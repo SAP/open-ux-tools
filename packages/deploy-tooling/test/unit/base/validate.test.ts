@@ -8,6 +8,7 @@ import {
 import { mockedProvider, mockedAdtService } from '../../__mocks__';
 import { green, red, yellow } from 'chalk';
 import { TransportChecksService } from '@sap-ux/axios-extension';
+import type { AxiosError } from '@sap-ux/axios-extension';
 import { t } from '@sap-ux/project-input-validator/src/i18n';
 import { isAppStudio, isOnPremiseDestination, listDestinations } from '@sap-ux/btp-utils';
 
@@ -478,5 +479,35 @@ describe('deploy-test validation', () => {
                 expect(result).toBe(expectedResult);
             }
         );
+    });
+    describe('Validate error does not show full stack trace', () => {
+        jest.resetAllMocks();
+        const mockLogger = {
+            error: jest.fn(),
+            debug: jest.fn()
+        };
+        jest.mock('@sap-ux/logger', () => {
+            const sapUxLogger = jest.requireActual('@sap-ux/logger');
+            return {
+                ...sapUxLogger,
+                ToolsLogger: jest.fn(() => mockLogger)
+            };
+        });
+        test('Only error message shown when error is thrown', async () => {
+            const logMock = jest.spyOn(mockLogger, 'error');
+            const mockAxiosError401 = {
+                response: {
+                    status: 401,
+                    statusText: 'Unauthorized'
+                },
+                message: 'Request failed with status code 401'
+            } as AxiosError;
+            mockedProvider.getAdtService.mockRejectedValueOnce(mockAxiosError401);
+
+            const output = await validateBeforeDeploy(testConfig, mockedProvider as any, mockLogger as any);
+
+            expect(output.result).toBe(false);
+            expect(logMock).toHaveBeenCalledWith(mockAxiosError401.message);
+        });
     });
 });

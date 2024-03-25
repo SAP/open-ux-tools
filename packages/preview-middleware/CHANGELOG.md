@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.13.0
+
+### Minor Changes
+
+-   733fcde8: Allow adding tiles pointing to remote apps
+
 ## 0.12.15
 
 ### Patch Changes
