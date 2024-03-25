@@ -137,24 +137,24 @@ export function traverseI18nProperties(path: string, entries: Array<I18nEntry>) 
     const updatedEntries: { [key: number]: boolean } = {};
     const output: string[] = [];
 
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        if (!line.startsWith('#')) {
-            let [key, value] = line.includes('=') ? line.split('=') : line.split(':');
-            key = key ? key.trim() : key;
-            value = value ? value.trim() : value;
-            const existingIndex = entries.findIndex((entry: any) => entry.key === key);
-            let newLine = line;
-            if (existingIndex !== -1) {
-                const { key, value } = entries[existingIndex];
-                newLine = `${key}=${value}`;
-                updatedEntries[existingIndex] = true;
-            }
-            output.push(newLine);
-        } else {
+    for (const line of lines) {
+        if (line.startsWith('#')) {
             output.push(line);
+            continue;
         }
+
+        const [i18nKey, _] = line.split(/\=|:/).map((word) => word.trim());
+        const index = entries.findIndex((entry) => entry.key === i18nKey);
+        let newLine = line;
+
+        if (index !== -1) {
+            const { key, value } = entries[index];
+            newLine = `${key}=${value}`;
+            updatedEntries[index] = true;
+        }
+        output.push(newLine);
     }
+
     return { lines, updatedEntries, output };
 }
 

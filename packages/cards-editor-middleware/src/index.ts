@@ -3,6 +3,7 @@ import type { MiddlewareParameters } from '@ui5/server';
 import { json, Router as createRouter } from 'express';
 import path, { join } from 'path';
 import { existsSync, writeFileSync, mkdirSync, readFileSync } from 'fs';
+import { getWebappPath } from '@sap-ux/project-access';
 import { render } from 'ejs';
 import * as utils from './utilities';
 import os from 'os';
@@ -22,6 +23,9 @@ module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<Reque
         throw new Error('No manifest.json found.');
     }
 
+    /**
+     * Route to serve card generator flp sandbox
+     */
     router.get(ApiRoutes.previewGeneratorSandbox, async (_req, res: Response) => {
         const app = JSON.parse(await manifest.getString())['sap.app'];
         res.status(200).send(
@@ -34,22 +38,21 @@ module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<Reque
         );
     });
 
+    /**
+     * Route to store card manifest files, the files are stored in the webapp folder of the project
+     * and the application manifest.json file is updated with the new card manifests information within the sap.cards.ap.embeds
+     */
     router.post(ApiRoutes.cardsStore, async (req: Request, res: Response) => {
         try {
-            const floorplan = req.body.floorplan;
-            const localPath = req.body.localPath;
-            const fileName = req.body.fileName || 'manifest.json';
-            const multipleCards = utils.prepareCardTypesForSaving(req.body.manifests);
-            const BASE_PATH = '/webapp';
-            const resolvedPath = path.resolve(BASE_PATH, localPath);
+            const { floorplan, localPath, fileName = 'manifest.json', manifests } = req.body;
+            const webappPath = await getWebappPath(path.resolve());
+            const fullPath = path.resolve(webappPath, localPath);
 
-            if (!resolvedPath.startsWith(BASE_PATH)) {
+            if (!fullPath.startsWith(webappPath)) {
                 throw new Error('Invalid path');
             }
 
-            const file = utils.prepareFileName(resolvedPath + '/' + fileName);
-            const fullPath = resolvedPath.startsWith('/') ? resolvedPath.slice(1) : resolvedPath;
-
+            const file = utils.prepareFileName(fullPath + '/' + fileName);
             if (!existsSync(fullPath)) {
                 try {
                     mkdirSync(fullPath, { recursive: true });
@@ -57,7 +60,7 @@ module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<Reque
                     res.status(403).send(`Files could not be created/updated.`);
                 }
             }
-
+            const multipleCards = utils.prepareCardTypesForSaving(manifests);
             writeFileSync(join(fullPath, file), multipleCards.integration);
             writeFileSync(join(fullPath, 'adaptive-' + file), multipleCards.adaptive);
 
@@ -67,7 +70,7 @@ module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<Reque
             if (!oManifest['sap.cards.ap']) {
                 oManifest['sap.cards.ap'] = {};
             }
-            const integrationCard = req.body.manifests.find((card: any) => card.type === 'integration');
+            const integrationCard = manifests.find((card: any) => card.type === 'integration');
             const entitySet = integrationCard.entitySet;
             oManifest['sap.cards.ap'].embeds ??= {};
             oManifest['sap.cards.ap'].embeds[floorplan] ??= {
@@ -88,6 +91,10 @@ module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<Reque
         }
     });
 
+    /**
+     * Route to store i18n properties
+     * All the new properties are added at the end of the i18n file
+     */
     router.post(ApiRoutes.i18nStore, async (req: Request, res: Response) => {
         try {
             const oManifest = JSON.parse(await manifest.getString());
