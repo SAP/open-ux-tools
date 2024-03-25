@@ -269,7 +269,7 @@ describe('getQuestions', () => {
         // Default version should be used
         expect((ui5VersionPrompt?.default as Function)()).toEqual(expectedUI5VerChoices[0].value);
 
-        // Provide a non-returned version as a choice and default
+        // This choice is not a maintained version and so the closest maintained version should be returned
         const defaultChoice = {
             'name': '1.120.99',
             'value': '1.120.99'
@@ -281,11 +281,8 @@ describe('getQuestions', () => {
         });
 
         ui5VersionPrompt = questions.find((question) => question.name === promptNames.ui5Version);
-        expect(((ui5VersionPrompt as ListQuestion)?.choices as Function)()).toEqual([
-            defaultChoice,
-            ...expectedUI5VerChoices
-        ]);
-        expect((ui5VersionPrompt?.default as Function)()).toEqual('1.120.99');
+        expect(((ui5VersionPrompt as ListQuestion)?.choices as Function)()).toEqual([...expectedUI5VerChoices]);
+        expect((ui5VersionPrompt?.default as Function)()).toEqual('1.118.0');
     });
 
     test('getQuestions, prompt: `addDeployConfig` conditions and message based on mta.yaml discovery', async () => {
