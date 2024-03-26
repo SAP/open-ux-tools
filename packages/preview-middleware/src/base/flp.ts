@@ -534,10 +534,9 @@ export class FlpSandbox {
             return propertyValue;
         }
         const propertyI18nKey = propertyValue.replace(/i18n>|[{}]/g, '');
-        let bundle: I18nBundles['sap.app'];
         const projectAccess = await createProjectAccess(projectRoot);
         try {
-            bundle = (await projectAccess.getApplication('').getI18nBundles())['sap.app'];
+            const bundle = (await projectAccess.getApplication('').getI18nBundles())['sap.app'];
             return bundle[propertyI18nKey]?.[0]?.value?.value ?? propertyI18nKey;
         } catch (e) {
             this.logger.warn('Failed to load i18n properties bundle');
