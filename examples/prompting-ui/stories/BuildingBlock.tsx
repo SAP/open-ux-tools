@@ -51,9 +51,10 @@ export const BuildingBlockQuestions = (props: {
             ...getDefaultAnswers(questions),
             ...newAnswers
         });
-        await validateAnswers(type, [{ name } as IQuestion], { [name]: answer }).then((validationResults) =>
-            setValidation({ ...validation, ...validationResults })
-        );
+        await validateAnswers(type, [{ name } as IQuestion], {
+            ...getDefaultAnswers(questions),
+            ...newAnswers
+        }).then((validationResults) => setValidation({ ...validation, ...validationResults }));
     }
 
     async function handleApply() {

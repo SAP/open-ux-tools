@@ -15,7 +15,7 @@ import {
     getChoices,
     getEntityChoices,
     getEntityPrompt,
-    getFilterBarIdPrompt,
+    getFilterBarIdListPrompt,
     getViewOrFragmentFilePrompt,
     getXPathStringsForXmlFile
 } from '../utils/prompts';
@@ -31,6 +31,8 @@ import type {
     FilterBarPromptsAnswer,
     ValidationResults
 } from './types';
+import { promises as fsPromises } from 'fs';
+import { DOMParser } from '@xmldom/xmldom';
 
 const TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID = 'tableBuildingBlockProperties';
 const TABLE_VISUALIZATION_PROPERTIES_GROUP_ID = 'tableVisualizationProperties';
@@ -85,6 +87,12 @@ export async function getBuildingBlockChoices<T extends Answers>(
                     annotationTerms.push(...[UIAnnotationTerms.SelectionFields]);
                 }
                 return getChoices(await getAnnotationPathQualifiers(projectProvider, entity, annotationTerms, true));
+            case 'filterBarId': {
+                if (!answers.viewOrFragmentFile) {
+                    return [];
+                }
+                return getChoices(await getFilterBarIdsInFile(answers.viewOrFragmentFile));
+            }
             default:
                 return [];
         }
@@ -92,6 +100,21 @@ export async function getBuildingBlockChoices<T extends Answers>(
         console.error(error);
         return [];
     }
+}
+
+export async function getFilterBarIdsInFile(viewOrFragmentFile: string): Promise<string[]> {
+    const ids: string[] = [];
+    const xmlContent = (await fsPromises.readFile(viewOrFragmentFile)).toString();
+    const errorHandler = (level: string, message: string): void => {
+        throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
+    };
+    const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent);
+    const filterBars = xmlDocument.getElementsByTagName('macros:FilterBar');
+    for (let i = 0; i < filterBars.length; i++) {
+        const id = filterBars[i].getAttributeNode('id')?.value;
+        id && ids.push(id);
+    }
+    return ids;
 }
 
 /**
@@ -138,12 +161,12 @@ export async function getChartBuildingBlockPrompts(basePath: string, fs: Editor)
                 basePath,
                 t('viewOrFragmentFile.message'),
                 t('viewOrFragmentFile.validate'),
-                [],
+                ['filterBarId'],
                 { required: true }
             ),
             getBuildingBlockIdPrompt(t('id.message'), t('id.validation'), defaultAnswers.id, { required: true }),
             getBindingContextTypePrompt(t('bindingContextType'), defaultAnswers.bindingContextType, { required: true }),
-            getFilterBarIdPrompt(t('filterBar'), { required: true }),
+            getFilterBarIdListPrompt(t('filterBar'), { required: true }),
             {
                 type: 'checkbox',
                 name: 'personalization',
@@ -226,7 +249,7 @@ export async function getTableBuildingBlockPrompts(basePath: string, fs: Editor)
                 basePath,
                 t('viewOrFragmentFile.message'),
                 t('viewOrFragmentFile.validate'),
-                ['aggregationPath'],
+                ['aggregationPath', 'filterBarId'],
                 { groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID, required: true }
             ),
             getBuildingBlockIdPrompt(t('id.message'), t('id.validation'), defaultAnswers.id, {
@@ -255,7 +278,8 @@ export async function getTableBuildingBlockPrompts(basePath: string, fs: Editor)
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
                 required: true
             }),
-            getFilterBarIdPrompt(t('filterBar.message'), {
+            getFilterBarIdListPrompt(t('filterBar.message'), {
+                required: true,
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
             }),
 
@@ -357,6 +381,13 @@ export async function getFilterBarBuildingBlockPrompts(
     const defaultAnswers: Answers = {
         id: 'FilterBar'
     };
+    const validateFn = async (value: string, answers?: Answers) => {
+        return value &&
+            answers?.viewOrFragmentFile &&
+            (await getFilterBarIdsInFile(answers?.viewOrFragmentFile)).find((id) => id === value)
+            ? t('id.validateExistingValueMsg')
+            : true;
+    };
     return {
         questions: [
             getViewOrFragmentFilePrompt(
@@ -367,7 +398,13 @@ export async function getFilterBarBuildingBlockPrompts(
                 ['aggregationPath'],
                 { required: true }
             ),
-            getBuildingBlockIdPrompt(t('id.message'), t('id.validation'), defaultAnswers.id, { required: true }),
+            getBuildingBlockIdPrompt(
+                t('id.message'),
+                t('id.validation'),
+                defaultAnswers.id,
+                { required: true },
+                validateFn
+            ),
             getAggregationPathPrompt(t('aggregation'), fs, { required: true }),
             getEntityPrompt(t('entity'), projectProvider, ['qualifier'], { required: true }),
             getAnnotationPathQualifierPrompt(
@@ -417,21 +454,21 @@ export const validateAnswers = async (
         blockPrompts = await getFilterBarBuildingBlockPrompts(basePath, fs);
     }
     let result: ValidationResults = {};
-    questions.forEach((q) => {
-        const question = blockPrompts.questions.find((blockQuestion) => q.name === blockQuestion.name);
+    for (const q of questions) {
+        const question: Question & { name: string; required?: boolean } = blockPrompts.questions.find(
+            (blockQuestion) => q.name === blockQuestion.name
+        );
         if (question.required && (answers[question.name] === undefined || answers[question.name] === '')) {
             result = { ...result, [question.name]: { isValid: false, errorMessage: 'Please enter a value!' } };
         } else {
             result = { ...result, [question.name]: { isValid: true } };
             if (question && question.name && typeof question.validate === 'function') {
-                const validationResult = question.validate(answers[question.name]);
+                const validationResult = await question.validate(answers[question.name], answers);
                 if (typeof validationResult === 'string') {
                     result = { ...result, [question.name]: { isValid: false, errorMessage: validationResult } };
-                } else {
-                    result = { ...result, [question.name]: { isValid: true } };
                 }
             }
         }
-    });
+    }
     return result;
 };

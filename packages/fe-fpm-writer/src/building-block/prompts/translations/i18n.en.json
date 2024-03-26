@@ -47,7 +47,8 @@
         "filterBar": {
             "id": {
                 "message": "Enter an ID for the filter bar building block",
-                "validation": "An ID is required to generate the filter bar building block"
+                "validation": "An ID is required to generate the filter bar building block",
+                "validateExistingValueMsg": "Filter bar with this ID already exists"
             },
             "viewOrFragmentFile": {
                 "message": "View or Fragment file name",

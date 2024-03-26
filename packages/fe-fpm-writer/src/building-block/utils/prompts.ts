@@ -1,7 +1,7 @@
 import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
 import type { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import { DOMParser } from '@xmldom/xmldom';
-import type { InputQuestion, ListQuestion } from 'inquirer';
+import type { Answers, InputQuestion, ListQuestion } from 'inquirer';
 import type { Editor } from 'mem-fs-editor';
 import { relative } from 'path';
 import type ProjectProvider from './project';
@@ -298,6 +298,28 @@ export function getFilterBarIdPrompt(
 }
 
 /**
+ * Returns a Prompt for selecting existing filter bar ID.
+ *
+ * @param message - prompt message
+ * @returns a List Prompt
+ */
+export function getFilterBarIdListPrompt(
+    message: string,
+    additionalProperties: AdditionalPromptProperties = {}
+): ListQuestion {
+    const { required, groupId, additionalInfo } = additionalProperties;
+    return {
+        type: 'list',
+        selectType: 'dynamic',
+        name: 'filterBarId',
+        message,
+        groupId,
+        required,
+        additionalInfo
+    } as ListQuestion;
+}
+
+/**
  * Returns the Binding Context Type Prompt.
  *
  * @param message - prompt message
@@ -336,14 +358,15 @@ export function getBuildingBlockIdPrompt(
     message: string,
     validationErrorMessage: string,
     defaultValue?: string,
-    additionalProperties: AdditionalPromptProperties = {}
+    additionalProperties: AdditionalPromptProperties = {},
+    validateFn?: (input: any, answers?: Answers) => string | boolean | Promise<string | boolean>
 ): InputQuestion {
     const { required, groupId, additionalInfo } = additionalProperties;
     return {
         type: 'input',
         name: 'id',
         message,
-        validate: (value: any) => (value ? true : validationErrorMessage),
+        validate: validateFn ? validateFn : (value: any) => (value ? true : validationErrorMessage),
         groupId,
         required,
         additionalInfo,
