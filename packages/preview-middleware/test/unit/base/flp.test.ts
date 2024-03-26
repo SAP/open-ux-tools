@@ -98,6 +98,19 @@ describe('FlpSandbox', () => {
             expect(flp.templateConfig).toMatchSnapshot();
         });
 
+        test('i18n manifest w/o bundle', async () => {
+            const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
+            const manifest = {
+                'sap.app': {
+                    id: 'my.id',
+                    title: '{i18n>myDifferentTitle}',
+                    description: '{{i18n>myDifferentDescription}}'
+                }
+            } as Manifest;
+            await flp.init(manifest);
+            expect(flp.templateConfig).toMatchSnapshot();
+        });
+
         test('i18n manifest', async () => {
             const projectAccessMock = jest.spyOn(projectAccess, 'createProjectAccess').mockImplementation(() => {
                 return Promise.resolve({
@@ -121,6 +134,15 @@ describe('FlpSandbox', () => {
             } as Manifest;
             await flp.init(manifest);
             expect(projectAccessMock).toBeCalled();
+            expect(flp.templateConfig).toMatchSnapshot();
+        });
+
+        test('i18n manifest with unknown propertyI18nKey', async () => {
+            const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
+            const manifest = {
+                'sap.app': { id: 'my.id', title: '{i18n>myOtherTitle}', description: '{{i18n>myOtherDescription}}' }
+            } as Manifest;
+            await flp.init(manifest);
             expect(flp.templateConfig).toMatchSnapshot();
         });
 
