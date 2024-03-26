@@ -10,7 +10,8 @@ import type {
     FioriToolsProxyConfigUI5,
     Resources,
     Ui5Document,
-    Adp
+    Adp,
+    MockserverConfig
 } from './types';
 import type { NodeComment, YAMLMap, YAMLSeq } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
@@ -273,13 +274,14 @@ export class UI5Config {
      * Adds a instance of the mockserver middleware to the config.
      *
      * @param path option path that is to be mocked
+     * @param annotationsConfig optional annotations config that is to be mocked
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addMockServerMiddleware(path?: string): UI5Config {
+    public addMockServerMiddleware(path?: string, annotationsConfig?: MockserverConfig['annotations']): this {
         this.document.appendTo({
             path: 'server.customMiddleware',
-            value: getMockServerMiddlewareConfig(path)
+            value: getMockServerMiddlewareConfig(path, annotationsConfig)
         });
         return this;
     }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as Enzyme from 'enzyme';
 import type { UIComboBoxProps, UIComboBoxState } from '../../../src/components/UIComboBox';
-import { UIComboBox } from '../../../src/components/UIComboBox';
+import { UIComboBox, UIComboBoxLoaderType } from '../../../src/components/UIComboBox';
 import { data as originalData, groupsData as originalGroupsData } from '../../__mock__/select-data';
 import { initIcons } from '../../../src/components/Icons';
 import type { IComboBox, IComboBoxOption } from '@fluentui/react';
@@ -792,5 +792,43 @@ describe('<UIComboBox />', () => {
                 }
             });
         }
+    });
+
+    describe('Test "isLoading" property', () => {
+        const testCases = [
+            {
+                isLoading: undefined,
+                expectLoaderInInput: false,
+                expectLoaderInMenu: false
+            },
+            {
+                isLoading: true,
+                expectLoaderInInput: false,
+                expectLoaderInMenu: true
+            },
+            {
+                isLoading: [UIComboBoxLoaderType.Input],
+                expectLoaderInInput: true,
+                expectLoaderInMenu: false
+            },
+            {
+                isLoading: [UIComboBoxLoaderType.List],
+                expectLoaderInInput: false,
+                expectLoaderInMenu: true
+            },
+            {
+                isLoading: [UIComboBoxLoaderType.Input, UIComboBoxLoaderType.List],
+                expectLoaderInInput: true,
+                expectLoaderInMenu: true
+            }
+        ];
+        test.each(testCases)('isLoading = $isLoading', ({ isLoading, expectLoaderInInput, expectLoaderInMenu }) => {
+            wrapper.setProps({
+                isLoading
+            });
+            openDropdown();
+            expect(wrapper.find('.ms-Callout UILoader').length).toEqual(expectLoaderInMenu ? 1 : 0);
+            expect(wrapper.find('.ms-ComboBox UILoader').length).toEqual(expectLoaderInInput ? 1 : 0);
+        });
     });
 });

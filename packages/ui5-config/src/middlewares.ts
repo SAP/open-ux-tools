@@ -77,7 +77,10 @@ export function getFioriToolsProxyMiddlewareConfig(
     return { config: fioriToolsProxy, comments };
 }
 
-export const getMockServerMiddlewareConfig = (path?: string): CustomMiddleware<MockserverConfig> => {
+export const getMockServerMiddlewareConfig = (
+    path?: string,
+    annotationsConfig: MockserverConfig['annotations'] = []
+): CustomMiddleware<MockserverConfig> => {
     path = path?.replace(/\/$/, ''); // Mockserver is sensitive to trailing '/'
     return {
         name: 'sap-fe-mockserver',
@@ -92,7 +95,7 @@ export const getMockServerMiddlewareConfig = (path?: string): CustomMiddleware<M
                     generateMockData: true
                 }
             ],
-            annotations: []
+            annotations: annotationsConfig
         }
     };
 };
