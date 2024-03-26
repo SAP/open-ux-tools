@@ -1,5 +1,11 @@
 # @sap-ux/xml-odata-annotation-converter
 
+## 0.2.2
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+
 ## 0.2.1
 
 ### Patch Changes

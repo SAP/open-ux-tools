@@ -344,11 +344,26 @@ export class FlpSandbox {
      */
     private addRoutesForAdditionalApps() {
         for (const app of this.config.apps) {
+            let manifest: Manifest | undefined;
             if (app.local) {
-                const manifest = JSON.parse(readFileSync(join(app.local, 'webapp/manifest.json'), 'utf-8'));
-                this.addApp(manifest, app);
+                manifest = JSON.parse(readFileSync(join(app.local, 'webapp/manifest.json'), 'utf-8'));
                 this.router.use(app.target, serveStatic(join(app.local, 'webapp')));
                 this.logger.info(`Serving additional application at ${app.target} from ${app.local}`);
+            } else if (app.componentId) {
+                manifest = {
+                    'sap.app': {
+                        id: app.componentId,
+                        title: app.intent ? `${app.intent.object}-${app.intent.action}` : app.componentId
+                    }
+                } as Manifest;
+            }
+            if (manifest) {
+                this.addApp(manifest, app);
+                this.logger.info(`Adding additional intent: ${app.intent?.object}-${app.intent?.action}`);
+            } else {
+                this.logger.info(
+                    `Invalid application config for route ${app.target} because neither componentId nor local folder provided.`
+                );
             }
         }
     }
