@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.19.3
+
+### Patch Changes
+
+-   89013210: Revert setting of cds.root
+
 ## 1.19.2
 
 ### Patch Changes

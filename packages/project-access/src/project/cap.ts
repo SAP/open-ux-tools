@@ -404,6 +404,8 @@ async function loadCdsModuleFromProject(capProjectPath: string): Promise<CdsFaca
     if (global) {
         global.cds = cds;
     }
+    // Ensure we use a known root path, otherwise `cwd` is used which varies between invocations.
+    cds.root = capProjectPath;
 
     return cds;
 }
