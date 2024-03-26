@@ -25,6 +25,16 @@ Object {
       "title": "My Other App",
       "url": "/yet/another/app",
     },
+    "myRemoteObject-action": Object {
+      "additionalInformation": "SAPUI5.Component=myRemoteComponent",
+      "applicationDependencies": Object {
+        "manifest": true,
+      },
+      "applicationType": "URL",
+      "description": "",
+      "title": "myRemoteObject-action",
+      "url": "/a/remote/app",
+    },
     "testfev2app-preview": Object {
       "additionalInformation": "SAPUI5.Component=test.fe.v2.app",
       "applicationDependencies": Object {
@@ -63,6 +73,7 @@ Object {
     "libs": "sap.m,sap.ui.core,sap.ushell",
     "resources": Object {
       "my.id": "..",
+      "myRemoteComponent": "/a/remote/app",
       "open.ux.preview.client": "/preview/client",
       "test.fe.v2.app": "/simple/app",
       "test.fe.v2.other": "/yet/another/app",

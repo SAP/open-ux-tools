@@ -14,7 +14,7 @@ import { tmpdir } from 'os';
 import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import * as adpTooling from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
-import type { I18nBundle, I18nEntry } from '@sap-ux/i18n';
+import type { I18nEntry } from '@sap-ux/i18n/src/types';
 
 jest.mock('@sap-ux/adp-tooling', () => {
     return {
@@ -106,7 +106,7 @@ describe('FlpSandbox', () => {
                             'sap.app': {
                                 'title': [{ value: { value: 'My App' } } as I18nEntry],
                                 'description': [{ value: { value: 'My App Description' } } as I18nEntry]
-                            } as I18nBundle
+                            } as I18nBundles['sap.app']
                         } as I18nBundles;
                     }
                 }) as unknown as Promise<ProjectAccess>;
@@ -148,6 +148,21 @@ describe('FlpSandbox', () => {
                                 local: join(fixtures, 'multi-app'),
                                 intent: {
                                     object: 'myObject',
+                                    action: 'action'
+                                }
+                            },
+                            {
+                                target: '/a/remote/app',
+                                componentId: 'myRemoteComponent',
+                                intent: {
+                                    object: 'myRemoteObject',
+                                    action: 'action'
+                                }
+                            },
+                            {
+                                target: '/an/invalid/app/config',
+                                intent: {
+                                    object: 'INVALID',
                                     action: 'action'
                                 }
                             }

@@ -1,5 +1,11 @@
 # @sap-ux/ui5-info
 
+## 0.3.3
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+
 ## 0.3.2
 
 ### Patch Changes

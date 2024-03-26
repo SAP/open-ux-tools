@@ -12,7 +12,7 @@ import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { createProjectAccess } from '@sap-ux/project-access';
 import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import { generateImportList, mergeTestConfigDefaults } from './test';
-import type { I18nBundle } from '@sap-ux/i18n';
+import type { I18nBundles } from '@sap-ux/project-access';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -346,11 +346,26 @@ export class FlpSandbox {
      */
     private async addRoutesForAdditionalApps() {
         for (const app of this.config.apps) {
+            let manifest: Manifest | undefined;
             if (app.local) {
-                const manifest = JSON.parse(readFileSync(join(app.local, 'webapp/manifest.json'), 'utf-8'));
-                await this.addApp(manifest, app);
+                manifest = JSON.parse(readFileSync(join(app.local, 'webapp/manifest.json'), 'utf-8'));
                 this.router.use(app.target, serveStatic(join(app.local, 'webapp')));
                 this.logger.info(`Serving additional application at ${app.target} from ${app.local}`);
+            } else if (app.componentId) {
+                manifest = {
+                    'sap.app': {
+                        id: app.componentId,
+                        title: app.intent ? `${app.intent.object}-${app.intent.action}` : app.componentId
+                    }
+                } as Manifest;
+            }
+            if (manifest) {
+                await this.addApp(manifest, app);
+                this.logger.info(`Adding additional intent: ${app.intent?.object}-${app.intent?.action}`);
+            } else {
+                this.logger.info(
+                    `Invalid application config for route ${app.target} because neither componentId nor local folder provided.`
+                );
             }
         }
     }
@@ -489,10 +504,16 @@ export class FlpSandbox {
             object: id.replace(/\./g, ''),
             action: 'preview'
         };
+        let title = manifest['sap.app'].title ?? id;
+        let description = manifest['sap.app'].description ?? '';
+        if (app.local) {
+            title = (await this.getI18nTextFromProperty(app.local, manifest['sap.app'].title)) ?? id;
+            description = (await this.getI18nTextFromProperty(app.local, manifest['sap.app'].description)) ?? '';
+        }
         this.templateConfig.ui5.resources[id] = app.target;
         this.templateConfig.apps[`${app.intent?.object}-${app.intent?.action}`] = {
-            title: (await this.getI18nTextFromProperty(app.local, manifest['sap.app'].title)) ?? manifest['sap.app'].id,
-            description: (await this.getI18nTextFromProperty(app.local, manifest['sap.app'].description)) ?? '',
+            title: title,
+            description: description,
             additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
             applicationType: 'URL',
             url: app.target,
@@ -514,7 +535,7 @@ export class FlpSandbox {
             return propertyValue;
         }
         const propertyI18nKey = propertyValue.replace(/i18n>|[{}]/g, '');
-        let bundle: I18nBundle;
+        let bundle: I18nBundles['sap.app'];
         const projectAccess = await createProjectAccess(projectRoot);
         try {
             bundle = (await projectAccess.getApplication('').getI18nBundles())['sap.app'];

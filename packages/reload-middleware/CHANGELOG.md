@@ -1,5 +1,11 @@
 # @sap-ux/reload-middleware
 
+## 0.1.2
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+
 ## 0.1.1
 
 ### Patch Changes
