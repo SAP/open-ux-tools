@@ -9,10 +9,10 @@ import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
+import { createProjectAccess } from '@sap-ux/project-access';
 import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import { generateImportList, mergeTestConfigDefaults } from './test';
 import type { I18nBundle } from '@sap-ux/i18n';
-import { getPropertiesI18nBundle } from '@sap-ux/i18n';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -495,26 +495,6 @@ export class FlpSandbox {
     }
 
     /**
-     * Get the i18n properties bundle.
-     *
-     * @param projectRoot absolute path to the project root
-     * @returns i18n properties bundle
-     * @private
-     */
-    private async getPropertiesI18nBundle(projectRoot: string) {
-        //todo: consider relative path from manifest['sap.app'].i18n
-        //todo: consider locale
-        const i18nFilePath = join(projectRoot, 'webapp', 'i18n', 'i18n.properties');
-        let bundle: I18nBundle | undefined;
-        try {
-            bundle = await getPropertiesI18nBundle(i18nFilePath);
-        } catch (e) {
-            this.logger.warn(`Failed to load i18n properties bundle from ${i18nFilePath}`);
-        }
-        return bundle;
-    }
-
-    /**
      * Get the i18n text of the given property.
      *
      * @param projectRoot absolute path to the project root
@@ -527,12 +507,16 @@ export class FlpSandbox {
         if (!propertyValue || propertyValue.search(/{{\w+}}|{i18n>\w+}/g) === -1) {
             return propertyValue;
         }
-        const bundle = await this.getPropertiesI18nBundle(projectRoot);
-        if (propertyValue && bundle) {
-            const propertyI18nKey = propertyValue.replace(/i18n>|[{}]/g, '');
+        const propertyI18nKey = propertyValue.replace(/i18n>|[{}]/g, '');
+        let bundle: I18nBundle;
+        const projectAccess = await createProjectAccess(projectRoot);
+        try {
+            bundle = (await projectAccess.getApplication('').getI18nBundles())['sap.app'];
             return bundle[propertyI18nKey]?.[0]?.value?.value ?? propertyI18nKey;
+        } catch (e) {
+            this.logger.warn('Failed to load i18n properties bundle');
         }
-        return propertyValue;
+        return propertyI18nKey;
     }
 
     /**

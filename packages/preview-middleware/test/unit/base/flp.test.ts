@@ -4,7 +4,7 @@ import { FlpSandbox as FlpSandboxUnderTest, initAdp } from '../../../src';
 import type { FlpConfig } from '../../../src/types';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
-import type { Manifest } from '@sap-ux/project-access';
+import type { ProjectAccess, I18nBundles, Manifest } from '@sap-ux/project-access';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import type { SuperTest, Test } from 'supertest';
@@ -13,7 +13,7 @@ import express from 'express';
 import { tmpdir } from 'os';
 import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import * as adpTooling from '@sap-ux/adp-tooling';
-import * as i18n from '@sap-ux/i18n';
+import * as projectAccess from '@sap-ux/project-access';
 import type { I18nBundle, I18nEntry } from '@sap-ux/i18n';
 
 jest.mock('@sap-ux/adp-tooling', () => {
@@ -95,6 +95,28 @@ describe('FlpSandbox', () => {
                 'sap.app': { id: 'my.id' }
             } as Manifest;
             await flp.init(manifest);
+            expect(flp.templateConfig).toMatchSnapshot();
+        });
+
+        test('i18n manifest', async () => {
+            const projectAccessMock = jest.spyOn(projectAccess, 'createProjectAccess').mockImplementation(() => {
+                return Promise.resolve({
+                    getI18nBundles: () => {
+                        return {
+                            'sap.app': {
+                                'title': [{ value: { value: 'My App' } } as I18nEntry],
+                                'description': [{ value: { value: 'My App Description' } } as I18nEntry]
+                            } as I18nBundle
+                        } as I18nBundles;
+                    }
+                }) as unknown as Promise<ProjectAccess>;
+            });
+            const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
+            const manifest = {
+                'sap.app': { id: 'my.id', title: '{i18n>myTitle}', description: '{{i18n>myDescription}}' }
+            } as Manifest;
+            await flp.init(manifest);
+            expect(projectAccessMock).toBeCalled();
             expect(flp.templateConfig).toMatchSnapshot();
         });
 
@@ -323,24 +345,6 @@ describe('FlpSandbox', () => {
 
         test('no route for custom init', async () => {
             await server.get('/test/integration/opaTests.qunit.js').expect(404);
-        });
-    });
-
-    describe('i18n bundle', () => {
-        const i18nBundleMock = jest.spyOn(i18n, 'getPropertiesI18nBundle').mockImplementation(() => {
-            return Promise.resolve({
-                'title': [{ value: { value: 'My App' } } as I18nEntry],
-                'description': [{ value: { value: 'My App Description' } } as I18nEntry]
-            } as I18nBundle);
-        });
-
-        test('i18n bundle: get manifest title and description', async () => {
-            const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
-            const manifest = {
-                'sap.app': { id: 'my.id', title: '{i18n>myTitle}', description: '{{i18n>myDescription}}' }
-            } as Manifest;
-            await flp.init(manifest);
-            expect(i18nBundleMock).toBeCalled();
         });
     });
 });
