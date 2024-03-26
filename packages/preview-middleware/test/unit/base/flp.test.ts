@@ -101,13 +101,17 @@ describe('FlpSandbox', () => {
         test('i18n manifest', async () => {
             const projectAccessMock = jest.spyOn(projectAccess, 'createProjectAccess').mockImplementation(() => {
                 return Promise.resolve({
-                    getI18nBundles: () => {
+                    getApplication: () => {
                         return {
-                            'sap.app': {
-                                'title': [{ value: { value: 'My App' } } as I18nEntry],
-                                'description': [{ value: { value: 'My App Description' } } as I18nEntry]
-                            } as I18nBundles['sap.app']
-                        } as I18nBundles;
+                            getI18nBundles: () => {
+                                return Promise.resolve({
+                                    'sap.app': {
+                                        'myTitle': [{ value: { value: 'My App' } } as I18nEntry],
+                                        'myDescription': [{ value: { value: 'My App Description' } } as I18nEntry]
+                                    } as I18nBundles['sap.app']
+                                }) as unknown as I18nBundles;
+                            }
+                        };
                     }
                 }) as unknown as Promise<ProjectAccess>;
             });
