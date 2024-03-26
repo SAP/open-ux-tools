@@ -8,11 +8,10 @@ import { Router as createRouter, static as serveStatic, json } from 'express';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
-import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
+import type { I18nBundles, Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { createProjectAccess } from '@sap-ux/project-access';
 import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import { generateImportList, mergeTestConfigDefaults } from './test';
-import type { I18nBundles } from '@sap-ux/project-access';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
