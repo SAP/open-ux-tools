@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.13.1
+
+### Patch Changes
+
+-   25ecdb90: Fix missing title and description on launchpad tile
+
 ## 0.13.0
 
 ### Minor Changes
