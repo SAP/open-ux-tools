@@ -37,10 +37,11 @@ export interface QuestionProps {
     pending?: boolean;
     additionalInfo?: string;
     validation: ValidationResults;
+    placeholder?: string;
 }
 
 export const Question = (props: QuestionProps) => {
-    const { question, onChange, answers, choices, pending, additionalInfo, validation = {} } = props;
+    const { question, onChange, answers, choices, pending, additionalInfo, validation = {}, placeholder } = props;
     let questionInput: JSX.Element;
     let value: AnswerValue = '';
     let errorMessage = '';
@@ -63,6 +64,7 @@ export const Question = (props: QuestionProps) => {
                     onChange={onChange}
                     additionalInfo={additionalInfo}
                     errorMessage={errorMessage}
+                    placeholder={placeholder}
                 />
             );
             break;
@@ -77,6 +79,7 @@ export const Question = (props: QuestionProps) => {
                     options={options}
                     additionalInfo={additionalInfo}
                     errorMessage={errorMessage}
+                    placeholder={placeholder}
                 />
             );
             break;
@@ -92,6 +95,7 @@ export const Question = (props: QuestionProps) => {
                     pending={pending}
                     additionalInfo={additionalInfo}
                     errorMessage={errorMessage}
+                    placeholder={placeholder}
                 />
             );
             break;

@@ -15,6 +15,7 @@ export interface MultiSelectProps extends CheckboxQuestion {
     pending?: boolean;
     additionalInfo?: string;
     errorMessage?: string;
+    placeholder?: string;
 }
 
 export const MultiSelect = (props: MultiSelectProps) => {
@@ -27,7 +28,8 @@ export const MultiSelect = (props: MultiSelectProps) => {
         options,
         pending,
         additionalInfo,
-        errorMessage
+        errorMessage,
+        placeholder
     } = props;
     const [value, setValue] = useValue('', props.value?.toString());
 
@@ -58,6 +60,7 @@ export const MultiSelect = (props: MultiSelectProps) => {
             }}
             onRenderLabel={getLabelRenderer(additionalInfo)}
             errorMessage={errorMessage}
+            placeholder={placeholder}
         />
     );
 };

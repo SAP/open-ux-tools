@@ -13,6 +13,7 @@ export interface AdditionalQuestionProperties {
     required?: boolean;
     groupId?: string;
     additionalInfo?: string;
+    placeholder?: string;
 }
 
 export interface Choice {
@@ -94,7 +95,7 @@ export const Questions = (props: QuestionsProps) => {
                 onChange(updatedAnswers, name, answer);
                 // Request dynamic choices for dependant questions
                 const deps = getDependantQuestions(questions, name);
-                requestChoices(deps, updatedAnswers);
+                deps.length && requestChoices(deps, updatedAnswers);
             }
         },
         [localAnswers, onChange]
@@ -123,18 +124,17 @@ export const Questions = (props: QuestionsProps) => {
                 return <></>;
             }
             return (
-                <>
-                    <Question
-                        key={`${question.name}-${index}`}
-                        question={question}
-                        validation={validation}
-                        answers={localAnswers}
-                        onChange={onAnswerChange}
-                        choices={externalChoices}
-                        pending={pendingRequests[name]}
-                        additionalInfo={(question as IQuestion).additionalInfo}
-                    />
-                </>
+                <Question
+                    key={`${question.name}-${index}`}
+                    question={question}
+                    validation={validation}
+                    answers={localAnswers}
+                    onChange={onAnswerChange}
+                    choices={externalChoices}
+                    pending={pendingRequests[name]}
+                    additionalInfo={(question as IQuestion).additionalInfo}
+                    placeholder={(question as IQuestion).placeholder}
+                />
             );
         });
 

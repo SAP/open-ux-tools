@@ -21,7 +21,7 @@ export const QuestionGroup = (props: QuestionGroupProps) => {
             {showDescription &&
                 description &&
                 description.map((descriptionParagraph, i) => (
-                    <div className="prompts-group-description">
+                    <div className="prompts-group-description" key={i}>
                         <ReactMarkdown key={i}>{descriptionParagraph}</ReactMarkdown>
                     </div>
                 ))}
