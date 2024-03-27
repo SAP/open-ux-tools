@@ -14,6 +14,17 @@ export function extractI18nKey(input: string, key = 'i18n'): string {
 }
 
 /**
+ * Extracts the mustache key from the given input.
+ *
+ * @param input string to extract the mustache key from
+ * @returns extracted mustache key
+ */
+export function extractMustacheKey(input: string): string {
+    const data = input.trim();
+    return data.substring(2, data.length - 2).trim();
+}
+
+/**
  * Get unique key. If the key is not unique, it increment key by one and recheck.
  *
  * @param key new key and it is incremented
