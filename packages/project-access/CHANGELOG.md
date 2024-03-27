@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.19.4
+
+### Patch Changes
+
+-   87c942e5: Remove setting of cds.root.
+
 ## 1.19.3
 
 ### Patch Changes
