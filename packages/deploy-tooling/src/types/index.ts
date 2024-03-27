@@ -1,4 +1,4 @@
-import type { AxiosRequestConfig, BspConfig } from '@sap-ux/axios-extension';
+import type { AxiosRequestConfig, BspConfig, AdaptationConfig } from '@sap-ux/axios-extension';
 import type { LogLevel } from '@sap-ux/logger';
 import type { AbapTarget as BaseAbapTarget, DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 
@@ -71,6 +71,7 @@ export interface AbapDeployConfig extends CommonOptions {
     app: Partial<BspConfig>;
     credentials?: AxiosRequestConfig['auth'];
     exclude?: string[];
+    adaptation?: AdaptationConfig;
 }
 
 export interface CliOptions
