@@ -164,9 +164,13 @@ export async function getChartBuildingBlockPrompts(basePath: string, fs: Editor)
                 ['filterBarId'],
                 { required: true }
             ),
-            getBuildingBlockIdPrompt(t('id.message'), t('id.validation'), defaultAnswers.id, { required: true }),
+            getBuildingBlockIdPrompt(t('id.message'), t('id.validation'), defaultAnswers.id, {
+                required: true
+            }),
             getBindingContextTypePrompt(t('bindingContextType'), defaultAnswers.bindingContextType, { required: true }),
-            getFilterBarIdListPrompt(t('filterBar'), { required: true }),
+            getFilterBarIdListPrompt(t('filterBar'), {
+                required: true
+            }),
             {
                 type: 'checkbox',
                 name: 'personalization',
@@ -176,7 +180,8 @@ export async function getChartBuildingBlockPrompts(basePath: string, fs: Editor)
                     { name: t('personalization.choices.type'), value: 'Type' },
                     { name: t('personalization.choices.item'), value: 'Item' },
                     { name: t('personalization.choices.sort'), value: 'Sort' }
-                ]
+                ],
+                placeholder: t('personalization.placeholder')
             } as CheckboxQuestion,
             {
                 type: 'list',
@@ -191,13 +196,17 @@ export async function getChartBuildingBlockPrompts(basePath: string, fs: Editor)
             {
                 type: 'input',
                 name: 'selectionChange',
-                message: t('selectionChange')
+                message: t('selectionChange'),
+                placeholder: t('selectionChangePlaceholder')
             } as InputQuestion,
-            getAggregationPathPrompt(t('aggregation'), fs, { required: true }),
+            getAggregationPathPrompt(t('aggregation'), fs, {
+                required: true
+            }),
             getEntityPrompt(t('entity'), projectProvider, ['qualifier'], { required: true }),
             getAnnotationPathQualifierPrompt('qualifier', t('qualifier'), projectProvider, [UIAnnotationTerms.Chart], {
                 additionalInfo: t('valuesDependentOnEntityTypeInfo'),
-                required: true
+                required: true,
+                placeholder: t('qualifierPlaceholder')
             })
         ]
     };
@@ -271,7 +280,8 @@ export async function getTableBuildingBlockPrompts(basePath: string, fs: Editor)
                 {
                     additionalInfo: t('valuesDependentOnEntityTypeInfo'),
                     groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
-                    required: true
+                    required: true,
+                    placeholder: t('qualifierPlaceholder')
                 }
             ),
             getAggregationPathPrompt(t('aggregation'), fs, {
@@ -412,7 +422,11 @@ export async function getFilterBarBuildingBlockPrompts(
                 t('qualifier'),
                 projectProvider,
                 [UIAnnotationTerms.SelectionFields],
-                { additionalInfo: t('valuesDependentOnEntityTypeInfo'), required: true }
+                {
+                    additionalInfo: t('valuesDependentOnEntityTypeInfo'),
+                    required: true,
+                    placeholder: t('qualifierPlaceholder')
+                }
             ),
             {
                 type: 'input',

@@ -31,7 +31,8 @@
                     "type": "Type",
                     "item": "Item",
                     "sort": "Sort"
-                }
+                },
+                "placeholder": "Select chart personalization"
             },
             "selectionMode": {
                 "message": "Select Binding Context Path Type",
@@ -41,7 +42,9 @@
                 }
             },
             "selectionChange": "Enter a function to be called when the selection has changed",
+            "selectionChangePlaceholder": "Enter a selecton change function",
             "qualifier": "Select the Chart Qualifier",
+            "qualifierPlaceholder": "Select chart qualifier",
             "valuesDependentOnEntityTypeInfo": "Values are dependent on entity type"
         },
         "filterBar": {
@@ -59,6 +62,7 @@
             "filterChanged": "Enter a function to be called when the filter value has changed",
             "search": "Enter a function to be called when the go button is pressed",
             "qualifier": "Select the Selection Fields Qualifier",
+            "qualifierPlaceholder": "Select selection fields qualifier",
             "aggregation": "Select the Aggregation Path",
             "valuesDependentOnEntityTypeInfo": "Values are dependent on entity type"
         },
@@ -83,6 +87,7 @@
             "bindingContextType": "Select the Binding Context Path Type",
             "entity": "Entity Type",
             "qualifier": "Select the Line Item Qualifier",
+            "qualifierPlaceholder": "Select a line item qualifier",
             "aggregation": "Select the Aggregation Path",
             "filterBar": {
                 "message": "Associated Filter Bar ID",

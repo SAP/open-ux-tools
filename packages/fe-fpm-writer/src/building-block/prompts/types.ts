@@ -54,4 +54,5 @@ export interface AdditionalPromptProperties {
     required?: boolean;
     groupId?: string;
     additionalInfo?: string;
+    placeholder?: string;
 }
