@@ -1,21 +1,25 @@
 import supertest from 'supertest';
 import express from 'express';
 import type { Router } from 'express';
-import { readFileSync, writeFileSync } from 'fs';
+import { promises } from 'fs';
 import { join } from 'path';
+import { getWebappPath } from '@sap-ux/project-access';
 import type { SuperTest, Test } from 'supertest';
 import * as sapCardsGenerator from '../../src';
 import * as utils from '../../src/utilities';
 import os from 'os';
+import path from 'path';
 
 jest.mock('fs', () => ({
-    ...jest.requireActual('fs'),
-    existsSync: jest.fn(),
-    mkdirSync: jest.fn(),
-    writeFileSync: jest.fn()
+    promises: {
+        ...jest.requireActual('fs').promises,
+        writeFile: jest.fn(),
+        access: jest.fn(),
+        mkdir: jest.fn()
+    }
 }));
 
-jest.spyOn(utils, 'traverseI18nProperties').mockReturnValue({
+jest.spyOn(utils, 'traverseI18nProperties').mockResolvedValue({
     lines: ['appTitle=Sales Order'],
     updatedEntries: [],
     output: ['appTitle=Sales Order']
@@ -29,9 +33,9 @@ async function getRouter(fixture?: string, configuration = {}): Promise<Router> 
                 byPath: (path: string) => {
                     if (path === '/manifest.json' && fixture) {
                         return {
-                            getString: () =>
+                            getString: async () =>
                                 Promise.resolve(
-                                    readFileSync(
+                                    await promises.readFile(
                                         join(__dirname, `../fixtures/${fixture}/webapp/manifest.json`),
                                         'utf-8'
                                     )
@@ -68,13 +72,13 @@ describe('sap-cards-generator', () => {
     });
 
     describe('Middleware for saving cards', () => {
-        let mockWriteFileSync: jest.Mock;
+        let mockFsPromisesWriteFile: jest.Mock;
 
         beforeAll(() => {
-            mockWriteFileSync = writeFileSync as jest.Mock;
+            mockFsPromisesWriteFile = promises.writeFile as jest.Mock;
         });
         afterEach(() => {
-            mockWriteFileSync.mockClear();
+            mockFsPromisesWriteFile.mockClear();
         });
         test('POST /cards/store', async () => {
             const payload = {
@@ -100,18 +104,18 @@ describe('sap-cards-generator', () => {
             const server = await getTestServer('lrop-v4');
             const response = await server.post(sapCardsGenerator.ApiRoutes.cardsStore).send(payload);
             expect(response.status).toBe(201);
-            expect(mockWriteFileSync).toHaveBeenCalledTimes(3);
+            expect(mockFsPromisesWriteFile).toHaveBeenCalledTimes(3);
         });
     });
 
     describe('Middleware for updating i18n file', () => {
-        let mockWriteFileSync: jest.Mock;
+        let mockFsPromisesWriteFile: jest.Mock;
 
         beforeAll(() => {
-            mockWriteFileSync = writeFileSync as jest.Mock;
+            mockFsPromisesWriteFile = promises.writeFile as jest.Mock;
         });
         afterEach(() => {
-            mockWriteFileSync.mockClear();
+            mockFsPromisesWriteFile.mockClear();
         });
 
         test('POST /i18n/store', async () => {
@@ -122,10 +126,12 @@ describe('sap-cards-generator', () => {
                     'value': 'new Entry'
                 }
             ]);
+            const webappPath = await getWebappPath(path.resolve());
+            const filePath = join(webappPath, 'i18n', 'i18n.properties');
             expect(response.status).toBe(201);
-            expect(mockWriteFileSync).toHaveBeenCalledTimes(1);
-            expect(mockWriteFileSync).toHaveBeenCalledWith(
-                join('./webapp/i18n/i18n.properties'),
+            expect(mockFsPromisesWriteFile).toHaveBeenCalledTimes(1);
+            expect(mockFsPromisesWriteFile).toHaveBeenCalledWith(
+                filePath,
                 ['appTitle=Sales Order', '', 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0=new Entry\n'].join(
                     os.EOL
                 ),

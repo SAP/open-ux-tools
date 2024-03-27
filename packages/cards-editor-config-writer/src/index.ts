@@ -2,10 +2,29 @@ import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Package, ManifestNamespace } from '@sap-ux/project-access';
+import type { Package } from '@sap-ux/project-access';
 import { UI5Config } from '@sap-ux/ui5-config';
 
-export type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & { [key: string]: unknown };
+/**
+ * Check if package.json has devDependency to @ui5/cli version  > 2.
+ *
+ * @param devDependencies - parsed devDependencies from package.json
+ * @returns - true: @ui/cli higher version 2; false: @ui/cli
+ */
+function isUi5CliHigherTwo(devDependencies: Partial<Record<string, string>>): boolean {
+    let isHigherTwo = false;
+    try {
+        const versionString = devDependencies['@ui5/cli'];
+        if (typeof versionString === 'string') {
+            const majorVersion = parseInt(versionString.split('.')[0].match(/\d+/)?.[0] || '0', 10);
+            isHigherTwo = majorVersion > 2 ? true : false;
+        }
+    } catch {
+        // if something went wrong we don't have @ui/cli > version 2
+    }
+    return isHigherTwo;
+}
+
 /**
  * Updates the package.json file to include the cards editor middleware and the start-cards-generator script.
  *
@@ -26,7 +45,7 @@ function updatePackageJson(basePath: string, fs: Editor) {
     packageJson.scripts ??= {};
     packageJson.scripts['start-cards-generator'] = `fiori run --open "test/flpGeneratorSandbox.html#Cards-generator"`;
 
-    if (!packageJson.devDependencies['@ui5/cli']?.startsWith('3')) {
+    if (!isUi5CliHigherTwo(packageJson.devDependencies)) {
         packageJson.ui5 ??= {};
         packageJson.ui5.dependencies ??= [];
         if (!packageJson.ui5.dependencies.includes('@sap-ux/cards-editor-middleware')) {
@@ -71,11 +90,6 @@ async function updateYaml(basePath: string, fs: Editor, middlewares: string[]) {
 export async function enableCardsEditor(basePath: string, fs?: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
-    }
-
-    const manifestFilePath = join(basePath, 'webapp/manifest.json');
-    if (!fs.exists(manifestFilePath)) {
-        throw new Error(`No manifest found at ${manifestFilePath}`);
     }
 
     updatePackageJson(basePath, fs);

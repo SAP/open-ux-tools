@@ -1,6 +1,5 @@
-import { statSync, readdirSync, readFileSync } from 'fs';
-import { ToolsLogger, LogLevel } from '@sap-ux/logger';
-import { join } from 'path';
+import { promises } from 'fs';
+import packageJson from '../package.json';
 
 interface MultiCardsPayload {
     type: string;
@@ -24,27 +23,6 @@ export const CARD_TYPES = {
 };
 
 /**
- * Return the version from package.json.
- *
- *  @returns - version from package.json
- */
-function getVersion(): string {
-    let version = '';
-    try {
-        version = JSON.parse(
-            readFileSync(join(__dirname, '../../package.json'), { encoding: 'utf8' }).toString()
-        ).version;
-    } catch (error: any) {
-        const logger = new ToolsLogger({
-            logLevel: LogLevel.Info
-        });
-        logger.warn(`Could not read version from 'package.json'`);
-        logger.debug(error);
-    }
-    return version;
-}
-
-/**
  * Prepare the file name by adding .json extension if it is missing.
  *
  * @param path Path to the file
@@ -62,7 +40,7 @@ export function prepareFileName(path: string): string {
  * @returns {string} returns the card as a string
  */
 export function prepareCardForSaving(card: any): string {
-    const version = getVersion();
+    const version = packageJson.version;
     const insights = card?.['sap.insights'];
     if (!insights.versions) {
         insights.versions = {
@@ -96,43 +74,14 @@ export function prepareCardTypesForSaving(aMultipleCards: MultiCardsPayload[]): 
 }
 
 /**
- * Find all manifests in the given folder.
- *
- * @param folder path to the folder to find all manifests
- * @returns An array of objects containing the file path and the manifest
- */
-export function getAllManifests(folder: string): Array<object> {
-    return readdirSync(folder)
-        .filter((file: string) => {
-            return statSync(join(folder, file)).isFile();
-        })
-        .map((file: string) => {
-            let manifest: object = {};
-            try {
-                manifest = JSON.parse(readFileSync(join(folder, file), 'utf8'));
-            } catch (err) {
-                if (err instanceof SyntaxError) {
-                    manifest = {
-                        _error: err.message
-                    };
-                }
-            }
-            return {
-                file: folder + '/' + file.replace('.json', ''),
-                manifest: manifest
-            };
-        });
-}
-
-/**
  * Traverse the i18n properties file and call the callback function for each property.
  *
  * @param path {string} - Path to the i18n properties file
  * @param entries {Array<I18nEntry>} - Array of entries to be updated
  * @returns {object} - Object containing the lines, updated entries and the output
  */
-export function traverseI18nProperties(path: string, entries: Array<I18nEntry>) {
-    const i18nFile: string = readFileSync(path, 'utf8');
+export async function traverseI18nProperties(path: string, entries: Array<I18nEntry>) {
+    const i18nFile: string = await promises.readFile(path, 'utf8');
     const lines = i18nFile.split(/\r\n|\n/);
     const updatedEntries: { [key: number]: boolean } = {};
     const output: string[] = [];
@@ -143,7 +92,7 @@ export function traverseI18nProperties(path: string, entries: Array<I18nEntry>) 
             continue;
         }
 
-        const [i18nKey, _] = line.split(/\=|:/).map((word) => word.trim());
+        const [i18nKey, _] = line.split(/[=:]/).map((word) => word.trim());
         const index = entries.findIndex((entry) => entry.key === i18nKey);
         let newLine = line;
 
@@ -157,35 +106,3 @@ export function traverseI18nProperties(path: string, entries: Array<I18nEntry>) 
 
     return { lines, updatedEntries, output };
 }
-
-/**
- * Flatten an array of arrays into a single array.
- *
- * @param lists {Array<string>} - Array of arrays
- * @returns {Array<any>} - Flattened array
- */
-const flatten = (lists: any) => {
-    return lists.reduce((a: any, b: string) => a.concat(b), []);
-};
-
-/**
- * Get all directories in the given path.
- *
- * @param srcpath {string} - Path to the folder
- * @returns {Array<string>} - Array of directories
- */
-const getDirectories = (srcpath: string) => {
-    return readdirSync(srcpath)
-        .map((file) => join(srcpath, file))
-        .filter((path) => statSync(path).isDirectory());
-};
-
-/**
- * Get all directories recursively.
- *
- * @param srcpath {string} - Path to the folder
- * @returns {Array<string>} - Array of directories
- */
-export const getDirectoriesRecursive = (srcpath: string): Array<string> => {
-    return [srcpath, ...flatten(getDirectories(srcpath).map(getDirectoriesRecursive))];
-};

@@ -49,7 +49,7 @@ server:
           path:
             - /resources
             - /test-resources
-          url: https://sapui5untested.int.sap.eu2.hana.ondemand.com/sapui5-sdk-internal
+          url: https://ui5.sap.com
     - name: sap-cards-generator
       afterMiddleware: compression
 "

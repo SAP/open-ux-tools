@@ -2,8 +2,8 @@ import type { RequestHandler, Request, Response } from 'express';
 import type { MiddlewareParameters } from '@ui5/server';
 import { json, Router as createRouter } from 'express';
 import path, { join } from 'path';
-import { existsSync, writeFileSync, mkdirSync, readFileSync } from 'fs';
-import { getWebappPath } from '@sap-ux/project-access';
+import { promises } from 'fs';
+import { getWebappPath, FileName } from '@sap-ux/project-access';
 import { render } from 'ejs';
 import * as utils from './utilities';
 import os from 'os';
@@ -14,13 +14,32 @@ export const enum ApiRoutes {
     i18nStore = '/editor/i18n'
 }
 
+/**
+ * Check if a file exists.
+ *
+ * @param path - The path to the file
+ * @returns - true if the file exists, false otherwise
+ */
+async function pathExists(path: string) {
+    try {
+        await promises.access(path);
+        return true;
+    } catch (error) {
+        if (error.code === 'ENOENT') {
+            return false; // File does not exist
+        } else {
+            throw error; // Other errors
+        }
+    }
+}
+
 module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<RequestHandler> => {
     const router = createRouter();
     router.use(json());
 
-    const manifest = await resources.rootProject.byPath('/manifest.json');
+    const manifest = await resources.rootProject.byPath(`/${FileName.Manifest}`);
     if (!manifest) {
-        throw new Error('No manifest.json found.');
+        throw new Error('manifest.json not found.');
     }
 
     /**
@@ -29,7 +48,7 @@ module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<Reque
     router.get(ApiRoutes.previewGeneratorSandbox, async (_req, res: Response) => {
         const app = JSON.parse(await manifest.getString())['sap.app'];
         res.status(200).send(
-            render(readFileSync(join(__dirname, '../templates/editor.html'), 'utf-8'), {
+            render(await promises.readFile(join(__dirname, '../templates/editor.html'), 'utf-8'), {
                 templateModel: {
                     appTitle: app.title || 'Card Editor Preview',
                     component: app.id
@@ -44,7 +63,7 @@ module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<Reque
      */
     router.post(ApiRoutes.cardsStore, async (req: Request, res: Response) => {
         try {
-            const { floorplan, localPath, fileName = 'manifest.json', manifests } = req.body;
+            const { floorplan, localPath, fileName = FileName.Manifest, manifests } = req.body;
             const webappPath = await getWebappPath(path.resolve());
             const fullPath = path.resolve(webappPath, localPath);
 
@@ -53,18 +72,19 @@ module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<Reque
             }
 
             const file = utils.prepareFileName(fullPath + '/' + fileName);
-            if (!existsSync(fullPath)) {
+            if (!(await pathExists(fullPath))) {
                 try {
-                    mkdirSync(fullPath, { recursive: true });
+                    await promises.mkdir(fullPath, { recursive: true });
                 } catch (err) {
                     res.status(403).send(`Files could not be created/updated.`);
                 }
             }
-            const multipleCards = utils.prepareCardTypesForSaving(manifests);
-            writeFileSync(join(fullPath, file), multipleCards.integration);
-            writeFileSync(join(fullPath, 'adaptive-' + file), multipleCards.adaptive);
 
-            const manifestPath = './webapp/manifest.json';
+            const multipleCards = utils.prepareCardTypesForSaving(manifests);
+
+            await promises.writeFile(join(fullPath, file), multipleCards.integration);
+            await promises.writeFile(join(fullPath, 'adaptive-' + file), multipleCards.adaptive);
+
             const oManifest = JSON.parse(await manifest.getString());
 
             if (!oManifest['sap.cards.ap']) {
@@ -84,7 +104,9 @@ module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<Reque
                     'localUri': fullPath
                 }
             ];
-            writeFileSync(manifestPath, JSON.stringify(oManifest, null, 2));
+
+            const manifestPath = join(webappPath, FileName.Manifest);
+            await promises.writeFile(manifestPath, JSON.stringify(oManifest, null, 2));
             res.status(201).send(`Files were updated/created`);
         } catch (err) {
             res.status(500).send(`Files could not be created/updated.`);
@@ -98,10 +120,17 @@ module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<Reque
     router.post(ApiRoutes.i18nStore, async (req: Request, res: Response) => {
         try {
             const oManifest = JSON.parse(await manifest.getString());
-            const i18nFilePath = oManifest['sap.app'].i18n || '/i18n/i18n.properties';
-            const filePath = join('./webapp', i18nFilePath);
+            const webappPath = await getWebappPath(path.resolve());
+            let filePath: string;
+
+            if (oManifest['sap.app'].i18n) {
+                filePath = join(webappPath, oManifest['sap.app'].i18n);
+            } else {
+                filePath = join(webappPath, 'i18n', 'i18n.properties');
+            }
+
             const entries = req.body || [];
-            const { lines, updatedEntries, output } = utils.traverseI18nProperties(filePath, entries);
+            const { lines, updatedEntries, output } = await utils.traverseI18nProperties(filePath, entries);
 
             // Add a new line if file is not empty and last line is not empty and there are new entries
             if (lines?.length > 0 && lines[lines?.length - 1].trim() && entries?.length) {
@@ -119,7 +148,7 @@ module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<Reque
                 }
             }
 
-            writeFileSync(filePath, output.join(os.EOL), { encoding: 'utf8' });
+            await promises.writeFile(filePath, output.join(os.EOL), { encoding: 'utf8' });
             res.status(201).send(`i18n file updated.`);
         } catch (err) {
             res.status(500).send(`File could not be updated.`);
