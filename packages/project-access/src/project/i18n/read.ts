@@ -1,7 +1,7 @@
 import { getCapI18nBundle, getI18nFolderNames, getPropertiesI18nBundle } from '@sap-ux/i18n';
 import { getCapEnvironment, getCdsFiles } from '..';
 import type { I18nBundles, I18nPropertiesPaths, ProjectType } from '../../types';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 /**
  * Add error to optional errors object.

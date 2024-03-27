@@ -4,7 +4,7 @@ import { NAV_CONFIG_NS, t } from '../i18n';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { readManifest } from '../navigation-config';
 
 /**

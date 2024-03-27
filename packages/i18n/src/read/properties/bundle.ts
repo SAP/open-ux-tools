@@ -1,6 +1,6 @@
 import type { I18nBundle } from '../../types';
 import { propertiesToI18nEntry } from '../../transformer/properties';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { readFile } from '../../utils';
 
 /**

@@ -1,5 +1,5 @@
 import { join } from 'path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import type { Manifest } from '@sap-ux/project-access';

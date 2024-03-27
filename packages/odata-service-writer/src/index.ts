@@ -1,6 +1,6 @@
 import { join, dirname, sep } from 'path';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { updateManifest, updatePackageJson } from './updates';
 import type { FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';

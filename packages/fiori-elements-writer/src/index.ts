@@ -1,5 +1,5 @@
 import { join } from 'path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import { generateCustomPage } from '@sap-ux/fe-fpm-writer';
 import type { App, Package } from '@sap-ux/ui5-application-writer';

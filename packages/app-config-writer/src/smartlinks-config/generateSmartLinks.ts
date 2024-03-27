@@ -1,6 +1,6 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { TargetConfig } from '../types';
 import { writeSmartLinksConfig } from './utils';

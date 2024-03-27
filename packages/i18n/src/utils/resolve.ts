@@ -2,7 +2,7 @@ import { join, dirname, sep } from 'path';
 import { existsSync, promises } from 'fs';
 import type { CdsEnvironment } from '../types';
 import { getI18nConfiguration } from './config';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 /**
  * Normalize file pth.

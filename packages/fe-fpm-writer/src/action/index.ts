@@ -1,5 +1,5 @@
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { CustomAction, CustomActionTarget, InternalCustomAction } from './types';
 import { TargetControl } from './types';

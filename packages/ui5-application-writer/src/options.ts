@@ -1,5 +1,5 @@
 import { join } from 'path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { Ui5App } from './types';
 import { getFilePaths } from '@sap-ux/project-access';

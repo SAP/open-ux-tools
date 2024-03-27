@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { Choice, PromptObject } from 'prompts';
 import type { Manifest } from '@sap-ux/project-access';
 import { getODataSources, getMainServiceDataSource } from '../app-info';

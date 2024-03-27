@@ -1,5 +1,5 @@
 import { render } from 'ejs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import { t } from './i18n';
 import type { OdataService } from './types';

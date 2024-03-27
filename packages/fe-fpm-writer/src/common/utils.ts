@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import os from 'os';
 import { join } from 'path';
 import { coerce, minor } from 'semver';

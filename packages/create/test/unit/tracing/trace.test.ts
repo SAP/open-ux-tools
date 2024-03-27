@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { promises } from 'fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { traceChanges } from '../../../src/tracing';
 import * as logger from '../../../src/tracing/logger';

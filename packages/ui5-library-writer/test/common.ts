@@ -2,7 +2,7 @@ import { dirname, join } from 'path';
 import { exec as execCP } from 'child_process';
 import { promisify } from 'util';
 import type { UI5LibConfig } from '../src/types';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 const exec = promisify(execCP);
 

@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName, readUi5Yaml } from '@sap-ux/project-access';

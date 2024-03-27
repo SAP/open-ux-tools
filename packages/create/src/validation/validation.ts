@@ -1,5 +1,5 @@
 import { existsSync } from 'fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { join } from 'path';
 
 /**

@@ -4,7 +4,7 @@ import { dirname, join } from 'path';
 import { readFileSync } from 'fs';
 import { sample } from './sample/metadata';
 import { create as createStore } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { FreestyleApp } from '../src';
 import { promisify } from 'util';

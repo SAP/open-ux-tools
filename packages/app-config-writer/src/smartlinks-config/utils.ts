@@ -1,7 +1,7 @@
 import type { AxiosBasicCredentials } from 'axios';
 import { cyan } from 'chalk';
 import { render } from 'ejs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor, VinylMemFsEditorFile } from 'mem-fs-editor';
 import { join } from 'path';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 import { createForAbap, createForDestination } from '@sap-ux/axios-extension';
@@ -20,6 +20,8 @@ import type {
     TargetMapping
 } from '../types';
 import { addUi5YamlServeStaticMiddleware, readUi5DeployConfigTarget } from './ui5-yaml';
+
+type Editor = MemFsEditor<VinylMemFsEditorFile>;
 
 /**
  * URL parameters for call to backend
@@ -218,7 +220,7 @@ export async function writeSmartLinksConfig(
         fs.copyTpl(templatePath, appConfigPath, { inboundTargets });
     } else {
         inboundTargets = mergeTargetMappings(appConfigPath, inboundTargets, fs);
-        const filledTemplate = render(fs.read(templatePath), { inboundTargets }, {});
+        const filledTemplate = render(fs.read(templatePath) as string, { inboundTargets }, {});
         fs.extendJSON(appConfigPath, JSON.parse(filledTemplate));
     }
     await addUi5YamlServeStaticMiddleware(basePath, fs, logger);
