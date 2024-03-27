@@ -1525,8 +1525,8 @@ importers:
         version: 7.9.0
     devDependencies:
       '@types/i18next-fs-backend':
-        specifier: 1.1.2
-        version: 1.1.2
+        specifier: 1.1.5
+        version: 1.1.5
       '@types/pluralize':
         specifier: 0.0.30
         version: 0.0.30
@@ -2114,8 +2114,8 @@ importers:
         version: 2.2.2
     devDependencies:
       '@types/i18next-fs-backend':
-        specifier: 1.1.2
-        version: 1.1.2
+        specifier: 1.1.5
+        version: 1.1.5
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
@@ -8615,8 +8615,8 @@ packages:
     dependencies:
       '@types/node': 17.0.9
 
-  /@types/i18next-fs-backend@1.1.2:
-    resolution: {integrity: sha512-ZzTRXA5B0x0oGhzKNp08IsYjZpli4LjRZpg3q4j0XFxN5lKG2MVLnR4yHX8PPExBk4sj9Yfk1z9O6CjPrAlmIQ==}
+  /@types/i18next-fs-backend@1.1.5:
+    resolution: {integrity: sha512-QKKYWkfQ13spBwa+5/lBThkPkMv8svU6a5Z0Bz96IuN+HupJZXVAbP93p5bK7iOcY7Y/g/W9Y6qy5z0i0NpTog==}
     dependencies:
       i18next: 21.10.0
     dev: true
