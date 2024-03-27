@@ -18,6 +18,7 @@ import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import { questions } from './prompts';
 import prompts from 'prompts';
 import { readFileSync } from 'fs';
+import { AuthenticationType } from '@sap-ux/store';
 
 /**
  * Check if it is a url or destination target.
@@ -144,6 +145,12 @@ export async function createAbapServiceProvider(
     } else if (isUrlTarget(target)) {
         if (target.scp) {
             provider = await createAbapCloudServiceProvider(options, target, prompt, logger);
+        } else if (target.authenticationType === AuthenticationType.ReentranceTicket) {
+            provider = createForAbapOnCloud({
+                ignoreCertErrors: options.ignoreCertErrors,
+                environment: AbapCloudEnvironment.EmbeddedSteampunk,
+                url: target.url
+            });
         } else {
             provider = await createAbapOnPremServiceProvider(options, target, prompt, logger);
         }

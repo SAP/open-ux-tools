@@ -1,3 +1,4 @@
+import type { AuthenticationType } from '@sap-ux/store';
 import type { Options } from 'http-proxy-middleware';
 
 export interface BaseBackendConfig {
@@ -17,6 +18,12 @@ export interface BaseBackendConfig {
      * If set to true the proxy will execute the required OAuth routine for the ABAP environment on SAP BTP
      */
     scp?: boolean;
+
+    /**
+     * Authentication mechanism to be used. Currently supported: "ReentranceTicket"
+     */
+    authenticationType?: AuthenticationType;
+
     /**
      * If set to true then the proxy will connect to the SAP API Business Hub
      */

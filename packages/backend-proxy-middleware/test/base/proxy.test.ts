@@ -346,7 +346,7 @@ describe('proxy', () => {
             mockCreateForAbapOnCloud.mockImplementationOnce(() => {
                 return {
                     cookies: '~cookies',
-                    getAtoInfo: jest.fn()
+                    getAtoInfo: jest.fn().mockReturnValue({})
                 };
             });
             const proxyOptions: OptionsWithHeaders = { headers: {} };
@@ -362,6 +362,7 @@ describe('proxy', () => {
 
             expect(proxyOptions.headers.cookie).toBe('~cookies');
             expect(mockCreateForAbapOnCloud).toBeCalledWith({
+                ignoreCertErrors: false,
                 environment: AbapCloudEnvironment.EmbeddedSteampunk,
                 url: system.url
             });
