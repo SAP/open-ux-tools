@@ -31,7 +31,8 @@
                     "type": "Type",
                     "item": "Item",
                     "sort": "Sort"
-                }
+                },
+                "placeholder": "Select chart personalization"
             },
             "selectionMode": {
                 "message": "Select Binding Context Path Type",
@@ -41,12 +42,16 @@
                 }
             },
             "selectionChange": "Enter a function to be called when the selection has changed",
-            "chartQualifier": "Select the Chart Qualifier"
+            "selectionChangePlaceholder": "Enter a selecton change function",
+            "qualifier": "Select the Chart Qualifier",
+            "qualifierPlaceholder": "Select chart qualifier",
+            "valuesDependentOnEntityTypeInfo": "Values are dependent on entity type"
         },
         "filterBar": {
             "id": {
                 "message": "Enter an ID for the filter bar building block",
-                "validation": "An ID is required to generate the filter bar building block"
+                "validation": "An ID is required to generate the filter bar building block",
+                "validateExistingValueMsg": "Filter bar with this ID already exists"
             },
             "viewOrFragmentFile": {
                 "message": "View or Fragment file name",
@@ -56,23 +61,38 @@
             "metaPath": "Enter the relative path of the property in the meta model",
             "filterChanged": "Enter a function to be called when the filter value has changed",
             "search": "Enter a function to be called when the go button is pressed",
-            "selectionFieldQualifier": "Select the Selection Fields Qualifier",
-            "aggregation": "Select the Aggregation Path"
+            "qualifier": "Select the Selection Fields Qualifier",
+            "qualifierPlaceholder": "Select selection fields qualifier",
+            "aggregation": "Select the Aggregation Path",
+            "valuesDependentOnEntityTypeInfo": "Values are dependent on entity type"
         },
         "table": {
+            "tableBuildingBlockPropertiesTitle": "Table Building Block Properties",
+            "tableBuildingBlockPropertiesDescription": [
+                "Select the `View or Fragment File` where you would like to insert the table building block and provide a `Building Block ID` to identify the table.",
+                "Select an `Entity Type`, an optional `Navigation Path`, and a `Line Item Qualifier` you would like to use for the table building block.",
+                "Select an `Aggregation Path` to determine where you would like the table to be placed on the page.",
+                "If you would like to link the table to an existing filter bar, provide the `Associated Filter Bar ID`."
+            ],
+            "tableVisualizationPropertiesTitle": "Table Visualization Properties",
+            "tableVisualizationPropertiesDescription": ["Configure your table using the properties below."],
             "viewOrFragmentFile": {
                 "message": "Select a View or Fragment file name",
                 "validation": "A View or Fragment is required to generate the table building block"
             },
             "id": {
-                "message": "Enter an ID for the table building block",
+                "message": "Building Block ID",
                 "validation": "An ID is required to generate the filter bar building block"
             },
             "bindingContextType": "Select the Binding Context Path Type",
             "entity": "Entity Type",
-            "lineItemQualifier": "Select the Line Item Qualifier",
+            "qualifier": "Select the Line Item Qualifier",
+            "qualifierPlaceholder": "Select a line item qualifier",
             "aggregation": "Select the Aggregation Path",
-            "filterBar": "Enter the ID of the filter bar building block associated with the table",
+            "filterBar": {
+                "message": "Associated Filter Bar ID",
+                "validation": "Enter the ID of the filter bar building block associated with the table"
+            },
             "tableType": {
                 "message": "Table Type"
             },
@@ -86,7 +106,7 @@
                 }
             },
             "displayHeader": "Display Header",
-            "tableHeaderText": "Enter a Table Header Text",
+            "header": { "message": "Table Header Text", "validation": "Enter a Table Header Text" },
             "personalization": {
                 "message": "Table Personalization",
                 "choices": {
@@ -101,7 +121,8 @@
             "dataExport": "Enable Data Export",
             "fullScreenMode": "Enable Full Screen Mode",
             "pasteFromClipboard": "Enable Paste From Clipboard",
-            "tableSearchableToggle": "Table Searchable Toggle"
+            "tableSearchableToggle": "Table Searchable Toggle",
+            "valuesDependentOnEntityTypeInfo": "Values are dependent on entity type"
         }
     }
 }

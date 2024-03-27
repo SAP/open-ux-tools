@@ -1,11 +1,13 @@
 import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
 import type { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import { DOMParser } from '@xmldom/xmldom';
-import type { InputQuestion, ListQuestion } from 'inquirer';
+import type { Answers, InputQuestion, ListQuestion } from 'inquirer';
 import type { Editor } from 'mem-fs-editor';
 import { relative } from 'path';
 import type ProjectProvider from './project';
 import { getAnnotationPathQualifiers, getEntityTypes } from './service';
+import { AdditionalPromptProperties } from '../prompts';
+
 /**
  * Returns a Prompt to choose a boolean value.
  *
@@ -13,15 +15,27 @@ import { getAnnotationPathQualifiers, getEntityTypes } from './service';
  * @param message - The message to display in the prompt
  * @returns a boolean prompt
  */
-export function getBooleanPrompt(name: string, message: string): ListQuestion {
+export function getBooleanPrompt(
+    name: string,
+    message: string,
+    defaultValue?: string,
+    additionalProperties: AdditionalPromptProperties = {}
+): ListQuestion {
+    const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
         type: 'list',
         name,
+        selectType: 'static',
         message,
         choices: [
             { name: 'False', value: false },
             { name: 'True', value: true }
-        ]
+        ],
+        default: defaultValue,
+        groupId,
+        required,
+        additionalInfo,
+        placeholder
     } as ListQuestion;
 }
 
@@ -38,11 +52,14 @@ export function getAnnotationPathQualifierPrompt(
     name: string,
     message: string,
     projectProvider: ProjectProvider,
-    annotationTerm: UIAnnotationTerms[]
+    annotationTerm: UIAnnotationTerms[],
+    additionalProperties: AdditionalPromptProperties = {}
 ): ListQuestion {
+    const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
         type: 'list',
         name,
+        selectType: 'dynamic',
         message,
         choices: async (answers) => {
             const { entity } = answers;
@@ -57,7 +74,11 @@ export function getAnnotationPathQualifierPrompt(
                 );
             }
             return choices;
-        }
+        },
+        groupId,
+        required,
+        additionalInfo,
+        placeholder
     } as ListQuestion;
 }
 
@@ -68,18 +89,24 @@ export function getAnnotationPathQualifierPrompt(
  * @param basePath - The base path to search for files
  * @param message - The message to display in the prompt
  * @param validationErrorMessage - The error message to show if validation fails
+ * @param dependantPromptNames - Dependant prompts names
  * @returns a prompt
  */
 export function getViewOrFragmentFilePrompt(
     fs: Editor,
     basePath: string,
     message: string,
-    validationErrorMessage: string
+    validationErrorMessage: string,
+    dependantPromptNames = ['aggregationPath'], // dependent prompts
+    additionalProperties: AdditionalPromptProperties = {}
 ): ListQuestion {
+    const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
         type: 'list',
+        selectType: 'dynamic',
         name: 'viewOrFragmentFile',
         message,
+        dependantPromptNames,
         choices: async () => {
             const files = await findFilesByExtension(
                 '.xml',
@@ -92,7 +119,11 @@ export function getViewOrFragmentFilePrompt(
                 value: file
             }));
         },
-        validate: (value: string) => (value ? true : validationErrorMessage)
+        validate: (value: string) => (value ? true : validationErrorMessage),
+        groupId,
+        required,
+        additionalInfo,
+        placeholder: placeholder || 'Select a view or fragment file'
     } as ListQuestion;
 }
 
@@ -101,22 +132,50 @@ export function getViewOrFragmentFilePrompt(
  *
  * @param message - The message to display in the prompt
  * @param projectProvider - The project provider
+ * @param dependantPromptNames - Dependant prompts names
  * @returns entity question
  */
-export function getEntityPrompt(message: string, projectProvider: ProjectProvider): ListQuestion {
+export function getEntityPrompt(
+    message: string,
+    projectProvider: ProjectProvider,
+    dependantPromptNames?: string[],
+    additionalProperties: AdditionalPromptProperties = {}
+): ListQuestion {
+    const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
         type: 'list',
         name: 'entity',
+        selectType: 'dynamic',
+        dependantPromptNames,
         message,
-        choices: async () => {
-            const choices = getChoices((await getEntityTypes(projectProvider)).map((e) => e.fullyQualifiedName));
-            if (!choices.length) {
-                throw new Error('Failed while fetching the entities');
-            }
-            return choices;
-        }
+        choices: getEntityChoices.bind(null, projectProvider),
+        groupId,
+        required,
+        additionalInfo,
+        placeholder: placeholder || 'Select an entity'
     } as ListQuestion;
 }
+
+/**
+ * Method returns choices for entity type selection.
+ *
+ * @param projectProvider - The project provider
+ * @returns entity question
+ */
+// ToDo - recheck types fr choices
+export async function getEntityChoices(
+    projectProvider: ProjectProvider
+): Promise<Array<{ name: string; value: string }>> {
+    const entityTypes = await getEntityTypes(projectProvider);
+    const entityTypeMap: { [key: string]: string } = {};
+    for (const entityType of entityTypes) {
+        const value = entityType.fullyQualifiedName;
+        const qualifierParts = value.split('.');
+        entityTypeMap[qualifierParts[qualifierParts.length - 1]] = value;
+    }
+    return getChoices(entityTypeMap);
+}
+
 /**
  * Return a Prompt for choosing the aggregation path.
  *
@@ -124,10 +183,16 @@ export function getEntityPrompt(message: string, projectProvider: ProjectProvide
  * @param fs - The file system object for reading files
  * @returns A ListQuestion object representing the prompt
  */
-export function getAggregationPathPrompt(message: string, fs: Editor): ListQuestion {
+export function getAggregationPathPrompt(
+    message: string,
+    fs: Editor,
+    additionalProperties: AdditionalPromptProperties = {}
+): ListQuestion {
+    const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
         type: 'list',
         name: 'aggregationPath',
+        selectType: 'dynamic',
         message,
         choices: (answers: any) => {
             const { viewOrFragmentFile } = answers;
@@ -136,7 +201,11 @@ export function getAggregationPathPrompt(message: string, fs: Editor): ListQuest
                 throw new Error('Failed while fetching the aggregation path.');
             }
             return choices;
-        }
+        },
+        groupId,
+        required,
+        additionalInfo,
+        placeholder: placeholder || 'Enter an aggregation path'
     } as ListQuestion;
 }
 
@@ -218,12 +287,43 @@ function getErrorMessage(error: Error): string {
  * @param message - prompt message
  * @returns a Input Prompt
  */
-export function getFilterBarIdPrompt(message: string): InputQuestion {
+export function getFilterBarIdPrompt(
+    message: string,
+    additionalProperties: AdditionalPromptProperties = {}
+): InputQuestion {
+    const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
         type: 'input',
         name: 'filterBar',
-        message
+        message,
+        groupId,
+        required,
+        additionalInfo,
+        placeholder
     } as InputQuestion;
+}
+
+/**
+ * Returns a Prompt for selecting existing filter bar ID.
+ *
+ * @param message - prompt message
+ * @returns a List Prompt
+ */
+export function getFilterBarIdListPrompt(
+    message: string,
+    additionalProperties: AdditionalPromptProperties = {}
+): ListQuestion {
+    const { required, groupId, additionalInfo, placeholder } = additionalProperties;
+    return {
+        type: 'list',
+        selectType: 'dynamic',
+        name: 'filterBarId',
+        message,
+        groupId,
+        required,
+        additionalInfo,
+        placeholder: placeholder || 'Select or enter a filter bar ID'
+    } as ListQuestion;
 }
 
 /**
@@ -232,15 +332,26 @@ export function getFilterBarIdPrompt(message: string): InputQuestion {
  * @param message - prompt message
  * @returns a List Prompt
  */
-export function getBindingContextTypePrompt(message: string): ListQuestion {
+export function getBindingContextTypePrompt(
+    message: string,
+    defaultValue?: string,
+    additionalProperties: AdditionalPromptProperties = {}
+): ListQuestion {
+    const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
         type: 'list',
         name: 'bindingContextType',
+        selectType: 'static',
         message,
         choices: [
             { name: 'Relative', value: 'relative' },
             { name: 'Absolute', value: 'absolute' }
-        ]
+        ],
+        default: defaultValue,
+        groupId,
+        required,
+        additionalInfo,
+        placeholder
     } as ListQuestion;
 }
 
@@ -251,11 +362,23 @@ export function getBindingContextTypePrompt(message: string): ListQuestion {
  * @param validationErrorMessage - The error message to show if ID validation fails
  * @returns An InputPrompt object for getting the building block ID
  */
-export function getBuildingBlockIdPrompt(message: string, validationErrorMessage: string): InputQuestion {
+export function getBuildingBlockIdPrompt(
+    message: string,
+    validationErrorMessage: string,
+    defaultValue?: string,
+    additionalProperties: AdditionalPromptProperties = {},
+    validateFn?: (input: any, answers?: Answers) => string | boolean | Promise<string | boolean>
+): InputQuestion {
+    const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
         type: 'input',
         name: 'id',
         message,
-        validate: (value: any) => (value ? true : validationErrorMessage)
+        validate: validateFn ? validateFn : (value: any) => (value ? true : validationErrorMessage),
+        groupId,
+        required,
+        additionalInfo,
+        default: defaultValue,
+        placeholder: placeholder || 'Enter a building block ID'
     } as InputQuestion;
 }

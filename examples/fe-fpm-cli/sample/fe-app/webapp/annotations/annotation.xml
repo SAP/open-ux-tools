@@ -21,6 +21,11 @@
                         <PropertyPath>Dummy</PropertyPath>
                     </Collection>
                 </Annotation>
+                <Annotation Term="UI.LineItem" Qualifier="test">
+                    <Collection>
+                        <PropertyPath>Dummy</PropertyPath>
+                    </Collection>
+                </Annotation>
                 <Annotation Term="UI.SelectionFields">
                     <Collection>
                         <PropertyPath>Dummy</PropertyPath>

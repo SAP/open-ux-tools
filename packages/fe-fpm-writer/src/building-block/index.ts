@@ -96,7 +96,7 @@ function getOrAddMacrosNamespace(ui5XmlDocument: Document): string {
  */
 function getTemplateDocument<T extends BuildingBlock>(
     buildingBlockData: T,
-    viewDocument: Document,
+    viewDocument: Document | undefined,
     fs: Editor
 ): Document {
     const templateFolderName = buildingBlockData.buildingBlockType;
@@ -104,7 +104,7 @@ function getTemplateDocument<T extends BuildingBlock>(
     const templateContent = render(
         fs.read(templateFilePath),
         {
-            macrosNamespace: getOrAddMacrosNamespace(viewDocument),
+            macrosNamespace: viewDocument ? getOrAddMacrosNamespace(viewDocument) : 'macros',
             data: buildingBlockData
         },
         {}
@@ -159,4 +159,31 @@ function updateViewFile(
         throw new Error(`Aggregation control not found ${aggregationPath}.`);
     }
     return fs;
+}
+
+/**
+ * Gets the serialized content of the updated view file.
+ *
+ * @param {string} basePath - The base path
+ * @param {BuildingBlockConfig} config - The building block configuration
+ * @param {Editor} [fs] - The memfs editor instance
+ * @returns {string} The serialized content of the updated view file
+ */
+export function getSerializedFileContent<T extends BuildingBlock>(
+    basePath: string,
+    config: BuildingBlockConfig<T>,
+    fs: Editor
+): string {
+    // Validate the base and view paths
+    if (!fs) {
+        fs = create(createStorage());
+    }
+
+    // Read the view xml and template files and update contents of the view xml file
+    const xmlDocument = config.viewOrFragmentPath
+        ? getUI5XmlDocument(basePath, config.viewOrFragmentPath, fs)
+        : undefined;
+    const templateDocument = getTemplateDocument(config.buildingBlockData, xmlDocument, fs);
+
+    return new XMLSerializer().serializeToString(templateDocument);
 }

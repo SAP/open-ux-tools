@@ -42,11 +42,13 @@ export async function generateFilterBarBuildingBlock(fs: Editor): Promise<Editor
     const basePath = testAppPath;
 
     const answers: FilterBarPromptsAnswer = (await inquirer.prompt(
-        await getFilterBarBuildingBlockPrompts(basePath, fs)
+        (
+            await getFilterBarBuildingBlockPrompts(basePath, fs)
+        ).questions
     )) as FilterBarPromptsAnswer;
-    const { aggregationPath, viewOrFragmentFile, selectionFieldQualifier } = answers;
+    const { aggregationPath, viewOrFragmentFile, qualifier } = answers;
 
-    answers.metaPath = selectionFieldQualifier;
+    answers.metaPath = qualifier;
     fs = generateBuildingBlock<FilterBarPromptsAnswer>(
         basePath,
         {
@@ -72,14 +74,16 @@ export async function generateChartBuildingBlock(fs: Editor): Promise<Editor> {
     const basePath = testAppPath;
 
     const answers: ChartPromptsAnswer = (await inquirer.prompt(
-        await getChartBuildingBlockPrompts(basePath, fs)
+        (
+            await getChartBuildingBlockPrompts(basePath, fs)
+        ).questions
     )) as ChartPromptsAnswer;
 
-    const { aggregationPath, viewOrFragmentFile, entity, chartQualifier, bindingContextType } = answers;
+    const { aggregationPath, viewOrFragmentFile, entity, qualifier, bindingContextType } = answers;
 
     const entityPath = entity.lastIndexOf('.') >= 0 ? entity?.substring?.(entity.lastIndexOf('.') + 1) : entity;
-    let navigationProperty = chartQualifier.substring(0, chartQualifier.indexOf('@'));
-    const _chartQualifier = chartQualifier.substring(chartQualifier.indexOf('@'));
+    let navigationProperty = qualifier.substring(0, qualifier.indexOf('@'));
+    const _chartQualifier = qualifier.substring(qualifier.indexOf('@'));
 
     if (bindingContextType === 'relative') {
         answers.metaPath = navigationProperty ? `${navigationProperty}${_chartQualifier}` : _chartQualifier;
@@ -115,14 +119,16 @@ export async function generateTableBuildingBlock(fs: Editor): Promise<Editor> {
     const basePath = testAppPath;
 
     const answers: TablePromptsAnswer = (await inquirer.prompt(
-        await getTableBuildingBlockPrompts(basePath, fs)
+        (
+            await getTableBuildingBlockPrompts(basePath, fs)
+        ).questions
     )) as TablePromptsAnswer;
 
-    const { aggregationPath, viewOrFragmentFile, entity, lineItemQualifier, bindingContextType } = answers;
+    const { aggregationPath, viewOrFragmentFile, entity, qualifier, bindingContextType } = answers;
 
     const entityPath = entity.lastIndexOf('.') >= 0 ? entity?.substring?.(entity.lastIndexOf('.') + 1) : entity;
-    let navigationProperty = lineItemQualifier.substring(0, lineItemQualifier.indexOf('@'));
-    const _lineItemQualifier = lineItemQualifier.substring(lineItemQualifier.indexOf('@'));
+    let navigationProperty = qualifier.substring(0, qualifier.indexOf('@'));
+    const _lineItemQualifier = qualifier.substring(qualifier.indexOf('@'));
 
     if (bindingContextType === 'relative') {
         answers.metaPath = navigationProperty ? `${navigationProperty}${_lineItemQualifier}` : _lineItemQualifier;

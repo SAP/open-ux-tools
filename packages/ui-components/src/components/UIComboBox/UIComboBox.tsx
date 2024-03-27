@@ -1,5 +1,5 @@
 import React from 'react';
-import type { IComboBoxProps, IComboBoxState, IAutofillProps } from '@fluentui/react';
+import type { IComboBoxProps, IComboBoxState, IAutofillProps, IButtonProps } from '@fluentui/react';
 import {
     ComboBox,
     IComboBox,
@@ -28,6 +28,17 @@ export {
     SelectableOptionMenuItemType as UISelectableOptionMenuItemType
 };
 
+export enum UIComboBoxLoaderType {
+    /**
+     * Loader within dropdown list
+     */
+    List = 'List',
+    /**
+     * Loader within input
+     */
+    Input = 'Input'
+}
+
 export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps {
     wrapperRef?: React.RefObject<HTMLDivElement>;
     highlight?: boolean;
@@ -37,7 +48,13 @@ export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps
     onRefresh?(): void;
     onHandleChange?(value: string | number): void;
     tooltipRefreshButton?: string;
-    isLoading?: boolean;
+    /**
+     * Show loading indicator(s).
+     * Supported places:
+     * 1. List - loader within dropdown list
+     * 2. Input - loader within input
+     */
+    isLoading?: boolean | UIComboBoxLoaderType[];
     isForceEnabled?: boolean;
     readOnly?: boolean;
     calloutCollisionTransformation?: boolean;
@@ -106,6 +123,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         this.onMultiSelectChange = this.onMultiSelectChange.bind(this);
         this.onScrollToItem = this.onScrollToItem.bind(this);
         this.setFocus = this.setFocus.bind(this);
+        this.onRenderIcon = this.onRenderIcon.bind(this);
 
         initializeComponentRef(this);
 
@@ -595,6 +613,46 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     }
 
     /**
+     * Method returns if loader should be displayed for passed type.
+     *
+     * @param type Loader's place
+     * @returns True if loader should be displayed for passed type.
+     */
+    private isLoaderApplied(type: UIComboBoxLoaderType): boolean {
+        const { isLoading } = this.props;
+        if (Array.isArray(isLoading)) {
+            return isLoading.includes(type);
+        }
+        // Boolean value matches List option
+        return !!isLoading && type === UIComboBoxLoaderType.List;
+    }
+
+    /**
+     * Method renders dropdown expand icon.
+     * Overwritten renderer to replace expand icon with loader when combobox has laoding property set.
+     *
+     * @param props Button properties
+     * @param defaultRender Default icon renderer
+     * @returns React element to render.
+     */
+    private onRenderIcon(
+        props?: IButtonProps,
+        defaultRender?: (props?: IButtonProps) => JSX.Element | null
+    ): JSX.Element | null {
+        if (this.isLoaderApplied(UIComboBoxLoaderType.Input)) {
+            const styles = {
+                label: {
+                    fontSize: '11px',
+                    fontWeight: 'normal'
+                }
+            };
+
+            return <UILoader className="uiLoaderXSmall" labelPosition="right" styles={styles} />;
+        }
+        return defaultRender?.(props) ?? null;
+    }
+
+    /**
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
@@ -612,7 +670,8 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                     iconButtonProps={{
                         iconProps: {
                             iconName: UiIcons.ArrowDown
-                        }
+                        },
+                        onRenderIcon: this.onRenderIcon
                     }}
                     calloutProps={{
                         calloutMaxHeight: 200,
@@ -675,7 +734,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         onMenuOpen: this.handleRefreshButton,
                         onChange: this.handleChange
                     })}
-                    {...(this.props.isLoading && {
+                    {...(this.isLoaderApplied(UIComboBoxLoaderType.List) && {
                         onRenderList: this.onRenderListLoading
                     })}
                     {...(this.props.multiSelect && {
