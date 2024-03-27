@@ -1,4 +1,4 @@
-import { extractI18nKey, getI18nUniqueKey } from '../../../src';
+import { extractI18nKey, getI18nUniqueKey, extractMustacheKey } from '../../../src';
 import type { I18nEntry, I18nBundle } from '../../../src';
 import { Range } from '../../../src/parser/utils';
 
@@ -41,6 +41,24 @@ describe('key', () => {
             const input = '{myI18nTest>generalInformation}';
             // act
             const result = extractI18nKey(input, 'myI18nTest');
+            // assert
+            expect(result).toEqual('generalInformation');
+        });
+    });
+    describe('extractMustacheKey', () => {
+        test('case 1: without space', () => {
+            // arrange
+            const input = '{{generalInformation}}';
+            // act
+            const result = extractMustacheKey(input);
+            // assert
+            expect(result).toEqual('generalInformation');
+        });
+        test('case 2: with space', () => {
+            // arrange
+            const input = ' {{ generalInformation }} ';
+            // act
+            const result = extractMustacheKey(input);
             // assert
             expect(result).toEqual('generalInformation');
         });
