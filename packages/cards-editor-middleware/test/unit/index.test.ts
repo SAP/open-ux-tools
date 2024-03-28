@@ -88,13 +88,40 @@ describe('sap-cards-generator', () => {
                 manifests: [
                     {
                         type: 'integration',
-                        manifest: {},
+                        manifest: {
+                            '_version': '1.15.0',
+                            'sap.card': {
+                                'type': 'Object',
+                                'header': {
+                                    'type': 'Numeric',
+                                    'title': 'Card title'
+                                }
+                            },
+                            'sap.insights': {
+                                'versions': {
+                                    'ui5': '1.120.1-202403281300'
+                                },
+                                'templateName': 'ObjectPage',
+                                'parentAppId': 'sales.order.wd20',
+                                'cardType': 'DT'
+                            }
+                        },
                         default: true,
                         entitySet: 'op1'
                     },
                     {
                         type: 'adaptive',
-                        manifest: {},
+                        manifest: {
+                            'type': 'AdaptiveCard',
+                            'body': [
+                                {
+                                    'type': 'TextBlock',
+                                    'wrap': true,
+                                    'weight': 'Bolder',
+                                    'text': 'Card Title'
+                                }
+                            ]
+                        },
                         default: true,
                         entitySet: 'op1'
                     }

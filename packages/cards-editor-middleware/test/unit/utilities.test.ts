@@ -1,10 +1,5 @@
 import type { I18nEntry } from '../../src/utilities';
-import {
-    prepareFileName,
-    prepareCardForSaving,
-    prepareCardTypesForSaving,
-    traverseI18nProperties
-} from '../../src/utilities';
+import { prepareFileName, prepareCardTypesForSaving, traverseI18nProperties } from '../../src/utilities';
 import { promises } from 'fs';
 
 jest.mock('fs', () => ({
@@ -27,26 +22,6 @@ describe('Common utils', () => {
         expect(prepareFileName('path/to/file')).toBe('file.json');
     });
 
-    test('prepareCardForSaving, when insight version is not declared', () => {
-        const card = {
-            'sap.insights': {}
-        };
-        expect(prepareCardForSaving(card)).toBe(
-            JSON.stringify({ 'sap.insights': { 'versions': { 'dtMiddleware': '0.2.1' } } }, null, 2)
-        );
-    });
-
-    test('prepareCardForSaving, when insight version is declared', () => {
-        const card = {
-            'sap.insights': {
-                'versions': {}
-            }
-        };
-        expect(prepareCardForSaving(card)).toBe(
-            JSON.stringify({ 'sap.insights': { 'versions': { 'dtMiddleware': '0.2.1' } } }, null, 2)
-        );
-    });
-
     test('prepareCardTypesForSaving', () => {
         const aMultipleCards = [
             {
@@ -59,6 +34,14 @@ describe('Common utils', () => {
                             'type': 'Numeric',
                             'title': 'Card title'
                         }
+                    },
+                    'sap.insights': {
+                        'versions': {
+                            'ui5': '1.120.1-202403281300'
+                        },
+                        'templateName': 'ObjectPage',
+                        'parentAppId': 'sales.order.wd20',
+                        'cardType': 'DT'
                     }
                 }
             },
@@ -77,10 +60,7 @@ describe('Common utils', () => {
                 }
             }
         ];
-        expect(prepareCardTypesForSaving(aMultipleCards)).toEqual({
-            integration: JSON.stringify(aMultipleCards[0].manifest, null, 2),
-            adaptive: JSON.stringify(aMultipleCards[1].manifest, null, 2)
-        });
+        expect(prepareCardTypesForSaving(aMultipleCards)).toMatchSnapshot();
     });
 
     test('traverseI18nProperties', async () => {

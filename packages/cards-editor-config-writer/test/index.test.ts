@@ -18,7 +18,7 @@ function createTestFs(basePath: string) {
 
 describe('enableCardEditor', () => {
     test('Valid LROP', async () => {
-        const basePath = '.tmp/lrop';
+        const basePath = join(__dirname, 'fixtures/lrop-v4');
         const fs = createTestFs(basePath);
         await enableCardsEditor(basePath, fs);
 

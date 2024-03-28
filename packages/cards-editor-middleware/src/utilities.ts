@@ -37,9 +37,9 @@ export function prepareFileName(path: string): string {
  * Prepare card for saving by adding dtMiddleware parameter to the card manifest.
  *
  * @param card {object}
- * @returns {string} returns the card as a string
+ * @returns {void}
  */
-export function prepareCardForSaving(card: any): string {
+function prepareIntegrationCardForSaving(card: any): void {
     const version = packageJson.version;
     const insights = card?.['sap.insights'];
     if (!insights.versions) {
@@ -49,7 +49,6 @@ export function prepareCardForSaving(card: any): string {
     } else {
         insights.versions.dtMiddleware = version;
     }
-    return JSON.stringify(card, null, 2);
 }
 
 /**
@@ -67,6 +66,7 @@ export function prepareCardTypesForSaving(aMultipleCards: MultiCardsPayload[]): 
         type: CARD_TYPES.ADAPTIVE,
         manifest: {}
     };
+    prepareIntegrationCardForSaving(integrationCard.manifest);
     return {
         integration: JSON.stringify(integrationCard.manifest, null, 2),
         adaptive: JSON.stringify(adaptiveCard.manifest, null, 2)

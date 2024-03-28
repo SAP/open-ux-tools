@@ -101,7 +101,7 @@ module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<Reque
             oManifest['sap.cards.ap'].embeds[floorplan]['manifests'] ??= {};
             oManifest['sap.cards.ap'].embeds[floorplan]['manifests'][entitySet] ??= [
                 {
-                    'localUri': fullPath
+                    'localUri': localPath
                 }
             ];
 
