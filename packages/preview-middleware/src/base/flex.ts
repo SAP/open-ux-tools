@@ -1,44 +1,9 @@
 import type { Logger } from '@sap-ux/logger';
 import type { ReaderCollection } from '@ui5/fs';
-import { existsSync, mkdirSync, readdirSync, unlinkSync, writeFileSync } from 'fs';
+import type { Editor } from 'mem-fs-editor';
+import { existsSync, readdirSync, unlinkSync } from 'fs';
 import { join, parse } from 'path';
-
-/**
- * Structure of a flex change.
- */
-export interface FlexChange {
-    [key: string]: string | object | undefined;
-    changeType: string;
-    reference: string;
-    moduleName?: string;
-    content?: {
-        codeRef?: string;
-        fragmentPath?: string;
-    };
-}
-
-/**
- * Map of change type specific correction functions.
- */
-const moduleNameContentMap: { [key: string]: (change: FlexChange) => string } = {
-    codeExt: (change) => (change.content?.codeRef ?? '').replace('.js', ''),
-    addXML: (change) => change.content?.fragmentPath ?? ''
-};
-
-/**
- * Sets the moduleName property of the provided change to also support old changes with newer UI5 versions.
- *
- * @param change change to be fixed
- * @param logger logger instance
- */
-function tryFixChange(change: FlexChange, logger: Logger) {
-    try {
-        const prefix = change.reference.replace(/\./g, '/');
-        change.moduleName = `${prefix}/changes/${moduleNameContentMap[change.changeType](change)}`;
-    } catch (error) {
-        logger.warn('Could not fix missing module name.');
-    }
-}
+import type { CommonChangeProperties } from '@sap-ux/adp-tooling';
 
 /**
  * Read changes from the file system and return them.
@@ -47,15 +12,15 @@ function tryFixChange(change: FlexChange, logger: Logger) {
  * @param logger logger instance
  * @returns object with the file name as key and the file content as value
  */
-export async function readChanges(project: ReaderCollection, logger: Logger): Promise<Record<string, FlexChange>> {
-    const changes: Record<string, FlexChange> = {};
+export async function readChanges(
+    project: ReaderCollection,
+    logger: Logger
+): Promise<Record<string, CommonChangeProperties>> {
+    const changes: Record<string, CommonChangeProperties> = {};
     const files = await project.byGlob('/**/changes/*.*');
     for (const file of files) {
         try {
-            const change = JSON.parse(await file.getString()) as FlexChange;
-            if (moduleNameContentMap[change.changeType] && !change.moduleName) {
-                tryFixChange(change, logger);
-            }
+            const change = JSON.parse(await file.getString()) as CommonChangeProperties;
             changes[`sap.ui.fl.${parse(file.getName()).name}`] = change;
             logger.debug(`Read change from ${file.getPath()}`);
         } catch (error) {
@@ -72,24 +37,22 @@ export async function readChanges(project: ReaderCollection, logger: Logger): Pr
  * @param data.fileName file name that is required for a valid change
  * @param data.fileType file type that is required
  * @param webappPath path to the webapp folder
+ * @param fs mem-fs editor
  * @param logger logger instance
  * @returns object with success flag and optional message
  */
 export function writeChange(
     data: object & { fileName?: string; fileType?: string },
     webappPath: string,
+    fs: Editor,
     logger: Logger
 ): { success: boolean; message?: string } {
     const fileName = data.fileName;
     const fileType = data.fileType;
     if (fileName && fileType) {
         logger.debug(`Write change ${fileName}.${fileType}`);
-        const path = join(webappPath, 'changes');
-        if (!existsSync(path)) {
-            mkdirSync(path);
-        }
-        const filePath = join(path, fileName + '.' + fileType);
-        writeFileSync(filePath, JSON.stringify(data, null, 2));
+        const filePath = join(webappPath, 'changes', fileName + '.' + fileType);
+        fs.writeJSON(filePath, data);
         const message = `FILE_CREATED ${fileName}.${fileType}`;
         return { success: true, message };
     } else {
