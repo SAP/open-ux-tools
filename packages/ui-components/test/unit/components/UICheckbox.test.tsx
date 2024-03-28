@@ -10,6 +10,8 @@ describe('<UIToggle />', () => {
     const globalClassNames = {
         root: 'ms-Checkbox',
         checkmark: 'ms-Checkbox-checkmark',
+        checkbox: 'ms-Checkbox-checkbox',
+        text: 'ms-Checkbox-text',
         error: 'ts-message-wrapper--error'
     };
 
@@ -59,6 +61,20 @@ describe('<UIToggle />', () => {
             const rootStyles = styles.root as IRawStyle;
             // Check hover opacity
             expect(rootStyles[0][0][`:hover .${globalClassNames.checkmark}`]).toEqual(undefined);
+        });
+
+        it('Disabled and Checked', () => {
+            wrapper.setProps({
+                disabled: true
+            });
+            const styles = (wrapper.find(Checkbox).props().styles as IStyleFunction<{}, {}>)({
+                checked: true
+            }) as ICheckboxStyles;
+            const rootStyles = styles.root as IRawStyle;
+            // Check text opacity
+            expect(rootStyles[0][1][`:hover .${globalClassNames.text}`].opacity).toEqual(0.4);
+            // Check checkbox hover
+            expect(rootStyles[1][`:hover .${globalClassNames.checkbox}`].borderColor).toEqual(undefined);
         });
     });
 });
