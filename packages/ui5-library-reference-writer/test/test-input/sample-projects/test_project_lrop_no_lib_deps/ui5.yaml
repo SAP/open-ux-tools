@@ -1,0 +1,5 @@
+specVersion: "1.0"
+metadata:
+  name: targetapp
+type: application
+ui5Theme: sap_fiori_3

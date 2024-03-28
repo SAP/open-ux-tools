@@ -1,0 +1,33 @@
+{
+  "name": "test_project_lrop_v2",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Test 'Project' \"Description\"",
+  "keywords": [
+    "ui5",
+    "openui5",
+    "sapui5"
+  ],
+  "main": "webapp/index.html",
+  "scripts": {
+    "start": "fiori run --open 'test/flpSandbox.html#testprojectlropv2-tile'",
+    "start-local": "fiori run --config ./ui5-local.yaml --open 'test/flpSandboxMockServer.html#testprojectlropv2-tile'",
+    "start-noflp": "fiori run --open 'index.html'",
+    "build": "ui5 build -a --clean-dest --include-task=generateCachebusterInfo",
+    "deploy": "fiori verify",
+    "deploy-config": "fiori add deploy-config",
+    "start-mock": "fiori run --open 'test/flpSandboxMockServer.html#testprojectlropv2-tile'"
+  },
+  "devDependencies": {
+    "@ui5/cli": "^2.14.1",
+    "@ui5/fs": "^2.0.6",
+    "@ui5/logger": "^2.0.1",
+    "rimraf": "3.0.2",
+    "@sap/ux-specification": "UI5-1.71"
+  },
+  "ui5": {
+    "dependencies": [
+      "@sap/ux-ui5-tooling"
+    ]
+  }
+}
