@@ -1,5 +1,11 @@
 # @sap-ux/reload-middleware
 
+## 0.1.3
+
+### Patch Changes
+
+-   057f7461: The appdescr_variant file extension added to the default set of watched files
+
 ## 0.1.2
 
 ### Patch Changes
