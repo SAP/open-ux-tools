@@ -9,7 +9,8 @@ import {
     type ConfirmQuestion,
     type FileBrowserQuestion,
     type InputQuestion,
-    type ListQuestion
+    type ListQuestion,
+    getDefaultUI5VersionChoice
 } from '@sap-ux/inquirer-common';
 import { getMtaPath } from '@sap-ux/project-access';
 import { validateModuleName, validateNamespace, validateProjectFolder } from '@sap-ux/project-input-validator';
@@ -310,10 +311,12 @@ function getUI5VersionPrompt(
     ui5Versions: UI5Version[] = [],
     ui5VersionPromptOptions?: UI5ApplicationPromptOptions[promptNames.ui5Version]
 ): UI5ApplicationQuestion {
+    // Set the default to be closest to the passed value or the default as defined by ui5 version service
+    const defaultChoice = getDefaultUI5VersionChoice(ui5Versions, ui5VersionPromptOptions?.defaultChoice);
     const ui5VersionChoices = ui5VersionsGrouped(
         ui5Versions,
-        ui5VersionPromptOptions?.includeSeparators,
-        ui5VersionPromptOptions?.defaultChoice
+        ui5VersionPromptOptions?.includeSeparators
+        // defaultChoice - this is added to support systemn versions however currently the middleware preview does not support this
     );
     return {
         when: () => !!ui5VersionChoices,
@@ -328,11 +331,7 @@ function getUI5VersionPrompt(
             searchChoices(input, ui5VersionChoices as ListChoiceOptions[]),
         message: t('prompts.appUi5VersionMessage'),
         default: () => {
-            // Set the default to be the passed value or the default as defined by ui5 version service
-            return (
-                ui5VersionPromptOptions?.defaultChoice?.value ??
-                ui5Versions.find((ui5Ver) => ui5Ver.default && ui5Ver.version)?.version
-            );
+            return defaultChoice?.value;
         }
     } as ListQuestion<UI5ApplicationAnswers>;
 }

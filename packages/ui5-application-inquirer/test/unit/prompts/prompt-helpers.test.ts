@@ -9,7 +9,7 @@ import {
     defaultAppName,
     extendWithOptions,
     hidePrompts,
-    isVersionIncluded,
+    isVersionIncluded
 } from '../../../src/prompts/prompt-helpers';
 import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../../../src/types';
 import { promptNames } from '../../../src/types';

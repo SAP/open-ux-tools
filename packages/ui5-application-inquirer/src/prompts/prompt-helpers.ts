@@ -1,7 +1,7 @@
 import type { YUIQuestion, validate } from '@sap-ux/inquirer-common';
 import { extendAdditionalMessages } from '@sap-ux/inquirer-common';
 import { existsSync } from 'fs';
-import type { Answers, Question } from 'inquirer';
+import type { Question } from 'inquirer';
 import { join } from 'path';
 import { coerce, gte } from 'semver';
 import { defaultProjectNumber, t } from '../i18n';
