@@ -45,7 +45,7 @@
         "@sap-ux/control-property-editor-sources": "workspace:@sap-ux/control-property-editor@*",
         "ejs": "3.1.9",
         "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.4.0"
+        "mem-fs-editor": "9.4.0",
         "@sap-ux/project-access": "workspace:*"
     },
     "devDependencies": {
