@@ -1,5 +1,5 @@
 {
-    "name": "@sap-ux/odata-service--inquirer",
+    "name": "@sap-ux/odata-service-inquirer",
     "description": "Prompts module that can prompt users for inputs required for odata service writing",
     "version": "0.1.0",
     "repository": {
@@ -30,14 +30,19 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@sap-ux/btp-utils": "0.14.2",
+        "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",
+        "@sap-ux/logger": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
+        "@sap/wing-service-explorer": "1.8.0",
+        "inquirer-autocomplete-prompt": "2.0.1",
         "i18next": "23.5.1",
         "lodash": "4.17.21"
     },
     "devDependencies": {
         "@sap-ux/odata-service-writer": "workspace:*",
         "@sap-devx/yeoman-ui-types": "1.14.4",
+        "@types/inquirer-autocomplete-prompt": "2.0.1",
         "@types/inquirer": "8.2.6",
         "@types/lodash": "4.14.202"
     },

@@ -16,6 +16,22 @@
             "capProjectChoiceText": "Use a $t(prompts.datasourceType.capProjectName)",
             "metadataFileChoiceText": "Upload a $t(prompts.datasourceType.metadataFileName)"
         },
+        "metadata": {
+            "message": "Metadata file path",
+            "description": "Upload a metadata file"
+        },
+        "capProject": {
+            "message": "Choose your CAP project",
+            "description": "Select a local CAP project",
+            "breadcrumb": "CAP Project",
+            "enterCapPathChoiceName": "Manually select CAP project folder path"
+        },
+        "validationMessages": {
+            "odataVersionMismatch": "The template you have chosen supports V{{requiredOdataVersion}} OData services only. The provided version is V{{providedOdataVersion}}.",
+            "metadataInvalid": "The service metadata is invalid.",
+            "metadataFilePathNotValid": "Metadata file does not exist or is not accessible. Please specify a valid file path.",
+            "capProjectNotFound": "The folder you have selected does not seem to contain a valid CAP project. Please check and try again."
+        },
         "nonUIServiceTypeWarningMessage": "Please note that {{serviceTypeDesc}} services are not intended to be used for the generation of SAP Fiori UI applications"
     }
 }

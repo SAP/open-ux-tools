@@ -1,6 +1,8 @@
-import type { PromptSeverityMessage, validate } from '@sap-ux/inquirer-common';
+import type { PromptSeverityMessage, YUIQuestion, validate } from '@sap-ux/inquirer-common';
 import type { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
-import type { AsyncDynamicQuestionProperty } from 'inquirer';
+import type { AsyncDynamicQuestionProperty, ListChoiceOptions } from 'inquirer';
+import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
+import type { CapCustomPaths } from '@sap-ux/project-access';
 
 export enum DatasourceType {
     SAP_SYSTEM = 'SAP_SYSTEM',
@@ -17,6 +19,18 @@ export interface OdataServiceAnswers {
      * The data source type answer.
      */
     datasourceType: DatasourceType;
+
+    /**
+     * The odata service metadata (edmx) document.
+     */
+    metadata?: string;
+
+    /**
+     * The selected CAP service.
+     *
+     */
+    capProject?: CapProjectChoice;
+
     /**
      * The base URL of the OData service. Typically the host and port of the service url.
      */
@@ -46,7 +60,7 @@ export interface OdataServiceAnswers {
     /**
      * The OData version of the service.
      */
-    odataVersion: OdataVersion;
+    odataVersion?: OdataVersion;
     /**
      * The name of the data source as would be written to the manifest.json.
      */
@@ -55,10 +69,6 @@ export interface OdataServiceAnswers {
      * The `sap.ui5.model` name as would be written to the manifest.json.
      */
     model?: string;
-    /**
-     * The odata service metadata edmx.
-     */
-    metadata?: string;
     /**
      * An annotations defintion.
      */
@@ -72,6 +82,7 @@ export interface OdataServiceAnswers {
      */
     localAnnotationsName?: string;
     //previewSettings?: Partial<ProxyBackend>;
+    version?: OdataVersion;
 }
 
 /**
@@ -82,7 +93,9 @@ export enum promptNames {
     /**
      * Data source type
      */
-    datasourceType = 'datasourceType'
+    datasourceType = 'datasourceType',
+    metadata = 'metadata',
+    capProject = 'capProject'
 }
 
 export type DatasourceTypePromptOptions = {
@@ -98,6 +111,34 @@ export type DatasourceTypePromptOptions = {
      * Include the `PROJECT_SPECIFIC_DESTINATION` option in the datasource type prompt
      */
     includeProjectSpecificDest?: boolean;
+};
+
+export type MetadataPromptOptions = {
+    /**
+     * Used to validate the metadata file contains the required odata version edmx
+     */
+    requiredOdataVersion?: OdataVersion;
+};
+
+export type WorkspaceFolder = {
+    folderName: string;
+    path: string;
+};
+export interface CapProjectChoice extends ListChoiceOptions {
+    value: (WorkspaceFolder & CapCustomPaths) | string;
+}
+export interface CapService {
+    projectPath: string; // The CAP Project Root
+    serviceName: string;
+    serviceCdsPath?: string; // relative path to cap service cds file
+}
+
+export type CapProjectPromptOptions = {
+    /**
+     * The search paths for the CAP projects
+     */
+    capSearchPaths?: string[];
+    default?: CapService;
 };
 
 /**
@@ -142,10 +183,15 @@ export type CommonPromptOptions = {
  */
 type objectValuePromptOptions =
     /* Record<stringValuePrompts, CommonPromptOptions> & */
-    Record<promptNames.datasourceType, DatasourceTypePromptOptions>;
+    Record<promptNames.datasourceType, DatasourceTypePromptOptions> &
+        Record<promptNames.metadata, MetadataPromptOptions> &
+        Record<promptNames.capProject, CommonPromptOptions>;
 
 /* &
     Record<DefaultValueConfirmPrompts, PromptDefaultValue<boolean>> */ /* export type UI5ApplicationQuestion = YUIQuestion<OdataServiceAnswers> &
     Partial<Pick<AutocompleteQuestionOptions, 'source'>>; */
+
+export type OdataServiceQuestion = YUIQuestion<OdataServiceAnswers> &
+    Partial<Pick<AutocompleteQuestionOptions, 'source'>>;
 
 export type OdataServicePromptOptions = Partial<objectValuePromptOptions>;

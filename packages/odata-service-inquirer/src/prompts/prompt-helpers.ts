@@ -1,60 +1,17 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import type { PromptSeverityMessage, YUIQuestion, validate } from '@sap-ux/inquirer-common';
-import type { Answers, ListChoiceOptions, Question } from 'inquirer';
+import { extendAdditionalMessages, extendValidate, type YUIQuestion } from '@sap-ux/inquirer-common';
+import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../i18n';
 import {
     DatasourceType,
-    type promptNames,
     type CommonPromptOptions,
     type DatasourceTypePromptOptions,
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
-    type PromptDefaultValue
+    type PromptDefaultValue,
+    type promptNames
 } from '../types';
 
-// TODO: Move to inquirer-common and add generic type support
-/**
- * Extends a validate function.
- *
- * @param question - the question to which the validate function will be applied
- * @param validateFunc - the validate function which will be applied to the question
- * @returns the extended validate function
- */
-function extendValidate(
-    question: Question,
-    validateFunc: validate<OdataServiceAnswers>
-): validate<OdataServiceAnswers> {
-    const validate = question.validate;
-    return (
-        value: unknown,
-        previousAnswers?: OdataServiceAnswers | undefined
-    ): ReturnType<validate<OdataServiceAnswers>> => {
-        const extVal = validateFunc(value, previousAnswers);
-        if (extVal !== true) {
-            return extVal;
-        }
-        return typeof validate === 'function' ? validate(value, previousAnswers) : true;
-    };
-}
-
-/**
- * Extends an additionalMessages function.
- *
- * @param question - the question to which the validate function will be applied
- * @param addMsgFunc - the additional messages function which will be applied to the question
- * @returns the extended additional messages function
- */
-function extendAdditionalMessages(question: YUIQuestion, addMsgFunc: PromptSeverityMessage): PromptSeverityMessage {
-    const addMsgs = question.additionalMessages;
-    return (value: unknown, previousAnswers?: Answers | undefined): ReturnType<PromptSeverityMessage> => {
-        const extMsg = addMsgFunc(value, previousAnswers);
-        if (extMsg) {
-            return extMsg; // Extended prompt message is returned first
-        }
-        // Defer to the original function if a valid message was not returned from the extended version
-        return typeof addMsgs === 'function' ? addMsgs(value, previousAnswers) : undefined;
-    };
-}
 /**
  * Extend the existing prompt property function with the one specified in prompt options or add as new.
  *
@@ -113,7 +70,6 @@ export function extendWithOptions(questions: YUIQuestion[], promptOptions: Odata
 /**
  * Get the datasource type choices.
  *
- * @param requiredOdataVersion - The required OData version,
  * @param options - optionally include some of the supported datasource type choices
  * @param options.includeNone - Include the `NONE` option in the datasource type prompt
  * @param options.includeProjectSpecificDest - Include the `PROJECT_SPECIFIC_DESTINATION` option in the datasource type prompt
@@ -150,4 +106,14 @@ export function getDatasourceTypeChoices({
     }
 
     return choices;
+}
+
+/**
+ * Much of the values returned by the service inquirer prompting are derived from prompt answers and not direct answer values.
+ * Since inquirer does not provide a way to return values that are not direct answers from prompts, this class will maintain the derived values
+ * across prompts statically for the lifespan of the prompting session.
+ *
+ */
+export default class PromptHelper {
+    static odataService: Partial<OdataServiceAnswers> = {};
 }

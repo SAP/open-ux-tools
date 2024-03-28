@@ -1,14 +1,23 @@
-import type { InquirerAdapter, YUIQuestion } from '@sap-ux/inquirer-common';
+import { type InquirerAdapter } from '@sap-ux/inquirer-common';
+import { type Logger, ToolsLogger } from '@sap-ux/logger';
 import isNil from 'lodash/isNil';
 import { getQuestions } from './prompts';
-import type { OdataServiceAnswers, OdataServicePromptOptions, PromptDefaultValue } from './types';
-import { promptNames } from './types';
+import LoggerHelper from './prompts/logger-helper';
+import type { OdataServiceAnswers, OdataServicePromptOptions, OdataServiceQuestion, PromptDefaultValue } from './types';
+import { DatasourceType, promptNames } from './types';
+import PromptHelper from './prompts/prompt-helpers';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
+import { validateODataVersion } from './prompts/validators';
+
 /**
  * Get the inquirer prompts for odata service.
  *
  * @param promptOptions
+ * @param logger    - a logger compatible with the {@link Logger} interface
+ * @returns the prompts used to provide input for odata service generation
  */
-function getPrompts(promptOptions?: OdataServicePromptOptions): YUIQuestion[] {
+function getPrompts(promptOptions?: OdataServicePromptOptions, logger?: Logger): OdataServiceQuestion[] {
+    LoggerHelper.logger = logger ?? new ToolsLogger({ logPrefix: 'OdataServiceInquirer' });
     return getQuestions(promptOptions);
 }
 
@@ -17,27 +26,31 @@ function getPrompts(promptOptions?: OdataServicePromptOptions): YUIQuestion[] {
  *
  * @param adapter
  * @param promptOptions
- * @param capCdsInfo
- * @param isYUI
+ * @param logger
  * @returns the prompt answers
  */
 async function prompt(
     adapter: InquirerAdapter,
-    promptOptions?: OdataServicePromptOptions
+    promptOptions?: OdataServicePromptOptions,
+    logger?: Logger
 ): Promise<OdataServiceAnswers> {
-    const ui5AppPrompts = getPrompts(promptOptions);
+    const odataServicePrompts = getPrompts(promptOptions, logger);
 
     /* if (adapter?.promptModule && (promptOptions?.service?.useAutocomplete || promptOptions?.sapSystem?.useAutocomplete)) {
         const pm = adapter.promptModule;
         pm.registerPrompt('autocomplete', autocomplete);
     } */
 
-    const answers = await adapter.prompt<OdataServiceAnswers>(ui5AppPrompts);
+    const answers = await adapter.prompt<OdataServiceAnswers>(odataServicePrompts);
+
+    // Add dervied service answers to the answers object
+    Object.assign(answers, PromptHelper.odataService);
+
     // Apply default values to prompts in case they have not been executed
-    if (promptOptions) {
+    /*  if (promptOptions) {
         Object.assign(answers, await getDefaults(answers, promptOptions));
     }
-
+ */
     return answers;
 }
 
@@ -57,7 +70,7 @@ function getDefaults(
     Object.entries(promptOptions).forEach(([key, promptOpt]) => {
         const promptKey = key as keyof typeof promptNames;
         // Do we have an answer, if not apply the default, either specified or fallback
-        const defaultProperty = (promptOpt as PromptDefaultValue<string | boolean>).default;
+        const defaultProperty = (promptOpt as PromptDefaultValue<string | boolean | object>).default;
         if (isNil(answers[promptKey]) && defaultProperty) {
             let defaultValue;
             if (typeof defaultProperty === 'function') {
@@ -75,10 +88,14 @@ function getDefaults(
 }
 
 export {
+    DatasourceType,
     getPrompts,
     prompt,
     promptNames,
+    OdataVersion,
     type InquirerAdapter,
     type OdataServiceAnswers,
-    type OdataServicePromptOptions
+    type OdataServicePromptOptions,
+    // temp exports, remove once development is done
+    validateODataVersion
 };

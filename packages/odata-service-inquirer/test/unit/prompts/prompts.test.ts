@@ -60,29 +60,40 @@ describe('getQuestions', () => {
                 "name": "datasourceType",
                 "type": "list",
               },
+              {
+                "guiOptions": {
+                  "breadcrumb": true,
+                  "mandatory": true,
+                },
+                "guiType": "file-browser",
+                "message": "Metadata file path",
+                "name": "metadata",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
             ]
         `);
 
-        expect(getQuestions({ datasourceType: { default: DatasourceType.CAP_PROJECT } })).toMatchObject([
-            { default: DatasourceType.CAP_PROJECT }
-        ]);
-        expect(getQuestions({ datasourceType: { includeNone: true } })).toMatchObject([
-            {
-                choices: expect.arrayContaining([
-                    { name: t('prompts.datasourceType.noneName'), value: DatasourceType.NONE }
-                ])
-            }
-        ]);
+        // Test that default is correctly set by options
+        expect(getQuestions({ datasourceType: { default: DatasourceType.CAP_PROJECT } })[0]).toMatchObject({
+            default: DatasourceType.CAP_PROJECT
+        });
+        // Test that additional choices are added by options: 'includeNone'
+        expect(getQuestions({ datasourceType: { includeNone: true } })[0]).toMatchObject({
+            choices: expect.arrayContaining([
+                { name: t('prompts.datasourceType.noneName'), value: DatasourceType.NONE }
+            ])
+        });
         jest.spyOn(btpUtils, 'isAppStudio').mockReturnValueOnce(true);
-        expect(getQuestions({ datasourceType: { includeProjectSpecificDest: true } })).toMatchObject([
-            {
-                choices: expect.arrayContaining([
-                    {
-                        name: t('prompts.datasourceType.projectSpecificDestChoiceText'),
-                        value: DatasourceType.PROJECT_SPECIFIC_DESTINATION
-                    }
-                ])
-            }
-        ]);
+        // Test that additional choices are added by options: 'includeProjectSpecificDest'
+        expect(getQuestions({ datasourceType: { includeProjectSpecificDest: true } })[0]).toMatchObject({
+            choices: expect.arrayContaining([
+                {
+                    name: t('prompts.datasourceType.projectSpecificDestChoiceText'),
+                    value: DatasourceType.PROJECT_SPECIFIC_DESTINATION
+                }
+            ])
+        });
     });
 });

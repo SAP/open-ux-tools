@@ -62,38 +62,6 @@ export function isVersionIncluded(version: string, minVersion: string): boolean 
 }
 
 /**
- * Adds additional conditions to the provided questions.
- *
- * @param questions the questions to which the condition will be added
- * @param condition function which returns true or false
- * @returns the passed questions reference
- */
-export function withCondition(questions: Question[], condition: (answers: Answers) => boolean): Question[] {
-    questions.forEach((question) => {
-        if (question.when !== undefined) {
-            if (typeof question.when === 'function') {
-                const when = question.when as (answers: Answers) => boolean | Promise<boolean>;
-                question.when = (answers: Answers): boolean | Promise<boolean> => {
-                    if (condition(answers)) {
-                        return when(answers);
-                    } else {
-                        return false;
-                    }
-                };
-            } else {
-                const whenValue = question.when as boolean;
-                question.when = (answers: Answers): boolean => {
-                    return condition(answers) && whenValue;
-                };
-            }
-        } else {
-            question.when = condition;
-        }
-    });
-    return questions;
-}
-
-/**
  * Extends a validate function.
  *
  * @param question - the question to which the validate function will be applied
