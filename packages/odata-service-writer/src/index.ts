@@ -55,7 +55,7 @@ export async function findProjectFiles(
 }
 
 /**
- * Generates the Annotations Config based on the manifest
+ * Generates the Annotations Config based on the manifest.
  *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {Editor} [fs] - the memfs editor instance
