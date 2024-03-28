@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
+<html lang="en">
+
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title><%- templateModel.appTitle %></title>
+	<script type="text/javascript">
+		window["sap-ushell-config"] = {
+			defaultRenderer: "fiori2",
+			bootstrapPlugins: {
+				"RuntimeAuthoringPlugin": {
+					component: "sap.ushell.plugins.rta",
+					config: {
+						validateAppVersion: false
+					}
+				}
+			},
+			renderers: {
+				fiori2: {
+					componentData: {
+						config: {
+							search: "hidden"
+						}
+					}
+				}
+			},
+			applications: {
+				"Cards-generator": {
+					title: "<%- templateModel.appTitle %>",
+					description: "",
+					additionalInformation: "SAPUI5.Component=<%- templateModel.component %>",
+					applicationType: "URL",
+					url: "../"
+				}
+			}
+		};
+	</script>
+
+	<script src="../test-resources/sap/ushell/bootstrap/sandbox.js" id="sap-ushell-bootstrap"></script>
+
+	<!-- Bootstrap the UI5 core library -->
+	<script id="sap-ui-bootstrap" src="../resources/sap-ui-core.js"
+		data-sap-ui-libs="sap.m, sap.f, sap.ushell, sap.ui.core, sap.ui.layout, sap.ui.generic.app, sap.ui.comp, sap.suite.ui.generic.template, sap.ovp, sap.ui.rta, sap.cards.ap.generator"
+		data-sap-ui-async="true" data-sap-ui-preload="async" data-sap-ui-theme="sap_horizon"
+		data-sap-ui-compatVersion="edge" data-sap-ui-language="en"
+		data-sap-ui-resourceroots='{"<%- templateModel.component %>": "../"}' data-sap-ui-frameOptions="allow">
+			// NON-SECURE setting for testing environment
+		</script>
+	<script>
+		sap.ui.getCore().attachInit(function () {
+			sap.ushell.Container.attachRendererCreatedEvent(function () {
+				sap.ushell.Container.getServiceAsync('AppLifeCycle').then((serviceInstance) => {
+					serviceInstance.attachAppLoaded(async (event) => {
+						sap.ui.require(["sap/cards/ap/generator/CardGenerator"], async function (CardGenerator) {
+							var oRenderer = sap.ushell.Container.getRenderer("fiori2");
+							if (oRenderer) {
+								var generateCardBtn = {
+									controlType: "sap.ushell.ui.launchpad.ActionItem",
+									bCurrentState: true,
+									oControlProperties: {
+										icon: "sap-icon://add",
+										id: "generate_card",
+										text: "Generate Card",
+										tooltip: "Generate Card",
+										press: function () {
+											var currentApplication = serviceInstance.getCurrentApplication();
+											var componentInstance = currentApplication.componentInstance;
+											CardGenerator.initializeAsync(componentInstance);
+										}
+									},
+									bIsVisible: true
+								};
+								oRenderer.addUserAction(generateCardBtn);
+							}
+						});
+					});
+				});
+			});
+			sap.ushell.Container.createRenderer().placeAt("content");
+		});
+	</script>
+</head>
+<!-- UI Content -->
+
+<body class="sapUiBody" id="content"></body>
+
+</html>
