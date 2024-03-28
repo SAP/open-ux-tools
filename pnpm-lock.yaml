@@ -1316,6 +1316,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/telemetry':
+        specifier: workspace:*
+        version: link:../telemetry
       ejs:
         specifier: 3.1.9
         version: 3.1.9
@@ -1323,6 +1326,9 @@ importers:
       '@private/preview-middleware-client':
         specifier: workspace:@sap-ux-private/preview-middleware-client@*
         version: link:../preview-middleware-client
+      '@sap-ux-private/control-property-editor-common':
+        specifier: workspace:*
+        version: link:../control-property-editor-common
       '@sap-ux-private/playwright':
         specifier: 0.0.3
         version: link:../playwright

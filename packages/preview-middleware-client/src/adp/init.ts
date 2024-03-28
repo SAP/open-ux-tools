@@ -5,6 +5,7 @@ import init from '../cpe/init';
 import { initDialogs } from './init-dialogs';
 import {
     ExternalAction,
+    enableTelemetry,
     showMessage,
     startPostMessageCommunication
 } from '@sap-ux-private/control-property-editor-common';
@@ -17,6 +18,8 @@ export default async function (rta: RuntimeAuthoring) {
     const { version } = (await VersionInfo.load()) as { version: string };
     const versionParts = version.split('.');
     const minor = parseInt(versionParts[1], 10);
+
+    enableTelemetry();
 
     const actionHandlers: ActionHandler[] = [];
     /**
