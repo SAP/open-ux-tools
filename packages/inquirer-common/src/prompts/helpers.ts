@@ -63,15 +63,9 @@ export function withCondition(questions: Question[], condition: (answers: Answer
  * @param validateFunc - the validate function which will be applied to the question
  * @returns the extended validate function
  */
-export function extendValidate(
-    question: Question,
-    validateFunc: Validator<Answers>
-): Validator<Answers> {
+export function extendValidate(question: Question, validateFunc: Validator<Answers>): Validator<Answers> {
     const validate = question.validate;
-    return (
-        value: unknown,
-        previousAnswers?: Answers | undefined
-    ): ReturnType<validate<Answers>> => {
+    return (value: unknown, previousAnswers?: Answers | undefined): ReturnType<validate<Answers>> => {
         const extVal = validateFunc?.(value, previousAnswers);
         if (extVal !== true) {
             return !!extVal;
