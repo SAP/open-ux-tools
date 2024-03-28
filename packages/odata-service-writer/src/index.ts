@@ -59,9 +59,12 @@ export async function findProjectFiles(
  *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {Editor} [fs] - the memfs editor instance
- * @returns an array with annotations config
+ * @returns {Promise<Array<{ localPath: string, urlPath: string }>>} An array with annotations config
  */
-async function generateODataAnnotationConfig(basePath: string, fs: Editor) {
+async function generateODataAnnotationConfig(
+    basePath: string,
+    fs: Editor
+): Promise<Array<{ localPath: string; urlPath: string }>> {
     // manifest.json
     const manifestPath = join(basePath, 'webapp', 'manifest.json');
     // Get component app id
