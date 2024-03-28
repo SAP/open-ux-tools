@@ -17,6 +17,9 @@
       "path": "../axios-extension"
     },
     {
+      "path": "../control-property-editor-common"
+    },
+    {
       "path": "../i18n"
     },
     {
@@ -30,6 +33,9 @@
     },
     {
       "path": "../store"
+    },
+    {
+      "path": "../telemetry"
     }
   ]
 }

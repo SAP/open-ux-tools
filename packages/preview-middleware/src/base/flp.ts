@@ -1,6 +1,6 @@
 import type { ReaderCollection } from '@ui5/fs';
 import { render } from 'ejs';
-import type { Request, RequestHandler, Response, Router } from 'express';
+import type { NextFunction, Request, RequestHandler, Response, Router } from 'express';
 import { readFileSync } from 'fs';
 import { dirname, join, posix } from 'path';
 import type { App, Editor, FlpConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
@@ -11,6 +11,8 @@ import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { createProjectAccess } from '@sap-ux/project-access';
 import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
+import { initTelemetrySettings, ClientFactory, SampleRate, EventName } from '@sap-ux/telemetry';
+import { enableTelemetry } from '@sap-ux-private/control-property-editor-common';
 import { generateImportList, mergeTestConfigDefaults } from './test';
 
 const DEVELOPER_MODE_CONFIG = new Map([
@@ -87,7 +89,8 @@ const PREVIEW_URL = {
         local: join(__dirname, '../../dist/client'),
         ns: 'open.ux.preview.client'
     },
-    api: '/preview/api'
+    api: '/preview/api',
+    telemetry: '/preview/api/telemetry'
 };
 
 export interface CustomConnector {
@@ -185,6 +188,7 @@ export class FlpSandbox {
      */
     async init(manifest: Manifest, componentId?: string, resources: Record<string, string> = {}): Promise<void> {
         this.createFlexHandler();
+        this.addTelemetryRoute();
         const flex = this.getFlexSettings();
         const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
         const ui5Theme =
@@ -328,6 +332,35 @@ export class FlpSandbox {
             const html = render(template, this.templateConfig);
             res.status(200).contentType('html').send(html);
         }) as RequestHandler);
+    }
+
+    private addTelemetryRoute() {
+        enableTelemetry();
+        this.router.post(
+            PREVIEW_URL.telemetry,
+            json(),
+            async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+                try {
+                    await initTelemetrySettings({
+                        consumerModule: { name: '@sap-ux/preview-middleware', version: '0.13.2' },
+                        internalFeature: false,
+                        watchTelemetrySettingStore: false
+                    });
+                    const data = req.body;
+                    const telemetryEvent = {
+                        eventName: EventName.CPE_EVENT,
+                        properties: data,
+                        measurements: {}
+                    };
+                    ClientFactory.getTelemetryClient().reportEvent(telemetryEvent, SampleRate.NoSampling, {
+                        appPath: process.cwd()
+                    });
+                    res.status(200).contentType('json').send({ updatedTelemetry: true });
+                } catch (error) {
+                    next(error);
+                }
+            }
+        );
     }
 
     /**
