@@ -28,6 +28,7 @@ export interface CodeExtResponse {
     controllerExists: boolean;
     controllerPath: string;
     controllerPathFromRoot: string;
+    isRunningInBAS: boolean;
 }
 
 export interface ControllersResponse {
