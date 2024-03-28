@@ -16,8 +16,11 @@ function isUi5CliHigherTwo(devDependencies: Partial<Record<string, string>>): bo
     try {
         const versionString = devDependencies['@ui5/cli'];
         if (typeof versionString === 'string') {
-            const majorVersion = parseInt(versionString.split('.')[0].match(/\d+/)?.[0] || '0', 10);
-            isHigherTwo = majorVersion > 2 ? true : false;
+            const regex = /\d+/;
+            const result = regex.exec(versionString.split('.')[0]);
+            const majorVersionValue = result ? result[0] : '0';
+            const majorVersion = parseInt(majorVersionValue, 10);
+            isHigherTwo = majorVersion > 2;
         }
     } catch {
         // if something went wrong we don't have @ui/cli > version 2
