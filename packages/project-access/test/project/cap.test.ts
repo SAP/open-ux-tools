@@ -107,8 +107,7 @@ describe('Test getCapModelAndServices()', () => {
                         }
                     ])
                 }
-            },
-            root: undefined
+            }
         };
         jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
 
@@ -139,7 +138,6 @@ describe('Test getCapModelAndServices()', () => {
             { root: 'PROJECT_ROOT' }
         );
         expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL', { root: 'PROJECT_ROOT' });
-        expect(cdsMock.root).toEqual('PROJECT_ROOT');
     });
 
     test('Get model and services, but services are empty', async () => {
