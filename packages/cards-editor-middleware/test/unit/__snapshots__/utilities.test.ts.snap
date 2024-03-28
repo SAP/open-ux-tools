@@ -25,7 +25,7 @@ Object {
   \\"sap.insights\\": {
     \\"versions\\": {
       \\"ui5\\": \\"1.120.1-202403281300\\",
-      \\"dtMiddleware\\": \\"0.2.1\\"
+      \\"dtMiddleware\\": \\"0.1.0\\"
     },
     \\"templateName\\": \\"ObjectPage\\",
     \\"parentAppId\\": \\"sales.order.wd20\\",
