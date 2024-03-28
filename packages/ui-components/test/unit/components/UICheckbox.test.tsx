@@ -63,18 +63,28 @@ describe('<UIToggle />', () => {
             expect(rootStyles[0][0][`:hover .${globalClassNames.checkmark}`]).toEqual(undefined);
         });
 
-        it('Disabled and Checked', () => {
-            wrapper.setProps({
-                disabled: true
-            });
+        it('Disabled', () => {
             const styles = (wrapper.find(Checkbox).props().styles as IStyleFunction<{}, {}>)({
+                disabled: true
+            }) as ICheckboxStyles;
+            const textStyles = styles.text as IRawStyle;
+            // Check text opacity
+            expect(textStyles.opacity).toEqual(0.4);
+            const checkBoxStyles = styles.checkbox as IRawStyle;
+            // Check checkbox opacity
+            expect(checkBoxStyles.opacity).toEqual(0.4);
+        });
+
+        it('Disabled and Checked', () => {
+            const styles = (wrapper.find(Checkbox).props().styles as IStyleFunction<{}, {}>)({
+                disabled: true,
                 checked: true
             }) as ICheckboxStyles;
             const rootStyles = styles.root as IRawStyle;
-            // Check text opacity
-            expect(rootStyles[0][1][`:hover .${globalClassNames.text}`].opacity).toEqual(0.4);
-            // Check checkbox hover
-            expect(rootStyles[1][`:hover .${globalClassNames.checkbox}`].borderColor).toEqual(undefined);
+            // Check checkbox background
+            expect(rootStyles[1][`:hover .${globalClassNames.checkbox}`].background).toEqual('');
+            // Check checkbox borderColor
+            expect(rootStyles[1][`:hover .${globalClassNames.checkbox}`].borderColor).toEqual('');
         });
     });
 });
