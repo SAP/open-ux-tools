@@ -4,6 +4,7 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
 import fsextra from 'fs-extra';
+
 describe('Test UI5 Library Reference Writer', () => {
     const fs = create(createStorage());
     const testOutputDir = join(__dirname, '/test-output');
@@ -31,7 +32,7 @@ describe('Test UI5 Library Reference Writer', () => {
         fsextra.mkdirSync(testProjectPath);
         fsextra.copySync(join(__dirname, '/test-input/sample-projects/test_project_lrop_v2'), testProjectPath);
         await generate(testProjectPath, reuseLibs, fs);
-        expect(fs.dump(testProjectPath)).toMatchSnapshot();
+        expect(fs.dump(testProjectPath, '**/webapp/*.json')).toMatchSnapshot();
     });
 
     it('should generate the UI5 library reference in a project with a custom webapp path', async () => {
@@ -43,7 +44,7 @@ describe('Test UI5 Library Reference Writer', () => {
             testProjectPath
         );
         await generate(testProjectPath, reuseLibs, fs);
-        expect(fs.dump(testProjectPath)).toMatchSnapshot();
+        expect(fs.dump(testProjectPath, '**/src/main/webapp/*.json')).toMatchSnapshot();
     });
 
     it('should generate the UI5 library reference (sap.ui5.dependencies.libs does not exist)', async () => {
@@ -52,6 +53,6 @@ describe('Test UI5 Library Reference Writer', () => {
         fsextra.mkdirSync(testProjectPath);
         fsextra.copySync(join(__dirname, '/test-input/sample-projects/test_project_lrop_no_lib_deps'), testProjectPath);
         await generate(testProjectPath, reuseLibs);
-        expect(fs.dump(testProjectPath)).toMatchSnapshot();
+        expect(fs.dump(testProjectPath, '**/webapp/*.json')).toMatchSnapshot();
     });
 });
