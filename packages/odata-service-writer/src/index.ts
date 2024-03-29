@@ -55,7 +55,7 @@ export async function findProjectFiles(
 }
 
 /**
- * Generates the Annotations Config based on the manifest.
+ * Generate annotations config, using `dataSources` read manifest.json.
  *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {Editor} [fs] - the memfs editor instance
@@ -65,24 +65,19 @@ async function generateODataAnnotationConfig(
     basePath: string,
     fs: Editor
 ): Promise<Array<{ localPath: string; urlPath: string }>> {
-    // manifest.json
-    const manifestPath = join(basePath, 'webapp', 'manifest.json');
-    // Get component app id
-    const manifest = fs.readJSON(manifestPath) ?? '';
-
+    const manifest = fs.readJSON(join(basePath, 'webapp', 'manifest.json'));
     const result: { [k: string]: ManifestNamespace.DataSource } = {};
-    const dataSources = manifest['sap.app']?.dataSources;
+    const dataSources = manifest?.['sap.app']?.dataSources ?? {};
     for (const dataSource in dataSources) {
         if (dataSources[dataSource].uri && dataSources[dataSource].type === 'ODataAnnotation') {
             result[dataSource] = dataSources[dataSource];
         }
     }
     const annotationSource = Object.values(result);
-    const annotationsConfig = annotationSource.map((annotation) => ({
+    return annotationSource.map((annotation) => ({
         localPath: `./webapp/${annotation.settings?.localUri}`,
         urlPath: annotation.uri
     }));
-    return annotationsConfig;
 }
 
 /**
