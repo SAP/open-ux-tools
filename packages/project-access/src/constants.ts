@@ -16,5 +16,22 @@ export const FileName = {
 } as const;
 
 export const DirName = {
-    Changes: 'changes'
+    Changes: 'changes',
+    Sapux: 'src',
+    Schemas: '.schemas',
+    Pages: 'pages',
+    Webapp: 'webapp',
+    Temp: '.tmp',
+    LocalService: 'localService',
+    Controller: 'controller',
+    View: 'view',
+    Fragment: 'fragment',
+    Ext: 'ext',
+    VSCode: '.vscode',
+    AppConfig: 'appconfig',
+    Db: 'db',
+    Csv: 'csv',
+    Data: 'data',
+    Mockdata: 'mockdata',
+    Dist: 'dist'
 } as const;
