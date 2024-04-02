@@ -161,6 +161,9 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
       '@sap-ux/system-access':
         specifier: workspace:*
         version: link:../system-access
@@ -186,9 +189,6 @@ importers:
         specifier: 1.6.3
         version: 1.6.3
     devDependencies:
-      '@sap-ux/project-access':
-        specifier: workspace:*
-        version: link:../project-access
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
