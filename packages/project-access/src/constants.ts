@@ -15,23 +15,27 @@ export const FileName = {
     UI5DeployYaml: 'ui5-deploy.yaml'
 } as const;
 
-export const DirName = {
-    Changes: 'changes',
-    Sapux: 'src',
-    Schemas: '.schemas',
-    Pages: 'pages',
-    Webapp: 'webapp',
-    Temp: '.tmp',
-    LocalService: 'localService',
-    Controller: 'controller',
-    View: 'view',
-    Fragment: 'fragment',
-    Ext: 'ext',
-    VSCode: '.vscode',
-    AppConfig: 'appconfig',
-    Db: 'db',
-    Csv: 'csv',
-    Data: 'data',
-    Mockdata: 'mockdata',
-    Dist: 'dist'
-} as const;
+export enum DirName {
+    Changes = 'changes',
+    Sapux = 'src',
+    Schemas = '.schemas',
+    Pages = 'pages',
+    Webapp = 'webapp',
+    Temp = '.tmp',
+    LocalService = 'localService',
+    Controller = 'controller',
+    View = 'view',
+    Fragment = 'fragment',
+    Fragments = 'fragments',
+    Ext = 'ext',
+    VSCode = '.vscode',
+    AppConfig = 'appconfig',
+    Db = 'db',
+    Csv = 'csv',
+    Data = 'data',
+    Mockdata = 'mockdata',
+    Dist = 'dist',
+    Coding = 'coding',
+    Manifest = 'manifest',
+    Annotations = 'annotations'
+}
