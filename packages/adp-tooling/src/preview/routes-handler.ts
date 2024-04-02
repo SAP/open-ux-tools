@@ -120,7 +120,7 @@ export default class RoutesHandler {
                 return;
             }
 
-            const fullPath = path.join(sourcePath, DirName.Changes, DirName.Fragment);
+            const fullPath = path.join(sourcePath, DirName.Changes, DirName.Fragments);
             const filePath = path.join(fullPath, `${fragmentName}.fragment.xml`);
 
             if (!fs.existsSync(fullPath)) {
