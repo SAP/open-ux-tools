@@ -9,12 +9,14 @@ import type { AdpWriterConfig } from '../types';
  */
 export function enhanceUI5Yaml(ui5Config: UI5Config, config: AdpWriterConfig) {
     const middlewares = config.options?.fioriTools ? getFioriToolsMiddlwares(config) : getOpenSourceMiddlewares(config);
-    ui5Config.setConfiguration({ propertiesFileSourceEncoding: "UTF-8" })
-    ui5Config.addCustomConfiguration("adp", config?.customConfig?.adp!);
+    ui5Config.setConfiguration({ propertiesFileSourceEncoding: 'UTF-8' });
     ui5Config.addCustomMiddleware(middlewares);
 
-    if (config.options?.isRunningInBAS && config.options?.isCloudProject) {
-        ui5Config.addUI5Framework("SAPUI5", config.ui5?.ui5Version!, [])
+    if (config.customConfig?.adp) {
+        ui5Config.addCustomConfiguration('adp', config.customConfig.adp);
+    }
+    if (config.options?.isRunningInBAS && config.options?.isCloudProject && config.ui5?.ui5Version) {
+        ui5Config.addUI5Framework('SAPUI5', config.ui5.ui5Version, []);
         const tasks = getAdpCloudCustomTasks(config);
         ui5Config.addCustomTasks(tasks);
     }
@@ -136,24 +138,24 @@ function getOpenSourceMiddlewares(config: AdpWriterConfig): CustomMiddleware<obj
  * @param config full project configuration
  * @returns list of required tasks.
  */
-function getAdpCloudCustomTasks(config: AdpWriterConfig & {target: AbapTarget}): CustomTask[] {
+function getAdpCloudCustomTasks(config: AdpWriterConfig & { target: AbapTarget }): CustomTask[] {
     return [
         {
-            name: "app-variant-bundler-build",
-            beforeTask: "escapeNonAsciiCharacters",
-            configuration:{
-                type: "abap",
+            name: 'app-variant-bundler-build',
+            beforeTask: 'escapeNonAsciiCharacters',
+            configuration: {
+                type: 'abap',
                 destination: config.target?.destination,
-                appName: config?.flp?.bspName, 
-                languages: ( config?.flp?.languages && config.flp.languages.map((language: { sap: string, i18n: string }) => {
+                appName: config?.flp?.bspName,
+                languages: config?.flp?.languages?.map((language: { sap: string; i18n: string }) => {
                     return {
                         sap: language.sap,
                         i18n: language.i18n
-                    }
-                })),
+                    };
+                }),
                 credentials: {
-                    username: "env:ABAP_USERNAME",
-                    password: "env:ABAP_PASSWORD"
+                    username: 'env:ABAP_USERNAME',
+                    password: 'env:ABAP_PASSWORD'
                 }
             }
         }

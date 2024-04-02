@@ -7,7 +7,7 @@ import { create } from 'mem-fs-editor';
  * Writes the s4hana env file to the mem-fs-editor instance.
  *
  * @param basePath - the base path
- * @param config - the writer configuration
+ * @param data - personal data intended to be exposed as env variables
  * @param fs - the memfs editor instance
  * @returns the updated memfs editor instance
  */

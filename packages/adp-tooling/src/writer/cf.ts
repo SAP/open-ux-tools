@@ -19,11 +19,11 @@ export async function generateCf(basePath: string, config: CfWriterConfig, fs?: 
     const tmplPath = join(__dirname, '../../templates/projects/cf');
 
     fs.copyTpl(join(tmplPath, '**/*.*'), join(basePath), config.app, undefined, {
-        globOptions: { dot: true, ignore: ["**/xs-security.json", "**/approuter/*.*", "**/manifest.appdescr_variant"] },
+        globOptions: { dot: true, ignore: ['**/xs-security.json', '**/approuter/*.*', '**/manifest.appdescr_variant'] },
         processDestinationPath: (filePath: string) =>
-        filePath
-            .replace(/gitignore.tmpl/g, '.gitignore')
-            .replace(/i18n\/i18n.properties/g, 'webapp/i18n/i18n.properties')
+            filePath
+                .replace(/gitignore.tmpl/g, '.gitignore')
+                .replace(/i18n\/i18n.properties/g, 'webapp/i18n/i18n.properties')
     });
 
     // manifest.appdescr_variant
@@ -38,14 +38,13 @@ export async function generateCf(basePath: string, config: CfWriterConfig, fs?: 
     fs.writeJSON(adpConfigPath, config.adpConfig);
     // approuter
     if (config.app.addStandaloneApprouter) {
-        fs.copyTpl(join(tmplPath, '**/*.*'), join(basePath,'approuter'), config.app);
+        fs.copyTpl(join(tmplPath, '**/*.*'), join(basePath, 'approuter'), config.app);
     }
     // xs-security.json
-    if (!fs.exists(join(config.app.projectPath, "xs-security.json"))) {
-        fs.copyTpl(join(tmplPath, "xs-security.json"), join(config.app.projectPath, "xs-security.json"), {
-                projectName: config.app.xsSecurityProjectName
-            }
-        );
+    if (!fs.exists(join(config.app.projectPath, 'xs-security.json'))) {
+        fs.copyTpl(join(tmplPath, 'xs-security.json'), join(config.app.projectPath, 'xs-security.json'), {
+            projectName: config.app.xsSecurityProjectName
+        });
     }
 
     return fs;

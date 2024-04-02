@@ -48,7 +48,7 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
     const fullConfig = setDefaults(config);
 
     fs.copyTpl(join(tmplPath, '**/*.*'), join(basePath), fullConfig, undefined, {
-        globOptions: { dot: true, ignore: config.options?.isRunningInBAS ? [] : ["**/pom.xml"] },
+        globOptions: { dot: true, ignore: config.options?.isRunningInBAS ? [] : ['**/pom.xml'] },
         processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
     });
 

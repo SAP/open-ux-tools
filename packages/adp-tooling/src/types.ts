@@ -47,7 +47,7 @@ export interface AdpWriterConfig {
         flpSubtitle?: string;
         inboundId?: string;
         bspName?: string;
-        languages?: []
+        languages?: [];
     };
     customConfig?: AdpCustomConfig;
     /**
@@ -363,8 +363,8 @@ export interface AdpProjectData {
 export interface AdpCustomConfig {
     adp?: {
         safeMode: boolean;
-    }
-};
+    };
+}
 
 export interface CfModuleData {
     appHostId: string;
