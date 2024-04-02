@@ -8,7 +8,7 @@ import type { MiddlewareUtils } from '@ui5/server';
 import type { ReaderCollection, Resource } from '@ui5/fs';
 import type { NextFunction, Request, Response } from 'express';
 
-import { FolderNames, TemplateFileName, HttpStatusCodes } from '../types';
+import { FolderTypes, TemplateFileName, HttpStatusCodes } from '../types';
 import type { CodeExtChange } from '../types';
 
 interface WriteFragmentBody {
@@ -119,7 +119,7 @@ export default class RoutesHandler {
                 return;
             }
 
-            const fullPath = path.join(sourcePath, FolderNames.Changes, FolderNames.Fragments);
+            const fullPath = path.join(sourcePath, FolderTypes.CHANGES, FolderTypes.FRAGMENTS);
             const filePath = path.join(fullPath, `${fragmentName}.fragment.xml`);
 
             if (!fs.existsSync(fullPath)) {
@@ -197,8 +197,8 @@ export default class RoutesHandler {
             const getPath = (
                 projectPath: string,
                 fileName: string,
-                folder: FolderNames.Coding | string = FolderNames.Coding
-            ) => path.join(projectPath, FolderNames.Changes, folder, fileName).split(path.sep).join(path.posix.sep);
+                folder: FolderTypes.CODING | string = FolderTypes.CODING
+            ) => path.join(projectPath, FolderTypes.CHANGES, folder, fileName).split(path.sep).join(path.posix.sep);
 
             for (const file of codeExtFiles) {
                 const fileStr = await file.getString();
@@ -258,7 +258,7 @@ export default class RoutesHandler {
                 return;
             }
 
-            const fullPath = path.join(sourcePath, FolderNames.Changes, FolderNames.Coding);
+            const fullPath = path.join(sourcePath, FolderTypes.CHANGES, FolderTypes.CODING);
             const filePath = path.join(fullPath, `${controllerExtName}.js`);
 
             if (!fs.existsSync(fullPath)) {

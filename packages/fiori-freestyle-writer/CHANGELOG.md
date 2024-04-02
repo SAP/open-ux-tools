@@ -1,5 +1,22 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.21.6
+
+### Patch Changes
+
+-   Updated dependencies [ec509c40]
+    -   @sap-ux/ui5-config@0.22.0
+    -   @sap-ux/odata-service-writer@0.16.2
+    -   @sap-ux/ui5-application-writer@0.26.5
+
+## 0.21.5
+
+### Patch Changes
+
+-   4b29ddcc: Update TypeScript templates, eslint config and ui5 devDependencies
+-   Updated dependencies [4b29ddcc]
+    -   @sap-ux/ui5-application-writer@0.26.4
+
 ## 0.21.4
 
 ### Patch Changes

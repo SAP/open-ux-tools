@@ -112,13 +112,18 @@ export const initTelemetrySettings = async (options: ToolsSuiteTelemetryInitSett
         TelemetrySettings.consumerModuleName = options.consumerModule.name;
         TelemetrySettings.consumerModuleVersion = options.consumerModule.version;
         ToolingTelemetrySettings.internalFeature = options.internalFeature ?? false;
-        TelemetrySettings.azureInstrumentationKey = options.resourceId ?? '';
+        if (options.resourceId) {
+            TelemetrySettings.azureInstrumentationKey = options.resourceId;
+        }
         const storeService = await getService<TelemetrySetting, TelemetrySettingKey>({
             entityName: 'telemetrySetting'
         });
 
         await readEnableTelemetry(storeService);
-        watchTelemetrySettingStore(storeService);
+
+        if (options.watchTelemetrySettingStore) {
+            watchTelemetrySettingStore(storeService);
+        }
     } catch (err) {
         reportRuntimeError(err);
     }

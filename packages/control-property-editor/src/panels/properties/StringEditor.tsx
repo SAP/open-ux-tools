@@ -51,6 +51,9 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
     const dispatch = useDispatch();
 
     const handlеChange = (e: React.FocusEvent | React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        if (value?.toString() === e.target.value) {
+            return;
+        }
         reportTelemetry({ category: 'Property Change', propertyName: name }).catch((error) => {
             console.error(`Error in reporting telemetry`, error);
         });
@@ -71,7 +74,6 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
     };
 
     const inputProps: UITextInputProps = {};
-
     inputProps.onBlur = (e) => handlеChange(e);
 
     inputProps.onKeyPress = (e) => {

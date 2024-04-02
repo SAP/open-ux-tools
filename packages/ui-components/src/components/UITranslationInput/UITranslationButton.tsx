@@ -28,7 +28,7 @@ export interface UITranslationButtonProps<T extends TranslationEntry> extends UI
  * @returns Resolved text.
  */
 const getStringText = (property: keyof TranslationInputStrings, strings?: TranslationInputStrings): string => {
-    return strings?.[property] || '';
+    return strings?.[property] ?? '';
 };
 
 /**
@@ -39,7 +39,7 @@ const getStringText = (property: keyof TranslationInputStrings, strings?: Transl
  */
 export const UITranslationButton = <T extends TranslationEntry>(props: UITranslationButtonProps<T>): ReactElement => {
     const { id, strings, value, onCreateNewEntry, onUpdateValue, onShowExistingEntry, busy, suggestion } = props;
-    const [isCalloutVisible, setCalloutVisible] = useState(false);
+    const [calloutVisible, setCalloutVisible] = useState(false);
     // Callbacks
     const onToggleCallout = useCallback((): void => {
         if (suggestion.suggest?.type === SuggestValueType.Existing) {
@@ -47,16 +47,16 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
             // Trigger show existing entry callbACK
             onShowExistingEntry?.(suggestion.suggest.entry);
         } else {
-            setCalloutVisible(!isCalloutVisible);
+            setCalloutVisible(!calloutVisible);
         }
-    }, [isCalloutVisible, suggestion]);
+    }, [calloutVisible, suggestion]);
     const onAccept = useCallback((): void => {
         if (suggestion.suggest) {
             if (suggestion.suggest.type === SuggestValueType.New) {
                 onCreateNewEntry?.(suggestion.suggest.entry);
             }
             if (value !== suggestion.suggest.i18n) {
-                onUpdateValue?.(suggestion.suggest.i18n || '');
+                onUpdateValue?.(suggestion.suggest.i18n ?? '');
             }
         }
 
@@ -72,12 +72,12 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
                 id={id}
                 disabled={props.disabled ?? false}
                 onClick={onToggleCallout}
-                iconProps={{ iconName: suggestion.suggest?.icon || UiIcons.World }}
+                iconProps={{ iconName: suggestion.suggest?.icon ?? UiIcons.World }}
                 title={suggestion.tooltip}
                 busy={busy?.busy}
                 useMinWaitingTime={busy?.useMinWaitingTime}
             />
-            {isCalloutVisible && (
+            {calloutVisible && (
                 <UICallout
                     target={`#${id}`}
                     gapSpace={5}

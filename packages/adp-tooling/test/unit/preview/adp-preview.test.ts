@@ -228,6 +228,7 @@ describe('AdaptationProject', () => {
             );
 
             const app = express();
+            app.use(express.json());
             adp.addApis(app);
             server = supertest(app);
         });

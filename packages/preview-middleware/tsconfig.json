@@ -17,6 +17,9 @@
       "path": "../axios-extension"
     },
     {
+      "path": "../i18n"
+    },
+    {
       "path": "../logger"
     },
     {
