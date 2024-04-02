@@ -223,6 +223,7 @@ export class FlpSandbox {
         }
         if (this.test) {
             this.addTestRoutes(this.test, id);
+            this.createTestSuite(this.test);
         }
 
         await this.addRoutesForAdditionalApps();
@@ -434,6 +435,54 @@ export class FlpSandbox {
             } catch (error) {
                 res.status(500).send(error.message);
             }
+        }) as RequestHandler);
+    }
+
+    /**
+     * Create a test suite for the test configurations.
+     *
+     * @param configs test configurations
+     * @private
+     */
+    private createTestSuite(configs: TestConfig[]) {
+        const testsuite = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit.html'), 'utf-8');
+        const initTemplate = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit.js'), 'utf-8');
+
+        const testConfig = configs.find((config) => config.framework === 'Testsuite') ?? { framework: 'Testsuite' };
+        const config = mergeTestConfigDefaults(testConfig);
+
+        this.logger.debug(`Add route for ${config.path}`);
+        this.router.get(config.path, (async (_req, res) => {
+            this.logger.debug(`Serving test route: ${config.path}`);
+            const templateConfig = {
+                initPath: config.init
+            };
+            const html = render(testsuite, templateConfig);
+            res.status(200).contentType('html').send(html);
+        }) as RequestHandler);
+
+        if (testConfig.init !== undefined) {
+            this.logger.debug(`Skip serving testsuite init script in favor of provided script: ${testConfig.init}`);
+            return;
+        }
+
+        const testPaths: string[] = [];
+        for (const testConfig of configs) {
+            if (testConfig.framework === 'Testsuite') {
+                continue;
+            }
+            const config = mergeTestConfigDefaults(testConfig);
+            testPaths.push(config.path);
+        }
+
+        this.logger.debug(`Add route for ${config.init}`);
+        this.router.get(config.init, (async (_req, res) => {
+            this.logger.debug(`Serving test route: ${config.init}`);
+            const templateConfig = {
+                testPaths: testPaths
+            };
+            const html = render(initTemplate, templateConfig);
+            res.status(200).contentType('application/javascript').send(html);
         }) as RequestHandler);
     }
 

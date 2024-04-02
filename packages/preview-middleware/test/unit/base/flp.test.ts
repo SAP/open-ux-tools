@@ -397,6 +397,16 @@ describe('FlpSandbox', () => {
         test('no route for custom init', async () => {
             await server.get('/test/integration/opaTests.qunit.js').expect(404);
         });
+
+        test('default testsuite', async () => {
+            const response = await server.get('/test/testsuite.qunit.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('default testsuite init testsuite.qunit.js', async () => {
+            const response = await server.get('/test/testsuite.qunit.js').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
     });
 });
 
