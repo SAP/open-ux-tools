@@ -10,6 +10,7 @@ export const defaultLiveReloadOpts: LiveReloadOptions = {
         'properties',
         'change',
         'variant',
+        'appdescr_variant',
         'ctrl_variant',
         'ctrl_variant_change',
         'ctrl_variant_management_change'

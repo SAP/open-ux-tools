@@ -1,5 +1,46 @@
 # @sap-ux/app-config-writer
 
+## 0.3.40
+
+### Patch Changes
+
+-   Updated dependencies [87c942e5]
+    -   @sap-ux/project-access@1.19.4
+    -   @sap-ux/axios-extension@1.11.4
+
+## 0.3.39
+
+### Patch Changes
+
+-   Updated dependencies [89013210]
+    -   @sap-ux/project-access@1.19.3
+    -   @sap-ux/axios-extension@1.11.4
+
+## 0.3.38
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+-   Updated dependencies [61b46bc8]
+    -   @sap-ux/axios-extension@1.11.4
+    -   @sap-ux/btp-utils@0.14.3
+
+## 0.3.37
+
+### Patch Changes
+
+-   Updated dependencies [ec509c40]
+    -   @sap-ux/ui5-config@0.22.0
+    -   @sap-ux/project-access@1.19.2
+    -   @sap-ux/axios-extension@1.11.3
+
+## 0.3.36
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.19.1
+-   @sap-ux/axios-extension@1.11.3
+
 ## 0.3.35
 
 ### Patch Changes

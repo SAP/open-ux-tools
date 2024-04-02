@@ -1,5 +1,47 @@
 # @sap-ux/preview-middleware
 
+## 0.13.2
+
+### Patch Changes
+
+-   Updated dependencies [87c942e5]
+    -   @sap-ux/project-access@1.19.4
+    -   @sap-ux/adp-tooling@0.9.6
+
+## 0.13.1
+
+### Patch Changes
+
+-   25ecdb90: Fix missing title and description on launchpad tile
+
+## 0.13.0
+
+### Minor Changes
+
+-   733fcde8: Allow adding tiles pointing to remote apps
+
+## 0.12.15
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+-   Updated dependencies [61b46bc8]
+    -   @sap-ux/adp-tooling@0.9.6
+
+## 0.12.14
+
+### Patch Changes
+
+-   6a477fba: feat: Replace auto-refresh with message in case of manual flex file changes
+    -   @sap-ux/adp-tooling@0.9.5
+
+## 0.12.13
+
+### Patch Changes
+
+-   Updated dependencies [4b29ddcc]
+    -   @sap-ux/adp-tooling@0.9.4
+
 ## 0.12.12
 
 ### Patch Changes

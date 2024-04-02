@@ -34,13 +34,13 @@ When this middleware is used together with the `reload-middleware`, then the ord
 
 ### `flp.apps`
 Array of additional application configurations:
-| Option          | Type     | Default Value  | Description                                                                                          |
-| --------------- | -------- | -------------- | ---------------------------------------------------------------------------------------------------- |
-| `target`        | `string` |                | Target path of the additional application                                                            |
-| `local`         | `string` |                | Local path to the folder containing the application                                                  |
-| `intent`        |          |                | Optional intent to be used for the application                                                       |
-| `intent.object` | `string` | `(calculated)` | Optional intent object, if it is not provided then it will be calculated based on the application id |
-| `intent.action` | `string` | `preview`      | Optional intent action                                                                               |
+| Option                   | Type     | Default Value  | Description                                                                                                   |
+| ------------------------ | -------- | -------------- | ------------------------------------------------------------------------------------------------------------- |
+| `target`                 | `string` |                | Target path of the additional application                                                                     |
+| `local` or `componentId` | `string` |                | Either a local path to a folder containing the application or the `componentId` of a remote app is required   |
+| `intent`                 |          |                | Optional intent to be used for the application                                                                |
+| `intent.object`          | `string` | `(calculated)` | Optional intent object, if it is not provided then it will be calculated based on the application id          |
+| `intent.action`          | `string` | `preview`      | Optional intent action                                                                                        |
 
 ### `adp.target`
 | Option        | Type                           | Description                                                                                                                                     |
@@ -93,7 +93,7 @@ server:
 
 ### Additional Applications
 If you want to test cross application navigation, then you can add additional applications into the local FLP.
-With this configuration, an application that is locally available in `../local-folder` will be available at `/apps/other-app` and will also be added as tile to the local FLP.
+With this configuration, an application that is locally available in `../local-folder` will be available at `/apps/other-app` and will also be added as tile to the local FLP as well as one of the UI5 sample apps will be bound to the intent `TheOther-preview`.
 ```Yaml
 server:
   customMiddleware:
@@ -101,8 +101,16 @@ server:
     afterMiddleware: compression
     configuration:
       apps:
-        - local: ../local-folder
-          target: /apps/other-app
+        - target: /apps/other-app
+          local: ../local-folder
+          intent: 
+            object: TheLocal
+            action: preview
+        - target: /test-resources/sap/ushell/demoapps/AppNavSample
+          componentId: sap.ushell.demo.AppNavSample
+          intent: 
+            object: TheOther
+            action: preview
 ```
 
 ### Runtime Adaptation Support

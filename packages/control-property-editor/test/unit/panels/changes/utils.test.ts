@@ -2,7 +2,7 @@ import { getFormattedDateAndTime } from '../../../../src/panels/changes/utils';
 
 describe('getFormattedDateAndTime', () => {
     let navigatorSpy: jest.SpyInstance;
-    jest.spyOn(navigator, 'languages', 'get').mockReturnValue(undefined);
+    jest.spyOn(navigator, 'languages', 'get').mockReturnValue([]);
     beforeEach(() => {
         navigatorSpy = jest.spyOn(navigator, 'language', 'get');
     });

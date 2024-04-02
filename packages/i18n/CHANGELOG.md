@@ -1,5 +1,11 @@
 # @sap-ux/i18n
 
+## 0.0.5
+
+### Patch Changes
+
+-   cc95c0a8: Fix infinite loop when comment on last line of properties file
+
 ## 0.0.4
 
 ### Patch Changes

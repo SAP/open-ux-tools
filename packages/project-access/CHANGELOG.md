@@ -1,5 +1,31 @@
 # @sap-ux/project-access
 
+## 1.19.4
+
+### Patch Changes
+
+-   87c942e5: Remove setting of cds.root.
+
+## 1.19.3
+
+### Patch Changes
+
+-   89013210: Revert setting of cds.root
+
+## 1.19.2
+
+### Patch Changes
+
+-   Updated dependencies [ec509c40]
+    -   @sap-ux/ui5-config@0.22.0
+
+## 1.19.1
+
+### Patch Changes
+
+-   Updated dependencies [cc95c0a8]
+    -   @sap-ux/i18n@0.0.5
+
 ## 1.19.0
 
 ### Minor Changes

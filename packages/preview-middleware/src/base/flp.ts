@@ -9,6 +9,7 @@ import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
+import { createProjectAccess } from '@sap-ux/project-access';
 import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import { generateImportList, mergeTestConfigDefaults } from './test';
 
@@ -49,6 +50,8 @@ const UI5_LIBS = [
     'sap.webanalytics',
     'sap.zen'
 ];
+
+const DEFAULT_LIVERELOAD_PORT = 35729;
 
 /**
  * Enhanced request handler that exposes a list of endpoints for the cds-plugin-ui5.
@@ -205,7 +208,7 @@ export class FlpSandbox {
             locateReuseLibsScript: this.config.libs ?? (await this.hasLocateReuseLibsScript())
         };
 
-        this.addApp(manifest, {
+        await this.addApp(manifest, {
             componentId,
             target: resources[componentId ?? id] ?? this.templateConfig.basePath,
             local: '.',
@@ -222,7 +225,7 @@ export class FlpSandbox {
             this.addTestRoutes(this.test, id);
         }
 
-        this.addRoutesForAdditionalApps();
+        await this.addRoutesForAdditionalApps();
         this.logger.info(`Initialized for app ${id}`);
         this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
     }
@@ -278,11 +281,15 @@ export class FlpSandbox {
                         templatePreviewUrl = templatePreviewUrl.replace('?', `?sap-ui-layer=${rta.layer}&`);
                     }
                     const template = readFileSync(join(__dirname, '../../templates/flp/editor.html'), 'utf-8');
+                    const envPort = process.env.FIORI_TOOLS_LIVERELOAD_PORT;
+                    let livereloadPort: number = envPort ? parseInt(envPort, 10) : DEFAULT_LIVERELOAD_PORT;
+                    livereloadPort = isNaN(livereloadPort) ? DEFAULT_LIVERELOAD_PORT : livereloadPort;
                     const html = render(template, {
                         previewUrl: templatePreviewUrl,
                         telemetry: rta.options?.telemetry ?? false,
                         appName: rta.options?.appName,
-                        scenario
+                        scenario,
+                        livereloadPort
                     });
                     res.status(200).contentType('html').send(html);
                 });
@@ -336,13 +343,28 @@ export class FlpSandbox {
     /**
      * Add additional routes for apps also to be shown in the local FLP.
      */
-    private addRoutesForAdditionalApps() {
+    private async addRoutesForAdditionalApps() {
         for (const app of this.config.apps) {
+            let manifest: Manifest | undefined;
             if (app.local) {
-                const manifest = JSON.parse(readFileSync(join(app.local, 'webapp/manifest.json'), 'utf-8'));
-                this.addApp(manifest, app);
+                manifest = JSON.parse(readFileSync(join(app.local, 'webapp/manifest.json'), 'utf-8'));
                 this.router.use(app.target, serveStatic(join(app.local, 'webapp')));
                 this.logger.info(`Serving additional application at ${app.target} from ${app.local}`);
+            } else if (app.componentId) {
+                manifest = {
+                    'sap.app': {
+                        id: app.componentId,
+                        title: app.intent ? `${app.intent.object}-${app.intent.action}` : app.componentId
+                    }
+                } as Manifest;
+            }
+            if (manifest) {
+                await this.addApp(manifest, app);
+                this.logger.info(`Adding additional intent: ${app.intent?.object}-${app.intent?.action}`);
+            } else {
+                this.logger.info(
+                    `Invalid application config for route ${app.target} because neither componentId nor local folder provided.`
+                );
             }
         }
     }
@@ -475,21 +497,51 @@ export class FlpSandbox {
      * @param manifest manifest of the additional target app
      * @param app configuration for the preview
      */
-    addApp(manifest: Manifest, app: App) {
+    async addApp(manifest: Manifest, app: App) {
         const id = manifest['sap.app'].id;
         app.intent ??= {
             object: id.replace(/\./g, ''),
             action: 'preview'
         };
+        let title = manifest['sap.app'].title ?? id;
+        let description = manifest['sap.app'].description ?? '';
+        if (app.local) {
+            title = (await this.getI18nTextFromProperty(app.local, manifest['sap.app'].title)) ?? id;
+            description = (await this.getI18nTextFromProperty(app.local, manifest['sap.app'].description)) ?? '';
+        }
         this.templateConfig.ui5.resources[id] = app.target;
         this.templateConfig.apps[`${app.intent?.object}-${app.intent?.action}`] = {
-            title: manifest['sap.app'].title ?? id,
-            description: manifest['sap.app'].description ?? '',
+            title: title,
+            description: description,
             additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
             applicationType: 'URL',
             url: app.target,
             applicationDependencies: { manifest: true }
         };
+    }
+
+    /**
+     * Get the i18n text of the given property.
+     *
+     * @param projectRoot absolute path to the project root
+     * @param propertyValue value of the property
+     * @returns i18n text of the property
+     * @private
+     */
+    private async getI18nTextFromProperty(projectRoot: string, propertyValue: string | undefined) {
+        //i18n model format could be {{key}} or {i18n>key}
+        if (!propertyValue || propertyValue.search(/{{\w+}}|{i18n>\w+}/g) === -1) {
+            return propertyValue;
+        }
+        const propertyI18nKey = propertyValue.replace(/i18n>|[{}]/g, '');
+        const projectAccess = await createProjectAccess(projectRoot);
+        try {
+            const bundle = (await projectAccess.getApplication('').getI18nBundles())['sap.app'];
+            return bundle[propertyI18nKey]?.[0]?.value?.value ?? propertyI18nKey;
+        } catch (e) {
+            this.logger.warn('Failed to load i18n properties bundle');
+        }
+        return propertyI18nKey;
     }
 
     /**
