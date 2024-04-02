@@ -18,15 +18,15 @@ Pnpm
 
 Calling the `generate` function
 ```javascript
-import { generate, ReuseLibType } from '@sap-ux/ui5-library-reference-writer'
+import { generate, ReuseLibConfig } from '@sap-ux/ui5-library-reference-writer'
 import { join } from 'path';
 
 const exampleWriter = async () => {
 
-  const reuseLibConfig = [{
+  const reuseLibConfig: ReuseLibConfig[] = [{
     name: 'se.mi.plm.reuse';
     path: 'sample/libs/se.mi.plm.reuse';
-    type: ReuseLibType.Library;
+    type: 'library';
     uri: '/sap/bc/ui5/reuse';
   }];
 
