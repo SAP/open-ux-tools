@@ -8,6 +8,8 @@ export interface ReuseLib {
     path: string;
     type: ReuseLibType;
     uri: string;
+    dependencies?: string[];
+    libRoot?: string;
 }
 
 export interface ServeStaticPath {
