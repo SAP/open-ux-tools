@@ -24,10 +24,10 @@ import { join } from 'path';
 const exampleWriter = async () => {
 
   const reuseLibConfig: ReuseLibConfig[] = [{
-    name: 'se.mi.plm.reuse';
-    path: 'sample/libs/se.mi.plm.reuse';
+    name: 'my.namespace.reuse';
+    path: 'sample/libs/my.namespace.reuse';
     type: 'library';
-    uri: '/sap/bc/ui5/reuse';
+    uri: '/sap/ui5/reuse';
   }];
 
   const projectDir = join(__dirname, 'testapp');

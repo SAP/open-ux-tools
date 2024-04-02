@@ -90,12 +90,12 @@ Object {
         \\"sap.suite.ui.generic.template\\": {
           \\"lazy\\": false
         },
-        \\"se.mi.plm.attachmentservice\\": {
+        \\"my.namespace.reuse.attachmentservice\\": {
           \\"lazy\\": false
         }
       },
       \\"components\\": {
-        \\"se.mi.plm.comp\\": {
+        \\"my.namespace.comp\\": {
           \\"lazy\\": false
         }
       }
@@ -290,12 +290,12 @@ Object {
         \\"sap.suite.ui.generic.template\\": {
           \\"lazy\\": false
         },
-        \\"se.mi.plm.attachmentservice\\": {
+        \\"my.namespace.reuse.attachmentservice\\": {
           \\"lazy\\": false
         }
       },
       \\"components\\": {
-        \\"se.mi.plm.comp\\": {
+        \\"my.namespace.comp\\": {
           \\"lazy\\": false
         }
       }
@@ -496,12 +496,12 @@ Object {
         \\"sap.suite.ui.generic.template\\": {
           \\"lazy\\": false
         },
-        \\"se.mi.plm.attachmentservice\\": {
+        \\"my.namespace.reuse.attachmentservice\\": {
           \\"lazy\\": false
         }
       },
       \\"components\\": {
-        \\"se.mi.plm.comp\\": {
+        \\"my.namespace.comp\\": {
           \\"lazy\\": false
         }
       }
@@ -701,12 +701,12 @@ Object {
         \\"sap.suite.ui.generic.template\\": {
           \\"lazy\\": false
         },
-        \\"se.mi.plm.attachmentservice\\": {
+        \\"my.namespace.reuse.attachmentservice\\": {
           \\"lazy\\": false
         }
       },
       \\"components\\": {
-        \\"se.mi.plm.comp\\": {
+        \\"my.namespace.comp\\": {
           \\"lazy\\": false
         }
       }

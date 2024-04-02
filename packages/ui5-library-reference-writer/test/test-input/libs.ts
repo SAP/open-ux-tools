@@ -2,15 +2,15 @@ import { ReuseLibConfig } from '../../src/types';
 
 export const reuseLibs: ReuseLibConfig[] = [
     {
-        name: `se.mi.plm.attachmentservice`,
-        path: 'sample/libs/se.mi.plm.attachmentservice',
+        name: `my.namespace.reuse.attachmentservice`,
+        path: 'sample/libs/my.namespace.reuse.attachmentservice',
         type: 'library',
-        uri: '/sap/bc/ui5_ui5/sap/plm_ath_cres1/'
+        uri: '/sap/ui5/sap/attach/'
     },
     {
-        name: `se.mi.plm.comp`,
-        path: 'sample/comp/se.mi.plm.comp',
+        name: `my.namespace.comp`,
+        path: 'sample/comp/my.namespace.reuse',
         type: 'component',
-        uri: '/sap/bc/ui5_ui5/sap/comp_1/'
+        uri: '/sap/ui5_ui5/sap/comp_1/'
     }
 ];
