@@ -64,22 +64,6 @@ export interface AdpWriterConfig {
     };
 }
 
-export interface AdpCfWriterConfig {
-    safeMode: boolean;
-    projectname: string;
-    client: {
-        username: string;
-        password: string;
-        url: string;
-        client: string;
-    }
-    systemUrl?: string;
-    package?: {
-        name?: string;
-        description?: string;
-    };
-}
-
 export interface ManifestAppdescr {
     fileName: string;
     layer: string;
@@ -378,6 +362,46 @@ export interface AdpProjectData {
 
 export interface AdpCustomConfig {
     adp?: {
-        safeMode?: boolean
+        safeMode: boolean;
     }
 };
+
+export interface CfModuleData {
+    appHostId: string;
+    appName: string;
+    appVersion: string;
+    appId: string;
+    module: string;
+    moduleTitle: string;
+    appVariantId: string;
+    projectName: string;
+    i18nGuid: string;
+    projectPath: string;
+    addSecurity: string;
+    addStandaloneApprouter: boolean;
+    sapCloudService: string;
+    xsSecurityProjectName: string;
+    org: string;
+    space: string;
+    html5RepoRuntime: string;
+}
+
+export interface CfAdpConfig {
+    componentname: string;
+    safeMode: boolean;
+    appvariant: string;
+    layer: string;
+    isOVPApp: boolean;
+    isFioriElement: boolean;
+    environment: string;
+    ui5Version: string;
+    cfSpace: string;
+    cfOrganization: string;
+    cfApiUrl: string;
+}
+
+export interface CfWriterConfig {
+    app: CfModuleData;
+    appdescr: ManifestAppdescr;
+    adpConfig: CfAdpConfig;
+}

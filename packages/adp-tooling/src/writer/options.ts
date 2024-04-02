@@ -1,4 +1,4 @@
-import type { CustomMiddleware, UI5Config, CustomTask, AbapTarget, Configuration } from '@sap-ux/ui5-config';
+import type { CustomMiddleware, UI5Config, CustomTask, AbapTarget } from '@sap-ux/ui5-config';
 import type { AdpWriterConfig } from '../types';
 
 /**

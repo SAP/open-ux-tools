@@ -4,14 +4,14 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 
 /**
- * Writes the adp-project template to the mem-fs-editor instance.
+ * Writes the s4hana env file to the mem-fs-editor instance.
  *
  * @param basePath - the base path
  * @param config - the writer configuration
  * @param fs - the memfs editor instance
  * @returns the updated memfs editor instance
  */
-export async function generateEnv(basePath: string, data: any, fs: Editor | null = null): Promise<Editor> {
+export async function generateEnv(basePath: string, data: string, fs: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }

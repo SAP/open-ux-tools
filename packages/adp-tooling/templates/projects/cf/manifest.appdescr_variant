@@ -2,9 +2,10 @@
   "fileName": "manifest",
   "layer": "<%= layer %>",
   "fileType": "appdescr_variant",
-  "reference": "<%= appId %>",
-  "id": "<%= appVariantId %>",
-  "namespace": "apps/<%= appId %>/appVariants/<%= appVariantId %>/",
+  "reference": "<%= reference %>",
+  "id": "<%= id %>",
+  "namespace": "<%= namespace %>",
+  "version": "0.1.0",
   "content": [
     {
       "changeType": "appdescr_app_setTitle",
