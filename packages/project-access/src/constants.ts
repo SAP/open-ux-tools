@@ -15,7 +15,7 @@ export const FileName = {
     UI5DeployYaml: 'ui5-deploy.yaml'
 } as const;
 
-export enum DirName {
+export const enum DirName {
     Changes = 'changes',
     Sapux = 'src',
     Schemas = '.schemas',
