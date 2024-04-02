@@ -2,7 +2,7 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { updateManifest, updateYaml } from './helpers';
-import { ReuseLibType, type ReuseLib } from './types';
+import type { ReuseLibConfig } from './types';
 
 /**
  * Writes the file updates to the memfs editor instance.
@@ -12,7 +12,7 @@ import { ReuseLibType, type ReuseLib } from './types';
  * @param fs - the memfs editor instance
  * @returns the updated memfs editor instance
  */
-async function generate(basePath: string, referenceLibraries: ReuseLib[], fs?: Editor): Promise<Editor> {
+async function generate(basePath: string, referenceLibraries: ReuseLibConfig[], fs?: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
@@ -23,5 +23,5 @@ async function generate(basePath: string, referenceLibraries: ReuseLib[], fs?: E
     return fs;
 }
 
-export { generate, ReuseLibType };
-export { ReuseLib };
+export { generate };
+export { ReuseLibConfig };

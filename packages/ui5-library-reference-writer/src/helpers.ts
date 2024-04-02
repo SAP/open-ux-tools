@@ -1,6 +1,6 @@
 import type { Editor } from 'mem-fs-editor';
+import type { ServeStaticPath, ReuseLibConfig } from './types';
 import { UI5Config, type CustomMiddleware } from '@sap-ux/ui5-config';
-import { ReuseLibType, type ServeStaticPath, type ReuseLib } from './types';
 import { getWebappPath, type Manifest } from '@sap-ux/project-access';
 import { dirname, join, relative } from 'path';
 import { yamlFiles, serveStatic, fioriToolsProxy, ManifestReuseType } from './constants';
@@ -12,13 +12,13 @@ import { yamlFiles, serveStatic, fioriToolsProxy, ManifestReuseType } from './co
  * @param reuseLibs reuse libraries for referencing
  * @param fs mem-fs editor instance
  */
-export async function updateManifest(projectPath: string, reuseLibs: ReuseLib[], fs: Editor) {
+export async function updateManifest(projectPath: string, reuseLibs: ReuseLibConfig[], fs: Editor) {
     const webapp = await getWebappPath(projectPath);
     const manifestPath = join(webapp, 'manifest.json');
     const manifest = fs.readJSON(manifestPath) as any as Manifest;
 
     reuseLibs.forEach((lib) => {
-        const reuseType = lib.type === ReuseLibType.Library ? ManifestReuseType.Library : ManifestReuseType.Component;
+        const reuseType = lib.type === 'library' ? ManifestReuseType.Library : ManifestReuseType.Component;
         if (manifest['sap.ui5']?.dependencies && !manifest['sap.ui5']?.dependencies?.[reuseType]) {
             manifest['sap.ui5'].dependencies[reuseType] = {};
         }
@@ -37,7 +37,7 @@ export async function updateManifest(projectPath: string, reuseLibs: ReuseLib[],
  * @param reuseLibs reuse libraries for referencing
  * @param fs mem-fs editor instance
  */
-export function updateYaml(projectPath: string, reuseLibs: ReuseLib[], fs: Editor) {
+export function updateYaml(projectPath: string, reuseLibs: ReuseLibConfig[], fs: Editor) {
     yamlFiles.forEach(async (yaml) => {
         const yamlPath = join(projectPath, yaml);
         if (fs.exists(yamlPath)) {
@@ -102,7 +102,7 @@ function getServeStaticConfig(
  * @param projectPath fiori project path
  * @returns serve static paths
  */
-function getServeStaticPaths(reuseLibs: ReuseLib[], projectPath: string): ServeStaticPath[] {
+function getServeStaticPaths(reuseLibs: ReuseLibConfig[], projectPath: string): ServeStaticPath[] {
     let serveStaticPaths: ServeStaticPath[] = [];
 
     reuseLibs.forEach((lib) => {

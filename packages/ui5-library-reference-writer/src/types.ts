@@ -1,15 +1,8 @@
-export const enum ReuseLibType {
-    Library = 'library',
-    Component = 'component'
-}
-
-export interface ReuseLib {
+export interface ReuseLibConfig {
     name: string;
     path: string;
-    type: ReuseLibType;
+    type: 'library' | 'component';
     uri: string;
-    dependencies?: string[];
-    libRoot?: string;
 }
 
 export interface ServeStaticPath {
