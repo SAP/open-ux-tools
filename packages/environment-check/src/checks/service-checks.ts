@@ -246,7 +246,6 @@ export async function checkTransportRequests(
             logger.warn(t('warning.getTransportRequestsoNotAvailable'));
         }
     } catch (e) {
-        logger.debug('error: ' + JSON.stringify(e));
         logger.error(t('error.getTransportRequestsError'));
 
         if (e.message.includes('403')) {

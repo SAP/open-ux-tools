@@ -417,8 +417,8 @@ describe('Test service check functions', () => {
 
         // Result check
         expect(transportRequestResult.isTransportRequests).toBe(false);
-        expect(transportRequestResult.messages.length).toBe(3);
-        expect(transportRequestResult.messages[0].severity).toBe(Severity.Debug);
-        expect(transportRequestResult.messages[1].severity).toBe(Severity.Error);
+        expect(transportRequestResult.messages.length).toBe(2);
+        expect(transportRequestResult.messages[0].severity).toBe(Severity.Error);
+        expect(transportRequestResult.messages[1].severity).toBe(Severity.Debug);
     });
 });
