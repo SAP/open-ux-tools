@@ -215,7 +215,8 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
         expect(result).toMatch('## All Destinations (0)');
         expect(result).toMatch('## Messages (0)');
     });
-    test('NEW TEST', () => {
+    test('Transport Request 403 warning and Guided Answers link', () => {
+        Date.now = jest.fn(() => 1_482_363_367_071);
         const envCheckResults = {
             markdownTitle: `SAP Fiori tools - Environment Check`,
             requestedChecks: requestedChecksSet,
@@ -231,7 +232,39 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
             ]
         };
         const result = convertResultsToMarkdown(envCheckResults);
-        expect(result).toMatchSnapshot('');
+        expect(result).toMatchInlineSnapshot(`
+            "
+            # SAP Fiori tools - Environment Check
+
+            <br>
+
+            ## Destination Details (0)
+            No destination details<br>
+
+            <br>
+
+            ## All Destinations (0)
+            No destinations<br>
+
+            <br>
+
+            ## Environment
+            Environment not checked<br>
+
+            <br>
+
+            ## Messages (2)
+            🔴 &nbsp; Error: Error checking ability to retrieve available Transport Requests 
+            <br>
+            <details><summary>ℹ Debug</summary>
+            <pre>
+            Request failed with status code 403
+            Guided Answers troubleshooting guide available at https://ga.support.sap.com/dtp/viewer/index.html#/tree/3046/actions/45995:45996:50742:46000:57266
+            </pre></details>
+
+            <sub>created at 2024-04-03 11:06:07 (UTC)</sub>
+            "
+        `);
     });
     test('Check destination details with no v2 or v4 service', () => {
         const result = convertResultsToMarkdown({
