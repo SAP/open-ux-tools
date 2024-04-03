@@ -231,38 +231,7 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
             ]
         };
         const result = convertResultsToMarkdown(envCheckResults);
-        expect(result.split('<sub>created at')[0]).toMatchInlineSnapshot(`
-            "
-            # SAP Fiori tools - Environment Check
-
-            <br>
-
-            ## Destination Details (0)
-            No destination details<br>
-
-            <br>
-
-            ## All Destinations (0)
-            No destinations<br>
-
-            <br>
-
-            ## Environment
-            Environment not checked<br>
-
-            <br>
-
-            ## Messages (2)
-            🔴 &nbsp; Error: Error checking ability to retrieve available Transport Requests 
-            <br>
-            <details><summary>ℹ Debug</summary>
-            <pre>
-            Request failed with status code 403
-            Guided Answers troubleshooting guide available at https://ga.support.sap.com/dtp/viewer/index.html#/tree/3046/actions/45995:45996:50742:46000:57266
-            </pre></details>
-
-            "
-        `);
+        expect(result.split('<sub>created at')[0]).toMatchSnapshot();
     });
     test('Check destination details with no v2 or v4 service', () => {
         const result = convertResultsToMarkdown({

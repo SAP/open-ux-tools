@@ -13,7 +13,6 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { countNumberOfServices, getCircularReplacer, getServiceCountText } from '../formatter';
 import { getLogger } from '../logger';
 import { t } from '../i18n';
-import { log } from 'console';
 
 const catalogMessages = {
     401: (systemName: string, odataVersion: ODataVersion): string =>
