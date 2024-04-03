@@ -13,6 +13,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { countNumberOfServices, getCircularReplacer, getServiceCountText } from '../formatter';
 import { getLogger } from '../logger';
 import { t } from '../i18n';
+import { log } from 'console';
 
 const catalogMessages = {
     401: (systemName: string, odataVersion: ODataVersion): string =>
@@ -245,8 +246,16 @@ export async function checkTransportRequests(
             logger.warn(t('warning.getTransportRequestsoNotAvailable'));
         }
     } catch (e) {
+        logger.debug('error: ' + JSON.stringify(e));
         logger.error(t('error.getTransportRequestsError'));
-        logger.debug(e.message);
+
+        if (e.message.includes('403')) {
+            {
+                logger.debug(e.message + '\n' + t('warning.transportRequests403'));
+            }
+        } else {
+            logger.debug(e.message);
+        }
     }
     return {
         messages: logger.getMessages(),
