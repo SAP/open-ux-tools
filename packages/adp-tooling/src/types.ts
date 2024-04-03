@@ -47,7 +47,7 @@ export interface AdpWriterConfig {
         flpSubtitle?: string;
         inboundId?: string;
         bspName?: string;
-        languages?: [];
+        languages?: language[];
     };
     customConfig?: AdpCustomConfig;
     /**
@@ -62,6 +62,11 @@ export interface AdpWriterConfig {
         isRunningInBAS?: boolean;
         isCloudProject?: boolean;
     };
+}
+
+export interface language  {
+    sap: string;
+    i18n: string;
 }
 
 export interface ManifestAppdescr {

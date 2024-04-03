@@ -38,7 +38,7 @@ export async function generateCf(basePath: string, config: CfWriterConfig, fs?: 
     fs.writeJSON(adpConfigPath, config.adpConfig);
     // approuter
     if (config.app.addStandaloneApprouter) {
-        fs.copyTpl(join(tmplPath, '**/*.*'), join(basePath, 'approuter'), config.app);
+        fs.copyTpl(join(tmplPath, 'approuter/*.*'), join(basePath, 'approuter'), config.app);
     }
     // xs-security.json
     if (!fs.exists(join(config.app.projectPath, 'xs-security.json'))) {

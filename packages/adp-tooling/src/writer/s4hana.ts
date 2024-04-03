@@ -11,7 +11,7 @@ import { create } from 'mem-fs-editor';
  * @param fs - the memfs editor instance
  * @returns the updated memfs editor instance
  */
-export async function generateEnv(basePath: string, data: string, fs: Editor): Promise<Editor> {
+export async function generateEnv(basePath: string, data: string, fs?: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
