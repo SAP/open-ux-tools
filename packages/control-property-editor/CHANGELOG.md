@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.4.17
+
+### Patch Changes
+
+-   31ae689d: websocket over https
+
 ## 0.4.16
 
 ### Patch Changes
