@@ -1,4 +1,3 @@
-import exp from 'constants';
 import type { EnvironmentCheckResult } from '../../src';
 import { Check, convertResultsToMarkdown, Severity, UrlServiceType } from '../../src';
 import { isAppStudio } from '@sap-ux/btp-utils';
