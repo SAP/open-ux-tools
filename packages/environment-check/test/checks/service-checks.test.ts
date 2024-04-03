@@ -440,6 +440,8 @@ describe('Test service check functions', () => {
         expect(transportRequestResult.isTransportRequests).toBe(false);
         expect(transportRequestResult.messages.length).toBe(3);
         expect(transportRequestResult.messages[1].severity).toBe(Severity.Warning);
-        expect(transportRequestResult.messages[1].text).toBe('Guided Answers troubleshooting guide available at https://ga.support.sap.com/dtp/viewer/index.html#/tree/3046/actions/45995:45996:50742:46000:57266');
+        expect(transportRequestResult.messages[1].text).toBe(
+            'Guided Answers troubleshooting guide available at https://ga.support.sap.com/dtp/viewer/index.html#/tree/3046/actions/45995:45996:50742:46000:57266'
+        );
     });
 });
