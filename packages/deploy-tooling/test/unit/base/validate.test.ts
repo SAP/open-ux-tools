@@ -480,7 +480,7 @@ describe('deploy-test validation', () => {
             }
         );
     });
-    describe.only('Validate error does not show full stack trace', () => {
+    describe('Validate error does not show full stack trace', () => {
         jest.resetAllMocks();
         const mockLogger = {
             error: jest.fn(),
