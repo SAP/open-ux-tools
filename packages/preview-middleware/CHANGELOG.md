@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.13.3
+
+### Patch Changes
+
+-   31ae689d: websocket over https
+
 ## 0.13.2
 
 ### Patch Changes
