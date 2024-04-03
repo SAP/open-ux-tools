@@ -421,4 +421,25 @@ describe('Test service check functions', () => {
         expect(transportRequestResult.messages[0].severity).toBe(Severity.Error);
         expect(transportRequestResult.messages[1].severity).toBe(Severity.Debug);
     });
+
+    test('checkTransportRequests 403', async () => {
+        const getAdtService = jest.fn();
+
+        getAdtService.mockImplementation(() => {
+            throw new Error('403');
+        });
+
+        const abapServiceProvider = {
+            getAdtService: getAdtService
+        } as unknown as AbapServiceProvider;
+
+        // Test execution
+        const transportRequestResult = await checkTransportRequests(abapServiceProvider);
+
+        // Result check
+        expect(transportRequestResult.isTransportRequests).toBe(false);
+        expect(transportRequestResult.messages.length).toBe(3);
+        expect(transportRequestResult.messages[1].severity).toBe(Severity.Warning);
+        expect(transportRequestResult.messages[1].text).toBe('Guided Answers troubleshooting guide available at https://ga.support.sap.com/dtp/viewer/index.html#/tree/3046/actions/45995:45996:50742:46000:57266');
+    });
 });

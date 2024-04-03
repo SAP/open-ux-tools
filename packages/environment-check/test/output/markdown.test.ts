@@ -225,7 +225,7 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
                 },
                 {
                     severity: Severity.Debug,
-                    text: 'Request failed with status code 403' + '\n' + t('warning.transportRequests403')
+                    text: t('warning.guidedAnswersLink')
                 }
             ]
         };

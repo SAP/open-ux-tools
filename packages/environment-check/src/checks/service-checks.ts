@@ -248,10 +248,9 @@ export async function checkTransportRequests(
         logger.error(t('error.getTransportRequestsError'));
 
         if (e.message.includes('403')) {
-            logger.debug(e.message + '\n' + t('warning.transportRequests403'));
-        } else {
-            logger.debug(e.message);
+            logger.warn(t('warning.guidedAnswersLink'));
         }
+        logger.debug(e.message);
     }
     return {
         messages: logger.getMessages(),
