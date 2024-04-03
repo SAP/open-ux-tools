@@ -137,27 +137,17 @@ describe('ADP writer', () => {
             const projectDir = join(outputDir, 'minimal');
             await generateEnv(projectDir, '');
             expect(
-                fs.dump(
-                    projectDir,
-                    (file) =>
-                        file.dirname === projectDir &&
-                        ['.env'].includes(file.basename)
-                )
+                fs.dump(projectDir, (file) => file.dirname === projectDir && ['.env'].includes(file.basename))
             ).toMatchSnapshot();
         });
 
         test('generate env file for s4hana cloud projects', async () => {
             const projectDir = join(outputDir, 'env');
             const data = `ABAP_USERNAME: test_name
-                          ABAP_PASSWORD: test_pass`
+                          ABAP_PASSWORD: test_pass`;
             await generateEnv(projectDir, data, fs);
             expect(
-                fs.dump(
-                    projectDir,
-                    (file) =>
-                        file.dirname === projectDir &&
-                        ['.env'].includes(file.basename)
-                )
+                fs.dump(projectDir, (file) => file.dirname === projectDir && ['.env'].includes(file.basename))
             ).toMatchSnapshot();
         });
     });
@@ -183,7 +173,7 @@ describe('ADP writer', () => {
                 space: '',
                 html5RepoRuntime: ''
             },
-            appdescr:{
+            appdescr: {
                 fileName: 'manifest',
                 layer: 'VENDOR',
                 fileType: '',
@@ -207,7 +197,7 @@ describe('ADP writer', () => {
                 cfApiUrl: ''
             }
         };
-        
+
         test('minimal config', async () => {
             const projectDir = join(outputDir, 'minimal');
             await generateCf(projectDir, config);
@@ -222,8 +212,18 @@ describe('ADP writer', () => {
                 fs.dump(
                     projectDir,
                     (file) =>
-                        file.dirname === projectDir || file.dirname === join(projectDir, 'webapp') || file.dirname === join(projectDir, 'approuter') || file.dirname === join(projectDir, '.adp')&&
-                        ['manifest.appdescr_variant', 'package.json', 'ui5.yaml', 'config.json', 'xs-security.json', 'xs-app.json'].includes(file.basename)
+                        file.dirname === projectDir ||
+                        file.dirname === join(projectDir, 'webapp') ||
+                        file.dirname === join(projectDir, 'approuter') ||
+                        (file.dirname === join(projectDir, '.adp') &&
+                            [
+                                'manifest.appdescr_variant',
+                                'package.json',
+                                'ui5.yaml',
+                                'config.json',
+                                'xs-security.json',
+                                'xs-app.json'
+                            ].includes(file.basename))
                 )
             ).toMatchSnapshot();
         });

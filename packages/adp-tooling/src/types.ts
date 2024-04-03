@@ -64,7 +64,7 @@ export interface AdpWriterConfig {
     };
 }
 
-export interface language  {
+export interface language {
     sap: string;
     i18n: string;
 }
