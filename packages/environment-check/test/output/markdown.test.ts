@@ -216,7 +216,6 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
         expect(result).toMatch('## Messages (0)');
     });
     test('Transport Request 403 warning and Guided Answers link', () => {
-        Date.now = jest.fn(() => 1_482_363_367_071);
         const envCheckResults = {
             markdownTitle: `SAP Fiori tools - Environment Check`,
             requestedChecks: requestedChecksSet,
@@ -232,7 +231,7 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
             ]
         };
         const result = convertResultsToMarkdown(envCheckResults);
-        expect(result).toMatchInlineSnapshot(`
+        expect(result.split('<sub>created at')[0]).toMatchInlineSnapshot(`
             "
             # SAP Fiori tools - Environment Check
 
@@ -262,7 +261,6 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
             Guided Answers troubleshooting guide available at https://ga.support.sap.com/dtp/viewer/index.html#/tree/3046/actions/45995:45996:50742:46000:57266
             </pre></details>
 
-            <sub>created at 2024-04-03 11:06:07 (UTC)</sub>
             "
         `);
     });
