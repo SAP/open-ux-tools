@@ -139,6 +139,9 @@ function getOpenSourceMiddlewares(config: AdpWriterConfig): CustomMiddleware<obj
  * @returns list of required tasks.
  */
 function getAdpCloudCustomTasks(config: AdpWriterConfig & { target: AbapTarget }): CustomTask[] {
+    const user = 'env:ABAP_USERNAME';
+    const pass = 'env:ABAP_PASSWORD';
+
     return [
         {
             name: 'app-variant-bundler-build',
@@ -154,8 +157,8 @@ function getAdpCloudCustomTasks(config: AdpWriterConfig & { target: AbapTarget }
                     };
                 }),
                 credentials: {
-                    username: 'env:ABAP_USERNAME',
-                    password: 'env:ABAP_PASSWORD'
+                    username: user,
+                    password: pass
                 }
             }
         }
