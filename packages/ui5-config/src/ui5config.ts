@@ -443,7 +443,7 @@ export class UI5Config {
      * @param serveStaticPaths serve static paths for the reuse libraries
      * @returns {UI5Config} the UI5Config instance
      */
-    public addServeStaticConfig(serveStaticPaths: ServeStaticPath[]): UI5Config {
+    public addServeStaticConfig(serveStaticPaths: ServeStaticPath[]): this {
         const serveStaticConfig = this.findCustomMiddleware<{ paths: ServeStaticPath[] }>(serveStatic);
         const fioriToolsProxyConfig = this.findCustomMiddleware(fioriToolsProxy);
 
