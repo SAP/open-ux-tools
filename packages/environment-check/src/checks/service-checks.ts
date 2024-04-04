@@ -247,9 +247,16 @@ export async function checkTransportRequests(
     } catch (e) {
         logger.error(t('error.getTransportRequestsError'));
 
-        if (e.message.includes('403')) {
+        const adtService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
+        const response = await adtService?.get('', {
+            headers: {
+                Accept: 'application/*'
+            }
+        });
+        if (e.message.includes('403') ?? (adtService?.getTransportRequests && response.status === 403)) {
             logger.warn(t('warning.guidedAnswersLink'));
         }
+
         logger.debug(e.message);
     }
     return {
