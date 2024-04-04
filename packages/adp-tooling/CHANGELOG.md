@@ -1,5 +1,15 @@
 # @sap-ux/adp-tooling
 
+## 0.9.8
+
+### Patch Changes
+
+-   f0e3263a: Adds missing constants entries, refactor duplicate constants, use project-access const instead
+-   Updated dependencies [f0e3263a]
+    -   @sap-ux/project-access@1.19.6
+    -   @sap-ux/axios-extension@1.11.4
+    -   @sap-ux/system-access@0.3.18
+
 ## 0.9.7
 
 ### Patch Changes
