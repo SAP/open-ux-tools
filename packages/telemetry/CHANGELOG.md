@@ -1,5 +1,11 @@
 # @sap-ux/telemetry
 
+## 0.4.13
+
+### Patch Changes
+
+-   68c7c6e8: Fix coding style based on sonar scan
+
 ## 0.4.12
 
 ### Patch Changes
