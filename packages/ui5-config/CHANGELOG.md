@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.22.1
+
+### Patch Changes
+
+-   efa35ddd: adds new module @sap-ux/ui5-library-reference-writer
+
 ## 0.22.0
 
 ### Minor Changes
