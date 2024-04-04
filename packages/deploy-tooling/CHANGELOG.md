@@ -1,5 +1,11 @@
 # @sap-ux/deploy-tooling
 
+## 0.14.10
+
+### Patch Changes
+
+-   dd0edf60: hide stack trace on error
+
 ## 0.14.9
 
 ### Patch Changes
