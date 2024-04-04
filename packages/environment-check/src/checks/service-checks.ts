@@ -236,8 +236,8 @@ export async function checkTransportRequests(
 ): Promise<{ messages: ResultMessage[]; isTransportRequests: boolean }> {
     const logger = getLogger();
     let isTransportRequests = false;
+    const adtService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
     try {
-        const adtService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
         if (adtService?.getTransportRequests) {
             isTransportRequests = true;
             logger.info(t('info.getTransportRequestsAvailable'));
@@ -247,7 +247,6 @@ export async function checkTransportRequests(
     } catch (e) {
         logger.error(t('error.getTransportRequestsError'));
 
-        const adtService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
         const response = await adtService?.get('', {
             headers: {
                 Accept: 'application/*'
