@@ -8,7 +8,7 @@ import fsextra from 'fs-extra';
 describe('Test UI5 Library Reference Writer', () => {
     const fs = create(createStorage());
     const testOutputDir = join(__dirname, '/test-output');
-    const debug = true;
+    const debug = !!process.env['UX_DEBUG'];
 
     beforeAll(() => {
         fsextra.removeSync(testOutputDir);
