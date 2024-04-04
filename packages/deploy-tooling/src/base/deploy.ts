@@ -4,7 +4,7 @@ import type {
     AxiosError,
     LayeredRepositoryService
 } from '@sap-ux/axios-extension';
-import { isAxiosError, TransportRequestService } from '@sap-ux/axios-extension';
+import { isAxiosError, TransportRequestService, logError } from '@sap-ux/axios-extension';
 import type { Logger } from '@sap-ux/logger';
 import { writeFileSync } from 'fs';
 import type { AbapDeployConfig } from '../types';
@@ -47,6 +47,8 @@ async function handleError(
         const success = await axiosErrorRetryHandler(command, error.response, provider, config, logger, archive);
         if (success) {
             return;
+        } else {
+            logError({ error, log: logger });
         }
     }
     logger.error(`${command === tryDeploy ? 'Deployment' : 'Undeployment'} has failed.`);
