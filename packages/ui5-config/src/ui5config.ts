@@ -412,15 +412,15 @@ export class UI5Config {
     /**
      * Returns the serve static config.
      *
-     * @param hasfioriToolProxy - whether the config contains a fiori-tools-proxy middleware
+     * @param addFioriToolProxy - if true, `fiori-tools-proxy` config is added, otherwise a `compression` config will be added
      * @param paths - serve static paths for the reuse libraries
      * @returns the serve static middleware config
      */
     private getServeStaticConfig(
-        hasfioriToolProxy: boolean,
+        addFioriToolProxy: boolean,
         paths: ServeStaticPath[]
     ): CustomMiddleware<{ paths: ServeStaticPath[] }> {
-        return hasfioriToolProxy
+        return addFioriToolProxy
             ? {
                   name: serveStatic,
                   beforeMiddleware: fioriToolsProxy,
