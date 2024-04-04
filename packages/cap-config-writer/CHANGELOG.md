@@ -1,5 +1,11 @@
 # @sap-ux/cap-config-writer
 
+## 0.2.25
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.19.5
+
 ## 0.2.24
 
 ### Patch Changes
