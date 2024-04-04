@@ -1,9 +1,9 @@
 import type { Editor } from 'mem-fs-editor';
-import type { ServeStaticPath, ReuseLibConfig } from './types';
-import { UI5Config, type CustomMiddleware } from '@sap-ux/ui5-config';
+import type { ReuseLibConfig } from './types';
+import { UI5Config, type ServeStaticPath } from '@sap-ux/ui5-config';
 import { getWebappPath, type Manifest } from '@sap-ux/project-access';
 import { dirname, join, relative } from 'path';
-import { yamlFiles, serveStatic, fioriToolsProxy, ManifestReuseType } from './constants';
+import { yamlFiles, ManifestReuseType } from './constants';
 
 /**
  * Updates manifest with references for the chosen reuse libs.
@@ -42,57 +42,12 @@ export function updateYaml(projectPath: string, reuseLibs: ReuseLibConfig[], fs:
         const yamlPath = join(projectPath, yaml);
         if (fs.exists(yamlPath)) {
             const ui5Config = await UI5Config.newInstance(fs.read(yamlPath));
-
-            const serveStaticConfig = ui5Config.findCustomMiddleware<{ paths: ServeStaticPath[] }>(serveStatic);
-            const fioriToolsProxyConfig = ui5Config.findCustomMiddleware(fioriToolsProxy);
             const serveStaticPaths: ServeStaticPath[] = getServeStaticPaths(reuseLibs, projectPath);
-
-            if (serveStaticConfig) {
-                if (serveStaticConfig.afterMiddleware === 'compression' && fioriToolsProxyConfig) {
-                    ui5Config.updateCustomMiddleware({
-                        name: serveStatic,
-                        beforeMiddleware: fioriToolsProxy,
-                        configuration: {
-                            paths: [...serveStaticConfig.configuration.paths, ...serveStaticPaths]
-                        }
-                    });
-                }
-            } else {
-                const serveStaticConfig = getServeStaticConfig(!!fioriToolsProxyConfig, serveStaticPaths);
-                ui5Config.addCustomMiddleware([serveStaticConfig]);
-            }
+            ui5Config.addServeStaticConfig(serveStaticPaths);
 
             fs.write(yamlPath, ui5Config.toString());
         }
     });
-}
-
-/**
- * Returns the serve static configuration.
- *
- * @param hasfioriToolProxy whether fiori tools proxy is enabled
- * @param paths serve static paths
- * @returns serve static configuration
- */
-function getServeStaticConfig(
-    hasfioriToolProxy: boolean,
-    paths: ServeStaticPath[]
-): CustomMiddleware<{ paths: ServeStaticPath[] }> {
-    return hasfioriToolProxy
-        ? {
-              name: serveStatic,
-              beforeMiddleware: fioriToolsProxy,
-              configuration: {
-                  paths: paths
-              }
-          }
-        : {
-              name: serveStatic,
-              afterMiddleware: 'compression',
-              configuration: {
-                  paths: paths
-              }
-          };
 }
 
 /**

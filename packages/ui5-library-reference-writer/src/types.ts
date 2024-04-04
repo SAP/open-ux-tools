@@ -4,9 +4,3 @@ export interface ReuseLibConfig {
     type: 'library' | 'component';
     uri: string;
 }
-
-export interface ServeStaticPath {
-    path: string;
-    src: string;
-    fallthrough: boolean;
-}

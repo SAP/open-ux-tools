@@ -23,7 +23,7 @@ server:
       ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
       backend:
       - path: /sap
-        url: http://ims.saplabs.com:50017
+        url: http://test.url.com:50017
   - name: fiori-tools-appreload
     afterMiddleware: compression
     configuration:
