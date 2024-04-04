@@ -236,8 +236,8 @@ export async function checkTransportRequests(
 ): Promise<{ messages: ResultMessage[]; isTransportRequests: boolean }> {
     const logger = getLogger();
     let isTransportRequests = false;
-    const adtService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
     try {
+        const adtService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
         if (adtService?.getTransportRequests) {
             isTransportRequests = true;
             logger.info(t('info.getTransportRequestsAvailable'));
@@ -246,16 +246,9 @@ export async function checkTransportRequests(
         }
     } catch (e) {
         logger.error(t('error.getTransportRequestsError'));
-
-        const response = await adtService?.get('', {
-            headers: {
-                Accept: 'application/*'
-            }
-        });
-        if (e.message.includes('403') ?? (adtService?.getTransportRequests && response.status === 403)) {
+        if (e.response?.status === 403) {
             logger.warn(t('warning.guidedAnswersLink'));
         }
-
         logger.debug(e.message);
     }
     return {

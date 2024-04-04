@@ -424,10 +424,14 @@ describe('Test service check functions', () => {
 
     test('checkTransportRequests 403', async () => {
         const getAdtService = jest.fn();
+        const axiosError = (status: 403) => {
+            return {
+                isAxiosError: true,
+                response: { status }
+            };
+        };
 
-        getAdtService.mockImplementation(() => {
-            throw new Error('403');
-        });
+        getAdtService.mockRejectedValueOnce(axiosError(403));
 
         const abapServiceProvider = {
             getAdtService: getAdtService
