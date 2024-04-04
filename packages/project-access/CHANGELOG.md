@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.19.6
+
+### Patch Changes
+
+-   f0e3263a: Adds missing constants entries, refactor duplicate constants, use project-access const instead
+
 ## 1.19.5
 
 ### Patch Changes
