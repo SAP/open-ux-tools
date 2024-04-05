@@ -164,11 +164,6 @@ export const enum UI5FlexLayer {
     CUSTOMER_BASE = 'CUSTOMER_BASE'
 }
 
-export enum DirName {
-    Sapux = 'src',
-    Webapp = 'webapp'
-}
-
 export interface ILogger extends Logger {
     /**
      * Pushes new messages to the logger.
