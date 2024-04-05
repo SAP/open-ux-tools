@@ -1,0 +1,818 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test UI5 Library Reference Writer should generate the UI5 library reference (sap.ui5.dependencies.libs does not exist) 1`] = `
+Object {
+  "../test_project_lrop_v2/webapp/manifest.json": Object {
+    "contents": "{
+  \\"_version\\": \\"1.17.0\\",
+  \\"sap.app\\": {
+    \\"id\\": \\"testNameSpace.testprojectlropv2\\",
+    \\"type\\": \\"application\\",
+    \\"i18n\\": \\"i18n/i18n.properties\\",
+    \\"applicationVersion\\": {
+      \\"version\\": \\"1.0.0\\"
+    },
+    \\"title\\": \\"{{appTitle}}\\",
+    \\"description\\": \\"{{appDescription}}\\",
+    \\"tags\\": {
+      \\"keywords\\": []
+    },
+    \\"resources\\": \\"resources.json\\",
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/metadata.xml\\"
+        }
+      },
+      \\"SEPMRA_PROD_MAN_ANNO_MDL\\": {
+        \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"localService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
+        }
+      },
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      }
+    },
+    \\"offline\\": false,
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"ui5template.smartTemplate\\",
+      \\"version\\": \\"1.40.12\\",
+      \\"toolsId\\": \\"4e5poddc-a666-4465-89eb-092e768dfecc\\"
+    }
+  },
+  \\"sap.ui\\": {
+    \\"technology\\": \\"UI5\\",
+    \\"icons\\": {
+      \\"icon\\": \\"\\",
+      \\"favIcon\\": \\"\\",
+      \\"phone\\": \\"\\",
+      \\"phone@2\\": \\"\\",
+      \\"tablet\\": \\"\\",
+      \\"tablet@2\\": \\"\\"
+    },
+    \\"deviceTypes\\": {
+      \\"desktop\\": true,
+      \\"tablet\\": true,
+      \\"phone\\": true
+    },
+    \\"supportedThemes\\": [
+      \\"sap_hcb\\",
+      \\"sap_belize\\",
+      \\"sap_fiori_3\\"
+    ]
+  },
+  \\"sap.ui5\\": {
+    \\"resources\\": {
+      \\"js\\": [],
+      \\"css\\": []
+    },
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.65.0\\",
+      \\"libs\\": {
+        \\"sap.ui.core\\": {
+          \\"lazy\\": false
+        },
+        \\"sap.ui.generic.app\\": {
+          \\"lazy\\": false
+        },
+        \\"sap.suite.ui.generic.template\\": {
+          \\"lazy\\": false
+        },
+        \\"my.namespace.reuse.attachmentservice\\": {
+          \\"lazy\\": false
+        }
+      },
+      \\"components\\": {
+        \\"my.namespace.comp\\": {
+          \\"lazy\\": false
+        }
+      }
+    },
+    \\"models\\": {
+      \\"i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      },
+      \\"i18n|sap.suite.ui.generic.template.ListReport|SEPMRA_C_PD_Product\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/ListReport/SEPMRA_C_PD_Product/i18n.properties\\"
+      },
+      \\"i18n|sap.suite.ui.generic.template.ObjectPage|SEPMRA_C_PD_Product\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/ObjectPage/SEPMRA_C_PD_Product/i18n.properties\\"
+      },
+      \\"i18n|sap.suite.ui.generic.template.ObjectPage|SEPMRA_C_PD_ProductSalesData\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/ObjectPage/SEPMRA_C_PD_ProductSalesData/i18n.properties\\"
+      },
+      \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
+        \\"settings\\": {
+          \\"defaultBindingMode\\": \\"TwoWay\\",
+          \\"defaultCountMode\\": \\"Inline\\",
+          \\"refreshAfterChange\\": false,
+          \\"metadataUrlParams\\": {
+            \\"sap-value-list\\": \\"none\\"
+          }
+        }
+      }
+    },
+    \\"extends\\": {
+      \\"extensions\\": {}
+    },
+    \\"contentDensities\\": {
+      \\"compact\\": true,
+      \\"cozy\\": true
+    }
+  },
+  \\"sap.ui.generic.app\\": {
+    \\"_version\\": \\"1.3.0\\",
+    \\"settings\\": {
+      \\"forceGlobalRefresh\\": false,
+      \\"objectPageHeaderType\\": \\"Dynamic\\",
+      \\"considerAnalyticalParameters\\": true,
+      \\"showDraftToggle\\": false
+    },
+    \\"pages\\": {
+      \\"ListReport|SEPMRA_C_PD_Product\\": {
+        \\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
+        \\"component\\": {
+          \\"name\\": \\"sap.suite.ui.generic.template.ListReport\\",
+          \\"list\\": true,
+          \\"settings\\": {
+            \\"condensedTableLayout\\": true,
+            \\"smartVariantManagement\\": true,
+            \\"enableTableFilterInPageVariant\\": true,
+            \\"filterSettings\\": {
+              \\"dateSettings\\": {
+                \\"useDateRange\\": true
+              }
+            }
+          }
+        },
+        \\"pages\\": {
+          \\"ObjectPage|SEPMRA_C_PD_Product\\": {
+            \\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
+            \\"defaultLayoutTypeIfExternalNavigation\\": \\"MidColumnFullScreen\\",
+            \\"component\\": {
+              \\"name\\": \\"sap.suite.ui.generic.template.ObjectPage\\"
+            },
+            \\"pages\\": {
+              \\"ObjectPage|to_ProductSalesData\\": {
+                \\"navigationProperty\\": \\"to_ProductSalesData\\",
+                \\"entitySet\\": \\"SEPMRA_C_PD_ProductSalesData\\",
+                \\"defaultLayoutTypeIfExternalNavigation\\": \\"MidColumnFullScreen\\",
+                \\"component\\": {
+                  \\"name\\": \\"sap.suite.ui.generic.template.ObjectPage\\"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  \\"sap.platform.abap\\": {
+    \\"uri\\": \\"\\"
+  },
+  \\"sap.fiori\\": {
+    \\"registrationIds\\": [],
+    \\"archeType\\": \\"transactional\\"
+  },
+  \\"sap.platform.hcp\\": {
+    \\"uri\\": \\"\\"
+  }
+}
+",
+    "state": "modified",
+  },
+  "../test_project_lrop_v2_custom_webapp_path/src/main/webapp/manifest.json": Object {
+    "contents": "{
+  \\"_version\\": \\"1.17.0\\",
+  \\"sap.app\\": {
+    \\"id\\": \\"testNameSpace.testprojectlropv2\\",
+    \\"type\\": \\"application\\",
+    \\"i18n\\": \\"i18n/i18n.properties\\",
+    \\"applicationVersion\\": {
+      \\"version\\": \\"1.0.0\\"
+    },
+    \\"title\\": \\"{{appTitle}}\\",
+    \\"description\\": \\"{{appDescription}}\\",
+    \\"tags\\": {
+      \\"keywords\\": []
+    },
+    \\"resources\\": \\"resources.json\\",
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/metadata.xml\\"
+        }
+      },
+      \\"SEPMRA_PROD_MAN_ANNO_MDL\\": {
+        \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"localService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
+        }
+      },
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      }
+    },
+    \\"offline\\": false,
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"ui5template.smartTemplate\\",
+      \\"version\\": \\"1.40.12\\"
+    }
+  },
+  \\"sap.ui\\": {
+    \\"technology\\": \\"UI5\\",
+    \\"icons\\": {
+      \\"icon\\": \\"\\",
+      \\"favIcon\\": \\"\\",
+      \\"phone\\": \\"\\",
+      \\"phone@2\\": \\"\\",
+      \\"tablet\\": \\"\\",
+      \\"tablet@2\\": \\"\\"
+    },
+    \\"deviceTypes\\": {
+      \\"desktop\\": true,
+      \\"tablet\\": true,
+      \\"phone\\": true
+    },
+    \\"supportedThemes\\": [
+      \\"sap_hcb\\",
+      \\"sap_belize\\",
+      \\"sap_fiori_3\\"
+    ]
+  },
+  \\"sap.ui5\\": {
+    \\"resources\\": {
+      \\"js\\": [],
+      \\"css\\": []
+    },
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.65.0\\",
+      \\"libs\\": {
+        \\"sap.ui.core\\": {
+          \\"lazy\\": false
+        },
+        \\"sap.ui.generic.app\\": {
+          \\"lazy\\": false
+        },
+        \\"sap.suite.ui.generic.template\\": {
+          \\"lazy\\": false
+        },
+        \\"my.namespace.reuse.attachmentservice\\": {
+          \\"lazy\\": false
+        }
+      },
+      \\"components\\": {
+        \\"my.namespace.comp\\": {
+          \\"lazy\\": false
+        }
+      }
+    },
+    \\"models\\": {
+      \\"i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      },
+      \\"i18n|sap.suite.ui.generic.template.ListReport|SEPMRA_C_PD_Product\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/ListReport/SEPMRA_C_PD_Product/i18n.properties\\"
+      },
+      \\"i18n|sap.suite.ui.generic.template.ObjectPage|SEPMRA_C_PD_Product\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/ObjectPage/SEPMRA_C_PD_Product/i18n.properties\\"
+      },
+      \\"i18n|sap.suite.ui.generic.template.ObjectPage|SEPMRA_C_PD_ProductSalesData\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/ObjectPage/SEPMRA_C_PD_ProductSalesData/i18n.properties\\"
+      },
+      \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
+        \\"settings\\": {
+          \\"defaultBindingMode\\": \\"TwoWay\\",
+          \\"defaultCountMode\\": \\"Inline\\",
+          \\"refreshAfterChange\\": false,
+          \\"metadataUrlParams\\": {
+            \\"sap-value-list\\": \\"none\\"
+          }
+        }
+      }
+    },
+    \\"extends\\": {
+      \\"extensions\\": {}
+    },
+    \\"contentDensities\\": {
+      \\"compact\\": true,
+      \\"cozy\\": true
+    }
+  },
+  \\"sap.ui.generic.app\\": {
+    \\"_version\\": \\"1.3.0\\",
+    \\"settings\\": {
+      \\"forceGlobalRefresh\\": false,
+      \\"objectPageHeaderType\\": \\"Dynamic\\",
+      \\"considerAnalyticalParameters\\": true,
+      \\"showDraftToggle\\": false
+    },
+    \\"pages\\": {
+      \\"ListReport|SEPMRA_C_PD_Product\\": {
+        \\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
+        \\"component\\": {
+          \\"name\\": \\"sap.suite.ui.generic.template.ListReport\\",
+          \\"list\\": true,
+          \\"settings\\": {
+            \\"condensedTableLayout\\": true,
+            \\"smartVariantManagement\\": true,
+            \\"enableTableFilterInPageVariant\\": true,
+            \\"filterSettings\\": {
+              \\"dateSettings\\": {
+                \\"useDateRange\\": true
+              }
+            }
+          }
+        },
+        \\"pages\\": {
+          \\"ObjectPage|SEPMRA_C_PD_Product\\": {
+            \\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
+            \\"defaultLayoutTypeIfExternalNavigation\\": \\"MidColumnFullScreen\\",
+            \\"component\\": {
+              \\"name\\": \\"sap.suite.ui.generic.template.ObjectPage\\"
+            },
+            \\"pages\\": {
+              \\"ObjectPage|to_ProductSalesData\\": {
+                \\"navigationProperty\\": \\"to_ProductSalesData\\",
+                \\"entitySet\\": \\"SEPMRA_C_PD_ProductSalesData\\",
+                \\"defaultLayoutTypeIfExternalNavigation\\": \\"MidColumnFullScreen\\",
+                \\"component\\": {
+                  \\"name\\": \\"sap.suite.ui.generic.template.ObjectPage\\"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  \\"sap.platform.abap\\": {
+    \\"uri\\": \\"\\"
+  },
+  \\"sap.fiori\\": {
+    \\"registrationIds\\": [],
+    \\"archeType\\": \\"transactional\\"
+  },
+  \\"sap.platform.hcp\\": {
+    \\"uri\\": \\"\\"
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Test UI5 Library Reference Writer should generate the UI5 library reference 1`] = `
+Object {
+  "webapp/manifest.json": Object {
+    "contents": "{
+  \\"_version\\": \\"1.17.0\\",
+  \\"sap.app\\": {
+    \\"id\\": \\"testNameSpace.testprojectlropv2\\",
+    \\"type\\": \\"application\\",
+    \\"i18n\\": \\"i18n/i18n.properties\\",
+    \\"applicationVersion\\": {
+      \\"version\\": \\"1.0.0\\"
+    },
+    \\"title\\": \\"{{appTitle}}\\",
+    \\"description\\": \\"{{appDescription}}\\",
+    \\"tags\\": {
+      \\"keywords\\": []
+    },
+    \\"resources\\": \\"resources.json\\",
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/metadata.xml\\"
+        }
+      },
+      \\"SEPMRA_PROD_MAN_ANNO_MDL\\": {
+        \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"localService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
+        }
+      },
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      }
+    },
+    \\"offline\\": false,
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"ui5template.smartTemplate\\",
+      \\"version\\": \\"1.40.12\\",
+      \\"toolsId\\": \\"4e5poddc-a666-4465-89eb-092e768dfecc\\"
+    }
+  },
+  \\"sap.ui\\": {
+    \\"technology\\": \\"UI5\\",
+    \\"icons\\": {
+      \\"icon\\": \\"\\",
+      \\"favIcon\\": \\"\\",
+      \\"phone\\": \\"\\",
+      \\"phone@2\\": \\"\\",
+      \\"tablet\\": \\"\\",
+      \\"tablet@2\\": \\"\\"
+    },
+    \\"deviceTypes\\": {
+      \\"desktop\\": true,
+      \\"tablet\\": true,
+      \\"phone\\": true
+    },
+    \\"supportedThemes\\": [
+      \\"sap_hcb\\",
+      \\"sap_belize\\",
+      \\"sap_fiori_3\\"
+    ]
+  },
+  \\"sap.ui5\\": {
+    \\"resources\\": {
+      \\"js\\": [],
+      \\"css\\": []
+    },
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.65.0\\",
+      \\"libs\\": {
+        \\"sap.ui.core\\": {
+          \\"lazy\\": false
+        },
+        \\"sap.ui.generic.app\\": {
+          \\"lazy\\": false
+        },
+        \\"sap.suite.ui.generic.template\\": {
+          \\"lazy\\": false
+        },
+        \\"my.namespace.reuse.attachmentservice\\": {
+          \\"lazy\\": false
+        }
+      },
+      \\"components\\": {
+        \\"my.namespace.comp\\": {
+          \\"lazy\\": false
+        }
+      }
+    },
+    \\"models\\": {
+      \\"i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      },
+      \\"i18n|sap.suite.ui.generic.template.ListReport|SEPMRA_C_PD_Product\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/ListReport/SEPMRA_C_PD_Product/i18n.properties\\"
+      },
+      \\"i18n|sap.suite.ui.generic.template.ObjectPage|SEPMRA_C_PD_Product\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/ObjectPage/SEPMRA_C_PD_Product/i18n.properties\\"
+      },
+      \\"i18n|sap.suite.ui.generic.template.ObjectPage|SEPMRA_C_PD_ProductSalesData\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/ObjectPage/SEPMRA_C_PD_ProductSalesData/i18n.properties\\"
+      },
+      \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
+        \\"settings\\": {
+          \\"defaultBindingMode\\": \\"TwoWay\\",
+          \\"defaultCountMode\\": \\"Inline\\",
+          \\"refreshAfterChange\\": false,
+          \\"metadataUrlParams\\": {
+            \\"sap-value-list\\": \\"none\\"
+          }
+        }
+      }
+    },
+    \\"extends\\": {
+      \\"extensions\\": {}
+    },
+    \\"contentDensities\\": {
+      \\"compact\\": true,
+      \\"cozy\\": true
+    }
+  },
+  \\"sap.ui.generic.app\\": {
+    \\"_version\\": \\"1.3.0\\",
+    \\"settings\\": {
+      \\"forceGlobalRefresh\\": false,
+      \\"objectPageHeaderType\\": \\"Dynamic\\",
+      \\"considerAnalyticalParameters\\": true,
+      \\"showDraftToggle\\": false
+    },
+    \\"pages\\": {
+      \\"ListReport|SEPMRA_C_PD_Product\\": {
+        \\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
+        \\"component\\": {
+          \\"name\\": \\"sap.suite.ui.generic.template.ListReport\\",
+          \\"list\\": true,
+          \\"settings\\": {
+            \\"condensedTableLayout\\": true,
+            \\"smartVariantManagement\\": true,
+            \\"enableTableFilterInPageVariant\\": true,
+            \\"filterSettings\\": {
+              \\"dateSettings\\": {
+                \\"useDateRange\\": true
+              }
+            }
+          }
+        },
+        \\"pages\\": {
+          \\"ObjectPage|SEPMRA_C_PD_Product\\": {
+            \\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
+            \\"defaultLayoutTypeIfExternalNavigation\\": \\"MidColumnFullScreen\\",
+            \\"component\\": {
+              \\"name\\": \\"sap.suite.ui.generic.template.ObjectPage\\"
+            },
+            \\"pages\\": {
+              \\"ObjectPage|to_ProductSalesData\\": {
+                \\"navigationProperty\\": \\"to_ProductSalesData\\",
+                \\"entitySet\\": \\"SEPMRA_C_PD_ProductSalesData\\",
+                \\"defaultLayoutTypeIfExternalNavigation\\": \\"MidColumnFullScreen\\",
+                \\"component\\": {
+                  \\"name\\": \\"sap.suite.ui.generic.template.ObjectPage\\"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  \\"sap.platform.abap\\": {
+    \\"uri\\": \\"\\"
+  },
+  \\"sap.fiori\\": {
+    \\"registrationIds\\": [],
+    \\"archeType\\": \\"transactional\\"
+  },
+  \\"sap.platform.hcp\\": {
+    \\"uri\\": \\"\\"
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Test UI5 Library Reference Writer should generate the UI5 library reference in a project with a custom webapp path 1`] = `
+Object {
+  "src/main/webapp/manifest.json": Object {
+    "contents": "{
+  \\"_version\\": \\"1.17.0\\",
+  \\"sap.app\\": {
+    \\"id\\": \\"testNameSpace.testprojectlropv2\\",
+    \\"type\\": \\"application\\",
+    \\"i18n\\": \\"i18n/i18n.properties\\",
+    \\"applicationVersion\\": {
+      \\"version\\": \\"1.0.0\\"
+    },
+    \\"title\\": \\"{{appTitle}}\\",
+    \\"description\\": \\"{{appDescription}}\\",
+    \\"tags\\": {
+      \\"keywords\\": []
+    },
+    \\"resources\\": \\"resources.json\\",
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/metadata.xml\\"
+        }
+      },
+      \\"SEPMRA_PROD_MAN_ANNO_MDL\\": {
+        \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"localService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
+        }
+      },
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      }
+    },
+    \\"offline\\": false,
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"ui5template.smartTemplate\\",
+      \\"version\\": \\"1.40.12\\"
+    }
+  },
+  \\"sap.ui\\": {
+    \\"technology\\": \\"UI5\\",
+    \\"icons\\": {
+      \\"icon\\": \\"\\",
+      \\"favIcon\\": \\"\\",
+      \\"phone\\": \\"\\",
+      \\"phone@2\\": \\"\\",
+      \\"tablet\\": \\"\\",
+      \\"tablet@2\\": \\"\\"
+    },
+    \\"deviceTypes\\": {
+      \\"desktop\\": true,
+      \\"tablet\\": true,
+      \\"phone\\": true
+    },
+    \\"supportedThemes\\": [
+      \\"sap_hcb\\",
+      \\"sap_belize\\",
+      \\"sap_fiori_3\\"
+    ]
+  },
+  \\"sap.ui5\\": {
+    \\"resources\\": {
+      \\"js\\": [],
+      \\"css\\": []
+    },
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.65.0\\",
+      \\"libs\\": {
+        \\"sap.ui.core\\": {
+          \\"lazy\\": false
+        },
+        \\"sap.ui.generic.app\\": {
+          \\"lazy\\": false
+        },
+        \\"sap.suite.ui.generic.template\\": {
+          \\"lazy\\": false
+        },
+        \\"my.namespace.reuse.attachmentservice\\": {
+          \\"lazy\\": false
+        }
+      },
+      \\"components\\": {
+        \\"my.namespace.comp\\": {
+          \\"lazy\\": false
+        }
+      }
+    },
+    \\"models\\": {
+      \\"i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      },
+      \\"i18n|sap.suite.ui.generic.template.ListReport|SEPMRA_C_PD_Product\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/ListReport/SEPMRA_C_PD_Product/i18n.properties\\"
+      },
+      \\"i18n|sap.suite.ui.generic.template.ObjectPage|SEPMRA_C_PD_Product\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/ObjectPage/SEPMRA_C_PD_Product/i18n.properties\\"
+      },
+      \\"i18n|sap.suite.ui.generic.template.ObjectPage|SEPMRA_C_PD_ProductSalesData\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/ObjectPage/SEPMRA_C_PD_ProductSalesData/i18n.properties\\"
+      },
+      \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
+        \\"settings\\": {
+          \\"defaultBindingMode\\": \\"TwoWay\\",
+          \\"defaultCountMode\\": \\"Inline\\",
+          \\"refreshAfterChange\\": false,
+          \\"metadataUrlParams\\": {
+            \\"sap-value-list\\": \\"none\\"
+          }
+        }
+      }
+    },
+    \\"extends\\": {
+      \\"extensions\\": {}
+    },
+    \\"contentDensities\\": {
+      \\"compact\\": true,
+      \\"cozy\\": true
+    }
+  },
+  \\"sap.ui.generic.app\\": {
+    \\"_version\\": \\"1.3.0\\",
+    \\"settings\\": {
+      \\"forceGlobalRefresh\\": false,
+      \\"objectPageHeaderType\\": \\"Dynamic\\",
+      \\"considerAnalyticalParameters\\": true,
+      \\"showDraftToggle\\": false
+    },
+    \\"pages\\": {
+      \\"ListReport|SEPMRA_C_PD_Product\\": {
+        \\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
+        \\"component\\": {
+          \\"name\\": \\"sap.suite.ui.generic.template.ListReport\\",
+          \\"list\\": true,
+          \\"settings\\": {
+            \\"condensedTableLayout\\": true,
+            \\"smartVariantManagement\\": true,
+            \\"enableTableFilterInPageVariant\\": true,
+            \\"filterSettings\\": {
+              \\"dateSettings\\": {
+                \\"useDateRange\\": true
+              }
+            }
+          }
+        },
+        \\"pages\\": {
+          \\"ObjectPage|SEPMRA_C_PD_Product\\": {
+            \\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
+            \\"defaultLayoutTypeIfExternalNavigation\\": \\"MidColumnFullScreen\\",
+            \\"component\\": {
+              \\"name\\": \\"sap.suite.ui.generic.template.ObjectPage\\"
+            },
+            \\"pages\\": {
+              \\"ObjectPage|to_ProductSalesData\\": {
+                \\"navigationProperty\\": \\"to_ProductSalesData\\",
+                \\"entitySet\\": \\"SEPMRA_C_PD_ProductSalesData\\",
+                \\"defaultLayoutTypeIfExternalNavigation\\": \\"MidColumnFullScreen\\",
+                \\"component\\": {
+                  \\"name\\": \\"sap.suite.ui.generic.template.ObjectPage\\"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  \\"sap.platform.abap\\": {
+    \\"uri\\": \\"\\"
+  },
+  \\"sap.fiori\\": {
+    \\"registrationIds\\": [],
+    \\"archeType\\": \\"transactional\\"
+  },
+  \\"sap.platform.hcp\\": {
+    \\"uri\\": \\"\\"
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;

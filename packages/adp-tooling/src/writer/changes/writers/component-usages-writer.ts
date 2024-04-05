@@ -1,6 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 
-import { ChangeType, FolderTypes } from '../../../types';
+import { ChangeType } from '../../../types';
+import { DirName } from '@sap-ux/project-access';
 import type { IWriter, ComponentUsagesData } from '../../../types';
 import { parseStringToObject, getGenericChange, writeChangeToFolder } from '../../../base/change-utils';
 
@@ -75,7 +76,7 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
             compUsagesChange,
             `id_${data.timestamp}_addComponentUsages.change`,
             this.fs,
-            FolderTypes.MANIFEST
+            DirName.Manifest
         );
 
         if (shouldAddLibRef) {
@@ -87,7 +88,7 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
                 refLibChange,
                 `id_${data.timestamp}_addLibraries.change`,
                 this.fs,
-                FolderTypes.MANIFEST
+                DirName.Manifest
             );
         }
     }

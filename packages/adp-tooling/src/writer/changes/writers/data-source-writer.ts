@@ -1,6 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 
-import { ChangeType, FolderTypes } from '../../../types';
+import { ChangeType } from '../../../types';
+import { DirName } from '@sap-ux/project-access';
 import type { IWriter, DataSourceData } from '../../../types';
 import { getGenericChange, writeChangeToFolder } from '../../../base/change-utils';
 
@@ -64,7 +65,7 @@ export class DataSourceWriter implements IWriter<DataSourceData> {
             change,
             `id_${data.timestamp}_changeDataSource.change`,
             this.fs,
-            FolderTypes.MANIFEST
+            DirName.Manifest
         );
 
         const shouldAddAnnotation = service.annotationUri && service.annotationUri.length > 0;
@@ -78,7 +79,7 @@ export class DataSourceWriter implements IWriter<DataSourceData> {
                 annotationChange,
                 `id_${data.timestamp}_changeDataSource.change`,
                 this.fs,
-                FolderTypes.MANIFEST
+                DirName.Manifest
             );
         }
     }

@@ -9,7 +9,8 @@ import type { MiddlewareUtils } from '@ui5/server';
 import type { ReaderCollection, Resource } from '@ui5/fs';
 import type { NextFunction, Request, Response } from 'express';
 
-import { FolderTypes, TemplateFileName, HttpStatusCodes } from '../types';
+import { TemplateFileName, HttpStatusCodes } from '../types';
+import { DirName } from '@sap-ux/project-access';
 import type { CodeExtChange } from '../types';
 
 interface WriteFragmentBody {
@@ -120,7 +121,7 @@ export default class RoutesHandler {
                 return;
             }
 
-            const fullPath = path.join(sourcePath, FolderTypes.CHANGES, FolderTypes.FRAGMENTS);
+            const fullPath = path.join(sourcePath, DirName.Changes, DirName.Fragments);
             const filePath = path.join(fullPath, `${fragmentName}.fragment.xml`);
 
             if (!fs.existsSync(fullPath)) {
@@ -195,11 +196,8 @@ export default class RoutesHandler {
             const sourcePath = project.getSourcePath();
             const projectName = project.getName();
 
-            const getPath = (
-                projectPath: string,
-                fileName: string,
-                folder: FolderTypes.CODING | string = FolderTypes.CODING
-            ) => path.join(projectPath, FolderTypes.CHANGES, folder, fileName).split(path.sep).join(path.posix.sep);
+            const getPath = (projectPath: string, fileName: string, folder: string = DirName.Coding) =>
+                path.join(projectPath, DirName.Changes, folder, fileName).split(path.sep).join(path.posix.sep);
 
             for (const file of codeExtFiles) {
                 const fileStr = await file.getString();
@@ -262,7 +260,7 @@ export default class RoutesHandler {
                 return;
             }
 
-            const fullPath = path.join(sourcePath, FolderTypes.CHANGES, FolderTypes.CODING);
+            const fullPath = path.join(sourcePath, DirName.Changes, DirName.Coding);
             const filePath = path.join(fullPath, `${controllerExtName}.js`);
 
             if (!fs.existsSync(fullPath)) {
