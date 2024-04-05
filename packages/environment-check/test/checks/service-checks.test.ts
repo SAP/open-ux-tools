@@ -7,6 +7,7 @@ import {
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { Severity } from '../../src/types';
 import type { AxiosError } from 'axios';
+import { t } from '../../src/i18n';
 
 describe('Catalog service tests, function checkCatalogServices()', () => {
     test('Returns v2 and v4 services succesfully', async () => {
@@ -420,5 +421,30 @@ describe('Test service check functions', () => {
         expect(transportRequestResult.messages.length).toBe(2);
         expect(transportRequestResult.messages[0].severity).toBe(Severity.Error);
         expect(transportRequestResult.messages[1].severity).toBe(Severity.Debug);
+    });
+
+    test('checkTransportRequests 403', async () => {
+        const getAdtService = jest.fn();
+        const axiosError = (status: 403) => {
+            return {
+                isAxiosError: true,
+                response: { status }
+            };
+        };
+
+        getAdtService.mockRejectedValueOnce(axiosError(403));
+
+        const abapServiceProvider = {
+            getAdtService: getAdtService
+        } as unknown as AbapServiceProvider;
+
+        // Test execution
+        const transportRequestResult = await checkTransportRequests(abapServiceProvider);
+
+        // Result check
+        expect(transportRequestResult.isTransportRequests).toBe(false);
+        expect(transportRequestResult.messages.length).toBe(3);
+        expect(transportRequestResult.messages[1].severity).toBe(Severity.Warning);
+        expect(transportRequestResult.messages[1].text).toBe(t('warning.guidedAnswersLink'));
     });
 });
