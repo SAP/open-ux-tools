@@ -315,6 +315,60 @@ exports[`UI5Config addMockServerMiddleware add without path 1`] = `
 "
 `;
 
+exports[`UI5Config addServeStaticConfig add with multiple paths (existing config) 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-servestatic
+      afterMiddleware: compression
+      configuration:
+        paths:
+          - path: /resources/targetapp
+            src: /targetapp/abeppw
+          - path: /appconfig
+            src: /srcapp/appconfig
+"
+`;
+
+exports[`UI5Config addServeStaticConfig add with single path (no existing serve static config) 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-servestatic
+      afterMiddleware: compression
+      configuration:
+        paths:
+          - path: /~testpath~
+            src: /~src
+            fallthrough: true
+"
+`;
+
+exports[`UI5Config addServeStaticConfig update serve static ocnfig 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-servestatic
+      beforeMiddleware: fiori-tools-proxy
+      configuration:
+        paths:
+          - path: /resources/targetapp
+            src: /targetapp/abeppw
+          - path: /appconfig
+            src: /srcapp/appconfig
+          - path: /~testpath~
+            src: /~src
+            fallthrough: true
+          - path: /~other
+            src: /~otherSrc
+            fallthrough: false
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false
+        backend:
+          - path: /sap
+            url: http://test.url.com:50017
+"
+`;
+
 exports[`UI5Config addUI5Framework Add with specific theme and additional library 1`] = `
 "framework:
   name: SAPUI5

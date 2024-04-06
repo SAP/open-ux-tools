@@ -165,6 +165,9 @@
       "path": "packages/ui5-library-inquirer"
     },
     {
+      "path": "packages/ui5-library-reference-writer"
+    },
+    {
       "path": "packages/ui5-library-writer"
     },
     {

@@ -14,7 +14,8 @@ export const webSocketMiddleware: Middleware<Dispatch<Action>> = (store: Middlew
     return (next: Dispatch<Action>) =>
         (action: Action): Action => {
             if (action.type === initializeLivereload.type) {
-                const socket = new WebSocket(`ws://${location.hostname}:${action.payload}`);
+                const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
+                const socket = new WebSocket(`${protocol}://${location.hostname}:${action.payload}`);
                 socket.addEventListener('message', (event) => {
                     const request = JSON.parse(event.data);
                     if (request.command === 'reload') {
