@@ -1,4 +1,4 @@
-// Last content update: Tue Nov 07 2023 12:06:19 GMT+0200 (Eastern European Standard Time)
+// Last content update: Wed Apr 03 2024 08:50:55 GMT+0200 (Central European Summer Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -410,7 +410,7 @@ export default {
             'Mandatory': 7,
             'Mandatory@Org.OData.Core.V1.Description': 'Property is mandatory from a business perspective',
             'Mandatory@Org.OData.Core.V1.LongDescription':
-                'A request that sets the property to its initial value or null fails entirely if this annotation is `Mandatory` in the after-image of the request.\n\n            This annotation value does not imply any restrictions on the value range of the property. For restricting the value range use e.g. the standard type facet `Nullable` with a value of `false` to exclude the `null` value, or terms from the [Validation vocabulary](https://github.com/oasis-tcs/odata-vocabularies/blob/main/vocabularies/Org.OData.Validation.V1.md).',
+                'A request that\n            <br>- sets the property to null or an empty value or\n            <br>- creates a non-[draft](#DraftRoot) entity and omits the property or\n            <br>- activates a draft entity while the property is null or empty\n            <br>fails entirely if this annotation is `Mandatory` in the after-image of the request.\n            The empty string is an empty value. Service-specific rules may consider other values, also\n            of non-string type, empty.\n            Values in draft entities are never considered empty.\n            Mandatory properties SHOULD be decorated in the UI with an asterisk.\n            Null or empty values can also be disallowed by restricting the property value range with the standard type facet `Nullable` or terms from the [Validation vocabulary](https://github.com/oasis-tcs/odata-vocabularies/blob/main/vocabularies/Org.OData.Validation.V1.md).',
             'Optional': 3,
             'Optional@Org.OData.Core.V1.Description': 'Property may have a value',
             'Optional@Org.OData.Core.V1.LongDescription':
@@ -599,6 +599,13 @@ export default {
         },
         'IntervalType': {
             '$Kind': 'ComplexType',
+            'Label': {
+                '$Nullable': true,
+                '@com.sap.vocabularies.Common.v1.Experimental': true,
+                '@Org.OData.Core.V1.Description':
+                    'A short, human-readable text suitable for labels and captions in UIs',
+                '@Org.OData.Core.V1.IsLanguageDependent': true
+            },
             'LowerBoundary': {
                 '$Type': 'Edm.PropertyPath',
                 '@Org.OData.Core.V1.Description': 'Property holding the lower interval boundary'
@@ -767,7 +774,19 @@ export default {
             '$DefaultValue': true,
             '$AppliesTo': ['Property', 'Parameter'],
             '@Org.OData.Core.V1.Description':
-                "If specified as true, there's only one value list mapping and its value list consists of a small number of fixed values"
+                "If specified as true, there's only one value list mapping and its value list consists of a small number of fixed values",
+            '@Org.OData.Validation.V1.ApplicableTerms': [
+                'com.sap.vocabularies.Common.v1.ValueListShowValuesImmediately'
+            ]
+        },
+        'ValueListShowValuesImmediately': {
+            '$Kind': 'Term',
+            '$Type': 'Org.OData.Core.V1.Tag',
+            '$DefaultValue': true,
+            '$AppliesTo': ['Annotation'],
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            '@Org.OData.Core.V1.Description':
+                'A value list with a very small number of fixed values, can decide to show all values immediately'
         },
         'ValueListForValidation': {
             '$Kind': 'Term',
@@ -854,7 +873,9 @@ export default {
             'LocalDataProperty': {
                 '$Type': 'Edm.PropertyPath',
                 '@Org.OData.Core.V1.Description':
-                    'Path to property that is used to filter the value list with `eq` comparison'
+                    'Path to property that is used to filter the value list with `eq` comparison',
+                '@Org.OData.Core.V1.LongDescription':
+                    'In case the property path contains a collection-based navigation or structural property, the filter is a set of `eq` comparisons connected by `or` operators'
             },
             'InitialValueIsSignificant': {
                 '$Type': 'Edm.Boolean',
@@ -875,6 +896,18 @@ export default {
                 '$DefaultValue': false,
                 '@com.sap.vocabularies.Common.v1.Experimental': true,
                 '@Org.OData.Core.V1.Description': 'Initial value, e.g. empty string, is a valid and significant value'
+            }
+        },
+        'ValueListParameterConstants': {
+            '$Kind': 'ComplexType',
+            '$BaseType': 'com.sap.vocabularies.Common.v1.ValueListParameter',
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            'Constants': {
+                '$Collection': true,
+                '$Type': 'Edm.PrimitiveType',
+                '@Org.OData.Core.V1.Description':
+                    'List of constant values that are used to filter the value list with `eq` comparisons connected by `or` operators, using the same representation as property default values, see [CSDL XML, 7.2.7 Default Value](https://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html#sec_DefaultValue). Initial values are significant.',
+                '@Org.OData.Core.V1.LongDescription': 'An empty list means a vacuous filter condition'
             }
         },
         'ValueListParameterInOut': {

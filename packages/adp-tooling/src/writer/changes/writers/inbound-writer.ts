@@ -1,6 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 
-import { ChangeType, FolderTypes } from '../../../types';
+import { ChangeType } from '../../../types';
+import { DirName } from '@sap-ux/project-access';
 import {
     getParsedPropertyValue,
     findChangeWithInboundId,
@@ -110,7 +111,7 @@ export class InboundWriter implements IWriter<InboundData> {
                 change,
                 `id_${data.timestamp}_changeInbound.change`,
                 this.fs,
-                FolderTypes.MANIFEST
+                DirName.Manifest
             );
         } else {
             if (changeWithInboundId.content) {

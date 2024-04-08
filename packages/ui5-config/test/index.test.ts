@@ -347,4 +347,56 @@ describe('UI5Config', () => {
             expect(ui5Config.toString()).toMatchSnapshot();
         });
     });
+
+    describe('addServeStaticConfig', () => {
+        const serveStaticMiddleware = {
+            name: 'fiori-tools-servestatic',
+            afterMiddleware: 'compression',
+            configuration: {
+                paths: [
+                    { path: '/resources/targetapp', src: '/targetapp/abeppw' },
+                    { path: '/appconfig', src: '/srcapp/appconfig' }
+                ]
+            }
+        };
+
+        const fioriToolsProxy = {
+            name: 'fiori-tools-proxy',
+            afterMiddleware: 'compression',
+            configuration: {
+                ignoreCertError: false,
+                backend: [
+                    {
+                        path: '/sap',
+                        url: 'http://test.url.com:50017'
+                    }
+                ]
+            }
+        };
+
+        test('add with single path (no existing serve static config)', () => {
+            ui5Config.addServeStaticConfig([{ path, src: '/~src', fallthrough: true }]);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('add with multiple paths (existing config)', () => {
+            ui5Config.addCustomMiddleware([serveStaticMiddleware]);
+
+            ui5Config.addServeStaticConfig([
+                { path, src: '/~src', fallthrough: true },
+                { path: '/~other', src: '/~otherSrc', fallthrough: false }
+            ]);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('update serve static ocnfig', () => {
+            ui5Config.addCustomMiddleware([serveStaticMiddleware, fioriToolsProxy]);
+
+            ui5Config.addServeStaticConfig([
+                { path, src: '/~src', fallthrough: true },
+                { path: '/~other', src: '/~otherSrc', fallthrough: false }
+            ]);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+    });
 });
