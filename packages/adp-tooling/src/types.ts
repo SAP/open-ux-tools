@@ -127,15 +127,6 @@ export interface CodeExtChange extends CommonChangeProperties {
     };
 }
 
-export const enum FolderTypes {
-    CHANGES = 'changes',
-    FRAGMENTS = 'fragments',
-    CODING = 'coding',
-    MANIFEST = 'manifest',
-    ANNOTATIONS = 'annotations',
-    WEBAPP = 'webapp'
-}
-
 export const enum TemplateFileName {
     Fragment = 'fragment.xml',
     Controller = 'controller.ejs'

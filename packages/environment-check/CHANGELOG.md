@@ -1,5 +1,29 @@
 # @sap-ux/environment-check
 
+## 0.16.44
+
+### Patch Changes
+
+-   b6c9a6ab: Provide a Guided Answers link for TR 403
+
+## 0.16.43
+
+### Patch Changes
+
+-   f0e3263a: Adds missing constants entries, refactor duplicate constants, use project-access const instead
+-   Updated dependencies [f0e3263a]
+    -   @sap-ux/project-access@1.19.6
+    -   @sap-ux/axios-extension@1.11.4
+
+## 0.16.42
+
+### Patch Changes
+
+-   Updated dependencies [efa35ddd]
+    -   @sap-ux/ui5-config@0.22.1
+    -   @sap-ux/project-access@1.19.5
+    -   @sap-ux/axios-extension@1.11.4
+
 ## 0.16.41
 
 ### Patch Changes
