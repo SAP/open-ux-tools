@@ -1,5 +1,30 @@
 # @sap-ux/project-access
 
+## 1.19.6
+
+### Patch Changes
+
+-   f0e3263a: Adds missing constants entries, refactor duplicate constants, use project-access const instead
+
+## 1.19.5
+
+### Patch Changes
+
+-   Updated dependencies [efa35ddd]
+    -   @sap-ux/ui5-config@0.22.1
+
+## 1.19.4
+
+### Patch Changes
+
+-   87c942e5: Remove setting of cds.root.
+
+## 1.19.3
+
+### Patch Changes
+
+-   89013210: Revert setting of cds.root
+
 ## 1.19.2
 
 ### Patch Changes

@@ -3,7 +3,7 @@ import path from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { existsSync, readFileSync, readdirSync } from 'fs';
 
-import { FolderTypes } from '../types';
+import { DirName } from '@sap-ux/project-access';
 import type {
     AdpProjectData,
     AnnotationsData,
@@ -36,9 +36,9 @@ export function writeAnnotationChange(
     try {
         const { timestamp, annotation } = data;
         const changeFileName = `id_${timestamp}_addAnnotationsToOData.change`;
-        const changesFolderPath = path.join(projectPath, FolderTypes.WEBAPP, FolderTypes.CHANGES);
-        const changeFilePath = path.join(changesFolderPath, FolderTypes.MANIFEST, changeFileName);
-        const annotationsFolderPath = path.join(changesFolderPath, FolderTypes.ANNOTATIONS);
+        const changesFolderPath = path.join(projectPath, DirName.Webapp, DirName.Changes);
+        const changeFilePath = path.join(changesFolderPath, DirName.Manifest, changeFileName);
+        const annotationsFolderPath = path.join(changesFolderPath, DirName.Annotations);
 
         writeChangeToFile(changeFilePath, change, fs);
 
@@ -75,7 +75,7 @@ export function writeChangeToFolder(
     dir = ''
 ): void {
     try {
-        let targetFolderPath = path.join(projectPath, FolderTypes.WEBAPP, FolderTypes.CHANGES);
+        let targetFolderPath = path.join(projectPath, DirName.Webapp, DirName.Changes);
 
         if (dir) {
             targetFolderPath = path.join(targetFolderPath, dir);
@@ -150,12 +150,7 @@ export function findChangeWithInboundId(projectPath: string, inboundId: string):
     let changeObj: InboundChange | undefined;
     let filePath = '';
 
-    const pathToInboundChangeFiles = path.join(
-        projectPath,
-        FolderTypes.WEBAPP,
-        FolderTypes.CHANGES,
-        FolderTypes.MANIFEST
-    );
+    const pathToInboundChangeFiles = path.join(projectPath, DirName.Webapp, DirName.Changes, DirName.Manifest);
 
     if (!existsSync(pathToInboundChangeFiles)) {
         return {
@@ -209,7 +204,7 @@ export function getGenericChange(
 
     return {
         fileName,
-        namespace: path.posix.join(projectData.namespace, FolderTypes.CHANGES),
+        namespace: path.posix.join(projectData.namespace, DirName.Changes),
         layer: projectData.layer,
         fileType: 'change',
         creation: new Date(timestamp).toISOString(),

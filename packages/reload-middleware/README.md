@@ -28,7 +28,7 @@ When this middleware is used together with the `preview-middleware`, then the or
 ## Configuration Examples
 
 ### [Minimal configuration](#minimal-configuration)
-In order to use the middleware this is the minimal configuration that you need to provide in the `ui5.yaml` of your application. By default all files under the `webapp` folder with the following extensions `['html', 'js', 'ts', 'json','xml', 'properties', 'change', 'variant', 'ctrl_variant', 'ctrl_variant_change', 'ctrl_variant_management_change']` will be watched. The `livereload` server is started on port `35729`.
+In order to use the middleware this is the minimal configuration that you need to provide in the `ui5.yaml` of your application. By default all files under the `webapp` folder with the following extensions `['html', 'js', 'ts', 'json','xml', 'properties', 'change', 'variant', 'appdescr_variant', 'ctrl_variant', 'ctrl_variant_change', 'ctrl_variant_management_change']` will be watched. The `livereload` server is started on port `35729`.
 
 ```YAML
 server:

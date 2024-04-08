@@ -38,3 +38,9 @@ export interface FioriAppReloadConfig {
     path: string;
     delay: number;
 }
+
+export interface ServeStaticPath {
+    path: string;
+    src: string;
+    fallthrough: boolean;
+}

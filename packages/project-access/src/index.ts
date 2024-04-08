@@ -1,4 +1,4 @@
-export { FileName } from './constants';
+export { FileName, DirName } from './constants';
 export { getFilePaths } from './file';
 export {
     createApplicationAccess,
