@@ -1,7 +1,8 @@
 import type { Editor } from 'mem-fs-editor';
-import { TemplateFileName, FolderTypes } from '../types';
+import { TemplateFileName } from '../types';
 import type { AddXMLChange, CommonChangeProperties, CodeExtChange } from '../types';
 import { join } from 'path';
+import { DirName } from '@sap-ux/project-access';
 import type { Logger } from '@sap-ux/logger';
 
 /**
@@ -56,7 +57,7 @@ export function isAddXMLChange(change: CommonChangeProperties): change is AddXML
  */
 export function addXmlFragment(basePath: string, change: AddXMLChange, fs: Editor, logger: Logger): void {
     const { fragmentPath } = change.content;
-    const fullPath = join(basePath, FolderTypes.CHANGES, fragmentPath);
+    const fullPath = join(basePath, DirName.Changes, fragmentPath);
 
     try {
         if (fs.exists(fullPath)) {
