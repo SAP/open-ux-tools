@@ -12,7 +12,6 @@ import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { createProjectAccess } from '@sap-ux/project-access';
 import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import { initTelemetrySettings, ClientFactory, SampleRate, EventName } from '@sap-ux/telemetry';
-import { enableTelemetry } from '@sap-ux-private/control-property-editor-common';
 import { generateImportList, mergeTestConfigDefaults } from './test';
 
 const DEVELOPER_MODE_CONFIG = new Map([
@@ -147,6 +146,7 @@ export class FlpSandbox {
     public readonly rta?: RtaConfig;
     public readonly test?: TestConfig[];
     public readonly router: EnhancedRouter;
+    private telemetryInitialized = false;
 
     /**
      * Constructor setting defaults and keeping reference to workspace resources.
@@ -335,28 +335,36 @@ export class FlpSandbox {
     }
 
     private addTelemetryRoute() {
-        enableTelemetry();
         this.router.post(
             PREVIEW_URL.telemetry,
             json(),
             async (req: Request, res: Response, next: NextFunction): Promise<void> => {
                 try {
-                    await initTelemetrySettings({
-                        consumerModule: { name: '@sap-ux/preview-middleware', version: '0.13.2' },
-                        internalFeature: false,
-                        watchTelemetrySettingStore: false
-                    });
+                    if (!this.telemetryInitialized) {
+                        await initTelemetrySettings({
+                            consumerModule: { name: '@sap-ux/preview-middleware', version: '0.13.2' },
+                            internalFeature: false,
+                            watchTelemetrySettingStore: false,
+                            resourceId: process.env.AZURE_INSTRUMENTATION_KEY
+                        });
+                        this.telemetryInitialized = true;
+                        this.logger.info('Telemetry initialized.');
+                    }
+
                     const data = req.body;
+
                     const telemetryEvent = {
-                        eventName: EventName.CPE_EVENT,
+                        eventName: EventName.ADP_EVENT,
                         properties: data,
                         measurements: {}
                     };
                     ClientFactory.getTelemetryClient().reportEvent(telemetryEvent, SampleRate.NoSampling, {
                         appPath: process.cwd()
                     });
+                    this.logger.info(`Telemetry reported with data: ${JSON.stringify(telemetryEvent)}`);
                     res.status(200).contentType('json').send({ updatedTelemetry: true });
                 } catch (error) {
+                    this.logger.error(`Could not send telemetry report. ${error}`);
                     next(error);
                 }
             }
