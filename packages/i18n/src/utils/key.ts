@@ -14,12 +14,12 @@ export function extractI18nKey(input: string, key = 'i18n'): string {
 }
 
 /**
- * Extracts the mustache key from the given input.
+ * Extracts double curly brackets key from the given input.
  *
- * @param input string to extract the mustache key from
- * @returns extracted mustache key
+ * @param input string to extract the double curly brackets key from
+ * @returns extracted key
  */
-export function extractMustacheKey(input: string): string {
+export function extractDoubleCurlyBracketsKey(input: string): string {
     const data = input.trim();
     return data.substring(2, data.length - 2).trim();
 }

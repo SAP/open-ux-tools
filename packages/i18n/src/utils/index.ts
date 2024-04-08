@@ -11,5 +11,5 @@ export {
     convertToCamelCase,
     convertToPascalCase
 } from './text';
-export { extractI18nKey, getI18nUniqueKey, extractMustacheKey } from './key';
+export { extractI18nKey, getI18nUniqueKey, extractDoubleCurlyBracketsKey } from './key';
 export { readFile, writeFile } from './mem-fs-editor';

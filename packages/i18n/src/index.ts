@@ -6,7 +6,7 @@ export {
     getI18nMaxLength,
     getI18nTextType,
     extractI18nKey,
-    extractMustacheKey,
+    extractDoubleCurlyBracketsKey,
     getI18nUniqueKey,
     convertToCamelCase,
     convertToPascalCase,

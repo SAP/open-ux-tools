@@ -1,4 +1,4 @@
-import { extractI18nKey, getI18nUniqueKey, extractMustacheKey } from '../../../src';
+import { extractI18nKey, getI18nUniqueKey, extractDoubleCurlyBracketsKey } from '../../../src';
 import type { I18nEntry, I18nBundle } from '../../../src';
 import { Range } from '../../../src/parser/utils';
 
@@ -45,12 +45,12 @@ describe('key', () => {
             expect(result).toEqual('generalInformation');
         });
     });
-    describe('extractMustacheKey', () => {
+    describe('extractDoubleCurlyBracketsKey', () => {
         test('case 1: without space', () => {
             // arrange
             const input = '{{generalInformation}}';
             // act
-            const result = extractMustacheKey(input);
+            const result = extractDoubleCurlyBracketsKey(input);
             // assert
             expect(result).toEqual('generalInformation');
         });
@@ -58,7 +58,7 @@ describe('key', () => {
             // arrange
             const input = ' {{ generalInformation }} ';
             // act
-            const result = extractMustacheKey(input);
+            const result = extractDoubleCurlyBracketsKey(input);
             // assert
             expect(result).toEqual('generalInformation');
         });
