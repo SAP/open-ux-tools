@@ -299,6 +299,24 @@ exports[`UI5Config addMockServerMiddleware add with given path 1`] = `
 "
 `;
 
+exports[`UI5Config addMockServerMiddleware add with path and annotationsConfig 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /~testpath~
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations:
+          - localPath: ./webapp/annotations/annotations.xml
+            urlPath: annotations.xml
+"
+`;
+
 exports[`UI5Config addMockServerMiddleware add without path 1`] = `
 "server:
   customMiddleware:

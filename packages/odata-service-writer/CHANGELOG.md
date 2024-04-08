@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.16.4
+
+### Patch Changes
+
+-   1ec097f8: append annotations to ui5-mock.yaml during creation.
+
 ## 0.16.3
 
 ### Patch Changes
