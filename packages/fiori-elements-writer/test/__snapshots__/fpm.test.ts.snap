@@ -128,7 +128,9 @@ server:
             metadataPath: ./webapp/localService/metadata.xml
             mockdataPath: ./webapp/localService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/annotations/annotation.xml
+            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
@@ -3846,7 +3848,9 @@ server:
             metadataPath: ./webapp/localService/metadata.xml
             mockdataPath: ./webapp/localService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/annotations/annotation.xml
+            urlPath: annotations/annotation.xml
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
