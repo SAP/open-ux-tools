@@ -116,14 +116,14 @@ export class UICheckbox extends React.Component<UICheckboxProps, {}> {
             checkbox: {
                 backgroundColor: 'var(--vscode-debugToolBar-background, var(--vscode-editorWidget-background))',
                 borderColor: 'var(--vscode-editorWidget-border)',
-                opacity: props.disabled ? 0.4 : 1
+                opacity: props.disabled ? 0.4 : undefined
             },
             checkmark: {
                 color: 'var(--vscode-checkbox-foreground, var(--vscode-editorWidget-foreground))'
             },
             text: {
                 color: 'var(--vscode-foreground)',
-                opacity: props.disabled ? 0.4 : 1
+                opacity: props.disabled ? 0.4 : undefined
             }
         };
     };
