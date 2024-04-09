@@ -246,6 +246,9 @@ export async function checkTransportRequests(
         }
     } catch (e) {
         logger.error(t('error.getTransportRequestsError'));
+        if (e.response?.status === 403) {
+            logger.warn(t('warning.guidedAnswersLink'));
+        }
         logger.debug(e.message);
     }
     return {

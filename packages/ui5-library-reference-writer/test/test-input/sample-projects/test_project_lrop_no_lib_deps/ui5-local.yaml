@@ -1,0 +1,21 @@
+specVersion: '1.0'
+metadata:
+    name: testapp
+type: application
+server:
+    customMiddleware:
+        - name: fiori-tools-proxy
+          afterMiddleware: compression
+          configuration:
+              ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+              backend:
+                  - path: /sap
+                    url: http://test.url.com:50017
+        - name: fiori-tools-servestatic
+          afterMiddleware: compression
+          configuration:
+              paths:
+                  - path: /resources/targetapp
+                    src: /targetapp/webapp
+                  - path: /appconfig
+                    src: /srcapp/appconfig

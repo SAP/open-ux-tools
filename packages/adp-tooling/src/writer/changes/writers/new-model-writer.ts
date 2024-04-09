@@ -1,6 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 
-import { ChangeType, FolderTypes } from '../../../types';
+import { ChangeType } from '../../../types';
+import { DirName } from '@sap-ux/project-access';
 import type { IWriter, NewModelData, DataSourceItem } from '../../../types';
 import { parseStringToObject, getGenericChange, writeChangeToFolder } from '../../../base/change-utils';
 
@@ -84,7 +85,7 @@ export class NewModelWriter implements IWriter<NewModelData> {
             change,
             `id_${data.timestamp}_addNewModel.change`,
             this.fs,
-            FolderTypes.MANIFEST
+            DirName.Manifest
         );
     }
 }
