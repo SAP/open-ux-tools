@@ -185,7 +185,7 @@ export const prettyPrintTimeInMs = (ms: number): string => {
  *
  * @param e error thrown by Axios after sending a request
  * @param e.error error from Axios
- * @param e.host hostname
+ * @param e.host optional hostname
  * @param e.log logger to be used
  * @param e.isDest optional destination flag
  */
@@ -204,7 +204,7 @@ export function logError({
     if (isAxiosError(error) && error.response?.data) {
         const errorMessage = getErrorMessageFromString(error.response?.data);
         if (errorMessage) {
-            prettyPrintError({ error: errorMessage, host: host, log: log, isDest: isDest });
+            prettyPrintError({ error: errorMessage, host, log: log, isDest: isDest });
         } else {
             log.error(error.response.data.toString());
         }
