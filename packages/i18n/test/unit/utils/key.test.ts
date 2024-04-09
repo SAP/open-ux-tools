@@ -62,6 +62,22 @@ describe('key', () => {
             // assert
             expect(result).toEqual('generalInformation');
         });
+        test('case 3: missing or wrong double curly', () => {
+            // arrange
+            const input = '{generalInformation}';
+            // act
+            const result = extractDoubleCurlyBracketsKey(input);
+            // assert
+            expect(result).toBeUndefined();
+        });
+        test('case 4: empty content', () => {
+            // arrange
+            const input = '{{}}';
+            // act
+            const result = extractDoubleCurlyBracketsKey(input);
+            // assert
+            expect(result).toEqual('');
+        });
     });
     describe('getI18nUniqueKey', () => {
         const range = Range.create(0, 0, 0, 0);

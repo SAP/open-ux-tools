@@ -13,14 +13,21 @@ export function extractI18nKey(input: string, key = 'i18n'): string {
     return input.replace(regPattern, '').replace(/\}$/gm, '').trim();
 }
 
+function doesDoubleCurlyBracketsExist(input: string): boolean {
+    return input.startsWith('{{') && input.endsWith('}}');
+}
+
 /**
  * Extracts double curly brackets key from the given input.
  *
  * @param input string to extract the double curly brackets key from
- * @returns extracted key
+ * @returns extracted key or undefined if open and closing double curly bracket does not exist
  */
-export function extractDoubleCurlyBracketsKey(input: string): string {
+export function extractDoubleCurlyBracketsKey(input: string): string | undefined {
     const data = input.trim();
+    if (!doesDoubleCurlyBracketsExist(data)) {
+        return;
+    }
     return data.substring(2, data.length - 2).trim();
 }
 
