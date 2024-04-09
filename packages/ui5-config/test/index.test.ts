@@ -9,6 +9,12 @@ describe('UI5Config', () => {
         destinationInstance = '~destinationInstance~',
         client = '012';
 
+    const annotationsConfig = [
+        {
+            localPath: './webapp/annotations/annotations.xml',
+            urlPath: 'annotations.xml'
+        }
+    ];
     // object under test
     let ui5Config: UI5Config;
     beforeEach(async () => {
@@ -206,6 +212,10 @@ describe('UI5Config', () => {
 
         test('add without path', () => {
             ui5Config.addMockServerMiddleware();
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+        test('add with path and annotationsConfig', () => {
+            ui5Config.addMockServerMiddleware(path, annotationsConfig);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
     });
