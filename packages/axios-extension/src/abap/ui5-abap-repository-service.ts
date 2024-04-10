@@ -1,4 +1,4 @@
-import type { AxiosResponse, AxiosRequestConfig } from 'axios';
+import { type AxiosResponse, type AxiosRequestConfig } from 'axios';
 import { logError, getErrorMessageFromString, prettyPrintError, prettyPrintMessage } from './message';
 import { ODataService } from '../base/odata-service';
 import { isAxiosError } from '../base/odata-request-error';
@@ -218,7 +218,7 @@ export class Ui5AbapRepositoryService extends ODataService {
             }
             return response;
         } catch (error) {
-            logError({ error, host: frontendUrl, log: this.log });
+            logError({ error, host: frontendUrl, log: this.log, isDest: this.isDest });
             throw error;
         }
     }
