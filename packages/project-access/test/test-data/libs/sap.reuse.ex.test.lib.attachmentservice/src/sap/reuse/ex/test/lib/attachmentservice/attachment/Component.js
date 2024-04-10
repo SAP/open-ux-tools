@@ -1,12 +1,12 @@
-sap.ui.define(['sap/ui/core/UIComponent'], function(UIComponent) {
+sap.ui.define(['sap/ui/core/UIComponent'], function (UIComponent) {
     'use strict';
 
     //test hello
-    var Component = UIComponent.extend('sap.se.mi.plm.lib.attachmentservice.attachment.Component', {
+    var Component = UIComponent.extend('sap.reuse.ex.test.lib.attachmentservice.attachment.Component', {
         metadata: {
             id: 'attachmentServiceComponent',
             manifest: 'json',
-            library: 'sap.se.mi.plm.lib.attachmentservice',
+            library: 'sap.reuse.ex.test.lib.attachmentservice',
             publicMethods: ['save', 'cancel', 'refresh', 'getApplicationState', 'getAttachmentCount'],
             properties: {
                 mode: {
@@ -86,22 +86,22 @@ sap.ui.define(['sap/ui/core/UIComponent'], function(UIComponent) {
                 ondelete: {}
             }
         },
-        createContent: function() {
+        createContent: function () {
             this.page = new sap.ui.view({
                 id: 'attachmentService',
-                viewName: 'sap.se.mi.plm.lib.attachmentservice.attachment.view.Attachment',
+                viewName: 'sap.reuse.ex.test.lib.attachmentservice.attachment.view.Attachment',
                 type: sap.ui.core.mvc.ViewType.XML
             });
             return this.page;
         },
-        setProperty: function(sName, oValue) {
+        setProperty: function (sName, oValue) {
             sap.ui.core.UIComponent.prototype.setProperty.apply(this, arguments);
         },
-        setMode: function(value) {
+        setMode: function (value) {
             this.setProperty('mode', value);
             this.page.getController().setModeProperty(value);
         },
-        setObjectKey: function(value) {
+        setObjectKey: function (value) {
             this.setProperty('objectKey', value);
             this.page
                 .getController()
@@ -113,7 +113,7 @@ sap.ui.define(['sap/ui/core/UIComponent'], function(UIComponent) {
                     this.getDocumentType()
                 );
         },
-        setObjectType: function(value) {
+        setObjectType: function (value) {
             this.setProperty('objectType', value);
             this.page
                 .getController()
@@ -125,7 +125,7 @@ sap.ui.define(['sap/ui/core/UIComponent'], function(UIComponent) {
                     this.getDocumentType()
                 );
         },
-        setSapObjectType: function(value) {
+        setSapObjectType: function (value) {
             this.setProperty('sapObjectType', value);
             this.page
                 .getController()
@@ -138,7 +138,7 @@ sap.ui.define(['sap/ui/core/UIComponent'], function(UIComponent) {
                     this.getSapObjectType()
                 );
         },
-        setSapObjectNodeType: function(value) {
+        setSapObjectNodeType: function (value) {
             this.setProperty('sapObjectNodeType', value);
             this.page
                 .getController()
@@ -152,54 +152,54 @@ sap.ui.define(['sap/ui/core/UIComponent'], function(UIComponent) {
                     this.getSapObjectNodeType()
                 );
         },
-        setAttributeHanding: function(value) {
+        setAttributeHanding: function (value) {
             this.page.getController().setAttributes(value);
         },
-        getAttributes: function() {
+        getAttributes: function () {
             return this.page.getController().getAttributeList();
         },
 
-        setAttributes: function(attr) {
+        setAttributes: function (attr) {
             this.page.getController().setAttributes(attr);
         },
-        setDocumentType: function(value) {
+        setDocumentType: function (value) {
             this.page.getController().setDocTypeProperty(value);
         },
 
-        save: function(isReferesh, callback) {
+        save: function (isReferesh, callback) {
             return this.page.getController().commitChanges(isReferesh, callback);
         },
-        cancel: function(isReferesh, callback) {
+        cancel: function (isReferesh, callback) {
             return this.page.getController().cancelChanges(isReferesh, callback);
         },
-        refresh: function(asMode, objectType, objectKey, semanticObject, sapObjectType, sapObjectNodeType) {
+        refresh: function (asMode, objectType, objectKey, semanticObject, sapObjectType, sapObjectNodeType) {
             this.page
                 .getController()
                 .setProperties(asMode, objectType, objectKey, semanticObject, null, sapObjectType, sapObjectNodeType);
         },
-        getApplicationState: function(callback) {
+        getApplicationState: function (callback) {
             return this.page.getController().getApplicationState(callback);
         },
 
-        getAttachmentCount: function(callback) {
+        getAttachmentCount: function (callback) {
             return this.page.getController().getAttachmentCount(callback);
         },
-        getAllAttachments: function(attachmentList, callBack, suppressLogDownload) {
+        getAllAttachments: function (attachmentList, callBack, suppressLogDownload) {
             return this.page.getController().onDownloadAll(attachmentList, callBack, suppressLogDownload);
         },
-        downloadSingleAttachment: function(oParameters, downloadFromRep) {
+        downloadSingleAttachment: function (oParameters, downloadFromRep) {
             return this.page.getController().downloadDirectAttachments([oParameters], downloadFromRep);
         },
-        downloadMultipleAttachments: function(aParams, downloadFromRep) {
+        downloadMultipleAttachments: function (aParams, downloadFromRep) {
             return this.page.getController().downloadDirectAttachments(aParams, downloadFromRep);
         },
-        uploadFiles: function(oUploaderModel, callBack) {
+        uploadFiles: function (oUploaderModel, callBack) {
             return this.page.getController().uploadFiles(oUploaderModel, callBack);
         },
-        checkOutFile: function(oCheckoutModel, callBack) {
+        checkOutFile: function (oCheckoutModel, callBack) {
             return this.page.getController().checkOut(oCheckoutModel, callBack);
         },
-        getAttachmentsByAlternateKey: function(objectType, objectKey, semanticObject, callBack) {
+        getAttachmentsByAlternateKey: function (objectType, objectKey, semanticObject, callBack) {
             return this.page
                 .getController()
                 .getAttachmentsByAlternateKey(objectType, objectKey, semanticObject, callBack);

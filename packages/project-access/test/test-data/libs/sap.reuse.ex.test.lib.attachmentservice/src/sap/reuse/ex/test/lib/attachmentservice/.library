@@ -2,7 +2,7 @@
 <library xmlns="http://www.sap.com/sap.ui.library.xsd" >
     <title>{{title}}</title>
     <documentation>{{description}}</documentation>
-	<name>sap.se.mi.plm.lib.attachmentservice</name>
+	<name>sap.reuse.ex.test.lib.attachmentservice</name>
 	<vendor>SAP SE</vendor>
 	<version>${version}</version>
 	<copyright>${copyright}</copyright>
@@ -19,14 +19,14 @@
             <archeType>reusecomponent</archeType>
          </sap.fiori>
          <sap.platform.abap>
-            <uri>/sap/bc/bsp/sap/plm_ath_cres1/</uri>
+            <uri>/sap/reuse/ex/sap/test/</uri>
          </sap.platform.abap>
          <sap.platform.hcp>
             <uri></uri>
          </sap.platform.hcp>
 	  </manifest>     
 	  <ownership xmlns="http://www.sap.com/ui5/buildext/ownership">
-          <component>PLM-FIO-DMS</component>
+          <component>TEST-COMP</component>
 	  </ownership> 
 	</appData>
 	<dependencies>
@@ -34,7 +34,7 @@
 			<libraryName>sap.ui.core</libraryName>
 		</dependency>
 		<dependency>
-			 <libraryName>sap.s4h.cfnd.featuretoggle</libraryName>
+			 <libraryName>sap.test.feature</libraryName>
 		</dependency>		
 	    <dependency>
 	        <libraryName>sap.m</libraryName>

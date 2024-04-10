@@ -3,18 +3,18 @@
  */
 
 /**
- * Initialization Code and shared classes of library sap.se.mi.plm.lib.attachmentservice.
+ * Initialization Code and shared classes of library sap.reuse.ex.test.lib.attachmentservice.
  */
 sap.ui.define(
     ['jquery.sap.global', 'sap/ui/core/library'], // library dependency
-    function(jQuery) {
+    function (jQuery) {
         'use strict';
 
         /**
          *
          *
          * @namespace
-         * @name sap.se.mi.plm.lib.test
+         * @name sap.reuse.ex.test.lib.test
          * @author SAP SE
          * @version ${version}
          * @public
@@ -22,17 +22,17 @@ sap.ui.define(
 
         // delegate further initialization of this library to the Core
         sap.ui.getCore().initLibrary({
-            name: 'sap.se.mi.plm.lib.attachmentservice',
+            name: 'sap.reuse.ex.test.lib.attachmentservice',
             version: '${version}',
             noLibraryCSS: true,
-            dependencies: ['sap.ui.core', 'sap.m', 'sap.s4h.cfnd.featuretoggle'],
+            dependencies: ['sap.ui.core', 'sap.m', 'sap.test.feature'],
             types: [],
             interfaces: [],
-            controls: ['sap.se.mi.plm.lib.attachmentservice.controls.Example'],
+            controls: ['sap.reuse.ex.test.lib.attachmentservice.controls.Example'],
             elements: []
         });
 
-        return sap.se.mi.plm.lib.attachmentservice;
+        return sap.reuse.ex.test.lib.attachmentservice;
     },
     /* bExport= */ false
 );

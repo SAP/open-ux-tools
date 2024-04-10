@@ -1,8 +1,9 @@
 import type { ListQuestion } from 'inquirer';
 import { initI18n, t } from '../../../src/i18n';
 import { getQuestions } from '../../../src/prompts/';
-import { promptNames, ReuseLibType } from '../../../src/types';
+import { promptNames } from '../../../src/types';
 import type { CheckBoxQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import { ReuseLibType } from '@sap-ux/project-access';
 
 describe('getQuestions', () => {
     beforeAll(async () => {

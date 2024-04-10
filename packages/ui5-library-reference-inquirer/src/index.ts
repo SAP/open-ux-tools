@@ -2,8 +2,13 @@ import { type InquirerAdapter } from '@sap-ux/inquirer-common';
 import inquirer, { type Question } from 'inquirer';
 import { getQuestions } from './prompts';
 import type { UI5LibraryReferenceAnswers, UI5LibraryReferencePromptOptions } from './types';
-import { findFioriArtifacts, type FioriArtifactTypes, type WorkspaceFolder } from '@sap-ux/project-access';
-import { getLibraryChoices, getProjectChoices } from './prompts/helpers';
+import {
+    getLibraryChoices,
+    findFioriArtifacts,
+    type FioriArtifactTypes,
+    type WorkspaceFolder
+} from '@sap-ux/project-access';
+import { getProjectChoices } from './projects';
 
 /**
  * Get the inquirer prompts for ui5 library inquirer.

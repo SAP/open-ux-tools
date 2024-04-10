@@ -1,10 +1,11 @@
 import { t } from '../i18n';
-import { SourceType } from '../constants';
+import { SourceType } from './constants';
 import { type CheckBoxQuestion, type ListQuestion } from '@sap-ux/inquirer-common';
 import type { ListChoiceOptions } from 'inquirer';
-import { checkDependencies, extendWithOptions, hidePrompts } from './helpers';
-import type { ReuseLibChoice, UI5LibraryReferenceAnswers, UI5LibraryReferencePromptOptions } from '../types';
+import { extendWithOptions, hidePrompts } from './helpers';
+import type { UI5LibraryReferenceAnswers, UI5LibraryReferencePromptOptions } from '../types';
 import { promptNames, type UI5LibraryReferenceQuestion } from '../types';
+import { checkDependencies, type ReuseLibChoice } from '@sap-ux/project-access';
 
 /**
  * Get the prompts for the UI5 library reference writing.
