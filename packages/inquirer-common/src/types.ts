@@ -10,7 +10,6 @@ import type {
     PromptModule,
     Question
 } from 'inquirer';
-import type { AsyncDynamicQuestionProperty } from 'inquirer';
 
 export interface UI5VersionChoice extends ListChoiceOptions {
     /**
@@ -87,8 +86,3 @@ export interface CheckBoxQuestion<A extends Answers = Answers> extends BaseCheck
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
 }
-
-// Default value type for input prompt options
-export type PromptDefaultValue<T> = {
-    default?: AsyncDynamicQuestionProperty<T>;
-};

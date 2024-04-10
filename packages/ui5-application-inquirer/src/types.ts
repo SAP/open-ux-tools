@@ -1,10 +1,5 @@
-import type {
-    PromptDefaultValue,
-    PromptSeverityMessage,
-    UI5VersionChoice,
-    YUIQuestion,
-    validate
-} from '@sap-ux/inquirer-common';
+import type { PromptSeverityMessage, UI5VersionChoice, YUIQuestion, validate } from '@sap-ux/inquirer-common';
+import type { AsyncDynamicQuestionProperty } from 'inquirer';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 
 export interface UI5ApplicationAnswers {
@@ -119,6 +114,11 @@ type DefaultValueConfirmPrompts =
     | promptNames.enableEslint
     | promptNames.skipAnnotations
     | promptNames.enableTypeScript;
+
+// Default value type for input prompt options
+export type PromptDefaultValue<T> = {
+    default?: AsyncDynamicQuestionProperty<T>;
+};
 
 /**
  * Defines prompt/question default values and/or whether or not they should be shown.

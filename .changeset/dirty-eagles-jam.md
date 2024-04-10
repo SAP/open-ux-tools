@@ -1,6 +1,5 @@
 ---
 '@sap-ux/ui5-library-reference-inquirer': patch
-'@sap-ux/ui5-application-inquirer': patch
 '@sap-ux/inquirer-common': patch
 '@sap-ux/project-access': patch
 ---
