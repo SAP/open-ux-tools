@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.11.5
+
+### Patch Changes
+
+-   1db4c60c: FIX: use correct url for reentrance tickets and enhance config to support it
+
 ## 1.11.4
 
 ### Patch Changes
