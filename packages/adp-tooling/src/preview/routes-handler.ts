@@ -3,6 +3,7 @@ import * as os from 'os';
 import * as path from 'path';
 import { renderFile } from 'ejs';
 import sanitize from 'sanitize-filename';
+import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { ReaderCollection, Resource } from '@ui5/fs';
@@ -219,10 +220,13 @@ export default class RoutesHandler {
                 return;
             }
 
+            const isRunningInBAS = isAppStudio();
+
             this.sendFilesResponse(res, {
                 controllerExists,
                 controllerPath: os.platform() === 'win32' ? `/${controllerPath}` : controllerPath,
-                controllerPathFromRoot
+                controllerPathFromRoot,
+                isRunningInBAS
             });
             this.logger.debug(
                 controllerExists
