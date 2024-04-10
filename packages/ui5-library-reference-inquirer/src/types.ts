@@ -1,5 +1,6 @@
 import type { PromptSeverityMessage, validate, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { ReuseLib } from '@sap-ux/project-access';
+import { ListChoiceOptions } from 'inquirer';
 /**
  * Enumeration of prompt names used by UI5LibraryReferencePromptOptions
  *
@@ -54,7 +55,7 @@ export type UI5LibraryReferencePromptOptions = Partial<stringValuePromptOptions>
 /**
  * Choice for the reuse library
  */
-export interface ReuseLibChoice {
+export interface ReuseLibChoice extends ListChoiceOptions {
     name: string;
     value: ReuseLib;
 }
