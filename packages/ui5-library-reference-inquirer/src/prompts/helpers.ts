@@ -104,7 +104,7 @@ export function extendWithOptions(
 
             for (const extProp of propsToExtend) {
                 if (extProp === 'validate' || extProp === 'additionalMessages') {
-                    question = applyExtensionFunction(question, promptOpt as CommonPromptOptions, extProp);
+                    question = applyExtensionFunction(question, promptOpt, extProp);
                 }
             }
         }
