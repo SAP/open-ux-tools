@@ -50,3 +50,11 @@ export interface UI5LibraryReferenceAnswers {
 export type UI5LibraryReferenceQuestion = YUIQuestion<UI5LibraryReferenceAnswers>;
 
 export type UI5LibraryReferencePromptOptions = Partial<stringValuePromptOptions>;
+
+/**
+ * Choice for the reuse library
+ */
+export interface ReuseLibChoice {
+    name: string;
+    value: ReuseLib;
+}

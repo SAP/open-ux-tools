@@ -1,2 +1,2 @@
 export * from './types';
-export { getLibraryChoices, checkDependencies } from './helpers';
+export { getReuseLibs, checkDependencies } from './helpers';

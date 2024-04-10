@@ -1,11 +1,11 @@
 import { join } from 'path';
-import { checkDependencies, getLibraryChoices, getLibraryDesc, getManifestDesc } from '../../src/library/helpers';
+import { checkDependencies, getReuseLibs, getLibraryDesc, getManifestDesc } from '../../src/library/helpers';
 import * as manifestJson from '../test-data/libs/sap.reuse.ex.test.lib.attachmentservice/src/sap/reuse/ex/test/lib/attachmentservice/manifest.json';
 import type { Manifest, ReuseLib } from '../../src';
 
 describe('library utils', () => {
     test('should return library choices', async () => {
-        const libChoices = await getLibraryChoices([
+        const libChoices = await getReuseLibs([
             {
                 projectRoot: join(__dirname, '../test-data/libs/sap.reuse.ex.test.lib.attachmentservice'),
                 manifestPath: join(
@@ -21,19 +21,12 @@ describe('library utils', () => {
         ]);
 
         expect(libChoices).toHaveLength(4);
-
         libChoices.sort((a, b) => a.name.localeCompare(b.name));
 
-        expect(libChoices[0].name).toBe('sap.reuse.ex.test.lib.attachmentservice - library');
-        expect(libChoices[1].name).toBe(
-            'sap.reuse.ex.test.lib.attachmentservice.attachment - component - UI Library for Fiori Reuse Attachment Service'
-        );
-        expect(libChoices[2].name).toBe(
-            'sap.reuse.ex.test.lib.attachmentservice.attachment.components.fscomponent - component - UI Library for Fiori Reuse Attachment Service'
-        );
-        expect(libChoices[3].name).toBe(
-            'sap.reuse.ex.test.lib.attachmentservice.attachment.components.stcomponent - component - UI Library for Fiori Reuse Attachment Service'
-        );
+        expect(libChoices[0].name).toBe('sap.reuse.ex.test.lib.attachmentservice');
+        expect(libChoices[1].name).toBe('sap.reuse.ex.test.lib.attachmentservice.attachment');
+        expect(libChoices[2].name).toBe('sap.reuse.ex.test.lib.attachmentservice.attachment.components.fscomponent');
+        expect(libChoices[3].name).toBe('sap.reuse.ex.test.lib.attachmentservice.attachment.components.stcomponent');
     });
 
     test('should return missing dependencies', async () => {

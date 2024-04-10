@@ -13,12 +13,5 @@ export interface ReuseLib {
     uri: string;
     dependencies: string[];
     libRoot: string;
-}
-
-/**
- * Choice for the reuse library
- */
-export interface ReuseLibChoice {
-    name: string;
-    value: ReuseLib;
+    description?: string;
 }

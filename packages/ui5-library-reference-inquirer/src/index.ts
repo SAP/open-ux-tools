@@ -3,12 +3,12 @@ import inquirer, { type Question } from 'inquirer';
 import { getQuestions } from './prompts';
 import type { UI5LibraryReferenceAnswers, UI5LibraryReferencePromptOptions } from './types';
 import {
-    getLibraryChoices,
+    getReuseLibs,
     findFioriArtifacts,
     type FioriArtifactTypes,
     type WorkspaceFolder
 } from '@sap-ux/project-access';
-import { getProjectChoices } from './projects';
+import { getProjectChoices, getLibraryChoices } from './choices';
 
 /**
  * Get the inquirer prompts for ui5 library inquirer.
@@ -26,9 +26,10 @@ async function getPrompts(
         artifacts: ['applications', 'libraries'] as FioriArtifactTypes[]
     };
     const fioriArtifacts = await findFioriArtifacts(options);
+    const reuseLibs = await getReuseLibs(fioriArtifacts?.libraries);
 
     const projectChoices = await getProjectChoices(fioriArtifacts?.applications);
-    const libraryChoices = await getLibraryChoices(fioriArtifacts?.libraries);
+    const libraryChoices = await getLibraryChoices(reuseLibs);
 
     return getQuestions(projectChoices, libraryChoices, promptOptions);
 }

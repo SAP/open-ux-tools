@@ -2,122 +2,113 @@ import { join } from 'path';
 import { ui5Libs } from './constants';
 import propertiesReader from 'properties-reader';
 import type { LibraryResults, Manifest } from '../types';
-import { ReuseLibType, type ReuseLibChoice, type ReuseLib } from './types';
+import { ReuseLibType, type ReuseLib } from './types';
 import { findFiles } from '../file';
 import { FileName } from '../constants';
 import { existsSync, promises as fs } from 'fs';
 import { XMLParser } from 'fast-xml-parser';
 
 /**
- * Reads the manifest file and creates a library choice option.
+ * Reads the manifest file and returns the reuse library.
  *
  * @param manifest - manifest file content
  * @param manifestPath - path to the manifest file
- * @param libraryChoiceOptions - existing library choice options
+ * @param reuseLibs - existing reuse libraries
  * @param projectRoot - root of the project
- * @returns library choice option or undefined
+ * @returns reuse library or undefined
  */
-const getLibraryChoiceFromManifest = async (
+const getLibraryFromManifest = async (
     manifest: Manifest,
     manifestPath: string,
-    libraryChoiceOptions: ReuseLibChoice[],
+    reuseLibs: ReuseLib[],
     projectRoot: string
-): Promise<ReuseLibChoice | undefined> => {
-    let reuseLibChoice;
+): Promise<ReuseLib | undefined> => {
+    let reuseLib;
     const manifestType = manifest['sap.app']?.type;
     if ((manifestType === 'component' || manifestType === 'library') && manifestPath) {
         const reuseType = getReuseType(manifestPath);
         const libDeps = getManifestDependencies(manifest);
-        const libName = [manifest['sap.app'].id, reuseType, getManifestDesc(manifest, manifestPath)]
-            .filter(Boolean)
-            .join(' - ');
-        const libIndex = libraryChoiceOptions.findIndex(
-            (libChoice) => libChoice.value.name === manifest?.['sap.app'].id
-        );
+        const description = getManifestDesc(manifest, manifestPath);
+
+        const libIndex = reuseLibs.findIndex((reuseLib) => reuseLib.name === manifest?.['sap.app'].id);
         if (libIndex === -1) {
-            reuseLibChoice = {
-                name: libName,
-                value: {
-                    name: `${manifest['sap.app'].id}`,
-                    path: manifestPath,
-                    type: reuseType,
-                    uri: manifest['sap.platform.abap']?.uri ?? '',
-                    dependencies: libDeps,
-                    libRoot: projectRoot
-                }
+            reuseLib = {
+                name: `${manifest['sap.app'].id}`,
+                path: manifestPath,
+                type: reuseType,
+                uri: manifest['sap.platform.abap']?.uri ?? '',
+                dependencies: libDeps,
+                libRoot: projectRoot,
+                description
             };
         }
     }
-    return reuseLibChoice;
+
+    return reuseLib;
 };
 
 /**
- * Reads library file and creates a library choice option.
+ * Reads library file and returns a reuse lib object.
  *
  * @param library - library file content
  * @param libraryPath - path to the library file
  * @param projectRoot - root of the project
- * @returns library choice option or undefined
+ * @returns reuse library or undefined
  */
-const getLibraryChoiceFromLibrary = async (
+const getLibraryFromLibraryFile = async (
     library: string,
     libraryPath: string,
     projectRoot: string
-): Promise<ReuseLibChoice | undefined> => {
+): Promise<ReuseLib | undefined> => {
     let libEntry;
     const parsedFile = new XMLParser({ removeNSPrefix: true }).parse(library, false);
     if (parsedFile?.library?.name) {
         const manifestType = parsedFile?.library ? 'library' : 'component';
         if (manifestType === 'component' || manifestType === 'library') {
             const reuseType = getReuseType(libraryPath);
-
             const libDeps = getLibraryDependencies(parsedFile);
-            const libName = [parsedFile.library.name, reuseType, getLibraryDesc(parsedFile, libraryPath)]
-                .filter(Boolean)
-                .join(' - ');
-
+            const description = getLibraryDesc(parsedFile, libraryPath);
             libEntry = {
-                name: libName,
-                value: {
-                    name: `${parsedFile.library.name}`,
-                    path: libraryPath,
-                    type: reuseType,
-                    uri: parsedFile.library?.appData?.manifest?.['sap.platform.abap']?.uri || '',
-                    dependencies: libDeps,
-                    libRoot: projectRoot
-                }
+                name: `${parsedFile.library.name}`,
+                path: libraryPath,
+                type: reuseType,
+                uri: parsedFile.library?.appData?.manifest?.['sap.platform.abap']?.uri || '',
+                dependencies: libDeps,
+                libRoot: projectRoot,
+                description
             };
         }
     }
+
     return libEntry;
 };
 
 /**
- * Updates the library choice options with the new library choice.
+ * Updates the library options with the new library.
  *
- * @param libraryChoiceOptions - existing library choice options
- * @param libraryChoice - new library choice
+ * @param reuseLibs - existing library options
+ * @param reuseLib - new library
  */
-const updateLibChoiceOptions = (libraryChoiceOptions: ReuseLibChoice[], libraryChoice?: ReuseLibChoice): void => {
-    if (libraryChoice) {
-        const libIndex = libraryChoiceOptions.findIndex((lib) => lib.value.name === libraryChoice.value.name);
+const updateLibOptions = (reuseLibs: ReuseLib[], reuseLib?: ReuseLib): void => {
+    if (reuseLib) {
+        const libIndex = reuseLibs.findIndex((lib) => lib.name === reuseLib.name);
         if (libIndex >= 0) {
             // replace
-            libraryChoiceOptions[libIndex] = libraryChoice;
+            reuseLibs[libIndex] = reuseLib;
         } else {
-            libraryChoiceOptions.push(libraryChoice);
+            reuseLibs.push(reuseLib);
         }
     }
 };
 
 /**
- * Creates the list choice options for the reuse libraries.
+ * Returns an array of the reuse libraries found in the folders.
  *
  * @param libs - array of libraries found in the workspace folders.
- * @returns list of library choices
+ * @returns list of reuse library
  */
-export const getLibraryChoices = async (libs?: LibraryResults[]): Promise<ReuseLibChoice[]> => {
-    const libraryChoiceOptions: ReuseLibChoice[] = [];
+export const getReuseLibs = async (libs?: LibraryResults[]): Promise<ReuseLib[]> => {
+    const reuseLibs: ReuseLib[] = [];
 
     if (libs) {
         for (const lib of libs) {
@@ -129,14 +120,9 @@ export const getLibraryChoices = async (libs?: LibraryResults[]): Promise<ReuseL
                 const manifest = JSON.parse(
                     await fs.readFile(join(manifestPath, FileName.Manifest), { encoding: 'utf8' })
                 );
-                const libraryChoice = await getLibraryChoiceFromManifest(
-                    manifest,
-                    manifestPath,
-                    libraryChoiceOptions,
-                    lib.projectRoot
-                );
-                if (libraryChoice) {
-                    libraryChoiceOptions.push(libraryChoice);
+                const library = await getLibraryFromManifest(manifest, manifestPath, reuseLibs, lib.projectRoot);
+                if (library) {
+                    reuseLibs.push(library);
                 }
             }
 
@@ -145,12 +131,12 @@ export const getLibraryChoices = async (libs?: LibraryResults[]): Promise<ReuseL
                     await fs.readFile(join(libraryPath, FileName.Library), { encoding: 'utf8' })
                 ).toString();
 
-                const libraryChoice = await getLibraryChoiceFromLibrary(library, libraryPath, lib.projectRoot);
-                updateLibChoiceOptions(libraryChoiceOptions, libraryChoice);
+                const libFile = await getLibraryFromLibraryFile(library, libraryPath, lib.projectRoot);
+                updateLibOptions(reuseLibs, libFile);
             }
         }
     }
-    return libraryChoiceOptions;
+    return reuseLibs;
 };
 
 /**
@@ -247,7 +233,7 @@ export function getLibraryDependencies(library: any): string[] {
 function getI18nProperty(i18nPath: string, property: string): string {
     try {
         const libProperties = propertiesReader(i18nPath);
-        return libProperties.get(property)?.toString() || '';
+        return libProperties.get(property)?.toString() ?? '';
     } catch (e) {
         return '';
     }
@@ -264,10 +250,13 @@ export function getManifestDesc(manifest: Manifest, projectPath: string): string
     const manifestDesc = manifest['sap.app']?.description;
     if (typeof manifestDesc === 'string' && manifestDesc.startsWith('{{')) {
         const desc = manifestDesc.replace(/(^{{)|(}}$)/g, '');
-        return getI18nProperty(join(projectPath, manifest['sap.app']?.i18n?.toString()), desc).toString();
+        const i18n = manifest['sap.app']?.i18n?.toString();
+        if (i18n) {
+            return getI18nProperty(join(projectPath, i18n), desc).toString();
+        }
     }
 
-    return (manifestDesc || '').toString();
+    return (manifestDesc ?? '').toString();
 }
 
 /**
@@ -278,18 +267,23 @@ export function getManifestDesc(manifest: Manifest, projectPath: string): string
  */
 export function getManifestDependencies(manifest: Manifest): string[] {
     const result: string[] = [];
+
     Object.values(['libs', 'components']).forEach((reuseType) => {
-        if (manifest['sap.ui5']?.dependencies?.[reuseType]) {
-            Object.keys(manifest['sap.ui5'].dependencies['libs']).forEach((manifestLibKey) => {
-                // ignore libs that start with SAPUI5 delivered namespaces
-                if (
-                    !ui5Libs.some((substring) => {
-                        return manifestLibKey === substring || manifestLibKey.startsWith(substring + '.');
-                    })
-                ) {
-                    result.push(manifestLibKey);
-                }
-            });
+        const dependencies = (manifest['sap.ui5']?.dependencies as { [k: string]: any } | undefined)?.[reuseType];
+        if (dependencies) {
+            const libs = manifest?.['sap.ui5']?.dependencies?.libs;
+            if (libs) {
+                Object.keys(libs).forEach((manifestLibKey) => {
+                    // ignore libs that start with SAPUI5 delivered namespaces
+                    if (
+                        !ui5Libs.some((substring) => {
+                            return manifestLibKey === substring || manifestLibKey.startsWith(substring + '.');
+                        })
+                    ) {
+                        result.push(manifestLibKey);
+                    }
+                });
+            }
         }
     });
 
