@@ -3,7 +3,8 @@
     "include": ["../../types/mem-fs-editor.d.ts", "src"],
     "compilerOptions": {
         "rootDir": "src",
-        "outDir": "dist"
+        "outDir": "dist",
+        "strict": false
     },
     "references": [
         {

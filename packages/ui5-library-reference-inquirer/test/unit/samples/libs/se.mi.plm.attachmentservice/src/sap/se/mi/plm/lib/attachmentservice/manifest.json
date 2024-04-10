@@ -1,0 +1,82 @@
+{
+  "_version": "1.1.0",
+
+  "sap.app": {
+    "_version": "1.1.0",
+    "id": "sap.se.mi.plm.lib.attachmentservice",
+    "type": "library",
+    "embeds": ["attachment", "attachment/components/stcomponent", "attachment/components/fscomponent"],
+    "i18n": "attachment/i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "${project.version}"
+    },
+    "title": "{{title}}",
+    "description": "{{description}}",
+    "ach": "PLM-FIO-DMS",
+    "dataSources": {
+      "CV_ATTACHMENT_SRV_Entities": {
+        "uri": "/sap/opu/odata/sap/CV_ATTACHMENT_SRV/"
+      }
+    },
+    "resources": "resources.json",
+    "offline": false
+  },
+  "sap.ui": {
+    "_version": "1.1.0",
+
+    "technology": "UI5",
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    },
+    "supportedThemes": ["sap_hcb", "sap_bluecrystal", "sap_belize"]
+  },
+
+  "sap.ui5": {
+    "_version": "1.1.0",
+    "rootView": {
+      "viewName": "sap.se.mi.plm.lib.attachmentservice.attachment.view.Attachment",
+      "type": "XML",
+      "id": "attachmentService"
+    },
+    "autoPrefixId": true,
+    "dependencies": {
+      "minUI5Version": "1.30.0",
+      "libs": {
+        "sap.ui.core": {
+          "minUI5Version": "1.30.0"
+        },
+        "sap.s4h.cfnd.featuretoggle": {
+          "minVersion": "11.19.0-SNAPSHOT",
+          "lazy": false
+        }
+      }
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "sap.se.mi.plm.lib.attachmentservice.attachment.i18n.i18n"
+        }
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": false
+    }
+  },
+  "sap.platform.abap": {
+    "_version": "1.1.0",
+    "uri": "/sap/bc/bsp/sap/plm_ath_cres1/"
+  },
+  "sap.platform.hcp": {
+    "_version": "1.1.0",
+    "uri": ""
+  },
+  "sap.fiori": {
+    "_version": "1.1.0",
+    "registrationIds": ["F1243"],
+    "archeType": "reusecomponent"
+  }
+}

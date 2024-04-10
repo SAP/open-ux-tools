@@ -1,4 +1,4 @@
-import type { YUIQuestion, validate } from '@sap-ux/inquirer-common';
+import type { YUIQuestion, validate, PromptDefaultValue } from '@sap-ux/inquirer-common';
 import { extendAdditionalMessages } from '@sap-ux/inquirer-common';
 import { existsSync } from 'fs';
 import type { Answers, Question } from 'inquirer';
@@ -8,7 +8,6 @@ import { defaultProjectNumber, t } from '../i18n';
 import {
     promptNames,
     type CommonPromptOptions,
-    type PromptDefaultValue,
     type UI5ApplicationAnswers,
     type UI5ApplicationPromptOptions,
     type UI5ApplicationQuestion
