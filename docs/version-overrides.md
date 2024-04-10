@@ -94,3 +94,22 @@ No fix available for `http-proxy` to upgrade to latest `follow-redirects`
 `socks` updated to no longer use `ip`, but `socks-proxy-agent` not upgraded to use the latest `socks`
 
 `@storybook/core-server` involves major version upgrade to consume the `ip` module fix
+
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ high                │ Path traversal in webpack-dev-middleware               │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ webpack-dev-middleware                                 │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ >=6.0.0 <6.1.2                                         │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=6.1.2                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ packages/ui-components >                               │
+│                     │ @storybook/react-webpack5@7.4.3 >                      │
+│                     │ @storybook/builder-webpack5@7.4.3 >                    │
+│                     │ webpack-dev-middleware@6.1.1                           │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-wr3j-pwj9-hqq6      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
+
+No fix available for `@storybook/builder-webpack5` to upgrade to latest `webpack-dev-middleware`

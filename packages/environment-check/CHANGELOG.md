@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.16.44
+
+### Patch Changes
+
+-   b6c9a6ab: Provide a Guided Answers link for TR 403
+
 ## 0.16.43
 
 ### Patch Changes
