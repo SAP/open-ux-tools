@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.15.12
+
+### Patch Changes
+
+-   8b0e0418: Fixed styling for disabled UICheckbox.
+
 ## 1.15.11
 
 ### Patch Changes
