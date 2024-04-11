@@ -1,5 +1,29 @@
 # @sap-ux/deploy-tooling
 
+## 0.14.11
+
+### Patch Changes
+
+-   1db4c60c: FIX: use correct url for reentrance tickets and enhance config to support it
+-   Updated dependencies [1db4c60c]
+    -   @sap-ux/axios-extension@1.11.5
+    -   @sap-ux/system-access@0.3.19
+
+## 0.14.10
+
+### Patch Changes
+
+-   dd0edf60: hide stack trace on error
+
+## 0.14.9
+
+### Patch Changes
+
+-   Updated dependencies [efa35ddd]
+    -   @sap-ux/ui5-config@0.22.1
+    -   @sap-ux/axios-extension@1.11.4
+    -   @sap-ux/system-access@0.3.18
+
 ## 0.14.8
 
 ### Patch Changes

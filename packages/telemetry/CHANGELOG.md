@@ -1,5 +1,26 @@
 # @sap-ux/telemetry
 
+## 0.4.13
+
+### Patch Changes
+
+-   68c7c6e8: Fix coding style based on sonar scan
+
+## 0.4.12
+
+### Patch Changes
+
+-   Updated dependencies [f0e3263a]
+    -   @sap-ux/project-access@1.19.6
+
+## 0.4.11
+
+### Patch Changes
+
+-   Updated dependencies [efa35ddd]
+    -   @sap-ux/ui5-config@0.22.1
+    -   @sap-ux/project-access@1.19.5
+
 ## 0.4.10
 
 ### Patch Changes
