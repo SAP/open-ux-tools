@@ -31,20 +31,22 @@
     ],
     "dependencies": {
         "@sap-ux/btp-utils": "workspace:*",
+        "@sap-ux/feature-toggle": "workspace:*",
+        "@sap-ux/telemetry": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap/wing-service-explorer": "1.8.0",
-        "inquirer-autocomplete-prompt": "2.0.1",
         "i18next": "23.5.1",
-        "lodash": "4.17.21"
+        "os-name": "4.0.1",
+        "semver": "7.5.4"
     },
     "devDependencies": {
         "@sap-ux/odata-service-writer": "workspace:*",
         "@sap-devx/yeoman-ui-types": "1.14.4",
         "@types/inquirer-autocomplete-prompt": "2.0.1",
         "@types/inquirer": "8.2.6",
-        "@types/lodash": "4.14.202"
+        "@types/semver": "7.5.4"
     },
     "engines": {
         "node": ">=18.x"

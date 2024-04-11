@@ -24,35 +24,35 @@ describe('getQuestions', () => {
         // jest.restoreAllMocks() only works when the mock was created with jest.spyOn().
         jest.restoreAllMocks();
     });
-    test('getQuestions, no options', () => {
+    test('getQuestions, no options', async () => {
         // Tests all declaritive values
-        expect(getQuestions()).toMatchInlineSnapshot(`
+        expect(await getQuestions()).toMatchInlineSnapshot(`
             [
               {
                 "additionalMessages": [Function],
                 "choices": [
                   {
                     "name": "Connect to a SAP System",
-                    "value": "SAP_SYSTEM",
+                    "value": "sap_system",
                   },
                   {
                     "name": "Connect to an OData Service Url",
-                    "value": "ODATA_SERVICE_URL",
+                    "value": "odata_service_url",
                   },
                   {
                     "name": "Connect to SAP Business Accelerator Hub",
-                    "value": "BUSINESS_HUB",
+                    "value": "business_hub",
                   },
                   {
                     "name": "Use a Local CAP Project",
-                    "value": "CAP_PROJECT",
+                    "value": "cap_project",
                   },
                   {
                     "name": "Upload a Metadata File",
-                    "value": "METADATA_FILE",
+                    "value": "metadata_file",
                   },
                 ],
-                "default": "SAP_SYSTEM",
+                "default": -1,
                 "guiOptions": {
                   "breadcrumb": true,
                 },
@@ -72,26 +72,70 @@ describe('getQuestions', () => {
                 "validate": [Function],
                 "when": [Function],
               },
+              {
+                "choices": [Function],
+                "default": [Function],
+                "guiOptions": {
+                  "applyDefaultWhenDirty": true,
+                  "breadcrumb": "CAP Project",
+                  "mandatory": true,
+                },
+                "message": "Choose your CAP project",
+                "name": "capProject",
+                "type": "list",
+                "when": [Function],
+              },
+              {
+                "default": [Function],
+                "guiOptions": {
+                  "breadcrumb": "CAP Project",
+                  "mandatory": true,
+                },
+                "guiType": "folder-browser",
+                "message": "CAP project folder path",
+                "name": "capProjectPath",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "choices": [Function],
+                "default": [Function],
+                "guiOptions": {
+                  "applyDefaultWhenDirty": true,
+                  "breadcrumb": true,
+                  "mandatory": true,
+                },
+                "message": "OData service",
+                "name": "capService",
+                "type": "list",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "name": "capCliMetadata",
+                "when": [Function],
+              },
             ]
         `);
 
         // Test that default is correctly set by options
-        expect(getQuestions({ datasourceType: { default: DatasourceType.CAP_PROJECT } })[0]).toMatchObject({
-            default: DatasourceType.CAP_PROJECT
+        expect((await getQuestions({ datasourceType: { default: DatasourceType.cap_project } }))[0]).toMatchObject({
+            default: DatasourceType.cap_project
         });
         // Test that additional choices are added by options: 'includeNone'
-        expect(getQuestions({ datasourceType: { includeNone: true } })[0]).toMatchObject({
+        expect((await getQuestions({ datasourceType: { includeNone: true } }))[0]).toMatchObject({
             choices: expect.arrayContaining([
-                { name: t('prompts.datasourceType.noneName'), value: DatasourceType.NONE }
+                { name: t('prompts.datasourceType.noneName'), value: DatasourceType.none }
             ])
         });
         jest.spyOn(btpUtils, 'isAppStudio').mockReturnValueOnce(true);
         // Test that additional choices are added by options: 'includeProjectSpecificDest'
-        expect(getQuestions({ datasourceType: { includeProjectSpecificDest: true } })[0]).toMatchObject({
+        expect((await getQuestions({ datasourceType: { includeProjectSpecificDest: true } }))[0]).toMatchObject({
             choices: expect.arrayContaining([
                 {
                     name: t('prompts.datasourceType.projectSpecificDestChoiceText'),
-                    value: DatasourceType.PROJECT_SPECIFIC_DESTINATION
+                    value: DatasourceType.project_specific_destination
                 }
             ])
         });

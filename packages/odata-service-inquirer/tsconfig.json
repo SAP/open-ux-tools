@@ -13,6 +13,9 @@
       "path": "../btp-utils"
     },
     {
+      "path": "../feature-toggle"
+    },
+    {
       "path": "../inquirer-common"
     },
     {
@@ -23,6 +26,9 @@
     },
     {
       "path": "../project-access"
+    },
+    {
+      "path": "../telemetry"
     }
   ]
 }

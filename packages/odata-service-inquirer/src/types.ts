@@ -3,17 +3,23 @@ import type { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import type { AsyncDynamicQuestionProperty, ListChoiceOptions } from 'inquirer';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import type { CapCustomPaths } from '@sap-ux/project-access';
+import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 
 export enum DatasourceType {
-    SAP_SYSTEM = 'SAP_SYSTEM',
-    BUSINESS_HUB = 'BUSINESS_HUB',
-    CAP_PROJECT = 'CAP_PROJECT',
-    ODATA_SERVICE_URL = 'ODATA_SERVICE_URL',
-    NONE = 'NONE',
-    METADATA_FILE = 'METADATA_FILE',
-    PROJECT_SPECIFIC_DESTINATION = 'PROJECT_SPECIFIC_DESTINATION'
+    sap_system = 'sap_system',
+    buiness_hub = 'business_hub',
+    cap_project = 'cap_project',
+    odata_service_url = 'odata_service_url',
+    none = 'none',
+    metadata_file = 'metadata_file',
+    project_specific_destination = 'project_specific_destination'
 }
 
+/**
+ * Answers returned by the OdataServiceInquirer prompt API,
+ * these answers are used to generate the OData service and may be derived from the user's input rather than direct answers.
+ *
+ */
 export interface OdataServiceAnswers {
     /**
      * The data source type answer.
@@ -27,10 +33,56 @@ export interface OdataServiceAnswers {
 
     /**
      * The selected CAP service.
-     *
      */
-    capProject?: CapProjectChoice;
+    capService?: CapService;
 
+    /**
+     * The odata version of the selected service.
+     */
+    odataVersion?: OdataVersion;
+
+    /**
+     * The service path of the selected service.
+     */
+    servicePath?: string;
+}
+
+/**
+ * Enumeration of prompt names used by OdataServiceInquirerPromptOptions
+ *
+ */
+export enum promptNames {
+    /**
+     * Data source type
+     */
+    datasourceType = 'datasourceType',
+    metadata = 'metadata',
+    capProject = 'capProject',
+    capService = 'capService'
+}
+
+/**
+ * Enumeration of internal prompt names used internally and not supported for modification using OdataServiceInquirerPromptOptions
+ *
+ */
+enum internalPromptNames {
+    capProjectPath = 'capProjectPath',
+    capCliMetdata = 'capCliMetadata'
+}
+
+export const servicePromptNames = { ...promptNames, ...internalPromptNames };
+
+/**
+ * Answers to CAP service prompts
+ *
+ */
+export interface CapServiceAnswers extends CapService {
+    [servicePromptNames.capProject]: CapProjectChoice['value'];
+    [servicePromptNames.capProjectPath]: string;
+    [servicePromptNames.capService]: CapServiceChoice['value'];
+}
+
+export interface OdataServicePromptAnswers extends CapServiceAnswers {
     /**
      * The base URL of the OData service. Typically the host and port of the service url.
      */
@@ -85,19 +137,6 @@ export interface OdataServiceAnswers {
     version?: OdataVersion;
 }
 
-/**
- * Enumeration of prompt names used by OdataServiceInquirerPromptOptions
- *
- */
-export enum promptNames {
-    /**
-     * Data source type
-     */
-    datasourceType = 'datasourceType',
-    metadata = 'metadata',
-    capProject = 'capProject'
-}
-
 export type DatasourceTypePromptOptions = {
     /**
      * Default datasource type
@@ -120,27 +159,46 @@ export type MetadataPromptOptions = {
     requiredOdataVersion?: OdataVersion;
 };
 
-export type WorkspaceFolder = {
+export type CapProjectRootPath = {
     folderName: string;
     path: string;
 };
+export type CapProjectPaths = CapProjectRootPath & CapCustomPaths;
 export interface CapProjectChoice extends ListChoiceOptions {
-    value: (WorkspaceFolder & CapCustomPaths) | string;
+    value: CapProjectPaths | string;
 }
+
+export type CapRuntime = 'Node.js' | 'Java';
 export interface CapService {
     projectPath: string; // The CAP Project Root
     serviceName: string;
     serviceCdsPath?: string; // relative path to cap service cds file
+    capType?: CapRuntime;
+    urlPath?: string; // URL path to the service
+    appPath?: string; // Path to the app folder
+}
+
+export interface CapServiceChoice extends ListChoiceOptions {
+    value: CapService;
 }
 
 export type CapProjectPromptOptions = {
     /**
-     * The search paths for the CAP projects
+     * The search paths for the CAP projects, this is a mandatory option as searching the entire file system is not recommended.
      */
-    capSearchPaths?: string[];
-    default?: CapService;
+    capSearchPaths: string[];
+    /**
+     * The default selected CAP project choice, this is used to pre-select a CAP project based on the CAP project path.
+     */
+    defaultChoice?: string;
 };
 
+export type CapServicePromptOptions = {
+    /**
+     * The default selected CAP service choice, this is used to pre-select a CAP service based on the specified CAP service.
+     */
+    defaultChoice?: CapService;
+};
 /**
  * These are boolean value prompt option keys
  */
@@ -178,14 +236,15 @@ export type CommonPromptOptions = {
 };
 
 /**
- * Provide the correct type checking for string value prompts and `ui5Version` options
+ * Provide the correct type checking for object value prompt options
  *
  */
 type objectValuePromptOptions =
     /* Record<stringValuePrompts, CommonPromptOptions> & */
     Record<promptNames.datasourceType, DatasourceTypePromptOptions> &
         Record<promptNames.metadata, MetadataPromptOptions> &
-        Record<promptNames.capProject, CommonPromptOptions>;
+        Record<promptNames.capProject, CapProjectPromptOptions> &
+        Record<promptNames.capService, CapServicePromptOptions>;
 
 /* &
     Record<DefaultValueConfirmPrompts, PromptDefaultValue<boolean>> */ /* export type UI5ApplicationQuestion = YUIQuestion<OdataServiceAnswers> &
@@ -195,3 +254,44 @@ export type OdataServiceQuestion = YUIQuestion<OdataServiceAnswers> &
     Partial<Pick<AutocompleteQuestionOptions, 'source'>>;
 
 export type OdataServicePromptOptions = Partial<objectValuePromptOptions>;
+
+export const PLATFORMS = {
+    VSCODE: {
+        name: 'Visual Studio Code',
+        technical: 'VSCode'
+    },
+    SBAS: {
+        name: 'SAP Business Application Studio',
+        technical: 'SBAS'
+    },
+    CLI: {
+        name: 'CLI',
+        technical: 'CLI'
+    }
+};
+
+/**
+ * Implementation of IValidationLink interface.
+ * Provides a toString() for serialization on CLI since IValidationLink rendering is only supported by YeomanUI.
+ */
+export class ValidationLink implements IValidationLink {
+    // Having to redeclare properties from an interface should not be required see: https://github.com/Microsoft/TypeScript/issues/5326
+    message: IValidationLink['message'];
+    link: IValidationLink['link'];
+
+    /**
+     * Constructor for ValidationLink.
+     *
+     * @param validationLink The validation link object to be used for serialization
+     */
+    constructor(validationLink: IValidationLink) {
+        Object.assign(this, validationLink);
+    }
+
+    /**
+     * Serialize the validation link object to a string.
+     *
+     * @returns The validation link object as a string
+     */
+    public toString = (): string => `${this.message} ${this.link.text}${this.link.url ? ' : ' + this.link.url : ''}`;
+}

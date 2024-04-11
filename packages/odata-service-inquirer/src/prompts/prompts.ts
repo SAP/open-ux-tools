@@ -11,6 +11,7 @@ import {
 } from '../types';
 import { getMetadataFileQuestion } from './datasources/metadata-file';
 import { extendWithOptions, getDatasourceTypeChoices } from './prompt-helpers';
+import { getLocalCapProjectPrompts } from './datasources/cap-project/questions';
 
 /**
  * Get the prompts for the OData service inquirer.
@@ -18,11 +19,11 @@ import { extendWithOptions, getDatasourceTypeChoices } from './prompt-helpers';
  * @param promptOptions
  * @returns the prompts used to provide input for OData service generation
  */
-export function getQuestions(promptOptions?: OdataServicePromptOptions): OdataServiceQuestion[] {
+export async function getQuestions(promptOptions?: OdataServicePromptOptions): Promise<OdataServiceQuestion[]> {
     let questions: OdataServiceQuestion[] = [getDatasourceTypeQuestion(promptOptions?.datasourceType)];
 
     // Add conditional questions depending on the selected source
-    questions.push(...getDatasourceTypeConditionalQuestions(promptOptions));
+    questions.push(...(await getDatasourceTypeConditionalQuestions(promptOptions)));
 
     // Apply extended `validate`, `additionalMessages` or override `default` prompt properties
     if (promptOptions) {
@@ -46,11 +47,11 @@ function getDatasourceTypeQuestion(options?: DatasourceTypePromptOptions): YUIQu
         guiOptions: {
             breadcrumb: true
         },
-        default: DatasourceType.SAP_SYSTEM,
+        default: options?.default ?? -1,
         message: t('prompts.datasourceType.message'),
         choices,
         additionalMessages: (source) => {
-            if (source === DatasourceType.BUSINESS_HUB) {
+            if (source === DatasourceType.buiness_hub) {
                 return {
                     message: t('prompts.nonUIServiceTypeWarningMessage', {
                         serviceTypeDesc: t('prompts.datasourceType.businessHubName')
@@ -68,13 +69,22 @@ function getDatasourceTypeQuestion(options?: DatasourceTypePromptOptions): YUIQu
  * @param promptOptions
  * @returns
  */
-function getDatasourceTypeConditionalQuestions(promptOptions?: OdataServicePromptOptions): OdataServiceQuestion[] {
+async function getDatasourceTypeConditionalQuestions(
+    promptOptions?: OdataServicePromptOptions
+): Promise<OdataServiceQuestion[]> {
     const conditionalQuestions: OdataServiceQuestion[] = [];
 
     conditionalQuestions.push(
         ...(withCondition(
             [getMetadataFileQuestion(promptOptions?.metadata) as Question],
-            (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.METADATA_FILE
+            (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.metadata_file
+        ) as OdataServiceQuestion[])
+    );
+
+    conditionalQuestions.push(
+        ...(withCondition(
+            getLocalCapProjectPrompts(promptOptions) as Question[],
+            (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.cap_project
         ) as OdataServiceQuestion[])
     );
 

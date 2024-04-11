@@ -1,6 +1,7 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { extendAdditionalMessages, extendValidate, type YUIQuestion } from '@sap-ux/inquirer-common';
 import type { ListChoiceOptions } from 'inquirer';
+import { ErrorHandler } from '../error-handler/errorHandler';
 import { t } from '../i18n';
 import {
     DatasourceType,
@@ -11,6 +12,8 @@ import {
     type PromptDefaultValue,
     type promptNames
 } from '../types';
+// Error handling is a cross-cutting concern and should be handled in a single place.
+export const errorHandler = new ErrorHandler();
 
 /**
  * Extend the existing prompt property function with the one specified in prompt options or add as new.
@@ -39,7 +42,7 @@ function applyExtensionFunction(
     return question;
 }
 /**
- * Updates questions with extensions for specific properties. Only `validate`, `default` and `additionalMessages` are currently supported.
+ * Updates questions with extensions for specific properties.
  *
  * @param questions - array of prompts to be extended
  * @param promptOptions - the prompt options possibly containing function extensions
@@ -56,7 +59,7 @@ export function extendWithOptions(questions: YUIQuestion[], promptOptions: Odata
                 if (extProp === 'validate' || extProp === 'additionalMessages') {
                     question = applyExtensionFunction(question, promptOpt as CommonPromptOptions, extProp);
                 }
-                // Provided defaults will override built in defaults
+                // Provided default will override built in defaults, regardless of the default type (function or value)
                 const defaultOverride = (promptOptions[promptOptKey] as PromptDefaultValue<string | boolean>).default;
                 if (defaultOverride) {
                     question.default = defaultOverride;
@@ -82,27 +85,27 @@ export function getDatasourceTypeChoices({
     const choices: ListChoiceOptions[] = [
         {
             name: t('prompts.datasourceType.sapSystemChoiceText'),
-            value: DatasourceType.SAP_SYSTEM
+            value: DatasourceType.sap_system
         },
         {
             name: t('prompts.datasourceType.odataServiceUrlChoiceText'),
-            value: DatasourceType.ODATA_SERVICE_URL
+            value: DatasourceType.odata_service_url
         },
-        { name: t('prompts.datasourceType.businessHubChoiceText'), value: DatasourceType.BUSINESS_HUB }
+        { name: t('prompts.datasourceType.businessHubChoiceText'), value: DatasourceType.buiness_hub }
     ];
 
     if (isAppStudio() && includeProjectSpecificDest) {
         choices.push({
             name: t('prompts.datasourceType.projectSpecificDestChoiceText'),
-            value: DatasourceType.PROJECT_SPECIFIC_DESTINATION
+            value: DatasourceType.project_specific_destination
         });
     }
 
-    choices.push({ name: t('prompts.datasourceType.capProjectChoiceText'), value: DatasourceType.CAP_PROJECT });
-    choices.push({ name: t('prompts.datasourceType.metadataFileChoiceText'), value: DatasourceType.METADATA_FILE });
+    choices.push({ name: t('prompts.datasourceType.capProjectChoiceText'), value: DatasourceType.cap_project });
+    choices.push({ name: t('prompts.datasourceType.metadataFileChoiceText'), value: DatasourceType.metadata_file });
 
     if (includeNone) {
-        choices.unshift({ name: t('prompts.datasourceType.noneName'), value: DatasourceType.NONE });
+        choices.unshift({ name: t('prompts.datasourceType.noneName'), value: DatasourceType.none });
     }
 
     return choices;
@@ -114,6 +117,6 @@ export function getDatasourceTypeChoices({
  * across prompts statically for the lifespan of the prompting session.
  *
  */
-export default class PromptHelper {
+export class PromptStateHelper {
     static odataService: Partial<OdataServiceAnswers> = {};
 }

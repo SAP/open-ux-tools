@@ -55,7 +55,6 @@ export function withCondition(questions: Question[], condition: (answers: Answer
     return questions;
 }
 
-// TODO: Move to inquirer-common and add generic type support
 /**
  * Extends a validate function.
  *

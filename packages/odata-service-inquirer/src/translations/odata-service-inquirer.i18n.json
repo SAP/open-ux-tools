@@ -26,6 +26,18 @@
             "breadcrumb": "CAP Project",
             "enterCapPathChoiceName": "Manually select CAP project folder path"
         },
+        "capProjectPath": {
+            "message": "CAP project folder path",
+            "description": "Select a local CAP project",
+            "breadcrumb": "CAP Project",
+            "enterCapPathChoiceName": "Manually select CAP project folder path"
+        },
+        "capService": {
+            "message": "OData service",
+            "description": "Select a local CAP service",
+            "breadcrumb": "CAP Service",
+            "enterCapPathChoiceName": "Manually select CAP service folder path"
+        },
         "validationMessages": {
             "odataVersionMismatch": "The template you have chosen supports V{{requiredOdataVersion}} OData services only. The provided version is V{{providedOdataVersion}}.",
             "metadataInvalid": "The service metadata is invalid.",
@@ -33,5 +45,11 @@
             "capProjectNotFound": "The folder you have selected does not seem to contain a valid CAP project. Please check and try again."
         },
         "nonUIServiceTypeWarningMessage": "Please note that {{serviceTypeDesc}} services are not intended to be used for the generation of SAP Fiori UI applications"
+    },
+    "errors": {
+        "capServiceUrlPathNotDefined": "The CAP service path URL is not defined for service: {{serviceName}}"
+    },
+    "telemetry": {
+        "unknownOsText": "Unknown"
     }
 }

@@ -3,7 +3,7 @@ import { t } from '../i18n';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { MetadataFactory } from '@sap/wing-service-explorer';
 import LoggerHelper from './logger-helper';
-import PromptHelper from './prompt-helpers';
+import { PromptStateHelper } from './prompt-helpers';
 
 /**
  * Validator function to verify if the specified metadata edmx version matches the specified required odata version.
@@ -55,8 +55,8 @@ export const validateMetadataFile = async (path: string, odataVersion?: OdataVer
         if (validationMsg) {
             return validationMsg;
         }
-        PromptHelper.odataService.metadata = metadataFile;
-        PromptHelper.odataService.odataVersion = version;
+        PromptStateHelper.odataService.metadata = metadataFile;
+        PromptStateHelper.odataService.odataVersion = version;
     } catch (error) {
         return t('prompts.validationMessages.metadataFilePathNotValid');
     }

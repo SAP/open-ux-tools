@@ -1,40 +1,171 @@
-import type { ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { FileBrowserQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
+import { getCapCustomPaths } from '@sap-ux/project-access';
 import { t } from '../../../i18n';
-import type { CapProjectChoice, CapProjectPromptOptions } from '../../../types';
-import { promptNames, type OdataServiceAnswers } from '../../../types';
-import { getCapWorkspaceChoices } from './cap-helper';
+import type {
+    CapProjectChoice,
+    CapProjectPaths,
+    CapProjectRootPath,
+    CapServiceAnswers,
+    CapServiceChoice,
+    OdataServicePromptAnswers,
+    OdataServicePromptOptions
+} from '../../../types';
+import { PLATFORMS, promptNames, servicePromptNames } from '../../../types';
+import { getPlatform } from '../../../utils';
+import { PromptStateHelper, errorHandler } from '../../prompt-helpers';
+import { enterCapPathChoiceValue, getCapEdmx, getCapServiceChoices, getCapWorkspaceChoices } from './cap-helper';
+import { validateCapPath } from './validators';
 
 /**
- * Get the prompt for selecting a CAP project.
+ * Find the specified choice in the list of CAP project choices and return its index.
+ *
+ * @param capChoices The list of CAP project choices
+ * @param defaultChoicePath The path of the default choice
+ * @returns The index of the default choice in the list of CAP project choices
+ */
+function getDefaultCapChoice(
+    capChoices: CapProjectChoice[],
+    defaultChoicePath?: string
+): CapProjectChoice['value'] | number {
+    if (defaultChoicePath) {
+        return capChoices.findIndex((choice) => {
+            if (typeof choice.value === 'string') {
+                return choice.value === defaultChoicePath;
+            }
+            return choice.value.path === defaultChoicePath;
+        });
+    } else if (capChoices.length === 2) {
+        return 0;
+    }
+    return -1;
+}
+/**
+ * Get the prompts for selecting a CAP project from local path discovery.
+ * Two prompts are returned, one for selecting a CAP project from a list of discovered projects and
+ * one for entering a custom path to a CAP project.
  *
  * @param promptOptions - The prompt options which control CAP project search paths and default value
  * @returns the prompt used to provide input for selecting a CAP project
  */
-export async function getLocalCapProjectPrompt(
-    promptOptions?: CapProjectPromptOptions
-): Promise<YUIQuestion<OdataServiceAnswers>> {
-    const capChoices = await getCapWorkspaceChoices(promptOptions?.capSearchPaths ?? [process.cwd()]);
-    const defaultCapService = promptOptions?.default;
-    //let validCapPath = false;
+export function getLocalCapProjectPrompts(
+    promptOptions?: OdataServicePromptOptions
+): YUIQuestion<OdataServicePromptAnswers>[] {
+    let capChoices: Awaited<CapProjectChoice[]>;
+    const defaultCapPath = promptOptions?.[promptNames.capProject]?.defaultChoice;
+    const defaultCapService = promptOptions?.[promptNames.capService]?.defaultChoice;
+    let selectedCapProject: CapProjectPaths | undefined;
+    let capServiceChoices: CapServiceChoice[];
+    let defaultServiceIndex = 0;
 
-    return {
-        when: (): boolean => capChoices?.length > 0,
-        type: 'list',
-        name: promptNames.capProject,
-        message: t('prompts.capProject.message'),
-        default: () => defaultCapService ?? 0, // todo: is zero necesary, wont it always default to the first entry?
-        choices: () => capChoices,
-        guiOptions: {
-            applyDefaultWhenDirty: true,
-            mandatory: true,
-            breadcrumb: t('prompts.capProject.breadcrumb')
-        },
-        validate: (capChoiceValue: CapProjectChoice['value']): boolean => {
-            if (typeof capChoiceValue === 'object' && capChoiceValue?.path) {
-                //validCapPath = true;
-                return true;
+    const prompts = [
+        {
+            when: async (): Promise<boolean> => {
+                capChoices = await getCapWorkspaceChoices(
+                    promptOptions?.[promptNames.capProject]?.capSearchPaths ?? []
+                );
+                return capChoices?.length > 1;
+            },
+            type: 'list',
+            name: servicePromptNames.capProject,
+            message: t('prompts.capProject.message'),
+            default: () => {
+                const defChoice = getDefaultCapChoice(capChoices, defaultCapPath);
+                return defChoice;
+            },
+            choices: () => capChoices,
+            guiOptions: {
+                applyDefaultWhenDirty: true,
+                mandatory: true,
+                breadcrumb: t('prompts.capProject.breadcrumb')
             }
-            return false;
-        }
-    } as ListQuestion<OdataServiceAnswers>;
+        } as ListQuestion<CapServiceAnswers>,
+        {
+            when: (answers): boolean => capChoices.length === 1 || answers.capProject === enterCapPathChoiceValue,
+            type: 'input',
+            guiType: 'folder-browser',
+            name: servicePromptNames.capProjectPath,
+            message: t('prompts.capProjectPath.message'),
+            default: () => {
+                if (defaultCapPath) {
+                    return defaultCapPath;
+                }
+            },
+            guiOptions: { mandatory: true, breadcrumb: t('prompts.capProject.breadcrumb') },
+            validate: async (projectPath: string): Promise<string | boolean> => {
+                const validCapPath = await validateCapPath(projectPath);
+                // Load the cap paths if the path is valid
+                if (validCapPath === true) {
+                    selectedCapProject = Object.assign(
+                        { path: projectPath } as CapProjectRootPath,
+                        await getCapCustomPaths(projectPath)
+                    );
+                    return true;
+                }
+                selectedCapProject = undefined;
+                return validCapPath;
+            }
+        } as FileBrowserQuestion<CapServiceAnswers>,
+        {
+            when: async (answers) => {
+                if (answers.capProject && typeof answers.capProject === 'object') {
+                    selectedCapProject = answers.capProject;
+                }
+
+                if (selectedCapProject) {
+                    capServiceChoices = await getCapServiceChoices(selectedCapProject);
+                    return true;
+                }
+                return false;
+            },
+            type: 'list',
+            name: servicePromptNames.capService,
+            message: t('prompts.capService.message'),
+            choices: () => {
+                if (defaultCapService) {
+                    defaultServiceIndex = capServiceChoices?.findIndex(
+                        (choice) => choice.value?.serviceName === defaultCapService.serviceName
+                    );
+                }
+                return capServiceChoices;
+            },
+            guiOptions: {
+                applyDefaultWhenDirty: true,
+                mandatory: true,
+                breadcrumb: true
+            },
+            default: () => {
+                return capServiceChoices?.length > 1 ? defaultServiceIndex : 0;
+            },
+            validate: async (capService: CapServiceChoice['value']): Promise<string | boolean> => {
+                const errMsg = errorHandler.getErrorMsg(undefined, true);
+                if (errMsg) {
+                    return errMsg;
+                }
+                if (capService) {
+                    PromptStateHelper.odataService.metadata = await getCapEdmx(capService);
+                    PromptStateHelper.odataService.servicePath = capService.urlPath;
+                    PromptStateHelper.odataService.odataVersion = OdataVersion.v4;
+                    return PromptStateHelper.odataService.metadata !== undefined
+                        ? true
+                        : t('prompts.validationMessages.metadataInvalid');
+                }
+                return false;
+            }
+        } as ListQuestion<CapServiceAnswers>
+    ];
+
+    if (getPlatform() === PLATFORMS.CLI) {
+        prompts.push({
+            when: async (answers: CapServiceAnswers): Promise<boolean> => {
+                PromptStateHelper.odataService.metadata = await getCapEdmx(answers.capService);
+                PromptStateHelper.odataService.servicePath = answers.capService.urlPath;
+                PromptStateHelper.odataService.odataVersion = OdataVersion.v4;
+                return false;
+            },
+            name: servicePromptNames.capCliMetdata
+        } as any);
+    }
+
+    return prompts;
 }
