@@ -9,6 +9,7 @@ export {
     FioriToolsProxyConfigUI5,
     FioriToolsServeStaticPath,
     FioriToolsServeStaticConfig,
+    ServeStaticPath,
     Adp,
     BspApp,
     AbapTarget,
