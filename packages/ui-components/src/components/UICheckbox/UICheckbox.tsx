@@ -71,8 +71,8 @@ export class UICheckbox extends React.Component<UICheckboxProps, {}> {
                 props.checked &&
                     !props.indeterminate && {
                         [`:hover .${this.GlobalClassNames.checkbox}`]: {
-                            background: 'var(--vscode-checkbox-background)',
-                            borderColor: 'var(--vscode-focusBorder)'
+                            background: props.disabled ? '' : 'var(--vscode-checkbox-background)',
+                            borderColor: props.disabled ? '' : 'var(--vscode-focusBorder)'
                         },
                         [`:focus .${this.GlobalClassNames.checkbox}`]: {
                             background: 'var(--vscode-checkbox-background)',
@@ -115,13 +115,15 @@ export class UICheckbox extends React.Component<UICheckboxProps, {}> {
             },
             checkbox: {
                 backgroundColor: 'var(--vscode-debugToolBar-background, var(--vscode-editorWidget-background))',
-                borderColor: 'var(--vscode-editorWidget-border)'
+                borderColor: 'var(--vscode-editorWidget-border)',
+                opacity: props.disabled ? 0.4 : undefined
             },
             checkmark: {
                 color: 'var(--vscode-checkbox-foreground, var(--vscode-editorWidget-foreground))'
             },
             text: {
-                color: 'var(--vscode-foreground)'
+                color: 'var(--vscode-foreground)',
+                opacity: props.disabled ? 0.4 : undefined
             }
         };
     };

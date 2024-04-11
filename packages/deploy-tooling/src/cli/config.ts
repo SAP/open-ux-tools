@@ -128,6 +128,7 @@ function mergeTarget(baseTarget: AbapTarget & { cloud?: boolean }, options: CliO
         url: targetUrl,
         client: options.client ?? baseTarget?.client,
         scp: options.cloud !== undefined ? options.cloud : baseTarget?.cloud,
+        authenticationType: options.authenticationType ?? baseTarget?.authenticationType,
         destination: options.destination ?? baseTarget?.destination,
         serviceKey: getServiceKey(options, targetUrl),
         params: options.queryParams ? parseQueryParams(options.queryParams) : undefined,
