@@ -198,7 +198,7 @@ export async function createTransportRequest(
     const transportRequest = await adtService?.createTransportRequest({
         packageName: config.app.package ?? '',
         ui5AppName,
-        description: 'Created by @sap-ux/deploy-tooling'
+        description: `Created by SAP Fiori tools for ABAP repository ${ui5AppName}`
     });
     if (transportRequest) {
         logger.info(`Transport request ${transportRequest} created for application ${ui5AppName}.`);
