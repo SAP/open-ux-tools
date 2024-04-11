@@ -102,6 +102,7 @@ function analyzePropertyType(property: ManagedObjectMetadataProperties): Analyze
         if (propertyDataType && !(propertyDataType instanceof DataType)) {
             return analyzedType;
         }
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         const name = Object.getPrototypeOf(propertyDataType).getName();
         if (!name) {
             analyzedType.primitiveType = 'enum';
