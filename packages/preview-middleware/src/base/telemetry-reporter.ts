@@ -5,6 +5,9 @@ import dotenv from 'dotenv';
 import { join } from 'path';
 import { enableTelemetry } from '@sap-ux-private/control-property-editor-common';
 
+/**
+* Class handling telemetry initialization and reporting.
+*/
 export class TelemetryReporter {
     constructor(private eventName: string, private layer?: string) {}
     public async initializeTelemetry() {
