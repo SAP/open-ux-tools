@@ -18,7 +18,7 @@ import { getProjectChoices, getLibraryChoices } from './choices';
  * @returns the prompts used to provide input for ui5 library generation
  */
 async function getPrompts(
-    wsFolders: WorkspaceFolder[] | string[],
+    wsFolders: readonly WorkspaceFolder[] | string[],
     promptOptions?: UI5LibraryReferencePromptOptions
 ): Promise<Question<UI5LibraryReferenceAnswers>[]> {
     const options = {
@@ -43,7 +43,7 @@ async function getPrompts(
  * @returns the prompt answers
  */
 async function prompt(
-    wsFolders?: WorkspaceFolder[] | string[],
+    wsFolders?: readonly WorkspaceFolder[] | string[],
     adapter?: InquirerAdapter,
     promptOptions?: UI5LibraryReferencePromptOptions
 ): Promise<UI5LibraryReferenceAnswers> {
