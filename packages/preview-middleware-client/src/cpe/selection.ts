@@ -101,7 +101,7 @@ export class SelectionService implements Service {
      * @param sendAction action sender function
      * @param subscribe subscriber function
      */
-    public async init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): Promise<void> {
+    public init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): void {
         const eventOrigin: Set<string> = new Set();
         const onselectionChange = this.createOnSelectionChangeHandler(sendAction, eventOrigin);
         this.rta.attachSelectionChange((event) => {
@@ -185,8 +185,10 @@ export class SelectionService implements Service {
                         const isOutline = eventOrigin.has('outline');
                         const name = controlName.toLowerCase().startsWith('sap') ? controlName : 'Other Control Types';
                         if (isOutline) {
+                            // eslint-disable-next-line @typescript-eslint/no-floating-promises
                             reportTelemetry({ category: 'Outline Selection', controlName: name });
                         } else {
+                            // eslint-disable-next-line @typescript-eslint/no-floating-promises
                             reportTelemetry({ category: 'Overlay Selection', controlName: name });
                         }
                     } catch (error) {
