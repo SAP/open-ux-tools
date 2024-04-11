@@ -1310,6 +1310,9 @@ importers:
       '@sap-ux/control-property-editor-sources':
         specifier: workspace:@sap-ux/control-property-editor@*
         version: link:../control-property-editor
+      '@sap-ux/feature-toggle':
+        specifier: workspace:*
+        version: link:../feature-toggle
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
@@ -1326,6 +1329,9 @@ importers:
       '@private/preview-middleware-client':
         specifier: workspace:@sap-ux-private/preview-middleware-client@*
         version: link:../preview-middleware-client
+      '@sap-ux-private/control-property-editor-common':
+        specifier: workspace:*
+        version: link:../control-property-editor-common
       '@sap-ux-private/playwright':
         specifier: 0.0.3
         version: link:../playwright

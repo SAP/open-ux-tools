@@ -17,6 +17,12 @@
       "path": "../axios-extension"
     },
     {
+      "path": "../control-property-editor-common"
+    },
+    {
+      "path": "../feature-toggle"
+    },
+    {
       "path": "../i18n"
     },
     {

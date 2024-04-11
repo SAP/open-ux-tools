@@ -11,8 +11,9 @@ import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { createProjectAccess } from '@sap-ux/project-access';
 import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
-import { initTelemetrySettings, ClientFactory, SampleRate, EventName } from '@sap-ux/telemetry';
+import { ClientFactory, SampleRate, EventName } from '@sap-ux/telemetry';
 import { generateImportList, mergeTestConfigDefaults } from './test';
+import { TelemetryReporter } from './telemetry-reporter';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -146,7 +147,7 @@ export class FlpSandbox {
     public readonly rta?: RtaConfig;
     public readonly test?: TestConfig[];
     public readonly router: EnhancedRouter;
-    private telemetryInitialized = false;
+    private telemetryReporter?: TelemetryReporter;
 
     /**
      * Constructor setting defaults and keeping reference to workspace resources.
@@ -188,7 +189,6 @@ export class FlpSandbox {
      */
     async init(manifest: Manifest, componentId?: string, resources: Record<string, string> = {}): Promise<void> {
         this.createFlexHandler();
-        this.addTelemetryRoute();
         const flex = this.getFlexSettings();
         const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
         const ui5Theme =
@@ -223,6 +223,9 @@ export class FlpSandbox {
             this.rta.options ??= {};
             this.rta.options.baseId = componentId ?? id;
             this.rta.options.appName = id;
+            if (this.rta.options.telemetry) {
+                this.addTelemetryRoute();
+            }
             this.addEditorRoutes(this.rta);
         }
         if (this.test) {
@@ -340,19 +343,17 @@ export class FlpSandbox {
             json(),
             async (req: Request, res: Response, next: NextFunction): Promise<void> => {
                 try {
-                    if (!this.telemetryInitialized) {
-                        await initTelemetrySettings({
-                            consumerModule: { name: '@sap-ux/preview-middleware', version: '0.13.2' },
-                            internalFeature: false,
-                            watchTelemetrySettingStore: false,
-                            resourceId: process.env.AZURE_INSTRUMENTATION_KEY
-                        });
-                        this.telemetryInitialized = true;
+                    if (!this.telemetryReporter) {
+                        let eventName = EventName.CPE_EVENT;
+                        if (this.rta?.options?.scenario === 'ADAPTATION_PROJECT') {
+                            eventName = EventName.ADP_EVENT;
+                        }
+                        this.telemetryReporter = new TelemetryReporter(eventName, this.rta?.layer);
+                        await this.telemetryReporter.initializeTelemetry();
                         this.logger.info('Telemetry initialized.');
                     }
 
                     const data = req.body;
-
                     const telemetryEvent = {
                         eventName: EventName.ADP_EVENT,
                         properties: data,
@@ -449,7 +450,8 @@ export class FlpSandbox {
                 const { success, message } = writeChange(
                     req.body,
                     this.utils.getProject().getSourcePath(),
-                    this.logger
+                    this.logger,
+                    this.telemetryReporter
                 );
                 if (success) {
                     res.status(200).send(message);
@@ -658,6 +660,7 @@ export async function initAdp(
             flp.rta.layer = layer;
             flp.rta.options = {
                 projectId: variant.id,
+                telemetry: true, // temprory until passed during intiialization 
                 scenario: 'ADAPTATION_PROJECT'
             };
             for (const editor of flp.rta.editors) {

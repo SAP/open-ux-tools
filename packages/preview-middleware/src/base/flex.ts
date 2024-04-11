@@ -2,6 +2,7 @@ import type { Logger } from '@sap-ux/logger';
 import type { ReaderCollection } from '@ui5/fs';
 import { existsSync, mkdirSync, readdirSync, unlinkSync, writeFileSync } from 'fs';
 import { join, parse } from 'path';
+import { TelemetryReporter } from './telemetry-reporter';
 
 /**
  * Structure of a flex change.
@@ -78,7 +79,8 @@ export async function readChanges(project: ReaderCollection, logger: Logger): Pr
 export function writeChange(
     data: object & { fileName?: string; fileType?: string },
     webappPath: string,
-    logger: Logger
+    logger: Logger,
+    reporter?: TelemetryReporter
 ): { success: boolean; message?: string } {
     const fileName = data.fileName;
     const fileType = data.fileType;
@@ -90,6 +92,10 @@ export function writeChange(
         }
         const filePath = join(path, fileName + '.' + fileType);
         writeFileSync(filePath, JSON.stringify(data, null, 2));
+        const telemetryData = { category: 'Save', commandName: (data as any).changeType, layer: (data as any).layer };
+        if (reporter) {
+            reporter.reportTelemetry(telemetryData);
+        }
         const message = `FILE_CREATED ${fileName}.${fileType}`;
         return { success: true, message };
     } else {
