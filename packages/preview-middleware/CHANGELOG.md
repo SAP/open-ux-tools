@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.13.8
+
+### Patch Changes
+
+-   10ce9b44: Fix potential race condition when executing qunit tests
+
 ## 0.13.7
 
 ### Patch Changes
