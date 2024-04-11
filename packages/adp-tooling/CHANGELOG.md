@@ -1,5 +1,19 @@
 # @sap-ux/adp-tooling
 
+## 0.9.10
+
+### Patch Changes
+
+-   Updated dependencies [1db4c60c]
+    -   @sap-ux/axios-extension@1.11.5
+    -   @sap-ux/system-access@0.3.19
+
+## 0.9.9
+
+### Patch Changes
+
+-   4cbb1639: "Open in VS Code" button for Controller Extension dialog does not work in BAS
+
 ## 0.9.8
 
 ### Patch Changes

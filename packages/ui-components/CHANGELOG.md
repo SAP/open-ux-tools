@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 1.15.12
+
+### Patch Changes
+
+-   8b0e0418: Fixed styling for disabled UICheckbox.
+
+## 1.15.11
+
+### Patch Changes
+
+-   f3acc1c6: Security upgrade fixes - `webpack-dev-middleware` from `6.1.1` to `6.1.3`
+
 ## 1.15.10
 
 ### Patch Changes
