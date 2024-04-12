@@ -12,6 +12,7 @@ import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { createProjectAccess } from '@sap-ux/project-access';
 import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import { generateImportList, mergeTestConfigDefaults } from './test';
+import type http from 'http';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -291,11 +292,7 @@ export class FlpSandbox {
                         scenario,
                         livereloadPort
                     });
-                    res.writeHead(200, {
-                        'Content-Type': 'text/html'
-                    });
-                    res.write(html);
-                    res.end();
+                    this.sendResponse(res, 'text/html', 200, html);
                 });
                 let path = dirname(editor.path);
                 if (!path.endsWith('/')) {
@@ -309,11 +306,7 @@ export class FlpSandbox {
                     '</body>',
                     `</body>\n<!-- livereload disabled for editor </body>-->`
                 );
-                res.writeHead(200, {
-                    'Content-Type': 'text/html'
-                });
-                res.write(html);
-                res.end();
+                this.sendResponse(res, 'text/html', 200, html);
             });
         }
     }
@@ -334,11 +327,7 @@ export class FlpSandbox {
             }
             const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
             const html = render(template, this.templateConfig);
-            res.writeHead(200, {
-                'Content-Type': 'text/html'
-            });
-            res.write(html);
-            res.end();
+            this.sendResponse(res, 'text/html', 200, html);
         }) as RequestHandler);
     }
 
@@ -411,11 +400,12 @@ export class FlpSandbox {
         const api = `${PREVIEW_URL.api}/changes`;
         this.router.use(api, json());
         this.router.get(api, (async (_req: Request, res: Response) => {
-            res.writeHead(200, {
-                'Content-Type': 'application/json'
-            });
-            res.write(JSON.stringify(await readChanges(this.project, this.logger)));
-            res.end();
+            this.sendResponse(
+                res,
+                'application/json',
+                200,
+                JSON.stringify(await readChanges(this.project, this.logger))
+            );
         }) as RequestHandler);
         this.router.post(api, (async (req: Request, res: Response) => {
             try {
@@ -425,20 +415,12 @@ export class FlpSandbox {
                     this.logger
                 );
                 if (success) {
-                    res.writeHead(200, {
-                        'Content-Type': 'text/plain'
-                    });
-                    res.write(message);
-                    res.end();
+                    this.sendResponse(res, 'text/plain', 200, message ?? '');
                 } else {
-                    res.writeHead(400);
-                    res.write('INVALID_DATA');
-                    res.end();
+                    this.sendResponse(res, 'text/plain', 400, 'INVALID_DATA');
                 }
             } catch (error) {
-                res.writeHead(500);
-                res.write(error.message);
-                res.end();
+                this.sendResponse(res, 'text/plain', 500, error.message);
             }
         }) as RequestHandler);
         this.router.delete(api, (async (req: Request, res: Response) => {
@@ -449,22 +431,31 @@ export class FlpSandbox {
                     this.logger
                 );
                 if (success) {
-                    res.writeHead(200, {
-                        'Content-Type': 'text/plain'
-                    });
-                    res.write(message);
-                    res.end();
+                    this.sendResponse(res, 'text/plain', 200, message ?? '');
                 } else {
-                    res.writeHead(400);
-                    res.write('INVALID_DATA');
-                    res.end();
+                    this.sendResponse(res, 'text/plain', 400, 'INVALID_DATA');
                 }
             } catch (error) {
-                res.writeHead(500);
-                res.write(error.message);
-                res.end();
+                this.sendResponse(res, 'text/plain', 500, error.message);
             }
         }) as RequestHandler);
+    }
+
+    /**
+     * Send a response with the given content type, status and body.
+     *
+     * @param res the response object
+     * @param contentType the content type
+     * @param status the response status
+     * @param body the response body
+     * @private
+     */
+    private sendResponse(res: Response | http.ServerResponse, contentType: string, status: number, body: string) {
+        res.writeHead(status, {
+            'Content-Type': contentType
+        });
+        res.write(body);
+        res.end();
     }
 
     /**
@@ -495,11 +486,7 @@ export class FlpSandbox {
                         initPath: `${ns}${config.init.replace('.js', '')}`
                     };
                     const html = render(htmlTemplate, templateConfig);
-                    res.writeHead(200, {
-                        'Content-Type': 'text/html'
-                    });
-                    res.write(html);
-                    res.end();
+                    this.sendResponse(res, 'text/html', 200, html);
                 }
             }) as RequestHandler);
             if (testConfig.init !== undefined) {
@@ -519,11 +506,7 @@ export class FlpSandbox {
                     const testFiles = await this.project.byGlob(config.pattern);
                     const templateConfig = { tests: generateImportList(ns, testFiles) };
                     const js = render(initTemplate, templateConfig);
-                    res.writeHead(200, {
-                        'Content-Type': 'application/javascript'
-                    });
-                    res.write(js);
-                    res.end();
+                    this.sendResponse(res, 'application/javascript', 200, js);
                 }
             }) as RequestHandler);
         }
