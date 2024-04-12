@@ -425,7 +425,9 @@ export class FlpSandbox {
                     this.logger
                 );
                 if (success) {
-                    res.writeHead(200);
+                    res.writeHead(200, {
+                        'Content-Type': 'text/plain'
+                    });
                     res.write(message);
                     res.end();
                 } else {
@@ -447,7 +449,9 @@ export class FlpSandbox {
                     this.logger
                 );
                 if (success) {
-                    res.writeHead(200);
+                    res.writeHead(200, {
+                        'Content-Type': 'text/plain'
+                    });
                     res.write(message);
                     res.end();
                 } else {
