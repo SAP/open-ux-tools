@@ -226,11 +226,11 @@ export async function init({
     customInit?: string | null;
 }): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
-    const container = sap.ui.require('sap/ushell/Container') as typeof sap.ushell.Container;
+    const container = sap?.ushell?.Container ?? sap.ui.require('sap/ushell/Container') as typeof sap.ushell.Container;
     // Register RTA if configured
     if (flex) {
         container.attachRendererCreatedEvent(async function () {
-            const lifecycleService = await sap.ushell.Container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
+            const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
                 const version = sap.ui.version;
                 const minor = parseInt(version.split('.')[1], 10);
