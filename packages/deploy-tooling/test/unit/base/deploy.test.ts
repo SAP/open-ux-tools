@@ -234,7 +234,7 @@ describe('base/deploy', () => {
             expect(config.createTransport).toBe(false);
             expect(mockedAdtService.createTransportRequest).toBeCalledTimes(1);
             expect(mockedAdtService.createTransportRequest).toBeCalledWith(
-                expect.objectContaining({ description: 'Created by SAP Fiori tools for ABAP repository ~name' })
+                expect.objectContaining({ description: 'Created by SAP Open UX Tools for ABAP repository ~name' })
             );
         });
 
