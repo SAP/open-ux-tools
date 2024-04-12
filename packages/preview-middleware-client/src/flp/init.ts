@@ -125,35 +125,32 @@ function registerModules(
  *
  *
  */
-function resetAppState() {
-    sap.ui.require(['sap/ui/core/Core'], async function (core: Core) {
-        await core.ready();
-        const Container = sap.ui.require('sap/ushell/Container');
-        if (!Container) {
-            return;
-        }
+async function resetAppState() {
+    const Container = sap.ui.require('sap/ushell/Container');
+    if (!Container) {
+        return;
+    }
 
-        const [oURLParser, oAppState] = await Promise.all([
-            Container.getServiceAsync('URLParsing'),
-            Container.getServiceAsync('AppState')
-        ]);
-        
-        const aURLParameters = window.location.hash.split('/');
-        const sAppState = 'sap-iapp-state';
+    const [oURLParser, oAppState] = await Promise.all([
+        Container.getServiceAsync('URLParsing'),
+        Container.getServiceAsync('AppState')
+    ]);
+    
+    const aURLParameters = window.location.hash.split('/');
+    const sAppState = 'sap-iapp-state';
 
-        for (const sURLParameter of aURLParameters) {
-            const oShellParams = oURLParser.parseParameters(sURLParameter);
-            for (const parameter in oShellParams) {
-                if (parameter.indexOf(sAppState) === -1) {
-                    continue;
-                }
-                const sAppStateValue = oShellParams[parameter]?.[0];
-                if (sAppStateValue) {
-                    oAppState.deleteAppState(sAppStateValue);
-                }
+    for (const sURLParameter of aURLParameters) {
+        const oShellParams = oURLParser.parseParameters(sURLParameter);
+        for (const parameter in oShellParams) {
+            if (parameter.indexOf(sAppState) === -1) {
+                continue;
+            }
+            const sAppStateValue = oShellParams[parameter]?.[0];
+            if (sAppStateValue) {
+                oAppState.deleteAppState(sAppStateValue);
             }
         }
-    });
+    }
 }
 
 /**
