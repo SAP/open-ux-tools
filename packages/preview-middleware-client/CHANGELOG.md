@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.9.5
+
+### Patch Changes
+
+-   da0ecd9a: Enable Typscript type checking in eslint module @sap-ux/eslint-plugin-fiori-tools
+
+## 0.9.4
+
+### Patch Changes
+
+-   4cbb1639: "Open in VS Code" button for Controller Extension dialog does not work in BAS
+
 ## 0.9.3
 
 ### Patch Changes

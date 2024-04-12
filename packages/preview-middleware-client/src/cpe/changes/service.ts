@@ -120,6 +120,7 @@ export class ChangeService {
                     if (control) {
                         name = control.getMetadata().getName();
                     }
+                    // eslint-disable-next-line  @typescript-eslint/no-unsafe-call
                     const modifiedMessage = modifyRTAErrorMessage(exception?.toString(), id, name);
                     const errorMessage =
                         modifiedMessage || `RTA Exception applying expression "${action.payload.value}"`;
@@ -379,9 +380,10 @@ export class ChangeService {
     private getCommandSelectorId(command: FlexCommand): string | undefined {
         return this.retryOperations([
             () => command.getSelector().id,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
             () => command.getElement().getProperty('persistencyKey'),
             () => command.getElement().getId(),
             () => command.getParent()?.getElement().getId()
-        ]);
+        ]) as string | undefined;
     }
 }

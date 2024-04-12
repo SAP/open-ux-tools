@@ -1,5 +1,13 @@
 # @sap-ux/ui5-library-writer
 
+## 0.3.27
+
+### Patch Changes
+
+-   da0ecd9a: Enable Typscript type checking in eslint module @sap-ux/eslint-plugin-fiori-tools
+-   Updated dependencies [da0ecd9a]
+    -   @sap-ux/ui5-application-writer@0.26.7
+
 ## 0.3.26
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 0.4.1
+
+### Patch Changes
+
+-   da0ecd9a: Enable Typscript type checking in eslint module @sap-ux/eslint-plugin-fiori-tools
+
 ## 0.3.2
 
 ### Patch Changes

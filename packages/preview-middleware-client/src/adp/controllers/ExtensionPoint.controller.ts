@@ -136,7 +136,7 @@ export default class ExtensionPoint extends BaseDialog {
      *
      * @param fragmentName Fragment name
      */
-    private async createExtensionPointFragmentChange(fragmentName: string): Promise<void> {
+    private createExtensionPointFragmentChange(fragmentName: string): void {
         const extensionPointName = this.model.getProperty('/extensionPointName');
         const modifiedValue = {
             fragment: `<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>`,

@@ -1,5 +1,25 @@
 # @sap-ux/preview-middleware
 
+## 0.13.8
+
+### Patch Changes
+
+-   10ce9b44: Fix potential race condition when executing qunit tests
+
+## 0.13.7
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.10
+
+## 0.13.6
+
+### Patch Changes
+
+-   4cbb1639: "Open in VS Code" button for Controller Extension dialog does not work in BAS
+-   Updated dependencies [4cbb1639]
+    -   @sap-ux/adp-tooling@0.9.9
+
 ## 0.13.5
 
 ### Patch Changes
