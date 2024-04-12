@@ -137,14 +137,7 @@ function resetAppState() {
             Container.getServiceAsync('URLParsing'),
             Container.getServiceAsync('AppState')
         ]);
-        const oURLParams = oURLParser.parseParameters(window.location.search);
-        const sFioriToolsAppState = 'fiori-tools-iapp-state';
-        const sFioriToolsAppStateValue = oURLParams[sFioriToolsAppState]?.[0].toLowerCase();
-
-        if (sFioriToolsAppStateValue === 'true') {
-            return;
-        }
-
+        
         const aURLParameters = window.location.hash.split('/');
         const sAppState = 'sap-iapp-state';
 
@@ -241,8 +234,8 @@ export async function init({
     customInit?: string | null;
 }): Promise<void> {
     // Register RTA if configured
-    sap.ushell.Container.attachRendererCreatedEvent(async function () {
-        if (flex) {
+    if (flex) {
+        sap.ushell.Container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await sap.ushell.Container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
                 const version = sap.ui.version;
@@ -276,10 +269,15 @@ export async function init({
                     }
                 );
             });
-        }
-        resetAppState();
-    });
+        });   
+    }
 
+    // reset app state if requested
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('fiori-tools-iapp-state')?.toLocaleLowerCase() === 'true') {
+        resetAppState();
+    }
+    
     // Load custom library paths if configured
     if (appUrls) {
         await registerComponentDependencyPaths(JSON.parse(appUrls));
