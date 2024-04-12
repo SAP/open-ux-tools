@@ -443,6 +443,7 @@ export class FlpSandbox {
 
     /**
      * Send a response with the given content type, status and body.
+     * Ensure compliance with common APIs in express and connect.
      *
      * @param res the response object
      * @param contentType the content type
