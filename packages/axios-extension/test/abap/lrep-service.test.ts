@@ -3,6 +3,17 @@ import fs from 'fs';
 import type { Message } from '../../src/abap/lrep-service';
 import type { AdaptationConfig } from '../../src';
 import { LayeredRepositoryService, createForAbap } from '../../src';
+import type { AxiosError } from '../../src';
+import type { ToolsLogger } from '@sap-ux/logger';
+import * as Logger from '@sap-ux/logger';
+
+const loggerMock: ToolsLogger = {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn()
+} as Partial<ToolsLogger> as ToolsLogger;
+jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 
 describe('LayeredRepositoryService', () => {
     const server = 'http://sap.example';
@@ -120,6 +131,44 @@ describe('LayeredRepositoryService', () => {
 
             const response = await service.deploy(archivePath, config);
             expect(response.status).toBe(200);
+        });
+        test('logError is called when request fails', async () => {
+            const mockAxiosError = {
+                response: {
+                    status: 404,
+                    data: 'Not found'
+                },
+                message: 'Request failed with status code 404'
+            } as AxiosError;
+
+            nock(server)
+                .get((url) => {
+                    return url.startsWith(
+                        `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
+                            config.namespace as string
+                        )}&layer=CUSTOMER_BASE`
+                    );
+                })
+                .reply(404);
+
+            // Force a request failure inside deploy
+            nock(server)
+                .post(
+                    `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
+                        config.namespace as string
+                    )}&layer=CUSTOMER_BASE&package=${config.package}&changelist=${config.transport}`
+                )
+                .replyWithError(mockAxiosError);
+
+            try {
+                await service.deploy(archivePath, config);
+                fail('The function should have thrown an error.');
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(loggerMock.error).toHaveBeenCalledWith(
+                    expect.stringContaining(mockAxiosError.response?.data as string)
+                );
+            }
         });
     });
 
