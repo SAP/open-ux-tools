@@ -4,8 +4,6 @@ import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/s
 import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
-import type Core from 'sap/ui/core/Core';
-import UriParameters from 'sap/base/util/UriParameters';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -122,18 +120,14 @@ function registerModules(
 }
 
 /**
- *
- *
+ * Reset the app state.
+ * 
+ * @param container the UShell container
  */
-async function resetAppState() {
-    const Container = sap.ui.require('sap/ushell/Container');
-    if (!Container) {
-        return;
-    }
-
+async function resetAppState(container: typeof sap.ushell.Container): Promise<void> {
     const [oURLParser, oAppState] = await Promise.all([
-        Container.getServiceAsync('URLParsing'),
-        Container.getServiceAsync('AppState')
+        container.getServiceAsync<any>('URLParsing'),
+        container.getServiceAsync<any>('AppState')
     ]);
     
     const aURLParameters = window.location.hash.split('/');
@@ -232,9 +226,10 @@ export async function init({
     customInit?: string | null;
 }): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
+    const container = sap.ui.require('sap/ushell/Container') as typeof sap.ushell.Container;
     // Register RTA if configured
     if (flex) {
-        sap.ushell.Container.attachRendererCreatedEvent(async function () {
+        container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await sap.ushell.Container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
                 const version = sap.ui.version;
@@ -273,7 +268,7 @@ export async function init({
 
     // reset app state if requested
     if (urlParams.get('fiori-tools-iapp-state')?.toLocaleLowerCase() === 'true') {
-        resetAppState();
+        await resetAppState(container);
     }
     
     // Load custom library paths if configured
