@@ -46,11 +46,11 @@
         "ejs": "3.1.9",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/feature-toggle": "workspace:*",
-        "@sap-ux/telemetry": "workspace:*"
+        "@sap-ux/telemetry": "workspace:*",
+        "dotenv": "16.3.1"
     },
     "devDependencies": {
         "@private/preview-middleware-client": "workspace:@sap-ux-private/preview-middleware-client@*",
-        "@sap-ux-private/control-property-editor-common": "workspace:*",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@types/ejs": "3.1.2",
@@ -63,7 +63,6 @@
         "nock": "13.4.0",
         "supertest": "6.3.3",
         "@sap-ux-private/playwright": "0.0.3",
-        "dotenv": "16.3.1",
         "@sap-ux/i18n": "workspace:*"
     },
     "peerDependencies": {

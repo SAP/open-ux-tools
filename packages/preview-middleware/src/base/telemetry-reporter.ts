@@ -1,29 +1,38 @@
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import { ClientFactory, EventName, SampleRate, initTelemetrySettings } from '@sap-ux/telemetry';
+import { ClientFactory, SampleRate, initTelemetrySettings } from '@sap-ux/telemetry';
 import modulePackageJson from '../../package.json';
-import dotenv from 'dotenv';
 import { join } from 'path';
-import { enableTelemetry } from '@sap-ux-private/control-property-editor-common';
+import dotenv from 'dotenv';
+import { Logger } from '@sap-ux/logger';
 
 /**
-* Class handling telemetry initialization and reporting.
-*/
+ * Class handling telemetry initialization and reporting.
+ */
 export class TelemetryReporter {
-    constructor(private eventName: string, private layer?: string) {}
+    private initialized: boolean;
+    constructor(private eventName: string, private readonly logger: Logger, private layer?: string) {}
     public async initializeTelemetry() {
-        const envFilePath = { path: join(__dirname, '..', '..', '.env') };
-        dotenv.config(envFilePath);
-        const internalFeature = isInternalFeaturesSettingEnabled();
-        await initTelemetrySettings({
-            consumerModule: modulePackageJson,
-            internalFeature,
-            watchTelemetrySettingStore: true,
-            resourceId: process.env['OpenUxTools_ResourceId']
-        });
-        enableTelemetry();
+        try {
+            const envFilePath = { path: join(__dirname, '..', '..', '.env') };
+            dotenv.config(envFilePath);
+            const internalFeature = isInternalFeaturesSettingEnabled();
+            await initTelemetrySettings({
+                consumerModule: modulePackageJson,
+                internalFeature,
+                watchTelemetrySettingStore: true,
+                resourceId: process.env['OpenUxTools_ResourceId']
+            });
+            this.initialized = true;
+        } catch (e) {
+            this.initialized = false;
+            this.logger.error(`Could not initialize telemetry. ${e}`);
+        }
     }
 
-    public reportTelemetry(data: any) {
+    public reportTelemetry(data: any): void {
+        if (!this.initialized) {
+            throw new Error('Telemetry not initialized');
+        }
         const telemetryEvent = {
             eventName: this.eventName,
             properties: { ...data, layer: this.layer },

@@ -348,21 +348,13 @@ export class FlpSandbox {
                         if (this.rta?.options?.scenario === 'ADAPTATION_PROJECT') {
                             eventName = EventName.ADP_EVENT;
                         }
-                        this.telemetryReporter = new TelemetryReporter(eventName, this.rta?.layer);
+                        this.telemetryReporter = new TelemetryReporter(eventName, this.logger, this.rta?.layer);
                         await this.telemetryReporter.initializeTelemetry();
                         this.logger.info('Telemetry initialized.');
                     }
 
                     const data = req.body;
-                    const telemetryEvent = {
-                        eventName: EventName.ADP_EVENT,
-                        properties: data,
-                        measurements: {}
-                    };
-                    ClientFactory.getTelemetryClient().reportEvent(telemetryEvent, SampleRate.NoSampling, {
-                        appPath: process.cwd()
-                    });
-                    this.logger.info(`Telemetry reported with data: ${JSON.stringify(telemetryEvent)}`);
+                    this.telemetryReporter.reportTelemetry(data);
                     res.status(200).contentType('json').send({ updatedTelemetry: true });
                 } catch (error) {
                     this.logger.error(`Could not send telemetry report. ${error}`);
@@ -660,7 +652,7 @@ export async function initAdp(
             flp.rta.layer = layer;
             flp.rta.options = {
                 projectId: variant.id,
-                telemetry: true, // temprory until passed during intiialization 
+                telemetry: true, // temprory until passed during intiialization
                 scenario: 'ADAPTATION_PROJECT'
             };
             for (const editor of flp.rta.editors) {
