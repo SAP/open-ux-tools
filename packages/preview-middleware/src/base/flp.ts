@@ -291,7 +291,11 @@ export class FlpSandbox {
                         scenario,
                         livereloadPort
                     });
-                    res.status(200).contentType('html').send(html);
+                    res.writeHead(200, {
+                        'Content-Type': 'text/html'
+                    });
+                    res.write(html);
+                    res.end();
                 });
                 let path = dirname(editor.path);
                 if (!path.endsWith('/')) {
@@ -305,7 +309,11 @@ export class FlpSandbox {
                     '</body>',
                     `</body>\n<!-- livereload disabled for editor </body>-->`
                 );
-                res.status(200).contentType('html').send(html);
+                res.writeHead(200, {
+                    'Content-Type': 'text/html'
+                });
+                res.write(html);
+                res.end();
             });
         }
     }
@@ -326,7 +334,11 @@ export class FlpSandbox {
             }
             const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
             const html = render(template, this.templateConfig);
-            res.status(200).contentType('html').send(html);
+            res.writeHead(200, {
+                'Content-Type': 'text/html'
+            });
+            res.write(html);
+            res.end();
         }) as RequestHandler);
     }
 
@@ -399,9 +411,11 @@ export class FlpSandbox {
         const api = `${PREVIEW_URL.api}/changes`;
         this.router.use(api, json());
         this.router.get(api, (async (_req: Request, res: Response) => {
-            res.status(200)
-                .contentType('application/json')
-                .send(await readChanges(this.project, this.logger));
+            res.writeHead(200, {
+                'Content-Type': 'application/json'
+            });
+            res.write(JSON.stringify(await readChanges(this.project, this.logger)));
+            res.end();
         }) as RequestHandler);
         this.router.post(api, (async (req: Request, res: Response) => {
             try {
@@ -411,12 +425,18 @@ export class FlpSandbox {
                     this.logger
                 );
                 if (success) {
-                    res.status(200).send(message);
+                    res.writeHead(200);
+                    res.write(message);
+                    res.end();
                 } else {
-                    res.status(400).send('INVALID_DATA');
+                    res.writeHead(400);
+                    res.write('INVALID_DATA');
+                    res.end();
                 }
             } catch (error) {
-                res.status(500).send(error.message);
+                res.writeHead(500);
+                res.write(error.message);
+                res.end();
             }
         }) as RequestHandler);
         this.router.delete(api, (async (req: Request, res: Response) => {
@@ -427,12 +447,18 @@ export class FlpSandbox {
                     this.logger
                 );
                 if (success) {
-                    res.status(200).send(message);
+                    res.writeHead(200);
+                    res.write(message);
+                    res.end();
                 } else {
-                    res.status(400).send('INVALID_DATA');
+                    res.writeHead(400);
+                    res.write('INVALID_DATA');
+                    res.end();
                 }
             } catch (error) {
-                res.status(500).send(error.message);
+                res.writeHead(500);
+                res.write(error.message);
+                res.end();
             }
         }) as RequestHandler);
     }
@@ -465,7 +491,11 @@ export class FlpSandbox {
                         initPath: `${ns}${config.init.replace('.js', '')}`
                     };
                     const html = render(htmlTemplate, templateConfig);
-                    res.status(200).contentType('html').send(html);
+                    res.writeHead(200, {
+                        'Content-Type': 'text/html'
+                    });
+                    res.write(html);
+                    res.end();
                 }
             }) as RequestHandler);
             if (testConfig.init !== undefined) {
@@ -484,8 +514,12 @@ export class FlpSandbox {
                 } else {
                     const testFiles = await this.project.byGlob(config.pattern);
                     const templateConfig = { tests: generateImportList(ns, testFiles) };
-                    const html = render(initTemplate, templateConfig);
-                    res.status(200).contentType('application/javascript').send(html);
+                    const js = render(initTemplate, templateConfig);
+                    res.writeHead(200, {
+                        'Content-Type': 'application/javascript'
+                    });
+                    res.write(js);
+                    res.end();
                 }
             }) as RequestHandler);
         }
