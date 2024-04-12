@@ -4,6 +4,7 @@ import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/s
 import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
+import type Core from 'sap/ui/core/Core';
 import UriParameters from 'sap/base/util/UriParameters';
 
 /**
@@ -121,6 +122,48 @@ function registerModules(
 }
 
 /**
+ *
+ *
+ */
+function resetAppState() {
+    sap.ui.require(['sap/ui/core/Core'], async function (core: Core) {
+        await core.ready();
+        const Container = sap.ui.require('sap/ushell/Container');
+        if (!Container) {
+            return;
+        }
+
+        const [oURLParser, oAppState] = await Promise.all([
+            Container.getServiceAsync('URLParsing'),
+            Container.getServiceAsync('AppState')
+        ]);
+        const oURLParams = oURLParser.parseParameters(window.location.search);
+        const sFioriToolsAppState = 'fiori-tools-iapp-state';
+        const sFioriToolsAppStateValue = oURLParams[sFioriToolsAppState]?.[0].toLowerCase();
+
+        if (sFioriToolsAppStateValue === 'true') {
+            return;
+        }
+
+        const aURLParameters = window.location.hash.split('/');
+        const sAppState = 'sap-iapp-state';
+
+        for (const sURLParameter of aURLParameters) {
+            const oShellParams = oURLParser.parseParameters(sURLParameter);
+            for (const parameter in oShellParams) {
+                if (parameter.indexOf(sAppState) === -1) {
+                    continue;
+                }
+                const sAppStateValue = oShellParams[parameter]?.[0];
+                if (sAppStateValue) {
+                    oAppState.deleteAppState(sAppStateValue);
+                }
+            }
+        }
+    });
+}
+
+/**
  * Fetch the manifest from the given application urls, then parse them for custom libs, and finally request their urls.
  *
  * @param appUrls application urls
@@ -198,8 +241,8 @@ export async function init({
     customInit?: string | null;
 }): Promise<void> {
     // Register RTA if configured
-    if (flex) {
-        sap.ushell.Container.attachRendererCreatedEvent(async function () {
+    sap.ushell.Container.attachRendererCreatedEvent(async function () {
+        if (flex) {
             const lifecycleService = await sap.ushell.Container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
                 const version = sap.ui.version;
@@ -233,8 +276,9 @@ export async function init({
                     }
                 );
             });
-        });
-    }
+        }
+        resetAppState();
+    });
 
     // Load custom library paths if configured
     if (appUrls) {
