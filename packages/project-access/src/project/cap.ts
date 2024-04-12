@@ -607,5 +607,5 @@ async function getCdsVersionFromPackageJson(packageJsonPath: string): Promise<st
  * @returns - major version as number
  */
 function getMajorVersion(versionString: string): number {
-    return parseInt(versionString.split('.')[0].match(/\d+/)?.[0] ?? '0', 10);
+    return parseInt(/\d+/.exec(versionString.split('.')[0])?.[0] ?? '0', 10);
 }
