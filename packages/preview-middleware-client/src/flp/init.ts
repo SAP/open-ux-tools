@@ -160,13 +160,14 @@ function resetAppState() {
  * Fetch the manifest from the given application urls, then parse them for custom libs, and finally request their urls.
  *
  * @param appUrls application urls
+ * @param urlParams URLSearchParams object
  * @returns returns a promise when the registration is completed.
  */
-export async function registerComponentDependencyPaths(appUrls: string[]): Promise<void> {
+export async function registerComponentDependencyPaths(appUrls: string[], urlParams: URLSearchParams): Promise<void> {
     const libs = await getManifestLibs(appUrls);
     if (libs && libs.length > 0) {
         let url = '/sap/bc/ui2/app_index/ui5_app_info?id=' + libs;
-        const sapClient = UriParameters.fromQuery(window.location.search).get('sap-client');
+        const sapClient = urlParams.get('sap-client');
         if (sapClient && sapClient.length === 3) {
             url = url + '&sap-client=' + sapClient;
         }
@@ -233,6 +234,7 @@ export async function init({
     flex?: string | null;
     customInit?: string | null;
 }): Promise<void> {
+    const urlParams = new URLSearchParams(window.location.search);
     // Register RTA if configured
     if (flex) {
         sap.ushell.Container.attachRendererCreatedEvent(async function () {
@@ -273,14 +275,13 @@ export async function init({
     }
 
     // reset app state if requested
-    const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('fiori-tools-iapp-state')?.toLocaleLowerCase() === 'true') {
         resetAppState();
     }
     
     // Load custom library paths if configured
     if (appUrls) {
-        await registerComponentDependencyPaths(JSON.parse(appUrls));
+        await registerComponentDependencyPaths(JSON.parse(appUrls), urlParams);
     }
 
     // Load custom initialization module
