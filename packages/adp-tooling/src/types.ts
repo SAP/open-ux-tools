@@ -147,6 +147,8 @@ export const enum HttpStatusCodes {
     SERVICE_UNAVAILABLE = 503
 }
 
+export type OperationType = 'read' | 'write' | 'delete';
+
 /**
  * Represents a constructor type that creates an instance of IWriter.
  *
