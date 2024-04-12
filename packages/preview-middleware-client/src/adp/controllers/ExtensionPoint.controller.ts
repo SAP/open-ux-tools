@@ -62,7 +62,7 @@ export default class ExtensionPoint extends BaseDialog {
 
         const fragmentName = this.model.getProperty('/newFragmentName');
 
-        await this.createExtensionPointFragmentChange(fragmentName);
+        this.createExtensionPointFragmentChange(fragmentName);
 
         notifyUser(`Note: The '${fragmentName}.fragment.xml' fragment will be created once you save the change.`, 8000);
 
