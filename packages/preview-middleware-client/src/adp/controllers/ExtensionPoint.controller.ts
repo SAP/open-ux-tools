@@ -56,7 +56,7 @@ export default class ExtensionPoint extends BaseDialog {
      *
      * @param event Event
      */
-    async onCreateBtnPress(event: Event): Promise<void> {
+    onCreateBtnPress(event: Event): void {
         const source = event.getSource<Button>();
         source.setEnabled(false);
 

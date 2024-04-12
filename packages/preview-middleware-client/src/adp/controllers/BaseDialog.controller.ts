@@ -47,7 +47,7 @@ export default abstract class BaseDialog extends Controller {
 
     abstract setup(dialog: Dialog): Promise<void>;
 
-    abstract onCreateBtnPress(event: Event): Promise<void>;
+    abstract onCreateBtnPress(event: Event): Promise<void> | void;
 
     abstract buildDialogData(): Promise<void>;
 
