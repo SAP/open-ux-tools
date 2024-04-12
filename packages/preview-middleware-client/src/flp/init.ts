@@ -284,7 +284,7 @@ export async function init({
     // init
     setI18nTitle();
     registerSAPFonts();
-    const renderer = await sap.ushell.Container.createRenderer(undefined, true);
+    const renderer = await container.createRenderer(undefined, true);
     renderer.placeAt('content');
 }
 
