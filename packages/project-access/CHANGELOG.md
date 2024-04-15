@@ -1,5 +1,12 @@
 # @sap-ux/project-access
 
+## 1.19.7
+
+### Patch Changes
+
+-   98496d57: adds new module @sap-ux/ui5-library-reference-inquirer
+-   e3d2e003: Detect mismatching global and project installations of @sap/cds
+
 ## 1.19.6
 
 ### Patch Changes

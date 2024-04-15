@@ -1,5 +1,11 @@
 # @sap-ux/inquirer-common
 
+## 0.2.4
+
+### Patch Changes
+
+-   98496d57: adds new module @sap-ux/ui5-library-reference-inquirer
+
 ## 0.2.3
 
 ### Patch Changes
