@@ -24,6 +24,7 @@ async function getPrompts(
 ): Promise<OdataServiceQuestion[]> {
     // Initialize the logger refs
     LoggerHelper.logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/odata-service-inquirer' });
+    ErrorHandler.logger = LoggerHelper.logger;
     ErrorHandler.guidedAnswersEnabled = enableGuidedAnswers;
 
     return getQuestions(promptOptions);

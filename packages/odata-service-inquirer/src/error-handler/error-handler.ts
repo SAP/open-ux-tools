@@ -1,6 +1,6 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { type Logger } from '@sap-ux/logger';
+import { type Logger, ToolsLogger } from '@sap-ux/logger';
 import { t } from '../i18n';
 import { PLATFORMS, ValidationLink } from '../types';
 import { getPlatform, sendTelemetryEvent } from '../utils';
@@ -97,6 +97,7 @@ export class ErrorHandler {
     private currentErrorType: ERROR_TYPE | null;
 
     static guidedAnswersEnabled = false;
+    private static _logger: Logger;
 
     // Get the required localized parameterized error message
     // Note that these are general fallback end-user error messages.
@@ -187,7 +188,26 @@ export class ErrorHandler {
      * @param enableGuidedAnswers if true, the end user validation errors will include guided answers to provide help
      */
     constructor(logger?: Logger, enableGuidedAnswers = false) {
+        ErrorHandler._logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/odata-service-inquirer' });
         ErrorHandler.guidedAnswersEnabled = enableGuidedAnswers;
+    }
+
+    /**
+     * Set the logger to be used for error messages.
+     *
+     * @param logger the logger instance to use
+     */
+    public static set logger(logger: Logger) {
+        ErrorHandler._logger = logger;
+    }
+
+    /**
+     * Get the logger used for error messages.
+     *
+     * @returns the logger instance
+     */
+    public static get logger() {
+        return ErrorHandler._logger;
     }
 
     /**
@@ -216,6 +236,38 @@ export class ErrorHandler {
         return Object.keys(ERROR_TYPE).find((errorCodeType) => {
             return ERROR_MAP[errorCodeType as ERROR_TYPE].find((exp: RegExp) => exp.test(error.toString()));
         }, {}) as ERROR_TYPE;
+    }
+
+    /**
+     * Maps errors to a few generic types, log a detailed error.
+     *
+     * @param error If the error is a string this will be logged as is. Otherwise it will be mapped to a general error internally, possibly retained and logged.
+     * @param userMsg If provided this will be set as the userErrorMsg instead of an error to msg map
+     *  this allows a message more relevant to the context of where the error was generated to be used.
+     * @param retainError Defaults to true to retain the error state.git status
+     * @returns A user-friendly message for display in-line
+     */
+    public logErrorMsgs(error: any | ERROR_TYPE, userMsg?: string, retainError = true): string {
+        let resolvedError: { errorMsg: string; errorType: ERROR_TYPE } = {
+            errorMsg: '',
+            errorType: ERROR_TYPE.UNKNOWN
+        };
+
+        // Overloaded to allow ERROR_TYPE for convenience
+        if (Object.values(ERROR_TYPE).includes(error)) {
+            resolvedError.errorMsg = ErrorHandler.getErrorMsgFromType(error) ?? error.toString();
+            resolvedError.errorType = error;
+        } else if (typeof error === 'string') {
+            resolvedError.errorMsg = error;
+        } else {
+            resolvedError = ErrorHandler.mapErrorToMsg(error);
+        }
+        ErrorHandler._logger.error(userMsg ? `${userMsg} ${resolvedError.errorMsg}` : resolvedError.errorMsg);
+        if (retainError) {
+            this.currentErrorMsg = userMsg ?? resolvedError.errorMsg;
+            this.currentErrorType = resolvedError.errorType;
+        }
+        return resolvedError.errorMsg;
     }
 
     /**
