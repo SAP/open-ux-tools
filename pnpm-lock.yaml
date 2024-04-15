@@ -1452,6 +1452,9 @@ importers:
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
+      fast-xml-parser:
+        specifier: 4.2.7
+        version: 4.2.7
       findit2:
         specifier: 2.2.3
         version: 2.2.3
@@ -1991,6 +1994,25 @@ importers:
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.1
         version: 2.0.1
+      inquirer:
+        specifier: 8.2.6
+        version: 8.2.6
+
+  packages/ui5-library-reference-inquirer:
+    dependencies:
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      i18next:
+        specifier: 23.5.1
+        version: 23.5.1
+    devDependencies:
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
       inquirer:
         specifier: 8.2.6
         version: 8.2.6
