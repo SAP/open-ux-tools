@@ -27,6 +27,10 @@ describe('library utils', () => {
         expect(libChoices[1].name).toBe('sap.reuse.ex.test.lib.attachmentservice.attachment');
         expect(libChoices[2].name).toBe('sap.reuse.ex.test.lib.attachmentservice.attachment.components.fscomponent');
         expect(libChoices[3].name).toBe('sap.reuse.ex.test.lib.attachmentservice.attachment.components.stcomponent');
+
+        for (const lib of libChoices) {
+            expect(lib.description).toBe('UI Library for Fiori Reuse Attachment Service');
+        }
     });
 
     test('should return missing dependencies', async () => {
@@ -54,7 +58,7 @@ describe('library utils', () => {
                 description: 'test description'
             }
         } as Manifest;
-        const description = getManifestDesc(manifest, 'mock/path');
+        const description = await getManifestDesc(manifest, 'mock/path');
         expect(description).toEqual('test description');
     });
 
@@ -64,7 +68,7 @@ describe('library utils', () => {
                 documentation: 'test description'
             }
         };
-        const description = getLibraryDesc(lib, 'mock/path');
+        const description = await getLibraryDesc(lib, 'mock/path');
         expect(description).toEqual('test description');
     });
 });

@@ -1,12 +1,13 @@
 import { join } from 'path';
 import { ui5Libs } from './constants';
-import propertiesReader from 'properties-reader';
 import type { LibraryResults, Manifest } from '../types';
 import { ReuseLibType, type ReuseLib } from './types';
 import { findFiles } from '../file';
 import { FileName } from '../constants';
 import { existsSync, promises as fs } from 'fs';
 import { XMLParser } from 'fast-xml-parser';
+import { getI18nPropertiesPaths } from '../project/i18n';
+import { getPropertiesI18nBundle } from '@sap-ux/i18n';
 
 /**
  * Reads the manifest file and returns the reuse library.
@@ -28,7 +29,7 @@ const getLibraryFromManifest = async (
     if ((manifestType === 'component' || manifestType === 'library') && manifestPath) {
         const reuseType = getReuseType(manifestPath);
         const libDeps = getManifestDependencies(manifest);
-        const description = getManifestDesc(manifest, manifestPath);
+        const description = await getManifestDesc(manifest, manifestPath);
 
         const libIndex = reuseLibs.findIndex((reuseLib) => reuseLib.name === manifest?.['sap.app'].id);
         if (libIndex === -1) {
@@ -67,7 +68,7 @@ const getLibraryFromLibraryFile = async (
         if (manifestType === 'component' || manifestType === 'library') {
             const reuseType = getReuseType(libraryPath);
             const libDeps = getLibraryDependencies(parsedFile);
-            const description = getLibraryDesc(parsedFile, libraryPath);
+            const description = await getLibraryDesc(parsedFile, libraryPath);
             libEntry = {
                 name: `${parsedFile.library.name}`,
                 path: libraryPath,
@@ -120,7 +121,12 @@ export const getReuseLibs = async (libs?: LibraryResults[]): Promise<ReuseLib[]>
                 const manifest = JSON.parse(
                     await fs.readFile(join(manifestPath, FileName.Manifest), { encoding: 'utf8' })
                 );
-                const library = await getLibraryFromManifest(manifest, manifestPath, reuseLibs, lib.projectRoot);
+                const library = await getLibraryFromManifest(
+                    manifest,
+                    join(manifestPath, FileName.Manifest),
+                    reuseLibs,
+                    lib.projectRoot
+                );
                 if (library) {
                     reuseLibs.push(library);
                 }
@@ -184,14 +190,15 @@ export function checkDependencies(answers: ReuseLib[], reuseLibs: ReuseLib[]): s
  * @param projectPath - project path
  * @returns library description
  */
-export function getLibraryDesc(library: any, projectPath: string): string {
-    const libraryDesc = library?.library?.documentation;
+export async function getLibraryDesc(library: any, projectPath: string): Promise<string> {
+    let libraryDesc = library?.library?.documentation;
     if (typeof libraryDesc === 'string' && libraryDesc.startsWith('{{')) {
-        const desc = libraryDesc.replace(/(^{{)|(}}$)/g, '');
-        return getI18nProperty(
+        const key = libraryDesc.substring(2, libraryDesc.length - 2);
+
+        libraryDesc = await geti18nPropertyValue(
             join(projectPath, library.library?.appData?.manifest?.i18n?.toString()),
-            desc
-        ).toString();
+            key
+        );
     }
     return libraryDesc.toString();
 }
@@ -224,39 +231,46 @@ export function getLibraryDependencies(library: any): string[] {
 }
 
 /**
- * Returns the i18n property.
+ * Returns the i18n property value.
  *
  * @param i18nPath - i18n path
- * @param property - property name
- * @returns i18n property
+ * @param key - property key
+ * @returns i18n property value
  */
-function getI18nProperty(i18nPath: string, property: string): string {
+async function geti18nPropertyValue(i18nPath: string, key: string): Promise<string> {
+    let value = '';
     try {
-        const libProperties = propertiesReader(i18nPath);
-        return libProperties.get(property)?.toString() ?? '';
+        const bundle = await getPropertiesI18nBundle(i18nPath);
+        const node = bundle[key].find((i) => i.key.value === key);
+        if (node) {
+            value = node.value.value;
+        }
     } catch (e) {
-        return '';
+        // ignore exception
     }
+    return value;
 }
 
 /**
  * Returns the manifest description.
  *
  * @param manifest - manifest object
- * @param projectPath - project path
+ * @param manifestPath - manifestPath path
  * @returns manifest description
  */
-export function getManifestDesc(manifest: Manifest, projectPath: string): string {
-    const manifestDesc = manifest['sap.app']?.description;
+export async function getManifestDesc(manifest: Manifest, manifestPath: string): Promise<string> {
+    let manifestDesc = manifest['sap.app']?.description;
+
     if (typeof manifestDesc === 'string' && manifestDesc.startsWith('{{')) {
-        const desc = manifestDesc.replace(/(^{{)|(}}$)/g, '');
-        const i18n = manifest['sap.app']?.i18n?.toString();
-        if (i18n) {
-            return getI18nProperty(join(projectPath, i18n), desc).toString();
-        }
+        const key = manifestDesc.substring(2, manifestDesc.length - 2);
+
+        const { 'sap.app': i18nPath } = await getI18nPropertiesPaths(manifestPath, manifest);
+        manifestDesc = await geti18nPropertyValue(i18nPath, key);
     }
 
-    return (manifestDesc ?? '').toString();
+    const x = (manifestDesc ?? '').toString();
+
+    return x;
 }
 
 /**

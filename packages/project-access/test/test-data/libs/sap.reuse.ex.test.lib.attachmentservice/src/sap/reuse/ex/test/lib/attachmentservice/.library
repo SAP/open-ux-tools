@@ -8,7 +8,7 @@
 	<copyright>${copyright}</copyright>
 	<appData>
 	  <manifest xmlns="http://www.sap.com/ui5/buildext/manifest" >
-	     <i18n>i18n/i18n.properties</i18n>
+	     <i18n>attachment/i18n/i18n.properties</i18n>
          <offline>false</offline>
          <deviceTypes desktop="true" phone="true" tablet="true" />
          <supportedTheme>sap_hcb</supportedTheme>
