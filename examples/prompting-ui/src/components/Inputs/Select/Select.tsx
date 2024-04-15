@@ -63,6 +63,9 @@ export const Select = (props: SelectProps) => {
             onChange={(_, newValue) => {
                 if (newValue !== undefined) {
                     setValue(newValue);
+                    if (name) {
+                        onChange(name, newValue, dependantPromptNames);
+                    }
                 }
             }}
             onRenderLabel={getLabelRenderer(additionalInfo)}
