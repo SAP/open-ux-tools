@@ -1,5 +1,32 @@
 # @sap-ux/preview-middleware
 
+## 0.13.11
+
+### Patch Changes
+
+-   Updated dependencies [98496d57]
+-   Updated dependencies [e3d2e003]
+    -   @sap-ux/project-access@1.19.7
+    -   @sap-ux/adp-tooling@0.9.12
+
+## 0.13.10
+
+### Patch Changes
+
+-   b17858cc: Support usage when running in connect server like karma
+
+## 0.13.9
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.11
+
+## 0.13.8
+
+### Patch Changes
+
+-   10ce9b44: Fix potential race condition when executing qunit tests
+
 ## 0.13.7
 
 ### Patch Changes
