@@ -221,8 +221,8 @@ importers:
         specifier: 16.3.1
         version: 16.3.1
       express:
-        specifier: 4.18.2
-        version: 4.18.2
+        specifier: 4.19.2
+        version: 4.19.2
       nock:
         specifier: 13.4.0
         version: 13.4.0
@@ -389,8 +389,8 @@ importers:
         specifier: 2.0.12
         version: 2.0.12
       express:
-        specifier: 4.18.2
-        version: 4.18.2
+        specifier: 4.19.2
+        version: 4.19.2
       nock:
         specifier: 13.4.0
         version: 13.4.0
@@ -493,7 +493,7 @@ importers:
         version: link:../project-access
       '@sap/cds':
         specifier: 7.4.1
-        version: 7.4.1(express@4.18.2)
+        version: 7.4.1(express@4.19.2)
       '@sap/cds-compiler':
         specifier: 4.4.4
         version: 4.4.4
@@ -1358,8 +1358,8 @@ importers:
         specifier: 16.3.1
         version: 16.3.1
       express:
-        specifier: 4.18.2
-        version: 4.18.2
+        specifier: 4.19.2
+        version: 4.19.2
       nock:
         specifier: 13.4.0
         version: 13.4.0
@@ -1478,8 +1478,8 @@ importers:
         specifier: 1.6.8
         version: 1.6.8
       express:
-        specifier: 4.18.2
-        version: 4.18.2
+        specifier: 4.19.2
+        version: 4.19.2
       supertest:
         specifier: 6.3.3
         version: 6.3.3
@@ -1500,8 +1500,8 @@ importers:
         specifier: 2.0.12
         version: 2.0.12
       express:
-        specifier: 4.18.2
-        version: 4.18.2
+        specifier: 4.19.2
+        version: 4.19.2
       serve-static:
         specifier: 1.15.0
         version: 1.15.0
@@ -2084,8 +2084,8 @@ importers:
         specifier: 2.0.12
         version: 2.0.12
       express:
-        specifier: 4.18.2
-        version: 4.18.2
+        specifier: 4.19.2
+        version: 4.19.2
       nock:
         specifier: 13.4.0
         version: 13.4.0
@@ -7398,14 +7398,14 @@ packages:
     dependencies:
       antlr4: 4.9.3
 
-  /@sap/cds-fiori@1.2.2(@sap/cds@7.4.1)(express@4.18.2):
+  /@sap/cds-fiori@1.2.2(@sap/cds@7.4.1)(express@4.19.2):
     resolution: {integrity: sha512-9bJKiIq8dCmwEcIXES7jiAcmiyJlDjjKdnvceAmqCU5Z925ZaalVIGYdnmmlQyciPUzD/bk3vRxmrPIogP6leA==}
     peerDependencies:
       '@sap/cds': '>=7'
       express: '>=4'
     dependencies:
-      '@sap/cds': 7.4.1(express@4.18.2)
-      express: 4.18.2
+      '@sap/cds': 7.4.1(express@4.19.2)
+      express: 4.19.2
     dev: true
 
   /@sap/cds-foss@5.0.0:
@@ -7418,13 +7418,13 @@ packages:
       yaml: 2.3.3
     dev: true
 
-  /@sap/cds@7.4.1(express@4.18.2):
+  /@sap/cds@7.4.1(express@4.19.2):
     resolution: {integrity: sha512-xGCeelb6wbbWOpG65aUFNNRfGBHyczycBltK7OiwGGAr6SfXHiw/p659+Fv8XeWpaQOnLVvp4tNvmPgvWVgJOg==}
     engines: {node: '>=16'}
     hasBin: true
     dependencies:
       '@sap/cds-compiler': 4.4.4
-      '@sap/cds-fiori': 1.2.2(@sap/cds@7.4.1)(express@4.18.2)
+      '@sap/cds-fiori': 1.2.2(@sap/cds@7.4.1)(express@4.19.2)
       '@sap/cds-foss': 5.0.0
     transitivePeerDependencies:
       - express
@@ -7577,7 +7577,7 @@ packages:
       ejs: 3.1.9
       esbuild: 0.18.20
       esbuild-plugin-alias: 0.2.1
-      express: 4.18.2
+      express: 4.19.2
       find-cache-dir: 3.3.2
       fs-extra: 11.1.1
       process: 0.11.10
@@ -7623,7 +7623,7 @@ packages:
       case-sensitive-paths-webpack-plugin: 2.4.0
       constants-browserify: 1.0.0
       css-loader: 6.8.1(webpack@5.88.0)
-      express: 4.18.2
+      express: 4.19.2
       fork-ts-checker-webpack-plugin: 8.0.0(typescript@5.3.3)(webpack@5.88.0)
       fs-extra: 11.1.1
       html-webpack-plugin: 5.5.0(webpack@5.88.0)
@@ -7691,7 +7691,7 @@ packages:
       detect-indent: 6.1.0
       envinfo: 7.10.0
       execa: 5.1.1
-      express: 4.18.2
+      express: 4.19.2
       find-up: 5.0.0
       fs-extra: 11.1.1
       get-npm-tarball-url: 2.0.3
@@ -7846,7 +7846,7 @@ packages:
       cli-table3: 0.6.3
       compression: 1.7.4
       detect-port: 1.5.1
-      express: 4.18.2
+      express: 4.19.2
       fs-extra: 11.1.1
       globby: 11.1.0
       ip: 2.0.1
@@ -9554,7 +9554,7 @@ packages:
       devcert-sanscache: 0.4.8
       escape-html: 1.0.3
       etag: 1.8.1
-      express: 4.18.2
+      express: 4.19.2
       fresh: 0.5.2
       graceful-fs: 4.2.11
       mime-types: 2.1.35
@@ -11511,8 +11511,8 @@ packages:
     resolution: {integrity: sha512-QADzlaHc8icV8I7vbaJXJwod9HWYp8uCqf1xa4OfNu1T7JVxQIrUgOWtHdNDtPiywmFbiS12VjotIXLrKM3orQ==}
     dev: true
 
-  /cookie@0.5.0:
-    resolution: {integrity: sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==}
+  /cookie@0.6.0:
+    resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
     engines: {node: '>= 0.6'}
     dev: true
 
@@ -12459,7 +12459,7 @@ packages:
       define-properties: 1.2.0
       es-abstract: 1.22.1
       es-set-tostringtag: 2.0.1
-      function-bind: 1.1.1
+      function-bind: 1.1.2
       get-intrinsic: 1.2.1
       globalthis: 1.0.3
       has-property-descriptors: 1.0.0
@@ -13353,16 +13353,16 @@ packages:
   /exponential-backoff@3.1.1:
     resolution: {integrity: sha512-dX7e/LHVJ6W3DE1MHWi9S1EYzDESENfLrYohG2G++ovZrYOkm4Knwa0mc1cn84xJOR4KEU0WSchhLbd0UklbHw==}
 
-  /express@4.18.2:
-    resolution: {integrity: sha512-5/PsL6iGPdfQ/lKM1UuielYgv3BUoJfz1aUwU9vHZ+J7gyvwdQXFEBIEIaxeGf0GIcreATNyBExtalisDbuMqQ==}
+  /express@4.19.2:
+    resolution: {integrity: sha512-5T6nhjsT+EOMzuck8JjBHARTHfMht0POzlA60WV2pMD3gyXw2LZnZ+ueGdNxG+0calOJcWKbpFcuzLZ91YWq9Q==}
     engines: {node: '>= 0.10.0'}
     dependencies:
       accepts: 1.3.8
       array-flatten: 1.1.1
-      body-parser: 1.20.1
+      body-parser: 1.20.2
       content-disposition: 0.5.4
       content-type: 1.0.5
-      cookie: 0.5.0
+      cookie: 0.6.0
       cookie-signature: 1.0.6
       debug: 2.6.9
       depd: 2.0.0
@@ -13904,10 +13904,6 @@ packages:
     os: [darwin]
     requiresBuild: true
     optional: true
-
-  /function-bind@1.1.1:
-    resolution: {integrity: sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==}
-    dev: true
 
   /function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
