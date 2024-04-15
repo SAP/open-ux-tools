@@ -51,7 +51,7 @@ export default async function (rta: RuntimeAuthoring) {
     }
 
     // also initialize the editor
-    init(rta);
+    await init(rta);
 
     const ui5VersionValidationMsg = getUI5VersionValidationMessage(version);
 
