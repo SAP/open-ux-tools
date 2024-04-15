@@ -61,9 +61,9 @@ export async function getBuildingBlockChoices<T extends Answers>(
         const annotationTerms: UIAnnotationTerms[] = [];
         switch (fieldName) {
             case 'service':
-                return await getCAPServiceChoices(projectProvider, projectProvider.appId);
+                return await getCAPServiceChoices(projectProvider);
             case 'entity':
-                return getEntityChoices(projectProvider, projectProvider.appId);
+                return getEntityChoices(projectProvider);
             case 'aggregationPath': {
                 if (!answers.viewOrFragmentFile) {
                     return [];
@@ -90,15 +90,7 @@ export async function getBuildingBlockChoices<T extends Answers>(
                 } else if (buildingBlockType === BuildingBlockType.FilterBar) {
                     annotationTerms.push(...[UIAnnotationTerms.SelectionFields]);
                 }
-                return getChoices(
-                    await getAnnotationPathQualifiers(
-                        projectProvider,
-                        projectProvider.appId,
-                        entity,
-                        annotationTerms,
-                        true
-                    )
-                );
+                return getChoices(await getAnnotationPathQualifiers(projectProvider, entity, annotationTerms, true));
             case 'filterBarId': {
                 if (!answers.viewOrFragmentFile) {
                     return [];

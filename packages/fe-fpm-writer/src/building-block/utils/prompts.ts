@@ -64,7 +64,7 @@ export function getAnnotationPathQualifierPrompt(
         choices: async (answers) => {
             const { entity } = answers;
             const choices = getChoices(
-                await getAnnotationPathQualifiers(projectProvider, projectProvider.appId, entity, annotationTerm, true)
+                await getAnnotationPathQualifiers(projectProvider, entity, annotationTerm, true)
             );
             if (!choices.length) {
                 throw new Error(
@@ -135,7 +135,7 @@ export async function getCAPServicePrompt(
 ): Promise<ListQuestion> {
     const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     let prompt = {};
-    await getCAPServiceChoices(projectProvider, projectProvider.appId).then((services) => {
+    await getCAPServiceChoices(projectProvider).then((services) => {
         const defaultValue = services.length === 1 && services[0].name;
         prompt = {
             type: 'list',
@@ -175,7 +175,7 @@ export function getEntityPrompt(
         selectType: 'dynamic',
         dependantPromptNames,
         message,
-        choices: getEntityChoices.bind(null, projectProvider, projectProvider.appId),
+        choices: getEntityChoices.bind(null, projectProvider),
         groupId,
         required,
         additionalInfo,
@@ -191,10 +191,9 @@ export function getEntityPrompt(
  */
 // ToDo - recheck types fr choices
 export async function getEntityChoices(
-    projectProvider: ProjectProvider,
-    appName: string
+    projectProvider: ProjectProvider
 ): Promise<Array<{ name: string; value: string }>> {
-    const entityTypes = await getEntityTypes(projectProvider, appName);
+    const entityTypes = await getEntityTypes(projectProvider);
     const entityTypeMap: { [key: string]: string } = {};
     for (const entityType of entityTypes) {
         const value = entityType.fullyQualifiedName;
@@ -205,10 +204,9 @@ export async function getEntityChoices(
 }
 
 export async function getCAPServiceChoices(
-    projectProvider: ProjectProvider,
-    appName: string
+    projectProvider: ProjectProvider
 ): Promise<Array<{ name: string; value: string }>> {
-    const services = (await projectProvider.getProject()).apps[appName].services;
+    const services = (await projectProvider.getProject()).apps[projectProvider.appId].services;
     const servicesMap: { [key: string]: string } = {};
     for (const serviceKey of Object.keys(services)) {
         servicesMap[serviceKey] = serviceKey;

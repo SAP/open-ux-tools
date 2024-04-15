@@ -53,9 +53,9 @@ const getServiceMetadata = async (project: Project, serviceName: string, appName
  * @param appName
  * @returns
  */
-export async function getEntityTypes(projectProvider: ProjectProvider, appName: string) {
+export async function getEntityTypes(projectProvider: ProjectProvider) {
     const project = await projectProvider.getProject();
-    const metadata = await getServiceMetadata(project as any, project.mainService, appName);
+    const metadata = await getServiceMetadata(project as any, project.mainService, projectProvider.appId);
     return Array.from(metadata.entityTypes);
 }
 
@@ -77,7 +77,6 @@ export function getAnnotationTermAlias(annotationTerm: UIAnnotationTerms) {
  */
 export async function getAnnotationPathQualifiers(
     projectProvider: ProjectProvider,
-    appName: string,
     entity: string,
     annotationTerm: UIAnnotationTerms[],
     useNamespace = false
@@ -87,8 +86,8 @@ export async function getAnnotationPathQualifiers(
         const project = await projectProvider.getProject();
         const annotationService = await getAnnotationService(
             project as any,
-            project.apps[appName].mainService!,
-            appName
+            project.apps[projectProvider.appId].mainService!,
+            projectProvider.appId
         );
         const mergedMetadata = getMergedMetadata(annotationService);
         let entityType = mergedMetadata.entityTypes.by_fullyQualifiedName(entity);
