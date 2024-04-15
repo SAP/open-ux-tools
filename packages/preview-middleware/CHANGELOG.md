@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 0.13.10
+
+### Patch Changes
+
+-   b17858cc: Support usage when running in connect server like karma
+
+## 0.13.9
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.11
+
 ## 0.13.8
 
 ### Patch Changes
