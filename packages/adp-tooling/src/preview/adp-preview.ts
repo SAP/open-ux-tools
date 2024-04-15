@@ -9,7 +9,7 @@ import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 
 import RoutesHandler from './routes-handler';
-import type { AdpPreviewConfig, CommonChangeProperties, DescriptorVariant } from '../types';
+import type { AdpPreviewConfig, CommonChangeProperties, DescriptorVariant, OperationType } from '../types';
 import type { Editor } from 'mem-fs-editor';
 import { addXmlFragment, isAddXMLChange, moduleNameContentMap, tryFixChange } from './change-handler';
 
@@ -179,7 +179,7 @@ export class AdpPreview {
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
     async onChangeRequest(
-        type: 'read' | 'write' | 'delete',
+        type: OperationType,
         change: CommonChangeProperties,
         fs: Editor,
         logger: Logger
