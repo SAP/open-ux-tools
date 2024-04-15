@@ -462,7 +462,7 @@ export class FlpSandbox {
                 initPath: config.init
             };
             const html = render(testsuite, templateConfig);
-            res.status(200).contentType('html').send(html);
+            this.sendResponse(res, 'text/html', 200, html);
         }) as RequestHandler);
 
         if (testConfig.init !== undefined) {
@@ -485,8 +485,8 @@ export class FlpSandbox {
             const templateConfig = {
                 testPaths: testPaths
             };
-            const html = render(initTemplate, templateConfig);
-            res.status(200).contentType('application/javascript').send(html);
+            const js = render(initTemplate, templateConfig);
+            this.sendResponse(res, 'application/javascript', 200, js);
         }) as RequestHandler);
     }
 
