@@ -18,7 +18,7 @@ const connector = merge({}, ObjectStorageConnector, {
 
             if (typeof this.fileChangeRequestNotifier === 'function' && change.fileName) {
                 try {
-                    this.fileChangeRequestNotifier(change.fileName, 'create',  change.changeType);
+                    this.fileChangeRequestNotifier(change.fileName, 'create', change.changeType);
                 } catch (e) {
                     // exceptions in the listener call are ignored
                 }
@@ -62,7 +62,7 @@ const connector = merge({}, ObjectStorageConnector, {
                     'content-type': 'application/json'
                 }
             });
-            const changes = await response.json();
+            const changes = await response.json() as unknown as FlexChange[];
             return changes;
         }
     } as typeof ObjectStorageConnector.storage,

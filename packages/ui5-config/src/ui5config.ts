@@ -11,7 +11,8 @@ import type {
     Resources,
     Ui5Document,
     Adp,
-    MockserverConfig
+    MockserverConfig,
+    ServeStaticPath
 } from './types';
 import type { NodeComment, YAMLMap, YAMLSeq } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
@@ -20,6 +21,7 @@ import {
     getFioriToolsProxyMiddlewareConfig,
     getMockServerMiddlewareConfig
 } from './middlewares';
+import { fioriToolsProxy, serveStatic } from './constants';
 
 /**
  * Represents a UI5 config file in yaml format (ui5(-*).yaml) with utility functions to manipulate the yaml document.
@@ -238,10 +240,7 @@ export class UI5Config {
      */
     public addBackendToFioriToolsProxydMiddleware(backend: FioriToolsProxyConfigBackend): UI5Config {
         const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
-        const proxyMiddleware = this.document.findItem(
-            middlewareList,
-            (item: any) => item.name === 'fiori-tools-proxy'
-        );
+        const proxyMiddleware = this.document.findItem(middlewareList, (item: any) => item.name === fioriToolsProxy);
         if (!proxyMiddleware) {
             throw new Error('Could not find fiori-tools-proxy');
         }
@@ -258,10 +257,7 @@ export class UI5Config {
      */
     public addUi5ToFioriToolsProxydMiddleware(ui5: FioriToolsProxyConfigUI5): UI5Config {
         const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
-        const proxyMiddleware = this.document.findItem(
-            middlewareList,
-            (item: any) => item.name === 'fiori-tools-proxy'
-        );
+        const proxyMiddleware = this.document.findItem(middlewareList, (item: any) => item.name === fioriToolsProxy);
         if (!proxyMiddleware) {
             throw new Error('Could not find fiori-tools-proxy');
         }
@@ -410,6 +406,62 @@ export class UI5Config {
         } else {
             this.addCustomMiddleware([middleware]);
         }
+        return this;
+    }
+
+    /**
+     * Returns the serve static config.
+     *
+     * @param addFioriToolProxy - if true, `fiori-tools-proxy` config is added, otherwise a `compression` config will be added
+     * @param paths - serve static paths for the reuse libraries
+     * @returns the serve static middleware config
+     */
+    private getServeStaticConfig(
+        addFioriToolProxy: boolean,
+        paths: ServeStaticPath[]
+    ): CustomMiddleware<{ paths: ServeStaticPath[] }> {
+        return addFioriToolProxy
+            ? {
+                  name: serveStatic,
+                  beforeMiddleware: fioriToolsProxy,
+                  configuration: {
+                      paths: paths
+                  }
+              }
+            : {
+                  name: serveStatic,
+                  afterMiddleware: 'compression',
+                  configuration: {
+                      paths: paths
+                  }
+              };
+    }
+
+    /**
+     * Adds or updates the serve static middleware in the config.
+     *
+     * @param serveStaticPaths serve static paths for the reuse libraries
+     * @returns {UI5Config} the UI5Config instance
+     */
+    public addServeStaticConfig(serveStaticPaths: ServeStaticPath[]): this {
+        const serveStaticConfig = this.findCustomMiddleware<{ paths: ServeStaticPath[] }>(serveStatic);
+        const fioriToolsProxyConfig = this.findCustomMiddleware(fioriToolsProxy);
+
+        if (serveStaticConfig) {
+            if (serveStaticConfig.afterMiddleware === 'compression' && fioriToolsProxyConfig) {
+                this.updateCustomMiddleware({
+                    name: serveStatic,
+                    beforeMiddleware: fioriToolsProxy,
+                    configuration: {
+                        paths: [...serveStaticConfig.configuration.paths, ...serveStaticPaths]
+                    }
+                });
+            }
+        } else {
+            const serveStaticConfig = this.getServeStaticConfig(!!fioriToolsProxyConfig, serveStaticPaths);
+            this.addCustomMiddleware([serveStaticConfig]);
+        }
+
         return this;
     }
 

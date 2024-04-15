@@ -1,4 +1,4 @@
-// Last content update: Tue Nov 07 2023 12:06:19 GMT+0200 (Eastern European Standard Time)
+// Last content update: Wed Apr 03 2024 08:50:55 GMT+0200 (Central European Summer Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -457,7 +457,7 @@ export default {
                         '$Name': 'MaxDistance',
                         '$Type': 'Edm.Int16',
                         '@Org.OData.Core.V1.OptionalParameter': {
-                            'DefaultValue': 32767
+                            'DefaultValue': '32767'
                         },
                         '@Org.OData.Validation.V1.Minimum': 1
                     },
@@ -510,7 +510,7 @@ export default {
                         '$Name': 'MaxDistance',
                         '$Type': 'Edm.Int16',
                         '@Org.OData.Core.V1.OptionalParameter': {
-                            'DefaultValue': 32767
+                            'DefaultValue': '32767'
                         },
                         '@Org.OData.Validation.V1.Minimum': 1
                     },
@@ -613,7 +613,7 @@ export default {
                         '@Org.OData.Core.V1.LongDescription':
                             'Every instance in the output set of a `groupby` transformation with M `rolluprecursive` operators\n            has M relationships to M nodes in M recursive hierarchies. This function returns the node x with path r to the root\n            in relationship number N.\n            If several such `groupby` transformations are nested, this function refers to the innermost one.',
                         '@Org.OData.Core.V1.OptionalParameter': {
-                            'DefaultValue': 1
+                            'DefaultValue': '1'
                         },
                         '@Org.OData.Validation.V1.Minimum': 1
                     }

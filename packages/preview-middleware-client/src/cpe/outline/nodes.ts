@@ -48,7 +48,7 @@ export async function transformNodes(input: OutlineViewNode[], scenario: Scenari
     const items: OutlineNode[] = [];
     while (stack.length) {
         const current = stack.shift();
-        const editable = await isEditable(current?.id);
+        const editable = isEditable(current?.id);
         if (current?.type === 'element') {
             const children = getChildren(current);
             const { text } = getAdditionalData(current.id);
