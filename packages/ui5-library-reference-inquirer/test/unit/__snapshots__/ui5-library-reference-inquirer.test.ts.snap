@@ -3,7 +3,7 @@
 exports[`ui5-library-reference-inquirer API getPrompts, no options 1`] = `
 Array [
   Object {
-    "choices": [Function],
+    "choices": Array [],
     "default": [Function],
     "guiOptions": Object {
       "breadcrumb": true,
@@ -16,7 +16,7 @@ Array [
   Object {
     "choices": Array [
       Object {
-        "name": "LABEL_WORKSPACE",
+        "name": "Workspace",
         "value": "Workspace",
       },
     ],
@@ -30,7 +30,7 @@ Array [
   },
   Object {
     "additionalMessages": [Function],
-    "choices": [Function],
+    "choices": Array [],
     "guiOptions": Object {
       "breadcrumb": true,
     },
