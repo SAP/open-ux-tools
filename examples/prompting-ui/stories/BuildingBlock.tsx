@@ -37,15 +37,17 @@ export const BuildingBlockQuestions = (props: {
     externalAnswers?: Answers;
 }): JSX.Element => {
     const { type, visibleQuestions, externalAnswers = {} } = props;
-    const [answers, setAnswers] = useState<Answers>(externalAnswers);
     const [layoutSettings, setLayoutSettings] = useState<CustomizationSettings>({
         multiColumn: true,
         showDescriptions: true
     });
     const choices = useChoices();
     const { groups, questions } = useQuestions(type, visibleQuestions);
+    const [answers, setAnswers] = useState<Answers>({ ...getDefaultAnswers(questions), ...externalAnswers });
     const [validation, setValidation] = useState<ValidationResults>({});
 
+    useEffect(() => setAnswers({ ...getDefaultAnswers(questions), ...externalAnswers }), [questions]);
+    
     async function updateAnswers(newAnswers: Answers, name: string, answer: AnswerValue) {
         setAnswers({
             ...getDefaultAnswers(questions),
