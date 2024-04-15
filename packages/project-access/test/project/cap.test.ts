@@ -3,6 +3,7 @@ import * as childProcess from 'child_process';
 import * as projectModuleMock from '../../src/project/module-loader';
 import type { Package } from '../../src';
 import { FileName } from '../../src/constants';
+import { clearGlobalCdsPathCache } from '../../src/project/cap';
 import {
     getCapCustomPaths,
     getCapEnvironment,
@@ -74,6 +75,7 @@ describe('Test isCapJavaProject()', () => {
 describe('Test getCapModelAndServices()', () => {
     afterEach(() => {
         jest.clearAllMocks();
+        clearGlobalCdsPathCache();
     });
 
     test('Get valid model and services, mock cds with local cds from devDependencies', async () => {
@@ -205,6 +207,60 @@ describe('Test getCapModelAndServices()', () => {
         expect(loggerSpy).toHaveBeenNthCalledWith(1, expect.stringContaining("'cds.home': /cds/home/path"));
         expect(loggerSpy).toHaveBeenNthCalledWith(2, expect.stringContaining("'cds.version': 7.4.2"));
         expect(loggerSpy).toHaveBeenNthCalledWith(3, expect.stringContaining("'cds.root':"));
+    });
+
+    test('Get model and service, fallback to global install, no cds dependency in project', async () => {
+        // Mock setup
+        const cdsMock = {
+            load: jest.fn().mockResolvedValue('MODEL'),
+            compile: {
+                to: {
+                    serviceinfo: jest.fn().mockResolvedValue([])
+                }
+            }
+        };
+        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock('home: /global/cds'));
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject')
+            .mockRejectedValueOnce('ERROR')
+            .mockResolvedValue(cdsMock);
+
+        // Test execution with object param
+        const projectRoot = '/some/test/path';
+        const capMS = await getCapModelAndServices(projectRoot);
+        expect(capMS.model).toEqual('MODEL');
+    });
+
+    test('Get model and service with mismatching major versions of global cds and project cds', async () => {
+        // Mock setup
+        const cdsMock = {
+            load: jest.fn().mockResolvedValue('MODEL'),
+            compile: {
+                to: {
+                    serviceinfo: jest.fn().mockResolvedValue([])
+                }
+            },
+            version: '7.0.0'
+        };
+        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock('home: /any/path'));
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject')
+            .mockRejectedValueOnce('ERROR')
+            .mockResolvedValue(cdsMock);
+        jest.spyOn(file, 'fileExists').mockResolvedValueOnce(true);
+        jest.spyOn(file, 'readJSON').mockResolvedValueOnce({ 'dependencies': { '@sap/cds': '6.0.0' } });
+
+        // Test execution with object param
+        const projectRoot = '/some/test/path';
+        try {
+            await getCapModelAndServices(projectRoot);
+            fail(
+                'Call to getCapModelAndServices() should have thrown error due to mismatch of cds versions, but did not.'
+            );
+        } catch (error) {
+            // Result check
+            ['@sap/cds major version', '6.0.0', '7.0.0'].forEach((testString) => {
+                expect(error.toString()).toContain(testString);
+            });
+        }
     });
 });
 
@@ -484,26 +540,6 @@ describe('Test getCapEnvironment()', () => {
         expect(loadSpy).toHaveBeenNthCalledWith(2, 'GLOBAL_ROOT', '@sap/cds');
         expect(forSpy).toBeCalledWith('cds', 'PROJECT_ROOT');
     });
-
-    function getChildProcessMock(data: any, throwError = false): childProcess.ChildProcess {
-        return {
-            stdout: {
-                on: (type: 'data', cb: (chunk: any) => void) => {
-                    if (type === 'data') {
-                        cb(data);
-                    }
-                }
-            },
-            on: (type: 'close' | 'error', cb: (error?: string) => void) => {
-                if (type === 'close') {
-                    cb();
-                }
-                if (type === 'error' && throwError) {
-                    cb('ERROR');
-                }
-            }
-        } as childProcess.ChildProcess;
-    }
 });
 
 describe('toReferenceUri', () => {
@@ -802,4 +838,24 @@ describe('Test getCdsServices()', () => {
 
 function fail(message: string) {
     expect(message).toBeFalsy();
+}
+
+function getChildProcessMock(data: any, throwError = false): childProcess.ChildProcess {
+    return {
+        stdout: {
+            on: (type: 'data', cb: (chunk: any) => void) => {
+                if (type === 'data') {
+                    cb(data);
+                }
+            }
+        },
+        on: (type: 'close' | 'error', cb: (error?: string) => void) => {
+            if (type === 'close') {
+                cb();
+            }
+            if (type === 'error' && throwError) {
+                cb('ERROR');
+            }
+        }
+    } as childProcess.ChildProcess;
 }
