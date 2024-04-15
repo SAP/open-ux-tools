@@ -3,6 +3,7 @@ import { t } from '../../../i18n';
 import type { MetadataPromptOptions, OdataServiceAnswers } from '../../../types';
 import { servicePromptNames } from '../../../types';
 import { validateMetadataFile } from '../../validators';
+import { PromptStateHelper } from '../../prompt-helpers';
 
 /**
  * Returns the metadata file question based on the provided @type{MetadataPromptOptions}.
@@ -14,11 +15,24 @@ export function getMetadataFileQuestion(promptOptions?: MetadataPromptOptions): 
     const metadataFileQuestion = {
         type: 'input',
         guiType: 'file-browser',
-        name: servicePromptNames.metadata,
+        name: servicePromptNames.metadataFilePath,
         guiOptions: { mandatory: true, breadcrumb: true },
-        message: t('prompts.metadata.message'),
+        message: t('prompts.metadataFile.message'),
         validate: async (path: string) => {
-            return validateMetadataFile(path, promptOptions?.requiredOdataVersion);
+            PromptStateHelper.reset();
+            const validateResult = await validateMetadataFile(path, promptOptions?.requiredOdataVersion);
+
+            if (typeof validateResult === 'string' || typeof validateResult === 'boolean') {
+                return validateResult;
+            }
+
+            if (validateResult.metadata) {
+                PromptStateHelper.odataService = {};
+                PromptStateHelper.odataService.odataVersion = validateResult.version;
+                PromptStateHelper.odataService.metadata = validateResult.metadata;
+                PromptStateHelper.odataService.servicePath = t('prompts.metadataFile.placeholder_odata_service_url'); // Dummy path used by v4 preview server middleware
+            }
+            return true;
         }
     } as FileBrowserQuestion<OdataServiceAnswers>;
 

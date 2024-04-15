@@ -3,7 +3,6 @@ import { t } from '../i18n';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { MetadataFactory } from '@sap/wing-service-explorer';
 import LoggerHelper from './logger-helper';
-import { PromptStateHelper } from './prompt-helpers';
 
 /**
  * Validator function to verify if the specified metadata edmx version matches the specified required odata version.
@@ -43,39 +42,41 @@ export function validateODataVersion(
     }
 }
 
-export const validateMetadataFile = async (path: string, odataVersion?: OdataVersion): Promise<boolean | string> => {
+/**
+ * Validates the metadata file, returning an error string, if not valid, or an object with the valid metadata and version.
+ *
+ * @param path
+ * @param odataVersion
+ * @returns
+ */
+
+export const validateMetadataFile = async (
+    path: string,
+    odataVersion?: OdataVersion
+): Promise<
+    | {
+          version: OdataVersion;
+          metadata: string;
+      }
+    | string
+    | boolean
+> => {
     if (!path) {
         return false;
     }
 
     try {
-        const metadataFile = await readFile(path, 'utf-8');
-        metadataFile.replace(/ & /g, ' &amp; ');
-        const { validationMsg, version } = validateODataVersion(metadataFile, odataVersion);
+        const metadata = await readFile(path, 'utf-8');
+        metadata.replace(/ & /g, ' &amp; ');
+        const { validationMsg, version } = validateODataVersion(metadata, odataVersion);
         if (validationMsg) {
             return validationMsg;
         }
-        PromptStateHelper.odataService.metadata = metadataFile;
-        PromptStateHelper.odataService.odataVersion = version;
+        return {
+            version: version ?? OdataVersion.v4,
+            metadata
+        };
     } catch (error) {
         return t('prompts.validationMessages.metadataFilePathNotValid');
     }
-    return true;
-    /*  if (existsSync(path) && statSync(path).isFile()) {
-            // Will remove existsSync and use statSync(path, { throwIfNoEntry: false }, when min node version > 14
-            // Exists and is a file
-            service.edmx = readFileSync(path, 'utf-8');
-            service.edmx = service.edmx.replace(/ & /g, ' &amp; ');
-            const { validationMsg, version } = validateODataVersion(service.edmx, requiredVersion);
-
-            if (validationMsg) {
-                delete service.edmx;
-                return validationMsg;
-            }
-            service.servicePath = t('EXAMPLE_URL_PATH'); // Dummy path used by v4 preview server middleware
-            service.version = version;
-            return true;
-        } else {
-            return t('ERROR_METADATA_FILE_DOES_NOT_EXIST');
-        }*/
 };

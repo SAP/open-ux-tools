@@ -1,7 +1,7 @@
 import { type InquirerAdapter } from '@sap-ux/inquirer-common';
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { ErrorHandler } from './error-handler/errorHandler';
+import { ErrorHandler } from './error-handler/error-handler';
 import { getQuestions } from './prompts';
 import LoggerHelper from './prompts/logger-helper';
 import { PromptStateHelper } from './prompts/prompt-helpers';
@@ -14,13 +14,17 @@ import { DatasourceType, promptNames, type CapRuntime, type CapService } from '.
  *
  * @param promptOptions
  * @param logger    - a logger compatible with the {@link Logger} interface
+ * @param enableGuidedAnswers
  * @returns the prompts used to provide input for odata service generation
  */
-async function getPrompts(promptOptions?: OdataServicePromptOptions, logger?: Logger): Promise<OdataServiceQuestion[]> {
+async function getPrompts(
+    promptOptions?: OdataServicePromptOptions,
+    logger?: Logger,
+    enableGuidedAnswers = false
+): Promise<OdataServiceQuestion[]> {
     // Initialize the logger refs
     LoggerHelper.logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/odata-service-inquirer' });
-    // Why not use the static logger ref directly from the ErrorHandler?
-    ErrorHandler.logger = LoggerHelper.logger;
+    ErrorHandler.guidedAnswersEnabled = enableGuidedAnswers;
 
     return getQuestions(promptOptions);
 }
@@ -31,14 +35,16 @@ async function getPrompts(promptOptions?: OdataServicePromptOptions, logger?: Lo
  * @param adapter
  * @param promptOptions
  * @param logger
+ * @param enableGuidedAnswers - if true, the prompts will use guided answers to help users with validation errors
  * @returns the prompt answers
  */
 async function prompt(
     adapter: InquirerAdapter,
     promptOptions?: OdataServicePromptOptions,
-    logger?: Logger
+    logger?: Logger,
+    enableGuidedAnswers?: boolean
 ): Promise<OdataServiceAnswers> {
-    const odataServicePrompts = await getPrompts(promptOptions, logger);
+    const odataServicePrompts = await getPrompts(promptOptions, logger, enableGuidedAnswers);
 
     /* if (adapter?.promptModule && (promptOptions?.service?.useAutocomplete || promptOptions?.sapSystem?.useAutocomplete)) {
         const pm = adapter.promptModule;

@@ -51,7 +51,7 @@ function getDatasourceTypeQuestion(options?: DatasourceTypePromptOptions): YUIQu
         message: t('prompts.datasourceType.message'),
         choices,
         additionalMessages: (source) => {
-            if (source === DatasourceType.buiness_hub) {
+            if (source === DatasourceType.business_hub) {
                 return {
                     message: t('prompts.nonUIServiceTypeWarningMessage', {
                         serviceTypeDesc: t('prompts.datasourceType.businessHubName')
@@ -76,7 +76,7 @@ async function getDatasourceTypeConditionalQuestions(
 
     conditionalQuestions.push(
         ...(withCondition(
-            [getMetadataFileQuestion(promptOptions?.metadata) as Question],
+            [getMetadataFileQuestion(promptOptions?.metadataFilePath) as Question],
             (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.metadata_file
         ) as OdataServiceQuestion[])
     );

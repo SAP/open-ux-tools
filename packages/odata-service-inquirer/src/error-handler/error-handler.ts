@@ -1,12 +1,10 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { isFeatureEnabled } from '@sap-ux/feature-toggle';
-import type { Logger } from '@sap-ux/logger';
-import { ToolsLogger } from '@sap-ux/logger';
+import { type Logger } from '@sap-ux/logger';
 import { t } from '../i18n';
 import { PLATFORMS, ValidationLink } from '../types';
 import { getPlatform, sendTelemetryEvent } from '../utils';
-import { getHelpUrl, GUIDED_ANSWERS_LAUNCH_CMD_ID, HELP_NODES, HELP_TREE } from './help/helpTopics';
+import { getHelpUrl, GUIDED_ANSWERS_LAUNCH_CMD_ID, HELP_NODES, HELP_TREE } from './help/help-topics';
 import { GUIDED_ANSWERS_ICON } from './help/images';
 
 const teleEventGALinkCreated = 'GA_LINK_CREATED';
@@ -31,7 +29,7 @@ export enum ERROR_TYPE {
     SERVICE_UNAVAILABLE = 'SERVICE_UNAVAILABLE', // Specific service
     NO_ABAP_ENVS = 'NO_ABAP_ENVS',
     CATALOG_SERVICE_NOT_ACTIVE = 'CATALOG_SERVICE_NOT_ACTIVE',
-    SERVER = 'SERVER',
+    NO_SUCH_HOST = 'NO_SUCH_HOST',
     NOT_FOUND = 'NOT_FOUND',
     ODATA_URL_NOT_FOUND = 'ODATA_URL_NOT_FOUND',
     BAD_GATEWAY = 'BAD_GATEWAY', // Can be caused by either local issue or endpoint configuration
@@ -75,7 +73,7 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
         /\/IWFND\/CM_V4_COS\/021/,
         /Service group '\/IWFND\/CONFIG' not published/
     ],
-    [ERROR_TYPE.SERVER]: [/no such host/],
+    [ERROR_TYPE.NO_SUCH_HOST]: [/no such host/],
     [ERROR_TYPE.NOT_FOUND]: [/404/],
     [ERROR_TYPE.ODATA_URL_NOT_FOUND]: [],
     [ERROR_TYPE.INTERNAL_SERVER_ERROR]: [/500/],
@@ -88,8 +86,6 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
     [ERROR_TYPE.NO_V4_SERVICES]: []
 };
 
-const enableGAIntegration = 'enableGAIntegration'; // Adds support for GA launch commands with GA links
-
 // Maps errors to end-user messages
 /**
  *
@@ -100,49 +96,49 @@ export class ErrorHandler {
     /** The last error message type generated if determined */
     private currentErrorType: ERROR_TYPE | null;
 
+    static guidedAnswersEnabled = false;
+
     // Get the required localized parameterized error message
     // Note that these are general fallback end-user error messages.
     // More specific error messages can be used at the point of error generation.
     private static readonly _errorMsg = (error?: Error | object): Record<ERROR_TYPE, string> => ({
-        [ERROR_TYPE.CERT]: t('CERTIFICATE_ERROR', { error }),
-        [ERROR_TYPE.CERT_EXPIRED]: t('URL_CERT_VALIDATION_ERROR', { cert_error_reason: t('TEXT_AN_EXPIRED_CERT') }),
-        [ERROR_TYPE.CERT_SELF_SIGNED]: t('URL_CERT_VALIDATION_ERROR', {
-            cert_error_reason: t('TEXT_A_SELF_SIGNED_CERT')
+        [ERROR_TYPE.CERT]: t('errors.certificateError', { error }),
+        [ERROR_TYPE.CERT_EXPIRED]: t('errors.urlCertValidationError', { cert_error_reason: t('texts.anExpiredCert') }),
+        [ERROR_TYPE.CERT_SELF_SIGNED]: t('errors.urlCertValidationError', {
+            cert_error_reason: t('texts.aSelfSignedCert')
         }),
-        [ERROR_TYPE.CERT_UKNOWN_OR_INVALID]: t('URL_CERT_VALIDATION_ERROR', {
-            cert_error_reason: t('TEXT_AN_UNKNOWN_OR_INVALID_CERT')
+        [ERROR_TYPE.CERT_UKNOWN_OR_INVALID]: t('errors.urlCertValidationError', {
+            cert_error_reason: t('texts.anUnknownOrInvalidCert')
         }),
-        [ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN]: t('URL_CERT_VALIDATION_ERROR', {
-            cert_error_reason: t('TEXT_AN_UNTRUSTED_ROOT_CERT') // todo: check if this is the correct resolution of self signed in chain error
+        [ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN]: t('errors.urlCertValidationError', {
+            cert_error_reason: t('texts.anUntrustedRootCert')
         }),
-        [ERROR_TYPE.AUTH]: t('ERROR_AUTHENTICATION', { error }),
-        [ERROR_TYPE.AUTH_TIMEOUT]: t('ERROR_AUTHENTICATION_TIMEOUT'),
-        [ERROR_TYPE.INVALID_URL]: t('WARNING_INVALID_URL'),
-        [ERROR_TYPE.CONNECTION]: t('CONNECTION_ERROR', {
+        [ERROR_TYPE.AUTH]: t('errors.authenticationFailed', { error }),
+        [ERROR_TYPE.AUTH_TIMEOUT]: t('errors.authenticationTimeout'),
+        [ERROR_TYPE.INVALID_URL]: t('errors.invalidUrl'),
+        [ERROR_TYPE.CONNECTION]: t('errors.connectionError', {
             error: (error as Error)?.message || JSON.stringify(error)
         }),
-        [ERROR_TYPE.UNKNOWN]: t('UNKNOWN_ERROR', {
+        [ERROR_TYPE.UNKNOWN]: t('errors.unknownError', {
             error: (error as Error)?.message || JSON.stringify(error)
         }),
-        [ERROR_TYPE.SERVICES_UNAVAILABLE]: t('ERROR_RETRIEVING_SERVICE'),
-        [ERROR_TYPE.SERVICE_UNAVAILABLE]: t('ERROR_SERVICE_NOT_AVAILABLE'),
-        [ERROR_TYPE.CATALOG_SERVICE_NOT_ACTIVE]: t('WARNING_CATALOG_SERVICE_NOT_ACTIVE'),
-        [ERROR_TYPE.INTERNAL_SERVER_ERROR]: t('ERROR_INTERNAL_SERVER', { error: (error as Error)?.message }),
-        [ERROR_TYPE.NOT_FOUND]: t('ERROR_URL_NOT_FOUND'),
-        [ERROR_TYPE.ODATA_URL_NOT_FOUND]: t('ERROR_ODATA_URL_NOT_FOUND'),
-        [ERROR_TYPE.BAD_GATEWAY]: t('ERROR_DESTINATION_UNAVAILABLE'),
-        [ERROR_TYPE.DESTINATION_UNAVAILABLE]: t('ERROR_DESTINATION_UNAVAILABLE'),
-        [ERROR_TYPE.DESTINATION_NOT_FOUND]: t('ERROR_DESTINATION_NOT_FOUND'),
-        [ERROR_TYPE.DESTINATION_MISCONFIGURED]: t('ERROR_DESTINATION_MISCONFIGURED'),
-        [ERROR_TYPE.NO_V2_SERVICES]: t('ERROR_NO_SERVICES', { version: '2' }),
-        [ERROR_TYPE.NO_V4_SERVICES]: t('ERROR_NO_SERVICES', { version: '4' }),
-        [ERROR_TYPE.DESTINATION_BAD_GATEWAY_503]: t('ERROR_DESTINATION_UNAVAILABLE'),
-        [ERROR_TYPE.REDIRECT]: t('ERROR_REDIRECT'),
-        [ERROR_TYPE.SERVER]: t('ERROR_SERVER'),
-        [ERROR_TYPE.NO_ABAP_ENVS]: t('ERROR_NO_ABAP_ENVS')
+        [ERROR_TYPE.SERVICES_UNAVAILABLE]: t('errors.servicesUnavailable'),
+        [ERROR_TYPE.SERVICE_UNAVAILABLE]: t('errors.serviceUnavailable'),
+        [ERROR_TYPE.CATALOG_SERVICE_NOT_ACTIVE]: t('errors.catalogServiceNotActive'),
+        [ERROR_TYPE.INTERNAL_SERVER_ERROR]: t('errors.internalServerError', { error: (error as Error)?.message }),
+        [ERROR_TYPE.NOT_FOUND]: t('errors.urlNotFound'),
+        [ERROR_TYPE.ODATA_URL_NOT_FOUND]: t('errors.odataServiceUrlNotFound'),
+        [ERROR_TYPE.BAD_GATEWAY]: t('errors.destinationUnavailable'),
+        [ERROR_TYPE.DESTINATION_UNAVAILABLE]: t('errors.destinationUnavailable'),
+        [ERROR_TYPE.DESTINATION_NOT_FOUND]: t('errors.destinationNotFound'),
+        [ERROR_TYPE.DESTINATION_MISCONFIGURED]: t('errors.destinationMisconfigured'),
+        [ERROR_TYPE.NO_V2_SERVICES]: t('errors.noServicesAvailable', { version: '2' }),
+        [ERROR_TYPE.NO_V4_SERVICES]: t('errors.noServicesAvailabl', { version: '4' }),
+        [ERROR_TYPE.DESTINATION_BAD_GATEWAY_503]: t('errors.destinationUnavailable'),
+        [ERROR_TYPE.REDIRECT]: t('errors.redirectError'),
+        [ERROR_TYPE.NO_SUCH_HOST]: t('errors.noSuchHostError'),
+        [ERROR_TYPE.NO_ABAP_ENVS]: t('error.abapEnvsUnavailable')
     });
-
-    private static _logger: Logger;
 
     /**
      * Get the Guided Answers (help) node for the specified error type.
@@ -175,7 +171,7 @@ export class ErrorHandler {
             [ERROR_TYPE.SERVICE_UNAVAILABLE]: undefined,
             [ERROR_TYPE.NO_ABAP_ENVS]: undefined,
             [ERROR_TYPE.CATALOG_SERVICE_NOT_ACTIVE]: undefined,
-            [ERROR_TYPE.SERVER]: undefined,
+            [ERROR_TYPE.NO_SUCH_HOST]: undefined,
             [ERROR_TYPE.NOT_FOUND]: undefined,
             [ERROR_TYPE.ODATA_URL_NOT_FOUND]: undefined,
             [ERROR_TYPE.INTERNAL_SERVER_ERROR]: undefined,
@@ -188,27 +184,10 @@ export class ErrorHandler {
      * Create an instance of the ErrorHandler.
      *
      * @param logger the logger instance to use
+     * @param enableGuidedAnswers if true, the end user validation errors will include guided answers to provide help
      */
-    constructor(logger?: Logger) {
-        ErrorHandler._logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/odata-service-inquirer' });
-    }
-
-    /**
-     * Set the logger to be used for error messages.
-     *
-     * @param logger the logger instance to use
-     */
-    public static set logger(logger: Logger) {
-        ErrorHandler._logger = logger;
-    }
-
-    /**
-     * Get the logger used for error messages.
-     *
-     * @returns the logger instance
-     */
-    public static get logger() {
-        return ErrorHandler._logger;
+    constructor(logger?: Logger, enableGuidedAnswers = false) {
+        ErrorHandler.guidedAnswersEnabled = enableGuidedAnswers;
     }
 
     /**
@@ -237,42 +216,6 @@ export class ErrorHandler {
         return Object.keys(ERROR_TYPE).find((errorCodeType) => {
             return ERROR_MAP[errorCodeType as ERROR_TYPE].find((exp: RegExp) => exp.test(error.toString()));
         }, {}) as ERROR_TYPE;
-    }
-
-    //public logErrorMsgs(error: ERROR_TYPE, userMsg?: string, retainError?: boolean): string;
-
-    //public logErrorMsgs(error: any, userMsg?: string, retainError?: boolean): string;
-
-    /**
-     * Maps errors to a few generic types, log a detailed error.
-     *
-     * @param error If the error is a string this will be logged as is. Otherwise it will be mapped to a general error internally, possibly retained and logged.
-     * @param userMsg If provided this will be set as the userErrorMsg instead of an error to msg map
-     *  this allows a message more relevant to the context of where the error was generated to be used.
-     * @param retainError Defaults to true to retain the error state.git status
-     * @returns A user-friendly message for display in-line
-     */
-    public logErrorMsgs(error: any, userMsg?: string, retainError = true): string {
-        let resolvedError: { errorMsg: string; errorType: ERROR_TYPE } = {
-            errorMsg: '',
-            errorType: ERROR_TYPE.UNKNOWN
-        };
-
-        // Overloaded to allow ERROR_TYPE for convenience
-        if (Object.values(ERROR_TYPE).includes(error)) {
-            resolvedError.errorMsg = ErrorHandler.getErrorMsgFromType(error) ?? error.toString();
-            resolvedError.errorType = error;
-        } else if (typeof error === 'string') {
-            resolvedError.errorMsg = error;
-        } else {
-            resolvedError = ErrorHandler.mapErrorToMsg(error);
-        }
-        ErrorHandler._logger.error(userMsg ? `${userMsg} ${resolvedError.errorMsg}` : resolvedError.errorMsg);
-        if (retainError) {
-            this.currentErrorMsg = userMsg ?? resolvedError.errorMsg;
-            this.currentErrorType = resolvedError.errorType;
-        }
-        return resolvedError.errorMsg;
     }
 
     /**
@@ -321,7 +264,7 @@ export class ErrorHandler {
         }
         // Get previous error message
         if (!errorMsg) {
-            errorMsg = this.currentErrorMsg ?? !!fallback ? ErrorHandler.getErrorMsgFromType(fallback!) : undefined;
+            errorMsg = this.currentErrorMsg ?? (fallback ? ErrorHandler.getErrorMsgFromType(fallback!) : undefined);
         }
 
         if (reset) {
@@ -339,14 +282,9 @@ export class ErrorHandler {
      *
      * @param error optional, if provided get the help link message that it maps to, otherwise get the previously logged error message help link
      * @param reset optional, resets the previous error state if true
-     * @param fallbackErrorType optional, return the message of the specified ERROR_TYPE if no error specified and the error handler does not have an error set previously
      * @returns An instance of @see {ValidationLink}
      */
-    public getValidationErrorHelp(
-        error?: any,
-        reset = false,
-        fallbackErrorType?: ERROR_TYPE
-    ): string | ValidationLink | undefined {
+    public getValidationErrorHelp(error?: any, reset = false): string | ValidationLink | undefined {
         let errorHelp: string | ValidationLink | undefined;
         let errorMsg: string | undefined;
         if (error) {
@@ -355,13 +293,9 @@ export class ErrorHandler {
                 errorHelp = ErrorHandler.getHelpForError(resolvedError.errorType, resolvedError.errorMsg);
             }
         } else if (!error) {
-            errorMsg =
-                this.currentErrorMsg ?? ErrorHandler.getErrorMsgFromType(fallbackErrorType ?? ERROR_TYPE.UNKNOWN) ?? '';
-            if (this.currentErrorType || fallbackErrorType) {
-                errorHelp = ErrorHandler.getHelpForError(
-                    this.currentErrorType ?? fallbackErrorType ?? ERROR_TYPE.UNKNOWN,
-                    errorMsg
-                );
+            errorMsg = this.currentErrorMsg ?? '';
+            if (this.currentErrorType) {
+                errorHelp = ErrorHandler.getHelpForError(this.currentErrorType, errorMsg);
             }
         }
 
@@ -444,13 +378,13 @@ export class ErrorHandler {
             const valLink: IValidationLink = {
                 message: mappedErrorMsg ?? '',
                 link: {
-                    text: t('INFO_VALIDATION_ERROR_CONTEXT_HELP'),
+                    text: t('guidedAnswers.validationErrorHelpText'),
                     icon: GUIDED_ANSWERS_ICON,
                     url: getHelpUrl(HELP_TREE.FIORI_TOOLS, [helpNode])
                 }
             };
-            const isGuidedAnswersEnabled = isFeatureEnabled(enableGAIntegration);
-            if (isGuidedAnswersEnabled) {
+
+            if (this.guidedAnswersEnabled) {
                 valLink.link.command = {
                     id: GUIDED_ANSWERS_LAUNCH_CMD_ID,
                     params: {
@@ -463,7 +397,7 @@ export class ErrorHandler {
             // Report the GA link created event
             sendTelemetryEvent(teleEventGALinkCreated, {
                 errorType,
-                isGuidedAnswersEnabled,
+                isGuidedAnswersEnabled: this.guidedAnswersEnabled,
                 nodeIdPath: `${helpNode}`
             });
             return new ValidationLink(valLink);

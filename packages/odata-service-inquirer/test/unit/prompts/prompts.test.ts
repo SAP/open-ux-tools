@@ -67,7 +67,7 @@ describe('getQuestions', () => {
                 },
                 "guiType": "file-browser",
                 "message": "Metadata file path",
-                "name": "metadata",
+                "name": "metadataFilePath",
                 "type": "input",
                 "validate": [Function],
                 "when": [Function],

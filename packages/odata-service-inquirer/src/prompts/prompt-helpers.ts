@@ -1,7 +1,7 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { extendAdditionalMessages, extendValidate, type YUIQuestion } from '@sap-ux/inquirer-common';
 import type { ListChoiceOptions } from 'inquirer';
-import { ErrorHandler } from '../error-handler/errorHandler';
+import { ErrorHandler } from '../error-handler/error-handler';
 import { t } from '../i18n';
 import {
     DatasourceType,
@@ -91,7 +91,7 @@ export function getDatasourceTypeChoices({
             name: t('prompts.datasourceType.odataServiceUrlChoiceText'),
             value: DatasourceType.odata_service_url
         },
-        { name: t('prompts.datasourceType.businessHubChoiceText'), value: DatasourceType.buiness_hub }
+        { name: t('prompts.datasourceType.businessHubChoiceText'), value: DatasourceType.business_hub }
     ];
 
     if (isAppStudio() && includeProjectSpecificDest) {
@@ -119,4 +119,7 @@ export function getDatasourceTypeChoices({
  */
 export class PromptStateHelper {
     static odataService: Partial<OdataServiceAnswers> = {};
+    static reset(): void {
+        PromptStateHelper.odataService = {};
+    }
 }

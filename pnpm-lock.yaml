@@ -1247,9 +1247,18 @@ importers:
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.1
         version: 2.0.1
+      '@types/lodash':
+        specifier: 4.14.178
+        version: 4.14.178
       '@types/semver':
         specifier: 7.5.4
         version: 7.5.4
+      jest-extended:
+        specifier: 3.2.4
+        version: 3.2.4(jest@29.5.0)
+      lodash:
+        specifier: 4.17.21
+        version: 4.17.21
 
   packages/odata-service-writer:
     dependencies:
@@ -8822,6 +8831,10 @@ packages:
     resolution: {integrity: sha512-2RXcRKdivPmn67pwjytvHoRv46AeXaLYVUWA0zkel1XSAOH5i71G0KfUdE5u3g80T155gR3Fo3ilVaqparLsVA==}
     dependencies:
       '@types/ws': 8.5.10
+    dev: true
+
+  /@types/lodash@4.14.178:
+    resolution: {integrity: sha512-0d5Wd09ItQWH1qFbEyQ7oTQ3GZrMfth5JkbN3EvTKLXcHLRDSXeLnlvlOn0wvxVIwK5o2M8JzP/OWz7T3NRsbw==}
     dev: true
 
   /@types/lodash@4.14.202:

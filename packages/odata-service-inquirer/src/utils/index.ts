@@ -23,22 +23,20 @@ export function getPlatform(): { name: string; technical: string } {
  * Send telemetry event.
  *
  * @param eventName the name of the telemetry event
- * @param appPath optional, the path of the app
+ * @param telemetryData
  */
-export function sendTelemetryEvent(eventName: string, telemetryData: TelemetryProperties, appPath?: string): void {
+export function sendTelemetryEvent(eventName: string, telemetryData: TelemetryProperties): void {
     const telemetryEvent = createTelemetryEvent(eventName, telemetryData);
     /* eslint-disable @typescript-eslint/no-floating-promises */
-    ClientFactory.getTelemetryClient().reportEvent(
-        telemetryEvent,
-        SampleRate.NoSampling,
-        appPath ? { appPath } : undefined
-    );
+    ClientFactory.getTelemetryClient().reportEvent(telemetryEvent, SampleRate.NoSampling);
 }
 
 /**
  * Create telemetry event.
  *
  * @param eventName the name of the telemetry event
+ * @param telemetryData
+ * @returns the telemetry event
  */
 function createTelemetryEvent(eventName: string, telemetryData: TelemetryProperties): TelemetryEvent {
     const telemProps: TelemetryProperties = Object.assign(telemetryData, {

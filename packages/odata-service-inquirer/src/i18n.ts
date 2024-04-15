@@ -11,7 +11,8 @@ export async function initI18nOdataServiceInquirer(): Promise<void> {
     await i18next.init(
         {
             lng: 'en',
-            fallbackLng: 'en'
+            fallbackLng: 'en',
+            missingInterpolationHandler: () => ''
         },
         () => i18next.addResourceBundle('en', odataServiceInquirerNamespace, translations)
     );

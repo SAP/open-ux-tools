@@ -16,9 +16,10 @@
             "capProjectChoiceText": "Use a $t(prompts.datasourceType.capProjectName)",
             "metadataFileChoiceText": "Upload a $t(prompts.datasourceType.metadataFileName)"
         },
-        "metadata": {
+        "metadataFile": {
             "message": "Metadata file path",
-            "description": "Upload a metadata file"
+            "description": "Upload a metadata file",
+            "placeholder_odata_service_url": "/here/goes/your/serviceurl/"
         },
         "capProject": {
             "message": "Choose your CAP project",
@@ -47,7 +48,36 @@
         "nonUIServiceTypeWarningMessage": "Please note that {{serviceTypeDesc}} services are not intended to be used for the generation of SAP Fiori UI applications"
     },
     "errors": {
-        "capServiceUrlPathNotDefined": "The CAP service path URL is not defined for service: {{serviceName}}"
+        "capServiceUrlPathNotDefined": "The CAP service path URL is not defined for service: {{serviceName}}",
+        "unknownError": "An error occurred: {{- error}}",
+        "servicesUnavailable": "An error occurred retrieving service(s) for SAP System.",
+        "certificateError": "A certificate error has occurred: {{- error}}",
+        "urlCertValidationError": "The system URL is using {{cert_error_reason}} security certificate.",
+        "authenticationFailed": "Authentication incorrect {{error}}",
+        "authenticationTimeout": "Authorization was not verified within the allowed time. Please ensure you have authenticated using the associated browser window.",
+        "invalidUrl": "Not a valid URL",
+        "connectionError": "A connection error occurred, please ensure the target host is available on the network: {{- error}}",
+        "serviceUnavailable": "Selected service is returning an error.",
+        "catalogServiceNotActive": "Catalog service is not active",
+        "internalServerError": "The URL you have provided cannot be accessed and is returning: '{{- error}}'. Please ensure that the URL is accessible externally.",
+        "urlNotFound": "URL not found",
+        "odataServiceUrlNotFound": "The service URL you have provided is not a valid OData Service. Fiori applications require an OData service as the data source.",
+        "destinationUnavailable": "The selected destination references an instance that is not available. Please check your destination configuration and try again.",
+        "destinationNotFound": "The destination is mis-configured, HTTP Error 404 returned, the requested resource could not be found.",
+        "destinationMisconfigured": "The destination is mis-configured, HTML5.DynamicDestination property is missing.",
+        "noServicesAvailable": "There are no V{{version}} OData services available from the selected system and the template you have chosen supports V{{version}} OData services only",
+        "redirectError": "A redirect response was received from the server",
+        "abapEnvsUnavailable": "ABAP environments unavailable",
+        "noSuchHostError": "No such host is known"
+    },
+    "texts": {
+        "anExpiredCert": "an expired",
+        "aSelfSignedCert": "a self-signed",
+        "anUnknownOrInvalidCert": "an unknown or invalid",
+        "anUntrustedRootCert": "an untrusted root"
+    },
+    "guidedAnswers": {
+        "validationErrorHelpText": "Need help with this error?"
     },
     "telemetry": {
         "unknownOsText": "Unknown"

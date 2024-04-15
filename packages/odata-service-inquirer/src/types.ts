@@ -7,7 +7,7 @@ import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 
 export enum DatasourceType {
     sap_system = 'sap_system',
-    buiness_hub = 'business_hub',
+    business_hub = 'business_hub',
     cap_project = 'cap_project',
     odata_service_url = 'odata_service_url',
     none = 'none',
@@ -45,6 +45,11 @@ export interface OdataServiceAnswers {
      * The service path of the selected service.
      */
     servicePath?: string;
+
+    /**
+     * Metadata file path
+     */
+    metadataFilePath?: string;
 }
 
 /**
@@ -56,7 +61,7 @@ export enum promptNames {
      * Data source type
      */
     datasourceType = 'datasourceType',
-    metadata = 'metadata',
+    metadataFilePath = 'metadataFilePath',
     capProject = 'capProject',
     capService = 'capService'
 }
@@ -242,7 +247,7 @@ export type CommonPromptOptions = {
 type objectValuePromptOptions =
     /* Record<stringValuePrompts, CommonPromptOptions> & */
     Record<promptNames.datasourceType, DatasourceTypePromptOptions> &
-        Record<promptNames.metadata, MetadataPromptOptions> &
+        Record<promptNames.metadataFilePath, MetadataPromptOptions> &
         Record<promptNames.capProject, CapProjectPromptOptions> &
         Record<promptNames.capService, CapServicePromptOptions>;
 
@@ -293,5 +298,7 @@ export class ValidationLink implements IValidationLink {
      *
      * @returns The validation link object as a string
      */
-    public toString = (): string => `${this.message} ${this.link.text}${this.link.url ? ' : ' + this.link.url : ''}`;
+    public toString(): string {
+        return `${this.message} ${this.link.text}${this.link.url ? ' : ' + this.link.url : ''}`;
+    }
 }
