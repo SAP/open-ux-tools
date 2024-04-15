@@ -25,6 +25,7 @@ export {
     isCapNodeJsProject,
     loadModuleFromProject,
     readCapServiceMetadataEdmx,
-    readUi5Yaml
+    readUi5Yaml,
+    getCapServiceName
 } from './project';
 export * from './types';

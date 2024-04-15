@@ -549,3 +549,15 @@ async function getCdsVersionInfo(cwd?: string): Promise<Record<string, string>> 
         });
     });
 }
+
+export async function getCapServiceName(projectRoot: string, datasourceUri: string): Promise<string> {
+    const services = (await getCapModelAndServices(projectRoot)).services;
+    const service = findServiceByUri(services, datasourceUri);
+    if (!service?.name) {
+        const errorMessage = `Service for uri: '${datasourceUri}' not found. Available services: ${JSON.stringify(
+            services
+        )}`;
+        throw Error(errorMessage);
+    }
+    return service.name;
+}
