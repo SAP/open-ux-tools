@@ -13,6 +13,12 @@ export function extractI18nKey(input: string, key = 'i18n'): string {
     return input.replace(regPattern, '').replace(/\}$/gm, '').trim();
 }
 
+/**
+ * Checks if a string starts with '{{' and ends with '}}'.
+ *
+ * @param input input string to check.
+ * @returns  boolean
+ */
 function doesDoubleCurlyBracketsExist(input: string): boolean {
     return input.startsWith('{{') && input.endsWith('}}');
 }
@@ -26,7 +32,7 @@ function doesDoubleCurlyBracketsExist(input: string): boolean {
 export function extractDoubleCurlyBracketsKey(input: string): string | undefined {
     const data = input.trim();
     if (!doesDoubleCurlyBracketsExist(data)) {
-        return;
+        return undefined;
     }
     return data.substring(2, data.length - 2).trim();
 }
