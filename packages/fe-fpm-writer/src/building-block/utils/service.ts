@@ -1,30 +1,61 @@
 /* eslint-disable jsdoc/require-returns */
-import type { EntityType } from '@sap-ux/vocabularies-types';
+import type { ConvertedMetadata, EntityType } from '@sap-ux/vocabularies-types';
 import type { EntityTypeAnnotations } from '@sap-ux/vocabularies-types/vocabularies/Edm_Types';
 import type { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import type File from 'vinyl';
-import { getConvertedAnnotations } from './avt';
 import type ProjectProvider from './project';
+import { convert } from '@sap-ux/annotation-converter';
+import { FioriAnnotationService } from '@sap-ux/fiori-annotation-api';
 
-/**
- *
- * @param projectProvider
- */
-function getMergedMetadata(projectProvider: ProjectProvider) {
-    const files: File[] = [];
-    const filePaths = projectProvider.getXmlFiles();
-    filePaths.forEach((filePath) => {
-        files.push(projectProvider.getFileByPath(filePath));
-    });
-    return getConvertedAnnotations(files);
+import { Project, getCapServiceName } from '@sap-ux/project-access';
+import { ProjectTemp } from './project-convertor';
+
+export async function getMappedServiceName(project: Project, serviceName: string, appName: string): Promise<string> {
+    let mappedServiceName = serviceName;
+    if (['CAPJava', 'CAPNodejs'].includes(project.projectType)) {
+        // Fetch the CDS service name by mapping it to the URI if the app's service is not the same
+        const appServiceName = project.apps[appName].mainService;
+        if (appServiceName) {
+            mappedServiceName = await getCapServiceName(
+                project.root,
+                project.apps[appName].services[appServiceName].uri || ''
+            );
+        }
+    }
+    return mappedServiceName;
+}
+export async function getAnnotationService(
+    project: ProjectTemp,
+    serviceName: string,
+    appName: string,
+    sync = true
+): Promise<FioriAnnotationService> {
+    const mappedServiceName = await getMappedServiceName(project, serviceName, appName);
+    const service = await FioriAnnotationService.createService(project as any, mappedServiceName, appName);
+    if (sync) {
+        await service.sync();
+    }
+    return service;
 }
 
+export function getMergedMetadata(annotationService: FioriAnnotationService): ConvertedMetadata {
+    const rawMetadata = annotationService.getSchema();
+    return convert(rawMetadata);
+}
+
+const getServiceMetadata = async (project: Project, serviceName: string, appName: string) => {
+    const annotationService = await getAnnotationService(project as any, serviceName, appName);
+    return getMergedMetadata(annotationService);
+};
+
 /**
  *
  * @param projectProvider
+ * @param appName
+ * @returns
  */
-export async function getEntityTypes(projectProvider: ProjectProvider) {
-    const metadata = getMergedMetadata(projectProvider);
+export async function getEntityTypes(projectProvider: ProjectProvider, appName: string) {
+    const project = await projectProvider.getProject();
+    const metadata = await getServiceMetadata(project as any, project.mainService, appName);
     return Array.from(metadata.entityTypes);
 }
 
@@ -46,13 +77,20 @@ export function getAnnotationTermAlias(annotationTerm: UIAnnotationTerms) {
  */
 export async function getAnnotationPathQualifiers(
     projectProvider: ProjectProvider,
+    appName: string,
     entity: string,
     annotationTerm: UIAnnotationTerms[],
     useNamespace = false
 ) {
     const result: Record<string, string> = {};
     try {
-        const mergedMetadata = getMergedMetadata(projectProvider);
+        const project = await projectProvider.getProject();
+        const annotationService = await getAnnotationService(
+            project as any,
+            project.apps[appName].mainService!,
+            appName
+        );
+        const mergedMetadata = getMergedMetadata(annotationService);
         let entityType = mergedMetadata.entityTypes.by_fullyQualifiedName(entity);
         if (!entityType) {
             const entitySet = mergedMetadata.entitySets.by_name(entity);

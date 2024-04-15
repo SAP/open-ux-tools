@@ -64,7 +64,7 @@ export function getAnnotationPathQualifierPrompt(
         choices: async (answers) => {
             const { entity } = answers;
             const choices = getChoices(
-                await getAnnotationPathQualifiers(projectProvider, entity, annotationTerm, true)
+                await getAnnotationPathQualifiers(projectProvider, projectProvider.appId, entity, annotationTerm, true)
             );
             if (!choices.length) {
                 throw new Error(
@@ -127,6 +127,33 @@ export function getViewOrFragmentFilePrompt(
     } as ListQuestion;
 }
 
+export async function getCAPServicePrompt(
+    message: string,
+    projectProvider: ProjectProvider,
+    dependantPromptNames?: string[],
+    additionalProperties: AdditionalPromptProperties = {}
+): Promise<ListQuestion> {
+    const { required, groupId, additionalInfo, placeholder } = additionalProperties;
+    let prompt = {};
+    await getCAPServiceChoices(projectProvider, projectProvider.appId).then((services) => {
+        const defaultValue = services.length === 1 && services[0].name;
+        prompt = {
+            type: 'list',
+            name: 'service',
+            selectType: 'dynamic',
+            dependantPromptNames,
+            message,
+            choices: services,
+            default: defaultValue,
+            groupId,
+            required,
+            additionalInfo,
+            placeholder: placeholder || 'Select a service'
+        } as ListQuestion;
+    });
+    return prompt as ListQuestion;
+}
+
 /**
  * Returns a Prompt for choosing an entity.
  *
@@ -148,7 +175,7 @@ export function getEntityPrompt(
         selectType: 'dynamic',
         dependantPromptNames,
         message,
-        choices: getEntityChoices.bind(null, projectProvider),
+        choices: getEntityChoices.bind(null, projectProvider, projectProvider.appId),
         groupId,
         required,
         additionalInfo,
@@ -164,9 +191,10 @@ export function getEntityPrompt(
  */
 // ToDo - recheck types fr choices
 export async function getEntityChoices(
-    projectProvider: ProjectProvider
+    projectProvider: ProjectProvider,
+    appName: string
 ): Promise<Array<{ name: string; value: string }>> {
-    const entityTypes = await getEntityTypes(projectProvider);
+    const entityTypes = await getEntityTypes(projectProvider, appName);
     const entityTypeMap: { [key: string]: string } = {};
     for (const entityType of entityTypes) {
         const value = entityType.fullyQualifiedName;
@@ -174,6 +202,18 @@ export async function getEntityChoices(
         entityTypeMap[qualifierParts[qualifierParts.length - 1]] = value;
     }
     return getChoices(entityTypeMap);
+}
+
+export async function getCAPServiceChoices(
+    projectProvider: ProjectProvider,
+    appName: string
+): Promise<Array<{ name: string; value: string }>> {
+    const services = (await projectProvider.getProject()).apps[appName].services;
+    const servicesMap: { [key: string]: string } = {};
+    for (const serviceKey of Object.keys(services)) {
+        servicesMap[serviceKey] = serviceKey;
+    }
+    return getChoices(servicesMap);
 }
 
 /**

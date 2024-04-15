@@ -12,6 +12,8 @@ import {
     getBindingContextTypePrompt,
     getBooleanPrompt,
     getBuildingBlockIdPrompt,
+    getCAPServiceChoices,
+    getCAPServicePrompt,
     getChoices,
     getEntityChoices,
     getEntityPrompt,
@@ -58,8 +60,10 @@ export async function getBuildingBlockChoices<T extends Answers>(
         const entity = answers?.entity;
         const annotationTerms: UIAnnotationTerms[] = [];
         switch (fieldName) {
+            case 'service':
+                return await getCAPServiceChoices(projectProvider, projectProvider.appId);
             case 'entity':
-                return getEntityChoices(projectProvider);
+                return getEntityChoices(projectProvider, projectProvider.appId);
             case 'aggregationPath': {
                 if (!answers.viewOrFragmentFile) {
                     return [];
@@ -86,7 +90,15 @@ export async function getBuildingBlockChoices<T extends Answers>(
                 } else if (buildingBlockType === BuildingBlockType.FilterBar) {
                     annotationTerms.push(...[UIAnnotationTerms.SelectionFields]);
                 }
-                return getChoices(await getAnnotationPathQualifiers(projectProvider, entity, annotationTerms, true));
+                return getChoices(
+                    await getAnnotationPathQualifiers(
+                        projectProvider,
+                        projectProvider.appId,
+                        entity,
+                        annotationTerms,
+                        true
+                    )
+                );
             case 'filterBarId': {
                 if (!answers.viewOrFragmentFile) {
                     return [];
@@ -139,6 +151,11 @@ export async function getBuildingBlockTypePrompts(): Promise<Question<BuildingBl
     ];
 }
 
+async function isCapProject(projectProvider: ProjectProvider): Promise<boolean> {
+    const projectType = (await projectProvider.getProject()).projectType;
+    return ['CAPJava', 'CAPNodejs'].includes(projectType);
+}
+
 /**
  * Returns a list of prompts required to generate a chart building block.
  *
@@ -168,6 +185,9 @@ export async function getChartBuildingBlockPrompts(basePath: string, fs: Editor)
                 required: true
             }),
             getBindingContextTypePrompt(t('bindingContextType'), defaultAnswers.bindingContextType, { required: true }),
+            ...((await isCapProject(projectProvider))
+                ? [await getCAPServicePrompt(t('service'), projectProvider, [], { required: true })]
+                : []),
             getFilterBarIdListPrompt(t('filterBar'), {
                 required: true
             }),
@@ -268,6 +288,14 @@ export async function getTableBuildingBlockPrompts(basePath: string, fs: Editor)
             getBindingContextTypePrompt(t('bindingContextType'), defaultAnswers.bindingContextType, {
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
             }),
+            ...((await isCapProject(projectProvider))
+                ? [
+                      await getCAPServicePrompt(t('service'), projectProvider, [], {
+                          groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
+                          required: true
+                      })
+                  ]
+                : []),
             getEntityPrompt(t('entity'), projectProvider, ['qualifier'], {
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
                 required: true
@@ -415,6 +443,9 @@ export async function getFilterBarBuildingBlockPrompts(
                 { required: true },
                 validateFn
             ),
+            ...((await isCapProject(projectProvider))
+                ? [await getCAPServicePrompt(t('service'), projectProvider, [], { required: true })]
+                : []),
             getAggregationPathPrompt(t('aggregation'), fs, { required: true }),
             getEntityPrompt(t('entity'), projectProvider, ['qualifier'], { required: true }),
             getAnnotationPathQualifierPrompt(

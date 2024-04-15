@@ -1,10 +1,11 @@
 /* eslint-disable jsdoc/require-returns */
 import type { Store } from 'mem-fs';
 import { getStoreForProject } from './memfs';
-import type { Manifest } from '@sap-ux/project-access';
+import { getProject, type Manifest } from '@sap-ux/project-access';
 import { join } from 'path';
 import type File from 'vinyl';
 import { type Editor } from 'mem-fs-editor';
+import { ProjectTemp, convertProject } from './project-convertor';
 
 /**
  *
@@ -13,12 +14,15 @@ class ProjectProvider {
     private store: Store;
     private annotationFiles: string[] = [];
     private metadataFile: string;
+    public appId: string;
     /**
      *
      * @param root
      * @param fs
      */
-    constructor(private root: string, private fs?: Editor) {}
+    constructor(private root: string, private fs?: Editor) {
+        this.appId = this.root.split('\\app\\').length > 1 ? `app\\${this.root.split('\\app\\')[1]}` : '';
+    }
 
     /**
      *
@@ -88,6 +92,18 @@ class ProjectProvider {
             }
         });
         return this.store.get(filePath);
+    }
+
+    /**
+     * Retrieves the new project structure from @sap-ux/project-access
+     * getProject() and converts it to the old structure.
+     *
+     * @param root - root path of the project
+     * @returns - project structure
+     */
+    async getProject(): Promise<ProjectTemp> {
+        const project = await getProject(this.root.replace(this.appId, ''));
+        return convertProject(project, this.appId);
     }
 }
 

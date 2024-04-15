@@ -17,6 +17,7 @@
             },
             "aggregation": "Select the Aggregation Path",
             "entity": "Select the Entity Type",
+            "service": "Service",
             "viewOrFragmentFile": {
                 "message": "Select a View or Fragment file name",
                 "validation": "A View or Fragment is required to generate the chart building block"
@@ -58,6 +59,7 @@
                 "validation": "A View or Fragment is required to generate the filterbar building block"
             },
             "entity": "Entity Type",
+            "service": "Service",
             "metaPath": "Enter the relative path of the property in the meta model",
             "filterChanged": "Enter a function to be called when the filter value has changed",
             "search": "Enter a function to be called when the go button is pressed",
@@ -86,6 +88,7 @@
             },
             "bindingContextType": "Select the Binding Context Path Type",
             "entity": "Entity Type",
+            "service": "Service",
             "qualifier": "Select the Line Item Qualifier",
             "qualifierPlaceholder": "Select a line item qualifier",
             "aggregation": "Select the Aggregation Path",

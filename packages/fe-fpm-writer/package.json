@@ -40,8 +40,9 @@
         "xpath": "0.0.33",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/vocabularies-types": "0.10.0",
-        "@sap-ux/annotation-converter":"0.8.0",
-        "@sap-ux/edmx-parser": "^0.7.0"
+        "@sap-ux/annotation-converter": "0.8.0",
+        "@sap-ux/edmx-parser": "^0.7.0",
+        "@sap-ux/fiori-annotation-api": "C:\\SAPDevelop\\tools-suite\\packages\\lib\\fiori-annotation-api"
     },
     "devDependencies": {
         "@types/inquirer": "8.2.6",
