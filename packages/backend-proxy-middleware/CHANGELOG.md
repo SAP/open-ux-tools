@@ -1,5 +1,20 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.7.22
+
+### Patch Changes
+
+-   Updated dependencies [080e7b06]
+    -   @sap-ux/axios-extension@1.11.6
+
+## 0.7.21
+
+### Patch Changes
+
+-   1db4c60c: FIX: use correct url for reentrance tickets and enhance config to support it
+-   Updated dependencies [1db4c60c]
+    -   @sap-ux/axios-extension@1.11.5
+
 ## 0.7.20
 
 ### Patch Changes

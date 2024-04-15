@@ -3627,7 +3627,7 @@ archive.zip
     \\"typescript\\": \\"^5.1.6\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
     \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.3.1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -36818,7 +36818,7 @@ archive.zip
     \\"typescript\\": \\"^5.1.6\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
     \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.3.1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -40291,7 +40291,7 @@ archive.zip
     \\"typescript\\": \\"^5.1.6\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
     \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.3.1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -43764,7 +43764,7 @@ archive.zip
     \\"typescript\\": \\"^5.1.6\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
     \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.3.1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {

@@ -75,7 +75,7 @@ export async function request<T>(endpoint: ApiEndpoints, method: RequestMethod, 
 
         switch (method) {
             case RequestMethod.GET:
-                return response.json();
+                return response.json() as T;
             case RequestMethod.POST:
                 /**
                  * Since POST usually creates something
@@ -83,7 +83,7 @@ export async function request<T>(endpoint: ApiEndpoints, method: RequestMethod, 
                  */
                 return response.text() as T;
             default:
-                return response.json();
+                return response.json() as T;
         }
     } catch (e) {
         throw new Error(e.message);
