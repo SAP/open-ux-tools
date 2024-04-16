@@ -1,5 +1,11 @@
 # @sap-ux/ui5-library-reference-inquirer
 
+## 0.2.12
+
+### Patch Changes
+
+-   0d0d1784: fix prompt choice issue
+
 ## 0.2.11
 
 ### Patch Changes
