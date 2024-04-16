@@ -16,6 +16,8 @@ describe('choices utils', () => {
         const projectChoices = await getProjectChoices(appResults);
 
         expect(projectChoices).toHaveLength(1);
+        expect(projectChoices[0].name).toBe('project1');
+        expect(projectChoices[0].value).toBe(join(__dirname, '../samples/project1'));
     });
 
     test('should return library choices', async () => {
