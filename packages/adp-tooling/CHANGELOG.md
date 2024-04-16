@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.9.14
+
+### Patch Changes
+
+-   6291bc37: chore - update dependencies to fix audit warnings
+
 ## 0.9.13
 
 ### Patch Changes
