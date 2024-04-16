@@ -13,7 +13,6 @@ jest.mock('../../src/prompts', () => {
 });
 
 describe('ui5-library-reference-inquirer API', () => {
-    jest.setTimeout(1000000000);
     afterEach(() => {
         jest.restoreAllMocks();
     });

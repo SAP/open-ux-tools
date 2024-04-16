@@ -4,6 +4,12 @@
         "sourceLabel": "Reusable Library Source",
         "referenceLibrariesLabel": "Select Reusable Libraries"
     },
+    "choices": {
+        "workspace": "Workspace"
+    },
+    "addtionalMsgs": {
+        "missingDeps": "Missing dependencies detected: {{dependencies}}"
+    },
     "error": {
         "noProjectsFound": "No Fiori tools projects found in the workspace",
         "noLibsFound": "No reuse libraries or components found in the workspace",
