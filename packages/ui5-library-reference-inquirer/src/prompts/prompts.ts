@@ -11,6 +11,7 @@ import {
 } from '../types';
 import { extendWithOptions, hidePrompts } from './helpers';
 import { SourceType } from './constants';
+import { Severity, type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 
 /**
  * Get the prompts for the UI5 library reference writing.
@@ -100,8 +101,12 @@ function getReferenceLibrariesPrompt(reuseLibs?: ReuseLibChoice[]): UI5LibraryRe
             breadcrumb: true
         },
         choices: reuseLibs,
-        additionalMessages: (): string | undefined => {
-            return missingDeps ? t('addtionalMsgs.missingDeps', { dependencies: missingDeps }) : undefined;
+        additionalMessages: (): IMessageSeverity | undefined => {
+            const msg = {
+                message: t('addtionalMsgs.missingDeps', { dependencies: missingDeps }),
+                severity: Severity.warning
+            };
+            return missingDeps ? msg : undefined;
         },
         validate: (answer) => {
             if (!reuseLibs?.length) {

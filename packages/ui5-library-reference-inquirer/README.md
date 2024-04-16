@@ -21,12 +21,15 @@ Example with Yeoman generator no options, e.g. cli prompting only :
 import Generator from 'yeoman-generator';
 import { generate, type ReuseLibConfig } from '@sap-ux/ui5-library-reference-writer'
 import { prompt, type UI5LibraryReferenceAnswers } from '@sap-ux/ui5-library-reference-inquirer';
+import { ToolsLogger } from '@sap-ux/logger';
 
 export default class UI5LibraryReferenceGenerator extends Generator {
     answers: UI5LibraryReferenceAnswers = {};
- 
+    logger: ToolsLogger;
+
     constructor(args: string | string[], opts: Generator.GeneratorOptions) {
         super(args, opts);
+        this.logger = new ToolsLogger();
     }
 
     public async prompting(): Promise<void> {        
@@ -50,7 +53,7 @@ export default class UI5LibraryReferenceGenerator extends Generator {
         try {
             await generate(this.answers.targetFolder, reuseLibConfigs);
         } catch (e) {
-            console.log(`Error adding reference ${e}`)
+            this.logger.error('Error generating reference to library');
         }
     }
 }

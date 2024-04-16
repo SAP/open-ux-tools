@@ -85,4 +85,5 @@ export interface InputQuestion<A extends Answers = Answers> extends BaseInputQue
 export interface CheckBoxQuestion<A extends Answers = Answers> extends BaseCheckBoxQuestion<A> {
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
+    additionalMessages?: YUIQuestion['additionalMessages'];
 }

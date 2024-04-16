@@ -1958,6 +1958,9 @@ importers:
         specifier: 23.5.1
         version: 23.5.1
     devDependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.14.4
+        version: 1.14.4
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
