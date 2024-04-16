@@ -31,12 +31,15 @@ export interface EntityConfig {
         EntitySet: string; // Defines the entity set for object page navigation
         Name: string; // Defines the entity name for object page navigation
     };
+    tableType?: TableType;
+    qualifier?: string;
 }
 
 export enum TableType {
     GRID = 'GridTable',
     ANALYTICAL = 'AnalyticalTable',
-    RESPONSIVE = 'ResponsiveTable'
+    RESPONSIVE = 'ResponsiveTable',
+    TREE = 'TreeTable'
 }
 
 export enum TableSelectionMode {
@@ -69,12 +72,10 @@ export interface OVPSettings {
 
 export interface ALPSettings {
     entityConfig: EntityConfig;
-    tableType?: TableType; // Defaults to 'Analytical'
 }
 export interface ALPSettingsV2 extends ALPSettings {
     smartVariantManagement?: boolean; // Not set by default
     multiSelect?: boolean; // Not set by default
-    qualifier?: string; // Not set by default
     autoHide?: boolean; // Not set by default
 }
 
