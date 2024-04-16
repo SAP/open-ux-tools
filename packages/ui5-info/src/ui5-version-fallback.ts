@@ -8,7 +8,7 @@ export const supportState = {
     skipped: 'Skipped'
 } as const;
 
-// Updated Feb-28-2024
+// Updated April-16-2024 from https://ui5.sap.com/versionoverview.json
 export const ui5VersionFallbacks = [
     {
         version: '1.122.*',
