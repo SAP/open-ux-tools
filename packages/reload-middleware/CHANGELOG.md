@@ -1,5 +1,11 @@
 # @sap-ux/reload-middleware
 
+## 0.1.4
+
+### Patch Changes
+
+-   6291bc37: chore - update dependencies to fix audit warnings
+
 ## 0.1.3
 
 ### Patch Changes
