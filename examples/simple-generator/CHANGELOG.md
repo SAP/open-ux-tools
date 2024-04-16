@@ -1,5 +1,11 @@
 # @sap-ux/generator-simple-fe
 
+## 0.3.38
+
+### Patch Changes
+
+-   6291bc37: chore - update dependencies to fix audit warnings
+
 ## 0.3.37
 
 ### Patch Changes
