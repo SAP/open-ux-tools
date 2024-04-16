@@ -1,5 +1,11 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.3.6
+
+### Patch Changes
+
+-   6291bc37: chore - update dependencies to fix audit warnings
+
 ## 1.3.5
 
 ### Patch Changes
