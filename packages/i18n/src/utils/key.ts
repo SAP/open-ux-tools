@@ -14,6 +14,30 @@ export function extractI18nKey(input: string, key = 'i18n'): string {
 }
 
 /**
+ * Checks if a string starts with '{{' and ends with '}}'.
+ *
+ * @param input input string to check.
+ * @returns  boolean
+ */
+function doesDoubleCurlyBracketsExist(input: string): boolean {
+    return input.startsWith('{{') && input.endsWith('}}');
+}
+
+/**
+ * Extracts double curly brackets key from the given input.
+ *
+ * @param input string to extract the double curly brackets key from
+ * @returns extracted key or undefined if open and closing double curly bracket does not exist
+ */
+export function extractDoubleCurlyBracketsKey(input: string): string | undefined {
+    const data = input.trim();
+    if (!doesDoubleCurlyBracketsExist(data)) {
+        return undefined;
+    }
+    return data.substring(2, data.length - 2).trim();
+}
+
+/**
  * Get unique key. If the key is not unique, it increment key by one and recheck.
  *
  * @param key new key and it is incremented

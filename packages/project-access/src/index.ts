@@ -33,3 +33,4 @@ export {
     toReferenceUri
 } from './project';
 export * from './types';
+export * from './library';
