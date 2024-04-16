@@ -1,5 +1,11 @@
 # @sap-ux/ui5-info
 
+## 0.4.0
+
+### Minor Changes
+
+-   148d011a: Will not return `Latest` as fallback UI5 version
+
 ## 0.3.3
 
 ### Patch Changes

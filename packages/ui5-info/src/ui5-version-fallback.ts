@@ -1,6 +1,6 @@
 import { coerce, gte } from 'semver';
 import type { UI5VersionOverview } from './types';
-import { defaultMinUi5Version, defaultVersion } from './constants';
+import { defaultMinUi5Version } from './constants';
 
 export const supportState = {
     maintenance: 'Maintenance',
@@ -8,8 +8,16 @@ export const supportState = {
     skipped: 'Skipped'
 } as const;
 
-// Updated Feb-28-2024
+// Updated April-16-2024 from https://ui5.sap.com/versionoverview.json
 export const ui5VersionFallbacks = [
+    {
+        version: '1.122.*',
+        support: supportState.maintenance
+    },
+    {
+        version: '1.121.*',
+        support: supportState.maintenance
+    },
     {
         version: '1.120.*',
         support: supportState.maintenance
@@ -36,7 +44,7 @@ export const ui5VersionFallbacks = [
     },
     {
         version: '1.114.*',
-        support: supportState.maintenance
+        support: supportState.outOfMaintenance
     },
     {
         version: '1.113.*',
@@ -349,5 +357,4 @@ const supportedUi5VersionFallbacks = ui5VersionFallbacks
     .map((maintainedVersion) => coerce(maintainedVersion.version)?.version ?? '0.0.0');
 
 const defaultUi5Versions = [...supportedUi5VersionFallbacks];
-defaultUi5Versions.unshift(defaultVersion);
 export { defaultUi5Versions, supportedUi5VersionFallbacks };
