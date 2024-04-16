@@ -50,7 +50,6 @@ export default class UI5LibraryReferenceGenerator extends Generator {
         try {
             await generate(this.answers.targetFolder, reuseLibConfigs);
         } catch (e) {
-            console.log(`Error adding reference ${e}`)
         }
     }
 }
