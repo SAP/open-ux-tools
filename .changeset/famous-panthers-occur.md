@@ -3,4 +3,4 @@
 '@sap-ux/preview-middleware': patch
 ---
 
-Adds writer functionality for generation of Adaptation Project's
+Adds writer functionality for generation of adaptation projects
