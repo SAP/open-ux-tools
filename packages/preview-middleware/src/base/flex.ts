@@ -92,7 +92,7 @@ export function writeChange(
         }
         const filePath = join(path, fileName + '.' + fileType);
         writeFileSync(filePath, JSON.stringify(data, null, 2));
-        const telemetryData = { category: 'Save', commandName: (data as any).changeType, layer: (data as any).layer };
+        const telemetryData = { category: 'Save', changeType: (data as any).changeType, layer: (data as any).layer };
         if (reporter) {
             reporter.reportTelemetry(telemetryData);
         }

@@ -2,7 +2,7 @@ interface TelemetryData {
     category: string;
     propertyName?: string;
     controlName?: string;
-    commandName?: string;
+    changeType?: string;
 }
 
 let enabled = false;
