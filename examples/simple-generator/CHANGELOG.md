@@ -1,5 +1,61 @@
 # @sap-ux/generator-simple-fe
 
+## 0.3.38
+
+### Patch Changes
+
+-   6291bc37: chore - update dependencies to fix audit warnings
+
+## 0.3.37
+
+### Patch Changes
+
+-   Updated dependencies [080e7b06]
+    -   @sap-ux/axios-extension@1.11.6
+    -   @sap-ux/system-access@0.3.20
+
+## 0.3.36
+
+### Patch Changes
+
+-   Updated dependencies [da0ecd9a]
+    -   @sap-ux/fiori-freestyle-writer@0.21.9
+    -   @sap-ux/fiori-elements-writer@0.18.13
+
+## 0.3.35
+
+### Patch Changes
+
+-   Updated dependencies [1db4c60c]
+    -   @sap-ux/axios-extension@1.11.5
+    -   @sap-ux/system-access@0.3.19
+
+## 0.3.34
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.18.12
+-   @sap-ux/fiori-freestyle-writer@0.21.8
+
+## 0.3.33
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.18.11
+-   @sap-ux/fiori-freestyle-writer@0.21.7
+-   @sap-ux/axios-extension@1.11.4
+-   @sap-ux/system-access@0.3.18
+
+## 0.3.32
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+-   Updated dependencies [61b46bc8]
+    -   @sap-ux/axios-extension@1.11.4
+    -   @sap-ux/btp-utils@0.14.3
+    -   @sap-ux/system-access@0.3.18
+
 ## 0.3.31
 
 ### Patch Changes

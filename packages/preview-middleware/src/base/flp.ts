@@ -9,8 +9,10 @@ import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
+import { createProjectAccess } from '@sap-ux/project-access';
 import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import { generateImportList, mergeTestConfigDefaults } from './test';
+import type http from 'http';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -207,7 +209,7 @@ export class FlpSandbox {
             locateReuseLibsScript: this.config.libs ?? (await this.hasLocateReuseLibsScript())
         };
 
-        this.addApp(manifest, {
+        await this.addApp(manifest, {
             componentId,
             target: resources[componentId ?? id] ?? this.templateConfig.basePath,
             local: '.',
@@ -224,7 +226,7 @@ export class FlpSandbox {
             this.addTestRoutes(this.test, id);
         }
 
-        this.addRoutesForAdditionalApps();
+        await this.addRoutesForAdditionalApps();
         this.logger.info(`Initialized for app ${id}`);
         this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
     }
@@ -290,7 +292,7 @@ export class FlpSandbox {
                         scenario,
                         livereloadPort
                     });
-                    res.status(200).contentType('html').send(html);
+                    this.sendResponse(res, 'text/html', 200, html);
                 });
                 let path = dirname(editor.path);
                 if (!path.endsWith('/')) {
@@ -304,7 +306,7 @@ export class FlpSandbox {
                     '</body>',
                     `</body>\n<!-- livereload disabled for editor </body>-->`
                 );
-                res.status(200).contentType('html').send(html);
+                this.sendResponse(res, 'text/html', 200, html);
             });
         }
     }
@@ -325,7 +327,7 @@ export class FlpSandbox {
             }
             const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
             const html = render(template, this.templateConfig);
-            res.status(200).contentType('html').send(html);
+            this.sendResponse(res, 'text/html', 200, html);
         }) as RequestHandler);
     }
 
@@ -342,13 +344,28 @@ export class FlpSandbox {
     /**
      * Add additional routes for apps also to be shown in the local FLP.
      */
-    private addRoutesForAdditionalApps() {
+    private async addRoutesForAdditionalApps() {
         for (const app of this.config.apps) {
+            let manifest: Manifest | undefined;
             if (app.local) {
-                const manifest = JSON.parse(readFileSync(join(app.local, 'webapp/manifest.json'), 'utf-8'));
-                this.addApp(manifest, app);
+                manifest = JSON.parse(readFileSync(join(app.local, 'webapp/manifest.json'), 'utf-8'));
                 this.router.use(app.target, serveStatic(join(app.local, 'webapp')));
                 this.logger.info(`Serving additional application at ${app.target} from ${app.local}`);
+            } else if (app.componentId) {
+                manifest = {
+                    'sap.app': {
+                        id: app.componentId,
+                        title: app.intent ? `${app.intent.object}-${app.intent.action}` : app.componentId
+                    }
+                } as Manifest;
+            }
+            if (manifest) {
+                await this.addApp(manifest, app);
+                this.logger.info(`Adding additional intent: ${app.intent?.object}-${app.intent?.action}`);
+            } else {
+                this.logger.info(
+                    `Invalid application config for route ${app.target} because neither componentId nor local folder provided.`
+                );
             }
         }
     }
@@ -383,9 +400,12 @@ export class FlpSandbox {
         const api = `${PREVIEW_URL.api}/changes`;
         this.router.use(api, json());
         this.router.get(api, (async (_req: Request, res: Response) => {
-            res.status(200)
-                .contentType('application/json')
-                .send(await readChanges(this.project, this.logger));
+            this.sendResponse(
+                res,
+                'application/json',
+                200,
+                JSON.stringify(await readChanges(this.project, this.logger))
+            );
         }) as RequestHandler);
         this.router.post(api, (async (req: Request, res: Response) => {
             try {
@@ -395,12 +415,12 @@ export class FlpSandbox {
                     this.logger
                 );
                 if (success) {
-                    res.status(200).send(message);
+                    this.sendResponse(res, 'text/plain', 200, message ?? '');
                 } else {
-                    res.status(400).send('INVALID_DATA');
+                    this.sendResponse(res, 'text/plain', 400, 'INVALID_DATA');
                 }
             } catch (error) {
-                res.status(500).send(error.message);
+                this.sendResponse(res, 'text/plain', 500, error.message);
             }
         }) as RequestHandler);
         this.router.delete(api, (async (req: Request, res: Response) => {
@@ -411,14 +431,32 @@ export class FlpSandbox {
                     this.logger
                 );
                 if (success) {
-                    res.status(200).send(message);
+                    this.sendResponse(res, 'text/plain', 200, message ?? '');
                 } else {
-                    res.status(400).send('INVALID_DATA');
+                    this.sendResponse(res, 'text/plain', 400, 'INVALID_DATA');
                 }
             } catch (error) {
-                res.status(500).send(error.message);
+                this.sendResponse(res, 'text/plain', 500, error.message);
             }
         }) as RequestHandler);
+    }
+
+    /**
+     * Send a response with the given content type, status and body.
+     * Ensure compliance with common APIs in express and connect.
+     *
+     * @param res the response object
+     * @param contentType the content type
+     * @param status the response status
+     * @param body the response body
+     * @private
+     */
+    private sendResponse(res: Response | http.ServerResponse, contentType: string, status: number, body: string) {
+        res.writeHead(status, {
+            'Content-Type': contentType
+        });
+        res.write(body);
+        res.end();
     }
 
     /**
@@ -449,7 +487,7 @@ export class FlpSandbox {
                         initPath: `${ns}${config.init.replace('.js', '')}`
                     };
                     const html = render(htmlTemplate, templateConfig);
-                    res.status(200).contentType('html').send(html);
+                    this.sendResponse(res, 'text/html', 200, html);
                 }
             }) as RequestHandler);
             if (testConfig.init !== undefined) {
@@ -468,8 +506,8 @@ export class FlpSandbox {
                 } else {
                     const testFiles = await this.project.byGlob(config.pattern);
                     const templateConfig = { tests: generateImportList(ns, testFiles) };
-                    const html = render(initTemplate, templateConfig);
-                    res.status(200).contentType('application/javascript').send(html);
+                    const js = render(initTemplate, templateConfig);
+                    this.sendResponse(res, 'application/javascript', 200, js);
                 }
             }) as RequestHandler);
         }
@@ -481,21 +519,51 @@ export class FlpSandbox {
      * @param manifest manifest of the additional target app
      * @param app configuration for the preview
      */
-    addApp(manifest: Manifest, app: App) {
+    async addApp(manifest: Manifest, app: App) {
         const id = manifest['sap.app'].id;
         app.intent ??= {
             object: id.replace(/\./g, ''),
             action: 'preview'
         };
+        let title = manifest['sap.app'].title ?? id;
+        let description = manifest['sap.app'].description ?? '';
+        if (app.local) {
+            title = (await this.getI18nTextFromProperty(app.local, manifest['sap.app'].title)) ?? id;
+            description = (await this.getI18nTextFromProperty(app.local, manifest['sap.app'].description)) ?? '';
+        }
         this.templateConfig.ui5.resources[id] = app.target;
         this.templateConfig.apps[`${app.intent?.object}-${app.intent?.action}`] = {
-            title: manifest['sap.app'].title ?? id,
-            description: manifest['sap.app'].description ?? '',
+            title: title,
+            description: description,
             additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
             applicationType: 'URL',
             url: app.target,
             applicationDependencies: { manifest: true }
         };
+    }
+
+    /**
+     * Get the i18n text of the given property.
+     *
+     * @param projectRoot absolute path to the project root
+     * @param propertyValue value of the property
+     * @returns i18n text of the property
+     * @private
+     */
+    private async getI18nTextFromProperty(projectRoot: string, propertyValue: string | undefined) {
+        //i18n model format could be {{key}} or {i18n>key}
+        if (!propertyValue || propertyValue.search(/{{\w+}}|{i18n>\w+}/g) === -1) {
+            return propertyValue;
+        }
+        const propertyI18nKey = propertyValue.replace(/i18n>|[{}]/g, '');
+        const projectAccess = await createProjectAccess(projectRoot);
+        try {
+            const bundle = (await projectAccess.getApplication('').getI18nBundles())['sap.app'];
+            return bundle[propertyI18nKey]?.[0]?.value?.value ?? propertyI18nKey;
+        } catch (e) {
+            this.logger.warn('Failed to load i18n properties bundle');
+        }
+        return propertyI18nKey;
     }
 
     /**

@@ -17,7 +17,7 @@
       "typescript": "^5.1.6",
       "@sap/ux-ui5-tooling": "1",
       "ui5-tooling-transpile": "^3.3.7",
-      "@sap-ux/eslint-plugin-fiori-tools": "^0.3.1"
+      "@sap-ux/eslint-plugin-fiori-tools": "^0.4.0"
     },
     "scripts": {
         "build": "run-p -l build-app build-interface",

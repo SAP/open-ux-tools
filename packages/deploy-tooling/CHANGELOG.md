@@ -1,5 +1,59 @@
 # @sap-ux/deploy-tooling
 
+## 0.14.13
+
+### Patch Changes
+
+-   fdd8cb0f: Change TR description
+
+## 0.14.12
+
+### Patch Changes
+
+-   Updated dependencies [080e7b06]
+    -   @sap-ux/axios-extension@1.11.6
+    -   @sap-ux/system-access@0.3.20
+
+## 0.14.11
+
+### Patch Changes
+
+-   1db4c60c: FIX: use correct url for reentrance tickets and enhance config to support it
+-   Updated dependencies [1db4c60c]
+    -   @sap-ux/axios-extension@1.11.5
+    -   @sap-ux/system-access@0.3.19
+
+## 0.14.10
+
+### Patch Changes
+
+-   dd0edf60: hide stack trace on error
+
+## 0.14.9
+
+### Patch Changes
+
+-   Updated dependencies [efa35ddd]
+    -   @sap-ux/ui5-config@0.22.1
+    -   @sap-ux/axios-extension@1.11.4
+    -   @sap-ux/system-access@0.3.18
+
+## 0.14.8
+
+### Patch Changes
+
+-   4c7d71eb: Adjust logging in validation for deploy-test to not log full stack trace, but only the message.
+
+## 0.14.7
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+-   Updated dependencies [61b46bc8]
+    -   @sap-ux/axios-extension@1.11.4
+    -   @sap-ux/btp-utils@0.14.3
+    -   @sap-ux/system-access@0.3.18
+
 ## 0.14.6
 
 ### Patch Changes

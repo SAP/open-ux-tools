@@ -1,5 +1,25 @@
 # @sap-ux/axios-extension
 
+## 1.11.6
+
+### Patch Changes
+
+-   080e7b06: enhance lrep log messages
+
+## 1.11.5
+
+### Patch Changes
+
+-   1db4c60c: FIX: use correct url for reentrance tickets and enhance config to support it
+
+## 1.11.4
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+-   Updated dependencies [61b46bc8]
+    -   @sap-ux/btp-utils@0.14.3
+
 ## 1.11.3
 
 ### Patch Changes

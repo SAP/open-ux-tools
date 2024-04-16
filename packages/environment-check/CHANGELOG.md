@@ -1,5 +1,84 @@
 # @sap-ux/environment-check
 
+## 0.16.48
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.19.8
+-   @sap-ux/axios-extension@1.11.6
+
+## 0.16.47
+
+### Patch Changes
+
+-   Updated dependencies [98496d57]
+-   Updated dependencies [e3d2e003]
+    -   @sap-ux/project-access@1.19.7
+    -   @sap-ux/axios-extension@1.11.6
+
+## 0.16.46
+
+### Patch Changes
+
+-   Updated dependencies [080e7b06]
+    -   @sap-ux/axios-extension@1.11.6
+
+## 0.16.45
+
+### Patch Changes
+
+-   Updated dependencies [1db4c60c]
+    -   @sap-ux/axios-extension@1.11.5
+
+## 0.16.44
+
+### Patch Changes
+
+-   b6c9a6ab: Provide a Guided Answers link for TR 403
+
+## 0.16.43
+
+### Patch Changes
+
+-   f0e3263a: Adds missing constants entries, refactor duplicate constants, use project-access const instead
+-   Updated dependencies [f0e3263a]
+    -   @sap-ux/project-access@1.19.6
+    -   @sap-ux/axios-extension@1.11.4
+
+## 0.16.42
+
+### Patch Changes
+
+-   Updated dependencies [efa35ddd]
+    -   @sap-ux/ui5-config@0.22.1
+    -   @sap-ux/project-access@1.19.5
+    -   @sap-ux/axios-extension@1.11.4
+
+## 0.16.41
+
+### Patch Changes
+
+-   Updated dependencies [87c942e5]
+    -   @sap-ux/project-access@1.19.4
+    -   @sap-ux/axios-extension@1.11.4
+
+## 0.16.40
+
+### Patch Changes
+
+-   Updated dependencies [89013210]
+    -   @sap-ux/project-access@1.19.3
+    -   @sap-ux/axios-extension@1.11.4
+
+## 0.16.39
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+-   Updated dependencies [61b46bc8]
+    -   @sap-ux/axios-extension@1.11.4
+    -   @sap-ux/btp-utils@0.14.3
+
 ## 0.16.38
 
 ### Patch Changes

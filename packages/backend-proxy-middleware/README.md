@@ -16,8 +16,9 @@ It can be used either with the `ui5 serve` or the `fiori run` commands.
 | `pathReplace`  | `string` optional      | If provided then the path will be replaced with this value before forwarding |
 | `client`      | `string` optional      | sap-client parameter |
 | `scp`         | `boolean` optional      | If set to true the proxy will execute the required OAuth routine for the ABAP environment on SAP BTP |
-| `apiHub`      | `boolean` optional      | If set to true then the proxy will connect to the SAP API Business Hub
-| `proxy`       | `string` optional      | If set then it will override the proxy settings from node.
+| `apiHub`      | `boolean` optional      | If set to true then the proxy will connect to the SAP API Business Hub |
+| `proxy`       | `string` optional      | If set then it will override the proxy settings from node. |
+| `authenticationType` | `string` optional  | Authentication mechanism to be used in VSCode. Currently supported: "ReentranceTicket" |
 
 Additional optional experimental property `bsp` (type `string`): The BSP property is only needed for the FLP Embedded Flow. The property refers to the BSP Application Name. In that case, we need to redirect the manifest.appdescr request to the local manifest.json in order to overwrite the deployed application with the local one.
 
