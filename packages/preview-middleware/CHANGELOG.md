@@ -1,5 +1,29 @@
 # @sap-ux/preview-middleware
 
+## 0.13.13
+
+### Patch Changes
+
+-   6291bc37: chore - update dependencies to fix audit warnings
+-   Updated dependencies [6291bc37]
+    -   @sap-ux/adp-tooling@0.9.14
+
+## 0.13.12
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.19.8
+-   @sap-ux/adp-tooling@0.9.13
+
+## 0.13.11
+
+### Patch Changes
+
+-   Updated dependencies [98496d57]
+-   Updated dependencies [e3d2e003]
+    -   @sap-ux/project-access@1.19.7
+    -   @sap-ux/adp-tooling@0.9.12
+
 ## 0.13.10
 
 ### Patch Changes
