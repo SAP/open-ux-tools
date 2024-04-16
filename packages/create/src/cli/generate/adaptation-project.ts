@@ -1,7 +1,7 @@
 import type { Command } from 'commander';
 import chalk from 'chalk';
 import { getLogger, traceChanges } from '../../tracing';
-import type { AdpWriterConfig, PromptDefaults } from '@sap-ux/adp-tooling';
+import { AdpWriterConfig, PromptDefaults, ProjectType } from '@sap-ux/adp-tooling';
 import { promptGeneratorInput, generate } from '@sap-ux/adp-tooling';
 import { runNpmInstallCommand } from '../../common';
 import { join } from 'path';
@@ -78,7 +78,7 @@ async function generateAdaptationProject(
         if (!basePath) {
             basePath = join(process.cwd(), config.app.id);
         }
-        const fs = await generate(basePath, config);
+        const fs = await generate(basePath, ProjectType.ON_PREM, config);
 
         if (!simulate) {
             await new Promise((resolve) => fs.commit(resolve));

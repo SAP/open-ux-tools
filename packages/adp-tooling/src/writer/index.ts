@@ -1,69 +1,35 @@
-import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
-import { create } from 'mem-fs-editor';
-import type { AdpWriterConfig } from '../types';
-import { UI5Config } from '@sap-ux/ui5-config';
-import { enhanceUI5Yaml, enhanceUI5DeployYaml, hasDeployConfig } from './options';
+import { create, type Editor } from 'mem-fs-editor';
+
+import type { ProjectGeneratorData, ProjectType } from '../types';
+import { WriterFactory } from './projects/writer-factory';
 
 /**
- * Set default values for optional properties.
+ * Generate files to a structure based on a specified project type.
  *
- * @param config configuration provided by the calling middleware
- * @returns enhanced configuration with default values
- */
-function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
-    const configWithDefaults: AdpWriterConfig = {
-        app: { ...config.app },
-        target: { ...config.target },
-        ui5: { ...config.ui5 },
-        deploy: config.deploy ? { ...config.deploy } : undefined,
-        options: { ...config.options },
-        flp: config.flp ? { ...config.flp } : undefined,
-        customConfig: { ...config.customConfig }
-    };
-    configWithDefaults.app.title ??= `Adaptation of ${config.app.reference}`;
-    configWithDefaults.app.layer ??= 'CUSTOMER_BASE';
-
-    configWithDefaults.package ??= config.package ? { ...config.package } : {};
-    configWithDefaults.package.name ??= config.app.id.toLowerCase().replace(/\./g, '-');
-    configWithDefaults.package.description ??= configWithDefaults.app.title;
-
-    return configWithDefaults;
-}
-
-/**
- * Writes the adp-project template to the mem-fs-editor instance.
+ * This function initializes the file system editor if not provided, selects the appropriate writer based on the project type,
+ * and then invokes the writer's write method to generate the project structure.
  *
- * @param basePath - the base path
- * @param config - the writer configuration
- * @param fs - the memfs editor instance
- * @returns the updated memfs editor instance
+ * @param {string} projectPath - The root path of the project.
+ * @param {T} type - The type of generator.
+ * @param {ProjectGeneratorData<T>} data - The data specific to the type of project, containing information necessary for specified project structure.
+ * @param {Editor | null} [fs] - The `mem-fs-editor` instance used for file operations.
+ * @returns {Promise<Editor>} A promise that resolves to the mem-fs editor instance used for generating project structure, allowing for further operations.
+ * @template T - A type parameter extending `ProjectType`, ensuring the function handles a defined set of project types.
  */
-export async function generate(basePath: string, config: AdpWriterConfig, fs?: Editor): Promise<Editor> {
+export async function generate<T extends ProjectType>(
+    projectPath: string,
+    type: T,
+    data: ProjectGeneratorData<T>,
+    fs: Editor | null = null
+): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
-    const tmplPath = join(__dirname, '../../templates/projects/abap');
-    const fullConfig = setDefaults(config);
 
-    fs.copyTpl(join(tmplPath, '**/*.*'), join(basePath), fullConfig, undefined, {
-        globOptions: { dot: true, ignore: config.options?.isRunningInBAS ? [] : ['**/pom.xml'] },
-        processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
-    });
+    const writer = WriterFactory.createWriter<T>(type, fs, projectPath);
 
-    // ui5.yaml
-    const ui5ConfigPath = join(basePath, 'ui5.yaml');
-    const baseUi5ConfigContent = fs.read(ui5ConfigPath);
-    const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
-    enhanceUI5Yaml(ui5Config, fullConfig);
-    fs.write(ui5ConfigPath, ui5Config.toString());
-    // ui5-deploy.yaml
-    if (hasDeployConfig(fullConfig)) {
-        const ui5DeployConfig = await UI5Config.newInstance(baseUi5ConfigContent);
-        enhanceUI5DeployYaml(ui5DeployConfig, fullConfig);
-        fs.write(join(basePath, 'ui5-deploy.yaml'), ui5DeployConfig.toString());
-    }
+    await writer.write(data);
 
     return fs;
 }
