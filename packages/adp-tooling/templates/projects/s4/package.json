@@ -1,0 +1,50 @@
+{
+    "name": "<%= package.name %>",
+    "version": "0.1.0",
+    "main": "index.js",
+    "private": true,
+    "description": "<%= package.description %>",
+    "keywords": [
+        "ui5",
+        "sapui5",
+        "adaptation-project"
+    ],
+	"repository": {
+		"type": "git",
+		"build": "ui5.js build --verbose --include-task generateCachebusterInfo"
+	},
+	"author": "",
+	"license": "ISC",
+	"ui5": {
+		"dependencies": ["@sap/ui5-builder-webide-extension", "@ui5/task-adaptation"]
+	},
+    "dependencies": {
+        "dotenv": "^16.0.3",
+        "inquirer": "^8.2.5",
+        "json-diff": "^1.0.6",
+        "prompt-sync": "^4.2.0",
+        "prompts": "^2.4.2",
+        "xml-js": "^1.6.11"
+    },
+    "devDependencies": {
+        "@sap/ux-ui5-tooling": "^1.11.4",
+        "@sap/ui5-builder-webide-extension": "1.0.x",
+        "@sapui5/ts-types": "^1.85.1",
+        "@types/js-yaml": "^4.0.5",
+        "@types/semver": "^7.3.13",
+        "@ui5/task-adaptation": "^1.0.10",
+        "bestzip": "2.1.4",
+        "rimraf": "3.0.2",
+        "@ui5/cli": "^3.6.0"
+    },
+    "scripts": {
+        "build": "ui5 build --include-task=generateCachebusterInfo && npm run zip",
+		"prebuild": "npm run clean",
+		"zip": "cd dist && npx bestzip ../<%= projectname %>.zip *",
+		"clean": "npx rimraf <%= projectname %>.zip dist",
+		"build-ui5": "npm explore @ui5/task-adaptation && npm run rollup",
+		"deploy": "npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip",
+		"undeploy": "fiori undeploy --config ui5-deploy.yaml",
+		"deploy-test": "npm run build && fiori deploy --config ui5-deploy.yaml --testMode true"
+    }
+}
