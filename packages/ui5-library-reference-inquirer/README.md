@@ -36,8 +36,8 @@ export default class UI5LibraryReferenceGenerator extends Generator {
 
     public async writing(): Promise<void> {
         const reuseLibConfigs: ReuseLibConfig[] = [];
-        if (answers.referenceLibraries) {
-            for (const lib of answers.referenceLibraries) {
+        if (this.answers.referenceLibraries) {
+            for (const lib of this.answers.referenceLibraries) {
                 reuseLibConfigs.push({
                     name: lib.name,
                     path: lib.path,
@@ -49,7 +49,9 @@ export default class UI5LibraryReferenceGenerator extends Generator {
 
         try {
             await generate(this.answers.targetFolder, reuseLibConfigs);
-        } catch (e) {}
+        } catch (e) {
+            console.log(`Error adding reference ${e}`)
+        }
     }
 }
 ```
