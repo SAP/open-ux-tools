@@ -47,7 +47,11 @@ export interface AdpWriterConfig {
         flpSubtitle?: string;
         inboundId?: string;
         bspName?: string;
-        languages?: language[];
+        languages?: Language[];
+        credentials?: {
+            username: string;
+            password: string;
+        };
     };
     customConfig?: AdpCustomConfig;
     /**
@@ -59,12 +63,11 @@ export interface AdpWriterConfig {
          * Optional: if set to true then the generated project will be recognized by the SAP Fiori tools
          */
         fioriTools?: boolean;
-        isRunningInBAS?: boolean;
-        isCloudProject?: boolean;
     };
+    appdescr?: ManifestAppdescr;
 }
 
-export interface language {
+export interface Language {
     sap: string;
     i18n: string;
 }
@@ -195,6 +198,14 @@ export type IWriterData<T extends ChangeType> = IWriter<GeneratorData<T>>;
  *
  * @template T - The specific type of data the writer will handle, determined by the associated ChangeType.
  */
+export type IProjectWriterData<T extends ProjectType> = IWriter<ProjectGeneratorData<T>>;
+
+/**
+ * Defines a generic interface for writer classes, specialized by the type of data they handle.
+ *
+ * @template T - The specific type of data the writer will handle, determined by the associated ChangeType.
+ */
+
 export interface IWriter<T> {
     /**
      * Writes the provided data to the project.
@@ -215,6 +226,29 @@ export const enum ChangeType {
     ADD_LIBRARY_REFERENCE = 'appdescr_ui5_addLibraries',
     CHANGE_INBOUND = 'appdescr_app_changeInbound'
 }
+
+/**
+ * Enumerates the types of projects that can be made, each representing a specific kind of project structure.
+ */
+export const enum ProjectType {
+    ON_PREM = 'OnPrem',
+    S4 = 'S4',
+    CF = 'CF'
+}
+
+/**
+ * Maps a ChangeType to the corresponding data structure needed for that type of change.
+ * This conditional type ensures type safety by linking each change type with its relevant data model.
+ *
+ * @template T - A subtype of ChangeType indicating the specific type of change.
+ */
+export type ProjectGeneratorData<T extends ProjectType> = T extends ProjectType.ON_PREM
+    ? AdpWriterConfig
+    : T extends ProjectType.S4
+    ? AdpWriterConfig
+    : T extends ProjectType.CF
+    ? CfWriterConfig
+    : never;
 
 /**
  * Maps a ChangeType to the corresponding data structure needed for that type of change.
@@ -366,8 +400,9 @@ export interface AdpProjectData {
 }
 
 export interface AdpCustomConfig {
-    adp?: {
+    adp: {
         safeMode: boolean;
+        environment: ProjectType;
     };
 }
 

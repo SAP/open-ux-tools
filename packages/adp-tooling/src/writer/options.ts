@@ -1,5 +1,5 @@
 import type { CustomMiddleware, UI5Config, CustomTask, AbapTarget } from '@sap-ux/ui5-config';
-import type { AdpWriterConfig } from '../types';
+import type { AdpCustomConfig, AdpWriterConfig, Language } from '../types';
 
 /**
  * Generate the configuration for the middlewares required for the ui5.yaml.
@@ -11,14 +11,31 @@ export function enhanceUI5Yaml(ui5Config: UI5Config, config: AdpWriterConfig) {
     const middlewares = config.options?.fioriTools ? getFioriToolsMiddlwares(config) : getOpenSourceMiddlewares(config);
     ui5Config.setConfiguration({ propertiesFileSourceEncoding: 'UTF-8' });
     ui5Config.addCustomMiddleware(middlewares);
+}
 
-    if (config.customConfig?.adp) {
-        ui5Config.addCustomConfiguration('adp', config.customConfig.adp);
-    }
-    if (config.options?.isRunningInBAS && config.options?.isCloudProject && config.ui5?.ui5Version) {
+/**
+ * Generate the configuration for the custom tasks required for the ui5.yaml.
+ *
+ * @param ui5Config configuration representing the ui5.yaml
+ * @param config full project configuration
+ */
+export function enhanceUI5YamlWithCustomTask(ui5Config: UI5Config, config: AdpWriterConfig) {
+    if (config.ui5?.ui5Version) {
         ui5Config.addUI5Framework('SAPUI5', config.ui5.ui5Version, []);
-        const tasks = getAdpCloudCustomTasks(config);
-        ui5Config.addCustomTasks(tasks);
+    }
+    const tasks = getAdpCloudCustomTasks(config);
+    ui5Config.addCustomTasks(tasks);
+}
+
+/**
+ * Generate custom configuration required for the ui5.yaml.
+ *
+ * @param ui5Config configuration representing the ui5.yaml
+ * @param config full project configuration
+ */
+export function enhanceUI5YamlWithCustomConfig(ui5Config: UI5Config, config?: AdpCustomConfig) {
+    if (config?.adp) {
+        ui5Config.addCustomConfiguration('adp', config.adp);
     }
 }
 
@@ -133,7 +150,7 @@ function getOpenSourceMiddlewares(config: AdpWriterConfig): CustomMiddleware<obj
 }
 
 /**
- * Get a list of required custom tasks using the Fiori tools.
+ * Get a list of required custom tasks for S4.
  *
  * @param config full project configuration
  * @returns list of required tasks.
@@ -150,7 +167,7 @@ function getAdpCloudCustomTasks(config: AdpWriterConfig & { target: AbapTarget }
                 type: 'abap',
                 destination: config.target?.destination,
                 appName: config?.flp?.bspName,
-                languages: config?.flp?.languages?.map((language: { sap: string; i18n: string }) => {
+                languages: config?.flp?.languages?.map((language: Language) => {
                     return {
                         sap: language.sap,
                         i18n: language.i18n
