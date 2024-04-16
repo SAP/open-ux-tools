@@ -142,7 +142,7 @@ export default class ExtensionPoint extends BaseDialog {
             throw new Error(e.message);
         }
 
-        await this.createExtensionPointFragmentChange(fragmentName);
+        this.createExtensionPointFragmentChange(fragmentName);
     }
 
     /**
@@ -150,7 +150,7 @@ export default class ExtensionPoint extends BaseDialog {
      *
      * @param fragmentName Fragment name
      */
-    private async createExtensionPointFragmentChange(fragmentName: string): Promise<void> {
+    private createExtensionPointFragmentChange(fragmentName: string): void {
         const extensionPointName = this.model.getProperty('/extensionPointName');
         const modifiedValue = {
             fragmentPath: `fragments/${fragmentName}.fragment.xml`,

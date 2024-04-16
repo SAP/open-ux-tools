@@ -14,6 +14,7 @@ import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import { ClientFactory, SampleRate, EventName } from '@sap-ux/telemetry';
 import { generateImportList, mergeTestConfigDefaults } from './test';
 import { TelemetryReporter } from './telemetry-reporter';
+import type http from 'http';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -298,7 +299,7 @@ export class FlpSandbox {
                         scenario,
                         livereloadPort
                     });
-                    res.status(200).contentType('html').send(html);
+                    this.sendResponse(res, 'text/html', 200, html);
                 });
                 let path = dirname(editor.path);
                 if (!path.endsWith('/')) {
@@ -312,7 +313,7 @@ export class FlpSandbox {
                     '</body>',
                     `</body>\n<!-- livereload disabled for editor </body>-->`
                 );
-                res.status(200).contentType('html').send(html);
+                this.sendResponse(res, 'text/html', 200, html);
             });
         }
     }
@@ -333,7 +334,7 @@ export class FlpSandbox {
             }
             const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
             const html = render(template, this.templateConfig);
-            res.status(200).contentType('html').send(html);
+            this.sendResponse(res, 'text/html', 200, html);
         }) as RequestHandler);
     }
 
@@ -433,9 +434,12 @@ export class FlpSandbox {
         const api = `${PREVIEW_URL.api}/changes`;
         this.router.use(api, json());
         this.router.get(api, (async (_req: Request, res: Response) => {
-            res.status(200)
-                .contentType('application/json')
-                .send(await readChanges(this.project, this.logger));
+            this.sendResponse(
+                res,
+                'application/json',
+                200,
+                JSON.stringify(await readChanges(this.project, this.logger))
+            );
         }) as RequestHandler);
         this.router.post(api, (async (req: Request, res: Response) => {
             try {
@@ -446,12 +450,12 @@ export class FlpSandbox {
                     this.telemetryReporter
                 );
                 if (success) {
-                    res.status(200).send(message);
+                    this.sendResponse(res, 'text/plain', 200, message ?? '');
                 } else {
-                    res.status(400).send('INVALID_DATA');
+                    this.sendResponse(res, 'text/plain', 400, 'INVALID_DATA');
                 }
             } catch (error) {
-                res.status(500).send(error.message);
+                this.sendResponse(res, 'text/plain', 500, error.message);
             }
         }) as RequestHandler);
         this.router.delete(api, (async (req: Request, res: Response) => {
@@ -462,14 +466,32 @@ export class FlpSandbox {
                     this.logger
                 );
                 if (success) {
-                    res.status(200).send(message);
+                    this.sendResponse(res, 'text/plain', 200, message ?? '');
                 } else {
-                    res.status(400).send('INVALID_DATA');
+                    this.sendResponse(res, 'text/plain', 400, 'INVALID_DATA');
                 }
             } catch (error) {
-                res.status(500).send(error.message);
+                this.sendResponse(res, 'text/plain', 500, error.message);
             }
         }) as RequestHandler);
+    }
+
+    /**
+     * Send a response with the given content type, status and body.
+     * Ensure compliance with common APIs in express and connect.
+     *
+     * @param res the response object
+     * @param contentType the content type
+     * @param status the response status
+     * @param body the response body
+     * @private
+     */
+    private sendResponse(res: Response | http.ServerResponse, contentType: string, status: number, body: string) {
+        res.writeHead(status, {
+            'Content-Type': contentType
+        });
+        res.write(body);
+        res.end();
     }
 
     /**
@@ -500,7 +522,7 @@ export class FlpSandbox {
                         initPath: `${ns}${config.init.replace('.js', '')}`
                     };
                     const html = render(htmlTemplate, templateConfig);
-                    res.status(200).contentType('html').send(html);
+                    this.sendResponse(res, 'text/html', 200, html);
                 }
             }) as RequestHandler);
             if (testConfig.init !== undefined) {
@@ -519,8 +541,8 @@ export class FlpSandbox {
                 } else {
                     const testFiles = await this.project.byGlob(config.pattern);
                     const templateConfig = { tests: generateImportList(ns, testFiles) };
-                    const html = render(initTemplate, templateConfig);
-                    res.status(200).contentType('application/javascript').send(html);
+                    const js = render(initTemplate, templateConfig);
+                    this.sendResponse(res, 'application/javascript', 200, js);
                 }
             }) as RequestHandler);
         }
