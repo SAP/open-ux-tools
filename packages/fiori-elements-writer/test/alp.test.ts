@@ -55,9 +55,9 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                                 navigationEntity: {
                                     EntitySet: 'MaterialDetails',
                                     Name: '_MaterialDetails'
-                                },
-                                tableType: TableType.RESPONSIVE
-                            }
+                                }
+                            },
+                            tableType: TableType.RESPONSIVE
                         } as ALPSettingsV4
                     }
                 }),

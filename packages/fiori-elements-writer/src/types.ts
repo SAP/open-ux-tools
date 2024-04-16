@@ -31,8 +31,6 @@ export interface EntityConfig {
         EntitySet: string; // Defines the entity set for object page navigation
         Name: string; // Defines the entity name for object page navigation
     };
-    tableType?: TableType;
-    qualifier?: string;
 }
 
 export enum TableType {
@@ -48,8 +46,11 @@ export enum TableSelectionMode {
     MULTI = 'Multi',
     SINGLE = 'Single'
 }
-
-export interface LROPSettings {
+export interface BaseFloorPlanSettings {
+    tableType?: TableType;
+    qualifier?: string;
+}
+export interface LROPSettings extends BaseFloorPlanSettings {
     entityConfig: EntityConfig;
 }
 
@@ -58,7 +59,7 @@ export interface FPMSettings {
     pageName: string;
 }
 
-export interface WorklistSettings {
+export interface WorklistSettings extends BaseFloorPlanSettings {
     entityConfig: EntityConfig;
 }
 
@@ -70,7 +71,7 @@ export interface OVPSettings {
     filterEntityType: string; // Filters the `globalFilterModel` data displayed in OVP cards
 }
 
-export interface ALPSettings {
+export interface ALPSettings extends BaseFloorPlanSettings {
     entityConfig: EntityConfig;
 }
 export interface ALPSettingsV2 extends ALPSettings {

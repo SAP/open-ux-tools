@@ -37,11 +37,11 @@
                                         "route": "<%- entityConfig.mainEntityName %>ObjectPage"
                                     }
                                 }
-                            }<% if (entityConfig.tableType) { %>,
+                            }<% if (locals.tableType) { %>,
                             "controlConfiguration": {
                                 "@com.sap.vocabularies.UI.v1.LineItem": {
                                     "tableSettings": {
-                                        "type": "<%- entityConfig.tableType %>"
+                                        "type": "<%- locals.tableType %>"
                                         <% if (entityConfig.qualifier) { %>,"qualifier": "<%- entityConfig.qualifier %>"<% } %>                                        
                                         <% if (type === 'alp'){ %>,"selectionMode": "<%- selectionMode %>"<% } %>
                                     }

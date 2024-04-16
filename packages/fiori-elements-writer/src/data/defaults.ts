@@ -19,9 +19,8 @@ export function setDefaultTemplateSettings<T extends {}>(template: Template<T>, 
     if (template.type === TemplateType.AnalyticalListPage) {
         const alpSettings: ALPSettings = template.settings as unknown as ALPSettings;
 
-        Object.assign(templateSettings, {});
-        Object.assign((templateSettings as any).entityConfig, {
-            tableType: alpSettings.entityConfig.tableType ?? TableType.ANALYTICAL // Overrides the UI5 default: ''
+        Object.assign(templateSettings, {
+            tableType: alpSettings.tableType ?? TableType.ANALYTICAL // Overrides the UI5 default: ''
         });
 
         if (odataVersion === OdataVersion.v4) {
@@ -36,7 +35,7 @@ export function setDefaultTemplateSettings<T extends {}>(template: Template<T>, 
             const alpSettingsv2: ALPSettingsV2 = template.settings as unknown as ALPSettingsV2;
             Object.assign(templateSettings, {
                 multiSelect: alpSettingsv2.multiSelect,
-                qualifier: alpSettingsv2.entityConfig.qualifier,
+                qualifier: alpSettingsv2.qualifier,
                 autoHide: alpSettingsv2.autoHide,
                 smartVariantManagement: alpSettingsv2.smartVariantManagement
             });

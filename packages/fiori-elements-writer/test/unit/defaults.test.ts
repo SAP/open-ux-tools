@@ -20,8 +20,8 @@ describe('Defaults', () => {
             Object {
               "entityConfig": Object {
                 "mainEntityName": "",
-                "tableType": "AnalyticalTable",
               },
+              "tableType": "AnalyticalTable",
             }
         `);
 
@@ -29,9 +29,9 @@ describe('Defaults', () => {
             Object {
               "entityConfig": Object {
                 "mainEntityName": "",
-                "tableType": "AnalyticalTable",
               },
               "selectionMode": "None",
+              "tableType": "AnalyticalTable",
             }
         `);
 
@@ -40,11 +40,11 @@ describe('Defaults', () => {
               "autoHide": undefined,
               "entityConfig": Object {
                 "mainEntityName": "",
-                "tableType": "AnalyticalTable",
               },
               "multiSelect": undefined,
               "qualifier": undefined,
               "smartVariantManagement": undefined,
+              "tableType": "AnalyticalTable",
             }
         `);
     });
@@ -54,9 +54,9 @@ describe('Defaults', () => {
             type: TemplateType.AnalyticalListPage,
             settings: {
                 entityConfig: {
-                    mainEntityName: '',
-                    tableType: TableType.GRID
+                    mainEntityName: ''
                 },
+                tableType: TableType.GRID,
                 autoHide: false,
                 multiSelect: true
             }
@@ -67,11 +67,11 @@ describe('Defaults', () => {
               "autoHide": false,
               "entityConfig": Object {
                 "mainEntityName": "",
-                "tableType": "GridTable",
               },
               "multiSelect": true,
               "qualifier": undefined,
               "smartVariantManagement": undefined,
+              "tableType": "GridTable",
             }
         `);
 
@@ -89,9 +89,9 @@ describe('Defaults', () => {
             Object {
               "entityConfig": Object {
                 "mainEntityName": "",
-                "tableType": "AnalyticalTable",
               },
               "selectionMode": "Multi",
+              "tableType": "AnalyticalTable",
             }
         `);
 

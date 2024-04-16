@@ -132,9 +132,9 @@ export const v4TemplateSettingsGridTable: LROPSettings | FEOPSettings | Worklist
         navigationEntity: {
             EntitySet: 'Booking',
             Name: '_Booking'
-        },
-        tableType: TableType.GRID
-    }
+        }
+    },
+    tableType: TableType.GRID
 };
 export const v2TemplateSettings: LROPSettings | WorklistSettings = {
     entityConfig: {
