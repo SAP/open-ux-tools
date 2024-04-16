@@ -34,6 +34,30 @@ describe('read', () => {
             expect(getCdsFilesSpy).toHaveBeenNthCalledWith(1, root, true);
             expect(getCapI18nBundleSpy).toHaveBeenNthCalledWith(1, root, {}, [], undefined);
         });
+        test('bundles for CAPJava', async () => {
+            const data: uxI18n.I18nBundle = {
+                'key': []
+            };
+            const absolutePath = join('absolute', 'path', 'to', 'i18n', 'properties', 'file');
+            const root = 'root';
+            const getPropertiesI18nBundleSpy = jest.spyOn(uxI18n, 'getPropertiesI18nBundle').mockResolvedValue(data);
+            const getCapEnvironmentSoy = jest.spyOn(cap, 'getCapEnvironment').mockResolvedValue({});
+            const getCdsFilesSpy = jest.spyOn(cap, 'getCdsFiles').mockResolvedValue([]);
+            const getCapI18nBundleSpy = jest.spyOn(uxI18n, 'getCapI18nBundle').mockResolvedValue(data);
+            const result = await getI18nBundles(
+                root,
+                {
+                    'sap.app': absolutePath,
+                    models: {}
+                },
+                'CAPJava'
+            );
+            expect(result).toEqual({ 'sap.app': data, models: {}, service: data });
+            expect(getPropertiesI18nBundleSpy).toHaveBeenNthCalledWith(1, absolutePath, undefined);
+            expect(getCapEnvironmentSoy).toHaveBeenNthCalledWith(1, root);
+            expect(getCdsFilesSpy).toHaveBeenNthCalledWith(1, root, true);
+            expect(getCapI18nBundleSpy).toHaveBeenNthCalledWith(1, root, {}, [], undefined);
+        });
         test('bundles for CAPNodejs - mem-fs-editor', async () => {
             const data: uxI18n.I18nBundle = {
                 'key': []
