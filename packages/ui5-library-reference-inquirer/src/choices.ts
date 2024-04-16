@@ -15,7 +15,7 @@ export const getProjectChoices = async (apps?: AllAppResults[]): Promise<ListCho
     if (apps) {
         for (const app of apps) {
             const name = basename(app.appRoot);
-            projectChoices.push({ name, value: { folderName: name, path: app.appRoot } });
+            projectChoices.push({ name, value: app.appRoot });
         }
     }
 

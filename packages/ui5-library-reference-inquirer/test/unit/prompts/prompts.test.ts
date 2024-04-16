@@ -4,6 +4,8 @@ import { getQuestions } from '../../../src/prompts/';
 import { promptNames } from '../../../src/types';
 import type { CheckBoxQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import { ReuseLibType } from '@sap-ux/project-access';
+import * as projectAccess from '@sap-ux/project-access';
+import { Severity } from '@sap-devx/yeoman-ui-types';
 
 describe('getQuestions', () => {
     beforeAll(async () => {
@@ -22,11 +24,11 @@ describe('getQuestions', () => {
         const referenceLibrariesPrompt = questions.find((question) => question.name === promptNames.referenceLibraries);
 
         expect(questions).toMatchSnapshot();
-        expect(((targetFolderPrompt as ListQuestion)?.choices as Function)()).toBeUndefined();
+        expect((targetFolderPrompt as ListQuestion)?.choices).toBeUndefined();
         expect(((targetFolderPrompt as ListQuestion)?.default as Function)()).toBeUndefined();
         expect(((targetFolderPrompt as ListQuestion)?.validate as Function)()).toBe(t('error.noProjectsFound'));
 
-        expect(((referenceLibrariesPrompt as CheckBoxQuestion)?.validate as Function)()).toBe(t('ERROR_NO_LIBS_FOUND'));
+        expect(((referenceLibrariesPrompt as CheckBoxQuestion)?.validate as Function)()).toBe(t('error.noLibsFound'));
     });
 
     test('getQuestions, with project & libs', () => {
@@ -49,18 +51,25 @@ describe('getQuestions', () => {
         const targetFolderPrompt = questions.find((question) => question.name === promptNames.targetProjectFolder);
         const referenceLibrariesPrompt = questions.find((question) => question.name === promptNames.referenceLibraries);
 
-        expect(((targetFolderPrompt as ListQuestion)?.choices as Function)()).toBe(projectChoices);
+        expect((targetFolderPrompt as ListQuestion)?.choices).toBe(projectChoices);
         expect(((targetFolderPrompt as ListQuestion)?.default as Function)()).toBe(0);
         expect(((targetFolderPrompt as ListQuestion)?.validate as Function)()).toBe(true);
 
-        expect(((referenceLibrariesPrompt as CheckBoxQuestion)?.choices as Function)()).toBe(reuseLibs);
+        expect((referenceLibrariesPrompt as CheckBoxQuestion)?.choices).toBe(reuseLibs);
         expect(((referenceLibrariesPrompt as CheckBoxQuestion)?.validate as Function)()).toBe(true);
         expect(((referenceLibrariesPrompt as CheckBoxQuestion)?.validate as Function)([])).toBe(
-            t('ERROR_NO_LIB_SELECTED')
+            t('error.noLibSelected')
         );
         expect(((referenceLibrariesPrompt as CheckBoxQuestion)?.validate as Function)(reuseLibs)).toBe(true);
 
         expect(((referenceLibrariesPrompt as YUIQuestion)?.additionalMessages as Function)()).toBeUndefined();
+
+        jest.spyOn(projectAccess, 'checkDependencies').mockReturnValue('dep1');
+        expect(((referenceLibrariesPrompt as CheckBoxQuestion)?.validate as Function)(reuseLibs)).toBe(true);
+        expect(((referenceLibrariesPrompt as YUIQuestion)?.additionalMessages as Function)()).toStrictEqual({
+            message: t('addtionalMsgs.missingDeps', { dependencies: 'dep1' }),
+            severity: Severity.warning
+        });
     });
 
     test('getQuestions, with project & libs and hide options', () => {
