@@ -1,6 +1,6 @@
 #  EXPERIMENTAL `@sap-ux/cards-editor-middleware`
 
-A middleware to store generation card manifest and i18n text to application repository. Middlware is configured by `@sap-ux/cards-editor-config-writer`
+A middleware to generate a card manifest and i18n text in the project. Middleware is configured by `@sap-ux/cards-editor-config-writer`
 
 ## Installation
 Npm

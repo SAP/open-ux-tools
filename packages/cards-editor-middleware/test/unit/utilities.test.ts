@@ -1,6 +1,7 @@
 import type { I18nEntry } from '../../src/utilities';
 import { prepareFileName, prepareCardTypesForSaving, traverseI18nProperties } from '../../src/utilities';
 import { promises } from 'fs';
+import packageJson from '../../package.json';
 
 jest.mock('fs', () => ({
     promises: {
@@ -11,7 +12,7 @@ jest.mock('fs', () => ({
     }
 }));
 
-describe('Common utils', () => {
+describe('Common utilities', () => {
     const mockFsPromisesReadFile = promises.readFile as jest.Mock;
     beforeEach(() => {
         jest.resetAllMocks();
@@ -37,7 +38,7 @@ describe('Common utils', () => {
                     },
                     'sap.insights': {
                         'versions': {
-                            'ui5': '1.120.1-202403281300'
+                            'ui5': '1.121.0-202403281300'
                         },
                         'templateName': 'ObjectPage',
                         'parentAppId': 'sales.order.wd20',
@@ -60,7 +61,30 @@ describe('Common utils', () => {
                 }
             }
         ];
-        expect(prepareCardTypesForSaving(aMultipleCards)).toMatchSnapshot();
+
+        const expectedIntegrationCard = {
+            '_version': '1.15.0',
+            'sap.card': {
+                'type': 'Object',
+                'header': {
+                    'type': 'Numeric',
+                    'title': 'Card title'
+                }
+            },
+            'sap.insights': {
+                'versions': {
+                    'ui5': '1.121.0-202403281300',
+                    'dtMiddleware': packageJson.version
+                },
+                'templateName': 'ObjectPage',
+                'parentAppId': 'sales.order.wd20',
+                'cardType': 'DT'
+            }
+        };
+        const preparedCards = prepareCardTypesForSaving(aMultipleCards);
+        const integrationCard = JSON.parse(preparedCards.integration);
+
+        expect(integrationCard).toMatchObject(expectedIntegrationCard);
     });
 
     test('traverseI18nProperties', async () => {
