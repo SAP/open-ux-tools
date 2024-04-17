@@ -5,6 +5,7 @@ import { tmpdir } from 'os';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { deleteChange } from '../../../dist/base/flex';
+import * as reporter from '../../../src/base/telemetry-reporter';
 
 describe('flex', () => {
     const logger = new ToolsLogger();
@@ -82,7 +83,7 @@ describe('flex', () => {
 
     describe('writeChange', () => {
         test('valid change', () => {
-            const change = { fileName: 'id', fileType: 'ctrl_variant', changeType: 'variant' };
+            const change = { fileName: 'id', fileType: 'ctrl_variant' };
             const result = writeChange(change, path, logger);
             expect(result.success).toBe(true);
             expect(result.message).toBeDefined();
@@ -94,6 +95,51 @@ describe('flex', () => {
         test('invalid change', () => {
             const result = writeChange({} as any, path, logger);
             expect(result.success).toBe(false);
+        });
+    });
+
+    describe('writeChange - telemetry', () => {
+        beforeEach(() => {
+            jest.resetAllMocks();
+        });
+        test('with all data', () => {
+            const reportSpy = jest.spyOn(reporter.TelemetryReporter.prototype, 'reportTelemetry').mockReturnValue();
+            const change = {
+                fileName: 'id',
+                fileType: 'ctrl_variant',
+                changeType: 'variant',
+                selector: { type: 'Control' },
+                content: { property: 'testProperty' },
+                support: { sapui5Version: '1.101.TEST' }
+            };
+            writeChange(change, path, logger, new reporter.TelemetryReporter('TEST_EVENT', logger, 'testLayer'));
+            expect(reportSpy).toBeCalledWith({
+                'category': 'Save',
+                'changeType': 'variant',
+                'controlType': 'Control',
+                'propertyName': 'testProperty',
+                'sapui5Version': '1.101.TEST'
+            });
+        });
+
+        test('with all data', () => {
+            const reportSpy = jest.spyOn(reporter.TelemetryReporter.prototype, 'reportTelemetry').mockReturnValue();
+            const change = {
+                fileName: 'id',
+                fileType: 'ctrl_variant',
+                changeType: 'addXML',
+                selector: undefined,
+                content: undefined,
+                support: undefined
+            };
+            writeChange(change, path, logger, new reporter.TelemetryReporter('TEST_EVENT', logger, 'testLayer'));
+            expect(reportSpy).toBeCalledWith({
+                'category': 'Save',
+                'changeType': 'addXML',
+                'controlType': '',
+                'propertyName': '',
+                'sapui5Version': ''
+            });
         });
     });
 
