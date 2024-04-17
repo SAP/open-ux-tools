@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.19.9
+
+### Patch Changes
+
+-   ee76e47f: fix: get i18n bundles for CAPJava
+
 ## 1.19.8
 
 ### Patch Changes
