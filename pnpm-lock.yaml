@@ -1315,9 +1315,6 @@ importers:
       '@sap-ux/control-property-editor-sources':
         specifier: workspace:@sap-ux/control-property-editor@*
         version: link:../control-property-editor
-      '@sap-ux/feature-toggle':
-        specifier: workspace:*
-        version: link:../feature-toggle
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
@@ -1327,9 +1324,6 @@ importers:
       '@sap-ux/telemetry':
         specifier: workspace:*
         version: link:../telemetry
-      dotenv:
-        specifier: 16.3.1
-        version: 16.3.1
       ejs:
         specifier: 3.1.9
         version: 3.1.9
@@ -1364,6 +1358,9 @@ importers:
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
+      dotenv:
+        specifier: 16.3.1
+        version: 16.3.1
       express:
         specifier: 4.19.2
         version: 4.19.2
