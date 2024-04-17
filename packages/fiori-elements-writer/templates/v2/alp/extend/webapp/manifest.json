@@ -17,9 +17,9 @@
                         "condensedTableLayout": true,
                         "showGoButtonOnFilterBar": true,
                         <% if (locals.tableType) { %>
-                        "tableType": "<%- locals.tableType %>",<% } %>
+                        "tableType": "<%- tableType %>",<% } %>
                         <% if (locals.qualifier) { %>
-                        "qualifier": "<%- locals.qualifier %>",<% } %>
+                        "qualifier": "<%- qualifier %>",<% } %>
                         <% if (locals.autoHide !== undefined) { %>
                         "autoHide": <%- autoHide %>,<% } %>
                         <% if (locals.smartVariantManagement !== undefined) { %>
