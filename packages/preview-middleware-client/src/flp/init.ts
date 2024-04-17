@@ -4,6 +4,7 @@ import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/s
 import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
+import AppState from 'sap/ushell/services/AppState';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -121,29 +122,18 @@ function registerModules(
 
 /**
  * Reset the app state.
- * 
+ *
  * @param container the UShell container
  */
 async function resetAppState(container: typeof sap.ushell.Container): Promise<void> {
-    const [oURLParser, oAppState] = await Promise.all([
-        container.getServiceAsync<any>('URLParsing'),
-        container.getServiceAsync<any>('AppState')
-    ]);
-    
-    const aURLParameters = window.location.hash.split('/');
-    const sAppState = 'sap-iapp-state';
+    const appStateService = await container.getServiceAsync<AppState>('AppState');
+    const urlParams = new URLSearchParams(window.location.hash);
 
-    for (const sURLParameter of aURLParameters) {
-        const oShellParams = oURLParser.parseParameters(sURLParameter);
-        for (const parameter in oShellParams) {
-            if (parameter.indexOf(sAppState) === -1) {
-                continue;
-            }
-            const sAppStateValue = oShellParams[parameter]?.[0];
-            if (sAppStateValue) {
-                oAppState.deleteAppState(sAppStateValue);
-            }
-        }
+    const appState = 'sap-iapp-state';
+
+    const appStateValue = urlParams.get(appState);
+    if (appStateValue) {
+        appStateService.deleteAppState(appStateValue);
     }
 }
 
@@ -226,7 +216,7 @@ export async function init({
     customInit?: string | null;
 }): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
-    const container = sap?.ushell?.Container ?? sap.ui.require('sap/ushell/Container') as typeof sap.ushell.Container;
+    const container = sap?.ushell?.Container ?? (sap.ui.require('sap/ushell/Container') as typeof sap.ushell.Container);
     // Register RTA if configured
     if (flex) {
         container.attachRendererCreatedEvent(async function () {
@@ -263,14 +253,14 @@ export async function init({
                     }
                 );
             });
-        });   
+        });
     }
 
     // reset app state if requested
     if (urlParams.get('fiori-tools-iapp-state')?.toLocaleLowerCase() === 'true') {
         await resetAppState(container);
     }
-    
+
     // Load custom library paths if configured
     if (appUrls) {
         await registerComponentDependencyPaths(JSON.parse(appUrls), urlParams);
