@@ -1,5 +1,11 @@
 # @sap-ux/inquirer-common
 
+## 0.2.6
+
+### Patch Changes
+
+-   f8b24a3a: fix additional msgs and readme
+
 ## 0.2.5
 
 ### Patch Changes
