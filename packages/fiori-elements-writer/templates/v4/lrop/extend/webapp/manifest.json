@@ -37,17 +37,19 @@
                                         "route": "<%- entityConfig.mainEntityName %>ObjectPage"
                                     }
                                 }
-                            }<% if (locals.tableType) { %>,
+                            }<% if (tableType) { %>,
                             "controlConfiguration": {
                                 "@com.sap.vocabularies.UI.v1.LineItem": {
                                     "tableSettings": {
-                                        "type": "<%- locals.tableType %>"
+                                        "type": "<%- tableType %>"
                                         <% if (locals.qualifier) { %>,"qualifier": "<%- locals.qualifier %>"<% } %>                                        
                                         <% if (type === 'alp'){ %>,"selectionMode": "<%- selectionMode %>"<% } %>
                                         <% if (locals.hierarchyQualifier){ %>,"hierarchyQualifier": "<%- hierarchyQualifier %>"<% } %>                                        
                                     }
                                 }
-                            },
+                            }
+                            <% } %> 
+                            <% if (type === 'alp'){ %>,
                             "views": {
                                 "paths": [{
                                     "primary": [

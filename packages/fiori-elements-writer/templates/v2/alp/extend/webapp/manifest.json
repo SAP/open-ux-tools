@@ -16,7 +16,7 @@
                     "settings": {
                         "condensedTableLayout": true,
                         "showGoButtonOnFilterBar": true,
-                        <% if (locals.tableType) { %>
+                        <% if (tableType) { %>
                         "tableType": "<%- tableType %>",<% } %>
                         <% if (locals.qualifier) { %>
                         "qualifier": "<%- qualifier %>",<% } %>

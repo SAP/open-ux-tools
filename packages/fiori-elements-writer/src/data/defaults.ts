@@ -1,7 +1,15 @@
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import readPkgUp from 'read-pkg-up';
-import type { ALPSettings, ALPSettingsV2, ALPSettingsV4, FioriElementsApp, Template } from '../types';
+import type {
+    ALPSettings,
+    ALPSettingsV2,
+    ALPSettingsV4,
+    FioriElementsApp,
+    LROPSettings,
+    Template,
+    WorklistSettings
+} from '../types';
 import { TableSelectionMode, TableType, TemplateType } from '../types';
 import { getBaseComponent, getUi5Libs, TemplateTypeAttributes } from './templateAttributes';
 
@@ -81,6 +89,27 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
     if (feApp.template.type === TemplateType.OverviewPage) {
         (feApp.service as OdataService).model = defaultModelName;
     }
+    // Set TableType settings
+    if (feApp.template.type === TemplateType.AnalyticalListPage) {
+        // ALP
+        (feApp.template.settings as ALPSettingsV2).tableType =
+            (feApp.template.settings as ALPSettingsV2).tableType ?? TableType.ANALYTICAL;
+        (feApp.template.settings as ALPSettingsV2).qualifier = (feApp.template.settings as ALPSettings).qualifier;
+    } else if (feApp.template.type === TemplateType.ListReportObjectPage) {
+        // LROP
+        (feApp.template.settings as LROPSettings).tableType =
+            (feApp.template.settings as LROPSettings).tableType ?? TableType.RESPONSIVE;
+        (feApp.template.settings as LROPSettings).hierarchyQualifier = (
+            feApp.template.settings as LROPSettings
+        ).hierarchyQualifier;
+    } else if (feApp.template.type === TemplateType.Worklist) {
+        // Worklist
+        (feApp.template.settings as WorklistSettings).tableType =
+            (feApp.template.settings as WorklistSettings).tableType ?? TableType.RESPONSIVE;
+        (feApp.template.settings as WorklistSettings).hierarchyQualifier = (
+            feApp.template.settings as WorklistSettings
+        ).hierarchyQualifier;
+    }
 
     // minimum UI5 version depending on the template required
     feApp.ui5 = feApp.ui5 ?? {};
@@ -89,7 +118,7 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
             feApp.ui5.version ?? TemplateTypeAttributes[feApp.template.type].minimumUi5Version[feApp.service.version]!;
     }
 
-    // if not explictly disabled, enable the SAP Fiori tools
+    // if not explicitly disabled, enable the SAP Fiori tools
     feApp.appOptions = feApp.appOptions ?? {};
     if (feApp.appOptions.sapux !== false) {
         feApp.appOptions.sapux = true;
