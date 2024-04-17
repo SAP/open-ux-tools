@@ -77,7 +77,7 @@ export async function readChanges(project: ReaderCollection, logger: Logger): Pr
  * @returns object with success flag and optional message
  */
 export function writeChange(
-    data: object & { fileName?: string; fileType?: string },
+    data: object & { fileName?: string; fileType?: string; changeType: string; layer: string },
     webappPath: string,
     logger: Logger,
     reporter?: TelemetryReporter
@@ -92,7 +92,7 @@ export function writeChange(
         }
         const filePath = join(path, fileName + '.' + fileType);
         writeFileSync(filePath, JSON.stringify(data, null, 2));
-        const telemetryData = { category: 'Save', changeType: (data as any).changeType, layer: (data as any).layer };
+        const telemetryData = { category: 'Save', changeType: data.changeType, layer: data.layer };
         if (reporter) {
             reporter.reportTelemetry(telemetryData);
         }

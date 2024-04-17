@@ -1,8 +1,5 @@
-import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { ClientFactory, SampleRate, initTelemetrySettings } from '@sap-ux/telemetry';
 import modulePackageJson from '../../package.json';
-// import { join } from 'path';
-// import dotenv from 'dotenv';
 import { Logger } from '@sap-ux/logger';
 
 const key = 'ApplicationInsightsInstrumentationKeyPLACEH0LDER';
@@ -15,14 +12,10 @@ export class TelemetryReporter {
     constructor(private eventName: string, private readonly logger: Logger, private layer?: string) {}
     public async initializeTelemetry() {
         try {
-            // const envFilePath = { path: join(__dirname, '..', '..', '.env') };
-            // dotenv.config(envFilePath);
-            const internalFeature = isInternalFeaturesSettingEnabled();
             await initTelemetrySettings({
                 consumerModule: modulePackageJson,
-                internalFeature,
+                internalFeature: false,
                 watchTelemetrySettingStore: true,
-                //resourceId: process.env['OpenUxTools_ResourceId']
                 resourceId: key
             });
             this.initialized = true;

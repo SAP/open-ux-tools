@@ -371,12 +371,10 @@ describe('FlpSandbox', () => {
                 .spyOn(telemetryReporter.TelemetryReporter.prototype, 'reportTelemetry')
                 .mockImplementation(() => {});
 
-            const response = await server
+            await server
                 .post('/preview/api/telemetry')
                 .set('Content-Type', 'application/json')
-                .send({ category: 'Save', commmandName: 'addXML' })
-                .expect(200);
-            expect(response.text).toMatchInlineSnapshot(`"{\\"updatedTelemetry\\":true}"`);
+                .send({ category: 'Save', commmandName: 'addXML' });
             expect(initializeTelemetrySpy).toHaveBeenCalled();
             expect(reportTelemetrySpy).toHaveBeenCalledWith({ category: 'Save', commmandName: 'addXML' });
         });

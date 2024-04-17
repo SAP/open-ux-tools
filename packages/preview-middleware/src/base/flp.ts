@@ -11,7 +11,7 @@ import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { createProjectAccess } from '@sap-ux/project-access';
 import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
-import { ClientFactory, SampleRate, EventName } from '@sap-ux/telemetry';
+import { EventName, getTelemetrySetting } from '@sap-ux/telemetry';
 import { generateImportList, mergeTestConfigDefaults } from './test';
 import { TelemetryReporter } from './telemetry-reporter';
 import type http from 'http';
@@ -356,7 +356,7 @@ export class FlpSandbox {
 
                     const data = req.body;
                     this.telemetryReporter.reportTelemetry(data);
-                    res.status(200).contentType('json').send({ updatedTelemetry: true });
+                    next();
                 } catch (error) {
                     this.logger.error(`Could not send telemetry report. ${error}`);
                     next(error);
@@ -670,11 +670,16 @@ export async function initAdp(
         const adp = new AdpPreview(config, rootProject, util, logger);
         const variant = JSON.parse(await appVariant.getString());
         const layer = await adp.init(variant);
+        let telemetry = true;
+        const setting = await getTelemetrySetting();
+        if (setting?.enableTelemetry) {
+            telemetry = setting.enableTelemetry;
+        }
         if (flp.rta) {
             flp.rta.layer = layer;
             flp.rta.options = {
                 projectId: variant.id,
-                telemetry: true, // temprory until passed during intiialization
+                telemetry,
                 scenario: 'ADAPTATION_PROJECT'
             };
             for (const editor of flp.rta.editors) {
