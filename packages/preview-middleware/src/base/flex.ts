@@ -78,8 +78,8 @@ export async function readChanges(project: ReaderCollection, logger: Logger): Pr
  */
 export function writeChange(
     data: object & {
-        fileName: string;
-        fileType: string;
+        fileName?: string;
+        fileType?: string;
         changeType?: string;
         support?: { sapui5Version: string };
         content?: { property?: string };
