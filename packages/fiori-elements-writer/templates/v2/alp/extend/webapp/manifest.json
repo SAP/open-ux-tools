@@ -16,10 +16,10 @@
                     "settings": {
                         "condensedTableLayout": true,
                         "showGoButtonOnFilterBar": true,
-                        <% if (locals.entityConfig.tableType) { %>
-                        "tableType": "<%- locals.entityConfig.tableType %>",<% } %>
-                        <% if (locals.entityConfig.qualifier) { %>
-                        "qualifier": "<%- locals.entityConfig.qualifier %>",<% } %>
+                        <% if (locals.tableType) { %>
+                        "tableType": "<%- locals.tableType %>",<% } %>
+                        <% if (locals.qualifier) { %>
+                        "qualifier": "<%- locals.qualifier %>",<% } %>
                         <% if (locals.autoHide !== undefined) { %>
                         "autoHide": <%- autoHide %>,<% } %>
                         <% if (locals.smartVariantManagement !== undefined) { %>

@@ -56,9 +56,9 @@ describe('Defaults', () => {
                 entityConfig: {
                     mainEntityName: ''
                 },
-                tableType: TableType.GRID,
                 autoHide: false,
-                multiSelect: true
+                multiSelect: true,
+                tableType: TableType.GRID
             }
         };
 

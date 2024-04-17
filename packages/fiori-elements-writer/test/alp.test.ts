@@ -76,10 +76,10 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                                 navigationEntity: {
                                     EntitySet: 'SEPMRA_C_ALP_SalesOrderItem',
                                     Name: 'to_SalesOrderItem'
-                                },
-                                tableType: TableType.RESPONSIVE,
-                                qualifier: 'DefaultVariant'
+                                }
                             },
+                            tableType: TableType.RESPONSIVE,
+                            qualifier: 'DefaultVariant',
                             multiSelect: true
                         } as ALPSettingsV2
                     }
