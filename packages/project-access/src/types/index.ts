@@ -3,6 +3,7 @@ export * from './cap';
 export * from './i18n';
 export * from './find';
 export * from './info';
+export * from './library';
 export * from './package';
 export * from './vscode';
 export * from './webapp';
