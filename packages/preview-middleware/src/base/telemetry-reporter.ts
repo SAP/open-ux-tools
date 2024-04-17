@@ -25,13 +25,7 @@ export class TelemetryReporter {
         }
     }
 
-    public reportTelemetry(data: {
-        category: string;
-        changeType: string;
-        controlType: string;
-        propertyName: string;
-        sapui5Version: string;
-    }): void {
+    public reportTelemetry<T extends {}>(data: T): void {
         if (!this.initialized) {
             throw new Error('Telemetry not initialized');
         }
