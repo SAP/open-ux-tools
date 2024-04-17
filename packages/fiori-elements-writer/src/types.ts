@@ -46,12 +46,12 @@ export enum TableSelectionMode {
     MULTI = 'Multi',
     SINGLE = 'Single'
 }
-export interface BaseFloorPlanSettings {
+export interface TableSettings {
     tableType?: TableType;
     qualifier?: string;
     hierarchyQualifier?: string;
 }
-export interface LROPSettings extends BaseFloorPlanSettings {
+export interface LROPSettings extends TableSettings {
     entityConfig: EntityConfig;
 }
 
@@ -60,7 +60,7 @@ export interface FPMSettings {
     pageName: string;
 }
 
-export interface WorklistSettings extends BaseFloorPlanSettings {
+export interface WorklistSettings extends TableSettings {
     entityConfig: EntityConfig;
 }
 
@@ -72,7 +72,7 @@ export interface OVPSettings {
     filterEntityType: string; // Filters the `globalFilterModel` data displayed in OVP cards
 }
 
-export interface ALPSettings extends BaseFloorPlanSettings {
+export interface ALPSettings extends TableSettings {
     entityConfig: EntityConfig;
 }
 export interface ALPSettingsV2 extends ALPSettings {
