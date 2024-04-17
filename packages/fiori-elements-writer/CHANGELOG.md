@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.18.14
+
+### Patch Changes
+
+-   4599ee7f: Add more support for setting the table type in the writer. Add TreeTable.
+
 ## 0.18.13
 
 ### Patch Changes
