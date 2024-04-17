@@ -481,6 +481,14 @@ exports[`FlpSandbox router editor with config 1`] = `
                     }
                 }
             },
+            services: {
+                NavTargetResolution: {
+                    config: {
+                        allowTestUrlComponentConfig: true,
+                        enableClientSideTargetResolution: true
+                    }
+                }
+            },
             applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
         };
     </script>
@@ -556,6 +564,14 @@ exports[`FlpSandbox router rta 1`] = `
                             search: \\"hidden\\",
                             enableSearch: false
                         }
+                    }
+                }
+            },
+            services: {
+                NavTargetResolution: {
+                    config: {
+                        allowTestUrlComponentConfig: true,
+                        enableClientSideTargetResolution: true
                     }
                 }
             },
@@ -666,6 +682,14 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `
                     }
                 }
             },
+            services: {
+                NavTargetResolution: {
+                    config: {
+                        allowTestUrlComponentConfig: true,
+                        enableClientSideTargetResolution: true
+                    }
+                }
+            },
             applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
         };
     </script>
@@ -746,6 +770,14 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
                     }
                 }
             },
+            services: {
+                NavTargetResolution: {
+                    config: {
+                        allowTestUrlComponentConfig: true,
+                        enableClientSideTargetResolution: true
+                    }
+                }
+            },
             applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
         };
     </script>
@@ -823,6 +855,14 @@ exports[`FlpSandbox router test/flp.html 1`] = `
                             search: \\"hidden\\",
                             enableSearch: false
                         }
+                    }
+                }
+            },
+            services: {
+                NavTargetResolution: {
+                    config: {
+                        allowTestUrlComponentConfig: true,
+                        enableClientSideTargetResolution: true
                     }
                 }
             },
