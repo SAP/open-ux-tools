@@ -37,6 +37,7 @@ export interface RtaConfig {
         projectId?: string;
         scenario?: string;
         appName?: string;
+        telemetry?: boolean;
     };
     editors: Editor[];
 }
