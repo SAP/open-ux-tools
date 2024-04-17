@@ -49,6 +49,7 @@ export enum TableSelectionMode {
 export interface BaseFloorPlanSettings {
     tableType?: TableType;
     qualifier?: string;
+    hierarchyQualifier?: string;
 }
 export interface LROPSettings extends BaseFloorPlanSettings {
     entityConfig: EntityConfig;
@@ -77,6 +78,7 @@ export interface ALPSettings extends BaseFloorPlanSettings {
 export interface ALPSettingsV2 extends ALPSettings {
     smartVariantManagement?: boolean; // Not set by default
     multiSelect?: boolean; // Not set by default
+    qualifier?: string; // Not set by default
     autoHide?: boolean; // Not set by default
 }
 

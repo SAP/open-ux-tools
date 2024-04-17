@@ -126,7 +126,7 @@ export const v4TemplateSettings: LROPSettings | FEOPSettings | WorklistSettings 
     }
 };
 
-export const v4TemplateSettingsGridTable: LROPSettings | FEOPSettings | WorklistSettings = {
+export const v4TemplateSettingsTreeTable: LROPSettings | FEOPSettings | WorklistSettings = {
     entityConfig: {
         mainEntityName: 'Travel',
         navigationEntity: {
@@ -134,7 +134,8 @@ export const v4TemplateSettingsGridTable: LROPSettings | FEOPSettings | Worklist
             Name: '_Booking'
         }
     },
-    tableType: TableType.GRID
+    tableType: TableType.TREE,
+    hierarchyQualifier: 'HierarchyNode'
 };
 export const v2TemplateSettings: LROPSettings | WorklistSettings = {
     entityConfig: {

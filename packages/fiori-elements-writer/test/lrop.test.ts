@@ -12,7 +12,7 @@ import {
     v2Service,
     projectChecks,
     updatePackageJSONDependencyToUseLocalPath,
-    v4TemplateSettingsGridTable
+    v4TemplateSettingsTreeTable
 } from './common';
 import { ServiceType } from '@sap-ux/odata-service-writer';
 
@@ -75,12 +75,12 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } as FioriElementsApp<LROPSettings>
         },
         {
-            name: 'lrop_v4_no_ui5_version_grid_table',
+            name: 'lrop_v4_no_ui5_version_tree_table',
             config: {
                 ...Object.assign(feBaseConfig('felropui5', false), {
                     template: {
                         type: TemplateType.ListReportObjectPage,
-                        settings: v4TemplateSettingsGridTable
+                        settings: v4TemplateSettingsTreeTable
                     }
                 }),
                 service: v4Service

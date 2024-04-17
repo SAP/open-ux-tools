@@ -22656,7 +22656,7 @@ sap.registerComponentDependencyPaths(manifestUri)
 }
 `;
 
-exports[`Fiori Elements template: lropTemplates Generate files for template: lrop_v4_no_ui5_version_grid_table 1`] = `
+exports[`Fiori Elements template: lropTemplates Generate files for template: lrop_v4_no_ui5_version_tree_table 1`] = `
 Object {
   ".gitignore": Object {
     "contents": "node_modules/
@@ -25946,7 +25946,8 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
               \\"controlConfiguration\\": {
                 \\"@com.sap.vocabularies.UI.v1.LineItem\\": {
                   \\"tableSettings\\": {
-                    \\"type\\": \\"GridTable\\"
+                    \\"type\\": \\"TreeTable\\",
+                    \\"hierarchyQualifier\\": \\"HierarchyNode\\"
                   }
                 }
               },
