@@ -77,7 +77,7 @@ export async function readChanges(project: ReaderCollection, logger: Logger): Pr
  * @returns object with success flag and optional message
  */
 export function writeChange(
-    data: object & { fileName?: string; fileType?: string; changeType: string; layer: string },
+    data: object & { fileName?: string; fileType?: string; changeType?: string; layer?: string },
     webappPath: string,
     logger: Logger,
     reporter?: TelemetryReporter
