@@ -15,6 +15,7 @@ import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import * as adpTooling from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
 import type { I18nEntry } from '@sap-ux/i18n/src/types';
+import * as telemetryReporter from '../../../src/base/telemetry-reporter';
 
 jest.mock('@sap-ux/adp-tooling', () => {
     return {
@@ -262,6 +263,9 @@ describe('FlpSandbox', () => {
                     ],
                     rta: {
                         layer: 'CUSTOMER_BASE',
+                        options: {
+                            telemetry: true
+                        },
                         editors: [
                             {
                                 path: '/my/rta.html'
@@ -357,6 +361,24 @@ describe('FlpSandbox', () => {
                 .set('Content-Type', 'application/json')
                 .send({ hello: 'world' })
                 .expect(400);
+        });
+
+        test('POST /preview/api/telemetry', async () => {
+            const initializeTelemetrySpy = jest
+                .spyOn(telemetryReporter.TelemetryReporter.prototype, 'initializeTelemetry')
+                .mockResolvedValue(Promise.resolve());
+            const reportTelemetrySpy = jest
+                .spyOn(telemetryReporter.TelemetryReporter.prototype, 'reportTelemetry')
+                .mockImplementation(() => {});
+
+            const response = await server
+                .post('/preview/api/telemetry')
+                .set('Content-Type', 'application/json')
+                .send({ category: 'Save', commmandName: 'addXML' })
+                .expect(200);
+            expect(response.text).toMatchInlineSnapshot(`"{\\"updatedTelemetry\\":true}"`);
+            expect(initializeTelemetrySpy).toHaveBeenCalled();
+            expect(reportTelemetrySpy).toHaveBeenCalledWith({ category: 'Save', commmandName: 'addXML' });
         });
 
         test('DELETE /preview/api/changes', async () => {
