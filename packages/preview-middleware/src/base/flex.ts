@@ -102,9 +102,9 @@ export function writeChange(
         const telemetryData = {
             category: 'Save',
             changeType: data.changeType,
-            controlType: data?.selector?.type || '',
-            propertyName: data?.content?.property || '',
-            sapui5Version: data?.support?.sapui5Version || ''
+            controlType: data?.selector?.type ?? '',
+            propertyName: data?.content?.property ?? '',
+            sapui5Version: data?.support?.sapui5Version ?? ''
         };
         if (reporter) {
             reporter.reportTelemetry(telemetryData);
