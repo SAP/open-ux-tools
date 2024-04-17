@@ -39,7 +39,7 @@ describe('flp/init', () => {
 
         test('single app, no reuse libs', async () => {
             fetchMock.mockResolvedValueOnce({ json: () => testManifest });
-            await registerComponentDependencyPaths(['/']);
+            await registerComponentDependencyPaths(['/'], new URLSearchParams());
             expect(loaderMock).not.toBeCalled();
         });
 
@@ -54,7 +54,7 @@ describe('flp/init', () => {
                     }
                 })
             });
-            await registerComponentDependencyPaths(['/']);
+            await registerComponentDependencyPaths(['/'], new URLSearchParams());
             expect(loaderMock).toBeCalledWith({ paths: { 'test/lib/component': '~url' } });
         });
 
@@ -68,7 +68,7 @@ describe('flp/init', () => {
                 }
             });
             try {
-                await registerComponentDependencyPaths(['/']);
+                await registerComponentDependencyPaths(['/'], new URLSearchParams());
             } catch (error) {
                 expect(error).toEqual('Error');
             }

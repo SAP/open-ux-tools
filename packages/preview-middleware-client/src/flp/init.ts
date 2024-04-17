@@ -4,8 +4,6 @@ import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/s
 import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
-import type Core from 'sap/ui/core/Core';
-import UriParameters from 'sap/base/util/UriParameters';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -122,58 +120,45 @@ function registerModules(
 }
 
 /**
- *
- *
+ * Reset the app state.
+ * 
+ * @param container the UShell container
  */
-function resetAppState() {
-    sap.ui.require(['sap/ui/core/Core'], async function (core: Core) {
-        await core.ready();
-        const Container = sap.ui.require('sap/ushell/Container');
-        if (!Container) {
-            return;
-        }
+async function resetAppState(container: typeof sap.ushell.Container): Promise<void> {
+    const [oURLParser, oAppState] = await Promise.all([
+        container.getServiceAsync<any>('URLParsing'),
+        container.getServiceAsync<any>('AppState')
+    ]);
+    
+    const aURLParameters = window.location.hash.split('/');
+    const sAppState = 'sap-iapp-state';
 
-        const [oURLParser, oAppState] = await Promise.all([
-            Container.getServiceAsync('URLParsing'),
-            Container.getServiceAsync('AppState')
-        ]);
-        const oURLParams = oURLParser.parseParameters(window.location.search);
-        const sFioriToolsAppState = 'fiori-tools-iapp-state';
-        const sFioriToolsAppStateValue = oURLParams[sFioriToolsAppState]?.[0].toLowerCase();
-
-        if (sFioriToolsAppStateValue === 'true') {
-            return;
-        }
-
-        const aURLParameters = window.location.hash.split('/');
-        const sAppState = 'sap-iapp-state';
-
-        for (const sURLParameter of aURLParameters) {
-            const oShellParams = oURLParser.parseParameters(sURLParameter);
-            for (const parameter in oShellParams) {
-                if (parameter.indexOf(sAppState) === -1) {
-                    continue;
-                }
-                const sAppStateValue = oShellParams[parameter]?.[0];
-                if (sAppStateValue) {
-                    oAppState.deleteAppState(sAppStateValue);
-                }
+    for (const sURLParameter of aURLParameters) {
+        const oShellParams = oURLParser.parseParameters(sURLParameter);
+        for (const parameter in oShellParams) {
+            if (parameter.indexOf(sAppState) === -1) {
+                continue;
+            }
+            const sAppStateValue = oShellParams[parameter]?.[0];
+            if (sAppStateValue) {
+                oAppState.deleteAppState(sAppStateValue);
             }
         }
-    });
+    }
 }
 
 /**
  * Fetch the manifest from the given application urls, then parse them for custom libs, and finally request their urls.
  *
  * @param appUrls application urls
+ * @param urlParams URLSearchParams object
  * @returns returns a promise when the registration is completed.
  */
-export async function registerComponentDependencyPaths(appUrls: string[]): Promise<void> {
+export async function registerComponentDependencyPaths(appUrls: string[], urlParams: URLSearchParams): Promise<void> {
     const libs = await getManifestLibs(appUrls);
     if (libs && libs.length > 0) {
         let url = '/sap/bc/ui2/app_index/ui5_app_info?id=' + libs;
-        const sapClient = UriParameters.fromQuery(window.location.search).get('sap-client');
+        const sapClient = urlParams.get('sap-client');
         if (sapClient && sapClient.length === 3) {
             url = url + '&sap-client=' + sapClient;
         }
@@ -240,10 +225,12 @@ export async function init({
     flex?: string | null;
     customInit?: string | null;
 }): Promise<void> {
+    const urlParams = new URLSearchParams(window.location.search);
+    const container = sap?.ushell?.Container ?? sap.ui.require('sap/ushell/Container') as typeof sap.ushell.Container;
     // Register RTA if configured
-    sap.ushell.Container.attachRendererCreatedEvent(async function () {
-        if (flex) {
-            const lifecycleService = await sap.ushell.Container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
+    if (flex) {
+        container.attachRendererCreatedEvent(async function () {
+            const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
                 const version = sap.ui.version;
                 const minor = parseInt(version.split('.')[1], 10);
@@ -276,13 +263,17 @@ export async function init({
                     }
                 );
             });
-        }
-        resetAppState();
-    });
+        });   
+    }
 
+    // reset app state if requested
+    if (urlParams.get('fiori-tools-iapp-state')?.toLocaleLowerCase() === 'true') {
+        await resetAppState(container);
+    }
+    
     // Load custom library paths if configured
     if (appUrls) {
-        await registerComponentDependencyPaths(JSON.parse(appUrls));
+        await registerComponentDependencyPaths(JSON.parse(appUrls), urlParams);
     }
 
     // Load custom initialization module
@@ -293,7 +284,7 @@ export async function init({
     // init
     setI18nTitle();
     registerSAPFonts();
-    const renderer = await sap.ushell.Container.createRenderer(undefined, true);
+    const renderer = await container.createRenderer(undefined, true);
     renderer.placeAt('content');
 }
 
