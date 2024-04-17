@@ -1,5 +1,5 @@
 export { FileName, DirName } from './constants';
-export { getFilePaths } from './file';
+export { getFilePaths, readJSON } from './file';
 export {
     createApplicationAccess,
     createProjectAccess,
