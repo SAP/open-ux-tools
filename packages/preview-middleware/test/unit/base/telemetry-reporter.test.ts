@@ -51,4 +51,12 @@ describe('TelemetryReporter', () => {
         };
         expect(getTelemetryClientMock.reportEvent).toBeCalledWith(eventName, 2, { appPath: process.cwd() });
     });
+
+    test('Telemetry not initialized', () => {
+        const data = { changeType: 'addXML' };
+        telemetry.initialized = false;
+        expect(() => {
+            telemetry.reportTelemetry(data);
+        }).toThrow('Telemetry not initialized');
+    });
 });
