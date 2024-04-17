@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<library xmlns="http://www.sap.com/sap.ui.library.xsd" >
+    <title>{{title}}</title>
+    <documentation>{{description}}</documentation>
+	<name>sap.reuse.ex.test.lib.attachmentservice</name>
+	<vendor>SAP SE</vendor>
+	<version>${version}</version>
+	<copyright>${copyright}</copyright>
+	<appData>
+	  <manifest xmlns="http://www.sap.com/ui5/buildext/manifest" >
+	     <i18n>attachment/i18n/i18n.properties</i18n>
+         <offline>false</offline>
+         <deviceTypes desktop="true" phone="true" tablet="true" />
+         <supportedTheme>sap_hcb</supportedTheme>
+         <supportedTheme>sap_bluecrystal</supportedTheme>
+         <contentDensities cozy="false" compact="false" />
+         <sap.fiori>
+            <registrationId>F1243</registrationId>
+            <archeType>reusecomponent</archeType>
+         </sap.fiori>
+         <sap.platform.abap>
+            <uri>/sap/reuse/ex/sap/test/</uri>
+         </sap.platform.abap>
+         <sap.platform.hcp>
+            <uri></uri>
+         </sap.platform.hcp>
+	  </manifest>     
+	  <ownership xmlns="http://www.sap.com/ui5/buildext/ownership">
+          <component>TEST-COMP</component>
+	  </ownership> 
+	</appData>
+	<dependencies>
+		<dependency>
+			<libraryName>sap.ui.core</libraryName>
+		</dependency>
+		<dependency>
+			 <libraryName>sap.test.feature</libraryName>
+		</dependency>		
+	    <dependency>
+	        <libraryName>sap.m</libraryName>
+	        </dependency>
+	</dependencies>
+</library>
