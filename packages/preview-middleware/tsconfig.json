@@ -17,6 +17,9 @@
       "path": "../axios-extension"
     },
     {
+      "path": "../feature-toggle"
+    },
+    {
       "path": "../i18n"
     },
     {

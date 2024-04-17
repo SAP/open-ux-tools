@@ -45,7 +45,8 @@
         "@sap-ux/control-property-editor-sources": "workspace:@sap-ux/control-property-editor@*",
         "ejs": "3.1.9",
         "@sap-ux/project-access": "workspace:*",
-        "@sap-ux/telemetry": "workspace:*"
+        "@sap-ux/telemetry": "workspace:*",
+        "@sap-ux/feature-toggle": "workspace:*"
     },
     "devDependencies": {
         "@private/preview-middleware-client": "workspace:@sap-ux-private/preview-middleware-client@*",

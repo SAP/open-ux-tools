@@ -1,6 +1,7 @@
 import { ClientFactory, SampleRate, initTelemetrySettings } from '@sap-ux/telemetry';
 import modulePackageJson from '../../package.json';
 import { Logger } from '@sap-ux/logger';
+import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 
 const key = 'ApplicationInsightsInstrumentationKeyPLACEH0LDER';
 
@@ -14,7 +15,7 @@ export class TelemetryReporter {
         try {
             await initTelemetrySettings({
                 consumerModule: modulePackageJson,
-                internalFeature: false,
+                internalFeature: isInternalFeaturesSettingEnabled(),
                 watchTelemetrySettingStore: true,
                 resourceId: key
             });
