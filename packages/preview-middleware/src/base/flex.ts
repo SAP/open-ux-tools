@@ -77,7 +77,14 @@ export async function readChanges(project: ReaderCollection, logger: Logger): Pr
  * @returns object with success flag and optional message
  */
 export function writeChange(
-    data: object & { fileName?: string; fileType?: string; changeType?: string; layer?: string },
+    data: object & {
+        fileName: string;
+        fileType: string;
+        changeType: string;
+        support?: { sapui5Version: string };
+        content?: { property?: string };
+        selector?: { type?: string };
+    },
     webappPath: string,
     logger: Logger,
     reporter?: TelemetryReporter
@@ -92,7 +99,13 @@ export function writeChange(
         }
         const filePath = join(path, fileName + '.' + fileType);
         writeFileSync(filePath, JSON.stringify(data, null, 2));
-        const telemetryData = { category: 'Save', changeType: data.changeType, layer: data.layer };
+        const telemetryData = {
+            category: 'Save',
+            changeType: data.changeType,
+            controlType: data?.selector?.type || '',
+            propertyName: data?.content?.property || '',
+            sapui5Version: data?.support?.sapui5Version || ''
+        };
         if (reporter) {
             reporter.reportTelemetry(telemetryData);
         }

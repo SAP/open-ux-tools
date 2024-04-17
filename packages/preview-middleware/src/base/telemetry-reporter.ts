@@ -25,13 +25,19 @@ export class TelemetryReporter {
         }
     }
 
-    public reportTelemetry(data: any): void {
+    public reportTelemetry(data: {
+        category: string;
+        changeType: string;
+        controlType: string;
+        propertyName: string;
+        sapui5Version: string;
+    }): void {
         if (!this.initialized) {
             throw new Error('Telemetry not initialized');
         }
         const telemetryEvent = {
             eventName: this.eventName,
-            properties: { ...data, layer: this.layer },
+            properties: { ...data, layer: this.layer ? this.layer : 'NO_LAYER_FOUND' },
             measurements: {}
         };
         ClientFactory.getTelemetryClient().reportEvent(telemetryEvent, SampleRate.NoSampling, {
