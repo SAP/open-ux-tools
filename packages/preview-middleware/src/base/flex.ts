@@ -80,7 +80,7 @@ export function writeChange(
     data: object & {
         fileName: string;
         fileType: string;
-        changeType: string;
+        changeType?: string;
         support?: { sapui5Version: string };
         content?: { property?: string };
         selector?: { type?: string };
@@ -101,7 +101,7 @@ export function writeChange(
         writeFileSync(filePath, JSON.stringify(data, null, 2));
         const telemetryData = {
             category: 'Save',
-            changeType: data.changeType,
+            changeType: data.changeType ?? 'Unknown',
             controlType: data?.selector?.type ?? '',
             propertyName: data?.content?.property ?? '',
             sapui5Version: data?.support?.sapui5Version ?? ''

@@ -25,7 +25,7 @@ export class TelemetryReporter {
         }
     }
 
-    public reportTelemetry<T extends {}>(data: T): void {
+    public reportTelemetry(data: { [key: string]: string | boolean }): void {
         if (!this.initialized) {
             throw new Error('Telemetry not initialized');
         }
