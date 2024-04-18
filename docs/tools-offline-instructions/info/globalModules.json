@@ -1,0 +1,15 @@
+{
+    "@sap/abap-deploy": "latest",
+    "@sap/cds-compiler": "latest",
+    "@sap/eslint-plugin-ui5-jsdocs": "latest",
+    "@sap/generator-adaptation-project": "latest",
+    "@sap/generator-fiori": "latest",
+    "@sap/ux-cds-odata-language-server-extension": "latest",
+    "@sap-ux/create": "latest",
+    "@sap-ux/deploy-tooling": "latest",
+    "@sapui5/distribution-metadata": "latest",
+    "@ui5/builder": "latest",
+    "chokidar": "latest",
+    "mta": "latest",
+    "yo": "latest"
+}

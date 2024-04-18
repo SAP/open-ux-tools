@@ -4,6 +4,8 @@ import { getQuestions } from '../../../src/prompts/';
 import { promptNames } from '../../../src/types';
 import type { CheckBoxQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import { ReuseLibType } from '@sap-ux/project-access';
+import * as projectAccess from '@sap-ux/project-access';
+import { Severity } from '@sap-devx/yeoman-ui-types';
 
 describe('getQuestions', () => {
     beforeAll(async () => {
@@ -61,6 +63,13 @@ describe('getQuestions', () => {
         expect(((referenceLibrariesPrompt as CheckBoxQuestion)?.validate as Function)(reuseLibs)).toBe(true);
 
         expect(((referenceLibrariesPrompt as YUIQuestion)?.additionalMessages as Function)()).toBeUndefined();
+
+        jest.spyOn(projectAccess, 'checkDependencies').mockReturnValue('dep1');
+        expect(((referenceLibrariesPrompt as CheckBoxQuestion)?.validate as Function)(reuseLibs)).toBe(true);
+        expect(((referenceLibrariesPrompt as YUIQuestion)?.additionalMessages as Function)()).toStrictEqual({
+            message: t('addtionalMsgs.missingDeps', { dependencies: 'dep1' }),
+            severity: Severity.warning
+        });
     });
 
     test('getQuestions, with project & libs and hide options', () => {
