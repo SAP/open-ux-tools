@@ -522,4 +522,46 @@ describe('Tools Suite Telemetry Tests', () => {
             'cmn.applicationType': 'Fiori Adaptation'
         });
     });
+
+    it('common telemetry property: invalid adaptation project', async () => {
+        memfs.vol.fromNestedJSON(
+            {
+                ['/project1/ui5.yaml']: fs.readFileSync(
+                    join(__dirname, 'fixtures/invalid-adaptation/ui5.yaml'),
+                    'utf-8'
+                ),
+                ['/project1/webapp/manifest.appdescr_variant']: fs.readFileSync(
+                    join(__dirname, 'fixtures/invalid-adaptation/webapp/manifest.appdescr_variant'),
+                    'utf-8'
+                ),
+                ['/project1/package.json']: fs.readFileSync(
+                    join(__dirname, 'fixtures/invalid-adaptation/package.json'),
+                    'utf-8'
+                )
+            },
+            '/'
+        );
+
+        isAppStudioMock.mockReturnValue(false);
+        const commonProperties = await processToolsSuiteTelemetry({
+            appPath: '/project1'
+        });
+
+        expect(commonProperties).toEqual({
+            appstudio: false,
+            'cmn.appstudio': false,
+            'cmn.template': '',
+            'cmn.deployTarget': 'NO_DEPLOY_CONFIG',
+            'cmn.odataSource': 'ABAP', // New project-access implementation assume ABAP data source if its not CAP
+            'cmn.devspace': '',
+            'cmn.internalFeatures': 'external',
+            internalVsExternal: 'external',
+            'cmn.nodeVersion': expect.any(String),
+            'cmn.templateId': '',
+            'cmn.templateVersion': '',
+            'cmn.toolsId': 'NO_TOOLS_ID',
+            'cmn.appLanguage': '',
+            'cmn.applicationType': 'Fiori Adaptation'
+        });
+    });
 });
