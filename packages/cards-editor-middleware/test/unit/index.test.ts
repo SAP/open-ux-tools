@@ -8,6 +8,7 @@ import type { SuperTest, Test } from 'supertest';
 import * as sapCardsGenerator from '../../src';
 import * as utils from '../../src/utilities';
 import path from 'path';
+import os from 'os';
 
 jest.mock('fs', () => ({
     promises: {
@@ -154,12 +155,14 @@ describe('sap-cards-generator', () => {
             ]);
             const webappPath = await getWebappPath(path.resolve());
             const filePath = join(webappPath, 'i18n', 'i18n.properties');
+            const text1 = `appTitle=Sales Order${os.EOL}`;
+            const text2 = `CardGeneratorGroupPropertyLabel_Groups_0_Items_0=new Entry${os.EOL}`;
+            const lines = [text1, text2];
+
             expect(response.status).toBe(201);
             expect(mockFsPromisesWriteFile).toHaveBeenCalledTimes(1);
             expect(mockFsPromisesWriteFile.mock.calls[0][0]).toBe(filePath);
-            expect(mockFsPromisesWriteFile.mock.calls[0][1]).toBe(
-                'appTitle=Sales Order\n\nCardGeneratorGroupPropertyLabel_Groups_0_Items_0=new Entry\n'
-            );
+            expect(mockFsPromisesWriteFile.mock.calls[0][1]).toBe(lines.join(os.EOL));
         });
     });
 });
