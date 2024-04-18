@@ -49,6 +49,17 @@ export function setDefaultTemplateSettings<T extends {}>(template: Template<T>, 
             });
             return templateSettings;
         }
+    } else if (template.type === TemplateType.ListReportObjectPage || template.type === TemplateType.Worklist) {
+        const tableSettings: WorklistSettings | LROPSettings = template.settings as unknown as
+            | WorklistSettings
+            | LROPSettings;
+        Object.assign(templateSettings, {
+            tableType: tableSettings.tableType ?? TableType.RESPONSIVE // Overrides the UI5 default: ''
+        });
+
+        if (tableSettings.tableType !== TableType.TREE) {
+            delete tableSettings.hierarchyQualifier;
+        }
     }
     return templateSettings;
 }
@@ -88,27 +99,6 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
     // OVP must use a named default model
     if (feApp.template.type === TemplateType.OverviewPage) {
         (feApp.service as OdataService).model = defaultModelName;
-    }
-    // Set TableType settings
-    if (feApp.template.type === TemplateType.AnalyticalListPage) {
-        // ALP
-        (feApp.template.settings as ALPSettingsV2).tableType =
-            (feApp.template.settings as ALPSettingsV2).tableType ?? TableType.ANALYTICAL;
-        (feApp.template.settings as ALPSettingsV2).qualifier = (feApp.template.settings as ALPSettings).qualifier;
-    } else if (feApp.template.type === TemplateType.ListReportObjectPage) {
-        // LROP
-        (feApp.template.settings as LROPSettings).tableType =
-            (feApp.template.settings as LROPSettings).tableType ?? TableType.RESPONSIVE;
-        (feApp.template.settings as LROPSettings).hierarchyQualifier = (
-            feApp.template.settings as LROPSettings
-        ).hierarchyQualifier;
-    } else if (feApp.template.type === TemplateType.Worklist) {
-        // Worklist
-        (feApp.template.settings as WorklistSettings).tableType =
-            (feApp.template.settings as WorklistSettings).tableType ?? TableType.RESPONSIVE;
-        (feApp.template.settings as WorklistSettings).hierarchyQualifier = (
-            feApp.template.settings as WorklistSettings
-        ).hierarchyQualifier;
     }
 
     // minimum UI5 version depending on the template required
