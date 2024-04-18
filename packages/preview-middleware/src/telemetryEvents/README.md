@@ -1,0 +1,1 @@
+Type definition of telemetry event structure used for Control property editor and adaptation editor

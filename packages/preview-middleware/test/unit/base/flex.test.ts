@@ -93,7 +93,7 @@ describe('flex', () => {
         });
 
         test('invalid change', () => {
-            const result = writeChange({} as any, path, logger);
+            const result = writeChange({}, path, logger);
             expect(result.success).toBe(false);
         });
     });
