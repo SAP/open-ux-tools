@@ -244,7 +244,7 @@ export class ErrorHandler {
      * @param error If the error is a string this will be logged as is. Otherwise it will be mapped to a general error internally, possibly retained and logged.
      * @param userMsg If provided this will be set as the userErrorMsg instead of an error to msg map
      *  this allows a message more relevant to the context of where the error was generated to be used.
-     * @param retainError Defaults to true to retain the error state.git status
+     * @param retainError Defaults to true to retain the error state.
      * @returns A user-friendly message for display in-line
      */
     public logErrorMsgs(error: any | ERROR_TYPE, userMsg?: string, retainError = true): string {

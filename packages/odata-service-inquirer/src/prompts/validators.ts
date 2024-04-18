@@ -7,9 +7,8 @@ import LoggerHelper from './logger-helper';
 /**
  * Validator function to verify if the specified metadata edmx version matches the specified required odata version.
  *
- * @param edmx
- * @param requiredVersion
- * @throws Parse error, if the edmx is unparseable
+ * @param edmx the edmx to validate
+ * @param requiredVersion the required odata version to validate against
  * @returns version and/or validation error message
  */
 export function validateODataVersion(

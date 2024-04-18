@@ -20,8 +20,7 @@ describe('getQuestions', () => {
     });
 
     afterEach(() => {
-        // Reset all spys (not mocks)
-        // jest.restoreAllMocks() only works when the mock was created with jest.spyOn().
+        // Ensure test isolation
         jest.restoreAllMocks();
     });
     test('getQuestions, no options', async () => {
@@ -113,7 +112,7 @@ describe('getQuestions', () => {
                 "when": [Function],
               },
               {
-                "name": "capCliMetadata",
+                "name": "capCliStateSetter",
                 "when": [Function],
               },
             ]

@@ -70,21 +70,19 @@ export enum promptNames {
  * Enumeration of internal prompt names used internally and not supported for modification using OdataServiceInquirerPromptOptions
  *
  */
-enum internalPromptNames {
+export enum internalPromptNames {
     capProjectPath = 'capProjectPath',
-    capCliMetdata = 'capCliMetadata'
+    capCliStateSetter = 'capCliStateSetter'
 }
-
-export const servicePromptNames = { ...promptNames, ...internalPromptNames };
 
 /**
  * Answers to CAP service prompts
  *
  */
 export interface CapServiceAnswers extends CapService {
-    [servicePromptNames.capProject]: CapProjectChoice['value'];
-    [servicePromptNames.capProjectPath]: string;
-    [servicePromptNames.capService]: CapServiceChoice['value'];
+    [promptNames.capProject]: CapProjectChoice['value'];
+    [internalPromptNames.capProjectPath]: string;
+    [promptNames.capService]: CapServiceChoice['value'];
 }
 
 export interface OdataServicePromptAnswers extends CapServiceAnswers {
@@ -174,6 +172,7 @@ export interface CapProjectChoice extends ListChoiceOptions {
 }
 
 export type CapRuntime = 'Node.js' | 'Java';
+
 export interface CapService {
     projectPath: string; // The CAP Project Root
     serviceName: string;
@@ -200,9 +199,9 @@ export type CapProjectPromptOptions = {
 
 export type CapServicePromptOptions = {
     /**
-     * The default selected CAP service choice, this is used to pre-select a CAP service based on the specified CAP service.
+     * The default selected CAP service choice, this is used to pre-select a CAP service based on the specified CAP service name.
      */
-    defaultChoice?: CapService;
+    defaultChoice?: Pick<CapService, 'serviceName' | 'projectPath'>;
 };
 /**
  * These are boolean value prompt option keys

@@ -23,7 +23,7 @@ export function getPlatform(): { name: string; technical: string } {
  * Send telemetry event.
  *
  * @param eventName the name of the telemetry event
- * @param telemetryData
+ * @param telemetryData the telemetry values to report
  */
 export function sendTelemetryEvent(eventName: string, telemetryData: TelemetryProperties): void {
     const telemetryEvent = createTelemetryEvent(eventName, telemetryData);
@@ -35,7 +35,7 @@ export function sendTelemetryEvent(eventName: string, telemetryData: TelemetryPr
  * Create telemetry event.
  *
  * @param eventName the name of the telemetry event
- * @param telemetryData
+ * @param telemetryData the telemetry values to add to he returned telemetry event
  * @returns the telemetry event
  */
 function createTelemetryEvent(eventName: string, telemetryData: TelemetryProperties): TelemetryEvent {

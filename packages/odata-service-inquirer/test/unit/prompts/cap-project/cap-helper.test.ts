@@ -1,7 +1,7 @@
 import * as sapuxProjectAccess from '@sap-ux/project-access';
 import { constants } from 'fs';
 import { initI18nOdataServiceInquirer } from '../../../../src/i18n';
-import { getCapWorkspaceChoices } from '../../../../src/prompts/datasources/cap-project/cap-helper';
+import { getCapProjectChoices } from '../../../../src/prompts/datasources/cap-project/cap-helpers';
 
 const accessFilePathsOK = ['/test/mock/bookshop/srv/', '/test/mock/bookshop/23/srv/', '/test/mock/flight/srv/'];
 
@@ -21,13 +21,13 @@ describe('cap-helper', () => {
         await initI18nOdataServiceInquirer();
     });
 
-    test('getCapWorkspaceChoices', async () => {
+    test('getCapProjectChoices', async () => {
         const findCapProjectsSpy = jest
             .spyOn(sapuxProjectAccess, 'findCapProjects')
             .mockResolvedValue(['/test/mock/1/bookshop', '/test/mock/2/bookshop', '/test/mock/flight']);
 
         //const detectedWorkspaceFolder = [bookshop, flights, bookshop2];
-        const choices = await getCapWorkspaceChoices(['/test/mock/']);
+        const choices = await getCapProjectChoices(['/test/mock/']);
         expect(choices).toMatchInlineSnapshot(`
             [
               {

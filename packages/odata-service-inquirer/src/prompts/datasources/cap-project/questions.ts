@@ -1,6 +1,7 @@
 import type { FileBrowserQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { getCapCustomPaths } from '@sap-ux/project-access';
+import type { Question } from 'inquirer';
 import { t } from '../../../i18n';
 import type {
     CapProjectChoice,
@@ -11,10 +12,10 @@ import type {
     OdataServicePromptAnswers,
     OdataServicePromptOptions
 } from '../../../types';
-import { PLATFORMS, promptNames, servicePromptNames } from '../../../types';
+import { PLATFORMS, internalPromptNames, promptNames } from '../../../types';
 import { getPlatform } from '../../../utils';
 import { PromptStateHelper, errorHandler } from '../../prompt-helpers';
-import { enterCapPathChoiceValue, getCapEdmx, getCapServiceChoices, getCapWorkspaceChoices } from './cap-helper';
+import { enterCapPathChoiceValue, getCapEdmx, getCapProjectChoices, getCapServiceChoices } from './cap-helpers';
 import { validateCapPath } from './validators';
 
 /**
@@ -50,24 +51,23 @@ function getDefaultCapChoice(
  */
 export function getLocalCapProjectPrompts(
     promptOptions?: OdataServicePromptOptions
-): YUIQuestion<OdataServicePromptAnswers>[] {
-    let capChoices: Awaited<CapProjectChoice[]>;
+): (YUIQuestion<OdataServicePromptAnswers> | Question)[] {
+    let capChoices: Awaited<CapProjectChoice[]> = [];
     const defaultCapPath = promptOptions?.[promptNames.capProject]?.defaultChoice;
     const defaultCapService = promptOptions?.[promptNames.capService]?.defaultChoice;
     let selectedCapProject: CapProjectPaths | undefined;
     let capServiceChoices: CapServiceChoice[];
     let defaultServiceIndex = 0;
+    PromptStateHelper.reset();
 
-    const prompts = [
+    const prompts: (ListQuestion<CapServiceAnswers> | FileBrowserQuestion<CapServiceAnswers> | Question)[] = [
         {
             when: async (): Promise<boolean> => {
-                capChoices = await getCapWorkspaceChoices(
-                    promptOptions?.[promptNames.capProject]?.capSearchPaths ?? []
-                );
+                capChoices = await getCapProjectChoices(promptOptions?.[promptNames.capProject]?.capSearchPaths ?? []);
                 return capChoices?.length > 1;
             },
             type: 'list',
-            name: servicePromptNames.capProject,
+            name: promptNames.capProject,
             message: t('prompts.capProject.message'),
             default: () => {
                 const defChoice = getDefaultCapChoice(capChoices, defaultCapPath);
@@ -81,10 +81,10 @@ export function getLocalCapProjectPrompts(
             }
         } as ListQuestion<CapServiceAnswers>,
         {
-            when: (answers): boolean => capChoices.length === 1 || answers.capProject === enterCapPathChoiceValue,
+            when: (answers): boolean => capChoices.length === 1 || answers?.capProject === enterCapPathChoiceValue,
             type: 'input',
             guiType: 'folder-browser',
-            name: servicePromptNames.capProjectPath,
+            name: internalPromptNames.capProjectPath,
             message: t('prompts.capProjectPath.message'),
             default: () => {
                 if (defaultCapPath) {
@@ -108,7 +108,7 @@ export function getLocalCapProjectPrompts(
         } as FileBrowserQuestion<CapServiceAnswers>,
         {
             when: async (answers) => {
-                if (answers.capProject && typeof answers.capProject === 'object') {
+                if (typeof answers?.capProject === 'object') {
                     selectedCapProject = answers.capProject;
                 }
 
@@ -119,12 +119,17 @@ export function getLocalCapProjectPrompts(
                 return false;
             },
             type: 'list',
-            name: servicePromptNames.capService,
+            name: promptNames.capService,
             message: t('prompts.capService.message'),
             choices: () => {
                 if (defaultCapService) {
+                    // Find the cap service, qualified by the provided project path
                     defaultServiceIndex = capServiceChoices?.findIndex(
-                        (choice) => choice.value?.serviceName === defaultCapService.serviceName
+                        (choice) =>
+                            // project path is an extra validation that the prompt options for each
+                            // of `defaultCapProject` and `defaultCapService` are compatible
+                            choice.value?.projectPath === defaultCapService?.projectPath &&
+                            choice.value?.serviceName === defaultCapService?.serviceName
                     );
                 }
                 return capServiceChoices;
@@ -158,13 +163,15 @@ export function getLocalCapProjectPrompts(
     if (getPlatform() === PLATFORMS.CLI) {
         prompts.push({
             when: async (answers: CapServiceAnswers): Promise<boolean> => {
-                PromptStateHelper.odataService.metadata = await getCapEdmx(answers.capService);
-                PromptStateHelper.odataService.servicePath = answers.capService.urlPath;
-                PromptStateHelper.odataService.odataVersion = OdataVersion.v4;
+                if (answers?.capService) {
+                    PromptStateHelper.odataService.metadata = await getCapEdmx(answers?.capService);
+                    PromptStateHelper.odataService.servicePath = answers?.capService.urlPath;
+                    PromptStateHelper.odataService.odataVersion = OdataVersion.v4;
+                }
                 return false;
             },
-            name: servicePromptNames.capCliMetdata
-        } as any);
+            name: internalPromptNames.capCliStateSetter
+        } as Question);
     }
 
     return prompts;

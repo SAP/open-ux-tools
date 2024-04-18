@@ -1,7 +1,7 @@
 import type { FileBrowserQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import { t } from '../../../i18n';
 import type { MetadataPromptOptions, OdataServiceAnswers } from '../../../types';
-import { servicePromptNames } from '../../../types';
+import { promptNames } from '../../../types';
 import { validateMetadataFile } from '../../validators';
 import { PromptStateHelper } from '../../prompt-helpers';
 
@@ -15,7 +15,7 @@ export function getMetadataFileQuestion(promptOptions?: MetadataPromptOptions): 
     const metadataFileQuestion = {
         type: 'input',
         guiType: 'file-browser',
-        name: servicePromptNames.metadataFilePath,
+        name: promptNames.metadataFilePath,
         guiOptions: { mandatory: true, breadcrumb: true },
         message: t('prompts.metadataFile.message'),
         validate: async (path: string) => {

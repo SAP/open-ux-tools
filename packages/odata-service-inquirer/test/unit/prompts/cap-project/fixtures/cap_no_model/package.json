@@ -1,0 +1,8 @@
+{
+  "name": "cap_no_model",
+  "version": "1.0.0",
+  "description": "A CAP project without a data model",
+  "dependencies": {
+    "@sap/cds": "6.0.0"
+  }
+}

@@ -1,15 +1,11 @@
-import type { CSN, CapCustomPaths, Package } from '@sap-ux/project-access';
+import type { CSN } from '@sap-ux/project-access';
 import {
     findCapProjects,
     getCapCustomPaths,
     getCapModelAndServices,
-    isCapJavaProject,
-    isCapNodeJsProject,
     readCapServiceMetadataEdmx
 } from '@sap-ux/project-access';
-import { readFile } from 'fs/promises';
-import { basename, isAbsolute, join, relative } from 'path';
-import { coerce, lt } from 'semver';
+import { basename, isAbsolute, relative } from 'path';
 import { t } from '../../../i18n';
 import type {
     CapProjectChoice,
@@ -24,33 +20,12 @@ import { errorHandler } from '../../prompt-helpers';
 export const enterCapPathChoiceValue = 'enterCapPath';
 
 /**
- * Temporary function to check the package.json for the cds version and determine if it is pre v7.
- * Should be removed when `getCapModelAndServices` returns the correct relative service path for the specific cds version in use by the project.
- *
- * @param projectRoot
- * @param capCustomPaths
- * @returns
- */
-async function _checkIfCDSPreV7(projectRoot: string, capCustomPaths: CapCustomPaths): Promise<boolean> {
-    try {
-        const packageJsonPath = join(projectRoot, 'package.json');
-        const packageJson: Package = JSON.parse(await readFile(packageJsonPath, 'utf-8')) ?? {};
-        const isCAPNodeJS =
-            (await isCapNodeJsProject(packageJson)) && !(await isCapJavaProject(projectRoot, capCustomPaths));
-        const cdsV7 = '7.0.0';
-        return lt(coerce(packageJson?.dependencies?.['@sap/cds']) ?? cdsV7, cdsV7) && isCAPNodeJS;
-    } catch {
-        return false;
-    }
-}
-
-/**
  * Search for CAP projects in the specified paths.
  *
  * @param paths - The paths used to search for CAP projects
  * @returns The CAP project paths and the number of folders with the same name
  */
-async function getCapWorkspaceFolders(
+async function getCapProjectPaths(
     paths: string[]
 ): Promise<{ capProjectPaths: CapProjectRootPath[]; folderCounts: Map<string, number> }> {
     const capProjectRoots = await findCapProjects({ wsFolders: paths });
@@ -61,7 +36,7 @@ async function getCapWorkspaceFolders(
     for (const root of capProjectRoots) {
         const folderName = basename(root);
         capRootPaths.push({ folderName, path: root });
-        folderNameCount.set(folderName, (folderNameCount.get(folderName) || 0) + 1);
+        folderNameCount.set(folderName, (folderNameCount.get(folderName) ?? 0) + 1);
     }
     return {
         capProjectPaths: capRootPaths.sort((a, b) => a.folderName.localeCompare(b.folderName)),
@@ -76,14 +51,14 @@ async function getCapWorkspaceFolders(
  * @param paths - The paths used to search for CAP projects
  * @returns The CAP project prompt choices
  */
-export async function getCapWorkspaceChoices(paths: string[]): Promise<CapProjectChoice[]> {
-    const { capProjectPaths, folderCounts } = await getCapWorkspaceFolders(paths);
+export async function getCapProjectChoices(paths: string[]): Promise<CapProjectChoice[]> {
+    const { capProjectPaths, folderCounts } = await getCapProjectPaths(paths);
 
     const capChoices: CapProjectChoice[] = [];
 
     for await (const capProjectPath of capProjectPaths) {
         const customCapPaths = await getCapCustomPaths(capProjectPath.path);
-        const folderCount = folderCounts.get(capProjectPath.folderName) || 1;
+        const folderCount = folderCounts.get(capProjectPath.folderName) ?? 1;
 
         capChoices.push({
             name: `${capProjectPath.folderName}${folderCount > 1 ? ' (' + capProjectPath.path + ')' : ''}`,
@@ -139,20 +114,13 @@ export async function getCapServiceChoices(capProjectPaths: CapProjectPaths): Pr
             capServices = services;
             capModel = model;
         } catch (error) {
-            if (error.code === 'MODEL_NOT_FOUND') {
-                errorHandler.logErrorMsgs(t('ERROR_USER_CDS_MODEL_NOT_FOUND'));
-            } else {
-                errorHandler.logErrorMsgs(t('ERROR_CDS_COMPILE', { error: error?.message }));
-            }
-            LoggerHelper.logger.error(t('ERROR_CDS_COMPILE', { error: error?.message }));
+            errorHandler.logErrorMsgs(error);
             return [];
         }
-        // TODO: request cds to add relative service file location to the serviceinfo, this would avoid this effort
         // We need the relative service definitions file paths (.cds) for the generated annotation file
         const projectPath = capProjectPaths.path;
         const appPath = capProjectPaths.app;
-        // todo: remove as `getCapModelAndServices` should return the correct relative path for the specific cds version in use by the project
-        // const preCdsV7 = await checkIfCDSPreV7(capProjectPaths.path, capProjectPaths);
+
         LoggerHelper.logger.debug(`CDS model source paths: ${JSON.stringify(capModel.$sources)}`);
         const serviceChoices = capServices
             .map((service) => {
