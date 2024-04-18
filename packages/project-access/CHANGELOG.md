@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.19.10
+
+### Patch Changes
+
+-   f8e16120: Add missing fiori tools settings enum
+
 ## 1.19.9
 
 ### Patch Changes
