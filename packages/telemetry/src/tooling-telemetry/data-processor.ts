@@ -1,4 +1,5 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
+import { UI5Config } from '@sap-ux/ui5-config';
 import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
@@ -108,7 +109,7 @@ async function getAppProperties(appPath: string): Promise<Record<string, string>
     if (applicationType === 'Fiori Reuse') {
         odataSource = ODataSource.UNKNOWN;
     }
-    const sourceTemplate = await getManifestSourceTemplate(appPath);
+    const sourceTemplate = await getSourceTemplate(appPath);
     const appProgrammingLanguage = await getAppProgrammingLanguage(appPath);
     const output: Record<string, string> = {};
     output[CommonProperties.TemplateType] = templateType;
@@ -262,29 +263,51 @@ function getInternalVsExternal(): InternalFeature {
 }
 
 /**
- * Read the manifest.json for the app and locate the tools id.
+ * Retrieves the source template configuration from either the standard manifest.json or
+ * the ui5.yaml based on the project type.
  *
- * @param appPath appPath Root folder path of Fiori app
- * @returns sourceTemplate section of data from manifest.json
+ * @param {string} appPath - The file system path to the application directory.
+ * @returns {Promise<SourceTemplate>} A promise that resolves to the source template configuration object.
  */
-async function getManifestSourceTemplate(appPath: string): Promise<SourceTemplate> {
-    let sourceTemplate: SourceTemplate = {};
+async function getSourceTemplate(appPath: string): Promise<SourceTemplate> {
+    const paths = {
+        manifest: path.join(appPath, 'webapp', 'manifest.json'),
+        appdescr: path.join(appPath, 'webapp', 'manifest.appdescr_variant'),
+        ui5Yaml: path.join(appPath, 'ui5.yaml')
+    };
+
     try {
-        const manifestPath = path.join(appPath, 'webapp', 'manifest.json');
-        if (fs.existsSync(manifestPath)) {
-            const manifestStr = await fs.promises.readFile(manifestPath, 'utf-8');
+        if (fs.existsSync(paths.manifest)) {
+            const manifestStr = await fs.promises.readFile(paths.manifest, 'utf-8');
             const manifest = JSON.parse(manifestStr);
-            sourceTemplate = manifest['sap.app']?.sourceTemplate;
+            return populateSourceTemplate(manifest['sap.app']?.sourceTemplate);
+        }
+
+        if (fs.existsSync(paths.appdescr)) {
+            const baseUi5ConfigContent = await fs.promises.readFile(paths.ui5Yaml, 'utf-8');
+            const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
+            const adp = ui5Config.getCustomConfiguration('adp') as { support: SourceTemplate };
+            return populateSourceTemplate(adp?.support);
         }
     } catch {
-        // Failed to read manifest.json
+        // Failed to read manifest.json or manifest.appdescr_variant
     }
-    sourceTemplate = sourceTemplate ?? {};
-    sourceTemplate.id = sourceTemplate.id ?? '';
-    sourceTemplate.version = sourceTemplate.version ?? '';
-    sourceTemplate.toolsId = sourceTemplate.toolsId ?? ToolsId.NO_TOOLS_ID;
 
-    return sourceTemplate;
+    return populateSourceTemplate({});
+}
+
+/**
+ * Populates default values for the source template if not specified.
+ *
+ * @param {SourceTemplate} sourceTemplate - Source template object potentially lacking defaults.
+ * @returns {SourceTemplate} Source template with defaults populated.
+ */
+function populateSourceTemplate(sourceTemplate: SourceTemplate): SourceTemplate {
+    return {
+        id: sourceTemplate.id ?? '',
+        version: sourceTemplate.version ?? '',
+        toolsId: sourceTemplate.toolsId ?? ToolsId.NO_TOOLS_ID
+    };
 }
 
 /**
