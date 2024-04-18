@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.11.6
+
+### Patch Changes
+
+-   080e7b06: enhance lrep log messages
+
 ## 1.11.5
 
 ### Patch Changes

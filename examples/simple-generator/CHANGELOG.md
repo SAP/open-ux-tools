@@ -1,5 +1,34 @@
 # @sap-ux/generator-simple-fe
 
+## 0.3.39
+
+### Patch Changes
+
+-   Updated dependencies [4599ee7f]
+    -   @sap-ux/fiori-elements-writer@0.18.14
+
+## 0.3.38
+
+### Patch Changes
+
+-   6291bc37: chore - update dependencies to fix audit warnings
+
+## 0.3.37
+
+### Patch Changes
+
+-   Updated dependencies [080e7b06]
+    -   @sap-ux/axios-extension@1.11.6
+    -   @sap-ux/system-access@0.3.20
+
+## 0.3.36
+
+### Patch Changes
+
+-   Updated dependencies [da0ecd9a]
+    -   @sap-ux/fiori-freestyle-writer@0.21.9
+    -   @sap-ux/fiori-elements-writer@0.18.13
+
 ## 0.3.35
 
 ### Patch Changes

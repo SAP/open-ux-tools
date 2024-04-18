@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/generator-simple-fe",
-    "version": "0.3.35",
+    "version": "0.3.39",
     "description": "Simple example of a yeoman generator for Fiori elements.",
     "license": "Apache-2.0",
     "private": true,
@@ -22,7 +22,7 @@
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
-        "yeoman-generator": "5.9.0"
+        "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
         "@types/yeoman-environment": "2.10.8",

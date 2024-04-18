@@ -1,5 +1,11 @@
 # @sap-ux/i18n
 
+## 0.0.6
+
+### Patch Changes
+
+-   03167a06: add utility method to extract mustache key
+
 ## 0.0.5
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.18.14
+
+### Patch Changes
+
+-   4599ee7f: Add more support for setting the table type in the writer. Add TreeTable.
+
+## 0.18.13
+
+### Patch Changes
+
+-   da0ecd9a: Enable Typscript type checking in eslint module @sap-ux/eslint-plugin-fiori-tools
+-   Updated dependencies [da0ecd9a]
+    -   @sap-ux/ui5-application-writer@0.26.7
+
 ## 0.18.12
 
 ### Patch Changes
