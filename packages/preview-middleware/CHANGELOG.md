@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.13.16
+
+### Patch Changes
+
+-   fc55fd6b: Component Usages writer produces incorrect content of a change
+-   Updated dependencies [fc55fd6b]
+    -   @sap-ux/adp-tooling@0.9.17
+
 ## 0.13.15
 
 ### Patch Changes

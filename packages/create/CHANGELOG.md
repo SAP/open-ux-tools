@@ -1,5 +1,13 @@
 # @sap-ux/create
 
+## 0.5.63
+
+### Patch Changes
+
+-   fc55fd6b: Component Usages writer produces incorrect content of a change
+-   Updated dependencies [fc55fd6b]
+    -   @sap-ux/adp-tooling@0.9.17
+
 ## 0.5.62
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.9.17
+
+### Patch Changes
+
+-   fc55fd6b: Component Usages writer produces incorrect content of a change
+
 ## 0.9.16
 
 ### Patch Changes
