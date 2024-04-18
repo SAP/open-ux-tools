@@ -280,14 +280,14 @@ async function getSourceTemplate(appPath: string): Promise<SourceTemplate> {
         if (fs.existsSync(paths.manifest)) {
             const manifestStr = await fs.promises.readFile(paths.manifest, 'utf-8');
             const manifest = JSON.parse(manifestStr);
-            return populateSourceTemplate(manifest['sap.app']?.sourceTemplate);
+            return populateSourceTemplate(manifest['sap.app']?.sourceTemplate ?? {});
         }
 
         if (fs.existsSync(paths.appdescr)) {
             const baseUi5ConfigContent = await fs.promises.readFile(paths.ui5Yaml, 'utf-8');
             const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
             const adp = ui5Config.getCustomConfiguration('adp') as { support: SourceTemplate };
-            return populateSourceTemplate(adp?.support);
+            return populateSourceTemplate(adp?.support ?? {});
         }
     } catch {
         // Failed to read manifest.json or manifest.appdescr_variant
