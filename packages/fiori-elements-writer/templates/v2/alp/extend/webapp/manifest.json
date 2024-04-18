@@ -16,16 +16,16 @@
                     "settings": {
                         "condensedTableLayout": true,
                         "showGoButtonOnFilterBar": true,
-                        <% if (tableType) { %>
-                        "tableType": "<%- tableType %>",<% } %>
+                        <% if (locals.tableType) { %>
+                        "tableType": "<%- locals.tableType %>",<% } %>
                         <% if (locals.qualifier) { %>
-                        "qualifier": "<%- qualifier %>",<% } %>
+                        "qualifier": "<%- locals.qualifier %>",<% } %>
                         <% if (locals.autoHide !== undefined) { %>
-                        "autoHide": <%- autoHide %>,<% } %>
+                        "autoHide": <%- locals.autoHide %>,<% } %>
                         <% if (locals.smartVariantManagement !== undefined) { %>
-                        "smartVariantManagement": <%- smartVariantManagement %>,<% } %>
+                        "smartVariantManagement": <%- locals.smartVariantManagement %>,<% } %>
                         "tableSettings": {<% if (locals.multiSelect !== undefined) { %>
-                            "multiSelect": <%- multiSelect %><% } %>
+                            "multiSelect": <%- locals.multiSelect %><% } %>
                         },
                         "keyPerformanceIndicators": {}
                     }
