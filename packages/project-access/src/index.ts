@@ -1,5 +1,5 @@
-export { FileName, DirName } from './constants';
-export * from './file';
+export { FileName, DirName, FioriToolsSettings } from './constants';
+export { getFilePaths } from './file';
 export {
     createApplicationAccess,
     createProjectAccess,
