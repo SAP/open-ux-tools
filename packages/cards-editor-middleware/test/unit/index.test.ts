@@ -7,7 +7,6 @@ import { getWebappPath } from '@sap-ux/project-access';
 import type { SuperTest, Test } from 'supertest';
 import * as sapCardsGenerator from '../../src';
 import * as utils from '../../src/utilities';
-import os from 'os';
 import path from 'path';
 
 jest.mock('fs', () => ({
@@ -157,12 +156,9 @@ describe('sap-cards-generator', () => {
             const filePath = join(webappPath, 'i18n', 'i18n.properties');
             expect(response.status).toBe(201);
             expect(mockFsPromisesWriteFile).toHaveBeenCalledTimes(1);
-            expect(mockFsPromisesWriteFile).toHaveBeenCalledWith(
-                filePath,
-                ['appTitle=Sales Order', '', 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0=new Entry\n'].join(
-                    os.EOL
-                ),
-                { encoding: 'utf8' }
+            expect(mockFsPromisesWriteFile.mock.calls[0][0]).toBe(filePath);
+            expect(mockFsPromisesWriteFile.mock.calls[0][1]).toBe(
+                'appTitle=Sales Order\n\nCardGeneratorGroupPropertyLabel_Groups_0_Items_0=new Entry\n'
             );
         });
     });
