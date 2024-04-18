@@ -38,3 +38,8 @@ export const DirName = {
     Manifest: 'manifest',
     Annotations: 'annotations'
 } as const;
+
+export enum FioriToolsSettings {
+    dir = '.fioritools',
+    migrationSettingsFile = 'migrationSettings.json'
+}

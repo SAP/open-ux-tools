@@ -11,6 +11,7 @@ import {
 } from '../types';
 import { extendWithOptions, hidePrompts } from './helpers';
 import { SourceType } from './constants';
+import { Severity, type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 
 /**
  * Get the prompts for the UI5 library reference writing.
@@ -56,7 +57,7 @@ function getTargetProjectFolderPrompt(projectChoices?: ListChoiceOptions[]): UI5
         },
         name: promptNames.targetProjectFolder,
         message: t('prompts.targetProjectFolderLabel'),
-        choices: () => projectChoices,
+        choices: projectChoices,
         default: () => {
             return projectChoices?.length ? 0 : undefined;
         },
@@ -79,7 +80,7 @@ function getSourcePrompt(): UI5LibraryReferenceQuestion {
         },
         name: promptNames.source,
         message: t('prompts.sourceLabel'),
-        choices: [{ name: t('LABEL_WORKSPACE'), value: SourceType.Workspace }],
+        choices: [{ name: t('choices.workspace'), value: SourceType.Workspace }],
         default: 0
     } as ListQuestion<UI5LibraryReferenceAnswers>;
 }
@@ -99,15 +100,19 @@ function getReferenceLibrariesPrompt(reuseLibs?: ReuseLibChoice[]): UI5LibraryRe
         guiOptions: {
             breadcrumb: true
         },
-        choices: () => reuseLibs,
-        additionalMessages: (): string | undefined => {
-            return missingDeps ? t('STATUS_MISSING_DEPS', { dependencies: missingDeps }) : undefined;
+        choices: reuseLibs,
+        additionalMessages: (): IMessageSeverity | undefined => {
+            const msg = {
+                message: t('addtionalMsgs.missingDeps', { dependencies: missingDeps }),
+                severity: Severity.warning
+            };
+            return missingDeps ? msg : undefined;
         },
         validate: (answer) => {
             if (!reuseLibs?.length) {
-                return t('ERROR_NO_LIBS_FOUND');
+                return t('error.noLibsFound');
             } else if (answer?.length < 1) {
-                return t('ERROR_NO_LIB_SELECTED');
+                return t('error.noLibSelected');
             } else if (answer?.length) {
                 missingDeps = checkDependencies(
                     answer,
