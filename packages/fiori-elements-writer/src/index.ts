@@ -60,7 +60,7 @@ function getTypeScriptIgnoreGlob<T extends {}>(feApp: FioriElementsApp<T>, coerc
 async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T>, fs?: Editor): Promise<Editor> {
     // Clone rather than modifying callers refs
     const feApp: FioriElementsApp<T> = cloneDeep(data);
-    // Ensure input data contains at least the manadatory properties required for app genertation
+    // Ensure input data contains at least the mandatory properties required for app generation
     validateRequiredProperties(feApp);
 
     setAppDefaults(feApp);
