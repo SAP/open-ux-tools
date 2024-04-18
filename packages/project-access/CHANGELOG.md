@@ -1,5 +1,31 @@
 # @sap-ux/project-access
 
+## 1.19.10
+
+### Patch Changes
+
+-   f8e16120: Add missing fiori tools settings enum
+
+## 1.19.9
+
+### Patch Changes
+
+-   ee76e47f: fix: get i18n bundles for CAPJava
+
+## 1.19.8
+
+### Patch Changes
+
+-   Updated dependencies [03167a06]
+    -   @sap-ux/i18n@0.0.6
+
+## 1.19.7
+
+### Patch Changes
+
+-   98496d57: adds new module @sap-ux/ui5-library-reference-inquirer
+-   e3d2e003: Detect mismatching global and project installations of @sap/cds
+
 ## 1.19.6
 
 ### Patch Changes

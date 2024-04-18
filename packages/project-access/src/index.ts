@@ -1,4 +1,4 @@
-export { FileName, DirName } from './constants';
+export { FileName, DirName, FioriToolsSettings } from './constants';
 export { getFilePaths } from './file';
 export {
     createApplicationAccess,
@@ -33,3 +33,4 @@ export {
     toReferenceUri
 } from './project';
 export * from './types';
+export * from './library';
