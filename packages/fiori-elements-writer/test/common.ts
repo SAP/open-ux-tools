@@ -5,7 +5,13 @@ import { create as createStore } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join, dirname } from 'path';
-import type { FEOPSettings, FioriElementsApp, LROPSettings, WorklistSettings } from '../src/types';
+import {
+    TableType,
+    type FEOPSettings,
+    type FioriElementsApp,
+    type LROPSettings,
+    type WorklistSettings
+} from '../src/types';
 import { promisify } from 'util';
 import { exec as execCP } from 'child_process';
 const exec = promisify(execCP);
@@ -120,6 +126,17 @@ export const v4TemplateSettings: LROPSettings | FEOPSettings | WorklistSettings 
     }
 };
 
+export const v4TemplateSettingsTreeTable: LROPSettings | FEOPSettings | WorklistSettings = {
+    entityConfig: {
+        mainEntityName: 'Travel',
+        navigationEntity: {
+            EntitySet: 'Booking',
+            Name: '_Booking'
+        }
+    },
+    tableType: TableType.TREE,
+    hierarchyQualifier: 'HierarchyNode'
+};
 export const v2TemplateSettings: LROPSettings | WorklistSettings = {
     entityConfig: {
         mainEntityName: 'SEPMRA_C_PD_Product',
