@@ -5,7 +5,7 @@ import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import AppState from 'sap/ushell/services/AppState';
-
+import Localization from 'sap/base/i18n/Localization';
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
  */
@@ -121,17 +121,15 @@ function registerModules(
 }
 
 /**
- * Reset the app state.
+ * Fetch the app state from the given application urls, then reset the app state.
  *
  * @param container the UShell container
+ * @returns returns a promise when the app state is resetted.
  */
 async function resetAppState(container: typeof sap.ushell.Container): Promise<void> {
     const appStateService = await container.getServiceAsync<AppState>('AppState');
     const urlParams = new URLSearchParams(window.location.hash);
-
-    const appState = 'sap-iapp-state';
-
-    const appStateValue = urlParams.get(appState);
+    const appStateValue = urlParams.get('sap-iapp-state') ?? urlParams.get('/?sap-iapp-state');
     if (appStateValue) {
         appStateService.deleteAppState(appStateValue);
     }
@@ -187,7 +185,7 @@ export function registerSAPFonts() {
  * @param i18nKey optional parameter to define the i18n key to be used for the title.
  */
 export function setI18nTitle(i18nKey = 'appTitle') {
-    const locale = sap.ui.getCore().getConfiguration().getLanguage();
+    const locale = Localization.getLanguage();
     const resourceBundle = ResourceBundle.create({
         url: 'i18n/i18n.properties',
         locale
@@ -257,7 +255,7 @@ export async function init({
     }
 
     // reset app state if requested
-    if (urlParams.get('fiori-tools-iapp-state')?.toLocaleLowerCase() === 'true') {
+    if (urlParams.get('fiori-tools-iapp-state')?.toLocaleLowerCase() !== 'true') {
         await resetAppState(container);
     }
 
