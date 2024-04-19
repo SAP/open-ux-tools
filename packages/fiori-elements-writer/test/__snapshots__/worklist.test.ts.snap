@@ -6879,6 +6879,13 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                     \\"route\\": \\"TravelObjectPage\\"
                   }
                 }
+              },
+              \\"controlConfiguration\\": {
+                \\"@com.sap.vocabularies.UI.v1.LineItem\\": {
+                  \\"tableSettings\\": {
+                    \\"type\\": \\"ResponsiveTable\\"
+                  }
+                }
               }
             }
           }
@@ -10517,6 +10524,13 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                 \\"Travel\\": {
                   \\"detail\\": {
                     \\"route\\": \\"TravelObjectPage\\"
+                  }
+                }
+              },
+              \\"controlConfiguration\\": {
+                \\"@com.sap.vocabularies.UI.v1.LineItem\\": {
+                  \\"tableSettings\\": {
+                    \\"type\\": \\"ResponsiveTable\\"
                   }
                 }
               }
