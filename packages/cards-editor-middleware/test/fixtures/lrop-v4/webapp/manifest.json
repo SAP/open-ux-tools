@@ -1,0 +1,122 @@
+{
+	"_version": "1.21.0",
+	"sap.app": {
+		"id": "apps.v4.example",
+		"type": "application",
+		"title": "FeV4 Example App",
+		"applicationVersion": {
+			"version": "${project.version}"
+		},
+		"dataSources": {
+			"mainService": {
+				"uri": "/sap/opu/odata4/mock/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "4.0"
+				}
+			}
+		},
+		"offline": false
+	},
+	"sap.ui": {
+		"technology": "UI5",
+		"icons": {
+			"icon": "sap-icon://product",
+			"favIcon": "sap-icon://product",
+			"phone": "sap-icon://product",
+			"phone@2": "sap-icon://product",
+			"tablet": "sap-icon://product",
+			"tablet@2": "sap-icon://product"
+		},
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		}
+	},
+	"sap.ui5": {
+		"resources": {
+			"js": [],
+			"css": []
+		},
+		"dependencies": {
+			"minUI5Version": "${sap.ui5.dist.version}",
+			"libs": {
+				"sap.fe.templates": {}
+			}
+		},
+		"models": {
+			"": {
+				"dataSource": "mainService",
+				"settings": {
+					"synchronizationMode": "None",
+					"operationMode": "Server",
+					"autoExpandSelect": true,
+					"earlyRequests": true
+				}
+			}
+		},
+		"routing": {
+			"targets": {
+				"RootElementList": {
+					"type": "Component",
+					"name": "sap.fe.templates.ListReport",
+					"id": "RootElementList",
+					"options": {
+						"settings": {
+							"entitySet": "RootElement",
+							"navigation": {
+								"RootElement": {
+									"detail": {
+										"route": "RootElementOP"
+									}
+								}
+							},
+							"controlConfiguration": {
+								"@com.sap.vocabularies.UI.v1.LineItem": {
+									"tableSettings": {
+										"type": "ResponsiveTable",
+										"personalization": {
+											"column": true,
+											"sort": true,
+											"filter": true,
+											"group": true
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"RootElementOP": {
+					"type": "Component",
+					"name": "sap.fe.templates.ObjectPage",
+					"id": "RootElementOP",
+					"options": {
+						"settings": {
+							"editableHeaderContent": true,
+							"entitySet": "RootElement",
+							"navigation": {}
+						}
+					}
+				}
+			},
+			"routes": [
+				{
+					"pattern": ":?query:",
+					"name": "RootElementList",
+					"target": "RootElementList"
+				},
+				{
+					"pattern": "RootElement({key}):?query:",
+					"name": "RootElementOP",
+					"target": "RootElementOP"
+				}
+			]
+		},
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		}
+	}
+}
