@@ -8,10 +8,7 @@ export const fetchMock = jest.fn();
 export const openMock = jest.fn();
 export const sapCoreMock = {
     byId: jest.fn(),
-    getComponent: jest.fn(),
-    getConfiguration: () => ({
-        getLanguage: jest.fn()
-    })
+    getComponent: jest.fn()
 };
 export const sapMock = {
     ui: {
