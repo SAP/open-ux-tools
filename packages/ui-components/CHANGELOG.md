@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.15.13
+
+### Patch Changes
+
+-   494fd0f1: fix: UISections splitter resize issue after window resize
+
 ## 1.15.12
 
 ### Patch Changes

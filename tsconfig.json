@@ -42,6 +42,12 @@
       "path": "packages/cap-config-writer"
     },
     {
+      "path": "packages/cards-editor-config-writer"
+    },
+    {
+      "path": "packages/cards-editor-middleware"
+    },
+    {
       "path": "packages/cds-annotation-parser"
     },
     {
@@ -157,6 +163,9 @@
     },
     {
       "path": "packages/ui5-library-inquirer"
+    },
+    {
+      "path": "packages/ui5-library-reference-inquirer"
     },
     {
       "path": "packages/ui5-library-reference-writer"
