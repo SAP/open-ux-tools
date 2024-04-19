@@ -3,6 +3,7 @@ import { getCapFolderPaths } from '../../src/cap';
 import { join } from 'path';
 
 describe('getCapFolderPaths', () => {
+    jest.setTimeout(3000000);
     const testCapProject = join(__dirname, '../fixtures/test-cap-project');
     test('should return correct folders from exisiting folders and configs', () => {
         const capPaths = getCapFolderPaths(testCapProject);

@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'fs';
+import { readFileSync } from 'fs';
 import { join } from 'path';
 import type { CapCustomPaths } from '@sap-ux/project-access';
 
@@ -9,25 +9,31 @@ import type { CapCustomPaths } from '@sap-ux/project-access';
  * @param capProjectPath - path to project root
  * @returns cap custom paths
  */
-export function getCapFolderPaths(capProjectPath: string): CapCustomPaths {
+export function getCapFolderPathsSync(capProjectPath: string): CapCustomPaths {
     const capPaths: CapCustomPaths = {
         app: 'app/',
         db: 'db/',
         srv: 'srv/'
     };
 
-    const cdsrcPath = join(`${capProjectPath}/.cdsrc.json`);
-    const packageJsonPath = join(`${capProjectPath}/package.json`);
+    const cdsrcPath = join(capProjectPath, '.cdsrc.json');
+    const packageJsonPath = join(capProjectPath, 'package.json');
+    const configFiles = [cdsrcPath, packageJsonPath];
 
-    for (const folder of Object.keys(capPaths)) {
+    for (const configFile of configFiles) {
         try {
-            const cdsrcCustomPath = getCdsrcCustomPaths(cdsrcPath, folder);
-            if (cdsrcCustomPath) {
-                capPaths[folder as keyof CapCustomPaths] = cdsrcCustomPath;
-            } else {
-                const packageCustomPath = getPackageCustomPaths(packageJsonPath, folder);
-                if (packageCustomPath) {
-                    capPaths[folder as keyof CapCustomPaths] = packageCustomPath;
+            const config = JSON.parse(readFileSync(configFile).toString());
+
+            for (const folder of Object.keys(capPaths)) {
+                let customPath;
+
+                if (config?.folders?.[folder]) {
+                    customPath = config.folders[folder];
+                } else if (config?.cds?.folders?.[folder]) {
+                    customPath = config.cds.folders[folder];
+                }
+                if (customPath) {
+                    capPaths[folder as keyof CapCustomPaths] = customPath;
                 }
             }
         } catch {
@@ -36,40 +42,4 @@ export function getCapFolderPaths(capProjectPath: string): CapCustomPaths {
     }
 
     return capPaths;
-}
-
-/**
- * Inspects the .cdsrc.json file for custom paths and returns the custom path for the given folder if found.
- *
- * @param cdsrcPath - path to .cdsrc.json
- * @param folder - folder to get the custom path for
- * @returns - custom path
- */
-function getCdsrcCustomPaths(cdsrcPath: string, folder: string): string | undefined {
-    let customPath;
-    if (existsSync(cdsrcPath)) {
-        const config = JSON.parse(readFileSync(cdsrcPath).toString());
-        if (config?.folders[folder]) {
-            customPath = config.folders[folder];
-        }
-    }
-    return customPath;
-}
-
-/**
- * Inspects the package.json file for custom paths and returns the custom path for the given folder if found.
- *
- * @param packageJsonPath - path to package.json
- * @param folder - folder to get the custom path for
- * @returns - custom path
- */
-function getPackageCustomPaths(packageJsonPath: string, folder: string): string | undefined {
-    let customPath;
-    if (existsSync(packageJsonPath)) {
-        const packageJson = JSON.parse(readFileSync(packageJsonPath).toString());
-        if (packageJson?.cds?.folders[folder]) {
-            customPath = packageJson.cds.folders[folder];
-        }
-    }
-    return customPath;
 }
