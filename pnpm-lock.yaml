@@ -1039,6 +1039,12 @@ importers:
         specifier: 10.0.0
         version: 10.0.0
 
+  packages/fiori-generator-shared:
+    dependencies:
+      '@sap-ux/project-access':
+        specifier: 1.19.10
+        version: link:../project-access
+
   packages/i18n:
     dependencies:
       jsonc-parser:

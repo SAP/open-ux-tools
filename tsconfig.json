@@ -84,6 +84,9 @@
       "path": "packages/fiori-freestyle-writer"
     },
     {
+      "path": "packages/fiori-generator-shared"
+    },
+    {
       "path": "packages/i18n"
     },
     {
