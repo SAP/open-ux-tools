@@ -15,8 +15,8 @@ describe('getCapFolderPaths', () => {
     });
 
     test('should not throw error with invalid config', () => {
-        jest.spyOn(fs, 'existsSync').mockImplementation(() => {
-            throw new Error('Error checking folder');
+        jest.spyOn(fs, 'readFileSync').mockImplementation(() => {
+            throw new Error('Error reading config');
         });
 
         const capPaths = getCapFolderPaths(testCapProject);

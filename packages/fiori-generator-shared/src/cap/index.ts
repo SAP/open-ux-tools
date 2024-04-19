@@ -19,22 +19,20 @@ export function getCapFolderPaths(capProjectPath: string): CapCustomPaths {
     const cdsrcPath = join(`${capProjectPath}/.cdsrc.json`);
     const packageJsonPath = join(`${capProjectPath}/package.json`);
 
-    try {
-        for (const folder of Object.keys(capPaths)) {
-            if (!existsSync(join(`${capProjectPath}/${folder}`))) {
-                const cdsrcCustomPath = getCdsrcCustomPaths(cdsrcPath, folder);
-                if (cdsrcCustomPath) {
-                    capPaths[folder as keyof CapCustomPaths] = cdsrcCustomPath;
-                } else {
-                    const packageCustomPath = getPackageCustomPaths(packageJsonPath, folder);
-                    if (packageCustomPath) {
-                        capPaths[folder as keyof CapCustomPaths] = packageCustomPath;
-                    }
+    for (const folder of Object.keys(capPaths)) {
+        try {
+            const cdsrcCustomPath = getCdsrcCustomPaths(cdsrcPath, folder);
+            if (cdsrcCustomPath) {
+                capPaths[folder as keyof CapCustomPaths] = cdsrcCustomPath;
+            } else {
+                const packageCustomPath = getPackageCustomPaths(packageJsonPath, folder);
+                if (packageCustomPath) {
+                    capPaths[folder as keyof CapCustomPaths] = packageCustomPath;
                 }
             }
+        } catch {
+            // Ignore errors as may have no custom paths or invalid configs
         }
-    } catch {
-        // Ignore errors as may have no custom paths or invalid configs
     }
 
     return capPaths;
