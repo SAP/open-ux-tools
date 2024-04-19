@@ -10,7 +10,9 @@ import type { AtoSettings } from './types';
 import { TenantType } from './types';
 // Can't use an `import type` here. We need the classname at runtime to create object instances:
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import { AdtService, AtoService } from './adt-catalog/services';
+import { AdtService, AtoService, GeneratorService } from './adt-catalog/services';
+import { UiServiceGenerator } from './adt-catalog/generators/ui-service-generator';
+import { BusinessObject } from './adt-catalog/services/virtual-folders-service';
 
 /**
  * Extension of the service provider for ABAP services.
@@ -220,5 +222,24 @@ export class AbapServiceProvider extends ServiceProvider {
         }
 
         return this.services[subclassName] as T;
+    }
+
+    /**
+     * Create a UI Service generator for the given business object.
+     *
+     * @param bo - business object
+     * @returns a UI Service generator
+     */
+    public async getUiServiceGenerator(bo: BusinessObject): Promise<UiServiceGenerator> {
+        const generatorService = await this.getAdtService<GeneratorService>(GeneratorService);
+        if (!generatorService) {
+            throw new Error('Generators are not support on this system');
+        }
+        const config = await generatorService.getUIServiceGeneratorConfig(bo.name);
+        // quick and dirty
+        const path = config.link[0].href.split(config.id)[0] + config.id;
+        const gen = this.createService<UiServiceGenerator>(path, UiServiceGenerator);
+        gen.configure(config, bo);
+        return gen;
     }
 }

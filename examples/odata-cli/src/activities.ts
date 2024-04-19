@@ -6,7 +6,8 @@ import {
     TransportChecksService,
     TransportRequestService,
     ListPackageService,
-    FileStoreService
+    FileStoreService,
+    VirtualFoldersService
 } from '@sap-ux/axios-extension';
 import { logger } from './types';
 
@@ -180,3 +181,25 @@ export async function testDeployUndeployDTA(
         logger.error(`Error: ${error.message}`);
     }
 }
+
+export async function testUiServiceGenerator(provider: AbapServiceProvider,
+    env: {
+        TEST_BO_NAME: string;
+        TEST_PACKAGE: string;
+    }): Promise<void> {
+
+    const s4Cloud = await provider.isS4Cloud();
+    if (!s4Cloud) {
+        logger.warn('Not an S/4 Cloud system. UI service generation might not be supported.');
+    }
+
+    const virtualFolders = await provider.getAdtService<VirtualFoldersService>(VirtualFoldersService);
+    const bos = await virtualFolders.getBusinessObjects();
+    const bo = bos.find((bo) => bo.name === env.TEST_BO_NAME);
+    const generator = await provider.getUiServiceGenerator(bo);
+    
+    const content = await generator.getContent(env.TEST_PACKAGE);
+    logger.info('done');
+    //await generatorService.getGenerator();
+}
+
