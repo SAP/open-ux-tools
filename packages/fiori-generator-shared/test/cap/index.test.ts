@@ -1,12 +1,11 @@
 import fs from 'fs';
-import { getCapFolderPaths } from '../../src/cap';
+import { getCapFolderPathsSync } from '../../src/';
 import { join } from 'path';
 
 describe('getCapFolderPaths', () => {
-    jest.setTimeout(3000000);
     const testCapProject = join(__dirname, '../fixtures/test-cap-project');
     test('should return correct folders from exisiting folders and configs', () => {
-        const capPaths = getCapFolderPaths(testCapProject);
+        const capPaths = getCapFolderPathsSync(testCapProject);
 
         expect(capPaths).toEqual({
             app: 'app/',
@@ -20,7 +19,7 @@ describe('getCapFolderPaths', () => {
             throw new Error('Error reading config');
         });
 
-        const capPaths = getCapFolderPaths(testCapProject);
+        const capPaths = getCapFolderPathsSync(testCapProject);
 
         expect(capPaths).toEqual({
             app: 'app/',
