@@ -3,7 +3,7 @@ import { getCapFolderPaths } from '../../src/cap';
 import { join } from 'path';
 
 describe('getCapFolderPaths', () => {
-    const testCapProject = join(__dirname, 'fixtures/test-cap-project');
+    const testCapProject = join(__dirname, '../fixtures/test-cap-project');
     test('should return correct folders from exisiting folders and configs', () => {
         const capPaths = getCapFolderPaths(testCapProject);
 
