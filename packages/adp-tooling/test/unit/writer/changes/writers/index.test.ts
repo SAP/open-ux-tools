@@ -93,7 +93,16 @@ describe('ComponentUsagesWriter', () => {
 
         expect(getGenericChangeMock).toHaveBeenCalledWith(
             expect.anything(),
-            expect.objectContaining({ componentUsages: expect.anything() }),
+            expect.objectContaining({
+                componentUsages: {
+                    [mockData.component.usageId]: {
+                        name: mockData.component.name,
+                        lazy: true,
+                        settings: { key: 'value' },
+                        data: { key: 'value' }
+                    }
+                }
+            }),
             ChangeType.ADD_COMPONENT_USAGES
         );
 
