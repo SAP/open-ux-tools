@@ -1042,7 +1042,7 @@ importers:
   packages/fiori-generator-shared:
     dependencies:
       '@sap-ux/project-access':
-        specifier: 1.19.10
+        specifier: workspace:*
         version: link:../project-access
 
   packages/i18n:
