@@ -22,10 +22,10 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
      * @returns {object} The constructed content object for the component usages change.
      */
     private constructContent({ component }: ComponentUsagesData): object {
-        const { data, usageId, settings, isLazy } = component;
+        const { data, usageId, settings, isLazy, name } = component;
         const componentUsages = {
             [usageId]: {
-                name: usageId,
+                name,
                 lazy: isLazy === 'true',
                 settings: parseStringToObject(settings),
                 data: parseStringToObject(data)
