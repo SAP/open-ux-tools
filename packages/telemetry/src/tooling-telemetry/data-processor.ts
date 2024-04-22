@@ -283,7 +283,7 @@ async function getSourceTemplate(appPath: string): Promise<SourceTemplate> {
             return populateSourceTemplate(manifest['sap.app']?.sourceTemplate ?? {});
         }
 
-        if (fs.existsSync(paths.appdescr)) {
+        if (fs.existsSync(paths.appdescr) && fs.existsSync(paths.ui5Yaml)) {
             const baseUi5ConfigContent = await fs.promises.readFile(paths.ui5Yaml, 'utf-8');
             const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
             const adp = ui5Config.getCustomConfiguration('adp') as { support: SourceTemplate };
