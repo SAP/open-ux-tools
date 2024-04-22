@@ -42,6 +42,12 @@
       "path": "packages/cap-config-writer"
     },
     {
+      "path": "packages/cards-editor-config-writer"
+    },
+    {
+      "path": "packages/cards-editor-middleware"
+    },
+    {
       "path": "packages/cds-annotation-parser"
     },
     {
@@ -76,6 +82,9 @@
     },
     {
       "path": "packages/fiori-freestyle-writer"
+    },
+    {
+      "path": "packages/fiori-generator-shared"
     },
     {
       "path": "packages/i18n"

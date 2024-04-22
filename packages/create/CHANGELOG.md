@@ -1,5 +1,12 @@
 # @sap-ux/create
 
+## 0.5.64
+
+### Patch Changes
+
+-   Updated dependencies [7693fcfc]
+    -   @sap-ux/cards-editor-config-writer@0.3.0
+
 ## 0.5.63
 
 ### Patch Changes
