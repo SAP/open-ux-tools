@@ -44,6 +44,7 @@ async function prompt(
     promptOptions?: OdataServicePromptOptions,
     logger?: Logger,
     enableGuidedAnswers?: boolean
+    // telemetryKey?: string //todo: provide implementation
 ): Promise<OdataServiceAnswers> {
     const odataServicePrompts = await getPrompts(promptOptions, logger, enableGuidedAnswers);
 

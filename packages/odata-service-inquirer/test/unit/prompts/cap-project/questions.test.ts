@@ -63,27 +63,8 @@ const initialMockCapServicesChoices: CapServiceChoice[] = [
 ];
 
 let mockCapServiceChoices: CapServiceChoice[] = initialMockCapServicesChoices;
-
-let mockCapProjectChoices: CapProjectChoice[] = []; /* [
-    {
-        name: 'test-cap-sample',
-        value: {
-            path: '/path/to/sample/cap/project'
-        }
-    },
-    {
-        name: t('prompts.capProject.enterCapPathChoiceName'),
-        value: 'enterCapPath'
-    }
-]; */
-let mockCapWorkspaceFolders: CapProjectChoice[] = []; /* = () => {
-    return [
-        {
-            folderName: 'test-cap-sample',
-            path: '/path/to/sample/cap/project'
-        }
-    ];
-}; */
+let mockCapProjectChoices: CapProjectChoice[] = [];
+let mockCapWorkspaceFolders: CapProjectChoice[] = [];
 
 const initialMockEdmx = '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="2"/>';
 let mockEdmx: string | undefined = initialMockEdmx;

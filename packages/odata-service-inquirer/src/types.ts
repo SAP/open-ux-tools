@@ -176,9 +176,9 @@ export type CapRuntime = 'Node.js' | 'Java';
 export interface CapService {
     projectPath: string; // The CAP Project Root
     serviceName: string;
+    urlPath: string; // URL path to the service
     serviceCdsPath?: string; // relative path to cap service cds file
     capType?: CapRuntime;
-    urlPath?: string; // URL path to the service
     appPath?: string; // Path to the app folder
 }
 

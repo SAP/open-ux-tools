@@ -1,18 +1,70 @@
 import * as sapuxProjectAccess from '@sap-ux/project-access';
-import { constants } from 'fs';
-import { initI18nOdataServiceInquirer } from '../../../../src/i18n';
-import { getCapProjectChoices } from '../../../../src/prompts/datasources/cap-project/cap-helpers';
+import path, { join, sep } from 'path';
+import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
+import {
+    getCapEdmx,
+    getCapProjectChoices,
+    getCapServiceChoices
+} from '../../../../src/prompts/datasources/cap-project/cap-helpers';
+import LoggerHelper from '../../../../src/prompts/logger-helper';
+import { errorHandler } from '../../../../src/prompts/prompt-helpers';
+import type { CapProjectPaths } from '../../../../src/types';
+import os from 'os';
+import type { CSN } from '@sap-ux/project-access';
 
-const accessFilePathsOK = ['/test/mock/bookshop/srv/', '/test/mock/bookshop/23/srv/', '/test/mock/flight/srv/'];
+const initMockCapModelAndServices = {
+    model: {},
+    services: {}
+};
 
-jest.mock('fs/promises', () => ({
-    ...jest.requireActual('fs/promises'),
-    access: jest.fn().mockImplementation(async (filePath: string, mode: number) => {
-        if (accessFilePathsOK.indexOf(filePath) > -1 && mode === constants.F_OK) {
-            return Promise.resolve();
+const mockCapModelAndServices1 = {
+    model: {
+        definitions: {
+            AdminService: {
+                $location: {
+                    file: `..${sep}..${sep}..${sep}mock${sep}bookshop${sep}srv${sep}admin-service.cds`
+                },
+                kind: 'service',
+                name: 'AdminService'
+            },
+            CatalogService: {
+                $location: {
+                    file: `..${sep}..${sep}..${sep}mock${sep}bookshop${sep}srv${sep}cat-service.cds`
+                },
+                kind: 'service',
+                name: 'CatalogService'
+            }
+        },
+        $sources: [
+            `${sep}some${sep}abs${sep}path${sep}mock${sep}bookshop${sep}srv${sep}cat-service.cds`,
+            `${sep}some${sep}abs${sep}path${sep}mock${sep}bookshop${sep}srv${sep}admin-service.cds`,
+            `${sep}some${sep}abs${sep}path${sep}mock${sep}bookshop${sep}db${sep}schema.cds`
+        ]
+    },
+    services: [
+        {
+            name: 'AdminService',
+            urlPath: '/admin/',
+            runtime: 'Node.js'
+        },
+        {
+            name: 'CatalogService',
+            urlPath: '/cat/',
+            runtime: 'Node.js'
         }
-        throw Error('File not accessible');
-    })
+    ]
+};
+
+let currentMockCapModelAndServices = initMockCapModelAndServices;
+
+const initialMockEdmx = '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="2"/>';
+let mockEdmx: string = initialMockEdmx;
+
+jest.mock('@sap-ux/project-access', () => ({
+    __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
+    ...jest.requireActual('@sap-ux/project-access'),
+    getCapModelAndServices: jest.fn().mockImplementation(async () => currentMockCapModelAndServices)
+    //readCapServiceMetadataEdmx: jest.fn().mockImplementation(async () => mockEdmx)
 }));
 
 describe('cap-helper', () => {
@@ -21,13 +73,28 @@ describe('cap-helper', () => {
         await initI18nOdataServiceInquirer();
     });
 
-    test('getCapProjectChoices', async () => {
-        const findCapProjectsSpy = jest
-            .spyOn(sapuxProjectAccess, 'findCapProjects')
-            .mockResolvedValue(['/test/mock/1/bookshop', '/test/mock/2/bookshop', '/test/mock/flight']);
+    beforeEach(() => {
+        // Ensure each test is isolated, reset mocked function return values to initial state
+        mockEdmx = initialMockEdmx;
+        currentMockCapModelAndServices = initMockCapModelAndServices;
+    });
 
-        //const detectedWorkspaceFolder = [bookshop, flights, bookshop2];
-        const choices = await getCapProjectChoices(['/test/mock/']);
+    test('getCapProjectChoices', async () => {
+        // Zero state test
+        const findCapProjectsSpy = jest.spyOn(sapuxProjectAccess, 'findCapProjects').mockResolvedValue([]);
+        let choices = await getCapProjectChoices(['/test/mock/']);
+        expect(choices).toMatchInlineSnapshot(`
+            [
+              {
+                "name": "Manually select CAP project folder path",
+                "value": "enterCapPath",
+              },
+            ]
+        `);
+
+        // Multiple CAP projects found, some of which have the same folder names
+        findCapProjectsSpy.mockResolvedValue(['/test/mock/1/bookshop', '/test/mock/2/bookshop', '/test/mock/flight']);
+        choices = await getCapProjectChoices(['/test/mock/']);
         expect(choices).toMatchInlineSnapshot(`
             [
               {
@@ -68,4 +135,208 @@ describe('cap-helper', () => {
         `);
         expect(findCapProjectsSpy).toHaveBeenCalledWith({ 'wsFolders': ['/test/mock/'] });
     });
+
+    test('getCapEdmx', async () => {
+        const readCapServiceMetadataEdmxSpy = jest
+            .spyOn(sapuxProjectAccess, 'readCapServiceMetadataEdmx')
+            .mockResolvedValue(mockEdmx);
+        // Valid CAP service
+        expect(
+            await getCapEdmx({
+                projectPath: '/some/cap/project',
+                urlPath: '../some/service',
+                serviceName: 'Service'
+            })
+        ).toMatchInlineSnapshot(`"<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="2"/>"`);
+
+        const errorHandlerSpy = jest.spyOn(errorHandler, 'logErrorMsgs');
+        const logErrorSpy = jest.spyOn(LoggerHelper.logger, 'error');
+
+        // Ensure we get errors returned from readCapServiceMetadataEdmxSpy and log them
+        readCapServiceMetadataEdmxSpy.mockRejectedValue('Cannot read metadata');
+        expect(
+            await getCapEdmx({
+                projectPath: '/test/mock/bookshop',
+                urlPath: '../srv/cat-service',
+                serviceName: 'CatalogService'
+            })
+        ).toBe(undefined);
+        // Error handler should be called with custom error message
+        expect(errorHandlerSpy).toHaveBeenCalledWith(
+            t('errors.cannotReadCapServiceMetadata', { serviceName: 'CatalogService' })
+        );
+        // Logger should be called with original error
+        expect(logErrorSpy).toHaveBeenCalledWith('Cannot read metadata');
+
+        // Check the real error returned by CDS
+        errorHandlerSpy.mockClear();
+        logErrorSpy.mockClear();
+        readCapServiceMetadataEdmxSpy.mockRestore();
+        expect(
+            await getCapEdmx({
+                projectPath: join(__dirname, 'fixtures/bookshop'),
+                urlPath: 'odata/v4/incident/',
+                serviceName: 'CatalogService'
+            })
+        ).toMatchInlineSnapshot(`undefined`);
+        // Error handler should be called with custom error message
+        expect(errorHandlerSpy).toHaveBeenCalledWith(
+            t('errors.cannotReadCapServiceMetadata', { serviceName: 'CatalogService' })
+        );
+        // Logger should be called with original error, this is unreliable as the underlying string value may be changed by CDS
+        // todo: We need `readCapServiceMetadataEdmx` to return an error code or the original error object
+        expect(logErrorSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+                message: expect.stringContaining(" Module '@sap/cds' not installed in project")
+            } as Error)
+        );
+    });
+
+    test('getCapServiceChoices', async () => {
+        const capProjectPaths: CapProjectPaths = {
+            app: 'app/',
+            db: 'db/',
+            folderName: 'bookshop',
+            path: '/test/mock/bookshop',
+            srv: 'srv/'
+        };
+        expect(await getCapServiceChoices(capProjectPaths)).toEqual([]);
+
+        currentMockCapModelAndServices = mockCapModelAndServices1;
+
+        expect(await getCapServiceChoices(capProjectPaths)).toMatchInlineSnapshot(`
+            [
+              {
+                "name": "AdminService (Node.js)",
+                "value": {
+                  "appPath": "app/",
+                  "capType": "Node.js",
+                  "projectPath": "/test/mock/bookshop",
+                  "serviceCdsPath": "../../../some/abs/path/mock/bookshop/srv/admin-service",
+                  "serviceName": "AdminService",
+                  "urlPath": "/admin/",
+                },
+              },
+              {
+                "name": "CatalogService (Node.js)",
+                "value": {
+                  "appPath": "app/",
+                  "capType": "Node.js",
+                  "projectPath": "/test/mock/bookshop",
+                  "serviceCdsPath": "../../../some/abs/path/mock/bookshop/srv/cat-service",
+                  "serviceName": "CatalogService",
+                  "urlPath": "/cat/",
+                },
+              },
+            ]
+        `);
+    });
+
+    /**
+     * Tests the service path resolution using both Windows and Unix implementations, so this critical functionality can be easily tested on non-Windows platforms by developers.
+     */
+    test.each(['currentOS', 'mockWin'])(
+        'getCapServiceChoice: cds service paths are resolved using OS path separators - %s',
+        async (mockOS) => {
+            let pathSep = sep;
+            let drive = '';
+
+            if (os.platform() === 'win32' && mockOS === 'mockWin') {
+                console.log('Skipping Windows emulation test on Windows');
+                return;
+            }
+            // Use the Windows implementations to test Windows path separators on Unix (does not run on Windows)
+            if (mockOS === 'mockWin') {
+                pathSep = '\\'; // Windows path separator is escaped
+                drive = 'C:';
+                jest.spyOn(path, 'isAbsolute').mockImplementation(path.win32.isAbsolute);
+                jest.spyOn(path, 'relative').mockImplementation(path.win32.relative);
+            }
+
+            const mockCdsModelAndServices = {
+                model: {
+                    definitions: {
+                        AdminService: {
+                            $location: {
+                                file: `..${pathSep}..${pathSep}..${pathSep}mock${pathSep}bookshop${pathSep}srv${pathSep}admin-service.cds`
+                            },
+                            kind: 'service',
+                            name: 'AdminService'
+                        },
+                        CatalogService: {
+                            $location: {
+                                file: `..${pathSep}..${pathSep}..${pathSep}mock${pathSep}bookshop${pathSep}srv${pathSep}cat-service.cds`
+                            },
+                            kind: 'service',
+                            name: 'CatalogService'
+                        }
+                    },
+                    $sources: [
+                        `${drive}${pathSep}some${pathSep}abs${pathSep}path${pathSep}mock${pathSep}bookshop${pathSep}srv${pathSep}cat-service.cds`,
+                        `${drive}${pathSep}some${pathSep}abs${pathSep}path${pathSep}mock${pathSep}bookshop${pathSep}srv${pathSep}admin-service.cds`,
+                        `${drive}${pathSep}some${pathSep}abs${pathSep}path${pathSep}mock${pathSep}bookshop${pathSep}db${pathSep}schema.cds`
+                    ]
+                },
+                services: [
+                    {
+                        name: 'AdminService',
+                        urlPath: '/admin/',
+                        runtime: 'Node.js'
+                    },
+                    {
+                        name: 'CatalogService',
+                        urlPath: '/cat/',
+                        runtime: 'Node.js'
+                    }
+                ]
+            };
+            jest.spyOn(sapuxProjectAccess, 'getCapModelAndServices').mockResolvedValue(
+                mockCdsModelAndServices as { model: CSN; services: any[] }
+            );
+            jest.spyOn(sapuxProjectAccess, 'getCapCustomPaths').mockResolvedValue({
+                app: 'app/',
+                db: 'db/',
+                srv: 'srv/'
+            } as {
+                app: string;
+                db: string;
+                srv: string;
+            });
+
+            const capProjectPaths: CapProjectPaths = {
+                app: 'app/',
+                db: 'db/',
+                folderName: 'bookshop',
+                path: `${drive}${pathSep}some${pathSep}abs${pathSep}path${pathSep}mock${pathSep}bookshop`,
+                srv: 'srv/'
+            };
+
+            const capServiceChoices = await getCapServiceChoices(capProjectPaths);
+            expect(capServiceChoices).toBeInstanceOf(Array);
+            expect(capServiceChoices.length).toBe(2);
+            expect(capServiceChoices[0].name).toBe('AdminService (Node.js)');
+            expect(capServiceChoices[0].value).toEqual({
+                appPath: 'app/',
+                capType: 'Node.js',
+                projectPath:
+                    mockOS === 'mockWin'
+                        ? `${drive}${pathSep}some${pathSep}abs${pathSep}path${pathSep}mock${pathSep}bookshop`
+                        : `${pathSep}some${pathSep}abs${pathSep}path${pathSep}mock${pathSep}bookshop`,
+                serviceCdsPath: `srv${pathSep}admin-service`,
+                serviceName: 'AdminService',
+                urlPath: '/admin/'
+            });
+            expect(capServiceChoices[1].value).toEqual({
+                appPath: 'app/',
+                capType: 'Node.js',
+                projectPath:
+                    mockOS === 'mockWin'
+                        ? `${drive}${pathSep}some${pathSep}abs${pathSep}path${pathSep}mock${pathSep}bookshop`
+                        : `${pathSep}some${pathSep}abs${pathSep}path${pathSep}mock${pathSep}bookshop`,
+                serviceCdsPath: `srv${pathSep}cat-service`,
+                serviceName: 'CatalogService',
+                urlPath: '/cat/'
+            });
+        }
+    );
 });

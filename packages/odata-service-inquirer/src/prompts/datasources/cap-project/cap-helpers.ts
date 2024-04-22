@@ -75,17 +75,64 @@ export async function getCapProjectChoices(paths: string[]): Promise<CapProjectC
     ];
 }
 
+// Remove when exported from `@sap-ux/project-access`
+type ServiceInfo = Awaited<ReturnType<typeof getCapModelAndServices>>['services'][0];
+
 /**
- * Sanitize the URL path by ensuring it starts with a '/'.
+ * Create a cap service choice from the service info.
  *
- * @param urlPath - The URL path to sanitize
- * @returns The sanitized URL path
+ * @param capModel
+ * @param serviceInfo
+ * @param projectPath
+ * @param appPath
+ * @returns a cap service choice
  */
-function sanitizeUrlPath(urlPath: string): string {
-    if (!urlPath.startsWith('/')) {
-        return `/${urlPath}`;
+function createCapServiceChoice(
+    capModel: CSN,
+    serviceInfo: ServiceInfo,
+    projectPath: string,
+    appPath: string
+): CapServiceChoice | undefined {
+    const srvDef = capModel.definitions?.[serviceInfo.name];
+    /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
+    const serviceFilePath = (srvDef as any)?.$location?.file;
+    LoggerHelper.logger.debug(`Cap service def: ${JSON.stringify(srvDef)}`);
+    LoggerHelper.logger.debug(`Cap service def $location.file: ${JSON.stringify(serviceFilePath)}`);
+
+    // Find the source path for the service definition file, we cannot resolve '../' path segments as
+    // we have no idea where the cwd was when the cds compiler was run. Remove the '../' or '..\\' path segments so the relative path can
+    // be resolved against the project root. This is a workaround until cds provides the correct path in the service info.
+    const absServicePath = capModel.$sources?.find(
+        (source) => source.indexOf(serviceFilePath.replace(/\.\.\\\\|\.\.\\|\.\.\//g, '')) > -1
+    );
+    LoggerHelper.logger.debug(`Source file path for service: ${serviceInfo.name}: ${absServicePath}`);
+
+    if (absServicePath && isAbsolute(absServicePath)) {
+        let serviceCdsFilePath = relative(projectPath, absServicePath);
+        // remove the file extension
+        serviceCdsFilePath = serviceCdsFilePath.substring(0, serviceCdsFilePath.lastIndexOf('.cds'));
+        LoggerHelper.logger.debug(`serviceCdsFilePath: ${serviceCdsFilePath}`);
+
+        const capService: CapService = {
+            serviceName: serviceInfo.name,
+            urlPath: !serviceInfo.urlPath.startsWith('/') ? `/${serviceInfo.urlPath}` : serviceInfo.urlPath,
+            serviceCdsPath: serviceCdsFilePath,
+            projectPath,
+            appPath,
+            // Assume Node.js if not defined
+            capType: serviceInfo.runtime ? (serviceInfo.runtime as 'Node.js' | 'Java') : 'Node.js'
+        };
+        return {
+            name: capService.capType
+                ? capService.serviceName + ' (' + capService.capType + ')'
+                : capService.serviceName,
+            value: capService
+        };
     }
-    return urlPath;
+    LoggerHelper.logger.error(
+        `Path for cds service file : ${serviceInfo.name} not found in cds model, $sources, or is not an absolute path`
+    );
+    return;
 }
 
 /**
@@ -114,6 +161,7 @@ export async function getCapServiceChoices(capProjectPaths: CapProjectPaths): Pr
             capServices = services;
             capModel = model;
         } catch (error) {
+            // todo: Check error codes and log different messages for different errors
             errorHandler.logErrorMsgs(error);
             return [];
         }
@@ -124,48 +172,9 @@ export async function getCapServiceChoices(capProjectPaths: CapProjectPaths): Pr
         LoggerHelper.logger.debug(`CDS model source paths: ${JSON.stringify(capModel.$sources)}`);
         const serviceChoices = capServices
             .map((service) => {
-                const srvDef = capModel.definitions?.[service.name];
-                /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
-                const serviceFilePath = (srvDef as any)?.$location?.file;
-                LoggerHelper.logger.debug(`Cap service def: ${JSON.stringify(srvDef)}`);
-                LoggerHelper.logger.debug(`Cap service def $location.file: ${JSON.stringify(serviceFilePath)}`);
-
-                // Find the source path for the service definition file, we cannot resolve '../' path segments as
-                // we have no idea where the cwd was when the cds compiler was run. Remove the '../' or '..\\' path segments so the relative path can
-                // be resolved against the project root. This is a workaround until cds provides the correct path in the service info.
-                const absServicePath = capModel.$sources?.find(
-                    (source) => source.indexOf(serviceFilePath.replace(/\.\.\\\\|\.\.\\|\.\.\//g, '')) > -1
-                );
-                LoggerHelper.logger.debug(`Source file path for service: ${service.name}: ${absServicePath}`);
-
-                if (absServicePath && isAbsolute(absServicePath)) {
-                    let serviceCdsFilePath = relative(projectPath, absServicePath);
-                    // remove the file extension
-                    serviceCdsFilePath = removeLastMatch(serviceCdsFilePath, '.cds');
-                    LoggerHelper.logger.debug(`serviceCdsFilePath: ${serviceCdsFilePath}`);
-
-                    const capService: CapService = {
-                        serviceName: service.name,
-                        urlPath: sanitizeUrlPath(service.urlPath),
-                        serviceCdsPath: serviceCdsFilePath,
-                        projectPath,
-                        appPath,
-                        // Assume Node.js if not defined
-                        capType: service.runtime ? (service.runtime as 'Node.js' | 'Java') : 'Node.js'
-                    };
-                    return {
-                        name: capService.capType
-                            ? capService.serviceName + ' (' + capService.capType + ')'
-                            : capService.serviceName,
-                        value: capService
-                    };
-                }
-                LoggerHelper.logger.error(
-                    `Path for cds service file : ${service.name} not found in cds model, $sources, or is not an absolute path`
-                );
-                return undefined;
+                return createCapServiceChoice(capModel, service, projectPath, appPath);
             })
-            .filter((service) => !!service) as CapServiceChoice[];
+            .filter((service) => !!service) as CapServiceChoice[]; // filter undefined entries
         return serviceChoices ?? [];
     } catch (err) {
         errorHandler.logErrorMsgs(err);
@@ -174,38 +183,17 @@ export async function getCapServiceChoices(capProjectPaths: CapProjectPaths): Pr
 }
 
 /**
- * Remove the last found match from a string.
- *
- * @param value - The value to remove the last match from
- * @param match - The match to remove
- * @returns The value with the last match removed
- */
-function removeLastMatch(value: string, match: string): string {
-    if (match === undefined) {
-        return value;
-    }
-    const index = value.lastIndexOf(match);
-    if (index === -1) {
-        return value;
-    }
-    return value.slice(0, index);
-}
-
-/**
- * Get the edmx metadata for the CAP service.
+ * Get the edmx metadata for the CAP service. Currently this will reload the model and services for each call.
+ * It could be optimized if we cached the project cds, model and services from previous calls when populating the Cap service choices.
  *
  * @param capService - The CAP service
  * @returns The edmx metadata for the CAP service
  */
 export async function getCapEdmx(capService: CapService): Promise<string | undefined> {
-    if (!capService.urlPath) {
-        LoggerHelper.logger.warn(t('errors.capServiceUrlPathNotDefined', { serviceName: capService.serviceName }));
-        return undefined;
-    }
     try {
-        // const serviceUrlPath = this.capServiceSanitizeUrls?.[serviceName]?.urlPath ?? sanitizedUrlPath;
         return await readCapServiceMetadataEdmx(capService.projectPath, capService.urlPath, 'v4');
-    } catch (err) {
-        errorHandler.logErrorMsgs(err);
+    } catch (error) {
+        errorHandler.logErrorMsgs(t('errors.cannotReadCapServiceMetadata', { serviceName: capService.serviceName }));
+        LoggerHelper.logger.error(error);
     }
 }

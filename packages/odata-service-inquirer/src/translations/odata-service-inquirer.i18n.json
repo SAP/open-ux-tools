@@ -48,7 +48,7 @@
         "nonUIServiceTypeWarningMessage": "Please note that {{serviceTypeDesc}} services are not intended to be used for the generation of SAP Fiori UI applications"
     },
     "errors": {
-        "capServiceUrlPathNotDefined": "The CAP service path URL is not defined for service: {{serviceName}}",
+        "cannotReadCapServiceMetadata": "An error occurred reading CAP service metadata: {{serviceName}}. See log for more details.",
         "unknownError": "An error occurred: {{- error}}",
         "servicesUnavailable": "An error occurred retrieving service(s) for SAP System.",
         "certificateError": "A certificate error has occurred: {{- error}}",
