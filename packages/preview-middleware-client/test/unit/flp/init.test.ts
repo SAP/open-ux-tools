@@ -1,10 +1,19 @@
-import { init, registerComponentDependencyPaths, registerSAPFonts, setI18nTitle } from '../../../src/flp/init';
+// import * as initBundle from '../../../src/flp/init';
+import {
+    init,
+    registerComponentDependencyPaths,
+    registerSAPFonts,
+    setI18nTitle,
+    resetAppState
+} from '../../../src/flp/init';
 import IconPoolMock from 'mock/sap/ui/core/IconPool';
 import { mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
 import { fetchMock, sapMock } from 'mock/window';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
 
 describe('flp/init', () => {
+    let windowSpy: jest.SpyInstance;
+
     test('registerSAPFonts', () => {
         registerSAPFonts();
         expect(IconPoolMock.registerFont).toBeCalledTimes(2);
@@ -75,7 +84,103 @@ describe('flp/init', () => {
         });
     });
 
+    describe('resetAppState', () => {
+        let Container: typeof sap.ushell.Container;
+
+        const mockService = {
+            deleteAppState: jest.fn()
+        };
+
+        beforeEach(() => {
+            windowSpy = jest.spyOn(globalThis, 'window', 'get');
+            Container = sap.ushell.Container;
+            sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService);
+        });
+
+        afterEach(() => {
+            windowSpy.mockRestore();
+            jest.clearAllMocks();
+        });
+
+        test('default', async () => {
+            windowSpy.mockImplementation(() => ({
+                location: {
+                    hash: ''
+                }
+            }));
+            await resetAppState(Container);
+            expect(mockService.deleteAppState).not.toBeCalled();
+        });
+
+        test('hash key equals "/?sap-iapp-state"', async () => {
+            windowSpy.mockImplementation(() => ({
+                location: {
+                    hash: '/?sap-iapp-state=dummyHash1234'
+                }
+            }));
+
+            await resetAppState(Container);
+            expect(mockService.deleteAppState).toBeCalled();
+            expect(mockService.deleteAppState.mock.calls[0][0]).toEqual('dummyHash1234');
+        });
+
+        test('hash key equals "sap-iapp-state"', async () => {
+            windowSpy.mockImplementation(() => ({
+                location: {
+                    hash: 'sap-iapp-state=dummyHash5678'
+                }
+            }));
+            await resetAppState(Container);
+            expect(mockService.deleteAppState).toBeCalled();
+            expect(mockService.deleteAppState.mock.calls[0][0]).toEqual('dummyHash5678');
+        });
+    });
+
     describe('init', () => {
+
+        describe.skip('param fiori-tools-iapp-state', () => {
+            // let resetAppStateSpy: jest.SpyInstance;
+            //     resetAppStateSpy = jest
+            //         .spyOn(initBundle, 'resetAppState')
+            //         .mockImplementationOnce(() => Promise.resolve(true));
+            // resetAppStateSpy.mockReset();
+
+            const resetAppStateMock = jest.fn();
+
+            jest.mock('../../../src/flp/init', () => ({
+                ...jest.requireActual('../../../src/flp/init'),
+                resetAppState: resetAppStateMock
+            }));
+
+            beforeEach(() => {
+                windowSpy = jest.spyOn(globalThis, 'window', 'get');
+            });
+            afterEach(() => {
+                windowSpy.mockRestore();
+                jest.clearAllMocks();
+            });
+
+            test('fiori-tools-iapp-state configured to "true"', async () => {
+                windowSpy.mockImplementation(() => ({
+                    location: {
+                        search: `fiori-tools-iapp-state='true'`
+                    }
+                }));
+                await init({});
+                expect(resetAppStateMock).not.toHaveBeenCalled();
+            });
+
+            test('fiori-tools-iapp-state configured to "false"', async () => {
+                windowSpy.mockImplementation(() => ({
+                    location: {
+                        search: `fiori-tools-iapp-state='chicken'`
+                    }
+                }));
+                await init({});
+                expect(resetAppStateMock).toHaveBeenCalled();
+            });
+        });
+
         beforeEach(() => {
             sapMock.ushell.Container.attachRendererCreatedEvent.mockReset();
             sapMock.ui.require.mockReset();

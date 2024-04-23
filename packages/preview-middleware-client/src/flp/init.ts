@@ -59,7 +59,7 @@ function addKeys(dependency: Record<string, unknown>, customLibs: Record<string,
  * @param appUrls urls pointing to included applications
  * @returns Promise of a comma separated list of all required libraries.
  */
-function getManifestLibs(appUrls: string[]): Promise<string> {
+async function getManifestLibs(appUrls: string[]): Promise<string> {
     const result = {} as Record<string, true>;
     const promises = [];
     for (const url of appUrls) {
@@ -126,7 +126,7 @@ function registerModules(
  * @param container the UShell container
  * @returns returns a promise when the app state is resetted.
  */
-async function resetAppState(container: typeof sap.ushell.Container): Promise<void> {
+export async function resetAppState(container: typeof sap.ushell.Container): Promise<void> {
     const appStateService = await container.getServiceAsync<AppState>('AppState');
     const urlParams = new URLSearchParams(window.location.hash);
     const appStateValue = urlParams.get('sap-iapp-state') ?? urlParams.get('/?sap-iapp-state');
