@@ -6,7 +6,7 @@ import { join } from 'path';
 import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
 import type { CustomElement, Manifest } from '../common/types';
-import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults';
+import { setCommonDefaults, getDefaultFragmentContent, getDefaultFragmentContentData } from '../common/defaults';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
 import { extendJSON } from '../common/file';
 import { getTemplatePath } from '../templates';
@@ -68,7 +68,13 @@ function enhanceConfig(
     }
 
     // generate section content
-    config.content = config.control || getDefaultFragmentContent(config.name, config.eventHandler);
+    if (config.control) {
+        config.content = config.control;
+    } else {
+        const fragmentContentData = getDefaultFragmentContentData(config.name, config.eventHandler, undefined, undefined, false);
+        config.content = fragmentContentData.content;
+        config.requireAttribute = fragmentContentData.requireAttribute;
+    }
     // Additional dependencies to include into 'Fragment.xml'
     config.dependencies = getAdditionalDependencies(config.minUI5Version);
 
