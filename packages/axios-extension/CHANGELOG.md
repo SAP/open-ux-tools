@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.11.7
+
+### Patch Changes
+
+-   31f5027c: Rename SCENARIO to FIORI_TOOLS_SCENARIO
+
 ## 1.11.6
 
 ### Patch Changes
