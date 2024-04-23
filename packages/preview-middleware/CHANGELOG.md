@@ -1,5 +1,43 @@
 # @sap-ux/preview-middleware
 
+## 0.13.19
+
+### Patch Changes
+
+-   00cf3025: Alternative approach to have a consistent save for XML Fragments
+-   Updated dependencies [00cf3025]
+    -   @sap-ux/adp-tooling@0.9.20
+
+## 0.13.18
+
+### Patch Changes
+
+-   Updated dependencies [4389c528]
+    -   @sap-ux/project-access@1.19.11
+    -   @sap-ux/adp-tooling@0.9.19
+
+## 0.13.17
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.18
+
+## 0.13.16
+
+### Patch Changes
+
+-   fc55fd6b: Component Usages writer produces incorrect content of a change
+-   Updated dependencies [fc55fd6b]
+    -   @sap-ux/adp-tooling@0.9.17
+
+## 0.13.15
+
+### Patch Changes
+
+-   Updated dependencies [f8e16120]
+    -   @sap-ux/project-access@1.19.10
+    -   @sap-ux/adp-tooling@0.9.16
+
 ## 0.13.14
 
 ### Patch Changes

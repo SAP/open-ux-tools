@@ -1,5 +1,57 @@
 # @sap-ux/create
 
+## 0.5.67
+
+### Patch Changes
+
+-   Updated dependencies [00cf3025]
+    -   @sap-ux/adp-tooling@0.9.20
+
+## 0.5.66
+
+### Patch Changes
+
+-   Updated dependencies [4389c528]
+    -   @sap-ux/project-access@1.19.11
+    -   @sap-ux/adp-tooling@0.9.19
+    -   @sap-ux/app-config-writer@0.3.50
+    -   @sap-ux/cap-config-writer@0.2.31
+    -   @sap-ux/cards-editor-config-writer@0.3.0
+    -   @sap-ux/mockserver-config-writer@0.4.1
+
+## 0.5.65
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.18
+-   @sap-ux/app-config-writer@0.3.49
+
+## 0.5.64
+
+### Patch Changes
+
+-   Updated dependencies [7693fcfc]
+    -   @sap-ux/cards-editor-config-writer@0.3.0
+
+## 0.5.63
+
+### Patch Changes
+
+-   fc55fd6b: Component Usages writer produces incorrect content of a change
+-   Updated dependencies [fc55fd6b]
+    -   @sap-ux/adp-tooling@0.9.17
+
+## 0.5.62
+
+### Patch Changes
+
+-   Updated dependencies [f8e16120]
+    -   @sap-ux/project-access@1.19.10
+    -   @sap-ux/adp-tooling@0.9.16
+    -   @sap-ux/app-config-writer@0.3.48
+    -   @sap-ux/cap-config-writer@0.2.30
+    -   @sap-ux/mockserver-config-writer@0.4.1
+
 ## 0.5.61
 
 ### Patch Changes

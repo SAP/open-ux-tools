@@ -1,21 +1,29 @@
 import type { ReaderCollection } from '@ui5/fs';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
+import type { Editor as MemFsEditor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { NextFunction, Request, RequestHandler, Response, Router } from 'express';
+import type http from 'http';
 import { readFileSync } from 'fs';
 import { dirname, join, posix } from 'path';
-import type { App, Editor, FlpConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
-import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
+import {
+    AdpPreview,
+    type AdpPreviewConfig,
+    type CommonChangeProperties,
+    type OperationType
+} from '@sap-ux/adp-tooling';
 import { createProjectAccess } from '@sap-ux/project-access';
-import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import { getTelemetrySetting } from '@sap-ux/telemetry';
 import { EventName } from '../telemetryEvents';
 import { generateImportList, mergeTestConfigDefaults } from './test';
 import { TelemetryReporter } from './telemetry-reporter';
-import type http from 'http';
+import { deleteChange, readChanges, writeChange } from './flex';
+import type { App, Editor, FlpConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -140,10 +148,18 @@ export interface TemplateConfig {
     locateReuseLibsScript?: boolean;
 }
 
+type OnChangeRequestHandler = (
+    type: OperationType,
+    change: CommonChangeProperties,
+    fs: MemFsEditor,
+    logger: Logger
+) => Promise<void>;
+
 /**
  * Class handling preview of a sandbox FLP.
  */
 export class FlpSandbox {
+    protected onChangeRequest: OnChangeRequestHandler | undefined;
     protected templateConfig: TemplateConfig;
     public readonly config: FlpConfig;
     public readonly rta?: RtaConfig;
@@ -180,6 +196,15 @@ export class FlpSandbox {
         this.rta = config.rta;
         logger.debug(`Config: ${JSON.stringify({ flp: this.config, rta: this.rta, test: this.test })}`);
         this.router = createRouter();
+    }
+
+    /**
+     * Registers a handler function to be called when a change request occurs.
+     *
+     * @param {OnChangeRequestHandler} handler - The function to be executed when a change request occurs.
+     */
+    public addOnChangeRequestHandler(handler: OnChangeRequestHandler): void {
+        this.onChangeRequest = handler;
     }
 
     /**
@@ -432,26 +457,33 @@ export class FlpSandbox {
      * Create required routes for flex.
      */
     private createFlexHandler(): void {
+        const fs = create(createStorage());
         const api = `${PREVIEW_URL.api}/changes`;
         this.router.use(api, json());
         this.router.get(api, (async (_req: Request, res: Response) => {
-            this.sendResponse(
-                res,
-                'application/json',
-                200,
-                JSON.stringify(await readChanges(this.project, this.logger))
-            );
+            const changes = await readChanges(this.project, this.logger);
+            if (this.onChangeRequest) {
+                for (const change of Object.values(changes)) {
+                    await this.onChangeRequest('read', change, fs, this.logger);
+                }
+            }
+            res.status(200).contentType('application/json').send(changes);
         }) as RequestHandler);
         this.router.post(api, (async (req: Request, res: Response) => {
             try {
+                const change = req.body as CommonChangeProperties;
+                if (this.onChangeRequest) {
+                    await this.onChangeRequest('write', change, fs, this.logger);
+                }
                 const { success, message } = writeChange(
-                    req.body,
+                    change,
                     this.utils.getProject().getSourcePath(),
+                    fs,
                     this.logger,
                     this.telemetryReporter
                 );
                 if (success) {
-                    this.sendResponse(res, 'text/plain', 200, message ?? '');
+                    fs.commit(() => res.status(200).send(message));
                 } else {
                     this.sendResponse(res, 'text/plain', 400, 'INVALID_DATA');
                 }
@@ -694,6 +726,7 @@ export async function initAdp(
 
         await flp.init(manifest, name, adp.resources);
         flp.router.use(adp.descriptor.url, adp.proxy.bind(adp) as RequestHandler);
+        flp.addOnChangeRequestHandler(adp.onChangeRequest.bind(adp));
         flp.router.use(json());
         adp.addApis(flp.router);
     } else {

@@ -251,6 +251,12 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         if (sizes) {
             // Update sizes after resize
             sizes = this.updateStateSizes(layoutSize, sizes);
+            // Update cached section's sizes
+            for (let i = 0; i < sizes.length; i++) {
+                if (this.resizeSections[i]) {
+                    this.resizeSections[i].section = sizes[i];
+                }
+            }
             // Apply state
             this.ignoreAnimation = true;
             this.setState({

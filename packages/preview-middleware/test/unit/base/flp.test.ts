@@ -437,6 +437,7 @@ describe('initAdp', () => {
             },
             resources: [],
             proxy: jest.fn(),
+            onChangeRequest: jest.fn(),
             addApis: jest.fn()
         } as unknown as adpTooling.AdpPreview;
     });
