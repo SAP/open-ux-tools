@@ -375,7 +375,7 @@ describe('UI5Config', () => {
         };
 
         test('add with single path (no existing serve static config)', () => {
-            ui5Config.addServeStaticConfig([{ path, src: '/~src', fallthrough: true }]);
+            ui5Config.addServeStaticConfig([{ path, src: '/~src', fallthrough: false }]);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
@@ -383,17 +383,20 @@ describe('UI5Config', () => {
             ui5Config.addCustomMiddleware([serveStaticMiddleware]);
 
             ui5Config.addServeStaticConfig([
-                { path, src: '/~src', fallthrough: true },
-                { path: '/~other', src: '/~otherSrc', fallthrough: false }
+                { path: '/~path', src: '/~src', fallthrough: false },
+                { path: '/~otherPath', src: '/~otherSrc', fallthrough: false }
             ]);
+            expect(ui5Config.toString()).toMatchSnapshot();
+
+            ui5Config.addServeStaticConfig([{ path: '/~newPath', src: '/~newSrc', fallthrough: false }]);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
-        test('update serve static ocnfig', () => {
+        test('update serve static config', () => {
             ui5Config.addCustomMiddleware([serveStaticMiddleware, fioriToolsProxy]);
 
             ui5Config.addServeStaticConfig([
-                { path, src: '/~src', fallthrough: true },
+                { path, src: '/~src', fallthrough: false },
                 { path: '/~other', src: '/~otherSrc', fallthrough: false }
             ]);
             expect(ui5Config.toString()).toMatchSnapshot();
