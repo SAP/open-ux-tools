@@ -6,7 +6,7 @@ import { join } from 'path';
 import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
 import type { CustomElement, Manifest } from '../common/types';
-import { setCommonDefaults, getDefaultFragmentContent, getDefaultFragmentContentData } from '../common/defaults';
+import { setCommonDefaults, getDefaultFragmentContentData } from '../common/defaults';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
 import { extendJSON } from '../common/file';
 import { getTemplatePath } from '../templates';
@@ -71,9 +71,7 @@ function enhanceConfig(
     if (config.control) {
         config.content = config.control;
     } else {
-        const fragmentContentData = getDefaultFragmentContentData(config.name, config.eventHandler, undefined, undefined, false);
-        config.content = fragmentContentData.content;
-        config.requireAttribute = fragmentContentData.requireAttribute;
+        Object.assign(config, getDefaultFragmentContentData(config.name, config.eventHandler, undefined, undefined, false));
     }
     // Additional dependencies to include into 'Fragment.xml'
     config.dependencies = getAdditionalDependencies(config.minUI5Version);
@@ -165,8 +163,11 @@ export function generateCustomHeaderSection(
             });
         }
         // Generate edit fragment content
-        editSection.content =
-            editSection.control ?? getDefaultFragmentContent(editSection.name, editSection.eventHandler, false, true);
+        if (editSection.control) {
+            editSection.content = editSection.control;
+        } else {
+            Object.assign(editSection, getDefaultFragmentContentData(editSection.name, editSection.eventHandler, false, true, false));
+        }
         if (editSection.path) {
             const viewPath = join(editSection.path, `${editSection.name}.fragment.xml`);
             if (!editor.exists(viewPath)) {
