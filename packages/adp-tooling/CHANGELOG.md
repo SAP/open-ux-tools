@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.9.20
+
+### Patch Changes
+
+-   00cf3025: Alternative approach to have a consistent save for XML Fragments
+
 ## 0.9.19
 
 ### Patch Changes
