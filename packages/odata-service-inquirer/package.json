@@ -31,15 +31,13 @@
     ],
     "dependencies": {
         "@sap-ux/btp-utils": "workspace:*",
-        "@sap-ux/feature-toggle": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap/wing-service-explorer": "1.8.0",
         "i18next": "23.5.1",
-        "os-name": "4.0.1",
-        "semver": "7.5.4"
+        "os-name": "4.0.1"
     },
     "devDependencies": {
         "@sap-ux/odata-service-writer": "workspace:*",
@@ -47,7 +45,6 @@
         "@types/inquirer-autocomplete-prompt": "2.0.1",
         "@types/inquirer": "8.2.6",
         "@types/lodash": "4.14.178",
-        "@types/semver": "7.5.4",
         "jest-extended": "3.2.4",
         "lodash": "4.17.21"
     },

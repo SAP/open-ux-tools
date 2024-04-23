@@ -1267,9 +1267,6 @@ importers:
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
-      '@sap-ux/feature-toggle':
-        specifier: workspace:*
-        version: link:../feature-toggle
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common
@@ -1291,9 +1288,6 @@ importers:
       os-name:
         specifier: 4.0.1
         version: 4.0.1
-      semver:
-        specifier: 7.5.4
-        version: 7.5.4
     devDependencies:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.14.4
@@ -1310,9 +1304,6 @@ importers:
       '@types/lodash':
         specifier: 4.14.178
         version: 4.14.178
-      '@types/semver':
-        specifier: 7.5.4
-        version: 7.5.4
       jest-extended:
         specifier: 3.2.4
         version: 3.2.4(jest@29.5.0)

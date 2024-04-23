@@ -13,9 +13,6 @@
       "path": "../btp-utils"
     },
     {
-      "path": "../feature-toggle"
-    },
-    {
       "path": "../inquirer-common"
     },
     {
