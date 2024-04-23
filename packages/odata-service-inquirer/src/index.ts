@@ -8,6 +8,8 @@ import { PromptStateHelper } from './prompts/prompt-helpers';
 import { validateODataVersion } from './prompts/validators';
 import type { OdataServiceAnswers, OdataServicePromptOptions, OdataServiceQuestion } from './types';
 import { DatasourceType, promptNames, type CapRuntime, type CapService } from './types';
+import { type ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
+import { setTelemetryClient } from './utils';
 
 /**
  * Get the inquirer prompts for odata service.
@@ -37,15 +39,18 @@ async function getPrompts(
  * @param promptOptions
  * @param logger
  * @param enableGuidedAnswers - if true, the prompts will use guided answers to help users with validation errors
+ * @param telemetryClient - the telemetry client to use for sending telemetry data
  * @returns the prompt answers
  */
 async function prompt(
     adapter: InquirerAdapter,
     promptOptions?: OdataServicePromptOptions,
     logger?: Logger,
-    enableGuidedAnswers?: boolean
-    // telemetryKey?: string //todo: provide implementation
+    enableGuidedAnswers?: boolean,
+    telemetryClient?: ToolsSuiteTelemetryClient
 ): Promise<OdataServiceAnswers> {
+    setTelemetryClient(telemetryClient);
+
     const odataServicePrompts = await getPrompts(promptOptions, logger, enableGuidedAnswers);
 
     /* if (adapter?.promptModule && (promptOptions?.service?.useAutocomplete || promptOptions?.sapSystem?.useAutocomplete)) {

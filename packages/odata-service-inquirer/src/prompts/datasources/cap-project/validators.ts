@@ -10,9 +10,9 @@ import { getCapProjectType } from '@sap-ux/project-access';
 export async function validateCapPath(capProjectPath: string): Promise<boolean | string> {
     if (capProjectPath) {
         try {
-            return !!(await getCapProjectType(capProjectPath)) || t('promps.validationMessages.capProjectNotFound');
+            return !!(await getCapProjectType(capProjectPath)) || t('prompts.validationMessages.capProjectNotFound');
         } catch (err) {
-            return t('promps.validationMessages.capProjectNotFound');
+            return t('prompts.validationMessages.capProjectNotFound');
         }
     }
     return false;

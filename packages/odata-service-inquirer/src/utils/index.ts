@@ -1,6 +1,6 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import type { TelemetryEvent, TelemetryProperties } from '@sap-ux/telemetry';
-import { ClientFactory, SampleRate } from '@sap-ux/telemetry';
+import type { TelemetryEvent, TelemetryProperties, ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
+import { SampleRate } from '@sap-ux/telemetry';
 import osName from 'os-name';
 import { PLATFORMS } from '../types';
 
@@ -19,6 +19,16 @@ export function getPlatform(): { name: string; technical: string } {
     }
 }
 
+let telemetryClient: ToolsSuiteTelemetryClient | undefined;
+
+/**
+ *
+ * @param toolsSuiteTelemetryClient
+ */
+export function setTelemetryClient(toolsSuiteTelemetryClient: ToolsSuiteTelemetryClient | undefined): void {
+    telemetryClient = toolsSuiteTelemetryClient;
+}
+
 /**
  * Send telemetry event.
  *
@@ -27,8 +37,10 @@ export function getPlatform(): { name: string; technical: string } {
  */
 export function sendTelemetryEvent(eventName: string, telemetryData: TelemetryProperties): void {
     const telemetryEvent = createTelemetryEvent(eventName, telemetryData);
-    /* eslint-disable @typescript-eslint/no-floating-promises */
-    ClientFactory.getTelemetryClient().reportEvent(telemetryEvent, SampleRate.NoSampling);
+    if (telemetryClient) {
+        /* eslint-disable @typescript-eslint/no-floating-promises */
+        telemetryClient.reportEvent(telemetryEvent, SampleRate.NoSampling);
+    }
 }
 
 /**
