@@ -35,9 +35,7 @@ describe('Test UI5 Library Reference Writer', () => {
         expect(fs.dump(testProjectPath, '**/webapp/*.json')).toMatchSnapshot();
         const ui5YamlContent = fs.dump(testProjectPath, '**/ui5.yaml')['ui5.yaml'].contents;
         expect(ui5YamlContent).toContain(`fiori-tools-servestatic`);
-        expect(ui5YamlContent).toContain(
-            `src: ${join('../../../../../sample/libs/my.namespace.reuse.attachmentservice')}`
-        );
+        expect(ui5YamlContent).toContain(`src: ${join('../../../sample/libs/my.namespace.reuse.attachmentservice')}`);
     });
 
     it('should generate the UI5 library reference in a project with a custom webapp path', async () => {
@@ -52,9 +50,7 @@ describe('Test UI5 Library Reference Writer', () => {
         expect(fs.dump(testProjectPath, '**/src/main/webapp/*.json')).toMatchSnapshot();
         const ui5YamlContent = fs.dump(testProjectPath, '**/ui5.yaml')['ui5.yaml'].contents;
         expect(ui5YamlContent).toContain(`fiori-tools-servestatic`);
-        expect(ui5YamlContent).toContain(
-            `src: ${join('../../../../../sample/libs/my.namespace.reuse.attachmentservice')}`
-        );
+        expect(ui5YamlContent).toContain(`src: ${join('../../../sample/libs/my.namespace.reuse.attachmentservice')}`);
     });
 
     it('should generate the UI5 library reference (sap.ui5.dependencies.libs does not exist)', async () => {
