@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.19.11
+
+### Patch Changes
+
+-   4389c528: expose library types
+
 ## 1.19.10
 
 ### Patch Changes
