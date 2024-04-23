@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.13.19
+
+### Patch Changes
+
+-   00cf3025: Alternative approach to have a consistent save for XML Fragments
+-   Updated dependencies [00cf3025]
+    -   @sap-ux/adp-tooling@0.9.20
+
 ## 0.13.18
 
 ### Patch Changes
