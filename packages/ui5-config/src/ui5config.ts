@@ -416,7 +416,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    private mergeCustomMiddleware(middleware: CustomMiddleware<unknown>): UI5Config {
+    private mergeCustomMiddleware(middleware: CustomMiddleware<unknown>): this {
         const name = middleware.name;
         if (this.findCustomMiddleware(name)) {
             this.document.updateAt({
