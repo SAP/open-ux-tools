@@ -71,7 +71,10 @@ function enhanceConfig(
     if (config.control) {
         config.content = config.control;
     } else {
-        Object.assign(config, getDefaultFragmentContentData(config.name, config.eventHandler, undefined, undefined, false));
+        Object.assign(
+            config,
+            getDefaultFragmentContentData(config.name, config.eventHandler, undefined, undefined, false)
+        );
     }
     // Additional dependencies to include into 'Fragment.xml'
     config.dependencies = getAdditionalDependencies(config.minUI5Version);
@@ -166,7 +169,10 @@ export function generateCustomHeaderSection(
         if (editSection.control) {
             editSection.content = editSection.control;
         } else {
-            Object.assign(editSection, getDefaultFragmentContentData(editSection.name, editSection.eventHandler, false, true, false));
+            Object.assign(
+                editSection,
+                getDefaultFragmentContentData(editSection.name, editSection.eventHandler, false, true, false)
+            );
         }
         if (editSection.path) {
             const viewPath = join(editSection.path, `${editSection.name}.fragment.xml`);
