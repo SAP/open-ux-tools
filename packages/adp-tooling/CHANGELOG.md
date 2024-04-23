@@ -1,5 +1,28 @@
 # @sap-ux/adp-tooling
 
+## 0.9.20
+
+### Patch Changes
+
+-   00cf3025: Alternative approach to have a consistent save for XML Fragments
+
+## 0.9.19
+
+### Patch Changes
+
+-   Updated dependencies [4389c528]
+    -   @sap-ux/project-access@1.19.11
+    -   @sap-ux/axios-extension@1.11.7
+    -   @sap-ux/system-access@0.3.21
+
+## 0.9.18
+
+### Patch Changes
+
+-   Updated dependencies [31f5027c]
+    -   @sap-ux/axios-extension@1.11.7
+    -   @sap-ux/system-access@0.3.21
+
 ## 0.9.17
 
 ### Patch Changes

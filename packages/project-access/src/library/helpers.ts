@@ -1,7 +1,6 @@
 import { join } from 'path';
 import { ui5Libs } from './constants';
-import type { LibraryResults, Manifest } from '../types';
-import { ReuseLibType, type ReuseLib } from './types';
+import { ReuseLibType, type LibraryResults, type Manifest, type ReuseLib } from '../types';
 import { findFiles } from '../file';
 import { FileName } from '../constants';
 import { existsSync, promises as fs } from 'fs';

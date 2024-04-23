@@ -3,13 +3,15 @@ import type { ReaderCollection } from '@ui5/fs';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { NextFunction, Request, Response, Router, RequestHandler } from 'express';
 
-import type { ToolsLogger } from '@sap-ux/logger';
+import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 
 import RoutesHandler from './routes-handler';
-import type { AdpPreviewConfig, DescriptorVariant } from '../types';
+import type { AdpPreviewConfig, CommonChangeProperties, DescriptorVariant, OperationType } from '../types';
+import type { Editor } from 'mem-fs-editor';
+import { addXmlFragment, isAddXMLChange, moduleNameContentMap, tryFixChange } from './change-handler';
 
 export const enum ApiRoutes {
     FRAGMENT = '/adp/api/fragment',
@@ -160,11 +162,42 @@ export class AdpPreview {
      */
     addApis(router: Router): void {
         router.get(ApiRoutes.FRAGMENT, this.routesHandler.handleReadAllFragments as RequestHandler);
-        router.post(ApiRoutes.FRAGMENT, this.routesHandler.handleWriteFragment as RequestHandler);
 
         router.get(ApiRoutes.CONTROLLER, this.routesHandler.handleReadAllControllers as RequestHandler);
         router.post(ApiRoutes.CONTROLLER, this.routesHandler.handleWriteControllerExt as RequestHandler);
 
         router.get(ApiRoutes.CODE_EXT, this.routesHandler.handleGetControllerExtensionData as RequestHandler);
+    }
+
+    /**
+     * Handles different types of change requests to project files.
+     *
+     * @param {string} type - The type of change request.
+     * @param {CommonChangeProperties} change - An object containing properties common to all change types.
+     * @param {Editor} fs - An instance of an editor interface for file system operations.
+     * @param {Logger} logger - An instance of a logging interface for message logging.
+     * @returns {Promise<void>} A promise that resolves when the change request has been processed.
+     */
+    async onChangeRequest(
+        type: OperationType,
+        change: CommonChangeProperties,
+        fs: Editor,
+        logger: Logger
+    ): Promise<void> {
+        switch (type) {
+            case 'read':
+                if (moduleNameContentMap[change.changeType] && !change.moduleName) {
+                    tryFixChange(change, logger);
+                }
+                break;
+            case 'write':
+                if (isAddXMLChange(change)) {
+                    addXmlFragment(this.util.getProject().getSourcePath(), change, fs, logger);
+                }
+                break;
+            default:
+                // no need to handle delete changes
+                break;
+        }
     }
 }
