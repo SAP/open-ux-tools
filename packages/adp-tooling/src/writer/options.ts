@@ -20,9 +20,6 @@ export function enhanceUI5Yaml(ui5Config: UI5Config, config: AdpWriterConfig) {
  * @param config full project configuration
  */
 export function enhanceUI5YamlWithCustomTask(ui5Config: UI5Config, config: AdpWriterConfig) {
-    if (config.ui5?.ui5Version) {
-        ui5Config.addUI5Framework('SAPUI5', config.ui5.ui5Version, []);
-    }
     const tasks = getAdpCloudCustomTasks(config);
     ui5Config.addCustomTasks(tasks);
 }

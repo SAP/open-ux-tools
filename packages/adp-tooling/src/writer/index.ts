@@ -11,7 +11,6 @@ import { WriterFactory } from './projects/writer-factory';
  * and then invokes the writer's write method to generate the project structure.
  *
  * @param {string} projectPath - The root path of the project.
- * @param {T} type - The type of generator.
  * @param {ProjectGeneratorData<T>} data - The data specific to the type of project, containing information necessary for specified project structure.
  * @param {Editor | null} [fs] - The `mem-fs-editor` instance used for file operations.
  * @returns {Promise<Editor>} A promise that resolves to the mem-fs editor instance used for generating project structure, allowing for further operations.
@@ -19,15 +18,15 @@ import { WriterFactory } from './projects/writer-factory';
  */
 export async function generate<T extends ProjectType>(
     projectPath: string,
-    type: T,
     data: ProjectGeneratorData<T>,
     fs: Editor | null = null
 ): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
+    const type:ProjectType = data.customConfig.adp.environment;
 
-    const writer = WriterFactory.createWriter<T>(type, fs, projectPath);
+    const writer = WriterFactory.createWriter(type, fs, projectPath);
 
     await writer.write(data);
 

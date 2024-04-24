@@ -7,7 +7,7 @@ import {
     writeManifestAppdecr,
     writeUI5Yaml,
     writeUI5DeployYaml
-} from '../../../base/project-utils';
+} from './project-utils';
 
 export class OnPremWriter implements IWriter<AdpWriterConfig> {
     /**

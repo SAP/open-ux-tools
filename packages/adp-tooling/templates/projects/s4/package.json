@@ -35,13 +35,13 @@
         "@ui5/task-adaptation": "^1.0.10",
         "bestzip": "2.1.4",
         "rimraf": "3.0.2",
-        "@ui5/cli": "^3.6.0"
+        "@ui5/cli": "^3.9.1"
     },
     "scripts": {
         "build": "ui5 build --include-task=generateCachebusterInfo && npm run zip",
 		"prebuild": "npm run clean",
-		"zip": "cd dist && npx bestzip ../<%= projectname %>.zip *",
-		"clean": "npx rimraf <%= projectname %>.zip dist",
+		"zip": "cd dist && npx bestzip ../<%= package.name %>.zip *",
+		"clean": "npx rimraf <%= package.name %>.zip dist",
 		"build-ui5": "npm explore @ui5/task-adaptation && npm run rollup",
 		"deploy": "npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip",
 		"undeploy": "fiori undeploy --config ui5-deploy.yaml",

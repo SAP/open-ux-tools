@@ -8,7 +8,7 @@ import {
     writeUI5DeployYaml,
     writeUI5Yaml,
     writeEnvFile
-} from '../../../base/project-utils';
+} from './project-utils';
 
 export class S4Writer extends OnPremWriter {
     /**
@@ -35,7 +35,7 @@ export class S4Writer extends OnPremWriter {
             writeManifestAppdecr(tmplPath, this.projectPath, fullConfig.appdescr, this.fs);
         }
         await writeUI5Yaml(this.projectPath, fullConfig, this.fs);
-        await writeUI5DeployYaml(this.projectPath, fullConfig, this.fs);
+        await writeUI5DeployYaml(tmplPath, this.projectPath, fullConfig, this.fs);
         await writeEnvFile(this.projectPath, fullConfig, this.fs);
     }
 }

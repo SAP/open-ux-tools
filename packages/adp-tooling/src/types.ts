@@ -53,7 +53,7 @@ export interface AdpWriterConfig {
             password: string;
         };
     };
-    customConfig?: AdpCustomConfig;
+    customConfig: AdpCustomConfig;
     /**
      * Optional: configuration for deployment to ABAP
      */
@@ -404,44 +404,4 @@ export interface AdpCustomConfig {
         safeMode: boolean;
         environment: ProjectType;
     };
-}
-
-export interface CfModuleData {
-    appHostId: string;
-    appName: string;
-    appVersion: string;
-    appId: string;
-    module: string;
-    moduleTitle: string;
-    appVariantId: string;
-    projectName: string;
-    i18nGuid: string;
-    projectPath: string;
-    addSecurity: string;
-    addStandaloneApprouter: boolean;
-    sapCloudService: string;
-    xsSecurityProjectName: string;
-    org: string;
-    space: string;
-    html5RepoRuntime: string;
-}
-
-export interface CfAdpConfig {
-    componentname: string;
-    safeMode: boolean;
-    appvariant: string;
-    layer: string;
-    isOVPApp: boolean;
-    isFioriElement: boolean;
-    environment: string;
-    ui5Version: string;
-    cfSpace: string;
-    cfOrganization: string;
-    cfApiUrl: string;
-}
-
-export interface CfWriterConfig {
-    app: CfModuleData;
-    appdescr: ManifestAppdescr;
-    adpConfig: CfAdpConfig;
 }
