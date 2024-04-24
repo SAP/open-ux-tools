@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 
-import type { ProjectGeneratorData, ProjectType } from '../types';
+import { ProjectGeneratorData, ProjectType } from '../types';
 import { WriterFactory } from './projects/writer-factory';
 
 /**
@@ -24,7 +24,7 @@ export async function generate<T extends ProjectType>(
     if (!fs) {
         fs = create(createStorage());
     }
-    const type:ProjectType = data.customConfig.adp.environment;
+    const type:ProjectType = data.customConfig?.adp.environment || ProjectType.ON_PREM;
 
     const writer = WriterFactory.createWriter(type, fs, projectPath);
 

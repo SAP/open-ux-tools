@@ -60,6 +60,6 @@ export class OnPremWriter implements IWriter<AdpWriterConfig> {
             writeManifestAppdecr(tmplPath, this.projectPath, fullConfig.appdescr, this.fs);
         }
         await writeUI5Yaml(this.projectPath, fullConfig, this.fs);
-        await writeUI5DeployYaml(this.projectPath, fullConfig, this.fs);
+        await writeUI5DeployYaml(tmplPath, this.projectPath, fullConfig, this.fs);
     }
 }

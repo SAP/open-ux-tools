@@ -32,7 +32,8 @@ export function enhanceUI5YamlWithCustomTask(ui5Config: UI5Config, config: AdpWr
  */
 export function enhanceUI5YamlWithCustomConfig(ui5Config: UI5Config, config?: AdpCustomConfig) {
     if (config?.adp) {
-        ui5Config.addCustomConfiguration('adp', config.adp);
+        const { safeMode } = config.adp;
+        ui5Config.addCustomConfiguration('adp', { safeMode });
     }
 }
 

@@ -1,6 +1,6 @@
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
-import { AdpWriterConfig, CfAdpConfig, CfModuleData, ManifestAppdescr, ProjectType } from '../../../types';
+import { AdpWriterConfig, ManifestAppdescr, ProjectType } from '../../../types';
 import {
     enhanceUI5DeployYaml,
     enhanceUI5Yaml,
@@ -23,7 +23,7 @@ import { UI5Config } from '@sap-ux/ui5-config';
 export function writeTemplateToFolder(
     templatePath: string,
     projectPath: string,
-    data: CfModuleData | AdpWriterConfig,
+    data: AdpWriterConfig,
     fs: Editor,
     exclude: string[] | [] = []
 ): void {

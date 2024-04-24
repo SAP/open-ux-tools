@@ -53,7 +53,7 @@ export interface AdpWriterConfig {
             password: string;
         };
     };
-    customConfig: AdpCustomConfig;
+    customConfig?: AdpCustomConfig;
     /**
      * Optional: configuration for deployment to ABAP
      */
@@ -233,7 +233,6 @@ export const enum ChangeType {
 export const enum ProjectType {
     ON_PREM = 'OnPrem',
     S4 = 'S4',
-    CF = 'CF'
 }
 
 /**
@@ -246,8 +245,6 @@ export type ProjectGeneratorData<T extends ProjectType> = T extends ProjectType.
     ? AdpWriterConfig
     : T extends ProjectType.S4
     ? AdpWriterConfig
-    : T extends ProjectType.CF
-    ? CfWriterConfig
     : never;
 
 /**

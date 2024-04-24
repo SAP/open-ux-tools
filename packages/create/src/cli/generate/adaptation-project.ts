@@ -78,7 +78,7 @@ async function generateAdaptationProject(
         if (!basePath) {
             basePath = join(process.cwd(), config.app.id);
         }
-        const fs = await generate(basePath, ProjectType.ON_PREM, config);
+        const fs = await generate(basePath, config);
 
         if (!simulate) {
             await new Promise((resolve) => fs.commit(resolve));

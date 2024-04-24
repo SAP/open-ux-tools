@@ -2,15 +2,14 @@ import type { Editor } from 'mem-fs-editor';
 
 import { ProjectType } from '../../types';
 import type { Writer, IProjectWriterData } from '../../types';
-import { OnPremWriter, S4Writer, CfWriter } from './writers';
+import { OnPremWriter, S4Writer } from './writers';
 /**
  * Handles the creation of a writer instance based on the project type.
  */
 export class WriterFactory {
     private static writers = new Map<ProjectType, Writer>([
         [ProjectType.ON_PREM, OnPremWriter],
-        [ProjectType.S4, S4Writer],
-        [ProjectType.CF, CfWriter]
+        [ProjectType.S4, S4Writer]
     ]);
 
     /**

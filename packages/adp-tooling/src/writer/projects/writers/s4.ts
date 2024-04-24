@@ -26,7 +26,7 @@ export class S4Writer extends OnPremWriter {
      * @returns {Promise<void>} A promise that resolves when the project writing process is completed.
      */
     async write(data: AdpWriterConfig): Promise<void> {
-        const tmplPath = join(__dirname, '../../../../templates/projects/s4');
+        const tmplPath = join(__dirname, '../../../../templates/projects/onprem');
         const fullConfig = this.setDefaults(data);
         const ignoredFiles = ['**/manifest.appdescr_variant'];
 
