@@ -9,7 +9,8 @@ import prettifyXml from 'prettify-xml';
 import { enhanceData, getAnnotationNamespaces } from './data';
 import { t } from './i18n';
 import { OdataService, OdataVersion, ServiceType } from './types';
-import type { ManifestNamespace } from '@sap-ux/project-access';
+import { getWebappPath } from '@sap-ux/project-access';
+import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
 
 /**
  * Ensures the existence of the given files in the provided base path. If a file in the provided list does not exit, an error would be thrown.
@@ -52,32 +53,6 @@ export async function findProjectFiles(
     }
 
     return files;
-}
-
-/**
- * Generate annotations config, using `dataSources` read manifest.json.
- *
- * @param {string} basePath - the root path of an existing UI5 application
- * @param {Editor} [fs] - the memfs editor instance
- * @returns {Promise<Array<{ localPath: string, urlPath: string }>>} An array with annotations config
- */
-async function generateODataAnnotationConfig(
-    basePath: string,
-    fs: Editor
-): Promise<Array<{ localPath: string; urlPath: string }>> {
-    const manifest = fs.readJSON(join(basePath, 'webapp', 'manifest.json'));
-    const result: { [k: string]: ManifestNamespace.DataSource } = {};
-    const dataSources = manifest?.['sap.app']?.dataSources ?? {};
-    for (const dataSource in dataSources) {
-        if (dataSources[dataSource].uri && dataSources[dataSource].type === 'ODataAnnotation') {
-            result[dataSource] = dataSources[dataSource];
-        }
-    }
-    const annotationSource = Object.values(result);
-    return annotationSource.map((annotation) => ({
-        localPath: `./webapp/${annotation.settings?.localUri}`,
-        urlPath: annotation.uri
-    }));
 }
 
 /**
@@ -133,9 +108,9 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     if (service.metadata) {
         // copy existing `ui5.yaml` as starting point for ui5-mock.yaml
         if (paths.ui5Yaml && ui5Config) {
-            const ui5MockConfig = await UI5Config.newInstance(ui5Config.toString());
-            ui5MockConfig.addMockServerMiddleware(service.path, await generateODataAnnotationConfig(basePath, fs));
-            fs.write(join(dirname(paths.ui5Yaml), 'ui5-mock.yaml'), ui5MockConfig.toString());
+            const webappPath = await getWebappPath(basePath);
+            const config = { webappPath };
+            await generateMockserverConfig(basePath, config, fs);
 
             // also add mockserver middleware to ui5-local.yaml
             if (ui5LocalConfig) {

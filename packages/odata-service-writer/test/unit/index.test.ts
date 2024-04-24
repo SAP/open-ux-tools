@@ -104,7 +104,6 @@ describe('generate', () => {
                 .addFioriToolsProxydMiddleware({ ui5: {} })
                 .toString();
             fs.write(join(root, 'ui5.yaml'), ui5YamlWithMiddleware);
-
             await generate(root, config, fs);
             const manifest = fs.readJSON(join(root, 'webapp/manifest.json')) as any;
             expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
