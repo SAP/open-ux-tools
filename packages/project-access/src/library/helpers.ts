@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { dirname, join } from 'path';
 import { ui5Libs } from './constants';
 import { ReuseLibType, type LibraryResults, type Manifest, type ReuseLib } from '../types';
 import { findFiles } from '../file';
@@ -34,7 +34,7 @@ const getLibraryFromManifest = async (
         if (libIndex === -1) {
             reuseLib = {
                 name: `${manifest['sap.app'].id}`,
-                path: manifestPath,
+                path: dirname(manifestPath),
                 type: reuseType,
                 uri: manifest['sap.platform.abap']?.uri ?? '',
                 dependencies: libDeps,
@@ -70,7 +70,7 @@ const getLibraryFromLibraryFile = async (
             const description = await getLibraryDesc(parsedFile, libraryPath);
             libEntry = {
                 name: `${parsedFile.library.name}`,
-                path: libraryPath,
+                path: dirname(libraryPath),
                 type: reuseType,
                 uri: parsedFile.library?.appData?.manifest?.['sap.platform.abap']?.uri || '',
                 dependencies: libDeps,
@@ -117,26 +117,19 @@ export const getReuseLibs = async (libs?: LibraryResults[]): Promise<ReuseLib[]>
             const libraryPaths = await findFiles('library.js', lib.projectRoot, excludeFolders);
 
             for (const manifestPath of manifestPaths) {
-                const manifest = JSON.parse(
-                    await fs.readFile(join(manifestPath, FileName.Manifest), { encoding: 'utf8' })
-                );
-                const library = await getLibraryFromManifest(
-                    manifest,
-                    join(manifestPath, FileName.Manifest),
-                    reuseLibs,
-                    lib.projectRoot
-                );
+                const manifestFilePath = join(manifestPath, FileName.Manifest);
+                const manifest = JSON.parse(await fs.readFile(manifestFilePath, { encoding: 'utf8' }));
+                const library = await getLibraryFromManifest(manifest, manifestFilePath, reuseLibs, lib.projectRoot);
                 if (library) {
                     reuseLibs.push(library);
                 }
             }
 
             for (const libraryPath of libraryPaths) {
-                const library = (
-                    await fs.readFile(join(libraryPath, FileName.Library), { encoding: 'utf8' })
-                ).toString();
+                const libraryFilePath = join(libraryPath, FileName.Library);
+                const library = (await fs.readFile(libraryFilePath, { encoding: 'utf8' })).toString();
 
-                const libFile = await getLibraryFromLibraryFile(library, libraryPath, lib.projectRoot);
+                const libFile = await getLibraryFromLibraryFile(library, libraryFilePath, lib.projectRoot);
                 updateLibOptions(reuseLibs, libFile);
             }
         }
@@ -151,7 +144,8 @@ export const getReuseLibs = async (libs?: LibraryResults[]): Promise<ReuseLib[]>
  * @returns the type of reuse library
  */
 function getReuseType(libraryPath: string): ReuseLibType {
-    return existsSync(join(libraryPath, '/library.js')) || existsSync(join(libraryPath, '/library.ts'))
+    return existsSync(join(dirname(libraryPath), '/library.js')) ||
+        existsSync(join(dirname(libraryPath), '/library.ts'))
         ? ReuseLibType.Library
         : ReuseLibType.Component;
 }
@@ -186,16 +180,16 @@ export function checkDependencies(answers: ReuseLib[], reuseLibs: ReuseLib[]): s
  * Returns the library description.
  *
  * @param library - library object
- * @param projectPath - project path
+ * @param libraryPath - library path
  * @returns library description
  */
-export async function getLibraryDesc(library: any, projectPath: string): Promise<string> {
+export async function getLibraryDesc(library: any, libraryPath: string): Promise<string> {
     let libraryDesc = library?.library?.documentation;
     if (typeof libraryDesc === 'string' && libraryDesc.startsWith('{{')) {
         const key = libraryDesc.substring(2, libraryDesc.length - 2);
 
         libraryDesc = await geti18nPropertyValue(
-            join(projectPath, library.library?.appData?.manifest?.i18n?.toString()),
+            join(dirname(libraryPath), library.library?.appData?.manifest?.i18n?.toString()),
             key
         );
     }
@@ -267,9 +261,7 @@ export async function getManifestDesc(manifest: Manifest, manifestPath: string):
         manifestDesc = await geti18nPropertyValue(i18nPath, key);
     }
 
-    const x = (manifestDesc ?? '').toString();
-
-    return x;
+    return (manifestDesc ?? '').toString();
 }
 
 /**
