@@ -13,7 +13,7 @@ async function collectPaths(root: string): Promise<string[]> {
         fileOrFolder.flatMap(async (relativePath: string) => {
             const path = join(root, relativePath);
             const stats = await promises.stat(path);
-            if (stats.isDirectory()) {
+            if (stats.isDirectory() && relativePath !== 'node_modules') {
                 return collectPaths(path);
             } else {
                 return Promise.resolve([path]);
