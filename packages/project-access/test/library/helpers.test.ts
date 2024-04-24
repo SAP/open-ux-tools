@@ -28,6 +28,32 @@ describe('library utils', () => {
         expect(libChoices[2].name).toBe('sap.reuse.ex.test.lib.attachmentservice.attachment.components.fscomponent');
         expect(libChoices[3].name).toBe('sap.reuse.ex.test.lib.attachmentservice.attachment.components.stcomponent');
 
+        expect(libChoices[0].path).toBe(
+            join(
+                __dirname,
+                '../test-data/libs/sap.reuse.ex.test.lib.attachmentservice/src/sap/reuse/ex/test/lib/attachmentservice'
+            )
+        );
+        expect(libChoices[1].path).toBe(
+            join(
+                __dirname,
+                '../test-data/libs/sap.reuse.ex.test.lib.attachmentservice/src/sap/reuse/ex/test/lib/attachmentservice/attachment'
+            )
+        );
+        expect(libChoices[2].path).toBe(
+            join(
+                __dirname,
+                '../test-data/libs/sap.reuse.ex.test.lib.attachmentservice/src/sap/reuse/ex/test/lib/attachmentservice/attachment/components/fscomponent'
+            )
+        );
+
+        expect(libChoices[3].path).toBe(
+            join(
+                __dirname,
+                '../test-data/libs/sap.reuse.ex.test.lib.attachmentservice/src/sap/reuse/ex/test/lib/attachmentservice/attachment/components/stcomponent'
+            )
+        );
+
         for (const lib of libChoices) {
             expect(lib.description).toBe('UI Library for Fiori Reuse Attachment Service');
         }

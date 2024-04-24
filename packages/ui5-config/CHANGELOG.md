@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.22.2
+
+### Patch Changes
+
+-   b7d95fb3: fix paths and config writers
+
 ## 0.22.1
 
 ### Patch Changes
