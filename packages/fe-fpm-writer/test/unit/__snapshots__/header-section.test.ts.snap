@@ -140,7 +140,7 @@ Object {
 exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in different extension folders for version 1.86 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<VBox core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomHeaderSection'}\\">
-		<Button  text=\\"NewCustomHeaderSection\\" press=\\"handler.onPress\\" />
+		<Button text=\\"NewCustomHeaderSection\\" press=\\"handler.onPress\\" />
 	</VBox>
 </core:FragmentDefinition>"
 `;
@@ -164,7 +164,7 @@ exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:f=\\"sap.ui.layout.form\\">
     <f:FormElement core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/different/NewCustomHeaderSectionEdit'}\\">
         <f:fields>
-            <Input  value=\\"NewCustomHeaderSectionEdit\\" change=\\"handler.onChange\\" />
+            <Input value=\\"NewCustomHeaderSectionEdit\\" change=\\"handler.onChange\\" />
         </f:fields>
     </f:FormElement>
 </core:FragmentDefinition>"
@@ -221,7 +221,7 @@ Object {
 exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in same extension folder for version 1.85 (edit mode not supported) 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<VBox core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomHeaderSection'}\\">
-		<Button  text=\\"NewCustomHeaderSection\\" press=\\"handler.onPress\\" />
+		<Button text=\\"NewCustomHeaderSection\\" press=\\"handler.onPress\\" />
 	</VBox>
 </core:FragmentDefinition>"
 `;
@@ -266,7 +266,7 @@ Object {
 exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in same extension folder for version 1.86 (edit mode disabled) 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<VBox core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomHeaderSection'}\\">
-		<Button  text=\\"NewCustomHeaderSection\\" press=\\"handler.onPress\\" />
+		<Button text=\\"NewCustomHeaderSection\\" press=\\"handler.onPress\\" />
 	</VBox>
 </core:FragmentDefinition>"
 `;
@@ -312,7 +312,7 @@ Object {
 exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in same extension folder for version 1.86 (eventHandler should not generate) 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<VBox core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomHeaderSection'}\\">
-		<Button  text=\\"NewCustomHeaderSection\\" press=\\"handler.onPress\\" />
+		<Button text=\\"NewCustomHeaderSection\\" press=\\"handler.onPress\\" />
 	</VBox>
 </core:FragmentDefinition>"
 `;
@@ -358,7 +358,7 @@ Object {
 exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in same extension folder for version 1.86 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<VBox core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomHeaderSection'}\\">
-		<Button  text=\\"NewCustomHeaderSection\\" press=\\"handler.onPress\\" />
+		<Button text=\\"NewCustomHeaderSection\\" press=\\"handler.onPress\\" />
 	</VBox>
 </core:FragmentDefinition>"
 `;
@@ -382,7 +382,7 @@ exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:f=\\"sap.ui.layout.form\\">
     <f:FormElement core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomHeaderSectionEdit'}\\">
         <f:fields>
-            <Input  value=\\"NewCustomHeaderSectionEdit\\" change=\\"handler.onChange\\" />
+            <Input value=\\"NewCustomHeaderSectionEdit\\" change=\\"handler.onChange\\" />
         </f:fields>
     </f:FormElement>
 </core:FragmentDefinition>"
@@ -429,7 +429,7 @@ Object {
 exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in same extension folder for version 1.98 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
 	<VBox core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomHeaderSection'}\\">
-		<Button  text=\\"NewCustomHeaderSection\\" press=\\"handler.onPress\\" />
+		<Button text=\\"NewCustomHeaderSection\\" press=\\"handler.onPress\\" />
 	</VBox>
 </core:FragmentDefinition>"
 `;
@@ -453,7 +453,7 @@ exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:f=\\"sap.ui.layout.form\\">
     <f:FormElement core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomHeaderSectionEdit'}\\">
         <f:fields>
-            <Input  value=\\"NewCustomHeaderSectionEdit\\" change=\\"handler.onChange\\" />
+            <Input value=\\"NewCustomHeaderSectionEdit\\" change=\\"handler.onChange\\" />
         </f:fields>
     </f:FormElement>
 </core:FragmentDefinition>"

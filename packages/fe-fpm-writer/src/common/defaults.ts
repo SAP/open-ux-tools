@@ -52,14 +52,18 @@ export function getDefaultFragmentContentData(
         const method = parts.pop();
         const handler = `${parts.join('/')}${isController ? '.controller' : ''}`;
         requireAttribute = `core:require="{ handler: '${handler}'}"`;
+        const attributes = [];
+        if (includeRequireInContent) {
+            attributes.push(requireAttribute);
+        }
         if (prefferInput) {
-            content = `<Input ${
-                includeRequireInContent ? requireAttribute : ''
-            } value="${text}" change="handler.${method}" />`;
+            attributes.push(`value="${text}"`);
+            attributes.push(`change="handler.${method}"`);
+            content = `<Input ${attributes.join(' ')} />`;
         } else {
-            content = `<Button ${
-                includeRequireInContent ? requireAttribute : ''
-            } text="${text}" press="handler.${method}" />`;
+            attributes.push(`text="${text}"`);
+            attributes.push(`press="handler.${method}"`);
+            content = `<Button ${attributes.join(' ')} />`;
         }
     } else if (prefferInput) {
         content = `<Input value="${text}" />`;
