@@ -1,4 +1,3 @@
-// import * as initBundle from '../../../src/flp/init';
 import {
     init,
     registerComponentDependencyPaths,
@@ -10,7 +9,6 @@ import IconPoolMock from 'mock/sap/ui/core/IconPool';
 import { mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
 import { fetchMock, sapMock } from 'mock/window';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
-import ts from 'sap/ui/model/odata/v4/ts';
 
 describe('flp/init', () => {
     test('registerSAPFonts', () => {

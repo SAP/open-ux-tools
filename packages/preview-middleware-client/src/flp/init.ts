@@ -124,7 +124,6 @@ function registerModules(
  * Fetch the app state from the given application urls, then reset the app state.
  *
  * @param container the UShell container
- * @returns returns a promise when the app state is resetted.
  */
 export async function resetAppState(container: typeof sap.ushell.Container): Promise<void> {
     const appStateService = await container.getServiceAsync<AppState>('AppState');
