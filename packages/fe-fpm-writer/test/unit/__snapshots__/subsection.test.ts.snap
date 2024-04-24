@@ -152,7 +152,7 @@ Object {
 exports[`SubCustomSection generateCustomSubSection Versions 1.85 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<VBox core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSubSection'}\\">
-		<Button  text=\\"NewCustomSubSection\\" press=\\"handler.onPress\\" />
+		<Button text=\\"NewCustomSubSection\\" press=\\"handler.onPress\\" />
 	</VBox>
 </core:FragmentDefinition>"
 `;
@@ -196,7 +196,7 @@ Object {
 exports[`SubCustomSection generateCustomSubSection Versions 1.86 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<VBox core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSubSection'}\\">
-		<Button  text=\\"NewCustomSubSection\\" press=\\"handler.onPress\\" />
+		<Button text=\\"NewCustomSubSection\\" press=\\"handler.onPress\\" />
 	</VBox>
 </core:FragmentDefinition>"
 `;
@@ -240,7 +240,7 @@ Object {
 exports[`SubCustomSection generateCustomSubSection Versions 1.98 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
 	<VBox core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSubSection'}\\">
-		<Button  text=\\"NewCustomSubSection\\" press=\\"handler.onPress\\" />
+		<Button text=\\"NewCustomSubSection\\" press=\\"handler.onPress\\" />
 	</VBox>
 </core:FragmentDefinition>"
 `;
