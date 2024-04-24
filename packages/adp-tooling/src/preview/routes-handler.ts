@@ -13,10 +13,6 @@ import { TemplateFileName, HttpStatusCodes } from '../types';
 import { DirName } from '@sap-ux/project-access';
 import type { CodeExtChange } from '../types';
 
-interface WriteFragmentBody {
-    fragmentName: string;
-}
-
 interface WriteControllerBody {
     controllerName: string;
     projectId: string;
@@ -97,55 +93,6 @@ export default class RoutesHandler {
             this.logger.debug(`Read fragments ${JSON.stringify(fileNames)}`);
         } catch (e) {
             this.handleErrorMessage(res, next, e);
-        }
-    };
-
-    /**
-     * Handler for writing a fragment file to the workspace.
-     *
-     * @param req Request
-     * @param res Response
-     * @param next Next Function
-     */
-    public handleWriteFragment = async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const data = req.body as WriteFragmentBody;
-
-            const fragmentName = sanitize(data.fragmentName);
-
-            const sourcePath = this.util.getProject().getSourcePath();
-
-            if (!fragmentName) {
-                res.status(HttpStatusCodes.BAD_REQUEST).send('Fragment name was not provided!');
-                this.logger.debug('Bad request. Fragment name was not provided!');
-                return;
-            }
-
-            const fullPath = path.join(sourcePath, DirName.Changes, DirName.Fragments);
-            const filePath = path.join(fullPath, `${fragmentName}.fragment.xml`);
-
-            if (!fs.existsSync(fullPath)) {
-                fs.mkdirSync(fullPath, { recursive: true });
-            }
-
-            if (fs.existsSync(filePath)) {
-                res.status(HttpStatusCodes.CONFLICT).send(`Fragment with name "${fragmentName}" already exists`);
-                this.logger.debug(`XML Fragment with name "${fragmentName}" was created`);
-                return;
-            }
-
-            // Copy the template XML Fragment to the project's workspace
-            const fragmentTemplatePath = path.join(__dirname, '../../templates/rta', TemplateFileName.Fragment);
-            fs.copyFileSync(fragmentTemplatePath, filePath);
-
-            const message = 'XML Fragment created';
-            res.status(HttpStatusCodes.CREATED).send(message);
-            this.logger.debug(`XML Fragment with name "${fragmentName}" was created`);
-        } catch (e) {
-            const sanitizedMsg = sanitize(e.message);
-            this.logger.error(sanitizedMsg);
-            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(sanitizedMsg);
-            next(e);
         }
     };
 
