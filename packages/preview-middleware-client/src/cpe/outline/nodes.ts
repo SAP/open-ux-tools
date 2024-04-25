@@ -5,6 +5,8 @@ import type { Scenario } from 'sap/ui/fl/Scenario';
 
 import { isEditable } from './utils';
 
+type ExtendedOutlineNode = OutlineNode & { extensionPointInfo: { defaultContent: string[] } };
+
 /**
  * Retrieves additional data for a given control ID.
  *
@@ -67,13 +69,33 @@ export async function transformNodes(input: OutlineViewNode[], scenario: Scenari
         }
 
         if (scenario === 'ADAPTATION_PROJECT' && current?.type === 'extensionPoint') {
+            const extensionPointInfo = (current as unknown as ExtendedOutlineNode).extensionPointInfo;
+
+            const hasDefaultContent = extensionPointInfo.defaultContent.length > 0;
+
+            let children: OutlineNode[] = [];
+            if (hasDefaultContent) {
+                extensionPointInfo.defaultContent.forEach((id) => {
+                    const { text } = getAdditionalData(id);
+                    const editable = isEditable(id);
+                    children.push({
+                        controlId: id,
+                        controlType: 'sap.ui.extensionpoint.child',
+                        name: text ?? id,
+                        visible: true,
+                        editable,
+                        children: []
+                    });
+                });
+            }
+
             const node: OutlineNode = {
                 controlId: current.id,
                 controlType: current.technicalName,
                 name: current.name!,
                 editable,
                 visible: current.visible ?? true,
-                children: [],
+                children,
                 icon: current.icon
             };
 
