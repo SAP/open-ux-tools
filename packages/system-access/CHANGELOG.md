@@ -1,5 +1,43 @@
 # @sap-ux/system-access
 
+## 0.3.21
+
+### Patch Changes
+
+-   Updated dependencies [31f5027c]
+    -   @sap-ux/axios-extension@1.11.7
+
+## 0.3.20
+
+### Patch Changes
+
+-   Updated dependencies [080e7b06]
+    -   @sap-ux/axios-extension@1.11.6
+
+## 0.3.19
+
+### Patch Changes
+
+-   1db4c60c: FIX: use correct url for reentrance tickets and enhance config to support it
+-   Updated dependencies [1db4c60c]
+    -   @sap-ux/axios-extension@1.11.5
+
+## 0.3.18
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+-   Updated dependencies [61b46bc8]
+    -   @sap-ux/axios-extension@1.11.4
+    -   @sap-ux/btp-utils@0.14.3
+
+## 0.3.17
+
+### Patch Changes
+
+-   Updated dependencies [e443e534]
+    -   @sap-ux/store@0.5.0
+
 ## 0.3.16
 
 ### Patch Changes

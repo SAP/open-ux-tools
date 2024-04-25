@@ -56,6 +56,7 @@ describe('toolsSuiteTelemetrySettings', () => {
      * Has existing central telemetry setting
      */
     it('Telemetry setting exists in store, enabled: true', async () => {
+        const getFilesystemWatcherForSpy = jest.spyOn(storeMock, 'getFilesystemWatcherFor');
         jest.spyOn(storeMock, 'getService').mockImplementation(() =>
             Promise.resolve({
                 read: () => Promise.resolve({ enableTelemetry: true })
@@ -65,10 +66,12 @@ describe('toolsSuiteTelemetrySettings', () => {
         await initTelemetrySettings({
             resourceId: '',
             consumerModule: packageJson,
-            internalFeature: false
+            internalFeature: false,
+            watchTelemetrySettingStore: true
         });
 
         expect(readFileMock).toBeCalledTimes(0);
+        expect(getFilesystemWatcherForSpy).toBeCalledTimes(1);
         expect(TelemetrySettings.consumerModuleName).toBe('testProject');
         expect(TelemetrySettings.consumerModuleVersion).toBe('0.0.1');
         expect(TelemetrySettings.telemetryEnabled).toBe(true);
@@ -82,15 +85,17 @@ describe('toolsSuiteTelemetrySettings', () => {
         );
 
         await initTelemetrySettings({
-            resourceId: '',
+            resourceId: undefined,
             consumerModule: packageJson,
-            internalFeature: false
+            internalFeature: false,
+            watchTelemetrySettingStore: false
         });
 
         expect(readFileMock).toBeCalledTimes(0);
         expect(TelemetrySettings.telemetryEnabled).toBe(false);
         expect(TelemetrySettings.consumerModuleName).toBe('testProject');
         expect(TelemetrySettings.consumerModuleVersion).toBe('0.0.1');
+        expect(TelemetrySettings.azureInstrumentationKey).toBe('');
     });
 
     /**
@@ -98,6 +103,7 @@ describe('toolsSuiteTelemetrySettings', () => {
      * Set enableTelemetry to fase if any of the vscode extension setting is false.
      */
     it('Telemetry setting does not exist in store, at least one of legacy telemetry setting is disabled', async () => {
+        const getFilesystemWatcherForSpy = jest.spyOn(storeMock, 'getFilesystemWatcherFor');
         mockSettingFileContent['sap.ux.help.enableTelemetry'] = false;
         jest.spyOn(storeMock, 'getService').mockImplementation(() =>
             Promise.resolve({
@@ -108,16 +114,19 @@ describe('toolsSuiteTelemetrySettings', () => {
         readFileMock.mockReturnValueOnce(Promise.resolve(JSON.stringify(mockSettingFileContent)));
 
         await initTelemetrySettings({
-            resourceId: '',
+            resourceId: 'abc-123',
             consumerModule: packageJson,
-            internalFeature: false
+            internalFeature: false,
+            watchTelemetrySettingStore: false
         });
 
         expect(readFileMock).toBeCalledTimes(1);
         expect(readFileMock).toBeCalledWith(expect.stringContaining('settings.json'), 'utf-8');
+        expect(getFilesystemWatcherForSpy).toBeCalledTimes(0);
         expect(TelemetrySettings.telemetryEnabled).toBe(false);
         expect(TelemetrySettings.consumerModuleName).toBe('testProject');
         expect(TelemetrySettings.consumerModuleVersion).toBe('0.0.1');
+        expect(TelemetrySettings.azureInstrumentationKey).toBe('abc-123');
     });
 
     /**
@@ -136,7 +145,8 @@ describe('toolsSuiteTelemetrySettings', () => {
         await initTelemetrySettings({
             resourceId: '',
             consumerModule: packageJson,
-            internalFeature: false
+            internalFeature: false,
+            watchTelemetrySettingStore: false
         });
 
         expect(readFileMock).toBeCalledTimes(1);
@@ -161,7 +171,8 @@ describe('toolsSuiteTelemetrySettings', () => {
         await initTelemetrySettings({
             resourceId: '',
             consumerModule: packageJson,
-            internalFeature: false
+            internalFeature: false,
+            watchTelemetrySettingStore: false
         });
         expect(readFileMock).toBeCalledTimes(1);
         expect(readFileMock).toBeCalledWith(expect.stringContaining('settings.json'), 'utf-8');
@@ -186,7 +197,8 @@ describe('toolsSuiteTelemetrySettings', () => {
         await initTelemetrySettings({
             resourceId: '',
             consumerModule: packageJson,
-            internalFeature: false
+            internalFeature: false,
+            watchTelemetrySettingStore: false
         });
         expect(readFileMock).toBeCalledTimes(1);
         expect(readFileMock).toBeCalledWith(expect.stringContaining('settings.json'), 'utf-8');
@@ -210,7 +222,8 @@ describe('toolsSuiteTelemetrySettings', () => {
         await initTelemetrySettings({
             resourceId: '',
             consumerModule: packageJson,
-            internalFeature: false
+            internalFeature: false,
+            watchTelemetrySettingStore: false
         });
         expect(readFileMock).toBeCalledTimes(1);
         expect(readFileMock).toBeCalledWith(expect.stringContaining('settings.json'), 'utf-8');
@@ -240,7 +253,8 @@ describe('toolsSuiteTelemetrySettings', () => {
         await initTelemetrySettings({
             resourceId: '',
             consumerModule: packageJson,
-            internalFeature: false
+            internalFeature: false,
+            watchTelemetrySettingStore: false
         });
         expect(readFileMock).toBeCalledTimes(0);
         expect(TelemetrySettings.telemetryEnabled).toBe(true);

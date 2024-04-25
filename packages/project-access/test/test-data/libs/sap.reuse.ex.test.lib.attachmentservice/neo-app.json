@@ -1,0 +1,74 @@
+{
+    "welcomeFile": "index.html",
+    "routes": [
+        {
+            "path": "/webapp/resources/sap/test/feature",
+            "target": {
+                "type": "application",
+                "name": "saps4hcfndfeaturetoggle"
+            },
+            "description": "Feature Toggle Library"
+        },
+        {
+            "path": "/resources/sap/test/feature",
+            "target": {
+                "type": "application",
+                "name": "saps4hcfndfeaturetoggle"
+            },
+            "description": "Feature Toggle Library"
+        },
+        {
+            "path": "/resources/sap/se/mi/plm/lib/attachmentservice",
+            "target": {
+                "type": "application",
+                "name": "sapsemiplmlibattachmentservice"
+            },
+            "description": ""
+        },
+        {
+            "path": "/test-resources",
+            "target": {
+                "type": "application",
+                "name": "sapsemiplmlibattachmentservice",
+                "entryPath": "test"
+            },
+            "description": ""
+        },
+        {
+            "path": "/resources",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "entryPath": "/resources"
+            },
+            "description": "SAPUI5 Resources"
+        },
+        {
+            "path": "/resources",
+            "target": {
+                "type": "service",
+                "name": "sapui5",
+                "entryPath": "/resources"
+            },
+            "description": "SAPUI5 Resources"
+        },
+        {
+            "path": "/test-resources",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "entryPath": "/test-resources"
+            },
+            "description": "SAPUI5 Test Resources"
+        },
+        {
+            "path": "/test-resources",
+            "target": {
+                "type": "service",
+                "name": "sapui5",
+                "entryPath": "/test-resources"
+            },
+            "description": "SAPUI5 Test Resources"
+        }
+    ]
+}

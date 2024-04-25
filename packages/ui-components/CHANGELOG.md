@@ -1,5 +1,65 @@
 # @sap-ux/ui-components
 
+## 1.15.13
+
+### Patch Changes
+
+-   494fd0f1: fix: UISections splitter resize issue after window resize
+
+## 1.15.12
+
+### Patch Changes
+
+-   8b0e0418: Fixed styling for disabled UICheckbox.
+
+## 1.15.11
+
+### Patch Changes
+
+-   f3acc1c6: Security upgrade fixes - `webpack-dev-middleware` from `6.1.1` to `6.1.3`
+
+## 1.15.10
+
+### Patch Changes
+
+-   edc3a166: UIComboBox. Extender 'isLoading' property with option to set loading within combobox input.
+
+## 1.15.9
+
+### Patch Changes
+
+-   d188f765: Upgrading version of `sanitize-html` due to medium priority security issue
+
+## 1.15.8
+
+### Patch Changes
+
+-   75653b31: UIIconButton. Some icons(which are not 16x16) are not centered within UIIconButton
+
+## 1.15.7
+
+### Patch Changes
+
+-   942b8f2f: Fixes for SonarQube issues:
+    1. Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.
+    1. Refactor this code to not use nested template literals.
+    1. Remove this property or method or refactor "Class", as "method" is not used inside component body
+    1. Move this component definition out of the parent component and pass data as props.
+    1. The signature '(from: number, length?: number | undefined): string' of 'text.substr' is deprecated.
+    1. Mark the props of the component as read-only.
+    1. Make this public static property readonly.
+    1. Prefer using an optional chain expression instead, as it's more concise and easier to read.
+    1. '{property}' is deprecated.
+    1. Unnecessary use of boolean literals in conditional expression.
+    1. useState call is not destructured into value + setter pair
+    1. Remove this commented out code.
+
+## 1.15.6
+
+### Patch Changes
+
+-   f6f7111c: UIIconButton. Apply vscode theme variables for UIIconButton when 'checked' property is set as 'true'
+
 ## 1.15.5
 
 ### Patch Changes

@@ -1,5 +1,93 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.18.17
+
+### Patch Changes
+
+-   Updated dependencies [2e10a7ae]
+    -   @sap-ux/fe-fpm-writer@0.24.10
+
+## 0.18.16
+
+### Patch Changes
+
+-   Updated dependencies [b7d95fb3]
+    -   @sap-ux/ui5-config@0.22.2
+    -   @sap-ux/fe-fpm-writer@0.24.9
+    -   @sap-ux/odata-service-writer@0.16.5
+    -   @sap-ux/ui5-application-writer@0.26.8
+    -   @sap-ux/ui5-test-writer@0.3.2
+
+## 0.18.15
+
+### Patch Changes
+
+-   8b227bb4: Fix passing the Table Type Parameters to the writer
+
+## 0.18.14
+
+### Patch Changes
+
+-   4599ee7f: Add more support for setting the table type in the writer. Add TreeTable.
+
+## 0.18.13
+
+### Patch Changes
+
+-   da0ecd9a: Enable Typscript type checking in eslint module @sap-ux/eslint-plugin-fiori-tools
+-   Updated dependencies [da0ecd9a]
+    -   @sap-ux/ui5-application-writer@0.26.7
+
+## 0.18.12
+
+### Patch Changes
+
+-   Updated dependencies [1ec097f8]
+    -   @sap-ux/odata-service-writer@0.16.4
+
+## 0.18.11
+
+### Patch Changes
+
+-   Updated dependencies [efa35ddd]
+    -   @sap-ux/ui5-config@0.22.1
+    -   @sap-ux/odata-service-writer@0.16.3
+    -   @sap-ux/ui5-application-writer@0.26.6
+    -   @sap-ux/fe-fpm-writer@0.24.9
+    -   @sap-ux/ui5-test-writer@0.3.2
+
+## 0.18.10
+
+### Patch Changes
+
+-   Updated dependencies [ec509c40]
+    -   @sap-ux/ui5-config@0.22.0
+    -   @sap-ux/odata-service-writer@0.16.2
+    -   @sap-ux/ui5-application-writer@0.26.5
+    -   @sap-ux/fe-fpm-writer@0.24.9
+    -   @sap-ux/ui5-test-writer@0.3.2
+
+## 0.18.9
+
+### Patch Changes
+
+-   4b29ddcc: Update TypeScript templates, eslint config and ui5 devDependencies
+-   Updated dependencies [4b29ddcc]
+    -   @sap-ux/ui5-application-writer@0.26.4
+
+## 0.18.8
+
+### Patch Changes
+
+-   7964a7ba: Adds exports for determining supported ui5 versions for FE templates
+
+## 0.18.7
+
+### Patch Changes
+
+-   Updated dependencies [3c9d8f5d]
+    -   @sap-ux/fe-fpm-writer@0.24.9
+
 ## 0.18.6
 
 ### Patch Changes

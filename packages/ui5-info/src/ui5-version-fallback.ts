@@ -1,4 +1,6 @@
+import { coerce, gte } from 'semver';
 import type { UI5VersionOverview } from './types';
+import { defaultMinUi5Version } from './constants';
 
 export const supportState = {
     maintenance: 'Maintenance',
@@ -6,11 +8,23 @@ export const supportState = {
     skipped: 'Skipped'
 } as const;
 
-// Updated Oct-18-2023
+// Updated April-16-2024 from https://ui5.sap.com/versionoverview.json
 export const ui5VersionFallbacks = [
     {
-        version: '1.119.*',
+        version: '1.122.*',
         support: supportState.maintenance
+    },
+    {
+        version: '1.121.*',
+        support: supportState.maintenance
+    },
+    {
+        version: '1.120.*',
+        support: supportState.maintenance
+    },
+    {
+        version: '1.119.*',
+        support: supportState.outOfMaintenance
     },
     {
         version: '1.118.*',
@@ -30,7 +44,7 @@ export const ui5VersionFallbacks = [
     },
     {
         version: '1.114.*',
-        support: supportState.maintenance
+        support: supportState.outOfMaintenance
     },
     {
         version: '1.113.*',
@@ -329,3 +343,18 @@ export const ui5VersionFallbacks = [
         support: supportState.outOfMaintenance
     }
 ] as UI5VersionOverview[];
+
+const supportedUi5VersionFallbacks = ui5VersionFallbacks
+    .filter((supportVersion) => {
+        if (
+            supportVersion.support === supportState.maintenance &&
+            gte(coerce(supportVersion.version) ?? '0.0.0', defaultMinUi5Version)
+        ) {
+            return true;
+        }
+        return false;
+    })
+    .map((maintainedVersion) => coerce(maintainedVersion.version)?.version ?? '0.0.0');
+
+const defaultUi5Versions = [...supportedUi5VersionFallbacks];
+export { defaultUi5Versions, supportedUi5VersionFallbacks };

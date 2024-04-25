@@ -1,4 +1,4 @@
-export { FileName } from './constants';
+export { FileName, DirName, FioriToolsSettings } from './constants';
 export { getFilePaths } from './file';
 export {
     createApplicationAccess,
@@ -24,6 +24,7 @@ export {
     getProject,
     getProjectType,
     getWebappPath,
+    isCapProject,
     isCapJavaProject,
     isCapNodeJsProject,
     loadModuleFromProject,
@@ -32,3 +33,4 @@ export {
     toReferenceUri
 } from './project';
 export * from './types';
+export * from './library';

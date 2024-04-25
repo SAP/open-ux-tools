@@ -1,4 +1,4 @@
-// Last content update: Tue Nov 07 2023 12:06:19 GMT+0200 (Eastern European Standard Time)
+// Last content update: Wed Apr 03 2024 08:50:55 GMT+0200 (Central European Summer Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -153,12 +153,17 @@ export default {
         'RecursiveHierarchyActionsType': {
             '$Kind': 'ComplexType',
             '@Org.OData.Core.V1.LongDescription':
-                'The qualified action names identify actions for maintaining nodes in the recursive hierarchy,\nwhich are specific for the given annotation qualifier.\nThese actions MUST have the same signature as the template actions linked below, with\n`Edm.EntityType` replaced with the entity type on which the recursive hierarchy is defined.\nThe resource path of the binding parameter MUST traverse the hierarchy collection,\nincluding any hierarchy directory.\n\nThe template actions themselves cannot be invoked.',
+                'The qualified action names identify actions for maintaining nodes in the recursive hierarchy,\nwhich are specific for the given annotation qualifier.\nThese actions MUST have the same signature as the template actions linked below, with\n`Edm.EntityType` replaced with the entity type on which the recursive hierarchy is defined.\nThe resource path of the binding parameter MUST traverse the hierarchy collection,\nincluding any hierarchy directory. If the resource path contains a Content ID reference to an earlier request,\nthe hierarchy directory MUST be determined from the resource path of that request.\n```json\n{"requests": [{\n  "id": "1",\n  "method": "post",\n  "url": "HierarchyDirectory(1)/Nodes",\n  "body": {\n    "Name": "child of A",\n    "Superordinate@odata.bind": "Nodes(\'A\')"\n  }\n}, {\n  "id": "2",\n  "dependsOn": ["1"],\n  "method": "post",\n  "url": "$1/Hierarchy.ChangeNextSiblingAction",\n  "body": {\n    "NextSibling": null\n  }\n}]}\n```\nThe template actions themselves cannot be invoked.',
             'ChangeNextSiblingAction': {
                 '$Type': 'com.sap.vocabularies.Common.v1.QualifiedName',
                 '$Nullable': true,
                 '@Org.OData.Core.V1.Description':
                     'Action that moves a node among its siblings, following [this template](#Template_ChangeNextSiblingAction)'
+            },
+            'ChangeSiblingForRootsSupported': {
+                '$Type': 'Edm.Boolean',
+                '$DefaultValue': true,
+                '@Org.OData.Core.V1.Description': 'Whether the sibling of a root can be changed'
             },
             'CopyAction': {
                 '$Type': 'com.sap.vocabularies.Common.v1.QualifiedName',
@@ -297,7 +302,7 @@ export default {
                 '@Org.OData.Core.V1.Description':
                     'Template for actions that copy a node and its descendants and are named in [`RecursiveHierarchyActions/CopyAction`](#RecursiveHierarchyActionsType)',
                 '@Org.OData.Core.V1.LongDescription':
-                    'To give the copied sub-hierarchy a parent, the action invocation can be followed\nby a PATCH that binds the parent navigation property (for example, `Superordinate` in the following JSON batch request).\n```json\n{"requests": [{\n  "id": "1",\n  "method": "post",\n  "url": "HierarchyDirectory(1)/Nodes(\'A\')/CopyAction"\n}, {\n  "id": "2",\n  "dependsOn": ["1"],\n  "method": "patch",\n  "url": "$1",\n  "body": {\n    "Superordinate": {"@id": "Nodes(\'B\')"}\n  }\n}]}\n```',
+                    'To give the copied sub-hierarchy a parent, the action invocation can be followed\nby a PATCH that binds the parent navigation property (for example, `Superordinate` in the following JSON batch request).\n```json\n{"requests": [{\n  "id": "1",\n  "method": "post",\n  "url": "HierarchyDirectory(1)/Nodes(\'A\')/CopyAction"\n}, {\n  "id": "2",\n  "dependsOn": ["1"],\n  "method": "patch",\n  "url": "$1",\n  "body": {\n    "Superordinate@odata.bind": "Nodes(\'B\')"\n  }\n}]}\n```',
                 '$Parameter': [
                     {
                         '$Name': 'Node',

@@ -128,7 +128,9 @@ server:
             metadataPath: ./webapp/localService/metadata.xml
             mockdataPath: ./webapp/localService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/annotations/annotation.xml
+            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
@@ -3632,31 +3634,6 @@ sap.registerComponentDependencyPaths(manifestUri)
 
 exports[`Fiori Elements template: feopTemplate Generate files for template: fefeop2ts 1`] = `
 Object {
-  ".babelrc.json": Object {
-    "contents": "{
-    \\"presets\\": [
-        \\"@babel/preset-env\\",
-        [
-            \\"transform-ui5\\",
-            {
-                \\"overridesToOverride\\": true
-            }
-        ],
-        \\"@babel/preset-typescript\\"
-    ],
-    \\"plugins\\": [
-        \\"transform-remove-console\\",
-        [
-            \\"transform-async-to-promises\\",
-            {
-                \\"inlineHelpers\\": true
-            }
-        ]
-    ],
-    \\"sourceMaps\\": true
-}",
-    "state": "modified",
-  },
   ".eslintrc": Object {
     "contents": "{
     \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
@@ -3696,11 +3673,11 @@ archive.zip
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"UI5-1.92\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
-    \\"ui5-tooling-transpile\\": \\"^3.2.0\\",
+    \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
     \\"typescript\\": \\"^5.1.6\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
-    \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.2.0\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
+    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -3778,6 +3755,8 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
         excludePatterns:
           - /Component-preload.js
     - name: fiori-tools-proxy
@@ -3803,6 +3782,8 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
 ",
     "state": "modified",
   },
@@ -3837,6 +3818,8 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
         excludePatterns:
           - /Component-preload.js
     - name: sap-fe-mockserver
@@ -3848,13 +3831,17 @@ server:
             metadataPath: ./webapp/localService/metadata.xml
             mockdataPath: ./webapp/localService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/annotations/annotation.xml
+            urlPath: annotations/annotation.xml
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
 ",
     "state": "modified",
   },
@@ -3889,6 +3876,8 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
         excludePatterns:
           - /Component-preload.js
 builder:
@@ -3897,6 +3886,8 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
 ",
     "state": "modified",
   },

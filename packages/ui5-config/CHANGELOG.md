@@ -1,5 +1,23 @@
 # @sap-ux/ui5-config
 
+## 0.22.2
+
+### Patch Changes
+
+-   b7d95fb3: fix paths and config writers
+
+## 0.22.1
+
+### Patch Changes
+
+-   efa35ddd: adds new module @sap-ux/ui5-library-reference-writer
+
+## 0.22.0
+
+### Minor Changes
+
+-   ec509c40: dynamically appends annotations from manifest.json for mockserver middleware config
+
 ## 0.21.1
 
 ### Patch Changes

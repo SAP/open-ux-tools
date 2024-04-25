@@ -9,6 +9,12 @@ describe('UI5Config', () => {
         destinationInstance = '~destinationInstance~',
         client = '012';
 
+    const annotationsConfig = [
+        {
+            localPath: './webapp/annotations/annotations.xml',
+            urlPath: 'annotations.xml'
+        }
+    ];
     // object under test
     let ui5Config: UI5Config;
     beforeEach(async () => {
@@ -208,6 +214,10 @@ describe('UI5Config', () => {
             ui5Config.addMockServerMiddleware();
             expect(ui5Config.toString()).toMatchSnapshot();
         });
+        test('add with path and annotationsConfig', () => {
+            ui5Config.addMockServerMiddleware(path, annotationsConfig);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
     });
 
     test('getAppReloadMiddlewareConfig', () => {
@@ -334,6 +344,61 @@ describe('UI5Config', () => {
                 },
                 app
             );
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+    });
+
+    describe('addServeStaticConfig', () => {
+        const serveStaticMiddleware = {
+            name: 'fiori-tools-servestatic',
+            afterMiddleware: 'compression',
+            configuration: {
+                paths: [
+                    { path: '/resources/targetapp', src: '/targetapp/abeppw' },
+                    { path: '/appconfig', src: '/srcapp/appconfig' }
+                ]
+            }
+        };
+
+        const fioriToolsProxy = {
+            name: 'fiori-tools-proxy',
+            afterMiddleware: 'compression',
+            configuration: {
+                ignoreCertError: false,
+                backend: [
+                    {
+                        path: '/sap',
+                        url: 'http://test.url.com:50017'
+                    }
+                ]
+            }
+        };
+
+        test('add with single path (no existing serve static config)', () => {
+            ui5Config.addServeStaticConfig([{ path, src: '/~src', fallthrough: false }]);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('add with multiple paths (existing config)', () => {
+            ui5Config.addCustomMiddleware([serveStaticMiddleware]);
+
+            ui5Config.addServeStaticConfig([
+                { path: '/~path', src: '/~src', fallthrough: false },
+                { path: '/~otherPath', src: '/~otherSrc', fallthrough: false }
+            ]);
+            expect(ui5Config.toString()).toMatchSnapshot();
+
+            ui5Config.addServeStaticConfig([{ path: '/~newPath', src: '/~newSrc', fallthrough: false }]);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('update serve static config', () => {
+            ui5Config.addCustomMiddleware([serveStaticMiddleware, fioriToolsProxy]);
+
+            ui5Config.addServeStaticConfig([
+                { path, src: '/~src', fallthrough: false },
+                { path: '/~other', src: '/~otherSrc', fallthrough: false }
+            ]);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
     });

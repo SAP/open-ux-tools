@@ -4,10 +4,9 @@ import { executeNpmUI5VersionsCmd } from './commands';
 import axios from 'axios';
 import type { Logger } from '@sap-ux/logger';
 import { ToolsLogger } from '@sap-ux/logger';
-import { ui5VersionFallbacks } from './ui5-version-fallback';
+import { ui5VersionFallbacks, defaultUi5Versions } from './ui5-version-fallback';
 import {
     defaultMinUi5Version,
-    defaultUi5Versions,
     defaultVersion,
     latestVersionString,
     ui5VersionRequestInfo,

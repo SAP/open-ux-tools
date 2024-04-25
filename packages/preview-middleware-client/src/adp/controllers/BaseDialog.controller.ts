@@ -7,8 +7,10 @@ import { ValueState } from 'sap/ui/core/library';
 import Controller from 'sap/ui/core/mvc/Controller';
 import JSONModel from 'sap/ui/model/json/JSONModel';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import CommandExecutor from '../command-executor';
+import { matchesFragmentName } from '../utils';
 
 /**
  * @namespace open.ux.preview.client.adp.controllers
@@ -45,7 +47,7 @@ export default abstract class BaseDialog extends Controller {
 
     abstract setup(dialog: Dialog): Promise<void>;
 
-    abstract onCreateBtnPress(event: Event): Promise<void>;
+    abstract onCreateBtnPress(event: Event): Promise<void> | void;
 
     abstract buildDialogData(): Promise<void>;
 
@@ -54,7 +56,7 @@ export default abstract class BaseDialog extends Controller {
      *
      * @param event Event
      */
-    onFragmentNameInputChange(event: Event) {
+    onFragmentNameInputChange(event: Event): void {
         const input = event.getSource<Input>();
         const beginBtn = this.dialog.getBeginButton();
 
@@ -94,8 +96,40 @@ export default abstract class BaseDialog extends Controller {
             return;
         }
 
+        const changeExists = this.checkForExistingChange(fragmentName);
+
+        if (changeExists) {
+            updateDialogState(
+                ValueState.Error,
+                'Enter a different name. The fragment name entered matches the name of an unsaved fragment.'
+            );
+            return;
+        }
+
         updateDialogState(ValueState.Success);
         this.model.setProperty('/newFragmentName', fragmentName);
+    }
+
+    /**
+     * Checks for the existence of a change associated with a specific fragment name in the RTA command stack.
+     *
+     * @param {string} fragmentName - The name of the fragment to check for existing changes.
+     * @returns {Promise<boolean>} A promise that resolves to `true` if a matching change is found, otherwise `false`.
+     */
+    checkForExistingChange(fragmentName: string): boolean {
+        const allCommands = this.rta.getCommandStack().getCommands();
+
+        return allCommands.some((command: FlexCommand) => {
+            if (command?.getProperty('name') === 'composite') {
+                const addXmlCommand = command
+                    .getCommands()
+                    .find((c: FlexCommand) => c?.getProperty('name') === 'addXMLAtExtensionPoint');
+
+                return addXmlCommand && matchesFragmentName(addXmlCommand, fragmentName);
+            } else {
+                return matchesFragmentName(command, fragmentName);
+            }
+        });
     }
 
     /**

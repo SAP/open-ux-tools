@@ -1,5 +1,23 @@
 # @sap-ux/odata-vocabularies
 
+## 0.3.7
+
+### Patch Changes
+
+-   95c72dff: update vocabularies content
+
+## 0.3.6
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+
+## 0.3.5
+
+### Patch Changes
+
+-   82c07285: OData Vocabularies: Update Some Texts in Specific Vocabularies For Analytics Support in CDS
+
 ## 0.3.4
 
 ### Patch Changes

@@ -1,5 +1,35 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.9.6
+
+### Patch Changes
+
+-   00cf3025: Alternative approach to have a consistent save for XML Fragments
+
+## 0.9.5
+
+### Patch Changes
+
+-   da0ecd9a: Enable Typscript type checking in eslint module @sap-ux/eslint-plugin-fiori-tools
+
+## 0.9.4
+
+### Patch Changes
+
+-   4cbb1639: "Open in VS Code" button for Controller Extension dialog does not work in BAS
+
+## 0.9.3
+
+### Patch Changes
+
+-   6a477fba: feat: Replace auto-refresh with message in case of manual flex file changes
+
+## 0.9.2
+
+### Patch Changes
+
+-   6d76e076: Enhance `preview-middleware` to allow running QUnit and OPA5 tests.
+
 ## 0.9.1
 
 ### Patch Changes

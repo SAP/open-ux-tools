@@ -1,5 +1,29 @@
 # @sap-ux/control-property-editor
 
+## 0.4.17
+
+### Patch Changes
+
+-   31ae689d: websocket over https
+
+## 0.4.16
+
+### Patch Changes
+
+-   6a477fba: feat: Replace auto-refresh with message in case of manual flex file changes
+
+## 0.4.15
+
+### Patch Changes
+
+-   fc76be56: do not trigger empty change on focus out
+
+## 0.4.14
+
+### Patch Changes
+
+-   373b9052: fix empty changes added on focus out
+
 ## 0.4.13
 
 ### Patch Changes

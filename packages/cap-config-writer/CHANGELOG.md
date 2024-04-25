@@ -1,5 +1,107 @@
 # @sap-ux/cap-config-writer
 
+## 0.2.32
+
+### Patch Changes
+
+-   Updated dependencies [b7d95fb3]
+    -   @sap-ux/project-access@1.19.12
+
+## 0.2.31
+
+### Patch Changes
+
+-   Updated dependencies [4389c528]
+    -   @sap-ux/project-access@1.19.11
+
+## 0.2.30
+
+### Patch Changes
+
+-   Updated dependencies [f8e16120]
+    -   @sap-ux/project-access@1.19.10
+
+## 0.2.29
+
+### Patch Changes
+
+-   Updated dependencies [ee76e47f]
+    -   @sap-ux/project-access@1.19.9
+
+## 0.2.28
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.19.8
+
+## 0.2.27
+
+### Patch Changes
+
+-   Updated dependencies [98496d57]
+-   Updated dependencies [e3d2e003]
+    -   @sap-ux/project-access@1.19.7
+
+## 0.2.26
+
+### Patch Changes
+
+-   Updated dependencies [f0e3263a]
+    -   @sap-ux/project-access@1.19.6
+
+## 0.2.25
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.19.5
+
+## 0.2.24
+
+### Patch Changes
+
+-   Updated dependencies [87c942e5]
+    -   @sap-ux/project-access@1.19.4
+
+## 0.2.23
+
+### Patch Changes
+
+-   Updated dependencies [89013210]
+    -   @sap-ux/project-access@1.19.3
+
+## 0.2.22
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.19.2
+
+## 0.2.21
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.19.1
+
+## 0.2.20
+
+### Patch Changes
+
+-   Updated dependencies [a4f00f7c]
+    -   @sap-ux/project-access@1.19.0
+
+## 0.2.19
+
+### Patch Changes
+
+-   Updated dependencies [e6da2117]
+    -   @sap-ux/project-access@1.18.0
+
+## 0.2.18
+
+### Patch Changes
+
+-   Updated dependencies [c381d32f]
+    -   @sap-ux/project-access@1.17.6
+
 ## 0.2.17
 
 ### Patch Changes

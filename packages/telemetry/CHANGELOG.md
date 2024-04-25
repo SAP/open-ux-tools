@@ -1,5 +1,157 @@
 # @sap-ux/telemetry
 
+## 0.4.19
+
+### Patch Changes
+
+-   Updated dependencies [b7d95fb3]
+    -   @sap-ux/project-access@1.19.12
+    -   @sap-ux/ui5-config@0.22.2
+
+## 0.4.18
+
+### Patch Changes
+
+-   Updated dependencies [4389c528]
+    -   @sap-ux/project-access@1.19.11
+
+## 0.4.17
+
+### Patch Changes
+
+-   Updated dependencies [f8e16120]
+    -   @sap-ux/project-access@1.19.10
+
+## 0.4.16
+
+### Patch Changes
+
+-   Updated dependencies [ee76e47f]
+    -   @sap-ux/project-access@1.19.9
+
+## 0.4.15
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.19.8
+
+## 0.4.14
+
+### Patch Changes
+
+-   Updated dependencies [98496d57]
+-   Updated dependencies [e3d2e003]
+    -   @sap-ux/project-access@1.19.7
+
+## 0.4.13
+
+### Patch Changes
+
+-   68c7c6e8: Fix coding style based on sonar scan
+
+## 0.4.12
+
+### Patch Changes
+
+-   Updated dependencies [f0e3263a]
+    -   @sap-ux/project-access@1.19.6
+
+## 0.4.11
+
+### Patch Changes
+
+-   Updated dependencies [efa35ddd]
+    -   @sap-ux/ui5-config@0.22.1
+    -   @sap-ux/project-access@1.19.5
+
+## 0.4.10
+
+### Patch Changes
+
+-   Updated dependencies [87c942e5]
+    -   @sap-ux/project-access@1.19.4
+
+## 0.4.9
+
+### Patch Changes
+
+-   Updated dependencies [89013210]
+    -   @sap-ux/project-access@1.19.3
+
+## 0.4.8
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+-   Updated dependencies [61b46bc8]
+    -   @sap-ux/btp-utils@0.14.3
+
+## 0.4.7
+
+### Patch Changes
+
+-   Updated dependencies [ec509c40]
+    -   @sap-ux/ui5-config@0.22.0
+    -   @sap-ux/project-access@1.19.2
+
+## 0.4.6
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.19.1
+
+## 0.4.5
+
+### Patch Changes
+
+-   Updated dependencies [a4f00f7c]
+    -   @sap-ux/project-access@1.19.0
+
+## 0.4.4
+
+### Patch Changes
+
+-   e05c129b: Remove unused dependency
+
+## 0.4.3
+
+### Patch Changes
+
+-   Updated dependencies [e6da2117]
+    -   @sap-ux/project-access@1.18.0
+
+## 0.4.2
+
+### Patch Changes
+
+-   Updated dependencies [e443e534]
+    -   @sap-ux/store@0.5.0
+
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [c381d32f]
+    -   @sap-ux/project-access@1.17.6
+
+## 0.4.0
+
+### Minor Changes
+
+-   15d6afbe: update init settings, bump azure applicationinsights and stablise tests
+
+## 0.3.1
+
+### Patch Changes
+
+-   98d34e8e: fix for assigning resource id in telemetry settings
+
+## 0.3.0
+
+### Minor Changes
+
+-   b2e867bc: no longer require resource id in initialisation
+
 ## 0.2.12
 
 ### Patch Changes

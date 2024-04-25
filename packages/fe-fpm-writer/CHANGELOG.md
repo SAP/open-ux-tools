@@ -1,5 +1,17 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.24.10
+
+### Patch Changes
+
+-   2e10a7ae: fix: fragment of custom section with event handler - move attribute 'core:require' from inner element('Button', 'Input') to wrapper element('VBox', 'FormElement')
+
+## 0.24.9
+
+### Patch Changes
+
+-   3c9d8f5d: Fixed namespace for controller event handler
+
 ## 0.24.8
 
 ### Patch Changes

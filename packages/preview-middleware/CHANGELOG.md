@@ -1,5 +1,238 @@
 # @sap-ux/preview-middleware
 
+## 0.13.20
+
+### Patch Changes
+
+-   Updated dependencies [b7d95fb3]
+    -   @sap-ux/project-access@1.19.12
+    -   @sap-ux/adp-tooling@0.9.21
+
+## 0.13.19
+
+### Patch Changes
+
+-   00cf3025: Alternative approach to have a consistent save for XML Fragments
+-   Updated dependencies [00cf3025]
+    -   @sap-ux/adp-tooling@0.9.20
+
+## 0.13.18
+
+### Patch Changes
+
+-   Updated dependencies [4389c528]
+    -   @sap-ux/project-access@1.19.11
+    -   @sap-ux/adp-tooling@0.9.19
+
+## 0.13.17
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.18
+
+## 0.13.16
+
+### Patch Changes
+
+-   fc55fd6b: Component Usages writer produces incorrect content of a change
+-   Updated dependencies [fc55fd6b]
+    -   @sap-ux/adp-tooling@0.9.17
+
+## 0.13.15
+
+### Patch Changes
+
+-   Updated dependencies [f8e16120]
+    -   @sap-ux/project-access@1.19.10
+    -   @sap-ux/adp-tooling@0.9.16
+
+## 0.13.14
+
+### Patch Changes
+
+-   Updated dependencies [ee76e47f]
+    -   @sap-ux/project-access@1.19.9
+    -   @sap-ux/adp-tooling@0.9.15
+
+## 0.13.13
+
+### Patch Changes
+
+-   6291bc37: chore - update dependencies to fix audit warnings
+-   Updated dependencies [6291bc37]
+    -   @sap-ux/adp-tooling@0.9.14
+
+## 0.13.12
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.19.8
+-   @sap-ux/adp-tooling@0.9.13
+
+## 0.13.11
+
+### Patch Changes
+
+-   Updated dependencies [98496d57]
+-   Updated dependencies [e3d2e003]
+    -   @sap-ux/project-access@1.19.7
+    -   @sap-ux/adp-tooling@0.9.12
+
+## 0.13.10
+
+### Patch Changes
+
+-   b17858cc: Support usage when running in connect server like karma
+
+## 0.13.9
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.11
+
+## 0.13.8
+
+### Patch Changes
+
+-   10ce9b44: Fix potential race condition when executing qunit tests
+
+## 0.13.7
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.10
+
+## 0.13.6
+
+### Patch Changes
+
+-   4cbb1639: "Open in VS Code" button for Controller Extension dialog does not work in BAS
+-   Updated dependencies [4cbb1639]
+    -   @sap-ux/adp-tooling@0.9.9
+
+## 0.13.5
+
+### Patch Changes
+
+-   Updated dependencies [f0e3263a]
+    -   @sap-ux/project-access@1.19.6
+    -   @sap-ux/adp-tooling@0.9.8
+
+## 0.13.4
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.7
+-   @sap-ux/project-access@1.19.5
+
+## 0.13.3
+
+### Patch Changes
+
+-   31ae689d: websocket over https
+
+## 0.13.2
+
+### Patch Changes
+
+-   Updated dependencies [87c942e5]
+    -   @sap-ux/project-access@1.19.4
+    -   @sap-ux/adp-tooling@0.9.6
+
+## 0.13.1
+
+### Patch Changes
+
+-   25ecdb90: Fix missing title and description on launchpad tile
+
+## 0.13.0
+
+### Minor Changes
+
+-   733fcde8: Allow adding tiles pointing to remote apps
+
+## 0.12.15
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+-   Updated dependencies [61b46bc8]
+    -   @sap-ux/adp-tooling@0.9.6
+
+## 0.12.14
+
+### Patch Changes
+
+-   6a477fba: feat: Replace auto-refresh with message in case of manual flex file changes
+    -   @sap-ux/adp-tooling@0.9.5
+
+## 0.12.13
+
+### Patch Changes
+
+-   Updated dependencies [4b29ddcc]
+    -   @sap-ux/adp-tooling@0.9.4
+
+## 0.12.12
+
+### Patch Changes
+
+-   6d76e076: Enhance `preview-middleware` to allow running QUnit and OPA5 tests.
+
+## 0.12.11
+
+### Patch Changes
+
+-   874187b9: Using inbound navigation writer to generate appropriate change files does not produce correct results
+-   Updated dependencies [874187b9]
+    -   @sap-ux/adp-tooling@0.9.3
+
+## 0.12.10
+
+### Patch Changes
+
+-   fc76be56: do not trigger empty change on focus out
+
+## 0.12.9
+
+### Patch Changes
+
+-   212d54ed: Removed unnecessary peer dependency of the adp-tooling and corrected the integration into the preview-middleware
+-   Updated dependencies [212d54ed]
+    -   @sap-ux/adp-tooling@0.9.2
+
+## 0.12.8
+
+### Patch Changes
+
+-   dcd3324e: fix on-blur no change for cpe
+
+## 0.12.7
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.1
+
+## 0.12.6
+
+### Patch Changes
+
+-   cf842794: Adds writer functionality for Adaptation Project's manifest change editors
+-   Updated dependencies [cf842794]
+    -   @sap-ux/adp-tooling@0.9.0
+
+## 0.12.5
+
+### Patch Changes
+
+-   6c5dba8e: Add reload-middleware
+
+## 0.12.4
+
+### Patch Changes
+
+-   5448433a: FIX: preview path on windows
+
 ## 0.12.3
 
 ### Patch Changes
