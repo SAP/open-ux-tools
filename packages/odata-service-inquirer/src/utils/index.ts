@@ -22,7 +22,8 @@ export function getPlatform(): { name: string; technical: string } {
 let telemetryClient: ToolsSuiteTelemetryClient | undefined;
 
 /**
- *
+ * Set the telemetry client.
+ * 
  * @param toolsSuiteTelemetryClient
  */
 export function setTelemetryClient(toolsSuiteTelemetryClient: ToolsSuiteTelemetryClient | undefined): void {

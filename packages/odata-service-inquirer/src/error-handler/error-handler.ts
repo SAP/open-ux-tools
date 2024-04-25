@@ -1,10 +1,10 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { type Logger, ToolsLogger } from '@sap-ux/logger';
+import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import { t } from '../i18n';
-import { PLATFORMS, ValidationLink } from '../types';
-import { getPlatform, sendTelemetryEvent } from '../utils';
-import { getHelpUrl, GUIDED_ANSWERS_LAUNCH_CMD_ID, HELP_NODES, HELP_TREE } from './help/help-topics';
+import { ValidationLink } from '../types';
+import { sendTelemetryEvent } from '../utils';
+import { GUIDED_ANSWERS_LAUNCH_CMD_ID, HELP_NODES, HELP_TREE, getHelpUrl } from './help/help-topics';
 import { GUIDED_ANSWERS_ICON } from './help/images';
 
 const teleEventGALinkCreated = 'GA_LINK_CREATED';
@@ -426,7 +426,7 @@ export class ErrorHandler {
         const helpNode = ErrorHandler.getHelpNode(errorType);
         const mappedErrorMsg = errorMsg || ErrorHandler.getErrorMsgFromType(errorType);
 
-        if (helpNode && getPlatform() === PLATFORMS.CLI) {
+        if (helpNode) {
             const valLink: IValidationLink = {
                 message: mappedErrorMsg ?? '',
                 link: {
