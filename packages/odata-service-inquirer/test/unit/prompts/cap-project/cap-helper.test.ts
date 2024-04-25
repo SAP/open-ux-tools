@@ -191,6 +191,21 @@ describe('cap-helper', () => {
                 message: expect.stringContaining(" Module '@sap/cds' not installed in project")
             } as Error)
         );
+
+        // CAP service `urlPath` not defined
+        errorHandlerSpy.mockClear();
+        logErrorSpy.mockClear();
+        readCapServiceMetadataEdmxSpy.mockRestore();
+        expect(
+            await getCapEdmx({
+                projectPath: '/test/mock/bookshop',
+                serviceName: 'CatalogService'
+            })
+        ).toBe(undefined);
+        // Error handler should be called with custom error message
+        expect(errorHandlerSpy).toHaveBeenCalledWith(
+            t('errors.capServiceUrlPathNotDefined', { serviceName: 'CatalogService' })
+        );
     });
 
     test('getCapServiceChoices', async () => {

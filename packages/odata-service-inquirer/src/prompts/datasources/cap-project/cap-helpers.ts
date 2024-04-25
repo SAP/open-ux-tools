@@ -188,13 +188,17 @@ export async function getCapServiceChoices(capProjectPaths: CapProjectPaths): Pr
 }
 
 /**
- * Get the edmx metadata for the CAP service. Currently this will reload the model and services for each call.
- * It could be optimized if we cached the project cds, model and services from previous calls when populating the Cap service choices.
+ * Get the edmx metadata for the CAP service.
  *
  * @param capService - The CAP service
  * @returns The edmx metadata for the CAP service
  */
 export async function getCapEdmx(capService: CapService): Promise<string | undefined> {
+    if (!capService.urlPath) {
+        const errorMsg = t('errors.capServiceUrlPathNotDefined', { serviceName: capService.serviceName });
+        errorHandler.logErrorMsgs(errorMsg);
+        return;
+    }
     try {
         return await readCapServiceMetadataEdmx(capService.projectPath, capService.urlPath, 'v4');
     } catch (error) {

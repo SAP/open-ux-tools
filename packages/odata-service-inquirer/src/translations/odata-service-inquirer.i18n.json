@@ -50,6 +50,8 @@
     },
     "errors": {
         "cannotReadCapServiceMetadata": "An error occurred reading CAP service metadata: {{serviceName}}. See log for more details.",
+        "capModelAndServicesLoadError": "An error occurred loading the CAP model and services. {{- error}}",
+        "capServiceUrlPathNotDefined": "An error occurred reading CAP service metadata: {{serviceName}}. CAP service property `urlPath` is not defined but is required.",
         "unknownError": "An error occurred: {{- error}}",
         "servicesUnavailable": "An error occurred retrieving service(s) for SAP System.",
         "certificateError": "A certificate error has occurred: {{- error}}",
@@ -69,8 +71,7 @@
         "noServicesAvailable": "There are no V{{version}} OData services available from the selected system and the template you have chosen supports V{{version}} OData services only",
         "redirectError": "A redirect response was received from the server",
         "abapEnvsUnavailable": "ABAP environments unavailable",
-        "noSuchHostError": "No such host is known",
-        "capModelAndServicesLoadError": "An error occurred loading the CAP model and services. {{- error}}"
+        "noSuchHostError": "No such host is known"
     },
     "texts": {
         "anExpiredCert": "an expired",

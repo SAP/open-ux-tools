@@ -164,8 +164,9 @@ export interface CapService {
     serviceName: string;
     /**
      * The URL path to the service, as specfied in the manifest.json of generated apps
+     * This is also provided as `OdataServicePromptAnswers` property `servicePath`
      */
-    urlPath: string;
+    urlPath?: string;
     /**
      * The relative path (from the `projectPath`) to the service cds file.
      */
