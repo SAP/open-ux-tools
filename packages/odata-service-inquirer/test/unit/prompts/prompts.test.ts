@@ -2,6 +2,8 @@ import { initI18nOdataServiceInquirer, t } from '../../../src/i18n';
 import { getQuestions } from '../../../src/prompts';
 import { DatasourceType } from '../../../src/types';
 import * as btpUtils from '@sap-ux/btp-utils';
+import { Severity } from '@sap-devx/yeoman-ui-types';
+import { ToolsLogger } from '@sap-ux/logger';
 
 /**
  * Workaround to for spyOn TypeError: Jest cannot redefine property
@@ -138,8 +140,21 @@ describe('getQuestions', () => {
                 }
             ])
         });
+    });
 
-        // Ensure the not implemented message is shown for all non-implemented datasources
-        // todo: Add tests for other datasources
+    test('datasourceTypeQuestion displays and logs not implemented yet message', async () => {
+        const logWarnSpy = jest.spyOn(ToolsLogger.prototype, 'warn');
+        const datasourceType = DatasourceType.sap_system;
+        const datasourceTypeQuestion = (await getQuestions())[0];
+        expect(datasourceTypeQuestion.name).toEqual('datasourceType');
+
+        const additionalMessages = (datasourceTypeQuestion.additionalMessages as Function)(datasourceType);
+        expect(additionalMessages).toMatchObject({
+            message: t('prompts.datasourceType.notYetImplemenetdWarningMessage', { datasourceType }),
+            severity: Severity.warning
+        });
+        expect(logWarnSpy).toHaveBeenCalledWith(
+            t('prompts.datasourceType.notYetImplemenetdWarningMessage', { datasourceType })
+        );
     });
 });
