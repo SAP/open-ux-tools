@@ -1,6 +1,7 @@
 import { initI18nOdataServiceInquirer, t } from '../../../src/i18n';
 import { getQuestions } from '../../../src/prompts';
-import { DatasourceType } from '../../../src/types';
+import { DatasourceType, PLATFORMS } from '../../../src/types';
+import * as utils from '../../../src/utils';
 import * as btpUtils from '@sap-ux/btp-utils';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { ToolsLogger } from '@sap-ux/logger';
@@ -26,6 +27,7 @@ describe('getQuestions', () => {
         jest.restoreAllMocks();
     });
     test('getQuestions', async () => {
+        jest.spyOn(utils, 'getPlatform').mockReturnValueOnce(PLATFORMS.CLI);
         // Tests all declaritive values
         expect(await getQuestions()).toMatchInlineSnapshot(`
             [

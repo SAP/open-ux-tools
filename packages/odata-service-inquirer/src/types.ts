@@ -154,12 +154,30 @@ export interface CapProjectChoice extends ListChoiceOptions {
 export type CapRuntime = 'Node.js' | 'Java';
 
 export interface CapService {
-    projectPath: string; // The CAP Project Root
+    /**
+     * The path to the CAP project.
+     */
+    projectPath: string;
+    /**
+     * The name of the CAP service as identified by the cds model.
+     */
     serviceName: string;
-    urlPath: string; // URL path to the service
-    serviceCdsPath?: string; // relative path to cap service cds file
+    /**
+     * The URL path to the service, as specfied in the manifest.json of generated apps
+     */
+    urlPath: string;
+    /**
+     * The relative path (from the `projectPath`) to the service cds file.
+     */
+    serviceCdsPath?: string;
+    /**
+     * The runtime of the CAP service.
+     */
     capType?: CapRuntime;
-    appPath?: string; // Path to the app folder
+    /**
+     * The relative path (from the `projectPath`) to the app folder
+     */
+    appPath?: string;
 }
 
 export interface CapServiceChoice extends ListChoiceOptions {
