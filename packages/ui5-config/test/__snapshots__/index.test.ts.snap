@@ -344,6 +344,35 @@ exports[`UI5Config addServeStaticConfig add with multiple paths (existing config
             src: /targetapp/abeppw
           - path: /appconfig
             src: /srcapp/appconfig
+          - path: /~path
+            src: /~src
+            fallthrough: false
+          - path: /~otherPath
+            src: /~otherSrc
+            fallthrough: false
+"
+`;
+
+exports[`UI5Config addServeStaticConfig add with multiple paths (existing config) 2`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-servestatic
+      afterMiddleware: compression
+      configuration:
+        paths:
+          - path: /resources/targetapp
+            src: /targetapp/abeppw
+          - path: /appconfig
+            src: /srcapp/appconfig
+          - path: /~path
+            src: /~src
+            fallthrough: false
+          - path: /~otherPath
+            src: /~otherSrc
+            fallthrough: false
+          - path: /~newPath
+            src: /~newSrc
+            fallthrough: false
 "
 `;
 
@@ -356,11 +385,11 @@ exports[`UI5Config addServeStaticConfig add with single path (no existing serve 
         paths:
           - path: /~testpath~
             src: /~src
-            fallthrough: true
+            fallthrough: false
 "
 `;
 
-exports[`UI5Config addServeStaticConfig update serve static ocnfig 1`] = `
+exports[`UI5Config addServeStaticConfig update serve static config 1`] = `
 "server:
   customMiddleware:
     - name: fiori-tools-servestatic
@@ -373,7 +402,7 @@ exports[`UI5Config addServeStaticConfig update serve static ocnfig 1`] = `
             src: /srcapp/appconfig
           - path: /~testpath~
             src: /~src
-            fallthrough: true
+            fallthrough: false
           - path: /~other
             src: /~otherSrc
             fallthrough: false
