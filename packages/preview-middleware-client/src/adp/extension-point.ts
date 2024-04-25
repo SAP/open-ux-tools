@@ -28,7 +28,7 @@ export interface ExtensionPointInfo {
     fragmentId?: string;
     aggregation?: string[];
     aggregationName?: string;
-    defaultContent?: string[];
+    defaultContent?: UI5Element[];
     targetControl?: UI5Element;
 }
 
