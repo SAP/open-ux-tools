@@ -294,6 +294,7 @@ export const Tree = (): ReactElement => {
             <></>
         );
         const isExtensionPoint = item?.controlType === 'sap.ui.extensionpoint';
+
         const tooltipId = `tooltip--${item?.name}`;
 
         return item && typeof itemIndex === 'number' && itemIndex > -1 ? (
@@ -373,9 +374,14 @@ export const Tree = (): ReactElement => {
         if (selectNode) {
             refProps.ref = scrollRef;
         }
-        const isExtensionPoint = groupHeaderProps?.group?.data?.controlType === 'sap.ui.extensionpoint';
+        const data = groupHeaderProps?.group?.data;
+        const isExtensionPoint = data?.controlType === 'sap.ui.extensionpoint';
+        let extPointHasChildren = false;
+        if (isExtensionPoint) {
+            extPointHasChildren = data?.children.length > 0;
+        }
         const focus = filterQuery.filter((item) => item.name === FilterName.focusEditable)[0].value as boolean;
-        const focusEditable = !groupHeaderProps?.group?.data?.editable && focus ? 'focusEditable' : '';
+        const focusEditable = !data?.editable && focus ? 'focusEditable' : '';
         const controlChange = controlChanges[groupHeaderProps?.group?.key ?? ''];
         const indicator = controlChange ? (
             <ChangeIndicator id={`${groupHeaderProps?.group?.key ?? ''}--ChangeIndicator`} {...controlChange} />
@@ -406,9 +412,7 @@ export const Tree = (): ReactElement => {
                             }}
                         />
                     )}
-                    {isExtensionPoint && (
-                        <Icon className={`${chevronTransform} extension-icon`} iconName={UiIcons.DataSource} />
-                    )}
+                    {isExtensionPoint && <Icon className="extension-icon" iconName={UiIcons.DataSource} />}
                     <div
                         style={{
                             cursor: 'pointer',
@@ -416,7 +420,7 @@ export const Tree = (): ReactElement => {
                             textOverflow: 'ellipsis'
                         }}
                         title={isExtensionPoint ? groupName : ''}>
-                        {groupName}
+                        {extPointHasChildren ? `${groupName} (has default content)` : groupName}
                     </div>
                     {isExtensionPoint && (
                         <div id={tooltipId} className="tooltip">
