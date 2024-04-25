@@ -71,8 +71,17 @@ export function enhanceUI5DeployYaml(ui5Config: UI5Config, config: AdpWriterConf
 function getFioriToolsMiddlwares(config: AdpWriterConfig): CustomMiddleware<unknown>[] {
     return [
         {
-            name: 'fiori-tools-preview',
+            name: 'fiori-tools-appreload',
             afterMiddleware: 'compression',
+            configuration: {
+              port: 35729,
+              path: 'webapp',
+              delay: 300,
+            }
+        },
+        {
+            name: 'fiori-tools-preview',
+            afterMiddleware: 'fiori-tools-appreload',
             configuration: {
                 adp: {
                     target: config.target,
@@ -109,6 +118,15 @@ function getFioriToolsMiddlwares(config: AdpWriterConfig): CustomMiddleware<unkn
  */
 function getOpenSourceMiddlewares(config: AdpWriterConfig): CustomMiddleware<object | undefined>[] {
     return [
+        {
+            name: 'reload-middleware',
+            afterMiddleware: 'compression',
+            configuration: {
+              port: 35729,
+              path: 'webapp',
+              delay: 300,
+            }
+        },
         {
             name: 'preview-middleware',
             afterMiddleware: 'compression',
