@@ -1292,6 +1292,9 @@ importers:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.14.4
         version: 1.14.4
+      '@sap-ux/feature-toggle':
+        specifier: workspace:*
+        version: link:../feature-toggle
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
         version: link:../odata-service-writer
