@@ -1,5 +1,13 @@
 # @sap-ux/project-access
 
+## 1.19.12
+
+### Patch Changes
+
+-   b7d95fb3: fix paths and config writers
+-   Updated dependencies [b7d95fb3]
+    -   @sap-ux/ui5-config@0.22.2
+
 ## 1.19.11
 
 ### Patch Changes
