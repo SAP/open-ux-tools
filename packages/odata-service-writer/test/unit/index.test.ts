@@ -94,7 +94,6 @@ describe('generate', () => {
             await generate(root, config, fs);
             const manifest = fs.readJSON(join(root, 'webapp/manifest.json')) as any;
             expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
-            expect(fs.exists(join(root, 'ui5-mock.yaml'))).toBe(true);
         });
 
         it('Nested folder structure - all files updated', async () => {
@@ -107,7 +106,6 @@ describe('generate', () => {
             await generate(root, config, fs);
             const manifest = fs.readJSON(join(root, 'webapp/manifest.json')) as any;
             expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
-            expect(fs.exists(join(root, 'ui5-mock.yaml'))).toBe(true);
         });
     });
 

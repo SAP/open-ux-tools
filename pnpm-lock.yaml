@@ -928,9 +928,15 @@ importers:
       '@sap-ux/fe-fpm-writer':
         specifier: workspace:*
         version: link:../fe-fpm-writer
+      '@sap-ux/mockserver-config-writer':
+        specifier: 0.4.2
+        version: 0.4.2
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
         version: link:../odata-service-writer
+      '@sap-ux/project-access':
+        specifier: 1.19.12
+        version: 1.19.12
       '@sap-ux/ui5-application-writer':
         specifier: workspace:*
         version: link:../ui5-application-writer
@@ -989,9 +995,15 @@ importers:
 
   packages/fiori-freestyle-writer:
     dependencies:
+      '@sap-ux/mockserver-config-writer':
+        specifier: 0.4.2
+        version: 0.4.2
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
         version: link:../odata-service-writer
+      '@sap-ux/project-access':
+        specifier: 1.19.12
+        version: 1.19.12
       '@sap-ux/ui5-application-writer':
         specifier: workspace:*
         version: link:../ui5-application-writer
@@ -1264,9 +1276,6 @@ importers:
 
   packages/odata-service-writer:
     dependencies:
-      '@sap-ux/mockserver-config-writer':
-        specifier: 0.4.2
-        version: 0.4.2
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
@@ -7452,12 +7461,33 @@ packages:
     resolution: {integrity: sha512-HTgMqm3purAJUjirm6m57h8BaoF/Qx6wuXxiB9cy7ZilmriNHVx0aXJV514I1r8GMRdKKHCVixmhZW0/4L02hw==}
     dev: true
 
+  /@sap-ux/i18n@0.0.6:
+    resolution: {integrity: sha512-FhCkweugj2XhuWZzNHxwzYVNjMuWPCPuFroU+AOqfV2uNl6AXpf07Ni5M7YKqVK5cvcvrkxdVKEAPGnG6RqtZA==}
+    engines: {node: '>=18.x'}
+    dependencies:
+      jsonc-parser: 3.2.0
+      vscode-languageserver-textdocument: 1.0.7
+      vscode-languageserver-types: 3.17.2
+    dev: false
+
   /@sap-ux/mockserver-config-writer@0.4.2:
     resolution: {integrity: sha512-rLbnUowah+UzbUCh/d3xfh6GAJLL6jxFYkZzmW2ff5RKakl3MkfVAmF94ATZLb3o6NuTKYy5R++LnwsOzNsh6g==}
     engines: {node: '>=18.x'}
     dependencies:
       '@sap-ux/ui5-config': 0.22.2
       i18next: 20.6.1
+      mem-fs: 2.1.0
+      mem-fs-editor: 9.4.0(mem-fs@2.1.0)
+    dev: false
+
+  /@sap-ux/project-access@1.19.12:
+    resolution: {integrity: sha512-KhnqRE+ORnxgVoaWJUzet/HrEH7jbcjvkfR3ye4wZSC/5JQDhApMEixyj6a65SYFB/fUQ90Yx0caXNkLkcXISw==}
+    engines: {node: '>=18.x'}
+    dependencies:
+      '@sap-ux/i18n': 0.0.6
+      '@sap-ux/ui5-config': 0.22.2
+      fast-xml-parser: 4.2.7
+      findit2: 2.2.3
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0(mem-fs@2.1.0)
     dev: false

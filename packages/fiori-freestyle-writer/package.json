@@ -32,7 +32,9 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
+        "@sap-ux/mockserver-config-writer": "0.4.2",
         "@sap-ux/odata-service-writer": "workspace:*",
+        "@sap-ux/project-access": "1.19.12",
         "@sap-ux/ui5-application-writer": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "ejs": "3.1.9",
@@ -47,8 +49,8 @@
         "@types/ejs": "3.1.2",
         "@types/fs-extra": "9.0.13",
         "@types/lodash": "4.14.202",
-        "@types/mem-fs-editor": "7.0.1",
         "@types/mem-fs": "1.1.2",
+        "@types/mem-fs-editor": "7.0.1",
         "fs-extra": "10.0.0"
     },
     "engines": {

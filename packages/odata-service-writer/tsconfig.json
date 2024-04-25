@@ -12,9 +12,6 @@
   },
   "references": [
     {
-      "path": "../mockserver-config-writer"
-    },
-    {
       "path": "../project-access"
     },
     {

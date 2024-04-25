@@ -5,6 +5,8 @@ import { generateCustomPage } from '@sap-ux/fe-fpm-writer';
 import type { App, Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService, OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
+import { getWebappPath } from '@sap-ux/project-access';
+import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
 import { generateOPAFiles } from '@sap-ux/ui5-test-writer';
 import { getPackageJsonTasks } from './packageConfig';
 import cloneDeep from 'lodash/cloneDeep';
@@ -73,6 +75,10 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     validateApp(feApp);
 
     await addOdataService(basePath, feApp.service, fs);
+    // Mockserver config
+    const webappPath = await getWebappPath(basePath);
+    const config = { webappPath };
+    await generateMockserverConfig(basePath, config, fs);
 
     const coercedUI5Version = semVer.coerce(feApp.ui5?.version)!;
     const templateOptions: TemplateOptions = {
