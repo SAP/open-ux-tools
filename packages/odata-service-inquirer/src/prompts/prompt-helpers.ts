@@ -1,74 +1,11 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { extendAdditionalMessages, extendValidate, type YUIQuestion } from '@sap-ux/inquirer-common';
 import type { ListChoiceOptions } from 'inquirer';
 import { ErrorHandler } from '../error-handler/error-handler';
 import { t } from '../i18n';
-import {
-    DatasourceType,
-    type CommonPromptOptions,
-    type DatasourceTypePromptOptions,
-    type OdataServiceAnswers,
-    type OdataServicePromptOptions,
-    type PromptDefaultValue,
-    type promptNames
-} from '../types';
-// Error handling is a cross-cutting concern and should be handled in a single place.
+import { DatasourceType, type DatasourceTypePromptOptions, type OdataServiceAnswers } from '../types';
+
+// Error handling is a cross-cutting concern, a single instance is required
 export const errorHandler = new ErrorHandler();
-
-/**
- * Extend the existing prompt property function with the one specified in prompt options or add as new.
- *
- * @param question - the question to which the extending function will be applied
- * @param promptOption - prompt options, containing extending functions
- * @param funcName - the question property (function) name to extend
- * @returns the extended question
- */
-function applyExtensionFunction(
-    question: YUIQuestion,
-    promptOption: CommonPromptOptions,
-    funcName: 'validate' | 'additionalMessages'
-): YUIQuestion {
-    let extendedFunc;
-
-    if (funcName === 'validate' && promptOption.validate) {
-        extendedFunc = extendValidate(question, promptOption.validate);
-    }
-
-    if (funcName === 'additionalMessages' && promptOption.additionalMessages) {
-        extendedFunc = extendAdditionalMessages(question, promptOption.additionalMessages);
-    }
-
-    question = Object.assign(question, { [funcName]: extendedFunc });
-    return question;
-}
-/**
- * Updates questions with extensions for specific properties.
- *
- * @param questions - array of prompts to be extended
- * @param promptOptions - the prompt options possibly containing function extensions
- * @returns - the extended questions
- */
-export function extendWithOptions(questions: YUIQuestion[], promptOptions: OdataServicePromptOptions): YUIQuestion[] {
-    questions.forEach((question) => {
-        const promptOptKey = question.name as keyof typeof promptNames;
-        const promptOpt = promptOptions[promptOptKey];
-        if (promptOpt) {
-            const propsToExtend = Object.keys(promptOpt);
-
-            for (const extProp of propsToExtend) {
-                if (extProp === 'validate' || extProp === 'additionalMessages') {
-                    question = applyExtensionFunction(question, promptOpt as CommonPromptOptions, extProp);
-                }
-                // Provided default will override built in defaults, regardless of the default type (function or value)
-                const defaultOverride = (promptOptions[promptOptKey] as PromptDefaultValue<string | boolean>).default;
-                if (defaultOverride) {
-                    question.default = defaultOverride;
-                }
-            }
-        }
-    });
-    return questions;
-}
 
 /**
  * Get the datasource type choices.
@@ -112,7 +49,7 @@ export function getDatasourceTypeChoices({
 }
 
 /**
- * Much of the values returned by the service inquirer prompting are derived from prompt answers and not direct answer values.
+ * Much of the values returned by the service inquirer prompting are derived from prompt answers and are not direct answer values.
  * Since inquirer does not provide a way to return values that are not direct answers from prompts, this class will maintain the derived values
  * across prompts statically for the lifespan of the prompting session.
  *

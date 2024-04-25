@@ -3,8 +3,10 @@ import { t } from '../../../src/i18n';
 import { GUIDED_ANSWERS_LAUNCH_CMD_ID, HELP_NODES, HELP_TREE } from '../../../src/error-handler/help/help-topics';
 import { GUIDED_ANSWERS_ICON } from '../../../src/error-handler/help/images';
 import { ErrorHandler, ERROR_TYPE } from '../../../src/error-handler/error-handler';
-import { ClientFactory, SampleRate } from '@sap-ux/telemetry';
+import type { ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
+import { SampleRate } from '@sap-ux/telemetry';
 import { initI18nOdataServiceInquirer } from '../../../src/i18n';
+import * as utils from '../../../src/utils';
 
 let mockIsAppStudio = false;
 
@@ -105,8 +107,8 @@ describe('Test ErrorHandler', () => {
         const errorHandler = new ErrorHandler(undefined, true);
         const mockTelemClient = {
             reportEvent: jest.fn()
-        };
-        jest.spyOn(ClientFactory, 'getTelemetryClient').mockImplementation(() => mockTelemClient as any);
+        } as Partial<ToolsSuiteTelemetryClient> as ToolsSuiteTelemetryClient;
+        utils.setTelemetryClient(mockTelemClient);
 
         expect(errorHandler.getValidationErrorHelp()).toEqual('');
         expect(errorHandler.getValidationErrorHelp(ERROR_TYPE.SERVICES_UNAVAILABLE)).toEqual(
@@ -147,7 +149,7 @@ describe('Test ErrorHandler', () => {
             },
             SampleRate.NoSampling
         );
-        mockTelemClient.reportEvent.mockClear();
+        (mockTelemClient.reportEvent as jest.Mock).mockClear();
 
         expect(serviceUnavailableHelpLink?.toString()).toMatchInlineSnapshot(
             `"An error occurred retrieving service(s) for SAP System. Need help with this error? : https://ga.support.sap.com/dtp/viewer/index.html#/tree/3046/actions/48366"`

@@ -10,35 +10,34 @@ import LoggerHelper from '../../../../src/prompts/logger-helper';
 import { errorHandler } from '../../../../src/prompts/prompt-helpers';
 import type { CapProjectPaths } from '../../../../src/types';
 import os from 'os';
-import type { CSN } from '@sap-ux/project-access';
 
 const initMockCapModelAndServices = {
     model: {},
     services: {}
 };
 
-const mockCapModelAndServices1 = {
+const mockCapModelAndServices1 = (drive = '', pathSep = sep) => ({
     model: {
         definitions: {
             AdminService: {
                 $location: {
-                    file: `..${sep}..${sep}..${sep}mock${sep}bookshop${sep}srv${sep}admin-service.cds`
+                    file: `..${pathSep}..${pathSep}..${pathSep}mock${pathSep}bookshop${pathSep}srv${pathSep}admin-service.cds`
                 },
                 kind: 'service',
                 name: 'AdminService'
             },
             CatalogService: {
                 $location: {
-                    file: `..${sep}..${sep}..${sep}mock${sep}bookshop${sep}srv${sep}cat-service.cds`
+                    file: `..${pathSep}..${pathSep}..${pathSep}mock${pathSep}bookshop${pathSep}srv${pathSep}cat-service.cds`
                 },
                 kind: 'service',
                 name: 'CatalogService'
             }
         },
         $sources: [
-            `${sep}some${sep}abs${sep}path${sep}mock${sep}bookshop${sep}srv${sep}cat-service.cds`,
-            `${sep}some${sep}abs${sep}path${sep}mock${sep}bookshop${sep}srv${sep}admin-service.cds`,
-            `${sep}some${sep}abs${sep}path${sep}mock${sep}bookshop${sep}db${sep}schema.cds`
+            `${drive}${pathSep}some${pathSep}abs${pathSep}path${pathSep}mock${pathSep}bookshop${pathSep}srv${pathSep}cat-service.cds`,
+            `${drive}${pathSep}some${pathSep}abs${pathSep}path${pathSep}mock${pathSep}bookshop${pathSep}srv${pathSep}admin-service.cds`,
+            `${drive}${pathSep}some${pathSep}abs${pathSep}path${pathSep}mock${pathSep}bookshop${pathSep}db${pathSep}schema.cds`
         ]
     },
     services: [
@@ -53,7 +52,7 @@ const mockCapModelAndServices1 = {
             runtime: 'Node.js'
         }
     ]
-};
+});
 
 let currentMockCapModelAndServices = initMockCapModelAndServices;
 
@@ -63,8 +62,10 @@ let mockEdmx: string = initialMockEdmx;
 jest.mock('@sap-ux/project-access', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('@sap-ux/project-access'),
-    getCapModelAndServices: jest.fn().mockImplementation(async () => currentMockCapModelAndServices)
-    //readCapServiceMetadataEdmx: jest.fn().mockImplementation(async () => mockEdmx)
+    getCapModelAndServices: jest.fn().mockImplementation(async () => {
+        return currentMockCapModelAndServices;
+    }),
+    getCdsRoots: jest.fn().mockResolvedValue([])
 }));
 
 describe('cap-helper', () => {
@@ -74,7 +75,7 @@ describe('cap-helper', () => {
     });
 
     beforeEach(() => {
-        // Ensure each test is isolated, reset mocked function return values to initial state
+        // Ensure each test is isolated, reset mocked function return values to initial states
         mockEdmx = initialMockEdmx;
         currentMockCapModelAndServices = initMockCapModelAndServices;
     });
@@ -202,7 +203,7 @@ describe('cap-helper', () => {
         };
         expect(await getCapServiceChoices(capProjectPaths)).toEqual([]);
 
-        currentMockCapModelAndServices = mockCapModelAndServices1;
+        currentMockCapModelAndServices = mockCapModelAndServices1();
 
         expect(await getCapServiceChoices(capProjectPaths)).toMatchInlineSnapshot(`
             [
@@ -232,6 +233,27 @@ describe('cap-helper', () => {
         `);
     });
 
+    test('getCapServiceChoices: getCapModelAndServices errors are caught, handled and logged correctly', async () => {
+        const errorHandlerSpy = jest.spyOn(errorHandler, 'logErrorMsgs');
+        const logErrorSpy = jest.spyOn(LoggerHelper.logger, 'error');
+        jest.spyOn(sapuxProjectAccess, 'getCapModelAndServices').mockRejectedValueOnce(
+            new Error('getCapModelAndServices error')
+        );
+        const capProjectPaths: CapProjectPaths = {
+            app: 'app/',
+            db: 'db/',
+            folderName: 'bookshop',
+            path: `/some/abs/path/mock/bookshop`,
+            srv: 'srv/'
+        };
+
+        expect(await getCapServiceChoices(capProjectPaths)).toEqual([]);
+        expect(errorHandlerSpy).toHaveBeenCalledWith(new Error('getCapModelAndServices error'));
+        expect(logErrorSpy).toHaveBeenCalledWith(
+            t('errors.capModelAndServicesLoadError', { error: 'getCapModelAndServices error' })
+        );
+    });
+
     /**
      * Tests the service path resolution using both Windows and Unix implementations, so this critical functionality can be easily tested on non-Windows platforms by developers.
      */
@@ -252,47 +274,8 @@ describe('cap-helper', () => {
                 jest.spyOn(path, 'isAbsolute').mockImplementation(path.win32.isAbsolute);
                 jest.spyOn(path, 'relative').mockImplementation(path.win32.relative);
             }
+            currentMockCapModelAndServices = mockCapModelAndServices1(drive, pathSep);
 
-            const mockCdsModelAndServices = {
-                model: {
-                    definitions: {
-                        AdminService: {
-                            $location: {
-                                file: `..${pathSep}..${pathSep}..${pathSep}mock${pathSep}bookshop${pathSep}srv${pathSep}admin-service.cds`
-                            },
-                            kind: 'service',
-                            name: 'AdminService'
-                        },
-                        CatalogService: {
-                            $location: {
-                                file: `..${pathSep}..${pathSep}..${pathSep}mock${pathSep}bookshop${pathSep}srv${pathSep}cat-service.cds`
-                            },
-                            kind: 'service',
-                            name: 'CatalogService'
-                        }
-                    },
-                    $sources: [
-                        `${drive}${pathSep}some${pathSep}abs${pathSep}path${pathSep}mock${pathSep}bookshop${pathSep}srv${pathSep}cat-service.cds`,
-                        `${drive}${pathSep}some${pathSep}abs${pathSep}path${pathSep}mock${pathSep}bookshop${pathSep}srv${pathSep}admin-service.cds`,
-                        `${drive}${pathSep}some${pathSep}abs${pathSep}path${pathSep}mock${pathSep}bookshop${pathSep}db${pathSep}schema.cds`
-                    ]
-                },
-                services: [
-                    {
-                        name: 'AdminService',
-                        urlPath: '/admin/',
-                        runtime: 'Node.js'
-                    },
-                    {
-                        name: 'CatalogService',
-                        urlPath: '/cat/',
-                        runtime: 'Node.js'
-                    }
-                ]
-            };
-            jest.spyOn(sapuxProjectAccess, 'getCapModelAndServices').mockResolvedValue(
-                mockCdsModelAndServices as { model: CSN; services: any[] }
-            );
             jest.spyOn(sapuxProjectAccess, 'getCapCustomPaths').mockResolvedValue({
                 app: 'app/',
                 db: 'db/',

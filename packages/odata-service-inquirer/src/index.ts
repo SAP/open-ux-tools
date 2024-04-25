@@ -53,21 +53,11 @@ async function prompt(
 
     const odataServicePrompts = await getPrompts(promptOptions, logger, enableGuidedAnswers);
 
-    /* if (adapter?.promptModule && (promptOptions?.service?.useAutocomplete || promptOptions?.sapSystem?.useAutocomplete)) {
-        const pm = adapter.promptModule;
-        pm.registerPrompt('autocomplete', autocomplete);
-    } */
-
     const answers = await adapter.prompt<OdataServiceAnswers>(odataServicePrompts);
 
     // Add dervied service answers to the answers object
     Object.assign(answers, PromptStateHelper.odataService);
 
-    // Apply default values to prompts in case they have not been executed
-    /*  if (promptOptions) {
-        Object.assign(answers, await getDefaults(answers, promptOptions));
-    }
- */
     return answers;
 }
 

@@ -1,5 +1,4 @@
-import type { PromptSeverityMessage, UI5VersionChoice, YUIQuestion, validate } from '@sap-ux/inquirer-common';
-import type { AsyncDynamicQuestionProperty } from 'inquirer';
+import type { CommonPromptOptions, PromptDefaultValue, UI5VersionChoice, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 
 export interface UI5ApplicationAnswers {
@@ -115,26 +114,18 @@ type DefaultValueConfirmPrompts =
     | promptNames.skipAnnotations
     | promptNames.enableTypeScript;
 
-// Default value type for input prompt options
-export type PromptDefaultValue<T> = {
-    default?: AsyncDynamicQuestionProperty<T>;
-};
-
 /**
  * Defines prompt/question default values and/or whether or not they should be shown.
  */
-export type CommonPromptOptions = {
-    hide?: boolean;
+export type UI5ApplicationCommonPromptOptions = {
     advancedOption?: boolean;
-    validate?: validate<UI5ApplicationAnswers>;
-    additionalMessages?: PromptSeverityMessage;
-};
+} & CommonPromptOptions;
 
 /**
  * Provide the correct type checking for string value prompts and `ui5Version` options
  *
  */
-type stringValuePromptOptions = Record<stringValuePrompts, CommonPromptOptions> &
+type stringValuePromptOptions = Record<stringValuePrompts, UI5ApplicationCommonPromptOptions> &
     Record<DefaultValueInputPrompts, PromptDefaultValue<string>> &
     Record<promptNames.ui5Version, UI5VersionPromptOptions>;
 
@@ -154,7 +145,7 @@ type booleanValuePromptOtions = Record<
          * @returns
          */
         validatorCallback?: (answer: boolean, promptName: string) => void;
-    } & CommonPromptOptions
+    } & UI5ApplicationCommonPromptOptions
 > &
     Record<DefaultValueConfirmPrompts, PromptDefaultValue<boolean>>;
 

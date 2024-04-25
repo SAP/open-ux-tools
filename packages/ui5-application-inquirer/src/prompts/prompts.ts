@@ -10,7 +10,8 @@ import {
     type FileBrowserQuestion,
     type InputQuestion,
     type ListQuestion,
-    getDefaultUI5VersionChoice
+    getDefaultUI5VersionChoice,
+    extendWithOptions
 } from '@sap-ux/inquirer-common';
 import { getMtaPath } from '@sap-ux/project-access';
 import { validateModuleName, validateNamespace, validateProjectFolder } from '@sap-ux/project-input-validator';
@@ -24,7 +25,7 @@ import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../i18n';
 import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../types';
 import { promptNames } from '../types';
-import { defaultAppName, extendWithOptions, hidePrompts, isVersionIncluded } from './prompt-helpers';
+import { defaultAppName, hidePrompts, isVersionIncluded } from './prompt-helpers';
 import { validateAppName } from './validators';
 
 /**

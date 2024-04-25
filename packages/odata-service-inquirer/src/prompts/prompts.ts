@@ -10,7 +10,7 @@ import {
     type OdataServicePromptOptions
 } from '../types';
 import { getMetadataFileQuestion } from './datasources/metadata-file';
-import { extendWithOptions, getDatasourceTypeChoices } from './prompt-helpers';
+import { getDatasourceTypeChoices } from './prompt-helpers';
 import { getLocalCapProjectPrompts } from './datasources/cap-project/questions';
 
 /**
@@ -20,15 +20,10 @@ import { getLocalCapProjectPrompts } from './datasources/cap-project/questions';
  * @returns the prompts used to provide input for OData service generation
  */
 export async function getQuestions(promptOptions?: OdataServicePromptOptions): Promise<OdataServiceQuestion[]> {
-    let questions: OdataServiceQuestion[] = [getDatasourceTypeQuestion(promptOptions?.datasourceType)];
+    const questions: OdataServiceQuestion[] = [getDatasourceTypeQuestion(promptOptions?.datasourceType)];
 
     // Add conditional questions depending on the selected source
     questions.push(...(await getDatasourceTypeConditionalQuestions(promptOptions)));
-
-    // Apply extended `validate`, `additionalMessages` or override `default` prompt properties
-    if (promptOptions) {
-        questions = extendWithOptions(questions as YUIQuestion[], promptOptions);
-    }
 
     return questions;
 }
@@ -88,7 +83,7 @@ async function getDatasourceTypeConditionalQuestions(
         ) as OdataServiceQuestion[])
     );
 
-    //...
+    //...further data sources to be added here
 
     return conditionalQuestions;
 }

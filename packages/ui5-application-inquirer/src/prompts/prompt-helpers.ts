@@ -1,19 +1,9 @@
-import type { YUIQuestion, validate } from '@sap-ux/inquirer-common';
-import { extendAdditionalMessages } from '@sap-ux/inquirer-common';
+import { latestVersionString } from '@sap-ux/ui5-info';
 import { existsSync } from 'fs';
-import type { Question } from 'inquirer';
 import { join } from 'path';
 import { coerce, gte } from 'semver';
 import { defaultProjectNumber, t } from '../i18n';
-import {
-    promptNames,
-    type CommonPromptOptions,
-    type PromptDefaultValue,
-    type UI5ApplicationAnswers,
-    type UI5ApplicationPromptOptions,
-    type UI5ApplicationQuestion
-} from '../types';
-import { latestVersionString } from '@sap-ux/ui5-info';
+import { promptNames, type UI5ApplicationPromptOptions, type UI5ApplicationQuestion } from '../types';
 
 /**
  * Tests if a directory with the specified `appName` exists at the path specified by `targetPath`.
@@ -59,88 +49,6 @@ export function isVersionIncluded(version: string, minVersion: string): boolean 
         return gte(ui5SemVer, minVersion);
     }
     return version === latestVersionString;
-}
-
-/**
- * Extends a validate function.
- *
- * @param question - the question to which the validate function will be applied
- * @param validateFunc - the validate function which will be applied to the question
- * @returns the extended validate function
- */
-function extendValidate(
-    question: Question,
-    validateFunc: validate<UI5ApplicationAnswers>
-): validate<UI5ApplicationAnswers> {
-    const validate = question.validate;
-    return (
-        value: unknown,
-        previousAnswers?: UI5ApplicationAnswers | undefined
-    ): ReturnType<validate<UI5ApplicationAnswers>> => {
-        const extVal = validateFunc(value, previousAnswers);
-        if (extVal !== true) {
-            return extVal;
-        }
-        return typeof validate === 'function' ? validate(value, previousAnswers) : true;
-    };
-}
-
-/**
- * Extend the existing prompt property function with the one specified in prompt options or add as new.
- *
- * @param question - the question to which the extending function will be applied
- * @param promptOption - prompt options, containing extending functions
- * @param funcName - the question property (function) name to extend
- * @returns the extended question
- */
-function applyExtensionFunction(
-    question: YUIQuestion,
-    promptOption: CommonPromptOptions,
-    funcName: 'validate' | 'additionalMessages'
-): YUIQuestion {
-    let extendedFunc;
-
-    if (funcName === 'validate' && promptOption.validate) {
-        extendedFunc = extendValidate(question, promptOption.validate);
-    }
-
-    if (funcName === 'additionalMessages' && promptOption.additionalMessages) {
-        extendedFunc = extendAdditionalMessages(question, promptOption.additionalMessages);
-    }
-
-    question = Object.assign(question, { [funcName]: extendedFunc });
-    return question;
-}
-/**
- * Updates questions with extensions for specific properties. Only `validate`, `default` and `additionalMessages` are currently supported.
- *
- * @param questions - array of prompts to be extended
- * @param promptOptions - the prompt options possibly containing function extensions
- * @returns - the extended questions
- */
-export function extendWithOptions(
-    questions: UI5ApplicationQuestion[],
-    promptOptions: UI5ApplicationPromptOptions
-): UI5ApplicationQuestion[] {
-    questions.forEach((question) => {
-        const promptOptKey = question.name as keyof typeof promptNames;
-        const promptOpt = promptOptions[promptOptKey];
-        if (promptOpt) {
-            const propsToExtend = Object.keys(promptOpt);
-
-            for (const extProp of propsToExtend) {
-                if (extProp === 'validate' || extProp === 'additionalMessages') {
-                    question = applyExtensionFunction(question, promptOpt as CommonPromptOptions, extProp);
-                }
-                // Provided defaults will override built in defaults
-                const defaultOverride = (promptOptions[promptOptKey] as PromptDefaultValue<string | boolean>).default;
-                if (defaultOverride) {
-                    question.default = defaultOverride;
-                }
-            }
-        }
-    });
-    return questions;
 }
 
 /**

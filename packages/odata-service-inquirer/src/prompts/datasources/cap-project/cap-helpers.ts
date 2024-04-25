@@ -3,6 +3,7 @@ import {
     findCapProjects,
     getCapCustomPaths,
     getCapModelAndServices,
+    getCdsRoots,
     readCapServiceMetadataEdmx
 } from '@sap-ux/project-access';
 import { basename, isAbsolute, relative } from 'path';
@@ -154,6 +155,10 @@ export async function getCapServiceChoices(capProjectPaths: CapProjectPaths): Pr
         let capModel: CSN;
 
         try {
+            // Workaround for missing clear cache functionality in `getCapModelAnsdServices`, this resets the cds.resolve.cache.
+            // If this is not done then errors can be thrown where out-of-processs changes to the files system have occurred
+            await getCdsRoots(capProjectPaths.path, true);
+            // Load the CAP model and services
             const { model, services } = await getCapModelAndServices({
                 projectRoot: capProjectPaths.path,
                 logger: LoggerHelper.logger
@@ -161,8 +166,8 @@ export async function getCapServiceChoices(capProjectPaths: CapProjectPaths): Pr
             capServices = services;
             capModel = model;
         } catch (error) {
-            // todo: Check error codes and log different messages for different errors
             errorHandler.logErrorMsgs(error);
+            LoggerHelper.logger.error(t('errors.capModelAndServicesLoadError', { error: error?.message }));
             return [];
         }
         // We need the relative service definitions file paths (.cds) for the generated annotation file

@@ -23,7 +23,7 @@ describe('getQuestions', () => {
         // Ensure test isolation
         jest.restoreAllMocks();
     });
-    test('getQuestions, no options', async () => {
+    test('getQuestions', async () => {
         // Tests all declaritive values
         expect(await getQuestions()).toMatchInlineSnapshot(`
             [

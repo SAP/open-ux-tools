@@ -1,9 +1,9 @@
-import type { PromptSeverityMessage, YUIQuestion, validate } from '@sap-ux/inquirer-common';
-import type { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
-import type { AsyncDynamicQuestionProperty, ListChoiceOptions } from 'inquirer';
-import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
-import type { CapCustomPaths } from '@sap-ux/project-access';
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
+import type { YUIQuestion } from '@sap-ux/inquirer-common';
+import type { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
+import type { CapCustomPaths } from '@sap-ux/project-access';
+import type { ListChoiceOptions } from 'inquirer';
+import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 
 export enum DatasourceType {
     sap_system = 'sap_system',
@@ -140,33 +140,13 @@ export interface OdataServicePromptAnswers extends CapServiceAnswers {
     version?: OdataVersion;
 }
 
-export type DatasourceTypePromptOptions = {
-    /**
-     * Default datasource type
-     */
-    default?: DatasourceType;
-    /**
-     * Include the `NONE` option in the datasource type prompt
-     */
-    includeNone?: boolean;
-    /**
-     * Include the `PROJECT_SPECIFIC_DESTINATION` option in the datasource type prompt
-     */
-    includeProjectSpecificDest?: boolean;
-};
-
-export type MetadataPromptOptions = {
-    /**
-     * Used to validate the metadata file contains the required odata version edmx
-     */
-    requiredOdataVersion?: OdataVersion;
-};
-
 export type CapProjectRootPath = {
     folderName: string;
     path: string;
 };
+
 export type CapProjectPaths = CapProjectRootPath & CapCustomPaths;
+
 export interface CapProjectChoice extends ListChoiceOptions {
     value: CapProjectPaths | string;
 }
@@ -203,61 +183,41 @@ export type CapServicePromptOptions = {
      */
     defaultChoice?: Pick<CapService, 'serviceName' | 'projectPath'>;
 };
-/**
- * These are boolean value prompt option keys
- */
-/* type booleanPromptKeys =
-    | 'addDeployConfig'
-    | 'addFlpConfig'
-    | 'enableEslint'
-    | 'skipAnnotations'
-    | 'enableTypeScript'
-    | 'enableCodeAssist'
-    | 'showAdvanced'
-    | 'enableNPMWorkspaces'; */
 
-//type stringValuePrompts = stringValuePromptType[keyof typeof promptNames];
-
-// Creates a general type for all boolean value prompt options
-/* type booleanValuePromptType = Pick<typeof promptNames, booleanPromptKeys>;
-type booleanValuePrompts = booleanValuePromptType[keyof booleanValuePromptType]; */
-
-// Prompt options that can be assigned a default
-//type DefaultValueInputPrompts = promptNames.datasourceType;
-
-// Default value type for input prompt options
-export type PromptDefaultValue<T> = {
-    default?: AsyncDynamicQuestionProperty<T>;
+export type DatasourceTypePromptOptions = {
+    /**
+     * Default datasource type
+     */
+    default?: DatasourceType;
+    /**
+     * Include the `NONE` option in the datasource type prompt
+     */
+    includeNone?: boolean;
+    /**
+     * Include the `PROJECT_SPECIFIC_DESTINATION` option in the datasource type prompt
+     */
+    includeProjectSpecificDest?: boolean;
 };
 
-/**
- * Defines prompt/question default values and/or whether or not they should be shown.
- */
-export type CommonPromptOptions = {
-    hide?: boolean;
-    validate?: validate<OdataServiceAnswers>;
-    additionalMessages?: PromptSeverityMessage;
+export type MetadataPromptOptions = {
+    /**
+     * Used to validate the metadata file contains the required odata version edmx
+     */
+    requiredOdataVersion?: OdataVersion;
 };
 
 /**
  * Provide the correct type checking for object value prompt options
- *
  */
-type objectValuePromptOptions =
-    /* Record<stringValuePrompts, CommonPromptOptions> & */
-    Record<promptNames.datasourceType, DatasourceTypePromptOptions> &
-        Record<promptNames.metadataFilePath, MetadataPromptOptions> &
-        Record<promptNames.capProject, CapProjectPromptOptions> &
-        Record<promptNames.capService, CapServicePromptOptions>;
-
-/* &
-    Record<DefaultValueConfirmPrompts, PromptDefaultValue<boolean>> */ /* export type UI5ApplicationQuestion = YUIQuestion<OdataServiceAnswers> &
-    Partial<Pick<AutocompleteQuestionOptions, 'source'>>; */
+type odataServiceInquirerPromptOptions = Record<promptNames.datasourceType, DatasourceTypePromptOptions> &
+    Record<promptNames.metadataFilePath, MetadataPromptOptions> &
+    Record<promptNames.capProject, CapProjectPromptOptions> &
+    Record<promptNames.capService, CapServicePromptOptions>;
 
 export type OdataServiceQuestion = YUIQuestion<OdataServiceAnswers> &
     Partial<Pick<AutocompleteQuestionOptions, 'source'>>;
 
-export type OdataServicePromptOptions = Partial<objectValuePromptOptions>;
+export type OdataServicePromptOptions = Partial<odataServiceInquirerPromptOptions>;
 
 export const PLATFORMS = {
     VSCODE: {
