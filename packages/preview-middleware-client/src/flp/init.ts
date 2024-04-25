@@ -5,7 +5,6 @@ import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import AppState from 'sap/ushell/services/AppState';
-import Localization from 'sap/base/i18n/Localization';
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
  */
@@ -184,7 +183,8 @@ export function registerSAPFonts() {
  * @param i18nKey optional parameter to define the i18n key to be used for the title.
  */
 export function setI18nTitle(i18nKey = 'appTitle') {
-    const locale = Localization.getLanguage();
+    const localization = sap.ui.require('sap/base/i18n/Localization') ?? sap.ui.getCore().getConfiguration();
+    const locale = localization.getLanguage();
     const resourceBundle = ResourceBundle.create({
         url: 'i18n/i18n.properties',
         locale
