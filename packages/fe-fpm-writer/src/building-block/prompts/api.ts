@@ -170,7 +170,7 @@ export async function getChartBuildingBlockPrompts(basePath: string, fs: Editor)
                 basePath,
                 t('viewOrFragmentFile.message'),
                 t('viewOrFragmentFile.validate'),
-                ['filterBarId'],
+                ['aggregationPath', 'filterBarId'],
                 { required: true }
             ),
             getBuildingBlockIdPrompt(t('id.message'), t('id.validation'), defaultAnswers.id, {
