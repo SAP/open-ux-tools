@@ -2,7 +2,7 @@ import type { Editor } from 'mem-fs-editor';
 import type { ReuseLibConfig } from './types';
 import { UI5Config, type ServeStaticPath } from '@sap-ux/ui5-config';
 import { getWebappPath, type Manifest } from '@sap-ux/project-access';
-import { dirname, join, relative } from 'path';
+import { join, relative } from 'path';
 import { yamlFiles, ManifestReuseType } from './constants';
 
 /**
@@ -64,7 +64,7 @@ function getServeStaticPaths(reuseLibs: ReuseLibConfig[], projectPath: string): 
         const reuseLibRefs: ServeStaticPath[] = [
             {
                 path: `/resources/${lib.name.replace(/\./g, '/')}`,
-                src: relative(projectPath, dirname(lib.path)),
+                src: relative(projectPath, lib.path),
                 fallthrough: false
             }
         ];
@@ -72,7 +72,7 @@ function getServeStaticPaths(reuseLibs: ReuseLibConfig[], projectPath: string): 
         if (lib.uri) {
             reuseLibRefs.push({
                 path: `${lib.uri.replace(/\/bsp\//g, '/ui5_ui5/')}`,
-                src: relative(projectPath, dirname(lib.path)),
+                src: relative(projectPath, lib.path),
                 fallthrough: false
             });
         }
