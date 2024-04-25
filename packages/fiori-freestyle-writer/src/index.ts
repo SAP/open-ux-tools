@@ -4,8 +4,6 @@ import { render } from 'ejs';
 import type { Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService } from '@sap-ux/odata-service-writer';
-import { getWebappPath } from '@sap-ux/project-access';
-import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
 import { getPackageJsonTasks } from './packageConfig';
 import cloneDeep from 'lodash/cloneDeep';
 import type { BasicAppSettings } from './types';
@@ -86,10 +84,6 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     // Add service to the project if provided
     if (ffApp.service) {
         await addOdataService(basePath, ffApp.service, fs);
-        // Mockserver config
-        const webappPath = await getWebappPath(basePath);
-        const config = { webappPath };
-        await generateMockserverConfig(basePath, config, fs);
     } else {
         // Add placeholder middleware so allow adding service later
         const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');

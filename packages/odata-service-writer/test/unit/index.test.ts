@@ -94,10 +94,11 @@ describe('generate', () => {
             await generate(root, config, fs);
             const manifest = fs.readJSON(join(root, 'webapp/manifest.json')) as any;
             expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
+            expect(fs.exists(join(root, 'ui5-mock.yaml'))).toBe(true);
         });
 
         it('Nested folder structure - all files updated', async () => {
-            const packagePath = join(testDir, 'package.json');
+            const packagePath = join(root, 'package.json');
             fs.writeJSON(packagePath, {});
             const ui5YamlWithMiddleware = (await UI5Config.newInstance(''))
                 .addFioriToolsProxydMiddleware({ ui5: {} })
@@ -106,6 +107,7 @@ describe('generate', () => {
             await generate(root, config, fs);
             const manifest = fs.readJSON(join(root, 'webapp/manifest.json')) as any;
             expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
+            expect(fs.exists(join(root, 'ui5-mock.yaml'))).toBe(true);
         });
     });
 

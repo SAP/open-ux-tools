@@ -17,13 +17,7 @@
       "path": "../fe-fpm-writer"
     },
     {
-      "path": "../mockserver-config-writer"
-    },
-    {
       "path": "../odata-service-writer"
-    },
-    {
-      "path": "../project-access"
     },
     {
       "path": "../ui5-application-writer"

@@ -6,13 +6,16 @@ Object {
     "contents": "{
   \\"ui5\\": {
     \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
+      \\"@sap-ux/ui5-middleware-fe-mockserver\\",
+      \\"@sap/ux-ui5-tooling\\"
     ]
   },
   \\"devDependencies\\": {
-    \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
+    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\"
+  },
+  \\"scripts\\": {
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/\\\\\\"\\"
   }
 }
 ",
@@ -38,6 +41,38 @@ Object {
             mockdataPath: ./webapp/localService/data
             generateMockData: true
         annotations: []
+",
+    "state": "modified",
+  },
+  "ui5-mock.yaml": Object {
+    "contents": "server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - path: /sap
+            url: http://localhost
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /sap/odata/testme
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations:
+          - localPath: ./webapp/localService/sepmra_annotations_tech_name.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='sepmra_annotations_tech_name',Version='0001')/$value/
+          - localPath: ./webapp/annotations/annotations_test.xml
+            urlPath: annotations/annotations_test.xml
 ",
     "state": "modified",
   },
@@ -2752,13 +2787,16 @@ Object {
     "contents": "{
   \\"ui5\\": {
     \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
+      \\"@sap-ux/ui5-middleware-fe-mockserver\\",
+      \\"@sap/ux-ui5-tooling\\"
     ]
   },
   \\"devDependencies\\": {
-    \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
+    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\"
+  },
+  \\"scripts\\": {
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/\\\\\\"\\"
   }
 }
 ",
@@ -2784,6 +2822,36 @@ Object {
             mockdataPath: ./webapp/localService/data
             generateMockData: true
         annotations: []
+",
+    "state": "modified",
+  },
+  "ui5-mock.yaml": Object {
+    "contents": "server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - path: /sap
+            url: http://localhost
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /sap/odata/testme
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations:
+          - localPath: ./webapp/localService//SEPM_XYZ/SERVICE.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='%2FSEPM_XYZ%2FSERVICE',Version='0001')/$value/
 ",
     "state": "modified",
   },

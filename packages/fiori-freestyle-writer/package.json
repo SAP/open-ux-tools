@@ -32,9 +32,7 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@sap-ux/mockserver-config-writer": "0.4.2",
         "@sap-ux/odata-service-writer": "workspace:*",
-        "@sap-ux/project-access": "1.19.12",
         "@sap-ux/ui5-application-writer": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "ejs": "3.1.9",
