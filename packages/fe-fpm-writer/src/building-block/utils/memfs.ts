@@ -2,6 +2,8 @@ import { promises } from 'fs';
 import { type Store, create } from 'mem-fs';
 import { join } from 'path';
 
+// ToDo - remove? seems it is not relevant after open source project-access
+
 /**
  *
  * @param {string} root - project root
