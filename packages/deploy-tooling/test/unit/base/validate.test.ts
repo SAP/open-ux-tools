@@ -493,6 +493,13 @@ describe('deploy-test validation', () => {
                 ToolsLogger: jest.fn(() => mockLogger)
             };
         });
+        const mockAxiosError403 = {
+            response: {
+                status: 403,
+                statusText: 'Forbidden'
+            },
+            message: 'Request failed with status code 403'
+        } as AxiosError;
         test('Only error message shown when error is thrown', async () => {
             const logMock = jest.spyOn(mockLogger, 'error');
             const mockAxiosError401 = {
@@ -508,6 +515,25 @@ describe('deploy-test validation', () => {
 
             expect(output.result).toBe(false);
             expect(logMock).toHaveBeenCalledWith(mockAxiosError401.message);
+        });
+        test('Only error message shown when error is thrown - validateTransport', async () => {
+            const logMock = jest.spyOn(mockLogger, 'error');
+
+            mockedAdtService.listPackages.mockResolvedValueOnce(['TESTPACKAGE', 'MYPACKAGE']);
+            mockedAdtService.getTransportRequests.mockRejectedValueOnce(mockAxiosError403);
+
+            const output = await validateBeforeDeploy(testConfig, mockedProvider as any, mockLogger as any);
+
+            expect(output.result).toBe(false);
+            expect(logMock).toHaveBeenLastCalledWith(mockAxiosError403.message);
+        });
+        test('Only error message shown when error is thrown - validatePackage', async () => {
+            const logMock = jest.spyOn(mockLogger, 'error');
+            mockedAdtService.listPackages.mockRejectedValueOnce(mockAxiosError403);
+
+            const output = await validateBeforeDeploy(testConfig, mockedProvider as any, mockLogger as any);
+            expect(output.result).toBe(false);
+            expect(logMock).toHaveBeenLastCalledWith(mockAxiosError403.message);
         });
     });
 });

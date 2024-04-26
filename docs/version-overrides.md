@@ -94,3 +94,50 @@ No fix available for `http-proxy` to upgrade to latest `follow-redirects`
 `socks` updated to no longer use `ip`, but `socks-proxy-agent` not upgraded to use the latest `socks`
 
 `@storybook/core-server` involves major version upgrade to consume the `ip` module fix
+
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ high                │ Path traversal in webpack-dev-middleware               │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ webpack-dev-middleware                                 │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ >=6.0.0 <6.1.2                                         │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=6.1.2                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ packages/ui-components >                               │
+│                     │ @storybook/react-webpack5@7.4.3 >                      │
+│                     │ @storybook/builder-webpack5@7.4.3 >                    │
+│                     │ webpack-dev-middleware@6.1.1                           │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-wr3j-pwj9-hqq6      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
+
+No fix available for `@storybook/builder-webpack5` to upgrade to latest `webpack-dev-middleware`
+
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ moderate            │ Denial of service while parsing a tar file due to lack │
+│                     │ of folders count validation                            │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ tar                                                    │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ <6.2.1                                                 │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=6.2.1                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ . > @nrwl/nx-cloud@18.0.0 > nx-cloud@18.0.0 >          │
+│                     │ tar@6.1.11                                             │
+│                     │                                                        │
+│                     │ examples/simple-generator > yeoman-generator@5.10.0 >  │
+│                     │ pacote@15.2.0 > @npmcli/run-script@6.0.2 >             │
+│                     │ node-gyp@9.4.0 > make-fetch-happen@11.1.1 >            │
+│                     │ cacache@17.1.3 > tar@6.1.15                            │
+│                     │                                                        │
+│                     │ examples/simple-generator > yeoman-generator@5.10.0 >  │
+│                     │ pacote@15.2.0 > @npmcli/run-script@6.0.2 >             │
+│                     │ node-gyp@9.4.0 > tar@6.1.15                            │
+│                     │                                                        │
+│                     │ ... Found 17 paths, run `pnpm why tar` for more        │
+│                     │ information                                            │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-f5x3-32g6-xq36      │
+└─────────────────────┴────────────────────────────────────────────────────────┘

@@ -56,7 +56,7 @@ export async function getI18nBundles(
         }
     }
 
-    if (projectType === 'CAPNodejs') {
+    if (projectType === 'CAPJava' || projectType === 'CAPNodejs') {
         try {
             const env = await getCapEnvironment(root);
             const cdsFiles = await getCdsFiles(root, true);

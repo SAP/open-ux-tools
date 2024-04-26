@@ -186,3 +186,11 @@ export interface CustomFragment {
      */
     fragmentFile?: string;
 }
+
+/**
+ * Interface represents content data of generated fragment.
+ */
+export interface FragmentContentData {
+    content: string;
+    requireAttribute?: string;
+}

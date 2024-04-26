@@ -158,12 +158,16 @@ export default class ControllerExtension extends BaseDialog {
 
         const { controllerName, viewId } = this.getControllerInfo(overlayControl);
 
-        const { controllerExists, controllerPath, controllerPathFromRoot } = await this.getExistingController(
-            controllerName
-        );
+        const { controllerExists, controllerPath, controllerPathFromRoot, isRunningInBAS } =
+            await this.getExistingController(controllerName);
 
         if (controllerExists) {
-            this.updateModelForExistingController(controllerExists, controllerPath, controllerPathFromRoot);
+            this.updateModelForExistingController(
+                controllerExists,
+                controllerPath,
+                controllerPathFromRoot,
+                isRunningInBAS
+            );
         } else {
             this.updateModelForNewController(viewId);
 
@@ -188,14 +192,16 @@ export default class ControllerExtension extends BaseDialog {
     /**
      * Updates the model properties for an existing controller.
      *
-     * @param controllerExists Whether the controller exists
-     * @param controllerPath The controller path
-     * @param controllerPathFromRoot The controller path from the project root
+     * @param {boolean} controllerExists - Whether the controller exists.
+     * @param {string} controllerPath - The controller path.
+     * @param {string} controllerPathFromRoot - The controller path from the project root.
+     * @param {boolean} isRunningInBAS - Whether the environment is BAS or VS Code.
      */
     private updateModelForExistingController(
         controllerExists: boolean,
         controllerPath: string,
-        controllerPathFromRoot: string
+        controllerPathFromRoot: string,
+        isRunningInBAS: boolean
     ): void {
         this.model.setProperty('/controllerExists', controllerExists);
         this.model.setProperty('/controllerPath', controllerPath);
@@ -209,7 +215,11 @@ export default class ControllerExtension extends BaseDialog {
         const messageForm = content[1] as SimpleForm;
         messageForm.setVisible(true);
 
-        this.dialog.getBeginButton().setText('Open in VS Code').setEnabled(true);
+        if (isRunningInBAS) {
+            this.dialog.getBeginButton().setVisible(false);
+        } else {
+            this.dialog.getBeginButton().setText('Open in VS Code').setEnabled(true);
+        }
         this.dialog.getEndButton().setText('Close');
     }
 

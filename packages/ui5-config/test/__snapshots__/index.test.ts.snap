@@ -299,6 +299,24 @@ exports[`UI5Config addMockServerMiddleware add with given path 1`] = `
 "
 `;
 
+exports[`UI5Config addMockServerMiddleware add with path and annotationsConfig 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /~testpath~
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations:
+          - localPath: ./webapp/annotations/annotations.xml
+            urlPath: annotations.xml
+"
+`;
+
 exports[`UI5Config addMockServerMiddleware add without path 1`] = `
 "server:
   customMiddleware:
@@ -312,6 +330,89 @@ exports[`UI5Config addMockServerMiddleware add without path 1`] = `
             mockdataPath: ./webapp/localService/data
             generateMockData: true
         annotations: []
+"
+`;
+
+exports[`UI5Config addServeStaticConfig add with multiple paths (existing config) 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-servestatic
+      afterMiddleware: compression
+      configuration:
+        paths:
+          - path: /resources/targetapp
+            src: /targetapp/abeppw
+          - path: /appconfig
+            src: /srcapp/appconfig
+          - path: /~path
+            src: /~src
+            fallthrough: false
+          - path: /~otherPath
+            src: /~otherSrc
+            fallthrough: false
+"
+`;
+
+exports[`UI5Config addServeStaticConfig add with multiple paths (existing config) 2`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-servestatic
+      afterMiddleware: compression
+      configuration:
+        paths:
+          - path: /resources/targetapp
+            src: /targetapp/abeppw
+          - path: /appconfig
+            src: /srcapp/appconfig
+          - path: /~path
+            src: /~src
+            fallthrough: false
+          - path: /~otherPath
+            src: /~otherSrc
+            fallthrough: false
+          - path: /~newPath
+            src: /~newSrc
+            fallthrough: false
+"
+`;
+
+exports[`UI5Config addServeStaticConfig add with single path (no existing serve static config) 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-servestatic
+      afterMiddleware: compression
+      configuration:
+        paths:
+          - path: /~testpath~
+            src: /~src
+            fallthrough: false
+"
+`;
+
+exports[`UI5Config addServeStaticConfig update serve static config 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-servestatic
+      beforeMiddleware: fiori-tools-proxy
+      configuration:
+        paths:
+          - path: /resources/targetapp
+            src: /targetapp/abeppw
+          - path: /appconfig
+            src: /srcapp/appconfig
+          - path: /~testpath~
+            src: /~src
+            fallthrough: false
+          - path: /~other
+            src: /~otherSrc
+            fallthrough: false
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false
+        backend:
+          - path: /sap
+            url: http://test.url.com:50017
 "
 `;
 
