@@ -21,9 +21,9 @@
                             "dateSettings": {
                                 "useDateRange": true
                             }
-                        }<% if (tableType) { %>,
+                        }<% if (locals.tableType) { %>,
                         "tableSettings": {
-                            "type": "<%- tableType %>"
+                            "type": "<%- locals.tableType %>"
                           }<% } %> 
                     }
                 },
