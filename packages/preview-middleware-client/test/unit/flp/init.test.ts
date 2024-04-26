@@ -161,7 +161,7 @@ describe('flp/init', () => {
                 expect.anything()
             );
 
-            const requireCb = sapMock.ui.require.mock.calls[0][1] as (
+            const requireCb = sapMock.ui.require.mock.calls[1][1] as (
                 startAdaptation: StartAdaptation,
                 pluginScript?: RTAPlugin
             ) => void;
@@ -199,7 +199,7 @@ describe('flp/init', () => {
                 expect.anything()
             );
 
-            const requireCb = sapMock.ui.require.mock.calls[0][1] as (
+            const requireCb = sapMock.ui.require.mock.calls[1][1] as (
                 initRta: InitRtaScript,
                 pluginScript?: RTAPlugin
             ) => Promise<void>;
