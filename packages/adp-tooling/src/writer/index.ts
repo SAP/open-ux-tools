@@ -1,34 +1,66 @@
+import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
-
-import { ProjectGeneratorData, ProjectType } from '../types';
-import { WriterFactory } from './projects/writer-factory';
+import type { AdpWriterConfig } from '../types';
+import {
+    writeTemplateToFolder,
+    writeManifestAppdescr,
+    writeUI5Yaml,
+    writeUI5DeployYaml,
+    writeEnvFile
+} from './project-utils';
 
 /**
- * Generate files to a structure based on a specified project type.
+ * Set default values for optional properties.
  *
- * This function initializes the file system editor if not provided, selects the appropriate writer based on the project type,
- * and then invokes the writer's write method to generate the project structure.
- *
- * @param {string} projectPath - The root path of the project.
- * @param {ProjectGeneratorData<T>} data - The data specific to the type of project, containing information necessary for specified project structure.
- * @param {Editor | null} [fs] - The `mem-fs-editor` instance used for file operations.
- * @returns {Promise<Editor>} A promise that resolves to the mem-fs editor instance used for generating project structure, allowing for further operations.
- * @template T - A type parameter extending `ProjectType`, ensuring the function handles a defined set of project types.
+ * @param config configuration provided by the calling middleware
+ * @returns enhanced configuration with default values
  */
-export async function generate<T extends ProjectType>(
-    projectPath: string,
-    data: ProjectGeneratorData<T>,
-    fs: Editor | null = null
-): Promise<Editor> {
+function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
+    const configWithDefaults: AdpWriterConfig = {
+        app: { ...config.app },
+        target: { ...config.target },
+        ui5: { ...config.ui5 },
+        deploy: config.deploy ? { ...config.deploy } : undefined,
+        options: { ...config.options },
+        flp: config.flp ? { ...config.flp } : undefined,
+        customConfig: config.customConfig ? { ...config.customConfig } : undefined,
+        appdescr: config.appdescr ? { ...config.appdescr } : undefined
+    };
+    configWithDefaults.app.title ??= `Adaptation of ${config.app.reference}`;
+    configWithDefaults.app.layer ??= 'CUSTOMER_BASE';
+
+    configWithDefaults.package ??= config.package ? { ...config.package } : {};
+    configWithDefaults.package.name ??= config.app.id.toLowerCase().replace(/\./g, '-');
+    configWithDefaults.package.description ??= configWithDefaults.app.title;
+
+    return configWithDefaults;
+}
+
+/**
+ * Writes the adp-project template to the mem-fs-editor instance.
+ *
+ * @param basePath - the base path
+ * @param config - the writer configuration
+ * @param fs - the memfs editor instance
+ * @returns the updated memfs editor instance
+ */
+export async function generate(basePath: string, config: AdpWriterConfig, fs?: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
-    const type:ProjectType = data.customConfig?.adp.environment || ProjectType.ON_PREM;
 
-    const writer = WriterFactory.createWriter(type, fs, projectPath);
+    const tmplPath = join(__dirname, '../../templates/project');
+    const fullConfig = setDefaults(config);
+    const ignoredFiles = fullConfig.appdescr ? ['**/manifest.appdescr_variant'] : [];
 
-    await writer.write(data);
+    writeTemplateToFolder(join(tmplPath, '**/*.*'), join(basePath), fullConfig, fs, ignoredFiles);
+    if (fullConfig.appdescr) {
+        writeManifestAppdescr(tmplPath, basePath, fullConfig.appdescr, fs);
+    }
+    await writeUI5DeployYaml(basePath, fullConfig, fs);
+    await writeUI5Yaml(basePath, fullConfig, fs);
+    await writeEnvFile(basePath, fullConfig, fs);
 
     return fs;
 }

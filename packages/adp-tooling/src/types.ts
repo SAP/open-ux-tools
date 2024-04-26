@@ -198,13 +198,6 @@ export type IWriterData<T extends ChangeType> = IWriter<GeneratorData<T>>;
  *
  * @template T - The specific type of data the writer will handle, determined by the associated ChangeType.
  */
-export type IProjectWriterData<T extends ProjectType> = IWriter<ProjectGeneratorData<T>>;
-
-/**
- * Defines a generic interface for writer classes, specialized by the type of data they handle.
- *
- * @template T - The specific type of data the writer will handle, determined by the associated ChangeType.
- */
 
 export interface IWriter<T> {
     /**
@@ -234,18 +227,6 @@ export const enum ProjectType {
     ON_PREM = 'OnPrem',
     S4 = 'S4',
 }
-
-/**
- * Maps a ChangeType to the corresponding data structure needed for that type of change.
- * This conditional type ensures type safety by linking each change type with its relevant data model.
- *
- * @template T - A subtype of ChangeType indicating the specific type of change.
- */
-export type ProjectGeneratorData<T extends ProjectType> = T extends ProjectType.ON_PREM
-    ? AdpWriterConfig
-    : T extends ProjectType.S4
-    ? AdpWriterConfig
-    : never;
 
 /**
  * Maps a ChangeType to the corresponding data structure needed for that type of change.

@@ -1,13 +1,13 @@
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
-import { AdpWriterConfig, ManifestAppdescr, ProjectType } from '../../../types';
+import { AdpWriterConfig, ManifestAppdescr, ProjectType } from '../types';
 import {
     enhanceUI5DeployYaml,
     enhanceUI5Yaml,
     hasDeployConfig,
     enhanceUI5YamlWithCustomConfig,
     enhanceUI5YamlWithCustomTask
-} from '../../options';
+} from './options';
 import { UI5Config } from '@sap-ux/ui5-config';
 
 /**
@@ -17,7 +17,7 @@ import { UI5Config } from '@sap-ux/ui5-config';
  * @param {string} projectPath - The root path of the project.
  * @param {CfModuleData | AdpWriterConfig} data - The data to be populated in the template file.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
- * @param {string[]} exclude - Files to be ignored when writing.
+ * @param {string[]} ignoredFiles - Files to be ignored when writing.
  * @returns {void}
  */
 export function writeTemplateToFolder(
@@ -25,11 +25,11 @@ export function writeTemplateToFolder(
     projectPath: string,
     data: AdpWriterConfig,
     fs: Editor,
-    exclude: string[] | [] = []
+    ignoredFiles: string[] | [] = []
 ): void {
     try {
         fs.copyTpl(templatePath, projectPath, data, undefined, {
-            globOptions: { dot: true, ignore: exclude },
+            globOptions: { dot: true, ignore: ignoredFiles },
             processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
         });
     } catch (e) {
@@ -46,7 +46,7 @@ export function writeTemplateToFolder(
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
  * @returns {void}
  */
-export function writeManifestAppdecr(
+export function writeManifestAppdescr(
     templatePath: string,
     projectPath: string,
     data: ManifestAppdescr,
