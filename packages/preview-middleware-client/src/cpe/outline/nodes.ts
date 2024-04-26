@@ -5,7 +5,9 @@ import type { Scenario } from 'sap/ui/fl/Scenario';
 
 import { isEditable } from './utils';
 
-type ExtendedOutlineNode = OutlineNode & { extensionPointInfo: { defaultContent: string[] } };
+type ExtendedOutlineNode = OutlineNode & {
+    extensionPointInfo: { defaultContent: string[]; createdControls: string[] };
+};
 
 /**
  * Retrieves additional data for a given control ID.
@@ -26,6 +28,14 @@ function getAdditionalData(id: string): { text?: string } {
     return {};
 }
 
+function getTechnicalName(id: string) {
+    const control = sap.ui.getCore().byId(id);
+    if (control) {
+        return control.getMetadata().getElementName();
+    }
+    return null;
+}
+
 /**
  * Gets the children nodes of an aggregation type node.
  *
@@ -39,13 +49,39 @@ function getChildren(current: OutlineViewNode): OutlineViewNode[] {
 }
 
 /**
+ * Adds a new child node to the extension point's children array based on the given control ID.
+ *
+ * @param {string} id - The unique identifier of the control to be added as a child node.
+ * @param {OutlineNode[]} children - The array of children nodes to which the new node will be added.
+ */
+function addChildToExtensionPoint(id: string, children: OutlineNode[]) {
+    const { text } = getAdditionalData(id);
+    const technicalName = getTechnicalName(id);
+    const editable = isEditable(id);
+
+    children.push({
+        controlId: id,
+        controlType: technicalName ?? 'sap.ui.extensionpoint.child',
+        name: text ?? id,
+        visible: true,
+        editable,
+        children: [],
+        hasDefaultContent: false
+    });
+}
+
+/**
  * Transform node.
  *
  * @param input outline view node
  * @param scenario type of project
  * @returns Promise<OutlineNode[]>
  */
-export async function transformNodes(input: OutlineViewNode[], scenario: Scenario): Promise<OutlineNode[]> {
+export async function transformNodes(
+    input: OutlineViewNode[],
+    scenario: Scenario,
+    uniqueCreatedControls: Set<string>
+): Promise<OutlineNode[]> {
     const stack = [...input];
     const items: OutlineNode[] = [];
     while (stack.length) {
@@ -62,7 +98,7 @@ export async function transformNodes(input: OutlineViewNode[], scenario: Scenari
                 name: text ?? technicalName,
                 editable,
                 visible: current.visible ?? true,
-                children: await transformNodes(children, scenario)
+                children: await transformNodes(children, scenario, uniqueCreatedControls)
             };
 
             items.push(node);
@@ -72,20 +108,21 @@ export async function transformNodes(input: OutlineViewNode[], scenario: Scenari
             const extensionPointInfo = (current as unknown as ExtendedOutlineNode).extensionPointInfo;
 
             const hasDefaultContent = extensionPointInfo.defaultContent.length > 0;
+            const hasCreatedControls = hasDefaultContent || extensionPointInfo.createdControls.length > 0;
 
             let children: OutlineNode[] = [];
+
             if (hasDefaultContent) {
-                extensionPointInfo.defaultContent.forEach((id) => {
-                    const { text } = getAdditionalData(id);
-                    const editable = isEditable(id);
-                    children.push({
-                        controlId: id,
-                        controlType: 'sap.ui.extensionpoint.child',
-                        name: text ?? id,
-                        visible: true,
-                        editable,
-                        children: []
-                    });
+                extensionPointInfo?.defaultContent.forEach((id) => {
+                    uniqueCreatedControls.add(id);
+                    addChildToExtensionPoint(id, children);
+                });
+            }
+
+            if (hasCreatedControls) {
+                extensionPointInfo?.createdControls.forEach((id) => {
+                    uniqueCreatedControls.add(id);
+                    addChildToExtensionPoint(id, children);
                 });
             }
 
@@ -96,11 +133,42 @@ export async function transformNodes(input: OutlineViewNode[], scenario: Scenari
                 editable,
                 visible: current.visible ?? true,
                 children,
-                icon: current.icon
+                icon: current.icon,
+                hasDefaultContent
             };
 
             items.push(node);
         }
     }
     return items;
+}
+
+/**
+ * Recursively removes nodes from a hierarchical array of objects based on specified unique IDs.
+ *
+ * @param {Object[]} nodes - The array of objects representing nodes, each potentially containing a nested array of children.
+ * @param {Set<string>} uniqueIDs - A set of unique identifiers. Nodes with `controlId` present in this set will be removed.
+ */
+export function removeNodeById(nodes: any[], uniqueIDs: Set<string>) {
+    let i = 0;
+    while (i < nodes.length) {
+        const item = nodes[i];
+
+        if (item.controlType === 'sap.ui.extensionpoint') {
+            i++;
+            continue;
+        }
+
+        if (uniqueIDs.has(item.controlId)) {
+            nodes.splice(i, 1);
+            continue;
+        }
+
+        if (item.children && item.children.length > 0) {
+            removeNodeById(item.children, uniqueIDs);
+        }
+
+        // Only increment i if no item was removed.
+        i++;
+    }
 }

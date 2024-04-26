@@ -295,6 +295,11 @@ export const Tree = (): ReactElement => {
         );
         const isExtensionPoint = item?.controlType === 'sap.ui.extensionpoint';
 
+        let hasDefaultContent = false;
+        if (isExtensionPoint) {
+            hasDefaultContent = item?.hasDefaultContent || false;
+        }
+
         const tooltipId = `tooltip--${item?.name}`;
 
         return item && typeof itemIndex === 'number' && itemIndex > -1 ? (
@@ -309,9 +314,8 @@ export const Tree = (): ReactElement => {
                     style={{ paddingLeft: paddingValue }}
                     className={`tree-cell ${isExtensionPoint ? 'tooltip-container' : ''}`}
                     onContextMenu={(e) => isExtensionPoint && handleOpenTooltip(e, tooltipId)}>
-                    {isExtensionPoint && (
-                        <Icon className="right-chevron-icon extension-icon" iconName={UiIcons.DataSource} />
-                    )}
+                    {isExtensionPoint && <Icon className="extension-icon" iconName={UiIcons.DataSource} />}
+
                     <div
                         style={{
                             cursor: 'auto',
@@ -320,8 +324,9 @@ export const Tree = (): ReactElement => {
                             display: 'block'
                         }}
                         title={isExtensionPoint ? item?.name : ''}>
-                        {item.name}
+                        {hasDefaultContent ? `${item.name} (has default content)` : item.name}
                     </div>
+
                     {isExtensionPoint && (
                         <div id={tooltipId} className="tooltip">
                             <button
@@ -374,11 +379,11 @@ export const Tree = (): ReactElement => {
         if (selectNode) {
             refProps.ref = scrollRef;
         }
-        const data = groupHeaderProps?.group?.data;
+        const data = groupHeaderProps?.group?.data as OutlineNodeItem;
         const isExtensionPoint = data?.controlType === 'sap.ui.extensionpoint';
-        let extPointHasChildren = false;
+        let hasDefaultContent = false;
         if (isExtensionPoint) {
-            extPointHasChildren = data?.children.length > 0;
+            hasDefaultContent = data?.hasDefaultContent || false;
         }
         const focus = filterQuery.filter((item) => item.name === FilterName.focusEditable)[0].value as boolean;
         const focusEditable = !data?.editable && focus ? 'focusEditable' : '';
@@ -412,7 +417,9 @@ export const Tree = (): ReactElement => {
                             }}
                         />
                     )}
+
                     {isExtensionPoint && <Icon className="extension-icon" iconName={UiIcons.DataSource} />}
+
                     <div
                         style={{
                             cursor: 'pointer',
@@ -420,8 +427,9 @@ export const Tree = (): ReactElement => {
                             textOverflow: 'ellipsis'
                         }}
                         title={isExtensionPoint ? groupName : ''}>
-                        {extPointHasChildren ? `${groupName} (has default content)` : groupName}
+                        {hasDefaultContent ? `${groupName} (has default content)` : groupName}
                     </div>
+
                     {isExtensionPoint && (
                         <div id={tooltipId} className="tooltip">
                             <button

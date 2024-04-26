@@ -4,7 +4,7 @@ import { outlineChanged } from '@sap-ux-private/control-property-editor-common';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type OutlineService from 'sap/ui/rta/command/OutlineService';
 
-import { transformNodes } from './nodes';
+import { transformNodes, removeNodeById } from './nodes';
 import Log from 'sap/base/Log';
 
 /**
@@ -15,10 +15,16 @@ import Log from 'sap/base/Log';
 export async function initOutline(rta: RuntimeAuthoring, sendAction: (action: ExternalAction) => void): Promise<void> {
     const outline = await rta.getService<OutlineService>('outline');
     const scenario = rta.getFlexSettings().scenario;
+    const uniqueCreatedControls = new Set<string>();
+
     async function syncOutline() {
         try {
             const viewNodes = await outline.get();
-            const outlineNodes = await transformNodes(viewNodes, scenario);
+            const outlineNodes = await transformNodes(viewNodes, scenario, uniqueCreatedControls);
+
+            if (uniqueCreatedControls) {
+                removeNodeById(outlineNodes, uniqueCreatedControls);
+            }
 
             sendAction(outlineChanged(outlineNodes));
         } catch (error) {

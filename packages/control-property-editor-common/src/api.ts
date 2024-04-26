@@ -106,6 +106,7 @@ export interface OutlineNode {
     children: OutlineNode[];
     icon?: string;
     extensionPointInfo?: string;
+    hasDefaultContent?: boolean;
 }
 
 export interface IconDetails {
