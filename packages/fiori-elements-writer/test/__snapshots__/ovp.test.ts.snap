@@ -130,7 +130,7 @@ server:
       configuration:
         mountPath: /
         services:
-          - urlPath: ''
+          - urlPath: /sap/opu/odata/sap/GWSAMPLE_BASIC
             metadataPath: ./webapp/localService/metadata.xml
             mockdataPath: ./webapp/localService/data
             generateMockData: true
@@ -1856,7 +1856,7 @@ server:
       configuration:
         mountPath: /
         services:
-          - urlPath: ''
+          - urlPath: /sap/opu/odata/sap/GWSAMPLE_BASIC
             metadataPath: ./webapp/localService/metadata.xml
             mockdataPath: ./webapp/localService/data
             generateMockData: true
@@ -3337,7 +3337,7 @@ server:
       configuration:
         mountPath: /
         services:
-          - urlPath: ''
+          - urlPath: /sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001
             metadataPath: ./webapp/localService/metadata.xml
             mockdataPath: ./webapp/localService/data
             generateMockData: true
@@ -9301,7 +9301,7 @@ server:
       configuration:
         mountPath: /
         services:
-          - urlPath: ''
+          - urlPath: /sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001
             metadataPath: ./webapp/localService/metadata.xml
             mockdataPath: ./webapp/localService/data
             generateMockData: true

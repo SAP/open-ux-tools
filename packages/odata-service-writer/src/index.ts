@@ -109,7 +109,10 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         // copy existing `ui5.yaml` as starting point for ui5-mock.yaml
         if (paths.ui5Yaml && ui5Config) {
             const webappPath = await getWebappPath(basePath);
-            const config = { webappPath };
+            const config = {
+                webappPath: webappPath,
+                ui5MockYamlConfig: { path: service.path }
+            };
             await generateMockserverConfig(basePath, config, fs);
             // add mockserver middleware to ui5-local.yaml
             if (ui5LocalConfig) {
