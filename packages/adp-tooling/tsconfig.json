@@ -1,3 +1,4 @@
+{
   "extends": "../../tsconfig.json",
   "include": [
     "../../types/ui5.d.ts",
