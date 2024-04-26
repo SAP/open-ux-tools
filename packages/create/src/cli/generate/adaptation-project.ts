@@ -1,7 +1,7 @@
 import type { Command } from 'commander';
 import chalk from 'chalk';
 import { getLogger, traceChanges } from '../../tracing';
-import { AdpWriterConfig, PromptDefaults } from '@sap-ux/adp-tooling';
+import type{ AdpWriterConfig, PromptDefaults } from '@sap-ux/adp-tooling';
 import { promptGeneratorInput, generate } from '@sap-ux/adp-tooling';
 import { runNpmInstallCommand } from '../../common';
 import { join } from 'path';
