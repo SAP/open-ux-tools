@@ -61,8 +61,8 @@ Object {
 
 exports[`CustomSection generateCustomSection Test property "eventHandler" "eventHandler" is "object" - create new file with custom file and function names 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
-	<VBox>
-		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/dummyAction'}\\" text=\\"NewCustomSection\\" press=\\"handler.DummyOnAction\\" />
+	<VBox core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/dummyAction'}\\">
+		<Button text=\\"NewCustomSection\\" press=\\"handler.DummyOnAction\\" />
 	</VBox>
 </core:FragmentDefinition>"
 `;
@@ -84,8 +84,8 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
 
 exports[`CustomSection generateCustomSection Test property "eventHandler" "eventHandler" is "object" - create new file with custom function name 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
-	<VBox>
-		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\" text=\\"NewCustomSection\\" press=\\"handler.DummyOnAction\\" />
+	<VBox core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\">
+		<Button text=\\"NewCustomSection\\" press=\\"handler.DummyOnAction\\" />
 	</VBox>
 </core:FragmentDefinition>"
 `;
@@ -107,8 +107,8 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
 
 exports[`CustomSection generateCustomSection Test property "eventHandler" "eventHandler" is empty "object" - create new file with default function name 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
-	<VBox>
-		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\" text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
+	<VBox core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\">
+		<Button text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
 	</VBox>
 </core:FragmentDefinition>"
 `;
@@ -130,8 +130,8 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
 
 exports[`CustomSection generateCustomSection Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with absolute position 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
-	<VBox>
-		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/MyExistingAction'}\\" text=\\"NewCustomSection\\" press=\\"handler.onHandleSecondAction\\" />
+	<VBox core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/MyExistingAction'}\\">
+		<Button text=\\"NewCustomSection\\" press=\\"handler.onHandleSecondAction\\" />
 	</VBox>
 </core:FragmentDefinition>"
 `;
@@ -156,8 +156,8 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
 
 exports[`CustomSection generateCustomSection Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position as object 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
-	<VBox>
-		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/MyExistingAction'}\\" text=\\"NewCustomSection\\" press=\\"handler.onHandleSecondAction\\" />
+	<VBox core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/MyExistingAction'}\\">
+		<Button text=\\"NewCustomSection\\" press=\\"handler.onHandleSecondAction\\" />
 	</VBox>
 </core:FragmentDefinition>"
 `;
@@ -208,8 +208,8 @@ Object {
 
 exports[`CustomSection generateCustomSection Versions 1.84, with handler, all properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<VBox>
-		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\" text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
+	<VBox core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\">
+		<Button text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
 	</VBox>
 </core:FragmentDefinition>"
 `;
@@ -257,8 +257,8 @@ Object {
 
 exports[`CustomSection generateCustomSection Versions 1.85, with handler, all properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<VBox>
-		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\" text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
+	<VBox core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\">
+		<Button text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
 	</VBox>
 </core:FragmentDefinition>"
 `;
@@ -305,8 +305,8 @@ Object {
 
 exports[`CustomSection generateCustomSection Versions 1.86, with handler, all properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<VBox>
-		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\" text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
+	<VBox core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\">
+		<Button text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
 	</VBox>
 </core:FragmentDefinition>"
 `;
@@ -353,8 +353,8 @@ Object {
 
 exports[`CustomSection generateCustomSection Versions 1.89, with handler, all properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<VBox>
-		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\" text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
+	<VBox core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\">
+		<Button text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
 	</VBox>
 </core:FragmentDefinition>"
 `;
@@ -401,8 +401,8 @@ Object {
 
 exports[`CustomSection generateCustomSection Versions 1.90, with handler, all properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
-	<VBox>
-		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\" text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
+	<VBox core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\">
+		<Button text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
 	</VBox>
 </core:FragmentDefinition>"
 `;
@@ -449,8 +449,8 @@ Object {
 
 exports[`CustomSection generateCustomSection Versions 1.98, with handler, all properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
-	<VBox>
-		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\" text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
+	<VBox core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\">
+		<Button text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
 	</VBox>
 </core:FragmentDefinition>"
 `;
@@ -712,8 +712,8 @@ Object {
 
 exports[`CustomSection generateCustomSection with handler, all properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
-	<VBox>
-		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\" text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
+	<VBox core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\">
+		<Button text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
 	</VBox>
 </core:FragmentDefinition>"
 `;

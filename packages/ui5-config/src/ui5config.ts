@@ -410,6 +410,26 @@ export class UI5Config {
     }
 
     /**
+     * Merges existing custom middleware with the passed config.
+     *
+     * @param middleware - middleware config
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    private mergeCustomMiddleware(middleware: CustomMiddleware<unknown>): this {
+        const name = middleware.name;
+        if (this.findCustomMiddleware(name)) {
+            this.document.updateAt({
+                path: 'server.customMiddleware',
+                matcher: { key: 'name', value: name },
+                value: middleware,
+                mode: 'merge'
+            });
+        }
+        return this;
+    }
+
+    /**
      * Returns the serve static config.
      *
      * @param addFioriToolProxy - if true, `fiori-tools-proxy` config is added, otherwise a `compression` config will be added
@@ -452,6 +472,13 @@ export class UI5Config {
                 this.updateCustomMiddleware({
                     name: serveStatic,
                     beforeMiddleware: fioriToolsProxy,
+                    configuration: {
+                        paths: [...serveStaticConfig.configuration.paths, ...serveStaticPaths]
+                    }
+                });
+            } else {
+                this.mergeCustomMiddleware({
+                    name: serveStatic,
                     configuration: {
                         paths: [...serveStaticConfig.configuration.paths, ...serveStaticPaths]
                     }

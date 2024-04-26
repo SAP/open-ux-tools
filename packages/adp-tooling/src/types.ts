@@ -69,7 +69,7 @@ export interface Content {
     texts?: object;
 }
 
-interface CommonChangeProperties {
+export interface CommonChangeProperties {
     changeType: string;
     reference: string;
     namespace: string;
@@ -146,6 +146,8 @@ export const enum HttpStatusCodes {
     NOT_IMPLEMETED = 501,
     SERVICE_UNAVAILABLE = 503
 }
+
+export type OperationType = 'read' | 'write' | 'delete';
 
 /**
  * Represents a constructor type that creates an instance of IWriter.

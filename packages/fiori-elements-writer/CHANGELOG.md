@@ -1,5 +1,29 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.18.18
+
+### Patch Changes
+
+-   37e7fc00: Fix for Worklist v2 missing table type setting
+
+## 0.18.17
+
+### Patch Changes
+
+-   Updated dependencies [2e10a7ae]
+    -   @sap-ux/fe-fpm-writer@0.24.10
+
+## 0.18.16
+
+### Patch Changes
+
+-   Updated dependencies [b7d95fb3]
+    -   @sap-ux/ui5-config@0.22.2
+    -   @sap-ux/fe-fpm-writer@0.24.9
+    -   @sap-ux/odata-service-writer@0.16.5
+    -   @sap-ux/ui5-application-writer@0.26.8
+    -   @sap-ux/ui5-test-writer@0.3.2
+
 ## 0.18.15
 
 ### Patch Changes
