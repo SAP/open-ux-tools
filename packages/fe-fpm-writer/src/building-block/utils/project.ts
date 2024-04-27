@@ -1,9 +1,5 @@
 /* eslint-disable jsdoc/require-returns */
-import type { Store } from 'mem-fs';
-import { getStoreForProject } from './memfs';
-import { getProject, type Manifest } from '@sap-ux/project-access';
-import { join } from 'path';
-import type File from 'vinyl';
+import { getProject } from '@sap-ux/project-access';
 import { type Editor } from 'mem-fs-editor';
 import { ProjectTemp, convertProject } from './project-convertor';
 
