@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.18.18
+
+### Patch Changes
+
+-   37e7fc00: Fix for Worklist v2 missing table type setting
+
 ## 0.18.17
 
 ### Patch Changes
