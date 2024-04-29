@@ -7,8 +7,10 @@ import type { OdataServiceAnswers } from '../types';
  *
  */
 export class PromptState {
-    static odataService: Partial<OdataServiceAnswers> = {};
-    static isYUI = false;
+    public static odataService: Partial<OdataServiceAnswers> = {};
+
+    public static isYUI = false;
+
     static reset(): void {
         PromptState.odataService = {};
     }

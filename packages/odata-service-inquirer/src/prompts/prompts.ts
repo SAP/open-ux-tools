@@ -2,12 +2,13 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import { withCondition, type YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Answers, Question } from 'inquirer';
 import { t } from '../i18n';
-import type { OdataServiceAnswers, OdataServiceQuestion } from '../types';
 import {
     DatasourceType,
     promptNames,
     type DatasourceTypePromptOptions,
-    type OdataServicePromptOptions
+    type OdataServicePromptOptions,
+    type OdataServiceAnswers,
+    type OdataServiceQuestion
 } from '../types';
 import { getMetadataFileQuestion } from './datasources/metadata-file';
 import { getDatasourceTypeChoices } from './prompt-helpers';
