@@ -152,11 +152,11 @@ describe('getQuestions', () => {
 
         const additionalMessages = (datasourceTypeQuestion.additionalMessages as Function)(datasourceType);
         expect(additionalMessages).toMatchObject({
-            message: t('prompts.datasourceType.notYetImplemenetdWarningMessage', { datasourceType }),
+            message: t('prompts.datasourceType.notYetImplementedWarningMessage', { datasourceType }),
             severity: Severity.warning
         });
         expect(logWarnSpy).toHaveBeenCalledWith(
-            t('prompts.datasourceType.notYetImplemenetdWarningMessage', { datasourceType })
+            t('prompts.datasourceType.notYetImplementedWarningMessage', { datasourceType })
         );
     });
 });
