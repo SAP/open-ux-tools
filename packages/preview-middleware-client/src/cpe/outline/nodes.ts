@@ -9,31 +9,39 @@ type ExtendedOutlineNode = OutlineNode & {
     extensionPointInfo: { defaultContent: string[]; createdControls: string[] };
 };
 
+interface AdditionalData {
+    text?: string;
+    technicalName?: string;
+}
+
 /**
  * Retrieves additional data for a given control ID.
  *
- * @param id The control ID for which to retrieve additional data
- * @returns An object containing additional data, including an optional 'text' property
+ * @param {string} id The unique identifier of the control.
+ * @returns {AdditionalData} An object containing the text and the technical name of the control.
  */
-function getAdditionalData(id: string): { text?: string } {
+function getAdditionalData(id: string): AdditionalData {
     const control = sap.ui.getCore().byId(id);
-    if (control?.getMetadata().getProperty('text')) {
+    if (!control) {
+        return {};
+    }
+
+    const metadata = control.getMetadata();
+    let details: AdditionalData = {};
+
+    const technicalName = metadata.getElementName();
+    if (technicalName) {
+        details.technicalName = technicalName;
+    }
+
+    if (metadata.getProperty('text')) {
         const text = control.getProperty('text');
         if (typeof text === 'string' && text.trim() !== '') {
-            return {
-                text
-            };
+            details.text = text;
         }
     }
-    return {};
-}
 
-function getTechnicalName(id: string) {
-    const control = sap.ui.getCore().byId(id);
-    if (control) {
-        return control.getMetadata().getElementName();
-    }
-    return null;
+    return details;
 }
 
 /**
@@ -55,8 +63,7 @@ function getChildren(current: OutlineViewNode): OutlineViewNode[] {
  * @param {OutlineNode[]} children - The array of children nodes to which the new node will be added.
  */
 function addChildToExtensionPoint(id: string, children: OutlineNode[]) {
-    const { text } = getAdditionalData(id);
-    const technicalName = getTechnicalName(id);
+    const { text, technicalName } = getAdditionalData(id);
     const editable = isEditable(id);
 
     children.push({
@@ -80,7 +87,7 @@ function addChildToExtensionPoint(id: string, children: OutlineNode[]) {
 export async function transformNodes(
     input: OutlineViewNode[],
     scenario: Scenario,
-    uniqueCreatedControls: Set<string>
+    uniqueIDs: Set<string>
 ): Promise<OutlineNode[]> {
     const stack = [...input];
     const items: OutlineNode[] = [];
@@ -98,7 +105,7 @@ export async function transformNodes(
                 name: text ?? technicalName,
                 editable,
                 visible: current.visible ?? true,
-                children: await transformNodes(children, scenario, uniqueCreatedControls)
+                children: await transformNodes(children, scenario, uniqueIDs)
             };
 
             items.push(node);
@@ -114,14 +121,14 @@ export async function transformNodes(
 
             if (hasDefaultContent) {
                 extensionPointInfo?.defaultContent.forEach((id) => {
-                    uniqueCreatedControls.add(id);
+                    uniqueIDs.add(id);
                     addChildToExtensionPoint(id, children);
                 });
             }
 
             if (hasCreatedControls) {
                 extensionPointInfo?.createdControls.forEach((id) => {
-                    uniqueCreatedControls.add(id);
+                    uniqueIDs.add(id);
                     addChildToExtensionPoint(id, children);
                 });
             }

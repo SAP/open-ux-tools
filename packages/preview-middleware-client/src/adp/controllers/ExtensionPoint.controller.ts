@@ -85,11 +85,17 @@ export default class ExtensionPoint extends BaseDialog {
         }
 
         this.model.setProperty('/extensionPointName', extensionPointName);
-        const hasDefaultContent = this.getHasDefaultContent(extensionPointName);
+        const hasDefaultContent = this.hasDefaultContentForName(extensionPointName);
         this.model.setProperty('/hasDefaultContent', hasDefaultContent);
     }
 
-    private getHasDefaultContent(name: string): boolean {
+    /**
+     * Determines whether there is default content associated with the given name.
+     *
+     * @param {string} name - The name to check for associated default content.
+     * @returns {boolean} - True if there is non-empty default content associated with the name, false otherwise.
+     */
+    private hasDefaultContentForName(name: string): boolean {
         const defaultContent = this.data?.info.find((v) => v.name === name)?.defaultContent;
         return (defaultContent && defaultContent.length > 0) || false;
     }
@@ -101,7 +107,7 @@ export default class ExtensionPoint extends BaseDialog {
         const name = this.data?.name;
 
         if (name) {
-            const hasDefaultContent = this.getHasDefaultContent(name);
+            const hasDefaultContent = this.hasDefaultContentForName(name);
 
             const extensionPointList = [{ key: 0, value: name }];
 
@@ -116,7 +122,7 @@ export default class ExtensionPoint extends BaseDialog {
             });
             const firstElName = extensionPointList[0].value;
             const enabled = extensionPointList.length > 1;
-            const hasDefaultContent = this.getHasDefaultContent(firstElName);
+            const hasDefaultContent = this.hasDefaultContentForName(firstElName);
 
             this.updateModel(firstElName, 0, extensionPointList, enabled, hasDefaultContent);
         }

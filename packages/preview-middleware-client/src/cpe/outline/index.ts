@@ -15,15 +15,15 @@ import Log from 'sap/base/Log';
 export async function initOutline(rta: RuntimeAuthoring, sendAction: (action: ExternalAction) => void): Promise<void> {
     const outline = await rta.getService<OutlineService>('outline');
     const scenario = rta.getFlexSettings().scenario;
-    const uniqueCreatedControls = new Set<string>();
+    const uniqueIDs = new Set<string>();
 
     async function syncOutline() {
         try {
             const viewNodes = await outline.get();
-            const outlineNodes = await transformNodes(viewNodes, scenario, uniqueCreatedControls);
+            const outlineNodes = await transformNodes(viewNodes, scenario, uniqueIDs);
 
-            if (uniqueCreatedControls) {
-                removeNodeById(outlineNodes, uniqueCreatedControls);
+            if (uniqueIDs) {
+                removeNodeById(outlineNodes, uniqueIDs);
             }
 
             sendAction(outlineChanged(outlineNodes));
