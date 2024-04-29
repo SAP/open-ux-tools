@@ -39,9 +39,9 @@ async function getCapProjectPaths(
         capRootPaths.push({ folderName, path: root });
         folderNameCount.set(folderName, (folderNameCount.get(folderName) ?? 0) + 1);
     }
-    const capProjectPaths = capRootPaths.sort((a, b) => a.folderName.localeCompare(b.folderName));
+    capRootPaths.sort((a, b) => a.folderName.localeCompare(b.folderName));
     return {
-        capProjectPaths,
+        capProjectPaths: capRootPaths,
         folderCounts: folderNameCount
     };
 }

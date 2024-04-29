@@ -266,7 +266,7 @@ export class ErrorHandler {
      * @param retainError Defaults to true to retain the error state.
      * @returns A user-friendly message for display in-line
      */
-    public logErrorMsgs(error: unknown | ERROR_TYPE, userMsg?: string, retainError = true): string {
+    public logErrorMsgs(error: unknown, userMsg?: string, retainError = true): string {
         let resolvedError: { errorMsg: string; errorType: ERROR_TYPE } = {
             errorMsg: '',
             errorType: ERROR_TYPE.UNKNOWN
