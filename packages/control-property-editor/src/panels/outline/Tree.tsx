@@ -298,6 +298,8 @@ export const Tree = (): ReactElement => {
 
         const tooltipId = `tooltip--${item?.name}`;
 
+        const cellName = hasDefaultContent ? `${item?.name} (has default content)` : item?.name;
+
         return item && typeof itemIndex === 'number' && itemIndex > -1 ? (
             <div
                 aria-hidden
@@ -320,7 +322,7 @@ export const Tree = (): ReactElement => {
                             display: 'block'
                         }}
                         title={isExtensionPoint ? item?.name : ''}>
-                        {hasDefaultContent ? `${item.name} (has default content)` : item.name}
+                        {cellName}
                     </div>
 
                     {isExtensionPoint && (
@@ -388,6 +390,7 @@ export const Tree = (): ReactElement => {
         );
 
         const tooltipId = `tooltip--${groupName}`;
+        const headerName = hasDefaultContent ? `${groupName} (has default content)` : groupName;
 
         return (
             <div
@@ -420,7 +423,7 @@ export const Tree = (): ReactElement => {
                             textOverflow: 'ellipsis'
                         }}
                         title={isExtensionPoint ? groupName : ''}>
-                        {hasDefaultContent ? `${groupName} (has default content)` : groupName}
+                        {headerName}
                     </div>
 
                     {isExtensionPoint && (
