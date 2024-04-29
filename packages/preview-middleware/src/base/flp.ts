@@ -720,6 +720,7 @@ export async function initAdp(
         if (flp.rta) {
             flp.rta.layer = layer;
             flp.rta.options = {
+                ...flp.rta.options,
                 projectId: variant.id,
                 scenario: 'ADAPTATION_PROJECT'
             };

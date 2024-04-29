@@ -17,7 +17,7 @@ describe('adp', () => {
     rtaMock.attachUndoRedoStackModified = jest.fn();
     rtaMock.attachSelectionChange = jest.fn();
     rtaMock.getFlexSettings.mockReturnValue({
-        telemetry: false,
+        telemetry: true,
         scenario: 'ADAPTATION_PROJECT'
     });
 
@@ -64,6 +64,7 @@ describe('adp', () => {
         const spyPostMessage = jest.spyOn(common, 'startPostMessageCommunication').mockImplementation(() => {
             return { dispose: jest.fn(), sendAction: jest.fn() };
         });
+        const enableTelemetry = jest.spyOn(common, 'enableTelemetry');
         VersionInfo.load.mockResolvedValue({ version: '1.118.1' });
 
         await init(rtaMock as unknown as RuntimeAuthoring);
@@ -71,6 +72,7 @@ describe('adp', () => {
         expect(initOutlineSpy).toBeCalledTimes(1);
         expect(addMenuItemSpy).toBeCalledTimes(2);
         expect(setPluginsSpy).toBeCalledTimes(1);
+        expect(enableTelemetry).toBeCalledTimes(2);
 
         const callBackFn = spyPostMessage.mock.calls[0][1];
 
