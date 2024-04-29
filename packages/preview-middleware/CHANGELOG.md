@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.13.22
+
+### Patch Changes
+
+-   2e296173: Enable telemetry for adaptation project
+
 ## 0.13.21
 
 ### Patch Changes
