@@ -1,5 +1,5 @@
-import { t } from '../../../i18n';
 import { getCapProjectType } from '@sap-ux/project-access';
+import { t } from '../../../i18n';
 
 /**
  * Ensure the path specified is a valid CAP project.

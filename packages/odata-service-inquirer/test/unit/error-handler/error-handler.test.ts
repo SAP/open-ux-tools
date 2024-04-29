@@ -20,6 +20,11 @@ jest.mock('@sap-ux/feature-toggle', () => ({
     isFeatureEnabled: jest.fn().mockImplementation((featureId) => featureId === 'enableGAIntegration')
 }));
 
+jest.mock('../../../src/utils', () => ({
+    ...jest.requireActual('../../../src/utils'),
+    getPlatform: jest.fn().mockReturnValue({ name: 'CLI', technical: 'CLI' })
+}));
+
 describe('Test ErrorHandler', () => {
     beforeAll(async () => {
         // Wait for i18n to bootstrap so we can test localised strings

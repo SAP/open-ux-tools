@@ -66,7 +66,7 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
     [ERROR_TYPE.SERVICES_UNAVAILABLE]: [],
     [ERROR_TYPE.SERVICE_UNAVAILABLE]: [/503/],
     [ERROR_TYPE.INVALID_URL]: [/Invalid URL/, /ERR_INVALID_URL/],
-    [ERROR_TYPE.REDIRECT]: [/3[0-9][0-9]/],
+    [ERROR_TYPE.REDIRECT]: [/3[\d][\d]/],
     [ERROR_TYPE.NO_ABAP_ENVS]: [],
     [ERROR_TYPE.CATALOG_SERVICE_NOT_ACTIVE]: [
         /\/IWBEP\/CM_V4_COS\/014/,
@@ -86,6 +86,8 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
     [ERROR_TYPE.NO_V4_SERVICES]: []
 };
 
+type ValidationLinkOrString = string | ValidationLink | undefined;
+
 // Maps errors to end-user messages
 /**
  *
@@ -96,7 +98,8 @@ export class ErrorHandler {
     /** The last error message type generated if determined */
     private currentErrorType: ERROR_TYPE | null;
 
-    static guidedAnswersEnabled = false;
+    private static _guidedAnswersEnabled: boolean;
+
     private static _logger: Logger;
 
     // Get the required localized parameterized error message
@@ -193,6 +196,22 @@ export class ErrorHandler {
     }
 
     /**
+     * Get Guided Answers (context help) enabled value.
+     *
+     * @returns true if Guided Answers is enabled
+     */
+    public static get guidedAnswersEnabled(): boolean {
+        return ErrorHandler._guidedAnswersEnabled;
+    }
+
+    /**
+     * Toggle Guided Answers (context help) for validation errors.
+     */
+    public static set guidedAnswersEnabled(value: boolean) {
+        ErrorHandler._guidedAnswersEnabled = value;
+    }
+
+    /**
      * Set the logger to be used for error messages.
      *
      * @param logger the logger instance to use
@@ -247,16 +266,17 @@ export class ErrorHandler {
      * @param retainError Defaults to true to retain the error state.
      * @returns A user-friendly message for display in-line
      */
-    public logErrorMsgs(error: any | ERROR_TYPE, userMsg?: string, retainError = true): string {
+    public logErrorMsgs(error: unknown | ERROR_TYPE, userMsg?: string, retainError = true): string {
         let resolvedError: { errorMsg: string; errorType: ERROR_TYPE } = {
             errorMsg: '',
             errorType: ERROR_TYPE.UNKNOWN
         };
 
         // Overloaded to allow ERROR_TYPE for convenience
-        if (Object.values(ERROR_TYPE).includes(error)) {
-            resolvedError.errorMsg = ErrorHandler.getErrorMsgFromType(error) ?? error.toString();
-            resolvedError.errorType = error;
+        if (Object.values(ERROR_TYPE).includes(error as ERROR_TYPE)) {
+            const errorType = error as ERROR_TYPE;
+            resolvedError.errorMsg = ErrorHandler.getErrorMsgFromType(errorType) ?? errorType.toString();
+            resolvedError.errorType = errorType;
         } else if (typeof error === 'string') {
             resolvedError.errorMsg = error;
         } else {
@@ -316,7 +336,7 @@ export class ErrorHandler {
         }
         // Get previous error message
         if (!errorMsg) {
-            errorMsg = this.currentErrorMsg ?? (fallback ? ErrorHandler.getErrorMsgFromType(fallback!) : undefined);
+            errorMsg = this.currentErrorMsg ?? (fallback ? ErrorHandler.getErrorMsgFromType(fallback) : undefined);
         }
 
         if (reset) {
@@ -336,8 +356,8 @@ export class ErrorHandler {
      * @param reset optional, resets the previous error state if true
      * @returns An instance of @see {ValidationLink}
      */
-    public getValidationErrorHelp(error?: any, reset = false): string | ValidationLink | undefined {
-        let errorHelp: string | ValidationLink | undefined;
+    public getValidationErrorHelp(error?: any, reset = false): ValidationLinkOrString {
+        let errorHelp: ValidationLinkOrString;
         let errorMsg: string | undefined;
         if (error) {
             const resolvedError = ErrorHandler.mapErrorToMsg(error);
@@ -422,9 +442,9 @@ export class ErrorHandler {
      * @param errorMsg - the message to appear with the help link
      * @returns A validation help link or help link message
      */
-    public static getHelpForError(errorType: ERROR_TYPE, errorMsg?: string): ValidationLink | string | undefined {
+    public static getHelpForError(errorType: ERROR_TYPE, errorMsg?: string): ValidationLinkOrString {
         const helpNode = ErrorHandler.getHelpNode(errorType);
-        const mappedErrorMsg = errorMsg || ErrorHandler.getErrorMsgFromType(errorType);
+        const mappedErrorMsg = errorMsg ?? ErrorHandler.getErrorMsgFromType(errorType);
 
         if (helpNode) {
             const valLink: IValidationLink = {

@@ -1,6 +1,6 @@
 import { initI18nOdataServiceInquirer, t } from '../../../src/i18n';
 import { getQuestions } from '../../../src/prompts';
-import { DatasourceType, PLATFORMS } from '../../../src/types';
+import { DatasourceType, hostEnvironment } from '../../../src/types';
 import * as utils from '../../../src/utils';
 import * as btpUtils from '@sap-ux/btp-utils';
 import { Severity } from '@sap-devx/yeoman-ui-types';
@@ -27,7 +27,7 @@ describe('getQuestions', () => {
         jest.restoreAllMocks();
     });
     test('getQuestions', async () => {
-        jest.spyOn(utils, 'getPlatform').mockReturnValueOnce(PLATFORMS.CLI);
+        jest.spyOn(utils, 'getPlatform').mockReturnValueOnce(hostEnvironment.cli);
         // Tests all declaritive values
         expect(await getQuestions()).toMatchInlineSnapshot(`
             [
@@ -36,23 +36,23 @@ describe('getQuestions', () => {
                 "choices": [
                   {
                     "name": "Connect to a SAP System",
-                    "value": "sap_system",
+                    "value": "sapSystem",
                   },
                   {
                     "name": "Connect to an OData Service Url",
-                    "value": "odata_service_url",
+                    "value": "odataServiceUrl",
                   },
                   {
                     "name": "Connect to SAP Business Accelerator Hub",
-                    "value": "business_hub",
+                    "value": "businessHub",
                   },
                   {
                     "name": "Use a Local CAP Project",
-                    "value": "cap_project",
+                    "value": "capProject",
                   },
                   {
                     "name": "Upload a Metadata File",
-                    "value": "metadata_file",
+                    "value": "metadataFile",
                   },
                 ],
                 "default": -1,
@@ -123,8 +123,8 @@ describe('getQuestions', () => {
         `);
 
         // Test that default is correctly set by options
-        expect((await getQuestions({ datasourceType: { default: DatasourceType.cap_project } }))[0]).toMatchObject({
-            default: DatasourceType.cap_project
+        expect((await getQuestions({ datasourceType: { default: DatasourceType.capProject } }))[0]).toMatchObject({
+            default: DatasourceType.capProject
         });
         // Test that additional choices are added by options: 'includeNone'
         expect((await getQuestions({ datasourceType: { includeNone: true } }))[0]).toMatchObject({
@@ -138,7 +138,7 @@ describe('getQuestions', () => {
             choices: expect.arrayContaining([
                 {
                     name: t('prompts.datasourceType.projectSpecificDestChoiceText'),
-                    value: DatasourceType.project_specific_destination
+                    value: DatasourceType.projectSpecificDestination
                 }
             ])
         });
@@ -146,7 +146,7 @@ describe('getQuestions', () => {
 
     test('datasourceTypeQuestion displays and logs not implemented yet message', async () => {
         const logWarnSpy = jest.spyOn(ToolsLogger.prototype, 'warn');
-        const datasourceType = DatasourceType.sap_system;
+        const datasourceType = DatasourceType.sapSystem;
         const datasourceTypeQuestion = (await getQuestions())[0];
         expect(datasourceTypeQuestion.name).toEqual('datasourceType');
 

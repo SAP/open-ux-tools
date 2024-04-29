@@ -39,8 +39,9 @@ async function getCapProjectPaths(
         capRootPaths.push({ folderName, path: root });
         folderNameCount.set(folderName, (folderNameCount.get(folderName) ?? 0) + 1);
     }
+    const capProjectPaths = capRootPaths.sort((a, b) => a.folderName.localeCompare(b.folderName));
     return {
-        capProjectPaths: capRootPaths.sort((a, b) => a.folderName.localeCompare(b.folderName)),
+        capProjectPaths,
         folderCounts: folderNameCount
     };
 }
@@ -133,7 +134,6 @@ function createCapServiceChoice(
     LoggerHelper.logger.error(
         `Path for cds service file : ${serviceInfo.name} not found in cds model, $sources, or is not an absolute path`
     );
-    return;
 }
 
 /**
@@ -142,7 +142,6 @@ function createCapServiceChoice(
  * @param capProjectPaths - The CAP project paths
  * @returns The CAP project service choices
  */
-// todo: Memoize this function, if the same CAP project is selected multiple times, the same CAP choices will be returned.
 export async function getCapServiceChoices(capProjectPaths: CapProjectPaths): Promise<CapServiceChoice[]> {
     LoggerHelper.logger.debug(`getCapServiceChoices: ${JSON.stringify(capProjectPaths)}`);
 

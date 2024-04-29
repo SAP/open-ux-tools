@@ -12,9 +12,9 @@ import type {
     OdataServicePromptAnswers,
     OdataServicePromptOptions
 } from '../../../types';
-import { PLATFORMS, internalPromptNames, promptNames } from '../../../types';
-import { getPlatform } from '../../../utils';
-import { PromptStateHelper, errorHandler } from '../../prompt-helpers';
+import { hostEnvironment, internalPromptNames, promptNames } from '../../../types';
+import { PromptState, getPlatform } from '../../../utils';
+import { errorHandler } from '../../prompt-helpers';
 import { enterCapPathChoiceValue, getCapEdmx, getCapProjectChoices, getCapServiceChoices } from './cap-helpers';
 import { validateCapPath } from './validators';
 
@@ -58,7 +58,7 @@ export function getLocalCapProjectPrompts(
     let selectedCapProject: CapProjectPaths | undefined;
     let capServiceChoices: CapServiceChoice[];
     let defaultServiceIndex = 0;
-    PromptStateHelper.reset();
+    PromptState.reset();
 
     const prompts: (ListQuestion<CapServiceAnswers> | FileBrowserQuestion<CapServiceAnswers> | Question)[] = [
         {
@@ -148,10 +148,10 @@ export function getLocalCapProjectPrompts(
                     return errMsg;
                 }
                 if (capService) {
-                    PromptStateHelper.odataService.metadata = await getCapEdmx(capService);
-                    PromptStateHelper.odataService.servicePath = capService.urlPath;
-                    PromptStateHelper.odataService.odataVersion = OdataVersion.v4;
-                    return PromptStateHelper.odataService.metadata !== undefined
+                    PromptState.odataService.metadata = await getCapEdmx(capService);
+                    PromptState.odataService.servicePath = capService.urlPath;
+                    PromptState.odataService.odataVersion = OdataVersion.v4;
+                    return PromptState.odataService.metadata !== undefined
                         ? true
                         : t('prompts.validationMessages.metadataInvalid');
                 }
@@ -160,13 +160,13 @@ export function getLocalCapProjectPrompts(
         } as ListQuestion<CapServiceAnswers>
     ];
 
-    if (getPlatform() === PLATFORMS.CLI) {
+    if (getPlatform() === hostEnvironment.cli) {
         prompts.push({
             when: async (answers: CapServiceAnswers): Promise<boolean> => {
                 if (answers?.capService) {
-                    PromptStateHelper.odataService.metadata = await getCapEdmx(answers?.capService);
-                    PromptStateHelper.odataService.servicePath = answers?.capService.urlPath;
-                    PromptStateHelper.odataService.odataVersion = OdataVersion.v4;
+                    PromptState.odataService.metadata = await getCapEdmx(answers?.capService);
+                    PromptState.odataService.servicePath = answers?.capService.urlPath;
+                    PromptState.odataService.odataVersion = OdataVersion.v4;
                 }
                 return false;
             },

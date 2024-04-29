@@ -185,7 +185,6 @@ describe('cap-helper', () => {
             t('errors.cannotReadCapServiceMetadata', { serviceName: 'CatalogService' })
         );
         // Logger should be called with original error, this is unreliable as the underlying string value may be changed by CDS
-        // todo: We need `readCapServiceMetadataEdmx` to return an error code or the original error object
         expect(logErrorSpy).toHaveBeenCalledWith(
             expect.objectContaining({
                 message: expect.stringContaining(" Module '@sap/cds' not installed in project")

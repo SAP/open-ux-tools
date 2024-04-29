@@ -49,11 +49,11 @@ function getDatasourceTypeQuestion(options?: DatasourceTypePromptOptions): YUIQu
         additionalMessages: (source: DatasourceType) => {
             if (
                 [
-                    DatasourceType.business_hub,
+                    DatasourceType.businessHub,
                     DatasourceType.none,
-                    DatasourceType.odata_service_url,
-                    DatasourceType.project_specific_destination,
-                    DatasourceType.sap_system
+                    DatasourceType.odataServiceUrl,
+                    DatasourceType.projectSpecificDestination,
+                    DatasourceType.sapSystem
                 ].includes(source)
             ) {
                 LoggerHelper.logger?.warn(
@@ -64,7 +64,7 @@ function getDatasourceTypeQuestion(options?: DatasourceTypePromptOptions): YUIQu
                     severity: Severity.warning
                 };
             }
-            if (source === DatasourceType.business_hub) {
+            if (source === DatasourceType.businessHub) {
                 return {
                     message: t('prompts.nonUIServiceTypeWarningMessage', {
                         serviceTypeDesc: t('prompts.datasourceType.businessHubName')
@@ -90,14 +90,14 @@ async function getDatasourceTypeConditionalQuestions(
     conditionalQuestions.push(
         ...(withCondition(
             [getMetadataFileQuestion(promptOptions?.metadataFilePath) as Question],
-            (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.metadata_file
+            (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.metadataFile
         ) as OdataServiceQuestion[])
     );
 
     conditionalQuestions.push(
         ...(withCondition(
             getLocalCapProjectPrompts(promptOptions) as Question[],
-            (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.cap_project
+            (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.capProject
         ) as OdataServiceQuestion[])
     );
 

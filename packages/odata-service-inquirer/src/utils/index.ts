@@ -2,7 +2,8 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import type { TelemetryEvent, TelemetryProperties, ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
 import { SampleRate } from '@sap-ux/telemetry';
 import osName from 'os-name';
-import { PLATFORMS } from '../types';
+import { hostEnvironment } from '../types';
+import { PromptState } from './prompt-state';
 
 const osVersionName = osName();
 
@@ -12,10 +13,10 @@ const osVersionName = osName();
  * @returns the platform name and technical name
  */
 export function getPlatform(): { name: string; technical: string } {
-    if ((process.mainModule && process.mainModule.filename.includes('yo')) ?? process.stdin.isTTY) {
-        return PLATFORMS.CLI;
+    if (!PromptState.isYUI) {
+        return hostEnvironment.cli;
     } else {
-        return isAppStudio() ? PLATFORMS.SBAS : PLATFORMS.VSCODE;
+        return isAppStudio() ? hostEnvironment.bas : hostEnvironment.vscode;
     }
 }
 
@@ -62,3 +63,5 @@ function createTelemetryEvent(eventName: string, telemetryData: TelemetryPropert
         measurements: {}
     };
 }
+
+export { PromptState };

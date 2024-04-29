@@ -5,18 +5,18 @@ import type { CapService } from '../../../../src/types';
 import {
     type CapProjectChoice,
     type CapServiceChoice,
-    PLATFORMS,
+    hostEnvironment,
     promptNames,
     internalPromptNames
 } from '../../../../src/types';
-import { getPlatform } from '../../../../src/utils';
+import { PromptState, getPlatform } from '../../../../src/utils';
 import {
     enterCapPathChoiceValue,
     getCapServiceChoices as getCapServiceChoicesMock
 } from '../../../../src/prompts/datasources/cap-project/cap-helpers';
 import * as capValidators from '../../../../src/prompts/datasources/cap-project/validators';
 import type { CapCustomPaths } from '@sap-ux/project-access';
-import { PromptStateHelper, errorHandler } from '../../../../src/prompts/prompt-helpers';
+import { errorHandler } from '../../../../src/prompts/prompt-helpers';
 
 jest.mock('../../../../src/utils', () => ({
     ...jest.requireActual('../../../../src/utils'),
@@ -37,7 +37,7 @@ const mockCapCustomPaths: CapCustomPaths = {
 };
 
 jest.mock('@sap-ux/project-access', () => ({
-    ...jest.requireActual('../../../../src/error-handler/error-handler'),
+    ...jest.requireActual('@sap-ux/project-access'),
     getCapCustomPaths: jest.fn().mockImplementation(async () => mockCapCustomPaths)
 }));
 
@@ -79,7 +79,7 @@ jest.mock('../../../../src/prompts/datasources/cap-project/cap-helpers', () => (
 
 describe('getLocalCapProjectPrompts', () => {
     beforeAll(async () => {
-        (getPlatform as jest.Mock).mockReturnValue(PLATFORMS.CLI);
+        (getPlatform as jest.Mock).mockReturnValue(hostEnvironment.cli);
         // Wait for i18n to bootstrap so we can test localised strings
         await initI18nOdataServiceInquirer();
     });
@@ -248,7 +248,7 @@ describe('getLocalCapProjectPrompts', () => {
             urlPath: 'odatav4/service/path'
         };
         expect(await (capServicePrompt!.validate as Function)(capService)).toBe(true);
-        expect(PromptStateHelper.odataService).toMatchInlineSnapshot(`
+        expect(PromptState.odataService).toMatchInlineSnapshot(`
             {
               "metadata": "<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="2"/>",
               "odataVersion": "4",
@@ -269,7 +269,7 @@ describe('getLocalCapProjectPrompts', () => {
             (prompt) => prompt.name === internalPromptNames.capCliStateSetter
         );
         expect(await (capCliStateSetterPrompt!.when as Function)()).toEqual(false);
-        expect(PromptStateHelper.odataService).toEqual({});
+        expect(PromptState.odataService).toEqual({});
 
         const capService: CapService = {
             projectPath: '/some/cap/project',
@@ -280,7 +280,7 @@ describe('getLocalCapProjectPrompts', () => {
             urlPath: 'odatav4/service/path'
         };
         expect(await (capCliStateSetterPrompt!.when as Function)({ capService })).toEqual(false);
-        expect(PromptStateHelper.odataService).toMatchInlineSnapshot(`
+        expect(PromptState.odataService).toMatchInlineSnapshot(`
             {
               "metadata": "<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="2"/>",
               "odataVersion": "4",

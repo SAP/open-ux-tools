@@ -2,8 +2,8 @@ import type { FileBrowserQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import { t } from '../../../i18n';
 import type { MetadataPromptOptions, OdataServiceAnswers } from '../../../types';
 import { promptNames } from '../../../types';
-import { validateMetadataFile } from '../../validators';
-import { PromptStateHelper } from '../../prompt-helpers';
+import { validateMetadataFile } from './validators';
+import { PromptState } from '../../../utils';
 
 /**
  * Returns the metadata file question based on the provided @type{MetadataPromptOptions}.
@@ -19,7 +19,7 @@ export function getMetadataFileQuestion(promptOptions?: MetadataPromptOptions): 
         guiOptions: { mandatory: true, breadcrumb: true },
         message: t('prompts.metadataFile.message'),
         validate: async (path: string) => {
-            PromptStateHelper.reset();
+            PromptState.reset();
             const validateResult = await validateMetadataFile(path, promptOptions?.requiredOdataVersion);
 
             if (typeof validateResult === 'string' || typeof validateResult === 'boolean') {
@@ -27,10 +27,10 @@ export function getMetadataFileQuestion(promptOptions?: MetadataPromptOptions): 
             }
 
             if (validateResult.metadata) {
-                PromptStateHelper.odataService = {};
-                PromptStateHelper.odataService.odataVersion = validateResult.version;
-                PromptStateHelper.odataService.metadata = validateResult.metadata;
-                PromptStateHelper.odataService.servicePath = t('prompts.metadataFile.placeholder_odata_service_url'); // Dummy path used by v4 preview server middleware
+                PromptState.odataService = {};
+                PromptState.odataService.odataVersion = validateResult.version;
+                PromptState.odataService.metadata = validateResult.metadata;
+                PromptState.odataService.servicePath = t('prompts.metadataFile.placeholder_odata_service_url'); // Dummy path used by v4 preview server middleware
             }
             return true;
         }

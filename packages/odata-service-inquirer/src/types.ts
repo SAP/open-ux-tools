@@ -6,13 +6,13 @@ import type { ListChoiceOptions } from 'inquirer';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 
 export enum DatasourceType {
-    sap_system = 'sap_system',
-    business_hub = 'business_hub',
-    cap_project = 'cap_project',
-    odata_service_url = 'odata_service_url',
+    sapSystem = 'sapSystem',
+    businessHub = 'businessHub',
+    capProject = 'capProject',
+    odataServiceUrl = 'odataServiceUrl',
     none = 'none',
-    metadata_file = 'metadata_file',
-    project_specific_destination = 'project_specific_destination'
+    metadataFile = 'metadataFile',
+    projectSpecificDestination = 'projectSpecificDestination'
 }
 
 /**
@@ -213,7 +213,7 @@ export type DatasourceTypePromptOptions = {
      */
     includeNone?: boolean;
     /**
-     * Include the `PROJECT_SPECIFIC_DESTINATION` option in the datasource type prompt
+     * Include the `projectSpecificDestination` option in the datasource type prompt
      */
     includeProjectSpecificDest?: boolean;
 };
@@ -238,16 +238,16 @@ export type OdataServiceQuestion = YUIQuestion<OdataServiceAnswers> &
 
 export type OdataServicePromptOptions = Partial<odataServiceInquirerPromptOptions>;
 
-export const PLATFORMS = {
-    VSCODE: {
+export const hostEnvironment = {
+    vscode: {
         name: 'Visual Studio Code',
         technical: 'VSCode'
     },
-    SBAS: {
+    bas: {
         name: 'SAP Business Application Studio',
         technical: 'SBAS'
     },
-    CLI: {
+    cli: {
         name: 'CLI',
         technical: 'CLI'
     }

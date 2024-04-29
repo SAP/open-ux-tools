@@ -1,15 +1,21 @@
 import { type InquirerAdapter } from '@sap-ux/inquirer-common';
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
+import { type ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
 import { ErrorHandler } from './error-handler/error-handler';
 import { getQuestions } from './prompts';
 import LoggerHelper from './prompts/logger-helper';
-import { PromptStateHelper } from './prompts/prompt-helpers';
 import { validateODataVersion } from './prompts/validators';
-import type { OdataServiceAnswers, OdataServicePromptOptions, OdataServiceQuestion } from './types';
-import { DatasourceType, promptNames, type CapRuntime, type CapService } from './types';
-import { type ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
-import { setTelemetryClient } from './utils';
+import {
+    DatasourceType,
+    promptNames,
+    type CapRuntime,
+    type CapService,
+    type OdataServiceAnswers,
+    type OdataServicePromptOptions,
+    type OdataServiceQuestion
+} from './types';
+import { PromptState, setTelemetryClient } from './utils';
 
 /**
  * Get the inquirer prompts for odata service.
@@ -40,6 +46,7 @@ async function getPrompts(
  * @param logger
  * @param enableGuidedAnswers - if true, the prompts will use guided answers to help users with validation errors
  * @param telemetryClient - the telemetry client to use for sending telemetry data
+ * @param isYUI - if true, the prompt is being called from the Yeoman UI extension host
  * @returns the prompt answers
  */
 async function prompt(
@@ -47,8 +54,11 @@ async function prompt(
     promptOptions?: OdataServicePromptOptions,
     logger?: Logger,
     enableGuidedAnswers?: boolean,
-    telemetryClient?: ToolsSuiteTelemetryClient
+    telemetryClient?: ToolsSuiteTelemetryClient,
+    isYUI = false
 ): Promise<OdataServiceAnswers> {
+    PromptState.isYUI = isYUI;
+
     setTelemetryClient(telemetryClient);
 
     const odataServicePrompts = await getPrompts(promptOptions, logger, enableGuidedAnswers);
@@ -56,7 +66,7 @@ async function prompt(
     const answers = await adapter.prompt<OdataServiceAnswers>(odataServicePrompts);
 
     // Add dervied service answers to the answers object
-    Object.assign(answers, PromptStateHelper.odataService);
+    Object.assign(answers, PromptState.odataService);
 
     return answers;
 }
