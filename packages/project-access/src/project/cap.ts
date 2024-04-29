@@ -408,9 +408,11 @@ async function loadCdsModuleFromProject(capProjectPath: string, strict: boolean 
         if (typeof cdsDependencyVersion === 'string') {
             const globalCdsVersion = cds.version;
             if (getMajorVersion(cdsDependencyVersion) !== getMajorVersion(globalCdsVersion)) {
-                throw Error(
+                const error = new Error(
                     `The @sap/cds major version (${cdsDependencyVersion}) specified in your CAP project is different to the @sap/cds version you have installed globally (${globalCdsVersion}). Please run 'npm install' on your CAP project to ensure that the correct CDS version is loaded.`
-                );
+                ) as Error & { code: string };
+                error.code = 'CDS_VERSION_MISMATCH';
+                throw error;
             }
         }
     }

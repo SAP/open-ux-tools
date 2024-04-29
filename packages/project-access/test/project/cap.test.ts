@@ -257,6 +257,7 @@ describe('Test getCapModelAndServices()', () => {
             );
         } catch (error) {
             // Result check
+            expect(error.code).toBe('CDS_VERSION_MISMATCH');
             ['@sap/cds major version', '6.0.0', '7.0.0'].forEach((testString) => {
                 expect(error.toString()).toContain(testString);
             });
