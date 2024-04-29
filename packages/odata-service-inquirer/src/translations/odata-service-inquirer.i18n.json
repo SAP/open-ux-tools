@@ -15,7 +15,7 @@
             "odataServiceUrlChoiceText": "Connect to an $t(prompts.datasourceType.odataServiceUrlName)",
             "capProjectChoiceText": "Use a $t(prompts.datasourceType.capProjectName)",
             "metadataFileChoiceText": "Upload a $t(prompts.datasourceType.metadataFileName)",
-            "notYetImplemenetdWarningMessage": "The selected data source type: {{ datasourceType }} is not yet implemented."
+            "notYetImplementedWarningMessage": "The selected data source type: {{ datasourceType }} is not yet implemented."
         },
         "metadataFile": {
             "message": "Metadata file path",

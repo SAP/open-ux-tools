@@ -57,10 +57,10 @@ function getDatasourceTypeQuestion(options?: DatasourceTypePromptOptions): YUIQu
                 ].includes(source)
             ) {
                 LoggerHelper.logger?.warn(
-                    t('prompts.datasourceType.notYetImplemenetdWarningMessage', { datasourceType: source })
+                    t('prompts.datasourceType.notYetImplementedWarningMessage', { datasourceType: source })
                 );
                 return {
-                    message: t('prompts.datasourceType.notYetImplemenetdWarningMessage', { datasourceType: source }),
+                    message: t('prompts.datasourceType.notYetImplementedWarningMessage', { datasourceType: source }),
                     severity: Severity.warning
                 };
             }

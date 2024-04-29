@@ -88,9 +88,9 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
 
 type ValidationLinkOrString = string | ValidationLink | undefined;
 
-// Maps errors to end-user messages
 /**
- *
+ * Maps errors to end-user messages using some basic root cause analysis based on regex matching.
+ * This class will also log errors and provide help links for validation errors in some limited use cases.
  */
 export class ErrorHandler {
     /** The last error message generated */
