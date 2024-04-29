@@ -1,5 +1,5 @@
 import type { FioriElementsApp } from '../src';
-import { generate, TemplateType } from '../src';
+import { generate, TableType, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import {
@@ -31,6 +31,18 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     template: {
                         type: TemplateType.Worklist,
                         settings: v2TemplateSettings
+                    }
+                }),
+                service: v2Service
+            } as FioriElementsApp<WorklistSettings>
+        },
+        {
+            name: 'worklistV2_table_type',
+            config: {
+                ...Object.assign(feBaseConfig('fewrk1'), {
+                    template: {
+                        type: TemplateType.Worklist,
+                        settings: Object.assign(v2TemplateSettings, { tableType: TableType.TREE })
                     }
                 }),
                 service: v2Service

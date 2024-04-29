@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.19.13
+
+### Patch Changes
+
+-   99bca62c: Add error code for cds mismatch
+
 ## 1.19.12
 
 ### Patch Changes
