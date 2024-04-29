@@ -294,11 +294,7 @@ export const Tree = (): ReactElement => {
             <></>
         );
         const isExtensionPoint = item?.controlType === 'sap.ui.extensionpoint';
-
-        let hasDefaultContent = false;
-        if (isExtensionPoint) {
-            hasDefaultContent = item?.hasDefaultContent || false;
-        }
+        const hasDefaultContent = item?.hasDefaultContent || false;
 
         const tooltipId = `tooltip--${item?.name}`;
 
@@ -381,10 +377,7 @@ export const Tree = (): ReactElement => {
         }
         const data = groupHeaderProps?.group?.data as OutlineNodeItem;
         const isExtensionPoint = data?.controlType === 'sap.ui.extensionpoint';
-        let hasDefaultContent = false;
-        if (isExtensionPoint) {
-            hasDefaultContent = data?.hasDefaultContent || false;
-        }
+        const hasDefaultContent = data?.hasDefaultContent || false;
         const focus = filterQuery.filter((item) => item.name === FilterName.focusEditable)[0].value as boolean;
         const focusEditable = !data?.editable && focus ? 'focusEditable' : '';
         const controlChange = controlChanges[groupHeaderProps?.group?.key ?? ''];
