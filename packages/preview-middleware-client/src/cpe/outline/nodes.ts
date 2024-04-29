@@ -107,8 +107,8 @@ export async function transformNodes(
         if (scenario === 'ADAPTATION_PROJECT' && current?.type === 'extensionPoint') {
             const extensionPointInfo = (current as unknown as ExtendedOutlineNode).extensionPointInfo;
 
-            const hasDefaultContent = extensionPointInfo.defaultContent.length > 0;
-            const hasCreatedControls = hasDefaultContent || extensionPointInfo.createdControls.length > 0;
+            const hasDefaultContent = extensionPointInfo?.defaultContent.length > 0;
+            const hasCreatedControls = extensionPointInfo?.createdControls.length > 0;
 
             let children: OutlineNode[] = [];
 
