@@ -95,7 +95,9 @@ export async function getBuildingBlockChoices<T extends Answers>(
                 if (!answers.viewOrFragmentFile) {
                     return [];
                 }
-                return getChoices(await getFilterBarIdsInFile(answers.viewOrFragmentFile));
+                return getChoices(
+                    await getBuildingBlockIdsInFile(answers.viewOrFragmentFile, BuildingBlockType.FilterBar)
+                );
             }
             default:
                 return [];
@@ -106,17 +108,34 @@ export async function getBuildingBlockChoices<T extends Answers>(
     }
 }
 
-export async function getFilterBarIdsInFile(viewOrFragmentFile: string): Promise<string[]> {
+export async function getBuildingBlockIdsInFile(
+    viewOrFragmentFile: string,
+    buildingBlockType: BuildingBlockType
+): Promise<string[]> {
     const ids: string[] = [];
-    const xmlContent = (await fsPromises.readFile(viewOrFragmentFile)).toString();
-    const errorHandler = (level: string, message: string): void => {
-        throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
-    };
-    const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent);
-    const filterBars = xmlDocument.getElementsByTagName('macros:FilterBar');
-    for (let i = 0; i < filterBars.length; i++) {
-        const id = filterBars[i].getAttributeNode('id')?.value;
-        id && ids.push(id);
+    let buildingBlockSelector;
+    switch (buildingBlockType) {
+        case BuildingBlockType.FilterBar:
+            buildingBlockSelector = 'macros:FilterBar';
+            break;
+        case BuildingBlockType.Table:
+            buildingBlockSelector = 'macros:Table';
+            break;
+        case BuildingBlockType.Chart:
+            buildingBlockSelector = 'macros:Chart';
+            break;
+    }
+    if (buildingBlockSelector) {
+        const xmlContent = (await fsPromises.readFile(viewOrFragmentFile)).toString();
+        const errorHandler = (level: string, message: string): void => {
+            throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
+        };
+        const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent);
+        const elements = xmlDocument.getElementsByTagName(buildingBlockSelector);
+        for (let i = 0; i < elements.length; i++) {
+            const id = elements[i].getAttributeNode('id')?.value;
+            id && ids.push(id);
+        }
     }
     return ids;
 }
@@ -159,6 +178,15 @@ export async function getChartBuildingBlockPrompts(basePath: string, fs: Editor)
     await initI18n();
     const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.chart.');
     const projectProvider = await ProjectProvider.createProject(basePath, fs);
+    const validateFn = async (value: string, answers?: Answers) => {
+        return value &&
+            answers?.viewOrFragmentFile &&
+            (await getBuildingBlockIdsInFile(answers?.viewOrFragmentFile, BuildingBlockType.Chart)).find(
+                (id) => id === value
+            )
+            ? t('id.validateExistingValueMsg')
+            : true;
+    };
     const defaultAnswers: Answers = {
         id: 'Chart',
         bindingContextType: 'relative'
@@ -173,9 +201,15 @@ export async function getChartBuildingBlockPrompts(basePath: string, fs: Editor)
                 ['filterBarId'],
                 { required: true }
             ),
-            getBuildingBlockIdPrompt(t('id.message'), t('id.validation'), defaultAnswers.id, {
-                required: true
-            }),
+            getBuildingBlockIdPrompt(
+                t('id.message'),
+                t('id.validation'),
+                defaultAnswers.id,
+                {
+                    required: true
+                },
+                validateFn
+            ),
             getBindingContextTypePrompt(t('bindingContextType'), defaultAnswers.bindingContextType, { required: true }),
             ...((await isCapProject(projectProvider))
                 ? [await getCAPServicePrompt(t('service'), projectProvider, [], { required: true })]
@@ -247,6 +281,15 @@ export async function getTableBuildingBlockPrompts(basePath: string, fs: Editor)
             description: t('tableVisualizationPropertiesDescription', { returnObjects: true })
         }
     ];
+    const validateFn = async (value: string, answers?: Answers) => {
+        return value &&
+            answers?.viewOrFragmentFile &&
+            (await getBuildingBlockIdsInFile(answers?.viewOrFragmentFile, BuildingBlockType.Table)).find(
+                (id) => id === value
+            )
+            ? t('id.validateExistingValueMsg')
+            : true;
+    };
     const defaultAnswers: Answers = {
         id: 'Table',
         bindingContextType: 'relative',
@@ -273,10 +316,16 @@ export async function getTableBuildingBlockPrompts(basePath: string, fs: Editor)
                 ['aggregationPath', 'filterBarId'],
                 { groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID, required: true }
             ),
-            getBuildingBlockIdPrompt(t('id.message'), t('id.validation'), defaultAnswers.id, {
-                groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
-                required: true
-            }),
+            getBuildingBlockIdPrompt(
+                t('id.message'),
+                t('id.validation'),
+                defaultAnswers.id,
+                {
+                    groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
+                    required: true
+                },
+                validateFn
+            ),
             getBindingContextTypePrompt(t('bindingContextType'), defaultAnswers.bindingContextType, {
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
             }),
@@ -414,7 +463,9 @@ export async function getFilterBarBuildingBlockPrompts(
     const validateFn = async (value: string, answers?: Answers) => {
         return value &&
             answers?.viewOrFragmentFile &&
-            (await getFilterBarIdsInFile(answers?.viewOrFragmentFile)).find((id) => id === value)
+            (await getBuildingBlockIdsInFile(answers?.viewOrFragmentFile, BuildingBlockType.FilterBar)).find(
+                (id) => id === value
+            )
             ? t('id.validateExistingValueMsg')
             : true;
     };
