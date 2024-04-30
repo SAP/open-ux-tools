@@ -35,16 +35,16 @@ export interface AdpWriterConfig {
     target: AbapTarget;
     ui5?: {
         minVersion?: string;
-        ui5Version?: string;
-        ui5EndpointUrl?: string;
+        version?: string;
+        url?: string;
     };
     package?: {
         name?: string;
         description?: string;
     };
     flp?: {
-        flpTitle?: string;
-        flpSubtitle?: string;
+        title?: string;
+        subtitle?: string;
         inboundId?: string;
         bspName?: string;
         languages?: Language[];
