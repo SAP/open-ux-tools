@@ -5,7 +5,6 @@ import { type ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
 import { ErrorHandler } from './error-handler/error-handler';
 import { getQuestions } from './prompts';
 import LoggerHelper from './prompts/logger-helper';
-import { validateODataVersion } from './prompts/validators';
 import {
     DatasourceType,
     promptNames,
