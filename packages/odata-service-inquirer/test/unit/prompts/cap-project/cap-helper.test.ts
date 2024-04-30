@@ -219,32 +219,30 @@ describe('cap-helper', () => {
 
         currentMockCapModelAndServices = mockCapModelAndServices1();
 
-        expect(await getCapServiceChoices(capProjectPaths)).toMatchInlineSnapshot(`
-            [
-              {
-                "name": "AdminService (Node.js)",
-                "value": {
-                  "appPath": "app/",
-                  "capType": "Node.js",
-                  "projectPath": "/test/mock/bookshop",
-                  "serviceCdsPath": "../../../some/abs/path/mock/bookshop/srv/admin-service",
-                  "serviceName": "AdminService",
-                  "urlPath": "/admin/",
-                },
-              },
-              {
-                "name": "CatalogService (Node.js)",
-                "value": {
-                  "appPath": "app/",
-                  "capType": "Node.js",
-                  "projectPath": "/test/mock/bookshop",
-                  "serviceCdsPath": "../../../some/abs/path/mock/bookshop/srv/cat-service",
-                  "serviceName": "CatalogService",
-                  "urlPath": "/cat/",
-                },
-              },
-            ]
-        `);
+        expect(await getCapServiceChoices(capProjectPaths)).toEqual([
+            {
+                name: 'AdminService (Node.js)',
+                value: {
+                    'appPath': 'app/',
+                    'capType': 'Node.js',
+                    'projectPath': '/test/mock/bookshop',
+                    'serviceCdsPath': join('../../../some/abs/path/mock/bookshop/srv/admin-service'),
+                    'serviceName': 'AdminService',
+                    'urlPath': '/admin/'
+                }
+            },
+            {
+                name: 'CatalogService (Node.js)',
+                value: {
+                    'appPath': 'app/',
+                    'capType': 'Node.js',
+                    'projectPath': '/test/mock/bookshop',
+                    'serviceCdsPath': join('../../../some/abs/path/mock/bookshop/srv/cat-service'),
+                    'serviceName': 'CatalogService',
+                    'urlPath': '/cat/'
+                }
+            }
+        ]);
     });
 
     test('getCapServiceChoices: getCapModelAndServices errors are caught, handled and logged correctly', async () => {
