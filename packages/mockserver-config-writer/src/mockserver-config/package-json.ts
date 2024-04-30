@@ -60,7 +60,7 @@ function enhanceScripts(fs: Editor, packageJson: Package): void {
     packageJson.scripts['start-mock'] =
         copyStartScript(packageJson.scripts.start) ??
         packageJson.scripts['start-mock'] ??
-        `fiori run --config ./ui5-mock.yaml --open \"/\"`;
+        `fiori run --config ./ui5-mock.yaml --open "/"`;
 }
 
 /**
