@@ -77,8 +77,6 @@ export {
     getPrompts,
     prompt,
     promptNames,
-    // temp exports, remove once development is done
-    validateODataVersion,
     type CapRuntime,
     type CapService,
     type InquirerAdapter,
