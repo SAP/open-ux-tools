@@ -8,15 +8,10 @@ import {
 } from '@sap-ux/project-access';
 import { basename, isAbsolute, relative } from 'path';
 import { t } from '../../../i18n';
-import type {
-    CapProjectChoice,
-    CapProjectPaths,
-    CapProjectRootPath,
-    CapService,
-    CapServiceChoice
-} from '../../../types';
+import type { CapService, CapServiceChoice } from '../../../types';
 import LoggerHelper from '../../logger-helper';
 import { errorHandler } from '../../prompt-helpers';
+import type { CapProjectChoice, CapProjectPaths, CapProjectRootPath } from './types';
 
 export const enterCapPathChoiceValue = 'enterCapPath';
 
@@ -83,10 +78,10 @@ type ServiceInfo = Awaited<ReturnType<typeof getCapModelAndServices>>['services'
 /**
  * Create a cap service choice from the service info.
  *
- * @param capModel
- * @param serviceInfo
- * @param projectPath
- * @param appPath
+ * @param capModel - The cap model
+ * @param serviceInfo - The service info
+ * @param projectPath - The project path
+ * @param appPath - The app path
  * @returns a cap service choice
  */
 function createCapServiceChoice(
@@ -134,6 +129,7 @@ function createCapServiceChoice(
     LoggerHelper.logger.error(
         `Path for cds service file : ${serviceInfo.name} not found in cds model, $sources, or is not an absolute path`
     );
+    return undefined;
 }
 
 /**
@@ -196,7 +192,7 @@ export async function getCapEdmx(capService: CapService): Promise<string | undef
     if (!capService.urlPath) {
         const errorMsg = t('errors.capServiceUrlPathNotDefined', { serviceName: capService.serviceName });
         errorHandler.logErrorMsgs(errorMsg);
-        return;
+        return undefined;
     }
     try {
         return await readCapServiceMetadataEdmx(capService.projectPath, capService.urlPath, 'v4');

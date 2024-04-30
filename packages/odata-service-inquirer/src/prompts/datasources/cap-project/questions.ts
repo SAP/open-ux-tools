@@ -3,19 +3,18 @@ import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { getCapCustomPaths } from '@sap-ux/project-access';
 import type { Question } from 'inquirer';
 import { t } from '../../../i18n';
-import type {
-    CapProjectChoice,
-    CapProjectPaths,
-    CapProjectRootPath,
-    CapServiceAnswers,
-    CapServiceChoice,
-    OdataServicePromptAnswers,
-    OdataServicePromptOptions
-} from '../../../types';
-import { hostEnvironment, internalPromptNames, promptNames } from '../../../types';
+import type { CapServiceChoice, OdataServicePromptOptions } from '../../../types';
+import { promptNames, hostEnvironment } from '../../../types';
 import { PromptState, getPlatform } from '../../../utils';
 import { errorHandler } from '../../prompt-helpers';
 import { enterCapPathChoiceValue, getCapEdmx, getCapProjectChoices, getCapServiceChoices } from './cap-helpers';
+import {
+    capInternalPromptNames,
+    type CapProjectChoice,
+    type CapProjectPaths,
+    type CapProjectRootPath,
+    type CapServiceAnswers
+} from './types';
 import { validateCapPath } from './validators';
 
 /**
@@ -51,7 +50,7 @@ function getDefaultCapChoice(
  */
 export function getLocalCapProjectPrompts(
     promptOptions?: OdataServicePromptOptions
-): (YUIQuestion<OdataServicePromptAnswers> | Question)[] {
+): (YUIQuestion<CapServiceAnswers> | Question)[] {
     let capChoices: Awaited<CapProjectChoice[]> = [];
     const defaultCapPath = promptOptions?.[promptNames.capProject]?.defaultChoice;
     const defaultCapService = promptOptions?.[promptNames.capService]?.defaultChoice;
@@ -84,7 +83,7 @@ export function getLocalCapProjectPrompts(
             when: (answers): boolean => capChoices.length === 1 || answers?.capProject === enterCapPathChoiceValue,
             type: 'input',
             guiType: 'folder-browser',
-            name: internalPromptNames.capProjectPath,
+            name: capInternalPromptNames.capProjectPath,
             message: t('prompts.capProjectPath.message'),
             default: () => {
                 if (defaultCapPath) {
@@ -170,7 +169,7 @@ export function getLocalCapProjectPrompts(
                 }
                 return false;
             },
-            name: internalPromptNames.capCliStateSetter
+            name: capInternalPromptNames.capCliStateSetter
         } as Question);
     }
 

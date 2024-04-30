@@ -8,7 +8,7 @@ import {
 } from '../../../../src/prompts/datasources/cap-project/cap-helpers';
 import LoggerHelper from '../../../../src/prompts/logger-helper';
 import { errorHandler } from '../../../../src/prompts/prompt-helpers';
-import type { CapProjectPaths } from '../../../../src/types';
+import type { CapProjectPaths } from '../../../../src/prompts/datasources/cap-project/types';
 import os from 'os';
 
 const initMockCapModelAndServices = {

@@ -1,9 +1,11 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
-import type { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
-import type { CapCustomPaths } from '@sap-ux/project-access';
+import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ListChoiceOptions } from 'inquirer';
-import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
+
+/**
+ * This file contains types that are exported by the module and are needed for consumers using the APIs `prompt` and `getPrompts`.
+ */
 
 export enum DatasourceType {
     sapSystem = 'sapSystem',
@@ -16,9 +18,8 @@ export enum DatasourceType {
 }
 
 /**
- * Answers returned by the OdataServiceInquirer prompt API,
- * these answers are used to generate the OData service and may be derived from the user's input rather than direct answers.
- *
+ * Answers returned by the OdataServiceInquirer prompt API.
+ * These values may be used to write an OData service and may be derived from the user's input rather than direct answers.
  */
 export interface OdataServiceAnswers {
     /**
@@ -42,7 +43,7 @@ export interface OdataServiceAnswers {
     odataVersion?: OdataVersion;
 
     /**
-     * The service path of the selected service.
+     * The relative path of the selected service.
      */
     servicePath?: string;
 
@@ -54,101 +55,24 @@ export interface OdataServiceAnswers {
 
 /**
  * Enumeration of prompt names used by OdataServiceInquirerPromptOptions
- *
  */
 export enum promptNames {
     /**
      * Data source type
      */
     datasourceType = 'datasourceType',
+    /**
+     * Metadata file path
+     */
     metadataFilePath = 'metadataFilePath',
+    /**
+     * Cap project
+     */
     capProject = 'capProject',
+    /**
+     * Cap service
+     */
     capService = 'capService'
-}
-
-/**
- * Enumeration of internal prompt names used internally and not supported for modification using OdataServiceInquirerPromptOptions
- *
- */
-export enum internalPromptNames {
-    capProjectPath = 'capProjectPath',
-    capCliStateSetter = 'capCliStateSetter'
-}
-
-/**
- * Answers to CAP service prompts
- *
- */
-export interface CapServiceAnswers extends CapService {
-    [promptNames.capProject]: CapProjectChoice['value'];
-    [internalPromptNames.capProjectPath]: string;
-    [promptNames.capService]: CapServiceChoice['value'];
-}
-
-export interface OdataServicePromptAnswers extends CapServiceAnswers {
-    /**
-     * The base URL of the OData service. Typically the host and port of the service url.
-     */
-    baseUrl?: string;
-    /**
-     * The SAP client code
-     */
-    sapClient?: string;
-    destination?: {
-        /**
-         * If the service is provided via a BTP destination, this is the destination name.
-         */
-        name: string;
-        /**
-         * Is this the instance name???
-         */
-        instance?: string;
-    };
-    /**
-     *
-     */
-    type?: ServiceType;
-    /**
-     * The path to the OData service. Typically the path to the service endpoint.
-     */
-    path?: string;
-    /**
-     * The OData version of the service.
-     */
-    odataVersion?: OdataVersion;
-    /**
-     * The name of the data source as would be written to the manifest.json.
-     */
-    name?: string;
-    /**
-     * The `sap.ui5.model` name as would be written to the manifest.json.
-     */
-    model?: string;
-    /**
-     * An annotations defintion.
-     */
-    annotations?: {
-        name?: string;
-        technicalName: string;
-        xml: string;
-    };
-    /**
-     * The local annotations file name?
-     */
-    localAnnotationsName?: string;
-    //previewSettings?: Partial<ProxyBackend>;
-    version?: OdataVersion;
-}
-
-export type CapProjectRootPath = {
-    folderName: string;
-    path: string;
-};
-
-export type CapProjectPaths = CapProjectRootPath & CapCustomPaths;
-
-export interface CapProjectChoice extends ListChoiceOptions {
-    value: CapProjectPaths | string;
 }
 
 export type CapRuntime = 'Node.js' | 'Java';
@@ -233,25 +157,9 @@ type odataServiceInquirerPromptOptions = Record<promptNames.datasourceType, Data
     Record<promptNames.capProject, CapProjectPromptOptions> &
     Record<promptNames.capService, CapServicePromptOptions>;
 
-export type OdataServiceQuestion = YUIQuestion<OdataServiceAnswers> &
-    Partial<Pick<AutocompleteQuestionOptions, 'source'>>;
+export type OdataServiceQuestion = YUIQuestion<OdataServiceAnswers>;
 
 export type OdataServicePromptOptions = Partial<odataServiceInquirerPromptOptions>;
-
-export const hostEnvironment = {
-    vscode: {
-        name: 'Visual Studio Code',
-        technical: 'VSCode'
-    },
-    bas: {
-        name: 'SAP Business Application Studio',
-        technical: 'SBAS'
-    },
-    cli: {
-        name: 'CLI',
-        technical: 'CLI'
-    }
-};
 
 /**
  * Implementation of IValidationLink interface.
@@ -280,3 +188,18 @@ export class ValidationLink implements IValidationLink {
         return `${this.message} ${this.link.text}${this.link.url ? ' : ' + this.link.url : ''}`;
     }
 }
+
+export const hostEnvironment = {
+    vscode: {
+        name: 'Visual Studio Code',
+        technical: 'VSCode'
+    },
+    bas: {
+        name: 'SAP Business Application Studio',
+        technical: 'SBAS'
+    },
+    cli: {
+        name: 'CLI',
+        technical: 'CLI'
+    }
+};

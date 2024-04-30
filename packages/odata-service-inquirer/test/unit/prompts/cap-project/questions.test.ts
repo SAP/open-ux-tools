@@ -2,13 +2,8 @@ import type { ListQuestion } from 'inquirer';
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import { getLocalCapProjectPrompts } from '../../../../src/prompts/datasources/cap-project/questions';
 import type { CapService } from '../../../../src/types';
-import {
-    type CapProjectChoice,
-    type CapServiceChoice,
-    hostEnvironment,
-    promptNames,
-    internalPromptNames
-} from '../../../../src/types';
+import { promptNames, hostEnvironment, type CapServiceChoice } from '../../../../src/types';
+import { type CapProjectChoice, capInternalPromptNames } from '../../../../src/prompts/datasources/cap-project/types';
 import { PromptState, getPlatform } from '../../../../src/utils';
 import {
     enterCapPathChoiceValue,
@@ -158,7 +153,7 @@ describe('getLocalCapProjectPrompts', () => {
 
     test('prompt: capProjectPath', async () => {
         let capPrompts = await getLocalCapProjectPrompts();
-        let capProjectPathPrompt = capPrompts.find((prompt) => prompt.name === internalPromptNames.capProjectPath);
+        let capProjectPathPrompt = capPrompts.find((prompt) => prompt.name === capInternalPromptNames.capProjectPath);
 
         // No previous answers, no cap project choices (from prompt `capProject`)
         expect(await (capProjectPathPrompt!.when as Function)()).toEqual(false);
@@ -183,7 +178,7 @@ describe('getLocalCapProjectPrompts', () => {
                 defaultChoice: '/abs/path/to/cap/project1'
             }
         });
-        capProjectPathPrompt = capPrompts.find((prompt) => prompt.name === internalPromptNames.capProjectPath);
+        capProjectPathPrompt = capPrompts.find((prompt) => prompt.name === capInternalPromptNames.capProjectPath);
         expect(await (capProjectPathPrompt!.default as Function)()).toEqual('/abs/path/to/cap/project1');
 
         // Validate
@@ -266,7 +261,7 @@ describe('getLocalCapProjectPrompts', () => {
     test('hidden prompt to set state on CLI - since list validators dont run there', async () => {
         const capPrompts = await getLocalCapProjectPrompts();
         const capCliStateSetterPrompt = capPrompts.find(
-            (prompt) => prompt.name === internalPromptNames.capCliStateSetter
+            (prompt) => prompt.name === capInternalPromptNames.capCliStateSetter
         );
         expect(await (capCliStateSetterPrompt!.when as Function)()).toEqual(false);
         expect(PromptState.odataService).toEqual({});

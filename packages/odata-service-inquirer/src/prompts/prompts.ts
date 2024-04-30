@@ -18,7 +18,7 @@ import LoggerHelper from './logger-helper';
 /**
  * Get the prompts for the OData service inquirer.
  *
- * @param promptOptions
+ * @param promptOptions - options that can control some of the prompt behavior. See {@link OdataServicePromptOptions} for details
  * @returns the prompts used to provide input for OData service generation
  */
 export async function getQuestions(promptOptions?: OdataServicePromptOptions): Promise<OdataServiceQuestion[]> {
@@ -33,7 +33,7 @@ export async function getQuestions(promptOptions?: OdataServicePromptOptions): P
 /**
  * Get the datasource type question.
  *
- * @param options
+ * @param options - options that can control some of the prompt behavior. See {@link DatasourceTypePromptOptions} for details
  * @returns the datasource type question
  */
 function getDatasourceTypeQuestion(options?: DatasourceTypePromptOptions): YUIQuestion<OdataServiceAnswers> {
@@ -80,8 +80,8 @@ function getDatasourceTypeQuestion(options?: DatasourceTypePromptOptions): YUIQu
 /**
  * Apply addiitonal when conditions based on the datasource type answer.
  *
- * @param promptOptions
- * @returns
+ * @param promptOptions - options that can control some of the prompt behavior. See {@link OdataServicePromptOptions} for details
+ * @returns the conditional questions based on the datasource type answer
  */
 async function getDatasourceTypeConditionalQuestions(
     promptOptions?: OdataServicePromptOptions

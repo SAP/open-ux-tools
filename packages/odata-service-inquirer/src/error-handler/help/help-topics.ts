@@ -33,9 +33,9 @@ const GUIDED_ANSWERS_SUPPORT_BASE_URL = 'https://ga.support.sap.com/dtp/viewer/i
  * Creates a help url for the specified tree and node ids. If node ids are not specified the root tree path
  * will be returned, which may not be a valid help page.
  *
- * @param treeId
- * @param nodeIds
- * @returns
+ * @param treeId The tree id of the help content system (Guided Answers context)
+ * @param nodeIds The node ids of the help content page (Guided Answers specific page)
+ * @returns The help url
  */
 export function getHelpUrl(treeId: number, nodeIds: number[]): string {
     let actions = '';

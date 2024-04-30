@@ -25,7 +25,7 @@ let telemetryClient: ToolsSuiteTelemetryClient | undefined;
 /**
  * Set the telemetry client.
  *
- * @param toolsSuiteTelemetryClient
+ * @param toolsSuiteTelemetryClient the telemetry client instance to use when sending telemetry events
  */
 export function setTelemetryClient(toolsSuiteTelemetryClient: ToolsSuiteTelemetryClient | undefined): void {
     telemetryClient = toolsSuiteTelemetryClient;

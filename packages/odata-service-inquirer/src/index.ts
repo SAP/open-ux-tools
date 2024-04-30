@@ -19,9 +19,9 @@ import { PromptState, setTelemetryClient } from './utils';
 /**
  * Get the inquirer prompts for odata service.
  *
- * @param promptOptions
- * @param logger    - a logger compatible with the {@link Logger} interface
- * @param enableGuidedAnswers
+ * @param promptOptions - options that can control some of the prompt behavior. See {@link OdataServicePromptOptions} for details
+ * @param logger - a logger compatible with the {@link Logger} interface
+ * @param enableGuidedAnswers - if true, the prompts will use guided answers to help users with validation errors
  * @returns the prompts used to provide input for odata service generation
  */
 async function getPrompts(
@@ -29,7 +29,6 @@ async function getPrompts(
     logger?: Logger,
     enableGuidedAnswers = false
 ): Promise<OdataServiceQuestion[]> {
-    // Initialize the logger refs
     LoggerHelper.logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/odata-service-inquirer' });
     ErrorHandler.logger = LoggerHelper.logger;
     ErrorHandler.guidedAnswersEnabled = enableGuidedAnswers;
@@ -40,9 +39,9 @@ async function getPrompts(
 /**
  * Prompt for odata service writer inputs.
  *
- * @param adapter
- * @param promptOptions
- * @param logger
+ * @param adapter - optionally provide references to a calling inquirer instance, this supports integration to Yeoman generators, for example
+ * @param promptOptions - options that can control some of the prompt behavior. See {@link OdataServicePromptOptions} for details
+ * @param logger - a logger compatible with the {@link Logger} interface
  * @param enableGuidedAnswers - if true, the prompts will use guided answers to help users with validation errors
  * @param telemetryClient - the telemetry client to use for sending telemetry data
  * @param isYUI - if true, the prompt is being called from the Yeoman UI extension host

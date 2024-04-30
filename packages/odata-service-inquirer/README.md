@@ -2,6 +2,9 @@
 
 Provides Inquirer based end-user prompting to allow selection of a service from multiple data source types. This invloves aquiring a connection to backend systems and retrieving edmx metadata for services provided by the catalog, from a local file or CAP project.
 
+**Note:**
+Current implementation is limited to metadata file and Local Cap projects as datasources only.
+
 ## Installation
 Npm
 `npm install --save @sap-ux/odata-service-inquirer`
@@ -16,57 +19,63 @@ Pnpm
 
 Prompts may be retrieved using `getPrompts` and then executed in another prompting module that supports `inquirer` type prompts. 
 
-`getPrompts` is provided to allow consumers to access prompts. There may be cases where these can be transformed to support other prompting frameworks. Most prompt configuration is possible via `OdataServiceInquirerOptions` and calling `prompt`. 
+`getPrompts` is provided to allow consumers to access prompts. There may be cases where these can be transformed to support other prompting frameworks. Most prompt configuration is possible via `OdataServiceInquirerOptions` and calling `prompt`. This is the recommended approach.
 
 Configurability of prompts is entirely controlled using the `OdataServiceInquirerOptions` parameter. 
 
 See [Inquirer.js](https://www.npmjs.com/package/inquirer) for valid default properties.
 
-### Inquirer usage example:
+### Odata Service Inquirer usage example:
 
-**TODO: REPLACE EXAMPLE**
-
-In the following example the prompts are customised as follows:
-
-- Provides a default application name of 'travelApp'
-- Provides additional validation of description to be less than 50 characters
-- Hides the UI5 version prompt behind an advanced confirm prompt
-
-```javascript
-import { type UI5ApplicationPromptOptions, type UI5ApplicationAnswerspromptNames, prompt } from '@sap-ux/ui5-application-inquirer';
-import { type InquirerAdapter } from '@sap-ux/inquirer-common';
-import inquirer from 'inquirer';
-
-const promptOptions: UI5ApplicationPromptOptions = {
-    // Provides a default UI5 application name
-    [promptNames.name]: {
-        default: 'travelApp'
-    },
-    // Adds additional validation to description prompt
-    [promptNames.description]: {
-        validate: (description, previousAnsers) => {
-            if (description.length > 50) {
-                return 'Please enter a description less than 50 characters'
+```TypeScript
+import type { InquirerAdapter } from '@sap-ux/inquirer-common';
+import type { OdataServiceAnswers, OdataServicePromptOptions } from '@sap-ux/odata-service-inquirer';
+import { DatasourceType, prompt, CapService } from '@sap-ux/odata-service-inquirer';
+import { generate as generateOdataService, OdataService, ServiceType } from '@sap-ux/odata-service-writer'
+...
+    const promptOpts = {
+        datasourceType: {
+            default: DatasourceType.capProject
+        },
+        metadata: {
+            requiredOdataVersion: OdataVersion.v4
+        },
+        capProject: {
+            capSearchPaths: this.workspaceFolders, // Pass VSCode workspace folders, for example, or any array of path strings
+            defaultChoice: `/local/cap/project/path`
+        },
+        capService: {
+            defaultChoice: {
+                projectPath: '/local/cap/project/path',
+                serviceName: 'MainOnlineService'
             }
         }
-    },
-    // Hide behind `showAdvanced` prompt
-    [promptNames.ui5Version]: {
-        advanced: true
+    } as OdataServicePromptOptions;
+
+    /**
+     * Pass an Inquirer prompt function https://www.npmjs.com/package/inquirer#methods
+     */
+    const inqAdaptor = {
+        prompt
+    };
+
+    const serviceAnswers: OdataServiceAnswers = await osPrompt(
+        inqAdaptor as InquirerAdapter,
+        promptOpts
+    );
+
+    const odataService: OdataService = {
+        type: serviceAnswers.capService ? ServiceType.CDS : ServiceType.EDMX,
+        url: serviceAnswers.metadata ? undefined : 'http://localhost',
+        path: serviceAnswers.servicePath,
+        metadata: serviceAnswers.metadata,
+        version: serviceAnswers.odataVersion
     }
-}
+    generateOdataService(serviceAnswers.capService.projectPath, odataService);
 
-const inquirerAdapter: InquirerAdapter = {
-    prompt: inquirer.prompt
-};
-
-// ui5AppAnswers will contain all values required to generate a UI5 app
-const ui5AppAnswers: UI5ApplicationAnswers = await prompt(
-    inquirerAdapter,
-    promptOptions
-);
-
+...
 ```
+
 ## License
 
 Read [License](./LICENSE).

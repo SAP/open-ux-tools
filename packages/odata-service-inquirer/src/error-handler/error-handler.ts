@@ -147,7 +147,7 @@ export class ErrorHandler {
     /**
      * Get the Guided Answers (help) node for the specified error type.
      *
-     * @param errorType
+     * @param errorType The error type for which a help node (help content id) may be returned
      * @returns The Guided Answers node for the specified error type
      */
     private static readonly getHelpNode = (errorType: ERROR_TYPE): number | undefined => {
@@ -381,8 +381,8 @@ export class ErrorHandler {
     /**
      * Get the error message for the specified error type.
      *
-     * @param errorType
-     * @param error
+     * @param errorType The error type for which the message may be returned
+     * @param error optional, if provided may be used to get generate a more specific error message, or be included in the message
      * @returns The error message for the specified error type
      */
     public static getErrorMsgFromType(errorType: ERROR_TYPE, error?: any): string | undefined {
