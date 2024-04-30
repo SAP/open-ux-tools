@@ -7,6 +7,7 @@ import VersionInfo from 'mock/sap/ui/VersionInfo';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import ElementRegistry from 'mock/sap/ui/core/ElementRegistry';
 
 describe('adp', () => {
     const addMenuItemSpy = jest.fn();
@@ -48,12 +49,11 @@ describe('adp', () => {
 
     beforeEach(() => {
         rtaMock.getDefaultPlugins
-            .mockReturnValueOnce({
+            .mockReturnValue({
                 contextMenu: {
                     addMenuItem: addMenuItemSpy
                 }
             })
-            .mockReturnValueOnce({});
     });
 
     afterEach(() => {
@@ -97,8 +97,41 @@ describe('adp', () => {
 
         expect(sendActionMock).toHaveBeenNthCalledWith(2, {
             type: '[ext] show-dialog-message',
-            payload:
-                'The current SAPUI5 version set for this Adaptation project is 1.70.0. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is 1.71'
+            payload: {
+                message:
+                    'The current SAPUI5 version set for this Adaptation project is 1.70.0. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is 1.71',
+                shouldHideIframe: true
+            }
+        });
+    });
+
+    test('init - send notification existance of sync views', async () => {
+        jest.spyOn(common, 'startPostMessageCommunication').mockImplementation(() => {
+            return { dispose: jest.fn(), sendAction: sendActionMock };
+        });
+
+        const mockUI5Element = {
+            getMetadata: jest.fn().mockReturnValue({
+                getName: jest.fn().mockReturnValue('XMLView')
+            }),
+            oAsyncState: undefined
+        };
+
+        ElementRegistry.all.mockReturnValue({
+            'application-app-preview-component---fin.ar.lineitems.display.appView': mockUI5Element
+        });
+
+        VersionInfo.load.mockResolvedValue({ version: '1.118.1' });
+
+        await init(rtaMock as unknown as RuntimeAuthoring);
+
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
+            type: '[ext] show-dialog-message',
+            payload: {
+                message:
+                'Have in mind that synchronous views are detected for this application and controller extensions are not supported for such views. Controller extension functionality on these views will be disabled.',
+                shouldHideIframe: false
+            }
         });
     });
 });

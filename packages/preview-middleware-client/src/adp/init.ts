@@ -1,5 +1,6 @@
 import log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import UI5ElementRegistry from 'sap/ui/core/ElementRegistry';
 
 import init from '../cpe/init';
 import { initDialogs } from './init-dialogs';
@@ -12,6 +13,7 @@ import {
 import { ActionHandler } from '../cpe/types';
 import VersionInfo from 'sap/ui/VersionInfo';
 import { getUI5VersionValidationMessage } from './ui5-version-utils';
+import UI5Element from 'sap/ui/dt/Element';
 
 export default async function (rta: RuntimeAuthoring) {
     const { version } = (await VersionInfo.load()) as { version: string };
@@ -40,8 +42,10 @@ export default async function (rta: RuntimeAuthoring) {
         }
     );
 
+    //get all sync views
+    const syncViewsIds = getAllSyncViewsIds();
     // initialize fragment content menu entry
-    initDialogs(rta);
+    initDialogs(rta, syncViewsIds);
 
     // initialize extension point service
     if (minor > 77) {
@@ -56,7 +60,37 @@ export default async function (rta: RuntimeAuthoring) {
     const ui5VersionValidationMsg = getUI5VersionValidationMessage(version);
 
     if (ui5VersionValidationMsg) {
-        sendAction(showMessage(ui5VersionValidationMsg));
+        sendAction(showMessage({ message: ui5VersionValidationMsg, shouldHideIframe: true }));
+
+        return;
     }
+    if (syncViewsIds.length > 0) {
+        sendAction(
+            showMessage({
+                message:
+                    'Have in mind that synchronous views are detected for this application and controller extensions are not supported for such views. Controller extension functionality on these views will be disabled.',
+                shouldHideIframe: false
+            })
+        );
+    }
+
     log.debug('ADP init executed.');
+}
+
+/**
+ *
+ * Get Ids for all sync views
+ *
+ * @returns array
+ */
+function getAllSyncViewsIds(): string[] {
+    const elements = UI5ElementRegistry.all() as Record<string, UI5Element>;
+    const syncViewIds: string[] = [];
+    Object.entries(elements).forEach(([key, ui5Element]) => {
+        if (ui5Element?.getMetadata()?.getName()?.includes('XMLView') && ui5Element?.oAsyncState === undefined) {
+            syncViewIds.push(key);
+        }
+    });
+
+    return syncViewIds;
 }
