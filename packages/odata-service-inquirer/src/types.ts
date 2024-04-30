@@ -133,7 +133,7 @@ export type DatasourceTypePromptOptions = {
      */
     default?: DatasourceType;
     /**
-     * Include the `NONE` option in the datasource type prompt
+     * Include the no datasource option in the datasource type prompt
      */
     includeNone?: boolean;
     /**
