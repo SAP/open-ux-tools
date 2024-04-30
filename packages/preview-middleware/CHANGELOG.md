@@ -1,5 +1,19 @@
 # @sap-ux/preview-middleware
 
+## 0.13.22
+
+### Patch Changes
+
+-   2e296173: Enable telemetry for adaptation project
+
+## 0.13.21
+
+### Patch Changes
+
+-   Updated dependencies [99bca62c]
+    -   @sap-ux/project-access@1.19.13
+    -   @sap-ux/adp-tooling@0.9.22
+
 ## 0.13.20
 
 ### Patch Changes
