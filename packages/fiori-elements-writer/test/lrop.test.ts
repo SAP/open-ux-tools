@@ -1,5 +1,5 @@
 import type { FioriElementsApp, LROPSettings } from '../src';
-import { generate, TemplateType } from '../src';
+import { generate, TableType, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import {
@@ -131,6 +131,18 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     template: {
                         type: TemplateType.ListReportObjectPage,
                         settings: v2TemplateSettings
+                    }
+                }),
+                service: v2Service
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lrop_v2_table_type',
+            config: {
+                ...Object.assign(feBaseConfig('felrop2'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: Object.assign(v2TemplateSettings, { tableType: TableType.TREE })
                     }
                 }),
                 service: v2Service
