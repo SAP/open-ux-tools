@@ -2,7 +2,7 @@
 import type { Store } from 'mem-fs';
 import { getStoreForProject } from './memfs';
 import { getProject, type Manifest } from '@sap-ux/project-access';
-import { join } from 'path';
+import path, { join } from 'path';
 import type File from 'vinyl';
 import { type Editor } from 'mem-fs-editor';
 import { ProjectTemp, convertProject } from './project-convertor';
@@ -18,7 +18,10 @@ class ProjectProvider {
      * @param fs
      */
     constructor(private root: string, private fs?: Editor) {
-        this.appId = this.root.split('\\app\\').length > 1 ? `app\\${this.root.split('\\app\\')[1]}` : '';
+        this.appId =
+            this.root.split(`${path.sep}app${path.sep}`).length > 1
+                ? join('app', this.root.split(`${path.sep}app${path.sep}`)[1])
+                : '';
     }
 
     /**
