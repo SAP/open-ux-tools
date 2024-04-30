@@ -16,5 +16,15 @@ describe('base/prompts', () => {
             prompts.inject([false]);
             expect(await promptConfirmation(message)).toBe(false);
         });
+
+        test('With callback.', async () => {
+            const logSpy = jest.spyOn(global.console, 'log');
+            const callback = () => {
+                console.log('~Test');
+            };
+            prompts.inject([true]);
+            expect(await promptConfirmation(message, callback)).toBe(true);
+            expect(logSpy).toBeCalledTimes(1);
+        });
     });
 });

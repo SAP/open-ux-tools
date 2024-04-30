@@ -15,7 +15,12 @@ import { join } from 'path';
 
 import * as validate from '../../../src/base/validate';
 import { SummaryStatus } from '../../../src/base/validate';
+import type { AdaptationConfig } from '@sap-ux/axios-extension';
 
+const adaptation: AdaptationConfig = {
+    namespace: 'apps/sap.ui.demoapps.rta.fiorielements/appVariants/adp.example/',
+    layer: 'VENDOR'
+} as AdaptationConfig;
 const validateBeforeDeployMock = jest.spyOn(validate, 'validateBeforeDeploy');
 const formatSummaryMock = jest.spyOn(validate, 'formatSummary');
 const showAdditionalInfoForOnPremMock = jest.spyOn(validate, 'showAdditionalInfoForOnPrem');
@@ -286,7 +291,7 @@ describe('base/deploy', () => {
                 mockedStoreService.read.mockResolvedValueOnce(credentials);
                 mockedLrepService.deploy.mockResolvedValue(undefined);
 
-                await deploy(adpArchive.toBuffer(), { app: {}, target }, nullLogger);
+                await deploy(adpArchive.toBuffer(), { app: {}, target, adaptation }, nullLogger);
                 expect(mockedLrepService.deploy).toBeCalledWith(expect.any(Buffer), {
                     layer: 'VENDOR',
                     namespace: 'apps/sap.ui.demoapps.rta.fiorielements/appVariants/adp.example/'
@@ -295,7 +300,7 @@ describe('base/deploy', () => {
 
             test('Test mode not supporterd in LREP', async () => {
                 try {
-                    await deploy(adpArchive.toBuffer(), { app: {}, target, test: true }, nullLogger);
+                    await deploy(adpArchive.toBuffer(), { app: {}, target, test: true, adaptation }, nullLogger);
                     fail('Should have thrown an error');
                 } catch (error) {
                     expect(error.message).toMatch(/test mode not supported/);

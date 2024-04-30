@@ -7,8 +7,10 @@ import { Command } from 'commander';
 import fs from 'fs';
 import { ToolsLogger } from '@sap-ux/logger';
 import ProcessEnv = NodeJS.ProcessEnv;
+import prompts from 'prompts';
 
 describe('cli', () => {
+    prompts.inject([true]);
     const appFixture = join(__dirname, '../../fixtures/simple-app/');
     const adpFixture = join(__dirname, '../../fixtures/adp/');
     const target = 'https://target.example';
@@ -134,6 +136,8 @@ describe('cli', () => {
     });
 
     describe('runUndeploy', () => {
+        const logSpy = jest.spyOn(global.console, 'log');
+
         test('successful undeploy with configuration file', async () => {
             const target = 'https://target.example';
             process.argv = [
@@ -148,6 +152,7 @@ describe('cli', () => {
             ];
             await runUndeploy();
             expect(mockedUi5RepoService.undeploy).toBeCalled();
+            expect(logSpy).not.toBeCalled();
         });
 
         test('successful undeploy from lrep', async () => {
@@ -161,6 +166,7 @@ describe('cli', () => {
             ];
             await runUndeploy();
             expect(mockedLrepService.undeploy).toBeCalled();
+            expect(logSpy).toBeCalled();
         });
 
         test('successful undeploy with environment variable and no config file', async () => {
