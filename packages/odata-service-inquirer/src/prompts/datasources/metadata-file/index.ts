@@ -27,7 +27,6 @@ export function getMetadataFileQuestion(promptOptions?: MetadataPromptOptions): 
             }
 
             if (validateResult.metadata) {
-                PromptState.odataService = {};
                 PromptState.odataService.odataVersion = validateResult.version;
                 PromptState.odataService.metadata = validateResult.metadata;
                 PromptState.odataService.servicePath = t('prompts.metadataFile.placeholder_odata_service_url'); // Dummy path used by v4 preview server middleware

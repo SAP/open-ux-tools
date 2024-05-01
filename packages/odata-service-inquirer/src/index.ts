@@ -32,7 +32,7 @@ async function getPrompts(
     enableGuidedAnswers = false,
     telemetryClient?: ToolsSuiteTelemetryClient,
     isYUI = false
-): Promise<{ prompts: OdataServiceQuestion[]; odataServiceAnswers: Partial<OdataServiceAnswers> }> {
+): Promise<{ prompts: OdataServiceQuestion[]; answers: { odataService: Partial<OdataServiceAnswers> } }> {
     LoggerHelper.logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/odata-service-inquirer' });
     ErrorHandler.logger = LoggerHelper.logger;
     ErrorHandler.guidedAnswersEnabled = enableGuidedAnswers;
@@ -42,7 +42,7 @@ async function getPrompts(
     return {
         prompts: await getQuestions(promptOptions),
         // Return reference to derived answers object that will be populated with user responses (after prompting is complete)
-        odataServiceAnswers: PromptState.odataService
+        answers: PromptState
     };
 }
 

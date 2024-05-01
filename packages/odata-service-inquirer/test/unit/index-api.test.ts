@@ -23,22 +23,16 @@ describe('API tests', () => {
                 validate: () => (PromptState.odataService.metadata = 'metadata contents')
             }
         ]);
-        const { prompts: questions, odataServiceAnswers } = await getPrompts(
-            undefined,
-            undefined,
-            true,
-            undefined,
-            true
-        );
+        const { prompts: questions, answers } = await getPrompts(undefined, undefined, true, undefined, true);
 
         expect(questions).toHaveLength(1);
         // execute the validate function as it would be done by inquirer
         (questions[0].validate as Function)();
-        expect(odataServiceAnswers.metadata).toBe('metadata contents');
+        expect(answers.odataService.metadata).toBe('metadata contents');
 
         // Ensure stateful properties are set correctly
         expect(PromptState.isYUI).toBe(true);
-        expect(PromptState.odataService).toBe(odataServiceAnswers);
+        expect(PromptState.odataService).toBe(answers.odataService);
         expect(LoggerHelper.logger).toBeDefined();
         expect(ErrorHandler.guidedAnswersEnabled).toBe(true);
         expect(ErrorHandler.logger).toBeDefined();
