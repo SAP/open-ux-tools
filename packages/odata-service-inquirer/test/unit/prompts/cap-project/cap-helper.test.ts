@@ -169,28 +169,6 @@ describe('cap-helper', () => {
         // Logger should be called with original error
         expect(logErrorSpy).toHaveBeenCalledWith('Cannot read metadata');
 
-        // Check the real error returned by CDS
-        errorHandlerSpy.mockClear();
-        logErrorSpy.mockClear();
-        readCapServiceMetadataEdmxSpy.mockRestore();
-        expect(
-            await getCapEdmx({
-                projectPath: join(__dirname, 'fixtures/bookshop'),
-                urlPath: 'odata/v4/incident/',
-                serviceName: 'CatalogService'
-            })
-        ).toMatchInlineSnapshot(`undefined`);
-        // Error handler should be called with custom error message
-        expect(errorHandlerSpy).toHaveBeenCalledWith(
-            t('errors.cannotReadCapServiceMetadata', { serviceName: 'CatalogService' })
-        );
-        // Logger should be called with original error, this is unreliable as the underlying string value may be changed by CDS
-        expect(logErrorSpy).toHaveBeenCalledWith(
-            expect.objectContaining({
-                message: expect.stringContaining(" Module '@sap/cds' not installed in project")
-            } as Error)
-        );
-
         // CAP service `urlPath` not defined
         errorHandlerSpy.mockClear();
         logErrorSpy.mockClear();

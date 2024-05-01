@@ -9,7 +9,7 @@
             "capProjectName": "Local CAP Project",
             "metadataFileName": "Metadata File",
             "noneName": "None",
-            "projectSpecificDestChoiceText": "Connect to a $t{prompts.datasourceType.projectSpecificDestName}",
+            "projectSpecificDestChoiceText": "Connect to a $t(prompts.datasourceType.projectSpecificDestName)",
             "businessHubChoiceText": "Connect to $t(prompts.datasourceType.businessHubName)",
             "sapSystemChoiceText": "Connect to a $t(prompts.datasourceType.sapSystemName)",
             "odataServiceUrlChoiceText": "Connect to an $t(prompts.datasourceType.odataServiceUrlName)",

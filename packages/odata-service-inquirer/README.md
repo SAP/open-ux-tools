@@ -1,6 +1,6 @@
 # @sap-ux/odata-service-inquirer
 
-Provides Inquirer based end-user prompting to allow selection of a service from multiple data source types. This invloves aquiring a connection to backend systems and retrieving edmx metadata for services provided by the catalog, from a local file or CAP project.
+Provides Inquirer based end-user prompting to allow selection of a service from multiple data source types. This involves acquiring a connection to backend systems and retrieving edmx metadata for services provided by the catalog, from a local file or CAP project.
 
 **Note:**
 Current implementation is limited to metadata file and Local Cap projects as datasources only.
