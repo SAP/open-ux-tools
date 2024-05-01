@@ -10,7 +10,7 @@ jest.mock('../../src/prompts', () => ({
     ...jest.requireActual('../../src/prompts')
 }));
 
-describe('cap-helper', () => {
+describe('API tests', () => {
     beforeAll(async () => {
         // Wait for i18n to bootstrap so we can test localised strings
         await initI18nOdataServiceInquirer();
