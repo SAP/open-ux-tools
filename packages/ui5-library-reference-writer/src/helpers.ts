@@ -4,6 +4,8 @@ import { UI5Config, type ServeStaticPath } from '@sap-ux/ui5-config';
 import { getWebappPath, type Manifest } from '@sap-ux/project-access';
 import { join, relative } from 'path';
 import { yamlFiles, ManifestReuseType } from './constants';
+import { YamlDocument } from '@sap-ux/yaml';
+import type { Logger } from '@sap-ux/logger';
 
 /**
  * Updates manifest with references for the chosen reuse libs.
@@ -28,6 +30,67 @@ export async function updateManifest(projectPath: string, reuseLibs: ReuseLibCon
     });
 
     fs.writeJSON(manifestPath, manifest);
+}
+
+/**
+ * Updates the ui5.yaml file for Node.js-based CAP projects with NPM workspaces enabled.
+ *
+ * @param {Editor} fs The file system editor instance.
+ * @param {string} yamlPath The path to the ui5.yaml file.
+ * @param {Logger} [logger] The logger instance for logging errors.
+ * @returns {void}
+ */
+export async function removeFioriToolsProxyAndAppReload(fs: Editor, yamlPath: string, logger?: Logger): Promise<void> {
+    try {
+        const yamlDocument = fs.read(yamlPath).toString();
+        const parsedYamlDocuments = await YamlDocument.newInstance(yamlDocument);
+        const doc = parsedYamlDocuments['documents'][0];
+        const server: any = doc.get('server');
+        // remove fiori tools proxy
+        server.customMiddleware = server.customMiddleware.filter(
+            (middleware: any) => middleware.name !== 'fiori-tools-proxy'
+        );
+        // remove config from appreload
+        const previewIdx = server.customMiddleware.findIndex(
+            (middleware: any) => middleware.name === 'fiori-tools-appreload'
+        );
+        delete server.customMiddleware[previewIdx]['configuration'];
+        doc.set('server', server);
+        fs.write(yamlPath, JSON.stringify(doc));
+    } catch (error) {
+        logger?.error(error);
+    }
+}
+
+/**
+ * Updates the application YAML file by adding static resource locations if not already present.
+ *
+ * @param {Editor} fs The file system editor instance.
+ * @param {string} applicationYamlPath The path to the application YAML file.
+ * @param {string} capCustomPathsApp The custom paths for CAP application.
+ * @param {Logger} [logger] The logger instance for logging errors.
+ * @returns {void}
+ */
+export async function updateStaticLocationsInApplicationYaml(
+    fs: Editor,
+    applicationYamlPath: string,
+    capCustomPathsApp: string,
+    logger?: Logger
+): Promise<void> {
+    try {
+        const applicationYamlDocuments = fs.read(applicationYamlPath).toString();
+        const parsedApplicationYamlDocuments: any = await YamlDocument.newInstance(applicationYamlDocuments);
+        if (
+            parsedApplicationYamlDocuments.length === 1 &&
+            parsedApplicationYamlDocuments[0].spring['web.resources.static-locations'] === undefined
+        ) {
+            const applicationYamlFirstDocument = parsedApplicationYamlDocuments[0];
+            applicationYamlFirstDocument.spring['web.resources.static-locations'] = `file:./${capCustomPathsApp}`;
+            fs.write(applicationYamlPath, JSON.stringify(applicationYamlFirstDocument));
+        }
+    } catch (error) {
+        logger?.error(error);
+    }
 }
 
 /**

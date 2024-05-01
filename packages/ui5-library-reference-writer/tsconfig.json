@@ -1,16 +1,25 @@
 {
-    "extends": "../../tsconfig.json",
-    "include": ["../../types/mem-fs-editor.d.ts", "src"],
-    "compilerOptions": {
-        "rootDir": "src",
-        "outDir": "dist"
+  "extends": "../../tsconfig.json",
+  "include": [
+    "../../types/mem-fs-editor.d.ts",
+    "src"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../logger"
     },
-    "references": [
-        {
-            "path": "../project-access"
-        },
-        {
-            "path": "../ui5-config"
-        }
-    ]
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../ui5-config"
+    },
+    {
+      "path": "../yaml"
+    }
+  ]
 }

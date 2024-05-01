@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import path from 'path';
 import type { CapCustomPaths } from '@sap-ux/project-access';
 
 /**
@@ -42,4 +43,15 @@ export function getCapFolderPathsSync(capProjectPath: string): CapCustomPaths {
     }
 
     return capPaths;
+}
+
+/**
+ * Get the path to the annotations file for a project.
+ *
+ * @param projectName The name of the project.
+ * @param appPath path to the application
+ * @returns {string} The path to the annotations file.
+ */
+export function getAnnotationPath(projectName: string, appPath = 'app'): string {
+    return path.join(appPath, projectName, 'annotation.cds').replace(/\\/g, '/');
 }

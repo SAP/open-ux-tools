@@ -28,15 +28,23 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
+        "@sap-ux/logger": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/ui5-library-reference-writer": "workspace:*",
+        "@sap-ux/environment-check": "workspace:*",
+        "@sap-ux/fiori-generator-shared": "workspace:*",
+        "i18next": "20.6.1",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "semver": "7.5.4"
     },
     "devDependencies": {
+        "@sap-ux/btp-utils": "0.14.3",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
-        "@types/semver": "7.5.2"
+        "@types/semver": "7.5.2",
+        "xml-js": "1.6.11",
+        "yaml": "2.2.2"
     },
     "engines": {
         "node": ">=18.x"
