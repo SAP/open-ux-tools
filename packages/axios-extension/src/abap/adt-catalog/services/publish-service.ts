@@ -1,7 +1,6 @@
 import { AdtService } from './adt-service';
 import type { AdtCategory } from '../../types';
 import { XMLParser } from 'fast-xml-parser';
-import _ from 'lodash';
 
 const parser = new XMLParser();
 
@@ -26,10 +25,24 @@ export class PublishService extends AdtService {
         return PublishService.adtCategory;
     }
 
+    /**
+     * Build the service binding content, used in the publish request.
+     *
+     * @param serviceType - The service type.
+     * @param serviceBindingName - The service binding name.
+     * @returns The service binding content.
+     */
     private buildServiceBindingContent(serviceType: string, serviceBindingName: string): string {
         return `<?xml version="1.0" encoding="UTF-8"?><adtcore:objectReferences xmlns:adtcore="http://www.sap.com/adt/core"><adtcore:objectReference adtcore:type="${serviceType}" adtcore:name="${serviceBindingName}"/></adtcore:objectReferences>`;
     }
 
+    /**
+     * Publish the service binding.
+     *
+     * @param type - The type of the service binding.
+     * @param bindingName - The name of the service binding.
+     * @returns The response status message.
+     */
     public async publish(
         type: string,
         bindingName: string

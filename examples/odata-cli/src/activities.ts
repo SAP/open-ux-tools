@@ -212,6 +212,7 @@ export async function testUiServiceGenerator(
     env: {
         TEST_BO_NAME: string;
         TEST_PACKAGE: string;
+        TEST_TRANSPORT: string;
     }
 ): Promise<void> {
     const s4Cloud = await provider.isS4Cloud();
@@ -228,16 +229,15 @@ export async function testUiServiceGenerator(
 
     //
     // Generator service
-    const generatorService = await provider.getAdtService<GeneratorService>(GeneratorService);
-    const generatorConfig = await generatorService.getUIServiceGeneratorConfig(bo.name, logger);
-    //logger.info('generatorConfig: ' + JSON.stringify(generatorConfig));
     const generator = await provider.getUiServiceGenerator(bo);
     const content = await generator.getContent(env.TEST_PACKAGE);
     //logger.info('content: ' + content);
     let generatedRefs;
     try {
-        generatedRefs = await generator.generate(content, 'JK5K900164');
-        logger.info('generatedRefs: ' + JSON.stringify(generatedRefs));
+        logger.info('Start generation of service');
+        generatedRefs = await generator.generate(content, env.TEST_TRANSPORT);
+        //logger.info('generatedRefs: ' + JSON.stringify(generatedRefs));
+        logger.info('Generation of service completed');
     } catch (error) {
         logger.error(error);
     }
@@ -249,23 +249,22 @@ export async function testUiServiceGenerator(
         try {
             await serviceLockGen.lockServiceBinding();
         } catch (error) {
-            //logger.error(error);
             if (error.response && error.response.status === 403) {
                 logger.warn(`${error.code} ${error.response.status} ${error.response.data}`);
             } else {
                 logger.warn(error);
-                //logger.warn(`${error.code} ${error.response.status} ${error.response.data}`);
                 return;
             }
         }
     }
     const publishService = await provider.getAdtService<PublishService>(PublishService);
     try {
+        logger.info('Start publish');
         const publishResult = await publishService.publish(
             generatedRefs.objectReference.type,
             generatedRefs.objectReference.name
         );
-        this.log(`Publish: ${publishResult.SEVERITY} ${publishResult.LONG_TEXT || publishResult.SHORT_TEXT}`);
+        logger.info(`Publish result: ${publishResult.SEVERITY} ${publishResult.LONG_TEXT || publishResult.SHORT_TEXT}`);
     } catch (error) {
         logger.error(error);
     }

@@ -8,6 +8,9 @@ export type BusinessObject = {
     description?: string;
 };
 
+/**
+ * BusinessObjectsService implements ADT requests to obtain the list of business objects.
+ */
 export class BusinessObjectsService extends AdtService {
     /**
      * @see AdtService.getAdtCatagory()
@@ -26,7 +29,13 @@ export class BusinessObjectsService extends AdtService {
         return BusinessObjectsService.adtCategory;
     }
 
-    public async getBusinessObjects(): Promise<BusinessObject[]> {
+    /**
+     * Get all business objects from ADT service.
+     *
+     * @param maxResults - The maximum number of business objects to be returned.
+     * @returns A list of business objects.
+     */
+    public async getBusinessObjects(maxResults?: number): Promise<BusinessObject[]> {
         const config = {
             headers: {
                 Accept: 'application/xml'
@@ -34,7 +43,7 @@ export class BusinessObjectsService extends AdtService {
             params: {
                 operation: 'quickSearch',
                 query: `*`,
-                maxResults: '10000',
+                maxResults: maxResults || 10000,
                 objectType: 'BDEF',
                 releaseStatus: 'USE_IN_CLOUD_DEVELOPMENT'
             }

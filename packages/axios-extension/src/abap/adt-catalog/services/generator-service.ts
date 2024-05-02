@@ -1,10 +1,6 @@
 import { AdtService } from './adt-service';
 import type { AdtCategory } from '../../types';
-import { XMLParser } from 'fast-xml-parser';
 import type { GeneratorEntry } from '../generators/types';
-import _ from 'lodash';
-
-const parser = new XMLParser();
 
 /**
  *
@@ -32,11 +28,10 @@ export class GeneratorService extends AdtService {
     /**
      * Get the UI service generator for the given business object.
      *
-     * @param businessObjectName
-     * @param _log
+     * @param businessObjectName - The business object name.
      * @returns TBD
      */
-    public async getUIServiceGeneratorConfig(businessObjectName: string, _log?: any): Promise<GeneratorEntry> {
+    public async getUIServiceGeneratorConfig(businessObjectName: string): Promise<GeneratorEntry> {
         const response = await this.get('', {
             headers: {
                 Accept: 'application/atom+xml;type=feed'
@@ -47,7 +42,6 @@ export class GeneratorService extends AdtService {
         });
 
         const data = this.parseResponse<any>(response.data).feed?.entry as GeneratorEntry;
-        //_log.info('data: ' + JSON.stringify(data));
         if (data?.id === 'ui-service' || data?.id === 'uiservice') {
             return data;
         } else {
