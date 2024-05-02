@@ -9,16 +9,20 @@ import type { Logger } from '@sap-ux/logger';
 import { t } from '../i18n';
 
 /**
- * Get the launch text for the CAP app
+ * Generates launch text for a CAP project.
  *
- * @export
- * @param {CapType} capType
- * @param {*} projectName
- * @param {string} appId
- * @param {boolean} [useNPMWorkspaces=false]
- * @return {*}  {string}
+ * @param {CapType} capType - The type of CAP project (JAVA or NODE_JS).
+ * @param {any} projectName - The name of the project.
+ * @param {string} appId - The ID of the application.
+ * @param {boolean} [useNPMWorkspaces] - Indicates whether NPM workspaces are used.
+ * @returns {string} The generated launch text.
  */
-export function generateCapLaunchText(capType: CapType, projectName: any, appId: string, useNPMWorkspaces: boolean = false): string {
+export function generateCapLaunchText(
+    capType: CapType,
+    projectName: any,
+    appId: string,
+    useNPMWorkspaces: boolean = false
+): string {
     let capUrl;
     let mvnCommand = '';
     if (capType === CapType.JAVA) {
@@ -93,7 +97,7 @@ export async function getGlobalInstalledCDSVersion(log?: Logger): Promise<string
                 .find((nodModPath) => existsSync(path.join(nodModPath, cdsPackageName)));
 
             if (foundCdsPath) {
-                 /*** temporary use - please remove spawnCommand export from  '@sap-ux/environment-check'*/
+                /*** temporary use - please remove spawnCommand export from  '@sap-ux/environment-check'*/
                 cdsVersion = await spawnCommand(npm, ['ls', cdsPackageName, '--depth=0']);
                 const logInfo = `OS checkCDSInstalled cdsVersion: ,
                     ${cdsVersion},
@@ -112,10 +116,10 @@ export async function getGlobalInstalledCDSVersion(log?: Logger): Promise<string
 
 /**
  * Converts a directory path to a POSIX-style path.
- * Temporary function to be removed once a common util lib package is available
+ * This function is temporary and should be removed once a common utility library package is available.
  *
- * @param dirPath directory path
- * @returns {string} The POSIX-style path.
+ * @param {string} dirPath - The directory path to be converted.
+ * @returns {string} The converted POSIX-style path.
  */
 export function toPosixPath(dirPath: string): string {
     return path.normalize(dirPath).split(/[\\/]/g).join(path.posix.sep);

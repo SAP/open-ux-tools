@@ -3,15 +3,13 @@ import type { Editor } from 'mem-fs-editor';
 import { t } from '../i18n';
 import { join } from 'path';
 import { CapType, MIN_CDS_SCRIPT_VERSION, type CapService } from '../types/capTypes';
-import { enableCdsUi5Plugin } from '../cap-config';
+import { enableCdsUi5Plugin, checkCdsUi5PluginEnabled, satisfiesMinCdsVersion } from '../cap-config';
 import { getCDSTask, getGlobalInstalledCDSVersion, toPosixPath } from './helpers';
-import { satisfiesMinCdsVersion } from '../cap-config/package-json';
 import type { Logger } from '@sap-ux/logger';
-import { checkCdsUi5PluginEnabled } from '../cap-config';
 
 /**
  * Updates the scripts in the package json file with the provided scripts object.
- * 
+ *
  * @param {Editor} fs - The file system editor.
  * @param {string} packageJsonPath - The path to the package.json file.
  * @param {Record<string, string>} scripts - The scripts to be added or updated in the package.json file.
@@ -66,7 +64,6 @@ async function updateScripts(
  * @param {string} appId - The ID of the app.
  * @param {Logger} [log] - The logger instance for logging warnings.
  * @param {boolean} [enableNPMWorkspaces] - Whether to enable npm workspaces.
- * @param {boolean} [hasNPMworkspaces] - Whether npm workspaces are enabled.
  * @returns {Promise<void>} A Promise that resolves once the root package.json is updated.
  */
 export async function updateRootPackageJsonCAP(
@@ -79,14 +76,14 @@ export async function updateRootPackageJsonCAP(
     enableNPMWorkspaces?: boolean
 ): Promise<void> {
     const packageJsonPath: string = getPackageJsonPath(capService.projectPath);
-    const packageJson = getPackageJson(fs, packageJsonPath) as Package;
+    const packageJson = getPackageJson(fs, packageJsonPath);
 
     if (enableNPMWorkspaces) {
         await enableCdsUi5Plugin(capService.projectPath, fs);
     }
 
     if (capService?.capType === CapType.NODE_JS) {
-        await updateScripts( fs, packageJsonPath, projectName, appId, enableNPMWorkspaces, log);
+        await updateScripts(fs, packageJsonPath, projectName, appId, enableNPMWorkspaces, log);
     }
 
     if (sapux) {

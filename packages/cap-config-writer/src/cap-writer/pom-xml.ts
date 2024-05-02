@@ -1,6 +1,6 @@
 import type { Editor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
-import { xml2js, js2xml, type Element, type ElementCompact} from 'xml-js';
+import { xml2js, js2xml, type Element, type ElementCompact } from 'xml-js';
 
 /**
  * Checks if the specified name exists in the array of elements.
@@ -29,7 +29,7 @@ function addWorkspaceElement(data: Element): boolean {
 
 /**
  * Reads the contents of the pom xml file and returns it as a string.
- * 
+ *
  * @param {Editor} fs - The file system editor.
  * @param {string} pomPath - The path to the pom.xml file.
  * @returns {string} The contents of the pom.xml file as a string.
@@ -40,7 +40,7 @@ function readPomXml(fs: Editor, pomPath: string): string {
 
 /**
  * Writes the provided XML structure to the pom xml file.
- * 
+ *
  * @param {Editor} fs - The file system editor.
  * @param {string} pomPath - The path to the pom.xml file.
  * @param {ElementCompact} pomContentsJson - The XML structure to be written to the pom.xml file.
