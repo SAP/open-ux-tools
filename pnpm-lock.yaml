@@ -114,6 +114,9 @@ importers:
       dotenv:
         specifier: 16.3.1
         version: 16.3.1
+      fast-xml-parser:
+        specifier: 4.2.7
+        version: 4.2.7
 
   examples/simple-generator:
     dependencies:

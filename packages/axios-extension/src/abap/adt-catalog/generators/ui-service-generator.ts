@@ -1,6 +1,6 @@
 import type { Logger } from '@sap-ux/logger';
 import type { GeneratorEntry } from './types';
-import type { BusinessObject } from '../services/virtual-folders-service';
+import type { BusinessObject } from '../services/businessobjects-service';
 import { AdtService } from '../services';
 
 /**
@@ -50,5 +50,18 @@ export class UiServiceGenerator extends AdtService {
         // Service binding is in XML format, ready to be used for the subsequent activation and publish.
         const data = this.parseResponse<any>(response.data);
         return data.objectReferences;
+    }
+
+    public async lockServiceBinding() {
+        await this.post('', '', {
+            headers: {
+                Accept: 'application/*,application/vnd.sap.as+xml;charset=UTF-8;dataname=com.sap.adt.lock.result',
+                'x-sap-adt-sessiontype': 'stateful'
+            },
+            params: {
+                _action: `LOCK`,
+                accessMode: 'MODIFY'
+            }
+        });
     }
 }

@@ -7,9 +7,12 @@ import {
     TransportRequestService,
     ListPackageService,
     FileStoreService,
-    VirtualFoldersService
+    BusinessObjectsService,
+    GeneratorService,
+    PublishService
 } from '@sap-ux/axios-extension';
 import { logger } from './types';
+import { XMLParser, XMLValidator } from 'fast-xml-parser';
 
 /**
  * Execute a sequence of test calls using the given provider.
@@ -182,24 +185,90 @@ export async function testDeployUndeployDTA(
     }
 }
 
-export async function testUiServiceGenerator(provider: AbapServiceProvider,
+/**
+ * Parse an XML document for ATO (Adaptation Transport Organizer) settings.
+ *
+ * @param xml xml document containing ATO settings
+ * @returns parsed ATO settings
+ */
+function parseResponse<T>(xml: string): T {
+    if (XMLValidator.validate(xml) !== true) {
+        this.log.warn(`Invalid XML: ${xml}`);
+        return {} as T;
+    }
+    const options = {
+        attributeNamePrefix: '',
+        ignoreAttributes: false,
+        ignoreNameSpace: true,
+        parseAttributeValue: true,
+        removeNSPrefix: true
+    };
+    const parser: XMLParser = new XMLParser(options);
+    return parser.parse(xml, true) as T;
+}
+
+export async function testUiServiceGenerator(
+    provider: AbapServiceProvider,
     env: {
         TEST_BO_NAME: string;
         TEST_PACKAGE: string;
-    }): Promise<void> {
-
+    }
+): Promise<void> {
     const s4Cloud = await provider.isS4Cloud();
     if (!s4Cloud) {
         logger.warn('Not an S/4 Cloud system. UI service generation might not be supported.');
     }
 
-    const virtualFolders = await provider.getAdtService<VirtualFoldersService>(VirtualFoldersService);
-    const bos = await virtualFolders.getBusinessObjects();
+    //
+    // Get BOs
+    const businesObjects = await provider.getAdtService<BusinessObjectsService>(BusinessObjectsService);
+    const bos = await businesObjects.getBusinessObjects();
     const bo = bos.find((bo) => bo.name === env.TEST_BO_NAME);
-    const generator = await provider.getUiServiceGenerator(bo);
-    
-    const content = await generator.getContent(env.TEST_PACKAGE);
-    logger.info('done');
-    //await generatorService.getGenerator();
-}
+    //logger.info(JSON.stringify(bos));
 
+    //
+    // Generator service
+    const generatorService = await provider.getAdtService<GeneratorService>(GeneratorService);
+    const generatorConfig = await generatorService.getUIServiceGeneratorConfig(bo.name, logger);
+    //logger.info('generatorConfig: ' + JSON.stringify(generatorConfig));
+    const generator = await provider.getUiServiceGenerator(bo);
+    const content = await generator.getContent(env.TEST_PACKAGE);
+    //logger.info('content: ' + content);
+    let generatedRefs;
+    try {
+        generatedRefs = await generator.generate(content, 'JK5K900164');
+        logger.info('generatedRefs: ' + JSON.stringify(generatedRefs));
+    } catch (error) {
+        logger.error(error);
+    }
+
+    //
+    // Publish (including lock service binding)
+    if (generatedRefs) {
+        const serviceLockGen = await provider.lockServiceBinding(generatedRefs.objectReference.uri);
+        try {
+            await serviceLockGen.lockServiceBinding();
+        } catch (error) {
+            //logger.error(error);
+            if (error.response && error.response.status === 403) {
+                logger.warn(`${error.code} ${error.response.status} ${error.response.data}`);
+            } else {
+                logger.warn(error);
+                //logger.warn(`${error.code} ${error.response.status} ${error.response.data}`);
+                return;
+            }
+        }
+    }
+    const publishService = await provider.getAdtService<PublishService>(PublishService);
+    try {
+        const publishResult = await publishService.publish(
+            generatedRefs.objectReference.type,
+            generatedRefs.objectReference.name
+        );
+        this.log(`Publish: ${publishResult.SEVERITY} ${publishResult.LONG_TEXT || publishResult.SHORT_TEXT}`);
+    } catch (error) {
+        logger.error(error);
+    }
+
+    logger.info('done');
+}

@@ -12,7 +12,7 @@ import { TenantType } from './types';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { AdtService, AtoService, GeneratorService } from './adt-catalog/services';
 import { UiServiceGenerator } from './adt-catalog/generators/ui-service-generator';
-import { BusinessObject } from './adt-catalog/services/virtual-folders-service';
+import type { BusinessObject } from './adt-catalog/services/businessobjects-service';
 
 /**
  * Extension of the service provider for ABAP services.
@@ -240,6 +240,17 @@ export class AbapServiceProvider extends ServiceProvider {
         const path = config.link[0].href.split(config.id)[0] + config.id;
         const gen = this.createService<UiServiceGenerator>(path, UiServiceGenerator);
         gen.configure(config, bo);
+        return gen;
+    }
+
+    /**
+     * Create a service provider to locking a binding path.
+     *
+     * @param path - service binding path
+     * @returns a service provider instance to lock the service binding
+     */
+    public async lockServiceBinding(path: string): Promise<UiServiceGenerator> {
+        const gen = this.createService<UiServiceGenerator>(path, UiServiceGenerator);
         return gen;
     }
 }
