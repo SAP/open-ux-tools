@@ -1,5 +1,15 @@
 # @sap-ux/deploy-tooling
 
+## 0.14.16
+
+### Patch Changes
+
+-   7f8105c7: move replaceEnvVariables to ui5-config and export
+-   Updated dependencies [7f8105c7]
+    -   @sap-ux/ui5-config@0.22.3
+    -   @sap-ux/axios-extension@1.11.7
+    -   @sap-ux/system-access@0.3.21
+
 ## 0.14.15
 
 ### Patch Changes
