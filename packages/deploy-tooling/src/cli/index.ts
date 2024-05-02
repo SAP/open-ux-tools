@@ -1,11 +1,12 @@
 import { Option, Command } from 'commander';
 import { ToolsLogger, ConsoleTransport, LogLevel } from '@sap-ux/logger';
-import { deploy, getConfigForLogging, replaceEnvVariables, undeploy, validateConfig } from '../base';
+import { deploy, getConfigForLogging, undeploy, validateConfig } from '../base';
 import type { CliOptions, AbapDeployConfig } from '../types';
 import { NAME } from '../types';
 import { getArchive } from './archive';
 import { getDeploymentConfig, getVersion, mergeConfig } from './config';
 import { config as loadEnvConfig } from 'dotenv';
+import { replaceEnvVariables } from '@sap-ux/ui5-config';
 
 /**
  * Create an instance of a command runner for deployment.
