@@ -1,5 +1,16 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.19.0
+
+### Minor Changes
+
+-   8db928db: odata-service-writer now uses logic from mockserver-config-writer to generate mockserver
+
+### Patch Changes
+
+-   Updated dependencies [8db928db]
+    -   @sap-ux/odata-service-writer@0.17.0
+
 ## 0.18.18
 
 ### Patch Changes

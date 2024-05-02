@@ -1260,6 +1260,9 @@ importers:
 
   packages/odata-service-writer:
     dependencies:
+      '@sap-ux/mockserver-config-writer':
+        specifier: workspace:*
+        version: link:../mockserver-config-writer
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
