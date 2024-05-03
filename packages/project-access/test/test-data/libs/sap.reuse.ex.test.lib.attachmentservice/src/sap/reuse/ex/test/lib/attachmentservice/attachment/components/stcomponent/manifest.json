@@ -1,0 +1,75 @@
+{
+    "_version": "1.1.0",
+    "sap.app": {
+        "_version": "1.1.0",
+        "id": "sap.reuse.ex.test.lib.attachmentservice.attachment.components.stcomponent",
+        "type": "library",
+        "i18n": "../../i18n/i18n.properties",
+        "embeddedBy": "../../../",
+        "title": "{{title}}",
+        "description": "{{description}}",
+        "ach": "PLM-FIO-DMS",
+        "dataSources": {
+            "CV_ATTACHMENT_SRV_Entities": {
+                "uri": "/sap/opu/odata/sap/CV_ATTACHMENT_SRV/"
+            }
+        },
+        "resources": "resources.json",
+        "offline": false
+    },
+    "sap.ui": {
+        "_version": "1.1.0",
+        "technology": "UI5",
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        },
+        "supportedThemes": ["sap_hcb", "sap_bluecrystal", "sap_belize"]
+    },
+    "sap.ui5": {
+        "_version": "1.1.0",
+        "rootView": {
+            "viewName": "sap.reuse.ex.test.lib.attachmentservice.attachment.view.Attachment",
+            "type": "XML"
+        },
+        "autoPrefixId": true,
+        "dependencies": {
+            "libs": {
+                "sap.ui.core": {},
+                "sap.m": {},
+                "sap.suite.ui.generic.template": { "lazy": true },
+                "sap.reuse.ex.test.lib.attachmentservice": {}
+            },
+            "components": {}
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "sap.reuse.ex.test.lib.attachmentservice.attachment.i18n.i18n"
+                }
+            }
+        },
+        "handleValidation": true,
+        "config": {},
+        "routing": {},
+        "contentDensities": {
+            "compact": false,
+            "cozy": false
+        }
+    },
+    "sap.platform.abap": {
+        "_version": "1.1.0",
+        "uri": "/sap/bc/bsp/sap/plm_ath_cres1/"
+    },
+    "sap.platform.hcp": {
+        "_version": "1.1.0",
+        "uri": ""
+    },
+    "sap.fiori": {
+        "_version": "1.1.0",
+        "registrationIds": ["F1243"],
+        "archeType": "reusecomponent"
+    }
+}

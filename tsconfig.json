@@ -42,6 +42,12 @@
       "path": "packages/cap-config-writer"
     },
     {
+      "path": "packages/cards-editor-config-writer"
+    },
+    {
+      "path": "packages/cards-editor-middleware"
+    },
+    {
       "path": "packages/cds-annotation-parser"
     },
     {
@@ -78,6 +84,9 @@
       "path": "packages/fiori-freestyle-writer"
     },
     {
+      "path": "packages/fiori-generator-shared"
+    },
+    {
       "path": "packages/i18n"
     },
     {
@@ -103,6 +112,9 @@
     },
     {
       "path": "packages/odata-entity-model"
+    },
+    {
+      "path": "packages/odata-service-inquirer"
     },
     {
       "path": "packages/odata-service-writer"
@@ -157,6 +169,12 @@
     },
     {
       "path": "packages/ui5-library-inquirer"
+    },
+    {
+      "path": "packages/ui5-library-reference-inquirer"
+    },
+    {
+      "path": "packages/ui5-library-reference-writer"
     },
     {
       "path": "packages/ui5-library-writer"

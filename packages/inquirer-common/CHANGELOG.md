@@ -1,5 +1,30 @@
 # @sap-ux/inquirer-common
 
+## 0.2.7
+
+### Patch Changes
+
+-   4098bed2: Moves some prompting code to inquirer-common. Adds new module odata-service-inquirer
+
+## 0.2.6
+
+### Patch Changes
+
+-   f8b24a3a: fix additional msgs and readme
+
+## 0.2.5
+
+### Patch Changes
+
+-   Updated dependencies [148d011a]
+    -   @sap-ux/ui5-info@0.4.0
+
+## 0.2.4
+
+### Patch Changes
+
+-   98496d57: adds new module @sap-ux/ui5-library-reference-inquirer
+
 ## 0.2.3
 
 ### Patch Changes

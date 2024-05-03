@@ -9,6 +9,8 @@ import prettifyXml from 'prettify-xml';
 import { enhanceData, getAnnotationNamespaces } from './data';
 import { t } from './i18n';
 import { OdataService, OdataVersion, ServiceType } from './types';
+import { getWebappPath } from '@sap-ux/project-access';
+import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
 
 /**
  * Ensures the existence of the given files in the provided base path. If a file in the provided list does not exit, an error would be thrown.
@@ -106,11 +108,13 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     if (service.metadata) {
         // copy existing `ui5.yaml` as starting point for ui5-mock.yaml
         if (paths.ui5Yaml && ui5Config) {
-            const ui5MockConfig = await UI5Config.newInstance(ui5Config.toString());
-            ui5MockConfig.addMockServerMiddleware(service.path);
-            fs.write(join(dirname(paths.ui5Yaml), 'ui5-mock.yaml'), ui5MockConfig.toString());
-
-            // also add mockserver middleware to ui5-local.yaml
+            const webappPath = await getWebappPath(basePath);
+            const config = {
+                webappPath: webappPath,
+                ui5MockYamlConfig: { path: service.path }
+            };
+            await generateMockserverConfig(basePath, config, fs);
+            // add mockserver middleware to ui5-local.yaml
             if (ui5LocalConfig) {
                 ui5LocalConfig.addMockServerMiddleware(service.path);
             }

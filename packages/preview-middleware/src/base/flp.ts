@@ -1,17 +1,27 @@
 import type { ReaderCollection } from '@ui5/fs';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
+import type { Editor as MemFsEditor } from 'mem-fs-editor';
 import { render } from 'ejs';
+import type http from 'http';
 import type { Request, RequestHandler, Response, Router } from 'express';
 import { readFileSync } from 'fs';
 import { dirname, join, posix } from 'path';
-import type { App, Editor, FlpConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
-import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
+import {
+    AdpPreview,
+    type AdpPreviewConfig,
+    type CommonChangeProperties,
+    type OperationType
+} from '@sap-ux/adp-tooling';
 import { createProjectAccess } from '@sap-ux/project-access';
-import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
+
+import { deleteChange, readChanges, writeChange } from './flex';
 import { generateImportList, mergeTestConfigDefaults } from './test';
+import type { App, Editor, FlpConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -135,10 +145,18 @@ export interface TemplateConfig {
     locateReuseLibsScript?: boolean;
 }
 
+type OnChangeRequestHandler = (
+    type: OperationType,
+    change: CommonChangeProperties,
+    fs: MemFsEditor,
+    logger: Logger
+) => Promise<void>;
+
 /**
  * Class handling preview of a sandbox FLP.
  */
 export class FlpSandbox {
+    protected onChangeRequest: OnChangeRequestHandler | undefined;
     protected templateConfig: TemplateConfig;
     public readonly config: FlpConfig;
     public readonly rta?: RtaConfig;
@@ -174,6 +192,15 @@ export class FlpSandbox {
         this.rta = config.rta;
         logger.debug(`Config: ${JSON.stringify({ flp: this.config, rta: this.rta, test: this.test })}`);
         this.router = createRouter();
+    }
+
+    /**
+     * Registers a handler function to be called when a change request occurs.
+     *
+     * @param {OnChangeRequestHandler} handler - The function to be executed when a change request occurs.
+     */
+    public addOnChangeRequestHandler(handler: OnChangeRequestHandler): void {
+        this.onChangeRequest = handler;
     }
 
     /**
@@ -291,7 +318,7 @@ export class FlpSandbox {
                         scenario,
                         livereloadPort
                     });
-                    res.status(200).contentType('html').send(html);
+                    this.sendResponse(res, 'text/html', 200, html);
                 });
                 let path = dirname(editor.path);
                 if (!path.endsWith('/')) {
@@ -305,7 +332,7 @@ export class FlpSandbox {
                     '</body>',
                     `</body>\n<!-- livereload disabled for editor </body>-->`
                 );
-                res.status(200).contentType('html').send(html);
+                this.sendResponse(res, 'text/html', 200, html);
             });
         }
     }
@@ -326,7 +353,7 @@ export class FlpSandbox {
             }
             const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
             const html = render(template, this.templateConfig);
-            res.status(200).contentType('html').send(html);
+            this.sendResponse(res, 'text/html', 200, html);
         }) as RequestHandler);
     }
 
@@ -396,27 +423,37 @@ export class FlpSandbox {
      * Create required routes for flex.
      */
     private createFlexHandler(): void {
+        const fs = create(createStorage());
         const api = `${PREVIEW_URL.api}/changes`;
         this.router.use(api, json());
         this.router.get(api, (async (_req: Request, res: Response) => {
-            res.status(200)
-                .contentType('application/json')
-                .send(await readChanges(this.project, this.logger));
+            const changes = await readChanges(this.project, this.logger);
+            if (this.onChangeRequest) {
+                for (const change of Object.values(changes)) {
+                    await this.onChangeRequest('read', change, fs, this.logger);
+                }
+            }
+            res.status(200).contentType('application/json').send(changes);
         }) as RequestHandler);
         this.router.post(api, (async (req: Request, res: Response) => {
             try {
+                const change = req.body as CommonChangeProperties;
+                if (this.onChangeRequest) {
+                    await this.onChangeRequest('write', change, fs, this.logger);
+                }
                 const { success, message } = writeChange(
-                    req.body,
+                    change,
                     this.utils.getProject().getSourcePath(),
+                    fs,
                     this.logger
                 );
                 if (success) {
-                    res.status(200).send(message);
+                    fs.commit(() => res.status(200).send(message));
                 } else {
-                    res.status(400).send('INVALID_DATA');
+                    this.sendResponse(res, 'text/plain', 400, 'INVALID_DATA');
                 }
             } catch (error) {
-                res.status(500).send(error.message);
+                this.sendResponse(res, 'text/plain', 500, error.message);
             }
         }) as RequestHandler);
         this.router.delete(api, (async (req: Request, res: Response) => {
@@ -427,14 +464,32 @@ export class FlpSandbox {
                     this.logger
                 );
                 if (success) {
-                    res.status(200).send(message);
+                    this.sendResponse(res, 'text/plain', 200, message ?? '');
                 } else {
-                    res.status(400).send('INVALID_DATA');
+                    this.sendResponse(res, 'text/plain', 400, 'INVALID_DATA');
                 }
             } catch (error) {
-                res.status(500).send(error.message);
+                this.sendResponse(res, 'text/plain', 500, error.message);
             }
         }) as RequestHandler);
+    }
+
+    /**
+     * Send a response with the given content type, status and body.
+     * Ensure compliance with common APIs in express and connect.
+     *
+     * @param res the response object
+     * @param contentType the content type
+     * @param status the response status
+     * @param body the response body
+     * @private
+     */
+    private sendResponse(res: Response | http.ServerResponse, contentType: string, status: number, body: string) {
+        res.writeHead(status, {
+            'Content-Type': contentType
+        });
+        res.write(body);
+        res.end();
     }
 
     /**
@@ -465,7 +520,7 @@ export class FlpSandbox {
                         initPath: `${ns}${config.init.replace('.js', '')}`
                     };
                     const html = render(htmlTemplate, templateConfig);
-                    res.status(200).contentType('html').send(html);
+                    this.sendResponse(res, 'text/html', 200, html);
                 }
             }) as RequestHandler);
             if (testConfig.init !== undefined) {
@@ -484,8 +539,8 @@ export class FlpSandbox {
                 } else {
                     const testFiles = await this.project.byGlob(config.pattern);
                     const templateConfig = { tests: generateImportList(ns, testFiles) };
-                    const html = render(initTemplate, templateConfig);
-                    res.status(200).contentType('application/javascript').send(html);
+                    const js = render(initTemplate, templateConfig);
+                    this.sendResponse(res, 'application/javascript', 200, js);
                 }
             }) as RequestHandler);
         }
@@ -616,6 +671,7 @@ export async function initAdp(
         if (flp.rta) {
             flp.rta.layer = layer;
             flp.rta.options = {
+                ...flp.rta.options,
                 projectId: variant.id,
                 scenario: 'ADAPTATION_PROJECT'
             };
@@ -630,6 +686,7 @@ export async function initAdp(
 
         await flp.init(manifest, name, adp.resources);
         flp.router.use(adp.descriptor.url, adp.proxy.bind(adp) as RequestHandler);
+        flp.addOnChangeRequestHandler(adp.onChangeRequest.bind(adp));
         flp.router.use(json());
         adp.addApis(flp.router);
     } else {

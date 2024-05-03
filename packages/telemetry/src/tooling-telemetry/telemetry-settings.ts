@@ -68,7 +68,8 @@ async function readEnableTelemetry(storeService: Service<TelemetrySetting, Telem
                     (propKey) => (deprecatedSetting[propKey] ?? true) as boolean
                 );
                 const deprecatedEnableTelemetrySetting = propValues.reduce(
-                    (prevValue, currentValue) => prevValue && currentValue
+                    (prevValue, currentValue) => prevValue && currentValue,
+                    true
                 );
 
                 await setEnableTelemetry(deprecatedEnableTelemetrySetting);

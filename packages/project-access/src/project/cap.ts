@@ -127,8 +127,8 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
 /**
  * Return the CAP model and all services. The cds.root will be set to the provided project root path.
  *
- * @param projectRoot - CAP project root where package.json resides or object specifying project root and optional logger to log additonal info
- * @returns {*}  {Promise<{ model: csn; services: ServiceInfo[] }>} - CAP Model and Services
+ * @param projectRoot - CAP project root where package.json resides or object specifying project root and optional logger to log additional info
+ * @returns {Promise<{ model: csn; services: ServiceInfo[] }>} - CAP Model and Services
  */
 export async function getCapModelAndServices(
     projectRoot: string | { projectRoot: string; logger?: Logger }
@@ -142,7 +142,7 @@ export async function getCapModelAndServices(
         _projectRoot = projectRoot;
     }
 
-    const cds = await loadCdsModuleFromProject(_projectRoot);
+    const cds = await loadCdsModuleFromProject(_projectRoot, true);
     const capProjectPaths = await getCapCustomPaths(_projectRoot);
     const modelPaths = [
         join(_projectRoot, capProjectPaths.app),
@@ -371,12 +371,13 @@ declare const global: {
 /**
  * Load CAP CDS module. First attempt loads @sap/cds for a project based on its root.
  * Second attempt loads @sap/cds from global installed @sap/cds-dk.
- * Throws error if module could not be loaded.
+ * Throws error if module could not be loaded or strict mode is true and there is a version mismatch.
  *
  * @param capProjectPath - project root of a CAP project
+ * @param [strict] - optional, when set true an error is thrown, if global loaded cds version does not match the cds version from package.json dependency. Default is false.
  * @returns - CAP CDS module for a CAP project
  */
-async function loadCdsModuleFromProject(capProjectPath: string): Promise<CdsFacade> {
+async function loadCdsModuleFromProject(capProjectPath: string, strict: boolean = false): Promise<CdsFacade> {
     let module: CdsFacade | { default: CdsFacade } | undefined;
     let loadProjectError;
     let loadError;
@@ -400,6 +401,22 @@ async function loadCdsModuleFromProject(capProjectPath: string): Promise<CdsFaca
         );
     }
     const cds = 'default' in module ? module.default : module;
+
+    // In case strict is true and there was a fallback to global cds installation for a project that has a cds dependency, check if major versions match
+    if (strict && loadProjectError) {
+        const cdsDependencyVersion = await getCdsVersionFromPackageJson(join(capProjectPath, FileName.Package));
+        if (typeof cdsDependencyVersion === 'string') {
+            const globalCdsVersion = cds.version;
+            if (getMajorVersion(cdsDependencyVersion) !== getMajorVersion(globalCdsVersion)) {
+                const error = new Error(
+                    `The @sap/cds major version (${cdsDependencyVersion}) specified in your CAP project is different to the @sap/cds version you have installed globally (${globalCdsVersion}). Please run 'npm install' on your CAP project to ensure that the correct CDS version is loaded.`
+                ) as Error & { code: string };
+                error.code = 'CDS_VERSION_MISMATCH';
+                throw error;
+            }
+        }
+    }
+
     // Fix when switching cds versions dynamically
     if (global) {
         global.cds = cds;
@@ -529,6 +546,13 @@ async function loadGlobalCdsModule<T>(): Promise<T> {
 }
 
 /**
+ * Clear cache of path to global cds module.
+ */
+export function clearGlobalCdsPathCache() {
+    globalCdsPathCache = '';
+}
+
+/**
  * Get cds information, which includes versions and also the home path of cds module.
  *
  * @param [cwd] - optional folder in which cds --version should be executed
@@ -557,4 +581,33 @@ async function getCdsVersionInfo(cwd?: string): Promise<Record<string, string>> 
             reject(error);
         });
     });
+}
+
+/**
+ * Read the version string of the @sap/cds module from the package.json file.
+ *
+ * @param packageJsonPath - path to package.json
+ * @returns - version of @sap/cds from package.json or undefined
+ */
+async function getCdsVersionFromPackageJson(packageJsonPath: string): Promise<string | undefined> {
+    let version: string | undefined;
+    try {
+        if (await fileExists(packageJsonPath)) {
+            const packageJson = await readJSON<Package>(packageJsonPath);
+            version = packageJson?.dependencies?.['@sap/cds'];
+        }
+    } catch {
+        // If we can't read or parse the package.json we return undefined
+    }
+    return version;
+}
+
+/**
+ * Get major version from version string.
+ *
+ * @param versionString - version string
+ * @returns - major version as number
+ */
+function getMajorVersion(versionString: string): number {
+    return parseInt(/\d+/.exec(versionString.split('.')[0])?.[0] ?? '0', 10);
 }

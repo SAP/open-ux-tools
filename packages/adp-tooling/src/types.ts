@@ -69,7 +69,7 @@ export interface Content {
     texts?: object;
 }
 
-interface CommonChangeProperties {
+export interface CommonChangeProperties {
     changeType: string;
     reference: string;
     namespace: string;
@@ -127,15 +127,6 @@ export interface CodeExtChange extends CommonChangeProperties {
     };
 }
 
-export const enum FolderTypes {
-    CHANGES = 'changes',
-    FRAGMENTS = 'fragments',
-    CODING = 'coding',
-    MANIFEST = 'manifest',
-    ANNOTATIONS = 'annotations',
-    WEBAPP = 'webapp'
-}
-
 export const enum TemplateFileName {
     Fragment = 'fragment.xml',
     Controller = 'controller.ejs'
@@ -155,6 +146,8 @@ export const enum HttpStatusCodes {
     NOT_IMPLEMETED = 501,
     SERVICE_UNAVAILABLE = 503
 }
+
+export type OperationType = 'read' | 'write' | 'delete';
 
 /**
  * Represents a constructor type that creates an instance of IWriter.
