@@ -1422,6 +1422,9 @@ importers:
       '@sap-ux/adp-tooling':
         specifier: workspace:*
         version: link:../adp-tooling
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
       '@sap-ux/control-property-editor-sources':
         specifier: workspace:@sap-ux/control-property-editor@*
         version: link:../control-property-editor
@@ -1572,6 +1575,9 @@ importers:
 
   packages/reload-middleware:
     dependencies:
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger

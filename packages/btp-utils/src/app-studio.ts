@@ -84,3 +84,14 @@ export async function listDestinations(): Promise<Destinations> {
     });
     return destinations;
 }
+
+/**
+ * Exposes port in SAP Business Application Studio.
+ *
+ * @param port Port that needs to be exposed
+ * @returns url on which the port is exposed
+ */
+export async function exposePort(port: number): Promise<string> {
+    const response = await axios.get(`http://localhost:3001/AppStudio/api/getHostByPort?port=${port}`);
+    return `${response.data.result}`;
+}
