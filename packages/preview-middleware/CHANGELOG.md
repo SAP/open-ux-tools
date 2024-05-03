@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.13.24
+
+### Patch Changes
+
+-   7697dea4: Outsourcing of initialization routine to manage app state from fiori-tools-proxy to preview-middleware-client and updating to UI5 2.0
+
 ## 0.13.23
 
 ### Patch Changes
