@@ -8,7 +8,6 @@ import {
     ListPackageService,
     FileStoreService,
     BusinessObjectsService,
-    GeneratorService,
     PublishService
 } from '@sap-ux/axios-extension';
 import { logger } from './types';
@@ -191,7 +190,7 @@ export async function testDeployUndeployDTA(
  * @param xml xml document containing ATO settings
  * @returns parsed ATO settings
  */
-function parseResponse<T>(xml: string): T {
+function _parseResponse<T>(xml: string): T {
     if (XMLValidator.validate(xml) !== true) {
         this.log.warn(`Invalid XML: ${xml}`);
         return {} as T;
@@ -207,6 +206,12 @@ function parseResponse<T>(xml: string): T {
     return parser.parse(xml, true) as T;
 }
 
+/**
+ * Test the UI service generation.
+ *
+ * @param provider instance of a service provider
+ * @param env object representing the content of the .env file.
+ */
 export async function testUiServiceGenerator(
     provider: AbapServiceProvider,
     env: {
@@ -220,29 +225,28 @@ export async function testUiServiceGenerator(
         logger.warn('Not an S/4 Cloud system. UI service generation might not be supported.');
     }
 
-    //
     // Get BOs
     const businesObjects = await provider.getAdtService<BusinessObjectsService>(BusinessObjectsService);
     const bos = await businesObjects.getBusinessObjects();
     const bo = bos.find((bo) => bo.name === env.TEST_BO_NAME);
-    //logger.info(JSON.stringify(bos));
+    logger.debug(bos.map((bo) => bo.name));
 
-    //
     // Generator service
     const generator = await provider.getUiServiceGenerator(bo);
     const content = await generator.getContent(env.TEST_PACKAGE);
-    //logger.info('content: ' + content);
+    logger.debug('content: ' + content);
     let generatedRefs;
     try {
         logger.info('Start generation of service');
         generatedRefs = await generator.generate(content, env.TEST_TRANSPORT);
-        //logger.info('generatedRefs: ' + JSON.stringify(generatedRefs));
+        logger.debug('generatedRefs: ' + JSON.stringify(generatedRefs));
         logger.info('Generation of service completed');
     } catch (error) {
-        logger.error(error);
+        logger.error(`${error.code}: ${error.message}`);
+        logger.debug(error);
+        return;
     }
 
-    //
     // Publish (including lock service binding)
     if (generatedRefs) {
         const serviceLockGen = await provider.lockServiceBinding(generatedRefs.objectReference.uri);
@@ -268,6 +272,4 @@ export async function testUiServiceGenerator(
     } catch (error) {
         logger.error(error);
     }
-
-    logger.info('done');
 }

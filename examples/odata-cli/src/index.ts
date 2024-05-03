@@ -48,4 +48,4 @@ if (isAppStudio()) {
     target = args.length > 0 ? args[0] : 'unknown';
     activity = args.length > 1 ? args[1] : 'odata';
 }
-targets[target](processEnv, activities[activity]).catch((error) => console.error(error));
+targets[target](processEnv, activities[activity]).then(() => console.log('done')).catch((error) => console.error(error));
