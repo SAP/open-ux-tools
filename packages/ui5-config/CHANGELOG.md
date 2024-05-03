@@ -1,5 +1,17 @@
 # @sap-ux/ui5-config
 
+## 0.22.3
+
+### Patch Changes
+
+-   7f8105c7: move replaceEnvVariables to ui5-config and export
+
+## 0.22.2
+
+### Patch Changes
+
+-   b7d95fb3: fix paths and config writers
+
 ## 0.22.1
 
 ### Patch Changes

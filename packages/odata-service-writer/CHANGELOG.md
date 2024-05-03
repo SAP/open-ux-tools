@@ -1,5 +1,31 @@
 # @sap-ux/odata-service-writer
 
+## 0.17.1
+
+### Patch Changes
+
+-   Updated dependencies [7f8105c7]
+    -   @sap-ux/ui5-config@0.22.3
+    -   @sap-ux/mockserver-config-writer@0.5.1
+
+## 0.17.0
+
+### Minor Changes
+
+-   8db928db: odata-service-writer now uses logic from mockserver-config-writer to generate mockserver
+
+### Patch Changes
+
+-   Updated dependencies [8db928db]
+    -   @sap-ux/mockserver-config-writer@0.5.0
+
+## 0.16.5
+
+### Patch Changes
+
+-   Updated dependencies [b7d95fb3]
+    -   @sap-ux/ui5-config@0.22.2
+
 ## 0.16.4
 
 ### Patch Changes

@@ -1,5 +1,62 @@
 # @sap-ux/preview-middleware
 
+## 0.13.24
+
+### Patch Changes
+
+-   7697dea4: Outsourcing of initialization routine to manage app state from fiori-tools-proxy to preview-middleware-client and updating to UI5 2.0
+
+## 0.13.23
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.23
+-   @sap-ux/project-access@1.19.14
+
+## 0.13.22
+
+### Patch Changes
+
+-   2e296173: Enable telemetry for adaptation project
+
+## 0.13.21
+
+### Patch Changes
+
+-   Updated dependencies [99bca62c]
+    -   @sap-ux/project-access@1.19.13
+    -   @sap-ux/adp-tooling@0.9.22
+
+## 0.13.20
+
+### Patch Changes
+
+-   Updated dependencies [b7d95fb3]
+    -   @sap-ux/project-access@1.19.12
+    -   @sap-ux/adp-tooling@0.9.21
+
+## 0.13.19
+
+### Patch Changes
+
+-   00cf3025: Alternative approach to have a consistent save for XML Fragments
+-   Updated dependencies [00cf3025]
+    -   @sap-ux/adp-tooling@0.9.20
+
+## 0.13.18
+
+### Patch Changes
+
+-   Updated dependencies [4389c528]
+    -   @sap-ux/project-access@1.19.11
+    -   @sap-ux/adp-tooling@0.9.19
+
+## 0.13.17
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.18
+
 ## 0.13.16
 
 ### Patch Changes
