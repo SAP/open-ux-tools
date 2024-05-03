@@ -698,6 +698,25 @@ describe('Business Object Service', () => {
         const businessObjects = await businessObjectService?.getBusinessObjects(maxResults);
         expect(businessObjects).toHaveLength(100);
     });
+
+    test('Business Object Service - invalid response', async () => {
+        const maxResults = 100;
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(AdtServices.LIST_PACKAGES)
+            .query({
+                operation: 'quickSearch',
+                query: `*`,
+                maxResults: maxResults,
+                objectType: 'BDEF',
+                releaseStatus: 'USE_IN_CLOUD_DEVELOPMENT'
+            })
+            .replyWithFile(200, join(__dirname, 'mockResponses/businessObjects-invalid.xml'));
+        const businessObjectService = await provider.getAdtService<BusinessObjectsService>(BusinessObjectsService);
+        const businessObjects = await businessObjectService?.getBusinessObjects(maxResults);
+        expect(businessObjects).toHaveLength(0);
+    });
 });
 
 describe('Generator Service', () => {
@@ -745,6 +764,12 @@ describe('Generator Service', () => {
             .post(
                 '/sap/bc/adt/rap/generators/ui-service?referencedObject=%2Fsap%2Fbc%2Fadt%2Fbo%2Fbehaviordefinitions%2Fi_banktp&corrNr=test_transport'
             )
+            .replyWithFile(200, join(__dirname, 'mockResponses/generationResponse.xml'))
+            .post('/sap/bc/adt/businessservices/bindings/zui_banktp004_o4')
+            .query({
+                _action: `LOCK`,
+                accessMode: 'MODIFY'
+            })
             .replyWithFile(200, join(__dirname, 'mockResponses/generationResponse.xml'));
 
         const gen = await provider.getUiServiceGenerator({
@@ -758,6 +783,9 @@ describe('Generator Service', () => {
 
         const generationReponse = await gen?.generate(content, transport);
         expect(generationReponse.objectReference.uri).toEqual('/sap/bc/adt/businessservices/bindings/zui_banktp004_o4');
+
+        const lockGen = await provider.lockServiceBinding(generationReponse.objectReference.uri);
+        expect(() => lockGen.lockServiceBinding()).not.toThrow();
     });
 });
 
