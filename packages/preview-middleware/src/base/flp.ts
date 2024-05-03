@@ -309,6 +309,7 @@ export class FlpSandbox {
                     }
                     const template = readFileSync(join(__dirname, '../../templates/flp/editor.html'), 'utf-8');
                     const envPort = process.env.FIORI_TOOLS_LIVERELOAD_PORT;
+                    const envLivereloadUrl = process.env.FIORI_TOOLS_LIVERELOAD_URL;
                     let livereloadPort: number = envPort ? parseInt(envPort, 10) : DEFAULT_LIVERELOAD_PORT;
                     livereloadPort = isNaN(livereloadPort) ? DEFAULT_LIVERELOAD_PORT : livereloadPort;
                     const html = render(template, {
@@ -316,7 +317,8 @@ export class FlpSandbox {
                         telemetry: rta.options?.telemetry ?? false,
                         appName: rta.options?.appName,
                         scenario,
-                        livereloadPort
+                        livereloadPort,
+                        livereloadUrl: envLivereloadUrl
                     });
                     this.sendResponse(res, 'text/html', 200, html);
                 });
