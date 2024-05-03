@@ -1,5 +1,18 @@
 # @sap-ux/project-access
 
+## 1.19.14
+
+### Patch Changes
+
+-   Updated dependencies [7f8105c7]
+    -   @sap-ux/ui5-config@0.22.3
+
+## 1.19.13
+
+### Patch Changes
+
+-   99bca62c: Add error code for cds mismatch
+
 ## 1.19.12
 
 ### Patch Changes
