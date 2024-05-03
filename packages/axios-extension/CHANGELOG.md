@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.11.8
+
+### Patch Changes
+
+-   56b77fd9: fix: isS4Cloud returned wrong value when checking a development client
+
 ## 1.11.7
 
 ### Patch Changes

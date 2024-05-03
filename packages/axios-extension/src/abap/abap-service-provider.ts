@@ -18,8 +18,6 @@ import type { BusinessObject } from './adt-catalog/services/businessobjects-serv
  * Extension of the service provider for ABAP services.
  */
 export class AbapServiceProvider extends ServiceProvider {
-    public s4Cloud: boolean | undefined;
-
     protected atoSettings: AtoSettings;
 
     /**
@@ -93,21 +91,15 @@ export class AbapServiceProvider extends ServiceProvider {
      * @returns true if it an S/4HANA cloud system
      */
     public async isS4Cloud(): Promise<boolean> {
-        if (this.s4Cloud === undefined) {
-            try {
-                const settings = await this.getAtoInfo();
-                this.s4Cloud =
-                    settings.tenantType === TenantType.Customer &&
-                    settings.operationsType === 'C' &&
-                    settings.isExtensibilityDevelopmentSystem === true &&
-                    settings.developmentPrefix !== '' &&
-                    settings.developmentPackage !== '';
-            } catch (error) {
-                this.log.warn('Failed to detect whether this is an SAP S/4HANA Cloud system or not.');
-                this.s4Cloud = false;
-            }
+        if (this.atoSettings === undefined) {
+            await this.getAtoInfo();
         }
-        return this.s4Cloud;
+        return (
+            this.atoSettings.tenantType === TenantType.Customer &&
+            this.atoSettings.operationsType === 'C' &&
+            this.atoSettings.developmentPrefix !== '' &&
+            this.atoSettings.developmentPackage !== ''
+        );
     }
 
     /**

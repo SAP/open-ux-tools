@@ -1,6 +1,6 @@
-import type { PromptSeverityMessage, validate, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { PromptSeverityMessage, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { ReuseLib } from '@sap-ux/project-access';
-import type { ListChoiceOptions } from 'inquirer';
+import type { ListChoiceOptions, Validator } from 'inquirer';
 /**
  * Enumeration of prompt names used by UI5LibraryReferencePromptOptions
  *
@@ -29,7 +29,7 @@ type stringValuePrompts = stringValuePromptType[keyof stringValuePromptType];
  */
 export type CommonPromptOptions = {
     hide?: boolean;
-    validate?: validate<UI5LibraryReferenceAnswers>;
+    validate?: Validator<UI5LibraryReferenceAnswers>;
     additionalMessages?: PromptSeverityMessage;
 };
 
