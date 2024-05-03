@@ -88,7 +88,6 @@ describe('V2CatalogService', () => {
 
         // create a catalog for testing
         const provider = createForAbap(config);
-        provider.s4Cloud = false;
         const catalog = provider.catalog(ODataVersion.v2);
 
         beforeAll(() => {
