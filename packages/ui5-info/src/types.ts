@@ -8,7 +8,7 @@ export interface UI5VersionFilterOptions {
     /**
      * Removes non-numeric versions, for example: 'snapshot-1.120' or 'Latest' (in the case where fallbacks are used)
      *
-     * If `includeSnapshots` is specified `onlyVersionNumbers` takes precedence
+     * If `snapshotVersionsHost` is specified `onlyVersionNumbers` takes precedence.
      */
     onlyVersionNumbers?: boolean;
     /**
