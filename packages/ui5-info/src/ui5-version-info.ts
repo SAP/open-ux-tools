@@ -384,7 +384,7 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
  *
  * @returns Latest version of SAPUI5.
  */
-export async function getLatestSapui5Version(): Promise<string | undefined> {
+export async function getLatestUI5Version(): Promise<string | undefined> {
     let version: string | undefined;
     try {
         const ui5Versions = await requestUI5Versions<UI5VersionsResponse>();
