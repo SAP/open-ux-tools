@@ -30,7 +30,8 @@
         "axios": "1.6.8"
     },
     "devDependencies": {
-        "nock": "13.4.0"
+        "nock": "13.4.0",
+        "@sap-ux/logger": "workspace:*"
     },
     "files": [
         "dist",

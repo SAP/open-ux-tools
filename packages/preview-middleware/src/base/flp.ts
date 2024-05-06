@@ -18,6 +18,7 @@ import {
     type OperationType
 } from '@sap-ux/adp-tooling';
 import { createProjectAccess } from '@sap-ux/project-access';
+import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 
 import { deleteChange, readChanges, writeChange } from './flex';
 import { generateImportList, mergeTestConfigDefaults } from './test';
@@ -301,7 +302,7 @@ export class FlpSandbox {
             if (editor.developerMode) {
                 previewUrl = `${previewUrl}.inner.html`;
                 editor.pluginScript ??= 'open/ux/preview/client/cpe/init';
-                this.router.get(editor.path, (_req: Request, res: Response) => {
+                this.router.get(editor.path, async (_req: Request, res: Response) => {
                     const scenario = rta.options?.scenario;
                     let templatePreviewUrl = `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.config.intent.object}-${this.config.intent.action}`;
                     if (scenario === 'ADAPTATION_PROJECT') {
@@ -311,12 +312,14 @@ export class FlpSandbox {
                     const envPort = process.env.FIORI_TOOLS_LIVERELOAD_PORT;
                     let livereloadPort: number = envPort ? parseInt(envPort, 10) : DEFAULT_LIVERELOAD_PORT;
                     livereloadPort = isNaN(livereloadPort) ? DEFAULT_LIVERELOAD_PORT : livereloadPort;
+                    const envLivereloadUrl = isAppStudio() ? await exposePort(livereloadPort) : undefined;
                     const html = render(template, {
                         previewUrl: templatePreviewUrl,
                         telemetry: rta.options?.telemetry ?? false,
                         appName: rta.options?.appName,
                         scenario,
-                        livereloadPort
+                        livereloadPort,
+                        livereloadUrl: envLivereloadUrl
                     });
                     this.sendResponse(res, 'text/html', 200, html);
                 });
