@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { cfGetInstanceKeyParameters } from '@sap/cf-tools';
+import type { Logger } from '@sap-ux/logger';
 import { ENV } from './app-studio.env';
 import type { Destination } from './destination';
 
@@ -89,9 +90,15 @@ export async function listDestinations(): Promise<Destinations> {
  * Exposes port in SAP Business Application Studio.
  *
  * @param port Port that needs to be exposed
+ * @param logger Logger
  * @returns url on which the port is exposed
  */
-export async function exposePort(port: number): Promise<string> {
-    const response = await axios.get(`http://localhost:3001/AppStudio/api/getHostByPort?port=${port}`);
-    return `${response.data.result}`;
+export async function exposePort(port: number, logger?: Logger): Promise<string> {
+    try {
+        const response = await axios.get(`http://localhost:3001/AppStudio/api/getHostByPort?port=${port}`);
+        return `${response.data.result}`;
+    } catch (error) {
+        logger?.error(`Port ${port} was not exposed!`);
+        return '';
+    }
 }

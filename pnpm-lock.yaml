@@ -407,6 +407,9 @@ importers:
         specifier: 1.6.8
         version: 1.6.8
     devDependencies:
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
       nock:
         specifier: 13.4.0
         version: 13.4.0

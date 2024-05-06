@@ -5,4 +5,4 @@
 '@sap-ux/btp-utils': patch
 ---
 
-fix preview reload on SBAS
+fix preview reload on SBAS, by exposing livereload server port over url

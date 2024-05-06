@@ -159,5 +159,10 @@ describe('App Studio', () => {
             const url = await exposePort(1234);
             expect(url).toStrictEqual('https://abcd.com');
         });
+        test('calls app studio api with correct port', async () => {
+            nock(server).get('/AppStudio/api/getHostByPort?port=1234').reply(500);
+            const url = await exposePort(1234);
+            expect(url).toStrictEqual('');
+        });
     });
 });
