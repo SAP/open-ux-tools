@@ -378,3 +378,21 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
         return ui5Version;
     });
 }
+
+/**
+ * Method retrieves latest SAPUI5 version by sending HTTP GET request to "https://ui5.sap.com/version.json'".
+ *
+ * @returns Latest version of SAPUI5.
+ */
+export async function getLatestSapui5Version(): Promise<string | undefined> {
+    let version: string | undefined;
+    try {
+        const ui5Versions = await requestUI5Versions<UI5VersionsResponse>();
+        version = ui5Versions?.latest?.version;
+    } catch {
+        // HTTP request most likely failed
+        version = undefined;
+    }
+
+    return version;
+}
