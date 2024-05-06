@@ -6,7 +6,8 @@ import {
     getDestinationUrlForAppStudio,
     Destination,
     listDestinations,
-    getCredentialsForDestinationService
+    getCredentialsForDestinationService,
+    exposePort
 } from '../src';
 import { ENV } from '../src/app-studio.env';
 import destinationList from './mockResponses/destinations.json';
@@ -128,6 +129,11 @@ describe('App Studio', () => {
             process.env[ENV.PROXY_URL] = server;
         });
 
+        afterAll(() => {
+            delete process.env[ENV.H2O_URL];
+            delete process.env[ENV.PROXY_URL];
+        });
+
         test('only destinations for development returned', async () => {
             nock(server)
                 .get('/api/listDestinations')
@@ -142,6 +148,21 @@ describe('App Studio', () => {
             nock(server).get('/api/listDestinations').reply(200);
             const actualDestinations = await listDestinations();
             expect(Object.values(actualDestinations).length).toBe(0);
+        });
+    });
+
+    describe('exposePort', () => {
+        const server = 'http://localhost:3001/';
+
+        test('calls app studio api with correct port', async () => {
+            nock(server).get('/AppStudio/api/getHostByPort?port=1234').reply(200, { result: 'https://abcd.com' });
+            const url = await exposePort(1234);
+            expect(url).toStrictEqual('https://abcd.com');
+        });
+        test('catches error returned by app studio', async () => {
+            nock(server).get('/AppStudio/api/getHostByPort?port=1234').reply(500);
+            const url = await exposePort(1234);
+            expect(url).toStrictEqual('');
         });
     });
 });
