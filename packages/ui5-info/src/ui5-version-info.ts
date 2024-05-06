@@ -148,14 +148,9 @@ async function parseUI5VersionsOverview(): Promise<UI5VersionOverview[]> {
         );
         versions = ui5VersionFallbacks;
     }
-    result = versions.map((ver: any) => {
+    result = versions.map((ver: any): UI5VersionOverview | undefined => {
         const parsedVersion = coerce(ver.version)?.version;
-        if (parsedVersion !== undefined) {
-            return {
-                version: parsedVersion,
-                support: ver.support
-            };
-        }
+        return parsedVersion !== undefined ? { version: parsedVersion, support: ver.support } : undefined;
     }) as UI5VersionOverview[];
 
     return result;
@@ -366,14 +361,12 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
             ui5Version.default = true;
         }
         if (filterOptions?.includeMaintained === true && ui5VersionsOverview !== undefined) {
-            ui5Version.maintained = ui5VersionsOverview.some((v) => {
-                if (v !== undefined) {
-                    return (
-                        `${major(v.version)}.${minor(v.version)}` === `${major(ui5)}.${minor(ui5)}` &&
-                        v.support === 'Maintenance'
-                    );
-                }
-            });
+            ui5Version.maintained = ui5VersionsOverview.some((v): Boolean | undefined =>
+                v !== undefined
+                    ? `${major(v.version)}.${minor(v.version)}` === `${major(ui5)}.${minor(ui5)}` &&
+                      v.support === 'Maintenance'
+                    : undefined
+            );
         }
         return ui5Version;
     });
