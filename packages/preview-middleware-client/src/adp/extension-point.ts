@@ -24,11 +24,11 @@ export interface ExtensionPointInfo {
     name: string;
     index?: number;
     view?: View;
-    createdControls?: [];
+    createdControls: string[];
     fragmentId?: string;
     aggregation?: string[];
     aggregationName?: string;
-    defaultContent?: UI5Element[];
+    defaultContent: UI5Element[];
     targetControl?: UI5Element;
 }
 
@@ -81,7 +81,7 @@ export default class ExtensionPointService {
 
         const plugin = new AddXMLAtExtensionPoint({
             commandFactory,
-            fragmentHandler: async (overlay: UI5Element, info: ExtensionPointData[]) =>
+            fragmentHandler: async (overlay: UI5Element, info: ExtensionPointInfo[]) =>
                 await this.fragmentHandler(overlay, info)
         });
 
@@ -97,7 +97,7 @@ export default class ExtensionPointService {
      * @param info Extension point data from the plugin
      * @returns Deferred extension point data that is provided to the plugin
      */
-    public async fragmentHandler(overlay: UI5Element, info: ExtensionPointData[]): Promise<DeferredExtPointData> {
+    public async fragmentHandler(overlay: UI5Element, info: ExtensionPointInfo[]): Promise<DeferredExtPointData> {
         let deferred = createDeferred<DeferredExtPointData>();
         const name = this.selectedExtensionPointName;
 
@@ -105,7 +105,7 @@ export default class ExtensionPointService {
             name,
             info,
             deferred
-        } as ExtensionPointData);
+        });
 
         this.selectedExtensionPointName = '';
         return deferred.promise;

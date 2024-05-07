@@ -298,7 +298,9 @@ export const Tree = (): ReactElement => {
 
         const tooltipId = `tooltip--${item?.name}`;
 
-        const cellName = hasDefaultContent ? `${item?.name} (has default content)` : item?.name;
+        const cellName = hasDefaultContent
+            ? t('EXTENSION_POINT_HAS_DEFAULT_CONTENT_TEXT', { name: item?.name })
+            : item?.name;
 
         return item && typeof itemIndex === 'number' && itemIndex > -1 ? (
             <div
@@ -390,7 +392,9 @@ export const Tree = (): ReactElement => {
         );
 
         const tooltipId = `tooltip--${groupName}`;
-        const headerName = hasDefaultContent ? `${groupName} (has default content)` : groupName;
+        const headerName = hasDefaultContent
+            ? t('EXTENSION_POINT_HAS_DEFAULT_CONTENT_TEXT', { name: groupName })
+            : groupName;
 
         return (
             <div

@@ -97,7 +97,7 @@ export default class ExtensionPoint extends BaseDialog {
      */
     private hasDefaultContentForName(name: string): boolean {
         const defaultContent = this.data?.info.find((v) => v.name === name)?.defaultContent;
-        return (defaultContent && defaultContent.length > 0) || false;
+        return defaultContent ? defaultContent.length > 0 : false;
     }
 
     /**
