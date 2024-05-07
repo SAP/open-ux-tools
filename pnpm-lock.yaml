@@ -407,6 +407,9 @@ importers:
         specifier: 1.6.8
         version: 1.6.8
     devDependencies:
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
       nock:
         specifier: 13.4.0
         version: 13.4.0
@@ -1258,8 +1261,63 @@ importers:
         specifier: 5.3.3
         version: 5.3.3
 
+  packages/odata-service-inquirer:
+    dependencies:
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      '@sap-ux/telemetry':
+        specifier: workspace:*
+        version: link:../telemetry
+      '@sap/wing-service-explorer':
+        specifier: 1.8.0
+        version: 1.8.0
+      i18next:
+        specifier: 23.5.1
+        version: 23.5.1
+      os-name:
+        specifier: 4.0.1
+        version: 4.0.1
+    devDependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.14.4
+        version: 1.14.4
+      '@sap-ux/feature-toggle':
+        specifier: workspace:*
+        version: link:../feature-toggle
+      '@sap-ux/odata-service-writer':
+        specifier: workspace:*
+        version: link:../odata-service-writer
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
+      '@types/inquirer-autocomplete-prompt':
+        specifier: 2.0.1
+        version: 2.0.1
+      '@types/lodash':
+        specifier: 4.14.202
+        version: 4.14.202
+      jest-extended:
+        specifier: 3.2.4
+        version: 3.2.4(jest@29.5.0)
+      lodash:
+        specifier: 4.17.21
+        version: 4.17.21
+
   packages/odata-service-writer:
     dependencies:
+      '@sap-ux/mockserver-config-writer':
+        specifier: workspace:*
+        version: link:../mockserver-config-writer
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
@@ -1367,6 +1425,9 @@ importers:
       '@sap-ux/adp-tooling':
         specifier: workspace:*
         version: link:../adp-tooling
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
       '@sap-ux/control-property-editor-sources':
         specifier: workspace:@sap-ux/control-property-editor@*
         version: link:../control-property-editor
@@ -1517,6 +1578,9 @@ importers:
 
   packages/reload-middleware:
     dependencies:
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
@@ -8368,6 +8432,21 @@ packages:
       vscode-languageserver-types: 3.17.2
     dev: false
 
+  /@sap/wing-service-explorer@1.8.0:
+    resolution: {integrity: sha512-2TVmuxAciPkbAfSuqE3WILu6EJL7jVVVyeyT//dZhXQH0VRtrd4DzWrf81lngyl58UUzQxugPHL7OcHj6R8xLA==}
+    engines: {node: '>=8.0.0'}
+    dependencies:
+      '@vscode-logging/types': 0.1.4
+      axios: 0.21.4
+      fast-xml-parser: 4.2.4
+      fs-extra: 7.0.1
+      lodash: 4.17.21
+      vkbeautify: 0.99.3
+      xml2js: 0.5.0
+    transitivePeerDependencies:
+      - debug
+    dev: false
+
   /@sapui5/types@1.120.5:
     resolution: {integrity: sha512-5n0pzbS4sP1eA0m1bFgnD1cKQT7BJQn9b1JADWanteElZTbyJjoaTFzSHIUjrCU+vxOwkHTajCjp+/6UNJ1KbQ==}
     dependencies:
@@ -10572,6 +10651,10 @@ packages:
   /@ungap/structured-clone@1.2.0:
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
 
+  /@vscode-logging/types@0.1.4:
+    resolution: {integrity: sha512-uxuHQfpX9RbkgSj5unJFmciXRczyFSaAI2aA829MYYkE8jxlhZLRLoiJLymTNiojNVdV7fFE3CILF5Q6M+EBsA==}
+    dev: false
+
   /@vue/compiler-core@3.3.4:
     resolution: {integrity: sha512-cquyDNvZ6jTbf/+x+AgM2Arrp6G4Dzbb0R64jiG804HRMfRiFXWI6kqUVqZ6ZR0bQhIoQjB4+2bhNtVwndW15g==}
     dependencies:
@@ -11446,6 +11529,14 @@ packages:
     resolution: {integrity: sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==}
     engines: {node: '>= 0.4'}
     dev: true
+
+  /axios@0.21.4:
+    resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
+    dependencies:
+      follow-redirects: 1.15.6
+    transitivePeerDependencies:
+      - debug
+    dev: false
 
   /axios@1.6.8:
     resolution: {integrity: sha512-v/ZHtJDU39mDpyBoFVkETcd/uNdxrWRrg3bKpOKzXFA6Bvqopts6ALSMU3y6ijYxbw2B+wPrIv46egTzJXCLGQ==}
@@ -14340,7 +14431,6 @@ packages:
       onetime: 5.1.2
       signal-exit: 3.0.7
       strip-final-newline: 2.0.0
-    dev: true
 
   /execa@5.1.1:
     resolution: {integrity: sha512-8uSpZZocAZRBAPIEINJj3Lo9HyGitllczc27Eh5YYojjMFMn8yHMDMaUHE2Jqfq05D/wucwI4JGURyXt1vchyg==}
@@ -14517,6 +14607,13 @@ packages:
   /fast-safe-stringify@2.1.1:
     resolution: {integrity: sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA==}
     dev: true
+
+  /fast-xml-parser@4.2.4:
+    resolution: {integrity: sha512-fbfMDvgBNIdDJLdLOwacjFAPYt67tr31H9ZhWSm45CDAxvd0I6WTlSOUo7K2P/K5sA5JgMKG64PI3DMcaFdWpQ==}
+    hasBin: true
+    dependencies:
+      strnum: 1.0.5
+    dev: false
 
   /fast-xml-parser@4.2.7:
     resolution: {integrity: sha512-J8r6BriSLO1uj2miOk1NW0YVm8AGOOu3Si2HQp/cSmo6EA4m3fcwu2WKjJ4RK9wMLBtg69y1kS8baDiQBR41Ig==}
@@ -14890,7 +14987,6 @@ packages:
       graceful-fs: 4.2.11
       jsonfile: 4.0.0
       universalify: 0.1.2
-    dev: true
 
   /fs-extra@8.1.0:
     resolution: {integrity: sha512-yhlQgA6mnOJUKOsRUFsgJdQCvkKhcz8tlZG5HBQfReYZy46OwLcY+Zia0mtdHsOo9y/hP+CxMN0TU9QxoOtG4g==}
@@ -15050,7 +15146,6 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       pump: 3.0.0
-    dev: true
 
   /get-stream@6.0.1:
     resolution: {integrity: sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==}
@@ -15606,7 +15701,6 @@ packages:
   /human-signals@1.1.1:
     resolution: {integrity: sha512-SEQu7vl8KjNL2eoGBLF3+wAjpsNfA9XMlXAYj/3EdaNfAlxKthD1xjEQfGOUhllCGGJVNY34bRr6lPINhNjyZw==}
     engines: {node: '>=8.12.0'}
-    dev: true
 
   /human-signals@2.1.0:
     resolution: {integrity: sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==}
@@ -17078,7 +17172,6 @@ packages:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
     optionalDependencies:
       graceful-fs: 4.2.11
-    dev: true
 
   /jsonfile@6.1.0:
     resolution: {integrity: sha512-5dgndWOriYSm5cnYaJNhalLNDKOqFwyDB/rr1E9ZsGciGvKPs8R2xYGCacuf3z6K1YKDz182fd+fY3cn3pMqXQ==}
@@ -17434,6 +17527,11 @@ packages:
     resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
     hasBin: true
     dev: true
+
+  /macos-release@2.5.1:
+    resolution: {integrity: sha512-DXqXhEM7gW59OjZO8NIjBCz9AQ1BEMrfiOAl4AYByHCtVHRF4KoGNO8mqQeM8lRCtQe/UnJ4imO/d2HdkKsd+A==}
+    engines: {node: '>=6'}
+    dev: false
 
   /magic-string@0.25.9:
     resolution: {integrity: sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==}
@@ -18637,6 +18735,14 @@ packages:
   /os-homedir@1.0.2:
     resolution: {integrity: sha512-B5JU3cabzk8c67mRRd3ECmROafjYMXbuzlwtqdM8IbS8ktlTix8aFGb2bAGKrSRIlnfKwovGUUr72JUPyOb6kQ==}
     engines: {node: '>=0.10.0'}
+    dev: false
+
+  /os-name@4.0.1:
+    resolution: {integrity: sha512-xl9MAoU97MH1Xt5K9ERft2YfCAoaO6msy1OBA0ozxEC0x0TmIoE6K3QvgJMMZA9yKGLmHXNY/YZoDbiGDj4zYw==}
+    engines: {node: '>=10'}
+    dependencies:
+      macos-release: 2.5.1
+      windows-release: 4.0.0
     dev: false
 
   /os-tmpdir@1.0.2:
@@ -20434,7 +20540,6 @@ packages:
 
   /sax@1.2.4:
     resolution: {integrity: sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==}
-    dev: true
 
   /saxes@6.0.0:
     resolution: {integrity: sha512-xAg7SOnEhrm5zI3puOOKyy1OMcMlIJZYNJY7xLBwSze0UjhPLnWfj2GF2EpT0jmzaJKIWKHLsaSSajf35bcYnA==}
@@ -21864,7 +21969,6 @@ packages:
   /universalify@0.1.2:
     resolution: {integrity: sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg==}
     engines: {node: '>= 4.0.0'}
-    dev: true
 
   /universalify@0.2.0:
     resolution: {integrity: sha512-CJ1QgKmNg3CwvAv/kOFmtnEN05f0D/cn9QntgNOQlQF9dgvVTHj3t+8JPdjqawCHk7V/KA+fbUqzZ9XWhcqPUg==}
@@ -22119,6 +22223,10 @@ packages:
       cloneable-readable: 1.1.3
       remove-trailing-separator: 1.1.0
       replace-ext: 1.0.1
+
+  /vkbeautify@0.99.3:
+    resolution: {integrity: sha512-2ozZEFfmVvQcHWoHLNuiKlUfDKlhh4KGsy54U0UrlLMR1SO+XKAIDqBxtBwHgNrekurlJwE8A9K6L49T78ZQ9Q==}
+    dev: false
 
   /void-elements@3.1.0:
     resolution: {integrity: sha512-Dhxzh5HZuiHQhbvTW9AMetFfBHDMYpo23Uo9btPXgdYP+3T5S+p+jgNy7spra+veYhBP2dCSgxR/i2Y02h5/6w==}
@@ -22404,6 +22512,13 @@ packages:
       string-width: 5.1.2
     dev: true
 
+  /windows-release@4.0.0:
+    resolution: {integrity: sha512-OxmV4wzDKB1x7AZaZgXMVsdJ1qER1ed83ZrTYd5Bwq2HfJVg3DJS8nqlAG4sMoJ7mu8cuRmLEYyU13BKwctRAg==}
+    engines: {node: '>=10'}
+    dependencies:
+      execa: 4.1.0
+    dev: false
+
   /winston-transport@4.7.0:
     resolution: {integrity: sha512-ajBj65K5I7denzer2IYW6+2bNIVqLGDHqDw3Ow8Ohh+vdW+rv4MZ6eiDvHoKhfJFZ2auyN8byXieDDJ96ViONg==}
     engines: {node: '>= 12.0.0'}
@@ -22555,6 +22670,14 @@ packages:
     engines: {node: '>= 10'}
     dev: false
 
+  /xml2js@0.5.0:
+    resolution: {integrity: sha512-drPFnkQJik/O+uPKpqSgr22mpuFHqKdbS835iAQrUC73L2F5WkboIRd63ai/2Yg6I1jzifPFKH2NTK+cfglkIA==}
+    engines: {node: '>=4.0.0'}
+    dependencies:
+      sax: 1.2.4
+      xmlbuilder: 11.0.1
+    dev: false
+
   /xml2js@0.6.2:
     resolution: {integrity: sha512-T4rieHaC1EXcES0Kxxj4JWgaUQHDk+qwHcYOCFHfiwKz7tOVPLq7Hjq9dM1WCMhylqMEfP7hMcOIChvotiZegA==}
     engines: {node: '>=4.0.0'}
@@ -22566,7 +22689,6 @@ packages:
   /xmlbuilder@11.0.1:
     resolution: {integrity: sha512-fDlsI/kFEx7gLvbecc0/ohLG50fugQp8ryHzMTuW9vSa1GJ0XYWKnhsUx7oie3G98+r56aTQIUB4kht42R3JvA==}
     engines: {node: '>=4.0'}
-    dev: true
 
   /xmlbuilder@15.1.1:
     resolution: {integrity: sha512-yMqGBqtXyeN1e3TGYvgNgDVZ3j84W4cwkOXQswghol6APgZWaff9lnbvN7MHYJOiXsvGPXtjTYJEiC9J2wv9Eg==}

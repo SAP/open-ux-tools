@@ -1,15 +1,10 @@
 import { type CdsUi5PluginInfo } from '@sap-ux/cap-config-writer';
-import type { InquirerAdapter } from '@sap-ux/inquirer-common';
+import type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-common';
 import { getDefaultUI5Theme, getUI5Versions, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
 import autocomplete from 'inquirer-autocomplete-prompt';
 import isNil from 'lodash/isNil';
 import { getQuestions } from './prompts';
-import type {
-    PromptDefaultValue,
-    UI5ApplicationAnswers,
-    UI5ApplicationPromptOptions,
-    UI5ApplicationQuestion
-} from './types';
+import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from './types';
 import { promptNames } from './types';
 /**
  * Get the inquirer prompts for ui5 library inquirer.

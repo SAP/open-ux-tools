@@ -1,5 +1,12 @@
 # @sap-ux/cards-editor-config-writer
 
+## 0.3.2
+
+### Patch Changes
+
+-   Updated dependencies [7f8105c7]
+    -   @sap-ux/ui5-config@0.22.3
+
 ## 0.3.1
 
 ### Patch Changes
