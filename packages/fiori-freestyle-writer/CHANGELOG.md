@@ -1,5 +1,14 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.22.3
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+-   Updated dependencies [4e267684]
+    -   @sap-ux/odata-service-writer@0.17.2
+    -   @sap-ux/ui5-application-writer@0.26.11
+
 ## 0.22.2
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.26.11
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+
 ## 0.26.10
 
 ### Patch Changes
