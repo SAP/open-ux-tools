@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.13.27
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+-   Updated dependencies [4e267684]
+    -   @sap-ux/adp-tooling@0.9.26
+
 ## 0.13.26
 
 ### Patch Changes

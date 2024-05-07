@@ -1,5 +1,11 @@
 # @sap-ux/cards-editor-middleware
 
+## 0.3.5
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+
 ## 0.3.4
 
 ### Patch Changes
