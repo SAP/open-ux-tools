@@ -1,10 +1,10 @@
-import type { ListChoiceOptions } from 'inquirer';
-import * as fuzzy from 'fuzzy';
-import { t } from '../i18n';
 import { getUi5Themes, type UI5Theme, type UI5Version } from '@sap-ux/ui5-info';
+import * as fuzzy from 'fuzzy';
+import type { ListChoiceOptions } from 'inquirer';
+import { coerce, eq, lte } from 'semver';
+import { t } from '../i18n';
 import type { UI5VersionChoice } from '../types';
 import { Separator } from './separator';
-import { coerce, lte, eq } from 'semver';
 
 /**
  * Get the UI5 themes as prompt choices applicable for the specified UI5 version.

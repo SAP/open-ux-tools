@@ -19,6 +19,10 @@ export interface StartOptions {
     previewUrl: string;
     rootElementId: string;
     livereloadPort: number;
+    /**
+     * Url used to connect to the livereload service. If provided, livereloadPort option is ignored.
+     */
+    livereloadUrl?: string;
     telemetry?: boolean;
     scenario: Scenario;
 }
@@ -41,7 +45,7 @@ export function start(options: StartOptions): void {
     setThemeOnDocument(theme as ThemeName);
 
     store.dispatch(setProjectScenario(scenario));
-    store.dispatch(initializeLivereload(options.livereloadPort));
+    store.dispatch(initializeLivereload({ port: options.livereloadPort, url: options.livereloadUrl }));
 
     ReactDOM.render(
         <React.StrictMode>

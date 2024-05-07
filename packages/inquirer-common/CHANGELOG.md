@@ -1,5 +1,11 @@
 # @sap-ux/inquirer-common
 
+## 0.2.7
+
+### Patch Changes
+
+-   4098bed2: Moves some prompting code to inquirer-common. Adds new module odata-service-inquirer
+
 ## 0.2.6
 
 ### Patch Changes

@@ -5,6 +5,7 @@ import connectLivereload from 'connect-livereload';
 import type { LiveReloadOptions, HttpsOptions, ConnectLivereloadOptions } from './types';
 import { getAvailablePort } from './utils';
 import { ToolsLogger } from '@sap-ux/logger';
+import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { promises } from 'fs';
 import { defaultLiveReloadOpts, defaultConnectLivereloadOpts } from './constants';
 
@@ -43,6 +44,13 @@ export const getLivereloadServer = async (
  * @param options - Connect-Livereload options
  * @returns A connect-livereload instance
  */
-export const getConnectLivereload = (options: ConnectLivereloadOptions): RequestHandler => {
-    return connectLivereload({ ...defaultConnectLivereloadOpts, ...options }) as RequestHandler;
+export const getConnectLivereload = async (options: ConnectLivereloadOptions): Promise<RequestHandler> => {
+    let connectOpts = defaultConnectLivereloadOpts;
+    if (isAppStudio()) {
+        const url = await exposePort(options.port ?? 35729);
+        const src = `${url}livereload.js?snipver=1&port=443`;
+        connectOpts = { ...connectOpts, src };
+    }
+
+    return connectLivereload({ ...connectOpts, ...options }) as RequestHandler;
 };
