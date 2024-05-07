@@ -27,6 +27,9 @@
     },
     {
       "path": "../ui5-library-reference-writer"
+    },
+    {
+      "path": "../yaml"
     }
   ]
 }

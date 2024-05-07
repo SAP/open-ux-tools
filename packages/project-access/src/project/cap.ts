@@ -558,7 +558,7 @@ export function clearGlobalCdsPathCache() {
  * @param [cwd] - optional folder in which cds --version should be executed
  * @returns - result of call 'cds --version'
  */
-async function getCdsVersionInfo(cwd?: string): Promise<Record<string, string>> {
+export async function getCdsVersionInfo(cwd?: string): Promise<Record<string, string>> {
     return new Promise((resolve, reject) => {
         let out = '';
         const cdsVersionInfo = spawn('cds', ['--version'], { cwd, shell: true });

@@ -71,7 +71,6 @@ export async function updateCdsFilesWithAnnotations(
     projectName: string,
     logger?: Logger
 ): Promise<void> {
-    const logInfo = (message: string) => logger?.info(t(message));
     const annotationPath = getAnnotationPath(projectName, capService?.appPath);
     const serviceCdsPath = await toReferenceUri(
         capService.projectPath,
@@ -80,15 +79,16 @@ export async function updateCdsFilesWithAnnotations(
     );
     const annotationConfig = generateAnnotationConfig(projectName);
     const annotationCdsPath = join(capService.projectPath, capService.appPath ?? '', projectName, 'annotations.cds');
-
-    logInfo(`Updating CDS files for ${capService.serviceName} service.`);
-    logInfo(`Updating CDS files with capService : ${JSON.stringify(capService)}`);
-    logInfo(
-        `Updating CDS files with : ${JSON.stringify({
-            root: capService.projectPath
-        })}, annotationPath: ${annotationPath}, capService: ${JSON.stringify(capService)}`
+    logger?.info(t('info.capServiceName', { capServiceName: capService.serviceName }));
+    logger?.info(
+        t('info.cdsUpdateInfo', {
+            projectPath: {
+                root: capService.projectPath
+            },
+            annotationPath: annotationPath,
+            capService: capService
+        })
     );
-
     await writeAnnotationCdsFile(fs, annotationCdsPath, capService.serviceName, serviceCdsPath);
     await updateCdsIndexOrServiceFile(fs, annotationConfig, capService);
 }

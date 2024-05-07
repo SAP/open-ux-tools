@@ -32,11 +32,14 @@
     ],
     "dependencies": {
         "@sap-ux/yaml": "workspace:*",
+        "@sap-ux/logger": "workspace:*",
         "lodash": "4.17.21",
-        "semver": "7.5.4"
+        "semver": "7.5.4",
+        "mem-fs-editor": "9.4.0"
     },
     "devDependencies": {
         "@types/lodash": "4.14.202",
+        "@types/mem-fs-editor": "7.0.1",
         "@types/semver": "7.5.2"
     },
     "engines": {

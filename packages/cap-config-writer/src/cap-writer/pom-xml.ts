@@ -65,7 +65,6 @@ export function updatePomXml(fs: Editor, pomPath: string, logger?: Logger): void
         const pomContents = readPomXml(fs, pomPath);
         const pomContentsJson: Element | ElementCompact = xml2js(pomContents, { compact: false, ignoreComment: false });
         const springBootMavenPlugin = 'spring-boot-maven-plugin';
-
         if (Object.keys(pomContentsJson).length === 0) {
             return;
         }

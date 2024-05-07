@@ -1,10 +1,16 @@
-import { type Package, getCapCustomPaths, getPackageJson, getPackageJsonPath } from '@sap-ux/project-access';
+import {
+    type Package,
+    getCapCustomPaths,
+    getPackageJson,
+    getPackageJsonPath,
+    getCdsVersionInfo
+} from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import { t } from '../i18n';
 import { join } from 'path';
 import { CapType, MIN_CDS_SCRIPT_VERSION, type CapService } from '../types/capTypes';
 import { enableCdsUi5Plugin, checkCdsUi5PluginEnabled, satisfiesMinCdsVersion } from '../cap-config';
-import { getCDSTask, getGlobalInstalledCDSVersion, toPosixPath } from './helpers';
+import { getCDSTask, toPosixPath } from './helpers';
 import type { Logger } from '@sap-ux/logger';
 
 /**
@@ -40,15 +46,12 @@ async function updateScripts(
 ): Promise<void> {
     const packageJson: Package = getPackageJson(fs, packageJsonPath);
     const hasNPMworkspaces = await checkCdsUi5PluginEnabled(packageJsonPath, fs);
-    const cdsVersion = await getGlobalInstalledCDSVersion(log);
-
-    if (cdsVersion && satisfiesMinCdsVersion(packageJson)) {
+    const cdsVersion = await getCdsVersionInfo();
+    if (cdsVersion.home && satisfiesMinCdsVersion(packageJson)) {
         const cdsScript = getCDSTask(projectName, appId, enableNPMWorkspaces ?? hasNPMworkspaces);
         updatePackageJsonWithScripts(fs, packageJsonPath, cdsScript);
     } else {
-        log?.warn(
-            t('WARNING_CDS_DK_NOT_INSTALLED', { cdsVersion: cdsVersion ?? '', minCdsVersion: MIN_CDS_SCRIPT_VERSION })
-        );
+        log?.warn(t('warn.cdsDKNotInstalled', { cdsVersion: cdsVersion ?? '', minCdsVersion: MIN_CDS_SCRIPT_VERSION }));
     }
 }
 

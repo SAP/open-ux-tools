@@ -1,38 +1,5 @@
-import { DisableCacheParam, MIN_CDS_SCRIPT_VERSION, CapType } from '../types/capTypes';
-import { platform } from 'os';
+import { DisableCacheParam } from '../types/capTypes';
 import path from 'path';
-import { existsSync } from 'fs';
-/*** temporary use - please remove export from  '@sap-ux/environment-check'*/
-import { spawnCommand } from '@sap-ux/environment-check';
-import { isAppStudio } from '@sap-ux/btp-utils';
-import type { Logger } from '@sap-ux/logger';
-import { t } from '../i18n';
-
-/**
- * Generates launch text for a CAP project.
- *
- * @param {CapType} capType - The type of CAP project (JAVA or NODE_JS).
- * @param {any} projectName - The name of the project.
- * @param {string} appId - The ID of the application.
- * @param {boolean} [useNPMWorkspaces] - Indicates whether NPM workspaces are used.
- * @returns {string} The generated launch text.
- */
-export function generateCapLaunchText(
-    capType: CapType,
-    projectName: any,
-    appId: string,
-    useNPMWorkspaces: boolean = false
-): string {
-    let capUrl;
-    let mvnCommand = '';
-    if (capType === CapType.JAVA) {
-        mvnCommand = ' (```mvn spring-boot:run```)';
-        capUrl = `http://localhost:8080/${projectName}/webapp/index.html`;
-    } else if (capType === undefined || capType === CapType.NODE_JS) {
-        capUrl = `http://localhost:4004/${getCAPAppUriPath(projectName, appId, useNPMWorkspaces)}/index.html`;
-    }
-    return `${t('TEXT_LAUNCH_CAP', { mvnCommand, capUrl })}`;
-}
 
 /**
  * Returns the URI path for the CAP app.
@@ -68,50 +35,6 @@ export function getCDSTask(
             useNPMWorkspaces
         )}/index.html?${DisableCacheParam}${useNPMWorkspaces ? ' --livereload false' : ''}`
     };
-}
-
-/**
- * Retrieves the globally installed version of @sap/cds-dk.
- * If a mock environment variable is set, it returns a predefined version.
- *
- * @param {Logger} [log] - The logger instance for logging messages.
- * @returns {Promise<string | void>} A Promise resolving to the installed version of @sap/cds-dk, or void if not found.
- */
-export async function getGlobalInstalledCDSVersion(log?: Logger): Promise<string | void> {
-    if (process.env.MOCK_CDS_DK_INSTALLED) {
-        return MIN_CDS_SCRIPT_VERSION;
-    }
-    const npm = platform() === 'win32' ? 'npm.cmd' : 'npm';
-    const cdsPackageName = '@sap/cds-dk';
-    let cdsVersion;
-    try {
-        /*** temporary use - please remove spawnCommand export from  '@sap-ux/environment-check'*/
-        cdsVersion = await spawnCommand(npm, ['ls', '-g', cdsPackageName, '--depth=0']);
-    } catch (err) {
-        // dont block the flow
-    }
-    if (!cdsVersion && isAppStudio() && process.env.NODE_PATH) {
-        try {
-            const foundCdsPath = process.env.NODE_PATH.split(':')
-                .filter((nodModPath) => nodModPath.endsWith('node_modules'))
-                .find((nodModPath) => existsSync(path.join(nodModPath, cdsPackageName)));
-
-            if (foundCdsPath) {
-                /*** temporary use - please remove spawnCommand export from  '@sap-ux/environment-check'*/
-                cdsVersion = await spawnCommand(npm, ['ls', cdsPackageName, '--depth=0']);
-                const logInfo = `OS checkCDSInstalled cdsVersion: ,
-                    ${cdsVersion},
-                    ${foundCdsPath},
-                    'isAppStudio()',
-                    ${isAppStudio()}`;
-                log?.info(logInfo);
-            }
-        } catch (err) {
-            // cds not found in known locations
-        }
-    }
-    // Referenced regex express https://stackoverflow.com/questions/64880479/a-regex-for-npm-or-any-other-package-both-for-name-and-any-version-number
-    return (cdsVersion as string)?.match(/@[~^]?([\dvx*]+(?:[-.](?:[\dx*]+|alpha|beta))*)/)?.[1];
 }
 
 /**

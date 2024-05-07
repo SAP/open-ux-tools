@@ -10,7 +10,8 @@ export {
     isCapNodeJsProject,
     getCapEnvironment,
     readCapServiceMetadataEdmx,
-    toReferenceUri
+    toReferenceUri,
+    getCdsVersionInfo
 } from './cap';
 export { getNodeModulesPath } from './dependencies';
 export { getCapI18nFolderNames, getI18nPropertiesPaths } from './i18n';

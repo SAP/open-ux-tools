@@ -33,6 +33,7 @@
         "@sap-ux/ui5-library-reference-writer": "workspace:*",
         "@sap-ux/environment-check": "workspace:*",
         "@sap-ux/fiori-generator-shared": "workspace:*",
+        "@sap-ux/yaml": "workspace:*",
         "i18next": "20.6.1",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",

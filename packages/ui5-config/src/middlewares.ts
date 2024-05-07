@@ -6,7 +6,9 @@ import type {
     MockserverConfig,
     FioriToolsProxyConfigUI5
 } from './types';
-import type { NodeComment } from '@sap-ux/yaml';
+import { type NodeComment, YamlDocument } from '@sap-ux/yaml';
+import type { Logger } from '@sap-ux/logger';
+import type { Editor } from 'mem-fs-editor';
 
 /**
  * Get the configuration for the AppReload middleware.
@@ -75,6 +77,36 @@ export function getFioriToolsProxyMiddlewareConfig(
     }
 
     return { config: fioriToolsProxy, comments };
+}
+
+/**
+ * Updates the ui5.yaml file for Node.js-based CAP projects with NPM workspaces enabled.
+ *
+ * @param {Editor} fs The file system editor instance.
+ * @param {string} yamlPath The path to the ui5.yaml file.
+ * @param {Logger} [logger] The logger instance for logging errors.
+ * @returns {void}
+ */
+export async function removeFioriToolsProxyAndAppReload(fs: Editor, yamlPath: string, logger?: Logger): Promise<void> {
+    try {
+        const yamlDocument = fs.read(yamlPath).toString();
+        const parsedYamlDocuments = await YamlDocument.newInstance(yamlDocument);
+        const doc = parsedYamlDocuments['documents'][0];
+        const server: any = doc.get('server');
+        // remove fiori tools proxy
+        server.customMiddleware = server.customMiddleware.filter(
+            (middleware: any) => middleware.name !== 'fiori-tools-proxy'
+        );
+        // remove config from appreload
+        const previewIdx = server.customMiddleware.findIndex(
+            (middleware: any) => middleware.name === 'fiori-tools-appreload'
+        );
+        delete server.customMiddleware[previewIdx]['configuration'];
+        doc.set('server', server);
+        fs.write(yamlPath, JSON.stringify(doc));
+    } catch (error) {
+        logger?.error(error);
+    }
 }
 
 export const getMockServerMiddlewareConfig = (

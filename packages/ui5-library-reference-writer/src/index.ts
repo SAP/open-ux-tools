@@ -3,9 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import {
     updateManifest,
-    updateYaml,
-    removeFioriToolsProxyAndAppReload,
-    updateStaticLocationsInApplicationYaml
+    updateYaml
 } from './helpers';
 import type { ReuseLibConfig } from './types';
 
@@ -30,5 +28,3 @@ async function generate(basePath: string, referenceLibraries: ReuseLibConfig[], 
 
 export { generate };
 export { ReuseLibConfig };
-export { removeFioriToolsProxyAndAppReload };
-export { updateStaticLocationsInApplicationYaml };

@@ -1,11 +1,12 @@
 {
     "info": {
-        "mockOnlyWarning": "This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock"
+        "capServiceName": "cap service name {{ capServiceName }}.",
+        "cdsUpdateInfo": "Update cds file with projectPath: {{ projectPath }}, annotationPath: {{ annotationPath }}, capService: {{ capService }}."
+    },
+    "warn": {
+        "cdsDKNotInstalled": "cds-dk version not installed, expected minimum cds version {{ minCdsVersion }} but received {{ cdsVersion } instead."
     },
     "error": {
-        "unsupportedOdataVersion": "OData Version of the specified service: {{ serviceVersion }}, is not supported by the template type: {{ templateType }}",
-        "unsupportedUI5Version": "Specified UI5 property '{{ versionProperty }}': {{ ui5Version }}, is not supported by the template type: {{ templateType }}. Please specify {{minRequiredUI5Version}} or above.",
-        "invalidUI5Version": "Specified UI5 property '{{ versionProperty }}': {{ ui5Version }}, is not a valid semantic version",
-        "missingRequiredProperty": "A property required for application generation is not specified: '{{ propertyName }}'."
+        "updateApplicationYaml": "Error occured while updating application yaml {{ error }}"
     }
 }

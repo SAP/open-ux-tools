@@ -1,6 +1,6 @@
 import type { CdsUi5PluginInfo } from '../cap-config/types';
 /** temporary use remove once available in @sap-ux/odata-service-inquirer  */
-export const MIN_CDS_SCRIPT_VERSION = '4.1.4';
+export const MIN_CDS_SCRIPT_VERSION = '6.8.2';
 export const DisableCacheParam = 'sap-ui-xx-viewCache=false';
 
 export enum CapType {

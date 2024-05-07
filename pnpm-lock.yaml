@@ -1974,12 +1974,18 @@ importers:
 
   packages/ui5-config:
     dependencies:
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@sap-ux/yaml':
         specifier: workspace:*
         version: link:../yaml
       lodash:
         specifier: 4.17.21
         version: 4.17.21
+      mem-fs-editor:
+        specifier: 9.4.0
+        version: 9.4.0(mem-fs@2.1.0)
       semver:
         specifier: 7.5.4
         version: 7.5.4
@@ -1987,6 +1993,9 @@ importers:
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
+      '@types/mem-fs-editor':
+        specifier: 7.0.1
+        version: 7.0.1
       '@types/semver':
         specifier: 7.5.2
         version: 7.5.2
@@ -2083,9 +2092,6 @@ importers:
       mem-fs-editor:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
-      yaml:
-        specifier: 2.4.2
-        version: 2.4.2
     devDependencies:
       '@types/fs-extra':
         specifier: 9.0.13
@@ -21697,6 +21703,7 @@ packages:
     resolution: {integrity: sha512-B3VqDZ+JAg1nZpaEmWtTXUlBneoGx6CPM9b0TENK6aoSu5t73dItudwdgmi6tHlIZZId4dZ9skcAQ2UbcyAeVA==}
     engines: {node: '>= 14'}
     hasBin: true
+    dev: true
 
   /yamljs@0.3.0:
     resolution: {integrity: sha512-C/FsVVhht4iPQYXOInoxUM/1ELSf9EsgKH34FofQOp6hwCPrW4vG4w5++TED3xRUo8gD7l0P1J1dLlDYzODsTQ==}
