@@ -52,7 +52,7 @@ export class BusinessObjectsService extends AdtService {
      * @returns A list of business object names.
      */
     private parseBOResponse(xml: string): BusinessObject[] {
-        const parsed = this.parseResponse(xml) as BusinessObjectSearchResponse;
+        const parsed = this.parseResponse<any>(xml);
 
         let boArray = [];
         if (parsed?.objectReferences?.objectReference) {
