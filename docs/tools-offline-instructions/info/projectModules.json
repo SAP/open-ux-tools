@@ -3,7 +3,10 @@
         "7.14.7"
     ],
     "@sap-ux/eslint-plugin-fiori-tools": [
-        "^0.3.1"
+        "^0.4.0"
+    ],
+    "@sap-ux/ui5-middleware-fe-mockserver": [
+        "2"
     ],
     "@sap/eslint-plugin-ui5-jsdocs": [
         "2.0.5"
@@ -18,6 +21,9 @@
         "1.96.60",
         "1.102.39",
         "1.108.27"
+    ],
+    "@sap/ux-ui5-tooling": [
+        "1"
     ],
     "@sapui5/ts-types": [
         "~1.108.0"
@@ -80,6 +86,9 @@
     "rimraf": [
         "^3.0.2",
         "3.0.2"
+    ],
+    "sqlite3": [
+        "^5"
     ],
     "typescript": [
         "^5.1.6"

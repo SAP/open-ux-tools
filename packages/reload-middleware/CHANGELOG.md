@@ -1,5 +1,13 @@
 # @sap-ux/reload-middleware
 
+## 0.1.5
+
+### Patch Changes
+
+-   9a32e102: fix preview reload on SBAS, by exposing livereload server port over url
+-   Updated dependencies [9a32e102]
+    -   @sap-ux/btp-utils@0.14.4
+
 ## 0.1.4
 
 ### Patch Changes

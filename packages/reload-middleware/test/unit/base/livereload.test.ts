@@ -1,3 +1,4 @@
+import * as appStudio from '@sap-ux/btp-utils';
 import { getLivereloadServer, getConnectLivereload } from '../../../src';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import livereload from 'livereload';
@@ -10,6 +11,13 @@ jest.mock('connect-livereload', () => ({
     __esModule: true,
     default: jest.fn()
 }));
+
+jest.mock('@sap-ux/btp-utils', () => {
+    return {
+        __esModule: true,
+        ...jest.requireActual('@sap-ux/btp-utils'),
+    };
+});
 
 describe('Livereload', () => {
     const livereloadSpy = jest.spyOn(livereload, 'createServer').mockImplementation((): any => {
@@ -76,6 +84,18 @@ describe('Connect Livereload', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        jest.restoreAllMocks();
+    });
+
+    test('connect-livereload on app studio', async () => {
+        jest.spyOn(appStudio, 'isAppStudio').mockReturnValue(true);
+        const exposeSpy = jest.spyOn(appStudio, 'exposePort').mockResolvedValue('http://example.com/');
+
+        await getConnectLivereload({ port: 12345 });
+
+        expect(connectLivereloadSpy).toHaveBeenCalledTimes(1);
+        expect(exposeSpy).toHaveBeenCalledWith(12345);
+        expect(connectLivereloadSpy).toHaveBeenCalledWith(expect.objectContaining({ port: 12345, src: 'http://example.com/livereload.js?snipver=1&port=443' }));
     });
 
     test('connect-livereload with default configuration', () => {

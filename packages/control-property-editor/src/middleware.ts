@@ -11,8 +11,9 @@ import {
     reloadApplication
 } from '@sap-ux-private/control-property-editor-common';
 
-import type { Action } from './actions';
 import { changeProperty } from './slice';
+
+type Action = ReturnType<typeof changeProperty>;
 
 /**
  * Communication between preview iframe and main application is realized through the communication middleware.
@@ -20,7 +21,7 @@ import { changeProperty } from './slice';
  * @param store - redux store
  * @returns Function
  */
-export const communicationMiddleware: Middleware<Dispatch<Action>> = (store: MiddlewareAPI) => {
+export const communicationMiddleware: Middleware<Dispatch<ExternalAction>> = (store: MiddlewareAPI) => {
     const { sendAction } = startPostMessageCommunication<ExternalAction>(
         function getTarget(): Window | undefined {
             let result;
@@ -46,10 +47,7 @@ export const communicationMiddleware: Middleware<Dispatch<Action>> = (store: Mid
                 }
                 case reloadApplication.type:
                 case deletePropertyChanges.type:
-                case selectControl.type: {
-                    sendAction(action);
-                    break;
-                }
+                case selectControl.type:
                 case addExtensionPoint.type: {
                     sendAction(action);
                     break;
