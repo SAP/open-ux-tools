@@ -361,7 +361,7 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
             ui5Version.default = true;
         }
         if (filterOptions?.includeMaintained === true && ui5VersionsOverview !== undefined) {
-            ui5Version.maintained = ui5VersionsOverview.some((v): Boolean | undefined =>
+            ui5Version.maintained = ui5VersionsOverview.some((v): boolean | undefined =>
                 v !== undefined
                     ? `${major(v.version)}.${minor(v.version)}` === `${major(ui5)}.${minor(ui5)}` &&
                       v.support === 'Maintenance'
