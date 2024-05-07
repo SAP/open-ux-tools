@@ -10,16 +10,10 @@
   },
   "references": [
     {
-      "path": "../logger"
-    },
-    {
       "path": "../project-access"
     },
     {
       "path": "../ui5-config"
-    },
-    {
-      "path": "../yaml"
     }
   ]
 }

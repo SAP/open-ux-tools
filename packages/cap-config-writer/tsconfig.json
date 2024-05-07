@@ -14,9 +14,6 @@
       "path": "../btp-utils"
     },
     {
-      "path": "../environment-check"
-    },
-    {
       "path": "../fiori-generator-shared"
     },
     {
@@ -27,12 +24,6 @@
     },
     {
       "path": "../project-access"
-    },
-    {
-      "path": "../ui5-library-reference-writer"
-    },
-    {
-      "path": "../yaml"
     }
   ]
 }
