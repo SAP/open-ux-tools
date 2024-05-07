@@ -795,7 +795,7 @@ describe('Generator Service', () => {
             .query({
                 referencedObject: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`
             })
-            .replyWithFile(200, join(__dirname, 'mockResponses/generatorConfigNoLink.xml'));
+            .replyWithFile(200, join(__dirname, 'mockResponses/generatorConfigNoLink1.xml'));
         await expect(
             provider.getUiServiceGenerator({
                 name: businessObjectName,
