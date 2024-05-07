@@ -1,5 +1,13 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.22.2
+
+### Patch Changes
+
+-   6684f851: fix(\*-writer): remove the incomplete JSDoc annotations
+-   Updated dependencies [6684f851]
+    -   @sap-ux/ui5-application-writer@0.26.10
+
 ## 0.22.1
 
 ### Patch Changes

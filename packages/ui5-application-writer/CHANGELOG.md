@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.26.10
+
+### Patch Changes
+
+-   6684f851: fix(\*-writer): remove the incomplete JSDoc annotations
+
 ## 0.26.9
 
 ### Patch Changes
