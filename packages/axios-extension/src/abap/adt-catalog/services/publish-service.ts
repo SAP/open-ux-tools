@@ -1,8 +1,5 @@
 import { AdtService } from './adt-service';
-import type { AdtCategory } from '../../types';
-import { XMLParser } from 'fast-xml-parser';
-
-const parser = new XMLParser();
+import type { AdtCategory, PublishResponse } from '../../types';
 
 /**
  *
@@ -43,10 +40,7 @@ export class PublishService extends AdtService {
      * @param bindingName - The name of the service binding.
      * @returns The response status message.
      */
-    public async publish(
-        type: string,
-        bindingName: string
-    ): Promise<{ SEVERITY: string; SHORT_TEXT: string; LONG_TEXT: string }> {
+    public async publish(type: string, bindingName: string): Promise<PublishResponse> {
         const content = this.buildServiceBindingContent(type, bindingName);
         const response = await this.post(`/publishjobs`, content, {
             headers: {
@@ -55,8 +49,7 @@ export class PublishService extends AdtService {
             }
         });
 
-        const data = parser.parse(response.data, true);
-        this.log.info('data: ' + JSON.stringify(data));
-        return data['asx:abap']['asx:values'].DATA;
+        const data = this.parseResponse(response.data);
+        return data['abap']['values']['DATA'];
     }
 }

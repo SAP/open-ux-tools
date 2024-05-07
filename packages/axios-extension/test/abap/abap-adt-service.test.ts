@@ -743,7 +743,6 @@ describe('Generator Service', () => {
             .replyWithFile(200, join(__dirname, 'mockResponses/generatorConfig.xml'));
         const generatorService = await provider.getAdtService<GeneratorService>(GeneratorService);
         const generatorConfig = await generatorService?.getUIServiceGeneratorConfig(businessObjectName);
-        console.log('genconfig: ' + generatorConfig);
         expect(generatorConfig?.id).toEqual('ui-service');
     });
 
@@ -784,8 +783,26 @@ describe('Generator Service', () => {
         const generationReponse = await gen?.generate(content, transport);
         expect(generationReponse.objectReference.uri).toEqual('/sap/bc/adt/businessservices/bindings/zui_banktp004_o4');
 
-        const lockGen = await provider.lockServiceBinding(generationReponse.objectReference.uri);
+        const lockGen = await provider.createLockServiceBindingGenerator(generationReponse.objectReference.uri);
         expect(() => lockGen.lockServiceBinding()).not.toThrow();
+    });
+
+    test('uiServiceGenerator with no links in response', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-3.xml'))
+            .get(AdtServices.GENERATOR)
+            .query({
+                referencedObject: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`
+            })
+            .replyWithFile(200, join(__dirname, 'mockResponses/generatorConfigNoLink.xml'));
+        await expect(
+            provider.getUiServiceGenerator({
+                name: businessObjectName,
+                description: 'test',
+                uri: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`
+            })
+        ).rejects.toThrowError();
     });
 });
 

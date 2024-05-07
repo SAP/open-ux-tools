@@ -1,12 +1,5 @@
 import { AdtService } from './adt-service';
-import type { AdtCategory } from '../../types';
-import { XMLParser, XMLValidator } from 'fast-xml-parser';
-
-export type BusinessObject = {
-    name: string;
-    uri: string;
-    description?: string;
-};
+import type { AdtCategory, BusinessObject, BusinessObjectSearchResponse } from '../../types';
 
 /**
  * BusinessObjectsService implements ADT requests to obtain the list of business objects.
@@ -59,19 +52,7 @@ export class BusinessObjectsService extends AdtService {
      * @returns A list of business object names.
      */
     private parseBOResponse(xml: string): BusinessObject[] {
-        if (XMLValidator.validate(xml) !== true) {
-            this.log.warn(`Invalid XML: ${xml}`);
-            return [];
-        }
-        const options = {
-            attributeNamePrefix: '',
-            ignoreAttributes: false,
-            ignoreNameSpace: true,
-            parseAttributeValue: true,
-            removeNSPrefix: true
-        };
-        const parser: XMLParser = new XMLParser(options);
-        const parsed = parser.parse(xml, true);
+        const parsed = this.parseResponse(xml) as BusinessObjectSearchResponse;
 
         let boArray = [];
         if (parsed?.objectReferences?.objectReference) {

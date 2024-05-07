@@ -133,3 +133,17 @@ export interface ArchiveFileNode {
 export type ArchiveFileNodeType = 'file' | 'folder';
 
 export type ArchiveFileContentType<T> = T extends 'file' ? string : T extends 'folder' ? ArchiveFileNode[] : never;
+
+export type BusinessObject = {
+    name: string;
+    uri: string;
+    description?: string;
+};
+
+export type BusinessObjectSearchResponse = {
+    objectReferences: {
+        objectReference: BusinessObject | BusinessObject[];
+    };
+};
+
+export type PublishResponse = { SEVERITY: string; SHORT_TEXT: string; LONG_TEXT: string };

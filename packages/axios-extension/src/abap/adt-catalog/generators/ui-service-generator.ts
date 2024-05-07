@@ -1,6 +1,6 @@
 import type { Logger } from '@sap-ux/logger';
 import type { GeneratorEntry } from './types';
-import type { BusinessObject } from '../services/businessobjects-service';
+import type { BusinessObject } from '../../types';
 import { AdtService } from '../services';
 
 /**
