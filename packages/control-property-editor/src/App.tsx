@@ -46,10 +46,10 @@ export default function App(appProps: AppProps): ReactElement {
 
     const [hideWarningDialog, setHideWarningDialog] = useLocalStorage('hide-warning-dialog', false);
     const [isWarningDialogVisible, setWarningDialogVisibility] = useState(() => hideWarningDialog !== true);
+    const [shouldShowDialogMessage, setShouldShowDialogMessage] = useState(false);
+    const [shouldHideIframe, setShouldHideIframe] = useState(false);
 
     const [isInitialized, setIsInitialized] = useState(false);
-    const [shouldShowDialogMessageForAdpProjects, setShouldShowDialogMessageForAdpProjects] = useState(false);
-    const [shouldHideIframeForAdpProjects, setShouldHideIframeForAdpProjects] = useState(false);
 
     const previewWidth = useSelector<RootState, string>(
         (state) => `${DEVICE_WIDTH_MAP.get(state.deviceType) ?? DEFAULT_DEVICE_WIDTH}px`
@@ -58,7 +58,6 @@ export default function App(appProps: AppProps): ReactElement {
     const fitPreview = useSelector<RootState, boolean>((state) => state.fitPreview ?? false);
     const windowSize = useWindowSize();
     const dialogMessage = useSelector<RootState, ShowMessage | undefined>((state) => state.dialogMessage);
-
     const containerRef = useCallback(
         (node) => {
             if (node === null) {
@@ -95,13 +94,13 @@ export default function App(appProps: AppProps): ReactElement {
     }
 
     function closeAdpWarningDialog(): void {
-        setShouldShowDialogMessageForAdpProjects(false);
+        setShouldShowDialogMessage(false);
     }
 
     useEffect(() => {
         if (dialogMessage && isAdpProject) {
-            setShouldShowDialogMessageForAdpProjects(true);
-            setShouldHideIframeForAdpProjects(dialogMessage.shouldHideIframe);
+            setShouldShowDialogMessage(true);
+            setShouldHideIframe(dialogMessage.shouldHideIframe);
         }
     }, [dialogMessage]);
 
@@ -112,7 +111,7 @@ export default function App(appProps: AppProps): ReactElement {
             </section>
             <section ref={containerRef} className="app-content">
                 <div className="app-canvas">
-                    {!shouldHideIframeForAdpProjects && (
+                    {!shouldHideIframe && (
                         <iframe
                             className="app-preview"
                             id="preview"
@@ -129,18 +128,18 @@ export default function App(appProps: AppProps): ReactElement {
             <section className="app-panel app-panel-right">
                 <PropertiesPanel />
             </section>
-            {isAdpProject && shouldHideIframeForAdpProjects && (
+            {isAdpProject && shouldHideIframe && (
                 <UIDialog
-                    hidden={!shouldShowDialogMessageForAdpProjects}
+                    hidden={!shouldShowDialogMessage}
                     dialogContentProps={{
                         title: t('TOOL_DISCLAIMER_TITLE'),
                         subText: dialogMessage?.message
                     }}
                 />
             )}
-            {isAdpProject && !shouldHideIframeForAdpProjects && (
+            {isAdpProject && !shouldHideIframe && (
                 <UIDialog
-                    hidden={!shouldShowDialogMessageForAdpProjects}
+                    hidden={!shouldShowDialogMessage}
                     dialogContentProps={{
                         title: t('TOOL_DISCLAIMER_TITLE'),
                         subText: dialogMessage?.message
