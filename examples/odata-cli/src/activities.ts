@@ -11,7 +11,6 @@ import {
     PublishService
 } from '@sap-ux/axios-extension';
 import { logger } from './types';
-import { XMLParser, XMLValidator } from 'fast-xml-parser';
 
 /**
  * Execute a sequence of test calls using the given provider.
@@ -185,28 +184,6 @@ export async function testDeployUndeployDTA(
 }
 
 /**
- * Parse an XML document for ATO (Adaptation Transport Organizer) settings.
- *
- * @param xml xml document containing ATO settings
- * @returns parsed ATO settings
- */
-function _parseResponse<T>(xml: string): T {
-    if (XMLValidator.validate(xml) !== true) {
-        this.log.warn(`Invalid XML: ${xml}`);
-        return {} as T;
-    }
-    const options = {
-        attributeNamePrefix: '',
-        ignoreAttributes: false,
-        ignoreNameSpace: true,
-        parseAttributeValue: true,
-        removeNSPrefix: true
-    };
-    const parser: XMLParser = new XMLParser(options);
-    return parser.parse(xml, true) as T;
-}
-
-/**
  * Test the UI service generation.
  *
  * @param provider instance of a service provider
@@ -226,8 +203,8 @@ export async function testUiServiceGenerator(
     }
 
     // Get BOs
-    const businesObjects = await provider.getAdtService<BusinessObjectsService>(BusinessObjectsService);
-    const bos = await businesObjects.getBusinessObjects();
+    const businessObjectsService = await provider.getAdtService<BusinessObjectsService>(BusinessObjectsService);
+    const bos = await businessObjectsService.getBusinessObjects();
     const bo = bos.find((bo) => bo.name === env.TEST_BO_NAME);
     logger.debug(bos.map((bo) => bo.name));
 
@@ -249,7 +226,7 @@ export async function testUiServiceGenerator(
 
     // Publish (including lock service binding)
     if (generatedRefs) {
-        const serviceLockGen = await provider.lockServiceBinding(generatedRefs.objectReference.uri);
+        const serviceLockGen = await provider.createLockServiceBindingGenerator(generatedRefs.objectReference.uri);
         try {
             await serviceLockGen.lockServiceBinding();
         } catch (error) {
