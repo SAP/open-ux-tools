@@ -1,5 +1,5 @@
 import { AdtService } from './adt-service';
-import type { AdtCategory, BusinessObject, BusinessObjectSearchResponse } from '../../types';
+import type { AdtCategory, BusinessObject } from '../../types';
 
 /**
  * BusinessObjectsService implements ADT requests to obtain the list of business objects.
