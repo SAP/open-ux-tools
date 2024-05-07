@@ -24,6 +24,6 @@ describe('index', () => {
         expect(reactSpy).toHaveBeenCalledTimes(1);
         expect(dispatchSpy).toHaveBeenCalledTimes(2);
         expect(dispatchSpy).nthCalledWith(1, setProjectScenario('APP_VARIANT'));
-        expect(dispatchSpy).nthCalledWith(2, initializeLivereload(8080));
+        expect(dispatchSpy).nthCalledWith(2, initializeLivereload({ port: 8080, url: undefined }));
     });
 });
