@@ -4,6 +4,7 @@ import { create } from 'mem-fs-editor';
 import { generate } from '../../../src';
 import type { AdpWriterConfig } from '../../../src/types';
 import { rimraf } from 'rimraf';
+import { migrateAdp } from '../../../src/writer';
 
 describe('ADP writer', () => {
     const fs = create(createStorage());
@@ -85,6 +86,11 @@ describe('ADP writer', () => {
                         ['package.json', 'ui5.yaml', 'ui5-deploy.yaml'].includes(file.basename)
                 )
             ).toMatchSnapshot();
+        });
+        test('migrate minimal config', async () => {
+            const projectDir = join(outputDir, 'minimal');
+            await migrateAdp(projectDir, config, fs);
+            expect(fs.dump(projectDir)).toMatchSnapshot();
         });
     });
 });
