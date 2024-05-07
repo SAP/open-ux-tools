@@ -1,0 +1,71 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Writing/manifest json files should remove ODataAnnotations from manifest json where annotations are defined as an array 1`] = `
+Object {
+  "": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/incident/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"ODataAnnotation\\"
+          ],
+          \\"odataVersion\\": \\"4.0\\"
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Writing/manifest json files should remove ODataAnnotations from manifest json where annotations are defined as an object 1`] = `
+Object {
+  "": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/incident/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotation\\": {
+            \\"ODataAnnotation\\": true
+          },
+          \\"odataVersion\\": \\"4.0\\"
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+  "../../../test-cap-package-sapux/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/incident/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"ODataAnnotation\\"
+          ],
+          \\"odataVersion\\": \\"4.0\\"
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;

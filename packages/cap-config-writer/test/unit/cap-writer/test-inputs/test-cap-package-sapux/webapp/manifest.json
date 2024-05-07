@@ -1,0 +1,14 @@
+{
+    "sap.app": {
+        "dataSources": {
+            "mainService": {
+              "uri": "/incident/",
+              "type": "OData",
+              "settings": {
+                "annotations": ["ODataAnnotation"],
+                "odataVersion": "4.0"
+              }
+            }
+          }
+    }
+}

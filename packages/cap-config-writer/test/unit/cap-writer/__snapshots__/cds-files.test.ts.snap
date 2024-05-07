@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`writes cds files correctly updates index cds correctly 1`] = `
+Object {
+  "../index.cds": Object {
+    "contents": "
+
+using from './testProject/annotations';",
+    "state": "modified",
+  },
+  "../testProject/annotations.cds": Object {
+    "contents": "using AdminService as service from '../../srv/admin-service';",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`writes cds files correctly updates index cds correctly 2`] = `
+Object {
+  "": Object {
+    "contents": "
+
+using from './testProject/annotations';",
+    "state": "modified",
+  },
+  "../testProject/annotations.cds": Object {
+    "contents": "using AdminService as service from '../../srv/admin-service';",
+    "state": "modified",
+  },
+}
+`;

@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Writing tsConfig and yaml files should update tsConfig files correctly 1`] = `
+Object {
+  "../../tsconfig.json": Object {
+    "contents": "{
+  \\"compilerOptions\\": {
+    \\"typeRoots\\": [
+      \\"./node_modules/@types\\",
+      \\"../../node_modules/@types\\"
+    ]
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Writing tsConfig and yaml files should update yaml files corectly 1`] = `
+Object {
+  "../tsconfig.json": Object {
+    "contents": "{
+  \\"compilerOptions\\": {
+    \\"typeRoots\\": [
+      \\"./node_modules/@types\\",
+      \\"../../node_modules/@types\\"
+    ]
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;

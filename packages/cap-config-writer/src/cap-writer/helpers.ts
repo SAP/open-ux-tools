@@ -1,4 +1,3 @@
-import { DisableCacheParam } from '../types/capTypes';
 import path from 'path';
 
 /**
@@ -28,6 +27,7 @@ export function getCDSTask(
     appId: string,
     useNPMWorkspaces: boolean = false
 ): { [x: string]: string } {
+    const DisableCacheParam = 'sap-ui-xx-viewCache=false';
     return {
         [`watch-${projectName}`]: `cds watch --open ${getCAPAppUriPath(
             projectName,

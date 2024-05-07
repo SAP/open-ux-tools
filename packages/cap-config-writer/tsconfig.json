@@ -23,6 +23,9 @@
       "path": "../logger"
     },
     {
+      "path": "../odata-service-inquirer"
+    },
+    {
       "path": "../project-access"
     },
     {

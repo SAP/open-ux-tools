@@ -8,10 +8,12 @@ import {
 import type { Editor } from 'mem-fs-editor';
 import { t } from '../i18n';
 import { join } from 'path';
-import { CapType, MIN_CDS_SCRIPT_VERSION, type CapService } from '../types/capTypes';
 import { enableCdsUi5Plugin, checkCdsUi5PluginEnabled, satisfiesMinCdsVersion } from '../cap-config';
 import { getCDSTask, toPosixPath } from './helpers';
 import type { Logger } from '@sap-ux/logger';
+import type { CapService, CapRuntime } from '@sap-ux/odata-service-inquirer';
+
+const minCdsVersion = '6.8.2';
 
 /**
  * Updates the scripts in the package json file with the provided scripts object.
@@ -51,7 +53,7 @@ async function updateScripts(
         const cdsScript = getCDSTask(projectName, appId, enableNPMWorkspaces ?? hasNPMworkspaces);
         updatePackageJsonWithScripts(fs, packageJsonPath, cdsScript);
     } else {
-        log?.warn(t('warn.cdsDKNotInstalled', { cdsVersion: cdsVersion ?? '', minCdsVersion: MIN_CDS_SCRIPT_VERSION }));
+        log?.warn(t('warn.cdsDKNotInstalled', { cdsVersion: cdsVersion ?? '', minCdsVersion: minCdsVersion }));
     }
 }
 
@@ -80,15 +82,14 @@ export async function updateRootPackageJsonCAP(
 ): Promise<void> {
     const packageJsonPath: string = getPackageJsonPath(capService.projectPath);
     const packageJson = getPackageJson(fs, packageJsonPath);
+    const capNodeType: CapRuntime = 'Node.js';
 
     if (enableNPMWorkspaces) {
         await enableCdsUi5Plugin(capService.projectPath, fs);
     }
-
-    if (capService?.capType === CapType.NODE_JS) {
+    if (capService?.capType === capNodeType) {
         await updateScripts(fs, packageJsonPath, projectName, appId, enableNPMWorkspaces, log);
     }
-
     if (sapux) {
         const capProjectPath = toPosixPath(
             join(capService.appPath ?? (await getCapCustomPaths(capService.projectPath)).app, projectName)

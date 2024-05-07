@@ -2,7 +2,7 @@ import { toReferenceUri } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import { t } from '../i18n';
 import { join } from 'path';
-import { type CapService } from '../types/capTypes';
+import { type CapService } from '@sap-ux/odata-service-inquirer';
 import { getAnnotationPath } from '@sap-ux/fiori-generator-shared';
 import type { Logger } from '@sap-ux/logger';
 import { toPosixPath } from './helpers';
