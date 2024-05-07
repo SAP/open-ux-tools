@@ -58,7 +58,9 @@ function enhanceDependencies(
 function enhanceScripts(fs: Editor, packageJson: Package): void {
     packageJson.scripts ||= {};
     packageJson.scripts['start-mock'] =
-        copyStartScript(packageJson.scripts.start) || `fiori run --config ./ui5-mock.yaml --open \"/\"`;
+        copyStartScript(packageJson.scripts.start) ??
+        packageJson.scripts['start-mock'] ??
+        `fiori run --config ./ui5-mock.yaml --open "/"`;
 }
 
 /**

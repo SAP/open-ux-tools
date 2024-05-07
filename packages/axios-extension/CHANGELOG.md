@@ -1,5 +1,18 @@
 # @sap-ux/axios-extension
 
+## 1.11.9
+
+### Patch Changes
+
+-   Updated dependencies [9a32e102]
+    -   @sap-ux/btp-utils@0.14.4
+
+## 1.11.8
+
+### Patch Changes
+
+-   56b77fd9: fix: isS4Cloud returned wrong value when checking a development client
+
 ## 1.11.7
 
 ### Patch Changes
