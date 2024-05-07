@@ -28,12 +28,44 @@ export function updateManifest(basePath: string, service: OdataService, fs: Edit
     }
 
     const manifestJsonExt = fs.read(join(templateRoot, 'extend', `manifest.json`));
-
     // If the service object includes ejs options, for example 'client' (see: https://ejs.co/#docs),
     // resulting in unexpected behaviour and problems when webpacking. Passing an empty options object prevents this.
     fs.extendJSON(manifestPath, JSON.parse(render(manifestJsonExt, service, {})));
 }
 
+/**
+ *
+ */
+export function updateExtendManifest(basePath: string, fs: Editor, templateRoot: string, service: OdataService) {
+    const manifestPath = join(basePath, 'webapp', 'manifest.json');
+    const testExtendManifestPath = join(templateRoot, 'extend', `manifest.json`);
+    const serviceData = {
+        name: service.name,
+        path: service.path,
+        version: service.version,
+        model: service.model
+    };
+    const parsedExtend = JSON.parse(render(fs.read(testExtendManifestPath), { ...serviceData }));
+    const manifest = fs.readJSON(manifestPath);
+
+    const ui5Model = parsedExtend?.['sap.ui5']?.models;
+    // const appid = parsedExtend?.['sap.app']?.id;
+
+    // starting with UI5 v1.110.0, synchronizationMode should be deleted in the manifest for V4 apps.
+    const ui5Version = semVer.coerce(manifest?.['sap.ui5']?.dependencies?.minUI5Version);
+    const odataVersion = parsedExtend?.['sap.app']?.dataSources?.[serviceData.name].settings?.odataVersion;
+    if (!ui5Version || (semVer.gte(ui5Version, '1.110.0') && odataVersion === '4.0')) {
+        delete ui5Model?.[serviceData.model].settings.synchronizationMode;
+        // const { synchronizationMode, ...settings } = ui5Model?.settings;
+    }
+    // const manifestJsonTemplate = fs.read(join(templateRoot, 'extend', `manifest.json`));
+    // const renderedManifestJson = render(manifestJsonTemplate, {
+    //     ...serviceData
+    // });
+
+    // const manifestJsonExt = JSON.parse(renderedManifestJson);
+    fs.extendJSON(manifestPath, parsedExtend);
+}
 /**
  * Update the package.json with the required middlewares.
  *

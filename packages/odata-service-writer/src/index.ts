@@ -2,7 +2,7 @@ import { join, dirname, sep } from 'path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { updateManifest, updatePackageJson } from './updates';
+import { updateExtendManifest, updateManifest, updatePackageJson } from './updates';
 import type { FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
 import { UI5Config, yamlErrorCode, YAMLError } from '@sap-ux/ui5-config';
 import prettifyXml from 'prettify-xml';
@@ -100,6 +100,8 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     // merge content into existing files
     const templateRoot = join(__dirname, '../templates');
 
+    // update template
+    updateExtendManifest(basePath, fs, templateRoot, service);
     // manifest.json
     updateManifest(basePath, service, fs, templateRoot);
 
