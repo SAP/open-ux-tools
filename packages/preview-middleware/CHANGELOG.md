@@ -1,5 +1,22 @@
 # @sap-ux/preview-middleware
 
+## 0.13.27
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+-   Updated dependencies [4e267684]
+    -   @sap-ux/adp-tooling@0.9.26
+
+## 0.13.26
+
+### Patch Changes
+
+-   9a32e102: fix preview reload on SBAS, by exposing livereload server port over url
+-   Updated dependencies [9a32e102]
+    -   @sap-ux/btp-utils@0.14.4
+    -   @sap-ux/adp-tooling@0.9.25
+
 ## 0.13.25
 
 ### Patch Changes

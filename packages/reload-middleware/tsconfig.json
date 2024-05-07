@@ -11,7 +11,10 @@
   },
   "references": [
     {
-      "path": "../logger"
+      "path": "../btp-utils"
     },
+    {
+      "path": "../logger"
+    }
   ]
 }
