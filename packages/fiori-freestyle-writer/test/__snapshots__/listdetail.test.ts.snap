@@ -8069,7 +8069,7 @@ archive.zip
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"eslint\\": \\"8.57.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
-    \\"@sapui5/ts-types-esm\\": \\"~1.76.0\\",
+    \\"@sapui5/ts-types\\": \\"~1.76.0\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
     \\"eslint-plugin-fiori-custom\\": \\"2.6.7\\",
     \\"@babel/eslint-parser\\": \\"7.14.7\\",
@@ -8097,10 +8097,11 @@ archive.zip
         \\"checkJs\\": true,
         \\"allowJs\\": true,
         \\"types\\": [
-            \\"@sapui5/ts-types-esm\\"
+            \\"@sapui5/ts-types\\"
         ]
     }
-}",
+}
+",
     "state": "modified",
   },
   "ui5-local.yaml": Object {
