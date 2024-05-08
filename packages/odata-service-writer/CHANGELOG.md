@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.17.2
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+
 ## 0.17.1
 
 ### Patch Changes

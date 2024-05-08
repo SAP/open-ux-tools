@@ -1,5 +1,23 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.19.3
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+-   Updated dependencies [4e267684]
+    -   @sap-ux/fe-fpm-writer@0.24.11
+    -   @sap-ux/odata-service-writer@0.17.2
+    -   @sap-ux/ui5-application-writer@0.26.11
+    -   @sap-ux/ui5-test-writer@0.3.3
+
+## 0.19.2
+
+### Patch Changes
+
+-   Updated dependencies [6684f851]
+    -   @sap-ux/ui5-application-writer@0.26.10
+
 ## 0.19.1
 
 ### Patch Changes

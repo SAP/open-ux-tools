@@ -1,5 +1,11 @@
 # @sap-ux/app-config-writer
 
+## 0.3.56
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+
 ## 0.3.55
 
 ### Patch Changes
