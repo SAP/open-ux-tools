@@ -1,0 +1,8 @@
+Common: {
+    SideEffects  : {
+        $Type : 'Common.SideEffectsType',
+        TargetProperties : [
+            'category/*',
+        ],
+    }
+}

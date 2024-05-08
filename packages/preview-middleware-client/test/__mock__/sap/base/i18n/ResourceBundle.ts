@@ -1,5 +1,6 @@
 export const mockBundle = {
-    getText: jest.fn()
+    getText: jest.fn(),
+    hasText: jest.fn()
 };
 
 export default {

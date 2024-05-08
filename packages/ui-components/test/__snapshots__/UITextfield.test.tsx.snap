@@ -22,6 +22,7 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
+      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
@@ -127,6 +128,7 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
+      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
@@ -232,6 +234,7 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
+      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
@@ -337,6 +340,7 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
+      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
@@ -435,6 +439,7 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
+      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
@@ -533,6 +538,7 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
+      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
@@ -631,6 +637,7 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
+      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
@@ -729,6 +736,7 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
+      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
@@ -829,6 +837,7 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
+      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
@@ -938,6 +947,7 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
+      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
@@ -1036,6 +1046,7 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
+      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
@@ -1134,6 +1145,7 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
+      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
@@ -1241,6 +1253,7 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
+      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {

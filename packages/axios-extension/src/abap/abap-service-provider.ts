@@ -16,8 +16,6 @@ import { AdtService, AtoService } from './adt-catalog/services';
  * Extension of the service provider for ABAP services.
  */
 export class AbapServiceProvider extends ServiceProvider {
-    public s4Cloud: boolean | undefined;
-
     protected atoSettings: AtoSettings;
 
     /**
@@ -91,21 +89,15 @@ export class AbapServiceProvider extends ServiceProvider {
      * @returns true if it an S/4HANA cloud system
      */
     public async isS4Cloud(): Promise<boolean> {
-        if (this.s4Cloud === undefined) {
-            try {
-                const settings = await this.getAtoInfo();
-                this.s4Cloud =
-                    settings.tenantType === TenantType.Customer &&
-                    settings.operationsType === 'C' &&
-                    settings.isExtensibilityDevelopmentSystem === true &&
-                    settings.developmentPrefix !== '' &&
-                    settings.developmentPackage !== '';
-            } catch (error) {
-                this.log.warn('Failed to detect whether this is an SAP S/4HANA Cloud system or not.');
-                this.s4Cloud = false;
-            }
+        if (this.atoSettings === undefined) {
+            await this.getAtoInfo();
         }
-        return this.s4Cloud;
+        return (
+            this.atoSettings.tenantType === TenantType.Customer &&
+            this.atoSettings.operationsType === 'C' &&
+            this.atoSettings.developmentPrefix !== '' &&
+            this.atoSettings.developmentPackage !== ''
+        );
     }
 
     /**
@@ -183,16 +175,15 @@ export class AbapServiceProvider extends ServiceProvider {
     /**
      * Create or get an existing instance of design time adaptation service.
      *
+     * @param alias - optional alias path on which the LREP service is exposed
      * @returns an instance of the design time adaptation service.
      */
-    public getLayeredRepository(): LayeredRepositoryService {
-        if (!this.services[LayeredRepositoryService.PATH]) {
-            this.services[LayeredRepositoryService.PATH] = this.createService<LayeredRepositoryService>(
-                LayeredRepositoryService.PATH,
-                LayeredRepositoryService
-            );
+    public getLayeredRepository(alias?: string): LayeredRepositoryService {
+        const path = alias ?? LayeredRepositoryService.PATH;
+        if (!this.services[path]) {
+            this.services[path] = this.createService<LayeredRepositoryService>(path, LayeredRepositoryService);
         }
-        return this.services[LayeredRepositoryService.PATH] as LayeredRepositoryService;
+        return this.services[path] as LayeredRepositoryService;
     }
 
     /**

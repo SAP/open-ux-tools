@@ -1,5 +1,5 @@
 import type {
-    AbapApp,
+    BspApp,
     AbapTarget,
     Configuration,
     CustomItem,
@@ -9,7 +9,10 @@ import type {
     FioriToolsProxyConfigBackend,
     FioriToolsProxyConfigUI5,
     Resources,
-    Ui5Document
+    Ui5Document,
+    Adp,
+    MockserverConfig,
+    ServeStaticPath
 } from './types';
 import type { NodeComment, YAMLMap, YAMLSeq } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
@@ -18,6 +21,7 @@ import {
     getFioriToolsProxyMiddlewareConfig,
     getMockServerMiddlewareConfig
 } from './middlewares';
+import { fioriToolsProxy, serveStatic } from './constants';
 
 /**
  * Represents a UI5 config file in yaml format (ui5(-*).yaml) with utility functions to manipulate the yaml document.
@@ -96,6 +100,41 @@ export class UI5Config {
     public setType(value: Ui5Document['type']): UI5Config {
         this.document.setIn({ path: 'type', value });
         return this;
+    }
+
+    /**
+     * Add a custom configuration to the yaml.
+     *
+     * @param key key/name of the custom property
+     * @param value the properties value
+     */
+    public addCustomConfiguration(key: string, value: object | string) {
+        try {
+            const configNode = this.document.getMap({ path: 'customConfiguration' });
+            configNode.setIn([key], value);
+        } catch (_error) {
+            this.document.setIn({
+                path: 'customConfiguration',
+                value: {
+                    [key]: value
+                }
+            });
+        }
+    }
+
+    /**
+     * Get a custom configuration from the yaml.
+     *
+     * @param key key/name of the custom property
+     * @returns the value of the property or undefined
+     */
+    public getCustomConfiguration(key: string): object | string | undefined {
+        try {
+            const node = this.document.getMap({ path: 'customConfiguration' }).get(key) as YAMLMap | undefined;
+            return node?.toJSON?.() ?? node?.toString();
+        } catch (_error) {
+            return undefined;
+        }
     }
 
     /**
@@ -201,10 +240,7 @@ export class UI5Config {
      */
     public addBackendToFioriToolsProxydMiddleware(backend: FioriToolsProxyConfigBackend): UI5Config {
         const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
-        const proxyMiddleware = this.document.findItem(
-            middlewareList,
-            (item: any) => item.name === 'fiori-tools-proxy'
-        );
+        const proxyMiddleware = this.document.findItem(middlewareList, (item: any) => item.name === fioriToolsProxy);
         if (!proxyMiddleware) {
             throw new Error('Could not find fiori-tools-proxy');
         }
@@ -221,10 +257,7 @@ export class UI5Config {
      */
     public addUi5ToFioriToolsProxydMiddleware(ui5: FioriToolsProxyConfigUI5): UI5Config {
         const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
-        const proxyMiddleware = this.document.findItem(
-            middlewareList,
-            (item: any) => item.name === 'fiori-tools-proxy'
-        );
+        const proxyMiddleware = this.document.findItem(middlewareList, (item: any) => item.name === fioriToolsProxy);
         if (!proxyMiddleware) {
             throw new Error('Could not find fiori-tools-proxy');
         }
@@ -237,13 +270,14 @@ export class UI5Config {
      * Adds a instance of the mockserver middleware to the config.
      *
      * @param path option path that is to be mocked
+     * @param annotationsConfig optional annotations config that is to be mocked
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addMockServerMiddleware(path?: string): UI5Config {
+    public addMockServerMiddleware(path?: string, annotationsConfig?: MockserverConfig['annotations']): this {
         this.document.appendTo({
             path: 'server.customMiddleware',
-            value: getMockServerMiddlewareConfig(path)
+            value: getMockServerMiddlewareConfig(path, annotationsConfig)
         });
         return this;
     }
@@ -253,20 +287,23 @@ export class UI5Config {
      *
      * @param target system that this app is to be deployed to
      * @param app application configuration for the deployment to ABAP
-     * @returns {UI5Config} the UI5Config instance
+     * @param fioriTools if true use the middleware included in the @sap/ux-ui5-tooling module
+     * @returns this UI5Config instance
      * @memberof UI5Config
      */
-    public addAbapDeployTask(target: AbapTarget, app: AbapApp): UI5Config {
+    public addAbapDeployTask(target: AbapTarget, app: BspApp | Adp, fioriTools = true) {
         this.document.appendTo({
-            path: 'builder.resources',
-            value: {
-                excludes: ['/test/**', '/localService/**']
-            }
+            path: 'builder.resources.excludes',
+            value: '/test/**'
+        });
+        this.document.appendTo({
+            path: 'builder.resources.excludes',
+            value: '/localService/**'
         });
         this.document.appendTo({
             path: 'builder.customTasks',
             value: {
-                name: 'deploy-to-abap',
+                name: fioriTools ? 'deploy-to-abap' : 'abap-deploy-task',
                 afterTask: 'generateCachebusterInfo',
                 configuration: { target, app }
             }
@@ -369,6 +406,89 @@ export class UI5Config {
         } else {
             this.addCustomMiddleware([middleware]);
         }
+        return this;
+    }
+
+    /**
+     * Merges existing custom middleware with the passed config.
+     *
+     * @param middleware - middleware config
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    private mergeCustomMiddleware(middleware: CustomMiddleware<unknown>): this {
+        const name = middleware.name;
+        if (this.findCustomMiddleware(name)) {
+            this.document.updateAt({
+                path: 'server.customMiddleware',
+                matcher: { key: 'name', value: name },
+                value: middleware,
+                mode: 'merge'
+            });
+        }
+        return this;
+    }
+
+    /**
+     * Returns the serve static config.
+     *
+     * @param addFioriToolProxy - if true, `fiori-tools-proxy` config is added, otherwise a `compression` config will be added
+     * @param paths - serve static paths for the reuse libraries
+     * @returns the serve static middleware config
+     */
+    private getServeStaticConfig(
+        addFioriToolProxy: boolean,
+        paths: ServeStaticPath[]
+    ): CustomMiddleware<{ paths: ServeStaticPath[] }> {
+        return addFioriToolProxy
+            ? {
+                  name: serveStatic,
+                  beforeMiddleware: fioriToolsProxy,
+                  configuration: {
+                      paths: paths
+                  }
+              }
+            : {
+                  name: serveStatic,
+                  afterMiddleware: 'compression',
+                  configuration: {
+                      paths: paths
+                  }
+              };
+    }
+
+    /**
+     * Adds or updates the serve static middleware in the config.
+     *
+     * @param serveStaticPaths serve static paths for the reuse libraries
+     * @returns {UI5Config} the UI5Config instance
+     */
+    public addServeStaticConfig(serveStaticPaths: ServeStaticPath[]): this {
+        const serveStaticConfig = this.findCustomMiddleware<{ paths: ServeStaticPath[] }>(serveStatic);
+        const fioriToolsProxyConfig = this.findCustomMiddleware(fioriToolsProxy);
+
+        if (serveStaticConfig) {
+            if (serveStaticConfig.afterMiddleware === 'compression' && fioriToolsProxyConfig) {
+                this.updateCustomMiddleware({
+                    name: serveStatic,
+                    beforeMiddleware: fioriToolsProxy,
+                    configuration: {
+                        paths: [...serveStaticConfig.configuration.paths, ...serveStaticPaths]
+                    }
+                });
+            } else {
+                this.mergeCustomMiddleware({
+                    name: serveStatic,
+                    configuration: {
+                        paths: [...serveStaticConfig.configuration.paths, ...serveStaticPaths]
+                    }
+                });
+            }
+        } else {
+            const serveStaticConfig = this.getServeStaticConfig(!!fioriToolsProxyConfig, serveStaticPaths);
+            this.addCustomMiddleware([serveStaticConfig]);
+        }
+
         return this;
     }
 

@@ -11,7 +11,8 @@ import { UIIcon } from '../UIIcon';
 import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
 import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
-import { isDropdownEmpty } from './utils';
+import { isDropdownEmpty, getCalloutCollisionTransformationProps } from './utils';
+import { CalloutCollisionTransform } from '../UICallout';
 
 import './UIDropdown.scss';
 
@@ -19,11 +20,27 @@ export { IDropdownOption as UIDropdownOption };
 export { DropdownMenuItemType as UIDropdownMenuItemType };
 
 export interface UIDropdownProps extends IDropdownProps, UIMessagesExtendedProps {
+    /**
+     * An optional callback function to handle change.
+     *
+     * @param option - The selected option.
+     * @param index - The index of the selected option.
+     */
     onHandleChange?(option: IDropdownOption, index: number): void;
+    /**
+     * An optional callback function to handle open event.
+     */
     onHandleOpen?(): void;
+    /**
+     * An optional callback function to render the title of the dropdown.
+     *
+     * @param items - The options of the dropdown.
+     * @returns The JSX element representing the title.
+     */
     onHandleRenderTitle?(items: IDropdownOption[] | undefined): JSX.Element;
     useDropdownAsMenuMinWidth?: boolean;
     readOnly?: boolean;
+    calloutCollisionTransformation?: boolean;
 }
 
 export interface UIDropdownState {
@@ -44,6 +61,10 @@ const ERROR_BORDER_COLOR = 'var(--vscode-inputValidation-errorBorder)';
  * @extends {React.Component<UIDropdownProps, UIDropdownState>}
  */
 export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState> {
+    private dropdownDomRef = React.createRef<HTMLDivElement>();
+    private menuDomRef = React.createRef<HTMLDivElement>();
+    private calloutCollisionTransform = new CalloutCollisionTransform(this.dropdownDomRef, this.menuDomRef);
+
     /**
      * Initializes component properties.
      *
@@ -77,14 +98,17 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
     };
 
     onClick = (/* event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number */): void => {
-        this.setState({ isOpen: !this.state.isOpen }, () => {
-            if (this.props.multiSelect && this.props.onHandleOpen) {
-                if (this.state.isOpen) {
-                    this.setState({ isOpen: !this.state.isOpen });
-                    this.props.onHandleOpen();
+        this.setState(
+            (prevState) => ({ isOpen: !prevState.isOpen }),
+            () => {
+                if (this.props.multiSelect && this.props.onHandleOpen) {
+                    if (this.state.isOpen) {
+                        this.setState((prevState) => ({ isOpen: !prevState.isOpen }));
+                        this.props.onHandleOpen();
+                    }
                 }
             }
-        });
+        );
     };
 
     onChange = (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number): void => {
@@ -254,10 +278,19 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
 
         return (
             <Dropdown
+                ref={this.dropdownDomRef}
                 calloutProps={{
                     calloutMaxHeight: 200,
                     styles: this.props.useDropdownAsMenuMinWidth ? this.getCalloutStylesForUseAsMinWidth : undefined,
-                    className: 'ts-Callout ts-Callout-Dropdown'
+                    className: 'ts-Callout ts-Callout-Dropdown',
+                    popupProps: {
+                        ref: this.menuDomRef
+                    },
+                    ...getCalloutCollisionTransformationProps(
+                        this.calloutCollisionTransform,
+                        this.props.multiSelect,
+                        this.props.calloutCollisionTransformation
+                    )
                 }}
                 onRenderCaretDown={this.onRenderCaretDown}
                 onClick={this.onClick}

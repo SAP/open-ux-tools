@@ -1,5 +1,362 @@
 # @sap-ux/ui5-library-writer
 
+## 0.3.37
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+-   Updated dependencies [4e267684]
+    -   @sap-ux/ui5-application-writer@0.26.11
+
+## 0.3.36
+
+### Patch Changes
+
+-   Updated dependencies [6684f851]
+    -   @sap-ux/ui5-application-writer@0.26.10
+
+## 0.3.35
+
+### Patch Changes
+
+-   Updated dependencies [7f8105c7]
+    -   @sap-ux/ui5-config@0.22.3
+    -   @sap-ux/project-access@1.19.14
+    -   @sap-ux/ui5-application-writer@0.26.9
+
+## 0.3.34
+
+### Patch Changes
+
+-   Updated dependencies [99bca62c]
+    -   @sap-ux/project-access@1.19.13
+    -   @sap-ux/ui5-application-writer@0.26.8
+
+## 0.3.33
+
+### Patch Changes
+
+-   Updated dependencies [b7d95fb3]
+    -   @sap-ux/project-access@1.19.12
+    -   @sap-ux/ui5-config@0.22.2
+    -   @sap-ux/ui5-application-writer@0.26.8
+
+## 0.3.32
+
+### Patch Changes
+
+-   Updated dependencies [4389c528]
+    -   @sap-ux/project-access@1.19.11
+    -   @sap-ux/ui5-application-writer@0.26.7
+
+## 0.3.31
+
+### Patch Changes
+
+-   Updated dependencies [f8e16120]
+    -   @sap-ux/project-access@1.19.10
+    -   @sap-ux/ui5-application-writer@0.26.7
+
+## 0.3.30
+
+### Patch Changes
+
+-   Updated dependencies [ee76e47f]
+    -   @sap-ux/project-access@1.19.9
+    -   @sap-ux/ui5-application-writer@0.26.7
+
+## 0.3.29
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.19.8
+-   @sap-ux/ui5-application-writer@0.26.7
+
+## 0.3.28
+
+### Patch Changes
+
+-   Updated dependencies [98496d57]
+-   Updated dependencies [e3d2e003]
+    -   @sap-ux/project-access@1.19.7
+    -   @sap-ux/ui5-application-writer@0.26.7
+
+## 0.3.27
+
+### Patch Changes
+
+-   da0ecd9a: Enable Typscript type checking in eslint module @sap-ux/eslint-plugin-fiori-tools
+-   Updated dependencies [da0ecd9a]
+    -   @sap-ux/ui5-application-writer@0.26.7
+
+## 0.3.26
+
+### Patch Changes
+
+-   Updated dependencies [f0e3263a]
+    -   @sap-ux/project-access@1.19.6
+    -   @sap-ux/ui5-application-writer@0.26.6
+
+## 0.3.25
+
+### Patch Changes
+
+-   Updated dependencies [efa35ddd]
+    -   @sap-ux/ui5-config@0.22.1
+    -   @sap-ux/project-access@1.19.5
+    -   @sap-ux/ui5-application-writer@0.26.6
+
+## 0.3.24
+
+### Patch Changes
+
+-   Updated dependencies [87c942e5]
+    -   @sap-ux/project-access@1.19.4
+    -   @sap-ux/ui5-application-writer@0.26.5
+
+## 0.3.23
+
+### Patch Changes
+
+-   Updated dependencies [89013210]
+    -   @sap-ux/project-access@1.19.3
+    -   @sap-ux/ui5-application-writer@0.26.5
+
+## 0.3.22
+
+### Patch Changes
+
+-   Updated dependencies [ec509c40]
+    -   @sap-ux/ui5-config@0.22.0
+    -   @sap-ux/project-access@1.19.2
+    -   @sap-ux/ui5-application-writer@0.26.5
+
+## 0.3.21
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.19.1
+-   @sap-ux/ui5-application-writer@0.26.4
+
+## 0.3.20
+
+### Patch Changes
+
+-   4b29ddcc: Update TypeScript templates, eslint config and ui5 devDependencies
+-   Updated dependencies [4b29ddcc]
+    -   @sap-ux/ui5-application-writer@0.26.4
+
+## 0.3.19
+
+### Patch Changes
+
+-   Updated dependencies [a4f00f7c]
+    -   @sap-ux/project-access@1.19.0
+    -   @sap-ux/ui5-application-writer@0.26.3
+
+## 0.3.18
+
+### Patch Changes
+
+-   Updated dependencies [e6da2117]
+    -   @sap-ux/project-access@1.18.0
+    -   @sap-ux/ui5-application-writer@0.26.3
+
+## 0.3.17
+
+### Patch Changes
+
+-   Updated dependencies [c381d32f]
+    -   @sap-ux/project-access@1.17.6
+    -   @sap-ux/ui5-application-writer@0.26.3
+
+## 0.3.16
+
+### Patch Changes
+
+-   Updated dependencies [33ec9ff9]
+    -   @sap-ux/project-access@1.17.5
+    -   @sap-ux/ui5-application-writer@0.26.3
+
+## 0.3.15
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/ui5-application-writer@0.26.3
+    -   @sap-ux/project-access@1.17.4
+    -   @sap-ux/ui5-config@0.21.1
+
+## 0.3.14
+
+### Patch Changes
+
+-   Updated dependencies [2eda843d]
+    -   @sap-ux/project-access@1.17.3
+    -   @sap-ux/ui5-application-writer@0.26.2
+
+## 0.3.13
+
+### Patch Changes
+
+-   Updated dependencies [76ce5c2f]
+    -   @sap-ux/project-access@1.17.2
+    -   @sap-ux/ui5-application-writer@0.26.2
+
+## 0.3.12
+
+### Patch Changes
+
+-   Updated dependencies [86da13e3]
+    -   @sap-ux/project-access@1.17.1
+    -   @sap-ux/ui5-application-writer@0.26.2
+
+## 0.3.11
+
+### Patch Changes
+
+-   Updated dependencies [236146b4]
+    -   @sap-ux/project-access@1.17.0
+    -   @sap-ux/ui5-application-writer@0.26.2
+
+## 0.3.10
+
+### Patch Changes
+
+-   Updated dependencies [e6f454ab]
+    -   @sap-ux/project-access@1.16.3
+    -   @sap-ux/ui5-application-writer@0.26.2
+
+## 0.3.9
+
+### Patch Changes
+
+-   Updated dependencies [d5b99a28]
+    -   @sap-ux/project-access@1.16.2
+    -   @sap-ux/ui5-application-writer@0.26.2
+
+## 0.3.8
+
+### Patch Changes
+
+-   Updated dependencies [20a4dbfc]
+    -   @sap-ux/project-access@1.16.1
+    -   @sap-ux/ui5-application-writer@0.26.2
+
+## 0.3.7
+
+### Patch Changes
+
+-   Updated dependencies [f7382bd1]
+    -   @sap-ux/project-access@1.16.0
+    -   @sap-ux/ui5-application-writer@0.26.2
+
+## 0.3.6
+
+### Patch Changes
+
+-   Updated dependencies [f11f9b2c]
+    -   @sap-ux/project-access@1.15.5
+    -   @sap-ux/ui5-application-writer@0.26.2
+
+## 0.3.5
+
+### Patch Changes
+
+-   Updated dependencies [3f977f21]
+    -   @sap-ux/ui5-config@0.21.0
+    -   @sap-ux/project-access@1.15.4
+    -   @sap-ux/ui5-application-writer@0.26.1
+
+## 0.3.4
+
+### Patch Changes
+
+-   Updated dependencies [a82759be]
+    -   @sap-ux/project-access@1.15.3
+    -   @sap-ux/ui5-application-writer@0.26.0
+
+## 0.3.3
+
+### Patch Changes
+
+-   Updated dependencies [d7d52155]
+    -   @sap-ux/project-access@1.15.2
+    -   @sap-ux/ui5-application-writer@0.26.0
+
+## 0.3.2
+
+### Patch Changes
+
+-   Updated dependencies [e4821c0f]
+    -   @sap-ux/project-access@1.15.1
+    -   @sap-ux/ui5-application-writer@0.26.0
+
+## 0.3.1
+
+### Patch Changes
+
+-   Updated dependencies [b458bf43]
+    -   @sap-ux/project-access@1.15.0
+    -   @sap-ux/ui5-application-writer@0.26.0
+
+## 0.3.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/ui5-application-writer@0.26.0
+    -   @sap-ux/project-access@1.14.0
+    -   @sap-ux/ui5-config@0.20.0
+
+## 0.2.13
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+-   Updated dependencies [cbcad88d]
+    -   @sap-ux/ui5-application-writer@0.25.10
+
+## 0.2.12
+
+### Patch Changes
+
+-   4087bffb: Allow more flexible @types type loading for TypeScript generate projects
+-   Updated dependencies [4087bffb]
+    -   @sap-ux/ui5-application-writer@0.25.9
+
+## 0.2.11
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.19.5
+-   @sap-ux/project-access@1.13.8
+-   @sap-ux/ui5-application-writer@0.25.8
+
+## 0.2.10
+
+### Patch Changes
+
+-   Updated dependencies [65010b09]
+    -   @sap-ux/ui5-application-writer@0.25.7
+    -   @sap-ux/ui5-config@0.19.4
+    -   @sap-ux/project-access@1.13.7
+
+## 0.2.9
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/project-access@1.13.6
+    -   @sap-ux/ui5-application-writer@0.25.6
+    -   @sap-ux/ui5-config@0.19.3
+
 ## 0.2.8
 
 ### Patch Changes

@@ -1,10 +1,11 @@
 import Log from 'sap/base/Log';
 import type AppLifeCycle from 'sap/ushell/services/AppLifeCycle';
-import type { RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
+import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
+import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
-import UriParameters from 'sap/base/util/UriParameters';
-
+import AppState from 'sap/ushell/services/AppState';
+import type Localization from 'sap/base/i18n/Localization';
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
  */
@@ -58,7 +59,7 @@ function addKeys(dependency: Record<string, unknown>, customLibs: Record<string,
  * @param appUrls urls pointing to included applications
  * @returns Promise of a comma separated list of all required libraries.
  */
-function getManifestLibs(appUrls: string[]): Promise<string> {
+async function getManifestLibs(appUrls: string[]): Promise<string> {
     const result = {} as Record<string, true>;
     const promises = [];
     for (const url of appUrls) {
@@ -120,21 +121,40 @@ function registerModules(
 }
 
 /**
+ * Fetch the app state from the given application urls, then reset the app state.
+ *
+ * @param container the UShell container
+ */
+export async function resetAppState(container: typeof sap.ushell.Container): Promise<void> {
+    const appStateService = await container.getServiceAsync<AppState>('AppState');
+    const urlParams = new URLSearchParams(window.location.hash);
+    const appStateValue = urlParams.get('sap-iapp-state') ?? urlParams.get('/?sap-iapp-state');
+    if (appStateValue) {
+        appStateService.deleteAppState(appStateValue);
+    }
+}
+
+/**
  * Fetch the manifest from the given application urls, then parse them for custom libs, and finally request their urls.
  *
  * @param appUrls application urls
+ * @param urlParams URLSearchParams object
  * @returns returns a promise when the registration is completed.
  */
-export async function registerComponentDependencyPaths(appUrls: string[]): Promise<void> {
+export async function registerComponentDependencyPaths(appUrls: string[], urlParams: URLSearchParams): Promise<void> {
     const libs = await getManifestLibs(appUrls);
     if (libs && libs.length > 0) {
         let url = '/sap/bc/ui2/app_index/ui5_app_info?id=' + libs;
-        const sapClient = UriParameters.fromQuery(window.location.search).get('sap-client');
+        const sapClient = urlParams.get('sap-client');
         if (sapClient && sapClient.length === 3) {
             url = url + '&sap-client=' + sapClient;
         }
         const response = await fetch(url);
-        registerModules(await response.json());
+        try {
+            registerModules(await response.json());
+        } catch (error) {
+            Log.error(`Registering of reuse libs failed. Error:${error}`);
+        }
     }
 }
 
@@ -150,82 +170,118 @@ export function registerSAPFonts() {
     //Registering to the icon pool
     IconPool.registerFont(fioriTheme);
     //SAP Business Suite Theme font family and URI
-    const bSuiteTheme = {
+    const suiteTheme = {
         fontFamily: 'BusinessSuiteInAppSymbols',
         fontURI: sap.ui.require.toUrl('sap/ushell/themes/base/fonts/')
     };
     //Registering to the icon pool
-    IconPool.registerFont(bSuiteTheme);
+    IconPool.registerFont(suiteTheme);
 }
 
 /**
  * Read the application title from the resource bundle and set it as document title.
+ *
+ * @param i18nKey optional parameter to define the i18n key to be used for the title.
  */
-export function setI18nTitle() {
-    const locale = sap.ui.getCore().getConfiguration().getLanguage();
+export function setI18nTitle(i18nKey = 'appTitle') {
+    const localization =
+        (sap.ui.require('sap/base/i18n/Localization') as Localization) ?? sap.ui.getCore().getConfiguration();
+    const locale = localization.getLanguage();
     const resourceBundle = ResourceBundle.create({
         url: 'i18n/i18n.properties',
         locale
     }) as ResourceBundle;
-    document.title = resourceBundle.getText('appTitle') ?? document.title;
+    if (resourceBundle.hasText(i18nKey)) {
+        document.title = resourceBundle.getText(i18nKey) ?? document.title;
+    }
 }
 
 /**
- * Apply additional configuration.
+ * Apply additional configuration and initialize sandbox.
  *
  * @param params init parameters read from the script tag
  * @param params.appUrls JSON containing a string array of application urls
  * @param params.flex JSON containing the flex configuration
+ * @param params.customInit path to the custom init module to be called
  * @returns promise
  */
-export function configure({ appUrls, flex }: { appUrls?: string | null; flex?: string | null }): Promise<void> {
+export async function init({
+    appUrls,
+    flex,
+    customInit
+}: {
+    appUrls?: string | null;
+    flex?: string | null;
+    customInit?: string | null;
+}): Promise<void> {
+    const urlParams = new URLSearchParams(window.location.search);
+    const container = sap?.ushell?.Container ?? (sap.ui.require('sap/ushell/Container') as typeof sap.ushell.Container);
     // Register RTA if configured
     if (flex) {
-        sap.ushell.Container.attachRendererCreatedEvent(async function () {
-            const serviceInstance = await sap.ushell.Container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
-            serviceInstance.attachAppLoaded(event => {
-                const oView = event.getParameter('componentInstance');
-                const requiredLibs = ['sap/ui/rta/api/startAdaptation'];
+        container.attachRendererCreatedEvent(async function () {
+            const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
+            lifecycleService.attachAppLoaded((event) => {
+                const version = sap.ui.version;
+                const minor = parseInt(version.split('.')[1], 10);
+                const view = event.getParameter('componentInstance');
                 const flexSettings = JSON.parse(flex);
+                const pluginScript = flexSettings.pluginScript ?? '';
+
+                let libs: string[] = [];
+                if (minor > 71) {
+                    libs.push('sap/ui/rta/api/startAdaptation');
+                } else {
+                    libs.push('open/ux/preview/client/flp/initRta');
+                }
+
                 if (flexSettings.pluginScript) {
-                    requiredLibs.push(flexSettings.pluginScript);
+                    libs.push(pluginScript);
                     delete flexSettings.pluginScript;
                 }
-                sap.ui.require(requiredLibs, function (startAdaptation: StartAdaptation, pluginScript?: RTAPlugin) {
-                    const options = {
-                        rootControl: oView,
-                        validateAppVersion: false,
-                        flexSettings
-                    };
-                    startAdaptation(options, pluginScript);
-                });
+
+                const options: RTAOptions = {
+                    rootControl: view,
+                    validateAppVersion: false,
+                    flexSettings
+                };
+
+                sap.ui.require(
+                    libs,
+                    async function (startAdaptation: StartAdaptation | InitRtaScript, pluginScript: RTAPlugin) {
+                        await startAdaptation(options, pluginScript);
+                    }
+                );
             });
         });
     }
 
+    // reset app state if requested
+    if (urlParams.get('fiori-tools-iapp-state')?.toLocaleLowerCase() !== 'true') {
+        await resetAppState(container);
+    }
+
     // Load custom library paths if configured
     if (appUrls) {
-        return registerComponentDependencyPaths(JSON.parse(appUrls));
-    } else {
-        return Promise.resolve();
+        await registerComponentDependencyPaths(JSON.parse(appUrls), urlParams);
     }
-}
 
-/**
- * Initialize the FLP sandbox.
- */
-export function init() {
+    // Load custom initialization module
+    if (customInit) {
+        sap.ui.require([customInit]);
+    }
+
+    // init
     setI18nTitle();
     registerSAPFonts();
-    sap.ushell.Container.createRenderer().placeAt('content');
+    const renderer = await container.createRenderer(undefined, true);
+    renderer.placeAt('content');
 }
 
 const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
 if (bootstrapConfig) {
-    configure({
+    init({
         appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
-        flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings')
-    })
-        .then(init)
-        .catch(() => Log.error('Sandbox initialization failed.'));
+        flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
+        customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit')
+    }).catch(() => Log.error('Sandbox initialization failed.'));
 }

@@ -1,4 +1,4 @@
-import { Uaa } from '../../src/auth/uaa';
+import { Uaa } from '../../src';
 import axios from 'axios';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 
@@ -70,7 +70,6 @@ describe('UAA', () => {
         });
 
         it('returns the access token without refresh token', async () => {
-            jest.setTimeout(10000);
             jest.spyOn(axios, 'request').mockResolvedValueOnce(mockedResponse);
 
             // mocked exchange with the server
@@ -91,6 +90,14 @@ describe('UAA', () => {
             };
 
             await expect(uaaInstance().getAccessToken()).resolves.toEqual(accessToken);
+        }, 10000);
+
+        it('calls refreshTokenCb with refresh token and access token', async () => {
+            jest.spyOn(axios, 'request').mockResolvedValueOnce(mockedResponse);
+            const mockCb = jest.fn();
+            await uaaInstance().getAccessToken(refreshToken, mockCb);
+            expect(mockCb).toBeCalled();
+            expect(mockCb).toBeCalledWith(undefined, accessToken);
         });
     });
 

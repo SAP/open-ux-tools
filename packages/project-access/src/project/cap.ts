@@ -1,24 +1,44 @@
 import { spawn } from 'child_process';
 import { dirname, join, normalize, relative, sep } from 'path';
 import { FileName } from '../constants';
-import type { CapCustomPaths, CapProjectType, CdsEnvironment, csn, Package } from '../types';
+import type {
+    CapCustomPaths,
+    CapProjectType,
+    CdsEnvironment,
+    csn,
+    LinkedModel,
+    Package,
+    ServiceDefinitions
+} from '../types';
 import { fileExists, readFile, readJSON } from '../file';
 import { loadModuleFromProject } from './module-loader';
+import type { Logger } from '@sap-ux/logger';
 
 interface CdsFacade {
     env: { for: (mode: string, path: string) => CdsEnvironment };
-    load: (paths: string | string[]) => Promise<csn>;
+    linked: (model: csn) => LinkedModel;
+    load: (paths: string | string[], options?: { root?: string }) => Promise<csn>;
     compile: {
         to: {
             serviceinfo: (model: csn, options?: { root?: string }) => ServiceInfo[];
             edmx: (model: csn, options?: { service?: string; version?: 'v2' | 'v4' }) => Promise<string>;
         };
     };
+    resolve: ResolveWithCache;
+    root: string; // cds.root
+    version: string; // cds.version
+    home: string; // cds.home
+}
+
+interface ResolveWithCache {
+    (files: string | string[], options?: { skipModelCache: boolean }): string[];
+    cache: Record<string, { cached: Record<string, string[]>; paths: string[] }>;
 }
 
 interface ServiceInfo {
     name: string;
     urlPath: string;
+    runtime?: string;
 }
 
 /**
@@ -28,7 +48,7 @@ interface ServiceInfo {
  * @returns - true if the project is a CAP Node.js project
  */
 export function isCapNodeJsProject(packageJson: Package): boolean {
-    return !!(packageJson.cds || packageJson.dependencies?.['@sap/cds']);
+    return !!(packageJson.cds ?? packageJson.dependencies?.['@sap/cds']);
 }
 
 /**
@@ -40,7 +60,7 @@ export function isCapNodeJsProject(packageJson: Package): boolean {
  */
 export async function isCapJavaProject(projectRoot: string, capCustomPaths?: CapCustomPaths): Promise<boolean> {
     const srv = capCustomPaths?.srv ?? (await getCapCustomPaths(projectRoot)).srv;
-    return fileExists(join(projectRoot, srv, 'src', 'main', 'resources', 'application.yaml'));
+    return fileExists(join(projectRoot, srv, 'src', 'main', 'resources', FileName.CapJavaApplicationYaml));
 }
 
 /**
@@ -70,6 +90,16 @@ export async function getCapProjectType(projectRoot: string): Promise<CapProject
 }
 
 /**
+ * Returns true if the project is either a CAP Node.js or a CAP Java project.
+ *
+ * @param projectRoot - the root path of the project
+ * @returns - true if the project is a CAP project
+ */
+export async function isCapProject(projectRoot: string): Promise<boolean> {
+    return !!(await getCapProjectType(projectRoot));
+}
+
+/**
  * Get CAP CDS project custom paths for project root.
  *
  * @param capProjectPath - project root of cap project
@@ -95,26 +125,43 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
 }
 
 /**
- * Return the CAP model and all services.
+ * Return the CAP model and all services. The cds.root will be set to the provided project root path.
  *
- * @param projectRoot - CAP project root where package.json resides
- * @returns {*}  {Promise<{ model: csn; services: ServiceInfo[] }>} - CAP Model and Services
+ * @param projectRoot - CAP project root where package.json resides or object specifying project root and optional logger to log additional info
+ * @returns {Promise<{ model: csn; services: ServiceInfo[] }>} - CAP Model and Services
  */
-export async function getCapModelAndServices(projectRoot: string): Promise<{ model: csn; services: ServiceInfo[] }> {
-    const cds = await loadCdsModuleFromProject(projectRoot);
-    const capProjectPaths = await getCapCustomPaths(projectRoot);
+export async function getCapModelAndServices(
+    projectRoot: string | { projectRoot: string; logger?: Logger }
+): Promise<{ model: csn; services: ServiceInfo[] }> {
+    let _projectRoot;
+    let _logger;
+    if (typeof projectRoot === 'object') {
+        _projectRoot = projectRoot.projectRoot;
+        _logger = projectRoot.logger;
+    } else {
+        _projectRoot = projectRoot;
+    }
+
+    const cds = await loadCdsModuleFromProject(_projectRoot, true);
+    const capProjectPaths = await getCapCustomPaths(_projectRoot);
     const modelPaths = [
-        join(projectRoot, capProjectPaths.app),
-        join(projectRoot, capProjectPaths.srv),
-        join(projectRoot, capProjectPaths.db)
+        join(_projectRoot, capProjectPaths.app),
+        join(_projectRoot, capProjectPaths.srv),
+        join(_projectRoot, capProjectPaths.db)
     ];
-    const model = await cds.load(modelPaths);
-    let services = cds.compile.to.serviceinfo(model, { root: projectRoot }) ?? [];
+    const model = await cds.load(modelPaths, { root: _projectRoot });
+
+    _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'cds.home': ${cds.home}`);
+    _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'cds.version': ${cds.version}`);
+    _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'cds.root': ${cds.root}`);
+
+    let services = cds.compile.to.serviceinfo(model, { root: _projectRoot }) ?? [];
     if (services.map) {
         services = services.map((value) => {
             return {
                 name: value.name,
-                urlPath: uniformUrl(value.urlPath)
+                urlPath: uniformUrl(value.urlPath),
+                runtime: value.runtime
             };
         });
     }
@@ -122,6 +169,127 @@ export async function getCapModelAndServices(projectRoot: string): Promise<{ mod
         model,
         services
     };
+}
+
+/**
+ * Returns a list of cds file paths (layers). By default return list of all, but you can also restrict it to one envRoot.
+ *
+ * @param projectRoot - root of the project, where the package.json is
+ * @param [ignoreErrors] - optionally, default is false; if set to true the thrown error will be checked for CDS file paths in model and returned
+ * @param [envRoot] - optionally, the root folder or CDS file to get the layer files
+ * @returns - array of strings containing cds file paths
+ */
+export async function getCdsFiles(
+    projectRoot: string,
+    ignoreErrors = false,
+    envRoot?: string | string[]
+): Promise<string[]> {
+    let cdsFiles: string[] = [];
+    try {
+        let csn;
+        envRoot ??= await getCdsRoots(projectRoot);
+        try {
+            const cds = await loadCdsModuleFromProject(projectRoot);
+            csn = await cds.load(envRoot, { root: projectRoot });
+            cdsFiles = [...(csn['$sources'] ?? [])];
+        } catch (e) {
+            if (ignoreErrors && e.model?.sources && typeof e.model.sources === 'object') {
+                cdsFiles.push(...extractCdsFilesFromMessage(e.model.sources));
+            } else {
+                throw e;
+            }
+        }
+    } catch (error) {
+        throw Error(
+            `Error while retrieving the list of cds files for project ${projectRoot}, envRoot ${envRoot}. Error was: ${error}`
+        );
+    }
+    return cdsFiles;
+}
+
+/**
+ * Returns a list of filepaths to CDS files in root folders. Same what is done if you execute cds.resolve('*') on command line in a project.
+ *
+ * @param projectRoot - root of the project, where the package.json is
+ * @param [clearCache] - optionally, clear the cache, default false
+ * @returns - array of root paths
+ */
+export async function getCdsRoots(projectRoot: string, clearCache = false): Promise<string[]> {
+    const roots = [];
+    const capCustomPaths = await getCapCustomPaths(projectRoot);
+    const cdsEnvRoots = [capCustomPaths.db, capCustomPaths.srv, capCustomPaths.app, 'schema', 'services'];
+    // clear cache is enforced to also resolve newly created cds file at design time
+    const cds = await loadCdsModuleFromProject(projectRoot);
+    if (clearCache) {
+        cds.resolve.cache = {};
+    }
+    for (const cdsEnvRoot of cdsEnvRoots) {
+        const resolvedRoots =
+            cds.resolve(join(projectRoot, cdsEnvRoot), {
+                skipModelCache: true
+            }) || [];
+        for (const resolvedRoot of resolvedRoots) {
+            roots.push(resolvedRoot);
+        }
+    }
+    return roots;
+}
+
+/**
+ * Return a list of services in a CAP project.
+ *
+ * @param projectRoot - root of the CAP project, where the package.json is
+ * @param ignoreErrors - in case loading the cds model throws an error, try to use the model from the exception object
+ * @returns - array of service definitions
+ */
+export async function getCdsServices(projectRoot: string, ignoreErrors = true): Promise<ServiceDefinitions[]> {
+    let cdsServices: ServiceDefinitions[] = [];
+    try {
+        const cds = await loadCdsModuleFromProject(projectRoot);
+        const roots: string[] = await getCdsRoots(projectRoot);
+        let model;
+        try {
+            model = await cds.load(roots, { root: projectRoot });
+        } catch (e) {
+            if (ignoreErrors && e.model) {
+                model = e.model;
+            } else {
+                throw e;
+            }
+        }
+        const linked = cds.linked(model);
+        if (Array.isArray(linked.services)) {
+            cdsServices = linked.services;
+        } else {
+            Object.keys(linked.services).forEach((service) => {
+                cdsServices.push(linked.services[service] as ServiceDefinitions);
+            });
+        }
+    } catch (error) {
+        throw Error(`Error while resolving cds roots for '${projectRoot}'. ${error}`);
+    }
+    return cdsServices;
+}
+
+/**
+ * When an error occurs while trying to read cds files, the error object contains the source file
+ * information. This function extracts this file paths.
+ *
+ * @param sources - map containing the file name
+ * @returns - array of strings containing cds file paths
+ */
+function extractCdsFilesFromMessage(sources: Record<string, { filename?: string }>): string[] {
+    const cdsFiles: string[] = [];
+    for (const source in sources) {
+        let filename = sources[source].filename;
+        if (typeof filename === 'string' && !filename.startsWith(sep)) {
+            filename = join(sep, filename);
+        }
+        if (filename) {
+            cdsFiles.push(filename);
+        }
+    }
+    return cdsFiles;
 }
 
 /**
@@ -194,14 +362,22 @@ export async function getCapEnvironment(capProjectPath: string): Promise<CdsEnvi
 }
 
 /**
+ * To fix issues when switching different cds versions dynamically, we need to set global.cds, see end of function loadCdsModuleFromProject()
+ */
+declare const global: {
+    cds: CdsFacade;
+};
+
+/**
  * Load CAP CDS module. First attempt loads @sap/cds for a project based on its root.
  * Second attempt loads @sap/cds from global installed @sap/cds-dk.
- * Throws error if module could not be loaded.
+ * Throws error if module could not be loaded or strict mode is true and there is a version mismatch.
  *
  * @param capProjectPath - project root of a CAP project
+ * @param [strict] - optional, when set true an error is thrown, if global loaded cds version does not match the cds version from package.json dependency. Default is false.
  * @returns - CAP CDS module for a CAP project
  */
-async function loadCdsModuleFromProject(capProjectPath: string): Promise<CdsFacade> {
+async function loadCdsModuleFromProject(capProjectPath: string, strict: boolean = false): Promise<CdsFacade> {
     let module: CdsFacade | { default: CdsFacade } | undefined;
     let loadProjectError;
     let loadError;
@@ -224,7 +400,29 @@ async function loadCdsModuleFromProject(capProjectPath: string): Promise<CdsFaca
             `Could not load cds module. Attempt to load module @sap/cds from project threw error '${loadProjectError}', attempt to load module @sap/cds from @sap/cds-dk threw error '${loadError}'`
         );
     }
-    return 'default' in module ? module.default : module;
+    const cds = 'default' in module ? module.default : module;
+
+    // In case strict is true and there was a fallback to global cds installation for a project that has a cds dependency, check if major versions match
+    if (strict && loadProjectError) {
+        const cdsDependencyVersion = await getCdsVersionFromPackageJson(join(capProjectPath, FileName.Package));
+        if (typeof cdsDependencyVersion === 'string') {
+            const globalCdsVersion = cds.version;
+            if (getMajorVersion(cdsDependencyVersion) !== getMajorVersion(globalCdsVersion)) {
+                const error = new Error(
+                    `The @sap/cds major version (${cdsDependencyVersion}) specified in your CAP project is different to the @sap/cds version you have installed globally (${globalCdsVersion}). Please run 'npm install' on your CAP project to ensure that the correct CDS version is loaded.`
+                ) as Error & { code: string };
+                error.code = 'CDS_VERSION_MISMATCH';
+                throw error;
+            }
+        }
+    }
+
+    // Fix when switching cds versions dynamically
+    if (global) {
+        global.cds = cds;
+    }
+
+    return cds;
 }
 
 /**
@@ -348,6 +546,13 @@ async function loadGlobalCdsModule<T>(): Promise<T> {
 }
 
 /**
+ * Clear cache of path to global cds module.
+ */
+export function clearGlobalCdsPathCache() {
+    globalCdsPathCache = '';
+}
+
+/**
  * Get cds information, which includes versions and also the home path of cds module.
  *
  * @param [cwd] - optional folder in which cds --version should be executed
@@ -376,4 +581,33 @@ async function getCdsVersionInfo(cwd?: string): Promise<Record<string, string>> 
             reject(error);
         });
     });
+}
+
+/**
+ * Read the version string of the @sap/cds module from the package.json file.
+ *
+ * @param packageJsonPath - path to package.json
+ * @returns - version of @sap/cds from package.json or undefined
+ */
+async function getCdsVersionFromPackageJson(packageJsonPath: string): Promise<string | undefined> {
+    let version: string | undefined;
+    try {
+        if (await fileExists(packageJsonPath)) {
+            const packageJson = await readJSON<Package>(packageJsonPath);
+            version = packageJson?.dependencies?.['@sap/cds'];
+        }
+    } catch {
+        // If we can't read or parse the package.json we return undefined
+    }
+    return version;
+}
+
+/**
+ * Get major version from version string.
+ *
+ * @param versionString - version string
+ * @returns - major version as number
+ */
+function getMajorVersion(versionString: string): number {
+    return parseInt(/\d+/.exec(versionString.split('.')[0])?.[0] ?? '0', 10);
 }

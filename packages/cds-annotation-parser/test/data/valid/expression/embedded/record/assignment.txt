@@ -1,0 +1,7 @@
+anno: {
+    prop1: (b / 2), 
+    prop2: (-c), 
+    prop3: (d ? e : f), 
+    prop4: (g AND h),
+    prop5: (NOT i)
+}

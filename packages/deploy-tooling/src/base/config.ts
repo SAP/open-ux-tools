@@ -1,6 +1,7 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { AbapTarget, AbapDeployConfig } from '../types';
 import { isUrlTarget } from '@sap-ux/system-access';
+import type { BspConfig } from '@sap-ux/axios-extension';
 
 /**
  * Clones the given config and removes secrets so that it can be printed to a log file.
@@ -22,28 +23,11 @@ export function getConfigForLogging(
 }
 
 /**
- * Replace environment variable references of pattern `env:VAR_NAME` with the value of the corresponding environment variable.
- *
- * @param obj - any object structure
- */
-export function replaceEnvVariables(obj: object): void {
-    for (const key in obj) {
-        const value = (obj as Record<string, unknown>)[key];
-        if (typeof value === 'object') {
-            replaceEnvVariables(value as object);
-        } else if (typeof value === 'string' && value.startsWith('env:')) {
-            const varName = value.split('env:')[1];
-            (obj as Record<string, unknown>)[key] = process.env[varName];
-        }
-    }
-}
-
-/**
  * Helper function for throwing a missing property error.
  *
  * @param property Invalid missing property
  */
-function throwConfigMissingError(property: string): void {
+export function throwConfigMissingError(property: string): void {
     throw new Error(`Invalid deployment configuration. Property ${property} is missing.`);
 }
 
@@ -65,6 +49,16 @@ function validateTarget(target: AbapTarget): AbapTarget {
 }
 
 /**
+ * Type checking the config object.
+ *
+ * @param config - config to be checked
+ * @returns true if it is of type BSP config
+ */
+export function isBspConfig(config: Partial<BspConfig>): config is BspConfig {
+    return (config as BspConfig).name !== undefined;
+}
+
+/**
  * Validate the given config. If anything mandatory is missing throw an error.
  *
  * @param config - the config to be validated
@@ -80,11 +74,7 @@ export function validateConfig(config: AbapDeployConfig | undefined): AbapDeploy
     } else {
         throwConfigMissingError('target');
     }
-    if (config.app) {
-        if (!config.app.name) {
-            throwConfigMissingError('app-name');
-        }
-    } else {
+    if (!config.app) {
         throwConfigMissingError('app');
     }
 

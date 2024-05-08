@@ -9,10 +9,10 @@
                                 "header": {
                                     "facets": {
                                         "<%- name %>": {
-                                            "template": "<%- ns %>.<%- name %>",
+                                            "template": "<%- ns %>.<%- typeof fragmentFile !== 'undefined' ? fragmentFile : name  %>",
                                             <% if (typeof edit !== 'undefined') { %> 
-                                                "templateEdit": "<%- edit.ns %>.<%- edit.name %>"
-                                            <% } %>,
+                                                "templateEdit": "<%- edit.ns %>.<%- edit.name %>",
+                                            <% } %>
                                             <%if (typeof position !== 'undefined') {%>"position": {
                                                 <% if (position.placement) { %> 
                                                     "placement": "<%- position.placement %>"<% if (position.anchor) { %>,<% } %>
@@ -26,7 +26,7 @@
                                                 "subTitle": "<%- subTitle %>",
                                             <% } %>
                                             <% if (typeof stashed !== 'undefined') { %> 
-                                                "stashed": "<%- stashed %>",
+                                                "stashed": <%- stashed %>,
                                             <% } %>
                                             "requestGroupId": "<%- requestGroupId %>",
                                             "flexSettings": {

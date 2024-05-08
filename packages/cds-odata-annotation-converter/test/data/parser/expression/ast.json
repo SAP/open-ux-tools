@@ -1,0 +1,3462 @@
+{
+    "type": "annotation",
+    "term": {
+        "type": "path",
+        "value": "UI.LineItem",
+        "segments": [
+            {
+                "type": "identifier",
+                "value": "UI",
+                "range": "[(0,0)..(0,2)]",
+                "quoted": false
+            },
+            {
+                "type": "identifier",
+                "value": "LineItem",
+                "range": "[(0,3)..(0,11)]",
+                "quoted": false
+            }
+        ],
+        "separators": [
+            {
+                "type": "separator",
+                "value": ".",
+                "range": "[(0,2)..(0,3)]",
+                "escaped": false
+            }
+        ],
+        "range": "[(0,0)..(0,11)]"
+    },
+    "range": "[(0,0)..(108,1)]",
+    "colon": {
+        "type": "token",
+        "range": "[(0,12)..(0,13)]",
+        "value": ":"
+    },
+    "value": {
+        "type": "collection",
+        "items": [
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(3,8)..(3,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(3,8)..(3,13)]"
+                        },
+                        "value": {
+                            "type": "correct-expression",
+                            "operatorName": "not",
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "not",
+                                    "range": "[(3,17)..(3,20)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "path",
+                                    "value": "isPostponed",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "isPostponed",
+                                            "range": "[(3,21)..(3,32)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(3,21)..(3,32)]"
+                                }
+                            ],
+                            "range": "[(3,15)..(3,34)]",
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(3,15)..(3,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(3,33)..(3,34)]"
+                            }
+                        },
+                        "range": "[(3,8)..(3,34)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(3,13)..(3,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(2,4)..(4,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(2,4)..(2,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(4,4)..(4,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(6,8)..(6,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(6,8)..(6,13)]"
+                        },
+                        "value": {
+                            "type": "correct-expression",
+                            "operatorName": "unary-minus",
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "-",
+                                    "range": "[(6,17)..(6,18)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "path",
+                                    "value": "delayInDays",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "delayInDays",
+                                            "range": "[(6,18)..(6,29)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(6,18)..(6,29)]"
+                                }
+                            ],
+                            "range": "[(6,15)..(6,31)]",
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(6,15)..(6,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(6,30)..(6,31)]"
+                            }
+                        },
+                        "range": "[(6,8)..(6,31)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(6,13)..(6,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(5,4)..(7,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(5,4)..(5,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(7,4)..(7,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(10,8)..(10,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(10,8)..(10,13)]"
+                        },
+                        "value": {
+                            "type": "correct-expression",
+                            "operatorName": "plus",
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "+",
+                                    "range": "[(10,23)..(10,24)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "path",
+                                    "value": "delay",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "delay",
+                                            "range": "[(10,17)..(10,22)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(10,17)..(10,22)]"
+                                },
+                                {
+                                    "type": "path",
+                                    "value": "offset",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "offset",
+                                            "range": "[(10,25)..(10,31)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(10,25)..(10,31)]"
+                                }
+                            ],
+                            "range": "[(10,15)..(10,33)]",
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(10,15)..(10,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(10,32)..(10,33)]"
+                            }
+                        },
+                        "range": "[(10,8)..(10,33)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(10,13)..(10,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(9,4)..(11,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(9,4)..(9,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(11,4)..(11,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(13,8)..(13,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(13,8)..(13,13)]"
+                        },
+                        "value": {
+                            "type": "correct-expression",
+                            "operatorName": "plus",
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "+",
+                                    "range": "[(13,23)..(13,24)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "path",
+                                    "value": "delay",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "delay",
+                                            "range": "[(13,17)..(13,22)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(13,17)..(13,22)]"
+                                },
+                                {
+                                    "type": "number",
+                                    "value": 1,
+                                    "range": "[(13,25)..(13,26)]"
+                                }
+                            ],
+                            "range": "[(13,15)..(13,28)]",
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(13,15)..(13,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(13,27)..(13,28)]"
+                            }
+                        },
+                        "range": "[(13,8)..(13,28)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(13,13)..(13,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(12,4)..(14,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(12,4)..(12,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(14,4)..(14,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(16,8)..(16,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(16,8)..(16,13)]"
+                        },
+                        "value": {
+                            "type": "correct-expression",
+                            "operatorName": "minus",
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "-",
+                                    "range": "[(16,23)..(16,24)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "path",
+                                    "value": "delay",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "delay",
+                                            "range": "[(16,17)..(16,22)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(16,17)..(16,22)]"
+                                },
+                                {
+                                    "type": "number",
+                                    "value": 1,
+                                    "range": "[(16,25)..(16,26)]"
+                                }
+                            ],
+                            "range": "[(16,15)..(16,28)]",
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(16,15)..(16,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(16,27)..(16,28)]"
+                            }
+                        },
+                        "range": "[(16,8)..(16,28)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(16,13)..(16,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(15,4)..(17,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(15,4)..(15,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(17,4)..(17,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(19,8)..(19,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(19,8)..(19,13)]"
+                        },
+                        "value": {
+                            "type": "correct-expression",
+                            "operatorName": "multiply",
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "*",
+                                    "range": "[(19,23)..(19,24)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "path",
+                                    "value": "delay",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "delay",
+                                            "range": "[(19,17)..(19,22)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(19,17)..(19,22)]"
+                                },
+                                {
+                                    "type": "number",
+                                    "value": 2,
+                                    "range": "[(19,25)..(19,26)]"
+                                }
+                            ],
+                            "range": "[(19,15)..(19,28)]",
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(19,15)..(19,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(19,27)..(19,28)]"
+                            }
+                        },
+                        "range": "[(19,8)..(19,28)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(19,13)..(19,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(18,4)..(20,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(18,4)..(18,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(20,4)..(20,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(22,8)..(22,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(22,8)..(22,13)]"
+                        },
+                        "value": {
+                            "type": "correct-expression",
+                            "operatorName": "divide",
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "/",
+                                    "range": "[(22,23)..(22,24)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "path",
+                                    "value": "delay",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "delay",
+                                            "range": "[(22,17)..(22,22)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(22,17)..(22,22)]"
+                                },
+                                {
+                                    "type": "number",
+                                    "value": 2,
+                                    "range": "[(22,25)..(22,26)]"
+                                }
+                            ],
+                            "range": "[(22,15)..(22,28)]",
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(22,15)..(22,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(22,27)..(22,28)]"
+                            }
+                        },
+                        "range": "[(22,8)..(22,28)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(22,13)..(22,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(21,4)..(23,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(21,4)..(21,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(23,4)..(23,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(25,8)..(25,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(25,8)..(25,13)]"
+                        },
+                        "value": {
+                            "type": "correct-expression",
+                            "operatorName": "minus",
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "-",
+                                    "range": "[(25,23)..(25,24)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "path",
+                                    "value": "delay",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "delay",
+                                            "range": "[(25,17)..(25,22)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(25,17)..(25,22)]"
+                                },
+                                {
+                                    "type": "number",
+                                    "value": 1,
+                                    "range": "[(25,25)..(25,26)]"
+                                }
+                            ],
+                            "range": "[(25,15)..(25,28)]",
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(25,15)..(25,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(25,27)..(25,28)]"
+                            }
+                        },
+                        "range": "[(25,8)..(25,28)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(25,13)..(25,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(24,4)..(26,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(24,4)..(24,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(26,4)..(26,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(28,8)..(28,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(28,8)..(28,13)]"
+                        },
+                        "value": {
+                            "type": "correct-expression",
+                            "operatorName": "greater-or-equal",
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": ">=",
+                                    "range": "[(28,23)..(28,25)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "path",
+                                    "value": "delay",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "delay",
+                                            "range": "[(28,17)..(28,22)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(28,17)..(28,22)]"
+                                },
+                                {
+                                    "type": "path",
+                                    "value": "offset",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "offset",
+                                            "range": "[(28,26)..(28,32)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(28,26)..(28,32)]"
+                                }
+                            ],
+                            "range": "[(28,15)..(28,34)]",
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(28,15)..(28,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(28,33)..(28,34)]"
+                            }
+                        },
+                        "range": "[(28,8)..(28,34)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(28,13)..(28,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(27,4)..(29,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(27,4)..(27,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(29,4)..(29,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(31,8)..(31,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(31,8)..(31,13)]"
+                        },
+                        "value": {
+                            "type": "correct-expression",
+                            "operatorName": "not-equal",
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "!=",
+                                    "range": "[(31,23)..(31,25)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "path",
+                                    "value": "delay",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "delay",
+                                            "range": "[(31,17)..(31,22)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(31,17)..(31,22)]"
+                                },
+                                {
+                                    "type": "path",
+                                    "value": "offset",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "offset",
+                                            "range": "[(31,26)..(31,32)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(31,26)..(31,32)]"
+                                }
+                            ],
+                            "range": "[(31,15)..(31,34)]",
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(31,15)..(31,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(31,33)..(31,34)]"
+                            }
+                        },
+                        "range": "[(31,8)..(31,34)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(31,13)..(31,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(30,4)..(32,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(30,4)..(30,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(32,4)..(32,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(34,8)..(34,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(34,8)..(34,13)]"
+                        },
+                        "value": {
+                            "type": "correct-expression",
+                            "operatorName": "not-equal",
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "<>",
+                                    "range": "[(34,23)..(34,25)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "path",
+                                    "value": "delay",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "delay",
+                                            "range": "[(34,17)..(34,22)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(34,17)..(34,22)]"
+                                },
+                                {
+                                    "type": "path",
+                                    "value": "offset",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "offset",
+                                            "range": "[(34,26)..(34,32)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(34,26)..(34,32)]"
+                                }
+                            ],
+                            "range": "[(34,15)..(34,34)]",
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(34,15)..(34,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(34,33)..(34,34)]"
+                            }
+                        },
+                        "range": "[(34,8)..(34,34)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(34,13)..(34,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(33,4)..(35,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(33,4)..(33,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(35,4)..(35,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(38,8)..(38,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(38,8)..(38,13)]"
+                        },
+                        "value": {
+                            "type": "correct-expression",
+                            "operatorName": "ternary",
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "?",
+                                    "range": "[(38,28)..(38,29)]"
+                                },
+                                {
+                                    "type": "operator",
+                                    "value": ":",
+                                    "range": "[(38,43)..(38,44)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "path",
+                                    "value": "isCritical",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "isCritical",
+                                            "range": "[(38,17)..(38,27)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(38,17)..(38,27)]"
+                                },
+                                {
+                                    "type": "string",
+                                    "value": "Important!",
+                                    "range": "[(38,30)..(38,42)]",
+                                    "openToken": {
+                                        "type": "token",
+                                        "value": "'",
+                                        "range": "[(38,30)..(38,31)]"
+                                    },
+                                    "closeToken": {
+                                        "type": "token",
+                                        "value": "'",
+                                        "range": "[(38,41)..(38,42)]"
+                                    }
+                                },
+                                {
+                                    "type": "string",
+                                    "value": "",
+                                    "range": "[(38,45)..(38,47)]",
+                                    "openToken": {
+                                        "type": "token",
+                                        "value": "'",
+                                        "range": "[(38,45)..(38,46)]"
+                                    },
+                                    "closeToken": {
+                                        "type": "token",
+                                        "value": "'",
+                                        "range": "[(38,46)..(38,47)]"
+                                    }
+                                }
+                            ],
+                            "range": "[(38,15)..(38,49)]",
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(38,15)..(38,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(38,48)..(38,49)]"
+                            }
+                        },
+                        "range": "[(38,8)..(38,49)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(38,13)..(38,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(37,4)..(39,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(37,4)..(37,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(39,4)..(39,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(42,8)..(42,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(42,8)..(42,13)]"
+                        },
+                        "value": {
+                            "type": "correct-expression",
+                            "operatorName": "minus",
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "-",
+                                    "range": "[(42,27)..(42,28)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "correct-expression",
+                                    "operatorName": "divide",
+                                    "operators": [
+                                        {
+                                            "type": "operator",
+                                            "value": "/",
+                                            "range": "[(42,23)..(42,24)]"
+                                        }
+                                    ],
+                                    "operands": [
+                                        {
+                                            "type": "path",
+                                            "value": "delay",
+                                            "segments": [
+                                                {
+                                                    "type": "identifier",
+                                                    "value": "delay",
+                                                    "range": "[(42,17)..(42,22)]",
+                                                    "quoted": false
+                                                }
+                                            ],
+                                            "separators": [],
+                                            "range": "[(42,17)..(42,22)]"
+                                        },
+                                        {
+                                            "type": "number",
+                                            "value": 2,
+                                            "range": "[(42,25)..(42,26)]"
+                                        }
+                                    ],
+                                    "range": "[(42,17)..(42,26)]"
+                                },
+                                {
+                                    "type": "path",
+                                    "value": "offset",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "offset",
+                                            "range": "[(42,29)..(42,35)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(42,29)..(42,35)]"
+                                }
+                            ],
+                            "range": "[(42,15)..(42,37)]",
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(42,15)..(42,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(42,36)..(42,37)]"
+                            }
+                        },
+                        "range": "[(42,8)..(42,37)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(42,13)..(42,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(41,4)..(43,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(41,4)..(41,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(43,4)..(43,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(45,8)..(45,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(45,8)..(45,13)]"
+                        },
+                        "value": {
+                            "type": "correct-expression",
+                            "operatorName": "ternary",
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "?",
+                                    "range": "[(45,32)..(45,33)]"
+                                },
+                                {
+                                    "type": "operator",
+                                    "value": ":",
+                                    "range": "[(45,48)..(45,49)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "correct-expression",
+                                    "operatorName": "equal",
+                                    "operators": [
+                                        {
+                                            "type": "operator",
+                                            "value": "=",
+                                            "range": "[(45,20)..(45,21)]"
+                                        }
+                                    ],
+                                    "operands": [
+                                        {
+                                            "type": "path",
+                                            "value": "id",
+                                            "segments": [
+                                                {
+                                                    "type": "identifier",
+                                                    "value": "id",
+                                                    "range": "[(45,17)..(45,19)]",
+                                                    "quoted": false
+                                                }
+                                            ],
+                                            "separators": [],
+                                            "range": "[(45,17)..(45,19)]"
+                                        },
+                                        {
+                                            "type": "string",
+                                            "value": "special",
+                                            "range": "[(45,22)..(45,31)]",
+                                            "openToken": {
+                                                "type": "token",
+                                                "value": "'",
+                                                "range": "[(45,22)..(45,23)]"
+                                            },
+                                            "closeToken": {
+                                                "type": "token",
+                                                "value": "'",
+                                                "range": "[(45,30)..(45,31)]"
+                                            }
+                                        }
+                                    ],
+                                    "range": "[(45,17)..(45,31)]"
+                                },
+                                {
+                                    "type": "string",
+                                    "value": "SpecialText",
+                                    "range": "[(45,34)..(45,47)]",
+                                    "openToken": {
+                                        "type": "token",
+                                        "value": "'",
+                                        "range": "[(45,34)..(45,35)]"
+                                    },
+                                    "closeToken": {
+                                        "type": "token",
+                                        "value": "'",
+                                        "range": "[(45,46)..(45,47)]"
+                                    }
+                                },
+                                {
+                                    "type": "path",
+                                    "value": "text",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "text",
+                                            "range": "[(45,50)..(45,54)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(45,50)..(45,54)]"
+                                }
+                            ],
+                            "range": "[(45,15)..(45,56)]",
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(45,15)..(45,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(45,55)..(45,56)]"
+                            }
+                        },
+                        "range": "[(45,8)..(45,56)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(45,13)..(45,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(44,4)..(46,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(44,4)..(44,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(46,4)..(46,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(48,8)..(48,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(48,8)..(48,13)]"
+                        },
+                        "value": {
+                            "type": "correct-expression",
+                            "operatorName": "or",
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "or",
+                                    "range": "[(48,61)..(48,63)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "correct-expression",
+                                    "operatorName": "and",
+                                    "operators": [
+                                        {
+                                            "type": "operator",
+                                            "value": "and",
+                                            "range": "[(48,46)..(48,49)]"
+                                        }
+                                    ],
+                                    "operands": [
+                                        {
+                                            "type": "correct-expression",
+                                            "operatorName": "not-equal",
+                                            "operators": [
+                                                {
+                                                    "type": "operator",
+                                                    "value": "!=",
+                                                    "range": "[(48,29)..(48,31)]"
+                                                }
+                                            ],
+                                            "operands": [
+                                                {
+                                                    "type": "path",
+                                                    "value": "description",
+                                                    "segments": [
+                                                        {
+                                                            "type": "identifier",
+                                                            "value": "description",
+                                                            "range": "[(48,17)..(48,28)]",
+                                                            "quoted": false
+                                                        }
+                                                    ],
+                                                    "separators": [],
+                                                    "range": "[(48,17)..(48,28)]"
+                                                },
+                                                {
+                                                    "type": "string",
+                                                    "value": "some string",
+                                                    "range": "[(48,32)..(48,45)]",
+                                                    "openToken": {
+                                                        "type": "token",
+                                                        "value": "'",
+                                                        "range": "[(48,32)..(48,33)]"
+                                                    },
+                                                    "closeToken": {
+                                                        "type": "token",
+                                                        "value": "'",
+                                                        "range": "[(48,44)..(48,45)]"
+                                                    }
+                                                }
+                                            ],
+                                            "range": "[(48,17)..(48,45)]"
+                                        },
+                                        {
+                                            "type": "path",
+                                            "value": "isCritical",
+                                            "segments": [
+                                                {
+                                                    "type": "identifier",
+                                                    "value": "isCritical",
+                                                    "range": "[(48,50)..(48,60)]",
+                                                    "quoted": false
+                                                }
+                                            ],
+                                            "separators": [],
+                                            "range": "[(48,50)..(48,60)]"
+                                        }
+                                    ],
+                                    "range": "[(48,17)..(48,60)]"
+                                },
+                                {
+                                    "type": "path",
+                                    "value": "isInteresting",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "isInteresting",
+                                            "range": "[(48,64)..(48,77)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(48,64)..(48,77)]"
+                                }
+                            ],
+                            "range": "[(48,15)..(48,79)]",
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(48,15)..(48,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(48,78)..(48,79)]"
+                            }
+                        },
+                        "range": "[(48,8)..(48,79)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(48,13)..(48,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(47,4)..(49,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(47,4)..(47,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(49,4)..(49,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(52,8)..(52,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(52,8)..(52,13)]"
+                        },
+                        "value": {
+                            "type": "correct-expression",
+                            "operatorName": "concat",
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "||",
+                                    "range": "[(52,26)..(52,28)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "string",
+                                    "value": "Hallo ",
+                                    "range": "[(52,17)..(52,25)]",
+                                    "openToken": {
+                                        "type": "token",
+                                        "value": "'",
+                                        "range": "[(52,17)..(52,18)]"
+                                    },
+                                    "closeToken": {
+                                        "type": "token",
+                                        "value": "'",
+                                        "range": "[(52,24)..(52,25)]"
+                                    }
+                                },
+                                {
+                                    "type": "path",
+                                    "value": "description",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "description",
+                                            "range": "[(52,29)..(52,40)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(52,29)..(52,40)]"
+                                }
+                            ],
+                            "range": "[(52,15)..(52,42)]",
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(52,15)..(52,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(52,41)..(52,42)]"
+                            }
+                        },
+                        "range": "[(52,8)..(52,42)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(52,13)..(52,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(51,4)..(53,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(51,4)..(51,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(53,4)..(53,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(55,8)..(55,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(55,8)..(55,13)]"
+                        },
+                        "value": {
+                            "type": "correct-expression",
+                            "operatorName": "like",
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "like",
+                                    "range": "[(55,29)..(55,33)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "path",
+                                    "value": "description",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "description",
+                                            "range": "[(55,17)..(55,28)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(55,17)..(55,28)]"
+                                },
+                                {
+                                    "type": "string",
+                                    "value": "odata.%",
+                                    "range": "[(55,34)..(55,43)]",
+                                    "openToken": {
+                                        "type": "token",
+                                        "value": "'",
+                                        "range": "[(55,34)..(55,35)]"
+                                    },
+                                    "closeToken": {
+                                        "type": "token",
+                                        "value": "'",
+                                        "range": "[(55,42)..(55,43)]"
+                                    }
+                                }
+                            ],
+                            "range": "[(55,15)..(55,45)]",
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(55,15)..(55,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(55,44)..(55,45)]"
+                            }
+                        },
+                        "range": "[(55,8)..(55,45)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(55,13)..(55,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(54,4)..(56,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(54,4)..(54,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(56,4)..(56,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(58,8)..(58,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(58,8)..(58,13)]"
+                        },
+                        "value": {
+                            "type": "correct-expression",
+                            "operatorName": "not-like",
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "not like",
+                                    "range": "[(58,29)..(58,37)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "path",
+                                    "value": "description",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "description",
+                                            "range": "[(58,17)..(58,28)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(58,17)..(58,28)]"
+                                },
+                                {
+                                    "type": "string",
+                                    "value": "odata.%",
+                                    "range": "[(58,38)..(58,47)]",
+                                    "openToken": {
+                                        "type": "token",
+                                        "value": "'",
+                                        "range": "[(58,38)..(58,39)]"
+                                    },
+                                    "closeToken": {
+                                        "type": "token",
+                                        "value": "'",
+                                        "range": "[(58,46)..(58,47)]"
+                                    }
+                                }
+                            ],
+                            "range": "[(58,15)..(58,49)]",
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(58,15)..(58,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(58,48)..(58,49)]"
+                            }
+                        },
+                        "range": "[(58,8)..(58,49)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(58,13)..(58,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(57,4)..(59,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(57,4)..(57,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(59,4)..(59,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(62,8)..(62,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(62,8)..(62,13)]"
+                        },
+                        "value": {
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "is null",
+                                    "range": "[(62,29)..(62,36)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "path",
+                                    "value": "description",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "description",
+                                            "range": "[(62,17)..(62,28)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(62,17)..(62,28)]"
+                                }
+                            ],
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(62,15)..(62,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(62,37)..(62,38)]"
+                            },
+                            "range": "[(62,15)..(62,38)]",
+                            "type": "unsupported-operator-expression",
+                            "unsupportedOperator": {
+                                "type": "operator",
+                                "value": "is null",
+                                "range": "[(62,29)..(62,36)]"
+                            }
+                        },
+                        "range": "[(62,8)..(62,38)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(62,13)..(62,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(61,4)..(63,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(61,4)..(61,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(63,4)..(63,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(65,8)..(65,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(65,8)..(65,13)]"
+                        },
+                        "value": {
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "is not null",
+                                    "range": "[(65,29)..(65,40)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "path",
+                                    "value": "description",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "description",
+                                            "range": "[(65,17)..(65,28)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(65,17)..(65,28)]"
+                                }
+                            ],
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(65,15)..(65,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(65,41)..(65,42)]"
+                            },
+                            "range": "[(65,15)..(65,42)]",
+                            "type": "unsupported-operator-expression",
+                            "unsupportedOperator": {
+                                "type": "operator",
+                                "value": "is not null",
+                                "range": "[(65,29)..(65,40)]"
+                            }
+                        },
+                        "range": "[(65,8)..(65,42)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(65,13)..(65,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(64,4)..(66,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(64,4)..(64,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(66,4)..(66,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(68,8)..(68,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(68,8)..(68,13)]"
+                        },
+                        "value": {
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "between",
+                                    "range": "[(68,24)..(68,31)]"
+                                },
+                                {
+                                    "type": "operator",
+                                    "value": "and",
+                                    "range": "[(68,35)..(68,38)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "path",
+                                    "value": "number",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "number",
+                                            "range": "[(68,17)..(68,23)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(68,17)..(68,23)]"
+                                },
+                                {
+                                    "type": "number",
+                                    "value": 10,
+                                    "range": "[(68,32)..(68,34)]"
+                                },
+                                {
+                                    "type": "number",
+                                    "value": 20,
+                                    "range": "[(68,39)..(68,41)]"
+                                }
+                            ],
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(68,15)..(68,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(68,42)..(68,43)]"
+                            },
+                            "range": "[(68,15)..(68,43)]",
+                            "type": "unsupported-operator-expression",
+                            "unsupportedOperator": {
+                                "type": "operator",
+                                "value": "between",
+                                "range": "[(68,24)..(68,31)]"
+                            }
+                        },
+                        "range": "[(68,8)..(68,43)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(68,13)..(68,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(67,4)..(69,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(67,4)..(67,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(69,4)..(69,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(71,8)..(71,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(71,8)..(71,13)]"
+                        },
+                        "value": {
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "not between",
+                                    "range": "[(71,24)..(71,35)]"
+                                },
+                                {
+                                    "type": "operator",
+                                    "value": "and",
+                                    "range": "[(71,39)..(71,42)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "path",
+                                    "value": "number",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "number",
+                                            "range": "[(71,17)..(71,23)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(71,17)..(71,23)]"
+                                },
+                                {
+                                    "type": "number",
+                                    "value": 30,
+                                    "range": "[(71,36)..(71,38)]"
+                                },
+                                {
+                                    "type": "number",
+                                    "value": 40,
+                                    "range": "[(71,43)..(71,45)]"
+                                }
+                            ],
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(71,15)..(71,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(71,46)..(71,47)]"
+                            },
+                            "range": "[(71,15)..(71,47)]",
+                            "type": "unsupported-operator-expression",
+                            "unsupportedOperator": {
+                                "type": "operator",
+                                "value": "not between",
+                                "range": "[(71,24)..(71,35)]"
+                            }
+                        },
+                        "range": "[(71,8)..(71,47)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(71,13)..(71,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(70,4)..(72,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(70,4)..(70,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(72,4)..(72,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(75,8)..(75,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(75,8)..(75,13)]"
+                        },
+                        "value": {
+                            "operators": [],
+                            "operands": [
+                                {
+                                    "type": "path",
+                                    "value": "nope",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "nope",
+                                            "range": "[(75,17)..(75,21)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(75,17)..(75,21)]"
+                                },
+                                {
+                                    "type": "path",
+                                    "value": "description",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "description",
+                                            "range": "[(75,22)..(75,33)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(75,22)..(75,33)]"
+                                }
+                            ],
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(75,15)..(75,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(75,34)..(75,35)]"
+                            },
+                            "range": "[(75,15)..(75,35)]",
+                            "type": "incorrect-expression",
+                            "message": "Error: no root operator found"
+                        },
+                        "range": "[(75,8)..(75,35)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(75,13)..(75,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(74,4)..(76,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(74,4)..(74,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(76,4)..(76,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(78,8)..(78,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(78,8)..(78,13)]"
+                        },
+                        "value": {
+                            "operators": [],
+                            "operands": [
+                                {
+                                    "type": "path",
+                                    "value": "delay",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "delay",
+                                            "range": "[(78,17)..(78,22)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(78,17)..(78,22)]"
+                                },
+                                {
+                                    "type": "path",
+                                    "value": "gt",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "gt",
+                                            "range": "[(78,23)..(78,25)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(78,23)..(78,25)]"
+                                },
+                                {
+                                    "type": "path",
+                                    "value": "offset",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "offset",
+                                            "range": "[(78,26)..(78,32)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(78,26)..(78,32)]"
+                                }
+                            ],
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(78,15)..(78,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(78,33)..(78,34)]"
+                            },
+                            "range": "[(78,15)..(78,34)]",
+                            "type": "incorrect-expression",
+                            "message": "Error: no root operator found"
+                        },
+                        "range": "[(78,8)..(78,34)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(78,13)..(78,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(77,4)..(79,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(77,4)..(77,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(79,4)..(79,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(82,8)..(82,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(82,8)..(82,13)]"
+                        },
+                        "value": {
+                            "type": "correct-expression",
+                            "operatorName": "and",
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "and",
+                                    "range": "[(82,46)..(82,49)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "correct-expression",
+                                    "operatorName": "not-equal",
+                                    "operators": [
+                                        {
+                                            "type": "operator",
+                                            "value": "!=",
+                                            "range": "[(82,29)..(82,31)]"
+                                        }
+                                    ],
+                                    "operands": [
+                                        {
+                                            "type": "path",
+                                            "value": "description",
+                                            "segments": [
+                                                {
+                                                    "type": "identifier",
+                                                    "value": "description",
+                                                    "range": "[(82,17)..(82,28)]",
+                                                    "quoted": false
+                                                }
+                                            ],
+                                            "separators": [],
+                                            "range": "[(82,17)..(82,28)]"
+                                        },
+                                        {
+                                            "type": "string",
+                                            "value": "some string",
+                                            "range": "[(82,32)..(82,45)]",
+                                            "openToken": {
+                                                "type": "token",
+                                                "value": "'",
+                                                "range": "[(82,32)..(82,33)]"
+                                            },
+                                            "closeToken": {
+                                                "type": "token",
+                                                "value": "'",
+                                                "range": "[(82,44)..(82,45)]"
+                                            }
+                                        }
+                                    ],
+                                    "range": "[(82,17)..(82,45)]"
+                                },
+                                {
+                                    "type": "correct-expression",
+                                    "operatorName": "or",
+                                    "operators": [
+                                        {
+                                            "type": "operator",
+                                            "value": "or",
+                                            "range": "[(82,62)..(82,64)]"
+                                        }
+                                    ],
+                                    "operands": [
+                                        {
+                                            "type": "path",
+                                            "value": "isCritical",
+                                            "segments": [
+                                                {
+                                                    "type": "identifier",
+                                                    "value": "isCritical",
+                                                    "range": "[(82,51)..(82,61)]",
+                                                    "quoted": false
+                                                }
+                                            ],
+                                            "separators": [],
+                                            "range": "[(82,51)..(82,61)]"
+                                        },
+                                        {
+                                            "type": "path",
+                                            "value": "isInteresting",
+                                            "segments": [
+                                                {
+                                                    "type": "identifier",
+                                                    "value": "isInteresting",
+                                                    "range": "[(82,65)..(82,78)]",
+                                                    "quoted": false
+                                                }
+                                            ],
+                                            "separators": [],
+                                            "range": "[(82,65)..(82,78)]"
+                                        }
+                                    ],
+                                    "range": "[(82,50)..(82,79)]",
+                                    "openToken": {
+                                        "type": "token",
+                                        "value": "(",
+                                        "range": "[(82,50)..(82,51)]"
+                                    },
+                                    "closeToken": {
+                                        "type": "token",
+                                        "value": ")",
+                                        "range": "[(82,78)..(82,79)]"
+                                    }
+                                }
+                            ],
+                            "range": "[(82,15)..(82,81)]",
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(82,15)..(82,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(82,80)..(82,81)]"
+                            }
+                        },
+                        "range": "[(82,8)..(82,81)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(82,13)..(82,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(81,4)..(83,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(81,4)..(81,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(83,4)..(83,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(86,8)..(86,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(86,8)..(86,13)]"
+                        },
+                        "value": {
+                            "type": "correct-expression",
+                            "operatorName": "and",
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "and",
+                                    "range": "[(86,46)..(86,49)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "correct-expression",
+                                    "operatorName": "not-equal",
+                                    "operators": [
+                                        {
+                                            "type": "operator",
+                                            "value": "!=",
+                                            "range": "[(86,29)..(86,31)]"
+                                        }
+                                    ],
+                                    "operands": [
+                                        {
+                                            "type": "path",
+                                            "value": "description",
+                                            "segments": [
+                                                {
+                                                    "type": "identifier",
+                                                    "value": "description",
+                                                    "range": "[(86,17)..(86,28)]",
+                                                    "quoted": false
+                                                }
+                                            ],
+                                            "separators": [],
+                                            "range": "[(86,17)..(86,28)]"
+                                        },
+                                        {
+                                            "type": "string",
+                                            "value": "some string",
+                                            "range": "[(86,32)..(86,45)]",
+                                            "openToken": {
+                                                "type": "token",
+                                                "value": "'",
+                                                "range": "[(86,32)..(86,33)]"
+                                            },
+                                            "closeToken": {
+                                                "type": "token",
+                                                "value": "'",
+                                                "range": "[(86,44)..(86,45)]"
+                                            }
+                                        }
+                                    ],
+                                    "range": "[(86,17)..(86,45)]"
+                                },
+                                {
+                                    "operators": [
+                                        {
+                                            "type": "operator",
+                                            "value": "or",
+                                            "range": "[(86,62)..(86,64)]"
+                                        }
+                                    ],
+                                    "operands": [
+                                        {
+                                            "type": "path",
+                                            "value": "isCritical",
+                                            "segments": [
+                                                {
+                                                    "type": "identifier",
+                                                    "value": "isCritical",
+                                                    "range": "[(86,51)..(86,61)]",
+                                                    "quoted": false
+                                                }
+                                            ],
+                                            "separators": [],
+                                            "range": "[(86,51)..(86,61)]"
+                                        }
+                                    ],
+                                    "openToken": {
+                                        "type": "token",
+                                        "value": "(",
+                                        "range": "[(86,50)..(86,51)]"
+                                    },
+                                    "closeToken": {
+                                        "type": "token",
+                                        "value": ")",
+                                        "range": "[(86,65)..(86,66)]"
+                                    },
+                                    "range": "[(86,50)..(86,66)]",
+                                    "type": "incorrect-expression",
+                                    "message": "Error: missing operand for binary-operator 'or'"
+                                }
+                            ],
+                            "range": "[(86,15)..(86,68)]",
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(86,15)..(86,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(86,67)..(86,68)]"
+                            }
+                        },
+                        "range": "[(86,8)..(86,68)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(86,13)..(86,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(85,4)..(87,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(85,4)..(85,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(87,4)..(87,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(90,8)..(90,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(90,8)..(90,13)]"
+                        },
+                        "value": {
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "!=",
+                                    "range": "[(90,29)..(90,31)]"
+                                },
+                                {
+                                    "type": "operator",
+                                    "value": "and",
+                                    "range": "[(90,33)..(90,36)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "path",
+                                    "value": "description",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "description",
+                                            "range": "[(90,17)..(90,28)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(90,17)..(90,28)]"
+                                },
+                                {
+                                    "type": "correct-expression",
+                                    "operatorName": "or",
+                                    "operators": [
+                                        {
+                                            "type": "operator",
+                                            "value": "or",
+                                            "range": "[(90,49)..(90,51)]"
+                                        }
+                                    ],
+                                    "operands": [
+                                        {
+                                            "type": "path",
+                                            "value": "isCritical",
+                                            "segments": [
+                                                {
+                                                    "type": "identifier",
+                                                    "value": "isCritical",
+                                                    "range": "[(90,38)..(90,48)]",
+                                                    "quoted": false
+                                                }
+                                            ],
+                                            "separators": [],
+                                            "range": "[(90,38)..(90,48)]"
+                                        },
+                                        {
+                                            "type": "path",
+                                            "value": "isInteresting",
+                                            "segments": [
+                                                {
+                                                    "type": "identifier",
+                                                    "value": "isInteresting",
+                                                    "range": "[(90,52)..(90,65)]",
+                                                    "quoted": false
+                                                }
+                                            ],
+                                            "separators": [],
+                                            "range": "[(90,52)..(90,65)]"
+                                        }
+                                    ],
+                                    "range": "[(90,37)..(90,66)]",
+                                    "openToken": {
+                                        "type": "token",
+                                        "value": "(",
+                                        "range": "[(90,37)..(90,38)]"
+                                    },
+                                    "closeToken": {
+                                        "type": "token",
+                                        "value": ")",
+                                        "range": "[(90,65)..(90,66)]"
+                                    }
+                                }
+                            ],
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(90,15)..(90,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(90,67)..(90,68)]"
+                            },
+                            "range": "[(90,15)..(90,68)]",
+                            "type": "incorrect-expression",
+                            "message": "Error: missing operand for binary-operator 'not-equal'"
+                        },
+                        "range": "[(90,8)..(90,68)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(90,13)..(90,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(89,4)..(91,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(89,4)..(89,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(91,4)..(91,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(94,8)..(94,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(94,8)..(94,13)]"
+                        },
+                        "value": {
+                            "type": "correct-expression",
+                            "operatorName": "and",
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "and",
+                                    "range": "[(94,46)..(94,49)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "correct-expression",
+                                    "operatorName": "not-equal",
+                                    "operators": [
+                                        {
+                                            "type": "operator",
+                                            "value": "!=",
+                                            "range": "[(94,29)..(94,31)]"
+                                        }
+                                    ],
+                                    "operands": [
+                                        {
+                                            "type": "path",
+                                            "value": "description",
+                                            "segments": [
+                                                {
+                                                    "type": "identifier",
+                                                    "value": "description",
+                                                    "range": "[(94,17)..(94,28)]",
+                                                    "quoted": false
+                                                }
+                                            ],
+                                            "separators": [],
+                                            "range": "[(94,17)..(94,28)]"
+                                        },
+                                        {
+                                            "type": "string",
+                                            "value": "some string",
+                                            "range": "[(94,32)..(94,45)]",
+                                            "openToken": {
+                                                "type": "token",
+                                                "value": "'",
+                                                "range": "[(94,32)..(94,33)]"
+                                            },
+                                            "closeToken": {
+                                                "type": "token",
+                                                "value": "'",
+                                                "range": "[(94,44)..(94,45)]"
+                                            }
+                                        }
+                                    ],
+                                    "range": "[(94,17)..(94,45)]"
+                                },
+                                {
+                                    "operators": [
+                                        {
+                                            "type": "operator",
+                                            "value": "is null",
+                                            "range": "[(94,62)..(94,69)]"
+                                        }
+                                    ],
+                                    "operands": [
+                                        {
+                                            "type": "path",
+                                            "value": "isCritical",
+                                            "segments": [
+                                                {
+                                                    "type": "identifier",
+                                                    "value": "isCritical",
+                                                    "range": "[(94,51)..(94,61)]",
+                                                    "quoted": false
+                                                }
+                                            ],
+                                            "separators": [],
+                                            "range": "[(94,51)..(94,61)]"
+                                        }
+                                    ],
+                                    "openToken": {
+                                        "type": "token",
+                                        "value": "(",
+                                        "range": "[(94,50)..(94,51)]"
+                                    },
+                                    "closeToken": {
+                                        "type": "token",
+                                        "value": ")",
+                                        "range": "[(94,69)..(94,70)]"
+                                    },
+                                    "range": "[(94,50)..(94,70)]",
+                                    "type": "unsupported-operator-expression",
+                                    "unsupportedOperator": {
+                                        "type": "operator",
+                                        "value": "is null",
+                                        "range": "[(94,62)..(94,69)]"
+                                    }
+                                }
+                            ],
+                            "range": "[(94,15)..(94,72)]",
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(94,15)..(94,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(94,71)..(94,72)]"
+                            }
+                        },
+                        "range": "[(94,8)..(94,72)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(94,13)..(94,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(93,4)..(95,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(93,4)..(93,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(95,4)..(95,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(98,8)..(98,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(98,8)..(98,13)]"
+                        },
+                        "value": {
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "is null",
+                                    "range": "[(98,29)..(98,36)]"
+                                },
+                                {
+                                    "type": "operator",
+                                    "value": "and",
+                                    "range": "[(98,37)..(98,40)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "path",
+                                    "value": "description",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "description",
+                                            "range": "[(98,17)..(98,28)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(98,17)..(98,28)]"
+                                },
+                                {
+                                    "type": "correct-expression",
+                                    "operatorName": "or",
+                                    "operators": [
+                                        {
+                                            "type": "operator",
+                                            "value": "or",
+                                            "range": "[(98,53)..(98,55)]"
+                                        }
+                                    ],
+                                    "operands": [
+                                        {
+                                            "type": "path",
+                                            "value": "isCritical",
+                                            "segments": [
+                                                {
+                                                    "type": "identifier",
+                                                    "value": "isCritical",
+                                                    "range": "[(98,42)..(98,52)]",
+                                                    "quoted": false
+                                                }
+                                            ],
+                                            "separators": [],
+                                            "range": "[(98,42)..(98,52)]"
+                                        },
+                                        {
+                                            "type": "path",
+                                            "value": "isInteresting",
+                                            "segments": [
+                                                {
+                                                    "type": "identifier",
+                                                    "value": "isInteresting",
+                                                    "range": "[(98,56)..(98,69)]",
+                                                    "quoted": false
+                                                }
+                                            ],
+                                            "separators": [],
+                                            "range": "[(98,56)..(98,69)]"
+                                        }
+                                    ],
+                                    "range": "[(98,41)..(98,70)]",
+                                    "openToken": {
+                                        "type": "token",
+                                        "value": "(",
+                                        "range": "[(98,41)..(98,42)]"
+                                    },
+                                    "closeToken": {
+                                        "type": "token",
+                                        "value": ")",
+                                        "range": "[(98,69)..(98,70)]"
+                                    }
+                                }
+                            ],
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(98,15)..(98,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(98,71)..(98,72)]"
+                            },
+                            "range": "[(98,15)..(98,72)]",
+                            "type": "unsupported-operator-expression",
+                            "unsupportedOperator": {
+                                "type": "operator",
+                                "value": "is null",
+                                "range": "[(98,29)..(98,36)]"
+                            }
+                        },
+                        "range": "[(98,8)..(98,72)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(98,13)..(98,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(97,4)..(99,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(97,4)..(97,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(99,4)..(99,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(102,8)..(102,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(102,8)..(102,13)]"
+                        },
+                        "value": {
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "!=",
+                                    "range": "[(102,29)..(102,31)]"
+                                },
+                                {
+                                    "type": "operator",
+                                    "value": "and",
+                                    "range": "[(102,33)..(102,36)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "path",
+                                    "value": "description",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "description",
+                                            "range": "[(102,17)..(102,28)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(102,17)..(102,28)]"
+                                },
+                                {
+                                    "operators": [
+                                        {
+                                            "type": "operator",
+                                            "value": "is null",
+                                            "range": "[(102,49)..(102,56)]"
+                                        }
+                                    ],
+                                    "operands": [
+                                        {
+                                            "type": "path",
+                                            "value": "isCritical",
+                                            "segments": [
+                                                {
+                                                    "type": "identifier",
+                                                    "value": "isCritical",
+                                                    "range": "[(102,38)..(102,48)]",
+                                                    "quoted": false
+                                                }
+                                            ],
+                                            "separators": [],
+                                            "range": "[(102,38)..(102,48)]"
+                                        }
+                                    ],
+                                    "openToken": {
+                                        "type": "token",
+                                        "value": "(",
+                                        "range": "[(102,37)..(102,38)]"
+                                    },
+                                    "closeToken": {
+                                        "type": "token",
+                                        "value": ")",
+                                        "range": "[(102,56)..(102,57)]"
+                                    },
+                                    "range": "[(102,37)..(102,57)]",
+                                    "type": "unsupported-operator-expression",
+                                    "unsupportedOperator": {
+                                        "type": "operator",
+                                        "value": "is null",
+                                        "range": "[(102,49)..(102,56)]"
+                                    }
+                                }
+                            ],
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(102,15)..(102,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(102,58)..(102,59)]"
+                            },
+                            "range": "[(102,15)..(102,59)]",
+                            "type": "incorrect-expression",
+                            "message": "Error: missing operand for binary-operator 'not-equal'"
+                        },
+                        "range": "[(102,8)..(102,59)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(102,13)..(102,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(101,4)..(103,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(101,4)..(101,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(103,4)..(103,5)]"
+                }
+            },
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Value",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Value",
+                                    "range": "[(106,8)..(106,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(106,8)..(106,13)]"
+                        },
+                        "value": {
+                            "operators": [
+                                {
+                                    "type": "operator",
+                                    "value": "is null",
+                                    "range": "[(106,29)..(106,36)]"
+                                },
+                                {
+                                    "type": "operator",
+                                    "value": "and",
+                                    "range": "[(106,37)..(106,40)]"
+                                }
+                            ],
+                            "operands": [
+                                {
+                                    "type": "path",
+                                    "value": "description",
+                                    "segments": [
+                                        {
+                                            "type": "identifier",
+                                            "value": "description",
+                                            "range": "[(106,17)..(106,28)]",
+                                            "quoted": false
+                                        }
+                                    ],
+                                    "separators": [],
+                                    "range": "[(106,17)..(106,28)]"
+                                },
+                                {
+                                    "operators": [
+                                        {
+                                            "type": "operator",
+                                            "value": "or",
+                                            "range": "[(106,53)..(106,55)]"
+                                        }
+                                    ],
+                                    "operands": [
+                                        {
+                                            "type": "path",
+                                            "value": "isCritical",
+                                            "segments": [
+                                                {
+                                                    "type": "identifier",
+                                                    "value": "isCritical",
+                                                    "range": "[(106,42)..(106,52)]",
+                                                    "quoted": false
+                                                }
+                                            ],
+                                            "separators": [],
+                                            "range": "[(106,42)..(106,52)]"
+                                        }
+                                    ],
+                                    "openToken": {
+                                        "type": "token",
+                                        "value": "(",
+                                        "range": "[(106,41)..(106,42)]"
+                                    },
+                                    "closeToken": {
+                                        "type": "token",
+                                        "value": ")",
+                                        "range": "[(106,56)..(106,57)]"
+                                    },
+                                    "range": "[(106,41)..(106,57)]",
+                                    "type": "incorrect-expression",
+                                    "message": "Error: missing operand for binary-operator 'or'"
+                                }
+                            ],
+                            "openToken": {
+                                "type": "token",
+                                "value": "(",
+                                "range": "[(106,15)..(106,16)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": ")",
+                                "range": "[(106,58)..(106,59)]"
+                            },
+                            "range": "[(106,15)..(106,59)]",
+                            "type": "unsupported-operator-expression",
+                            "unsupportedOperator": {
+                                "type": "operator",
+                                "value": "is null",
+                                "range": "[(106,29)..(106,36)]"
+                            }
+                        },
+                        "range": "[(106,8)..(106,59)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(106,13)..(106,14)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(105,4)..(107,5)]",
+                "commas": [],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(105,4)..(105,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(107,4)..(107,5)]"
+                }
+            }
+        ],
+        "range": "[(0,14)..(108,1)]",
+        "commas": [
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(4,5)..(4,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(7,5)..(7,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(11,5)..(11,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(14,5)..(14,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(17,5)..(17,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(20,5)..(20,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(23,5)..(23,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(26,5)..(26,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(29,5)..(29,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(32,5)..(32,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(35,5)..(35,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(39,5)..(39,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(43,5)..(43,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(46,5)..(46,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(49,5)..(49,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(53,5)..(53,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(56,5)..(56,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(59,5)..(59,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(63,5)..(63,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(66,5)..(66,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(69,5)..(69,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(72,5)..(72,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(76,5)..(76,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(79,5)..(79,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(83,5)..(83,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(87,5)..(87,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(91,5)..(91,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(95,5)..(95,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(99,5)..(99,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(103,5)..(103,6)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(107,5)..(107,6)]"
+            }
+        ],
+        "openToken": {
+            "type": "token",
+            "value": "[",
+            "range": "[(0,14)..(0,15)]"
+        },
+        "closeToken": {
+            "type": "token",
+            "value": "]",
+            "range": "[(108,0)..(108,1)]"
+        }
+    }
+}

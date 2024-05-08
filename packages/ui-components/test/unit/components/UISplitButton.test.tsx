@@ -100,4 +100,24 @@ describe('<UISplitButton />', () => {
 
         expect(spyOnChange).toHaveBeenCalledWith('option2');
     });
+
+    it('Should render a UISplitButton component - updates on props change', () => {
+        const testProps = Object.assign({}, splitButtonProps);
+        const Proxy = (defaultProps: UISplitButtonProps): JSX.Element => <UISplitButton {...defaultProps} />;
+        wrapper = Enzym.mount<UISplitButton>(<Proxy {...testProps} />, { attachTo: app });
+
+        splitButtonInstance = wrapper.find('UISplitButton').instance() as UISplitButton;
+        expect(wrapper.find('button').length).toEqual(2);
+        const btn1 = wrapper.find('button').last();
+        btn1.simulate('click');
+
+        let entries = getContextItems('test');
+        expect(entries).toHaveLength(2);
+        wrapper.setProps({
+            ...splitButtonProps,
+            menuItems: [...splitButtonProps.menuItems, { key: 'option4', text: 'option 4' }]
+        });
+        entries = getContextItems('test');
+        expect(entries).toHaveLength(3);
+    });
 });

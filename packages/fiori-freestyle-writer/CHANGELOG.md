@@ -1,5 +1,190 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.22.3
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+-   Updated dependencies [4e267684]
+    -   @sap-ux/odata-service-writer@0.17.2
+    -   @sap-ux/ui5-application-writer@0.26.11
+
+## 0.22.2
+
+### Patch Changes
+
+-   6684f851: fix(\*-writer): remove the incomplete JSDoc annotations
+-   Updated dependencies [6684f851]
+    -   @sap-ux/ui5-application-writer@0.26.10
+
+## 0.22.1
+
+### Patch Changes
+
+-   Updated dependencies [7f8105c7]
+    -   @sap-ux/ui5-config@0.22.3
+    -   @sap-ux/odata-service-writer@0.17.1
+    -   @sap-ux/ui5-application-writer@0.26.9
+
+## 0.22.0
+
+### Minor Changes
+
+-   8db928db: odata-service-writer now uses logic from mockserver-config-writer to generate mockserver
+
+### Patch Changes
+
+-   Updated dependencies [8db928db]
+    -   @sap-ux/odata-service-writer@0.17.0
+
+## 0.21.10
+
+### Patch Changes
+
+-   Updated dependencies [b7d95fb3]
+    -   @sap-ux/ui5-config@0.22.2
+    -   @sap-ux/odata-service-writer@0.16.5
+    -   @sap-ux/ui5-application-writer@0.26.8
+
+## 0.21.9
+
+### Patch Changes
+
+-   da0ecd9a: Enable Typscript type checking in eslint module @sap-ux/eslint-plugin-fiori-tools
+-   Updated dependencies [da0ecd9a]
+    -   @sap-ux/ui5-application-writer@0.26.7
+
+## 0.21.8
+
+### Patch Changes
+
+-   Updated dependencies [1ec097f8]
+    -   @sap-ux/odata-service-writer@0.16.4
+
+## 0.21.7
+
+### Patch Changes
+
+-   Updated dependencies [efa35ddd]
+    -   @sap-ux/ui5-config@0.22.1
+    -   @sap-ux/odata-service-writer@0.16.3
+    -   @sap-ux/ui5-application-writer@0.26.6
+
+## 0.21.6
+
+### Patch Changes
+
+-   Updated dependencies [ec509c40]
+    -   @sap-ux/ui5-config@0.22.0
+    -   @sap-ux/odata-service-writer@0.16.2
+    -   @sap-ux/ui5-application-writer@0.26.5
+
+## 0.21.5
+
+### Patch Changes
+
+-   4b29ddcc: Update TypeScript templates, eslint config and ui5 devDependencies
+-   Updated dependencies [4b29ddcc]
+    -   @sap-ux/ui5-application-writer@0.26.4
+
+## 0.21.4
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/ui5-application-writer@0.26.3
+    -   @sap-ux/odata-service-writer@0.16.1
+    -   @sap-ux/ui5-config@0.21.1
+
+## 0.21.3
+
+### Patch Changes
+
+-   Updated dependencies [446f290c]
+    -   @sap-ux/odata-service-writer@0.16.0
+
+## 0.21.2
+
+### Patch Changes
+
+-   Updated dependencies [f11f9b2c]
+    -   @sap-ux/ui5-application-writer@0.26.2
+    -   @sap-ux/odata-service-writer@0.15.1
+
+## 0.21.1
+
+### Patch Changes
+
+-   Updated dependencies [3f977f21]
+    -   @sap-ux/ui5-config@0.21.0
+    -   @sap-ux/odata-service-writer@0.15.1
+    -   @sap-ux/ui5-application-writer@0.26.1
+
+## 0.21.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/ui5-application-writer@0.26.0
+    -   @sap-ux/odata-service-writer@0.15.0
+    -   @sap-ux/ui5-config@0.20.0
+
+## 0.20.14
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+-   Updated dependencies [cbcad88d]
+    -   @sap-ux/odata-service-writer@0.14.36
+    -   @sap-ux/ui5-application-writer@0.25.10
+
+## 0.20.13
+
+### Patch Changes
+
+-   4087bffb: Allow more flexible @types type loading for TypeScript generate projects
+-   Updated dependencies [4087bffb]
+    -   @sap-ux/ui5-application-writer@0.25.9
+
+## 0.20.12
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.19.5
+-   @sap-ux/odata-service-writer@0.14.35
+-   @sap-ux/ui5-application-writer@0.25.8
+
+## 0.20.11
+
+### Patch Changes
+
+-   65010b09: fix - use patch version 0 for ui5 types semver for more reliable installs
+-   Updated dependencies [65010b09]
+    -   @sap-ux/ui5-application-writer@0.25.7
+    -   @sap-ux/ui5-config@0.19.4
+    -   @sap-ux/odata-service-writer@0.14.34
+
+## 0.20.10
+
+### Patch Changes
+
+-   c53a1665: Small fix in App.controller.js template
+
+## 0.20.9
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/odata-service-writer@0.14.33
+    -   @sap-ux/ui5-application-writer@0.25.6
+    -   @sap-ux/ui5-config@0.19.3
+
 ## 0.20.8
 
 ### Patch Changes

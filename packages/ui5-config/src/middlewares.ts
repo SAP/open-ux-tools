@@ -56,15 +56,15 @@ export function getFioriToolsProxyMiddlewareConfig(
 
     if (backends && backends.length > 0) {
         backends.forEach((element) => {
-            element.path = element.path || '/';
+            element.path = element.path ?? '/';
         });
         fioriToolsProxy.configuration.backend = backends;
     }
 
     if (ui5 !== undefined) {
         fioriToolsProxy.configuration['ui5'] = {
-            path: ui5.path || ['/resources', '/test-resources'],
-            url: ui5.url || 'https://ui5.sap.com'
+            path: ui5.path ?? ['/resources', '/test-resources'],
+            url: ui5.url ?? 'https://ui5.sap.com'
         };
         if (ui5.version) {
             fioriToolsProxy.configuration['ui5'].version = ui5.version;
@@ -77,7 +77,10 @@ export function getFioriToolsProxyMiddlewareConfig(
     return { config: fioriToolsProxy, comments };
 }
 
-export const getMockServerMiddlewareConfig = (path?: string): CustomMiddleware<MockserverConfig> => {
+export const getMockServerMiddlewareConfig = (
+    path?: string,
+    annotationsConfig: MockserverConfig['annotations'] = []
+): CustomMiddleware<MockserverConfig> => {
     path = path?.replace(/\/$/, ''); // Mockserver is sensitive to trailing '/'
     return {
         name: 'sap-fe-mockserver',
@@ -86,13 +89,13 @@ export const getMockServerMiddlewareConfig = (path?: string): CustomMiddleware<M
             mountPath: '/',
             services: [
                 {
-                    urlPath: path || '',
+                    urlPath: path ?? '',
                     metadataPath: './webapp/localService/metadata.xml',
                     mockdataPath: './webapp/localService/data',
                     generateMockData: true
                 }
             ],
-            annotations: []
+            annotations: annotationsConfig
         }
     };
 };

@@ -62,6 +62,20 @@ describe('ListReport', () => {
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
         });
 
+        test('minimal input, plus optional page id', () => {
+            const target = join(testDir, 'minimal-input');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            const minInput = {
+                ...minimalInput,
+                id: 'DummyPage'
+            };
+            const testApiData = JSON.parse(JSON.stringify(minInput));
+            //act
+            generate(target, testApiData, fs);
+            //check
+            expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
+        });
+
         test('all optional settings used', () => {
             const target = join(testDir, 'all-settings');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);

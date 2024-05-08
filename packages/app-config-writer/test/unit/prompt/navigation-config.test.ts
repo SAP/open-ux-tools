@@ -76,6 +76,26 @@ describe('Test promptInboundNavigationConfig', () => {
         ]);
     });
 
+    test('promptInboundNavigationConfig sets optional prompts to undefined when no input', async () => {
+        const basePath = join(__dirname, '../../fixtures/navigation-config/ui5-app-inbounds');
+        jest.spyOn(prompts, 'prompt').mockResolvedValue({
+            semanticObject: 'so1',
+            action: 'act1',
+            title: '123',
+            subTitle: ''
+        });
+        await expect(promptInboundNavigationConfig(basePath)).resolves.toEqual(
+            expect.objectContaining({
+                'config': {
+                    'action': 'act1',
+                    'semanticObject': 'so1',
+                    'title': '123'
+                },
+                'fs': expect.anything()
+            })
+        );
+    });
+
     test('prompting returns undefined config when "overwrite" false and inbound exists', async () => {
         const basePath = join(__dirname, '../../fixtures/navigation-config/ui5-app-inbounds');
         jest.spyOn(prompts, 'prompt').mockResolvedValue({

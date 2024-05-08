@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+        <edmx:Include Namespace="Org.OData.Core.V1" Alias="Core"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="NorthwindModel" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="Category">
+                <Key>
+                    <PropertyRef Name="CategoryID" />
+                </Key>
+                <Property
+                    Name="CategoryID"
+                    Type="Edm.Int32"
+                    Nullable="false"
+                    p5:StoreGeneratedPattern="Identity"
+                    xmlns:p5="http://schemas.microsoft.com/ado/2009/02/edm/annotation"
+                />
+                <Property Name="CategoryName" Type="Edm.String" Nullable="false" MaxLength="15" />
+                <Property Name="Description" Type="Edm.String" MaxLength="max" />
+                <Property Name="Picture" Type="Edm.Binary" MaxLength="max" />
+            </EntityType>
+            <Annotations Target="ODataWebExperimental.Northwind.Model.NorthwindEntities">
+                <Annotation Term="Com.Microsoft.OData.Service.Conventions.V1.UrlConventions" String="KeyAsSegment" />
+            </Annotations>
+        </Schema>
+        <Schema Namespace="ODataWebExperimental.Northwind.Model" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer
+                Name="NorthwindEntities"
+                p4:LazyLoadingEnabled="true"
+                xmlns:p4="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
+                <EntitySet Name="Categories" EntityType="NorthwindModel.Category">
+                </EntitySet>
+            </EntityContainer>
+            <Annotations Target="ODataWebExperimental.Northwind.Model.NorthwindEntities/Categories">
+                <Annotation Term="Core.Description" String="Test" />
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

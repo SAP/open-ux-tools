@@ -1,5 +1,35 @@
 # @sap-ux/types
 
+## 1.1.3
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+
+## 1.1.2
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+
+## 1.1.1
+
+### Patch Changes
+
+-   b7bce4f4: feat: move odata-entity-model module
+
+## 1.1.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+## 1.0.5
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+
 ## 1.0.4
 
 ### Patch Changes

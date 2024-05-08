@@ -1,5 +1,251 @@
 # @sap-ux/project-access
 
+## 1.19.14
+
+### Patch Changes
+
+-   Updated dependencies [7f8105c7]
+    -   @sap-ux/ui5-config@0.22.3
+
+## 1.19.13
+
+### Patch Changes
+
+-   99bca62c: Add error code for cds mismatch
+
+## 1.19.12
+
+### Patch Changes
+
+-   b7d95fb3: fix paths and config writers
+-   Updated dependencies [b7d95fb3]
+    -   @sap-ux/ui5-config@0.22.2
+
+## 1.19.11
+
+### Patch Changes
+
+-   4389c528: expose library types
+
+## 1.19.10
+
+### Patch Changes
+
+-   f8e16120: Add missing fiori tools settings enum
+
+## 1.19.9
+
+### Patch Changes
+
+-   ee76e47f: fix: get i18n bundles for CAPJava
+
+## 1.19.8
+
+### Patch Changes
+
+-   Updated dependencies [03167a06]
+    -   @sap-ux/i18n@0.0.6
+
+## 1.19.7
+
+### Patch Changes
+
+-   98496d57: adds new module @sap-ux/ui5-library-reference-inquirer
+-   e3d2e003: Detect mismatching global and project installations of @sap/cds
+
+## 1.19.6
+
+### Patch Changes
+
+-   f0e3263a: Adds missing constants entries, refactor duplicate constants, use project-access const instead
+
+## 1.19.5
+
+### Patch Changes
+
+-   Updated dependencies [efa35ddd]
+    -   @sap-ux/ui5-config@0.22.1
+
+## 1.19.4
+
+### Patch Changes
+
+-   87c942e5: Remove setting of cds.root.
+
+## 1.19.3
+
+### Patch Changes
+
+-   89013210: Revert setting of cds.root
+
+## 1.19.2
+
+### Patch Changes
+
+-   Updated dependencies [ec509c40]
+    -   @sap-ux/ui5-config@0.22.0
+
+## 1.19.1
+
+### Patch Changes
+
+-   Updated dependencies [cc95c0a8]
+    -   @sap-ux/i18n@0.0.5
+
+## 1.19.0
+
+### Minor Changes
+
+-   a4f00f7c: Remove setting of cds.root. Set the project in cds.load() instead.
+
+## 1.18.0
+
+### Minor Changes
+
+-   e6da2117: adds iscapproject function
+
+## 1.17.6
+
+### Patch Changes
+
+-   c381d32f: feat(project-access): detect libraries with `.library`
+
+## 1.17.5
+
+### Patch Changes
+
+-   33ec9ff9: fix: enhance `getI18nBundles` to be more tolerant
+
+## 1.17.4
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/ui5-config@0.21.1
+    -   @sap-ux/i18n@0.0.4
+
+## 1.17.3
+
+### Patch Changes
+
+-   2eda843d: feat(project-access): expose "toReferenceUri" in package interface
+
+## 1.17.2
+
+### Patch Changes
+
+-   76ce5c2f: fix: expose getI18nPropertiesPaths and export types for browser in @sap-ux/i18n
+-   Updated dependencies [76ce5c2f]
+    -   @sap-ux/i18n@0.0.3
+
+## 1.17.1
+
+### Patch Changes
+
+-   86da13e3: Add i18n support
+-   Updated dependencies [86da13e3]
+    -   @sap-ux/i18n@0.0.2
+
+## 1.17.0
+
+### Minor Changes
+
+-   236146b4: Add retrieval of project structure
+
+## 1.16.3
+
+### Patch Changes
+
+-   e6f454ab: Fix for detecting apps that are part of CAP
+
+## 1.16.2
+
+### Patch Changes
+
+-   d5b99a28: cds.root is now set from passed project root
+
+## 1.16.1
+
+### Patch Changes
+
+-   20a4dbfc: Fix for classification of freestyle apps in CAP Java projects
+
+## 1.16.0
+
+### Minor Changes
+
+-   f7382bd1: Add getAppType() and getProjectType()
+
+## 1.15.5
+
+### Patch Changes
+
+-   f11f9b2c: fix(deps): update dependency @ui5/manifest to v1.61.0
+
+## 1.15.4
+
+### Patch Changes
+
+-   Updated dependencies [3f977f21]
+    -   @sap-ux/ui5-config@0.21.0
+
+## 1.15.3
+
+### Patch Changes
+
+-   a82759be: Fix for "TypeError: Cannot read properties of undefined (reading 'odata-v4')" which can occur when dynamically loading different @sap/cds verrsions
+
+## 1.15.2
+
+### Patch Changes
+
+-   d7d52155: Find project root of adp by searching for package.json
+
+## 1.15.1
+
+### Patch Changes
+
+-   e4821c0f: SonarCloud code smells
+
+## 1.15.0
+
+### Minor Changes
+
+-   b458bf43: Adding functions getCdsFiles(), getCdsRoots(), getCdsServices()
+
+## 1.14.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/ui5-config@0.20.0
+
+## 1.13.8
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.19.5
+
+## 1.13.7
+
+### Patch Changes
+
+-   Updated dependencies [65010b09]
+    -   @sap-ux/ui5-config@0.19.4
+
+## 1.13.6
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/ui5-config@0.19.3
+
 ## 1.13.5
 
 ### Patch Changes

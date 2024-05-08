@@ -81,12 +81,12 @@ describe('message helpers', () => {
         };
         const errorMock = (log.error = jest.fn());
         const infoMock = (log.info = jest.fn());
-        prettyPrintError({ error, log, host });
+        prettyPrintError({ error, log, host, isDest: true });
         // log message, each resolution and each error detail
         expect(errorMock).toBeCalledTimes(
             1 + Object.keys(error.innererror.Error_Resolution).length + error.innererror.errordetails.length
         );
-        expect(infoMock).toBeCalledTimes(2);
+        expect(infoMock).toBeCalledTimes(3);
 
         // Restrict to only errordetails, typical for deployment with test mode enabled
         errorMock.mockReset();

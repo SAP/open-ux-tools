@@ -74,10 +74,6 @@ export function getUIContextualMenuItemStyles(): Partial<IContextualMenuItemStyl
 export function getUIcontextualMenuCalloutStyles(maxWidth?: number): Partial<ICalloutContentStyles> {
     return {
         root: {
-            // workaround. resolves callout root element borders being cut or invisible
-            // issue appears in webkit based environments with double as devicePixelRatio value
-            animationFillMode: 'none',
-            transform: 'rotate(0.0001deg)',
             maxWidth: maxWidth
         }
     };
@@ -142,12 +138,20 @@ export const UIContextualMenu: React.FC<UIIContextualMenuProps> = (props) => {
                 ...props.calloutProps
             }}
             styles={{ ...getUIcontextualMenuStyles(), ...props.styles }}
-            onRenderSubMenu={(props?: IContextualMenuProps): JSX.Element | null => {
-                if (!props) {
-                    return null;
-                }
-                return <UIContextualMenu {...props} />;
-            }}
+            onRenderSubMenu={getSubMenu}
         />
     );
 };
+
+/**
+ * Method returns element for submenu of contextual menu.
+ *
+ * @param props Contextual menu properties.
+ * @returns Element for submenu of contextual menu.
+ */
+function getSubMenu(props?: IContextualMenuProps): JSX.Element | null {
+    if (!props) {
+        return null;
+    }
+    return <UIContextualMenu {...props} />;
+}

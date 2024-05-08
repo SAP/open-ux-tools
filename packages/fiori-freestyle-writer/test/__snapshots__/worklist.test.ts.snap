@@ -6218,24 +6218,20 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
 ], 
-    /**
-     * provide app-view type models (as in the first \\"V\\" in MVVC)
-     * 
-     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
-     * @param {typeof sap.ui.Device} Device
-     * 
-     * @returns {Function} createDeviceModel() for providing runtime info for the device the UI5 app is running on
-     */
-    function (JSONModel, Device) {
-        \\"use strict\\";
+function (JSONModel, Device) {
+    \\"use strict\\";
 
-        return {
-            createDeviceModel: function () {
-                var oModel = new JSONModel(Device);
-                oModel.setDefaultBindingMode(\\"OneWay\\");
-                return oModel;
+    return {
+        /**
+         * Provides runtime info for the device the UI5 app is running on as JSONModel
+         */
+        createDeviceModel: function () {
+            var oModel = new JSONModel(Device);
+            oModel.setDefaultBindingMode(\\"OneWay\\");
+            return oModel;
         }
     };
+
 });",
     "state": "modified",
   },
@@ -9541,24 +9537,20 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
 ], 
-    /**
-     * provide app-view type models (as in the first \\"V\\" in MVVC)
-     * 
-     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
-     * @param {typeof sap.ui.Device} Device
-     * 
-     * @returns {Function} createDeviceModel() for providing runtime info for the device the UI5 app is running on
-     */
-    function (JSONModel, Device) {
-        \\"use strict\\";
+function (JSONModel, Device) {
+    \\"use strict\\";
 
-        return {
-            createDeviceModel: function () {
-                var oModel = new JSONModel(Device);
-                oModel.setDefaultBindingMode(\\"OneWay\\");
-                return oModel;
+    return {
+        /**
+         * Provides runtime info for the device the UI5 app is running on as JSONModel
+         */
+        createDeviceModel: function () {
+            var oModel = new JSONModel(Device);
+            oModel.setDefaultBindingMode(\\"OneWay\\");
+            return oModel;
         }
     };
+
 });",
     "state": "modified",
   },
@@ -12455,24 +12447,20 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
 ], 
-    /**
-     * provide app-view type models (as in the first \\"V\\" in MVVC)
-     * 
-     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
-     * @param {typeof sap.ui.Device} Device
-     * 
-     * @returns {Function} createDeviceModel() for providing runtime info for the device the UI5 app is running on
-     */
-    function (JSONModel, Device) {
-        \\"use strict\\";
+function (JSONModel, Device) {
+    \\"use strict\\";
 
-        return {
-            createDeviceModel: function () {
-                var oModel = new JSONModel(Device);
-                oModel.setDefaultBindingMode(\\"OneWay\\");
-                return oModel;
+    return {
+        /**
+         * Provides runtime info for the device the UI5 app is running on as JSONModel
+         */
+        createDeviceModel: function () {
+            var oModel = new JSONModel(Device);
+            oModel.setDefaultBindingMode(\\"OneWay\\");
+            return oModel;
         }
     };
+
 });",
     "state": "modified",
   },
@@ -12962,31 +12950,6 @@ sap.registerComponentDependencyPaths(manifestUri)
 
 exports[`Fiori freestyle template: worklistTemplate Generate files for template: worklist_ts 1`] = `
 Object {
-  ".babelrc.json": Object {
-    "contents": "{
-    \\"presets\\": [
-        \\"@babel/preset-env\\",
-        [
-            \\"transform-ui5\\",
-            {
-                \\"overridesToOverride\\": true
-            }
-        ],
-        \\"@babel/preset-typescript\\"
-    ],
-    \\"plugins\\": [
-        \\"transform-remove-console\\",
-        [
-            \\"transform-async-to-promises\\",
-            {
-                \\"inlineHelpers\\": true
-            }
-        ]
-    ],
-    \\"sourceMaps\\": true
-}",
-    "state": "modified",
-  },
   ".eslintrc": Object {
     "contents": "{
     \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
@@ -13025,11 +12988,11 @@ archive.zip
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
-    \\"ui5-tooling-transpile\\": \\"^3.2.0\\",
+    \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
     \\"typescript\\": \\"^5.1.6\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
-    \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.2.0\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
+    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -13067,8 +13030,9 @@ archive.zip
                 \\"./webapp/*\\"
             ]
         },
-        \\"types\\": [
-            \\"@sapui5/ts-types-esm\\"
+        \\"typeRoots\\": [
+            \\"./node_modules/@types\\",
+            \\"./node_modules/@sapui5/ts-types-esm\\"
         ]
     },
     \\"include\\": [
@@ -13109,6 +13073,8 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
         excludePatterns:
           - /Component-preload.js
     - name: fiori-tools-proxy
@@ -13137,6 +13103,8 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
 ",
     "state": "modified",
   },
@@ -13174,6 +13142,8 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
         excludePatterns:
           - /Component-preload.js
     - name: sap-fe-mockserver
@@ -13192,6 +13162,8 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
 ",
     "state": "modified",
   },
@@ -13229,6 +13201,8 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
         excludePatterns:
           - /Component-preload.js
 builder:
@@ -13237,6 +13211,8 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
 ",
     "state": "modified",
   },
@@ -16329,31 +16305,6 @@ sap.registerComponentDependencyPaths(manifestUri)
 
 exports[`Fiori freestyle template: worklistTemplate Generate files for template: worklist_ts_ui5_1_108 1`] = `
 Object {
-  ".babelrc.json": Object {
-    "contents": "{
-    \\"presets\\": [
-        \\"@babel/preset-env\\",
-        [
-            \\"transform-ui5\\",
-            {
-                \\"overridesToOverride\\": true
-            }
-        ],
-        \\"@babel/preset-typescript\\"
-    ],
-    \\"plugins\\": [
-        \\"transform-remove-console\\",
-        [
-            \\"transform-async-to-promises\\",
-            {
-                \\"inlineHelpers\\": true
-            }
-        ]
-    ],
-    \\"sourceMaps\\": true
-}",
-    "state": "modified",
-  },
   ".eslintrc": Object {
     "contents": "{
     \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
@@ -16391,12 +16342,12 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sapui5/ts-types-esm\\": \\"~1.108.1\\",
-    \\"ui5-tooling-transpile\\": \\"^3.2.0\\",
+    \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
+    \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
     \\"typescript\\": \\"^5.1.6\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
-    \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.2.0\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
+    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -16434,8 +16385,9 @@ archive.zip
                 \\"./webapp/*\\"
             ]
         },
-        \\"types\\": [
-            \\"@sapui5/ts-types-esm\\"
+        \\"typeRoots\\": [
+            \\"./node_modules/@types\\",
+            \\"./node_modules/@sapui5/ts-types-esm\\"
         ]
     },
     \\"include\\": [
@@ -16471,6 +16423,8 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
         excludePatterns:
           - /Component-preload.js
     - name: fiori-tools-proxy
@@ -16499,6 +16453,8 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
 ",
     "state": "modified",
   },
@@ -16536,6 +16492,8 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
         excludePatterns:
           - /Component-preload.js
     - name: sap-fe-mockserver
@@ -16554,6 +16512,8 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
 ",
     "state": "modified",
   },
@@ -16591,6 +16551,8 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
         excludePatterns:
           - /Component-preload.js
 builder:
@@ -16599,6 +16561,8 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
 ",
     "state": "modified",
   },

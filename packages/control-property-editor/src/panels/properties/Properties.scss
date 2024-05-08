@@ -1,0 +1,102 @@
+@import './../../variables.scss';
+
+.property-content {
+    padding: 20px 15px;
+}
+
+.space {
+    margin-bottom: 10px;
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.space-toggle {
+    label {
+        font-size: $defaultFontSize;
+        font-weight: bold;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+    margin-bottom: 12px;
+}
+.space-toggle-disabled {
+    label {
+        opacity: 0.55;
+    }
+}
+
+.dropdownEditor {
+    label {
+        font-weight: bold;
+        padding-bottom: 2px;
+        height: auto;
+    }
+    color: var(--vscode-foreground);
+    font-size: $defaultFontSize;
+    margin-bottom: 12px;
+}
+
+.stringEditor {
+    font-weight: bold;
+    font-size: $defaultFontSize;
+    div {
+        label {
+            font-weight: bold !important;
+            margin-bottom: 0px !important;
+        }
+    }
+    margin-bottom: 12px;
+}
+
+.stringEditorDisabled {
+    div {
+        div {
+            opacity: 0.4;
+        }
+    }
+}
+
+.properties-no-control-selected-text {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 29px;
+    text-align: center;
+    padding-top: 30px;
+    color: var(--vscode-foreground);
+}
+
+.properties-modify-text {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 18px;
+    text-align: center;
+    margin: 10%;
+    color: var(--vscode-foreground);
+}
+
+.properties-control-select-icon {
+    text-align: center;
+}
+.filter-properties {
+    display: flex;
+    margin: 0px 15px 10px 15px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.funnel-properties-icon {
+    margin-left: 16px;
+    i {
+        line-height: 20px;
+    }
+}
+
+label[for='editable-properties-checkbox'] {
+    .ms-Checkbox-text {
+        font-size: 13px !important;
+    }
+}

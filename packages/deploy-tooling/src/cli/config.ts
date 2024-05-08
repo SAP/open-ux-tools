@@ -128,6 +128,7 @@ function mergeTarget(baseTarget: AbapTarget & { cloud?: boolean }, options: CliO
         url: targetUrl,
         client: options.client ?? baseTarget?.client,
         scp: options.cloud !== undefined ? options.cloud : baseTarget?.cloud,
+        authenticationType: options.authenticationType ?? baseTarget?.authenticationType,
         destination: options.destination ?? baseTarget?.destination,
         serviceKey: getServiceKey(options, targetUrl),
         params: options.queryParams ? parseQueryParams(options.queryParams) : undefined,
@@ -162,7 +163,7 @@ function mergeCredentials(taskConfig: AbapDeployConfig, options: CliOptions) {
  * @returns the merged config
  */
 export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOptions): Promise<AbapDeployConfig> {
-    const app: BspConfig = {
+    const app: Partial<BspConfig> = {
         name: options.name ?? taskConfig.app?.name,
         description: options.description ?? taskConfig.app?.description,
         package: options.package ?? taskConfig.app?.package,
@@ -177,6 +178,7 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
     config.yes = mergeFlag(options.yes, taskConfig.yes);
     config.createTransport = mergeFlag(options.createTransport, taskConfig.createTransport);
     config.retry = process.env.NO_RETRY ? !process.env.NO_RETRY : mergeFlag(options.retry, taskConfig.retry);
+    config.lrep = options.lrep;
 
     if (!options.archiveUrl && !options.archivePath && !options.archiveFolder) {
         options.archiveFolder = 'dist';

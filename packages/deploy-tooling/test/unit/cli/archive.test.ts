@@ -1,10 +1,11 @@
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { dirname, relative } from 'path';
+import { join, relative } from 'path';
 import { getArchive } from '../../../src/cli/archive';
 import { createUi5Archive } from '../../../src/ui5/archive';
 import axios from 'axios';
 import type { Resource } from '@ui5/fs';
-import { ZipFile } from 'yazl';
+import AdmZip from 'adm-zip';
+import { existsSync } from 'fs';
 
 jest.mock('axios');
 
@@ -13,8 +14,13 @@ describe('cli/archive', () => {
 
     describe('createArchiveFromFolder', () => {
         test('existing folder', async () => {
-            const archiveFolder = relative(process.cwd(), dirname(__dirname));
-            await getArchive(nullLogger, { archiveFolder } as any);
+            const archiveFolder = join(__dirname, '../../fixtures/simple-app/webapp');
+            const archive = await getArchive(nullLogger, { archiveFolder } as any);
+            expect(archive).toBeDefined();
+            const files = new AdmZip(archive).getEntries().map((entry) => entry.entryName);
+            for (const file of files) {
+                expect(existsSync(join(archiveFolder, file))).toBe(true);
+            }
         });
 
         test('not existing folder', async () => {
@@ -83,19 +89,20 @@ describe('Archive Generation', () => {
     const mockProject = {
         byGlob: jest.fn().mockResolvedValue(files)
     };
-    const zipFileSpy = jest.spyOn(ZipFile.prototype, 'addBuffer');
 
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
     test('Create archive with exclude parameter', async () => {
-        await createUi5Archive(nullLogger, mockProject as any, projectName, ['/test/']);
-        expect(zipFileSpy).toBeCalledTimes(1);
+        const buffer = await createUi5Archive(nullLogger, mockProject as any, projectName, ['/test/']);
+        const zip = new AdmZip(buffer);
+        expect(zip.getEntryCount()).toBe(1);
     });
 
     test('Create archive to include everything', async () => {
-        await createUi5Archive(nullLogger, mockProject as any, projectName);
-        expect(zipFileSpy).toBeCalledTimes(2);
+        const buffer = await createUi5Archive(nullLogger, mockProject as any, projectName);
+        const zip = new AdmZip(buffer);
+        expect(zip.getEntryCount()).toBe(2);
     });
 });

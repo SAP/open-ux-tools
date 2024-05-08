@@ -1,0 +1,139 @@
+.filter-outline {
+    display: flex;
+    margin: 20px 14px 30px 14px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.funnel-icon {
+    margin-left: 16px;
+    i {
+        line-height: 20px;
+    }
+}
+
+.funnel-call-out-checkbox {
+    padding-bottom: 5px;
+}
+
+.tree-no-control-found {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 29px;
+    text-align: center;
+    color: var(--vscode-foreground);
+}
+.tree-modify-search-input {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 18px;
+    text-align: center;
+    padding-top: 20px;
+    color: var(--vscode-foreground);
+}
+.tree-search-icon {
+    text-align: center;
+}
+
+.tree-cell {
+    display: flex;
+    font-size: 13px;
+    font-weight: normal;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    height: 18px;
+    padding: 5px 0;
+    min-width: 0px;
+    align-items: center;
+}
+
+.tree-row {
+    display: flex;
+    justify-content: space-between;
+    &:hover {
+        cursor: pointer;
+        background-color: var(--vscode-dropdown-background);
+        color: var(--vscode-dropdown-foreground);
+        outline: 1px dashed var(--vscode-contrastActiveBorder);
+    }
+    align-items: center;
+}
+
+.app-panel-scroller > div {
+    padding-top: 0px;
+}
+.focusEditable {
+    opacity: 0.55;
+}
+
+.extension-icon {
+    margin-top: 2px;
+}
+
+.tooltip-container {
+    position: relative;
+}
+
+.tooltip {
+    background: var(--vscode-badge-background);
+    color: #fff;
+    width: auto;
+    padding: 0px 2px;
+    margin-left: -40px; /* Center the tooltip */
+    bottom: 95%; /* Position the tooltip above the text */
+    left: 50%;
+    border-radius: 4px;
+    position: absolute;
+    text-align: center;
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s;
+
+    button {
+        background-color: var(--vscode-textLink-foreground);
+        border: none;
+        color: white;
+        padding: 4px 8px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 11px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: all 0.1s ease-in-out;
+
+        &:hover {
+            opacity: 0.88;
+        }
+    }
+}
+
+.tree-row-icon {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.right-chevron-icon {
+    margin-right: 3px;
+    transform: rotate(0deg);
+    transform-origin: 50% 50%;
+    transition: transform 0.1s linear 0s;
+}
+.down-chevron-icon {
+    margin-right: 3px;
+    transform: rotate(90deg);
+    transform-origin: 50% 50%;
+    transition: transform 0.1s linear 0s;
+}
+
+.app-panel-selected-bg.tree-row {
+    color: var(--vscode-list-activeSelectionForeground);
+    background-color: var(--vscode-list-activeSelectionBackground);
+    outline: 1px solid var(--vscode-contrastActiveBorder);
+}

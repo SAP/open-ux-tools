@@ -25,6 +25,7 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
             folder: 'extensions/custom',
             title: 'New Custom Header Section',
             subTitle: 'Custom Header section subtitle',
+            stashed: false,
             edit,
             requestGroupId: RequestGroupId.Decoration,
             flexSettings: {
@@ -79,6 +80,30 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
             expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
             expect(expectedEditFragmentPath).toBeDefined();
             // fragment is not generated, file does not exist
+            try {
+                fs.read(expectedEditFragmentPath);
+            } catch (error) {
+                expect(error).toBeDefined();
+            }
+        });
+
+        test(`for version 1.86 (edit mode disabled)`, () => {
+            const customHeaderSection = createCustomHeaderSectionWithEditFragment('1.86.0', undefined);
+            const expectedFragmentPath = join(
+                testDir,
+                `webapp/${customHeaderSection.folder}/${customHeaderSection.name}.fragment.xml`
+            );
+            generateCustomHeaderSection(testDir, { ...customHeaderSection }, fs);
+
+            const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
+            const settings = (
+                updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
+            )['settings'];
+            expect(settings.content).toMatchSnapshot();
+            expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
+            expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
+            expect(expectedEditFragmentPath).toBeDefined();
+            // edit fragment is not generated, file does not exist
             try {
                 fs.read(expectedEditFragmentPath);
             } catch (error) {
@@ -149,6 +174,21 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
                 expect(fs.read(expectedEditFragmentPath)).toMatchSnapshot();
                 expect(fs.read(expectedEditFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
             });
+        });
+
+        test('custom control for edit mode', () => {
+            const customHeaderSection = createCustomHeaderSectionWithEditFragment('1.98', {
+                name: 'NewCustomHeaderSectionEdit',
+                folder: 'extensions/custom',
+                control: '<CustomXML text="" />'
+            } as HeaderSectionEditProperty);
+            const expectedFragmentPath = join(
+                testDir,
+                `webapp/${customHeaderSection.edit?.folder}/${customHeaderSection.edit?.name}.fragment.xml`
+            );
+            generateCustomHeaderSection(testDir, customHeaderSection, fs);
+
+            expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
         });
     });
 

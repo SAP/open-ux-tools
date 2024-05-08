@@ -1,5 +1,75 @@
 # @sap-ux/ui5-config
 
+## 0.22.3
+
+### Patch Changes
+
+-   7f8105c7: move replaceEnvVariables to ui5-config and export
+
+## 0.22.2
+
+### Patch Changes
+
+-   b7d95fb3: fix paths and config writers
+
+## 0.22.1
+
+### Patch Changes
+
+-   efa35ddd: adds new module @sap-ux/ui5-library-reference-writer
+
+## 0.22.0
+
+### Minor Changes
+
+-   ec509c40: dynamically appends annotations from manifest.json for mockserver middleware config
+
+## 0.21.1
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/yaml@0.14.1
+
+## 0.21.0
+
+### Minor Changes
+
+-   3f977f21: Enhanced functionality to support adding customer properties
+
+## 0.20.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/yaml@0.14.0
+
+## 0.19.5
+
+### Patch Changes
+
+-   Updated dependencies [4052822f]
+    -   @sap-ux/yaml@0.13.9
+
+## 0.19.4
+
+### Patch Changes
+
+-   65010b09: fix - use patch version 0 for ui5 types semver for more reliable installs
+
+## 0.19.3
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/yaml@0.13.8
+
 ## 0.19.2
 
 ### Patch Changes

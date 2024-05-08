@@ -1,0 +1,87 @@
+[
+    {
+        "type": "element",
+        "range": "[(1,4)..(3,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.LineItem",
+                "valueRange": "[(1,4)..(1,12)]"
+            }
+        },
+        "contentRange": "[(1,14)..(3,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(2,16)..(2,29)]",
+                "name": "Collection",
+                "attributes": {},
+                "contentRange": "[(2,17)..(2,28)]",
+                "content": []
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(4,4)..(6,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.Badge",
+                "valueRange": "[(4,4)..(4,9)]"
+            }
+        },
+        "contentRange": "[(4,11)..(6,5)]",
+        "content": []
+    },
+    {
+        "type": "element",
+        "range": "[(7,4)..(11,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.Badge",
+                "valueRange": "[(7,4)..(7,9)]"
+            },
+            "Qualifier": {
+                "type": "attribute",
+                "name": "Qualifier",
+                "value": "b",
+                "valueRange": "[(7,11)..(7,12)]"
+            }
+        },
+        "contentRange": "[(7,14)..(11,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(7,15)..(11,5)]",
+                "name": "Record",
+                "attributes": {},
+                "contentRange": "[(7,16)..(11,4)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(8,8)..(10,9)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "Title",
+                                "valueRange": "[(8,8)..(8,13)]"
+                            }
+                        },
+                        "contentRange": "[(8,14)..(10,9)]",
+                        "content": []
+                    }
+                ]
+            }
+        ]
+    }
+]

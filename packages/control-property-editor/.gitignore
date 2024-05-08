@@ -1,0 +1,4 @@
+/coverage/
+
+# esbuild stats file
+**/esbuild-stats.json

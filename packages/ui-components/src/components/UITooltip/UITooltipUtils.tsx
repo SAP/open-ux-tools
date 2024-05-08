@@ -26,19 +26,31 @@ export class UITooltipUtils {
         };
     }
 
-    public static renderContent = (content: string | React.ReactElement | null): ITooltipProps => {
+    /**
+     * Method returns object which can be used to render tooltip's text content.
+     *
+     * @param content Content to render in tooltip.
+     * @returns {ITooltipProps} Tooltip properties.
+     */
+    public static renderContent(content: string | React.ReactElement | null): ITooltipProps {
         return {
             onRenderContent: () => <span>{content ?? ''}</span>,
             styles: UITooltipUtils.getStyles()
         } as ITooltipProps;
-    };
+    }
 
-    public static renderHTMLContent = (content: string): ITooltipProps => {
+    /**
+     * Method returns object which can be used to render tooltip's content with custom HTML content.
+     *
+     * @param content HTML content to render in tooltip.
+     * @returns {ITooltipProps} Tooltip properties.
+     */
+    public static renderHTMLContent(content: string): ITooltipProps {
         const sanitized = sanitizeHtml(content);
 
         return {
             onRenderContent: () => <span dangerouslySetInnerHTML={{ __html: sanitized }} />,
             styles: UITooltipUtils.getStyles()
         } as ITooltipProps;
-    };
+    }
 }

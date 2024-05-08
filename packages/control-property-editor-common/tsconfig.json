@@ -1,0 +1,21 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "incremental": true,
+        "lib": ["ES2021", "DOM"],
+        "strictNullChecks": true,
+        "outDir": "dist",
+        "rootDir": "src",
+        "baseUrl": ".",
+        "types": ["node", "jest"],
+        "moduleResolution": "node",
+        "useUnknownInCatchVariables": false
+    },
+    "include": ["src/**/*.ts"],
+    "exclude": ["dist", "node_modules", "coverage"],
+    "references": [
+        {
+            "path": "../logger"
+        }
+    ]
+}

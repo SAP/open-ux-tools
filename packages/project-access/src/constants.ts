@@ -1,6 +1,8 @@
 export const FileName = {
     AdaptationConfig: 'config.json',
+    CapJavaApplicationYaml: 'application.yaml',
     ExtConfigJson: '.extconfig.json',
+    Library: '.library',
     Manifest: 'manifest.json',
     ManifestAppDescrVar: 'manifest.appdescr_variant',
     MtaYaml: 'mta.yaml',
@@ -12,3 +14,32 @@ export const FileName = {
     Ui5MockYaml: 'ui5-mock.yaml',
     UI5DeployYaml: 'ui5-deploy.yaml'
 } as const;
+
+export const DirName = {
+    Changes: 'changes',
+    Schemas: '.schemas',
+    Pages: 'pages',
+    Webapp: 'webapp',
+    Temp: '.tmp',
+    LocalService: 'localService',
+    Controller: 'controller',
+    View: 'view',
+    Fragment: 'fragment',
+    Fragments: 'fragments',
+    Ext: 'ext',
+    VSCode: '.vscode',
+    AppConfig: 'appconfig',
+    Db: 'db',
+    Csv: 'csv',
+    Data: 'data',
+    Mockdata: 'mockdata',
+    Dist: 'dist',
+    Coding: 'coding',
+    Manifest: 'manifest',
+    Annotations: 'annotations'
+} as const;
+
+export enum FioriToolsSettings {
+    dir = '.fioritools',
+    migrationSettingsFile = 'migrationSettings.json'
+}

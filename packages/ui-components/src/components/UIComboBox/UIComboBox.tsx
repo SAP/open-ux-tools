@@ -1,5 +1,5 @@
 import React from 'react';
-import type { IComboBoxProps, IComboBoxState, IAutofillProps } from '@fluentui/react';
+import type { IComboBoxProps, IComboBoxState, IAutofillProps, IButtonProps } from '@fluentui/react';
 import {
     ComboBox,
     IComboBox,
@@ -17,7 +17,9 @@ import { UiIcons } from '../Icons';
 import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
 import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
-import { isDropdownEmpty } from '../UIDropdown';
+import { isDropdownEmpty, getCalloutCollisionTransformationProps } from '../UIDropdown';
+import { CalloutCollisionTransform } from '../UICallout';
+import { isHTMLInputElement } from '../../utilities';
 
 export {
     IComboBoxOption as UIComboBoxOption,
@@ -26,23 +28,46 @@ export {
     SelectableOptionMenuItemType as UISelectableOptionMenuItemType
 };
 
+export enum UIComboBoxLoaderType {
+    /**
+     * Loader within dropdown list
+     */
+    List = 'List',
+    /**
+     * Loader within input
+     */
+    Input = 'Input'
+}
+
 export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps {
     wrapperRef?: React.RefObject<HTMLDivElement>;
     highlight?: boolean;
     useComboBoxAsMenuMinWidth?: boolean;
     // Default value for "openMenuOnClick" is "true"
     openMenuOnClick?: boolean;
+    /**
+     *
+     */
     onRefresh?(): void;
+    /**
+     *
+     */
     onHandleChange?(value: string | number): void;
     tooltipRefreshButton?: string;
-    isLoading?: boolean;
+    /**
+     * Show loading indicator(s).
+     * Supported places:
+     * 1. List - loader within dropdown list
+     * 2. Input - loader within input
+     */
+    isLoading?: boolean | UIComboBoxLoaderType[];
     isForceEnabled?: boolean;
     readOnly?: boolean;
+    calloutCollisionTransformation?: boolean;
 }
 export interface UIComboBoxState {
     minWidth?: number;
     isListHidden?: boolean;
-    toggleRefresh: boolean;
 }
 
 interface ComboboxItemInfo {
@@ -76,10 +101,13 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     static defaultProps = { openMenuOnClick: true };
     // Reference to fluent ui combobox
     private comboBox = React.createRef<ComboBoxRef>();
+    private comboboxDomRef = React.createRef<HTMLDivElement>();
+    private menuDomRef = React.createRef<HTMLDivElement>();
     private selectedElement: React.RefObject<HTMLDivElement> = React.createRef();
     private query = '';
     private ignoreOpenKeys: Array<string> = ['Meta', 'Control', 'Shift', 'Tab', 'Alt', 'CapsLock'];
     private isListHidden = false;
+    private calloutCollisionTransform = new CalloutCollisionTransform(this.comboboxDomRef, this.menuDomRef);
 
     /**
      * Initializes component properties.
@@ -96,18 +124,16 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         this.onRenderOption = this.onRenderOption.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
         this.onClick = this.onClick.bind(this);
-        this.toggleRefresh = this.toggleRefresh.bind(this);
         this.handleRefreshButton = this.handleRefreshButton.bind(this);
         this.onPendingValueChanged = this.onPendingValueChanged.bind(this);
         this.onMultiSelectChange = this.onMultiSelectChange.bind(this);
         this.onScrollToItem = this.onScrollToItem.bind(this);
         this.setFocus = this.setFocus.bind(this);
+        this.onRenderIcon = this.onRenderIcon.bind(this);
 
         initializeComponentRef(this);
 
-        this.state = {
-            toggleRefresh: false
-        };
+        this.state = {};
     }
 
     /**
@@ -159,14 +185,33 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     }
 
     /**
+     * Method prevents cursor from jumping to the end of input.
+     *
+     * @param {React.FormEvent<IComboBox>} event Combobox event object
+     */
+    private setCaretPosition(event: React.FormEvent<IComboBox>) {
+        if (isHTMLInputElement(event.target)) {
+            const input = event.target;
+            const selectionEnd = input.selectionEnd;
+            if (selectionEnd !== input.value.length) {
+                window.requestAnimationFrame(() => {
+                    input.selectionStart = selectionEnd;
+                    input.selectionEnd = selectionEnd;
+                });
+            }
+        }
+    }
+
+    /**
      * Method filters options and hides unmatched options.
      *
      * @param {React.FormEvent<IComboBox>} event Combobox event object
      */
     private onInput(event: React.FormEvent<IComboBox>): void {
         this.isListHidden = false;
-        if (event.target) {
-            const input = event.target as HTMLInputElement;
+        if (isHTMLInputElement(event.target)) {
+            this.setCaretPosition(event);
+            const input = event.target;
             this.query = input.value.trimStart().toLowerCase();
             // Filter options
             const baseCombobox = this.comboBox.current;
@@ -178,8 +223,11 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
 
     /**
      * Method opens menu when user clicks on Combobox (input or button).
+     *
+     * @param event
      */
-    private onClick(): void {
+    private onClick(event: React.FormEvent<IComboBox>): void {
+        this.setCaretPosition(event);
         const baseCombobox = this.comboBox.current;
         const isOpen = baseCombobox && baseCombobox.state.isOpen;
         const isDisabled = this.props.disabled;
@@ -433,16 +481,6 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
 
     /**
      * Method called only when property 'onRefresh' has been defined.
-     * It is called when the menu Open and Dismiss to handle the toggleRefresh state.
-     */
-    private toggleRefresh(): void {
-        this.setState({
-            toggleRefresh: !this.state.toggleRefresh
-        });
-    }
-
-    /**
-     * Method called only when property 'onRefresh' has been defined.
      * It is called when click on the refresh buttonIcon.
      */
     private handleRefreshButton() {
@@ -581,6 +619,46 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     }
 
     /**
+     * Method returns if loader should be displayed for passed type.
+     *
+     * @param type Loader's place
+     * @returns True if loader should be displayed for passed type.
+     */
+    private isLoaderApplied(type: UIComboBoxLoaderType): boolean {
+        const { isLoading } = this.props;
+        if (Array.isArray(isLoading)) {
+            return isLoading.includes(type);
+        }
+        // Boolean value matches List option
+        return !!isLoading && type === UIComboBoxLoaderType.List;
+    }
+
+    /**
+     * Method renders dropdown expand icon.
+     * Overwritten renderer to replace expand icon with loader when combobox has laoding property set.
+     *
+     * @param props Button properties
+     * @param defaultRender Default icon renderer
+     * @returns React element to render.
+     */
+    private onRenderIcon(
+        props?: IButtonProps,
+        defaultRender?: (props?: IButtonProps) => JSX.Element | null
+    ): JSX.Element | null {
+        if (this.isLoaderApplied(UIComboBoxLoaderType.Input)) {
+            const styles = {
+                label: {
+                    fontSize: '11px',
+                    fontWeight: 'normal'
+                }
+            };
+
+            return <UILoader className="uiLoaderXSmall" labelPosition="right" styles={styles} />;
+        }
+        return defaultRender?.(props) ?? null;
+    }
+
+    /**
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
@@ -593,14 +671,19 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
             <div ref={this.props.wrapperRef} className={this.getClassNames(messageInfo)}>
                 <ComboBox
                     componentRef={this.comboBox}
+                    ref={this.comboboxDomRef}
                     disabled={disabled}
                     iconButtonProps={{
                         iconProps: {
                             iconName: UiIcons.ArrowDown
-                        }
+                        },
+                        onRenderIcon: this.onRenderIcon
                     }}
                     calloutProps={{
                         calloutMaxHeight: 200,
+                        popupProps: {
+                            ref: this.menuDomRef
+                        },
                         className: 'ts-Callout ts-Callout-Dropdown',
                         styles: {
                             ...(this.props.useComboBoxAsMenuMinWidth && {
@@ -609,7 +692,12 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                                     display: this.state.isListHidden ? 'none' : undefined
                                 }
                             })
-                        }
+                        },
+                        ...getCalloutCollisionTransformationProps(
+                            this.calloutCollisionTransform,
+                            this.props.multiSelect,
+                            this.props.calloutCollisionTransformation
+                        )
                     }}
                     styles={{
                         label: {
@@ -652,7 +740,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         onMenuOpen: this.handleRefreshButton,
                         onChange: this.handleChange
                     })}
-                    {...(this.props.isLoading && {
+                    {...(this.isLoaderApplied(UIComboBoxLoaderType.List) && {
                         onRenderList: this.onRenderListLoading
                     })}
                     {...(this.props.multiSelect && {

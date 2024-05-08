@@ -1,0 +1,88 @@
+UI : {
+    HeaderFacets : [
+        {
+            $Type:'UI.ReferenceFacet',
+            Target : '',
+        },
+        {
+            $Type:'UI.ReferenceFacet',
+            Target : 'assignedIndividual',
+        },
+        {
+            $Type:'UI.ReferenceFacet',
+            Target : 'assignedIndividual/',
+        },
+        {
+            $Type:'UI.ReferenceFacet',
+            Target : 'assignedIndividual/@Communication.Contact',
+        },
+        {
+            $Type:'UI.ReferenceFacet',
+            Target : ![],
+        },
+        {
+            $Type:'UI.ReferenceFacet',
+            Target : ![assignedIndividual],
+        },
+        {
+            $Type:'UI.ReferenceFacet',
+            Target : ![assignedIndividual.],
+        },
+        {
+            $Type:'UI.ReferenceFacet',
+            Target : ![assignedIndividual.@Communication.Contact],
+        },
+        {
+            $Type:'UI.ReferenceFacet',
+            Target : "",cd 
+        },
+        {
+            $Type:'UI.ReferenceFacet',
+            Target : "assignedIndividual",
+        },
+        {
+            $Type:'UI.ReferenceFacet',
+            Target : "assignedIndividual.",
+        },
+        {
+            $Type:'UI.ReferenceFacet',
+            Target : "assignedIndividual.@Communication.Contact",
+        },
+        {
+            $Type:'UI.ReferenceFacet',
+            Target : assignedIndividual/@Communication.Contact,
+        }
+    ],
+    Chart.AxisScaling.ScaleBehavior : #AutoScale,
+    LineItem: @UI.LineItem#q1,
+    LineItem#q1: @UI.LineItem#q2,
+    LineItem #q2: incedentStatus.@LineItem,
+    DataPoint  : {
+        $Type : 'UI.DataPointType',
+        Value : safetyIncidents.@Common.Application/Component,    
+    },
+    DataPoint  : {
+        $Type : 'UI.DataPointType',
+        Value : safetyIncidents.@sap.com.vocabularies.Common.v1.Application/Component/,    
+    };
+    DataPoint  : {
+        $Type : 'UI.DataPointType',
+        Value : safetyIncidents.![@sap.com.vocabularies.Common.v1.Application]/Component/,    
+    };
+    DataPoint  : {
+        $Type : 'UI.DataPointType',
+        Value : safetyIncidents.@sap.com.vocabularies.Common.v1.![Application#q1]/Component/,    
+    };
+    DataPoint  : {
+        $Type : 'UI.DataPointType',
+        Value : @Common.Label#l1,    
+    };
+    DataPoint  : {
+        $Type : 'UI.DataPointType',
+        Value : @Common.Application#q1/Component,    
+    };
+    DataPoint  : {
+        $Type : 'UI.DataPointType',
+        Value : aaa.@Common.Application#,
+    };
+}

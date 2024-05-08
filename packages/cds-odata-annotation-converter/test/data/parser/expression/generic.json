@@ -1,0 +1,2010 @@
+[
+    {
+        "type": "element",
+        "range": "[(0,0)..(108,1)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.LineItem",
+                "valueRange": "[(0,0)..(0,11)]"
+            }
+        },
+        "contentRange": "[(0,13)..(108,1)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(0,14)..(108,1)]",
+                "name": "Collection",
+                "attributes": {},
+                "contentRange": "[(0,15)..(108,0)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(2,4)..(4,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(2,5)..(4,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(3,8)..(3,34)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(3,8)..(3,13)]"
+                                    }
+                                },
+                                "contentRange": "[(3,14)..(3,34)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(3,15)..(3,34)]",
+                                        "name": "Not",
+                                        "nameRange": "[(3,17)..(3,20)]",
+                                        "attributes": {},
+                                        "contentRange": "[(3,21)..(3,32)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(3,21)..(3,32)]",
+                                                "name": "Path",
+                                                "attributes": {},
+                                                "contentRange": "[(3,21)..(3,32)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(3,21)..(3,32)]",
+                                                        "text": "isPostponed",
+                                                        "fragmentRanges": ["[(3,21)..(3,32)]"]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(5,4)..(7,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(5,5)..(7,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(6,8)..(6,31)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(6,8)..(6,13)]"
+                                    }
+                                },
+                                "contentRange": "[(6,14)..(6,31)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(6,15)..(6,31)]",
+                                        "name": "Neg",
+                                        "nameRange": "[(6,17)..(6,18)]",
+                                        "attributes": {},
+                                        "contentRange": "[(6,18)..(6,29)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(6,18)..(6,29)]",
+                                                "name": "Path",
+                                                "attributes": {},
+                                                "contentRange": "[(6,18)..(6,29)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(6,18)..(6,29)]",
+                                                        "text": "delayInDays",
+                                                        "fragmentRanges": ["[(6,18)..(6,29)]"]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(9,4)..(11,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(9,5)..(11,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(10,8)..(10,33)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(10,8)..(10,13)]"
+                                    }
+                                },
+                                "contentRange": "[(10,14)..(10,33)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(10,15)..(10,33)]",
+                                        "name": "Add",
+                                        "nameRange": "[(10,23)..(10,24)]",
+                                        "attributes": {},
+                                        "contentRange": "[(10,17)..(10,31)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(10,17)..(10,22)]",
+                                                "name": "Path",
+                                                "attributes": {},
+                                                "contentRange": "[(10,17)..(10,22)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(10,17)..(10,22)]",
+                                                        "text": "delay",
+                                                        "fragmentRanges": ["[(10,17)..(10,22)]"]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "element",
+                                                "range": "[(10,25)..(10,31)]",
+                                                "name": "Path",
+                                                "attributes": {},
+                                                "contentRange": "[(10,25)..(10,31)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(10,25)..(10,31)]",
+                                                        "text": "offset",
+                                                        "fragmentRanges": ["[(10,25)..(10,31)]"]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(12,4)..(14,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(12,5)..(14,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(13,8)..(13,28)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(13,8)..(13,13)]"
+                                    }
+                                },
+                                "contentRange": "[(13,14)..(13,28)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(13,15)..(13,28)]",
+                                        "name": "Add",
+                                        "nameRange": "[(13,23)..(13,24)]",
+                                        "attributes": {},
+                                        "contentRange": "[(13,17)..(13,26)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(13,17)..(13,22)]",
+                                                "name": "Path",
+                                                "attributes": {},
+                                                "contentRange": "[(13,17)..(13,22)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(13,17)..(13,22)]",
+                                                        "text": "delay",
+                                                        "fragmentRanges": ["[(13,17)..(13,22)]"]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "element",
+                                                "range": "[(13,25)..(13,26)]",
+                                                "name": "Int",
+                                                "attributes": {},
+                                                "contentRange": "[(13,25)..(13,26)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(13,25)..(13,26)]",
+                                                        "text": "1"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(15,4)..(17,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(15,5)..(17,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(16,8)..(16,28)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(16,8)..(16,13)]"
+                                    }
+                                },
+                                "contentRange": "[(16,14)..(16,28)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(16,15)..(16,28)]",
+                                        "name": "Sub",
+                                        "nameRange": "[(16,23)..(16,24)]",
+                                        "attributes": {},
+                                        "contentRange": "[(16,17)..(16,26)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(16,17)..(16,22)]",
+                                                "name": "Path",
+                                                "attributes": {},
+                                                "contentRange": "[(16,17)..(16,22)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(16,17)..(16,22)]",
+                                                        "text": "delay",
+                                                        "fragmentRanges": ["[(16,17)..(16,22)]"]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "element",
+                                                "range": "[(16,25)..(16,26)]",
+                                                "name": "Int",
+                                                "attributes": {},
+                                                "contentRange": "[(16,25)..(16,26)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(16,25)..(16,26)]",
+                                                        "text": "1"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(18,4)..(20,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(18,5)..(20,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(19,8)..(19,28)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(19,8)..(19,13)]"
+                                    }
+                                },
+                                "contentRange": "[(19,14)..(19,28)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(19,15)..(19,28)]",
+                                        "name": "Mul",
+                                        "nameRange": "[(19,23)..(19,24)]",
+                                        "attributes": {},
+                                        "contentRange": "[(19,17)..(19,26)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(19,17)..(19,22)]",
+                                                "name": "Path",
+                                                "attributes": {},
+                                                "contentRange": "[(19,17)..(19,22)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(19,17)..(19,22)]",
+                                                        "text": "delay",
+                                                        "fragmentRanges": ["[(19,17)..(19,22)]"]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "element",
+                                                "range": "[(19,25)..(19,26)]",
+                                                "name": "Int",
+                                                "attributes": {},
+                                                "contentRange": "[(19,25)..(19,26)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(19,25)..(19,26)]",
+                                                        "text": "2"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(21,4)..(23,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(21,5)..(23,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(22,8)..(22,28)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(22,8)..(22,13)]"
+                                    }
+                                },
+                                "contentRange": "[(22,14)..(22,28)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(22,15)..(22,28)]",
+                                        "name": "Div",
+                                        "nameRange": "[(22,23)..(22,24)]",
+                                        "attributes": {},
+                                        "contentRange": "[(22,17)..(22,26)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(22,17)..(22,22)]",
+                                                "name": "Path",
+                                                "attributes": {},
+                                                "contentRange": "[(22,17)..(22,22)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(22,17)..(22,22)]",
+                                                        "text": "delay",
+                                                        "fragmentRanges": ["[(22,17)..(22,22)]"]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "element",
+                                                "range": "[(22,25)..(22,26)]",
+                                                "name": "Int",
+                                                "attributes": {},
+                                                "contentRange": "[(22,25)..(22,26)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(22,25)..(22,26)]",
+                                                        "text": "2"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(24,4)..(26,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(24,5)..(26,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(25,8)..(25,28)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(25,8)..(25,13)]"
+                                    }
+                                },
+                                "contentRange": "[(25,14)..(25,28)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(25,15)..(25,28)]",
+                                        "name": "Sub",
+                                        "nameRange": "[(25,23)..(25,24)]",
+                                        "attributes": {},
+                                        "contentRange": "[(25,17)..(25,26)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(25,17)..(25,22)]",
+                                                "name": "Path",
+                                                "attributes": {},
+                                                "contentRange": "[(25,17)..(25,22)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(25,17)..(25,22)]",
+                                                        "text": "delay",
+                                                        "fragmentRanges": ["[(25,17)..(25,22)]"]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "element",
+                                                "range": "[(25,25)..(25,26)]",
+                                                "name": "Int",
+                                                "attributes": {},
+                                                "contentRange": "[(25,25)..(25,26)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(25,25)..(25,26)]",
+                                                        "text": "1"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(27,4)..(29,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(27,5)..(29,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(28,8)..(28,34)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(28,8)..(28,13)]"
+                                    }
+                                },
+                                "contentRange": "[(28,14)..(28,34)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(28,15)..(28,34)]",
+                                        "name": "Ge",
+                                        "nameRange": "[(28,23)..(28,25)]",
+                                        "attributes": {},
+                                        "contentRange": "[(28,17)..(28,32)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(28,17)..(28,22)]",
+                                                "name": "Path",
+                                                "attributes": {},
+                                                "contentRange": "[(28,17)..(28,22)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(28,17)..(28,22)]",
+                                                        "text": "delay",
+                                                        "fragmentRanges": ["[(28,17)..(28,22)]"]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "element",
+                                                "range": "[(28,26)..(28,32)]",
+                                                "name": "Path",
+                                                "attributes": {},
+                                                "contentRange": "[(28,26)..(28,32)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(28,26)..(28,32)]",
+                                                        "text": "offset",
+                                                        "fragmentRanges": ["[(28,26)..(28,32)]"]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(30,4)..(32,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(30,5)..(32,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(31,8)..(31,34)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(31,8)..(31,13)]"
+                                    }
+                                },
+                                "contentRange": "[(31,14)..(31,34)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(31,15)..(31,34)]",
+                                        "name": "Ne",
+                                        "nameRange": "[(31,23)..(31,25)]",
+                                        "attributes": {},
+                                        "contentRange": "[(31,17)..(31,32)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(31,17)..(31,22)]",
+                                                "name": "Path",
+                                                "attributes": {},
+                                                "contentRange": "[(31,17)..(31,22)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(31,17)..(31,22)]",
+                                                        "text": "delay",
+                                                        "fragmentRanges": ["[(31,17)..(31,22)]"]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "element",
+                                                "range": "[(31,26)..(31,32)]",
+                                                "name": "Path",
+                                                "attributes": {},
+                                                "contentRange": "[(31,26)..(31,32)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(31,26)..(31,32)]",
+                                                        "text": "offset",
+                                                        "fragmentRanges": ["[(31,26)..(31,32)]"]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(33,4)..(35,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(33,5)..(35,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(34,8)..(34,34)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(34,8)..(34,13)]"
+                                    }
+                                },
+                                "contentRange": "[(34,14)..(34,34)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(34,15)..(34,34)]",
+                                        "name": "Ne",
+                                        "nameRange": "[(34,23)..(34,25)]",
+                                        "attributes": {},
+                                        "contentRange": "[(34,17)..(34,32)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(34,17)..(34,22)]",
+                                                "name": "Path",
+                                                "attributes": {},
+                                                "contentRange": "[(34,17)..(34,22)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(34,17)..(34,22)]",
+                                                        "text": "delay",
+                                                        "fragmentRanges": ["[(34,17)..(34,22)]"]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "element",
+                                                "range": "[(34,26)..(34,32)]",
+                                                "name": "Path",
+                                                "attributes": {},
+                                                "contentRange": "[(34,26)..(34,32)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(34,26)..(34,32)]",
+                                                        "text": "offset",
+                                                        "fragmentRanges": ["[(34,26)..(34,32)]"]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(37,4)..(39,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(37,5)..(39,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(38,8)..(38,49)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(38,8)..(38,13)]"
+                                    }
+                                },
+                                "contentRange": "[(38,14)..(38,49)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(38,15)..(38,49)]",
+                                        "name": "If",
+                                        "nameRange": "[(38,28)..(38,29)]",
+                                        "attributes": {},
+                                        "contentRange": "[(38,17)..(38,47)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(38,17)..(38,27)]",
+                                                "name": "Path",
+                                                "attributes": {},
+                                                "contentRange": "[(38,17)..(38,27)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(38,17)..(38,27)]",
+                                                        "text": "isCritical",
+                                                        "fragmentRanges": ["[(38,17)..(38,27)]"]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "element",
+                                                "range": "[(38,30)..(38,42)]",
+                                                "name": "String",
+                                                "attributes": {},
+                                                "contentRange": "[(38,31)..(38,41)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(38,31)..(38,41)]",
+                                                        "text": "Important!"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "element",
+                                                "range": "[(38,45)..(38,47)]",
+                                                "name": "String",
+                                                "attributes": {},
+                                                "contentRange": "[(38,46)..(38,46)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(38,46)..(38,46)]",
+                                                        "text": ""
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(41,4)..(43,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(41,5)..(43,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(42,8)..(42,37)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(42,8)..(42,13)]"
+                                    }
+                                },
+                                "contentRange": "[(42,14)..(42,37)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(42,15)..(42,37)]",
+                                        "name": "Sub",
+                                        "nameRange": "[(42,27)..(42,28)]",
+                                        "attributes": {},
+                                        "contentRange": "[(42,17)..(42,35)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(42,17)..(42,26)]",
+                                                "name": "Div",
+                                                "nameRange": "[(42,23)..(42,24)]",
+                                                "attributes": {},
+                                                "contentRange": "[(42,17)..(42,26)]",
+                                                "content": [
+                                                    {
+                                                        "type": "element",
+                                                        "range": "[(42,17)..(42,22)]",
+                                                        "name": "Path",
+                                                        "attributes": {},
+                                                        "contentRange": "[(42,17)..(42,22)]",
+                                                        "content": [
+                                                            {
+                                                                "type": "text",
+                                                                "range": "[(42,17)..(42,22)]",
+                                                                "text": "delay",
+                                                                "fragmentRanges": ["[(42,17)..(42,22)]"]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "element",
+                                                        "range": "[(42,25)..(42,26)]",
+                                                        "name": "Int",
+                                                        "attributes": {},
+                                                        "contentRange": "[(42,25)..(42,26)]",
+                                                        "content": [
+                                                            {
+                                                                "type": "text",
+                                                                "range": "[(42,25)..(42,26)]",
+                                                                "text": "2"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "element",
+                                                "range": "[(42,29)..(42,35)]",
+                                                "name": "Path",
+                                                "attributes": {},
+                                                "contentRange": "[(42,29)..(42,35)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(42,29)..(42,35)]",
+                                                        "text": "offset",
+                                                        "fragmentRanges": ["[(42,29)..(42,35)]"]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(44,4)..(46,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(44,5)..(46,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(45,8)..(45,56)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(45,8)..(45,13)]"
+                                    }
+                                },
+                                "contentRange": "[(45,14)..(45,56)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(45,15)..(45,56)]",
+                                        "name": "If",
+                                        "nameRange": "[(45,32)..(45,33)]",
+                                        "attributes": {},
+                                        "contentRange": "[(45,17)..(45,54)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(45,17)..(45,31)]",
+                                                "name": "Eq",
+                                                "nameRange": "[(45,20)..(45,21)]",
+                                                "attributes": {},
+                                                "contentRange": "[(45,17)..(45,31)]",
+                                                "content": [
+                                                    {
+                                                        "type": "element",
+                                                        "range": "[(45,17)..(45,19)]",
+                                                        "name": "Path",
+                                                        "attributes": {},
+                                                        "contentRange": "[(45,17)..(45,19)]",
+                                                        "content": [
+                                                            {
+                                                                "type": "text",
+                                                                "range": "[(45,17)..(45,19)]",
+                                                                "text": "id",
+                                                                "fragmentRanges": ["[(45,17)..(45,19)]"]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "element",
+                                                        "range": "[(45,22)..(45,31)]",
+                                                        "name": "String",
+                                                        "attributes": {},
+                                                        "contentRange": "[(45,23)..(45,30)]",
+                                                        "content": [
+                                                            {
+                                                                "type": "text",
+                                                                "range": "[(45,23)..(45,30)]",
+                                                                "text": "special"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "element",
+                                                "range": "[(45,34)..(45,47)]",
+                                                "name": "String",
+                                                "attributes": {},
+                                                "contentRange": "[(45,35)..(45,46)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(45,35)..(45,46)]",
+                                                        "text": "SpecialText"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "element",
+                                                "range": "[(45,50)..(45,54)]",
+                                                "name": "Path",
+                                                "attributes": {},
+                                                "contentRange": "[(45,50)..(45,54)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(45,50)..(45,54)]",
+                                                        "text": "text",
+                                                        "fragmentRanges": ["[(45,50)..(45,54)]"]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(47,4)..(49,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(47,5)..(49,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(48,8)..(48,79)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(48,8)..(48,13)]"
+                                    }
+                                },
+                                "contentRange": "[(48,14)..(48,79)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(48,15)..(48,79)]",
+                                        "name": "Or",
+                                        "nameRange": "[(48,61)..(48,63)]",
+                                        "attributes": {},
+                                        "contentRange": "[(48,17)..(48,77)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(48,17)..(48,60)]",
+                                                "name": "And",
+                                                "nameRange": "[(48,46)..(48,49)]",
+                                                "attributes": {},
+                                                "contentRange": "[(48,17)..(48,60)]",
+                                                "content": [
+                                                    {
+                                                        "type": "element",
+                                                        "range": "[(48,17)..(48,45)]",
+                                                        "name": "Ne",
+                                                        "nameRange": "[(48,29)..(48,31)]",
+                                                        "attributes": {},
+                                                        "contentRange": "[(48,17)..(48,45)]",
+                                                        "content": [
+                                                            {
+                                                                "type": "element",
+                                                                "range": "[(48,17)..(48,28)]",
+                                                                "name": "Path",
+                                                                "attributes": {},
+                                                                "contentRange": "[(48,17)..(48,28)]",
+                                                                "content": [
+                                                                    {
+                                                                        "type": "text",
+                                                                        "range": "[(48,17)..(48,28)]",
+                                                                        "text": "description",
+                                                                        "fragmentRanges": ["[(48,17)..(48,28)]"]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "type": "element",
+                                                                "range": "[(48,32)..(48,45)]",
+                                                                "name": "String",
+                                                                "attributes": {},
+                                                                "contentRange": "[(48,33)..(48,44)]",
+                                                                "content": [
+                                                                    {
+                                                                        "type": "text",
+                                                                        "range": "[(48,33)..(48,44)]",
+                                                                        "text": "some string"
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "element",
+                                                        "range": "[(48,50)..(48,60)]",
+                                                        "name": "Path",
+                                                        "attributes": {},
+                                                        "contentRange": "[(48,50)..(48,60)]",
+                                                        "content": [
+                                                            {
+                                                                "type": "text",
+                                                                "range": "[(48,50)..(48,60)]",
+                                                                "text": "isCritical",
+                                                                "fragmentRanges": ["[(48,50)..(48,60)]"]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "element",
+                                                "range": "[(48,64)..(48,77)]",
+                                                "name": "Path",
+                                                "attributes": {},
+                                                "contentRange": "[(48,64)..(48,77)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(48,64)..(48,77)]",
+                                                        "text": "isInteresting",
+                                                        "fragmentRanges": ["[(48,64)..(48,77)]"]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(51,4)..(53,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(51,5)..(53,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(52,8)..(52,42)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(52,8)..(52,13)]"
+                                    }
+                                },
+                                "contentRange": "[(52,14)..(52,42)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(52,15)..(52,42)]",
+                                        "name": "Apply",
+                                        "attributes": {
+                                            "Function": {
+                                                "type": "attribute",
+                                                "name": "Function",
+                                                "value": "odata.concat",
+                                                "valueRange": "[(52,26)..(52,28)]"
+                                            }
+                                        },
+                                        "contentRange": "[(52,17)..(52,40)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(52,17)..(52,25)]",
+                                                "name": "String",
+                                                "attributes": {},
+                                                "contentRange": "[(52,18)..(52,24)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(52,18)..(52,24)]",
+                                                        "text": "Hallo "
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "element",
+                                                "range": "[(52,29)..(52,40)]",
+                                                "name": "Path",
+                                                "attributes": {},
+                                                "contentRange": "[(52,29)..(52,40)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(52,29)..(52,40)]",
+                                                        "text": "description",
+                                                        "fragmentRanges": ["[(52,29)..(52,40)]"]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(54,4)..(56,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(54,5)..(56,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(55,8)..(55,45)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(55,8)..(55,13)]"
+                                    }
+                                },
+                                "contentRange": "[(55,14)..(55,45)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(55,15)..(55,45)]",
+                                        "name": "Apply",
+                                        "attributes": {
+                                            "Function": {
+                                                "type": "attribute",
+                                                "name": "Function",
+                                                "value": "odata.matchesPattern",
+                                                "valueRange": "[(55,29)..(55,33)]"
+                                            }
+                                        },
+                                        "contentRange": "[(55,17)..(55,43)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(55,17)..(55,28)]",
+                                                "name": "Path",
+                                                "attributes": {},
+                                                "contentRange": "[(55,17)..(55,28)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(55,17)..(55,28)]",
+                                                        "text": "description",
+                                                        "fragmentRanges": ["[(55,17)..(55,28)]"]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "element",
+                                                "range": "[(55,34)..(55,43)]",
+                                                "name": "String",
+                                                "attributes": {},
+                                                "contentRange": "[(55,35)..(55,42)]",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "range": "[(55,35)..(55,42)]",
+                                                        "text": "odata.%"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(57,4)..(59,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(57,5)..(59,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(58,8)..(58,49)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(58,8)..(58,13)]"
+                                    }
+                                },
+                                "contentRange": "[(58,14)..(58,49)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "name": "Not",
+                                        "nameRange": "[(58,29)..(58,37)]",
+                                        "attributes": {},
+                                        "contentRange": "[(58,17)..(58,47)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(58,15)..(58,49)]",
+                                                "name": "Apply",
+                                                "attributes": {
+                                                    "Function": {
+                                                        "type": "attribute",
+                                                        "name": "Function",
+                                                        "value": "odata.matchesPattern",
+                                                        "valueRange": "[(58,29)..(58,37)]"
+                                                    }
+                                                },
+                                                "contentRange": "[(58,17)..(58,47)]",
+                                                "content": [
+                                                    {
+                                                        "type": "element",
+                                                        "range": "[(58,17)..(58,28)]",
+                                                        "name": "Path",
+                                                        "attributes": {},
+                                                        "contentRange": "[(58,17)..(58,28)]",
+                                                        "content": [
+                                                            {
+                                                                "type": "text",
+                                                                "range": "[(58,17)..(58,28)]",
+                                                                "text": "description",
+                                                                "fragmentRanges": ["[(58,17)..(58,28)]"]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "element",
+                                                        "range": "[(58,38)..(58,47)]",
+                                                        "name": "String",
+                                                        "attributes": {},
+                                                        "contentRange": "[(58,39)..(58,46)]",
+                                                        "content": [
+                                                            {
+                                                                "type": "text",
+                                                                "range": "[(58,39)..(58,46)]",
+                                                                "text": "odata.%"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(61,4)..(63,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(61,5)..(63,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(62,8)..(62,38)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(62,8)..(62,13)]"
+                                    }
+                                },
+                                "contentRange": "[(62,14)..(62,38)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(62,29)..(62,36)]",
+                                        "name": "is null",
+                                        "nameRange": "[(62,29)..(62,36)]",
+                                        "attributes": {},
+                                        "content": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(64,4)..(66,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(64,5)..(66,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(65,8)..(65,42)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(65,8)..(65,13)]"
+                                    }
+                                },
+                                "contentRange": "[(65,14)..(65,42)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(65,29)..(65,40)]",
+                                        "name": "is not null",
+                                        "nameRange": "[(65,29)..(65,40)]",
+                                        "attributes": {},
+                                        "content": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(67,4)..(69,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(67,5)..(69,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(68,8)..(68,43)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(68,8)..(68,13)]"
+                                    }
+                                },
+                                "contentRange": "[(68,14)..(68,43)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(68,24)..(68,31)]",
+                                        "name": "between",
+                                        "nameRange": "[(68,24)..(68,31)]",
+                                        "attributes": {},
+                                        "content": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(70,4)..(72,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(70,5)..(72,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(71,8)..(71,47)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(71,8)..(71,13)]"
+                                    }
+                                },
+                                "contentRange": "[(71,14)..(71,47)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(71,24)..(71,35)]",
+                                        "name": "not between",
+                                        "nameRange": "[(71,24)..(71,35)]",
+                                        "attributes": {},
+                                        "content": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(74,4)..(76,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(74,5)..(76,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(75,8)..(75,35)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(75,8)..(75,13)]"
+                                    }
+                                },
+                                "contentRange": "[(75,14)..(75,35)]",
+                                "content": []
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(77,4)..(79,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(77,5)..(79,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(78,8)..(78,34)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(78,8)..(78,13)]"
+                                    }
+                                },
+                                "contentRange": "[(78,14)..(78,34)]",
+                                "content": []
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(81,4)..(83,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(81,5)..(83,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(82,8)..(82,81)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(82,8)..(82,13)]"
+                                    }
+                                },
+                                "contentRange": "[(82,14)..(82,81)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(82,15)..(82,81)]",
+                                        "name": "And",
+                                        "nameRange": "[(82,46)..(82,49)]",
+                                        "attributes": {},
+                                        "contentRange": "[(82,17)..(82,79)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(82,17)..(82,45)]",
+                                                "name": "Ne",
+                                                "nameRange": "[(82,29)..(82,31)]",
+                                                "attributes": {},
+                                                "contentRange": "[(82,17)..(82,45)]",
+                                                "content": [
+                                                    {
+                                                        "type": "element",
+                                                        "range": "[(82,17)..(82,28)]",
+                                                        "name": "Path",
+                                                        "attributes": {},
+                                                        "contentRange": "[(82,17)..(82,28)]",
+                                                        "content": [
+                                                            {
+                                                                "type": "text",
+                                                                "range": "[(82,17)..(82,28)]",
+                                                                "text": "description",
+                                                                "fragmentRanges": ["[(82,17)..(82,28)]"]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "element",
+                                                        "range": "[(82,32)..(82,45)]",
+                                                        "name": "String",
+                                                        "attributes": {},
+                                                        "contentRange": "[(82,33)..(82,44)]",
+                                                        "content": [
+                                                            {
+                                                                "type": "text",
+                                                                "range": "[(82,33)..(82,44)]",
+                                                                "text": "some string"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "element",
+                                                "range": "[(82,50)..(82,79)]",
+                                                "name": "Or",
+                                                "nameRange": "[(82,62)..(82,64)]",
+                                                "attributes": {},
+                                                "contentRange": "[(82,51)..(82,78)]",
+                                                "content": [
+                                                    {
+                                                        "type": "element",
+                                                        "range": "[(82,51)..(82,61)]",
+                                                        "name": "Path",
+                                                        "attributes": {},
+                                                        "contentRange": "[(82,51)..(82,61)]",
+                                                        "content": [
+                                                            {
+                                                                "type": "text",
+                                                                "range": "[(82,51)..(82,61)]",
+                                                                "text": "isCritical",
+                                                                "fragmentRanges": ["[(82,51)..(82,61)]"]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "element",
+                                                        "range": "[(82,65)..(82,78)]",
+                                                        "name": "Path",
+                                                        "attributes": {},
+                                                        "contentRange": "[(82,65)..(82,78)]",
+                                                        "content": [
+                                                            {
+                                                                "type": "text",
+                                                                "range": "[(82,65)..(82,78)]",
+                                                                "text": "isInteresting",
+                                                                "fragmentRanges": ["[(82,65)..(82,78)]"]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(85,4)..(87,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(85,5)..(87,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(86,8)..(86,68)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(86,8)..(86,13)]"
+                                    }
+                                },
+                                "contentRange": "[(86,14)..(86,68)]",
+                                "content": []
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(89,4)..(91,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(89,5)..(91,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(90,8)..(90,68)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(90,8)..(90,13)]"
+                                    }
+                                },
+                                "contentRange": "[(90,14)..(90,68)]",
+                                "content": []
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(93,4)..(95,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(93,5)..(95,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(94,8)..(94,72)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(94,8)..(94,13)]"
+                                    }
+                                },
+                                "contentRange": "[(94,14)..(94,72)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(94,15)..(94,72)]",
+                                        "name": "And",
+                                        "nameRange": "[(94,46)..(94,49)]",
+                                        "attributes": {},
+                                        "contentRange": "[(94,17)..(94,70)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(94,17)..(94,45)]",
+                                                "name": "Ne",
+                                                "nameRange": "[(94,29)..(94,31)]",
+                                                "attributes": {},
+                                                "contentRange": "[(94,17)..(94,45)]",
+                                                "content": [
+                                                    {
+                                                        "type": "element",
+                                                        "range": "[(94,17)..(94,28)]",
+                                                        "name": "Path",
+                                                        "attributes": {},
+                                                        "contentRange": "[(94,17)..(94,28)]",
+                                                        "content": [
+                                                            {
+                                                                "type": "text",
+                                                                "range": "[(94,17)..(94,28)]",
+                                                                "text": "description",
+                                                                "fragmentRanges": ["[(94,17)..(94,28)]"]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "element",
+                                                        "range": "[(94,32)..(94,45)]",
+                                                        "name": "String",
+                                                        "attributes": {},
+                                                        "contentRange": "[(94,33)..(94,44)]",
+                                                        "content": [
+                                                            {
+                                                                "type": "text",
+                                                                "range": "[(94,33)..(94,44)]",
+                                                                "text": "some string"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "element",
+                                                "range": "[(94,62)..(94,69)]",
+                                                "name": "is null",
+                                                "nameRange": "[(94,62)..(94,69)]",
+                                                "attributes": {},
+                                                "content": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(97,4)..(99,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(97,5)..(99,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(98,8)..(98,72)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(98,8)..(98,13)]"
+                                    }
+                                },
+                                "contentRange": "[(98,14)..(98,72)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(98,29)..(98,36)]",
+                                        "name": "is null",
+                                        "nameRange": "[(98,29)..(98,36)]",
+                                        "attributes": {},
+                                        "content": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(101,4)..(103,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(101,5)..(103,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(102,8)..(102,59)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(102,8)..(102,13)]"
+                                    }
+                                },
+                                "contentRange": "[(102,14)..(102,59)]",
+                                "content": []
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(105,4)..(107,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(105,5)..(107,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(106,8)..(106,59)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(106,8)..(106,13)]"
+                                    }
+                                },
+                                "contentRange": "[(106,14)..(106,59)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(106,29)..(106,36)]",
+                                        "name": "is null",
+                                        "nameRange": "[(106,29)..(106,36)]",
+                                        "attributes": {},
+                                        "content": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

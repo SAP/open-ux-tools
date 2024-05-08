@@ -1,11 +1,12 @@
 import * as React from 'react';
 import * as Enzyme from 'enzyme';
 import type { UIDropdownProps } from '../../../src/components/UIDropdown';
-import { UIDropdown } from '../../../src/components/UIDropdown';
+import { UIDropdown, getCalloutCollisionTransformationProps } from '../../../src/components/UIDropdown';
 import type { IStyleFunction, ICalloutContentStyles, IDropdownStyleProps } from '@fluentui/react';
 import { Dropdown, ResponsiveMode } from '@fluentui/react';
 import { data as originalData, groupsData as originalGroupsData } from '../../__mock__/select-data';
 import { initIcons } from '../../../src/components/Icons';
+import { CalloutCollisionTransform } from '../../../src/components';
 
 const data = JSON.parse(JSON.stringify(originalData));
 const groupsData = JSON.parse(JSON.stringify(originalGroupsData));
@@ -325,4 +326,91 @@ describe('<UIDropdown />', () => {
         expect(wrapper.find('.ms-Dropdown-header').length).toEqual(7);
         expect(wrapper.find('.ms-Dropdown-header .ts-dropdown-item-blocker').length).toEqual(0);
     });
+
+    describe('Test "calloutCollisionTransformation" property', () => {
+        const testCases = [
+            {
+                multiSelect: true,
+                enabled: true,
+                expected: true
+            },
+            {
+                multiSelect: false,
+                enabled: true,
+                expected: false
+            },
+            {
+                multiSelect: true,
+                enabled: false,
+                expected: false
+            }
+        ];
+        for (const testCase of testCases) {
+            const { multiSelect, enabled, expected } = testCase;
+            it(`calloutCollisionTransformation=${enabled}, multiSelect=${multiSelect}`, () => {
+                wrapper.setProps({
+                    multiSelect: testCase.multiSelect,
+                    calloutCollisionTransformation: testCase.enabled
+                });
+                const dropdown = wrapper.find(Dropdown);
+                expect(dropdown.length).toEqual(1);
+                const calloutProps = dropdown.prop('calloutProps');
+                if (expected) {
+                    expect(calloutProps?.preventDismissOnEvent).toBeDefined();
+                    expect(calloutProps?.layerProps?.onLayerDidMount).toBeDefined();
+                    expect(calloutProps?.layerProps?.onLayerWillUnmount).toBeDefined();
+                } else {
+                    expect(calloutProps?.preventDismissOnEvent).toBeUndefined();
+                    expect(calloutProps?.layerProps?.onLayerDidMount).toBeUndefined();
+                    expect(calloutProps?.layerProps?.onLayerWillUnmount).toBeUndefined();
+                }
+            });
+        }
+    });
+});
+
+describe('Utils/getCalloutCollisionTransformationProps', () => {
+    const testCases = [
+        {
+            multiSelect: true,
+            enabled: true,
+            expectation: true
+        },
+        {
+            multiSelect: true,
+            enabled: false,
+            expectation: true
+        },
+        {
+            multiSelect: false,
+            enabled: true,
+            expectation: true
+        },
+        {
+            multiSelect: undefined,
+            enabled: undefined,
+            expectation: true
+        }
+    ];
+    for (const testCase of testCases) {
+        const { multiSelect, enabled, expectation } = testCase;
+        it(`getCalloutCollisionTransformationProps - multiSelect=${multiSelect}, enabled=${enabled}`, () => {
+            const source = React.createRef<HTMLElement>();
+            const menu = React.createRef<HTMLElement>();
+            const calloutCollisionTransform = new CalloutCollisionTransform(source, menu);
+            const props = getCalloutCollisionTransformationProps(calloutCollisionTransform, true, true);
+
+            expect(props).toEqual(
+                expectation
+                    ? {
+                          preventDismissOnEvent: calloutCollisionTransform.preventDismissOnEvent,
+                          layerProps: {
+                              onLayerDidMount: calloutCollisionTransform.applyTransformation,
+                              onLayerWillUnmount: calloutCollisionTransform.resetTransformation
+                          }
+                      }
+                    : undefined
+            );
+        });
+    }
 });

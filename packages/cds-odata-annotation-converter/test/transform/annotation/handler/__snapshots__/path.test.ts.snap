@@ -1,0 +1,316 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`annotation conversion path handler convert ![navigation.element.@UI.DataPoint#E]/Value 1`] = `
+Array [
+  "(4,14)",
+  "(15,22)",
+  "(23,38)",
+  "(40,45)",
+]
+`;
+
+exports[`annotation conversion path handler convert ![navigation.element.@UI.DataPoint#E]/Value 2`] = `
+Array [
+  Object {
+    "data": Object {
+      "proposedValue": "@UI.DataPoint#E/Value]",
+      "value": "@UI.DataPoint#E/Value",
+    },
+    "message": "Path escaping brackets ![] should be used",
+    "range": Object {
+      "end": Object {
+        "character": 45,
+        "line": 0,
+      },
+      "start": Object {
+        "character": 23,
+        "line": 0,
+      },
+    },
+    "rule": "no-odata-path-separator",
+    "severity": 2,
+  },
+]
+`;
+
+exports[`annotation conversion path handler convert ![navigation/element/@UI.DataPoint] 1`] = `
+Array [
+  "(4,14)",
+  "(15,22)",
+  "(23,36)",
+]
+`;
+
+exports[`annotation conversion path handler convert ![navigation/element/@UI.DataPoint] 2`] = `Array []`;
+
+exports[`annotation conversion path handler convert navigation.element.![@UI.DataPoint#B]/Value 1`] = `
+Array [
+  "(2,12)",
+  "(13,20)",
+  "(23,38)",
+  "(40,45)",
+]
+`;
+
+exports[`annotation conversion path handler convert navigation.element.![@UI.DataPoint#B]/Value 2`] = `
+Array [
+  Object {
+    "data": Object {
+      "proposedValue": "@UI.DataPoint#B/Value]",
+      "value": "@UI.DataPoint#B/Value",
+    },
+    "message": "Path escaping brackets ![] should be used",
+    "range": Object {
+      "end": Object {
+        "character": 45,
+        "line": 0,
+      },
+      "start": Object {
+        "character": 23,
+        "line": 0,
+      },
+    },
+    "rule": "no-odata-path-separator",
+    "severity": 2,
+  },
+]
+`;
+
+exports[`annotation conversion path handler convert navigation.element.@UI.![DataPoint#C]/Value 1`] = `
+Array [
+  "(2,12)",
+  "(13,20)",
+  "(21,38)",
+  "(40,45)",
+]
+`;
+
+exports[`annotation conversion path handler convert navigation.element.@UI.![DataPoint#C]/Value 2`] = `
+Array [
+  Object {
+    "data": Object {
+      "proposedValue": "![@UI.DataPoint#C/Value]",
+      "value": "@UI.DataPoint#C/Value",
+    },
+    "message": "Path escaping brackets ![] should be used",
+    "range": Object {
+      "end": Object {
+        "character": 45,
+        "line": 0,
+      },
+      "start": Object {
+        "character": 21,
+        "line": 0,
+      },
+    },
+    "rule": "no-odata-path-separator",
+    "severity": 2,
+  },
+]
+`;
+
+exports[`annotation conversion path handler convert navigation.element.@UI.DataPoint#D/Value/ 1`] = `
+Array [
+  "(2,12)",
+  "(13,20)",
+  "(21,36)",
+  "(37,42)",
+]
+`;
+
+exports[`annotation conversion path handler convert navigation.element.@UI.DataPoint#D/Value/ 2`] = `
+Array [
+  Object {
+    "data": Object {
+      "proposedValue": "![@UI.DataPoint#D/Value/]",
+      "value": "@UI.DataPoint#D/Value/",
+    },
+    "message": "Path escaping brackets ![] should be used",
+    "range": Object {
+      "end": Object {
+        "character": 43,
+        "line": 0,
+      },
+      "start": Object {
+        "character": 21,
+        "line": 0,
+      },
+    },
+    "rule": "no-odata-path-separator",
+    "severity": 2,
+  },
+]
+`;
+
+exports[`annotation conversion path handler convert navigation.element.@UI.DataPoint/Value 1`] = `
+Array [
+  "(2,12)",
+  "(13,20)",
+  "(21,34)",
+  "(35,40)",
+]
+`;
+
+exports[`annotation conversion path handler convert navigation.element.@UI.DataPoint/Value 2`] = `
+Array [
+  Object {
+    "data": Object {
+      "proposedValue": "![@UI.DataPoint/Value]",
+      "value": "@UI.DataPoint/Value",
+    },
+    "message": "Path escaping brackets ![] should be used",
+    "range": Object {
+      "end": Object {
+        "character": 40,
+        "line": 0,
+      },
+      "start": Object {
+        "character": 21,
+        "line": 0,
+      },
+    },
+    "rule": "no-odata-path-separator",
+    "severity": 2,
+  },
+]
+`;
+
+exports[`annotation conversion path handler convert navigation.element.@UI.Hidden 1`] = `
+Array [
+  "(2,12)",
+  "(13,20)",
+  "(21,31)",
+]
+`;
+
+exports[`annotation conversion path handler convert navigation.element.@UI.Hidden 2`] = `Array []`;
+
+exports[`annotation conversion path handler convert navigation.element/@UI.DataPoint#ABC 1`] = `
+Array [
+  "(2,12)",
+  "(13,20)",
+  "(21,38)",
+]
+`;
+
+exports[`annotation conversion path handler convert navigation.element/@UI.DataPoint#ABC 2`] = `
+Array [
+  Object {
+    "data": Object {
+      "caseCheck": Object {
+        "isNamespacedValue": false,
+        "lookupPath": Array [],
+        "proposedValue": ".",
+        "value": "/",
+      },
+    },
+    "message": "Wrong path separator '/'. Did you mean '.'?",
+    "range": Object {
+      "end": Object {
+        "character": 21,
+        "line": 0,
+      },
+      "start": Object {
+        "character": 20,
+        "line": 0,
+      },
+    },
+    "severity": 2,
+  },
+]
+`;
+
+exports[`annotation conversion path handler convert navigation/element 1`] = `
+Array [
+  "(2,12)",
+  "(13,20)",
+]
+`;
+
+exports[`annotation conversion path handler convert navigation/element 2`] = `
+Array [
+  Object {
+    "data": Object {
+      "caseCheck": Object {
+        "isNamespacedValue": false,
+        "lookupPath": Array [],
+        "proposedValue": ".",
+        "value": "/",
+      },
+    },
+    "message": "Wrong path separator '/'. Did you mean '.'?",
+    "range": Object {
+      "end": Object {
+        "character": 13,
+        "line": 0,
+      },
+      "start": Object {
+        "character": 12,
+        "line": 0,
+      },
+    },
+    "severity": 2,
+  },
+]
+`;
+
+exports[`annotation conversion path handler convert navigation/element/@UI.DataPoint#A 1`] = `
+Array [
+  "(2,12)",
+  "(13,20)",
+  "(21,36)",
+]
+`;
+
+exports[`annotation conversion path handler convert navigation/element/@UI.DataPoint#A 2`] = `
+Array [
+  Object {
+    "data": Object {
+      "caseCheck": Object {
+        "isNamespacedValue": false,
+        "lookupPath": Array [],
+        "proposedValue": ".",
+        "value": "/",
+      },
+    },
+    "message": "Wrong path separator '/'. Did you mean '.'?",
+    "range": Object {
+      "end": Object {
+        "character": 13,
+        "line": 0,
+      },
+      "start": Object {
+        "character": 12,
+        "line": 0,
+      },
+    },
+    "severity": 2,
+  },
+  Object {
+    "data": Object {
+      "caseCheck": Object {
+        "isNamespacedValue": false,
+        "lookupPath": Array [],
+        "proposedValue": ".",
+        "value": "/",
+      },
+    },
+    "message": "Wrong path separator '/'. Did you mean '.'?",
+    "range": Object {
+      "end": Object {
+        "character": 21,
+        "line": 0,
+      },
+      "start": Object {
+        "character": 20,
+        "line": 0,
+      },
+    },
+    "severity": 2,
+  },
+]
+`;
+
+exports[`annotation conversion path handler convert with no ranges 1`] = `Array []`;
+
+exports[`annotation conversion path handler convert with no ranges 2`] = `Array []`;

@@ -1,10 +1,12 @@
-import type { FioriElementsApp } from '../types';
+import type { FioriElementsApp, LROPSettings } from '../types';
 import { TemplateType } from '../types';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import { render } from 'ejs';
+import semVer from 'semver';
+import type { ManifestEntitySettings } from './types';
 
 /**
  * Extend the manifest.json file passed via the fs reference with the template and settings specified.
@@ -14,7 +16,7 @@ import { render } from 'ejs';
  * @param fs - A reference to the in memory file system
  * @param targetPath - The target application path
  * @param rootTemplatesPath - The root path where the manifest templates will be found
- * @param feApp - The applicaiton config to be used by the manifest templates
+ * @param feApp - The application config to be used by the manifest templates
  */
 export function extendManifestJson<T>(
     fs: Editor,
@@ -23,7 +25,7 @@ export function extendManifestJson<T>(
     feApp: FioriElementsApp<T>
 ): void {
     let templatePath = feApp.template.type;
-    // FEOP and ALP v4 are variants of LROP and so we use the same template
+    // FEOP and ALP v4 are variants of LROP and so we use the same template and settings
     if (
         feApp.service.version === OdataVersion.v4 &&
         [
@@ -34,6 +36,17 @@ export function extendManifestJson<T>(
         ].includes(feApp.template.type)
     ) {
         templatePath = TemplateType.ListReportObjectPage;
+
+        // starting with UI5 v1.94.0, contextPath should be used instead of 'entitySet' in manifest for v4 LROP based apps
+        const minVersion = semVer.coerce(feApp.ui5?.minUI5Version);
+        if (!minVersion || semVer.gte(minVersion, '1.94.0')) {
+            const entityConfig = (feApp.template.settings as LROPSettings).entityConfig as ManifestEntitySettings;
+            entityConfig.contextPath = `/${entityConfig.mainEntityName}`;
+
+            if (entityConfig.navigationEntity?.EntitySet) {
+                entityConfig.navigationEntity.contextPath = `${entityConfig.contextPath}/${entityConfig.navigationEntity.Name}`;
+            }
+        }
     }
 
     // Enhance template settings

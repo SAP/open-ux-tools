@@ -282,7 +282,7 @@ export class YamlDocument {
     deleteAt({ path, matcher }: { path: string; matcher: { key: string; value: string } }): YamlDocument {
         const pathArray = this.toPathArray(path);
         const seq = this.documents[0].getIn(pathArray) as YAMLSeq<yaml.Node>;
-        if (!seq || !seq.items) {
+        if (!seq?.items) {
             throw new YAMLError(interpolate(errorTemplate.seqDoesNotExist, { path }), errorCode.seqDoesNotExist);
         }
 

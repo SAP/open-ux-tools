@@ -1,31 +1,22 @@
-import type { ToolsLogger } from '@sap-ux/logger';
-import { ZipFile } from 'yazl';
-import type { AdpPreviewConfig, DescriptorVariant } from '../types';
-import type { NextFunction, Request, Response } from 'express';
-import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
+import ZipFile from 'adm-zip';
 import type { ReaderCollection } from '@ui5/fs';
+import type { MiddlewareUtils } from '@ui5/server';
+import type { NextFunction, Request, Response, Router, RequestHandler } from 'express';
+
+import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
+import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 
-/**
- * Create a buffer based on the given zip file object.
- *
- * @param zip object representing a zip file
- * @returns a buffer
- */
-async function createBuffer(zip: ZipFile): Promise<Buffer> {
-    await new Promise<void>((resolve) => {
-        zip.end({ forceZip64Format: false }, () => {
-            resolve();
-        });
-    });
+import RoutesHandler from './routes-handler';
+import type { AdpPreviewConfig, CommonChangeProperties, DescriptorVariant, OperationType } from '../types';
+import type { Editor } from 'mem-fs-editor';
+import { addXmlFragment, isAddXMLChange, moduleNameContentMap, tryFixChange } from './change-handler';
 
-    const chunks: Buffer[] = [];
-    for await (const chunk of zip.outputStream) {
-        chunks.push(chunk as Buffer);
-    }
-
-    return Buffer.concat(chunks);
+export const enum ApiRoutes {
+    FRAGMENT = '/adp/api/fragment',
+    CONTROLLER = '/adp/api/controller',
+    CODE_EXT = '/adp/api/code_ext/:controllerName'
 }
 
 /**
@@ -36,6 +27,10 @@ export class AdpPreview {
      * Merged descriptor variant with reference app manifest
      */
     private mergedDescriptor: MergedAppDescriptor;
+    /**
+     * Routes handler class to handle API requests
+     */
+    private routesHandler: RoutesHandler;
 
     /**
      * @returns merged manifest.
@@ -72,13 +67,17 @@ export class AdpPreview {
      *
      * @param config adp config
      * @param project reference to the root of the project
+     * @param util middleware utilities provided by the UI5 CLI
      * @param logger logger instance
      */
     constructor(
         private readonly config: AdpPreviewConfig,
         private readonly project: ReaderCollection,
+        private readonly util: MiddlewareUtils,
         private readonly logger: ToolsLogger
-    ) {}
+    ) {
+        this.routesHandler = new RoutesHandler(project, util, logger);
+    }
 
     /**
      * Fetch all required configurations from the backend and initialize all configurations.
@@ -98,12 +97,12 @@ export class AdpPreview {
         const zip = new ZipFile();
         const files = await this.project.byGlob('**/*.*');
         for (const file of files) {
-            zip.addBuffer(await file.getBuffer(), file.getPath().substring(1));
+            zip.addFile(file.getPath().substring(1), await file.getBuffer());
         }
-        const buffer = await createBuffer(zip);
+        const buffer = zip.toBuffer();
 
-        // validate namespace & layer combination and fetch csrf token
-        await lrep.isExistingVariant(descriptorVariant.namespace, descriptorVariant.layer);
+        // fetch a merged descriptor from the backend
+        await lrep.getCsrfToken();
         this.mergedDescriptor = (await lrep.mergeAppDescriptorVariant(buffer))[descriptorVariant.id];
 
         return descriptorVariant.layer;
@@ -123,12 +122,82 @@ export class AdpPreview {
         } else if (req.path === '/Component-preload.js') {
             res.status(404).send();
         } else {
-            const files = await this.project.byGlob(req.path);
+            // check if the requested file exists in the file system (replace .js with .* for typescript)
+            const files = await this.project.byGlob(req.path.replace('.js', '.*'));
             if (files.length === 1) {
-                res.status(200).send(await files[0].getString());
+                // redirect to the exposed path so that other middlewares can handle it
+                res.redirect(302, req.path);
             } else {
                 next();
             }
+        }
+    }
+
+    /**
+     * Add additional APIs to the router that are required for adaptation projects only.
+     *
+     * This method sets up various GET and POST routes for handling fragments, controllers,
+     * and code extensions. For POST routes to work correctly, ensure that the router is
+     * using the **express.json()** middleware. This middleware is responsible for parsing
+     * incoming requests with JSON payloads and is based on body-parser.
+     *
+     * Usage:
+     * ```ts
+     * import express from "express";
+     *
+     * const app = express();
+     * const router = express.Router();
+     *
+     * // Ensure express.json() middleware is applied to the router or app
+     * router.use(express.json());
+     *
+     * const adp = new AdpPreview();
+     * adp.addApis(router);
+     *
+     * app.use('/', router);
+     * ```
+     *
+     * @param {Router} router - The router that is to be enhanced with the API.
+     * @returns {void} A promise that resolves when the APIs have been added.
+     */
+    addApis(router: Router): void {
+        router.get(ApiRoutes.FRAGMENT, this.routesHandler.handleReadAllFragments as RequestHandler);
+
+        router.get(ApiRoutes.CONTROLLER, this.routesHandler.handleReadAllControllers as RequestHandler);
+        router.post(ApiRoutes.CONTROLLER, this.routesHandler.handleWriteControllerExt as RequestHandler);
+
+        router.get(ApiRoutes.CODE_EXT, this.routesHandler.handleGetControllerExtensionData as RequestHandler);
+    }
+
+    /**
+     * Handles different types of change requests to project files.
+     *
+     * @param {string} type - The type of change request.
+     * @param {CommonChangeProperties} change - An object containing properties common to all change types.
+     * @param {Editor} fs - An instance of an editor interface for file system operations.
+     * @param {Logger} logger - An instance of a logging interface for message logging.
+     * @returns {Promise<void>} A promise that resolves when the change request has been processed.
+     */
+    async onChangeRequest(
+        type: OperationType,
+        change: CommonChangeProperties,
+        fs: Editor,
+        logger: Logger
+    ): Promise<void> {
+        switch (type) {
+            case 'read':
+                if (moduleNameContentMap[change.changeType] && !change.moduleName) {
+                    tryFixChange(change, logger);
+                }
+                break;
+            case 'write':
+                if (isAddXMLChange(change)) {
+                    addXmlFragment(this.util.getProject().getSourcePath(), change, fs, logger);
+                }
+                break;
+            default:
+                // no need to handle delete changes
+                break;
         }
     }
 }

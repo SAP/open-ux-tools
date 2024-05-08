@@ -1,0 +1,104 @@
+{
+  "header": {
+    "fields": [
+      {
+        "quoted": false,
+        "value": "key",
+        "range": "[(2,0)..(2,3)]"
+      },
+      {
+        "quoted": false,
+        "value": "en",
+        "range": "[(2,4)..(2,6)]"
+      },
+      {
+        "quoted": false,
+        "value": "de",
+        "range": "[(2,7)..(2,9)]"
+      }
+    ],
+    "range": "[(2,0)..(2,9)]"
+  },
+  "rows": [
+    {
+      "fields": [
+        {
+          "quoted": false,
+          "value": "",
+          "range": "[(3,0)..(3,0)]"
+        }
+      ],
+      "range": "[(3,0)..(3,0)]"
+    },
+    {
+      "fields": [
+        {
+          "quoted": false,
+          "value": "Book",
+          "range": "[(4,0)..(4,4)]"
+        },
+        {
+          "quoted": false,
+          "value": "Book",
+          "range": "[(4,5)..(4,9)]"
+        },
+        {
+          "quoted": false,
+          "value": "Buch",
+          "range": "[(4,10)..(4,14)]"
+        }
+      ],
+      "range": "[(4,0)..(4,14)]"
+    },
+    {
+      "fields": [
+        {
+          "quoted": false,
+          "value": "",
+          "range": "[(5,0)..(5,0)]"
+        }
+      ],
+      "range": "[(5,0)..(5,0)]"
+    },
+    {
+      "fields": [
+        {
+          "quoted": false,
+          "value": "",
+          "range": "[(6,0)..(6,0)]"
+        }
+      ],
+      "range": "[(6,0)..(6,0)]"
+    },
+    {
+      "fields": [
+        {
+          "quoted": false,
+          "value": "Books",
+          "range": "[(7,0)..(7,5)]"
+        },
+        {
+          "quoted": false,
+          "value": "Books",
+          "range": "[(7,6)..(7,11)]"
+        },
+        {
+          "quoted": false,
+          "value": "Büche",
+          "range": "[(7,12)..(7,17)]"
+        }
+      ],
+      "range": "[(7,0)..(7,17)]"
+    },
+    {
+      "fields": [
+        {
+          "quoted": false,
+          "value": "",
+          "range": "[(8,0)..(8,0)]"
+        }
+      ],
+      "range": "[(8,0)..(8,0)]"
+    }
+  ]
+}

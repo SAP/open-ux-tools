@@ -78,6 +78,20 @@ describe('CustomPage', () => {
             expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.js'))).toMatchSnapshot();
         });
 
+        test('latest version with minimal input, plus optional page id', () => {
+            const target = join(testDir, 'minimal-input');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            const minInput = {
+                ...minimalInput,
+                id: 'DummyPage'
+            };
+            const testApiData = JSON.parse(JSON.stringify(minInput));
+            //act
+            generateCustomPage(target, testApiData, fs);
+            //check
+            expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
+        });
+
         test('latest version with entitySet and lower UI5 version', () => {
             const target = join(testDir, 'ui5_1_71');
             const localManifest = JSON.parse(testAppManifest);
@@ -116,6 +130,19 @@ describe('CustomPage', () => {
             expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.js'))).toMatchSnapshot();
         });
 
+        test('with older but supported UI5 version, plus optional page id', () => {
+            const target = join(testDir, 'version-1.84');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            const minInput = {
+                ...minimalInput,
+                id: 'DummyPage',
+                minUI5Version: '1.84'
+            };
+            const testApiData = JSON.parse(JSON.stringify(minInput));
+            generateCustomPage(target, testApiData, fs);
+            expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
+        });
+
         test('with not supported version', () => {
             const target = join(testDir, 'version-not-supported');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
@@ -140,6 +167,8 @@ describe('CustomPage', () => {
             fs.write(viewPath, 'viewContent');
             const controllerPath = join(target, `webapp/${folder}/CustomPage.controller.js`);
             fs.write(controllerPath, 'controllerContent');
+            const i18nPropertiesPath = join(target, 'webapp/i18n/i18n.properties');
+            fs.write(i18nPropertiesPath, '');
             //sut
             generateCustomPage(target, { ...minimalInput, folder }, fs);
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
@@ -147,6 +176,7 @@ describe('CustomPage', () => {
             expect(fs.read(controllerPath)).toEqual('controllerContent');
             expect(fs.exists(viewPath)).toBe(true);
             expect(fs.read(viewPath)).toEqual('viewContent');
+            expect(fs.read(i18nPropertiesPath)).toEqual('');
         });
     });
 
@@ -165,6 +195,17 @@ describe('CustomPage', () => {
             const target = join(testDir, 'with-nav');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
             generateCustomPage(target, inputWithNavigation, fs);
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
+        });
+
+        test('simple inbound navigation, plus optional page id', () => {
+            const target = join(testDir, 'with-nav');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            const minInput = {
+                ...inputWithNavigation,
+                id: 'DummyPage'
+            };
+            generateCustomPage(target, minInput, fs);
             expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
         });
 
@@ -251,6 +292,10 @@ describe('CustomPage', () => {
             let updatedManifest = fs.read(join(target, 'webapp/manifest.json'));
             let result = detectTabSpacing(updatedManifest);
             expect(result).toEqual(expectedAfterSave);
+
+            const updatedI18nProperties = fs.read(join(target, 'webapp/i18n/i18n.properties'));
+            expect(updatedI18nProperties).toMatchSnapshot();
+
             // Generate another page and check if new tab sizing recalculated correctly without passing tab size info
             generateCustomPage(
                 target,
@@ -263,6 +308,32 @@ describe('CustomPage', () => {
             updatedManifest = fs.read(join(target, 'webapp/manifest.json'));
             result = detectTabSpacing(updatedManifest);
             expect(result).toEqual(expectedAfterSave);
+        });
+    });
+
+    describe('Typescript controller', () => {
+        const minimalInput: CustomPage = {
+            name: 'CustomPage',
+            entity: 'RootEntity',
+            typescript: true
+        };
+        test('latest version with minimal input', () => {
+            const target = join(testDir, 'minimal-input');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            //act
+            generateCustomPage(target, minimalInput, fs);
+            //check
+            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.ts'))).toMatchSnapshot();
+        });
+
+        test('lower UI5 version(1.84)', () => {
+            const target = join(testDir, 'minimal-input');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            const testInput = { ...minimalInput, minUI5Version: '1.84.62' };
+            //act
+            generateCustomPage(target, testInput, fs);
+            //check
+            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.ts'))).toMatchSnapshot();
         });
     });
 });

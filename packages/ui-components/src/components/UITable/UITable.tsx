@@ -295,7 +295,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
         let column: UIColumn = {} as UIColumn;
 
         const cells = rowEl?.querySelectorAll('.ms-DetailsRow-fields .ms-DetailsRow-cell');
-        if (!cells || !cells.length) {
+        if (!cells?.length) {
             return;
         }
 
@@ -640,19 +640,19 @@ export class UITable extends React.Component<UITableProps, UITableState> {
     }
 
     /**
-     * Validates cell.
+     * Validates passed value for cell and updates "errorMessage" property based on validation result.
      *
+     * @param editedCell Cell to validate
      * @param value
      */
-    private validateCell(value: string): void {
-        const editedCell = this.state.editedCell;
+    private validateCell(editedCell: EditedCell, value: string): void {
         const column = editedCell?.column;
         let errorMessage = '';
         if (column && typeof column.validate === 'function') {
             errorMessage = column.validate(value);
         }
         if (editedCell && editedCell.errorMessage !== errorMessage) {
-            if (typeof editedCell.rowIndex === 'number' && editedCell?.column?.key) {
+            if (typeof editedCell.rowIndex === 'number' && editedCell.column?.key) {
                 const cell = getCellFromCoords(
                     editedCell.rowIndex,
                     editedCell.column.key,
@@ -664,7 +664,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
             }
 
             editedCell.errorMessage = errorMessage || undefined;
-            this.setState({ editedCell });
+            // Rerender table to show error message
             this.rerenderTable();
         }
     }
@@ -676,26 +676,31 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      * @param newValue
      */
     private onTextInputChange(e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue = ''): void {
-        const editedCell = this.state.editedCell || this.activeElement;
-        if (editedCell) {
-            editedCell.newValue = newValue;
-        }
-        this.setState({ editedCell });
-        const column = editedCell?.column;
-        if (column && typeof column.validate === 'function') {
-            this.validateCell(newValue);
-        }
-        if (this.props.renderInputs) {
-            this.saveCell(false, newValue);
-        }
+        this.setState((prevState) => {
+            const editedCell = prevState.editedCell ?? this.activeElement;
+            if (editedCell) {
+                editedCell.newValue = newValue;
+
+                const column = editedCell.column;
+                if (column && typeof column.validate === 'function') {
+                    this.validateCell(editedCell, newValue);
+                }
+                if (this.props.renderInputs) {
+                    this.saveCell(false, newValue);
+                }
+            }
+            return { editedCell };
+        });
     }
 
     private onComboBoxChange = (option?: IComboBoxOption): void => {
-        const editedCell = this.state.editedCell || this.activeElement;
-        if (editedCell && option) {
-            editedCell.newValue = option.text;
-        }
-        this.setState({ editedCell });
+        this.setState((prevState) => {
+            const editedCell = prevState.editedCell ?? this.activeElement;
+            if (editedCell && option) {
+                editedCell.newValue = option.text;
+            }
+            return { editedCell };
+        });
     };
 
     private readonly onDropdownCellValueChange = (

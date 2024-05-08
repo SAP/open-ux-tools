@@ -14,7 +14,19 @@
       "path": "../adp-tooling"
     },
     {
+      "path": "../axios-extension"
+    },
+    {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../i18n"
+    },
+    {
       "path": "../logger"
+    },
+    {
+      "path": "../playwright"
     },
     {
       "path": "../project-access"

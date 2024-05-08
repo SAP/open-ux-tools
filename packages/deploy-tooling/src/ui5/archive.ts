@@ -1,7 +1,6 @@
-import { ZipFile } from 'yazl';
+import ZipFile from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { DuplexCollection } from '@ui5/fs';
-import { createBuffer } from '../base';
 
 /**
  * Create an archive of files in the workspace.
@@ -27,9 +26,9 @@ export async function createUi5Archive(
             const path = resource.getPath().replace(prefix, '');
             logger.debug(`Adding ${path}`);
             const buffer = await resource.getBuffer();
-            zip.addBuffer(buffer, path);
+            zip.addFile(path, buffer);
         }
     }
     logger.info('Archive created.');
-    return createBuffer(zip);
+    return zip.toBuffer();
 }

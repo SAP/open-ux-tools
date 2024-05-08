@@ -1,0 +1,100 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ts getNewAnnotationFile 1`] = `
+Object {
+  "fileContent": "<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/UI.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.UI.v1\\" Alias=\\"UI\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/Common.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.Common.v1\\" Alias=\\"Common\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"metadatauri/def/ghi\\">
+        <edmx:Include Namespace=\\"STTA_PROD_MAN\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"\\">
+        <edmx:Include Namespace=\\"test\\" Alias=\\"Test\\"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\" Namespace=\\"schemaNamespace\\">
+            
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
+",
+  "position": Object {
+    "character": 12,
+    "line": 15,
+  },
+}
+`;
+
+exports[`ts serializeElement 1`] = `
+"
+<Reference/>"
+`;
+
+exports[`ts serializeReference case 1: when alias is deffined 1`] = `
+"
+<edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/Common.xml\\">
+    <edmx:Include Namespace=\\"com.sap.vocabularies.Common.v1\\" Alias=\\"UI\\"/>
+</edmx:Reference>"
+`;
+
+exports[`ts serializeReference case 2: when alias is undefined 1`] = `
+"
+<edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/Common.xml\\">
+    <edmx:Include Namespace=\\"com.sap.vocabularies.Common.v1\\"/>
+</edmx:Reference>"
+`;
+
+exports[`ts serializeTarget 1`] = `
+"
+            <Annotations Target=\\"abc\\">
+                <Annotation Term=\\"Common.ValueList\\">
+                    <Record Type=\\"Common.ValueListType\\">
+                        <PropertyValue Property=\\"CollectionPath\\" String=\\"Airports\\"/>
+                        <PropertyValue Property=\\"Parameters\\">
+                            <Collection>
+                                <Record Type=\\"Common.ValueListParameterInOut\\">
+                                    <PropertyValue Property=\\"LocalDataProperty\\" PropertyPath=\\"LastName\\"/>
+                                    <PropertyValue Property=\\"ValueListProperty\\" String=\\"IcaoCode\\"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term=\\"Common.ValueListWithFixedValues\\" Bool=\\"true\\"/>
+                <Annotation Term=\\"Common.ValueList\\" Qualifier=\\"cxcx\\">
+                    <Record Type=\\"Common.ValueListType\\">
+                        <PropertyValue Property=\\"CollectionPath\\" String=\\"AddressInfo\\"/>
+                    </Record>
+                </Annotation>
+            </Annotations>"
+`;
+
+exports[`ts serializeTarget with embedded annotations 1`] = `
+"
+    <Annotations Target=\\"abc\\">
+        <Annotation Term=\\"Common.ValueList\\">
+            <Record Type=\\"Common.ValueListType\\">
+                <PropertyValue Property=\\"CollectionPath\\" String=\\"Airports\\"/>
+                <PropertyValue Property=\\"Parameters\\">
+                    <Collection>
+                        <Record Type=\\"Common.ValueListParameterInOut\\">
+                            <Annotation Term=\\"UI.Emphasized\\"/>
+                            <PropertyValue Property=\\"LocalDataProperty\\" PropertyPath=\\"LastName\\">
+                                <Annotation Term=\\"Common.Application\\">
+                                    <Record Type=\\"Common.ApplicationType\\">
+                                        <PropertyValue Property=\\"ServiceVersion\\" String=\\"2.0\\"/>
+                                    </Record>
+                                </Annotation>
+                            </PropertyValue>
+                            <PropertyValue Property=\\"ValueListProperty\\" String=\\"IcaoCode\\"/>
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+    </Annotations>"
+`;

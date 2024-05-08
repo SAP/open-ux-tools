@@ -1,0 +1,162 @@
+{
+    "type": "annotation-file",
+    "uri": "file://metadata.xml",
+    "range": "[(1,0)..(76,12)]",
+    "contentRange": "[(5,53)..(76,0)]",
+    "namespace": {
+        "type": "namespace",
+        "name": "Z2SEPMRA_C_PD_PRODUCT_CDS",
+        "range": "[(7,8)..(74,17)]",
+        "nameRange": "[(8,23)..(8,48)]",
+        "contentRange": "[(11,65)..(74,8)]"
+    },
+    "references": [],
+    "targets": [],
+    "metadata": [
+        {
+            "path": "Z2SEPMRA_C_PD_PRODUCT_CDS.I_CurrencyType",
+            "isAnnotatable": true,
+            "kind": "EntityType",
+            "name": "Z2SEPMRA_C_PD_PRODUCT_CDS.I_CurrencyType",
+            "isCollectionValued": false,
+            "isComplexType": false,
+            "isEntityType": true,
+            "location": {
+                "uri": "file://metadata.xml",
+                "range": "[(12,12)..(58,25)]"
+            },
+            "content": [
+                {
+                    "path": "Z2SEPMRA_C_PD_PRODUCT_CDS.I_CurrencyType/Currency",
+                    "isAnnotatable": true,
+                    "kind": "Property",
+                    "name": "Currency",
+                    "isCollectionValued": false,
+                    "isComplexType": false,
+                    "isEntityType": false,
+                    "edmPrimitiveType": "Edm.String",
+                    "location": {
+                        "uri": "file://metadata.xml",
+                        "range": "[(16,16)..(25,18)]"
+                    },
+                    "content": [],
+                    "targetKinds": ["Property"]
+                },
+                {
+                    "path": "Z2SEPMRA_C_PD_PRODUCT_CDS.I_CurrencyType/Currency_Text",
+                    "isAnnotatable": true,
+                    "kind": "Property",
+                    "name": "Currency_Text",
+                    "isCollectionValued": false,
+                    "isComplexType": false,
+                    "isEntityType": false,
+                    "edmPrimitiveType": "Edm.String",
+                    "location": {
+                        "uri": "file://metadata.xml",
+                        "range": "[(26,16)..(33,18)]"
+                    },
+                    "content": [],
+                    "targetKinds": ["Property"]
+                },
+                {
+                    "path": "Z2SEPMRA_C_PD_PRODUCT_CDS.I_CurrencyType/Decimals",
+                    "isAnnotatable": true,
+                    "kind": "Property",
+                    "name": "Decimals",
+                    "isCollectionValued": false,
+                    "isComplexType": false,
+                    "isEntityType": false,
+                    "edmPrimitiveType": "Edm.Byte",
+                    "location": {
+                        "uri": "file://metadata.xml",
+                        "range": "[(34,16)..(34,60)]"
+                    },
+                    "content": [],
+                    "targetKinds": ["Property"]
+                },
+                {
+                    "path": "Z2SEPMRA_C_PD_PRODUCT_CDS.I_CurrencyType/CurrencyISOCode",
+                    "isAnnotatable": true,
+                    "kind": "Property",
+                    "name": "CurrencyISOCode",
+                    "isCollectionValued": false,
+                    "isComplexType": false,
+                    "isEntityType": false,
+                    "edmPrimitiveType": "Edm.String",
+                    "location": {
+                        "uri": "file://metadata.xml",
+                        "range": "[(35,16)..(42,18)]"
+                    },
+                    "content": [],
+                    "targetKinds": ["Property"]
+                },
+                {
+                    "path": "Z2SEPMRA_C_PD_PRODUCT_CDS.I_CurrencyType/AlternativeCurrencyKey",
+                    "isAnnotatable": true,
+                    "kind": "Property",
+                    "name": "AlternativeCurrencyKey",
+                    "isCollectionValued": false,
+                    "isComplexType": false,
+                    "isEntityType": false,
+                    "edmPrimitiveType": "Edm.String",
+                    "location": {
+                        "uri": "file://metadata.xml",
+                        "range": "[(43,16)..(50,18)]"
+                    },
+                    "content": [],
+                    "targetKinds": ["Property"]
+                },
+                {
+                    "path": "Z2SEPMRA_C_PD_PRODUCT_CDS.I_CurrencyType/IsPrimaryCurrencyForISOCrcy",
+                    "isAnnotatable": true,
+                    "kind": "Property",
+                    "name": "IsPrimaryCurrencyForISOCrcy",
+                    "isCollectionValued": false,
+                    "isComplexType": false,
+                    "isEntityType": false,
+                    "edmPrimitiveType": "Edm.Boolean",
+                    "location": {
+                        "uri": "file://metadata.xml",
+                        "range": "[(51,16)..(57,18)]"
+                    },
+                    "content": [],
+                    "targetKinds": ["Property"]
+                }
+            ],
+            "keys": ["Currency"],
+            "targetKinds": ["EntityType"]
+        },
+        {
+            "path": "Z2SEPMRA_C_PD_PRODUCT_CDS.Z2SEPMRA_C_PD_PRODUCT_CDS_Entities",
+            "isAnnotatable": true,
+            "kind": "EntityContainer",
+            "name": "Z2SEPMRA_C_PD_PRODUCT_CDS.Z2SEPMRA_C_PD_PRODUCT_CDS_Entities",
+            "isCollectionValued": false,
+            "isComplexType": false,
+            "isEntityType": false,
+            "location": {
+                "uri": "file://metadata.xml",
+                "range": "[(60,12)..(73,30)]"
+            },
+            "content": [
+                {
+                    "path": "Z2SEPMRA_C_PD_PRODUCT_CDS.Z2SEPMRA_C_PD_PRODUCT_CDS_Entities/I_Currency",
+                    "isAnnotatable": true,
+                    "kind": "EntitySet",
+                    "name": "I_Currency",
+                    "isCollectionValued": true,
+                    "isComplexType": false,
+                    "isEntityType": true,
+                    "structuredType": "Z2SEPMRA_C_PD_PRODUCT_CDS.I_CurrencyType",
+                    "location": {
+                        "uri": "file://metadata.xml",
+                        "range": "[(64,16)..(72,18)]"
+                    },
+                    "content": [],
+                    "targetKinds": ["EntitySet", "Collection"]
+                }
+            ],
+            "targetKinds": ["EntityContainer"]
+        }
+    ]
+}

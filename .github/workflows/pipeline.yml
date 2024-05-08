@@ -11,7 +11,7 @@ jobs:
         strategy:
             matrix:
                 os: [ubuntu-latest, windows-latest]
-                node-version: [16.x, 18.x]
+                node-version: [18.x, 20.x]
         runs-on: ${{ matrix.os }}
         timeout-minutes: 15
         steps:
@@ -42,8 +42,32 @@ jobs:
               run: pnpm run build
             - name: Run unit tests
               run: pnpm run test
+            - name: Cache playwright browsers
+              id: cache-playwright-browsers
+              uses: actions/cache@v3
+              with:
+                path: |
+                  ${{ runner.os == 'Windows' }}:
+                    C:\Users\runneradmin\AppData\Local\ms-playwright
+                  ${{ runner.os != 'Windows' }}:
+                    ~/.cache/ms-playwright
+                key: playwright-browsers-os-${{ matrix.os }}-node-version-${{ matrix.node-version }}
+            - name: Install playwright browsers
+              if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
+              run: npx playwright install --with-deps
+            - name: Run integration tests
+              run: pnpm run test:integration
+            - name: Upload playwright reports
+              if: failure()
+              uses: actions/upload-artifact@v3
+              with:
+                name: playwright-reports-os-${{ matrix.os }}-node-version-${{ matrix.node-version }}
+                path: |
+                  packages/*/playwright-report
+                  !packages/*/node_modules
+                retention-days: 15
             - name: Run SonarCloud scan
-              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '16.x'
+              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '18.x'
               uses: sonarsource/sonarcloud-github-action@master
               env:
                   GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
@@ -74,10 +98,10 @@ jobs:
                   key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
                       ${{ runner.os }}-build-${{ env.cache-name }}-
-            - name: Use Node.js 16.x
+            - name: Use Node.js 18.x
               uses: actions/setup-node@v3
               with:
-                  node-version: 16.x
+                  node-version: 18.x
             - name: Install pnpm modules
               run: pnpm install
             - name: Apply changesets
@@ -119,10 +143,10 @@ jobs:
                   key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
                       ${{ runner.os }}-build-${{ env.cache-name }}-
-            - name: Use Node.js 16.x
+            - name: Use Node.js 18.x
               uses: actions/setup-node@v3
               with:
-                  node-version: 16.x
+                  node-version: 18.x
             - name: Install pnpm modules
               run: pnpm install
             - name: Run build

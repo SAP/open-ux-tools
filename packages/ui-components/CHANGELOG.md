@@ -1,5 +1,249 @@
 # @sap-ux/ui-components
 
+## 1.15.13
+
+### Patch Changes
+
+-   494fd0f1: fix: UISections splitter resize issue after window resize
+
+## 1.15.12
+
+### Patch Changes
+
+-   8b0e0418: Fixed styling for disabled UICheckbox.
+
+## 1.15.11
+
+### Patch Changes
+
+-   f3acc1c6: Security upgrade fixes - `webpack-dev-middleware` from `6.1.1` to `6.1.3`
+
+## 1.15.10
+
+### Patch Changes
+
+-   edc3a166: UIComboBox. Extender 'isLoading' property with option to set loading within combobox input.
+
+## 1.15.9
+
+### Patch Changes
+
+-   d188f765: Upgrading version of `sanitize-html` due to medium priority security issue
+
+## 1.15.8
+
+### Patch Changes
+
+-   75653b31: UIIconButton. Some icons(which are not 16x16) are not centered within UIIconButton
+
+## 1.15.7
+
+### Patch Changes
+
+-   942b8f2f: Fixes for SonarQube issues:
+    1. Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.
+    1. Refactor this code to not use nested template literals.
+    1. Remove this property or method or refactor "Class", as "method" is not used inside component body
+    1. Move this component definition out of the parent component and pass data as props.
+    1. The signature '(from: number, length?: number | undefined): string' of 'text.substr' is deprecated.
+    1. Mark the props of the component as read-only.
+    1. Make this public static property readonly.
+    1. Prefer using an optional chain expression instead, as it's more concise and easier to read.
+    1. '{property}' is deprecated.
+    1. Unnecessary use of boolean literals in conditional expression.
+    1. useState call is not destructured into value + setter pair
+    1. Remove this commented out code.
+
+## 1.15.6
+
+### Patch Changes
+
+-   f6f7111c: UIIconButton. Apply vscode theme variables for UIIconButton when 'checked' property is set as 'true'
+
+## 1.15.5
+
+### Patch Changes
+
+-   80fae216: Addition of Icon for App Info Page. Needed for new dev efforts
+
+## 1.15.4
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+
+## 1.15.3
+
+### Patch Changes
+
+-   13dcde74: Update Icons.tsx to fix typo
+
+## 1.15.2
+
+### Patch Changes
+
+-   ccf2767a: Update Icons - Expand/Collapse Groups & 3 Layout options (Layout Centre, Left. & Right)
+
+## 1.15.1
+
+### Patch Changes
+
+-   601f6389: fix: Allow to pass custom `data-*` attributes for `UISections`, `UISection`, `UIToolbar` and `UIToolbarColumn` components.
+
+## 1.15.0
+
+### Minor Changes
+
+-   ea1ed433: feat: New component UIQuickNavigation to allow focus through groups using keyboard shortcuts
+
+## 1.14.2
+
+### Patch Changes
+
+-   be152c6f: Add lightning icon
+
+## 1.14.1
+
+### Patch Changes
+
+-   17cd1c21: fix: UIDefaultButton. Apply VSCode border color(`--vscode-button-border`) to UIDefaultButton
+
+## 1.14.0
+
+### Minor Changes
+
+-   3ec4de4b: Fix: UIComboBox. Prevent caret jump on input value change and on autocomplete value click
+
+## 1.13.5
+
+### Patch Changes
+
+-   4f792c88: - add `ValidateInfo` icon
+    -   add `ValidateError` icon
+    -   add `ValidateWarning` icon
+
+## 1.13.4
+
+### Patch Changes
+
+-   e47492f0: Reusable css variables and classes for common box shadows.
+    Variables - `--ui-box-shadow-small`, `--ui-box-shadow-medium`, `--ui-box-shadow-large`.
+    Classes - `ui-box-shadow-small `, `ui-box-shadow-medium`, `ui-box-shadow-large`.
+
+## 1.13.3
+
+### Patch Changes
+
+-   3473d4b0: UIFlexibleTable. New property "isTouchDragDisabled" which allows to disable drag/reordering of table rows where drag is initalized by touch events
+
+## 1.13.2
+
+### Patch Changes
+
+-   f1221f2b: fix: UIContextualMenu. Border bottom is cut for UIContextualMenu in some zoom levels
+
+## 1.13.1
+
+### Patch Changes
+
+-   cbae7aba: fix: UICallout. New property "focusTargetSiblingOnTabPress", which allows to focus next/previous element relative to target when Tab key is pressed using keyboard
+
+## 1.13.0
+
+### Minor Changes
+
+-   c7d5b85c: UIDropdown, UIComboBox - new property "calloutCollisionTransformation" to improve interaction between multi-select dropdown and dialog action buttons(transformation makes dialog action buttons if its overlapped by dropdown menu)
+
+## 1.12.5
+
+### Patch Changes
+
+-   ade42a17: add `bookbookmark` icon
+
+## 1.12.4
+
+### Patch Changes
+
+-   f2b5e735: update `header` and `layout` icons
+
+## 1.12.3
+
+### Patch Changes
+
+-   c53c31e3: Update Icons.tsx
+
+## 1.12.2
+
+### Patch Changes
+
+-   37f4e176: Parameterise UI Action Aallout border colour
+
+## 1.12.1
+
+### Patch Changes
+
+-   9896d6f4: add `footer` icon
+
+## 1.12.0
+
+### Minor Changes
+
+-   22a21267: UISplitButton update state on props change
+
+## 1.11.21
+
+### Patch Changes
+
+-   95f951f9: styling changes for UIActionCallout
+
+## 1.11.20
+
+### Patch Changes
+
+-   767e1c36: UIDialog, UICallout, UIContextualMenu, dropdown menus - apply border radius. 4px for UIDialog and UICallout. 2px for contextual and dropdown menus
+
+## 1.11.19
+
+### Patch Changes
+
+-   a6de5157: Fixed SonarQube issue: "setState" should use a callback when referencing the previous state
+
+## 1.11.18
+
+### Patch Changes
+
+-   80b95469: fix(ui-components): fix focus state for the split button
+
+## 1.11.17
+
+### Patch Changes
+
+-   38d70e31: UIList. Fix - ListProps interface is extended from fluent-ui IGroupedListProps
+
+## 1.11.16
+
+### Patch Changes
+
+-   2039c789: UIFlexibleTable. Fix - impossible to scroll with touch when user touches disabled row.
+
+## 1.11.15
+
+### Patch Changes
+
+-   a1c0d41f: UITextField. Fix - apply font family using vscode variable to UITextField input.
+
+## 1.11.14
+
+### Patch Changes
+
+-   67179f36: chore(deps): update storybook monorepo to v7.4.3
+
+## 1.11.13
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+
 ## 1.11.12
 
 ### Patch Changes

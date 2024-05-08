@@ -1,0 +1,22 @@
+.filter {
+    display: flex;
+    margin: 17px 15px 10px 15px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.noData {
+    font-style: normal;
+    font-weight: bolder;
+    font-size: 15px;
+    line-height: 21px;
+    text-align: center;
+    padding-top: 20px;
+    margin-left: 35px;
+    color: var(--vscode-foreground);
+}
+
+.infoIcon {
+    margin-left: 15px;
+    margin-top: 5px;
+}

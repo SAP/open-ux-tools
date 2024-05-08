@@ -1,0 +1,10 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "dist",
+        "rootDir": "./src",
+        "lib": ["ES2021", "ESNext.BigInt"],
+        "preserveConstEnums": true
+    },
+    "include": ["src"]
+}

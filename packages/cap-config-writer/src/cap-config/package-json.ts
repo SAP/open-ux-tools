@@ -3,7 +3,7 @@ import { getCapCustomPaths } from '@sap-ux/project-access';
 import type { Package } from '@sap-ux/project-access';
 
 const minCdsVersion = '6.8.2';
-const minCdsPluginUi5Version = '0.2.1';
+const minCdsPluginUi5Version = '0.6.13';
 
 /**
  * Ensure a minimum version of @sap/cds in dependencies.

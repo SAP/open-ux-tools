@@ -1,0 +1,61 @@
+#theme-light {
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    background: #ffffff;
+}
+
+#theme-dark {
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    background-color: #3c3c3c;
+}
+
+#theme-high-contrast {
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    background: #f38518;
+}
+
+.theme-child {
+    display: flex;
+    float: left;
+    width: 20px;
+    height: 20px;
+    margin: 10px 0 10px 10px;
+    border-radius: 1px;
+    position: relative;
+    outline: none;
+}
+.ms-Fabric--isFocusVisible {
+    .theme-child:focus::after {
+        content: "";
+        position: absolute;
+        border: 1px solid transparent;
+        outline-style: solid;
+        outline-width: 1px;
+        z-index: 1;
+        outline-color: var(--vscode-focusBorder);
+        inset: -3px;
+    }
+}
+.selected {
+    border-radius: 1px;
+    background-color: var(--vscode-progressBar-background);
+}
+
+div#theme-light {
+    margin-left: 3px;
+    margin-bottom: 3px;
+    margin-top: 3px;
+}
+div#theme-dark {
+    margin-left: 3px;
+    margin-top: 3px;
+}
+div#theme-high-contrast {
+    margin-left: 3px;
+    margin-top: 3px;
+}

@@ -1,0 +1,5 @@
+UI.HeaderInfo #issue: {
+    TypeName    :
+    TypeNamePlural : 'tnp'
+
+//  due to parsing issues trailing '}' is missing

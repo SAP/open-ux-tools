@@ -1,11 +1,12 @@
 import { Option, Command } from 'commander';
 import { ToolsLogger, ConsoleTransport, LogLevel } from '@sap-ux/logger';
-import { deploy, getConfigForLogging, replaceEnvVariables, undeploy, validateConfig } from '../base';
+import { deploy, getConfigForLogging, undeploy, validateConfig } from '../base';
 import type { CliOptions, AbapDeployConfig } from '../types';
 import { NAME } from '../types';
 import { getArchive } from './archive';
 import { getDeploymentConfig, getVersion, mergeConfig } from './config';
 import { config as loadEnvConfig } from 'dotenv';
+import { replaceEnvVariables } from '@sap-ux/ui5-config';
 
 /**
  * Create an instance of a command runner for deployment.
@@ -30,7 +31,7 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
         .addOption(new Option('--url <target-url>', 'URL of target ABAP system').conflicts('destination'))
         .addOption(new Option('--client <sap-client>', 'Client number of target ABAP system').conflicts('destination'))
         .addOption(new Option('--cloud', 'Target is an ABAP Cloud system').conflicts('destination'))
-        .addOption(new Option('--service <service-path>', 'Target SAPUI5 Repository OData Service'))
+        .addOption(new Option('--service <service-path>', 'Target alias for deployment service'))
         .addOption(
             new Option(
                 '--cloud-service-key <file-location>',
@@ -99,6 +100,13 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
                     'archivePath'
                 ])
             );
+    } else if (name === 'undeploy') {
+        command.addOption(
+            new Option(
+                '--lrep <namespace>',
+                'Undeploy the given namespace from the layered repository (for adaptation projects)'
+            ).conflicts(['test', 'name'])
+        );
     }
     return command.version(getVersion(), '-v, --version', 'version of the deploy tooling');
 }
@@ -135,7 +143,7 @@ async function prepareRun(cmd: Command) {
 }
 
 /**
- * Function that is to be execute when the exposed deploy command is executed.
+ * Function that is to be executed when the exposed deploy command is executed.
  */
 export async function runDeploy(): Promise<void> {
     const cmd = createCommand('deploy');
@@ -149,7 +157,7 @@ export async function runDeploy(): Promise<void> {
 }
 
 /**
- * Function that is to be execute when the exposed undeploy command is executed.
+ * Function that is to be executed when the exposed undeploy command is executed.
  */
 export async function runUndeploy(): Promise<void> {
     const cmd = createCommand('undeploy');

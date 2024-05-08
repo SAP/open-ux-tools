@@ -1,0 +1,17 @@
+.header,
+.item {
+    padding: 5px 15px 5px 15px;
+}
+
+.item:hover {
+    background-color: var(--vscode-dropdown-background);
+    color: var(--vscode-dropdown-foreground);
+    outline: 1px dashed var(--vscode-contrastActiveBorder);
+    .actions {
+        visibility: visible;
+    }
+}
+
+.actions {
+    visibility: hidden;
+}

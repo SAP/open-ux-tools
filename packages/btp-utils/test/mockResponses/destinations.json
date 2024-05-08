@@ -57,5 +57,18 @@
         "ProxyType": "Internet",
         "Description": "Destination without WebIDEUsage configured.",
         "Host": "http://no-usages.sap.example"
+    },
+    {
+        "Name": "S4HC",
+        "Type": "HTTP",
+        "Authentication": "SAMLAssertion",
+        "ProxyType": "Internet",
+        "Description": "S4HC for ABAP Cloud Deployment",
+        "WebIDEEnabled": "true",
+        "WebIDEUsage": "odata_abap,dev_abap",
+        "Host": "https://s4hc-example.sap.example",
+        "HTML5.DynamicDestination": "true",
+        "audience": "https://s4hc-example.sap.example",
+        "authnContextClassRef": "urn:oasis:names:tc:SAML:2.0:ac:classes:PreviousSession"
     }
 ]
