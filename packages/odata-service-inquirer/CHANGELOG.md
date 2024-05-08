@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.1.2
+
+### Patch Changes
+
+-   Updated dependencies [9a32e102]
+    -   @sap-ux/btp-utils@0.14.4
+    -   @sap-ux/telemetry@0.4.22
+
 ## 0.1.1
 
 ### Patch Changes

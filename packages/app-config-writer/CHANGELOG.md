@@ -1,5 +1,19 @@
 # @sap-ux/app-config-writer
 
+## 0.3.56
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+
+## 0.3.55
+
+### Patch Changes
+
+-   Updated dependencies [9a32e102]
+    -   @sap-ux/btp-utils@0.14.4
+    -   @sap-ux/axios-extension@1.11.9
+
 ## 0.3.54
 
 ### Patch Changes
