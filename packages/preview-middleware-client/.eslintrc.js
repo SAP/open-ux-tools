@@ -21,10 +21,7 @@ module.exports = {
                 varsIgnorePattern: '^_',
                 argsIgnorePattern: '^_'
             }
-        ],
-        '@typescript-eslint/no-unsafe-argument': 'warn',
-        '@typescript-eslint/no-unsafe-member-access': 'warn',
-        '@typescript-eslint/no-unsafe-assignment': 'warn'
+        ]
     },
     overrides: [
         {
