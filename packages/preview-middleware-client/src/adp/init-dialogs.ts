@@ -8,6 +8,12 @@ import type UI5Element from 'sap/ui/core/Element';
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
+/** sap.ui.fl */
+import FlUtils from 'sap/ui/fl/Utils';
+
+/** sap.ui.dt */
+import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
+
 import AddFragment from './controllers/AddFragment.controller';
 import ControllerExtension from './controllers/ControllerExtension.controller';
 import { ExtensionPointData } from './extension-point';
@@ -33,6 +39,7 @@ export const initDialogs = (rta: RuntimeAuthoring): void => {
         id: 'ADD_FRAGMENT',
         text: 'Add: Fragment',
         handler: async (overlays: UI5Element[]) => await handler(overlays[0], rta, DialogNames.ADD_FRAGMENT),
+        enabled: isFragmentCommandEnabled,
         icon: 'sap-icon://attachment-html'
     });
 
@@ -87,3 +94,18 @@ export async function handler(
 
     await controller.setup(dialog as Dialog);
 }
+
+/**
+ * Determines whether the fragment command should be enabled based on the provided overlays.
+ *
+ * @param {ElementOverlay[]} overlays - An array of ElementOverlay objects representing the UI overlays.
+ * @returns {boolean} True if the fragment command is enabled, false otherwise.
+ */
+export const isFragmentCommandEnabled = (overlays: ElementOverlay[]): boolean => {
+    if (overlays.length === 0) return false;
+
+    const control = overlays[0].getElement();
+    const hasStableId = FlUtils.checkControlId(control);
+
+    return hasStableId && overlays.length <= 1;
+};

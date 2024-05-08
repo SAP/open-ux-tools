@@ -74,6 +74,7 @@ declare module 'sap/ui/dt/plugin/ContextMenu' {
         text: string;
         handler: Function;
         icon?: string;
+        enabled?: Function;
     }
 
     interface ContextMenu {
