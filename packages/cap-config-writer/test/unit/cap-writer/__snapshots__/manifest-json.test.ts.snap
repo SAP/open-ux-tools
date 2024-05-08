@@ -10,9 +10,7 @@ Object {
         \\"uri\\": \\"/incident/\\",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
-          \\"annotations\\": [
-            \\"ODataAnnotation\\"
-          ],
+          \\"annotations\\": [],
           \\"odataVersion\\": \\"4.0\\"
         }
       }
@@ -55,9 +53,7 @@ Object {
         \\"uri\\": \\"/incident/\\",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
-          \\"annotations\\": [
-            \\"ODataAnnotation\\"
-          ],
+          \\"annotations\\": [],
           \\"odataVersion\\": \\"4.0\\"
         }
       }
