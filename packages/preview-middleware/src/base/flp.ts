@@ -250,7 +250,10 @@ export class FlpSandbox {
             this.addEditorRoutes(this.rta);
         }
         if (this.test) {
-            this.addTestRoutes(this.test, id);
+            this.addTestRoutes(
+                this.test.filter((config) => config.framework !== 'Testsuite'),
+                id
+            );
             this.createTestSuite(this.test);
         }
 
@@ -479,12 +482,16 @@ export class FlpSandbox {
     }
 
     /**
-     * Create a test suite for the test configurations.
+     * If it is part of TestConfig, create a test suite for the test configurations.
      *
      * @param configs test configurations
      * @private
      */
     private createTestSuite(configs: TestConfig[]) {
+        if (!this.test?.find((config) => config.framework === 'Testsuite')) {
+            //create a testsuite only if it is explicitly part of the test configuration
+            return;
+        }
         const testsuite = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit.html'), 'utf-8');
         const initTemplate = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit.js'), 'utf-8');
 

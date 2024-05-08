@@ -398,12 +398,56 @@ describe('FlpSandbox', () => {
             await server.get('/test/integration/opaTests.qunit.js').expect(404);
         });
 
-        test('default testsuite', async () => {
+        test('default without testsuite', async () => {
+            await server.get('/test/testsuite.qunit.html').expect(404);
+            await server.get('/test/testsuite.qunit.js').expect(404);
+        });
+    });
+
+    describe('router with test suite', () => {
+        let server!: SuperTest<Test>;
+
+        beforeAll(async () => {
+            const flp = new FlpSandbox(
+                {
+                    flp: {
+                        apps: [
+                            {
+                                target: '/yet/another/app'
+                            }
+                        ]
+                    },
+                    test: [
+                        {
+                            framework: 'QUnit'
+                        },
+                        {
+                            framework: 'OPA5'
+                        },
+                        {
+                            framework: 'Testsuite'
+                        }
+                    ]
+                },
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+
+            const app = express();
+            app.use(flp.router);
+
+            server = await supertest(app);
+        });
+
+        test('default with testsuite', async () => {
             const response = await server.get('/test/testsuite.qunit.html').expect(200);
             expect(response.text).toMatchSnapshot();
         });
 
-        test('default testsuite init testsuite.qunit.js', async () => {
+        test('default with testsuite and init testsuite.qunit.js', async () => {
             const response = await server.get('/test/testsuite.qunit.js').expect(200);
             expect(response.text).toMatchSnapshot();
         });

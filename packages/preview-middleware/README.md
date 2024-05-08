@@ -29,7 +29,7 @@ When this middleware is used together with the `reload-middleware`, then the ord
 | `rta`                  |           |                  | Optional configuration allowing to add mount points for runtime adaptation                                                                                                                                                                                |
 | `rta.layer`            | `string`  | `(calculated)`   | Optional property for defining the runtime adaptation layer for changes (default is `CUSTOMER_BASE` or read from the project for adaptation projects)                                                                                                     |
 | `rta.editors`          | `array`   | `undefined`      | Optional list of mount points for editing                                                                                                                                                                                                                 |
-| `test`                 | `array`   | `undefined`      | Optional list of configurations for automated testing. As soon as at least one framework is configured a testsuite will automatically be created                                                                                                          |
+| `test`                 | `array`   | `undefined`      | Optional list of configurations for automated testing.                                                                                                                                                                                                    |
 | `debug`                | `boolean` | `false`          | Enables debug output                                                                                                                                                                                                                                      |
 
 ### `flp.apps`
@@ -59,7 +59,7 @@ Array of additional application configurations:
 ### `test`
 | Option          | Type               | Description                                                                                                                                                    |
 | --------------- | -------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `framework`     | `string` mandatory | Currently `OPA5`, `QUnit` and `Testsuite` are supported                                                                                                        |
+| `framework`     | `string` mandatory | Currently `OPA5`, `QUnit` and `Testsuite` are supported. `Testsuite` will generate a testsuite for all configured frameworks that can be be used with a test runner (like e.g. karma) |
 | `path`          | `string` optional  | The mount point to be used for test suite                                                                                                                      |
 | `init`          | `string` optional  | The mount point to be used for test runner script                                                                                                              |
 | `pattern`       | `string` optional  | Optional glob pattern to find the tests. By default `/test/**/*Journey.*` is used for `OPA5` and `/test/**/*Test.*` is used for `QUnit` (n.a. for `Testsuite`) |
