@@ -260,7 +260,7 @@ my.test.app_sap.app.title=Adaptation of the.original.app",
 }
 `;
 
-exports[`ADP writer migrateAdp migrate minimal config 1`] = `
+exports[`ADP writer migrate migrate minimal config 1`] = `
 Object {
   "../deploy/.gitignore": Object {
     "contents": "node_modules/

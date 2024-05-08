@@ -4,7 +4,7 @@ import { create } from 'mem-fs-editor';
 import { generate } from '../../../src';
 import type { AdpWriterConfig } from '../../../src/types';
 import { rimraf } from 'rimraf';
-import { migrateAdp } from '../../../src/writer';
+import { migrate } from '../../../src/writer';
 
 describe('ADP writer', () => {
     const fs = create(createStorage());
@@ -95,7 +95,7 @@ describe('ADP writer', () => {
         test('migrate minimal config', async () => {
             fs.copy(migrateInputDir, migrateOutputDir);
             expect(fs.exists(join(migrateOutputDir, 'ui5.yaml'))).toBeFalsy();
-            await migrateAdp(migrateOutputDir, config, fs);
+            await migrate(migrateOutputDir, config, fs);
             expect(fs.dump(migrateOutputDir)).toMatchSnapshot();
             expect(fs.exists(join(migrateOutputDir, 'ui5.yaml'))).toBeTruthy();
             expect(fs.exists(join(migrateOutputDir, 'package.json'))).toBeTruthy();
