@@ -5,10 +5,16 @@ import { ToolsLogger } from '@sap-ux/logger';
 import editor from 'mem-fs-editor';
 import { join } from 'path';
 import { updateRootPackageJsonCAP, updateAppPackageJsonCAP } from '../../../src/cap-writer/package-json';
+import { getCdsVersionInfo } from '@sap-ux/project-access';
 
 jest.mock('../../../src/cap-config/package-json', () => ({
     ...jest.requireActual('../../../src/cap-config/package-json'),
     satisfiesMinCdsVersion: jest.fn()
+}));
+
+jest.mock('@sap-ux/project-access', () => ({
+    ...jest.requireActual('@sap-ux/project-access'),
+    getCdsVersionInfo: jest.fn()
 }));
 
 describe('Writing/package json files', () => {
@@ -29,6 +35,9 @@ describe('Writing/package json files', () => {
             appPath: 'app',
             capType: capNodeType
         };
+        (getCdsVersionInfo as jest.Mock).mockReturnValue({ 
+            home: '/cdsVersion'
+        })
     });
 
     afterEach(() => {
