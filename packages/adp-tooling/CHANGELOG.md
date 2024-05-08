@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.9.26
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+
 ## 0.9.25
 
 ### Patch Changes

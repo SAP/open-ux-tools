@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.4.19
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+
 ## 0.4.18
 
 ### Patch Changes

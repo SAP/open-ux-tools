@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.24.11
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+
 ## 0.24.10
 
 ### Patch Changes
