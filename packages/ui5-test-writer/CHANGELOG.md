@@ -1,5 +1,11 @@
 # @sap-ux/ui5-test-writer
 
+## 0.3.3
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+
 ## 0.3.2
 
 ### Patch Changes

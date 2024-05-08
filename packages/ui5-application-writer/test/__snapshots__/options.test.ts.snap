@@ -72,7 +72,8 @@ archive.zip
             \\"@sapui5/ts-types\\"
         ]
     }
-}",
+}
+",
     "state": "modified",
   },
   "ui5-local.yaml": Object {
