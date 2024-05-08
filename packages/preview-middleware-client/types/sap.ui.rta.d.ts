@@ -190,6 +190,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         flexSettings: FlexSettings;
         rootControl: Control;
         validateAppVersion: boolean;
+        showToolbars?: boolean;
     }
 
     export default class RuntimeAuthoring {
@@ -212,6 +213,14 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         } & Component;
         stop: (bSkipSave, bSkipRestart) => Promise<void>;
         attachStop: (handler: (event: Event) => void) => void;
+        setMode: (sNewMode: string) => void;
+        canUndo: () => boolean;
+        canRedo: () => boolean;
+        canSave: () => boolean;
+        undo: () => void;
+        redo: () => void;
+        save: () => void; // found since 1.108
+        __serializeAndSave: () => void; // found since 1.84
     }
 }
 

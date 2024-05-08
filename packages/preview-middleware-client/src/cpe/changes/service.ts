@@ -136,6 +136,7 @@ export class ChangeService {
 
         await this.fetchSavedChanges();
         this.updateStack();
+        // if using rta.stop and reintialize, following event interferes
         this.options.rta.attachStop(() => {
             // eslint-disable-next-line fiori-custom/sap-no-location-reload
             location.reload();

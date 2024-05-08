@@ -65,13 +65,12 @@
         (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
-<% if (locals.flex && flex?.scenario === 'ADAPTATION_PROJECT') { %>
+<% if (locals.flex && ['ADAPTATION_PROJECT', 'FE_FROM_SCRATCH'].includes(flex?.scenario)) { %>
         <!-- Temporary fix until RTA provides api for enable/disable buttons in main RTA navigation menu -->
     <style>
-        .sapUiRtaToolbarActionsSection button[aria-label="Exit"],
-        .sapUiRtaToolbarActionsSection button[id$="fragment--sapUiRta_feedback"],
-        .sapUiRtaToolbarActionsSection button[id$="fragment--sapUiRta_actionsToolbar-overflowButton"] {
-        display:none;
+           #shell-header, .sapUiRtaToolbar {
+            visibility: hidden;
+            height: 1px;
         }
     </style><% } %>
 </head>

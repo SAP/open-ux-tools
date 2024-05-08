@@ -228,6 +228,9 @@ export const propertyChangeFailed = createExternalAction<PropertyChangeFailed>('
 export const changeStackModified = createExternalAction<ChangeStackModified>('change-stack-modified');
 export const showMessage = createExternalAction<string>('show-dialog-message');
 export const reloadApplication = createExternalAction<void>('reload-application');
+export const appMode = createExternalAction<'navigation' | 'adaptation'>('app-mode');
+export const rtaEventState = createExternalAction<{ redo: boolean; undo: boolean; save: boolean }>('rta-button-state');
+export const rtaEvent = createExternalAction<'undo' | 'redo' | 'save'>('rtaEvent');
 export const storageFileChanged = createExternalAction<string>('storage-file-changed');
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
@@ -242,4 +245,7 @@ export type ExternalAction =
     | ReturnType<typeof changeStackModified>
     | ReturnType<typeof showMessage>
     | ReturnType<typeof reloadApplication>
+    | ReturnType<typeof appMode>
+    | ReturnType<typeof rtaEvent>
+    | ReturnType<typeof rtaEventState>
     | ReturnType<typeof storageFileChanged>;

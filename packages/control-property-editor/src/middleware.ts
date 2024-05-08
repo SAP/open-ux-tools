@@ -8,7 +8,9 @@ import {
     selectControl,
     deletePropertyChanges,
     addExtensionPoint,
-    reloadApplication
+    reloadApplication,
+    appMode,
+    rtaEvent
 } from '@sap-ux-private/control-property-editor-common';
 
 import { changeProperty } from './slice';
@@ -47,6 +49,8 @@ export const communicationMiddleware: Middleware<Dispatch<ExternalAction>> = (st
                 }
                 case reloadApplication.type:
                 case deletePropertyChanges.type:
+                case appMode.type:
+                case rtaEvent.type:
                 case selectControl.type:
                 case addExtensionPoint.type: {
                     sendAction(action);

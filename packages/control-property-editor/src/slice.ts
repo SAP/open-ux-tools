@@ -20,7 +20,9 @@ import {
     showMessage,
     scenario,
     reloadApplication,
-    storageFileChanged
+    storageFileChanged,
+    appMode,
+    rtaEventState
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -41,6 +43,12 @@ interface SliceState {
     changes: ChangesSlice;
     dialogMessage: string | undefined;
     fileChanges?: string[];
+    appMode: 'navigation' | 'adaptation';
+    rtaEventState: {
+        undo: boolean;
+        redo: boolean;
+        save: boolean;
+    };
 }
 
 export interface ChangesSlice {
@@ -119,7 +127,13 @@ export const initialState: SliceState = {
         saved: [],
         pendingChangeIds: []
     },
-    dialogMessage: undefined
+    dialogMessage: undefined,
+    appMode: 'adaptation',
+    rtaEventState: {
+        redo: true,
+        undo: true,
+        save: true
+    }
 };
 const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
     name: 'app',
@@ -270,6 +284,12 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 if (fileName) {
                     state.changes.pendingChangeIds.push(fileName);
                 }
+            })
+            .addMatcher(appMode.match, (state, action: ReturnType<typeof appMode>): void => {
+                state.appMode = action.payload;
+            })
+            .addMatcher(rtaEventState.match, (state, action: ReturnType<typeof rtaEventState>): void => {
+                state.rtaEventState = action.payload;
             })
 });
 

@@ -16,6 +16,7 @@ import Log from 'sap/base/Log';
 import { logger } from './logger';
 import { getIcons } from './ui5-utils';
 import workspaceConnector from '../flp/WorkspaceConnector';
+import { RtaService } from './rta-service';
 
 export default function init(rta: RuntimeAuthoring): Promise<void> {
     Log.info('Initializing Control Property Editor');
@@ -38,7 +39,8 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
     const selectionService = new SelectionService(rta);
 
     const changesService = new ChangeService({ rta }, selectionService);
-    const services: Service[] = [selectionService, changesService];
+    const rtaService = new RtaService({ rta });
+    const services: Service[] = [selectionService, changesService, rtaService];
     try {
         loadDefaultLibraries();
         const { sendAction } = startPostMessageCommunication<ExternalAction>(

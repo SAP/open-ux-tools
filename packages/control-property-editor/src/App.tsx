@@ -14,6 +14,9 @@ import { DEFAULT_DEVICE_WIDTH, DEVICE_WIDTH_MAP } from './devices';
 
 import './App.scss';
 import './Workarounds.scss';
+import { RTAToolBar, Separator, ThemeSelectorCallout, Toolbar } from './components';
+import { ViewChanger } from './panels/properties/ViewChanger';
+import { DeviceSelector } from './panels/properties/DeviceSelector';
 
 export interface AppProps {
     previewUrl: string;
@@ -99,66 +102,83 @@ export default function App(appProps: AppProps): ReactElement {
     }, [dialogMessage]);
 
     return (
-        <div className="app">
-            <section className="app-panel app-panel-left">
-                <LeftPanel />
-            </section>
-            <section ref={containerRef} className="app-content">
-                <div className="app-canvas">
-                    {!shouldShowDialogMessageForAdpProjects && (
-                        <iframe
-                            className="app-preview"
-                            id="preview"
-                            style={{
-                                width: previewWidth,
-                                transform: `scale(${previewScale})`
-                            }}
-                            src={previewUrl}
-                            title={t('APPLICATION_PREVIEW_TITLE')}
-                        />
-                    )}
-                </div>
-            </section>
-            <section className="app-panel app-panel-right">
-                <PropertiesPanel />
-            </section>
-            {isAdpProject && (
-                <UIDialog
-                    hidden={!shouldShowDialogMessageForAdpProjects}
-                    dialogContentProps={{
-                        title: t('TOOL_DISCLAIMER_TITLE'),
-                        subText: dialogMessage
-                    }}
-                />
-            )}
-            {scenario === 'FE_FROM_SCRATCH' ? (
-                <UIDialog
-                    hidden={!isWarningDialogVisible}
-                    closeButtonAriaLabel={t('CLOSE')}
-                    dialogContentProps={{
-                        title: t('TOOL_DISCLAIMER_TITLE'),
-                        subText: t('TOOL_DISCLAIMER_TEXT')
-                    }}
-                    acceptButtonText={t('OK')}
-                    onAccept={closeWarningDialog}>
-                    <UILink href="https://ui5.sap.com/#/topic/03265b0408e2432c9571d6b3feb6b1fd">
-                        {t('FE_DOCUMENTATION_LINK_TEXT')}
-                    </UILink>
-                    <UIToggle
-                        className="space space-toggle"
-                        label={t('DONT_SHOW_WARNING_ON_START')}
-                        inlineLabel
-                        inlineLabelLeft
-                        labelFlexGrow
-                        checked={hideWarningDialog}
-                        onChange={(_event, checked = false): void => {
-                            setHideWarningDialog(checked);
+        <>
+            <Toolbar
+                left={
+                    <>
+                        <RTAToolBar />
+                    </>
+                }
+                right={
+                    <>
+                        <ThemeSelectorCallout />
+                        <Separator direction="vertical" style={{ marginLeft: '10px', marginRight: '10px' }} />
+                        <ViewChanger />
+                        <DeviceSelector />
+                    </>
+                }
+            />
+            <div className="app">
+                <section className="app-panel app-panel-left">
+                    <LeftPanel />
+                </section>
+                <section ref={containerRef} className="app-content">
+                    <div className="app-canvas">
+                        {!shouldShowDialogMessageForAdpProjects && (
+                            <iframe
+                                className="app-preview"
+                                id="preview"
+                                style={{
+                                    width: previewWidth,
+                                    transform: `scale(${previewScale})`
+                                }}
+                                src={previewUrl}
+                                title={t('APPLICATION_PREVIEW_TITLE')}
+                            />
+                        )}
+                    </div>
+                </section>
+                <section className="app-panel app-panel-right">
+                    <PropertiesPanel />
+                </section>
+                {isAdpProject && (
+                    <UIDialog
+                        hidden={!shouldShowDialogMessageForAdpProjects}
+                        dialogContentProps={{
+                            title: t('TOOL_DISCLAIMER_TITLE'),
+                            subText: dialogMessage
                         }}
                     />
-                </UIDialog>
-            ) : (
-                <></>
-            )}
-        </div>
+                )}
+                {scenario === 'FE_FROM_SCRATCH' ? (
+                    <UIDialog
+                        hidden={!isWarningDialogVisible}
+                        closeButtonAriaLabel={t('CLOSE')}
+                        dialogContentProps={{
+                            title: t('TOOL_DISCLAIMER_TITLE'),
+                            subText: t('TOOL_DISCLAIMER_TEXT')
+                        }}
+                        acceptButtonText={t('OK')}
+                        onAccept={closeWarningDialog}>
+                        <UILink href="https://ui5.sap.com/#/topic/03265b0408e2432c9571d6b3feb6b1fd">
+                            {t('FE_DOCUMENTATION_LINK_TEXT')}
+                        </UILink>
+                        <UIToggle
+                            className="space space-toggle"
+                            label={t('DONT_SHOW_WARNING_ON_START')}
+                            inlineLabel
+                            inlineLabelLeft
+                            labelFlexGrow
+                            checked={hideWarningDialog}
+                            onChange={(_event, checked = false): void => {
+                                setHideWarningDialog(checked);
+                            }}
+                        />
+                    </UIDialog>
+                ) : (
+                    <></>
+                )}
+            </div>
+        </>
     );
 }

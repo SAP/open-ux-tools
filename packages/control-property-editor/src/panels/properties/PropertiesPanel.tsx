@@ -14,7 +14,7 @@ import { DeviceSelector } from './DeviceSelector';
 export function PropertiesPanel(): ReactElement {
     return (
         <>
-            <Toolbar
+            {/* <Toolbar
                 left={
                     <>
                         <ThemeSelectorCallout />
@@ -23,7 +23,7 @@ export function PropertiesPanel(): ReactElement {
                     </>
                 }
                 right={<DeviceSelector />}
-            />
+            /> */}
             <PropertiesList />
         </>
     );

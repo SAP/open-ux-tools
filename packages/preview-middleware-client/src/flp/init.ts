@@ -6,6 +6,10 @@ import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import AppState from 'sap/ushell/services/AppState';
 import type Localization from 'sap/base/i18n/Localization';
+import Event from 'sap/ui/base/Event';
+import Control from 'sap/ui/core/Control';
+import EventProvider from 'sap/ui/base/EventProvider';
+import Stack from 'sap/ui/rta/command/Stack';
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
  */
@@ -221,36 +225,7 @@ export async function init({
         container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
-                const version = sap.ui.version;
-                const minor = parseInt(version.split('.')[1], 10);
-                const view = event.getParameter('componentInstance');
-                const flexSettings = JSON.parse(flex);
-                const pluginScript = flexSettings.pluginScript ?? '';
-
-                let libs: string[] = [];
-                if (minor > 71) {
-                    libs.push('sap/ui/rta/api/startAdaptation');
-                } else {
-                    libs.push('open/ux/preview/client/flp/initRta');
-                }
-
-                if (flexSettings.pluginScript) {
-                    libs.push(pluginScript);
-                    delete flexSettings.pluginScript;
-                }
-
-                const options: RTAOptions = {
-                    rootControl: view,
-                    validateAppVersion: false,
-                    flexSettings
-                };
-
-                sap.ui.require(
-                    libs,
-                    async function (startAdaptation: StartAdaptation | InitRtaScript, pluginScript: RTAPlugin) {
-                        await startAdaptation(options, pluginScript);
-                    }
-                );
+                initializeRta(flex, event?.getParameter('componentInstance'));
             });
         });
     }
@@ -284,4 +259,39 @@ if (bootstrapConfig) {
         flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
         customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit')
     }).catch(() => Log.error('Sandbox initialization failed.'));
+}
+
+
+// alternative to hiding toolbar-  reinitialize rta after stop
+export function initializeRta(flex: string, rootControl: Control, stack?: Stack) {
+    const version = sap.ui.version;
+    const minor = parseInt(version.split('.')[1], 10);
+    const flexSettings = JSON.parse(flex);
+    const pluginScript = flexSettings.pluginScript ?? '';
+
+    let libs: string[] = [];
+    if (minor > 71) {
+        libs.push('sap/ui/rta/api/startAdaptation');
+    } else {
+        libs.push('open/ux/preview/client/flp/initRta');
+    }
+
+    if (flexSettings.pluginScript) {
+        libs.push(pluginScript);
+        delete flexSettings.pluginScript;
+    }
+    const options: RTAOptions = {
+        rootControl,
+        validateAppVersion: false,
+        flexSettings,
+        // showToolbars: false,
+        // showWindowUnloadDialog: false
+    };
+    if (stack) {
+        options['commandStack'] = stack;
+    }
+
+    sap.ui.require(libs, async function (startAdaptation: StartAdaptation | InitRtaScript, pluginScript: RTAPlugin) {
+        await startAdaptation(options, pluginScript);
+    });
 }
