@@ -93,16 +93,16 @@ export default function App(appProps: AppProps): ReactElement {
         setWarningDialogVisibility(false);
     }
 
-    function closeAdpWarningDialog(): void {
+    const closeAdpWarningDialog = (): void => {
         setShouldShowDialogMessage(false);
-    }
+    };
 
     useEffect(() => {
         if (dialogMessage && isAdpProject) {
             setShouldShowDialogMessage(true);
             setShouldHideIframe(dialogMessage.shouldHideIframe);
         }
-    }, [dialogMessage]);
+    }, [dialogMessage, isAdpProject]);
 
     return (
         <div className="app">

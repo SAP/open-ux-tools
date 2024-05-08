@@ -11,7 +11,6 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 /** sap.ui.fl */
 import FlUtils from 'sap/ui/fl/Utils';
 
-/**  */
 import ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 import AddFragment from './controllers/AddFragment.controller';

@@ -107,7 +107,7 @@ describe('adp', () => {
         });
     });
 
-    test('init - send notification existance of sync views', async () => {
+    test('init - send notification existence of sync views', async () => {
         jest.spyOn(common, 'startPostMessageCommunication').mockImplementation(() => {
             return { dispose: jest.fn(), sendAction: sendActionMock };
         });

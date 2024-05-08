@@ -46,21 +46,16 @@ export default async function (rta: RuntimeAuthoring) {
         }
     );
 
-    //get all sync views
     const syncViewsIds = getAllSyncViewsIds();
-    // initialize fragment content menu entry
     initDialogs(rta, syncViewsIds);
 
-    // initialize extension point service
     if (minor > 77) {
         const ExtensionPointService = (await import('open/ux/preview/client/adp/extension-point')).default;
         const extPointService = new ExtensionPointService(rta);
         extPointService.init(subscribe);
     }
 
-    // also initialize the editor
     await init(rta);
-
     const ui5VersionValidationMsg = getUI5VersionValidationMessage(version);
 
     if (ui5VersionValidationMsg) {
@@ -85,7 +80,7 @@ export default async function (rta: RuntimeAuthoring) {
  *
  * Get Ids for all sync views
  *
- * @returns array
+ * @returns array of Ids for application sync views
  */
 function getAllSyncViewsIds(): string[] {
     const elements = UI5ElementRegistry.all() as Record<string, UI5Element>;

@@ -188,14 +188,8 @@ test('renders warning message for "ADAPTATION_PROJECT" scenario', async () => {
         scale: 1.0,
         selectedControl: undefined,
         outline: [],
-        filterQuery: [
-            { name: FilterName.focusEditable, value: true },
-            { name: FilterName.focusCommonlyUsed, value: true },
-            { name: FilterName.query, value: '' },
-            { name: FilterName.changeSummaryFilterQuery, value: '' },
-            { name: FilterName.showEditableProperties, value: true }
-        ],
-        scenario: scenario.UiAdaptation,
+        filterQuery: [],
+        scenario: scenario.AdaptationProject,
         isAdpProject: true,
         icons: [],
         changes: {
@@ -215,7 +209,6 @@ test('renders warning message for "ADAPTATION_PROJECT" scenario', async () => {
     expect(warningDialog).toBeInTheDocument();
     const okButton = screen.getByText(/ok/i);
     expect(okButton).toBeInTheDocument();
-    fireEvent.click(okButton);
 });
 
 const testCases = [
