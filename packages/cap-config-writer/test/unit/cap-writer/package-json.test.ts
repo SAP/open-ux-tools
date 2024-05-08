@@ -12,7 +12,6 @@ jest.mock('../../../src/cap-config/package-json', () => ({
 }));
 
 describe('Writing/package json files', () => {
-    const testOutputPath = join(__dirname, '..', '..', 'test-output');
     const store = memFs.create();
     const fs = editor.create(store);
     const testInputPath = join(__dirname, 'test-inputs');
@@ -22,13 +21,9 @@ describe('Writing/package json files', () => {
     let capService: CapService;
     const capNodeType: CapRuntime = 'Node.js';
 
-    beforeAll(() => {
-        fs.copy(testInputPath, testOutputPath);
-    });
-
     beforeEach(() => {
         capService = {
-            projectPath: join(testOutputPath, testProjectNameNoSapUx),
+            projectPath: join(testInputPath, testProjectNameNoSapUx),
             serviceName: 'AdminService',
             serviceCdsPath: 'srv/admin-service',
             appPath: 'app',
@@ -48,9 +43,9 @@ describe('Writing/package json files', () => {
     });
 
     test('should update package for cap projects with sap ux enabled', async () => {
-        const packageJsonPath = join(testOutputPath, testProjectNameWithSapUx, 'package.json');
+        const packageJsonPath = join(testInputPath, testProjectNameWithSapUx, 'package.json');
         const isSapUxEnabled = true;
-        capService.projectPath = join(testOutputPath, testProjectNameWithSapUx);
+        capService.projectPath = join(testInputPath, testProjectNameWithSapUx);
         (satisfiesMinCdsVersion as jest.Mock).mockReturnValue(true);
         await updateRootPackageJsonCAP(fs, testProjectNameNoSapUx, isSapUxEnabled, capService, 'test.app.project');
         expect((fs as any).dump(packageJsonPath)).toMatchSnapshot();
@@ -58,7 +53,7 @@ describe('Writing/package json files', () => {
 
     test('should log warning if no minimum cds version is being satisfied', async () => {
         const testProjectMinCds = 'test-cap-package-no-min-cds-version';
-        const testMinCds = join(testOutputPath, testProjectMinCds);
+        const testMinCds = join(testInputPath, testProjectMinCds);
         const packageJsonPath = join(testMinCds, 'package.json');
         const isSapUxEnabled = false;
         (satisfiesMinCdsVersion as jest.Mock).mockReturnValue(false);
@@ -69,7 +64,7 @@ describe('Writing/package json files', () => {
     test('should enable CdsUi5Plugin when workspace is enabled', async () => {
         const isSapUxEnabled = true;
         const isNpmWorkspacesEnabled = true;
-        const packageJsonPath = join(testOutputPath, testProjectNameWithSapUx, 'package.json');
+        const packageJsonPath = join(testInputPath, testProjectNameWithSapUx, 'package.json');
         await updateRootPackageJsonCAP(
             fs,
             testProjectNameWithSapUx,
