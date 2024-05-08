@@ -35,9 +35,9 @@ describe('Writing/package json files', () => {
             appPath: 'app',
             capType: capNodeType
         };
-        (getCdsVersionInfo as jest.Mock).mockReturnValue({ 
+        (getCdsVersionInfo as jest.Mock).mockReturnValue({
             home: '/cdsVersion'
-        })
+        });
     });
 
     afterEach(() => {
@@ -65,9 +65,16 @@ describe('Writing/package json files', () => {
         const testMinCds = join(testInputPath, testProjectMinCds);
         const packageJsonPath = join(testMinCds, 'package.json');
         const isSapUxEnabled = false;
+        const logger = new ToolsLogger();
+        const loggerMock = jest.fn();
+        logger.warn = loggerMock;
         (satisfiesMinCdsVersion as jest.Mock).mockReturnValue(false);
         await updateRootPackageJsonCAP(fs, testProjectMinCds, isSapUxEnabled, capService, 'test.app.project', logger);
         expect((fs as any).dump(packageJsonPath)).toMatchSnapshot();
+        expect(logger.warn).toHaveBeenCalledTimes(1);
+        expect(logger.warn).toHaveBeenCalledWith(
+            expect.stringContaining('cds-dk version not installed, expected minimum cds version')
+        );
     });
 
     test('should enable CdsUi5Plugin when workspace is enabled', async () => {

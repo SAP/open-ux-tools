@@ -53,7 +53,7 @@ async function updateScripts(
         const cdsScript = getCDSTask(projectName, appId, enableNPMWorkspaces ?? hasNPMworkspaces);
         updatePackageJsonWithScripts(fs, packageJsonPath, cdsScript);
     } else {
-        log?.warn(t('warn.cdsDKNotInstalled', { cdsVersion: cdsVersion ?? '', minCdsVersion: minCdsVersion }));
+        log?.warn(t('warn.cdsDKNotInstalled', { cdsVersion: cdsVersion.home, minCdsVersion: minCdsVersion }));
     }
 }
 

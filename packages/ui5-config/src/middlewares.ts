@@ -91,8 +91,8 @@ export async function removeFioriToolsProxyAndAppReload(fs: Editor, yamlPath: st
     try {
         const yamlDocument = fs.read(yamlPath).toString();
         const parsedYamlDocuments = await YamlDocument.newInstance(yamlDocument);
-        const doc = parsedYamlDocuments['documents'][0];
-        const server: any = doc.get('server');
+        const doc = parsedYamlDocuments['documents'][0].toJSON();
+        const server = doc['server'];
         // remove fiori tools proxy
         server.customMiddleware = server.customMiddleware.filter(
             (middleware: any) => middleware.name !== 'fiori-tools-proxy'
@@ -102,7 +102,7 @@ export async function removeFioriToolsProxyAndAppReload(fs: Editor, yamlPath: st
             (middleware: any) => middleware.name === 'fiori-tools-appreload'
         );
         delete server.customMiddleware[previewIdx]['configuration'];
-        doc.set('server', server);
+        doc['server'] = server;
         fs.write(yamlPath, JSON.stringify(doc));
     } catch (error) {
         logger?.error(error);

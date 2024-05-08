@@ -25,8 +25,8 @@ describe('Writing/manifest json files', () => {
     });
 
     test('should not update manifest for cap projects when project path is invalid', async () => {
-        fs.extendJSON = jest.fn();
-        fs.writeJSON = jest.fn();
+        jest.spyOn(fs, 'extendJSON');
+        jest.spyOn(fs, 'writeJSON');
         updateCAPManifestJson(fs, 'test/testFile');
         // Verify that fs.extendJSON is not called
         expect(fs.extendJSON).not.toHaveBeenCalled();

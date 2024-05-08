@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Writing tsConfig and yaml files should update tsConfig files correctly 1`] = `
+exports[`Writing tsConfig and yaml files should update static location in application yaml files corectly when spring is undefined 1`] = `
 Object {
-  "../../tsconfig.json": Object {
+  "../../test-cap-package-sapux/tsconfig.json": Object {
     "contents": "{
   \\"compilerOptions\\": {
     \\"typeRoots\\": [
@@ -17,9 +17,9 @@ Object {
 }
 `;
 
-exports[`Writing tsConfig and yaml files should update yaml files corectly 1`] = `
+exports[`Writing tsConfig and yaml files should update tsConfig files correctly 1`] = `
 Object {
-  "../tsconfig.json": Object {
+  "../../tsconfig.json": Object {
     "contents": "{
   \\"compilerOptions\\": {
     \\"typeRoots\\": [

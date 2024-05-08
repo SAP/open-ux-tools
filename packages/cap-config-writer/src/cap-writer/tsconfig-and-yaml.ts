@@ -51,8 +51,8 @@ export async function updateStaticLocationsInApplicationYaml(
         const applicationYamlDocuments = fs.read(applicationYamlPath).toString();
         const parsedApplicationYamlDocuments: any = await YamlDocument.newInstance(applicationYamlDocuments);
         if (
-            parsedApplicationYamlDocuments.length === 1 &&
-            parsedApplicationYamlDocuments[0].spring['web.resources.static-locations'] === undefined
+            parsedApplicationYamlDocuments.documents.length === 1 &&
+            parsedApplicationYamlDocuments.documents[0].spring['web.resources.static-locations'] === undefined
         ) {
             const applicationYamlFirstDocument = parsedApplicationYamlDocuments[0];
             applicationYamlFirstDocument.spring['web.resources.static-locations'] = `file:./${capCustomPathsApp}`;

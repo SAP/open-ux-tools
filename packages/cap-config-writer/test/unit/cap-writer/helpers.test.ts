@@ -24,4 +24,14 @@ describe('getCDSTask', () => {
         const cdsTask = getCDSTask(projectName, appId, useNPMWorkspaces);
         expect(cdsTask).toEqual(expectedTask);
     });
+
+    test('should return CDS task  when useNPMWorkspaces is not provided', () => {
+        const projectName = 'test_project';
+        const appId = 'test.app.project1';
+        const expectedTask = {
+            [`watch-${projectName}`]: `cds watch --open ${projectName}/webapp/index.html?${DisableCacheParam}`
+        };
+        const cdsTask = getCDSTask(projectName, appId);
+        expect(cdsTask).toEqual(expectedTask);
+    });
 });
