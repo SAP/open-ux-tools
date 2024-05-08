@@ -416,9 +416,6 @@ importers:
 
   packages/cap-config-writer:
     dependencies:
-      '@sap-ux/environment-check':
-        specifier: workspace:*
-        version: link:../environment-check
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
@@ -431,9 +428,6 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
-      '@sap-ux/ui5-library-reference-writer':
-        specifier: workspace:*
-        version: link:../ui5-library-reference-writer
       '@sap-ux/yaml':
         specifier: workspace:*
         version: link:../yaml
@@ -465,9 +459,6 @@ importers:
       xml-js:
         specifier: 1.6.11
         version: 1.6.11
-      yaml:
-        specifier: 2.2.2
-        version: 2.2.2
 
   packages/cards-editor-config-writer:
     dependencies:
@@ -2140,18 +2131,12 @@ importers:
 
   packages/ui5-library-reference-writer:
     dependencies:
-      '@sap-ux/logger':
-        specifier: workspace:*
-        version: link:../logger
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
-      '@sap-ux/yaml':
-        specifier: workspace:*
-        version: link:../yaml
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
