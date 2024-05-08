@@ -59,6 +59,5 @@ export function updateCAPManifestJson(fs: Editor, appRoot: string): void {
     const manifest = getManifest(fs, manifestPath);
     if (manifest) {
         removeODataAnnotationsFromManifest(fs, manifestPath, manifest);
-        fs.writeJSON(manifestPath, manifest);
     }
 }
