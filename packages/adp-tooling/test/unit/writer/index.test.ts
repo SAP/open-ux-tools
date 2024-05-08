@@ -98,7 +98,9 @@ describe('ADP writer', () => {
             await migrate(migrateOutputDir, config, fs);
             expect(fs.dump(migrateOutputDir)).toMatchSnapshot();
             expect(fs.exists(join(migrateOutputDir, 'ui5.yaml'))).toBeTruthy();
-            expect(fs.exists(join(migrateOutputDir, 'package.json'))).toBeTruthy();
+            expect(fs.exists(join(migrateOutputDir, 'package.json'))).toBeTruthy();            
+            expect(fs.exists(join(migrateOutputDir, '/.che'))).toBeFalsy();
+            expect(fs.exists(join(migrateOutputDir, 'xs-app.json'))).toBeFalsy();
         });
     });
 });
