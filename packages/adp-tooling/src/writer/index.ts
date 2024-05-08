@@ -80,7 +80,7 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
  * @returns the updated memfs editor instance
  */
 
-export async function migrateAdp(basePath: string, config: AdpWriterConfig, fs?: Editor): Promise<Editor> {
+export async function migrate(basePath: string, config: AdpWriterConfig, fs?: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }

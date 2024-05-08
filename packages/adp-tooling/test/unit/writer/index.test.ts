@@ -10,6 +10,8 @@ describe('ADP writer', () => {
     const fs = create(createStorage());
     const debug = !!process.env['UX_DEBUG'];
     const outputDir = join(__dirname, '../../fixtures/test-output');
+    const migrateInputDir = join(__dirname, '../../fixtures/webide-adaptation-project');
+    const migrateOutputDir = join(__dirname, '../../fixtures/test-output/webide-adaptation-project');
 
     beforeAll(async () => {
         await rimraf(outputDir);
@@ -87,10 +89,16 @@ describe('ADP writer', () => {
                 )
             ).toMatchSnapshot();
         });
+    });
+
+    describe('migrate', () => {
         test('migrate minimal config', async () => {
-            const projectDir = join(outputDir, 'minimal');
-            await migrateAdp(projectDir, config, fs);
-            expect(fs.dump(projectDir)).toMatchSnapshot();
+            fs.copy(migrateInputDir, migrateOutputDir);
+            expect(fs.exists(join(migrateOutputDir, 'ui5.yaml'))).toBeFalsy();
+            await migrateAdp(migrateOutputDir, config, fs);
+            expect(fs.dump(migrateOutputDir)).toMatchSnapshot();
+            expect(fs.exists(join(migrateOutputDir, 'ui5.yaml'))).toBeTruthy();
+            expect(fs.exists(join(migrateOutputDir, 'package.json'))).toBeTruthy();
         });
     });
 });
