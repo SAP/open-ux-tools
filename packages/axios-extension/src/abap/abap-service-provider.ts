@@ -245,7 +245,7 @@ export class AbapServiceProvider extends ServiceProvider {
             throw new Error('No service URL found in the generator config');
         }
         const endIndex = config.link[0].href.indexOf(config.id) + config.id.length;
-        return config.link[0]?.href?.substring(0, endIndex);
+        return config.link[0].href.substring(0, endIndex);
     }
 
     /**
