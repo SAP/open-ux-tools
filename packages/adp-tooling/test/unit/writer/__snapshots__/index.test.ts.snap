@@ -859,6 +859,8 @@ server:
         options:
           secure: true
 ",
+    "state": "modified",
+  },
   "webapp/i18n/ListReport/SEPMRA_C_PD_Product/i18n.properties": Object {
     "contents": "#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.
 
