@@ -93,14 +93,12 @@ describe('ADP writer', () => {
 
     describe('migrate', () => {
         test('migrate minimal config', async () => {
-            fs.copy(migrateInputDir, migrateOutputDir);
+            fs.copy(migrateInputDir, migrateOutputDir, { globOptions: { dot: true } });
             expect(fs.exists(join(migrateOutputDir, 'ui5.yaml'))).toBeFalsy();
             await migrate(migrateOutputDir, config, fs);
             expect(fs.dump(migrateOutputDir)).toMatchSnapshot();
             expect(fs.exists(join(migrateOutputDir, 'ui5.yaml'))).toBeTruthy();
-            expect(fs.exists(join(migrateOutputDir, 'package.json'))).toBeTruthy();            
-            expect(fs.exists(join(migrateOutputDir, '/.che'))).toBeFalsy();
-            expect(fs.exists(join(migrateOutputDir, 'xs-app.json'))).toBeFalsy();
+            expect(fs.exists(join(migrateOutputDir, 'package.json'))).toBeTruthy();
         });
     });
 });
