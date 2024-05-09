@@ -1,4 +1,4 @@
-import { updateManifest, updatePackageJson } from '../../src/updates';
+import { updateManifest, updatePackageJson, getModelSettings } from '../../src/updates';
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -40,6 +40,19 @@ describe('updates', () => {
             updateManifest('./', service, fs, join(__dirname, '../../templates'));
             // Passing empty options prevents ejs interpretting OdataService properties as ejs options
             expect(ejsMock).toHaveBeenCalledWith(expect.anything(), service, {});
+        });
+    });
+
+    describe('getModelSettings', () => {
+        test.each([
+            ['1.100.0', true],
+            ['1.110.0', true],
+            ['1.115.0', false],
+            ['2.0.0', false],
+            [undefined, false]
+        ])('returns correct settings for minUI5Version %s', (minUI5Version, syncModeResult) => {
+            const result = getModelSettings(minUI5Version);
+            expect(result.includeSynchronizationMode).toEqual(syncModeResult);
         });
     });
 
