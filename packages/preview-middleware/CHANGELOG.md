@@ -1,5 +1,47 @@
 # @sap-ux/preview-middleware
 
+## 0.13.28
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.27
+
+## 0.13.27
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+-   Updated dependencies [4e267684]
+    -   @sap-ux/adp-tooling@0.9.26
+
+## 0.13.26
+
+### Patch Changes
+
+-   9a32e102: fix preview reload on SBAS, by exposing livereload server port over url
+-   Updated dependencies [9a32e102]
+    -   @sap-ux/btp-utils@0.14.4
+    -   @sap-ux/adp-tooling@0.9.25
+
+## 0.13.25
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.24
+
+## 0.13.24
+
+### Patch Changes
+
+-   7697dea4: Outsourcing of initialization routine to manage app state from fiori-tools-proxy to preview-middleware-client and updating to UI5 2.0
+
+## 0.13.23
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.23
+-   @sap-ux/project-access@1.19.14
+
 ## 0.13.22
 
 ### Patch Changes
