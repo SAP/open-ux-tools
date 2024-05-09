@@ -30,7 +30,7 @@ See [Inquirer.js](https://www.npmjs.com/package/inquirer) for valid default prop
 ```TypeScript
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
 import type { OdataServiceAnswers, OdataServicePromptOptions } from '@sap-ux/odata-service-inquirer';
-import { DatasourceType, prompt, CapService } from '@sap-ux/odata-service-inquirer';
+import { DatasourceType, prompt as serviceInquirerPrompt, CapService } from '@sap-ux/odata-service-inquirer';
 import { generate as generateOdataService, OdataService, ServiceType } from '@sap-ux/odata-service-writer'
 ...
     const promptOpts = {
@@ -56,10 +56,10 @@ import { generate as generateOdataService, OdataService, ServiceType } from '@sa
      * Pass an Inquirer prompt function https://www.npmjs.com/package/inquirer#methods
      */
     const inqAdaptor = {
-        prompt
+        prompt: this.prompt.bind(this) // the inquirer prompting function, here we use the generators reference
     };
 
-    const serviceAnswers: OdataServiceAnswers = await osPrompt(
+    const serviceAnswers: OdataServiceAnswers = await serviceInquirerPrompt(
         inqAdaptor as InquirerAdapter,
         promptOpts
     );
