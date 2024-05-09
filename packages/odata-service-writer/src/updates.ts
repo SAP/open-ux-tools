@@ -42,7 +42,7 @@ export function updateManifest(basePath: string, service: OdataService, fs: Edit
  * @param minUI5Version - The minimum UI5 version.
  * @returns updated model settings.
  */
-export function getModelSettings(minUI5Version: string | undefined) {
+function getModelSettings(minUI5Version: string | undefined) {
     let includeSynchronizationMode = false;
     if (minUI5Version && semVer.valid(minUI5Version)) {
         includeSynchronizationMode = semVer.satisfies(minUI5Version, '<=1.110');

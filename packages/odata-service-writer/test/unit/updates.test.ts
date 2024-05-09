@@ -1,4 +1,4 @@
-import { updateManifest, updatePackageJson, getModelSettings } from '../../src/updates';
+import { updateManifest, updatePackageJson } from '../../src/updates';
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -41,18 +41,44 @@ describe('updates', () => {
             // Passing empty options prevents ejs interpretting OdataService properties as ejs options
             expect(ejsMock).toHaveBeenCalledWith(expect.anything(), service, {});
         });
-    });
-
-    describe('getModelSettings', () => {
         test.each([
-            ['1.100.0', true],
             ['1.110.0', true],
-            ['1.115.0', false],
-            ['2.0.0', false],
+            ['1.115.0', true],
+            ['', false],
+            ['1.105.0', false],
             [undefined, false]
-        ])('returns correct settings for minUI5Version %s', (minUI5Version, syncModeResult) => {
-            const result = getModelSettings(minUI5Version);
-            expect(result.includeSynchronizationMode).toEqual(syncModeResult);
+        ])('Ensure synchronizationMode is correctly set for minUI5Version %s', (minUI5Version, syncMode) => {
+            const testManifest = {
+                'sap.app': {
+                    id: 'test.update.manifest'
+                },
+                'sap.ui5': {
+                    dependencies: {
+                        minUI5Version: minUI5Version
+                    }
+                }
+            };
+
+            const service: OdataService = {
+                version: OdataVersion.v4,
+                client: '123',
+                model: 'amodel',
+                name: 'aname',
+                path: '/a/path'
+            };
+
+            // Write the test manifest to a file
+            fs.writeJSON('./webapp/manifest.json', testManifest);
+            const ejsMock = jest.spyOn(ejs, 'render');
+
+            // Call updateManifest
+            updateManifest('./', service, fs, join(__dirname, '../../templates'));
+
+            expect(ejsMock).toHaveBeenCalledWith(
+                expect.anything(),
+                { ...service, includeSynchronizationMode: syncMode },
+                {}
+            );
         });
     });
 
