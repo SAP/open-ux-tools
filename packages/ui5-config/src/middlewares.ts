@@ -6,7 +6,7 @@ import type {
     MockserverConfig,
     FioriToolsProxyConfigUI5
 } from './types';
-import { type NodeComment, YamlDocument } from '@sap-ux/yaml';
+import { type NodeComment, YamlDocument, yamlDocumentToYamlString } from '@sap-ux/yaml';
 import type { Logger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
 
@@ -103,7 +103,7 @@ export async function removeFioriToolsProxyAndAppReload(fs: Editor, yamlPath: st
         );
         delete server.customMiddleware[previewIdx]['configuration'];
         doc['server'] = server;
-        fs.write(yamlPath, JSON.stringify(doc));
+        fs.write(yamlPath, yamlDocumentToYamlString(doc));
     } catch (error) {
         logger?.error(error);
     }

@@ -2,6 +2,12 @@
 
 exports[`Writing tsConfig and yaml files should update static location in application yaml files corectly when spring is undefined 1`] = `
 Object {
+  "": Object {
+    "contents": "spring:
+  web.resources.static-locations: file:./capCustomPathsApp
+",
+    "state": "modified",
+  },
   "../../test-cap-package-sapux/tsconfig.json": Object {
     "contents": "{
   \\"compilerOptions\\": {

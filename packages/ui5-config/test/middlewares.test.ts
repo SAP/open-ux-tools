@@ -13,7 +13,7 @@ describe('removeFioriToolsProxyAndAppReload', () => {
     const yamlPath = join(testInputPath, 'test-cap-java/pom.xml');
 
     test('should remove Fiori Tools proxy and app reload configurations', async () => {
-        const document = `{\"server\":{\"customMiddleware\":[{\"name\":\"fiori-tools-appreload\"}]}}`;
+        const document = `server:\n  customMiddleware:\n    - name: fiori-tools-appreload\n`;
         // Mock the fs module
         const fsMock = {
             ...editor,

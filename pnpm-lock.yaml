@@ -3492,7 +3492,7 @@ packages:
       '@babel/core': ^7.0.0
     dependencies:
       '@babel/core': 7.23.7
-      '@babel/helper-create-regexp-features-plugin': 7.22.15(@babel/core@7.23.7)
+      '@babel/helper-create-regexp-features-plugin': 7.22.9(@babel/core@7.23.7)
       '@babel/helper-plugin-utils': 7.24.0
     dev: true
 

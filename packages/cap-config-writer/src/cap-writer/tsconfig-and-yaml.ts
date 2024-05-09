@@ -1,6 +1,6 @@
 import { FileName } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
-import { YamlDocument } from '@sap-ux/yaml';
+import { YamlDocument, yamlDocumentToYamlString } from '@sap-ux/yaml';
 import type { Logger } from '@sap-ux/logger';
 import { join } from 'path';
 import { t } from '../i18n';
@@ -49,14 +49,16 @@ export async function updateStaticLocationsInApplicationYaml(
 ): Promise<void> {
     try {
         const applicationYamlDocuments = fs.read(applicationYamlPath).toString();
-        const parsedApplicationYamlDocuments: any = await YamlDocument.newInstance(applicationYamlDocuments);
+        const yamlDoc = await YamlDocument.newInstance(applicationYamlDocuments);
+        const stringifiedYaml = JSON.stringify(yamlDoc);
+        const parsedApplicationYamlDocuments = JSON.parse(stringifiedYaml).documents;
         if (
-            parsedApplicationYamlDocuments.documents.length === 1 &&
-            parsedApplicationYamlDocuments.documents[0].spring['web.resources.static-locations'] === undefined
+            parsedApplicationYamlDocuments.length === 1 &&
+            parsedApplicationYamlDocuments[0].spring['web.resources.static-locations'] === undefined
         ) {
             const applicationYamlFirstDocument = parsedApplicationYamlDocuments[0];
             applicationYamlFirstDocument.spring['web.resources.static-locations'] = `file:./${capCustomPathsApp}`;
-            fs.write(applicationYamlPath, JSON.stringify(applicationYamlFirstDocument));
+            fs.write(applicationYamlPath, yamlDocumentToYamlString(applicationYamlFirstDocument));
         }
     } catch (error) {
         logger?.error(t('error.updateApplicationYaml', { error: error }));
