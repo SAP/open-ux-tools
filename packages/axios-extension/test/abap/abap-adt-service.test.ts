@@ -7,7 +7,10 @@ import {
     TransportRequestService,
     TransportChecksService,
     ListPackageService,
-    FileStoreService
+    FileStoreService,
+    BusinessObjectsService,
+    GeneratorService,
+    PublishService
 } from '../../src';
 import * as auth from '../../src/auth';
 import type { ArchiveFileNode } from '../../src/abap/types';
@@ -16,6 +19,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import { Uaa } from '../../src/auth/uaa';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
+import { UiServiceGenerator } from '../../src/abap/adt-catalog/generators/ui-service-generator';
 
 const loggerMock: ToolsLogger = {
     debug: jest.fn(),
@@ -38,7 +42,10 @@ enum AdtServices {
     TRANSPORT_CHECKS = '/sap/bc/adt/cts/transportchecks',
     TRANSPORT_REQUEST = '/sap/bc/adt/cts/transports',
     LIST_PACKAGES = '/sap/bc/adt/repository/informationsystem/search',
-    FILE_STORE = '/sap/bc/adt/filestore/ui5-bsp/objects'
+    FILE_STORE = '/sap/bc/adt/filestore/ui5-bsp/objects',
+    //BUSINESS_OBJECTS = '/sap/bc/adt/repository/informationsystem/search',
+    GENERATOR = '/sap/bc/adt/repository/generators',
+    PUBLISH = '/sap/bc/adt/businessservices/odatav4'
 }
 
 const server = 'https://server.example';
@@ -658,5 +665,169 @@ describe('File Store Service', () => {
             .reply(200, 'Invalid XML');
         const fsService = await provider.getAdtService<FileStoreService>(FileStoreService);
         await expect(fsService?.getAppArchiveContent('folder', 'ZTESTAPP')).rejects.toThrow('Invalid XML content');
+    });
+});
+
+describe('Business Object Service', () => {
+    beforeAll(() => {
+        nock.disableNetConnect();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
+    });
+
+    const provider = createForAbap(config);
+
+    test('Business Object Service - multiple business objects returned', async () => {
+        const maxResults = 100;
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(AdtServices.LIST_PACKAGES)
+            .query({
+                operation: 'quickSearch',
+                query: `*`,
+                maxResults: maxResults,
+                objectType: 'BDEF',
+                releaseStatus: 'USE_IN_CLOUD_DEVELOPMENT'
+            })
+            .replyWithFile(200, join(__dirname, 'mockResponses/businessObjects-1.xml'));
+        const businessObjectService = await provider.getAdtService<BusinessObjectsService>(BusinessObjectsService);
+        const businessObjects = await businessObjectService?.getBusinessObjects(maxResults);
+        expect(businessObjects).toHaveLength(100);
+    });
+
+    test('Business Object Service - invalid response', async () => {
+        const maxResults = 100;
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(AdtServices.LIST_PACKAGES)
+            .query({
+                operation: 'quickSearch',
+                query: `*`,
+                maxResults: maxResults,
+                objectType: 'BDEF',
+                releaseStatus: 'USE_IN_CLOUD_DEVELOPMENT'
+            })
+            .replyWithFile(200, join(__dirname, 'mockResponses/businessObjects-invalid.xml'));
+        const businessObjectService = await provider.getAdtService<BusinessObjectsService>(BusinessObjectsService);
+        const businessObjects = await businessObjectService?.getBusinessObjects(maxResults);
+        expect(businessObjects).toHaveLength(0);
+    });
+});
+
+describe('Generator Service', () => {
+    beforeAll(() => {
+        nock.disableNetConnect();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
+    });
+
+    const provider = createForAbap(config);
+    const businessObjectName = 'I_BANKTP';
+
+    test('Generator Service - generator config returned', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-3.xml'))
+            .get(AdtServices.GENERATOR)
+            .query({
+                referencedObject: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`
+            })
+            .replyWithFile(200, join(__dirname, 'mockResponses/generatorConfig.xml'));
+        const generatorService = await provider.getAdtService<GeneratorService>(GeneratorService);
+        const generatorConfig = await generatorService?.getUIServiceGeneratorConfig(businessObjectName);
+        expect(generatorConfig?.id).toEqual('ui-service');
+    });
+
+    test('uiServiceGenerator', async () => {
+        const transport = 'test_transport';
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-3.xml'))
+            .get(AdtServices.GENERATOR)
+            .query({
+                referencedObject: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`
+            })
+            .replyWithFile(200, join(__dirname, 'mockResponses/generatorConfig.xml'))
+            .get(
+                `/sap/bc/adt/rap/generators/ui-service/content?referencedObject=%2fsap%2fbc%2fadt%2fbo%2fbehaviordefinitions%2fi_banktp&package=ztest1`
+            )
+            .replyWithFile(200, join(__dirname, 'mockResponses/generatorContent.json'))
+            .post(
+                '/sap/bc/adt/rap/generators/ui-service?referencedObject=%2Fsap%2Fbc%2Fadt%2Fbo%2Fbehaviordefinitions%2Fi_banktp&corrNr=test_transport'
+            )
+            .replyWithFile(200, join(__dirname, 'mockResponses/generationResponse.xml'))
+            .post('/sap/bc/adt/businessservices/bindings/zui_banktp004_o4')
+            .query({
+                _action: `LOCK`,
+                accessMode: 'MODIFY'
+            })
+            .replyWithFile(200, join(__dirname, 'mockResponses/generationResponse.xml'));
+
+        const gen = await provider.getUiServiceGenerator({
+            name: businessObjectName,
+            description: 'test',
+            uri: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`
+        });
+        expect(gen).toBeInstanceOf(UiServiceGenerator);
+        const content = await gen?.getContent('ztest1');
+        expect(JSON.parse(content).businessService.serviceDefinition.serviceDefinitionName).toEqual('ZUI_BANKTP004_O4');
+
+        const generationReponse = await gen?.generate(content, transport);
+        expect(generationReponse.objectReference.uri).toEqual('/sap/bc/adt/businessservices/bindings/zui_banktp004_o4');
+
+        const lockGen = await provider.createLockServiceBindingGenerator(generationReponse.objectReference.uri);
+        expect(() => lockGen.lockServiceBinding()).not.toThrow();
+    });
+
+    test('uiServiceGenerator with no links in response', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-3.xml'))
+            .get(AdtServices.GENERATOR)
+            .query({
+                referencedObject: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`
+            })
+            .replyWithFile(200, join(__dirname, 'mockResponses/generatorConfigNoLink1.xml'));
+        await expect(
+            provider.getUiServiceGenerator({
+                name: businessObjectName,
+                description: 'test',
+                uri: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`
+            })
+        ).rejects.toThrowError();
+    });
+});
+
+describe('Publish Service', () => {
+    beforeAll(() => {
+        nock.disableNetConnect();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
+    });
+
+    const provider = createForAbap(config);
+
+    test('Publish Service - publish completed successfully', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-3.xml'))
+            .post(`${AdtServices.PUBLISH}/publishjobs`)
+            .replyWithFile(200, join(__dirname, 'mockResponses/publishResponse.xml'));
+        const type = 'SRVB/SVB';
+        const name = 'ZUI_BANKTP004_O4';
+        const publishService = await provider.getAdtService<PublishService>(PublishService);
+        const publishResponse = await publishService?.publish(type, name);
+        expect(publishResponse?.SEVERITY).toEqual('OK');
     });
 });

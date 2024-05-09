@@ -25,6 +25,7 @@ export async function testWithAbapSystem(
         TEST_SYSTEM: string;
         TEST_USER?: string;
         TEST_PASSWORD?: string;
+        TEST_CLIENT?: string;
     },
     activity: TestActivity
 ): Promise<void> {
@@ -34,6 +35,9 @@ export async function testWithAbapSystem(
         auth: {
             username: env.TEST_USER,
             password: env.TEST_PASSWORD
+        },
+        params: {
+            'sap-client': env.TEST_CLIENT
         }
     });
     activity(provider, env).catch((error) => console.error(error));
