@@ -82,7 +82,6 @@ export const Questions = (props: QuestionsProps) => {
     }, [answers]);
     // Request dynamic choices
     useDynamicQuestionsEffect(() => {
-        console.log(`UI-PROMPTS. useEffect->[questions]`);
         const dynamicChoices = getDynamicQuestions(questions);
         requestChoices(dynamicChoices, localAnswers);
     }, questions);
