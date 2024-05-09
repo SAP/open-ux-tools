@@ -18,7 +18,7 @@ export function updateManifest(basePath: string, service: OdataService, fs: Edit
     // manifest.json
     const manifestPath = join(basePath, 'webapp', 'manifest.json');
     // Get component app id
-    const manifest = fs.readJSON(manifestPath) as any as Manifest;
+    const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
     const appProp = 'sap.app';
     const appid = manifest?.[appProp]?.id;
     // Throw if required property is not found manifest.json
