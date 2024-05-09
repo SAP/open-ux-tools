@@ -1,8 +1,8 @@
-import type { Answers, CheckboxQuestion, InputQuestion, ListQuestion } from 'inquirer';
+import type { CheckboxQuestion, InputQuestion, ListQuestion } from 'inquirer';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Question } from '../Question/Question';
 import type { AnswerValue, PromptsGroup } from '../Question/Question';
-import { getDependantQuestions, getDynamicQuestions, updateAnswer } from '../../utilities';
+import { getDependantQuestions, getDynamicQuestions, updateAnswer, useDynamicQuestionsEffect } from '../../utilities';
 import './Questions.scss';
 import { useRequestedChoices } from '../../utilities';
 import { QuestionGroup } from '../QuestionGroup';
@@ -81,10 +81,11 @@ export const Questions = (props: QuestionsProps) => {
         setLocalAnswers({ ...answers });
     }, [answers]);
     // Request dynamic choices
-    useEffect(() => {
+    useDynamicQuestionsEffect(() => {
+        console.log(`UI-PROMPTS. useEffect->[questions]`);
         const dynamicChoices = getDynamicQuestions(questions);
         requestChoices(dynamicChoices, localAnswers);
-    }, [questions]);
+    }, questions);
     // Change callback
     const onAnswerChange = useCallback(
         (name: string, answer?: AnswerValue, _dependantPromptNames?: string[]) => {

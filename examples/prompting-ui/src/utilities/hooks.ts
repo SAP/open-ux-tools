@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import type { UIComboBoxOption } from '@sap-ux/ui-components';
-import type { DynamicChoices, Choice } from '../components';
+import type { DynamicChoices, Choice, IQuestion } from '../components';
 import type { Question } from '../components/Question';
+import { getDynamicQuestions } from './utils';
 
 interface RequestedChoices {
     [key: string]: boolean;
@@ -86,4 +87,24 @@ export function useRequestedChoices(
         }
     }, [latestChoices]);
     return [pendingRequests, setRequestedChoices];
+}
+
+function isDynamicQuestionsEquals(values1: string[], values2: string[]): boolean {
+    return (
+        values1.length === values2.length &&
+        values1.every((value) => values2.includes(value)) &&
+        values2.every((value) => values1.includes(value))
+    );
+}
+
+export function useDynamicQuestionsEffect(effect: (names: string[]) => void, questions: IQuestion[]): void {
+    const dynamicChoices = useRef<string[]>([]);
+    useEffect(() => {
+        const newDynamicChoices = getDynamicQuestions(questions);
+        if (!isDynamicQuestionsEquals(dynamicChoices.current, newDynamicChoices)) {
+            // Dynamic questions changed - trigger effect
+            dynamicChoices.current = newDynamicChoices;
+            effect(dynamicChoices.current);
+        }
+    }, [questions]);
 }
