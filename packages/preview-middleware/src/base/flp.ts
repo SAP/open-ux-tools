@@ -488,16 +488,14 @@ export class FlpSandbox {
      * @private
      */
     private createTestSuite(configs: TestConfig[]) {
-        if (!this.test?.find((config) => config.framework === 'Testsuite')) {
+        const testsuiteConfig = configs.find((config) => config.framework === 'Testsuite');
+        if (!testsuiteConfig) {
             //create a testsuite only if it is explicitly part of the test configuration
             return;
         }
         const testsuite = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit.html'), 'utf-8');
         const initTemplate = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit.js'), 'utf-8');
-
-        const testConfig = configs.find((config) => config.framework === 'Testsuite') ?? { framework: 'Testsuite' };
-        const config = mergeTestConfigDefaults(testConfig);
-
+        const config = mergeTestConfigDefaults(testsuiteConfig);
         this.logger.debug(`Add route for ${config.path}`);
         this.router.get(config.path, (async (_req, res) => {
             this.logger.debug(`Serving test route: ${config.path}`);
@@ -508,8 +506,10 @@ export class FlpSandbox {
             this.sendResponse(res, 'text/html', 200, html);
         }) as RequestHandler);
 
-        if (testConfig.init !== undefined) {
-            this.logger.debug(`Skip serving testsuite init script in favor of provided script: ${testConfig.init}`);
+        if (testsuiteConfig.init !== undefined) {
+            this.logger.debug(
+                `Skip serving testsuite init script in favor of provided script: ${testsuiteConfig.init}`
+            );
             return;
         }
 
