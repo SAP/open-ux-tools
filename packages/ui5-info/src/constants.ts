@@ -28,3 +28,5 @@ export const defaultMinUi5Version = '1.65.0';
 export const latestVersionString = 'Latest';
 export const defaultVersion = latestVersionString;
 export const minUi5VersionSupportingCodeAssist = '1.76.0';
+export const minUi5VersionV4Template = '1.84.0';
+export const minUI5VersionForLocalDev = '1.79.0';
