@@ -212,6 +212,8 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         } & Component;
         stop: (bSkipSave, bSkipRestart) => Promise<void>;
         attachStop: (handler: (event: Event) => void) => void;
+        attachStart: (handler: (event: Event) => void) => void;
+        setMode : (mode: string) => void;
     }
 }
 
@@ -219,7 +221,7 @@ declare module 'sap/ui/rta/api/startAdaptation' {
     import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
     export type RTAPlugin = (rta: RuntimeAuthoring) => Promise<void> | void;
-    export type StartAdaptation = (options: object, plugin?: RTAPlugin) => void;
+    export type StartAdaptation = (options: object, plugin?: RTAPlugin,  onStart?: Function, onFailed?: Function, onStop?: Function) => void;
     export type InitRtaScript = (options: RTAOptions, pluginScript: RTAPlugin) => Promise<void>;
 
     const startAdaptation: StartAdaptation;

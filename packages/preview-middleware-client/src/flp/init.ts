@@ -6,6 +6,14 @@ import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import AppState from 'sap/ushell/services/AppState';
 import type Localization from 'sap/base/i18n/Localization';
+import {
+    ExternalAction,
+    showMessage,
+    startPostMessageCommunication
+} from '@sap-ux-private/control-property-editor-common';
+import { ActionHandler } from '../cpe/types';
+import initRta from './initRta';
+import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
  */
@@ -218,6 +226,10 @@ export async function init({
     const container = sap?.ushell?.Container ?? (sap.ui.require('sap/ushell/Container') as typeof sap.ushell.Container);
     // Register RTA if configured
     if (flex) {
+        const { sendAction } = startPostMessageCommunication<ExternalAction>(
+            window.parent,
+            async function onAction(_action: ExternalAction) {}
+        );
         container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
@@ -248,7 +260,21 @@ export async function init({
                 sap.ui.require(
                     libs,
                     async function (startAdaptation: StartAdaptation | InitRtaScript, pluginScript: RTAPlugin) {
-                        await startAdaptation(options, pluginScript);
+                        try {
+                            await startAdaptation(options, pluginScript, undefined, errorCallback);
+                        } catch (vError) {
+                            if (
+                                vError === 'Reload triggered' ||
+                                (vError.message && vError.message === 'Reload triggered')
+                            ) {
+                                //sendAction(showMessage('Higher Layer Changes.'));
+                                //const rta = new RuntimeAuthoring(options);
+                                //rta.destroy();
+                                //rta.setMode('navigation');
+
+                                //throw new Error('Higher layher changes');
+                            }
+                        }
                     }
                 );
             });
@@ -285,3 +311,7 @@ if (bootstrapConfig) {
         customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit')
     }).catch(() => Log.error('Sandbox initialization failed.'));
 }
+
+const errorCallback = () => {
+    throw new Error('Application failed');
+};

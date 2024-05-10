@@ -141,6 +141,14 @@ export class ChangeService {
             location.reload();
         });
         this.options.rta.attachUndoRedoStackModified(this.createOnStackChangeHandler());
+        this.options.rta.attachStart((event: Event) => this.testStart(event));
+    }
+
+    private testStart(_event: Event): (_event: Event)  => Promise<void> {
+        return async (): Promise<void> => {
+            const _test = 1;
+
+        }
     }
 
     /**

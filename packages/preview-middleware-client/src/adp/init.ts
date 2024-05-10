@@ -19,6 +19,7 @@ export default async function (rta: RuntimeAuthoring) {
     const versionParts = version.split('.');
     const minor = parseInt(versionParts[1], 10);
     const flexSettings = rta.getFlexSettings();
+    rta.setMode('navigation');
     if (flexSettings.telemetry === true) {
         enableTelemetry();
     }
