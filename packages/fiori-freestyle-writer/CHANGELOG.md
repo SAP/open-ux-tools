@@ -1,5 +1,82 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.22.4
+
+### Patch Changes
+
+-   Updated dependencies [9ad3cf7a]
+    -   @sap-ux/odata-service-writer@0.18.0
+
+## 0.22.3
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+-   Updated dependencies [4e267684]
+    -   @sap-ux/odata-service-writer@0.17.2
+    -   @sap-ux/ui5-application-writer@0.26.11
+
+## 0.22.2
+
+### Patch Changes
+
+-   6684f851: fix(\*-writer): remove the incomplete JSDoc annotations
+-   Updated dependencies [6684f851]
+    -   @sap-ux/ui5-application-writer@0.26.10
+
+## 0.22.1
+
+### Patch Changes
+
+-   Updated dependencies [7f8105c7]
+    -   @sap-ux/ui5-config@0.22.3
+    -   @sap-ux/odata-service-writer@0.17.1
+    -   @sap-ux/ui5-application-writer@0.26.9
+
+## 0.22.0
+
+### Minor Changes
+
+-   8db928db: odata-service-writer now uses logic from mockserver-config-writer to generate mockserver
+
+### Patch Changes
+
+-   Updated dependencies [8db928db]
+    -   @sap-ux/odata-service-writer@0.17.0
+
+## 0.21.10
+
+### Patch Changes
+
+-   Updated dependencies [b7d95fb3]
+    -   @sap-ux/ui5-config@0.22.2
+    -   @sap-ux/odata-service-writer@0.16.5
+    -   @sap-ux/ui5-application-writer@0.26.8
+
+## 0.21.9
+
+### Patch Changes
+
+-   da0ecd9a: Enable Typscript type checking in eslint module @sap-ux/eslint-plugin-fiori-tools
+-   Updated dependencies [da0ecd9a]
+    -   @sap-ux/ui5-application-writer@0.26.7
+
+## 0.21.8
+
+### Patch Changes
+
+-   Updated dependencies [1ec097f8]
+    -   @sap-ux/odata-service-writer@0.16.4
+
+## 0.21.7
+
+### Patch Changes
+
+-   Updated dependencies [efa35ddd]
+    -   @sap-ux/ui5-config@0.22.1
+    -   @sap-ux/odata-service-writer@0.16.3
+    -   @sap-ux/ui5-application-writer@0.26.6
+
 ## 0.21.6
 
 ### Patch Changes

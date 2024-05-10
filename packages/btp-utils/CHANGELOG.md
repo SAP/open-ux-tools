@@ -1,5 +1,17 @@
 # @sap-ux/btp-utils
 
+## 0.14.4
+
+### Patch Changes
+
+-   9a32e102: fix preview reload on SBAS, by exposing livereload server port over url
+
+## 0.14.3
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+
 ## 0.14.2
 
 ### Patch Changes

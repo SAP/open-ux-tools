@@ -165,18 +165,15 @@ sap.ui.define([
     "contents": "sap.ui.define([
     \\"sap/ui/core/mvc/Controller\\"
 ],
-    /**
-     * @param {typeof sap.ui.core.mvc.Controller} Controller
-     */
-    function (Controller) {
-        \\"use strict\\";
+function (Controller) {
+    \\"use strict\\";
 
-        return Controller.extend(\\"nods1.controller.View1\\", {
-            onInit: function () {
+    return Controller.extend(\\"nods1.controller.View1\\", {
+        onInit: function () {
 
-            }
-        });
+        }
     });
+});
 ",
     "state": "modified",
   },
@@ -349,24 +346,20 @@ title=App Title",
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
 ], 
-    /**
-     * provide app-view type models (as in the first \\"V\\" in MVVC)
-     * 
-     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
-     * @param {typeof sap.ui.Device} Device
-     * 
-     * @returns {Function} createDeviceModel() for providing runtime info for the device the UI5 app is running on
-     */
-    function (JSONModel, Device) {
-        \\"use strict\\";
+function (JSONModel, Device) {
+    \\"use strict\\";
 
-        return {
-            createDeviceModel: function () {
-                var oModel = new JSONModel(Device);
-                oModel.setDefaultBindingMode(\\"OneWay\\");
-                return oModel;
+    return {
+        /**
+         * Provides runtime info for the device the UI5 app is running on as JSONModel
+         */
+        createDeviceModel: function () {
+            var oModel = new JSONModel(Device);
+            oModel.setDefaultBindingMode(\\"OneWay\\");
+            return oModel;
         }
     };
+
 });",
     "state": "modified",
   },
@@ -743,7 +736,7 @@ archive.zip
     \\"typescript\\": \\"^5.1.6\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
     \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.3.1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -1370,7 +1363,7 @@ archive.zip
     \\"typescript\\": \\"^5.1.6\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
     \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.3.1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -1985,7 +1978,7 @@ archive.zip
     \\"typescript\\": \\"^5.1.6\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
     \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.3.1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -2779,18 +2772,15 @@ sap.ui.define([
     "contents": "sap.ui.define([
     \\"sap/ui/core/mvc/Controller\\"
 ],
-    /**
-     * @param {typeof sap.ui.core.mvc.Controller} Controller
-     */
-    function (Controller) {
-        \\"use strict\\";
+function (Controller) {
+    \\"use strict\\";
 
-        return Controller.extend(\\"nods1.controller.CustomViewName\\", {
-            onInit: function () {
+    return Controller.extend(\\"nods1.controller.CustomViewName\\", {
+        onInit: function () {
 
-            }
-        });
+        }
     });
+});
 ",
     "state": "modified",
   },
@@ -2983,24 +2973,20 @@ title=App Title",
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
 ], 
-    /**
-     * provide app-view type models (as in the first \\"V\\" in MVVC)
-     * 
-     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
-     * @param {typeof sap.ui.Device} Device
-     * 
-     * @returns {Function} createDeviceModel() for providing runtime info for the device the UI5 app is running on
-     */
-    function (JSONModel, Device) {
-        \\"use strict\\";
+function (JSONModel, Device) {
+    \\"use strict\\";
 
-        return {
-            createDeviceModel: function () {
-                var oModel = new JSONModel(Device);
-                oModel.setDefaultBindingMode(\\"OneWay\\");
-                return oModel;
+    return {
+        /**
+         * Provides runtime info for the device the UI5 app is running on as JSONModel
+         */
+        createDeviceModel: function () {
+            var oModel = new JSONModel(Device);
+            oModel.setDefaultBindingMode(\\"OneWay\\");
+            return oModel;
         }
     };
+
 });",
     "state": "modified",
   },
@@ -3556,18 +3542,15 @@ sap.ui.define([
     "contents": "sap.ui.define([
     \\"sap/ui/core/mvc/Controller\\"
 ],
-    /**
-     * @param {typeof sap.ui.core.mvc.Controller} Controller
-     */
-    function (Controller) {
-        \\"use strict\\";
+function (Controller) {
+    \\"use strict\\";
 
-        return Controller.extend(\\"nods1.controller.View1\\", {
-            onInit: function () {
+    return Controller.extend(\\"nods1.controller.View1\\", {
+        onInit: function () {
 
-            }
-        });
+        }
     });
+});
 ",
     "state": "modified",
   },
@@ -3761,24 +3744,20 @@ title=App Title",
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
 ], 
-    /**
-     * provide app-view type models (as in the first \\"V\\" in MVVC)
-     * 
-     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
-     * @param {typeof sap.ui.Device} Device
-     * 
-     * @returns {Function} createDeviceModel() for providing runtime info for the device the UI5 app is running on
-     */
-    function (JSONModel, Device) {
-        \\"use strict\\";
+function (JSONModel, Device) {
+    \\"use strict\\";
 
-        return {
-            createDeviceModel: function () {
-                var oModel = new JSONModel(Device);
-                oModel.setDefaultBindingMode(\\"OneWay\\");
-                return oModel;
+    return {
+        /**
+         * Provides runtime info for the device the UI5 app is running on as JSONModel
+         */
+        createDeviceModel: function () {
+            var oModel = new JSONModel(Device);
+            oModel.setDefaultBindingMode(\\"OneWay\\");
+            return oModel;
         }
     };
+
 });",
     "state": "modified",
   },
@@ -4334,18 +4313,15 @@ sap.ui.define([
     "contents": "sap.ui.define([
     \\"sap/ui/core/mvc/Controller\\"
 ],
-    /**
-     * @param {typeof sap.ui.core.mvc.Controller} Controller
-     */
-    function (Controller) {
-        \\"use strict\\";
+function (Controller) {
+    \\"use strict\\";
 
-        return Controller.extend(\\"nods1.controller.View1\\", {
-            onInit: function () {
+    return Controller.extend(\\"nods1.controller.View1\\", {
+        onInit: function () {
 
-            }
-        });
+        }
     });
+});
 ",
     "state": "modified",
   },
@@ -4538,24 +4514,20 @@ title=App Title",
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
 ], 
-    /**
-     * provide app-view type models (as in the first \\"V\\" in MVVC)
-     * 
-     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
-     * @param {typeof sap.ui.Device} Device
-     * 
-     * @returns {Function} createDeviceModel() for providing runtime info for the device the UI5 app is running on
-     */
-    function (JSONModel, Device) {
-        \\"use strict\\";
+function (JSONModel, Device) {
+    \\"use strict\\";
 
-        return {
-            createDeviceModel: function () {
-                var oModel = new JSONModel(Device);
-                oModel.setDefaultBindingMode(\\"OneWay\\");
-                return oModel;
+    return {
+        /**
+         * Provides runtime info for the device the UI5 app is running on as JSONModel
+         */
+        createDeviceModel: function () {
+            var oModel = new JSONModel(Device);
+            oModel.setDefaultBindingMode(\\"OneWay\\");
+            return oModel;
         }
     };
+
 });",
     "state": "modified",
   },
@@ -4893,18 +4865,15 @@ sap.ui.define([
     "contents": "sap.ui.define([
     \\"sap/ui/core/mvc/Controller\\"
 ],
-    /**
-     * @param {typeof sap.ui.core.mvc.Controller} Controller
-     */
-    function (Controller) {
-        \\"use strict\\";
+function (Controller) {
+    \\"use strict\\";
 
-        return Controller.extend(\\"nods1.controller.View1\\", {
-            onInit: function () {
+    return Controller.extend(\\"nods1.controller.View1\\", {
+        onInit: function () {
 
-            }
-        });
+        }
     });
+});
 ",
     "state": "modified",
   },
@@ -5059,24 +5028,20 @@ title=App Title",
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
 ], 
-    /**
-     * provide app-view type models (as in the first \\"V\\" in MVVC)
-     * 
-     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
-     * @param {typeof sap.ui.Device} Device
-     * 
-     * @returns {Function} createDeviceModel() for providing runtime info for the device the UI5 app is running on
-     */
-    function (JSONModel, Device) {
-        \\"use strict\\";
+function (JSONModel, Device) {
+    \\"use strict\\";
 
-        return {
-            createDeviceModel: function () {
-                var oModel = new JSONModel(Device);
-                oModel.setDefaultBindingMode(\\"OneWay\\");
-                return oModel;
+    return {
+        /**
+         * Provides runtime info for the device the UI5 app is running on as JSONModel
+         */
+        createDeviceModel: function () {
+            var oModel = new JSONModel(Device);
+            oModel.setDefaultBindingMode(\\"OneWay\\");
+            return oModel;
         }
     };
+
 });",
     "state": "modified",
   },

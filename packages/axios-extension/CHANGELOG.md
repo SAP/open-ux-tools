@@ -1,5 +1,50 @@
 # @sap-ux/axios-extension
 
+## 1.12.0
+
+### Minor Changes
+
+-   312919ec: Add new adt services for ui service generation and publish
+
+## 1.11.9
+
+### Patch Changes
+
+-   Updated dependencies [9a32e102]
+    -   @sap-ux/btp-utils@0.14.4
+
+## 1.11.8
+
+### Patch Changes
+
+-   56b77fd9: fix: isS4Cloud returned wrong value when checking a development client
+
+## 1.11.7
+
+### Patch Changes
+
+-   31f5027c: Rename SCENARIO to FIORI_TOOLS_SCENARIO
+
+## 1.11.6
+
+### Patch Changes
+
+-   080e7b06: enhance lrep log messages
+
+## 1.11.5
+
+### Patch Changes
+
+-   1db4c60c: FIX: use correct url for reentrance tickets and enhance config to support it
+
+## 1.11.4
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+-   Updated dependencies [61b46bc8]
+    -   @sap-ux/btp-utils@0.14.3
+
 ## 1.11.3
 
 ### Patch Changes

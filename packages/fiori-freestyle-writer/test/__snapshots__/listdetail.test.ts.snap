@@ -44,7 +44,7 @@ archive.zip
     \\"typescript\\": \\"^5.1.6\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
     \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.3.1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -2719,7 +2719,7 @@ archive.zip
     \\"typescript\\": \\"^5.1.6\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
     \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.3.1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -5394,7 +5394,7 @@ archive.zip
     \\"typescript\\": \\"^5.1.6\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
     \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.3.1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -8070,7 +8070,7 @@ archive.zip
     \\"eslint\\": \\"8.57.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
     \\"@sapui5/ts-types\\": \\"~1.76.0\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.3.1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
     \\"eslint-plugin-fiori-custom\\": \\"2.6.7\\",
     \\"@babel/eslint-parser\\": \\"7.14.7\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
@@ -8100,7 +8100,8 @@ archive.zip
             \\"@sapui5/ts-types\\"
         ]
     }
-}",
+}
+",
     "state": "modified",
   },
   "ui5-local.yaml": Object {
@@ -8228,10 +8229,6 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
     \\"use strict\\";
 
     return UIComponent.extend(\\"test.me.Component\\", {
-        /**
-         * @param {typeof sap.ui.model.json.JSONModel} JSONModel
-         * @param {typeof sap.ui.Device} Device
-         */ 
         metadata : {
             manifest : \\"json\\"
         },
@@ -9988,24 +9985,20 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
 ], 
-    /**
-     * provide app-view type models (as in the first \\"V\\" in MVVC)
-     * 
-     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
-     * @param {typeof sap.ui.Device} Device
-     * 
-     * @returns {Function} createDeviceModel() for providing runtime info for the device the UI5 app is running on
-     */
-    function (JSONModel, Device) {
-        \\"use strict\\";
+function (JSONModel, Device) {
+    \\"use strict\\";
 
-        return {
-            createDeviceModel: function () {
-                var oModel = new JSONModel(Device);
-                oModel.setDefaultBindingMode(\\"OneWay\\");
-                return oModel;
+    return {
+        /**
+         * Provides runtime info for the device the UI5 app is running on as JSONModel
+         */
+        createDeviceModel: function () {
+            var oModel = new JSONModel(Device);
+            oModel.setDefaultBindingMode(\\"OneWay\\");
+            return oModel;
         }
     };
+
 });",
     "state": "modified",
   },
@@ -10608,7 +10601,7 @@ archive.zip
     \\"typescript\\": \\"^5.1.6\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
     \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.3.1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {

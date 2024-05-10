@@ -4,10 +4,13 @@ import type {
     ConfirmQuestion as BaseConfirmQuestion,
     InputQuestion as BaseInputQuestion,
     ListQuestion as BaseListQuestion,
+    CheckboxQuestion as BaseCheckBoxQuestion,
     ListChoiceOptions,
     PromptFunction,
     PromptModule,
-    Question
+    Question,
+    Validator,
+    AsyncDynamicQuestionProperty
 } from 'inquirer';
 
 export interface UI5VersionChoice extends ListChoiceOptions {
@@ -52,7 +55,6 @@ export interface GuiOptions {
 }
 
 export type PromptSeverityMessage = (input?: unknown, previousAnswers?: Answers) => IMessageSeverity | undefined;
-export type validate<T> = (input: any, answers?: T) => boolean | string | Promise<boolean | string>;
 
 export type YUIQuestion<A extends Answers = Answers> = Question<A> & {
     name: string;
@@ -80,3 +82,23 @@ export interface InputQuestion<A extends Answers = Answers> extends BaseInputQue
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
 }
+
+export interface CheckBoxQuestion<A extends Answers = Answers> extends BaseCheckBoxQuestion<A> {
+    name: YUIQuestion['name'];
+    guiOptions?: YUIQuestion['guiOptions'];
+    additionalMessages?: YUIQuestion['additionalMessages'];
+}
+
+/**
+ * Defines prompt/question default values and/or whether or not they should be shown.
+ */
+export type CommonPromptOptions<T extends Answers = Answers> = {
+    hide?: boolean;
+    validate?: Validator<T>;
+    additionalMessages?: PromptSeverityMessage;
+};
+
+// Default value type for input prompt options
+export type PromptDefaultValue<T> = {
+    default?: AsyncDynamicQuestionProperty<T>;
+};

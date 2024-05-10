@@ -1,5 +1,114 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.19.4
+
+### Patch Changes
+
+-   Updated dependencies [9ad3cf7a]
+    -   @sap-ux/odata-service-writer@0.18.0
+
+## 0.19.3
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+-   Updated dependencies [4e267684]
+    -   @sap-ux/fe-fpm-writer@0.24.11
+    -   @sap-ux/odata-service-writer@0.17.2
+    -   @sap-ux/ui5-application-writer@0.26.11
+    -   @sap-ux/ui5-test-writer@0.3.3
+
+## 0.19.2
+
+### Patch Changes
+
+-   Updated dependencies [6684f851]
+    -   @sap-ux/ui5-application-writer@0.26.10
+
+## 0.19.1
+
+### Patch Changes
+
+-   Updated dependencies [7f8105c7]
+    -   @sap-ux/ui5-config@0.22.3
+    -   @sap-ux/odata-service-writer@0.17.1
+    -   @sap-ux/ui5-application-writer@0.26.9
+    -   @sap-ux/fe-fpm-writer@0.24.10
+    -   @sap-ux/ui5-test-writer@0.3.2
+
+## 0.19.0
+
+### Minor Changes
+
+-   8db928db: odata-service-writer now uses logic from mockserver-config-writer to generate mockserver
+
+### Patch Changes
+
+-   Updated dependencies [8db928db]
+    -   @sap-ux/odata-service-writer@0.17.0
+
+## 0.18.18
+
+### Patch Changes
+
+-   37e7fc00: Fix for Worklist v2 missing table type setting
+
+## 0.18.17
+
+### Patch Changes
+
+-   Updated dependencies [2e10a7ae]
+    -   @sap-ux/fe-fpm-writer@0.24.10
+
+## 0.18.16
+
+### Patch Changes
+
+-   Updated dependencies [b7d95fb3]
+    -   @sap-ux/ui5-config@0.22.2
+    -   @sap-ux/fe-fpm-writer@0.24.9
+    -   @sap-ux/odata-service-writer@0.16.5
+    -   @sap-ux/ui5-application-writer@0.26.8
+    -   @sap-ux/ui5-test-writer@0.3.2
+
+## 0.18.15
+
+### Patch Changes
+
+-   8b227bb4: Fix passing the Table Type Parameters to the writer
+
+## 0.18.14
+
+### Patch Changes
+
+-   4599ee7f: Add more support for setting the table type in the writer. Add TreeTable.
+
+## 0.18.13
+
+### Patch Changes
+
+-   da0ecd9a: Enable Typscript type checking in eslint module @sap-ux/eslint-plugin-fiori-tools
+-   Updated dependencies [da0ecd9a]
+    -   @sap-ux/ui5-application-writer@0.26.7
+
+## 0.18.12
+
+### Patch Changes
+
+-   Updated dependencies [1ec097f8]
+    -   @sap-ux/odata-service-writer@0.16.4
+
+## 0.18.11
+
+### Patch Changes
+
+-   Updated dependencies [efa35ddd]
+    -   @sap-ux/ui5-config@0.22.1
+    -   @sap-ux/odata-service-writer@0.16.3
+    -   @sap-ux/ui5-application-writer@0.26.6
+    -   @sap-ux/fe-fpm-writer@0.24.9
+    -   @sap-ux/ui5-test-writer@0.3.2
+
 ## 0.18.10
 
 ### Patch Changes

@@ -17,6 +17,12 @@
       "path": "../axios-extension"
     },
     {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../i18n"
+    },
+    {
       "path": "../logger"
     },
     {

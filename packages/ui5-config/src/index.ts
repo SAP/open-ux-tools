@@ -9,6 +9,7 @@ export {
     FioriToolsProxyConfigUI5,
     FioriToolsServeStaticPath,
     FioriToolsServeStaticConfig,
+    ServeStaticPath,
     Adp,
     BspApp,
     AbapTarget,
@@ -17,5 +18,5 @@ export {
     UI5ProxyConfigTarget
 } from './types';
 export { UI5_DEFAULT } from './defaults';
-export { mergeObjects, getEsmTypesVersion, getTypesVersion, getTypesPackage } from './utils';
+export { mergeObjects, getEsmTypesVersion, getTypesVersion, getTypesPackage, replaceEnvVariables } from './utils';
 export { errorCode as yamlErrorCode, YAMLError } from '@sap-ux/yaml';

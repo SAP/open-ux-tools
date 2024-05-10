@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-elements-writer",
     "description": "SAP Fiori elements application writer",
-    "version": "0.18.10",
+    "version": "0.19.4",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -36,7 +36,7 @@
         "@sap-ux/fe-fpm-writer": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/ui5-test-writer": "workspace:*",
-        "ejs": "3.1.9",
+        "ejs": "3.1.10",
         "i18next": "20.6.1",
         "lodash": "4.17.21",
         "mem-fs": "2.1.0",

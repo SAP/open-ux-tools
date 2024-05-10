@@ -1,4 +1,4 @@
-// Last content update: Tue Nov 07 2023 12:06:19 GMT+0200 (Eastern European Standard Time)
+// Last content update: Wed Apr 03 2024 08:50:55 GMT+0200 (Central European Summer Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -376,6 +376,7 @@ export default {
             },
             'Title': {
                 '$Type': 'com.sap.vocabularies.UI.v1.DataField',
+                '$Nullable': true,
                 '@Org.OData.Core.V1.Description': 'Resource title'
             },
             'Description': {
@@ -1782,7 +1783,8 @@ export default {
                 'com.sap.vocabularies.UI.v1.Hidden',
                 'com.sap.vocabularies.UI.v1.Importance',
                 'com.sap.vocabularies.UI.v1.PartOfPreview',
-                'com.sap.vocabularies.HTML5.v1.CssDefaults'
+                'com.sap.vocabularies.HTML5.v1.CssDefaults',
+                'com.sap.vocabularies.Common.v1.FieldControl'
             ],
             'Label': {
                 '$Nullable': true,
@@ -2176,7 +2178,7 @@ export default {
             '$UnderlyingType': 'Edm.String',
             '@Org.OData.Core.V1.Description': 'Name of an Action, Function, ActionImport, or FunctionImport in scope',
             '@Org.OData.Core.V1.LongDescription':
-                'Possible values are\n        \n- Namespace-qualified name of an action or function (`foo.bar`)\n- Namespace-qualified name of an action or function followed by parentheses with the parameter signature to identify a specific overload, like in an [annotation target](https://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html#sec_Target) (`foo.bar(baz.qux)`)\n- Simple name of an action import or function import of the annotated service (`quux`)\n- Namespace-qualified name of an entity container, followed by a slash and the simple name of an action import or function import in any referenced schema (`foo.corge/quux`)'
+                'Possible values are\n\n- Namespace-qualified name of an action or function (`foo.bar`)\n- Namespace-qualified name of an action or function followed by parentheses with the parameter signature to identify a specific overload, like in an [annotation target](https://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html#sec_Target) (`foo.bar(baz.qux)`)\n- Simple name of an action import or function import of the annotated service (`quux`)\n- Namespace-qualified name of an entity container, followed by a slash and the simple name of an action import or function import in any referenced schema (`foo.corge/quux`)'
         }
     }
 } as CSDL;

@@ -13,8 +13,12 @@ import { fileChanged, initializeLivereload } from './slice';
 export const webSocketMiddleware: Middleware<Dispatch<Action>> = (store: MiddlewareAPI) => {
     return (next: Dispatch<Action>) =>
         (action: Action): Action => {
-            if (action.type === initializeLivereload.type) {
-                const socket = new WebSocket(`ws://${location.hostname}:${action.payload}`);
+            if (initializeLivereload.match(action)) {
+                const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
+                const url = action.payload.url
+                    ? action.payload.url.replace('http', 'ws')
+                    : `${protocol}://${location.hostname}:${action.payload.port}`;
+                const socket = new WebSocket(url);
                 socket.addEventListener('message', (event) => {
                     const request = JSON.parse(event.data);
                     if (request.command === 'reload') {

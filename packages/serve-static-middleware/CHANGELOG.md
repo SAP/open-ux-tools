@@ -1,5 +1,11 @@
 # @sap-ux/serve-static-middleware
 
+## 0.1.2
+
+### Patch Changes
+
+-   6291bc37: chore - update dependencies to fix audit warnings
+
 ## 0.1.1
 
 ### Patch Changes

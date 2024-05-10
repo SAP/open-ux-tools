@@ -6,7 +6,8 @@ import { initDialogs } from './init-dialogs';
 import {
     ExternalAction,
     showMessage,
-    startPostMessageCommunication
+    startPostMessageCommunication,
+    enableTelemetry
 } from '@sap-ux-private/control-property-editor-common';
 
 import { ActionHandler } from '../cpe/types';
@@ -17,7 +18,10 @@ export default async function (rta: RuntimeAuthoring) {
     const { version } = (await VersionInfo.load()) as { version: string };
     const versionParts = version.split('.');
     const minor = parseInt(versionParts[1], 10);
-
+    const flexSettings = rta.getFlexSettings();
+    if (flexSettings.telemetry === true) {
+        enableTelemetry();
+    }
     const actionHandlers: ActionHandler[] = [];
     /**
      *
@@ -51,7 +55,7 @@ export default async function (rta: RuntimeAuthoring) {
     }
 
     // also initialize the editor
-    init(rta);
+    await init(rta);
 
     const ui5VersionValidationMsg = getUI5VersionValidationMessage(version);
 
