@@ -95,10 +95,13 @@ describe('ADP writer', () => {
         test('migrate minimal config', async () => {
             fs.copy(migrateInputDir, migrateOutputDir, { globOptions: { dot: true } });
             expect(fs.exists(join(migrateOutputDir, 'ui5.yaml'))).toBeFalsy();
+            expect(fs.exists(join(migrateOutputDir, '.che/project.json'))).toBeTruthy();
             await migrate(migrateOutputDir, config, fs);
             expect(fs.dump(migrateOutputDir)).toMatchSnapshot();
             expect(fs.exists(join(migrateOutputDir, 'ui5.yaml'))).toBeTruthy();
             expect(fs.exists(join(migrateOutputDir, 'package.json'))).toBeTruthy();
+            expect(fs.exists(join(migrateOutputDir, '.che/project.json'))).toBeFalsy();
+            expect(fs.exists(join(migrateOutputDir, 'neo-app.json'))).toBeFalsy();
         });
     });
 });

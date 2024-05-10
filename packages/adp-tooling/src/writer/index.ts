@@ -93,6 +93,16 @@ export async function migrate(basePath: string, config: AdpWriterConfig, fs?: Ed
         processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
     });
 
+    // delete .che folder
+    if (fs.exists(join(basePath, '.che/project.json'))) {
+        fs.delete(join(basePath, '.che/'));
+    }
+
+    // delete neo-app.json
+    if (fs.exists(join(basePath, 'neo-app.json'))) {
+        fs.delete(join(basePath, 'neo-app.json'));
+    }
+
     await writeUi5Yaml(basePath, fullConfig, fs);
 
     return fs;

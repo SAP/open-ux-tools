@@ -640,23 +640,10 @@ my.test.app_sap.app.title=Adaptation of the.original.app",
 ",
     "state": "modified",
   },
+
   ".che/project.json": Object {
-    "contents": "{
-    \\"type\\": \\"sap.web\\",
-    \\"builders\\": {
-        \\"configs\\": {}
-    },
-    \\"runners\\": {
-        \\"configs\\": {}
-    },
-    \\"attributes\\": {
-        \\"sap.watt.common.setting\\": [
-            \\"{\\\\\\"projectType\\\\\\":[\\\\\\"sap.watt.uitools.ide.web\\\\\\",\\\\\\"sap.watt.uitools.ide.fiori\\\\\\",\\\\\\"sap.watt.saptoolsets.fiori.project.uiadaptation\\\\\\",\\\\\\"sap.watt.saptoolsets.fiori.project.adaptation\\\\\\"],\\\\\\"generation\\\\\\":[{\\\\\\"templateId\\\\\\":\\\\\\"adaptation.flexibilityadaptation\\\\\\",\\\\\\"templateVersion\\\\\\":\\\\\\"1.1.0\\\\\\",\\\\\\"dateTimeStamp\\\\\\":\\\\\\"Tue, 27 Jul 2021 08:48:16 GMT\\\\\\"}],\\\\\\"basevalidator\\\\\\":{\\\\\\"services\\\\\\":{\\\\\\"xml\\\\\\":\\\\\\"fioriXmlAnalysis\\\\\\",\\\\\\"js\\\\\\":\\\\\\"fioriJsValidator\\\\\\"}},\\\\\\"codeCheckingTriggers\\\\\\":{\\\\\\"notifyBeforePush\\\\\\":false,\\\\\\"notifyBeforePushLevel\\\\\\":\\\\\\"Error\\\\\\",\\\\\\"blockPush\\\\\\":false,\\\\\\"blockPushLevel\\\\\\":\\\\\\"Error\\\\\\"},\\\\\\"uiadaptation\\\\\\":{\\\\\\"componentname\\\\\\":\\\\\\"sap.ui.demoapps.rta.fiorielements\\\\\\",\\\\\\"safeMode\\\\\\":true,\\\\\\"appvariant\\\\\\":\\\\\\"migrate.test\\\\\\",\\\\\\"layer\\\\\\":\\\\\\"VENDOR\\\\\\",\\\\\\"sourceSystem\\\\\\":\\\\\\"U1YCLNT120\\\\\\",\\\\\\"isOVPApp\\\\\\":false,\\\\\\"isFioriElement\\\\\\":true}}\\"
-        ]
-    },
-    \\"mixinTypes\\": []
-}",
-    "state": "modified",
+    "contents": null,
+    "state": "deleted",
   },
   ".gitignore": Object {
     "contents": "node_modules/
@@ -667,138 +654,8 @@ dist/
     "state": "modified",
   },
   "neo-app.json": Object {
-    "contents": "{
-  \\"welcomeFile\\": \\"/\\",
-  \\"routes\\": [
-    {
-      \\"path\\": \\"/sap/bc/ui5_ui5\\",
-      \\"target\\": {
-        \\"type\\": \\"destination\\",
-        \\"name\\": \\"U1YCLNT120\\",
-        \\"entryPath\\": \\"/sap/bc/ui5_ui5\\"
-      },
-      \\"description\\": \\"Path to ABAP system\\"
-    },
-    {
-      \\"path\\": \\"/sap/bc/ui2/app_index\\",
-      \\"target\\": {
-        \\"type\\": \\"destination\\",
-        \\"name\\": \\"U1YCLNT120\\",
-        \\"entryPath\\": \\"/sap/bc/ui2/app_index\\"
-      },
-      \\"description\\": \\"App index API\\"
-    },
-    {
-      \\"path\\": \\"/sap/opu/odata\\",
-      \\"target\\": {
-        \\"type\\": \\"destination\\",
-        \\"name\\": \\"U1YCLNT120\\",
-        \\"entryPath\\": \\"/sap/opu/odata\\"
-      },
-      \\"description\\": \\"Route OData to app\\"
-    },
-    {
-      \\"path\\": \\"/sap/bc/lrep\\",
-      \\"target\\": {
-        \\"type\\": \\"destination\\",
-        \\"name\\": \\"U1YCLNT120\\",
-        \\"entryPath\\": \\"/sap/bc/lrep\\"
-      },
-      \\"description\\": \\"Flex data from server\\"
-    },
-    {
-      \\"path\\": \\"/webapp/resources\\",
-      \\"target\\": {
-        \\"type\\": \\"application\\",
-        \\"name\\": \\"sapui5preview\\",
-        \\"entryPath\\": \\"/resources\\",
-        \\"version\\": \\"1.91.1\\"
-      },
-      \\"description\\": \\"SAPUI5 Resources\\"
-    },
-    {
-      \\"path\\": \\"/webapp/resources\\",
-      \\"target\\": {
-        \\"type\\": \\"service\\",
-        \\"name\\": \\"sapui5\\",
-        \\"entryPath\\": \\"/resources\\",
-        \\"version\\": \\"1.91.1\\"
-      },
-      \\"description\\": \\"SAPUI5 Resources\\"
-    },
-    {
-      \\"path\\": \\"/webapp/test-resources\\",
-      \\"target\\": {
-        \\"type\\": \\"application\\",
-        \\"name\\": \\"sapui5preview\\",
-        \\"entryPath\\": \\"/test-resources\\",
-        \\"version\\": \\"1.91.1\\"
-      },
-      \\"description\\": \\"SAPUI5 Test Resources\\"
-    },
-    {
-      \\"path\\": \\"/webapp/test-resources\\",
-      \\"target\\": {
-        \\"type\\": \\"service\\",
-        \\"name\\": \\"sapui5\\",
-        \\"entryPath\\": \\"/test-resources\\",
-        \\"version\\": \\"1.91.1\\"
-      },
-      \\"description\\": \\"SAPUI5 Test Resources\\"
-    },
-    {
-      \\"path\\": \\"/webapp/parent\\",
-      \\"target\\": {
-        \\"type\\": \\"destination\\",
-        \\"name\\": \\"U1YCLNT120\\",
-        \\"entryPath\\": \\"/sap/bc/ui5_ui5/ui5/rta_fiori_elem\\"
-      },
-      \\"description\\": \\"Path to the original app resources\\"
-    },
-    {
-      \\"path\\": \\"/resources\\",
-      \\"target\\": {
-        \\"type\\": \\"application\\",
-        \\"name\\": \\"sapui5preview\\",
-        \\"entryPath\\": \\"/resources\\",
-        \\"version\\": \\"1.91.1\\"
-      },
-      \\"description\\": \\"SAPUI5 Resources\\"
-    },
-    {
-      \\"path\\": \\"/resources\\",
-      \\"target\\": {
-        \\"type\\": \\"service\\",
-        \\"name\\": \\"sapui5\\",
-        \\"entryPath\\": \\"/resources\\",
-        \\"version\\": \\"1.91.1\\"
-      },
-      \\"description\\": \\"SAPUI5 Resources\\"
-    },
-    {
-      \\"path\\": \\"/test-resources\\",
-      \\"target\\": {
-        \\"type\\": \\"application\\",
-        \\"name\\": \\"sapui5preview\\",
-        \\"entryPath\\": \\"/test-resources\\",
-        \\"version\\": \\"1.91.1\\"
-      },
-      \\"description\\": \\"SAPUI5 Test Resources\\"
-    },
-    {
-      \\"path\\": \\"/test-resources\\",
-      \\"target\\": {
-        \\"type\\": \\"service\\",
-        \\"name\\": \\"sapui5\\",
-        \\"entryPath\\": \\"/test-resources\\",
-        \\"version\\": \\"1.91.1\\"
-      },
-      \\"description\\": \\"SAPUI5 Test Resources\\"
-    }
-  ]
-}
-",
-    "state": "modified",
+    "contents": null,
+    "state": "deleted",
   },
   "package.json": Object {
     "contents": "{
