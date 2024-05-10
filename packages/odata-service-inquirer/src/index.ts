@@ -15,6 +15,7 @@ import {
     type OdataServiceQuestion
 } from './types';
 import { PromptState, setTelemetryClient } from './utils';
+import { initI18nOdataServiceInquirer } from './i18n';
 
 /**
  * Get the inquirer prompts for odata service.
@@ -33,6 +34,8 @@ async function getPrompts(
     telemetryClient?: ToolsSuiteTelemetryClient,
     isYUI = false
 ): Promise<{ prompts: OdataServiceQuestion[]; answers: { odataService: Partial<OdataServiceAnswers> } }> {
+    // prompt texts must be loaded before the prompts are created, wait for the i18n bundle to be initialized
+    await initI18nOdataServiceInquirer();
     LoggerHelper.logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/odata-service-inquirer' });
     ErrorHandler.logger = LoggerHelper.logger;
     ErrorHandler.guidedAnswersEnabled = enableGuidedAnswers;

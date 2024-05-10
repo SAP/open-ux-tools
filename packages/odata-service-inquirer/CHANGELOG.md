@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.1.3
+
+### Patch Changes
+
+-   cd430f98: Fix for prompt texts not loaded
+
 ## 0.1.2
 
 ### Patch Changes
