@@ -640,7 +640,6 @@ my.test.app_sap.app.title=Adaptation of the.original.app",
 ",
     "state": "modified",
   },
-
   ".che/project.json": Object {
     "contents": null,
     "state": "deleted",
