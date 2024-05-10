@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.18.0
+
+### Minor Changes
+
+-   9ad3cf7a: conditionally writing synchronizationMode based on minUI5Version
+
 ## 0.17.2
 
 ### Patch Changes
