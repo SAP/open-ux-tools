@@ -74,6 +74,7 @@ declare module 'sap/ui/dt/plugin/ContextMenu' {
         text: string;
         handler: Function;
         icon?: string;
+        enabled?: Function;
     }
 
     interface ContextMenu {
@@ -82,3 +83,14 @@ declare module 'sap/ui/dt/plugin/ContextMenu' {
 
     export default ContextMenu;
 }
+
+declare module 'sap/ui/dt/Element' {
+    import type Element from 'sap/ui/core/Element';
+
+    interface ElementExtended extends Element {
+        oAsyncState: any;
+    }
+
+    export default ElementExtended;
+}
+
