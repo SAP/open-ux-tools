@@ -3,10 +3,15 @@ import type Dialog from 'sap/m/Dialog';
 
 /** sap.ui.core */
 import Fragment from 'sap/ui/core/Fragment';
-import type UI5Element from 'sap/ui/core/Element';
+import UI5Element from 'sap/ui/core/Element';
 
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+
+/** sap.ui.fl */
+import FlUtils from 'sap/ui/fl/Utils';
+
+import ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 import AddFragment from './controllers/AddFragment.controller';
 import ControllerExtension from './controllers/ControllerExtension.controller';
@@ -25,8 +30,9 @@ type Controller = AddFragment | ControllerExtension | ExtensionPoint;
  * Adds a new item to the context menu
  *
  * @param rta Runtime Authoring
+ * @param syncViewsIds Ids of all application sync views
  */
-export const initDialogs = (rta: RuntimeAuthoring): void => {
+export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[]): void => {
     const contextMenu = rta.getDefaultPlugins().contextMenu;
 
     contextMenu.addMenuItem({
@@ -40,8 +46,23 @@ export const initDialogs = (rta: RuntimeAuthoring): void => {
         id: 'EXTEND_CONTROLLER',
         text: 'Extend With Controller',
         handler: async (overlays: UI5Element[]) => await handler(overlays[0], rta, DialogNames.CONTROLLER_EXTENSION),
-        icon: 'sap-icon://create-form'
+        icon: 'sap-icon://create-form',
+        enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds)
     });
+};
+
+/**
+ * Handler for enablement of Extend With Controller context menu entry
+ *
+ * @param overlays Control overlays
+ * @param syncViewsIds Runtime Authoring
+ *
+ * @returns boolean 
+ */
+export const isControllerExtensionEnabled = (overlays: ElementOverlay[], syncViewsIds: string[]): boolean => {
+    const clickedControlId = FlUtils.getViewForControl(overlays[0].getElement()).getId();
+
+    return overlays.length <= 1 && !syncViewsIds.includes(clickedControlId);
 };
 
 /**

@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.9.9
+
+### Patch Changes
+
+-   cad21d4d: Enable Adding Controller Extension only on async views for Adp Projects
+
 ## 0.9.8
 
 ### Patch Changes
