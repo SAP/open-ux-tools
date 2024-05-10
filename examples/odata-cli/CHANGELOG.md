@@ -1,5 +1,13 @@
 # @sap-ux/odata-cli
 
+## 0.12.22
+
+### Patch Changes
+
+-   312919ec: Add new adt services for ui service generation and publish
+-   Updated dependencies [312919ec]
+    -   @sap-ux/axios-extension@1.12.0
+
 ## 0.12.21
 
 ### Patch Changes

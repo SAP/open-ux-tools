@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.12.0
+
+### Minor Changes
+
+-   312919ec: Add new adt services for ui service generation and publish
+
 ## 1.11.9
 
 ### Patch Changes
