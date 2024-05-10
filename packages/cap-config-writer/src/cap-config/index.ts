@@ -9,7 +9,8 @@ import {
     ensureMinCdsVersion,
     getWorkspaceInfo,
     hasCdsPluginUi5,
-    satisfiesMinCdsVersion
+    satisfiesMinCdsVersion,
+    minCdsVersion
 } from './package-json';
 export { satisfiesMinCdsVersion } from './package-json';
 import type { CdsUi5PluginInfo } from './types';
@@ -92,3 +93,5 @@ export async function checkCdsUi5PluginEnabled(
     cdsInfo.isCdsUi5PluginEnabled = cdsInfo.hasMinCdsVersion && cdsInfo.isWorkspaceEnabled && cdsInfo.hasCdsUi5Plugin;
     return moreInfo ? cdsInfo : cdsInfo.isCdsUi5PluginEnabled;
 }
+
+export { minCdsVersion };

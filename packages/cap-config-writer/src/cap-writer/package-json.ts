@@ -8,12 +8,10 @@ import {
 import type { Editor } from 'mem-fs-editor';
 import { t } from '../i18n';
 import { join } from 'path';
-import { enableCdsUi5Plugin, checkCdsUi5PluginEnabled, satisfiesMinCdsVersion } from '../cap-config';
+import { enableCdsUi5Plugin, checkCdsUi5PluginEnabled, satisfiesMinCdsVersion, minCdsVersion } from '../cap-config';
 import { getCDSTask, toPosixPath } from './helpers';
 import type { Logger } from '@sap-ux/logger';
 import type { CapService, CapRuntime } from '@sap-ux/odata-service-inquirer';
-
-const minCdsVersion = '6.8.2';
 
 /**
  * Updates the scripts in the package json file with the provided scripts object.
