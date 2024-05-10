@@ -70,7 +70,11 @@ describe('outline nodes', () => {
                             name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
                             editable: false,
                             type: 'extensionPoint',
-                            visible: true
+                            visible: true,
+                            extensionPointInfo: {
+                                createdControls: [],
+                                defaultContent: []
+                            }
                         }
                     ],
                     'ADAPTATION_PROJECT'
@@ -83,8 +87,7 @@ describe('outline nodes', () => {
                     editable: false,
                     hasDefaultContent: false,
                     name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
-                    visible: true,
-                    icon: undefined
+                    visible: true
                 }
             ]);
         });
@@ -130,8 +133,7 @@ describe('outline nodes', () => {
                     editable: false,
                     hasDefaultContent: true,
                     name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
-                    visible: true,
-                    icon: undefined
+                    visible: true
                 }
             ]);
         });
@@ -168,8 +170,7 @@ describe('outline nodes', () => {
                     editable: false,
                     hasDefaultContent: false,
                     name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
-                    visible: true,
-                    icon: undefined
+                    visible: true
                 }
             ]);
         });

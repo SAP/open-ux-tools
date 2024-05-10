@@ -5,10 +5,6 @@ import type { Scenario } from 'sap/ui/fl/Scenario';
 
 import { isEditable } from './utils';
 
-type ExtendedOutlineNode = OutlineNode & {
-    extensionPointInfo: { defaultContent: string[]; createdControls: string[] };
-};
-
 interface AdditionalData {
     text?: string;
     technicalName?: string;
@@ -17,8 +13,8 @@ interface AdditionalData {
 /**
  * Retrieves additional data for a given control ID.
  *
- * @param {string} id The unique identifier of the control.
- * @returns {AdditionalData} An object containing the text and the technical name of the control.
+ * @param id The unique identifier of the control.
+ * @returns An object containing the text and the technical name of the control.
  */
 function getAdditionalData(id: string): AdditionalData {
     const control = sap.ui.getCore().byId(id);
@@ -82,12 +78,13 @@ function addChildToExtensionPoint(id: string, children: OutlineNode[]) {
  *
  * @param input outline view node
  * @param scenario type of project
- * @returns Promise<OutlineNode[]>
+ * @param extPointIDs ids that need are filled when extension point has default content or created controls inside
+ * @returns {Promise<OutlineNode[]>} transformed outline tree nodes
  */
 export async function transformNodes(
     input: OutlineViewNode[],
     scenario: Scenario,
-    uniqueIDs: Set<string>
+    extPointIDs: Set<string>
 ): Promise<OutlineNode[]> {
     const stack = [...input];
     const items: OutlineNode[] = [];
@@ -105,43 +102,30 @@ export async function transformNodes(
                 name: text ?? technicalName,
                 editable,
                 visible: current.visible ?? true,
-                children: await transformNodes(children, scenario, uniqueIDs)
+                children: await transformNodes(children, scenario, extPointIDs)
             };
 
             items.push(node);
         }
 
-        if (scenario === 'ADAPTATION_PROJECT' && current?.type === 'extensionPoint') {
-            const extensionPointInfo = (current as unknown as ExtendedOutlineNode).extensionPointInfo;
-
-            const hasDefaultContent = extensionPointInfo?.defaultContent.length > 0;
-            const hasCreatedControls = extensionPointInfo?.createdControls.length > 0;
+        if (scenario === 'ADAPTATION_PROJECT' && current?.type === 'extensionPoint' && current.extensionPointInfo) {
+            const { defaultContent, createdControls } = current.extensionPointInfo;
 
             let children: OutlineNode[] = [];
-
-            if (hasDefaultContent) {
-                extensionPointInfo?.defaultContent.forEach((id) => {
-                    uniqueIDs.add(id);
-                    addChildToExtensionPoint(id, children);
-                });
-            }
-
-            if (hasCreatedControls) {
-                extensionPointInfo?.createdControls.forEach((id) => {
-                    uniqueIDs.add(id);
-                    addChildToExtensionPoint(id, children);
-                });
-            }
+            // We can combine both because there can only be either defaultContent or createdControls for one extension point node.
+            [...defaultContent, ...createdControls].forEach((id: string) => {
+                extPointIDs.add(id);
+                addChildToExtensionPoint(id, children);
+            });
 
             const node: OutlineNode = {
                 controlId: current.id,
                 controlType: current.technicalName,
-                name: current.name!,
+                name: current.name || '',
                 editable,
                 visible: current.visible ?? true,
                 children,
-                icon: current.icon,
-                hasDefaultContent
+                hasDefaultContent: defaultContent.length > 0
             };
 
             items.push(node);
@@ -152,11 +136,14 @@ export async function transformNodes(
 
 /**
  * Recursively removes nodes from a hierarchical array of objects based on specified unique IDs.
+ * Otherwise, we get a duplication of elements in the outline tree where the parent has a button for example that was added with an extension point.
+ * This button should not appear under the parent of the extension point but under the extension point itself.
+ * Without removing this extra node we will have a button under the parent and under the extension point.
  *
  * @param {Object[]} nodes - The array of objects representing nodes, each potentially containing a nested array of children.
- * @param {Set<string>} uniqueIDs - A set of unique identifiers. Nodes with `controlId` present in this set will be removed.
+ * @param {Set<string>} extPointIDs - A set of unique identifiers. Nodes with `controlId` present in this set will be removed.
  */
-export function removeNodeById(nodes: any[], uniqueIDs: Set<string>) {
+export function removeNodeById(nodes: any[], extPointIDs: Set<string>) {
     let i = 0;
     while (i < nodes.length) {
         const item = nodes[i];
@@ -166,13 +153,13 @@ export function removeNodeById(nodes: any[], uniqueIDs: Set<string>) {
             continue;
         }
 
-        if (uniqueIDs.has(item.controlId)) {
+        if (extPointIDs.has(item.controlId)) {
             nodes.splice(i, 1);
             continue;
         }
 
         if (item.children && item.children.length > 0) {
-            removeNodeById(item.children, uniqueIDs);
+            removeNodeById(item.children, extPointIDs);
         }
 
         // Only increment i if no item was removed.

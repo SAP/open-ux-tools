@@ -97,16 +97,22 @@ export type ControlProperty =
     | StringControlProperty
     | StringControlPropertyWithOptions;
 
-export interface OutlineNode {
+export interface OutlineNode extends BaseOutlineNode, Partial<Omit<ExtendedOutlineNode, keyof BaseOutlineNode>> {}
+
+export interface BaseOutlineNode {
     controlId: string;
     controlType: string; // as used in rta i.e sap.m.NavContainer
     name: string;
     visible: boolean;
     editable: boolean;
     children: OutlineNode[];
-    icon?: string;
-    extensionPointInfo?: string;
-    hasDefaultContent?: boolean;
+}
+
+export interface ExtendedOutlineNode extends BaseOutlineNode {
+    /**
+     * Indicates whether the extension point has deafult content to further proccess it in the outline tree
+     */
+    hasDefaultContent: boolean;
 }
 
 export interface IconDetails {

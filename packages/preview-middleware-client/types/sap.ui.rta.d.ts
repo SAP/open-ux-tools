@@ -105,6 +105,7 @@ declare module 'sap/ui/rta/command/OutlineService' {
         instanceName?: string;
         name?: string;
         icon?: string;
+        extensionPointInfo?: { defaultContent: string[]; createdControls: string[] }; // only available for extension point nodes
     }
 
     interface OutlineService {
