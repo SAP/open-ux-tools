@@ -389,8 +389,8 @@ describe('main redux slice', () => {
         });
 
         test('show message', () => {
-            expect(reducer({} as any, showMessage('testMessage'))).toStrictEqual({
-                dialogMessage: 'testMessage'
+            expect(reducer({} as any, showMessage({ message: 'testMessage', shouldHideIframe: false }))).toStrictEqual({
+                dialogMessage: { message: 'testMessage', shouldHideIframe: false }
             });
         });
         test('reload application', () => {
