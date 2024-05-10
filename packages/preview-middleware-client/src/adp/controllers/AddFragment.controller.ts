@@ -33,6 +33,8 @@ interface CreateFragmentProps {
     targetAggregation: string;
 }
 
+const radix = 10;
+
 /**
  * @namespace open.ux.preview.client.adp.controllers
  */
@@ -114,7 +116,7 @@ export default class AddFragment extends BaseDialog {
         );
 
         newSelectedControlChildren = newSelectedControlChildren.map((key) => {
-            return parseInt(key);
+            return parseInt(key, radix);
         });
 
         this.specialIndexHandling(selectedItemText);
@@ -134,9 +136,9 @@ export default class AddFragment extends BaseDialog {
         const source = event.getSource<Button>();
         source.setEnabled(false);
 
-        const fragmentName = this.model.getProperty('/newFragmentName');
-        const index = parseInt(this.model.getProperty('/selectedIndex'));
-        const targetAggregation = this.model.getProperty('/selectedAggregation/value');
+        const fragmentName = this.model.getProperty('/newFragmentName') as string;
+        const index = parseInt(this.model.getProperty('/selectedIndex') as string, radix);
+        const targetAggregation = this.model.getProperty('/selectedAggregation/value') as string;
         const fragmentData = {
             index,
             fragmentName,
@@ -182,7 +184,7 @@ export default class AddFragment extends BaseDialog {
         );
 
         selectedControlChildren = selectedControlChildren.map((key) => {
-            return parseInt(key);
+            return parseInt(key, radix);
         });
 
         this.model.setProperty('/selectedControlName', selectedControlName);
@@ -216,8 +218,8 @@ export default class AddFragment extends BaseDialog {
 
             this.model.setProperty('/fragmentList', fragments);
         } catch (e) {
-            MessageToast.show(e.message);
-            throw new Error(e.message);
+            MessageToast.show((e as Error).message);
+            throw new Error((e as Error).message);
         }
 
         this.model.setProperty('/selectedIndex', indexArray.length - 1);

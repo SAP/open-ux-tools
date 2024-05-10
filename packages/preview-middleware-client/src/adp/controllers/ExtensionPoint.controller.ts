@@ -60,7 +60,7 @@ export default class ExtensionPoint extends BaseDialog {
         const source = event.getSource<Button>();
         source.setEnabled(false);
 
-        const fragmentName = this.model.getProperty('/newFragmentName');
+        const fragmentName = this.model.getProperty('/newFragmentName') as string;
 
         this.createExtensionPointFragmentChange(fragmentName);
 
@@ -111,8 +111,8 @@ export default class ExtensionPoint extends BaseDialog {
 
             this.model.setProperty('/fragmentList', fragments);
         } catch (e) {
-            MessageToast.show(e.message);
-            throw new Error(e.message);
+            MessageToast.show((e as Error).message);
+            throw new Error((e as Error).message);
         }
     }
 
@@ -137,7 +137,7 @@ export default class ExtensionPoint extends BaseDialog {
      * @param fragmentName Fragment name
      */
     private createExtensionPointFragmentChange(fragmentName: string): void {
-        const extensionPointName = this.model.getProperty('/extensionPointName');
+        const extensionPointName = this.model.getProperty('/extensionPointName') as string;
         const modifiedValue = {
             fragment: `<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>`,
             fragmentPath: `fragments/${fragmentName}.fragment.xml`,

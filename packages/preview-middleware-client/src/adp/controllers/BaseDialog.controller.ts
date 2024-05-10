@@ -61,7 +61,7 @@ export default abstract class BaseDialog extends Controller {
         const beginBtn = this.dialog.getBeginButton();
 
         const fragmentName: string = input.getValue();
-        const fragmentList: { fragmentName: string }[] = this.model.getProperty('/fragmentList');
+        const fragmentList: { fragmentName: string }[] = this.model.getProperty('/fragmentList') as { fragmentName: string }[];
 
         const updateDialogState = (valueState: ValueState, valueStateText = '') => {
             input.setValueState(valueState).setValueStateText(valueStateText);

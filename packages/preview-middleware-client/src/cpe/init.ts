@@ -48,7 +48,7 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
                     try {
                         await handler(action);
                     } catch (error) {
-                        Log.error('Handler Failed: ', error);
+                        Log.error('Handler Failed: ', error as Error);
                     }
                 }
             },
@@ -61,7 +61,7 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
         // For initOutline to complete the RTA needs to already running (to access RTA provided services).
         // That can only happen if the plugin initialization has completed.
         initOutline(rta, sendAction).catch((error) =>
-            Log.error('Error during initialization of Control Property Editor', error)
+            Log.error('Error during initialization of Control Property Editor', error as Error)
         );
         const icons = getIcons();
 
@@ -78,7 +78,7 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
 
         sendAction(iconsLoaded(icons));
     } catch (error) {
-        Log.error('Error during initialization of Control Property Editor', error);
+        Log.error('Error during initialization of Control Property Editor', error as Error);
     }
     return Promise.resolve();
 }

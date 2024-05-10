@@ -43,7 +43,7 @@ export default class CommandExecutor {
                 flexSettings
             );
         } catch (e) {
-            const errorMsg = `Could not get command for '${commandName}'. ${e.message}`;
+            const errorMsg = `Could not get command for '${commandName}'. ${(e as Error).message}`;
             MessageToast.show(errorMsg);
             throw new Error(errorMsg);
         }
@@ -61,8 +61,8 @@ export default class CommandExecutor {
              */
             await this.rta.getCommandStack().pushAndExecute(command);
         } catch (e) {
-            MessageToast.show(e.message);
-            throw new Error(e.message);
+            MessageToast.show((e as Error).message);
+            throw new Error((e as Error).message);
         }
     }
 }

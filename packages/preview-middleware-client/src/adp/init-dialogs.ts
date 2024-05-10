@@ -22,29 +22,6 @@ export const enum DialogNames {
 type Controller = AddFragment | ControllerExtension | ExtensionPoint;
 
 /**
- * Adds a new item to the context menu
- *
- * @param rta Runtime Authoring
- */
-export const initDialogs = (rta: RuntimeAuthoring): void => {
-    const contextMenu = rta.getDefaultPlugins().contextMenu;
-
-    contextMenu.addMenuItem({
-        id: 'ADD_FRAGMENT',
-        text: 'Add: Fragment',
-        handler: async (overlays: UI5Element[]) => await handler(overlays[0], rta, DialogNames.ADD_FRAGMENT),
-        icon: 'sap-icon://attachment-html'
-    });
-
-    contextMenu.addMenuItem({
-        id: 'EXTEND_CONTROLLER',
-        text: 'Extend With Controller',
-        handler: async (overlays: UI5Element[]) => await handler(overlays[0], rta, DialogNames.CONTROLLER_EXTENSION),
-        icon: 'sap-icon://create-form'
-    });
-};
-
-/**
  * Handler for new context menu entry
  *
  * @param overlay Control overlays
@@ -87,3 +64,26 @@ export async function handler(
 
     await controller.setup(dialog as Dialog);
 }
+
+/**
+ * Adds a new item to the context menu
+ *
+ * @param rta Runtime Authoring
+ */
+export const initDialogs = (rta: RuntimeAuthoring): void => {
+    const contextMenu = rta.getDefaultPlugins().contextMenu;
+
+    contextMenu.addMenuItem({
+        id: 'ADD_FRAGMENT',
+        text: 'Add: Fragment',
+        handler: async (overlays: UI5Element[]) => await handler(overlays[0], rta, DialogNames.ADD_FRAGMENT),
+        icon: 'sap-icon://attachment-html'
+    });
+
+    contextMenu.addMenuItem({
+        id: 'EXTEND_CONTROLLER',
+        text: 'Extend With Controller',
+        handler: async (overlays: UI5Element[]) => await handler(overlays[0], rta, DialogNames.CONTROLLER_EXTENSION),
+        icon: 'sap-icon://create-form'
+    });
+};

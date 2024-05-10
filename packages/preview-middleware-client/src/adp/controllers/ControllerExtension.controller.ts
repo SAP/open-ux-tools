@@ -83,7 +83,7 @@ export default class ControllerExtension extends BaseDialog {
         const beginBtn = this.dialog.getBeginButton();
 
         const controllerName: string = input.getValue();
-        const controllerList: { controllerName: string }[] = this.model.getProperty('/controllersList');
+        const controllerList: { controllerName: string }[] = this.model.getProperty('/controllersList') as { controllerName: string }[];
 
         const updateDialogState = (valueState: ValueState, valueStateText = '') => {
             input.setValueState(valueState).setValueStateText(valueStateText);
@@ -132,17 +132,17 @@ export default class ControllerExtension extends BaseDialog {
      */
     async onCreateBtnPress(event: Event) {
         const source = event.getSource<Button>();
-        const controllerExists = this.model.getProperty('/controllerExists');
+        const controllerExists = this.model.getProperty('/controllerExists') as boolean;
 
         if (!controllerExists) {
             source.setEnabled(false);
 
-            const controllerName = this.model.getProperty('/newControllerName');
-            const viewId = this.model.getProperty('/viewId');
+            const controllerName = this.model.getProperty('/newControllerName') as string;
+            const viewId = this.model.getProperty('/viewId') as string;
 
             await this.createNewController(controllerName, viewId);
         } else {
-            const controllerPath = this.model.getProperty('/controllerPath');
+            const controllerPath = this.model.getProperty('/controllerPath') as string;
             window.open(`vscode://file${controllerPath}`);
         }
 
@@ -243,8 +243,8 @@ export default class ControllerExtension extends BaseDialog {
             const data = await getExistingController(controllerName);
             return data;
         } catch (e) {
-            MessageToast.show(e.message, { duration: 5000 });
-            throw new Error(e.message);
+            MessageToast.show((e as Error).message, { duration: 5000 });
+            throw new Error((e as Error).message);
         }
     }
 
@@ -256,8 +256,8 @@ export default class ControllerExtension extends BaseDialog {
             const { controllers } = await readControllers<ControllersResponse>();
             this.model.setProperty('/controllersList', controllers);
         } catch (e) {
-            MessageToast.show(e.message, { duration: 5000 });
-            throw new Error(e.message);
+            MessageToast.show((e as Error).message, { duration: 5000 });
+            throw new Error((e as Error).message);
         }
     }
 
@@ -288,8 +288,8 @@ export default class ControllerExtension extends BaseDialog {
             // We want to update the model incase we have already created a controller file but failed when creating a change file,
             // so when the user types the same controller name again he does not get 409 from the server, instead an error is shown in the UI
             await this.getControllers();
-            MessageToast.show(e.message);
-            throw new Error(e.message);
+            MessageToast.show((e as Error).message);
+            throw new Error((e as Error).message);
         }
     }
 }

@@ -22,7 +22,7 @@ export async function initOutline(rta: RuntimeAuthoring, sendAction: (action: Ex
 
             sendAction(outlineChanged(outlineNodes));
         } catch (error) {
-            Log.error('Outline sync failed!', error);
+            Log.error('Outline sync failed!', error as Error);
         }
     }
     await syncOutline();

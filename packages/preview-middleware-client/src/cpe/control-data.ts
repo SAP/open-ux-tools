@@ -103,7 +103,7 @@ function analyzePropertyType(property: ManagedObjectMetadataProperties): Analyze
             return analyzedType;
         }
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        const name = Object.getPrototypeOf(propertyDataType).getName();
+        const name = (Object.getPrototypeOf(propertyDataType) as { getName: () => string }).getName();
         if (!name) {
             analyzedType.primitiveType = 'enum';
         } else {

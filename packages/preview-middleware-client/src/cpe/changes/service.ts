@@ -121,7 +121,7 @@ export class ChangeService {
                         name = control.getMetadata().getName();
                     }
                     // eslint-disable-next-line  @typescript-eslint/no-unsafe-call
-                    const modifiedMessage = modifyRTAErrorMessage(exception?.toString(), id, name);
+                    const modifiedMessage = modifyRTAErrorMessage((exception as Error)?.toString(), id, name);
                     const errorMessage =
                         modifiedMessage || `RTA Exception applying expression "${action.payload.value}"`;
                     const propertyChangeFailedAction = propertyChangeFailed({ ...action.payload, errorMessage });
@@ -235,7 +235,7 @@ export class ChangeService {
                 })
             );
 
-        await Promise.all(filesToDelete).catch((error) => Log.error(error));
+        await Promise.all(filesToDelete).catch((error) => Log.error(error as string));
 
         await this.fetchSavedChanges();
         this.updateStack();
@@ -271,7 +271,7 @@ export class ChangeService {
                         }
                     }
                 } catch (error) {
-                    Log.error('CPE: Change creation Failed', error);
+                    Log.error('CPE: Change creation Failed', error as Error);
                 }
             });
 
@@ -301,10 +301,10 @@ export class ChangeService {
 
         switch (changeType) {
             case 'propertyChange':
-                value = command.getProperty('newValue');
+                value = command.getProperty('newValue') as string;
                 break;
             case 'propertyBindingChange':
-                value = command.getProperty('newBinding');
+                value = command.getProperty('newBinding') as string;
                 break;
         }
         const { fileName } = command.getPreparedChange().getDefinition();
@@ -313,7 +313,7 @@ export class ChangeService {
                 type: 'pending',
                 changeType,
                 controlId: selectorId,
-                propertyName: command.getProperty('propertyName'),
+                propertyName: command.getProperty('propertyName') as string,
                 isActive: index >= inactiveCommandCount,
                 value,
                 controlName: command.getElement().getMetadata().getName().split('.').pop() ?? '',
@@ -351,7 +351,7 @@ export class ChangeService {
                 }
                 return result;
             } catch (error) {
-                Log.error(`Retry operation failed: ${error?.message}`);
+                Log.error(`Retry operation failed: ${(error as Error)?.message}`);
                 continue;
             }
         }

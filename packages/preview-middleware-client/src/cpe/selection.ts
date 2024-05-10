@@ -78,7 +78,7 @@ async function addDocumentationForProperties(control: ManagedObject, controlData
             controlProp.documentation = getPropertyDocument(property, controlProp.ui5Type, document);
         });
     } catch (e) {
-        Log.error('Document loading failed', e);
+        Log.error('Document loading failed', e as Error);
     }
 }
 
@@ -105,7 +105,7 @@ export class SelectionService implements Service {
         const eventOrigin: Set<string> = new Set();
         const onselectionChange = this.createOnSelectionChangeHandler(sendAction, eventOrigin);
         this.rta.attachSelectionChange((event) => {
-            onselectionChange(event).catch((error) => Log.error('Event interrupted: ', error));
+            onselectionChange(event).catch((error) => Log.error('Event interrupted: ', error as Error));
         });
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (selectControl.match(action)) {
