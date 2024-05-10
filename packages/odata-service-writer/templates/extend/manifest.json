@@ -36,7 +36,9 @@
                 "dataSource": "<%=name%>",
                 "preload": true,
                 "settings": {<%if (version === '4') {%>
+                    <% if (locals.includeSynchronizationMode) { %>
                     "synchronizationMode": "None",
+                    <% } %>
                     "operationMode": "Server",
                     "autoExpandSelect": true,
                     "earlyRequests": true<% } %>
