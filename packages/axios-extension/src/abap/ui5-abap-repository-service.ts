@@ -132,7 +132,7 @@ export class Ui5AbapRepositoryService extends ODataService {
             const response = await this.get<AppInfo>(`/Repositories('${encodeURIComponent(app)}')`);
             return response.odata();
         } catch (error) {
-            this.log.debug(`Retrieving application ${app}, ${error}`);
+            this.log.debug(`Retrieving application ${app} from ${Ui5AbapRepositoryService.PATH}, ${error}`);
             if (isAxiosError(error) && error.response?.status === 404) {
                 return undefined;
             }
