@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.19.0
+
+### Minor Changes
+
+-   a47d0f5e: support for memfs within mockserver logic
+
 ## 0.18.0
 
 ### Minor Changes
