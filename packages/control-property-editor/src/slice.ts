@@ -8,7 +8,8 @@ import type {
     PendingPropertyChange,
     PropertyChange,
     SavedPropertyChange,
-    Scenario
+    Scenario,
+    ShowMessage
 } from '@sap-ux-private/control-property-editor-common';
 import {
     changeStackModified,
@@ -39,7 +40,7 @@ interface SliceState {
     isAdpProject: boolean;
     icons: IconDetails[];
     changes: ChangesSlice;
-    dialogMessage: string | undefined;
+    dialogMessage: ShowMessage | undefined;
     fileChanges?: string[];
 }
 

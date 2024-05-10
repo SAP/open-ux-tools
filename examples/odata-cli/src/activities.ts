@@ -6,7 +6,9 @@ import {
     TransportChecksService,
     TransportRequestService,
     ListPackageService,
-    FileStoreService
+    FileStoreService,
+    BusinessObjectsService,
+    PublishService
 } from '@sap-ux/axios-extension';
 import { logger } from './types';
 
@@ -178,5 +180,73 @@ export async function testDeployUndeployDTA(
         }
     } catch (error) {
         logger.error(`Error: ${error.message}`);
+    }
+}
+
+/**
+ * Test the UI service generation.
+ *
+ * @param provider instance of a service provider
+ * @param env object representing the content of the .env file.
+ */
+export async function testUiServiceGenerator(
+    provider: AbapServiceProvider,
+    env: {
+        TEST_BO_NAME: string;
+        TEST_PACKAGE: string;
+        TEST_TRANSPORT: string;
+    }
+): Promise<void> {
+    const s4Cloud = await provider.isS4Cloud();
+    if (!s4Cloud) {
+        logger.warn('Not an S/4 Cloud system. UI service generation might not be supported.');
+    }
+
+    // Get BOs
+    const businessObjectsService = await provider.getAdtService<BusinessObjectsService>(BusinessObjectsService);
+    const bos = await businessObjectsService.getBusinessObjects();
+    const bo = bos.find((bo) => bo.name === env.TEST_BO_NAME);
+    logger.debug(bos.map((bo) => bo.name));
+
+    // Generator service
+    const generator = await provider.getUiServiceGenerator(bo);
+    const content = await generator.getContent(env.TEST_PACKAGE);
+    logger.debug('content: ' + content);
+    let generatedRefs;
+    try {
+        logger.info('Start generation of service');
+        generatedRefs = await generator.generate(content, env.TEST_TRANSPORT);
+        logger.debug('generatedRefs: ' + JSON.stringify(generatedRefs));
+        logger.info('Generation of service completed');
+    } catch (error) {
+        logger.error(`${error.code}: ${error.message}`);
+        logger.debug(error);
+        return;
+    }
+
+    // Publish (including lock service binding)
+    if (generatedRefs) {
+        const serviceLockGen = await provider.createLockServiceBindingGenerator(generatedRefs.objectReference.uri);
+        try {
+            await serviceLockGen.lockServiceBinding();
+        } catch (error) {
+            if (error.response && error.response.status === 403) {
+                logger.warn(`${error.code} ${error.response.status} ${error.response.data}`);
+            } else {
+                logger.warn(error);
+                return;
+            }
+        }
+    }
+    const publishService = await provider.getAdtService<PublishService>(PublishService);
+    try {
+        logger.info('Start publish');
+        const publishResult = await publishService.publish(
+            generatedRefs.objectReference.type,
+            generatedRefs.objectReference.name
+        );
+        logger.info(`Publish result: ${publishResult.SEVERITY} ${publishResult.LONG_TEXT || publishResult.SHORT_TEXT}`);
+    } catch (error) {
+        logger.error(error);
     }
 }
