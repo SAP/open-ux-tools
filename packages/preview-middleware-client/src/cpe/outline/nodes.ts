@@ -121,7 +121,7 @@ export async function transformNodes(
             const node: OutlineNode = {
                 controlId: current.id,
                 controlType: current.technicalName,
-                name: current.name || '',
+                name: current.name ?? '',
                 editable,
                 visible: current.visible ?? true,
                 children,
