@@ -162,6 +162,11 @@ export interface PropertyChangeDeletionDetails {
     fileName?: string;
 }
 
+export interface ShowMessage {
+    message: string;
+    shouldHideIframe: boolean;
+}
+
 /**
  * ACTIONS
  */
@@ -226,7 +231,7 @@ export const changeProperty = createExternalAction<PropertyChange>('change-prope
 export const propertyChanged = createExternalAction<PropertyChanged>('property-changed');
 export const propertyChangeFailed = createExternalAction<PropertyChangeFailed>('change-property-failed');
 export const changeStackModified = createExternalAction<ChangeStackModified>('change-stack-modified');
-export const showMessage = createExternalAction<string>('show-dialog-message');
+export const showMessage = createExternalAction<ShowMessage>('show-dialog-message');
 export const reloadApplication = createExternalAction<void>('reload-application');
 export const storageFileChanged = createExternalAction<string>('storage-file-changed');
 export type ExternalAction =
