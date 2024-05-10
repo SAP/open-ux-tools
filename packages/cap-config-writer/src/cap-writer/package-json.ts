@@ -47,7 +47,7 @@ async function updateScripts(
     const packageJson: Package = getPackageJson(fs, packageJsonPath);
     const hasNPMworkspaces = await checkCdsUi5PluginEnabled(packageJsonPath, fs);
     const cdsVersion = await getCdsVersionInfo();
-    if (cdsVersion.home && satisfiesMinCdsVersion(packageJson)) {
+    if (cdsVersion.home && packageJson && satisfiesMinCdsVersion(packageJson)) {
         const cdsScript = getCDSTask(projectName, appId, enableNPMWorkspaces ?? hasNPMworkspaces);
         updatePackageJsonWithScripts(fs, packageJsonPath, cdsScript);
     } else {
@@ -82,7 +82,7 @@ export async function updateRootPackageJsonCAP(
     const packageJson = getPackageJson(fs, packageJsonPath);
     const capNodeType: CapRuntime = 'Node.js';
 
-    if (enableNPMWorkspaces) {
+    if (enableNPMWorkspaces && packageJson) {
         await enableCdsUi5Plugin(capService.projectPath, fs);
     }
     if (capService?.capType === capNodeType) {
