@@ -617,16 +617,10 @@ export class FlpSandbox {
             object: id.replace(/\./g, ''),
             action: 'preview'
         };
-        let title = manifest['sap.app'].title ?? id;
-        let description = manifest['sap.app'].description ?? '';
-        if (app.local) {
-            title = (await this.getI18nTextFromProperty(app.local, manifest['sap.app'].title)) ?? id;
-            description = (await this.getI18nTextFromProperty(app.local, manifest['sap.app'].description)) ?? '';
-        }
         this.templateConfig.ui5.resources[id] = app.target;
         this.templateConfig.apps[`${app.intent?.object}-${app.intent?.action}`] = {
-            title: title,
-            description: description,
+            title: (await this.getI18nTextFromProperty(app.local, manifest['sap.app'].title)) ?? id,
+            description: (await this.getI18nTextFromProperty(app.local, manifest['sap.app'].description)) ?? '',
             additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
             applicationType: 'URL',
             url: app.target,
@@ -642,9 +636,9 @@ export class FlpSandbox {
      * @returns i18n text of the property
      * @private
      */
-    private async getI18nTextFromProperty(projectRoot: string, propertyValue: string | undefined) {
+    private async getI18nTextFromProperty(projectRoot: string | undefined, propertyValue: string | undefined) {
         //i18n model format could be {{key}} or {i18n>key}
-        if (!propertyValue || propertyValue.search(/{{\w+}}|{i18n>\w+}/g) === -1) {
+        if (!projectRoot || !propertyValue || propertyValue.search(/{{\w+}}|{i18n>\w+}/g) === -1) {
             return propertyValue;
         }
         const propertyI18nKey = propertyValue.replace(/i18n>|[{}]/g, '');
