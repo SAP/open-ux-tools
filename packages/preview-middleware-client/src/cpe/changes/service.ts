@@ -162,7 +162,7 @@ export class ChangeService {
      */
     private async fetchSavedChanges(): Promise<void> {
         const savedChangesResponse = await fetch(FlexChangesEndPoints.changes + `?_=${Date.now()}`);
-        const savedChanges = await savedChangesResponse.json();
+        const savedChanges = await savedChangesResponse.json() as Record<string, Change>;
         const changes = (
             Object.keys(savedChanges ?? {})
                 .map((key): SavedPropertyChange | UnknownSavedChange | undefined => {

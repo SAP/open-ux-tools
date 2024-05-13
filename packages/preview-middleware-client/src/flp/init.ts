@@ -34,6 +34,16 @@ const UI5_LIBS = [
     'sap.zen'
 ];
 
+interface Manifest {
+    ['sap.ui5']?: {
+        dependencies?: {
+            libs: Record<string, unknown>;
+            components: Record<string, unknown>;
+        };
+        componentUsages?: Record<string, unknown>;
+    };
+}
+
 /**
  * Check whether a specific dependency is a custom library, and if yes, add it to the map.
  *
@@ -65,9 +75,9 @@ async function getManifestLibs(appUrls: string[]): Promise<string> {
     for (const url of appUrls) {
         promises.push(
             fetch(`${url}/manifest.json`).then(async (resp) => {
-                const manifest = await resp.json();
+                const manifest = (await resp.json()) as Manifest;
                 if (manifest) {
-                    if (manifest['sap.ui5'] && manifest['sap.ui5'].dependencies) {
+                    if (manifest['sap.ui5']?.dependencies) {
                         if (manifest['sap.ui5'].dependencies.libs) {
                             addKeys(manifest['sap.ui5'].dependencies.libs, result);
                         }
@@ -75,7 +85,7 @@ async function getManifestLibs(appUrls: string[]): Promise<string> {
                             addKeys(manifest['sap.ui5'].dependencies.components, result);
                         }
                     }
-                    if (manifest['sap.ui5'] && manifest['sap.ui5'].componentUsages) {
+                    if (manifest['sap.ui5']?.componentUsages) {
                         addKeys(manifest['sap.ui5'].componentUsages, result);
                     }
                 }
