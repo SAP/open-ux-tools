@@ -1,18 +1,5 @@
 import path from 'path';
-
-/**
- * Returns the URI path for the CAP app.
- *
- * @param {string} projectName - The name of the project.
- * @param {string} appId - The ID of the app.
- * @param {boolean} [useNPMWorkspaces] - Whether to use npm workspaces.
- * @returns {string} The URI path for the CAP app.
- */
-function getCAPAppUriPath(projectName: string, appId: string, useNPMWorkspaces: boolean = false): string {
-    // projects by default are served base on the folder name in the app/ folder
-    // If the project uses npm workspaces (and specifically cds-plugin-ui5 ) then the project is served using the appId including namespace
-    return useNPMWorkspaces ? appId : projectName + '/webapp';
-}
+import { getCAPAppUriPath } from '@sap-ux/project-access';
 
 /**
  * Retrieves the CDS task for the CAP app.

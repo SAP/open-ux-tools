@@ -33,7 +33,8 @@ export {
     toReferenceUri,
     getPackageJson,
     getPackageJsonPath,
-    getCdsVersionInfo
+    getCdsVersionInfo,
+    getCAPAppUriPath
 } from './project';
 export * from './types';
 export * from './library';

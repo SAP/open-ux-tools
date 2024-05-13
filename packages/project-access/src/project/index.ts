@@ -11,7 +11,8 @@ export {
     getCapEnvironment,
     readCapServiceMetadataEdmx,
     toReferenceUri,
-    getCdsVersionInfo
+    getCdsVersionInfo,
+    getCAPAppUriPath
 } from './cap';
 export { getNodeModulesPath } from './dependencies';
 export { getCapI18nFolderNames, getI18nPropertiesPaths } from './i18n';
