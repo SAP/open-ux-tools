@@ -38,7 +38,7 @@ export class BusinessObjectsService extends AdtService {
                 query: `*`,
                 maxResults: maxResults || 10000,
                 objectType: 'BDEF',
-                releaseStatus: 'USE_IN_CLOUD_DEVELOPMENT'
+                releaseState: 'USE_IN_CLOUD_DEVELOPMENT'
             }
         };
         const response = await this.get('', config);

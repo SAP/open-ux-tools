@@ -691,7 +691,7 @@ describe('Business Object Service', () => {
                 query: `*`,
                 maxResults: maxResults,
                 objectType: 'BDEF',
-                releaseStatus: 'USE_IN_CLOUD_DEVELOPMENT'
+                releaseState: 'USE_IN_CLOUD_DEVELOPMENT'
             })
             .replyWithFile(200, join(__dirname, 'mockResponses/businessObjects-1.xml'));
         const businessObjectService = await provider.getAdtService<BusinessObjectsService>(BusinessObjectsService);
@@ -710,7 +710,7 @@ describe('Business Object Service', () => {
                 query: `*`,
                 maxResults: maxResults,
                 objectType: 'BDEF',
-                releaseStatus: 'USE_IN_CLOUD_DEVELOPMENT'
+                releaseState: 'USE_IN_CLOUD_DEVELOPMENT'
             })
             .replyWithFile(200, join(__dirname, 'mockResponses/businessObjects-invalid.xml'));
         const businessObjectService = await provider.getAdtService<BusinessObjectsService>(BusinessObjectsService);
