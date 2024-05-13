@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.10.0
+
+### Minor Changes
+
+-   9ccbaded: add migration adp writer
+
 ## 0.9.28
 
 ### Patch Changes
