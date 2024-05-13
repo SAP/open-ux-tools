@@ -1,5 +1,17 @@
 # @sap-ux/axios-extension
 
+## 1.12.1
+
+### Patch Changes
+
+-   1b5f7442: feat(axios-extension): Add PATH to debug output
+
+## 1.12.0
+
+### Minor Changes
+
+-   312919ec: Add new adt services for ui service generation and publish
+
 ## 1.11.9
 
 ### Patch Changes

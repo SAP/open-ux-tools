@@ -110,6 +110,9 @@ importers:
       dotenv:
         specifier: 16.3.1
         version: 16.3.1
+      fast-xml-parser:
+        specifier: 4.2.7
+        version: 4.2.7
 
   examples/simple-generator:
     dependencies:
@@ -3462,7 +3465,7 @@ packages:
       '@babel/core': ^7.0.0
     dependencies:
       '@babel/core': 7.23.7
-      '@babel/helper-create-regexp-features-plugin': 7.22.15(@babel/core@7.23.7)
+      '@babel/helper-create-regexp-features-plugin': 7.22.9(@babel/core@7.23.7)
       '@babel/helper-plugin-utils': 7.24.0
     dev: true
 
