@@ -1,5 +1,11 @@
 # @sap-ux/ui5-info
 
+## 0.5.0
+
+### Minor Changes
+
+-   5d4c0dec: Added minUi5VersionV4Template, minUI5VersionForLocalDev, getLatestUI5Version(), and getSapSystemUI5Version()
+
 ## 0.4.0
 
 ### Minor Changes

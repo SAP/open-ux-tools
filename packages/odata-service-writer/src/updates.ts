@@ -4,6 +4,7 @@ import { join } from 'path';
 import { t } from './i18n';
 import type { OdataService } from './types';
 import semVer from 'semver';
+import type { Manifest } from '@sap-ux/project-access';
 
 /**
  * Internal function that updates the manifest.json based on the given service configuration.
@@ -17,7 +18,7 @@ export function updateManifest(basePath: string, service: OdataService, fs: Edit
     // manifest.json
     const manifestPath = join(basePath, 'webapp', 'manifest.json');
     // Get component app id
-    const manifest = fs.readJSON(manifestPath);
+    const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
     const appProp = 'sap.app';
     const appid = manifest?.[appProp]?.id;
     // Throw if required property is not found manifest.json
@@ -28,12 +29,26 @@ export function updateManifest(basePath: string, service: OdataService, fs: Edit
     }
 
     const manifestJsonExt = fs.read(join(templateRoot, 'extend', `manifest.json`));
-
+    const minUI5Version = manifest['sap.ui5']?.dependencies?.minUI5Version;
+    const manifestSettings = Object.assign(service, getModelSettings(minUI5Version));
     // If the service object includes ejs options, for example 'client' (see: https://ejs.co/#docs),
     // resulting in unexpected behaviour and problems when webpacking. Passing an empty options object prevents this.
-    fs.extendJSON(manifestPath, JSON.parse(render(manifestJsonExt, service, {})));
+    fs.extendJSON(manifestPath, JSON.parse(render(manifestJsonExt, manifestSettings, {})));
 }
 
+/**
+ * Determines model settings based on the UI5 version.
+ *
+ * @param minUI5Version - The minimum UI5 version.
+ * @returns updated model settings.
+ */
+function getModelSettings(minUI5Version: string | undefined) {
+    let includeSynchronizationMode = false;
+    if (minUI5Version && semVer.valid(minUI5Version)) {
+        includeSynchronizationMode = semVer.satisfies(minUI5Version, '<=1.110');
+    }
+    return { includeSynchronizationMode };
+}
 /**
  * Update the package.json with the required middlewares.
  *
