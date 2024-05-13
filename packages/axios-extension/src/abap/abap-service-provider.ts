@@ -6,11 +6,13 @@ import { AppIndexService } from './app-index-service';
 import { ODataVersion } from '../base/odata-service';
 import { LayeredRepositoryService } from './lrep-service';
 import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
-import type { AtoSettings } from './types';
+import type { AtoSettings, BusinessObject } from './types';
 import { TenantType } from './types';
 // Can't use an `import type` here. We need the classname at runtime to create object instances:
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import { AdtService, AtoService } from './adt-catalog/services';
+import { AdtService, AtoService, GeneratorService } from './adt-catalog/services';
+import { UiServiceGenerator } from './adt-catalog/generators/ui-service-generator';
+import type { GeneratorEntry } from './adt-catalog/generators/types';
 
 /**
  * Extension of the service provider for ABAP services.
@@ -212,5 +214,48 @@ export class AbapServiceProvider extends ServiceProvider {
         }
 
         return this.services[subclassName] as T;
+    }
+
+    /**
+     * Create a UI Service generator for the given business object.
+     *
+     * @param bo - business object
+     * @returns a UI Service generator
+     */
+    public async getUiServiceGenerator(bo: BusinessObject): Promise<UiServiceGenerator> {
+        const generatorService = await this.getAdtService<GeneratorService>(GeneratorService);
+        if (!generatorService) {
+            throw new Error('Generators are not support on this system');
+        }
+        const config = await generatorService.getUIServiceGeneratorConfig(bo.name);
+        const gen = this.createService<UiServiceGenerator>(this.getServiceUrlFromConfig(config), UiServiceGenerator);
+        gen.configure(config, bo);
+        return gen;
+    }
+
+    /**
+     * Get the service URL from the generator config.
+     *
+     * @param config - generator config
+     * @returns the service URL
+     */
+    private getServiceUrlFromConfig(config: GeneratorEntry): string {
+        // make code in this function defensive against undefined href
+        if (Array.isArray(config.link) && !config.link[0]?.href) {
+            throw new Error('No service URL found in the generator config');
+        }
+        const endIndex = config.link[0].href.indexOf(config.id) + config.id.length;
+        return config.link[0].href.substring(0, endIndex);
+    }
+
+    /**
+     * Create a service provider to lock a binding path.
+     *
+     * @param path - service binding path
+     * @returns a service provider instance to lock the service binding
+     */
+    public async createLockServiceBindingGenerator(path: string): Promise<UiServiceGenerator> {
+        const gen = this.createService<UiServiceGenerator>(path, UiServiceGenerator);
+        return gen;
     }
 }
