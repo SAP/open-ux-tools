@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.10.1
+
+### Patch Changes
+
+-   f361f3b4: export migrate adt
+
 ## 0.10.0
 
 ### Minor Changes
