@@ -1,7 +1,7 @@
 import Log from 'sap/base/Log';
 import type AppLifeCycle from 'sap/ushell/services/AppLifeCycle';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
-import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import AppState from 'sap/ushell/services/AppState';
@@ -161,7 +161,18 @@ export async function registerComponentDependencyPaths(appUrls: string[], urlPar
         }
         const response = await fetch(url);
         try {
-            registerModules(await response.json());
+            registerModules(
+                (await response.json()) as Record<
+                    string,
+                    {
+                        dependencies?: {
+                            url?: string;
+                            type?: string;
+                            componentId: string;
+                        }[];
+                    }
+                >
+            );
         } catch (error) {
             Log.error(`Registering of reuse libs failed. Error:${error}`);
         }
@@ -234,7 +245,7 @@ export async function init({
                 const version = sap.ui.version;
                 const minor = parseInt(version.split('.')[1], 10);
                 const view = event.getParameter('componentInstance');
-                const flexSettings = JSON.parse(flex);
+                const flexSettings = JSON.parse(flex) as FlexSettings;
                 const pluginScript = flexSettings.pluginScript ?? '';
 
                 let libs: string[] = [];
@@ -245,7 +256,7 @@ export async function init({
                 }
 
                 if (flexSettings.pluginScript) {
-                    libs.push(pluginScript);
+                    libs.push(pluginScript as string);
                     delete flexSettings.pluginScript;
                 }
 
