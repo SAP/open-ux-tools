@@ -1,5 +1,17 @@
 # @sap-ux/adp-tooling
 
+## 0.10.1
+
+### Patch Changes
+
+-   f361f3b4: export migrate adt
+
+## 0.10.0
+
+### Minor Changes
+
+-   9ccbaded: add migration adp writer
+
 ## 0.9.28
 
 ### Patch Changes
