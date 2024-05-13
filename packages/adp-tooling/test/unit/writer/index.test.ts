@@ -10,8 +10,6 @@ describe('ADP writer', () => {
     const fs = create(createStorage());
     const debug = !!process.env['UX_DEBUG'];
     const outputDir = join(__dirname, '../../fixtures/test-output');
-    const migrateInputDir = join(__dirname, '../../fixtures/webide-adaptation-project');
-    const migrateOutputDir = join(__dirname, '../../fixtures/test-output/webide-adaptation-project');
 
     beforeAll(async () => {
         await rimraf(outputDir);
@@ -92,16 +90,16 @@ describe('ADP writer', () => {
     });
 
     describe('migrate', () => {
+        const migrateInputDir = join(__dirname, '../../fixtures/webide-adaptation-project');
+
         test('migrate minimal config', async () => {
-            fs.copy(migrateInputDir, migrateOutputDir, { globOptions: { dot: true } });
-            expect(fs.exists(join(migrateOutputDir, 'ui5.yaml'))).toBeFalsy();
-            expect(fs.exists(join(migrateOutputDir, '.che/project.json'))).toBeTruthy();
-            await migrate(migrateOutputDir, config, fs);
-            expect(fs.dump(migrateOutputDir)).toMatchSnapshot();
-            expect(fs.exists(join(migrateOutputDir, 'ui5.yaml'))).toBeTruthy();
-            expect(fs.exists(join(migrateOutputDir, 'package.json'))).toBeTruthy();
-            expect(fs.exists(join(migrateOutputDir, '.che/project.json'))).toBeFalsy();
-            expect(fs.exists(join(migrateOutputDir, 'neo-app.json'))).toBeFalsy();
+            const projectDir = join(outputDir, 'webide-adaptation-project');
+            fs.copy(migrateInputDir, projectDir, { globOptions: { dot: true } });
+
+            await migrate(projectDir, config, fs);
+            expect(fs.dump(projectDir)).toMatchSnapshot();
+            expect(fs.exists(join(projectDir, '.che/project.json'))).toBeFalsy();
+            expect(fs.exists(join(projectDir, 'neo-app.json'))).toBeFalsy();
         });
     });
 });
