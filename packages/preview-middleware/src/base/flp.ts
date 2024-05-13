@@ -490,7 +490,11 @@ export class FlpSandbox {
     private createTestSuite(configs: TestConfig[]) {
         const testsuiteConfig = configs.find((config) => config.framework === 'Testsuite');
         if (!testsuiteConfig) {
-            //create a testsuite only if it is explicitly part of the test configuration
+            //silent skip: create a testsuite only if it is explicitly part of the test configuration
+            return;
+        }
+        if (configs.length <= 1) {
+            this.logger.warn('Skip testsuite generation. No test frameworks configured.');
             return;
         }
         const testsuite = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit.html'), 'utf-8');
