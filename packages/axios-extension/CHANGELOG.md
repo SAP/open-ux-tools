@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.12.2
+
+### Patch Changes
+
+-   a41bbd95: Use correct param in business object request, add new exports
+
 ## 1.12.1
 
 ### Patch Changes
