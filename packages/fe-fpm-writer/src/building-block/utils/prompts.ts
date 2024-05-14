@@ -7,6 +7,7 @@ import { relative } from 'path';
 import type ProjectProvider from './project';
 import { getAnnotationPathQualifiers, getEntityTypes } from './service';
 import { AdditionalPromptProperties } from '../prompts';
+import { getCapServiceName } from '@sap-ux/project-access';
 
 /**
  * Returns a Prompt to choose a boolean value.
@@ -136,7 +137,7 @@ export async function getCAPServicePrompt(
     const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     let prompt = {};
     await getCAPServiceChoices(projectProvider).then((services) => {
-        const defaultValue = services.length === 1 && services[0].name;
+        const defaultValue = services.length === 1 && services[0].value;
         prompt = {
             type: 'list',
             name: 'service',
@@ -206,10 +207,15 @@ export async function getEntityChoices(
 export async function getCAPServiceChoices(
     projectProvider: ProjectProvider
 ): Promise<Array<{ name: string; value: string }>> {
-    const services = (await projectProvider.getProject()).apps[projectProvider.appId].services;
+    const project = await projectProvider.getProject();
+    const services = project.apps[projectProvider.appId].services;
     const servicesMap: { [key: string]: string } = {};
     for (const serviceKey of Object.keys(services)) {
-        servicesMap[serviceKey] = serviceKey;
+        const mappedServiceName = await getCapServiceName(
+            project.root,
+            project.apps[projectProvider.appId].services[serviceKey]?.uri || ''
+        );
+        servicesMap[mappedServiceName] = serviceKey;
     }
     return getChoices(servicesMap);
 }
