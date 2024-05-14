@@ -3,7 +3,7 @@ import type { OutlineNode } from '@sap-ux-private/control-property-editor-common
 import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
 
-import { removeNodeById, transformNodes as tn } from '../../../../src/cpe/outline/nodes';
+import { transformNodes as tn } from '../../../../src/cpe/outline/nodes';
 import { sapCoreMock } from 'mock/window';
 
 jest.mock('../../../../src/cpe/outline/utils', () => {
@@ -13,9 +13,8 @@ jest.mock('../../../../src/cpe/outline/utils', () => {
 });
 
 describe('outline nodes', () => {
-    const testSet = new Set<string>();
     const transformNodes = (nodes: OutlineViewNode[], scenario: Scenario): Promise<OutlineNode[]> =>
-        tn(nodes, scenario, testSet);
+        tn(nodes, scenario);
 
     sapCoreMock.byId.mockReturnValue({
         getMetadata: jest.fn().mockReturnValue({
@@ -93,47 +92,78 @@ describe('outline nodes', () => {
         });
 
         test('extension point with default content', async () => {
-            const node = {
+            const node1 = {
                 id: 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
                 technicalName: 'sap.ui.extensionpoint',
                 name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
                 editable: false,
                 type: 'extensionPoint',
+                visible: true,
                 extensionPointInfo: {
-                    defaultContent: ['id1', 'id2'],
+                    defaultContent: ['id1'],
                     createdControls: []
-                },
-                visible: true
-            } as unknown as OutlineViewNode;
+                }
+            };
 
-            expect(await transformNodes([node], 'ADAPTATION_PROJECT')).toStrictEqual([
+            const node2 = {
+                id: 'id1',
+                technicalName: 'sap.m.Label',
+                name: 'New Label',
+                editable: false,
+                type: 'element',
+                visible: true
+            };
+
+            const aggregation = {
+                editable: false,
+                elements: [node1, node2],
+                id: 'application-app-preview-component---View1--hbox',
+                technicalName: 'items',
+                type: 'aggregation'
+            };
+
+            const nodes = [
                 {
-                    children: [
+                    icon: 'sap/m/designtime/HBox.icon.svg',
+                    id: 'application-app-preview-component---View1--hbox',
+                    name: 'HBox',
+                    technicalName: 'sap.m.HBox',
+                    type: 'element',
+                    visible: true,
+                    elements: [aggregation]
+                } as unknown as OutlineViewNode
+            ];
+
+            console.log(JSON.stringify(await transformNodes(nodes, 'ADAPTATION_PROJECT'), null, 2));
+
+            expect(await transformNodes(nodes, 'ADAPTATION_PROJECT')).toStrictEqual([
+                {
+                    'controlId': 'application-app-preview-component---View1--hbox',
+                    'controlType': 'sap.m.HBox',
+                    'name': 'HBox',
+                    'editable': false,
+                    'visible': true,
+                    'children': [
                         {
-                            'children': [],
-                            'controlId': 'id1',
-                            'controlType': 'some-name',
+                            'controlId': 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
+                            'controlType': 'sap.ui.extensionpoint',
+                            'name': 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
                             'editable': false,
-                            'hasDefaultContent': false,
-                            'name': 'Component',
-                            'visible': true
-                        },
-                        {
-                            'children': [],
-                            'controlId': 'id2',
-                            'controlType': 'some-name',
-                            'editable': false,
-                            'hasDefaultContent': false,
-                            'name': 'id2',
-                            'visible': true
+                            'visible': true,
+                            'hasDefaultContent': true,
+                            'children': [
+                                {
+                                    'controlId': 'id1',
+                                    'controlType': 'some-name',
+                                    'name': 'id1',
+                                    'visible': true,
+                                    'editable': false,
+                                    'children': [],
+                                    'hasDefaultContent': false
+                                }
+                            ]
                         }
-                    ],
-                    controlId: 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
-                    controlType: 'sap.ui.extensionpoint',
-                    editable: false,
-                    hasDefaultContent: true,
-                    name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
-                    visible: true
+                    ]
                 }
             ]);
         });
@@ -223,74 +253,6 @@ describe('outline nodes', () => {
                             children: []
                         }
                     ]
-                }
-            ]);
-        });
-    });
-
-    describe('removeNodeById', () => {
-        test('should remove node with matching controlId', () => {
-            const nodes = [
-                { controlId: 'id1', controlType: 'Component', children: [] },
-                { controlId: 'id2', controlType: 'Component', children: [] }
-            ];
-
-            const uniqueIDs = new Set(['id1']);
-            removeNodeById(nodes, uniqueIDs);
-
-            expect(nodes).toEqual([{ controlId: 'id2', controlType: 'Component', children: [] }]);
-        });
-
-        test('should not remove node when controlId does not match', () => {
-            const nodes = [{ controlId: 'id3', controlType: 'Component', children: [] }];
-            const uniqueIDs = new Set(['id1']);
-
-            removeNodeById(nodes, uniqueIDs);
-
-            expect(nodes).toEqual(nodes);
-        });
-
-        test('should skip nodes of type sap.ui.extensionpoint', () => {
-            const nodes = [
-                {
-                    controlId: 'id3',
-                    controlType: 'sap.ui.extensionpoint',
-                    children: [{ controlId: 'id1', controlType: 'sap.m.Label', children: [] }]
-                }
-            ];
-
-            const uniqueIDs = new Set(['id1']);
-            removeNodeById(nodes, uniqueIDs);
-
-            expect(nodes).toEqual([
-                {
-                    controlId: 'id3',
-                    controlType: 'sap.ui.extensionpoint',
-                    children: [{ controlId: 'id1', controlType: 'sap.m.Label', children: [] }]
-                }
-            ]);
-        });
-
-        test('should handle nested structures properly', () => {
-            const nodes = [
-                {
-                    controlId: 'root',
-                    controlType: 'XMLView',
-                    children: [
-                        { controlId: 'child1', controlType: 'sap.m.Table', children: [] },
-                        { controlId: 'child2', controlType: 'OverflowToolbar', children: [] }
-                    ]
-                }
-            ];
-
-            const uniqueIDs = new Set(['child1']);
-            removeNodeById(nodes, uniqueIDs);
-
-            expect(nodes).toEqual([
-                {
-                    controlId: 'root',
-                    controlType: 'XMLView',
-                    children: [{ controlId: 'child2', controlType: 'OverflowToolbar', children: [] }]
                 }
             ]);
         });

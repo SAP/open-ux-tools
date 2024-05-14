@@ -81,20 +81,23 @@ function addChildToExtensionPoint(id: string, children: OutlineNode[]) {
  * @param extPointIDs ids that need are filled when extension point has default content or created controls inside
  * @returns {Promise<OutlineNode[]>} transformed outline tree nodes
  */
-export async function transformNodes(
-    input: OutlineViewNode[],
-    scenario: Scenario,
-    extPointIDs: Set<string>
-): Promise<OutlineNode[]> {
+export async function transformNodes(input: OutlineViewNode[], scenario: Scenario): Promise<OutlineNode[]> {
     const stack = [...input];
     const items: OutlineNode[] = [];
     while (stack.length) {
         const current = stack.shift();
         const editable = isEditable(current?.id);
+        const isAdp = scenario === 'ADAPTATION_PROJECT';
+        const isExtPoint = current?.type === 'extensionPoint';
+
         if (current?.type === 'element') {
             const children = getChildren(current);
             const { text } = getAdditionalData(current.id);
             const technicalName = current.technicalName.split('.').slice(-1)[0];
+
+            const transformedChildren = isAdp
+                ? await handleDuplicateNodes(children, scenario)
+                : await transformNodes(children, scenario);
 
             const node: OutlineNode = {
                 controlId: current.id,
@@ -102,19 +105,18 @@ export async function transformNodes(
                 name: text ?? technicalName,
                 editable,
                 visible: current.visible ?? true,
-                children: await transformNodes(children, scenario, extPointIDs)
+                children: transformedChildren
             };
 
             items.push(node);
         }
 
-        if (scenario === 'ADAPTATION_PROJECT' && current?.type === 'extensionPoint' && current.extensionPointInfo) {
+        if (isAdp && isExtPoint) {
             const { defaultContent, createdControls } = current.extensionPointInfo;
 
             let children: OutlineNode[] = [];
             // We can combine both because there can only be either defaultContent or createdControls for one extension point node.
             [...defaultContent, ...createdControls].forEach((id: string) => {
-                extPointIDs.add(id);
                 addChildToExtensionPoint(id, children);
             });
 
@@ -135,34 +137,24 @@ export async function transformNodes(
 }
 
 /**
- * Recursively removes nodes from a hierarchical array of objects based on specified unique IDs.
- * Otherwise, we get a duplication of elements in the outline tree where the parent has a button for example that was added with an extension point.
- * This button should not appear under the parent of the extension point but under the extension point itself.
- * Without removing this extra node we will have a button under the parent and under the extension point.
+ * Handles duplicate nodes that are retrieved from extension point default content and created controls,
+ * if they exist under an extension point these controls are removed from the children array
  *
- * @param {Object[]} nodes - The array of objects representing nodes, each potentially containing a nested array of children.
- * @param {Set<string>} extPointIDs - A set of unique identifiers. Nodes with `controlId` present in this set will be removed.
+ * @param children outline view node children
+ * @param scenario type of project
+ * @returns transformed outline tree nodes
  */
-export function removeNodeById(nodes: any[], extPointIDs: Set<string>) {
-    let i = 0;
-    while (i < nodes.length) {
-        const item = nodes[i];
+export async function handleDuplicateNodes(children: OutlineViewNode[], scenario: Scenario): Promise<OutlineNode[]> {
+    const extPointIDs = new Set<string>();
 
-        if (item.controlType === 'sap.ui.extensionpoint') {
-            i++;
-            continue;
+    children.forEach((child: OutlineViewNode) => {
+        if (child.type === 'extensionPoint') {
+            const { defaultContent, createdControls } = child.extensionPointInfo;
+            [...defaultContent, ...createdControls].forEach((id) => extPointIDs.add(id));
         }
+    });
 
-        if (extPointIDs.has(item.controlId)) {
-            nodes.splice(i, 1);
-            continue;
-        }
+    const uniqueChildren = children.filter((child) => !extPointIDs.has(child.id));
 
-        if (item.children && item.children.length > 0) {
-            removeNodeById(item.children, extPointIDs);
-        }
-
-        // Only increment i if no item was removed.
-        i++;
-    }
+    return transformNodes(uniqueChildren, scenario);
 }
