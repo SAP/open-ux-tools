@@ -1,17 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Writing/manifest json files should remove ODataAnnotations from manifest json where annotations are defined as an array 1`] = `
-Object {
-  "": Object {
+{
+  "": {
     "contents": "{
-  \\"sap.app\\": {
-    \\"dataSources\\": {
-      \\"mainService\\": {
-        \\"uri\\": \\"/incident/\\",
-        \\"type\\": \\"OData\\",
-        \\"settings\\": {
-          \\"annotations\\": [],
-          \\"odataVersion\\": \\"4.0\\"
+  "sap.app": {
+    "dataSources": {
+      "mainService": {
+        "uri": "/incident/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.0"
         }
       }
     }
@@ -24,19 +24,19 @@ Object {
 `;
 
 exports[`Writing/manifest json files should remove ODataAnnotations from manifest json where annotations are defined as an object 1`] = `
-Object {
-  "": Object {
+{
+  "": {
     "contents": "{
-  \\"sap.app\\": {
-    \\"dataSources\\": {
-      \\"mainService\\": {
-        \\"uri\\": \\"/incident/\\",
-        \\"type\\": \\"OData\\",
-        \\"settings\\": {
-          \\"annotation\\": {
-            \\"ODataAnnotation\\": true
+  "sap.app": {
+    "dataSources": {
+      "mainService": {
+        "uri": "/incident/",
+        "type": "OData",
+        "settings": {
+          "annotation": {
+            "ODataAnnotation": true
           },
-          \\"odataVersion\\": \\"4.0\\"
+          "odataVersion": "4.0"
         }
       }
     }
@@ -45,16 +45,16 @@ Object {
 ",
     "state": "modified",
   },
-  "../../../test-cap-package-sapux/webapp/manifest.json": Object {
+  "../../../test-cap-package-sapux/webapp/manifest.json": {
     "contents": "{
-  \\"sap.app\\": {
-    \\"dataSources\\": {
-      \\"mainService\\": {
-        \\"uri\\": \\"/incident/\\",
-        \\"type\\": \\"OData\\",
-        \\"settings\\": {
-          \\"annotations\\": [],
-          \\"odataVersion\\": \\"4.0\\"
+  "sap.app": {
+    "dataSources": {
+      "mainService": {
+        "uri": "/incident/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.0"
         }
       }
     }

@@ -207,20 +207,10 @@ export async function getProjectType(projectRoot: string): Promise<ProjectType> 
 /**
  * Reads the package.json file and returns its content.
  *
- * @param {Editor} fs - The file system editor.
  * @param {string} packageJsonPath - The path to the package.json file.
+ * @param {Editor} fs - The file system editor.
  * @returns {Package} The content of the package.json file.
  */
-export function getPackageJson(fs: Editor, packageJsonPath: string): Package {
-    return fs.readJSON(packageJsonPath) as Package;
-}
-
-/**
- * Generates the path to the package.json file located within a project directory.
- *
- * @param {string} projectPath - The path to the project directory.
- * @returns {string} The path to the package.json file.
- */
-export function getPackageJsonPath(projectPath: string): string {
-    return join(projectPath, 'package.json');
+export function getPackageJson(packageJsonPath: string, fs?: Editor): Package {
+    return fs?.readJSON(packageJsonPath) as Package;
 }

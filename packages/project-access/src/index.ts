@@ -32,9 +32,7 @@ export {
     readUi5Yaml,
     toReferenceUri,
     getPackageJson,
-    getPackageJsonPath,
-    getCdsVersionInfo,
-    getCAPAppUriPath
+    getCdsVersionInfo
 } from './project';
 export * from './types';
 export * from './library';

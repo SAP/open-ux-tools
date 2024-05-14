@@ -1,46 +1,46 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Writing/package json files should enable CdsUi5Plugin when workspace is enabled 1`] = `
-Object {
-  "": Object {
+{
+  "": {
     "contents": "{
-  \\"name\\": \\"test_cap\\",
-  \\"version\\": \\"0\\",
-  \\"description\\": \\"Test file\\",
-  \\"dependencies\\": {
-    \\"@sap/cds\\": \\"6.8.2\\"
+  "name": "test_cap",
+  "version": "0",
+  "description": "Test file",
+  "dependencies": {
+    "@sap/cds": "6.8.2"
   },
-  \\"sapux\\": [
-    \\"app/test-cap-package-no-sapux\\"
+  "sapux": [
+    "app/test-cap-package-no-sapux"
   ],
-  \\"scripts\\": {
-    \\"watch-test-cap-package-no-sapux\\": \\"cds watch --open test-cap-package-no-sapux/webapp/index.html?sap-ui-xx-viewCache=false\\"
+  "scripts": {
+    "watch-test-cap-package-no-sapux": "cds watch --open test-cap-package-no-sapux/webapp/index.html?sap-ui-xx-viewCache=false"
   }
 }
 ",
     "state": "modified",
   },
-  "../../test-cap-package-no-sapux/package.json": Object {
+  "../../test-cap-package-no-sapux/package.json": {
     "contents": "{
-  \\"name\\": \\"test_cap\\",
-  \\"version\\": \\"0\\",
-  \\"description\\": \\"Test file\\",
-  \\"scripts\\": {
-    \\"test-script\\": \\"Run some scripts here\\",
-    \\"int-test\\": \\"test command\\",
-    \\"start\\": \\"start command\\"
+  "name": "test_cap",
+  "version": "0",
+  "description": "Test file",
+  "scripts": {
+    "test-script": "Run some scripts here",
+    "int-test": "test command",
+    "start": "start command"
   },
-  \\"dependencies\\": {
-    \\"@sap/cds\\": \\"^6.8.2\\"
+  "dependencies": {
+    "@sap/cds": "^6.8.2"
   },
-  \\"workspaces\\": [
-    \\"app/*\\"
+  "workspaces": [
+    "app/*"
   ],
-  \\"devDependencies\\": {
-    \\"cds-plugin-ui5\\": \\"^0.6.13\\"
+  "devDependencies": {
+    "cds-plugin-ui5": "^0.6.13"
   },
-  \\"sapux\\": [
-    \\"app/test-cap-package-sapux\\"
+  "sapux": [
+    "app/test-cap-package-sapux"
   ]
 }
 ",
@@ -50,20 +50,20 @@ Object {
 `;
 
 exports[`Writing/package json files should log warning if no minimum cds version is being satisfied 1`] = `
-Object {
-  "../../test-cap-package-sapux/package.json": Object {
+{
+  "../../test-cap-package-sapux/package.json": {
     "contents": "{
-  \\"name\\": \\"test_cap\\",
-  \\"version\\": \\"0\\",
-  \\"description\\": \\"Test file\\",
-  \\"dependencies\\": {
-    \\"@sap/cds\\": \\"6.8.2\\"
+  "name": "test_cap",
+  "version": "0",
+  "description": "Test file",
+  "dependencies": {
+    "@sap/cds": "6.8.2"
   },
-  \\"sapux\\": [
-    \\"app/test-cap-package-no-sapux\\"
+  "sapux": [
+    "app/test-cap-package-no-sapux"
   ],
-  \\"scripts\\": {
-    \\"watch-test-cap-package-no-sapux\\": \\"cds watch --open test-cap-package-no-sapux/webapp/index.html?sap-ui-xx-viewCache=false\\"
+  "scripts": {
+    "watch-test-cap-package-no-sapux": "cds watch --open test-cap-package-no-sapux/webapp/index.html?sap-ui-xx-viewCache=false"
   }
 }
 ",
@@ -73,46 +73,46 @@ Object {
 `;
 
 exports[`Writing/package json files should remove int-test script and keep other scripts 1`] = `
-Object {
-  "": Object {
+{
+  "": {
     "contents": "{
-  \\"name\\": \\"test_cap\\",
-  \\"version\\": \\"0\\",
-  \\"description\\": \\"Test file\\",
-  \\"scripts\\": {
-    \\"test-script\\": \\"Run some scripts here\\"
+  "name": "test_cap",
+  "version": "0",
+  "description": "Test file",
+  "scripts": {
+    "test-script": "Run some scripts here"
   },
-  \\"dependencies\\": {
-    \\"@sap/cds\\": \\"^6.8.2\\"
+  "dependencies": {
+    "@sap/cds": "^6.8.2"
   },
-  \\"workspaces\\": [
-    \\"app/*\\"
+  "workspaces": [
+    "app/*"
   ],
-  \\"devDependencies\\": {
-    \\"cds-plugin-ui5\\": \\"^0.6.13\\"
+  "devDependencies": {
+    "cds-plugin-ui5": "^0.6.13"
   }
 }
 ",
     "state": "modified",
   },
-  "../../../../../../app/package.json": Object {
+  "../../../../../../app/package.json": {
     "contents": "{}
 ",
     "state": "modified",
   },
-  "../../test-cap-package-sapux/package.json": Object {
+  "../../test-cap-package-sapux/package.json": {
     "contents": "{
-  \\"name\\": \\"test_cap\\",
-  \\"version\\": \\"0\\",
-  \\"description\\": \\"Test file\\",
-  \\"dependencies\\": {
-    \\"@sap/cds\\": \\"6.8.2\\"
+  "name": "test_cap",
+  "version": "0",
+  "description": "Test file",
+  "dependencies": {
+    "@sap/cds": "6.8.2"
   },
-  \\"sapux\\": [
-    \\"app/test-cap-package-no-sapux\\"
+  "sapux": [
+    "app/test-cap-package-no-sapux"
   ],
-  \\"scripts\\": {
-    \\"watch-test-cap-package-no-sapux\\": \\"cds watch --open test-cap-package-no-sapux/webapp/index.html?sap-ui-xx-viewCache=false\\"
+  "scripts": {
+    "watch-test-cap-package-no-sapux": "cds watch --open test-cap-package-no-sapux/webapp/index.html?sap-ui-xx-viewCache=false"
   }
 }
 ",
@@ -122,51 +122,51 @@ Object {
 `;
 
 exports[`Writing/package json files should remove sapux property from package json and start scripts 1`] = `
-Object {
-  "../../app/package.json": Object {
+{
+  "../../app/package.json": {
     "contents": "{}
 ",
     "state": "modified",
   },
-  "../../test/unit/cap-writer/test-inputs/test-cap-package-no-sapux/package.json": Object {
+  "../../test/unit/cap-writer/test-inputs/test-cap-package-no-sapux/package.json": {
     "contents": "{
-  \\"name\\": \\"test_cap\\",
-  \\"version\\": \\"0\\",
-  \\"description\\": \\"Test file\\",
-  \\"scripts\\": {
-    \\"test-script\\": \\"Run some scripts here\\",
-    \\"int-test\\": \\"test command\\",
-    \\"start\\": \\"start command\\"
+  "name": "test_cap",
+  "version": "0",
+  "description": "Test file",
+  "scripts": {
+    "test-script": "Run some scripts here",
+    "int-test": "test command",
+    "start": "start command"
   },
-  \\"dependencies\\": {
-    \\"@sap/cds\\": \\"^6.8.2\\"
+  "dependencies": {
+    "@sap/cds": "^6.8.2"
   },
-  \\"workspaces\\": [
-    \\"app/*\\"
+  "workspaces": [
+    "app/*"
   ],
-  \\"devDependencies\\": {
-    \\"cds-plugin-ui5\\": \\"^0.6.13\\"
+  "devDependencies": {
+    "cds-plugin-ui5": "^0.6.13"
   },
-  \\"sapux\\": [
-    \\"app/test-cap-package-sapux\\"
+  "sapux": [
+    "app/test-cap-package-sapux"
   ]
 }
 ",
     "state": "modified",
   },
-  "../../test/unit/cap-writer/test-inputs/test-cap-package-sapux/package.json": Object {
+  "../../test/unit/cap-writer/test-inputs/test-cap-package-sapux/package.json": {
     "contents": "{
-  \\"name\\": \\"test_cap\\",
-  \\"version\\": \\"0\\",
-  \\"description\\": \\"Test file\\",
-  \\"dependencies\\": {
-    \\"@sap/cds\\": \\"6.8.2\\"
+  "name": "test_cap",
+  "version": "0",
+  "description": "Test file",
+  "dependencies": {
+    "@sap/cds": "6.8.2"
   },
-  \\"sapux\\": [
-    \\"app/test-cap-package-no-sapux\\"
+  "sapux": [
+    "app/test-cap-package-no-sapux"
   ],
-  \\"scripts\\": {
-    \\"watch-test-cap-package-no-sapux\\": \\"cds watch --open test-cap-package-no-sapux/webapp/index.html?sap-ui-xx-viewCache=false\\"
+  "scripts": {
+    "watch-test-cap-package-no-sapux": "cds watch --open test-cap-package-no-sapux/webapp/index.html?sap-ui-xx-viewCache=false"
   }
 }
 ",
@@ -175,23 +175,23 @@ Object {
 }
 `;
 
-exports[`Writing/package json files should update package for cap projects with sap ux disabled 1`] = `Object {}`;
+exports[`Writing/package json files should update package for cap projects with sap ux disabled 1`] = `{}`;
 
 exports[`Writing/package json files should update package for cap projects with sap ux enabled 1`] = `
-Object {
-  "": Object {
+{
+  "": {
     "contents": "{
-  \\"name\\": \\"test_cap\\",
-  \\"version\\": \\"0\\",
-  \\"description\\": \\"Test file\\",
-  \\"dependencies\\": {
-    \\"@sap/cds\\": \\"6.8.2\\"
+  "name": "test_cap",
+  "version": "0",
+  "description": "Test file",
+  "dependencies": {
+    "@sap/cds": "6.8.2"
   },
-  \\"sapux\\": [
-    \\"app/test-cap-package-no-sapux\\"
+  "sapux": [
+    "app/test-cap-package-no-sapux"
   ],
-  \\"scripts\\": {
-    \\"watch-test-cap-package-no-sapux\\": \\"cds watch --open test-cap-package-no-sapux/webapp/index.html?sap-ui-xx-viewCache=false\\"
+  "scripts": {
+    "watch-test-cap-package-no-sapux": "cds watch --open test-cap-package-no-sapux/webapp/index.html?sap-ui-xx-viewCache=false"
   }
 }
 ",

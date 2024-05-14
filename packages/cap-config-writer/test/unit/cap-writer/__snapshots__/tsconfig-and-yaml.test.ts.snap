@@ -1,19 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Writing tsConfig and yaml files should update static location in application yaml files corectly when spring is undefined 1`] = `
-Object {
-  "": Object {
+{
+  "": {
     "contents": "spring:
   web.resources.static-locations: file:./capCustomPathsApp
 ",
     "state": "modified",
   },
-  "../../test-cap-package-sapux/tsconfig.json": Object {
+  "../../test-cap-package-sapux/tsconfig.json": {
     "contents": "{
-  \\"compilerOptions\\": {
-    \\"typeRoots\\": [
-      \\"./node_modules/@types\\",
-      \\"../../node_modules/@types\\"
+  "compilerOptions": {
+    "typeRoots": [
+      "./node_modules/@types",
+      "../../node_modules/@types"
     ]
   }
 }
@@ -24,13 +24,13 @@ Object {
 `;
 
 exports[`Writing tsConfig and yaml files should update tsConfig files correctly 1`] = `
-Object {
-  "../../tsconfig.json": Object {
+{
+  "../../tsconfig.json": {
     "contents": "{
-  \\"compilerOptions\\": {
-    \\"typeRoots\\": [
-      \\"./node_modules/@types\\",
-      \\"../../node_modules/@types\\"
+  "compilerOptions": {
+    "typeRoots": [
+      "./node_modules/@types",
+      "../../node_modules/@types"
     ]
   }
 }

@@ -1,10 +1,4 @@
-import {
-    type Package,
-    getCapCustomPaths,
-    getPackageJson,
-    getPackageJsonPath,
-    getCdsVersionInfo
-} from '@sap-ux/project-access';
+import { type Package, getCapCustomPaths, getPackageJson, getCdsVersionInfo } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import { t } from '../i18n';
 import { join } from 'path';
@@ -44,7 +38,7 @@ async function updateScripts(
     enableNPMWorkspaces?: boolean,
     log?: Logger
 ): Promise<void> {
-    const packageJson: Package = getPackageJson(fs, packageJsonPath);
+    const packageJson: Package = getPackageJson(packageJsonPath, fs);
     const hasNPMworkspaces = await checkCdsUi5PluginEnabled(packageJsonPath, fs);
     const cdsVersion = await getCdsVersionInfo();
     if (cdsVersion.home && packageJson && satisfiesMinCdsVersion(packageJson)) {
@@ -78,8 +72,8 @@ export async function updateRootPackageJsonCAP(
     log?: Logger,
     enableNPMWorkspaces?: boolean
 ): Promise<void> {
-    const packageJsonPath: string = getPackageJsonPath(capService.projectPath);
-    const packageJson = getPackageJson(fs, packageJsonPath);
+    const packageJsonPath: string = join(capService.projectPath, 'package.json');
+    const packageJson = getPackageJson(packageJsonPath, fs);
     const capNodeType: CapRuntime = 'Node.js';
 
     if (enableNPMWorkspaces && packageJson) {

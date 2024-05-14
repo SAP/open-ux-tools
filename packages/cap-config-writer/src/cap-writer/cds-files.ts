@@ -3,9 +3,8 @@ import type { Editor } from 'mem-fs-editor';
 import { t } from '../i18n';
 import { join } from 'path';
 import { type CapService } from '@sap-ux/odata-service-inquirer';
-import { getAnnotationPath } from '@sap-ux/fiori-generator-shared';
 import type { Logger } from '@sap-ux/logger';
-import { toPosixPath } from './helpers';
+import { toPosixPath, getAnnotationPath } from './helpers';
 
 /**
  * Updates either the index.cds or services.cds file with the provided annotation configuration.

@@ -1,5 +1,4 @@
 import path from 'path';
-import { getCAPAppUriPath } from '@sap-ux/project-access';
 
 /**
  * Retrieves the CDS task for the CAP app.
@@ -15,12 +14,13 @@ export function getCDSTask(
     useNPMWorkspaces: boolean = false
 ): { [x: string]: string } {
     const DisableCacheParam = 'sap-ui-xx-viewCache=false';
+    // projects by default are served base on the folder name in the app/ folder
+    // If the project uses npm workspaces (and specifically cds-plugin-ui5 ) then the project is served using the appId including namespace
+    const project = useNPMWorkspaces ? appId : projectName + '/webapp';
     return {
-        [`watch-${projectName}`]: `cds watch --open ${getCAPAppUriPath(
-            projectName,
-            appId,
-            useNPMWorkspaces
-        )}/index.html?${DisableCacheParam}${useNPMWorkspaces ? ' --livereload false' : ''}`
+        [`watch-${projectName}`]: `cds watch --open ${project}/index.html?${DisableCacheParam}${
+            useNPMWorkspaces ? ' --livereload false' : ''
+        }`
     };
 }
 
@@ -33,4 +33,15 @@ export function getCDSTask(
  */
 export function toPosixPath(dirPath: string): string {
     return path.normalize(dirPath).split(/[\\/]/g).join(path.posix.sep);
+}
+
+/**
+ * Get the path to the annotations file for a project.
+ *
+ * @param projectName The name of the project.
+ * @param appPath path to the application
+ * @returns {string} The path to the annotations file.
+ */
+export function getAnnotationPath(projectName: string, appPath = 'app'): string {
+    return path.join(appPath, projectName, 'annotation.cds').replace(/\\/g, '/');
 }

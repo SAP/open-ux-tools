@@ -351,20 +351,6 @@ function findServiceByUri(
 }
 
 /**
- * Returns the URI path for the CAP app.
- *
- * @param {string} projectName - The name of the project.
- * @param {string} appId - The ID of the app.
- * @param {boolean} [useNPMWorkspaces] - Whether to use npm workspaces.
- * @returns {string} The URI path for the CAP app.
- */
-export function getCAPAppUriPath(projectName: string, appId: string, useNPMWorkspaces: boolean = false): string {
-    // projects by default are served base on the folder name in the app/ folder
-    // If the project uses npm workspaces (and specifically cds-plugin-ui5 ) then the project is served using the appId including namespace
-    return useNPMWorkspaces ? appId : projectName + '/webapp';
-}
-
-/**
  * Get CAP CDS project environment config for project root.
  *
  * @param capProjectPath - project root of a CAP project
