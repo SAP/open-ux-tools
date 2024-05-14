@@ -5,7 +5,7 @@ type KeyValueString = { [key: string]: string };
 
 /**
  * Gets the data sources that are of type OData.
- * 
+ *
  * @param {{ [k: string]: ManifestNamespace.DataSource } | undefined} dataSources - The data sources from the manifest.
  * @returns {DataSource[]} - The data sources that are of type OData.
  */
@@ -28,13 +28,13 @@ export function getTargetDataSources(
 
 /**
  * Gets the data sources that are of type ODataAnnotation.
- * 
+ *
  * @param {{ [k: string]: ManifestNamespace.DataSource } | undefined} dataSources - The data sources from the manifest.
- * @returns { [key: string]: string } - The data sources that are of type ODataAnnotation.
+ * @returns { KeyValueString } - The data sources that are of type ODataAnnotation.
  */
-export function getTargetODataAnnotations(dataSources: { [k: string]: ManifestNamespace.DataSource } | undefined): {
-    [key: string]: string;
-} {
+export function getTargetODataAnnotations(
+    dataSources: { [k: string]: ManifestNamespace.DataSource } | undefined
+): KeyValueString {
     const annotations: { [key: string]: string } = {};
     if (!dataSources) {
         return annotations;
@@ -49,7 +49,7 @@ export function getTargetODataAnnotations(dataSources: { [k: string]: ManifestNa
 
 /**
  * Gets the data sources that are of type ODataAnnotation.
- * 
+ *
  * @param {DataSource[]} dataSources - The data sources from the manifest.
  * @returns {KeyValueString} - The data sources dictionary.
  */
@@ -62,7 +62,7 @@ export function getDataSourcesDictionary(dataSources: DataSource[]): KeyValueStr
 
 /**
  * Gets the data services with URI from the data sources.
- * 
+ *
  * @param {DataSource[]} dataSources - The data sources from the manifest.
  * @returns {KeyValueString} - The data sources dictionary.
  */

@@ -28,8 +28,8 @@ type ShowAnnotationDataVersionInfoMessage = {
 };
 
 /**
- * Checks if the OData URI message should be shown
- * 
+ * Checks if the OData URI message should be shown.
+ *
  * @param {string} uri - the new OData URI from prompt answers
  * @param {boolean} isCFEnv - is the project CF or ABAP
  * @returns {boolean} - true if the OData URI message should be shown
@@ -45,8 +45,8 @@ function shouldShowODataUriInfo(uri: string, isCFEnv: boolean): boolean {
 }
 
 /**
- * Get the prefix of the OData service
- * 
+ * Get the prefix of the OData service.
+ *
  * @param {boolean} isCFEnv - is the project CF or ABAP
  * @param {number} version - the version of the OData service
  * @returns {string} - the prefix of the OData service
@@ -59,8 +59,8 @@ function getPrefix(isCFEnv: boolean, version: number) {
 }
 
 /**
- * Get the version of the OData service
- * 
+ * Get the version of the OData service.
+ *
  * @param {string} uri - the URI of the OData service
  * @param {boolean} isCFEnv - is the project CF or ABAP
  * @returns {string} - the version of the OData service
@@ -69,8 +69,8 @@ function getVersion(uri: string, isCFEnv: boolean) {
     return uri.split('/').filter(Boolean)[isCFEnv ? 1 : 2];
 }
 /**
- * Checks if the OData version info message should be shown
- *  
+ * Checks if the OData version info message should be shown.
+ *
  * @param {ShowDataVersionInfoMessage} data - the data for the OData service
  * @returns {boolean} - true if the OData version info message should be shown
  */
@@ -84,8 +84,8 @@ function shouldShowODataVersionInfoMessage(data: ShowDataVersionInfoMessage): bo
 }
 
 /**
- * Checks if the Annotation OData version info message should be shown
- * 
+ * Checks if the Annotation OData version info message should be shown.
+ *
  * @param {ShowAnnotationDataVersionInfoMessage} data - the data for the OData service
  * @returns {boolean} - true if the Annotation OData version info message should be shown
  */
@@ -104,8 +104,8 @@ function shouldShowAnnotationODataVersionInfoMessage(data: ShowAnnotationDataVer
 }
 
 /**
- * Gets the questions for changing the data source
- * 
+ * Gets the questions for changing the data source.
+ *
  * @param {AdpChangeDataSourceQuestions} data - the data for the questions
  * @returns {Question<AdpChangeDataSourceAnswers>[]} - the questions
  */

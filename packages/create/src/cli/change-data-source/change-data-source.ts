@@ -34,7 +34,7 @@ export function addChangeDataSourceCommand(cmd: Command): void {
 
 /**
  * Changes the data source of an adaptation project.
- * 
+ *
  * @param {string} basePath - The path to the adaptation project.
  * @param {PromptDefaults} defaults - The default values for the prompts.
  */

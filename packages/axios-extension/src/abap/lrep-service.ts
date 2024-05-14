@@ -258,7 +258,7 @@ export class LayeredRepositoryService extends Axios implements Service {
 
     /**
      * Gets the manifest from the given URL.
-     * 
+     *
      * @param {string} manifestUrl - The URL of the manifest to fetch.
      * @returns {Promise<Manifest>} - The manifest.
      */

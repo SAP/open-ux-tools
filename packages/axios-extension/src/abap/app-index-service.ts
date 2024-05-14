@@ -36,8 +36,8 @@ export abstract class AppIndexService extends Axios implements Service {
     }
 
     /**
-     * Gets the URL to the app manifest with the specified id.  
-     * 
+     * Gets the URL to the app manifest with the specified id.
+     *
      * @param {string} appId - The id of the app.
      * @returns {Promise<string>} - URL to the app manifest.
      */

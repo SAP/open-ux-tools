@@ -3,7 +3,7 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 
 /**
  * Validates the URI input.
- * 
+ *
  * @param {string} value - The value to validate.
  * @param {string} input - The input name.
  * @param {boolean} isMandatory - Whether the input is mandatory.
@@ -23,7 +23,7 @@ export function validateURI(value: string, input: string, isMandatory = true): b
 
 /**
  * Validates the OData service input.
- * 
+ *
  * @param {string} value - The value to validate.
  * @param {ManifestNamespace.DataSource[]} oDataSources - The OData sources from the manifest.
  * @returns {boolean | string} - The validation result.
