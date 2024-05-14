@@ -126,7 +126,7 @@
             "internalConsoleOptions": "neverOpen",
             "cwd": "${workspaceFolder}/packages/reload-middleware"
         },
-                {
+        {
             "type": "node",
             "request": "launch",
             "name": "fiori-freestyle-writer: Debug Current Jest File with UX_DEBUG & UX_DEBUG_FULL",
