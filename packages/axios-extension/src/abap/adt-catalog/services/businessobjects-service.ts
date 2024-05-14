@@ -28,7 +28,7 @@ export class BusinessObjectsService extends AdtService {
      * @param maxResults - The maximum number of business objects to be returned.
      * @returns A list of business objects.
      */
-    public async getBusinessObjects(maxResults?: number): Promise<BusinessObject[]> {
+    public async getBusinessObjects(maxResults = 10000): Promise<BusinessObject[]> {
         const config = {
             headers: {
                 Accept: 'application/xml'
@@ -36,9 +36,9 @@ export class BusinessObjectsService extends AdtService {
             params: {
                 operation: 'quickSearch',
                 query: `*`,
-                maxResults: maxResults || 10000,
+                maxResults: maxResults,
                 objectType: 'BDEF',
-                releaseStatus: 'USE_IN_CLOUD_DEVELOPMENT'
+                releaseState: 'USE_IN_CLOUD_DEVELOPMENT'
             }
         };
         const response = await this.get('', config);

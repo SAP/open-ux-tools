@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.1.5
+
+### Patch Changes
+
+-   Updated dependencies [e3d2324c]
+    -   @sap-ux/project-access@1.20.0
+    -   @sap-ux/telemetry@0.4.23
+
 ## 0.1.4
 
 ### Patch Changes
