@@ -39,7 +39,11 @@ export const DirName = {
     Annotations: 'annotations'
 } as const;
 
-export enum FioriToolsSettings {
-    dir = '.fioritools',
-    migrationSettingsFile = 'migrationSettings.json'
-}
+export const FioriToolsSettings = {
+    dir: '.fioritools',
+    migrationSettingsFile: 'migrationSettings.json'
+} as const;
+
+export const SchemaName = {
+    Ftfs: 'ftfs'
+} as const;
