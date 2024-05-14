@@ -4,7 +4,7 @@ import snapshotResponse from './testdata/snapshot-response.json';
 import officialResponse from './testdata/official-response.json';
 import overviewResponse from './testdata/overview-response.json';
 
-import { getUI5Versions } from '../src/ui5-version-info';
+import { getLatestUI5Version, getUI5Versions } from '../src/ui5-version-info';
 import * as commands from '../src/commands';
 import { ToolsLogger } from '@sap-ux/logger';
 import { ui5VersionRequestInfo } from '../src/constants';
@@ -295,5 +295,47 @@ describe('getUI5Versions: npm listed versions', () => {
         expect(commandRunSpy).toHaveBeenCalledTimes(1);
         expect(retrievedUI5Versions[0]).toEqual({ version: '1.90.1' });
         expect(retrievedUI5Versions.length).toEqual(1);
+    });
+});
+
+describe('getLatestUI5Version', () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+        nock.cleanAll();
+    });
+
+    it('Return latest UI5 version', async () => {
+        nock(ui5VersionRequestInfo.OfficialUrl)
+            .get(`/${ui5VersionRequestInfo.VersionsFile}`)
+            .reply(200, officialResponse);
+
+        const latestVersion = await getLatestUI5Version();
+        expect(latestVersion).toBe('1.109.3');
+    });
+
+    it('Return undefined as UI5 version JSON is null', async () => {
+        nock(ui5VersionRequestInfo.OfficialUrl)
+            .get(`/${ui5VersionRequestInfo.VersionsFile}`)
+            .reply(200, null as unknown as string);
+
+        const latestVersion = await getLatestUI5Version();
+        expect(latestVersion).toBeUndefined();
+    });
+
+    it('Return undefined as latest UI5 version is not returned', async () => {
+        nock(ui5VersionRequestInfo.OfficialUrl)
+            .get(`/${ui5VersionRequestInfo.VersionsFile}`)
+            .reply(200, { ui5Versions: { latest: {} } });
+
+        const latestVersion = await getLatestUI5Version();
+        expect(latestVersion).toBeUndefined();
+    });
+
+    it('Return undefined as network call throws exception', async () => {
+        jest.spyOn(axios, 'get').mockImplementationOnce(() => {
+            throw new Error('Network error');
+        });
+        const latestVersion = await getLatestUI5Version();
+        expect(latestVersion).toBeUndefined();
     });
 });

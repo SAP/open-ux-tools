@@ -1,5 +1,28 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.22.6
+
+### Patch Changes
+
+-   Updated dependencies [e3d2324c]
+    -   @sap-ux/ui5-config@0.22.4
+    -   @sap-ux/odata-service-writer@0.19.1
+    -   @sap-ux/ui5-application-writer@0.26.12
+
+## 0.22.5
+
+### Patch Changes
+
+-   Updated dependencies [a47d0f5e]
+    -   @sap-ux/odata-service-writer@0.19.0
+
+## 0.22.4
+
+### Patch Changes
+
+-   Updated dependencies [9ad3cf7a]
+    -   @sap-ux/odata-service-writer@0.18.0
+
 ## 0.22.3
 
 ### Patch Changes
