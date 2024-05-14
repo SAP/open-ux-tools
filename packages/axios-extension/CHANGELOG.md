@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.12.3
+
+### Patch Changes
+
+-   19ec0f01: FIX: corrected scenario ID for S/4HANA Cloud Public Edition 2408 and onward
+
 ## 1.12.2
 
 ### Patch Changes
