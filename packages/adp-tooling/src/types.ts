@@ -1,4 +1,4 @@
-import type { UI5FlexLayer } from '@sap-ux/project-access';
+import type { UI5FlexLayer, ManifestNamespace } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp } from '@sap-ux/ui5-config';
 import type { Editor } from 'mem-fs-editor';
@@ -339,4 +339,28 @@ export interface AdpProjectData {
     applicationIdx: string;
     reference: string;
     id: string;
+}
+
+export interface AdpChangeDataSourceAnswers {
+    targetODataSource?: string;
+    oDataSourceURI?: string;
+    targetODataURIInfo?: string;
+    targetODataURIV2Info?: string;
+    targetODataURIV4Info?: string;
+    maxAge?: number;
+    oDataAnnotationSourceURI?: string;
+    targetODataAnnotationURIInfo?: string;
+    targetODataAnnotationURIV2Info?: string;
+    targetODataAnnotationURIV4Info?: string;
+}
+
+export type DataSource = ManifestNamespace.DataSource & { dataSourceName: string; annotations: string[] };
+export interface AdpChangeDataSourceQuestions {
+    isYUI: boolean;
+    isInSafeMode: boolean;
+    oDataSources: DataSource[];
+    isCFEnv: boolean;
+    oDataServicesWithURI: { [key: string]: string };
+    oDataSourcesDictionary: { [key: string]: string };
+    oDataAnnotations: { [key: string]: string };
 }

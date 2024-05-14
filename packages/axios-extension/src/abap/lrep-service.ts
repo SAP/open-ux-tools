@@ -257,6 +257,28 @@ export class LayeredRepositoryService extends Axios implements Service {
     }
 
     /**
+     * Gets the manifest from the given URL.
+     * 
+     * @param {string} manifestUrl - The URL of the manifest to fetch.
+     * @returns {Promise<Manifest>} - The manifest.
+     */
+    public async getManifest(manifestUrl: string): Promise<Manifest> {
+        const url = manifestUrl.replace(LayeredRepositoryService.PATH, '');
+        try {
+            const repsponse = await this.get(url);
+            return JSON.parse(repsponse.data);
+        } catch (error) {
+            if (isAxiosError(error)) {
+                this.log.error('Manifest fetching failed');
+            } else {
+                this.log.error('Manifest parsing error: Manifest is not in expected format.');
+            }
+            this.log.debug(error);
+            throw error;
+        }
+    }
+
+    /**
      * Try parsing the response and log the result. If the parsing fails and an alternative is provided, log it instead.
      *
      * @param response axios response from the LREP service

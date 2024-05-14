@@ -34,4 +34,28 @@ export abstract class AppIndexService extends Axios implements Service {
         const response = await this.get('/', { params });
         return JSON.parse(response.data).results as AppIndex;
     }
+
+    /**
+     * Gets the URL to the app manifest with the specified id.  
+     * 
+     * @param {string} appId - The id of the app.
+     * @returns {Promise<string>} - URL to the app manifest.
+     */
+    public async getManifestUrl(appId: string): Promise<string> {
+        let result = '';
+        const params = {
+            'id': appId
+        };
+        try {
+            const response = await this.get('/ui5_app_info_json', { params });
+            const responseValues: any = Object.values(JSON.parse(response.data));
+            result =
+                responseValues[0].manifestUrl !== undefined
+                    ? responseValues[0].manifestUrl
+                    : responseValues[0].manifest;
+        } catch (e) {
+            throw new Error(`Failed to get manifest URL for app with id ${appId}`);
+        }
+        return result;
+    }
 }
