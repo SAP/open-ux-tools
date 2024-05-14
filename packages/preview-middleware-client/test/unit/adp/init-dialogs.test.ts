@@ -10,12 +10,16 @@ import Fragment from 'mock/sap/ui/core/Fragment';
 import Controller from 'mock/sap/ui/core/mvc/Controller';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 
-import { DialogNames, handler, initDialogs, isFragmentCommandEnabled, isControllerExtensionEnabled } from '../../../src/adp/init-dialogs';
+import {
+    DialogNames,
+    handler,
+    initDialogs,
+    isFragmentCommandEnabled,
+    isControllerExtensionEnabled
+} from '../../../src/adp/init-dialogs';
 import AddFragment from '../../../src/adp/controllers/AddFragment.controller';
 import ControllerExtension from '../../../src/adp/controllers/ControllerExtension.controller';
 import ExtensionPoint from '../../../src/adp/controllers/ExtensionPoint.controller';
-import ElementOverlay from 'sap/ui/dt/ElementOverlay';
-
 
 describe('Dialogs', () => {
     describe('initDialogs', () => {
@@ -103,7 +107,7 @@ describe('Dialogs', () => {
             const result = isFragmentCommandEnabled([]);
 
             expect(result).toBe(false);
-          });
+        });
     });
 
     describe('isControllerExtensionEnabled', () => {

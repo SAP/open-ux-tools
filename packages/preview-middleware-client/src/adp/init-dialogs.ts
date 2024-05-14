@@ -59,12 +59,27 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[]): void
  * @param overlays Control overlays
  * @param syncViewsIds Runtime Authoring
  *
- * @returns boolean 
+ * @returns boolean
  */
 export const isControllerExtensionEnabled = (overlays: ElementOverlay[], syncViewsIds: string[]): boolean => {
     const clickedControlId = FlUtils.getViewForControl(overlays[0].getElement()).getId();
 
     return overlays.length <= 1 && !syncViewsIds.includes(clickedControlId);
+};
+
+/**
+ * Determines whether the fragment command should be enabled based on the provided overlays.
+ *
+ * @param {ElementOverlay[]} overlays - An array of ElementOverlay objects representing the UI overlays.
+ * @returns {boolean} True if the fragment command is enabled, false otherwise.
+ */
+export const isFragmentCommandEnabled = (overlays: ElementOverlay[]): boolean => {
+    if (overlays.length === 0) return false;
+
+    const control = overlays[0].getElement();
+    const hasStableId = FlUtils.checkControlId(control);
+
+    return hasStableId && overlays.length <= 1;
 };
 
 /**
@@ -110,18 +125,3 @@ export async function handler(
 
     await controller.setup(dialog as Dialog);
 }
-
-/**
- * Determines whether the fragment command should be enabled based on the provided overlays.
- *
- * @param {ElementOverlay[]} overlays - An array of ElementOverlay objects representing the UI overlays.
- * @returns {boolean} True if the fragment command is enabled, false otherwise.
- */
-export const isFragmentCommandEnabled = (overlays: ElementOverlay[]): boolean => {
-    if (overlays.length === 0) return false;
-
-    const control = overlays[0].getElement();
-    const hasStableId = FlUtils.checkControlId(control);
-
-    return hasStableId && overlays.length <= 1;
-};
