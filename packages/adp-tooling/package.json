@@ -35,19 +35,17 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
+        "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "@sap-ux/btp-utils": "workspace:*",
-        "sanitize-filename": "1.6.3",
+        "adm-zip": "0.5.10",
         "ejs": "3.1.10",
         "i18next": "23.11.2",
         "inquirer": "8.2.6",
-        "adm-zip": "0.5.10",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "prompts": "2.4.2",
@@ -63,12 +61,12 @@
         "@types/mem-fs-editor": "7.0.1",
         "@types/prompts": "2.4.4",
         "@types/supertest": "2.0.12",
+        "@ui5/manifest": "1.61.0",
         "dotenv": "16.3.1",
         "express": "4.19.2",
         "nock": "13.4.0",
         "rimraf": "5.0.5",
-        "supertest": "6.3.3",
-        "@ui5/manifest": "1.61.0"
+        "supertest": "6.3.3"
     },
     "engines": {
         "node": ">=18.x"
