@@ -732,45 +732,66 @@ server:
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for my.test.app
+    "contents": "#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.
 
-#Texts for manifest.json
+# This is the resource bundle for migrate test
+#__ldi.translation.uuid=0ebc351c-414c-dada-d429-c852998b8c80
 
 #XTIT: Application name
-my.test.app_sap.app.title=Adaptation of the.original.app",
+migrate.test_sap.app.title=migrate test",
     "state": "modified",
   },
   "webapp/manifest.appdescr_variant": Object {
     "contents": "{
-  \\"fileName\\": \\"manifest\\",
-  \\"layer\\": \\"CUSTOMER_BASE\\",
-  \\"fileType\\": \\"appdescr_variant\\",
-  \\"reference\\": \\"the.original.app\\",
-  \\"id\\": \\"my.test.app\\",
-  \\"namespace\\": \\"apps/the.original.app/appVariants/my.test.app/\\",
-  \\"version\\": \\"0.1.0\\",
-  \\"content\\": [
-    {
-      \\"changeType\\": \\"appdescr_app_setTitle\\",
-      \\"content\\": {},
-      \\"texts\\": {
-        \\"i18n\\": \\"i18n/i18n.properties\\"
-      }
-    },
-    {
-      \\"changeType\\": \\"appdescr_ui5_addNewModelEnhanceWith\\",
-      \\"content\\": {
-        \\"modelId\\": \\"i18n\\",
-        \\"bundleUrl\\": \\"i18n/i18n.properties\\",
-        \\"supportedLocales\\": [
-          \\"\\"
-        ],
-        \\"fallbackLocale\\": \\"\\"
-      }
-    }
-  ]
-}
-",
+	\\"fileName\\": \\"manifest\\",
+	\\"layer\\": \\"VENDOR\\",
+	\\"fileType\\": \\"appdescr_variant\\",
+	\\"reference\\": \\"sap.ui.demoapps.rta.fiorielements\\",
+	\\"id\\": \\"migrate.test\\",
+	\\"namespace\\": \\"apps/sap.ui.demoapps.rta.fiorielements/appVariants/migrate.test/\\",
+	\\"version\\": \\"\${project.version}\\",
+	\\"content\\": [
+		{
+			\\"changeType\\": \\"appdescr_app_setTitle\\",
+			\\"content\\": {},
+			\\"texts\\": {
+				\\"i18n\\": \\"i18n/i18n.properties\\"
+			}
+		},
+		{
+			\\"changeType\\": \\"appdescr_ui5_addNewModelEnhanceWith\\",
+			\\"content\\": {
+				\\"modelId\\": \\"i18n|sap.suite.ui.generic.template.ListReport|SEPMRA_C_PD_Product\\"
+			},
+			\\"texts\\": {
+				\\"i18n\\": \\"i18n/ListReport/SEPMRA_C_PD_Product/i18n.properties\\"
+			}
+		},
+		{
+			\\"changeType\\": \\"appdescr_ui5_addNewModelEnhanceWith\\",
+			\\"content\\": {
+				\\"modelId\\": \\"i18n|sap.suite.ui.generic.template.ObjectPage|SEPMRA_C_PD_Product\\"
+			},
+			\\"texts\\": {
+				\\"i18n\\": \\"i18n/ObjectPage/SEPMRA_C_PD_Product/i18n.properties\\"
+			}
+		},
+		{
+			\\"changeType\\": \\"appdescr_fiori_setRegistrationIds\\",
+			\\"content\\": {
+				\\"registrationIds\\": [
+					\\"F1647\\"
+				]
+			}
+		},
+		{
+			\\"changeType\\": \\"appdescr_app_setAch\\",
+			\\"content\\": {
+				\\"ach\\": \\"CA-UI5-FL-RTA\\"
+			}
+		}
+	]
+}",
     "state": "modified",
   },
   "webapp/test/Adaptation_index.html": Object {
