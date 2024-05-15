@@ -1,18 +1,9 @@
-import { ExternalAction, appMode, rtaEventState, rtaEvent } from '@sap-ux-private/control-property-editor-common';
+import { appMode, rtaEventState, rtaEvent } from '@sap-ux-private/control-property-editor-common';
 import { ActionSenderFunction, SubscribeFunction, UI5AdaptationOptions } from './types';
-import type AppLifeCycle from 'sap/ushell/services/AppLifeCycle';
-import { init, initializeRta } from '../flp/init';
-import Event from 'sap/ui/base/Event';
-import EventProvider from 'sap/ui/base/EventProvider';
-import Stack from 'sap/ui/rta/command/Stack';
-
-const oTempCommandStack: any[] = [];
-let oCommandStack: any;
 /**
  * A Class of RtaService
  */
 export class RtaService {
-    private sendAction: (action: ExternalAction) => void;
     /**
      *
      * @param options ui5 adaptation options.
@@ -26,7 +17,6 @@ export class RtaService {
      * @param subscribe subscriber function
      */
     public async init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): Promise<void> {
-        this.sendAction = sendAction;
         subscribe(async (action): Promise<void> => {
             if (appMode.match(action)) {
                 // Option 1
@@ -38,10 +28,12 @@ export class RtaService {
                 } else if (action.payload === 'redo') {
                     this.options.rta.redo();
                 } else if (action.payload === 'save') {
-                    if ((this.options.rta as any)?._serializeAndSave) {
-                        (this.options.rta as any)?._serializeAndSave();
-                    } else {
+                    if (this.options.rta.save) {
+                        // v1.107.x and above
                         this.options.rta.save();
+                    } else if ((this.options.rta as any)?._serializeToLrep) {
+                        // v1.71.x
+                        (this.options.rta as any)?._serializeToLrep();
                     }
                 }
             }
@@ -49,13 +41,13 @@ export class RtaService {
         this.options.rta.attachUndoRedoStackModified(async (): Promise<void> => {
             const canUndo = this.options.rta.canUndo();
             const canRedo = this.options.rta.canRedo();
-            const canSave = canUndo; // this.options.rta.canSave() (to find alternative for older versions); 
+            const canSave = this.options.rta?.canSave /* 1.112.x and above */ ? this.options.rta?.canSave() : canUndo;
             sendAction(rtaEventState({ undo: canUndo, redo: canRedo, save: canSave }));
         });
         this.options.rta.attachModeChanged(async (): Promise<void> => {
             const canUndo = this.options.rta.canUndo();
             const canRedo = this.options.rta.canRedo();
-            const canSave = canUndo; // this.options.rta.canSave();
+            const canSave = this.options.rta?.canSave ? this.options.rta?.canSave() : canUndo;
             sendAction(rtaEventState({ undo: canUndo, redo: canRedo, save: canSave }));
         });
     }

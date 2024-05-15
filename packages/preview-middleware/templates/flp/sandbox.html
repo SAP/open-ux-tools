@@ -68,9 +68,15 @@
 <% if (locals.flex && ['ADAPTATION_PROJECT', 'FE_FROM_SCRATCH'].includes(flex?.scenario)) { %>
         <!-- Temporary fix until RTA provides api for enable/disable buttons in main RTA navigation menu -->
     <style>
-           #shell-header, .sapUiRtaToolbar {
+        #shell-header, .sapUiRtaToolbar {
             visibility: hidden;
             height: 1px;
+        } 
+        .sapUshellShellCanvas {
+            top: 0 !important;
+        }
+        .sapUiRtaMode .sapUiShellBackgroundImage.sapUiGlobalBackgroundImageForce.sapUshellShellBG {
+            background-color: transparent !important;
         }
     </style><% } %>
 </head>
