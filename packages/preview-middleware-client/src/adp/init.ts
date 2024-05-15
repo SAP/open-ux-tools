@@ -15,8 +15,6 @@ import { ActionHandler } from '../cpe/types';
 import VersionInfo from 'sap/ui/VersionInfo';
 import { getUI5VersionValidationMessage } from './ui5-version-utils';
 import UI5Element from 'sap/ui/dt/Element';
-import OutlineService from 'sap/ui/rta/command/OutlineService';
-import { transformNodes } from '../cpe/outline/nodes';
 
 export default async function (rta: RuntimeAuthoring) {
     const { version } = (await VersionInfo.load()) as { version: string };
@@ -65,7 +63,7 @@ export default async function (rta: RuntimeAuthoring) {
 
         return;
     }
-    
+
     if (syncViewsIds.length > 0) {
         sendAction(
             showMessage({
@@ -78,7 +76,6 @@ export default async function (rta: RuntimeAuthoring) {
 
     log.debug('ADP init executed.');
 }
-
 
 /**
  *

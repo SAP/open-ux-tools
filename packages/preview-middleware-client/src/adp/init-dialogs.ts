@@ -17,7 +17,6 @@ import AddFragment from './controllers/AddFragment.controller';
 import ControllerExtension from './controllers/ControllerExtension.controller';
 import { ExtensionPointData } from './extension-point';
 import ExtensionPoint from './controllers/ExtensionPoint.controller';
-import Component from 'sap/ui/core/Component';
 import { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 
 export const enum DialogNames {
@@ -42,7 +41,7 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[]): void
         text: 'Add: Fragment',
         handler: async (overlays: UI5Element[]) => await handler(overlays[0], rta, DialogNames.ADD_FRAGMENT),
         icon: 'sap-icon://attachment-html',
-        enabled: (overlays: ElementOverlay[]) => isAddFragmentEnabled(overlays)
+        enabled: async (overlays: ElementOverlay[]) => await isAddFragmentEnabled(overlays)
     });
 
     contextMenu.addMenuItem({
@@ -50,7 +49,7 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[]): void
         text: 'Extend With Controller',
         handler: async (overlays: UI5Element[]) => await handler(overlays[0], rta, DialogNames.CONTROLLER_EXTENSION),
         icon: 'sap-icon://create-form',
-        enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds)
+        enabled: async (overlays: ElementOverlay[]) => await isControllerExtensionEnabled(overlays, syncViewsIds)
     });
 };
 
@@ -61,10 +60,11 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[]): void
  *
  * @returns boolean whether menu item is enabled or not
  */
-export const isAddFragmentEnabled = (overlays: ElementOverlay[]): boolean => {
+export const isAddFragmentEnabled = async (overlays: ElementOverlay[]): Promise<boolean> => {
     const clickedControlId = FlUtils.getViewForControl(overlays[0].getElement()).getId();
+    const isClickedControlReuseComponent = await isReuseComponent(clickedControlId);
 
-    return overlays.length <= 1 && !isReuseComponent(clickedControlId);
+    return overlays.length <= 1 && !isClickedControlReuseComponent;
 };
 
 /**
@@ -75,10 +75,11 @@ export const isAddFragmentEnabled = (overlays: ElementOverlay[]): boolean => {
  *
  * @returns boolean whether menu item is enabled or not 
  */
-export const isControllerExtensionEnabled = (overlays: ElementOverlay[], syncViewsIds: string[]): boolean => {
+export const isControllerExtensionEnabled = async (overlays: ElementOverlay[], syncViewsIds: string[]): Promise<boolean> => {
     const clickedControlId = FlUtils.getViewForControl(overlays[0].getElement()).getId();
+    const isClickedControlReuseComponent = await isReuseComponent(clickedControlId);
 
-    return overlays.length <= 1 && !syncViewsIds.includes(clickedControlId) && !isReuseComponent;
+    return overlays.length <= 1 && !syncViewsIds.includes(clickedControlId) && !isClickedControlReuseComponent;
 };
 
 /**
@@ -87,13 +88,22 @@ export const isControllerExtensionEnabled = (overlays: ElementOverlay[], syncVie
  * @param clickedControlId id of the clicked control
  * @returns boolean if clicked control is from reused component
  */
-const isReuseComponent = (clickedControlId: string): boolean => {
+const isReuseComponent = async (clickedControlId: string): Promise<boolean> => {
     const version = sap.ui.version;
     const minor = parseInt(version.split('.')[1], 10);
-    const manifest = Component.getComponentById(clickedControlId)?.getManifest() as Manifest;
-    const isReuseComponent = manifest['sap.app']?.type === 'component' && minor >= 114;
+    if(minor < 114) {
+        return false;
+    }
     
-    return isReuseComponent;
+    const Component = (await import('sap/ui/core/Component')).default;
+    const component = Component.getComponentById(clickedControlId);//?.getManifest() as Manifest;
+    if(!component) {
+        return false;
+    }
+
+    const manifest = component.getManifest() as Manifest;
+    
+    return manifest['sap.app']?.type === 'component';
 }
 
 /**

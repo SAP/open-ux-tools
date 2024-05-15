@@ -65,24 +65,24 @@ describe('Dialogs', () => {
         const syncViewsIds = ['syncViewId1', 'syncViewId2'];
         const elementOverlayMock = { getElement: jest.fn() } as unknown as ElementOverlay;
 
-        it('should return true when overlays length is 1 and clickedControlId is not in syncViewsIds', () => {
+        it('should return true when overlays length is 1 and clickedControlId is not in syncViewsIds', async () => {
             FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('asyncViewId2') });
             const overlays: ElementOverlay[] = [elementOverlayMock];
-            expect(isControllerExtensionEnabled(overlays, syncViewsIds)).toBe(true);
+            expect(await isControllerExtensionEnabled(overlays, syncViewsIds)).toBe(true);
         });
 
-        it('should return false when overlays length is 1 and clickedControlId is in syncViewsIds', () => {
+        it('should return false when overlays length is 1 and clickedControlId is in syncViewsIds', async () => {
             FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('syncViewId1') });
             const overlays: ElementOverlay[] = [elementOverlayMock];
 
-            expect(isControllerExtensionEnabled(overlays, syncViewsIds)).toBe(false);
+            expect(await isControllerExtensionEnabled(overlays, syncViewsIds)).toBe(false);
         });
 
-        it('should return false when overlays length is more than 1', () => {
+        it('should return false when overlays length is more than 1', async () => {
             FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('syncViewId3') });
             const overlays: ElementOverlay[] = [elementOverlayMock, elementOverlayMock];
             const syncViewsIds = ['syncViewId1', 'syncViewId2'];
-            expect(isControllerExtensionEnabled(overlays, syncViewsIds)).toBe(false);
+            expect(await isControllerExtensionEnabled(overlays, syncViewsIds)).toBe(false);
         });
     });
 });

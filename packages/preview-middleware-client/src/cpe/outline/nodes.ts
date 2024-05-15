@@ -1,10 +1,7 @@
 import type { OutlineNode } from '@sap-ux-private/control-property-editor-common';
-
 import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
-
 import { isEditable } from './utils';
-import Component from 'sap/ui/core/Component';
 import { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 
 /**
@@ -43,10 +40,16 @@ function getChildren(current: OutlineViewNode): OutlineViewNode[] {
  *
  * @param input outline view node
  * @param scenario type of project
- * @param reuseComponentsIds node ids of reuse components that are filled when outline is transformed
+ * @param reuseComponentsIds node ids of reuse components that are filled when outline nodes are transformed
  * @returns Promise<OutlineNode[]>
  */
-export async function transformNodes(input: OutlineViewNode[], scenario: Scenario, reuseComponentsIds: Set<string>): Promise<OutlineNode[]> {
+export async function transformNodes(
+    input: OutlineViewNode[],
+    scenario: Scenario,
+    reuseComponentsIds: Set<string>
+): Promise<OutlineNode[]> {
+    const version = sap.ui.version;
+    const minor = parseInt(version.split('.')[1], 10);
     const stack = [...input];
     const items: OutlineNode[] = [];
     while (stack.length) {
@@ -66,12 +69,14 @@ export async function transformNodes(input: OutlineViewNode[], scenario: Scenari
                 children: await transformNodes(children, scenario, reuseComponentsIds)
             };
 
-            if(scenario === 'ADAPTATION_PROJECT' && current?.component) {
-                const version = sap.ui.version;
-                const minor = parseInt(version.split('.')[1], 10);
-                const currentManifest = Component.getComponentById(current.id)?.getManifest() as Manifest;
-                if(currentManifest['sap.app'].type === 'component' && minor >= 114) {
-                    reuseComponentsIds.add(current.id);
+            if (scenario === 'ADAPTATION_PROJECT' && current?.component && minor >= 114) {
+                const Component = (await import('sap/ui/core/Component')).default;
+                const nodeComponent = Component.getComponentById(current.id);
+                if (nodeComponent) {
+                    const manifest = nodeComponent.getManifest() as Manifest;
+                    if (manifest['sap.app']?.type === 'component') {
+                        reuseComponentsIds.add(current.id);
+                    }
                 }
             }
 
