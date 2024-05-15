@@ -6,6 +6,8 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import nock from 'nock';
 import type { EnhancedRouter } from '../../../src/base/flp';
+import type { ToolsLogger } from '@sap-ux/logger';
+import * as Logger from '@sap-ux/logger';
 
 jest.mock('@sap-ux/store', () => {
     return {
@@ -17,6 +19,14 @@ jest.mock('@sap-ux/store', () => {
         )
     };
 });
+
+const loggerMock: ToolsLogger = {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn()
+} as Partial<ToolsLogger> as ToolsLogger;
+jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 
 async function getRouter(fixture?: string, configuration: Partial<MiddlewareConfig> = {}): Promise<EnhancedRouter> {
     return await (previewMiddleware as any).default({
@@ -39,6 +49,8 @@ async function getRouter(fixture?: string, configuration: Partial<MiddlewareConf
                                     )
                                 )
                         };
+                    } else if (fixture === 'flpExists') {
+                        return {};
                     } else {
                         return undefined;
                     }
@@ -83,10 +95,16 @@ describe('ui5/middleware', () => {
             })
             .persist();
     });
+
     test('no config', async () => {
         const server = await getTestServer('simple-app');
         await server.get('/test/flp.html').expect(200);
         await server.get('/preview/client/flp/init.js').expect(200);
+    });
+
+    test('flpSandbox exists', async () => {
+        await getTestServer('flpExists');
+        expect(loggerMock.info).toBeCalledWith('File to render preview found on file system.');
     });
 
     test('simple config', async () => {
