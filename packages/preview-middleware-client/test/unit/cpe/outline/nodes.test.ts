@@ -13,7 +13,7 @@ jest.mock('../../../../src/cpe/outline/utils', () => {
 });
 describe('outline nodes', () => {
     const transformNodes = (nodes: OutlineViewNode[], scenario: Scenario): Promise<OutlineNode[]> =>
-        tn(nodes, scenario);
+        tn(nodes, scenario, new Set<string>());
     sapCoreMock.byId.mockReturnValue({
         getMetadata: jest.fn().mockReturnValue({
             getProperty: jest.fn().mockReturnValueOnce('Component').mockReturnValueOnce('Component').mockReturnValue('')

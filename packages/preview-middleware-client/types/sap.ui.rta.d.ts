@@ -105,6 +105,7 @@ declare module 'sap/ui/rta/command/OutlineService' {
         instanceName?: string;
         name?: string;
         icon?: string;
+        component?: boolean;
     }
 
     interface OutlineService {

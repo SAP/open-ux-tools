@@ -17,6 +17,8 @@ import AddFragment from './controllers/AddFragment.controller';
 import ControllerExtension from './controllers/ControllerExtension.controller';
 import { ExtensionPointData } from './extension-point';
 import ExtensionPoint from './controllers/ExtensionPoint.controller';
+import Component from 'sap/ui/core/Component';
+import { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 
 export const enum DialogNames {
     ADD_FRAGMENT = 'AddFragment',
@@ -39,7 +41,8 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[]): void
         id: 'ADD_FRAGMENT',
         text: 'Add: Fragment',
         handler: async (overlays: UI5Element[]) => await handler(overlays[0], rta, DialogNames.ADD_FRAGMENT),
-        icon: 'sap-icon://attachment-html'
+        icon: 'sap-icon://attachment-html',
+        enabled: (overlays: ElementOverlay[]) => isAddFragmentEnabled(overlays)
     });
 
     contextMenu.addMenuItem({
@@ -52,18 +55,46 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[]): void
 };
 
 /**
+ * Handler for enablement of Add Fragment context menu entry
+ *
+ * @param overlays Control overlays
+ *
+ * @returns boolean whether menu item is enabled or not
+ */
+export const isAddFragmentEnabled = (overlays: ElementOverlay[]): boolean => {
+    const clickedControlId = FlUtils.getViewForControl(overlays[0].getElement()).getId();
+
+    return overlays.length <= 1 && !isReuseComponent(clickedControlId);
+};
+
+/**
  * Handler for enablement of Extend With Controller context menu entry
  *
  * @param overlays Control overlays
  * @param syncViewsIds Runtime Authoring
  *
- * @returns boolean 
+ * @returns boolean whether menu item is enabled or not 
  */
 export const isControllerExtensionEnabled = (overlays: ElementOverlay[], syncViewsIds: string[]): boolean => {
     const clickedControlId = FlUtils.getViewForControl(overlays[0].getElement()).getId();
 
-    return overlays.length <= 1 && !syncViewsIds.includes(clickedControlId);
+    return overlays.length <= 1 && !syncViewsIds.includes(clickedControlId) && !isReuseComponent;
 };
+
+/**
+ * Function that checks if clicked control is from view that uses reused component
+ * 
+ * @param clickedControlId id of the clicked control
+ * @returns boolean if clicked control is from reused component
+ */
+const isReuseComponent = (clickedControlId: string): boolean => {
+    const version = sap.ui.version;
+    const minor = parseInt(version.split('.')[1], 10);
+    const manifest = Component.getComponentById(clickedControlId)?.getManifest() as Manifest;
+    const isReuseComponent = manifest['sap.app']?.type === 'component' && minor >= 114;
+    
+    return isReuseComponent;
+}
 
 /**
  * Handler for new context menu entry

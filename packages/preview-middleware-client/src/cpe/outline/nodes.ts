@@ -4,6 +4,8 @@ import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
 
 import { isEditable } from './utils';
+import Component from 'sap/ui/core/Component';
+import { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 
 /**
  * Retrieves additional data for a given control ID.
@@ -41,9 +43,10 @@ function getChildren(current: OutlineViewNode): OutlineViewNode[] {
  *
  * @param input outline view node
  * @param scenario type of project
+ * @param reuseComponentsIds node ids of reuse components that are filled when outline is transformed
  * @returns Promise<OutlineNode[]>
  */
-export async function transformNodes(input: OutlineViewNode[], scenario: Scenario): Promise<OutlineNode[]> {
+export async function transformNodes(input: OutlineViewNode[], scenario: Scenario, reuseComponentsIds: Set<string>): Promise<OutlineNode[]> {
     const stack = [...input];
     const items: OutlineNode[] = [];
     while (stack.length) {
@@ -60,8 +63,17 @@ export async function transformNodes(input: OutlineViewNode[], scenario: Scenari
                 name: text ?? technicalName,
                 editable,
                 visible: current.visible ?? true,
-                children: await transformNodes(children, scenario)
+                children: await transformNodes(children, scenario, reuseComponentsIds)
             };
+
+            if(scenario === 'ADAPTATION_PROJECT' && current?.component) {
+                const version = sap.ui.version;
+                const minor = parseInt(version.split('.')[1], 10);
+                const currentManifest = Component.getComponentById(current.id)?.getManifest() as Manifest;
+                if(currentManifest['sap.app'].type === 'component' && minor >= 114) {
+                    reuseComponentsIds.add(current.id);
+                }
+            }
 
             items.push(node);
         }

@@ -11,7 +11,7 @@ import { useAppDispatch } from './store';
 import { changePreviewScale } from './slice';
 import { useWindowSize } from './use-window-size';
 import { DEFAULT_DEVICE_WIDTH, DEVICE_WIDTH_MAP } from './devices';
-import { ShowMessage } from '@sap-ux-private/control-property-editor-common';
+import type { ShowMessage } from '@sap-ux-private/control-property-editor-common';
 
 import './App.scss';
 import './Workarounds.scss';
@@ -58,6 +58,7 @@ export default function App(appProps: AppProps): ReactElement {
     const fitPreview = useSelector<RootState, boolean>((state) => state.fitPreview ?? false);
     const windowSize = useWindowSize();
     const dialogMessage = useSelector<RootState, ShowMessage | undefined>((state) => state.dialogMessage);
+    const [dialogQueue, setDialogQueue] = useState<ShowMessage[]>([]);
     const containerRef = useCallback(
         (node) => {
             if (node === null) {
@@ -94,13 +95,19 @@ export default function App(appProps: AppProps): ReactElement {
     }
 
     const closeAdpWarningDialog = (): void => {
-        setShouldShowDialogMessage(false);
+        setDialogQueue((prevQueue) => prevQueue.slice(1));
+        setShouldShowDialogMessage(dialogQueue.length !== 0);
     };
 
     useEffect(() => {
-        if (dialogMessage && isAdpProject) {
+        if (
+            dialogMessage &&
+            isAdpProject &&
+            !dialogQueue.some((dialogObject) => dialogObject.message === dialogMessage.message)
+        ) {
             setShouldShowDialogMessage(true);
             setShouldHideIframe(dialogMessage.shouldHideIframe);
+            setDialogQueue((prevQueue) => [...prevQueue, dialogMessage]);
         }
     }, [dialogMessage, isAdpProject]);
 
@@ -128,21 +135,21 @@ export default function App(appProps: AppProps): ReactElement {
             <section className="app-panel app-panel-right">
                 <PropertiesPanel />
             </section>
-            {isAdpProject && shouldHideIframe && (
+            {isAdpProject && shouldHideIframe && dialogQueue.length > 0 && (
                 <UIDialog
                     hidden={!shouldShowDialogMessage}
                     dialogContentProps={{
                         title: t('TOOL_DISCLAIMER_TITLE'),
-                        subText: dialogMessage?.message
+                        subText: dialogQueue[0]?.message
                     }}
                 />
             )}
-            {isAdpProject && !shouldHideIframe && (
+            {isAdpProject && !shouldHideIframe && dialogQueue.length > 0 && (
                 <UIDialog
                     hidden={!shouldShowDialogMessage}
                     dialogContentProps={{
                         title: t('TOOL_DISCLAIMER_TITLE'),
-                        subText: dialogMessage?.message
+                        subText: dialogQueue[0]?.message
                     }}
                     acceptButtonText={t('OK')}
                     onAccept={closeAdpWarningDialog}
