@@ -37,7 +37,7 @@ export async function getReentranceTicket({
         const redirectPort = (server.address() as AddressInfo).port;
 
         // Open browser to handle SAML flow and return the reentrance ticket
-        const scenario = process.env.FIORI_TOOLS_SCENARIO ?? 'FIORI';
+        const scenario = process.env.FIORI_TOOLS_SCENARIO ?? 'FTO1';
         const url = `${backend.uiHostname()}${ADT_REENTRANCE_ENDPOINT}?scenario=${scenario}&redirect-url=${redirectUrl(
             redirectPort
         )}`;

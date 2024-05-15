@@ -1,6 +1,7 @@
 export { UI5Config } from './ui5config';
 export {
     Configuration,
+    CustomItem,
     CustomTask,
     CustomMiddleware,
     FioriAppReloadConfig,
