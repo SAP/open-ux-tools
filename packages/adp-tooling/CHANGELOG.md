@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.10.5
+
+### Patch Changes
+
+-   c87fcc91: Fix project migration
+
 ## 0.10.4
 
 ### Patch Changes
