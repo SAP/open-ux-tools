@@ -172,7 +172,7 @@ function getOpenSourceMiddlewares(config: AdpWriterConfig): CustomMiddleware<obj
  * @returns list of required tasks.
  */
 function getAdpCloudCustomTasks(config: AdpWriterConfig & { target: AbapTarget }): CustomTask[] {
-    const user = 'env:AFIORI_TOOLS_USER';
+    const user = 'env:FIORI_TOOLS_USER';
     const pass = 'env:FIORI_TOOLS_PASSWORD';
 
     return [
