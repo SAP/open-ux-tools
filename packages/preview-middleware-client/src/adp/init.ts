@@ -75,8 +75,8 @@ export default async function (rta: RuntimeAuthoring) {
 }
 
 /**
- *
  * Get Ids for all sync views
+ * 
  * @param minor UI5 Version
  *
  * @returns array of Ids for application sync views
@@ -108,6 +108,12 @@ async function getAllSyncViewsIds(minor: number): Promise<string[]> {
     return syncViewIds;
 }
 
+/**
+ * Check if element is sync view
+ *
+ * @param element UI5Element
+ * @returns boolean if element is sync view or not
+ */
 const isSyncView = (element: UI5Element): boolean => {
     return element?.getMetadata()?.getName()?.includes('XMLView') && element?.oAsyncState === undefined;
 };
