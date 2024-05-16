@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.1.6
+
+### Patch Changes
+
+-   1fee817f: Exports needed for open source migration
+
 ## 0.1.5
 
 ### Patch Changes
