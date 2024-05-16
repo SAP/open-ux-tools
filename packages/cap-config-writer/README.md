@@ -64,19 +64,6 @@ const logger: Logger = {}; // logger instance from @sap-ux/logger
 await updateStaticLocationsInApplicationYaml(fsMock, applicationYamlPath, capCustomPathsApp, logger);
 ```
 
-### updateCAPManifestJson
-The function constructs the path to the manifest JSON file based on the provided appRoot. It then retrieves the manifest from the file system using the provided file system editor (fs). If the manifest exists, it removes any references to annotations in manifest file.
-
-```ts
-import { updateCAPManifestJson } from '@sap-ux/cap-config-writer';
-
-// Usage example
-const fsMock: Editor = {}; // mem-fs file editor
-const appRoot: string = 'path/to/your/app'; // The root directory of the application
-
-updateCAPManifestJson(fsMock, appRoot);
-```
-
 ### updateRootPackageJsonCAP
 Updates the package.json file of a CAP project app based on project requirements such as enableNPMWorkspaces
 
