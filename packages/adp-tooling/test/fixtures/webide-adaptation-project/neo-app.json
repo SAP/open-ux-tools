@@ -1,0 +1,130 @@
+{
+    "welcomeFile": "/",
+    "routes": [
+        {
+            "path": "/sap/bc/ui5_ui5",
+            "target": {
+                "type": "destination",
+                "name": "DEVCLNT000",
+                "entryPath": "/sap/bc/ui5_ui5"
+            },
+            "description": "Path to ABAP system"
+        },
+        {
+            "path": "/sap/bc/ui2/app_index",
+            "target": {
+                "type": "destination",
+                "name": "DEVCLNT000",
+                "entryPath": "/sap/bc/ui2/app_index"
+            },
+            "description": "App index API"
+        },
+        {
+            "path": "/sap/opu/odata",
+            "target": {
+                "type": "destination",
+                "name": "DEVCLNT000",
+                "entryPath": "/sap/opu/odata"
+            },
+            "description": "Route OData to app"
+        },
+        {
+            "path": "/sap/bc/lrep",
+            "target": {
+                "type": "destination",
+                "name": "DEVCLNT000",
+                "entryPath": "/sap/bc/lrep"
+            },
+            "description": "Flex data from server"
+        },
+        {
+            "path": "/webapp/resources",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "entryPath": "/resources",
+                "version": "1.91.1"
+            },
+            "description": "SAPUI5 Resources"
+        },
+        {
+            "path": "/webapp/resources",
+            "target": {
+                "type": "service",
+                "name": "sapui5",
+                "entryPath": "/resources",
+                "version": "1.91.1"
+            },
+            "description": "SAPUI5 Resources"
+        },
+        {
+            "path": "/webapp/test-resources",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "entryPath": "/test-resources",
+                "version": "1.91.1"
+            },
+            "description": "SAPUI5 Test Resources"
+        },
+        {
+            "path": "/webapp/test-resources",
+            "target": {
+                "type": "service",
+                "name": "sapui5",
+                "entryPath": "/test-resources",
+                "version": "1.91.1"
+            },
+            "description": "SAPUI5 Test Resources"
+        },
+        {
+            "path": "/webapp/parent",
+            "target": {
+                "type": "destination",
+                "name": "DEVCLNT000",
+                "entryPath": "/sap/bc/ui5_ui5/ui5/rta_fiori_elem"
+            },
+            "description": "Path to the original app resources"
+        },
+        {
+            "path": "/resources",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "entryPath": "/resources",
+                "version": "1.91.1"
+            },
+            "description": "SAPUI5 Resources"
+        },
+        {
+            "path": "/resources",
+            "target": {
+                "type": "service",
+                "name": "sapui5",
+                "entryPath": "/resources",
+                "version": "1.91.1"
+            },
+            "description": "SAPUI5 Resources"
+        },
+        {
+            "path": "/test-resources",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "entryPath": "/test-resources",
+                "version": "1.91.1"
+            },
+            "description": "SAPUI5 Test Resources"
+        },
+        {
+            "path": "/test-resources",
+            "target": {
+                "type": "service",
+                "name": "sapui5",
+                "entryPath": "/test-resources",
+                "version": "1.91.1"
+            },
+            "description": "SAPUI5 Test Resources"
+        }
+    ]
+}
