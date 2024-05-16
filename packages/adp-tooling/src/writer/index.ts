@@ -8,6 +8,8 @@ import {
     writeUI5DeployYaml,
 } from './project-utils';
 
+const tmplPath = join(__dirname, '../../templates/project');
+
 /**
  * Set default values for optional properties.
  *
@@ -47,12 +49,54 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
         fs = create(createStorage());
     }
 
-    const tmplPath = join(__dirname, '../../templates/project');
     const fullConfig = setDefaults(config);
 
     writeTemplateToFolder(join(tmplPath, '**/*.*'), join(basePath), fullConfig, fs);
     await writeUI5DeployYaml(basePath, fullConfig, fs);
     await writeUI5Yaml(basePath, fullConfig, fs);
+
+    return fs;
+}
+
+/**
+ * Writes the adp-project template to the mem-fs-editor instance during migration.
+ *
+ * @param basePath - the base path
+ * @param config - the writer configuration
+ * @param fs - the memfs editor instance
+ * @returns the updated memfs editor instance
+ */
+
+export async function migrate(basePath: string, config: AdpWriterConfig, fs?: Editor): Promise<Editor> {
+    if (!fs) {
+        fs = create(createStorage());
+    }
+
+    const fullConfig = setDefaults(config);
+
+    // Copy the specified files to target project
+    fs.copyTpl(join(tmplPath, '**/ui5.yaml'), join(basePath), fullConfig, undefined, {
+        globOptions: { dot: true }
+    });
+    fs.copyTpl(join(tmplPath, '**/package.json'), join(basePath), fullConfig, undefined, {
+        globOptions: { dot: true }
+    });
+    fs.copyTpl(join(tmplPath, '**/gitignore.tmpl'), join(basePath), fullConfig, undefined, {
+        globOptions: { dot: true },
+        processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
+    });
+
+    // delete .che folder
+    if (fs.exists(join(basePath, '.che/project.json'))) {
+        fs.delete(join(basePath, '.che/'));
+    }
+
+    // delete neo-app.json
+    if (fs.exists(join(basePath, 'neo-app.json'))) {
+        fs.delete(join(basePath, 'neo-app.json'));
+    }
+
+    await writeUi5Yaml(basePath, fullConfig, fs);
 
     return fs;
 }

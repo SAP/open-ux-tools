@@ -3,7 +3,7 @@
     "displayName": "Control Property Editor",
     "description": "Control Property Editor",
     "license": "Apache-2.0",
-    "version": "0.4.17",
+    "version": "0.4.20",
     "main": "dist/app.js",
     "repository": {
         "type": "git",
@@ -54,7 +54,7 @@
         "ts-import-plugin": "1.6.3",
         "ts-jest": "29.1.2",
         "postcss-modules": "6.0.0",
-        "ejs": "3.1.7",
+        "ejs": "3.1.10",
         "@ui5/fs": "3.0.4",
         "esbuild-plugin-alias": "0.2.1",
         "esbuild-plugin-copy": "2.1.1",

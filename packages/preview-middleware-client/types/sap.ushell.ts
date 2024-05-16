@@ -8,3 +8,11 @@ declare module 'sap/ushell/services/AppLifeCycle' {
 
     export default AppLifeCycle;
 }
+
+declare module 'sap/ushell/services/AppState' {
+    interface AppState {
+        deleteAppState(appStateValue: string): void;
+    }
+
+    export default AppState;
+}

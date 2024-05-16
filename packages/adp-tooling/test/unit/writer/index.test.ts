@@ -4,6 +4,7 @@ import { create } from 'mem-fs-editor';
 import { generate, generateEnv, generateCf } from '../../../src';
 import type { AdpWriterConfig, CfWriterConfig } from '../../../src/types';
 import { rimraf } from 'rimraf';
+import { migrate } from '../../../src/writer';
 
 describe('ADP writer', () => {
     const fs = create(createStorage());
@@ -149,6 +150,20 @@ describe('ADP writer', () => {
             expect(
                 fs.dump(projectDir, (file) => file.dirname === projectDir && ['.env'].includes(file.basename))
             ).toMatchSnapshot();
+        });
+    });
+
+    describe('migrate', () => {
+        const migrateInputDir = join(__dirname, '../../fixtures/webide-adaptation-project');
+
+        test('migrate minimal config', async () => {
+            const projectDir = join(outputDir, 'webide-adaptation-project');
+            fs.copy(migrateInputDir, projectDir, { globOptions: { dot: true } });
+
+            await migrate(projectDir, config, fs);
+            expect(fs.dump(projectDir)).toMatchSnapshot();
+            expect(fs.exists(join(projectDir, '.che/project.json'))).toBeFalsy();
+            expect(fs.exists(join(projectDir, 'neo-app.json'))).toBeFalsy();
         });
     });
 });

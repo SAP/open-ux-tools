@@ -1,5 +1,110 @@
 # @sap-ux/generator-simple-fe
 
+## 0.3.57
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.12.3
+-   @sap-ux/system-access@0.3.27
+-   @sap-ux/fiori-elements-writer@0.19.6
+-   @sap-ux/fiori-freestyle-writer@0.22.6
+
+## 0.3.56
+
+### Patch Changes
+
+-   Updated dependencies [19ec0f01]
+    -   @sap-ux/axios-extension@1.12.3
+    -   @sap-ux/system-access@0.3.27
+
+## 0.3.55
+
+### Patch Changes
+
+-   Updated dependencies [a41bbd95]
+    -   @sap-ux/axios-extension@1.12.2
+    -   @sap-ux/system-access@0.3.26
+
+## 0.3.54
+
+### Patch Changes
+
+-   Updated dependencies [1b5f7442]
+    -   @sap-ux/axios-extension@1.12.1
+    -   @sap-ux/system-access@0.3.25
+
+## 0.3.53
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.19.5
+-   @sap-ux/fiori-freestyle-writer@0.22.5
+
+## 0.3.52
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.19.4
+-   @sap-ux/fiori-freestyle-writer@0.22.4
+
+## 0.3.51
+
+### Patch Changes
+
+-   Updated dependencies [312919ec]
+    -   @sap-ux/axios-extension@1.12.0
+    -   @sap-ux/system-access@0.3.24
+
+## 0.3.50
+
+### Patch Changes
+
+-   Updated dependencies [4e267684]
+    -   @sap-ux/fiori-elements-writer@0.19.3
+    -   @sap-ux/fiori-freestyle-writer@0.22.3
+
+## 0.3.49
+
+### Patch Changes
+
+-   Updated dependencies [6684f851]
+    -   @sap-ux/fiori-freestyle-writer@0.22.2
+    -   @sap-ux/fiori-elements-writer@0.19.2
+
+## 0.3.48
+
+### Patch Changes
+
+-   Updated dependencies [9a32e102]
+    -   @sap-ux/btp-utils@0.14.4
+    -   @sap-ux/axios-extension@1.11.9
+    -   @sap-ux/system-access@0.3.23
+
+## 0.3.47
+
+### Patch Changes
+
+-   Updated dependencies [56b77fd9]
+    -   @sap-ux/axios-extension@1.11.8
+    -   @sap-ux/system-access@0.3.22
+
+## 0.3.46
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.19.1
+-   @sap-ux/fiori-freestyle-writer@0.22.1
+-   @sap-ux/axios-extension@1.11.7
+-   @sap-ux/system-access@0.3.21
+
+## 0.3.45
+
+### Patch Changes
+
+-   Updated dependencies [8db928db]
+    -   @sap-ux/fiori-freestyle-writer@0.22.0
+    -   @sap-ux/fiori-elements-writer@0.19.0
+
 ## 0.3.44
 
 ### Patch Changes

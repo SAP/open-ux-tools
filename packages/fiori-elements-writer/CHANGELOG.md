@@ -1,5 +1,70 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.19.6
+
+### Patch Changes
+
+-   Updated dependencies [e3d2324c]
+    -   @sap-ux/ui5-config@0.22.4
+    -   @sap-ux/fe-fpm-writer@0.24.11
+    -   @sap-ux/odata-service-writer@0.19.1
+    -   @sap-ux/ui5-application-writer@0.26.12
+    -   @sap-ux/ui5-test-writer@0.3.3
+
+## 0.19.5
+
+### Patch Changes
+
+-   Updated dependencies [a47d0f5e]
+    -   @sap-ux/odata-service-writer@0.19.0
+
+## 0.19.4
+
+### Patch Changes
+
+-   Updated dependencies [9ad3cf7a]
+    -   @sap-ux/odata-service-writer@0.18.0
+
+## 0.19.3
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+-   Updated dependencies [4e267684]
+    -   @sap-ux/fe-fpm-writer@0.24.11
+    -   @sap-ux/odata-service-writer@0.17.2
+    -   @sap-ux/ui5-application-writer@0.26.11
+    -   @sap-ux/ui5-test-writer@0.3.3
+
+## 0.19.2
+
+### Patch Changes
+
+-   Updated dependencies [6684f851]
+    -   @sap-ux/ui5-application-writer@0.26.10
+
+## 0.19.1
+
+### Patch Changes
+
+-   Updated dependencies [7f8105c7]
+    -   @sap-ux/ui5-config@0.22.3
+    -   @sap-ux/odata-service-writer@0.17.1
+    -   @sap-ux/ui5-application-writer@0.26.9
+    -   @sap-ux/fe-fpm-writer@0.24.10
+    -   @sap-ux/ui5-test-writer@0.3.2
+
+## 0.19.0
+
+### Minor Changes
+
+-   8db928db: odata-service-writer now uses logic from mockserver-config-writer to generate mockserver
+
+### Patch Changes
+
+-   Updated dependencies [8db928db]
+    -   @sap-ux/odata-service-writer@0.17.0
+
 ## 0.18.18
 
 ### Patch Changes

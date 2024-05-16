@@ -1,5 +1,17 @@
 # @sap-ux/ui5-config
 
+## 0.22.4
+
+### Patch Changes
+
+-   e3d2324c: Improvements for consumption
+
+## 0.22.3
+
+### Patch Changes
+
+-   7f8105c7: move replaceEnvVariables to ui5-config and export
+
 ## 0.22.2
 
 ### Patch Changes

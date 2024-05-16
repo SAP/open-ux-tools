@@ -8,7 +8,8 @@ import type {
     PendingPropertyChange,
     PropertyChange,
     SavedPropertyChange,
-    Scenario
+    Scenario,
+    ShowMessage
 } from '@sap-ux-private/control-property-editor-common';
 import {
     changeStackModified,
@@ -39,7 +40,7 @@ interface SliceState {
     isAdpProject: boolean;
     icons: IconDetails[];
     changes: ChangesSlice;
-    dialogMessage: string | undefined;
+    dialogMessage: ShowMessage | undefined;
     fileChanges?: string[];
 }
 
@@ -89,13 +90,21 @@ const filterInitOptions: FilterOptions[] = [
     { name: FilterName.showEditableProperties, value: true }
 ];
 
-export const changeProperty = createAction<PropertyChange>('app/change-property');
+export const changeProperty = createAction<PropertyChange, 'app/change-property'>('app/change-property');
 export const changePreviewScale = createAction<number>('app/change-preview-scale');
 export const changePreviewScaleMode = createAction<'fit' | 'fixed'>('app/change-preview-scale-mode');
 export const changeDeviceType = createAction<DeviceType>('app/change-device-type');
 export const filterNodes = createAction<FilterOptions[]>('app/filter-nodes');
 export const fileChanged = createAction<string[]>('app/file-changed');
-export const initializeLivereload = createAction<number>('app/initialize-livereload');
+interface LivereloadOptions {
+    port: number;
+
+    /**
+     * Url used to connect to the livereload service. If provided, port option is ignored.
+     */
+    url?: string;
+}
+export const initializeLivereload = createAction<LivereloadOptions>('app/initialize-livereload');
 export const initialState: SliceState = {
     deviceType: DeviceType.Desktop,
     scale: 1.0,

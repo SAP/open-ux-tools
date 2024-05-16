@@ -114,6 +114,9 @@
       "path": "packages/odata-entity-model"
     },
     {
+      "path": "packages/odata-service-inquirer"
+    },
+    {
       "path": "packages/odata-service-writer"
     },
     {

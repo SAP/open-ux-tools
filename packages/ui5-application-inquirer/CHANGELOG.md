@@ -1,5 +1,34 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.3.17
+
+### Patch Changes
+
+-   Updated dependencies [e3d2324c]
+    -   @sap-ux/project-access@1.20.0
+
+## 0.3.16
+
+### Patch Changes
+
+-   Updated dependencies [5d4c0dec]
+    -   @sap-ux/ui5-info@0.5.0
+    -   @sap-ux/inquirer-common@0.2.8
+
+## 0.3.15
+
+### Patch Changes
+
+-   4098bed2: Moves some prompting code to inquirer-common. Adds new module odata-service-inquirer
+-   Updated dependencies [4098bed2]
+    -   @sap-ux/inquirer-common@0.2.7
+
+## 0.3.14
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.19.14
+
 ## 0.3.13
 
 ### Patch Changes

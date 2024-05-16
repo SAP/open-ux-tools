@@ -6,13 +6,16 @@ Object {
     "contents": "{
   \\"ui5\\": {
     \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
+      \\"@sap-ux/ui5-middleware-fe-mockserver\\",
+      \\"@sap/ux-ui5-tooling\\"
     ]
   },
   \\"devDependencies\\": {
-    \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
+    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\"
+  },
+  \\"scripts\\": {
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/\\\\\\"\\"
   }
 }
 ",
@@ -2763,7 +2766,6 @@ Object {
         \\"dataSource\\": \\"mainService\\",
         \\"preload\\": true,
         \\"settings\\": {
-          \\"synchronizationMode\\": \\"None\\",
           \\"operationMode\\": \\"Server\\",
           \\"autoExpandSelect\\": true,
           \\"earlyRequests\\": true
@@ -2784,13 +2786,16 @@ Object {
     "contents": "{
   \\"ui5\\": {
     \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
+      \\"@sap-ux/ui5-middleware-fe-mockserver\\",
+      \\"@sap/ux-ui5-tooling\\"
     ]
   },
   \\"devDependencies\\": {
-    \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
+    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\"
+  },
+  \\"scripts\\": {
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/\\\\\\"\\"
   }
 }
 ",

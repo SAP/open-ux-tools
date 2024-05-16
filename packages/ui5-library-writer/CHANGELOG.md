@@ -1,5 +1,38 @@
 # @sap-ux/ui5-library-writer
 
+## 0.3.38
+
+### Patch Changes
+
+-   Updated dependencies [e3d2324c]
+    -   @sap-ux/project-access@1.20.0
+    -   @sap-ux/ui5-config@0.22.4
+    -   @sap-ux/ui5-application-writer@0.26.12
+
+## 0.3.37
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+-   Updated dependencies [4e267684]
+    -   @sap-ux/ui5-application-writer@0.26.11
+
+## 0.3.36
+
+### Patch Changes
+
+-   Updated dependencies [6684f851]
+    -   @sap-ux/ui5-application-writer@0.26.10
+
+## 0.3.35
+
+### Patch Changes
+
+-   Updated dependencies [7f8105c7]
+    -   @sap-ux/ui5-config@0.22.3
+    -   @sap-ux/project-access@1.19.14
+    -   @sap-ux/ui5-application-writer@0.26.9
+
 ## 0.3.34
 
 ### Patch Changes

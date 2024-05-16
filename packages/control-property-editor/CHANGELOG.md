@@ -1,5 +1,23 @@
 # @sap-ux/control-property-editor
 
+## 0.4.20
+
+### Patch Changes
+
+-   cad21d4d: Enable Adding Controller Extension only on async views for Adp Projects
+
+## 0.4.19
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+
+## 0.4.18
+
+### Patch Changes
+
+-   9a32e102: fix preview reload on SBAS, by exposing livereload server port over url
+
 ## 0.4.17
 
 ### Patch Changes
