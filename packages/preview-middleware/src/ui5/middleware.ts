@@ -47,16 +47,11 @@ async function createRouter(
     if (config.adp) {
         await initAdp(resources.rootProject, config.adp, flp, middlewareUtil, logger);
     } else {
-        const flpPath = config.flp.path ?? '/test/flpSandbox.html';
-        if (await resources.rootProject.byPath(flpPath)) {
-            logger.info('File to render preview found on file system.');
+        const manifest = await resources.rootProject.byPath('/manifest.json');
+        if (manifest) {
+            await flp.init(JSON.parse(await manifest.getString()));
         } else {
-            const manifest = await resources.rootProject.byPath('/manifest.json');
-            if (manifest) {
-                await flp.init(JSON.parse(await manifest.getString()));
-            } else {
-                throw new Error('No manifest.json found.');
-            }
+            throw new Error('No manifest.json found.');
         }
     }
     // add exposed endpoints for cds-plugin-ui5
