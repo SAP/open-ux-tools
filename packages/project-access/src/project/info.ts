@@ -211,6 +211,6 @@ export async function getProjectType(projectRoot: string): Promise<ProjectType> 
  * @param {Editor} fs - The file system editor.
  * @returns {Package} The content of the package.json file.
  */
-export function getPackageJson(packageJsonPath: string, fs?: Editor): Package {
-    return fs?.readJSON(packageJsonPath) as Package;
+export async function getPackageJson(packageJsonPath: string, fs?: Editor): Promise<Package> {
+    return readJSON<Package>(packageJsonPath, fs);
 }

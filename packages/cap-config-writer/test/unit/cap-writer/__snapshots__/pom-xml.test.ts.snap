@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Writing pom xml json files for cap java projects should remove ODataAnnotations from manifest json where annotations are defined as an array 1`] = `
+exports[`Writing pom xml json files for cap java projects should correctly update pom xml files 1`] = `
 {
   "": {
     "contents": "<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">

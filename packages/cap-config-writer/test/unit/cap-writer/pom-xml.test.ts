@@ -12,7 +12,7 @@ describe('Writing pom xml json files for cap java projects', () => {
     const pomPath = join(testInputPath, 'test-cap-java/pom.xml');
     const logger = new ToolsLogger();
 
-    test('should remove ODataAnnotations from manifest json where annotations are defined as an array', async () => {
+    test('should correctly update pom xml files', async () => {
         updatePomXml(fs, pomPath, logger);
         expect((fs as any).dump(pomPath)).toMatchSnapshot();
     });

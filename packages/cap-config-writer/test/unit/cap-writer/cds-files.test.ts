@@ -2,12 +2,21 @@ import { ToolsLogger } from '@sap-ux/logger';
 import type { CapService, CapRuntime } from '@sap-ux/odata-service-inquirer';
 import { updateCdsFilesWithAnnotations } from '../../../src/cap-writer/cds-files';
 import memFs from 'mem-fs';
-import editor from 'mem-fs-editor';
+import editor, { type Editor } from 'mem-fs-editor';
 import { join } from 'path';
 
 const capNodeType: CapRuntime = 'Node.js';
 
 describe('writes cds files correctly', () => {
+    let fs: Editor;
+
+    // beforeEach function to reset fs before each test
+    beforeEach(() => {
+        const store = memFs.create();
+        // Create a new instance of the Editor class before each test
+        fs = editor.create(store);
+    });
+
     it('calls logger.info with correct messages', async () => {
         const capAppFolder = 'webapp';
         const testPath = join(__dirname, '..', '..', 'test-inputs');
@@ -21,8 +30,6 @@ describe('writes cds files correctly', () => {
             capType: capNodeType
         };
         const projectName = 'testProject';
-        const store = memFs.create();
-        const fs = editor.create(store);
         const logger = new ToolsLogger();
         const loggerMock = jest.fn();
         logger.info = loggerMock;
@@ -38,8 +45,6 @@ describe('writes cds files correctly', () => {
         const testPath = join(__dirname, '..', '..', 'unit/cap-writer/test-inputs');
         const testProjectNameNoSapUx = 'test-cap-package-no-sapux';
         const testCAPNoSapUx = join(testPath, testProjectNameNoSapUx);
-        const store = memFs.create();
-        const fs = editor.create(store);
         const capService: CapService = {
             projectPath: testCAPNoSapUx,
             serviceName: 'AdminService',
@@ -49,27 +54,18 @@ describe('writes cds files correctly', () => {
         };
         const projectName = 'testProject';
         await updateCdsFilesWithAnnotations(fs, capService, projectName);
-        const indexCdsPath = join(capService.projectPath, capService.appPath ?? '', 'services.cds');
-        expect((fs as any).dump(indexCdsPath)).toMatchSnapshot();
-    });
-
-    it('updates index cds correctly', async () => {
-        const capAppFolder = 'webapp-with-services';
-        const testPath = join(__dirname, '..', '..', 'unit/cap-writer/test-inputs');
-        const testProjectNameNoSapUx = 'test-cap-package-no-sapux';
-        const testCAPNoSapUx = join(testPath, testProjectNameNoSapUx);
-        const store = memFs.create();
-        const fs = editor.create(store);
-        const capService: CapService = {
-            projectPath: testCAPNoSapUx,
-            serviceName: 'AdminService',
-            serviceCdsPath: 'srv/admin-service',
-            appPath: capAppFolder,
-            capType: capNodeType
+        const indexCdsPath = join(capService.projectPath, capService.appPath ?? '', 'index.cds');
+        const receivedContents = (fs as any).dump(indexCdsPath);
+        const expectedContents = {
+            '../testProject/annotations.cds': {
+                contents: "using AdminService as service from '../../srv/admin-service';",
+                state: 'modified'
+            },
+            '': {
+                contents: "\n\nusing from './testProject/annotations';",
+                state: 'modified'
+            }
         };
-        const projectName = 'testProject';
-        const serviceCdsPath = join(capService.projectPath, capService.appPath ?? '', 'services.cds');
-        await updateCdsFilesWithAnnotations(fs, capService, projectName);
-        expect((fs as any).dump(serviceCdsPath)).toMatchSnapshot();
+        expect(receivedContents).toEqual(expectedContents);
     });
 });

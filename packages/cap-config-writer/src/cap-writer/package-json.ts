@@ -38,7 +38,7 @@ async function updateScripts(
     enableNPMWorkspaces?: boolean,
     log?: Logger
 ): Promise<void> {
-    const packageJson: Package = getPackageJson(packageJsonPath, fs);
+    const packageJson: Package = await getPackageJson(packageJsonPath, fs);
     const hasNPMworkspaces = await checkCdsUi5PluginEnabled(packageJsonPath, fs);
     const cdsVersion = await getCdsVersionInfo();
     if (cdsVersion.home && packageJson && satisfiesMinCdsVersion(packageJson)) {
@@ -73,7 +73,7 @@ export async function updateRootPackageJsonCAP(
     enableNPMWorkspaces?: boolean
 ): Promise<void> {
     const packageJsonPath: string = join(capService.projectPath, 'package.json');
-    const packageJson = getPackageJson(packageJsonPath, fs);
+    const packageJson = await getPackageJson(packageJsonPath, fs);
     const capNodeType: CapRuntime = 'Node.js';
 
     if (enableNPMWorkspaces && packageJson) {

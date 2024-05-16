@@ -20,4 +20,3 @@ export {
 export { UI5_DEFAULT } from './defaults';
 export { mergeObjects, getEsmTypesVersion, getTypesVersion, getTypesPackage, replaceEnvVariables } from './utils';
 export { errorCode as yamlErrorCode, YAMLError } from '@sap-ux/yaml';
-export { removeFioriToolsProxyAndAppReload } from './middlewares';
