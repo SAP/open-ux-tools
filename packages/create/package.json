@@ -40,6 +40,8 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/mockserver-config-writer": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/ui5-application-inquirer": "workspace:*",
+        "@sap-ux/ui5-application-writer": "workspace:*",
         "chalk": "4.1.2",
         "commander": "9.4.0",
         "diff": "5.1.0",

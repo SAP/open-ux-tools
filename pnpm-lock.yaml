@@ -712,6 +712,12 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/ui5-application-inquirer':
+        specifier: workspace:*
+        version: link:../ui5-application-inquirer
+      '@sap-ux/ui5-application-writer':
+        specifier: workspace:*
+        version: link:../ui5-application-writer
       chalk:
         specifier: 4.1.2
         version: 4.1.2
