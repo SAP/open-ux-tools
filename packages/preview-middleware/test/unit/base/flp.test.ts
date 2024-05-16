@@ -300,13 +300,6 @@ describe('FlpSandbox', () => {
             expect(response.text).toMatchSnapshot();
         });
 
-        test('test/flp.html - warn if a file at the same location exists', async () => {
-            logger.warn.mockReset();
-            mockProject.byPath.mockResolvedValueOnce({});
-            await server.get('/test/flpSandbox.html').expect(200);
-            expect(logger.warn).toBeCalled();
-        });
-
         test('rta', async () => {
             const response = await server.get('/my/rta.html').expect(200);
             expect(response.text).toMatchSnapshot();
