@@ -5,6 +5,7 @@ import type { Scenario } from 'sap/ui/fl/Scenario';
 
 import { transformNodes as tn } from '../../../../src/cpe/outline/nodes';
 import { sapCoreMock } from 'mock/window';
+import ComponentMock  from 'mock/sap/ui/core/Component';
 
 jest.mock('../../../../src/cpe/outline/utils', () => {
     return {
@@ -129,6 +130,44 @@ describe('outline nodes', () => {
                     ]
                 }
             ]);
+        });
+
+        test('fill reuse components', async () => {
+            
+            const nodes =  [
+                {
+                    id: 'application-preview-app-component',
+                    technicalName: 'v2flex.Component',
+                    editable: false,
+                    type: 'element',
+                    visible: true,
+                    component: true,
+                    elements: [
+                        {
+                            id: 'application-preview-app-component',
+                            technicalName: 'rootControl',
+                            editable: false,
+                            type: 'aggregation',
+                            elements: [
+                                {
+                                    id: '__layout0',
+                                    technicalName: 'sap.f.FlexibleColumnLayout',
+                                    editable: false,
+                                    type: 'element',
+                                    visible: true
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ];
+            ComponentMock.getComponentById = jest.fn().mockReturnValue({ getManifest: () => {
+                return {
+                    ['sap.app']: {
+                        type: 'component'
+                    }
+                }
+            } })
         });
     });
 });
