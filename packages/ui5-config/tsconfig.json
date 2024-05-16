@@ -7,12 +7,5 @@
     "rootDir": "src",
     "outDir": "dist"
   },
-  "references": [
-    {
-      "path": "../logger"
-    },
-    {
-      "path": "../yaml"
-    }
-  ]
+  "references": [{ "path": "../yaml" }]
 }

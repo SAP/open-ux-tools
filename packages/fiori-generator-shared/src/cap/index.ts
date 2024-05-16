@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs';
-import path, { join } from 'path';
+import { join } from 'path';
 import type { CapCustomPaths } from '@sap-ux/project-access';
 
 /**

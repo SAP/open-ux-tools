@@ -6,9 +6,7 @@ import type {
     MockserverConfig,
     FioriToolsProxyConfigUI5
 } from './types';
-import { type NodeComment, YamlDocument, yamlDocumentToYamlString } from '@sap-ux/yaml';
-import type { Logger } from '@sap-ux/logger';
-import type { Editor } from 'mem-fs-editor';
+import { type NodeComment } from '@sap-ux/yaml';
 
 /**
  * Get the configuration for the AppReload middleware.
@@ -78,7 +76,6 @@ export function getFioriToolsProxyMiddlewareConfig(
 
     return { config: fioriToolsProxy, comments };
 }
-
 
 export const getMockServerMiddlewareConfig = (
     path?: string,
