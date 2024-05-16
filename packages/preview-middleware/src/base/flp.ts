@@ -79,7 +79,7 @@ const DEFAULT_THEME = 'sap_horizon';
 /**
  * Default path for mounting the local FLP.
  */
-const DEFAULT_PATH = '/test/flpSanbox.html';
+const DEFAULT_PATH = '/test/flpSandbox.html';
 
 /**
  * Default intent

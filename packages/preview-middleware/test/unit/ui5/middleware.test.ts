@@ -86,7 +86,7 @@ describe('ui5/middleware', () => {
 
     test('no config', async () => {
         const server = await getTestServer('simple-app');
-        await server.get('/test/flpSanbox.html').expect(200);
+        await server.get('/test/flpSandbox.html').expect(200);
         await server.get('/preview/client/flp/init.js').expect(200);
     });
 
@@ -122,7 +122,7 @@ describe('ui5/middleware', () => {
                 editors: [{ path: '/adp/editor.html', developerMode: true }]
             }
         });
-        await server.get('/test/flpSanbox.html').expect(200);
+        await server.get('/test/flpSandbox.html').expect(200);
         await server.get('/adp/editor.html').expect(200);
     });
 
@@ -148,6 +148,6 @@ describe('ui5/middleware', () => {
     test('exposed endpoints (for cds-plugin-ui5)', async () => {
         const router = await getRouter('simple-app');
         expect(router.getAppPages).toBeDefined();
-        expect(router.getAppPages?.()).toEqual(['/test/flpSanbox.html#app-preview']);
+        expect(router.getAppPages?.()).toEqual(['/test/flpSandbox.html#app-preview']);
     });
 });

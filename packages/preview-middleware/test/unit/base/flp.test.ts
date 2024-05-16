@@ -60,7 +60,7 @@ describe('FlpSandbox', () => {
     describe('constructor', () => {
         test('default (no) config', () => {
             const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
-            expect(flp.config.path).toBe('/test/flp.html');
+            expect(flp.config.path).toBe('/test/flpSandbox.html');
             expect(flp.config.apps).toBeDefined();
             expect(flp.config.apps).toHaveLength(0);
             expect(flp.config.intent).toStrictEqual({ object: 'app', action: 'preview' });
@@ -295,15 +295,15 @@ describe('FlpSandbox', () => {
             server = await supertest(app);
         });
 
-        test('test/flp.html', async () => {
-            const response = await server.get('/test/flp.html').expect(200);
+        test('test/flpSandbox.html', async () => {
+            const response = await server.get('/test/flpSandbox.html').expect(200);
             expect(response.text).toMatchSnapshot();
         });
 
         test('test/flp.html - warn if a file at the same location exists', async () => {
             logger.warn.mockReset();
             mockProject.byPath.mockResolvedValueOnce({});
-            await server.get('/test/flp.html').expect(200);
+            await server.get('/test/flpSandbox.html').expect(200);
             expect(logger.warn).toBeCalled();
         });
 
@@ -375,7 +375,7 @@ describe('FlpSandbox', () => {
         });
 
         test('editor with config', async () => {
-            const response = await server.get('/test/flp.html').expect(200);
+            const response = await server.get('/test/flpSandbox.html').expect(200);
             expect(response.text).toMatchSnapshot();
         });
 
