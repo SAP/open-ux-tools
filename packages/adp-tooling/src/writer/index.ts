@@ -4,10 +4,8 @@ import { create, type Editor } from 'mem-fs-editor';
 import type { AdpWriterConfig } from '../types';
 import {
     writeTemplateToFolder,
-    writeManifestAppdescr,
     writeUI5Yaml,
     writeUI5DeployYaml,
-    writeEnvFile
 } from './project-utils';
 
 /**
@@ -25,7 +23,6 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
         options: { ...config.options },
         flp: config.flp ? { ...config.flp } : undefined,
         customConfig: config.customConfig ? { ...config.customConfig } : undefined,
-        appdescr: config.appdescr ? { ...config.appdescr } : undefined
     };
     configWithDefaults.app.title ??= `Adaptation of ${config.app.reference}`;
     configWithDefaults.app.layer ??= 'CUSTOMER_BASE';
@@ -52,15 +49,10 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
 
     const tmplPath = join(__dirname, '../../templates/project');
     const fullConfig = setDefaults(config);
-    const ignoredFiles = fullConfig.appdescr ? ['**/manifest.appdescr_variant'] : [];
 
-    writeTemplateToFolder(join(tmplPath, '**/*.*'), join(basePath), fullConfig, fs, ignoredFiles);
-    if (fullConfig.appdescr) {
-        writeManifestAppdescr(tmplPath, basePath, fullConfig.appdescr, fs);
-    }
+    writeTemplateToFolder(join(tmplPath, '**/*.*'), join(basePath), fullConfig, fs);
     await writeUI5DeployYaml(basePath, fullConfig, fs);
     await writeUI5Yaml(basePath, fullConfig, fs);
-    await writeEnvFile(basePath, fullConfig, fs);
 
     return fs;
 }

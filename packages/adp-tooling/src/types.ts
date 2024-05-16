@@ -1,6 +1,7 @@
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp, BspApp } from '@sap-ux/ui5-config';
+import type { OperationsType } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 
 export interface DescriptorVariant {
@@ -31,12 +32,13 @@ export interface AdpWriterConfig {
         reference: string;
         layer?: UI5FlexLayer;
         title?: string;
+        content?: Content[];
     };
     target: AbapTarget;
     ui5?: {
         minVersion?: string;
         version?: string;
-        url?: string;
+        frameworkUrl?: string;
     };
     package?: {
         name?: string;
@@ -64,7 +66,6 @@ export interface AdpWriterConfig {
          */
         fioriTools?: boolean;
     };
-    appdescr?: ManifestAppdescr;
 }
 
 export interface Language {
@@ -211,14 +212,6 @@ export const enum ChangeType {
     ADD_COMPONENT_USAGES = 'appdescr_ui5_addComponentUsages',
     ADD_LIBRARY_REFERENCE = 'appdescr_ui5_addLibraries',
     CHANGE_INBOUND = 'appdescr_app_changeInbound'
-}
-
-/**
- * Enumerates the types of projects that can be made, each representing a specific kind of project structure.
- */
-export const enum ProjectType {
-    ON_PREM = 'OnPrem',
-    S4 = 'S4',
 }
 
 /**
@@ -373,6 +366,6 @@ export interface AdpProjectData {
 export interface AdpCustomConfig {
     adp: {
         safeMode: boolean;
-        environment: ProjectType;
+        environment: OperationsType;
     };
 }

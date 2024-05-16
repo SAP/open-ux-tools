@@ -97,7 +97,7 @@ function getFioriToolsMiddlwares(config: AdpWriterConfig): CustomMiddleware<unkn
                 ui5: {
                     version: config?.ui5?.minVersion,
                     path: ['/resources', '/test-resources'],
-                    url: config?.ui5?.url ?? 'https://ui5.sap.com'
+                    url: config?.ui5?.frameworkUrl ?? 'https://ui5.sap.com'
                 },
                 backend: [
                     {
@@ -172,8 +172,8 @@ function getOpenSourceMiddlewares(config: AdpWriterConfig): CustomMiddleware<obj
  * @returns list of required tasks.
  */
 function getAdpCloudCustomTasks(config: AdpWriterConfig & { target: AbapTarget }): CustomTask[] {
-    const user = 'env:ABAP_USERNAME';
-    const pass = 'env:ABAP_PASSWORD';
+    const user = 'env:AFIORI_TOOLS_USER';
+    const pass = 'env:FIORI_TOOLS_PASSWORD';
 
     return [
         {
