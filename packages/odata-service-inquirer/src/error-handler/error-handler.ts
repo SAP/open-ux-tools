@@ -137,7 +137,7 @@ export class ErrorHandler {
         [ERROR_TYPE.DESTINATION_NOT_FOUND]: t('errors.destinationNotFound'),
         [ERROR_TYPE.DESTINATION_MISCONFIGURED]: t('errors.destinationMisconfigured'),
         [ERROR_TYPE.NO_V2_SERVICES]: t('errors.noServicesAvailable', { version: '2' }),
-        [ERROR_TYPE.NO_V4_SERVICES]: t('errors.noServicesAvailabl', { version: '4' }),
+        [ERROR_TYPE.NO_V4_SERVICES]: t('errors.noServicesAvailable', { version: '4' }),
         [ERROR_TYPE.DESTINATION_BAD_GATEWAY_503]: t('errors.destinationUnavailable'),
         [ERROR_TYPE.REDIRECT]: t('errors.redirectError'),
         [ERROR_TYPE.NO_SUCH_HOST]: t('errors.noSuchHostError'),
