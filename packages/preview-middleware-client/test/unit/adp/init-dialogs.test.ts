@@ -7,7 +7,13 @@ import Fragment from 'mock/sap/ui/core/Fragment';
 import Controller from 'mock/sap/ui/core/mvc/Controller';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 
-import { DialogNames, handler, initDialogs, isControllerExtensionEnabled } from '../../../src/adp/init-dialogs';
+import {
+    DialogNames,
+    handler,
+    initDialogs,
+    isControllerExtensionEnabled,
+    isAddFragmentEnabled
+} from '../../../src/adp/init-dialogs';
 import AddFragment from '../../../src/adp/controllers/AddFragment.controller';
 import ControllerExtension from '../../../src/adp/controllers/ControllerExtension.controller';
 import ExtensionPoint from '../../../src/adp/controllers/ExtensionPoint.controller';
@@ -15,6 +21,19 @@ import ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import FlUtils from 'sap/ui/fl/Utils';
 
 describe('Dialogs', () => {
+    const elementOverlayMock = { getElement: jest.fn() } as unknown as ElementOverlay;
+    const componentMock = {
+        getComponentById: jest.fn().mockReturnValue({
+            getManifest: () => {
+                return {
+                    ['sap.app']: {
+                        type: 'component'
+                    }
+                };
+            }
+        })
+    };
+
     describe('initDialogs', () => {
         afterEach(() => {
             jest.restoreAllMocks();
@@ -63,26 +82,50 @@ describe('Dialogs', () => {
 
     describe('isControllerExtensionEnabled', () => {
         const syncViewsIds = ['syncViewId1', 'syncViewId2'];
-        const elementOverlayMock = { getElement: jest.fn() } as unknown as ElementOverlay;
+        it('should return false when overlays array is empty', () => {
+            expect(isControllerExtensionEnabled([], syncViewsIds)).toBe(false);
+        });
 
-        it('should return true when overlays length is 1 and clickedControlId is not in syncViewsIds', async () => {
+        it('should return true when overlays length is 1 and clickedControlId is not in syncViewsIds and it is not reuse component', () => {
             FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('asyncViewId2') });
             const overlays: ElementOverlay[] = [elementOverlayMock];
-            expect(await isControllerExtensionEnabled(overlays, syncViewsIds)).toBe(true);
+            sapMock.ui.version = '1.118.1';
+            sapMock.ui.require = jest.fn().mockReturnValue({
+                getComponentById: () => undefined
+            });
+            expect(isControllerExtensionEnabled(overlays, syncViewsIds)).toBe(true);
         });
 
-        it('should return false when overlays length is 1 and clickedControlId is in syncViewsIds', async () => {
-            FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('syncViewId1') });
+        it('should return false when overlays length is 1 and clickedControlId is not in syncViewsIds and but it is reuse component', () => {
+            FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('asyncViewId2') });
             const overlays: ElementOverlay[] = [elementOverlayMock];
-
-            expect(await isControllerExtensionEnabled(overlays, syncViewsIds)).toBe(false);
+            sapMock.ui.version = '1.118.1';
+            sapMock.ui.require = jest.fn().mockReturnValue(componentMock);
+            expect(isControllerExtensionEnabled(overlays, syncViewsIds)).toBe(false);
         });
 
-        it('should return false when overlays length is more than 1', async () => {
+        it('should return false when overlays length is more than 1', () => {
             FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('syncViewId3') });
             const overlays: ElementOverlay[] = [elementOverlayMock, elementOverlayMock];
             const syncViewsIds = ['syncViewId1', 'syncViewId2'];
-            expect(await isControllerExtensionEnabled(overlays, syncViewsIds)).toBe(false);
+            expect(isControllerExtensionEnabled(overlays, syncViewsIds)).toBe(false);
+        });
+    });
+
+    describe('isAddFragmentEnabled', () => {
+        it('should return false when overlays array is empty', () => {
+            expect(isAddFragmentEnabled([])).toBe(false);
+        });
+
+        it('should return true when overlays are not empty and it is not reuse component', () => {
+            sapMock.ui.version = '1.110.4';
+            expect(isAddFragmentEnabled([elementOverlayMock])).toBe(true);
+        });
+
+        it('should return false when overlays are not empty and it is reuse component', () => {
+            sapMock.ui.version = '1.118.1';
+            sapMock.ui.require = jest.fn().mockReturnValue(componentMock);
+            expect(isAddFragmentEnabled([elementOverlayMock])).toBe(false);
         });
     });
 });

@@ -41,7 +41,7 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[]): void
         text: 'Add: Fragment',
         handler: async (overlays: UI5Element[]) => await handler(overlays[0], rta, DialogNames.ADD_FRAGMENT),
         icon: 'sap-icon://attachment-html',
-        enabled: async (overlays: ElementOverlay[]) => await isAddFragmentEnabled(overlays)
+        enabled: (overlays: ElementOverlay[]) => isAddFragmentEnabled(overlays)
     });
 
     contextMenu.addMenuItem({
@@ -49,7 +49,7 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[]): void
         text: 'Extend With Controller',
         handler: async (overlays: UI5Element[]) => await handler(overlays[0], rta, DialogNames.CONTROLLER_EXTENSION),
         icon: 'sap-icon://create-form',
-        enabled: async (overlays: ElementOverlay[]) => await isControllerExtensionEnabled(overlays, syncViewsIds)
+        enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds)
     });
 };
 
@@ -60,12 +60,15 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[]): void
  *
  * @returns boolean whether menu item is enabled or not
  */
-export const isAddFragmentEnabled = async (overlays: ElementOverlay[]): Promise<boolean> => {
+export function isAddFragmentEnabled(overlays: ElementOverlay[]): boolean {
+    if (overlays.length === 0 || overlays.length > 1) {
+        return false;
+    }
     const clickedControlId = FlUtils.getViewForControl(overlays[0].getElement()).getId();
-    const isClickedControlReuseComponent = await isReuseComponent(clickedControlId);
+    const isClickedControlReuseComponent = isReuseComponent(clickedControlId);
 
-    return overlays.length <= 1 && !isClickedControlReuseComponent;
-};
+    return !isClickedControlReuseComponent;
+}
 
 /**
  * Handler for enablement of Extend With Controller context menu entry
@@ -73,38 +76,41 @@ export const isAddFragmentEnabled = async (overlays: ElementOverlay[]): Promise<
  * @param overlays Control overlays
  * @param syncViewsIds Runtime Authoring
  *
- * @returns boolean whether menu item is enabled or not 
+ * @returns boolean whether menu item is enabled or not
  */
-export const isControllerExtensionEnabled = async (overlays: ElementOverlay[], syncViewsIds: string[]): Promise<boolean> => {
+export function isControllerExtensionEnabled(overlays: ElementOverlay[], syncViewsIds: string[]): boolean {
+    if (overlays.length === 0 || overlays.length > 1) {
+        return false;
+    }
     const clickedControlId = FlUtils.getViewForControl(overlays[0].getElement()).getId();
-    const isClickedControlReuseComponent = await isReuseComponent(clickedControlId);
+    const isClickedControlReuseComponent = isReuseComponent(clickedControlId);
 
-    return overlays.length <= 1 && !syncViewsIds.includes(clickedControlId) && !isClickedControlReuseComponent;
-};
+    return !syncViewsIds.includes(clickedControlId) && !isClickedControlReuseComponent;
+}
 
 /**
  * Function that checks if clicked control is from view that uses reused component
- * 
+ *
  * @param clickedControlId id of the clicked control
  * @returns boolean if clicked control is from reused component
  */
-const isReuseComponent = async (clickedControlId: string): Promise<boolean> => {
+const isReuseComponent = (clickedControlId: string): boolean => {
     const version = sap.ui.version;
     const minor = parseInt(version.split('.')[1], 10);
-    if(minor < 114) {
+    if (minor < 114) {
         return false;
     }
-    
-    const Component = (await import('sap/ui/core/Component')).default;
-    const component = Component.getComponentById(clickedControlId);//?.getManifest() as Manifest;
-    if(!component) {
+
+    const Component = sap.ui.require('sap/ui/core/Component');
+    const component = Component.getComponentById(clickedControlId);
+    if (!component) {
         return false;
     }
 
     const manifest = component.getManifest() as Manifest;
-    
+
     return manifest['sap.app']?.type === 'component';
-}
+};
 
 /**
  * Handler for new context menu entry

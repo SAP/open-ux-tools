@@ -52,6 +52,10 @@ export async function transformNodes(
     const minor = parseInt(version.split('.')[1], 10);
     const stack = [...input];
     const items: OutlineNode[] = [];
+    let Component;
+    if(scenario === 'ADAPTATION_PROJECT' && minor >= 114) {
+        Component = (await import('sap/ui/core/Component')).default;
+    }
     while (stack.length) {
         const current = stack.shift();
         const editable = isEditable(current?.id);
@@ -70,8 +74,7 @@ export async function transformNodes(
             };
 
             if (scenario === 'ADAPTATION_PROJECT' && current?.component && minor >= 114) {
-                const Component = (await import('sap/ui/core/Component')).default;
-                const nodeComponent = Component.getComponentById(current.id);
+                const nodeComponent = Component?.getComponentById(current.id);
                 if (nodeComponent) {
                     const manifest = nodeComponent.getManifest() as Manifest;
                     if (manifest['sap.app']?.type === 'component') {

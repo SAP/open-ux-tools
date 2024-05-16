@@ -4,8 +4,8 @@ import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
 
 import { transformNodes as tn } from '../../../../src/cpe/outline/nodes';
-import { sapCoreMock } from 'mock/window';
-import ComponentMock  from 'mock/sap/ui/core/Component';
+import { sapCoreMock, sapMock } from 'mock/window';
+import ComponentMock from 'mock/sap/ui/core/Component';
 
 jest.mock('../../../../src/cpe/outline/utils', () => {
     return {
@@ -13,8 +13,11 @@ jest.mock('../../../../src/cpe/outline/utils', () => {
     };
 });
 describe('outline nodes', () => {
-    const transformNodes = (nodes: OutlineViewNode[], scenario: Scenario): Promise<OutlineNode[]> =>
-        tn(nodes, scenario, new Set<string>());
+    const transformNodes = (
+        nodes: OutlineViewNode[],
+        scenario: Scenario,
+        reuseComponentsIds: Set<string> = new Set<string>()
+    ): Promise<OutlineNode[]> => tn(nodes, scenario, reuseComponentsIds);
     sapCoreMock.byId.mockReturnValue({
         getMetadata: jest.fn().mockReturnValue({
             getProperty: jest.fn().mockReturnValueOnce('Component').mockReturnValueOnce('Component').mockReturnValue('')
@@ -133,8 +136,17 @@ describe('outline nodes', () => {
         });
 
         test('fill reuse components', async () => {
-            
-            const nodes =  [
+            sapMock.ui.version = '1.118.1';
+            ComponentMock.getComponentById = jest.fn().mockReturnValue({
+                getManifest: () => {
+                    return {
+                        ['sap.app']: {
+                            type: 'component'
+                        }
+                    };
+                }
+            });
+            const nodes: OutlineViewNode[] = [
                 {
                     id: 'application-preview-app-component',
                     technicalName: 'v2flex.Component',
@@ -161,13 +173,10 @@ describe('outline nodes', () => {
                     ]
                 }
             ];
-            ComponentMock.getComponentById = jest.fn().mockReturnValue({ getManifest: () => {
-                return {
-                    ['sap.app']: {
-                        type: 'component'
-                    }
-                }
-            } })
+            const reuseComponentsIds = new Set<string>();
+
+            await transformNodes(nodes, 'ADAPTATION_PROJECT', reuseComponentsIds);
+            expect(reuseComponentsIds.size).toBe(1);
         });
     });
 });
