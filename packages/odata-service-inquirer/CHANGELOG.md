@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.1.7
+
+### Patch Changes
+
+-   39c22835: Fixes typo in i18n key
+
 ## 0.1.6
 
 ### Patch Changes
