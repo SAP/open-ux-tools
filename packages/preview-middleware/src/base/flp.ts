@@ -352,7 +352,7 @@ export class FlpSandbox {
             // warn the user if a file with the same name exists in the filesystem
             const file = await this.project.byPath(this.config.path);
             if (file) {
-                this.logger.warn(`HTML file returned at ${this.config.path} is loaded from the file system.`);
+                this.logger.info(`HTML file returned at ${this.config.path} is loaded from the file system.`);
                 next();
             } else {
                 const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');

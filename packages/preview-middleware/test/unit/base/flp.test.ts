@@ -54,6 +54,7 @@ describe('FlpSandbox', () => {
     } as unknown as MiddlewareUtils;
     const logger = { debug: jest.fn(), warn: jest.fn(), error: jest.fn(), info: jest.fn() } as unknown as Logger & {
         warn: jest.Mock;
+        info: jest.Mock;
     };
     const fixtures = join(__dirname, '../../fixtures');
 
@@ -389,6 +390,38 @@ describe('FlpSandbox', () => {
 
         test('no route for custom init', async () => {
             await server.get('/test/integration/opaTests.qunit.js').expect(404);
+        });
+    });
+
+    describe('router - existing FlpSandbox', () => {
+        let server!: SuperTest<Test>;
+
+        beforeAll(async () => {
+            const flp = new FlpSandbox(
+                {
+                    flp: {
+                        path: '/test/existingFlp.html'
+                    }
+                },
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+
+            const app = express();
+            app.use(flp.router);
+
+            server = await supertest(app);
+        });
+
+        test('test/existingFlp.html', async () => {
+            logger.info.mockReset();
+            mockProject.byPath.mockResolvedValueOnce({});
+            expect(logger.info).toBeCalled();
+            const response = await server.get('/test/existingFlp.html').expect(200);
+            expect(response.text).toMatchSnapshot();
         });
     });
 });
