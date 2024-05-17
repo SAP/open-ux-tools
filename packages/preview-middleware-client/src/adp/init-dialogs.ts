@@ -41,8 +41,8 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[]): void
         id: 'ADD_FRAGMENT',
         text: 'Add: Fragment',
         handler: async (overlays: UI5Element[]) => await handler(overlays[0], rta, DialogNames.ADD_FRAGMENT),
-        enabled: isFragmentCommandEnabled,
-        icon: 'sap-icon://attachment-html'
+        icon: 'sap-icon://attachment-html',
+        enabled: isFragmentCommandEnabled
     });
 
     contextMenu.addMenuItem({
@@ -55,23 +55,6 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[]): void
 };
 
 /**
- * Handler for enablement of Add Fragment context menu entry
- *
- * @param overlays Control overlays
- *
- * @returns boolean whether menu item is enabled or not
- */
-export function isAddFragmentEnabled(overlays: ElementOverlay[]): boolean {
-    if (overlays.length === 0 || overlays.length > 1) {
-        return false;
-    }
-    const clickedControlId = FlUtils.getViewForControl(overlays[0].getElement()).getId();
-    const isClickedControlReuseComponent = isReuseComponent(clickedControlId);
-
-    return !isClickedControlReuseComponent;
-}
-
-/**
  * Handler for enablement of Extend With Controller context menu entry
  *
  * @param overlays Control overlays
@@ -80,9 +63,8 @@ export function isAddFragmentEnabled(overlays: ElementOverlay[]): boolean {
  * @returns boolean whether menu item is enabled or not
  */
 export function isControllerExtensionEnabled(overlays: ElementOverlay[], syncViewsIds: string[]): boolean {
-    if (overlays.length === 0 || overlays.length > 1) {
-        return false;
-    }
+    if (overlays.length === 0 || overlays.length > 1) return false;
+
     const clickedControlId = FlUtils.getViewForControl(overlays[0].getElement()).getId();
     const isClickedControlReuseComponent = isReuseComponent(clickedControlId);
 
@@ -120,12 +102,12 @@ const isReuseComponent = (clickedControlId: string): boolean => {
  * @returns {boolean} True if the fragment command is enabled, false otherwise.
  */
 export const isFragmentCommandEnabled = (overlays: ElementOverlay[]): boolean => {
-    if (overlays.length === 0) return false;
+    if (overlays.length === 0 || overlays.length > 1) return false;
 
     const control = overlays[0].getElement();
     const hasStableId = FlUtils.checkControlId(control);
 
-    return hasStableId && overlays.length <= 1;
+    return hasStableId && !isReuseComponent(control.getId());
 };
 
 /**

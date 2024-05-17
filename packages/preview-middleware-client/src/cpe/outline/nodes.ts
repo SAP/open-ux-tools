@@ -53,7 +53,7 @@ export async function transformNodes(
     const stack = [...input];
     const items: OutlineNode[] = [];
     let Component;
-    if(scenario === 'ADAPTATION_PROJECT' && minor >= 114) {
+    if (scenario === 'ADAPTATION_PROJECT' && minor >= 114) {
         Component = (await import('sap/ui/core/Component')).default;
     }
     while (stack.length) {

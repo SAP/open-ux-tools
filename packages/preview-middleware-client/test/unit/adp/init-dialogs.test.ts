@@ -20,6 +20,7 @@ import {
 import AddFragment from '../../../src/adp/controllers/AddFragment.controller';
 import ControllerExtension from '../../../src/adp/controllers/ControllerExtension.controller';
 import ExtensionPoint from '../../../src/adp/controllers/ExtensionPoint.controller';
+import ManagedObject from 'sap/ui/base/ManagedObject';
 
 describe('Dialogs', () => {
     const elementOverlayMock = { getElement: jest.fn() } as unknown as ElementOverlay;
@@ -87,30 +88,27 @@ describe('Dialogs', () => {
         });
 
         const overlay = {
-            getElement: () => ({})
-        } as ElementOverlay;
+            getElement: jest.fn().mockReturnValue({ getId: jest.fn()})
+        } as unknown as ElementOverlay;
 
-        it('should return true if there is one overlay with a stable ID', () => {
+        it('should return true if there is one overlay with a stable ID and it is not reuse component', () => {
             Utils.checkControlId.mockReturnValue(true);
-
+            sapMock.ui.version = '1.110.1';
             const result = isFragmentCommandEnabled([overlay]);
 
             expect(result).toBe(true);
-            expect(Utils.checkControlId).toHaveBeenCalledWith({});
         });
 
-        it('should return false if there is one overlay without a stable ID', () => {
+        it('should return false if there is one overlay without a stable ID and it is reuse component', () => {
             Utils.checkControlId.mockReturnValue(false);
-
+            sapMock.ui.require = jest.fn().mockReturnValue(componentMock);
             const result = isFragmentCommandEnabled([overlay]);
 
             expect(result).toBe(false);
-            expect(Utils.checkControlId).toHaveBeenCalledWith({});
         });
 
         it('should return false if there are multiple overlays even with stable IDs', () => {
             Utils.checkControlId.mockReturnValue(true);
-
             const result = isFragmentCommandEnabled([overlay, overlay]);
 
             expect(result).toBe(false);
@@ -152,23 +150,6 @@ describe('Dialogs', () => {
             const overlays: ElementOverlay[] = [elementOverlayMock, elementOverlayMock];
             const syncViewsIds = ['syncViewId1', 'syncViewId2'];
             expect(isControllerExtensionEnabled(overlays, syncViewsIds)).toBe(false);
-        });
-    });
-
-    describe('isAddFragmentEnabled', () => {
-        it('should return false when overlays array is empty', () => {
-            expect(isAddFragmentEnabled([])).toBe(false);
-        });
-
-        it('should return true when overlays are not empty and it is not reuse component', () => {
-            sapMock.ui.version = '1.110.4';
-            expect(isAddFragmentEnabled([elementOverlayMock])).toBe(true);
-        });
-
-        it('should return false when overlays are not empty and it is reuse component', () => {
-            sapMock.ui.version = '1.118.1';
-            sapMock.ui.require = jest.fn().mockReturnValue(componentMock);
-            expect(isAddFragmentEnabled([elementOverlayMock])).toBe(false);
         });
     });
 });
