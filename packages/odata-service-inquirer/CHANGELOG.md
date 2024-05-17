@@ -1,5 +1,25 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.1.7
+
+### Patch Changes
+
+-   39c22835: Fixes typo in i18n key
+
+## 0.1.6
+
+### Patch Changes
+
+-   1fee817f: Exports needed for open source migration
+
+## 0.1.5
+
+### Patch Changes
+
+-   Updated dependencies [e3d2324c]
+    -   @sap-ux/project-access@1.20.0
+    -   @sap-ux/telemetry@0.4.23
+
 ## 0.1.4
 
 ### Patch Changes

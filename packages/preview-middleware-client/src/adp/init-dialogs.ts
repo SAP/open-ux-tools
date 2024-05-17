@@ -11,7 +11,8 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 /** sap.ui.fl */
 import FlUtils from 'sap/ui/fl/Utils';
 
-import ElementOverlay from 'sap/ui/dt/ElementOverlay';
+/** sap.ui.dt */
+import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 import AddFragment from './controllers/AddFragment.controller';
 import ControllerExtension from './controllers/ControllerExtension.controller';
@@ -40,8 +41,8 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[]): void
         id: 'ADD_FRAGMENT',
         text: 'Add: Fragment',
         handler: async (overlays: UI5Element[]) => await handler(overlays[0], rta, DialogNames.ADD_FRAGMENT),
-        icon: 'sap-icon://attachment-html',
-        enabled: (overlays: ElementOverlay[]) => isAddFragmentEnabled(overlays)
+        enabled: isFragmentCommandEnabled,
+        icon: 'sap-icon://attachment-html'
     });
 
     contextMenu.addMenuItem({
@@ -110,6 +111,21 @@ const isReuseComponent = (clickedControlId: string): boolean => {
     const manifest = component.getManifest() as Manifest;
 
     return manifest['sap.app']?.type === 'component';
+};
+
+/**
+ * Determines whether the fragment command should be enabled based on the provided overlays.
+ *
+ * @param {ElementOverlay[]} overlays - An array of ElementOverlay objects representing the UI overlays.
+ * @returns {boolean} True if the fragment command is enabled, false otherwise.
+ */
+export const isFragmentCommandEnabled = (overlays: ElementOverlay[]): boolean => {
+    if (overlays.length === 0) return false;
+
+    const control = overlays[0].getElement();
+    const hasStableId = FlUtils.checkControlId(control);
+
+    return hasStableId && overlays.length <= 1;
 };
 
 /**

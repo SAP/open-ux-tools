@@ -1,5 +1,29 @@
 # @sap-ux/adp-tooling
 
+## 0.10.5
+
+### Patch Changes
+
+-   c87fcc91: Fix project migration
+
+## 0.10.4
+
+### Patch Changes
+
+-   Updated dependencies [e3d2324c]
+    -   @sap-ux/project-access@1.20.0
+    -   @sap-ux/ui5-config@0.22.4
+    -   @sap-ux/axios-extension@1.12.3
+    -   @sap-ux/system-access@0.3.27
+
+## 0.10.3
+
+### Patch Changes
+
+-   Updated dependencies [19ec0f01]
+    -   @sap-ux/axios-extension@1.12.3
+    -   @sap-ux/system-access@0.3.27
+
 ## 0.10.2
 
 ### Patch Changes
