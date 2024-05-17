@@ -18,6 +18,16 @@ export function runNpmInstallCommand(basePath: string, installArgs: string[] = [
 }
 
 /**
+ * Checks if a property is a function.
+ *
+ * @param property property to be checked
+ * @returns true if the property is a function
+ */
+function isFunction(property: unknown | Function): property is Function {
+    return typeof property === 'function';
+}
+
+/**
  * Converts a YUI question to a simple prompts question.
  *
  * @param question YUI question to be converted
@@ -29,12 +39,10 @@ function convertQuestion(question: YUIQuestion, answers: { [key: string]: unknow
         type: question.type === 'input' ? 'text' : question.type,
         name: question.name,
         message: question.message,
-        validate:
-            typeof question.validate === 'function'
-                ? (value: unknown) => question.validate!(value, answers)
-                : question.validate,
-        initial: typeof question.default === 'function' ? () => question.default(answers) : question.default,
-        when: question.when
+        validate: (value: unknown) =>
+            isFunction(question.validate) ? question.validate(value, answers) : question.validate ?? true,
+        initial: () => (isFunction(question.default) ? question.default(answers) : question.default),
+        when: () => (isFunction(question.when) ? question.when(answers) : question.when ?? true)
     };
 }
 
@@ -49,7 +57,7 @@ export async function promptYUIQuestions<T>(questions: YUIQuestion[], useDefault
     const answers: { [key: string]: unknown } = {};
     for (const question of questions) {
         const q = convertQuestion(question, answers);
-        if (!q.when || q.when(answers)) {
+        if (!q.when || q.when()) {
             if (useDefaults) {
                 answers[q.name] =
                     typeof question.default === 'function' ? () => question.default(answers) : question.default;
