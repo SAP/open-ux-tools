@@ -2,7 +2,7 @@ import { type InquirerAdapter } from '@sap-ux/inquirer-common';
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { type ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
-import { ErrorHandler } from './error-handler/error-handler';
+import { ErrorHandler, ERROR_TYPE } from './error-handler/error-handler';
 import { getQuestions } from './prompts';
 import LoggerHelper from './prompts/logger-helper';
 import {
@@ -86,5 +86,8 @@ export {
     type CapService,
     type InquirerAdapter,
     type OdataServiceAnswers,
-    type OdataServicePromptOptions
+    type OdataServicePromptOptions,
+    // These exports are to facilitate migration to open-ux-tools and will be removed in a future release
+    ERROR_TYPE,
+    ErrorHandler
 };
