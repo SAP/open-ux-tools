@@ -10,7 +10,7 @@ import {
 import type { Page } from '@sap-ux-private/playwright';
 import { writeFile } from 'fs/promises';
 import { join } from 'path';
-import { UI5Version } from '@sap-ux/ui5-info';
+import type { UI5Version } from '@sap-ux/ui5-info';
 
 const buildUrl =
     (port = 3000) =>
