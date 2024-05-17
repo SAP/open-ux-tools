@@ -96,7 +96,8 @@ export async function migrate(basePath: string, config: AdpWriterConfig, fs?: Ed
         fs.delete(join(basePath, 'neo-app.json'));
     }
 
-    await writeUi5Yaml(basePath, fullConfig, fs);
+    await writeUI5Yaml(basePath, fullConfig, fs);
+    await writeUI5DeployYaml(basePath, fullConfig, fs);
 
     return fs;
 }
