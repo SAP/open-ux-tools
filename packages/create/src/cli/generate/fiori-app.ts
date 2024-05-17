@@ -1,9 +1,11 @@
 import type { Command } from 'commander';
 import { getLogger, traceChanges } from '../../tracing';
-import { getInquirerAdapter, runNpmInstallCommand } from '../../common';
+import { promptYUIQuestions, runNpmInstallCommand } from '../../common';
 import type { Ui5App } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5App } from '@sap-ux/ui5-application-writer';
-import { prompt as promptUi5App  } from '@sap-ux/ui5-application-inquirer';
+import { getPrompts as getAppPrompts } from '@sap-ux/ui5-application-inquirer';
+import type { UI5ApplicationAnswers } from '@sap-ux/ui5-application-inquirer';
+import { join } from 'path';
 
 /**
  * Add a new sub-command to generate SAP UI5 adaptation projects the given command.
@@ -15,7 +17,7 @@ export function addGenerateFioriApp(cmd: Command): void {
         .option('-n, --skip-install', 'skip npm install step')
         .option('-s, --simulate', 'simulate only do not write or install')
         .action(async (path, options) => {
-            await generateFioriApp(path, { ...options }, !!options.simulate, !!options.skipInstall);
+            await generateFioriApp(path ?? process.cwd(), { ...options }, !!options.simulate, !!options.skipInstall);
         });
 }
 
@@ -36,18 +38,19 @@ async function generateFioriApp(
     const logger = getLogger();
     try {
         logger.debug(`Called generate Fiori app for path '${basePath}', skip install is '${skipInstall}'`);
-        const ui5AppAnswers = await promptUi5App(getInquirerAdapter(), {});
+        const ui5AppPrompts = await getAppPrompts();
+        const ui5AppAnswers = await promptYUIQuestions<UI5ApplicationAnswers>(ui5AppPrompts);
 
         const config: Ui5App = {
             app: {
-                id: ui5AppAnswers.name!
+                id: ui5AppAnswers.namespace ? `${ui5AppAnswers.namespace}.${ui5AppAnswers.name}` : ui5AppAnswers.name!
             },
             package: {
                 name: ui5AppAnswers.name!
             }
         };
 
-        const fs = await generateUi5App(basePath, config);
+        const fs = await generateUi5App(join(basePath, config.package.name), config);
 
         if (!simulate) {
             await new Promise((resolve) => fs.commit(resolve));

@@ -1,6 +1,6 @@
-import type { InquirerAdapter } from '@sap-ux/ui5-application-inquirer';
 import { spawnSync } from 'child_process';
 import prompts from 'prompts';
+import type { YUIQuestion } from '@sap-ux/inquirer-common';
 
 /**
  * Run npm install command.
@@ -17,29 +17,40 @@ export function runNpmInstallCommand(basePath: string, installArgs: string[] = [
     });
 }
 
-function convertQuestion(question: any, answers: any): any {
+/**
+ * Converts a YUI question to a simple prompts question.
+ *
+ * @param question YUI question to be converted
+ * @param answers previously given answers
+ * @returns question converted to prompts question
+ */
+function convertQuestion(question: YUIQuestion, answers: { [key: string]: unknown }): any {
     return {
         type: question.type === 'input' ? 'text' : question.type,
         name: question.name,
         message: question.message,
         validate:
             typeof question.validate === 'function'
-                ? (value: any) => question.validate(value, answers)
+                ? (value: unknown) => question.validate!(value, answers)
                 : question.validate,
-        initial: typeof question.default === 'function' ? () => question.default(answers) : question.default
+        initial: typeof question.default === 'function' ? () => question.default(answers) : question.default,
+        when: question.when
     };
 }
 
 /**
- * Get the inquirer adapter.
+ * Prompt a list of YeomanUI questions with the simple prompts module.
  *
- * @returns the inquirer adapter
+ * @param questions list of questions
+ * @returns the answers to the questions
  */
-export function getInquirerAdapter(): InquirerAdapter {
-    return {
-        promptModule: undefined,
-        async prompt(questions: any, answers = {}): Promise<any> {
-            return prompts(questions.map((q: any) => convertQuestion(q, answers)));
+export async function promptYUIQuestions<T>(questions: YUIQuestion[]): Promise<T> {
+    const answers: { [key: string]: unknown } = {};
+    for (const question of questions) {
+        const q = convertQuestion(question, answers);
+        if (!q.when || q.when(answers)) {
+            answers[q.name] = (await prompts(q))[q.name];
         }
-    };
+    }
+    return answers as T;
 }
