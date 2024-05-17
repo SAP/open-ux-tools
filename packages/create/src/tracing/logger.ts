@@ -17,7 +17,11 @@ let logger: ToolsLogger;
  */
 export function getLogger(): ToolsLogger {
     if (!logger) {
-        logger = new ToolsLogger({ transports: [new ConsoleTransport()], logPrefix: '' });
+        logger = new ToolsLogger({
+            transports: [new ConsoleTransport()],
+            logPrefix: '',
+            logLevel: process.env.DEBUG ? LogLevel.Debug : LogLevel.Info
+        });
         setCustomFormatter(logger);
     }
     return logger;
