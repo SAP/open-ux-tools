@@ -1,5 +1,6 @@
 import { spawnSync } from 'child_process';
 import prompts from 'prompts';
+import type { PromptType, PromptObject } from 'prompts';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 
 /**
@@ -27,7 +28,7 @@ function isFunction(property: unknown | Function): property is Function {
     return typeof property === 'function';
 }
 
-const QUESTION_TYPE_MAP: Record<string, string> = {
+const QUESTION_TYPE_MAP: Record<string, PromptType> = {
     input: 'text',
     list: 'autocomplete',
     checkbox: 'multiselect'
@@ -43,21 +44,20 @@ const QUESTION_TYPE_MAP: Record<string, string> = {
 async function convertQuestion(
     question: YUIQuestion & { choices?: unknown },
     answers: { [key: string]: unknown }
-): Promise<any> {
-    const q: any = {
+): Promise<PromptObject> {
+    const q: PromptObject = {
         type: QUESTION_TYPE_MAP[question.type ?? 'input'] ?? question.type,
         name: question.name,
-        message: question.message,
+        message: isFunction(question.message) ? await question.message(answers) : await question.message,
         validate: (value: unknown) =>
             isFunction(question.validate) ? question.validate(value, answers) : question.validate ?? true,
-        initial: () => (isFunction(question.default) ? question.default(answers) : question.default),
-        when: () => (isFunction(question.when) ? question.when(answers) : question.when ?? true)
+        initial: () => (isFunction(question.default) ? question.default(answers) : question.default)
     };
     if (question.choices) {
         const choices: Array<{ name: string; value: unknown }> = isFunction(question.choices)
             ? await question.choices(answers)
             : question.choices;
-        const initialValue = q.initial();
+        const initialValue = (q.initial as Function)();
         q.choices = choices.map((choice) => ({ title: choice.name, value: choice.value }));
         q.initial = () => choices.findIndex((choice) => choice.value === initialValue);
     }
@@ -74,17 +74,17 @@ async function convertQuestion(
 export async function promptYUIQuestions<T>(questions: YUIQuestion[], useDefaults: boolean): Promise<T> {
     const answers: { [key: string]: unknown } = {};
     for (const question of questions) {
-        const q = await convertQuestion(question, answers);
-        if (!q.when || q.when()) {
+        if (isFunction(question.when) ? question.when(answers) : question.when !== false) {
             if (useDefaults) {
-                answers[q.name] = q.initial();
+                answers[question.name] = isFunction(question.default) ? question.default(answers) : question.default;
             } else {
+                const q = await convertQuestion(question, answers);
                 const answer = await prompts(q, {
                     onCancel: () => {
                         throw new Error('User canceled the prompt');
                     }
                 });
-                answers[q.name] = answer[q.name];
+                answers[question.name] = answer[question.name];
             }
         }
     }

@@ -57,6 +57,9 @@ async function generateFioriApp(
             },
             addDeployConfig: {
                 hide: true
+            },
+            enableTypeScript: {
+                default: true
             }
         };
         // hide advanced questions
