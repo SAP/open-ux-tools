@@ -6,6 +6,7 @@ import { generate as generateUi5App } from '@sap-ux/ui5-application-writer';
 import { getPrompts as getAppPrompts, promptNames } from '@sap-ux/ui5-application-inquirer';
 import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions } from '@sap-ux/ui5-application-inquirer';
 import { join } from 'path';
+import { generateInboundNavigationConfig, promptInboundNavigationConfig } from '@sap-ux/app-config-writer';
 
 /**
  * Add a new sub-command to generate SAP UI5 adaptation projects the given command.
@@ -110,7 +111,10 @@ async function generateFioriApp(
         const fs = await generateUi5App(targetPath, config);
 
         if (ui5AppAnswers.addFlpConfig) {
-            // TBD: prompt FLP config and write it to the project
+            const { config } = await promptInboundNavigationConfig(targetPath, fs);
+            if (config) {
+                await generateInboundNavigationConfig(targetPath, config, true, fs);
+            }
         }
 
         if (!simulate) {

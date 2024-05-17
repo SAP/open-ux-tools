@@ -11,12 +11,16 @@ import { readManifest } from '../navigation-config';
  * Prompt for inbound navigation configuration values.
  *
  * @param basePath the application root path
+ * @param fs option mem-fs-editor instance
  * @returns inbound config or undefined if config prompting was aborted
  */
 export async function promptInboundNavigationConfig(
-    basePath: string
+    basePath: string,
+    fs?: Editor
 ): Promise<{ config: ManifestNamespace.Inbound[string] | undefined; fs: Editor }> {
-    const fs = create(createStorage());
+    if (!fs) {
+        fs = create(createStorage());
+    }
     const { manifest } = await readManifest(basePath, fs);
 
     const inbounds = manifest?.['sap.app']?.crossNavigation?.inbounds;
