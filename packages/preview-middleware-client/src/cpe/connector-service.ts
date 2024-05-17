@@ -1,5 +1,6 @@
 import { ExternalAction, storageFileChanged } from '@sap-ux-private/control-property-editor-common';
 import { ActionSenderFunction } from './types';
+import VersionInfo from 'sap/ui/VersionInfo';
 
 /**
  * A Class of WorkspaceConnectorService
@@ -11,8 +12,9 @@ export class WorkspaceConnectorService {
      * @param sendAction action sender function
      */
     public async init(sendAction: ActionSenderFunction): Promise<void> {
-        const version = sap.ui.version;
-        const minor = parseInt(version.split('.')[1], 10);
+        const { version } = (await VersionInfo.load()) as { version: string };
+        const versionParts = version.split('.');
+        const minor = parseInt(versionParts[1], 10);
         if (minor > 72) {
             const connector = (await import('open/ux/preview/client/flp/WorkspaceConnector')).default;
             // hook the file deletion listener to the UI5 workspace connector
