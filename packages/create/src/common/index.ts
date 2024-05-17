@@ -27,6 +27,12 @@ function isFunction(property: unknown | Function): property is Function {
     return typeof property === 'function';
 }
 
+const QUESTION_TYPE_MAP: Record<string, string> = {
+    input: 'text',
+    list: 'autocomplete',
+    checkbox: 'multiselect'
+};
+
 /**
  * Converts a YUI question to a simple prompts question.
  *
@@ -34,9 +40,12 @@ function isFunction(property: unknown | Function): property is Function {
  * @param answers previously given answers
  * @returns question converted to prompts question
  */
-function convertQuestion(question: YUIQuestion, answers: { [key: string]: unknown }): any {
-    return {
-        type: question.type === 'input' ? 'text' : question.type,
+async function convertQuestion(
+    question: YUIQuestion & { choices?: unknown },
+    answers: { [key: string]: unknown }
+): Promise<any> {
+    const q: any = {
+        type: QUESTION_TYPE_MAP[question.type ?? 'input'] ?? question.type,
         name: question.name,
         message: question.message,
         validate: (value: unknown) =>
@@ -44,6 +53,15 @@ function convertQuestion(question: YUIQuestion, answers: { [key: string]: unknow
         initial: () => (isFunction(question.default) ? question.default(answers) : question.default),
         when: () => (isFunction(question.when) ? question.when(answers) : question.when ?? true)
     };
+    if (question.choices) {
+        const choices: Array<{ name: string; value: unknown }> = isFunction(question.choices)
+            ? await question.choices(answers)
+            : question.choices;
+        const initialValue = q.initial();
+        q.choices = choices.map((choice) => ({ title: choice.name, value: choice.value }));
+        q.initial = () => choices.findIndex((choice) => choice.value === initialValue);
+    }
+    return q;
 }
 
 /**
@@ -56,11 +74,10 @@ function convertQuestion(question: YUIQuestion, answers: { [key: string]: unknow
 export async function promptYUIQuestions<T>(questions: YUIQuestion[], useDefaults: boolean): Promise<T> {
     const answers: { [key: string]: unknown } = {};
     for (const question of questions) {
-        const q = convertQuestion(question, answers);
+        const q = await convertQuestion(question, answers);
         if (!q.when || q.when()) {
             if (useDefaults) {
-                answers[q.name] =
-                    typeof question.default === 'function' ? () => question.default(answers) : question.default;
+                answers[q.name] = q.initial();
             } else {
                 const answer = await prompts(q, {
                     onCancel: () => {

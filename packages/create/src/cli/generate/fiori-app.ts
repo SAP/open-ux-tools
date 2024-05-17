@@ -94,8 +94,8 @@ async function generateFioriApp(
                 name: ui5AppAnswers.name!
             },
             ui5: {
-                // version: ui5AppAnswers.ui5Version, FOR some reason it doesn't work with the default TBD
-                // ui5Theme: ui5AppAnswers.ui5Theme FOR some reason it doesn't work with the default TBD
+                version: ui5AppAnswers.ui5Version,
+                ui5Theme: ui5AppAnswers.ui5Theme
             },
             appOptions: {
                 codeAssist: ui5AppAnswers.enableCodeAssist,
