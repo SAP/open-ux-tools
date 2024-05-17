@@ -7,9 +7,11 @@ import Log from 'mock/sap/base/Log';
 import { fetchMock, sapCoreMock } from 'mock/window';
 import * as ui5Utils from '../../../src/cpe/ui5-utils';
 import connector from '../../../src/flp/WorkspaceConnector';
+import VersionInfo from 'mock/sap/ui/VersionInfo';
 
 describe('main', () => {
     let sendActionMock: jest.Mock;
+    VersionInfo.load.mockResolvedValue({ version: '1.120.4' });
     const applyChangeSpy = jest
         .spyOn(flexChange, 'applyChange')
         .mockResolvedValueOnce()
