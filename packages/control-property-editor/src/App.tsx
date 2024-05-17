@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { UIDialog, UILink, UIToggle } from '@sap-ux/ui-components';
-import type { Scenario } from '@sap-ux-private/control-property-editor-common';
+import type { Scenario, ShowMessage } from '@sap-ux-private/control-property-editor-common';
 import { PropertiesPanel, LeftPanel } from './panels';
 import { useLocalStorage } from './use-local-storage';
 import type { RootState } from './store';
@@ -11,7 +11,6 @@ import { useAppDispatch } from './store';
 import { changePreviewScale } from './slice';
 import { useWindowSize } from './use-window-size';
 import { DEFAULT_DEVICE_WIDTH, DEVICE_WIDTH_MAP } from './devices';
-import type { ShowMessage } from '@sap-ux-private/control-property-editor-common';
 
 import './App.scss';
 import './Workarounds.scss';
