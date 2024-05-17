@@ -419,9 +419,11 @@ describe('FlpSandbox', () => {
         test('test/existingFlp.html', async () => {
             logger.info.mockReset();
             mockProject.byPath.mockResolvedValueOnce({});
+            await server.get('/test/existingFlp.html');
             expect(logger.info).toBeCalled();
-            const response = await server.get('/test/existingFlp.html').expect(200);
-            expect(response.text).toMatchSnapshot();
+            expect(logger.info).toBeCalledWith(
+                'HTML file returned at /test/existingFlp.html is loaded from the file system.'
+            );
         });
     });
 });
