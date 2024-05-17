@@ -79,7 +79,7 @@ const DEFAULT_THEME = 'sap_horizon';
 /**
  * Default path for mounting the local FLP.
  */
-const DEFAULT_PATH = '/test/flpSandbox.html';
+const DEFAULT_PATH = '/test/flp.html';
 
 /**
  * Default intent
@@ -349,7 +349,7 @@ export class FlpSandbox {
 
         // add route for the sandbox.html
         this.router.get(this.config.path, (async (_req: Request, res: Response, next: NextFunction) => {
-            // warn the user if a file with the same name exists in the filesystem
+            // inform the user if a html file exists on the filesystem
             const file = await this.project.byPath(this.config.path);
             if (file) {
                 this.logger.info(`HTML file returned at ${this.config.path} is loaded from the file system.`);
