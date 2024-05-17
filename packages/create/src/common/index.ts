@@ -42,14 +42,25 @@ function convertQuestion(question: YUIQuestion, answers: { [key: string]: unknow
  * Prompt a list of YeomanUI questions with the simple prompts module.
  *
  * @param questions list of questions
+ * @param useDefaults - if true, the default values are used for all prompts
  * @returns the answers to the questions
  */
-export async function promptYUIQuestions<T>(questions: YUIQuestion[]): Promise<T> {
+export async function promptYUIQuestions<T>(questions: YUIQuestion[], useDefaults: boolean): Promise<T> {
     const answers: { [key: string]: unknown } = {};
     for (const question of questions) {
         const q = convertQuestion(question, answers);
         if (!q.when || q.when(answers)) {
-            answers[q.name] = (await prompts(q))[q.name];
+            if (useDefaults) {
+                answers[q.name] =
+                    typeof question.default === 'function' ? () => question.default(answers) : question.default;
+            } else {
+                const answer = await prompts(q, {
+                    onCancel: () => {
+                        throw new Error('User canceled the prompt');
+                    }
+                });
+                answers[q.name] = answer[q.name];
+            }
         }
     }
     return answers as T;
