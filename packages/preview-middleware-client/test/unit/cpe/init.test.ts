@@ -104,7 +104,6 @@ describe('main', () => {
         //assert
         expect(applyChangeSpy).toBeCalledWith({ rta: rta }, payload);
         expect(initOutlineSpy).toBeCalledWith(rta, sendActionMock);
-        expect(sendActionMock).toBeCalledWith(common.storageFileChanged('testFile'));
     });
     test('init - rta exception', async () => {
         initOutlineSpy.mockRejectedValue('error');

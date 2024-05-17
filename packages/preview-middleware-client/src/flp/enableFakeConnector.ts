@@ -96,6 +96,5 @@ export default function (): void {
         loadChanges,
         loadSettings: () => Promise.resolve()
     });
-    FakeLrepConnector.fileChangeRequestNotifier = undefined;
     FakeLrepConnector.enableFakeConnector();
 }
