@@ -1,6 +1,7 @@
 import type { Service } from '../base/service-provider';
 import { Axios } from 'axios';
 import type { Logger } from '@sap-ux/logger';
+import { isAxiosError } from '../base/odata-request-error';
 
 export interface App extends Record<string, unknown> {
     'sap.app/id': string;
@@ -53,8 +54,14 @@ export abstract class AppIndexService extends Axios implements Service {
                 responseValues[0].manifestUrl !== undefined
                     ? responseValues[0].manifestUrl
                     : responseValues[0].manifest;
-        } catch (e) {
-            throw new Error(`Failed to get manifest URL for app with id ${appId}`);
+        } catch (error) {
+            if (isAxiosError(error)) {
+                this.log.error(`Failed fetching ui5_app_info_json for app with id ${appId}.`);
+            } else {
+                this.log.error(`Parsing error: ui5_app_info_json is not in expected format for app with id ${appId}.`);
+            }
+            this.log.debug(error);
+            throw error;
         }
         return result;
     }
