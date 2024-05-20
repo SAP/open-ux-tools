@@ -62,7 +62,7 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[]): void
  *
  * @returns boolean whether menu item is enabled or not
  */
-export function isControllerExtensionEnabled(overlays: ElementOverlay[], syncViewsIds: string[]): boolean {
+export const isControllerExtensionEnabled = (overlays: ElementOverlay[], syncViewsIds: string[]): boolean => {
     if (overlays.length === 0 || overlays.length > 1) return false;
 
     const clickedControlId = FlUtils.getViewForControl(overlays[0].getElement()).getId();
@@ -77,7 +77,7 @@ export function isControllerExtensionEnabled(overlays: ElementOverlay[], syncVie
  * @param clickedControlId id of the clicked control
  * @returns boolean if clicked control is from reused component
  */
-const isReuseComponent = (clickedControlId: string): boolean => {
+export const isReuseComponent = (clickedControlId: string): boolean => {
     const version = sap.ui.version;
     const minor = parseInt(version.split('.')[1], 10);
     if (minor < 114) {
@@ -92,7 +92,11 @@ const isReuseComponent = (clickedControlId: string): boolean => {
 
     const manifest = component.getManifest() as Manifest;
 
-    return manifest['sap.app']?.type === 'component';
+    if(!manifest) {
+        return false;
+    }
+
+    return manifest['sap.app'].type === 'component';
 };
 
 /**

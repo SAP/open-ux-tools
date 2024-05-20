@@ -14,16 +14,15 @@ import {
     DialogNames,
     handler,
     initDialogs,
-    isFragmentCommandEnabled,
-    isControllerExtensionEnabled
+    isReuseComponent,
+    isControllerExtensionEnabled,
+    isFragmentCommandEnabled
 } from '../../../src/adp/init-dialogs';
 import AddFragment from '../../../src/adp/controllers/AddFragment.controller';
 import ControllerExtension from '../../../src/adp/controllers/ControllerExtension.controller';
 import ExtensionPoint from '../../../src/adp/controllers/ExtensionPoint.controller';
-import ManagedObject from 'sap/ui/base/ManagedObject';
 
 describe('Dialogs', () => {
-    const elementOverlayMock = { getElement: jest.fn() } as unknown as ElementOverlay;
     const componentMock = {
         getComponentById: jest.fn().mockReturnValue({
             getManifest: () => {
@@ -35,7 +34,6 @@ describe('Dialogs', () => {
             }
         })
     };
-
     describe('initDialogs', () => {
         afterEach(() => {
             jest.restoreAllMocks();
@@ -83,26 +81,26 @@ describe('Dialogs', () => {
     });
 
     describe('isFragmentCommandEnabled', () => {
-        beforeEach(() => {
+        afterEach(() => {
             jest.restoreAllMocks();
         });
 
         const overlay = {
-            getElement: jest.fn().mockReturnValue({ getId: jest.fn()})
+            getElement: jest.fn().mockReturnValue({ getId: jest.fn() })
         } as unknown as ElementOverlay;
 
-        it('should return true if there is one overlay with a stable ID and it is not reuse component', () => {
+        it('should return false if there is one overlay with a stable ID and it is reuse component', () => {
             Utils.checkControlId.mockReturnValue(true);
-            sapMock.ui.version = '1.110.1';
+            sapMock.ui.require = jest.fn().mockReturnValue(componentMock);
             const result = isFragmentCommandEnabled([overlay]);
 
-            expect(result).toBe(true);
+            expect(result).toBe(false);
         });
 
         it('should return false if there is one overlay without a stable ID and it is reuse component', () => {
             Utils.checkControlId.mockReturnValue(false);
-            sapMock.ui.require = jest.fn().mockReturnValue(componentMock);
             const result = isFragmentCommandEnabled([overlay]);
+            sapMock.ui.require = jest.fn().mockReturnValue(componentMock);
 
             expect(result).toBe(false);
         });
@@ -114,6 +112,14 @@ describe('Dialogs', () => {
             expect(result).toBe(false);
         });
 
+        it('should return true if there is one overlay with a stable ID and it is not reuse component', () => {
+            Utils.checkControlId.mockReturnValue(true);
+            sapMock.ui.version = '1.112.1';
+            const result = isFragmentCommandEnabled([overlay]);
+
+            expect(result).toBe(true);
+        });
+
         it('should return false if no overlays are provided', () => {
             const result = isFragmentCommandEnabled([]);
 
@@ -122,23 +128,27 @@ describe('Dialogs', () => {
     });
 
     describe('isControllerExtensionEnabled', () => {
+        const elementOverlayMock = { getElement: jest.fn() } as unknown as ElementOverlay;
         const syncViewsIds = ['syncViewId1', 'syncViewId2'];
+
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
+        
         it('should return false when overlays array is empty', () => {
             expect(isControllerExtensionEnabled([], syncViewsIds)).toBe(false);
         });
 
         it('should return true when overlays length is 1 and clickedControlId is not in syncViewsIds and it is not reuse component', () => {
             FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('asyncViewId2') });
+            sapMock.ui.version = '1.112.1';
             const overlays: ElementOverlay[] = [elementOverlayMock];
-            sapMock.ui.version = '1.118.1';
-            sapMock.ui.require = jest.fn().mockReturnValue({
-                getComponentById: () => undefined
-            });
             expect(isControllerExtensionEnabled(overlays, syncViewsIds)).toBe(true);
         });
 
-        it('should return false when overlays length is 1 and clickedControlId is not in syncViewsIds and but it is reuse component', () => {
-            FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('asyncViewId2') });
+        it('should return false when overlays length is 1 and clickedControlId is not in syncViewsIds and it is reuse component', () => {
+            FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('asyncViewId4') });
             const overlays: ElementOverlay[] = [elementOverlayMock];
             sapMock.ui.version = '1.118.1';
             sapMock.ui.require = jest.fn().mockReturnValue(componentMock);
@@ -150,6 +160,58 @@ describe('Dialogs', () => {
             const overlays: ElementOverlay[] = [elementOverlayMock, elementOverlayMock];
             const syncViewsIds = ['syncViewId1', 'syncViewId2'];
             expect(isControllerExtensionEnabled(overlays, syncViewsIds)).toBe(false);
+        });
+    });
+
+    describe('isReuseComponent', () => {
+        const clickedControlId = 'someViewId';
+        it('should return false for ui5 minor version lower than 114', () => {
+            sapMock.ui.version = '1.112.1';
+            expect(isReuseComponent(clickedControlId)).toBe(false);
+        });
+
+        it('should return false when cannot find component with clicked control Id', () => {
+            sapMock.ui.version = '1.118.1';
+            sapMock.ui.require = jest.fn().mockReturnValue({
+                getComponentById: () => undefined
+            });
+
+            expect(isReuseComponent(clickedControlId)).toBe(false);
+        });
+
+        it('should return false when manifest is undefined', () => {
+            sapMock.ui.version = '1.118.1';
+            sapMock.ui.require = jest.fn().mockReturnValue({
+                getComponentById: jest.fn().mockReturnValue({
+                    getManifest: () => undefined
+                })
+            });
+
+            expect(isReuseComponent(clickedControlId)).toBe(false);
+        });
+
+        it('should return false when type is not component', () => {
+            sapMock.ui.version = '1.118.1';
+            sapMock.ui.require = jest.fn().mockReturnValue({
+                getComponentById: jest.fn().mockReturnValue({
+                    getManifest: () => {
+                        return {
+                            ['sap.app']: {
+                                type: 'view'
+                            }
+                        };
+                    }
+                })
+            });
+
+            expect(isReuseComponent(clickedControlId)).toBe(false);
+        });
+
+        it('should return true when type is component', () => {
+            sapMock.ui.version = '1.118.1';
+            sapMock.ui.require = jest.fn().mockReturnValue(componentMock);
+
+            expect(isReuseComponent(clickedControlId)).toBe(true);
         });
     });
 });
