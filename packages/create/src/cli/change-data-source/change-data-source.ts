@@ -136,6 +136,6 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults): Pro
             await changeDataSource(basePath, defaults);
             return;
         }
-        throw error;
+        logger.debug(error);
     }
 }
