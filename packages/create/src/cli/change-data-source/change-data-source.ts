@@ -24,8 +24,9 @@ import { promptYUIQuestions } from '../../common';
  */
 export function addChangeDataSourceCommand(cmd: Command): void {
     cmd.command('change-data-source [path]')
+        .option('-s, --simulate', 'simulate only do not write or install')
         .action(async (path, options) => {
-            await changeDataSource(path, { ...options });
+            await changeDataSource(path, { ...options }, !!options.simulate);
         });
 }
 
@@ -34,11 +35,12 @@ export function addChangeDataSourceCommand(cmd: Command): void {
  *
  * @param {string} basePath - The path to the adaptation project.
  * @param {PromptDefaults} defaults - The default values for the prompts.
+ * @param simulate if set to true, then no files will be written to the filesystem
  */
 
 let loginAttempts = 3;
 
-async function changeDataSource(basePath: string, defaults: PromptDefaults): Promise<void> {
+async function changeDataSource(basePath: string, defaults: PromptDefaults, simulate: boolean,): Promise<void> {
     const logger = getLogger();
     try {
         if (!basePath) {
@@ -124,7 +126,11 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults): Pro
             dataSourcesDictionary: oDataSourcesDictionary
         };
         const fs = await generateChange<ChangeType.CHANGE_DATA_SOURCE>(basePath, ChangeType.CHANGE_DATA_SOURCE, config);
-        await new Promise((resolve) => fs.commit(resolve));
+        if (!simulate) {
+            await new Promise((resolve) => fs.commit(resolve));
+        } else {
+            await traceChanges(fs);
+        }
     } catch (error) {
         logger.error(error.message);
         if (error.code === 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY' && !defaults.ignoreCertErrors) {
@@ -137,13 +143,13 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults): Pro
                 }
             ]);
             defaults.ignoreCertErrors = confirm.ignoreCertErrors;
-            await changeDataSource(basePath, defaults);
+            await changeDataSource(basePath, defaults, simulate);
             return;
         }
         if (error?.response?.status === 401 && loginAttempts) {
             loginAttempts--;
             logger.error(`Authentication failed. Please check your credentials. Login attempts left: ${loginAttempts}`);
-            await changeDataSource(basePath, defaults);
+            await changeDataSource(basePath, defaults, simulate);
             return;
         }
         logger.debug(error);
