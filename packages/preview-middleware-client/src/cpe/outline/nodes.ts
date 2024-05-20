@@ -40,7 +40,7 @@ function getChildren(current: OutlineViewNode): OutlineViewNode[] {
  *
  * @param input outline view node
  * @param scenario type of project
- * @param reuseComponentsIds node ids of reuse components that are filled when outline nodes are transformed
+ * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
  * @returns Promise<OutlineNode[]>
  */
 export async function transformNodes(
@@ -48,14 +48,8 @@ export async function transformNodes(
     scenario: Scenario,
     reuseComponentsIds: Set<string>
 ): Promise<OutlineNode[]> {
-    const version = sap.ui.version;
-    const minor = parseInt(version.split('.')[1], 10);
     const stack = [...input];
     const items: OutlineNode[] = [];
-    let Component;
-    if (scenario === 'ADAPTATION_PROJECT' && minor >= 114) {
-        Component = (await import('sap/ui/core/Component')).default;
-    }
     while (stack.length) {
         const current = stack.shift();
         const editable = isEditable(current?.id);
@@ -73,15 +67,7 @@ export async function transformNodes(
                 children: await transformNodes(children, scenario, reuseComponentsIds)
             };
 
-            if (scenario === 'ADAPTATION_PROJECT' && current?.component && minor >= 114) {
-                const nodeComponent = Component?.getComponentById(current.id);
-                if (nodeComponent) {
-                    const manifest = nodeComponent.getManifest() as Manifest;
-                    if (manifest['sap.app']?.type === 'component') {
-                        reuseComponentsIds.add(current.id);
-                    }
-                }
-            }
+            await fillReuseComponents(reuseComponentsIds, current, scenario);
 
             items.push(node);
         }
@@ -101,4 +87,26 @@ export async function transformNodes(
         }
     }
     return items;
+}
+
+/**
+ * Fill reuse components ids.
+ *
+ * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
+ * @param node view node
+ * @param scenario type of project
+ */
+async function fillReuseComponents(reuseComponentsIds: Set<string>, node: OutlineViewNode, scenario: Scenario): Promise<void> {
+    const version = sap.ui.version;
+    const minor = parseInt(version.split('.')[1], 10);
+    let Component = (await import('sap/ui/core/Component')).default;
+    if (scenario === 'ADAPTATION_PROJECT' && node?.component && minor >= 114) {
+        const nodeComponent = Component?.getComponentById(node.id);
+        if (nodeComponent) {
+            const manifest = nodeComponent.getManifest() as Manifest;
+            if (manifest['sap.app']?.type === 'component') {
+                reuseComponentsIds.add(node.id);
+            }
+        }
+    }
 }
