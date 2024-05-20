@@ -11,11 +11,13 @@ import {
 } from '@sap-ux/adp-tooling';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { getLogger, traceChanges } from '../../tracing';
-import { prompt } from 'inquirer';
+import prompts from 'prompts';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { promptYUIQuestions } from '../../common';
+
+let loginAttempts = 3;
 
 /**
  * Add a new sub-command to change the data source of an adaptation project to the given command.
@@ -35,12 +37,9 @@ export function addChangeDataSourceCommand(cmd: Command): void {
  *
  * @param {string} basePath - The path to the adaptation project.
  * @param {PromptDefaults} defaults - The default values for the prompts.
- * @param simulate if set to true, then no files will be written to the filesystem
+ * @param {boolean} simulate - if set to true, then no files will be written to the filesystem
  */
-
-let loginAttempts = 3;
-
-async function changeDataSource(basePath: string, defaults: PromptDefaults, simulate: boolean,): Promise<void> {
+async function changeDataSource(basePath: string, defaults: PromptDefaults, simulate: boolean): Promise<void> {
     const logger = getLogger();
     try {
         if (!basePath) {
@@ -56,13 +55,16 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults, simu
 
         const variant = JSON.parse(readFileSync(join(basePath, 'webapp', 'manifest.appdescr_variant'), 'utf-8'));
         const ui5Config = await UI5Config.newInstance(readFileSync(join(basePath, 'ui5.yaml'), 'utf-8'));
-        const { destination, url, client } = ui5Config.findCustomMiddleware<{ backend: Array<{ destination?: string, url?: string, client?: string }> }>('fiori-tools-proxy')?.configuration?.backend?.[0] ?? {}
+        const { destination, url, client } =
+            ui5Config.findCustomMiddleware<{ backend: Array<{ destination?: string; url?: string; client?: string }> }>(
+                'fiori-tools-proxy'
+            )?.configuration?.backend?.[0] ?? {};
 
         let target;
         if (destination) {
             target = { destination };
         } else if (url) {
-            target = { url, client};
+            target = { url, client };
         } else {
             throw new Error('No system configuration found in ui5.yaml');
         }
@@ -135,7 +137,7 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults, simu
         logger.error(error.message);
         if (error.code === 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY' && !defaults.ignoreCertErrors) {
             logger.error('If you are using a self-signed certificate, please use the --ignore-cert-errors flag.');
-            const confirm = await prompt([
+            const confirm = await prompts([
                 {
                     type: 'confirm',
                     name: 'ignoreCertErrors',

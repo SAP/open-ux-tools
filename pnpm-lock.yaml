@@ -745,9 +745,6 @@ importers:
       diff:
         specifier: 5.1.0
         version: 5.1.0
-      inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0

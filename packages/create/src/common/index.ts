@@ -62,9 +62,9 @@ async function convertQuestion(
         const initialValue = (q.initial as Function)();
         q.choices = choices.map((choice) => {
             if (typeof choice === 'object') {
-                return ({ title: choice.name, value: choice.value })
+                return { title: choice.name, value: choice.value };
             }
-            return ({ title: choice, value: choice });
+            return { title: choice, value: choice };
         });
         q.initial = () => choices.findIndex((choice) => choice.value === initialValue);
     }
