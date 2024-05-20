@@ -24,6 +24,15 @@ Calling `sap-ux add` allows adding a feature to a project.
 ## remove
 Calling `sap-ux remove` allows removing a feature to a project.
 
+## adp-add
+Calling `sap-ux adp-add` allows adding a manifest change to an already existing adaptation project
+
+### change-data-source
+Calling `sap-ux adp-add change-data-source` allows replacing the OData Source of the base application.  
+```sh
+sap-ux adp-add change-data-source /path/to/adaptation-project
+```
+
 ## generate
 Calling `sap-ux generate` allows generating a new project.
 
