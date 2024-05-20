@@ -3,7 +3,7 @@ import type { AdpProjectData, DataSourceData, PromptDefaults } from '@sap-ux/adp
 import {
     generateChange,
     ChangeType,
-    ChangeDataSourcePrompts,
+    getPromptsForChangeDataSource,
     getTargetDataSources,
     getTargetODataAnnotations,
     getDataSourcesDictionary,
@@ -76,7 +76,7 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults): Pro
         const oDataServicesWithURI = getDataServicesWithURI(oDataSources);
         const isInSafeMode = (ui5Config.getCustomConfiguration('adp') as { safeMode: boolean })?.safeMode;
         const answers = await prompt(
-            ChangeDataSourcePrompts.getQuestions({
+            getPromptsForChangeDataSource({
                 oDataSources,
                 oDataSourcesDictionary,
                 oDataAnnotations,

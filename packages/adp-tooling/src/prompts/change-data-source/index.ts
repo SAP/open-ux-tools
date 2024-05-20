@@ -1,8 +1,8 @@
 import type { InputQuestion } from '@sap-ux/inquirer-common';
 import type { Answers, ListQuestion, Question, NumberQuestion } from 'inquirer';
-import type { AdpChangeDataSourceAnswers, AdpChangeDataSourceQuestions } from '../../../types';
-import { t } from '../../../i18n';
-import { validateURI, validateODataServices } from '../../validators';
+import type { AdpChangeDataSourceAnswers, AdpChangeDataSourceQuestions } from '../../types';
+import { t } from '../../i18n';
+import { validateURI, validateODataServices } from '../validators';
 
 const ODATA_V2_PREFIX_ABAP = '/sap/opu/odata/';
 const ODATA_V4_PREFIX_ABAP = '/sap/opu/odata4/';
@@ -104,12 +104,12 @@ function shouldShowAnnotationODataVersionInfoMessage(data: ShowAnnotationDataVer
 }
 
 /**
- * Gets the questions for changing the data source.
+ * Gets the prompts for changing the data source.
  *
  * @param {AdpChangeDataSourceQuestions} data - the data for the questions
  * @returns {Question<AdpChangeDataSourceAnswers>[]} - the questions
  */
-export function getQuestions(data: AdpChangeDataSourceQuestions): Question<AdpChangeDataSourceAnswers>[] {
+export function getPrompts(data: AdpChangeDataSourceQuestions): Question<AdpChangeDataSourceAnswers>[] {
     return [
         {
             type: 'input',
