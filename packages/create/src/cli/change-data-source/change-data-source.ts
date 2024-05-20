@@ -1,5 +1,5 @@
 import type { Command } from 'commander';
-import type { AdpProjectData, DataSourceData, PromptDefaults } from '@sap-ux/adp-tooling';
+import type { AdpProjectData, DataSourceData, PromptDefaults, AdpChangeDataSourceAnswers } from '@sap-ux/adp-tooling';
 import {
     generateChange,
     ChangeType,
@@ -12,9 +12,10 @@ import {
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { getLogger, traceChanges } from '../../tracing';
 import { prompt } from 'inquirer';
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { UI5Config } from '@sap-ux/ui5-config';
+import { promptYUIQuestions } from '../../common';
 
 /**
  * Add a new sub-command to change the data source of an adaptation project to the given command.
@@ -42,7 +43,15 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults): Pro
     try {
         if (!basePath) {
             basePath = process.cwd();
-        } 
+        }
+        const configJsonPath = join(basePath, '.adp', 'config.json');
+        if (existsSync(configJsonPath)) {
+            const config = JSON.parse(readFileSync(configJsonPath, 'utf-8'));
+            if (config.environment === 'CF') {
+                throw new Error('Changing data source is not supported for CF projects.');
+            }
+        }
+
         const variant = JSON.parse(readFileSync(join(basePath, 'webapp', 'manifest.appdescr_variant'), 'utf-8'));
         const ui5Config = await UI5Config.newInstance(readFileSync(join(basePath, 'ui5.yaml'), 'utf-8'));
         const { destination, url, client } = ui5Config.findCustomMiddleware<{ backend: Array<{ destination?: string, url?: string, client?: string }> }>('fiori-tools-proxy')?.configuration?.backend?.[0] ?? {}
@@ -75,7 +84,7 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults): Pro
         const oDataAnnotations = getTargetODataAnnotations(manifest['sap.app'].dataSources);
         const oDataServicesWithURI = getDataServicesWithURI(oDataSources);
         const isInSafeMode = (ui5Config.getCustomConfiguration('adp') as { safeMode: boolean })?.safeMode;
-        const answers = await prompt(
+        const answers = await promptYUIQuestions<AdpChangeDataSourceAnswers>(
             getPromptsForChangeDataSource({
                 oDataSources,
                 oDataSourcesDictionary,
@@ -84,7 +93,8 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults): Pro
                 isInSafeMode,
                 isYUI: false,
                 isCFEnv: false
-            })
+            }),
+            false
         );
 
         const config: DataSourceData = {

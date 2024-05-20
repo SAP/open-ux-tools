@@ -1,6 +1,6 @@
-import type { InputQuestion } from '@sap-ux/inquirer-common';
-import type { Answers, ListQuestion, Question, NumberQuestion } from 'inquirer';
-import type { AdpChangeDataSourceAnswers, AdpChangeDataSourceQuestions } from '../../types';
+import type { NumberQuestion, ListQuestion, InputQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { Answers } from 'inquirer';
+import type { AdpChangeDataSourceQuestion, AdpChangeDataSourceAnswers, AdpChangeDataSourceQuestions } from '../../types';
 import { t } from '../../i18n';
 import { validateURI, validateODataServices } from '../validators';
 
@@ -109,7 +109,7 @@ function shouldShowAnnotationODataVersionInfoMessage(data: ShowAnnotationDataVer
  * @param {AdpChangeDataSourceQuestions} data - the data for the questions
  * @returns {Question<AdpChangeDataSourceAnswers>[]} - the questions
  */
-export function getPrompts(data: AdpChangeDataSourceQuestions): Question<AdpChangeDataSourceAnswers>[] {
+export function getPrompts(data: AdpChangeDataSourceQuestions): AdpChangeDataSourceQuestion[] {
     return [
         {
             type: 'input',

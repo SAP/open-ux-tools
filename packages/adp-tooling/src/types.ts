@@ -2,6 +2,7 @@ import type { UI5FlexLayer, ManifestNamespace } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp } from '@sap-ux/ui5-config';
 import type { Editor } from 'mem-fs-editor';
+import type { YUIQuestion } from '@sap-ux/inquirer-common';
 
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
@@ -353,6 +354,8 @@ export interface AdpChangeDataSourceAnswers {
     targetODataAnnotationURIV2Info?: string;
     targetODataAnnotationURIV4Info?: string;
 }
+
+export type AdpChangeDataSourceQuestion = YUIQuestion<AdpChangeDataSourceAnswers>
 
 export type DataSource = ManifestNamespace.DataSource & { dataSourceName: string; annotations: string[] };
 export interface AdpChangeDataSourceQuestions {
