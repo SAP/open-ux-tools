@@ -96,7 +96,11 @@ export async function transformNodes(
  * @param node view node
  * @param scenario type of project
  */
-async function fillReuseComponents(reuseComponentsIds: Set<string>, node: OutlineViewNode, scenario: Scenario): Promise<void> {
+async function fillReuseComponents(
+    reuseComponentsIds: Set<string>,
+    node: OutlineViewNode,
+    scenario: Scenario
+): Promise<void> {
     const version = sap.ui.version;
     const minor = parseInt(version.split('.')[1], 10);
     let Component = (await import('sap/ui/core/Component')).default;
