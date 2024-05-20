@@ -99,11 +99,7 @@ export default function App(appProps: AppProps): ReactElement {
     };
 
     useEffect(() => {
-        if (
-            dialogMessage &&
-            isAdpProject &&
-            !dialogQueue.some((dialogObject) => dialogObject.message === dialogMessage.message)
-        ) {
+        if (dialogMessage && isAdpProject) {
             setShouldShowDialogMessage(true);
             setShouldHideIframe(dialogMessage.shouldHideIframe);
             setDialogQueue((prevQueue) => [...prevQueue, dialogMessage]);
