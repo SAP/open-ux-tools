@@ -345,17 +345,11 @@ export interface AdpProjectData {
 export interface AdpChangeDataSourceAnswers {
     targetODataSource?: string;
     oDataSourceURI?: string;
-    targetODataURIInfo?: string;
-    targetODataURIV2Info?: string;
-    targetODataURIV4Info?: string;
     maxAge?: number;
     oDataAnnotationSourceURI?: string;
-    targetODataAnnotationURIInfo?: string;
-    targetODataAnnotationURIV2Info?: string;
-    targetODataAnnotationURIV4Info?: string;
 }
 
-export type AdpChangeDataSourceQuestion = YUIQuestion<AdpChangeDataSourceAnswers>
+export type AdpChangeDataSourceQuestion = YUIQuestion<AdpChangeDataSourceAnswers>;
 
 export type DataSource = ManifestNamespace.DataSource & { dataSourceName: string; annotations: string[] };
 export interface AdpChangeDataSourceQuestions {
