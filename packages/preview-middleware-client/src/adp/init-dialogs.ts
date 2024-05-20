@@ -72,10 +72,10 @@ export const isControllerExtensionEnabled = (overlays: ElementOverlay[], syncVie
 }
 
 /**
- * Function that checks if clicked control is from view that uses reused component
+ * Function that checks if clicked control is from view which is reuse component
  *
  * @param clickedControlId id of the clicked control
- * @returns boolean if clicked control is from reused component
+ * @returns boolean if clicked control is from reused component view
  */
 export const isReuseComponent = (clickedControlId: string): boolean => {
     const version = sap.ui.version;
