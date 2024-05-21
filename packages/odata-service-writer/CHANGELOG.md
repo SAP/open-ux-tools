@@ -1,5 +1,25 @@
 # @sap-ux/odata-service-writer
 
+## 0.19.1
+
+### Patch Changes
+
+-   Updated dependencies [e3d2324c]
+    -   @sap-ux/ui5-config@0.22.4
+    -   @sap-ux/mockserver-config-writer@0.5.2
+
+## 0.19.0
+
+### Minor Changes
+
+-   a47d0f5e: support for memfs within mockserver logic
+
+## 0.18.0
+
+### Minor Changes
+
+-   9ad3cf7a: conditionally writing synchronizationMode based on minUI5Version
+
 ## 0.17.2
 
 ### Patch Changes

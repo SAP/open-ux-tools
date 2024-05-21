@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.22.4
+
+### Patch Changes
+
+-   e3d2324c: Improvements for consumption
+
 ## 0.22.3
 
 ### Patch Changes

@@ -1,5 +1,90 @@
 # @sap-ux/preview-middleware
 
+## 0.13.41
+
+### Patch Changes
+
+-   1618da09: Use existing html file on file system for preview
+
+## 0.13.40
+
+### Patch Changes
+
+-   da5d9f0b: Fragment files are not created together with an addXML change in onChangeRequest handler
+-   Updated dependencies [da5d9f0b]
+    -   @sap-ux/adp-tooling@0.10.6
+
+## 0.13.39
+
+### Patch Changes
+
+-   52faf16f: Fix RTA initialization issue for UI5 versions less than 1.72.
+
+## 0.13.38
+
+### Patch Changes
+
+-   39665ea9: Fix for CPE does not start UI Adaptation for ADP Projects with lower UI5 Version than 1.120
+
+## 0.13.37
+
+### Patch Changes
+
+-   9e8af342: Disable fragment context menu item in CPE for controls with no stable id
+
+## 0.13.36
+
+### Patch Changes
+
+-   Updated dependencies [c87fcc91]
+    -   @sap-ux/adp-tooling@0.10.5
+
+## 0.13.35
+
+### Patch Changes
+
+-   Updated dependencies [e3d2324c]
+    -   @sap-ux/project-access@1.20.0
+    -   @sap-ux/adp-tooling@0.10.4
+
+## 0.13.34
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.3
+
+## 0.13.33
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.2
+
+## 0.13.32
+
+### Patch Changes
+
+-   Updated dependencies [f361f3b4]
+    -   @sap-ux/adp-tooling@0.10.1
+
+## 0.13.31
+
+### Patch Changes
+
+-   Updated dependencies [9ccbaded]
+    -   @sap-ux/adp-tooling@0.10.0
+
+## 0.13.30
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.28
+
+## 0.13.29
+
+### Patch Changes
+
+-   cad21d4d: Enable Adding Controller Extension only on async views for Adp Projects
+
 ## 0.13.28
 
 ### Patch Changes

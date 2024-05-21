@@ -1,5 +1,29 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.9.12
+
+### Patch Changes
+
+-   52faf16f: Fix RTA initialization issue for UI5 versions less than 1.72.
+
+## 0.9.11
+
+### Patch Changes
+
+-   39665ea9: Fix for CPE does not start UI Adaptation for ADP Projects with lower UI5 Version than 1.120
+
+## 0.9.10
+
+### Patch Changes
+
+-   9e8af342: Disable fragment context menu item in CPE for controls with no stable id
+
+## 0.9.9
+
+### Patch Changes
+
+-   cad21d4d: Enable Adding Controller Extension only on async views for Adp Projects
+
 ## 0.9.8
 
 ### Patch Changes

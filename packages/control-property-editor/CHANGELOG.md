@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.4.20
+
+### Patch Changes
+
+-   cad21d4d: Enable Adding Controller Extension only on async views for Adp Projects
+
 ## 0.4.19
 
 ### Patch Changes
