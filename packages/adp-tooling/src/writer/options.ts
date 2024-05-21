@@ -1,5 +1,5 @@
 import type { CustomMiddleware, UI5Config } from '@sap-ux/ui5-config';
-import type { AdpWriterConfig } from '../types';
+import type { AdpCustomConfig, AdpWriterConfig } from '../types';
 
 /**
  * Generate the configuration for the middlewares required for the ui5.yaml.
@@ -38,6 +38,19 @@ export function enhanceUI5DeployYaml(ui5Config: UI5Config, config: AdpWriterConf
 }
 
 /**
+ * Generate custom configuration required for the ui5.yaml.
+ *
+ * @param ui5Config configuration representing the ui5.yaml
+ * @param config full project configuration
+ */
+export function enhanceUI5YamlWithCustomConfig(ui5Config: UI5Config, config?: AdpCustomConfig) {
+    if (config?.adp) {
+        const { safeMode } = config.adp;
+        ui5Config.addCustomConfiguration('adp', { safeMode });
+    }
+}
+
+/**
  * Get a list of required middlewares using the Fiori tools.
  *
  * @param config full project configuration
@@ -61,8 +74,9 @@ function getFioriToolsMiddlwares(config: AdpWriterConfig): CustomMiddleware<unkn
             configuration: {
                 ignoreCertErrors: false,
                 ui5: {
+                    version: config?.ui5?.minVersion ?? '', //default to latest if version is not set
                     path: ['/resources', '/test-resources'],
-                    url: 'https://ui5.sap.com'
+                    url: config?.ui5?.frameworkUrl ?? 'https://ui5.sap.com'
                 },
                 backend: [
                     {

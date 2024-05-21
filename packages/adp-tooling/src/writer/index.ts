@@ -4,7 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { AdpWriterConfig } from '../types';
 import { UI5Config } from '@sap-ux/ui5-config';
-import { enhanceUI5Yaml, enhanceUI5DeployYaml, hasDeployConfig } from './options';
+import { enhanceUI5Yaml, enhanceUI5DeployYaml, hasDeployConfig, enhanceUI5YamlWithCustomConfig } from './options';
 
 const tmplPath = join(__dirname, '../../templates/project');
 
@@ -38,6 +38,7 @@ async function writeUi5Yaml(basePath: string, config: AdpWriterConfig, fs: Edito
     const baseUi5ConfigContent = fs.read(ui5ConfigPath);
     const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
     enhanceUI5Yaml(ui5Config, config);
+    enhanceUI5YamlWithCustomConfig(ui5Config, config?.customConfig);
     fs.write(ui5ConfigPath, ui5Config.toString());
     // ui5-deploy.yaml
     if (hasDeployConfig(config)) {
