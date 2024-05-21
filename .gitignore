@@ -174,5 +174,5 @@ dist
 **/test-results
 **/fixtures-copy
 
-
+# nx 
 .nx

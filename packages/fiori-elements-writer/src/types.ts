@@ -36,7 +36,8 @@ export interface EntityConfig {
 export enum TableType {
     GRID = 'GridTable',
     ANALYTICAL = 'AnalyticalTable',
-    RESPONSIVE = 'ResponsiveTable'
+    RESPONSIVE = 'ResponsiveTable',
+    TREE = 'TreeTable'
 }
 
 export enum TableSelectionMode {
@@ -45,8 +46,12 @@ export enum TableSelectionMode {
     MULTI = 'Multi',
     SINGLE = 'Single'
 }
-
-export interface LROPSettings {
+export interface TableSettings {
+    tableType?: TableType;
+    qualifier?: string;
+    hierarchyQualifier?: string;
+}
+export interface LROPSettings extends TableSettings {
     entityConfig: EntityConfig;
 }
 
@@ -55,7 +60,7 @@ export interface FPMSettings {
     pageName: string;
 }
 
-export interface WorklistSettings {
+export interface WorklistSettings extends TableSettings {
     entityConfig: EntityConfig;
 }
 
@@ -67,9 +72,8 @@ export interface OVPSettings {
     filterEntityType: string; // Filters the `globalFilterModel` data displayed in OVP cards
 }
 
-export interface ALPSettings {
+export interface ALPSettings extends TableSettings {
     entityConfig: EntityConfig;
-    tableType?: TableType; // Defaults to 'Analytical'
 }
 export interface ALPSettingsV2 extends ALPSettings {
     smartVariantManagement?: boolean; // Not set by default

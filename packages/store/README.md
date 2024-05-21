@@ -20,6 +20,8 @@ interface Service<Entity, EntityKey> {
 Currently, `'system'`, `'telemetry'` and `'api-hub'`  are the only supported entities. Support for `'user'` may be added in the future.
 Unsupported entity names will result in an error being thrown.
 
+The store supports storing values in operating system specific secure storage, like keychain on MacOS or secure storage on Windows. To disable access to secure storage, environment variable `FIORI_TOOLS_DISABLE_SECURE_STORE` can be set.
+
 # Recommended way to add support for a new entity
 
 (Please read the code for the system entity starting here for a concrete example: [./src/services/backend-system.ts](./src/services/backend-system.ts))

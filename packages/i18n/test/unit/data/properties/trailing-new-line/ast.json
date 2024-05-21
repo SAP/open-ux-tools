@@ -1,0 +1,16 @@
+[
+  {
+    "type": "key-element-line",
+    "key": {
+      "type": "key",
+      "value": "key",
+      "range": "[(0,0)..(0,3)]"
+    },
+    "element": {
+      "type": "value",
+      "value": "",
+      "range": "[(0,3)..(0,3)]"
+    },
+    "range": "[(0,0)..(0,3)]"
+  }
+]

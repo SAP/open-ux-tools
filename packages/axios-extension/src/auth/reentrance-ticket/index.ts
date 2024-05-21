@@ -7,9 +7,9 @@ import { setupRedirectHandling } from './redirect';
 
 /**
  * DO NOT USE THIS SERVICE ENDPOINT DIRECTLY.
- *  It might change without notice.
+ * It might be removed in the future without notice.
  */
-const ADT_REENTRANCE_ENDPOINT = '/sap/bc/adt/core/http/reentranceticket';
+const ADT_REENTRANCE_ENDPOINT = '/sap/bc/sec/reentrance';
 
 /**
  * Get the reentrance ticket from the backend.
@@ -37,7 +37,10 @@ export async function getReentranceTicket({
         const redirectPort = (server.address() as AddressInfo).port;
 
         // Open browser to handle SAML flow and return the reentrance ticket
-        const url = `${backend.uiHostname()}${ADT_REENTRANCE_ENDPOINT}?redirect-url=${redirectUrl(redirectPort)}`;
+        const scenario = process.env.FIORI_TOOLS_SCENARIO ?? 'FTO1';
+        const url = `${backend.uiHostname()}${ADT_REENTRANCE_ENDPOINT}?scenario=${scenario}&redirect-url=${redirectUrl(
+            redirectPort
+        )}`;
         open(url)?.catch((error) => logger.error(error));
     });
 }

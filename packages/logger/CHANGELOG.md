@@ -1,5 +1,17 @@
 # @sap-ux/logger
 
+## 0.5.1
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+
+## 0.5.0
+
+### Minor Changes
+
+-   2e0b1a6d: Adding ExtensionLogger for convenient VSCode extension logging
+
 ## 0.4.0
 
 ### Minor Changes

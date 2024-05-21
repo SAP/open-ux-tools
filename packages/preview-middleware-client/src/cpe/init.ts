@@ -14,6 +14,7 @@ import { loadDefaultLibraries } from './documentation';
 import Log from 'sap/base/Log';
 import { logger } from './logger';
 import { getIcons } from './ui5-utils';
+import { WorkspaceConnectorService } from './connector-service';
 
 export default function init(rta: RuntimeAuthoring): Promise<void> {
     Log.info('Initializing Control Property Editor');
@@ -36,7 +37,9 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
     const selectionService = new SelectionService(rta);
 
     const changesService = new ChangeService({ rta }, selectionService);
-    const services: Service[] = [selectionService, changesService];
+    const connectorService = new WorkspaceConnectorService();
+
+    const services: Service[] = [selectionService, changesService, connectorService];
     try {
         loadDefaultLibraries();
         const { sendAction } = startPostMessageCommunication<ExternalAction>(
@@ -62,6 +65,7 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
             Log.error('Error during initialization of Control Property Editor', error)
         );
         const icons = getIcons();
+
         sendAction(iconsLoaded(icons));
     } catch (error) {
         Log.error('Error during initialization of Control Property Editor', error);

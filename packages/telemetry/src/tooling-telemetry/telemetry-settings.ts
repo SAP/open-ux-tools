@@ -68,7 +68,8 @@ async function readEnableTelemetry(storeService: Service<TelemetrySetting, Telem
                     (propKey) => (deprecatedSetting[propKey] ?? true) as boolean
                 );
                 const deprecatedEnableTelemetrySetting = propValues.reduce(
-                    (prevValue, currentValue) => prevValue && currentValue
+                    (prevValue, currentValue) => prevValue && currentValue,
+                    true
                 );
 
                 await setEnableTelemetry(deprecatedEnableTelemetrySetting);
@@ -109,16 +110,21 @@ function watchTelemetrySettingStore(storeService: Service<TelemetrySetting, Tele
  */
 export const initTelemetrySettings = async (options: ToolsSuiteTelemetryInitSettings): Promise<void> => {
     try {
-        TelemetrySettings.azureInstrumentationKey = options.resourceId;
         TelemetrySettings.consumerModuleName = options.consumerModule.name;
         TelemetrySettings.consumerModuleVersion = options.consumerModule.version;
         ToolingTelemetrySettings.internalFeature = options.internalFeature ?? false;
+        if (options.resourceId) {
+            TelemetrySettings.azureInstrumentationKey = options.resourceId;
+        }
         const storeService = await getService<TelemetrySetting, TelemetrySettingKey>({
             entityName: 'telemetrySetting'
         });
 
         await readEnableTelemetry(storeService);
-        watchTelemetrySettingStore(storeService);
+
+        if (options.watchTelemetrySettingStore) {
+            watchTelemetrySettingStore(storeService);
+        }
     } catch (err) {
         reportRuntimeError(err);
     }

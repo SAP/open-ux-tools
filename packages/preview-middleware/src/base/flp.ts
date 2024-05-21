@@ -1,15 +1,28 @@
 import type { ReaderCollection } from '@ui5/fs';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
+import type { Editor as MemFsEditor } from 'mem-fs-editor';
 import { render } from 'ejs';
-import type { Request, RequestHandler, Response, Router } from 'express';
+import type http from 'http';
+import type { Request, RequestHandler, Response, Router, NextFunction } from 'express';
 import { readFileSync } from 'fs';
-import { dirname, join, relative } from 'path';
-import type { App, Editor, FlpConfig, MiddlewareConfig, RtaConfig } from '../types';
+import { dirname, join, posix } from 'path';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
-import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
-import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
+import {
+    AdpPreview,
+    type AdpPreviewConfig,
+    type CommonChangeProperties,
+    type OperationType
+} from '@sap-ux/adp-tooling';
+import { createProjectAccess } from '@sap-ux/project-access';
+import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
+
+import { deleteChange, readChanges, writeChange } from './flex';
+import { generateImportList, mergeTestConfigDefaults } from './test';
+import type { App, Editor, FlpConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -48,6 +61,8 @@ const UI5_LIBS = [
     'sap.webanalytics',
     'sap.zen'
 ];
+
+const DEFAULT_LIVERELOAD_PORT = 35729;
 
 /**
  * Enhanced request handler that exposes a list of endpoints for the cds-plugin-ui5.
@@ -95,6 +110,7 @@ export interface CustomConnector {
 export interface FlexConnector {
     connector: string;
     layers: string[];
+    url?: string;
 }
 
 /**
@@ -110,9 +126,7 @@ export interface TemplateConfig {
             additionalInformation: string;
             applicationType: 'URL';
             url: string;
-            applicationDependencies?: {
-                manifest: boolean;
-            };
+            applicationDependencies?: { manifest: boolean };
         }
     >;
     ui5: {
@@ -122,6 +136,7 @@ export interface TemplateConfig {
         bootstrapOptions: string;
         resources: Record<string, string>;
     };
+    init?: string;
     flex?: {
         [key: string]: unknown;
         layer: UI5FlexLayer;
@@ -131,13 +146,22 @@ export interface TemplateConfig {
     locateReuseLibsScript?: boolean;
 }
 
+type OnChangeRequestHandler = (
+    type: OperationType,
+    change: CommonChangeProperties,
+    fs: MemFsEditor,
+    logger: Logger
+) => Promise<void>;
+
 /**
  * Class handling preview of a sandbox FLP.
  */
 export class FlpSandbox {
+    protected onChangeRequest: OnChangeRequestHandler | undefined;
     protected templateConfig: TemplateConfig;
     public readonly config: FlpConfig;
     public readonly rta?: RtaConfig;
+    public readonly test?: TestConfig[];
     public readonly router: EnhancedRouter;
 
     /**
@@ -159,14 +183,25 @@ export class FlpSandbox {
             intent: config.flp?.intent ?? DEFAULT_INTENT,
             apps: config.flp?.apps ?? [],
             libs: config.flp?.libs,
-            theme: config.flp?.theme
+            theme: config.flp?.theme,
+            init: config.flp?.init
         };
         if (!this.config.path.startsWith('/')) {
             this.config.path = `/${this.config.path}`;
         }
+        this.test = config.test;
         this.rta = config.rta;
-        logger.debug(`Config: ${JSON.stringify({ flp: this.config, rta: this.rta })}`);
+        logger.debug(`Config: ${JSON.stringify({ flp: this.config, rta: this.rta, test: this.test })}`);
         this.router = createRouter();
+    }
+
+    /**
+     * Registers a handler function to be called when a change request occurs.
+     *
+     * @param {OnChangeRequestHandler} handler - The function to be executed when a change request occurs.
+     */
+    public addOnChangeRequestHandler(handler: OnChangeRequestHandler): void {
+        this.onChangeRequest = handler;
     }
 
     /**
@@ -177,13 +212,17 @@ export class FlpSandbox {
      * @param resources optional additional resource mappings
      */
     async init(manifest: Manifest, componentId?: string, resources: Record<string, string> = {}): Promise<void> {
-        const flex = this.createFlexHandler();
+        this.createFlexHandler();
+        const flex = this.getFlexSettings();
         const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
         const ui5Theme =
             this.config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
+        const id = manifest['sap.app'].id;
+        const ns = id.replace(/\./g, '/');
         this.templateConfig = {
-            basePath: relative(dirname(this.config.path), '/') ?? '.',
+            basePath: posix.relative(posix.dirname(this.config.path), '/') ?? '.',
             apps: {},
+            init: this.config.init ? ns + this.config.init : undefined,
             ui5: {
                 libs: this.getUI5Libs(manifest),
                 theme: ui5Theme,
@@ -196,8 +235,8 @@ export class FlpSandbox {
             },
             locateReuseLibsScript: this.config.libs ?? (await this.hasLocateReuseLibsScript())
         };
-        const id = manifest['sap.app'].id;
-        this.addApp(manifest, {
+
+        await this.addApp(manifest, {
             componentId,
             target: resources[componentId ?? id] ?? this.templateConfig.basePath,
             local: '.',
@@ -210,7 +249,11 @@ export class FlpSandbox {
             this.rta.options.appName = id;
             this.addEditorRoutes(this.rta);
         }
-        this.addRoutesForAdditionalApps();
+        if (this.test) {
+            this.addTestRoutes(this.test, id);
+        }
+
+        await this.addRoutesForAdditionalApps();
         this.logger.info(`Initialized for app ${id}`);
         this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
     }
@@ -259,20 +302,26 @@ export class FlpSandbox {
             if (editor.developerMode) {
                 previewUrl = `${previewUrl}.inner.html`;
                 editor.pluginScript ??= 'open/ux/preview/client/cpe/init';
-                this.router.get(editor.path, (_req: Request, res: Response) => {
+                this.router.get(editor.path, async (_req: Request, res: Response) => {
                     const scenario = rta.options?.scenario;
                     let templatePreviewUrl = `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.config.intent.object}-${this.config.intent.action}`;
                     if (scenario === 'ADAPTATION_PROJECT') {
                         templatePreviewUrl = templatePreviewUrl.replace('?', `?sap-ui-layer=${rta.layer}&`);
                     }
                     const template = readFileSync(join(__dirname, '../../templates/flp/editor.html'), 'utf-8');
+                    const envPort = process.env.FIORI_TOOLS_LIVERELOAD_PORT;
+                    let livereloadPort: number = envPort ? parseInt(envPort, 10) : DEFAULT_LIVERELOAD_PORT;
+                    livereloadPort = isNaN(livereloadPort) ? DEFAULT_LIVERELOAD_PORT : livereloadPort;
+                    const envLivereloadUrl = isAppStudio() ? await exposePort(livereloadPort) : undefined;
                     const html = render(template, {
                         previewUrl: templatePreviewUrl,
                         telemetry: rta.options?.telemetry ?? false,
                         appName: rta.options?.appName,
-                        scenario
+                        scenario,
+                        livereloadPort,
+                        livereloadUrl: envLivereloadUrl
                     });
-                    res.status(200).contentType('html').send(html);
+                    this.sendResponse(res, 'text/html', 200, html);
                 });
                 let path = dirname(editor.path);
                 if (!path.endsWith('/')) {
@@ -282,8 +331,11 @@ export class FlpSandbox {
             }
 
             this.router.get(previewUrl, (_req: Request, res: Response) => {
-                const html = this.generateSandboxForEditor(rta, editor);
-                res.status(200).contentType('html').send(html);
+                const html = this.generateSandboxForEditor(rta, editor).replace(
+                    '</body>',
+                    `</body>\n<!-- livereload disabled for editor </body>-->`
+                );
+                this.sendResponse(res, 'text/html', 200, html);
             });
         }
     }
@@ -296,21 +348,16 @@ export class FlpSandbox {
         this.router.use(PREVIEW_URL.client.url, serveStatic(PREVIEW_URL.client.local));
 
         // add route for the sandbox.html
-        this.router.get(this.config.path, (async (req: Request, res: Response & { _livereload?: boolean }) => {
-            // warn the user if a file with the same name exists in the filesystem
+        this.router.get(this.config.path, (async (_req: Request, res: Response, next: NextFunction) => {
+            // inform the user if a html file exists on the filesystem
             const file = await this.project.byPath(this.config.path);
             if (file) {
-                this.logger.warn(`HTML file returned at ${this.config.path} is NOT loaded from the file system.`);
-            }
-
-            const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
-            const html = render(template, this.templateConfig);
-            // if livereload is enabled, don't send it but let other middleware modify the content
-            if (res._livereload) {
-                res.write(html);
-                res.end();
+                this.logger.info(`HTML file returned at ${this.config.path} is loaded from the file system.`);
+                next();
             } else {
-                res.status(200).contentType('html').send(html);
+                const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
+                const html = render(template, this.templateConfig);
+                this.sendResponse(res, 'text/html', 200, html);
             }
         }) as RequestHandler);
     }
@@ -328,68 +375,46 @@ export class FlpSandbox {
     /**
      * Add additional routes for apps also to be shown in the local FLP.
      */
-    private addRoutesForAdditionalApps() {
+    private async addRoutesForAdditionalApps() {
         for (const app of this.config.apps) {
+            let manifest: Manifest | undefined;
             if (app.local) {
-                const manifest = JSON.parse(readFileSync(join(app.local, 'webapp/manifest.json'), 'utf-8'));
-                this.addApp(manifest, app);
+                manifest = JSON.parse(readFileSync(join(app.local, 'webapp/manifest.json'), 'utf-8'));
                 this.router.use(app.target, serveStatic(join(app.local, 'webapp')));
                 this.logger.info(`Serving additional application at ${app.target} from ${app.local}`);
+            } else if (app.componentId) {
+                manifest = {
+                    'sap.app': {
+                        id: app.componentId,
+                        title: app.intent ? `${app.intent.object}-${app.intent.action}` : app.componentId
+                    }
+                } as Manifest;
+            }
+            if (manifest) {
+                await this.addApp(manifest, app);
+                this.logger.info(`Adding additional intent: ${app.intent?.object}-${app.intent?.action}`);
+            } else {
+                this.logger.info(
+                    `Invalid application config for route ${app.target} because neither componentId nor local folder provided.`
+                );
             }
         }
     }
 
     /**
-     * Create required routes for flex.
+     * Retrieves the configuration settings for UI5 flexibility services.
      *
-     * @returns template configuration for flex.
+     * @returns An array of flexibility service configurations, each specifying a connector
+     *          and its options, such as the layers it applies to and its service URL, if applicable.
      */
-    private createFlexHandler(): TemplateConfig['ui5']['flex'] {
-        const workspaceConnectorPath = 'open/ux/preview/client/flp/WorkspaceConnector';
-        const api = `${PREVIEW_URL.api}/changes`;
-        this.router.use(api, json());
-        this.router.get(api, (async (_req: Request, res: Response) => {
-            res.status(200)
-                .contentType('application/json')
-                .send(await readChanges(this.project, this.logger));
-        }) as RequestHandler);
-        this.router.post(api, (async (req: Request, res: Response) => {
-            try {
-                const { success, message } = writeChange(
-                    req.body,
-                    this.utils.getProject().getSourcePath(),
-                    this.logger
-                );
-                if (success) {
-                    res.status(200).send(message);
-                } else {
-                    res.status(400).send('INVALID_DATA');
-                }
-            } catch (error) {
-                res.status(500).send(error.message);
-            }
-        }) as RequestHandler);
-        this.router.delete(api, (async (req: Request, res: Response) => {
-            try {
-                const { success, message } = deleteChange(
-                    req.body,
-                    this.utils.getProject().getSourcePath(),
-                    this.logger
-                );
-                if (success) {
-                    res.status(200).send(message);
-                } else {
-                    res.status(400).send('INVALID_DATA');
-                }
-            } catch (error) {
-                res.status(500).send(error.message);
-            }
-        }) as RequestHandler);
+    private getFlexSettings(): TemplateConfig['ui5']['flex'] {
+        const localConnectorPath = 'custom.connectors.WorkspaceConnector';
 
         return [
+            { connector: 'LrepConnector', layers: [], url: '/sap/bc/lrep' },
             {
-                applyConnector: workspaceConnectorPath,
-                writeConnector: workspaceConnectorPath,
+                applyConnector: localConnectorPath,
+                writeConnector: localConnectorPath,
                 custom: true
             },
             {
@@ -400,28 +425,183 @@ export class FlpSandbox {
     }
 
     /**
+     * Create required routes for flex.
+     */
+    private createFlexHandler(): void {
+        const fs = create(createStorage());
+        const api = `${PREVIEW_URL.api}/changes`;
+        this.router.use(api, json());
+        this.router.get(api, (async (_req: Request, res: Response) => {
+            const changes = await readChanges(this.project, this.logger);
+            if (this.onChangeRequest) {
+                for (const change of Object.values(changes)) {
+                    await this.onChangeRequest('read', change, fs, this.logger);
+                }
+            }
+            res.status(200).contentType('application/json').send(changes);
+        }) as RequestHandler);
+        this.router.post(api, (async (req: Request, res: Response) => {
+            try {
+                const change = req.body as CommonChangeProperties;
+                if (this.onChangeRequest) {
+                    await this.onChangeRequest('write', change, fs, this.logger);
+                }
+                const { success, message } = writeChange(
+                    change,
+                    this.utils.getProject().getSourcePath(),
+                    fs,
+                    this.logger
+                );
+                if (success) {
+                    fs.commit(() => res.status(200).send(message));
+                } else {
+                    this.sendResponse(res, 'text/plain', 400, 'INVALID_DATA');
+                }
+            } catch (error) {
+                this.sendResponse(res, 'text/plain', 500, error.message);
+            }
+        }) as RequestHandler);
+        this.router.delete(api, (async (req: Request, res: Response) => {
+            try {
+                const { success, message } = deleteChange(
+                    req.body,
+                    this.utils.getProject().getSourcePath(),
+                    this.logger
+                );
+                if (success) {
+                    this.sendResponse(res, 'text/plain', 200, message ?? '');
+                } else {
+                    this.sendResponse(res, 'text/plain', 400, 'INVALID_DATA');
+                }
+            } catch (error) {
+                this.sendResponse(res, 'text/plain', 500, error.message);
+            }
+        }) as RequestHandler);
+    }
+
+    /**
+     * Send a response with the given content type, status and body.
+     * Ensure compliance with common APIs in express and connect.
+     *
+     * @param res the response object
+     * @param contentType the content type
+     * @param status the response status
+     * @param body the response body
+     * @private
+     */
+    private sendResponse(res: Response | http.ServerResponse, contentType: string, status: number, body: string) {
+        res.writeHead(status, {
+            'Content-Type': contentType
+        });
+        res.write(body);
+        res.end();
+    }
+
+    /**
+     * Add routes for html and scripts required for a local test FLP.
+     *
+     * @param configs test configurations
+     * @param id application id from manifest
+     */
+    private addTestRoutes(configs: TestConfig[], id: string) {
+        const ns = id.replace(/\./g, '/');
+        const htmlTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.html'), 'utf-8');
+        const initTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.js'), 'utf-8');
+        for (const testConfig of configs) {
+            const config = mergeTestConfigDefaults(testConfig);
+            this.logger.debug(`Add route for ${config.path}`);
+            // add route for the *.qunit.html
+            this.router.get(config.path, (async (_req, res, next) => {
+                this.logger.debug(`Serving test route: ${config.path}`);
+                const file = await this.project.byPath(config.path);
+                if (file) {
+                    this.logger.warn(`HTML file returned at ${config.path} is loaded from the file system.`);
+                    next();
+                } else {
+                    const templateConfig = {
+                        id,
+                        framework: config.framework,
+                        basePath: posix.relative(posix.dirname(config.path), '/') ?? '.',
+                        initPath: `${ns}${config.init.replace('.js', '')}`
+                    };
+                    const html = render(htmlTemplate, templateConfig);
+                    this.sendResponse(res, 'text/html', 200, html);
+                }
+            }) as RequestHandler);
+            if (testConfig.init !== undefined) {
+                this.logger.debug(`Skip serving test init script in favor of provided script: ${testConfig.init}`);
+                continue;
+            }
+            // add route for the init file
+            this.logger.debug(`Add route for ${config.init}`);
+            this.router.get(config.init, (async (_req, res, next) => {
+                this.logger.debug(`Serving test init script: ${config.init}`);
+
+                const files = await this.project.byGlob(config.init.replace('.js', '.*'));
+                if (files?.length > 0) {
+                    this.logger.warn(`Script returned at ${config.path} is loaded from the file system.`);
+                    next();
+                } else {
+                    const testFiles = await this.project.byGlob(config.pattern);
+                    const templateConfig = { tests: generateImportList(ns, testFiles) };
+                    const js = render(initTemplate, templateConfig);
+                    this.sendResponse(res, 'application/javascript', 200, js);
+                }
+            }) as RequestHandler);
+        }
+    }
+
+    /**
      * Add an application to the local FLP preview.
      *
      * @param manifest manifest of the additional target app
      * @param app configuration for the preview
      */
-    addApp(manifest: Manifest, app: App) {
+    async addApp(manifest: Manifest, app: App) {
         const id = manifest['sap.app'].id;
         app.intent ??= {
             object: id.replace(/\./g, ''),
             action: 'preview'
         };
+        let title = manifest['sap.app'].title ?? id;
+        let description = manifest['sap.app'].description ?? '';
+        if (app.local) {
+            title = (await this.getI18nTextFromProperty(app.local, manifest['sap.app'].title)) ?? id;
+            description = (await this.getI18nTextFromProperty(app.local, manifest['sap.app'].description)) ?? '';
+        }
         this.templateConfig.ui5.resources[id] = app.target;
         this.templateConfig.apps[`${app.intent?.object}-${app.intent?.action}`] = {
-            title: manifest['sap.app'].title ?? id,
-            description: manifest['sap.app'].description ?? '',
+            title: title,
+            description: description,
             additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
             applicationType: 'URL',
             url: app.target,
-            applicationDependencies: {
-                manifest: true
-            }
+            applicationDependencies: { manifest: true }
         };
+    }
+
+    /**
+     * Get the i18n text of the given property.
+     *
+     * @param projectRoot absolute path to the project root
+     * @param propertyValue value of the property
+     * @returns i18n text of the property
+     * @private
+     */
+    private async getI18nTextFromProperty(projectRoot: string, propertyValue: string | undefined) {
+        //i18n model format could be {{key}} or {i18n>key}
+        if (!propertyValue || propertyValue.search(/{{\w+}}|{i18n>\w+}/g) === -1) {
+            return propertyValue;
+        }
+        const propertyI18nKey = propertyValue.replace(/i18n>|[{}]/g, '');
+        const projectAccess = await createProjectAccess(projectRoot);
+        try {
+            const bundle = (await projectAccess.getApplication('').getI18nBundles())['sap.app'];
+            return bundle[propertyI18nKey]?.[0]?.value?.value ?? propertyI18nKey;
+        } catch (e) {
+            this.logger.warn('Failed to load i18n properties bundle');
+        }
+        return propertyI18nKey;
     }
 
     /**
@@ -496,6 +676,7 @@ export async function initAdp(
         if (flp.rta) {
             flp.rta.layer = layer;
             flp.rta.options = {
+                ...flp.rta.options,
                 projectId: variant.id,
                 scenario: 'ADAPTATION_PROJECT'
             };
@@ -503,8 +684,15 @@ export async function initAdp(
                 editor.pluginScript ??= 'open/ux/preview/client/adp/init';
             }
         }
-        await flp.init(adp.descriptor.manifest, adp.descriptor.name, adp.resources);
+
+        const descriptor = adp.descriptor;
+        descriptor.asyncHints.requests = [];
+        const { name, manifest } = descriptor;
+
+        await flp.init(manifest, name, adp.resources);
         flp.router.use(adp.descriptor.url, adp.proxy.bind(adp) as RequestHandler);
+        flp.addOnChangeRequestHandler(adp.onChangeRequest.bind(adp));
+        flp.router.use(json());
         adp.addApis(flp.router);
     } else {
         throw new Error('ADP configured but no manifest.appdescr_variant found.');

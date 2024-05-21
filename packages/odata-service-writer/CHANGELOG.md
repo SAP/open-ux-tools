@@ -1,5 +1,85 @@
 # @sap-ux/odata-service-writer
 
+## 0.19.1
+
+### Patch Changes
+
+-   Updated dependencies [e3d2324c]
+    -   @sap-ux/ui5-config@0.22.4
+    -   @sap-ux/mockserver-config-writer@0.5.2
+
+## 0.19.0
+
+### Minor Changes
+
+-   a47d0f5e: support for memfs within mockserver logic
+
+## 0.18.0
+
+### Minor Changes
+
+-   9ad3cf7a: conditionally writing synchronizationMode based on minUI5Version
+
+## 0.17.2
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+
+## 0.17.1
+
+### Patch Changes
+
+-   Updated dependencies [7f8105c7]
+    -   @sap-ux/ui5-config@0.22.3
+    -   @sap-ux/mockserver-config-writer@0.5.1
+
+## 0.17.0
+
+### Minor Changes
+
+-   8db928db: odata-service-writer now uses logic from mockserver-config-writer to generate mockserver
+
+### Patch Changes
+
+-   Updated dependencies [8db928db]
+    -   @sap-ux/mockserver-config-writer@0.5.0
+
+## 0.16.5
+
+### Patch Changes
+
+-   Updated dependencies [b7d95fb3]
+    -   @sap-ux/ui5-config@0.22.2
+
+## 0.16.4
+
+### Patch Changes
+
+-   1ec097f8: append annotations to ui5-mock.yaml during creation.
+
+## 0.16.3
+
+### Patch Changes
+
+-   Updated dependencies [efa35ddd]
+    -   @sap-ux/ui5-config@0.22.1
+
+## 0.16.2
+
+### Patch Changes
+
+-   Updated dependencies [ec509c40]
+    -   @sap-ux/ui5-config@0.22.0
+
+## 0.16.1
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/ui5-config@0.21.1
+
 ## 0.16.0
 
 ### Minor Changes

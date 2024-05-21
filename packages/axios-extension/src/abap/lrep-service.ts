@@ -7,6 +7,7 @@ import { readFileSync } from 'fs';
 import { isAxiosError } from '../base/odata-request-error';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { TransportConfig } from './ui5-abap-repository-service';
+import { logError } from './message';
 
 export type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & { [key: string]: unknown };
 /**
@@ -60,6 +61,7 @@ export interface MergedAppDescriptor {
                 final: boolean;
             };
         }[];
+        requests?: unknown[];
     };
 }
 
@@ -202,18 +204,22 @@ export class LayeredRepositoryService extends Axios implements Service {
             params['changelist'] = config.transport;
         }
 
-        const response = await this.request({
-            method: checkResponse.status === 200 ? 'PUT' : 'POST',
-            url: DTA_PATH_SUFFIX,
-            data,
-            params,
-            headers: {
-                'Content-Type': 'application/octet-stream'
-            }
-        });
-        this.tryLogResponse(response, 'Deployment successful.');
-
-        return response;
+        try {
+            const response = await this.request({
+                method: checkResponse.status === 200 ? 'PUT' : 'POST',
+                url: DTA_PATH_SUFFIX,
+                data,
+                params,
+                headers: {
+                    'Content-Type': 'application/octet-stream'
+                }
+            });
+            this.tryLogResponse(response, 'Deployment successful.');
+            return response;
+        } catch (error) {
+            logError({ error, log: this.log });
+            throw error;
+        }
     }
 
     /**

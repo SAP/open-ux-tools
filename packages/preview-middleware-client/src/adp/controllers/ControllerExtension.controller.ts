@@ -57,16 +57,18 @@ export default class ControllerExtension extends BaseDialog {
     }
 
     /**
-     * Initializes controller, fills model with data and opens the dialog
+     * Setups the Dialog and the JSON Model
+     *
+     * @param {Dialog} dialog - Dialog instance
      */
-    async onInit() {
-        this.dialog = this.byId('controllerExtensionDialog') as unknown as Dialog;
+    async setup(dialog: Dialog): Promise<void> {
+        this.dialog = dialog;
 
         this.setEscapeHandler();
 
         await this.buildDialogData();
 
-        this.getView()?.setModel(this.model);
+        this.dialog.setModel(this.model);
 
         this.dialog.open();
     }
@@ -156,12 +158,16 @@ export default class ControllerExtension extends BaseDialog {
 
         const { controllerName, viewId } = this.getControllerInfo(overlayControl);
 
-        const { controllerExists, controllerPath, controllerPathFromRoot } = await this.getExistingController(
-            controllerName
-        );
+        const { controllerExists, controllerPath, controllerPathFromRoot, isRunningInBAS } =
+            await this.getExistingController(controllerName);
 
         if (controllerExists) {
-            this.updateModelForExistingController(controllerExists, controllerPath, controllerPathFromRoot);
+            this.updateModelForExistingController(
+                controllerExists,
+                controllerPath,
+                controllerPathFromRoot,
+                isRunningInBAS
+            );
         } else {
             this.updateModelForNewController(viewId);
 
@@ -186,26 +192,34 @@ export default class ControllerExtension extends BaseDialog {
     /**
      * Updates the model properties for an existing controller.
      *
-     * @param controllerExists Whether the controller exists
-     * @param controllerPath The controller path
-     * @param controllerPathFromRoot The controller path from the project root
+     * @param {boolean} controllerExists - Whether the controller exists.
+     * @param {string} controllerPath - The controller path.
+     * @param {string} controllerPathFromRoot - The controller path from the project root.
+     * @param {boolean} isRunningInBAS - Whether the environment is BAS or VS Code.
      */
     private updateModelForExistingController(
         controllerExists: boolean,
         controllerPath: string,
-        controllerPathFromRoot: string
+        controllerPathFromRoot: string,
+        isRunningInBAS: boolean
     ): void {
         this.model.setProperty('/controllerExists', controllerExists);
         this.model.setProperty('/controllerPath', controllerPath);
         this.model.setProperty('/controllerPathFromRoot', controllerPathFromRoot);
 
-        const form = this.byId('controllerExtensionDialog_Form') as SimpleForm;
+        const content = this.dialog.getContent();
+
+        const form = content[0] as SimpleForm;
         form.setVisible(false);
 
-        const messageForm = this.byId('controllerExtensionDialog_Form--existingController') as SimpleForm;
+        const messageForm = content[1] as SimpleForm;
         messageForm.setVisible(true);
 
-        this.dialog.getBeginButton().setText('Open in VS Code').setEnabled(true);
+        if (isRunningInBAS) {
+            this.dialog.getBeginButton().setVisible(false);
+        } else {
+            this.dialog.getBeginButton().setText('Open in VS Code').setEnabled(true);
+        }
         this.dialog.getEndButton().setText('Close');
     }
 

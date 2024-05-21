@@ -8,7 +8,8 @@ import type {
     PendingPropertyChange,
     PropertyChange,
     SavedPropertyChange,
-    Scenario
+    Scenario,
+    ShowMessage
 } from '@sap-ux-private/control-property-editor-common';
 import {
     changeStackModified,
@@ -18,7 +19,9 @@ import {
     propertyChanged,
     propertyChangeFailed,
     showMessage,
-    scenario
+    scenario,
+    reloadApplication,
+    storageFileChanged
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -34,15 +37,18 @@ interface SliceState {
     outline: OutlineNode[];
     filterQuery: FilterOptions[];
     scenario: Scenario;
+    isAdpProject: boolean;
     icons: IconDetails[];
     changes: ChangesSlice;
-    dialogMessage: string | undefined;
+    dialogMessage: ShowMessage | undefined;
+    fileChanges?: string[];
 }
 
 export interface ChangesSlice {
     controls: ControlChanges;
     pending: PendingPropertyChange[];
     saved: SavedPropertyChange[];
+    pendingChangeIds: string[];
 }
 export interface ControlChanges {
     [id: string]: ControlChangeStats;
@@ -84,24 +90,35 @@ const filterInitOptions: FilterOptions[] = [
     { name: FilterName.showEditableProperties, value: true }
 ];
 
-export const changeProperty = createAction<PropertyChange>('app/change-property');
+export const changeProperty = createAction<PropertyChange, 'app/change-property'>('app/change-property');
 export const changePreviewScale = createAction<number>('app/change-preview-scale');
 export const changePreviewScaleMode = createAction<'fit' | 'fixed'>('app/change-preview-scale-mode');
 export const changeDeviceType = createAction<DeviceType>('app/change-device-type');
 export const filterNodes = createAction<FilterOptions[]>('app/filter-nodes');
+export const fileChanged = createAction<string[]>('app/file-changed');
+interface LivereloadOptions {
+    port: number;
 
-export const initialState = {
+    /**
+     * Url used to connect to the livereload service. If provided, port option is ignored.
+     */
+    url?: string;
+}
+export const initializeLivereload = createAction<LivereloadOptions>('app/initialize-livereload');
+export const initialState: SliceState = {
     deviceType: DeviceType.Desktop,
     scale: 1.0,
     selectedControl: undefined,
     outline: [],
     filterQuery: filterInitOptions,
     scenario: scenario.UiAdaptation,
+    isAdpProject: false,
     icons: [],
     changes: {
         controls: {},
         pending: [],
-        saved: []
+        saved: [],
+        pendingChangeIds: []
     },
     dialogMessage: undefined
 };
@@ -111,6 +128,7 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
     reducers: {
         setProjectScenario: (state, action: PayloadAction<Scenario>) => {
             state.scenario = action.payload;
+            state.isAdpProject = action.payload === scenario.AdaptationProject;
         }
     },
     extraReducers: (builder) =>
@@ -179,6 +197,7 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 state.changes.saved = action.payload.saved;
                 state.changes.pending = action.payload.pending;
                 state.changes.controls = {};
+
                 for (const change of [...action.payload.pending, ...action.payload.saved].reverse()) {
                     const { controlId, propertyName, type, controlName } = change;
                     const key = `${controlId}`;
@@ -224,6 +243,34 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
             })
             .addMatcher(showMessage.match, (state, action: ReturnType<typeof showMessage>): void => {
                 state.dialogMessage = action.payload;
+            })
+            .addMatcher(fileChanged.match, (state, action: ReturnType<typeof fileChanged>): void => {
+                const newFileChanges = action.payload.filter((changedFile) => {
+                    const idx = state.changes.pendingChangeIds.findIndex((pendingFile) =>
+                        changedFile.includes(pendingFile)
+                    );
+                    if (idx > -1) {
+                        state.changes.pendingChangeIds.splice(idx, 1);
+                    }
+                    return idx < 0;
+                });
+                if (!state.fileChanges) {
+                    state.fileChanges = newFileChanges;
+                } else {
+                    state.fileChanges = [
+                        ...state.fileChanges,
+                        ...newFileChanges.filter((changedFile) => !state.fileChanges?.includes(changedFile))
+                    ];
+                }
+            })
+            .addMatcher(reloadApplication.match, (state): void => {
+                state.fileChanges = [];
+            })
+            .addMatcher(storageFileChanged.match, (state, action: ReturnType<typeof storageFileChanged>): void => {
+                const fileName = action.payload;
+                if (fileName) {
+                    state.changes.pendingChangeIds.push(fileName);
+                }
             })
 });
 

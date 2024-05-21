@@ -39,7 +39,7 @@ export class UIDatePicker extends React.Component<UIDatePickerProps> {
     public constructor(props: UIDatePickerProps) {
         super(props);
 
-        this.state.value = props.defaultValue || '';
+        this.state.value = props.defaultValue ?? '';
 
         this.onInputChange = this.onInputChange.bind(this);
         this.onPickerChange = this.onPickerChange.bind(this);

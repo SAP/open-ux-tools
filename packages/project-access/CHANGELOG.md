@@ -1,5 +1,163 @@
 # @sap-ux/project-access
 
+## 1.20.0
+
+### Minor Changes
+
+-   e3d2324c: Improvements for consumption
+
+### Patch Changes
+
+-   Updated dependencies [e3d2324c]
+    -   @sap-ux/ui5-config@0.22.4
+
+## 1.19.14
+
+### Patch Changes
+
+-   Updated dependencies [7f8105c7]
+    -   @sap-ux/ui5-config@0.22.3
+
+## 1.19.13
+
+### Patch Changes
+
+-   99bca62c: Add error code for cds mismatch
+
+## 1.19.12
+
+### Patch Changes
+
+-   b7d95fb3: fix paths and config writers
+-   Updated dependencies [b7d95fb3]
+    -   @sap-ux/ui5-config@0.22.2
+
+## 1.19.11
+
+### Patch Changes
+
+-   4389c528: expose library types
+
+## 1.19.10
+
+### Patch Changes
+
+-   f8e16120: Add missing fiori tools settings enum
+
+## 1.19.9
+
+### Patch Changes
+
+-   ee76e47f: fix: get i18n bundles for CAPJava
+
+## 1.19.8
+
+### Patch Changes
+
+-   Updated dependencies [03167a06]
+    -   @sap-ux/i18n@0.0.6
+
+## 1.19.7
+
+### Patch Changes
+
+-   98496d57: adds new module @sap-ux/ui5-library-reference-inquirer
+-   e3d2e003: Detect mismatching global and project installations of @sap/cds
+
+## 1.19.6
+
+### Patch Changes
+
+-   f0e3263a: Adds missing constants entries, refactor duplicate constants, use project-access const instead
+
+## 1.19.5
+
+### Patch Changes
+
+-   Updated dependencies [efa35ddd]
+    -   @sap-ux/ui5-config@0.22.1
+
+## 1.19.4
+
+### Patch Changes
+
+-   87c942e5: Remove setting of cds.root.
+
+## 1.19.3
+
+### Patch Changes
+
+-   89013210: Revert setting of cds.root
+
+## 1.19.2
+
+### Patch Changes
+
+-   Updated dependencies [ec509c40]
+    -   @sap-ux/ui5-config@0.22.0
+
+## 1.19.1
+
+### Patch Changes
+
+-   Updated dependencies [cc95c0a8]
+    -   @sap-ux/i18n@0.0.5
+
+## 1.19.0
+
+### Minor Changes
+
+-   a4f00f7c: Remove setting of cds.root. Set the project in cds.load() instead.
+
+## 1.18.0
+
+### Minor Changes
+
+-   e6da2117: adds iscapproject function
+
+## 1.17.6
+
+### Patch Changes
+
+-   c381d32f: feat(project-access): detect libraries with `.library`
+
+## 1.17.5
+
+### Patch Changes
+
+-   33ec9ff9: fix: enhance `getI18nBundles` to be more tolerant
+
+## 1.17.4
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/ui5-config@0.21.1
+    -   @sap-ux/i18n@0.0.4
+
+## 1.17.3
+
+### Patch Changes
+
+-   2eda843d: feat(project-access): expose "toReferenceUri" in package interface
+
+## 1.17.2
+
+### Patch Changes
+
+-   76ce5c2f: fix: expose getI18nPropertiesPaths and export types for browser in @sap-ux/i18n
+-   Updated dependencies [76ce5c2f]
+    -   @sap-ux/i18n@0.0.3
+
+## 1.17.1
+
+### Patch Changes
+
+-   86da13e3: Add i18n support
+-   Updated dependencies [86da13e3]
+    -   @sap-ux/i18n@0.0.2
+
 ## 1.17.0
 
 ### Minor Changes

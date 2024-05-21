@@ -6,9 +6,12 @@ import type Event from 'sap/ui/base/Event';
 import Log from 'mock/sap/base/Log';
 import { fetchMock, sapCoreMock } from 'mock/window';
 import * as ui5Utils from '../../../src/cpe/ui5-utils';
+import connector from '../../../src/flp/WorkspaceConnector';
+import VersionInfo from 'mock/sap/ui/VersionInfo';
 
 describe('main', () => {
     let sendActionMock: jest.Mock;
+    VersionInfo.load.mockResolvedValue({ version: '1.120.4' });
     const applyChangeSpy = jest
         .spyOn(flexChange, 'applyChange')
         .mockResolvedValueOnce()
@@ -72,7 +75,8 @@ describe('main', () => {
         getFlexSettings: jest.fn().mockReturnValue({ layer: 'VENDOR', scenario: common.scenario.UiAdaptation }),
         getRootControlInstance: jest.fn().mockReturnValue({
             getManifest: jest.fn().mockReturnValue({ 'sap.app': { id: 'testId' } })
-        })
+        }),
+        attachStop: jest.fn()
     } as any;
 
     const spyPostMessage = jest.spyOn(common, 'startPostMessageCommunication').mockImplementation(() => {
@@ -94,6 +98,10 @@ describe('main', () => {
             type: '[ext] change-property',
             payload
         });
+
+        // check delete notifier
+        sendActionMock.mockClear();
+        await connector.storage.removeItem('sap.ui.fl.testFile');
 
         //assert
         expect(applyChangeSpy).toBeCalledWith({ rta: rta }, payload);

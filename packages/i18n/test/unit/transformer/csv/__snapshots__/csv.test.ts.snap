@@ -1,0 +1,126 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`csv csvToI18nBundle 1`] = `
+Object {
+  "de": Array [
+    Object {
+      "filePath": "absolute/file/path",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 16,
+            "line": 2,
+          },
+          "start": Object {
+            "character": 0,
+            "line": 2,
+          },
+        },
+        "value": "            Book",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 26,
+            "line": 2,
+          },
+          "start": Object {
+            "character": 22,
+            "line": 2,
+          },
+        },
+        "value": "Buch",
+      },
+    },
+    Object {
+      "filePath": "absolute/file/path",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 17,
+            "line": 3,
+          },
+          "start": Object {
+            "character": 0,
+            "line": 3,
+          },
+        },
+        "value": "            Books",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 30,
+            "line": 3,
+          },
+          "start": Object {
+            "character": 24,
+            "line": 3,
+          },
+        },
+        "value": "Bücher",
+      },
+    },
+  ],
+  "en": Array [
+    Object {
+      "filePath": "absolute/file/path",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 16,
+            "line": 2,
+          },
+          "start": Object {
+            "character": 0,
+            "line": 2,
+          },
+        },
+        "value": "            Book",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 21,
+            "line": 2,
+          },
+          "start": Object {
+            "character": 17,
+            "line": 2,
+          },
+        },
+        "value": "Book",
+      },
+    },
+    Object {
+      "filePath": "absolute/file/path",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 17,
+            "line": 3,
+          },
+          "start": Object {
+            "character": 0,
+            "line": 3,
+          },
+        },
+        "value": "            Books",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 23,
+            "line": 3,
+          },
+          "start": Object {
+            "character": 18,
+            "line": 3,
+          },
+        },
+        "value": "Books",
+      },
+    },
+  ],
+}
+`;

@@ -47,12 +47,13 @@ export function getPackageJsonTasks({
     const hashFragment = flpAppId ? `#${flpAppId}` : '';
     // Full parameter section composed by search param and fragment identifier
     const params = `${searchParam}${hashFragment}`;
-
     const startCommand = localOnly
         ? `echo \\"${t('info.mockOnlyWarning')}\\"`
-        : `fiori run --open "${startFile || 'test/flpSandbox.html'}${params}"`;
+        : // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+          `fiori run --open "${startFile || 'test/flpSandbox.html'}${params}"`;
 
     const startLocalCommand = `fiori run --config ./ui5-local.yaml --open "${
+        //eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         localStartFile || 'test/flpSandbox.html'
     }${params}"`;
 

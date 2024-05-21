@@ -42,6 +42,12 @@
       "path": "packages/cap-config-writer"
     },
     {
+      "path": "packages/cards-editor-config-writer"
+    },
+    {
+      "path": "packages/cards-editor-middleware"
+    },
+    {
       "path": "packages/cds-annotation-parser"
     },
     {
@@ -69,10 +75,28 @@
       "path": "packages/fe-fpm-writer"
     },
     {
+      "path": "packages/feature-toggle"
+    },
+    {
       "path": "packages/fiori-elements-writer"
     },
     {
       "path": "packages/fiori-freestyle-writer"
+    },
+    {
+      "path": "packages/fiori-generator-shared"
+    },
+    {
+      "path": "packages/i18n"
+    },
+    {
+      "path": "packages/inquirer-common"
+    },
+    {
+      "path": "packages/jest-file-matchers"
+    },
+    {
+      "path": "packages/jest-runner-puppeteer"
     },
     {
       "path": "packages/logger"
@@ -88,6 +112,9 @@
     },
     {
       "path": "packages/odata-entity-model"
+    },
+    {
+      "path": "packages/odata-service-inquirer"
     },
     {
       "path": "packages/odata-service-writer"
@@ -111,6 +138,12 @@
       "path": "packages/project-input-validator"
     },
     {
+      "path": "packages/reload-middleware"
+    },
+    {
+      "path": "packages/serve-static-middleware"
+    },
+    {
       "path": "packages/store"
     },
     {
@@ -123,6 +156,9 @@
       "path": "packages/ui-components"
     },
     {
+      "path": "packages/ui5-application-inquirer"
+    },
+    {
       "path": "packages/ui5-application-writer"
     },
     {
@@ -133,6 +169,12 @@
     },
     {
       "path": "packages/ui5-library-inquirer"
+    },
+    {
+      "path": "packages/ui5-library-reference-inquirer"
+    },
+    {
+      "path": "packages/ui5-library-reference-writer"
     },
     {
       "path": "packages/ui5-library-writer"

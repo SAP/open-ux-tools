@@ -17,7 +17,8 @@ const getEmptyModel = (): ChangesSlice => {
     const model: ChangesSlice = {
         controls: {} as any,
         pending: [],
-        saved: []
+        saved: [],
+        pendingChangeIds: []
     };
     return model;
 };
@@ -25,6 +26,7 @@ const getEmptyModel = (): ChangesSlice => {
 const getModel = (saved = false): ChangesSlice => {
     const model: ChangesSlice = {
         controls: {} as any,
+        pendingChangeIds: [],
         pending: !saved
             ? ([
                   {
@@ -34,7 +36,8 @@ const getModel = (saved = false): ChangesSlice => {
                       type: 'pending',
                       value: 'testValue1',
                       isActive: true,
-                      changeType: 'propertyChange'
+                      changeType: 'propertyChange',
+                      fileName: 'testFile1'
                   },
                   {
                       controlId: 'testId1BoolFalse',
@@ -43,7 +46,8 @@ const getModel = (saved = false): ChangesSlice => {
                       type: 'pending',
                       value: false,
                       isActive: true,
-                      changeType: 'propertyChange'
+                      changeType: 'propertyChange',
+                      fileName: 'testFile2'
                   },
                   {
                       controlId: 'testId1Exp',
@@ -52,21 +56,24 @@ const getModel = (saved = false): ChangesSlice => {
                       type: 'pending',
                       value: '{expression}',
                       isActive: true,
-                      changeType: 'propertyBindingChange'
+                      changeType: 'propertyBindingChange',
+                      fileName: 'testFile3'
                   },
                   {
                       controlId: 'ListReport::TableToolbar',
                       controlName: 'OverflowToolbar',
                       type: 'pending',
                       isActive: true,
-                      changeType: 'addXML'
+                      changeType: 'addXML',
+                      fileName: 'testFile4'
                   },
                   {
                       controlId: 'FieldGroup::TechnicalData::FormGroup',
                       controlName: 'Group',
                       type: 'pending',
                       isActive: true,
-                      changeType: 'addFields'
+                      changeType: 'addFields',
+                      fileName: 'testFile5'
                   }
               ] as PendingChange[])
             : [],
@@ -151,7 +158,9 @@ describe('ChangePanel', () => {
             filterQuery: filterInitOptions,
             selectedControl: undefined,
             changes: model,
-            icons: []
+            icons: [],
+            dialogMessage: undefined,
+            isAdpProject: false
         };
         render(<ChangesPanel />, { initialState });
 
@@ -169,7 +178,10 @@ describe('ChangePanel', () => {
             filterQuery: filterInitOptions,
             selectedControl: undefined,
             changes: model,
-            icons: []
+            icons: [],
+            dialogMessage: undefined,
+            isAdpProject: false,
+            scenario: 'APP_VARIANT'
         };
         render(<ChangesPanel />, { initialState });
 
@@ -202,7 +214,9 @@ describe('ChangePanel', () => {
             filterQuery: filterInitOptions,
             selectedControl: undefined,
             changes: model,
-            icons: []
+            icons: [],
+            dialogMessage: undefined,
+            isAdpProject: false
         };
         render(<ChangesPanel />, { initialState });
 
@@ -269,7 +283,8 @@ describe('ChangePanel', () => {
                     controlId: 'someSelectorId',
                     header: true
                 } as any
-            ]
+            ],
+            pendingChangeIds: []
         };
         const initialState: State = {
             deviceType: DeviceType.Desktop,
@@ -278,7 +293,9 @@ describe('ChangePanel', () => {
             filterQuery: filterInitOptions,
             selectedControl: undefined,
             changes: model,
-            icons: []
+            icons: [],
+            dialogMessage: undefined,
+            isAdpProject: false
         };
         render(<ChangesPanel />, { initialState });
 
@@ -330,7 +347,9 @@ describe('ChangePanel', () => {
             filterQuery: filterInitOptions,
             selectedControl: undefined,
             changes: model,
-            icons: []
+            icons: [],
+            dialogMessage: undefined,
+            isAdpProject: false
         };
         render(<ChangesPanel />, { initialState });
 
@@ -354,7 +373,9 @@ describe('ChangePanel', () => {
             filterQuery: filterInitOptions,
             selectedControl: undefined,
             changes: model,
-            icons: []
+            icons: [],
+            dialogMessage: undefined,
+            isAdpProject: false
         };
         render(<ChangesPanel />, { initialState });
 
@@ -364,5 +385,35 @@ describe('ChangePanel', () => {
 
         const formFieldChange = screen.getByText(/id_1698648267087_373_movesimpleformfield/i);
         expect(formFieldChange).toBeInTheDocument();
+    });
+
+    test('External changes', () => {
+        const model = getModel(true);
+        const filterInitOptions: FilterOptions[] = [
+            { name: FilterName.changeSummaryFilterQuery, value: 'Simple Form' }
+        ];
+        const externalChanges: string[] = ['example1.changes', 'example2.changes'];
+        const initialState: State = {
+            deviceType: DeviceType.Desktop,
+            scale: 1,
+            outline: {} as any,
+            filterQuery: filterInitOptions,
+            selectedControl: undefined,
+            changes: model,
+            icons: [],
+            fileChanges: externalChanges,
+            dialogMessage: undefined,
+            isAdpProject: false
+        };
+        render(<ChangesPanel />, { initialState });
+
+        // check unsaved changes
+        const externalChangesTitle = screen.getByText(/Changes detected!/i);
+        expect(externalChangesTitle).toBeInTheDocument();
+        expect(externalChangesTitle.title.split('\n')).toEqual([
+            'Changes in files:',
+            'example1.changes',
+            'example2.changes'
+        ]);
     });
 });

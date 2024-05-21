@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { divProperties, getNativeProps } from '@fluentui/react';
+
 import './UIToolbar.scss';
 
 export interface UIToolbarProps {
@@ -7,6 +9,12 @@ export interface UIToolbarProps {
     breakPointLarge?: number;
     breakPointMedium?: number;
     breakPointSmall?: number;
+    /**
+     * An optional callback function triggered when the toolbar is resized.
+     *
+     * @param {number} width - The new width of the toolbar.
+     * @param {string} widthName - The name of the width.
+     */
     onResize?(width: number, widthName: string): void;
 }
 
@@ -111,8 +119,13 @@ export class UIToolbar extends React.Component<UIToolbarProps, UIToolbarState> {
      * @returns {React.ReactNode}
      */
     render(): React.ReactNode {
+        const divProps = getNativeProps<React.HTMLAttributes<HTMLDivElement>>(this.props, divProperties, [
+            'className',
+            'children'
+        ]);
         return (
             <div
+                {...divProps}
                 tabIndex={-1}
                 ref={this.toolbarRef}
                 className={`ui-toolbar ${this.state.toolbarWidthClassName} ${

@@ -1,7 +1,15 @@
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import readPkgUp from 'read-pkg-up';
-import type { ALPSettings, ALPSettingsV2, ALPSettingsV4, FioriElementsApp, Template } from '../types';
+import type {
+    ALPSettings,
+    ALPSettingsV2,
+    ALPSettingsV4,
+    FioriElementsApp,
+    LROPSettings,
+    Template,
+    WorklistSettings
+} from '../types';
 import { TableSelectionMode, TableType, TemplateType } from '../types';
 import { getBaseComponent, getUi5Libs, TemplateTypeAttributes } from './templateAttributes';
 
@@ -20,13 +28,13 @@ export function setDefaultTemplateSettings<T extends {}>(template: Template<T>, 
         const alpSettings: ALPSettings = template.settings as unknown as ALPSettings;
 
         Object.assign(templateSettings, {
-            tableType: alpSettings.tableType || TableType.ANALYTICAL // Overrides the UI5 default: ''
+            tableType: alpSettings.tableType ?? TableType.ANALYTICAL // Overrides the UI5 default: ''
         });
 
         if (odataVersion === OdataVersion.v4) {
             const alpV4Settings: ALPSettingsV4 = template.settings as unknown as ALPSettingsV4;
             Object.assign(templateSettings, {
-                selectionMode: alpV4Settings.selectionMode || TableSelectionMode.NONE
+                selectionMode: alpV4Settings.selectionMode ?? TableSelectionMode.NONE
             });
             return templateSettings;
         }
@@ -40,6 +48,17 @@ export function setDefaultTemplateSettings<T extends {}>(template: Template<T>, 
                 smartVariantManagement: alpSettingsv2.smartVariantManagement
             });
             return templateSettings;
+        }
+    } else if (template.type === TemplateType.ListReportObjectPage || template.type === TemplateType.Worklist) {
+        const tableSettings: WorklistSettings | LROPSettings = template.settings as unknown as
+            | WorklistSettings
+            | LROPSettings;
+        Object.assign(templateSettings, {
+            tableType: tableSettings.tableType ?? TableType.RESPONSIVE // Overrides the UI5 default: ''
+        });
+
+        if (tableSettings.tableType !== TableType.TREE) {
+            delete tableSettings.hierarchyQualifier;
         }
     }
     return templateSettings;
@@ -63,6 +82,7 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
     }
 
     // Generate base UI5 project
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     feApp.app.baseComponent = feApp.app.baseComponent || getBaseComponent(feApp.template.type, feApp.service.version);
 
     // Add ui5 libs for specified template and odata version
@@ -88,7 +108,7 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
             feApp.ui5.version ?? TemplateTypeAttributes[feApp.template.type].minimumUi5Version[feApp.service.version]!;
     }
 
-    // if not explictly disabled, enable the SAP Fiori tools
+    // if not explicitly disabled, enable the SAP Fiori tools
     feApp.appOptions = feApp.appOptions ?? {};
     if (feApp.appOptions.sapux !== false) {
         feApp.appOptions.sapux = true;

@@ -1,6 +1,8 @@
-export { FileName } from './constants';
+export { FileName, DirName, FioriToolsSettings } from './constants';
 export { getFilePaths } from './file';
 export {
+    createApplicationAccess,
+    createProjectAccess,
     findAllApps,
     findCapProjects,
     findFioriArtifacts,
@@ -15,17 +17,21 @@ export {
     getCdsFiles,
     getCdsRoots,
     getCdsServices,
+    getCapI18nFolderNames,
     getI18nPropertiesPaths,
     getMtaPath,
     getNodeModulesPath,
     getProject,
     getProjectType,
     getWebappPath,
+    isCapProject,
     isCapJavaProject,
     isCapNodeJsProject,
     loadModuleFromProject,
     readCapServiceMetadataEdmx,
     readUi5Yaml,
-    getCapServiceName
+    getCapServiceName,
+    toReferenceUri
 } from './project';
 export * from './types';
+export * from './library';

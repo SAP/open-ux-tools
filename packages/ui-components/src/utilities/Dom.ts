@@ -4,7 +4,7 @@
  * @param element Element.
  * @returns True if passed Element is HTML Element.
  */
-export function isHTMLElement(element: Element): element is HTMLElement {
+export function isHTMLElement(element: Element | ParentNode): element is HTMLElement {
     return 'title' in element;
 }
 

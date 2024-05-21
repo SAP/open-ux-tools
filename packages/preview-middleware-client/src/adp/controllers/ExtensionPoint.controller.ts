@@ -16,9 +16,10 @@ import JSONModel from 'sap/ui/model/json/JSONModel';
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import { getFragments, writeFragment } from '../api-handler';
+import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { ExtensionPointData, ExtensionPointInfo } from '../extension-point';
+import { notifyUser } from '../utils';
 
 /**
  * @namespace open.ux.preview.client.adp.controllers
@@ -26,23 +27,26 @@ import { ExtensionPointData, ExtensionPointInfo } from '../extension-point';
 export default class ExtensionPoint extends BaseDialog {
     public readonly data: ExtensionPointData;
 
-    constructor(name: string, _overlays: UI5Element, _rta: RuntimeAuthoring, data: ExtensionPointData) {
+    constructor(name: string, _overlays: UI5Element, rta: RuntimeAuthoring, data: ExtensionPointData) {
         super(name);
         this.model = new JSONModel();
         this.data = data;
+        this.rta = rta;
     }
 
     /**
-     * Initializes controller, fills model with data and opens the dialog
+     * Setups the Dialog and the JSON Model
+     *
+     * @param {Dialog} dialog - Dialog instance
      */
-    async onInit() {
-        this.dialog = this.byId('addFragmentAtExtPointDialog') as unknown as Dialog;
+    async setup(dialog: Dialog): Promise<void> {
+        this.dialog = dialog;
 
         this.setEscapeHandler();
 
         await this.buildDialogData();
 
-        this.getView()?.setModel(this.model);
+        this.dialog.setModel(this.model);
 
         this.dialog.open();
     }
@@ -52,13 +56,15 @@ export default class ExtensionPoint extends BaseDialog {
      *
      * @param event Event
      */
-    async onCreateBtnPress(event: Event): Promise<void> {
+    onCreateBtnPress(event: Event): void {
         const source = event.getSource<Button>();
         source.setEnabled(false);
 
         const fragmentName = this.model.getProperty('/newFragmentName');
 
-        await this.createNewFragment(fragmentName);
+        this.createExtensionPointFragmentChange(fragmentName);
+
+        notifyUser(`Note: The '${fragmentName}.fragment.xml' fragment will be created once you save the change.`, 8000);
 
         this.handleDialogClose();
     }
@@ -112,11 +118,11 @@ export default class ExtensionPoint extends BaseDialog {
 
     /**
      * Updates the Select control according to provided values
-     * 
+     *
      * @param name Extension point name
      * @param key Selected extension point key
      * @param list All of the extension points that are under a view
-     * @param enabled Enables the select control    
+     * @param enabled Enables the select control
      */
     private updateModel(name: string, key: number, list: { key: number; value: string }[], enabled: boolean): void {
         this.model.setProperty('/extensionPointName', name);
@@ -126,31 +132,14 @@ export default class ExtensionPoint extends BaseDialog {
     }
 
     /**
-     * Creates a new fragment for the specified extension point
-     *
-     * @param fragmentName Fragment name
-     */
-    private async createNewFragment(fragmentName: string): Promise<void> {
-        try {
-            await writeFragment<unknown>({ fragmentName });
-            MessageToast.show(`Fragment with name '${fragmentName}' was created.`);
-        } catch (e) {
-            // In case of error when creating a new fragment, we should not create a change file
-            MessageToast.show(e.message);
-            throw new Error(e.message);
-        }
-
-        await this.createExtensionPointFragmentChange(fragmentName);
-    }
-
-    /**
      * Creates add xml at extension point changes
      *
      * @param fragmentName Fragment name
      */
-    private async createExtensionPointFragmentChange(fragmentName: string): Promise<void> {
+    private createExtensionPointFragmentChange(fragmentName: string): void {
         const extensionPointName = this.model.getProperty('/extensionPointName');
         const modifiedValue = {
+            fragment: `<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>`,
             fragmentPath: `fragments/${fragmentName}.fragment.xml`,
             extensionPointName
         };

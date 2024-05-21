@@ -23,8 +23,9 @@ import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 import ControlUtils from '../control-utils';
 import CommandExecutor from '../command-executor';
-import { getFragments, writeFragment } from '../api-handler';
+import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
+import { notifyUser } from '../utils';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -41,20 +42,23 @@ export default class AddFragment extends BaseDialog {
         this.rta = rta;
         this.overlays = overlays;
         this.model = new JSONModel();
+        this.ui5Version = sap.ui.version;
         this.commandExecutor = new CommandExecutor(this.rta);
     }
 
     /**
-     * Initializes controller, fills model with data and opens the dialog
+     * Setups the Dialog and the JSON Model
+     *
+     * @param {Dialog} dialog - Dialog instance
      */
-    async onInit() {
-        this.dialog = this.byId('addNewFragmentDialog') as unknown as Dialog;
+    async setup(dialog: Dialog): Promise<void> {
+        this.dialog = dialog;
 
         this.setEscapeHandler();
 
         await this.buildDialogData();
 
-        this.getView()?.setModel(this.model);
+        this.dialog.setModel(this.model);
 
         this.dialog.open();
     }
@@ -139,7 +143,9 @@ export default class AddFragment extends BaseDialog {
             targetAggregation
         };
 
-        await this.createNewFragment(fragmentData);
+        await this.createFragmentChange(fragmentData);
+
+        notifyUser(`Note: The '${fragmentName}.fragment.xml' fragment will be created once you save the change.`, 8000);
 
         this.handleDialogClose();
     }
@@ -243,28 +249,6 @@ export default class AddFragment extends BaseDialog {
     }
 
     /**
-     * Creates a new fragment for the specified control
-     *
-     * @param fragmentData Fragment Data
-     * @param fragmentData.index Index for XML Fragment placement
-     * @param fragmentData.fragmentName Fragment name
-     * @param fragmentData.targetAggregation Target aggregation for control
-     */
-    private async createNewFragment(fragmentData: CreateFragmentProps): Promise<void> {
-        const { fragmentName, index, targetAggregation } = fragmentData;
-        try {
-            await writeFragment<unknown>({ fragmentName });
-            MessageToast.show(`Fragment with name '${fragmentName}' was created.`);
-        } catch (e) {
-            // In case of error when creating a new fragment, we should not create a change file
-            MessageToast.show(e.message);
-            throw new Error(e.message);
-        }
-
-        await this.createFragmentChange({ fragmentName, index, targetAggregation });
-    }
-
-    /**
      * Creates an addXML fragment command and pushes it to the command stack
      *
      * @param fragmentData Fragment Data
@@ -278,17 +262,20 @@ export default class AddFragment extends BaseDialog {
         const designMetadata = overlay.getDesignTimeMetadata();
 
         const modifiedValue = {
+            fragment: `<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>`,
             fragmentPath: `fragments/${fragmentName}.fragment.xml`,
             index: index ?? 0,
             targetAggregation: targetAggregation ?? 'content'
         };
 
-        await this.commandExecutor.generateAndExecuteCommand(
+        const command = await this.commandExecutor.getCommand(
             this.runtimeControl,
             'addXML',
             modifiedValue,
             designMetadata,
             flexSettings
         );
+
+        await this.commandExecutor.pushAndExecuteCommand(command);
     }
 }

@@ -1,6 +1,7 @@
 {
     "sap.app": {
         "id": "one",
+        "type": "application",
         "i18n": "i18n/i18n.properties",
         "dataSources": {
             "mainService": {

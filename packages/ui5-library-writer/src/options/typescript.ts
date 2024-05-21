@@ -58,6 +58,9 @@ export async function enableTypescript(libInput: UI5LibInput, basePath: string, 
         afterMiddleware: 'compression',
         configuration: {
             debug: true,
+            transformModulesToUI5: {
+                overridesToOverride: true
+            },
             excludePatterns: ['/Component-preload.js']
         }
     });
@@ -67,7 +70,10 @@ export async function enableTypescript(libInput: UI5LibInput, basePath: string, 
             name: 'ui5-tooling-transpile-task',
             afterTask: 'replaceVersion',
             configuration: {
-                debug: true
+                debug: true,
+                transformModulesToUI5: {
+                    overridesToOverride: true
+                }
             }
         }
     ]);

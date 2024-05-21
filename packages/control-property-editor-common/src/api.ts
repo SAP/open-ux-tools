@@ -120,6 +120,7 @@ export interface PendingPropertyChange<T extends PropertyValue = PropertyValue> 
      * Indicates if change is before or after current position in undo redo stack
      */
     isActive: boolean;
+    fileName: string;
 }
 
 export interface PendingOtherChange {
@@ -128,6 +129,7 @@ export interface PendingOtherChange {
     changeType: string;
     controlId: string;
     controlName: string;
+    fileName: string;
 }
 
 export type PendingChange = PendingPropertyChange | PendingOtherChange;
@@ -158,6 +160,11 @@ export interface PropertyChangeDeletionDetails {
     controlId: string;
     propertyName: string;
     fileName?: string;
+}
+
+export interface ShowMessage {
+    message: string;
+    shouldHideIframe: boolean;
 }
 
 /**
@@ -224,8 +231,9 @@ export const changeProperty = createExternalAction<PropertyChange>('change-prope
 export const propertyChanged = createExternalAction<PropertyChanged>('property-changed');
 export const propertyChangeFailed = createExternalAction<PropertyChangeFailed>('change-property-failed');
 export const changeStackModified = createExternalAction<ChangeStackModified>('change-stack-modified');
-export const showMessage = createExternalAction<string>('show-dialog-message');
-
+export const showMessage = createExternalAction<ShowMessage>('show-dialog-message');
+export const reloadApplication = createExternalAction<void>('reload-application');
+export const storageFileChanged = createExternalAction<string>('storage-file-changed');
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
     | ReturnType<typeof controlSelected>
@@ -237,4 +245,6 @@ export type ExternalAction =
     | ReturnType<typeof addExtensionPoint>
     | ReturnType<typeof propertyChangeFailed>
     | ReturnType<typeof changeStackModified>
-    | ReturnType<typeof showMessage>;
+    | ReturnType<typeof showMessage>
+    | ReturnType<typeof reloadApplication>
+    | ReturnType<typeof storageFileChanged>;

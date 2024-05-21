@@ -1,5 +1,65 @@
 # @sap-ux/control-property-editor
 
+## 0.4.20
+
+### Patch Changes
+
+-   cad21d4d: Enable Adding Controller Extension only on async views for Adp Projects
+
+## 0.4.19
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+
+## 0.4.18
+
+### Patch Changes
+
+-   9a32e102: fix preview reload on SBAS, by exposing livereload server port over url
+
+## 0.4.17
+
+### Patch Changes
+
+-   31ae689d: websocket over https
+
+## 0.4.16
+
+### Patch Changes
+
+-   6a477fba: feat: Replace auto-refresh with message in case of manual flex file changes
+
+## 0.4.15
+
+### Patch Changes
+
+-   fc76be56: do not trigger empty change on focus out
+
+## 0.4.14
+
+### Patch Changes
+
+-   373b9052: fix empty changes added on focus out
+
+## 0.4.13
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+
+## 0.4.12
+
+### Patch Changes
+
+-   b817c8d5: Property change is created (unsaved) on the key press but should be on blur for the adaptation projects
+
+## 0.4.11
+
+### Patch Changes
+
+-   f6bf758e: Mark for saved changes now changes on press of save button
+
 ## 0.4.10
 
 ### Patch Changes

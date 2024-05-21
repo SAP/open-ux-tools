@@ -45,7 +45,7 @@ export async function promptUserPass(log: Logger): Promise<string | undefined> {
                 name: 'username',
                 message: `${cyan(i18n.t('info.username'))}\n\n`,
                 validate: (value): boolean | string => {
-                    if (!value || !value.trim()) {
+                    if (!value?.trim()) {
                         return `${i18n.t('error.emptyUsername')}`;
                     } else {
                         return true;
@@ -57,7 +57,7 @@ export async function promptUserPass(log: Logger): Promise<string | undefined> {
                 name: 'password',
                 message: `${cyan(i18n.t('info.password'))}\n\n`,
                 validate: (value): boolean | string => {
-                    if (!value || !value.trim()) {
+                    if (!value?.trim()) {
                         return `${i18n.t('error.emptyPassword')}`;
                     } else {
                         return true;

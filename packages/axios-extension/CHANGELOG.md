@@ -1,5 +1,135 @@
 # @sap-ux/axios-extension
 
+## 1.12.3
+
+### Patch Changes
+
+-   19ec0f01: FIX: corrected scenario ID for S/4HANA Cloud Public Edition 2408 and onward
+
+## 1.12.2
+
+### Patch Changes
+
+-   a41bbd95: Use correct param in business object request, add new exports
+
+## 1.12.1
+
+### Patch Changes
+
+-   1b5f7442: feat(axios-extension): Add PATH to debug output
+
+## 1.12.0
+
+### Minor Changes
+
+-   312919ec: Add new adt services for ui service generation and publish
+
+## 1.11.9
+
+### Patch Changes
+
+-   Updated dependencies [9a32e102]
+    -   @sap-ux/btp-utils@0.14.4
+
+## 1.11.8
+
+### Patch Changes
+
+-   56b77fd9: fix: isS4Cloud returned wrong value when checking a development client
+
+## 1.11.7
+
+### Patch Changes
+
+-   31f5027c: Rename SCENARIO to FIORI_TOOLS_SCENARIO
+
+## 1.11.6
+
+### Patch Changes
+
+-   080e7b06: enhance lrep log messages
+
+## 1.11.5
+
+### Patch Changes
+
+-   1db4c60c: FIX: use correct url for reentrance tickets and enhance config to support it
+
+## 1.11.4
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+-   Updated dependencies [61b46bc8]
+    -   @sap-ux/btp-utils@0.14.3
+
+## 1.11.3
+
+### Patch Changes
+
+-   Updated dependencies [811c4324]
+    -   @sap-ux/btp-utils@0.14.2
+
+## 1.11.2
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/btp-utils@0.14.1
+    -   @sap-ux/logger@0.5.1
+
+## 1.11.1
+
+### Patch Changes
+
+-   efd2f6d4: Support ui5 version 1.71.\* in CPE.
+
+## 1.11.0
+
+### Minor Changes
+
+-   0f6e0e1b: Checks if an ABAP target system is on premise to log additional info when deploying.
+    Change was made for ABAP developers to see a deployment info message indicating if ABAP target system is on premise.
+    So that Developers can update URL to reflect the internal protocol, host and port using on premise configuration
+
+### Patch Changes
+
+-   Updated dependencies [0f6e0e1b]
+    -   @sap-ux/btp-utils@0.14.0
+
+## 1.10.2
+
+### Patch Changes
+
+-   64f9c513: adds more concise logging of error from xml response
+
+## 1.10.1
+
+### Patch Changes
+
+-   Updated dependencies [2e0b1a6d]
+    -   @sap-ux/logger@0.5.0
+
+## 1.10.0
+
+### Minor Changes
+
+-   ecd5275d: fix log info order, remove showAddInfo
+
+## 1.9.0
+
+### Minor Changes
+
+-   de8a4878: Checks if an ABAP target system is on premise to log additional info when deploying.
+    Change was made for ABAP developers to see a deployment info message indicating if ABAP target system is on premise.
+    So that Developers can update URL to reflect the internal protocol, host and port using on premise configuration
+
+### Patch Changes
+
+-   Updated dependencies [de8a4878]
+    -   @sap-ux/btp-utils@0.13.0
+
 ## 1.8.1
 
 ### Patch Changes
