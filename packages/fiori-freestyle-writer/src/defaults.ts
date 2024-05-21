@@ -28,6 +28,7 @@ function setBasicTemplateDefaults(settings: BasicAppSettings): void {
  * @param ffApp full config object used by the generate method
  */
 export function setDefaults(ffApp: FreestyleApp<unknown>): void {
+    console.log("__dirname FE --->", __dirname)
     setAppDefaults(ffApp.app);
 
     // Add template information

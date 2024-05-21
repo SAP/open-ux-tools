@@ -4,7 +4,7 @@
         "cdsUpdateInfo": "Update cds file with projectPath: {{ projectPath }}, annotationPath: {{ annotationPath }}, capService: {{ capService }}."
     },
     "warn": {
-        "cdsDKNotInstalled": "cds-dk version not installed, expected minimum cds version {{ minCdsVersion }} but received {{ cdsVersion }} instead."
+        "cdsDKNotInstalled": "cds-dk version is not installed"
     },
     "error": {
         "updateApplicationYaml": "Error occured while updating application yaml {{ error }}"

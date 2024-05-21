@@ -72,8 +72,11 @@ export function setDefaultTemplateSettings<T extends {}>(template: Template<T>, 
  */
 export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<T> {
     // Add template information
+    console.log("__dirname FE --->", __dirname)
     if (!feApp.app.sourceTemplate?.version || !feApp.app.sourceTemplate?.id) {
+        console.log(" setAppDefaults attempting to read package.json")
         const packageInfo = readPkgUp.sync({ cwd: __dirname });
+        console.log("got packageInfo", packageInfo)
         feApp.app.sourceTemplate = {
             id: `${packageInfo?.packageJson.name}:${feApp.template.type}`,
             version: packageInfo?.packageJson.version,

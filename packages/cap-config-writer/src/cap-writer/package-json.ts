@@ -1,11 +1,12 @@
-import { type Package, getCapCustomPaths, getPackageJson, getCdsVersionInfo } from '@sap-ux/project-access';
+import { type Package, getCapCustomPaths, getPackageJson } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
-import { t } from '../i18n';
 import { join } from 'path';
-import { enableCdsUi5Plugin, checkCdsUi5PluginEnabled, satisfiesMinCdsVersion, minCdsVersion } from '../cap-config';
+import { t } from '../i18n';
+import { enableCdsUi5Plugin, checkCdsUi5PluginEnabled } from '../cap-config';
+import { type CapServiceCdsInfo } from '../cap-config/types';
 import { getCDSTask, toPosixPath } from './helpers';
 import type { Logger } from '@sap-ux/logger';
-import type { CapService, CapRuntime } from '@sap-ux/odata-service-inquirer';
+import type { CapRuntime } from '@sap-ux/odata-service-inquirer';
 
 /**
  * Updates the scripts in the package json file with the provided scripts object.
@@ -27,7 +28,6 @@ function updatePackageJsonWithScripts(fs: Editor, packageJsonPath: string, scrip
  * @param {string} projectName - The name of the project.
  * @param {string} appId - The ID of the app.
  * @param {boolean} [enableNPMWorkspaces] - Whether to enable npm workspaces.
- * @param {Logger} [log] - The logger instance for logging warnings.
  * @returns {Promise<void>} A Promise that resolves once the scripts are updated.
  */
 async function updateScripts(
@@ -35,18 +35,20 @@ async function updateScripts(
     packageJsonPath: string,
     projectName: string,
     appId: string,
-    enableNPMWorkspaces?: boolean,
-    log?: Logger
+    enableNPMWorkspaces?: boolean
 ): Promise<void> {
-    const packageJson: Package = await getPackageJson(packageJsonPath, fs);
+    // const packageJson: Package = await getPackageJson(packageJsonPath, fs);
+    // const hasNPMworkspaces = await checkCdsUi5PluginEnabled(packageJsonPath, fs);
+    // const cdsVersion = await getCdsVersionInfo();
+    // if (cdsVersion.home && packageJson && satisfiesMinCdsVersion(packageJson)) {
+    //     const cdsScript = getCDSTask(projectName, appId, enableNPMWorkspaces ?? hasNPMworkspaces);
+    //     updatePackageJsonWithScripts(fs, packageJsonPath, cdsScript);
+    // } else {
+    //     log?.warn(t('warn.cdsDKNotInstalled', { cdsVersion: cdsVersion, minCdsVersion: minCdsVersion }));
+    // }
     const hasNPMworkspaces = await checkCdsUi5PluginEnabled(packageJsonPath, fs);
-    const cdsVersion = await getCdsVersionInfo();
-    if (cdsVersion.home && packageJson && satisfiesMinCdsVersion(packageJson)) {
-        const cdsScript = getCDSTask(projectName, appId, enableNPMWorkspaces ?? hasNPMworkspaces);
-        updatePackageJsonWithScripts(fs, packageJsonPath, cdsScript);
-    } else {
-        log?.warn(t('warn.cdsDKNotInstalled', { cdsVersion: cdsVersion, minCdsVersion: minCdsVersion }));
-    }
+    const cdsScript = getCDSTask(projectName, appId, enableNPMWorkspaces ?? hasNPMworkspaces);
+    updatePackageJsonWithScripts(fs, packageJsonPath, cdsScript);
 }
 
 /**
@@ -57,7 +59,7 @@ async function updateScripts(
  * @param {Editor} fs - The file system editor.
  * @param {string} projectName - The name of the project.
  * @param {boolean} sapux - Whether to add the app name to the sapux array.
- * @param {CapService} capService - The CAP service instance.
+ * @param {CapServiceCdsInfo} capService - The CAP service instance.
  * @param {string} appId - The ID of the app.
  * @param {Logger} [log] - The logger instance for logging warnings.
  * @param {boolean} [enableNPMWorkspaces] - Whether to enable npm workspaces.
@@ -67,7 +69,7 @@ export async function updateRootPackageJsonCAP(
     fs: Editor,
     projectName: string,
     sapux: boolean,
-    capService: CapService,
+    capService: CapServiceCdsInfo,
     appId: string,
     log?: Logger,
     enableNPMWorkspaces?: boolean
@@ -79,8 +81,10 @@ export async function updateRootPackageJsonCAP(
     if (enableNPMWorkspaces && packageJson) {
         await enableCdsUi5Plugin(capService.projectPath, fs);
     }
-    if (capService?.capType === capNodeType) {
-        await updateScripts(fs, packageJsonPath, projectName, appId, enableNPMWorkspaces, log);
+    if (capService?.capType === capNodeType && capService?.cdsVersionInfo) {
+        await updateScripts(fs, packageJsonPath, projectName, appId, enableNPMWorkspaces);
+    } else {
+        log?.warn(t('warn.cdsDKNotInstalled'));
     }
     if (sapux) {
         const capProjectPath = toPosixPath(
