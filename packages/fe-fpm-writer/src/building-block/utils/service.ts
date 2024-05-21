@@ -7,7 +7,6 @@ import { convert } from '@sap-ux/annotation-converter';
 import { FioriAnnotationService } from '@sap-ux/fiori-annotation-api';
 
 import { Project, getCapServiceName } from '@sap-ux/project-access';
-import { ProjectTemp } from './project-convertor';
 
 export async function getMappedServiceName(project: Project, serviceName: string, appName: string): Promise<string> {
     let mappedServiceName = serviceName;
@@ -24,13 +23,13 @@ export async function getMappedServiceName(project: Project, serviceName: string
     return mappedServiceName;
 }
 export async function getAnnotationService(
-    project: ProjectTemp,
+    project: Project,
     serviceName: string,
     appName: string,
     sync = true
 ): Promise<FioriAnnotationService> {
     const mappedServiceName = await getMappedServiceName(project, serviceName, appName);
-    const service = await FioriAnnotationService.createService(project as any, mappedServiceName, appName);
+    const service = await FioriAnnotationService.createService(project, mappedServiceName, appName);
     if (sync) {
         await service.sync();
     }
