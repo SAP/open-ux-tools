@@ -751,8 +751,8 @@ server:
       configuration:
         adp:
           target:
-            url: http://sap.example
             destination: test
+            url: http://sap.example
             client: '000'
           ignoreCertErrors: false
     - name: fiori-tools-proxy
@@ -766,8 +766,8 @@ server:
             - /test-resources
           url: https://ui5.sap.com
         backend:
-          - url: http://sap.example
-            destination: test
+          - destination: test
+            url: http://sap.example
             client: '000'
             path: /sap
 customConfiguration:

@@ -97,7 +97,7 @@ describe('ADP writer', () => {
                 reference: 'the.original.app'
             },
             target: {
-                destination: 'test'
+                destination: 'test',
                 url: 'http://sap.example',
                 client: '000'
             },
