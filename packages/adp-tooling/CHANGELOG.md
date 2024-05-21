@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.10.6
+
+### Patch Changes
+
+-   da5d9f0b: Fragment files are not created together with an addXML change in onChangeRequest handler
+
 ## 0.10.5
 
 ### Patch Changes
