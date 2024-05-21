@@ -13,7 +13,7 @@ export async function getMappedServiceName(project: Project, serviceName: string
     let mappedServiceName = serviceName;
     if (['CAPJava', 'CAPNodejs'].includes(project.projectType)) {
         // Fetch the CDS service name by mapping it to the URI if the app's service is not the same
-        const appServiceName = project.apps[appName].mainService;
+        const appServiceName = getMainService(project, appName);
         if (appServiceName) {
             mappedServiceName = await getCapServiceName(
                 project.root,
@@ -47,6 +47,22 @@ const getServiceMetadata = async (project: Project, serviceName: string, appName
     return getMergedMetadata(annotationService);
 };
 
+// ToDo - is there otherway?
+function getMainService(project: Project, appId?: string): string {
+    let mainService: string | undefined;
+    if (appId === undefined) {
+        const appIds = Object.keys(project.apps);
+        mainService = project.apps[appIds[0]].mainService;
+    } else {
+        const app = project.apps[appId];
+        if (!app) {
+            throw new Error('ERROR_INVALID_APP_ID');
+        }
+        mainService = app.mainService;
+    }
+    return mainService || 'mainService';
+}
+
 /**
  *
  * @param projectProvider
@@ -55,7 +71,11 @@ const getServiceMetadata = async (project: Project, serviceName: string, appName
  */
 export async function getEntityTypes(projectProvider: ProjectProvider) {
     const project = await projectProvider.getProject();
-    const metadata = await getServiceMetadata(project as any, project.mainService, projectProvider.appId);
+    const metadata = await getServiceMetadata(
+        project,
+        getMainService(project, projectProvider.appId),
+        projectProvider.appId
+    );
     return Array.from(metadata.entityTypes);
 }
 
@@ -86,7 +106,7 @@ export async function getAnnotationPathQualifiers(
         const project = await projectProvider.getProject();
         const annotationService = await getAnnotationService(
             project as any,
-            project.apps[projectProvider.appId].mainService!,
+            getMainService(project, projectProvider.appId),
             projectProvider.appId
         );
         const mergedMetadata = getMergedMetadata(annotationService);

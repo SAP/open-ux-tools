@@ -1,8 +1,7 @@
 /* eslint-disable jsdoc/require-returns */
-import { getProject } from '@sap-ux/project-access';
+import { Project, getProject } from '@sap-ux/project-access';
 import path, { join } from 'path';
 import { type Editor } from 'mem-fs-editor';
-import { ProjectTemp, convertProject } from './project-convertor';
 
 /**
  *
@@ -37,9 +36,8 @@ class ProjectProvider {
      * @param root - root path of the project
      * @returns - project structure
      */
-    async getProject(): Promise<ProjectTemp> {
-        const project = await getProject(this.root.replace(this.appId, ''));
-        return convertProject(project, this.appId);
+    async getProject(): Promise<Project> {
+        return getProject(this.root.replace(this.appId, ''));
     }
 }
 
