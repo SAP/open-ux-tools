@@ -5,6 +5,7 @@ import { generate } from '../../../src';
 import type { AdpWriterConfig } from '../../../src/types';
 import { rimraf } from 'rimraf';
 import { migrate } from '../../../src/writer';
+import { OperationsType } from '@sap-ux/axios-extension';
 
 describe('ADP writer', () => {
     const fs = create(createStorage());
@@ -90,13 +91,33 @@ describe('ADP writer', () => {
     });
 
     describe('migrate', () => {
+        const migrateConfig: AdpWriterConfig = {
+            app: {
+                id: 'my.test.app',
+                reference: 'the.original.app'
+            },
+            target: {
+                url: 'http://sap.example',
+                destination: 'test',
+                client: '000'
+            },
+            customConfig: {
+                adp: {
+                    environment: 'P',
+                    safeMode: true
+                }
+            },
+            options: {
+                fioriTools: true
+            }
+        };
         const migrateInputDir = join(__dirname, '../../fixtures/webide-adaptation-project');
 
         test('migrate minimal config', async () => {
             const projectDir = join(outputDir, 'webide-adaptation-project');
             fs.copy(migrateInputDir, projectDir, { globOptions: { dot: true } });
 
-            await migrate(projectDir, config, fs);
+            await migrate(projectDir, migrateConfig, fs);
             expect(fs.dump(projectDir)).toMatchSnapshot();
             expect(fs.exists(join(projectDir, '.che/project.json'))).toBeFalsy();
             expect(fs.exists(join(projectDir, 'neo-app.json'))).toBeFalsy();
