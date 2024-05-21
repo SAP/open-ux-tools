@@ -59,8 +59,8 @@ export async function convertQuestion(
         type: QUESTION_TYPE_MAP[question.type ?? 'input'] ?? question.type,
         name: question.name,
         message: isFunction(question.message) ? await question.message(answers) : await question.message,
-        validate: (value: unknown) =>
-            isFunction(question.validate) ? question.validate(value, answers) : question.validate ?? true,
+        validate: async (value: unknown) =>
+            isFunction(question.validate) ? await question.validate(value, answers) : question.validate ?? true,
         initial: () => (isFunction(question.default) ? question.default(answers) : question.default)
     };
     if (question.choices) {
@@ -78,7 +78,8 @@ export async function convertQuestion(
  */
 export async function promptYUIQuestions<T>(questions: YUIQuestion[], useDefaults: boolean): Promise<T> {
     const answers: { [key: string]: unknown } = {};
-    for (const question of questions) {
+    for (let i = 0; i < questions.length; i++) {
+        const question = questions[i];
         if (isFunction(question.when) ? question.when(answers) : question.when !== false) {
             if (useDefaults) {
                 answers[question.name] = isFunction(question.default) ? question.default(answers) : question.default;
@@ -87,6 +88,16 @@ export async function promptYUIQuestions<T>(questions: YUIQuestion[], useDefault
                 const answer = await prompts(q, {
                     onCancel: () => {
                         throw new Error('User canceled the prompt');
+                    },
+                    onSubmit: async (prompt: PromptObject, answer: unknown) => {
+                        // prompts does not handle validation for autocomplete out of the box
+                        if (prompt.type === 'autocomplete' && prompt.validate) {
+                            const valid = await (q.validate as Function)(answer);
+                            if (valid !== true) {
+                                console.error(valid);
+                                i--;
+                            }
+                        }
                     }
                 });
                 answers[question.name] = answer[question.name];
