@@ -5,6 +5,11 @@ import { create } from 'mem-fs-editor';
 import type { AdpWriterConfig } from '../types';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { enhanceUI5Yaml, enhanceUI5DeployYaml, hasDeployConfig, enhanceUI5YamlWithCustomConfig } from './options';
+import {
+    writeTemplateToFolder,
+    writeUI5Yaml,
+    writeUI5DeployYaml,
+} from './project-utils';
 
 const tmplPath = join(__dirname, '../../templates/project');
 
@@ -20,7 +25,8 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
         target: { ...config.target },
         ui5: { ...config.ui5 },
         deploy: config.deploy ? { ...config.deploy } : undefined,
-        options: { ...config.options }
+        options: { ...config.options },
+        customConfig: config.customConfig ? { ...config.customConfig } : undefined,
     };
     configWithDefaults.app.title ??= `Adaptation of ${config.app.reference}`;
     configWithDefaults.app.layer ??= 'CUSTOMER_BASE';
@@ -30,22 +36,6 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
     configWithDefaults.package.description ??= configWithDefaults.app.title;
 
     return configWithDefaults;
-}
-
-async function writeUi5Yaml(basePath: string, config: AdpWriterConfig, fs: Editor) {
-    // ui5.yaml
-    const ui5ConfigPath = join(basePath, 'ui5.yaml');
-    const baseUi5ConfigContent = fs.read(ui5ConfigPath);
-    const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
-    enhanceUI5Yaml(ui5Config, config);
-    enhanceUI5YamlWithCustomConfig(ui5Config, config?.customConfig);
-    fs.write(ui5ConfigPath, ui5Config.toString());
-    // ui5-deploy.yaml
-    if (hasDeployConfig(config)) {
-        const ui5DeployConfig = await UI5Config.newInstance(baseUi5ConfigContent);
-        enhanceUI5DeployYaml(ui5DeployConfig, config);
-        fs.write(join(basePath, 'ui5-deploy.yaml'), ui5DeployConfig.toString());
-    }
 }
 
 /**
@@ -62,12 +52,9 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
     }
     const fullConfig = setDefaults(config);
 
-    fs.copyTpl(join(tmplPath, '**/*.*'), join(basePath), fullConfig, undefined, {
-        globOptions: { dot: true },
-        processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
-    });
-
-    await writeUi5Yaml(basePath, fullConfig, fs);
+    writeTemplateToFolder(join(tmplPath, '**/*.*'), join(basePath), fullConfig, fs);
+    await writeUI5DeployYaml(basePath, fullConfig, fs);
+    await writeUI5Yaml(basePath, fullConfig, fs)
 
     return fs;
 }
@@ -102,7 +89,7 @@ export async function migrate(basePath: string, config: AdpWriterConfig, fs?: Ed
 
     // delete .che folder
     if (fs.exists(join(basePath, '.che/project.json'))) {
-        fs.delete(join(basePath, '.che/'));
+        fs.delete(join(basePath, '.che/*'));
     }
 
     // delete neo-app.json
@@ -110,7 +97,8 @@ export async function migrate(basePath: string, config: AdpWriterConfig, fs?: Ed
         fs.delete(join(basePath, 'neo-app.json'));
     }
 
-    await writeUi5Yaml(basePath, fullConfig, fs);
+    await writeUI5Yaml(basePath, fullConfig, fs);
+    await writeUI5DeployYaml(basePath, fullConfig, fs);
 
     return fs;
 }

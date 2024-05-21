@@ -117,10 +117,19 @@ specVersion: \\"3.0\\"
 metadata:
   name: my.test.app
 type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
 server:
   customMiddleware:
-    - name: fiori-tools-preview
+    - name: fiori-tools-appreload
       afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
       configuration:
         adp:
           target:
@@ -190,8 +199,17 @@ specVersion: \\"3.0\\"
 metadata:
   name: my.test.app
 type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
 server:
   customMiddleware:
+    - name: reload-middleware
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
     - name: preview-middleware
       afterMiddleware: compression
       configuration:
@@ -331,8 +349,17 @@ specVersion: \\"3.0\\"
 metadata:
   name: my.test.app
 type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
 server:
   customMiddleware:
+    - name: reload-middleware
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
     - name: preview-middleware
       afterMiddleware: compression
       configuration:
@@ -464,10 +491,19 @@ specVersion: \\"3.0\\"
 metadata:
   name: my.test.app
 type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
 server:
   customMiddleware:
-    - name: fiori-tools-preview
+    - name: fiori-tools-appreload
       afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
       configuration:
         adp:
           target:
@@ -574,8 +610,17 @@ specVersion: \\"3.0\\"
 metadata:
   name: my.test.app
 type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
 server:
   customMiddleware:
+    - name: reload-middleware
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
     - name: preview-middleware
       afterMiddleware: compression
       configuration:
@@ -693,8 +738,17 @@ specVersion: \\"3.0\\"
 metadata:
   name: my.test.app
 type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
 server:
   customMiddleware:
+    - name: reload-middleware
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
     - name: preview-middleware
       afterMiddleware: compression
       configuration:
