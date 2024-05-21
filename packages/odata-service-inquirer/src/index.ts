@@ -2,7 +2,7 @@ import { type InquirerAdapter } from '@sap-ux/inquirer-common';
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { type ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
-import { ErrorHandler } from './error-handler/error-handler';
+import { ErrorHandler, ERROR_TYPE } from './error-handler/error-handler';
 import { getQuestions } from './prompts';
 import LoggerHelper from './prompts/logger-helper';
 import {
@@ -15,6 +15,7 @@ import {
     type OdataServiceQuestion
 } from './types';
 import { PromptState, setTelemetryClient } from './utils';
+import { initI18nOdataServiceInquirer } from './i18n';
 
 /**
  * Get the inquirer prompts for odata service.
@@ -33,6 +34,8 @@ async function getPrompts(
     telemetryClient?: ToolsSuiteTelemetryClient,
     isYUI = false
 ): Promise<{ prompts: OdataServiceQuestion[]; answers: { odataService: Partial<OdataServiceAnswers> } }> {
+    // prompt texts must be loaded before the prompts are created, wait for the i18n bundle to be initialized
+    await initI18nOdataServiceInquirer();
     LoggerHelper.logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/odata-service-inquirer' });
     ErrorHandler.logger = LoggerHelper.logger;
     ErrorHandler.guidedAnswersEnabled = enableGuidedAnswers;
@@ -83,5 +86,8 @@ export {
     type CapService,
     type InquirerAdapter,
     type OdataServiceAnswers,
-    type OdataServicePromptOptions
+    type OdataServicePromptOptions,
+    // These exports are to facilitate migration to open-ux-tools and will be removed in a future release
+    ERROR_TYPE,
+    ErrorHandler
 };

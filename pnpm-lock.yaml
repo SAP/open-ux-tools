@@ -110,6 +110,9 @@ importers:
       dotenv:
         specifier: 16.3.1
         version: 16.3.1
+      fast-xml-parser:
+        specifier: 4.2.7
+        version: 4.2.7
 
   examples/simple-generator:
     dependencies:
@@ -1462,6 +1465,9 @@ importers:
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
+      '@sap-ux/ui5-info':
+        specifier: workspace:*
+        version: link:../ui5-info
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2

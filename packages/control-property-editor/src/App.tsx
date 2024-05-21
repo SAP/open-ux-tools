@@ -11,6 +11,7 @@ import { useAppDispatch } from './store';
 import { changePreviewScale } from './slice';
 import { useWindowSize } from './use-window-size';
 import { DEFAULT_DEVICE_WIDTH, DEVICE_WIDTH_MAP } from './devices';
+import { ShowMessage } from '@sap-ux-private/control-property-editor-common';
 
 import './App.scss';
 import './Workarounds.scss';
@@ -45,9 +46,10 @@ export default function App(appProps: AppProps): ReactElement {
 
     const [hideWarningDialog, setHideWarningDialog] = useLocalStorage('hide-warning-dialog', false);
     const [isWarningDialogVisible, setWarningDialogVisibility] = useState(() => hideWarningDialog !== true);
+    const [shouldShowDialogMessage, setShouldShowDialogMessage] = useState(false);
+    const [shouldHideIframe, setShouldHideIframe] = useState(false);
 
     const [isInitialized, setIsInitialized] = useState(false);
-    const [shouldShowDialogMessageForAdpProjects, setShouldShowDialogMessageForAdpProjects] = useState(false);
 
     const previewWidth = useSelector<RootState, string>(
         (state) => `${DEVICE_WIDTH_MAP.get(state.deviceType) ?? DEFAULT_DEVICE_WIDTH}px`
@@ -55,8 +57,7 @@ export default function App(appProps: AppProps): ReactElement {
     const previewScale = useSelector<RootState, number>((state) => state.scale);
     const fitPreview = useSelector<RootState, boolean>((state) => state.fitPreview ?? false);
     const windowSize = useWindowSize();
-    const dialogMessage = useSelector<RootState, string | undefined>((state) => state.dialogMessage);
-
+    const dialogMessage = useSelector<RootState, ShowMessage | undefined>((state) => state.dialogMessage);
     const containerRef = useCallback(
         (node) => {
             if (node === null) {
@@ -92,11 +93,16 @@ export default function App(appProps: AppProps): ReactElement {
         setWarningDialogVisibility(false);
     }
 
+    const closeAdpWarningDialog = (): void => {
+        setShouldShowDialogMessage(false);
+    };
+
     useEffect(() => {
         if (dialogMessage && isAdpProject) {
-            setShouldShowDialogMessageForAdpProjects(true);
+            setShouldShowDialogMessage(true);
+            setShouldHideIframe(dialogMessage.shouldHideIframe);
         }
-    }, [dialogMessage]);
+    }, [dialogMessage, isAdpProject]);
 
     return (
         <div className="app">
@@ -105,7 +111,7 @@ export default function App(appProps: AppProps): ReactElement {
             </section>
             <section ref={containerRef} className="app-content">
                 <div className="app-canvas">
-                    {!shouldShowDialogMessageForAdpProjects && (
+                    {!shouldHideIframe && (
                         <iframe
                             className="app-preview"
                             id="preview"
@@ -122,15 +128,27 @@ export default function App(appProps: AppProps): ReactElement {
             <section className="app-panel app-panel-right">
                 <PropertiesPanel />
             </section>
-            {isAdpProject && (
+            {isAdpProject && shouldHideIframe && (
                 <UIDialog
-                    hidden={!shouldShowDialogMessageForAdpProjects}
+                    hidden={!shouldShowDialogMessage}
                     dialogContentProps={{
                         title: t('TOOL_DISCLAIMER_TITLE'),
-                        subText: dialogMessage
+                        subText: dialogMessage?.message
                     }}
                 />
             )}
+            {isAdpProject && !shouldHideIframe && (
+                <UIDialog
+                    hidden={!shouldShowDialogMessage}
+                    dialogContentProps={{
+                        title: t('TOOL_DISCLAIMER_TITLE'),
+                        subText: dialogMessage?.message
+                    }}
+                    acceptButtonText={t('OK')}
+                    onAccept={closeAdpWarningDialog}
+                />
+            )}
+
             {scenario === 'FE_FROM_SCRATCH' ? (
                 <UIDialog
                     hidden={!isWarningDialogVisible}
