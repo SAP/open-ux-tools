@@ -182,8 +182,7 @@ export class Ui5AbapRepositoryService extends ODataService {
             bsp.name,
             bsp.description || 'Deployed with SAP Fiori tools',
             info ? info.Package : bsp.package
-        );
-        this.log.debug(`Payload:\n${payload}`);
+        );        
         const config = this.createConfig(bsp.transport, testMode, safeMode);
         const frontendUrl = this.getAbapFrontendUrl();
         try {
