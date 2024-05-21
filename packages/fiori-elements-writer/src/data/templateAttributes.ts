@@ -32,7 +32,7 @@ const commonUi5Libs: FrameworkLibs = {
         'sap.ui.generic.app',
         'sap.suite.ui.generic.template'
     ],
-    [OdataVersion.v4]: ['sap.m', 'sap.ushell', 'sap.fe.templates']
+    [OdataVersion.v4]: ['sap.m', 'sap.fe.templates']
 };
 
 type TemplateLibsEntry = {
@@ -88,7 +88,7 @@ const templateLibs: TemplateLibs = {
         },
         [TemplateType.FlexibleProgrammingModel]: {
             baseComponent: appComponentLibFioriElements,
-            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.fe.templates']
+            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.fe.core']
         }
     }
 };

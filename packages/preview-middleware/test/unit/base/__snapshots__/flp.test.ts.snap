@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`FlpSandbox init add default libs if no libs in manifest.json 1`] = `"sap.m,sap.ui.core,sap.ushell"`;
+exports[`FlpSandbox init add default libs if no libs in manifest.json 1`] = `"sap.m,sap.ui.core"`;
 
 exports[`FlpSandbox init additional apps 1`] = `
 Object {
@@ -70,7 +70,7 @@ Object {
         ],
       },
     ],
-    "libs": "sap.m,sap.ui.core,sap.ushell",
+    "libs": "sap.m,sap.ui.core",
     "resources": Object {
       "my.id": "..",
       "myRemoteComponent": "/a/remote/app",
@@ -121,7 +121,7 @@ Object {
         ],
       },
     ],
-    "libs": "sap.m,sap.ui.core,sap.ushell",
+    "libs": "sap.m,sap.ui.core",
     "resources": Object {
       "my.id": "..",
       "open.ux.preview.client": "/preview/client",
@@ -169,7 +169,7 @@ Object {
         ],
       },
     ],
-    "libs": "sap.m,sap.ui.core,sap.ushell",
+    "libs": "sap.m,sap.ui.core",
     "resources": Object {
       "my.id": "..",
       "open.ux.preview.client": "/preview/client",
@@ -217,7 +217,7 @@ Object {
         ],
       },
     ],
-    "libs": "sap.m,sap.ui.core,sap.ushell",
+    "libs": "sap.m,sap.ui.core",
     "resources": Object {
       "my.id": "..",
       "open.ux.preview.client": "/preview/client",
@@ -265,7 +265,7 @@ Object {
         ],
       },
     ],
-    "libs": "sap.m,sap.ui.core,sap.ushell",
+    "libs": "sap.m,sap.ui.core",
     "resources": Object {
       "my.id": "..",
       "open.ux.preview.client": "/preview/client",

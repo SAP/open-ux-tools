@@ -619,7 +619,7 @@ export class FlpSandbox {
                 })
                 .join(',');
         } else {
-            return 'sap.m,sap.ui.core,sap.ushell';
+            return 'sap.m,sap.ui.core';
         }
     }
 }
