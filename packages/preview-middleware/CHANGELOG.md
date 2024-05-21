@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.13.41
+
+### Patch Changes
+
+-   1618da09: Use existing html file on file system for preview
+
 ## 0.13.40
 
 ### Patch Changes
