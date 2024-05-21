@@ -131,6 +131,7 @@ server:
       configuration:
         ignoreCertErrors: false
         ui5:
+          version: ''
           path:
             - /resources
             - /test-resources
@@ -477,6 +478,7 @@ server:
       configuration:
         ignoreCertErrors: false
         ui5:
+          version: ''
           path:
             - /resources
             - /test-resources
@@ -640,7 +642,7 @@ my.test.app_sap.app.title=Adaptation of the.original.app",
 ",
     "state": "modified",
   },
-  ".che/project.json": Object {
+    ".che/project.json": Object {
     "contents": null,
     "state": "deleted",
   },
@@ -717,7 +719,7 @@ server:
 ",
     "state": "modified",
   },
-  "webapp/i18n/ListReport/SEPMRA_C_PD_Product/i18n.properties": Object {
+    "webapp/i18n/ListReport/SEPMRA_C_PD_Product/i18n.properties": Object {
     "contents": "#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.
 
 # This is the resource bundle for migrate test
