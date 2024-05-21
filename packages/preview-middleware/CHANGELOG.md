@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.13.39
+
+### Patch Changes
+
+-   52faf16f: Fix RTA initialization issue for UI5 versions less than 1.72.
+
 ## 0.13.38
 
 ### Patch Changes
