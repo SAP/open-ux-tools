@@ -87,9 +87,15 @@ export async function migrate(basePath: string, config: AdpWriterConfig, fs?: Ed
 
     const fullConfig = setDefaults(config);
 
-    // copy all files except app discriptor
-    fs.copyTpl(join(tmplPath, '**/*.*'), join(basePath), fullConfig, undefined, {
-        globOptions: { dot: true, ignore: ['manifest.appdescr_variant'] },
+    // Copy the specified files to target project
+    fs.copyTpl(join(tmplPath, '**/ui5.yaml'), join(basePath), fullConfig, undefined, {
+        globOptions: { dot: true }
+    });
+    fs.copyTpl(join(tmplPath, '**/package.json'), join(basePath), fullConfig, undefined, {
+        globOptions: { dot: true }
+    });
+    fs.copyTpl(join(tmplPath, '**/gitignore.tmpl'), join(basePath), fullConfig, undefined, {
+        globOptions: { dot: true },
         processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
     });
 

@@ -1,5 +1,24 @@
 # @sap-ux/preview-middleware
 
+## 0.13.38
+
+### Patch Changes
+
+-   39665ea9: Fix for CPE does not start UI Adaptation for ADP Projects with lower UI5 Version than 1.120
+
+## 0.13.37
+
+### Patch Changes
+
+-   9e8af342: Disable fragment context menu item in CPE for controls with no stable id
+
+## 0.13.36
+
+### Patch Changes
+
+-   Updated dependencies [c87fcc91]
+    -   @sap-ux/adp-tooling@0.10.5
+
 ## 0.13.35
 
 ### Patch Changes
