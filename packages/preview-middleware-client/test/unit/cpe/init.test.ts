@@ -76,7 +76,8 @@ describe('main', () => {
         getRootControlInstance: jest.fn().mockReturnValue({
             getManifest: jest.fn().mockReturnValue({ 'sap.app': { id: 'testId' } })
         }),
-        attachStop: jest.fn()
+        attachStop: jest.fn(),
+        attachModeChanged: jest.fn()
     } as any;
 
     const spyPostMessage = jest.spyOn(common, 'startPostMessageCommunication').mockImplementation(() => {

@@ -19,6 +19,7 @@ import type { ActionSenderFunction, SubscribeFunction, UI5AdaptationOptions } fr
 import type Event from 'sap/ui/base/Event';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import Log from 'sap/base/Log';
+import { modeAnStackChangeHandler } from '../rta-service';
 
 interface ChangeContent {
     property: string;
@@ -248,6 +249,7 @@ export class ChangeService {
      * @returns (event: sap.ui.base.Event) => Promise<void>
      */
     private createOnStackChangeHandler(): (event: Event) => Promise<void> {
+        const handler = modeAnStackChangeHandler(this.sendAction, this.options.rta);
         return async (): Promise<void> => {
             const stack = this.options.rta.getCommandStack();
             const allCommands = stack.getCommands();
@@ -282,6 +284,7 @@ export class ChangeService {
             }
 
             this.updateStack(activeChanges);
+            handler();
         };
     }
 

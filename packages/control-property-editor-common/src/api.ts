@@ -234,6 +234,13 @@ export const changeStackModified = createExternalAction<ChangeStackModified>('ch
 export const showMessage = createExternalAction<ShowMessage>('show-dialog-message');
 export const reloadApplication = createExternalAction<void>('reload-application');
 export const storageFileChanged = createExternalAction<string>('storage-file-changed');
+export const setAppMode = createExternalAction<'navigation' | 'adaptation'>('set-app-mode');
+export const canChangeStack = createExternalAction<{ canRedo: boolean; canUndo: boolean }>('can-change-stack');
+export const canSave = createExternalAction<boolean>('can-save');
+export const undo = createExternalAction<void>('undo');
+export const redo = createExternalAction<void>('redo');
+export const save = createExternalAction<void>('save');
+
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
     | ReturnType<typeof controlSelected>
@@ -247,4 +254,10 @@ export type ExternalAction =
     | ReturnType<typeof changeStackModified>
     | ReturnType<typeof showMessage>
     | ReturnType<typeof reloadApplication>
-    | ReturnType<typeof storageFileChanged>;
+    | ReturnType<typeof storageFileChanged>
+    | ReturnType<typeof setAppMode>
+    | ReturnType<typeof canChangeStack>
+    | ReturnType<typeof canSave>
+    | ReturnType<typeof undo>
+    | ReturnType<typeof redo>
+    | ReturnType<typeof save>;

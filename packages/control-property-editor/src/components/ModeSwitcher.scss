@@ -1,0 +1,11 @@
+ .mode-switcher {
+    display: flex;
+    align-items: center;
+    .ms-Button { 
+        border-radius: 3px;
+        margin-right: 1px;
+    }
+    .ms-Label {
+        margin-right: 10px;
+    }
+} 

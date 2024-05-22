@@ -73,5 +73,12 @@
   "NO_CONTROL_CHANGES_FOUND": "No Control Changes Found",
   "CHANGE": "Change",
   "FILE": "File: ",
-  "CONTROL": "Selector Id: "
+  "CONTROL": "Selector Id: ",
+  "MODE": "Mode",
+  "LIVE": "Live",
+  "EDIT": "Edit",
+  "SAVE": "Save",
+  "UNDO": "Undo",
+  "REDO": "Redo",
+  "NAVIGATE": "Navigate"
 }

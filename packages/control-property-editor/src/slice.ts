@@ -21,7 +21,10 @@ import {
     showMessage,
     scenario,
     reloadApplication,
-    storageFileChanged
+    storageFileChanged,
+    setAppMode,
+    canChangeStack,
+    canSave
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -42,6 +45,12 @@ interface SliceState {
     changes: ChangesSlice;
     dialogMessage: ShowMessage | undefined;
     fileChanges?: string[];
+    appMode: 'navigation' | 'adaptation';
+    changeStack: {
+        canUndo: boolean;
+        canRedo: boolean;
+    };
+    canSave: boolean;
 }
 
 export interface ChangesSlice {
@@ -120,7 +129,13 @@ export const initialState: SliceState = {
         saved: [],
         pendingChangeIds: []
     },
-    dialogMessage: undefined
+    dialogMessage: undefined,
+    appMode: 'adaptation',
+    changeStack: {
+        canUndo: false,
+        canRedo: false
+    },
+    canSave: false
 };
 const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
     name: 'app',
@@ -271,6 +286,15 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 if (fileName) {
                     state.changes.pendingChangeIds.push(fileName);
                 }
+            })
+            .addMatcher(setAppMode.match, (state, action: ReturnType<typeof setAppMode>): void => {
+                state.appMode = action.payload;
+            })
+            .addMatcher(canChangeStack.match, (state, action: ReturnType<typeof canChangeStack>): void => {
+                state.changeStack = action.payload;
+            })
+            .addMatcher(canSave.match, (state, action: ReturnType<typeof canSave>): void => {
+                state.canSave = action.payload;
             })
 });
 
