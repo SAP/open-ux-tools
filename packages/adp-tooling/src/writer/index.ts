@@ -3,13 +3,7 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { AdpWriterConfig } from '../types';
-import { UI5Config } from '@sap-ux/ui5-config';
-import { enhanceUI5Yaml, enhanceUI5DeployYaml, hasDeployConfig, enhanceUI5YamlWithCustomConfig } from './options';
-import {
-    writeTemplateToFolder,
-    writeUI5Yaml,
-    writeUI5DeployYaml,
-} from './project-utils';
+import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml } from './project-utils';
 
 const tmplPath = join(__dirname, '../../templates/project');
 
@@ -26,7 +20,7 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
         ui5: { ...config.ui5 },
         deploy: config.deploy ? { ...config.deploy } : undefined,
         options: { ...config.options },
-        customConfig: config.customConfig ? { ...config.customConfig } : undefined,
+        customConfig: config.customConfig ? { ...config.customConfig } : undefined
     };
     configWithDefaults.app.title ??= `Adaptation of ${config.app.reference}`;
     configWithDefaults.app.layer ??= 'CUSTOMER_BASE';
@@ -54,7 +48,7 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
 
     writeTemplateToFolder(join(tmplPath, '**/*.*'), join(basePath), fullConfig, fs);
     await writeUI5DeployYaml(basePath, fullConfig, fs);
-    await writeUI5Yaml(basePath, fullConfig, fs)
+    await writeUI5Yaml(basePath, fullConfig, fs);
 
     return fs;
 }
