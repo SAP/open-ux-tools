@@ -1,5 +1,31 @@
 # @sap-ux/preview-middleware
 
+## 0.13.41
+
+### Patch Changes
+
+-   1618da09: Use existing html file on file system for preview
+
+## 0.13.40
+
+### Patch Changes
+
+-   da5d9f0b: Fragment files are not created together with an addXML change in onChangeRequest handler
+-   Updated dependencies [da5d9f0b]
+    -   @sap-ux/adp-tooling@0.10.6
+
+## 0.13.39
+
+### Patch Changes
+
+-   52faf16f: Fix RTA initialization issue for UI5 versions less than 1.72.
+
+## 0.13.38
+
+### Patch Changes
+
+-   39665ea9: Fix for CPE does not start UI Adaptation for ADP Projects with lower UI5 Version than 1.120
+
 ## 0.13.37
 
 ### Patch Changes

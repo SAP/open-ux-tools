@@ -60,11 +60,6 @@ export function addXmlFragment(basePath: string, change: AddXMLChange, fs: Edito
     const fullPath = join(basePath, DirName.Changes, fragmentPath);
 
     try {
-        if (fs.exists(fullPath)) {
-            logger.info(`XML Fragment "${fragmentPath}" already exists.`);
-            return;
-        }
-
         const fragmentTemplatePath = join(__dirname, '../../templates/rta', TemplateFileName.Fragment);
         fs.copy(fragmentTemplatePath, fullPath);
         logger.info(`XML Fragment "${fragmentPath}" was created`);
