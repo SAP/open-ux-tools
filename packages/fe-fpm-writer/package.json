@@ -42,7 +42,7 @@
         "@sap-ux/vocabularies-types": "0.10.0",
         "@sap-ux/annotation-converter": "0.8.0",
         "@sap-ux/edmx-parser": "^0.7.0",
-        "@sap-ux/fiori-annotation-api": "C:\\SAPDevelop\\tools-suite\\packages\\lib\\fiori-annotation-api"
+        "@sap-ux/fiori-annotation-api": "file:./sap-ux-fiori-annotation-api-1.13.7.tgz"
     },
     "devDependencies": {
         "@types/inquirer": "8.2.6",
