@@ -8,7 +8,7 @@
   "version": "0.1.0",
   "content": [
 <%if(app.content){-%><% for(let change of app.content){-%>
-    <%- JSON.stringify(change) %><%-","%>
+    <%- JSON.stringify(change, undefined, 4) %><%-","%>
 <%}-%><%}-%>
     {
       "changeType": "appdescr_app_setTitle",

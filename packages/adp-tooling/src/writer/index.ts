@@ -2,6 +2,7 @@ import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import type { AdpWriterConfig } from '../types';
+import { enhanceManifestChangeContentWithFlpConfig } from './options';
 import {
     writeTemplateToFolder,
     writeUI5Yaml,
@@ -51,6 +52,9 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
 
     const fullConfig = setDefaults(config);
 
+    if (fullConfig.customConfig?.adp.environment === "C" && fullConfig.flp) {
+        enhanceManifestChangeContentWithFlpConfig(fullConfig.flp, fullConfig.app.id, fullConfig.app.content)
+    }
     writeTemplateToFolder(join(tmplPath, '**/*.*'), join(basePath), fullConfig, fs);
     await writeUI5DeployYaml(basePath, fullConfig, fs);
     await writeUI5Yaml(basePath, fullConfig, fs);

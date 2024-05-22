@@ -44,17 +44,7 @@ export interface AdpWriterConfig {
         name?: string;
         description?: string;
     };
-    flp?: {
-        title?: string;
-        subtitle?: string;
-        inboundId?: string;
-        bspName?: string;
-        languages?: Language[];
-        credentials?: {
-            username: string;
-            password: string;
-        };
-    };
+    flp?: FlpConfiguration;
     customConfig?: AdpCustomConfig;
     /**
      * Optional: configuration for deployment to ABAP
@@ -67,6 +57,18 @@ export interface AdpWriterConfig {
         fioriTools?: boolean;
     };
 }
+
+export interface FlpConfiguration {
+    title: string;
+    bspName: string;
+    languages: Language[];
+    inboundId: string;
+    subTitle?: string;
+    semanticObject?: string;
+    action?: string;
+    additionalParameters?: object;
+    configurationType: FlpConfigurationType;
+};
 
 export interface Language {
     sap: string;
@@ -368,4 +370,53 @@ export interface AdpCustomConfig {
         safeMode: boolean;
         environment: OperationsType;
     };
+}
+
+export interface InboundChangeContent {
+    inboundId: string;
+    entityPropertyChange: InboundChangeEntityPropertyChange[];
+}
+export interface InboundChangeContentAddInboundId {
+    inbound: {
+        [inboundId: string]: AddInboundModel;
+    };
+}
+export interface AddInboundModel {
+    semanticObject: string;
+    action: string;
+    title: string;
+    subTitle?: string;
+    signature: AddInboundSignitureModel;
+}
+export interface AddInboundSignitureModel {
+    parameters: InboundParameters;
+    additionalParameters: string;
+}
+export interface InboundParameters {
+    "sap-appvar-id"?: object;
+    "sap-priority"?: object;
+}
+export interface InboundChangeEntityPropertyChange {
+    propertyPath: string;
+    operation: string;
+    propertyValue: any;
+}
+export interface InboundChange {
+    inbound: {
+        [key: string]: {
+            semanticObject: string;
+            action: string;
+            icon: string;
+            title: string;
+            subTitle: string;
+            signature: {
+                parameters: object | string;
+                additionalParameters: "allowed";
+            };
+        };
+    };
+}
+
+export const enum FlpConfigurationType {
+    ADD_NEW_TILE = "Add new tile"
 }
