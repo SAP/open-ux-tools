@@ -22,7 +22,7 @@ Object {
         \\"@ui5/cli\\": \\"^3.9.1\\"
     },
     \\"scripts\\": {
-        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
+        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
         \\"start\\": \\"ui5 serve --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"ui5 serve --open /test/adaptation-editor.html\\",
         \\"deploy\\": \\"ui5 build --config ui5-deploy.yaml --exclude-task abap-deploy-task generateFlexChangesBundle generateComponentPreload --clean-dest && deploy --config ui5-deploy.yaml\\",
@@ -77,7 +77,7 @@ Object {
         \\"@ui5/cli\\": \\"^3.9.1\\"
     },
     \\"scripts\\": {
-        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
+        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
         \\"deploy\\": \\"ui5 build --config ui5-deploy.yaml --exclude-task deploy-to-abap generateFlexChangesBundle generateComponentPreload --clean-dest && fiori deploy --config ui5-deploy.yaml\\",
@@ -184,7 +184,7 @@ dist/
         \\"@ui5/cli\\": \\"^3.9.1\\"
     },
     \\"scripts\\": {
-        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
+        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
         \\"start\\": \\"ui5 serve --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"ui5 serve --open /test/adaptation-editor.html\\"
     }
@@ -309,7 +309,7 @@ dist/
         \\"@ui5/cli\\": \\"^3.9.1\\"
     },
     \\"scripts\\": {
-        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
+        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
         \\"start\\": \\"ui5 serve --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"ui5 serve --open /test/adaptation-editor.html\\",
         \\"deploy\\": \\"ui5 build --config ui5-deploy.yaml --exclude-task abap-deploy-task generateFlexChangesBundle generateComponentPreload --clean-dest && deploy --config ui5-deploy.yaml\\",
@@ -451,7 +451,7 @@ dist/
         \\"@ui5/cli\\": \\"^3.9.1\\"
     },
     \\"scripts\\": {
-        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
+        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
         \\"deploy\\": \\"ui5 build --config ui5-deploy.yaml --exclude-task deploy-to-abap generateFlexChangesBundle generateComponentPreload --clean-dest && fiori deploy --config ui5-deploy.yaml\\",
@@ -595,7 +595,7 @@ dist/
         \\"@ui5/cli\\": \\"^3.9.1\\"
     },
     \\"scripts\\": {
-        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
+        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
         \\"start\\": \\"ui5 serve --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"ui5 serve --open /test/adaptation-editor.html\\"
     }
@@ -687,7 +687,7 @@ my.test.app_sap.app.title=Adaptation of the.original.app",
 ",
     "state": "modified",
   },
-  ".che/project.json": Object {
+    ".che/project.json": Object {
     "contents": null,
     "state": "deleted",
   },
@@ -720,7 +720,7 @@ dist/
         \\"@ui5/cli\\": \\"^3.9.1\\"
     },
     \\"scripts\\": {
-        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
+        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\"
     }
@@ -776,7 +776,7 @@ customConfiguration:
 ",
     "state": "modified",
   },
-  "webapp/i18n/ListReport/SEPMRA_C_PD_Product/i18n.properties": Object {
+    "webapp/i18n/ListReport/SEPMRA_C_PD_Product/i18n.properties": Object {
     "contents": "#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.
 
 # This is the resource bundle for migrate test
