@@ -131,6 +131,8 @@ export function getLocalCapProjectPrompts(
                             choice.value?.serviceName === defaultCapService?.serviceName
                     );
                 }
+                debugger;
+                console.log('capServiceChoices --->', capServiceChoices, " PromptState.odataService.cdsVersionInfo",  PromptState.odataService.cdsVersionInfo);
                 return capServiceChoices;
             },
             guiOptions: {
@@ -159,6 +161,8 @@ export function getLocalCapProjectPrompts(
         } as ListQuestion<CapServiceAnswers>
     ];
 
+    console.log("gathered prompts --->", prompts)
+
     if (getPlatform() === hostEnvironment.cli) {
         prompts.push({
             when: async (answers: CapServiceAnswers): Promise<boolean> => {
@@ -166,12 +170,12 @@ export function getLocalCapProjectPrompts(
                     PromptState.odataService.metadata = await getCapEdmx(answers?.capService);
                     PromptState.odataService.servicePath = answers?.capService.urlPath;
                     PromptState.odataService.odataVersion = OdataVersion.v4;
+                    PromptState.odataService.cdsVersionInfo = PromptState.odataService.cdsVersionInfo;
                 }
                 return false;
             },
             name: capInternalPromptNames.capCliStateSetter
         } as Question);
     }
-
     return prompts;
 }

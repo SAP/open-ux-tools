@@ -36,6 +36,11 @@ export interface OdataServiceAnswers {
      * The selected CAP service.
      */
     capService?: CapService;
+    /**
+     * cds version info extracted from the project package json at the time of 
+     * prompting.
+     */
+    cdsVersionInfo?: CdsVersionInfo;
 
     /**
      * The odata version of the selected service.
@@ -76,6 +81,8 @@ export enum promptNames {
 }
 
 export type CapRuntime = 'Node.js' | 'Java';
+
+export type CdsVersionInfo = { version: string; path: string; root: string };
 
 export interface CapService {
     /**

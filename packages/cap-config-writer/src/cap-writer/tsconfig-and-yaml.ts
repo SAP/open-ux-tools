@@ -52,12 +52,17 @@ export async function updateStaticLocationsInApplicationYaml(
         const yamlDoc = await YamlDocument.newInstance(applicationYamlDocuments);
         const stringifiedYaml = JSON.stringify(yamlDoc);
         const parsedApplicationYamlDocuments = JSON.parse(stringifiedYaml).documents;
+        // console.log("parsedApplicationYamlDocuments from OS", parsedApplicationYamlDocuments)
+        // console.log("parsedApplicationYamlDocuments[0].spring['web.resources.static-locations'] OS", parsedApplicationYamlDocuments[0].spring['web.resources.static-locations'])
+        
         if (
             parsedApplicationYamlDocuments.length === 1 &&
             parsedApplicationYamlDocuments[0].spring['web.resources.static-locations'] === undefined
         ) {
             const applicationYamlFirstDocument = parsedApplicationYamlDocuments[0];
             applicationYamlFirstDocument.spring['web.resources.static-locations'] = `file:./${capCustomPathsApp}`;
+            // console.log("yamlDocumentToYamlString(applicationYamlFirstDocument)", yamlDocumentToYamlString(applicationYamlFirstDocument))
+            // console.log("applicationYamlPath", applicationYamlPath)
             fs.write(applicationYamlPath, yamlDocumentToYamlString(applicationYamlFirstDocument));
         }
     } catch (error) {

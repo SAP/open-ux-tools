@@ -31,9 +31,9 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
+        "@sap-ux/fe-fpm-writer": "workspace:*",
         "@sap-ux/odata-service-writer": "workspace:*",
         "@sap-ux/ui5-application-writer": "workspace:*",
-        "@sap-ux/fe-fpm-writer": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/ui5-test-writer": "workspace:*",
         "ejs": "3.1.10",
@@ -49,8 +49,8 @@
         "@types/ejs": "3.1.2",
         "@types/fs-extra": "9.0.13",
         "@types/lodash": "4.14.202",
-        "@types/mem-fs-editor": "7.0.1",
         "@types/mem-fs": "1.1.2",
+        "@types/mem-fs-editor": "7.0.1",
         "@types/semver": "7.5.2",
         "fs-extra": "10.0.0"
     },

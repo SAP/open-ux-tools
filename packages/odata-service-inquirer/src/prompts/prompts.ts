@@ -14,6 +14,7 @@ import { getMetadataFileQuestion } from './datasources/metadata-file';
 import { getDatasourceTypeChoices } from './prompt-helpers';
 import { getLocalCapProjectPrompts } from './datasources/cap-project/questions';
 import LoggerHelper from './logger-helper';
+import { PromptState } from '../utils';
 
 /**
  * Get the prompts for the OData service inquirer.
@@ -87,14 +88,12 @@ async function getDatasourceTypeConditionalQuestions(
     promptOptions?: OdataServicePromptOptions
 ): Promise<OdataServiceQuestion[]> {
     const conditionalQuestions: OdataServiceQuestion[] = [];
-
     conditionalQuestions.push(
         ...(withCondition(
             [getMetadataFileQuestion(promptOptions?.metadataFilePath) as Question],
             (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.metadataFile
         ) as OdataServiceQuestion[])
     );
-
     conditionalQuestions.push(
         ...(withCondition(
             getLocalCapProjectPrompts(promptOptions) as Question[],

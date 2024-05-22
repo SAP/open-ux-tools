@@ -12,7 +12,8 @@ import {
     type CapService,
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
-    type OdataServiceQuestion
+    type OdataServiceQuestion,
+    type CdsVersionInfo
 } from './types';
 import { PromptState, setTelemetryClient } from './utils';
 import { initI18nOdataServiceInquirer } from './i18n';
@@ -41,7 +42,6 @@ async function getPrompts(
     ErrorHandler.guidedAnswersEnabled = enableGuidedAnswers;
     PromptState.isYUI = isYUI;
     setTelemetryClient(telemetryClient);
-
     return {
         prompts: await getQuestions(promptOptions),
         // Return reference to derived answers object that will be populated with user responses (after prompting is complete)
@@ -87,6 +87,7 @@ export {
     type InquirerAdapter,
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
+    type CdsVersionInfo,
     // These exports are to facilitate migration to open-ux-tools and will be removed in a future release
     ERROR_TYPE,
     ErrorHandler

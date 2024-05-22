@@ -11,6 +11,7 @@ import { t } from '../../../i18n';
 import type { CapService, CapServiceChoice } from '../../../types';
 import LoggerHelper from '../../logger-helper';
 import { errorHandler } from '../../prompt-helpers';
+import { PromptState } from '../../../utils';
 import type { CapProjectChoice, CapProjectPaths, CapProjectRootPath } from './types';
 
 export const enterCapPathChoiceValue = 'enterCapPath';
@@ -154,12 +155,20 @@ export async function getCapServiceChoices(capProjectPaths: CapProjectPaths): Pr
             // If this is not done then errors can be thrown where out-of-processs changes to the files system have occurred
             await getCdsRoots(capProjectPaths.path, true);
             // Load the CAP model and services
-            const { model, services } = await getCapModelAndServices({
+            const { model, services, cdsVersionInfo } = await getCapModelAndServices({
                 projectRoot: capProjectPaths.path,
                 logger: LoggerHelper.logger
             });
             capServices = services;
             capModel = model;
+            /* store cds version info extracted from package at prompting stage into Promp state OdataServiceAnswers
+             * cdsVersionInfo extracted at this point will be used through out during thegeneration of the app.
+             */
+            if(!PromptState.odataService) {
+                PromptState.odataService = { cdsVersionInfo: cdsVersionInfo };
+            }
+            else PromptState.odataService.cdsVersionInfo = cdsVersionInfo;
+            console.log("PromptState.odataService.cdsVersionInfo from getCapServiceChoices after assigning", PromptState.odataService.cdsVersionInfo)
         } catch (error) {
             errorHandler.logErrorMsgs(error);
             LoggerHelper.logger.error(t('errors.capModelAndServicesLoadError', { error: error?.message }));

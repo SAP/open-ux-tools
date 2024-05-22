@@ -2,7 +2,7 @@ import { type Package, getCapCustomPaths, getPackageJson } from '@sap-ux/project
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import { t } from '../i18n';
-import { enableCdsUi5Plugin, checkCdsUi5PluginEnabled } from '../cap-config';
+import { enableCdsUi5Plugin, checkCdsUi5PluginEnabled , satisfiesMinCdsVersion} from '../cap-config';
 import { type CapServiceCdsInfo } from '../cap-config/types';
 import { getCDSTask, toPosixPath } from './helpers';
 import type { Logger } from '@sap-ux/logger';
@@ -46,6 +46,7 @@ async function updateScripts(
     // } else {
     //     log?.warn(t('warn.cdsDKNotInstalled', { cdsVersion: cdsVersion, minCdsVersion: minCdsVersion }));
     // }
+    // remove this logic hasNPMworkspaces because at this point we may get it
     const hasNPMworkspaces = await checkCdsUi5PluginEnabled(packageJsonPath, fs);
     const cdsScript = getCDSTask(projectName, appId, enableNPMWorkspaces ?? hasNPMworkspaces);
     updatePackageJsonWithScripts(fs, packageJsonPath, cdsScript);
@@ -81,7 +82,16 @@ export async function updateRootPackageJsonCAP(
     if (enableNPMWorkspaces && packageJson) {
         await enableCdsUi5Plugin(capService.projectPath, fs);
     }
-    if (capService?.capType === capNodeType && capService?.cdsVersionInfo) {
+    /**
+     * if cds version info is available in capService then use it to update scripts 
+     * else check the min cds version by reading package.json
+     * Mostly headless app generation will not have capService.cdsVersionInfo available since there is no 
+     * prompting stage in headless app generation, in this case mostly cds version will be taken from package.json
+     */
+    console.log("updateRootPackageJsonCAP OS capService.cdsVersionInfo --->", capService?.cdsVersionInfo)
+    const isCdsVersionAvailable = capService?.cdsVersionInfo ? capService?.cdsVersionInfo : satisfiesMinCdsVersion(packageJson);
+    console.log("isCdsVersionAvailable", isCdsVersionAvailable)
+    if (capService?.capType === capNodeType && isCdsVersionAvailable) {
         await updateScripts(fs, packageJsonPath, projectName, appId, enableNPMWorkspaces);
     } else {
         log?.warn(t('warn.cdsDKNotInstalled'));
