@@ -9,9 +9,5 @@ import { PropertiesList } from './PropertiesList';
  * @returns Properties panel as ReactElement
  */
 export function PropertiesPanel(): ReactElement {
-    return (
-        <>
-            <PropertiesList />
-        </>
-    );
+    return <PropertiesList />;
 }
