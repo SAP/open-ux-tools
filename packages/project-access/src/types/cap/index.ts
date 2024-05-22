@@ -214,3 +214,15 @@ export interface LinkedModel extends CSN {
     services: Definitions & ((namespace: string) => Definitions);
     definitions: Definitions;
 }
+
+export interface ServiceInfo {
+    name: string;
+    urlPath: string;
+    runtime?: string;
+}
+
+export interface CdsInfo {
+    home: string;
+    version: string;
+    root: string;
+}
