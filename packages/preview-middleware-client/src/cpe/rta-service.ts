@@ -55,7 +55,7 @@ export function modeAnStackChangeHandler(sendAction: (action: ExternalAction) =>
     return () => {
         const canUndo = rta.canUndo();
         const canRedo = rta.canRedo();
-        const saveAllowed = rta?.canSave ? rta?.canSave() : canUndo; /* canSave v1.112.x and above */
+        const saveAllowed = rta?.canSave ? rta?.canSave() : canUndo; /* canSave v1.112.x and above only*/
         sendAction(canChangeStack({ canUndo, canRedo }));
         sendAction(canSave(saveAllowed));
     };
