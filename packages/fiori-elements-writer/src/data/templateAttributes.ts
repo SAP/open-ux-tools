@@ -88,7 +88,7 @@ const templateLibs: TemplateLibs = {
         },
         [TemplateType.FlexibleProgrammingModel]: {
             baseComponent: appComponentLibFioriElements,
-            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.fe.core']
+            ui5Libs: [...commonUi5Libs[OdataVersion.v4].filter((lib) => lib !== 'sap.fe.templates'), 'sap.fe.core']
         }
     }
 };
