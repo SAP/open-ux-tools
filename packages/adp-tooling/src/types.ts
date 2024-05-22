@@ -278,20 +278,9 @@ export interface NewModelData {
 }
 
 export interface DataSourceData {
-    projectData: AdpProjectData;
-    timestamp: number;
-    service: {
-        /** Data source identifier. */
-        name: string;
-        /** URI of the data source. */
-        uri: string;
-        /** Optional maximum age for the data source cache. */
-        maxAge?: number;
-        /** URI for the OData annotation source. */
-        annotationUri: string;
-    };
-    /** Dictionary mapping data source keys to their values. */
-    dataSourcesDictionary: { [key: string]: string };
+    variant: DescriptorVariant;
+    dataSources: Record<string, ManifestNamespace.DataSource>;
+    answers: ChangeDataSourceAnswers;
 }
 
 export interface InboundData {
@@ -332,7 +321,7 @@ export interface AdpProjectData {
     namespace: string;
     ui5Version: string;
     name: string;
-    layer: string;
+    layer: UI5FlexLayer;
     environment: string;
     safeMode: boolean;
     sourceSystem: string;

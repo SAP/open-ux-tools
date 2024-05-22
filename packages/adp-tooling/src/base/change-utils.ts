@@ -8,6 +8,7 @@ import type {
     AdpProjectData,
     AnnotationsData,
     ChangeType,
+    DescriptorVariant,
     InboundContent,
     ManifestChangeProperties,
     PropertyValueType
@@ -200,16 +201,41 @@ export function getGenericChange(
     changeType: ChangeType
 ): ManifestChangeProperties {
     const { projectData, timestamp } = data;
-    const fileName = `id_${timestamp}`;
+    const { namespace, layer, reference } = projectData;
+    const variant = {
+        reference,
+        layer,
+        namespace
+    } as DescriptorVariant;
+
+    return getChange(variant, timestamp, content, changeType);
+}
+
+/**
+ * Constructs a generic change object based on provided parameters.
+ *
+ * @param {DescriptorVariant} variant the app descriptor variant
+ * @param {number} timestamp - The timestamp
+ * @param {object} content - The content of the change to be applied
+ * @param {ChangeType} changeType - The type of the change
+ * @returns An object representing the change
+ */
+export function getChange(
+    variant: DescriptorVariant,
+    timestamp: number,
+    content: object,
+    changeType: ChangeType
+): ManifestChangeProperties {
+    const { reference, layer, namespace } = variant;
 
     return {
-        fileName,
-        namespace: path.posix.join(projectData.namespace, DirName.Changes),
-        layer: projectData.layer,
+        fileName: `id_${timestamp}`,
+        namespace: path.posix.join(namespace, DirName.Changes),
+        layer,
         fileType: 'change',
         creation: new Date(timestamp).toISOString(),
         packageName: '$TMP',
-        reference: projectData.id,
+        reference,
         support: { generator: '@sap-ux/adp-tooling' },
         changeType,
         content

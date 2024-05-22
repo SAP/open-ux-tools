@@ -1,12 +1,7 @@
 import type { Command } from 'commander';
-import type { AdpProjectData, DataSourceData, PromptDefaults } from '@sap-ux/adp-tooling';
-import {
-    generateChange,
-    ChangeType,
-    getPromptsForChangeDataSource,
-    getTargetDataSources,
-    getDataSourcesDictionary
-} from '@sap-ux/adp-tooling';
+import type { PromptDefaults } from '@sap-ux/adp-tooling';
+import type { ToolsLogger } from '@sap-ux/logger';
+import { generateChange, ChangeType, getPromptsForChangeDataSource } from '@sap-ux/adp-tooling';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { getLogger, traceChanges } from '../../tracing';
 import prompts from 'prompts';
@@ -43,80 +38,22 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults, simu
         if (!basePath) {
             basePath = process.cwd();
         }
-        const configJsonPath = join(basePath, '.adp', 'config.json');
-        if (existsSync(configJsonPath)) {
-            const config = JSON.parse(readFileSync(configJsonPath, 'utf-8'));
-            if (config.environment === 'CF') {
-                throw new Error('Changing data source is not supported for CF projects.');
-            }
-        }
+        checkEnvironment(basePath);
 
-        const variant = JSON.parse(readFileSync(join(basePath, 'webapp', 'manifest.appdescr_variant'), 'utf-8'));
-        const ui5Config = await UI5Config.newInstance(readFileSync(join(basePath, 'ui5.yaml'), 'utf-8'));
-        const { destination, url, client } =
-            ui5Config.findCustomMiddleware<{ backend: Array<{ destination?: string; url?: string; client?: string }> }>(
-                'fiori-tools-proxy'
-            )?.configuration?.backend?.[0] ?? {};
-
-        let target;
-        if (destination) {
-            target = { destination };
-        } else if (url) {
-            target = { url, client };
-        } else {
-            throw new Error('No system configuration found in ui5.yaml');
-        }
-
-        const provider = await createAbapServiceProvider(
-            target,
-            {
-                ignoreCertErrors: defaults.ignoreCertErrors
-            },
-            true,
-            logger
-        );
-
-        const appIndexService = provider.getAppIndex();
-        const manifestUrl = await appIndexService.getManifestUrl(variant.reference);
-        const lrepService = provider.getLayeredRepository();
-        const manifest = await lrepService.getManifest(manifestUrl);
-
+        const variant = getVariant(basePath);
+        const manifest = await getManifest(basePath, defaults, logger, variant);
         const dataSources = manifest['sap.app'].dataSources;
         if (!dataSources) {
             throw new Error('No data sources found in the manifest');
         }
-        const oDataSources = getTargetDataSources(dataSources);
-        const oDataSourcesDictionary = getDataSourcesDictionary(oDataSources);
-        const isInSafeMode = (ui5Config.getCustomConfiguration('adp') as { safeMode: boolean })?.safeMode;
         const answers = await promptYUIQuestions(getPromptsForChangeDataSource(dataSources), false);
 
-        const config: DataSourceData = {
-            service: {
-                name: answers.dataSourceId ?? '',
-                uri: answers.dataSourceUri ?? '',
-                annotationUri: answers.annotationUri ?? '',
-                maxAge: answers.dataSourceSettingsMaxAge ?? 0
-            },
-            projectData: {
-                path: basePath,
-                title: basePath.split('/').pop(),
-                namespace: variant.namespace,
-                ui5Version: ui5Config.findCustomMiddleware<{ ui5: { version: string } }>('fiori-tools-proxy')
-                    ?.configuration?.ui5?.version,
-                name: variant.id.startsWith('customer.') ? variant.id.replace(/customer./, '') : variant.id,
-                layer: variant.layer,
-                environment: 'ABAP',
-                safeMode: isInSafeMode,
-                sourceSystem: ui5Config.findCustomMiddleware<{ backend: { url: string } }>('fiori-tools-proxy')
-                    ?.configuration?.backend?.url,
-                applicationIdx: variant.reference,
-                reference: variant.reference,
-                id: variant.id
-            } as AdpProjectData,
-            timestamp: Date.now(),
-            dataSourcesDictionary: oDataSourcesDictionary
-        };
-        const fs = await generateChange<ChangeType.CHANGE_DATA_SOURCE>(basePath, ChangeType.CHANGE_DATA_SOURCE, config);
+        const fs = await generateChange<ChangeType.CHANGE_DATA_SOURCE>(basePath, ChangeType.CHANGE_DATA_SOURCE, {
+            variant,
+            dataSources,
+            answers
+        });
+
         if (!simulate) {
             await new Promise((resolve) => fs.commit(resolve));
         } else {
@@ -144,5 +81,71 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults, simu
             return;
         }
         logger.debug(error);
+    }
+}
+
+/**
+ *
+ *
+ * @param basePath
+ * @param defaults
+ * @param logger
+ * @param variant
+ * @returns
+ */
+async function getManifest(basePath: string, defaults: PromptDefaults, logger: ToolsLogger, variant: any) {
+    const ui5Config = await UI5Config.newInstance(readFileSync(join(basePath, 'ui5.yaml'), 'utf-8'));
+    const { destination, url, client } =
+        ui5Config.findCustomMiddleware<{ backend: Array<{ destination?: string; url?: string; client?: string }> }>(
+            'fiori-tools-proxy'
+        )?.configuration?.backend?.[0] ?? {};
+
+    let target;
+    if (destination) {
+        target = { destination };
+    } else if (url) {
+        target = { url, client };
+    } else {
+        throw new Error('No system configuration found in ui5.yaml');
+    }
+
+    const provider = await createAbapServiceProvider(
+        target,
+        {
+            ignoreCertErrors: defaults.ignoreCertErrors
+        },
+        true,
+        logger
+    );
+
+    const appIndexService = provider.getAppIndex();
+    const manifestUrl = await appIndexService.getManifestUrl(variant.reference);
+    const lrepService = provider.getLayeredRepository();
+    const manifest = await lrepService.getManifest(manifestUrl);
+    return manifest;
+}
+
+/**
+ *
+ *
+ * @param basePath
+ * @returns
+ */
+function getVariant(basePath: string) {
+    return JSON.parse(readFileSync(join(basePath, 'webapp', 'manifest.appdescr_variant'), 'utf-8'));
+}
+
+/**
+ *
+ *
+ * @param basePath
+ */
+function checkEnvironment(basePath: string) {
+    const configJsonPath = join(basePath, '.adp', 'config.json');
+    if (existsSync(configJsonPath)) {
+        const config = JSON.parse(readFileSync(configJsonPath, 'utf-8'));
+        if (config.environment === 'CF') {
+            throw new Error('Changing data source is not supported for CF projects.');
+        }
     }
 }
