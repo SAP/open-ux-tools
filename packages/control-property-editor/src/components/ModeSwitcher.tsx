@@ -17,6 +17,7 @@ export function ModeSwitcher(): ReactElement {
     const dispatch = useDispatch();
 
     const mode = useSelector<RootState, 'navigation' | 'adaptation'>((state) => state.appMode);
+    const disabled = useSelector<RootState, boolean>((state) => state.initialLoading);
     return (
         <div className="mode-switcher">
             <UILabel>{t('MODE')}:</UILabel>
@@ -24,14 +25,16 @@ export function ModeSwitcher(): ReactElement {
                 primary={mode === 'adaptation'}
                 onClick={(): void => {
                     dispatch(setAppMode('adaptation'));
-                }}>
+                }}
+                disabled={disabled}>
                 {t('EDIT')}
             </UIDefaultButton>
             <UIDefaultButton
                 primary={mode === 'navigation'}
                 onClick={(): void => {
                     dispatch(setAppMode('navigation'));
-                }}>
+                }}
+                disabled={disabled}>
                 {t('LIVE')}
             </UIDefaultButton>
         </div>
