@@ -1,3 +1,4 @@
+import { type AppOptions } from '@sap-ux/ui5-application-writer';
 import type { OdataService } from '../types';
 import { DEFAULT_DATASOURCE_NAME } from './constants';
 
@@ -50,12 +51,20 @@ function setDefaultAnnotationsName(service: OdataService): void {
  * Directly modifies the passed object reference.
  *
  * @param {OdataService} service - the OData service object
+ * @param {AppOptions} options - Additional options for prociding options to update manifest json
  */
-export function enhanceData(service: OdataService): void {
+export function enhanceData(service: OdataService, options?: AppOptions): void {
     setDefaultServicePath(service);
     setDefaultServiceName(service);
     setDefaultServiceModel(service);
-    setDefaultAnnotationsName(service);
+    /**
+     * if excludeAnnotations is provided as true, then the default annotations name will not be written.
+     * if no options are provided, then excludeAnnotations is set to true by default.
+     */
+    const setDefaultAnnotationName = !options ? true : !options?.excludeAnnotations;
+    if (setDefaultAnnotationName) {
+        setDefaultAnnotationsName(service);
+    }
 
     // enhance preview settings with service configuration
     service.previewSettings = service.previewSettings || {};

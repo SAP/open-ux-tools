@@ -92,7 +92,8 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
         ui5Libs: getUi5Libs(feApp.template.type, feApp.service.version)?.concat(feApp.ui5?.ui5Libs ?? [])
     };
 
-    if (!feApp.service.localAnnotationsName) {
+    // add local annotations only if specified in options
+    if (!feApp.appOptions.excludeAnnotations && !feApp.service.localAnnotationsName) {
         feApp.service.localAnnotationsName = 'annotation';
     }
 
