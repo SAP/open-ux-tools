@@ -1,6 +1,5 @@
 import type { Command } from 'commander';
-import type { AdpProjectData, DataSourceData, PromptDefaults, ChangeDataSourceAnswers } from '@sap-ux/adp-tooling';
-import type { YUIQuestion } from '@sap-ux/inquirer-common';
+import type { AdpProjectData, DataSourceData, PromptDefaults } from '@sap-ux/adp-tooling';
 import {
     generateChange,
     ChangeType,
@@ -89,10 +88,7 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults, simu
         const oDataSources = getTargetDataSources(dataSources);
         const oDataSourcesDictionary = getDataSourcesDictionary(oDataSources);
         const isInSafeMode = (ui5Config.getCustomConfiguration('adp') as { safeMode: boolean })?.safeMode;
-        const answers = await promptYUIQuestions<ChangeDataSourceAnswers>(
-            getPromptsForChangeDataSource(dataSources) as YUIQuestion[],
-            false
-        );
+        const answers = await promptYUIQuestions(getPromptsForChangeDataSource(dataSources), false);
 
         const config: DataSourceData = {
             service: {

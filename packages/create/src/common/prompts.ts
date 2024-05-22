@@ -1,6 +1,7 @@
 import prompts from 'prompts';
 import type { PromptType, PromptObject } from 'prompts';
 import type { ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { Answers } from 'inquirer';
 
 /**
  * Checks if a property is a function.
@@ -19,10 +20,11 @@ const QUESTION_TYPE_MAP: Record<string, PromptType> = {
 };
 
 /**
+ * Enhances the new prompt with the choices from the original list question.
  *
- * @param question
- * @param listQuestion
- * @param prompt
+ * @param listQuestion original list question
+ * @param prompt converted prompt
+ * @param answers previously given answers
  */
 async function enhanceListQuestion(
     listQuestion: ListQuestion,
@@ -51,9 +53,9 @@ async function enhanceListQuestion(
  * @param answers previously given answers
  * @returns question converted to prompts question
  */
-export async function convertQuestion(
-    question: YUIQuestion & { choices?: unknown },
-    answers: { [key: string]: unknown }
+export async function convertQuestion<T extends Answers>(
+    question: YUIQuestion<T> & { choices?: unknown },
+    answers: T
 ): Promise<PromptObject> {
     const prompt: PromptObject = {
         type: QUESTION_TYPE_MAP[question.type ?? 'input'] ?? question.type,
@@ -76,8 +78,11 @@ export async function convertQuestion(
  * @param useDefaults - if true, the default values are used for all prompts
  * @returns the answers to the questions
  */
-export async function promptYUIQuestions<T>(questions: YUIQuestion[], useDefaults: boolean): Promise<T> {
-    const answers: { [key: string]: unknown } = {};
+export async function promptYUIQuestions<T extends Answers>(
+    questions: YUIQuestion<T>[],
+    useDefaults: boolean
+): Promise<T> {
+    const answers = {} as T;
     for (let i = 0; i < questions.length; i++) {
         const question = questions[i];
         if (isFunction(question.when) ? question.when(answers) : question.when !== false) {
