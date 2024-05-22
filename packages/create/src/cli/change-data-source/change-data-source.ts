@@ -1,13 +1,12 @@
 import type { Command } from 'commander';
-import type { AdpProjectData, DataSourceData, PromptDefaults, AdpChangeDataSourceAnswers } from '@sap-ux/adp-tooling';
+import type { AdpProjectData, DataSourceData, PromptDefaults, ChangeDataSourceAnswers } from '@sap-ux/adp-tooling';
+import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import {
     generateChange,
     ChangeType,
     getPromptsForChangeDataSource,
     getTargetDataSources,
-    getTargetODataAnnotations,
-    getDataSourcesDictionary,
-    getDataServicesWithURI
+    getDataSourcesDictionary
 } from '@sap-ux/adp-tooling';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { getLogger, traceChanges } from '../../tracing';
@@ -83,30 +82,24 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults, simu
         const lrepService = provider.getLayeredRepository();
         const manifest = await lrepService.getManifest(manifestUrl);
 
-        const oDataSources = getTargetDataSources(manifest['sap.app'].dataSources);
+        const dataSources = manifest['sap.app'].dataSources;
+        if (!dataSources) {
+            throw new Error('No data sources found in the manifest');
+        }
+        const oDataSources = getTargetDataSources(dataSources);
         const oDataSourcesDictionary = getDataSourcesDictionary(oDataSources);
-        const oDataAnnotations = getTargetODataAnnotations(manifest['sap.app'].dataSources);
-        const oDataServicesWithURI = getDataServicesWithURI(oDataSources);
         const isInSafeMode = (ui5Config.getCustomConfiguration('adp') as { safeMode: boolean })?.safeMode;
-        const answers = await promptYUIQuestions<AdpChangeDataSourceAnswers>(
-            getPromptsForChangeDataSource({
-                oDataSources,
-                oDataSourcesDictionary,
-                oDataAnnotations,
-                oDataServicesWithURI,
-                isInSafeMode,
-                isYUI: false,
-                isCFEnv: false
-            }),
+        const answers = await promptYUIQuestions<ChangeDataSourceAnswers>(
+            getPromptsForChangeDataSource(dataSources) as YUIQuestion[],
             false
         );
 
         const config: DataSourceData = {
             service: {
-                name: answers.targetODataSource ?? '',
-                uri: answers.oDataSourceURI ?? '',
-                annotationUri: answers.oDataAnnotationSourceURI ?? '',
-                maxAge: answers.maxAge ?? 0
+                name: answers.dataSourceId ?? '',
+                uri: answers.dataSourceUri ?? '',
+                annotationUri: answers.annotationUri ?? '',
+                maxAge: answers.dataSourceSettingsMaxAge ?? 0
             },
             projectData: {
                 path: basePath,

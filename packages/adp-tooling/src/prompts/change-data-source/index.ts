@@ -1,74 +1,58 @@
-import type { NumberQuestion, ListQuestion, InputQuestion } from '@sap-ux/inquirer-common';
-import type {
-    AdpChangeDataSourceQuestion,
-    AdpChangeDataSourceAnswers,
-    AdpChangeDataSourceQuestions
-} from '../../types';
+import type { NumberQuestion, ListQuestion, InputQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { ManifestNamespace } from '@sap-ux/project-access';
+import type { ChangeDataSourceAnswers } from '../../types';
 import { t } from '../../i18n';
-import { validateURI, validateODataServices } from '../validators';
+import { getDataSourceIds } from '../utils';
+import { isNotEmptyString } from '../../base/helper';
 
 /**
  * Gets the prompts for changing the data source.
  *
- * @param {AdpChangeDataSourceQuestions} data - the data for the questions
- * @returns {AdpChangeDataSourceQuestion[]} - the questions
+ * @param {Record<string, ManifestNamespace.DataSource>} datasources data sources from the manifest
+ * @returns {YUIQuestion<ChangeDataSourceAnswers>[]} the questions/prompts
  */
-export function getPrompts(data: AdpChangeDataSourceQuestions): AdpChangeDataSourceQuestion[] {
+export function getPrompts(
+    datasources: Record<string, ManifestNamespace.DataSource>
+): YUIQuestion<ChangeDataSourceAnswers>[] {
+    const dataSourceIds = getDataSourceIds(datasources);
     return [
         {
             type: 'list',
-            name: 'targetODataSource',
+            name: 'dataSourceId',
             message: t('prompts.oDataSourceLabel'),
-            choices: data.oDataSources?.map((dS) => dS.dataSourceName) ?? [],
-            default: data.oDataSources?.[0]?.dataSourceName,
+            choices: dataSourceIds,
+            default: dataSourceIds?.[0],
             store: false,
             guiOptions: {
                 mandatory: true,
                 hint: t('prompts.oDataSourceTooltip')
-            },
-            validate: (value: string) => validateODataServices(value, data.oDataSources)
-        } as ListQuestion<AdpChangeDataSourceAnswers>,
+            }
+        } as ListQuestion<ChangeDataSourceAnswers>,
         {
             type: 'input',
-            name: 'oDataSourceURI',
+            name: 'dataSourceUri',
             message: t('prompts.oDataSourceURILabel'),
             guiOptions: {
                 mandatory: true,
                 hint: t('prompts.oDataSourceURITooltip')
             },
-            validate: (value: string) => validateURI(value, t('prompts.oDataSourceURILabel')),
-            when: !!data.oDataSources.length,
+            validate: isNotEmptyString,
+            when: !!dataSourceIds.length,
             store: false
-        } as InputQuestion<AdpChangeDataSourceAnswers>,
+        } as InputQuestion<ChangeDataSourceAnswers>,
         {
             type: 'number',
-            name: 'maxAge',
+            name: 'dataSourceSettingsMaxAge',
             message: t('prompts.maxAgeLabel'),
-            guiOptions: {
-                mandatory: false
-            },
-            when: (answers: AdpChangeDataSourceAnswers) => answers.oDataSourceURI !== '',
-            default: null
-        } as NumberQuestion<AdpChangeDataSourceAnswers>,
+            when: (answers: ChangeDataSourceAnswers) => answers.dataSourceUri !== ''
+        } as NumberQuestion<ChangeDataSourceAnswers>,
         {
             type: 'input',
-            name: 'oDataAnnotationSourceURI',
+            name: 'annotationUri',
             message: t('prompts.oDataAnnotationSourceURILabel'),
-            validate: (value: string) => validateURI(value, t('prompts.oDataAnnotationSourceURILabel'), false),
             guiOptions: {
-                mandatory: false,
                 hint: t('prompts.oDataAnnotationSourceURITooltip')
-            },
-            when: (answers: AdpChangeDataSourceAnswers) => {
-                const selectedOdataSource = answers.targetODataSource ?? '';
-                const selectOdataSourceAnnotation = data.oDataSourcesDictionary[selectedOdataSource];
-                if (!selectOdataSourceAnnotation) {
-                    return false;
-                }
-                const annotationUri = data.oDataAnnotations[selectOdataSourceAnnotation];
-
-                return annotationUri.startsWith('/sap/opu/odata/') || annotationUri.startsWith('/sap/opu/odata4/');
             }
-        } as InputQuestion<AdpChangeDataSourceAnswers>
+        } as InputQuestion<ChangeDataSourceAnswers>
     ];
 }

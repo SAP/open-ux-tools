@@ -69,3 +69,28 @@ export function getDataSourcesDictionary(dataSources: DataSource[]): KeyValueStr
 export function getDataServicesWithURI(dataSources: DataSource[]): KeyValueString {
     return Object.assign({}, ...dataSources.map((s) => ({ [s.dataSourceName]: s.uri })));
 }
+
+/**
+ * Gets data source IDs of the OData services.
+ *
+ * @param {Record<string, ManifestNamespace.DataSource>} dataSources data sources from the manifest
+ * @returns {string[]} data source IDs
+ */
+export function getDataSourceIds(dataSources: Record<string, ManifestNamespace.DataSource>): string[] {
+    const dataSourcesOData = filterDataSourcesByType(dataSources, 'OData');
+    return Object.keys(dataSourcesOData);
+}
+
+/**
+ * Filters data sources by type.
+ *
+ * @param {Record<string, ManifestNamespace.DataSource>} dataSources data sources from the manifest
+ * @param {string} type data source type
+ * @returns {Record<string, ManifestNamespace.DataSource>} data source IDs
+ */
+export function filterDataSourcesByType(
+    dataSources: Record<string, ManifestNamespace.DataSource>,
+    type: string
+): Record<string, ManifestNamespace.DataSource> {
+    return Object.fromEntries(Object.entries(dataSources).filter(([, data]) => data.type === type));
+}

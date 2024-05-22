@@ -1,7 +1,7 @@
 import { spawnSync } from 'child_process';
 import prompts from 'prompts';
 import type { PromptType, PromptObject } from 'prompts';
-import type { YUIQuestion } from '@sap-ux/inquirer-common';
+import type { ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 
 /**
  * Run npm install command.
@@ -37,17 +37,43 @@ const QUESTION_TYPE_MAP: Record<string, PromptType> = {
 };
 
 /**
+ *
+ * @param question
+ * @param listQuestion
+ * @param prompt
+ */
+async function enhanceListQuestion(
+    listQuestion: ListQuestion,
+    prompt: PromptObject,
+    answers: { [key: string]: unknown }
+) {
+    const choices: Array<{ name: string; value: unknown } | string | number> = (
+        isFunction(listQuestion.choices) ? await listQuestion.choices(answers) : listQuestion.choices
+    ) as Array<{ name: string; value: unknown } | string | number>;
+    const mapppedChoices = choices.map((choice) => ({
+        title: typeof choice === 'object' ? choice.name : `${choice}`,
+        value: typeof choice === 'object' ? choice.value : choice
+    }));
+    const initialValue = (prompt.initial as Function)();
+    prompt.choices = mapppedChoices;
+    prompt.initial = () =>
+        mapppedChoices[initialValue]
+            ? initialValue
+            : mapppedChoices.findIndex((choice) => choice.value === initialValue);
+}
+
+/**
  * Converts a YUI question to a simple prompts question.
  *
  * @param question YUI question to be converted
  * @param answers previously given answers
  * @returns question converted to prompts question
  */
-async function convertQuestion(
+export async function convertQuestion(
     question: YUIQuestion & { choices?: unknown },
     answers: { [key: string]: unknown }
 ): Promise<PromptObject> {
-    const q: PromptObject = {
+    const prompt: PromptObject = {
         type: QUESTION_TYPE_MAP[question.type ?? 'input'] ?? question.type,
         name: question.name,
         message: isFunction(question.message) ? await question.message(answers) : await question.message,
@@ -56,19 +82,9 @@ async function convertQuestion(
         initial: () => (isFunction(question.default) ? question.default(answers) : question.default)
     };
     if (question.choices) {
-        const choices: Array<{ name: string; value: unknown }> = isFunction(question.choices)
-            ? await question.choices(answers)
-            : question.choices;
-        const initialValue = (q.initial as Function)();
-        q.choices = choices.map((choice) => {
-            if (typeof choice === 'object') {
-                return { title: choice.name, value: choice.value };
-            }
-            return { title: choice, value: choice };
-        });
-        q.initial = () => choices.findIndex((choice) => choice.value === initialValue);
+        await enhanceListQuestion(question as ListQuestion, prompt, answers);
     }
-    return q;
+    return prompt;
 }
 
 /**
