@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { addChangeDataSourceCommand } from '../../../../src/cli/change-data-source/change-data-source';
+import { addChangeDataSourceCommand } from '../../../../src/cli/add/change-data-source';
 import * as tracer from '../../../../src/tracing/trace';
 import * as common from '../../../../src/common';
 import * as logger from '../../../../src/tracing/logger';
