@@ -1,5 +1,14 @@
 # @sap-ux/adp-tooling
 
+## 0.10.7
+
+### Patch Changes
+
+-   6e3d4da4: Add config needed in BAS
+-   Updated dependencies [6e3d4da4]
+    -   @sap-ux/axios-extension@1.12.4
+    -   @sap-ux/system-access@0.3.28
+
 ## 0.10.6
 
 ### Patch Changes
