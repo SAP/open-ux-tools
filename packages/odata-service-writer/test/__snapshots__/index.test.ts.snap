@@ -1,5 +1,136 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ODataService templates generate: project when local annotations and annotations are excluded 1`] = `
+Object {
+  "package.json": Object {
+    "contents": "{
+  \\"ui5\\": {
+    \\"dependencies\\": [
+      \\"@sap-ux/ui5-middleware-fe-mockserver\\",
+      \\"@sap/ux-ui5-tooling\\"
+    ]
+  },
+  \\"devDependencies\\": {
+    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\"
+  },
+  \\"scripts\\": {
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/\\\\\\"\\"
+  }
+}
+",
+    "state": "modified",
+  },
+  "ui5-local.yaml": Object {
+    "contents": "server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /sap
+            url: http://localhost
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /sap/odata/testme
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
+",
+    "state": "modified",
+  },
+  "ui5-mock.yaml": Object {
+    "contents": "server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - path: /sap
+            url: http://localhost
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /sap/odata/testme
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
+",
+    "state": "modified",
+  },
+  "ui5.yaml": Object {
+    "contents": "server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - path: /sap
+            url: http://localhost
+",
+    "state": "modified",
+  },
+  "webapp/localService/metadata.xml": Object {
+    "contents": "<HELLO>
+    <WORLD>
+        <METADATA>
+        </METADATA>
+    </WORLD>
+</HELLO>",
+    "state": "modified",
+  },
+  "webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"testappid\\",
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/odata/testme/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [],
+          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"odataVersion\\": \\"2.0\\"
+        }
+      }
+    }
+  },
+  \\"sap.ui5\\": {
+    \\"models\\": {
+      \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
+        \\"settings\\": {}
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
 exports[`ODataService templates generate: project with local annotations 1`] = `
 Object {
   "package.json": Object {

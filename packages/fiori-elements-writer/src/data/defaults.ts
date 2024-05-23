@@ -92,11 +92,6 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
         ui5Libs: getUi5Libs(feApp.template.type, feApp.service.version)?.concat(feApp.ui5?.ui5Libs ?? [])
     };
 
-    // add local annotations only if specified in options
-    if (!feApp.appOptions.excludeAnnotations && !feApp.service.localAnnotationsName) {
-        feApp.service.localAnnotationsName = 'annotation';
-    }
-
     // OVP must use a named default model
     if (feApp.template.type === TemplateType.OverviewPage) {
         (feApp.service as OdataService).model = defaultModelName;
@@ -113,6 +108,11 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
     feApp.appOptions = feApp.appOptions ?? {};
     if (feApp.appOptions.sapux !== false) {
         feApp.appOptions.sapux = true;
+    }
+
+    // add local annotations only if specified in options, excludeAnnotations is false and no local annotations name is provided
+    if (!feApp.appOptions.excludeAnnotations && !feApp.service.localAnnotationsName) {
+        feApp.service.localAnnotationsName = 'annotation';
     }
 
     return feApp;

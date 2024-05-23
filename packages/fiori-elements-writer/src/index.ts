@@ -2,7 +2,7 @@ import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import { generateCustomPage } from '@sap-ux/fe-fpm-writer';
-import type { App, AppOptions, Package } from '@sap-ux/ui5-application-writer';
+import type { App, Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService, OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import { generateOPAFiles } from '@sap-ux/ui5-test-writer';
@@ -72,7 +72,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     // This is done after `generateUi5Project` since defaults are set if values are not provided
     validateApp(feApp);
 
-    await addOdataService(basePath, feApp.service, fs, feApp.appOptions as AppOptions);
+    await addOdataService(basePath, feApp.service, fs);
 
     const coercedUI5Version = semVer.coerce(feApp.ui5?.version)!;
     const templateOptions: TemplateOptions = {

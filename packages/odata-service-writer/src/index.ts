@@ -11,7 +11,6 @@ import { t } from './i18n';
 import { OdataService, OdataVersion, ServiceType } from './types';
 import { getWebappPath } from '@sap-ux/project-access';
 import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
-import { type AppOptions } from '@sap-ux/ui5-application-writer';
 
 /**
  * Ensures the existence of the given files in the provided base path. If a file in the provided list does not exit, an error would be thrown.
@@ -62,17 +61,16 @@ export async function findProjectFiles(
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - the OData service instance
  * @param {Editor} [fs] - the memfs editor instance
- * @param {AppOptions} options - Additional options for prociding options to update manifest json
  * @throws {Error} - if required UI5 project files are not found
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
-async function generate(basePath: string, service: OdataService, fs?: Editor, options?: AppOptions): Promise<Editor> {
+async function generate(basePath: string, service: OdataService, fs?: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
     const paths = await findProjectFiles(basePath, fs);
     ensureExists(basePath, ['webapp/manifest.json'], fs);
-    enhanceData(service, options);
+    enhanceData(service);
 
     // merge content into existing files
     const templateRoot = join(__dirname, '../templates');

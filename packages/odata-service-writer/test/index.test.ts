@@ -87,4 +87,18 @@ describe('ODataService templates', () => {
         await generate(testDir, serviceConfigWithAnnotations, fs);
         expect(fs.dump(testDir)).toMatchSnapshot();
     });
+
+    it('generate: project when local annotations and annotations are excluded', async () => {
+        const serviceConfigWithAnnotations: OdataService = {
+            url: 'http://localhost',
+            path: '/sap/odata/testme',
+            version: OdataVersion.v2,
+            metadata: '<HELLO><WORLD><METADATA></METADATA></WORLD></HELLO>'
+        };
+
+        const testDir = await createTestDir('exclude-annotations');
+        await generate(testDir, serviceConfigWithAnnotations, fs);
+        // generated manifest.json should not contain annotations and local annotations
+        expect(fs.dump(testDir)).toMatchSnapshot();
+    });
 });

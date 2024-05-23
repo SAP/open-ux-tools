@@ -81,7 +81,7 @@ export interface AppOptions {
     generateIndex?: boolean;
     /**
      * Exclude annotations from being written to manifest.json
-    */
+     */
     excludeAnnotations: boolean;
 }
 
