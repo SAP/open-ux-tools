@@ -3,6 +3,7 @@ import type { AbapTarget, DestinationAbapTarget, UrlAbapTarget } from '../types'
 import type {
     AbapCloudStandaloneOptions,
     AbapServiceProvider,
+    AxiosError,
     AxiosRequestConfig,
     ProviderConfiguration,
     ServiceInfo
@@ -143,23 +144,21 @@ async function createAbapDestinationServiceProvider(
     if (!destination) {
         throw new Error(`Destination ${target.destination} not found on subaccount`);
     }
-    let provider = createForDestination(options, destination) as AbapServiceProvider;
+    const provider = createForDestination(options, destination) as AbapServiceProvider;
     // if prompting is enabled, check if the destination works or basic auth is required
-    while (prompt) {
-        try {
-            // not ideal solution - better would be to do it as an interceptor of the first request
-            await provider.getLayeredRepository().getCsrfToken();
-            break;
-        } catch (error) {
-            if (isAxiosError(error) && error.response?.status === 401) {
-                options.auth = await getCredentialsWithPrompts();
-                provider = createForDestination(options, destination) as AbapServiceProvider;
-                process.env.FIORI_TOOLS_USER = options.auth.username;
-                process.env.FIORI_TOOLS_PASSWORD = options.auth.password;
+    if (prompt) {
+        const id = provider.interceptors.response.use(undefined, async (error: AxiosError) => {
+            provider.interceptors.response.eject(id);
+            if (error.response?.status === 401) {
+                const credentials = await getCredentialsWithPrompts();
+                provider.defaults.auth = credentials;
+                process.env.FIORI_TOOLS_USER = credentials.username;
+                process.env.FIORI_TOOLS_PASSWORD = credentials.password;
+                return provider.request(error.config!);
             } else {
                 throw error;
             }
-        }
+        });
     }
     return provider;
 }
