@@ -4,27 +4,33 @@ import { DefaultButton } from '@fluentui/react';
 import { UIContextualMenu } from '../UIContextualMenu';
 import { COMMON_INPUT_STYLES } from '../UIInput';
 
+const VSCODE_BORDER_COLOR = 'var(--vscode-button-border, transparent)';
 export const BASE_STYLES = {
     color: 'var(--vscode-button-foreground)',
     primary: {
         backgroundColor: 'var(--vscode-button-background)',
-        disabledBorderColor: 'var(--vscode-button-border, var(--vscode-button-background))',
-        borderColor: 'var(--vscode-button-border, var(--vscode-contrastBorder, var(--vscode-button-background)))',
+        disabledBorderColor: VSCODE_BORDER_COLOR,
+        borderColor: VSCODE_BORDER_COLOR,
         hoverBackgroundColor: 'var(--vscode-button-hoverBackground)',
-        hoverBorderColor:
-            'var(--vscode-contrastActiveBorder, var(--vscode-button-border, var(--vscode-button-hoverBackground)))'
+        hoverBorderColor: VSCODE_BORDER_COLOR
     },
     secondary: {
-        backgroundColor: 'var(--vscode-button-secondaryBackground, #5f6a79)',
-        disabledBorderColor: 'var(--vscode-button-border, var(--vscode-button-secondaryBackground, #5f6a79))',
-        borderColor:
-            'var(--vscode-button-border, var(--vscode-contrastBorder, var(--vscode-button-secondaryBackground, #5f6a79)))',
-        hoverBackgroundColor: 'var(--vscode-button-secondaryHoverBackground, #4c5561)',
-        hoverBorderColor:
-            'var(--vscode-contrastActiveBorder, var(--vscode-button-border, var(--vscode-button-secondaryHoverBackground, #4c5561)))',
-        color: 'var(--vscode-button-secondaryForeground, #ffffff)'
+        backgroundColor: 'var(--vscode-button-secondaryBackground)',
+        disabledBorderColor: VSCODE_BORDER_COLOR,
+        borderColor: VSCODE_BORDER_COLOR,
+        hoverBackgroundColor: 'var(--vscode-button-secondaryHoverBackground)',
+        hoverBorderColor: VSCODE_BORDER_COLOR,
+        color: 'var(--vscode-button-secondaryForeground)'
     }
 };
+
+export interface UIDefaultButtonProps extends IButtonProps {
+    /**
+     * Changes the visual presentation of the button to be transparent.
+     * @defaultvalue false
+     */
+    transparent?: boolean;
+}
 
 /**
  * UIDefaultButton component
@@ -32,19 +38,19 @@ export const BASE_STYLES = {
  *
  * @exports
  * @class UIDefaultButton
- * @extends {React.Component<IButtonProps, {}>}
+ * @extends {React.Component<UIDefaultButtonProps, {}>}
  */
-export class UIDefaultButton extends React.Component<IButtonProps, {}> {
+export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
     /**
      * Initializes component properties.
      *
-     * @param {IButtonProps} props
+     * @param {UIDefaultButtonProps} props
      */
-    public constructor(props: IButtonProps) {
+    public constructor(props: UIDefaultButtonProps) {
         super(props);
     }
 
-    protected setStyle = (props: IButtonProps): IButtonStyles => {
+    protected setStyle = (props: UIDefaultButtonProps): IButtonStyles => {
         const dividerStyle: IStyle = {
             position: 'absolute',
             width: 1,
@@ -52,6 +58,26 @@ export class UIDefaultButton extends React.Component<IButtonProps, {}> {
             top: 0,
             bottom: 0,
             backgroundColor: 'var(--vscode-editor-background)'
+        };
+        const interactionStyles = {
+            color: BASE_STYLES.secondary.color,
+            backgroundColor: BASE_STYLES.secondary.hoverBackgroundColor,
+            borderColor: BASE_STYLES.secondary.hoverBorderColor,
+            selectors: {
+                'svg > path, svg > rect': {
+                    fill: BASE_STYLES.secondary.color
+                }
+            },
+            ...(props.primary && {
+                color: BASE_STYLES.color,
+                backgroundColor: BASE_STYLES.primary.hoverBackgroundColor,
+                borderColor: BASE_STYLES.primary.hoverBorderColor,
+                selectors: {
+                    'svg > path, svg > rect': {
+                        fill: BASE_STYLES.color
+                    }
+                }
+            })
         };
         return {
             root: {
@@ -112,27 +138,8 @@ export class UIDefaultButton extends React.Component<IButtonProps, {}> {
                     borderColor: BASE_STYLES.primary.disabledBorderColor
                 })
             },
-            rootHovered: {
-                // Add to use hard coded value here as Theia doesn't support these values correctly
-                color: BASE_STYLES.secondary.color,
-                backgroundColor: BASE_STYLES.secondary.hoverBackgroundColor,
-                borderColor: BASE_STYLES.secondary.hoverBorderColor,
-                selectors: {
-                    'svg > path, svg > rect': {
-                        fill: BASE_STYLES.secondary.color
-                    }
-                },
-                ...(props.primary && {
-                    color: BASE_STYLES.color,
-                    backgroundColor: BASE_STYLES.primary.hoverBackgroundColor,
-                    borderColor: BASE_STYLES.primary.hoverBorderColor,
-                    selectors: {
-                        'svg > path, svg > rect': {
-                            fill: BASE_STYLES.color
-                        }
-                    }
-                })
-            },
+            rootPressed: interactionStyles,
+            rootHovered: interactionStyles,
             icon: {
                 height: 16,
                 lineHeight: 16,
