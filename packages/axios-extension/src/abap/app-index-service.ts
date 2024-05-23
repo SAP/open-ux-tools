@@ -34,4 +34,26 @@ export abstract class AppIndexService extends Axios implements Service {
         const response = await this.get('/', { params });
         return JSON.parse(response.data).results as AppIndex;
     }
+
+    /**
+     * Returns if manifest is first supported.
+     *
+     * @param {string} appId - The id of the app.
+     * @returns {Promise<boolean>} - is manifest first supported.
+     */
+    public async getIsManiFirstSupported(appId: string): Promise<boolean> {
+        try {
+            const params = {
+                'id': appId
+            };
+            const response = await this.get('/ui5_app_mani_first_supported', { params });
+            const parseResponseData = JSON.parse(response.data);
+
+            return parseResponseData as boolean;
+        } catch (error) {
+            this.log.error(`Failed fetching ui5_app_mani_first_supported for app with id ${appId}.`);
+            this.log.debug(error);
+            throw error;
+        }
+    }
 }

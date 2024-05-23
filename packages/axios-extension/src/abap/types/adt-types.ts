@@ -69,6 +69,14 @@ export interface TransportRequest {
     targetSystem: string;
 }
 
+/**
+ * Transport check data available in response.
+ */
+export interface TransportCheck {
+    transportNumber?: string;
+    package: string;
+}
+
 export enum TenantType {
     SAP = 'SAP',
     Customer = 'CUSTOMER'
