@@ -1,5 +1,12 @@
 # @sap-ux/ui-components
 
+## 1.15.15
+
+### Patch Changes
+
+-   fcc980f9: Save icon update
+    Icon was in wrong position for some reason, so I've recentered it.
+
 ## 1.15.14
 
 ### Patch Changes
