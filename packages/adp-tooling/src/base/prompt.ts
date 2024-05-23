@@ -16,8 +16,6 @@ export type PromptDefaults = {
     ft?: boolean;
     package?: string;
     transport?: string;
-    username?: string;
-    password?: string;
 };
 
 /**
