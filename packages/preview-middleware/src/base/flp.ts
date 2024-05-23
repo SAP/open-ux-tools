@@ -271,14 +271,11 @@ export class FlpSandbox {
             : '@sap-ux/preview-middleware';
         const config = { ...this.templateConfig };
         /* sap.ui.rta needs to be added to the list of preload libs for variants management and adaptation projects */
-        const preloadUI5Lib = ['sap.ui.rta', 'sap.fe.core', 'sap.fe.templates'];
-        preloadUI5Lib.forEach((lib) => {
-            if (!config.ui5.libs.includes(lib)) {
-                const libs = config.ui5.libs.split(',');
-                libs.push(lib);
-                config.ui5.libs = libs.join(',');
-            }
-        });
+        if (!config.ui5.libs.includes('sap.ui.rta')) {
+            const libs = config.ui5.libs.split(',');
+            libs.push('sap.ui.rta');
+            config.ui5.libs = libs.join(',');
+        }
         config.flex = {
             layer: rta.layer,
             ...rta.options,
