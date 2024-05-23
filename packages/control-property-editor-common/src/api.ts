@@ -105,7 +105,7 @@ export interface OutlineNode {
     editable: boolean;
     children: OutlineNode[];
     icon?: string;
-    extensionPointInfo?: string;
+    hasDefaultContent?: boolean;
 }
 
 export interface IconDetails {
