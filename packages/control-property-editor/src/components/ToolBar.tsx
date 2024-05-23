@@ -11,6 +11,9 @@ import { Separator } from './Separator';
 import { ModeSwitcher } from './ModeSwitcher';
 import { UndoRedoSaveActions } from './UndoRedoSaveActions';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
+import { Scenario } from '@sap-ux-private/control-property-editor-common';
 
 export interface ToolbarProps {
     left?: React.ReactNode;
@@ -24,10 +27,13 @@ export interface ToolbarProps {
  */
 export function Toolbar(): ReactElement {
     const { t } = useTranslation();
+    const scenario = useSelector<RootState, Scenario>((state) => state.scenario);
     return (
         <UIToolbar>
             <UIToolbarColumn className="column-left">
-                <UILabel className="flexEditorLabel">{t('APP_TITLE')}</UILabel>
+                <UILabel className="flexEditorLabel">
+                    {scenario === 'ADAPTATION_PROJECT' ? t('APP_TITLE_ADAPTATION_EDITOR') : t('APP_TITLE')}
+                </UILabel>
             </UIToolbarColumn>
             <UIToolbarColumn className="column-center">
                 <ModeSwitcher />

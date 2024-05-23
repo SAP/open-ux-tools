@@ -47,11 +47,11 @@ export class RtaService {
                 }
             }
         });
-        this.rta.attachModeChanged(modeAnStackChangeHandler(sendAction, this.rta));
+        this.rta.attachModeChanged(modeAndStackChangeHandler(sendAction, this.rta));
     }
 }
 
-export function modeAnStackChangeHandler(sendAction: (action: ExternalAction) => void, rta: RuntimeAuthoring) {
+export function modeAndStackChangeHandler(sendAction: (action: ExternalAction) => void, rta: RuntimeAuthoring) {
     return () => {
         const canUndo = rta.canUndo();
         const canRedo = rta.canRedo();
