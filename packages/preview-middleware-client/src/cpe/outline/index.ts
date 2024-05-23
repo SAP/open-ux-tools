@@ -15,6 +15,7 @@ import Log from 'sap/base/Log';
 export async function initOutline(rta: RuntimeAuthoring, sendAction: (action: ExternalAction) => void): Promise<void> {
     const outline = await rta.getService<OutlineService>('outline');
     const scenario = rta.getFlexSettings().scenario;
+
     async function syncOutline() {
         try {
             const viewNodes = await outline.get();
