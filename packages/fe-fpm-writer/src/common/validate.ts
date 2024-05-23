@@ -36,7 +36,7 @@ export function validateBasePath(basePath: string, fs?: Editor): boolean {
     } else {
         const manifest = fs.readJSON(manifestPath) as any;
         const ui5Dependencies = manifest['sap.ui5']?.dependencies?.libs;
-        if (!(ui5Dependencies && (ui5Dependencies['sap.fe.core'] || ui5Dependencies['sap.fe.templates']))) {
+        if (!(ui5Dependencies && (ui5Dependencies['sap.fe.macros'] || ui5Dependencies['sap.fe.templates']))) {
             throw new Error(
                 'Dependencies sap.fe.core or sap.fe.templates are missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries.'
             );
