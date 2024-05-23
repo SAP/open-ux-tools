@@ -80,10 +80,6 @@ export interface AppOptions {
      */
     generateIndex?: boolean;
     /**
-     * Exclude annotations from being written to manifest.json
-     */
-    excludeAnnotations: boolean;
-    /**
      * Excludes writing of the Fiori Tools proxy middleware in the ui5.yaml
      */
     excludeMiddleware?: boolean;

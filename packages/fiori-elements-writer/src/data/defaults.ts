@@ -114,10 +114,5 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
         feApp.appOptions.sapux = true;
     }
 
-    // add local annotations only if specified in options, excludeAnnotations is false and no local annotations name is provided
-    if (!feApp.appOptions?.excludeAnnotations && !feApp.service.localAnnotationsName) {
-        feApp.service.localAnnotationsName = 'annotation';
-    }
-
     return feApp;
 }

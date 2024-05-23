@@ -40,7 +40,6 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     // ui5.yaml
     const ui5ConfigPath = join(basePath, 'ui5.yaml');
     const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
-    
     // Add Fiori Tools middleware if not excluded
     if (!ui5AppConfig.appOptions?.excludeMiddleware) {
         ui5Config.addFioriToolsProxydMiddleware({
