@@ -323,7 +323,7 @@ Object {
 }
 `;
 
-exports[`FlpSandbox init reuse libs not part of data-sap-ui-libs 1`] = `"sap.ui.core,sap.m"`;
+exports[`FlpSandbox init reuse libs not part of data-sap-ui-libs 1`] = `"sap.ui.core,sap.m,sap.ushell"`;
 
 exports[`FlpSandbox init ui5Theme 1`] = `
 Object {
