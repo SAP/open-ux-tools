@@ -22,7 +22,6 @@ export interface ToolbarProps {
 /**
  * React element with children.
  *
- * @param propsWithChildren PropsWithChildren<ToolbarProps>
  * @returns ReactElement
  */
 export function Toolbar(): ReactElement {
