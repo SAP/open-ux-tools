@@ -334,7 +334,6 @@ export interface AdpProjectData {
     id: string;
 }
 
-
 export interface ChangeDataSourceAnswers {
     dataSourceId: string;
     dataSourceUri: string;
@@ -351,3 +350,12 @@ export interface AdpCustomConfig {
     };
 }
 
+export interface PreviewConfigAdp {
+    adp?: {
+        target?: {
+            url?: string;
+            client?: string;
+            destination?: string;
+        };
+    };
+}

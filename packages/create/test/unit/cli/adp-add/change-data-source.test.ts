@@ -1,0 +1,267 @@
+import { Command } from 'commander';
+import type { Editor } from 'mem-fs-editor';
+import type { ToolsLogger } from '@sap-ux/logger';
+import { addChangeDataSourceCommand } from '../../../../src/cli/change-data-source/change-data-source';
+import * as tracer from '../../../../src/tracing/trace';
+import * as common from '../../../../src/common';
+import * as logger from '../../../../src/tracing/logger';
+import * as adp from '@sap-ux/adp-tooling';
+import type { CustomMiddleware } from '@sap-ux/ui5-config';
+import { UI5Config } from '@sap-ux/ui5-config';
+import * as mockFs from 'fs';
+import { join } from 'path';
+import * as prompts from 'prompts';
+
+const appManifest = jest
+    .requireActual('fs')
+    .readFileSync(join(__dirname, '../../../fixtures/adaptation-project', 'manifest.json'), 'utf-8');
+const descriptorVariant = JSON.parse(
+    jest
+        .requireActual('fs')
+        .readFileSync(join(__dirname, '../../../fixtures/adaptation-project', 'manifest.appdescr_variant'), 'utf-8')
+);
+
+jest.mock('fs');
+jest.mock('prompts');
+
+const abapServicesMock = {
+    getManifestUrl: jest.fn().mockResolvedValue('https://sap.example'),
+    getManifest: jest.fn().mockResolvedValue(JSON.parse(appManifest))
+};
+
+jest.mock('@sap-ux/system-access', () => {
+    return {
+        ...jest.requireActual('@sap-ux/system-access'),
+        createAbapServiceProvider: () => {
+            return {
+                getAppIndex: jest.fn().mockReturnValue({
+                    getManifestUrl: abapServicesMock.getManifestUrl
+                }),
+                getLayeredRepository: jest.fn().mockReturnValue({
+                    getManifest: abapServicesMock.getManifest
+                })
+            };
+        }
+    };
+});
+
+describe('adp-add/change-data-source', () => {
+    // Mocks
+    let loggerMock: ToolsLogger;
+    const memFsEditorMock = {
+        create: jest.fn().mockReturnValue({
+            commit: jest.fn().mockImplementation((cb) => cb())
+        })
+    };
+    const traceSpy = jest.spyOn(tracer, 'traceChanges');
+    const generateChangeSpy = jest
+        .spyOn(adp, 'generateChange')
+        .mockResolvedValue(memFsEditorMock as Partial<Editor> as Editor);
+    const getArgv = (...arg: string[]) => ['', '', 'change-data-source', ...arg];
+    const mockAnswers = {
+        targetODataSource: 'mainService',
+        targetODataUrl: '/sap/opu/odata/test',
+        annotationUri: '/sap/opu/odata/test/annotation',
+        maxAge: 60
+    };
+    const promptYUIQuestionsSpy = jest.spyOn(common, 'promptYUIQuestions').mockResolvedValue(mockAnswers);
+    // Test data
+    const appRoot = join(__dirname, '../../../fixtures');
+    beforeEach(() => {
+        jest.clearAllMocks();
+        loggerMock = {
+            debug: jest.fn(),
+            error: jest.fn()
+        } as Partial<ToolsLogger> as ToolsLogger;
+        jest.spyOn(logger, 'getLogger').mockImplementation(() => loggerMock);
+        jest.spyOn(mockFs, 'existsSync').mockImplementation(() => false);
+        jest.spyOn(mockFs, 'readFileSync').mockImplementation(() => JSON.stringify(descriptorVariant));
+        jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
+            findCustomMiddleware: jest.fn().mockReturnValue({
+                configuration: {
+                    adp: {
+                        target: {
+                            url: 'https://sap.example',
+                            client: '100'
+                        }
+                    }
+                }
+            } as Partial<CustomMiddleware> as CustomMiddleware<object>)
+        } as Partial<UI5Config> as UI5Config);
+    });
+
+    test('change-data-source - CF environment', async () => {
+        // Mock setup
+        jest.spyOn(mockFs, 'existsSync').mockImplementationOnce(() => true);
+        jest.spyOn(mockFs, 'readFileSync').mockReturnValueOnce(JSON.stringify({ environment: 'CF' }));
+        // Test execution
+        const command = new Command('change-data-source');
+        addChangeDataSourceCommand(command);
+        await command.parseAsync(getArgv(appRoot));
+        // Flow check
+        expect(loggerMock.debug).toBeCalled();
+        expect(loggerMock.error).toBeCalledWith('Changing data source is not supported for CF projects.');
+        expect(generateChangeSpy).not.toBeCalled();
+    });
+
+    test('change-data-source - no system configuration', async () => {
+        // Mock setup
+        jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
+            findCustomMiddleware: jest.fn().mockReturnValue(undefined)
+        } as Partial<UI5Config> as UI5Config);
+        jest.spyOn(UI5Config, 'newInstance').mockResolvedValue(UI5Config.newInstance(''));
+        jest.spyOn(UI5Config.prototype, 'findCustomMiddleware').mockReturnValue({
+            configuration: { backend: [] }
+        } as Partial<CustomMiddleware> as CustomMiddleware<object>);
+        // Test execution
+        const command = new Command('change-data-source');
+        addChangeDataSourceCommand(command);
+        await command.parseAsync(getArgv());
+        // Flow check
+        expect(loggerMock.debug).toBeCalled();
+        expect(loggerMock.error).toBeCalledWith('No system configuration found in ui5.yaml');
+        expect(generateChangeSpy).not.toBeCalled();
+    });
+
+    test('change-data-source - system URL', async () => {
+        // Test execution
+        const command = new Command('change-data-source');
+        addChangeDataSourceCommand(command);
+        await command.parseAsync(getArgv(appRoot));
+        // Flow check
+        expect(promptYUIQuestionsSpy).toBeCalled();
+        expect(generateChangeSpy).toBeCalled();
+    });
+
+    test('change-data-source - Destination', async () => {
+        // Mock setup
+        jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
+            findCustomMiddleware: jest.fn().mockReturnValue({
+                configuration: {
+                    adp: {
+                        target: {
+                            destination: 'mainService'
+                        }
+                    }
+                }
+            } as Partial<CustomMiddleware> as CustomMiddleware<object>)
+        } as Partial<UI5Config> as UI5Config);
+        // Test execution
+        const command = new Command('change-data-source');
+        addChangeDataSourceCommand(command);
+        await command.parseAsync(getArgv(appRoot));
+        // Flow check
+        expect(promptYUIQuestionsSpy).toBeCalled();
+        expect(generateChangeSpy).toBeCalled();
+    });
+
+    test('change-data-source - --simulate', async () => {
+        // Test execution
+        const command = new Command('change-data-source');
+        addChangeDataSourceCommand(command);
+        await command.parseAsync(getArgv(appRoot, '--simulate'));
+        // Flow check
+        expect(promptYUIQuestionsSpy).toBeCalled();
+        expect(generateChangeSpy).toBeCalled();
+        expect(traceSpy).toBeCalled();
+    });
+
+    test('change-data-source - issuer certificate error', async () => {
+        // Mock setup
+        jest.spyOn(prompts, 'prompt').mockResolvedValueOnce({ ignoreCertErrors: true });
+        abapServicesMock.getManifestUrl
+            .mockRejectedValueOnce({ message: 'Certificate error', code: 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY' })
+            .mockResolvedValue('https://sap.example');
+        // Test execution
+        const command = new Command('change-data-source');
+        addChangeDataSourceCommand(command);
+        await command.parseAsync(getArgv(appRoot));
+        // Flow check
+        expect(loggerMock.error).toBeCalledWith('Certificate error');
+        expect(loggerMock.error).toBeCalledWith(
+            'If you are using a self-signed certificate, please use the --ignore-cert-errors flag.'
+        );
+        expect(loggerMock.debug).not.toBeCalledWith();
+        expect(promptYUIQuestionsSpy).toBeCalled();
+        expect(generateChangeSpy).toBeCalled();
+    });
+    test('change-data-source - authentication error', async () => {
+        // Mock setup
+        abapServicesMock.getManifestUrl
+            .mockRejectedValueOnce({ message: '401:Unauthorized', response: { status: 401 } })
+            .mockResolvedValue('https://sap.example');
+        // Test execution
+        const command = new Command('change-data-source');
+        addChangeDataSourceCommand(command);
+        await command.parseAsync(getArgv(appRoot));
+        // Flow check
+        expect(loggerMock.error).toBeCalledWith('401:Unauthorized');
+        expect(loggerMock.error).toBeCalledWith(
+            'Authentication failed. Please check your credentials. Login attempts left: 2'
+        );
+        expect(loggerMock.debug).not.toBeCalledWith();
+        expect(promptYUIQuestionsSpy).toBeCalled();
+        expect(generateChangeSpy).toBeCalled();
+    });
+    // test('change-data-source - authentication error for all atempts', async () => {
+    //     //Mock setup
+    //     const getManifestError = { message: '401:Unauthorized', response: { status: 401 } };
+    //     abapServicesMock.getManifestUrl
+    //         .mockRejectedValueOnce(getManifestError)
+    //         .mockRejectedValueOnce(getManifestError)
+    //         .mockRejectedValueOnce(getManifestError)
+    //         .mockResolvedValue('https://sap.example');
+    //     // Test execution
+    //     const command = new Command('change-data-source');
+    //     addChangeDataSourceCommand(command);
+    //     await command.parseAsync(getArgv(appRoot));
+    //     // Flow check
+    //     expect(loggerMock.error).toHaveBeenNthCalledWith(1, '401:Unauthorized');
+    //     expect(loggerMock.error).toHaveBeenNthCalledWith(
+    //         2,
+    //         'Authentication failed. Please check your credentials. Login attempts left: 1'
+    //     );
+    //     expect(loggerMock.error).toHaveBeenNthCalledWith(3, '401:Unauthorized');
+    //     expect(loggerMock.error).toHaveBeenNthCalledWith(
+    //         4,
+    //         'Authentication failed. Please check your credentials. Login attempts left: 0'
+    //     );
+    //     expect(loggerMock.debug).toBeCalledWith(getManifestError);
+    //     expect(promptYUIQuestionsSpy).not.toBeCalled();
+    //     expect(generateChangeSpy).not.toBeCalled();
+    // });
+    test('change-data-source - mising configuration in ui5.yaml', async () => {
+        // Mock setup
+        jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
+            findCustomMiddleware: jest.fn().mockReturnValue({
+                test: {} as Partial<CustomMiddleware> as CustomMiddleware<object>
+            }),
+            getCustomConfiguration: jest.fn().mockReturnValue({
+                safeMode: false
+            } as Record<string, boolean>)
+        } as Partial<UI5Config> as UI5Config);
+        // Test execution
+        const command = new Command('change-data-source');
+        addChangeDataSourceCommand(command);
+        await command.parseAsync(getArgv(appRoot));
+        // Flow check
+        expect(loggerMock.error).toBeCalledWith('No system configuration found in ui5.yaml');
+        expect(promptYUIQuestionsSpy).not.toBeCalled();
+        expect(generateChangeSpy).not.toBeCalled();
+    });
+
+    test('change-data-source - no data sources in manifest', async () => {
+        // Mock setup
+        abapServicesMock.getManifest
+            .mockResolvedValueOnce({ 'sap.app': {} })
+            .mockResolvedValue(JSON.parse(appManifest));
+        // Test execution
+        const command = new Command('change-data-source');
+        addChangeDataSourceCommand(command);
+        await command.parseAsync(getArgv(appRoot));
+        // Flow check
+        expect(loggerMock.error).toBeCalledWith('No data sources found in the manifest');
+        expect(promptYUIQuestionsSpy).not.toBeCalled();
+        expect(generateChangeSpy).not.toBeCalled();
+    });
+});

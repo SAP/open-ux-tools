@@ -1,5 +1,5 @@
 import type { Command } from 'commander';
-import type { PromptDefaults } from '@sap-ux/adp-tooling';
+import type { PreviewConfigAdp, PromptDefaults } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { generateChange, ChangeType, getPromptsForChangeDataSource } from '@sap-ux/adp-tooling';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
@@ -74,7 +74,7 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults, simu
             await changeDataSource(basePath, defaults, simulate);
             return;
         }
-        if (error?.response?.status === 401 && loginAttempts) {
+        if (error.response?.status === 401 && loginAttempts) {
             loginAttempts--;
             logger.error(`Authentication failed. Please check your credentials. Login attempts left: ${loginAttempts}`);
             await changeDataSource(basePath, defaults, simulate);
@@ -86,7 +86,6 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults, simu
 
 /**
  *
- *
  * @param basePath
  * @param defaults
  * @param logger
@@ -96,9 +95,7 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults, simu
 async function getManifest(basePath: string, defaults: PromptDefaults, logger: ToolsLogger, variant: any) {
     const ui5Config = await UI5Config.newInstance(readFileSync(join(basePath, 'ui5.yaml'), 'utf-8'));
     const { destination, url, client } =
-        ui5Config.findCustomMiddleware<{ backend: Array<{ destination?: string; url?: string; client?: string }> }>(
-            'fiori-tools-proxy'
-        )?.configuration?.backend?.[0] ?? {};
+        ui5Config.findCustomMiddleware<PreviewConfigAdp>('fiori-tools-preview')?.configuration?.adp?.target ?? {};
 
     let target;
     if (destination) {
@@ -127,7 +124,6 @@ async function getManifest(basePath: string, defaults: PromptDefaults, logger: T
 
 /**
  *
- *
  * @param basePath
  * @returns
  */
@@ -136,7 +132,6 @@ function getVariant(basePath: string) {
 }
 
 /**
- *
  *
  * @param basePath
  */

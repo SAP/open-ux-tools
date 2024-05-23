@@ -1,0 +1,8 @@
+{
+  "fileName": "manifest",
+  "layer": "CUSTOMER_BASE",
+  "fileType": "appdescr_variant",
+  "reference": "sap.ui.demoapps.rta.fiorielements",
+  "id": "customer.app.variant1",
+  "namespace": "apps/sap.ui.demoapps.rta.fiorielements/appVariants/customer.app.variant1/"
+}
