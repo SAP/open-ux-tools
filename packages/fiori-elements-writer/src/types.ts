@@ -111,6 +111,10 @@ export interface FioriElementsApp<T> extends Ui5App {
          * This will eventually move up to {@link Ui5App.appOptions}
          */
         addTests?: boolean;
+        /**
+         * Exclude annotations from being written to manifest.json
+         */
+        excludeAnnotations?: boolean;
     };
 }
 
