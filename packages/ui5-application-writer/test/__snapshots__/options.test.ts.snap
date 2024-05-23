@@ -89,6 +89,7 @@ framework:
   libraries:
     - name: sap.m
     - name: sap.ui.core
+    - name: sap.ushell
     - name: themelib_sap_fiori_3
 server:
   customMiddleware:
@@ -333,6 +334,7 @@ framework:
   libraries:
     - name: sap.m
     - name: sap.ui.core
+    - name: sap.ushell
     - name: themelib_sap_fiori_3
 server:
   customMiddleware:
@@ -574,6 +576,7 @@ framework:
   libraries:
     - name: sap.m
     - name: sap.ui.core
+    - name: sap.ushell
     - name: themelib_sap_fiori_3
 server:
   customMiddleware:
@@ -1160,6 +1163,7 @@ framework:
   libraries:
     - name: sap.m
     - name: sap.ui.core
+    - name: sap.ushell
     - name: themelib_sap_fiori_3
 server:
   customMiddleware:
