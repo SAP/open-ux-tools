@@ -43,17 +43,13 @@ export abstract class AppIndexService extends Axios implements Service {
      * @returns {Promise<string>} - URL to the app manifest.
      */
     public async getManifestUrl(appId: string): Promise<string> {
-        let result = '';
-        const params = {
-            'id': appId
-        };
         try {
-            const response = await this.get('/ui5_app_info_json', { params });
-            const responseValues: any = Object.values(JSON.parse(response.data));
-            result =
-                responseValues[0].manifestUrl !== undefined
-                    ? responseValues[0].manifestUrl
-                    : responseValues[0].manifest;
+            const response = await this.get('/ui5_app_info_json', { params: { id: appId } });
+            const appInfo = JSON.parse(response.data)[appId] as {
+                manifestUrl?: string;
+                manifest?: string;
+            };
+            return appInfo.manifestUrl ?? appInfo.manifest ?? '';
         } catch (error) {
             if (isAxiosError(error)) {
                 this.log.error(`Failed fetching ui5_app_info_json for app with id ${appId}.`);
@@ -63,6 +59,5 @@ export abstract class AppIndexService extends Axios implements Service {
             this.log.debug(error);
             throw error;
         }
-        return result;
     }
 }

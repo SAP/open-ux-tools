@@ -1,8 +1,8 @@
 import { AppIndexService, createForAbap } from '../../src';
 import nock from 'nock';
 import appIndexMock from './mockResponses/appIndex.json';
-
-nock.disableNetConnect();
+import appInfoJsonMock from './mockResponses/ui5AppInfo.json';
+import cloneDeep from 'lodash/cloneDeep';
 
 describe('AppIndexService', () => {
     const server = 'https://sap.example';
@@ -11,6 +11,18 @@ describe('AppIndexService', () => {
     };
 
     beforeAll(() => {
+        nock.disableNetConnect();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
+    });
+
+    describe('search', () => {
+        const provider = createForAbap(config);
+        const service: AppIndexService = provider.getAppIndex();
+
         nock(server)
             .get((path) => path.startsWith(AppIndexService.PATH))
             .reply(200, (path) => {
@@ -33,11 +45,6 @@ describe('AppIndexService', () => {
                 }
             })
             .persist();
-    });
-
-    describe('search', () => {
-        const provider = createForAbap(config);
-        const service: AppIndexService = provider.getAppIndex();
 
         test('no filter', async () => {
             const appIndex = await service.search();
@@ -59,6 +66,87 @@ describe('AppIndexService', () => {
             expect(appIndex).toBeDefined();
             expect(appIndex.length).toBe(2);
             expect(appIndex[0].url).toBeDefined();
+        });
+    });
+
+    describe('getManifestUrl', () => {
+        const provider = createForAbap(config);
+        const service: AppIndexService = provider.getAppIndex();
+
+        test('get manifest url from manifest property', async () => {
+            nock.cleanAll();
+            nock(server)
+                .get((path) => path.includes('/ui5_app_info_json'))
+                .reply(200, appInfoJsonMock)
+                .persist();
+            const manifestUrl = await service.getManifestUrl('ExampleApp');
+            expect(manifestUrl).toBe('/sap/bc/lrep/content/apps/ExampleApp/app/sap/example_app/manifest.appdescr');
+        });
+
+        test('get manifest url from manifestUrl property', async () => {
+            nock.cleanAll();
+            nock(server)
+                .get((path) => path.includes('/ui5_app_info_json'))
+                .reply(200, () => {
+                    const appInfoJsonMockWithManifestUrl: {
+                        [key: string]: { manifest?: string; manifestUrl?: string };
+                    } = cloneDeep(appInfoJsonMock);
+                    delete appInfoJsonMockWithManifestUrl[Object.keys(appInfoJsonMockWithManifestUrl)[0]].manifest;
+                    appInfoJsonMockWithManifestUrl[Object.keys(appInfoJsonMockWithManifestUrl)[0]].manifestUrl =
+                        '/sap/bc/lrep/content/apps/ExampleApp/app/sap/example_app/manifest.appdescr';
+                    return appInfoJsonMockWithManifestUrl;
+                })
+                .persist();
+            const manifestUrl = await service.getManifestUrl('ExampleApp');
+            expect(manifestUrl).toBe('/sap/bc/lrep/content/apps/ExampleApp/app/sap/example_app/manifest.appdescr');
+        });
+
+        test('get manifest url neither manifest nor manifestUrl exist', async () => {
+            nock.cleanAll();
+            nock(server)
+                .get((path) => path.includes('/ui5_app_info_json'))
+                .reply(200, () => {
+                    const appInfoJsonMockWithManifestUrl: {
+                        [key: string]: { manifest?: string; manifestUrl?: string };
+                    } = cloneDeep(appInfoJsonMock);
+                    delete appInfoJsonMockWithManifestUrl[Object.keys(appInfoJsonMockWithManifestUrl)[0]].manifest;
+                    return appInfoJsonMockWithManifestUrl;
+                })
+                .persist();
+            const manifestUrl = await service.getManifestUrl('ExampleApp');
+            expect(manifestUrl).toBe('');
+        });
+
+        test('get manifest url fails, application not found', async () => {
+            nock.cleanAll();
+            nock(server)
+                .get((path) => path.includes('/ui5_app_info_json'))
+                .reply(404)
+                .persist();
+
+            try {
+                await service.getManifestUrl('ExampleApp');
+                fail('The function should have thrown an error.');
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toBe('Request failed with status code 404');
+            }
+        });
+
+        test('get manifest url fails, invalid json', async () => {
+            nock.cleanAll();
+            nock(server)
+                .get((path) => path.includes('/ui5_app_info_json'))
+                .reply(200, () => 'test')
+                .persist();
+
+            try {
+                await service.getManifestUrl('ExampleApp');
+                fail('The function should have thrown an error.');
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toBe('Unexpected token e in JSON at position 1');
+            }
         });
     });
 });
