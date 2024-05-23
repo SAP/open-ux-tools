@@ -203,33 +203,6 @@ describe('adp-add/change-data-source', () => {
         expect(promptYUIQuestionsSpy).toBeCalled();
         expect(generateChangeSpy).toBeCalled();
     });
-    // test('change-data-source - authentication error for all atempts', async () => {
-    //     //Mock setup
-    //     const getManifestError = { message: '401:Unauthorized', response: { status: 401 } };
-    //     abapServicesMock.getManifestUrl
-    //         .mockRejectedValueOnce(getManifestError)
-    //         .mockRejectedValueOnce(getManifestError)
-    //         .mockRejectedValueOnce(getManifestError)
-    //         .mockResolvedValue('https://sap.example');
-    //     // Test execution
-    //     const command = new Command('change-data-source');
-    //     addChangeDataSourceCommand(command);
-    //     await command.parseAsync(getArgv(appRoot));
-    //     // Flow check
-    //     expect(loggerMock.error).toHaveBeenNthCalledWith(1, '401:Unauthorized');
-    //     expect(loggerMock.error).toHaveBeenNthCalledWith(
-    //         2,
-    //         'Authentication failed. Please check your credentials. Login attempts left: 1'
-    //     );
-    //     expect(loggerMock.error).toHaveBeenNthCalledWith(3, '401:Unauthorized');
-    //     expect(loggerMock.error).toHaveBeenNthCalledWith(
-    //         4,
-    //         'Authentication failed. Please check your credentials. Login attempts left: 0'
-    //     );
-    //     expect(loggerMock.debug).toBeCalledWith(getManifestError);
-    //     expect(promptYUIQuestionsSpy).not.toBeCalled();
-    //     expect(generateChangeSpy).not.toBeCalled();
-    // });
     test('change-data-source - mising configuration in ui5.yaml', async () => {
         // Mock setup
         jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
