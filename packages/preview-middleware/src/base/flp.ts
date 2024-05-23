@@ -4,7 +4,7 @@ import { create } from 'mem-fs-editor';
 import type { Editor as MemFsEditor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type http from 'http';
-import type { Request, RequestHandler, Response, Router } from 'express';
+import type { Request, RequestHandler, Response, Router, NextFunction } from 'express';
 import { readFileSync } from 'fs';
 import { dirname, join, posix } from 'path';
 import { Router as createRouter, static as serveStatic, json } from 'express';
@@ -351,15 +351,17 @@ export class FlpSandbox {
         this.router.use(PREVIEW_URL.client.url, serveStatic(PREVIEW_URL.client.local));
 
         // add route for the sandbox.html
-        this.router.get(this.config.path, (async (_req: Request, res: Response) => {
-            // warn the user if a file with the same name exists in the filesystem
+        this.router.get(this.config.path, (async (_req: Request, res: Response, next: NextFunction) => {
+            // inform the user if a html file exists on the filesystem
             const file = await this.project.byPath(this.config.path);
             if (file) {
-                this.logger.warn(`HTML file returned at ${this.config.path} is NOT loaded from the file system.`);
+                this.logger.info(`HTML file returned at ${this.config.path} is loaded from the file system.`);
+                next();
+            } else {
+                const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
+                const html = render(template, this.templateConfig);
+                this.sendResponse(res, 'text/html', 200, html);
             }
-            const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
-            const html = render(template, this.templateConfig);
-            this.sendResponse(res, 'text/html', 200, html);
         }) as RequestHandler);
     }
 

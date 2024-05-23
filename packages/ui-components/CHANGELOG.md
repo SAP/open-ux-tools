@@ -1,5 +1,12 @@
 # @sap-ux/ui-components
 
+## 1.15.14
+
+### Patch Changes
+
+-   833718a0: Update Icons.tsx
+    New icons for dev efforts
+
 ## 1.15.13
 
 ### Patch Changes
