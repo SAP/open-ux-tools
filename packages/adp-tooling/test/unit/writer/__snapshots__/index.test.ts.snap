@@ -21,7 +21,7 @@ Object {
         \\"@ui5/cli\\": \\"^3.6.0\\"
     },
     \\"scripts\\": {
-        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
+        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
         \\"start\\": \\"ui5 serve --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"ui5 serve --open /test/adaptation-editor.html\\",
         \\"deploy\\": \\"ui5 build --config ui5-deploy.yaml --exclude-task abap-deploy-task generateFlexChangesBundle generateComponentPreload --clean-dest && deploy --config ui5-deploy.yaml\\",
@@ -75,7 +75,7 @@ Object {
         \\"@ui5/cli\\": \\"^3.6.0\\"
     },
     \\"scripts\\": {
-        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
+        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
         \\"deploy\\": \\"ui5 build --config ui5-deploy.yaml --exclude-task deploy-to-abap generateFlexChangesBundle generateComponentPreload --clean-dest && fiori deploy --config ui5-deploy.yaml\\",
@@ -120,8 +120,14 @@ resources:
     propertiesFileSourceEncoding: UTF-8
 server:
   customMiddleware:
-    - name: fiori-tools-preview
+    - name: fiori-tools-appreload
       afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
       configuration:
         adp:
           target:
@@ -132,6 +138,7 @@ server:
       configuration:
         ignoreCertErrors: false
         ui5:
+          version: ''
           path:
             - /resources
             - /test-resources
@@ -187,14 +194,9 @@ Object {
         \\"xml-js\\": \\"^1.6.11\\"
     },
     \\"scripts\\": {
-        \\"build\\": \\"ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
-        \\"prebuild\\": \\"npm run clean\\",
-        \\"zip\\": \\"cd dist && npx bestzip ../my-test-app.zip *\\",
-        \\"clean\\": \\"npx rimraf my-test-app.zip dist\\",
-        \\"build-ui5\\": \\"npm explore @ui5/task-adaptation && npm run rollup\\",
-        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
-        \\"undeploy\\": \\"fiori undeploy --config ui5-deploy.yaml\\",
-        \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
+        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
+        \\"start\\": \\"ui5 serve --open /test/flp.html#app-preview\\",
+        \\"start-editor\\": \\"ui5 serve --open /test/adaptation-editor.html\\"
     }
 }
 ",
@@ -235,283 +237,12 @@ resources:
     propertiesFileSourceEncoding: UTF-8
 server:
   customMiddleware:
-    - name: fiori-tools-preview
+    - name: reload-middleware
       afterMiddleware: compression
       configuration:
-        adp:
-          target:
-            url: http://sap.example
-          ignoreCertErrors: false
-    - name: fiori-tools-proxy
-      afterMiddleware: fiori-tools-preview
-      configuration:
-        ignoreCertErrors: false
-        ui5:
-          path:
-            - /resources
-            - /test-resources
-        backend:
-          - url: http://sap.example
-            path: /sap
-customConfiguration:
-  adp:
-    safeMode: false
-framework:
-  name: SAPUI5
-  version: 1.122.1
-  libraries:
-    - name: themelib_sap_fiori_3
-builder:
-  customTasks:
-    - name: app-variant-bundler-build
-      beforeTask: escapeNonAsciiCharacters
-      configuration:
-        type: abap
-        appName: bsp.test.app
-        languages:
-          - sap: testId
-            i18n: testKey
-        credentials:
-          username: env:ABAP_USERNAME
-          password: env:ABAP_PASSWORD
-",
-    "state": "modified",
-  },
-}
-`;
-
-exports[`ADP writer generate minimal config 1`] = `Object {}`;
-
-exports[`ADP writer generateCf add standalone approuter 1`] = `
-Object {
-  ".adp/config.json": Object {
-    "contents": "{
-  \\"componentname\\": \\"\\",
-  \\"safeMode\\": false,
-  \\"appvariant\\": \\"\\",
-  \\"layer\\": \\"VENDOR\\",
-  \\"isOVPApp\\": false,
-  \\"isFioriElement\\": false,
-  \\"environment\\": \\"\\",
-  \\"ui5Version\\": \\"\\",
-  \\"cfSpace\\": \\"\\",
-  \\"cfOrganization\\": \\"\\",
-  \\"cfApiUrl\\": \\"\\"
-}
-",
-    "state": "modified",
-  },
-  ".gitignore": Object {
-    "contents": "/node_modules/
-/preview/
-/dist/
-*.tar
-*.zip
-UIAdaptation*.html
-",
-    "state": "modified",
-  },
-  "approuter": Object {
-    "contents": null,
-  },
-  "approuter/package.json": Object {
-    "contents": "{
-	\\"name\\": \\"test_app-approuter\\",
-	\\"description\\": \\"Node.js based application router service for html5-apps\\",
-	\\"engines\\": {
-		\\"node\\": \\"^10.0.0\\"
-	},
-	\\"dependencies\\": {
-		\\"@sap/approuter\\": \\"^7.0.0\\"
-	},
-	\\"scripts\\": {
-		\\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\"
-	}
-}
-",
-    "state": "modified",
-  },
-  "approuter/xs-app.json": Object {
-    "contents": "{
-	\\"welcomeFile\\": \\"/cp.portal\\",
-	\\"authenticationMethod\\": \\"route\\",
-	\\"logout\\": {
-		\\"logoutEndpoint\\": \\"/do/logout\\"
-	},
-	\\"routes\\": [
-		{
-			\\"source\\": \\"^(.*)$\\",
-			\\"target\\": \\"$1\\",
-			\\"service\\": \\"html5-apps-repo-rt\\",
-			\\"authenticationType\\": \\"xsuaa\\"
-		}
-	]
-}
-",
-    "state": "modified",
-  },
-  "package.json": Object {
-    "contents": "{
-	\\"name\\": \\"test_app\\",
-	\\"version\\": \\"1.0.0\\",
-	\\"description\\": \\"\\",
-	\\"main\\": \\"index.js\\",
-	\\"scripts\\": {
-		\\"build\\": \\"npm run clean && ui5 build --include-task=generateCachebusterInfo && npm run zip\\",
-		\\"zip\\": \\"cd dist && npx bestzip ../test_app.zip *\\",
-		\\"clean\\": \\"npx rimraf test_app.zip dist\\",
-		\\"build-ui5\\": \\"npm explore @ui5/task-adaptation -- npm run rollup\\"
-	},
-	\\"repository\\": {
-		\\"type\\": \\"git\\",
-		\\"build\\": \\"ui5.js build --verbose --include-task generateCachebusterInfo\\"
-	},
-	\\"ui5\\": {
-		\\"dependencies\\": [
-			\\"@sap/ui5-builder-webide-extension\\",
-			\\"@ui5/task-adaptation\\"
-		]
-	},
-	\\"devDependencies\\": {
-		\\"@sap/ui5-builder-webide-extension\\": \\"1.0.x\\",
-		\\"@sapui5/ts-types\\": \\"^1.85.1\\",
-		\\"@ui5/cli\\": \\"^2.7.0\\",
-		\\"@ui5/task-adaptation\\": \\"^1.0.x\\",
-		\\"bestzip\\": \\"2.1.4\\",
-		\\"rimraf\\": \\"3.0.2\\"
-	}
-}
-",
-    "state": "modified",
-  },
-  "ui5.yaml": Object {
-    "contents": "---
-specVersion: \\"2.2\\"
-type: application
-metadata:
-  name: test_app
-builder:
-  customTasks:
-    - name: app-variant-bundler-build
-      beforeTask: escapeNonAsciiCharacters
-      configuration:
-        appHostId: app.id
-        appName: test_app
-        appVersion: 
-        moduleName: test_app
-        org: 
-        space: 
-        html5RepoRuntime: 
-        sapCloudService: 
-",
-    "state": "modified",
-  },
-  "webapp/manifest.appdescr_variant": Object {
-    "contents": "{
-  \\"fileName\\": \\"manifest\\",
-  \\"layer\\": \\"VENDOR\\",
-  \\"fileType\\": \\"\\",
-  \\"reference\\": \\"\\",
-  \\"id\\": \\"\\",
-  \\"namespace\\": \\"\\",
-  \\"version\\": \\"\\",
-  \\"content\\": [
-    {
-      \\"changeType\\": \\"appdescr_app_setTitle\\",
-      \\"content\\": {},
-      \\"texts\\": {
-        \\"i18n\\": \\"i18n/i18n.properties\\"
-      }
-    },
-    {
-      \\"changeType\\": \\"appdescr_app_setTitle\\",
-      \\"content\\": {},
-      \\"texts\\": {
-        \\"i18n\\": \\"i18n/i18n.properties\\"
-      }
-    }
-  ]
-}
-",
-    "state": "modified",
-  },
-}
-`;
-
-exports[`ADP writer generateCf minimal config 1`] = `
-Object {
-  "../deploy/.gitignore": Object {
-    "contents": "node_modules/
-dist/
-.tmp
-.env
-*.zip",
-    "state": "modified",
-  },
-  "../deploy/package.json": Object {
-    "contents": "{
-    \\"name\\": \\"my-test-app\\",
-    \\"version\\": \\"0.1.0\\", 
-    \\"private\\": true,
-    \\"description\\": \\"Adaptation of the.original.app\\",
-    \\"keywords\\": [
-        \\"ui5\\",
-        \\"sapui5\\",
-        \\"adaptation-project\\"
-    ],
-    \\"devDependencies\\": {
-        \\"@sap-ux/backend-proxy-middleware\\": \\"^0.7.5\\",
-        \\"@sap-ux/preview-middleware\\": \\"^0.11.1\\",
-        \\"@sap-ux/ui5-proxy-middleware\\": \\"^1.3.0\\",
-        \\"@sap-ux/deploy-tooling\\": \\"^0.11.7\\",
-        \\"@ui5/cli\\": \\"^3.6.0\\"
-    },
-    \\"scripts\\": {
-        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
-        \\"start\\": \\"ui5 serve --open /test/flp.html#app-preview\\",
-        \\"start-editor\\": \\"ui5 serve --open /test/adaptation-editor.html\\",
-        \\"deploy\\": \\"ui5 build --config ui5-deploy.yaml --exclude-task abap-deploy-task generateFlexChangesBundle generateComponentPreload --clean-dest && deploy --config ui5-deploy.yaml\\",
-        \\"undeploy\\": \\"undeploy --config ui5-deploy.yaml --lrep \\\\\\"apps/the.original.app/appVariants/my.test.app/\\\\\\"\\"
-    }
-}
-",
-    "state": "modified",
-  },
-  "../deploy/ui5-deploy.yaml": Object {
-    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
-
-specVersion: \\"3.0\\"
-metadata:
-  name: my-test-app
-type: application
-builder:
-  resources:
-    excludes:
-      - /test/**
-      - /localService/**
-  customTasks:
-    - name: abap-deploy-task
-      afterTask: generateCachebusterInfo
-      configuration:
-        target:
-          url: http://sap.example
-        app:
-          package: $TMP
-",
-    "state": "modified",
-  },
-  "../deploy/ui5.yaml": Object {
-    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
-
-specVersion: \\"3.0\\"
-metadata:
-  name: my-test-app
-type: application
-resources:
-  configuration:
-    propertiesFileSourceEncoding: UTF-8
-server:
-  customMiddleware:
+        port: 35729
+        path: webapp
+        delay: 300
     - name: preview-middleware
       afterMiddleware: compression
       configuration:
@@ -1002,7 +733,7 @@ dist/
         \\"@ui5/cli\\": \\"^3.9.1\\"
     },
     \\"scripts\\": {
-        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
+        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
         \\"start\\": \\"ui5 serve --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"ui5 serve --open /test/adaptation-editor.html\\",
         \\"deploy\\": \\"ui5 build --config ui5-deploy.yaml --exclude-task abap-deploy-task generateFlexChangesBundle generateComponentPreload --clean-dest && deploy --config ui5-deploy.yaml\\",
@@ -1042,8 +773,17 @@ specVersion: \\"3.0\\"
 metadata:
   name: my.test.app
 type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
 server:
   customMiddleware:
+    - name: reload-middleware
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
     - name: preview-middleware
       afterMiddleware: compression
       configuration:
@@ -1135,7 +875,7 @@ dist/
         \\"@ui5/cli\\": \\"^3.9.1\\"
     },
     \\"scripts\\": {
-        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
+        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
         \\"deploy\\": \\"ui5 build --config ui5-deploy.yaml --exclude-task deploy-to-abap generateFlexChangesBundle generateComponentPreload --clean-dest && fiori deploy --config ui5-deploy.yaml\\",
@@ -1175,10 +915,19 @@ specVersion: \\"3.0\\"
 metadata:
   name: my.test.app
 type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
 server:
   customMiddleware:
-    - name: fiori-tools-preview
+    - name: fiori-tools-appreload
       afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
       configuration:
         adp:
           target:
@@ -1189,6 +938,7 @@ server:
       configuration:
         ignoreCertErrors: false
         ui5:
+          version: ''
           path:
             - /resources
             - /test-resources
@@ -1269,7 +1019,7 @@ dist/
         \\"@ui5/cli\\": \\"^3.9.1\\"
     },
     \\"scripts\\": {
-        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
+        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
         \\"start\\": \\"ui5 serve --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"ui5 serve --open /test/adaptation-editor.html\\"
     }
@@ -1284,8 +1034,17 @@ specVersion: \\"3.0\\"
 metadata:
   name: my.test.app
 type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
 server:
   customMiddleware:
+    - name: reload-middleware
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
     - name: preview-middleware
       afterMiddleware: compression
       configuration:
@@ -1381,16 +1140,13 @@ dist/
     ],
     \\"dependencies\\": {},
     \\"devDependencies\\": {
-        \\"@sap-ux/backend-proxy-middleware\\": \\"^0.7.5\\",
-        \\"@sap-ux/preview-middleware\\": \\"^0.11.1\\",
-        \\"@sap-ux/ui5-proxy-middleware\\": \\"^1.3.0\\",
-        \\"@sap-ux/deploy-tooling\\": \\"^0.11.7\\",
+        \\"@sap/ux-ui5-tooling\\": \\"^1.11.4\\",
         \\"@ui5/cli\\": \\"^3.9.1\\"
     },
     \\"scripts\\": {
-        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
-        \\"start\\": \\"ui5 serve --open /test/flp.html#app-preview\\",
-        \\"start-editor\\": \\"ui5 serve --open /test/adaptation-editor.html\\"
+        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
+        \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
+        \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\"
     }
 }
 ",
@@ -1403,29 +1159,44 @@ specVersion: \\"3.0\\"
 metadata:
   name: my.test.app
 type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
 server:
   customMiddleware:
-    - name: preview-middleware
+    - name: fiori-tools-appreload
       afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
       configuration:
         adp:
           target:
+            destination: test
             url: http://sap.example
+            client: '000'
           ignoreCertErrors: false
-        rta:
-          editors:
-            - path: /test/adaptation-editor.html
-              developerMode: true
-    - name: ui5-proxy-middleware
-      afterMiddleware: preview-middleware
-    - name: backend-proxy-middleware
-      afterMiddleware: preview-middleware
+    - name: fiori-tools-proxy
+      afterMiddleware: fiori-tools-preview
       configuration:
+        ignoreCertErrors: false
+        ui5:
+          version: ''
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
         backend:
-          url: http://sap.example
-          path: /sap
-        options:
-          secure: true
+          - destination: test
+            url: http://sap.example
+            client: '000'
+            path: /sap
+customConfiguration:
+  adp:
+    safeMode: true
 ",
     "state": "modified",
   },

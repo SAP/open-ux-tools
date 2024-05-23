@@ -1,5 +1,12 @@
 # @sap-ux/environment-check
 
+## 0.16.63
+
+### Patch Changes
+
+-   Updated dependencies [6e3d4da4]
+    -   @sap-ux/axios-extension@1.12.4
+
 ## 0.16.62
 
 ### Patch Changes

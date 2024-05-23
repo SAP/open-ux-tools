@@ -3,11 +3,7 @@ import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import type { AdpWriterConfig } from '../types';
 import { enhanceManifestChangeContentWithFlpConfig } from './options';
-import {
-    writeTemplateToFolder,
-    writeUI5Yaml,
-    writeUI5DeployYaml,
-} from './project-utils';
+import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml } from './project-utils';
 
 const tmplPath = join(__dirname, '../../templates/project');
 
@@ -92,7 +88,7 @@ export async function migrate(basePath: string, config: AdpWriterConfig, fs?: Ed
 
     // delete .che folder
     if (fs.exists(join(basePath, '.che/project.json'))) {
-        fs.delete(join(basePath, '.che/'));
+        fs.delete(join(basePath, '.che/*'));
     }
 
     // delete neo-app.json

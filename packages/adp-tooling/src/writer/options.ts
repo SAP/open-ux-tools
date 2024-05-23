@@ -96,7 +96,7 @@ function getFioriToolsMiddlwares(config: AdpWriterConfig): CustomMiddleware<unkn
             configuration: {
                 ignoreCertErrors: false,
                 ui5: {
-                    version: config?.ui5?.minVersion,
+                    version: config?.ui5?.minVersion ?? '', //default to latest if version is not set
                     path: ['/resources', '/test-resources'],
                     url: config?.ui5?.frameworkUrl ?? 'https://ui5.sap.com'
                 },
