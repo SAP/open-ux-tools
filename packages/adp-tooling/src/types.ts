@@ -2,6 +2,7 @@ import type { UI5FlexLayer, ManifestNamespace } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp } from '@sap-ux/ui5-config';
 import type { Editor } from 'mem-fs-editor';
+import type { OperationsType } from '@sap-ux/axios-extension';
 
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
@@ -35,11 +36,14 @@ export interface AdpWriterConfig {
     target: AbapTarget;
     ui5?: {
         minVersion?: string;
+        version?: string;
+        frameworkUrl?: string;
     };
     package?: {
         name?: string;
         description?: string;
     };
+    customConfig?: AdpCustomConfig;
     /**
      * Optional: configuration for deployment to ABAP
      */
@@ -330,6 +334,7 @@ export interface AdpProjectData {
     id: string;
 }
 
+
 export interface ChangeDataSourceAnswers {
     dataSourceId: string;
     dataSourceUri: string;
@@ -338,3 +343,11 @@ export interface ChangeDataSourceAnswers {
 }
 
 export type DataSource = ManifestNamespace.DataSource & { dataSourceName: string; annotations: string[] };
+
+export interface AdpCustomConfig {
+    adp: {
+        safeMode: boolean;
+        environment: OperationsType;
+    };
+}
+
