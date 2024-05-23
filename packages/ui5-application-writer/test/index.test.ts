@@ -67,6 +67,34 @@ describe('UI5 templates', () => {
         `);
     });
 
+    it('generates files correctly with middleware configration written when excludeMiddleware option is provided', async () => {
+        let projectDir = join(outputDir, 'testapp-simple');
+        await generate(projectDir, ui5AppConfig, fs);
+        //expect(fs.dump(projectDir)).toMatchSnapshot();
+
+        // Test `sap.app.sourceTemplate.toolsId` is correctly written
+        ui5AppConfig.app.sourceTemplate = {
+            ...ui5AppConfig.app.sourceTemplate,
+            toolsId: 'guid:1234abcd'
+        };
+        ui5AppConfig.appOptions = {
+            excludeMiddleware: true
+        };
+        projectDir = join(outputDir, 'testapp-withtoolsid');
+        await generate(projectDir, ui5AppConfig, fs);
+        await updatePackageJSONDependencyToUseLocalPath(projectDir, fs);
+        const ui5File = fs.read(join(projectDir, 'ui5.yaml'));
+        expect(ui5File).toMatchInlineSnapshot(`
+            "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+            specVersion: \\"3.1\\"
+            metadata:
+              name: testAppId
+            type: application
+            "
+        `);
+    });
+
     // Test to ensure the appid does not contain any characters that result in malfored docs
     it('validate appid', async () => {
         const projectDir = join(outputDir, 'testapp-fail');

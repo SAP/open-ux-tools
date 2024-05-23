@@ -40,12 +40,16 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     // ui5.yaml
     const ui5ConfigPath = join(basePath, 'ui5.yaml');
     const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
-    ui5Config.addFioriToolsProxydMiddleware({
-        ui5: {
-            url: ui5App.ui5?.frameworkUrl
-        }
-    });
-    ui5Config.addFioriToolsAppReloadMiddleware();
+    
+    // Add Fiori Tools middleware if not excluded
+    if (!ui5AppConfig.appOptions?.excludeMiddleware) {
+        ui5Config.addFioriToolsProxydMiddleware({
+            ui5: {
+                url: ui5App.ui5?.frameworkUrl
+            }
+        });
+        ui5Config.addFioriToolsAppReloadMiddleware();
+    }
 
     // ui5-local.yaml
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');

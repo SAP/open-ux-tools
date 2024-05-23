@@ -75,8 +75,8 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
     if (!feApp.app.sourceTemplate?.version || !feApp.app.sourceTemplate?.id) {
         const packageInfo = readPkgUp.sync({ cwd: __dirname });
         feApp.app.sourceTemplate = {
-            id: `${packageInfo?.packageJson.name}:${feApp.template.type}`,
-            version: packageInfo?.packageJson.version,
+            id: `@sap/generator-fiori:${feApp.template.type}`,
+            version: "1.13.5",
             toolsId: feApp.app.sourceTemplate?.toolsId
         };
     }
@@ -112,6 +112,11 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
     feApp.appOptions = feApp.appOptions ?? {};
     if (feApp.appOptions.sapux !== false) {
         feApp.appOptions.sapux = true;
+    }
+
+    // add local annotations only if specified in options, excludeAnnotations is false and no local annotations name is provided
+    if (!feApp.appOptions?.excludeAnnotations && !feApp.service.localAnnotationsName) {
+        feApp.service.localAnnotationsName = 'annotation';
     }
 
     return feApp;
