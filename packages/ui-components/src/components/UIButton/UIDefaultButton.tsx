@@ -5,10 +5,9 @@ import { UIContextualMenu } from '../UIContextualMenu';
 import { COMMON_INPUT_STYLES } from '../UIInput';
 
 const VSCODE_BORDER_COLOR = 'var(--vscode-button-border, transparent)';
-const VSCODE_CHECKED_BORDER_COLOR = 'var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))';
 export const BASE_STYLES = {
     color: 'var(--vscode-button-foreground)',
-    checkedBorderColor: VSCODE_CHECKED_BORDER_COLOR,
+    checkedBorderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))',
     primary: {
         backgroundColor: 'var(--vscode-button-background)',
         disabledBorderColor: VSCODE_BORDER_COLOR,
@@ -31,16 +30,13 @@ export const BASE_STYLES = {
         hoverBackgroundColor: 'var(--vscode-toolbar-hoverBackground, var(--vscode-menubar-selectionBackground))',
         hoverBorderColor: 'var(--vscode-contrastActiveBorder, transparent)',
         hoverBorderStyle: 'dashed',
-        //hoverBorderColor: 'var(--vscode-contrastBorder, transparent)',
         color: 'var(--vscode-foreground)',
         checkedBackgroundColor: 'var(--vscode-button-background)',
         checkedColor: 'var(--vscode-button-foreground)',
-        checkedBorderStyle: 'solid',
-        // checkedBorderColor: 'var(--vscode-contrastActiveBorder, transparent)',
-        checkedHoverBackgroundColor: 'var(--vscode-button-hoverBackground)'
-        //checkedHoverBorderColor: 'var(--vscode-contrastActiveBorder, transparent)'
+        checkedBorderStyle: 'solid'
     }
 };
+const ICON_SELECTOR = 'svg > path, svg > rect';
 
 export interface UIDefaultButtonProps extends IButtonProps {
     /**
@@ -78,12 +74,12 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
      * @returns Styles for hover and press States of root button element.
      */
     private getInteractionStyle(checked: boolean, primary?: boolean, transparent?: boolean): IStyle {
-        const styles = {
+        let styles: IStyle = {
             color: BASE_STYLES.secondary.color,
             backgroundColor: BASE_STYLES.secondary.hoverBackgroundColor,
             borderColor: BASE_STYLES.secondary.hoverBorderColor,
             selectors: {
-                'svg > path, svg > rect': {
+                [ICON_SELECTOR]: {
                     fill: BASE_STYLES.secondary.color
                 }
             },
@@ -92,38 +88,46 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                 backgroundColor: BASE_STYLES.primary.hoverBackgroundColor,
                 borderColor: BASE_STYLES.primary.hoverBorderColor,
                 selectors: {
-                    'svg > path, svg > rect': {
+                    [ICON_SELECTOR]: {
                         fill: BASE_STYLES.color
                     }
                 }
             }),
-            ...(transparent &&
-                !checked && {
+            ...(checked && {
+                borderColor: BASE_STYLES.checkedBorderColor
+            })
+        };
+        if (transparent) {
+            if (checked) {
+                styles = {
+                    ...styles,
+                    color: BASE_STYLES.color,
+                    backgroundColor: BASE_STYLES.primary.backgroundColor,
+                    borderColor: BASE_STYLES.primary.borderColor,
+                    selectors: {
+                        [ICON_SELECTOR]: {
+                            fill: BASE_STYLES.color
+                        }
+                    }
+                };
+            } else {
+                styles = {
+                    ...styles,
                     color: BASE_STYLES.transparent.color,
                     backgroundColor: BASE_STYLES.transparent.hoverBackgroundColor,
                     borderColor: BASE_STYLES.transparent.hoverBorderColor,
                     borderStyle: BASE_STYLES.transparent.hoverBorderStyle,
                     selectors: {
-                        'svg > path, svg > rect': {
+                        [ICON_SELECTOR]: {
                             fill: BASE_STYLES.transparent.color
                         }
                     }
-                }),
-            ...(transparent &&
-                checked && {
-                    color: BASE_STYLES.color,
-                    backgroundColor: BASE_STYLES.primary.backgroundColor,
-                    borderColor: BASE_STYLES.primary.borderColor,
-                    selectors: {
-                        'svg > path, svg > rect': {
-                            fill: BASE_STYLES.color
-                        }
-                    }
-                }),
-            ...(checked && {
-                borderColor: BASE_STYLES.checkedBorderColor
-            })
-        };
+                };
+            }
+        }
+        if (checked) {
+            styles = { ...styles, borderColor: BASE_STYLES.checkedBorderColor };
+        }
         return styles;
     }
 
@@ -226,14 +230,14 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                 marginLeft: -3,
                 color: BASE_STYLES.secondary.color,
                 selectors: {
-                    'svg > path, svg > rect': {
+                    [ICON_SELECTOR]: {
                         fill: BASE_STYLES.secondary.color
                     }
                 },
                 ...(primary && {
                     color: BASE_STYLES.color,
                     selectors: {
-                        'svg > path, svg > rect': {
+                        [ICON_SELECTOR]: {
                             fill: BASE_STYLES.color
                         }
                     }
@@ -241,7 +245,7 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                 ...(transparent && {
                     color: BASE_STYLES.transparent.color,
                     selectors: {
-                        'svg > path, svg > rect': {
+                        [ICON_SELECTOR]: {
                             fill: BASE_STYLES.transparent.color
                         }
                     }
@@ -302,7 +306,7 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                         backgroundColor: 'var(--vscode-button-hoverBackground)',
                         borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-button-hoverBackground))',
                         selectors: {
-                            'svg > path, svg > rect': {
+                            [ICON_SELECTOR]: {
                                 fill: BASE_STYLES.color
                             }
                         }
@@ -333,7 +337,7 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                 backgroundColor: 'var(--vscode-button-hoverBackground)',
                 borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-button-hoverBackground))',
                 selectors: {
-                    'svg > path, svg > rect': {
+                    [ICON_SELECTOR]: {
                         fill: BASE_STYLES.color
                     },
 
@@ -342,7 +346,7 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                         backgroundColor: 'var(--vscode-button-hoverBackground)',
                         borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-button-hoverBackground))',
                         selectors: {
-                            'svg > path, svg > rect': {
+                            [ICON_SELECTOR]: {
                                 fill: BASE_STYLES.color
                             }
                         }
