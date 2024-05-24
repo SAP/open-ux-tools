@@ -302,6 +302,7 @@ describe('OutlinePanel', () => {
                 controlId: '04',
                 children: [],
                 controlType: 'sap.ui.extensionpoint',
+                hasDefaultContent: true,
                 editable: true,
                 visible: true
             }

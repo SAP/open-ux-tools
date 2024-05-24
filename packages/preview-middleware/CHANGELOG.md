@@ -1,5 +1,18 @@
 # @sap-ux/preview-middleware
 
+## 0.13.43
+
+### Patch Changes
+
+-   56d8b0b9: Add default content for extension points to the outline in CPE
+
+## 0.13.42
+
+### Patch Changes
+
+-   Updated dependencies [6e3d4da4]
+    -   @sap-ux/adp-tooling@0.10.7
+
 ## 0.13.41
 
 ### Patch Changes

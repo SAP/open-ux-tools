@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.4.21
+
+### Patch Changes
+
+-   56d8b0b9: Add default content for extension points to the outline in CPE
+
 ## 0.4.20
 
 ### Patch Changes
