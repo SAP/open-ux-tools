@@ -4,8 +4,9 @@ import { mockedStoreService, mockIsAppStudio, mockListDestinations, mockReadFile
 import type { Destination } from '@sap-ux/btp-utils';
 import type { AbapTarget } from '../../../src/types';
 import prompts from 'prompts';
+import { AuthenticationType } from '@sap-ux/store';
 
-describe('service', () => {
+describe('connect', () => {
     const logger = new ToolsLogger({ transports: [new NullTransport()] });
     const target = {
         url: 'http://target.example',
@@ -19,6 +20,10 @@ describe('service', () => {
             mockIsAppStudio.mockReturnValue(false);
         });
 
+        afterEach(() => {
+            prompts.inject([]);
+        });
+
         describe('ABAP on-premise', () => {
             test('credentials available from store', async () => {
                 mockedStoreService.read.mockResolvedValueOnce({ username, password });
@@ -27,7 +32,7 @@ describe('service', () => {
             });
 
             test('prompt credentials if not available in store', async () => {
-                prompts.inject([username, password]);
+                prompts.inject([AuthenticationType.Basic, username, password]);
                 const provider = await createAbapServiceProvider(target, undefined, true, logger);
                 expect(provider).toBeDefined();
                 expect(process.env.FIORI_TOOLS_USER).toBe(username);
