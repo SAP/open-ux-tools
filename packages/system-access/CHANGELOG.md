@@ -1,5 +1,11 @@
 # @sap-ux/system-access
 
+## 0.3.29
+
+### Patch Changes
+
+-   895ee259: FIX: handle 401 in BAS
+
 ## 0.3.28
 
 ### Patch Changes
