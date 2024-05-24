@@ -68,7 +68,7 @@ export interface FlpConfiguration {
     action?: string;
     additionalParameters?: object;
     configurationType: FlpConfigurationType;
-};
+}
 
 export interface Language {
     sap: string;

@@ -15,9 +15,11 @@ export function addGenerateAdaptationProjectCommand(cmd: Command): void {
     cmd.command('adaptation-project [path]')
         .option('-n, --skip-install', 'skip npm install step')
         .option('-s, --simulate', 'simulate only do not write or install')
+        .option('-y, --yes', 'use default values for all prompts')
         .option('--id [id]', 'id of the adaptation project')
         .option('--reference [reference]', 'id of the original application')
         .option('--url [url]', 'url pointing to the target system containing the original app')
+        .option('--ignoreCertErrors', 'ignore certificate errors when connecting to the target system')
         .option('--ft', 'enable the Fiori tools for the generated project')
         .option('--package [package]', 'ABAP package to be used for deployments')
         .option('--transport [transport]', 'ABAP transport to be used for deployments')
@@ -30,7 +32,13 @@ export function addGenerateAdaptationProjectCommand(cmd: Command): void {
             console.log(
                 'Please report any issues or feedback at https://github.com/SAP/open-ux-tools/issues/new/choose.\n'
             );
-            await generateAdaptationProject(path, { ...options }, !!options.simulate, !!options.skipInstall);
+            await generateAdaptationProject(
+                path,
+                { ...options },
+                !!options.yes,
+                !!options.simulate,
+                !!options.skipInstall
+            );
         });
 }
 
@@ -39,12 +47,14 @@ export function addGenerateAdaptationProjectCommand(cmd: Command): void {
  *
  * @param basePath target folder of the new project
  * @param defaults optional defaults
+ * @param useDefaults if set to true, then default values are used for all prompts and the prompting is skipped
  * @param simulate if set to true, then no files will be written to the filesystem
  * @param skipInstall if set to true then `npm i` is not executed in the new project
  */
 async function generateAdaptationProject(
     basePath: string,
     defaults: PromptDefaults,
+    useDefaults: boolean,
     simulate: boolean,
     skipInstall: boolean
 ): Promise<void> {
@@ -52,26 +62,30 @@ async function generateAdaptationProject(
     try {
         logger.debug(`Called generate adaptation-project for path '${basePath}', skip install is '${skipInstall}'`);
         let config: AdpWriterConfig;
-        if (defaults.id && defaults.reference && defaults.url) {
-            const url = new URL(defaults.url);
-            config = {
-                app: {
-                    id: defaults.id,
-                    reference: defaults.reference,
-                    layer: 'CUSTOMER_BASE'
-                },
-                target: {
-                    url: url.origin,
-                    client: url.searchParams.get('sap-client') ?? undefined
-                },
-                deploy: {
-                    package: defaults.package ? defaults.package.toUpperCase() : '$TMP',
-                    transport: defaults.transport ? defaults.transport.toUpperCase() : undefined
-                },
-                options: {
-                    fioriTools: defaults.ft
-                }
-            };
+        if (useDefaults) {
+            if (defaults.id && defaults.reference && defaults.url) {
+                const url = new URL(defaults.url);
+                config = {
+                    app: {
+                        id: defaults.id,
+                        reference: defaults.reference,
+                        layer: 'CUSTOMER_BASE'
+                    },
+                    target: {
+                        url: url.origin,
+                        client: url.searchParams.get('sap-client') ?? undefined
+                    },
+                    deploy: {
+                        package: defaults.package ? defaults.package.toUpperCase() : '$TMP',
+                        transport: defaults.transport ? defaults.transport.toUpperCase() : undefined
+                    },
+                    options: {
+                        fioriTools: defaults.ft
+                    }
+                };
+            } else {
+                throw new Error('Missing required parameters. Please provide --id, --reference and --url.');
+            }
         } else {
             config = await promptGeneratorInput(defaults, logger);
         }

@@ -1,5 +1,5 @@
 import prompts, { type Answers } from 'prompts';
-import type { AdpWriterConfig } from '../types';
+import type { AdpCustomConfig, AdpWriterConfig } from '../types';
 import type { AbapTarget } from '@sap-ux/system-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { Logger } from '@sap-ux/logger';
@@ -30,7 +30,7 @@ export async function promptGeneratorInput(
     logger: Logger
 ): Promise<AdpWriterConfig> {
     defaults = defaults ?? {};
-    const { target, apps, layer } = await promptTarget(defaults, logger);
+    const { target, apps, layer, customConfig } = await promptTarget(defaults, logger);
     const app = await prompts([
         {
             type: 'autocomplete',
@@ -101,7 +101,8 @@ export async function promptGeneratorInput(
         },
         target,
         options,
-        deploy
+        deploy,
+        customConfig
     };
 }
 
@@ -115,7 +116,7 @@ export async function promptGeneratorInput(
 export async function promptTarget(
     defaults: PromptDefaults,
     logger: Logger
-): Promise<{ apps: AppIndex; layer: UI5FlexLayer; target: AbapTarget }> {
+): Promise<{ apps: AppIndex; layer: UI5FlexLayer; target: AbapTarget; customConfig: AdpCustomConfig }> {
     let count = 0;
     let target: Answers<'url' | 'client'> = { url: defaults.url, client: defaults.client };
     while (count < 3) {
@@ -171,7 +172,7 @@ async function fetchSystemInformation(
     target: prompts.Answers<'url' | 'client'>,
     ignoreCertErrors: boolean | undefined,
     logger: Logger
-): Promise<{ apps: AppIndex; layer: UI5FlexLayer }> {
+): Promise<{ apps: AppIndex; layer: UI5FlexLayer; customConfig: AdpCustomConfig }> {
     const provider = await createAbapServiceProvider(
         target,
         {
@@ -183,6 +184,12 @@ async function fetchSystemInformation(
     logger.info('Fetching system information...');
     const ato = await provider.getAtoInfo();
     const layer = ato.tenantType === 'SAP' ? 'VENDOR' : 'CUSTOMER_BASE';
+    const customConfig: AdpCustomConfig = {
+        adp: {
+            environment: ato.operationsType ?? 'P',
+            safeMode: true
+        }
+    };
     logger.info(`Target layer: ${layer}`);
     logger.info('Fetching list of available applications... (it can take a moment)');
     const appIndex = provider.getAppIndex();
@@ -193,5 +200,5 @@ async function fetchSystemInformation(
         },
         ['sap.app/id', 'sap.app/title', 'sap.fiori/registrationIds']
     );
-    return { apps, layer };
+    return { apps, layer, customConfig };
 }
