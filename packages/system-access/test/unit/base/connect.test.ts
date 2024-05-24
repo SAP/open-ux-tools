@@ -49,6 +49,12 @@ describe('connect', () => {
                 expect(process.env.FIORI_TOOLS_PASSWORD).toBe(password);
             });
 
+            test('prompt S/4Cloud system if not available in store', async () => {
+                prompts.inject([AuthenticationType.ReentranceTicket]);
+                const provider = await createAbapServiceProvider({ ...target }, undefined, true, logger);
+                expect(provider).toBeDefined();
+            });
+
             test('invalid target', async () => {
                 try {
                     await createAbapServiceProvider({ destination: '~destination' }, undefined, true, logger);
@@ -110,7 +116,7 @@ describe('connect', () => {
             test('throw error when cloud system read from store but cloud target is not specified in params', async () => {
                 mockedStoreService.read.mockResolvedValueOnce(credentials);
                 try {
-                    await createAbapServiceProvider({ ...target, scp: false }, undefined, true, logger);
+                    await createAbapServiceProvider({ ...target, scp: false }, undefined, false, logger);
                     fail('Should have thrown an error');
                 } catch (error) {
                     expect(error.message).toBe('This is an ABAP Cloud system, please correct your configuration.');
