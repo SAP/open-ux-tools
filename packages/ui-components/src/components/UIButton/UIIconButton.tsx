@@ -112,7 +112,7 @@ export class UIIconButton extends React.Component<ButtonProps, {}> {
                 }
             },
             rootCheckedHovered: {
-                backgroundColor: 'var(--vscode-button-hoverBackground)',
+                backgroundColor: 'var(--vscode-button-background)',
                 outline: '1px dashed var(--vscode-contrastActiveBorder)'
             },
             iconChecked: {
