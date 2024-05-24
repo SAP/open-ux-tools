@@ -7,7 +7,7 @@ import { initI18n } from '../../../src/i18n';
 import { UndoRedoSaveActions } from '../../../src/components/UndoRedoSaveActions';
 import { mockResizeObserver } from '../../utils/utils';
 import { initIcons } from '@sap-ux/ui-components';
-import { canChangeStack, canSave, redo, save, undo } from '@sap-ux-private/control-property-editor-common';
+import { canChangeStack, canSave, loadIsDone, redo, save, undo } from '@sap-ux-private/control-property-editor-common';
 import { initialState } from '../../../src/slice';
 
 beforeAll(() => {
@@ -22,7 +22,10 @@ test('renders UndoRedoSaveActions', () => {
     // update state
     store.dispatch(canChangeStack({ canRedo: true, canUndo: true }));
     store.dispatch(canSave(true));
-    
+    store.dispatch(loadIsDone());
+
+    dispatch.mockClear();
+
     const themeCalloutContent = screen.getAllByRole('button');
     expect(themeCalloutContent).toHaveLength(3);
 

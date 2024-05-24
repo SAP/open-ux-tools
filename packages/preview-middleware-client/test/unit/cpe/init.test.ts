@@ -131,6 +131,10 @@ describe('main', () => {
             payload: mockIconResult
         });
         expect(sendActionMock).toHaveBeenNthCalledWith(2, {
+            type: '[ext] load-is-done',
+            payload: undefined
+        });
+        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
             type: '[ext] change-stack-modified',
             payload: { saved: [], pending: [] }
         });

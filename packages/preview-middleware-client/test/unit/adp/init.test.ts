@@ -8,7 +8,7 @@ import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import ElementRegistry from 'mock/sap/ui/core/ElementRegistry';
-import Element from 'mock/sap/ui/core/Element'
+import Element from 'mock/sap/ui/core/Element';
 
 describe('adp', () => {
     const addMenuItemSpy = jest.fn();
@@ -49,12 +49,11 @@ describe('adp', () => {
     });
 
     beforeEach(() => {
-        rtaMock.getDefaultPlugins
-            .mockReturnValue({
-                contextMenu: {
-                    addMenuItem: addMenuItemSpy
-                }
-            })
+        rtaMock.getDefaultPlugins.mockReturnValue({
+            contextMenu: {
+                addMenuItem: addMenuItemSpy
+            }
+        });
     });
 
     afterEach(() => {
@@ -98,7 +97,17 @@ describe('adp', () => {
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
+        expect(sendActionMock).toHaveBeenNthCalledWith(1, {
+            type: '[ext] icons-loaded',
+            payload: []
+        });
+
         expect(sendActionMock).toHaveBeenNthCalledWith(2, {
+            type: '[ext] load-is-done',
+            payload: undefined
+        });
+
+        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
             type: '[ext] show-dialog-message',
             payload: {
                 message:
@@ -128,11 +137,21 @@ describe('adp', () => {
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
+        expect(sendActionMock).toHaveBeenNthCalledWith(1, {
+            type: '[ext] icons-loaded',
+            payload: []
+        });
+
         expect(sendActionMock).toHaveBeenNthCalledWith(2, {
+            type: '[ext] load-is-done',
+            payload: undefined
+        });
+
+        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
             type: '[ext] show-dialog-message',
             payload: {
                 message:
-                'Have in mind that synchronous views are detected for this application and controller extensions are not supported for such views. Controller extension functionality on these views will be disabled.',
+                    'Have in mind that synchronous views are detected for this application and controller extensions are not supported for such views. Controller extension functionality on these views will be disabled.',
                 shouldHideIframe: false
             }
         });
@@ -157,11 +176,11 @@ describe('adp', () => {
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
-        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
+        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
             type: '[ext] show-dialog-message',
             payload: {
                 message:
-                'Have in mind that synchronous views are detected for this application and controller extensions are not supported for such views. Controller extension functionality on these views will be disabled.',
+                    'Have in mind that synchronous views are detected for this application and controller extensions are not supported for such views. Controller extension functionality on these views will be disabled.',
                 shouldHideIframe: false
             }
         });
