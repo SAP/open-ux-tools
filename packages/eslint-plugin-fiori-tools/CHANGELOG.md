@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 0.4.2
+
+### Patch Changes
+
+-   398c4092: Relax some eslint rules for fiori typescript projects
+
 ## 0.4.1
 
 ### Patch Changes
