@@ -12,8 +12,7 @@ import {
     AbapCloudEnvironment,
     createForAbapOnCloud,
     createForAbap,
-    createForDestination,
-    isAxiosError
+    createForDestination
 } from '@sap-ux/axios-extension';
 import { getCredentialsFromStore, getCredentialsWithPrompts, isBasicAuth, isServiceAuth } from './credentials';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
