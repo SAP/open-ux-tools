@@ -37,6 +37,14 @@ export async function create(changes: FlexChange[]): Promise<void> {
                 change.support.generator = settings.generator;
             }
 
+            if (typeof FakeLrepConnector.fileChangeRequestNotifier === 'function' && change.fileName) {
+                try {
+                    FakeLrepConnector.fileChangeRequestNotifier(change.fileName, 'create', change.changeType);
+                } catch (e) {
+                    // exceptions in the listener call are ignored
+                }
+            }
+
             return fetch(CHANGES_API_PATH, {
                 method: 'POST',
                 body: JSON.stringify(change, null, 2),
@@ -88,6 +96,5 @@ export default function (): void {
         loadChanges,
         loadSettings: () => Promise.resolve()
     });
-
     FakeLrepConnector.enableFakeConnector();
 }
