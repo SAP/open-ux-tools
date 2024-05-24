@@ -1,5 +1,12 @@
 # @sap-ux/adp-tooling
 
+## 0.10.8
+
+### Patch Changes
+
+-   Updated dependencies [895ee259]
+    -   @sap-ux/system-access@0.3.29
+
 ## 0.10.7
 
 ### Patch Changes
