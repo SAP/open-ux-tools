@@ -9,6 +9,5 @@ module.exports = {
     createForAbapOnCloud: jest.fn((options: unknown) => {
         const provider = axiosExt.createForAbapOnCloud(options);
         return provider;
-    }),
-    createForDestination: jest.fn().mockReturnValue(mockedProvider)
+    })
 };
