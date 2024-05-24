@@ -68,16 +68,17 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
         super(props);
     }
 
-    protected setStyle = (props: UIDefaultButtonProps): IButtonStyles => {
-        const dividerStyle: IStyle = {
-            position: 'absolute',
-            width: 1,
-            right: 21,
-            top: 0,
-            bottom: 0,
-            backgroundColor: 'var(--vscode-editor-background)'
-        };
-        const interactionStyles = {
+    /**
+     * Method returns styles for hover and press States of root button element.
+     *
+     * @param checked Is styles for checked state.
+     * @param primary Is button primary.
+     * @param transparent Is button transparent.
+     *
+     * @returns Styles for hover and press States of root button element.
+     */
+    private getInteractionStyle(checked: boolean, primary?: boolean, transparent?: boolean): IStyle {
+        const styles = {
             color: BASE_STYLES.secondary.color,
             backgroundColor: BASE_STYLES.secondary.hoverBackgroundColor,
             borderColor: BASE_STYLES.secondary.hoverBorderColor,
@@ -86,7 +87,7 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                     fill: BASE_STYLES.secondary.color
                 }
             },
-            ...(props.primary && {
+            ...(primary && {
                 color: BASE_STYLES.color,
                 backgroundColor: BASE_STYLES.primary.hoverBackgroundColor,
                 borderColor: BASE_STYLES.primary.hoverBorderColor,
@@ -96,8 +97,8 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                     }
                 }
             }),
-            ...(props.transparent &&
-                !props.checked && {
+            ...(transparent &&
+                !checked && {
                     color: BASE_STYLES.transparent.color,
                     backgroundColor: BASE_STYLES.transparent.hoverBackgroundColor,
                     borderColor: BASE_STYLES.transparent.hoverBorderColor,
@@ -108,8 +109,8 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                         }
                     }
                 }),
-            ...(props.transparent &&
-                props.checked && {
+            ...(transparent &&
+                checked && {
                     color: BASE_STYLES.color,
                     backgroundColor: BASE_STYLES.primary.backgroundColor,
                     borderColor: BASE_STYLES.primary.borderColor,
@@ -119,9 +120,33 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                         }
                     }
                 }),
-            ...(props.checked && {
+            ...(checked && {
                 borderColor: BASE_STYLES.checkedBorderColor
             })
+        };
+        return styles;
+    }
+
+    /**
+     * Method returns styles of root button element.
+     *
+     * @param props Button props.
+     *
+     * @returns Styles of root button element.
+     */
+    protected setStyle = (props: UIDefaultButtonProps): IButtonStyles => {
+        const { primary, transparent } = props;
+        const dividerStyle: IStyle = {
+            position: 'absolute',
+            width: 1,
+            right: 21,
+            top: 0,
+            bottom: 0,
+            backgroundColor: 'var(--vscode-editor-background)'
+        };
+        const interactionStyles = {
+            root: this.getInteractionStyle(false, primary, transparent),
+            checked: this.getInteractionStyle(true, primary, transparent)
         };
         return {
             root: {
@@ -146,13 +171,13 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                 borderColor: BASE_STYLES.secondary.borderColor,
                 color: BASE_STYLES.secondary.color,
 
-                ...(props.primary && {
+                ...(primary && {
                     backgroundColor: BASE_STYLES.primary.backgroundColor,
                     borderColor: BASE_STYLES.primary.borderColor,
                     color: BASE_STYLES.color
                 }),
                 // Transparent button
-                ...(props.transparent && {
+                ...(transparent && {
                     backgroundColor: BASE_STYLES.transparent.backgroundColor,
                     borderColor: BASE_STYLES.transparent.borderColor,
                     color: BASE_STYLES.transparent.color
@@ -181,20 +206,20 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                 backgroundColor: BASE_STYLES.secondary.backgroundColor,
                 borderColor: BASE_STYLES.secondary.disabledBorderColor,
                 color: BASE_STYLES.secondary.color,
-                ...(props.primary && {
+                ...(primary && {
                     opacity: '0.5 !important',
                     color: BASE_STYLES.color,
                     backgroundColor: BASE_STYLES.primary.backgroundColor,
                     borderColor: BASE_STYLES.primary.disabledBorderColor
                 }),
-                ...(props.transparent && {
+                ...(transparent && {
                     color: BASE_STYLES.transparent.color,
                     backgroundColor: BASE_STYLES.transparent.backgroundColor,
                     borderColor: BASE_STYLES.transparent.disabledBorderColor
                 })
             },
-            rootPressed: interactionStyles,
-            rootHovered: interactionStyles,
+            rootPressed: interactionStyles.root,
+            rootHovered: interactionStyles.root,
             icon: {
                 height: 16,
                 lineHeight: 16,
@@ -205,7 +230,7 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                         fill: BASE_STYLES.secondary.color
                     }
                 },
-                ...(props.primary && {
+                ...(primary && {
                     color: BASE_STYLES.color,
                     selectors: {
                         'svg > path, svg > rect': {
@@ -213,7 +238,7 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                         }
                     }
                 }),
-                ...(props.transparent && {
+                ...(transparent && {
                     color: BASE_STYLES.transparent.color,
                     selectors: {
                         'svg > path, svg > rect': {
@@ -227,7 +252,7 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                     'svg > path': {
                         fill: BASE_STYLES.secondary.color
                     },
-                    ...(props.primary && {
+                    ...(primary && {
                         'svg > path': {
                             fill: BASE_STYLES.color
                         }
@@ -238,18 +263,18 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                 backgroundColor: BASE_STYLES.secondary.backgroundColor,
                 color: BASE_STYLES.secondary.color,
                 borderColor: BASE_STYLES.checkedBorderColor,
-                ...(props.primary && {
+                ...(primary && {
                     backgroundColor: BASE_STYLES.primary.backgroundColor,
                     color: BASE_STYLES.color
                 }),
-                ...(props.transparent && {
+                ...(transparent && {
                     backgroundColor: BASE_STYLES.transparent.checkedBackgroundColor,
                     color: BASE_STYLES.transparent.checkedColor,
                     borderStyle: BASE_STYLES.transparent.checkedBorderStyle
                 })
             },
-            rootCheckedHovered: interactionStyles,
-            rootCheckedPressed: interactionStyles,
+            rootCheckedHovered: interactionStyles.checked,
+            rootCheckedPressed: interactionStyles.checked,
             splitButtonMenuButton: {
                 padding: 6,
                 height: 22,
@@ -290,7 +315,7 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                 backgroundColor: 'var(--vscode-button-secondaryBackground,#5f6a79)',
                 borderColor: BASE_STYLES.secondary.backgroundColor,
                 color: BASE_STYLES.secondary.color,
-                ...(props.primary && {
+                ...(primary && {
                     color: BASE_STYLES.color,
                     backgroundColor: BASE_STYLES.primary.backgroundColor,
                     borderColor: 'var(--vscode-button-background)'
