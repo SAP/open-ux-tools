@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.16.0
+
+### Minor Changes
+
+-   43b0ebdd: Buttons. New property 'transparent' for UIDefaultButton and minor coloring styles correction
+
 ## 1.15.15
 
 ### Patch Changes
