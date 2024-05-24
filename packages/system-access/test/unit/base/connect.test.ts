@@ -5,6 +5,7 @@ import type { Destination } from '@sap-ux/btp-utils';
 import type { AbapTarget } from '../../../src/types';
 import prompts from 'prompts';
 import { AuthenticationType } from '@sap-ux/store';
+import nock from 'nock';
 
 describe('connect', () => {
     const logger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -14,6 +15,15 @@ describe('connect', () => {
     };
     const username = '~user';
     const password = '~pass';
+
+    beforeAll(() => {
+        nock.disableNetConnect();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
+    });
 
     describe('createProvider', () => {
         beforeAll(() => {
@@ -122,6 +132,30 @@ describe('connect', () => {
                 mockListDestinations.mockReturnValue({ testDestination: { Name: destination } as Destination });
                 const provider = await createAbapServiceProvider({ destination }, undefined, false, logger);
                 expect(provider).toBeDefined();
+            });
+
+            test('valid destination but auth required', async () => {
+                const destination = {
+                    Name: 'testdestination',
+                    'sap-platform': 'abap'
+                } as Destination;
+                mockListDestinations.mockReturnValue({ [destination.Name]: destination });
+                const provider = await createAbapServiceProvider(
+                    { destination: destination.Name },
+                    undefined,
+                    true,
+                    logger
+                );
+                // mock a 401 response if no auth is provided
+                nock(`https://${destination.Name}.dest`)
+                    .get(/.*/)
+                    .reply(function() {
+                        return this.req.headers.authorization ? [200] : [401];
+                    })
+                    .persist();
+                prompts.inject([username, password]);
+                await provider.getAtoInfo();
+                expect(provider.defaults.auth).toStrictEqual({ username, password });
             });
 
             test('error if destination not found', async () => {

@@ -1,8 +1,9 @@
 import type { Logger } from '@sap-ux/logger';
-import type { AbapTarget, UrlAbapTarget } from '../types';
+import type { AbapTarget, DestinationAbapTarget, UrlAbapTarget } from '../types';
 import type {
     AbapCloudStandaloneOptions,
     AbapServiceProvider,
+    AxiosError,
     AxiosRequestConfig,
     ProviderConfiguration,
     ServiceInfo
@@ -21,13 +22,23 @@ import { readFileSync } from 'fs';
 import { AuthenticationType } from '@sap-ux/store';
 
 /**
- * Check if it is a url or destination target.
+ * Check if it is a url target.
  *
  * @param target target configuration
- * @returns true is it is a UrlAbapTarget
+ * @returns true if it is a UrlAbapTarget
  */
 export function isUrlTarget(target: AbapTarget): target is UrlAbapTarget {
     return (<UrlAbapTarget>target).url !== undefined;
+}
+
+/**
+ * Check if it is a destination target.
+ *
+ * @param target target configuration
+ * @returns true if it is a DestinationAbapTarget
+ */
+export function isDestinationTarget(target: AbapTarget): target is DestinationAbapTarget {
+    return (<DestinationAbapTarget>target).destination !== undefined;
 }
 
 /**
@@ -124,6 +135,44 @@ async function createAbapOnPremServiceProvider(
 }
 
 /**
+ * Enhance axios options and create a service provider instance for a destination.
+ *
+ * @param options predefined axios options
+ * @param target url target configuration
+ * @param prompt - prompt the user for missing information
+ * @returns an ABAPServiceProvider instance
+ */
+async function createAbapDestinationServiceProvider(
+    options: AxiosRequestConfig,
+    target: DestinationAbapTarget,
+    prompt: boolean
+): Promise<AbapServiceProvider> {
+    // Need additional properties to determine the type of destination we are dealing with
+    const destinations = await listDestinations();
+    const destination = destinations?.[target.destination];
+    if (!destination) {
+        throw new Error(`Destination ${target.destination} not found on subaccount`);
+    }
+    const provider = createForDestination(options, destination) as AbapServiceProvider;
+    // if prompting is enabled, check if the destination works or basic auth is required
+    if (prompt) {
+        const id = provider.interceptors.response.use(undefined, async (error: AxiosError) => {
+            provider.interceptors.response.eject(id);
+            if (error.response?.status === 401) {
+                const credentials = await getCredentialsWithPrompts();
+                provider.defaults.auth = credentials;
+                process.env.FIORI_TOOLS_USER = credentials.username;
+                process.env.FIORI_TOOLS_PASSWORD = credentials.password;
+                return provider.request(error.config!);
+            } else {
+                throw error;
+            }
+        });
+    }
+    return provider;
+}
+
+/**
  * Create an instance of an ABAP service provider connected to the given target configuration.
  *
  * @param target - target configuration
@@ -143,15 +192,9 @@ export async function createAbapServiceProvider(
         params: target.params ?? {},
         ...requestOptions
     };
-    // Destination only supported on Business Application studio
-    if (isAppStudio() && target.destination) {
-        // Need additional properties to determine the type of destination we are dealing with
-        const destinations = await listDestinations();
-        const destination = destinations?.[target.destination];
-        if (!destination) {
-            throw new Error(`Destination ${target.destination} not found on subaccount`);
-        }
-        provider = createForDestination(options, destination) as AbapServiceProvider;
+    // Destination only supported in Business Application Studio
+    if (isAppStudio() && isDestinationTarget(target)) {
+        provider = await createAbapDestinationServiceProvider(options, target, prompt);
     } else if (isUrlTarget(target)) {
         if (target.scp) {
             provider = await createAbapCloudServiceProvider(options, target, prompt, logger);
