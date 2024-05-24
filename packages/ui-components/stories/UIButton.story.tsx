@@ -121,8 +121,23 @@ export const defaultUsage = (): JSX.Element => {
                     <UIDefaultButton iconProps={{ iconName: UiIcons.Calendar }}>
                         Secondary button with icon
                     </UIDefaultButton>
-                    <UIDefaultButton checked>
-                        Secondary checked button
+                    <UIDefaultButton checked>Secondary checked button</UIDefaultButton>
+                </Stack>
+            </Stack>
+            <Stack tokens={stackTokens}>
+                <Text variant={'large'} className="textColor" block>
+                    Transparent Button
+                </Text>
+                <Stack horizontal tokens={stackTokens}>
+                    <UIDefaultButton transparent>Transparent button</UIDefaultButton>
+                    <UIDefaultButton transparent disabled>
+                        Transparent disabled button
+                    </UIDefaultButton>
+                    <UIDefaultButton transparent iconProps={{ iconName: UiIcons.Calendar }}>
+                        Transparent button with icon
+                    </UIDefaultButton>
+                    <UIDefaultButton transparent checked>
+                        Transparent checked button
                     </UIDefaultButton>
                 </Stack>
             </Stack>
