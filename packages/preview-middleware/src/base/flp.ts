@@ -341,6 +341,25 @@ export class FlpSandbox {
     }
 
     /**
+     * Writes the html content to file system.
+     *
+     * @param html content to write to file
+     * @param filePath path to write file content to
+     */
+    private writeToFileSystem(html: string, filePath: string): void {
+        try {
+            const fs = create(createStorage());
+            const writeToFile = process.argv.find((elem) => elem === 'writeToFile');
+            if (writeToFile) {
+                fs.write(filePath, html);
+                fs.commit(() => this.logger.info(`Created file at ${filePath}.`));
+            }
+        } catch (e) {
+            this.logger.warn(`Could not write content to file ${filePath}. Error: ${e}`);
+        }
+    }
+
+    /**
      * Add routes for html and scripts required for a local FLP.
      */
     private addStandardRoutes() {
@@ -357,6 +376,7 @@ export class FlpSandbox {
             } else {
                 const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
                 const html = render(template, this.templateConfig);
+                this.writeToFileSystem(html, this.config.path);
                 this.sendResponse(res, 'text/html', 200, html);
             }
         }) as RequestHandler);
