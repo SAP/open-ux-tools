@@ -4,7 +4,7 @@ import type { ReactElement } from 'react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store';
+import type { RootState } from '../store';
 import './ModeSwitcher.scss';
 
 /**
@@ -17,12 +17,13 @@ export function ModeSwitcher(): ReactElement {
     const dispatch = useDispatch();
 
     const mode = useSelector<RootState, 'navigation' | 'adaptation'>((state) => state.appMode);
-    const disabled = useSelector<RootState, boolean>((state) => state.initialLoading);
+    const disabled = useSelector<RootState, boolean>((state) => state.isAppLoading);
     return (
         <div className="mode-switcher">
             <UILabel>{t('MODE')}:</UILabel>
             <UIDefaultButton
-                primary={mode === 'adaptation'}
+                transparent={true}
+                checked={mode === 'adaptation'}
                 onClick={(): void => {
                     dispatch(setAppMode('adaptation'));
                 }}
@@ -30,7 +31,8 @@ export function ModeSwitcher(): ReactElement {
                 {t('EDIT')}
             </UIDefaultButton>
             <UIDefaultButton
-                primary={mode === 'navigation'}
+                transparent={true}
+                checked={mode === 'navigation'}
                 onClick={(): void => {
                     dispatch(setAppMode('navigation'));
                 }}

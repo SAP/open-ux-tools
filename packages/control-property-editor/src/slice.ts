@@ -25,7 +25,7 @@ import {
     setAppMode,
     canChangeStack,
     canSave,
-    initIsDone
+    loadIsDone
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -52,7 +52,7 @@ interface SliceState {
         canRedo: boolean;
     };
     canSave: boolean;
-    initialLoading: boolean;
+    isAppLoading: boolean;
 }
 
 export interface ChangesSlice {
@@ -139,7 +139,7 @@ export const initialState: SliceState = {
         canRedo: false
     },
     canSave: false,
-    initialLoading: true
+    isAppLoading: true
 };
 const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
     name: 'app',
@@ -284,6 +284,7 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
             })
             .addMatcher(reloadApplication.match, (state): void => {
                 state.fileChanges = [];
+                state.isAppLoading = true;
             })
             .addMatcher(storageFileChanged.match, (state, action: ReturnType<typeof storageFileChanged>): void => {
                 const fileName = action.payload;
@@ -300,8 +301,8 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
             .addMatcher(canSave.match, (state, action: ReturnType<typeof canSave>): void => {
                 state.canSave = action.payload;
             })
-            .addMatcher(initIsDone.match, (state): void => {
-                state.initialLoading = false;
+            .addMatcher(loadIsDone.match, (state): void => {
+                state.isAppLoading = false;
             })
 });
 

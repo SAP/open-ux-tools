@@ -237,7 +237,7 @@ export const storageFileChanged = createExternalAction<string>('storage-file-cha
 export const setAppMode = createExternalAction<'navigation' | 'adaptation'>('set-app-mode');
 export const canChangeStack = createExternalAction<{ canRedo: boolean; canUndo: boolean }>('can-change-stack');
 export const canSave = createExternalAction<boolean>('can-save');
-export const initIsDone = createExternalAction<void>('init-is-done');
+export const loadIsDone = createExternalAction<void>('load-is-done');
 export const undo = createExternalAction<void>('undo');
 export const redo = createExternalAction<void>('redo');
 export const save = createExternalAction<void>('save');
@@ -262,4 +262,4 @@ export type ExternalAction =
     | ReturnType<typeof undo>
     | ReturnType<typeof redo>
     | ReturnType<typeof save>
-    | ReturnType<typeof initIsDone>;
+    | ReturnType<typeof loadIsDone>;

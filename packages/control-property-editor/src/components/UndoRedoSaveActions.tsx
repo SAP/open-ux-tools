@@ -4,7 +4,7 @@ import type { ReactElement } from 'react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store';
+import type { RootState } from '../store';
 import { Separator } from './Separator';
 
 /**
@@ -17,6 +17,7 @@ export function UndoRedoSaveActions(): ReactElement {
     const dispatch = useDispatch();
     const changeStack = useSelector<RootState, { canRedo: boolean; canUndo: boolean }>((state) => state.changeStack);
     const canSave = useSelector<RootState, boolean>((state) => state.canSave);
+    const isLoading = useSelector<RootState, boolean>((state) => state.isAppLoading);
     return (
         <>
             <UIIconButton
@@ -28,7 +29,7 @@ export function UndoRedoSaveActions(): ReactElement {
                 onClick={(): void => {
                     dispatch(undo());
                 }}
-                disabled={!changeStack.canUndo}
+                disabled={!changeStack.canUndo || isLoading}
             />
             <UIIconButton
                 id="redo-button"
@@ -39,7 +40,7 @@ export function UndoRedoSaveActions(): ReactElement {
                 onClick={(): void => {
                     dispatch(redo());
                 }}
-                disabled={!changeStack.canRedo}
+                disabled={!changeStack.canRedo || isLoading}
             />
             <Separator direction="vertical" style={{ marginLeft: '10px', marginRight: '10px' }} />
             <UIIconButton
@@ -51,7 +52,7 @@ export function UndoRedoSaveActions(): ReactElement {
                 onClick={(): void => {
                     dispatch(save());
                 }}
-                disabled={!canSave}
+                disabled={!canSave || isLoading}
             />
         </>
     );
