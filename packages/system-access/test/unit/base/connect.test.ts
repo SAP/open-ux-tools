@@ -30,10 +30,6 @@ describe('connect', () => {
             mockIsAppStudio.mockReturnValue(false);
         });
 
-        afterEach(() => {
-            prompts.inject([]);
-        });
-
         describe('ABAP on-premise', () => {
             test('credentials available from store', async () => {
                 mockedStoreService.read.mockResolvedValueOnce({ username, password });
