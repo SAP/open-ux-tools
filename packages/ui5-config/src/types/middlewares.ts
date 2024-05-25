@@ -16,6 +16,7 @@ export interface FioriToolsProxyConfigBackend {
     path?: string;
     url: string;
     client?: string;
+    authenticationType?: string;
     destination?: string;
     destinationInstance?: string;
     pathPrefix?: string;

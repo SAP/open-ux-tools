@@ -154,8 +154,23 @@ describe('UI5Config', () => {
         });
 
         test('add commonly configured backend (and UI5 defaults)', () => {
+            const authenticationType = 'reentranceTicket';
             ui5Config.addFioriToolsProxydMiddleware({
-                backend: [{ url, path, destination, destinationInstance }],
+                backend: [
+                    {
+                        url,
+                        path,
+                        destination,
+                        destinationInstance
+                    },
+                    {
+                        url,
+                        path,
+                        destination,
+                        destinationInstance,
+                        authenticationType
+                    }
+                ],
                 ui5: {}
             });
             expect(ui5Config.toString()).toMatchSnapshot();
@@ -183,7 +198,20 @@ describe('UI5Config', () => {
     describe('addBackendToFioriToolsProxydMiddleware', () => {
         test('add proxy without out backend first and then call add backend', () => {
             ui5Config.addFioriToolsProxydMiddleware({ ui5: {} });
-            ui5Config.addBackendToFioriToolsProxydMiddleware({ url, path });
+            ui5Config.addBackendToFioriToolsProxydMiddleware({
+                url,
+                path
+            });
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('should add comments with backend authentication type as reentrance ticket', () => {
+            ui5Config.addFioriToolsProxydMiddleware({ ui5: {} });
+            ui5Config.addBackendToFioriToolsProxydMiddleware({
+                url,
+                path,
+                authenticationType: 'reentranceTicket'
+            });
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
