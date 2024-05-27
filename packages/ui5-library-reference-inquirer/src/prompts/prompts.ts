@@ -1,7 +1,7 @@
 import { t } from '../i18n';
 import type { ListChoiceOptions } from 'inquirer';
 import { checkDependencies } from '@sap-ux/project-access';
-import type { CheckBoxQuestion, ListQuestion } from '@sap-ux/inquirer-common';
+import { extendWithOptions, type CheckBoxQuestion, type ListQuestion } from '@sap-ux/inquirer-common';
 import {
     promptNames,
     type UI5LibraryReferenceQuestion,
@@ -9,7 +9,7 @@ import {
     type UI5LibraryReferenceAnswers,
     type UI5LibraryReferencePromptOptions
 } from '../types';
-import { extendWithOptions, hidePrompts } from './helpers';
+import { hidePrompts } from './helpers';
 import { SourceType } from './constants';
 import { Severity, type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 

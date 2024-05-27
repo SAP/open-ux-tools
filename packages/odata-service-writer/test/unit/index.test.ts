@@ -9,6 +9,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { tmpdir } from 'os';
 import { t } from '../../src/i18n';
+import * as projectAccess from '@sap-ux/project-access';
 
 const testDir = tmpdir();
 const commonConfig = {
@@ -86,6 +87,7 @@ describe('generate', () => {
         });
 
         it('Standard folder structure - all files updated', async () => {
+            const getWebappPathMock = jest.spyOn(projectAccess, 'getWebappPath');
             const packagePath = join(root, 'package.json');
             fs.writeJSON(packagePath, {});
             const ui5YamlWithOutMiddleware = (await UI5Config.newInstance('')).setConfiguration({}).toString();
@@ -95,16 +97,17 @@ describe('generate', () => {
             const manifest = fs.readJSON(join(root, 'webapp/manifest.json')) as any;
             expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
             expect(fs.exists(join(root, 'ui5-mock.yaml'))).toBe(true);
+            // verify getWebappPath is called with fs
+            expect(getWebappPathMock).toHaveBeenCalledWith(expect.anything(), fs);
         });
 
         it('Nested folder structure - all files updated', async () => {
-            const packagePath = join(testDir, 'package.json');
+            const packagePath = join(root, 'package.json');
             fs.writeJSON(packagePath, {});
             const ui5YamlWithMiddleware = (await UI5Config.newInstance(''))
                 .addFioriToolsProxydMiddleware({ ui5: {} })
                 .toString();
             fs.write(join(root, 'ui5.yaml'), ui5YamlWithMiddleware);
-
             await generate(root, config, fs);
             const manifest = fs.readJSON(join(root, 'webapp/manifest.json')) as any;
             expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);

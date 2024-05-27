@@ -1,5 +1,185 @@
 # @sap-ux/preview-middleware
 
+## 0.13.46
+
+### Patch Changes
+
+-   b67b29f5: Generate testsuite for all configured test frameworks
+
+## 0.13.45
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.9
+
+## 0.13.44
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.8
+
+## 0.13.43
+
+### Patch Changes
+
+-   56d8b0b9: Add default content for extension points to the outline in CPE
+
+## 0.13.42
+
+### Patch Changes
+
+-   Updated dependencies [6e3d4da4]
+    -   @sap-ux/adp-tooling@0.10.7
+
+## 0.13.41
+
+### Patch Changes
+
+-   1618da09: Use existing html file on file system for preview
+
+## 0.13.40
+
+### Patch Changes
+
+-   da5d9f0b: Fragment files are not created together with an addXML change in onChangeRequest handler
+-   Updated dependencies [da5d9f0b]
+    -   @sap-ux/adp-tooling@0.10.6
+
+## 0.13.39
+
+### Patch Changes
+
+-   52faf16f: Fix RTA initialization issue for UI5 versions less than 1.72.
+
+## 0.13.38
+
+### Patch Changes
+
+-   39665ea9: Fix for CPE does not start UI Adaptation for ADP Projects with lower UI5 Version than 1.120
+
+## 0.13.37
+
+### Patch Changes
+
+-   9e8af342: Disable fragment context menu item in CPE for controls with no stable id
+
+## 0.13.36
+
+### Patch Changes
+
+-   Updated dependencies [c87fcc91]
+    -   @sap-ux/adp-tooling@0.10.5
+
+## 0.13.35
+
+### Patch Changes
+
+-   Updated dependencies [e3d2324c]
+    -   @sap-ux/project-access@1.20.0
+    -   @sap-ux/adp-tooling@0.10.4
+
+## 0.13.34
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.3
+
+## 0.13.33
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.2
+
+## 0.13.32
+
+### Patch Changes
+
+-   Updated dependencies [f361f3b4]
+    -   @sap-ux/adp-tooling@0.10.1
+
+## 0.13.31
+
+### Patch Changes
+
+-   Updated dependencies [9ccbaded]
+    -   @sap-ux/adp-tooling@0.10.0
+
+## 0.13.30
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.28
+
+## 0.13.29
+
+### Patch Changes
+
+-   cad21d4d: Enable Adding Controller Extension only on async views for Adp Projects
+
+## 0.13.28
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.27
+
+## 0.13.27
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+-   Updated dependencies [4e267684]
+    -   @sap-ux/adp-tooling@0.9.26
+
+## 0.13.26
+
+### Patch Changes
+
+-   9a32e102: fix preview reload on SBAS, by exposing livereload server port over url
+-   Updated dependencies [9a32e102]
+    -   @sap-ux/btp-utils@0.14.4
+    -   @sap-ux/adp-tooling@0.9.25
+
+## 0.13.25
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.24
+
+## 0.13.24
+
+### Patch Changes
+
+-   7697dea4: Outsourcing of initialization routine to manage app state from fiori-tools-proxy to preview-middleware-client and updating to UI5 2.0
+
+## 0.13.23
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.23
+-   @sap-ux/project-access@1.19.14
+
+## 0.13.22
+
+### Patch Changes
+
+-   2e296173: Enable telemetry for adaptation project
+
+## 0.13.21
+
+### Patch Changes
+
+-   Updated dependencies [99bca62c]
+    -   @sap-ux/project-access@1.19.13
+    -   @sap-ux/adp-tooling@0.9.22
+
+## 0.13.20
+
+### Patch Changes
+
+-   Updated dependencies [b7d95fb3]
+    -   @sap-ux/project-access@1.19.12
+    -   @sap-ux/adp-tooling@0.9.21
+
 ## 0.13.19
 
 ### Patch Changes

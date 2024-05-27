@@ -4,7 +4,7 @@ import { create } from 'mem-fs-editor';
 import type { Editor as MemFsEditor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type http from 'http';
-import type { Request, RequestHandler, Response, Router } from 'express';
+import type { Request, RequestHandler, Response, Router, NextFunction } from 'express';
 import { readFileSync } from 'fs';
 import { dirname, join, posix } from 'path';
 import { Router as createRouter, static as serveStatic, json } from 'express';
@@ -18,6 +18,7 @@ import {
     type OperationType
 } from '@sap-ux/adp-tooling';
 import { createProjectAccess } from '@sap-ux/project-access';
+import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 
 import { deleteChange, readChanges, writeChange } from './flex';
 import { generateImportList, mergeTestConfigDefaults } from './test';
@@ -249,7 +250,11 @@ export class FlpSandbox {
             this.addEditorRoutes(this.rta);
         }
         if (this.test) {
-            this.addTestRoutes(this.test, id);
+            this.addTestRoutes(
+                this.test.filter((config) => config.framework !== 'Testsuite'),
+                id
+            );
+            this.createTestSuite(this.test);
         }
 
         await this.addRoutesForAdditionalApps();
@@ -301,7 +306,7 @@ export class FlpSandbox {
             if (editor.developerMode) {
                 previewUrl = `${previewUrl}.inner.html`;
                 editor.pluginScript ??= 'open/ux/preview/client/cpe/init';
-                this.router.get(editor.path, (_req: Request, res: Response) => {
+                this.router.get(editor.path, async (_req: Request, res: Response) => {
                     const scenario = rta.options?.scenario;
                     let templatePreviewUrl = `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.config.intent.object}-${this.config.intent.action}`;
                     if (scenario === 'ADAPTATION_PROJECT') {
@@ -311,12 +316,14 @@ export class FlpSandbox {
                     const envPort = process.env.FIORI_TOOLS_LIVERELOAD_PORT;
                     let livereloadPort: number = envPort ? parseInt(envPort, 10) : DEFAULT_LIVERELOAD_PORT;
                     livereloadPort = isNaN(livereloadPort) ? DEFAULT_LIVERELOAD_PORT : livereloadPort;
+                    const envLivereloadUrl = isAppStudio() ? await exposePort(livereloadPort) : undefined;
                     const html = render(template, {
                         previewUrl: templatePreviewUrl,
                         telemetry: rta.options?.telemetry ?? false,
                         appName: rta.options?.appName,
                         scenario,
-                        livereloadPort
+                        livereloadPort,
+                        livereloadUrl: envLivereloadUrl
                     });
                     this.sendResponse(res, 'text/html', 200, html);
                 });
@@ -345,15 +352,17 @@ export class FlpSandbox {
         this.router.use(PREVIEW_URL.client.url, serveStatic(PREVIEW_URL.client.local));
 
         // add route for the sandbox.html
-        this.router.get(this.config.path, (async (_req: Request, res: Response) => {
-            // warn the user if a file with the same name exists in the filesystem
+        this.router.get(this.config.path, (async (_req: Request, res: Response, next: NextFunction) => {
+            // inform the user if a html file exists on the filesystem
             const file = await this.project.byPath(this.config.path);
             if (file) {
-                this.logger.warn(`HTML file returned at ${this.config.path} is NOT loaded from the file system.`);
+                this.logger.info(`HTML file returned at ${this.config.path} is loaded from the file system.`);
+                next();
+            } else {
+                const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
+                const html = render(template, this.templateConfig);
+                this.sendResponse(res, 'text/html', 200, html);
             }
-            const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
-            const html = render(template, this.templateConfig);
-            this.sendResponse(res, 'text/html', 200, html);
         }) as RequestHandler);
     }
 
@@ -475,6 +484,62 @@ export class FlpSandbox {
     }
 
     /**
+     * If it is part of TestConfig, create a test suite for the test configurations.
+     *
+     * @param configs test configurations
+     * @private
+     */
+    private createTestSuite(configs: TestConfig[]) {
+        const testsuiteConfig = configs.find((config) => config.framework === 'Testsuite');
+        if (!testsuiteConfig) {
+            //silent skip: create a testsuite only if it is explicitly part of the test configuration
+            return;
+        }
+        if (configs.length <= 1) {
+            this.logger.warn('Skip testsuite generation. No test frameworks configured.');
+            return;
+        }
+        const testsuite = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit.html'), 'utf-8');
+        const initTemplate = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit.js'), 'utf-8');
+        const config = mergeTestConfigDefaults(testsuiteConfig);
+        this.logger.debug(`Add route for ${config.path}`);
+        this.router.get(config.path, (async (_req, res) => {
+            this.logger.debug(`Serving test route: ${config.path}`);
+            const templateConfig = {
+                initPath: config.init
+            };
+            const html = render(testsuite, templateConfig);
+            this.sendResponse(res, 'text/html', 200, html);
+        }) as RequestHandler);
+
+        if (testsuiteConfig.init !== undefined) {
+            this.logger.debug(
+                `Skip serving testsuite init script in favor of provided script: ${testsuiteConfig.init}`
+            );
+            return;
+        }
+
+        const testPaths: string[] = [];
+        for (const testConfig of configs) {
+            if (testConfig.framework === 'Testsuite') {
+                continue;
+            }
+            const config = mergeTestConfigDefaults(testConfig);
+            testPaths.push(config.path);
+        }
+
+        this.logger.debug(`Add route for ${config.init}`);
+        this.router.get(config.init, (async (_req, res) => {
+            this.logger.debug(`Serving test route: ${config.init}`);
+            const templateConfig = {
+                testPaths: testPaths
+            };
+            const js = render(initTemplate, templateConfig);
+            this.sendResponse(res, 'application/javascript', 200, js);
+        }) as RequestHandler);
+    }
+
+    /**
      * Send a response with the given content type, status and body.
      * Ensure compliance with common APIs in express and connect.
      *
@@ -558,16 +623,10 @@ export class FlpSandbox {
             object: id.replace(/\./g, ''),
             action: 'preview'
         };
-        let title = manifest['sap.app'].title ?? id;
-        let description = manifest['sap.app'].description ?? '';
-        if (app.local) {
-            title = (await this.getI18nTextFromProperty(app.local, manifest['sap.app'].title)) ?? id;
-            description = (await this.getI18nTextFromProperty(app.local, manifest['sap.app'].description)) ?? '';
-        }
         this.templateConfig.ui5.resources[id] = app.target;
         this.templateConfig.apps[`${app.intent?.object}-${app.intent?.action}`] = {
-            title: title,
-            description: description,
+            title: (await this.getI18nTextFromProperty(app.local, manifest['sap.app'].title)) ?? id,
+            description: (await this.getI18nTextFromProperty(app.local, manifest['sap.app'].description)) ?? '',
             additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
             applicationType: 'URL',
             url: app.target,
@@ -583,9 +642,9 @@ export class FlpSandbox {
      * @returns i18n text of the property
      * @private
      */
-    private async getI18nTextFromProperty(projectRoot: string, propertyValue: string | undefined) {
+    private async getI18nTextFromProperty(projectRoot: string | undefined, propertyValue: string | undefined) {
         //i18n model format could be {{key}} or {i18n>key}
-        if (!propertyValue || propertyValue.search(/{{\w+}}|{i18n>\w+}/g) === -1) {
+        if (!projectRoot || !propertyValue || propertyValue.search(/{{\w+}}|{i18n>\w+}/g) === -1) {
             return propertyValue;
         }
         const propertyI18nKey = propertyValue.replace(/i18n>|[{}]/g, '');
@@ -671,6 +730,7 @@ export async function initAdp(
         if (flp.rta) {
             flp.rta.layer = layer;
             flp.rta.options = {
+                ...flp.rta.options,
                 projectId: variant.id,
                 scenario: 'ADAPTATION_PROJECT'
             };

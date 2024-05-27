@@ -1,5 +1,146 @@
 # @sap-ux/adp-tooling
 
+## 0.10.9
+
+### Patch Changes
+
+-   Updated dependencies [96de8f25]
+    -   @sap-ux/system-access@0.3.30
+
+## 0.10.8
+
+### Patch Changes
+
+-   Updated dependencies [895ee259]
+    -   @sap-ux/system-access@0.3.29
+
+## 0.10.7
+
+### Patch Changes
+
+-   6e3d4da4: Add config needed in BAS
+-   Updated dependencies [6e3d4da4]
+    -   @sap-ux/axios-extension@1.12.4
+    -   @sap-ux/system-access@0.3.28
+
+## 0.10.6
+
+### Patch Changes
+
+-   da5d9f0b: Fragment files are not created together with an addXML change in onChangeRequest handler
+
+## 0.10.5
+
+### Patch Changes
+
+-   c87fcc91: Fix project migration
+
+## 0.10.4
+
+### Patch Changes
+
+-   Updated dependencies [e3d2324c]
+    -   @sap-ux/project-access@1.20.0
+    -   @sap-ux/ui5-config@0.22.4
+    -   @sap-ux/axios-extension@1.12.3
+    -   @sap-ux/system-access@0.3.27
+
+## 0.10.3
+
+### Patch Changes
+
+-   Updated dependencies [19ec0f01]
+    -   @sap-ux/axios-extension@1.12.3
+    -   @sap-ux/system-access@0.3.27
+
+## 0.10.2
+
+### Patch Changes
+
+-   Updated dependencies [a41bbd95]
+    -   @sap-ux/axios-extension@1.12.2
+    -   @sap-ux/system-access@0.3.26
+
+## 0.10.1
+
+### Patch Changes
+
+-   f361f3b4: export migrate adt
+
+## 0.10.0
+
+### Minor Changes
+
+-   9ccbaded: add migration adp writer
+
+## 0.9.28
+
+### Patch Changes
+
+-   Updated dependencies [1b5f7442]
+    -   @sap-ux/axios-extension@1.12.1
+    -   @sap-ux/system-access@0.3.25
+
+## 0.9.27
+
+### Patch Changes
+
+-   Updated dependencies [312919ec]
+    -   @sap-ux/axios-extension@1.12.0
+    -   @sap-ux/system-access@0.3.24
+
+## 0.9.26
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+
+## 0.9.25
+
+### Patch Changes
+
+-   Updated dependencies [9a32e102]
+    -   @sap-ux/btp-utils@0.14.4
+    -   @sap-ux/axios-extension@1.11.9
+    -   @sap-ux/system-access@0.3.23
+
+## 0.9.24
+
+### Patch Changes
+
+-   Updated dependencies [56b77fd9]
+    -   @sap-ux/axios-extension@1.11.8
+    -   @sap-ux/system-access@0.3.22
+
+## 0.9.23
+
+### Patch Changes
+
+-   Updated dependencies [7f8105c7]
+    -   @sap-ux/ui5-config@0.22.3
+    -   @sap-ux/project-access@1.19.14
+    -   @sap-ux/axios-extension@1.11.7
+    -   @sap-ux/system-access@0.3.21
+
+## 0.9.22
+
+### Patch Changes
+
+-   Updated dependencies [99bca62c]
+    -   @sap-ux/project-access@1.19.13
+    -   @sap-ux/axios-extension@1.11.7
+    -   @sap-ux/system-access@0.3.21
+
+## 0.9.21
+
+### Patch Changes
+
+-   Updated dependencies [b7d95fb3]
+    -   @sap-ux/project-access@1.19.12
+    -   @sap-ux/ui5-config@0.22.2
+    -   @sap-ux/axios-extension@1.11.7
+    -   @sap-ux/system-access@0.3.21
+
 ## 0.9.20
 
 ### Patch Changes

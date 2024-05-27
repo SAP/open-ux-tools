@@ -1,5 +1,26 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.3.9
+
+### Patch Changes
+
+-   Updated dependencies [e3d2324c]
+    -   @sap-ux/ui5-config@0.22.4
+
+## 1.3.8
+
+### Patch Changes
+
+-   Updated dependencies [7f8105c7]
+    -   @sap-ux/ui5-config@0.22.3
+
+## 1.3.7
+
+### Patch Changes
+
+-   Updated dependencies [b7d95fb3]
+    -   @sap-ux/ui5-config@0.22.2
+
 ## 1.3.6
 
 ### Patch Changes

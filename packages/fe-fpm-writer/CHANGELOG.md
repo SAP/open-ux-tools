@@ -1,5 +1,17 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.24.11
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+
+## 0.24.10
+
+### Patch Changes
+
+-   2e10a7ae: fix: fragment of custom section with event handler - move attribute 'core:require' from inner element('Button', 'Input') to wrapper element('VBox', 'FormElement')
+
 ## 0.24.9
 
 ### Patch Changes

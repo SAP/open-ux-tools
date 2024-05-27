@@ -1,5 +1,37 @@
 # @sap-ux/project-access
 
+## 1.20.0
+
+### Minor Changes
+
+-   e3d2324c: Improvements for consumption
+
+### Patch Changes
+
+-   Updated dependencies [e3d2324c]
+    -   @sap-ux/ui5-config@0.22.4
+
+## 1.19.14
+
+### Patch Changes
+
+-   Updated dependencies [7f8105c7]
+    -   @sap-ux/ui5-config@0.22.3
+
+## 1.19.13
+
+### Patch Changes
+
+-   99bca62c: Add error code for cds mismatch
+
+## 1.19.12
+
+### Patch Changes
+
+-   b7d95fb3: fix paths and config writers
+-   Updated dependencies [b7d95fb3]
+    -   @sap-ux/ui5-config@0.22.2
+
 ## 1.19.11
 
 ### Patch Changes

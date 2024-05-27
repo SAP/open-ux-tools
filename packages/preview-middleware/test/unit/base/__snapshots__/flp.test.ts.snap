@@ -618,7 +618,8 @@ exports[`FlpSandbox router rta with developerMode=true 1`] = `
                 telemetry: false,
                 rootElementId: 'root',
                 scenario: '',
-                livereloadPort: 35729
+                livereloadPort: 35729,
+                livereloadUrl: '',
             });
         </script>
     </body>
@@ -860,4 +861,29 @@ exports[`FlpSandbox router test/flp.html 1`] = `
 </body>
 
 </html>"
+`;
+
+exports[`FlpSandbox router with test suite default with testsuite 1`] = `
+"<!DOCTYPE html>
+<html lang=\\"en\\">
+<head>
+    <title>QUnit TestSuite</title>
+    <script src=\\"/resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"/test/testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+</head>
+<body>
+</body>
+</html>"
+`;
+
+exports[`FlpSandbox router with test suite default with testsuite and init testsuite.qunit.js 1`] = `
+"window.suite = function () {
+    const oSuite = new parent.jsUnitTestSuite();
+
+    oSuite.addTestPage(\\"/test/unitTests.qunit.html\\");
+
+    oSuite.addTestPage(\\"/test/opaTests.qunit.html\\");
+
+    return oSuite;
+}"
 `;
