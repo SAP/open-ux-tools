@@ -54,7 +54,7 @@ export function mergeApp(app: App): App {
 }
 
 // Required default libs
-export const defaultUI5Libs = ['sap.m', 'sap.ui.core'];
+export const defaultUI5Libs = ['sap.m', 'sap.ui.core', 'sap.ushell'];
 
 /**
  * Merges version properties with the provided UI5 instance.
@@ -82,6 +82,9 @@ export function mergeUi5(ui5: Partial<UI5>, options?: Partial<AppOptions>): UI5 
     merged.typesPackage = getTypesPackage(merged.typesVersion);
     merged.ui5Theme = ui5.ui5Theme ?? 'sap_fiori_3';
     merged.ui5Libs = getUI5Libs(ui5.ui5Libs);
+    if (options?.loadFpmLibs) {
+        merged.ui5Libs.push('sap.fe.templates');
+    }
 
     return Object.assign({}, ui5, merged) as UI5;
 }

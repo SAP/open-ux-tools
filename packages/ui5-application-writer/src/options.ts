@@ -58,7 +58,8 @@ const factories: { [key: string]: (input: FeatureInput) => Promise<void> } = {
     loadReuseLibs: async (input: FeatureInput) => await copyTemplates('loadReuseLibs', input),
     sapux: async (input: FeatureInput) => await copyTemplates('sapux', input),
     typescript: async (input: FeatureInput) => await enableTypescript(input),
-    npmPackageConsumption: async (input: FeatureInput) => await enableNpmPackageConsumption(input)
+    npmPackageConsumption: async (input: FeatureInput) => await enableNpmPackageConsumption(input),
+    loadFpmLibs: async (input: FeatureInput) => await copyTemplates('loadFpmLibs', input)
 };
 
 /**

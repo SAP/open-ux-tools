@@ -247,7 +247,8 @@ appDescription=Test App Description",
         \\"minUI5Version\\": \\"1.60.0\\",
         \\"libs\\": {
           \\"sap.m\\": {},
-          \\"sap.ui.core\\": {}
+          \\"sap.ui.core\\": {},
+          \\"sap.ushell\\": {}
         }
       },
       \\"contentDensities\\": {
@@ -492,7 +493,8 @@ appDescription=Test App Description",
         \\"minUI5Version\\": \\"1.92.1\\",
         \\"libs\\": {
           \\"sap.m\\": {},
-          \\"sap.ui.core\\": {}
+          \\"sap.ui.core\\": {},
+          \\"sap.ushell\\": {}
         }
       },
       \\"contentDensities\\": {
@@ -734,7 +736,8 @@ appDescription=Test App Description",
         \\"minUI5Version\\": \\"1.60.0\\",
         \\"libs\\": {
           \\"sap.m\\": {},
-          \\"sap.ui.core\\": {}
+          \\"sap.ui.core\\": {},
+          \\"sap.ushell\\": {}
         }
       },
       \\"contentDensities\\": {
@@ -1364,7 +1367,8 @@ appDescription=Test App Description",
         \\"minUI5Version\\": \\"1.60.0\\",
         \\"libs\\": {
           \\"sap.m\\": {},
-          \\"sap.ui.core\\": {}
+          \\"sap.ui.core\\": {},
+          \\"sap.ushell\\": {}
         }
       },
       \\"contentDensities\\": {

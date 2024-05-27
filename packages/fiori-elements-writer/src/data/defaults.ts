@@ -101,6 +101,11 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
         (feApp.service as OdataService).model = defaultModelName;
     }
 
+    //FPM loading specific UI5 libs
+    if (feApp.template.type === TemplateType.FlexibleProgrammingModel) {
+        feApp.appOptions.loadFpmLibs = true;
+    }
+
     // minimum UI5 version depending on the template required
     feApp.ui5 = feApp.ui5 ?? {};
     if (!feApp.ui5.minUI5Version) {

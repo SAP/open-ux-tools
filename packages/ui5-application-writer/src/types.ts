@@ -79,6 +79,11 @@ export interface AppOptions {
      * Excludes the index.html from the template and does not add the `start-noflp` script in package.json
      */
     generateIndex?: boolean;
+
+    /**
+     * Enables specific ui5 libs for FPM apps
+     */
+    loadFpmLibs?: boolean;
 }
 
 export interface Ui5App {

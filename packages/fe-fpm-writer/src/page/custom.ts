@@ -111,6 +111,9 @@ export function generate(basePath: string, data: CustomPage, fs?: Editor): Edito
     if (data.typescript) {
         addExtensionTypes(basePath, data.minUI5Version, fs);
     }
+    if (data.entity) {
+        
+    }
 
     return fs;
 }
