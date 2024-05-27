@@ -725,6 +725,9 @@ importers:
         specifier: 2.4.2
         version: 2.4.2
     devDependencies:
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
       '@types/diff':
         specifier: 5.0.9
         version: 5.0.9
