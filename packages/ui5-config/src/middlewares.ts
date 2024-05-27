@@ -1,3 +1,4 @@
+import { AuthenticationType } from '@sap-ux/store';
 import type {
     FioriToolsProxyConfigBackend,
     CustomMiddleware,
@@ -38,7 +39,7 @@ export function getBackendComments(
 ): NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[] {
     const comment = [];
 
-    if (backend.authenticationType === 'reentranceTicket') {
+    if (backend.authenticationType === AuthenticationType.ReentranceTicket) {
         comment.push({
             path: `configuration.backend.${index}.authenticationType`,
             comment: ' SAML support for vscode',

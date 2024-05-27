@@ -1,3 +1,4 @@
+import { AuthenticationType } from '@sap-ux/store';
 import type { BspApp, UI5ProxyConfig } from '../src';
 import { UI5Config } from '../src';
 
@@ -154,7 +155,6 @@ describe('UI5Config', () => {
         });
 
         test('add commonly configured backend (and UI5 defaults)', () => {
-            const authenticationType = 'reentranceTicket';
             ui5Config.addFioriToolsProxydMiddleware({
                 backend: [
                     {
@@ -168,7 +168,7 @@ describe('UI5Config', () => {
                         path,
                         destination,
                         destinationInstance,
-                        authenticationType
+                        authenticationType: AuthenticationType.ReentranceTicket
                     }
                 ],
                 ui5: {}
@@ -210,7 +210,7 @@ describe('UI5Config', () => {
             ui5Config.addBackendToFioriToolsProxydMiddleware({
                 url,
                 path,
-                authenticationType: 'reentranceTicket'
+                authenticationType: AuthenticationType.ReentranceTicket
             });
             expect(ui5Config.toString()).toMatchSnapshot();
         });
