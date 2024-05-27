@@ -3,8 +3,9 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { AdpWriterConfig } from '../types';
-import { UI5Config } from '@sap-ux/ui5-config';
-import { enhanceUI5Yaml, enhanceUI5DeployYaml, hasDeployConfig } from './options';
+import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml } from './project-utils';
+
+const tmplPath = join(__dirname, '../../templates/project');
 
 /**
  * Set default values for optional properties.
@@ -18,7 +19,8 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
         target: { ...config.target },
         ui5: { ...config.ui5 },
         deploy: config.deploy ? { ...config.deploy } : undefined,
-        options: { ...config.options }
+        options: { ...config.options },
+        customConfig: config.customConfig ? { ...config.customConfig } : undefined
     };
     configWithDefaults.app.title ??= `Adaptation of ${config.app.reference}`;
     configWithDefaults.app.layer ??= 'CUSTOMER_BASE';
@@ -42,26 +44,55 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
     if (!fs) {
         fs = create(createStorage());
     }
-    const tmplPath = join(__dirname, '../../templates/project');
     const fullConfig = setDefaults(config);
 
-    fs.copyTpl(join(tmplPath, '**/*.*'), join(basePath), fullConfig, undefined, {
+    writeTemplateToFolder(join(tmplPath, '**/*.*'), join(basePath), fullConfig, fs);
+    await writeUI5DeployYaml(basePath, fullConfig, fs);
+    await writeUI5Yaml(basePath, fullConfig, fs);
+
+    return fs;
+}
+
+/**
+ * Writes the adp-project template to the mem-fs-editor instance during migration.
+ *
+ * @param basePath - the base path
+ * @param config - the writer configuration
+ * @param fs - the memfs editor instance
+ * @returns the updated memfs editor instance
+ */
+
+export async function migrate(basePath: string, config: AdpWriterConfig, fs?: Editor): Promise<Editor> {
+    if (!fs) {
+        fs = create(createStorage());
+    }
+
+    const fullConfig = setDefaults(config);
+
+    // Copy the specified files to target project
+    fs.copyTpl(join(tmplPath, '**/ui5.yaml'), join(basePath), fullConfig, undefined, {
+        globOptions: { dot: true }
+    });
+    fs.copyTpl(join(tmplPath, '**/package.json'), join(basePath), fullConfig, undefined, {
+        globOptions: { dot: true }
+    });
+    fs.copyTpl(join(tmplPath, '**/gitignore.tmpl'), join(basePath), fullConfig, undefined, {
         globOptions: { dot: true },
         processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
     });
 
-    // ui5.yaml
-    const ui5ConfigPath = join(basePath, 'ui5.yaml');
-    const baseUi5ConfigContent = fs.read(ui5ConfigPath);
-    const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
-    enhanceUI5Yaml(ui5Config, fullConfig);
-    fs.write(ui5ConfigPath, ui5Config.toString());
-    // ui5-deploy.yaml
-    if (hasDeployConfig(fullConfig)) {
-        const ui5DeployConfig = await UI5Config.newInstance(baseUi5ConfigContent);
-        enhanceUI5DeployYaml(ui5DeployConfig, fullConfig);
-        fs.write(join(basePath, 'ui5-deploy.yaml'), ui5DeployConfig.toString());
+    // delete .che folder
+    if (fs.exists(join(basePath, '.che/project.json'))) {
+        fs.delete(join(basePath, '.che/*'));
     }
+
+    // delete neo-app.json
+    if (fs.exists(join(basePath, 'neo-app.json'))) {
+        fs.delete(join(basePath, 'neo-app.json'));
+    }
+
+    await writeUI5Yaml(basePath, fullConfig, fs);
+    await writeUI5DeployYaml(basePath, fullConfig, fs);
 
     return fs;
 }

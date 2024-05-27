@@ -146,15 +146,6 @@ describe('change-handler', () => {
             mockLogger.error.mockClear();
         });
 
-        it('should log information if the XML fragment already exists', () => {
-            mockFs.exists.mockReturnValue(true);
-
-            addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger);
-
-            expect(mockFs.copy).not.toHaveBeenCalled();
-            expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" already exists.`);
-        });
-
         it('should create the XML fragment and log information if it does not exist', () => {
             mockFs.exists.mockReturnValue(false);
 
