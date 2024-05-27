@@ -77,7 +77,7 @@ interface OptionalTestConfig {
 }
 
 export interface TestConfig extends Partial<OptionalTestConfig> {
-    framework: 'OPA5' | 'QUnit';
+    framework: 'OPA5' | 'QUnit' | 'Testsuite';
 }
 
 export type InternalTestConfig = TestConfig & OptionalTestConfig;
