@@ -511,8 +511,8 @@ importers:
         version: 3.17.2
     devDependencies:
       npm-run-all2:
-        specifier: 5.0.0
-        version: 5.0.0
+        specifier: 6.2.0
+        version: 6.2.0
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -551,8 +551,8 @@ importers:
         specifier: 4.4.4
         version: 4.4.4
       npm-run-all2:
-        specifier: 5.0.0
-        version: 5.0.0
+        specifier: 6.2.0
+        version: 6.2.0
 
   packages/control-property-editor:
     devDependencies:
@@ -629,8 +629,8 @@ importers:
         specifier: 20.6.1
         version: 20.6.1
       npm-run-all2:
-        specifier: 5.0.0
-        version: 5.0.0
+        specifier: 6.2.0
+        version: 6.2.0
       postcss:
         specifier: 8.4.31
         version: 8.4.31
@@ -680,8 +680,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       npm-run-all2:
-        specifier: 5.0.0
-        version: 5.0.0
+        specifier: 6.2.0
+        version: 6.2.0
       rimraf:
         specifier: 5.0.5
         version: 5.0.5
@@ -1075,8 +1075,8 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       npm-run-all2:
-        specifier: 5.0.0
-        version: 5.0.0
+        specifier: 6.2.0
+        version: 6.2.0
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@types/node@18.11.9)(typescript@5.3.3)
@@ -1236,8 +1236,8 @@ importers:
         specifier: workspace:*
         version: link:../odata-entity-model
       npm-run-all2:
-        specifier: 5.0.0
-        version: 5.0.0
+        specifier: 6.2.0
+        version: 6.2.0
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -1249,8 +1249,8 @@ importers:
         version: 3.17.2
     devDependencies:
       npm-run-all2:
-        specifier: 5.0.0
-        version: 5.0.0
+        specifier: 6.2.0
+        version: 6.2.0
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -1261,8 +1261,8 @@ importers:
         specifier: workspace:*
         version: link:../odata-annotation-core-types
       npm-run-all2:
-        specifier: 5.0.0
-        version: 5.0.0
+        specifier: 6.2.0
+        version: 6.2.0
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -1384,8 +1384,8 @@ importers:
         specifier: 1.6.8
         version: 1.6.8
       npm-run-all2:
-        specifier: 5.0.0
-        version: 5.0.0
+        specifier: 6.2.0
+        version: 6.2.0
       prettier:
         specifier: 2.5.1
         version: 2.5.1
@@ -1502,8 +1502,8 @@ importers:
         specifier: 13.4.0
         version: 13.4.0
       npm-run-all2:
-        specifier: 5.0.0
-        version: 5.0.0
+        specifier: 6.2.0
+        version: 6.2.0
       supertest:
         specifier: 6.3.3
         version: 6.3.3
@@ -1883,8 +1883,8 @@ importers:
         specifier: 1.0.3
         version: 1.0.3(babel-jest@29.5.0)
       npm-run-all2:
-        specifier: 5.0.0
-        version: 5.0.0
+        specifier: 6.2.0
+        version: 6.2.0
       react:
         specifier: 16.14.0
         version: 16.14.0
@@ -2302,8 +2302,8 @@ importers:
         specifier: 7.1.1
         version: 7.1.1
       npm-run-all2:
-        specifier: 5.0.0
-        version: 5.0.0
+        specifier: 6.2.0
+        version: 6.2.0
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -17577,17 +17577,17 @@ packages:
       - supports-color
     dev: true
 
-  /npm-run-all2@5.0.0:
-    resolution: {integrity: sha512-twczQhEpj55UROtg0Xz0nzn83TanS5Re12g5g1hcdnyAhlWOt9VNHdSHf2Z6MO3/wOVqy9tEdi0ruJt5NnMgmw==}
-    engines: {node: '>= 10'}
+  /npm-run-all2@6.2.0:
+    resolution: {integrity: sha512-wA7yVIkthe6qJBfiJ2g6aweaaRlw72itsFGF6HuwCHKwtwAx/4BY1vVpk6bw6lS8RLMsexoasOkd0aYOmsFG7Q==}
+    engines: {node: ^14.18.0 || >=16.0.0, npm: '>= 8'}
     hasBin: true
     dependencies:
-      ansi-styles: 4.3.0
+      ansi-styles: 6.2.1
       cross-spawn: 7.0.3
       memorystream: 0.3.1
-      minimatch: 3.0.5
-      pidtree: 0.5.0
-      read-pkg: 5.2.0
+      minimatch: 9.0.3
+      pidtree: 0.6.0
+      read-package-json-fast: 3.0.2
       shell-quote: 1.7.3
     dev: true
 
@@ -18278,8 +18278,8 @@ packages:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
 
-  /pidtree@0.5.0:
-    resolution: {integrity: sha512-9nxspIM7OpZuhBxPg73Zvyq7j1QMPMPsGKTqRc2XOaFQauDvoNz9fM1Wdkjmeo7l9GXOZiRs97sPkuayl39wjA==}
+  /pidtree@0.6.0:
+    resolution: {integrity: sha512-eG2dWTVw5bzqGRztnHExczNxt5VGsE6OwTeCG3fdUf9KBsZzO3R5OIIIzWR+iZA0NtZ+RDVdaoE2dK1cn6jH4g==}
     engines: {node: '>=0.10'}
     hasBin: true
     dev: true

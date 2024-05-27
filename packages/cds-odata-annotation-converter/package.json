@@ -37,6 +37,6 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap/cds": "7.4.1",
         "@sap/cds-compiler": "4.4.4",
-        "npm-run-all2": "5.0.0"
+        "npm-run-all2": "6.2.0"
     }
 }
