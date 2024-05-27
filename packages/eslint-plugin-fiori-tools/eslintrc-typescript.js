@@ -23,6 +23,13 @@ const overrides = [
         ],
         'parserOptions': {
             'project': true // uses local tsconfig.json nearest to file being linted. Especially important for monorepos
+        },
+        'rules': {
+            '@typescript-eslint/no-unsafe-call': 'warn',
+            '@typescript-eslint/no-unsafe-member-access': 'warn',
+            '@typescript-eslint/no-unsafe-return': 'warn',
+            '@typescript-eslint/no-unsafe-argument': 'warn',
+            '@typescript-eslint/no-unsafe-assignment': 'warn'
         }
     }
 ];

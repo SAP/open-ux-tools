@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.12.4
+
+### Patch Changes
+
+-   6e3d4da4: Add config needed in BAS
+
 ## 1.12.3
 
 ### Patch Changes
