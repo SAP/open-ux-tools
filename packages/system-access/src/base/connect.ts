@@ -98,10 +98,6 @@ async function createAbapOnPremServiceProvider(
     prompt: boolean,
     logger: Logger
 ): Promise<AbapServiceProvider> {
-    options.baseURL = target.url;
-    if (target.client) {
-        options.params['sap-client'] = target.client;
-    }
     if (!options.auth) {
         const storedOpts = await getCredentialsFromStore(target, logger);
         if (isBasicAuth(storedOpts)) {
@@ -205,6 +201,10 @@ export async function createAbapServiceProvider(
                 ...target
             });
         } else {
+            options.baseURL = target.url;
+            if (target.client) {
+                options.params['sap-client'] = target.client;
+            }
             provider = await createAbapOnPremServiceProvider(options, target, prompt, logger);
         }
     } else {
