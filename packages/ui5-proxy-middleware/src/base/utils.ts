@@ -11,15 +11,21 @@ import type { Url } from 'url';
 import { t } from '../i18n';
 
 /**
- * Handler for the proxy response event.
- * Sets an Etag which will be used for re-validation of the cached UI5 sources.
+ * Handler for the proxy response event responsible for two tasks:
+ * 1. Sets an Etag which will be used for re-validation of the cached UI5 sources.
+ * 2. Redirects the request to the correct sandbox file if UI5 2.0 is used.
  *
  * @param proxyRes - proxy response object
+ * @param req - request object
  * @param etag - ETag for the cached sources, normally the UI5 version
  */
-export const proxyResponseHandler = (proxyRes: IncomingMessage, etag: string): void => {
+export const proxyResponseHandler = (proxyRes: IncomingMessage, req: Request, etag: string): void => {
     proxyRes.headers['Etag'] = etag;
     proxyRes.headers['cache-control'] = 'no-cache';
+    if (proxyRes.statusCode === 404 && req.path.includes('/test-resources/sap/ushell/bootstrap/sandbox.js')) {
+        proxyRes.statusCode = 302;
+        proxyRes.headers['location'] = '/resources/sap/ushell/bootstrap/sandbox2.js';
+    }
 };
 
 /**
