@@ -80,9 +80,9 @@ export function getFioriToolsProxyMiddlewareConfig(
     if (backends && backends.length > 0) {
         backends.forEach((element, index) => {
             element.path = element.path ?? '/';
-            const backendComment = getBackendComments(element, index);
-            if (backendComment) {
-                comments = [...comments, ...backendComment];
+            const backendComments = getBackendComments(element, index);
+            if (backendComments) {
+                comments = [...comments, ...backendComments];
             }
         });
         fioriToolsProxy.configuration.backend = backends;
