@@ -12,6 +12,7 @@ jest.mock('../../../../src/cpe/outline/utils', () => {
         isEditable: () => false
     };
 });
+
 describe('outline nodes', () => {
     const transformNodes = (
         nodes: OutlineViewNode[],
@@ -20,10 +21,16 @@ describe('outline nodes', () => {
     ): Promise<OutlineNode[]> => tn(nodes, scenario, reuseComponentsIds);
     sapCoreMock.byId.mockReturnValue({
         getMetadata: jest.fn().mockReturnValue({
-            getProperty: jest.fn().mockReturnValueOnce('Component').mockReturnValueOnce('Component').mockReturnValue('')
+            getProperty: jest
+                .fn()
+                .mockReturnValueOnce('Component')
+                .mockReturnValueOnce('Component')
+                .mockReturnValue(''),
+            getElementName: jest.fn().mockReturnValue('some-name')
         }),
         getProperty: jest.fn().mockReturnValueOnce('Component').mockReturnValueOnce('Component').mockReturnValue('')
     });
+
     describe('transformNodes', () => {
         test('empty tree', async () => {
             expect(await transformNodes([], 'UI_ADAPTATION')).toStrictEqual([]);
@@ -65,7 +72,11 @@ describe('outline nodes', () => {
                             name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
                             editable: false,
                             type: 'extensionPoint',
-                            visible: true
+                            visible: true,
+                            extensionPointInfo: {
+                                createdControls: [],
+                                defaultContent: []
+                            }
                         }
                     ],
                     'ADAPTATION_PROJECT'
@@ -76,9 +87,123 @@ describe('outline nodes', () => {
                     controlId: 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
                     controlType: 'sap.ui.extensionpoint',
                     editable: false,
+                    hasDefaultContent: false,
                     name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
+                    visible: true
+                }
+            ]);
+        });
+
+        test('extension point with default content', async () => {
+            const node1 = {
+                id: 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
+                technicalName: 'sap.ui.extensionpoint',
+                name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
+                editable: false,
+                type: 'extensionPoint',
+                visible: true,
+                extensionPointInfo: {
+                    defaultContent: ['id1'],
+                    createdControls: []
+                }
+            };
+
+            const node2 = {
+                id: 'id1',
+                technicalName: 'sap.m.Label',
+                name: 'New Label',
+                editable: false,
+                type: 'element',
+                visible: true
+            };
+
+            const aggregation = {
+                editable: false,
+                elements: [node1, node2],
+                id: 'application-app-preview-component---View1--hbox',
+                technicalName: 'items',
+                type: 'aggregation'
+            };
+
+            const nodes = [
+                {
+                    icon: 'sap/m/designtime/HBox.icon.svg',
+                    id: 'application-app-preview-component---View1--hbox',
+                    name: 'HBox',
+                    technicalName: 'sap.m.HBox',
+                    type: 'element',
                     visible: true,
-                    icon: undefined
+                    elements: [aggregation]
+                } as unknown as OutlineViewNode
+            ];
+
+            console.log(JSON.stringify(await transformNodes(nodes, 'ADAPTATION_PROJECT'), null, 2));
+
+            expect(await transformNodes(nodes, 'ADAPTATION_PROJECT')).toStrictEqual([
+                {
+                    'controlId': 'application-app-preview-component---View1--hbox',
+                    'controlType': 'sap.m.HBox',
+                    'name': 'HBox',
+                    'editable': false,
+                    'visible': true,
+                    'children': [
+                        {
+                            'controlId': 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
+                            'controlType': 'sap.ui.extensionpoint',
+                            'name': 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
+                            'editable': false,
+                            'visible': true,
+                            'hasDefaultContent': true,
+                            'children': [
+                                {
+                                    'controlId': 'id1',
+                                    'controlType': 'some-name',
+                                    'name': 'id1',
+                                    'visible': true,
+                                    'editable': false,
+                                    'children': [],
+                                    'hasDefaultContent': false
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]);
+        });
+
+        test('extension point with created controls', async () => {
+            const node = {
+                id: 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
+                technicalName: 'sap.ui.extensionpoint',
+                name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
+                editable: false,
+                type: 'extensionPoint',
+                extensionPointInfo: {
+                    defaultContent: [],
+                    createdControls: ['id1']
+                },
+                visible: true
+            } as unknown as OutlineViewNode;
+
+            expect(await transformNodes([node], 'ADAPTATION_PROJECT')).toStrictEqual([
+                {
+                    children: [
+                        {
+                            'children': [],
+                            'controlId': 'id1',
+                            'controlType': 'some-name',
+                            'editable': false,
+                            'hasDefaultContent': false,
+                            'name': 'id1',
+                            'visible': true
+                        }
+                    ],
+                    controlId: 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
+                    controlType: 'sap.ui.extensionpoint',
+                    editable: false,
+                    hasDefaultContent: false,
+                    name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
+                    visible: true
                 }
             ]);
         });

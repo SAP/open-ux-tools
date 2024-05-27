@@ -294,7 +294,13 @@ export const Tree = (): ReactElement => {
             <></>
         );
         const isExtensionPoint = item?.controlType === 'sap.ui.extensionpoint';
+        const hasDefaultContent = item?.hasDefaultContent || false;
+
         const tooltipId = `tooltip--${item?.name}`;
+
+        const cellName = hasDefaultContent
+            ? t('EXTENSION_POINT_HAS_DEFAULT_CONTENT_TEXT', { name: item?.name })
+            : item?.name;
 
         return item && typeof itemIndex === 'number' && itemIndex > -1 ? (
             <div
@@ -308,9 +314,8 @@ export const Tree = (): ReactElement => {
                     style={{ paddingLeft: paddingValue }}
                     className={`tree-cell ${isExtensionPoint ? 'tooltip-container' : ''}`}
                     onContextMenu={(e) => isExtensionPoint && handleOpenTooltip(e, tooltipId)}>
-                    {isExtensionPoint && (
-                        <Icon className="right-chevron-icon extension-icon" iconName={UiIcons.DataSource} />
-                    )}
+                    {isExtensionPoint && <Icon className="extension-icon" iconName={UiIcons.DataSource} />}
+
                     <div
                         style={{
                             cursor: 'auto',
@@ -319,8 +324,9 @@ export const Tree = (): ReactElement => {
                             display: 'block'
                         }}
                         title={isExtensionPoint ? item?.name : ''}>
-                        {item.name}
+                        {cellName}
                     </div>
+
                     {isExtensionPoint && (
                         <div id={tooltipId} className="tooltip">
                             <button
@@ -373,9 +379,11 @@ export const Tree = (): ReactElement => {
         if (selectNode) {
             refProps.ref = scrollRef;
         }
-        const isExtensionPoint = groupHeaderProps?.group?.data?.controlType === 'sap.ui.extensionpoint';
+        const data = groupHeaderProps?.group?.data as OutlineNodeItem;
+        const isExtensionPoint = data?.controlType === 'sap.ui.extensionpoint';
+        const hasDefaultContent = data?.hasDefaultContent || false;
         const focus = filterQuery.filter((item) => item.name === FilterName.focusEditable)[0].value as boolean;
-        const focusEditable = !groupHeaderProps?.group?.data?.editable && focus ? 'focusEditable' : '';
+        const focusEditable = !data?.editable && focus ? 'focusEditable' : '';
         const controlChange = controlChanges[groupHeaderProps?.group?.key ?? ''];
         const indicator = controlChange ? (
             <ChangeIndicator id={`${groupHeaderProps?.group?.key ?? ''}--ChangeIndicator`} {...controlChange} />
@@ -384,6 +392,9 @@ export const Tree = (): ReactElement => {
         );
 
         const tooltipId = `tooltip--${groupName}`;
+        const headerName = hasDefaultContent
+            ? t('EXTENSION_POINT_HAS_DEFAULT_CONTENT_TEXT', { name: groupName })
+            : groupName;
 
         return (
             <div
@@ -406,9 +417,9 @@ export const Tree = (): ReactElement => {
                             }}
                         />
                     )}
-                    {isExtensionPoint && (
-                        <Icon className={`${chevronTransform} extension-icon`} iconName={UiIcons.DataSource} />
-                    )}
+
+                    {isExtensionPoint && <Icon className="extension-icon" iconName={UiIcons.DataSource} />}
+
                     <div
                         style={{
                             cursor: 'pointer',
@@ -416,8 +427,9 @@ export const Tree = (): ReactElement => {
                             textOverflow: 'ellipsis'
                         }}
                         title={isExtensionPoint ? groupName : ''}>
-                        {groupName}
+                        {headerName}
                     </div>
+
                     {isExtensionPoint && (
                         <div id={tooltipId} className="tooltip">
                             <button

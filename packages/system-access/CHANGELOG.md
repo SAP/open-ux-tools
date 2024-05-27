@@ -1,5 +1,24 @@
 # @sap-ux/system-access
 
+## 0.3.30
+
+### Patch Changes
+
+-   96de8f25: FIX: prompt user for authentication type if not known when generating an adaptation project
+
+## 0.3.29
+
+### Patch Changes
+
+-   895ee259: FIX: handle 401 in BAS
+
+## 0.3.28
+
+### Patch Changes
+
+-   Updated dependencies [6e3d4da4]
+    -   @sap-ux/axios-extension@1.12.4
+
 ## 0.3.27
 
 ### Patch Changes
