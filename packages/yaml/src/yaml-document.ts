@@ -98,10 +98,11 @@ export class YamlDocument {
 
     /**
      * Creates a Node element and adds the provided comments.
+     * To add the comments the value must be flat JSON.
      *
      * @param options - Options
-     * @param options.value - the object's value
-     * @param options.comments - optional comments for subnodes in value being added
+     * @param options.value - the object's value (must be flat json)
+     * @param options.comments - optional comments for no in value being added
      * @returns the node create from the value with any added comments
      */
     createNode({ value, comments }: { value: unknown; comments?: NodeComment<unknown>[] }): yaml.YAMLSeq<Node> {
