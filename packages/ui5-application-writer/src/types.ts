@@ -83,7 +83,7 @@ export interface AppOptions {
     /**
      * Enables specific ui5 libs for FPM apps
      */
-    loadFpmLibs?: boolean;
+    loadFpmUi5Libs?: boolean;
 }
 
 export interface Ui5App {

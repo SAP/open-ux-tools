@@ -53,7 +53,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         ui5Libs.push('sap.ushell');
     }
     // preload for FPM applications
-    if (ui5App.appOptions.loadFpmLibs) {
+    if (ui5App.appOptions.loadFpmUi5Libs) {
         ui5Libs.push('sap.fe.templates');
     }
     // ui5-local.yaml
