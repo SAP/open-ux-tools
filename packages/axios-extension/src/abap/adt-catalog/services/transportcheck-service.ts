@@ -71,7 +71,7 @@ export class TransportChecksService extends AdtService {
      * @param namespace The namespace for the deployed application
      * @returns Object that contains the package and the tansport used for the application deployment
      */
-    public async transportCheck(namespace: string): Promise<TransportCheck> {
+    public async getPackageAndTransportRequest(namespace: string): Promise<TransportCheck> {
         const acceptHeaders = {
             headers: {
                 Accept: 'application/vnd.sap.as+xml; dataname=com.sap.adt.transport.service.checkData',
