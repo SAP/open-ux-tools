@@ -182,10 +182,10 @@ describe('NewModelWriter', () => {
 describe('DataSourceWriter', () => {
     const mockData: DataSourceData = {
         answers: {
-            dataSourceId: 'CustomOData',
-            dataSourceUri: '/sap/opu/odata/custom',
+            id: 'CustomOData',
+            uri: '/sap/opu/odata/custom',
             annotationUri: '',
-            dataSourceSettingsMaxAge: 60
+            maxAge: 60
         },
         dataSources: {
             'CustomOData': {
@@ -218,17 +218,17 @@ describe('DataSourceWriter', () => {
             expect.anything(),
             expect.anything(),
             expect.objectContaining({
-                dataSourceId: mockData.answers.dataSourceId,
+                dataSourceId: mockData.answers.id,
                 entityPropertyChange: expect.arrayContaining([
                     expect.objectContaining({
                         propertyPath: 'uri',
                         operation: 'UPDATE',
-                        propertyValue: mockData.answers.dataSourceUri
+                        propertyValue: mockData.answers.uri
                     }),
                     expect.objectContaining({
                         propertyPath: 'settings/maxAge',
                         operation: 'UPSERT',
-                        propertyValue: mockData.answers.dataSourceSettingsMaxAge
+                        propertyValue: mockData.answers.maxAge
                     })
                 ])
             }),

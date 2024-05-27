@@ -18,7 +18,7 @@ export function getPrompts(
     return [
         {
             type: 'list',
-            name: 'dataSourceId',
+            name: 'id',
             message: t('prompts.oDataSourceLabel'),
             choices: dataSourceIds,
             default: dataSourceIds?.[0],
@@ -30,7 +30,7 @@ export function getPrompts(
         } as ListQuestion<ChangeDataSourceAnswers>,
         {
             type: 'input',
-            name: 'dataSourceUri',
+            name: 'uri',
             message: t('prompts.oDataSourceURILabel'),
             guiOptions: {
                 mandatory: true,
@@ -42,9 +42,9 @@ export function getPrompts(
         } as InputQuestion<ChangeDataSourceAnswers>,
         {
             type: 'number',
-            name: 'dataSourceSettingsMaxAge',
+            name: 'maxAge',
             message: t('prompts.maxAgeLabel'),
-            when: (answers: ChangeDataSourceAnswers) => answers.dataSourceUri !== ''
+            when: (answers: ChangeDataSourceAnswers) => answers.uri !== ''
         } as NumberQuestion<ChangeDataSourceAnswers>,
         {
             type: 'input',

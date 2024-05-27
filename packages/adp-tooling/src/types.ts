@@ -335,9 +335,13 @@ export interface AdpProjectData {
 }
 
 export interface ChangeDataSourceAnswers {
-    dataSourceId: string;
-    dataSourceUri: string;
-    dataSourceSettingsMaxAge?: number;
+    /** Data Source identifier  */
+    id: string;
+    /** Data Source URI */
+    uri: string;
+    /** Data Source Max Age */
+    maxAge?: number;
+    /** Data Source Annotation URI */
     annotationUri?: string;
 }
 

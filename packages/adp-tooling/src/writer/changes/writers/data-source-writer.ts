@@ -57,11 +57,11 @@ export class DataSourceWriter implements IWriter<DataSourceData> {
      */
     async write(data: DataSourceData): Promise<void> {
         const { variant, dataSources, answers } = data;
-        const { dataSourceId, dataSourceUri, dataSourceSettingsMaxAge, annotationUri } = answers;
-        const annotationId = dataSources[dataSourceId].settings?.annotations?.[0];
+        const { id, uri, maxAge, annotationUri } = answers;
+        const annotationId = dataSources[id].settings?.annotations?.[0];
 
         const timestamp = Date.now();
-        const content = this.constructContent(dataSourceId, dataSourceUri, dataSourceSettingsMaxAge);
+        const content = this.constructContent(id, uri, maxAge);
         const change = getChange(variant, timestamp, content, ChangeType.CHANGE_DATA_SOURCE);
 
         writeChangeToFolder(
