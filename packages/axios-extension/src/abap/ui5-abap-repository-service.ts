@@ -183,7 +183,6 @@ export class Ui5AbapRepositoryService extends ODataService {
             bsp.description || 'Deployed with SAP Fiori tools',
             info ? info.Package : bsp.package
         );
-        this.log.debug(`Payload:\n${payload}`);
         const config = this.createConfig(bsp.transport, testMode, safeMode);
         const frontendUrl = this.getAbapFrontendUrl();
         try {
@@ -325,6 +324,13 @@ export class Ui5AbapRepositoryService extends ODataService {
         const base64Data = archive.toString('base64');
         const time = new Date().toISOString();
         const escapedName = encodeXmlValue(name);
+        this.log.debug(
+            `Create payload using : \n Time: ${time} \n ID: ${
+                this.publicUrl
+            }/Repositories('${escapedName}') \n Description: ${encodeXmlValue(
+                description
+            )} \n Repository: ${escapedName} \n ABAP Package: ${abapPackage?.toUpperCase()}`
+        );
         return (
             `<entry xmlns="http://www.w3.org/2005/Atom"` +
             `       xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"` +
