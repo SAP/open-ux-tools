@@ -103,7 +103,7 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
 
     //FPM loading specific UI5 libs
     if (feApp.template.type === TemplateType.FlexibleProgrammingModel) {
-        feApp.appOptions.loadFpmLibs = true;
+        feApp.appOptions.loadFpmUi5Libs = true;
     }
 
     // minimum UI5 version depending on the template required
