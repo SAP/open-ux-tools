@@ -235,9 +235,11 @@ export const showMessage = createExternalAction<ShowMessage>('show-dialog-messag
 export const reloadApplication = createExternalAction<void>('reload-application');
 export const storageFileChanged = createExternalAction<string>('storage-file-changed');
 export const setAppMode = createExternalAction<'navigation' | 'adaptation'>('set-app-mode');
-export const canChangeStack = createExternalAction<{ canRedo: boolean; canUndo: boolean }>('can-change-stack');
-export const canSave = createExternalAction<boolean>('can-save');
-export const loadIsDone = createExternalAction<void>('load-is-done');
+export const setUndoRedoEnablement = createExternalAction<{ canRedo: boolean; canUndo: boolean }>(
+    'set-undo-redo-enablement'
+);
+export const setSaveEnablement = createExternalAction<boolean>('set-save-enablement');
+export const appLoaded = createExternalAction<void>('app-loaded');
 export const undo = createExternalAction<void>('undo');
 export const redo = createExternalAction<void>('redo');
 export const save = createExternalAction<void>('save');
@@ -257,9 +259,9 @@ export type ExternalAction =
     | ReturnType<typeof reloadApplication>
     | ReturnType<typeof storageFileChanged>
     | ReturnType<typeof setAppMode>
-    | ReturnType<typeof canChangeStack>
-    | ReturnType<typeof canSave>
+    | ReturnType<typeof setUndoRedoEnablement>
+    | ReturnType<typeof setSaveEnablement>
     | ReturnType<typeof undo>
     | ReturnType<typeof redo>
     | ReturnType<typeof save>
-    | ReturnType<typeof loadIsDone>;
+    | ReturnType<typeof appLoaded>;

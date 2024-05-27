@@ -103,7 +103,7 @@ describe('adp', () => {
         });
 
         expect(sendActionMock).toHaveBeenNthCalledWith(2, {
-            type: '[ext] load-is-done',
+            type: '[ext] app-loaded',
             payload: undefined
         });
 
@@ -143,7 +143,7 @@ describe('adp', () => {
         });
 
         expect(sendActionMock).toHaveBeenNthCalledWith(2, {
-            type: '[ext] load-is-done',
+            type: '[ext] app-loaded',
             payload: undefined
         });
 

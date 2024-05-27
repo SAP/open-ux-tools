@@ -249,7 +249,7 @@ export class ChangeService {
      * @returns (event: sap.ui.base.Event) => Promise<void>
      */
     private createOnStackChangeHandler(): (event: Event) => Promise<void> {
-        const handler = modeAndStackChangeHandler(this.sendAction, this.options.rta);
+        const handleStackChange = modeAndStackChangeHandler(this.sendAction, this.options.rta);
         return async (): Promise<void> => {
             const stack = this.options.rta.getCommandStack();
             const allCommands = stack.getCommands();
@@ -284,7 +284,7 @@ export class ChangeService {
             }
 
             this.updateStack(activeChanges);
-            handler();
+            handleStackChange();
         };
     }
 

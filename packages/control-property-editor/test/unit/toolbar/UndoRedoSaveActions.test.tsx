@@ -4,10 +4,17 @@ import '@testing-library/jest-dom';
 import { render } from '../utils';
 import { initI18n } from '../../../src/i18n';
 
-import { UndoRedoSaveActions } from '../../../src/components/UndoRedoSaveActions';
+import { UndoRedoSaveActions } from '../../../src/toolbar/UndoRedoSaveActions';
 import { mockResizeObserver } from '../../utils/utils';
 import { initIcons } from '@sap-ux/ui-components';
-import { canChangeStack, canSave, loadIsDone, redo, save, undo } from '@sap-ux-private/control-property-editor-common';
+import {
+    setUndoRedoEnablement,
+    setSaveEnablement,
+    appLoaded,
+    redo,
+    save,
+    undo
+} from '@sap-ux-private/control-property-editor-common';
 import { initialState } from '../../../src/slice';
 
 beforeAll(() => {
@@ -20,9 +27,9 @@ test('renders UndoRedoSaveActions', () => {
     const { dispatch, store } = render(<UndoRedoSaveActions />, { initialState });
 
     // update state
-    store.dispatch(canChangeStack({ canRedo: true, canUndo: true }));
-    store.dispatch(canSave(true));
-    store.dispatch(loadIsDone());
+    store.dispatch(setUndoRedoEnablement({ canRedo: true, canUndo: true }));
+    store.dispatch(setSaveEnablement(true));
+    store.dispatch(appLoaded());
 
     dispatch.mockClear();
 

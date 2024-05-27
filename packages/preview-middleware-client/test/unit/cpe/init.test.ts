@@ -131,7 +131,7 @@ describe('main', () => {
             payload: mockIconResult
         });
         expect(sendActionMock).toHaveBeenNthCalledWith(2, {
-            type: '[ext] load-is-done',
+            type: '[ext] app-loaded',
             payload: undefined
         });
         expect(sendActionMock).toHaveBeenNthCalledWith(3, {

@@ -510,7 +510,7 @@ exports[`FlpSandbox router editor with config 1`] = `
         (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
-    
+
 </head>
 
 <!-- UI Content -->
@@ -586,7 +586,7 @@ exports[`FlpSandbox router rta 1`] = `
         (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
-    
+
 </head>
 
 <!-- UI Content -->
@@ -697,7 +697,7 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `
         (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
-    
+
 </head>
 
 <!-- UI Content -->
@@ -777,7 +777,7 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
         (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
-    
+
 </head>
 
 <!-- UI Content -->
@@ -853,7 +853,7 @@ exports[`FlpSandbox router test/flp.html 1`] = `
         (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
-    
+
 </head>
 
 <!-- UI Content -->

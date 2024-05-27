@@ -1,7 +1,7 @@
 import {
     setAppMode,
-    canChangeStack,
-    canSave,
+    setUndoRedoEnablement,
+    setSaveEnablement,
     undo,
     redo,
     save,
@@ -25,7 +25,7 @@ export class RtaService {
      * @param sendAction action sender function
      * @param subscribe subscriber function
      */
-    public async init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): Promise<void> {
+    public init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): void {
         subscribe(async (action): Promise<void> => {
             if (setAppMode.match(action)) {
                 this.rta.setMode(action.payload);
@@ -46,6 +46,7 @@ export class RtaService {
                     this.rta?._serializeToLrep();
                 }
             }
+            return Promise.resolve();
         });
         this.rta.attachModeChanged(modeAndStackChangeHandler(sendAction, this.rta));
     }
@@ -56,7 +57,7 @@ export function modeAndStackChangeHandler(sendAction: (action: ExternalAction) =
         const canUndo = rta.canUndo();
         const canRedo = rta.canRedo();
         const saveAllowed = rta?.canSave ? rta?.canSave() : canUndo; /* canSave v1.112.x and above only*/
-        sendAction(canChangeStack({ canUndo, canRedo }));
-        sendAction(canSave(saveAllowed));
+        sendAction(setUndoRedoEnablement({ canUndo, canRedo }));
+        sendAction(setSaveEnablement(saveAllowed));
     };
 }

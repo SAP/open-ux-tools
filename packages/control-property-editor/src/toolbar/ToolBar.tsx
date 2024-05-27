@@ -4,10 +4,10 @@ import React from 'react';
 import { UIFocusZone, UILabel, UIToolbar, UIToolbarColumn } from '@sap-ux/ui-components';
 
 import './ToolBar.scss';
-import { ViewChanger } from '../panels/properties/ViewChanger';
-import { DeviceSelector } from '../panels/properties/DeviceSelector';
-import { ThemeSelectorCallout } from './ThemeSelectorCallout';
-import { Separator } from './Separator';
+import { ViewChanger } from './ViewChanger';
+import { DeviceSelector } from './DeviceSelector';
+import { ThemeSelectorCallout } from '../components/ThemeSelectorCallout';
+import { Separator } from '../components/Separator';
 import { ModeSwitcher } from './ModeSwitcher';
 import { UndoRedoSaveActions } from './UndoRedoSaveActions';
 import { useTranslation } from 'react-i18next';
@@ -31,7 +31,7 @@ export function Toolbar(): ReactElement {
         <UIFocusZone>
             <UIToolbar>
                 <UIToolbarColumn className="column-left">
-                    <UILabel className="flexEditorLabel">
+                    <UILabel className="app-title">
                         {scenario === 'ADAPTATION_PROJECT' ? t('APP_TITLE_ADAPTATION_EDITOR') : t('APP_TITLE')}
                     </UILabel>
                 </UIToolbarColumn>

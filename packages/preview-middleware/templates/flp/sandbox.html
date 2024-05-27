@@ -65,7 +65,7 @@
         (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
-    <% if (locals.flex && ['ADAPTATION_PROJECT', 'FE_FROM_SCRATCH'].includes(flex?.scenario)) { %>
+<% if (locals.flex && ['ADAPTATION_PROJECT', 'FE_FROM_SCRATCH'].includes(flex?.scenario)) { %>
         <!-- Hides Rta native toolbar  -->
     <style>
         #shell-header, .sapUiRtaToolbar {

@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { AnyAction } from 'redux';
 import { UIIconButton } from '@sap-ux/ui-components';
 
-import type { DeviceType } from '../../devices';
-import { changeDeviceType } from '../../slice';
-import type { RootState } from '../../store';
+import type { DeviceType } from '../devices';
+import { changeDeviceType } from '../slice';
+import type { RootState } from '../store';
 
 export interface DeviceToggleProps {
     deviceType: DeviceType;

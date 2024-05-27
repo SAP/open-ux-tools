@@ -1,7 +1,7 @@
 import { setAppMode } from '@sap-ux-private/control-property-editor-common';
 import { UIDefaultButton, UILabel } from '@sap-ux/ui-components';
 import type { ReactElement } from 'react';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '../store';
@@ -18,24 +18,29 @@ export function ModeSwitcher(): ReactElement {
 
     const mode = useSelector<RootState, 'navigation' | 'adaptation'>((state) => state.appMode);
     const disabled = useSelector<RootState, boolean>((state) => state.isAppLoading);
+
+    const handleAdaptationClick = useCallback(() => {
+        dispatch(setAppMode('adaptation'));
+    }, [dispatch]);
+
+    const handleNavigationClick = useCallback(() => {
+        dispatch(setAppMode('navigation'));
+    }, [dispatch]);
+
     return (
         <div className="mode-switcher">
             <UILabel>{t('MODE')}:</UILabel>
             <UIDefaultButton
                 transparent={true}
                 checked={mode === 'adaptation'}
-                onClick={(): void => {
-                    dispatch(setAppMode('adaptation'));
-                }}
+                onClick={handleAdaptationClick}
                 disabled={disabled}>
                 {t('EDIT')}
             </UIDefaultButton>
             <UIDefaultButton
                 transparent={true}
                 checked={mode === 'navigation'}
-                onClick={(): void => {
-                    dispatch(setAppMode('navigation'));
-                }}
+                onClick={handleNavigationClick}
                 disabled={disabled}>
                 {t('LIVE')}
             </UIDefaultButton>

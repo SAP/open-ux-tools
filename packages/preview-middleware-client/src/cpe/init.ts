@@ -3,7 +3,7 @@ import {
     startPostMessageCommunication,
     iconsLoaded,
     enableTelemetry,
-    loadIsDone
+    appLoaded
 } from '@sap-ux-private/control-property-editor-common';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
@@ -69,7 +69,7 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
         const icons = getIcons();
 
         sendAction(iconsLoaded(icons));
-        sendAction(loadIsDone());
+        sendAction(appLoaded());
     } catch (error) {
         Log.error('Error during initialization of Control Property Editor', error);
     }

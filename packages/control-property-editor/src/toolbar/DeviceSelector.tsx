@@ -2,7 +2,7 @@ import type { ReactElement } from 'react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { DeviceType } from '../../devices';
+import { DeviceType } from '../devices';
 
 import type { DeviceToggleProps } from './DeviceToggle';
 import { DeviceToggle } from './DeviceToggle';

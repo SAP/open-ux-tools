@@ -23,9 +23,9 @@ import {
     reloadApplication,
     storageFileChanged,
     setAppMode,
-    canChangeStack,
-    canSave,
-    loadIsDone
+    setUndoRedoEnablement,
+    setSaveEnablement,
+    appLoaded
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -295,13 +295,16 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
             .addMatcher(setAppMode.match, (state, action: ReturnType<typeof setAppMode>): void => {
                 state.appMode = action.payload;
             })
-            .addMatcher(canChangeStack.match, (state, action: ReturnType<typeof canChangeStack>): void => {
-                state.changeStack = action.payload;
-            })
-            .addMatcher(canSave.match, (state, action: ReturnType<typeof canSave>): void => {
+            .addMatcher(
+                setUndoRedoEnablement.match,
+                (state, action: ReturnType<typeof setUndoRedoEnablement>): void => {
+                    state.changeStack = action.payload;
+                }
+            )
+            .addMatcher(setSaveEnablement.match, (state, action: ReturnType<typeof setSaveEnablement>): void => {
                 state.canSave = action.payload;
             })
-            .addMatcher(loadIsDone.match, (state): void => {
+            .addMatcher(appLoaded.match, (state): void => {
                 state.isAppLoading = false;
             })
 });
