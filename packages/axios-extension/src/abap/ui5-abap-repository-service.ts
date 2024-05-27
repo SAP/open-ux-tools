@@ -325,7 +325,7 @@ export class Ui5AbapRepositoryService extends ODataService {
         const time = new Date().toISOString();
         const escapedName = encodeXmlValue(name);
         this.log.debug(
-            `Create payload using : \n Time: ${time} \n ID: ${
+            `Payload:\n Time: ${time} \n ID: ${
                 this.publicUrl
             }/Repositories('${escapedName}') \n Description: ${encodeXmlValue(
                 description
