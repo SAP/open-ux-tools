@@ -1,5 +1,12 @@
 # @sap-ux/deploy-tooling
 
+## 0.14.26
+
+### Patch Changes
+
+-   Updated dependencies [96de8f25]
+    -   @sap-ux/system-access@0.3.30
+
 ## 0.14.25
 
 ### Patch Changes
