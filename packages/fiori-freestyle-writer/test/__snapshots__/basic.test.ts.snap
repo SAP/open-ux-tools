@@ -57,12 +57,12 @@ framework:
   libraries:
     - name: sap.m
     - name: sap.ui.core
-    - name: sap.ushell
     - name: sap.f
     - name: sap.suite.ui.generic.template
     - name: sap.ui.comp
     - name: sap.ui.generic.app
     - name: sap.ui.table
+    - name: sap.ushell
     - name: themelib_sap_belize
 server:
   customMiddleware:
@@ -274,12 +274,12 @@ title=App Title",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
-        \\"sap.ushell\\": {},
         \\"sap.f\\": {},
         \\"sap.suite.ui.generic.template\\": {},
         \\"sap.ui.comp\\": {},
         \\"sap.ui.generic.app\\": {},
-        \\"sap.ui.table\\": {}
+        \\"sap.ui.table\\": {},
+        \\"sap.ushell\\": {}
       }
     },
     \\"contentDensities\\": {
@@ -425,7 +425,7 @@ function (JSONModel, Device) {
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.generic.app,sap.ui.table\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.f,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.generic.app,sap.ui.table,sap.ushell\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_belize\\"
@@ -798,12 +798,12 @@ framework:
   libraries:
     - name: sap.m
     - name: sap.ui.core
-    - name: sap.ushell
     - name: sap.f
     - name: sap.suite.ui.generic.template
     - name: sap.ui.comp
     - name: sap.ui.generic.app
     - name: sap.ui.table
+    - name: sap.ushell
     - name: themelib_sap_belize
 server:
   customMiddleware:
@@ -1124,12 +1124,12 @@ title=App Title",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
-        \\"sap.ushell\\": {},
         \\"sap.f\\": {},
         \\"sap.suite.ui.generic.template\\": {},
         \\"sap.ui.comp\\": {},
         \\"sap.ui.generic.app\\": {},
-        \\"sap.ui.table\\": {}
+        \\"sap.ui.table\\": {},
+        \\"sap.ushell\\": {}
       }
     },
     \\"contentDensities\\": {
@@ -1269,7 +1269,7 @@ export function createDeviceModel () {
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.generic.app,sap.ui.table\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.f,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.generic.app,sap.ui.table,sap.ushell\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_belize\\"
@@ -1745,8 +1745,7 @@ title=App Title",
       \\"minUI5Version\\": \\"1.108.1\\",
       \\"libs\\": {
         \\"sap.m\\": {},
-        \\"sap.ui.core\\": {},
-        \\"sap.ushell\\": {}
+        \\"sap.ui.core\\": {}
       }
     },
     \\"contentDensities\\": {
@@ -2362,8 +2361,7 @@ title=App Title",
       \\"minUI5Version\\": \\"1.114.0\\",
       \\"libs\\": {
         \\"sap.m\\": {},
-        \\"sap.ui.core\\": {},
-        \\"sap.ushell\\": {}
+        \\"sap.ui.core\\": {}
       }
     },
     \\"contentDensities\\": {
@@ -2612,12 +2610,12 @@ framework:
   libraries:
     - name: sap.m
     - name: sap.ui.core
-    - name: sap.ushell
     - name: sap.f
     - name: sap.suite.ui.generic.template
     - name: sap.ui.comp
     - name: sap.ui.generic.app
     - name: sap.ui.table
+    - name: sap.ushell
     - name: themelib_sap_belize
 server:
   customMiddleware:
@@ -2900,12 +2898,12 @@ title=App Title",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
-        \\"sap.ushell\\": {},
         \\"sap.f\\": {},
         \\"sap.suite.ui.generic.template\\": {},
         \\"sap.ui.comp\\": {},
         \\"sap.ui.generic.app\\": {},
-        \\"sap.ui.table\\": {}
+        \\"sap.ui.table\\": {},
+        \\"sap.ushell\\": {}
       }
     },
     \\"contentDensities\\": {
@@ -3056,7 +3054,7 @@ function (JSONModel, Device) {
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.generic.app,sap.ui.table\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.f,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.generic.app,sap.ui.table,sap.ushell\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_belize\\"
@@ -3382,12 +3380,12 @@ framework:
   libraries:
     - name: sap.m
     - name: sap.ui.core
-    - name: sap.ushell
     - name: sap.f
     - name: sap.suite.ui.generic.template
     - name: sap.ui.comp
     - name: sap.ui.generic.app
     - name: sap.ui.table
+    - name: sap.ushell
     - name: themelib_sap_belize
 server:
   customMiddleware:
@@ -3671,12 +3669,12 @@ title=App Title",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
-        \\"sap.ushell\\": {},
         \\"sap.f\\": {},
         \\"sap.suite.ui.generic.template\\": {},
         \\"sap.ui.comp\\": {},
         \\"sap.ui.generic.app\\": {},
-        \\"sap.ui.table\\": {}
+        \\"sap.ui.table\\": {},
+        \\"sap.ushell\\": {}
       }
     },
     \\"contentDensities\\": {
@@ -3827,7 +3825,7 @@ function (JSONModel, Device) {
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.generic.app,sap.ui.table\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.f,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.generic.app,sap.ui.table,sap.ushell\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_belize\\"
@@ -4153,12 +4151,12 @@ framework:
   libraries:
     - name: sap.m
     - name: sap.ui.core
-    - name: sap.ushell
     - name: sap.f
     - name: sap.suite.ui.generic.template
     - name: sap.ui.comp
     - name: sap.ui.generic.app
     - name: sap.ui.table
+    - name: sap.ushell
     - name: themelib_sap_belize
 server:
   customMiddleware:
@@ -4441,12 +4439,12 @@ title=App Title",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
-        \\"sap.ushell\\": {},
         \\"sap.f\\": {},
         \\"sap.suite.ui.generic.template\\": {},
         \\"sap.ui.comp\\": {},
         \\"sap.ui.generic.app\\": {},
-        \\"sap.ui.table\\": {}
+        \\"sap.ui.table\\": {},
+        \\"sap.ushell\\": {}
       }
     },
     \\"contentDensities\\": {
@@ -4597,7 +4595,7 @@ function (JSONModel, Device) {
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.generic.app,sap.ui.table\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.f,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.generic.app,sap.ui.table,sap.ushell\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_belize\\"
@@ -4705,12 +4703,12 @@ framework:
   libraries:
     - name: sap.m
     - name: sap.ui.core
-    - name: sap.ushell
     - name: sap.f
     - name: sap.suite.ui.generic.template
     - name: sap.ui.comp
     - name: sap.ui.generic.app
     - name: sap.ui.table
+    - name: sap.ushell
     - name: themelib_sap_belize
 server:
   customMiddleware:
@@ -4955,12 +4953,12 @@ title=App Title",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
-        \\"sap.ushell\\": {},
         \\"sap.f\\": {},
         \\"sap.suite.ui.generic.template\\": {},
         \\"sap.ui.comp\\": {},
         \\"sap.ui.generic.app\\": {},
-        \\"sap.ui.table\\": {}
+        \\"sap.ui.table\\": {},
+        \\"sap.ushell\\": {}
       }
     },
     \\"contentDensities\\": {
@@ -5111,7 +5109,7 @@ function (JSONModel, Device) {
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.generic.app,sap.ui.table\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.f,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.generic.app,sap.ui.table,sap.ushell\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_belize\\"
