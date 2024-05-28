@@ -38,6 +38,9 @@
     },
     {
       "path": "../ui5-config"
+    },
+    {
+      "path": "../store"
     }
   ]
 }
