@@ -125,6 +125,24 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
 }
 
 /**
+ * Method validates cds cache for passed paths.
+ * If cds cache has "undefined" entry for passed path then cache for such path will be cleared.
+ *
+ * @param cds - CAP CDS module for a CAP project
+ * @param paths - Paths to validate
+ */
+function validateCdsCache(cds: CdsFacade, paths: string[]): void {
+    for (const scope in cds.resolve.cache) {
+        const entry = cds.resolve.cache[scope];
+        for (const path in entry.cached) {
+            if (entry.cached[path] === undefined && paths.includes(path)) {
+                delete entry.cached[path];
+            }
+        }
+    }
+}
+
+/**
  * Return the CAP model and all services. The cds.root will be set to the provided project root path.
  *
  * @param projectRoot - CAP project root where package.json resides or object specifying project root and optional logger to log additional info
@@ -156,6 +174,8 @@ export async function getCapModelAndServices(
     _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'cds.root': ${cds.root}`);
 
     let services = cds.compile.to.serviceinfo(model, { root: _projectRoot }) ?? [];
+    // Validate cds cache for model paths - there can be case when one of folder does not have annotations yet(for example app folder)
+    validateCdsCache(cds, modelPaths);
     if (services.map) {
         services = services.map((value) => {
             return {
