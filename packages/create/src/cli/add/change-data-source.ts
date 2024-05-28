@@ -1,6 +1,7 @@
 import type { Command } from 'commander';
-import type { PreviewConfigAdp, PromptDefaults } from '@sap-ux/adp-tooling';
+import type { DescriptorVariant, PreviewConfigAdp, PromptDefaults } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { Manifest } from '@sap-ux/project-access';
 import { generateChange, ChangeType, getPromptsForChangeDataSource } from '@sap-ux/adp-tooling';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { getLogger, traceChanges } from '../../tracing';
@@ -85,14 +86,20 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults, simu
 }
 
 /**
+ * Get the manifest of the base application.
  *
- * @param basePath
- * @param defaults
- * @param logger
- * @param variant
- * @returns
+ * @param {string} basePath - The path to the adaptation project
+ * @param {PromptDefaults} defaults - The default values for the prompts
+ * @param {ToolsLogger} logger - The logger
+ * @param {DescriptorVariant} variant - The app descriptor variant
+ * @returns {Promise<Manifest>} The manifest
  */
-async function getManifest(basePath: string, defaults: PromptDefaults, logger: ToolsLogger, variant: any) {
+async function getManifest(
+    basePath: string,
+    defaults: PromptDefaults,
+    logger: ToolsLogger,
+    variant: DescriptorVariant
+): Promise<Manifest> {
     const ui5Config = await UI5Config.newInstance(readFileSync(join(basePath, 'ui5.yaml'), 'utf-8'));
     const { destination, url, client } =
         ui5Config.findCustomMiddleware<PreviewConfigAdp>('fiori-tools-preview')?.configuration?.adp?.target ?? {};
@@ -118,22 +125,24 @@ async function getManifest(basePath: string, defaults: PromptDefaults, logger: T
     const appIndexService = provider.getAppIndex();
     const manifestUrl = await appIndexService.getManifestUrl(variant.reference);
     const lrepService = provider.getLayeredRepository();
-    const manifest = await lrepService.getManifest(manifestUrl);
-    return manifest;
+    return await lrepService.getManifest(manifestUrl);
 }
 
 /**
+ * Get the app descriptor variant.
  *
- * @param basePath
- * @returns
+ * @param {string} basePath - The path to the adaptation project
+ * @returns {DescriptorVariant} The app descriptor variant
  */
-function getVariant(basePath: string) {
+function getVariant(basePath: string): DescriptorVariant {
     return JSON.parse(readFileSync(join(basePath, 'webapp', 'manifest.appdescr_variant'), 'utf-8'));
 }
 
 /**
+ * Check if the project is a CF project.
  *
- * @param basePath
+ * @param {string} basePath - The path to the adaptation project
+ * @throws {Error} If the project is a CF project
  */
 function checkEnvironment(basePath: string) {
     const configJsonPath = join(basePath, '.adp', 'config.json');
