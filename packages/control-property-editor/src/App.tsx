@@ -3,15 +3,15 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { UIDialog, UILink, UIToggle } from '@sap-ux/ui-components';
-import type { Scenario } from '@sap-ux-private/control-property-editor-common';
-import { PropertiesPanel, LeftPanel } from './panels';
+import type { Scenario, ShowMessage } from '@sap-ux-private/control-property-editor-common';
+import { LeftPanel, PropertiesList } from './panels';
+import { Toolbar } from './toolbar';
 import { useLocalStorage } from './use-local-storage';
 import type { RootState } from './store';
 import { useAppDispatch } from './store';
 import { changePreviewScale } from './slice';
 import { useWindowSize } from './use-window-size';
 import { DEFAULT_DEVICE_WIDTH, DEVICE_WIDTH_MAP } from './devices';
-import { ShowMessage } from '@sap-ux-private/control-property-editor-common';
 
 import './App.scss';
 import './Workarounds.scss';
@@ -105,78 +105,81 @@ export default function App(appProps: AppProps): ReactElement {
     }, [dialogMessage, isAdpProject]);
 
     return (
-        <div className="app">
-            <section className="app-panel app-panel-left">
-                <LeftPanel />
-            </section>
-            <section ref={containerRef} className="app-content">
-                <div className="app-canvas">
-                    {!shouldHideIframe && (
-                        <iframe
-                            className="app-preview"
-                            id="preview"
-                            style={{
-                                width: previewWidth,
-                                transform: `scale(${previewScale})`
-                            }}
-                            src={previewUrl}
-                            title={t('APPLICATION_PREVIEW_TITLE')}
-                        />
-                    )}
-                </div>
-            </section>
-            <section className="app-panel app-panel-right">
-                <PropertiesPanel />
-            </section>
-            {isAdpProject && shouldHideIframe && (
-                <UIDialog
-                    hidden={!shouldShowDialogMessage}
-                    dialogContentProps={{
-                        title: t('TOOL_DISCLAIMER_TITLE'),
-                        subText: dialogMessage?.message
-                    }}
-                />
-            )}
-            {isAdpProject && !shouldHideIframe && (
-                <UIDialog
-                    hidden={!shouldShowDialogMessage}
-                    dialogContentProps={{
-                        title: t('TOOL_DISCLAIMER_TITLE'),
-                        subText: dialogMessage?.message
-                    }}
-                    acceptButtonText={t('OK')}
-                    onAccept={closeAdpWarningDialog}
-                />
-            )}
-
-            {scenario === 'FE_FROM_SCRATCH' ? (
-                <UIDialog
-                    hidden={!isWarningDialogVisible}
-                    closeButtonAriaLabel={t('CLOSE')}
-                    dialogContentProps={{
-                        title: t('TOOL_DISCLAIMER_TITLE'),
-                        subText: t('TOOL_DISCLAIMER_TEXT')
-                    }}
-                    acceptButtonText={t('OK')}
-                    onAccept={closeWarningDialog}>
-                    <UILink href="https://ui5.sap.com/#/topic/03265b0408e2432c9571d6b3feb6b1fd">
-                        {t('FE_DOCUMENTATION_LINK_TEXT')}
-                    </UILink>
-                    <UIToggle
-                        className="space space-toggle"
-                        label={t('DONT_SHOW_WARNING_ON_START')}
-                        inlineLabel
-                        inlineLabelLeft
-                        labelFlexGrow
-                        checked={hideWarningDialog}
-                        onChange={(_event, checked = false): void => {
-                            setHideWarningDialog(checked);
+        <div className="app-container">
+            <Toolbar />
+            <div className="app">
+                <section className="app-panel app-panel-left">
+                    <LeftPanel />
+                </section>
+                <section ref={containerRef} className="app-content">
+                    <div className="app-canvas">
+                        {!shouldHideIframe && (
+                            <iframe
+                                className="app-preview"
+                                id="preview"
+                                style={{
+                                    width: previewWidth,
+                                    transform: `scale(${previewScale})`
+                                }}
+                                src={previewUrl}
+                                title={t('APPLICATION_PREVIEW_TITLE')}
+                            />
+                        )}
+                    </div>
+                </section>
+                <section className="app-panel app-panel-right">
+                    <PropertiesList />
+                </section>
+                {isAdpProject && shouldHideIframe && (
+                    <UIDialog
+                        hidden={!shouldShowDialogMessage}
+                        dialogContentProps={{
+                            title: t('TOOL_DISCLAIMER_TITLE'),
+                            subText: dialogMessage?.message
                         }}
                     />
-                </UIDialog>
-            ) : (
-                <></>
-            )}
+                )}
+                {isAdpProject && !shouldHideIframe && (
+                    <UIDialog
+                        hidden={!shouldShowDialogMessage}
+                        dialogContentProps={{
+                            title: t('TOOL_DISCLAIMER_TITLE'),
+                            subText: dialogMessage?.message
+                        }}
+                        acceptButtonText={t('OK')}
+                        onAccept={closeAdpWarningDialog}
+                    />
+                )}
+
+                {scenario === 'FE_FROM_SCRATCH' ? (
+                    <UIDialog
+                        hidden={!isWarningDialogVisible}
+                        closeButtonAriaLabel={t('CLOSE')}
+                        dialogContentProps={{
+                            title: t('TOOL_DISCLAIMER_TITLE'),
+                            subText: t('TOOL_DISCLAIMER_TEXT')
+                        }}
+                        acceptButtonText={t('OK')}
+                        onAccept={closeWarningDialog}>
+                        <UILink href="https://ui5.sap.com/#/topic/03265b0408e2432c9571d6b3feb6b1fd">
+                            {t('FE_DOCUMENTATION_LINK_TEXT')}
+                        </UILink>
+                        <UIToggle
+                            className="space space-toggle"
+                            label={t('DONT_SHOW_WARNING_ON_START')}
+                            inlineLabel
+                            inlineLabelLeft
+                            labelFlexGrow
+                            checked={hideWarningDialog}
+                            onChange={(_event, checked = false): void => {
+                                setHideWarningDialog(checked);
+                            }}
+                        />
+                    </UIDialog>
+                ) : (
+                    <></>
+                )}
+            </div>
         </div>
     );
 }
