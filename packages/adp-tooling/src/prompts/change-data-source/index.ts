@@ -21,7 +21,7 @@ export function getPrompts(
             name: 'id',
             message: t('prompts.oDataSourceLabel'),
             choices: dataSourceIds,
-            default: dataSourceIds?.[0],
+            default: dataSourceIds[0],
             store: false,
             guiOptions: {
                 mandatory: true,
