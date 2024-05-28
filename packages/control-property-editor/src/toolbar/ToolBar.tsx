@@ -1,19 +1,20 @@
 import type { ReactElement } from 'react';
+import { useTranslation } from 'react-i18next';
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import { UIFocusZone, UILabel, UIToolbar, UIToolbarColumn } from '@sap-ux/ui-components';
+import type { Scenario } from '@sap-ux-private/control-property-editor-common';
 
-import './ToolBar.scss';
+import type { RootState } from '../store';
+import { Separator, ThemeSelectorCallout } from '../components';
+
 import { ViewChanger } from './ViewChanger';
 import { DeviceSelector } from './DeviceSelector';
-import { ThemeSelectorCallout } from '../components/ThemeSelectorCallout';
-import { Separator } from '../components/Separator';
 import { ModeSwitcher } from './ModeSwitcher';
 import { UndoRedoSaveActions } from './UndoRedoSaveActions';
-import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
-import type { RootState } from '../store';
-import type { Scenario } from '@sap-ux-private/control-property-editor-common';
+
+import './ToolBar.scss';
 
 export interface ToolbarProps {
     left?: React.ReactNode;

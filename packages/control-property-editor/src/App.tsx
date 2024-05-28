@@ -4,7 +4,8 @@ import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { UIDialog, UILink, UIToggle } from '@sap-ux/ui-components';
 import type { Scenario, ShowMessage } from '@sap-ux-private/control-property-editor-common';
-import { LeftPanel } from './panels';
+import { LeftPanel, PropertiesList } from './panels';
+import { Toolbar } from './toolbar';
 import { useLocalStorage } from './use-local-storage';
 import type { RootState } from './store';
 import { useAppDispatch } from './store';
@@ -14,8 +15,6 @@ import { DEFAULT_DEVICE_WIDTH, DEVICE_WIDTH_MAP } from './devices';
 
 import './App.scss';
 import './Workarounds.scss';
-import { Toolbar } from './toolbar';
-import { PropertiesList } from './panels/properties/PropertiesList';
 
 export interface AppProps {
     previewUrl: string;

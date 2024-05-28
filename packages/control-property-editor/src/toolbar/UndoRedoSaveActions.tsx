@@ -1,9 +1,11 @@
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import type { ReactElement } from 'react';
+import { useTranslation } from 'react-i18next';
+
 import { redo, save, undo } from '@sap-ux-private/control-property-editor-common';
 import { UIIconButton, UiIcons } from '@sap-ux/ui-components';
-import type { ReactElement } from 'react';
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
+
 import type { RootState } from '../store';
 import { Separator } from '../components';
 

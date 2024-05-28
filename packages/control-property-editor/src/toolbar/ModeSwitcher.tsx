@@ -1,10 +1,13 @@
-import { setAppMode } from '@sap-ux-private/control-property-editor-common';
-import { UIDefaultButton, UILabel } from '@sap-ux/ui-components';
 import type { ReactElement } from 'react';
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { setAppMode } from '@sap-ux-private/control-property-editor-common';
+import { UIDefaultButton, UILabel } from '@sap-ux/ui-components';
+
 import type { RootState } from '../store';
+
 import './ModeSwitcher.scss';
 
 /**
