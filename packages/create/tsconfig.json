@@ -34,13 +34,13 @@
       "path": "../project-access"
     },
     {
+      "path": "../store"
+    },
+    {
       "path": "../system-access"
     },
     {
       "path": "../ui5-config"
-    },
-    {
-      "path": "../store"
     }
   ]
 }
