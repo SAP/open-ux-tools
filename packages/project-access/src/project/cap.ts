@@ -132,7 +132,8 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
  * @param paths - Paths to validate
  */
 function validateCdsCache(cds: CdsFacade, paths: string[]): void {
-    for (const scope in cds.resolve.cache) {
+    const cache = cds.resolve?.cache ?? {};
+    for (const scope in cache) {
         const entry = cds.resolve.cache[scope];
         for (const path in entry.cached) {
             if (entry.cached[path] === undefined && paths.includes(path)) {

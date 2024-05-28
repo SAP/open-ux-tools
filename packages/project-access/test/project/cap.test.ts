@@ -263,6 +263,113 @@ describe('Test getCapModelAndServices()', () => {
             });
         }
     });
+
+    describe('Test validateCdsCache()', () => {
+        const projectRoot = 'PROJECT_ROOT';
+        const modelPaths = {
+            app: join(projectRoot, 'APP'),
+            srv: join(projectRoot, 'SRV'),
+            db: join(projectRoot, 'DB')
+        };
+        const cacheValidateTestCases = [
+            {
+                name: 'Clear all empty cache for "app", "db", "srv"',
+                cache: {
+                    'dummy': {
+                        'cached': {
+                            [modelPaths.app]: undefined,
+                            [modelPaths.db]: undefined,
+                            [modelPaths.srv]: undefined
+                        }
+                    }
+                },
+                expected: {
+                    'dummy': {
+                        'cached': {}
+                    }
+                }
+            },
+            {
+                name: 'Do not clear resolved cache',
+                cache: {
+                    'dummy': {
+                        'cached': {
+                            [modelPaths.app]: 'dummy1',
+                            [modelPaths.db]: 'dummy2',
+                            [modelPaths.srv]: 'dummy3'
+                        }
+                    }
+                },
+                expected: {
+                    'dummy': {
+                        'cached': {
+                            [modelPaths.app]: 'dummy1',
+                            [modelPaths.db]: 'dummy2',
+                            [modelPaths.srv]: 'dummy3'
+                        }
+                    }
+                }
+            },
+            {
+                name: 'Clear only relevant and empty cache',
+                cache: {
+                    'dummy': {
+                        'cached': {
+                            [modelPaths.app]: undefined,
+                            [modelPaths.db]: 'dummy1',
+                            [modelPaths.srv]: 'dummy2',
+                            'nonModel': 'dummy3'
+                        }
+                    }
+                },
+                expected: {
+                    'dummy': {
+                        'cached': {
+                            [modelPaths.db]: 'dummy1',
+                            [modelPaths.srv]: 'dummy2',
+                            'nonModel': 'dummy3'
+                        }
+                    }
+                }
+            }
+        ];
+
+        test.each(cacheValidateTestCases)('$name', async ({ cache, expected }) => {
+            // Mock setup
+            const cdsMock = {
+                env: {
+                    'for': () => ({
+                        folders: {
+                            app: 'APP',
+                            db: 'DB',
+                            srv: 'SRV'
+                        }
+                    })
+                },
+                load: jest.fn().mockImplementation(() => Promise.resolve('MODEL')),
+                compile: {
+                    to: {
+                        serviceinfo: jest.fn().mockImplementation(() => [
+                            {
+                                'name': 'Forwardslash',
+                                'urlPath': 'odata/service/with/forwardslash/'
+                            }
+                        ])
+                    }
+                },
+                resolve: {
+                    cache
+                }
+            };
+            jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+
+            // Test execution
+            await getCapModelAndServices(projectRoot);
+
+            // Check results
+            expect(cdsMock.resolve.cache).toStrictEqual(expected);
+        });
+    });
 });
 
 describe('Test readCapServiceMetadataEdmx()', () => {
