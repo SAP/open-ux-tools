@@ -1,5 +1,11 @@
 # @sap-ux/telemetry
 
+## 0.4.25
+
+### Patch Changes
+
+-   2b95fee9: Read toolsId from Adaptation Projects ui5.yaml file in telemetry package
+
 ## 0.4.24
 
 ### Patch Changes
