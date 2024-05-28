@@ -1,7 +1,8 @@
 import { errorTemplate } from '../src/errors';
 import { YamlDocument } from '../src';
-import type { YAMLMap, YAMLSeq } from '../src';
+import type { NodeComment, YAMLMap, YAMLSeq } from '../src';
 import { interpolate } from '../src/texts';
+import type yaml from 'yaml';
 
 describe('YamlDocument', () => {
     it('throws an error when instantiated with malformed YAML contents', async () => {
@@ -249,6 +250,28 @@ key1: 42
 #This goes at the end
 `;
             expect(doc.toString()).toEqual(expectedValue);
+        });
+    });
+
+    describe('addNodeComments', () => {
+        it('creates a node from the value and adds comments', async () => {
+            const value = {
+                b: '2',
+                c: '3'
+            };
+            const comments = [
+                {
+                    path: 'b',
+                    comment: 'Y',
+                    key: 'b'
+                }
+            ] as NodeComment<unknown>[];
+
+            const serializedYaml = 'a: 1';
+
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            const newNode = doc.createNode({ value, comments });
+            expect(((newNode.items[0] as yaml.Pair).value as yaml.Scalar).comment).toBe('Y');
         });
     });
 
@@ -959,8 +982,9 @@ seq1:
         const doc = await YamlDocument.newInstance(serializedYaml);
         doc.appendTo({
             path: 'seq1.1.a.b.d',
-            value: { w: 1, x: { y: { z: 42 } } },
+            value: { w: 1, v: [{ f: 1 }, { f: 2 }], x: { y: { z: 42 } } },
             comments: [
+                { path: 'v.0.f', comment: ' Y' },
                 { path: 'w', comment: 'W' },
                 { path: 'x.y.z', comment: 'The answer!' }
             ]
@@ -973,6 +997,9 @@ seq1:
         d:
           - w: 13
           - w: 1 #W
+            v:
+              - f: 1 # Y
+              - f: 2
             x:
               y:
                 z: 42 #The answer!
