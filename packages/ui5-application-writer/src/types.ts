@@ -81,9 +81,9 @@ export interface AppOptions {
     generateIndex?: boolean;
 
     /**
-     * Enables specific ui5 libs for FPM apps
+     * Enables specific ui5 libs for V4 apps
      */
-    loadFpmUi5Libs?: boolean;
+    loadV4Ui5Libs?: boolean;
 }
 
 export interface Ui5App {

@@ -83,12 +83,12 @@ describe('UI5 templates', () => {
         });
     });
 
-    it('option: `loadFpmUi5Libs`', async () => {
+    it('option: `loadV4Ui5Libs`', async () => {
         const projectDir = join(outputDir, 'testapp_loadFpmUi5Libs');
         const fs = await generate(projectDir, {
             ...baseAppConfig,
             appOptions: {
-                loadFpmUi5Libs: true
+                loadV4Ui5Libs: true
             }
         });
         expect(fs.dump(projectDir)).toMatchSnapshot();
@@ -101,6 +101,7 @@ describe('UI5 templates', () => {
             }
         });
     });
+
     it('option: `typescript, npm modules and Fiori tools`', async () => {
         const projectDir = join(outputDir, 'testapp_typescript');
         const fs = await generate(

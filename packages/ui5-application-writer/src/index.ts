@@ -52,8 +52,8 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     if (!ui5Libs.includes('sap.ushell')) {
         ui5Libs.push('sap.ushell');
     }
-    // preload for FPM applications
-    if (ui5App.appOptions.loadFpmUi5Libs) {
+    // preload ui5 libs for V4 applications
+    if (ui5App.appOptions.loadV4Ui5Libs && !ui5Libs.includes('sap.fe.templates')) {
         ui5Libs.push('sap.fe.templates');
     }
     // ui5-local.yaml
