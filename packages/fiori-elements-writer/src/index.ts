@@ -65,9 +65,9 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
 
     setAppDefaults(feApp);
 
-    feApp.template.settings = setDefaultTemplateSettings(feApp.template, feApp.service.version);
-
     fs = await generateUi5Project(basePath, feApp, fs);
+
+    feApp.template.settings = setDefaultTemplateSettings(feApp.template, feApp.service.version);
 
     // This is done after `generateUi5Project` since defaults are set if values are not provided
     validateApp(feApp);
