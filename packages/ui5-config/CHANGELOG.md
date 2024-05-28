@@ -1,5 +1,13 @@
 # @sap-ux/ui5-config
 
+## 0.22.5
+
+### Patch Changes
+
+-   3684195d: adds authenticationType to fiori tools proxy backend and ability to add inline comments to yaml nodes
+-   Updated dependencies [3684195d]
+    -   @sap-ux/yaml@0.14.2
+
 ## 0.22.4
 
 ### Patch Changes
