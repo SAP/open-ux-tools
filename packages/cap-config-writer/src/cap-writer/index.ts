@@ -1,0 +1,1 @@
+export { updateRootPackageJsonCAP } from './package-json'
