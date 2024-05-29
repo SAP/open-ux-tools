@@ -863,9 +863,19 @@ describe('clearCdsModuleCache', () => {
         expect(cdsMock.resolve.cache).toStrictEqual({});
     });
 
-    test('Unresolvable cds module', async () => {
+    test('Unresolvable cds module - error is thrown', async () => {
         // Mock setup
         jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(undefined));
+        // Test execution
+        const result = await clearCdsModuleCache(projectRoot);
+        expect(result).toEqual(false);
+    });
+
+    test('Unresolvable cds module - error is not thrown', async () => {
+        // Mock setup
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() =>
+            Promise.resolve({ default: undefined })
+        );
         // Test execution
         const result = await clearCdsModuleCache(projectRoot);
         expect(result).toEqual(false);

@@ -221,7 +221,7 @@ export async function getCdsRoots(projectRoot: string, clearCache = false): Prom
     // clear cache is enforced to also resolve newly created cds file at design time
     const cds = await loadCdsModuleFromProject(projectRoot);
     if (clearCache) {
-        _clearCdsModuleCache(cds);
+        clearCdsResolveCache(cds);
     }
     for (const cdsEnvRoot of cdsEnvRoots) {
         const resolvedRoots =
@@ -432,16 +432,17 @@ async function loadCdsModuleFromProject(capProjectPath: string, strict: boolean 
  * @returns True if cache cleared successfully.
  */
 export async function clearCdsModuleCache(projectRoot: string): Promise<boolean> {
+    let result = false;
     try {
         const cds = await loadCdsModuleFromProject(projectRoot);
         if (cds) {
-            _clearCdsModuleCache(cds);
+            clearCdsResolveCache(cds);
+            result = true;
         }
-    } catch (error) {
-        // Do not throw error if wrong path or cds module does not exist
-        return false;
+    } catch (e) {
+        // ignore exception
     }
-    return true;
+    return result;
 }
 
 /**
@@ -449,7 +450,7 @@ export async function clearCdsModuleCache(projectRoot: string): Promise<boolean>
  *
  * @param cds CAP CDS module
  */
-function _clearCdsModuleCache(cds: CdsFacade): void {
+function clearCdsResolveCache(cds: CdsFacade): void {
     cds.resolve.cache = {};
 }
 
