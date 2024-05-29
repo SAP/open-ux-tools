@@ -172,7 +172,7 @@ function updateViewFile(
 export function getSerializedFileContent<T extends BuildingBlock>(
     basePath: string,
     config: BuildingBlockConfig<T>,
-    fs: Editor
+    fs?: Editor
 ): string {
     // Validate the base and view paths
     if (!fs) {
