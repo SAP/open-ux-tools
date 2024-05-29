@@ -46,7 +46,6 @@ jest.mock('@sap-ux/system-access', () => {
 });
 
 describe('adp-add/change-data-source', () => {
-    // Mocks
     let loggerMock: ToolsLogger;
     const memFsEditorMock = {
         create: jest.fn().mockReturnValue({
@@ -65,7 +64,7 @@ describe('adp-add/change-data-source', () => {
         maxAge: 60
     };
     const promptYUIQuestionsSpy = jest.spyOn(common, 'promptYUIQuestions').mockResolvedValue(mockAnswers);
-    // Test data
+
     const appRoot = join(__dirname, '../../../fixtures');
     beforeEach(() => {
         jest.clearAllMocks();
@@ -91,21 +90,19 @@ describe('adp-add/change-data-source', () => {
     });
 
     test('change-data-source - CF environment', async () => {
-        // Mock setup
         jest.spyOn(mockFs, 'existsSync').mockImplementationOnce(() => true);
         jest.spyOn(mockFs, 'readFileSync').mockReturnValueOnce(JSON.stringify({ environment: 'CF' }));
-        // Test execution
+
         const command = new Command('change-data-source');
         addChangeDataSourceCommand(command);
         await command.parseAsync(getArgv(appRoot));
-        // Flow check
+
         expect(loggerMock.debug).toBeCalled();
         expect(loggerMock.error).toBeCalledWith('Changing data source is not supported for CF projects.');
         expect(generateChangeSpy).not.toBeCalled();
     });
 
     test('change-data-source - no system configuration', async () => {
-        // Mock setup
         jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
             findCustomMiddleware: jest.fn().mockReturnValue(undefined)
         } as Partial<UI5Config> as UI5Config);
@@ -113,28 +110,26 @@ describe('adp-add/change-data-source', () => {
         jest.spyOn(UI5Config.prototype, 'findCustomMiddleware').mockReturnValue({
             configuration: { backend: [] }
         } as Partial<CustomMiddleware> as CustomMiddleware<object>);
-        // Test execution
+
         const command = new Command('change-data-source');
         addChangeDataSourceCommand(command);
         await command.parseAsync(getArgv());
-        // Flow check
+
         expect(loggerMock.debug).toBeCalled();
         expect(loggerMock.error).toBeCalledWith('No system configuration found in ui5.yaml');
         expect(generateChangeSpy).not.toBeCalled();
     });
 
     test('change-data-source - system URL', async () => {
-        // Test execution
         const command = new Command('change-data-source');
         addChangeDataSourceCommand(command);
         await command.parseAsync(getArgv(appRoot));
-        // Flow check
+
         expect(promptYUIQuestionsSpy).toBeCalled();
         expect(generateChangeSpy).toBeCalled();
     });
 
     test('change-data-source - Destination', async () => {
-        // Mock setup
         jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
             findCustomMiddleware: jest.fn().mockReturnValue({
                 configuration: {
@@ -146,37 +141,35 @@ describe('adp-add/change-data-source', () => {
                 }
             } as Partial<CustomMiddleware> as CustomMiddleware<object>)
         } as Partial<UI5Config> as UI5Config);
-        // Test execution
+
         const command = new Command('change-data-source');
         addChangeDataSourceCommand(command);
         await command.parseAsync(getArgv(appRoot));
-        // Flow check
+
         expect(promptYUIQuestionsSpy).toBeCalled();
         expect(generateChangeSpy).toBeCalled();
     });
 
     test('change-data-source - --simulate', async () => {
-        // Test execution
         const command = new Command('change-data-source');
         addChangeDataSourceCommand(command);
         await command.parseAsync(getArgv(appRoot, '--simulate'));
-        // Flow check
+
         expect(promptYUIQuestionsSpy).toBeCalled();
         expect(generateChangeSpy).toBeCalled();
         expect(traceSpy).toBeCalled();
     });
 
     test('change-data-source - issuer certificate error', async () => {
-        // Mock setup
         jest.spyOn(prompts, 'prompt').mockResolvedValueOnce({ ignoreCertErrors: true });
         abapServicesMock.getManifestUrl
             .mockRejectedValueOnce({ message: 'Certificate error', code: 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY' })
             .mockResolvedValue('https://sap.example');
-        // Test execution
+
         const command = new Command('change-data-source');
         addChangeDataSourceCommand(command);
         await command.parseAsync(getArgv(appRoot));
-        // Flow check
+
         expect(loggerMock.error).toBeCalledWith('Certificate error');
         expect(loggerMock.error).toBeCalledWith(
             'If you are using a self-signed certificate, please use the --ignore-cert-errors flag.'
@@ -186,15 +179,14 @@ describe('adp-add/change-data-source', () => {
         expect(generateChangeSpy).toBeCalled();
     });
     test('change-data-source - authentication error', async () => {
-        // Mock setup
         abapServicesMock.getManifestUrl
             .mockRejectedValueOnce({ message: '401:Unauthorized', response: { status: 401 } })
             .mockResolvedValue('https://sap.example');
-        // Test execution
+
         const command = new Command('change-data-source');
         addChangeDataSourceCommand(command);
         await command.parseAsync(getArgv(appRoot));
-        // Flow check
+
         expect(loggerMock.error).toBeCalledWith('401:Unauthorized');
         expect(loggerMock.error).toBeCalledWith(
             'Authentication failed. Please check your credentials. Login attempts left: 2'
@@ -204,7 +196,6 @@ describe('adp-add/change-data-source', () => {
         expect(generateChangeSpy).toBeCalled();
     });
     test('change-data-source - mising configuration in ui5.yaml', async () => {
-        // Mock setup
         jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
             findCustomMiddleware: jest.fn().mockReturnValue({
                 test: {} as Partial<CustomMiddleware> as CustomMiddleware<object>
@@ -213,26 +204,25 @@ describe('adp-add/change-data-source', () => {
                 safeMode: false
             } as Record<string, boolean>)
         } as Partial<UI5Config> as UI5Config);
-        // Test execution
+
         const command = new Command('change-data-source');
         addChangeDataSourceCommand(command);
         await command.parseAsync(getArgv(appRoot));
-        // Flow check
+
         expect(loggerMock.error).toBeCalledWith('No system configuration found in ui5.yaml');
         expect(promptYUIQuestionsSpy).not.toBeCalled();
         expect(generateChangeSpy).not.toBeCalled();
     });
 
     test('change-data-source - no data sources in manifest', async () => {
-        // Mock setup
         abapServicesMock.getManifest
             .mockResolvedValueOnce({ 'sap.app': {} })
             .mockResolvedValue(JSON.parse(appManifest));
-        // Test execution
+
         const command = new Command('change-data-source');
         addChangeDataSourceCommand(command);
         await command.parseAsync(getArgv(appRoot));
-        // Flow check
+
         expect(loggerMock.error).toBeCalledWith('No data sources found in the manifest');
         expect(promptYUIQuestionsSpy).not.toBeCalled();
         expect(generateChangeSpy).not.toBeCalled();

@@ -4,7 +4,6 @@ import * as utils from '../../../../src/prompts/utils';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 
 describe('getPrompts', () => {
-    // Mock data
     const dataSources = {
         'mainService': {
             'uri': '/sap/opu/odata/main/service',

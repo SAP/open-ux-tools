@@ -144,7 +144,7 @@ function getVariant(basePath: string): DescriptorVariant {
  * @param {string} basePath - The path to the adaptation project.
  * @throws {Error} If the project is a CF project.
  */
-function checkEnvironment(basePath: string) {
+function checkEnvironment(basePath: string): void {
     const configJsonPath = join(basePath, '.adp', 'config.json');
     if (existsSync(configJsonPath)) {
         const config = JSON.parse(readFileSync(configJsonPath, 'utf-8'));

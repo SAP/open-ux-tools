@@ -8,13 +8,13 @@ import { isNotEmptyString } from '../../base/helper';
 /**
  * Gets the prompts for changing the data source.
  *
- * @param {Record<string, ManifestNamespace.DataSource>} datasources - Data sources from the manifest.
+ * @param {Record<string, ManifestNamespace.DataSource>} dataSources - Data sources from the manifest.
  * @returns {YUIQuestion<ChangeDataSourceAnswers>[]} The questions/prompts.
  */
 export function getPrompts(
-    datasources: Record<string, ManifestNamespace.DataSource>
+    dataSources: Record<string, ManifestNamespace.DataSource>
 ): YUIQuestion<ChangeDataSourceAnswers>[] {
-    const dataSourceIds = getDataSourceIds(datasources);
+    const dataSourceIds = getDataSourceIds(dataSources);
     return [
         {
             type: 'list',
