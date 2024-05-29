@@ -19,6 +19,7 @@
   "NO_CONTROL_FOUND": "No control found",
   "MODIFY_SEARCH_INPUT": "Modify the search input",
   "APP_TITLE": "Control Property Editor",
+  "APP_TITLE_ADAPTATION_EDITOR": "Adaptation Editor",
   "DEVICE_TYPE_DESKTOP": "Desktop",
   "DEVICE_TYPE_TABLET": "Tablet",
   "DEVICE_TYPE_PHONE": "Phone",
@@ -74,5 +75,12 @@
   "NO_CONTROL_CHANGES_FOUND": "No Control Changes Found",
   "CHANGE": "Change",
   "FILE": "File: ",
-  "CONTROL": "Selector Id: "
+  "CONTROL": "Selector Id: ",
+  "MODE": "Mode",
+  "LIVE": "Live",
+  "EDIT": "Edit",
+  "SAVE": "Save",
+  "UNDO": "Undo",
+  "REDO": "Redo",
+  "NAVIGATE": "Navigate"
 }
