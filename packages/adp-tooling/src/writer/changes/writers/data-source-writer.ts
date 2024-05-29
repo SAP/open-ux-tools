@@ -72,8 +72,7 @@ export class DataSourceWriter implements IWriter<DataSourceData> {
             DirName.Manifest
         );
 
-        const shouldAddAnnotation = annotationId && annotationUri;
-        if (shouldAddAnnotation) {
+        if (annotationId && annotationUri) {
             const annotationContent = this.constructContent(annotationId, annotationUri);
             const annotationTs = timestamp + 1;
             const annotationChange = getChange(variant, annotationTs, annotationContent, ChangeType.CHANGE_DATA_SOURCE);
