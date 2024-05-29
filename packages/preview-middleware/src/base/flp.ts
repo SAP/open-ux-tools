@@ -213,29 +213,8 @@ export class FlpSandbox {
      */
     async init(manifest: Manifest, componentId?: string, resources: Record<string, string> = {}): Promise<void> {
         this.createFlexHandler();
-        const flex = this.getFlexSettings();
-        const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
-        const ui5Theme =
-            this.config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
         const id = manifest['sap.app'].id;
-        const ns = id.replace(/\./g, '/');
-        this.templateConfig = {
-            basePath: posix.relative(posix.dirname(this.config.path), '/') ?? '.',
-            apps: {},
-            init: this.config.init ? ns + this.config.init : undefined,
-            ui5: {
-                libs: this.getUI5Libs(manifest),
-                theme: ui5Theme,
-                flex,
-                resources: {
-                    ...resources,
-                    [PREVIEW_URL.client.ns]: PREVIEW_URL.client.url
-                },
-                bootstrapOptions: ''
-            },
-            locateReuseLibsScript: this.config.libs ?? (await this.hasLocateReuseLibsScript())
-        };
-
+        this.templateConfig = await getTemplateConfig(manifest, { flp: { ...this.config } }, resources, this.project);
         await this.addApp(manifest, {
             componentId,
             target: resources[componentId ?? id] ?? this.templateConfig.basePath,
@@ -345,25 +324,6 @@ export class FlpSandbox {
     }
 
     /**
-     * Writes the html content to file system.
-     *
-     * @param html content to write to file
-     * @param filePath path to write file content to
-     */
-    private writeToFileSystem(html: string, filePath: string): void {
-        try {
-            const fs = create(createStorage());
-            const writeToFile = process.argv.find((elem) => elem === 'writeToFile');
-            if (writeToFile) {
-                fs.write(filePath, html);
-                fs.commit(() => this.logger.info(`Created file at ${filePath}.`));
-            }
-        } catch (e) {
-            this.logger.warn(`Could not write content to file ${filePath}. Error: ${e}`);
-        }
-    }
-
-    /**
      * Add routes for html and scripts required for a local FLP.
      */
     private addStandardRoutes() {
@@ -380,20 +340,9 @@ export class FlpSandbox {
             } else {
                 const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
                 const html = render(template, this.templateConfig);
-                this.writeToFileSystem(html, this.config.path);
                 this.sendResponse(res, 'text/html', 200, html);
             }
         }) as RequestHandler);
-    }
-
-    /**
-     * Try finding a locate-reuse-libs script in the project.
-     *
-     * @returns the location of the locate-reuse-libs script or undefined.
-     */
-    private async hasLocateReuseLibsScript(): Promise<boolean | undefined> {
-        const files = await this.project.byGlob('**/locate-reuse-libs.js');
-        return files.length > 0;
     }
 
     /**
@@ -423,29 +372,6 @@ export class FlpSandbox {
                 );
             }
         }
-    }
-
-    /**
-     * Retrieves the configuration settings for UI5 flexibility services.
-     *
-     * @returns An array of flexibility service configurations, each specifying a connector
-     *          and its options, such as the layers it applies to and its service URL, if applicable.
-     */
-    private getFlexSettings(): TemplateConfig['ui5']['flex'] {
-        const localConnectorPath = 'custom.connectors.WorkspaceConnector';
-
-        return [
-            { connector: 'LrepConnector', layers: [], url: '/sap/bc/lrep' },
-            {
-                applyConnector: localConnectorPath,
-                writeConnector: localConnectorPath,
-                custom: true
-            },
-            {
-                connector: 'LocalStorageConnector',
-                layers: ['CUSTOMER', 'USER']
-            }
-        ];
     }
 
     /**
@@ -677,26 +603,60 @@ export class FlpSandbox {
         }
         return propertyI18nKey;
     }
+}
 
-    /**
-     * Gets the UI5 libs dependencies from manifest.json.
-     *
-     * @param manifest application manifest
-     * @returns UI5 libs that should preloaded
-     */
-    private getUI5Libs(manifest: Manifest): string {
-        if (manifest['sap.ui5']?.dependencies?.libs) {
-            const libNames = Object.keys(manifest['sap.ui5'].dependencies.libs);
-            return libNames
-                .filter((key) => {
-                    return UI5_LIBS.some((substring) => {
-                        return key === substring || key.startsWith(substring + '.');
-                    });
-                })
-                .join(',');
-        } else {
-            return 'sap.m,sap.ui.core,sap.ushell';
+/**
+ * Retrieves the configuration settings for UI5 flexibility services.
+ *
+ * @returns An array of flexibility service configurations, each specifying a connector
+ *          and its options, such as the layers it applies to and its service URL, if applicable.
+ */
+function getFlexSettings(): TemplateConfig['ui5']['flex'] {
+    const localConnectorPath = 'custom.connectors.WorkspaceConnector';
+
+    return [
+        { connector: 'LrepConnector', layers: [], url: '/sap/bc/lrep' },
+        {
+            applyConnector: localConnectorPath,
+            writeConnector: localConnectorPath,
+            custom: true
+        },
+        {
+            connector: 'LocalStorageConnector',
+            layers: ['CUSTOMER', 'USER']
         }
+    ];
+}
+
+/**
+ * Try finding a locate-reuse-libs script in the project.
+ *
+ * @param project reference to the project provided by the UI5 CLI
+ * @returns the location of the locate-reuse-libs script or undefined.
+ */
+async function hasLocateReuseLibsScript(project: ReaderCollection): Promise<boolean | undefined> {
+    const files = await project.byGlob('**/locate-reuse-libs.js');
+    return files.length > 0;
+}
+
+/**
+ * Gets the UI5 libs dependencies from manifest.json.
+ *
+ * @param manifest application manifest
+ * @returns UI5 libs that should preloaded
+ */
+function getUI5Libs(manifest: Manifest): string {
+    if (manifest['sap.ui5']?.dependencies?.libs) {
+        const libNames = Object.keys(manifest['sap.ui5'].dependencies.libs);
+        return libNames
+            .filter((key) => {
+                return UI5_LIBS.some((substring) => {
+                    return key === substring || key.startsWith(substring + '.');
+                });
+            })
+            .join(',');
+    } else {
+        return 'sap.m,sap.ui.core,sap.ushell';
     }
 }
 
@@ -724,6 +684,45 @@ function serializeDataAttributes(attributes: Map<string, string>, indent = '', p
  */
 function serializeUi5Configuration(config: Map<string, string>): string {
     return '\n' + serializeDataAttributes(config, '        ', 'data-sap-ui');
+}
+
+/**
+ * Gets the Template Configutartions for FLP sandbox.
+ *
+ * @param manifest application manifest
+ * @param config configuration from the ui5.yaml
+ * @param resources optional additional resource mappings
+ * @param project reference to the project provided by the UI5 CLI
+ * @returns template config
+ */
+async function getTemplateConfig(
+    manifest: Manifest,
+    config: Partial<MiddlewareConfig>,
+    resources: Record<string, string> = {},
+    project?: ReaderCollection
+): Promise<TemplateConfig> {
+    const flex = getFlexSettings();
+    const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
+    const ui5Theme =
+        config.flp?.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
+    const id = manifest['sap.app'].id;
+    const ns = id.replace(/\./g, '/');
+    return {
+        basePath: posix.relative(posix.dirname(config.flp?.path ?? ''), '/') ?? '.',
+        apps: {},
+        init: config.flp?.init ? ns + config.flp?.init : undefined,
+        ui5: {
+            libs: getUI5Libs(manifest),
+            theme: ui5Theme,
+            flex,
+            resources: {
+                ...resources,
+                [PREVIEW_URL.client.ns]: PREVIEW_URL.client.url
+            },
+            bootstrapOptions: ''
+        },
+        locateReuseLibsScript: project ? await hasLocateReuseLibsScript(project) : config.flp?.libs
+    };
 }
 
 /**
@@ -770,5 +769,36 @@ export async function initAdp(
         adp.addApis(flp.router);
     } else {
         throw new Error('ADP configured but no manifest.appdescr_variant found.');
+    }
+}
+
+/**
+ * Gets the HTML content for FLP sandbox.
+ *
+ * @param basePath path to
+ * @param ui5Yaml configuration from the ui5.yaml
+ * @param manifest application manifest
+ * @param logger logger instance
+ * @param fs mem-fs editor
+ * @returns mem-fs editor
+ */
+export function getFlpSandboxHtml(
+    basePath: string,
+    ui5Yaml: Partial<MiddlewareConfig>,
+    manifest: Manifest,
+    logger: ToolsLogger,
+    fs?: MemFsEditor
+): MemFsEditor | undefined {
+    try {
+        if (!fs) {
+            fs = create(createStorage());
+        }
+        const templateConfig = getTemplateConfig(manifest, ui5Yaml);
+        const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
+        const html = render(template, templateConfig);
+        fs.write(basePath, html);
+        return fs;
+    } catch (e) {
+        logger.warn(`Could not write content to memory: ${basePath}. Error: ${e}`);
     }
 }
