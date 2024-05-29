@@ -1,3 +1,5 @@
+import type { CapService } from '@sap-ux/odata-service-inquirer';
+
 export type CdsUi5PluginInfo = {
     /**
      * Convienience property. The CDS UI5 plugin is considered enabled if `hasCdsUi5Plugin`, `hasMinCdsVersion`, `isWorkspaceEnabled` are all true.
@@ -16,3 +18,7 @@ export type CdsUi5PluginInfo = {
      */
     hasCdsUi5Plugin: boolean;
 };
+
+export interface CapServiceInfo extends CapService {
+    capCdsInfo: CdsUi5PluginInfo;
+}
