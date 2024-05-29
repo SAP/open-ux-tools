@@ -74,6 +74,10 @@ async function updateScripts(
 ): Promise<void> {
     const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
     const hasNPMworkspaces = await checkCdsUi5PluginEnabled(packageJsonPath, fs);
+    // Determine whether to add cds watch scripts for the app based on the availability of minimum CDS version information.
+    // If 'cdsUi5PluginInfo' contains version information and it satisfies the minimum required CDS version,
+    // or if 'cdsUi5PluginInfo' is not available and the version specified in 'package.json' satisfies the minimum required version,
+    // then set 'addScripts' to true. Otherwise, set it to false.
     const addScripts = cdsUi5PluginInfo?.hasMinCdsVersion ? cdsUi5PluginInfo.hasMinCdsVersion : satisfiesMinCdsVersion(packageJson)
     if(addScripts) {
         const cdsScript = getCDSWatchScript(projectName, appId, enableNPMWorkspaces ?? hasNPMworkspaces);
