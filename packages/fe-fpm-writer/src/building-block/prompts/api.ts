@@ -9,7 +9,6 @@ import ProjectProvider from '../utils/project';
 import {
     getAggregationPathPrompt,
     getAnnotationPathQualifierPrompt,
-    getBindingContextTypePrompt,
     getBooleanPrompt,
     getBuildingBlockIdPrompt,
     getCAPServiceChoices,
@@ -188,8 +187,7 @@ export async function getChartBuildingBlockPrompts(basePath: string, fs: Editor)
             : true;
     };
     const defaultAnswers: Answers = {
-        id: 'Chart',
-        bindingContextType: 'relative'
+        id: 'Chart'
     };
     return {
         questions: [
@@ -210,13 +208,19 @@ export async function getChartBuildingBlockPrompts(basePath: string, fs: Editor)
                 },
                 validateFn
             ),
-            getBindingContextTypePrompt(t('bindingContextType'), defaultAnswers.bindingContextType, { required: true }),
             ...((await isCapProject(projectProvider))
                 ? [await getCAPServicePrompt(t('service'), projectProvider, [], { required: true })]
                 : []),
-            getFilterBarIdListPrompt(t('filterBar'), {
+            getEntityPrompt(t('entity'), projectProvider, ['qualifier'], { required: true }),
+            getAnnotationPathQualifierPrompt('qualifier', t('qualifier'), projectProvider, [UIAnnotationTerms.Chart], {
+                additionalInfo: t('valuesDependentOnEntityTypeInfo'),
+                required: true,
+                placeholder: t('qualifierPlaceholder')
+            }),
+            getAggregationPathPrompt(t('aggregation'), fs, {
                 required: true
             }),
+            getFilterBarIdListPrompt(t('filterBar')),
             {
                 type: 'checkbox',
                 name: 'personalization',
@@ -244,16 +248,7 @@ export async function getChartBuildingBlockPrompts(basePath: string, fs: Editor)
                 name: 'selectionChange',
                 message: t('selectionChange'),
                 placeholder: t('selectionChangePlaceholder')
-            } as InputQuestion,
-            getAggregationPathPrompt(t('aggregation'), fs, {
-                required: true
-            }),
-            getEntityPrompt(t('entity'), projectProvider, ['qualifier'], { required: true }),
-            getAnnotationPathQualifierPrompt('qualifier', t('qualifier'), projectProvider, [UIAnnotationTerms.Chart], {
-                additionalInfo: t('valuesDependentOnEntityTypeInfo'),
-                required: true,
-                placeholder: t('qualifierPlaceholder')
-            })
+            } as InputQuestion
         ]
     };
 }
@@ -292,7 +287,6 @@ export async function getTableBuildingBlockPrompts(basePath: string, fs: Editor)
     };
     const defaultAnswers: Answers = {
         id: 'Table',
-        bindingContextType: 'relative',
         type: 'ResponsiveTable',
         selectionMode: 'Single',
         displayHeader: true,
@@ -326,9 +320,6 @@ export async function getTableBuildingBlockPrompts(basePath: string, fs: Editor)
                 },
                 validateFn
             ),
-            getBindingContextTypePrompt(t('bindingContextType'), defaultAnswers.bindingContextType, {
-                groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
-            }),
             ...((await isCapProject(projectProvider))
                 ? [
                       await getCAPServicePrompt(t('service'), projectProvider, [], {
@@ -358,7 +349,6 @@ export async function getTableBuildingBlockPrompts(basePath: string, fs: Editor)
                 required: true
             }),
             getFilterBarIdListPrompt(t('filterBar.message'), {
-                required: true,
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
             }),
 
@@ -547,7 +537,13 @@ export const validateAnswers = async (
             (blockQuestion) => q.name === blockQuestion.name
         );
         if (question.required && (answers[question.name] === undefined || answers[question.name] === '')) {
-            result = { ...result, [question.name]: { isValid: false, errorMessage: 'Please enter a value!' } };
+            result = {
+                ...result,
+                [question.name]: {
+                    isValid: false,
+                    errorMessage: question.type === 'input' ? 'Please enter a value' : 'Please select a value'
+                }
+            };
         } else {
             result = { ...result, [question.name]: { isValid: true } };
             if (question && question.name && typeof question.validate === 'function') {
