@@ -1,7 +1,7 @@
 import { type Package, getCapCustomPaths } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import path, { join } from 'path';
-import { CdsUi5PluginInfo, CapServiceInfo } from '../cap-config/types'
+import { CdsUi5PluginInfo, CapServiceCdsInfo } from '../cap-config/types'
 import { enableCdsUi5Plugin, checkCdsUi5PluginEnabled, satisfiesMinCdsVersion } from '../cap-config';
 import type { Logger } from '@sap-ux/logger';
 
@@ -69,12 +69,12 @@ async function updateScripts(
     projectName: string,
     appId: string,
     enableNPMWorkspaces?: boolean,
-    cdsInfo?: CdsUi5PluginInfo
+    cdsUi5PluginInfo?: CdsUi5PluginInfo
     //log?: Logger
 ): Promise<void> {
     const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
     const hasNPMworkspaces = await checkCdsUi5PluginEnabled(packageJsonPath, fs);
-    const addScripts = cdsInfo?.hasMinCdsVersion ? cdsInfo.hasMinCdsVersion : satisfiesMinCdsVersion(packageJson)
+    const addScripts = cdsUi5PluginInfo?.hasMinCdsVersion ? cdsUi5PluginInfo.hasMinCdsVersion : satisfiesMinCdsVersion(packageJson)
     if(addScripts) {
         const cdsScript = getCDSWatchScript(projectName, appId, enableNPMWorkspaces ?? hasNPMworkspaces);
         updatePackageJsonWithScripts(fs, packageJsonPath, cdsScript);
@@ -101,7 +101,7 @@ export async function updateRootPackageJsonCAP(
     fs: Editor,
     projectName: string,
     sapux: boolean,
-    capService: CapServiceInfo,
+    capService: CapServiceCdsInfo,
     appId: string,
     //log?: Logger,
     enableNPMWorkspaces?: boolean
@@ -114,7 +114,7 @@ export async function updateRootPackageJsonCAP(
         await enableCdsUi5Plugin(capService.projectPath, fs);
     }
     if (capService?.capType === capNodeType) {
-        await updateScripts(fs, packageJsonPath, projectName, appId, enableNPMWorkspaces, capService.capCdsInfo);
+        await updateScripts(fs, packageJsonPath, projectName, appId, enableNPMWorkspaces, capService.cdsUi5PluginInfo);
     }
     if (sapux) {
         const capProjectPath = toPosixPath(

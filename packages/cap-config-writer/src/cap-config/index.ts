@@ -44,6 +44,7 @@ export async function enableCdsUi5Plugin(basePath: string, fs?: Editor): Promise
  *
  * @param basePath - root path of the CAP project, where package.json is located
  * @param [fs] - optional: the memfs editor instance
+ * @param {CdsInfo} [cdsVersionInfo] - Optional. Information about the CDS version which is extracted during the prompting phase of app generation.
  * @returns true: cds-plugin-ui5 and all prerequisites are fulfilled; false: cds-plugin-ui5 is not enabled or not all prerequisites are fulfilled
  */
 export async function checkCdsUi5PluginEnabled(basePath: string, fs?: Editor, cdsVersionInfo?: CdsInfo): Promise<boolean>;
@@ -53,6 +54,7 @@ export async function checkCdsUi5PluginEnabled(basePath: string, fs?: Editor, cd
  *
  * @param basePath - root path of the CAP project, where package.json is located
  * @param [fs] - optional: the memfs editor instance
+ * @param {CdsInfo} [cdsVersionInfo] - Optional. Information about the CDS version which is extracted during the prompting phase of app generation.
  * @param [moreInfo] if true return an object specifying detailed info about the cds and workspace state
  * @returns false if package.json is not found at specified path or {@link CdsUi5PluginInfo} with additional info
  */
@@ -68,6 +70,7 @@ export async function checkCdsUi5PluginEnabled(
  *
  * @param basePath - root path of the CAP project, where package.json is located
  * @param [fs] - optional: the memfs editor instance
+ * @param {CdsInfo} [cdsVersionInfo] - Optional. Information about the CDS version which is extracted during the prompting phase of app generation.
  * @param [moreInfo] if true return an object specifying detailed info about the cds and workspace state
  * @returns false if package.json is not found at specified path or {@link CdsUi5PluginInfo} with additional info or true if
  * cds-plugin-ui5 and all prerequisites are fulfilled
@@ -88,7 +91,10 @@ export async function checkCdsUi5PluginEnabled(
     const packageJson = fs.readJSON(packageJsonPath) as Package;
     const { workspaceEnabled } = await getWorkspaceInfo(basePath, packageJson);
     const cdsInfo: CdsUi5PluginInfo = {
-        //hasMinCdsVersion: satisfiesMinCdsVersion(packageJson),
+        //hasMinCdsVersion: satisfiesMinCdsVersion(packageJson), 
+        // Below line checks if 'cdsVersionInfo' is available and contains version information.
+        // If it does, it uses that version information to determine if it satisfies the minimum CDS version required.
+        // If 'cdsVersionInfo' is not available or does not contain version information,it falls back to check the version specified in the package.json file.
         hasMinCdsVersion: cdsVersionInfo?.version ? satisfies(cdsVersionInfo?.version, `>=${minCdsVersion}`) : satisfiesMinCdsVersion(packageJson),
         isWorkspaceEnabled: workspaceEnabled,
         hasCdsUi5Plugin: hasCdsPluginUi5(packageJson),

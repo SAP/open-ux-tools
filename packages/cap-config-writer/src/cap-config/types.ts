@@ -19,6 +19,6 @@ export type CdsUi5PluginInfo = {
     hasCdsUi5Plugin: boolean;
 };
 
-export interface CapServiceInfo extends CapService {
-    capCdsInfo: CdsUi5PluginInfo;
+export interface CapServiceCdsInfo extends CapService {
+    cdsUi5PluginInfo: CdsUi5PluginInfo;
 }
