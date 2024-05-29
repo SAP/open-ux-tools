@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.4.23
+
+### Patch Changes
+
+-   78de7813: RTA standard toolbar replaced with custom CPE toolbar
+
 ## 0.4.22
 
 ### Patch Changes

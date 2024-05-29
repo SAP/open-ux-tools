@@ -2,7 +2,8 @@ import type { ExternalAction } from '@sap-ux-private/control-property-editor-com
 import {
     startPostMessageCommunication,
     iconsLoaded,
-    enableTelemetry
+    enableTelemetry,
+    appLoaded
 } from '@sap-ux-private/control-property-editor-common';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
@@ -15,6 +16,7 @@ import Log from 'sap/base/Log';
 import { logger } from './logger';
 import { getIcons } from './ui5-utils';
 import { WorkspaceConnectorService } from './connector-service';
+import { RtaService } from './rta-service';
 
 export default function init(rta: RuntimeAuthoring): Promise<void> {
     Log.info('Initializing Control Property Editor');
@@ -38,8 +40,8 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
 
     const changesService = new ChangeService({ rta }, selectionService);
     const connectorService = new WorkspaceConnectorService();
-
-    const services: Service[] = [selectionService, changesService, connectorService];
+    const rtaService = new RtaService(rta);
+    const services: Service[] = [selectionService, changesService, connectorService, rtaService];
     try {
         loadDefaultLibraries();
         const { sendAction } = startPostMessageCommunication<ExternalAction>(
@@ -67,6 +69,7 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
         const icons = getIcons();
 
         sendAction(iconsLoaded(icons));
+        sendAction(appLoaded());
     } catch (error) {
         Log.error('Error during initialization of Control Property Editor', error);
     }
