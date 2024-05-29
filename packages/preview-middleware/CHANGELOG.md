@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.13.48
+
+### Patch Changes
+
+-   78de7813: RTA standard toolbar replaced with custom CPE toolbar
+
 ## 0.13.47
 
 ### Patch Changes

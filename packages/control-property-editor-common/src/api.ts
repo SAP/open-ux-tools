@@ -234,6 +234,16 @@ export const changeStackModified = createExternalAction<ChangeStackModified>('ch
 export const showMessage = createExternalAction<ShowMessage>('show-dialog-message');
 export const reloadApplication = createExternalAction<void>('reload-application');
 export const storageFileChanged = createExternalAction<string>('storage-file-changed');
+export const setAppMode = createExternalAction<'navigation' | 'adaptation'>('set-app-mode');
+export const setUndoRedoEnablement = createExternalAction<{ canRedo: boolean; canUndo: boolean }>(
+    'set-undo-redo-enablement'
+);
+export const setSaveEnablement = createExternalAction<boolean>('set-save-enablement');
+export const appLoaded = createExternalAction<void>('app-loaded');
+export const undo = createExternalAction<void>('undo');
+export const redo = createExternalAction<void>('redo');
+export const save = createExternalAction<void>('save');
+
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
     | ReturnType<typeof controlSelected>
@@ -247,4 +257,11 @@ export type ExternalAction =
     | ReturnType<typeof changeStackModified>
     | ReturnType<typeof showMessage>
     | ReturnType<typeof reloadApplication>
-    | ReturnType<typeof storageFileChanged>;
+    | ReturnType<typeof storageFileChanged>
+    | ReturnType<typeof setAppMode>
+    | ReturnType<typeof setUndoRedoEnablement>
+    | ReturnType<typeof setSaveEnablement>
+    | ReturnType<typeof undo>
+    | ReturnType<typeof redo>
+    | ReturnType<typeof save>
+    | ReturnType<typeof appLoaded>;

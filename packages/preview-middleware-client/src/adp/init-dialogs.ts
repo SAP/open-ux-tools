@@ -74,7 +74,7 @@ export const isControllerExtensionEnabled = (overlays: ElementOverlay[], syncVie
  * @returns {boolean} True if the fragment command is enabled, false otherwise.
  */
 export const isFragmentCommandEnabled = (overlays: ElementOverlay[]): boolean => {
-    if (overlays.length === 0) return false;
+    if (overlays.length === 0) {return false;}
 
     const control = overlays[0].getElement();
     const hasStableId = FlUtils.checkControlId(control);
