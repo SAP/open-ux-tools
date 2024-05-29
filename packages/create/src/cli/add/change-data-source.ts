@@ -92,7 +92,7 @@ async function getManifest(
         throw new Error('No system configuration found in ui5.yaml');
     }
     const target = adp.target;
-    const ignoreCertErrors = adp.ignoreCertErrors;
+    const ignoreCertErrors = adp.ignoreCertErrors ?? false;
     const provider = await createAbapServiceProvider(
         target,
         {
