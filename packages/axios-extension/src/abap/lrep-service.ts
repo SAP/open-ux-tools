@@ -263,9 +263,8 @@ export class LayeredRepositoryService extends Axios implements Service {
      * @returns {Promise<Manifest>} The manifest.
      */
     public async getManifest(manifestUrl: string): Promise<Manifest> {
-        const url = manifestUrl.replace(LayeredRepositoryService.PATH, '');
         try {
-            const repsponse = await this.get(url);
+            const repsponse = await this.get(manifestUrl);
             return JSON.parse(repsponse.data);
         } catch (error) {
             if (isAxiosError(error)) {
