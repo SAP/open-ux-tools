@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.13.51
+
+### Patch Changes
+
+-   52623d36: fix missing support for connect api in flex handler creation
+
 ## 0.13.50
 
 ### Patch Changes
