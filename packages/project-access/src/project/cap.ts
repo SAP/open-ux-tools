@@ -125,25 +125,6 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
 }
 
 /**
- * Method validates cds cache for passed paths.
- * If cds cache has "undefined" entry for passed path then cache for such path will be cleared.
- *
- * @param cds - CAP CDS module for a CAP project
- * @param paths - Paths to validate
- */
-function validateCdsCache(cds: CdsFacade, paths: string[]): void {
-    const cache = cds.resolve?.cache ?? {};
-    for (const scope in cache) {
-        const entry = cds.resolve.cache[scope];
-        for (const path in entry.cached) {
-            if (entry.cached[path] === undefined && paths.includes(path)) {
-                delete entry.cached[path];
-            }
-        }
-    }
-}
-
-/**
  * Return the CAP model and all services. The cds.root will be set to the provided project root path.
  *
  * @param projectRoot - CAP project root where package.json resides or object specifying project root and optional logger to log additional info
@@ -175,8 +156,6 @@ export async function getCapModelAndServices(
     _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'cds.root': ${cds.root}`);
 
     let services = cds.compile.to.serviceinfo(model, { root: _projectRoot }) ?? [];
-    // Validate cds cache for model paths - there can be case when one of folder does not have annotations yet(for example app folder)
-    validateCdsCache(cds, modelPaths);
     if (services.map) {
         services = services.map((value) => {
             return {
@@ -242,7 +221,7 @@ export async function getCdsRoots(projectRoot: string, clearCache = false): Prom
     // clear cache is enforced to also resolve newly created cds file at design time
     const cds = await loadCdsModuleFromProject(projectRoot);
     if (clearCache) {
-        cds.resolve.cache = {};
+        _clearCdsModuleCache(cds);
     }
     for (const cdsEnvRoot of cdsEnvRoots) {
         const resolvedRoots =
@@ -444,6 +423,33 @@ async function loadCdsModuleFromProject(capProjectPath: string, strict: boolean 
     }
 
     return cds;
+}
+
+/**
+ * Method to clear CAP CDS module cache for passed project path.
+ *
+ * @param projectRoot root of a CAP project
+ */
+export async function clearCdsModuleCache(projectRoot: string): Promise<boolean> {
+    try {
+        const cds = await loadCdsModuleFromProject(projectRoot);
+        if (cds) {
+            _clearCdsModuleCache(cds);
+        }
+    } catch (error) {
+        // Do not throw error if wrong path or cds module does not exist
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Method to clear CAP CDS module cache for passed cds module.
+ *
+ * @param cds CAP CDS module
+ */
+export async function _clearCdsModuleCache(cds: CdsFacade): Promise<void> {
+    cds.resolve.cache = {};
 }
 
 /**
