@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.19.8
+
+### Patch Changes
+
+-   d6b68b0e: Fix "Uncaught TypeError: Assignment to constant variable." in project template changes_loader.ts
+
 ## 0.19.7
 
 ### Patch Changes
