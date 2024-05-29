@@ -18,6 +18,7 @@ import type { NodeComment, YAMLMap, YAMLSeq } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
 import {
     getAppReloadMiddlewareConfig,
+    getBackendComments,
     getFioriToolsProxyMiddlewareConfig,
     getMockServerMiddlewareConfig
 } from './middlewares';
@@ -244,7 +245,13 @@ export class UI5Config {
         if (!proxyMiddleware) {
             throw new Error('Could not find fiori-tools-proxy');
         }
-        this.document.getMap({ start: proxyMiddleware as YAMLMap, path: 'configuration' }).set('backend', [backend]);
+        const comments = getBackendComments(backend);
+        const backendNode = this.document.createNode({ value: backend, comments });
+
+        this.document
+            .getMap({ start: proxyMiddleware as YAMLMap, path: 'configuration' })
+            .set('backend', [backendNode]);
+
         return this;
     }
 

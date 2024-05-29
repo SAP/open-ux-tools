@@ -23,7 +23,7 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
                 })
                     .then(function(sChangesFolderContent) {
                         const regex = /(\/changes\/[^"]*\.[a-zA-Z]*)/g;
-                        const result = regex.exec(sChangesFolderContent);
+                        let result = regex.exec(sChangesFolderContent);
                         const aChanges = [];
                         while (result !== null) {
                             aChanges.push(result[1]);

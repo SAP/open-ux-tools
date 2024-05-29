@@ -6,8 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { UIComboBoxOption, UIComboBoxRef } from '@sap-ux/ui-components';
 import { UIComboBox, UIIconButton, UiIcons } from '@sap-ux/ui-components';
 
-import type { RootState } from '../../store';
-import { changePreviewScale, changePreviewScaleMode } from '../../slice';
+import type { RootState } from '../store';
+import { changePreviewScale, changePreviewScaleMode } from '../slice';
 
 import styles from './ViewChanger.module.scss';
 

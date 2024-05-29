@@ -1,4 +1,3 @@
-// Copied over from App modeler
 .ui-toolbar {
     // We do not need fixed if we use flexes
     position: static;
@@ -9,11 +8,19 @@
     }
     // Move to right edge
     .column-right {
-        justify-content: flex-end;
+        width: 300px; // corresponds to .app-panel width
         flex-grow: 0;
     }
     .column-left {
+        width: 300px; // corresponds to .app-panel width
         overflow: hidden;
+        flex-grow: 0;
+    }
+    .column-center {
+        justify-content: flex-start;
+        .mode-switcher {
+            margin-right: 30px;
+        }
     }
     .ui-toolbar__content {
         justify-content: space-between;
@@ -36,4 +43,30 @@
     .ui-divider {
         margin: 0;
     }
+
+    .ms-Label {
+        margin-top: 0px;
+    }
+}
+
+.right-panel-toolbar .ui-toolbar__column__content{
+    display: flex;
+    width: 100%;
+    .rt-panel-tb-left-container {
+        display: flex;
+        flex-grow: 1;
+        align-items: center;
+        height: 100%;
+    }
+    .rt-panel-tb-right-container {
+        display: flex;
+    }
+}
+
+.app-title {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 16px;
+    color: var(--vscode-foreground);
 }

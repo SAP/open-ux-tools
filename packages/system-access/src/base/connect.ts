@@ -98,10 +98,6 @@ async function createAbapOnPremServiceProvider(
     prompt: boolean,
     logger: Logger
 ): Promise<AbapServiceProvider> {
-    options.baseURL = target.url;
-    if (target.client) {
-        options.params['sap-client'] = target.client;
-    }
     if (!options.auth) {
         const storedOpts = await getCredentialsFromStore(target, logger);
         if (isBasicAuth(storedOpts)) {
@@ -114,10 +110,20 @@ async function createAbapOnPremServiceProvider(
                 throw new Error('This is an ABAP Cloud system, please correct your configuration.');
             }
             if (prompt) {
-                const credentials = await getCredentialsWithPrompts(storedOpts?.username);
-                options.auth = credentials;
-                process.env.FIORI_TOOLS_USER = credentials.username;
-                process.env.FIORI_TOOLS_PASSWORD = credentials.password;
+                const { authType } = await prompts([questions.authType]);
+                if (authType === AuthenticationType.ReentranceTicket) {
+                    target.authenticationType = AuthenticationType.ReentranceTicket;
+                    return createForAbapOnCloud({
+                        ...options,
+                        ...target,
+                        environment: AbapCloudEnvironment.EmbeddedSteampunk
+                    });
+                } else {
+                    const credentials = await getCredentialsWithPrompts(storedOpts?.username);
+                    options.auth = credentials;
+                    process.env.FIORI_TOOLS_USER = credentials.username;
+                    process.env.FIORI_TOOLS_PASSWORD = credentials.password;
+                }
             }
         }
     }
@@ -192,9 +198,13 @@ export async function createAbapServiceProvider(
             provider = createForAbapOnCloud({
                 ignoreCertErrors: options.ignoreCertErrors,
                 environment: AbapCloudEnvironment.EmbeddedSteampunk,
-                url: target.url
+                ...target
             });
         } else {
+            options.baseURL = target.url;
+            if (target.client) {
+                options.params['sap-client'] = target.client;
+            }
             provider = await createAbapOnPremServiceProvider(options, target, prompt, logger);
         }
     } else {

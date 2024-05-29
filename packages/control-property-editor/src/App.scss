@@ -4,10 +4,19 @@
 html {
     overflow: hidden;
 }
+body {
+    background-color: var(--vscode-editor-background);
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%
+}
+
 .app {
     display: flex;
     height: 100%;
-    background-color: var(--vscode-editor-background);
     min-width: 0;
     min-height: 0;
     overflow: hidden;

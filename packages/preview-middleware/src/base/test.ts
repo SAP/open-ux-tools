@@ -13,6 +13,12 @@ const DEFAULTS: Record<string, InternalTestConfig> = {
         init: '/test/opaTests.qunit.js',
         pattern: '/test/**/*Journey.*',
         framework: 'OPA5'
+    },
+    testsuite: {
+        path: '/test/testsuite.qunit.html',
+        init: '/test/testsuite.qunit.js',
+        pattern: '',
+        framework: 'Testsuite'
     }
 };
 

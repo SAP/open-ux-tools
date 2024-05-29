@@ -21,7 +21,11 @@ import {
     showMessage,
     scenario,
     reloadApplication,
-    storageFileChanged
+    storageFileChanged,
+    setAppMode,
+    setUndoRedoEnablement,
+    setSaveEnablement,
+    appLoaded
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -42,6 +46,13 @@ interface SliceState {
     changes: ChangesSlice;
     dialogMessage: ShowMessage | undefined;
     fileChanges?: string[];
+    appMode: 'navigation' | 'adaptation';
+    changeStack: {
+        canUndo: boolean;
+        canRedo: boolean;
+    };
+    canSave: boolean;
+    isAppLoading: boolean;
 }
 
 export interface ChangesSlice {
@@ -120,7 +131,15 @@ export const initialState: SliceState = {
         saved: [],
         pendingChangeIds: []
     },
-    dialogMessage: undefined
+    dialogMessage: undefined,
+    appMode: 'adaptation',
+
+    changeStack: {
+        canUndo: false,
+        canRedo: false
+    },
+    canSave: false,
+    isAppLoading: true
 };
 const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
     name: 'app',
@@ -265,12 +284,28 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
             })
             .addMatcher(reloadApplication.match, (state): void => {
                 state.fileChanges = [];
+                state.isAppLoading = true;
             })
             .addMatcher(storageFileChanged.match, (state, action: ReturnType<typeof storageFileChanged>): void => {
                 const fileName = action.payload;
                 if (fileName) {
                     state.changes.pendingChangeIds.push(fileName);
                 }
+            })
+            .addMatcher(setAppMode.match, (state, action: ReturnType<typeof setAppMode>): void => {
+                state.appMode = action.payload;
+            })
+            .addMatcher(
+                setUndoRedoEnablement.match,
+                (state, action: ReturnType<typeof setUndoRedoEnablement>): void => {
+                    state.changeStack = action.payload;
+                }
+            )
+            .addMatcher(setSaveEnablement.match, (state, action: ReturnType<typeof setSaveEnablement>): void => {
+                state.canSave = action.payload;
+            })
+            .addMatcher(appLoaded.match, (state): void => {
+                state.isAppLoading = false;
             })
 });
 
