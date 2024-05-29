@@ -30,7 +30,8 @@ export {
     loadModuleFromProject,
     readCapServiceMetadataEdmx,
     readUi5Yaml,
-    toReferenceUri
+    toReferenceUri,
+    filterDataSourcesByType
 } from './project';
 export * from './types';
 export * from './library';

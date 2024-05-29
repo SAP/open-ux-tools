@@ -1,6 +1,6 @@
 import { getPrompts } from '../../../../src/prompts/change-data-source/index';
 import * as i18n from '../../../../src/i18n';
-import * as utils from '../../../../src/prompts/utils';
+import * as projectAccess from '@sap-ux/project-access';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 
 describe('getPrompts', () => {
@@ -39,8 +39,11 @@ describe('getPrompts', () => {
         jest.restoreAllMocks();
     });
     test('return prompts', () => {
-        const dataSourceIds = ['mainService'];
-        jest.spyOn(utils, 'getDataSourceIds').mockReturnValueOnce(dataSourceIds);
+        const filteredDataSources = {
+            'mainService': dataSources['mainService']
+        };
+        const dataSourceIds = Object.keys(filteredDataSources);
+        jest.spyOn(projectAccess, 'filterDataSourcesByType').mockReturnValueOnce(filteredDataSources);
 
         const prompts = getPrompts(dataSources);
 
@@ -88,8 +91,7 @@ describe('getPrompts', () => {
         expect(maxAgeCondition({ uri: 'uri' })).toBeTruthy();
     });
     test('return prompts - no data sources', () => {
-        const dataSourceIds: string[] = [];
-        jest.spyOn(utils, 'getDataSourceIds').mockReturnValueOnce(dataSourceIds);
+        jest.spyOn(projectAccess, 'filterDataSourcesByType').mockReturnValueOnce({});
 
         const prompts = getPrompts({});
 

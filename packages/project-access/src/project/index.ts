@@ -12,6 +12,7 @@ export {
     readCapServiceMetadataEdmx,
     toReferenceUri
 } from './cap';
+export { filterDataSourcesByType } from './service';
 export { getNodeModulesPath } from './dependencies';
 export { getCapI18nFolderNames, getI18nPropertiesPaths } from './i18n';
 export { getAppProgrammingLanguage, getAppType, getProject, getProjectType } from './info';

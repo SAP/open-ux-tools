@@ -2,7 +2,7 @@ import type { NumberQuestion, ListQuestion, InputQuestion, YUIQuestion } from '@
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { ChangeDataSourceAnswers } from '../../types';
 import { t } from '../../i18n';
-import { getDataSourceIds } from '../utils';
+import { filterDataSourcesByType } from '@sap-ux/project-access';
 import { isNotEmptyString } from '../../base/helper';
 
 /**
@@ -14,7 +14,7 @@ import { isNotEmptyString } from '../../base/helper';
 export function getPrompts(
     dataSources: Record<string, ManifestNamespace.DataSource>
 ): YUIQuestion<ChangeDataSourceAnswers>[] {
-    const dataSourceIds = getDataSourceIds(dataSources);
+    const dataSourceIds = Object.keys(filterDataSourcesByType(dataSources, 'OData'));
     return [
         {
             type: 'list',
