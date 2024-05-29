@@ -31,7 +31,7 @@ export function addChangeDataSourceCommand(cmd: Command): void {
  *
  * @param {string} basePath - The path to the adaptation project.
  * @param {PromptDefaults} defaults - The default values for the prompts.
- * @param {boolean} simulate - if set to true, then no files will be written to the filesystem
+ * @param {boolean} simulate - If set to true, then no files will be written to the filesystem.
  */
 async function changeDataSource(basePath: string, defaults: PromptDefaults, simulate: boolean): Promise<void> {
     const logger = getLogger();
@@ -88,11 +88,11 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults, simu
 /**
  * Get the manifest of the base application.
  *
- * @param {string} basePath - The path to the adaptation project
- * @param {PromptDefaults} defaults - The default values for the prompts
- * @param {ToolsLogger} logger - The logger
- * @param {DescriptorVariant} variant - The app descriptor variant
- * @returns {Promise<Manifest>} The manifest
+ * @param {string} basePath - The path to the adaptation project.
+ * @param {PromptDefaults} defaults - The default values for the prompts.
+ * @param {ToolsLogger} logger - The logger.
+ * @param {DescriptorVariant} variant - The app descriptor variant.
+ * @returns {Promise<Manifest>} The manifest.
  */
 async function getManifest(
     basePath: string,
@@ -131,8 +131,8 @@ async function getManifest(
 /**
  * Get the app descriptor variant.
  *
- * @param {string} basePath - The path to the adaptation project
- * @returns {DescriptorVariant} The app descriptor variant
+ * @param {string} basePath - The path to the adaptation project.
+ * @returns {DescriptorVariant} The app descriptor variant.
  */
 function getVariant(basePath: string): DescriptorVariant {
     return JSON.parse(readFileSync(join(basePath, 'webapp', 'manifest.appdescr_variant'), 'utf-8'));
@@ -141,8 +141,8 @@ function getVariant(basePath: string): DescriptorVariant {
 /**
  * Check if the project is a CF project.
  *
- * @param {string} basePath - The path to the adaptation project
- * @throws {Error} If the project is a CF project
+ * @param {string} basePath - The path to the adaptation project.
+ * @throws {Error} If the project is a CF project.
  */
 function checkEnvironment(basePath: string) {
     const configJsonPath = join(basePath, '.adp', 'config.json');

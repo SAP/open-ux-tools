@@ -214,11 +214,11 @@ export function getGenericChange(
 /**
  * Constructs a generic change object based on provided parameters.
  *
- * @param {DescriptorVariant} variant the app descriptor variant
- * @param {number} timestamp - The timestamp
- * @param {object} content - The content of the change to be applied
- * @param {ChangeType} changeType - The type of the change
- * @returns An object representing the change
+ * @param {DescriptorVariant} variant - The app descriptor variant.
+ * @param {number} timestamp - The timestamp.
+ * @param {object} content - The content of the change to be applied.
+ * @param {ChangeType} changeType - The type of the change.
+ * @returns - An object representing the change
  */
 export function getChange(
     variant: DescriptorVariant,

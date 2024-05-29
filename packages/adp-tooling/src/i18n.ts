@@ -3,8 +3,11 @@ import i18next from 'i18next';
 import translations from './translations/adp-tooling.i18n.json';
 
 const adpI18nNamespace = 'adp-tooling';
+
 /**
  * Initialize i18next with the translations for this module.
+ *
+ * @returns {Promise<void>} A promise that resolves when the i18n initialization is completed.
  */
 export async function initI18n(): Promise<void> {
     await i18next.init({
@@ -23,9 +26,9 @@ export async function initI18n(): Promise<void> {
 /**
  * Helper function facading the call to i18next. Unless a namespace option is provided the local namespace will be used.
  *
- * @param key i18n key
- * @param options additional options
- * @returns {string} localized string stored for the given key
+ * @param {string} key - The i18n key.
+ * @param {TOptions} options - Additional options.
+ * @returns {string} Localized string stored for the given key.
  */
 export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {

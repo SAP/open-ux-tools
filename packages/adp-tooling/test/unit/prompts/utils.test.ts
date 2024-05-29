@@ -1,4 +1,3 @@
-import { data } from '../../../../ui-components/test/__mock__/select-data';
 import * as utils from '../../../src/prompts/utils';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 
