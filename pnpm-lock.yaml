@@ -2022,6 +2022,9 @@ importers:
 
   packages/ui5-config:
     dependencies:
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
       '@sap-ux/yaml':
         specifier: workspace:*
         version: link:../yaml

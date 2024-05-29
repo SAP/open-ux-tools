@@ -259,7 +259,7 @@ describe('SelectionService', () => {
         await service.init(sendActionMock, subscribeMock);
 
         await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
-        expect(sendActionMock).toHaveBeenCalledTimes(2);
+        expect(sendActionMock).toHaveBeenCalledTimes(4);
         expect(sendActionMock).toHaveBeenNthCalledWith(2, {
             type: '[ext] change-stack-modified',
             payload: {
@@ -323,7 +323,7 @@ describe('SelectionService', () => {
         await service.init(sendActionMock, subscribeMock);
 
         await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
-        expect(sendActionMock).toHaveBeenCalledTimes(2);
+        expect(sendActionMock).toHaveBeenCalledTimes(4);
         expect(sendActionMock).toHaveBeenNthCalledWith(2, {
             type: '[ext] change-stack-modified',
             payload: {
@@ -371,7 +371,7 @@ describe('SelectionService', () => {
         await service.init(sendActionMock, subscribeMock);
 
         await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
-        expect(sendActionMock).toHaveBeenCalledTimes(2);
+        expect(sendActionMock).toHaveBeenCalledTimes(4);
         expect(sendActionMock).toHaveBeenNthCalledWith(2, {
             type: '[ext] change-stack-modified',
             payload: {
@@ -458,7 +458,7 @@ describe('SelectionService', () => {
         await service.init(sendActionMock, subscribeMock);
 
         await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
-        expect(sendActionMock).toHaveBeenCalledTimes(2);
+        expect(sendActionMock).toHaveBeenCalledTimes(4);
         expect(sendActionMock).toHaveBeenNthCalledWith(2, {
             type: '[ext] change-stack-modified',
             payload: {

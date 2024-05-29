@@ -1,5 +1,17 @@
 # @sap-ux/axios-extension
 
+## 1.12.6
+
+### Patch Changes
+
+-   558891c2: cleanup logging statment
+
+## 1.12.5
+
+### Patch Changes
+
+-   69282b7d: add cookies for embedded steampunk service providers
+
 ## 1.12.4
 
 ### Patch Changes
