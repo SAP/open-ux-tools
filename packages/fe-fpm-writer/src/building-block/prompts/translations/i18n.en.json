@@ -62,18 +62,18 @@
             "entity": "Entity",
             "service": "Service",
             "metaPath": "Enter the relative path of the property in the meta model",
-            "filterChanged": "Enter a function to be called when the filter value has changed",
-            "search": "Enter a function to be called when the go button is pressed",
-            "qualifier": "Select the Selection Fields Qualifier",
+            "filterChanged": "Filter Function",
+            "search": "Search Function",
+            "qualifier": "Selection Fields Qualifier",
             "qualifierPlaceholder": "Select selection fields qualifier",
-            "aggregation": "Select the Aggregation Path",
+            "aggregation": "Aggregation Path",
             "valuesDependentOnEntityTypeInfo": "Values are dependent on entity type"
         },
         "table": {
             "tableBuildingBlockPropertiesTitle": "Table Building Block Properties",
             "tableBuildingBlockPropertiesDescription": [
                 "Select the `View or Fragment File` where you would like to insert the table building block and provide a `Building Block ID` to identify the table.",
-                "Select an `Entity Type`, an optional `Navigation Path`, and a `Line Item Qualifier` you would like to use for the table building block.",
+                "Select an `Entity Type`, and a `Line Item Qualifier` you would like to use for the table building block.",
                 "Select an `Aggregation Path` to determine where you would like the table to be placed on the page.",
                 "If you would like to link the table to an existing filter bar, provide the `Associated Filter Bar ID`."
             ],
