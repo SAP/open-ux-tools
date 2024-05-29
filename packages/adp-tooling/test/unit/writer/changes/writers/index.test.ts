@@ -212,8 +212,10 @@ describe('DataSourceWriter', () => {
     });
 
     it('should write data source change with provided data', async () => {
+        const systemTime = new Date('2024-03-10');
+        jest.useFakeTimers().setSystemTime(systemTime);
         await writer.write(mockData);
-
+        jest.useRealTimers();
         expect(getChangeMock).toHaveBeenCalledWith(
             expect.anything(),
             expect.anything(),
@@ -238,7 +240,7 @@ describe('DataSourceWriter', () => {
         expect(writeChangeToFolder).toHaveBeenCalledWith(
             mockProjectPath,
             expect.any(Object),
-            expect.anything(),
+            `id_${systemTime.getTime()}_changeDataSource.change`,
             {},
             'manifest'
         );
