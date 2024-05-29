@@ -76,7 +76,8 @@ describe('main', () => {
         getRootControlInstance: jest.fn().mockReturnValue({
             getManifest: jest.fn().mockReturnValue({ 'sap.app': { id: 'testId' } })
         }),
-        attachStop: jest.fn()
+        attachStop: jest.fn(),
+        attachModeChanged: jest.fn()
     } as any;
 
     const spyPostMessage = jest.spyOn(common, 'startPostMessageCommunication').mockImplementation(() => {
@@ -130,6 +131,10 @@ describe('main', () => {
             payload: mockIconResult
         });
         expect(sendActionMock).toHaveBeenNthCalledWith(2, {
+            type: '[ext] app-loaded',
+            payload: undefined
+        });
+        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
             type: '[ext] change-stack-modified',
             payload: { saved: [], pending: [] }
         });

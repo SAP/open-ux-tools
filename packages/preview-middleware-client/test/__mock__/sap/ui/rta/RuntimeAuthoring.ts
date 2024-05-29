@@ -13,8 +13,17 @@ class RuntimeAuthoringMock {
     public attachStop =  jest.fn();
     public stop = jest.fn();
     public attachUndoRedoStackModified = jest.fn();
+    public attachModeChanged = jest.fn();
     public attachSelectionChange = jest.fn();
     public setPlugins = jest.fn();
+    public canUndo = jest.fn();
+    public canRedo = jest.fn();
+    public canSave = jest.fn();
+    public setMode = jest.fn();
+    public undo = jest.fn();
+    public redo = jest.fn();
+    public save = jest.fn();
+    public _serializeToLrep = jest.fn();
 }
 
 export default RuntimeAuthoringMock as unknown as RuntimeAuthoring & typeof RuntimeAuthoringMock;
