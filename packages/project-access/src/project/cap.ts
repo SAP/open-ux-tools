@@ -428,7 +428,8 @@ async function loadCdsModuleFromProject(capProjectPath: string, strict: boolean 
 /**
  * Method to clear CAP CDS module cache for passed project path.
  *
- * @param projectRoot root of a CAP project
+ * @param projectRoot root of a CAP project.
+ * @returns True if cache cleared successfully.
  */
 export async function clearCdsModuleCache(projectRoot: string): Promise<boolean> {
     try {
@@ -448,7 +449,7 @@ export async function clearCdsModuleCache(projectRoot: string): Promise<boolean>
  *
  * @param cds CAP CDS module
  */
-export async function _clearCdsModuleCache(cds: CdsFacade): Promise<void> {
+function _clearCdsModuleCache(cds: CdsFacade): void {
     cds.resolve.cache = {};
 }
 
