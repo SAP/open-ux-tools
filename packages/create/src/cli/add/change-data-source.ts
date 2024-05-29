@@ -1,11 +1,10 @@
 import type { Command } from 'commander';
-import type { DescriptorVariant, PreviewConfigAdp, PromptDefaults } from '@sap-ux/adp-tooling';
+import type { AdpPreviewConfig, DescriptorVariant, PromptDefaults } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { generateChange, ChangeType, getPromptsForChangeDataSource } from '@sap-ux/adp-tooling';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { getLogger, traceChanges } from '../../tracing';
-import prompts from 'prompts';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { UI5Config } from '@sap-ux/ui5-config';
@@ -62,19 +61,6 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults, simu
         }
     } catch (error) {
         logger.error(error.message);
-        if (error.code === 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY' && !defaults.ignoreCertErrors) {
-            logger.error('If you are using a self-signed certificate, please use the --ignore-cert-errors flag.');
-            const confirm = await prompts([
-                {
-                    type: 'confirm',
-                    name: 'ignoreCertErrors',
-                    message: 'Do you want to ignore certificate errors?'
-                }
-            ]);
-            defaults.ignoreCertErrors = confirm.ignoreCertErrors;
-            await changeDataSource(basePath, defaults, simulate);
-            return;
-        }
         if (error.response?.status === 401 && loginAttempts) {
             loginAttempts--;
             logger.error(`Authentication failed. Please check your credentials. Login attempts left: ${loginAttempts}`);
@@ -101,22 +87,16 @@ async function getManifest(
     variant: DescriptorVariant
 ): Promise<Manifest> {
     const ui5Config = await UI5Config.newInstance(readFileSync(join(basePath, 'ui5.yaml'), 'utf-8'));
-    const { destination, url, client } =
-        ui5Config.findCustomMiddleware<PreviewConfigAdp>('fiori-tools-preview')?.configuration?.adp?.target ?? {};
-
-    let target;
-    if (destination) {
-        target = { destination };
-    } else if (url) {
-        target = { url, client };
-    } else {
+    const adp = ui5Config.findCustomMiddleware<{ adp: AdpPreviewConfig }>('fiori-tools-preview')?.configuration?.adp;
+    if (!adp) {
         throw new Error('No system configuration found in ui5.yaml');
     }
-
+    const target = adp.target;
+    const ignoreCertErrors = adp.ignoreCertErrors;
     const provider = await createAbapServiceProvider(
         target,
         {
-            ignoreCertErrors: defaults.ignoreCertErrors
+            ignoreCertErrors
         },
         true,
         logger

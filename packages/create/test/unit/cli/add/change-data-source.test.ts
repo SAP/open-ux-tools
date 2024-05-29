@@ -160,24 +160,6 @@ describe('adp-add/change-data-source', () => {
         expect(traceSpy).toBeCalled();
     });
 
-    test('change-data-source - issuer certificate error', async () => {
-        jest.spyOn(prompts, 'prompt').mockResolvedValueOnce({ ignoreCertErrors: true });
-        abapServicesMock.getManifestUrl
-            .mockRejectedValueOnce({ message: 'Certificate error', code: 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY' })
-            .mockResolvedValue('https://sap.example');
-
-        const command = new Command('change-data-source');
-        addChangeDataSourceCommand(command);
-        await command.parseAsync(getArgv(appRoot));
-
-        expect(loggerMock.error).toBeCalledWith('Certificate error');
-        expect(loggerMock.error).toBeCalledWith(
-            'If you are using a self-signed certificate, please use the --ignore-cert-errors flag.'
-        );
-        expect(loggerMock.debug).not.toBeCalledWith();
-        expect(promptYUIQuestionsSpy).toBeCalled();
-        expect(generateChangeSpy).toBeCalled();
-    });
     test('change-data-source - authentication error', async () => {
         abapServicesMock.getManifestUrl
             .mockRejectedValueOnce({ message: '401:Unauthorized', response: { status: 401 } })

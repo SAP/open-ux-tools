@@ -353,13 +353,3 @@ export interface AdpCustomConfig {
         environment: OperationsType;
     };
 }
-
-export interface PreviewConfigAdp {
-    adp?: {
-        target?: {
-            url?: string;
-            client?: string;
-            destination?: string;
-        };
-    };
-}
