@@ -3,7 +3,7 @@ import * as childProcess from 'child_process';
 import * as projectModuleMock from '../../src/project/module-loader';
 import type { Package } from '../../src';
 import { FileName } from '../../src/constants';
-import { clearGlobalCdsPathCache } from '../../src/project/cap';
+import { clearCdsModuleCache, clearGlobalCdsPathCache } from '../../src/project/cap';
 import {
     getCapCustomPaths,
     getCapEnvironment,
@@ -839,6 +839,51 @@ describe('Test getCdsServices()', () => {
         } catch (error) {
             expect(error.toString()).toContain('CDS_LOAD_ERROR');
         }
+    });
+});
+
+describe('clearCdsModuleCache', () => {
+    const projectRoot = 'PROJECT_ROOT';
+    test('Clear CDS cache', async () => {
+        // Mock setup
+        const cdsMock = {
+            load: jest.fn().mockImplementation(() => Promise.resolve('MODEL')),
+            resolve: {
+                cache: {
+                    'dummy': {
+                        'cached': {
+                            'dummyPath': 'dummyValue'
+                        }
+                    }
+                }
+            }
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+
+        // Test execution
+        const result = await clearCdsModuleCache(projectRoot);
+
+        // Check results
+        expect(result).toEqual(true);
+        expect(cdsMock.resolve.cache).toStrictEqual({});
+    });
+
+    test('Unresolvable cds module - error is thrown', async () => {
+        // Mock setup
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(undefined));
+        // Test execution
+        const result = await clearCdsModuleCache(projectRoot);
+        expect(result).toEqual(false);
+    });
+
+    test('Unresolvable cds module - error is not thrown', async () => {
+        // Mock setup
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() =>
+            Promise.resolve({ default: undefined })
+        );
+        // Test execution
+        const result = await clearCdsModuleCache(projectRoot);
+        expect(result).toEqual(false);
     });
 });
 
