@@ -53,6 +53,14 @@ export function enhanceManifestAndGetActionsElementReference(manifest: any, targ
         page.options.settings.content[target.control].actions =
             page.options.settings.content[target.control].actions || {};
         return page.options.settings.content[target.control].actions;
+    } else if (target.control === TargetControl.body && target.customSectionKey) {
+        // custom section actions
+        page.options.settings[target.control] = page.options.settings[target.control] || {};
+        page.options.settings[target.control][target.customSectionKey] =
+            page.options.settings[target.control][target.customSectionKey] || {};
+        page.options.settings[target.control][target.customSectionKey].actions =
+            page.options.settings[target.control][target.customSectionKey].actions || {};
+        return page.options.settings[target.control][target.customSectionKey].actions;
     } else {
         const controlPrefix = target.navProperty ? target.navProperty + '/' : '';
         const controlSuffix = target.qualifier ? '#' + target.qualifier : '';
