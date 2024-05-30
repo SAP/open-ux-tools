@@ -11,6 +11,22 @@ export interface App extends Record<string, unknown> {
 }
 
 export type AppIndex = Partial<App>[];
+export type AsyncHintsLib = {
+    name: string;
+};
+export type AsyncHintsRequest = {
+    name: string;
+    reference: string;
+};
+export interface Ui5AppInfo {
+    name: string;
+    url: string;
+    manifestUrl: string;
+    asyncHints: {
+        libs: AsyncHintsLib[];
+        requests: AsyncHintsRequest[];
+    };
+}
 
 /**
  * A class representing the app index service allowing to search applications deployed on an ABAP system.
@@ -37,19 +53,18 @@ export abstract class AppIndexService extends Axios implements Service {
     }
 
     /**
-     * Gets the URL to the app manifest with the specified id.
+     * Gets the app info for the specified id.
      *
      * @param {string} appId - The id of the app.
-     * @returns {Promise<string>} URL to the app manifest.
+     * @returns {Promise<Ui5AppInfo>} App info.
      */
-    public async getManifestUrl(appId: string): Promise<string> {
+    public async getAppInfo(appId: string): Promise<Ui5AppInfo> {
         try {
             const response = await this.get('/ui5_app_info_json', { params: { id: appId } });
-            const appInfo = JSON.parse(response.data)[appId] as {
-                manifestUrl?: string;
-                manifest?: string;
-            };
-            return appInfo.manifestUrl ?? appInfo.manifest ?? '';
+            const appInfo = JSON.parse(response.data)[appId];
+            appInfo.manifestUrl = appInfo.manifestUrl ?? appInfo.manifest ?? '';
+            delete appInfo.manifest;
+            return appInfo as Ui5AppInfo;
         } catch (error) {
             if (isAxiosError(error)) {
                 this.log.error(`Failed fetching ui5_app_info_json for app with id ${appId}.`);

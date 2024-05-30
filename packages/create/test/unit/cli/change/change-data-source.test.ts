@@ -24,7 +24,7 @@ jest.mock('fs');
 jest.mock('prompts');
 
 const abapServicesMock = {
-    getManifestUrl: jest.fn().mockResolvedValue('https://sap.example'),
+    getAppInfo: jest.fn().mockResolvedValue({ manifestUrl: 'https://sap.example' }),
     getManifest: jest.fn().mockResolvedValue(JSON.parse(appManifest))
 };
 
@@ -34,7 +34,7 @@ jest.mock('@sap-ux/system-access', () => {
         createAbapServiceProvider: () => {
             return {
                 getAppIndex: jest.fn().mockReturnValue({
-                    getManifestUrl: abapServicesMock.getManifestUrl
+                    getAppInfo: abapServicesMock.getAppInfo
                 }),
                 getLayeredRepository: jest.fn().mockReturnValue({
                     getManifest: abapServicesMock.getManifest
@@ -160,7 +160,7 @@ describe('change/data-source', () => {
     });
 
     test('change data-source - authentication error', async () => {
-        abapServicesMock.getManifestUrl
+        abapServicesMock.getAppInfo
             .mockRejectedValueOnce({ message: '401:Unauthorized', response: { status: 401 } })
             .mockResolvedValue('https://sap.example');
 

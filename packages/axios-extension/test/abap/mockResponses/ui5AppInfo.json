@@ -2,7 +2,7 @@
     "ExampleApp": {
         "name": "ExampleApp",
         "url": "/sap/bc/ui5_ui5/sap/example_app",
-        "manifest": "/sap/bc/lrep/content/apps/ExampleApp/app/sap/example_app/manifest.appdescr",
+        "manifestUrl": "/sap/bc/lrep/content/apps/ExampleApp/app/sap/example_app/manifest.appdescr",
         "self": {
             "name": "ExampleApp",
             "url": "/sap/bc/ui5_ui5/sap/example_app"

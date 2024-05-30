@@ -103,7 +103,7 @@ async function getManifest(
     );
 
     const appIndexService = provider.getAppIndex();
-    const manifestUrl = await appIndexService.getManifestUrl(variant.reference);
+    const manifestUrl = (await appIndexService.getAppInfo(variant.reference)).manifestUrl;
     const lrepService = provider.getLayeredRepository('/');
     return await lrepService.getManifest(manifestUrl);
 }
