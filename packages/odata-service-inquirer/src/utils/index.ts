@@ -65,13 +65,13 @@ function createTelemetryEvent(eventName: string, telemetryData: TelemetryPropert
 }
 
 /**
-* Replaces the url origin (protocal, host and port) in the specified metadata 'Uri' entries with a relative path segment '.'.
-* 
-* @param metadata a metadata string
-* @returns metadata string with the origin replaced with a relative path segment '.'
-*/
+ * Replaces the url origin (protocal, host and port) in the specified metadata 'Uri' entries with a relative path segment '.'.
+ *
+ * @param metadata a metadata string
+ * @returns metadata string with the origin replaced with a relative path segment '.'
+ */
 export function removeOrigin(metadata: string): string {
-   return metadata?.replace(/ Uri="(http|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[0])/g, ` Uri=".`);
+    return metadata?.replace(/ Uri="(http|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[0])/g, ` Uri=".`);
 }
 
 export { PromptState };
