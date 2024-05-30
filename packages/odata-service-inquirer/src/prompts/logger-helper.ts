@@ -1,4 +1,6 @@
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
+import type { AxiosInterceptorManager, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import * as AxiosLogger from 'axios-logger';
 
 /**
  * Static logger prevents passing of logger references through all functions, as this is a cross-cutting concern.
@@ -22,5 +24,50 @@ export default class LoggerHelper {
      */
     public static set logger(value: Logger) {
         LoggerHelper._logger = value;
+    }
+
+    /**
+     * Attach the Axios logger to the request and response interceptors.
+     *
+     * @param interceptors the axios interceptors
+     * @param interceptors.request the axios request interceptor
+     * @param interceptors.response the axios response interceptor
+     */
+    public static attachAxiosLogger(interceptors: {
+        request: AxiosInterceptorManager<InternalAxiosRequestConfig>;
+        response: AxiosInterceptorManager<AxiosResponse>;
+    }): void {
+        interceptors.request.use(
+            (request) => {
+                return AxiosLogger.requestLogger(request, {
+                    url: true,
+                    data: true,
+                    prefixText: '@sap-ux/odata-service-inquirer',
+                    headers: true,
+                    logger: LoggerHelper.logger.debug.bind(this)
+                });
+            },
+            (error) => {
+                return AxiosLogger.errorLogger(error, {
+                    logger: LoggerHelper.logger.error.bind(this)
+                });
+            }
+        );
+        interceptors.response.use(
+            (response) => {
+                return AxiosLogger.responseLogger(response, {
+                    data: true,
+                    prefixText: '@sap-ux/odata-service-inquirer',
+                    status: true,
+                    headers: true,
+                    logger: LoggerHelper.logger.debug.bind(this)
+                });
+            },
+            (err) => {
+                return AxiosLogger.errorLogger(err, {
+                    logger: LoggerHelper.logger.error.bind(this)
+                });
+            }
+        );
     }
 }

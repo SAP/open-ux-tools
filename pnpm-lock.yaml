@@ -1269,6 +1269,9 @@ importers:
 
   packages/odata-service-inquirer:
     dependencies:
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
@@ -1287,6 +1290,12 @@ importers:
       '@sap/wing-service-explorer':
         specifier: 1.8.0
         version: 1.8.0
+      axios:
+        specifier: 1.6.8
+        version: 1.6.8
+      axios-logger:
+        specifier: 2.8.0
+        version: 2.8.0
       i18next:
         specifier: 23.5.1
         version: 23.5.1
@@ -10839,6 +10848,13 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
+  /axios-logger@2.8.0:
+    resolution: {integrity: sha512-MWOBmbyAarx18rkI0xsuMDkK1oaqwROqeZjsfVgsD0Y7IGLzN3ZNZPpcnoCDKeajU0uLxjCs85186CeLU36bXg==}
+    dependencies:
+      chalk: 4.1.2
+      dateformat: 3.0.3
+    dev: false
+
   /axios@0.21.4:
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
     dependencies:
@@ -12143,6 +12159,10 @@ packages:
     dependencies:
       yaml-ast-parser: 0.0.43
     dev: true
+
+  /dateformat@3.0.3:
+    resolution: {integrity: sha512-jyCETtSl3VMZMWeRo7iY1FL19ges1t55hMo5yaam4Jrsm5EPL89UQkoQRyiI+Yf4k8r2ZpdngkV8hr1lIdjb3Q==}
+    dev: false
 
   /debug@2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}

@@ -1,4 +1,5 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
+import type { Annotations } from '@sap-ux/axios-extension';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ListChoiceOptions } from 'inquirer';
@@ -33,6 +34,11 @@ export interface OdataServiceAnswers {
     metadata?: string;
 
     /**
+     * The annotations document for the service.
+     */
+    annotations?: Annotations[];
+
+    /**
      * The selected CAP service.
      */
     capService?: CapService;
@@ -43,9 +49,29 @@ export interface OdataServiceAnswers {
     odataVersion?: OdataVersion;
 
     /**
-     * The relative path of the selected service.
+     * The url origin (scheme, domain and port) of the service.
+     */
+    origin?: string;
+
+    /**
+     * The relative url path of the selected service. This coupled with the origin forms the full service url.
      */
     servicePath?: string;
+
+    /**
+     * The 'sap-client' value for the service.
+     */
+    sapClient?: string;
+
+    /**
+     * User name for the service where basic authentication is required.
+     */
+    username?: string;
+
+    /**
+     * Password for the service where basic authentication is required.
+     */
+    password?: string;
 
     /**
      * Metadata file path
@@ -72,7 +98,11 @@ export enum promptNames {
     /**
      * Cap service
      */
-    capService = 'capService'
+    capService = 'capService',
+    /**
+     * Odata service URL
+     */
+    serviceUrl = 'serviceUrl'
 }
 
 export type CapRuntime = 'Node.js' | 'Java';
@@ -149,13 +179,21 @@ export type MetadataPromptOptions = {
     requiredOdataVersion?: OdataVersion;
 };
 
+export type OdataServiceUrlPromptOptions = {
+    /**
+     * Used to validate the service specified by the url is of the required odata version edmx
+     */
+    requiredOdataVersion?: OdataVersion;
+};
+
 /**
- * Provide the correct type checking for object value prompt options
+ * Provide the correct type checking for prompt options
  */
 type odataServiceInquirerPromptOptions = Record<promptNames.datasourceType, DatasourceTypePromptOptions> &
     Record<promptNames.metadataFilePath, MetadataPromptOptions> &
     Record<promptNames.capProject, CapProjectPromptOptions> &
-    Record<promptNames.capService, CapServicePromptOptions>;
+    Record<promptNames.capService, CapServicePromptOptions> &
+    Record<promptNames.serviceUrl, OdataServiceUrlPromptOptions>;
 
 export type OdataServiceQuestion = YUIQuestion<OdataServiceAnswers>;
 
@@ -203,3 +241,5 @@ export const hostEnvironment = {
         technical: 'CLI'
     }
 };
+
+export const SAP_CLIENT_KEY = 'sap-client';

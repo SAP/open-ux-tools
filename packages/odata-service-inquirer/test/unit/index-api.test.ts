@@ -125,6 +125,53 @@ describe('API tests', () => {
                 "validate": [Function],
                 "when": [Function],
               },
+              {
+                "guiOptions": {
+                  "breadcrumb": true,
+                  "hint": "http://<hostname>:<port>/path/to/odata/service/",
+                  "mandatory": true,
+                },
+                "message": "OData service URL",
+                "name": "serviceUrl",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "default": false,
+                "message": "Do you want to continue generation with the untrusted certificate?",
+                "name": "ignoreCertError",
+                "type": "confirm",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "name": "cliIgnoreCertValidate",
+                "when": [Function],
+              },
+              {
+                "guiOptions": {
+                  "mandatory": true,
+                },
+                "message": "Service username",
+                "name": "username",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "guiOptions": {
+                  "applyDefaultWhenDirty": true,
+                  "mandatory": true,
+                },
+                "guiType": "login",
+                "mask": "*",
+                "message": "Service password",
+                "name": "password",
+                "type": "password",
+                "validate": [Function],
+                "when": [Function],
+              },
             ]
         `);
     });

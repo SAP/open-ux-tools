@@ -4,7 +4,7 @@ import { getLocalCapProjectPrompts } from '../../../../src/prompts/datasources/c
 import type { CapService } from '../../../../src/types';
 import { promptNames, hostEnvironment, type CapServiceChoice } from '../../../../src/types';
 import { type CapProjectChoice, capInternalPromptNames } from '../../../../src/prompts/datasources/cap-project/types';
-import { PromptState, getPlatform } from '../../../../src/utils';
+import { PromptState, getHostEnvironment } from '../../../../src/utils';
 import {
     enterCapPathChoiceValue,
     getCapServiceChoices as getCapServiceChoicesMock
@@ -15,7 +15,7 @@ import { errorHandler } from '../../../../src/prompts/prompt-helpers';
 
 jest.mock('../../../../src/utils', () => ({
     ...jest.requireActual('../../../../src/utils'),
-    getPlatform: jest.fn()
+    getHostEnvironment: jest.fn()
 }));
 
 jest.mock('../../../../src/error-handler/error-handler', () => ({
@@ -74,7 +74,7 @@ jest.mock('../../../../src/prompts/datasources/cap-project/cap-helpers', () => (
 
 describe('getLocalCapProjectPrompts', () => {
     beforeAll(async () => {
-        (getPlatform as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         // Wait for i18n to bootstrap so we can test localised strings
         await initI18nOdataServiceInquirer();
     });

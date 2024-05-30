@@ -11,6 +11,8 @@ export class PromptState {
 
     public static isYUI = false;
 
+    public static isCertError = false;
+
     static reset(): void {
         PromptState.odataService = {};
     }

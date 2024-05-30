@@ -16,6 +16,8 @@ import {
 } from './types';
 import { PromptState, setTelemetryClient } from './utils';
 import { initI18nOdataServiceInquirer } from './i18n';
+// temp test
+import { ConnectionValidator } from './prompts/datasources/service-url/connectionValidator';
 
 /**
  * Get the inquirer prompts for odata service.
@@ -89,5 +91,6 @@ export {
     type OdataServicePromptOptions,
     // These exports are to facilitate migration to open-ux-tools and will be removed in a future release
     ERROR_TYPE,
-    ErrorHandler
+    ErrorHandler,
+    ConnectionValidator
 };

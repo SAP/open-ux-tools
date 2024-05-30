@@ -12,7 +12,7 @@ const osVersionName = osName();
  *
  * @returns the platform name and technical name
  */
-export function getPlatform(): { name: string; technical: string } {
+export function getHostEnvironment(): { name: string; technical: string } {
     if (!PromptState.isYUI) {
         return hostEnvironment.cli;
     } else {
@@ -54,7 +54,7 @@ export function sendTelemetryEvent(eventName: string, telemetryData: TelemetryPr
  */
 function createTelemetryEvent(eventName: string, telemetryData: TelemetryProperties): TelemetryEvent {
     const telemProps: TelemetryProperties = Object.assign(telemetryData, {
-        Platform: getPlatform().technical,
+        Platform: getHostEnvironment().technical,
         OperatingSystem: osVersionName
     });
     return {
@@ -62,6 +62,16 @@ function createTelemetryEvent(eventName: string, telemetryData: TelemetryPropert
         properties: telemProps,
         measurements: {}
     };
+}
+
+/**
+* Replaces the url origin (protocal, host and port) in the specified metadata 'Uri' entries with a relative path segment '.'.
+* 
+* @param metadata a metadata string
+* @returns metadata string with the origin replaced with a relative path segment '.'
+*/
+export function removeOrigin(metadata: string): string {
+   return metadata?.replace(/ Uri="(http|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[0])/g, ` Uri=".`);
 }
 
 export { PromptState };

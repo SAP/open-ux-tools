@@ -132,7 +132,7 @@ export class ErrorHandler {
         [ERROR_TYPE.INTERNAL_SERVER_ERROR]: t('errors.internalServerError', { error: (error as Error)?.message }),
         [ERROR_TYPE.NOT_FOUND]: t('errors.urlNotFound'),
         [ERROR_TYPE.ODATA_URL_NOT_FOUND]: t('errors.odataServiceUrlNotFound'),
-        [ERROR_TYPE.BAD_GATEWAY]: t('errors.destinationUnavailable'),
+        [ERROR_TYPE.BAD_GATEWAY]: t('errors.badGateway'),
         [ERROR_TYPE.DESTINATION_UNAVAILABLE]: t('errors.destinationUnavailable'),
         [ERROR_TYPE.DESTINATION_NOT_FOUND]: t('errors.destinationNotFound'),
         [ERROR_TYPE.DESTINATION_MISCONFIGURED]: t('errors.destinationMisconfigured'),
