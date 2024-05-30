@@ -79,11 +79,6 @@ export interface AppOptions {
      * Excludes the index.html from the template and does not add the `start-noflp` script in package.json
      */
     generateIndex?: boolean;
-
-    /**
-     * Enables specific ui5 libs for V4 apps
-     */
-    loadV4Ui5Libs?: boolean;
 }
 
 export interface Ui5App {

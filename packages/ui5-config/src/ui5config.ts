@@ -154,6 +154,14 @@ export class UI5Config {
         ui5Libraries: string[],
         ui5Theme = 'sap_fiori_3'
     ): UI5Config {
+        // Libraries to always load
+        const defaultLibraries = ['sap.m', 'sap.ushell', 'sap.ui.core'];
+
+        defaultLibraries.forEach((lib) => {
+            if (!ui5Libraries.includes(lib)) {
+                ui5Libraries.push(lib);
+            }
+        });
         const libraryObjs = [];
         for (const library of ui5Libraries) {
             libraryObjs.push({ name: library });
@@ -166,6 +174,17 @@ export class UI5Config {
             value: { name: ui5Framework, version: ui5Version, libraries: libraryObjs }
         });
         return this;
+    }
+
+    public updateUI5Libs(): void {
+        const libs = this.document.getSequence({ path: 'framework.libraries' });
+        if (libs && !this.document.findItem(libs, (lib: any) => lib.name === 'sap.fe.templates')) {
+            libs.add({ name: 'sap.fe.templates' });
+            this.document.setIn({
+                path: 'framework.libraries',
+                value: libs.toJSON()
+            });
+        }
     }
 
     /**

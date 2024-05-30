@@ -446,6 +446,8 @@ exports[`UI5Config addUI5Framework Add with specific theme and additional librar
   version: 1.64.0
   libraries:
     - name: sap.m
+    - name: sap.ushell
+    - name: sap.ui.core
     - name: themelib_sap_belize
 "
 `;
@@ -455,6 +457,9 @@ exports[`UI5Config addUI5Framework Minimal set of inputs 1`] = `
   name: SAPUI5
   version: 1.64.0
   libraries:
+    - name: sap.m
+    - name: sap.ushell
+    - name: sap.ui.core
     - name: themelib_sap_fiori_3
 "
 `;
@@ -465,6 +470,8 @@ exports[`UI5Config addUI5Framework Use a dark theme 1`] = `
   version: 1.64.0
   libraries:
     - name: sap.m
+    - name: sap.ushell
+    - name: sap.ui.core
     - name: themelib_sap_fiori_3
 "
 `;
@@ -475,6 +482,8 @@ exports[`UI5Config addUI5Framework Use horizon high contrast black theme 1`] = `
   version: 1.96.0
   libraries:
     - name: sap.m
+    - name: sap.ushell
+    - name: sap.ui.core
     - name: themelib_sap_horizon
 "
 `;
@@ -485,6 +494,8 @@ exports[`UI5Config addUI5Framework Use horizon high contrast white theme 1`] = `
   version: 1.96.0
   libraries:
     - name: sap.m
+    - name: sap.ushell
+    - name: sap.ui.core
     - name: themelib_sap_horizon
 "
 `;
@@ -495,6 +506,8 @@ exports[`UI5Config addUI5Framework Use horizon high dark theme 1`] = `
   version: 1.96.0
   libraries:
     - name: sap.m
+    - name: sap.ushell
+    - name: sap.ui.core
     - name: themelib_sap_horizon
 "
 `;
@@ -546,5 +559,18 @@ exports[`UI5Config setType replace type 1`] = `
 
 exports[`UI5Config setType set type 1`] = `
 "type: application
+"
+`;
+
+exports[`UI5Config updateUI5Libs updateUI5Libs in framework libraries 1`] = `
+"framework:
+  name: SAPUI5
+  version: 1.64.0
+  libraries:
+    - name: sap.m
+    - name: sap.ushell
+    - name: sap.ui.core
+    - name: themelib_sap_fiori_3
+    - name: sap.fe.templates
 "
 `;

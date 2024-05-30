@@ -83,25 +83,6 @@ describe('UI5 templates', () => {
         });
     });
 
-    it('option: `loadV4Ui5Libs`', async () => {
-        const projectDir = join(outputDir, 'testapp_loadFpmUi5Libs');
-        const fs = await generate(projectDir, {
-            ...baseAppConfig,
-            appOptions: {
-                loadV4Ui5Libs: true
-            }
-        });
-        expect(fs.dump(projectDir)).toMatchSnapshot();
-        return new Promise((resolve) => {
-            // write out the files for debugging
-            if (debug) {
-                fs.commit(resolve);
-            } else {
-                resolve(true);
-            }
-        });
-    });
-
     it('option: `typescript, npm modules and Fiori tools`', async () => {
         const projectDir = join(outputDir, 'testapp_typescript');
         const fs = await generate(

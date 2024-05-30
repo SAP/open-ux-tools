@@ -21,6 +21,7 @@ import {
 import { changesPreviewToVersion, escapeFLPText } from './data/templateAttributes';
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
+import { UI5Config } from '@sap-ux/ui5-config';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -140,6 +141,14 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
                 );
             }
         );
+    }
+
+    // Updating ui5-local with FPM specific libs
+    if (feApp.service.version == OdataVersion.v4) {
+        const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
+        const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
+        ui5LocalConfig.updateUI5Libs();
+        fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     }
 
     // Update manifest.json with template specific settings
