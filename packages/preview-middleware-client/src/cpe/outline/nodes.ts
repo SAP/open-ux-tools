@@ -79,6 +79,7 @@ function addChildToExtensionPoint(id: string, children: OutlineNode[]) {
  * @param scenario type of project
  * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
  * @returns {Promise<OutlineNode[]>} transformed outline tree nodes
+ */
 export async function transformNodes(
     input: OutlineViewNode[],
     scenario: Scenario,
@@ -98,8 +99,8 @@ export async function transformNodes(
             const technicalName = current.technicalName.split('.').slice(-1)[0];
 
             const transformedChildren = isAdp
-                ? await handleDuplicateNodes(children, scenario)
-                : await transformNodes(children, scenario);
+                ? await handleDuplicateNodes(children, scenario, reuseComponentsIds)
+                : await transformNodes(children, scenario, reuseComponentsIds);
 
             const node: OutlineNode = {
                 controlId: current.id,
@@ -107,7 +108,7 @@ export async function transformNodes(
                 name: text ?? technicalName,
                 editable,
                 visible: current.visible ?? true,
-                children: await transformNodes(children, scenario, reuseComponentsIds)
+                children: transformedChildren
             };
 
             await fillReuseComponents(reuseComponentsIds, current, scenario);
@@ -165,15 +166,16 @@ async function fillReuseComponents(
         }
     }
  }
-
+/**
  * Handles duplicate nodes that are retrieved from extension point default content and created controls,
  * if they exist under an extension point these controls are removed from the children array
  *
  * @param children outline view node children
  * @param scenario type of project
+ * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
  * @returns transformed outline tree nodes
  */
-export async function handleDuplicateNodes(children: OutlineViewNode[], scenario: Scenario): Promise<OutlineNode[]> {
+export async function handleDuplicateNodes(children: OutlineViewNode[], scenario: Scenario, reuseComponentsIds: Set<string>): Promise<OutlineNode[]> {
     const extPointIDs = new Set<string>();
 
     children.forEach((child: OutlineViewNode) => {
@@ -185,5 +187,5 @@ export async function handleDuplicateNodes(children: OutlineViewNode[], scenario
 
     const uniqueChildren = children.filter((child) => !extPointIDs.has(child.id));
 
-    return transformNodes(uniqueChildren, scenario);
+    return transformNodes(uniqueChildren, scenario, reuseComponentsIds);
 }
