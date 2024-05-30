@@ -10,7 +10,8 @@ export {
     isCapNodeJsProject,
     getCapEnvironment,
     readCapServiceMetadataEdmx,
-    toReferenceUri
+    toReferenceUri,
+    clearCdsModuleCache
 } from './cap';
 export { filterDataSourcesByType } from './service';
 export { getNodeModulesPath } from './dependencies';

@@ -32,6 +32,7 @@ export {
     readUi5Yaml,
     toReferenceUri,
     filterDataSourcesByType
+    clearCdsModuleCache
 } from './project';
 export * from './types';
 export * from './library';

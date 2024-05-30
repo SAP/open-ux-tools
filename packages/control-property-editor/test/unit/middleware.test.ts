@@ -133,4 +133,93 @@ describe('communication middleware', () => {
         `);
         expect(sendActionfn).toHaveBeenCalledTimes(1);
     });
+
+    test('undo - send action', () => {
+        const action = common.undo();
+        const next = jest.fn().mockReturnValue(action);
+        jest.mock('@sap-ux-private/control-property-editor-common', () => {
+            return {
+                undo: { type: '[ext] undo' }
+            };
+        });
+        const result = middleWare(next)(action);
+        expect(result).toMatchInlineSnapshot(`
+            Object {
+              "payload": undefined,
+              "type": "[ext] undo",
+            }
+        `);
+        expect(sendActionfn).toHaveBeenCalledTimes(1);
+    });
+
+    test('redo - send action', () => {
+        const action = common.redo();
+        const next = jest.fn().mockReturnValue(action);
+        jest.mock('@sap-ux-private/control-property-editor-common', () => {
+            return {
+                redo: { type: '[ext] redo' }
+            };
+        });
+        const result = middleWare(next)(action);
+        expect(result).toMatchInlineSnapshot(`
+            Object {
+              "payload": undefined,
+              "type": "[ext] redo",
+            }
+        `);
+        expect(sendActionfn).toHaveBeenCalledTimes(1);
+    });
+
+    test('save - send action', () => {
+        const action = common.save();
+        const next = jest.fn().mockReturnValue(action);
+        jest.mock('@sap-ux-private/control-property-editor-common', () => {
+            return {
+                save: { type: '[ext] save' }
+            };
+        });
+        const result = middleWare(next)(action);
+        expect(result).toMatchInlineSnapshot(`
+            Object {
+              "payload": undefined,
+              "type": "[ext] save",
+            }
+        `);
+        expect(sendActionfn).toHaveBeenCalledTimes(1);
+    });
+
+    test('setAppMode(adaptation) mode - send action', () => {
+        const action = common.setAppMode('adaptation');
+        const next = jest.fn().mockReturnValue(action);
+        jest.mock('@sap-ux-private/control-property-editor-common', () => {
+            return {
+                setAppMode: { type: '[ext] setAppMode' }
+            };
+        });
+        const result = middleWare(next)(action);
+        expect(result).toMatchInlineSnapshot(`
+            Object {
+              "payload": "adaptation",
+              "type": "[ext] set-app-mode",
+            }
+        `);
+        expect(sendActionfn).toHaveBeenCalledTimes(1);
+    });
+    test('setAppMode(navigation) mode - send action', () => {
+        const action = common.setAppMode('navigation');
+        const next = jest.fn().mockReturnValue(action);
+        jest.mock('@sap-ux-private/control-property-editor-common', () => {
+            return {
+                setAppMode: { type: '[ext] setAppMode' }
+            };
+        });
+        const result = middleWare(next)(action);
+        expect(result).toMatchInlineSnapshot(`
+            Object {
+              "payload": "navigation",
+              "type": "[ext] set-app-mode",
+            }
+        `);
+        expect(sendActionfn).toHaveBeenCalledTimes(1);
+    });
 });

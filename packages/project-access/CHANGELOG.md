@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.20.2
+
+### Patch Changes
+
+-   54c91c6d: Export method 'clearCdsModuleCache' to provide option to clear cds module cache for passed project root path.
+
 ## 1.20.1
 
 ### Patch Changes
