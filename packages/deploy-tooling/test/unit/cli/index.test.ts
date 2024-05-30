@@ -79,6 +79,7 @@ describe('cli', () => {
         ];
 
         const cliCmdWithUaa = [...cliCmd, '--cloud-service-env', '--service', '/bc/my/uaa/deploy/service'];
+        const cliCmdWithAuthTyp = [...cliCmd, '--authentication-type', 'reentranceTicket'];
 
         test.each([
             {
@@ -113,6 +114,12 @@ describe('cli', () => {
                 deployFn: mockedUi5RepoService.deploy,
                 object: { retry: false, strictSsl: false },
                 provider: '/bc/my/uaa/deploy/service'
+            },
+            {
+                params: cliCmdWithAuthTyp,
+                writeFileSyncCalled: 0,
+                deployFn: mockedUi5RepoService.deploy,
+                object: { authenticationType: 'reentranceTicket' }
             }
         ])(
             'successful deploy with different options %s',
