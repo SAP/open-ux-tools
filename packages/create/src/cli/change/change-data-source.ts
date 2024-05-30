@@ -15,10 +15,10 @@ let loginAttempts = 3;
 /**
  * Add a new sub-command to change the data source of an adaptation project to the given command.
  *
- * @param {Command} cmd - The command to add the change-data-source sub-command to.
+ * @param {Command} cmd - The command to add the change data-source sub-command to.
  */
 export function addChangeDataSourceCommand(cmd: Command): void {
-    cmd.command('change-data-source [path]')
+    cmd.command('data-source [path]')
         .option('-s, --simulate', 'simulate only do not write or install')
         .action(async (path, options) => {
             await changeDataSource(path, { ...options }, !!options.simulate);

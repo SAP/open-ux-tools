@@ -5,6 +5,7 @@ import { getLogger } from '../tracing';
 import { getAddCommands } from './add';
 import { getRemoveCommands } from './remove';
 import { getGenerateCommands } from './generate';
+import { getChangeCommands } from './change';
 
 /*
  * We've chosen 'commander' over 'minimist' and 'yargs' for this CLI implementation. Reasons:
@@ -52,6 +53,9 @@ function getCommanderProgram(): Command {
 
     // Handler for create-fiori remove <feature> ..
     program.addCommand(getRemoveCommands());
+
+    // Handler for create-fiori change <feature> ..
+    program.addCommand(getChangeCommands());
 
     // Override exit so calling this command without arguments does not result in an exit code 1, which causes an error message when running from npm init
     program.exitOverride();
