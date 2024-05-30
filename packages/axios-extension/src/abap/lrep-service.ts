@@ -277,7 +277,7 @@ export class LayeredRepositoryService extends Axios implements Service {
      * @param cloudPackage name
      * @returns the system info object
      */
-    public async systemInfo(language: string = 'EN', cloudPackage?: string): Promise<SystemInfo> {
+    public async getSystemInfo(language: string = 'EN', cloudPackage?: string): Promise<SystemInfo> {
         try {
             const params = {
                 'sap-languag': language
@@ -286,14 +286,14 @@ export class LayeredRepositoryService extends Axios implements Service {
                 params['package'] = cloudPackage;
             }
 
-            const response = await this.get(`${DTA_PATH_SUFFIX}/system_info`, { params });
+            const response = await this.get(`${DTA_PATH_SUFFIX}system_info`, { params });
             this.tryLogResponse(response, 'Successful getting system info.');
             return JSON.parse(response.data) as SystemInfo;
         } catch (error) {
             this.log.error('Getting system data failed.');
             this.log.debug(error);
             if (isAxiosError(error) && error.response?.status === 405) {
-                this.log.error('Newer version of SAP_UI required');
+                this.log.error('Newer version of SAP_UI required!');
             }
 
             throw error;
