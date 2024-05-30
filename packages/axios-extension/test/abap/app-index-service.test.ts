@@ -1,7 +1,7 @@
 import { AppIndexService, createForAbap } from '../../src';
 import nock from 'nock';
 import appIndexMock from './mockResponses/appIndex.json';
-
+import type { AxiosError } from '../../src';
 nock.disableNetConnect();
 
 describe('AppIndexService', () => {
@@ -11,6 +11,18 @@ describe('AppIndexService', () => {
     };
 
     beforeAll(() => {
+        nock.disableNetConnect();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
+    });
+
+    describe('search', () => {
+        const provider = createForAbap(config);
+        const service: AppIndexService = provider.getAppIndex();
+
         nock(server)
             .get((path) => path.startsWith(AppIndexService.PATH))
             .reply(200, (path) => {
@@ -33,11 +45,6 @@ describe('AppIndexService', () => {
                 }
             })
             .persist();
-    });
-
-    describe('search', () => {
-        const provider = createForAbap(config);
-        const service: AppIndexService = provider.getAppIndex();
 
         test('no filter', async () => {
             const appIndex = await service.search();
@@ -59,6 +66,46 @@ describe('AppIndexService', () => {
             expect(appIndex).toBeDefined();
             expect(appIndex.length).toBe(2);
             expect(appIndex[0].url).toBeDefined();
+        });
+    });
+
+    describe('getIsManiFirstSupported', () => {
+        const provider = createForAbap(config);
+        const service: AppIndexService = provider.getAppIndex();
+
+        test('get is manifest first supported', async () => {
+            nock.cleanAll();
+            nock(server)
+                .get((path) => path.startsWith(`${AppIndexService.PATH}/ui5_app_mani_first_supported`))
+                .reply(200, (_path) => {
+                    return appIndexMock['ui5_app_mani_first_supported'];
+                })
+                .persist();
+
+            const result = await service.getIsManiFirstSupported('appId');
+            expect(result).toBe(true);
+        });
+
+        test('request fails and throw error', async () => {
+            const mockAxiosError = {
+                response: {
+                    status: 404,
+                    data: 'Not found'
+                },
+                message: 'Request failed with status code 404'
+            } as AxiosError;
+            nock.cleanAll();
+            nock(server)
+                .get((path) => path.startsWith(`${AppIndexService.PATH}/ui5_app_mani_first_supported`))
+                .replyWithError(mockAxiosError)
+                .persist();
+
+            try {
+                await service.getIsManiFirstSupported('appId');
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toBe('Request failed with status code 404');
+            }
         });
     });
 });
