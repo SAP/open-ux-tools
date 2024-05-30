@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.24.12
+
+### Patch Changes
+
+-   855a4ae2: Added support for custom action within custom section
+
 ## 0.24.11
 
 ### Patch Changes
