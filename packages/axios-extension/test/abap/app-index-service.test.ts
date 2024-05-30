@@ -102,6 +102,7 @@ describe('AppIndexService', () => {
 
             try {
                 await service.getIsManiFirstSupported('appId');
+                fail('The function should have thrown an error.');
             } catch (error) {
                 expect(error).toBeDefined();
                 expect(error.message).toBe('Request failed with status code 404');
