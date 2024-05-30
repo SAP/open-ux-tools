@@ -1,5 +1,17 @@
 # @sap-ux/control-property-editor
 
+## 0.4.23
+
+### Patch Changes
+
+-   78de7813: RTA standard toolbar replaced with custom CPE toolbar
+
+## 0.4.22
+
+### Patch Changes
+
+-   33f1df85: Update build in themes(`dark`, `light`, `hcb`) by syncing from latest VSCode 1.89.1
+
 ## 0.4.21
 
 ### Patch Changes

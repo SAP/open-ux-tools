@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 1.16.1
+
+### Patch Changes
+
+-   33f1df85: Update build in themes(`dark`, `light`, `hcb`) by syncing from latest VSCode 1.89.1
+
+## 1.16.0
+
+### Minor Changes
+
+-   43b0ebdd: Buttons. New property 'transparent' for UIDefaultButton and minor coloring styles correction
+
 ## 1.15.15
 
 ### Patch Changes

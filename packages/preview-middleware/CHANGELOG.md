@@ -1,5 +1,62 @@
 # @sap-ux/preview-middleware
 
+## 0.13.52
+
+### Patch Changes
+
+-   Updated dependencies [54c91c6d]
+    -   @sap-ux/project-access@1.20.2
+    -   @sap-ux/adp-tooling@0.10.13
+
+## 0.13.51
+
+### Patch Changes
+
+-   52623d36: fix missing support for connect api in flex handler creation
+
+## 0.13.50
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.12
+
+## 0.13.49
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.11
+
+## 0.13.48
+
+### Patch Changes
+
+-   78de7813: RTA standard toolbar replaced with custom CPE toolbar
+
+## 0.13.47
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.10
+-   @sap-ux/project-access@1.20.1
+
+## 0.13.46
+
+### Patch Changes
+
+-   b67b29f5: Generate testsuite for all configured test frameworks
+
+## 0.13.45
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.9
+
+## 0.13.44
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.8
+
 ## 0.13.43
 
 ### Patch Changes

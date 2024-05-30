@@ -534,7 +534,11 @@ describe('OutlinePanel', () => {
             },
             icons: [],
             dialogMessage: undefined,
-            isAdpProject: false
+            isAdpProject: false,
+            appMode: 'adaptation',
+            canSave: false,
+            changeStack: { canRedo: false, canUndo: false },
+            isAppLoading: true
         };
         const { container } = render(<OutlinePanel />, { initialState });
 

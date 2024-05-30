@@ -402,7 +402,8 @@ describe('main redux slice', () => {
                     reloadApplication()
                 )
             ).toStrictEqual({
-                fileChanges: []
+                fileChanges: [],
+                isAppLoading: true
             });
         });
     });
