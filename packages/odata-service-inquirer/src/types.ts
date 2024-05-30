@@ -1,7 +1,7 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { CdsInfo } from '@sap-ux/project-access';
+import type { CdsVersionInfo } from '@sap-ux/project-access';
 import type { ListChoiceOptions } from 'inquirer';
 
 /**
@@ -86,7 +86,7 @@ export interface CapService {
     /**
      * The CDS info for the Cds instance that was used to compile the project when determining the service.
      */
-    cdsInfo?: CdsInfo;
+    cdsVersionInfo?: CdsVersionInfo;
     /**
      * The name of the CAP service as identified by the cds model.
      */

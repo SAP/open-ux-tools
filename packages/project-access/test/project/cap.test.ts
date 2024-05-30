@@ -109,7 +109,10 @@ describe('Test getCapModelAndServices()', () => {
                         }
                     ])
                 }
-            }
+            },
+            home: '/path/to/cds/home',
+            version: '7.0.0',
+            root: '/path/to/cds/root'
         };
         jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
 
@@ -134,10 +137,10 @@ describe('Test getCapModelAndServices()', () => {
                     'runtime': 'Node.js'
                 }
             ],
-            cdsInfo: {
-                home: undefined,
-                version: undefined,
-                root: undefined
+            cdsVersionInfo: {
+                home: '/path/to/cds/home',
+                version: '7.0.0',
+                root: '/path/to/cds/root'
             }
         });
         expect(cdsMock.load).toBeCalledWith(
@@ -173,6 +176,11 @@ describe('Test getCapModelAndServices()', () => {
 
         // Check results
         expect(capMS.services).toEqual([]);
+        expect(capMS.cdsVersionInfo).toEqual({
+            home: undefined,
+            version: undefined,
+            root: undefined
+        });
         expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL_NO_SERVICES', { root: 'ROOT_PATH' });
     });
 

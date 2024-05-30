@@ -12,7 +12,7 @@ import {
 import * as capValidators from '../../../../src/prompts/datasources/cap-project/validators';
 import type { CapCustomPaths } from '@sap-ux/project-access';
 import { errorHandler } from '../../../../src/prompts/prompt-helpers';
-import { type CdsInfo } from '@sap-ux/project-access';
+import { type CdsVersionInfo } from '@sap-ux/project-access';
 
 jest.mock('../../../../src/utils', () => ({
     ...jest.requireActual('../../../../src/utils'),
@@ -37,9 +37,9 @@ jest.mock('@sap-ux/project-access', () => ({
     getCapCustomPaths: jest.fn().mockImplementation(async () => mockCapCustomPaths)
 }));
 
-const mockCdsInfo: CdsInfo = {
+const mockCdsVersionInfo: CdsVersionInfo = {
     version: '7.0.0',
-    home: '/path/to/cd/home',
+    home: '/path/to/cds/home',
     root: '/path/to/cds/root'
 };
 
@@ -51,7 +51,7 @@ const initialMockCapServicesChoices: CapServiceChoice[] = [
             urlPath: '/admin/',
             serviceCdsPath: '../bookshop/srv/admin-service',
             projectPath: '/cap/path/to/project1',
-            cdsInfo: mockCdsInfo
+            cdsVersionInfo: mockCdsVersionInfo
         }
     },
     {
@@ -61,7 +61,7 @@ const initialMockCapServicesChoices: CapServiceChoice[] = [
             urlPath: '/browse/',
             serviceCdsPath: '../bookshop/srv/cat-service',
             projectPath: '/cap/path/to/project1',
-            cdsInfo: mockCdsInfo
+            cdsVersionInfo: mockCdsVersionInfo
         }
     }
 ];
@@ -250,7 +250,7 @@ describe('getLocalCapProjectPrompts', () => {
             capType: 'Node.js',
             serviceCdsPath: '../relative/services/path',
             urlPath: 'odatav4/service/path',
-            cdsInfo: mockCdsInfo
+            cdsVersionInfo: mockCdsVersionInfo
         };
         expect(await (capServicePrompt!.validate as Function)(capService)).toBe(true);
         expect(PromptState.odataService).toMatchInlineSnapshot(`
@@ -283,7 +283,7 @@ describe('getLocalCapProjectPrompts', () => {
             capType: 'Node.js',
             serviceCdsPath: '../relative/services/path',
             urlPath: 'odatav4/service/path',
-            cdsInfo: mockCdsInfo
+            cdsVersionInfo: mockCdsVersionInfo
         };
         expect(await (capCliStateSetterPrompt!.when as Function)({ capService })).toEqual(false);
         expect(PromptState.odataService).toMatchInlineSnapshot(`

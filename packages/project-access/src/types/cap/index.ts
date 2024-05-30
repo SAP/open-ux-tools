@@ -221,7 +221,10 @@ export interface ServiceInfo {
     runtime?: string;
 }
 
-export interface CdsInfo {
+/**
+ * CDS version information extracted from package json that was used to compile the project when determining the service.
+ */
+export interface CdsVersionInfo {
     home: string;
     version: string;
     root: string;
