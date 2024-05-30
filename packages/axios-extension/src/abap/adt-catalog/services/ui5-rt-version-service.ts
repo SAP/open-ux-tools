@@ -31,7 +31,7 @@ export class UI5RtVersionService extends AdtService {
     /**
      * Get UI5 Version of ABAP system.
      *
-     * @returns AdtCategory
+     * @returns UI5 Version on the connected ABAP System.
      */
     public async getUI5Version(): Promise<string> {
         try {
@@ -39,7 +39,7 @@ export class UI5RtVersionService extends AdtService {
             return result.data as string;
         } catch (error) {
             if (isAxiosError) {
-                this.log.error('Could not fetched UI5 Version.');
+                this.log.debug('Could not fetch UI5 Version.');
             }
             this.log.debug(error);
             throw error;

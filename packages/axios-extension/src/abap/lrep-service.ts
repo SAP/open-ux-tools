@@ -292,6 +292,9 @@ export class LayeredRepositoryService extends Axios implements Service {
         } catch (error) {
             this.log.error('Getting system data failed.');
             this.log.debug(error);
+            if (isAxiosError(error) && error.response?.status === 405) {
+                this.log.error('Newer version of SAP_UI required');
+            }
 
             throw error;
         }
