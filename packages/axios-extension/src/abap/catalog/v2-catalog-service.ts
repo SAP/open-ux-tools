@@ -107,12 +107,19 @@ export class V2CatalogService extends CatalogService {
             });
         }
 
-        const params = {
-            $format: 'json',
-            $filter: `Title eq '${title}' and TechnicalServiceVersion eq ${version}`
-        };
-        const response = await this.get<ODataServiceV2Info[]>(`/${this.entitySet}`, { params });
-        const services = response.odata();
+        let services = [];
+        if (this.entitySet) {
+            const params = {
+                $format: 'json',
+                $filter: `Title eq '${title}' and TechnicalServiceVersion eq ${version}`
+            };
+            const response = await this.get<ODataServiceV2Info[]>(`/${this.entitySet}`, { params });
+            services = response.odata();
+        } else {
+            const uriTemplate = `/ServiceCollection/?$filter=Title eq '${title}' and TechnicalServiceVersion eq ${version}&$format=json`;
+            const uri = encodeURI(uriTemplate);
+            services = (await this.get<ODataServiceV2Info[]>(uri)).odata();
+        }
 
         if (services.length > 1) {
             // #14793: Fix for user created multi namespaces for the same service
@@ -138,8 +145,11 @@ export class V2CatalogService extends CatalogService {
      * @param filter.path filter by path
      * @returns service annotations
      */
-    protected async getServiceAnnotations({ id, title, path }: FilterOptions): Promise<ODataServiceV2Info[]> {
-        if (!this.entitySet) {
+    protected async getServiceAnnotations(
+        { id, title, path }: FilterOptions,
+        preloadCatalog = true
+    ): Promise<ODataServiceV2Info[]> {
+        if (preloadCatalog && !this.entitySet) {
             await this.determineEntitySet();
         }
         if (!id) {
@@ -149,8 +159,9 @@ export class V2CatalogService extends CatalogService {
             }
         }
         if (id) {
+            let basePath = this.entitySet ? `${this.entitySet}` : 'serviceCollection';
             const response = await this.get<ODataServiceV2Info[]>(
-                `/${this.entitySet}('${encodeURIComponent(id)}')/Annotations`,
+                `/${basePath}('${encodeURIComponent(id)}')/Annotations`,
                 {
                     params: { $format: 'json' }
                 }
@@ -170,12 +181,12 @@ export class V2CatalogService extends CatalogService {
      * @param filter.path filter by path
      * @returns annotations
      */
-    public async getAnnotations({ id, title, path }: FilterOptions): Promise<Annotations[]> {
+    public async getAnnotations({ id, title, path }: FilterOptions, preloadCatalog = true): Promise<Annotations[]> {
         if (!id && !title && !path) {
             throw new Error('No filter parameters passed in');
         }
 
-        const serviceAnnotations = await this.getServiceAnnotations({ id, title, path });
+        const serviceAnnotations = await this.getServiceAnnotations({ id, title, path }, preloadCatalog);
         const annotations: Annotations[] = [];
         for (const service of serviceAnnotations) {
             const _path = `/Annotations(TechnicalName='${encodeURIComponent(service.TechnicalName)}',Version='${
