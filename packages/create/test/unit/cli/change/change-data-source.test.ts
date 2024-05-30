@@ -23,8 +23,9 @@ const descriptorVariant = JSON.parse(
 jest.mock('fs');
 jest.mock('prompts');
 
+const mockAppInfo = { ExampleApp: { manifestUrl: 'https://sap.example' } };
 const abapServicesMock = {
-    getAppInfo: jest.fn().mockResolvedValue({ manifestUrl: 'https://sap.example' }),
+    getAppInfo: jest.fn().mockResolvedValue(mockAppInfo),
     getManifest: jest.fn().mockResolvedValue(JSON.parse(appManifest))
 };
 
@@ -162,7 +163,7 @@ describe('change/data-source', () => {
     test('change data-source - authentication error', async () => {
         abapServicesMock.getAppInfo
             .mockRejectedValueOnce({ message: '401:Unauthorized', response: { status: 401 } })
-            .mockResolvedValue('https://sap.example');
+            .mockResolvedValue(mockAppInfo);
 
         const command = new Command('data-source');
         addChangeDataSourceCommand(command);
@@ -205,6 +206,19 @@ describe('change/data-source', () => {
         await command.parseAsync(getArgv(appRoot));
 
         expect(loggerMock.error).toBeCalledWith('No data sources found in the manifest');
+        expect(promptYUIQuestionsSpy).not.toBeCalled();
+        expect(generateChangeSpy).not.toBeCalled();
+    });
+
+    test('change data-source - no manifest URL', async () => {
+        abapServicesMock.getAppInfo.mockResolvedValueOnce({ ExampleApp: {} }).mockResolvedValue(mockAppInfo);
+
+        const command = new Command('data-source');
+        addChangeDataSourceCommand(command);
+        await command.parseAsync(getArgv(appRoot));
+
+        expect(loggerMock.error).toBeCalledWith('Manifest URL not found');
+        expect(loggerMock.debug).toBeCalled();
         expect(promptYUIQuestionsSpy).not.toBeCalled();
         expect(generateChangeSpy).not.toBeCalled();
     });

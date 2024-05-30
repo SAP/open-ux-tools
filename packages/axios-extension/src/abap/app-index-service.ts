@@ -18,10 +18,13 @@ export type AsyncHintsRequest = {
     name: string;
     reference: string;
 };
-export interface Ui5AppInfo {
+
+export type Ui5AppInfo = Record<string, Ui5AppInfoContent>;
+export interface Ui5AppInfoContent {
     name: string;
     url: string;
-    manifestUrl: string;
+    manifestUrl?: string;
+    manifest?: string;
     asyncHints: {
         libs: AsyncHintsLib[];
         requests: AsyncHintsRequest[];
@@ -61,10 +64,7 @@ export abstract class AppIndexService extends Axios implements Service {
     public async getAppInfo(appId: string): Promise<Ui5AppInfo> {
         try {
             const response = await this.get('/ui5_app_info_json', { params: { id: appId } });
-            const appInfo = JSON.parse(response.data)[appId];
-            appInfo.manifestUrl = appInfo.manifestUrl ?? appInfo.manifest ?? '';
-            delete appInfo.manifest;
-            return appInfo as Ui5AppInfo;
+            return JSON.parse(response.data);
         } catch (error) {
             if (isAxiosError(error)) {
                 this.log.error(`Failed fetching ui5_app_info_json for app with id ${appId}.`);

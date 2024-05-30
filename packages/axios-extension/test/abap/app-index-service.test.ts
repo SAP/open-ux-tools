@@ -2,7 +2,16 @@ import { AppIndexService, createForAbap } from '../../src';
 import nock from 'nock';
 import appIndexMock from './mockResponses/appIndex.json';
 import appInfoJsonMock from './mockResponses/ui5AppInfo.json';
-import cloneDeep from 'lodash/cloneDeep';
+import type { ToolsLogger } from '@sap-ux/logger';
+import * as Logger from '@sap-ux/logger';
+
+const loggerMock: ToolsLogger = {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn()
+} as Partial<ToolsLogger> as ToolsLogger;
+jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 
 describe('AppIndexService', () => {
     const server = 'https://sap.example';
@@ -80,44 +89,7 @@ describe('AppIndexService', () => {
                 .reply(200, appInfoJsonMock)
                 .persist();
             const appInfo = await service.getAppInfo('ExampleApp');
-            expect(appInfo).toStrictEqual(appInfoJsonMock['ExampleApp']);
-        });
-
-        test('get app info with `manifest` property', async () => {
-            const appInfoJsonMockWithManifest: {
-                [key: string]: { manifest?: string; manifestUrl?: string };
-            } = cloneDeep(appInfoJsonMock);
-            delete appInfoJsonMockWithManifest['ExampleApp']?.manifestUrl;
-            appInfoJsonMockWithManifest['ExampleApp'].manifest =
-                '/sap/bc/lrep/content/apps/ExampleApp/app/sap/example_app/manifest.appdescr';
-
-            nock.cleanAll();
-            nock(server)
-                .get((path) => path.includes('/ui5_app_info_json'))
-                .reply(200, () => appInfoJsonMockWithManifest)
-                .persist();
-
-            const appInfo = await service.getAppInfo('ExampleApp');
-            expect(appInfo).toStrictEqual(appInfoJsonMock['ExampleApp']);
-        });
-
-        test('get app info without manifest or manifestUrl property', async () => {
-            nock.cleanAll();
-            nock(server)
-                .get((path) => path.includes('/ui5_app_info_json'))
-                .reply(200, () => {
-                    const appInfoJsonMockWithoutManifestURL: {
-                        [key: string]: { manifest?: string; manifestUrl?: string };
-                    } = cloneDeep(appInfoJsonMock);
-                    delete appInfoJsonMockWithoutManifestURL['ExampleApp'].manifestUrl;
-                    return appInfoJsonMockWithoutManifestURL;
-                })
-                .persist();
-
-            const expectedAppInfo = cloneDeep(appInfoJsonMock['ExampleApp']);
-            expectedAppInfo.manifestUrl = '';
-            const appInfo = await service.getAppInfo('ExampleApp');
-            expect(appInfo).toStrictEqual(expectedAppInfo);
+            expect(appInfo).toStrictEqual(appInfoJsonMock);
         });
 
         test('get app info fails, application not found', async () => {

@@ -41,7 +41,7 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults, simu
         checkEnvironment(basePath);
 
         const variant = getVariant(basePath);
-        const manifest = await getManifest(basePath, defaults, logger, variant);
+        const manifest = await getManifest(basePath, logger, variant);
         const dataSources = manifest['sap.app'].dataSources;
         if (!dataSources) {
             throw new Error('No data sources found in the manifest');
@@ -75,17 +75,11 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults, simu
  * Get the manifest of the base application.
  *
  * @param {string} basePath - The path to the adaptation project.
- * @param {PromptDefaults} defaults - The default values for the prompts.
  * @param {ToolsLogger} logger - The logger.
  * @param {DescriptorVariant} variant - The app descriptor variant.
  * @returns {Promise<Manifest>} The manifest.
  */
-async function getManifest(
-    basePath: string,
-    defaults: PromptDefaults,
-    logger: ToolsLogger,
-    variant: DescriptorVariant
-): Promise<Manifest> {
+async function getManifest(basePath: string, logger: ToolsLogger, variant: DescriptorVariant): Promise<Manifest> {
     const ui5Config = await UI5Config.newInstance(readFileSync(join(basePath, 'ui5.yaml'), 'utf-8'));
     const adp = ui5Config.findCustomMiddleware<{ adp: AdpPreviewConfig }>('fiori-tools-preview')?.configuration?.adp;
     if (!adp) {
@@ -103,7 +97,11 @@ async function getManifest(
     );
 
     const appIndexService = provider.getAppIndex();
-    const manifestUrl = (await appIndexService.getAppInfo(variant.reference)).manifestUrl;
+    const appInfo = (await appIndexService.getAppInfo(variant.reference))[variant.reference];
+    const manifestUrl = appInfo.manifestUrl ?? appInfo.manifest;
+    if (!manifestUrl) {
+        throw new Error('Manifest URL not found');
+    }
     const lrepService = provider.getLayeredRepository('/');
     return await lrepService.getManifest(manifestUrl);
 }

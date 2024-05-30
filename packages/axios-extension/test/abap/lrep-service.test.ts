@@ -283,10 +283,13 @@ describe('LayeredRepositoryService', () => {
     });
 
     describe('getManifest', () => {
-        const manifestUrl = `/content/apps/ExampleApp/app/sap/example_app/manifest.appdescr`;
+        const server = 'http://sap.example';
+        const service = createForAbap({ baseURL: server }).getLayeredRepository('/');
+        const manifestUrl = '/sap/bc/lrep/content/apps/ExampleApp/app/sap/example_app/manifest.appdescr';
+
         test('get valid manifest', async () => {
             const mockResult = { '_version': '1.0.0' };
-            nock(server).get(`${LayeredRepositoryService.PATH}${manifestUrl}`).reply(200, mockResult);
+            nock(server).get(manifestUrl).reply(200, mockResult);
             const response = await service.getManifest(manifestUrl);
             expect(response).toEqual(mockResult);
         });
