@@ -132,7 +132,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
             const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
             const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
             const ui5Libs = ['sap.fe.templates'];
-            ui5LocalConfig.updateUI5Libs(ui5Libs);
+            ui5LocalConfig.addUI5Libs(ui5Libs);
             fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
         }
     } else {

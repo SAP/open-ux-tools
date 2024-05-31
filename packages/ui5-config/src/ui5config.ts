@@ -171,7 +171,7 @@ export class UI5Config {
     /**
      *  Adds UI5 libraries to the yaml configuration if they do not already exist.
      *
-     * @param {string[]} addLibs - to update with these libraries
+     * @param {string[]} addLibs - to add these libraries
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
