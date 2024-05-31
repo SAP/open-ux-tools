@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.13.54
+
+### Patch Changes
+
+-   c1cc4f57: fix missing RTA toolbar in variant management
+
 ## 0.13.53
 
 ### Patch Changes
