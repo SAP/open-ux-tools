@@ -1,7 +1,7 @@
-import { OdataVersion } from '../../../../src';
+import { OdataVersion } from '../../../../src/index';
 import { initI18nOdataServiceInquirer } from '../../../../src/i18n';
 import { getServiceUrlQuestions } from '../../../../src/prompts/datasources/service-url/questions';
-import { OdataServiceUrlPromptOptions } from '../../../../src/types';
+import type { OdataServiceUrlPromptOptions } from '../../../../src/types';
 
 describe('Service URL prompts', () => {
     beforeAll(async () => {
