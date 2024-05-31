@@ -76,7 +76,8 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     const templateRoot = join(__dirname, '../templates');
 
     // update cds files with annotations only if service type is CDS and annotations are provided
-    if (service.type === ServiceType.CDS && service.annotations) {
+    const serviceType = service.type ? service.type : ServiceType.EDMX;
+    if (serviceType === ServiceType.CDS && service.annotations) {
         await updateCdsFilesWithAnnotations(service.annotations as CdsAnnotationsInfo, fs);
     }
     // manifest.json

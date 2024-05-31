@@ -71,7 +71,8 @@ async function updateCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotatio
  * @param {OdataService} service - The OData service information.
  */
 export function writeAnnotationXmlFiles(fs: Editor, basePath: string, service: OdataService): void {
-    if (service.type === ServiceType.CDS) {
+    const serviceType = service.type ? service.type : ServiceType.EDMX;
+    if (serviceType === ServiceType.CDS) {
         return;
     }
     // Write annotation xml if annotations are provided and service type is EDMX

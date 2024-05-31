@@ -15,6 +15,7 @@ export enum ServiceType {
     CDS = 'cds'
 }
 
+
 /**
  * Interface representing information for EDMX annotations.
  */

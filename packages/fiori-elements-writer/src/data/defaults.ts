@@ -93,7 +93,8 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
     };
 
     // Assign a default annotation name if the service type is EDMX and no local annotation name is provided
-    if (feApp.service.type === ServiceType.EDMX && !feApp.service.localAnnotationsName) {
+    const serviceType = feApp.service.type ? feApp.service.type : ServiceType.EDMX;
+    if (serviceType === ServiceType.EDMX && !feApp.service.localAnnotationsName) {
         feApp.service.localAnnotationsName = 'annotation';
     }
 
