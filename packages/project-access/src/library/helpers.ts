@@ -7,6 +7,7 @@ import { existsSync, promises as fs } from 'fs';
 import { XMLParser } from 'fast-xml-parser';
 import { getI18nPropertiesPaths } from '../project/i18n';
 import { getPropertiesI18nBundle } from '@sap-ux/i18n';
+import { gte, valid } from 'semver';
 
 /**
  * Reads the manifest file and returns the reuse library.
@@ -292,5 +293,54 @@ export function getManifestDependencies(manifest: Manifest): string[] {
         }
     });
 
+    return result;
+}
+
+/**
+ * Returns the minUI5Version, as defined in manifest.
+ *
+ * @param manifest - manifest object
+ * @returns minUI5Version, if present
+ */
+export function getMinUI5VersionFromManifest(manifest: Manifest): string | string[] | undefined {
+    const dependencies = manifest['sap.ui5']?.dependencies;
+    if (dependencies) {
+        return dependencies.minUI5Version;
+    }
+    return undefined;
+}
+
+/**
+ * Returns the minUI5Version as string[].
+ *
+ * @param manifest - manifest object
+ * @returns minUI5Version, as an array of strings
+ */
+export function getMinUI5VersionAsArray(manifest: Manifest): string[] {
+    let result: string[] = [];
+    const minUI5Version = getMinUI5VersionFromManifest(manifest);
+    if (minUI5Version) {
+        result = Array.isArray(minUI5Version) ? minUI5Version : [minUI5Version];
+    }
+    return result;
+}
+
+/**
+ * Returns the minUI5Version in string format.
+ * If it is defined as an arry, returns the minimum version from it.
+ *
+ * @param manifest - manifest object
+ * @returns the minimum version as string
+ */
+export function getMinimumUI5Version(manifest: Manifest): string | undefined {
+    let result: string | undefined;
+    const minUI5VersionArray = getMinUI5VersionAsArray(manifest);
+    if (minUI5VersionArray.length > 0) {
+        minUI5VersionArray.forEach((version) => {
+            if (valid(version) && (!result || gte(result, version))) {
+                result = version;
+            }
+        });
+    }
     return result;
 }
