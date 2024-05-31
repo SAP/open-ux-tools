@@ -1,4 +1,5 @@
 import { TlsPatch } from '../../src/base/patchTls';
+import tls from 'tls';
 
 describe('Test for TLS patch isPatchRequired()', () => {
     it('should return true for internal URLs containing .sap.corp', () => {
