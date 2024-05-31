@@ -158,6 +158,7 @@ export function createForAbapOnCloud(options: AbapCloudOptions & Partial<Provide
             const { url, cookies, ...config } = options;
             provider = createInstance<AbapServiceProvider>(AbapServiceProvider, {
                 baseURL: url,
+                cookies,
                 ...config
             });
             if (!cookies) {
