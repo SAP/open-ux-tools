@@ -1,5 +1,11 @@
 # @sap-ux/deploy-tooling
 
+## 0.14.30
+
+### Patch Changes
+
+-   d86989f9: adds auth type param to deploy tooling
+
 ## 0.14.29
 
 ### Patch Changes
