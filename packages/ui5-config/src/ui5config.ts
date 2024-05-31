@@ -175,7 +175,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addUI5Libs(addLibs: string[]): UI5Config {
+    public addUI5Libs(addLibs: string[]): this {
         const libs = this.document.getSequence({ path: 'framework.libraries' });
         if (libs) {
             addLibs.forEach((libName) => {
