@@ -4,6 +4,7 @@ import type { AdtCategory, AdtTransportStatus, TransportRequest, TransportCheck 
 import { XMLValidator } from 'fast-xml-parser';
 import * as xpath from 'xpath';
 import { DOMParser } from '@xmldom/xmldom';
+import type { AxiosResponse } from 'axios';
 
 /**
  * TransportChecksService implements ADT requests for fetching a list of available transport requests
@@ -31,11 +32,10 @@ export class TransportChecksService extends AdtService {
     /**
      * TransportChecksService API function to fetch a list of available transport requests.
      *
-     * @param packageName Package name for deployment
-     * @param appName Fiori project name for deployment. A new project that has not been deployed before is also allowed
-     * @returns A list of transport requests that can be used for deploy
+     * @param uri ADT uri identifying the development object
+     * @returns A list of transport requests linked to the dev object idenitfied by the uri
      */
-    public async getTransportRequests(packageName: string, appName: string): Promise<TransportRequest[]> {
+    private async getTransportRequests(uri: string): Promise<AxiosResponse> {
         const acceptHeaders = {
             headers: {
                 Accept: 'application/vnd.sap.as+xml; dataname=com.sap.adt.transport.service.checkData',
@@ -49,19 +49,26 @@ export class TransportChecksService extends AdtService {
                 <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
                     <asx:values>
                         <DATA>
-                        <PGMID/>
-                        <OBJECT/>
-                        <OBJECTNAME/>
-                        <DEVCLASS>${packageName}</DEVCLASS>
-                        <SUPER_PACKAGE/>
-                        <OPERATION>I</OPERATION>
-                        <URI>/sap/bc/adt/filestore/ui5-bsp/objects/${encodeURIComponent(appName)}/$create</URI>
+                            <OPERATION>I</OPERATION>
+                            <URI>${uri}</URI>
                         </DATA>
                     </asx:values>
                 </asx:abap>
             `;
 
-        const response = await this.post('', data, acceptHeaders);
+        return await this.post('', data, acceptHeaders);
+    }
+
+    /**
+     * TransportChecksService API function to fetch a list of available transport requests.
+     *
+     * @param app Fiori project name for deployment. A new project that has not been deployed before is also allowed
+     * @returns A list of transport requests that can be used for deploy
+     */
+    public async getTransportRequestsForApp(app: string): Promise<TransportRequest[]> {
+        const response = await this.getTransportRequests(
+            `/sap/bc/adt/filestore/ui5-bsp/objects/${encodeURIComponent(app)}/$create`
+        );
         return this.getTransportRequestList(response.data);
     }
 
@@ -71,28 +78,38 @@ export class TransportChecksService extends AdtService {
      * @param namespace The namespace for the deployed application
      * @returns Object that contains the package and the tansport used for the application deployment
      */
-    public async getPackageAndTransportRequest(namespace: string): Promise<TransportCheck> {
-        const acceptHeaders = {
-            headers: {
-                Accept: 'application/vnd.sap.as+xml; dataname=com.sap.adt.transport.service.checkData',
-                'content-type':
-                    'application/vnd.sap.as+xml; charset=UTF-8; dataname=com.sap.adt.transport.service.checkData'
-            }
-        };
-
-        const data = `
-			<?xml version="1.0" encoding="UTF-8" ?>
-			<asx:abap version="1.0" xmlns:asx="http://www.sap.com/abapxml">
-				<asx:values>
-					<DATA>
-						<OPERATION>I</OPERATION>
-						<URI>/sap/bc/adt/ui_flex_dta_folder?name=${namespace}&amp;layer=CUSTOMER_BASE&amp;package=undefined</URI>
-					</DATA>
-				</asx:values>
-			</asx:abap>`;
-        const response = await this.post('', data, acceptHeaders);
-
+    public async getTransportRequestForNamespace(namespace: string): Promise<TransportCheck> {
+        const response = await this.getTransportRequests(
+            `/sap/bc/adt/ui_flex_dta_folder?name=${namespace}&amp;layer=CUSTOMER_BASE&amp;package=undefined`
+        );
         return this.getTransportCheck(response.data);
+    }
+
+    /**
+     * Get a list of valid transport requests
+     * from ADT transportcheckes response response.
+     *
+     * @param xml Raw XML string from ADT transportcheckes reponse data
+     * @returns a list of valid transport requests can be used for deploy config
+     */
+    private getTransportRequestList(xml: string): TransportRequest[] {
+        if (XMLValidator.validate(xml) !== true) {
+            this.log.warn(`Invalid XML: ${xml}`);
+            return [];
+        }
+        const doc = new DOMParser().parseFromString(xml);
+
+        const status = xpath.select1('//RESULT/text()', doc)?.toString() as AdtTransportStatus;
+        switch (status) {
+            case 'S':
+                return this.getTransportList(doc);
+            case 'E':
+                this.logErrorMsgs(doc);
+                return [];
+            default:
+                this.log.warn(`Unknown response content: ${xml}`);
+                return [];
+        }
     }
 
     /**
@@ -147,33 +164,6 @@ export class TransportChecksService extends AdtService {
             };
         } else {
             throw new Error('Unable to parse ADT response');
-        }
-    }
-
-    /**
-     * Get a list of valid transport requests
-     * from ADT transportcheckes response response.
-     *
-     * @param xml Raw XML string from ADT transportcheckes reponse data
-     * @returns a list of valid transport requests can be used for deploy config
-     */
-    private getTransportRequestList(xml: string): TransportRequest[] {
-        if (XMLValidator.validate(xml) !== true) {
-            this.log.warn(`Invalid XML: ${xml}`);
-            return [];
-        }
-        const doc = new DOMParser().parseFromString(xml);
-
-        const status = xpath.select1('//RESULT/text()', doc)?.toString() as AdtTransportStatus;
-        switch (status) {
-            case 'S':
-                return this.getTransportList(doc);
-            case 'E':
-                this.logErrorMsgs(doc);
-                return [];
-            default:
-                this.log.warn(`Unknown response content: ${xml}`);
-                return [];
         }
     }
 

@@ -64,12 +64,14 @@ export async function useCatalogAndFetchSomeMetadata(
  * @param env object representing the content of the .env file.
  * @param env.TEST_PACKAGE optional package name for testing fetch transport numbers
  * @param env.TEST_APP optional project name for testing fetch transport numbers, new project doesn't exist on backend is also allowed
+ * @param env.TEST_NAMESPACE optional adp namespace for testing fetch transport numbers
  */
 export async function useAdtServices(
     provider: AbapServiceProvider,
     env: {
-        TEST_PACKAGE: string;
-        TEST_APP: string;
+        TEST_PACKAGE?: string;
+        TEST_APP?: string;
+        TEST_NAMESPACE?: string;
     }
 ): Promise<void> {
     try {
@@ -78,11 +80,58 @@ export async function useAdtServices(
             logger.warn('ATO setting is empty!');
         }
         const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
-        const transportRequestList = await transportChecksService.getTransportRequests(env.TEST_PACKAGE, env.TEST_APP);
-        if (transportRequestList.length === 0) {
-            logger.info(`Transport number is empty for package name ${env.TEST_PACKAGE}, app name ${env.TEST_APP}`);
-        } else {
-            logger.info(JSON.stringify(transportRequestList));
+        
+        if (env.TEST_APP) {
+            const transportRequestList = await transportChecksService.getTransportRequestsForApp(env.TEST_APP);
+            if (transportRequestList.length === 0) {
+                logger.info(`Transport number is empty for app name ${env.TEST_APP}`);
+            } else {
+                logger.info(JSON.stringify(transportRequestList));
+            }
+
+            const fileStoreService = await provider.getAdtService<FileStoreService>(FileStoreService);
+            const rootFolderContent = await fileStoreService.getAppArchiveContent('folder', env.TEST_APP);
+            logger.info(
+                `Deployed archive for ${env.TEST_APP} contains: ${(rootFolderContent as ArchiveFileNode[])
+                    .map((node) => node.basename)
+                    .join(',')}`
+            );
+
+            // Query and log the first encountered file content inside env.TEST_APP
+            const fileList = rootFolderContent.filter((node) => node.type === 'file');
+            if (fileList.length > 0) {
+                debugger
+                const fileContent = await fileStoreService.getAppArchiveContent('file', env.TEST_APP, fileList[0].path);
+                logger.info(`File content of ${fileList[0].path} is:`);
+                logger.info(fileContent);
+            } else {
+                logger.info(`No file in ${env.TEST_APP}`);
+            }
+            // Query and log the first encountered folder content inside env.TEST_APP
+            const folderList = rootFolderContent.filter((node) => node.type === 'folder');
+            if (folderList.length > 0) {
+                const folderContent = await fileStoreService.getAppArchiveContent(
+                    'folder',
+                    env.TEST_APP,
+                    folderList[0].path
+                );
+                logger.info(
+                    `Folder ${folderList[0].path} contains: ${(folderContent as ArchiveFileNode[])
+                        .map((node) => node.basename)
+                        .join(',')}`
+                );
+            } else {
+                logger.info(`No folder in ${env.TEST_APP}`);
+            }
+        }
+
+        if (env.TEST_NAMESPACE) {
+            const transportRequest = await transportChecksService.getTransportRequestForNamespace(env.TEST_NAMESPACE);
+            if (transportRequest) {
+                logger.info(`Transport number is empty for app name ${env.TEST_NAMESPACE}`);
+            } else {
+                logger.info(JSON.stringify(transportRequest));
+            }
         }
 
         if (env.TEST_PACKAGE) {
@@ -100,40 +149,6 @@ export async function useAdtServices(
         const listPackageService = await provider.getAdtService<ListPackageService>(ListPackageService);
         const packages = await listPackageService.listPackages({ maxResults: 50, phrase: '$TMP' });
         logger.info(`Query $tmp package: ${packages.length === 1}`);
-
-        const fileStoreService = await provider.getAdtService<FileStoreService>(FileStoreService);
-        const rootFolderContent = await fileStoreService.getAppArchiveContent('folder', env.TEST_APP);
-        logger.info(
-            `Deployed archive for ${env.TEST_APP} contains: ${(rootFolderContent as ArchiveFileNode[])
-                .map((node) => node.basename)
-                .join(',')}`
-        );
-
-        // Query and log the first encountered file content inside env.TEST_APP
-        const fileList = rootFolderContent.filter((node) => node.type === 'file');
-        if (fileList.length > 0) {
-            const fileContent = await fileStoreService.getAppArchiveContent('file', env.TEST_APP, fileList[0].path);
-            logger.info(`File content of ${fileList[0].path} is:`);
-            logger.info(fileContent);
-        } else {
-            logger.info(`No file in ${env.TEST_APP}`);
-        }
-        // Query and log the first encountered folder content inside env.TEST_APP
-        const folderList = rootFolderContent.filter((node) => node.type === 'folder');
-        if (folderList.length > 0) {
-            const folderContent = await fileStoreService.getAppArchiveContent(
-                'folder',
-                env.TEST_APP,
-                folderList[0].path
-            );
-            logger.info(
-                `Folder ${folderList[0].path} contains: ${(folderContent as ArchiveFileNode[])
-                    .map((node) => node.basename)
-                    .join(',')}`
-            );
-        } else {
-            logger.info(`No folder in ${env.TEST_APP}`);
-        }
     } catch (error) {
         logger.error(error.cause || error.toString() || error);
     }
