@@ -65,7 +65,7 @@ export async function validateService(
                 const catalogService = abapProvider.catalog(serviceOdataVersion as unknown as ODataVersion);
                 LoggerHelper.attachAxiosLogger(catalogService.interceptors);
                 LoggerHelper.logger.debug('Getting annotations for service');
-                const annotations = await catalogService.getAnnotations({ path: serviceAsUrl.pathname }, false);
+                const annotations = await catalogService.getAnnotations({ path: serviceAsUrl.pathname });
                 LoggerHelper.logger.debug(`Annotations array of length: ${annotations?.length} returned`);
                 PromptState.odataService.annotations = annotations;
             } catch (err) {
