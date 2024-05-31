@@ -1,4 +1,5 @@
 import { TlsPatch } from '../../src/base/patchTls';
+import tls from 'tls';
 
 describe('Test for TLS patch isPatchRequired()', () => {
     it('should return true for internal URLs containing .sap.corp', () => {
@@ -16,6 +17,7 @@ describe('Test for TLS patch isPatchRequired()', () => {
     it('should not require patching after patch is applied', () => {
         expect(TlsPatch.isPatchRequired('host.devint.net.sap:12345/any/path')).toBe(true);
         TlsPatch.apply();
+        tls.createSecureContext();
         expect(TlsPatch.isPatched).toBe(true);
     });
 });
