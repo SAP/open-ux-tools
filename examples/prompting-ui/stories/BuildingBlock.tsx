@@ -35,8 +35,9 @@ export const BuildingBlockQuestions = (props: {
     type: SupportedBuildingBlocks;
     visibleQuestions?: string[];
     externalAnswers?: Answers;
+    liveValidation?: boolean;
 }): JSX.Element => {
-    const { type, visibleQuestions, externalAnswers = {} } = props;
+    const { type, visibleQuestions, externalAnswers = {}, liveValidation = true } = props;
     const [layoutSettings, setLayoutSettings] = useState<CustomizationSettings>({
         multiColumn: true,
         showDescriptions: true
@@ -47,16 +48,24 @@ export const BuildingBlockQuestions = (props: {
     const [validation, setValidation] = useState<ValidationResults>({});
 
     useEffect(() => setAnswers({ ...getDefaultAnswers(questions), ...externalAnswers }), [questions]);
-    
+
     async function updateAnswers(newAnswers: Answers, name: string, answer: AnswerValue) {
         setAnswers({
             ...getDefaultAnswers(questions),
             ...newAnswers
         });
-        await validateAnswers(type, [{ name } as IQuestion], {
-            ...getDefaultAnswers(questions),
-            ...newAnswers
-        }).then((validationResults) => setValidation({ ...validation, ...validationResults }));
+        if (liveValidation) {
+            await validateAnswers(type, [{ name } as IQuestion], {
+                ...getDefaultAnswers(questions),
+                ...newAnswers
+            }).then((validationResults) => setValidation({ ...validation, ...validationResults }));
+        } else {
+            const clearValidation = { ...validation };
+            if (clearValidation[name]) {
+                delete clearValidation[name];
+                setValidation(clearValidation);
+            }
+        }
     }
 
     async function handleApply() {

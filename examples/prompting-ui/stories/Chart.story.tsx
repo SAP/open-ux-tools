@@ -25,3 +25,7 @@ export const ExternalValues = (): JSX.Element => {
         />
     );
 };
+
+export const WithoutLiveValidation = (): JSX.Element => {
+    return <BuildingBlockQuestions type={SupportedBuildingBlocks.Chart} liveValidation={false} />;
+};
