@@ -1,5 +1,148 @@
 # @sap-ux/preview-middleware
 
+## 0.13.52
+
+### Patch Changes
+
+-   Updated dependencies [54c91c6d]
+    -   @sap-ux/project-access@1.20.2
+    -   @sap-ux/adp-tooling@0.10.13
+
+## 0.13.51
+
+### Patch Changes
+
+-   52623d36: fix missing support for connect api in flex handler creation
+
+## 0.13.50
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.12
+
+## 0.13.49
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.11
+
+## 0.13.48
+
+### Patch Changes
+
+-   78de7813: RTA standard toolbar replaced with custom CPE toolbar
+
+## 0.13.47
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.10
+-   @sap-ux/project-access@1.20.1
+
+## 0.13.46
+
+### Patch Changes
+
+-   b67b29f5: Generate testsuite for all configured test frameworks
+
+## 0.13.45
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.9
+
+## 0.13.44
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.8
+
+## 0.13.43
+
+### Patch Changes
+
+-   56d8b0b9: Add default content for extension points to the outline in CPE
+
+## 0.13.42
+
+### Patch Changes
+
+-   Updated dependencies [6e3d4da4]
+    -   @sap-ux/adp-tooling@0.10.7
+
+## 0.13.41
+
+### Patch Changes
+
+-   1618da09: Use existing html file on file system for preview
+
+## 0.13.40
+
+### Patch Changes
+
+-   da5d9f0b: Fragment files are not created together with an addXML change in onChangeRequest handler
+-   Updated dependencies [da5d9f0b]
+    -   @sap-ux/adp-tooling@0.10.6
+
+## 0.13.39
+
+### Patch Changes
+
+-   52faf16f: Fix RTA initialization issue for UI5 versions less than 1.72.
+
+## 0.13.38
+
+### Patch Changes
+
+-   39665ea9: Fix for CPE does not start UI Adaptation for ADP Projects with lower UI5 Version than 1.120
+
+## 0.13.37
+
+### Patch Changes
+
+-   9e8af342: Disable fragment context menu item in CPE for controls with no stable id
+
+## 0.13.36
+
+### Patch Changes
+
+-   Updated dependencies [c87fcc91]
+    -   @sap-ux/adp-tooling@0.10.5
+
+## 0.13.35
+
+### Patch Changes
+
+-   Updated dependencies [e3d2324c]
+    -   @sap-ux/project-access@1.20.0
+    -   @sap-ux/adp-tooling@0.10.4
+
+## 0.13.34
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.3
+
+## 0.13.33
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.2
+
+## 0.13.32
+
+### Patch Changes
+
+-   Updated dependencies [f361f3b4]
+    -   @sap-ux/adp-tooling@0.10.1
+
+## 0.13.31
+
+### Patch Changes
+
+-   Updated dependencies [9ccbaded]
+    -   @sap-ux/adp-tooling@0.10.0
+
 ## 0.13.30
 
 ### Patch Changes

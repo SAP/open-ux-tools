@@ -1,5 +1,35 @@
 # @sap-ux/axios-extension
 
+## 1.12.6
+
+### Patch Changes
+
+-   558891c2: cleanup logging statment
+
+## 1.12.5
+
+### Patch Changes
+
+-   69282b7d: add cookies for embedded steampunk service providers
+
+## 1.12.4
+
+### Patch Changes
+
+-   6e3d4da4: Add config needed in BAS
+
+## 1.12.3
+
+### Patch Changes
+
+-   19ec0f01: FIX: corrected scenario ID for S/4HANA Cloud Public Edition 2408 and onward
+
+## 1.12.2
+
+### Patch Changes
+
+-   a41bbd95: Use correct param in business object request, add new exports
+
 ## 1.12.1
 
 ### Patch Changes

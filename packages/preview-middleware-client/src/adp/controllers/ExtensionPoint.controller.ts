@@ -85,6 +85,19 @@ export default class ExtensionPoint extends BaseDialog {
         }
 
         this.model.setProperty('/extensionPointName', extensionPointName);
+        const hasDefaultContent = this.hasDefaultContentForName(extensionPointName);
+        this.model.setProperty('/hasDefaultContent', hasDefaultContent);
+    }
+
+    /**
+     * Determines whether there is default content associated with the given name.
+     *
+     * @param {string} name - The name to check for associated default content.
+     * @returns {boolean} - True if there is non-empty default content associated with the name, false otherwise.
+     */
+    private hasDefaultContentForName(name: string): boolean {
+        const defaultContent = this.data?.info.find((v) => v.name === name)?.defaultContent;
+        return defaultContent ? defaultContent.length > 0 : false;
     }
 
     /**
@@ -92,18 +105,26 @@ export default class ExtensionPoint extends BaseDialog {
      */
     async buildDialogData(): Promise<void> {
         const name = this.data?.name;
+
         if (name) {
+            const hasDefaultContent = this.hasDefaultContentForName(name);
+
             const extensionPointList = [{ key: 0, value: name }];
-            this.updateModel(name, 0, extensionPointList, false);
+
+            this.updateModel(name, 0, extensionPointList, false, hasDefaultContent);
         } else {
+            // In this case we are selecting from the application. There can be many extension points under one control.
             const extensionPointList = this.data.info.map((v: ExtensionPointInfo, idx: number) => {
                 return {
                     key: idx,
                     value: v.name
                 };
             });
+            const firstElName = extensionPointList[0].value;
             const enabled = extensionPointList.length > 1;
-            this.updateModel(extensionPointList[0].value, 0, extensionPointList, enabled);
+            const hasDefaultContent = this.hasDefaultContentForName(firstElName);
+
+            this.updateModel(firstElName, 0, extensionPointList, enabled, hasDefaultContent);
         }
 
         try {
@@ -123,12 +144,20 @@ export default class ExtensionPoint extends BaseDialog {
      * @param key Selected extension point key
      * @param list All of the extension points that are under a view
      * @param enabled Enables the select control
+     * @param hasDefaultContent Whether there is default content associated with the extension name
      */
-    private updateModel(name: string, key: number, list: { key: number; value: string }[], enabled: boolean): void {
+    private updateModel(
+        name: string,
+        key: number,
+        list: { key: number; value: string }[],
+        enabled: boolean,
+        hasDefaultContent: boolean
+    ): void {
         this.model.setProperty('/extensionPointName', name);
         this.model.setProperty('/extensionPointKey', key);
         this.model.setProperty('/extensionPointList', list);
         this.model.setProperty('/extensionListEnabled', enabled);
+        this.model.setProperty('/hasDefaultContent', hasDefaultContent);
     }
 
     /**

@@ -67,10 +67,11 @@ export interface I18nPropertiesPaths {
     };
 }
 
+export type ODataVersion = NonNullable<ManifestNamespace.Setting['odataVersion']>;
 export interface ServiceSpecification {
     uri?: string;
     local?: string;
-    odataVersion?: ManifestNamespace.Setting['odataVersion'];
+    odataVersion?: ODataVersion;
     annotations?: {
         uri?: string;
         /**

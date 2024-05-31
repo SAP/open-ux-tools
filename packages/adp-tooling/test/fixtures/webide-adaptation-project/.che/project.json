@@ -1,0 +1,15 @@
+{
+    "type": "sap.web",
+    "builders": {
+        "configs": {}
+    },
+    "runners": {
+        "configs": {}
+    },
+    "attributes": {
+        "sap.watt.common.setting": [
+            "{\"projectType\":[\"sap.watt.uitools.ide.web\",\"sap.watt.uitools.ide.fiori\",\"sap.watt.saptoolsets.fiori.project.uiadaptation\",\"sap.watt.saptoolsets.fiori.project.adaptation\"],\"generation\":[{\"templateId\":\"adaptation.flexibilityadaptation\",\"templateVersion\":\"1.1.0\",\"dateTimeStamp\":\"Tue, 27 Jul 2021 08:48:16 GMT\"}],\"basevalidator\":{\"services\":{\"xml\":\"fioriXmlAnalysis\",\"js\":\"fioriJsValidator\"}},\"codeCheckingTriggers\":{\"notifyBeforePush\":false,\"notifyBeforePushLevel\":\"Error\",\"blockPush\":false,\"blockPushLevel\":\"Error\"},\"uiadaptation\":{\"componentname\":\"sap.ui.demoapps.rta.fiorielements\",\"safeMode\":true,\"appvariant\":\"migrate.test\",\"layer\":\"VENDOR\",\"sourceSystem\":\"DEVCLNT000\",\"isOVPApp\":false,\"isFioriElement\":true}}"
+        ]
+    },
+    "mixinTypes": []
+}

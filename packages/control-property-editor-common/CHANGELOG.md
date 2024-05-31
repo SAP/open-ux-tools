@@ -1,5 +1,17 @@
 # @sap-ux-private/control-property-editor-common
 
+## 0.3.6
+
+### Patch Changes
+
+-   78de7813: RTA standard toolbar replaced with custom CPE toolbar
+
+## 0.3.5
+
+### Patch Changes
+
+-   56d8b0b9: Add default content for extension points to the outline in CPE
+
 ## 0.3.4
 
 ### Patch Changes

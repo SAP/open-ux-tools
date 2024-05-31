@@ -1,5 +1,5 @@
 import type { CustomMiddleware, UI5Config } from '@sap-ux/ui5-config';
-import type { AdpWriterConfig } from '../types';
+import type { AdpCustomConfig, AdpWriterConfig } from '../types';
 
 /**
  * Generate the configuration for the middlewares required for the ui5.yaml.
@@ -9,6 +9,7 @@ import type { AdpWriterConfig } from '../types';
  */
 export function enhanceUI5Yaml(ui5Config: UI5Config, config: AdpWriterConfig) {
     const middlewares = config.options?.fioriTools ? getFioriToolsMiddlwares(config) : getOpenSourceMiddlewares(config);
+    ui5Config.setConfiguration({ propertiesFileSourceEncoding: 'UTF-8' });
     ui5Config.addCustomMiddleware(middlewares);
 }
 
@@ -38,6 +39,19 @@ export function enhanceUI5DeployYaml(ui5Config: UI5Config, config: AdpWriterConf
 }
 
 /**
+ * Generate custom configuration required for the ui5.yaml.
+ *
+ * @param ui5Config configuration representing the ui5.yaml
+ * @param config full project configuration
+ */
+export function enhanceUI5YamlWithCustomConfig(ui5Config: UI5Config, config?: AdpCustomConfig) {
+    if (config?.adp) {
+        const { safeMode } = config.adp;
+        ui5Config.addCustomConfiguration('adp', { safeMode });
+    }
+}
+
+/**
  * Get a list of required middlewares using the Fiori tools.
  *
  * @param config full project configuration
@@ -46,8 +60,17 @@ export function enhanceUI5DeployYaml(ui5Config: UI5Config, config: AdpWriterConf
 function getFioriToolsMiddlwares(config: AdpWriterConfig): CustomMiddleware<unknown>[] {
     return [
         {
-            name: 'fiori-tools-preview',
+            name: 'fiori-tools-appreload',
             afterMiddleware: 'compression',
+            configuration: {
+              port: 35729,
+              path: 'webapp',
+              delay: 300,
+            }
+        },
+        {
+            name: 'fiori-tools-preview',
+            afterMiddleware: 'fiori-tools-appreload',
             configuration: {
                 adp: {
                     target: config.target,
@@ -61,8 +84,9 @@ function getFioriToolsMiddlwares(config: AdpWriterConfig): CustomMiddleware<unkn
             configuration: {
                 ignoreCertErrors: false,
                 ui5: {
+                    version: config?.ui5?.minVersion ?? '', //default to latest if version is not set
                     path: ['/resources', '/test-resources'],
-                    url: 'https://ui5.sap.com'
+                    url: config?.ui5?.frameworkUrl ?? 'https://ui5.sap.com'
                 },
                 backend: [
                     {
@@ -83,6 +107,15 @@ function getFioriToolsMiddlwares(config: AdpWriterConfig): CustomMiddleware<unkn
  */
 function getOpenSourceMiddlewares(config: AdpWriterConfig): CustomMiddleware<object | undefined>[] {
     return [
+        {
+            name: 'reload-middleware',
+            afterMiddleware: 'compression',
+            configuration: {
+              port: 35729,
+              path: 'webapp',
+              delay: 300,
+            }
+        },
         {
             name: 'preview-middleware',
             afterMiddleware: 'compression',
