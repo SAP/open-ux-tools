@@ -134,7 +134,7 @@ describe('UI5Config', () => {
     describe('updateUI5Libs', () => {
         test('updateUI5Libs in framework libraries', () => {
             ui5Config.addUI5Framework('SAPUI5', '1.64.0', ['sap.m'], 'sap_fiori_3_dark');
-            ui5Config.updateUI5Libs();
+            ui5Config.updateUI5Libs(['sap.ushell']);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
     });

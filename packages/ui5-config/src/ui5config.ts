@@ -154,14 +154,6 @@ export class UI5Config {
         ui5Libraries: string[],
         ui5Theme = 'sap_fiori_3'
     ): UI5Config {
-        // Libraries to always load
-        const defaultLibraries = ['sap.m', 'sap.ushell', 'sap.ui.core'];
-
-        defaultLibraries.forEach((lib) => {
-            if (!ui5Libraries.includes(lib)) {
-                ui5Libraries.push(lib);
-            }
-        });
         const libraryObjs = [];
         for (const library of ui5Libraries) {
             libraryObjs.push({ name: library });
@@ -176,15 +168,27 @@ export class UI5Config {
         return this;
     }
 
-    public updateUI5Libs(): void {
+    /**
+     *  Updates UI5 libraries to the yaml configuration.
+     *
+     * @param {string[]} updateLibs - to update with these libraries
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public updateUI5Libs(updateLibs: string[]): UI5Config {
         const libs = this.document.getSequence({ path: 'framework.libraries' });
-        if (libs && !this.document.findItem(libs, (lib: any) => lib.name === 'sap.fe.templates')) {
-            libs.add({ name: 'sap.fe.templates' });
+        if (libs) {
+            updateLibs.forEach((libName) => {
+                if (!this.document.findItem(libs, (lib: any) => lib.name === libName)) {
+                    libs.add({ name: libName });
+                }
+            });
             this.document.setIn({
                 path: 'framework.libraries',
                 value: libs.toJSON()
             });
         }
+        return this;
     }
 
     /**
