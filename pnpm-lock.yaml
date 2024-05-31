@@ -9,6 +9,8 @@ overrides:
   nx-cloud>axios@<1.6.8: '>=1.6.8'
   nx-cloud>tar@<6.2.1: '>=6.2.1'
   '@sap/bas-sdk>axios@<1.6.8': '>=1.6.8'
+  '@sap/wing-service-explorer>axios@<1.6.8': '>=1.6.8'
+  '@sap/wing-service-explorer>fast-xml-parser@4.2.4': '>=4.2.7'
 
 importers:
 
@@ -7934,8 +7936,8 @@ packages:
     engines: {node: '>=8.0.0'}
     dependencies:
       '@vscode-logging/types': 0.1.4
-      axios: 0.21.4
-      fast-xml-parser: 4.2.4
+      axios: 1.6.8
+      fast-xml-parser: 4.2.7
       fs-extra: 7.0.1
       lodash: 4.17.21
       vkbeautify: 0.99.3
@@ -11024,14 +11026,6 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
-  /axios@0.21.4:
-    resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
-    dependencies:
-      follow-redirects: 1.15.6
-    transitivePeerDependencies:
-      - debug
-    dev: false
-
   /axios@1.6.8:
     resolution: {integrity: sha512-v/ZHtJDU39mDpyBoFVkETcd/uNdxrWRrg3bKpOKzXFA6Bvqopts6ALSMU3y6ijYxbw2B+wPrIv46egTzJXCLGQ==}
     dependencies:
@@ -14072,13 +14066,6 @@ packages:
   /fast-safe-stringify@2.1.1:
     resolution: {integrity: sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA==}
     dev: true
-
-  /fast-xml-parser@4.2.4:
-    resolution: {integrity: sha512-fbfMDvgBNIdDJLdLOwacjFAPYt67tr31H9ZhWSm45CDAxvd0I6WTlSOUo7K2P/K5sA5JgMKG64PI3DMcaFdWpQ==}
-    hasBin: true
-    dependencies:
-      strnum: 1.0.5
-    dev: false
 
   /fast-xml-parser@4.2.7:
     resolution: {integrity: sha512-J8r6BriSLO1uj2miOk1NW0YVm8AGOOu3Si2HQp/cSmo6EA4m3fcwu2WKjJ4RK9wMLBtg69y1kS8baDiQBR41Ig==}
