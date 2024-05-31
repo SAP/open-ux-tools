@@ -107,6 +107,16 @@ export async function getBuildingBlockChoices<T extends Answers>(
     }
 }
 
+export async function validateElementId(viewOrFragmentFile: string, id: string): Promise<HTMLElement | null> {
+    const xmlContent = (await fsPromises.readFile(viewOrFragmentFile)).toString();
+    const errorHandler = (level: string, message: string): void => {
+        throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
+    };
+    const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent);
+    const element = xmlDocument.getElementById(id);
+    return element;
+}
+
 export async function getBuildingBlockIdsInFile(
     viewOrFragmentFile: string,
     buildingBlockType: BuildingBlockType
@@ -178,11 +188,7 @@ export async function getChartBuildingBlockPrompts(basePath: string, fs: Editor)
     const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.chart.');
     const projectProvider = await ProjectProvider.createProject(basePath, fs);
     const validateFn = async (value: string, answers?: Answers) => {
-        return value &&
-            answers?.viewOrFragmentFile &&
-            (await getBuildingBlockIdsInFile(answers?.viewOrFragmentFile, BuildingBlockType.Chart)).find(
-                (id) => id === value
-            )
+        return value && answers?.viewOrFragmentFile && (await validateElementId(answers?.viewOrFragmentFile, value))
             ? t('id.validateExistingValueMsg')
             : true;
     };
@@ -277,11 +283,7 @@ export async function getTableBuildingBlockPrompts(basePath: string, fs: Editor)
         }
     ];
     const validateFn = async (value: string, answers?: Answers) => {
-        return value &&
-            answers?.viewOrFragmentFile &&
-            (await getBuildingBlockIdsInFile(answers?.viewOrFragmentFile, BuildingBlockType.Table)).find(
-                (id) => id === value
-            )
+        return value && answers?.viewOrFragmentFile && (await validateElementId(answers?.viewOrFragmentFile, value))
             ? t('id.validateExistingValueMsg')
             : true;
     };
@@ -451,11 +453,7 @@ export async function getFilterBarBuildingBlockPrompts(
         id: 'FilterBar'
     };
     const validateFn = async (value: string, answers?: Answers) => {
-        return value &&
-            answers?.viewOrFragmentFile &&
-            (await getBuildingBlockIdsInFile(answers?.viewOrFragmentFile, BuildingBlockType.FilterBar)).find(
-                (id) => id === value
-            )
+        return value && answers?.viewOrFragmentFile && (await validateElementId(answers?.viewOrFragmentFile, value))
             ? t('id.validateExistingValueMsg')
             : true;
     };
