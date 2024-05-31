@@ -18,6 +18,9 @@ import { UI5ControlProperty } from './types';
 import DataType from 'sap/ui/base/DataType';
 
 type AnalyzedType = Pick<UI5ControlProperty, 'isArray' | 'primitiveType' | 'ui5Type' | 'enumValues'>;
+interface Name {
+    getName(): string;
+}
 /**
  * A property is disabled if it is an array or the type is 'any'
  * - since  we currently don't have a good editor for it Otherwise, it is enabled.
@@ -103,7 +106,7 @@ function analyzePropertyType(property: ManagedObjectMetadataProperties): Analyze
             return analyzedType;
         }
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        const name = (Object.getPrototypeOf(propertyDataType) as { getName: () => string }).getName();
+        const name = (Object.getPrototypeOf(propertyDataType) as Name).getName();
         if (!name) {
             analyzedType.primitiveType = 'enum';
         } else {

@@ -44,6 +44,17 @@ interface Manifest {
     };
 }
 
+type AppIndexData = Record<
+    string,
+    {
+        dependencies?: {
+            url?: string;
+            type?: string;
+            componentId: string;
+        }[];
+    }
+>;
+
 /**
  * Check whether a specific dependency is a custom library, and if yes, add it to the map.
  *
@@ -100,18 +111,7 @@ async function getManifestLibs(appUrls: string[]): Promise<string> {
  *
  * @param dataFromAppIndex data returned from the app index service
  */
-function registerModules(
-    dataFromAppIndex: Record<
-        string,
-        {
-            dependencies?: {
-                url?: string;
-                type?: string;
-                componentId: string;
-            }[];
-        }
-    >
-) {
+function registerModules(dataFromAppIndex: AppIndexData) {
     Object.keys(dataFromAppIndex).forEach(function (moduleDefinitionKey) {
         const moduleDefinition = dataFromAppIndex[moduleDefinitionKey];
         if (moduleDefinition && moduleDefinition.dependencies) {
@@ -161,18 +161,7 @@ export async function registerComponentDependencyPaths(appUrls: string[], urlPar
         }
         const response = await fetch(url);
         try {
-            registerModules(
-                (await response.json()) as Record<
-                    string,
-                    {
-                        dependencies?: {
-                            url?: string;
-                            type?: string;
-                            componentId: string;
-                        }[];
-                    }
-                >
-            );
+            registerModules((await response.json()) as AppIndexData);
         } catch (error) {
             Log.error(`Registering of reuse libs failed. Error:${error}`);
         }

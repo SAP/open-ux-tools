@@ -11,6 +11,7 @@ import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import CommandExecutor from '../command-executor';
 import { matchesFragmentName } from '../utils';
+import type { Fragments } from '../api-handler';
 
 /**
  * @namespace open.ux.preview.client.adp.controllers
@@ -61,7 +62,7 @@ export default abstract class BaseDialog extends Controller {
         const beginBtn = this.dialog.getBeginButton();
 
         const fragmentName: string = input.getValue();
-        const fragmentList: { fragmentName: string }[] = this.model.getProperty('/fragmentList') as { fragmentName: string }[];
+        const fragmentList: Fragments = this.model.getProperty('/fragmentList') as Fragments;
 
         const updateDialogState = (valueState: ValueState, valueStateText = '') => {
             input.setValueState(valueState).setValueStateText(valueStateText);

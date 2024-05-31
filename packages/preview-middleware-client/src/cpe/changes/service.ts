@@ -44,6 +44,8 @@ interface Change {
     changeType: string;
 }
 
+type SavedChangesResponse = Record<string, Change>;
+
 type Properties<T extends object> = { [K in keyof T]-?: K extends string ? K : never }[keyof T];
 /**
  * Assert change for its validity. Throws error if no value found in saved changes.
@@ -163,7 +165,7 @@ export class ChangeService {
      */
     private async fetchSavedChanges(): Promise<void> {
         const savedChangesResponse = await fetch(FlexChangesEndPoints.changes + `?_=${Date.now()}`);
-        const savedChanges = await savedChangesResponse.json() as Record<string, Change>;
+        const savedChanges = await savedChangesResponse.json() as SavedChangesResponse;
         const changes = (
             Object.keys(savedChanges ?? {})
                 .map((key): SavedPropertyChange | UnknownSavedChange | undefined => {

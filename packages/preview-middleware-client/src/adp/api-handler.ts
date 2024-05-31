@@ -16,8 +16,9 @@ export const enum RequestMethod {
     DELETE = 'DELETE'
 }
 
-type Fragments = { fragmentName: string }[];
-type Controllers = { controllerName: string }[];
+export type Fragments = { fragmentName: string }[];
+export type Controllers = { controllerName: string }[];
+type ResponseMessage = { message?: string };
 
 export interface FragmentsResponse {
     fragments: Fragments;
@@ -68,7 +69,7 @@ export async function request<T>(endpoint: ApiEndpoints, method: RequestMethod, 
         const response: Response = await fetch(endpoint, config);
 
         if (!response.ok) {
-            const errorData = await response.json() as { message?: string };
+            const errorData = await response.json() as ResponseMessage;
             const message = errorData?.message ?? '';
             throw new Error(`Request failed, status: ${response.status}. ${message}`.trim());
         }
