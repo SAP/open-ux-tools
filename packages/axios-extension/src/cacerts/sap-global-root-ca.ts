@@ -1,3 +1,8 @@
+/**
+ * SAP Global Root CA certificate is publicly available from:
+ * https://github.com/SAP/SapMachine/blob/sapmachine/src/java.base/share/data/cacerts/sapglobalrootca
+ *
+ */
 export const sapGlobalRootCaCert = `
 Owner: CN=SAP Global Root CA, O=SAP AG, L=Walldorf, C=DE
 Issuer: CN=SAP Global Root CA, O=SAP AG, L=Walldorf, C=DE
