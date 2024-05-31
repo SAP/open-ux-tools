@@ -1,4 +1,4 @@
-import { OdataVersion } from '@sap-ux/odata-service-writer';
+import { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import readPkgUp from 'read-pkg-up';
 import type {
@@ -92,7 +92,8 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
         ui5Libs: getUi5Libs(feApp.template.type, feApp.service.version)?.concat(feApp.ui5?.ui5Libs ?? [])
     };
 
-    if (!feApp.service.localAnnotationsName) {
+    // Assign a default annotation name if the service type is EDMX and no local annotation name is provided
+    if (feApp.service.type === ServiceType.EDMX && !feApp.service.localAnnotationsName) {
         feApp.service.localAnnotationsName = 'annotation';
     }
 

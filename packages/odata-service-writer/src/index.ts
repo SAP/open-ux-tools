@@ -2,13 +2,13 @@ import { join, dirname, sep } from 'path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { updateManifest, updatePackageJson } from './updates';
+import { updateManifest, updatePackageJson, updateCdsFilesWithAnnotations, writeAnnotationXmlFiles } from './updates';
 import type { FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
 import { UI5Config, yamlErrorCode, YAMLError } from '@sap-ux/ui5-config';
 import prettifyXml from 'prettify-xml';
 import { enhanceData, getAnnotationNamespaces } from './data';
 import { t } from './i18n';
-import { OdataService, OdataVersion, ServiceType } from './types';
+import { OdataService, OdataVersion, ServiceType, CdsAnnotationsInfo, EdmxAnnotationsInfo } from './types';
 import { getWebappPath } from '@sap-ux/project-access';
 import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
 
@@ -75,6 +75,10 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     // merge content into existing files
     const templateRoot = join(__dirname, '../templates');
 
+    // update cds files with annotations only if service type is CDS and annotations are provided
+    if (service.type === ServiceType.CDS && service.annotations) {
+        await updateCdsFilesWithAnnotations(service.annotations as CdsAnnotationsInfo, fs);
+    }
     // manifest.json
     updateManifest(basePath, service, fs, templateRoot);
 
@@ -146,14 +150,10 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     }
 
-    if (service.annotations?.xml) {
-        fs.write(
-            join(basePath, 'webapp', 'localService', `${service.annotations.technicalName}.xml`),
-            prettifyXml(service.annotations.xml, { indent: 4 })
-        );
-    }
+    // Write annotation xml if annotations are provided and service type is EDMX
+    writeAnnotationXmlFiles(fs, basePath, service);
 
     return fs;
 }
 
-export { generate, OdataVersion, OdataService, ServiceType };
+export { generate, OdataVersion, OdataService, ServiceType, EdmxAnnotationsInfo, CdsAnnotationsInfo };
