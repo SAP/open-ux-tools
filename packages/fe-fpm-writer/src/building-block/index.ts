@@ -87,6 +87,31 @@ function getOrAddMacrosNamespace(ui5XmlDocument: Document): string {
 }
 
 /**
+ * Returns the content of the xml file document.
+ *
+ * @param {BuildingBlock} buildingBlockData - the building block data
+ * @param {Document} viewDocument - the view xml file document
+ * @param {Editor} fs - the memfs editor instance
+ * @returns {string} the template xml file content
+ */
+function getTemplateContent<T extends BuildingBlock>(
+    buildingBlockData: T,
+    viewDocument: Document | undefined,
+    fs: Editor
+): string {
+    const templateFolderName = buildingBlockData.buildingBlockType;
+    const templateFilePath = getTemplatePath(`/building-block/${templateFolderName}/View.xml`);
+    return render(
+        fs.read(templateFilePath),
+        {
+            macrosNamespace: viewDocument ? getOrAddMacrosNamespace(viewDocument) : 'macros',
+            data: buildingBlockData
+        },
+        {}
+    );
+}
+
+/**
  * Returns the template xml file document.
  *
  * @param {BuildingBlock} buildingBlockData - the building block data
@@ -99,16 +124,7 @@ function getTemplateDocument<T extends BuildingBlock>(
     viewDocument: Document | undefined,
     fs: Editor
 ): Document {
-    const templateFolderName = buildingBlockData.buildingBlockType;
-    const templateFilePath = getTemplatePath(`/building-block/${templateFolderName}/View.xml`);
-    const templateContent = render(
-        fs.read(templateFilePath),
-        {
-            macrosNamespace: viewDocument ? getOrAddMacrosNamespace(viewDocument) : 'macros',
-            data: buildingBlockData
-        },
-        {}
-    );
+    const templateContent = getTemplateContent(buildingBlockData, viewDocument, fs);
     const errorHandler = (level: string, message: string) => {
         throw new Error(`Unable to parse template file with building block data. Details: [${level}] - ${message}`);
     };
@@ -178,12 +194,9 @@ export function getSerializedFileContent<T extends BuildingBlock>(
     if (!fs) {
         fs = create(createStorage());
     }
-
-    // Read the view xml and template files and update contents of the view xml file
+    // Read the view xml and template files and get content of the view xml file
     const xmlDocument = config.viewOrFragmentPath
         ? getUI5XmlDocument(basePath, config.viewOrFragmentPath, fs)
         : undefined;
-    const templateDocument = getTemplateDocument(config.buildingBlockData, xmlDocument, fs);
-
-    return new XMLSerializer().serializeToString(templateDocument);
+    return getTemplateContent(config.buildingBlockData, xmlDocument, fs);
 }
