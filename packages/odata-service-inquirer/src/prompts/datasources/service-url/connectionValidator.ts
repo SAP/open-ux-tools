@@ -87,6 +87,7 @@ export class ConnectionValidator {
                 cookies: ''
             };
             let axiosConfig: AxiosRequestConfig = {};
+
             if (username && password) {
                 axiosConfig = {
                     auth: {
@@ -95,17 +96,16 @@ export class ConnectionValidator {
                     }
                 };
             }
+
             if (isBAS) {
                 axiosConfig.params.saml2 = 'disabled';
             }
-            // We will need this config again
-            this._axiosConfig = Object.assign(axiosConfig, provideConfig);
 
-            // Only the base url and search params are used from the URL object
+            this._axiosConfig = Object.assign(axiosConfig, provideConfig);
             this._odataService = createServiceForUrl(url.toString(), this._axiosConfig);
             LoggerHelper.attachAxiosLogger(this._odataService.interceptors);
             await this._odataService.get('');
-            return 200; // Ok, if we get here, url is found and accessible
+            return 200;
         } catch (e) {
             LoggerHelper.logger.debug(`ConnectionValidator.checkSapService() - error: ${e.message}`);
             if (e?.isAxiosError) {
