@@ -85,13 +85,17 @@ export async function useAdtServices(
             logger.info(JSON.stringify(transportRequestList));
         }
 
-        const trasnportRequestService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
-        const newTransportNumber = await trasnportRequestService.createTransportRequest({
-            packageName: env.TEST_PACKAGE,
-            ui5AppName: env.TEST_APP,
-            description: 'Test from odata-cli'
-        });
-        logger.info(`Created transport number: ${newTransportNumber}`);
+        if (env.TEST_PACKAGE) {
+            const trasnportRequestService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
+            const newTransportNumber = await trasnportRequestService.createTransportRequest({
+                packageName: env.TEST_PACKAGE,
+                ui5AppName: env.TEST_APP,
+                description: 'Test from odata-cli'
+            });
+            logger.info(`Created transport number: ${newTransportNumber}`);
+        } else {
+            logger.warn('env.TEST_PACKAGE required for testing transport creation');
+        }
 
         const listPackageService = await provider.getAdtService<ListPackageService>(ListPackageService);
         const packages = await listPackageService.listPackages({ maxResults: 50, phrase: '$TMP' });
