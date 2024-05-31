@@ -169,13 +169,13 @@ export class UI5Config {
     }
 
     /**
-     *  Updates UI5 libraries to the yaml configuration.
+     *  Adds UI5 libraries to the yaml configuration if they do not already exist.
      *
      * @param {string[]} updateLibs - to update with these libraries
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public updateUI5Libs(updateLibs: string[]): UI5Config {
+    public addUI5Libs(updateLibs: string[]): UI5Config {
         const libs = this.document.getSequence({ path: 'framework.libraries' });
         if (libs) {
             updateLibs.forEach((libName) => {
