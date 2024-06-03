@@ -1,5 +1,5 @@
 import prompts, { type Answers } from 'prompts';
-import type { AdpCustomConfig, AdpWriterConfig } from '../types';
+import type { CustomConfig, AdpWriterConfig } from '../types';
 import type { AbapTarget } from '@sap-ux/system-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { Logger } from '@sap-ux/logger';
@@ -116,7 +116,7 @@ export async function promptGeneratorInput(
 export async function promptTarget(
     defaults: PromptDefaults,
     logger: Logger
-): Promise<{ apps: AppIndex; layer: UI5FlexLayer; target: AbapTarget; customConfig: AdpCustomConfig }> {
+): Promise<{ apps: AppIndex; layer: UI5FlexLayer; target: AbapTarget; customConfig: CustomConfig }> {
     let count = 0;
     let target: Answers<'url' | 'client'> = { url: defaults.url, client: defaults.client };
     while (count < 3) {
@@ -172,7 +172,7 @@ async function fetchSystemInformation(
     target: prompts.Answers<'url' | 'client'>,
     ignoreCertErrors: boolean | undefined,
     logger: Logger
-): Promise<{ apps: AppIndex; layer: UI5FlexLayer; customConfig: AdpCustomConfig }> {
+): Promise<{ apps: AppIndex; layer: UI5FlexLayer; customConfig: CustomConfig }> {
     const provider = await createAbapServiceProvider(
         target,
         {
@@ -184,10 +184,11 @@ async function fetchSystemInformation(
     logger.info('Fetching system information...');
     const ato = await provider.getAtoInfo();
     const layer = ato.tenantType === 'SAP' ? 'VENDOR' : 'CUSTOMER_BASE';
-    const customConfig: AdpCustomConfig = {
+    const customConfig: CustomConfig = {
         adp: {
             environment: ato.operationsType ?? 'P',
-            safeMode: true
+            safeMode: true,
+            addInboundId: false
         }
     };
     logger.info(`Target layer: ${layer}`);
