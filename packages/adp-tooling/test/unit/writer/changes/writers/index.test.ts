@@ -3,7 +3,6 @@ import type { Editor } from 'mem-fs-editor';
 import {
     writeAnnotationChange,
     writeChangeToFolder,
-    getGenericChange,
     findChangeWithInboundId,
     writeChangeToFile,
     getChange
@@ -28,14 +27,12 @@ jest.mock('../../../../../src/base/change-utils', () => ({
     ...jest.requireActual('../../../../../src/base/change-utils'),
     writeAnnotationChange: jest.fn(),
     writeChangeToFolder: jest.fn(),
-    getGenericChange: jest.fn().mockReturnValue({}),
     getChange: jest.fn().mockReturnValue({}),
     findChangeWithInboundId: jest.fn(),
     writeChangeToFile: jest.fn()
 }));
 
 const writeAnnotationChangeMock = writeAnnotationChange as jest.Mock;
-const getGenericChangeMock = getGenericChange as jest.Mock;
 const getChangeMock = getChange as jest.Mock;
 const writeChangeToFolderMock = writeChangeToFolder as jest.Mock;
 const findChangeWithInboundIdMock = findChangeWithInboundId as jest.Mock;
@@ -94,7 +91,8 @@ describe('ComponentUsagesWriter', () => {
     it('should write component usages and library reference changes when required', async () => {
         await writer.write(mockData as ComponentUsagesData);
 
-        expect(getGenericChangeMock).toHaveBeenCalledWith(
+        expect(getChangeMock).toHaveBeenCalledWith(
+            expect.anything(),
             expect.anything(),
             expect.objectContaining({
                 componentUsages: {
@@ -109,7 +107,8 @@ describe('ComponentUsagesWriter', () => {
             ChangeType.ADD_COMPONENT_USAGES
         );
 
-        expect(getGenericChangeMock).toHaveBeenCalledWith(
+        expect(getChangeMock).toHaveBeenCalledWith(
+            expect.anything(),
             expect.anything(),
             expect.objectContaining({ libraries: { mockLibrary: { lazy: false } } }),
             ChangeType.ADD_LIBRARY_REFERENCE
@@ -163,8 +162,9 @@ describe('NewModelWriter', () => {
 
         await writer.write(mockData);
 
-        expect(getGenericChangeMock).toHaveBeenCalledWith(
+        expect(getChangeMock).toHaveBeenCalledWith(
             expect.anything(),
+            mockData.timestamp,
             expect.any(Object),
             ChangeType.ADD_NEW_MODEL
         );
@@ -280,7 +280,7 @@ describe('InboundWriter', () => {
 
         await writer.write(mockData as InboundData);
 
-        expect(getGenericChangeMock).toHaveBeenCalled();
+        expect(getChangeMock).toHaveBeenCalled();
         expect(writeChangeToFolderMock).toHaveBeenCalled();
     });
 

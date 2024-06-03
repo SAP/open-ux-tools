@@ -1,11 +1,12 @@
 import path from 'path';
 import type { Editor } from 'mem-fs-editor';
+import type { UI5FlexLayer } from '@sap-ux/project-access';
 import { readFileSync, existsSync, readdirSync } from 'fs';
 
 import { type AnnotationsData, type PropertyValueType, ChangeType, type ManifestChangeProperties } from '../../../src';
 import {
     findChangeWithInboundId,
-    getGenericChange,
+    getChange,
     getParsedPropertyValue,
     parseStringToObject,
     writeAnnotationChange,
@@ -111,7 +112,7 @@ describe('Change Utils', () => {
         });
     });
 
-    describe('getGenericChange', () => {
+    describe('getChange', () => {
         beforeEach(() => {
             jest.clearAllMocks();
         });
@@ -119,7 +120,7 @@ describe('Change Utils', () => {
         const mockData = {
             projectData: {
                 namespace: 'mockNamespace',
-                layer: 'mockLayer',
+                layer: 'mockLayer' as UI5FlexLayer,
                 reference: 'mockReference'
             },
             timestamp: Date.now()
@@ -127,8 +128,9 @@ describe('Change Utils', () => {
         const mockContent = { key: 'value' };
 
         it('should return the correct change object structure', () => {
-            const result = getGenericChange(
-                mockData as AnnotationsData,
+            const result = getChange(
+                mockData.projectData,
+                mockData.timestamp,
                 mockContent,
                 ChangeType.ADD_ANNOTATIONS_TO_ODATA
             );
