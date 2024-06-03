@@ -281,37 +281,4 @@ describe('LayeredRepositoryService', () => {
             }
         });
     });
-
-    describe('getManifest', () => {
-        const server = 'http://sap.example';
-        const service = createForAbap({ baseURL: server }).getLayeredRepository('/');
-        const manifestUrl = '/sap/bc/lrep/content/apps/ExampleApp/app/sap/example_app/manifest.appdescr';
-
-        test('get valid manifest', async () => {
-            const mockResult = { '_version': '1.0.0' };
-            nock(server).get(manifestUrl).reply(200, mockResult);
-            const response = await service.getManifest(manifestUrl);
-            expect(response).toEqual(mockResult);
-        });
-
-        test('manifest not found', async () => {
-            nock(server).get(manifestUrl).reply(404);
-            try {
-                await service.getManifest(manifestUrl);
-                fail('The function should have thrown an error.');
-            } catch (error) {
-                expect(error).toBeDefined();
-            }
-        });
-        test('manifest with corruped content', async () => {
-            const mockResult = 'corrupted content';
-            nock(server).get(manifestUrl).reply(200, mockResult);
-            try {
-                await service.getManifest(manifestUrl);
-                fail('The function should have thrown an error.');
-            } catch (error) {
-                expect(error).toBeDefined();
-            }
-        });
-    });
 });
