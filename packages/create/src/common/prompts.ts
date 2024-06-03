@@ -9,7 +9,7 @@ import type { Answers } from 'inquirer';
  * @param property property to be checked
  * @returns true if the property is a function
  */
-function isFunction(property: unknown | Function): property is Function {
+function isFunction(property: unknown): property is Function {
     return typeof property === 'function';
 }
 
