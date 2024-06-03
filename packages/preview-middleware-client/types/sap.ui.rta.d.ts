@@ -95,9 +95,10 @@ declare module 'sap/ui/rta/command/CommandFactory' {
 }
 
 declare module 'sap/ui/rta/command/OutlineService' {
-    export interface OutlineViewNode {
+    export type OutlineViewNode = AggregationOutlineViewNode | ExtPointOutlineViewNode | ElementOutlineViewNode;
+
+    interface BaseOutlineViewNode {
         id: string;
-        type: 'aggregation' | 'element' | 'extensionPoint';
         technicalName: string;
         editable: boolean;
         elements?: OutlineViewNode[];
@@ -105,6 +106,17 @@ declare module 'sap/ui/rta/command/OutlineService' {
         instanceName?: string;
         name?: string;
         icon?: string;
+    }
+
+    export interface AggregationOutlineViewNode extends BaseOutlineViewNode {
+        type: 'aggregation';
+    }
+    export interface ElementOutlineViewNode extends BaseOutlineViewNode {
+        type: 'element';
+    }
+    export interface ExtPointOutlineViewNode extends BaseOutlineViewNode {
+        type: 'extensionPoint';
+        extensionPointInfo: { defaultContent: string[]; createdControls: string[] }; // only available for extension point nodes
     }
 
     interface OutlineService {
@@ -213,6 +225,14 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         } & Component;
         stop: (bSkipSave, bSkipRestart) => Promise<void>;
         attachStop: (handler: (event: Event) => void) => void;
+        setMode: (sNewMode: string) => void;
+        canUndo: () => boolean;
+        canRedo: () => boolean;
+        canSave?: () => boolean;
+        undo: () => void;
+        redo: () => void;
+        save?: () => void;
+        _serializeToLrep: () => void;
     }
 }
 
