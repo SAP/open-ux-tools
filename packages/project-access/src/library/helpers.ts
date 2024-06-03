@@ -294,4 +294,3 @@ export function getManifestDependencies(manifest: Manifest): string[] {
 
     return result;
 }
-

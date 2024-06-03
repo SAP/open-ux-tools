@@ -1,10 +1,5 @@
 import { join } from 'path';
-import {
-    checkDependencies,
-    getReuseLibs,
-    getLibraryDesc,
-    getManifestDesc
-} from '../../src/library/helpers';
+import { checkDependencies, getReuseLibs, getLibraryDesc, getManifestDesc } from '../../src/library/helpers';
 import * as manifestJson from '../test-data/libs/sap.reuse.ex.test.lib.attachmentservice/src/sap/reuse/ex/test/lib/attachmentservice/manifest.json';
 import type { Manifest, ReuseLib } from '../../src';
 

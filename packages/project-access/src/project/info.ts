@@ -205,7 +205,6 @@ export async function getProjectType(projectRoot: string): Promise<ProjectType> 
     return capType;
 }
 
-
 /**
  * Returns the minUI5Version, as defined in manifest.
  *
