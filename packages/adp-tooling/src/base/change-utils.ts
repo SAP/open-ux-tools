@@ -186,48 +186,25 @@ export function findChangeWithInboundId(projectPath: string, inboundId: string):
 }
 
 /**
- * Constructs a generic change object based on provided parameters.
- *
- * @param data - The base data associated with the change, including project data and timestamp.
- * @param data.projectData - The project specific data.
- * @param data.timestamp - The timestamp.
- * @param {object} content - The content of the change to be applied.
- * @param {ChangeType} changeType - The type of the change.
- * @returns An object representing the change.
+ * Required descriptor variant properties that muse be used in changes.
  */
-export function getGenericChange(
-    data: { projectData: AdpProjectData; timestamp: number },
-    content: object,
-    changeType: ChangeType
-): ManifestChangeProperties {
-    const { projectData, timestamp } = data;
-    const { namespace, layer, reference } = projectData;
-    const variant = {
-        reference,
-        layer,
-        namespace
-    } as DescriptorVariant;
-
-    return getChange(variant, timestamp, content, changeType);
-}
+export type ChangeMetadata = Pick<DescriptorVariant, 'reference' | 'layer' | 'namespace'>;
 
 /**
  * Constructs a generic change object based on provided parameters.
  *
- * @param {DescriptorVariant} variant - The app descriptor variant.
+ * @param {ChangeMetadata} metadata - Required metadata from the app descriptor variant.
  * @param {number} timestamp - The timestamp.
  * @param {object} content - The content of the change to be applied.
  * @param {ChangeType} changeType - The type of the change.
  * @returns - An object representing the change
  */
 export function getChange(
-    variant: DescriptorVariant,
+    { reference, layer, namespace }: ChangeMetadata,
     timestamp: number,
     content: object,
     changeType: ChangeType
 ): ManifestChangeProperties {
-    const { reference, layer, namespace } = variant;
-
     return {
         fileName: `id_${timestamp}`,
         namespace: path.posix.join(namespace, DirName.Changes),
