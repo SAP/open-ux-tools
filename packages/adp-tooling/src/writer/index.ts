@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
-import type { AdpWriterConfig } from '../types';
+import type { CloudApp, AdpWriterConfig } from '../types';
 import { enhanceManifestChangeContentWithFlpConfig } from './options';
 import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml } from './project-utils';
 
@@ -30,6 +30,10 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
     configWithDefaults.package.name ??= config.app.id.toLowerCase().replace(/\./g, '-');
     configWithDefaults.package.description ??= configWithDefaults.app.title;
 
+    if (configWithDefaults.flp && configWithDefaults?.customConfig?.adp.addInboundId) {
+        configWithDefaults.flp.inboundId ??= `${configWithDefaults.app.id}.InboundID`;
+    }
+
     return configWithDefaults;
 }
 
@@ -49,7 +53,7 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
     const fullConfig = setDefaults(config);
 
     if (fullConfig.customConfig?.adp.environment === "C" && fullConfig.flp) {
-        enhanceManifestChangeContentWithFlpConfig(fullConfig.flp, fullConfig.app.id, fullConfig.app.content)
+        enhanceManifestChangeContentWithFlpConfig(fullConfig.flp, fullConfig.app as CloudApp, fullConfig.app.content, fullConfig.customConfig.adp.addInboundId)
     }
     writeTemplateToFolder(join(tmplPath, '**/*.*'), join(basePath), fullConfig, fs);
     await writeUI5DeployYaml(basePath, fullConfig, fs);

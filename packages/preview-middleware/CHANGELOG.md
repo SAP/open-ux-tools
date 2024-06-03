@@ -1,5 +1,63 @@
 # @sap-ux/preview-middleware
 
+## 0.13.55
+
+### Patch Changes
+
+-   81026f96: Add explanation at the end of disabled context menu item due to non stable ID
+
+## 0.13.54
+
+### Patch Changes
+
+-   c1cc4f57: fix missing RTA toolbar in variant management
+
+## 0.13.53
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.20.3
+-   @sap-ux/adp-tooling@0.10.14
+
+## 0.13.52
+
+### Patch Changes
+
+-   Updated dependencies [54c91c6d]
+    -   @sap-ux/project-access@1.20.2
+    -   @sap-ux/adp-tooling@0.10.13
+
+## 0.13.51
+
+### Patch Changes
+
+-   52623d36: fix missing support for connect api in flex handler creation
+
+## 0.13.50
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.12
+
+## 0.13.49
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.11
+
+## 0.13.48
+
+### Patch Changes
+
+-   78de7813: RTA standard toolbar replaced with custom CPE toolbar
+
+## 0.13.47
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.10
+-   @sap-ux/project-access@1.20.1
+
 ## 0.13.46
 
 ### Patch Changes

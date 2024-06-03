@@ -1,10 +1,11 @@
-import { UIIconButton, UiIcons, UICallout, UIFocusZone } from '@sap-ux/ui-components';
+import { UIIconButton, UICallout, UIFocusZone } from '@sap-ux/ui-components';
 import type { ReactElement } from 'react';
 import React, { useRef, useState } from 'react';
 import { useId } from '@fluentui/react-hooks';
 import { useTranslation } from 'react-i18next';
 
 import './ThemeSelectorCallout.scss';
+import { IconName } from '../icons';
 
 export type ThemeName = 'dark' | 'light' | 'high contrast';
 
@@ -85,7 +86,7 @@ export function ThemeSelectorCallout(): ReactElement {
             <UIIconButton
                 id={buttonId}
                 iconProps={{
-                    iconName: UiIcons.Settings
+                    iconName: IconName.themePainter
                 }}
                 title={t('SETTINGS')}
                 onClick={(): void => {

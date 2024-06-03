@@ -1,6 +1,6 @@
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
-import { AdpWriterConfig } from '../types';
+import { CloudApp, AdpWriterConfig } from '../types';
 import {
     enhanceUI5DeployYaml,
     enhanceUI5Yaml,
@@ -51,7 +51,7 @@ export async function writeUI5Yaml(projectPath: string, data: AdpWriterConfig, f
         enhanceUI5Yaml(ui5Config, data);
         enhanceUI5YamlWithCustomConfig(ui5Config, data?.customConfig);
         if (data.customConfig?.adp?.environment === "C") {
-            enhanceUI5YamlWithCustomTask(ui5Config, data);
+            enhanceUI5YamlWithCustomTask(ui5Config, data as AdpWriterConfig & { app: CloudApp });
         }
 
         fs.write(ui5ConfigPath, ui5Config.toString());

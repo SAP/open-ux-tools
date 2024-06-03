@@ -26,14 +26,25 @@ export interface AdpPreviewConfig {
     ignoreCertErrors?: boolean;
 }
 
+export interface OnpremApp {
+    id: string;
+    reference: string;
+    layer?: UI5FlexLayer;
+    title?: string;
+    content?: Content[];
+}
+
+export interface CloudApp extends OnpremApp {
+    bspName: string;
+    languages: Language[]
+}
+
+export type App = OnpremApp | CloudApp;
+
+export type DeployConfig = Adp | BspApp;
+
 export interface AdpWriterConfig {
-    app: {
-        id: string;
-        reference: string;
-        layer?: UI5FlexLayer;
-        title?: string;
-        content?: Content[];
-    };
+    app: App;
     target: AbapTarget;
     ui5?: {
         minVersion?: string;
@@ -44,12 +55,12 @@ export interface AdpWriterConfig {
         name?: string;
         description?: string;
     };
-    flp?: FlpConfiguration;
-    customConfig?: AdpCustomConfig;
+    flp?: FlpConfig;
+    customConfig?: CustomConfig;
     /**
      * Optional: configuration for deployment to ABAP
      */
-    deploy?: Adp | BspApp;
+    deploy?: DeployConfig;
     options?: {
         /**
          * Optional: if set to true then the generated project will be recognized by the SAP Fiori tools
@@ -58,17 +69,26 @@ export interface AdpWriterConfig {
     };
 }
 
-export interface FlpConfiguration {
-    title: string;
-    bspName: string;
-    languages: Language[];
+export interface ChangeInboundNavigation {
+    /** Identifier for the inbound navigation. */
     inboundId: string;
+    title?: string;
     subTitle?: string;
-    semanticObject?: string;
-    action?: string;
-    additionalParameters?: object;
-    configurationType: FlpConfigurationType;
 }
+
+export interface NewInboundNavigation {
+    /** Represent business entities and can bundle applications that reflect a specific scenario. */
+    semanticObject: string;
+    /** Operations which can be performed on a semantic object. */
+    action: string;
+    //** Defined instance of the semantic object (e.g. by specifying the employee ID). */
+    additionalParameters?: object;
+    title: string;
+    subTitle?: string;
+    inboundId?: string;
+}
+
+export type FlpConfig = ChangeInboundNavigation | NewInboundNavigation;
 
 export interface Language {
     sap: string;
@@ -365,10 +385,11 @@ export interface AdpProjectData {
     id: string;
 }
 
-export interface AdpCustomConfig {
+export interface CustomConfig {
     adp: {
         safeMode: boolean;
         environment: OperationsType;
+        addInboundId: boolean;
     };
 }
 
@@ -415,8 +436,4 @@ export interface InboundChange {
             };
         };
     };
-}
-
-export const enum FlpConfigurationType {
-    ADD_NEW_TILE = "Add new tile"
 }
