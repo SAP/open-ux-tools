@@ -216,6 +216,10 @@ describe('cli', () => {
     });
 
     describe('createCommand', () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+            jest.restoreAllMocks();
+        });
         function makeCommand(cmdString?: 'deploy' | 'undeploy') {
             const actionMock = jest.fn();
             const cmd = createCommand(cmdString ?? 'deploy');
