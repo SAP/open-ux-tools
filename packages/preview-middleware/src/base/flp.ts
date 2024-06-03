@@ -506,6 +506,7 @@ export class FlpSandbox {
         this.router.get(config.path, (async (_req, res) => {
             this.logger.debug(`Serving test route: ${config.path}`);
             const templateConfig = {
+                basePath: this.templateConfig.basePath,
                 initPath: config.init
             };
             const html = render(testsuite, templateConfig);
