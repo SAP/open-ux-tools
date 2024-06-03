@@ -238,13 +238,15 @@ Object {
           "options": Object {
             "settings": Object {
               "body": Object {
-                "CustomSectionOne": Object {
-                  "actions": Object {
-                    "MyCustomAction": Object {
-                      "enabled": true,
-                      "press": "",
-                      "text": "My custom action text",
-                      "visible": true,
+                "sections": Object {
+                  "CustomSectionOne": Object {
+                    "actions": Object {
+                      "MyCustomAction": Object {
+                        "enabled": true,
+                        "press": "",
+                        "text": "My custom action text",
+                        "visible": true,
+                      },
                     },
                   },
                 },
