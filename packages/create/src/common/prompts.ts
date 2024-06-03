@@ -72,6 +72,26 @@ export async function convertQuestion<T extends Answers>(
 }
 
 /**
+ * Creates a handle for the validation of a list/autocomplete etc. of questions.
+ *
+ * @param state current prompting state
+ * @param state.index index of the question
+ * @returns the validation handler that can be executed on submit
+ */
+function getListValidationHandler(state: { index: number }) {
+    return async (prompt: PromptObject, answer: unknown) => {
+        // prompts does not handle validation for autocomplete out of the box
+        if (prompt.type === 'autocomplete' && prompt.validate) {
+            const valid = await (prompt.validate as Function)(answer);
+            if (valid !== true) {
+                console.error(valid);
+                state.index--;
+            }
+        }
+    };
+}
+
+/**
  * Prompt a list of YeomanUI questions with the simple prompts module.
  *
  * @param questions list of questions
@@ -82,32 +102,28 @@ export async function promptYUIQuestions<T extends Answers>(
     questions: YUIQuestion<T>[],
     useDefaults: boolean
 ): Promise<T> {
-    const answers = {} as T;
-    for (let i = 0; i < questions.length; i++) {
-        const question = questions[i];
-        if (isFunction(question.when) ? question.when(answers) : question.when !== false) {
+    const state = {
+        answers: {} as T,
+        index: 0
+    };
+    for (; state.index < questions.length; state.index++) {
+        const question = questions[state.index];
+        if (isFunction(question.when) ? question.when(state.answers) : question.when !== false) {
             if (useDefaults) {
-                answers[question.name] = isFunction(question.default) ? question.default(answers) : question.default;
+                state.answers[question.name] = isFunction(question.default)
+                    ? question.default(state.answers)
+                    : question.default;
             } else {
-                const q = await convertQuestion(question, answers);
+                const q = await convertQuestion(question, state.answers);
                 const answer = await prompts(q, {
                     onCancel: () => {
                         throw new Error('User canceled the prompt');
                     },
-                    onSubmit: async (prompt: PromptObject, answer: unknown) => {
-                        // prompts does not handle validation for autocomplete out of the box
-                        if (prompt.type === 'autocomplete' && prompt.validate) {
-                            const valid = await (q.validate as Function)(answer);
-                            if (valid !== true) {
-                                console.error(valid);
-                                i--;
-                            }
-                        }
-                    }
+                    onSubmit: getListValidationHandler(state)
                 });
-                answers[question.name] = answer[question.name];
+                state.answers[question.name] = answer[question.name];
             }
         }
     }
-    return answers as T;
+    return state.answers;
 }
