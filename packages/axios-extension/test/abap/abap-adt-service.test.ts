@@ -71,10 +71,16 @@ const configForAbapOnCloud = {
     } as any,
     environment: AbapCloudEnvironment.Standalone
 };
-const existingCookieConfigForAbapOnCloud = {
+const existingCookieConfigForAbapOnCloudStandalone = {
     service: {},
     cookies: 'sap-usercontext=sap-client=100;SAP_SESSIONID_Y05_100=abc',
     environment: AbapCloudEnvironment.Standalone
+};
+
+const existingCookieConfigForAbapOnCloudEmbeddedSteampunk = {
+    service: {},
+    cookies: 'sap-usercontext=sap-client=100;SAP_SESSIONID_X01_100=abc',
+    environment: AbapCloudEnvironment.EmbeddedSteampunk
 };
 
 const testPackage = 'ZSPD';
@@ -368,6 +374,8 @@ describe('Transport checks', () => {
 
 describe('Use existing connection session', () => {
     const attachUaaAuthInterceptorSpy = jest.spyOn(auth, 'attachUaaAuthInterceptor');
+    const attachReentranceTicketAuthInterceptorSpy = jest.spyOn(auth, 'attachReentranceTicketAuthInterceptor');
+
     beforeAll(() => {
         nock.disableNetConnect();
     });
@@ -375,6 +383,8 @@ describe('Use existing connection session', () => {
     beforeEach(() => {
         nock.cleanAll();
         attachUaaAuthInterceptorSpy.mockRestore();
+        attachReentranceTicketAuthInterceptorSpy.mockRestore();
+
         Uaa.prototype.getAccessToken = jest.fn();
         Uaa.prototype.getAccessTokenWithClientCredentials = jest.fn();
     });
@@ -390,19 +400,31 @@ describe('Use existing connection session', () => {
         expect(provider.cookies.toString()).toBe('sap-usercontext=sap-client=100; SAP_SESSIONID_Y05_100=abc');
     });
 
-    test('abap service provider for cloud', async () => {
+    test('abap service provider for cloud (standalone)', async () => {
         nock(server)
             .get(AdtServices.DISCOVERY)
             .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
             .get(AdtServices.ATO_SETTINGS)
             .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsS4C.xml'));
 
-        const provider = createForAbapOnCloud(existingCookieConfigForAbapOnCloud as any);
+        const provider = createForAbapOnCloud(existingCookieConfigForAbapOnCloudStandalone as any);
         expect(provider.cookies.toString()).toBe('sap-usercontext=sap-client=100; SAP_SESSIONID_Y05_100=abc');
         expect(await provider.isS4Cloud()).toBe(false);
         expect(attachUaaAuthInterceptorSpy).toBeCalledTimes(0);
         expect(Uaa.prototype.getAccessToken).toBeCalledTimes(0);
         expect(Uaa.prototype.getAccessTokenWithClientCredentials).toBeCalledTimes(0);
+    });
+
+    test('abap service provider for cloud (embedded steampunk)', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(AdtServices.ATO_SETTINGS)
+            .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsS4C.xml'));
+
+        const provider = createForAbapOnCloud(existingCookieConfigForAbapOnCloudEmbeddedSteampunk as any);
+        expect(provider.cookies.toString()).toBe('sap-usercontext=sap-client=100; SAP_SESSIONID_X01_100=abc');
+        expect(attachReentranceTicketAuthInterceptorSpy).toBeCalledTimes(0);
     });
 
     test('abap service provider for cloud - require authentication', async () => {

@@ -32,7 +32,7 @@
     "devDependencies": {
         "@types/validate-npm-package-name": "4.0.1",
         "@types/i18next": "13.0.0",
-        "jest-extended": "3.2.4"
+        "jest-extended": "4.0.2"
     },
     "files": [
         "dist",

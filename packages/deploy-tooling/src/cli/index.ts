@@ -32,6 +32,7 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
         .addOption(new Option('--client <sap-client>', 'Client number of target ABAP system').conflicts('destination'))
         .addOption(new Option('--cloud', 'Target is an ABAP Cloud system').conflicts('destination'))
         .addOption(new Option('--service <service-path>', 'Target alias for deployment service'))
+        .addOption(new Option('--authentication-type <authentication-type>', 'Authentication type for the app'))
         .addOption(
             new Option(
                 '--cloud-service-key <file-location>',

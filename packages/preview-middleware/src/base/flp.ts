@@ -388,7 +388,7 @@ export class FlpSandbox {
                     await this.onChangeRequest('read', change, fs, this.logger);
                 }
             }
-            res.status(200).contentType('application/json').send(changes);
+            this.sendResponse(res, 'application/json', 200, JSON.stringify(changes));
         }) as RequestHandler);
         this.router.post(api, (async (req: Request, res: Response) => {
             try {
@@ -403,7 +403,7 @@ export class FlpSandbox {
                     this.logger
                 );
                 if (success) {
-                    fs.commit(() => res.status(200).send(message));
+                    fs.commit(() => this.sendResponse(res, 'text/plain', 200, message ?? ''));
                 } else {
                     this.sendResponse(res, 'text/plain', 400, 'INVALID_DATA');
                 }

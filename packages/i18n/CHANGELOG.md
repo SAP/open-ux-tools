@@ -1,5 +1,11 @@
 # @sap-ux/i18n
 
+## 0.0.7
+
+### Patch Changes
+
+-   f80a4256: chore - upgrade jest 29.7.0 - change in src to check object is defined before accessing it.
+
 ## 0.0.6
 
 ### Patch Changes

@@ -79,6 +79,7 @@ describe('cli', () => {
         ];
 
         const cliCmdWithUaa = [...cliCmd, '--cloud-service-env', '--service', '/bc/my/uaa/deploy/service'];
+        const cliCmdWithAuthType = [...cliCmd, '--authentication-type', 'reentranceTicket'];
 
         test.each([
             {
@@ -113,6 +114,12 @@ describe('cli', () => {
                 deployFn: mockedUi5RepoService.deploy,
                 object: { retry: false, strictSsl: false },
                 provider: '/bc/my/uaa/deploy/service'
+            },
+            {
+                params: cliCmdWithAuthType,
+                writeFileSyncCalled: 0,
+                deployFn: mockedUi5RepoService.deploy,
+                object: { authenticationType: 'reentranceTicket' }
             }
         ])(
             'successful deploy with different options %s',
@@ -209,6 +216,10 @@ describe('cli', () => {
     });
 
     describe('createCommand', () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+            jest.restoreAllMocks();
+        });
         function makeCommand(cmdString?: 'deploy' | 'undeploy') {
             const actionMock = jest.fn();
             const cmd = createCommand(cmdString ?? 'deploy');

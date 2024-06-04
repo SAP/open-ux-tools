@@ -126,6 +126,7 @@ Options:
   --cloud-service-env                  Load ABAP cloud service properties from either a .env file or your environment variables. Secrets in your .env should not be committed to source control.
   --username                           ABAP Service username
   --password                           ABAP Service password
+  --authentication-type                Authentication type for the app (e.g. 'basic', 'reentranceTicket'). Required for 'reentranceTicket'.
   --create-transport                   Create a transport request during deployment
   --transport <transport-request>      Transport number to record the change in the ABAP system
   --name <bsp-name>                    Project name of the app
@@ -202,6 +203,7 @@ Options:
   --cloud-service-env                  Load ABAP cloud service properties from either a .env file or your environment variables
   --username                           ABAP Service username
   --password                           ABAP Service password
+  --authentication-type                Authentication type for the app (e.g. 'basic', 'reentranceTicket'). Required for 'reentranceTicket'.
   --transport <transport-request>      Transport number to record the change in the ABAP system
   --create-transport                   Create a transport request during deployment
   --package <abap-package>             Package name for deploy target ABAP system (only required when --create-transport is used)

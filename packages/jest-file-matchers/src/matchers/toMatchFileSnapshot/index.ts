@@ -5,7 +5,7 @@
 import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
-import diff from 'jest-diff';
+import { diff } from 'jest-diff';
 import type { MatcherIgnore } from '../types';
 import type { FileMatcherOptions } from './types';
 import mkdirp from 'mkdirp';

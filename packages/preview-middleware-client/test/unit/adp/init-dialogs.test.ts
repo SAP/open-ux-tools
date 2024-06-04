@@ -15,7 +15,8 @@ import {
     handler,
     initDialogs,
     isFragmentCommandEnabled,
-    isControllerExtensionEnabled
+    isControllerExtensionEnabled,
+    getAddFragmentItemText
 } from '../../../src/adp/init-dialogs';
 import AddFragment from '../../../src/adp/controllers/AddFragment.controller';
 import ControllerExtension from '../../../src/adp/controllers/ControllerExtension.controller';
@@ -107,6 +108,34 @@ describe('Dialogs', () => {
             const result = isFragmentCommandEnabled([]);
 
             expect(result).toBe(false);
+        });
+    });
+
+    describe('getAddFragmentItemText', () => {
+        beforeEach(() => {
+            jest.restoreAllMocks();
+        });
+
+        const overlay = {
+            getElement: () => ({})
+        } as ElementOverlay;
+
+        it('should return simple text if the control is with a stable ID', () => {
+            Utils.checkControlId.mockReturnValue(true);
+
+            const result = getAddFragmentItemText(overlay);
+
+            expect(result).toBe('Add: Fragment');
+            expect(Utils.checkControlId).toHaveBeenCalledWith({});
+        });
+
+        it('should return extra text if the control is with a unstable ID', () => {
+            Utils.checkControlId.mockReturnValue(false);
+
+            const result = getAddFragmentItemText(overlay);
+
+            expect(result).toBe('Add: Fragment (Unavailable due to unstable ID of the control or its parent control)');
+            expect(Utils.checkControlId).toHaveBeenCalledWith({});
         });
     });
 
