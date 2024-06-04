@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.20.4
+
+### Patch Changes
+
+-   a7d78229: Added new functions for retrieving the minUI5Version(s) from manifest
+
 ## 1.20.3
 
 ### Patch Changes
