@@ -64,11 +64,11 @@ const logger: Logger = {}; // logger instance from @sap-ux/logger
 await updateStaticLocationsInApplicationYaml(fsMock, applicationYamlPath, capCustomPathsApp, logger);
 ```
 
-### updateRootPackageJsonCAP
+### updateRootPackageJson
 Updates the package.json file of a CAP project app based on project requirements such as enableNPMWorkspaces
 
 ```ts
-import { updateRootPackageJsonCAP } from '@sap-ux/cap-config-writer';
+import { updateRootPackageJson } from '@sap-ux/cap-config-writer';
 
 // Usage example
 const fsMock: Editor = {}; // mem-fs file editor
@@ -79,36 +79,20 @@ const appId: string = 'your-app-id';
 const log: Logger = {}; //// mem-fs file editor
 const enableNPMWorkspaces: boolean = true; // npm workspaces (optional)
 
-await updateRootPackageJsonCAP(fsMock, projectName, sapux, capService, appId, log, enableNPMWorkspaces);
+await updateRootPackageJson(fsMock, projectName, sapux, capService, appId, log, enableNPMWorkspaces);
 ```
 
 ### updateAppPackageJsonCAP
 The function constructs the path to the package.json file based on the provided appRoot. It then reads the contents of the package.json file and removes the sapux property, the int-test script, and any scripts starting with 'start' that are not required for the app.
 
 ```ts
-import { updateAppPackageJsonCAP } from '@sap-ux/cap-config-writer';
+import { updateAppPackageJson } from '@sap-ux/cap-config-writer';
 
 // Usage example
 const fsMock: Editor = {}; // mem-fs file editor
 const appRoot: string = 'path/to/your/app'; // The root directory of the application
 
-updateAppPackageJsonCAP(fsMock, appRoot);
-```
-
-### updateCdsFilesWithAnnotations
-The function updates CAP CDS files by adding annotation references. 
-
-```ts
-import { updateCdsFilesWithAnnotations } from '@sap-ux/cap-config-writer';
-
-// Example usage
-const fsMock: Editor = {}; // mem-fs file editor
-const capService: CapService = {}; // Your CAP service configuration
-const projectName: string = 'your-project-name';
-const logger: Logger = {}; // logger instance from @sap-ux/logger
-
-await updateCdsFilesWithAnnotations(fsMock, capService, projectName, logger);
-
+updateAppPackageJson(fsMock, appRoot);
 ```
 
 ## Keywords
