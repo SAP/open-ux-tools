@@ -1,5 +1,12 @@
 # @sap-ux/project-access
 
+## 1.20.3
+
+### Patch Changes
+
+-   Updated dependencies [f80a4256]
+    -   @sap-ux/i18n@0.0.7
+
 ## 1.20.2
 
 ### Patch Changes

@@ -1,5 +1,24 @@
 # @sap-ux/preview-middleware
 
+## 0.13.55
+
+### Patch Changes
+
+-   81026f96: Add explanation at the end of disabled context menu item due to non stable ID
+
+## 0.13.54
+
+### Patch Changes
+
+-   c1cc4f57: fix missing RTA toolbar in variant management
+
+## 0.13.53
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.20.3
+-   @sap-ux/adp-tooling@0.10.14
+
 ## 0.13.52
 
 ### Patch Changes
