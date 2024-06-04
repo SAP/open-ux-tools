@@ -16,7 +16,8 @@ import type { Manifest } from '@sap-ux/project-access';
  */
 export function serviceIsCds(service: OdataService): boolean {
     // if service type is not defined, set EDMX as default
-    const serviceType = service.type ? service.type : ServiceType.EDMX;
+    let serviceType = service.type;
+    serviceType ||= ServiceType.EDMX;
     if (serviceType === ServiceType.CDS) {
         return true;
     }
