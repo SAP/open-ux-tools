@@ -172,6 +172,6 @@ export function getLocalCapProjectPrompts(
             name: capInternalPromptNames.capCliStateSetter
         } as Question);
     }
-    
+
     return prompts;
 }

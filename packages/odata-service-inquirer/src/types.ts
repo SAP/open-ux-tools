@@ -37,7 +37,7 @@ export interface OdataServiceAnswers {
      * The selected CAP service.
      */
     capService?: CapService;
-    
+
     /**
      * The odata version of the selected service.
      */
