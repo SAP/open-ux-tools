@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.21.0
+
+### Minor Changes
+
+-   69b8d6de: Introduces enhanced functionality by returning CDS information, extracted during the prompt phase, and is made available for later use .
+
 ## 1.20.4
 
 ### Patch Changes
