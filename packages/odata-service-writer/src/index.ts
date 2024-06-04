@@ -11,6 +11,7 @@ import { t } from './i18n';
 import { OdataService, OdataVersion, ServiceType, CdsAnnotationsInfo, EdmxAnnotationsInfo } from './types';
 import { getWebappPath } from '@sap-ux/project-access';
 import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
+import { serviceIsCds } from './updates';
 
 /**
  * Ensures the existence of the given files in the provided base path. If a file in the provided list does not exit, an error would be thrown.
@@ -76,8 +77,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     const templateRoot = join(__dirname, '../templates');
 
     // update cds files with annotations only if service type is CDS and annotations are provided
-    const serviceType = service.type ? service.type : ServiceType.EDMX;
-    if (serviceType === ServiceType.CDS && service.annotations) {
+    if (serviceIsCds(service) && service.annotations) {
         await updateCdsFilesWithAnnotations(service.annotations as CdsAnnotationsInfo, fs);
     }
     // manifest.json
