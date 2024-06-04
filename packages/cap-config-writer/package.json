@@ -30,7 +30,6 @@
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/odata-service-inquirer": "workspace:*",
         "@sap-ux/yaml": "workspace:*",
         "i18next": "20.6.1",
@@ -39,7 +38,6 @@
         "semver": "7.5.4"
     },
     "devDependencies": {
-        "@sap-ux/btp-utils": "0.14.3",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/semver": "7.5.2",

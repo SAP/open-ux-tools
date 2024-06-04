@@ -11,12 +11,6 @@
   },
   "references": [
     {
-      "path": "../btp-utils"
-    },
-    {
-      "path": "../fiori-generator-shared"
-    },
-    {
       "path": "../logger"
     },
     {

@@ -419,9 +419,6 @@ importers:
 
   packages/cap-config-writer:
     dependencies:
-      '@sap-ux/fiori-generator-shared':
-        specifier: workspace:*
-        version: link:../fiori-generator-shared
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
@@ -447,9 +444,6 @@ importers:
         specifier: 7.5.4
         version: 7.5.4
     devDependencies:
-      '@sap-ux/btp-utils':
-        specifier: 0.14.3
-        version: 0.14.3
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -7881,16 +7875,6 @@ packages:
     resolution: {integrity: sha512-HTgMqm3purAJUjirm6m57h8BaoF/Qx6wuXxiB9cy7ZilmriNHVx0aXJV514I1r8GMRdKKHCVixmhZW0/4L02hw==}
     dev: true
 
-  /@sap-ux/btp-utils@0.14.3:
-    resolution: {integrity: sha512-rYPjvk2RTgWrbe1s8owcQqx2aDKBku5lWS17CsmsLHW2A+WsXwjglg5I5Qj58891R5P4TbvRvZ97Jz1bLC6gYQ==}
-    engines: {node: '>=18.x'}
-    dependencies:
-      '@sap/cf-tools': 2.1.1
-      axios: 1.6.8
-    transitivePeerDependencies:
-      - debug
-    dev: true
-
   /@sap/bas-sdk@3.7.7:
     resolution: {integrity: sha512-kl43080dwR1sexefIfQ+kVSw8/0qXq4CODLK1fPrZMpCqWxMsrQUXtzibvgFFy38x02prgm9IStgLREOvNL3ng==}
     dependencies:
@@ -7952,6 +7936,7 @@ packages:
       lodash: 4.17.21
       properties-reader: 2.2.0
       url: 0.11.0
+    dev: false
 
   /@sap/ux-cds-compiler-facade@1.12.2(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core):
     resolution: {integrity: sha512-l51XGaSgqcaF8dAwQAVjcJULlXnh2nF2BW5XuPfdshbHyklakXVedCLS7bVE+osuSct+BjtxbZUUPuDxkPpkrw==}
@@ -11996,6 +11981,7 @@ packages:
       esprima: 4.0.1
       has-own-prop: 2.0.0
       repeat-string: 1.6.1
+    dev: false
 
   /comment-json@4.2.3:
     resolution: {integrity: sha512-SsxdiOf064DWoZLH799Ata6u7iV658A11PlWtZATDlXPpKGJnbJZ5Z24ybixAi+LUUqJ/GKowAejtC5GFUG7Tw==}
@@ -18869,6 +18855,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       mkdirp: 1.0.4
+    dev: false
 
   /proto-list@1.2.4:
     resolution: {integrity: sha512-vtK/94akxsTMhe0/cbfpR+syPuszcuwhqVjJq26CuNDgFGj682oRBXOP5MJpv2r7JtE8MsiepGIqvvOTBwn2vA==}
