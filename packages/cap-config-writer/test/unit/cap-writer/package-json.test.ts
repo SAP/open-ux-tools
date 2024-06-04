@@ -1,11 +1,13 @@
-import type { CapService, CapRuntime } from '@sap-ux/odata-service-inquirer';
+import type { CapRuntime } from '@sap-ux/odata-service-inquirer';
 import { satisfiesMinCdsVersion } from '../../../src/cap-config/package-json';
 import memFs from 'mem-fs';
 import { ToolsLogger } from '@sap-ux/logger';
 import editor, { type Editor } from 'mem-fs-editor';
 import { join } from 'path';
-import { updateRootPackageJsonCAP, updateAppPackageJsonCAP } from '../../../src/cap-writer/package-json';
+import { minCdsVersion } from '../../../src/cap-config';
+import { updateRootPackageJson, updateAppPackageJson } from '../../../src/cap-writer/package-json';
 import { getCdsVersionInfo, getPackageJson } from '@sap-ux/project-access';
+import type { CapServiceCdsInfo } from '../../../src/index';
 
 jest.mock('../../../src/cap-config/package-json', () => ({
     ...jest.requireActual('../../../src/cap-config/package-json'),
@@ -23,7 +25,7 @@ describe('Writing/package json files', () => {
     const logger = new ToolsLogger();
     const testProjectNameNoSapUx = 'test-cap-package-no-sapux';
     const testProjectNameWithSapUx = 'test-cap-package-sapux';
-    let capService: CapService;
+    let capService: CapServiceCdsInfo;
     const capNodeType: CapRuntime = 'Node.js';
 
     // beforeEach function to reset fs before each test
@@ -39,7 +41,13 @@ describe('Writing/package json files', () => {
             serviceName: 'AdminService',
             serviceCdsPath: 'srv/admin-service',
             appPath: 'app',
-            capType: capNodeType
+            capType: capNodeType,
+            cdsUi5PluginInfo: {
+                isCdsUi5PluginEnabled: false,
+                hasMinCdsVersion: true,
+                isWorkspaceEnabled: false,
+                hasCdsUi5Plugin: false
+            }
         };
         (getCdsVersionInfo as jest.Mock).mockReturnValue({
             home: '/cdsVersion'
@@ -55,7 +63,7 @@ describe('Writing/package json files', () => {
         const isSapUxEnabled = true;
         capService.projectPath = join(testInputPath, testProjectNameWithSapUx);
         (satisfiesMinCdsVersion as jest.Mock).mockReturnValue(true);
-        await updateRootPackageJsonCAP(fs, testProjectNameNoSapUx, isSapUxEnabled, capService, 'test.app.project');
+        await updateRootPackageJson(fs, testProjectNameNoSapUx, isSapUxEnabled, capService, 'test.app.project');
         const packageJson = await getPackageJson(packageJsonPath, fs);
         const scripts = packageJson.scripts;
         expect(scripts).toEqual({
@@ -71,10 +79,19 @@ describe('Writing/package json files', () => {
         const loggerMock = jest.fn();
         logger.warn = loggerMock;
         (satisfiesMinCdsVersion as jest.Mock).mockReturnValue(false);
-        await updateRootPackageJsonCAP(fs, testProjectMinCds, isSapUxEnabled, capService, 'test.app.project', logger);
+        const capServiceWithNoMinCds = capService;
+        capServiceWithNoMinCds.cdsUi5PluginInfo.hasMinCdsVersion = false;
+        await updateRootPackageJson(
+            fs,
+            testProjectMinCds,
+            isSapUxEnabled,
+            capServiceWithNoMinCds,
+            'test.app.project',
+            logger
+        );
         expect(logger.warn).toHaveBeenCalledTimes(1);
         expect(logger.warn).toHaveBeenCalledWith(
-            expect.stringContaining('cds-dk version not installed, expected minimum cds version')
+            expect.stringContaining(`minimum cds-dk ${minCdsVersion} version is required to add cds watch scripts`)
         );
     });
 
@@ -82,7 +99,7 @@ describe('Writing/package json files', () => {
         const isSapUxEnabled = true;
         const isNpmWorkspacesEnabled = true;
         const packageJsonPath = join(testInputPath, testProjectNameNoSapUx, 'package.json');
-        await updateRootPackageJsonCAP(
+        await updateRootPackageJson(
             fs,
             testProjectNameWithSapUx,
             isSapUxEnabled,
@@ -101,7 +118,20 @@ describe('Writing/package json files', () => {
     test('should remove int-test script and start scripts, and also keep other scripts', async () => {
         const appRoot = join(__dirname, 'test-inputs/test-cap-package-no-sapux');
         const packageJsonPath = join(capService.projectPath, 'package.json');
-        updateAppPackageJsonCAP(fs, appRoot);
+        updateAppPackageJson(fs, appRoot);
+        const packageJson = await getPackageJson(packageJsonPath, fs);
+        const scripts = packageJson.scripts;
+        expect(scripts).toEqual({
+            'test-script': 'Run some scripts here'
+        });
+        expect(scripts).not.toHaveProperty('int-test');
+        expect(scripts).not.toHaveProperty('start');
+    });
+
+    test('should remove int-test script and start scripts, and also keep other scripts', async () => {
+        const appRoot = join(__dirname, 'test-inputs/test-cap-package-no-sapux');
+        const packageJsonPath = join(capService.projectPath, 'package.json');
+        updateAppPackageJson(fs, appRoot);
         const packageJson = await getPackageJson(packageJsonPath, fs);
         const scripts = packageJson.scripts;
         expect(scripts).toEqual({

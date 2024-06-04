@@ -1,12 +1,46 @@
-import { type Package, getCapCustomPaths, getPackageJson } from '@sap-ux/project-access';
+import type { Package } from '@sap-ux/project-access';
+import { getCapCustomPaths } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
-import { join } from 'path';
-import { t } from '../i18n';
-import { enableCdsUi5Plugin, checkCdsUi5PluginEnabled , satisfiesMinCdsVersion} from '../cap-config';
-import { type CapServiceCdsInfo } from '../cap-config/types';
-import { getCDSTask, toPosixPath } from './helpers';
+import path, { join } from 'path';
+import type { CdsUi5PluginInfo, CapServiceCdsInfo } from '../cap-config/types';
+import { enableCdsUi5Plugin, checkCdsUi5PluginEnabled, satisfiesMinCdsVersion, minCdsVersion } from '../cap-config';
 import type { Logger } from '@sap-ux/logger';
-import type { CapRuntime } from '@sap-ux/odata-service-inquirer';
+import { t } from '../i18n';
+
+/**
+ * Converts a directory path to a POSIX-style path.
+ * This function is temporary and should be removed once a common utility library package is available.
+ *
+ * @param {string} dirPath - The directory path to be converted.
+ * @returns {string} The converted POSIX-style path.
+ */
+function toPosixPath(dirPath: string): string {
+    return path.normalize(dirPath).split(/[\\/]/g).join(path.posix.sep);
+}
+
+/**
+ * Retrieves the CDS watch script for the CAP app.
+ *
+ * @param {string} projectName - The name of the project.
+ * @param {string} appId - The ID of the app.
+ * @param {boolean} [useNPMWorkspaces] - Whether to use npm workspaces.
+ * @returns {{ [x: string]: string }} The CDS watch script for the CAP app.
+ */
+export function getCDSWatchScript(
+    projectName: string,
+    appId: string,
+    useNPMWorkspaces: boolean = false
+): { [x: string]: string } {
+    const DisableCacheParam = 'sap-ui-xx-viewCache=false';
+    // projects by default are served base on the folder name in the app/ folder
+    // If the project uses npm workspaces (and specifically cds-plugin-ui5 ) then the project is served using the appId including namespace
+    const project = useNPMWorkspaces ? appId : projectName + '/webapp';
+    return {
+        [`watch-${projectName}`]: `cds watch --open ${project}/index.html?${DisableCacheParam}${
+            useNPMWorkspaces ? ' --livereload false' : ''
+        }`
+    };
+}
 
 /**
  * Updates the scripts in the package json file with the provided scripts object.
@@ -28,6 +62,8 @@ function updatePackageJsonWithScripts(fs: Editor, packageJsonPath: string, scrip
  * @param {string} projectName - The name of the project.
  * @param {string} appId - The ID of the app.
  * @param {boolean} [enableNPMWorkspaces] - Whether to enable npm workspaces.
+ * @param {CapServiceCdsInfo} cdsUi5PluginInfo - cds Ui5 plugin info.
+ * @param {Logger} [log] - The logger instance for logging warnings.
  * @returns {Promise<void>} A Promise that resolves once the scripts are updated.
  */
 async function updateScripts(
@@ -35,27 +71,29 @@ async function updateScripts(
     packageJsonPath: string,
     projectName: string,
     appId: string,
-    enableNPMWorkspaces?: boolean
+    enableNPMWorkspaces?: boolean,
+    cdsUi5PluginInfo?: CdsUi5PluginInfo,
+    log?: Logger
 ): Promise<void> {
-    // const packageJson: Package = await getPackageJson(packageJsonPath, fs);
-    // const hasNPMworkspaces = await checkCdsUi5PluginEnabled(packageJsonPath, fs);
-    // const cdsVersion = await getCdsVersionInfo();
-    // if (cdsVersion.home && packageJson && satisfiesMinCdsVersion(packageJson)) {
-    //     const cdsScript = getCDSTask(projectName, appId, enableNPMWorkspaces ?? hasNPMworkspaces);
-    //     updatePackageJsonWithScripts(fs, packageJsonPath, cdsScript);
-    // } else {
-    //     log?.warn(t('warn.cdsDKNotInstalled', { cdsVersion: cdsVersion, minCdsVersion: minCdsVersion }));
-    // }
-    // remove this logic hasNPMworkspaces because at this point we may get it
+    const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
     const hasNPMworkspaces = await checkCdsUi5PluginEnabled(packageJsonPath, fs);
-    const cdsScript = getCDSTask(projectName, appId, enableNPMWorkspaces ?? hasNPMworkspaces);
-    updatePackageJsonWithScripts(fs, packageJsonPath, cdsScript);
+    // Determine whether to add cds watch scripts for the app based on the availability of minimum CDS version information.
+    // If 'cdsUi5PluginInfo' contains version information and it satisfies the minimum required CDS version,
+    // or if 'cdsUi5PluginInfo' is not available and the version specified in 'package.json' satisfies the minimum required version,
+    // then set 'addScripts' to true. Otherwise, set it to false.
+    const addScripts = cdsUi5PluginInfo?.hasMinCdsVersion ? cdsUi5PluginInfo.hasMinCdsVersion : satisfiesMinCdsVersion(packageJson);
+    if (addScripts) {
+        const cdsScript = getCDSWatchScript(projectName, appId, enableNPMWorkspaces ?? hasNPMworkspaces);
+        updatePackageJsonWithScripts(fs, packageJsonPath, cdsScript);
+    } else {
+        log?.warn(t('warn.cdsDKNotInstalled', { minCdsVersion: minCdsVersion }));
+    }
 }
 
 /**
  * Updates the root package.json file of CAP projects with the following changes:
  * 1) Adds the app name to the sapux array in the root package.json if sapux is enabled.
- * 2) Adds the cds watch script to the root package.json tasks if applicable.
+ * 2) Adds the cds watch script to the root package.json if applicable.
  *
  * @param {Editor} fs - The file system editor.
  * @param {string} projectName - The name of the project.
@@ -66,7 +104,7 @@ async function updateScripts(
  * @param {boolean} [enableNPMWorkspaces] - Whether to enable npm workspaces.
  * @returns {Promise<void>} A Promise that resolves once the root package.json is updated.
  */
-export async function updateRootPackageJsonCAP(
+export async function updateRootPackageJson(
     fs: Editor,
     projectName: string,
     sapux: boolean,
@@ -76,25 +114,22 @@ export async function updateRootPackageJsonCAP(
     enableNPMWorkspaces?: boolean
 ): Promise<void> {
     const packageJsonPath: string = join(capService.projectPath, 'package.json');
-    const packageJson = await getPackageJson(packageJsonPath, fs);
-    const capNodeType: CapRuntime = 'Node.js';
+    const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
+    const capNodeType = 'Node.js';
 
     if (enableNPMWorkspaces && packageJson) {
         await enableCdsUi5Plugin(capService.projectPath, fs);
     }
-    /**
-     * if cds version info is available in capService then use it to update scripts 
-     * else check the min cds version by reading package.json
-     * Mostly headless app generation will not have capService.cdsVersionInfo available since there is no 
-     * prompting stage in headless app generation, in this case mostly cds version will be taken from package.json
-     */
-    console.log("updateRootPackageJsonCAP OS capService.cdsVersionInfo --->", capService?.cdsVersionInfo)
-    const isCdsVersionAvailable = capService?.cdsVersionInfo ? capService?.cdsVersionInfo : satisfiesMinCdsVersion(packageJson);
-    console.log("isCdsVersionAvailable", isCdsVersionAvailable)
-    if (capService?.capType === capNodeType && isCdsVersionAvailable) {
-        await updateScripts(fs, packageJsonPath, projectName, appId, enableNPMWorkspaces);
-    } else {
-        log?.warn(t('warn.cdsDKNotInstalled'));
+    if (capService?.capType === capNodeType) {
+        await updateScripts(
+            fs,
+            packageJsonPath,
+            projectName,
+            appId,
+            enableNPMWorkspaces,
+            capService.cdsUi5PluginInfo,
+            log
+        );
     }
     if (sapux) {
         const capProjectPath = toPosixPath(
@@ -112,7 +147,7 @@ export async function updateRootPackageJsonCAP(
  * @param {Editor} fs The file system editor.
  * @param {string} appRoot The root directory of the application.
  */
-export function updateAppPackageJsonCAP(fs: Editor, appRoot: string): void {
+export function updateAppPackageJson(fs: Editor, appRoot: string): void {
     const packageJsonPath: string = join(appRoot, 'package.json');
     const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
 

@@ -1,4 +1,4 @@
-import type { CapService, CdsVersionInfo } from '@sap-ux/odata-service-inquirer';
+import type { CapService } from '@sap-ux/odata-service-inquirer';
 
 export type CdsUi5PluginInfo = {
     /**
@@ -20,5 +20,5 @@ export type CdsUi5PluginInfo = {
 };
 
 export interface CapServiceCdsInfo extends CapService {
-    cdsVersionInfo?: CdsVersionInfo;
+    cdsUi5PluginInfo: CdsUi5PluginInfo;
 }
