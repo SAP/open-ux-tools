@@ -1,5 +1,5 @@
 import type { OdataService, EdmxAnnotationsInfo } from '../types';
-import { ServiceType } from '../types';
+import { serviceIsCds } from '../updates';
 import { DEFAULT_DATASOURCE_NAME } from './constants';
 
 /**
@@ -45,8 +45,9 @@ function setDefaultAnnotationsName(service: OdataService): void {
      * In the manifest EJS template, annotation names are referred to for adding annotations to the manifest.json.
      * For CAP projects, annotations are added to the annotations.cds file and not to the manifest.json.
      */
-    const serviceType = service.type ? service.type : ServiceType.EDMX;
-    if(serviceType === ServiceType.CDS) return;
+    if (serviceIsCds(service)) {
+        return;
+    }
     const annotations = service.annotations as EdmxAnnotationsInfo;
     if (annotations?.technicalName && !annotations.name) {
         annotations.name = annotations?.technicalName?.replace(/\//g, '_')?.replace(/^_/, '');

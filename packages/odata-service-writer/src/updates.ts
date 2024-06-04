@@ -9,6 +9,21 @@ import prettifyXml from 'prettify-xml';
 import type { Manifest } from '@sap-ux/project-access';
 
 /**
+ * Function to check if the service type is CDS.
+ *
+ * @param service - the OData service instance
+ * @returns true if the service type is CDS
+ */
+export function serviceIsCds(service: OdataService): boolean {
+    // if service type is not defined, set EDMX as default
+    const serviceType = service.type ? service.type : ServiceType.EDMX;
+    if (serviceType === ServiceType.CDS) {
+        return true;
+    }
+    return false;
+}
+
+/**
  * Internal function that updates the manifest.json based on the given service configuration.
  *
  * @param basePath - the root path of an existing UI5 application
@@ -65,14 +80,13 @@ async function updateCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotatio
 
 /**
  * Writes annotation XML files.
- * 
+ *
  * @param {Editor} fs - The memfs editor instance.
  * @param {string} basePath - The base path of the project.
  * @param {OdataService} service - The OData service information.
  */
 export function writeAnnotationXmlFiles(fs: Editor, basePath: string, service: OdataService): void {
-    const serviceType = service.type ? service.type : ServiceType.EDMX;
-    if (serviceType === ServiceType.CDS) {
+    if (serviceIsCds(service)) {
         return;
     }
     // Write annotation xml if annotations are provided and service type is EDMX
