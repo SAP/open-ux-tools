@@ -131,8 +131,6 @@ export function getLocalCapProjectPrompts(
                             choice.value?.serviceName === defaultCapService?.serviceName
                     );
                 }
-                debugger;
-                console.log('capServiceChoices --->', capServiceChoices, " PromptState.odataService.cdsVersionInfo",  PromptState.odataService.cdsVersionInfo);
                 return capServiceChoices;
             },
             guiOptions: {
@@ -174,5 +172,6 @@ export function getLocalCapProjectPrompts(
             name: capInternalPromptNames.capCliStateSetter
         } as Question);
     }
+    
     return prompts;
 }

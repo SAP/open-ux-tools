@@ -37,12 +37,7 @@ export interface OdataServiceAnswers {
      * The selected CAP service.
      */
     capService?: CapService;
-    /**
-     * cds version info extracted from the project package json at the time of 
-     * prompting.
-     */
-    cdsVersionInfo?: CdsVersionInfo;
-
+    
     /**
      * The odata version of the selected service.
      */

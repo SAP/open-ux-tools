@@ -41,6 +41,7 @@ async function getPrompts(
     ErrorHandler.guidedAnswersEnabled = enableGuidedAnswers;
     PromptState.isYUI = isYUI;
     setTelemetryClient(telemetryClient);
+    
     return {
         prompts: await getQuestions(promptOptions),
         // Return reference to derived answers object that will be populated with user responses (after prompting is complete)

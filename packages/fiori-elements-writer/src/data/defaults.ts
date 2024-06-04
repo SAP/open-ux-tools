@@ -70,7 +70,7 @@ export function setDefaultTemplateSettings<T extends {}>(template: Template<T>, 
  * @param feApp - Fiori elements application config
  * @returns Fiori elements app config with updated defaults for unspecified properties
  */
-export async function setAppDefaults<T>(feApp: FioriElementsApp<T>): Promise<FioriElementsApp<T>> {
+export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<T> {
     // Add template information
     if (!feApp.app.sourceTemplate?.version || !feApp.app.sourceTemplate?.id) {
         const packageInfo = readPkgUp.sync({ cwd: __dirname });
@@ -92,7 +92,6 @@ export async function setAppDefaults<T>(feApp: FioriElementsApp<T>): Promise<Fio
         ui5Libs: getUi5Libs(feApp.template.type, feApp.service.version)?.concat(feApp.ui5?.ui5Libs ?? [])
     };
 
-    // add annotations only if specified in options
     if (!feApp.service.localAnnotationsName) {
         feApp.service.localAnnotationsName = 'annotation';
     }

@@ -88,12 +88,14 @@ async function getDatasourceTypeConditionalQuestions(
     promptOptions?: OdataServicePromptOptions
 ): Promise<OdataServiceQuestion[]> {
     const conditionalQuestions: OdataServiceQuestion[] = [];
+
     conditionalQuestions.push(
         ...(withCondition(
             [getMetadataFileQuestion(promptOptions?.metadataFilePath) as Question],
             (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.metadataFile
         ) as OdataServiceQuestion[])
     );
+    
     conditionalQuestions.push(
         ...(withCondition(
             getLocalCapProjectPrompts(promptOptions) as Question[],
