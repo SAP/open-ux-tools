@@ -1,6 +1,7 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
+import type { CdsVersionInfo } from '@sap-ux/project-access';
 import type { ListChoiceOptions } from 'inquirer';
 
 /**
@@ -82,13 +83,15 @@ export enum promptNames {
 
 export type CapRuntime = 'Node.js' | 'Java';
 
-export type CdsVersionInfo = { version: string; path: string; root: string };
-
 export interface CapService {
     /**
      * The path to the CAP project.
      */
     projectPath: string;
+    /**
+     * The CDS info for the Cds instance that was used to compile the project when determining the service.
+     */
+    cdsVersionInfo?: CdsVersionInfo;
     /**
      * The name of the CAP service as identified by the cds model.
      */
@@ -103,7 +106,7 @@ export interface CapService {
      */
     serviceCdsPath?: string;
     /**
-     * The runtime of the CAP service.
+     * The runtime of the Cds instance that was used to compile the project when determining the service.
      */
     capType?: CapRuntime;
     /**

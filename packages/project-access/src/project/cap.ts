@@ -8,7 +8,9 @@ import type {
     csn,
     LinkedModel,
     Package,
-    ServiceDefinitions
+    ServiceDefinitions,
+    ServiceInfo,
+    CdsVersionInfo
 } from '../types';
 import { fileExists, readFile, readJSON } from '../file';
 import { loadModuleFromProject } from './module-loader';
@@ -33,12 +35,6 @@ interface CdsFacade {
 interface ResolveWithCache {
     (files: string | string[], options?: { skipModelCache: boolean }): string[];
     cache: Record<string, { cached: Record<string, string[]>; paths: string[] }>;
-}
-
-interface ServiceInfo {
-    name: string;
-    urlPath: string;
-    runtime?: string;
 }
 
 /**
@@ -129,11 +125,11 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
  * In addition will return the information about the cds verion and location that was used to load the model and services.
  *
  * @param projectRoot - CAP project root where package.json resides or object specifying project root and optional logger to log additional info
- * @returns {Promise<{ model: csn; services: ServiceInfo[], cdsVersionInfo: { version: string; path: string } }>} - CAP Model and Services, and CDS info
+ * @returns {Promise<{ model: csn; services: ServiceInfo[]; cdsVersionInfo: CdsVersionInfo }>} - CAP Model and Services
  */
 export async function getCapModelAndServices(
     projectRoot: string | { projectRoot: string; logger?: Logger }
-): Promise<{ model: csn; services: ServiceInfo[], cdsVersionInfo: { version: string; path: string; root: string } }> {
+): Promise<{ model: csn; services: ServiceInfo[]; cdsVersionInfo: CdsVersionInfo }> {
     let _projectRoot;
     let _logger;
     if (typeof projectRoot === 'object') {
@@ -170,8 +166,8 @@ export async function getCapModelAndServices(
         model,
         services,
         cdsVersionInfo: {
+            home: cds.home,
             version: cds.version,
-            path: cds.home,
             root: cds.root
         }
     };
@@ -227,7 +223,7 @@ export async function getCdsRoots(projectRoot: string, clearCache = false): Prom
     // clear cache is enforced to also resolve newly created cds file at design time
     const cds = await loadCdsModuleFromProject(projectRoot);
     if (clearCache) {
-        cds.resolve.cache = {};
+        clearCdsResolveCache(cds);
     }
     for (const cdsEnvRoot of cdsEnvRoots) {
         const resolvedRoots =
@@ -429,6 +425,35 @@ async function loadCdsModuleFromProject(capProjectPath: string, strict: boolean 
     }
 
     return cds;
+}
+
+/**
+ * Method to clear CAP CDS module cache for passed project path.
+ *
+ * @param projectRoot root of a CAP project.
+ * @returns True if cache cleared successfully.
+ */
+export async function clearCdsModuleCache(projectRoot: string): Promise<boolean> {
+    let result = false;
+    try {
+        const cds = await loadCdsModuleFromProject(projectRoot);
+        if (cds) {
+            clearCdsResolveCache(cds);
+            result = true;
+        }
+    } catch (e) {
+        // ignore exception
+    }
+    return result;
+}
+
+/**
+ * Method to clear CAP CDS module cache for passed cds module.
+ *
+ * @param cds CAP CDS module
+ */
+function clearCdsResolveCache(cds: CdsFacade): void {
+    cds.resolve.cache = {};
 }
 
 /**

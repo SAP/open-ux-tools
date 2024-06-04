@@ -1,3 +1,4 @@
+import { AuthenticationType } from '@sap-ux/store';
 import type {
     FioriToolsProxyConfigBackend,
     CustomMiddleware,
@@ -26,6 +27,29 @@ export function getAppReloadMiddlewareConfig(): CustomMiddleware<FioriAppReloadC
 }
 
 /**
+ * Returns default comments for the given backend configuration values.
+ *
+ * @param backend backend config
+ * @param index - optional index of backend entry
+ * @returns the node comments for the backend config
+ */
+export function getBackendComments(
+    backend: FioriToolsProxyConfigBackend,
+    index?: number
+): NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[] {
+    const comment = [];
+
+    if (backend.authenticationType === AuthenticationType.ReentranceTicket) {
+        comment.push({
+            path: `configuration.backend.${index}.authenticationType`,
+            comment: ' SAML support for vscode',
+            key: 'authenticationType'
+        });
+    }
+    return comment;
+}
+
+/**
  * Get the configuration for the Fiori tools middleware.
  *
  * @param backends configuration of backends
@@ -46,7 +70,7 @@ export function getFioriToolsProxyMiddlewareConfig(
             ignoreCertError: false
         }
     };
-    const comments: NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[] = [
+    let comments: NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[] = [
         {
             path: 'configuration.ignoreCertError',
             comment:
@@ -55,8 +79,12 @@ export function getFioriToolsProxyMiddlewareConfig(
     ];
 
     if (backends && backends.length > 0) {
-        backends.forEach((element) => {
+        backends.forEach((element, index) => {
             element.path = element.path ?? '/';
+            const backendComments = getBackendComments(element, index);
+            if (backendComments) {
+                comments = [...comments, ...backendComments];
+            }
         });
         fioriToolsProxy.configuration.backend = backends;
     }

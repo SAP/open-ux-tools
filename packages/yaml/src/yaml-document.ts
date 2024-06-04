@@ -9,6 +9,7 @@ import { interpolate } from './texts';
 export interface NodeComment<T> {
     path: string;
     comment: string;
+    key?: string;
 }
 
 /**
@@ -103,6 +104,30 @@ export class YamlDocument {
                 break;
         }
         return this;
+    }
+
+    /**
+     * Creates a Node element and adds the provided comments.
+     * To add the comments the value must be flat JSON.
+     *
+     * @param options - Options
+     * @param options.value - the object's value (must be flat json)
+     * @param options.comments - optional comments for no in value being added
+     * @returns the node create from the value with any added comments
+     */
+    createNode({ value, comments }: { value: unknown; comments?: NodeComment<unknown>[] }): yaml.YAMLSeq<Node> {
+        const newNode = this.documents[0].createNode(value) as YAMLSeq<yaml.Node>;
+        if (comments?.length) {
+            for (const c of comments) {
+                const nodeIndex = newNode.items.findIndex((item) => {
+                    const keyValue = ((item as yaml.Pair).key as yaml.Scalar).value;
+                    return keyValue === c.key;
+                });
+                ((newNode.items[nodeIndex] as yaml.Pair).value as yaml.Scalar).comment = c.comment;
+            }
+        }
+
+        return newNode;
     }
 
     /**
@@ -385,11 +410,12 @@ export class YamlDocument {
      * @returns {string[]} - the path array
      * @memberof YamlDocument
      */
-    private toPathArray(path: string): string[] {
+    private toPathArray(path: string): (string | number)[] {
         const result = path
             ?.toString()
             .split('.')
-            .filter((p) => p !== '');
+            .filter((p) => p !== '')
+            .map((p) => (isNaN(Number(p)) ? p : Number(p))); // to add comments to array elements e.g arr.0.prop
 
         if (!result || result.length === 0) {
             throw new YAMLError(errorTemplate.pathCannotBeEmpty, errorCode.pathCannotBeEmpty);

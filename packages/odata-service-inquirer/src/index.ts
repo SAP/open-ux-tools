@@ -12,8 +12,7 @@ import {
     type CapService,
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
-    type OdataServiceQuestion,
-    type CdsVersionInfo
+    type OdataServiceQuestion
 } from './types';
 import { PromptState, setTelemetryClient } from './utils';
 import { initI18nOdataServiceInquirer } from './i18n';
@@ -87,7 +86,6 @@ export {
     type InquirerAdapter,
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
-    type CdsVersionInfo,
     // These exports are to facilitate migration to open-ux-tools and will be removed in a future release
     ERROR_TYPE,
     ErrorHandler

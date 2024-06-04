@@ -1,5 +1,105 @@
 # @sap-ux/create
 
+## 0.5.93
+
+### Patch Changes
+
+-   Updated dependencies [69b8d6de]
+    -   @sap-ux/project-access@1.21.0
+    -   @sap-ux/adp-tooling@0.10.16
+    -   @sap-ux/app-config-writer@0.3.69
+    -   @sap-ux/cap-config-writer@0.2.40
+    -   @sap-ux/cards-editor-config-writer@0.3.4
+    -   @sap-ux/mockserver-config-writer@0.5.3
+
+## 0.5.92
+
+### Patch Changes
+
+-   Updated dependencies [a7d78229]
+    -   @sap-ux/project-access@1.20.4
+    -   @sap-ux/adp-tooling@0.10.15
+    -   @sap-ux/app-config-writer@0.3.68
+    -   @sap-ux/cap-config-writer@0.2.39
+    -   @sap-ux/cards-editor-config-writer@0.3.4
+    -   @sap-ux/mockserver-config-writer@0.5.3
+
+## 0.5.91
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.20.3
+-   @sap-ux/adp-tooling@0.10.14
+-   @sap-ux/app-config-writer@0.3.67
+-   @sap-ux/cap-config-writer@0.2.38
+-   @sap-ux/cards-editor-config-writer@0.3.4
+-   @sap-ux/mockserver-config-writer@0.5.3
+
+## 0.5.90
+
+### Patch Changes
+
+-   Updated dependencies [54c91c6d]
+    -   @sap-ux/project-access@1.20.2
+    -   @sap-ux/adp-tooling@0.10.13
+    -   @sap-ux/app-config-writer@0.3.66
+    -   @sap-ux/cap-config-writer@0.2.37
+    -   @sap-ux/cards-editor-config-writer@0.3.4
+    -   @sap-ux/mockserver-config-writer@0.5.3
+
+## 0.5.89
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.12
+-   @sap-ux/app-config-writer@0.3.65
+
+## 0.5.88
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.11
+-   @sap-ux/app-config-writer@0.3.64
+
+## 0.5.87
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.10
+-   @sap-ux/app-config-writer@0.3.63
+-   @sap-ux/cards-editor-config-writer@0.3.4
+-   @sap-ux/mockserver-config-writer@0.5.3
+-   @sap-ux/project-access@1.20.1
+-   @sap-ux/cap-config-writer@0.2.36
+
+## 0.5.86
+
+### Patch Changes
+
+-   96de8f25: FIX: prompt user for authentication type if not known when generating an adaptation project
+    -   @sap-ux/adp-tooling@0.10.9
+
+## 0.5.85
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.8
+
+## 0.5.84
+
+### Patch Changes
+
+-   Updated dependencies [6e3d4da4]
+    -   @sap-ux/adp-tooling@0.10.7
+    -   @sap-ux/app-config-writer@0.3.62
+
+## 0.5.83
+
+### Patch Changes
+
+-   Updated dependencies [da5d9f0b]
+    -   @sap-ux/adp-tooling@0.10.6
+
 ## 0.5.82
 
 ### Patch Changes

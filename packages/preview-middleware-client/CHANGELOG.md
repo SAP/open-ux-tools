@@ -1,5 +1,29 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.9.15
+
+### Patch Changes
+
+-   81026f96: Add explanation at the end of disabled context menu item due to non stable ID
+
+## 0.9.14
+
+### Patch Changes
+
+-   78de7813: RTA standard toolbar replaced with custom CPE toolbar
+
+## 0.9.13
+
+### Patch Changes
+
+-   56d8b0b9: Add default content for extension points to the outline in CPE
+
+## 0.9.12
+
+### Patch Changes
+
+-   52faf16f: Fix RTA initialization issue for UI5 versions less than 1.72.
+
 ## 0.9.11
 
 ### Patch Changes

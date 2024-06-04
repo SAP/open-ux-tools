@@ -13,6 +13,14 @@
             labelSpanS="4"
             singleContainerFullSize="false">
             <f:content>
+                <MessageStrip
+                    text="Have in mind that the selected extension point has a default content and by adding fragment it will no longer be visible."
+                    id="extensionPointDefaultContentMessage"
+                    class="sapUiTinyMarginBottom"
+                    showIcon="true"
+                    type="Information"
+                    visible="{/hasDefaultContent}">
+                </MessageStrip>
                 <Label text="Extension Point" />
                 <Select
                     enabled="{/extensionListEnabled}"

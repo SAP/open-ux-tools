@@ -17,6 +17,7 @@ import { getI18nPropertiesPaths } from './i18n/i18n';
 import { findFioriArtifacts } from './search';
 import { getMainService, getServicesAndAnnotations } from './service';
 import { getWebappPath } from './ui5-config';
+import { gte, valid } from 'semver';
 
 /**
  * Returns the project structure for a given Fiori project.
@@ -205,12 +206,50 @@ export async function getProjectType(projectRoot: string): Promise<ProjectType> 
 }
 
 /**
- * Reads the package.json file and returns its content.
+ * Returns the minUI5Version, as defined in manifest.
  *
- * @param {string} packageJsonPath - The path to the package.json file.
- * @param {Editor} fs - The file system editor.
- * @returns {Package} The content of the package.json file.
+ * @param manifest - manifest object
+ * @returns minUI5Version, if present
  */
-export async function getPackageJson(packageJsonPath: string, fs?: Editor): Promise<Package> {
-    return readJSON<Package>(packageJsonPath, fs);
+export function getMinUI5VersionFromManifest(manifest: Manifest): string | string[] | undefined {
+    const dependencies = manifest['sap.ui5']?.dependencies;
+    if (dependencies) {
+        return dependencies.minUI5Version;
+    }
+    return undefined;
+}
+
+/**
+ * Returns the minUI5Version as string[].
+ *
+ * @param manifest - manifest object
+ * @returns minUI5Version, as an array of strings
+ */
+export function getMinUI5VersionAsArray(manifest: Manifest): string[] {
+    let result: string[] = [];
+    const minUI5Version = getMinUI5VersionFromManifest(manifest);
+    if (minUI5Version) {
+        result = Array.isArray(minUI5Version) ? minUI5Version : [minUI5Version];
+    }
+    return result;
+}
+
+/**
+ * Returns the minUI5Version in string format.
+ * If it is defined as an arry, returns the minimum version from it.
+ *
+ * @param manifest - manifest object
+ * @returns the minimum version as string
+ */
+export function getMinimumUI5Version(manifest: Manifest): string | undefined {
+    let result: string | undefined;
+    const minUI5VersionArray = getMinUI5VersionAsArray(manifest);
+    if (minUI5VersionArray.length > 0) {
+        minUI5VersionArray.forEach((version) => {
+            if (valid(version) && (!result || gte(result, version))) {
+                result = version;
+            }
+        });
+    }
+    return result;
 }
