@@ -27,16 +27,21 @@ export interface AdpPreviewConfig {
 }
 
 export interface OnpremApp {
+    /** Application variant id. */
     id: string;
+    /** Reference associated with the ID of the base application. */
     reference: string;
     layer?: UI5FlexLayer;
     title?: string;
+    /** Optional: Application variant change content. */
     content?: Content[];
 }
 
 export interface CloudApp extends OnpremApp {
+    /** bspName associated with the ABAP Cloud repository name of the base application. */
     bspName: string;
-    languages: Language[]
+    /** Cloud app active languages. */
+    languages: Language[];
 }
 
 export type App = OnpremApp | CloudApp;
@@ -72,19 +77,24 @@ export interface AdpWriterConfig {
 export interface ChangeInboundNavigation {
     /** Identifier for the inbound navigation. */
     inboundId: string;
+    /** Title associated with the inbound navigation. */
     title?: string;
+    /** Subtitle associated with the inbound navigation. */
     subTitle?: string;
 }
 
 export interface NewInboundNavigation {
-    /** Represent business entities and can bundle applications that reflect a specific scenario. */
+    /** Represent business entities that reflect a specific scenario. */
     semanticObject: string;
     /** Operations which can be performed on a semantic object. */
     action: string;
     //** Defined instance of the semantic object (e.g. by specifying the employee ID). */
     additionalParameters?: object;
+    /** Title associated with the inbound navigation. */
     title: string;
+    /** Optional: Subtitle associated with the inbound navigation. */
     subTitle?: string;
+    /** Optional: Identifier for the inbound navigation. */
     inboundId?: string;
 }
 
@@ -393,46 +403,49 @@ export interface CustomConfig {
     };
 }
 
-export interface InboundChangeContent {
-    inboundId: string;
-    entityPropertyChange: InboundChangeEntityPropertyChange[];
-}
 export interface InboundChangeContentAddInboundId {
     inbound: {
         [inboundId: string]: AddInboundModel;
     };
 }
 export interface AddInboundModel {
+    /** Represent business entities that reflect a specific scenario. */
     semanticObject: string;
+    /** Operations which can be performed on a semantic object. */
     action: string;
+    /** Title associated with the inbound navigation data. */
     title: string;
+    /** Optional: Subtitle associated with the inbound navigation data. */
     subTitle?: string;
     signature: AddInboundSignitureModel;
 }
 export interface AddInboundSignitureModel {
     parameters: InboundParameters;
+    //** Defined instance of the semantic object (e.g. by specifying the employee ID). */
     additionalParameters: string;
 }
 export interface InboundParameters {
-    "sap-appvar-id"?: object;
-    "sap-priority"?: object;
+    'sap-appvar-id'?: object;
+    'sap-priority'?: object;
 }
-export interface InboundChangeEntityPropertyChange {
-    propertyPath: string;
-    operation: string;
-    propertyValue: any;
-}
+
 export interface InboundChange {
     inbound: {
         [key: string]: {
+            /** Represent business entities that reflect a specific scenario. */
             semanticObject: string;
+            /** Operations which can be performed on a semantic object. */
             action: string;
+            /** Icon associated with the inbound navigation data. */
             icon: string;
+            /** Title associated with the inbound navigation data. */
             title: string;
+            /** Subtitle associated with the inbound navigation data. */
             subTitle: string;
             signature: {
                 parameters: object | string;
-                additionalParameters: "allowed";
+                //** Defined instance of the semantic object (e.g. by specifying the employee ID). */
+                additionalParameters: 'allowed';
             };
         };
     };

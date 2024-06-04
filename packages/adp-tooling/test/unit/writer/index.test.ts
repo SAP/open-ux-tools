@@ -1,11 +1,10 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { generate, generateEnv, generateCf } from '../../../src';
-import type { AdpWriterConfig, CfWriterConfig } from '../../../src/types';
+import { generate } from '../../../src';
+import type { AdpWriterConfig } from '../../../src/types';
 import { rimraf } from 'rimraf';
 import { migrate } from '../../../src/writer';
-import { OperationsType } from '@sap-ux/axios-extension';
 
 describe('ADP writer', () => {
     const fs = create(createStorage());
@@ -40,7 +39,7 @@ describe('ADP writer', () => {
     describe('generate', () => {
         test('minimal config', async () => {
             const projectDir = join(outputDir, 'minimal');
-            await generate(projectDir, config);
+            await generate(projectDir, config, fs);
             expect(fs.dump(projectDir)).toMatchSnapshot();
         });
 
@@ -99,9 +98,7 @@ describe('ADP writer', () => {
                         package: '$TMP'
                     },
                     options: {
-                        fioriTools: true,
-                        isRunningInBAS: true,
-                        isCloudProject: true
+                        fioriTools: true
                     },
                     ui5: {
                         ui5Version: '1.122.1'
@@ -130,26 +127,6 @@ describe('ADP writer', () => {
                         file.dirname === projectDir &&
                         ['package.json', 'ui5.yaml', 'ui5-deploy.yaml'].includes(file.basename)
                 )
-            ).toMatchSnapshot();
-        });
-    });
-
-    describe('generateEnv', () => {
-        test('generate env file for s4hana cloud projects minimal', async () => {
-            const projectDir = join(outputDir, 'minimal');
-            await generateEnv(projectDir, '');
-            expect(
-                fs.dump(projectDir, (file) => file.dirname === projectDir && ['.env'].includes(file.basename))
-            ).toMatchSnapshot();
-        });
-
-        test('generate env file for s4hana cloud projects', async () => {
-            const projectDir = join(outputDir, 'env');
-            const data = `ABAP_USERNAME: test_name
-                          ABAP_PASSWORD: test_pass`;
-            await generateEnv(projectDir, data, fs);
-            expect(
-                fs.dump(projectDir, (file) => file.dirname === projectDir && ['.env'].includes(file.basename))
             ).toMatchSnapshot();
         });
     });

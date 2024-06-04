@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
-import type { CloudApp, AdpWriterConfig } from '../types';
+import type { AdpWriterConfig } from '../types';
 import { enhanceManifestChangeContentWithFlpConfig } from './options';
 import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml } from './project-utils';
 
@@ -21,7 +21,7 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
         deploy: config.deploy ? { ...config.deploy } : undefined,
         options: { ...config.options },
         flp: config.flp ? { ...config.flp } : undefined,
-        customConfig: config.customConfig ? { ...config.customConfig } : undefined,
+        customConfig: config.customConfig ? { ...config.customConfig } : undefined
     };
     configWithDefaults.app.title ??= `Adaptation of ${config.app.reference}`;
     configWithDefaults.app.layer ??= 'CUSTOMER_BASE';
@@ -52,8 +52,13 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
 
     const fullConfig = setDefaults(config);
 
-    if (fullConfig.customConfig?.adp.environment === "C" && fullConfig.flp) {
-        enhanceManifestChangeContentWithFlpConfig(fullConfig.flp, fullConfig.app as CloudApp, fullConfig.app.content, fullConfig.customConfig.adp.addInboundId)
+    if (fullConfig.customConfig?.adp.environment === 'C' && fullConfig.flp) {
+        enhanceManifestChangeContentWithFlpConfig(
+            fullConfig.flp,
+            fullConfig.app.id,
+            fullConfig.app.content,
+            fullConfig.customConfig.adp.addInboundId
+        );
     }
     writeTemplateToFolder(join(tmplPath, '**/*.*'), join(basePath), fullConfig, fs);
     await writeUI5DeployYaml(basePath, fullConfig, fs);
@@ -70,7 +75,6 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
  * @param fs - the memfs editor instance
  * @returns the updated memfs editor instance
  */
-
 export async function migrate(basePath: string, config: AdpWriterConfig, fs?: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
