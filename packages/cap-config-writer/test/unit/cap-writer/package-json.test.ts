@@ -6,7 +6,7 @@ import editor, { type Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import { minCdsVersion } from '../../../src/cap-config';
 import { updateRootPackageJson, updateAppPackageJson } from '../../../src/cap-writer/package-json';
-import { getCdsVersionInfo, getPackageJson } from '@sap-ux/project-access';
+import type { Package } from '@sap-ux/project-access';
 import type { CapServiceCdsInfo } from '../../../src/index';
 
 jest.mock('../../../src/cap-config/package-json', () => ({
@@ -49,9 +49,6 @@ describe('Writing/package json files', () => {
                 hasCdsUi5Plugin: false
             }
         };
-        (getCdsVersionInfo as jest.Mock).mockReturnValue({
-            home: '/cdsVersion'
-        });
     });
 
     afterEach(() => {
@@ -64,7 +61,7 @@ describe('Writing/package json files', () => {
         capService.projectPath = join(testInputPath, testProjectNameWithSapUx);
         (satisfiesMinCdsVersion as jest.Mock).mockReturnValue(true);
         await updateRootPackageJson(fs, testProjectNameNoSapUx, isSapUxEnabled, capService, 'test.app.project');
-        const packageJson = await getPackageJson(packageJsonPath, fs);
+        const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
         const scripts = packageJson.scripts;
         expect(scripts).toEqual({
             'watch-test-cap-package-no-sapux':
@@ -108,7 +105,7 @@ describe('Writing/package json files', () => {
             logger,
             isNpmWorkspacesEnabled
         );
-        const packageJson = await getPackageJson(packageJsonPath, fs);
+        const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
         const devDependencies = packageJson.devDependencies;
         expect(devDependencies).toEqual({
             'cds-plugin-ui5': '^0.6.13'
@@ -119,7 +116,7 @@ describe('Writing/package json files', () => {
         const appRoot = join(__dirname, 'test-inputs/test-cap-package-no-sapux');
         const packageJsonPath = join(capService.projectPath, 'package.json');
         updateAppPackageJson(fs, appRoot);
-        const packageJson = await getPackageJson(packageJsonPath, fs);
+        const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
         const scripts = packageJson.scripts;
         expect(scripts).toEqual({
             'test-script': 'Run some scripts here'
@@ -132,7 +129,7 @@ describe('Writing/package json files', () => {
         const appRoot = join(__dirname, 'test-inputs/test-cap-package-no-sapux');
         const packageJsonPath = join(capService.projectPath, 'package.json');
         updateAppPackageJson(fs, appRoot);
-        const packageJson = await getPackageJson(packageJsonPath, fs);
+        const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
         const scripts = packageJson.scripts;
         expect(scripts).toEqual({
             'test-script': 'Run some scripts here'

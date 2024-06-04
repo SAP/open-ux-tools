@@ -72,22 +72,13 @@ export function setDefaultTemplateSettings<T extends {}>(template: Template<T>, 
  */
 export async function setAppDefaults<T>(feApp: FioriElementsApp<T>): Promise<FioriElementsApp<T>> {
     // Add template information
-    console.log("__dirname FE --->", __dirname)
     if (!feApp.app.sourceTemplate?.version || !feApp.app.sourceTemplate?.id) {
-        console.log(" setAppDefaults attempting to read package.json")
-        //const packageInfo = readPkgUp.sync({ cwd: __dirname });
-        const packageId = `@sap/generator-fiori:${feApp.template.type}`;
-        const packageVersion = "1.13.5";
+        const packageInfo = readPkgUp.sync({ cwd: __dirname });
         feApp.app.sourceTemplate = {
-            id: packageId,
-            version: packageVersion,
+            id: `${packageInfo?.packageJson.name}:${feApp.template.type}`,
+            version: packageInfo?.packageJson.version,
             toolsId: feApp.app.sourceTemplate?.toolsId
         };
-        // feApp.app.sourceTemplate = {
-        //     id: `${packageInfo?.packageJson.name}:${feApp.template.type}`,
-        //     version: packageInfo?.packageJson.version,
-        //     toolsId: feApp.app.sourceTemplate?.toolsId
-        // };;
     }
 
     // Generate base UI5 project
