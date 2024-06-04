@@ -133,7 +133,12 @@ describe('Test getCapModelAndServices()', () => {
                     'urlPath': 'url',
                     'runtime': 'Node.js'
                 }
-            ]
+            ],
+            cdsInfo: {
+                home: undefined,
+                version: undefined,
+                root: undefined
+            }
         });
         expect(cdsMock.load).toBeCalledWith(
             [join('PROJECT_ROOT', 'APP'), join('PROJECT_ROOT', 'SRV'), join('PROJECT_ROOT', 'DB')],

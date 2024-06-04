@@ -2,7 +2,7 @@ import { coerce, gte, satisfies } from 'semver';
 import { getCapCustomPaths } from '@sap-ux/project-access';
 import type { Package } from '@sap-ux/project-access';
 
-const minCdsVersion = '6.8.2';
+export const minCdsVersion = '6.8.2';
 const minCdsPluginUi5Version = '0.6.13';
 
 /**
