@@ -93,7 +93,7 @@ export async function setAppDefaults<T>(feApp: FioriElementsApp<T>): Promise<Fio
     };
 
     // add annotations only if specified in options
-    if (!feApp.appOptions.excludeAnnotations && !feApp.service.localAnnotationsName) {
+    if (!feApp.service.localAnnotationsName) {
         feApp.service.localAnnotationsName = 'annotation';
     }
 

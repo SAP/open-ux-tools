@@ -79,14 +79,6 @@ export interface AppOptions {
      * Excludes the index.html from the template and does not add the `start-noflp` script in package.json
      */
     generateIndex?: boolean;
-    /**
-     * Excludes the annotations from manifest json
-     */
-    excludeAnnotations?: boolean;
-    /**
-     * Excludes fiori tools middleware from ui5.yaml
-     */
-    excludeFioriToolsProxyMiddleware?: boolean;
 }
 
 export interface Ui5App {

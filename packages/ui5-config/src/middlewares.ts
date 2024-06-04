@@ -7,7 +7,7 @@ import type {
     MockserverConfig,
     FioriToolsProxyConfigUI5
 } from './types';
-import { type NodeComment } from '@sap-ux/yaml';
+import type { NodeComment } from '@sap-ux/yaml';
 
 /**
  * Get the configuration for the AppReload middleware.
