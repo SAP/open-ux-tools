@@ -18,9 +18,9 @@ export const Input = (props: InputProps) => {
     const onLiveChange = (event: React.FormEvent, newValue?: string | undefined) => {
         setValue(newValue ?? '');
     };
+
     useEffect(() => {
-        const id = setTimeout(() => onChange(name, value), 700);
-        return () => clearTimeout(id);
+        onChange(name, value);
     }, [name, value]);
 
     return (
