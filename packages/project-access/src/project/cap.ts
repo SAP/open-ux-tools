@@ -8,7 +8,9 @@ import type {
     csn,
     LinkedModel,
     Package,
-    ServiceDefinitions
+    ServiceDefinitions,
+    ServiceInfo,
+    CdsVersionInfo
 } from '../types';
 import { fileExists, readFile, readJSON } from '../file';
 import { loadModuleFromProject } from './module-loader';
@@ -33,12 +35,6 @@ interface CdsFacade {
 interface ResolveWithCache {
     (files: string | string[], options?: { skipModelCache: boolean }): string[];
     cache: Record<string, { cached: Record<string, string[]>; paths: string[] }>;
-}
-
-interface ServiceInfo {
-    name: string;
-    urlPath: string;
-    runtime?: string;
 }
 
 /**
@@ -128,11 +124,11 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
  * Return the CAP model and all services. The cds.root will be set to the provided project root path.
  *
  * @param projectRoot - CAP project root where package.json resides or object specifying project root and optional logger to log additional info
- * @returns {Promise<{ model: csn; services: ServiceInfo[] }>} - CAP Model and Services
+ * @returns {Promise<{ model: csn; services: ServiceInfo[]; cdsVersionInfo: CdsVersionInfo }>} - CAP Model and Services
  */
 export async function getCapModelAndServices(
     projectRoot: string | { projectRoot: string; logger?: Logger }
-): Promise<{ model: csn; services: ServiceInfo[] }> {
+): Promise<{ model: csn; services: ServiceInfo[]; cdsVersionInfo: CdsVersionInfo }> {
     let _projectRoot;
     let _logger;
     if (typeof projectRoot === 'object') {
@@ -167,7 +163,12 @@ export async function getCapModelAndServices(
     }
     return {
         model,
-        services
+        services,
+        cdsVersionInfo: {
+            home: cds.home,
+            version: cds.version,
+            root: cds.root
+        }
     };
 }
 
