@@ -1098,6 +1098,9 @@ importers:
       i18next:
         specifier: 23.5.1
         version: 23.5.1
+      lodash:
+        specifier: 4.17.21
+        version: 4.17.21
       semver:
         specifier: 7.5.4
         version: 7.5.4
@@ -1108,6 +1111,9 @@ importers:
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
+      '@types/lodash':
+        specifier: 4.14.202
+        version: 4.14.202
       '@types/semver':
         specifier: 7.5.4
         version: 7.5.4
