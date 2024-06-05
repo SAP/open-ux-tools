@@ -1,7 +1,7 @@
 import memFs from 'mem-fs';
 import { join } from 'path';
 import editor, { type Editor } from 'mem-fs-editor';
-import { updateTsConfigCap, updateStaticLocationsInApplicationYaml } from '../../../src/cap-writer/tsconfig-and-yaml';
+import { updateTsConfig, updateStaticLocationsInApplicationYaml } from '../../../src/cap-writer/tsconfig-and-yaml';
 import { YamlDocument } from '@sap-ux/yaml';
 
 jest.mock('@sap-ux/yaml', () => ({
@@ -26,7 +26,7 @@ describe('Writing tsConfig and yaml files', () => {
         const projectName = 'test-cap-package-sapux';
         const projectPath = join(testInputPath, projectName);
         const tsConfigPath = join(projectPath, 'tsconfig.json');
-        updateTsConfigCap(fs, projectPath);
+        updateTsConfig(fs, projectPath);
         const tsConfigJson = (fs.readJSON(tsConfigPath) as any) ?? {};
         const compilerOptions = tsConfigJson.compilerOptions.typeRoots;
         expect(compilerOptions).toEqual([

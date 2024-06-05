@@ -12,7 +12,7 @@ import { t } from '../i18n';
  * @param {Editor} fs The file system editor.
  * @param {string} appRoot The root directory of the application.
  */
-export function updateTsConfigCap(fs: Editor, appRoot: string): void {
+export function updateTsConfig(fs: Editor, appRoot: string): void {
     const tsConfigPath = join(appRoot, FileName.Tsconfig);
     if (fs.exists(tsConfigPath)) {
         const tsConfig: any = fs.readJSON(tsConfigPath);

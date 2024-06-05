@@ -36,17 +36,17 @@ const logger: Logger = {}; // logger instance from @sap-ux/logger
 
 updatePomXml(fsMock, pomPath, logger);
 ```
-### updateTsConfigCap
+### updateTsConfig
 The function constructs the path to the tsconfig.json file based on the provided appRoot. If the file exists, it reads its contents and checks if the typeRoots property is defined in the compilerOptions. The function extends the tsconfig.json file with the modified compilerOptions.
 
 ```ts
-import { updateTsConfigCap } from '@sap-ux/cap-config-writer';
+import { updateTsConfig } from '@sap-ux/cap-config-writer';
 
 // Usage example
 const fsMock: Editor = {}; // mem-fs file editor
 const appRoot: string = 'path/to/your/app'; // The root directory of the application
 
-updateTsConfigCap(fsMock, appRoot);
+updateTsConfig(fsMock, appRoot);
 ```
 
 ### updateStaticLocationsInApplicationYaml
