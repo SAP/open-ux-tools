@@ -45,6 +45,8 @@ export async function enableCdsUi5Plugin(basePath: string, fs?: Editor): Promise
  * @param basePath - root path of the CAP project, where package.json is located
  * @param [fs] - optional: the memfs editor instance
  * @param {CdsVersionInfo} [cdsVersionInfo] - Optional. Information about the CDS version which is extracted during the prompting phase of app generation.
+    cdsVersionInfo provides you with the version number of the CDS module which will be available for use throughout the app generation phase. This information is used to check if 
+    the version of the CDS module satisfies the minimum required version for the cds-plugin-ui5.
  * @returns true: cds-plugin-ui5 and all prerequisites are fulfilled; false: cds-plugin-ui5 is not enabled or not all prerequisites are fulfilled
  */
 export async function checkCdsUi5PluginEnabled(basePath: string, fs?: Editor, cdsVersionInfo?: CdsVersionInfo): Promise<boolean>;
@@ -55,6 +57,8 @@ export async function checkCdsUi5PluginEnabled(basePath: string, fs?: Editor, cd
  * @param basePath - root path of the CAP project, where package.json is located
  * @param [fs] - optional: the memfs editor instance
  * @param {CdsVersionInfo} [cdsVersionInfo] - Optional. Information about the CDS version which is extracted during the prompting phase of app generation.
+    cdsVersionInfo provides you with the version number of the CDS module which will be available for use throughout the app generation phase. This information is used to check if 
+    the version of the CDS module satisfies the minimum required version for the cds-plugin-ui5.
  * @param [moreInfo] if true return an object specifying detailed info about the cds and workspace state
  * @returns false if package.json is not found at specified path or {@link CdsUi5PluginInfo} with additional info
  */
@@ -71,6 +75,8 @@ export async function checkCdsUi5PluginEnabled(
  * @param basePath - root path of the CAP project, where package.json is located
  * @param [fs] - optional: the memfs editor instance
  * @param {CdsVersionInfo} [cdsVersionInfo] - Optional. Information about the CDS version which is extracted during the prompting phase of app generation.
+    cdsVersionInfo provides you with the version number of the CDS module which will be available for use throughout the app generation phase. This information is used to check if 
+    the version of the CDS module satisfies the minimum required version for the cds-plugin-ui5.
  * @param [moreInfo] if true return an object specifying detailed info about the cds and workspace state
  * @returns false if package.json is not found at specified path or {@link CdsUi5PluginInfo} with additional info or true if
  * cds-plugin-ui5 and all prerequisites are fulfilled
