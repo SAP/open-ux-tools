@@ -101,6 +101,27 @@ Object {
 }
 `;
 
+exports[`controlData buildControlData - fe 1`] = `
+Object {
+  "fe": true,
+  "id": "testID",
+  "name": "sap.fe.macros.table.TableAPI",
+  "properties": Array [
+    Object {
+      "editor": "input",
+      "isEnabled": true,
+      "isIcon": false,
+      "name": "contextPath",
+      "readableName": "Context Path",
+      "type": "string",
+      "ui5Type": undefined,
+      "value": undefined,
+    },
+  ],
+  "type": "sap.fe.macros.table.TableAPI",
+}
+`;
+
 exports[`controlData buildControlData 1`] = `
 Object {
   "fe": false,

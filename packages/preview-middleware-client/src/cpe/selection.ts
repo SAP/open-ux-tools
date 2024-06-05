@@ -271,7 +271,6 @@ export class SelectionService implements Service {
                     } catch (error) {
                         Log.error('Failed to report telemetry', error);
                     } finally {
-                        // const ctrl = tryParentCtrl(runtimeControl);
                         await handleControlSelected(sendAction, ctrl);
                         eventOrigin.delete('outline');
                     }
