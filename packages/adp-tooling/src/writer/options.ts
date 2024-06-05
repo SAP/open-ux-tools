@@ -5,11 +5,10 @@ import type {
     InboundContent,
     Language,
     InboundChangeContentAddInboundId,
-    FlpConfig,
     Content,
     CloudApp,
-    NewInboundNavigation,
-    ChangeInboundNavigation
+    ChangeInboundNavigation,
+    InternalInboundNavigation
 } from '../types';
 
 /**
@@ -213,10 +212,6 @@ function getInboundChangeContentWithExistingInboundId(
     flpConfiguration: ChangeInboundNavigation,
     appId: string
 ): InboundContent {
-    if (!flpConfiguration.inboundId) {
-        throw new Error('Missing properties!');
-    }
-
     const inboundContent: InboundContent = {
         inboundId: flpConfiguration.inboundId,
         entityPropertyChange: [
@@ -262,13 +257,9 @@ function getInboundChangeContentWithExistingInboundId(
  * @returns Inbound change content.
  */
 function getInboundChangeContentWithNewInboundID(
-    flpConfiguration: NewInboundNavigation,
+    flpConfiguration: InternalInboundNavigation,
     appId: string
 ): InboundChangeContentAddInboundId {
-    if (!flpConfiguration.action || !flpConfiguration.semanticObject || !flpConfiguration.inboundId) {
-        throw new Error('Missing properties!');
-    }
-
     const content: InboundChangeContentAddInboundId = {
         inbound: {
             [flpConfiguration.inboundId]: {
@@ -309,20 +300,18 @@ function getInboundChangeContentWithNewInboundID(
  * @param flpConfiguration FLP cloud project configuration
  * @param appId Application variant id
  * @param manifestChangeContent Application variant change content
- * @param addInboundId optional
  */
 export function enhanceManifestChangeContentWithFlpConfig(
-    flpConfiguration: FlpConfig,
+    flpConfiguration: InternalInboundNavigation,
     appId: string,
-    manifestChangeContent: Content[] | Content[] = [],
-    addInboundId: boolean
+    manifestChangeContent: Content[] | Content[] = []
 ): void {
-    const inboundChangeContent = addInboundId
-        ? getInboundChangeContentWithNewInboundID(flpConfiguration as NewInboundNavigation, appId)
+    const inboundChangeContent = flpConfiguration.addInboundId
+        ? getInboundChangeContentWithNewInboundID(flpConfiguration as InternalInboundNavigation, appId)
         : getInboundChangeContentWithExistingInboundId(flpConfiguration as ChangeInboundNavigation, appId);
     if (inboundChangeContent) {
         const addInboundChange = {
-            changeType: addInboundId ? 'appdescr_app_addNewInbound' : 'appdescr_app_changeInbound',
+            changeType: flpConfiguration.addInboundId ? 'appdescr_app_addNewInbound' : 'appdescr_app_changeInbound',
             content: inboundChangeContent,
             texts: {
                 'i18n': 'i18n/i18n.properties'

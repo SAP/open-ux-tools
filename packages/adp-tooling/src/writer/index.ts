@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
-import type { AdpWriterConfig } from '../types';
+import type { AdpWriterConfig, InternalInboundNavigation } from '../types';
 import { enhanceManifestChangeContentWithFlpConfig } from './options';
 import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml } from './project-utils';
 
@@ -14,13 +14,13 @@ const tmplPath = join(__dirname, '../../templates/project');
  * @returns enhanced configuration with default values
  */
 function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
-    const configWithDefaults: AdpWriterConfig = {
+    const configWithDefaults: AdpWriterConfig & { flp?: InternalInboundNavigation } = {
         app: { ...config.app },
         target: { ...config.target },
         ui5: { ...config.ui5 },
         deploy: config.deploy ? { ...config.deploy } : undefined,
         options: { ...config.options },
-        flp: config.flp ? { ...config.flp } : undefined,
+        flp: config.flp ? ({ ...config.flp } as InternalInboundNavigation) : undefined,
         customConfig: config.customConfig ? { ...config.customConfig } : undefined
     };
     configWithDefaults.app.title ??= `Adaptation of ${config.app.reference}`;
@@ -30,8 +30,9 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
     configWithDefaults.package.name ??= config.app.id.toLowerCase().replace(/\./g, '-');
     configWithDefaults.package.description ??= configWithDefaults.app.title;
 
-    if (configWithDefaults.flp && configWithDefaults?.customConfig?.adp.addInboundId) {
-        configWithDefaults.flp.inboundId ??= `${configWithDefaults.app.id}.InboundID`;
+    if (configWithDefaults.flp && !configWithDefaults.flp.inboundId) {
+        configWithDefaults.flp.addInboundId = true;
+        configWithDefaults.flp.inboundId = `${configWithDefaults.app.id}.InboundID`;
     }
 
     return configWithDefaults;
@@ -54,10 +55,9 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
 
     if (fullConfig.customConfig?.adp.environment === 'C' && fullConfig.flp) {
         enhanceManifestChangeContentWithFlpConfig(
-            fullConfig.flp,
+            fullConfig.flp as InternalInboundNavigation,
             fullConfig.app.id,
-            fullConfig.app.content,
-            fullConfig.customConfig.adp.addInboundId
+            fullConfig.app.content
         );
     }
     writeTemplateToFolder(join(tmplPath, '**/*.*'), join(basePath), fullConfig, fs);
