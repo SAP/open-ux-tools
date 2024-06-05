@@ -48,7 +48,7 @@ function isControlEnabled(
     fe?: boolean
 ): boolean {
     if (fe) {
-        return isPropertyEnabled(analyzedType) && hasStableId && !ignore && fe;
+        return isPropertyEnabled(analyzedType) && hasStableId && !ignore;
     }
 
     return (controlOverlay?.isSelectable() ?? false) && isPropertyEnabled(analyzedType) && hasStableId && !ignore;
