@@ -45,6 +45,15 @@ describe('ADP writer', () => {
 
         test('add deploy config', async () => {
             const projectDir = join(outputDir, 'deploy');
+            Object.assign(config.app, {
+                bspName: 'bsp.test.app',
+                languages: [
+                    {
+                        sap: 'testId',
+                        i18n: 'testKey'
+                    }
+                ]
+            });
             await generate(
                 projectDir,
                 {
@@ -101,21 +110,13 @@ describe('ADP writer', () => {
                         fioriTools: true
                     },
                     ui5: {
-                        ui5Version: '1.122.1'
+                        version: '1.122.1'
                     },
                     customConfig: {
                         adp: {
-                            safeMode: false
+                            safeMode: false,
+                            environment: 'C'
                         }
-                    },
-                    flp: {
-                        bspName: 'bsp.test.app',
-                        languages: [
-                            {
-                                sap: 'testId',
-                                i18n: 'testKey'
-                            }
-                        ]
                     }
                 },
                 fs
