@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.22.8
+
+### Patch Changes
+
+-   d2d324ff: Update flpSandbox.html to include flexibilityServices
+
 ## 0.22.7
 
 ### Patch Changes

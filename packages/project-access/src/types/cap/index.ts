@@ -214,3 +214,18 @@ export interface LinkedModel extends CSN {
     services: Definitions & ((namespace: string) => Definitions);
     definitions: Definitions;
 }
+
+export interface ServiceInfo {
+    name: string;
+    urlPath: string;
+    runtime?: string;
+}
+
+/**
+ * CDS version information extracted from package json that was used to compile the project when determining the service.
+ */
+export interface CdsVersionInfo {
+    home: string;
+    version: string;
+    root: string;
+}

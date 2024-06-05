@@ -1549,6 +1549,9 @@ importers:
       mem-fs-editor:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
+      semver:
+        specifier: 7.5.4
+        version: 7.5.4
     devDependencies:
       '@sap-ux/logger':
         specifier: workspace:*
@@ -1559,6 +1562,9 @@ importers:
       '@types/mem-fs-editor':
         specifier: 7.0.1
         version: 7.0.1
+      '@types/semver':
+        specifier: 7.5.2
+        version: 7.5.2
       '@ui5/manifest':
         specifier: 1.61.0
         version: 1.61.0

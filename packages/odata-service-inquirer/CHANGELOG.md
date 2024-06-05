@@ -1,5 +1,25 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.2.0
+
+### Minor Changes
+
+-   69b8d6de: Introduces enhanced functionality by returning CDS information, extracted during the prompt phase, and is made available for later use .
+
+### Patch Changes
+
+-   Updated dependencies [69b8d6de]
+    -   @sap-ux/project-access@1.21.0
+    -   @sap-ux/telemetry@0.4.29
+
+## 0.1.12
+
+### Patch Changes
+
+-   Updated dependencies [a7d78229]
+    -   @sap-ux/project-access@1.20.4
+    -   @sap-ux/telemetry@0.4.28
+
 ## 0.1.11
 
 ### Patch Changes

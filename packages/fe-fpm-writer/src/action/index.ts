@@ -45,7 +45,6 @@ function enhanceConfig(data: CustomAction, manifestPath: string, manifest: Manif
  */
 export function enhanceManifestAndGetActionsElementReference(manifest: any, target: CustomActionTarget): any {
     const page = manifest['sap.ui5'].routing.targets[target.page];
-    const SECTIONS = 'sections';
     page.options = page.options || {};
     page.options.settings = page.options.settings || {};
     if (target.control === TargetControl.header || target.control === TargetControl.footer) {
@@ -55,15 +54,19 @@ export function enhanceManifestAndGetActionsElementReference(manifest: any, targ
             page.options.settings.content[target.control].actions || {};
         return page.options.settings.content[target.control].actions;
     } else if (target.control === TargetControl.body && target.customSectionKey) {
-        // custom section actions
-        page.options.settings[target.control] = page.options.settings[target.control] || {};
-        page.options.settings[target.control][SECTIONS] = page.options.settings[target.control][SECTIONS] || {};
-        page.options.settings[target.control][SECTIONS][target.customSectionKey] =
-            page.options.settings[target.control][SECTIONS][target.customSectionKey] || {};
-        page.options.settings[target.control][SECTIONS][target.customSectionKey].actions =
-            page.options.settings[target.control][SECTIONS][target.customSectionKey].actions || {};
-        return page.options.settings[target.control][SECTIONS][target.customSectionKey].actions;
+        // condition for custom section actions
+        // Custom actions for custom sections are defined similarly like for header/footer under content property
+        // In: 'options/settings/content/body/sections/<customSection>/actions'
+        page.options.settings.content = page.options.settings.content || {};
+        page.options.settings.content[target.control] = page.options.settings.content[target.control] || {};
+        page.options.settings.content[target.control].sections = page.options.settings.content[target.control].sections || {};
+        page.options.settings.content[target.control].sections[target.customSectionKey] =
+            page.options.settings.content[target.control].sections[target.customSectionKey] || {};
+        page.options.settings.content[target.control].sections[target.customSectionKey].actions =
+            page.options.settings.content[target.control].sections[target.customSectionKey].actions || {};
+        return page.options.settings.content[target.control].sections[target.customSectionKey].actions;
     } else {
+        // Custom actions for other elements are defined in: 'options/settings/controlConfiguration/<element>/actions'
         const controlPrefix = target.navProperty ? target.navProperty + '/' : '';
         const controlSuffix = target.qualifier ? '#' + target.qualifier : '';
         const controlId = `${controlPrefix}${target.control}${controlSuffix}`;
