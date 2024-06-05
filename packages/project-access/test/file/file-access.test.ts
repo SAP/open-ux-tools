@@ -1,6 +1,6 @@
 import { join } from 'path';
-import type { Package } from '../../src';
-import { readFile, readJSON, fileExists, writeFile } from '../../src/file';
+import type { Manifest, Package } from '../../src';
+import { readFile, readJSON, fileExists, updateManifestJSON, updatePackageJSON, writeFile } from '../../src/file';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { promises } from 'fs';
@@ -88,6 +88,32 @@ describe('fileAccess', () => {
         test('Check existing file in mem-fs, should return true', async () => {
             const exists = await fileExists(memFilePath, memFs);
             expect(exists).toBe(true);
+        });
+    });
+
+    describe('updatePackageJSON', () => {
+        test('Should update package.json using previous indentation', async () => {
+            const updateFileContent = {} as unknown as Package;
+            const spacing = 4;
+            const jsonStringifySpy = jest.spyOn(JSON, 'stringify');
+            const writeFileSpy = jest.spyOn(promises, 'writeFile').mockResolvedValue();
+            const pckgPath = join(__dirname, '..', 'test-data', 'project', 'info', 'empty-project', 'package.json');
+            await updatePackageJSON(pckgPath, updateFileContent);
+            expect(jsonStringifySpy).toBeCalledWith(updateFileContent, null, spacing);
+            expect(writeFileSpy).toBeCalledWith(pckgPath, '{}\n', { encoding: 'utf8' });
+        });
+    });
+
+    describe('updateManifestJSON', () => {
+        test('Should update manifest.json using previous indentation', async () => {
+            const updateFileContent = {} as unknown as Manifest;
+            const spacing = 4;
+            const jsonStringifySpy = jest.spyOn(JSON, 'stringify');
+            const writeFileSpy = jest.spyOn(promises, 'writeFile').mockResolvedValue();
+            const manifestPath = join(__dirname, '..', 'test-data', 'project', 'info', 'empty-project', 'webapp', 'manifest.json');
+            await updateManifestJSON(manifestPath, updateFileContent);
+            expect(jsonStringifySpy).toBeCalledWith(updateFileContent, null, spacing);
+            expect(writeFileSpy).toBeCalledWith(manifestPath, "{}\n", { encoding: 'utf8' });
         });
     });
 });
