@@ -2,6 +2,7 @@
 
 exports[`controlData buildControlData - disabled properties for noStableId 1`] = `
 Object {
+  "fe": false,
   "id": "",
   "name": "sap.m.Button",
   "properties": Array [
@@ -102,6 +103,7 @@ Object {
 
 exports[`controlData buildControlData 1`] = `
 Object {
+  "fe": false,
   "id": "testID",
   "name": "sap.m.Button",
   "properties": Array [

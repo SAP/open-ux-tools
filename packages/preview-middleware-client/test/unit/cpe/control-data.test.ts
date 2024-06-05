@@ -180,7 +180,8 @@ describe('controlData', () => {
             .mockReturnValueOnce(undefined)
             .mockReturnValueOnce(undefined)
             .mockReturnValueOnce({ bindingString: 'testModel>testValue/value' })
-            .mockReturnValue(undefined)
+            .mockReturnValue(undefined),
+        isA: jest.fn().mockReturnValue(false)
     };
     Utils.checkControlId = jest.fn((control) => {
         if (control.getId()) {

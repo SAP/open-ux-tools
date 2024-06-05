@@ -1,5 +1,6 @@
 import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import UI5Element from 'sap/ui/core/Element';
 
 export interface UI5AdaptationOptions {
     rta: RuntimeAuthoring;
@@ -40,3 +41,6 @@ export interface Service {
     init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): void;
 }
 
+export interface UI5ElementWithContent extends UI5Element {
+    getContent: () => UI5ElementWithContent;
+}

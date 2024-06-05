@@ -548,4 +548,84 @@ describe('OutlinePanel', () => {
         const indicator = container.querySelectorAll('svg circle');
         expect(indicator).toHaveLength(2);
     });
+    test('show fe controls and hide mdc controls', () => {
+        const model: OutlineNode[] = [
+            {
+                controlId: '__filter0',
+                controlType: 'sap.m.IconTabFilter',
+                name: 'All',
+                editable: false,
+                visible: true,
+                children: [
+                    {
+                        controlId: '__strip0',
+                        controlType: 'sap.m.MessageStrip',
+                        name: 'MessageStrip',
+                        editable: false,
+                        visible: false,
+                        children: [],
+                        fe: false
+                    },
+                    {
+                        controlId: 'namespace--fe::table::1::LineItem::Table',
+                        controlType: 'sap.fe.macros.table.TableAPI',
+                        name: 'TableAPI',
+                        editable: true,
+                        visible: false,
+                        children: [
+                            {
+                                controlId: 'namespace--fe::table::1::LineItem',
+                                controlType: 'sap.ui.mdc.Table',
+                                name: 'Table',
+                                editable: false,
+                                visible: false,
+                                children: [
+                                    {
+                                        controlId: 'namespace--fe::table::1::LineItem-innerTable',
+                                        controlType: 'sap.m.Table',
+                                        name: 'Table',
+                                        editable: false,
+                                        visible: false,
+                                        children: [],
+                                        fe: false
+                                    }
+                                ],
+                                fe: false
+                            }
+                        ],
+                        fe: true
+                    }
+                ],
+                fe: false
+            }
+        ];
+        const initialState: State = {
+            deviceType: DeviceType.Desktop,
+            scale: 1,
+            outline: model,
+            filterQuery: filterInitOptions,
+            scenario: scenario.UiAdaptation,
+            selectedControl: undefined,
+            changes: {
+                pending: [],
+                saved: [],
+                controls: {},
+                pendingChangeIds: []
+            },
+            icons: [],
+            dialogMessage: undefined,
+            isAdpProject: false,
+            appMode: 'adaptation',
+            canSave: true,
+            changeStack: { canRedo: true, canUndo: true },
+            isAppLoading: false
+        };
+        render(<OutlinePanel />, { initialState });
+        // check TableAPI - fe control is available
+        const tableAPI = screen.getByText(/TableAPI/i);
+        expect(tableAPI).toBeInTheDocument();
+        // strick check Table - mdc control is not available
+        const table = screen.queryByText(/^Table$/i);
+        expect(table).not.toBeInTheDocument();
+    });
 });

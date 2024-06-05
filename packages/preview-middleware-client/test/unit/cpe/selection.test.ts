@@ -2,12 +2,13 @@ import * as controlData from '../../../src/cpe/control-data';
 import { SelectionService } from '../../../src/cpe/selection';
 import * as Documentation from '../../../src/cpe/documentation';
 import type { ExternalAction, Control } from '@sap-ux-private/control-property-editor-common';
-import type Element from 'sap/ui/core/Element';
 import type { ID } from 'sap/ui/core/library';
 import { fetchMock, sapCoreMock } from 'mock/window';
 import { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
+import { FE_CORE_BUILDING_BLOCKS } from '../../../src/cpe/constant';
 
 describe('SelectionService', () => {
+    const isA = jest.fn().mockReturnValue(false);
     const sendActionMock = jest.fn();
     let buildControlDataSpy: jest.SpyInstance<any>;
     let documentation: jest.SpyInstance<any>;
@@ -277,7 +278,8 @@ describe('SelectionService', () => {
                                     })
                                 }
                             })
-                        })
+                        }),
+                        getParent: jest.fn().mockReturnValue({ isA })
                     })
                 }
             ]
@@ -334,6 +336,242 @@ describe('SelectionService', () => {
             payload: { id: 'control1', name: 'controlName', type: 'controlType', properties: [] },
             type: '[ext] control-selected'
         });
+    });
+    test('attaches to selected control change - FE', async () => {
+        let handler: ((event: Event) => Promise<void>) | undefined;
+        let propertyChangeHandler: ((event: Event) => Promise<void>) | undefined;
+        const attachEventSpy = jest
+            .fn()
+            .mockImplementation((eventName: string, newHandler: (event: Event) => Promise<void>) => {
+                if (eventName === '_change') {
+                    propertyChangeHandler = newHandler;
+                }
+            });
+        jest.spyOn(controlData, 'buildControlData').mockReturnValue({
+            id: 'control1',
+            name: 'controlName',
+            type: 'controlType',
+            properties: []
+        });
+        const localIsA = jest.fn().mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(false);
+        const metadata = jest.fn().mockReturnValue({
+            getName: jest.fn().mockReturnValue('test')
+        });
+        const getParent = jest.fn().mockReturnValue({
+            isA: localIsA,
+            getMetadata: metadata,
+            attachEvent: attachEventSpy,
+            getBindingInfo: jest.fn(),
+            getParent: jest.fn().mockReturnValue({
+                isA: localIsA,
+                getMetadata: metadata,
+                attachEvent: attachEventSpy,
+                getBindingInfo: jest.fn(),
+                getParent: jest.fn().mockReturnValue({
+                    isA: localIsA,
+                    attachEvent: attachEventSpy,
+                    getBindingInfo: jest.fn(),
+                    getMetadata: metadata,
+                    getParent: jest.fn().mockReturnValue({})
+                })
+            })
+        });
+        const cache = new Map([
+            [
+                'overlayControl1',
+                {
+                    getElementInstance: jest.fn().mockReturnValue({
+                        attachEvent: attachEventSpy,
+                        getBindingInfo: jest.fn(),
+                        getMetadata: jest.fn().mockReturnValue({
+                            getName: jest.fn().mockReturnValue('test'),
+                            getLibraryName: jest.fn().mockReturnValue('sap.m'),
+                            getAllProperties: jest.fn().mockReturnValue({
+                                activeIcon: {
+                                    name: 'activeIcon',
+                                    type: 'sap.ui.core.URI',
+                                    group: 'Misc',
+                                    defaultValue: null,
+                                    bindable: false,
+                                    getType: jest.fn().mockReturnValue({
+                                        getName: jest.fn().mockReturnValue('sap.ui.core.URI')
+                                    })
+                                },
+                                ariaHasPopup: {
+                                    name: 'ariaHasPopup',
+                                    type: 'sap.ui.core.aria.HasPopup',
+                                    group: 'Accessibility',
+                                    defaultValue: 'None',
+                                    bindable: false,
+                                    getType: jest.fn().mockReturnValue({
+                                        getName: jest.fn().mockReturnValue('sap.ui.core.aria.HasPopup')
+                                    })
+                                },
+                                blocked: {
+                                    name: 'blocked',
+                                    type: 'boolean',
+                                    group: 'Misc',
+                                    defaultValue: false,
+                                    bindable: false,
+                                    getType: jest.fn().mockReturnValue({
+                                        getName: jest.fn().mockReturnValue('boolean')
+                                    })
+                                },
+                                busyIndicatorDelay: {
+                                    name: 'busyIndicatorDelay',
+                                    type: 'int',
+                                    group: 'Misc',
+                                    defaultValue: 1000,
+                                    bindable: false,
+                                    getType: jest.fn().mockReturnValue({
+                                        getName: jest.fn().mockReturnValue('int')
+                                    })
+                                },
+                                fieldGroupIds: {
+                                    name: 'fieldGroupIds',
+                                    type: 'string[]',
+                                    group: 'Misc',
+                                    defaultValue: 'test',
+                                    bindable: false,
+                                    getType: jest.fn().mockReturnValue({
+                                        getName: jest.fn().mockReturnValue('string[]')
+                                    })
+                                },
+                                text: {
+                                    name: 'text',
+                                    type: 'string',
+                                    group: 'Misc',
+                                    defaultValue: '',
+                                    bindable: false,
+                                    getType: jest.fn().mockReturnValue({
+                                        getName: jest.fn().mockReturnValue('string')
+                                    })
+                                },
+                                width: {
+                                    name: 'width',
+                                    type: 'sap.ui.core.CSSSize',
+                                    group: 'Misc',
+                                    defaultValue: null,
+                                    bindable: false,
+                                    getType: jest.fn().mockReturnValue({
+                                        getName: jest.fn().mockReturnValue('sap.ui.core.CSSSize')
+                                    })
+                                },
+                                test: {
+                                    name: 'test',
+                                    type: 'float',
+                                    group: 'Misc',
+                                    defaultValue: null,
+                                    bindable: false,
+                                    getType: jest.fn().mockReturnValue({
+                                        getName: jest.fn().mockReturnValue('float')
+                                    })
+                                },
+                                testProperty: undefined,
+                                testProperty1: {
+                                    name: 'testProperty1',
+                                    group: 'Misc',
+                                    defaultValue: null,
+                                    bindable: false,
+                                    getType: jest.fn().mockReturnValue(undefined)
+                                },
+                                testProperty2: {
+                                    name: 'testProperty2',
+                                    group: 'Misc',
+                                    defaultValue: null,
+                                    bindable: false,
+                                    getType: jest.fn().mockReturnValue({
+                                        getName: jest.fn().mockReturnValue(undefined)
+                                    })
+                                },
+                                testProperty3: {
+                                    name: 'testProperty3',
+                                    group: 'Misc',
+                                    defaultValue: null,
+                                    bindable: false,
+                                    getType: jest.fn().mockReturnValue({
+                                        getName: jest.fn().mockReturnValue('any')
+                                    })
+                                },
+                                testProperty4: {
+                                    name: 'testProperty4',
+                                    group: 'Misc',
+                                    defaultValue: null,
+                                    bindable: false,
+                                    getType: jest.fn().mockReturnValue({
+                                        getName: jest.fn().mockReturnValue('object')
+                                    })
+                                },
+                                testProperty5: {
+                                    name: 'testProperty5',
+                                    group: 'Misc',
+                                    defaultValue: null,
+                                    bindable: false,
+                                    getType: jest.fn().mockReturnValue({
+                                        getName: jest.fn().mockReturnValue('void')
+                                    })
+                                }
+                            })
+                        }),
+                        getParent
+                    })
+                }
+            ]
+        ]);
+        sapCoreMock.byId.mockImplementation((id: ID) => {
+            return cache.get(id);
+        });
+        const selectionChangeGetParameterSpy = jest.fn().mockReturnValue([
+            {
+                getId: () => 'overlayControl1'
+            }
+        ]);
+        const attachSelectionChange = jest.fn().mockImplementation((newHandler: (event: Event) => Promise<void>) => {
+            handler = newHandler;
+        });
+        const rta = {
+            attachSelectionChange,
+            getService: jest.fn().mockReturnValue({ get: jest.fn(), attachEvent: jest.fn() })
+        } as any;
+        const service = new SelectionService(rta);
+        const sendActionSpy = jest.fn();
+        await service.init(sendActionSpy, jest.fn());
+        expect(handler).not.toBeUndefined();
+        // Select control
+        if (handler !== undefined) {
+            await handler({
+                getParameter: selectionChangeGetParameterSpy
+            } as any);
+        }
+
+        expect(propertyChangeHandler).not.toBeUndefined();
+        // Trigger change
+        if (propertyChangeHandler !== undefined) {
+            await propertyChangeHandler({
+                getParameter: (name: string) => {
+                    switch (name) {
+                        case 'name':
+                            return 'text';
+                        case 'id':
+                            return 'control1';
+                        case 'newValue':
+                            return 'newText';
+                        default:
+                            throw 'Unknown';
+                    }
+                }
+            } as any);
+        }
+        expect(sendActionSpy).toHaveBeenNthCalledWith(1, {
+            payload: { id: 'control1', name: 'controlName', type: 'controlType', properties: [] },
+            type: '[ext] control-selected'
+        });
+        expect(sendActionSpy).toHaveBeenNthCalledWith(2, {
+            payload: { controlId: 'control1', newValue: 'newText', propertyName: 'text' },
+            type: '[ext] property-changed'
+        });
+        expect(localIsA).toHaveBeenNthCalledWith(1, FE_CORE_BUILDING_BLOCKS);
+        expect(getParent).toHaveBeenCalledTimes(1);
     });
 
     test('dispose handlers after selection', async () => {
@@ -493,7 +731,8 @@ describe('SelectionService', () => {
                                     })
                                 }
                             })
-                        })
+                        }),
+                        getParent: jest.fn().mockReturnValue({ isA })
                     })
                 }
             ]
@@ -552,7 +791,7 @@ describe('SelectionService', () => {
         });
     });
 
-    test('select control', async () => {
+    test('select control - outline panel', async () => {
         const actionHandlers: ((action: ExternalAction) => void)[] = [];
         function subscribe(handler: (action: ExternalAction) => Promise<void> | void): void {
             actionHandlers.push(handler);
@@ -560,7 +799,7 @@ describe('SelectionService', () => {
         const cache = new Map();
         cache.set(
             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--action::SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities::SEPMRA_C_PD_ProductCopy',
-            {} as Element
+            { isA }
         );
         cache.set('testId', undefined);
         cache.set('testIdfinal', {
@@ -589,7 +828,8 @@ describe('SelectionService', () => {
                         })
                     }
                 })
-            })
+            }),
+            isA
         } as any);
 
         sapCoreMock.byId.mockImplementation((id: ID) => {
@@ -709,8 +949,55 @@ describe('SelectionService', () => {
         }
         expect(sendActionMock).toHaveBeenNthCalledWith(1, { type: '[ext] control-selected', payload: mockControlData });
         expect(sendActionMock).toHaveBeenNthCalledWith(2, { type: '[ext] control-selected', payload: mockControlData });
-        expect(buildControlDataSpy).toHaveBeenNthCalledWith(1, {});
+        expect(buildControlDataSpy).toHaveBeenNthCalledWith(1, { isA });
         expect(buildControlDataSpy).toHaveBeenNthCalledWith(2, cache.get('testIdfinal'));
+    });
+    test('select control [FE] - outline panel', async () => {
+        const actionHandlers: ((action: ExternalAction) => void)[] = [];
+        function subscribe(handler: (action: ExternalAction) => Promise<void> | void): void {
+            actionHandlers.push(handler);
+        }
+        const cache = new Map();
+        cache.set('testId', undefined);
+        const key =
+            'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--action::SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities::SEPMRA_C_PD_ProductCopy';
+        const localIsA = jest.fn().mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(false);
+        const getContent = jest.fn().mockReturnValue({
+            isA: localIsA,
+            getContent: jest.fn().mockReturnValue({
+                isA: localIsA,
+                getContent: jest.fn().mockReturnValue({})
+            })
+        });
+        cache.set(key, {
+            isA: localIsA,
+            getContent
+        });
+
+        sapCoreMock.byId.mockImplementation((id: ID) => {
+            return cache.get(id);
+        });
+        mockOverlay.isSelectable.mockReturnValue(true);
+        mockOverlay.isSelectable.mockReturnValue(false);
+        const attachSelectionChange = jest.fn().mockImplementation();
+        const rta = {
+            attachSelectionChange,
+            getSelection: jest.fn().mockReturnValue([{ setSelected: jest.fn() }, { setSelected: jest.fn() }]),
+            getService: jest.fn().mockReturnValue({ get: jest.fn(), attachEvent: jest.fn() })
+        } as any;
+        const service = new SelectionService(rta);
+        await service.init(sendActionMock, subscribe);
+
+        for (const handler2 of actionHandlers) {
+            await handler2({
+                type: '[ext] select-control',
+                payload: key
+            });
+        }
+        expect(sendActionMock).toHaveBeenNthCalledWith(1, { type: '[ext] control-selected', payload: mockControlData });
+        expect(buildControlDataSpy).toHaveBeenCalledTimes(1);
+        expect(localIsA).toHaveBeenNthCalledWith(1, FE_CORE_BUILDING_BLOCKS);
+        expect(getContent).toHaveBeenCalledTimes(1);
     });
 
     test('attaches to selected control change - test getBindingInfo object bindingString', async () => {
@@ -743,7 +1030,8 @@ describe('SelectionService', () => {
                             getName: jest.fn().mockReturnValue('test'),
                             getLibraryName: jest.fn().mockReturnValue('sap.m'),
                             getAllProperties: jest.fn().mockReturnValue({})
-                        })
+                        }),
+                        getParent: jest.fn().mockReturnValue({ isA })
                     })
                 }
             ]
@@ -790,7 +1078,7 @@ describe('SelectionService', () => {
             } as any);
         }
         expect(mockGetBindingInfo).toBeCalledWith('random');
-        
+
         if (handler !== undefined) {
             await handler({
                 getParameter: selectionChangeGetParameterSpy

@@ -13,6 +13,10 @@ export interface Control {
     type: string;
 
     properties: ControlProperty[];
+    /**
+     * Indicates whether control is fiori element
+     */
+    fe?: boolean;
 }
 export type PropertyValue = string | boolean | number;
 export type PropertyChangeType = 'propertyChange' | 'propertyBindingChange';
@@ -106,6 +110,7 @@ export interface OutlineNode {
     children: OutlineNode[];
     icon?: string;
     hasDefaultContent?: boolean;
+    fe?: boolean;
 }
 
 export interface IconDetails {

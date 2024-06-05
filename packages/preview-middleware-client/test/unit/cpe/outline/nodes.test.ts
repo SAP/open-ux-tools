@@ -15,7 +15,7 @@ jest.mock('../../../../src/cpe/outline/utils', () => {
 describe('outline nodes', () => {
     const transformNodes = (nodes: OutlineViewNode[], scenario: Scenario): Promise<OutlineNode[]> =>
         tn(nodes, scenario);
-
+    const isA = jest.fn().mockReturnValue(false);
     sapCoreMock.byId.mockReturnValue({
         getMetadata: jest.fn().mockReturnValue({
             getProperty: jest
@@ -25,7 +25,8 @@ describe('outline nodes', () => {
                 .mockReturnValue(''),
             getElementName: jest.fn().mockReturnValue('some-name')
         }),
-        getProperty: jest.fn().mockReturnValueOnce('Component').mockReturnValueOnce('Component').mockReturnValue('')
+        getProperty: jest.fn().mockReturnValueOnce('Component').mockReturnValueOnce('Component').mockReturnValue(''),
+        isA
     });
 
     describe('transformNodes', () => {
@@ -54,7 +55,8 @@ describe('outline nodes', () => {
                     controlType: 'v2flex.Component',
                     editable: false,
                     name: 'Component',
-                    visible: true
+                    visible: true,
+                    fe: false
                 }
             ]);
         });
@@ -86,7 +88,8 @@ describe('outline nodes', () => {
                     editable: false,
                     hasDefaultContent: false,
                     name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
-                    visible: true
+                    visible: true,
+                    fe: false
                 }
             ]);
         });
@@ -138,28 +141,31 @@ describe('outline nodes', () => {
 
             expect(await transformNodes(nodes, 'ADAPTATION_PROJECT')).toStrictEqual([
                 {
-                    'controlId': 'application-app-preview-component---View1--hbox',
-                    'controlType': 'sap.m.HBox',
-                    'name': 'HBox',
-                    'editable': false,
-                    'visible': true,
-                    'children': [
+                    controlId: 'application-app-preview-component---View1--hbox',
+                    controlType: 'sap.m.HBox',
+                    name: 'HBox',
+                    editable: false,
+                    fe: false,
+                    visible: true,
+                    children: [
                         {
-                            'controlId': 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
-                            'controlType': 'sap.ui.extensionpoint',
-                            'name': 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
-                            'editable': false,
-                            'visible': true,
-                            'hasDefaultContent': true,
-                            'children': [
+                            controlId: 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
+                            controlType: 'sap.ui.extensionpoint',
+                            name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
+                            editable: false,
+                            visible: true,
+                            fe: false,
+                            hasDefaultContent: true,
+                            children: [
                                 {
-                                    'controlId': 'id1',
-                                    'controlType': 'some-name',
-                                    'name': 'id1',
-                                    'visible': true,
-                                    'editable': false,
-                                    'children': [],
-                                    'hasDefaultContent': false
+                                    controlId: 'id1',
+                                    controlType: 'some-name',
+                                    name: 'id1',
+                                    visible: true,
+                                    editable: false,
+                                    fe: false,
+                                    children: [],
+                                    hasDefaultContent: false
                                 }
                             ]
                         }
@@ -186,13 +192,14 @@ describe('outline nodes', () => {
                 {
                     children: [
                         {
-                            'children': [],
-                            'controlId': 'id1',
-                            'controlType': 'some-name',
-                            'editable': false,
-                            'hasDefaultContent': false,
-                            'name': 'id1',
-                            'visible': true
+                            children: [],
+                            controlId: 'id1',
+                            controlType: 'some-name',
+                            editable: false,
+                            hasDefaultContent: false,
+                            name: 'id1',
+                            visible: true,
+                            fe: false
                         }
                     ],
                     controlId: 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
@@ -200,49 +207,50 @@ describe('outline nodes', () => {
                     editable: false,
                     hasDefaultContent: false,
                     name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
-                    visible: true
+                    visible: true,
+                    fe: false
                 }
             ]);
         });
 
         test('aggregation', async () => {
-            expect(
-                await transformNodes(
-                    [
-                        {
-                            id: 'application-preview-app-component',
-                            technicalName: 'v2flex.Component',
-                            editable: false,
-                            type: 'element',
-                            visible: true,
-                            elements: [
-                                {
-                                    id: 'application-preview-app-component',
-                                    technicalName: 'rootControl',
-                                    editable: false,
-                                    type: 'aggregation',
-                                    elements: [
-                                        {
-                                            id: '__layout0',
-                                            technicalName: 'sap.f.FlexibleColumnLayout',
-                                            editable: false,
-                                            type: 'element',
-                                            visible: true
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ],
-                    'UI_ADAPTATION'
-                )
-            ).toStrictEqual([
+            const result = await transformNodes(
+                [
+                    {
+                        id: 'application-preview-app-component',
+                        technicalName: 'v2flex.Component',
+                        editable: false,
+                        type: 'element',
+                        visible: true,
+                        elements: [
+                            {
+                                id: 'application-preview-app-component',
+                                technicalName: 'rootControl',
+                                editable: false,
+                                type: 'aggregation',
+                                elements: [
+                                    {
+                                        id: '__layout0',
+                                        technicalName: 'sap.f.FlexibleColumnLayout',
+                                        editable: false,
+                                        type: 'element',
+                                        visible: true
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                'UI_ADAPTATION'
+            );
+            expect(result).toStrictEqual([
                 {
                     controlId: 'application-preview-app-component',
                     controlType: 'v2flex.Component',
                     editable: false,
                     name: 'Component',
                     visible: true,
+                    fe: false,
                     children: [
                         {
                             controlId: '__layout0',
@@ -250,6 +258,7 @@ describe('outline nodes', () => {
                             name: 'FlexibleColumnLayout',
                             editable: false,
                             visible: true,
+                            fe: false,
                             children: []
                         }
                     ]
