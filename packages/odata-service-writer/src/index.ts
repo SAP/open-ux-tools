@@ -86,7 +86,8 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     let ui5Config: UI5Config | undefined;
     let ui5LocalConfig: UI5Config | undefined;
     let ui5LocalConfigPath: string | undefined;
-    if (paths.ui5Yaml) {
+    if (!serviceIsCds(service) &&  paths.ui5Yaml) {
+        // Dont extend backend middlewares if service type is CDS 
         ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
         try {
             ui5Config.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
@@ -109,7 +110,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     }
 
     // Add mockserver entries
-    if (service.metadata) {
+    if (!serviceIsCds(service) && service.metadata) {
         // copy existing `ui5.yaml` as starting point for ui5-mock.yaml
         if (paths.ui5Yaml && ui5Config) {
             const webappPath = await getWebappPath(basePath, fs);
