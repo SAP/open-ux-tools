@@ -1,6 +1,6 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 import type { Annotations } from '@sap-ux/axios-extension';
-import type { YUIQuestion } from '@sap-ux/inquirer-common';
+import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ListChoiceOptions } from 'inquirer';
 
@@ -102,7 +102,11 @@ export enum promptNames {
     /**
      * Odata service URL
      */
-    serviceUrl = 'serviceUrl'
+    serviceUrl = 'serviceUrl',
+    /**
+     * password
+     */
+    serviceUrlPassword = 'serviceUrlPassword'
 }
 
 export type CapRuntime = 'Node.js' | 'Java';
@@ -184,7 +188,9 @@ export type OdataServiceUrlPromptOptions = {
      * Used to validate the service specified by the url is of the required odata version edmx
      */
     requiredOdataVersion?: OdataVersion;
-};
+} & Pick<CommonPromptOptions, 'additionalMessages'>; // Service URL prompts allow extension with additional messages
+
+export type OdataServiceUrlPasswordOptions = Pick<CommonPromptOptions, 'additionalMessages'>; // Service URL password prompts allow extension with additional messages
 
 /**
  * Provide the correct type checking for prompt options
@@ -193,7 +199,8 @@ type odataServiceInquirerPromptOptions = Record<promptNames.datasourceType, Data
     Record<promptNames.metadataFilePath, MetadataPromptOptions> &
     Record<promptNames.capProject, CapProjectPromptOptions> &
     Record<promptNames.capService, CapServicePromptOptions> &
-    Record<promptNames.serviceUrl, OdataServiceUrlPromptOptions>;
+    Record<promptNames.serviceUrl, OdataServiceUrlPromptOptions> &
+    Record<promptNames.serviceUrlPassword, OdataServiceUrlPasswordOptions>;
 
 export type OdataServiceQuestion = YUIQuestion<OdataServiceAnswers>;
 

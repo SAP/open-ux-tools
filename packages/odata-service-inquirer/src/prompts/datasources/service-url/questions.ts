@@ -1,7 +1,9 @@
+import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
+import { extendWithOptions } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConfirmQuestion, InputQuestion, PasswordQuestion, Question } from 'inquirer';
 import { t } from '../../../i18n';
-import type { OdataServiceAnswers, OdataServiceUrlPromptOptions } from '../../../types';
+import type { OdataServiceAnswers, OdataServicePromptOptions } from '../../../types';
 import { hostEnvironment, promptNames } from '../../../types';
 import { PromptState, getHostEnvironment } from '../../../utils';
 import LoggerHelper from '../../logger-helper';
@@ -28,7 +30,7 @@ interface ServiceUrlAnswers extends OdataServiceAnswers {
     /**
      * Password for the service where basic authentication is required.
      */
-    [serviceUrlInternalPromptNames.password]?: string;
+    [promptNames.serviceUrlPassword]?: string;
 }
 
 /**
@@ -225,7 +227,7 @@ function getPasswordPrompt(
             applyDefaultWhenDirty: true,
             mandatory: true
         },
-        name: serviceUrlInternalPromptNames.password,
+        name: promptNames.serviceUrlPassword,
         message: t('prompts.servicePassword.message'),
         guiType: 'login',
         mask: '*',
@@ -252,19 +254,40 @@ function getPasswordPrompt(
  * Get the service URL questions.
  *
  * @param promptOptions prompt options that can be passed to the service URL questions to configure behaviour
+ * @param promptOptions.serviceUrl
+ * @param promptOptions.serviceUrlPassword
  * @returns the odata service URL questions
  */
-export function getServiceUrlQuestions(promptOptions?: OdataServiceUrlPromptOptions): Question<OdataServiceAnswers>[] {
+export function getServiceUrlQuestions({
+    serviceUrl: serviceUrlOpts,
+    serviceUrlPassword: passwordOpts
+}: OdataServicePromptOptions = {}): Question<OdataServiceAnswers>[] {
     // Connection validator maintains connection state and validity across multiple prompts
     const connectValidator = new ConnectionValidator();
-    const requiredVersion = promptOptions?.requiredOdataVersion;
+    const requiredVersion = serviceUrlOpts?.requiredOdataVersion;
     PromptState.reset();
 
-    return [
+    let questions = [
         getServiceUrlPrompt(connectValidator, requiredVersion),
         getIgnoreCertErrorsPrompt(connectValidator, requiredVersion),
         getCliIgnoreCertValidatePrompt(connectValidator, requiredVersion),
         getUsernamePrompt(connectValidator),
         getPasswordPrompt(connectValidator, requiredVersion)
     ];
+
+    // Add additional messages to prompts if specified in the prompt options
+    let promptsOptToExtend: Record<string, CommonPromptOptions> = {};
+
+    // todo: for each prompt option with additionalMessages
+    if (serviceUrlOpts?.additionalMessages) {
+        promptsOptToExtend = { serviceUrl: serviceUrlOpts };
+    }
+    if (passwordOpts?.additionalMessages) {
+        promptsOptToExtend = { ...promptsOptToExtend, serviceUrlPassword: passwordOpts };
+    }
+
+    if (promptsOptToExtend) {
+        questions = extendWithOptions(questions as YUIQuestion[], promptsOptToExtend, PromptState.odataService);
+    }
+    return questions;
 }

@@ -1,20 +1,25 @@
 import type { Answers, Question, Validator } from 'inquirer';
 import type { CommonPromptOptions, PromptDefaultValue, PromptSeverityMessage, YUIQuestion } from '../types';
+import cloneDeep from 'lodash/cloneDeep';
 
 /**
  * Extends an additionalMessages function.
  *
  * @param question - the question to which the validate function will be applied
  * @param addMsgFunc - the additional messages function which will be applied to the question
+ * @param promptState - the runtime state of the prompts, this can be used to provide additional answers not defined by the prompt answers object
  * @returns the extended additional messages function
  */
 export function extendAdditionalMessages(
     question: YUIQuestion,
-    addMsgFunc: PromptSeverityMessage
+    addMsgFunc: PromptSeverityMessage,
+    promptState?: unknown
 ): PromptSeverityMessage {
     const addMsgs = question.additionalMessages;
     return (value: unknown, previousAnswers?: Answers | undefined): ReturnType<PromptSeverityMessage> => {
-        const extMsg = addMsgFunc(value, previousAnswers);
+        // Allow non-prompt answer (derived answers) values to be passed to the additional messages function
+        const combinedAnswers = Object.assign({}, cloneDeep(previousAnswers), cloneDeep(promptState));
+        const extMsg = addMsgFunc(value, combinedAnswers);
         if (extMsg) {
             return extMsg; // Extended prompt message is returned first
         }
@@ -28,16 +33,19 @@ export function extendAdditionalMessages(
  *
  * @param question - the question to which the validate function will be applied
  * @param validateFunc - the validate function which will be applied to the question
+ * @param promptState - the runtime state of the prompts, this can be used to provide additional answers not defined by the prompt answers object
  * @returns the extended validate function
  */
 export function extendValidate<T extends Answers = Answers>(
     question: Question,
-    validateFunc: NonNullable<Validator<T>>
+    validateFunc: NonNullable<Validator<T>>,
+    promptState?: unknown
 ): NonNullable<Validator<T>> {
     const validate: Validator<T> = question.validate;
     return (value: unknown, previousAnswers?: T): ReturnType<NonNullable<Validator<T>>> => {
-        // Cant use ReturnType<Validator<T>>
-        const extVal = validateFunc?.(value, previousAnswers);
+        // Allow non-prompt answer (derived answers) values to be passed to the additional messages function
+        const combinedAnswers = Object.assign({}, cloneDeep(previousAnswers), cloneDeep(promptState));
+        const extVal = validateFunc?.(value, combinedAnswers);
         if (extVal !== true) {
             return extVal;
         }
@@ -51,21 +59,23 @@ export function extendValidate<T extends Answers = Answers>(
  * @param question - the question to which the extending function will be applied
  * @param promptOption - prompt options, containing extending functions
  * @param funcName - the question property (function) name to extend
+ * @param promptState - the runtime state of the prompts, this can be used to provide additional answers not defined by the prompt answers object
  * @returns the extended question
  */
 export function applyExtensionFunction<T extends Answers = Answers>(
     question: YUIQuestion,
     promptOption: CommonPromptOptions<T>,
-    funcName: 'validate' | 'additionalMessages'
+    funcName: 'validate' | 'additionalMessages',
+    promptState?: unknown
 ): YUIQuestion {
     let extendedFunc;
 
     if (funcName === 'validate' && promptOption.validate) {
-        extendedFunc = extendValidate(question, promptOption.validate);
+        extendedFunc = extendValidate(question, promptOption.validate, promptState);
     }
 
     if (funcName === 'additionalMessages' && promptOption.additionalMessages) {
-        extendedFunc = extendAdditionalMessages(question, promptOption.additionalMessages);
+        extendedFunc = extendAdditionalMessages(question, promptOption.additionalMessages, promptState);
     }
 
     question = Object.assign(question, { [funcName]: extendedFunc });
@@ -109,11 +119,13 @@ export function withCondition(questions: Question[], condition: (answers: Answer
  *
  * @param questions - array of prompts to be extended
  * @param promptOptions - the prompt options possibly containing function extensions
+ * @param promptState - the runtime state of the prompts, this can be used to provide additional answers not defined by the prompt answers object
  * @returns - the extended questions
  */
 export function extendWithOptions<T extends YUIQuestion = YUIQuestion>(
     questions: T[],
-    promptOptions: Record<string, CommonPromptOptions & PromptDefaultValue<string | boolean>>
+    promptOptions: Record<string, CommonPromptOptions & PromptDefaultValue<string | boolean>>,
+    promptState?: unknown
 ): YUIQuestion[] {
     questions.forEach((question: YUIQuestion) => {
         const promptOptKey = question.name;
@@ -123,7 +135,7 @@ export function extendWithOptions<T extends YUIQuestion = YUIQuestion>(
 
             for (const extProp of propsToExtend) {
                 if (extProp === 'validate' || extProp === 'additionalMessages') {
-                    question = applyExtensionFunction(question, promptOpt as CommonPromptOptions, extProp);
+                    question = applyExtensionFunction(question, promptOpt as CommonPromptOptions, extProp, promptState);
                 }
                 // Provided defaults will override built in defaults
                 const defaultOverride = (promptOptions[promptOptKey] as PromptDefaultValue<string | boolean>).default;

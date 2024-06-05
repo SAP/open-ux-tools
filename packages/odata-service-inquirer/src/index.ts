@@ -16,8 +16,6 @@ import {
 } from './types';
 import { PromptState, setTelemetryClient } from './utils';
 import { initI18nOdataServiceInquirer } from './i18n';
-// temp test
-import { ConnectionValidator } from './prompts/datasources/service-url/connectionValidator';
 
 /**
  * Get the inquirer prompts for odata service.
@@ -35,7 +33,7 @@ async function getPrompts(
     enableGuidedAnswers = false,
     telemetryClient?: ToolsSuiteTelemetryClient,
     isYUI = false
-): Promise<{ prompts: OdataServiceQuestion[]; answers: { odataService: Partial<OdataServiceAnswers> } }> {
+): Promise<{ prompts: OdataServiceQuestion[]; answers: Partial<OdataServiceAnswers> }> {
     // prompt texts must be loaded before the prompts are created, wait for the i18n bundle to be initialized
     await initI18nOdataServiceInquirer();
     LoggerHelper.logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/odata-service-inquirer' });
@@ -47,7 +45,7 @@ async function getPrompts(
     return {
         prompts: await getQuestions(promptOptions),
         // Return reference to derived answers object that will be populated with user responses (after prompting is complete)
-        answers: PromptState
+        answers: PromptState.odataService
     };
 }
 
@@ -91,6 +89,5 @@ export {
     type OdataServicePromptOptions,
     // These exports are to facilitate migration to open-ux-tools and will be removed in a future release
     ERROR_TYPE,
-    ErrorHandler,
-    ConnectionValidator
+    ErrorHandler
 };

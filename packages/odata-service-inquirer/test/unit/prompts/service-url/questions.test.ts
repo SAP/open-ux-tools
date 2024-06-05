@@ -1,7 +1,6 @@
-import { OdataVersion } from '../../../../src/index';
 import { initI18nOdataServiceInquirer } from '../../../../src/i18n';
+import { OdataVersion } from '../../../../src/index';
 import { getServiceUrlQuestions } from '../../../../src/prompts/datasources/service-url/questions';
-import type { OdataServiceUrlPromptOptions } from '../../../../src/types';
 
 describe('Service URL prompts', () => {
     beforeAll(async () => {
@@ -53,7 +52,7 @@ describe('Service URL prompts', () => {
                 "guiType": "login",
                 "mask": "*",
                 "message": "Service password",
-                "name": "password",
+                "name": "serviceUrlPassword",
                 "type": "password",
                 "validate": [Function],
                 "when": [Function],
@@ -61,7 +60,7 @@ describe('Service URL prompts', () => {
             ]
         `);
 
-        questions = getServiceUrlQuestions({ requiredOdataVersion: OdataVersion.v4 } as OdataServiceUrlPromptOptions);
+        questions = getServiceUrlQuestions({ serviceUrl: { requiredOdataVersion: OdataVersion.v4 } });
         let serviceUrlQuestion = questions.find((q) => q.name === 'serviceUrl');
         expect(serviceUrlQuestion).toMatchObject({
             guiOptions: {
@@ -75,7 +74,7 @@ describe('Service URL prompts', () => {
             validate: expect.any(Function)
         });
 
-        questions = getServiceUrlQuestions({ requiredOdataVersion: OdataVersion.v2 } as OdataServiceUrlPromptOptions);
+        questions = getServiceUrlQuestions({ serviceUrl: { requiredOdataVersion: OdataVersion.v2 } });
         serviceUrlQuestion = questions.find((q) => q.name === 'serviceUrl');
         expect(serviceUrlQuestion).toMatchObject({
             guiOptions: {

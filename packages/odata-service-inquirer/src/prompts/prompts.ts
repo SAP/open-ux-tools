@@ -105,7 +105,7 @@ async function getDatasourceTypeConditionalQuestions(
 
     conditionalQuestions.push(
         ...(withCondition(
-            getServiceUrlQuestions(promptOptions?.serviceUrl) as Question[],
+            getServiceUrlQuestions(promptOptions) as Question[],
             (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.odataServiceUrl
         ) as OdataServiceQuestion[])
     );

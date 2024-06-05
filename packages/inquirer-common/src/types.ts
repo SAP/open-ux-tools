@@ -54,7 +54,11 @@ export interface GuiOptions {
     breadcrumb?: boolean | string;
 }
 
-export type PromptSeverityMessage = (input?: unknown, previousAnswers?: Answers) => IMessageSeverity | undefined;
+export type PromptSeverityMessage = (
+    input?: unknown,
+    previousAnswers?: Answers,
+    promptState?: unknown
+) => IMessageSeverity | undefined;
 
 export type YUIQuestion<A extends Answers = Answers> = Question<A> & {
     name: string;

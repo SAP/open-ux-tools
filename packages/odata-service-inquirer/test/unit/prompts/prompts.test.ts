@@ -161,7 +161,7 @@ describe('getQuestions', () => {
                 "guiType": "login",
                 "mask": "*",
                 "message": "Service password",
-                "name": "password",
+                "name": "serviceUrlPassword",
                 "type": "password",
                 "validate": [Function],
                 "when": [Function],

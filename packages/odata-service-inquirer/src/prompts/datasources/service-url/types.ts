@@ -4,6 +4,5 @@
 export enum serviceUrlInternalPromptNames {
     ignoreCertError = 'ignoreCertError',
     username = 'username',
-    password = 'password',
     cliIgnoreCertValidate = 'cliIgnoreCertValidate'
 }
