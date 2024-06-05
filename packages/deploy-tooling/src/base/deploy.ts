@@ -195,10 +195,11 @@ export async function createTransportRequest(
     }
     const adtService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
     const ui5AppName = isBspConfig(config.app) ? config.app.name : '';
+    const description = `For ABAP repository ${ui5AppName}, created by SAP Open UX Tools`;
     const transportRequest = await adtService?.createTransportRequest({
         packageName: config.app.package ?? '',
         ui5AppName,
-        description: `Created by SAP Open UX Tools for ABAP repository ${ui5AppName}`
+        description: description.length > 60 ? description.slice(0, 57) + '...' : description
     });
     if (transportRequest) {
         logger.info(`Transport request ${transportRequest} created for application ${ui5AppName}.`);
