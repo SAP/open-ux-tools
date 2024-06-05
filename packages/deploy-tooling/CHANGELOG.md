@@ -1,5 +1,11 @@
 # @sap-ux/deploy-tooling
 
+## 0.14.31
+
+### Patch Changes
+
+-   dc9b15af: update and truncate transport request description
+
 ## 0.14.30
 
 ### Patch Changes

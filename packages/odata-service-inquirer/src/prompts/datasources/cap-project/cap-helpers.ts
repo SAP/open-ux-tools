@@ -1,4 +1,4 @@
-import type { CSN } from '@sap-ux/project-access';
+import type { CSN, ServiceInfo, CdsVersionInfo } from '@sap-ux/project-access';
 import {
     findCapProjects,
     getCapCustomPaths,
@@ -72,9 +72,6 @@ export async function getCapProjectChoices(paths: string[]): Promise<CapProjectC
     ];
 }
 
-// Remove when exported from `@sap-ux/project-access`
-type ServiceInfo = Awaited<ReturnType<typeof getCapModelAndServices>>['services'][0];
-
 /**
  * Create a cap service choice from the service info.
  *
@@ -82,13 +79,15 @@ type ServiceInfo = Awaited<ReturnType<typeof getCapModelAndServices>>['services'
  * @param serviceInfo - The service info
  * @param projectPath - The project path
  * @param appPath - The app path
+ * @param cdsVersionInfo - The cds version info
  * @returns a cap service choice
  */
 function createCapServiceChoice(
     capModel: CSN,
     serviceInfo: ServiceInfo,
     projectPath: string,
-    appPath: string
+    appPath: string,
+    cdsVersionInfo: CdsVersionInfo
 ): CapServiceChoice | undefined {
     const srvDef = capModel.definitions?.[serviceInfo.name];
     /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
@@ -117,7 +116,8 @@ function createCapServiceChoice(
             projectPath,
             appPath,
             // Assume Node.js if not defined
-            capType: serviceInfo.runtime ? (serviceInfo.runtime as 'Node.js' | 'Java') : 'Node.js'
+            capType: serviceInfo.runtime ? (serviceInfo.runtime as 'Node.js' | 'Java') : 'Node.js',
+            cdsVersionInfo
         };
         return {
             name: capService.capType
@@ -148,18 +148,20 @@ export async function getCapServiceChoices(capProjectPaths: CapProjectPaths): Pr
     try {
         let capServices = [];
         let capModel: CSN;
+        let capCdsVersionInfo: CdsVersionInfo;
 
         try {
             // Workaround for missing clear cache functionality in `getCapModelAnsdServices`, this resets the cds.resolve.cache.
             // If this is not done then errors can be thrown where out-of-processs changes to the files system have occurred
             await getCdsRoots(capProjectPaths.path, true);
             // Load the CAP model and services
-            const { model, services } = await getCapModelAndServices({
+            const { model, services, cdsVersionInfo } = await getCapModelAndServices({
                 projectRoot: capProjectPaths.path,
                 logger: LoggerHelper.logger
             });
             capServices = services;
             capModel = model;
+            capCdsVersionInfo = cdsVersionInfo;
         } catch (error) {
             errorHandler.logErrorMsgs(error);
             LoggerHelper.logger.error(t('errors.capModelAndServicesLoadError', { error: error?.message }));
@@ -172,7 +174,7 @@ export async function getCapServiceChoices(capProjectPaths: CapProjectPaths): Pr
         LoggerHelper.logger.debug(`CDS model source paths: ${JSON.stringify(capModel.$sources)}`);
         const serviceChoices = capServices
             .map((service) => {
-                return createCapServiceChoice(capModel, service, projectPath, appPath);
+                return createCapServiceChoice(capModel, service, projectPath, appPath, capCdsVersionInfo);
             })
             .filter((service) => !!service) as CapServiceChoice[]; // filter undefined entries
         return serviceChoices ?? [];
