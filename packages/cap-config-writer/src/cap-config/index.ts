@@ -2,7 +2,7 @@ import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
-import type { Package } from '@sap-ux/project-access';
+import type { Package, CdsVersionInfo } from '@sap-ux/project-access';
 import {
     addCdsPluginUi5,
     enableWorkspaces,
@@ -16,12 +16,6 @@ export { satisfiesMinCdsVersion } from './package-json';
 import type { CdsUi5PluginInfo } from './types';
 import { satisfies } from 'semver';
 
-/** temporary remove after PR1947*/ 
-export interface CdsVersionInfo {
-    home: string;
-    version: string;
-    root: string;
-}
 /**
  * Enable workspace and cds-plugin-ui5 for given CAP project.
  *

@@ -8,17 +8,6 @@ import type { Logger } from '@sap-ux/logger';
 import { t } from '../i18n';
 
 /**
- * Converts a directory path to a POSIX-style path.
- * This function is temporary and should be removed once a common utility library package is available.
- *
- * @param {string} dirPath - The directory path to be converted.
- * @returns {string} The converted POSIX-style path.
- */
-function toPosixPath(dirPath: string): string {
-    return path.normalize(dirPath).split(/[\\/]/g).join(path.posix.sep);
-}
-
-/**
  * Retrieves the CDS watch script for the CAP app.
  *
  * @param {string} projectName - The name of the project.
@@ -132,9 +121,9 @@ export async function updateRootPackageJson(
         );
     }
     if (sapux) {
-        const capProjectPath = toPosixPath(
-            join(capService.appPath ?? (await getCapCustomPaths(capService.projectPath)).app, projectName)
-        );
+        const dirPath = join(capService.appPath ?? (await getCapCustomPaths(capService.projectPath)).app, projectName);
+        // Converts a directory path to a POSIX-style path.
+        const capProjectPath = path.normalize(dirPath).split(/[\\/]/g).join(path.posix.sep);
         const sapuxExt = Array.isArray(packageJson?.sapux) ? [...packageJson.sapux, capProjectPath] : [capProjectPath];
         fs.extendJSON(packageJsonPath, { sapux: sapuxExt });
     }
