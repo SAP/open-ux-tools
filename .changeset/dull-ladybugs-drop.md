@@ -3,4 +3,4 @@
 '@sap-ux/odata-service-writer': minor
 ---
 
-support the exclusion of annotations from manifest json for cap projects
+Add support for CAP project services and annotations, based on the service type.
