@@ -1,5 +1,5 @@
 import type { OdataService } from '../../src';
-import { generate, OdataVersion } from '../../src';
+import { generate, OdataVersion, ServiceType } from '../../src';
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -16,7 +16,8 @@ const commonConfig = {
     url: 'http://localhost',
     path: '/sap/odata/testme',
     client: '012',
-    metadata: '<HELLO WORLD />'
+    metadata: '<HELLO WORLD />',
+    type: ServiceType.EDMX
 };
 
 describe('generate', () => {
