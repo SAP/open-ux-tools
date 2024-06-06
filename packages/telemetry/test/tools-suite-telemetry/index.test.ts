@@ -37,6 +37,14 @@ describe('Tools Suite Telemetry Tests', () => {
         memfs.vol.reset();
     });
 
+    beforeAll(() => {
+        jest.clearAllMocks();
+    });
+
+    afterAll(() => {
+        jest.resetAllMocks();
+    });
+
     it('No additional properties, Not SBAS', async () => {
         isAppStudioMock.mockReturnValue(false);
         const commonProperties = await processToolsSuiteTelemetry(undefined);
