@@ -14,7 +14,7 @@ describe('Service URL prompts', () => {
               {
                 "guiOptions": {
                   "breadcrumb": true,
-                  "hint": "http://<hostname>:<port>/path/to/odata/service/",
+                  "hint": "https://<hostname>:<port>/path/to/odata/service/",
                   "mandatory": true,
                 },
                 "message": "OData service URL",
@@ -65,7 +65,7 @@ describe('Service URL prompts', () => {
         expect(serviceUrlQuestion).toMatchObject({
             guiOptions: {
                 breadcrumb: true,
-                hint: 'http://<hostname>:<port>/path/to/odata/service/',
+                hint: 'https://<hostname>:<port>/path/to/odata/service/',
                 mandatory: true
             },
             message: 'OData V4 service URL',
@@ -79,7 +79,7 @@ describe('Service URL prompts', () => {
         expect(serviceUrlQuestion).toMatchObject({
             guiOptions: {
                 breadcrumb: true,
-                hint: 'http://<hostname>:<port>/path/to/odata/service/',
+                hint: 'https://<hostname>:<port>/path/to/odata/service/',
                 mandatory: true
             },
             message: 'OData V2 service URL',

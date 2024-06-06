@@ -4,6 +4,10 @@ import { SampleRate } from '@sap-ux/telemetry';
 import osName from 'os-name';
 import { hostEnvironment } from '../types';
 import { PromptState } from './prompt-state';
+import { XMLParser } from 'fast-xml-parser';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
+import LoggerHelper from '../prompts/logger-helper';
+import { t } from '../i18n';
 
 const osVersionName = osName();
 
@@ -65,13 +69,28 @@ function createTelemetryEvent(eventName: string, telemetryData: TelemetryPropert
 }
 
 /**
- * Replaces the url origin (protocal, host and port) in the specified metadata 'Uri' entries with a relative path segment '.'.
+ * Validate and parse the odata version from the metadata.
  *
  * @param metadata a metadata string
- * @returns metadata string with the origin replaced with a relative path segment '.'
+ * @returns the odata version of the specified metadata, throws an error if the metadata is invalid
  */
-export function removeOrigin(metadata: string): string {
-    return metadata?.replace(/ Uri="(http|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[0])/g, ` Uri=".`);
+export function parseOdataVersion(metadata: string): OdataVersion {
+    const options = {
+        attributeNamePrefix: '',
+        ignoreAttributes: false,
+        ignoreNameSpace: true,
+        parseAttributeValue: true,
+        removeNSPrefix: true
+    };
+    const parser: XMLParser = new XMLParser(options);
+    try {
+        const parsed = parser.parse(metadata, true);
+        const odataVersion: OdataVersion = parsed['Edmx']['Version'] === 1 ? OdataVersion.v2 : OdataVersion.v4;
+        return odataVersion;
+    } catch (error) {
+        LoggerHelper.logger.error(error);
+        throw new Error(t('prompts.validationMessages.metadataInvalid'));
+    }
 }
 
 export { PromptState };

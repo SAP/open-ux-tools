@@ -45,7 +45,7 @@ function getServiceUrlPrompt(connectValidator: ConnectionValidator, requiredVers
         type: 'input',
         name: promptNames.serviceUrl,
         guiOptions: {
-            hint: 'http://<hostname>:<port>/path/to/odata/service/',
+            hint: 'https://<hostname>:<port>/path/to/odata/service/',
             mandatory: true,
             breadcrumb: true
         },

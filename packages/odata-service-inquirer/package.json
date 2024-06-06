@@ -36,11 +36,11 @@
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "@sap/wing-service-explorer": "1.8.0",
-        "i18next": "23.5.1",
-        "os-name": "4.0.1",
         "axios": "1.6.8",
-        "axios-logger": "2.8.0"
+        "axios-logger": "2.8.0",
+        "fast-xml-parser": "4.2.7",
+        "i18next": "23.5.1",
+        "os-name": "4.0.1"
     },
     "devDependencies": {
         "@sap-ux/odata-service-writer": "workspace:*",

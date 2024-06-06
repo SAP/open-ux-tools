@@ -122,7 +122,7 @@ describe('getQuestions', () => {
               {
                 "guiOptions": {
                   "breadcrumb": true,
-                  "hint": "http://<hostname>:<port>/path/to/odata/service/",
+                  "hint": "https://<hostname>:<port>/path/to/odata/service/",
                   "mandatory": true,
                 },
                 "message": "OData service URL",

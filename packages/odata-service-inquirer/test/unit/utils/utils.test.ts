@@ -1,22 +1,19 @@
 import { readFile } from 'fs/promises';
 import { join } from 'path';
-import { removeOrigin } from '../../../src/utils/index';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
+import { parseOdataVersion } from '../../../src/utils';
 
 describe('Utils', () => {
-    const data: string[][] = [
-        ['metadata1.xml', 'relativeMetadata1.xml'],
-        ['metadata2.xml', 'relativeMetadata2.xml']
-    ];
-    data.forEach((args: string[]) => {
-        const metadataFile: string = args[0];
-        const relativeMetadataFile: string = args[1];
-        it(`removeOrigin('${metadataFile}')`, async () => {
-            const metadata: string = await readFile(join(__dirname, `fixtures/${metadataFile}`), 'utf8');
-            const relativeMetadata: string = await readFile(
-                join(__dirname, `fixtures/${relativeMetadataFile}`),
-                'utf8'
-            );
-            expect(removeOrigin(metadata)).toEqual(relativeMetadata);
-        });
+    test('parseOdataVersion', async () => {
+        let metadata: string = await readFile(join(__dirname, 'fixtures/metadata_v2.xml'), 'utf8');
+        let odataVersion = parseOdataVersion(metadata);
+        expect(odataVersion).toBe(OdataVersion.v2);
+
+        metadata = await readFile(join(__dirname, 'fixtures/metadata_v4.xml'), 'utf8');
+        odataVersion = parseOdataVersion(metadata);
+        expect(odataVersion).toBe(OdataVersion.v4);
+
+        metadata = await readFile(join(__dirname, 'fixtures/invalid_metadata.xml'), 'utf8');
+        expect(() => parseOdataVersion(metadata)).toThrowError('The service metadata is invalid.');
     });
 });

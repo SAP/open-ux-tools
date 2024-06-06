@@ -1,10 +1,8 @@
-import { OdataVersion } from '@sap-ux/odata-service-writer';
+import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConnectionValidator } from './connectionValidator';
 import type { ODataVersion } from '@sap-ux/axios-extension';
 import { createForAbap } from '@sap-ux/axios-extension';
-import { PromptState, removeOrigin } from '../../../utils';
-import { MetadataFactory } from '@sap/wing-service-explorer';
-import { ProtocolType } from '@sap/wing-service-explorer/dist/lib/metadata/metadataFactory';
+import { PromptState, parseOdataVersion } from '../../../utils';
 import { t } from '../../../i18n';
 import { SAP_CLIENT_KEY } from '../../../types';
 import { errorHandler } from '../../prompt-helpers';
@@ -32,10 +30,7 @@ export async function validateService(
                 connectValidator.setRejectUnauthorized(!ignoreCertError);
             }
             const metadata = await connectValidator.odataService.metadata();
-            // The next loc throws an error if the edmx is invalid
-            const explorer = MetadataFactory.getMetadataFactory().getMetadataExplorer(metadata);
-            const serviceOdataVersion =
-                explorer.getProtocolType() === ProtocolType.ODATAV2 ? OdataVersion.v2 : OdataVersion.v4;
+            const serviceOdataVersion = parseOdataVersion(metadata);
 
             if (requiredVersion && requiredVersion !== serviceOdataVersion) {
                 return `${t('errors.odataServiceVersionMismatch', {
@@ -43,10 +38,11 @@ export async function validateService(
                     requiredVersion
                 })}`;
             }
-            PromptState.odataService.metadata = removeOrigin(metadata);
-            PromptState.odataService.odataVersion = serviceOdataVersion;
 
             const serviceAsUrl = new URL(url);
+            // Remove all occurrences of the origin from the metadata to make it relative
+            PromptState.odataService.metadata = metadata.replace(new RegExp(serviceAsUrl.origin, 'g'), '.');
+            PromptState.odataService.odataVersion = serviceOdataVersion;
             const urlSearch = new URLSearchParams(serviceAsUrl.search);
             let sapClient;
             if (urlSearch.has(SAP_CLIENT_KEY)) {
