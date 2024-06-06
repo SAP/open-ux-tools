@@ -304,7 +304,7 @@ function getInboundChangeContentWithNewInboundID(
 export function enhanceManifestChangeContentWithFlpConfig(
     flpConfiguration: InternalInboundNavigation,
     appId: string,
-    manifestChangeContent: Content[] | Content[] = []
+    manifestChangeContent: Content[] = []
 ): void {
     const inboundChangeContent = flpConfiguration.addInboundId
         ? getInboundChangeContentWithNewInboundID(flpConfiguration, appId)
