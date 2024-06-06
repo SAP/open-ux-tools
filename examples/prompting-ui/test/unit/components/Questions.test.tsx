@@ -17,14 +17,17 @@ describe('Questions', () => {
                 questions={[
                     {
                         type: 'input',
-                        name: 'test',
-                        // ToDo - remove
-                        selectType: 'static'
-                    }
+                        name: 'testInput'
+                    } as IQuestion,
+                    {
+                        type: 'checkbox',
+                        name: 'testCheckbox'
+                    } as IQuestion
                 ]}
             />
         );
-        expect(screen.getByText('test')).toBeDefined();
+        expect(screen.getByText('testInput')).toBeDefined();
+        expect(screen.getByText('testCheckbox')).toBeDefined();
     });
 
     it('Dynamic questions', async () => {
@@ -77,12 +80,58 @@ describe('Questions', () => {
                 validation={{}}
                 onChange={jest.fn()}
                 onChoiceRequest={onChoiceRequest}
-                questions={[
-                    dynamicQuestion1, dynamicQuestion2, dynamicQuestion3
-                ]}
+                questions={[dynamicQuestion1, dynamicQuestion2, dynamicQuestion3]}
             />
         );
         expect(onChoiceRequest).toBeCalledTimes(1);
         expect(onChoiceRequest).toBeCalledWith(['test1', 'test2', 'test3'], {});
+    });
+
+    it('Render filterBarId - input or select', async () => {
+        // no choices available
+        render(
+            <Questions
+                answers={{}}
+                choices={{}}
+                validation={{}}
+                onChange={jest.fn()}
+                onChoiceRequest={jest.fn()}
+                questions={[
+                    {
+                        type: 'list',
+                        selectType: 'static',
+                        name: 'filterBarId',
+                        message: 'Filter Bar Id'
+                    } as IQuestion
+                ]}
+            />
+        );
+        const inputField = screen.getByLabelText('Filter Bar Id');
+        expect(inputField).toBeDefined();
+        expect(inputField.classList).toContain('ms-TextField-field');
+        expect(inputField.classList).not.toContain('ms-ComboBox-Input');
+
+        // choices available
+        render(
+            <Questions
+                answers={{}}
+                choices={{ filterBarId: [{ name: 'one', value: 'one' }] }}
+                validation={{}}
+                onChange={jest.fn()}
+                onChoiceRequest={jest.fn()}
+                questions={[
+                    {
+                        type: 'list',
+                        selectType: 'static',
+                        name: 'filterBarId',
+                        message: 'Filter Bar Id 2'
+                    } as IQuestion
+                ]}
+            />
+        );
+        const comboBox = screen.getByLabelText('Filter Bar Id 2');
+        expect(comboBox).toBeDefined();
+        expect(comboBox.classList).not.toContain('ms-TextField-field');
+        expect(comboBox.classList).toContain('ms-ComboBox-Input');
     });
 });
