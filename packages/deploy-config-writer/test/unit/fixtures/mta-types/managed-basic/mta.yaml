@@ -1,0 +1,10 @@
+_schema-version: '3.2'
+ID: basicApp
+version: 0.0.1
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+
+modules: []
+
+resources: []
