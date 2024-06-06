@@ -208,7 +208,7 @@ export async function getCAPServiceChoices(
     projectProvider: ProjectProvider
 ): Promise<Array<{ name: string; value: string }>> {
     const project = await projectProvider.getProject();
-    const services = project.apps[projectProvider.appId].services;
+    const services = project.apps[projectProvider.appId]?.services;
     const servicesMap: { [key: string]: string } = {};
     for (const serviceKey of Object.keys(services)) {
         const mappedServiceName = await getCapServiceName(
