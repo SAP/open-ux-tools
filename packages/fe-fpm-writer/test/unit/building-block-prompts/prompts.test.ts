@@ -1,3 +1,4 @@
+import { join } from 'path';
 import {
     getBuildingBlockTypePrompts,
     getChartBuildingBlockPrompts,
@@ -8,8 +9,11 @@ import ProjectProvider from '../../../src/building-block/utils/project';
 
 describe('Prompts', () => {
     const fs = jest.fn() as any;
-    beforeAll(() => {
-        jest.spyOn(ProjectProvider, 'createProject').mockResolvedValue({} as ProjectProvider);
+    beforeAll(async () => {
+        const projectProvider = await ProjectProvider.createProject(
+            join(__dirname, '../sample/building-block/webapp-prompts')
+        );
+        jest.spyOn(ProjectProvider, 'createProject').mockResolvedValue(projectProvider);
     });
     test('getBuildingBlockTypePrompts', async () => {
         const questionnair = await getBuildingBlockTypePrompts();

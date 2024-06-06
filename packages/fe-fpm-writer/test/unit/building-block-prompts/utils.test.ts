@@ -11,8 +11,11 @@ import {
     getBindingContextTypePrompt,
     getBooleanPrompt,
     getBuildingBlockIdPrompt,
+    getCAPServiceChoices,
+    getCAPServicePrompt,
     getChoices,
     getEntityPrompt,
+    getFilterBarIdListPrompt,
     getFilterBarIdPrompt,
     getViewOrFragmentFilePrompt
 } from '../../../src/building-block/utils/prompts';
@@ -22,13 +25,19 @@ import {
     getEntityTypes
 } from '../../../src/building-block/utils/service';
 
+jest.setTimeout(10000);
+
 const projectFolder = join(__dirname, '../sample/building-block/webapp-prompts');
 
 jest.mock('@sap-ux/project-access', () => ({
     __esModule: true,
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/project-access') as object),
-    getFileByExtension: jest.fn().mockResolvedValue([join(projectFolder, 'webapp/ext', 'Main.view.xml')])
+    getFileByExtension: jest
+        .fn()
+        .mockResolvedValue([
+            join(__dirname, '../sample/building-block/webapp-prompts', 'webapp/ext/main', 'Main.view.xml')
+        ])
 }));
 
 const ENTITY_TYPE = 'C_CUSTOMER_OP_SRV.C_CustomerOPType';
@@ -130,12 +139,12 @@ describe('utils - ', () => {
             const choicesProp = aggregationPathPrompt.choices as Choices;
             expect(choicesProp).toBeDefined();
             let choices = await choicesProp({
-                viewOrFragmentFile: join(projectFolder, 'ext/main/Main.view.xml')
+                viewOrFragmentFile: join(projectFolder, 'webapp/ext/main/Main.view.xml')
             });
             expect(choices).toMatchSnapshot();
 
             choices = await choicesProp({
-                viewOrFragmentFile: join(projectFolder, 'ext/main/Main.view.xml')
+                viewOrFragmentFile: join(projectFolder, 'webapp/ext/main/Main.view.xml')
             });
             await expect(
                 async () =>
@@ -167,6 +176,7 @@ describe('utils - ', () => {
             const bindingContextPrompt = getBindingContextTypePrompt('bindingContext');
             expect(bindingContextPrompt).toMatchInlineSnapshot(`
                 Object {
+                  "additionalInfo": undefined,
                   "choices": Array [
                     Object {
                       "name": "Relative",
@@ -177,8 +187,13 @@ describe('utils - ', () => {
                       "value": "absolute",
                     },
                   ],
+                  "default": undefined,
+                  "groupId": undefined,
                   "message": "bindingContext",
                   "name": "bindingContextType",
+                  "placeholder": undefined,
+                  "required": undefined,
+                  "selectType": "static",
                   "type": "list",
                 }
             `);
@@ -187,6 +202,7 @@ describe('utils - ', () => {
             const booleanPrompt = getBooleanPrompt('name', 'message');
             expect(booleanPrompt).toMatchInlineSnapshot(`
                 Object {
+                  "additionalInfo": undefined,
                   "choices": Array [
                     Object {
                       "name": "False",
@@ -197,8 +213,13 @@ describe('utils - ', () => {
                       "value": true,
                     },
                   ],
+                  "default": undefined,
+                  "groupId": undefined,
                   "message": "message",
                   "name": "name",
+                  "placeholder": undefined,
+                  "required": undefined,
+                  "selectType": "static",
                   "type": "list",
                 }
             `);
@@ -207,8 +228,12 @@ describe('utils - ', () => {
             const prompt = getFilterBarIdPrompt('message');
             expect(prompt).toMatchInlineSnapshot(`
                 Object {
+                  "additionalInfo": undefined,
+                  "groupId": undefined,
                   "message": "message",
                   "name": "filterBar",
+                  "placeholder": undefined,
+                  "required": undefined,
                   "type": "input",
                 }
             `);
@@ -218,8 +243,13 @@ describe('utils - ', () => {
             const prompt = getBuildingBlockIdPrompt('message', 'error');
             expect(prompt).toMatchInlineSnapshot(`
                 Object {
+                  "additionalInfo": undefined,
+                  "default": undefined,
+                  "groupId": undefined,
                   "message": "message",
                   "name": "id",
+                  "placeholder": "Enter a building block ID",
+                  "required": undefined,
                   "type": "input",
                   "validate": [Function],
                 }
@@ -228,6 +258,64 @@ describe('utils - ', () => {
             const validateFn = prompt.validate;
             expect(typeof validateFn).toBe('function');
             expect(validateFn?.('')).toBe('error');
+        });
+
+        test('getFilterBarIdListPrompt', () => {
+            const prompt = getFilterBarIdListPrompt('message');
+            expect(prompt).toMatchInlineSnapshot(`
+                Object {
+                  "additionalInfo": undefined,
+                  "groupId": undefined,
+                  "message": "message",
+                  "name": "filterBarId",
+                  "placeholder": "Select or enter a filter bar ID",
+                  "required": undefined,
+                  "selectType": "dynamic",
+                  "type": "list",
+                }
+            `);
+        });
+
+        test('getCAPServiceChoices', async () => {
+            const capProjectProvider = await ProjectProvider.createProject(
+                join(__dirname, '../sample/building-block/webapp-prompts-cap/app/incidents')
+            );
+            const choices = await getCAPServiceChoices(capProjectProvider);
+            expect(choices).toMatchInlineSnapshot(`
+                Array [
+                  Object {
+                    "name": "IncidentService",
+                    "value": "mainService",
+                  },
+                ]
+            `);
+        });
+
+        test('getCAPServicePrompt', async () => {
+            const capProjectProvider = await ProjectProvider.createProject(
+                join(__dirname, '../sample/building-block/webapp-prompts-cap/app/incidents')
+            );
+            const prompt = await getCAPServicePrompt('message', capProjectProvider);
+            expect(prompt).toMatchInlineSnapshot(`
+                Object {
+                  "additionalInfo": undefined,
+                  "choices": Array [
+                    Object {
+                      "name": "IncidentService",
+                      "value": "mainService",
+                    },
+                  ],
+                  "default": "mainService",
+                  "dependantPromptNames": undefined,
+                  "groupId": undefined,
+                  "message": "message",
+                  "name": "service",
+                  "placeholder": "Select a service",
+                  "required": undefined,
+                  "selectType": "dynamic",
+                  "type": "list",
+                }
+            `);
         });
     });
 });
