@@ -39,7 +39,7 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[]): void
 
     contextMenu.addMenuItem({
         id: 'ADD_FRAGMENT',
-        text: 'Add: Fragment',
+        text: getAddFragmentItemText,
         handler: async (overlays: UI5Element[]) => await handler(overlays[0], rta, DialogNames.ADD_FRAGMENT),
         icon: 'sap-icon://attachment-html',
         enabled: isFragmentCommandEnabled
@@ -112,6 +112,20 @@ export const isFragmentCommandEnabled = (overlays: ElementOverlay[]): boolean =>
     const hasStableId = FlUtils.checkControlId(control);
 
     return hasStableId && !isReuseComponent(control.getId());
+};
+
+/**
+ * Determines the text that should be displayed for the Add Fragment context menu item.
+ *
+ * @param {ElementOverlay} overlay - An ElementOverlay object representing the UI overlay.
+ * @returns {string} The text of the Add Fragment context menu item.
+ */
+export const getAddFragmentItemText = (overlay: ElementOverlay) => {
+    if (!isFragmentCommandEnabled([overlay])) {
+        return 'Add: Fragment (Unavailable due to unstable ID of the control or its parent control)';
+    }
+
+    return 'Add: Fragment';
 };
 
 /**

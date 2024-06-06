@@ -144,6 +144,7 @@ export default class ExtensionPoint extends BaseDialog {
      * @param key Selected extension point key
      * @param list All of the extension points that are under a view
      * @param enabled Enables the select control
+     * @param hasDefaultContent Whether there is default content associated with the extension name
      */
     private updateModel(
         name: string,
