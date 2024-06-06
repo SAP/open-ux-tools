@@ -93,4 +93,21 @@ export function parseOdataVersion(metadata: string): OdataVersion {
     }
 }
 
+/**
+ * Replaces the origin in the metadata URIs with a relative path. Only origins that include a port number are replaced.
+ *
+ * @param metadata a metadata string containing URIs which include origin (protocol, host, port)
+ * @returns the metadata string with URIs replaced with relative paths
+ */
+export function originToRelative(metadata: string): string {
+    // Regex explanation:
+    // 1. Match the string "Uri=" literally
+    // 2. Match either "http" or "https"
+    // 3. Match "://" literally
+    // 4. Match any character except newline characters as few times as possible
+    // 5. Match a single colon, indicating the port number of the URL
+    // 5. Match a single forward slash, indicating the first path segment of the URL (after the origin)
+    return metadata.replace(new RegExp(/(Uri=")(http|https):\/\/(.*?):(.*?)(\/{1})/, 'g'), `$1./`);
+}
+
 export { PromptState };

@@ -49,7 +49,7 @@ export default class LoggerHelper {
             },
             (error) => {
                 return AxiosLogger.errorLogger(error, {
-                    logger: LoggerHelper.logger.error.bind(this)
+                    logger: LoggerHelper.logger.debug.bind(this)
                 });
             }
         );
@@ -65,7 +65,7 @@ export default class LoggerHelper {
             },
             (err) => {
                 return AxiosLogger.errorLogger(err, {
-                    logger: LoggerHelper.logger.error.bind(this)
+                    logger: LoggerHelper.logger.debug.bind(this)
                 });
             }
         );

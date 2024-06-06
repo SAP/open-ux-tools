@@ -2,7 +2,7 @@ import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConnectionValidator } from './connectionValidator';
 import type { ODataVersion } from '@sap-ux/axios-extension';
 import { createForAbap } from '@sap-ux/axios-extension';
-import { PromptState, parseOdataVersion } from '../../../utils';
+import { PromptState, originToRelative, parseOdataVersion } from '../../../utils';
 import { t } from '../../../i18n';
 import { SAP_CLIENT_KEY } from '../../../types';
 import { errorHandler } from '../../prompt-helpers';
@@ -41,7 +41,7 @@ export async function validateService(
 
             const serviceAsUrl = new URL(url);
             // Remove all occurrences of the origin from the metadata to make it relative
-            PromptState.odataService.metadata = metadata.replace(new RegExp(serviceAsUrl.origin, 'g'), '.');
+            PromptState.odataService.metadata = originToRelative(metadata);
             PromptState.odataService.odataVersion = serviceOdataVersion;
             const urlSearch = new URLSearchParams(serviceAsUrl.search);
             let sapClient;
