@@ -47,14 +47,11 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     });
     ui5Config.addFioriToolsAppReloadMiddleware();
 
-    // preload ui5-local.yaml
-    const ui5DefaultLibs = ['sap.m', 'sap.ushell', 'sap.ui.core'];
+    //preload ui5-local.yaml
     const ui5Libs = ui5App.ui5.ui5Libs as string[];
-    ui5DefaultLibs.forEach((lib) => {
-        if (!ui5Libs.includes(lib)) {
-            ui5Libs.push(lib);
-        }
-    });
+    if (!ui5Libs.includes('sap.ushell')) {
+        ui5Libs.push('sap.ushell');
+    }
 
     // ui5-local.yaml
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
