@@ -1,13 +1,13 @@
 import type { Destination } from '@sap-ux/btp-utils';
 
-export type ServiceType =
+export type ResourceType =
     | 'xsuaa'
     | 'destination'
     | 'portal'
     | 'connectivity'
+    | 'managed:xsuaa'
     | 'html5-apps-repo:app-host'
-    | 'html5-apps-repo:app-runtime'
-    | string;
+    | 'html5-apps-repo:app-runtime';
 export type ModuleType =
     | 'hdb'
     | 'nodejs'
@@ -18,9 +18,9 @@ export type ModuleType =
     | 'com.sap.application.content:resource'
     | 'html5'
     | 'com.sap.portal.content';
-export type ResourceType = ExistingResourceType | ManagedResourceType;
-export type ExistingResourceType = 'org.cloudfoundry.existing-service';
-export type ManagedResourceType = 'org.cloudfoundry.managed-service';
+export type CloudFoundryServiceType = ExistingServiceType | ManagedServiceType;
+export type ExistingServiceType = 'org.cloudfoundry.existing-service';
+export type ManagedServiceType = 'org.cloudfoundry.managed-service';
 export type MTADestinationType = Destination & {
     ServiceInstanceName: string;
     ServiceKeyName: string;

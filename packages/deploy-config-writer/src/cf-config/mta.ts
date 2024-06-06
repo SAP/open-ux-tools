@@ -30,7 +30,13 @@ import {
 import { t } from '../i18n';
 import type { Logger } from '@sap-ux/logger';
 import type { YAMLMap, YAMLSeq } from '@sap-ux/yaml';
-import type { ResourceType, ModuleType, ServiceType, ManagedResourceType, MTADestinationType } from '../types';
+import type {
+    CloudFoundryServiceType,
+    ModuleType,
+    ResourceType,
+    ManagedServiceType,
+    MTADestinationType
+} from '../types';
 
 /**
  * A class representing interactions with the MTA binary, found at https://sap.github.io/cloud-mta-build-tool/.
@@ -38,8 +44,8 @@ import type { ResourceType, ModuleType, ServiceType, ManagedResourceType, MTADes
 export class MtaConfig {
     private readonly mta: Mta;
     private apps: Map<string, Module> = new Map();
-    private modules: Map<ModuleType, Module> = new Map();
-    private resources: Map<ServiceType, Resource> = new Map();
+    private modules: Map<ModuleType | string, Module> = new Map();
+    private resources: Map<ResourceType | string, Resource> = new Map();
     private dirty = false;
     private mtaId: string;
     private log: Logger | undefined;
@@ -468,8 +474,8 @@ export class MtaConfig {
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
     public async addConnectivityResource(): Promise<void> {
-        const serviceType: ServiceType = 'connectivity';
-        const resourceType: ManagedResourceType = 'org.cloudfoundry.managed-service';
+        const serviceType: ResourceType = 'connectivity';
+        const resourceType: ManagedServiceType = 'org.cloudfoundry.managed-service';
         const resourceName = `${this.prefix}-connectivity`;
 
         const router = this.modules.get('approuter.nodejs');
@@ -547,7 +553,7 @@ export class MtaConfig {
      */
     public async addAbapService(newAbapServiceChoice: { label: string; service: string }): Promise<void> {
         const newResourceName = `${this.prefix}-abap-${newAbapServiceChoice.label}`;
-        const cfExistingSrvResource: ResourceType = 'org.cloudfoundry.existing-service';
+        const cfExistingSrvResource: CloudFoundryServiceType = 'org.cloudfoundry.existing-service';
 
         const router = this.modules.get('approuter.nodejs');
         if (router) {
