@@ -1,5 +1,17 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.24.14
+
+### Patch Changes
+
+-   d2063073: Fixed custom action path when it's generated in custom section.
+
+## 0.24.13
+
+### Patch Changes
+
+-   f69d72c1: Fixed custom action path when it's generated within custom section.
+
 ## 0.24.12
 
 ### Patch Changes
