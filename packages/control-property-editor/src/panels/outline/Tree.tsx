@@ -504,9 +504,8 @@ function getGroups(model: OutlineNode[], items: OutlineNodeItem[], level = 0, pa
     const group: IGroup[] = [];
     for (let i = 0; i < model.length; i++) {
         const data = model[i];
-        const fe = data.fe;
         const children = data.children || [];
-        const count = fe ? 0 : children.length; // no of item for each group
+        const count = children.length; // no of item for each group
         const newPath = [...path, i.toString(), 'children'];
         const newGroup = {
             count,
@@ -519,16 +518,12 @@ function getGroups(model: OutlineNode[], items: OutlineNodeItem[], level = 0, pa
             data: { ...data, path: newPath }
         };
 
-        if (fe) {
-            group.push(newGroup);
-        } else {
-            const shouldCreate = createGroupChild(children);
-            newGroup.children = shouldCreate ? getGroups(children, items, level + 1, newPath) : [];
-            group.push(newGroup);
-            // add node children to item
-            if (!shouldCreate) {
-                children.forEach((item, i) => items.push({ ...item, level, path: [...newPath, i.toString()] }));
-            }
+        const shouldCreate = createGroupChild(children);
+        newGroup.children = shouldCreate ? getGroups(children, items, level + 1, newPath) : [];
+        group.push(newGroup);
+        // add node children to item
+        if (!shouldCreate) {
+            children.forEach((item, i) => items.push({ ...item, level, path: [...newPath, i.toString()] }));
         }
     }
     return group;

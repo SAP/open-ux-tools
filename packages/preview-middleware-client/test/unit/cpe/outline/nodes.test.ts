@@ -56,7 +56,6 @@ describe('outline nodes', () => {
                     editable: false,
                     name: 'Component',
                     visible: true,
-                    fe: false
                 }
             ]);
         });
@@ -89,7 +88,6 @@ describe('outline nodes', () => {
                     hasDefaultContent: false,
                     name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
                     visible: true,
-                    fe: false
                 }
             ]);
         });
@@ -145,7 +143,6 @@ describe('outline nodes', () => {
                     controlType: 'sap.m.HBox',
                     name: 'HBox',
                     editable: false,
-                    fe: false,
                     visible: true,
                     children: [
                         {
@@ -154,7 +151,6 @@ describe('outline nodes', () => {
                             name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
                             editable: false,
                             visible: true,
-                            fe: false,
                             hasDefaultContent: true,
                             children: [
                                 {
@@ -163,7 +159,6 @@ describe('outline nodes', () => {
                                     name: 'id1',
                                     visible: true,
                                     editable: false,
-                                    fe: false,
                                     children: [],
                                     hasDefaultContent: false
                                 }
@@ -199,7 +194,6 @@ describe('outline nodes', () => {
                             hasDefaultContent: false,
                             name: 'id1',
                             visible: true,
-                            fe: false
                         }
                     ],
                     controlId: 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
@@ -208,7 +202,6 @@ describe('outline nodes', () => {
                     hasDefaultContent: false,
                     name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
                     visible: true,
-                    fe: false
                 }
             ]);
         });
@@ -250,7 +243,6 @@ describe('outline nodes', () => {
                     editable: false,
                     name: 'Component',
                     visible: true,
-                    fe: false,
                     children: [
                         {
                             controlId: '__layout0',
@@ -258,7 +250,6 @@ describe('outline nodes', () => {
                             name: 'FlexibleColumnLayout',
                             editable: false,
                             visible: true,
-                            fe: false,
                             children: []
                         }
                     ]

@@ -37,7 +37,7 @@ function isPropertyEnabled(analyzedType: AnalyzedType): boolean {
  * @param hasStableId - given control has stable id.
  * @param ignore - property that is ignored during design time
  * @param controlOverlay - element overlay
- * @param {boolean} fe - Indicates whether the node is fiori element.
+ * @param {boolean} buildingBlock - Indicates whether the node is building block.
  * @returns boolean
  */
 function isControlEnabled(
@@ -45,9 +45,9 @@ function isControlEnabled(
     hasStableId: boolean,
     ignore: boolean,
     controlOverlay?: ElementOverlay,
-    fe?: boolean
+    buildingBlock?: boolean
 ): boolean {
-    if (fe) {
+    if (buildingBlock) {
         return isPropertyEnabled(analyzedType) && hasStableId && !ignore;
     }
 
@@ -182,7 +182,7 @@ export function buildControlData(control: ManagedObject, controlOverlay?: Elemen
     const selectedControlName = controlMetadata.getName();
     const hasStableId = Utils.checkControlId(control);
     const controlProperties = controlOverlay ? controlOverlay.getDesignTimeMetadata().getData().properties : undefined;
-    const fe = control.isA(FE_CORE_BUILDING_BLOCKS);
+    const buildingBlock = control.isA(FE_CORE_BUILDING_BLOCKS);
     // Add the control's properties
     const allProperties = controlMetadata.getAllProperties() as unknown as {
         [name: string]: ManagedObjectMetadataProperties;
@@ -223,7 +223,7 @@ export function buildControlData(control: ManagedObject, controlOverlay?: Elemen
         // 2. The control has stable ID
         // 3. It is not configured to be ignored in design time
         // 4. And control overlay is selectable or control belongs to `sap.fe.core.buildingBlocks.BuildingBlockBase`
-        const isEnabled = isControlEnabled(analyzedType, hasStableId, ignore, controlOverlay, fe);
+        const isEnabled = isControlEnabled(analyzedType, hasStableId, ignore, controlOverlay, buildingBlock);
 
         const value = normalizeObjectPropertyValue(controlNewData.newValue);
         const isIcon =
@@ -307,6 +307,6 @@ export function buildControlData(control: ManagedObject, controlOverlay?: Elemen
         type: selectedControlName, //the name of the ui5 class of the control/aggregation
         properties: [...properties].sort((a, b) => (a.name > b.name ? 1 : -1)),
         name: selectedControlName,
-        fe
+        buildingBlock
     };
 }

@@ -58,9 +58,8 @@ function getChildren(current: OutlineViewNode): OutlineViewNode[] {
  *
  * @param {string} id - The unique identifier of the control to be added as a child node.
  * @param {OutlineNode[]} children - The array of children nodes to which the new node will be added.
- * @param {boolean} fe - Indicates whether the node is fiori element.
  */
-function addChildToExtensionPoint(id: string, children: OutlineNode[], fe: boolean) {
+function addChildToExtensionPoint(id: string, children: OutlineNode[]) {
     const { text, technicalName } = getAdditionalData(id);
     const editable = isEditable(id);
 
@@ -71,8 +70,7 @@ function addChildToExtensionPoint(id: string, children: OutlineNode[], fe: boole
         visible: true,
         editable,
         children: [],
-        hasDefaultContent: false,
-        fe
+        hasDefaultContent: false
     });
 }
 
@@ -93,10 +91,10 @@ export async function transformNodes(input: OutlineViewNode[], scenario: Scenari
         const isAdp = scenario === 'ADAPTATION_PROJECT';
         const isExtPoint = current?.type === 'extensionPoint';
         const control = sap.ui.getCore().byId(current?.id);
-        const fe = control?.isA(FE_CORE_BUILDING_BLOCKS) ?? false;
+        const buildingBlock = control?.isA(FE_CORE_BUILDING_BLOCKS) ?? false;
 
         if (current?.type === 'element') {
-            const children = getChildren(current);
+            const children = buildingBlock ? [] : getChildren(current);
             const { text } = getAdditionalData(current.id);
             const technicalName = current.technicalName.split('.').slice(-1)[0];
 
@@ -110,8 +108,7 @@ export async function transformNodes(input: OutlineViewNode[], scenario: Scenari
                 name: text ?? technicalName,
                 editable,
                 visible: current.visible ?? true,
-                children: transformedChildren,
-                fe
+                children: transformedChildren
             };
 
             items.push(node);
@@ -123,7 +120,7 @@ export async function transformNodes(input: OutlineViewNode[], scenario: Scenari
             let children: OutlineNode[] = [];
             // We can combine both because there can only be either defaultContent or createdControls for one extension point node.
             [...defaultContent, ...createdControls].forEach((id: string) => {
-                addChildToExtensionPoint(id, children, fe);
+                addChildToExtensionPoint(id, children);
             });
 
             const node: OutlineNode = {
@@ -133,8 +130,7 @@ export async function transformNodes(input: OutlineViewNode[], scenario: Scenari
                 editable,
                 visible: current.visible ?? true,
                 children,
-                hasDefaultContent: defaultContent.length > 0,
-                fe
+                hasDefaultContent: defaultContent.length > 0
             };
 
             items.push(node);

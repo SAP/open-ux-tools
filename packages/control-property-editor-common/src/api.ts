@@ -14,9 +14,9 @@ export interface Control {
 
     properties: ControlProperty[];
     /**
-     * Indicates whether control is fiori element
+     * Indicates whether control is building block
      */
-    fe?: boolean;
+    buildingBlock?: boolean;
 }
 export type PropertyValue = string | boolean | number;
 export type PropertyChangeType = 'propertyChange' | 'propertyBindingChange';
@@ -110,7 +110,6 @@ export interface OutlineNode {
     children: OutlineNode[];
     icon?: string;
     hasDefaultContent?: boolean;
-    fe?: boolean;
 }
 
 export interface IconDetails {

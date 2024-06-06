@@ -2,7 +2,7 @@
 
 exports[`controlData buildControlData - disabled properties for noStableId 1`] = `
 Object {
-  "fe": false,
+  "buildingBlock": false,
   "id": "",
   "name": "sap.m.Button",
   "properties": Array [
@@ -103,7 +103,7 @@ Object {
 
 exports[`controlData buildControlData - fe 1`] = `
 Object {
-  "fe": true,
+  "buildingBlock": true,
   "id": "testID",
   "name": "sap.fe.macros.table.TableAPI",
   "properties": Array [
@@ -124,7 +124,7 @@ Object {
 
 exports[`controlData buildControlData 1`] = `
 Object {
-  "fe": false,
+  "buildingBlock": false,
   "id": "testID",
   "name": "sap.m.Button",
   "properties": Array [
