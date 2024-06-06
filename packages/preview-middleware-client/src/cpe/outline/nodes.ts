@@ -45,9 +45,13 @@ function getAdditionalData(id: string): AdditionalData {
  * Gets the children nodes of an aggregation type node.
  *
  * @param current The current node to retrieve children from
+ * @param buildingBlock Indicates whether the node is building block
  * @returns An array of children nodes, or an empty array if none are found
  */
-function getChildren(current: OutlineViewNode): OutlineViewNode[] {
+function getChildren(current: OutlineViewNode, buildingBlock = false): OutlineViewNode[] {
+    if (buildingBlock) {
+        return [];
+    }
     return (current.elements ?? []).flatMap((element: OutlineViewNode) =>
         element.type === 'aggregation' ? element.elements ?? [] : []
     );
@@ -91,10 +95,10 @@ export async function transformNodes(input: OutlineViewNode[], scenario: Scenari
         const isAdp = scenario === 'ADAPTATION_PROJECT';
         const isExtPoint = current?.type === 'extensionPoint';
         const control = sap.ui.getCore().byId(current?.id);
-        const buildingBlock = control?.isA(FE_CORE_BUILDING_BLOCKS) ?? false;
-
+        const buildingBlock = control?.isA(FE_CORE_BUILDING_BLOCKS);
+        const visible = current?.visible ?? true;
         if (current?.type === 'element') {
-            const children = buildingBlock ? [] : getChildren(current);
+            const children = getChildren(current, buildingBlock);
             const { text } = getAdditionalData(current.id);
             const technicalName = current.technicalName.split('.').slice(-1)[0];
 
@@ -107,7 +111,7 @@ export async function transformNodes(input: OutlineViewNode[], scenario: Scenari
                 controlType: current.technicalName,
                 name: text ?? technicalName,
                 editable,
-                visible: current.visible ?? true,
+                visible,
                 children: transformedChildren
             };
 
@@ -128,7 +132,7 @@ export async function transformNodes(input: OutlineViewNode[], scenario: Scenari
                 controlType: current.technicalName,
                 name: current.name ?? '',
                 editable,
-                visible: current.visible ?? true,
+                visible,
                 children,
                 hasDefaultContent: defaultContent.length > 0
             };
