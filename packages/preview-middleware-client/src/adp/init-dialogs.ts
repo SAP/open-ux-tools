@@ -19,6 +19,7 @@ import ControllerExtension from './controllers/ControllerExtension.controller';
 import { ExtensionPointData } from './extension-point';
 import ExtensionPoint from './controllers/ExtensionPoint.controller';
 import { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
+import ManagedObject from 'sap/ui/base/ManagedObject';
 
 export const enum DialogNames {
     ADD_FRAGMENT = 'AddFragment',
@@ -69,7 +70,7 @@ export const isControllerExtensionEnabled = (overlays: ElementOverlay[], syncVie
     const isClickedControlReuseComponent = isReuseComponent(clickedControlId);
 
     return !syncViewsIds.includes(clickedControlId) && !isClickedControlReuseComponent;
-}
+};
 
 /**
  * Function that checks if clicked control is from view which is reuse component
@@ -92,7 +93,7 @@ export const isReuseComponent = (clickedControlId: string): boolean => {
 
     const manifest = component.getManifest() as Manifest;
 
-    if(!manifest) {
+    if (!manifest) {
         return false;
     }
 
@@ -109,9 +110,17 @@ export const isFragmentCommandEnabled = (overlays: ElementOverlay[]): boolean =>
     if (overlays.length === 0 || overlays.length > 1) return false;
 
     const control = overlays[0].getElement();
-    const hasStableId = FlUtils.checkControlId(control);
 
-    return hasStableId && !isReuseComponent(control.getId());
+    return hasStableId(control) && !isReuseComponent(control.getId());
+};
+
+/**
+ * Determines whether control has stable id
+ * @param {ManagedObject} control - ManagedObject object representing the UI control.
+ * @returns {boolean} True if control has stable Id, false otherwise
+ */
+const hasStableId = (control: ManagedObject): boolean => {
+    return FlUtils.checkControlId(control);
 };
 
 /**
@@ -121,7 +130,8 @@ export const isFragmentCommandEnabled = (overlays: ElementOverlay[]): boolean =>
  * @returns {string} The text of the Add Fragment context menu item.
  */
 export const getAddFragmentItemText = (overlay: ElementOverlay) => {
-    if (!isFragmentCommandEnabled([overlay])) {
+    const control = overlay.getElement();
+    if (control && !hasStableId(control)) {
         return 'Add: Fragment (Unavailable due to unstable ID of the control or its parent control)';
     }
 
