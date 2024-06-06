@@ -307,7 +307,7 @@ export function enhanceManifestChangeContentWithFlpConfig(
     manifestChangeContent: Content[] | Content[] = []
 ): void {
     const inboundChangeContent = flpConfiguration.addInboundId
-        ? getInboundChangeContentWithNewInboundID(flpConfiguration as InternalInboundNavigation, appId)
+        ? getInboundChangeContentWithNewInboundID(flpConfiguration, appId)
         : getInboundChangeContentWithExistingInboundId(flpConfiguration as ChangeInboundNavigation, appId);
     if (inboundChangeContent) {
         const addInboundChange = {

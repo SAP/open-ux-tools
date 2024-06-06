@@ -43,17 +43,14 @@ describe('ADP writer', () => {
             expect(fs.dump(projectDir)).toMatchSnapshot();
         });
 
+        test('config without passed memfs editor instance', async () => {
+            const projectDir = join(outputDir, 'memfs');
+            await generate(projectDir, config);
+            expect(fs.dump(projectDir)).toMatchSnapshot();
+        });
+
         test('add deploy config', async () => {
             const projectDir = join(outputDir, 'deploy');
-            Object.assign(config.app, {
-                bspName: 'bsp.test.app',
-                languages: [
-                    {
-                        sap: 'testId',
-                        i18n: 'testKey'
-                    }
-                ]
-            });
             await generate(
                 projectDir,
                 {
@@ -97,8 +94,17 @@ describe('ADP writer', () => {
             ).toMatchSnapshot();
         });
 
-        test('enable s4hana cloud', async () => {
+        test('S/4HANA cloud config', async () => {
             const projectDir = join(outputDir, 's4hana');
+            Object.assign(config.app, {
+                bspName: 'bsp.test.app',
+                languages: [
+                    {
+                        sap: 'testId',
+                        i18n: 'testKey'
+                    }
+                ]
+            });
             await generate(
                 projectDir,
                 {
@@ -111,6 +117,50 @@ describe('ADP writer', () => {
                     },
                     ui5: {
                         version: '1.122.1'
+                    },
+                    flp: {
+                        semanticObject: 'sampleObj',
+                        action: 'sampleAction',
+                        title: 'testTitle',
+                        subTitle: 'testSubTitle'
+                    },
+                    customConfig: {
+                        adp: {
+                            safeMode: false,
+                            environment: 'C'
+                        }
+                    }
+                },
+                fs
+            );
+            expect(
+                fs.dump(
+                    projectDir,
+                    (file) =>
+                        file.dirname === projectDir &&
+                        ['package.json', 'ui5.yaml', 'ui5-deploy.yaml'].includes(file.basename)
+                )
+            ).toMatchSnapshot();
+        });
+
+        test('S/4HANA cloud config with inboundId', async () => {
+            const projectDir = join(outputDir, 's4hanaWithInboundId');
+            await generate(
+                projectDir,
+                {
+                    ...config,
+                    deploy: {
+                        package: '$TMP'
+                    },
+                    options: {
+                        fioriTools: true
+                    },
+                    ui5: {
+                        version: '1.122.1'
+                    },
+                    flp: {
+                        inboundId: 'sampleId',
+                        subTitle: 'sampleSubTitle'
                     },
                     customConfig: {
                         adp: {
