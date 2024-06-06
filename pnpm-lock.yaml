@@ -548,8 +548,8 @@ importers:
         specifier: 7.4.1
         version: 7.4.1(express@4.19.2)
       '@sap/cds-compiler':
-        specifier: 4.4.4
-        version: 4.4.4
+        specifier: 4.8.0
+        version: 4.8.0
       npm-run-all2:
         specifier: 6.2.0
         version: 6.2.0
@@ -7875,21 +7875,12 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@sap/cds-compiler@4.4.4:
-    resolution: {integrity: sha512-dDTD3mLpTEhp1/5Pgvasf74avqeOP/OW27aE2tL3+ujYPYVvGgs5d3wtfdbchZscd9M9/jY/5dZKuQliNNHSAw==}
-    engines: {node: '>=16'}
-    hasBin: true
-    dependencies:
-      antlr4: 4.9.3
-    dev: true
-
   /@sap/cds-compiler@4.8.0:
     resolution: {integrity: sha512-C8IkzNfdMIzG136K/VvOmG65d8UnR9lcZF5q/c//Jp2/RZIZvwFvO5HHPre19+YWhuwJXbIMb3kc5x9CW9ZLNw==}
     engines: {node: '>=16'}
     hasBin: true
     dependencies:
       antlr4: 4.9.3
-    dev: false
 
   /@sap/cds-fiori@1.2.2(@sap/cds@7.4.1)(express@4.19.2):
     resolution: {integrity: sha512-9bJKiIq8dCmwEcIXES7jiAcmiyJlDjjKdnvceAmqCU5Z925ZaalVIGYdnmmlQyciPUzD/bk3vRxmrPIogP6leA==}
@@ -7916,7 +7907,7 @@ packages:
     engines: {node: '>=16'}
     hasBin: true
     dependencies:
-      '@sap/cds-compiler': 4.4.4
+      '@sap/cds-compiler': 4.8.0
       '@sap/cds-fiori': 1.2.2(@sap/cds@7.4.1)(express@4.19.2)
       '@sap/cds-foss': 5.0.0
     transitivePeerDependencies:
