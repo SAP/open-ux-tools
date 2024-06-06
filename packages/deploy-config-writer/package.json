@@ -12,6 +12,7 @@
   },
   "license": "Apache-2.0",
   "main": "dist/index.js",
+  "author": "@SAP/ux-tools-team",
   "scripts": {
     "build": "tsc --build",
     "clean": "rimraf dist coverage *.tsbuildinfo",
@@ -48,6 +49,6 @@
     "@types/js-yaml": "4.0.9"
   },
   "engines": {
-    "node": ">= 14.16.0"
+    "node": ">=18.x"
   }
 }

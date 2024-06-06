@@ -515,7 +515,7 @@ export class MtaConfig {
             this.modules.get('com.sap.application.content:destination'),
             this.modules.get('approuter.nodejs')
         ].filter((elem) => elem !== undefined)) {
-            const destinationName = this.resources.get('destination')?.name;
+            const destinationName = this.resources.get('destination')?.name ?? `${this.prefix}-destination-service`;
             if (module?.requires?.findIndex((app) => app.name === destinationName) === -1) {
                 if (module.type === 'approuter.nodejs') {
                     module.requires.push({
