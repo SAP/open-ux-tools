@@ -55,7 +55,7 @@ describe('outline nodes', () => {
                     controlType: 'v2flex.Component',
                     editable: false,
                     name: 'Component',
-                    visible: true,
+                    visible: true
                 }
             ]);
         });
@@ -87,7 +87,7 @@ describe('outline nodes', () => {
                     editable: false,
                     hasDefaultContent: false,
                     name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
-                    visible: true,
+                    visible: true
                 }
             ]);
         });
@@ -193,7 +193,7 @@ describe('outline nodes', () => {
                             editable: false,
                             hasDefaultContent: false,
                             name: 'id1',
-                            visible: true,
+                            visible: true
                         }
                     ],
                     controlId: 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
@@ -201,7 +201,7 @@ describe('outline nodes', () => {
                     editable: false,
                     hasDefaultContent: false,
                     name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
-                    visible: true,
+                    visible: true
                 }
             ]);
         });
@@ -253,6 +253,69 @@ describe('outline nodes', () => {
                             children: []
                         }
                     ]
+                }
+            ]);
+        });
+        test('building block - ignore children', async () => {
+            const isA = jest.fn().mockReturnValue(true);
+            sapCoreMock.byId.mockReturnValue({
+                getMetadata: jest.fn().mockReturnValue({
+                    getProperty: jest
+                        .fn()
+                        .mockReturnValueOnce('Component')
+                        .mockReturnValueOnce('Component')
+                        .mockReturnValue(''),
+                    getElementName: jest.fn().mockReturnValue('some-name')
+                }),
+                getProperty: jest
+                    .fn()
+                    .mockReturnValueOnce('Component')
+                    .mockReturnValueOnce('Component')
+                    .mockReturnValue(''),
+                isA
+            });
+            const data: OutlineViewNode[] = [
+                {
+                    id: 'test.namespace--fe::table::1::LineItem::Table',
+                    technicalName: 'sap.fe.macros.table.TableAPI',
+                    editable: false,
+                    type: 'element',
+                    visible: false,
+                    elements: [
+                        {
+                            id: 'test.namespace--fe::table::1::LineItem::Table',
+                            technicalName: 'content',
+                            editable: false,
+                            type: 'aggregation',
+                            elements: [
+                                {
+                                    id: 'test.namespace--fe::table::1::LineItem',
+                                    technicalName: 'sap.ui.mdc.Table',
+                                    editable: true,
+                                    type: 'element',
+                                    visible: false,
+                                    elements: []
+                                }
+                            ]
+                        },
+                        {
+                            id: 'test.namespace--fe::table::1::LineItem::Table',
+                            technicalName: 'actions',
+                            editable: false,
+                            type: 'aggregation'
+                        }
+                    ]
+                }
+            ];
+            const result = await transformNodes(data, 'UI_ADAPTATION');
+            expect(result).toStrictEqual([
+                {
+                    controlId: 'test.namespace--fe::table::1::LineItem::Table',
+                    controlType: 'sap.fe.macros.table.TableAPI',
+                    name: 'Component',
+                    editable: false,
+                    visible: false,
+                    children: []
                 }
             ]);
         });
