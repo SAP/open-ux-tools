@@ -15,7 +15,7 @@ export function getJsonSpace(tabInfo: JSONFileInfo): WriteJsonSpace | undefined 
     // 'tabInfo' exists - it was passed as custom configuration or calculated from target file
     if (tabInfo.useTabSymbol) {
         // Tab symbol should be used as tab
-        space = CHAR_TAB.repeat(tabInfo.size || 1);
+        space = CHAR_TAB.repeat(tabInfo.size ?? 1);
     } else {
         // Spaces should be used as tab
         space = tabInfo.size;
@@ -31,7 +31,7 @@ export function getJsonSpace(tabInfo: JSONFileInfo): WriteJsonSpace | undefined 
  */
 function getLineTabInfo(line: string): JSONFileInfo {
     let tabSize: JSONFileInfo = {};
-    const symbol = line[0] === CHAR_TAB ? CHAR_TAB : CHAR_SPACE;
+    const symbol = line.startsWith(CHAR_TAB) ? CHAR_TAB : CHAR_SPACE;
     // get count of tabs
     for (let i = 0; i < line.length; i++) {
         const char = line[i];
