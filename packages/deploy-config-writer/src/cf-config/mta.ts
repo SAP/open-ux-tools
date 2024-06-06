@@ -516,25 +516,23 @@ export class MtaConfig {
             this.modules.get('approuter.nodejs')
         ].filter((elem) => elem !== undefined)) {
             const destinationName = this.resources.get('destination')?.name;
-            if (module && destinationName) {
-                if (module.requires?.findIndex((app) => app.name === destinationName) === -1) {
-                    if (module.type === 'approuter.nodejs') {
-                        module.requires.push({
-                            name: destinationName,
-                            ...UI5StandaloneModuleDestination
-                        });
-                    }
-                    if (module.type === 'com.sap.application.content') {
-                        module.requires.push({
-                            name: destinationName,
-                            parameters: {
-                                'content-target': true
-                            }
-                        });
-                    }
-                    await this.mta.updateModule(module);
-                    this.dirty = true;
+            if (module?.requires?.findIndex((app) => app.name === destinationName) === -1) {
+                if (module.type === 'approuter.nodejs') {
+                    module.requires.push({
+                        name: destinationName,
+                        ...UI5StandaloneModuleDestination
+                    });
                 }
+                if (module.type === 'com.sap.application.content') {
+                    module.requires.push({
+                        name: destinationName,
+                        parameters: {
+                            'content-target': true
+                        }
+                    });
+                }
+                await this.mta.updateModule(module);
+                this.dirty = true;
             }
         }
     }
@@ -585,7 +583,7 @@ export class MtaConfig {
         let isAbapDirectServiceBinding = false;
         const resourceNames = Array.from(this.resources.keys());
         for (const resourceName of resourceNames) {
-            if (resourceName.indexOf(`${this.prefix}-abap-`) === 0) {
+            if (resourceName.includes(`${this.prefix}-abap-`)) {
                 isAbapDirectServiceBinding = true;
                 break;
             }
