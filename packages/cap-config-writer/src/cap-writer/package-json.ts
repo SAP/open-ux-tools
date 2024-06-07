@@ -11,7 +11,8 @@ import { t } from '../i18n';
  * Retrieves the CDS watch script for the CAP app.
  *
  * @param {string} projectName - The project's name, which is the module name.
- * @param {string} appId - The application's ID, including its namespace and the module name.
+ * @param {string} appId - The application's ID, including its namespace and the module name. 
+    If appId is provided, it will be used to open the application instead of the project name. This option is available for use with npm workspaces.
  * @returns {{ [x: string]: string }} The CDS watch script for the CAP app.
  */
 export function getCDSWatchScript(
