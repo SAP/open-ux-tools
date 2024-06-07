@@ -1,5 +1,12 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.2.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.21.1
+-   @sap-ux/telemetry@0.4.30
+
 ## 0.2.0
 
 ### Minor Changes
