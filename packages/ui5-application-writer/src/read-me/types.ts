@@ -4,7 +4,7 @@ import { CapRuntime } from '@sap-ux/odata-service-inquirer';
 /**
  * Represents the structure of the README file.
  */
-export interface ReadMe {
+export interface ReadMe_old {
     /** The generation date of the README file. */
     genDate: string;
     /** The platform on which the README file is generated. */
@@ -45,6 +45,14 @@ export interface ReadMe {
     additionalEntries?: { label: string; value: string }[];
     /** The launch text for the project (optional). */
     launchText?: string;
+}
+
+export interface ReadMe {
+    /** The name of the project. */
+    projectName: string;
+    /** The title of the project. */
+    projectTitle: string;
+    [key: string]: string | string[] | boolean | { label: string; value: string }[] | undefined;
 }
 
 export interface TemplateWriter {

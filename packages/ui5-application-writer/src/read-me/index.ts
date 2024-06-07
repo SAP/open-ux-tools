@@ -37,19 +37,21 @@ function getTemplateWriter({ fileName, destPath, fsEditor}: TemplateWriter): App
  * @returns The launch text for the application.
  */
 export function getLaunchText(capType: CapRuntime | undefined, projectName: string, appId: string, useNPMWorkspaces: boolean = false): string {
-    let capUrl;
-    let mvnCommand = '';
-    // projects by default are served base on the folder name in the app/ folder
-    // If the project uses npm workspaces (and specifically cds-plugin-ui5 ) then the project is served using the appId including namespace
-    const project = useNPMWorkspaces ? appId : projectName + '/webapp';
-    if (capType === CAP_RUNTIME.JAVA) {
-        // For Java CAP runtime
-        mvnCommand = ' (```mvn spring-boot:run```)';
-        capUrl = `http://localhost:8080/${projectName}/webapp/index.html`;
-    } else if (capType === undefined || capType === CAP_RUNTIME.NODE_JS) {
-            // For Node.js CAP runtime (or if capType is undefined)
-        capUrl = `http://localhost:4004/${project}/index.html`;
+    function getCapUrl(): string {
+        const project = useNPMWorkspaces ? appId : projectName + '/webapp';
+        if (capType === CAP_RUNTIME.JAVA) {
+            return `http://localhost:8080/${projectName}/webapp/index.html`;
+        } else if (capType === undefined || capType === CAP_RUNTIME.NODE_JS) {
+            return `http://localhost:4004/${project}/index.html`;
+        }
+        return '';
     }
+
+    let mvnCommand = '';
+    if (capType === CAP_RUNTIME.JAVA) {
+        mvnCommand = ' (```mvn spring-boot:run```)';
+    }
+    const capUrl = getCapUrl();
     return `${t('TEXT_LAUNCH_CAP', { mvnCommand, capUrl })}`;
 }
 
