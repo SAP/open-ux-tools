@@ -1,11 +1,12 @@
 import Log from 'sap/base/Log';
 import type AppLifeCycle from 'sap/ushell/services/AppLifeCycle';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
-import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type { RTAOptions, FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import AppState from 'sap/ushell/services/AppState';
-import type Localization from 'sap/base/i18n/Localization';
+import { getManifestAppdescr } from '../adp/api-handler';
+
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
  */
@@ -179,18 +180,35 @@ export function registerSAPFonts() {
 }
 
 /**
+ * Create Respource Bundle based on the scenario.
+ *
+ * @param scenario scenario to be used for the resource bundle.
+ */
+async function loadI18nResourceBundle(scenario: string): Promise<ResourceBundle> {
+    if (scenario === 'ADAPTATION_PROJECT') {
+        const manifest = await getManifestAppdescr();
+        const enhanceWith = (manifest.content as { texts: { i18n: string } }[])
+            .filter((content) => !!content.texts?.i18n)
+            .map((content) => {
+                return { bundleUrl: `../${content.texts.i18n}` };
+            });
+        return ResourceBundle.create({
+            url: '../i18n/i18n.properties',
+            enhanceWith
+        });
+    }
+    return ResourceBundle.create({
+        url: 'i18n/i18n.properties'
+    });
+}
+
+/**
  * Read the application title from the resource bundle and set it as document title.
  *
+ * @param resourceBundle resource bundle to read the title from.
  * @param i18nKey optional parameter to define the i18n key to be used for the title.
  */
-export function setI18nTitle(i18nKey = 'appTitle') {
-    const localization =
-        (sap.ui.require('sap/base/i18n/Localization') as Localization) ?? sap.ui.getCore().getConfiguration();
-    const locale = localization.getLanguage();
-    const resourceBundle = ResourceBundle.create({
-        url: 'i18n/i18n.properties',
-        locale
-    }) as ResourceBundle;
+export function setI18nTitle(resourceBundle: ResourceBundle, i18nKey = 'appTitle') {
     if (resourceBundle.hasText(i18nKey)) {
         document.title = resourceBundle.getText(i18nKey) ?? document.title;
     }
@@ -216,15 +234,17 @@ export async function init({
 }): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
     const container = sap?.ushell?.Container ?? (sap.ui.require('sap/ushell/Container') as typeof sap.ushell.Container);
+    let scenario: string = '';
     // Register RTA if configured
     if (flex) {
+        const flexSettings = JSON.parse(flex) as FlexSettings;
+        scenario = flexSettings.scenario;
         container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
                 const version = sap.ui.version;
                 const minor = parseInt(version.split('.')[1], 10);
                 const view = event.getParameter('componentInstance');
-                const flexSettings = JSON.parse(flex);
                 const pluginScript = flexSettings.pluginScript ?? '';
 
                 let libs: string[] = [];
@@ -235,7 +255,7 @@ export async function init({
                 }
 
                 if (flexSettings.pluginScript) {
-                    libs.push(pluginScript);
+                    libs.push(pluginScript as string);
                     delete flexSettings.pluginScript;
                 }
 
@@ -271,7 +291,8 @@ export async function init({
     }
 
     // init
-    setI18nTitle();
+    const resourceBundle = await loadI18nResourceBundle(scenario);
+    setI18nTitle(resourceBundle);
     registerSAPFonts();
     const renderer = await container.createRenderer(undefined, true);
     renderer.placeAt('content');
