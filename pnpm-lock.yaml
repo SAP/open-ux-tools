@@ -529,8 +529,8 @@ importers:
         specifier: workspace:*
         version: link:../odata-vocabularies
       '@sap/ux-cds-compiler-facade':
-        specifier: 1.12.2
-        version: 1.12.2(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)
+        specifier: 1.13.6
+        version: 1.13.6(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
       i18next:
         specifier: 20.6.1
         version: 20.6.1
@@ -548,8 +548,8 @@ importers:
         specifier: 7.4.1
         version: 7.4.1(express@4.19.2)
       '@sap/cds-compiler':
-        specifier: 4.4.4
-        version: 4.4.4
+        specifier: 4.8.0
+        version: 4.8.0
       npm-run-all2:
         specifier: 6.2.0
         version: 6.2.0
@@ -7875,8 +7875,8 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@sap/cds-compiler@4.4.4:
-    resolution: {integrity: sha512-dDTD3mLpTEhp1/5Pgvasf74avqeOP/OW27aE2tL3+ujYPYVvGgs5d3wtfdbchZscd9M9/jY/5dZKuQliNNHSAw==}
+  /@sap/cds-compiler@4.8.0:
+    resolution: {integrity: sha512-C8IkzNfdMIzG136K/VvOmG65d8UnR9lcZF5q/c//Jp2/RZIZvwFvO5HHPre19+YWhuwJXbIMb3kc5x9CW9ZLNw==}
     engines: {node: '>=16'}
     hasBin: true
     dependencies:
@@ -7907,7 +7907,7 @@ packages:
     engines: {node: '>=16'}
     hasBin: true
     dependencies:
-      '@sap/cds-compiler': 4.4.4
+      '@sap/cds-compiler': 4.8.0
       '@sap/cds-fiori': 1.2.2(@sap/cds@7.4.1)(express@4.19.2)
       '@sap/cds-foss': 5.0.0
     transitivePeerDependencies:
@@ -7923,16 +7923,18 @@ packages:
       url: 0.11.0
     dev: false
 
-  /@sap/ux-cds-compiler-facade@1.12.2(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core):
-    resolution: {integrity: sha512-l51XGaSgqcaF8dAwQAVjcJULlXnh2nF2BW5XuPfdshbHyklakXVedCLS7bVE+osuSct+BjtxbZUUPuDxkPpkrw==}
+  /@sap/ux-cds-compiler-facade@1.13.6(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access):
+    resolution: {integrity: sha512-yShhK6VyV7ZzPJYVr4dBihCi8989xzldFQTPs+yYId+A6nepHBYAi+TNB4nnR1Iih8OtbHfy6kHy6fMqNZNkBg==}
+    engines: {node: '>=18.16.0'}
     peerDependencies:
-      '@sap-ux/odata-annotation-core': 0.1.7
-      '@sap-ux/odata-annotation-core-types': 0.3.0
+      '@sap-ux/odata-annotation-core': '>=0.1.8'
+      '@sap-ux/odata-annotation-core-types': '>=0.3.1'
+      '@sap-ux/project-access': 1.20.0
     dependencies:
       '@sap-ux/odata-annotation-core': link:packages/odata-annotation-core
       '@sap-ux/odata-annotation-core-types': link:packages/odata-annotation-core-types
-      '@sap/cds-compiler': 4.4.4
-      vscode-languageserver-types: 3.17.2
+      '@sap-ux/project-access': link:packages/project-access
+      '@sap/cds-compiler': 4.8.0
     dev: false
 
   /@sap/wing-service-explorer@1.8.0:
