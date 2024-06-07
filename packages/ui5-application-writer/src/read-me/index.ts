@@ -1,54 +1,31 @@
-import { ApplyTemplateFunction, ReadMe, CAP_RUNTIME, TemplateWriter } from './types';
+import { ReadMe } from './types';
+import type { TemplateWriter, ApplyTemplateFunction } from './types';
 import { t } from '../i18n';
 import { join } from 'path';
 import { Editor } from 'mem-fs-editor';
-import { type CapRuntime } from '@sap-ux/odata-service-inquirer';
+import type { CapRuntime } from '@sap-ux/odata-service-inquirer';
 import { DatasourceType } from '@sap-ux/odata-service-inquirer';
-
-/**
- * Returns a function that writes a template to the file system.
- * @param fileName The name of the file to write.
- * @param destPath The destination path to write the file to.
- * @param fsEditor The file system editor.
- * @returns The function that writes the template to the file system.
- */
-function getTemplateWriter({ fileName, destPath, fsEditor}: TemplateWriter): ApplyTemplateFunction {
-    // We have different relative template paths depending on if the code is bundled (prod) or not not (test)
-    // todo: make the paths the same relatively so this is not necessary (or have a mapping in webpack)
-    let bundledPath = false;
-    if (fsEditor.exists(join(__dirname, '..', 'templates', fileName))) {
-        bundledPath = true;
-    }
-    return <P>(path: string, properties: P): void => {
-        fsEditor.copyTpl(
-            join(__dirname, `${bundledPath ? '' : '..'}`, '..', 'templates', path),
-            join(destPath, path.replace(/\.tmpl|-cap-tmpl/g, '')),
-            properties!
-        );
-    };
-}
 
 /**
  * Generates a launch text for the launching of applications.
  * @param capType The type of CAP runtime used in the application will be provided for CAP applications.
- * @param projectName The name of the project.
- * @param appId The ID of the application.
- * @param useNPMWorkspaces Specifies whether the project uses npm workspaces. Defaults to false.
+ * @param projectName The project's name, which is the module name.
+ * @param appId If appId is provided, it will be used to open the application instead of the project name. This option is available for use with npm workspaces.
  * @returns The launch text for the application.
  */
-export function getLaunchText(capType: CapRuntime | undefined, projectName: string, appId: string, useNPMWorkspaces: boolean = false): string {
+export function getLaunchText(capType: CapRuntime | undefined, projectName: string, appId?: string): string {
     function getCapUrl(): string {
-        const project = useNPMWorkspaces ? appId : projectName + '/webapp';
-        if (capType === CAP_RUNTIME.JAVA) {
+        const project = appId ?? projectName + '/webapp';
+        if (capType === 'Java') {
             return `http://localhost:8080/${projectName}/webapp/index.html`;
-        } else if (capType === undefined || capType === CAP_RUNTIME.NODE_JS) {
+        } else if (capType === undefined || capType === 'Node.js') {
             return `http://localhost:4004/${project}/index.html`;
         }
         return '';
     }
 
     let mvnCommand = '';
-    if (capType === CAP_RUNTIME.JAVA) {
+    if (capType === 'Java') {
         mvnCommand = ' (```mvn spring-boot:run```)';
     }
     const capUrl = getCapUrl();
@@ -68,7 +45,7 @@ export function getDataSourceLabel(source: DatasourceType, systemType: string = 
         const labelDatasourceType = t(`README_LABEL_DATASOURCE_TYPE_${DatasourceType.sapSystem}`);
         const labelSystemType = t(`LABEL_SAP_SYSTEM_SOURCE_TYPE_${systemType}`);
         return `${labelDatasourceType} (${labelSystemType})`;
-    } else if ( source === DatasourceType.businessHub && isApiEnterpriseType) {
+    } else if (source === DatasourceType.businessHub && isApiEnterpriseType) {
         // Label for API business hub enterprise type data source
        return t('LABEL_API_BUSINESS_HUB_ENTERPRISE');
     }
@@ -76,6 +53,12 @@ export function getDataSourceLabel(source: DatasourceType, systemType: string = 
     return t(`README_LABEL_DATASOURCE_TYPE_${source}`)
 }
 
+/**
+ * Merges the provided ReadMe configuration with default values to be used by read me templates.
+ * 
+ * @param {Partial<ReadMe>} readMeConfig - The partial configuration object to merge with defaults.
+ * @returns {ReadMe} The merged configuration object with defaults applied.
+ */
 function mergeWithDefaults(readMeConfig: Partial<ReadMe>): ReadMe {
     const defaults: ReadMe = {
         genDate: new Date().toString(),
@@ -104,24 +87,66 @@ function mergeWithDefaults(readMeConfig: Partial<ReadMe>): ReadMe {
 }
 
 /**
- * Composes the README.md file.
- * @param apply The template writer function.
- * @param readMe The README configuration.
+ * Returns a function that writes a template to the file system.
+ * @param {object} templateWriter - The template writer object.
+ * @param {string} templateWriter.fileName - The name of the file to write.
+ * @param {string} templateWriter.destPath - The destination path to write the file to.
+ * @param {Editor} templateWriter.fsEditor - The file system editor.
+ * @returns The function that writes the template to the file system.
  */
-export function composeReadMe(apply: ApplyTemplateFunction, readMeConfig: Partial<ReadMe>): void {
-    // Apply the configuration to generate the README.md file
-    const config: ReadMe = mergeWithDefaults(readMeConfig);
-    apply<ReadMe>('README.md', config);
+function getTemplateWriter({ fileName, destPath, fsEditor}: TemplateWriter): ApplyTemplateFunction {
+    // Determine if the template path is bundled (prod) or not (test)
+    const isBundledPath = fsEditor.exists(join(__dirname, '..', 'templates', fileName));
+    return <P>(path: string, properties: P): void => {
+        // Compute the template source path based on whether it's bundled or not
+        const templateSourcePath = join(__dirname, isBundledPath ? '' : '..', '..', 'templates', path);
+        // Compute the destination path, removing specific substrings from the path
+        const templateDestPath = join(destPath, path.replace(/\.tmpl|-cap-tmpl/g, ''));
+        // Copy the template with the provided properties
+        fsEditor.copyTpl(templateSourcePath, templateDestPath, properties!);
+    };
 }
 
 /**
- * Exposed readMe generator API, for use until open source ux-tools provides
- * @param fs
- * @param param1
+ * Generates a README file at the specified destination path using the provided configuration and file system editor.
+ *
+ * @param {string} destPath - The desitination path where the README file will be created.
+ * @param {Partial<ReadMe>} readMeConfig - The configuration object containing the details to be included in the README file. Properties in this object are optional.
+ * @param {Editor} fs - The file system editor instance used to write the README file.
+ * @returns {Editor} The file system editor instance used to write the README file.
+ *
+ * @example
+ * const readMeConfig = {
+ *     projectName: "MyProject",
+ *     projectTitle: "My Project Title",
+ *     projectNamespace: "com.example",
+ *     projectDescription: "A description of my project.",
+ *     ui5Theme: "sap_belize",
+ *     projectUI5Version: "1.84.0",
+ *     enableCodeAssist: true,
+ *     enableEslint: true,
+ *     enableTypeScript: false,
+ *     genId: "generator-id",
+ *     genVersion: "1.0.0",
+ *     templateLabel: "List Report Page",
+ *     genDate: "2023-06-01",
+ *     genPlatform: "Web",
+ *     dataSourceLabel: "OData V4",
+ *     serviceUrl: "https://example.com/service",
+ *     showMockDataInfo: true,
+ *     additionalEntries: [
+ *         { label: "Custom Entry", value: "Custom Value" }
+ *     ],
+ *     launchText: "To launch the project, run `npm start`."
+ * };
+ *
+ * generateReadMe("./README.md", readMeConfig, editor);
  */
 export function generateReadMe(destPath: string, readMeConfig: Partial<ReadMe>, fs: Editor): Editor {
-    composeReadMe(getTemplateWriter({ fileName: 'README.md', destPath, fsEditor: fs }), readMeConfig);
+    const config: ReadMe = mergeWithDefaults(readMeConfig);
+    // Apply the configuration to generate the README.md file
+    getTemplateWriter({ fileName: 'README.md', destPath, fsEditor: fs })<ReadMe>('README.md', config);
     return fs;
 }
 
-export { ReadMe }
+export { ReadMe };
