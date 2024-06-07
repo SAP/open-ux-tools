@@ -1998,9 +1998,6 @@ importers:
         specifier: 7.5.4
         version: 7.5.4
     devDependencies:
-      '@sap-ux/btp-utils':
-        specifier: workspace:*
-        version: link:../btp-utils
       '@sap-ux/eslint-plugin-fiori-tools':
         specifier: workspace:*
         version: link:../eslint-plugin-fiori-tools
