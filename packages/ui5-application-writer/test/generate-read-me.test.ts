@@ -63,9 +63,11 @@ describe('Readme file tests', () => {
             dataSourceLabel: getDataSourceLabel(DatasourceType.capProject, "",true),
             launchText: getLaunchText(service.capService.capType, projectName, genId)
         }
+        console.log("readMePath", readMePath)
 
         generateReadMe(__dirname, config, editor);
         //expect(editor.exists(readMePath)).toBeTrue();
+        console.log("editor.read(readMePath)", editor.read(readMePath))
         expect(editor.read(readMePath)).toEqual(readFileSync(expectReadMePath, 'utf-8'));
     });
 });

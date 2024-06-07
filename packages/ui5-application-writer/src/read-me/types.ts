@@ -47,12 +47,36 @@ export interface ReadMe_old {
     launchText?: string;
 }
 
-export interface ReadMe {
+export interface ReadMe_latest {
     /** The name of the project. */
     projectName: string;
     /** The title of the project. */
     projectTitle: string;
-    [key: string]: string | string[] | boolean | { label: string; value: string }[] | undefined;
+    [key: string]: string | string[] | boolean | AdditionalEntries[] | undefined;
+}
+
+interface AdditionalEntries {
+    label: string; 
+    value: string;
+}
+
+interface OptionalEntries {
+    [key: string]: string | string[] | boolean | AdditionalEntries[] | undefined;
+}
+export interface ReadMe extends OptionalEntries {
+    // Core properties
+    projectName: string;
+    projectTitle: string;
+    projectNamespace: string;
+    projectDescription: string;
+    ui5Theme: string;
+    projectUI5Version: string;
+    enableCodeAssist: boolean;
+    enableEslint: boolean;
+    enableTypeScript: boolean;
+    genId: string;
+    genVersion: string;
+    templateLabel: string;
 }
 
 export interface TemplateWriter {

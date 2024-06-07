@@ -76,6 +76,32 @@ export function getDataSourceLabel(source: DatasourceType, systemType: string = 
     return t(`README_LABEL_DATASOURCE_TYPE_${source}`)
 }
 
+function mergeWithDefaults(readMeConfig: Partial<ReadMe>): ReadMe {
+    const defaults: ReadMe = {
+        genDate: new Date().toString(),
+        genPlatform: '',
+        dataSourceLabel: '',
+        metadataFilename: '',
+        serviceUrl: 'N/A',
+        projectName: '',
+        projectTitle: '',
+        projectDescription: '',
+        projectNamespace: '',
+        ui5Theme: '',
+        projectUI5Version: '',
+        enableCodeAssist: false,
+        enableEslint: false,
+        enableTypeScript: false,
+        showMockDataInfo: false,
+        genVersion: '',
+        templateLabel: '',
+        genId: '',
+        additionalEntries: [],
+        launchText: t('TEXT_LAUNCH_DEFAULT')
+    };
+
+    return { ...defaults, ...readMeConfig };
+}
 
 /**
  * Composes the README.md file.
@@ -83,31 +109,8 @@ export function getDataSourceLabel(source: DatasourceType, systemType: string = 
  * @param readMe The README configuration.
  */
 export function composeReadMe(apply: ApplyTemplateFunction, readMeConfig: Partial<ReadMe>): void {
-
-    // Create a complete configuration object for the README.md file with default values
-    const config: ReadMe = {
-        genDate: readMeConfig?.genDate || new Date().toString(), // Generation date
-        genPlatform: readMeConfig?.genPlatform || '', // Generation platform
-        dataSourceLabel: readMeConfig?.dataSourceLabel || '', // Data source label
-        metadataFilename: readMeConfig?.metadataFilename, // Metadata filename
-        serviceUrl: readMeConfig?.serviceUrl || 'N/A', // Service URL
-        projectName: readMeConfig?.projectName || '', // Project name
-        projectTitle: readMeConfig?.projectTitle || '', // Project title
-        projectDescription: readMeConfig?.projectDescription || '', // Project description
-        projectNamespace: readMeConfig?.projectNamespace || '', // Project namespace
-        ui5Theme: readMeConfig?.ui5Theme || '', // UI5 theme
-        projectUI5Version: readMeConfig?.projectUI5Version || '', // UI5 version
-        enableCodeAssist: readMeConfig?.enableCodeAssist || false, // Enable code assist
-        enableEslint: readMeConfig?.enableEslint || false, // Enable ESLint
-        enableTypeScript: readMeConfig?.enableTypeScript || false, // Enable TypeScript
-        showMockDataInfo: readMeConfig?.showMockDataInfo || false, // Show mock data info
-        genVersion: readMeConfig?.genVersion || '', // Generation version
-        templateLabel: readMeConfig?.templateLabel || '', // Template label
-        genId: readMeConfig?.genId || '', // Generation ID
-        additionalEntries: readMeConfig.additionalEntries || [], // Additional entries (if any)
-        launchText: readMeConfig?.launchText || t('TEXT_LAUNCH_DEFAULT') // Launch text (default value if not provided)
-    };
     // Apply the configuration to generate the README.md file
+    const config: ReadMe = mergeWithDefaults(readMeConfig);
     apply<ReadMe>('README.md', config);
 }
 
