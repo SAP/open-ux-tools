@@ -36,6 +36,11 @@ describe('Utils', () => {
                     <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
                 </edmx:Reference>
                 <edmx:Reference
+                        Uri="./sap/opu/odata4/this/is/an/odata/v4/path"
+                        xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+                    <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
+                </edmx:Reference>
+                <edmx:Reference
                         Uri="./sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CAPABILITIES',Version='0001',SAP__Origin='LOCAL')/$value"
                         xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
                     <edmx:Include Namespace="Org.OData.Capabilities.V1" Alias="Capabilities"/>
