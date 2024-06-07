@@ -68,7 +68,7 @@ export async function checkCdsUi5PluginEnabled(
  * @param basePath - root path of the CAP project, where package.json is located
  * @param [fs] - optional: the memfs editor instance
  * @param [moreInfo] if true return an object specifying detailed info about the cds and workspace state
- * @param {CdsVersionInfo} [cdsVersionInfo] - Optional. If provided will be used instead of parsing the package.json file to determine the cds version.
+ * @param {CdsVersionInfo} [cdsVersionInfo] - If provided will be used instead of parsing the package.json file to determine the cds version.
  * @returns false if package.json is not found at specified path or {@link CdsUi5PluginInfo} with additional info
  */
 export async function checkCdsUi5PluginEnabled(
@@ -85,7 +85,7 @@ export async function checkCdsUi5PluginEnabled(
  * @param basePath - root path of the CAP project, where package.json is located
  * @param [fs] - optional: the memfs editor instance
  * @param [moreInfo] if true return an object specifying detailed info about the cds and workspace state
- * @param {CdsVersionInfo} [cdsVersionInfo] - Optional. If provided will be used instead of parsing the package.json file to determine the cds version.
+ * @param {CdsVersionInfo} [cdsVersionInfo] - If provided will be used instead of parsing the package.json file to determine the cds version.
  * @returns false if package.json is not found at specified path or {@link CdsUi5PluginInfo} with additional info or true if
  * cds-plugin-ui5 and all prerequisites are fulfilled
  */
