@@ -419,9 +419,21 @@ importers:
 
   packages/cap-config-writer:
     dependencies:
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@sap-ux/odata-service-inquirer':
+        specifier: workspace:*
+        version: link:../odata-service-inquirer
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/yaml':
+        specifier: workspace:*
+        version: link:../yaml
+      i18next:
+        specifier: 20.6.1
+        version: 20.6.1
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -441,6 +453,9 @@ importers:
       '@types/semver':
         specifier: 7.5.2
         version: 7.5.2
+      xml-js:
+        specifier: 1.6.11
+        version: 1.6.11
 
   packages/cards-editor-config-writer:
     dependencies:
@@ -7899,7 +7914,7 @@ packages:
       big.js: 6.2.1
       generic-pool: 3.9.0
       xmlbuilder: 15.1.1
-      yaml: 2.3.3
+      yaml: 2.4.2
     dev: true
 
   /@sap/cds@7.4.1(express@4.19.2):
@@ -22053,6 +22068,13 @@ packages:
       xml-parser-xo: 3.2.0
     dev: false
 
+  /xml-js@1.6.11:
+    resolution: {integrity: sha512-7rVi2KMfwfWFl+GpPg6m80IVMWXLRjO+PxTq7V2CDhoGak0wzYzFgUY2m4XJ47OGdXd8eLE8EmwfAmdjw7lC1g==}
+    hasBin: true
+    dependencies:
+      sax: 1.2.4
+    dev: true
+
   /xml-name-validator@4.0.0:
     resolution: {integrity: sha512-ICP2e+jsHvAj2E2lIHxa5tjXRlKDJo4IdvPvCXbXQGdzSfmSpNVyIKMvoZHjDY9DP0zV17iI85o90vRFXNccRw==}
     engines: {node: '>=12'}
@@ -22140,6 +22162,13 @@ packages:
   /yaml@2.3.3:
     resolution: {integrity: sha512-zw0VAJxgeZ6+++/su5AFoqBbZbrEakwu+X0M5HmcwUiBL7AzcuPKjj5we4xfQLp78LkEMpD0cOnUhmgOVy3KdQ==}
     engines: {node: '>= 14'}
+    dev: false
+
+  /yaml@2.4.2:
+    resolution: {integrity: sha512-B3VqDZ+JAg1nZpaEmWtTXUlBneoGx6CPM9b0TENK6aoSu5t73dItudwdgmi6tHlIZZId4dZ9skcAQ2UbcyAeVA==}
+    engines: {node: '>= 14'}
+    hasBin: true
+    dev: true
 
   /yamljs@0.3.0:
     resolution: {integrity: sha512-C/FsVVhht4iPQYXOInoxUM/1ELSf9EsgKH34FofQOp6hwCPrW4vG4w5++TED3xRUo8gD7l0P1J1dLlDYzODsTQ==}
