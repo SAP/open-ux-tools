@@ -12,21 +12,20 @@ import { t } from '../i18n';
  *
  * @param {string} projectName - The project's name, which is the module name.
  * @param {string} appId - The application's ID, including its namespace and the module name.
- * @param {boolean} [useNPMWorkspaces] - Whether to use npm workspaces.
  * @returns {{ [x: string]: string }} The CDS watch script for the CAP app.
  */
 export function getCDSWatchScript(
     projectName: string,
-    appId: string,
-    useNPMWorkspaces: boolean = false
+    appId?: string
 ): { [x: string]: string } {
     const DisableCacheParam = 'sap-ui-xx-viewCache=false';
     // projects by default are served base on the folder name in the app/ folder
     // If the project uses npm workspaces (and specifically cds-plugin-ui5 ) then the project is served using the appId including namespace
-    const project = useNPMWorkspaces ? appId : projectName + '/webapp';
+    //const project = useNPMWorkspaces ? appId : projectName + '/webapp';
+    const project = appId ? appId : projectName + '/webapp';
     const watchScript = {
         [`watch-${projectName}`]: `cds watch --open ${project}/index.html?${DisableCacheParam}${
-            useNPMWorkspaces ? ' --livereload false' : ''
+            appId ? ' --livereload false' : ''
         }`
     }
     return watchScript;
@@ -65,7 +64,6 @@ async function updateScripts(
     cdsUi5PluginInfo?: CdsUi5PluginInfo,
     log?: Logger
 ): Promise<void> {
-    ///Users/I743583/SAPDevelop/tools-suite/packages/app-generator/fiori/test/test-input/fe-garage-demo/package.json
     const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
     const hasNPMworkspaces = await checkCdsUi5PluginEnabled(packageJsonPath, fs);
     // Determine whether to add cds watch scripts for the app based on the availability of minimum CDS version information.
@@ -73,8 +71,12 @@ async function updateScripts(
     // or if 'cdsUi5PluginInfo' is not available and the version specified in 'package.json' satisfies the minimum required version,
     // then set 'addScripts' to true. Otherwise, set it to false.
     const addScripts = cdsUi5PluginInfo?.hasMinCdsVersion ? cdsUi5PluginInfo.hasMinCdsVersion : satisfiesMinCdsVersion(packageJson);
+    let cdsScript;
     if (addScripts) {
-        const cdsScript = getCDSWatchScript(projectName, appId, enableNPMWorkspaces ?? hasNPMworkspaces);
+        if(enableNPMWorkspaces ?? hasNPMworkspaces) {
+            cdsScript = getCDSWatchScript(projectName, appId);
+        }
+        else cdsScript = getCDSWatchScript(projectName);
         updatePackageJsonWithScripts(fs, packageJsonPath, cdsScript);
     } else {
         log?.warn(t('warn.cdsDKNotInstalled', { minCdsVersion: minCdsVersion }));
