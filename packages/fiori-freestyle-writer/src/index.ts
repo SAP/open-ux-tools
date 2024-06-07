@@ -104,7 +104,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     }
 
-    // Entend ui5-local.yaml with additional UI5 lib
+    // Extend ui5-local.yaml with additional UI5 lib
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
     const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
     ui5LocalConfig.addUI5Libs([ushellLib]);
