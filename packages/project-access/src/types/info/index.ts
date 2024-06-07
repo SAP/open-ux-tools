@@ -91,12 +91,3 @@ export type AppType =
     | 'SAPUI5 Extension'
     | 'Fiori Reuse'
     | 'Fiori Adaptation';
-
-export interface JSONFileInfo {
-    // Spaces size
-    size?: number;
-    // Use '\t' symbol instead of space
-    useTabSymbol?: boolean;
-    // End of file
-    eof?: string;
-}

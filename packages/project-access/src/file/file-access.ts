@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs';
 import type { Editor } from 'mem-fs-editor';
-import { Manifest, Package } from '../types';
-import { getJSONFileInfo, getJsonSpace } from './file-info';
+import type { Manifest, Package } from '../types';
+import parseJsonError from 'json-parse-even-better-errors';
 
 /**
  * Read file asynchronously. Throws error if file does not exist.
@@ -75,7 +75,7 @@ export async function fileExists(path: string, memFs?: Editor): Promise<boolean>
  * @param path - path to file
  * @param packageJson - updated package.json file content
  */
-export async function updatePackageJSON(path:string, packageJson: Package): Promise<void> {
+export async function updatePackageJSON(path: string, packageJson: Package): Promise<void> {
     await updateJSON(path, packageJson);
 }
 
@@ -93,24 +93,14 @@ export async function updateManifestJSON(path: string, manifest: Manifest): Prom
  * Updates JSON file asynchronously by keeping the indentation from previous content with new content for given path.
  *
  * @param path - path to file
- * @param manifest - updated JSON file content
+ * @param content - updated JSON file content
  */
 async function updateJSON(path: string, content: object): Promise<void> {
-    const oldContent = await readFile(path);
-    // read spacing information from old content
-    const fileInfo = getJSONFileInfo(oldContent);
-    const calculatedSpace = getJsonSpace(fileInfo);
-    let result;
-    if (calculatedSpace && content) {
-        // Spaces are identified and new content is not empty
-        let result = JSON.stringify(content, null, calculatedSpace);
-        if (fileInfo.eof) {
-            result += fileInfo.eof;
-        }
-        await writeFile(path, result);
-    } else {
-        // Default spacing
-        result = JSON.stringify(content, null, 4);
-        await writeFile(path, result);
-    }
+    // read old contents and indentation of the JSON file
+    const oldContentText = await readFile(path);
+    const oldContentJson = parseJsonError(oldContentText);
+    const indent = Symbol.for('indent');
+    // prepare new JSON file content with previous indentation
+    const result = JSON.stringify(content, null, oldContentJson[indent]) + '\n';
+    await writeFile(path, result);
 }

@@ -92,28 +92,59 @@ describe('fileAccess', () => {
     });
 
     describe('updatePackageJSON', () => {
-        test('Should update package.json using previous indentation', async () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+        test('Should update package.json using previous indentation with tab space', async () => {
             const updateFileContent = {} as unknown as Package;
-            const spacing = 4;
             const jsonStringifySpy = jest.spyOn(JSON, 'stringify');
             const writeFileSpy = jest.spyOn(promises, 'writeFile').mockResolvedValue();
-            const pckgPath = join(__dirname, '..', 'test-data', 'project', 'info', 'empty-project', 'package.json');
+            const pckgPath = join(__dirname, '..', 'test-data', 'json', 'package', 'package-tab-space.json');
             await updatePackageJSON(pckgPath, updateFileContent);
-            expect(jsonStringifySpy).toBeCalledWith(updateFileContent, null, spacing);
+            expect(jsonStringifySpy).toBeCalledWith(updateFileContent, null, '  ');
+            expect(writeFileSpy).toBeCalledWith(pckgPath, '{}\n', { encoding: 'utf8' });
+        });
+        test('Should update package.json using previous indentation with 1 space', async () => {
+            const updateFileContent = {} as unknown as Package;
+            const jsonStringifySpy = jest.spyOn(JSON, 'stringify');
+            const writeFileSpy = jest.spyOn(promises, 'writeFile').mockResolvedValue();
+            const pckgPath = join(__dirname, '..', 'test-data', 'json', 'package', 'package-single-space.json');
+            await updatePackageJSON(pckgPath, updateFileContent);
+            expect(jsonStringifySpy).toBeCalledWith(updateFileContent, null, ' ');
+            expect(writeFileSpy).toBeCalledWith(pckgPath, '{}\n', { encoding: 'utf8' });
+        });
+        test('Should update package.json using previous indentation with 2 spaces', async () => {
+            const updateFileContent = {} as unknown as Package;
+            const jsonStringifySpy = jest.spyOn(JSON, 'stringify');
+            const writeFileSpy = jest.spyOn(promises, 'writeFile').mockResolvedValue();
+            const pckgPath = join(__dirname, '..', 'test-data', 'json', 'package', 'package-double-space.json');
+            await updatePackageJSON(pckgPath, updateFileContent);
+            expect(jsonStringifySpy).toBeCalledWith(updateFileContent, null, '  ');
             expect(writeFileSpy).toBeCalledWith(pckgPath, '{}\n', { encoding: 'utf8' });
         });
     });
 
     describe('updateManifestJSON', () => {
-        test('Should update manifest.json using previous indentation', async () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+        test('Should update manifest.json using previous indentation 1 space', async () => {
             const updateFileContent = {} as unknown as Manifest;
-            const spacing = 4;
             const jsonStringifySpy = jest.spyOn(JSON, 'stringify');
             const writeFileSpy = jest.spyOn(promises, 'writeFile').mockResolvedValue();
-            const manifestPath = join(__dirname, '..', 'test-data', 'project', 'info', 'empty-project', 'webapp', 'manifest.json');
+            const manifestPath = join(__dirname, '..', 'test-data', 'json', 'manifest', 'manifest-single-space.json');
             await updateManifestJSON(manifestPath, updateFileContent);
-            expect(jsonStringifySpy).toBeCalledWith(updateFileContent, null, spacing);
-            expect(writeFileSpy).toBeCalledWith(manifestPath, "{}\n", { encoding: 'utf8' });
+            expect(jsonStringifySpy).toBeCalledWith(updateFileContent, null, ' ');
+            expect(writeFileSpy).toBeCalledWith(manifestPath, '{}\n', { encoding: 'utf8' });
+        });
+        test('Should update manifest.json using previous indentation 2 spaces', async () => {
+            const updateFileContent = {} as unknown as Manifest;
+            const jsonStringifySpy = jest.spyOn(JSON, 'stringify');
+            const writeFileSpy = jest.spyOn(promises, 'writeFile').mockResolvedValue();
+            const manifestPath = join(__dirname, '..', 'test-data', 'json', 'manifest', 'manifest-double-space.json');
+            await updateManifestJSON(manifestPath, updateFileContent);
+            expect(jsonStringifySpy).toBeCalledWith(updateFileContent, null, '  ');
+            expect(writeFileSpy).toBeCalledWith(manifestPath, '{}\n', { encoding: 'utf8' });
         });
     });
 });
