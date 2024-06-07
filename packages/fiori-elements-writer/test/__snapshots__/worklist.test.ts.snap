@@ -7248,8 +7248,8 @@ framework:
     - name: sap.m
     - name: sap.ui.core
     - name: sap.fe.templates
-    - name: sap.ushell
     - name: themelib_sap_fiori_3
+    - name: sap.ushell
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -10894,8 +10894,8 @@ framework:
     - name: sap.m
     - name: sap.ui.core
     - name: sap.fe.templates
-    - name: sap.ushell
     - name: themelib_sap_fiori_3
+    - name: sap.ushell
 server:
   customMiddleware:
     - name: fiori-tools-appreload

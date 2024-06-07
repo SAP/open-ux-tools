@@ -3275,8 +3275,8 @@ framework:
     - name: sap.ovp
     - name: sap.ui.rta
     - name: sap.ui.layout
-    - name: sap.ushell
     - name: themelib_sap_fiori_3
+    - name: sap.ushell
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -9214,8 +9214,8 @@ framework:
     - name: sap.ovp
     - name: sap.ui.rta
     - name: sap.ui.layout
-    - name: sap.ushell
     - name: themelib_sap_fiori_3
+    - name: sap.ushell
 server:
   customMiddleware:
     - name: fiori-tools-appreload

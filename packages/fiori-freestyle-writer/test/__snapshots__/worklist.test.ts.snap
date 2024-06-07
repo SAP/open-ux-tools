@@ -16414,8 +16414,8 @@ framework:
     - name: sap.m
     - name: sap.ui.core
     - name: sap.f
-    - name: sap.ushell
     - name: themelib_sap_horizon
+    - name: sap.ushell
 server:
   customMiddleware:
     - name: fiori-tools-appreload

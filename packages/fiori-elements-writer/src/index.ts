@@ -91,11 +91,18 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
         ignore = getTypeScriptIgnoreGlob(feApp, coercedUI5Version);
     }
 
+    // Check if sap.ushell is already in the ui5Libs array
+    const ushellLib = 'sap.ushell';
+    const ui5Libs = Array.isArray(feApp.ui5?.ui5Libs) ? feApp.ui5.ui5Libs : [feApp.ui5?.ui5Libs];
+    if (!ui5Libs.includes(ushellLib)) {
+        ui5Libs.push(ushellLib);
+    }
     fs.copyTpl(
         join(rootTemplatesPath, 'common', 'add', '**/*.*'),
         basePath,
         {
             ...feApp,
+            ui5: { ...feApp.ui5, ui5Libs },
             templateOptions,
             escapeFLPText
         },
@@ -104,6 +111,12 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
             globOptions: { ignore, dot: true }
         }
     );
+
+    // Extend ui5-local.yaml
+    const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
+    const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
+    ui5LocalConfig.addUI5Libs([ushellLib]);
+    fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
 
     // Extend common files
     const packagePath = join(basePath, 'package.json');
