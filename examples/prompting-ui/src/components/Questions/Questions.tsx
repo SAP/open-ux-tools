@@ -6,6 +6,7 @@ import { getDependantQuestions, getDynamicQuestions, updateAnswer, useDynamicQue
 import './Questions.scss';
 import { useRequestedChoices } from '../../utilities';
 import { QuestionGroup } from '../QuestionGroup';
+import { ValidationResults } from '@sap-ux/fe-fpm-writer';
 
 export interface AdditionalQuestionProperties {
     selectType: 'static' | 'dynamic';
@@ -31,8 +32,6 @@ export const enum PromptsLayoutType {
 }
 
 export type IQuestion = (ListQuestion | InputQuestion | CheckboxQuestion) & AdditionalQuestionProperties;
-
-export type ValidationResults = { [questionName: string]: { isValid: boolean; errorMessage?: string } };
 
 export interface QuestionsProps {
     questions: Array<IQuestion>;

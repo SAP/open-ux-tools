@@ -5,17 +5,10 @@ import type {
     CheckboxQuestion as _CheckboxQuestion
 } from 'inquirer';
 import { Input, Select, MultiSelect } from '../Inputs';
-import type { Choice, ValidationResults } from '../Questions';
+import type { AdditionalQuestionProperties, Choice } from '../Questions';
+import { ValidationResults } from '@sap-ux/fe-fpm-writer';
 import { useOptions } from '../../utilities';
 import './Question.scss';
-
-export interface AdditionalQuestionProperties {
-    selectType: 'static' | 'dynamic';
-    dependantPromptNames?: string[];
-    required?: boolean;
-    groupId?: string;
-    additionalInfo?: string;
-}
 
 export type ListQuestion = _ListQuestion & AdditionalQuestionProperties;
 export type InputQuestion = _InputQuestion;
