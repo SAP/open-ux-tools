@@ -1,4 +1,4 @@
-import type { Answers, Question } from 'inquirer';
+import type { Answers as IAnswers, Question } from 'inquirer';
 import type { BuildingBlockType, Chart, FilterBar, Table } from '../types';
 
 export interface PromptsGroup {
@@ -6,6 +6,8 @@ export interface PromptsGroup {
     title: string;
     description: string[];
 }
+
+export type Answers = IAnswers;
 
 export interface Prompts<T extends Answers> {
     questions: Question<T>[];
