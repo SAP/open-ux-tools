@@ -254,8 +254,8 @@ function getPasswordPrompt(
  * Get the service URL questions.
  *
  * @param promptOptions prompt options that can be passed to the service URL questions to configure behaviour
- * @param promptOptions.serviceUrl
- * @param promptOptions.serviceUrlPassword
+ * @param promptOptions.serviceUrl see {@link OdataServicePromptOptions}
+ * @param promptOptions.serviceUrlPassword see {@link OdataServicePromptOptions}
  * @returns the odata service URL questions
  */
 export function getServiceUrlQuestions({

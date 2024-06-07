@@ -94,7 +94,9 @@ export function parseOdataVersion(metadata: string): OdataVersion {
 }
 
 /**
- * Replaces the origin in the metadata URIs with a relative path. Only origins that include a port number are replaced.
+ * Replaces the origin in the metadata URIs with a relative path.
+ * The path will be tested for '/sap/opu/odata/' and if found, the origin will be replaced with './'.
+ * This is to ensure that the metadata URIs are relative and that other non-SAP internal backend URIs are not affected.
  *
  * @param metadata a metadata string containing URIs which include origin (protocol, host, port)
  * @returns the metadata string with URIs replaced with relative paths
@@ -107,7 +109,10 @@ export function originToRelative(metadata: string): string {
     // 4. Match any character except newline characters as few times as possible
     // 5. Match a single colon, indicating the port number of the URL
     // 5. Match a single forward slash, indicating the first path segment of the URL (after the origin)
-    return metadata.replace(new RegExp(/(Uri=")(http|https):\/\/(.*?):(.*?)(\/{1})/, 'g'), `$1./`);
+    return metadata.replace(
+        new RegExp(/(Uri=")(http|https):\/\/(.*?)(\/{1})(sap\/opu\/odata)/, 'g'),
+        `$1./sap/opu/odata`
+    );
 }
 
 export { PromptState };
