@@ -10,8 +10,8 @@ import { t } from '../i18n';
 /**
  * Retrieves the CDS watch script for the CAP app.
  *
- * @param {string} projectName - The name of the project.
- * @param {string} appId - The ID of the app.
+ * @param {string} projectName - The project's name, which is the module name.
+ * @param {string} appId - The application's ID, including its namespace and the module name.
  * @param {boolean} [useNPMWorkspaces] - Whether to use npm workspaces.
  * @returns {{ [x: string]: string }} The CDS watch script for the CAP app.
  */
@@ -24,11 +24,12 @@ export function getCDSWatchScript(
     // projects by default are served base on the folder name in the app/ folder
     // If the project uses npm workspaces (and specifically cds-plugin-ui5 ) then the project is served using the appId including namespace
     const project = useNPMWorkspaces ? appId : projectName + '/webapp';
-    return {
+    const watchScript = {
         [`watch-${projectName}`]: `cds watch --open ${project}/index.html?${DisableCacheParam}${
             useNPMWorkspaces ? ' --livereload false' : ''
         }`
-    };
+    }
+    return watchScript;
 }
 
 /**
@@ -48,8 +49,8 @@ function updatePackageJsonWithScripts(fs: Editor, packageJsonPath: string, scrip
  *
  * @param {Editor} fs - The file system editor.
  * @param {string} packageJsonPath - The path to the package.json file.
- * @param {string} projectName - The name of the project.
- * @param {string} appId - The ID of the app.
+ * @param {string} projectName - The project's name, which is the module name.
+ * @param {string} appId - The application's ID, including its namespace and the module name.
  * @param {boolean} [enableNPMWorkspaces] - Whether to enable npm workspaces.
  * @param {CapServiceCdsInfo} cdsUi5PluginInfo - cds Ui5 plugin info.
  * @param {Logger} [log] - The logger instance for logging warnings.
@@ -64,6 +65,7 @@ async function updateScripts(
     cdsUi5PluginInfo?: CdsUi5PluginInfo,
     log?: Logger
 ): Promise<void> {
+    ///Users/I743583/SAPDevelop/tools-suite/packages/app-generator/fiori/test/test-input/fe-garage-demo/package.json
     const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
     const hasNPMworkspaces = await checkCdsUi5PluginEnabled(packageJsonPath, fs);
     // Determine whether to add cds watch scripts for the app based on the availability of minimum CDS version information.
@@ -85,10 +87,10 @@ async function updateScripts(
  * 2) Adds the cds watch script to the root package.json if applicable.
  *
  * @param {Editor} fs - The file system editor.
- * @param {string} projectName - The name of the project.
+ * @param {string} projectName - The project's name, which is the module name.
  * @param {boolean} sapux - Whether to add the app name to the sapux array.
  * @param {CapServiceCdsInfo} capService - The CAP service instance.
- * @param {string} appId - The ID of the app.
+ * @param {string} appId - The application's ID, including its namespace and the module name.
  * @param {Logger} [log] - The logger instance for logging warnings.
  * @param {boolean} [enableNPMWorkspaces] - Whether to enable npm workspaces.
  * @returns {Promise<void>} A Promise that resolves once the root package.json is updated.
