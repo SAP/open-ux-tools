@@ -13,16 +13,9 @@
     },
     "TEXT_LAUNCH_DEFAULT" : "In order to launch the generated app, simply run the following from the generated app root folder:\n\n```\n    npm start\n```",
     "LABEL_API_BUSINESS_HUB_ENTERPRISE": "SAP API Business Hub Enterprise",
-    "LABEL_SAP_SYSTEM_SOURCE_TYPE_SCP": "ABAP Environment on SAP Business Technology Platform",
-    "LABEL_SAP_SYSTEM_SOURCE_TYPE_S4HC": "SAP S/4HANA Cloud Environment",
-    "LABEL_SAP_SYSTEM_SOURCE_TYPE_ON_PREM": "ABAP On Premise",
     "README_LABEL_DATASOURCE_TYPE_sapSystem": "SAP System",
-    "README_LABEL_DATASOURCE_TYPE_buinessHub": "SAP Business Accelerator Hub",
-    "README_LABEL_DATASOURCE_TYPE_capProject": "Local Cap",
-    "README_LABEL_DATASOURCE_TYPE_odataServiceUrl": "OData Url",
     "README_LABEL_DATASOURCE_TYPE_none": "None",
-    "README_LABEL_DATASOURCE_TYPE_metadataFile": "File",
-    "README_LABEL_DATASOURCE_TYPE_projectSpecificDestination": "MTA File",
+    "LABEL_SAP_SYSTEM_SOURCE_TYPE_ON_PREM": "ABAP On Premise",
+    "README_LABEL_DATASOURCE_TYPE_capProject": "Local Cap",
     "TEXT_LAUNCH_CAP": "In order to launch the generated app, simply start your CAP project{{mvnCommand}} and navigate to the following location in your browser:\n\n{{- capUrl}}"
-    
 }
