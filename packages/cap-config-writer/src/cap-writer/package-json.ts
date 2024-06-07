@@ -20,7 +20,7 @@ export function getCDSWatchScript(
 ): { [x: string]: string } {
     const DisableCacheParam = 'sap-ui-xx-viewCache=false';
     // projects by default are served base on the folder name in the app/ folder
-    const project = appId ? appId : projectName + '/webapp';
+    const project = appId ?? projectName + '/webapp';
     const watchScript = {
         [`watch-${projectName}`]: `cds watch --open ${project}/index.html?${DisableCacheParam}${
             appId ? ' --livereload false' : ''
