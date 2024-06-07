@@ -82,13 +82,13 @@ describe('Test enableCdsUi5Plugin()', () => {
 describe('Test checkCdsUi5PluginEnabled()', () => {
     test('Empty project should return false', async () => {
         expect(await checkCdsUi5PluginEnabled(__dirname)).toBe(false);
-        expect(await checkCdsUi5PluginEnabled(__dirname, undefined, undefined, true)).toBe(false);
+        expect(await checkCdsUi5PluginEnabled(__dirname, undefined, true)).toBe(false);
     });
 
     test('CAP project with valid cds-plugin-ui', async () => {
         expect(await checkCdsUi5PluginEnabled(join(fixturesPath, 'cap-valid-cds-plugin-ui'))).toBe(true);
         expect(
-            await checkCdsUi5PluginEnabled(join(fixturesPath, 'cap-valid-cds-plugin-ui'), undefined, undefined, true)
+            await checkCdsUi5PluginEnabled(join(fixturesPath, 'cap-valid-cds-plugin-ui'), undefined, true)
         ).toEqual({
             hasCdsUi5Plugin: true,
             hasMinCdsVersion: true,
@@ -105,7 +105,7 @@ describe('Test checkCdsUi5PluginEnabled()', () => {
             workspaces: []
         });
         expect(await checkCdsUi5PluginEnabled(__dirname, memFs)).toBe(false);
-        expect(await checkCdsUi5PluginEnabled(__dirname, memFs, undefined, true)).toEqual({
+        expect(await checkCdsUi5PluginEnabled(__dirname, memFs, true)).toEqual({
             hasCdsUi5Plugin: true,
             hasMinCdsVersion: true,
             isCdsUi5PluginEnabled: false,
@@ -121,7 +121,7 @@ describe('Test checkCdsUi5PluginEnabled()', () => {
             workspaces: {}
         });
         expect(await checkCdsUi5PluginEnabled(__dirname, memFs)).toBe(false);
-        expect(await checkCdsUi5PluginEnabled(__dirname, memFs, undefined, true)).toEqual({
+        expect(await checkCdsUi5PluginEnabled(__dirname, memFs, true)).toEqual({
             hasCdsUi5Plugin: true,
             hasMinCdsVersion: true,
             isCdsUi5PluginEnabled: false,
@@ -139,7 +139,7 @@ describe('Test checkCdsUi5PluginEnabled()', () => {
             }
         });
         expect(await checkCdsUi5PluginEnabled(__dirname, memFs)).toBe(true);
-        expect(await checkCdsUi5PluginEnabled(__dirname, memFs, undefined, true)).toEqual({
+        expect(await checkCdsUi5PluginEnabled(__dirname, memFs, true)).toEqual({
             hasCdsUi5Plugin: true,
             hasMinCdsVersion: true,
             isCdsUi5PluginEnabled: true,
@@ -162,7 +162,7 @@ describe('Test checkCdsUi5PluginEnabled()', () => {
             root: '/path/root'
         };
         expect(await checkCdsUi5PluginEnabled(__dirname, memFs)).toBe(true);
-        expect(await checkCdsUi5PluginEnabled(__dirname, memFs, cdsVersionInfo, true)).toEqual({
+        expect(await checkCdsUi5PluginEnabled(__dirname, memFs, true, cdsVersionInfo)).toEqual({
             hasCdsUi5Plugin: true,
             hasMinCdsVersion: true,
             isCdsUi5PluginEnabled: true,
