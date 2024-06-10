@@ -2,7 +2,7 @@ import { join, dirname, sep } from 'path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { updateManifest, updatePackageJson, updateCdsFilesWithAnnotations, writeAnnotationXmlFiles, serviceIsCds, isCdsAnnotationsObject } from './updates';
+import { updateManifest, updatePackageJson, updateCdsFilesWithAnnotations, writeAnnotationXmlFiles, serviceIsCds } from './updates';
 import type { FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
 import { UI5Config, yamlErrorCode, YAMLError } from '@sap-ux/ui5-config';
 import prettifyXml from 'prettify-xml';
@@ -76,8 +76,8 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     const templateRoot = join(__dirname, '../templates');
 
     // update cds files with annotations only if service type is CDS and annotations are provided
-    if (serviceIsCds(service) && isCdsAnnotationsObject(service.annotations)) {
-        await updateCdsFilesWithAnnotations(service.annotations, fs);
+    if (serviceIsCds(service) && service.annotations) {
+        await updateCdsFilesWithAnnotations(service.annotations as CdsAnnotationsInfo, fs);
     }
     // manifest.json
     updateManifest(basePath, service, fs, templateRoot);
@@ -134,7 +134,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
 
         // Adds local annotations to datasources section of manifest.json and writes the annotations file
         if (service.localAnnotationsName) {
-            const namespaces = getAnnotationNamespaces(service);
+            const namespaces = getAnnotationNamespaces(service.metadata, service.annotations as EdmxAnnotationsInfo);
             fs.copyTpl(
                 join(templateRoot, 'add', 'annotation.xml'),
                 join(basePath, 'webapp', 'annotations', `${service.localAnnotationsName}.xml`),

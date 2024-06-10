@@ -25,32 +25,6 @@ export function serviceIsCds(service: OdataService): boolean {
 }
 
 /**
-* Type guard to check if an object is of type CdsAnnotationsInfo.
-* 
-* @param {any} obj - The object to check.
-* @returns {obj is CdsAnnotationsInfo} - True if the object is CdsAnnotationsInfo, false otherwise.
-*/
-export function isCdsAnnotationsObject(obj: any): obj is CdsAnnotationsInfo {
-    return obj &&
-        typeof obj.cdsFileContents === 'string' &&
-        typeof obj.projectPath === 'string' &&
-        typeof obj.appPath === 'string' &&
-        typeof obj.projectName === 'string';
-}
- 
-/**
-  * Type guard to check if an object is of type EdmxAnnotationsInfo.
-  * 
-  * @param {any} obj - The object to check.
-  * @returns {obj is EdmxAnnotationsInfo} - True if the object is EdmxAnnotationsInfo, false otherwise.
-*/
-export function isEdmxAnnotationsObject(obj: any): obj is EdmxAnnotationsInfo {
-     return obj &&
-         typeof obj.technicalName === 'string' &&
-         typeof obj.xml === 'string';
-}
-
-/**
  * Internal function that updates the manifest.json based on the given service configuration.
  *
  * @param basePath - the root path of an existing UI5 application

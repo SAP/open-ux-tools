@@ -1,4 +1,4 @@
-import type { OdataService, CdsAnnotationsInfo } from '../src/types';
+import type { OdataService } from '../src/types';
 import { OdataVersion, ServiceType } from '../src/types';
 import { generate } from '../src';
 import { join } from 'path';
@@ -88,39 +88,5 @@ describe('ODataService templates', () => {
         const testDir = await createTestDir('local-annotations');
         await generate(testDir, serviceConfigWithAnnotations, fs);
         expect(fs.dump(testDir)).toMatchSnapshot();
-    });
-
-    it('generate: Ensure no cds files are generated in cds projects when annotations are not of cds type', async () => {
-        const serviceConfigWithAnnotations: OdataService = {
-            ...validServiceConfig,
-            type: ServiceType.CDS,
-            annotations: {} as unknown as CdsAnnotationsInfo
-        };
-
-        const testDir = await createTestDir('local-annotations');
-        await generate(testDir, serviceConfigWithAnnotations, fs);
-        const fileDump = fs.dump(testDir);
-        expect(fileDump["../../../projectPath/appPath/projectName/annotations.cds"]).not.toBeDefined();
-        expect(fileDump["../../../projectPath/appPath/services.cds"]).not.toBeDefined();
-    });
-
-    it('generate: Ensure cds files generated in cds projects when cds type annotations are provided', async () => {
-        const CdsAnnotationsInfo = {
-            cdsFileContents: `using AdminService as service from '../../srv/admin-service'`,
-            projectPath: 'projectPath',
-            appPath: 'appPath',
-            projectName: 'projectName'
-        };
-        const serviceConfigWithAnnotations: OdataService = {
-            ...validServiceConfig,
-            type: ServiceType.CDS,
-            annotations: CdsAnnotationsInfo
-        };
-
-        const testDir = await createTestDir('local-annotations');
-        await generate(testDir, serviceConfigWithAnnotations, fs);
-        const fileDump = fs.dump(testDir);
-        expect(fileDump["../../../projectPath/appPath/projectName/annotations.cds"]).toBeDefined();
-        expect(fileDump["../../../projectPath/appPath/services.cds"]).toBeDefined();
     });
 });
