@@ -184,7 +184,7 @@ export function registerSAPFonts() {
  *
  * @param scenario scenario to be used for the resource bundle.
  */
-async function loadI18nResourceBundle(scenario: string): Promise<ResourceBundle> {
+export async function loadI18nResourceBundle(scenario: string): Promise<ResourceBundle> {
     if (scenario === 'ADAPTATION_PROJECT') {
         const manifest = await getManifestAppdescr();
         const enhanceWith = (manifest.content as { texts: { i18n: string } }[])
@@ -291,7 +291,7 @@ export async function init({
     }
 
     // init
-    const resourceBundle = await loadI18nResourceBundle(scenario);
+    const resourceBundle = await loadI18nResourceBundle(scenario ?? '');
     setI18nTitle(resourceBundle);
     registerSAPFonts();
     const renderer = await container.createRenderer(undefined, true);

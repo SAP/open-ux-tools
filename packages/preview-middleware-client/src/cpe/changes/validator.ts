@@ -1,6 +1,6 @@
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import ResourceModel from 'sap/ui/model/resource/ResourceModel';
-import UI5Element from 'sap/ui/core/Element';
+import type UI5Element from 'sap/ui/core/Element';
 
 /**
  * Function to validate if a given value is a valid binding model.
