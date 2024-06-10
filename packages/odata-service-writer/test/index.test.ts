@@ -7,7 +7,6 @@ import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { readFile, removeSync } from 'fs-extra';
 import { UI5Config } from '@sap-ux/ui5-config';
-import exp from 'constants';
 
 describe('ODataService templates', () => {
     const debug = !!process.env['UX_DEBUG'];
