@@ -1,37 +1,33 @@
 import { join } from 'path';
-import {
-    getBuildingBlockTypePrompts,
-    getChartBuildingBlockPrompts,
-    getFilterBarBuildingBlockPrompts,
-    getTableBuildingBlockPrompts
-} from '../../../src';
+import { PromptsAPI } from '../../../src';
 import ProjectProvider from '../../../src/building-block/utils/project';
 
 describe('Prompts', () => {
     const fs = jest.fn() as any;
+    let promptsAPI: PromptsAPI;
     beforeAll(async () => {
-        const projectProvider = await ProjectProvider.createProject(
-            join(__dirname, '../sample/building-block/webapp-prompts')
-        );
+        const projectPath = join(__dirname, '../sample/building-block/webapp-prompts');
+        const projectProvider = await ProjectProvider.createProject(projectPath);
         jest.spyOn(ProjectProvider, 'createProject').mockResolvedValue(projectProvider);
+        promptsAPI = await PromptsAPI.init(projectPath);
     });
     test('getBuildingBlockTypePrompts', async () => {
-        const questionnair = await getBuildingBlockTypePrompts();
+        const questionnair = await promptsAPI.getBuildingBlockTypePrompts();
         expect(questionnair).toMatchSnapshot();
     });
 
     test('getChartBuildingBlockPrompts', async () => {
-        const questionnair = await getChartBuildingBlockPrompts('', fs);
+        const questionnair = await promptsAPI.getChartBuildingBlockPrompts(fs);
         expect(questionnair).toMatchSnapshot();
     });
 
     test('getFilterBarBuildingBlockPrompts', async () => {
-        const questionnair = await getFilterBarBuildingBlockPrompts('', fs);
+        const questionnair = await promptsAPI.getFilterBarBuildingBlockPrompts(fs);
         expect(questionnair).toMatchSnapshot();
     });
 
     test('getTableBuildingBlockPrompts', async () => {
-        const questionnair = await getTableBuildingBlockPrompts('', fs);
+        const questionnair = await promptsAPI.getTableBuildingBlockPrompts(fs);
         expect(questionnair).toMatchSnapshot();
     });
 });
