@@ -4,6 +4,7 @@ import type Dialog from 'sap/m/Dialog';
 /** sap.ui.core */
 import Fragment from 'sap/ui/core/Fragment';
 import UI5Element from 'sap/ui/core/Element';
+import Component from 'sap/ui/core/Component'
 
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
@@ -85,7 +86,6 @@ export const isReuseComponent = (clickedControlId: string): boolean => {
         return false;
     }
 
-    const Component = sap.ui.require('sap/ui/core/Component');
     const component = Component.getComponentById(clickedControlId);
     if (!component) {
         return false;
