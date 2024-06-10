@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.10.19
+
+### Patch Changes
+
+-   98b5aaee: Add new model writer has misspelled property that breaks the validation of the change
+
 ## 0.10.18
 
 ### Patch Changes

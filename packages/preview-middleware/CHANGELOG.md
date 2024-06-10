@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.13.60
+
+### Patch Changes
+
+-   98b5aaee: Add new model writer has misspelled property that breaks the validation of the change
+-   Updated dependencies [98b5aaee]
+    -   @sap-ux/adp-tooling@0.10.19
+
 ## 0.13.59
 
 ### Patch Changes
