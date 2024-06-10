@@ -1,6 +1,7 @@
 import { XMLParser } from 'fast-xml-parser';
 import { t } from '../i18n';
 import type { NamespaceAlias, OdataService, EdmxAnnotationsInfo } from '../types';
+import { isEdmxAnnotationsObject } from '../updates';
 
 /**
  * Returns the namespaces parsed from the specified metadata and annotations.
@@ -13,15 +14,14 @@ import type { NamespaceAlias, OdataService, EdmxAnnotationsInfo } from '../types
 export function getAnnotationNamespaces({ metadata, annotations }: Partial<OdataService>): NamespaceAlias[] {
     // Enhance service with annotations namespaces
     const schemaNamespaces = metadata ? getNamespaces(metadata) : [];
-    const edmxAnnotations = annotations as EdmxAnnotationsInfo;
-    if (edmxAnnotations?.xml) {
+    if (isEdmxAnnotationsObject(annotations) && annotations?.xml) {
         // Parse once
-        const annotationsJson: Object = xmlToJson(edmxAnnotations.xml);
+        const annotationsJson: Object = xmlToJson(annotations.xml);
 
         return schemaNamespaces.map((schema: NamespaceAlias) => {
             // Check if alias exists in backend annotation file, if so use it
             const annotationAlias = 
-            edmxAnnotations.xml && schema.namespace 
+            annotations.xml && schema.namespace 
             ? getAliasFromAnnotation(annotationsJson, schema.namespace) 
             : '';
             if (annotationAlias) {
