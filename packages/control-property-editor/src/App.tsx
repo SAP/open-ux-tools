@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { UIDialog, UILink, UIToggle } from '@sap-ux/ui-components';
 import type { Scenario, ShowMessage } from '@sap-ux-private/control-property-editor-common';
-import { PropertiesPanel, LeftPanel, PropertiesList } from './panels';
+import { LeftPanel, PropertiesList } from './panels';
 import { Toolbar } from './toolbar';
 import { useLocalStorage } from './use-local-storage';
 import type { RootState } from './store';
