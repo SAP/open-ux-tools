@@ -49,7 +49,7 @@ export default class LoggerHelper {
             },
             (error) => {
                 return AxiosLogger.errorLogger(error, {
-                    logger: LoggerHelper.logger.debug.bind(this)
+                    logger: LoggerHelper.logger.debug
                 });
             }
         );
@@ -60,12 +60,12 @@ export default class LoggerHelper {
                     prefixText: '@sap-ux/odata-service-inquirer',
                     status: true,
                     headers: true,
-                    logger: LoggerHelper.logger.debug.bind(this)
+                    logger: LoggerHelper.logger.debug
                 });
             },
             (err) => {
                 return AxiosLogger.errorLogger(err, {
-                    logger: LoggerHelper.logger.debug.bind(this)
+                    logger: LoggerHelper.logger.debug
                 });
             }
         );

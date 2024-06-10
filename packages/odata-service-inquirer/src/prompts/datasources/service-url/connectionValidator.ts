@@ -7,7 +7,6 @@ import https from 'https';
 import LoggerHelper from '../../logger-helper';
 import type { AxiosRequestConfig, ODataService, ProviderConfiguration } from '@sap-ux/axios-extension';
 import { createServiceForUrl } from '@sap-ux/axios-extension';
-import { SAP_CLIENT_KEY } from '../../../types';
 
 /**
  * Structure to store validity information about url to be validated.
@@ -81,28 +80,27 @@ export class ConnectionValidator {
             if (ignoreCertError === true) {
                 this.setRejectUnauthorized(!ignoreCertError);
             }
+            if (isBAS) {
+                url.searchParams.append('saml2', 'disabled');
+            }
 
-            const provideConfig: ProviderConfiguration = {
+            let axiosConfig: AxiosRequestConfig & ProviderConfiguration = {
+                params: url.searchParams,
                 ignoreCertErrors: ignoreCertError,
                 cookies: ''
             };
-            let axiosConfig: AxiosRequestConfig = {};
 
             if (username && password) {
-                axiosConfig = {
+                axiosConfig = Object.assign(axiosConfig, {
                     auth: {
                         username,
                         password
                     }
-                };
+                });
             }
 
-            if (isBAS) {
-                axiosConfig.params.saml2 = 'disabled';
-            }
-
-            this._axiosConfig = Object.assign(axiosConfig, provideConfig);
-            this._odataService = createServiceForUrl(url.toString(), this._axiosConfig);
+            this._axiosConfig = axiosConfig;
+            this._odataService = createServiceForUrl(url.origin + url.pathname, this._axiosConfig);
             LoggerHelper.attachAxiosLogger(this._odataService.interceptors);
             await this._odataService.get('');
             return 200;
@@ -160,23 +158,27 @@ export class ConnectionValidator {
                 this.validity.authRequired = false;
             } else if (status === 404) {
                 this.validity.reachable = false;
-                return ErrorHandler.getErrorMsgFromType(ERROR_TYPE.ODATA_URL_NOT_FOUND) ?? false;
+                return ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NOT_FOUND) ?? false;
             } else if (ErrorHandler.isCertError(status)) {
-                this.validity.reachable = false;
+                this.validity.reachable = true;
                 this.validity.canSkipCertError = ignorableCertErrors.includes(ErrorHandler.getErrorType(status));
                 return errorHandler.getValidationErrorHelp(status, false) ?? false;
             } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.AUTH) {
+                this.validity.reachable = true;
                 this.validity.authRequired = true;
             } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.REDIRECT) {
-                return t('error.urlRedirect');
+                this.validity.reachable = true;
+                return t('errors.urlRedirect');
             } else if (status !== 404) {
+                this.validity.reachable = false;
                 return ErrorHandler.getErrorMsgFromType(ERROR_TYPE.CONNECTION, `http code: ${status}`) ?? false;
             }
-            this.validity.reachable = status !== 404;
-            return this.validity.reachable;
+            this.validity.reachable = true;
+            return true;
         } catch (error) {
             // More helpful context specific error
             if (ErrorHandler.getErrorType(error) === ERROR_TYPE.CONNECTION) {
+                this.validity.reachable = false;
                 return errorHandler.logErrorMsgs(t('errors.serviceUrlNotFound', { url: serviceUrl }));
             }
 
@@ -245,7 +247,6 @@ export class ConnectionValidator {
      * @param serviceUrl optional, the service url to validate, the previously validated url will be used if not provided
      * @param username user name
      * @param password password
-     * @param client optional, sap client code
      * @param ignoreCertError optional, ignore some certificate errors
      * @returns true if the authentication is successful, false if not, or an error message string
      */
@@ -253,7 +254,6 @@ export class ConnectionValidator {
         serviceUrl = this._validatedUrl,
         username: string,
         password: string,
-        client?: string,
         ignoreCertError = false
     ): Promise<boolean | string> {
         if (!serviceUrl) {
@@ -264,9 +264,6 @@ export class ConnectionValidator {
         }
         try {
             const url = new URL(serviceUrl);
-            if (client) {
-                url.searchParams.append(SAP_CLIENT_KEY, client);
-            }
             this.validity.authenticated =
                 (await this.checkSapService(url, username, password, ignoreCertError)) === 200;
             return this.validity.authenticated === true ? true : t('errors.authenticationFailed');

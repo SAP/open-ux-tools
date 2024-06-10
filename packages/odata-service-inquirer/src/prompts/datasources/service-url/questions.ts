@@ -235,13 +235,7 @@ function getPasswordPrompt(
             if (!serviceUrl || !username || !password) {
                 return false;
             }
-            const validAuth = await connectValidator.validateAuth(
-                serviceUrl,
-                username,
-                password,
-                undefined,
-                ignoreCertError
-            );
+            const validAuth = await connectValidator.validateAuth(serviceUrl, username, password, ignoreCertError);
             if (validAuth === true) {
                 return validateService(serviceUrl, requiredVersion, connectValidator);
             }
