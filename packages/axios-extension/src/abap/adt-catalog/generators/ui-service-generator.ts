@@ -1,4 +1,3 @@
-import type { Logger } from '@sap-ux/logger';
 import type { GeneratorEntry } from './types';
 import type { BusinessObject } from '../../types';
 import { AdtService } from '../services';
@@ -7,8 +6,6 @@ import { AdtService } from '../services';
  *
  */
 export class UiServiceGenerator extends AdtService {
-    public log: Logger;
-
     protected bo!: BusinessObject;
 
     /**
