@@ -77,7 +77,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
 
     // update cds files with annotations only if service type is CDS and annotations are provided
     if (serviceIsCds(service) && isCdsAnnotationsObject(service.annotations)) {
-        await updateCdsFilesWithAnnotations(service.annotations as CdsAnnotationsInfo, fs);
+        await updateCdsFilesWithAnnotations(service.annotations, fs);
     }
     // manifest.json
     updateManifest(basePath, service, fs, templateRoot);

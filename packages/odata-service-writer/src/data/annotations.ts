@@ -1,6 +1,6 @@
 import { XMLParser } from 'fast-xml-parser';
 import { t } from '../i18n';
-import type { NamespaceAlias, OdataService, EdmxAnnotationsInfo } from '../types';
+import type { NamespaceAlias, OdataService } from '../types';
 import { isEdmxAnnotationsObject } from '../updates';
 
 /**
