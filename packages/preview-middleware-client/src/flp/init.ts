@@ -188,10 +188,8 @@ export async function loadI18nResourceBundle(scenario: string): Promise<Resource
     if (scenario === 'ADAPTATION_PROJECT') {
         const manifest = await getManifestAppdescr();
         const enhanceWith = (manifest.content as { texts: { i18n: string } }[])
-            .filter((content) => !!content.texts?.i18n)
-            .map((content) => {
-                return { bundleUrl: `../${content.texts.i18n}` };
-            });
+            .filter((content) => content.texts?.i18n)
+            .map((content) => ({ bundleUrl: `../${content.texts.i18n}` }));
         return ResourceBundle.create({
             url: '../i18n/i18n.properties',
             enhanceWith
