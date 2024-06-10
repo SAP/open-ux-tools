@@ -1,18 +1,11 @@
-import {
-    BuildingBlockType,
-    generateBuildingBlock,
-    getBuildingBlockTypePrompts,
-    getFilterBarBuildingBlockPrompts,
-    getTableBuildingBlockPrompts,
-    getChartBuildingBlockPrompts
-} from '@sap-ux/fe-fpm-writer';
+import { BuildingBlockType, PromptsAPI } from '@sap-ux/fe-fpm-writer';
 import type { FilterBarPromptsAnswer, ChartPromptsAnswer, BuildingBlockTypePromptsAnswer } from '@sap-ux/fe-fpm-writer';
 import type { TablePromptsAnswer } from '@sap-ux/fe-fpm-writer/src/building-block/prompts';
 import inquirer from 'inquirer';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { join, relative } from 'path';
+import { join } from 'path';
 import { promisify } from 'util';
 
 const sampleAppPath = join(__dirname, '../sample/fe-app');
@@ -40,27 +33,13 @@ async function initialize(): Promise<Editor> {
  */
 export async function generateFilterBarBuildingBlock(fs: Editor): Promise<Editor> {
     const basePath = testAppPath;
-
+    const promptsAPI = await PromptsAPI.init(basePath);
     const answers: FilterBarPromptsAnswer = (await inquirer.prompt(
         (
-            await getFilterBarBuildingBlockPrompts(basePath, fs)
+            await promptsAPI.getFilterBarBuildingBlockPrompts(fs)
         ).questions
     )) as FilterBarPromptsAnswer;
-    const { aggregationPath, viewOrFragmentFile, qualifier } = answers;
-
-    answers.metaPath = qualifier;
-    fs = generateBuildingBlock<FilterBarPromptsAnswer>(
-        basePath,
-        {
-            aggregationPath,
-            viewOrFragmentPath: relative(basePath, viewOrFragmentFile),
-            buildingBlockData: {
-                ...answers,
-                buildingBlockType: BuildingBlockType.FilterBar
-            }
-        },
-        fs
-    );
+    fs = promptsAPI.generateBuildingBlockWithAnswers<FilterBarPromptsAnswer>(BuildingBlockType.FilterBar, answers);
     return fs;
 }
 
@@ -72,41 +51,13 @@ export async function generateFilterBarBuildingBlock(fs: Editor): Promise<Editor
  */
 export async function generateChartBuildingBlock(fs: Editor): Promise<Editor> {
     const basePath = testAppPath;
-
+    const promptsAPI = await PromptsAPI.init(basePath);
     const answers: ChartPromptsAnswer = (await inquirer.prompt(
         (
-            await getChartBuildingBlockPrompts(basePath, fs)
+            await promptsAPI.getChartBuildingBlockPrompts(fs)
         ).questions
     )) as ChartPromptsAnswer;
-
-    const { aggregationPath, viewOrFragmentFile, entity, qualifier, bindingContextType } = answers;
-
-    const entityPath = entity.lastIndexOf('.') >= 0 ? entity?.substring?.(entity.lastIndexOf('.') + 1) : entity;
-    let navigationProperty = qualifier.substring(0, qualifier.indexOf('@'));
-    const _chartQualifier = qualifier.substring(qualifier.indexOf('@'));
-
-    if (bindingContextType === 'relative') {
-        answers.metaPath = navigationProperty ? `${navigationProperty}${_chartQualifier}` : _chartQualifier;
-    } else {
-        if (navigationProperty) {
-            navigationProperty = `/${navigationProperty}`;
-        }
-        answers.contextPath = entityPath ? `/${entityPath}${navigationProperty}` : '';
-        answers.metaPath = _chartQualifier;
-    }
-
-    fs = generateBuildingBlock<ChartPromptsAnswer>(
-        basePath,
-        {
-            aggregationPath,
-            viewOrFragmentPath: relative(basePath, viewOrFragmentFile),
-            buildingBlockData: {
-                ...answers,
-                buildingBlockType: BuildingBlockType.Chart
-            }
-        },
-        fs
-    );
+    fs = promptsAPI.generateBuildingBlockWithAnswers<ChartPromptsAnswer>(BuildingBlockType.Chart, answers);
     return fs;
 }
 /**
@@ -117,49 +68,24 @@ export async function generateChartBuildingBlock(fs: Editor): Promise<Editor> {
  */
 export async function generateTableBuildingBlock(fs: Editor): Promise<Editor> {
     const basePath = testAppPath;
-
+    const promptsAPI = await PromptsAPI.init(basePath);
     const answers: TablePromptsAnswer = (await inquirer.prompt(
         (
-            await getTableBuildingBlockPrompts(basePath, fs)
+            await promptsAPI.getTableBuildingBlockPrompts(fs)
         ).questions
     )) as TablePromptsAnswer;
-
-    const { aggregationPath, viewOrFragmentFile, entity, qualifier, bindingContextType } = answers;
-
-    const entityPath = entity.lastIndexOf('.') >= 0 ? entity?.substring?.(entity.lastIndexOf('.') + 1) : entity;
-    let navigationProperty = qualifier.substring(0, qualifier.indexOf('@'));
-    const _lineItemQualifier = qualifier.substring(qualifier.indexOf('@'));
-
-    if (bindingContextType === 'relative') {
-        answers.metaPath = navigationProperty ? `${navigationProperty}${_lineItemQualifier}` : _lineItemQualifier;
-    } else {
-        if (navigationProperty) {
-            navigationProperty = `/${navigationProperty}`;
-        }
-        answers.contextPath = entityPath ? `/${entityPath}${navigationProperty}` : '';
-        answers.metaPath = _lineItemQualifier;
-    }
-
-    fs = generateBuildingBlock<TablePromptsAnswer>(
-        basePath,
-        {
-            aggregationPath,
-            viewOrFragmentPath: relative(basePath, viewOrFragmentFile),
-            buildingBlockData: {
-                ...answers,
-                buildingBlockType: BuildingBlockType.Table
-            }
-        },
-        fs
-    );
+    fs = promptsAPI.generateBuildingBlockWithAnswers<TablePromptsAnswer>(BuildingBlockType.Table, answers);
     return fs;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 (async () => {
     try {
+        const promptsAPI = await PromptsAPI.init(sampleAppPath);
         let fs = await initialize();
-        const answers: BuildingBlockTypePromptsAnswer = await inquirer.prompt(await getBuildingBlockTypePrompts());
+        const answers: BuildingBlockTypePromptsAnswer = await inquirer.prompt(
+            await promptsAPI.getBuildingBlockTypePrompts()
+        );
 
         switch (answers.buildingBlockType) {
             case BuildingBlockType.Chart:

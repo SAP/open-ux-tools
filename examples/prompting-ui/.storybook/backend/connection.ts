@@ -1,11 +1,5 @@
 import { join } from 'path';
-import {
-    getTableBuildingBlockPrompts,
-    getChartBuildingBlockPrompts,
-    getFilterBarBuildingBlockPrompts,
-    getBuildingBlockChoices,
-    validateAnswers
-} from '@sap-ux/fe-fpm-writer';
+import { PromptsAPI } from '@sap-ux/fe-fpm-writer';
 import { promisify } from 'util';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
@@ -28,7 +22,6 @@ import {
     SetValidationResults
 } from '../../stories/utils/types';
 import { Actions, GET_CODE_SNIPPET, ResetAnswers, SetChoices, GetChoices } from '../../stories/utils/types';
-import { fpmWriterApi, getSerializeContent } from './writerApi';
 import { AddonActions } from '../addons/types';
 import { handleAction as handleAddonAction } from '../addons/project';
 import { existsSync } from 'fs';
@@ -103,8 +96,9 @@ export const validateProject = async (): Promise<string | undefined> => {
     try {
         const fs = await getEditor(true);
         const currentAppPath = getProjectPath();
+        const promptsAPI = await PromptsAPI.init(currentAppPath);
         // Call API to get table questions - it should validate of path is supported
-        const { groups, questions } = await getTableBuildingBlockPrompts(currentAppPath, fs);
+        const { groups, questions } = await promptsAPI.getTableBuildingBlockPrompts(fs);
         const entityQuestion = questions.find((question) => question.name === 'entity');
         if (entityQuestion && 'choices' in entityQuestion && typeof entityQuestion.choices === 'function') {
             await entityQuestion.choices();
@@ -118,19 +112,20 @@ async function handleAction(action: Actions): Promise<void> {
     try {
         let fs = await getEditor();
         let currentAppPath = getProjectPath();
+        const promptsAPI = await PromptsAPI.init(currentAppPath);
         switch (action.type) {
             case GET_QUESTIONS: {
                 let responseAction: Actions | undefined;
                 if (action.value === SupportedBuildingBlocks.Table) {
-                    const { groups, questions } = await getTableBuildingBlockPrompts(currentAppPath, fs);
+                    const { groups, questions } = await promptsAPI.getTableBuildingBlockPrompts(fs);
                     // Post processing
                     responseAction = { type: SET_TABLE_QUESTIONS, questions, groups };
                 } else if (action.value === SupportedBuildingBlocks.Chart) {
-                    const { groups, questions } = await getChartBuildingBlockPrompts(currentAppPath, fs);
+                    const { groups, questions } = await promptsAPI.getChartBuildingBlockPrompts(fs);
                     // Post processing
                     responseAction = { type: SET_CHART_QUESTIONS, questions, groups };
                 } else if (action.value === SupportedBuildingBlocks.FilterBar) {
-                    const { groups, questions } = await getFilterBarBuildingBlockPrompts(currentAppPath, fs);
+                    const { groups, questions } = await promptsAPI.getFilterBarBuildingBlockPrompts(fs);
                     // Post processing
                     responseAction = { type: SET_FILTERBAR_QUESTIONS, questions, groups };
                 }
@@ -143,7 +138,7 @@ async function handleAction(action: Actions): Promise<void> {
                 const { names, buildingBlockType, answers } = action as GetChoices;
                 const result: DynamicChoices = {};
                 for (const name of names) {
-                    const choices = await getBuildingBlockChoices(
+                    const choices = await promptsAPI.getBuildingBlockChoices(
                         buildingBlockType as any,
                         name,
                         answers,
@@ -161,7 +156,7 @@ async function handleAction(action: Actions): Promise<void> {
             }
             case APPLY_ANSWERS: {
                 const { answers, buildingBlockType /*, projectRoot */ } = action;
-                const _fs = fpmWriterApi(buildingBlockType as any, answers as any, currentAppPath, fs);
+                const _fs = promptsAPI.generateBuildingBlockWithAnswers(buildingBlockType, answers);
                 console.log(currentAppPath);
                 await promisify(_fs.commit).call(_fs);
                 const responseAction: ResetAnswers = {
@@ -192,7 +187,7 @@ async function handleAction(action: Actions): Promise<void> {
                     }
                     fs = await getEditor(true);
                     // Call API to get table questions - it should validate of path is supported
-                    const { groups, questions } = await getTableBuildingBlockPrompts(currentAppPath, fs);
+                    const { groups, questions } = await promptsAPI.getTableBuildingBlockPrompts(fs);
                     const entityQuestion = questions.find((question) => question.name === 'entity');
                     if (entityQuestion && 'choices' in entityQuestion && typeof entityQuestion.choices === 'function') {
                         await entityQuestion.choices();
@@ -212,12 +207,7 @@ async function handleAction(action: Actions): Promise<void> {
             }
             case GET_CODE_SNIPPET: {
                 const { answers, buildingBlockType /*, projectRoot */ } = action;
-                const codeSnippet = await getSerializeContent(
-                    buildingBlockType as any,
-                    answers as any,
-                    currentAppPath,
-                    fs
-                );
+                const codeSnippet = promptsAPI.getCodeSnippet(buildingBlockType, answers);
                 const responseAction: UpdateCodeSnippet = {
                     type: UPDATE_CODE_SNIPPET,
                     buildingBlockType,
@@ -229,9 +219,7 @@ async function handleAction(action: Actions): Promise<void> {
             }
             case VALIDATE_ANSWERS: {
                 const fs = await getEditor(true);
-                const currentAppPath = getProjectPath();
-                const validationResult = await validateAnswers(
-                    currentAppPath,
+                const validationResult = await promptsAPI.validateAnswers(
                     fs,
                     action.questions,
                     action.answers,
