@@ -40,7 +40,7 @@ export class NewModelWriter implements IWriter<NewModelData> {
                     uri: service.uri,
                     type: 'OData',
                     settings: {
-                        version: service.version
+                        odataVersion: service.version
                     }
                 }
             },
