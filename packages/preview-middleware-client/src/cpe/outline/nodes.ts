@@ -3,6 +3,7 @@ import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
 import { isEditable } from './utils';
 import { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
+import Component from 'sap/ui/core/Component'
 
 interface AdditionalData {
     text?: string;
@@ -155,9 +156,8 @@ async function fillReuseComponents(
 ): Promise<void> {
     const version = sap.ui.version;
     const minor = parseInt(version.split('.')[1], 10);
-    let Component = (await import('sap/ui/core/Component')).default;
     if (scenario === 'ADAPTATION_PROJECT' && node?.component && minor >= 114) {
-        const nodeComponent = Component?.getComponentById(node.id);
+        const nodeComponent = Component.getComponentById(node.id);
         if (nodeComponent) {
             const manifest = nodeComponent.getManifest() as Manifest;
             if (manifest['sap.app']?.type === 'component') {
