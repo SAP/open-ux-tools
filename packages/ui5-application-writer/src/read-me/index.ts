@@ -3,55 +3,6 @@ import type { TemplateWriter, ApplyTemplateFunction } from './types';
 import { t } from '../i18n';
 import { join } from 'path';
 import { Editor } from 'mem-fs-editor';
-import type { CapRuntime } from '@sap-ux/odata-service-inquirer';
-import { DatasourceType } from '@sap-ux/odata-service-inquirer';
-
-/**
- * Generates a launch text for the launching of applications.
- * @param capType The type of CAP runtime used in the application will be provided for CAP applications.
- * @param projectName The project's name, which is the module name.
- * @param appId If appId is provided, it will be used to open the application instead of the project name. This option is available for use with npm workspaces.
- * @returns The launch text for the application.
- */
-export function getLaunchText(capType: CapRuntime | undefined, projectName: string, appId?: string): string {
-    function getCapUrl(): string {
-        const project = appId ?? projectName + '/webapp';
-        if (capType === 'Java') {
-            return `http://localhost:8080/${projectName}/webapp/index.html`;
-        } else if (capType === undefined || capType === 'Node.js') {
-            return `http://localhost:4004/${project}/index.html`;
-        }
-        return '';
-    }
-
-    let mvnCommand = '';
-    if (capType === 'Java') {
-        mvnCommand = ' (```mvn spring-boot:run```)';
-    }
-    const capUrl = getCapUrl();
-    return `${t('TEXT_LAUNCH_CAP', { mvnCommand, capUrl })}`;
-}
-
-/**
- * Generates a label for the data source to be written into read me.
- * @param source The type of data source.
- * @param systemType The type of system associated with the data source.
- * @param isApiEnterpriseType Indicates whether the data source is an enterprise API.
- * @returns The generated data source label.
- */
-export function getDataSourceLabel(source: DatasourceType, systemType: string = '', isApiEnterpriseType: boolean = false): string {
-    if (source === DatasourceType.sapSystem) {
-        // Label for SAP system data source
-        const labelDatasourceType = t(`README_LABEL_DATASOURCE_TYPE_${DatasourceType.sapSystem}`);
-        const labelSystemType = t(`LABEL_SAP_SYSTEM_SOURCE_TYPE_${systemType}`);
-        return `${labelDatasourceType} (${labelSystemType})`;
-    } else if (source === DatasourceType.businessHub && isApiEnterpriseType) {
-        // Label for API business hub enterprise type data source
-       return t('LABEL_API_BUSINESS_HUB_ENTERPRISE');
-    }
-    // Default label for other data source types
-    return t(`README_LABEL_DATASOURCE_TYPE_${source}`)
-}
 
 /**
  * Merges the provided ReadMe configuration with default values to be used by read me templates.
