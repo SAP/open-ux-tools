@@ -11,7 +11,6 @@
 '@sap-ux/cards-editor-middleware': minor
 '@sap-ux/cds-annotation-parser': minor
 '@sap-ux/cds-odata-annotation-converter': minor
-'@sap-ux/control-property-editor': minor
 '@sap-ux-private/control-property-editor-common': minor
 '@sap-ux/create': minor
 '@sap-ux/deploy-tooling': minor
