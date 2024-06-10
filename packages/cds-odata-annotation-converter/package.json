@@ -19,7 +19,7 @@
         "lint:summary": "eslint . --ext .ts,.tsx -f summary",
         "pre-commit": "lint-staged --quiet",
         "test": "jest --maxWorkers=2",
-        "watch": "tsc  --build ./ -watch"
+        "watch": "tsc --build ./ -watch"
     },
     "files": [
         "dist/"
@@ -28,15 +28,16 @@
         "@sap-ux/cds-annotation-parser": "workspace:*",
         "@sap-ux/odata-annotation-core": "workspace:*",
         "@sap-ux/odata-vocabularies": "workspace:*",
-        "@sap/ux-cds-compiler-facade": "1.13.6",
+        "@sap/ux-cds-compiler-facade": "1.13.5",
         "i18next": "20.6.1",
         "vscode-languageserver-types": "3.17.2"
     },
     "devDependencies": {
         "@sap-ux/odata-annotation-core-types": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "@sap/cds": "7.4.1",
+        "@sap/cds": "7.9.2",
         "@sap/cds-compiler": "4.8.0",
-        "npm-run-all2": "6.2.0"
+        "npm-run-all2": "6.2.0",
+        "typescript": "5.3.3"
     }
 }
