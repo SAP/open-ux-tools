@@ -24,7 +24,8 @@ const commonVisibleControls = [
     'sap.ui.comp.ValueHelpDialog',
     'sap.viz.ui5.controls.VizFrame',
     'sap.ovp.ui.Card',
-    'sap.ui.extensionpoint'
+    'sap.ui.extensionpoint',
+    'sap.ui.extensionpoint.child'
 ];
 
 /**

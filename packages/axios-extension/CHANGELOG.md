@@ -1,5 +1,29 @@
 # @sap-ux/axios-extension
 
+## 1.13.0
+
+### Minor Changes
+
+-   b2ee99fc: Updates how service specific annotations are requested
+
+## 1.12.6
+
+### Patch Changes
+
+-   558891c2: cleanup logging statment
+
+## 1.12.5
+
+### Patch Changes
+
+-   69282b7d: add cookies for embedded steampunk service providers
+
+## 1.12.4
+
+### Patch Changes
+
+-   6e3d4da4: Add config needed in BAS
+
 ## 1.12.3
 
 ### Patch Changes

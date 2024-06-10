@@ -1,5 +1,43 @@
 # @sap-ux/project-access
 
+## 1.21.1
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.22.6
+
+## 1.21.0
+
+### Minor Changes
+
+-   69b8d6de: Introduces enhanced functionality by returning CDS information, extracted during the prompt phase, and is made available for later use .
+
+## 1.20.4
+
+### Patch Changes
+
+-   a7d78229: Added new functions for retrieving the minUI5Version(s) from manifest
+
+## 1.20.3
+
+### Patch Changes
+
+-   Updated dependencies [f80a4256]
+    -   @sap-ux/i18n@0.0.7
+
+## 1.20.2
+
+### Patch Changes
+
+-   54c91c6d: Export method 'clearCdsModuleCache' to provide option to clear cds module cache for passed project root path.
+
+## 1.20.1
+
+### Patch Changes
+
+-   Updated dependencies [3684195d]
+    -   @sap-ux/ui5-config@0.22.5
+
 ## 1.20.0
 
 ### Minor Changes

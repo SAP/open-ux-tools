@@ -1,5 +1,51 @@
 # @sap-ux/cap-config-writer
 
+## 0.3.0
+
+### Minor Changes
+
+-   64a95bd1: Add additional cap configuration writing functionalities
+
+### Patch Changes
+
+-   Updated dependencies [64a95bd1]
+    -   @sap-ux/yaml@0.15.0
+    -   @sap-ux/project-access@1.21.1
+    -   @sap-ux/odata-service-inquirer@0.2.1
+
+## 0.2.40
+
+### Patch Changes
+
+-   Updated dependencies [69b8d6de]
+    -   @sap-ux/project-access@1.21.0
+
+## 0.2.39
+
+### Patch Changes
+
+-   Updated dependencies [a7d78229]
+    -   @sap-ux/project-access@1.20.4
+
+## 0.2.38
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.20.3
+
+## 0.2.37
+
+### Patch Changes
+
+-   Updated dependencies [54c91c6d]
+    -   @sap-ux/project-access@1.20.2
+
+## 0.2.36
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.20.1
+
 ## 0.2.35
 
 ### Patch Changes

@@ -1,5 +1,64 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.20.1
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.22.6
+-   @sap-ux/odata-service-writer@0.20.1
+-   @sap-ux/ui5-application-writer@0.26.14
+-   @sap-ux/fe-fpm-writer@0.24.14
+-   @sap-ux/ui5-test-writer@0.3.3
+
+## 0.20.0
+
+### Minor Changes
+
+-   e9a007af: Add support for CAP project services and annotations, based on the service type.
+
+### Patch Changes
+
+-   Updated dependencies [e9a007af]
+    -   @sap-ux/odata-service-writer@0.20.0
+
+## 0.19.11
+
+### Patch Changes
+
+-   Updated dependencies [d2063073]
+    -   @sap-ux/fe-fpm-writer@0.24.14
+
+## 0.19.10
+
+### Patch Changes
+
+-   Updated dependencies [f69d72c1]
+    -   @sap-ux/fe-fpm-writer@0.24.13
+
+## 0.19.9
+
+### Patch Changes
+
+-   Updated dependencies [855a4ae2]
+    -   @sap-ux/fe-fpm-writer@0.24.12
+
+## 0.19.8
+
+### Patch Changes
+
+-   d6b68b0e: Fix "Uncaught TypeError: Assignment to constant variable." in project template changes_loader.ts
+
+## 0.19.7
+
+### Patch Changes
+
+-   Updated dependencies [3684195d]
+    -   @sap-ux/ui5-config@0.22.5
+    -   @sap-ux/odata-service-writer@0.19.2
+    -   @sap-ux/ui5-application-writer@0.26.13
+    -   @sap-ux/fe-fpm-writer@0.24.11
+    -   @sap-ux/ui5-test-writer@0.3.3
+
 ## 0.19.6
 
 ### Patch Changes
