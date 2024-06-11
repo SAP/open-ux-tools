@@ -74,9 +74,10 @@ export async function fileExists(path: string, memFs?: Editor): Promise<boolean>
  *
  * @param path - path to file
  * @param packageJson - updated package.json file content
+ * @param memFs - optional mem-fs-editor instance
  */
-export async function updatePackageJSON(path: string, packageJson: Package): Promise<void> {
-    await updateJSON(path, packageJson);
+export async function updatePackageJSON(path: string, packageJson: Package, memFs?: Editor): Promise<void> {
+    await updateJSON(path, packageJson, memFs);
 }
 
 /**
@@ -84,9 +85,10 @@ export async function updatePackageJSON(path: string, packageJson: Package): Pro
  *
  * @param path - path to file
  * @param manifest - updated manifest.json file content
+ * @param memFs - optional mem-fs-editor instance
  */
-export async function updateManifestJSON(path: string, manifest: Manifest): Promise<void> {
-    await updateJSON(path, manifest);
+export async function updateManifestJSON(path: string, manifest: Manifest, memFs?: Editor): Promise<void> {
+    await updateJSON(path, manifest, memFs);
 }
 
 /**
@@ -94,13 +96,14 @@ export async function updateManifestJSON(path: string, manifest: Manifest): Prom
  *
  * @param path - path to file
  * @param content - updated JSON file content
+ * @param memFs - optional mem-fs-editor instance
  */
-async function updateJSON(path: string, content: object): Promise<void> {
+async function updateJSON(path: string, content: object, memFs?: Editor): Promise<void> {
     // read old contents and indentation of the JSON file
-    const oldContentText = await readFile(path);
+    const oldContentText = await readFile(path, memFs);
     const oldContentJson = parseJsonError(oldContentText);
     const indent = Symbol.for('indent');
     // prepare new JSON file content with previous indentation
     const result = JSON.stringify(content, null, oldContentJson[indent]) + '\n';
-    await writeFile(path, result);
+    await writeFile(path, result, memFs);
 }

@@ -122,6 +122,14 @@ describe('fileAccess', () => {
             expect(jsonStringifySpy).toBeCalledWith(updateFileContent, null, '  ');
             expect(writeFileSpy).toBeCalledWith(pckgPath, '{}\n', { encoding: 'utf8' });
         });
+        test('Should update package.json using previous indentation with 4 spaces - mem-fs-editor', async () => {
+            const updateFileContent = { sapux: true } as unknown as Package;
+            const pckgPath = join(__dirname, '..', 'test-data', 'json', 'package', 'package-4-spaces.json');
+            memFs.writeJSON(pckgPath, { sapux: false }, undefined, 4);
+            await updatePackageJSON(pckgPath, updateFileContent, memFs);
+            const result = memFs.read(pckgPath);
+            expect(result).toBe(`{\n    "sapux": true\n}\n`);
+        });
     });
 
     describe('updateManifestJSON', () => {
@@ -145,6 +153,14 @@ describe('fileAccess', () => {
             await updateManifestJSON(manifestPath, updateFileContent);
             expect(jsonStringifySpy).toBeCalledWith(updateFileContent, null, '  ');
             expect(writeFileSpy).toBeCalledWith(manifestPath, '{}\n', { encoding: 'utf8' });
+        });
+        test('Should update package.json using previous indentation with 4 spaces - mem-fs-editor', async () => {
+            const updateFileContent = { 'sap.app': { id: 'single_apps-fiori_elements' } } as unknown as Manifest;
+            const manifestPath = join(__dirname, '..', 'test-data', 'json', 'manifest', 'manifest-4-spaces.json');
+            memFs.writeJSON(manifestPath, { 'sap.app': { id: 'dummy' } }, undefined, 4);
+            await updateManifestJSON(manifestPath, updateFileContent, memFs);
+            const result = memFs.read(manifestPath);
+            expect(result).toBe(`{\n    "sap.app": {\n        "id": "single_apps-fiori_elements"\n    }\n}\n`);
         });
     });
 });
