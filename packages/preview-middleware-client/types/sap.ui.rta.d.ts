@@ -106,7 +106,6 @@ declare module 'sap/ui/rta/command/OutlineService' {
         instanceName?: string;
         name?: string;
         icon?: string;
-        component?: boolean;
     }
 
     export interface AggregationOutlineViewNode extends BaseOutlineViewNode {
