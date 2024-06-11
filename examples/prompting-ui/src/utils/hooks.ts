@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { getQuestions, subscribeOnChoicesUpdate, unsubscribeOnChoicesUpdate } from './communication';
-import { DynamicChoices, IQuestion } from '../../src/components';
+import { DynamicChoices, IQuestion } from '@sap-ux/ui-prompting';
 import { SupportedBuildingBlocks } from './types';
-import { PromptsGroup } from '../../src/components/Question';
+import { PromptsGroup } from '@sap-ux/ui-prompting';
 
 export function useChoices(): DynamicChoices {
     const [choices, setChoices] = useState({});

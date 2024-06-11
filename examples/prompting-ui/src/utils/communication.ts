@@ -10,8 +10,8 @@ import {
     VALIDATE_ANSWERS,
     ValidateAnswers
 } from '../../.storybook/addons/project/types';
-import type { DynamicChoices, IQuestion, ValidationResults } from '../../src/components';
-import { PromptsGroup } from '../../src/components/Question';
+import type { DynamicChoices, IQuestion, ValidationResults } from '@sap-ux/ui-prompting';
+import { PromptsGroup } from '@sap-ux/ui-prompting';
 import type { Actions, GetChoices, GetCodeSnippet } from './types';
 import {
     APPLY_ANSWERS,

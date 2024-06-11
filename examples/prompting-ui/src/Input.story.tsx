@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input } from '../src/components';
+import { Input } from '@sap-ux/ui-prompting';
 
 export default { title: 'Basic/Input' };
 

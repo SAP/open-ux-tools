@@ -1,0 +1,22 @@
+<style>
+    html,
+    body,
+    #root {
+        height: 100%;
+    }
+    body {
+        color: var(--vscode-foreground) !important;
+        font-family: var(--vscode-font-family);
+        background: var(--vscode-editor-background);
+    }
+</style>
+<script data-custom="SAP">
+    window.addEventListener('message', (event) => {
+        if (event.data.type === 'ts-refresh') {
+            updateThemeVariables(event.data.style);
+        }
+    });
+    function updateThemeVariables(style) {
+        document.body.parentNode.setAttribute('style', style);
+    }
+</script>

@@ -156,6 +156,9 @@
       "path": "packages/ui-components"
     },
     {
+      "path": "packages/ui-prompting"
+    },
+    {
       "path": "packages/ui5-application-inquirer"
     },
     {

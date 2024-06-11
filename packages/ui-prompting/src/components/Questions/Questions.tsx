@@ -6,7 +6,6 @@ import { getDependantQuestions, getDynamicQuestions, updateAnswer, useDynamicQue
 import './Questions.scss';
 import { useRequestedChoices } from '../../utilities';
 import { QuestionGroup } from '../QuestionGroup';
-import { ValidationResults } from '@sap-ux/fe-fpm-writer';
 
 export interface AdditionalQuestionProperties {
     selectType: 'static' | 'dynamic';
@@ -37,7 +36,8 @@ export interface QuestionsProps {
     questions: Array<IQuestion>;
     answers: Record<string, AnswerValue>;
     choices: DynamicChoices;
-    validation: ValidationResults;
+    // ToDo
+    validation: any;
     onChoiceRequest: (names: string[], answers: Record<string, AnswerValue>) => void;
     onChange: (
         answers: Record<string, AnswerValue>,

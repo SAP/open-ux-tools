@@ -22,13 +22,7 @@
   },
   "references": [
     {
-      "path": "../../packages/fe-fpm-writer"
-    },
-    {
-      "path": "../../packages/ui-components"
-    },
-    {
-      "path": "../../packages/ui-prompting"
+      "path": "../ui-components"
     }
   ]
 }

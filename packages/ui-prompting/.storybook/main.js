@@ -1,18 +1,16 @@
-import { resolve } from 'path';
-import { createWebSocketConnection } from './backend';
+const path = require('path');
 
 module.exports = {
-    stories: ['../src/*.story.tsx'],
+    stories: ['../stories/*.story.tsx'],
     addons: [
         {
             name: 'storybook-addon-turbo-build',
             options: {
                 optimizationLevel: 3
             }
-        },
-        './addons/register.ts'
+        }
     ],
-    webpackFinal: async function (config) {
+    webpackFinal: async (config) => {
         config.module.rules.push({
             test: /\.(ts|tsx)$/,
             use: [
@@ -37,16 +35,9 @@ module.exports = {
                 },
                 'sass-loader'
             ],
-            include: [
-                resolve(__dirname, '../../../packages/ui-components'),
-                resolve(__dirname, '../../../packages/ui-prompting')
-            ]
+            include: [path.resolve(__dirname, '../'), path.resolve(__dirname, '../../../packages/ui-components')]
         });
         config.resolve.extensions.push('.ts', '.tsx');
-        if (config.mode === 'development') {
-            // Create WebSocket connection to comunicate between fpm-writer API and ui
-            await createWebSocketConnection();
-        }
         return config;
     },
     framework: {

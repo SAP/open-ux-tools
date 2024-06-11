@@ -2,10 +2,10 @@ import { UIDefaultButton, UISmallButton, initIcons } from '@sap-ux/ui-components
 import React, { useEffect, useState } from 'react';
 import { SupportedBuildingBlocks } from './utils';
 import { applyAnswers, getChoices, getCodeSnippet, getWebSocket, validateAnswers } from './utils/communication';
-import { Questions, PromptsLayoutType, IQuestion, ValidationResults } from '../src/components';
+import { Questions, PromptsLayoutType, IQuestion, ValidationResults } from '@sap-ux/ui-prompting';
 import { useChoices, useQuestions } from './utils/hooks';
 import { Answers } from 'inquirer';
-import { AnswerValue } from '../src/components/Question';
+import { AnswerValue } from '@sap-ux/ui-prompting';
 
 initIcons();
 getWebSocket();

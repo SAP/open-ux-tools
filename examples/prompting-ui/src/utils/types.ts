@@ -1,7 +1,7 @@
 import type { FilterBarPromptsAnswer, ChartPromptsAnswer, TablePromptsAnswer } from '@sap-ux/fe-fpm-writer';
 import type { Question, Answers } from 'inquirer';
 import { AddonActions } from '../../.storybook/addons/types';
-import type { DynamicChoices } from '../../src/components';
+import type { DynamicChoices } from '@sap-ux/ui-prompting';
 
 export type Actions =
     | GetQuestions

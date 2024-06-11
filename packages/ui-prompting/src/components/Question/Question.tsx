@@ -6,7 +6,6 @@ import type {
 } from 'inquirer';
 import { Input, Select, MultiSelect } from '../Inputs';
 import type { AdditionalQuestionProperties, Choice } from '../Questions';
-import { ValidationResults } from '@sap-ux/fe-fpm-writer';
 import { useOptions } from '../../utilities';
 import './Question.scss';
 
@@ -29,7 +28,8 @@ export interface QuestionProps {
     choices?: Choice[];
     pending?: boolean;
     additionalInfo?: string;
-    validation: ValidationResults;
+    // ToDo
+    validation: any;
     placeholder?: string;
 }
 

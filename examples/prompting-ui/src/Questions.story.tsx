@@ -1,6 +1,6 @@
 import React from 'react';
-import { Questions } from '../src/components';
-import type { IQuestion } from '../src/components';
+import { Questions } from '@sap-ux/ui-prompting';
+import type { IQuestion } from '@sap-ux/ui-prompting';
 import { initIcons } from '@sap-ux/ui-components';
 
 export default { title: 'Basic/Questions' };

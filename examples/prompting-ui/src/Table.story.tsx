@@ -1,5 +1,4 @@
 import React from 'react';
-import { PromptsLayoutType } from '../src/components';
 import { SupportedBuildingBlocks } from './utils';
 import { BuildingBlockQuestions } from './BuildingBlock';
 
