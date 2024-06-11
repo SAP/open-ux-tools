@@ -1,6 +1,6 @@
 import React, { useState, memo } from 'react';
 import { Form, Blockquote, Loader, AddonPanel } from '@storybook/components';
-import { getProjectPath, getWebSocket, updateProjectPath } from '../../../stories/utils';
+import { getProjectPath, getWebSocket, updateProjectPath } from '../../../src/utils';
 
 getWebSocket();
 
@@ -126,7 +126,9 @@ export const ProjectPathForm = memo(() => {
 
 export const render = (props: { active?: boolean }): React.ReactElement => {
     const { active = false } = props;
-    return <AddonPanel key="panel" active={active}>
-        <ProjectPathForm />
-    </AddonPanel>
-}
+    return (
+        <AddonPanel key="panel" active={active}>
+            <ProjectPathForm />
+        </AddonPanel>
+    );
+};

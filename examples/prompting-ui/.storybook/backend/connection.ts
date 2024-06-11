@@ -20,8 +20,8 @@ import {
     UpdateCodeSnippet,
     SET_VALIDATION_RESULTS,
     SetValidationResults
-} from '../../stories/utils/types';
-import { Actions, GET_CODE_SNIPPET, ResetAnswers, SetChoices, GetChoices } from '../../stories/utils/types';
+} from '../../src/utils/types';
+import { Actions, GET_CODE_SNIPPET, ResetAnswers, SetChoices, GetChoices } from '../../src/utils/types';
 import { AddonActions } from '../addons/types';
 import { handleAction as handleAddonAction } from '../addons/project';
 import { existsSync } from 'fs';

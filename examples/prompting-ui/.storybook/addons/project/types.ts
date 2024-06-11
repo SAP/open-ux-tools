@@ -1,5 +1,5 @@
 import { Answers } from 'inquirer';
-import { SupportedBuildingBlocks } from '../../../stories/utils';
+import { SupportedBuildingBlocks } from '../../../src/utils';
 import { IQuestion } from '../../../src/components';
 
 export type ProjectActions = GetProjectPath | SetProjectPath | UpdateProjectPath | UpdateProjectPathResult;
