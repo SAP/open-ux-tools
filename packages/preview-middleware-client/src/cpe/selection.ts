@@ -128,13 +128,14 @@ function handleOverlaySelection(rta: RuntimeAuthoring, control: UI5Element): boo
  */
 async function handleControlSelected(
     sendAction: ActionSenderFunction,
-    control: UI5Element | Component | ManagedObject | null
+    control: UI5Element | Component | ManagedObject | null | undefined,
+    overlayControl?: ElementOverlay
 ): Promise<void> {
     if (!control) {
         return;
     }
     // trigger control select and select control actions to show its properties on properties panel
-    const controlData = buildControlData(control);
+    const controlData = buildControlData(control, overlayControl);
     // add document
     await addDocumentationForProperties(control, controlData);
     const controlSelectedAction = controlSelected(controlData);
@@ -219,7 +220,9 @@ export class SelectionService implements Service {
                 if (handled) {
                     return;
                 }
-                await handleControlSelected(sendAction, control);
+                // get parent ctrl in case of building blocks if not handled in overlay selection
+                const parentCtrl = tryParentCtrl(control);
+                await handleControlSelected(sendAction, parentCtrl);
             }
         });
     }
@@ -271,7 +274,7 @@ export class SelectionService implements Service {
                     } catch (error) {
                         Log.error('Failed to report telemetry', error);
                     } finally {
-                        await handleControlSelected(sendAction, ctrl);
+                        await handleControlSelected(sendAction, ctrl, overlayControl);
                         eventOrigin.delete('outline');
                     }
                 }
