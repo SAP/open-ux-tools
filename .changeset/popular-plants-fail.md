@@ -3,4 +3,4 @@
 "@sap-ux/preview-middleware": patch
 ---
 
-fix: i18n bindings validation fails for nested *.properties files
+i18n bindings validation fails for nested *.properties files
