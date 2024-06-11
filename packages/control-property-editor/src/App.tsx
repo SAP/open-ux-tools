@@ -133,26 +133,26 @@ export default function App(appProps: AppProps): ReactElement {
                 <section className="app-panel app-panel-right">
                     <PropertiesList />
                 </section>
-                 {isAdpProject && shouldHideIframe && dialogQueue.length > 0 && (
-                <UIDialog
-                    hidden={!shouldShowDialogMessage}
-                    dialogContentProps={{
-                        title: t('TOOL_DISCLAIMER_TITLE'),
-                        subText: dialogQueue[0]?.message
-                    }}
-                />
-            )}
-            {isAdpProject && !shouldHideIframe && dialogQueue.length > 0 && (
-                <UIDialog
-                    hidden={!shouldShowDialogMessage}
-                    dialogContentProps={{
-                        title: t('TOOL_DISCLAIMER_TITLE'),
-                        subText: dialogQueue[0]?.message
-                    }}
-                    acceptButtonText={t('OK')}
-                    onAccept={closeAdpWarningDialog}
-                />
-            )}
+                {isAdpProject && shouldHideIframe && dialogQueue.length > 0 && (
+                    <UIDialog
+                        hidden={!shouldShowDialogMessage}
+                        dialogContentProps={{
+                            title: t('TOOL_DISCLAIMER_TITLE'),
+                            subText: dialogQueue[0]?.message
+                        }}
+                    />
+                )}
+                {isAdpProject && !shouldHideIframe && dialogQueue.length > 0 && (
+                    <UIDialog
+                        hidden={!shouldShowDialogMessage}
+                        dialogContentProps={{
+                            title: t('TOOL_DISCLAIMER_TITLE'),
+                            subText: dialogQueue[0]?.message
+                        }}
+                        acceptButtonText={t('OK')}
+                        onAccept={closeAdpWarningDialog}
+                    />
+                )}
 
                 {scenario === 'FE_FROM_SCRATCH' ? (
                     <UIDialog
