@@ -11,6 +11,7 @@ import { default as mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
 import * as apiHandler from '../../../src/adp/api-handler';
 import { fetchMock, sapMock } from 'mock/window';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
+import type { Scenario } from 'sap/ui/fl/Scenario';
 
 describe('flp/init', () => {
     test('registerSAPFonts', () => {
@@ -41,7 +42,7 @@ describe('flp/init', () => {
                 }
             ]
         } as unknown as apiHandler.ManifestAppdescr);
-        await loadI18nResourceBundle('other');
+        await loadI18nResourceBundle('other' as Scenario);
         expect(mockBundle.create).toBeCalledWith({
             url: 'i18n/i18n.properties',
         });
