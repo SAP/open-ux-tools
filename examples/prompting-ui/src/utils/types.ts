@@ -2,9 +2,9 @@ import {
     type FilterBarPromptsAnswer,
     type ChartPromptsAnswer,
     type TablePromptsAnswer,
-    type Prompts,
-    BuildingBlockType as SupportedBuildingBlocks
+    type Prompts
 } from '@sap-ux/fe-fpm-writer';
+import { BuildingBlockType as SupportedBuildingBlocks } from '@sap-ux/fe-fpm-writer/dist/building-block/types';
 import type { Answers } from 'inquirer';
 import { AddonActions } from '../addons/types';
 import type { DynamicChoices, PromptsGroup, PromptQuestion } from '@sap-ux/ui-prompting';
