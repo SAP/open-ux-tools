@@ -154,7 +154,7 @@ describe('fileAccess', () => {
             expect(jsonStringifySpy).toBeCalledWith(updateFileContent, null, '  ');
             expect(writeFileSpy).toBeCalledWith(manifestPath, '{}\n', { encoding: 'utf8' });
         });
-        test('Should update package.json using previous indentation with 4 spaces - mem-fs-editor', async () => {
+        test('Should update manifest.json using previous indentation with 4 spaces - mem-fs-editor', async () => {
             const updateFileContent = { 'sap.app': { id: 'single_apps-fiori_elements' } } as unknown as Manifest;
             const manifestPath = join(__dirname, '..', 'test-data', 'json', 'manifest', 'manifest-4-spaces.json');
             memFs.writeJSON(manifestPath, { 'sap.app': { id: 'dummy' } }, undefined, 4);
