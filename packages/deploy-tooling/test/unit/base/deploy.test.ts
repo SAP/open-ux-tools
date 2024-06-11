@@ -1,7 +1,8 @@
 import prompts from 'prompts';
+import AdmZip from 'adm-zip';
+import { join } from 'path';
 import { createTransportRequest, deploy, undeploy } from '../../../src/base/deploy';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import type { AbapDeployConfig } from '../../../src/types';
 import {
     mockedStoreService,
     mockedUi5RepoService,
@@ -9,12 +10,11 @@ import {
     mockedAdtService,
     mockedLrepService
 } from '../../__mocks__';
-import type { AbapTarget } from '@sap-ux/system-access';
-import AdmZip from 'adm-zip';
-import { join } from 'path';
-
-import * as validate from '../../../src/base/validate';
 import { SummaryStatus } from '../../../src/base/validate';
+import * as validate from '../../../src/base/validate';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { AbapTarget } from '@sap-ux/system-access';
+import type { AbapDeployConfig } from '../../../src/types';
 
 const validateBeforeDeployMock = jest.spyOn(validate, 'validateBeforeDeploy');
 const showAdditionalInfoForOnPremMock = jest.spyOn(validate, 'showAdditionalInfoForOnPrem');
@@ -235,7 +235,37 @@ describe('base/deploy', () => {
             expect(config.createTransport).toBe(false);
             expect(mockedAdtService.createTransportRequest).toBeCalledTimes(1);
             expect(mockedAdtService.createTransportRequest).toBeCalledWith(
-                expect.objectContaining({ description: 'Created by SAP Open UX Tools for ABAP repository ~name' })
+                expect.objectContaining({ description: 'For ABAP repository ~name, created by SAP Open UX Tools' })
+            );
+        });
+
+        test('should truncate transport request description', async () => {
+            const createTransportRequestMock = jest.fn();
+            createTransportRequestMock.mockResolvedValueOnce('~transport123');
+            const mockProvider = {
+                getAdtService: () => {
+                    return {
+                        createTransportRequest: createTransportRequestMock
+                    };
+                }
+            };
+
+            const tr = await createTransportRequest(
+                {
+                    app: {
+                        name: 'app-name-with-extra-chars',
+                        package: 'package1'
+                    }
+                } as AbapDeployConfig,
+                nullLogger,
+                mockProvider as unknown as AbapServiceProvider
+            );
+
+            expect(tr).toBe('~transport123');
+            expect(createTransportRequestMock).toBeCalledWith(
+                expect.objectContaining({
+                    description: 'For ABAP repository app-name-with-extra-chars, created by...'
+                })
             );
         });
 

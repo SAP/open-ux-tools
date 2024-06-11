@@ -1,5 +1,11 @@
 # @sap-ux/mockserver-config-writer
 
+## 0.5.4
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.22.6
+
 ## 0.5.3
 
 ### Patch Changes

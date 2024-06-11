@@ -1,0 +1,9 @@
+{
+  "name": "test_cap",
+  "version": "0",
+  "description": "Test file",
+  "dependencies": {
+    "@sap/cds": "6.8.2"
+  },
+  "sapux": []
+}
