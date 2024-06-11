@@ -1073,8 +1073,8 @@ importers:
         specifier: ^0.7.0
         version: 0.7.1
       '@sap-ux/fiori-annotation-api':
-        specifier: file:./sap-ux-fiori-annotation-api-1.13.7.tgz
-        version: file:packages/fe-fpm-writer/sap-ux-fiori-annotation-api-1.13.7.tgz
+        specifier: file:./sap-ux-fiori-annotation-api-1.13.8.tgz
+        version: file:packages/fe-fpm-writer/sap-ux-fiori-annotation-api-1.13.8.tgz
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
@@ -10393,19 +10393,16 @@ packages:
       '@xml-tools/common': 0.1.6
       '@xml-tools/parser': 1.0.11
       lodash: 4.17.21
-    dev: true
 
   /@xml-tools/common@0.1.6:
     resolution: {integrity: sha512-7aVZeEYccs1KI/Asd6KKnrB4dTAWXTkjRMjG40ApGEUp5NpfQIvWLEBvMv85Koj2lbSpagcAERwDy9qMsfWGdA==}
     dependencies:
       lodash: 4.17.21
-    dev: true
 
   /@xml-tools/parser@1.0.11:
     resolution: {integrity: sha512-aKqQ077XnR+oQtHJlrAflaZaL7qZsulWc/i/ZEooar5JiWj1eLt0+Wg28cpa+XLney107wXqneC+oG1IZvxkTA==}
     dependencies:
       chevrotain: 7.1.1
-    dev: true
 
   /@xmldom/xmldom@0.8.10:
     resolution: {integrity: sha512-2WALfTl4xo2SkGCYRt6rDTFfk9R1czmBvUQy12gK2KuRKIpWEhcbbzy8EZXtz/jkRqHX8bFEc6FC1HjX4TUWYw==}
@@ -21869,6 +21866,10 @@ packages:
     resolution: {integrity: sha512-bFJH7UQxlXT8kKeyiyu41r22jCZXG8kuuVVA33OEJn1diWOZK5n8zBSPZFHVBOu8kXZ6h0LIRhf5UnCo61J4Hg==}
     dev: false
 
+  /vscode-languageserver-textdocument@1.0.8:
+    resolution: {integrity: sha512-1bonkGqQs5/fxGT5UchTgjGVnfysL0O8v1AYMBjqTbWQTFn721zaPGDYFkOKtfDgFiSgXM3KwaG3FMGfW4Ed9Q==}
+    dev: false
+
   /vscode-languageserver-types@3.17.2:
     resolution: {integrity: sha512-zHhCWatviizPIq9B7Vh9uvrH6x3sK8itC84HkamnBWoDFJtzBf7SWlpLCZUit72b3os45h6RWQNC9xHRDF8dRA==}
     dev: false
@@ -22526,8 +22527,15 @@ packages:
       readable-stream: 3.6.0
     dev: false
 
-  file:packages/fe-fpm-writer/sap-ux-fiori-annotation-api-1.13.7.tgz:
-    resolution: {integrity: sha512-F2hpaC37kUEzNnXSpg7e8M5JTjSgJ6krh1SyWmeNyLN0xi2bS9unqxKYYK4SaBTmIWPsBnep5fllzMtRkEpzsQ==, tarball: file:packages/fe-fpm-writer/sap-ux-fiori-annotation-api-1.13.7.tgz}
+  file:packages/fe-fpm-writer/sap-ux-fiori-annotation-api-1.13.8.tgz:
+    resolution: {integrity: sha512-2+fOmRpMmzOaOURjNFbNYAaa7rZga1A8q3f0n2ZSOiw7Cy3BzNjZKGBinvZXvZ04PoDvOeFtxIKl4pnl85TWUA==, tarball: file:packages/fe-fpm-writer/sap-ux-fiori-annotation-api-1.13.8.tgz}
     name: '@sap/ux-fiori-annotation-api'
-    version: 1.13.7
+    version: 1.13.8
+    dependencies:
+      '@sap/cds-compiler': 4.8.0
+      '@xml-tools/ast': 5.0.5
+      '@xml-tools/parser': 1.0.11
+      mem-fs: 2.1.0
+      mem-fs-editor: 9.4.0(mem-fs@2.1.0)
+      vscode-languageserver-textdocument: 1.0.8
     dev: false
