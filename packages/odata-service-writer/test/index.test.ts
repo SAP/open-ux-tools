@@ -1,5 +1,5 @@
 import type { OdataService } from '../src/types';
-import { OdataVersion } from '../src/types';
+import { OdataVersion, ServiceType } from '../src/types';
 import { generate } from '../src';
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
@@ -16,6 +16,7 @@ describe('ODataService templates', () => {
     const validServiceConfig: OdataService = {
         url: 'http://localhost',
         path: '/sap/odata/testme',
+        type: ServiceType.EDMX,
         version: OdataVersion.v2,
         metadata: '<HELLO><WORLD><METADATA></METADATA></WORLD></HELLO>',
         annotations: {
