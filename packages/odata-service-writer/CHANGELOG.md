@@ -1,5 +1,12 @@
 # @sap-ux/odata-service-writer
 
+## 0.20.1
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.22.6
+-   @sap-ux/mockserver-config-writer@0.5.4
+
 ## 0.20.0
 
 ### Minor Changes
