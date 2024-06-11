@@ -39,7 +39,7 @@ export function extendAdditionalMessages(
 export function extendValidate<T extends Answers = Answers>(
     question: Question,
     validateFunc: NonNullable<Validator<T>>,
-    promptState?: unknown
+    promptState?: Answers
 ): NonNullable<Validator<T>> {
     const validate: Validator<T> = question.validate;
     return (value: unknown, previousAnswers?: T): ReturnType<NonNullable<Validator<T>>> => {
@@ -66,7 +66,7 @@ export function applyExtensionFunction<T extends Answers = Answers>(
     question: YUIQuestion,
     promptOption: CommonPromptOptions<T>,
     funcName: 'validate' | 'additionalMessages',
-    promptState?: unknown
+    promptState?: Answers
 ): YUIQuestion {
     let extendedFunc;
 
@@ -125,7 +125,7 @@ export function withCondition(questions: Question[], condition: (answers: Answer
 export function extendWithOptions<T extends YUIQuestion = YUIQuestion>(
     questions: T[],
     promptOptions: Record<string, CommonPromptOptions & PromptDefaultValue<string | boolean>>,
-    promptState?: unknown
+    promptState?: Answers
 ): YUIQuestion[] {
     questions.forEach((question: YUIQuestion) => {
         const promptOptKey = question.name;

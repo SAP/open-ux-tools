@@ -59,7 +59,7 @@ function getServiceUrlPrompt(connectValidator: ConnectionValidator, requiredVers
 
             if (urlValidationState === true) {
                 if (!connectValidator.validity.authRequired) {
-                    return validateService(connectValidator.odataService, requiredVersion);
+                    return validateService(url, connectValidator, requiredVersion);
                 }
                 return true;
             }
@@ -104,7 +104,7 @@ function getIgnoreCertErrorsPrompt(
 
             if (validUrl === true) {
                 if (!connectValidator.validity.authRequired) {
-                    return validateService(connectValidator.odataService, requiredVersion, ignoreCertError);
+                    return validateService(serviceUrl, connectValidator, requiredVersion, ignoreCertError);
                 }
                 return true;
             }
@@ -167,11 +167,7 @@ function getCliIgnoreCertValidatePrompt(
                 if (validUrl === true) {
                     if (!connectValidator.validity.authRequired) {
                         // Will log on CLI
-                        const validService = await validateService(
-                            connectValidator.odataService,
-                            requiredVersion,
-                            true
-                        );
+                        const validService = await validateService(serviceUrl, connectValidator, requiredVersion, true);
                         if (validService !== true) {
                             throw new Error(validService.toString());
                         }
@@ -241,7 +237,7 @@ function getPasswordPrompt(
             }
             const validAuth = await connectValidator.validateAuth(serviceUrl, username, password, ignoreCertError);
             if (validAuth === true) {
-                return validateService(connectValidator.odataService, requiredVersion);
+                return validateService(serviceUrl, connectValidator, requiredVersion);
             }
             return validAuth;
         }

@@ -12,13 +12,17 @@ import { ERROR_TYPE, ErrorHandler } from '../../../error-handler/error-handler';
 /**
  * Validates that a service specified by the odata service is accessible, has the required version and returns valid metadata.
  *
- * @param odataService the odata service instance to validate
+ * @param url
+ * @param connectionConfig
+ * @param connectionConfig.odataService the odata service instance to use to retrieve the metadata (as used by ConnectionValidator)
+ * @param connectionConfig.axiosConfig the axios config to use for the annotations request (as used by ConnectionValidator)
  * @param requiredVersion if specified and the service odata version does not match this version, an error is returned
  * @param ignoreCertError if true some certificate errors are ignored
  * @returns true, false or an error message string
  */
 export async function validateService(
-    odataService: ODataService,
+    url: string,
+    { odataService, axiosConfig }: { odataService: ODataService; axiosConfig: AxiosRequestConfig },
     requiredVersion: OdataVersion | undefined = undefined,
     ignoreCertError = false
 ): Promise<boolean | string> {
@@ -41,24 +45,22 @@ export async function validateService(
         PromptState.odataService.odataVersion = serviceOdataVersion;
 
         // Extract sap-client and keep the rest of the query params as part of the url
-        const axiosRequesConfig = odataService.defaults as AxiosRequestConfig;
-        const sapClient = removeQueryParam(SAP_CLIENT_KEY, axiosRequesConfig);
-        const urlSearchParams = new URLSearchParams(axiosRequesConfig.params);
-        const queryParams = urlSearchParams.toString() ? `?${urlSearchParams}` : '';
-        const fullUrl = new URL(`${axiosRequesConfig.baseURL}${axiosRequesConfig.url ?? ''}${queryParams}`);
+        const fullUrl = new URL(url);
+        const sapClient = fullUrl.searchParams.get(SAP_CLIENT_KEY) ?? undefined;
+        fullUrl.searchParams.delete(SAP_CLIENT_KEY);
 
-        PromptState.odataService.servicePath = fullUrl.pathname + queryParams;
+        PromptState.odataService.servicePath = `${fullUrl.pathname}${fullUrl.search}`;
         PromptState.odataService.origin = fullUrl.origin;
         PromptState.odataService.sapClient = sapClient;
 
         // Best effort attempt to get annotations but dont throw an error if it fails as this may not even be an Abap system
         try {
             // Create an abap provider instance to get the annotations using the same request config
-            const abapProvider = createForAbap(axiosRequesConfig);
+            const abapProvider = createForAbap(axiosConfig);
             const catalogService = abapProvider.catalog(serviceOdataVersion as unknown as ODataVersion);
             LoggerHelper.attachAxiosLogger(catalogService.interceptors);
             LoggerHelper.logger.debug('Getting annotations for service');
-            const annotations = await catalogService.getAnnotations({ path: axiosRequesConfig.url });
+            const annotations = await catalogService.getAnnotations({ path: fullUrl.pathname });
             LoggerHelper.logger.debug(`Annotations array of length: ${annotations?.length} returned`);
             if (annotations?.length === 0 || !annotations) {
                 LoggerHelper.logger.info(t('prompts.validationMessages.annotationsNotFound'));
@@ -79,27 +81,4 @@ export async function validateService(
     } finally {
         ConnectionValidator.setGlobalRejectUnauthorized(true);
     }
-}
-
-/**
- * Remove specified param from the query params and return the value.
- * The passed axiosConfig params object is modified.
- *
- * @param paramKey the key of the param to remove from the specified axiosConfig params property
- * @param axiosConfig the axios request config containing the params to modify
- * @returns the value of the removed param, the axiosConfig params object is also modified
- */
-function removeQueryParam(paramKey: string, axiosConfig: AxiosRequestConfig): string {
-    let paramValue;
-    if (axiosConfig.params) {
-        // Axios config params may be a URLSearchParams object or a plain object
-        if (axiosConfig.params instanceof URLSearchParams) {
-            paramValue = axiosConfig.params.get(paramKey) ?? undefined;
-            axiosConfig.params.delete(paramKey);
-        } else {
-            paramValue = axiosConfig.params[paramKey] ?? undefined;
-            delete axiosConfig.params[paramKey];
-        }
-    }
-    return paramValue;
 }
