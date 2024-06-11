@@ -72,9 +72,6 @@ export const prepare = async (
     fileCache: Map<string, File>;
 }> => {
     const projectRoot: string = projectRootFolder;
-    const project = {
-        root: projectRoot
-    };
     const roots = await projectAccess.getCdsRoots(projectRoot);
     const resolvedRoots = cds.resolve(roots ?? []);
     const cdsFiles = resolvedRoots?.map((uri) => relative(projectRoot, uri));
@@ -86,7 +83,7 @@ export const prepare = async (
             return acc;
         }, new Map<string, File>());
     }
-    const cdsArtifacts = await getCdsArtifacts(project as unknown as any, cdsServiceName, roots, fileCache);
+    const cdsArtifacts = await getCdsArtifacts(projectRoot, cdsServiceName, roots, fileCache);
 
     return { projectRoot, cdsArtifacts, fileCache };
 };
