@@ -1,6 +1,6 @@
 import { AddonPanel, Form, SyntaxHighlighter } from '@storybook/components';
 import React, { useEffect, useState } from 'react';
-import { Actions, UPDATE_CODE_SNIPPET, getWebSocket, onMessageAttach } from '../../../src/utils';
+import { Actions, UPDATE_CODE_SNIPPET, getWebSocket, onMessageAttach } from '../../../stories/utils';
 
 getWebSocket(false);
 

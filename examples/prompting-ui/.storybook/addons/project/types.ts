@@ -1,5 +1,5 @@
 import { Answers } from 'inquirer';
-import { SupportedBuildingBlocks } from '../../../src/utils';
+import { SupportedBuildingBlocks } from '../../../stories/utils';
 import { IQuestion } from '@sap-ux/ui-prompting';
 
 export type ProjectActions = GetProjectPath | SetProjectPath | UpdateProjectPath | UpdateProjectPathResult;
