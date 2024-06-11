@@ -1,4 +1,10 @@
-import type { FilterBarPromptsAnswer, ChartPromptsAnswer, TablePromptsAnswer, Prompts } from '@sap-ux/fe-fpm-writer';
+import {
+    type FilterBarPromptsAnswer,
+    type ChartPromptsAnswer,
+    type TablePromptsAnswer,
+    type Prompts,
+    BuildingBlockType as SupportedBuildingBlocks
+} from '@sap-ux/fe-fpm-writer';
 import type { Answers } from 'inquirer';
 import { AddonActions } from '../addons/types';
 import type { DynamicChoices, PromptsGroup, PromptQuestion } from '@sap-ux/ui-prompting';
@@ -27,16 +33,8 @@ export const APPLY_ANSWERS = 'APPLY_ANSWERS';
 export const RESET_ANSWERS = 'RESET_ANSWERS';
 export const SET_VALIDATION_RESULTS = 'SET_VALIDATION_RESULTS';
 
-/**
- * Building block type.
- *
- * @enum {string}
- */
-export enum SupportedBuildingBlocks {
-    FilterBar = 'filter-bar',
-    Chart = 'chart',
-    Table = 'table'
-}
+// ToDo use new exported enum from fpm-writer/api
+export { SupportedBuildingBlocks };
 
 export interface ApplyAnswers {
     type: typeof APPLY_ANSWERS;
