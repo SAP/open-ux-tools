@@ -5,7 +5,7 @@ import { useValue, getLabelRenderer } from '../../../utilities';
 
 export interface InputProps extends InputQuestion {
     value?: string | number | boolean;
-    onChange: (name: string, value?: string | number | boolean) => void;
+    onChange?: (name: string, value?: string | number | boolean) => void;
     required?: boolean;
     additionalInfo?: string;
     errorMessage?: string;
@@ -20,7 +20,7 @@ export const Input = (props: InputProps) => {
     };
 
     useEffect(() => {
-        onChange(name, value);
+        onChange?.(name, value);
     }, [name, value]);
 
     return (

@@ -1,8 +1,13 @@
 import { Answers } from 'inquirer';
 import { SupportedBuildingBlocks } from '../../../src/utils';
-import { IQuestion } from '@sap-ux/ui-prompting';
+import { PromptQuestion } from '@sap-ux/ui-prompting';
 
-export type ProjectActions = GetProjectPath | SetProjectPath | UpdateProjectPath | UpdateProjectPathResult;
+export type ProjectActions =
+    | GetProjectPath
+    | SetProjectPath
+    | UpdateProjectPath
+    | UpdateProjectPathResult
+    | ValidateAnswers;
 
 export const GET_PROJECT_PATH = 'GET_PROJECT_PATH';
 export const UPDATE_PROJECT_PATH = 'UPDATE_PROJECT_PATH';
@@ -36,7 +41,7 @@ export interface UpdateProjectPathResult extends UpdateProjectPathResultPayload 
 
 export interface ValidateAnswers {
     type: typeof VALIDATE_ANSWERS;
-    questions: IQuestion[];
+    questions: PromptQuestion[];
     answers: Answers;
     value: SupportedBuildingBlocks;
 }

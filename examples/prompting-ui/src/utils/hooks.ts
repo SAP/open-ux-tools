@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { getQuestions, subscribeOnChoicesUpdate, unsubscribeOnChoicesUpdate } from './communication';
-import { DynamicChoices, IQuestion } from '@sap-ux/ui-prompting';
+import { DynamicChoices, PromptQuestion } from '@sap-ux/ui-prompting';
 import { SupportedBuildingBlocks } from './types';
 import { PromptsGroup } from '@sap-ux/ui-prompting';
 
@@ -29,8 +29,8 @@ export function useChoices(): DynamicChoices {
 export function useQuestions(
     type: SupportedBuildingBlocks,
     filterQuestions?: string[]
-): { questions: IQuestion[]; groups?: PromptsGroup[] } {
-    const [questions, setQuestions] = useState<{ questions: IQuestion[]; groups?: PromptsGroup[] }>({
+): { questions: PromptQuestion[]; groups?: PromptsGroup[] } {
+    const [questions, setQuestions] = useState<{ questions: PromptQuestion[]; groups?: PromptsGroup[] }>({
         groups: undefined,
         questions: []
     });

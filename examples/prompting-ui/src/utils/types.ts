@@ -1,7 +1,7 @@
 import type { FilterBarPromptsAnswer, ChartPromptsAnswer, TablePromptsAnswer } from '@sap-ux/fe-fpm-writer';
-import type { Question, Answers } from 'inquirer';
-import { AddonActions } from '../../.storybook/addons/types';
-import type { DynamicChoices } from '@sap-ux/ui-prompting';
+import type { Answers } from 'inquirer';
+import { AddonActions } from '../addons/types';
+import type { DynamicChoices, PromptsGroup, PromptQuestion } from '@sap-ux/ui-prompting';
 
 export type Actions =
     | GetQuestions
@@ -14,7 +14,8 @@ export type Actions =
     | ResetAnswers
     | AddonActions
     | GetCodeSnippet
-    | UpdateCodeSnippet;
+    | UpdateCodeSnippet
+    | SetValidationResults;
 
 export const GET_QUESTIONS = 'GET_QUESTIONS';
 export const SET_TABLE_QUESTIONS = 'SET_TABLE_QUESTIONS';
@@ -65,7 +66,8 @@ export interface GetQuestions {
 }
 
 interface SetQuestions<T extends Answers> {
-    questions: Question<T>[];
+    questions: PromptQuestion<T>[];
+    groups?: PromptsGroup[];
 }
 
 export type SupportedAnswers = TablePromptsAnswer | ChartPromptsAnswer | FilterBarPromptsAnswer;

@@ -1109,6 +1109,9 @@ importers:
         specifier: 0.0.33
         version: 0.0.33
     devDependencies:
+      '@sap-ux/ui-prompting':
+        specifier: workspace:*
+        version: link:../ui-prompting
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2

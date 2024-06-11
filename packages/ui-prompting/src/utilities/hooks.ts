@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import type { UIComboBoxOption } from '@sap-ux/ui-components';
-import type { DynamicChoices, Choice, IQuestion } from '../components';
-import type { Question } from '../components/Question';
+import type { DynamicChoices, Choice } from '../components';
 import { getDynamicQuestions } from './utils';
+import { PromptQuestion } from '../types';
 
 interface RequestedChoices {
     [key: string]: boolean;
@@ -25,7 +25,7 @@ export function useValue<S>(initialValue: S, propValue?: S): [S, (value: S) => v
     return [value, updateValue];
 }
 
-function getOptions(question: Question, choices?: Choice[]): UIComboBoxOption[] {
+function getOptions(question: PromptQuestion, choices?: Choice[]): UIComboBoxOption[] {
     // Use external/dynamicly populated choices
     let resolvedChoices = choices;
     // Use static choices if dynamic choices are not available
@@ -47,7 +47,7 @@ function getOptions(question: Question, choices?: Choice[]): UIComboBoxOption[] 
     return [];
 }
 
-export function useOptions(question: Question, choices?: Choice[]): UIComboBoxOption[] {
+export function useOptions(question: PromptQuestion, choices?: Choice[]): UIComboBoxOption[] {
     const [options, setOptions] = useState<UIComboBoxOption[]>([]);
     useEffect(() => {
         const options = getOptions(question, choices);
@@ -58,7 +58,7 @@ export function useOptions(question: Question, choices?: Choice[]): UIComboBoxOp
 
 export function useRequestedChoices(
     initialValue: RequestedChoices,
-    latestChoices: DynamicChoices
+    latestChoices: DynamicChoices = {}
 ): [RequestedChoices, (value: string[]) => void] {
     const requests = useRef<RequestedChoices>({ ...initialValue });
     const [pendingRequests, setPendingRequests] = useState<RequestedChoices>({ ...requests.current });
@@ -97,7 +97,7 @@ function isDynamicQuestionsEquals(values1: string[], values2: string[]): boolean
     );
 }
 
-export function useDynamicQuestionsEffect(effect: (names: string[]) => void, questions: IQuestion[]): void {
+export function useDynamicQuestionsEffect(effect: (names: string[]) => void, questions: PromptQuestion[]): void {
     const dynamicChoices = useRef<string[]>([]);
     useEffect(() => {
         const newDynamicChoices = getDynamicQuestions(questions);

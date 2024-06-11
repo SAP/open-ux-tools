@@ -2,7 +2,13 @@ import { UIDefaultButton, UISmallButton, initIcons } from '@sap-ux/ui-components
 import React, { useEffect, useState } from 'react';
 import { SupportedBuildingBlocks } from './utils';
 import { applyAnswers, getChoices, getCodeSnippet, getWebSocket, validateAnswers } from './utils/communication';
-import { Questions, PromptsLayoutType, IQuestion, ValidationResults } from '@sap-ux/ui-prompting';
+import {
+    Questions,
+    PromptsLayoutType,
+    PromptQuestion,
+    ValidationResults,
+    ValidationResult
+} from '@sap-ux/ui-prompting';
 import { useChoices, useQuestions } from './utils/hooks';
 import { Answers } from 'inquirer';
 import { AnswerValue } from '@sap-ux/ui-prompting';
@@ -23,8 +29,8 @@ const STYLE_FLEX = {
     display: 'flex'
 };
 
-const getDefaultAnswers = (questions: IQuestion[]) =>
-    questions.reduce((acc: Answers, q: IQuestion) => {
+const getDefaultAnswers = (questions: PromptQuestion[]) =>
+    questions.reduce((acc: Answers, q: PromptQuestion) => {
         if (q.name) {
             acc = { ...acc, [q.name]: q.default };
         }
@@ -55,7 +61,7 @@ export const BuildingBlockQuestions = (props: {
             ...newAnswers
         });
         if (liveValidation) {
-            await validateAnswers(type, [{ name } as IQuestion], {
+            await validateAnswers(type, [{ name }], {
                 ...getDefaultAnswers(questions),
                 ...newAnswers
             }).then((validationResults) => setValidation({ ...validation, ...validationResults }));
@@ -73,7 +79,7 @@ export const BuildingBlockQuestions = (props: {
             setValidation(validationResults);
             // Call API to apply changes
             console.log('Applying changes... FPM Writer');
-            if (!Object.values(validationResults).some((result) => result.isValid === false)) {
+            if (!Object.values(validationResults).some((result: ValidationResult) => result.isValid === false)) {
                 applyAnswers(type, answers).then(({ buildingBlockType }) => {
                     setAnswers({});
                     setValidation({});

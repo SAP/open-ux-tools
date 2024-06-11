@@ -1,4 +1,5 @@
-import type { Answers as IAnswers, Question } from 'inquirer';
+import type { Answers as IAnswers } from 'inquirer';
+import type { PromptQuestion } from '@sap-ux/ui-prompting';
 import type { BuildingBlockType, Chart, FilterBar, Table } from '../types';
 
 export interface PromptsGroup {
@@ -10,7 +11,7 @@ export interface PromptsGroup {
 export type Answers = IAnswers;
 
 export interface Prompts<T extends Answers> {
-    questions: Question<T>[];
+    questions: PromptQuestion<T>[];
     groups?: PromptsGroup[];
 }
 
@@ -50,6 +51,7 @@ export interface FilterBarPromptsAnswer extends FilterBar, Answers {
     viewOrFragmentFile: string;
 }
 
+// ToDo - import from ui types
 export type ValidationResults = { [questionName: string]: { isValid: boolean; errorMessage?: string } };
 
 export interface AdditionalPromptProperties {

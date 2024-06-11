@@ -1,13 +1,13 @@
 import React from 'react';
 import { Questions } from '@sap-ux/ui-prompting';
-import type { IQuestion } from '@sap-ux/ui-prompting';
+import type { PromptQuestion } from '@sap-ux/ui-prompting';
 import { initIcons } from '@sap-ux/ui-components';
 
 export default { title: 'Basic/Questions' };
 
 initIcons();
 
-const questions: IQuestion[] = [
+const questions: PromptQuestion[] = [
     {
         name: 'Dummy1',
         type: 'input'

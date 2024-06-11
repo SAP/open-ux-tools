@@ -10,7 +10,7 @@ module.exports = {
                 optimizationLevel: 3
             }
         },
-        './addons/register.ts'
+        '../src/addons/register.ts'
     ],
     webpackFinal: async function (config) {
         config.module.rules.push({
