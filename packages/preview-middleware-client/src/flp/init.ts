@@ -180,7 +180,7 @@ export function registerSAPFonts() {
 }
 
 /**
- * Create Respource Bundle based on the scenario.
+ * Create Resource Bundle based on the scenario.
  *
  * @param scenario scenario to be used for the resource bundle.
  */
