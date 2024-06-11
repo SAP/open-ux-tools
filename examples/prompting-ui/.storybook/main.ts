@@ -2,7 +2,7 @@ import { resolve } from 'path';
 import { createWebSocketConnection } from './backend';
 
 module.exports = {
-    stories: ['../stories/*.story.tsx'],
+    stories: ['../src/*.story.tsx'],
     addons: [
         {
             name: 'storybook-addon-turbo-build',
