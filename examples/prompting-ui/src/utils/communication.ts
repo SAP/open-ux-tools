@@ -105,12 +105,7 @@ export function getQuestions<T extends Answers>(
         const handleMessage = (action: Actions) => {
             if ('questions' in action && Array.isArray(action.questions)) {
                 onMessageDetach(expectedActionType, handleMessage);
-                // if (action.type === SET_TABLE_QUESTIONS) {
-                //     const x: PromptQuestion<T> = action.questions[0];
-                // }
-
-                // ToDo resolve casting after fpm-writer types adjustment
-                resolve({ questions: action.questions as any, groups: 'groups' in action ? action.groups : undefined });
+                resolve({ questions: action.questions, groups: 'groups' in action ? action.groups : undefined });
             }
         };
         onMessageAttach(expectedActionType, handleMessage);

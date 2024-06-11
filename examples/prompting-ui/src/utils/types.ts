@@ -1,4 +1,4 @@
-import type { FilterBarPromptsAnswer, ChartPromptsAnswer, TablePromptsAnswer } from '@sap-ux/fe-fpm-writer';
+import type { FilterBarPromptsAnswer, ChartPromptsAnswer, TablePromptsAnswer, Prompts } from '@sap-ux/fe-fpm-writer';
 import type { Answers } from 'inquirer';
 import { AddonActions } from '../addons/types';
 import type { DynamicChoices, PromptsGroup, PromptQuestion } from '@sap-ux/ui-prompting';
@@ -65,22 +65,17 @@ export interface GetQuestions {
     value: SupportedBuildingBlocks;
 }
 
-interface SetQuestions<T extends Answers> {
-    questions: PromptQuestion<T>[];
-    groups?: PromptsGroup[];
-}
-
 export type SupportedAnswers = TablePromptsAnswer | ChartPromptsAnswer | FilterBarPromptsAnswer;
 
-export interface SetTableQuestions extends SetQuestions<TablePromptsAnswer> {
+export interface SetTableQuestions extends Prompts<TablePromptsAnswer> {
     type: typeof SET_TABLE_QUESTIONS;
 }
 
-export interface SetChartQuestions extends SetQuestions<ChartPromptsAnswer> {
+export interface SetChartQuestions extends Prompts<ChartPromptsAnswer> {
     type: typeof SET_CHART_QUESTIONS;
 }
 
-export interface SetFilterBarQuestions extends SetQuestions<FilterBarPromptsAnswer> {
+export interface SetFilterBarQuestions extends Prompts<FilterBarPromptsAnswer> {
     type: typeof SET_FILTERBAR_QUESTIONS;
 }
 

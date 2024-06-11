@@ -606,6 +606,7 @@ export class PromptsAPI {
     public generateBuildingBlockWithAnswers = <
         T extends TablePromptsAnswer | FilterBarPromptsAnswer | ChartPromptsAnswer
     >(
+        // ToDo - different enum???
         buildingBlockType: BuildingBlockType,
         answers: T
     ): Editor => {

@@ -98,10 +98,10 @@ export const validateProject = async (): Promise<string | undefined> => {
         const currentAppPath = getProjectPath();
         const promptsAPI = await PromptsAPI.init(currentAppPath);
         // Call API to get table questions - it should validate of path is supported
-        const { groups, questions } = await promptsAPI.getTableBuildingBlockPrompts(fs);
+        const { questions } = await promptsAPI.getTableBuildingBlockPrompts(fs);
         const entityQuestion = questions.find((question) => question.name === 'entity');
         if (entityQuestion && 'choices' in entityQuestion && typeof entityQuestion.choices === 'function') {
-            await entityQuestion.choices();
+            await entityQuestion.choices({});
         }
     } catch (e) {
         return `Error: ${e.message || e}`;
@@ -155,7 +155,7 @@ async function handleAction(action: Actions): Promise<void> {
                 break;
             }
             case APPLY_ANSWERS: {
-                const { answers, buildingBlockType /*, projectRoot */ } = action;
+                const { answers, buildingBlockType } = action;
                 const _fs = promptsAPI.generateBuildingBlockWithAnswers(buildingBlockType, answers);
                 console.log(currentAppPath);
                 await promisify(_fs.commit).call(_fs);
@@ -190,7 +190,8 @@ async function handleAction(action: Actions): Promise<void> {
                     const { groups, questions } = await promptsAPI.getTableBuildingBlockPrompts(fs);
                     const entityQuestion = questions.find((question) => question.name === 'entity');
                     if (entityQuestion && 'choices' in entityQuestion && typeof entityQuestion.choices === 'function') {
-                        await entityQuestion.choices();
+                        // ToDo - test if can be reusaded validateProject
+                        await entityQuestion.choices({});
                     }
                 } catch (e) {
                     message = `Error: ${e.message || e}`;
