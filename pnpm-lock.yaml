@@ -1558,6 +1558,9 @@ importers:
       findit2:
         specifier: 2.2.3
         version: 2.2.3
+      json-parse-even-better-errors:
+        specifier: 3.0.2
+        version: 3.0.2
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -1571,6 +1574,9 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      '@types/json-parse-better-errors':
+        specifier: 1.0.3
+        version: 1.0.3
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -1583,9 +1589,6 @@ importers:
       '@ui5/manifest':
         specifier: 1.61.0
         version: 1.61.0
-      json-parse-even-better-errors:
-        specifier: 3.0.2
-        version: 3.0.2
       vscode-uri:
         specifier: 3.0.7
         version: 3.0.7
@@ -9360,6 +9363,10 @@ packages:
       parse5: 7.1.2
     dev: true
 
+  /@types/json-parse-better-errors@1.0.3:
+    resolution: {integrity: sha512-wbwigqXeGQq+liQIqxYNylOV4c3ilUqB9czasOS26TSy21Ti1l2Q8c8TEjmaTnc0CgdJDBhIMFJssIbY1FanYA==}
+    dev: true
+
   /@types/json-schema@7.0.12:
     resolution: {integrity: sha512-Hr5Jfhc9eYOQNPYO5WLDq/n4jqijdHNlDXjuAQkkt+mWdQR+XJToOHrsD4cPaMXpn6KO7y2+wM8AZEs8VpBLVA==}
 
@@ -16623,7 +16630,7 @@ packages:
   /json-parse-even-better-errors@3.0.2:
     resolution: {integrity: sha512-fi0NG4bPjCHunUJffmLd0gxssIgkNmArMvis4iNah6Owg1MCJjWhEcDLmsK6iGkJq3tHwbDkTlce70/tmXN4cQ==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
-    dev: true
+    dev: false
 
   /json-schema-traverse@0.4.1:
     resolution: {integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==}
