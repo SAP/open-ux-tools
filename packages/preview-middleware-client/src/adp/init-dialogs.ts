@@ -35,8 +35,9 @@ type Controller = AddFragment | ControllerExtension | ExtensionPoint;
  *
  * @param rta Runtime Authoring
  * @param syncViewsIds Ids of all application sync views
+ * @param minorUI5Version minor UI5 version
  */
-export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[]): void => {
+export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[], minorUI5Version: number): void => {
     const contextMenu = rta.getDefaultPlugins().contextMenu;
 
     contextMenu.addMenuItem({
@@ -44,7 +45,7 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[]): void
         text: getAddFragmentItemText,
         handler: async (overlays: UI5Element[]) => await handler(overlays[0], rta, DialogNames.ADD_FRAGMENT),
         icon: 'sap-icon://attachment-html',
-        enabled: isFragmentCommandEnabled
+        enabled: (overlays: ElementOverlay[]) => isFragmentCommandEnabled(overlays, minorUI5Version)
     });
 
     contextMenu.addMenuItem({
@@ -52,7 +53,7 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[]): void
         text: 'Extend With Controller',
         handler: async (overlays: UI5Element[]) => await handler(overlays[0], rta, DialogNames.CONTROLLER_EXTENSION),
         icon: 'sap-icon://create-form',
-        enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds)
+        enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds, minorUI5Version)
     });
 };
 
@@ -61,14 +62,15 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[]): void
  *
  * @param overlays Control overlays
  * @param syncViewsIds Runtime Authoring
+ * @param minorUI5Version minor UI5 version
  *
  * @returns boolean whether menu item is enabled or not
  */
-export const isControllerExtensionEnabled = (overlays: ElementOverlay[], syncViewsIds: string[]): boolean => {
+export const isControllerExtensionEnabled = (overlays: ElementOverlay[], syncViewsIds: string[], minorUI5Version: number): boolean => {
     if (overlays.length === 0 || overlays.length > 1) return false;
 
     const clickedControlId = FlUtils.getViewForControl(overlays[0].getElement()).getId();
-    const isClickedControlReuseComponent = isReuseComponent(clickedControlId);
+    const isClickedControlReuseComponent = isReuseComponent(clickedControlId, minorUI5Version);
 
     return !syncViewsIds.includes(clickedControlId) && !isClickedControlReuseComponent;
 };
@@ -77,12 +79,11 @@ export const isControllerExtensionEnabled = (overlays: ElementOverlay[], syncVie
  * Function that checks if clicked control is from view which is reuse component
  *
  * @param clickedControlId id of the clicked control
+ * @param minorUI5Version minor UI5 version
  * @returns boolean if clicked control is from reused component view
  */
-export const isReuseComponent = (clickedControlId: string): boolean => {
-    const version = sap.ui.version;
-    const minor = parseInt(version.split('.')[1], 10);
-    if (minor < 114) {
+export const isReuseComponent = (clickedControlId: string, minorUI5Version: number): boolean => {
+    if (minorUI5Version < 114) {
         return false;
     }
 
@@ -104,14 +105,15 @@ export const isReuseComponent = (clickedControlId: string): boolean => {
  * Determines whether the fragment command should be enabled based on the provided overlays.
  *
  * @param {ElementOverlay[]} overlays - An array of ElementOverlay objects representing the UI overlays.
+ * @param minorUI5Version minor UI5 version
  * @returns {boolean} True if the fragment command is enabled, false otherwise.
  */
-export const isFragmentCommandEnabled = (overlays: ElementOverlay[]): boolean => {
+export const isFragmentCommandEnabled = (overlays: ElementOverlay[], minorUI5Version: number): boolean => {
     if (overlays.length === 0 || overlays.length > 1) return false;
 
     const control = overlays[0].getElement();
 
-    return hasStableId(control) && !isReuseComponent(control.getId());
+    return hasStableId(control) && !isReuseComponent(control.getId(), minorUI5Version);
 };
 
 /**

@@ -6,6 +6,7 @@ import type { Scenario } from 'sap/ui/fl/Scenario';
 import { transformNodes as tn } from '../../../../src/cpe/outline/nodes';
 import { sapCoreMock, sapMock } from 'mock/window';
 import ComponentMock from 'mock/sap/ui/core/Component';
+import VersionInfo from 'mock/sap/ui/VersionInfo';
 
 jest.mock('../../../../src/cpe/outline/utils', () => {
     return {
@@ -30,6 +31,10 @@ describe('outline nodes', () => {
         }),
         getProperty: jest.fn().mockReturnValueOnce('Component').mockReturnValueOnce('Component').mockReturnValue('')
     });
+
+    beforeAll(() => {
+        VersionInfo.load.mockResolvedValue({ version: '1.118.1' });
+    })
 
     describe('transformNodes', () => {
         test('empty tree', async () => {
@@ -261,7 +266,6 @@ describe('outline nodes', () => {
         });
 
         test('fill reuse components', async () => {
-            sapMock.ui.version = '1.118.1';
             ComponentMock.getComponentById = jest.fn().mockReturnValue({
                 getManifest: () => {
                     return {

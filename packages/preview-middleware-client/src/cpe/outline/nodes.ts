@@ -4,6 +4,7 @@ import type { Scenario } from 'sap/ui/fl/Scenario';
 import { isEditable } from './utils';
 import { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 import Component from 'sap/ui/core/Component'
+import VersionInfo from 'sap/ui/VersionInfo';
 
 interface AdditionalData {
     text?: string;
@@ -88,6 +89,9 @@ export async function transformNodes(
 ): Promise<OutlineNode[]> {
     const stack = [...input];
     const items: OutlineNode[] = [];
+    const { version } = (await VersionInfo.load()) as { version: string };
+    const versionParts = version.split('.');
+    const minor = parseInt(versionParts[1], 10);
     while (stack.length) {
         const current = stack.shift();
         const editable = isEditable(current?.id);
@@ -112,7 +116,7 @@ export async function transformNodes(
                 children: transformedChildren
             };
 
-            await fillReuseComponents(reuseComponentsIds, current, scenario);
+            await fillReuseComponents(reuseComponentsIds, current, scenario, minor);
 
             items.push(node);
         }
@@ -148,15 +152,15 @@ export async function transformNodes(
  * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
  * @param node view node
  * @param scenario type of project
+ * @param minorUI5Version miner UI5 version 
  */
 async function fillReuseComponents(
     reuseComponentsIds: Set<string>,
     node: OutlineViewNode,
-    scenario: Scenario
+    scenario: Scenario,
+    minorUI5Version: number
 ): Promise<void> {
-    const version = sap.ui.version;
-    const minor = parseInt(version.split('.')[1], 10);
-    if (scenario === 'ADAPTATION_PROJECT' && node?.component && minor >= 114) {
+    if (scenario === 'ADAPTATION_PROJECT' && node?.component && minorUI5Version >= 114) {
         const nodeComponent = Component.getComponentById(node.id);
         if (nodeComponent) {
             const manifest = nodeComponent.getManifest() as Manifest;
