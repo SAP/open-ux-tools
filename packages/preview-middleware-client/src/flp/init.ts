@@ -2,7 +2,7 @@ import Log from 'sap/base/Log';
 import type AppLifeCycle from 'sap/ushell/services/AppLifeCycle';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
 import type { RTAOptions, FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
-import { default as scenarios, type Scenario } from 'sap/ui/fl/Scenario';
+import scenarios, { type Scenario } from 'sap/ui/fl/Scenario';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import AppState from 'sap/ushell/services/AppState';
