@@ -35,7 +35,7 @@ import {
     UpdateProjectPathResult,
     VALIDATE_ANSWERS
 } from '../addons/project/types';
-import { DynamicChoices } from '../../src/components';
+import { DynamicChoices } from '@sap-ux/ui-prompting';
 
 const sampleAppPath = join(__dirname, '../../../fe-fpm-cli/sample/fe-app');
 

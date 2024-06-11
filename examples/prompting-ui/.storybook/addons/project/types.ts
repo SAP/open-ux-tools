@@ -1,6 +1,6 @@
 import { Answers } from 'inquirer';
 import { SupportedBuildingBlocks } from '../../../src/utils';
-import { IQuestion } from '../../../src/components';
+import { IQuestion } from '@sap-ux/ui-prompting';
 
 export type ProjectActions = GetProjectPath | SetProjectPath | UpdateProjectPath | UpdateProjectPathResult;
 
