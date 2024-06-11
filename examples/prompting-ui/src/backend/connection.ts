@@ -156,7 +156,8 @@ async function handleAction(action: Actions): Promise<void> {
             }
             case APPLY_ANSWERS: {
                 const { answers, buildingBlockType } = action;
-                const _fs = promptsAPI.generateBuildingBlockWithAnswers(buildingBlockType, answers);
+                // ToDo recheck after cleanup for answers
+                const _fs = promptsAPI.generateBuildingBlockWithAnswers(buildingBlockType, answers as any);
                 console.log(currentAppPath);
                 await promisify(_fs.commit).call(_fs);
                 const responseAction: ResetAnswers = {
@@ -207,8 +208,9 @@ async function handleAction(action: Actions): Promise<void> {
                 break;
             }
             case GET_CODE_SNIPPET: {
-                const { answers, buildingBlockType /*, projectRoot */ } = action;
-                const codeSnippet = promptsAPI.getCodeSnippet(buildingBlockType, answers);
+                const { answers, buildingBlockType } = action;
+                // ToDo recheck after cleanup for answers
+                const codeSnippet = promptsAPI.getCodeSnippet(buildingBlockType, answers as any);
                 const responseAction: UpdateCodeSnippet = {
                     type: UPDATE_CODE_SNIPPET,
                     buildingBlockType,
