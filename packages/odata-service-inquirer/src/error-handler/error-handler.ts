@@ -185,6 +185,21 @@ export class ErrorHandler {
     };
 
     /**
+     * Find an error property for mapping to a general error type from most to least significant.
+     *
+     * @param error any type of error or object that has an error code, status, name or message
+     * @returns a value that can be used to look up a general error type
+     */
+    private static findErrorValueForMapping = (error: any) =>
+        error.response?.data?.error?.code ||
+        error.response?.status ||
+        error.response?.data ||
+        error.code ||
+        (['TypeError', 'Error'].includes(error.name) ? error.message : error.name) || // For generic error types use the message otherwise the name is more relevant
+        error.message ||
+        error;
+
+    /**
      * Create an instance of the ErrorHandler.
      *
      * @param logger the logger instance to use
@@ -252,8 +267,12 @@ export class ErrorHandler {
      * @returns the error type
      */
     public static getErrorType(error: string | number | Error): ERROR_TYPE {
+        let errorValueToFind = error;
+        if (error instanceof Error) {
+            errorValueToFind = ErrorHandler.findErrorValueForMapping(error);
+        }
         return Object.keys(ERROR_TYPE).find((errorCodeType) => {
-            return ERROR_MAP[errorCodeType as ERROR_TYPE].find((exp: RegExp) => exp.test(error.toString()));
+            return ERROR_MAP[errorCodeType as ERROR_TYPE].find((exp: RegExp) => exp.test(errorValueToFind.toString()));
         }, {}) as ERROR_TYPE;
     }
 
@@ -302,16 +321,7 @@ export class ErrorHandler {
             errorType = error;
         } else {
             // Map error type using more to less specific information if available
-            errorType =
-                ErrorHandler.getErrorType(
-                    error.response?.data?.error?.code ||
-                        error.response?.status ||
-                        error.response?.data ||
-                        error.code ||
-                        (['TypeError', 'Error'].includes(error.name) ? error.message : error.name) || // For generic error types use the message otherwise the name is more relevant
-                        error.message ||
-                        error
-                ) ?? ERROR_TYPE.UNKNOWN;
+            errorType = ErrorHandler.getErrorType(this.findErrorValueForMapping(error)) ?? ERROR_TYPE.UNKNOWN;
         }
 
         return {

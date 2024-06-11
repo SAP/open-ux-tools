@@ -69,7 +69,7 @@ function createTelemetryEvent(eventName: string, telemetryData: TelemetryPropert
 }
 
 /**
- * Validate and parse the odata version from the metadata.
+ * Validate xml and parse the odata version from the metadata xml.
  *
  * @param metadata a metadata string
  * @returns the odata version of the specified metadata, throws an error if the metadata is invalid

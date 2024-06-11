@@ -78,7 +78,7 @@ export class ConnectionValidator {
             // VSCode default extension proxy setting does not allow bypassing cert errors using httpsAgent (as used by Axios)
             // so we must use globalAgent to bypass cert validation
             if (ignoreCertError === true) {
-                this.setRejectUnauthorized(!ignoreCertError);
+                ConnectionValidator.setGlobalRejectUnauthorized(!ignoreCertError);
             }
             if (isBAS) {
                 url.searchParams.append('saml2', 'disabled');
@@ -116,8 +116,8 @@ export class ConnectionValidator {
                 throw e;
             }
         } finally {
-            // Reset cert validation
-            this.setRejectUnauthorized(true);
+            // Reset global cert validation
+            ConnectionValidator.setGlobalRejectUnauthorized(true);
         }
     }
 
@@ -289,15 +289,9 @@ export class ConnectionValidator {
      *
      * @param rejectUnauthorized - true to reject unauthorized certificates, false to accept them
      */
-    public setRejectUnauthorized(rejectUnauthorized: boolean): void {
+    public static setGlobalRejectUnauthorized(rejectUnauthorized: boolean): void {
         if (https.globalAgent.options) {
             https.globalAgent.options.rejectUnauthorized = rejectUnauthorized;
         }
-        /* todo: When would this be used? 
-        //@ts-expect-error - fallbackAgent is not in the types
-        if (https.globalAgent.fallbackAgent) {
-            //@ts-expect-error
-            https.globalAgent.fallbackAgent.options.rejectUnauthorized = rejectUnauthorized;
-        } */
     }
 }
