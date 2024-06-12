@@ -4,7 +4,6 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
-import ProjectProvider from '../../../src/building-block/prompts/utils/project';
 import {
     getAggregationPathPrompt,
     getAnnotationPathQualifierPrompt,
@@ -17,13 +16,12 @@ import {
     getEntityPrompt,
     getFilterBarIdListPrompt,
     getFilterBarIdPrompt,
-    getViewOrFragmentFilePrompt
-} from '../../../src/building-block/prompts/utils/prompts';
-import {
+    getViewOrFragmentFilePrompt,
+    ProjectProvider,
     getAnnotationPathQualifiers,
     getAnnotationTermAlias,
     getEntityTypes
-} from '../../../src/building-block/prompts/utils/service';
+} from '../../../src/building-block/prompts/utils';
 import * as projectAccess from '@sap-ux/project-access';
 
 jest.setTimeout(10000);
