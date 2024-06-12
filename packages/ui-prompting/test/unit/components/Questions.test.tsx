@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import { initIcons } from '@sap-ux/ui-components';
-import { IQuestion, Questions } from '../../../src/components';
+import { Questions } from '../../../src/components';
+import { PromptQuestion } from '../../../src/types';
 
 describe('Questions', () => {
     initIcons();
@@ -18,11 +19,11 @@ describe('Questions', () => {
                     {
                         type: 'input',
                         name: 'testInput'
-                    } as IQuestion,
+                    },
                     {
                         type: 'checkbox',
                         name: 'testCheckbox'
-                    } as IQuestion
+                    }
                 ]}
             />
         );
@@ -32,7 +33,7 @@ describe('Questions', () => {
 
     it('Dynamic questions', async () => {
         const onChoiceRequest = jest.fn();
-        const dynamicQuestion1: IQuestion = {
+        const dynamicQuestion1: PromptQuestion = {
             type: 'list',
             name: 'test1',
             selectType: 'dynamic'
@@ -102,7 +103,7 @@ describe('Questions', () => {
                         selectType: 'static',
                         name: 'filterBarId',
                         message: 'Filter Bar Id'
-                    } as IQuestion
+                    }
                 ]}
             />
         );
@@ -125,7 +126,7 @@ describe('Questions', () => {
                         selectType: 'static',
                         name: 'filterBarId',
                         message: 'Filter Bar Id 2'
-                    } as IQuestion
+                    }
                 ]}
             />
         );
