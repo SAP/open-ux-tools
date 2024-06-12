@@ -1,4 +1,5 @@
-import type { Answers as IAnswers, Question } from 'inquirer';
+import type { Answers as IAnswers } from 'inquirer';
+import type { PromptQuestion } from '@sap-ux/ui-prompting';
 import type { BuildingBlockType, Chart, FilterBar, Table } from '../types';
 
 export interface PromptsGroup {
@@ -10,7 +11,7 @@ export interface PromptsGroup {
 export type Answers = IAnswers;
 
 export interface Prompts<T extends Answers> {
-    questions: Question<T>[];
+    questions: PromptQuestion<Partial<T>>[];
     groups?: PromptsGroup[];
 }
 
@@ -18,6 +19,7 @@ export interface BuildingBlockTypePromptsAnswer extends Answers {
     buildingBlockType: BuildingBlockType;
 }
 
+// ToDo - I think should not extend from Table
 export interface TablePromptsAnswer extends Table, Answers {
     viewOrFragmentFile: string;
     aggregationPath: string;
@@ -32,6 +34,7 @@ export interface TablePromptsAnswer extends Table, Answers {
     tableHeaderText: string;
 }
 
+// ToDo - I think should not extend from Chart
 export interface ChartPromptsAnswer extends Chart, Answers {
     viewOrFragmentFile: string;
     aggregationPath: string;
@@ -44,12 +47,14 @@ export interface ChartPromptsAnswer extends Chart, Answers {
     bindingContextType: 'relative' | 'absolute';
 }
 
+// ToDo - I think should not extend from FilterBar
 export interface FilterBarPromptsAnswer extends FilterBar, Answers {
     qualifier: string;
     entity: string;
     viewOrFragmentFile: string;
 }
 
+// ToDo - import from ui types
 export type ValidationResults = { [questionName: string]: { isValid: boolean; errorMessage?: string } };
 
 export interface AdditionalPromptProperties {

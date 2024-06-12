@@ -20,8 +20,8 @@ import {
     UpdateCodeSnippet,
     SET_VALIDATION_RESULTS,
     SetValidationResults
-} from '../../stories/utils/types';
-import { Actions, GET_CODE_SNIPPET, ResetAnswers, SetChoices, GetChoices } from '../../stories/utils/types';
+} from '../../src/utils/types';
+import { Actions, GET_CODE_SNIPPET, ResetAnswers, SetChoices, GetChoices } from '../../src/utils/types';
 import { AddonActions } from '../addons/types';
 import { handleAction as handleAddonAction } from '../addons/project';
 import { existsSync } from 'fs';
@@ -98,10 +98,10 @@ export const validateProject = async (): Promise<string | undefined> => {
         const currentAppPath = getProjectPath();
         const promptsAPI = await PromptsAPI.init(currentAppPath);
         // Call API to get table questions - it should validate of path is supported
-        const { groups, questions } = await promptsAPI.getTableBuildingBlockPrompts(fs);
+        const { questions } = await promptsAPI.getTableBuildingBlockPrompts(fs);
         const entityQuestion = questions.find((question) => question.name === 'entity');
         if (entityQuestion && 'choices' in entityQuestion && typeof entityQuestion.choices === 'function') {
-            await entityQuestion.choices();
+            await entityQuestion.choices({});
         }
     } catch (e) {
         return `Error: ${e.message || e}`;
@@ -155,8 +155,9 @@ async function handleAction(action: Actions): Promise<void> {
                 break;
             }
             case APPLY_ANSWERS: {
-                const { answers, buildingBlockType /*, projectRoot */ } = action;
-                const _fs = promptsAPI.generateBuildingBlockWithAnswers(buildingBlockType, answers);
+                const { answers, buildingBlockType } = action;
+                // ToDo recheck after cleanup for answers
+                const _fs = promptsAPI.generateBuildingBlockWithAnswers(buildingBlockType, answers as any);
                 console.log(currentAppPath);
                 await promisify(_fs.commit).call(_fs);
                 const responseAction: ResetAnswers = {
@@ -190,7 +191,8 @@ async function handleAction(action: Actions): Promise<void> {
                     const { groups, questions } = await promptsAPI.getTableBuildingBlockPrompts(fs);
                     const entityQuestion = questions.find((question) => question.name === 'entity');
                     if (entityQuestion && 'choices' in entityQuestion && typeof entityQuestion.choices === 'function') {
-                        await entityQuestion.choices();
+                        // ToDo - test if can be reusaded validateProject
+                        await entityQuestion.choices({});
                     }
                 } catch (e) {
                     message = `Error: ${e.message || e}`;
@@ -206,8 +208,9 @@ async function handleAction(action: Actions): Promise<void> {
                 break;
             }
             case GET_CODE_SNIPPET: {
-                const { answers, buildingBlockType /*, projectRoot */ } = action;
-                const codeSnippet = promptsAPI.getCodeSnippet(buildingBlockType, answers);
+                const { answers, buildingBlockType } = action;
+                // ToDo recheck after cleanup for answers
+                const codeSnippet = promptsAPI.getCodeSnippet(buildingBlockType, answers as any);
                 const responseAction: UpdateCodeSnippet = {
                     type: UPDATE_CODE_SNIPPET,
                     buildingBlockType,

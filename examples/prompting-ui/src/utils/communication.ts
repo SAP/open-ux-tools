@@ -9,8 +9,8 @@ import {
     UpdateProjectPathResultPayload,
     VALIDATE_ANSWERS,
     ValidateAnswers
-} from '../../.storybook/addons/project/types';
-import type { DynamicChoices, IQuestion, ValidationResults } from '@sap-ux/ui-prompting';
+} from '../addons/project/types';
+import type { DynamicChoices, PromptQuestion, ValidationResults } from '@sap-ux/ui-prompting';
 import { PromptsGroup } from '@sap-ux/ui-prompting';
 import type { Actions, GetChoices, GetCodeSnippet } from './types';
 import {
@@ -26,6 +26,7 @@ import {
     SET_VALIDATION_RESULTS,
     SupportedBuildingBlocks
 } from './types';
+import { ProjectActions } from '../addons/project';
 
 let ws: WebSocket | undefined;
 
@@ -88,9 +89,9 @@ const QUESTIONS_TYPE_MAP = new Map([
     [SupportedBuildingBlocks.FilterBar, SET_FILTERBAR_QUESTIONS]
 ]);
 
-export function getQuestions(
+export function getQuestions<T extends Answers>(
     type: SupportedBuildingBlocks
-): Promise<{ questions: IQuestion[]; groups?: PromptsGroup[] }> {
+): Promise<{ questions: PromptQuestion<T>[]; groups?: PromptsGroup[] }> {
     return new Promise((resolve, error) => {
         const getAction: GetQuestions = {
             type: GET_QUESTIONS,
@@ -104,7 +105,7 @@ export function getQuestions(
         const handleMessage = (action: Actions) => {
             if ('questions' in action && Array.isArray(action.questions)) {
                 onMessageDetach(expectedActionType, handleMessage);
-                resolve({ questions: action.questions as IQuestion[], groups: action.groups });
+                resolve({ questions: action.questions, groups: 'groups' in action ? action.groups : undefined });
             }
         };
         onMessageAttach(expectedActionType, handleMessage);
@@ -152,7 +153,7 @@ export function applyAnswers(
 
 export function validateAnswers(
     value: SupportedBuildingBlocks,
-    questions: IQuestion[],
+    questions: PromptQuestion[],
     answers: Answers
 ): Promise<ValidationResults> {
     return new Promise((resolve, error) => {
@@ -165,7 +166,9 @@ export function validateAnswers(
         sendMessage(getAction);
         const handleMessage = (action: Actions) => {
             onMessageDetach(SET_VALIDATION_RESULTS, handleMessage);
-            resolve({ ...action.validationResults });
+            if (action.type === SET_VALIDATION_RESULTS) {
+                resolve({ ...action.validationResults });
+            }
         };
         onMessageAttach(SET_VALIDATION_RESULTS, handleMessage);
     });

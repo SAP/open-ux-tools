@@ -1,27 +1,21 @@
 import React from 'react';
-import type {
-    InputQuestion as _InputQuestion,
-    ListQuestion as _ListQuestion,
-    CheckboxQuestion as _CheckboxQuestion
-} from 'inquirer';
 import { Input, Select, MultiSelect } from '../Inputs';
-import type { AdditionalQuestionProperties, Choice } from '../Questions';
+import type { Choice } from '../Questions';
 import { useOptions } from '../../utilities';
 import './Question.scss';
+import { PromptQuestion } from '../../types';
 
-export type ListQuestion = _ListQuestion & AdditionalQuestionProperties;
-export type InputQuestion = _InputQuestion;
-export type MultiSelectQuestion = _CheckboxQuestion & AdditionalQuestionProperties;
-export type Question = ListQuestion | InputQuestion | MultiSelectQuestion;
+// ToDo - move to types
 export interface PromptsGroup {
     id: string;
     title: string;
     description: string[];
 }
+// ToDo -recheck type
 export type AnswerValue = string | number | boolean | undefined;
 
 export interface QuestionProps {
-    question: Question;
+    question: PromptQuestion;
     answers: Record<string, AnswerValue>;
     onChange: (name: string, answer: AnswerValue, dependantPromptNames?: string[]) => void;
     isLoading?: boolean;

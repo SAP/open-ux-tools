@@ -1,7 +1,8 @@
-import type { AnswerValue, InputQuestion, Question } from '../components/Question';
+import type { AnswerValue } from '../components/Question';
+import type { PromptQuestion } from '../types';
 
 export function getDependantQuestions(
-    questions: Question[],
+    questions: PromptQuestion[],
     name: string,
     dependantPromptNames: string[] = []
 ): string[] {
@@ -16,9 +17,9 @@ export function getDependantQuestions(
     return dependantPromptNames;
 }
 
-export function getDynamicQuestions(questions: Question[]): string[] {
+export function getDynamicQuestions(questions: PromptQuestion[]): string[] {
     const dynamicQuestions = questions.filter(
-        (question): question is Required<Pick<Question, 'name'>> =>
+        (question): question is Required<Pick<PromptQuestion, 'name'>> =>
             'selectType' in question && question.selectType === 'dynamic' && !!question.name
     );
     return dynamicQuestions.map((question) => question.name);
@@ -26,7 +27,7 @@ export function getDynamicQuestions(questions: Question[]): string[] {
 
 export function updateAnswer(
     answers: Record<string, AnswerValue>,
-    questions: Question[],
+    questions: PromptQuestion[],
     name: string,
     value?: AnswerValue
 ): Record<string, AnswerValue> {
@@ -40,8 +41,4 @@ export function updateAnswer(
         updatedAnswers[dependantName] = '';
     });
     return updatedAnswers;
-}
-
-export function isInputType(question: Question): question is InputQuestion {
-    return question.type === 'input';
 }

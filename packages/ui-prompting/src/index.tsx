@@ -1,3 +1,2 @@
 export * from './components';
-
-export type ValidationResults = any;
+export * from './types';

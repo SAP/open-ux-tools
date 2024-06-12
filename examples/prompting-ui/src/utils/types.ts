@@ -1,7 +1,13 @@
-import type { FilterBarPromptsAnswer, ChartPromptsAnswer, TablePromptsAnswer } from '@sap-ux/fe-fpm-writer';
-import type { Question, Answers } from 'inquirer';
-import { AddonActions } from '../../.storybook/addons/types';
-import type { DynamicChoices } from '@sap-ux/ui-prompting';
+import {
+    type FilterBarPromptsAnswer,
+    type ChartPromptsAnswer,
+    type TablePromptsAnswer,
+    type Prompts
+} from '@sap-ux/fe-fpm-writer';
+import { BuildingBlockType as SupportedBuildingBlocks } from '@sap-ux/fe-fpm-writer/dist/building-block/types';
+import type { Answers } from 'inquirer';
+import { AddonActions } from '../addons/types';
+import type { DynamicChoices, PromptsGroup, PromptQuestion } from '@sap-ux/ui-prompting';
 
 export type Actions =
     | GetQuestions
@@ -14,7 +20,8 @@ export type Actions =
     | ResetAnswers
     | AddonActions
     | GetCodeSnippet
-    | UpdateCodeSnippet;
+    | UpdateCodeSnippet
+    | SetValidationResults;
 
 export const GET_QUESTIONS = 'GET_QUESTIONS';
 export const SET_TABLE_QUESTIONS = 'SET_TABLE_QUESTIONS';
@@ -26,16 +33,8 @@ export const APPLY_ANSWERS = 'APPLY_ANSWERS';
 export const RESET_ANSWERS = 'RESET_ANSWERS';
 export const SET_VALIDATION_RESULTS = 'SET_VALIDATION_RESULTS';
 
-/**
- * Building block type.
- *
- * @enum {string}
- */
-export enum SupportedBuildingBlocks {
-    FilterBar = 'filter-bar',
-    Chart = 'chart',
-    Table = 'table'
-}
+// ToDo use new exported enum from fpm-writer/api
+export { SupportedBuildingBlocks };
 
 export interface ApplyAnswers {
     type: typeof APPLY_ANSWERS;
@@ -64,21 +63,17 @@ export interface GetQuestions {
     value: SupportedBuildingBlocks;
 }
 
-interface SetQuestions<T extends Answers> {
-    questions: Question<T>[];
-}
-
 export type SupportedAnswers = TablePromptsAnswer | ChartPromptsAnswer | FilterBarPromptsAnswer;
 
-export interface SetTableQuestions extends SetQuestions<TablePromptsAnswer> {
+export interface SetTableQuestions extends Prompts<TablePromptsAnswer> {
     type: typeof SET_TABLE_QUESTIONS;
 }
 
-export interface SetChartQuestions extends SetQuestions<ChartPromptsAnswer> {
+export interface SetChartQuestions extends Prompts<ChartPromptsAnswer> {
     type: typeof SET_CHART_QUESTIONS;
 }
 
-export interface SetFilterBarQuestions extends SetQuestions<FilterBarPromptsAnswer> {
+export interface SetFilterBarQuestions extends Prompts<FilterBarPromptsAnswer> {
     type: typeof SET_FILTERBAR_QUESTIONS;
 }
 

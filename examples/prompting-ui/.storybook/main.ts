@@ -1,8 +1,8 @@
 import { resolve } from 'path';
-import { createWebSocketConnection } from './backend';
+import { createWebSocketConnection } from '../src/backend';
 
 module.exports = {
-    stories: ['../stories/*.story.tsx'],
+    stories: ['../src/*.story.tsx'],
     addons: [
         {
             name: 'storybook-addon-turbo-build',
@@ -10,7 +10,7 @@ module.exports = {
                 optimizationLevel: 3
             }
         },
-        './addons/register.ts'
+        '../src/addons/register.ts'
     ],
     webpackFinal: async function (config) {
         config.module.rules.push({

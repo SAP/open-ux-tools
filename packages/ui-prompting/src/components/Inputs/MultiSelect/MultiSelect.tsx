@@ -6,7 +6,6 @@ import { useValue, getLabelRenderer } from '../../../utilities';
 
 export interface MultiSelectProps extends CheckboxQuestion {
     value?: string | number | boolean;
-    selectType: 'static' | 'dynamic';
     onChange: (name: string, value: string | number | undefined, dependantPromptNames?: string[]) => void;
     dependantPromptNames?: string[];
     required?: boolean;
