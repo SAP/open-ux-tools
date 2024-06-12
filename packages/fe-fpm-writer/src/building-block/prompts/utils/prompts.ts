@@ -22,8 +22,8 @@ export function getBooleanPrompt(
     defaultValue?: string,
     additionalProperties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
-    const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
+        ...additionalProperties,
         type: 'list',
         name,
         selectType: 'static',
@@ -32,11 +32,7 @@ export function getBooleanPrompt(
             { name: 'False', value: false },
             { name: 'True', value: true }
         ],
-        default: defaultValue,
-        groupId,
-        required,
-        additionalInfo,
-        placeholder
+        default: defaultValue
     };
 }
 
@@ -56,8 +52,8 @@ export function getAnnotationPathQualifierPrompt(
     annotationTerm: UIAnnotationTerms[],
     additionalProperties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
-    const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
+        ...additionalProperties,
         type: 'list',
         name,
         selectType: 'dynamic',
@@ -75,11 +71,7 @@ export function getAnnotationPathQualifierPrompt(
                 );
             }
             return choices;
-        },
-        groupId,
-        required,
-        additionalInfo,
-        placeholder
+        }
     };
 }
 
@@ -101,8 +93,8 @@ export function getViewOrFragmentFilePrompt(
     dependantPromptNames = ['aggregationPath'], // dependent prompts
     additionalProperties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
-    const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
+        ...additionalProperties,
         type: 'list',
         selectType: 'dynamic',
         name: 'viewOrFragmentFile',
@@ -121,10 +113,7 @@ export function getViewOrFragmentFilePrompt(
             }));
         },
         validate: (value: string) => (value ? true : validationErrorMessage),
-        groupId,
-        required,
-        additionalInfo,
-        placeholder: placeholder || 'Select a view or fragment file'
+        placeholder: additionalProperties.placeholder ?? 'Select a view or fragment file'
     };
 }
 
@@ -133,27 +122,20 @@ export async function getCAPServicePrompt(
     projectProvider: ProjectProvider,
     dependantPromptNames?: string[],
     additionalProperties: Partial<ListPromptQuestion> = {}
-): Promise<ListQuestion> {
-    const { required, groupId, additionalInfo, placeholder } = additionalProperties;
-    let prompt = {};
-    // ToDo ???
-    await getCAPServiceChoices(projectProvider).then((services) => {
-        const defaultValue = services.length === 1 && services[0].value;
-        prompt = {
-            type: 'list',
-            name: 'service',
-            selectType: 'dynamic',
-            dependantPromptNames,
-            message,
-            choices: services,
-            default: defaultValue,
-            groupId,
-            required,
-            additionalInfo,
-            placeholder: placeholder || 'Select a service'
-        } as ListQuestion;
-    });
-    return prompt as ListQuestion;
+): Promise<ListPromptQuestion> {
+    const services = await getCAPServiceChoices(projectProvider);
+    const defaultValue = services.length === 1 ? services[0].value : undefined;
+    return {
+        ...additionalProperties,
+        type: 'list',
+        name: 'service',
+        selectType: 'dynamic',
+        dependantPromptNames,
+        message,
+        choices: services,
+        default: defaultValue,
+        placeholder: additionalProperties.placeholder ?? 'Select a service'
+    };
 }
 
 /**
@@ -170,18 +152,15 @@ export function getEntityPrompt(
     dependantPromptNames?: string[],
     additionalProperties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
-    const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
+        ...additionalProperties,
         type: 'list',
         name: 'entity',
         selectType: 'dynamic',
         dependantPromptNames,
         message,
         choices: getEntityChoices.bind(null, projectProvider),
-        groupId,
-        required,
-        additionalInfo,
-        placeholder: placeholder || 'Select an entity'
+        placeholder: additionalProperties.placeholder ?? 'Select an entity'
     };
 }
 
@@ -233,8 +212,8 @@ export function getAggregationPathPrompt(
     fs: Editor,
     additionalProperties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
-    const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
+        ...additionalProperties,
         type: 'list',
         name: 'aggregationPath',
         selectType: 'dynamic',
@@ -248,10 +227,7 @@ export function getAggregationPathPrompt(
             }
             return choices;
         },
-        groupId,
-        required,
-        additionalInfo,
-        placeholder: placeholder || 'Enter an aggregation path'
+        placeholder: additionalProperties.placeholder ?? 'Enter an aggregation path'
     };
 }
 
@@ -287,7 +263,10 @@ export function getXPathStringsForXmlFile(xmlFilePath: string, fs: Editor): Reco
         const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent);
         const nodes = [{ parentNode: '', node: xmlDocument.firstChild }];
         while (nodes && nodes.length > 0) {
-            const { parentNode, node } = (nodes as any).shift();
+            const { parentNode, node } = nodes.shift()!;
+            if (!node) {
+                continue;
+            }
             result[`${parentNode}/${node.nodeName}`] = augmentXpathWithLocalNames(`${parentNode}/${node.nodeName}`);
             for (let index = 0; index < node.childNodes.length; index++) {
                 const childNode = node.childNodes[index];
@@ -337,15 +316,11 @@ export function getFilterBarIdPrompt(
     message: string,
     additionalProperties: Partial<InputPromptQuestion> = {}
 ): InputPromptQuestion {
-    const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
+        ...additionalProperties,
         type: 'input',
         name: 'filterBar',
-        message,
-        groupId,
-        required,
-        additionalInfo,
-        placeholder
+        message
     };
 }
 
@@ -359,16 +334,13 @@ export function getFilterBarIdListPrompt(
     message: string,
     additionalProperties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
-    const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
+        ...additionalProperties,
         type: 'list',
         selectType: 'dynamic',
         name: 'filterBarId',
         message,
-        groupId,
-        required,
-        additionalInfo,
-        placeholder: placeholder || 'Select or enter a filter bar ID'
+        placeholder: additionalProperties.placeholder ?? 'Select or enter a filter bar ID'
     };
 }
 
@@ -383,8 +355,8 @@ export function getBindingContextTypePrompt(
     defaultValue?: string,
     additionalProperties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
-    const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
+        ...additionalProperties,
         type: 'list',
         name: 'bindingContextType',
         selectType: 'static',
@@ -393,11 +365,7 @@ export function getBindingContextTypePrompt(
             { name: 'Relative', value: 'relative' },
             { name: 'Absolute', value: 'absolute' }
         ],
-        default: defaultValue,
-        groupId,
-        required,
-        additionalInfo,
-        placeholder
+        default: defaultValue
     };
 }
 
@@ -416,17 +384,14 @@ export function getBuildingBlockIdPrompt(
     // ToDo avoid any
     validateFn?: (input: any, answers?: Answers) => string | boolean | Promise<string | boolean>
 ): InputPromptQuestion {
-    const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
+        ...additionalProperties,
         type: 'input',
         name: 'id',
         message,
         // ToDo avoid any
         validate: validateFn ? validateFn : (value: any) => (value ? true : validationErrorMessage),
-        groupId,
-        required,
-        additionalInfo,
         default: defaultValue,
-        placeholder: placeholder || 'Enter a building block ID'
+        placeholder: additionalProperties.placeholder ?? 'Enter a building block ID'
     };
 }

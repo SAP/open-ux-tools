@@ -541,20 +541,20 @@ export class PromptsAPI {
         answers: Answers,
         type: BuildingBlockType
     ): Promise<ValidationResults> {
-        // ToDo avoid any
-        let blockPrompts: { questions: any[]; groups?: PromptsGroup[] } = { questions: [] };
+        let originalPrompts: { questions: PromptQuestion[]; groups?: PromptsGroup[] } = { questions: [] };
         if (type === BuildingBlockType.Table) {
-            blockPrompts = await this.getTableBuildingBlockPrompts(fs);
+            originalPrompts = await this.getTableBuildingBlockPrompts(fs);
         } else if (type === BuildingBlockType.Chart) {
-            blockPrompts = await this.getChartBuildingBlockPrompts(fs);
+            originalPrompts = await this.getChartBuildingBlockPrompts(fs);
         } else if (type === BuildingBlockType.FilterBar) {
-            blockPrompts = await this.getFilterBarBuildingBlockPrompts(fs);
+            originalPrompts = await this.getFilterBarBuildingBlockPrompts(fs);
         }
         let result: ValidationResults = {};
         for (const q of questions) {
-            const question: Question & { name: string; required?: boolean } = blockPrompts.questions.find(
-                (blockQuestion) => q.name === blockQuestion.name
-            );
+            const question = originalPrompts.questions.find((blockQuestion) => q.name === blockQuestion.name);
+            if (!question || !question.name) {
+                continue;
+            }
             if (question.required && (answers[question.name] === undefined || answers[question.name] === '')) {
                 result = {
                     ...result,

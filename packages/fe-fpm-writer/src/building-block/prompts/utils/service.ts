@@ -42,7 +42,7 @@ export function getMergedMetadata(annotationService: FioriAnnotationService): Co
 }
 
 const getServiceMetadata = async (project: Project, serviceName: string, appName: string) => {
-    const annotationService = await getAnnotationService(project as any, serviceName, appName);
+    const annotationService = await getAnnotationService(project, serviceName, appName);
     return getMergedMetadata(annotationService);
 };
 
@@ -82,9 +82,9 @@ export async function getEntityTypes(projectProvider: ProjectProvider) {
  *
  * @param annotationTerm
  */
-export function getAnnotationTermAlias(annotationTerm: UIAnnotationTerms) {
+export function getAnnotationTermAlias(annotationTerm: UIAnnotationTerms): [keyof EntityTypeAnnotations, string] {
     const [, , , vocabularyName, , annotationTermName] = annotationTerm.split('.');
-    return [vocabularyName, annotationTermName] as [keyof EntityTypeAnnotations, string];
+    return [vocabularyName as keyof EntityTypeAnnotations, annotationTermName];
 }
 
 /**
@@ -104,7 +104,7 @@ export async function getAnnotationPathQualifiers(
     try {
         const project = await projectProvider.getProject();
         const annotationService = await getAnnotationService(
-            project as any,
+            project,
             getMainService(project, projectProvider.appId),
             projectProvider.appId
         );
