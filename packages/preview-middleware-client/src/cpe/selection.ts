@@ -124,6 +124,7 @@ function handleOverlaySelection(rta: RuntimeAuthoring, control: UI5Element): boo
  *
  * @param {ActionSenderFunction} sendAction - The function to send the action
  * @param {UI5Element | Component | ManagedObject | null} control - The control to be selected
+ * @param {ElementOverlay} overlayControl - An ElementOverlay representing the UI overlay
  * @returns {Promise<void>} - A Promise that resolves when the control is successfully selected
  */
 async function handleControlSelected(
@@ -143,7 +144,7 @@ async function handleControlSelected(
 }
 
 /**
- * Retrieves the innermost UI5Element from a given control.
+ * Incase of `building blocks`, retrieves the innermost UI5Element from a given control.
  *
  * @param {UI5ElementWithContent} control - The control to retrieve the UI5Element from
  * @returns {UI5Element} - The innermost UI5Element from the given control
@@ -206,7 +207,7 @@ export class SelectionService implements Service {
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (selectControl.match(action)) {
                 const id = action.payload;
-                let control = sap.ui.getCore().byId(id);
+                const control = sap.ui.getCore().byId(id);
                 if (!control) {
                     const component = getComponent(id);
                     if (component) {
@@ -215,14 +216,12 @@ export class SelectionService implements Service {
                     return;
                 }
                 eventOrigin.add('outline');
-                control = tryCtrl(control as UI5ElementWithContent);
-                const handled = handleOverlaySelection(this.rta, control);
+                const triedCtrl = tryCtrl(control as UI5ElementWithContent);
+                const handled = handleOverlaySelection(this.rta, triedCtrl);
                 if (handled) {
                     return;
                 }
-                // get parent ctrl in case of building blocks if not handled in overlay selection
-                const parentCtrl = tryParentCtrl(control);
-                await handleControlSelected(sendAction, parentCtrl);
+                await handleControlSelected(sendAction, control);
             }
         });
     }

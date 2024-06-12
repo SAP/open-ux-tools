@@ -949,8 +949,8 @@ describe('SelectionService', () => {
         }
         expect(sendActionMock).toHaveBeenNthCalledWith(1, { type: '[ext] control-selected', payload: mockControlData });
         expect(sendActionMock).toHaveBeenNthCalledWith(2, { type: '[ext] control-selected', payload: mockControlData });
-        expect(buildControlDataSpy).toHaveBeenNthCalledWith(1, { isA });
-        expect(buildControlDataSpy).toHaveBeenNthCalledWith(2, cache.get('testIdfinal'));
+        expect(buildControlDataSpy).toHaveBeenNthCalledWith(1, { isA }, undefined);
+        expect(buildControlDataSpy).toHaveBeenNthCalledWith(2, cache.get('testIdfinal'), undefined);
     });
     test('select control [FE] - outline panel', async () => {
         const actionHandlers: ((action: ExternalAction) => void)[] = [];
