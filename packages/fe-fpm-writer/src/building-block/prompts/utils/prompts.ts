@@ -6,7 +6,7 @@ import type { Editor } from 'mem-fs-editor';
 import { relative } from 'path';
 import type ProjectProvider from './project';
 import { getAnnotationPathQualifiers, getEntityTypes } from './service';
-import { AdditionalPromptProperties } from '../prompts';
+import { AdditionalPromptProperties } from '..';
 import { getCapServiceName } from '@sap-ux/project-access';
 
 /**
@@ -238,6 +238,7 @@ export function getAggregationPathPrompt(
         name: 'aggregationPath',
         selectType: 'dynamic',
         message,
+        // ToDo avoid any
         choices: (answers: any) => {
             const { viewOrFragmentFile } = answers;
             const choices = getChoices(getXPathStringsForXmlFile(viewOrFragmentFile, fs));
@@ -411,6 +412,7 @@ export function getBuildingBlockIdPrompt(
     validationErrorMessage: string,
     defaultValue?: string,
     additionalProperties: AdditionalPromptProperties = {},
+    // ToDo avoid any
     validateFn?: (input: any, answers?: Answers) => string | boolean | Promise<string | boolean>
 ): InputQuestion {
     const { required, groupId, additionalInfo, placeholder } = additionalProperties;
@@ -418,6 +420,7 @@ export function getBuildingBlockIdPrompt(
         type: 'input',
         name: 'id',
         message,
+        // ToDo avoid any
         validate: validateFn ? validateFn : (value: any) => (value ? true : validationErrorMessage),
         groupId,
         required,

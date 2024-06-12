@@ -5,7 +5,6 @@ import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { i18nNamespaces, initI18n, translate } from '../../i18n';
 import { BuildingBlockConfig, BuildingBlockType } from '../types';
-import ProjectProvider from '../utils/project';
 import {
     getAggregationPathPrompt,
     getAnnotationPathQualifierPrompt,
@@ -18,9 +17,10 @@ import {
     getEntityPrompt,
     getFilterBarIdListPrompt,
     getViewOrFragmentFilePrompt,
-    getXPathStringsForXmlFile
-} from '../utils/prompts';
-import { getAnnotationPathQualifiers } from '../utils/service';
+    getXPathStringsForXmlFile,
+    ProjectProvider,
+    getAnnotationPathQualifiers
+} from './utils';
 import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
 import { relative } from 'path';
 import type {
@@ -540,6 +540,7 @@ export class PromptsAPI {
         answers: Answers,
         type: BuildingBlockType
     ): Promise<ValidationResults> {
+        // ToDo avoid any
         let blockPrompts: { questions: any[]; groups?: PromptsGroup[] } = { questions: [] };
         if (type === BuildingBlockType.Table) {
             blockPrompts = await this.getTableBuildingBlockPrompts(fs);

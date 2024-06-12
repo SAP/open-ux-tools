@@ -3,10 +3,11 @@ import { Project, getProject } from '@sap-ux/project-access';
 import path, { join } from 'path';
 import { type Editor } from 'mem-fs-editor';
 
+// ToDo - I think we do not need ProjectProvider anymore
 /**
  *
  */
-class ProjectProvider {
+export class ProjectProvider {
     public appId: string;
     /**
      *
@@ -40,5 +41,3 @@ class ProjectProvider {
         return getProject(this.root.replace(this.appId, ''));
     }
 }
-
-export default ProjectProvider;
