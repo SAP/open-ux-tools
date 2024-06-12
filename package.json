@@ -65,7 +65,9 @@
             "@testing-library/jest-dom>@adobe/css-tools@<4.3.2": ">=4.3.2",
             "nx-cloud>axios@<1.6.8": ">=1.6.8",
             "nx-cloud>tar@<6.2.1": ">=6.2.1",
-            "@sap/bas-sdk>axios@<1.6.8": ">=1.6.8"
+            "@sap/bas-sdk>axios@<1.6.8": ">=1.6.8",
+            "@sap/wing-service-explorer>axios@<1.6.8": ">=1.6.8",
+            "@sap/wing-service-explorer>fast-xml-parser@4.2.4": ">=4.2.7"
         }
     }
 }
