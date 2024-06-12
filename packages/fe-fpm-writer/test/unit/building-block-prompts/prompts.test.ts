@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { PromptsAPI } from '../../../src';
-import ProjectProvider from '../../../src/building-block/prompts/utils/project';
+import { ProjectProvider } from '../../../src/building-block/prompts/utils/project';
 
 describe('Prompts', () => {
     const fs = jest.fn() as any;
