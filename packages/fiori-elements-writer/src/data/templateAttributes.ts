@@ -176,7 +176,7 @@ export const TemplateTypeAttributes: TemplateAttributes = {
 
 export const annotationReuseLibs: AnnotationReuseLibs[] = [
     {
-        supportedODataVersions: [OdataVersion.v4, OdataVersion.v2],
+        supportedODataVersions: [OdataVersion.v4],
         annotation: 'UI.Note',
         reuseLib: 'sap.nw.core.gbt.notes.lib.reuse'
     }
