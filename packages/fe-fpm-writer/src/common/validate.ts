@@ -35,9 +35,10 @@ export function validateBasePath(basePath: string, fs?: Editor): boolean {
         throw new Error(`Invalid project folder. Cannot find required file ${manifestPath}`);
     } else {
         const manifest = fs.readJSON(manifestPath) as any;
-        if ((manifest['sap.ui5']?.dependencies?.libs?.['sap.fe.templates'] !== undefined) === false) {
+        const ui5Dependencies = manifest['sap.ui5']?.dependencies?.libs;
+        if (!(ui5Dependencies && (ui5Dependencies['sap.fe.core'] || ui5Dependencies['sap.fe.templates']))) {
             throw new Error(
-                'Dependency sap.fe.templates is missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries.'
+                'Dependencies sap.fe.core or sap.fe.templates are missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries.'
             );
         }
     }
