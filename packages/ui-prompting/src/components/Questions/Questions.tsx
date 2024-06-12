@@ -4,7 +4,7 @@ import { getDependantQuestions, getDynamicQuestions, updateAnswer, useDynamicQue
 import { useRequestedChoices } from '../../utilities';
 import { QuestionGroup } from '../QuestionGroup';
 import type { PromptQuestion, ValidationResults, PromptsGroup, AnswerValue, DynamicChoices } from '../../types';
-import type { PromptsLayoutType } from '../../types';
+import { PromptsLayoutType } from '../../types';
 
 import './Questions.scss';
 
