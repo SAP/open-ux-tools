@@ -7,7 +7,9 @@ import type {
     I18nBundles,
     I18nPropertiesPaths,
     ProjectType,
-    ApplicationStructure
+    ApplicationStructure,
+    Package,
+    Manifest
 } from '../types';
 
 import {
@@ -23,6 +25,7 @@ import { getProject } from './info';
 import { findAllApps } from './search';
 
 import type { Editor } from 'mem-fs-editor';
+import { updateManifestJSON, updatePackageJSON } from '../file';
 
 /**
  *
@@ -151,6 +154,27 @@ class ApplicationAccessImp implements ApplicationAccess {
      */
     getI18nPropertiesPaths(): Promise<I18nPropertiesPaths> {
         return getI18nPropertiesPaths(this.app.manifest);
+    }
+
+    /**
+     * Updates package.json file asynchronously by keeping the previous indentation.
+     *
+     * @param path - path to file
+     * @param packageJson - updated package.json file content
+     * @param memFs - optional mem-fs-editor instance
+     */
+    async updatePackageJSON(path: string, packageJson: Package, memFs?: Editor): Promise<void> {
+        await updatePackageJSON(path, packageJson, memFs);
+    }
+
+    /**
+     * Updates manifest.json file asynchronously by keeping the previous indentation.
+     *
+     * @param manifest - updated manifest.json file content
+     * @param memFs - optional mem-fs-editor instance
+     */
+    async updateManifestJSON(manifest: Manifest, memFs?: Editor): Promise<void> {
+        await updateManifestJSON(this.app.manifest, manifest, memFs);
     }
 
     /**

@@ -1,6 +1,9 @@
 import type { I18nBundles } from '../i18n';
 import type { NewI18nEntry } from '@sap-ux/i18n';
 import type { ApplicationStructure, I18nPropertiesPaths, Project, ProjectType } from '../info';
+import type { Editor } from 'mem-fs-editor';
+import type { Package } from '../package';
+import type { Manifest } from '../webapp';
 
 interface BaseAccess {
     readonly project: Project;
@@ -94,6 +97,21 @@ export interface ApplicationAccess extends BaseAccess {
      * @returns absolute paths to i18n.properties
      */
     getI18nPropertiesPaths(): Promise<I18nPropertiesPaths>;
+    /**
+     * Updates package.json file asynchronously by keeping the previous indentation.
+     *
+     * @param path - path to file
+     * @param packageJson - updated package.json file content
+     * @param memFs - optional mem-fs-editor instance
+     */
+    updatePackageJSON(path: string, packageJson: Package, memFs?: Editor): Promise<void>;
+    /**
+     * Updates manifest.json file asynchronously by keeping the previous indentation.
+     *
+     * @param manifest - updated manifest.json file content
+     * @param memFs - optional mem-fs-editor instance
+     */
+    updateManifestJSON(manifest: Manifest, memFs?: Editor): Promise<void>;
 }
 
 export interface ProjectAccess extends BaseAccess {
