@@ -78,4 +78,27 @@ describe('<UIDropdown />', () => {
         expect(containerElement.childNodes[0]).toBe(textElement);
         expect(containerElement.childNodes[1]).toBe(iconElement);
     });
+
+    it('Test mexture menu - item with icon and item without icon', () => {
+        wrapper.setProps({
+            items: [
+                {
+                    key: 'item1',
+                    text: 'menu item 1'
+                },
+                {
+                    key: 'item2',
+                    iconProps: {
+                        iconName: UiIcons.GuidedDevelopment
+                    },
+                    text: 'menu item 2'
+                }
+            ]
+        });
+        wrapper.update();
+        //Check if only one icon is rendered
+        expect(wrapper.find(`i[data-icon-name="${UiIcons.GuidedDevelopment}"]`).length).toEqual(1);
+        // Check if two menu items are rendered
+        expect(wrapper.find('.ms-ContextualMenu-linkContent').length).toEqual(2);
+    });
 });
