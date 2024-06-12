@@ -45,14 +45,13 @@ describe('ConnectionValidator', () => {
 
         const result = await validator.validateUrl(invalidUrl);
         expect(result).toBe(t('errors.invalidUrl'));
-        expect(await validator.isAuthRequired()).toBe(false);
         expect(validator.validity).toEqual({
-            'urlFormat': false
+            urlFormat: false
         });
 
         expect(await validator.validateUrl('')).toBe(false);
         expect(validator.validity).toEqual({
-            'urlFormat': false
+            urlFormat: false
         });
     });
 
@@ -63,12 +62,11 @@ describe('ConnectionValidator', () => {
 
         const result = await validator.validateUrl(serviceUrl);
         expect(result).toBe(true);
-        expect(await validator.isAuthRequired()).toBe(false);
         expect(validator.validity).toEqual({
-            'authRequired': false,
-            'authenticated': true,
-            'reachable': true,
-            'urlFormat': true
+            authRequired: false,
+            authenticated: true,
+            reachable: true,
+            urlFormat: true
         });
     });
 
@@ -80,8 +78,8 @@ describe('ConnectionValidator', () => {
 
         expect(result).toMatch(t('errors.connectionError'));
         expect(validator.validity).toEqual({
-            'urlFormat': true,
-            'reachable': false
+            urlFormat: true,
+            reachable: false
         });
     });
 
@@ -92,8 +90,8 @@ describe('ConnectionValidator', () => {
 
         expect(result).toMatch(t('errors.urlNotFound'));
         expect(validator.validity).toEqual({
-            'urlFormat': true,
-            'reachable': false
+            urlFormat: true,
+            reachable: false
         });
     });
 
@@ -104,7 +102,11 @@ describe('ConnectionValidator', () => {
             .mockRejectedValue(newAxiosErrorWithStatus(401));
         let validator = new ConnectionValidator();
         expect(await validator.validateUrl(serviceUrl)).toBe(true);
-        expect(await validator.isAuthRequired(serviceUrl)).toBe(true);
+        expect(validator.validity).toEqual({
+            urlFormat: true,
+            reachable: true,
+            authRequired: true
+        });
 
         const createServiceSpy = jest.spyOn(axiosExtension, 'createServiceForUrl');
         jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
@@ -129,8 +131,8 @@ describe('ConnectionValidator', () => {
         getODataServiceSpy.mockClear();
 
         expect(validator.validity).toEqual({
-            'urlFormat': true,
-            'reachable': false
+            urlFormat: true,
+            reachable: false
         });
         expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toBe(false);
         expect(validator.validity).toEqual({ urlFormat: true, reachable: false });
@@ -216,11 +218,12 @@ describe('ConnectionValidator', () => {
             authRequired: true
         });
         jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
-        expect(await validator.isAuthRequired('https://example.com/serviceB')).toBe(false);
+        expect(await validator.validateUrl('https://example.com/serviceB')).toBe(true);
         expect(validator.validity).toEqual({
             urlFormat: true,
             reachable: true,
-            authRequired: false
+            authRequired: false,
+            authenticated: true
         });
     });
 

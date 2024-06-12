@@ -1,6 +1,6 @@
 import { V2CatalogService, createServiceForUrl } from '@sap-ux/axios-extension';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { AxiosResponse, AxiosError, AxiosRequestConfig } from 'axios';
+import type { AxiosResponse, AxiosError } from 'axios';
 import { ErrorHandler } from '../../../../src/error-handler/error-handler';
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import { validateService } from '../../../../src/prompts/datasources/service-url/validators'; // Import the validateService function from its module
@@ -61,25 +61,13 @@ describe('Test service url validators', () => {
         ).toBe(true);
 
         // Valid metadata with required version
-        expect(
-            await validateService(
-                serviceUrl,
-                { odataService, axiosConfig: {} },
-                OdataVersion.v4
-            )
-        ).toBe(
+        expect(await validateService(serviceUrl, { odataService, axiosConfig: {} }, OdataVersion.v4)).toBe(
             t('prompts.validationMessages.odataVersionMismatch', {
                 requiredOdataVersion: OdataVersion.v4,
                 providedOdataVersion: OdataVersion.v2
             })
         );
-        expect(
-            await validateService(
-                serviceUrl,
-                { odataService, axiosConfig: {} },
-                OdataVersion.v2
-            )
-        ).toBe(true);
+        expect(await validateService(serviceUrl, { odataService, axiosConfig: {} }, OdataVersion.v2)).toBe(true);
     });
 
     test('should set the prompt state', async () => {

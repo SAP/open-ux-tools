@@ -11,14 +11,15 @@ import { ERROR_TYPE, ErrorHandler } from '../../../error-handler/error-handler';
 
 /**
  * Validates that a service specified by the odata service is accessible, has the required version and returns valid metadata.
+ * Retrieves annotations (from Abap backends) if available and stores them in the PromptState.
  *
- * @param url
- * @param connectionConfig
- * @param connectionConfig.odataService the odata service instance to use to retrieve the metadata (as used by ConnectionValidator)
+ * @param url the full odata service url including query parameters
+ * @param connectionConfig the connection configuration to use for the validation, a subset of the ConnectionValidator properties
+ * @param connectionConfig.odataService the odata service instance used to retrieve the metadata (as used by ConnectionValidator)
  * @param connectionConfig.axiosConfig the axios config to use for the annotations request (as used by ConnectionValidator)
  * @param requiredVersion if specified and the service odata version does not match this version, an error is returned
  * @param ignoreCertError if true some certificate errors are ignored
- * @returns true, false or an error message string
+ * @returns true if a valid odata service was returned, false or an error message string otherwise
  */
 export async function validateService(
     url: string,
@@ -62,6 +63,7 @@ export async function validateService(
             LoggerHelper.logger.debug('Getting annotations for service');
             const annotations = await catalogService.getAnnotations({ path: fullUrl.pathname });
             LoggerHelper.logger.debug(`Annotations array of length: ${annotations?.length} returned`);
+
             if (annotations?.length === 0 || !annotations) {
                 LoggerHelper.logger.info(t('prompts.validationMessages.annotationsNotFound'));
             }

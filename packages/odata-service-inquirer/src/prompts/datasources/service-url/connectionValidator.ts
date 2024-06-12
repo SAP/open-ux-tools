@@ -212,35 +212,7 @@ export class ConnectionValidator {
         return false;
     }
 
-    /**
-     * Tests whether basic auth is required for the specified url. If the url has already been validated, the previous result is returned.
-     *
-     * @param serviceUrl optional, the service url to validate, the previously validated url will be used if not provided
-     * @param ignoreCertError optional, ignore some certificate errors
-     * @returns true if basic auth is required, false if not, or log error message
-     */
-    public async isAuthRequired(serviceUrl = this._validatedUrl, ignoreCertError = false): Promise<boolean> {
-        if (!serviceUrl) {
-            return false;
-        }
-
-        if (this.validity.reachable === false || this.validity.authRequired === false) {
-            return false;
-        }
-        if (this._validatedUrl === serviceUrl && this.validity.authRequired !== undefined) {
-            return this.validity.authRequired;
-        }
-        try {
-            const url = new URL(serviceUrl);
-            const status = await this.checkSapService(url, undefined, undefined, ignoreCertError);
-            this.validity.authRequired = ErrorHandler.getErrorType(status) === ERROR_TYPE.AUTH;
-            return this.validity.authRequired;
-        } catch (error) {
-            errorHandler.logErrorMsgs(error);
-            return false;
-        }
-    }
-
+    // TODO: Remove as not used by service url prompting
     /**
      * Test the connectivity with the specified service url using the provided credentials.
      *

@@ -1,8 +1,10 @@
 import { ErrorHandler } from '../../src/error-handler/error-handler';
 import { getPrompts } from '../../src/index';
 import * as prompts from '../../src/prompts';
+import * as utils from '../../src/utils';
 import LoggerHelper from '../../src/prompts/logger-helper';
 import { PromptState } from '../../src/utils';
+import { hostEnvironment } from '../../src/types';
 
 jest.mock('../../src/prompts', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
@@ -37,6 +39,7 @@ describe('API tests', () => {
     });
 
     test('getPrompts, i18n is loaded', async () => {
+        jest.spyOn(utils, 'getHostEnvironment').mockReturnValueOnce(hostEnvironment.cli);
         const { prompts: questions } = await getPrompts(undefined, undefined, true, undefined, true);
 
         expect(questions).toMatchInlineSnapshot(`
@@ -126,6 +129,10 @@ describe('API tests', () => {
                 "when": [Function],
               },
               {
+                "name": "capCliStateSetter",
+                "when": [Function],
+              },
+              {
                 "guiOptions": {
                   "breadcrumb": true,
                   "hint": "https://<hostname>:<port>/path/to/odata/service/",
@@ -143,10 +150,6 @@ describe('API tests', () => {
                 "name": "ignoreCertError",
                 "type": "confirm",
                 "validate": [Function],
-                "when": [Function],
-              },
-              {
-                "name": "cliIgnoreCertValidate",
                 "when": [Function],
               },
               {

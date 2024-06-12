@@ -90,7 +90,9 @@
         "odataServiceVersionMismatch": "The template you have chosen supports V{{requiredVersion}} OData services only. The provided version is V{{serviceVersion}}.",
         "destinationAuthError": "The selected system is returning an authentication error. Please verify the destination configuration",
         "serviceUrlNotFound": "Please verify the service url: {{- url}}, target system configuration and network connectivity",
-        "urlRedirect": "The service URL is redirecting"
+        "urlRedirect": "The service URL is redirecting",
+        "certValidationRequired": "Certificate validation is required.",
+        "exitingGeneration": "Exiting generation. {{exitReason}}"
     },
     "texts": {
         "anExpiredCert": "an expired",

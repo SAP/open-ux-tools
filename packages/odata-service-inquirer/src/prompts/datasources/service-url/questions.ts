@@ -80,9 +80,8 @@ function getIgnoreCertErrorsPrompt(
     requiredVersion?: OdataVersion
 ): ConfirmQuestion<ServiceUrlAnswers> {
     return {
-        when: (answers: ServiceUrlAnswers) => {
-            // const errorType = errorHandler.getCurrentErrorType(hostEnv !== hostEnvironment.cli ? true : false);
-            if (answers.serviceUrl && connectValidator.validity.canSkipCertError) {
+        when: ({ serviceUrl }: ServiceUrlAnswers) => {
+            if (serviceUrl && connectValidator.validity.canSkipCertError) {
                 return true;
             }
             return false;
@@ -112,36 +111,6 @@ function getIgnoreCertErrorsPrompt(
         }
     } as ConfirmQuestion<ServiceUrlAnswers>;
 }
-
-/* 
-// todo: implement validateUrlAndService and use it in getIgnoreCertErrorsPromp, getServiceUrlPrompt and cliIgnoreCertValidatePrompt
-function validateUrlAndService(connectionValidator: ConnectionValidator, answers: ServiceUrlAnswers, requiredVersion?: OdataVersion) {
-    if () {
-        LoggerHelper.logger.warn(t('prompts.validationMessages.warningCertificateValidationDisabled'));
-    }
-
-    const validUrl = await connectionValidator.validateUrl({
-        serviceUrl: answers.serviceUrl,
-        ignoreCertError,
-        forceReValidation: true
-    });
-
-    if (validUrl === true) {
-        if (!connectValidator.validity.authRequired) {
-            return validateService(
-                {
-                    url: answers.serviceUrl,
-                    requiredVersion
-                },
-                connectValidator,
-                ignoreCertError
-            );
-        }
-        return true;
-    }
-    return validUrl;
-} */
-
 /**
  * Prompt used to validate the service based on ignoring cert errors since 'confirm' prompt validators don't run on CLI.
  *
@@ -153,13 +122,12 @@ function getCliIgnoreCertValidatePrompt(
     connectValidator: ConnectionValidator,
     requiredVersion?: OdataVersion
 ): Question<ServiceUrlAnswers> {
-    const hostEnv = getHostEnvironment();
     return {
         // Add dummy prompt for CLI to revalidate since "confirm" prompt validators don't run on CLI
         when: async ({ serviceUrl, ignoreCertError }: ServiceUrlAnswers) => {
-            if (hostEnv === hostEnvironment.cli && serviceUrl) {
+            if (serviceUrl) {
                 if (ignoreCertError === false) {
-                    throw new Error('User terminated generation. Certificate validation is required.');
+                    throw new Error(t('errors.exitingGeneration', { exitReason: t('errors.certValidationRequired') }));
                 }
                 LoggerHelper.logger.warn(t('prompts.validationMessages.warningCertificateValidationDisabled'));
                 // Re-check if auth required
@@ -169,9 +137,10 @@ function getCliIgnoreCertValidatePrompt(
                         // Will log on CLI
                         const validService = await validateService(serviceUrl, connectValidator, requiredVersion, true);
                         if (validService !== true) {
-                            throw new Error(validService.toString());
+                            throw new Error(t('errors.exitingGeneration', { exitReason: validService.toString() }));
                         }
                     }
+                    return true;
                 } else {
                     throw new Error(validUrl.toString()); // exit
                 }
@@ -190,11 +159,7 @@ function getCliIgnoreCertValidatePrompt(
  */
 function getUsernamePrompt(connectValidator: ConnectionValidator): InputQuestion<ServiceUrlAnswers> {
     return {
-        when: async ({ serviceUrl, ignoreCertError }: ServiceUrlAnswers) => {
-            return connectValidator.validity.reachable
-                ? await connectValidator.isAuthRequired(serviceUrl, ignoreCertError)
-                : false;
-        },
+        when: () => (connectValidator.validity.reachable ? connectValidator.validity.authRequired === true : false),
         type: 'input',
         name: serviceUrlInternalPromptNames.username,
         message: t('prompts.serviceUsername.message'),
@@ -217,11 +182,7 @@ function getPasswordPrompt(
     requiredVersion?: OdataVersion
 ): PasswordQuestion<ServiceUrlAnswers> {
     return {
-        when: async ({ serviceUrl, ignoreCertError }: ServiceUrlAnswers) => {
-            return connectValidator.validity.reachable
-                ? await connectValidator.isAuthRequired(serviceUrl, ignoreCertError)
-                : false;
-        },
+        when: () => (connectValidator.validity.reachable ? connectValidator.validity.authRequired === true : false),
         type: 'password',
         guiOptions: {
             applyDefaultWhenDirty: true,
@@ -237,7 +198,7 @@ function getPasswordPrompt(
             }
             const validAuth = await connectValidator.validateAuth(serviceUrl, username, password, ignoreCertError);
             if (validAuth === true) {
-                return validateService(serviceUrl, connectValidator, requiredVersion);
+                return validateService(serviceUrl, connectValidator, requiredVersion, ignoreCertError);
             }
             return validAuth;
         }
@@ -261,13 +222,15 @@ export function getServiceUrlQuestions({
     const requiredVersion = serviceUrlOpts?.requiredOdataVersion;
     PromptState.reset();
 
-    let questions = [
+    let questions: Question<ServiceUrlAnswers>[] = [
         getServiceUrlPrompt(connectValidator, requiredVersion),
-        getIgnoreCertErrorsPrompt(connectValidator, requiredVersion),
-        getCliIgnoreCertValidatePrompt(connectValidator, requiredVersion),
-        getUsernamePrompt(connectValidator),
-        getPasswordPrompt(connectValidator, requiredVersion)
+        getIgnoreCertErrorsPrompt(connectValidator, requiredVersion)
     ];
+
+    if (getHostEnvironment() === hostEnvironment.cli) {
+        questions.push(getCliIgnoreCertValidatePrompt(connectValidator, requiredVersion));
+    }
+    questions.push(getUsernamePrompt(connectValidator), getPasswordPrompt(connectValidator, requiredVersion));
 
     // Add additional messages to prompts if specified in the prompt options
     let promptsOptToExtend: Record<string, CommonPromptOptions> = {};
