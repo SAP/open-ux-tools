@@ -187,7 +187,6 @@ describe('utils - ', () => {
             const bindingContextPrompt = getBindingContextTypePrompt('bindingContext');
             expect(bindingContextPrompt).toMatchInlineSnapshot(`
                 Object {
-                  "additionalInfo": undefined,
                   "choices": Array [
                     Object {
                       "name": "Relative",
@@ -199,11 +198,8 @@ describe('utils - ', () => {
                     },
                   ],
                   "default": undefined,
-                  "groupId": undefined,
                   "message": "bindingContext",
                   "name": "bindingContextType",
-                  "placeholder": undefined,
-                  "required": undefined,
                   "selectType": "static",
                   "type": "list",
                 }
@@ -213,7 +209,6 @@ describe('utils - ', () => {
             const booleanPrompt = getBooleanPrompt('name', 'message');
             expect(booleanPrompt).toMatchInlineSnapshot(`
                 Object {
-                  "additionalInfo": undefined,
                   "choices": Array [
                     Object {
                       "name": "False",
@@ -225,11 +220,8 @@ describe('utils - ', () => {
                     },
                   ],
                   "default": undefined,
-                  "groupId": undefined,
                   "message": "message",
                   "name": "name",
-                  "placeholder": undefined,
-                  "required": undefined,
                   "selectType": "static",
                   "type": "list",
                 }
@@ -239,12 +231,8 @@ describe('utils - ', () => {
             const prompt = getFilterBarIdPrompt('message');
             expect(prompt).toMatchInlineSnapshot(`
                 Object {
-                  "additionalInfo": undefined,
-                  "groupId": undefined,
                   "message": "message",
                   "name": "filterBar",
-                  "placeholder": undefined,
-                  "required": undefined,
                   "type": "input",
                 }
             `);
@@ -254,13 +242,10 @@ describe('utils - ', () => {
             const prompt = getBuildingBlockIdPrompt('message', 'error');
             expect(prompt).toMatchInlineSnapshot(`
                 Object {
-                  "additionalInfo": undefined,
                   "default": undefined,
-                  "groupId": undefined,
                   "message": "message",
                   "name": "id",
                   "placeholder": "Enter a building block ID",
-                  "required": undefined,
                   "type": "input",
                   "validate": [Function],
                 }
@@ -275,12 +260,9 @@ describe('utils - ', () => {
             const prompt = getFilterBarIdListPrompt('message');
             expect(prompt).toMatchInlineSnapshot(`
                 Object {
-                  "additionalInfo": undefined,
-                  "groupId": undefined,
                   "message": "message",
                   "name": "filterBarId",
                   "placeholder": "Select or enter a filter bar ID",
-                  "required": undefined,
                   "selectType": "dynamic",
                   "type": "list",
                 }

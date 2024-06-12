@@ -11,14 +11,11 @@ Object {
 
 exports[`utils -  prompts entityPrompt 1`] = `
 Object {
-  "additionalInfo": undefined,
   "choices": [Function],
   "dependantPromptNames": undefined,
-  "groupId": undefined,
   "message": "entity",
   "name": "entity",
   "placeholder": "Select an entity",
-  "required": undefined,
   "selectType": "dynamic",
   "type": "list",
 }
@@ -151,13 +148,10 @@ Array [
 
 exports[`utils -  prompts getAggregationPathPrompt 1`] = `
 Object {
-  "additionalInfo": undefined,
   "choices": [Function],
-  "groupId": undefined,
   "message": "AggregationPathMessage",
   "name": "aggregationPath",
   "placeholder": "Enter an aggregation path",
-  "required": undefined,
   "selectType": "dynamic",
   "type": "list",
 }
@@ -182,13 +176,9 @@ Array [
 
 exports[`utils -  prompts getAnnotationPathQualifierPrompt 1`] = `
 Object {
-  "additionalInfo": undefined,
   "choices": [Function],
-  "groupId": undefined,
   "message": "testMessage",
   "name": "testAnnotationPath",
-  "placeholder": undefined,
-  "required": undefined,
   "selectType": "dynamic",
   "type": "list",
 }
@@ -205,16 +195,13 @@ Array [
 
 exports[`utils -  prompts getViewOrFragmentFilePrompt 1`] = `
 Object {
-  "additionalInfo": undefined,
   "choices": [Function],
   "dependantPromptNames": Array [
     "aggregationPath",
   ],
-  "groupId": undefined,
   "message": "testMessage",
   "name": "viewOrFragmentFile",
   "placeholder": "Select a view or fragment file",
-  "required": undefined,
   "selectType": "dynamic",
   "type": "list",
   "validate": [Function],
