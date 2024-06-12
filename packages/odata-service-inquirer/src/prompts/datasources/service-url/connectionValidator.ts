@@ -22,10 +22,6 @@ interface Validity {
 // Cert errors than may be ignored by prompt user
 const ignorableCertErrors = [ERROR_TYPE.CERT_SELF_SIGNED, ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN];
 
-// set Axios default adapter to http which is desired for Node
-// if window.XMLHttpRequest is set globally (possibly by external packages), incorrect xhr adapter will be used
-// axios.defaults.adapter = 'http';
-
 /**
  * Class that validates the connection to a service url or catalog url.
  * This will determine if authentication is required and if the service/catalog is reachable, generating messages to guide the user.

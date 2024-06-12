@@ -235,7 +235,6 @@ export function getServiceUrlQuestions({
     // Add additional messages to prompts if specified in the prompt options
     let promptsOptToExtend: Record<string, CommonPromptOptions> = {};
 
-    // todo: for each prompt option with additionalMessages
     if (serviceUrlOpts?.additionalMessages) {
         promptsOptToExtend = { serviceUrl: serviceUrlOpts };
     }
