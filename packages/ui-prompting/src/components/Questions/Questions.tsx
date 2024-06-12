@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Question } from '../Question/Question';
-import type { AnswerValue, PromptsGroup } from '../Question/Question';
 import { getDependantQuestions, getDynamicQuestions, updateAnswer, useDynamicQuestionsEffect } from '../../utilities';
 import './Questions.scss';
 import { useRequestedChoices } from '../../utilities';
 import { QuestionGroup } from '../QuestionGroup';
-import { PromptQuestion } from '../../types';
+import type { PromptQuestion, ValidationResults, PromptsGroup, AnswerValue } from '../../types';
 
 export interface Choice {
     name: string;
@@ -26,7 +25,7 @@ export interface QuestionsProps {
     answers?: Record<string, AnswerValue>;
     choices?: DynamicChoices;
     // ToDo
-    validation?: any;
+    validation?: ValidationResults;
     onChoiceRequest?: (names: string[], answers: Record<string, AnswerValue>) => void;
     onChange?: (
         answers: Record<string, AnswerValue>,

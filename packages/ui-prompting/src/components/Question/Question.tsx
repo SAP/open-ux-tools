@@ -3,16 +3,7 @@ import { Input, Select, MultiSelect } from '../Inputs';
 import type { Choice } from '../Questions';
 import { useOptions } from '../../utilities';
 import './Question.scss';
-import { PromptQuestion } from '../../types';
-
-// ToDo - move to types
-export interface PromptsGroup {
-    id: string;
-    title: string;
-    description: string[];
-}
-// ToDo -recheck type
-export type AnswerValue = string | number | boolean | undefined;
+import type { PromptQuestion, ValidationResults, AnswerValue } from '../../types';
 
 export interface QuestionProps {
     question: PromptQuestion;
@@ -23,7 +14,7 @@ export interface QuestionProps {
     pending?: boolean;
     additionalInfo?: string;
     // ToDo
-    validation: any;
+    validation: ValidationResults;
     placeholder?: string;
 }
 

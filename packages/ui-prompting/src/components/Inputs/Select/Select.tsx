@@ -42,7 +42,6 @@ export const Select = (props: SelectProps) => {
         const newOption = comboboxValue === undefined ? undefined : { key: comboboxValue, text: comboboxValue };
         setValue(option ? option.key ?? '' : (newOption?.text as string));
         if (name) {
-            // ToDo - avoid any? -> option?.data.value
             onChange(name, option ? option.data.value : newOption?.text, dependantPromptNames);
         }
     };
@@ -89,7 +88,6 @@ export const Select = (props: SelectProps) => {
                     : (_, option) => {
                           setValue(option?.key ?? '');
                           if (name) {
-                              // ToDo - avoid any? -> option?.data.value
                               onChange(name, option?.data.value, dependantPromptNames);
                           }
                       }

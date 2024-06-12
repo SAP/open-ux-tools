@@ -1,5 +1,8 @@
 import type { Answers, CheckboxQuestion, InputQuestion, ListQuestion } from 'inquirer';
 
+/**
+ * Interfaces for questions.
+ */
 export interface BasePromptQuestion {
     /**
      * Indication wether value is required.
@@ -60,3 +63,15 @@ export interface ValidationResult {
 export interface ValidationResults {
     [questionName: string]: ValidationResult;
 }
+
+/**
+ * Interfaces for groups.
+ */
+export interface PromptsGroup {
+    id: string;
+    title: string;
+    description: string[];
+}
+
+// ToDo -recheck type
+export type AnswerValue = string | number | boolean | undefined;
