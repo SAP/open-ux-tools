@@ -56,8 +56,7 @@ export interface GuiOptions {
 
 export type PromptSeverityMessage = (
     input?: unknown,
-    previousAnswers?: Answers,
-    promptState?: unknown
+    previousAnswers?: Answers
 ) => IMessageSeverity | undefined;
 
 export type YUIQuestion<A extends Answers = Answers> = Question<A> & {
