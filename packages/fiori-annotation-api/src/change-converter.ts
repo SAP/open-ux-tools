@@ -4,7 +4,8 @@ import {
     ATTRIBUTE_TYPE,
     createElementNode,
     createTextNode,
-    Edm
+    Edm,
+    createTarget
 } from '@sap-ux/odata-annotation-core-types';
 
 import {
@@ -51,11 +52,34 @@ import type {
     AnnotationReference,
     InsertAttribute,
     InsertChange,
-    UpdateChange
+    UpdateChange,
+    InsertEmbeddedAnnotationChange,
+    DeleteChange,
+    MoveChange,
+    ExpressionUpdateContent,
+    ExpressionModificationContent,
+    PrimitiveModificationContent,
+    UpdateContent
 } from './types';
-import { ChangeType, ExpressionType, INSERT_ELEMENT } from './types';
+import {
+    ChangeType,
+    DELETE_ATTRIBUTE,
+    DELETE_ELEMENT,
+    ExpressionType,
+    INSERT_ATTRIBUTE,
+    INSERT_ELEMENT,
+    INSERT_TARGET,
+    UPDATE_ATTRIBUTE_VALUE
+} from './types';
 import { annotationReferenceToString, getGenericNodeFromPointer } from './utils';
 import { ApiError, ApiErrorCode } from './error';
+import {
+    MOVE_ELEMENT,
+    REPLACE_ATTRIBUTE,
+    REPLACE_ELEMENT,
+    REPLACE_ELEMENT_CONTENT,
+    REPLACE_TEXT
+} from './types/internal-change';
 
 export type SchemaProvider = () => RawMetadata;
 /**
@@ -63,6 +87,8 @@ export type SchemaProvider = () => RawMetadata;
  */
 export class ChangeConverter {
     private aliasInfoCache: Record<string, AliasInformation> = {};
+    private newTargetChanges: Map<string, Map<string, InsertAnnotationChange[]>> = new Map();
+    private annotationFileChanges: AnnotationFileChange[] = [];
     /**
      *
      * @param serviceName Name of the service.
@@ -92,9 +118,9 @@ export class ChangeConverter {
         changes: Change[]
     ): AnnotationFileChange[] {
         this.reset();
-        const annotationFileChanges: AnnotationFileChange[] = [];
+
         const mergedChanges = mergeChanges(changes);
-        const newTargetChanges = new Map<string, Map<string, InsertAnnotationChange[]>>();
+
         for (const change of mergedChanges) {
             const file = compiledService.annotationFiles.find((file) => file.uri === change.uri);
             if (!file) {
@@ -103,338 +129,88 @@ export class ChangeConverter {
             const aliasInfoMod = this.getAliasInformation(file);
 
             if (change.kind === ChangeType.InsertAnnotation) {
-                const annotationFile = compiledService.annotationFiles.find((file) => file.uri === change.uri);
-                const targetName = toAliasQualifiedName(change.content.target, aliasInfoMod);
-                const targetIndex = annotationFile?.targets.findIndex(
-                    (target) => toAliasQualifiedName(target.name, aliasInfoMod) === targetName
-                );
-                if (targetIndex === -1) {
-                    // no existing target found, we need to create one
-                    const changesForUri = newTargetChanges.get(change.uri);
-                    if (!changesForUri) {
-                        newTargetChanges.set(
-                            change.uri,
-                            new Map<string, InsertAnnotationChange[]>([[targetName, [change]]])
-                        );
-                    } else {
-                        const changesForTarget = changesForUri.get(targetName);
-                        if (changesForTarget) {
-                            changesForTarget.push(change);
-                        } else {
-                            changesForUri.set(targetName, [change]);
-                        }
-                    }
-                } else {
-                    // add annotation to existing target
-                    const internal: InsertElement = {
-                        type: 'insert-element',
-                        uri: change.uri,
-                        target: targetName,
-                        pointer: `/targets/${targetIndex}`,
-                        element: convertAnnotationToInternal(change.content.value, aliasInfoMod)
-                    };
-                    annotationFileChanges.push(internal);
-                }
+                this.insertAnnotation(compiledService, aliasInfoMod, change);
             } else if (change.kind === ChangeType.InsertEmbeddedAnnotation) {
-                const { reference, content } = change;
-                const { targetPointer, internalPointer } = findAnnotationByReference(
-                    aliasInfoMod,
-                    file,
-                    fileMergeMaps[change.uri],
-                    reference,
-                    change.pointer,
-                    this.splitAnnotationSupport
-                );
-
-                const internal: InsertElement = {
-                    type: 'insert-element',
-                    uri: change.uri,
-                    target: change.reference.target,
-                    element: convertAnnotationToInternal(content.value, aliasInfoMod),
-                    pointer: targetPointer + internalPointer
-                };
-                annotationFileChanges.push(internal);
+                this.insertEmbeddedAnnotation(file, fileMergeMaps, aliasInfoMod, change);
             } else if (change.kind === ChangeType.Insert) {
-                const internalChange = this.convertInsert(file, fileMergeMaps, aliasInfoMod, change);
-                if (internalChange) {
-                    annotationFileChanges.push(internalChange);
-                }
+                this.convertInsert(file, fileMergeMaps, aliasInfoMod, change);
             } else if (change.kind === ChangeType.Delete) {
-                const { reference } = change;
-                const {
-                    target,
-                    targetPointer: pointer,
-                    internalPointer
-                } = findAnnotationByReference(
-                    aliasInfoMod,
-                    file,
-                    fileMergeMaps[change.uri],
-                    reference,
-                    change.pointer,
-                    this.splitAnnotationSupport
-                );
-                // look for attribute pointer suffix e.g attributes/Qualifier/value
-                const suffix = internalPointer.split('/').slice(-3);
-                if (suffix[0] === 'attributes' && suffix.length === 3) {
-                    // its an attribute change
-                    const [, , property] = suffix;
-                    if (property === 'value') {
-                        const internal: DeleteAttribute = {
-                            type: 'delete-attribute',
-                            uri: change.uri,
-                            pointer: pointer + internalPointer.split('/').slice(0, -1).join('/')
-                        };
-                        annotationFileChanges.push(internal);
-                    }
-                } else if (change.pointer === '') {
-                    const internal: DeleteElement = {
-                        type: 'delete-element',
-                        target: target.name,
-                        uri: change.uri,
-                        pointer: pointer
-                    };
-                    annotationFileChanges.push(internal);
-                } else if (internalPointer !== '') {
-                    const internal: DeleteElement = {
-                        type: 'delete-element',
-                        uri: change.uri,
-                        target: target.name,
-                        pointer: pointer + internalPointer
-                    };
-                    annotationFileChanges.push(internal);
-                }
+                this.convertDelete(file, fileMergeMaps, aliasInfoMod, change);
             } else if (change.kind === ChangeType.Update) {
-                const { reference, content } = change;
-                const valueType = this.getValueType(schemaProvider, change);
-                const {
-                    element,
-                    targetPointer: pointer,
-                    internalPointer
-                } = findAnnotationByReference(
-                    aliasInfoMod,
-                    file,
-                    fileMergeMaps[change.uri],
-                    reference,
-                    change.pointer,
-                    this.splitAnnotationSupport,
-                    valueType
-                );
-                if (internalPointer === '') {
-                    // value does not exist, treat this as insert
-                    const internalChange = this.convertInsert(file, fileMergeMaps, aliasInfoMod, change);
-                    if (internalChange) {
-                        annotationFileChanges.push(internalChange);
-                    }
-                } else {
-                    // look for attribute pointer suffix e.g attributes/Qualifier/value
-                    const suffix = internalPointer.split('/').slice(-3);
-                    if (suffix[0] === 'attributes' && suffix.length === 3) {
-                        // its an attribute change
-                        const [, attributeName, property] = suffix;
-                        if (property === 'value') {
-                            // TODO: move this logic to convertPrimitiveValueToInternal
-                            let newValue = content.value.toString();
-                            if (
-                                attributeName === Edm.Type ||
-                                attributeName === Edm.EnumMember ||
-                                attributeName === Edm.Term
-                            ) {
-                                newValue = toAliasQualifiedName(change.content.value.toString(), aliasInfoMod);
-                            }
-                            if (content.type === 'primitive' && content.expressionType === Edm.AnnotationPath) {
-                                newValue = convertPrimitiveValueToInternal(
-                                    Edm.AnnotationPath,
-                                    content.value.toString(),
-                                    aliasInfoMod
-                                );
-                            }
-                            const internal: UpdateAttributeValue = {
-                                type: 'update-attribute-value',
-                                uri: change.uri,
-                                pointer: pointer + internalPointer.split('/').slice(0, -1).join('/'),
-                                newValue
-                            };
-                            annotationFileChanges.push(internal);
-                        }
-                    } else if (content.type === 'expression' && content.value.type === 'Collection') {
-                        const node = getGenericNodeFromPointer(file, pointer + internalPointer);
-                        const newElement = convertExpressionToInternal(aliasInfoMod, content.value);
-                        if (node?.type === ELEMENT_TYPE && newElement) {
-                            const internalChange: ReplaceElement = {
-                                type: 'replace-element',
-                                uri: change.uri,
-                                pointer: pointer + internalPointer,
-                                newElement
-                            };
-                            annotationFileChanges.push(internalChange);
-                        }
-                    } else if (content.type === 'expression') {
-                        const rawPrimitiveValue = (content.value as any)[content.value.type]; // There is always a property with on the object as type name, Typescript does not infer this case as expected
-                        const newValue = convertPrimitiveValueToInternal(
-                            content.value.type,
-                            rawPrimitiveValue,
-                            aliasInfoMod
-                        );
-                        const type = valueType ?? content.value.type;
-                        const node = getGenericNodeFromPointer(file, pointer + internalPointer);
-                        if (node?.type === ELEMENT_TYPE) {
-                            if (content.previousType === undefined && content.value.type === valueType) {
-                                if (node.attributes[type]) {
-                                    // attribute notation
-                                    const internalChange: UpdateAttributeValue = {
-                                        type: 'update-attribute-value',
-                                        uri: change.uri,
-                                        pointer: pointer + internalPointer + `/attributes/${type}`,
-                                        newValue
-                                    };
-                                    annotationFileChanges.push(internalChange);
-                                } else if (node.name === valueType) {
-                                    // element notation
-                                    const internalChange: ReplaceElementContent = {
-                                        type: 'replace-element-content',
-                                        uri: change.uri,
-                                        pointer: pointer + internalPointer,
-                                        newValue: [createTextNode(newValue)]
-                                    };
-                                    annotationFileChanges.push(internalChange);
-                                }
-                            } else if (node.attributes[type]) {
-                                // attribute notation
-                                const internalChange: ReplaceAttribute = {
-                                    type: 'replace-attribute',
-                                    uri: change.uri,
-                                    pointer: pointer + internalPointer + `/attributes/${type}`,
-                                    newAttributeName: content.value.type,
-                                    newAttributeValue: newValue
-                                };
-                                annotationFileChanges.push(internalChange);
-                            } else if (node.name === valueType) {
-                                // element notation
-                                const internalChange: ReplaceElement = {
-                                    type: 'replace-element',
-                                    uri: change.uri,
-                                    pointer: pointer + internalPointer,
-                                    newElement: createElementNode({
-                                        name: content.value.type,
-                                        content: [createTextNode(newValue)]
-                                    })
-                                };
-                                annotationFileChanges.push(internalChange);
-                            }
-                        } else if (node?.type === ATTRIBUTE_TYPE) {
-                            if (content.previousType === undefined && content.value.type === valueType) {
-                                // attribute notation
-                                const internalChange: UpdateAttributeValue = {
-                                    type: 'update-attribute-value',
-                                    uri: change.uri,
-                                    pointer: pointer + internalPointer,
-                                    newValue
-                                };
-                                annotationFileChanges.push(internalChange);
-                            } else {
-                                // attribute notation
-                                const internalChange: ReplaceAttribute = {
-                                    type: 'replace-attribute',
-                                    uri: change.uri,
-                                    pointer: pointer + internalPointer,
-                                    newAttributeName: content.value.type,
-                                    newAttributeValue: newValue
-                                };
-                                annotationFileChanges.push(internalChange);
-                            }
-                        }
-                    } else if (content.type === 'primitive' && content.value !== undefined) {
-                        const internalPointerForPrimitiveValues = convertPointerInAnnotationToInternal(
-                            element,
-                            change.pointer,
-                            content.expressionType
-                        );
-                        let newValue = content.value.toString();
-                        if (content.expressionType === Edm.AnnotationPath) {
-                            newValue = convertPrimitiveValueToInternal(
-                                Edm.AnnotationPath,
-                                content.value.toString(),
-                                aliasInfoMod
-                            );
-                        }
-                        const internal: ReplaceText = {
-                            type: 'replace-text',
-                            uri: change.uri,
-                            pointer: pointer + internalPointerForPrimitiveValues + '/text',
-                            text: createTextNode(newValue)
-                        };
-                        annotationFileChanges.push(internal);
-                    } else {
-                        const element = convertChangeToElement(aliasInfoMod, file, change);
-                        if (element) {
-                            const internal: ReplaceElement = {
-                                type: 'replace-element',
-                                uri: change.uri,
-                                pointer: pointer + internalPointer,
-                                newElement: element
-                            };
-                            annotationFileChanges.push(internal);
-                        }
-                    }
-                }
+                this.convertUpdate(file, fileMergeMaps, aliasInfoMod, schemaProvider, change);
             } else if (change.kind === ChangeType.Move) {
-                const { reference, index, moveReference } = change;
-                const { targetPointer: pointer, internalPointer } = findAnnotationByReference(
-                    aliasInfoMod,
-                    file,
-                    fileMergeMaps[change.uri],
-                    reference,
-                    change.pointer,
-                    this.splitAnnotationSupport
+                this.convertMove(file, fileMergeMaps, aliasInfoMod, change);
+            }
+        }
+
+        this.addTargetChanges(compiledService);
+
+        return this.annotationFileChanges;
+    }
+
+    private insertAnnotation(
+        compiledService: CompiledService,
+        aliasInfo: AliasInformation,
+        change: InsertAnnotationChange
+    ): void {
+        const annotationFile = compiledService.annotationFiles.find((file) => file.uri === change.uri);
+        const targetName = toAliasQualifiedName(change.content.target, aliasInfo);
+        const targetIndex = annotationFile?.targets.findIndex(
+            (target) => toAliasQualifiedName(target.name, aliasInfo) === targetName
+        );
+        if (targetIndex === -1) {
+            // no existing target found, we need to create one
+            const changesForUri = this.newTargetChanges.get(change.uri);
+            if (!changesForUri) {
+                this.newTargetChanges.set(
+                    change.uri,
+                    new Map<string, InsertAnnotationChange[]>([[targetName, [change]]])
                 );
-                const internal: MoveElements = {
-                    type: 'move-element',
-                    uri: change.uri,
-                    pointer: pointer + internalPointer,
-                    index: index,
-                    fromPointers: moveReference?.reduce((acc, moveRef) => {
-                        acc.push(
-                            ...moveRef.fromPointer.map((fromPointer) => {
-                                const { targetPointer: fromTargetPointer, internalPointer: internalFromPointer } =
-                                    findAnnotationByReference(
-                                        aliasInfoMod,
-                                        file,
-                                        fileMergeMaps[change.uri],
-                                        moveRef.reference ?? change.reference,
-                                        fromPointer,
-                                        this.splitAnnotationSupport
-                                    );
-                                return fromTargetPointer + internalFromPointer;
-                            })
-                        );
-                        return acc;
-                    }, new Array<JsonPointer>())
-                };
-                annotationFileChanges.push(internal);
+            } else {
+                const changesForTarget = changesForUri.get(targetName);
+                if (changesForTarget) {
+                    changesForTarget.push(change);
+                } else {
+                    changesForUri.set(targetName, [change]);
+                }
             }
+        } else {
+            // add annotation to existing target
+            const internal: InsertElement = {
+                type: INSERT_ELEMENT,
+                uri: change.uri,
+                target: targetName,
+                pointer: `/targets/${targetIndex}`,
+                element: convertAnnotationToInternal(change.content.value, aliasInfo)
+            };
+            this.annotationFileChanges.push(internal);
         }
-        const insertTargetChanges: InsertTarget[] = [];
-        for (const [uri, changesForUri] of newTargetChanges) {
-            const file = compiledService.annotationFiles.find((file) => file.uri === uri);
-            if (!file) {
-                throw new Error(`Invalid change. File ${uri} does not exist.`);
-            }
-            const aliasInfoMod = this.getAliasInformation(file);
-            for (const [targetName, inserts] of changesForUri) {
-                const internal: InsertTarget = {
-                    type: 'insert-target',
-                    uri: uri,
-                    target: {
-                        type: 'target',
-                        name: targetName,
-                        terms: inserts.map((change) => convertAnnotationToInternal(change.content.value, aliasInfoMod))
-                    }
-                };
-                insertTargetChanges.push(internal);
-            }
-        }
-        annotationFileChanges.unshift(...insertTargetChanges);
-        return annotationFileChanges;
+    }
+
+    private insertEmbeddedAnnotation(
+        file: AnnotationFile,
+        fileMergeMaps: Record<string, Record<string, string>>,
+        aliasInfo: AliasInformation,
+        change: InsertEmbeddedAnnotationChange
+    ): void {
+        const { reference, content } = change;
+        const { targetPointer, internalPointer } = findAnnotationByReference(
+            aliasInfo,
+            file,
+            fileMergeMaps[change.uri],
+            reference,
+            change.pointer,
+            this.splitAnnotationSupport
+        );
+
+        const internal: InsertElement = {
+            type: INSERT_ELEMENT,
+            uri: change.uri,
+            target: change.reference.target,
+            element: convertAnnotationToInternal(content.value, aliasInfo),
+            pointer: targetPointer + internalPointer
+        };
+        this.annotationFileChanges.push(internal);
     }
 
     private convertInsert(
@@ -442,7 +218,7 @@ export class ChangeConverter {
         fileMergeMaps: Record<string, Record<string, string>>,
         aliasInfoMod: AliasInformation,
         change: InsertChange | UpdateChange
-    ): AnnotationFileChange | undefined {
+    ): void {
         const { reference, content } = change;
         const {
             element,
@@ -465,7 +241,7 @@ export class ChangeConverter {
                 element: convertRecordToInternal(aliasInfoMod, content.value),
                 index: change.kind === ChangeType.Insert ? change.index : undefined
             };
-            return internal;
+            this.annotationFileChanges.push(internal);
         } else if (content.type === 'property-value') {
             const internal: InsertElement = {
                 type: INSERT_ELEMENT,
@@ -475,7 +251,7 @@ export class ChangeConverter {
                 element: convertPropertyValueToInternal(aliasInfoMod, content.value),
                 index: change.kind === ChangeType.Insert ? change.index : undefined
             };
-            return internal;
+            this.annotationFileChanges.push(internal);
         } else if (content.type === 'collection') {
             const internal: InsertElement = {
                 type: INSERT_ELEMENT,
@@ -485,94 +261,434 @@ export class ChangeConverter {
                 element: convertCollectionToInternal(aliasInfoMod, content.value),
                 index: change.kind === ChangeType.Insert ? change.index : undefined
             };
-            return internal;
+            this.annotationFileChanges.push(internal);
         } else if (content.type === 'expression') {
-            const node = getGenericNodeFromPointer(file, pointer + internalPointer);
-            if (node?.type === ELEMENT_TYPE && node.name === Edm.Collection) {
-                const expression = convertExpressionToInternal(aliasInfoMod, content.value);
-                if (expression) {
-                    const internal: InsertElement = {
-                        type: INSERT_ELEMENT,
-                        uri: change.uri,
-                        target: change.reference.target,
-                        pointer: pointer + internalPointer,
-                        element: expression
-                    };
-                    return internal;
-                }
-            } else {
-                const container = convertExpressionToInternal(
-                    aliasInfoMod,
-                    content.value,
-                    createElementNode({ name: 'placeholder' })
-                );
-                if (container) {
-                    const expression = container.content[0];
-                    if (expression?.type === ELEMENT_TYPE) {
-                        const internal: InsertElement = {
-                            type: INSERT_ELEMENT,
-                            uri: change.uri,
-                            target: change.reference.target,
-                            pointer: pointer + internalPointer,
-                            element: expression
-                        };
-                        return internal;
-                    } else if (Object.keys(container.attributes).length > 0) {
-                        const attribute = container.attributes[Object.keys(container.attributes)[0]];
-                        const internal: InsertAttribute = {
-                            type: 'insert-attribute',
-                            uri: change.uri,
-                            pointer: pointer + internalPointer,
-                            name: attribute.name,
-                            value: attribute.value
-                        };
-                        return internal;
-                    }
-                }
-            }
+            this.convertInsertExpression(file, aliasInfoMod, pointer + internalPointer, change, content);
         } else if (content.type === 'primitive') {
-            if (content.expressionType === ExpressionType.Unknown) {
-                const internalPointer = convertPointerInAnnotationToInternal(
-                    element,
-                    // last segment is used to determine attribute name
-                    change.pointer.split('/').slice(0, -1).join('/')
-                );
-                const attributeName = getAttributeNameFromPointer(change.pointer);
-                if (attributeName) {
-                    const value =
-                        attributeName === Edm.Type
-                            ? toAliasQualifiedName(content.value.toString(), aliasInfoMod)
-                            : content.value.toString();
-                    const internal: InsertAttribute = {
-                        type: 'insert-attribute',
-                        uri: change.uri,
-                        pointer: pointer + internalPointer,
-                        name: attributeName,
-                        value: value
-                    };
-                    return internal;
-                }
-            } else if (content.expressionType === ExpressionType.Null) {
+            this.convertInsertPrimitive(element, aliasInfoMod, pointer, internalPointer, change, content);
+        }
+    }
+
+    private convertInsertExpression(
+        file: AnnotationFile,
+        aliasInfoMod: AliasInformation,
+        pointer: string,
+        change: InsertChange | UpdateChange,
+        content: ExpressionModificationContent | ExpressionUpdateContent
+    ): void {
+        const node = getGenericNodeFromPointer(file, pointer);
+        if (node?.type === ELEMENT_TYPE && node.name === Edm.Collection) {
+            const expression = convertExpressionToInternal(aliasInfoMod, content.value);
+            if (expression) {
                 const internal: InsertElement = {
                     type: INSERT_ELEMENT,
                     uri: change.uri,
                     target: change.reference.target,
-                    pointer: pointer + internalPointer,
-                    element: createElementNode({ name: Edm.Null })
+                    pointer: pointer,
+                    element: expression
                 };
-                return internal;
-            } else if (typeof content.expressionType === 'string') {
-                const internal: InsertAttribute = {
-                    type: 'insert-attribute',
-                    uri: change.uri,
-                    pointer: pointer + internalPointer,
-                    name: content.expressionType,
-                    value: content.value.toString()
-                };
-                return internal;
+                this.annotationFileChanges.push(internal);
+            }
+        } else {
+            const container = convertExpressionToInternal(
+                aliasInfoMod,
+                content.value,
+                createElementNode({ name: 'placeholder' })
+            );
+            if (container) {
+                const expression = container.content[0];
+                if (expression?.type === ELEMENT_TYPE) {
+                    const internal: InsertElement = {
+                        type: INSERT_ELEMENT,
+                        uri: change.uri,
+                        target: change.reference.target,
+                        pointer: pointer,
+                        element: expression
+                    };
+                    this.annotationFileChanges.push(internal);
+                    return;
+                } else if (Object.keys(container.attributes).length > 0) {
+                    const attribute = container.attributes[Object.keys(container.attributes)[0]];
+                    const internal: InsertAttribute = {
+                        type: INSERT_ATTRIBUTE,
+                        uri: change.uri,
+                        pointer: pointer,
+                        name: attribute.name,
+                        value: attribute.value
+                    };
+                    this.annotationFileChanges.push(internal);
+                    return;
+                }
             }
         }
+    }
+
+    private convertInsertPrimitive(
+        element: Element,
+        aliasInfoMod: AliasInformation,
+        pointer: string,
+        internalPointer: string,
+        change: InsertChange | UpdateChange,
+        content: PrimitiveModificationContent
+    ): void {
+        if (content.expressionType === ExpressionType.Unknown) {
+            const attributePointer = convertPointerInAnnotationToInternal(
+                element,
+                // last segment is used to determine attribute name
+                change.pointer.split('/').slice(0, -1).join('/')
+            );
+            const attributeName = getAttributeNameFromPointer(change.pointer);
+            if (attributeName) {
+                const value = convertPrimitiveValueToInternal(attributeName, content.value, aliasInfoMod);
+                const internal: InsertAttribute = {
+                    type: INSERT_ATTRIBUTE,
+                    uri: change.uri,
+                    pointer: pointer + attributePointer,
+                    name: attributeName,
+                    value: value
+                };
+                this.annotationFileChanges.push(internal);
+            }
+        } else if (content.expressionType === ExpressionType.Null) {
+            const internal: InsertElement = {
+                type: INSERT_ELEMENT,
+                uri: change.uri,
+                target: change.reference.target,
+                pointer: pointer + internalPointer,
+                element: createElementNode({ name: Edm.Null })
+            };
+            this.annotationFileChanges.push(internal);
+        } else if (typeof content.expressionType === 'string') {
+            const internal: InsertAttribute = {
+                type: INSERT_ATTRIBUTE,
+                uri: change.uri,
+                pointer: pointer + internalPointer,
+                name: content.expressionType,
+                value: content.value.toString()
+            };
+            this.annotationFileChanges.push(internal);
+        }
+    }
+
+    private convertDelete(
+        file: AnnotationFile,
+        fileMergeMaps: Record<string, Record<string, string>>,
+        aliasInfo: AliasInformation,
+        change: DeleteChange
+    ): void {
+        const { reference } = change;
+        const {
+            target,
+            targetPointer: pointer,
+            internalPointer
+        } = findAnnotationByReference(
+            aliasInfo,
+            file,
+            fileMergeMaps[change.uri],
+            reference,
+            change.pointer,
+            this.splitAnnotationSupport
+        );
+        // look for attribute pointer suffix e.g attributes/Qualifier/value
+        const suffix = internalPointer.split('/').slice(-3);
+        if (suffix[0] === 'attributes' && suffix.length === 3) {
+            // its an attribute change
+            const [, , property] = suffix;
+            if (property === 'value') {
+                const internal: DeleteAttribute = {
+                    type: DELETE_ATTRIBUTE,
+                    uri: change.uri,
+                    pointer: pointer + internalPointer.split('/').slice(0, -1).join('/')
+                };
+                this.annotationFileChanges.push(internal);
+            }
+        } else if (change.pointer === '') {
+            const internal: DeleteElement = {
+                type: DELETE_ELEMENT,
+                target: target.name,
+                uri: change.uri,
+                pointer: pointer
+            };
+            this.annotationFileChanges.push(internal);
+        } else if (internalPointer !== '') {
+            const internal: DeleteElement = {
+                type: DELETE_ELEMENT,
+                uri: change.uri,
+                target: target.name,
+                pointer: pointer + internalPointer
+            };
+            this.annotationFileChanges.push(internal);
+        }
+    }
+
+    private convertUpdate(
+        file: AnnotationFile,
+        fileMergeMaps: Record<string, Record<string, string>>,
+        aliasInfo: AliasInformation,
+        schemaProvider: SchemaProvider,
+        change: UpdateChange
+    ): void {
+        const { reference, content } = change;
+        const valueType = this.getValueType(schemaProvider, change);
+        const {
+            element,
+            targetPointer: pointer,
+            internalPointer
+        } = findAnnotationByReference(
+            aliasInfo,
+            file,
+            fileMergeMaps[change.uri],
+            reference,
+            change.pointer,
+            this.splitAnnotationSupport,
+            valueType
+        );
+        if (internalPointer === '') {
+            // value does not exist, treat this as insert
+            this.convertInsert(file, fileMergeMaps, aliasInfo, change);
+            return;
+        }
+        // look for attribute pointer suffix e.g attributes/Qualifier/value
+        const suffix = internalPointer.split('/').slice(-3);
+        if (suffix[0] === 'attributes' && suffix.length === 3) {
+            // its an attribute change
+            const [, attributeName, property] = suffix;
+            this.convertUpdateAttribute(aliasInfo, attributeName, property, pointer, internalPointer, change);
+        } else if (content.type === 'expression' && content.value.type === 'Collection') {
+            const node = getGenericNodeFromPointer(file, pointer + internalPointer);
+            const newElement = convertExpressionToInternal(aliasInfo, content.value);
+            if (node?.type === ELEMENT_TYPE && newElement) {
+                const internalChange: ReplaceElement = {
+                    type: REPLACE_ELEMENT,
+                    uri: change.uri,
+                    pointer: pointer + internalPointer,
+                    newElement
+                };
+                this.annotationFileChanges.push(internalChange);
+            }
+        } else if (content.type === 'expression') {
+            this.convertUpdateExpression(file, aliasInfo, content, pointer + internalPointer, valueType);
+        } else if (content.type === 'primitive' && content.value !== undefined) {
+            const internalPointerForPrimitiveValues = convertPointerInAnnotationToInternal(
+                element,
+                change.pointer,
+                content.expressionType
+            );
+            const newValue = convertPrimitiveValueToInternal(content.expressionType ?? '', content.value, aliasInfo);
+
+            const internal: ReplaceText = {
+                type: REPLACE_TEXT,
+                uri: change.uri,
+                pointer: pointer + internalPointerForPrimitiveValues + '/text',
+                text: createTextNode(newValue)
+            };
+            this.annotationFileChanges.push(internal);
+        } else {
+            const element = convertChangeToElement(aliasInfo, file, change);
+            if (element) {
+                const internal: ReplaceElement = {
+                    type: REPLACE_ELEMENT,
+                    uri: change.uri,
+                    pointer: pointer + internalPointer,
+                    newElement: element
+                };
+                this.annotationFileChanges.push(internal);
+            }
+        }
+    }
+
+    private convertUpdateAttribute(
+        aliasInfo: AliasInformation,
+        attributeName: string,
+        property: string,
+        pointer: string,
+        internalPointer: string,
+        change: UpdateChange
+    ): void {
+        const value = this.getAttributeValue(change.content);
+        if (property === 'value' && value !== undefined) {
+            const type = this.getPrimitiveValueType(change.content) ?? attributeName;
+            const newValue = convertPrimitiveValueToInternal(type, value, aliasInfo);
+
+            const internal: UpdateAttributeValue = {
+                type: UPDATE_ATTRIBUTE_VALUE,
+                uri: change.uri,
+                pointer: pointer + internalPointer.split('/').slice(0, -1).join('/'),
+                newValue
+            };
+            this.annotationFileChanges.push(internal);
+        }
+    }
+
+    private getPrimitiveValueType(content: UpdateContent): string | undefined {
+        if (content.type === 'primitive') {
+            if (content.expressionType === ExpressionType.Unknown) {
+                return undefined;
+            }
+            return content.expressionType;
+        }
+        if (content.type === 'expression') {
+            if (content.value.type === ExpressionType.Unknown) {
+                return undefined;
+            }
+            return content.value.type;
+        }
         return undefined;
+    }
+
+    private getAttributeValue(content: UpdateContent): string | number | boolean | undefined {
+        if (content.type === 'primitive') {
+            return content.value;
+        }
+        if (content.type === 'expression') {
+            return this.getExpressionValue(content);
+        }
+        return undefined;
+    }
+
+    private getExpressionValue(content: ExpressionUpdateContent): string | number | boolean {
+        return (content.value as any)[content.value.type]; // There is always a property with on the object as type name, Typescript does not infer this case as expected
+    }
+
+    private convertUpdateExpression(
+        file: AnnotationFile,
+        aliasInfo: AliasInformation,
+        content: ExpressionUpdateContent,
+        pointer: string,
+        valueType: string | undefined
+    ): void {
+        const rawPrimitiveValue = this.getExpressionValue(content);
+        const newValue = convertPrimitiveValueToInternal(content.value.type, rawPrimitiveValue, aliasInfo);
+        const type = valueType ?? content.value.type;
+        const node = getGenericNodeFromPointer(file, pointer);
+        if (node?.type === ELEMENT_TYPE) {
+            const onlyChangeValue = content.previousType === undefined && content.value.type === valueType;
+            if (onlyChangeValue && node.attributes[type]) {
+                // attribute notation
+                const internalChange: UpdateAttributeValue = {
+                    type: UPDATE_ATTRIBUTE_VALUE,
+                    uri: file.uri,
+                    pointer: pointer + `/attributes/${type}`,
+                    newValue
+                };
+                this.annotationFileChanges.push(internalChange);
+            } else if (onlyChangeValue && node.attributes[type] && node.name === valueType) {
+                // element notation
+                const internalChange: ReplaceElementContent = {
+                    type: REPLACE_ELEMENT_CONTENT,
+                    uri: file.uri,
+                    pointer: pointer,
+                    newValue: [createTextNode(newValue)]
+                };
+                this.annotationFileChanges.push(internalChange);
+            } else if (node.attributes[type]) {
+                // attribute notation
+                const internalChange: ReplaceAttribute = {
+                    type: REPLACE_ATTRIBUTE,
+                    uri: file.uri,
+                    pointer: pointer + `/attributes/${type}`,
+                    newAttributeName: content.value.type,
+                    newAttributeValue: newValue
+                };
+                this.annotationFileChanges.push(internalChange);
+            } else if (node.name === valueType) {
+                // element notation
+                const internalChange: ReplaceElement = {
+                    type: REPLACE_ELEMENT,
+                    uri: file.uri,
+                    pointer: pointer,
+                    newElement: createElementNode({
+                        name: content.value.type,
+                        content: [createTextNode(newValue)]
+                    })
+                };
+                this.annotationFileChanges.push(internalChange);
+            }
+        } else if (node?.type === ATTRIBUTE_TYPE) {
+            if (content.previousType === undefined && content.value.type === valueType) {
+                // attribute notation
+                const internalChange: UpdateAttributeValue = {
+                    type: UPDATE_ATTRIBUTE_VALUE,
+                    uri: file.uri,
+                    pointer: pointer,
+                    newValue
+                };
+                this.annotationFileChanges.push(internalChange);
+            } else {
+                // attribute notation
+                const internalChange: ReplaceAttribute = {
+                    type: REPLACE_ATTRIBUTE,
+                    uri: file.uri,
+                    pointer: pointer,
+                    newAttributeName: content.value.type,
+                    newAttributeValue: newValue
+                };
+                this.annotationFileChanges.push(internalChange);
+            }
+        }
+    }
+
+    private convertMove(
+        file: AnnotationFile,
+        fileMergeMaps: Record<string, Record<string, string>>,
+        aliasInfo: AliasInformation,
+        change: MoveChange
+    ): void {
+        const { reference, index, moveReference } = change;
+        const { targetPointer: pointer, internalPointer } = findAnnotationByReference(
+            aliasInfo,
+            file,
+            fileMergeMaps[change.uri],
+            reference,
+            change.pointer,
+            this.splitAnnotationSupport
+        );
+        const internal: MoveElements = {
+            type: MOVE_ELEMENT,
+            uri: change.uri,
+            pointer: pointer + internalPointer,
+            index: index,
+            fromPointers: moveReference.reduce((acc, moveRef) => {
+                acc.push(
+                    ...moveRef.fromPointer.map((fromPointer) => {
+                        const { targetPointer: fromTargetPointer, internalPointer: internalFromPointer } =
+                            findAnnotationByReference(
+                                aliasInfo,
+                                file,
+                                fileMergeMaps[change.uri],
+                                moveRef.reference ?? change.reference,
+                                fromPointer,
+                                this.splitAnnotationSupport
+                            );
+                        return fromTargetPointer + internalFromPointer;
+                    })
+                );
+                return acc;
+            }, new Array<JsonPointer>())
+        };
+        this.annotationFileChanges.push(internal);
+    }
+
+    private addTargetChanges(compiledService: CompiledService): void {
+        const insertTargetChanges: InsertTarget[] = [];
+        for (const [uri, changesForUri] of this.newTargetChanges) {
+            const file = compiledService.annotationFiles.find((file) => file.uri === uri);
+            if (!file) {
+                throw new Error(`Invalid change. File ${uri} does not exist.`);
+            }
+            const aliasInfoMod = this.getAliasInformation(file);
+            for (const [targetName, inserts] of changesForUri) {
+                const target = createTarget(targetName);
+                target.terms = inserts.map((change) => convertAnnotationToInternal(change.content.value, aliasInfoMod));
+                const internal: InsertTarget = {
+                    type: INSERT_TARGET,
+                    uri: uri,
+                    target
+                };
+                insertTargetChanges.push(internal);
+            }
+        }
+        this.annotationFileChanges.unshift(...insertTargetChanges);
     }
 
     private getValueType(schemaProvider: SchemaProvider, change: UpdateChange): string | undefined {
@@ -629,6 +745,8 @@ export class ChangeConverter {
 
     private reset() {
         this.aliasInfoCache = {};
+        this.newTargetChanges = new Map<string, Map<string, InsertAnnotationChange[]>>();
+        this.annotationFileChanges = [];
     }
 }
 

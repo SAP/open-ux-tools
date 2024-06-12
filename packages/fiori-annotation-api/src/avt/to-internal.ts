@@ -260,13 +260,18 @@ export function convertPrimitiveValueToInternal(
     value: string | number | boolean,
     aliasInfo: AliasInformation
 ): string {
-    let result = value.toString();
-    if (result && type === 'EnumMember') {
-        result = getAliasedEnumMember(aliasInfo, result);
-    } else if (result && type.indexOf('Path') >= 0) {
-        result = getAliasedPath(aliasInfo, result);
+    const text = value.toString();
+    if (!text) {
+        return text;
+    } else if (type === Edm.EnumMember) {
+        return getAliasedEnumMember(aliasInfo, text);
+    } else if (type.indexOf('Path') >= 0) {
+        return getAliasedPath(aliasInfo, text);
+    } else if (type === Edm.Type || type === Edm.Term) {
+        return toAliasQualifiedName(text, aliasInfo);
+    } else {
+        return text;
     }
-    return result;
 }
 
 function consumeElement(element: Element, collectionElement: Element, hostElement?: Element): Element {
