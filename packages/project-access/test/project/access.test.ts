@@ -266,6 +266,35 @@ describe('Test function createApplicationAccess()', () => {
         expect(result).toBe('{\n    "sapux": false\n}\n');
     });
 
+    test('Update package.json of app in CAP project (mocked)', async () => {
+        // Mock setup
+        const projectRoot = join(sampleRoot, 'cap-project');
+        const appRoot = join(projectRoot, 'apps/one');
+        const updateFileContent = { name: 'two' } as unknown as Package;
+        const writeFileSpy = jest.spyOn(promises, 'writeFile').mockResolvedValue();
+        const pckgPath = join(appRoot, 'package.json');
+        // Test execution
+        const appAccess = await createApplicationAccess(appRoot);
+        await appAccess.updatePackageJSON(pckgPath, updateFileContent);
+        // Result check
+        expect(writeFileSpy).toBeCalledWith(pckgPath, '{\n    "name": "two"\n}\n', { encoding: 'utf8' });
+    });
+
+    test('Update package.json of app in CAP project - mem-fs-editor (mocked)', async () => {
+        // Mock setup
+        const projectRoot = join(sampleRoot, 'cap-project');
+        const appRoot = join(projectRoot, 'apps/one');
+        const updateFileContent = { name: 'two' } as unknown as Package;
+        const pckgPath = join(appRoot, 'package.json');
+        memFs.writeJSON(pckgPath, { name: 'one' }, undefined, 4);
+        // Test execution
+        const appAccess = await createApplicationAccess(appRoot);
+        await appAccess.updatePackageJSON(pckgPath, updateFileContent, memFs);
+        // Result check
+        const result = memFs.read(pckgPath);
+        expect(result).toBe('{\n    "name": "two"\n}\n');
+    });
+
     test('Update manifest.json of standalone app (mocked)', async () => {
         // Mock setup
         const appRoot = join(sampleRoot, 'fiori_elements');
