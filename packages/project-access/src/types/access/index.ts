@@ -100,11 +100,10 @@ export interface ApplicationAccess extends BaseAccess {
     /**
      * Updates package.json file asynchronously by keeping the previous indentation.
      *
-     * @param path - path to file
      * @param packageJson - updated package.json file content
      * @param memFs - optional mem-fs-editor instance
      */
-    updatePackageJSON(path: string, packageJson: Package, memFs?: Editor): Promise<void>;
+    updatePackageJSON(packageJson: Package, memFs?: Editor): Promise<void>;
     /**
      * Updates manifest.json file asynchronously by keeping the previous indentation.
      *

@@ -1,4 +1,4 @@
-import { relative } from 'path';
+import { join, relative } from 'path';
 import type { NewI18nEntry } from '@sap-ux/i18n';
 import type {
     ApplicationAccess,
@@ -159,12 +159,11 @@ class ApplicationAccessImp implements ApplicationAccess {
     /**
      * Updates package.json file asynchronously by keeping the previous indentation.
      *
-     * @param path - path to file
      * @param packageJson - updated package.json file content
      * @param memFs - optional mem-fs-editor instance
      */
-    async updatePackageJSON(path: string, packageJson: Package, memFs?: Editor): Promise<void> {
-        await updatePackageJSON(path, packageJson, memFs);
+    async updatePackageJSON(packageJson: Package, memFs?: Editor): Promise<void> {
+        await updatePackageJSON(join(this.app.appRoot, 'package.json'), packageJson, memFs);
     }
 
     /**

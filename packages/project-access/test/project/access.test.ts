@@ -247,7 +247,7 @@ describe('Test function createApplicationAccess()', () => {
         const pckgPath = join(appRoot, 'package.json');
         // Test execution
         const appAccess = await createApplicationAccess(appRoot);
-        await appAccess.updatePackageJSON(pckgPath, updateFileContent);
+        await appAccess.updatePackageJSON(updateFileContent);
         // Result check
         expect(writeFileSpy).toBeCalledWith(pckgPath, '{\n    "sapux": false\n}\n', { encoding: 'utf8' });
     });
@@ -260,7 +260,7 @@ describe('Test function createApplicationAccess()', () => {
         memFs.writeJSON(pckgPath, { sapux: true }, undefined, 4);
         // Test execution
         const appAccess = await createApplicationAccess(appRoot);
-        await appAccess.updatePackageJSON(pckgPath, updateFileContent, memFs);
+        await appAccess.updatePackageJSON(updateFileContent, memFs);
         // Result check
         const result = memFs.read(pckgPath);
         expect(result).toBe('{\n    "sapux": false\n}\n');
@@ -275,7 +275,7 @@ describe('Test function createApplicationAccess()', () => {
         const pckgPath = join(appRoot, 'package.json');
         // Test execution
         const appAccess = await createApplicationAccess(appRoot);
-        await appAccess.updatePackageJSON(pckgPath, updateFileContent);
+        await appAccess.updatePackageJSON(updateFileContent);
         // Result check
         expect(writeFileSpy).toBeCalledWith(pckgPath, '{\n    "name": "two"\n}\n', { encoding: 'utf8' });
     });
@@ -289,7 +289,7 @@ describe('Test function createApplicationAccess()', () => {
         memFs.writeJSON(pckgPath, { name: 'one' }, undefined, 4);
         // Test execution
         const appAccess = await createApplicationAccess(appRoot);
-        await appAccess.updatePackageJSON(pckgPath, updateFileContent, memFs);
+        await appAccess.updatePackageJSON(updateFileContent, memFs);
         // Result check
         const result = memFs.read(pckgPath);
         expect(result).toBe('{\n    "name": "two"\n}\n');
