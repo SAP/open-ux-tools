@@ -4,7 +4,6 @@ import type Dialog from 'sap/m/Dialog';
 /** sap.ui.core */
 import Fragment from 'sap/ui/core/Fragment';
 import UI5Element from 'sap/ui/core/Element';
-import Component from 'sap/ui/core/Component'
 
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
@@ -19,8 +18,8 @@ import AddFragment from './controllers/AddFragment.controller';
 import ControllerExtension from './controllers/ControllerExtension.controller';
 import { ExtensionPointData } from './extension-point';
 import ExtensionPoint from './controllers/ExtensionPoint.controller';
-import { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 import ManagedObject from 'sap/ui/base/ManagedObject';
+import { isReuseComponent } from '../cpe/outline/utils';
 
 export const enum DialogNames {
     ADD_FRAGMENT = 'AddFragment',
@@ -75,31 +74,6 @@ export const isControllerExtensionEnabled = (overlays: ElementOverlay[], syncVie
     return !syncViewsIds.includes(clickedControlId) && !isClickedControlReuseComponent;
 };
 
-/**
- * Function that checks if clicked control is from view which is reuse component
- *
- * @param clickedControlId id of the clicked control
- * @param minorUI5Version minor UI5 version
- * @returns boolean if clicked control is from reused component view
- */
-export const isReuseComponent = (clickedControlId: string, minorUI5Version: number): boolean => {
-    if (minorUI5Version < 114) {
-        return false;
-    }
-
-    const component = Component.getComponentById(clickedControlId);
-    if (!component) {
-        return false;
-    }
-
-    const manifest = component.getManifest() as Manifest;
-
-    if (!manifest) {
-        return false;
-    }
-
-    return manifest['sap.app'].type === 'component';
-};
 
 /**
  * Determines whether the fragment command should be enabled based on the provided overlays.

@@ -1,9 +1,7 @@
 import type { OutlineNode } from '@sap-ux-private/control-property-editor-common';
 import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
-import { isEditable } from './utils';
-import { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
-import Component from 'sap/ui/core/Component'
+import { isEditable, isReuseComponent } from './utils';
 import VersionInfo from 'sap/ui/VersionInfo';
 
 interface AdditionalData {
@@ -152,7 +150,7 @@ export async function transformNodes(
  * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
  * @param node view node
  * @param scenario type of project
- * @param minorUI5Version miner UI5 version 
+ * @param minorUI5Version miner UI5 version
  */
 async function fillReuseComponents(
     reuseComponentsIds: Set<string>,
@@ -160,16 +158,10 @@ async function fillReuseComponents(
     scenario: Scenario,
     minorUI5Version: number
 ): Promise<void> {
-    if (scenario === 'ADAPTATION_PROJECT' && node?.component && minorUI5Version >= 114) {
-        const nodeComponent = Component.getComponentById(node.id);
-        if (nodeComponent) {
-            const manifest = nodeComponent.getManifest() as Manifest;
-            if (manifest['sap.app']?.type === 'component') {
-                reuseComponentsIds.add(node.id);
-            }
-        }
+    if (scenario === 'ADAPTATION_PROJECT' && node?.component && isReuseComponent(node.id, minorUI5Version)) {
+        reuseComponentsIds.add(node.id);
     }
- }
+}
 /**
  * Handles duplicate nodes that are retrieved from extension point default content and created controls,
  * if they exist under an extension point these controls are removed from the children array
@@ -179,7 +171,11 @@ async function fillReuseComponents(
  * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
  * @returns transformed outline tree nodes
  */
-export async function handleDuplicateNodes(children: OutlineViewNode[], scenario: Scenario, reuseComponentsIds: Set<string>): Promise<OutlineNode[]> {
+export async function handleDuplicateNodes(
+    children: OutlineViewNode[],
+    scenario: Scenario,
+    reuseComponentsIds: Set<string>
+): Promise<OutlineNode[]> {
     const extPointIDs = new Set<string>();
 
     children.forEach((child: OutlineViewNode) => {

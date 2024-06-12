@@ -4,7 +4,7 @@ import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
 
 import { transformNodes as tn } from '../../../../src/cpe/outline/nodes';
-import { sapCoreMock, sapMock } from 'mock/window';
+import { sapCoreMock } from 'mock/window';
 import ComponentMock from 'mock/sap/ui/core/Component';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 
