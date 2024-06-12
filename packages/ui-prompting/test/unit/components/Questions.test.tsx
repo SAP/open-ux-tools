@@ -2,7 +2,7 @@ import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import { initIcons } from '@sap-ux/ui-components';
 import { Questions } from '../../../src/components';
-import { PromptQuestion } from '../../../src/types';
+import type { PromptQuestion } from '../../../src/types';
 
 describe('Questions', () => {
     initIcons();
