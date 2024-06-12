@@ -1,3 +1,8 @@
+import { existsSync } from 'fs';
+import { mkdir, rm } from 'fs/promises';
+import { homedir } from 'os';
+import { join } from 'path';
+import { spawn } from 'child_process';
 import { getNodeModulesPath } from './dependencies';
 
 /**
@@ -25,4 +30,92 @@ export async function loadModuleFromProject<T>(projectRoot: string, moduleName: 
         throw Error(`Module '${moduleName}' not installed in project '${projectRoot}'.\n${error.toString()}`);
     }
     return module;
+}
+
+/**
+ * npm command is platform depending: Winows 'npm.cmd', Mac 'npm'
+ */
+const npmCommand = /^win/.test(process.platform) ? 'npm.cmd' : 'npm';
+
+/**
+ * platform specific config for spawn to execute commands
+ */
+const spawnOptions = /^win/.test(process.platform) ? { windowsVerbatimArguments: true, shell: true } : {};
+
+/**
+ * Directory where fiori tools settings are stored
+ */
+const fioriToolsDirectory = join(homedir(), '.fioritools');
+
+/**
+ * Directory where modules are cached
+ */
+const moduleCacheRoot = join(fioriToolsDirectory, 'module-cache');
+
+/**
+ * Get a module, if it is not cached it will be installed and returned.
+ *
+ * @param module - name of the module
+ * @param version - version of the module
+ * @returns - module
+ */
+export async function getModule<T>(module: string, version: string): Promise<T> {
+    const moduleDirectory = join(moduleCacheRoot, module, version);
+    if (!existsSync(join(moduleDirectory, 'package.json'))) {
+        if (existsSync(moduleDirectory)) {
+            await rm(moduleDirectory, { recursive: true });
+        }
+        await mkdir(moduleDirectory, { recursive: true });
+        await installModule(module, version, moduleDirectory);
+    }
+    return loadModuleFromProject<T>(moduleDirectory, module);
+}
+
+/**
+ * Delete a module from cache.
+ *
+ * @param module - name of the module
+ * @param version - version of the module
+ */
+export async function deleteModule(module: string, version: string): Promise<void> {
+    const moduleDirectory = join(moduleCacheRoot, module, version);
+    if (existsSync(moduleDirectory)) {
+        await rm(moduleDirectory, { recursive: true });
+    }
+}
+
+/**
+ * Install a module in a given directory.
+ *
+ * @param module - name of the module
+ * @param version - version of the module
+ * @param moduleDirectory - directory where the module should be installed
+ */
+async function installModule(module: string, version: string, moduleDirectory: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+        let stdOut = '';
+        let stdErr = '';
+        const options = { ...spawnOptions, cwd: moduleDirectory };
+        const commandArgs = ['install', `${module}@${version}`];
+        const spawnProcess = spawn(npmCommand, commandArgs, options);
+        spawnProcess.stdout.on('data', (data) => {
+            stdOut += data.toString();
+        });
+        spawnProcess.stderr.on('data', (data) => {
+            stdErr += data.toString();
+        });
+        spawnProcess.on('exit', () => {
+            const commandString = `${npmCommand} ${commandArgs.join(' ')}`;
+            if (stdErr) {
+                console.error(`Command '${commandString}' not successful, stderr:`, stdErr);
+            }
+            if (stdOut) {
+                console.log(`Command '${commandString}' successful, stdout:`, stdOut);
+            }
+            resolve();
+        });
+        spawnProcess.on('error', (error) => {
+            reject(error);
+        });
+    });
 }
