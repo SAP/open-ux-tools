@@ -4,18 +4,18 @@ import { pathToFileURL } from 'url';
 
 import type { Range, AnnotationFile } from '@sap-ux/odata-annotation-core';
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
+import { ANNOTATION_GROUP_TYPE, ANNOTATION_TYPE } from '@sap-ux/cds-annotation-parser';
 
-import type { Token } from '@sap/cds-compiler';
 import { createCdsCompilerFacadeForRoot, createMetadataCollector } from '@sap/ux-cds-compiler-facade';
 import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
 
 import type { Target, CdsAnnotationFile } from '@sap-ux/cds-odata-annotation-converter';
 import { toAnnotationFile, toTargetMap } from '@sap-ux/cds-odata-annotation-converter';
 
+import type { CompilerToken } from '../../../src/cds/cds-compiler-tokens';
 import type { AstNode } from '../../../src/cds/document';
 import { getDeletionRangeForNode, getTextEditsForDeletionRanges } from '../../../src/cds/deletion';
 import { getAnnotationFromAssignment } from '../../../src/cds/utils';
-import { ANNOTATION_GROUP_TYPE, ANNOTATION_TYPE } from '@sap-ux/cds-annotation-parser';
 
 function getTextForRange(content: string, range: Range): string {
     const lines = content.split('\n');
@@ -117,7 +117,7 @@ function matchTarget(target: Target, qualifierStartString: string): Match[] {
 }
 interface TestContext {
     facade: CdsCompilerFacade;
-    tokens: Token[];
+    tokens: CompilerToken[];
     vocabularyAliases: Set<string>;
     text: string;
     ast: CdsAnnotationFile;
