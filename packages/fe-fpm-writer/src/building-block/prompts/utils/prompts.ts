@@ -21,7 +21,7 @@ export function getBooleanPrompt(
     message: string,
     defaultValue?: string,
     additionalProperties: Partial<ListPromptQuestion> = {}
-): ListQuestion {
+): ListPromptQuestion {
     const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
         type: 'list',
@@ -37,7 +37,7 @@ export function getBooleanPrompt(
         required,
         additionalInfo,
         placeholder
-    } as ListQuestion;
+    };
 }
 
 /**
@@ -55,7 +55,7 @@ export function getAnnotationPathQualifierPrompt(
     projectProvider: ProjectProvider,
     annotationTerm: UIAnnotationTerms[],
     additionalProperties: Partial<ListPromptQuestion> = {}
-): ListQuestion {
+): ListPromptQuestion {
     const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
         type: 'list',
@@ -80,7 +80,7 @@ export function getAnnotationPathQualifierPrompt(
         required,
         additionalInfo,
         placeholder
-    } as ListQuestion;
+    };
 }
 
 /**
@@ -100,7 +100,7 @@ export function getViewOrFragmentFilePrompt(
     validationErrorMessage: string,
     dependantPromptNames = ['aggregationPath'], // dependent prompts
     additionalProperties: Partial<ListPromptQuestion> = {}
-): ListQuestion {
+): ListPromptQuestion {
     const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
         type: 'list',
@@ -125,7 +125,7 @@ export function getViewOrFragmentFilePrompt(
         required,
         additionalInfo,
         placeholder: placeholder || 'Select a view or fragment file'
-    } as ListQuestion;
+    };
 }
 
 export async function getCAPServicePrompt(
@@ -136,6 +136,7 @@ export async function getCAPServicePrompt(
 ): Promise<ListQuestion> {
     const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     let prompt = {};
+    // ToDo ???
     await getCAPServiceChoices(projectProvider).then((services) => {
         const defaultValue = services.length === 1 && services[0].value;
         prompt = {
@@ -168,7 +169,7 @@ export function getEntityPrompt(
     projectProvider: ProjectProvider,
     dependantPromptNames?: string[],
     additionalProperties: Partial<ListPromptQuestion> = {}
-): ListQuestion {
+): ListPromptQuestion {
     const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
         type: 'list',
@@ -181,7 +182,7 @@ export function getEntityPrompt(
         required,
         additionalInfo,
         placeholder: placeholder || 'Select an entity'
-    } as ListQuestion;
+    };
 }
 
 /**
@@ -231,7 +232,7 @@ export function getAggregationPathPrompt(
     message: string,
     fs: Editor,
     additionalProperties: Partial<ListPromptQuestion> = {}
-): ListQuestion {
+): ListPromptQuestion {
     const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
         type: 'list',
@@ -251,7 +252,7 @@ export function getAggregationPathPrompt(
         required,
         additionalInfo,
         placeholder: placeholder || 'Enter an aggregation path'
-    } as ListQuestion;
+    };
 }
 
 /**
@@ -335,7 +336,7 @@ function getErrorMessage(error: Error): string {
 export function getFilterBarIdPrompt(
     message: string,
     additionalProperties: Partial<InputPromptQuestion> = {}
-): InputQuestion {
+): InputPromptQuestion {
     const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
         type: 'input',
@@ -345,7 +346,7 @@ export function getFilterBarIdPrompt(
         required,
         additionalInfo,
         placeholder
-    } as InputQuestion;
+    };
 }
 
 /**
@@ -357,7 +358,7 @@ export function getFilterBarIdPrompt(
 export function getFilterBarIdListPrompt(
     message: string,
     additionalProperties: Partial<ListPromptQuestion> = {}
-): ListQuestion {
+): ListPromptQuestion {
     const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
         type: 'list',
@@ -368,7 +369,7 @@ export function getFilterBarIdListPrompt(
         required,
         additionalInfo,
         placeholder: placeholder || 'Select or enter a filter bar ID'
-    } as ListQuestion;
+    };
 }
 
 /**
@@ -381,7 +382,7 @@ export function getBindingContextTypePrompt(
     message: string,
     defaultValue?: string,
     additionalProperties: Partial<ListPromptQuestion> = {}
-): ListQuestion {
+): ListPromptQuestion {
     const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
         type: 'list',
@@ -397,7 +398,7 @@ export function getBindingContextTypePrompt(
         required,
         additionalInfo,
         placeholder
-    } as ListQuestion;
+    };
 }
 
 /**
@@ -414,7 +415,7 @@ export function getBuildingBlockIdPrompt(
     additionalProperties: Partial<InputPromptQuestion> = {},
     // ToDo avoid any
     validateFn?: (input: any, answers?: Answers) => string | boolean | Promise<string | boolean>
-): InputQuestion {
+): InputPromptQuestion {
     const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
         type: 'input',
@@ -427,5 +428,5 @@ export function getBuildingBlockIdPrompt(
         additionalInfo,
         default: defaultValue,
         placeholder: placeholder || 'Enter a building block ID'
-    } as InputQuestion;
+    };
 }

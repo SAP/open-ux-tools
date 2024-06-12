@@ -1,4 +1,4 @@
-import type { Answers as IAnswers } from 'inquirer';
+import type { Answers } from 'inquirer';
 import type {
     PromptQuestion,
     CheckboxPromptQuestion,
@@ -7,15 +7,14 @@ import type {
 } from '@sap-ux/ui-prompting';
 import type { BuildingBlockType, Chart, FilterBar, Table } from '../types';
 
-export { PromptQuestion, CheckboxPromptQuestion, InputPromptQuestion, ListPromptQuestion };
+export { PromptQuestion, CheckboxPromptQuestion, InputPromptQuestion, ListPromptQuestion, Answers };
 
+// ToDo annotate properties
 export interface PromptsGroup {
     id: string;
     title: string;
     description: string[];
 }
-
-export type Answers = IAnswers;
 
 export interface Prompts<T extends Answers> {
     questions: PromptQuestion<Partial<T>>[];

@@ -20,11 +20,7 @@ export interface BasePromptQuestion {
     placeholder?: string;
 }
 
-/**
- * Represents a question prompt for list question with dropdown visualization.
- * Combines properties of ListQuestion and BasePromptQuestion.
- */
-export interface ListPromptQuestion<T extends Answers = Answers> extends ListQuestion<T>, BasePromptQuestion {
+export interface ListBasePromptQuestion extends BasePromptQuestion {
     /**
      * Option population type.
      * 'static' - options are provided within property 'choices'.
@@ -32,6 +28,13 @@ export interface ListPromptQuestion<T extends Answers = Answers> extends ListQue
      * Default value is "static".
      */
     selectType?: 'static' | 'dynamic';
+}
+
+/**
+ * Represents a question prompt for list question with dropdown visualization.
+ * Combines properties of ListQuestion and BasePromptQuestion.
+ */
+export interface ListPromptQuestion<T extends Answers = Answers> extends ListQuestion<T>, ListBasePromptQuestion {
     /**
      * Dependant prompt names which should be updated after value change of current prompt.
      */
@@ -48,7 +51,9 @@ export interface InputPromptQuestion<T extends Answers = Answers> extends InputQ
  * Represents a question prompt for checkbox.
  * Combines properties of CheckboxQuestion and BasePromptQuestion.
  */
-export interface CheckboxPromptQuestion<T extends Answers = Answers> extends CheckboxQuestion<T>, BasePromptQuestion {}
+export interface CheckboxPromptQuestion<T extends Answers = Answers>
+    extends CheckboxQuestion<T>,
+        ListBasePromptQuestion {}
 
 export type PromptQuestion<T extends Answers = Answers> =
     | ListPromptQuestion<T>

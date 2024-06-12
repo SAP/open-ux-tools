@@ -30,7 +30,8 @@ import type {
     TablePromptsAnswer,
     BuildingBlockTypePromptsAnswer,
     FilterBarPromptsAnswer,
-    ValidationResults
+    ValidationResults,
+    PromptQuestion
 } from './types';
 import { promises as fsPromises } from 'fs';
 import { DOMParser } from '@xmldom/xmldom';
@@ -169,9 +170,9 @@ export class PromptsAPI {
     /**
      * Returns a list of prompts required to generate building blocks.
      *
-     * @returns {Promise<PromptObject<keyof BuildingBlockTypePromptsAnswer>[]>} the list of prompts
+     * @returns The list of prompts for building block types selection.
      */
-    public async getBuildingBlockTypePrompts(): Promise<Question<BuildingBlockTypePromptsAnswer>[]> {
+    public async getBuildingBlockTypePrompts(): Promise<PromptQuestion<BuildingBlockTypePromptsAnswer>[]> {
         await initI18n();
         const t = translate(i18nNamespaces.buildingBlock, 'prompts.super.');
         return [
@@ -184,7 +185,7 @@ export class PromptsAPI {
                     { name: t('buildingBlockType.choices.filterBar'), value: BuildingBlockType.FilterBar },
                     { name: t('buildingBlockType.choices.table'), value: BuildingBlockType.Table }
                 ]
-            } as ListQuestion
+            }
         ];
     }
 
@@ -261,7 +262,7 @@ export class PromptsAPI {
                         { name: t('personalization.choices.sort'), value: 'Sort' }
                     ],
                     placeholder: t('personalization.placeholder')
-                } as CheckboxQuestion,
+                },
                 {
                     type: 'list',
                     selectType: 'static',
@@ -271,13 +272,13 @@ export class PromptsAPI {
                         { name: t('selectionMode.choices.single'), value: 'Single' },
                         { name: t('selectionMode.choices.multiple'), value: 'Multiple' }
                     ]
-                } as ListQuestion,
+                },
                 {
                     type: 'input',
                     name: 'selectionChange',
                     message: t('selectionChange'),
                     placeholder: t('selectionChangePlaceholder')
-                } as InputQuestion
+                }
             ]
         };
     }
@@ -389,7 +390,7 @@ export class PromptsAPI {
                     ],
                     default: defaultAnswers.type,
                     groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-                } as ListQuestion,
+                },
                 {
                     type: 'list',
                     name: 'selectionMode',
@@ -403,7 +404,7 @@ export class PromptsAPI {
                     ],
                     default: defaultAnswers.selectionMode,
                     groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-                } as ListQuestion,
+                },
                 getBooleanPrompt('displayHeader', t('displayHeader'), defaultAnswers.displayHeader, {
                     groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
                 }),
@@ -412,7 +413,7 @@ export class PromptsAPI {
                     name: 'header',
                     message: t('header.message'),
                     groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-                } as InputQuestion,
+                },
                 {
                     type: 'checkbox',
                     name: 'personalization',
@@ -423,7 +424,7 @@ export class PromptsAPI {
                         { name: t('personalization.choices.Filter'), value: 'Filter' }
                     ],
                     groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-                } as CheckboxQuestion,
+                },
                 {
                     type: 'list',
                     name: 'variantManagement',
@@ -435,7 +436,7 @@ export class PromptsAPI {
                     ],
                     default: defaultAnswers.variantManagement,
                     groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-                } as ListQuestion,
+                },
                 getBooleanPrompt('readOnly', t('readOnlyMode'), defaultAnswers.readOnly, {
                     groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
                 }),
