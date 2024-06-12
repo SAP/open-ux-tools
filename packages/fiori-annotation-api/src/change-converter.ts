@@ -69,17 +69,15 @@ import {
     INSERT_ATTRIBUTE,
     INSERT_ELEMENT,
     INSERT_TARGET,
-    UPDATE_ATTRIBUTE_VALUE
-} from './types';
-import { annotationReferenceToString, getGenericNodeFromPointer } from './utils';
-import { ApiError, ApiErrorCode } from './error';
-import {
+    UPDATE_ATTRIBUTE_VALUE,
     MOVE_ELEMENT,
     REPLACE_ATTRIBUTE,
     REPLACE_ELEMENT,
     REPLACE_ELEMENT_CONTENT,
     REPLACE_TEXT
-} from './types/internal-change';
+} from './types';
+import { annotationReferenceToString, getGenericNodeFromPointer } from './utils';
+import { ApiError, ApiErrorCode } from './error';
 
 export type SchemaProvider = () => RawMetadata;
 /**
@@ -572,7 +570,7 @@ export class ChangeConverter {
                     newValue
                 };
                 this.annotationFileChanges.push(internalChange);
-            } else if (onlyChangeValue && node.attributes[type] && node.name === valueType) {
+            } else if (onlyChangeValue && node.name === valueType) {
                 // element notation
                 const internalChange: ReplaceElementContent = {
                     type: REPLACE_ELEMENT_CONTENT,
