@@ -212,7 +212,6 @@ export class ConnectionValidator {
         return false;
     }
 
-    // TODO: Remove as not used by service url prompting
     /**
      * Test the connectivity with the specified service url using the provided credentials.
      *
