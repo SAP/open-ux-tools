@@ -99,38 +99,16 @@ export function findAnnotationByReference(
             const term = target.terms[j];
             const qualifier = getElementAttributeValue(term, Edm.Qualifier);
             const termName = resolveName(getElementAttributeValue(term, Edm.Term), aliasInfo.aliasMap).qName;
-
             if (
                 reference.term === termName &&
                 ((!qualifier && !reference.qualifier) || qualifier === reference.qualifier)
             ) {
-                const q = qualifier ? '#' + qualifier : '';
-                const id = `${targetName}@${termName}${q}`;
                 if (mergeAnnotations) {
-                    const mergedSegments = pointer.split('/').filter((x) => !!x);
-                    const keyRoot = `${id}/0/0`;
-                    for (let segmentIndex = mergedSegments.length; segmentIndex > 0; segmentIndex--) {
-                        const key = `${keyRoot}/${mergedSegments.slice(0, segmentIndex).join('/')}`;
-                        const match = mergeMap[key];
-                        if (match) {
-                            const [, targetIndexSegment, termIndexSegment, ...mappedSourceSegments] = match
-                                .replace(id, '')
-                                .split('/');
-                            const targetIndex = parseInt(targetIndexSegment, 10);
-                            const termIndex = parseInt(termIndexSegment, 10);
-                            const sourceTerm = file.targets[targetIndex].terms[termIndex];
-                            const internalPointer = convertPointerInAnnotationToInternal(
-                                sourceTerm,
-                                '/' + [...mappedSourceSegments, ...mergedSegments.slice(segmentIndex)].join('/'),
-                                valueType
-                            );
-                            return {
-                                element: sourceTerm,
-                                target: file.targets[targetIndex],
-                                targetPointer: `/targets/${targetIndex}/terms/${termIndex}`,
-                                internalPointer
-                            };
-                        }
+                    const suffix = qualifier ? '#' + qualifier : '';
+                    const id = `${targetName}@${termName}${suffix}`;
+                    const result = searchInMergedAnnotations(file, mergeMap, id, pointer, valueType);
+                    if (result) {
+                        return result;
                     }
                 }
                 const internalPointer = convertPointerInAnnotationToInternal(term, pointer, valueType);
@@ -140,6 +118,39 @@ export function findAnnotationByReference(
     }
     const path = annotationReferenceToString(reference);
     throw new ApiError(`Term '${path}' does not exist`, ApiErrorCode.General);
+}
+
+function searchInMergedAnnotations(
+    file: AnnotationFile,
+    mergeMap: Record<string, string>,
+    id: string,
+    pointer: string,
+    valueType?: string
+): SearchResult | undefined {
+    const mergedSegments = pointer.split('/').filter((x) => !!x);
+    const keyRoot = `${id}/0/0`;
+    for (let segmentIndex = mergedSegments.length; segmentIndex > 0; segmentIndex--) {
+        const key = `${keyRoot}/${mergedSegments.slice(0, segmentIndex).join('/')}`;
+        const match = mergeMap[key];
+        if (match) {
+            const [, targetIndexSegment, termIndexSegment, ...mappedSourceSegments] = match.replace(id, '').split('/');
+            const targetIndex = parseInt(targetIndexSegment, 10);
+            const termIndex = parseInt(termIndexSegment, 10);
+            const sourceTerm = file.targets[targetIndex].terms[termIndex];
+            const internalPointer = convertPointerInAnnotationToInternal(
+                sourceTerm,
+                '/' + [...mappedSourceSegments, ...mergedSegments.slice(segmentIndex)].join('/'),
+                valueType
+            );
+            return {
+                element: sourceTerm,
+                target: file.targets[targetIndex],
+                targetPointer: `/targets/${targetIndex}/terms/${termIndex}`,
+                internalPointer
+            };
+        }
+    }
+    return undefined;
 }
 
 function resolvePath(namespaceMap: NamespaceMap, currentNamespace: string, path: string): string {

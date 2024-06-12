@@ -77,16 +77,6 @@ export interface EmbeddedAnnotationModificationContent {
     value: RawAnnotation;
 }
 
-export const MOD_TYPE_RECORD_RANGE = 'recordRange';
-/**
- * TODO: look into how to achieve batch modifications in a generic way
- *
- * @deprecated
- */
-export interface RecordRangeModificationContent {
-    type: typeof MOD_TYPE_RECORD_RANGE;
-    value: AnnotationRecord[];
-}
 export type UpdateContent =
     | PrimitiveModificationContent
     | ExpressionUpdateContent

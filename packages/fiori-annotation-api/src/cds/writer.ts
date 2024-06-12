@@ -1400,8 +1400,7 @@ function getContainerContent(
     ).filter((comment) => !items.some((item) => item.range && rangeContained(item.range, comment.range)));
     const source = [...commas, ...items, ...commentsInContent].sort(compareRange);
     const content: ContainerContentBlock[] = [];
-    for (let i = 0; i < source.length; i++) {
-        const node = source[i];
+    for (const node of source) {
         processNode(content, node);
     }
     return content;

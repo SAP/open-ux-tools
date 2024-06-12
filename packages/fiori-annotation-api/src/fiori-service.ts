@@ -364,8 +364,12 @@ export class FioriAnnotationService {
     private async commit(): Promise<void> {
         await new Promise<void>((resolve, reject) => {
             this.fs.commit((error: any) => {
-                if (error) {
+                if (error instanceof Error) {
                     reject(error);
+                } else if (typeof error === 'string') {
+                    reject(new Error(error));
+                } else if (error) {
+                    reject(new Error('Unknown error.'));
                 }
                 resolve();
             });

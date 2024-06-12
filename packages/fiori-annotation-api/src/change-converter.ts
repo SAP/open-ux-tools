@@ -93,7 +93,6 @@ export class ChangeConverter {
     ): AnnotationFileChange[] {
         this.reset();
         const annotationFileChanges: AnnotationFileChange[] = [];
-        // const compiledService = this.adapter.compiledService;
         const mergedChanges = mergeChanges(changes);
         const newTargetChanges = new Map<string, Map<string, InsertAnnotationChange[]>>();
         for (const change of mergedChanges) {
