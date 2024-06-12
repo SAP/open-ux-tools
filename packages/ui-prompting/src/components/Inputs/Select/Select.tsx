@@ -72,7 +72,7 @@ export const Select = (props: SelectProps) => {
     ) : (
         <UIComboBox
             label={typeof message === 'string' ? message : name}
-            options={options.sort((a, b) => a.text.localeCompare(b.text))}
+            options={options?.sort((a, b) => a.text.localeCompare(b.text))}
             highlight={true}
             allowFreeform={true}
             useComboBoxAsMenuMinWidth={true}
