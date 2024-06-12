@@ -2,7 +2,7 @@
 import type { ConvertedMetadata, EntityType } from '@sap-ux/vocabularies-types';
 import type { EntityTypeAnnotations } from '@sap-ux/vocabularies-types/vocabularies/Edm_Types';
 import type { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import type ProjectProvider from './project';
+import type { ProjectProvider } from './project';
 import { convert } from '@sap-ux/annotation-converter';
 import { FioriAnnotationService } from '@sap-ux/fiori-annotation-api';
 

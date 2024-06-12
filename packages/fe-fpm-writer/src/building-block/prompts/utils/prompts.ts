@@ -4,10 +4,10 @@ import { DOMParser } from '@xmldom/xmldom';
 import type { Answers, InputQuestion, ListQuestion } from 'inquirer';
 import type { Editor } from 'mem-fs-editor';
 import { relative } from 'path';
-import type ProjectProvider from './project';
+import { ProjectProvider } from './project';
 import { getAnnotationPathQualifiers, getEntityTypes } from './service';
-import { AdditionalPromptProperties } from '..';
 import { getCapServiceName } from '@sap-ux/project-access';
+import type { InputPromptQuestion, ListPromptQuestion } from '../types';
 
 /**
  * Returns a Prompt to choose a boolean value.
@@ -20,7 +20,7 @@ export function getBooleanPrompt(
     name: string,
     message: string,
     defaultValue?: string,
-    additionalProperties: AdditionalPromptProperties = {}
+    additionalProperties: Partial<ListPromptQuestion> = {}
 ): ListQuestion {
     const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
@@ -54,7 +54,7 @@ export function getAnnotationPathQualifierPrompt(
     message: string,
     projectProvider: ProjectProvider,
     annotationTerm: UIAnnotationTerms[],
-    additionalProperties: AdditionalPromptProperties = {}
+    additionalProperties: Partial<ListPromptQuestion> = {}
 ): ListQuestion {
     const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
@@ -99,7 +99,7 @@ export function getViewOrFragmentFilePrompt(
     message: string,
     validationErrorMessage: string,
     dependantPromptNames = ['aggregationPath'], // dependent prompts
-    additionalProperties: AdditionalPromptProperties = {}
+    additionalProperties: Partial<ListPromptQuestion> = {}
 ): ListQuestion {
     const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
@@ -132,7 +132,7 @@ export async function getCAPServicePrompt(
     message: string,
     projectProvider: ProjectProvider,
     dependantPromptNames?: string[],
-    additionalProperties: AdditionalPromptProperties = {}
+    additionalProperties: Partial<ListPromptQuestion> = {}
 ): Promise<ListQuestion> {
     const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     let prompt = {};
@@ -167,7 +167,7 @@ export function getEntityPrompt(
     message: string,
     projectProvider: ProjectProvider,
     dependantPromptNames?: string[],
-    additionalProperties: AdditionalPromptProperties = {}
+    additionalProperties: Partial<ListPromptQuestion> = {}
 ): ListQuestion {
     const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
@@ -230,7 +230,7 @@ export async function getCAPServiceChoices(
 export function getAggregationPathPrompt(
     message: string,
     fs: Editor,
-    additionalProperties: AdditionalPromptProperties = {}
+    additionalProperties: Partial<ListPromptQuestion> = {}
 ): ListQuestion {
     const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
@@ -334,7 +334,7 @@ function getErrorMessage(error: Error): string {
  */
 export function getFilterBarIdPrompt(
     message: string,
-    additionalProperties: AdditionalPromptProperties = {}
+    additionalProperties: Partial<InputPromptQuestion> = {}
 ): InputQuestion {
     const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
@@ -356,7 +356,7 @@ export function getFilterBarIdPrompt(
  */
 export function getFilterBarIdListPrompt(
     message: string,
-    additionalProperties: AdditionalPromptProperties = {}
+    additionalProperties: Partial<ListPromptQuestion> = {}
 ): ListQuestion {
     const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
@@ -380,7 +380,7 @@ export function getFilterBarIdListPrompt(
 export function getBindingContextTypePrompt(
     message: string,
     defaultValue?: string,
-    additionalProperties: AdditionalPromptProperties = {}
+    additionalProperties: Partial<ListPromptQuestion> = {}
 ): ListQuestion {
     const { required, groupId, additionalInfo, placeholder } = additionalProperties;
     return {
@@ -411,7 +411,7 @@ export function getBuildingBlockIdPrompt(
     message: string,
     validationErrorMessage: string,
     defaultValue?: string,
-    additionalProperties: AdditionalPromptProperties = {},
+    additionalProperties: Partial<InputPromptQuestion> = {},
     // ToDo avoid any
     validateFn?: (input: any, answers?: Answers) => string | boolean | Promise<string | boolean>
 ): InputQuestion {

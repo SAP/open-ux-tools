@@ -1,6 +1,13 @@
 import type { Answers as IAnswers } from 'inquirer';
-import type { PromptQuestion } from '@sap-ux/ui-prompting';
+import type {
+    PromptQuestion,
+    CheckboxPromptQuestion,
+    InputPromptQuestion,
+    ListPromptQuestion
+} from '@sap-ux/ui-prompting';
 import type { BuildingBlockType, Chart, FilterBar, Table } from '../types';
+
+export { PromptQuestion, CheckboxPromptQuestion, InputPromptQuestion, ListPromptQuestion };
 
 export interface PromptsGroup {
     id: string;
@@ -56,10 +63,3 @@ export interface FilterBarPromptsAnswer extends FilterBar, Answers {
 
 // ToDo - import from ui types
 export type ValidationResults = { [questionName: string]: { isValid: boolean; errorMessage?: string } };
-
-export interface AdditionalPromptProperties {
-    required?: boolean;
-    groupId?: string;
-    additionalInfo?: string;
-    placeholder?: string;
-}
