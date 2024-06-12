@@ -9,7 +9,6 @@ export interface MultiSelectProps extends CheckboxQuestion {
     onChange: (name: string, value: string | number | undefined, dependantPromptNames?: string[]) => void;
     dependantPromptNames?: string[];
     required?: boolean;
-    type: 'checkbox';
     options: UIComboBoxOption[];
     pending?: boolean;
     additionalInfo?: string;

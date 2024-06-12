@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { UIComboBoxOption } from '@sap-ux/ui-components';
-import type { DynamicChoices, Choice } from '../components';
 import { getDynamicQuestions } from './utils';
-import type { PromptQuestion } from '../types';
+import type { PromptQuestion, DynamicChoices, PromptListChoices } from '../types';
 
 interface RequestedChoices {
     [key: string]: boolean;
@@ -25,7 +24,7 @@ export function useValue<S>(initialValue: S, propValue?: S): [S, (value: S) => v
     return [value, updateValue];
 }
 
-function getOptions(question: PromptQuestion, choices?: Choice[]): UIComboBoxOption[] {
+function getOptions(question: PromptQuestion, choices?: PromptListChoices): UIComboBoxOption[] {
     // Use external/dynamicly populated choices
     let resolvedChoices = choices;
     // Use static choices if dynamic choices are not available
@@ -47,7 +46,7 @@ function getOptions(question: PromptQuestion, choices?: Choice[]): UIComboBoxOpt
     return [];
 }
 
-export function useOptions(question: PromptQuestion, choices?: Choice[]): UIComboBoxOption[] {
+export function useOptions(question: PromptQuestion, choices?: PromptListChoices): UIComboBoxOption[] {
     const [options, setOptions] = useState<UIComboBoxOption[]>([]);
     useEffect(() => {
         const options = getOptions(question, choices);

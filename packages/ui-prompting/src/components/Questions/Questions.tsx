@@ -1,30 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Question } from '../Question/Question';
 import { getDependantQuestions, getDynamicQuestions, updateAnswer, useDynamicQuestionsEffect } from '../../utilities';
-import './Questions.scss';
 import { useRequestedChoices } from '../../utilities';
 import { QuestionGroup } from '../QuestionGroup';
-import type { PromptQuestion, ValidationResults, PromptsGroup, AnswerValue } from '../../types';
+import type { PromptQuestion, ValidationResults, PromptsGroup, AnswerValue, DynamicChoices } from '../../types';
+import type { PromptsLayoutType } from '../../types';
 
-export interface Choice {
-    name: string;
-    value: string | number | boolean;
-}
-
-export interface DynamicChoices {
-    [key: string]: Choice[];
-}
-
-export const enum PromptsLayoutType {
-    SingleColumn = 'SingleColumn',
-    MultiColumn = 'MultiColumn'
-}
+import './Questions.scss';
 
 export interface QuestionsProps {
     questions: PromptQuestion[];
     answers?: Record<string, AnswerValue>;
     choices?: DynamicChoices;
-    // ToDo
     validation?: ValidationResults;
     onChoiceRequest?: (names: string[], answers: Record<string, AnswerValue>) => void;
     onChange?: (

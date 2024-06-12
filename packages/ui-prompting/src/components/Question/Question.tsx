@@ -1,18 +1,17 @@
 import React from 'react';
 import { Input, Select, MultiSelect } from '../Inputs';
-import type { Choice } from '../Questions';
 import { useOptions } from '../../utilities';
+import type { PromptQuestion, ValidationResults, AnswerValue, PromptListChoices } from '../../types';
+
 import './Question.scss';
-import type { PromptQuestion, ValidationResults, AnswerValue } from '../../types';
 
 export interface QuestionProps {
     question: PromptQuestion;
     answers: Record<string, AnswerValue>;
     onChange: (name: string, answer: AnswerValue, dependantPromptNames?: string[]) => void;
-    choices?: Choice[];
+    choices?: PromptListChoices;
     pending?: boolean;
     additionalInfo?: string;
-    // ToDo
     validation: ValidationResults;
     placeholder?: string;
 }

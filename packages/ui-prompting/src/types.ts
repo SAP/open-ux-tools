@@ -1,4 +1,4 @@
-import type { Answers, CheckboxQuestion, InputQuestion, ListQuestion } from 'inquirer';
+import type { Answers, CheckboxQuestion, ChoiceOptions, DistinctChoice, InputQuestion, ListQuestion } from 'inquirer';
 
 /**
  * Interfaces for questions.
@@ -70,6 +70,18 @@ export interface ValidationResults {
 }
 
 /**
+ * Choices.
+ */
+export { DistinctChoice, ChoiceOptions };
+
+// ToDo - change and consume DistinctChoice instead of ChoiceOptions
+export type PromptListChoices = ReadonlyArray<ChoiceOptions>;
+
+export interface DynamicChoices {
+    [key: string]: PromptListChoices;
+}
+
+/**
  * Interfaces for groups.
  */
 export interface PromptsGroup {
@@ -80,3 +92,8 @@ export interface PromptsGroup {
 
 // ToDo -recheck type
 export type AnswerValue = string | number | boolean | undefined;
+
+export const enum PromptsLayoutType {
+    SingleColumn = 'SingleColumn',
+    MultiColumn = 'MultiColumn'
+}
