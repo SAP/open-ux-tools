@@ -28,7 +28,7 @@ The following features are not supported:
 - Using changes with logical and arithmetic operators: `Apply`, `And`, `Add` etc.
 
 ## Usage
-See usage in `test/fiori-service.test`.
+See usage in [`test/unit/fiori-service.test.ts`](test/unit/fiori-service.test.ts).
 
 ## Keywords
 OData Fiori annotations
