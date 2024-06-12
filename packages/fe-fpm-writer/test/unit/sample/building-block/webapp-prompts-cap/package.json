@@ -33,6 +33,6 @@
         "sqlite3": "^4.2.0"
     },
     "sapux": [
-        "app/incidents"
+        "app\\incidents"
     ]
 }
