@@ -126,7 +126,7 @@ interface TestContext {
 }
 
 async function prepare(relativeFilePathSegments: string[]): Promise<TestContext> {
-    const testDataFolder = '../../data';
+    const testDataFolder = join('..', '..', 'data');
     const root = normalize(join(__dirname, testDataFolder, 'cds', 'term-deletion'));
     const filePath = join(root, ...relativeFilePathSegments);
 

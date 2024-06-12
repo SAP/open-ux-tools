@@ -175,7 +175,7 @@ function findTermKind(
             deletionRangeKind = DeletionRangeKind.TERM_FQ_NAME; // e.g. @title
         } else if (vocabularyAliases.has(tokens[i].text) && tokens[i + 1].text === '.') {
             deletionRangeKind = DeletionRangeKind.TERM_FQ_NAME;
-        } else if (/^[a-zA-Z0-9_]+$/.test(tokens[i].text)) {
+        } else if (/^\w+$/.test(tokens[i].text)) {
             // TODO use better regular expression for OData simple identifier
             deletionRangeKind = DeletionRangeKind.TERM_NAME;
         } else {
@@ -484,7 +484,7 @@ function canIncludeAnnotateWithStatement(
                 tokens[beforeTokenIndex].text.toUpperCase() === 'ACTIONS' &&
                 getNeighboringToken(tokens, beforeTokenIndex, -1)?.text.toUpperCase() === 'WITH' &&
                 ['Annotate', 'Extend', 'Ext'].includes(
-                    getNeighboringToken(tokens, beforeTokenIndex, -2)?.isIdentifier || ''
+                    getNeighboringToken(tokens, beforeTokenIndex, -2)?.isIdentifier ?? ''
                 )
             );
         }
@@ -492,7 +492,7 @@ function canIncludeAnnotateWithStatement(
         return (
             tokens[beforeTokenIndex].text.toUpperCase() === 'WITH' &&
             ['Annotate', 'Extend', 'Ext'].includes(
-                getNeighboringToken(tokens, beforeTokenIndex, -1)?.isIdentifier || ''
+                getNeighboringToken(tokens, beforeTokenIndex, -1)?.isIdentifier ?? ''
             )
         );
     }

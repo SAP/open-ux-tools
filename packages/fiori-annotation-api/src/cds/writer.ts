@@ -1204,7 +1204,6 @@ function createElementRanges(document: CDSDocument, tokens: CompilerToken[], poi
     }, new Map<string, number[]>());
 
     for (const [containerPath, indices] of groups) {
-        // TODO: check if parent gets resolved correctly
         const [parent] = getAstNodesFromPointer(document, containerPath).reverse();
         if (parent?.type === COLLECTION_TYPE) {
             const indentLevel = getIndentLevelFromNode(tokens, parent);

@@ -82,7 +82,7 @@ import type { Document } from './document';
 import { CDSWriter } from './writer';
 import { getMissingRefs } from './references';
 import { addAllVocabulariesToAliasInformation } from '../vocabularies';
-import { getDocument, getGhostFileDocument } from './compile';
+import { getDocument, getGhostFileDocument } from './document';
 import { convertPointer, getAstNodesFromPointer } from './pointer';
 import { getGenericNodeFromPointer, pathFromUri, PRIMITIVE_TYPE_NAMES } from '../utils';
 import {
@@ -239,14 +239,17 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
      * @returns All relevant service files.
      */
     public getAllFiles(includeGhostFiles: boolean): TextFile[] {
-        return includeGhostFiles
-            ? this.compiledService.annotationFiles.reverse().map((file) => ({
-                  uri: file.uri,
-                  isReadOnly:
-                      // ghost files are readOnly and should not be in service files
-                      this.service.serviceFiles.find((serviceFile) => serviceFile.uri === file.uri)?.isReadOnly ?? true
-              }))
-            : [...this.service.serviceFiles];
+        if (includeGhostFiles) {
+            const annotationFiles = [...this.compiledService.annotationFiles];
+            annotationFiles.reverse();
+            return annotationFiles.map((file) => ({
+                uri: file.uri,
+                isReadOnly:
+                    // ghost files are readOnly and should not be in service files
+                    this.service.serviceFiles.find((serviceFile) => serviceFile.uri === file.uri)?.isReadOnly ?? true
+            }));
+        }
+        return [...this.service.serviceFiles];
     }
 
     /**
@@ -351,9 +354,10 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
                 throw new ApiError(`Could not compile service. Missing document ${file.uri}`, ApiErrorCode.General);
             }
         }
+        annotationFiles.reverse();
         return Object.freeze({
             odataVersion: '4.0',
-            annotationFiles: annotationFiles.reverse(),
+            annotationFiles,
             metadata: this.metadata
         });
     }
@@ -489,20 +493,7 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         );
         const [currentAstNode] = getAstNodesFromPointer(document.ast, pointer).slice(-1);
         if (containsFlattenedNodes) {
-            const targetPointer = pointer.split('/').slice(0, 3).join('/');
-            const termPointer = change.pointer.split('/').slice(0, 5).join('/');
-            const annotationValuePointer = change.pointer.split('/').slice(5).join('/');
-            const element = getGenericNodeFromPointer(document.annotationFile, termPointer);
-            if (element?.type === ELEMENT_TYPE) {
-                const annotation = buildAnnotation(element, annotationValuePointer, change.element);
-                if (annotation) {
-                    writer.addChange({
-                        type: 'insert-annotation',
-                        element: annotation,
-                        pointer: targetPointer
-                    });
-                }
-            }
+            this.insertInFlattenedStructure(writer, document, change, pointer);
         } else if (currentAstNode.type === TARGET_TYPE) {
             writer.addChange({
                 type: 'insert-annotation',
@@ -557,6 +548,28 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
 
         this.addMissingReferences(document.uri, missingReferences);
     };
+
+    private insertInFlattenedStructure(
+        writer: CDSWriter,
+        document: Document,
+        change: InsertElement,
+        pointer: string
+    ): void {
+        const targetPointer = pointer.split('/').slice(0, 3).join('/');
+        const termPointer = change.pointer.split('/').slice(0, 5).join('/');
+        const annotationValuePointer = change.pointer.split('/').slice(5).join('/');
+        const element = getGenericNodeFromPointer(document.annotationFile, termPointer);
+        if (element?.type === ELEMENT_TYPE) {
+            const annotation = buildAnnotation(element, annotationValuePointer, change.element);
+            if (annotation) {
+                writer.addChange({
+                    type: 'insert-annotation',
+                    element: annotation,
+                    pointer: targetPointer
+                });
+            }
+        }
+    }
 
     private insertAnnotation(writer: CDSWriter, change: InsertElement, pointer: string): void {
         // insert annotation value

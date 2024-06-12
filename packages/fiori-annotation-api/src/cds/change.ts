@@ -442,7 +442,7 @@ export interface MoveCollectionValue {
     /**
      * move before index.
      */
-    index?: number | undefined;
+    index?: number;
     /**
      * Array of  eg: collection.
      */

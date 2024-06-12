@@ -392,9 +392,7 @@ function convertUpdateElementNameToTextEdits(
             const nameLength = element.name?.length ?? 0;
             openTagRange.start.character++; // <
             openTagRange.end.character = openTagRange.start.character + nameLength;
-            if (openTagRange) {
-                edits.push(TextEdit.replace(openTagRange, newName));
-            }
+            edits.push(TextEdit.replace(openTagRange, newName));
             if (closeTagRange) {
                 closeTagRange.start.character += 2; // </
                 closeTagRange.end.character--; // >
@@ -602,7 +600,6 @@ function findInsertPosition(
     if (child) {
         const childRange = sourcePositionToRange(child.position);
         // keep associated comments with element together
-        // TODO: check with comment with line between
         const comment = findComment(comments, childRange);
         const startAnchorRange = findStartAnchorRange(element, index);
         if (!startAnchorRange) {

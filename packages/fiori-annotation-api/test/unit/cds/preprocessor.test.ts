@@ -23,7 +23,7 @@ import {
 } from '../../../src/cds/change';
 import { preprocessChanges } from '../../../src/cds/preprocessor';
 
-import { getDocument } from '../../../src/cds/compile';
+import { getDocument } from '../../../src/cds/document';
 import type { Document } from '../../../src/cds/document';
 import { PROJECTS } from '../projects';
 

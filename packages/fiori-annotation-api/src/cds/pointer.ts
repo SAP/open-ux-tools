@@ -462,8 +462,7 @@ export function getAstNodesFromPointer(document: CDSDocument, pointer: string): 
     }
 
     let node: AstNode | AstNode[] | undefined = document;
-    for (let index = 0; index < segments.length; index++) {
-        const segment = segments[index];
+    for (const segment of segments) {
         const next: AstNode[] | AstNode | undefined = (node as unknown as { [key: string]: AstNode | AstNode[] })?.[
             segment
         ];

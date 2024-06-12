@@ -218,7 +218,7 @@ export function convertExpressionToInternal(
             break;
         case 'Unknown':
             return undefined;
-        default:
+        default: {
             // value type is EDMX primitive expression
             const rawPrimitiveValue = (value as any)[value.type]; // There is always a property with on the object as type name, Typescript does not infer this case as expected
             primitiveValue = convertPrimitiveValueToInternal(value.type, rawPrimitiveValue, aliasInfo);
@@ -231,6 +231,7 @@ export function convertExpressionToInternal(
                 element.content.push(createTextNode(primitiveValue));
             }
             break;
+        }
     }
     return element;
 }
@@ -331,24 +332,21 @@ function replaceAliasInSubNodes(result: Element, aliasInfo: AliasInformation, re
 }
 
 function removeEmptyTextNodes(result: Element): void {
-    if ((result.content || []).some((entry) => entry.type === ELEMENT_TYPE)) {
+    if ((result.content ?? []).some((entry) => entry.type === ELEMENT_TYPE)) {
         // sub elements present: filter out empty text nodes
-        result.content = result.content.filter((entry) => !(entry.type === TEXT_TYPE && !(entry.text || '').trim()));
+        result.content = result.content.filter((entry) => !(entry.type === TEXT_TYPE && !(entry.text ?? '').trim()));
     }
 }
 
 function getAliasedSegment(aliasInfo: AliasInformation, segment: string): string {
-    let segmentWitAlias = '';
-    const indexAt = segment.indexOf('@');
-    if (indexAt >= 0) {
-        const term = toAliasQualifiedName(segment.substr(indexAt + 1), aliasInfo);
-        segmentWitAlias = segment.substr(0, indexAt) + '@' + term;
+    const [path, term] = segment.split('@');
+    if (term) {
+        return `${path}@${toAliasQualifiedName(term, aliasInfo)}`;
     } else if (segment.indexOf('.') > -1) {
-        segmentWitAlias = toAliasQualifiedName(segment, aliasInfo);
+        return toAliasQualifiedName(segment, aliasInfo);
     } else {
-        segmentWitAlias = segment;
+        return segment;
     }
-    return segmentWitAlias;
 }
 
 function getAliasedPath(aliasInfo: AliasInformation, path: PathValue): PathValue {

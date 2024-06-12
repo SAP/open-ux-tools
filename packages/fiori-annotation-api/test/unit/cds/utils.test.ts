@@ -7,7 +7,7 @@ import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
 import { createCdsCompilerFacadeForRoot, createMetadataCollector } from '@sap/ux-cds-compiler-facade';
 import type { AnnotationGroup } from '@sap-ux/cds-annotation-parser';
 
-import { getDocument } from '../../../src/cds/compile';
+import { getDocument } from '../../../src/cds/document';
 import type { Document } from '../../../src/cds/document';
 import { getAnnotationFromAssignment } from '../../../src/cds/utils';
 

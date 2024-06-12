@@ -4,7 +4,7 @@ import { join } from 'path';
 import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
 import { createCdsCompilerFacadeForRoot, createMetadataCollector } from '@sap/ux-cds-compiler-facade';
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
-import { getDocument } from '../../../src/cds/compile';
+import { getDocument } from '../../../src/cds/document';
 import type { Document } from '../../../src/cds/document';
 
 const vocabularyService = new VocabularyService(true);
