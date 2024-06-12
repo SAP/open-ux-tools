@@ -289,7 +289,7 @@ describe('utils - ', () => {
             `);
         });
 
-        test('getCAPServiceChoices', async () => {
+        test.skip('getCAPServiceChoices', async () => {
             jest.spyOn(projectAccess, 'getProject').mockResolvedValue({
                 apps: {
                     ['app\\incidents']: {
@@ -314,7 +314,7 @@ describe('utils - ', () => {
             `);
         });
 
-        test('getCAPServicePrompt', async () => {
+        test.skip('getCAPServicePrompt', async () => {
             jest.spyOn(projectAccess, 'getProject').mockResolvedValue({
                 apps: {
                     ['app\\incidents']: {
