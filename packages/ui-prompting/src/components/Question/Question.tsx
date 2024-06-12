@@ -9,7 +9,6 @@ export interface QuestionProps {
     question: PromptQuestion;
     answers: Record<string, AnswerValue>;
     onChange: (name: string, answer: AnswerValue, dependantPromptNames?: string[]) => void;
-    isLoading?: boolean;
     choices?: Choice[];
     pending?: boolean;
     additionalInfo?: string;
