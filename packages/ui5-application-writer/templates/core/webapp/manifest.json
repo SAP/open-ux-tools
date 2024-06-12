@@ -38,7 +38,10 @@
         "minUI5Version": "<%- ui5.minUI5Version %>",
         "libs": {<% ui5.ui5Libs.forEach((ui5Lib, idx, libs) => { %>
           <%- `"${ui5Lib}": {}${idx+1 < libs.length ? ',' : ''}` %><% }); %>
-        }
+        }<% if (sapUI5Components) { %>,
+        "components": {<% ui5.ui5Components.forEach((ui5Component, idx, libs) => { %>
+        <%- `"${ui5Component}": {}${idx+1 < libs.length ? ',' : ''}` %><% }); %>
+      }<% } %>
       },
       "contentDensities": {
         "compact": true,

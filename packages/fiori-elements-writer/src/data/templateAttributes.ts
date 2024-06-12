@@ -46,6 +46,12 @@ type TemplateLibs = {
     };
 };
 
+type AnnotationReuseLibs = {
+    supportedODataVersions: OdataVersion[];
+    annotation: string;
+    reuseLib: string;
+};
+
 const templateLibs: TemplateLibs = {
     [OdataVersion.v2]: {
         [TemplateType.AnalyticalListPage]: {
@@ -167,3 +173,47 @@ export const TemplateTypeAttributes: TemplateAttributes = {
         }
     }
 };
+
+export const annotationReuseLibs: AnnotationReuseLibs[] = [
+    {
+        supportedODataVersions: [OdataVersion.v4, OdataVersion.v2],
+        annotation: 'UI.Note',
+        reuseLib: 'sap.nw.core.gbt.notes.lib.reuse'
+    }
+];
+
+export function getAnnotationDeps(version: OdataVersion, metadata?: string): string | string[] | undefined {
+    const reuseLibs = new Set();
+    const annotationsFound = new Set();
+    let sapUI5Components = false;
+
+    if (annotationReuseLibs.hasOwnProperty(version)) {
+        sapUI5Components = true;
+    }
+
+    // Create a regular expression that matches any of the annotations
+    const annotationsRegex = new RegExp(
+        annotationReuseLibs.map((annotationReuseLib) => annotationReuseLib.annotation).join('|'),
+        'g'
+    );
+    let match;
+
+    if (metadata) {
+        // Scan the string once
+        while ((match = annotationsRegex.exec(metadata)) !== null) {
+            annotationsFound.add(match[0]);
+        }
+    }
+
+    // Add corresponding dependencies based on found annotations
+    annotationsFound.forEach((annotation) => {
+        const annotationReuseLib = annotationReuseLibs.find(
+            (annotationReuseLib) => annotationReuseLib.annotation === annotation
+        );
+        if (annotationReuseLib) {
+            reuseLibs.add(annotationReuseLib.annotation);
+        }
+    });
+
+    return Array.from(reuseLibs);
+}
