@@ -24,6 +24,7 @@ import {
     getAnnotationTermAlias,
     getEntityTypes
 } from '../../../src/building-block/utils/service';
+import * as projectAccess from '@sap-ux/project-access';
 
 jest.setTimeout(10000);
 
@@ -37,7 +38,14 @@ jest.mock('@sap-ux/project-access', () => ({
         .fn()
         .mockResolvedValue([
             join(__dirname, '../sample/building-block/webapp-prompts', 'webapp/ext/main', 'Main.view.xml')
-        ])
+        ]),
+    getCapProjectType: jest.fn().mockResolvedValue('CAPNodejs'),
+    loadModuleFromProject: jest.fn().mockResolvedValue({
+        version: '5.5.5',
+        home: '',
+        env: {}
+    }),
+    getCapServiceName: jest.fn().mockResolvedValue('mappedMainServiceName')
 }));
 
 const ENTITY_TYPE = 'C_CUSTOMER_OP_SRV.C_CustomerOPType';
@@ -45,12 +53,17 @@ type Choices = (answers?: Answers) => Promise<readonly DistinctChoice<Answers, L
 
 describe('utils - ', () => {
     let projectProvider: ProjectProvider;
+    let capProjectProvider: ProjectProvider;
     let fs: Editor;
 
     beforeAll(async () => {
         projectProvider = await ProjectProvider.createProject(projectFolder);
         fs = create(createStorage());
+        capProjectProvider = await ProjectProvider.createProject(
+            join(__dirname, '../sample/building-block/webapp-prompts-cap/app/incidents')
+        );
     });
+
     describe('annotation service - ', () => {
         test('entityType', async () => {
             const entityTypes = await getEntityTypes(projectProvider);
@@ -277,14 +290,24 @@ describe('utils - ', () => {
         });
 
         test('getCAPServiceChoices', async () => {
-            const capProjectProvider = await ProjectProvider.createProject(
-                join(__dirname, '../sample/building-block/webapp-prompts-cap/app/incidents')
-            );
+            jest.spyOn(projectAccess, 'getProject').mockResolvedValue({
+                apps: {
+                    ['app\\incidents']: {
+                        appRoot: '',
+                        manifest: '',
+                        changes: '',
+                        services: { mainService: {} },
+                        mainService: 'mainService'
+                    } as unknown as projectAccess.ApplicationStructure
+                },
+                projectType: 'CAPNodejs',
+                root: join(__dirname, '../sample/building-block/webapp-prompts-cap')
+            });
             const choices = await getCAPServiceChoices(capProjectProvider);
             expect(choices).toMatchInlineSnapshot(`
                 Array [
                   Object {
-                    "name": "IncidentService",
+                    "name": "mappedMainServiceName",
                     "value": "mainService",
                   },
                 ]
@@ -292,16 +315,26 @@ describe('utils - ', () => {
         });
 
         test('getCAPServicePrompt', async () => {
-            const capProjectProvider = await ProjectProvider.createProject(
-                join(__dirname, '../sample/building-block/webapp-prompts-cap/app/incidents')
-            );
+            jest.spyOn(projectAccess, 'getProject').mockResolvedValue({
+                apps: {
+                    ['app\\incidents']: {
+                        appRoot: '',
+                        manifest: '',
+                        changes: '',
+                        services: { mainService: {} },
+                        mainService: 'mainService'
+                    } as unknown as projectAccess.ApplicationStructure
+                },
+                projectType: 'CAPNodejs',
+                root: join(__dirname, '../sample/building-block/webapp-prompts-cap')
+            });
             const prompt = await getCAPServicePrompt('message', capProjectProvider);
             expect(prompt).toMatchInlineSnapshot(`
                 Object {
                   "additionalInfo": undefined,
                   "choices": Array [
                     Object {
-                      "name": "IncidentService",
+                      "name": "mappedMainServiceName",
                       "value": "mainService",
                     },
                   ],
