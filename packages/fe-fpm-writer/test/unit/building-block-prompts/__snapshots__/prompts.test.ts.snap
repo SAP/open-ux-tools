@@ -28,13 +28,11 @@ exports[`Prompts getChartBuildingBlockPrompts 1`] = `
 Object {
   "questions": Array [
     Object {
-      "additionalInfo": undefined,
       "choices": [Function],
       "dependantPromptNames": Array [
         "aggregationPath",
         "filterBarId",
       ],
-      "groupId": undefined,
       "message": "View or Fragment File",
       "name": "viewOrFragmentFile",
       "placeholder": "Select a view or fragment file",
@@ -44,9 +42,7 @@ Object {
       "validate": [Function],
     },
     Object {
-      "additionalInfo": undefined,
       "default": "Chart",
-      "groupId": undefined,
       "message": "Building Block ID",
       "name": "id",
       "placeholder": "Enter a building block ID",
@@ -55,12 +51,10 @@ Object {
       "validate": [Function],
     },
     Object {
-      "additionalInfo": undefined,
       "choices": [Function],
       "dependantPromptNames": Array [
         "qualifier",
       ],
-      "groupId": undefined,
       "message": "Entity",
       "name": "entity",
       "placeholder": "Select an entity",
@@ -71,7 +65,6 @@ Object {
     Object {
       "additionalInfo": "Values are dependent on entity type",
       "choices": [Function],
-      "groupId": undefined,
       "message": "Chart Qualifier",
       "name": "qualifier",
       "placeholder": "Select chart qualifier",
@@ -80,9 +73,7 @@ Object {
       "type": "list",
     },
     Object {
-      "additionalInfo": undefined,
       "choices": [Function],
-      "groupId": undefined,
       "message": "Aggregation Path",
       "name": "aggregationPath",
       "placeholder": "Enter an aggregation path",
@@ -91,12 +82,9 @@ Object {
       "type": "list",
     },
     Object {
-      "additionalInfo": undefined,
-      "groupId": undefined,
       "message": "Associated Filter Bar ID",
       "name": "filterBarId",
       "placeholder": "Select or enter a filter bar ID",
-      "required": undefined,
       "selectType": "dynamic",
       "type": "list",
     },
@@ -151,12 +139,10 @@ exports[`Prompts getFilterBarBuildingBlockPrompts 1`] = `
 Object {
   "questions": Array [
     Object {
-      "additionalInfo": undefined,
       "choices": [Function],
       "dependantPromptNames": Array [
         "aggregationPath",
       ],
-      "groupId": undefined,
       "message": "View or Fragment File",
       "name": "viewOrFragmentFile",
       "placeholder": "Select a view or fragment file",
@@ -166,9 +152,7 @@ Object {
       "validate": [Function],
     },
     Object {
-      "additionalInfo": undefined,
       "default": "FilterBar",
-      "groupId": undefined,
       "message": "Building Block ID",
       "name": "id",
       "placeholder": "Enter a building block ID",
@@ -177,9 +161,7 @@ Object {
       "validate": [Function],
     },
     Object {
-      "additionalInfo": undefined,
       "choices": [Function],
-      "groupId": undefined,
       "message": "Aggregation Path",
       "name": "aggregationPath",
       "placeholder": "Enter an aggregation path",
@@ -188,12 +170,10 @@ Object {
       "type": "list",
     },
     Object {
-      "additionalInfo": undefined,
       "choices": [Function],
       "dependantPromptNames": Array [
         "qualifier",
       ],
-      "groupId": undefined,
       "message": "Entity",
       "name": "entity",
       "placeholder": "Select an entity",
@@ -204,7 +184,6 @@ Object {
     Object {
       "additionalInfo": "Values are dependent on entity type",
       "choices": [Function],
-      "groupId": undefined,
       "message": "Selection Fields Qualifier",
       "name": "qualifier",
       "placeholder": "Select selection fields qualifier",
@@ -249,7 +228,6 @@ Object {
   ],
   "questions": Array [
     Object {
-      "additionalInfo": undefined,
       "choices": [Function],
       "dependantPromptNames": Array [
         "aggregationPath",
@@ -265,7 +243,6 @@ Object {
       "validate": [Function],
     },
     Object {
-      "additionalInfo": undefined,
       "default": "Table",
       "groupId": "tableBuildingBlockProperties",
       "message": "Building Block ID",
@@ -276,7 +253,6 @@ Object {
       "validate": [Function],
     },
     Object {
-      "additionalInfo": undefined,
       "choices": [Function],
       "dependantPromptNames": Array [
         "qualifier",
@@ -301,7 +277,6 @@ Object {
       "type": "list",
     },
     Object {
-      "additionalInfo": undefined,
       "choices": [Function],
       "groupId": "tableBuildingBlockProperties",
       "message": "Aggregation Path",
@@ -312,12 +287,10 @@ Object {
       "type": "list",
     },
     Object {
-      "additionalInfo": undefined,
       "groupId": "tableBuildingBlockProperties",
       "message": "Associated Filter Bar ID",
       "name": "filterBarId",
       "placeholder": "Select or enter a filter bar ID",
-      "required": undefined,
       "selectType": "dynamic",
       "type": "list",
     },
@@ -364,7 +337,6 @@ Object {
       "type": "list",
     },
     Object {
-      "additionalInfo": undefined,
       "choices": Array [
         Object {
           "name": "False",
@@ -379,8 +351,6 @@ Object {
       "groupId": "tableVisualizationProperties",
       "message": "Display Header",
       "name": "displayHeader",
-      "placeholder": undefined,
-      "required": undefined,
       "selectType": "static",
       "type": "list",
     },
@@ -432,7 +402,6 @@ Object {
       "type": "list",
     },
     Object {
-      "additionalInfo": undefined,
       "choices": Array [
         Object {
           "name": "False",
@@ -447,13 +416,10 @@ Object {
       "groupId": "tableVisualizationProperties",
       "message": "Enable Read Only Mode",
       "name": "readOnly",
-      "placeholder": undefined,
-      "required": undefined,
       "selectType": "static",
       "type": "list",
     },
     Object {
-      "additionalInfo": undefined,
       "choices": Array [
         Object {
           "name": "False",
@@ -468,13 +434,10 @@ Object {
       "groupId": "tableVisualizationProperties",
       "message": "Enable Auto Column Width",
       "name": "enableAutoColumnWidth",
-      "placeholder": undefined,
-      "required": undefined,
       "selectType": "static",
       "type": "list",
     },
     Object {
-      "additionalInfo": undefined,
       "choices": Array [
         Object {
           "name": "False",
@@ -489,13 +452,10 @@ Object {
       "groupId": "tableVisualizationProperties",
       "message": "Enable Data Export",
       "name": "enableExport",
-      "placeholder": undefined,
-      "required": undefined,
       "selectType": "static",
       "type": "list",
     },
     Object {
-      "additionalInfo": undefined,
       "choices": Array [
         Object {
           "name": "False",
@@ -510,13 +470,10 @@ Object {
       "groupId": "tableVisualizationProperties",
       "message": "Enable Full Screen Mode",
       "name": "enableFullScreen",
-      "placeholder": undefined,
-      "required": undefined,
       "selectType": "static",
       "type": "list",
     },
     Object {
-      "additionalInfo": undefined,
       "choices": Array [
         Object {
           "name": "False",
@@ -531,13 +488,10 @@ Object {
       "groupId": "tableVisualizationProperties",
       "message": "Enable Paste From Clipboard",
       "name": "enablePaste",
-      "placeholder": undefined,
-      "required": undefined,
       "selectType": "static",
       "type": "list",
     },
     Object {
-      "additionalInfo": undefined,
       "choices": Array [
         Object {
           "name": "False",
@@ -552,8 +506,6 @@ Object {
       "groupId": "tableVisualizationProperties",
       "message": "Table Searchable Toggle",
       "name": "isSearchable",
-      "placeholder": undefined,
-      "required": undefined,
       "selectType": "static",
       "type": "list",
     },
