@@ -87,6 +87,7 @@ export function getUIcontextualMenuCalloutStyles(maxWidth?: number): Partial<ICa
  * @returns - mutated IContextualMenuItem prop with styles props generators applied to each menu tree node
  */
 function injectContextualMenuItemsStyle(items: IContextualMenuItem[]): IContextualMenuItem[] {
+    const renderMenuWithIcons = items.some((item) => item.iconProps);
     return items.map((item: IContextualMenuItem) => {
         if (!item.itemProps) {
             item.itemProps = {};
@@ -105,12 +106,12 @@ function injectContextualMenuItemsStyle(items: IContextualMenuItem[]): IContextu
             item.submenuIconProps = submenuIconProps;
         }
 
-        if (item?.iconProps) {
+        if (item.iconProps || renderMenuWithIcons) {
             item.onRenderContent = (props, renderers): React.ReactNode => {
                 return (
                     <>
                         {renderers.renderItemName(props)}
-                        {renderers.renderItemIcon(props)}
+                        {item.iconProps && renderers.renderItemIcon(props)}
                     </>
                 );
             };
