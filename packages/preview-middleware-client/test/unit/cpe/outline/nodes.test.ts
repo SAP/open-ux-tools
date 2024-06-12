@@ -10,7 +10,8 @@ import VersionInfo from 'mock/sap/ui/VersionInfo';
 
 jest.mock('../../../../src/cpe/outline/utils', () => {
     return {
-        isEditable: () => false
+        isEditable: () => false,
+        isReuseComponent: () => true
     };
 });
 

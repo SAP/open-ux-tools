@@ -1,10 +1,9 @@
 import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
-import { isEditable } from '../../../../src/cpe/outline/utils';
+import { isEditable, isReuseComponent } from '../../../../src/cpe/outline/utils';
 import OverlayUtil from 'mock/sap/ui/dt/OverlayUtil';
 import ComponentMock from 'mock/sap/ui/core/Component';
 import { sapCoreMock } from 'mock/window';
 import * as cpeUtils from '../../../../src/cpe/utils';
-import { isReuseComponent } from '../../../../src/cpe/outline/utils';
 jest.mock('../../../../src/cpe/control-data', () => {
     return {
         buildControlData: () => {
