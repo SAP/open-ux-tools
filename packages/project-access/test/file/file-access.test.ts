@@ -95,15 +95,6 @@ describe('fileAccess', () => {
         beforeEach(() => {
             jest.clearAllMocks();
         });
-        test('Should update package.json using previous indentation with tab space', async () => {
-            const updateFileContent = {} as unknown as Package;
-            const jsonStringifySpy = jest.spyOn(JSON, 'stringify');
-            const writeFileSpy = jest.spyOn(promises, 'writeFile').mockResolvedValue();
-            const pckgPath = join(__dirname, '..', 'test-data', 'json', 'package', 'package-tab-space.json');
-            await updatePackageJSON(pckgPath, updateFileContent);
-            expect(jsonStringifySpy).toBeCalledWith(updateFileContent, null, '  ');
-            expect(writeFileSpy).toBeCalledWith(pckgPath, '{}\n', { encoding: 'utf8' });
-        });
         test('Should update package.json using previous indentation with 1 space', async () => {
             const updateFileContent = {} as unknown as Package;
             const jsonStringifySpy = jest.spyOn(JSON, 'stringify');
@@ -129,6 +120,14 @@ describe('fileAccess', () => {
             await updatePackageJSON(pckgPath, updateFileContent, memFs);
             const result = memFs.read(pckgPath);
             expect(result).toBe(`{\n    "sapux": true\n}\n`);
+        });
+        test('Should update package.json using previous indentation with tab - mem-fs-editor', async () => {
+            const updateFileContent = { sapux: true } as unknown as Package;
+            const pckgPath = join(__dirname, '..', 'test-data', 'json', 'package', 'package-tab-spaces.json');
+            memFs.writeJSON(pckgPath, { sapux: false }, undefined, '\t');
+            await updatePackageJSON(pckgPath, updateFileContent, memFs);
+            const result = memFs.read(pckgPath);
+            expect(result).toBe(`{\n\t"sapux": true\n}\n`);
         });
     });
 
