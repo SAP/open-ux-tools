@@ -13,12 +13,13 @@ import cloneDeep from 'lodash/cloneDeep';
 export function extendAdditionalMessages(
     question: YUIQuestion,
     addMsgFunc: PromptSeverityMessage,
-    promptState?: unknown
+    promptState?: Answers
 ): PromptSeverityMessage {
     const addMsgs = question.additionalMessages;
     return (value: unknown, previousAnswers?: Answers | undefined): ReturnType<PromptSeverityMessage> => {
         // Allow non-prompt answer (derived answers) values to be passed to the additional messages function
-        const combinedAnswers = Object.assign({}, cloneDeep(previousAnswers), cloneDeep(promptState));
+        // We clone as answers should never be mutatable in prompt functions
+        const combinedAnswers = { ...cloneDeep(previousAnswers), ...cloneDeep(promptState) };
         const extMsg = addMsgFunc(value, combinedAnswers);
         if (extMsg) {
             return extMsg; // Extended prompt message is returned first
@@ -43,8 +44,8 @@ export function extendValidate<T extends Answers = Answers>(
 ): NonNullable<Validator<T>> {
     const validate: Validator<T> = question.validate;
     return (value: unknown, previousAnswers?: T): ReturnType<NonNullable<Validator<T>>> => {
-        // Allow non-prompt answer (derived answers) values to be passed to the additional messages function
-        const combinedAnswers = Object.assign({}, cloneDeep(previousAnswers), cloneDeep(promptState));
+        // Allow non-prompt answer (derived answers) values to be passed to the validate function
+        const combinedAnswers = { ...cloneDeep(previousAnswers), ...cloneDeep(promptState) } as T;
         const extVal = validateFunc?.(value, combinedAnswers);
         if (extVal !== true) {
             return extVal;

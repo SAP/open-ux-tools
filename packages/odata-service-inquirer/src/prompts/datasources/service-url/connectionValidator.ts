@@ -149,28 +149,7 @@ export class ConnectionValidator {
             this.validity.urlFormat = true;
             this._validatedUrl = serviceUrl;
 
-            if (status === 200) {
-                this.validity.authenticated = true;
-                this.validity.authRequired = false;
-            } else if (status === 404) {
-                this.validity.reachable = false;
-                return ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NOT_FOUND) ?? false;
-            } else if (ErrorHandler.isCertError(status)) {
-                this.validity.reachable = true;
-                this.validity.canSkipCertError = ignorableCertErrors.includes(ErrorHandler.getErrorType(status));
-                return errorHandler.getValidationErrorHelp(status, false) ?? false;
-            } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.AUTH) {
-                this.validity.reachable = true;
-                this.validity.authRequired = true;
-            } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.REDIRECT) {
-                this.validity.reachable = true;
-                return t('errors.urlRedirect');
-            } else if (status !== 404) {
-                this.validity.reachable = false;
-                return ErrorHandler.getErrorMsgFromType(ERROR_TYPE.CONNECTION, `http code: ${status}`) ?? false;
-            }
-            this.validity.reachable = true;
-            return true;
+            return this.getValidationResultFromStatusCode(status);
         } catch (error) {
             // More helpful context specific error
             if (ErrorHandler.getErrorType(error) === ERROR_TYPE.CONNECTION) {
@@ -182,6 +161,38 @@ export class ConnectionValidator {
             const errorMsg = errorHandler.getErrorMsg(error);
             return errorMsg ?? t('errors.invalidUrl');
         }
+    }
+
+    /**
+     * Translate the status code into a validation result.
+     * Sets the instance validity state based on the status code.
+     *
+     * @param status a http request status code used to determine the validation result
+     * @returns
+     */
+    private getValidationResultFromStatusCode(status: string | number): boolean | string | IValidationLink {
+        if (status === 200) {
+            this.validity.authenticated = true;
+            this.validity.authRequired = false;
+        } else if (status === 404) {
+            this.validity.reachable = false;
+            return ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NOT_FOUND) ?? false;
+        } else if (ErrorHandler.isCertError(status)) {
+            this.validity.reachable = true;
+            this.validity.canSkipCertError = ignorableCertErrors.includes(ErrorHandler.getErrorType(status));
+            return errorHandler.getValidationErrorHelp(status, false) ?? false;
+        } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.AUTH) {
+            this.validity.reachable = true;
+            this.validity.authRequired = true;
+        } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.REDIRECT) {
+            this.validity.reachable = true;
+            return t('errors.urlRedirect');
+        } else if (status !== 404) {
+            this.validity.reachable = false;
+            return ErrorHandler.getErrorMsgFromType(ERROR_TYPE.CONNECTION, `http code: ${status}`) ?? false;
+        }
+        this.validity.reachable = true;
+        return true;
     }
 
     /**
@@ -211,14 +222,14 @@ export class ConnectionValidator {
     /**
      * Test the connectivity with the specified service url using the provided credentials.
      *
-     * @param serviceUrl optional, the service url to validate, the previously validated url will be used if not provided
+     * @param serviceUrl optional, the service url to validate
      * @param username user name
      * @param password password
      * @param ignoreCertError optional, ignore some certificate errors
      * @returns true if the authentication is successful, false if not, or an error message string
      */
     public async validateAuth(
-        serviceUrl = this._validatedUrl,
+        serviceUrl: string,
         username: string,
         password: string,
         ignoreCertError = false

@@ -131,26 +131,21 @@ function getCliIgnoreCertValidatePrompt(
                 // If the user choose to not ignore cert errors, we cannot continue
                 if (ignoreCertError === false) {
                     throw new Error(t('errors.exitingGeneration', { exitReason: t('errors.certValidationRequired') }));
-                } else if (ignoreCertError === true) {
+                }
+                if (ignoreCertError === true) {
                     // If the user choose to ignore cert errors, we need to re-validate
                     LoggerHelper.logger.warn(t('prompts.validationMessages.warningCertificateValidationDisabled'));
-                    // Re-check if auth required
+                    // Re-check if auth required as the cert error would have prevented this check earlier
                     const validUrl = await connectValidator.validateUrl(serviceUrl, ignoreCertError, true);
-                    if (validUrl === true) {
-                        if (!connectValidator.validity.authRequired) {
-                            // Will log on CLI
-                            const validService = await validateService(
-                                serviceUrl,
-                                connectValidator,
-                                requiredVersion,
-                                true
-                            );
-                            if (validService !== true) {
-                                throw new Error(t('errors.exitingGeneration', { exitReason: validService.toString() }));
-                            }
-                        }
-                    } else {
+                    if (validUrl !== true) {
                         throw new Error(validUrl.toString()); // exit
+                    }
+                    if (!connectValidator.validity.authRequired) {
+                        // Will log on CLI
+                        const validService = await validateService(serviceUrl, connectValidator, requiredVersion, true);
+                        if (validService !== true) {
+                            throw new Error(t('errors.exitingGeneration', { exitReason: validService.toString() }));
+                        }
                     }
                 }
             }
