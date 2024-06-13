@@ -26,6 +26,7 @@ import { findAllApps } from './search';
 
 import type { Editor } from 'mem-fs-editor';
 import { updateManifestJSON, updatePackageJSON } from '../file';
+import { FileName } from '../constants';
 
 /**
  *
@@ -163,7 +164,7 @@ class ApplicationAccessImp implements ApplicationAccess {
      * @param memFs - optional mem-fs-editor instance
      */
     async updatePackageJSON(packageJson: Package, memFs?: Editor): Promise<void> {
-        await updatePackageJSON(join(this.app.appRoot, 'package.json'), packageJson, memFs);
+        await updatePackageJSON(join(this.app.appRoot, FileName.Package), packageJson, memFs);
     }
 
     /**
