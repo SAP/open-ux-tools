@@ -1,5 +1,15 @@
 import type { CustomMiddleware, UI5Config, CustomTask, AbapTarget } from '@sap-ux/ui5-config';
-import type { CustomConfig, AdpWriterConfig, InboundChangeContent, Language, InboundChangeContentAddInboundId, FlpConfig, Content, CloudApp, NewInboundNavigation, ChangeInboundNavigation } from '../types';
+import type {
+    CustomConfig,
+    AdpWriterConfig,
+    InboundContent,
+    Language,
+    InboundChangeContentAddInboundId,
+    Content,
+    CloudApp,
+    ChangeInboundNavigation,
+    InternalInboundNavigation
+} from '../types';
 
 /**
  * Generate the configuration for the middlewares required for the ui5.yaml.
@@ -74,9 +84,9 @@ function getFioriToolsMiddlwares(config: AdpWriterConfig): CustomMiddleware<unkn
             name: 'fiori-tools-appreload',
             afterMiddleware: 'compression',
             configuration: {
-              port: 35729,
-              path: 'webapp',
-              delay: 300,
+                port: 35729,
+                path: 'webapp',
+                delay: 300
             }
         },
         {
@@ -122,9 +132,9 @@ function getOpenSourceMiddlewares(config: AdpWriterConfig): CustomMiddleware<obj
             name: 'reload-middleware',
             afterMiddleware: 'compression',
             configuration: {
-              port: 35729,
-              path: 'webapp',
-              delay: 300,
+                port: 35729,
+                path: 'webapp',
+                delay: 300
             }
         },
         {
@@ -198,17 +208,16 @@ function getAdpCloudCustomTasks(config: AdpWriterConfig & { target: AbapTarget }
  * @param appId application id
  * @returns Inbound change content.
  */
-function getInboundChangeContentWithExistingInboundId(flpConfiguration: ChangeInboundNavigation, appId: string): InboundChangeContent {
-    if (!flpConfiguration.inboundId) {
-        throw new Error("Missing properties!");
-    }
-
-    const inboundContent: InboundChangeContent = {
+function getInboundChangeContentWithExistingInboundId(
+    flpConfiguration: ChangeInboundNavigation,
+    appId: string
+): InboundContent {
+    const inboundContent: InboundContent = {
         inboundId: flpConfiguration.inboundId,
         entityPropertyChange: [
             {
-                propertyPath: "title",
-                operation: "UPSERT",
+                propertyPath: 'title',
+                operation: 'UPSERT',
                 propertyValue: `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.title}}`
             }
         ]
@@ -216,20 +225,20 @@ function getInboundChangeContentWithExistingInboundId(flpConfiguration: ChangeIn
 
     if (flpConfiguration.subTitle) {
         inboundContent.entityPropertyChange.push({
-            propertyPath: "subTitle",
-            operation: "UPSERT",
+            propertyPath: 'subTitle',
+            operation: 'UPSERT',
             propertyValue: `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.subTitle}}`
         });
     }
 
     inboundContent.entityPropertyChange.push({
-        propertyPath: "signature/parameters/sap-appvar-id",
-        operation: "UPSERT",
+        propertyPath: 'signature/parameters/sap-appvar-id',
+        operation: 'UPSERT',
         propertyValue: {
             required: true,
             filter: {
                 value: appId,
-                format: "plain"
+                format: 'plain'
             },
             launcherValue: {
                 value: appId
@@ -247,11 +256,10 @@ function getInboundChangeContentWithExistingInboundId(flpConfiguration: ChangeIn
  * @param appId application id
  * @returns Inbound change content.
  */
-function getInboundChangeContentWithNewInboundID(flpConfiguration: NewInboundNavigation, appId: string): InboundChangeContentAddInboundId {
-    if (!flpConfiguration.action || !flpConfiguration.semanticObject || !flpConfiguration.inboundId) {
-        throw new Error("Missing properties!");
-    }
-
+function getInboundChangeContentWithNewInboundID(
+    flpConfiguration: InternalInboundNavigation,
+    appId: string
+): InboundChangeContentAddInboundId {
     const content: InboundChangeContentAddInboundId = {
         inbound: {
             [flpConfiguration.inboundId]: {
@@ -259,7 +267,7 @@ function getInboundChangeContentWithNewInboundID(flpConfiguration: NewInboundNav
                 semanticObject: flpConfiguration.semanticObject,
                 title: `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.title}}`,
                 signature: {
-                    additionalParameters: "allowed",
+                    additionalParameters: 'allowed',
                     parameters: flpConfiguration.additionalParameters ?? {}
                 }
             }
@@ -267,14 +275,16 @@ function getInboundChangeContentWithNewInboundID(flpConfiguration: NewInboundNav
     };
 
     if (flpConfiguration.subTitle) {
-        content.inbound[flpConfiguration.inboundId].subTitle = `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.subTitle}}`;
+        content.inbound[
+            flpConfiguration.inboundId
+        ].subTitle = `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.subTitle}}`;
     }
 
-    content.inbound[flpConfiguration.inboundId].signature.parameters["sap-appvar-id"] = {
+    content.inbound[flpConfiguration.inboundId].signature.parameters['sap-appvar-id'] = {
         required: true,
         filter: {
             value: appId,
-            format: "plain"
+            format: 'plain'
         },
         launcherValue: {
             value: appId
@@ -288,27 +298,34 @@ function getInboundChangeContentWithNewInboundID(flpConfiguration: NewInboundNav
  * Generate Inbound change content required for manifest.appdescriptor.
  *
  * @param flpConfiguration FLP cloud project configuration
- * @param appId application id
+ * @param appId Application variant id
+ * @param manifestChangeContent Application variant change content
  */
-export function enhanceManifestChangeContentWithFlpConfig(flpConfiguration: FlpConfig, app: CloudApp, manifestChangeContent: Content[] | Content[] = [], addInboundId: boolean): void {
-    const inboundChangeContent = addInboundId ? getInboundChangeContentWithNewInboundID(flpConfiguration as NewInboundNavigation, app.id) : getInboundChangeContentWithExistingInboundId(flpConfiguration as ChangeInboundNavigation, app.id);
+export function enhanceManifestChangeContentWithFlpConfig(
+    flpConfiguration: InternalInboundNavigation,
+    appId: string,
+    manifestChangeContent: Content[] = []
+): void {
+    const inboundChangeContent = flpConfiguration.addInboundId
+        ? getInboundChangeContentWithNewInboundID(flpConfiguration, appId)
+        : getInboundChangeContentWithExistingInboundId(flpConfiguration as ChangeInboundNavigation, appId);
     if (inboundChangeContent) {
-        const firstFlpChange = {
-            changeType: addInboundId ? "appdescr_app_addNewInbound" : "appdescr_app_changeInbound",
+        const addInboundChange = {
+            changeType: flpConfiguration.addInboundId ? 'appdescr_app_addNewInbound' : 'appdescr_app_changeInbound',
             content: inboundChangeContent,
             texts: {
-                "i18n": "i18n/i18n.properties"
+                'i18n': 'i18n/i18n.properties'
             }
         };
-        const secondFlpChange = {
-            changeType: "appdescr_app_removeAllInboundsExceptOne",
+        const removeOtherInboundsChange = {
+            changeType: 'appdescr_app_removeAllInboundsExceptOne',
             content: {
-                "inboundId": flpConfiguration.inboundId
+                'inboundId': flpConfiguration.inboundId
             },
             texts: {}
         };
 
-        manifestChangeContent.push(firstFlpChange);
-        manifestChangeContent.push(secondFlpChange);
+        manifestChangeContent.push(addInboundChange);
+        manifestChangeContent.push(removeOtherInboundsChange);
     }
 }

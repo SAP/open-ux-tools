@@ -1,5 +1,30 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.20.0
+
+### Minor Changes
+
+-   e9a007af: Add support for CAP project services and annotations, based on the service type.
+
+### Patch Changes
+
+-   Updated dependencies [e9a007af]
+    -   @sap-ux/odata-service-writer@0.20.0
+
+## 0.19.11
+
+### Patch Changes
+
+-   Updated dependencies [d2063073]
+    -   @sap-ux/fe-fpm-writer@0.24.14
+
+## 0.19.10
+
+### Patch Changes
+
+-   Updated dependencies [f69d72c1]
+    -   @sap-ux/fe-fpm-writer@0.24.13
+
 ## 0.19.9
 
 ### Patch Changes
