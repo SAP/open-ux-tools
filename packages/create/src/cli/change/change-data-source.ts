@@ -1,9 +1,6 @@
 import type { Command } from 'commander';
 import type { AdpPreviewConfig, DescriptorVariant, PromptDefaults } from '@sap-ux/adp-tooling';
-import type { ToolsLogger } from '@sap-ux/logger';
-import type { Manifest } from '@sap-ux/project-access';
-import { generateChange, ChangeType, getPromptsForChangeDataSource } from '@sap-ux/adp-tooling';
-import { createAbapServiceProvider } from '@sap-ux/system-access';
+import { generateChange, ChangeType, getPromptsForChangeDataSource, getManifest } from '@sap-ux/adp-tooling';
 import { getLogger, traceChanges } from '../../tracing';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
@@ -41,7 +38,12 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults, simu
         checkEnvironment(basePath);
 
         const variant = getVariant(basePath);
-        const manifest = await getManifest(basePath, logger, variant);
+        const ui5Conf = await UI5Config.newInstance(readFileSync(join(basePath, 'ui5.yaml'), 'utf-8'));
+        const adp = ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('fiori-tools-preview')?.configuration?.adp;
+        if (!adp) {
+            throw new Error('No system configuration found in ui5.yaml');
+        }
+        const manifest = await getManifest(variant.reference, adp, logger);
         const dataSources = manifest['sap.app'].dataSources;
         if (!dataSources) {
             throw new Error('No data sources found in the manifest');
@@ -69,41 +71,6 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults, simu
         }
         logger.debug(error);
     }
-}
-
-/**
- * Get the manifest of the base application.
- *
- * @param {string} basePath - The path to the adaptation project.
- * @param {ToolsLogger} logger - The logger.
- * @param {DescriptorVariant} variant - The app descriptor variant.
- * @returns {Promise<Manifest>} The manifest.
- */
-async function getManifest(basePath: string, logger: ToolsLogger, variant: DescriptorVariant): Promise<Manifest> {
-    const ui5Config = await UI5Config.newInstance(readFileSync(join(basePath, 'ui5.yaml'), 'utf-8'));
-    const adp = ui5Config.findCustomMiddleware<{ adp: AdpPreviewConfig }>('fiori-tools-preview')?.configuration?.adp;
-    if (!adp) {
-        throw new Error('No system configuration found in ui5.yaml');
-    }
-    const target = adp.target;
-    const ignoreCertErrors = adp.ignoreCertErrors ?? false;
-    const provider = await createAbapServiceProvider(
-        target,
-        {
-            ignoreCertErrors
-        },
-        true,
-        logger
-    );
-
-    const appIndexService = provider.getAppIndex();
-    const appInfo = (await appIndexService.getAppInfo(variant.reference))[variant.reference];
-    const manifestUrl = appInfo.manifestUrl ?? appInfo.manifest;
-    if (!manifestUrl) {
-        throw new Error('Manifest URL not found');
-    }
-    const lrepService = provider.getLayeredRepository('/');
-    return await lrepService.getManifest(manifestUrl);
 }
 
 /**
