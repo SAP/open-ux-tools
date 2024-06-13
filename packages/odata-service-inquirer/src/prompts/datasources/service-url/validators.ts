@@ -1,13 +1,12 @@
+import { createForAbap, type AxiosRequestConfig, type ODataService, type ODataVersion } from '@sap-ux/axios-extension';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import { ConnectionValidator } from './connectionValidator';
-import type { AxiosRequestConfig, ODataService } from '@sap-ux/axios-extension';
-import { createForAbap, type ODataVersion } from '@sap-ux/axios-extension';
-import { PromptState, originToRelative, parseOdataVersion } from '../../../utils';
+import { ERROR_TYPE, ErrorHandler } from '../../../error-handler/error-handler';
 import { t } from '../../../i18n';
 import { SAP_CLIENT_KEY } from '../../../types';
-import { errorHandler } from '../../prompt-helpers';
+import { PromptState, originToRelative, parseOdataVersion } from '../../../utils';
 import LoggerHelper from '../../logger-helper';
-import { ERROR_TYPE, ErrorHandler } from '../../../error-handler/error-handler';
+import { errorHandler } from '../../prompt-helpers';
+import { ConnectionValidator } from './connectionValidator';
 
 /**
  * Validates that a service specified by the odata service is accessible, has the required version and returns valid metadata.

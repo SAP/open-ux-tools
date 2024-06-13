@@ -110,7 +110,7 @@ export function originToRelative(metadata: string): string {
     // 5. Match "sap/opu/odata" or "sap/opu/odata4" literally
 
     return metadata.replace(
-        new RegExp(/(Uri=")(http|https):\/\/(.*?)(\/{1})(sap\/opu\/(odata\/|odata4\/))/, 'g'),
+        new RegExp(/(Uri=")(http|https):\/{2}(.*?)(\/)(sap\/opu\/(odata\/|odata4\/))/, 'g'),
         // Retain the original path segment after the origin, matched with capture group 5 (index 4)
         (match: string, ...patterns: string[]) => `${patterns[0]}./${patterns[4]}`
     );

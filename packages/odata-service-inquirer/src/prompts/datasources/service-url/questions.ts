@@ -170,7 +170,7 @@ function getUsernamePrompt(connectValidator: ConnectionValidator): InputQuestion
         guiOptions: {
             mandatory: true
         },
-        validate: (user: string) => (user && user.length > 0 ? true : false)
+        validate: (user: string) => user?.length > 0
     } as InputQuestion<ServiceUrlAnswers>;
 }
 

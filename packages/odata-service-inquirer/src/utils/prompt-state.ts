@@ -11,8 +11,6 @@ export class PromptState {
 
     public static isYUI = false;
 
-    public static isCertError = false;
-
     static reset(): void {
         // Reset all values in the odataService object, do not reset the object reference itself as it may be used by external consumers
         Object.keys(PromptState.odataService).forEach((key) => {
