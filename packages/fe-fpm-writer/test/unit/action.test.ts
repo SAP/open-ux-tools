@@ -148,6 +148,24 @@ describe('CustomAction', () => {
             expect(fs.exists(join(testDir, 'webapp/ext/myCustomAction/MyCustomAction.js'))).toBeFalsy();
         });
 
+        test('custom section as target', () => {
+            generateCustomAction(
+                testDir,
+                {
+                    name,
+                    target: {
+                        page: target.page,
+                        control: TargetControl.body,
+                        customSectionKey: 'CustomSectionOne'
+                    },
+                    settings
+                },
+                fs
+            );
+            expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
+            expect(fs.exists(join(testDir, 'webapp/ext/myCustomAction/MyCustomAction.js'))).toBeFalsy();
+        });
+
         const positionTests = [
             {
                 name: 'Create with anchor',
