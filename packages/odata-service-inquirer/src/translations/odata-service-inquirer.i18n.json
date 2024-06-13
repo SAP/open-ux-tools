@@ -91,7 +91,7 @@
         "destinationAuthError": "The selected system is returning an authentication error. Please verify the destination configuration",
         "serviceUrlNotFound": "Please verify the service url: {{- url}}, target system configuration and network connectivity",
         "urlRedirect": "The service URL is redirecting",
-        "certValidationRequired": "Certificate validation is required.",
+        "certValidationRequired": "Certificate validation is required to continue.",
         "exitingGeneration": "Exiting generation. {{exitReason}}"
     },
     "texts": {
