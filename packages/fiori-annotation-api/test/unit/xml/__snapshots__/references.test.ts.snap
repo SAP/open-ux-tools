@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`collectUsedNamespaces annotation path 1`] = `
+Set {
+  "Service",
+  "Common",
+  "Analytics",
+}
+`;
+
+exports[`collectUsedNamespaces annotation path as element 1`] = `
+Set {
+  "Service",
+  "Common",
+  "Analytics",
+}
+`;
+
+exports[`collectUsedNamespaces embedded term  1`] = `
+Set {
+  "Service",
+  "Common",
+  "UI",
+}
+`;
+
+exports[`collectUsedNamespaces enum member 1`] = `
+Set {
+  "IncidentService",
+  "UI",
+  "Communication",
+}
+`;
+
+exports[`collectUsedNamespaces record 1`] = `
+Set {
+  "Service",
+  "UI",
+  "Common",
+}
+`;
+
+exports[`collectUsedNamespaces target alias 1`] = `
+Set {
+  "Service",
+}
+`;
+
+exports[`collectUsedNamespaces target namespace 1`] = `
+Set {
+  "IncidentService",
+}
+`;
+
+exports[`collectUsedNamespaces term alias 1`] = `
+Set {
+  "Service",
+  "UI",
+}
+`;
+
+exports[`collectUsedNamespaces term namespace 1`] = `
+Set {
+  "IncidentService",
+  "com.sap.vocabularies.UI.v1",
+}
+`;
