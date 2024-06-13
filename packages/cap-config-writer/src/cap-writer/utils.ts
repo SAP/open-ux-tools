@@ -10,11 +10,17 @@ import type { CapRuntime } from '@sap-ux/odata-service-inquirer';
  * @returns The launch text for the application.
  */
 export function getLaunchText(capType: CapRuntime | undefined, projectName: string, appId?: string): string {
+    /**
+     * Determines the URL based on the project type.
+     * @returns The URL for launching the project.
+     */
     function getCapUrl(): string {
         const project = appId ?? projectName + '/webapp';
         if (capType === 'Java') {
+            // For Java projects
             return `http://localhost:8080/${projectName}/webapp/index.html`;
         } else if (capType === undefined || capType === 'Node.js') {
+            // For Node.js projects or when capType is undefined
             return `http://localhost:4004/${project}/index.html`;
         }
         return '';
@@ -22,6 +28,7 @@ export function getLaunchText(capType: CapRuntime | undefined, projectName: stri
 
     let mvnCommand = '';
     if (capType === 'Java') {
+        // If capType is 'Java', set the Maven command for running Spring Boot
         mvnCommand = ' (```mvn spring-boot:run```)';
     }
     const capUrl = getCapUrl();

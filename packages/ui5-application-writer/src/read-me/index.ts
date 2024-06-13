@@ -55,7 +55,7 @@ function getTemplateWriter({ fileName, destPath, fsEditor }: TemplateWriter): Ap
         // Compute the destination path, removing specific substrings from the path
         const templateDestPath = join(destPath, path.replace(/\.tmpl|-cap-tmpl/g, ''));
         // Copy the template with the provided properties
-        fsEditor.copyTpl(templateSourcePath, templateDestPath, properties!);
+        fsEditor.copyTpl(templateSourcePath, templateDestPath, properties as ApplyTemplateFunction);
     };
 }
 
