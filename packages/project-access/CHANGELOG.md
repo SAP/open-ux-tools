@@ -1,5 +1,30 @@
 # @sap-ux/project-access
 
+## 1.21.2
+
+### Patch Changes
+
+-   Updated dependencies [9188fe8b]
+    -   @sap-ux/ui5-config@0.22.7
+
+## 1.21.1
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.22.6
+
+## 1.21.0
+
+### Minor Changes
+
+-   69b8d6de: Introduces enhanced functionality by returning CDS information, extracted during the prompt phase, and is made available for later use .
+
+## 1.20.4
+
+### Patch Changes
+
+-   a7d78229: Added new functions for retrieving the minUI5Version(s) from manifest
+
 ## 1.20.3
 
 ### Patch Changes
