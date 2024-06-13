@@ -28,10 +28,9 @@
         "format:fix": "prettier --write --ignore-path ../../.prettierignore",
         "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../.prettierignore",
         "storybook": "npm-run-all -l -p storybook:prepare storybook:run",
-        "storybook:prepare": "ts-node ./scripts/index.ts",
+        "storybook:prepare": "ts-node ./scripts/prepare-storybook.ts",
         "storybook:run": "storybook dev -s static",
-        "test": "jest --ci --forceExit --colors --silent",
-        "test-u": "jest --ci --forceExit --colors  --silent -u"
+        "test": "jest --ci --forceExit --colors --silent"
     },
     "dependencies": {
         "@sap-ux/ui-components": "workspace:*",

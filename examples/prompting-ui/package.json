@@ -20,15 +20,16 @@
     "main": "dist/index.js",
     "scripts": {
         "clean": "rimraf --glob dist coverage *.tsbuildinfo storybook",
-        "build": "npm-run-all -l -p build:extension build:copyfiles build:storybook",
+        "build": "npm-run-all -l -p build:extension build:copyfiles",
         "build:extension": "tsc --build --pretty",
         "build:copyfiles": "copyfiles --up 1 \"./src/**/*.scss\" ./dist/",
         "lint": "eslint . --ext .ts,.tsx",
         "lint:fix": "eslint . --ext .ts,.tsx --fix",
         "format:fix": "prettier --write --ignore-path ../../.prettierignore",
         "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../.prettierignore",
-        "storybook": "storybook dev -s static",
-        "build:storybook": "storybook build -o ./storybook",
+        "storybook": "npm-run-all -l -p storybook:prepare storybook:run",
+        "storybook:prepare": "ts-node ./scripts/prepare-storybook.ts",
+        "storybook:run": "storybook dev -s static",
         "dev": "nodemon --exec \"pnpm storybook -p 60648 --no-open\" -w \".storybook/*\" -e \"ts,tsx\""
     },
     "dependencies": {
@@ -78,6 +79,7 @@
         "storybook-addon-turbo-build": "2.0.1",
         "style-loader": "3.3.3",
         "ts-loader": "9.4.4",
+        "ts-node": "10.9.2",
         "typescript": "5.3.3",
         "ws": "7.4.6"
     }
