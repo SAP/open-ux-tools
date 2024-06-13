@@ -125,24 +125,32 @@ function getCliIgnoreCertValidatePrompt(
     return {
         // Add dummy prompt for CLI to revalidate since "confirm" prompt validators don't run on CLI
         when: async ({ serviceUrl, ignoreCertError }: ServiceUrlAnswers) => {
-            if (serviceUrl) {
+            if (serviceUrl && connectValidator.validity.canSkipCertError) {
+                // If the user choose to not ignore cert errors, we cannot continue
                 if (ignoreCertError === false) {
                     throw new Error(t('errors.exitingGeneration', { exitReason: t('errors.certValidationRequired') }));
-                }
-                LoggerHelper.logger.warn(t('prompts.validationMessages.warningCertificateValidationDisabled'));
-                // Re-check if auth required
-                const validUrl = await connectValidator.validateUrl(serviceUrl, ignoreCertError, true);
-                if (validUrl === true) {
-                    if (!connectValidator.validity.authRequired) {
-                        // Will log on CLI
-                        const validService = await validateService(serviceUrl, connectValidator, requiredVersion, true);
-                        if (validService !== true) {
-                            throw new Error(t('errors.exitingGeneration', { exitReason: validService.toString() }));
+                } else if (ignoreCertError === true) {
+                    // If the user choose to ignore cert errors, we need to re-validate
+                    LoggerHelper.logger.warn(t('prompts.validationMessages.warningCertificateValidationDisabled'));
+                    // Re-check if auth required
+                    const validUrl = await connectValidator.validateUrl(serviceUrl, ignoreCertError, true);
+                    if (validUrl === true) {
+                        if (!connectValidator.validity.authRequired) {
+                            // Will log on CLI
+                            const validService = await validateService(
+                                serviceUrl,
+                                connectValidator,
+                                requiredVersion,
+                                true
+                            );
+                            if (validService !== true) {
+                                throw new Error(t('errors.exitingGeneration', { exitReason: validService.toString() }));
+                            }
                         }
+                        return true;
+                    } else {
+                        throw new Error(validUrl.toString()); // exit
                     }
-                    return true;
-                } else {
-                    throw new Error(validUrl.toString()); // exit
                 }
             }
             return false;

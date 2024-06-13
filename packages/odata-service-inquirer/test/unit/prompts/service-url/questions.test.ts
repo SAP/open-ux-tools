@@ -266,6 +266,13 @@ describe('Service URL prompts', () => {
 
     test('Test prompt: cliIgnoreCertValidate', async () => {
         jest.spyOn(utils, 'getHostEnvironment').mockReturnValueOnce(hostEnvironment.cli);
+        connectionValidatorMock.validity = {
+            urlFormat: true,
+            reachable: true,
+            authRequired: false,
+            authenticated: false,
+            canSkipCertError: true
+        };
         const serviceUrl = 'https://some.host:1234/service/path';
         const questions = getServiceUrlQuestions();
         const ignorableCertErrorsPrompt = questions.find(
@@ -282,13 +289,6 @@ describe('Service URL prompts', () => {
 
         let serviceValidatorSpy = jest.spyOn(serviceUrlValidators, 'validateService').mockResolvedValue(true);
         const loggerSpy = jest.spyOn(LoggerHelper.logger, 'warn');
-        connectionValidatorMock.validity = {
-            urlFormat: true,
-            reachable: true,
-            authRequired: false,
-            authenticated: false,
-            canSkipCertError: true
-        };
 
         // Should validate the service using the when condition on CLI
         expect(
