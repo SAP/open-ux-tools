@@ -61,10 +61,14 @@ async function generateAdaptationProject(
     const logger = getLogger();
     try {
         logger.debug(`Called generate adaptation-project for path '${basePath}', skip install is '${skipInstall}'`);
+        if (defaults.url) {
+            const url = new URL(defaults.url);
+            defaults.url = url.origin;
+            defaults.client = url.searchParams.get('sap-client') ?? undefined;
+        }
         let config: AdpWriterConfig;
         if (useDefaults) {
             if (defaults.id && defaults.reference && defaults.url) {
-                const url = new URL(defaults.url);
                 config = {
                     app: {
                         id: defaults.id,
@@ -72,8 +76,8 @@ async function generateAdaptationProject(
                         layer: 'CUSTOMER_BASE'
                     },
                     target: {
-                        url: url.origin,
-                        client: url.searchParams.get('sap-client') ?? undefined
+                        url: defaults.url,
+                        client: defaults.client
                     },
                     deploy: {
                         package: defaults.package ? defaults.package.toUpperCase() : '$TMP',
