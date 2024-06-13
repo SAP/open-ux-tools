@@ -1574,9 +1574,6 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
-      '@types/json-parse-better-errors':
-        specifier: 1.0.3
-        version: 1.0.3
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -9361,10 +9358,6 @@ packages:
       '@types/node': 18.11.9
       '@types/tough-cookie': 4.0.2
       parse5: 7.1.2
-    dev: true
-
-  /@types/json-parse-better-errors@1.0.3:
-    resolution: {integrity: sha512-wbwigqXeGQq+liQIqxYNylOV4c3ilUqB9czasOS26TSy21Ti1l2Q8c8TEjmaTnc0CgdJDBhIMFJssIbY1FanYA==}
     dev: true
 
   /@types/json-schema@7.0.12:
