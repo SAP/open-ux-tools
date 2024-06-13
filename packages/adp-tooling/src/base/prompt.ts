@@ -193,12 +193,15 @@ async function fetchSystemInformation(
     logger.info(`Target layer: ${layer}`);
     logger.info('Fetching list of available applications... (it can take a moment)');
     const appIndex = provider.getAppIndex();
-    const apps = await appIndex.search(
-        {
-            'sap.ui/technology': 'UI5',
-            'sap.app/type': 'application'
-        },
-        ['sap.app/id', 'sap.app/title', 'sap.fiori/registrationIds']
-    );
+
+    const searchParams: Record<string, string> = {
+        'sap.ui/technology': 'UI5',
+        'sap.app/type': 'application'
+    };
+    if (customConfig.adp.environment === 'C') {
+        searchParams['sap.fiori/cloudDevAdaptationStatus'] = 'released';
+    }
+
+    const apps = await appIndex.search(searchParams, ['sap.app/id', 'sap.app/title', 'sap.fiori/registrationIds']);
     return { apps, layer, customConfig };
 }
