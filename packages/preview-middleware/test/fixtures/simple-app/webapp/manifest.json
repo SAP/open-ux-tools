@@ -56,7 +56,6 @@
             "libs": {
                 "sap.m": {},
                 "sap.ui.core": {},
-                "sap.ushell": {},
                 "sap.f": {},
                 "sap.ui.comp": {},
                 "sap.ui.generic.app": {},
