@@ -1,51 +1,4 @@
 import type { Editor } from 'mem-fs-editor';
-import type { CapRuntime } from '@sap-ux/odata-service-inquirer';
-
-/**
- * Represents the old structure of the README file.
- */
-// export interface ReadMe {
-//     /** The generation date of the README file. */
-//     genDate: string;
-//     /** The platform on which the README file is generated. */
-//     genPlatform: string;
-//     /** The label for the data source used in the project. */
-//     dataSourceLabel: string;
-//     /** The filename of the metadata associated with the project (optional). */
-//     metadataFilename?: string;
-//     /** The URL of the service associated with the project. */
-//     serviceUrl: string;
-//     /** The name of the project. */
-//     projectName: string;
-//     /** The title of the project. */
-//     projectTitle: string;
-//     /** The namespace of the project. */
-//     projectNamespace: string;
-//     /** The description of the project. */
-//     projectDescription: string;
-//     /** The theme used in the project. */
-//     ui5Theme: string;
-//     /** The version of UI5 used in the project. */
-//     projectUI5Version: string;
-//     /** Indicates whether code assist is enabled for the project. */
-//     enableCodeAssist: boolean;
-//     /** Indicates whether ESLint is enabled for the project. */
-//     enableEslint: boolean;
-//     /** Indicates whether TypeScript is enabled for the project. */
-//     enableTypeScript: boolean;
-//     /** Indicates whether mock data information is shown (optional). */
-//     showMockDataInfo?: boolean;
-//     /** The identifier of the project. */
-//     genId: string;
-//     /** The version of the project. */
-//     genVersion: string;
-//     /** The label of the template or floorplan selected for the project. */
-//     templateLabel: string;
-//     /** Additional entries in the README file (optional). */
-//     additionalEntries?: { label: string; value: string }[];
-//     /** The launch text for the project (optional). */
-//     launchText?: string;
-// }
 
 /**
  * Interface representing additional entries for the README file.
@@ -58,19 +11,48 @@ interface AdditionalEntries {
 }
 
 /**
- * Interface representing the configuration for generating a README file.
+ * Interface representing optional entries that can be included in the README configuration.
+ * This interface allows dynamic properties with specified types.
  */
-export interface ReadMe {
+interface OptionalEntries {
+    /** 
+     * A dynamic property key with a value that can be a string, an array of strings, a boolean,
+     * an array of AdditionalEntries, or undefined.
+     */
+    [key: string]: string | string[] | boolean | AdditionalEntries[] | undefined;
+}
+
+/**
+ * Interface representing the configuration for generating a README file.
+ * Extends OptionalEntries to include dynamic properties along with the core properties.
+ */
+export interface ReadMe extends OptionalEntries {
     /** The name of the project. */
     projectName: string;
     /** The title of the project. */
     projectTitle: string;
-    /**
-     * Dynamic key-value pairs for additional properties.
-     * The value can be a string, an array of strings, a boolean,
-     * an array of additional entries, or undefined.
-     */
-    [key: string]: string | string[] | boolean | AdditionalEntries[] | undefined;
+    /** The namespace of the project. */
+    projectNamespace: string;
+    /** The description of the project. */
+    projectDescription: string;
+    /** The UI5 theme used in the project. */
+    ui5Theme: string;
+    /** The minimum UI5 version required for the project. */
+    projectUI5Version: string;
+    /** Indicates if code assist is enabled in the project. */
+    enableCodeAssist: boolean;
+    /** Indicates if ESLint is enabled in the project. */
+    enableEslint: boolean;
+    /** Indicates if TypeScript is enabled in the project. */
+    enableTypeScript: boolean;
+    /** The generated ID for the README configuration. */
+    genId: string;
+    /** The version of the generator used for creating the README file. */
+    genVersion: string;
+    /** The label for the template used in generating the README file. */
+    templateLabel: string;
+    /** The label indicating the data source type for the project. */
+    dataSourceLabel: string;
 }
 
 /**

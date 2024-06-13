@@ -1,7 +1,7 @@
 import path, { join } from 'path';
 import memFs from 'mem-fs';
 import memFsEditor from 'mem-fs-editor';
-import { generateReadMe, getDataSourceLabel, getLaunchText } from '../src/read-me/index';
+import { generateReadMe } from '../src/read-me/index';
 import { OdataVersion, DatasourceType } from '@sap-ux/odata-service-inquirer';
 import type { ReadMe } from '../src/read-me/types';
 import { readFileSync } from 'fs';
@@ -31,10 +31,13 @@ const generateReadMeConfig = (overrides: Partial<ReadMe>): Partial<ReadMe> => {
     };
 };
 
+function getLaunchText(mvnCommand: string, capUrl: string): string {
+    return `${t('TEXT_LAUNCH_CAP', { mvnCommand, capUrl })}`;
+}
+
 describe('Readme file generation tests', () => {
     const store = memFs.create();
     const editor = memFsEditor.create(store);
-    const onPremiseSystemType = 'ON_PREM';
 
     it('should generate README.md with the correct content - test case 04', () => {
         const readMePath = path.join(__dirname, '/README.md');
@@ -52,11 +55,13 @@ describe('Readme file generation tests', () => {
                 return realJoin(...args);
             }
         });
+        const mvnCommand = ' (```mvn spring-boot:run```)',
+            capUrl = `http://localhost:8080/someProjectName/webapp/index.html`;
         const config = generateReadMeConfig({
             genId: GeneratorName.FE,
             templateLabel: 'List Report Page V4',
-            dataSourceLabel: getDataSourceLabel(DatasourceType.capProject, "", true),
-            launchText: getLaunchText('Java', commonConfig.projectName!, GeneratorName.FE)
+            dataSourceLabel: 'Local Cap',
+            launchText: getLaunchText(mvnCommand, capUrl)
         });
         generateReadMe(__dirname, config, editor);
         expect(editor.read(readMePath)).toEqual(readFileSync(expectReadMePath, 'utf-8'));
@@ -78,7 +83,7 @@ describe('Readme file generation tests', () => {
             templateLabel: 'Some Generator Specific Template',
             serviceUrl,
             showMockDataInfo: !!service.edmx && !service.capService,
-            dataSourceLabel: getDataSourceLabel(DatasourceType.sapSystem, onPremiseSystemType)
+            dataSourceLabel: 'SAP System (ABAP On Premise)'
         });
         generateReadMe(__dirname, config, editor);
         expect(editor.read(readMePath)).toEqual(readFileSync(join(__dirname, './expected/test01/README.md'), 'utf-8'));
@@ -101,7 +106,7 @@ describe('Readme file generation tests', () => {
                 { label: 'Generator Specific Label B', value: 'Generator Specific Value B' }
             ],
             serviceUrl,
-            dataSourceLabel: getDataSourceLabel(DatasourceType.sapSystem, onPremiseSystemType)
+            dataSourceLabel: 'SAP System (ABAP On Premise)'
         });
         generateReadMe(__dirname, config, editor);
         expect(editor.read(readMePath)).toEqual(readFileSync(join(__dirname, './expected/test02/README.md'), 'utf-8'));
@@ -112,7 +117,7 @@ describe('Readme file generation tests', () => {
         const config = generateReadMeConfig({
             genId: GeneratorName.FF,
             templateLabel: 'simple',
-            dataSourceLabel: getDataSourceLabel(DatasourceType.none)
+            dataSourceLabel: 'None'
         });
         generateReadMe(__dirname, config, editor);
         expect(editor.read(readMePath)).toEqual(readFileSync(join(__dirname, './expected/test03/README.md'), 'utf-8'));
@@ -123,37 +128,9 @@ describe('Readme file generation tests', () => {
         const config = generateReadMeConfig({
             genId: GeneratorName.FF,
             templateLabel: 'simple',
-            dataSourceLabel: getDataSourceLabel(DatasourceType.businessHub, "", true)
+            dataSourceLabel: 'SAP API Business Hub Enterprise'
         });
         generateReadMe(__dirname, config, editor);
         expect(editor.read(readMePath)).toEqual(readFileSync(join(__dirname, './expected/test05/README.md'), 'utf-8'));
     });
 });
-
-// describe('Launch Text utility function tests', () => {
-//     it('should generate correct launch text', () => {
-//         let mvnCommand = ' (```mvn spring-boot:run```)';
-//         let capUrl = `http://localhost:8080/project1/webapp/index.html`;
-//         let workspaceCapUrl = `http://localhost:4004/test.app.project1/index.html`;
-
-//         expect(getLaunchText('Java', 'project1', undefined)).toBe(
-//             `${t('TEXT_LAUNCH_CAP', { mvnCommand, capUrl })}`
-//         );
-//         capUrl = `http://localhost:4004/project1/webapp/index.html`;
-//         mvnCommand = '';
-
-//         expect(getLaunchText('Node.js', 'project1', undefined)).toBe(
-//             `${t('TEXT_LAUNCH_CAP', { mvnCommand, capUrl })}`
-//         );
-//         expect(getLaunchText(undefined, 'project1', 'test.app.project1')).toBe(
-//             `${t('TEXT_LAUNCH_CAP', { mvnCommand, capUrl: workspaceCapUrl })}`
-//         );
-
-//         expect(getLaunchText(undefined, 'project1', undefined)).toBe(
-//             `${t('TEXT_LAUNCH_CAP', { mvnCommand, capUrl })}`
-//         );
-//         expect(getLaunchText(undefined, 'project1', 'test.app.project1')).toBe(
-//             `${t('TEXT_LAUNCH_CAP', { mvnCommand, capUrl: workspaceCapUrl })}`
-//         );
-//     });
-// });
