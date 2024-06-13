@@ -16,7 +16,7 @@ import type { Fragments } from '../api-handler';
 /**
  * @namespace open.ux.preview.client.adp.controllers
  */
-export default abstract class BaseDialog extends Controller {
+export default abstract class BaseDialog<T extends JSONModel = JSONModel> extends Controller {
     /**
      * Runtime Authoring
      */
@@ -28,7 +28,7 @@ export default abstract class BaseDialog extends Controller {
     /**
      * JSON Model that has the data
      */
-    public model: JSONModel;
+    public model: T;
     /**
      * Runtime control managed object
      */
