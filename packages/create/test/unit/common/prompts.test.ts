@@ -1,4 +1,4 @@
-import { YUIQuestion, ListQuestion } from '@sap-ux/inquirer-common';
+import type { YUIQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 import { convertQuestion, promptYUIQuestions } from '../../../src/common/prompts';
 import prompts from 'prompts';
 
@@ -9,7 +9,7 @@ const YUI_TEST_QUESTION: Record<string, YUIQuestion | ListQuestion> = {
         message: 'List of strings',
         choices: ['a', 'b', 'c'],
         default: 'a',
-        validate: (value: string) => value === 'a'
+        validate: (value: string) => (value === 'a' ? true : 'Only "a" is valid')
     } as ListQuestion,
     ListOfObjectsWithIndex: {
         type: 'list',
@@ -74,6 +74,12 @@ describe('common', () => {
             const answers = await promptYUIQuestions(Object.values(YUI_TEST_QUESTION), false);
             expect(answers[YUI_TEST_QUESTION.ListOfStringsWithValue.name]).toBe('a');
             expect(answers[YUI_TEST_QUESTION.ListOfObjectsWithIndex.name]).toBe('a');
+        });
+
+        test('prompt a list question with validation functions and wrong inputs at first', async () => {
+            prompts.inject(['c', 'd', 'a']);
+            const answers = await promptYUIQuestions([YUI_TEST_QUESTION.ListOfStringsWithValue], false);
+            expect(answers[YUI_TEST_QUESTION.ListOfStringsWithValue.name]).toBe('a');
         });
     });
 });
