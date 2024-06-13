@@ -114,7 +114,6 @@ declare module 'sap/ui/rta/command/OutlineService' {
     }
     export interface ElementOutlineViewNode extends BaseOutlineViewNode {
         type: 'element';
-        
     }
     export interface ExtPointOutlineViewNode extends BaseOutlineViewNode {
         type: 'extensionPoint';
