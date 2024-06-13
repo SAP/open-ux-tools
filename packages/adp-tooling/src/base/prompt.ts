@@ -187,8 +187,7 @@ async function fetchSystemInformation(
     const customConfig: CustomConfig = {
         adp: {
             environment: ato.operationsType ?? 'P',
-            safeMode: true,
-            addInboundId: false
+            safeMode: true
         }
     };
     logger.info(`Target layer: ${layer}`);
