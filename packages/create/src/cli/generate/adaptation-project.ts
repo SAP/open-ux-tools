@@ -66,33 +66,8 @@ async function generateAdaptationProject(
             defaults.url = url.origin;
             defaults.client = url.searchParams.get('sap-client') ?? undefined;
         }
-        let config: AdpWriterConfig;
-        if (useDefaults) {
-            if (defaults.id && defaults.reference && defaults.url) {
-                config = {
-                    app: {
-                        id: defaults.id,
-                        reference: defaults.reference,
-                        layer: 'CUSTOMER_BASE'
-                    },
-                    target: {
-                        url: defaults.url,
-                        client: defaults.client
-                    },
-                    deploy: {
-                        package: defaults.package ? defaults.package.toUpperCase() : '$TMP',
-                        transport: defaults.transport ? defaults.transport.toUpperCase() : undefined
-                    },
-                    options: {
-                        fioriTools: defaults.ft
-                    }
-                };
-            } else {
-                throw new Error('Missing required parameters. Please provide --id, --reference and --url.');
-            }
-        } else {
-            config = await promptGeneratorInput(defaults, logger);
-        }
+        const config = useDefaults ? createConfigFromDefaults(defaults) : await promptGeneratorInput(defaults, logger);
+
         if (!basePath) {
             basePath = join(process.cwd(), config.app.id);
         }
@@ -109,5 +84,36 @@ async function generateAdaptationProject(
         }
     } catch (error) {
         logger.error(error.message);
+    }
+}
+
+/**
+ * Create a writer config based on the given defaults.
+ *
+ * @param defaults default values provided via command line
+ * @returns writer config
+ */
+function createConfigFromDefaults(defaults: PromptDefaults): AdpWriterConfig {
+    if (defaults.id && defaults.reference && defaults.url) {
+        return {
+            app: {
+                id: defaults.id,
+                reference: defaults.reference,
+                layer: 'CUSTOMER_BASE'
+            },
+            target: {
+                url: defaults.url,
+                client: defaults.client
+            },
+            deploy: {
+                package: defaults.package ? defaults.package.toUpperCase() : '$TMP',
+                transport: defaults.transport ? defaults.transport.toUpperCase() : undefined
+            },
+            options: {
+                fioriTools: defaults.ft
+            }
+        };
+    } else {
+        throw new Error('Missing required parameters. Please provide --id, --reference and --url.');
     }
 }
