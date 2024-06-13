@@ -41,7 +41,6 @@ type AddFragmentModel = JSONModel & {
     getProperty(sPath: '/newFragmentName'): string;
 
     getProperty(sPath: '/selectedIndex'): string;
-    setProperty(sPath: '/selectedIndex', value: number);
     
     getProperty(sPath: '/selectedAggregation/value'): string;
     // ...
