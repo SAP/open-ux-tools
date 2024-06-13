@@ -290,13 +290,13 @@ describe('Service URL prompts', () => {
         let serviceValidatorSpy = jest.spyOn(serviceUrlValidators, 'validateService').mockResolvedValue(true);
         const loggerSpy = jest.spyOn(LoggerHelper.logger, 'warn');
 
-        // Should validate the service using the when condition on CLI
+        // Should validate the service using the when condition on CLI but never return true, errors will be thrown and the generator will exit
         expect(
             await (ignorableCertErrorsPrompt?.when as Function)({
                 [promptNames.serviceUrl]: serviceUrl,
                 [serviceUrlInternalPromptNames.ignoreCertError]: true
             })
-        ).toBe(true);
+        ).toBe(false);
 
         expect(loggerSpy).toHaveBeenCalledWith(t('prompts.validationMessages.warningCertificateValidationDisabled'));
         expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith(serviceUrl, true, true);
@@ -321,7 +321,7 @@ describe('Service URL prompts', () => {
                 [promptNames.serviceUrl]: serviceUrl,
                 [serviceUrlInternalPromptNames.ignoreCertError]: true
             })
-        ).toBe(true);
+        ).toBe(false);
         expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith(serviceUrl, true, true);
 
         connectionValidatorMock.validity = {

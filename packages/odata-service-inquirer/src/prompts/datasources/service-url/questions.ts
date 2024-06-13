@@ -124,6 +124,8 @@ function getCliIgnoreCertValidatePrompt(
 ): Question<ServiceUrlAnswers> {
     return {
         // Add dummy prompt for CLI to revalidate since "confirm" prompt validators don't run on CLI
+        // The `when` condition should never return true (so it does not get rendered in GUI prompts) but will throw an error to exit generation
+        // if the user chooses to not ignore cert errors or if the odata service is not valid
         when: async ({ serviceUrl, ignoreCertError }: ServiceUrlAnswers) => {
             if (serviceUrl && connectValidator.validity.canSkipCertError) {
                 // If the user choose to not ignore cert errors, we cannot continue
@@ -147,7 +149,6 @@ function getCliIgnoreCertValidatePrompt(
                                 throw new Error(t('errors.exitingGeneration', { exitReason: validService.toString() }));
                             }
                         }
-                        return true;
                     } else {
                         throw new Error(validUrl.toString()); // exit
                     }
