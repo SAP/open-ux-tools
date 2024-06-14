@@ -5,8 +5,8 @@ import type { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/
 import type { ProjectProvider } from './project';
 import { convert } from '@sap-ux/annotation-converter';
 import { FioriAnnotationService } from '@sap-ux/fiori-annotation-api';
-
-import { Project, getCapServiceName } from '@sap-ux/project-access';
+import { getCapServiceName } from '@sap-ux/project-access';
+import type { Project } from '@sap-ux/project-access';
 
 export async function getMappedServiceName(project: Project, serviceName: string, appName: string): Promise<string> {
     let mappedServiceName = serviceName;
@@ -65,7 +65,6 @@ function getMainService(project: Project, appId?: string): string {
 /**
  *
  * @param projectProvider
- * @param appName
  * @returns
  */
 export async function getEntityTypes(projectProvider: ProjectProvider) {

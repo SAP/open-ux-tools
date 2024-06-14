@@ -1,5 +1,6 @@
 /* eslint-disable jsdoc/require-returns */
-import { Project, getProject } from '@sap-ux/project-access';
+import { getProject } from '@sap-ux/project-access';
+import type { Project } from '@sap-ux/project-access';
 import path, { join } from 'path';
 import { type Editor } from 'mem-fs-editor';
 
@@ -40,4 +41,9 @@ export class ProjectProvider {
     async getProject(): Promise<Project> {
         return getProject(this.root.replace(this.appId, ''));
     }
+}
+
+export async function isCapProject(projectProvider: ProjectProvider): Promise<boolean> {
+    const projectType = (await projectProvider.getProject()).projectType;
+    return ['CAPJava', 'CAPNodejs'].includes(projectType);
 }

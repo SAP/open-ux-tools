@@ -1,22 +1,14 @@
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import type { TFunction } from 'i18next';
-import type { Answers, CheckboxQuestion, InputQuestion, ListQuestion, Question } from 'inquirer';
+import type { Answers, Question } from 'inquirer';
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { i18nNamespaces, initI18n, translate } from '../../i18n';
-import { BuildingBlockConfig, BuildingBlockType } from '../types';
+import { BuildingBlockType } from '../types';
+import type { BuildingBlockConfig } from '../types';
 import {
-    getAggregationPathPrompt,
-    getAnnotationPathQualifierPrompt,
-    getBooleanPrompt,
-    getBuildingBlockIdPrompt,
     getCAPServiceChoices,
-    getCAPServicePrompt,
     getChoices,
     getEntityChoices,
-    getEntityPrompt,
-    getFilterBarIdListPrompt,
-    getViewOrFragmentFilePrompt,
     getXPathStringsForXmlFile,
     ProjectProvider,
     getAnnotationPathQualifiers
@@ -36,9 +28,9 @@ import type {
 import { promises as fsPromises } from 'fs';
 import { DOMParser } from '@xmldom/xmldom';
 import { generateBuildingBlock, getSerializedFileContent } from '..';
-
-const TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID = 'tableBuildingBlockProperties';
-const TABLE_VISUALIZATION_PROPERTIES_GROUP_ID = 'tableVisualizationProperties';
+import { getChartBuildingBlockPrompts } from './chart';
+import { getTableBuildingBlockPrompts } from './table';
+import { getFilterBarBuildingBlockPrompts } from './filter-bar';
 
 export class PromptsAPI {
     basePath: string;
@@ -125,16 +117,6 @@ export class PromptsAPI {
         }
     }
 
-    private async validateElementId(viewOrFragmentFile: string, id: string): Promise<HTMLElement | null> {
-        const xmlContent = (await fsPromises.readFile(viewOrFragmentFile)).toString();
-        const errorHandler = (level: string, message: string): void => {
-            throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
-        };
-        const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent);
-        const element = xmlDocument.getElementById(id);
-        return element;
-    }
-
     private async getBuildingBlockIdsInFile(
         viewOrFragmentFile: string,
         buildingBlockType: BuildingBlockType
@@ -189,11 +171,6 @@ export class PromptsAPI {
         ];
     }
 
-    async isCapProject(): Promise<boolean> {
-        const projectType = (await this.projectProvider.getProject()).projectType;
-        return ['CAPJava', 'CAPNodejs'].includes(projectType);
-    }
-
     /**
      * Returns a list of prompts required to generate a chart building block.
      *
@@ -201,86 +178,8 @@ export class PromptsAPI {
      * @returns {Promise<PromptObject<keyof ChartPromptsAnswer>[]>}
      */
     public async getChartBuildingBlockPrompts(fs: Editor): Promise<Prompts<ChartPromptsAnswer>> {
-        await initI18n();
-        const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.chart.');
-        const validateFn = async (value: string, answers?: Answers) => {
-            return value &&
-                answers?.viewOrFragmentFile &&
-                (await this.validateElementId(answers?.viewOrFragmentFile, value))
-                ? t('id.validateExistingValueMsg')
-                : true;
-        };
-        const defaultAnswers: Answers = {
-            id: 'Chart'
-        };
-        return {
-            questions: [
-                getViewOrFragmentFilePrompt(
-                    fs,
-                    this.basePath,
-                    t('viewOrFragmentFile.message'),
-                    t('viewOrFragmentFile.validate'),
-                    ['aggregationPath', 'filterBarId'],
-                    { required: true }
-                ),
-                getBuildingBlockIdPrompt(
-                    t('id.message'),
-                    t('id.validation'),
-                    defaultAnswers.id,
-                    {
-                        required: true
-                    },
-                    validateFn
-                ),
-                ...((await this.isCapProject())
-                    ? [await getCAPServicePrompt(t('service'), this.projectProvider, [], { required: true })]
-                    : []),
-                getEntityPrompt(t('entity'), this.projectProvider, ['qualifier'], { required: true }),
-                getAnnotationPathQualifierPrompt(
-                    'qualifier',
-                    t('qualifier'),
-                    this.projectProvider,
-                    [UIAnnotationTerms.Chart],
-                    {
-                        additionalInfo: t('valuesDependentOnEntityTypeInfo'),
-                        required: true,
-                        placeholder: t('qualifierPlaceholder')
-                    }
-                ),
-                getAggregationPathPrompt(t('aggregation'), fs, {
-                    required: true
-                }),
-                getFilterBarIdListPrompt(t('filterBar')),
-                {
-                    type: 'checkbox',
-                    name: 'personalization',
-                    message: t('personalization.message'),
-                    selectType: 'static',
-                    choices: [
-                        { name: t('personalization.choices.type'), value: 'Type' },
-                        { name: t('personalization.choices.item'), value: 'Item' },
-                        { name: t('personalization.choices.sort'), value: 'Sort' }
-                    ],
-                    placeholder: t('personalization.placeholder')
-                },
-                {
-                    type: 'list',
-                    selectType: 'static',
-                    name: 'selectionMode',
-                    message: t('selectionMode.message'),
-                    choices: [
-                        { name: t('selectionMode.choices.single'), value: 'Single' },
-                        { name: t('selectionMode.choices.multiple'), value: 'Multiple' }
-                    ]
-                },
-                {
-                    type: 'input',
-                    name: 'selectionChange',
-                    message: t('selectionChange'),
-                    placeholder: t('selectionChangePlaceholder')
-                }
-            ]
-        };
+        // ToDo - currently just same name
+        return getChartBuildingBlockPrompts(fs, this.basePath, this.projectProvider);
     }
 
     /**
@@ -290,173 +189,8 @@ export class PromptsAPI {
      * @returns {Promise<PromptObject<keyof ChartPromptsAnswer>[]>}
      */
     public async getTableBuildingBlockPrompts(fs: Editor): Promise<Prompts<TablePromptsAnswer>> {
-        await initI18n();
-        const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.table.');
-        const groups: PromptsGroup[] = [
-            {
-                id: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
-                title: t('tableBuildingBlockPropertiesTitle'),
-                description: t('tableBuildingBlockPropertiesDescription', { returnObjects: true })
-            },
-            {
-                id: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID,
-                title: t('tableVisualizationPropertiesTitle'),
-                description: t('tableVisualizationPropertiesDescription', { returnObjects: true })
-            }
-        ];
-        const validateFn = async (value: string, answers?: Answers) => {
-            return value &&
-                answers?.viewOrFragmentFile &&
-                (await this.validateElementId(answers?.viewOrFragmentFile, value))
-                ? t('id.validateExistingValueMsg')
-                : true;
-        };
-        const defaultAnswers: Answers = {
-            id: 'Table',
-            type: 'ResponsiveTable',
-            selectionMode: 'Single',
-            displayHeader: true,
-            variantManagement: 'None',
-            readOnly: false,
-            enableAutoColumnWidth: false,
-            enableExport: false,
-            enableFullScreen: false,
-            enablePaste: false,
-            isSearchable: true
-        };
-        return {
-            groups,
-            questions: [
-                //first prompt group
-                getViewOrFragmentFilePrompt(
-                    fs,
-                    this.basePath,
-                    t('viewOrFragmentFile.message'),
-                    t('viewOrFragmentFile.validate'),
-                    ['aggregationPath', 'filterBarId'],
-                    { groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID, required: true }
-                ),
-                getBuildingBlockIdPrompt(
-                    t('id.message'),
-                    t('id.validation'),
-                    defaultAnswers.id,
-                    {
-                        groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
-                        required: true
-                    },
-                    validateFn
-                ),
-                ...((await this.isCapProject())
-                    ? [
-                          await getCAPServicePrompt(t('service'), this.projectProvider, [], {
-                              groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
-                              required: true
-                          })
-                      ]
-                    : []),
-                getEntityPrompt(t('entity'), this.projectProvider, ['qualifier'], {
-                    groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
-                    required: true
-                }),
-                getAnnotationPathQualifierPrompt(
-                    'qualifier',
-                    t('qualifier'),
-                    this.projectProvider,
-                    [UIAnnotationTerms.LineItem],
-                    {
-                        additionalInfo: t('valuesDependentOnEntityTypeInfo'),
-                        groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
-                        required: true,
-                        placeholder: t('qualifierPlaceholder')
-                    }
-                ),
-                getAggregationPathPrompt(t('aggregation'), fs, {
-                    groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
-                    required: true
-                }),
-                getFilterBarIdListPrompt(t('filterBar.message'), {
-                    groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
-                }),
-
-                //second prompt group
-                {
-                    type: 'list',
-                    name: 'type',
-                    message: t('tableType.message'),
-                    choices: [
-                        // ResponsiveTable | GridTable
-                        { name: 'Responsive Table', value: 'ResponsiveTable' },
-                        { name: 'Grid Table', value: 'GridTable' }
-                    ],
-                    default: defaultAnswers.type,
-                    groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-                },
-                {
-                    type: 'list',
-                    name: 'selectionMode',
-                    message: t('selectionMode.message'),
-                    choices: [
-                        // None, Single, Multi or Auto
-                        { name: t('selectionMode.choices.single'), value: 'Single' },
-                        { name: t('selectionMode.choices.multiple'), value: 'Multi' },
-                        { name: t('selectionMode.choices.auto'), value: 'Auto' },
-                        { name: t('selectionMode.choices.none'), value: 'None' }
-                    ],
-                    default: defaultAnswers.selectionMode,
-                    groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-                },
-                getBooleanPrompt('displayHeader', t('displayHeader'), defaultAnswers.displayHeader, {
-                    groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-                }),
-                {
-                    type: 'input',
-                    name: 'header',
-                    message: t('header.message'),
-                    groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-                },
-                {
-                    type: 'checkbox',
-                    name: 'personalization',
-                    message: t('personalization.message'),
-                    choices: [
-                        { name: t('personalization.choices.Sort'), value: 'Sort' },
-                        { name: t('personalization.choices.Column'), value: 'Column' },
-                        { name: t('personalization.choices.Filter'), value: 'Filter' }
-                    ],
-                    groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-                },
-                {
-                    type: 'list',
-                    name: 'variantManagement',
-                    message: t('tableVariantManagement'),
-                    choices: [
-                        { name: 'Page', value: 'Page' },
-                        { name: 'Control', value: 'Control' },
-                        { name: 'None', value: 'None' }
-                    ],
-                    default: defaultAnswers.variantManagement,
-                    groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-                },
-                getBooleanPrompt('readOnly', t('readOnlyMode'), defaultAnswers.readOnly, {
-                    groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-                }),
-                getBooleanPrompt('enableAutoColumnWidth', t('autoColumnWidth'), defaultAnswers.enableAutoColumnWidth, {
-                    groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-                }),
-                getBooleanPrompt('enableExport', t('dataExport'), defaultAnswers.enableExport, {
-                    groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-                }),
-                getBooleanPrompt('enableFullScreen', t('fullScreenMode'), defaultAnswers.enableFullScreen, {
-                    groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-                }),
-                getBooleanPrompt('enablePaste', t('pasteFromClipboard'), defaultAnswers.enablePaste, {
-                    groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-                }),
-                getBooleanPrompt('isSearchable', t('tableSearchableToggle'), defaultAnswers.isSearchable, {
-                    groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-                })
-            ]
-        };
+        // ToDo - currently just same name
+        return getTableBuildingBlockPrompts(fs, this.basePath, this.projectProvider);
     }
 
     /**
@@ -466,64 +200,8 @@ export class PromptsAPI {
      * @returns {Promise<PromptObject<keyof FilterBarPromptsAnswer>[]>} the list of prompts
      */
     public async getFilterBarBuildingBlockPrompts(fs: Editor): Promise<Prompts<FilterBarPromptsAnswer>> {
-        await initI18n();
-        const t = translate(i18nNamespaces.buildingBlock, 'prompts.filterBar.');
-
-        const defaultAnswers: Answers = {
-            id: 'FilterBar'
-        };
-        const validateFn = async (value: string, answers?: Answers) => {
-            return value &&
-                answers?.viewOrFragmentFile &&
-                (await this.validateElementId(answers?.viewOrFragmentFile, value))
-                ? t('id.validateExistingValueMsg')
-                : true;
-        };
-        return {
-            questions: [
-                getViewOrFragmentFilePrompt(
-                    fs,
-                    this.basePath,
-                    t('viewOrFragmentFile.message'),
-                    t('viewOrFragmentFile.validate'),
-                    ['aggregationPath'],
-                    { required: true }
-                ),
-                getBuildingBlockIdPrompt(
-                    t('id.message'),
-                    t('id.validation'),
-                    defaultAnswers.id,
-                    { required: true },
-                    validateFn
-                ),
-                ...((await this.isCapProject())
-                    ? [await getCAPServicePrompt(t('service'), this.projectProvider, [], { required: true })]
-                    : []),
-                getAggregationPathPrompt(t('aggregation'), fs, { required: true }),
-                getEntityPrompt(t('entity'), this.projectProvider, ['qualifier'], { required: true }),
-                getAnnotationPathQualifierPrompt(
-                    'qualifier',
-                    t('qualifier'),
-                    this.projectProvider,
-                    [UIAnnotationTerms.SelectionFields],
-                    {
-                        additionalInfo: t('valuesDependentOnEntityTypeInfo'),
-                        required: true,
-                        placeholder: t('qualifierPlaceholder')
-                    }
-                ),
-                {
-                    type: 'input',
-                    name: 'filterChanged',
-                    message: t('filterChanged')
-                },
-                {
-                    type: 'input',
-                    name: 'search',
-                    message: t('search')
-                }
-            ]
-        };
+        // ToDo - currently just same name
+        return getFilterBarBuildingBlockPrompts(fs, this.basePath, this.projectProvider);
     }
 
     /**
