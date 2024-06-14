@@ -36,7 +36,7 @@ export async function generateFilterBarBuildingBlock(fs: Editor): Promise<Editor
     const promptsAPI = await PromptsAPI.init(basePath);
     const answers: FilterBarPromptsAnswer = (await inquirer.prompt(
         (
-            await promptsAPI.getFilterBarBuildingBlockPrompts(fs)
+            await promptsAPI.getPrompts(BuildingBlockType.FilterBar, fs)
         ).questions
     )) as FilterBarPromptsAnswer;
     fs = promptsAPI.generateBuildingBlockWithAnswers<FilterBarPromptsAnswer>(BuildingBlockType.FilterBar, answers);
@@ -54,7 +54,7 @@ export async function generateChartBuildingBlock(fs: Editor): Promise<Editor> {
     const promptsAPI = await PromptsAPI.init(basePath);
     const answers: ChartPromptsAnswer = (await inquirer.prompt(
         (
-            await promptsAPI.getChartBuildingBlockPrompts(fs)
+            await promptsAPI.getPrompts(BuildingBlockType.Chart, fs)
         ).questions
     )) as ChartPromptsAnswer;
     fs = promptsAPI.generateBuildingBlockWithAnswers<ChartPromptsAnswer>(BuildingBlockType.Chart, answers);
@@ -71,7 +71,7 @@ export async function generateTableBuildingBlock(fs: Editor): Promise<Editor> {
     const promptsAPI = await PromptsAPI.init(basePath);
     const answers: TablePromptsAnswer = (await inquirer.prompt(
         (
-            await promptsAPI.getTableBuildingBlockPrompts(fs)
+            await promptsAPI.getPrompts(BuildingBlockType.Table, fs)
         ).questions
     )) as TablePromptsAnswer;
     fs = promptsAPI.generateBuildingBlockWithAnswers<TablePromptsAnswer>(BuildingBlockType.Table, answers);
