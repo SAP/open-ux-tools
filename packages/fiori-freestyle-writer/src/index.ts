@@ -102,6 +102,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         // Add placeholder middleware so allow adding service later
         const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
         if(fs.exists(ui5LocalConfigPath)) {
+            // ui5LocalConfigPath will be present only if app is not a CAP application
             const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
             ui5LocalConfig.addFioriToolsProxydMiddleware({});
             fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
@@ -111,6 +112,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     // Extend ui5-local.yaml with additional UI5 lib
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
     if(fs.exists(ui5LocalConfigPath)) {
+        // ui5LocalConfigPath will be present only if app is not a CAP application
         const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
         ui5LocalConfig.addUI5Libs([ushellLib]);
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());

@@ -104,6 +104,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         // ui5-local.yaml
         ui5LocalConfigPath = join(dirname(paths.ui5Yaml), 'ui5-local.yaml');
         if (fs.exists(ui5LocalConfigPath)) {
+            // ui5LocalConfigPath will be present only if app is not a CAP application
             ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
             ui5LocalConfig.addFioriToolsProxydMiddleware({ backend: [service.previewSettings as ProxyBackend] });
         }

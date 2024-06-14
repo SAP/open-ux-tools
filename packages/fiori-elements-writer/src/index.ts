@@ -115,6 +115,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     // Extend ui5-local.yaml
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
     if(fs.exists(ui5LocalConfigPath)) {
+        // ui5LocalConfigPath will be present only if app is not a CAP application
         const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
         ui5LocalConfig.addUI5Libs([ushellLib]);
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
