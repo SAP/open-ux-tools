@@ -67,13 +67,19 @@ export class PromptsAPI {
      * @param {Editor} fs the memfs editor instance
      * @returns List of prompts for passed type
      */
-    public getPrompts<N extends SupportedPrompts['type']>(
+    public async getPrompts<N extends SupportedPrompts['type']>(
         promptType: N,
         fs: Editor
     ): Promise<Prompts<NarrowPrompt<typeof promptType>['answers']>> {
-        return PromptsMap[promptType](fs, this.basePath, this.projectProvider) as Promise<
-            Prompts<NarrowPrompt<typeof promptType>['answers']>
-        >;
+        const method = promptType in PromptsMap ? PromptsMap[promptType] : unsupportedPrompts;
+        if (typeof method === 'function') {
+            return method(fs, this.basePath, this.projectProvider) as Promise<
+                Prompts<NarrowPrompt<typeof promptType>['answers']>
+            >;
+        }
+        return {
+            questions: []
+        };
     }
 
     /**
