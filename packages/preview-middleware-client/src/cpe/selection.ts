@@ -22,7 +22,7 @@ import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import { getComponent } from './ui5-utils';
 import UI5Element from 'sap/ui/core/Element';
 import type Component from 'sap/ui/core/Component';
-import { FE_CORE_BUILDING_BLOCKS } from './constant';
+import { FE_MACRO_API } from './constant';
 
 export interface PropertyChangeParams {
     name: string;
@@ -150,9 +150,9 @@ async function handleControlSelected(
  * @returns {UI5Element} - The innermost UI5Element from the given control
  */
 function tryCtrl(control: UI5ElementWithContent): UI5Element {
-    if (control.isA(FE_CORE_BUILDING_BLOCKS)) {
+    if (control.isA(FE_MACRO_API)) {
         let content = control.getContent();
-        while (content.isA(FE_CORE_BUILDING_BLOCKS)) {
+        while (content.isA(FE_MACRO_API)) {
             content = content.getContent();
         }
         return content;
@@ -168,8 +168,8 @@ function tryCtrl(control: UI5ElementWithContent): UI5Element {
  */
 function tryParentCtrl(control: ManagedObject) {
     let parent = control.getParent();
-    if (parent?.isA(FE_CORE_BUILDING_BLOCKS)) {
-        while (parent?.getParent()?.isA(FE_CORE_BUILDING_BLOCKS)) {
+    if (parent?.isA(FE_MACRO_API)) {
+        while (parent?.getParent()?.isA(FE_MACRO_API)) {
             parent = parent.getParent();
         }
         if (parent) {

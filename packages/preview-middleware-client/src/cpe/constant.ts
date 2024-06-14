@@ -1,1 +1,1 @@
-export const FE_CORE_BUILDING_BLOCKS = 'sap.fe.core.buildingBlocks.BuildingBlockBase';
+export const FE_MACRO_API = 'sap.fe.macros.MacroAPI';

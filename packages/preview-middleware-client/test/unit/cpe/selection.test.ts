@@ -5,7 +5,7 @@ import type { ExternalAction, Control } from '@sap-ux-private/control-property-e
 import type { ID } from 'sap/ui/core/library';
 import { fetchMock, sapCoreMock } from 'mock/window';
 import { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
-import { FE_CORE_BUILDING_BLOCKS } from '../../../src/cpe/constant';
+import { FE_MACRO_API } from '../../../src/cpe/constant';
 
 describe('SelectionService', () => {
     const isA = jest.fn().mockReturnValue(false);
@@ -570,7 +570,7 @@ describe('SelectionService', () => {
             payload: { controlId: 'control1', newValue: 'newText', propertyName: 'text' },
             type: '[ext] property-changed'
         });
-        expect(localIsA).toHaveBeenNthCalledWith(1, FE_CORE_BUILDING_BLOCKS);
+        expect(localIsA).toHaveBeenNthCalledWith(1, FE_MACRO_API);
         expect(getParent).toHaveBeenCalledTimes(1);
     });
 
@@ -996,7 +996,7 @@ describe('SelectionService', () => {
         }
         expect(sendActionMock).toHaveBeenNthCalledWith(1, { type: '[ext] control-selected', payload: mockControlData });
         expect(buildControlDataSpy).toHaveBeenCalledTimes(1);
-        expect(localIsA).toHaveBeenNthCalledWith(1, FE_CORE_BUILDING_BLOCKS);
+        expect(localIsA).toHaveBeenNthCalledWith(1, FE_MACRO_API);
         expect(getContent).toHaveBeenCalledTimes(1);
     });
 

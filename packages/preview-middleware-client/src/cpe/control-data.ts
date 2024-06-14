@@ -16,7 +16,7 @@ import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import type { ManagedObjectMetadataProperties } from './utils';
 import { UI5ControlProperty } from './types';
 import DataType from 'sap/ui/base/DataType';
-import { FE_CORE_BUILDING_BLOCKS } from './constant';
+import { FE_MACRO_API } from './constant';
 
 type AnalyzedType = Pick<UI5ControlProperty, 'isArray' | 'primitiveType' | 'ui5Type' | 'enumValues'>;
 /**
@@ -182,7 +182,7 @@ export function buildControlData(control: ManagedObject, controlOverlay?: Elemen
     const selectedControlName = controlMetadata.getName();
     const hasStableId = Utils.checkControlId(control);
     const controlProperties = controlOverlay ? controlOverlay.getDesignTimeMetadata().getData().properties : undefined;
-    const buildingBlock = control.isA(FE_CORE_BUILDING_BLOCKS);
+    const buildingBlock = control.isA(FE_MACRO_API);
     // Add the control's properties
     const allProperties = controlMetadata.getAllProperties() as unknown as {
         [name: string]: ManagedObjectMetadataProperties;

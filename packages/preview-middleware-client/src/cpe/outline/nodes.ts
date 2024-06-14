@@ -4,7 +4,7 @@ import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
 
 import { isEditable } from './utils';
-import { FE_CORE_BUILDING_BLOCKS } from '../constant';
+import { FE_MACRO_API } from '../constant';
 
 interface AdditionalData {
     text?: string;
@@ -95,7 +95,7 @@ export async function transformNodes(input: OutlineViewNode[], scenario: Scenari
         const isAdp = scenario === 'ADAPTATION_PROJECT';
         const isExtPoint = current?.type === 'extensionPoint';
         const control = sap.ui.getCore().byId(current?.id);
-        const buildingBlock = control?.isA(FE_CORE_BUILDING_BLOCKS);
+        const buildingBlock = control?.isA(FE_MACRO_API);
         const visible = current?.visible ?? true;
         if (current?.type === 'element') {
             const children = getChildren(current, buildingBlock);
