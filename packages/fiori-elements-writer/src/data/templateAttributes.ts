@@ -46,13 +46,13 @@ type TemplateLibs = {
     };
 };
 
+interface AnnotationReuseLibsEntry {
+    annotation: string;
+    reuseLib: string;
+}
+
 type AnnotationReuseLibs = {
-    [OdataVersion.v4]: [
-        {
-            annotation: string;
-            reuseLib: string;
-        }
-    ];
+    [V in OdataVersion]: [AnnotationReuseLibsEntry] | [];
 };
 
 const templateLibs: TemplateLibs = {
@@ -125,7 +125,7 @@ export function getUi5Libs(
     version: OdataVersion,
     metadata: string | undefined
 ): string[] | undefined {
-    let templateLibs: TemplateLibs;
+    let libs: TemplateLibs[];
     const reuseLibs = getAnnotationLibs(version, metadata);
     return [...templateLibs[version][type]?.ui5Libs, ...reuseLibs];
 }
@@ -189,7 +189,8 @@ export const annotationReuseLibs: AnnotationReuseLibs = {
             annotation: 'UI.Note',
             reuseLib: 'sap.nw.core.gbt.notes.lib.reuse'
         }
-    ]
+    ],
+    [OdataVersion.v2]: []
 };
 
 export function getAnnotationLibs(version: OdataVersion, metadata?: string) {
@@ -213,11 +214,11 @@ export function getAnnotationLibs(version: OdataVersion, metadata?: string) {
             annotationsFound.forEach((annotation) => {
                 const rule = annotationReuseLibs[version]?.find((rule) => rule.annotation === annotation);
                 if (rule) {
-                    reuseLibs.push(rule.lib);
+                    reuseLibs.push(rule.reuseLib);
                 }
             });
         }
-    } catch(e) {
+    } catch (e) {
         // do nothing
     }
 
