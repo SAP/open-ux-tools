@@ -345,6 +345,15 @@ export interface ChangeDataSourceAnswers {
     annotationUri?: string;
 }
 
+export interface AddAnnotationsAnswers {
+    /** Data Source identifier  */
+    id: string;
+    /**   */
+    fileSelectOption: number;
+    /** Annotation File path */
+    filePath: string;
+}
+
 export type DataSource = ManifestNamespace.DataSource & { dataSourceName: string; annotations: string[] };
 
 export interface AdpCustomConfig {
