@@ -18,7 +18,6 @@ import { relative } from 'path';
 import type {
     ChartPromptsAnswer,
     Prompts,
-    PromptsGroup,
     TablePromptsAnswer,
     BuildingBlockTypePromptsAnswer,
     FilterBarPromptsAnswer,
