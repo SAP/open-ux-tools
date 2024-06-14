@@ -1,6 +1,7 @@
 import readPkgUp from 'read-pkg-up';
 import type { BasicAppSettings, FioriApp, FreestyleApp } from './types';
 import { TemplateType } from './types';
+import { ServiceType } from '@sap-ux/odata-service-writer';
 
 /**
  * Set defaults for missing parameters on the given Fiori/UI5 app instance.
@@ -45,6 +46,7 @@ export function setDefaults(ffApp: FreestyleApp<unknown>): void {
     }
     // All fiori-freestyle apps should use load reuse libs, unless explicitly overridden
     ffApp.appOptions = Object.assign({ loadReuseLibs: true }, ffApp.appOptions);
+    Object.assign(ffApp.appOptions, { isCapApplication: ServiceType.CDS === ffApp.service?.type });
 }
 
 // Specific escaping is required for FLP texts in flpSandbox.html template file

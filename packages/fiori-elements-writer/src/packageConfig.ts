@@ -23,7 +23,8 @@ export function getPackageJsonTasks({
     flpAppId = '',
     startFile,
     localStartFile,
-    generateIndex = true
+    generateIndex = true, 
+    isCapApplication = false
 }: {
     localOnly: boolean;
     addMock: boolean;
@@ -33,6 +34,7 @@ export function getPackageJsonTasks({
     startFile?: string;
     localStartFile?: string;
     generateIndex?: boolean;
+    isCapApplication?: boolean;
 }): PackageJsonScripts {
     // Build search param part of preview launch url
     const searchParamList: string[][] = [];
@@ -58,9 +60,13 @@ export function getPackageJsonTasks({
     }${params}"`;
 
     const scripts: PackageJsonScripts = {
-        start: startCommand,
-        'start-local': startLocalCommand
+        start: startCommand
     };
+
+    if(!isCapApplication) {
+        // Add start-local script only if not a CAP application
+        scripts['start-local'] = startLocalCommand;
+    }
 
     if (generateIndex) {
         scripts['start-noflp'] = localOnly

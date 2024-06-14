@@ -113,6 +113,7 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
 
     // if not explicitly disabled, enable the SAP Fiori tools
     feApp.appOptions = feApp.appOptions ?? {};
+    feApp.appOptions.isCapApplication = ServiceType.CDS === feApp.service.type;
     if (feApp.appOptions.sapux !== false) {
         feApp.appOptions.sapux = true;
     }

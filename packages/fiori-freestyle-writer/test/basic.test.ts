@@ -3,7 +3,7 @@ import { generate, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import { testOutputDir, debug, updatePackageJSONDependencyToUseLocalPath } from './common';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
+import { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import type { BasicAppSettings } from '../src/types';
 import { projectChecks } from './common';
 
@@ -176,6 +176,20 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         }).then(async () => {
             await projectChecks(testPath, config, debug?.debugFull);
         });
+    });
+
+    test('Generate files for template: cap type basic_cap', async () => {
+        commonConfig.template.settings = {};
+        commonConfig.service = {
+            type: ServiceType.CDS, 
+            path: '/sap/opu/odata/',
+            url: 'http://localhost',
+            version: OdataVersion.v2,
+            metadata: '<metadata />'
+        }
+        const testPath = join(curTestOutPath, 'basic_cap');
+        const fs = await generate(testPath, commonConfig);
+        expect(fs.dump(testPath)).toMatchSnapshot();
     });
 
     test("app id prefix correctly generated in template's Component.js", async () => {

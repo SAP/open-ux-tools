@@ -9,7 +9,6 @@ import { mergeWithDefaults } from './data';
 import { ui5TSSupport } from './data/ui5Libs';
 import { applyOptionalFeatures, enableTypescript as enableTypescriptOption } from './options';
 import { Ui5App } from './types';
-import { generateReadMe, ReadMe, getLaunchText, getDataSourceLabel, composeReadMe } from './read-me'
 
 /**
  * Writes the template to the memfs editor instance.
@@ -32,6 +31,12 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     if (ui5AppConfig.appOptions?.generateIndex === false) {
         ignore.push('**/webapp/index.html');
     }
+    if (ui5AppConfig.appOptions?.isCapApplication) {
+        // ignore the ui5-local.yaml file for CAP applications
+        ignore.push('**/ui5-local.yaml');
+        // ignore the .gitignore.tmpl file for CAP applications
+        ignore.push('**/gitignore.tmpl');
+    }
 
     fs.copyTpl(join(tmplPath, 'core', '**/*.*'), join(basePath), ui5App, undefined, {
         globOptions: { dot: true, ignore },
@@ -48,24 +53,26 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     });
     ui5Config.addFioriToolsAppReloadMiddleware();
 
-    // ui5-local.yaml
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
-    const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-    ui5LocalConfig.addUI5Framework(
-        ui5App.ui5.framework,
-        ui5App.ui5.localVersion,
-        ui5App.ui5.ui5Libs as string[],
-        ui5App.ui5.ui5Theme
-    );
-    ui5LocalConfig.addFioriToolsAppReloadMiddleware();
-
-    // Add optional features
-    await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config, ui5LocalConfig]);
-
+    if (!ui5AppConfig.appOptions?.isCapApplication) {
+        // write ui5-local.yaml
+        const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
+        ui5LocalConfig.addUI5Framework(
+            ui5App.ui5.framework,
+            ui5App.ui5.localVersion,
+            ui5App.ui5.ui5Libs as string[],
+            ui5App.ui5.ui5Theme
+        );
+        ui5LocalConfig.addFioriToolsAppReloadMiddleware();
+        // Add optional features
+        await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config, ui5LocalConfig]);
+        fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
+    }
+    else {
+        await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config]);
+    }
     // write ui5 yamls
     fs.write(ui5ConfigPath, ui5Config.toString());
-    fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
-
     return fs;
 }
 
@@ -134,4 +141,3 @@ async function enableTypescript(basePath: string, fs?: Editor): Promise<Editor> 
 
 export { Ui5App, generate, enableTypescript, isTypescriptEnabled };
 export { App, Package, UI5, AppOptions };
-export { generateReadMe, ReadMe, getLaunchText, getDataSourceLabel, composeReadMe }

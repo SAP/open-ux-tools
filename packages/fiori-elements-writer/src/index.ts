@@ -114,9 +114,11 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
 
     // Extend ui5-local.yaml
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
-    const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-    ui5LocalConfig.addUI5Libs([ushellLib]);
-    fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
+    if(fs.exists(ui5LocalConfigPath)) {
+        const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
+        ui5LocalConfig.addUI5Libs([ushellLib]);
+        fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
+    }
 
     // Extend common files
     const packagePath = join(basePath, 'package.json');
@@ -183,7 +185,8 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
             flpAppId: feApp.app.flpAppId,
             startFile: data?.app?.startFile,
             localStartFile: data?.app?.localStartFile,
-            generateIndex: feApp.appOptions?.generateIndex
+            generateIndex: feApp.appOptions?.generateIndex, 
+            isCapApplication: feApp.service?.type === ServiceType.CDS
         })
     });
 
