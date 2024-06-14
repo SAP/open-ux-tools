@@ -51,7 +51,6 @@ export interface UI5 {
     descriptorVersion: string;
     ui5Libs: string | string[];
     ui5Theme: string;
-    ui5Components: string | string[];
 }
 
 // Additional configurable features
