@@ -3,24 +3,28 @@ import type { Answers, ChartPromptsAnswer, FilterBarPromptsAnswer, Prompts, Tabl
 import type { ProjectProvider } from '../utils';
 import { BuildingBlockType } from '../../types';
 
-// ToDo constand or new enum instead of BuildingBlockType enum?
-type AnswerMapping = {
-    [BuildingBlockType.Chart]: ChartPromptsAnswer;
-    [BuildingBlockType.Table]: TablePromptsAnswer;
-    [BuildingBlockType.FilterBar]: FilterBarPromptsAnswer;
-    [BuildingBlockType.Field]: Answers;
-};
+interface Chart {
+    // ToDo constand or new enum instead of BuildingBlockType enum?
+    type: BuildingBlockType.Chart;
+    answers: ChartPromptsAnswer;
+}
 
-type BasePrompt<T extends keyof AnswerMapping> = {
-    type: T;
-    answers: AnswerMapping[T];
-};
+interface Table {
+    type: BuildingBlockType.Table;
+    answers: TablePromptsAnswer;
+}
 
-export type SupportedPrompts =
-    | BasePrompt<BuildingBlockType.Chart>
-    | BasePrompt<BuildingBlockType.Table>
-    | BasePrompt<BuildingBlockType.FilterBar>
-    | BasePrompt<BuildingBlockType.Field>;
+interface FilterBar {
+    type: BuildingBlockType.FilterBar;
+    answers: FilterBarPromptsAnswer;
+}
+
+interface Field {
+    type: BuildingBlockType.Field;
+    answers: Answers;
+}
+
+export type SupportedPrompts = Chart | Table | FilterBar | Field;
 
 export type NarrowPrompt<T, N = SupportedPrompts> = N extends { type: T } ? N : never;
 
