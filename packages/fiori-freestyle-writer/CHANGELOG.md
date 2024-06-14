@@ -1,5 +1,24 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.22.11
+
+### Patch Changes
+
+-   9188fe8b: fpm v4 removed sap.fe.templates in manifest.json, now has dependency on sap.fe.core
+    sap.ushell removed from ui5-application-writer, now loaded in fiori-elements and fiori-freestyle writers respectively
+-   Updated dependencies [9188fe8b]
+    -   @sap-ux/ui5-application-writer@0.26.15
+    -   @sap-ux/ui5-config@0.22.7
+    -   @sap-ux/odata-service-writer@0.20.2
+
+## 0.22.10
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.22.6
+-   @sap-ux/odata-service-writer@0.20.1
+-   @sap-ux/ui5-application-writer@0.26.14
+
 ## 0.22.9
 
 ### Patch Changes
