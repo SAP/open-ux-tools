@@ -50,9 +50,12 @@ export function attachUaaAuthInterceptor(
 
     provider.interceptors.request.use(async (request: InternalAxiosRequestConfig) => {
         token = token ?? (await getToken());
-        // add token as auth header
+        // add token as auth header for this request
         request.headers = request.headers ?? new AxiosHeaders();
         request.headers.authorization = `bearer ${token}`;
+        // add token as auth header for all subsequent requests
+        provider.defaults.headers.common = provider.defaults.headers.common ?? {};
+        provider.defaults.headers.common.Authorization = `bearer ${token}`;
 
         return request;
     });
