@@ -128,16 +128,14 @@ describe('ui5-application-inquirer API', () => {
             }
         };
 
-        expect(await prompt(mockInquirerAdapter, promptOpts)).toMatchInlineSnapshot(`
-            {
-              "aPrompt": "a prompt answer",
-            }
-        `);
+        expect(await prompt(mockInquirerAdapter, promptOpts)).toMatchObject({
+            aPrompt: 'a prompt answer'
+        });
         // Ensure autocomplete plugin is registered
         expect(adapterRegisterPromptSpy).toHaveBeenCalledWith('autocomplete', AutocompletePrompt);
     });
 
-    test('prompt, defaults are applied', async () => {
+    test('prompt, defaults are applied from prompt options and prompt defaults', async () => {
         const mockPromptsModule = createPromptModule();
         const mockInquirerAdapter: InquirerAdapter = {
             prompt: jest.fn().mockResolvedValue({ [promptNames.name]: 'a prompt answer' }),
@@ -160,33 +158,63 @@ describe('ui5-application-inquirer API', () => {
             // Ensure a default is applied, even if the prompt is not executed
             [promptNames.ui5Theme]: {
                 hide: true
+            },
+            [promptNames.addDeployConfig]: {
+                hide: true
+            },
+            [promptNames.enableTypeScript]: {
+                default: (answers) => {
+                    if (answers.capCdsInfo?.hasCdsUi5Plugin) {
+                        return true;
+                    }
+                    return false;
+                }
             }
         };
 
-        let answers = await prompt(mockInquirerAdapter, promptOpts);
-        expect(answers).toMatchInlineSnapshot(`
-            {
-              "description": "No annotations",
-              "name": "a prompt answer",
-              "skipAnnotations": true,
-              "ui5Theme": "sap_horizon",
-              "ui5Version": "999.999.999",
-            }
-        `);
+        let answers = await prompt(mockInquirerAdapter, promptOpts, {
+            hasCdsUi5Plugin: true,
+            isCdsUi5PluginEnabled: false,
+            hasMinCdsVersion: false,
+            isWorkspaceEnabled: false
+        });
+        // Since capCdsInfo was provided some prompt should be hidden and so no answer should be provided
+        expect(answers).toEqual({
+            addFlpConfig: false,
+            description: 'No annotations',
+            enableCodeAssist: false,
+            enableNPMWorkspaces: false,
+            enableTypeScript: true,
+            name: 'a prompt answer',
+            namespace: '',
+            showAdvanced: false,
+            skipAnnotations: true,
+            title: 'App Title',
+            ui5Theme: 'sap_horizon',
+            ui5Version: '999.999.999'
+        });
 
         // Provided answer takes precendence, default theme uses ui5 answer, default functions use previous answers
         mockInquirerAdapter.prompt = jest
             .fn()
             .mockResolvedValue({ [promptNames.ui5Version]: '1.64.0', [promptNames.skipAnnotations]: false });
         answers = await prompt(mockInquirerAdapter, promptOpts);
-        expect(answers).toMatchInlineSnapshot(`
-            {
-              "description": "Annotations inc.",
-              "skipAnnotations": false,
-              "ui5Theme": "sap_fiori_3",
-              "ui5Version": "1.64.0",
-            }
-        `);
+        expect(answers).toEqual({
+            addFlpConfig: false,
+            description: 'Annotations inc.',
+            enableCodeAssist: false,
+            enableEslint: false,
+            enableNPMWorkspaces: false,
+            enableTypeScript: false,
+            name: 'project1',
+            namespace: '',
+            showAdvanced: false,
+            skipAnnotations: false,
+            targetFolder: expect.any(String),
+            title: 'App Title',
+            ui5Theme: 'sap_fiori_3',
+            ui5Version: '1.64.0'
+        });
     });
 
     test('prompt, prompt args are passed correctly applied', async () => {

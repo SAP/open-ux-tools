@@ -1,13 +1,10 @@
-import { type IMessageSeverity, Severity } from '@sap-devx/yeoman-ui-types';
 import { latestVersionString } from '@sap-ux/ui5-info';
-import type { Answers } from 'inquirer';
 import { join } from 'path';
 import { initI18nUi5AppInquirer } from '../../../src/i18n';
 import * as promptHelpers from '../../../src/prompts/prompt-helpers';
 import { appPathExists, defaultAppName, hidePrompts, isVersionIncluded } from '../../../src/prompts/prompt-helpers';
 import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../../../src/types';
 import { promptNames } from '../../../src/types';
-import { extendWithOptions } from '@sap-ux/inquirer-common';
 
 describe('prompt-helpers', () => {
     const testTempDir = join(__dirname, './test-tmp');
