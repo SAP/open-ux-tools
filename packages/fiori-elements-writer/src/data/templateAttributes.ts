@@ -126,7 +126,7 @@ export function getUi5Libs(
     metadata: string | undefined
 ): string[] | undefined {
     const reuseLibs = getAnnotationLibs(version, metadata);
-    return [...(templateLibs[version][type]?.ui5Libs as []), ...reuseLibs];
+    return [...(<[]>templateLibs[version][type]?.ui5Libs), ...reuseLibs];
 }
 
 // Additional attributes associated with TemplateType
