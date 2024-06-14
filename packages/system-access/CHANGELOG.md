@@ -1,5 +1,11 @@
 # @sap-ux/system-access
 
+## 0.4.0
+
+### Minor Changes
+
+-   a48a8c0b: Add support for the SAP Fiori tools CI/CD variables
+
 ## 0.3.34
 
 ### Patch Changes
