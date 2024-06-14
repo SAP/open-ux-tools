@@ -11,7 +11,7 @@ import type {
     WorklistSettings
 } from '../types';
 import { TableSelectionMode, TableType, TemplateType } from '../types';
-import { getAnnotationDeps, getBaseComponent, getUi5Libs, TemplateTypeAttributes } from './templateAttributes';
+import { getBaseComponent, getUi5Libs, TemplateTypeAttributes } from './templateAttributes';
 
 const defaultModelName = 'mainModel'; // UI5 default model name is '' but some floorplans require a named default model
 
