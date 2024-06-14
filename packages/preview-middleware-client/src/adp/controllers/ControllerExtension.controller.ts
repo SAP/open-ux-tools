@@ -45,10 +45,14 @@ interface ControllerInfo {
     viewId: string;
 }
 
+type ControllerModel = JSONModel & {
+    getProperty(sPath: '/controllersList'): { controllerName: string }[];
+};
+
 /**
  * @namespace open.ux.preview.client.adp.controllers
  */
-export default class ControllerExtension extends BaseDialog {
+export default class ControllerExtension extends BaseDialog<ControllerModel> {
     constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring) {
         super(name);
         this.rta = rta;

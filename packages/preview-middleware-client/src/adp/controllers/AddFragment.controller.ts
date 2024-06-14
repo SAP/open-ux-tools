@@ -35,10 +35,16 @@ interface CreateFragmentProps {
 
 const radix = 10;
 
+type AddFragmentModel = JSONModel & {
+    getProperty(sPath: '/newFragmentName'): string;
+    getProperty(sPath: '/selectedIndex'): string;
+    getProperty(sPath: '/selectedAggregation/value'): string;
+};
+
 /**
  * @namespace open.ux.preview.client.adp.controllers
  */
-export default class AddFragment extends BaseDialog {
+export default class AddFragment extends BaseDialog<AddFragmentModel> {
     constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring) {
         super(name);
         this.rta = rta;
@@ -136,9 +142,9 @@ export default class AddFragment extends BaseDialog {
         const source = event.getSource<Button>();
         source.setEnabled(false);
 
-        const fragmentName = this.model.getProperty('/newFragmentName') as string;
-        const index = parseInt(this.model.getProperty('/selectedIndex') as string, radix);
-        const targetAggregation = this.model.getProperty('/selectedAggregation/value') as string;
+        const fragmentName = this.model.getProperty('/newFragmentName');
+        const index = parseInt(this.model.getProperty('/selectedIndex'), radix);
+        const targetAggregation = this.model.getProperty('/selectedAggregation/value');
         const fragmentData = {
             index,
             fragmentName,

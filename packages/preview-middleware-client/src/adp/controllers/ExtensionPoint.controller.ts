@@ -21,10 +21,14 @@ import BaseDialog from './BaseDialog.controller';
 import { ExtensionPointData, ExtensionPointInfo } from '../extension-point';
 import { notifyUser } from '../utils';
 
+type ExtensionPointModel = JSONModel & {
+    getProperty(sPath: '/newFragmentName'): string;
+}; 
+
 /**
  * @namespace open.ux.preview.client.adp.controllers
  */
-export default class ExtensionPoint extends BaseDialog {
+export default class ExtensionPoint extends BaseDialog<ExtensionPointModel> {
     public readonly data: ExtensionPointData;
 
     constructor(name: string, _overlays: UI5Element, rta: RuntimeAuthoring, data: ExtensionPointData) {
@@ -60,7 +64,7 @@ export default class ExtensionPoint extends BaseDialog {
         const source = event.getSource<Button>();
         source.setEnabled(false);
 
-        const fragmentName = this.model.getProperty('/newFragmentName') as string;
+        const fragmentName = this.model.getProperty('/newFragmentName');
 
         this.createExtensionPointFragmentChange(fragmentName);
 
