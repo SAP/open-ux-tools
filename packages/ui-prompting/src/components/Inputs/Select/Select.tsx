@@ -88,7 +88,7 @@ export const Select = (props: SelectProps) => {
                     : (_, option) => {
                           setValue(option?.key ?? '');
                           if (name) {
-                              onChange(name, option?.data.value, dependantPromptNames);
+                              onChange(name, option?.data?.value, dependantPromptNames);
                           }
                       }
             }

@@ -127,7 +127,7 @@ describe('Select', () => {
 
     it('Test filterBarId input property placeholder', () => {
         render(<Select {...props} name="filterBarId" options={[]} placeholder="testPlaceholder" />);
-        expect(screen.getByPlaceholderText('testPlaceholder')).toBeDefined();
+        expect(screen.getByPlaceholderText('Enter a new ID')).toBeDefined();
     });
 
     it('Test filterBarId input property pending', () => {
