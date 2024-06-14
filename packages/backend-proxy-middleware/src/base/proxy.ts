@@ -243,9 +243,9 @@ export async function enhanceConfigForSystem(
     backend: BackendConfig,
     logger: ToolsLogger
 ): Promise<void> {
-    // create a ABAP service provider but only prompt if information is missing for Steampunk, the rest can be handled by the browser
-    const provider = await createAbapServiceProvider(backend, undefined, false /*backend.scp === true*/, logger);
-    // sending a request to the backend to get cookies and updated the auth header
+    // create a ABAP service provider with the given configuration
+    const provider = await createAbapServiceProvider(backend, undefined, false, logger);
+    // send a request to the backend to get cookies and updated the auth header
     const ato = await provider.getAtoInfo();
     if (ato) {
         proxyOptions.headers['cookie'] = provider.cookies.toString();
