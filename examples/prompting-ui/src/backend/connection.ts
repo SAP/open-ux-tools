@@ -98,7 +98,7 @@ export const validateProject = async (): Promise<string | undefined> => {
         const currentAppPath = getProjectPath();
         const promptsAPI = await PromptsAPI.init(currentAppPath);
         // Call API to get table questions - it should validate of path is supported
-        const { questions } = await promptsAPI.getTableBuildingBlockPrompts(fs);
+        const { questions } = await promptsAPI.getPrompts(SupportedBuildingBlocks.Table, fs);
         const entityQuestion = questions.find((question) => question.name === 'entity');
         if (entityQuestion && 'choices' in entityQuestion && typeof entityQuestion.choices === 'function') {
             await entityQuestion.choices({});
@@ -116,16 +116,14 @@ async function handleAction(action: Actions): Promise<void> {
         switch (action.type) {
             case GET_QUESTIONS: {
                 let responseAction: Actions | undefined;
+                const { groups, questions } = await promptsAPI.getPrompts(action.value, fs);
                 if (action.value === SupportedBuildingBlocks.Table) {
-                    const { groups, questions } = await promptsAPI.getTableBuildingBlockPrompts(fs);
                     // Post processing
                     responseAction = { type: SET_TABLE_QUESTIONS, questions, groups };
                 } else if (action.value === SupportedBuildingBlocks.Chart) {
-                    const { groups, questions } = await promptsAPI.getChartBuildingBlockPrompts(fs);
                     // Post processing
                     responseAction = { type: SET_CHART_QUESTIONS, questions, groups };
                 } else if (action.value === SupportedBuildingBlocks.FilterBar) {
-                    const { groups, questions } = await promptsAPI.getFilterBarBuildingBlockPrompts(fs);
                     // Post processing
                     responseAction = { type: SET_FILTERBAR_QUESTIONS, questions, groups };
                 }
@@ -188,7 +186,7 @@ async function handleAction(action: Actions): Promise<void> {
                     }
                     fs = await getEditor(true);
                     // Call API to get table questions - it should validate of path is supported
-                    const { groups, questions } = await promptsAPI.getTableBuildingBlockPrompts(fs);
+                    const { questions } = await promptsAPI.getPrompts(SupportedBuildingBlocks.Table, fs);
                     const entityQuestion = questions.find((question) => question.name === 'entity');
                     if (entityQuestion && 'choices' in entityQuestion && typeof entityQuestion.choices === 'function') {
                         // ToDo - test if can be reusaded validateProject

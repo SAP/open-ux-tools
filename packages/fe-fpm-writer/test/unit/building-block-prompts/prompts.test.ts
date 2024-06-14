@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { PromptsAPI } from '../../../src';
+import { BuildingBlockType, PromptsAPI } from '../../../src';
 import { ProjectProvider } from '../../../src/building-block/prompts/utils/project';
 
 describe('Prompts', () => {
@@ -17,17 +17,17 @@ describe('Prompts', () => {
     });
 
     test('getChartBuildingBlockPrompts', async () => {
-        const questionnair = await promptsAPI.getChartBuildingBlockPrompts(fs);
+        const questionnair = await promptsAPI.getPrompts(BuildingBlockType.Chart, fs);
         expect(questionnair).toMatchSnapshot();
     });
 
     test('getFilterBarBuildingBlockPrompts', async () => {
-        const questionnair = await promptsAPI.getFilterBarBuildingBlockPrompts(fs);
+        const questionnair = await promptsAPI.getPrompts(BuildingBlockType.FilterBar, fs);
         expect(questionnair).toMatchSnapshot();
     });
 
     test('getTableBuildingBlockPrompts', async () => {
-        const questionnair = await promptsAPI.getTableBuildingBlockPrompts(fs);
+        const questionnair = await promptsAPI.getPrompts(BuildingBlockType.Table, fs);
         expect(questionnair).toMatchSnapshot();
     });
 });

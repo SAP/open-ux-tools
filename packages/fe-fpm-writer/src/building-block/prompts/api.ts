@@ -23,7 +23,10 @@ import type {
     BuildingBlockTypePromptsAnswer,
     FilterBarPromptsAnswer,
     ValidationResults,
-    PromptQuestion
+    PromptQuestion,
+    SupportedPrompts,
+    SupportedPromptsMap,
+    NarrowPrompt
 } from './types';
 import { promises as fsPromises } from 'fs';
 import { DOMParser } from '@xmldom/xmldom';
@@ -31,6 +34,17 @@ import { generateBuildingBlock, getSerializedFileContent } from '..';
 import { getChartBuildingBlockPrompts } from './chart';
 import { getTableBuildingBlockPrompts } from './table';
 import { getFilterBarBuildingBlockPrompts } from './filter-bar';
+
+const unsupportedPrompts = (_fs: Editor, _basePath: string, _projectProvider: ProjectProvider): Prompts<Answers> => ({
+    questions: []
+});
+
+const PromptsMap: SupportedPromptsMap = {
+    [BuildingBlockType.Chart]: getChartBuildingBlockPrompts,
+    [BuildingBlockType.Table]: getTableBuildingBlockPrompts,
+    [BuildingBlockType.FilterBar]: getFilterBarBuildingBlockPrompts,
+    [BuildingBlockType.Field]: unsupportedPrompts
+};
 
 export class PromptsAPI {
     basePath: string;
@@ -45,6 +59,22 @@ export class PromptsAPI {
         const fs = create(createStorage());
         const projectProvider = await ProjectProvider.createProject(basePath, fs);
         return new PromptsAPI(basePath, projectProvider);
+    }
+
+    /**
+     * Returns a list of prompts for passed type.
+     *
+     * @param {Editor} fs the memfs editor instance
+     * @param {Editor} fs the memfs editor instance
+     * @returns List of prompts for passed type
+     */
+    public getPrompts<N extends SupportedPrompts['type']>(
+        promptType: N,
+        fs: Editor
+    ): Promise<Prompts<NarrowPrompt<typeof promptType>['answers']>> {
+        return PromptsMap[promptType](fs, this.basePath, this.projectProvider) as Promise<
+            Prompts<NarrowPrompt<typeof promptType>['answers']>
+        >;
     }
 
     /**
@@ -172,39 +202,6 @@ export class PromptsAPI {
     }
 
     /**
-     * Returns a list of prompts required to generate a chart building block.
-     *
-     * @param {Editor} fs the memfs editor instance
-     * @returns {Promise<PromptObject<keyof ChartPromptsAnswer>[]>}
-     */
-    public async getChartBuildingBlockPrompts(fs: Editor): Promise<Prompts<ChartPromptsAnswer>> {
-        // ToDo - currently just same name
-        return getChartBuildingBlockPrompts(fs, this.basePath, this.projectProvider);
-    }
-
-    /**
-     * Returns a list of prompts required to generate a table building block.
-     *
-     * @param {Editor} fs the memfs editor instance
-     * @returns {Promise<PromptObject<keyof ChartPromptsAnswer>[]>}
-     */
-    public async getTableBuildingBlockPrompts(fs: Editor): Promise<Prompts<TablePromptsAnswer>> {
-        // ToDo - currently just same name
-        return getTableBuildingBlockPrompts(fs, this.basePath, this.projectProvider);
-    }
-
-    /**
-     * Returns a list of prompts required to generate a filter bar building block.
-     *
-     * @param fs
-     * @returns {Promise<PromptObject<keyof FilterBarPromptsAnswer>[]>} the list of prompts
-     */
-    public async getFilterBarBuildingBlockPrompts(fs: Editor): Promise<Prompts<FilterBarPromptsAnswer>> {
-        // ToDo - currently just same name
-        return getFilterBarBuildingBlockPrompts(fs, this.basePath, this.projectProvider);
-    }
-
-    /**
      * Validates answers: checks if required prompts have values and runs validate() if exists on prompt
      *
      * @param fs
@@ -219,14 +216,7 @@ export class PromptsAPI {
         answers: Answers,
         type: BuildingBlockType
     ): Promise<ValidationResults> {
-        let originalPrompts: { questions: PromptQuestion[]; groups?: PromptsGroup[] } = { questions: [] };
-        if (type === BuildingBlockType.Table) {
-            originalPrompts = await this.getTableBuildingBlockPrompts(fs);
-        } else if (type === BuildingBlockType.Chart) {
-            originalPrompts = await this.getChartBuildingBlockPrompts(fs);
-        } else if (type === BuildingBlockType.FilterBar) {
-            originalPrompts = await this.getFilterBarBuildingBlockPrompts(fs);
-        }
+        let originalPrompts = await this.getPrompts(type, fs);
         let result: ValidationResults = {};
         for (const q of questions) {
             const question = originalPrompts.questions.find((blockQuestion) => q.name === blockQuestion.name);

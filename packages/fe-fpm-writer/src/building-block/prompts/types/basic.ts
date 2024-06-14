@@ -5,7 +5,7 @@ import type {
     InputPromptQuestion,
     ListPromptQuestion
 } from '@sap-ux/ui-prompting';
-import type { BuildingBlockType, Chart, FilterBar, Table } from '../types';
+import type { BuildingBlockType, Chart, FilterBar, Table } from '../../types';
 
 export { PromptQuestion, CheckboxPromptQuestion, InputPromptQuestion, ListPromptQuestion, Answers };
 
@@ -16,7 +16,7 @@ export interface PromptsGroup {
     description: string[];
 }
 
-export interface Prompts<T extends Answers> {
+export interface Prompts<T extends Answers = Answers> {
     questions: PromptQuestion<Partial<T>>[];
     groups?: PromptsGroup[];
 }
@@ -62,3 +62,5 @@ export interface FilterBarPromptsAnswer extends FilterBar, Answers {
 
 // ToDo - import from ui types
 export type ValidationResults = { [questionName: string]: { isValid: boolean; errorMessage?: string } };
+
+// ToDo - move to separate file?
