@@ -11,6 +11,9 @@
   },
   "references": [
     {
+      "path": "../fiori-annotation-api"
+    },
+    {
       "path": "../project-access"
     },
     {
