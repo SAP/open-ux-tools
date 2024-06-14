@@ -23,6 +23,7 @@ import { notifyUser } from '../utils';
 
 type ExtensionPointModel = JSONModel & {
     getProperty(sPath: '/newFragmentName'): string;
+    getProperty(sPath: '/extensionPointName'): string;
 }; 
 
 /**
@@ -170,7 +171,7 @@ export default class ExtensionPoint extends BaseDialog<ExtensionPointModel> {
      * @param fragmentName Fragment name
      */
     private createExtensionPointFragmentChange(fragmentName: string): void {
-        const extensionPointName = this.model.getProperty('/extensionPointName') as string;
+        const extensionPointName = this.model.getProperty('/extensionPointName');
         const modifiedValue = {
             fragment: `<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>`,
             fragmentPath: `fragments/${fragmentName}.fragment.xml`,

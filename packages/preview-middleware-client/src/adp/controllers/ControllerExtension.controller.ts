@@ -47,6 +47,10 @@ interface ControllerInfo {
 
 type ControllerModel = JSONModel & {
     getProperty(sPath: '/controllersList'): { controllerName: string }[];
+    getProperty(sPath: '/controllerExists'): boolean;
+    getProperty(sPath: '/newControllerName'): string;
+    getProperty(sPath: '/viewId'): string;
+    getProperty(sPath: '/controllerPath'): string;
 };
 
 /**
@@ -87,7 +91,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
         const beginBtn = this.dialog.getBeginButton();
 
         const controllerName: string = input.getValue();
-        const controllerList: { controllerName: string }[] = this.model.getProperty('/controllersList') as { controllerName: string }[];
+        const controllerList = this.model.getProperty('/controllersList');
 
         const updateDialogState = (valueState: ValueState, valueStateText = '') => {
             input.setValueState(valueState).setValueStateText(valueStateText);
@@ -136,17 +140,17 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
      */
     async onCreateBtnPress(event: Event) {
         const source = event.getSource<Button>();
-        const controllerExists = this.model.getProperty('/controllerExists') as boolean;
+        const controllerExists = this.model.getProperty('/controllerExists');
 
         if (!controllerExists) {
             source.setEnabled(false);
 
-            const controllerName = this.model.getProperty('/newControllerName') as string;
-            const viewId = this.model.getProperty('/viewId') as string;
+            const controllerName = this.model.getProperty('/newControllerName');
+            const viewId = this.model.getProperty('/viewId');
 
             await this.createNewController(controllerName, viewId);
         } else {
-            const controllerPath = this.model.getProperty('/controllerPath') as string;
+            const controllerPath = this.model.getProperty('/controllerPath');
             window.open(`vscode://file${controllerPath}`);
         }
 
