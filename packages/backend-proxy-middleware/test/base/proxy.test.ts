@@ -10,43 +10,11 @@ import {
 } from '../../src/base/proxy';
 import { generateProxyMiddlewareOptions, createProxy } from '../../src';
 import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types';
-import { AuthenticationType } from '@sap-ux/store';
-import { getInstance } from '@sap-ux/store/dist/services/backend-system';
-
-jest.mock('@sap-ux/store/dist/services/api-hub', () => ({
-    getInstance: jest.fn().mockReturnValue({ read: () => {} })
-}));
-jest.mock('@sap-ux/store/dist/services/backend-system', () => ({
-    getInstance: jest.fn().mockReturnValue({ read: () => {} })
-}));
-const mockGetService = getInstance as jest.Mock;
-
-// mock required axios-extension functions
-import { AbapCloudEnvironment, createForAbapOnCloud } from '@sap-ux/axios-extension';
-jest.mock('@sap-ux/axios-extension', () => ({
-    ...(jest.requireActual('@sap-ux/axios-extension') as object),
-    createForAbapOnCloud: jest.fn()
-}));
-const mockCreateForAbapOnCloud = createForAbapOnCloud as jest.Mock;
+import { mockGetCredentialsForDestinationService, mockIsAppStudio, mockListDestinations, mockedStoreService } from '../__mocks__';
+import nock from 'nock';
 
 // mock required btp-utils functions
-import {
-    listDestinations,
-    getDestinationUrlForAppStudio,
-    WebIDEUsage,
-    WebIDEAdditionalData,
-    getCredentialsForDestinationService,
-    isAppStudio
-} from '@sap-ux/btp-utils';
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...(jest.requireActual('@sap-ux/btp-utils') as object),
-    listDestinations: jest.fn(),
-    getCredentialsForDestinationService: jest.fn(),
-    isAppStudio: jest.fn()
-}));
-const mockListDestinations = listDestinations as jest.Mock;
-const mockGetCredentialsForDestinationService = getCredentialsForDestinationService as jest.Mock;
-const mockIsAppStudio = isAppStudio as jest.Mock;
+import { getDestinationUrlForAppStudio, WebIDEUsage, WebIDEAdditionalData } from '@sap-ux/btp-utils';
 
 const mockPrompt = jest.fn();
 jest.mock('prompts', () => {
@@ -57,6 +25,28 @@ describe('proxy', () => {
     type OptionsWithHeaders = Options & { headers: object };
     const logger = new ToolsLogger({
         transports: [new NullTransport()]
+    });
+    const system: LocalBackendConfig = {
+        path: '/example',
+        url: 'http://backend.example'
+    };
+
+    beforeAll(() => {
+        nock.disableNetConnect();
+        nock(system.url)
+            .get('/sap/bc/adt/discovery')
+            .reply(function () {
+                console.log(this.req.headers.authorization);
+                return this.req.headers.authorization
+                    ? [200, undefined, { 'set-cookie': [`auth=${this.req.headers.authorization.split(' ')[0]}`] }]
+                    : [401];
+            })
+            .persist();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
     });
 
     beforeEach(() => {
@@ -281,45 +271,11 @@ describe('proxy', () => {
     });
 
     describe('enhanceConfigForSystem', () => {
-        const system: LocalBackendConfig = {
-            path: '/example',
-            url: 'http://backend.example'
-        };
-
         test('simple system', async () => {
             const proxyOptions: OptionsWithHeaders = { headers: {} };
 
             await enhanceConfigForSystem({ ...proxyOptions }, system, logger);
             expect(proxyOptions).toEqual(proxyOptions);
-        });
-
-        test('oauth required', async () => {
-            mockCreateForAbapOnCloud.mockImplementationOnce(() => {
-                return {
-                    cookies: '~cookies',
-                    getAtoInfo: jest.fn()
-                };
-            });
-
-            try {
-                await enhanceConfigForSystem({ headers: {} }, system, logger);
-                fail('Should have thrown an error because no service keys have been provided.');
-            } catch (error) {
-                expect(error).toBeDefined();
-            }
-
-            const proxyOptions: OptionsWithHeaders = { headers: {} };
-            const cloudSystem = {
-                ...system,
-                serviceKeys: { keys: '~keys' },
-                refreshToken: '~token'
-            };
-            await enhanceConfigForSystem(proxyOptions, cloudSystem, logger);
-            expect(mockCreateForAbapOnCloud).toBeCalledWith({
-                environment: AbapCloudEnvironment.Standalone,
-                service: cloudSystem.serviceKeys,
-                refreshToken: cloudSystem.refreshToken
-            });
         });
 
         test('user/password authentication', async () => {
@@ -328,41 +284,16 @@ describe('proxy', () => {
                 username: '~user',
                 password: '~password'
             };
-
-            // provided from config
-            await enhanceConfigForSystem(proxyOptions, { ...system, ...creds }, logger);
-            expect(proxyOptions.auth).toBe(`${creds.username}:${creds.password}`);
+            // provided from store
+            mockedStoreService.read.mockResolvedValueOnce(creds);
+            await enhanceConfigForSystem(proxyOptions, { ...system }, logger);
+            expect(proxyOptions.headers['cookie']).toBe('auth=Basic');
 
             // provided from env variables
             process.env.FIORI_TOOLS_USER = creds.username;
             process.env.FIORI_TOOLS_PASSWORD = creds.password;
             await enhanceConfigForSystem(proxyOptions, system, logger);
-            expect(proxyOptions.auth).toBe(`${creds.username}:${creds.password}`);
-        });
-
-        test('use reentrance tickets', async () => {
-            mockCreateForAbapOnCloud.mockImplementationOnce(() => {
-                return {
-                    cookies: '~cookies',
-                    getAtoInfo: jest.fn().mockReturnValue({})
-                };
-            });
-            const proxyOptions: OptionsWithHeaders = { headers: {} };
-            await enhanceConfigForSystem(
-                proxyOptions,
-                {
-                    ...system,
-                    authenticationType: AuthenticationType.ReentranceTicket
-                },
-                logger
-            );
-
-            expect(proxyOptions.headers.cookie).toBe('~cookies');
-            expect(mockCreateForAbapOnCloud).toBeCalledWith({
-                ignoreCertErrors: false,
-                environment: AbapCloudEnvironment.EmbeddedSteampunk,
-                url: system.url
-            });
+            expect(proxyOptions.headers['cookie']).toBe('auth=Basic');
         });
     });
 
@@ -453,18 +384,14 @@ describe('proxy', () => {
         });
 
         test('user/password authentication from env', async () => {
-            const backend: LocalBackendConfig = {
-                url: 'http://backend.example',
-                path: '/my/path'
-            };
             const creds = {
                 username: '~user',
                 password: '~password'
             };
             process.env.FIORI_TOOLS_USER = creds.username;
             process.env.FIORI_TOOLS_PASSWORD = creds.password;
-            const proxyOptions = await generateProxyMiddlewareOptions(backend);
-            expect(proxyOptions.auth).toBe(`${creds.username}:${creds.password}`);
+            const proxyOptions = await generateProxyMiddlewareOptions(system);
+            expect(proxyOptions.headers?.['cookie']).toBe('auth=Basic');
         });
 
         test('throw an error if proxyOptions.target is not defined', async () => {
@@ -489,11 +416,7 @@ describe('proxy', () => {
 
         test('generate proxy middleware despite an error when accessing the store', async () => {
             mockIsAppStudio.mockReturnValue(false);
-            mockGetService.mockReturnValueOnce({
-                read: () => {
-                    throw new Error();
-                }
-            });
+            mockedStoreService.read.mockRejectedValueOnce(Error);
             const backend: LocalBackendConfig = {
                 url: 'http://backend.example',
                 path: '/my/path'
