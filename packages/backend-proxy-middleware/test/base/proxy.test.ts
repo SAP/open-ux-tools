@@ -9,8 +9,8 @@ import {
     proxyErrorHandler
 } from '../../src/base/proxy';
 import { generateProxyMiddlewareOptions, createProxy } from '../../src';
-import { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types';
-import { AuthenticationType, BackendSystem } from '@sap-ux/store';
+import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types';
+import { AuthenticationType } from '@sap-ux/store';
 import { getInstance } from '@sap-ux/store/dist/services/backend-system';
 
 jest.mock('@sap-ux/store/dist/services/api-hub', () => ({
@@ -281,15 +281,15 @@ describe('proxy', () => {
     });
 
     describe('enhanceConfigForSystem', () => {
-        const system: BackendSystem = {
-            name: 'example',
+        const system: LocalBackendConfig = {
+            path: '/example',
             url: 'http://backend.example'
         };
 
         test('simple system', async () => {
             const proxyOptions: OptionsWithHeaders = { headers: {} };
 
-            await enhanceConfigForSystem({ ...proxyOptions }, system, false, jest.fn());
+            await enhanceConfigForSystem({ ...proxyOptions }, system, logger);
             expect(proxyOptions).toEqual(proxyOptions);
         });
 
@@ -302,7 +302,7 @@ describe('proxy', () => {
             });
 
             try {
-                await enhanceConfigForSystem({ headers: {} }, system, true, jest.fn());
+                await enhanceConfigForSystem({ headers: {} }, system, logger);
                 fail('Should have thrown an error because no service keys have been provided.');
             } catch (error) {
                 expect(error).toBeDefined();
@@ -314,13 +314,11 @@ describe('proxy', () => {
                 serviceKeys: { keys: '~keys' },
                 refreshToken: '~token'
             };
-            const callback = jest.fn();
-            await enhanceConfigForSystem(proxyOptions, cloudSystem, true, callback);
+            await enhanceConfigForSystem(proxyOptions, cloudSystem, logger);
             expect(mockCreateForAbapOnCloud).toBeCalledWith({
                 environment: AbapCloudEnvironment.Standalone,
                 service: cloudSystem.serviceKeys,
-                refreshToken: cloudSystem.refreshToken,
-                refreshTokenChangedCb: callback
+                refreshToken: cloudSystem.refreshToken
             });
         });
 
@@ -332,13 +330,13 @@ describe('proxy', () => {
             };
 
             // provided from config
-            await enhanceConfigForSystem(proxyOptions, { ...system, ...creds }, false, jest.fn());
+            await enhanceConfigForSystem(proxyOptions, { ...system, ...creds }, logger);
             expect(proxyOptions.auth).toBe(`${creds.username}:${creds.password}`);
 
             // provided from env variables
             process.env.FIORI_TOOLS_USER = creds.username;
             process.env.FIORI_TOOLS_PASSWORD = creds.password;
-            await enhanceConfigForSystem(proxyOptions, system, false, jest.fn());
+            await enhanceConfigForSystem(proxyOptions, system, logger);
             expect(proxyOptions.auth).toBe(`${creds.username}:${creds.password}`);
         });
 
@@ -356,8 +354,7 @@ describe('proxy', () => {
                     ...system,
                     authenticationType: AuthenticationType.ReentranceTicket
                 },
-                false,
-                jest.fn()
+                logger
             );
 
             expect(proxyOptions.headers.cookie).toBe('~cookies');

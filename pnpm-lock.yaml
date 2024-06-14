@@ -339,9 +339,6 @@ importers:
 
   packages/backend-proxy-middleware:
     dependencies:
-      '@sap-ux/axios-extension':
-        specifier: workspace:*
-        version: link:../axios-extension
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
@@ -351,6 +348,9 @@ importers:
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
+      '@sap-ux/system-access':
+        specifier: workspace:*
+        version: link:../system-access
       chalk:
         specifier: 4.1.2
         version: 4.1.2
@@ -373,6 +373,9 @@ importers:
         specifier: 1.1.0
         version: 1.1.0
     devDependencies:
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
       '@types/express':
         specifier: 4.17.21
         version: 4.17.21
