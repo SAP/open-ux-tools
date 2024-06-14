@@ -192,7 +192,14 @@ export const annotationReuseLibs: AnnotationReuseLibs = {
     [OdataVersion.v2]: []
 };
 
-export function getAnnotationLibs(version: OdataVersion, metadata?: string) {
+/**
+ * Gets the reuse libraries associated with annotation entries in meatadata
+ *
+ * @param version - The odata service version reuse library supports
+ * @param metadata - The metadata where to look for the annotation entry
+ * @returns The base component library path
+ */
+function getAnnotationLibs(version: OdataVersion, metadata?: string) {
     const reuseLibs: string[] = [];
 
     // Create a regular expression that matches any of the annotations
