@@ -1,5 +1,5 @@
 export { FileName, DirName, FioriToolsSettings } from './constants';
-export { getFilePaths } from './file';
+export { getFilePaths, updateManifestJSON, updatePackageJSON } from './file';
 export {
     createApplicationAccess,
     createProjectAccess,
