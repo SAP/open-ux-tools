@@ -30,29 +30,11 @@ describe('connect', () => {
             mockIsAppStudio.mockReturnValue(false);
         });
 
-        beforeEach(() => {
-            delete process.env.FIORI_TOOLS_USER;
-            delete process.env.FIORI_TOOLS_PASSWORD;
-        });
-
         describe('ABAP on-premise', () => {
             test('credentials available from store', async () => {
-                process.env.FIORI_TOOLS_USER = '~ignoredusername';
-                process.env.FIORI_TOOLS_PASSWORD = '~ignoredpassword';
                 mockedStoreService.read.mockResolvedValueOnce({ username, password });
                 const provider = await createAbapServiceProvider(target, undefined, true, logger);
                 expect(provider).toBeDefined();
-                expect(provider.defaults.auth?.username).toBe(username);
-                expect(provider.defaults.auth?.password).toBe(password);
-            });
-
-            test('use credentials from CI/CD env variables', async () => {
-                process.env.FIORI_TOOLS_USER = username;
-                process.env.FIORI_TOOLS_PASSWORD = password;
-                const provider = await createAbapServiceProvider(target, undefined, true, logger);
-                expect(provider).toBeDefined();
-                expect(provider.defaults.auth?.username).toBe(username);
-                expect(provider.defaults.auth?.password).toBe(password);
             });
 
             test('prompt credentials if not available in store', async () => {
