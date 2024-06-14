@@ -250,8 +250,8 @@ export async function enhanceConfigForSystem(
     if (ato) {
         proxyOptions.headers['cookie'] = provider.cookies.toString();
     }
-    if (typeof provider.defaults.auth === 'string') {
-        proxyOptions.auth = provider.defaults.auth;
+    if (typeof provider.defaults.headers.common.Authorization === 'string') {
+        proxyOptions.headers.Authorization = provider.defaults.headers.common.Authorization;
     }
 }
 
