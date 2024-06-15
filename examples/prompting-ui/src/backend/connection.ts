@@ -139,8 +139,7 @@ async function handleAction(action: Actions): Promise<void> {
                     const choices = await promptsAPI.getBuildingBlockChoices(
                         buildingBlockType as any,
                         name,
-                        answers,
-                        currentAppPath
+                        answers
                     );
                     result[name] = choices;
                 }
