@@ -92,10 +92,9 @@ export class PromptsAPI {
      * @returns
      */
     public async getBuildingBlockChoices<T extends Answers>(
-        buildingBlockType: string,
+        buildingBlockType: BuildingBlockType,
         fieldName: string,
-        answers: T,
-        rootPath: string
+        answers: T
     ) {
         try {
             const fs = create(createStorage());
@@ -115,12 +114,12 @@ export class PromptsAPI {
                 case 'viewOrFragmentFile': {
                     const files = await findFilesByExtension(
                         '.xml',
-                        rootPath,
+                        this.basePath,
                         ['.git', 'node_modules', 'dist', 'annotations', 'localService'],
                         fs
                     );
                     return files.map((file) => ({
-                        name: relative(rootPath, file),
+                        name: relative(this.basePath, file),
                         value: file
                     }));
                 }
