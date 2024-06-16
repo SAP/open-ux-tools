@@ -8,6 +8,7 @@ import { ProjectProvider } from './project';
 import { getAnnotationPathQualifiers, getEntityTypes } from './service';
 import { getCapServiceName } from '@sap-ux/project-access';
 import type { InputPromptQuestion, ListPromptQuestion } from '../types';
+import { BuildingBlockType } from '../../types';
 
 /**
  * Returns a Prompt to choose a boolean value.
@@ -332,6 +333,7 @@ export function getFilterBarIdPrompt(
  */
 export function getFilterBarIdListPrompt(
     message: string,
+    fs: Editor,
     additionalProperties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
     return {
@@ -340,8 +342,50 @@ export function getFilterBarIdListPrompt(
         selectType: 'dynamic',
         name: 'filterBarId',
         message,
-        placeholder: additionalProperties.placeholder ?? 'Select or enter a filter bar ID'
+        placeholder: additionalProperties.placeholder ?? 'Select or enter a filter bar ID',
+        // ToDo avoid any
+        choices: async (answers: Answers) => {
+            if (!answers.viewOrFragmentFile) {
+                return [];
+            }
+            return getChoices(
+                await getBuildingBlockIdsInFile(answers.viewOrFragmentFile, BuildingBlockType.FilterBar, fs)
+            );
+        }
     };
+}
+
+async function getBuildingBlockIdsInFile(
+    viewOrFragmentFile: string,
+    buildingBlockType: BuildingBlockType,
+    fs: Editor
+): Promise<string[]> {
+    const ids: string[] = [];
+    let buildingBlockSelector;
+    switch (buildingBlockType) {
+        case BuildingBlockType.FilterBar:
+            buildingBlockSelector = 'macros:FilterBar';
+            break;
+        case BuildingBlockType.Table:
+            buildingBlockSelector = 'macros:Table';
+            break;
+        case BuildingBlockType.Chart:
+            buildingBlockSelector = 'macros:Chart';
+            break;
+    }
+    if (buildingBlockSelector) {
+        const xmlContent = fs.read(viewOrFragmentFile);
+        const errorHandler = (level: string, message: string): void => {
+            throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
+        };
+        const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent);
+        const elements = xmlDocument.getElementsByTagName(buildingBlockSelector);
+        for (let i = 0; i < elements.length; i++) {
+            const id = elements[i].getAttributeNode('id')?.value;
+            id && ids.push(id);
+        }
+    }
+    return ids;
 }
 
 /**

@@ -96,91 +96,28 @@ export class PromptsAPI {
      * @param {string} rootPath - The root path
      * @returns
      */
-    // public async getBuildingBlockChoices<T extends Answers>(
-    //     buildingBlockType: BuildingBlockType,
-    //     fieldName: string,
-    //     answers: T
-    // ): Promise<PromptListChoices> {
-    //     try {
-    //         // todo - cache questions
-    //         const prompt = await this.getPrompts(buildingBlockType, this.fs);
-    //         const question = prompt.questions.find((question) => question.name === fieldName);
-    //         if (question && question.type === 'list') {
-    //             const choices =
-    //                 typeof question.choices === 'function' ? await question.choices(answers) : question.choices;
-    //             if (choices && Array.isArray(choices)) {
-    //                 return choices.map((choice) =>
-    //                     typeof choice === 'string' ? { value: choice, name: choice } : choice
-    //                 );
-    //             }
-    //         }
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    //     return [];
-    // }
     public async getBuildingBlockChoices<T extends Answers>(
         buildingBlockType: BuildingBlockType,
         fieldName: string,
         answers: T
-    ) {
+    ): Promise<PromptListChoices> {
         try {
-            const fs = this.fs;
-            const entity = answers?.entity;
-            const annotationTerms: UIAnnotationTerms[] = [];
-            switch (fieldName) {
-                case 'service':
-                    return await getCAPServiceChoices(this.projectProvider);
-                case 'entity':
-                    return getEntityChoices(this.projectProvider);
-                case 'aggregationPath': {
-                    if (!answers.viewOrFragmentFile) {
-                        return [];
-                    }
-                    return getChoices(getXPathStringsForXmlFile(answers.viewOrFragmentFile, fs));
-                }
-                case 'viewOrFragmentFile': {
-                    const files = await findFilesByExtension(
-                        '.xml',
-                        this.basePath,
-                        ['.git', 'node_modules', 'dist', 'annotations', 'localService'],
-                        fs
-                    );
-                    return files.map((file) => ({
-                        name: relative(this.basePath, file),
-                        value: file
-                    }));
-                }
-                case 'qualifier':
-                    if (buildingBlockType === BuildingBlockType.Table) {
-                        annotationTerms.push(...[UIAnnotationTerms.LineItem]);
-                    } else if (buildingBlockType === BuildingBlockType.Chart) {
-                        annotationTerms.push(...[UIAnnotationTerms.Chart]);
-                    } else if (buildingBlockType === BuildingBlockType.FilterBar) {
-                        annotationTerms.push(...[UIAnnotationTerms.SelectionFields]);
-                    }
-                    return getChoices(
-                        await getAnnotationPathQualifiers(this.projectProvider, entity, annotationTerms, true)
-                    );
-                case 'filterBarId': {
-                    if (!answers.viewOrFragmentFile) {
-                        return [];
-                    }
-                    return getChoices(
-                        await this.getBuildingBlockIdsInFile(
-                            answers.viewOrFragmentFile,
-                            BuildingBlockType.FilterBar,
-                            fs
-                        )
+            // todo - cache questions
+            const prompt = await this.getPrompts(buildingBlockType, this.fs);
+            const question = prompt.questions.find((question) => question.name === fieldName);
+            if (question && question.type === 'list') {
+                const choices =
+                    typeof question.choices === 'function' ? await question.choices(answers) : question.choices;
+                if (choices && Array.isArray(choices)) {
+                    return choices.map((choice) =>
+                        typeof choice === 'string' ? { value: choice, name: choice } : choice
                     );
                 }
-                default:
-                    return [];
             }
         } catch (error) {
             console.error(error);
-            return [];
         }
+        return [];
     }
 
     // ToDo - move function to utils nd call within prompts definition

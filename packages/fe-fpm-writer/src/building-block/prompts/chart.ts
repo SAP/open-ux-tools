@@ -70,7 +70,7 @@ export async function getChartBuildingBlockPrompts(
             getAggregationPathPrompt(t('aggregation'), fs, {
                 required: true
             }),
-            getFilterBarIdListPrompt(t('filterBar')),
+            getFilterBarIdListPrompt(t('filterBar'), fs),
             {
                 type: 'checkbox',
                 name: 'personalization',

@@ -108,7 +108,7 @@ export async function getTableBuildingBlockPrompts(
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
                 required: true
             }),
-            getFilterBarIdListPrompt(t('filterBar.message'), {
+            getFilterBarIdListPrompt(t('filterBar.message'), fs, {
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
             }),
 
