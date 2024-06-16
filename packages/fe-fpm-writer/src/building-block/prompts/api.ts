@@ -120,40 +120,6 @@ export class PromptsAPI {
         return [];
     }
 
-    // ToDo - move function to utils nd call within prompts definition
-    private async getBuildingBlockIdsInFile(
-        viewOrFragmentFile: string,
-        buildingBlockType: BuildingBlockType,
-        fs: Editor
-    ): Promise<string[]> {
-        const ids: string[] = [];
-        let buildingBlockSelector;
-        switch (buildingBlockType) {
-            case BuildingBlockType.FilterBar:
-                buildingBlockSelector = 'macros:FilterBar';
-                break;
-            case BuildingBlockType.Table:
-                buildingBlockSelector = 'macros:Table';
-                break;
-            case BuildingBlockType.Chart:
-                buildingBlockSelector = 'macros:Chart';
-                break;
-        }
-        if (buildingBlockSelector) {
-            const xmlContent = fs.read(viewOrFragmentFile);
-            const errorHandler = (level: string, message: string): void => {
-                throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
-            };
-            const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent);
-            const elements = xmlDocument.getElementsByTagName(buildingBlockSelector);
-            for (let i = 0; i < elements.length; i++) {
-                const id = elements[i].getAttributeNode('id')?.value;
-                id && ids.push(id);
-            }
-        }
-        return ids;
-    }
-
     /**
      * Returns a list of prompts required to generate building blocks.
      *
