@@ -257,9 +257,10 @@ describe('utils - ', () => {
         });
 
         test('getFilterBarIdListPrompt', () => {
-            const prompt = getFilterBarIdListPrompt('message');
+            const prompt = getFilterBarIdListPrompt('message', fs);
             expect(prompt).toMatchInlineSnapshot(`
                 Object {
+                  "choices": [Function],
                   "message": "message",
                   "name": "filterBarId",
                   "placeholder": "Select or enter a filter bar ID",

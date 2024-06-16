@@ -272,6 +272,7 @@ Object {
       "type": "list",
     },
     Object {
+      "choices": [Function],
       "message": "Associated Filter Bar ID",
       "name": "filterBarId",
       "placeholder": "Select or enter a filter bar ID",
@@ -477,6 +478,7 @@ Object {
       "type": "list",
     },
     Object {
+      "choices": [Function],
       "groupId": "tableBuildingBlockProperties",
       "message": "Associated Filter Bar ID",
       "name": "filterBarId",
