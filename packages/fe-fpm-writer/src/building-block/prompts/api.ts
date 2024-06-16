@@ -25,7 +25,8 @@ import type {
     PromptQuestion,
     SupportedPrompts,
     SupportedPromptsMap,
-    NarrowPrompt
+    NarrowPrompt,
+    PromptListChoices
 } from './types';
 import { promises as fsPromises } from 'fs';
 import { DOMParser } from '@xmldom/xmldom';
@@ -48,16 +49,20 @@ const PromptsMap: SupportedPromptsMap = {
 export class PromptsAPI {
     basePath: string;
     projectProvider: ProjectProvider;
+    fs: Editor;
 
-    constructor(basePath: string, projectProvider: ProjectProvider) {
+    constructor(basePath: string, projectProvider: ProjectProvider, fs: Editor) {
         this.basePath = basePath;
         this.projectProvider = projectProvider;
+        this.fs = fs;
     }
 
-    public static async init(basePath: string): Promise<PromptsAPI> {
-        const fs = create(createStorage());
+    public static async init(basePath: string, fs?: Editor): Promise<PromptsAPI> {
+        if (!fs) {
+            fs = create(createStorage());
+        }
         const projectProvider = await ProjectProvider.createProject(basePath, fs);
-        return new PromptsAPI(basePath, projectProvider);
+        return new PromptsAPI(basePath, projectProvider, fs);
     }
 
     /**
@@ -91,13 +96,36 @@ export class PromptsAPI {
      * @param {string} rootPath - The root path
      * @returns
      */
+    // public async getBuildingBlockChoices<T extends Answers>(
+    //     buildingBlockType: BuildingBlockType,
+    //     fieldName: string,
+    //     answers: T
+    // ): Promise<PromptListChoices> {
+    //     try {
+    //         // todo - cache questions
+    //         const prompt = await this.getPrompts(buildingBlockType, this.fs);
+    //         const question = prompt.questions.find((question) => question.name === fieldName);
+    //         if (question && question.type === 'list') {
+    //             const choices =
+    //                 typeof question.choices === 'function' ? await question.choices(answers) : question.choices;
+    //             if (choices && Array.isArray(choices)) {
+    //                 return choices.map((choice) =>
+    //                     typeof choice === 'string' ? { value: choice, name: choice } : choice
+    //                 );
+    //             }
+    //         }
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    //     return [];
+    // }
     public async getBuildingBlockChoices<T extends Answers>(
         buildingBlockType: BuildingBlockType,
         fieldName: string,
         answers: T
     ) {
         try {
-            const fs = create(createStorage());
+            const fs = this.fs;
             const entity = answers?.entity;
             const annotationTerms: UIAnnotationTerms[] = [];
             switch (fieldName) {
@@ -139,7 +167,11 @@ export class PromptsAPI {
                         return [];
                     }
                     return getChoices(
-                        await this.getBuildingBlockIdsInFile(answers.viewOrFragmentFile, BuildingBlockType.FilterBar)
+                        await this.getBuildingBlockIdsInFile(
+                            answers.viewOrFragmentFile,
+                            BuildingBlockType.FilterBar,
+                            fs
+                        )
                     );
                 }
                 default:
@@ -151,9 +183,11 @@ export class PromptsAPI {
         }
     }
 
+    // ToDo - move function to utils nd call within prompts definition
     private async getBuildingBlockIdsInFile(
         viewOrFragmentFile: string,
-        buildingBlockType: BuildingBlockType
+        buildingBlockType: BuildingBlockType,
+        fs: Editor
     ): Promise<string[]> {
         const ids: string[] = [];
         let buildingBlockSelector;

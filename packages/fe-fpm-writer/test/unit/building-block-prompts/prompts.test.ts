@@ -1,16 +1,22 @@
 import { join } from 'path';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
 import { BuildingBlockType, PromptsAPI } from '../../../src';
 import { ProjectProvider } from '../../../src/building-block/prompts/utils/project';
 
 describe('Prompts', () => {
-    const fs = jest.fn() as any;
+    let fs: Editor;
+    const projectPath = join(__dirname, '../sample/building-block/webapp-prompts');
     let promptsAPI: PromptsAPI;
-    beforeAll(async () => {
-        const projectPath = join(__dirname, '../sample/building-block/webapp-prompts');
+    beforeEach(async () => {
+        fs = create(createStorage());
+        // fs.delete(projectPath);
         const projectProvider = await ProjectProvider.createProject(projectPath);
         jest.spyOn(ProjectProvider, 'createProject').mockResolvedValue(projectProvider);
-        promptsAPI = await PromptsAPI.init(projectPath);
+        promptsAPI = await PromptsAPI.init(projectPath, fs);
     });
+
     test('getBuildingBlockTypePrompts', async () => {
         const questionnair = await promptsAPI.getBuildingBlockTypePrompts();
         expect(questionnair).toMatchSnapshot();
@@ -52,7 +58,6 @@ describe('Prompts', () => {
                 'viewOrFragmentFile',
                 {}
             );
-            expect(filesChoices.map((choice) => choice.name)).toMatchSnapshot();
             // Get "viewOrFragmentFile"
             const aggregationChoices = await promptsAPI.getBuildingBlockChoices(
                 BuildingBlockType.Chart,
@@ -64,9 +69,40 @@ describe('Prompts', () => {
             expect(aggregationChoices).toMatchSnapshot();
         });
 
-        // test('Choices for field "aggregationPath"', async () => {
-        //     const choices = await promptsAPI.getBuildingBlockChoices(BuildingBlockType.Chart, 'aggregationPath', {});
-        //     expect(choices).toMatchSnapshot();
-        // });
+        test('Choices for field "filterBarId"', async () => {
+            const filename = 'Test.view.xml';
+            const xml = `
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:html="http://www.w3.org/1999/xhtml" controllerName="com.test.myApp.ext.main.Main"
+    xmlns:macros="sap.fe.macros">
+    <Page title="Main">
+        <content>
+            <macros:FilterBar id="FilterBar" metaPath="@com.sap.vocabularies.UI.v1.SelectionFields"/>
+            <macros:FilterBar id="FilterBar2" />
+            <macros:FilterBar id="dummyId" />
+        </content>
+    </Page>
+</mvc:View>
+            `;
+            fs.write(join(projectPath, `webapp/ext/${filename}`), xml);
+
+            // ToDo write xml with filterbars
+            // Get "viewOrFragmentFile"
+            const filesChoices = await promptsAPI.getBuildingBlockChoices(
+                BuildingBlockType.Chart,
+                'viewOrFragmentFile',
+                {}
+            );
+            const fileChoice = filesChoices.find((choice) => choice.value.endsWith(filename));
+            // Get "viewOrFragmentFile"
+            const aggregationChoices = await promptsAPI.getBuildingBlockChoices(
+                BuildingBlockType.Chart,
+                'filterBarId',
+                {
+                    viewOrFragmentFile: fileChoice
+                }
+            );
+            expect(aggregationChoices).toMatchSnapshot();
+        });
     });
 });

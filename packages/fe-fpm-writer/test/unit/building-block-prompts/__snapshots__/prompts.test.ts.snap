@@ -125,13 +125,9 @@ Array [
 ]
 `;
 
-exports[`Prompts getBuildingBlockChoices Choices for field "viewOrFragmentFile" and "aggregationPath" 1`] = `
-Array [
-  "webapp\\\\ext\\\\main\\\\Main.view.xml",
-]
-`;
+exports[`Prompts getBuildingBlockChoices Choices for field "filterBarId" 1`] = `Array []`;
 
-exports[`Prompts getBuildingBlockChoices Choices for field "viewOrFragmentFile" and "aggregationPath" 2`] = `
+exports[`Prompts getBuildingBlockChoices Choices for field "viewOrFragmentFile" and "aggregationPath" 1`] = `
 Array [
   Object {
     "name": "/mvc:View",

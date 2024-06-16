@@ -3,11 +3,12 @@ import type {
     PromptQuestion,
     CheckboxPromptQuestion,
     InputPromptQuestion,
-    ListPromptQuestion
+    ListPromptQuestion,
+    PromptListChoices
 } from '@sap-ux/ui-prompting';
 import type { BuildingBlockType, Chart, FilterBar, Table } from '../../types';
 
-export { PromptQuestion, CheckboxPromptQuestion, InputPromptQuestion, ListPromptQuestion, Answers };
+export { PromptQuestion, PromptListChoices, CheckboxPromptQuestion, InputPromptQuestion, ListPromptQuestion, Answers };
 
 // ToDo annotate properties
 export interface PromptsGroup {
