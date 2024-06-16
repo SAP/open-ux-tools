@@ -125,7 +125,22 @@ Array [
 ]
 `;
 
-exports[`Prompts getBuildingBlockChoices Choices for field "filterBarId" 1`] = `Array []`;
+exports[`Prompts getBuildingBlockChoices Choices for field "filterBarId" 1`] = `
+Array [
+  Object {
+    "name": "FilterBar",
+    "value": "FilterBar",
+  },
+  Object {
+    "name": "FilterBar2",
+    "value": "FilterBar2",
+  },
+  Object {
+    "name": "dummyId",
+    "value": "dummyId",
+  },
+]
+`;
 
 exports[`Prompts getBuildingBlockChoices Choices for field "viewOrFragmentFile" and "aggregationPath" 1`] = `
 Array [

@@ -99,7 +99,7 @@ describe('Prompts', () => {
                 BuildingBlockType.Chart,
                 'filterBarId',
                 {
-                    viewOrFragmentFile: fileChoice
+                    viewOrFragmentFile: fileChoice?.value
                 }
             );
             expect(aggregationChoices).toMatchSnapshot();

@@ -203,7 +203,7 @@ export class PromptsAPI {
                 break;
         }
         if (buildingBlockSelector) {
-            const xmlContent = (await fsPromises.readFile(viewOrFragmentFile)).toString();
+            const xmlContent = fs.read(viewOrFragmentFile);
             const errorHandler = (level: string, message: string): void => {
                 throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
             };
