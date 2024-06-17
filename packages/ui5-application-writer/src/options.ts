@@ -132,7 +132,7 @@ export async function applyOptionalFeatures(
 export function generateReadMe(destPath: string, readMe: ReadMe, fs: Editor): Editor {
     const config = mergeWithReadMeDefaults(readMe);
     // Apply the configuration to generate the README file
-    const templateSourcePath = join(__dirname, '..', 'templates/optional/README.md');
+    const templateSourcePath = join(__dirname, '..', 'templates/core/README.md');
     const templateDestPath = `${destPath}/README.md`;
     try {
         // copy template

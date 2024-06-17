@@ -26,7 +26,9 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         mergeWithDefaults(ui5AppConfig);
 
     const tmplPath = join(__dirname, '..', 'templates');
-    const ignore = [ui5AppConfig.appOptions?.typescript ? '**/*.js' : '**/*.ts'];
+    const ignore = [ui5AppConfig.appOptions?.typescript ? '**/*.js' : '**/*.ts',
+        '**/README.md'
+    ];
 
     if (ui5AppConfig.appOptions?.generateIndex === false) {
         ignore.push('**/webapp/index.html');
