@@ -24,7 +24,8 @@ import { generateBuildingBlock, getSerializedFileContent } from '..';
 import {
     getChartBuildingBlockPrompts,
     getTableBuildingBlockPrompts,
-    getFilterBarBuildingBlockPrompts
+    getFilterBarBuildingBlockPrompts,
+    getBuildingBlockTypePrompts
 } from './questions';
 
 const unsupportedPrompts = (_fs: Editor, _basePath: string, _projectProvider: ProjectProvider): Prompts<Answers> => ({
@@ -118,20 +119,7 @@ export class PromptsAPI {
      * @returns The list of prompts for building block types selection.
      */
     public async getBuildingBlockTypePrompts(): Promise<PromptQuestion<BuildingBlockTypePromptsAnswer>[]> {
-        await initI18n();
-        const t = translate(i18nNamespaces.buildingBlock, 'prompts.super.');
-        return [
-            {
-                type: 'list',
-                name: 'buildingBlockType',
-                message: t('buildingBlockType.message'),
-                choices: [
-                    { name: t('buildingBlockType.choices.chart'), value: BuildingBlockType.Chart },
-                    { name: t('buildingBlockType.choices.filterBar'), value: BuildingBlockType.FilterBar },
-                    { name: t('buildingBlockType.choices.table'), value: BuildingBlockType.Table }
-                ]
-            }
-        ];
+        return getBuildingBlockTypePrompts();
     }
 
     /**
