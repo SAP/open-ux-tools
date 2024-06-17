@@ -1,5 +1,11 @@
 # @sap-ux/system-access
 
+## 0.4.1
+
+### Patch Changes
+
+-   7f8bc980: FIX: prompt user for authentication type if not known when generating an adaptation project
+
 ## 0.4.0
 
 ### Minor Changes

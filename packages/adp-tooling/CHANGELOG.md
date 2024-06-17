@@ -1,5 +1,16 @@
 # @sap-ux/adp-tooling
 
+## 0.11.0
+
+### Minor Changes
+
+-   7f8bc980: Adds writer functionality for generation of OnPremise and Cloud Adaptation Projects
+
+### Patch Changes
+
+-   Updated dependencies [7f8bc980]
+    -   @sap-ux/system-access@0.4.1
+
 ## 0.10.23
 
 ### Patch Changes
