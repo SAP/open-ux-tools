@@ -20,7 +20,7 @@ import type Event from 'sap/ui/base/Event';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import Log from 'sap/base/Log';
 import { modeAndStackChangeHandler } from '../rta-service';
-import { getError, getErrorMessage } from '../error-utils';
+import { getError } from '../error-utils';
 
 interface ChangeContent {
     property: string;
@@ -125,9 +125,9 @@ export class ChangeService {
                         name = control.getMetadata().getName();
                     }
 
-                    const exceptionMessage = getErrorMessage(exception);
+                    const error = getError(exception);
                     // eslint-disable-next-line  @typescript-eslint/no-unsafe-call
-                    const modifiedMessage = modifyRTAErrorMessage(exceptionMessage, id, name);
+                    const modifiedMessage = modifyRTAErrorMessage(error.message, id, name);
                     const errorMessage =
                         modifiedMessage || `RTA Exception applying expression "${action.payload.value}"`;
                     const propertyChangeFailedAction = propertyChangeFailed({ ...action.payload, errorMessage });
@@ -241,7 +241,7 @@ export class ChangeService {
                 })
             );
 
-        await Promise.all(filesToDelete).catch((error) => Log.error(getErrorMessage(error)));
+        await Promise.all(filesToDelete).catch((error) => Log.error(getError(error).message));
 
         await this.fetchSavedChanges();
         this.updateStack();

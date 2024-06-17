@@ -5,7 +5,7 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
 import type DesignTimeMetadata from 'sap/ui/dt/DesignTimeMetadata';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import { getErrorMessage } from '../cpe/error-utils';
+import { getError } from '../cpe/error-utils';
 
 type CommandNames = 'addXML';
 
@@ -44,10 +44,11 @@ export default class CommandExecutor {
                 flexSettings
             );
         } catch (e) {
-            const errorMessage = getErrorMessage(e);
-            const msgToastErrorMsg = `Could not get command for '${commandName}'. ${errorMessage}`;
+            const error = getError(e);
+            const msgToastErrorMsg = `Could not get command for '${commandName}'. ${error.message}`;
+            error.message = msgToastErrorMsg;
             MessageToast.show(msgToastErrorMsg);
-            throw new Error(msgToastErrorMsg);
+            throw error;
         }
     }
 
@@ -63,9 +64,9 @@ export default class CommandExecutor {
              */
             await this.rta.getCommandStack().pushAndExecute(command);
         } catch (e) {
-            const errorMessage = getErrorMessage(e);
-            MessageToast.show(errorMessage);
-            throw new Error(errorMessage);
+            const error = getError(e);
+            MessageToast.show(error.message);
+            throw error;
         }
     }
 }

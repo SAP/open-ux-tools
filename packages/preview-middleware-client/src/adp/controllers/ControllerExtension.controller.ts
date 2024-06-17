@@ -35,7 +35,7 @@ import {
     writeController
 } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
-import { getErrorMessage } from '../../cpe/error-utils';
+import { getError } from '../../cpe/error-utils';
 
 interface ControllerExtensionService {
     add: (codeRef: string, viewId: string) => Promise<{ creation: string }>;
@@ -252,9 +252,9 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
             const data = await getExistingController(controllerName);
             return data;
         } catch (e) {
-            const errorMessage: string = getErrorMessage(e);
-            MessageToast.show(errorMessage, { duration: 5000 });
-            throw new Error(errorMessage);
+            const error = getError(e);
+            MessageToast.show(error.message, { duration: 5000 });
+            throw error;
         }
     }
 
@@ -308,8 +308,8 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
      * @throws {Error}.
      */
     private handleError(e: unknown): void {
-        const errorMessage = getErrorMessage(e);
-        MessageToast.show(errorMessage, { duration: 5000 });
-        throw new Error(errorMessage);
+        const error = getError(e);
+        MessageToast.show(error.message, { duration: 5000 });
+        throw error;
     }
 }
