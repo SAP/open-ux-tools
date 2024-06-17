@@ -12,6 +12,7 @@ import type { PackageJsonScripts } from './types';
  * @param options.startFile path that should be opened with the start script
  * @param options.localStartFile path that should be oppend with the start-local script
  * @param options.generateIndex exclude the start-noflp script
+ * @param options.isCapProject exclude the start-local script for CAP projects
  * @returns package.json scripts
  */
 export function getPackageJsonTasks({
@@ -22,7 +23,7 @@ export function getPackageJsonTasks({
     startFile,
     localStartFile,
     generateIndex = true,
-    isCapApplication = false,
+    isCapProject = false
 }: {
     localOnly: boolean;
     addMock: boolean;
@@ -31,7 +32,7 @@ export function getPackageJsonTasks({
     startFile?: string;
     localStartFile?: string;
     generateIndex?: boolean;
-    isCapApplication?: boolean;
+    isCapProject?: boolean;
 }): PackageJsonScripts {
     // Build search param part of preview launch url
     const searchParamList = [];
@@ -50,17 +51,17 @@ export function getPackageJsonTasks({
     const startCommand = localOnly
         ? `echo \\"${t('info.mockOnlyWarning')}\\"`
         : `fiori run --open "${startFile || 'test/flpSandbox.html'}${params}"`;
-    const startLocalCommand = `fiori run --config ./ui5-local.yaml --open "${
-        localStartFile || 'test/flpSandbox.html'
-    }${params}"`;
 
     const scripts: PackageJsonScripts = {
         start: startCommand
     };
 
-    if(!isCapApplication) {
+    if (!isCapProject) {
+        const startLocalCommand = `fiori run --config ./ui5-local.yaml --open "${
+            localStartFile || 'test/flpSandbox.html'
+        }${params}"`;
         // Add start-local script only if not a CAP application
-        scripts['start-local'] = startLocalCommand
+        scripts['start-local'] = startLocalCommand;
     }
 
     if (generateIndex) {

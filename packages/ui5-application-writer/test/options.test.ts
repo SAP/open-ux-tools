@@ -47,7 +47,7 @@ describe('UI5 templates', () => {
         const fs = await generate(projectDir, {
             ...baseAppConfig,
             appOptions: {
-                isCapApplication: true
+                isCapProject: true
             }
         });
         expect(fs.dump(projectDir)).toMatchSnapshot();

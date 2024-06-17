@@ -2083,15 +2083,9 @@ importers:
         specifier: 7.5.4
         version: 7.5.4
     devDependencies:
-      '@sap-ux/btp-utils':
-        specifier: workspace:*
-        version: link:../btp-utils
       '@sap-ux/eslint-plugin-fiori-tools':
         specifier: workspace:*
         version: link:../eslint-plugin-fiori-tools
-      '@sap-ux/odata-service-inquirer':
-        specifier: workspace:*
-        version: link:../odata-service-inquirer
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access

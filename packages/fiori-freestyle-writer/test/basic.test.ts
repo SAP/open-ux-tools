@@ -181,12 +181,12 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     test('Generate files for template: cap type basic_cap', async () => {
         commonConfig.template.settings = {};
         commonConfig.service = {
-            type: ServiceType.CDS, 
+            type: ServiceType.CDS,
             path: '/sap/opu/odata/',
             url: 'http://localhost',
             version: OdataVersion.v2,
             metadata: '<metadata />'
-        }
+        };
         const testPath = join(curTestOutPath, 'basic_cap');
         const fs = await generate(testPath, commonConfig);
         expect(fs.dump(testPath)).toMatchSnapshot();

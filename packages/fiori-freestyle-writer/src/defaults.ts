@@ -46,7 +46,7 @@ export function setDefaults(ffApp: FreestyleApp<unknown>): void {
     }
     // All fiori-freestyle apps should use load reuse libs, unless explicitly overridden
     ffApp.appOptions = Object.assign({ loadReuseLibs: true }, ffApp.appOptions);
-    Object.assign(ffApp.appOptions, { isCapApplication: ServiceType.CDS === ffApp.service?.type });
+    Object.assign(ffApp.appOptions, { isCapProject: ServiceType.CDS === ffApp.service?.type });
 }
 
 // Specific escaping is required for FLP texts in flpSandbox.html template file

@@ -31,7 +31,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     if (ui5AppConfig.appOptions?.generateIndex === false) {
         ignore.push('**/webapp/index.html');
     }
-    if (ui5AppConfig.appOptions?.isCapApplication) {
+    if (ui5AppConfig.appOptions?.isCapProject) {
         // ignore the ui5-local.yaml file for CAP applications
         ignore.push('**/ui5-local.yaml');
         // ignore the .gitignore.tmpl file for CAP applications
@@ -54,7 +54,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     ui5Config.addFioriToolsAppReloadMiddleware();
 
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
-    if (!ui5AppConfig.appOptions?.isCapApplication) {
+    if (!ui5AppConfig.appOptions?.isCapProject) {
         // write ui5-local.yaml
         const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
         ui5LocalConfig.addUI5Framework(
@@ -67,8 +67,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         // Add optional features
         await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config, ui5LocalConfig]);
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
-    }
-    else {
+    } else {
         await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config]);
     }
     // write ui5 yamls

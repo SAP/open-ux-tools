@@ -80,9 +80,9 @@ export interface AppOptions {
      */
     generateIndex?: boolean;
     /*
-     * Excludes the ui5-local.yaml and .gitignore from the template CAP applications
+     * Excludes the ui5-local.yaml and .gitignore from the template CAP projects
      */
-    isCapApplication ?: boolean;
+    isCapProject?: boolean;
 }
 
 export interface Ui5App {

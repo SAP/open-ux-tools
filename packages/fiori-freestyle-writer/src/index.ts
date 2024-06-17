@@ -89,7 +89,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
             startFile: data?.app?.startFile,
             localStartFile: data?.app?.localStartFile,
             generateIndex: ffApp.appOptions?.generateIndex,
-            isCapApplication: ffApp.service?.type === ServiceType.CDS
+            isCapProject: ffApp.service?.type === ServiceType.CDS
         })
     };
 
@@ -101,7 +101,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     } else {
         // Add placeholder middleware so allow adding service later
         const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
-        if(!ffApp.appOptions?.isCapApplication && fs.exists(ui5LocalConfigPath)) {
+        if (!ffApp.appOptions?.isCapProject && fs.exists(ui5LocalConfigPath)) {
             // write ui5-local.yaml only if not a CAP application and it exists
             const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
             ui5LocalConfig.addFioriToolsProxydMiddleware({});
@@ -111,7 +111,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 
     // Extend ui5-local.yaml with additional UI5 lib
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
-    if(!ffApp.appOptions?.isCapApplication && fs.exists(ui5LocalConfigPath)) {
+    if (!ffApp.appOptions?.isCapProject && fs.exists(ui5LocalConfigPath)) {
         // write ui5-local.yaml only if not a CAP application and it exists
         const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
         ui5LocalConfig.addUI5Libs([ushellLib]);
