@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Capabilities.V1.xml">
+    <edmx:Include Alias="Capabilities" Namespace="Org.OData.Capabilities.V1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+    <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+    <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+    <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+  </edmx:Reference>
+  <edmx:DataServices>
+    <Schema Namespace="IncidentService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <EntityContainer Name="EntityContainer">
+        <EntitySet Name="Category" EntityType="IncidentService.Category">
+          <NavigationPropertyBinding Path="texts" Target="Category_texts"/>
+          <NavigationPropertyBinding Path="localized" Target="Category_texts"/>
+        </EntitySet>
+        <EntitySet Name="Category_texts" EntityType="IncidentService.Category_texts"/>
+        <EntitySet Name="IncidentPhotos" EntityType="IncidentService.IncidentPhotos"/>
+        <EntitySet Name="IncidentStatus" EntityType="IncidentService.IncidentStatus">
+          <NavigationPropertyBinding Path="texts" Target="IncidentStatus_texts"/>
+          <NavigationPropertyBinding Path="localized" Target="IncidentStatus_texts"/>
+        </EntitySet>
+        <EntitySet Name="IncidentStatus_texts" EntityType="IncidentService.IncidentStatus_texts"/>
+        <EntitySet Name="IncidentsByCategory" EntityType="IncidentService.IncidentsByCategory">
+          <NavigationPropertyBinding Path="category" Target="Category"/>
+        </EntitySet>
+        <EntitySet Name="Individual" EntityType="IncidentService.Individual"/>
+        <EntitySet Name="Priority" EntityType="IncidentService.Priority">
+          <NavigationPropertyBinding Path="texts" Target="Priority_texts"/>
+          <NavigationPropertyBinding Path="localized" Target="Priority_texts"/>
+        </EntitySet>
+        <EntitySet Name="Priority_texts" EntityType="IncidentService.Priority_texts"/>
+        <EntitySet Name="SafetyIncidents" EntityType="IncidentService.SafetyIncidents">
+          <NavigationPropertyBinding Path="category" Target="Category"/>
+          <NavigationPropertyBinding Path="priority" Target="Priority"/>
+          <NavigationPropertyBinding Path="incidentStatus" Target="IncidentStatus"/>
+          <NavigationPropertyBinding Path="assignedIndividual" Target="Individual"/>
+          <NavigationPropertyBinding Path="incidentPhotos" Target="IncidentPhotos"/>
+        </EntitySet>
+      </EntityContainer>
+      <EntityType Name="Category">
+        <Key>
+          <PropertyRef Name="code"/>
+        </Key>
+        <Property Name="name" Type="Edm.String" MaxLength="255"/>
+        <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+        <Property Name="code" Type="Edm.String" MaxLength="20" Nullable="false"/>
+        <NavigationProperty Name="texts" Type="Collection(IncidentService.Category_texts)">
+          <OnDelete Action="Cascade"/>
+        </NavigationProperty>
+        <NavigationProperty Name="localized" Type="IncidentService.Category_texts">
+          <ReferentialConstraint Property="code" ReferencedProperty="code"/>
+        </NavigationProperty>
+      </EntityType>
+      <EntityType Name="Category_texts">
+        <Key>
+          <PropertyRef Name="locale"/>
+          <PropertyRef Name="code"/>
+        </Key>
+        <Property Name="locale" Type="Edm.String" MaxLength="5" Nullable="false"/>
+        <Property Name="name" Type="Edm.String" MaxLength="255"/>
+        <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+        <Property Name="code" Type="Edm.String" MaxLength="20" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="IncidentPhotos">
+        <Key>
+          <PropertyRef Name="id"/>
+        </Key>
+        <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+        <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+        <Property Name="id" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="imageType" Type="Edm.String"/>
+        <Property Name="image" Type="Edm.Stream"/>
+        <Property Name="safetyIncident_ID" Type="Edm.Guid"/>
+      </EntityType>
+      <EntityType Name="IncidentStatus">
+        <Key>
+          <PropertyRef Name="code"/>
+        </Key>
+        <Property Name="name" Type="Edm.String" MaxLength="255"/>
+        <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+        <Property Name="code" Type="Edm.String" MaxLength="20" Nullable="false"/>
+        <NavigationProperty Name="texts" Type="Collection(IncidentService.IncidentStatus_texts)">
+          <OnDelete Action="Cascade"/>
+        </NavigationProperty>
+        <NavigationProperty Name="localized" Type="IncidentService.IncidentStatus_texts">
+          <ReferentialConstraint Property="code" ReferencedProperty="code"/>
+        </NavigationProperty>
+      </EntityType>
+      <EntityType Name="IncidentStatus_texts">
+        <Key>
+          <PropertyRef Name="locale"/>
+          <PropertyRef Name="code"/>
+        </Key>
+        <Property Name="locale" Type="Edm.String" MaxLength="5" Nullable="false"/>
+        <Property Name="name" Type="Edm.String" MaxLength="255"/>
+        <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+        <Property Name="code" Type="Edm.String" MaxLength="20" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="IncidentsByCategory">
+        <Key>
+          <PropertyRef Name="category_code"/>
+        </Key>
+        <Property Name="categories" Type="Edm.Int32"/>
+        <NavigationProperty Name="category" Type="IncidentService.Category">
+          <ReferentialConstraint Property="category_code" ReferencedProperty="code"/>
+        </NavigationProperty>
+        <Property Name="category_code" Type="Edm.String" MaxLength="20" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="Individual">
+        <Key>
+          <PropertyRef Name="ID"/>
+        </Key>
+        <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+        <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+        <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="firstName" Type="Edm.String"/>
+        <Property Name="lastName" Type="Edm.String"/>
+        <Property Name="emailAddress" Type="Edm.String"/>
+      </EntityType>
+      <EntityType Name="Priority">
+        <Key>
+          <PropertyRef Name="code"/>
+        </Key>
+        <Property Name="name" Type="Edm.String" MaxLength="255"/>
+        <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+        <Property Name="code" Type="Edm.String" MaxLength="20" Nullable="false"/>
+        <NavigationProperty Name="texts" Type="Collection(IncidentService.Priority_texts)">
+          <OnDelete Action="Cascade"/>
+        </NavigationProperty>
+        <NavigationProperty Name="localized" Type="IncidentService.Priority_texts">
+          <ReferentialConstraint Property="code" ReferencedProperty="code"/>
+        </NavigationProperty>
+      </EntityType>
+      <EntityType Name="Priority_texts">
+        <Key>
+          <PropertyRef Name="locale"/>
+          <PropertyRef Name="code"/>
+        </Key>
+        <Property Name="locale" Type="Edm.String" MaxLength="5" Nullable="false"/>
+        <Property Name="name" Type="Edm.String" MaxLength="255"/>
+        <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+        <Property Name="code" Type="Edm.String" MaxLength="20" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="SafetyIncidents">
+        <Key>
+          <PropertyRef Name="ID"/>
+        </Key>
+        <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="createdBy" Type="Edm.String" MaxLength="255"/>
+        <Property Name="modifiedAt" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="modifiedBy" Type="Edm.String" MaxLength="255"/>
+        <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="title" Type="Edm.String" MaxLength="50"/>
+        <NavigationProperty Name="category" Type="IncidentService.Category">
+          <ReferentialConstraint Property="category_code" ReferencedProperty="code"/>
+        </NavigationProperty>
+        <NavigationProperty Name="priority" Type="IncidentService.Priority">
+          <ReferentialConstraint Property="priority_code" ReferencedProperty="code"/>
+        </NavigationProperty>
+        <NavigationProperty Name="incidentStatus" Type="IncidentService.IncidentStatus">
+          <ReferentialConstraint Property="incidentStatus_code" ReferencedProperty="code"/>
+        </NavigationProperty>
+        <Property Name="description" Type="Edm.String" MaxLength="1000"/>
+        <Property Name="incidentResolutionDate" Type="Edm.Date"/>
+        <NavigationProperty Name="assignedIndividual" Type="IncidentService.Individual">
+          <ReferentialConstraint Property="assignedIndividual_ID" ReferencedProperty="ID"/>
+        </NavigationProperty>
+        <NavigationProperty Name="incidentPhotos" Type="Collection(IncidentService.IncidentPhotos)"/>
+        <Property Name="category_code" Type="Edm.String" MaxLength="20"/>
+        <Property Name="priority_code" Type="Edm.String" MaxLength="20"/>
+        <Property Name="incidentStatus_code" Type="Edm.String" MaxLength="20"/>
+        <Property Name="assignedIndividual_ID" Type="Edm.Guid"/>
+      </EntityType>
+      <Annotations Target="IncidentService.Category">
+        <Annotation Term="UI.Identification">
+          <Collection>
+            <Path>name</Path>
+          </Collection>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="IncidentService.EntityContainer/Category">
+        <Annotation Term="Capabilities.DeleteRestrictions">
+          <Record Type="Capabilities.DeleteRestrictionsType">
+            <PropertyValue Property="Deletable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.InsertRestrictions">
+          <Record Type="Capabilities.InsertRestrictionsType">
+            <PropertyValue Property="Insertable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.UpdateRestrictions">
+          <Record Type="Capabilities.UpdateRestrictionsType">
+            <PropertyValue Property="Updatable" Bool="false"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="IncidentService.Category/name">
+        <Annotation Term="Common.Label" String="Name"/>
+      </Annotations>
+      <Annotations Target="IncidentService.Category/descr">
+        <Annotation Term="Common.Label" String="Description"/>
+      </Annotations>
+      <Annotations Target="IncidentService.Category_texts/name">
+        <Annotation Term="Common.Label" String="Name"/>
+      </Annotations>
+      <Annotations Target="IncidentService.Category_texts/descr">
+        <Annotation Term="Common.Label" String="Description"/>
+      </Annotations>
+      <Annotations Target="IncidentService.IncidentPhotos/createdAt">
+        <Annotation Term="Common.Label" String="Created At"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+      </Annotations>
+      <Annotations Target="IncidentService.IncidentPhotos/createdBy">
+        <Annotation Term="Common.Label" String="Created By"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="A user's unique ID"/>
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+      </Annotations>
+      <Annotations Target="IncidentService.IncidentPhotos/modifiedAt">
+        <Annotation Term="Common.Label" String="Changed At"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+      </Annotations>
+      <Annotations Target="IncidentService.IncidentPhotos/modifiedBy">
+        <Annotation Term="Common.Label" String="Changed By"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="A user's unique ID"/>
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+      </Annotations>
+      <Annotations Target="IncidentService.IncidentPhotos/imageType">
+        <Annotation Term="Core.isMediaType" Bool="true"/>
+      </Annotations>
+      <Annotations Target="IncidentService.IncidentPhotos/image">
+        <Annotation Term="Core.MediaType" Path="ImageType"/>
+      </Annotations>
+      <Annotations Target="IncidentService.IncidentStatus">
+        <Annotation Term="UI.Identification">
+          <Collection>
+            <Path>name</Path>
+          </Collection>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="IncidentService.IncidentStatus/name">
+        <Annotation Term="Common.Label" String="Name"/>
+      </Annotations>
+      <Annotations Target="IncidentService.IncidentStatus/descr">
+        <Annotation Term="Common.Label" String="Description"/>
+      </Annotations>
+      <Annotations Target="IncidentService.IncidentStatus_texts/name">
+        <Annotation Term="Common.Label" String="Name"/>
+      </Annotations>
+      <Annotations Target="IncidentService.IncidentStatus_texts/descr">
+        <Annotation Term="Common.Label" String="Description"/>
+      </Annotations>
+      <Annotations Target="IncidentService.IncidentsByCategory/categories">
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="IncidentService.IncidentsByCategory/category">
+        <Annotation Term="Common.Label" String="Category"/>
+      </Annotations>
+      <Annotations Target="IncidentService.IncidentsByCategory/category_code">
+        <Annotation Term="Common.Label" String="Category"/>
+        <Annotation Term="Common.ValueList">
+          <Record Type="Common.ValueListType">
+            <PropertyValue Property="Label" String="Category"/>
+            <PropertyValue Property="CollectionPath" String="Category"/>
+            <PropertyValue Property="Parameters">
+              <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                  <PropertyValue Property="LocalDataProperty" PropertyPath="category_code"/>
+                  <PropertyValue Property="ValueListProperty" String="code"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                  <PropertyValue Property="ValueListProperty" String="name"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="IncidentService.Individual/createdAt">
+        <Annotation Term="Common.Label" String="Created At"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+      </Annotations>
+      <Annotations Target="IncidentService.Individual/createdBy">
+        <Annotation Term="Common.Label" String="Created By"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="A user's unique ID"/>
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+      </Annotations>
+      <Annotations Target="IncidentService.Individual/modifiedAt">
+        <Annotation Term="Common.Label" String="Changed At"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+      </Annotations>
+      <Annotations Target="IncidentService.Individual/modifiedBy">
+        <Annotation Term="Common.Label" String="Changed By"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="A user's unique ID"/>
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+      </Annotations>
+      <Annotations Target="IncidentService.Individual/firstName">
+        <Annotation Term="Common.Label" String="First Name"/>
+      </Annotations>
+      <Annotations Target="IncidentService.Individual/lastName">
+        <Annotation Term="Common.Label" String="Last Name"/>
+      </Annotations>
+      <Annotations Target="IncidentService.Individual/emailAddress">
+        <Annotation Term="Common.Label" String="Email Address"/>
+      </Annotations>
+      <Annotations Target="IncidentService.Priority">
+        <Annotation Term="UI.Identification">
+          <Collection>
+            <Path>name</Path>
+          </Collection>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="IncidentService.EntityContainer/Priority">
+        <Annotation Term="Capabilities.DeleteRestrictions">
+          <Record Type="Capabilities.DeleteRestrictionsType">
+            <PropertyValue Property="Deletable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.InsertRestrictions">
+          <Record Type="Capabilities.InsertRestrictionsType">
+            <PropertyValue Property="Insertable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="Capabilities.UpdateRestrictions">
+          <Record Type="Capabilities.UpdateRestrictionsType">
+            <PropertyValue Property="Updatable" Bool="false"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="IncidentService.Priority/name">
+        <Annotation Term="Common.Label" String="Name"/>
+      </Annotations>
+      <Annotations Target="IncidentService.Priority/descr">
+        <Annotation Term="Common.Label" String="Description"/>
+      </Annotations>
+      <Annotations Target="IncidentService.Priority_texts/name">
+        <Annotation Term="Common.Label" String="Name"/>
+      </Annotations>
+      <Annotations Target="IncidentService.Priority_texts/descr">
+        <Annotation Term="Common.Label" String="Description"/>
+      </Annotations>
+      <Annotations Target="IncidentService.SafetyIncidents/createdAt">
+        <Annotation Term="Common.Label" String="Created At"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+      </Annotations>
+      <Annotations Target="IncidentService.SafetyIncidents/createdBy">
+        <Annotation Term="Common.Label" String="Created By"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="A user's unique ID"/>
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+      </Annotations>
+      <Annotations Target="IncidentService.SafetyIncidents/modifiedAt">
+        <Annotation Term="Common.Label" String="Changed At"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+      </Annotations>
+      <Annotations Target="IncidentService.SafetyIncidents/modifiedBy">
+        <Annotation Term="Common.Label" String="Changed By"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+        <Annotation Term="Core.Description" String="A user's unique ID"/>
+        <Annotation Term="UI.HiddenFilter" Bool="true"/>
+      </Annotations>
+      <Annotations Target="IncidentService.SafetyIncidents/title">
+        <Annotation Term="Common.Label" String="Title"/>
+      </Annotations>
+      <Annotations Target="IncidentService.SafetyIncidents/category">
+        <Annotation Term="Common.Label" String="Category"/>
+      </Annotations>
+      <Annotations Target="IncidentService.SafetyIncidents/priority">
+        <Annotation Term="Common.Label" String="Priority"/>
+      </Annotations>
+      <Annotations Target="IncidentService.SafetyIncidents/incidentStatus">
+        <Annotation Term="Common.Label" String="IncidentStatus"/>
+      </Annotations>
+      <Annotations Target="IncidentService.SafetyIncidents/description">
+        <Annotation Term="Common.Label" String="Description"/>
+      </Annotations>
+      <Annotations Target="IncidentService.SafetyIncidents/incidentResolutionDate">
+        <Annotation Term="Common.Label" String="ResolutionDate"/>
+      </Annotations>
+      <Annotations Target="IncidentService.SafetyIncidents/category_code">
+        <Annotation Term="Common.Label" String="Category"/>
+        <Annotation Term="Common.ValueList">
+          <Record Type="Common.ValueListType">
+            <PropertyValue Property="Label" String="Category"/>
+            <PropertyValue Property="CollectionPath" String="Category"/>
+            <PropertyValue Property="Parameters">
+              <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                  <PropertyValue Property="LocalDataProperty" PropertyPath="category_code"/>
+                  <PropertyValue Property="ValueListProperty" String="code"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                  <PropertyValue Property="ValueListProperty" String="name"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="IncidentService.SafetyIncidents/priority_code">
+        <Annotation Term="Common.Label" String="Priority"/>
+        <Annotation Term="Common.ValueList">
+          <Record Type="Common.ValueListType">
+            <PropertyValue Property="Label" String="Priority"/>
+            <PropertyValue Property="CollectionPath" String="Priority"/>
+            <PropertyValue Property="Parameters">
+              <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                  <PropertyValue Property="LocalDataProperty" PropertyPath="priority_code"/>
+                  <PropertyValue Property="ValueListProperty" String="code"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                  <PropertyValue Property="ValueListProperty" String="name"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="IncidentService.SafetyIncidents/incidentStatus_code">
+        <Annotation Term="Common.Label" String="IncidentStatus"/>
+        <Annotation Term="Common.ValueList">
+          <Record Type="Common.ValueListType">
+            <PropertyValue Property="Label" String="IncidentStatus"/>
+            <PropertyValue Property="CollectionPath" String="IncidentStatus"/>
+            <PropertyValue Property="Parameters">
+              <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                  <PropertyValue Property="LocalDataProperty" PropertyPath="incidentStatus_code"/>
+                  <PropertyValue Property="ValueListProperty" String="code"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                  <PropertyValue Property="ValueListProperty" String="name"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+      </Annotations>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

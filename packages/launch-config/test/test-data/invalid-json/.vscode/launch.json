@@ -1,0 +1,35 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+      {
+          "name": "Debug",
+          "request": "launch",
+          "type": "chrome",
+          "webRoot": "${workspaceFolder}/webapp",
+          "url": "http://localhost:8080/test/flpSandbox.html?sap-client=001&sap-ui-xx-viewCache=false#CentralSupplierConfirmation-manage",
+          "console": "integratedTerminal",
+          "skipFiles": [
+              "${workspaceFolder}/node_modules/**/*.js",
+              "<node_internals>/**/*.js",
+              "${workspaceFolder}/webapp/resources/**/*.js"
+          ]
+      },
+      {
+          "name": "Debugger attach",
+          "request": "attach",
+          "type": "chrome",
+          "webRoot": "${workspaceFolder}/webapp",
+          "port": 8080,
+          "url": "http://localhost*",
+          "console": "integratedTerminal",
+          "skipFiles": [
+              "${workspaceFolder}/node_modules/**/*.js",
+              "<node_internals>/**/*.js",
+              "${workspaceFolder}/webapp/resources/**/*.js"
+          ]
+      }
+  ]
+}

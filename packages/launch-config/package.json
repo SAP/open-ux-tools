@@ -1,0 +1,50 @@
+{
+    "name": "@sap-ux/launch-config",
+    "version": "1.0.0",
+    "description": "SAP Fiori tools launch config administration",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/launch-config"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Alaunch-config"
+    },
+    "license": "Apache-2.0",
+    "private": false,
+    "main": "dist/index.js",
+    "scripts": {
+        "pre-commit": "lint-staged",
+        "clean:dist": "rimraf ./dist ./generators *.tsbuildinfo",
+        "clean": "rimraf ./reports",
+        "compile": "tsc  --build ./tsconfig.build.json --pretty",
+        "build": "npm-run-all clean compile",
+        "build:deps": "yarn lerna run --concurrency 1 --no-bail --stream --scope @sap/ux-launch-config  --include-dependencies build",
+        "test": "jest --maxWorkers=1 --ci --forceExit --detectOpenHandles",
+        "watch": "tsc --build --watch ./",
+        "lint": "eslint . --ext .ts,.tsx",
+        "lint:summary": "eslint . --ext .ts,.tsx -f summary",
+        "lint:fix": "eslint --fix",
+        "lint:fix:all": "eslint . --ext .ts,.tsx --fix",
+        "lint:report": "eslint . --ext .ts,.tsx -f multiple ",
+        "format:fix": "prettier --write --loglevel silent --ignore-path ../../../../.prettierignore",
+        "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../../.prettierignore",
+        "madge": "madge --warning --circular --extensions ts ./"
+    },
+    "files": [
+        "dist/",
+        "LICENSE",
+        "package.json"
+    ],
+    "engines": {
+        "node": ">=18.x"
+    },
+    "dependencies": {
+        "@sap-ux/project-access": "1.20.2",
+        "@sap/ux-launch-config-types": "1.14.0",
+        "@sap/ux-project-access": "1.14.0",
+        "@sap/ux-ui5-info": "1.14.0",
+        "jsonc-parser": "3.2.0",
+        "yargs-parser": "20.2.6"
+    }
+}
