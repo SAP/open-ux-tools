@@ -1,4 +1,4 @@
 export * from './project';
-export * from './prompts';
+export * from './questions';
 export * from './service';
 export * from './xml';

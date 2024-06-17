@@ -133,7 +133,7 @@ export async function getCAPServicePrompt(
         selectType: 'dynamic',
         dependantPromptNames,
         message,
-        choices: services,
+        choices: getCAPServiceChoices.bind(null, projectProvider),
         default: defaultValue,
         placeholder: additionalProperties.placeholder ?? 'Select a service'
     };
@@ -160,29 +160,18 @@ export function getEntityPrompt(
         selectType: 'dynamic',
         dependantPromptNames,
         message,
-        choices: getEntityChoices.bind(null, projectProvider),
+        choices: async () => {
+            const entityTypes = await getEntityTypes(projectProvider);
+            const entityTypeMap: { [key: string]: string } = {};
+            for (const entityType of entityTypes) {
+                const value = entityType.fullyQualifiedName;
+                const qualifierParts = value.split('.');
+                entityTypeMap[qualifierParts[qualifierParts.length - 1]] = value;
+            }
+            return getChoices(entityTypeMap);
+        },
         placeholder: additionalProperties.placeholder ?? 'Select an entity'
     };
-}
-
-/**
- * Method returns choices for entity type selection.
- *
- * @param projectProvider - The project provider
- * @returns entity question
- */
-// ToDo - recheck types fr choices
-export async function getEntityChoices(
-    projectProvider: ProjectProvider
-): Promise<Array<{ name: string; value: string }>> {
-    const entityTypes = await getEntityTypes(projectProvider);
-    const entityTypeMap: { [key: string]: string } = {};
-    for (const entityType of entityTypes) {
-        const value = entityType.fullyQualifiedName;
-        const qualifierParts = value.split('.');
-        entityTypeMap[qualifierParts[qualifierParts.length - 1]] = value;
-    }
-    return getChoices(entityTypeMap);
 }
 
 export async function getCAPServiceChoices(

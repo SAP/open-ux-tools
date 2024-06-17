@@ -47,7 +47,7 @@ export interface BaseBuildingBlockPromptAnswer extends Answers {
     qualifier: string;
 }
 
-// ToDo - I think should not extend from Table
+// ToDo - not sure if should extend from Table
 export interface TablePromptsAnswer extends Table, BaseBuildingBlockPromptAnswer {
     filterBar?: string;
     selectionChange?: string;
@@ -56,14 +56,14 @@ export interface TablePromptsAnswer extends Table, BaseBuildingBlockPromptAnswer
     tableHeaderText?: string;
 }
 
-// ToDo - I think should not extend from Chart
+// ToDo - not sure if should extend from Chart
 export interface ChartPromptsAnswer extends Chart, BaseBuildingBlockPromptAnswer {
     filterBar?: string;
     selectionMode?: string;
     selectionChange?: string;
 }
 
-// ToDo - I think should not extend from FilterBar
+// ToDo - not sure if should extend from FilterBar
 export interface FilterBarPromptsAnswer extends FilterBar, BaseBuildingBlockPromptAnswer {
     filterChanged?: string;
     search?: string;
