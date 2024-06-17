@@ -4,7 +4,8 @@ import {
     type TablePromptsAnswer,
     type Prompts
 } from '@sap-ux/fe-fpm-writer';
-import { BuildingBlockType as SupportedBuildingBlocks } from '@sap-ux/fe-fpm-writer/dist/building-block/types';
+// ToDo -> use directly PromptsType?
+import { PromptsType as SupportedBuildingBlocks } from '@sap-ux/fe-fpm-writer/dist/building-block/prompts/types/basic';
 import type { Answers } from 'inquirer';
 import { AddonActions } from '../addons/types';
 import type { DynamicChoices, PromptsGroup, PromptQuestion } from '@sap-ux/ui-prompting';
