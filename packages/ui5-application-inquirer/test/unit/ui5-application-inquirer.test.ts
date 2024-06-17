@@ -135,7 +135,7 @@ describe('ui5-application-inquirer API', () => {
         expect(adapterRegisterPromptSpy).toHaveBeenCalledWith('autocomplete', AutocompletePrompt);
     });
 
-    test('prompt, defaults are applied from prompt options and prompt defaults', async () => {
+    test('prompt, defaults are applied from prompt options and prompt defaults if advanced option', async () => {
         const mockPromptsModule = createPromptModule();
         const mockInquirerAdapter: InquirerAdapter = {
             prompt: jest.fn().mockResolvedValue({ [promptNames.name]: 'a prompt answer' }),
@@ -169,6 +169,13 @@ describe('ui5-application-inquirer API', () => {
                     }
                     return false;
                 }
+            },
+            [promptNames.enableNPMWorkspaces]: {
+                advancedOption: true
+            },
+            [promptNames.enableCodeAssist]: {
+                advancedOption: true,
+                default: true
             }
         };
 
@@ -178,40 +185,31 @@ describe('ui5-application-inquirer API', () => {
             hasMinCdsVersion: false,
             isWorkspaceEnabled: false
         });
-        // Since capCdsInfo was provided some prompt should be hidden and so no answer should be provided
+        // Since capCdsInfo was provided some prompts should not provide an answer
         expect(answers).toEqual({
-            addFlpConfig: false,
             description: 'No annotations',
-            enableCodeAssist: false,
+            enableCodeAssist: true,
             enableNPMWorkspaces: false,
             enableTypeScript: true,
             name: 'a prompt answer',
-            namespace: '',
-            showAdvanced: false,
             skipAnnotations: true,
-            title: 'App Title',
             ui5Theme: 'sap_horizon',
             ui5Version: '999.999.999'
         });
 
         // Provided answer takes precendence, default theme uses ui5 answer, default functions use previous answers
-        mockInquirerAdapter.prompt = jest
-            .fn()
-            .mockResolvedValue({ [promptNames.ui5Version]: '1.64.0', [promptNames.skipAnnotations]: false });
+        mockInquirerAdapter.prompt = jest.fn().mockResolvedValue({
+            [promptNames.ui5Version]: '1.64.0',
+            [promptNames.skipAnnotations]: false,
+            [promptNames.enableCodeAssist]: false
+        });
         answers = await prompt(mockInquirerAdapter, promptOpts);
         expect(answers).toEqual({
-            addFlpConfig: false,
             description: 'Annotations inc.',
             enableCodeAssist: false,
-            enableEslint: false,
             enableNPMWorkspaces: false,
             enableTypeScript: false,
-            name: 'project1',
-            namespace: '',
-            showAdvanced: false,
             skipAnnotations: false,
-            targetFolder: expect.any(String),
-            title: 'App Title',
             ui5Theme: 'sap_fiori_3',
             ui5Version: '1.64.0'
         });
