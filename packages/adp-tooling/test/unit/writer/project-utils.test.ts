@@ -1,18 +1,23 @@
 import path from 'path';
+import { readFileSync } from 'fs';
 import { Editor } from 'mem-fs-editor';
 import type { AdpWriterConfig } from '../../../src';
 import {
     writeTemplateToFolder,
     writeUI5Yaml,
-    writeUI5DeployYaml
+    writeUI5DeployYaml,
+    getPackageJSONInfo
 } from '../../../src/writer/project-utils';
 
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
     read: jest.fn(),
     copyTpl: jest.fn(),
-    write: jest.fn()
+    write: jest.fn(),
+    readFileSync: jest.fn()
 }));
+
+const readFileSyncMock = readFileSync as jest.Mock;
 
 describe('Project Utils', () => {
     const data: AdpWriterConfig = {
@@ -31,6 +36,31 @@ describe('Project Utils', () => {
                     name: ${data.app.id}
                     type: application`;
 
+    describe('getPackageJSONInfo', () => {
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
+        it('should return package.json content when file is read successfully', () => {
+            const mockJSON = { name: 'test-package', version: '1.0.0' };
+            readFileSyncMock.mockReturnValue(JSON.stringify(mockJSON));
+
+            const result = getPackageJSONInfo();
+
+            expect(result).toEqual(mockJSON);
+        });
+
+        it('should return default package info on read failure', () => {
+            readFileSyncMock.mockImplementation(() => {
+                throw new Error('File not found');
+            });
+
+            const result = getPackageJSONInfo();
+
+            expect(result).toEqual({ name: '@sap-ux/adp-tooling', version: 'NO_VERSION_FOUND' });
+        });
+    });
+
     describe('writeTemplateToFolder', () => {
         beforeEach(() => {
             jest.clearAllMocks();
@@ -43,12 +73,7 @@ describe('Project Utils', () => {
         const mockFs = { copyTpl: writeFilesSpy };
 
         it('should write template to the specified folder', () => {
-            writeTemplateToFolder(
-                templatePath,
-                projectPath,
-                data,
-                mockFs as unknown as Editor
-            );
+            writeTemplateToFolder(templatePath, projectPath, data, mockFs as unknown as Editor);
 
             expect(writeFilesSpy.mock.calls[0][0]).toEqual(templatePath);
             expect(writeFilesSpy.mock.calls[0][1]).toEqual(projectPath);
@@ -62,15 +87,8 @@ describe('Project Utils', () => {
             });
 
             expect(() => {
-                writeTemplateToFolder(
-                    templatePath,
-                    projectPath,
-                    data,
-                    mockFs as unknown as Editor
-                );
-            }).toThrow(
-                `Could not write template files to folder. Reason: ${errMsg}`
-            );
+                writeTemplateToFolder(templatePath, projectPath, data, mockFs as unknown as Editor);
+            }).toThrow(`Could not write template files to folder. Reason: ${errMsg}`);
         });
     });
 
@@ -85,11 +103,7 @@ describe('Project Utils', () => {
         const mockFs = { write: writeFilesSpy, read: jest.fn().mockReturnValue(ui5Yaml) };
 
         it('should write ui5.yaml to the specified folder', async () => {
-            await writeUI5Yaml(
-                projectPath,
-                data,
-                mockFs as unknown as Editor
-            );
+            await writeUI5Yaml(projectPath, data, mockFs as unknown as Editor);
 
             expect(writeFilesSpy.mock.calls[0][0]).toEqual(path.join(projectPath, 'ui5.yaml'));
         });
@@ -101,14 +115,8 @@ describe('Project Utils', () => {
             });
 
             expect(async () => {
-                await writeUI5Yaml(
-                    projectPath,
-                    data,
-                    mockFs as unknown as Editor
-                );
-            }).rejects.toThrow(
-                `Could not write ui5.yaml file. Reason: ${errMsg}`
-            );
+                await writeUI5Yaml(projectPath, data, mockFs as unknown as Editor);
+            }).rejects.toThrow(`Could not write ui5.yaml file. Reason: ${errMsg}`);
         });
     });
 
@@ -129,11 +137,7 @@ describe('Project Utils', () => {
         const mockFs = { write: writeFilesSpy, read: jest.fn().mockReturnValue(ui5Yaml) };
 
         it('should write ui5-deploy.yaml to the specified folder', async () => {
-            await writeUI5DeployYaml(
-                projectPath,
-                config,
-                mockFs as unknown as Editor
-            );
+            await writeUI5DeployYaml(projectPath, config, mockFs as unknown as Editor);
 
             expect(writeFilesSpy.mock.calls[0][0]).toEqual(path.join(projectPath, 'ui5-deploy.yaml'));
         });
@@ -145,14 +149,8 @@ describe('Project Utils', () => {
             });
 
             expect(async () => {
-                await writeUI5DeployYaml(
-                    projectPath,
-                    config,
-                    mockFs as unknown as Editor
-                );
-            }).rejects.toThrow(
-                `Could not write ui5-deploy.yaml file. Reason: ${errMsg}`
-            );
+                await writeUI5DeployYaml(projectPath, config, mockFs as unknown as Editor);
+            }).rejects.toThrow(`Could not write ui5-deploy.yaml file. Reason: ${errMsg}`);
         });
     });
 });

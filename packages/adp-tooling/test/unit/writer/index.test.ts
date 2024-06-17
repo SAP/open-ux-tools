@@ -126,8 +126,12 @@ describe('ADP writer', () => {
                     },
                     customConfig: {
                         adp: {
-                            safeMode: false,
-                            environment: 'C'
+                            environment: 'C',
+                            support: {
+                                id: '@package/name',
+                                toolsId: 'uuidv4',
+                                version: '0.0.1'
+                            }
                         }
                     }
                 },
@@ -164,8 +168,12 @@ describe('ADP writer', () => {
                     },
                     customConfig: {
                         adp: {
-                            safeMode: false,
-                            environment: 'C'
+                            environment: 'C',
+                            support: {
+                                id: '@package/name',
+                                toolsId: 'uuidv4',
+                                version: '0.0.1'
+                            }
                         }
                     }
                 },
@@ -196,7 +204,11 @@ describe('ADP writer', () => {
             customConfig: {
                 adp: {
                     environment: 'P',
-                    safeMode: true
+                    support: {
+                        id: '@package/name',
+                        toolsId: 'uuidv4',
+                        version: '0.0.1'
+                    }
                 }
             },
             options: {
