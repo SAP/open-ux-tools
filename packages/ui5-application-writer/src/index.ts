@@ -7,8 +7,9 @@ import { UI5Config, getEsmTypesVersion, getTypesPackage } from '@sap-ux/ui5-conf
 import type { Manifest } from '@sap-ux/project-access';
 import { mergeWithDefaults } from './data';
 import { ui5TSSupport } from './data/ui5Libs';
-import { applyOptionalFeatures, enableTypescript as enableTypescriptOption, generateReadMe } from './options';
+import { applyOptionalFeatures, enableTypescript as enableTypescriptOption } from './options';
 import { Ui5App } from './types';
+import { generateReadMe } from './read-me';
 
 /**
  * Writes the template to the memfs editor instance.

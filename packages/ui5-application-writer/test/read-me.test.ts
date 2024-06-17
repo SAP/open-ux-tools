@@ -1,7 +1,7 @@
 import path from 'path';
 import memFs from 'mem-fs';
 import memFsEditor from 'mem-fs-editor';
-import { generateReadMe } from '../src/options';
+import { generateReadMe } from '../src/read-me';
 import { readFileSync } from 'fs';
 import type { ReadMe } from '../src/types';
 
