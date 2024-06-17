@@ -9,7 +9,7 @@ import type { CapRuntime } from '@sap-ux/odata-service-inquirer';
  * @param appId If appId is provided, it will be used to open the application instead of the project name. This option is available for use with npm workspaces.
  * @returns The launch text for the application.
  */
-export function getLaunchText(capType: CapRuntime | undefined, projectName: string, appId?: string): string {
+export function getLaunchText(capType: CapRuntime, projectName: string, appId?: string): string {
     /**
      * Determines the URL based on the project type.
      * @returns The URL for launching the project.

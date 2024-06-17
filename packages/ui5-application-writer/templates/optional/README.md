@@ -7,8 +7,8 @@
 |**Generation Platform**<br><%= genPlatform %>|
 |**Template Used**<br><%= templateLabel %>|
 |**Service Type**<br><%= dataSourceLabel %>|<% if(metadataFilename) { %>
-|**Metadata File**<br><%= metadataFilename %><% } else { %>
-|**Service URL**<br><%= serviceUrl %><%}%>
+|**Metadata File**<br><%= metadataFilename %>|<% } else { %>
+|**Service URL**<br><%= serviceUrl %>|<%}%>
 |**Module Name**<br><%= projectName %>|
 |**Application Title**<br><%= projectTitle %>|
 |**Namespace**<br><%= projectNamespace %>|

@@ -1,11 +1,12 @@
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
-import type { Ui5App } from './types';
+import type { Ui5App, ReadMe } from './types';
 import { getFilePaths } from '@sap-ux/project-access';
 import type { UI5Config } from '@sap-ux/ui5-config';
 import { ui5NPMSupport, ui5TSSupport } from './data/ui5Libs';
 import { mergeObjects, UI5_DEFAULT } from '@sap-ux/ui5-config';
+import { mergeWithReadMeDefaults } from './data/defaults';
 
 /**
  * Input required to enable optional features.
@@ -118,4 +119,26 @@ export async function applyOptionalFeatures(
             }
         }
     }
+}
+
+/**
+ * Generates a README file at the specified destination path using the provided configuration and file system editor.
+ *
+ * @param {string} destPath - The desitination path where the README file will be created.
+ * @param {ReadMe} readMe - The configuration object containing the details to be included in the README file. Properties in this object are optional.
+ * @param {Editor} fs - The file system editor instance used to write the README file.
+ * @returns {Editor} The file system editor instance used to write the README file.
+ */
+export function generateReadMe(destPath: string, readMe: ReadMe, fs: Editor): Editor {
+    const config = mergeWithReadMeDefaults(readMe);
+    // Apply the configuration to generate the README file
+    const templateSourcePath = join(__dirname, '..', 'templates/optional/README.md');
+    const templateDestPath = `${destPath}/README.md`;
+    try {
+        // copy template
+        fs.copyTpl(templateSourcePath, templateDestPath, config);
+    } catch (error) {
+        console.error('Error copying README template:', error);
+    }
+    return fs;
 }

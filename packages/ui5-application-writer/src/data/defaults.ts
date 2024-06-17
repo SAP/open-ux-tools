@@ -1,5 +1,5 @@
 import { UI5_DEFAULT, getEsmTypesVersion, getTypesVersion, getTypesPackage } from '@sap-ux/ui5-config';
-import type { App, AppOptions, Package, UI5, UI5Framework } from '../types';
+import type { App, AppOptions, Package, UI5, UI5Framework, ReadMe } from '../types';
 import versionToManifestDescMapping from '@ui5/manifest/mapping.json'; // from https://github.com/SAP/ui5-manifest/blob/master/mapping.json
 import { getUI5Libs } from './ui5Libs';
 import semVer from 'semver';
@@ -51,6 +51,26 @@ export function mergeApp(app: App): App {
         },
         app
     );
+}
+
+/**
+ * Merges the provided ReadMe configuration with default values to be used by read me templates.
+ *
+ * @param {ReadMe} readMe - The configuration object to merge with defaults.
+ * @returns {ReadMe} The merged configuration object with defaults applied.
+ */
+export function mergeWithReadMeDefaults(readMe: ReadMe): ReadMe {
+    const defaults = {
+        genDate: new Date().toString(),
+        genPlatform: '',
+        metadataFilename: '',
+        serviceUrl: 'N/A',
+        showMockDataInfo: false,
+        additionalEntries: [],
+        launchText: t('TEXT_LAUNCH_DEFAULT')
+    };
+
+    return { ...defaults, ...readMe };
 }
 
 // Required default libs

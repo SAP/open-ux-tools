@@ -2,12 +2,12 @@
 |               |
 | ------------- |
 |**Generation Date and Time**<br>Jan 01 1975|
-|**App Generator**<br>@sap/generator-name|
+|**App Generator**<br>@sap/generator-fiori-elements|
 |**App Generator Version**<br>2.0.1|
-|**Generation Platform**<br>CLI|
-|**Template Used**<br>Some Generator Specific Template|
-|**Service Type**<br>SAP System (ABAP On Premise)|
-|**Service URL**<br>http://somehost:1234/some/service/path
+|**Generation Platform**<br>|
+|**Template Used**<br>List Report Page V4|
+|**Service Type**<br>Local Cap|
+|**Service URL**<br>N/A|
 |**Module Name**<br>someProjectName|
 |**Application Title**<br>someProjectTitle|
 |**Namespace**<br>projectNamespace|
@@ -16,8 +16,6 @@
 |**Enable Code Assist Libraries**<br>False|
 |**Enable TypeScript**<br>False|
 |**Add Eslint configuration**<br>False|
-|**Generator Specific Label A**<br>Generator Specific Value A|
-|**Generator Specific Label B**<br>Generator Specific Value B|
 
 ## someProjectName
 

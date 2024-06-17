@@ -7,9 +7,8 @@ import { UI5Config, getEsmTypesVersion, getTypesPackage } from '@sap-ux/ui5-conf
 import type { Manifest } from '@sap-ux/project-access';
 import { mergeWithDefaults } from './data';
 import { ui5TSSupport } from './data/ui5Libs';
-import { applyOptionalFeatures, enableTypescript as enableTypescriptOption } from './options';
+import { applyOptionalFeatures, enableTypescript as enableTypescriptOption, generateReadMe } from './options';
 import { Ui5App } from './types';
-import { generateReadMe, ReadMe } from './read-me';
 
 /**
  * Writes the template to the memfs editor instance.
@@ -65,6 +64,10 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     // write ui5 yamls
     fs.write(ui5ConfigPath, ui5Config.toString());
     fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
+    // generate README.md
+    if (ui5App.app?.readMe) {
+        generateReadMe(basePath, ui5App.app.readMe, fs);
+    }
 
     return fs;
 }
@@ -134,4 +137,3 @@ async function enableTypescript(basePath: string, fs?: Editor): Promise<Editor> 
 
 export { Ui5App, generate, enableTypescript, isTypescriptEnabled };
 export { App, Package, UI5, AppOptions };
-export { generateReadMe, ReadMe };
