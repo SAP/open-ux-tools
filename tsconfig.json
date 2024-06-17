@@ -102,6 +102,9 @@
       "path": "packages/jest-runner-puppeteer"
     },
     {
+      "path": "packages/launch-config"
+    },
+    {
       "path": "packages/logger"
     },
     {
