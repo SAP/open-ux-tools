@@ -84,7 +84,7 @@ export function getQuestions(
 
     // Apply extended `validate`, `additionalMessages` or override `default` prompt properties
     if (promptOptions) {
-        questions = extendWithOptions(questions, promptOptions, { capCdsInfo });
+        questions = extendWithOptions(questions, promptOptions);
     }
     return questions;
 }
