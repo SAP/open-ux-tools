@@ -743,12 +743,18 @@ importers:
         specifier: 2.4.2
         version: 2.4.2
     devDependencies:
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
       '@types/diff':
         specifier: 5.0.9
         version: 5.0.9
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
