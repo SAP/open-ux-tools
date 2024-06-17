@@ -1,6 +1,5 @@
-import { readJSON } from '@sap/ux-project-access';
 import type { Package } from '@sap-ux/project-access';
-import { FileName } from '@sap-ux/project-access';
+import { FileName, readJSON } from '@sap-ux/project-access';
 import { join } from 'path';
 import type { LaunchConfig, LaunchConfigEnv } from '../types';
 import { getIndexOfArgument } from './common';

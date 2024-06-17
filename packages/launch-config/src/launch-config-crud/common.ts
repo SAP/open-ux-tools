@@ -1,6 +1,6 @@
 import { basename, join } from 'path';
 import type { FioriOptions } from '@sap/ux-launch-config-types';
-import type { FioriElementsVersion } from '@sap/ux-ui5-info';
+import type { FioriElementsVersion } from '@sap-ux/ui5-info';
 import type { LaunchConfig, LaunchConfigEnv } from '../types';
 import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID } from '../types';
 import { default as yargsParser } from 'yargs-parser';

@@ -1,6 +1,5 @@
 import { join } from 'path';
-import { DirName } from '@sap-ux/project-access';
-import { createDirectory, fileExists, updateFile } from '@sap/ux-project-access';
+import { DirName, createDirectory, fileExists, updateFile } from '@sap-ux/project-access';
 import type { FioriOptions } from '@sap/ux-launch-config-types';
 import { createFioriLaunchConfig, launchConfigFile } from './common';
 

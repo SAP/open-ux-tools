@@ -1,5 +1,4 @@
-import { createDirectory, deleteDirectory, findAllProjectRoots } from '@sap/ux-project-access';
-import { DirName } from '@sap-ux/project-access';
+import { DirName, createDirectory, deleteDirectory, findAllProjectRoots } from '@sap-ux/project-access';
 import { copyFileSync } from 'fs';
 import { dirname, join } from 'path';
 import {

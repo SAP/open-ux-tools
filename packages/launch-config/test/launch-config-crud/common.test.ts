@@ -1,7 +1,7 @@
 import { buildUI5Option, createFioriLaunchConfig, getFioriOptions } from '../../src';
 import type { LaunchConfig } from '../../src';
 import { TestPaths } from '../test-data/utils';
-import { FioriElementsVersion } from '@sap/ux-ui5-info';
+import { FioriElementsVersion } from '@sap-ux/ui5-info';
 
 describe('buildUI5Option', () => {
     test('Returns build UI5 option', () => {

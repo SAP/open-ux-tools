@@ -1,4 +1,4 @@
-import { readFile, readJSONWithComments, updateJSONWithComments } from '@sap/ux-project-access';
+import { readFile, readJSONWithComments, updateJSONWithComments } from '@sap-ux/project-access';
 import { createFioriLaunchConfig, parseArguments } from './common';
 import type { LaunchConfig } from '../types';
 import type { FioriOptions } from '@sap/ux-launch-config-types';

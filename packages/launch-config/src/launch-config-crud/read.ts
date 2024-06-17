@@ -1,5 +1,4 @@
-import { readJSONWithComments } from '@sap/ux-project-access';
-import { DirName } from '@sap-ux/project-access';
+import { DirName, readJSONWithComments } from '@sap-ux/project-access';
 import { existsSync } from 'fs';
 import { join } from 'path';
 import type { LaunchConfig, LaunchConfigInfo } from '../types';

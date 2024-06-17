@@ -1,9 +1,8 @@
 import { basename, join } from 'path';
-import { createProjectProvider, getUi5CustomMiddleware, readJSON } from '@sap/ux-project-access';
 import type { FioriOptions } from '@sap/ux-launch-config-types';
 import type { Package } from '@sap-ux/project-access';
-import { FileName } from '@sap-ux/project-access';
-import type { FioriElementsVersion } from '@sap/ux-ui5-info';
+import { FileName, createProjectProvider, getUi5CustomMiddleware, readJSON } from '@sap-ux/project-access';
+import type { FioriElementsVersion } from '@sap-ux/ui5-info';
 
 /**
  * Find out starting HTML file for project using package.json.

@@ -1,8 +1,7 @@
 import { join } from 'path';
-import { createDirectory, deleteDirectory, readJSON, updateFile } from '@sap/ux-project-access';
+import { createDirectory, deleteDirectory, FileName, readJSON, updateFile } from '@sap-ux/project-access';
 import { createLaunchConfigFile, getLaunchConfigFiles } from '../../src';
 import { TestPaths } from '../test-data/utils';
-import { FileName } from '@sap-ux/project-access';
 
 beforeEach(async () => {
     await deleteDirectory(TestPaths.tmpDir);
