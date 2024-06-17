@@ -3,11 +3,11 @@ import memFs from 'mem-fs';
 import memFsEditor from 'mem-fs-editor';
 import { generateReadMe } from '../src/options';
 import { readFileSync } from 'fs';
-import { t } from '../src/i18n';
 import type { ReadMe } from '../src/types';
 
-function getLaunchText(mvnCommand: string, capUrl: string): string {
-    return `${t('TEXT_LAUNCH_CAP', { mvnCommand, capUrl })}`;
+function getLaunchText(): string {
+    return 'In order to launch the generated app, simply start your CAP project (```mvn spring-boot:run```) and navigate to the following location in your browser:' + `\n` + `\n` +
+    'http://localhost:8080/someProjectName/webapp/index.html';
 }
 
 describe('Readme file generation tests', () => {
@@ -17,13 +17,11 @@ describe('Readme file generation tests', () => {
     it('should generate README.md with the correct content including core and optional properties', () => {
         const readMePath = path.join(__dirname, '/README.md');
         const expectReadMePath = path.join(__dirname, './expected/test01/README.md');
-        const mvnCommand = ' (```mvn spring-boot:run```)',
-            capUrl = `http://localhost:8080/someProjectName/webapp/index.html`;
         const readMe: ReadMe = {
             genId: '@sap/generator-fiori-elements',
             templateLabel: 'List Report Page V4',
             dataSourceLabel: 'Local Cap',
-            launchText: getLaunchText(mvnCommand, capUrl),
+            launchText: getLaunchText(),
             genVersion: '2.0.1',
             genDate: 'Jan 01 1975',
             genPlatform: 'CLI',

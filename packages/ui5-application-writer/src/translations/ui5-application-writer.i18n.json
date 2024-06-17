@@ -11,6 +11,5 @@
         "defaultAppTitle": "Title of {{ id }}",
         "defaultAppDescription": "Description of {{ id }}"
     },
-    "TEXT_LAUNCH_DEFAULT" : "In order to launch the generated app, simply run the following from the generated app root folder:\n\n```\n    npm start\n```",
-    "TEXT_LAUNCH_CAP": "In order to launch the generated app, simply start your CAP project{{mvnCommand}} and navigate to the following location in your browser:\n\n{{- capUrl}}"
+    "TEXT_LAUNCH_DEFAULT" : "In order to launch the generated app, simply run the following from the generated app root folder:\n\n```\n    npm start\n```"
 }
