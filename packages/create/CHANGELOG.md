@@ -1,5 +1,13 @@
 # @sap-ux/create
 
+## 0.5.103
+
+### Patch Changes
+
+-   7f8bc980: FIX: prompt user for authentication type if not known when generating an adaptation project
+-   Updated dependencies [7f8bc980]
+    -   @sap-ux/adp-tooling@0.11.0
+
 ## 0.5.102
 
 ### Patch Changes
