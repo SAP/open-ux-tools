@@ -317,6 +317,11 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                     !pointer,
                     `Could not process change ${change.type} ${change.uri} ${change.pointer} ${change.element.name}`
                 );
+                const fullPointer = pointer + convertPointer(document.annotationFile, change.pointer);
+                const element = getNodeFromPointer(document.ast, fullPointer);
+                if (element?.type === 'XMLElement' && element.name === Edm.Annotations) {
+                    this.markElementInsertion(targetChildReferences, fullPointer, element);
+                }
                 writer.addChange({
                     type: INSERT_ELEMENT,
                     pointer: pointer + convertPointer(document.annotationFile, change.pointer),
@@ -432,24 +437,45 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
         }
     }
 
+    private getTargetChildReferences(
+        targetChildReferences: Map<string, Set<string>>,
+        parentPointer: string,
+        element: XMLElement
+    ): Set<string> {
+        const result = targetChildReferences.get(parentPointer);
+
+        if (result) {
+            return result;
+        }
+
+        const pointerSet = new Set<string>();
+        for (let index = 0; index < element.subElements.length; index++) {
+            const child = element.subElements[index];
+            if (child.type === 'XMLElement') {
+                pointerSet.add(`${parentPointer}/subElements/${index}`);
+            }
+        }
+        targetChildReferences.set(parentPointer, pointerSet);
+        return pointerSet;
+    }
+
     private markElementDeletion(
         targetChildReferences: Map<string, Set<string>>,
         fullPointer: string,
         element: XMLElement
     ): void {
         const parentPointer = fullPointer.split('/').slice(0, -2).join('/');
-        if (!targetChildReferences.has(parentPointer)) {
-            const pointerSet = new Set<string>();
-            for (let index = 0; index < element.subElements.length; index++) {
-                const child = element.subElements[index];
-                if (child.type === 'XMLElement') {
-                    pointerSet.add(`${parentPointer}/subElements/${index}`);
-                }
-            }
-            targetChildReferences.set(parentPointer, pointerSet);
-        }
-        const annotationReferences = targetChildReferences.get(parentPointer);
-        annotationReferences?.delete(fullPointer);
+        const annotationReferences = this.getTargetChildReferences(targetChildReferences, parentPointer, element);
+        annotationReferences.delete(fullPointer);
+    }
+
+    private markElementInsertion(
+        targetChildReferences: Map<string, Set<string>>,
+        fullPointer: string,
+        element: XMLElement
+    ): void {
+        const annotationReferences = this.getTargetChildReferences(targetChildReferences, fullPointer, element);
+        annotationReferences.add(`${fullPointer}/subElements/-1`);
     }
 
     private postprocessEdits(uri: string, writer: XMLWriter, edits: TextEdit[]): TextEdit[] {

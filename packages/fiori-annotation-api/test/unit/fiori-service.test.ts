@@ -252,13 +252,18 @@ function createVolume(root: string): Editor {
     return editor;
 }
 
-function createLineItem(uri: string, collection: AnnotationRecord[], qualifier?: string): InsertAnnotationChange {
+function createLineItem(
+    uri: string,
+    collection: AnnotationRecord[],
+    qualifier?: string,
+    target = targetName
+): InsertAnnotationChange {
     return {
         kind: ChangeType.InsertAnnotation,
         uri,
         content: {
             type: 'annotation',
-            target: targetName,
+            target,
             value: {
                 term: LINE_ITEM,
                 qualifier,
@@ -888,6 +893,27 @@ describe('fiori annotation service', () => {
                             }
                         }
                     }
+                ]
+            });
+
+            createEditTestCase({
+                name: 'delete and insert in the same target',
+                projectTestModels: TEST_TARGETS,
+                getInitialChanges: (files) => [
+                    createLineItem(files.annotations, [createDataWithLabel('one')], 'test0', TARGET_INCIDENTS)
+                ],
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.Delete,
+                        reference: {
+                            target: TARGET_INCIDENTS,
+                            term: `${UI}.LineItem`,
+                            qualifier: 'test0'
+                        },
+                        uri: files.annotations,
+                        pointer: ''
+                    },
+                    createLineItem(files.annotations, [], 'test1', TARGET_INCIDENTS)
                 ]
             });
         });
