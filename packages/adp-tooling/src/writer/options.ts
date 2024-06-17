@@ -1,5 +1,15 @@
-import type { CustomMiddleware, UI5Config } from '@sap-ux/ui5-config';
-import type { AdpCustomConfig, AdpWriterConfig } from '../types';
+import type { CustomMiddleware, UI5Config, CustomTask, AbapTarget } from '@sap-ux/ui5-config';
+import type {
+    CustomConfig,
+    AdpWriterConfig,
+    InboundContent,
+    Language,
+    InboundChangeContentAddInboundId,
+    Content,
+    CloudApp,
+    ChangeInboundNavigation,
+    InternalInboundNavigation
+} from '../types';
 
 /**
  * Generate the configuration for the middlewares required for the ui5.yaml.
@@ -11,6 +21,30 @@ export function enhanceUI5Yaml(ui5Config: UI5Config, config: AdpWriterConfig) {
     const middlewares = config.options?.fioriTools ? getFioriToolsMiddlwares(config) : getOpenSourceMiddlewares(config);
     ui5Config.setConfiguration({ propertiesFileSourceEncoding: 'UTF-8' });
     ui5Config.addCustomMiddleware(middlewares);
+}
+
+/**
+ * Generate the configuration for the custom tasks required for the ui5.yaml.
+ *
+ * @param ui5Config configuration representing the ui5.yaml
+ * @param config full project configuration
+ */
+export function enhanceUI5YamlWithCustomTask(ui5Config: UI5Config, config: AdpWriterConfig & { app: CloudApp }) {
+    const tasks = getAdpCloudCustomTasks(config);
+    ui5Config.addCustomTasks(tasks);
+}
+
+/**
+ * Generate custom configuration required for the ui5.yaml.
+ *
+ * @param ui5Config configuration representing the ui5.yaml
+ * @param config full project configuration
+ */
+export function enhanceUI5YamlWithCustomConfig(ui5Config: UI5Config, config?: CustomConfig) {
+    if (config?.adp) {
+        const { safeMode } = config.adp;
+        ui5Config.addCustomConfiguration('adp', { safeMode });
+    }
 }
 
 /**
@@ -39,19 +73,6 @@ export function enhanceUI5DeployYaml(ui5Config: UI5Config, config: AdpWriterConf
 }
 
 /**
- * Generate custom configuration required for the ui5.yaml.
- *
- * @param ui5Config configuration representing the ui5.yaml
- * @param config full project configuration
- */
-export function enhanceUI5YamlWithCustomConfig(ui5Config: UI5Config, config?: AdpCustomConfig) {
-    if (config?.adp) {
-        const { safeMode } = config.adp;
-        ui5Config.addCustomConfiguration('adp', { safeMode });
-    }
-}
-
-/**
  * Get a list of required middlewares using the Fiori tools.
  *
  * @param config full project configuration
@@ -63,9 +84,9 @@ function getFioriToolsMiddlwares(config: AdpWriterConfig): CustomMiddleware<unkn
             name: 'fiori-tools-appreload',
             afterMiddleware: 'compression',
             configuration: {
-              port: 35729,
-              path: 'webapp',
-              delay: 300,
+                port: 35729,
+                path: 'webapp',
+                delay: 300
             }
         },
         {
@@ -111,9 +132,9 @@ function getOpenSourceMiddlewares(config: AdpWriterConfig): CustomMiddleware<obj
             name: 'reload-middleware',
             afterMiddleware: 'compression',
             configuration: {
-              port: 35729,
-              path: 'webapp',
-              delay: 300,
+                port: 35729,
+                path: 'webapp',
+                delay: 300
             }
         },
         {
@@ -152,4 +173,159 @@ function getOpenSourceMiddlewares(config: AdpWriterConfig): CustomMiddleware<obj
             }
         }
     ];
+}
+
+/**
+ * Get a list of required custom tasks for Cloud application.
+ *
+ * @param config full project configuration
+ * @returns list of required tasks.
+ */
+function getAdpCloudCustomTasks(config: AdpWriterConfig & { target: AbapTarget } & { app: CloudApp }): CustomTask[] {
+    return [
+        {
+            name: 'app-variant-bundler-build',
+            beforeTask: 'escapeNonAsciiCharacters',
+            configuration: {
+                type: 'abap',
+                destination: config.target?.destination,
+                appName: config?.app?.bspName,
+                languages: config?.app?.languages?.map((language: Language) => {
+                    return {
+                        sap: language.sap,
+                        i18n: language.i18n
+                    };
+                })
+            }
+        }
+    ];
+}
+
+/**
+ * Get a Inbound change content with provided inboundId.
+ *
+ * @param flpConfiguration FLP cloud project configuration
+ * @param appId application id
+ * @returns Inbound change content.
+ */
+function getInboundChangeContentWithExistingInboundId(
+    flpConfiguration: ChangeInboundNavigation,
+    appId: string
+): InboundContent {
+    const inboundContent: InboundContent = {
+        inboundId: flpConfiguration.inboundId,
+        entityPropertyChange: [
+            {
+                propertyPath: 'title',
+                operation: 'UPSERT',
+                propertyValue: `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.title}}`
+            }
+        ]
+    };
+
+    if (flpConfiguration.subTitle) {
+        inboundContent.entityPropertyChange.push({
+            propertyPath: 'subTitle',
+            operation: 'UPSERT',
+            propertyValue: `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.subTitle}}`
+        });
+    }
+
+    inboundContent.entityPropertyChange.push({
+        propertyPath: 'signature/parameters/sap-appvar-id',
+        operation: 'UPSERT',
+        propertyValue: {
+            required: true,
+            filter: {
+                value: appId,
+                format: 'plain'
+            },
+            launcherValue: {
+                value: appId
+            }
+        }
+    });
+
+    return inboundContent;
+}
+
+/**
+ * Get a Inbound change content without provided inboundId.
+ *
+ * @param flpConfiguration FLP cloud project configuration
+ * @param appId application id
+ * @returns Inbound change content.
+ */
+function getInboundChangeContentWithNewInboundID(
+    flpConfiguration: InternalInboundNavigation,
+    appId: string
+): InboundChangeContentAddInboundId {
+    const content: InboundChangeContentAddInboundId = {
+        inbound: {
+            [flpConfiguration.inboundId]: {
+                action: flpConfiguration.action,
+                semanticObject: flpConfiguration.semanticObject,
+                title: `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.title}}`,
+                signature: {
+                    additionalParameters: 'allowed',
+                    parameters: flpConfiguration.additionalParameters ?? {}
+                }
+            }
+        }
+    };
+
+    if (flpConfiguration.subTitle) {
+        content.inbound[
+            flpConfiguration.inboundId
+        ].subTitle = `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.subTitle}}`;
+    }
+
+    content.inbound[flpConfiguration.inboundId].signature.parameters['sap-appvar-id'] = {
+        required: true,
+        filter: {
+            value: appId,
+            format: 'plain'
+        },
+        launcherValue: {
+            value: appId
+        }
+    };
+
+    return content;
+}
+
+/**
+ * Generate Inbound change content required for manifest.appdescriptor.
+ *
+ * @param flpConfiguration FLP cloud project configuration
+ * @param appId Application variant id
+ * @param manifestChangeContent Application variant change content
+ */
+export function enhanceManifestChangeContentWithFlpConfig(
+    flpConfiguration: InternalInboundNavigation,
+    appId: string,
+    manifestChangeContent: Content[] = []
+): void {
+    const inboundChangeContent = flpConfiguration.addInboundId
+        ? getInboundChangeContentWithNewInboundID(flpConfiguration, appId)
+        : getInboundChangeContentWithExistingInboundId(flpConfiguration as ChangeInboundNavigation, appId);
+    if (inboundChangeContent) {
+        const addInboundChange = {
+            changeType: flpConfiguration.addInboundId ? 'appdescr_app_addNewInbound' : 'appdescr_app_changeInbound',
+            content: inboundChangeContent,
+            texts: {
+                'i18n': 'i18n/i18n.properties'
+            }
+        };
+        const removeOtherInboundsChange = {
+            changeType: 'appdescr_app_removeAllInboundsExceptOne',
+            content: {
+                'inboundId': flpConfiguration.inboundId
+            },
+            texts: {}
+        };
+
+        manifestChangeContent.push(addInboundChange);
+        manifestChangeContent.push(removeOtherInboundsChange);
+    }
 }
