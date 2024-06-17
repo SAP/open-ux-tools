@@ -576,7 +576,7 @@ exports[`fiori annotation service initial file content cds 1`] = `
 exports[`fiori annotation service initial file content xml 1`] = `
 "<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
     <edmx:Reference Uri=\\"/incident/$metadata\\">
-        <edmx:Include Namespace=\\"IncidentService\\"/>
+        <edmx:Include Namespace=\\"IncidentService\\" Alias=\\"Metadata\\"/>
     </edmx:Reference>
     <edmx:DataServices>
         <Schema xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\" Namespace=\\"IncidentService.annotations\\">

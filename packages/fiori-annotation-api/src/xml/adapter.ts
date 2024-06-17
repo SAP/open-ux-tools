@@ -168,7 +168,8 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                     {
                         name: metadataNamespace,
                         uri: metadataURI,
-                        type: 'reference'
+                        type: 'reference',
+                        alias: 'Metadata'
                     }
                 ],
                 targets: [],
