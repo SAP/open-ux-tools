@@ -96,7 +96,7 @@ export class PromptsAPI {
      * @param {string} rootPath - The root path
      * @returns
      */
-    public async getBuildingBlockChoices<T extends Answers>(
+    public async getChoices<T extends Answers>(
         buildingBlockType: BuildingBlockType,
         fieldName: string,
         answers: T
@@ -214,7 +214,7 @@ export class PromptsAPI {
         };
     }
 
-    public generateBuildingBlockWithAnswers = <
+    public submitAnswers = <
         T extends TablePromptsAnswer | FilterBarPromptsAnswer | ChartPromptsAnswer
     >(
         // ToDo - different enum???

@@ -37,15 +37,15 @@ describe('Prompts', () => {
         expect(questionnair).toMatchSnapshot();
     });
 
-    describe('getBuildingBlockChoices', () => {
+    describe('getChoices', () => {
         test('Choices for field "entity"', async () => {
-            const choices = await promptsAPI.getBuildingBlockChoices(BuildingBlockType.Table, 'entity', {});
+            const choices = await promptsAPI.getChoices(BuildingBlockType.Table, 'entity', {});
             expect(choices).toMatchSnapshot();
         });
 
         const types = [BuildingBlockType.Chart, BuildingBlockType.FilterBar, BuildingBlockType.Table];
         test.each(types)('Type "%s", choices for field "qualifier"', async (type: BuildingBlockType) => {
-            const choices = await promptsAPI.getBuildingBlockChoices(type, 'qualifier', {
+            const choices = await promptsAPI.getChoices(type, 'qualifier', {
                 entity: 'C_CUSTOMER_OP_SRV.C_CustomerOPType'
             });
             expect(choices).toMatchSnapshot();
@@ -53,19 +53,11 @@ describe('Prompts', () => {
 
         test('Choices for field "viewOrFragmentFile" and "aggregationPath"', async () => {
             // Get "viewOrFragmentFile"
-            const filesChoices = await promptsAPI.getBuildingBlockChoices(
-                BuildingBlockType.Chart,
-                'viewOrFragmentFile',
-                {}
-            );
+            const filesChoices = await promptsAPI.getChoices(BuildingBlockType.Chart, 'viewOrFragmentFile', {});
             // Get "viewOrFragmentFile"
-            const aggregationChoices = await promptsAPI.getBuildingBlockChoices(
-                BuildingBlockType.Chart,
-                'aggregationPath',
-                {
-                    viewOrFragmentFile: filesChoices[0].value
-                }
-            );
+            const aggregationChoices = await promptsAPI.getChoices(BuildingBlockType.Chart, 'aggregationPath', {
+                viewOrFragmentFile: filesChoices[0].value
+            });
             expect(aggregationChoices).toMatchSnapshot();
         });
 
@@ -88,20 +80,12 @@ describe('Prompts', () => {
 
             // ToDo write xml with filterbars
             // Get "viewOrFragmentFile"
-            const filesChoices = await promptsAPI.getBuildingBlockChoices(
-                BuildingBlockType.Chart,
-                'viewOrFragmentFile',
-                {}
-            );
+            const filesChoices = await promptsAPI.getChoices(BuildingBlockType.Chart, 'viewOrFragmentFile', {});
             const fileChoice = filesChoices.find((choice) => choice.value.endsWith(filename));
             // Get "viewOrFragmentFile"
-            const aggregationChoices = await promptsAPI.getBuildingBlockChoices(
-                BuildingBlockType.Chart,
-                'filterBarId',
-                {
-                    viewOrFragmentFile: fileChoice?.value
-                }
-            );
+            const aggregationChoices = await promptsAPI.getChoices(BuildingBlockType.Chart, 'filterBarId', {
+                viewOrFragmentFile: fileChoice?.value
+            });
             expect(aggregationChoices).toMatchSnapshot();
         });
     });

@@ -136,11 +136,7 @@ async function handleAction(action: Actions): Promise<void> {
                 const { names, buildingBlockType, answers } = action as GetChoices;
                 const result: DynamicChoices = {};
                 for (const name of names) {
-                    const choices = await promptsAPI.getBuildingBlockChoices(
-                        buildingBlockType as any,
-                        name,
-                        answers
-                    );
+                    const choices = await promptsAPI.getChoices(buildingBlockType as any, name, answers);
                     result[name] = choices;
                 }
 
@@ -154,7 +150,7 @@ async function handleAction(action: Actions): Promise<void> {
             case APPLY_ANSWERS: {
                 const { answers, buildingBlockType } = action;
                 // ToDo recheck after cleanup for answers
-                const _fs = promptsAPI.generateBuildingBlockWithAnswers(buildingBlockType, answers as any);
+                const _fs = promptsAPI.submitAnswers(buildingBlockType, answers as any);
                 console.log(currentAppPath);
                 await promisify(_fs.commit).call(_fs);
                 const responseAction: ResetAnswers = {
