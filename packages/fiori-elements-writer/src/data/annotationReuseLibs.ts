@@ -1,0 +1,57 @@
+import { OdataVersion } from '../types';
+
+interface AnnotationReuseLibsEntry {
+    annotation: string;
+    reuseLib: string;
+}
+
+type AnnotationReuseLibs = {
+    [V in OdataVersion]: [AnnotationReuseLibsEntry] | [];
+};
+
+export const annotationReuseLibs: AnnotationReuseLibs = {
+    [OdataVersion.v2]: [],
+    [OdataVersion.v4]: [
+        {
+            annotation: 'UI.Note',
+            reuseLib: 'sap.nw.core.gbt.notes.lib.reuse'
+        }
+    ]
+};
+
+/**
+ * Gets the reuse libraries associated with annotation entries in meatadata
+ *
+ * @param version - The odata service version reuse library supports
+ * @param metadata - The metadata where to look for the annotation entry
+ * @returns The base component library path
+ */
+export function getAnnotationLibs(version: OdataVersion, metadata?: string) {
+    const reuseLibs: string[] = [];
+    const annotationsFound = new Set();
+
+    // Create a regular expression that matches any of the annotations
+    const annotationsRegex = new RegExp(
+        annotationReuseLibs[version]
+            ?.map((annotationReuseLib: { annotation: any }) => annotationReuseLib.annotation)
+            .join('|'),
+        'g'
+    );
+
+    if (metadata) {
+        let match;
+        while ((match = annotationsRegex.exec(metadata)) !== null) {
+            annotationsFound.add(match[0]);
+        }
+
+        // Add corresponding dependencies based on found annotations
+        annotationsFound.forEach((annotation) => {
+            const rule = annotationReuseLibs[version]?.find((rule) => rule.annotation === annotation);
+            if (rule) {
+                reuseLibs.push(rule.reuseLib);
+            }
+        });
+    }
+
+    return Array.from(reuseLibs);
+}

@@ -46,15 +46,6 @@ type TemplateLibs = {
     };
 };
 
-interface AnnotationReuseLibsEntry {
-    annotation: string;
-    reuseLib: string;
-}
-
-type AnnotationReuseLibs = {
-    [V in OdataVersion]: [AnnotationReuseLibsEntry] | [];
-};
-
 const templateLibs: TemplateLibs = {
     [OdataVersion.v2]: {
         [TemplateType.AnalyticalListPage]: {
@@ -120,13 +111,8 @@ export function getBaseComponent(type: TemplateType, version: OdataVersion): str
  * @param version - The odata service version determines the appropriate base component to use
  * @returns The Ui5 libs required by the specified template type and OData version
  */
-export function getUi5Libs(
-    type: TemplateType,
-    version: OdataVersion,
-    metadata: string | undefined
-): string[] | undefined {
-    const reuseLibs = getAnnotationLibs(version, metadata);
-    return [...(<[]>templateLibs[version][type]?.ui5Libs), ...reuseLibs];
+export function getTemplateUi5Libs(type: TemplateType, version: OdataVersion): string[] {
+    return templateLibs[version][type]?.ui5Libs ?? [];
 }
 
 // Additional attributes associated with TemplateType
@@ -181,52 +167,3 @@ export const TemplateTypeAttributes: TemplateAttributes = {
         }
     }
 };
-
-export const annotationReuseLibs: AnnotationReuseLibs = {
-    [OdataVersion.v4]: [
-        {
-            annotation: 'UI.Note',
-            reuseLib: 'sap.nw.core.gbt.notes.lib.reuse'
-        }
-    ],
-    [OdataVersion.v2]: []
-};
-
-/**
- * Gets the reuse libraries associated with annotation entries in meatadata
- *
- * @param version - The odata service version reuse library supports
- * @param metadata - The metadata where to look for the annotation entry
- * @returns The base component library path
- */
-function getAnnotationLibs(version: OdataVersion, metadata?: string) {
-    const reuseLibs: string[] = [];
-
-    // Create a regular expression that matches any of the annotations
-    const annotationsRegex = new RegExp(
-        annotationReuseLibs[version]
-            ?.map((annotationReuseLib: { annotation: any }) => annotationReuseLib.annotation)
-            .join('|'),
-        'g'
-    );
-
-    try {
-        if (metadata) {
-            const matches = metadata.match(annotationsRegex) || [];
-            // Convert matches array to a Set to ensure uniqueness
-            const annotationsFound = new Set(matches);
-
-            // Add corresponding dependencies based on found annotations
-            annotationsFound.forEach((annotation) => {
-                const rule = annotationReuseLibs[version]?.find((rule) => rule.annotation === annotation);
-                if (rule) {
-                    reuseLibs.push(rule.reuseLib);
-                }
-            });
-        }
-    } catch (e) {
-        // do nothing
-    }
-
-    return Array.from(reuseLibs);
-}

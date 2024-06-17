@@ -11,7 +11,8 @@ import type {
     WorklistSettings
 } from '../types';
 import { TableSelectionMode, TableType, TemplateType } from '../types';
-import { getBaseComponent, getUi5Libs, TemplateTypeAttributes } from './templateAttributes';
+import { getBaseComponent, getTemplateUi5Libs, TemplateTypeAttributes } from './templateAttributes';
+import { getAnnotationLibs } from './annotationReuseLibs';
 
 const defaultModelName = 'mainModel'; // UI5 default model name is '' but some floorplans require a named default model
 
@@ -64,6 +65,18 @@ export function setDefaultTemplateSettings<T extends {}>(template: Template<T>, 
     return templateSettings;
 }
 
+function getUi5Libs(
+    type: TemplateType,
+    version: OdataVersion,
+    metadata?: string,
+    ui5Libs?: string | string[]
+): string[] {
+    const templateLibs = getTemplateUi5Libs(type, version);
+    const annotationLibs = getAnnotationLibs(version, metadata);
+
+    return [...templateLibs, ...annotationLibs].concat(ui5Libs ?? []);
+}
+
 /**
  * Sets defaults for the specified Fiori elements application.
  *
@@ -89,7 +102,7 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
     // Dups will be removed by call to `generateUI5Project`
     feApp.ui5 = {
         ...feApp.ui5,
-        ui5Libs: getUi5Libs(feApp.template.type, feApp.service.version, feApp.service?.metadata)?.concat(feApp.ui5?.ui5Libs ?? [])
+        ui5Libs: getUi5Libs(feApp.template.type, feApp.service.version, feApp.service.metadata, feApp.ui5?.ui5Libs)
     };
 
     // Assign a default annotation name if the service type is EDMX and no local annotation name is provided
