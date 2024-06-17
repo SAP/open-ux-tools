@@ -399,10 +399,16 @@ export interface AdpProjectData {
     id: string;
 }
 
+export interface ToolsSupport {
+    id: string;
+    version: string;
+    toolsId: string;
+}
+
 export interface CustomConfig {
     adp: {
-        safeMode: boolean;
         environment: OperationsType;
+        support: ToolsSupport;
     };
 }
 
