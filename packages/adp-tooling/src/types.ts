@@ -229,7 +229,6 @@ export type IWriterData<T extends ChangeType> = IWriter<GeneratorData<T>>;
  *
  * @template T - The specific type of data the writer will handle, determined by the associated ChangeType.
  */
-
 export interface IWriter<T> {
     /**
      * Writes the provided data to the project.
