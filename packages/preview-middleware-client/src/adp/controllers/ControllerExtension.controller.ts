@@ -35,6 +35,7 @@ import {
     writeController
 } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
+import { getErrorMessage } from '../../cpe/error-utils';
 
 interface ControllerExtensionService {
     add: (codeRef: string, viewId: string) => Promise<{ creation: string }>;
@@ -251,8 +252,9 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
             const data = await getExistingController(controllerName);
             return data;
         } catch (e) {
-            MessageToast.show((e as Error).message, { duration: 5000 });
-            throw new Error((e as Error).message);
+            const errorMessage: string = getErrorMessage(e);
+            MessageToast.show(errorMessage, { duration: 5000 });
+            throw new Error(errorMessage);
         }
     }
 
@@ -264,8 +266,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
             const { controllers } = await readControllers<ControllersResponse>();
             this.model.setProperty('/controllersList', controllers);
         } catch (e) {
-            MessageToast.show((e as Error).message, { duration: 5000 });
-            throw new Error((e as Error).message);
+            this.handleError(e);
         }
     }
 
@@ -296,8 +297,19 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
             // We want to update the model incase we have already created a controller file but failed when creating a change file,
             // so when the user types the same controller name again he does not get 409 from the server, instead an error is shown in the UI
             await this.getControllers();
-            MessageToast.show((e as Error).message);
-            throw new Error((e as Error).message);
+            this.handleError(e);
         }
+    }
+
+    /**
+     * Function that handles runtime thrown errors with MessageToast
+     *
+     * @param e error instance
+     * @throws {Error}.
+     */
+    private handleError(e: unknown): void {
+        const errorMessage = getErrorMessage(e);
+        MessageToast.show(errorMessage, { duration: 5000 });
+        throw new Error(errorMessage);
     }
 }

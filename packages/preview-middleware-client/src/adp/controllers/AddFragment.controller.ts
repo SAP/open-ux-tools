@@ -26,6 +26,7 @@ import CommandExecutor from '../command-executor';
 import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { notifyUser } from '../utils';
+import { getErrorMessage } from '../../cpe/error-utils';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -224,8 +225,9 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
 
             this.model.setProperty('/fragmentList', fragments);
         } catch (e) {
-            MessageToast.show((e as Error).message);
-            throw new Error((e as Error).message);
+            const errorMessage: string = getErrorMessage(e);
+            MessageToast.show(errorMessage);
+            throw new Error(errorMessage);
         }
 
         this.model.setProperty('/selectedIndex', indexArray.length - 1);

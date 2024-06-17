@@ -17,6 +17,7 @@ import { logger } from './logger';
 import { getIcons } from './ui5-utils';
 import { WorkspaceConnectorService } from './connector-service';
 import { RtaService } from './rta-service';
+import { getError } from './error-utils';
 
 export default function init(rta: RuntimeAuthoring): Promise<void> {
     Log.info('Initializing Control Property Editor');
@@ -51,7 +52,7 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
                     try {
                         await handler(action);
                     } catch (error) {
-                        Log.error('Handler Failed: ', error as Error);
+                        Log.error('Handler Failed: ', getError(error));
                     }
                 }
             },
@@ -64,14 +65,14 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
         // For initOutline to complete the RTA needs to already running (to access RTA provided services).
         // That can only happen if the plugin initialization has completed.
         initOutline(rta, sendAction).catch((error) =>
-            Log.error('Error during initialization of Control Property Editor', error as Error)
+            Log.error('Error during initialization of Control Property Editor', getError(error))
         );
         const icons = getIcons();
 
         sendAction(iconsLoaded(icons));
         sendAction(appLoaded());
     } catch (error) {
-        Log.error('Error during initialization of Control Property Editor', error as Error);
+        Log.error('Error during initialization of Control Property Editor', getError(error));
     }
     return Promise.resolve();
 }

@@ -20,6 +20,7 @@ import type Event from 'sap/ui/base/Event';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import Log from 'sap/base/Log';
 import { modeAndStackChangeHandler } from '../rta-service';
+import { getError, getErrorMessage } from '../error-utils';
 
 interface ChangeContent {
     property: string;
@@ -123,8 +124,10 @@ export class ChangeService {
                     if (control) {
                         name = control.getMetadata().getName();
                     }
+
+                    const exceptionMessage = getErrorMessage(exception);
                     // eslint-disable-next-line  @typescript-eslint/no-unsafe-call
-                    const modifiedMessage = modifyRTAErrorMessage((exception as Error)?.toString(), id, name);
+                    const modifiedMessage = modifyRTAErrorMessage(exceptionMessage, id, name);
                     const errorMessage =
                         modifiedMessage || `RTA Exception applying expression "${action.payload.value}"`;
                     const propertyChangeFailedAction = propertyChangeFailed({ ...action.payload, errorMessage });
@@ -165,7 +168,7 @@ export class ChangeService {
      */
     private async fetchSavedChanges(): Promise<void> {
         const savedChangesResponse = await fetch(FlexChangesEndPoints.changes + `?_=${Date.now()}`);
-        const savedChanges = await savedChangesResponse.json() as SavedChangesResponse;
+        const savedChanges = (await savedChangesResponse.json()) as SavedChangesResponse;
         const changes = (
             Object.keys(savedChanges ?? {})
                 .map((key): SavedPropertyChange | UnknownSavedChange | undefined => {
@@ -238,7 +241,7 @@ export class ChangeService {
                 })
             );
 
-        await Promise.all(filesToDelete).catch((error) => Log.error(error as string));
+        await Promise.all(filesToDelete).catch((error) => Log.error(getErrorMessage(error)));
 
         await this.fetchSavedChanges();
         this.updateStack();
@@ -275,7 +278,7 @@ export class ChangeService {
                         }
                     }
                 } catch (error) {
-                    Log.error('CPE: Change creation Failed', error as Error);
+                    Log.error('CPE: Change creation Failed', getError(error));
                 }
             });
 
@@ -356,7 +359,7 @@ export class ChangeService {
                 }
                 return result;
             } catch (error) {
-                Log.error(`Retry operation failed: ${(error as Error)?.message}`);
+                Log.error('Retry operation failed:', getError(error));
                 continue;
             }
         }
