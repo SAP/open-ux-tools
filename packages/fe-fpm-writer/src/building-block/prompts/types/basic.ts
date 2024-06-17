@@ -37,37 +37,34 @@ export interface BuildingBlockTypePromptsAnswer extends Answers {
     buildingBlockType: PromptsType;
 }
 
-// ToDo - I think should not extend from Table
-export interface TablePromptsAnswer extends Table, Answers {
+export interface BaseBuildingBlockPromptAnswer extends Answers {
     viewOrFragmentFile: string;
     aggregationPath: string;
     id: string;
     entity: string;
-    filterBar: string;
-    selectionChange: string;
+    // ToDi - obsolete?
     bindingContextType: 'relative' | 'absolute';
     qualifier: string;
-    type: 'ResponsiveTable' | 'GridTable';
-    displayHeader: boolean;
-    tableHeaderText: string;
+}
+
+// ToDo - I think should not extend from Table
+export interface TablePromptsAnswer extends Table, BaseBuildingBlockPromptAnswer {
+    filterBar?: string;
+    selectionChange?: string;
+    type?: 'ResponsiveTable' | 'GridTable';
+    displayHeader?: boolean;
+    tableHeaderText?: string;
 }
 
 // ToDo - I think should not extend from Chart
-export interface ChartPromptsAnswer extends Chart, Answers {
-    viewOrFragmentFile: string;
-    aggregationPath: string;
-    id: string;
-    entity: string;
-    filterBar: string;
-    selectionMode: string;
-    selectionChange: string;
-    qualifier: string;
-    bindingContextType: 'relative' | 'absolute';
+export interface ChartPromptsAnswer extends Chart, BaseBuildingBlockPromptAnswer {
+    filterBar?: string;
+    selectionMode?: string;
+    selectionChange?: string;
 }
 
 // ToDo - I think should not extend from FilterBar
-export interface FilterBarPromptsAnswer extends FilterBar, Answers {
-    qualifier: string;
-    entity: string;
-    viewOrFragmentFile: string;
+export interface FilterBarPromptsAnswer extends FilterBar, BaseBuildingBlockPromptAnswer {
+    filterChanged?: string;
+    search?: string;
 }
