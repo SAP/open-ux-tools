@@ -1,10 +1,9 @@
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
-import { ServiceType } from '@sap-ux/odata-service-writer';
 import type { Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
-import { generate as addOdataService } from '@sap-ux/odata-service-writer';
+import { ServiceType, generate as addOdataService } from '@sap-ux/odata-service-writer';
 import { getPackageJsonTasks } from './packageConfig';
 import cloneDeep from 'lodash/cloneDeep';
 import type { BasicAppSettings } from './types';
