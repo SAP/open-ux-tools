@@ -1,4 +1,4 @@
-import { BuildingBlockType, PromptsAPI } from '@sap-ux/fe-fpm-writer';
+import { PromptsType, PromptsAPI } from '@sap-ux/fe-fpm-writer';
 import type { FilterBarPromptsAnswer, ChartPromptsAnswer, BuildingBlockTypePromptsAnswer } from '@sap-ux/fe-fpm-writer';
 import type { TablePromptsAnswer } from '@sap-ux/fe-fpm-writer/src/building-block/prompts';
 import inquirer from 'inquirer';
@@ -36,10 +36,10 @@ export async function generateFilterBarBuildingBlock(fs: Editor): Promise<Editor
     const promptsAPI = await PromptsAPI.init(basePath);
     const answers: FilterBarPromptsAnswer = (await inquirer.prompt(
         (
-            await promptsAPI.getPrompts(BuildingBlockType.FilterBar, fs)
+            await promptsAPI.getPrompts(PromptsType.FilterBar, fs)
         ).questions
     )) as FilterBarPromptsAnswer;
-    fs = promptsAPI.submitAnswers<FilterBarPromptsAnswer>(BuildingBlockType.FilterBar, answers);
+    fs = promptsAPI.submitAnswers<FilterBarPromptsAnswer>(PromptsType.FilterBar, answers);
     return fs;
 }
 
@@ -54,10 +54,10 @@ export async function generateChartBuildingBlock(fs: Editor): Promise<Editor> {
     const promptsAPI = await PromptsAPI.init(basePath);
     const answers: ChartPromptsAnswer = (await inquirer.prompt(
         (
-            await promptsAPI.getPrompts(BuildingBlockType.Chart, fs)
+            await promptsAPI.getPrompts(PromptsType.Chart, fs)
         ).questions
     )) as ChartPromptsAnswer;
-    fs = promptsAPI.submitAnswers<ChartPromptsAnswer>(BuildingBlockType.Chart, answers);
+    fs = promptsAPI.submitAnswers<ChartPromptsAnswer>(PromptsType.Chart, answers);
     return fs;
 }
 /**
@@ -71,10 +71,10 @@ export async function generateTableBuildingBlock(fs: Editor): Promise<Editor> {
     const promptsAPI = await PromptsAPI.init(basePath);
     const answers: TablePromptsAnswer = (await inquirer.prompt(
         (
-            await promptsAPI.getPrompts(BuildingBlockType.Table, fs)
+            await promptsAPI.getPrompts(PromptsType.Table, fs)
         ).questions
     )) as TablePromptsAnswer;
-    fs = promptsAPI.submitAnswers<TablePromptsAnswer>(BuildingBlockType.Table, answers);
+    fs = promptsAPI.submitAnswers<TablePromptsAnswer>(PromptsType.Table, answers);
     return fs;
 }
 
@@ -83,18 +83,17 @@ export async function generateTableBuildingBlock(fs: Editor): Promise<Editor> {
     try {
         const promptsAPI = await PromptsAPI.init(sampleAppPath);
         let fs = await initialize();
-        const answers: BuildingBlockTypePromptsAnswer = await inquirer.prompt(
-            await promptsAPI.getBuildingBlockTypePrompts()
-        );
+        const buildingBlockPrompts = await promptsAPI.getPrompts(PromptsType.BuildingBlocks, fs);
+        const answers: Partial<BuildingBlockTypePromptsAnswer> = await inquirer.prompt(buildingBlockPrompts.questions);
 
         switch (answers.buildingBlockType) {
-            case BuildingBlockType.Chart:
+            case PromptsType.Chart:
                 fs = await generateChartBuildingBlock(fs);
                 break;
-            case BuildingBlockType.FilterBar:
+            case PromptsType.FilterBar:
                 fs = await generateFilterBarBuildingBlock(fs);
                 break;
-            case BuildingBlockType.Table:
+            case PromptsType.Table:
                 fs = await generateTableBuildingBlock(fs);
                 break;
             default:
