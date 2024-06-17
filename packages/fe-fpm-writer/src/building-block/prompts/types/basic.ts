@@ -4,18 +4,22 @@ import type {
     CheckboxPromptQuestion,
     InputPromptQuestion,
     ListPromptQuestion,
-    PromptListChoices
+    PromptListChoices,
+    PromptsGroup,
+    ValidationResults
 } from '@sap-ux/ui-prompting';
 import type { BuildingBlockType, Chart, FilterBar, Table } from '../../types';
 
-export { PromptQuestion, PromptListChoices, CheckboxPromptQuestion, InputPromptQuestion, ListPromptQuestion, Answers };
-
-// ToDo annotate properties
-export interface PromptsGroup {
-    id: string;
-    title: string;
-    description: string[];
-}
+export {
+    PromptQuestion,
+    PromptListChoices,
+    CheckboxPromptQuestion,
+    InputPromptQuestion,
+    ListPromptQuestion,
+    Answers,
+    PromptsGroup,
+    ValidationResults
+};
 
 export interface Prompts<T extends Answers = Answers> {
     questions: PromptQuestion<Partial<T>>[];
@@ -60,8 +64,3 @@ export interface FilterBarPromptsAnswer extends FilterBar, Answers {
     entity: string;
     viewOrFragmentFile: string;
 }
-
-// ToDo - import from ui types
-export type ValidationResults = { [questionName: string]: { isValid: boolean; errorMessage?: string } };
-
-// ToDo - move to separate file?
