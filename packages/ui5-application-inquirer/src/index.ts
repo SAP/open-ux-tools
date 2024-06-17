@@ -57,34 +57,12 @@ async function prompt(
 
     const answers = await adapter.prompt<UI5ApplicationAnswers>(ui5AppPrompts);
     // Apply default values to prompts in case they have not been executed
-    Object.assign(answers, await getDefaults(answers, ui5AppPrompts, promptOptions, capCdsInfo));
+    if (promptOptions) {
+        const defaultAnswers = applyPromptOptionDefaults(answers, ui5AppPrompts, promptOptions, capCdsInfo);
+        Object.assign(answers, defaultAnswers);
+    }
 
     return answers;
-}
-
-/**
- * Return the default values for prompts that did not provide an answer if they are advanced options, and may not have been answered.
- * The answer can be assigned from the prompt options or a prompt default otherwise.
- *
- * @param answers the answers from previous prompting, only answers without a value will be considered for defaulting
- * @param ui5AppPrompts the prompts that were used to prompt the user, note that hidden prompts will not be included
- * @param promptOptions the prompt options which may provide default values or functions
- * @param capCdsInfo will be passed as additional answer to default functions that depend on it to determine the default value
- * @returns the default values for the unanswered prompts based on the prompt options and prompt defaults
- */
-function getDefaults(
-    answers: Partial<UI5ApplicationAnswers>,
-    ui5AppPrompts: UI5ApplicationQuestion[],
-    promptOptions?: UI5ApplicationPromptOptions,
-    capCdsInfo?: CdsUi5PluginInfo
-): Partial<UI5ApplicationAnswers> {
-    let defaultAnswers: Partial<UI5ApplicationAnswers> = {};
-
-    // First apply prompt option defaults
-    if (promptOptions) {
-        defaultAnswers = applyPromptOptionDefaults(answers, ui5AppPrompts, promptOptions, capCdsInfo);
-    }
-    return defaultAnswers;
 }
 
 /**
@@ -145,7 +123,7 @@ function applyPromptOptionDefaults(
 /**
  * Get the default value for a prompt based on the provided default value or function.
  * If a function is provided, it will be called with the current answers to determine the default value.
- * 
+ *
  * @param answers the current answers provided to default functions
  * @param promptDefault the default value or function to determine the default value
  * @returns the default value for the prompt or undefined if no default value is provided
