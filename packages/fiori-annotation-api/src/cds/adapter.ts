@@ -31,13 +31,15 @@ import type {
 
 import { MetadataService } from '@sap-ux/odata-entity-model';
 import type { Project } from '@sap-ux/project-access';
+import type { Record } from '@sap-ux/cds-annotation-parser';
 import {
     ANNOTATION_GROUP_ITEMS_TYPE,
     ANNOTATION_TYPE,
     COLLECTION_TYPE,
     QUALIFIER_TYPE,
     RECORD_PROPERTY_TYPE,
-    RECORD_TYPE
+    RECORD_TYPE,
+    isReservedProperty
 } from '@sap-ux/cds-annotation-parser';
 import {
     Edm,
@@ -503,7 +505,7 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         } else if (currentAstNode.type === ANNOTATION_TYPE) {
             this.insertAnnotation(writer, change, pointer);
         } else if (currentAstNode.type === RECORD_TYPE) {
-            this.insertRecord(writer, change, pointer);
+            this.insertRecord(writer, change, pointer, currentAstNode);
         } else if (currentAstNode.type === RECORD_PROPERTY_TYPE) {
             if (PRIMITIVE_TYPE_NAMES.includes(change.element.name)) {
                 writer.addChange({
@@ -584,12 +586,14 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         }
     }
 
-    private insertRecord(writer: CDSWriter, change: InsertElement, pointer: string): void {
+    private insertRecord(writer: CDSWriter, change: InsertElement, pointer: string, record: Record): void {
         if (change.element.name === Edm.PropertyValue) {
+            const index = adaptRecordPropertyIndex(record, change.index);
             const modifiedPointer = [...pointer.split('/'), 'properties'].join('/'); // pointer is record
-            writer.addChange(createInsertRecordPropertyChange(modifiedPointer, change.element, change.index));
+            writer.addChange(createInsertRecordPropertyChange(modifiedPointer, change.element, index));
         } else if (change.element.name === Edm.Annotation) {
-            writer.addChange(createInsertEmbeddedAnnotationChange(pointer, change.element, change.index));
+            const index = adaptRecordPropertyIndex(record, change.index);
+            writer.addChange(createInsertEmbeddedAnnotationChange(pointer, change.element, index));
         } else if (change.element.name === Edm.Record) {
             const segment = pointer.split('/');
             const changeIndex = parseInt(segment.pop() ?? '', 10);
@@ -856,4 +860,20 @@ function buildElement(node: Element): Element {
         result.attributes[Edm.Property] = node.attributes[Edm.Property];
     }
     return result;
+}
+
+function adaptRecordPropertyIndex(record: Record, currentIndex?: number): number | undefined {
+    if (currentIndex === undefined) {
+        return currentIndex;
+    }
+
+    let adaptedIdx = currentIndex;
+
+    for (let index = 0; index < record.properties.length; index++) {
+        const propertyName = record.properties[index].name.value;
+        if (isReservedProperty(propertyName) && index <= adaptedIdx) {
+            adaptedIdx = adaptedIdx + 1;
+        }
+    }
+    return adaptedIdx;
 }

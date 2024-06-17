@@ -304,9 +304,8 @@ function createLineItemWithAnnotations(
     return change;
 }
 
-function createDataField(value = 'path', annotations: RawAnnotation[] = []): AnnotationRecord {
-    return {
-        type: DATA_FIELD_TYPE,
+function createDataField(value = 'path', annotations: RawAnnotation[] = [], type = true): AnnotationRecord {
+    const record: AnnotationRecord = {
         propertyValues: [
             {
                 name: 'Value',
@@ -318,6 +317,10 @@ function createDataField(value = 'path', annotations: RawAnnotation[] = []): Ann
         ],
         annotations
     };
+    if (type) {
+        record.type = DATA_FIELD_TYPE;
+    }
+    return record;
 }
 function createDataWithLabel(value = 'sample'): AnnotationRecord {
     return {
@@ -1484,6 +1487,110 @@ describe('fiori annotation service', () => {
                                 }
                             }
                         }
+                    }
+                ]
+            });
+
+            // relevant only for cds
+            createEditTestCase({
+                name: 'in record consider $Type',
+                projectTestModels: TEST_TARGETS.filter((target) => target === PROJECTS.V4_CDS_START),
+                getInitialChanges: (files) => [
+                    createLineItem(files.annotations, [createDataField('path'), createDataField('path')])
+                ],
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.Insert,
+                        reference: {
+                            target: targetName,
+                            term: LINE_ITEM
+                        },
+                        uri: files.annotations,
+                        pointer: 'collection/0/propertyValues',
+                        content: {
+                            type: 'property-value',
+                            value: {
+                                name: 'Label',
+                                value: {
+                                    type: 'String',
+                                    String: 'Test'
+                                }
+                            }
+                        },
+                        index: 0 // adjusts index if $Type/$value/$edmJson is found
+                    },
+                    {
+                        kind: ChangeType.InsertEmbeddedAnnotation,
+                        reference: {
+                            target: targetName,
+                            term: LINE_ITEM
+                        },
+                        uri: files.annotations,
+                        pointer: 'collection/1/annotations',
+                        content: {
+                            type: 'embedded-annotation',
+                            value: {
+                                term: `${UI}.Importance`,
+                                value: {
+                                    type: 'String',
+                                    String: 'Test'
+                                }
+                            }
+                        },
+                        index: 0 // adjusts index if $Type/$value/$edmJson is found
+                    }
+                ]
+            });
+
+            createEditTestCase({
+                name: 'in record without type',
+                projectTestModels: TEST_TARGETS,
+                getInitialChanges: (files) => [
+                    createLineItem(files.annotations, [
+                        createDataField('path', [], false),
+                        createDataField('path', [], false)
+                    ])
+                ],
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.Insert,
+                        reference: {
+                            target: targetName,
+                            term: LINE_ITEM
+                        },
+                        uri: files.annotations,
+                        pointer: 'collection/0/propertyValues',
+                        content: {
+                            type: 'property-value',
+                            value: {
+                                name: 'Label',
+                                value: {
+                                    type: 'String',
+                                    String: 'Test'
+                                }
+                            }
+                        },
+                        index: 0 // index not adjusted as $Type/$value/$edmJson not found
+                    },
+                    {
+                        kind: ChangeType.InsertEmbeddedAnnotation,
+                        reference: {
+                            target: targetName,
+                            term: LINE_ITEM
+                        },
+                        uri: files.annotations,
+                        pointer: 'collection/1/annotations',
+                        content: {
+                            type: 'embedded-annotation',
+                            value: {
+                                term: `${UI}.Importance`,
+                                value: {
+                                    type: 'String',
+                                    String: 'Test'
+                                }
+                            }
+                        },
+                        index: 0 // index not adjusted as $Type/$value/$edmJson not found
                     }
                 ]
             });

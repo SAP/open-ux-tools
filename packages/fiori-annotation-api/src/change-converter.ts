@@ -206,7 +206,8 @@ export class ChangeConverter {
             uri: change.uri,
             target: change.reference.target,
             element: convertAnnotationToInternal(content.value, aliasInfo),
-            pointer: targetPointer + internalPointer
+            pointer: targetPointer + internalPointer,
+            index: change.index
         };
         this.annotationFileChanges.push(internal);
     }
