@@ -1,5 +1,11 @@
 # @sap-ux/create
 
+## 0.5.104
+
+### Patch Changes
+
+-   a06687ce: Added internal functionality to support inquirer prompts
+
 ## 0.5.103
 
 ### Patch Changes
