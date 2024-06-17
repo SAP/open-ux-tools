@@ -16,14 +16,14 @@ describe('Launch Text utility function tests', () => {
         expect(getLaunchText('Node.js', 'project1', undefined)).toBe(
             `${t('TEXT_LAUNCH_CAP', { mvnCommand, capUrl })}`
         );
-        expect(getLaunchText(undefined, 'project1', 'test.app.project1')).toBe(
+        expect(getLaunchText('Node.js', 'project1', 'test.app.project1')).toBe(
             `${t('TEXT_LAUNCH_CAP', { mvnCommand, capUrl: workspaceCapUrl })}`
         );
 
-        expect(getLaunchText(undefined, 'project1', undefined)).toBe(
+        expect(getLaunchText('Node.js', 'project1', undefined)).toBe(
             `${t('TEXT_LAUNCH_CAP', { mvnCommand, capUrl })}`
         );
-        expect(getLaunchText(undefined, 'project1', 'test.app.project1')).toBe(
+        expect(getLaunchText('Node.js', 'project1', 'test.app.project1')).toBe(
             `${t('TEXT_LAUNCH_CAP', { mvnCommand, capUrl: workspaceCapUrl })}`
         );
     });

@@ -19,11 +19,10 @@ export function getLaunchText(capType: CapRuntime, projectName: string, appId?: 
         if (capType === 'Java') {
             // For Java projects
             return `http://localhost:8080/${projectName}/webapp/index.html`;
-        } else if (capType === undefined || capType === 'Node.js') {
+        } else {
             // For Node.js projects or when capType is undefined
             return `http://localhost:4004/${project}/index.html`;
         }
-        return '';
     }
 
     let mvnCommand = '';
