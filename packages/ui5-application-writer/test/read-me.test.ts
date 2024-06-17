@@ -43,7 +43,7 @@ describe('Readme file generation tests', () => {
         expect(editor.read(readMePath)).toEqual(readFileSync(expectReadMePath, 'utf-8'));
     });
 
-    it('should generate README.md with default values', () => {
+    it('should generate README.md with core properties', () => {
         const readMePath = path.join(__dirname, '/README.md');
         const expectReadMePath = path.join(__dirname, './expected/test02/README.md');
         const readMe: ReadMe = {

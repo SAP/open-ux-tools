@@ -6,7 +6,7 @@ import { getFilePaths } from '@sap-ux/project-access';
 import type { UI5Config } from '@sap-ux/ui5-config';
 import { ui5NPMSupport, ui5TSSupport } from './data/ui5Libs';
 import { mergeObjects, UI5_DEFAULT } from '@sap-ux/ui5-config';
-import { mergeWithReadMeDefaults } from './data/defaults';
+import { t } from './i18n';
 
 /**
  * Input required to enable optional features.
@@ -130,13 +130,21 @@ export async function applyOptionalFeatures(
  * @returns {Editor} The file system editor instance used to write the README file.
  */
 export function generateReadMe(destPath: string, readMe: ReadMe, fs: Editor): Editor {
-    const config = mergeWithReadMeDefaults(readMe);
     // Apply the configuration to generate the README file
     const templateSourcePath = join(__dirname, '..', 'templates/core/README.md');
     const templateDestPath = `${destPath}/README.md`;
     try {
         // copy template
-        fs.copyTpl(templateSourcePath, templateDestPath, config);
+        const locals = {
+            genDate: new Date().toString(),
+            genPlatform: '',
+            metadataFilename: '',
+            serviceUrl: 'N/A',
+            showMockDataInfo: false,
+            additionalEntries: [],
+            launchText: t('TEXT_LAUNCH_DEFAULT')
+        };
+        fs.copyTpl(templateSourcePath, templateDestPath, { ...locals, ...readMe });
     } catch (error) {
         console.error('Error copying README template:', error);
     }

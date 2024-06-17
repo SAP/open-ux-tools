@@ -53,26 +53,6 @@ export function mergeApp(app: App): App {
     );
 }
 
-/**
- * Merges the provided ReadMe configuration with default values to be used by read me templates.
- *
- * @param {ReadMe} readMe - The configuration object to merge with defaults.
- * @returns {ReadMe} The merged configuration object with defaults applied.
- */
-export function mergeWithReadMeDefaults(readMe: ReadMe): ReadMe {
-    const defaults = {
-        genDate: new Date().toString(),
-        genPlatform: '',
-        metadataFilename: '',
-        serviceUrl: 'N/A',
-        showMockDataInfo: false,
-        additionalEntries: [],
-        launchText: t('TEXT_LAUNCH_DEFAULT')
-    };
-
-    return { ...defaults, ...readMe };
-}
-
 // Required default libs
 export const defaultUI5Libs = ['sap.m', 'sap.ui.core'];
 
