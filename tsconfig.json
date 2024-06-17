@@ -159,6 +159,9 @@
       "path": "packages/ui-components"
     },
     {
+      "path": "packages/ui-prompting"
+    },
+    {
       "path": "packages/ui5-application-inquirer"
     },
     {
@@ -195,7 +198,13 @@
       "path": "packages/yaml"
     },
     {
+      "path": "examples/fe-fpm-cli"
+    },
+    {
       "path": "examples/odata-cli"
+    },
+    {
+      "path": "examples/prompting-ui"
     },
     {
       "path": "examples/simple-generator"

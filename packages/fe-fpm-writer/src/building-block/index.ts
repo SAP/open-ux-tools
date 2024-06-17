@@ -87,6 +87,31 @@ function getOrAddMacrosNamespace(ui5XmlDocument: Document): string {
 }
 
 /**
+ * Returns the content of the xml file document.
+ *
+ * @param {BuildingBlock} buildingBlockData - the building block data
+ * @param {Document} viewDocument - the view xml file document
+ * @param {Editor} fs - the memfs editor instance
+ * @returns {string} the template xml file content
+ */
+function getTemplateContent<T extends BuildingBlock>(
+    buildingBlockData: T,
+    viewDocument: Document | undefined,
+    fs: Editor
+): string {
+    const templateFolderName = buildingBlockData.buildingBlockType;
+    const templateFilePath = getTemplatePath(`/building-block/${templateFolderName}/View.xml`);
+    return render(
+        fs.read(templateFilePath),
+        {
+            macrosNamespace: viewDocument ? getOrAddMacrosNamespace(viewDocument) : 'macros',
+            data: buildingBlockData
+        },
+        {}
+    );
+}
+
+/**
  * Returns the template xml file document.
  *
  * @param {BuildingBlock} buildingBlockData - the building block data
@@ -96,19 +121,10 @@ function getOrAddMacrosNamespace(ui5XmlDocument: Document): string {
  */
 function getTemplateDocument<T extends BuildingBlock>(
     buildingBlockData: T,
-    viewDocument: Document,
+    viewDocument: Document | undefined,
     fs: Editor
 ): Document {
-    const templateFolderName = buildingBlockData.buildingBlockType;
-    const templateFilePath = getTemplatePath(`/building-block/${templateFolderName}/View.xml`);
-    const templateContent = render(
-        fs.read(templateFilePath),
-        {
-            macrosNamespace: getOrAddMacrosNamespace(viewDocument),
-            data: buildingBlockData
-        },
-        {}
-    );
+    const templateContent = getTemplateContent(buildingBlockData, viewDocument, fs);
     const errorHandler = (level: string, message: string) => {
         throw new Error(`Unable to parse template file with building block data. Details: [${level}] - ${message}`);
     };
@@ -159,4 +175,28 @@ function updateViewFile(
         throw new Error(`Aggregation control not found ${aggregationPath}.`);
     }
     return fs;
+}
+
+/**
+ * Gets the serialized content of the updated view file.
+ *
+ * @param {string} basePath - The base path
+ * @param {BuildingBlockConfig} config - The building block configuration
+ * @param {Editor} [fs] - The memfs editor instance
+ * @returns {string} The serialized content of the updated view file
+ */
+export function getSerializedFileContent<T extends BuildingBlock>(
+    basePath: string,
+    config: BuildingBlockConfig<T>,
+    fs?: Editor
+): string {
+    // Validate the base and view paths
+    if (!fs) {
+        fs = create(createStorage());
+    }
+    // Read the view xml and template files and get content of the view xml file
+    const xmlDocument = config.viewOrFragmentPath
+        ? getUI5XmlDocument(basePath, config.viewOrFragmentPath, fs)
+        : undefined;
+    return getTemplateContent(config.buildingBlockData, xmlDocument, fs);
 }

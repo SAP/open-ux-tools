@@ -20,8 +20,29 @@ export { enableFPM, FPMConfig } from './app';
 
 export { validateBasePath, validateVersion } from './common/validate';
 
-export { BuildingBlockType, FilterBar, Chart, Field, FieldFormatOptions, Table } from './building-block/types';
-export { generateBuildingBlock } from './building-block';
+export {
+    BuildingBlockType,
+    FilterBar,
+    Chart,
+    Field,
+    FieldFormatOptions,
+    Table,
+    BuildingBlockConfig
+} from './building-block/types';
+export { generateBuildingBlock, getSerializedFileContent } from './building-block';
+export {
+    BuildingBlockTypePromptsAnswer,
+    ChartPromptsAnswer,
+    FilterBarPromptsAnswer,
+    PromptsAPI,
+    TablePromptsAnswer,
+    PromptsGroup,
+    Prompts,
+    ValidationResults,
+    Answers
+} from './building-block/prompts';
 
 export { ControllerExtension, ControllerExtensionPageType } from './controller-extension/types';
 export { generateControllerExtension } from './controller-extension';
+
+export { initI18n } from './i18n';

@@ -33,6 +33,7 @@ export {
     loadModuleFromProject,
     readCapServiceMetadataEdmx,
     readUi5Yaml,
+    getCapServiceName,
     toReferenceUri,
     clearCdsModuleCache
 } from './project';
