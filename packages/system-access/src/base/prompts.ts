@@ -1,5 +1,16 @@
+import { AuthenticationType } from '@sap-ux/store';
 import { existsSync } from 'fs';
 import type { PromptObject } from 'prompts';
+
+const authType: PromptObject<string> = {
+    type: 'autocomplete',
+    name: 'authType',
+    message: 'Type of authentication:',
+    choices: [
+        { title: 'Basic authentication', value: AuthenticationType.Basic },
+        { title: 'SAP reentrance tickets', value: AuthenticationType.ReentranceTicket }
+    ]
+};
 
 const username: PromptObject<string> = {
     type: 'text',
@@ -38,6 +49,7 @@ const systemName: PromptObject<string> = {
  * Export map of questions for usage with the prompts modules
  */
 export const questions = {
+    authType,
     username,
     password,
     serviceKeysPath,

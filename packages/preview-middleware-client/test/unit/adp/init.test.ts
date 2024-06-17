@@ -8,6 +8,7 @@ import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import ElementRegistry from 'mock/sap/ui/core/ElementRegistry';
+import Element from 'mock/sap/ui/core/Element';
 
 describe('adp', () => {
     const addMenuItemSpy = jest.fn();
@@ -48,12 +49,11 @@ describe('adp', () => {
     });
 
     beforeEach(() => {
-        rtaMock.getDefaultPlugins
-            .mockReturnValue({
-                contextMenu: {
-                    addMenuItem: addMenuItemSpy
-                }
-            })
+        rtaMock.getDefaultPlugins.mockReturnValue({
+            contextMenu: {
+                addMenuItem: addMenuItemSpy
+            }
+        });
     });
 
     afterEach(() => {
@@ -97,7 +97,17 @@ describe('adp', () => {
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
+        expect(sendActionMock).toHaveBeenNthCalledWith(1, {
+            type: '[ext] icons-loaded',
+            payload: []
+        });
+
         expect(sendActionMock).toHaveBeenNthCalledWith(2, {
+            type: '[ext] app-loaded',
+            payload: undefined
+        });
+
+        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
             type: '[ext] show-dialog-message',
             payload: {
                 message:
@@ -107,7 +117,7 @@ describe('adp', () => {
         });
     });
 
-    test('init - send notification existence of sync views', async () => {
+    test('init - send notification existence of sync views for minor UI5 version bigger than 120', async () => {
         jest.spyOn(common, 'startPostMessageCommunication').mockImplementation(() => {
             return { dispose: jest.fn(), sendAction: sendActionMock };
         });
@@ -123,15 +133,54 @@ describe('adp', () => {
             'application-app-preview-component---fin.ar.lineitems.display.appView': mockUI5Element
         });
 
+        VersionInfo.load.mockResolvedValue({ version: '1.123.1' });
+
+        await init(rtaMock as unknown as RuntimeAuthoring);
+
+        expect(sendActionMock).toHaveBeenNthCalledWith(1, {
+            type: '[ext] icons-loaded',
+            payload: []
+        });
+
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
+            type: '[ext] app-loaded',
+            payload: undefined
+        });
+
+        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
+            type: '[ext] show-dialog-message',
+            payload: {
+                message:
+                    'Have in mind that synchronous views are detected for this application and controller extensions are not supported for such views. Controller extension functionality on these views will be disabled.',
+                shouldHideIframe: false
+            }
+        });
+    });
+
+    test('init - send notification existence of sync views for minor UI5 version lower than 120', async () => {
+        jest.spyOn(common, 'startPostMessageCommunication').mockImplementation(() => {
+            return { dispose: jest.fn(), sendAction: sendActionMock };
+        });
+
+        const mockUI5Element = {
+            getMetadata: jest.fn().mockReturnValue({
+                getName: jest.fn().mockReturnValue('XMLView')
+            }),
+            oAsyncState: undefined,
+            getId: jest.fn().mockReturnValue('application-app-preview-component---fin.ar.lineitems.display.appView')
+        };
+
+        Element.registry.filter.mockReturnValue([mockUI5Element]);
+
         VersionInfo.load.mockResolvedValue({ version: '1.118.1' });
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
-        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
+        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
             type: '[ext] show-dialog-message',
             payload: {
                 message:
-                'Have in mind that synchronous views are detected for this application and controller extensions are not supported for such views. Controller extension functionality on these views will be disabled.',
+                    'Have in mind that synchronous views are detected for this application and controller extensions are not supported for such views. Controller extension functionality on these views will be disabled.',
                 shouldHideIframe: false
             }
         });

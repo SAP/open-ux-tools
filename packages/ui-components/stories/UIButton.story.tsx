@@ -64,6 +64,8 @@ export const defaultUsage = (): JSX.Element => {
         }
     }));
 
+    const mixtureMenuItemsWithIcon = [menuItemsWithIcon[0], { ...menuItemsWithIcon[1], iconProps: undefined }];
+
     const getMenuItemsWithSeparators = (): UIContextualMenuItem[] => {
         return [
             getMenuItem('option1', 'option 1'),
@@ -103,8 +105,11 @@ export const defaultUsage = (): JSX.Element => {
                     <UIDefaultButton primary disabled>
                         Primary disabled button
                     </UIDefaultButton>
-                    <UIDefaultButton primary iconProps={{ iconName: 'ArrowLeft13x13' }}>
+                    <UIDefaultButton primary iconProps={{ iconName: UiIcons.Calendar }}>
                         Primary button with icon
+                    </UIDefaultButton>
+                    <UIDefaultButton primary checked>
+                        Primary checked button
                     </UIDefaultButton>
                 </Stack>
             </Stack>
@@ -115,8 +120,26 @@ export const defaultUsage = (): JSX.Element => {
                 <Stack horizontal tokens={stackTokens}>
                     <UIDefaultButton>Secondary button</UIDefaultButton>
                     <UIDefaultButton disabled>Secondary disabled button</UIDefaultButton>
-                    <UIDefaultButton iconProps={{ iconName: 'ArrowLRight13x13' }}>
+                    <UIDefaultButton iconProps={{ iconName: UiIcons.Calendar }}>
                         Secondary button with icon
+                    </UIDefaultButton>
+                    <UIDefaultButton checked>Secondary checked button</UIDefaultButton>
+                </Stack>
+            </Stack>
+            <Stack tokens={stackTokens}>
+                <Text variant={'large'} className="textColor" block>
+                    Transparent Button
+                </Text>
+                <Stack horizontal tokens={stackTokens}>
+                    <UIDefaultButton transparent>Transparent button</UIDefaultButton>
+                    <UIDefaultButton transparent disabled>
+                        Transparent disabled button
+                    </UIDefaultButton>
+                    <UIDefaultButton transparent iconProps={{ iconName: UiIcons.Calendar }}>
+                        Transparent button with icon
+                    </UIDefaultButton>
+                    <UIDefaultButton transparent checked>
+                        Transparent checked button
                     </UIDefaultButton>
                 </Stack>
             </Stack>
@@ -238,6 +261,8 @@ export const defaultUsage = (): JSX.Element => {
                         }}>
                         Icon with color - disabled
                     </UIActionButton>
+                </Stack>
+                <Stack horizontal tokens={stackTokens}>
                     <UIActionButton
                         iconProps={{
                             iconName: UiIcons.Bulb
@@ -248,6 +273,17 @@ export const defaultUsage = (): JSX.Element => {
                             items: menuItemsWithIcon
                         }}>
                         Button with menu
+                    </UIActionButton>
+                    <UIActionButton
+                        iconProps={{
+                            iconName: UiIcons.Bulb
+                        }}
+                        menuProps={{
+                            directionalHint: UIDirectionalHint.bottomRightEdge,
+                            directionalHintFixed: false,
+                            items: mixtureMenuItemsWithIcon
+                        }}>
+                        Button with mixture menu
                     </UIActionButton>
                 </Stack>
             </Stack>

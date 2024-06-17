@@ -164,6 +164,25 @@ exports[`UI5Config addBackendToFioriToolsProxydMiddleware add proxy without out 
 "
 `;
 
+exports[`UI5Config addBackendToFioriToolsProxydMiddleware should add comments with backend authentication type as reentrance ticket 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - url: http://localhost:8080
+            path: /~testpath~
+            authenticationType: reentranceTicket # SAML support for vscode
+"
+`;
+
 exports[`UI5Config addFioriToolsProxydMiddleware add backend with flexible parameters (and UI5 defaults) 1`] = `
 "server:
   customMiddleware:
@@ -233,6 +252,11 @@ exports[`UI5Config addFioriToolsProxydMiddleware add commonly configured backend
             path: /~testpath~
             destination: ~destination~
             destinationInstance: ~destinationInstance~
+          - url: http://localhost:8080
+            path: /~testpath~
+            destination: ~destination~
+            destinationInstance: ~destinationInstance~
+            authenticationType: reentranceTicket # SAML support for vscode
         ui5:
           path:
             - /resources
@@ -472,6 +496,17 @@ exports[`UI5Config addUI5Framework Use horizon high dark theme 1`] = `
   libraries:
     - name: sap.m
     - name: themelib_sap_horizon
+"
+`;
+
+exports[`UI5Config addUI5Libs addUI5Libs in framework libraries 1`] = `
+"framework:
+  name: SAPUI5
+  version: 1.64.0
+  libraries:
+    - name: sap.m
+    - name: themelib_sap_fiori_3
+    - name: sap.ushell
 "
 `;
 

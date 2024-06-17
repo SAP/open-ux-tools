@@ -1,5 +1,34 @@
 # @sap-ux/odata-service-writer
 
+## 0.20.2
+
+### Patch Changes
+
+-   Updated dependencies [9188fe8b]
+    -   @sap-ux/ui5-config@0.22.7
+    -   @sap-ux/mockserver-config-writer@0.5.5
+
+## 0.20.1
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.22.6
+-   @sap-ux/mockserver-config-writer@0.5.4
+
+## 0.20.0
+
+### Minor Changes
+
+-   e9a007af: Add support for CAP project services and annotations, based on the service type.
+
+## 0.19.2
+
+### Patch Changes
+
+-   Updated dependencies [3684195d]
+    -   @sap-ux/ui5-config@0.22.5
+    -   @sap-ux/mockserver-config-writer@0.5.3
+
 ## 0.19.1
 
 ### Patch Changes

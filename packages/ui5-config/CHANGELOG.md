@@ -1,5 +1,27 @@
 # @sap-ux/ui5-config
 
+## 0.22.7
+
+### Patch Changes
+
+-   9188fe8b: fpm v4 removed sap.fe.templates in manifest.json, now has dependency on sap.fe.core
+    sap.ushell removed from ui5-application-writer, now loaded in fiori-elements and fiori-freestyle writers respectively
+
+## 0.22.6
+
+### Patch Changes
+
+-   Updated dependencies [64a95bd1]
+    -   @sap-ux/yaml@0.15.0
+
+## 0.22.5
+
+### Patch Changes
+
+-   3684195d: adds authenticationType to fiori tools proxy backend and ability to add inline comments to yaml nodes
+-   Updated dependencies [3684195d]
+    -   @sap-ux/yaml@0.14.2
+
 ## 0.22.4
 
 ### Patch Changes
