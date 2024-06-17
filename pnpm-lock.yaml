@@ -192,6 +192,9 @@ importers:
       sanitize-filename:
         specifier: 1.6.3
         version: 1.6.3
+      uuid:
+        specifier: 10.0.0
+        version: 10.0.0
     devDependencies:
       '@sap-ux/store':
         specifier: workspace:*
@@ -217,6 +220,9 @@ importers:
       '@types/supertest':
         specifier: 2.0.12
         version: 2.0.12
+      '@types/uuid':
+        specifier: 9.0.8
+        version: 9.0.8
       dotenv:
         specifier: 16.3.1
         version: 16.3.1
@@ -9763,6 +9769,10 @@ packages:
 
   /@types/uuid@3.4.11:
     resolution: {integrity: sha512-CJNkbEu4IdVuBMRVaNC2GjASgJK7ziqDlVXWuJ1pvhOLADl7nzxhTKjHRdOmo2SuXuygcWBmzgYgn9foTX0UiA==}
+    dev: true
+
+  /@types/uuid@9.0.8:
+    resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
     dev: true
 
   /@types/validate-npm-package-name@4.0.1:
@@ -22157,6 +22167,11 @@ packages:
   /utils-merge@1.0.1:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
+
+  /uuid@10.0.0:
+    resolution: {integrity: sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==}
+    hasBin: true
+    dev: false
 
   /uuid@3.4.0:
     resolution: {integrity: sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==}
