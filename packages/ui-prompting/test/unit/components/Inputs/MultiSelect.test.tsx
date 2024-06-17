@@ -70,6 +70,7 @@ describe('MultiSelect', () => {
     it('Test property errorMessage', () => {
         render(<MultiSelect {...props} errorMessage="testErrorMessage" />);
         expect(screen.getByRole('alert')).toBeDefined();
+        expect(screen.getByText('testErrorMessage')).toBeDefined();
     });
 
     it('Test property placeholder', () => {

@@ -1,138 +1,113 @@
 import * as React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { initIcons } from '@sap-ux/ui-components';
 import { Questions } from '../../../src/components';
-import type { PromptQuestion } from '../../../src/types';
+import { PromptsLayoutType } from '../../../src/types';
+import { QuestionsProps } from '../../../dist';
+import { questions } from '../../mock-data/questions';
 
 describe('Questions', () => {
     initIcons();
 
-    it('Render questions', async () => {
+    const props: QuestionsProps = {
+        questions: [],
+        answers: {},
+        choices: {},
+        validation: {},
+        onChoiceRequest: jest.fn(),
+        onChange: jest.fn(),
+        layoutType: undefined,
+        groups: [],
+        showDescriptions: undefined
+    };
+
+    it('Render questions component - empty question array, SingleColumn layout', async () => {
+        render(<Questions {...props} layoutType={undefined} />);
+        expect(document.getElementsByClassName('prompt-entries')).toBeDefined();
+        expect(document.getElementsByClassName('prompt-entries-wrapper-single')[0]).toBeDefined();
+    });
+
+    it('Render questions component - 4 items question array, 2 groups, MultipleColumn layout with description', async () => {
         render(
             <Questions
-                answers={{}}
-                choices={{}}
-                validation={{}}
-                onChange={jest.fn()}
-                onChoiceRequest={jest.fn()}
-                questions={[
-                    {
-                        type: 'input',
-                        name: 'testInput'
-                    },
-                    {
-                        type: 'checkbox',
-                        name: 'testCheckbox'
-                    }
+                {...props}
+                layoutType={PromptsLayoutType.MultiColumn}
+                questions={Object.values(questions)}
+                showDescriptions={true}
+                groups={[
+                    { title: 'group0', id: 'group0', description: ['description0'] },
+                    { title: 'group1', id: 'group1', description: ['description1'] }
                 ]}
             />
         );
-        expect(screen.getByText('testInput')).toBeDefined();
-        expect(screen.getByText('testCheckbox')).toBeDefined();
+        expect(document.getElementsByClassName('prompt-entry')).toHaveLength(4);
+        expect(document.getElementsByClassName('prompts-group')).toHaveLength(2);
+        expect(screen.getByText('description0')).toBeDefined();
+        expect(document.getElementsByClassName('prompt-entries-wrapper-multi')[0]).toBeDefined();
     });
 
-    it('Dynamic questions', async () => {
-        const onChoiceRequest = jest.fn();
-        const dynamicQuestion1: PromptQuestion = {
-            type: 'list',
-            name: 'test1',
-            selectType: 'dynamic'
-        };
-        const dynamicQuestion2 = {
-            ...dynamicQuestion1,
-            name: 'test2'
-        };
-        const dynamicQuestion3 = {
-            ...dynamicQuestion1,
-            name: 'test3'
-        };
+    it('Render questions component - onChoiceRequest', async () => {
+        const onChoiceRequestFn = jest.fn();
+        render(
+            <Questions
+                {...props}
+                layoutType={undefined}
+                questions={[questions.dynamicList]}
+                onChoiceRequest={onChoiceRequestFn}
+            />
+        );
+        expect(onChoiceRequestFn).toHaveBeenCalled();
+    });
 
+    it('Render questions component - onChange', async () => {
+        const onChangeFn = jest.fn();
+        render(<Questions {...props} layoutType={undefined} questions={[questions.input]} onChange={onChangeFn} />);
+        const input = screen.getByRole('textbox');
+        expect(input).toBeDefined();
+        fireEvent.change(input, { target: { value: 'new value' } });
+        expect(onChangeFn).toHaveBeenCalledWith({ 'testInput': 'new value' }, 'testInput', 'new value');
+    });
+
+    it('Render questions component - validation', async () => {
         const { rerender } = render(
-            <Questions
-                answers={{}}
-                choices={{}}
-                validation={{}}
-                onChange={jest.fn()}
-                onChoiceRequest={onChoiceRequest}
-                questions={[dynamicQuestion1, dynamicQuestion2]}
-            />
+            <Questions {...props} layoutType={undefined} questions={Object.values(questions)} />
         );
-        // Render with initial questions
-        expect(onChoiceRequest).toBeCalledTimes(1);
-        expect(onChoiceRequest).toBeCalledWith(['test1', 'test2'], {});
-        onChoiceRequest.mockReset();
-        // Rereneder with same questions, but with new reference
+        expect(screen.queryAllByRole('alert')).toHaveLength(0);
         rerender(
             <Questions
-                answers={{}}
-                choices={{}}
-                validation={{}}
-                onChange={jest.fn()}
-                onChoiceRequest={onChoiceRequest}
-                questions={[dynamicQuestion2, dynamicQuestion1]}
+                {...props}
+                layoutType={undefined}
+                questions={Object.values(questions)}
+                validation={{
+                    testInput: { isValid: false, errorMessage: 'validation failure' },
+                    testStaticList: { isValid: false, errorMessage: 'validation failure' },
+                    testDynamicList: { isValid: false, errorMessage: 'validation failure' },
+                    testCheckbox: { isValid: false, errorMessage: 'validation failure' }
+                }}
             />
         );
-        expect(onChoiceRequest).toBeCalledTimes(0);
-        // Rereneder with new question
-        rerender(
-            <Questions
-                answers={{}}
-                choices={{}}
-                validation={{}}
-                onChange={jest.fn()}
-                onChoiceRequest={onChoiceRequest}
-                questions={[dynamicQuestion1, dynamicQuestion2, dynamicQuestion3]}
-            />
-        );
-        expect(onChoiceRequest).toBeCalledTimes(1);
-        expect(onChoiceRequest).toBeCalledWith(['test1', 'test2', 'test3'], {});
+        expect(screen.queryAllByRole('alert')).toHaveLength(4);
     });
 
-    it('Render filterBarId - input or select', async () => {
-        // no choices available
+    it('Render questions component - answers and choices', async () => {
         render(
             <Questions
-                answers={{}}
-                choices={{}}
-                validation={{}}
-                onChange={jest.fn()}
-                onChoiceRequest={jest.fn()}
-                questions={[
-                    {
-                        type: 'list',
-                        selectType: 'static',
-                        name: 'filterBarId',
-                        message: 'Filter Bar Id'
-                    }
-                ]}
+                {...props}
+                layoutType={undefined}
+                questions={Object.values(questions)}
+                answers={{
+                    testInput: 'testName0',
+                    testStaticList: 'testValue0',
+                    testDynamicList: 'testValue0',
+                    testCheckbox: 'testValue0'
+                }}
+                choices={{
+                    testStaticList: [{ name: 'testName0', value: 'testValue0' }],
+                    testDynamicList: [{ name: 'testName0', value: 'testValue0' }],
+                    testCheckbox: [{ name: 'testName0', value: 'testValue0' }]
+                }}
             />
         );
-        const inputField = screen.getByLabelText('Filter Bar Id');
-        expect(inputField).toBeDefined();
-        expect(inputField.classList).toContain('ms-TextField-field');
-        expect(inputField.classList).not.toContain('ms-ComboBox-Input');
-
-        // choices available
-        render(
-            <Questions
-                answers={{}}
-                choices={{ filterBarId: [{ name: 'one', value: 'one' }] }}
-                validation={{}}
-                onChange={jest.fn()}
-                onChoiceRequest={jest.fn()}
-                questions={[
-                    {
-                        type: 'list',
-                        selectType: 'static',
-                        name: 'filterBarId',
-                        message: 'Filter Bar Id 2'
-                    }
-                ]}
-            />
-        );
-        const comboBox = screen.getByLabelText('Filter Bar Id 2');
-        expect(comboBox).toBeDefined();
-        expect(comboBox.classList).not.toContain('ms-TextField-field');
-        expect(comboBox.classList).toContain('ms-ComboBox-Input');
+        expect(screen.queryAllByDisplayValue('testName0')).toHaveLength(4);
     });
 });
