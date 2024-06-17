@@ -1,5 +1,18 @@
 # @sap-ux/project-access
 
+## 1.22.0
+
+### Minor Changes
+
+-   ad93a484: Update functions for package.json and manifest.json that keeps previous indentation.
+
+## 1.21.2
+
+### Patch Changes
+
+-   Updated dependencies [9188fe8b]
+    -   @sap-ux/ui5-config@0.22.7
+
 ## 1.21.1
 
 ### Patch Changes

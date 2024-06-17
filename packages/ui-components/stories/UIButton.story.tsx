@@ -64,6 +64,8 @@ export const defaultUsage = (): JSX.Element => {
         }
     }));
 
+    const mixtureMenuItemsWithIcon = [menuItemsWithIcon[0], { ...menuItemsWithIcon[1], iconProps: undefined }];
+
     const getMenuItemsWithSeparators = (): UIContextualMenuItem[] => {
         return [
             getMenuItem('option1', 'option 1'),
@@ -259,6 +261,8 @@ export const defaultUsage = (): JSX.Element => {
                         }}>
                         Icon with color - disabled
                     </UIActionButton>
+                </Stack>
+                <Stack horizontal tokens={stackTokens}>
                     <UIActionButton
                         iconProps={{
                             iconName: UiIcons.Bulb
@@ -269,6 +273,17 @@ export const defaultUsage = (): JSX.Element => {
                             items: menuItemsWithIcon
                         }}>
                         Button with menu
+                    </UIActionButton>
+                    <UIActionButton
+                        iconProps={{
+                            iconName: UiIcons.Bulb
+                        }}
+                        menuProps={{
+                            directionalHint: UIDirectionalHint.bottomRightEdge,
+                            directionalHintFixed: false,
+                            items: mixtureMenuItemsWithIcon
+                        }}>
+                        Button with mixture menu
                     </UIActionButton>
                 </Stack>
             </Stack>
