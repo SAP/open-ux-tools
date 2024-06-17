@@ -443,6 +443,9 @@ importers:
       semver:
         specifier: 7.5.4
         version: 7.5.4
+      xml-js:
+        specifier: 1.6.11
+        version: 1.6.11
     devDependencies:
       '@types/mem-fs':
         specifier: 1.1.2
@@ -453,9 +456,6 @@ importers:
       '@types/semver':
         specifier: 7.5.2
         version: 7.5.2
-      xml-js:
-        specifier: 1.6.11
-        version: 1.6.11
 
   packages/cards-editor-config-writer:
     dependencies:
@@ -22675,7 +22675,7 @@ packages:
     hasBin: true
     dependencies:
       sax: 1.2.4
-    dev: true
+    dev: false
 
   /xml-name-validator@4.0.0:
     resolution: {integrity: sha512-ICP2e+jsHvAj2E2lIHxa5tjXRlKDJo4IdvPvCXbXQGdzSfmSpNVyIKMvoZHjDY9DP0zV17iI85o90vRFXNccRw==}
