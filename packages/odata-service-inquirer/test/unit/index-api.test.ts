@@ -1,8 +1,10 @@
 import { ErrorHandler } from '../../src/error-handler/error-handler';
 import { getPrompts } from '../../src/index';
 import * as prompts from '../../src/prompts';
+import * as utils from '../../src/utils';
 import LoggerHelper from '../../src/prompts/logger-helper';
 import { PromptState } from '../../src/utils';
+import { hostEnvironment } from '../../src/types';
 
 jest.mock('../../src/prompts', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
@@ -26,17 +28,18 @@ describe('API tests', () => {
         expect(questions).toHaveLength(1);
         // execute the validate function as it would be done by inquirer
         (questions[0].validate as Function)();
-        expect(answers.odataService.metadata).toBe('metadata contents');
+        expect(answers.metadata).toBe('metadata contents');
 
         // Ensure stateful properties are set correctly
         expect(PromptState.isYUI).toBe(true);
-        expect(PromptState.odataService).toBe(answers.odataService);
+        expect(PromptState.odataService).toBe(answers);
         expect(LoggerHelper.logger).toBeDefined();
         expect(ErrorHandler.guidedAnswersEnabled).toBe(true);
         expect(ErrorHandler.logger).toBeDefined();
     });
 
     test('getPrompts, i18n is loaded', async () => {
+        jest.spyOn(utils, 'getHostEnvironment').mockReturnValueOnce(hostEnvironment.cli);
         const { prompts: questions } = await getPrompts(undefined, undefined, true, undefined, true);
 
         expect(questions).toMatchInlineSnapshot(`
@@ -122,6 +125,53 @@ describe('API tests', () => {
                 "message": "OData service",
                 "name": "capService",
                 "type": "list",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "name": "capCliStateSetter",
+                "when": [Function],
+              },
+              {
+                "guiOptions": {
+                  "breadcrumb": true,
+                  "hint": "https://<hostname>:<port>/path/to/odata/service/",
+                  "mandatory": true,
+                },
+                "message": "OData service URL",
+                "name": "serviceUrl",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "default": false,
+                "message": "Do you want to continue generation with the untrusted certificate?",
+                "name": "ignoreCertError",
+                "type": "confirm",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "guiOptions": {
+                  "mandatory": true,
+                },
+                "message": "Service username",
+                "name": "username",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "guiOptions": {
+                  "applyDefaultWhenDirty": true,
+                  "mandatory": true,
+                },
+                "guiType": "login",
+                "mask": "*",
+                "message": "Service password",
+                "name": "serviceUrlPassword",
+                "type": "password",
                 "validate": [Function],
                 "when": [Function],
               },
