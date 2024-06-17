@@ -16,7 +16,7 @@ export function generateReadMe(destPath: string, readMe: ReadMe, fs: Editor): Ed
     // Apply the configuration to generate the README file
     const templateSourcePath = join(__dirname, '..', 'templates/core/README.md');
     const templateDestPath = `${destPath}/README.md`;
-    // copy template
+    // pass locals with default values to be used in the template
     const locals = {
         genDate: new Date().toString(),
         genPlatform: '',
@@ -26,6 +26,7 @@ export function generateReadMe(destPath: string, readMe: ReadMe, fs: Editor): Ed
         additionalEntries: [],
         launchText: t('TEXT_LAUNCH_DEFAULT')
     };
+    // copy template
     fs.copyTpl(templateSourcePath, templateDestPath, { ...locals, ...readMe });
     return fs;
 }
