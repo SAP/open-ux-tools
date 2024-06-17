@@ -1,27 +1,29 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Prompts getBuildingBlockTypePrompts 1`] = `
-Array [
-  Object {
-    "choices": Array [
-      Object {
-        "name": "Chart",
-        "value": "chart",
-      },
-      Object {
-        "name": "Filter Bar",
-        "value": "filter-bar",
-      },
-      Object {
-        "name": "Table",
-        "value": "table",
-      },
-    ],
-    "message": "Select a building block",
-    "name": "buildingBlockType",
-    "type": "list",
-  },
-]
+Object {
+  "questions": Array [
+    Object {
+      "choices": Array [
+        Object {
+          "name": "Chart",
+          "value": "chart",
+        },
+        Object {
+          "name": "Filter Bar",
+          "value": "filter-bar",
+        },
+        Object {
+          "name": "Table",
+          "value": "table",
+        },
+      ],
+      "message": "Select a building block",
+      "name": "buildingBlockType",
+      "type": "list",
+    },
+  ],
+}
 `;
 
 exports[`Prompts getChartBuildingBlockPrompts 1`] = `

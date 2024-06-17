@@ -20,6 +20,7 @@ import type {
     NarrowPrompt,
     PromptListChoices
 } from './types';
+import { PromptsType } from './types';
 import { generateBuildingBlock, getSerializedFileContent } from '..';
 import {
     getChartBuildingBlockPrompts,
@@ -33,10 +34,10 @@ const unsupportedPrompts = (_fs: Editor, _basePath: string, _projectProvider: Pr
 });
 
 const PromptsMap: SupportedPromptsMap = {
-    [BuildingBlockType.Chart]: getChartBuildingBlockPrompts,
-    [BuildingBlockType.Table]: getTableBuildingBlockPrompts,
-    [BuildingBlockType.FilterBar]: getFilterBarBuildingBlockPrompts,
-    [BuildingBlockType.Field]: unsupportedPrompts
+    [PromptsType.Chart]: getChartBuildingBlockPrompts,
+    [PromptsType.Table]: getTableBuildingBlockPrompts,
+    [PromptsType.FilterBar]: getFilterBarBuildingBlockPrompts,
+    [PromptsType.BuildingBlocks]: getBuildingBlockTypePrompts
 };
 
 export class PromptsAPI {
@@ -66,13 +67,13 @@ export class PromptsAPI {
      * @returns List of prompts for passed type
      */
     public async getPrompts<N extends SupportedPrompts['type']>(
-        promptType: N,
+        type: N,
         fs: Editor
-    ): Promise<Prompts<NarrowPrompt<typeof promptType>['answers']>> {
-        const method = promptType in PromptsMap ? PromptsMap[promptType] : unsupportedPrompts;
+    ): Promise<Prompts<NarrowPrompt<typeof type>['answers']>> {
+        const method = type in PromptsMap ? PromptsMap[type] : unsupportedPrompts;
         if (typeof method === 'function') {
             return method(fs, this.basePath, this.projectProvider) as Promise<
-                Prompts<NarrowPrompt<typeof promptType>['answers']>
+                Prompts<NarrowPrompt<typeof type>['answers']>
             >;
         }
         return {
@@ -83,20 +84,20 @@ export class PromptsAPI {
     /**
      * Gets building block choices.
      *
-     * @param {string} buildingBlockType - The building block type
-     * @param {string} fieldName - The field name
-     * @param {unknown} answers - The answers object
-     * @param {string} rootPath - The root path
+     * @param type - The building block type
+     * @param fieldName - The field name
+     * @param answers - The answers object
+     * @param rootPath - The root path
      * @returns
      */
     public async getChoices<T extends Answers>(
-        buildingBlockType: BuildingBlockType,
+        type: PromptsType,
         fieldName: string,
         answers: T
     ): Promise<PromptListChoices> {
         try {
             // todo - cache questions
-            const prompt = await this.getPrompts(buildingBlockType, this.fs);
+            const prompt = await this.getPrompts(type, this.fs);
             const question = prompt.questions.find((question) => question.name === fieldName);
             if (question && question.type === 'list') {
                 const choices =
@@ -114,15 +115,6 @@ export class PromptsAPI {
     }
 
     /**
-     * Returns a list of prompts required to generate building blocks.
-     *
-     * @returns The list of prompts for building block types selection.
-     */
-    public async getBuildingBlockTypePrompts(): Promise<PromptQuestion<BuildingBlockTypePromptsAnswer>[]> {
-        return getBuildingBlockTypePrompts();
-    }
-
-    /**
      * Validates answers: checks if required prompts have values and runs validate() if exists on prompt
      *
      * @param fs
@@ -135,7 +127,7 @@ export class PromptsAPI {
         fs: Editor,
         questions: Question[],
         answers: Answers,
-        type: BuildingBlockType
+        type: PromptsType
     ): Promise<ValidationResults> {
         let originalPrompts = await this.getPrompts(type, fs);
         let result: ValidationResults = {};
@@ -166,23 +158,22 @@ export class PromptsAPI {
     }
 
     public submitAnswers = <T extends TablePromptsAnswer | FilterBarPromptsAnswer | ChartPromptsAnswer>(
-        // ToDo - different enum???
-        buildingBlockType: BuildingBlockType,
+        type: PromptsType,
         answers: T
     ): Editor => {
-        const configData = this.getBuildingBlockConfig(answers, buildingBlockType);
+        const configData = this.getBuildingBlockConfig(answers, type);
         if (!configData) {
-            throw new Error(`No writer found for building block type: ${buildingBlockType}`);
+            throw new Error(`No writer found for building block type: ${type}`);
         }
         const fs: Editor = generateBuildingBlock(this.basePath, configData);
         return fs;
     };
 
     public getCodeSnippet<T extends TablePromptsAnswer | FilterBarPromptsAnswer | ChartPromptsAnswer>(
-        buildingBlockType: BuildingBlockType,
+        type: PromptsType,
         answers: T
     ): string {
-        const configData = this.getBuildingBlockConfig(answers, buildingBlockType, true);
+        const configData = this.getBuildingBlockConfig(answers, type, true);
         return getSerializedFileContent(this.basePath, configData);
     }
 
@@ -196,7 +187,7 @@ export class PromptsAPI {
 
     private getBuildingBlockConfig<T extends TablePromptsAnswer | FilterBarPromptsAnswer | ChartPromptsAnswer>(
         answers: T,
-        buildingBlockType: BuildingBlockType,
+        type: PromptsType,
         placeholders = false
     ): BuildingBlockConfig<T> {
         const { aggregationPath, viewOrFragmentFile, entity, qualifier } = answers;
@@ -210,7 +201,7 @@ export class PromptsAPI {
                 ...answers,
                 id,
                 metaPath,
-                buildingBlockType
+                type
             }
         };
     }

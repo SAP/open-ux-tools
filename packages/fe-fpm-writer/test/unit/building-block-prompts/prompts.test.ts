@@ -2,7 +2,7 @@ import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { BuildingBlockType, PromptsAPI } from '../../../src';
+import { PromptsType, PromptsAPI } from '../../../src';
 import { ProjectProvider } from '../../../src/building-block/prompts/utils/project';
 
 describe('Prompts', () => {
@@ -18,33 +18,33 @@ describe('Prompts', () => {
     });
 
     test('getBuildingBlockTypePrompts', async () => {
-        const questionnair = await promptsAPI.getBuildingBlockTypePrompts();
+        const questionnair = await promptsAPI.getPrompts(PromptsType.BuildingBlocks, fs);
         expect(questionnair).toMatchSnapshot();
     });
 
     test('getChartBuildingBlockPrompts', async () => {
-        const questionnair = await promptsAPI.getPrompts(BuildingBlockType.Chart, fs);
+        const questionnair = await promptsAPI.getPrompts(PromptsType.Chart, fs);
         expect(questionnair).toMatchSnapshot();
     });
 
     test('getFilterBarBuildingBlockPrompts', async () => {
-        const questionnair = await promptsAPI.getPrompts(BuildingBlockType.FilterBar, fs);
+        const questionnair = await promptsAPI.getPrompts(PromptsType.FilterBar, fs);
         expect(questionnair).toMatchSnapshot();
     });
 
     test('getTableBuildingBlockPrompts', async () => {
-        const questionnair = await promptsAPI.getPrompts(BuildingBlockType.Table, fs);
+        const questionnair = await promptsAPI.getPrompts(PromptsType.Table, fs);
         expect(questionnair).toMatchSnapshot();
     });
 
     describe('getChoices', () => {
         test('Choices for field "entity"', async () => {
-            const choices = await promptsAPI.getChoices(BuildingBlockType.Table, 'entity', {});
+            const choices = await promptsAPI.getChoices(PromptsType.Table, 'entity', {});
             expect(choices).toMatchSnapshot();
         });
 
-        const types = [BuildingBlockType.Chart, BuildingBlockType.FilterBar, BuildingBlockType.Table];
-        test.each(types)('Type "%s", choices for field "qualifier"', async (type: BuildingBlockType) => {
+        const types = [PromptsType.Chart, PromptsType.FilterBar, PromptsType.Table];
+        test.each(types)('Type "%s", choices for field "qualifier"', async (type: PromptsType) => {
             const choices = await promptsAPI.getChoices(type, 'qualifier', {
                 entity: 'C_CUSTOMER_OP_SRV.C_CustomerOPType'
             });
@@ -53,9 +53,9 @@ describe('Prompts', () => {
 
         test('Choices for field "viewOrFragmentFile" and "aggregationPath"', async () => {
             // Get "viewOrFragmentFile"
-            const filesChoices = await promptsAPI.getChoices(BuildingBlockType.Chart, 'viewOrFragmentFile', {});
+            const filesChoices = await promptsAPI.getChoices(PromptsType.Chart, 'viewOrFragmentFile', {});
             // Get "viewOrFragmentFile"
-            const aggregationChoices = await promptsAPI.getChoices(BuildingBlockType.Chart, 'aggregationPath', {
+            const aggregationChoices = await promptsAPI.getChoices(PromptsType.Chart, 'aggregationPath', {
                 viewOrFragmentFile: filesChoices[0].value
             });
             expect(aggregationChoices).toMatchSnapshot();
@@ -80,10 +80,10 @@ describe('Prompts', () => {
 
             // ToDo write xml with filterbars
             // Get "viewOrFragmentFile"
-            const filesChoices = await promptsAPI.getChoices(BuildingBlockType.Chart, 'viewOrFragmentFile', {});
+            const filesChoices = await promptsAPI.getChoices(PromptsType.Chart, 'viewOrFragmentFile', {});
             const fileChoice = filesChoices.find((choice) => choice.value.endsWith(filename));
             // Get "viewOrFragmentFile"
-            const aggregationChoices = await promptsAPI.getChoices(BuildingBlockType.Chart, 'filterBarId', {
+            const aggregationChoices = await promptsAPI.getChoices(PromptsType.Chart, 'filterBarId', {
                 viewOrFragmentFile: fileChoice?.value
             });
             expect(aggregationChoices).toMatchSnapshot();

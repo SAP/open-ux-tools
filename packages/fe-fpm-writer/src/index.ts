@@ -31,6 +31,7 @@ export {
 } from './building-block/types';
 export { generateBuildingBlock, getSerializedFileContent } from './building-block';
 export {
+    PromptsType,
     BuildingBlockTypePromptsAnswer,
     ChartPromptsAnswer,
     FilterBarPromptsAnswer,

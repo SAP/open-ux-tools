@@ -8,7 +8,7 @@ import type {
     PromptsGroup,
     ValidationResults
 } from '@sap-ux/ui-prompting';
-import type { BuildingBlockType, Chart, FilterBar, Table } from '../../types';
+import type { Chart, FilterBar, Table } from '../../types';
 
 export {
     PromptQuestion,
@@ -21,13 +21,20 @@ export {
     ValidationResults
 };
 
+export const enum PromptsType {
+    FilterBar = 'filter-bar',
+    Chart = 'chart',
+    Table = 'table',
+    BuildingBlocks = 'building-blocks'
+}
+
 export interface Prompts<T extends Answers = Answers> {
     questions: PromptQuestion<Partial<T>>[];
     groups?: PromptsGroup[];
 }
 
 export interface BuildingBlockTypePromptsAnswer extends Answers {
-    buildingBlockType: BuildingBlockType;
+    buildingBlockType: PromptsType;
 }
 
 // ToDo - I think should not extend from Table

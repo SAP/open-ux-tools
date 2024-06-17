@@ -1,14 +1,20 @@
 import type { Editor } from 'mem-fs-editor';
-import type { Answers, ChartPromptsAnswer, FilterBarPromptsAnswer, Prompts, TablePromptsAnswer } from './basic';
+import type {
+    BuildingBlockTypePromptsAnswer,
+    ChartPromptsAnswer,
+    FilterBarPromptsAnswer,
+    Prompts,
+    TablePromptsAnswer
+} from './basic';
+import { PromptsType } from './basic';
 import type { ProjectProvider } from '../utils';
-import { BuildingBlockType } from '../../types';
 
 // ToDo constand or new enum instead of BuildingBlockType enum?
 type AnswerMapping = {
-    [BuildingBlockType.Chart]: ChartPromptsAnswer;
-    [BuildingBlockType.Table]: TablePromptsAnswer;
-    [BuildingBlockType.FilterBar]: FilterBarPromptsAnswer;
-    [BuildingBlockType.Field]: Answers;
+    [PromptsType.Chart]: ChartPromptsAnswer;
+    [PromptsType.Table]: TablePromptsAnswer;
+    [PromptsType.FilterBar]: FilterBarPromptsAnswer;
+    [PromptsType.BuildingBlocks]: BuildingBlockTypePromptsAnswer;
 };
 
 type BasePrompt<T extends keyof AnswerMapping> = {
@@ -17,10 +23,10 @@ type BasePrompt<T extends keyof AnswerMapping> = {
 };
 
 export type SupportedPrompts =
-    | BasePrompt<BuildingBlockType.Chart>
-    | BasePrompt<BuildingBlockType.Table>
-    | BasePrompt<BuildingBlockType.FilterBar>
-    | BasePrompt<BuildingBlockType.Field>;
+    | BasePrompt<PromptsType.Chart>
+    | BasePrompt<PromptsType.Table>
+    | BasePrompt<PromptsType.FilterBar>
+    | BasePrompt<PromptsType.BuildingBlocks>;
 
 export type NarrowPrompt<T, N = SupportedPrompts> = N extends { type: T } ? N : never;
 
