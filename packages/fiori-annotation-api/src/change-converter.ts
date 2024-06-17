@@ -214,7 +214,7 @@ export class ChangeConverter {
     private convertInsert(
         file: AnnotationFile,
         fileMergeMaps: Record<string, Record<string, string>>,
-        aliasInfoMod: AliasInformation,
+        aliasInfo: AliasInformation,
         change: InsertChange | UpdateChange
     ): void {
         const { reference, content } = change;
@@ -223,21 +223,22 @@ export class ChangeConverter {
             targetPointer: pointer,
             internalPointer
         } = findAnnotationByReference(
-            aliasInfoMod,
+            aliasInfo,
             file,
             fileMergeMaps[change.uri],
             reference,
             change.pointer,
             this.splitAnnotationSupport
         );
+        const index = change.kind === ChangeType.Insert ? change.index : undefined;
         if (content.type === 'record') {
             const internal: InsertElement = {
                 type: INSERT_ELEMENT,
                 uri: change.uri,
                 target: change.reference.target,
                 pointer: pointer + internalPointer,
-                element: convertRecordToInternal(aliasInfoMod, content.value),
-                index: change.kind === ChangeType.Insert ? change.index : undefined
+                element: convertRecordToInternal(aliasInfo, content.value),
+                index
             };
             this.annotationFileChanges.push(internal);
         } else if (content.type === 'property-value') {
@@ -246,8 +247,8 @@ export class ChangeConverter {
                 uri: change.uri,
                 target: change.reference.target,
                 pointer: pointer + internalPointer,
-                element: convertPropertyValueToInternal(aliasInfoMod, content.value),
-                index: change.kind === ChangeType.Insert ? change.index : undefined
+                element: convertPropertyValueToInternal(aliasInfo, content.value),
+                index
             };
             this.annotationFileChanges.push(internal);
         } else if (content.type === 'collection') {
@@ -256,14 +257,14 @@ export class ChangeConverter {
                 uri: change.uri,
                 target: change.reference.target,
                 pointer: pointer + internalPointer,
-                element: convertCollectionToInternal(aliasInfoMod, content.value),
-                index: change.kind === ChangeType.Insert ? change.index : undefined
+                element: convertCollectionToInternal(aliasInfo, content.value),
+                index
             };
             this.annotationFileChanges.push(internal);
         } else if (content.type === 'expression') {
-            this.convertInsertExpression(file, aliasInfoMod, pointer + internalPointer, change, content);
+            this.convertInsertExpression(file, aliasInfo, pointer + internalPointer, change, content, index);
         } else if (content.type === 'primitive') {
-            this.convertInsertPrimitive(element, aliasInfoMod, pointer, internalPointer, change, content);
+            this.convertInsertPrimitive(element, aliasInfo, pointer, internalPointer, change, content, index);
         }
     }
 
@@ -272,7 +273,8 @@ export class ChangeConverter {
         aliasInfoMod: AliasInformation,
         pointer: string,
         change: InsertChange | UpdateChange,
-        content: ExpressionModificationContent | ExpressionUpdateContent
+        content: ExpressionModificationContent | ExpressionUpdateContent,
+        index: number | undefined
     ): void {
         const node = getGenericNodeFromPointer(file, pointer);
         if (node?.type === ELEMENT_TYPE && node.name === Edm.Collection) {
@@ -283,7 +285,8 @@ export class ChangeConverter {
                     uri: change.uri,
                     target: change.reference.target,
                     pointer: pointer,
-                    element: expression
+                    element: expression,
+                    index
                 };
                 this.annotationFileChanges.push(internal);
             }
@@ -301,7 +304,8 @@ export class ChangeConverter {
                         uri: change.uri,
                         target: change.reference.target,
                         pointer: pointer,
-                        element: expression
+                        element: expression,
+                        index
                     };
                     this.annotationFileChanges.push(internal);
                     return;
@@ -327,7 +331,8 @@ export class ChangeConverter {
         pointer: string,
         internalPointer: string,
         change: InsertChange | UpdateChange,
-        content: PrimitiveModificationContent
+        content: PrimitiveModificationContent,
+        index: number | undefined
     ): void {
         if (content.expressionType === ExpressionType.Unknown) {
             const attributePointer = convertPointerInAnnotationToInternal(
@@ -353,7 +358,8 @@ export class ChangeConverter {
                 uri: change.uri,
                 target: change.reference.target,
                 pointer: pointer + internalPointer,
-                element: createElementNode({ name: Edm.Null })
+                element: createElementNode({ name: Edm.Null }),
+                index
             };
             this.annotationFileChanges.push(internal);
         } else if (typeof content.expressionType === 'string') {

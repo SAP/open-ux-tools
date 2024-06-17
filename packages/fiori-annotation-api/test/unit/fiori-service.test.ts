@@ -7,7 +7,7 @@ import { create as createEditor } from 'mem-fs-editor';
 
 import type { Project } from '@sap-ux/project-access';
 
-import type { AnnotationRecord, Collection, RawAnnotation } from '@sap-ux/vocabularies-types';
+import type { AnnotationRecord, Collection, PropertyPathExpression, RawAnnotation } from '@sap-ux/vocabularies-types';
 import { getProject } from '@sap-ux/project-access';
 
 import type { Change, DeleteChange, InsertAnnotationChange, TextFile } from '../../src/types';
@@ -69,6 +69,7 @@ const PHONE_TYPE_CELL = `${COMMUNICATION}.PhoneType/cell`;
 const UI = 'com.sap.vocabularies.UI.v1';
 const COMMON = 'com.sap.vocabularies.Common.v1';
 const LINE_ITEM = `${UI}.LineItem`;
+const SELECTION_FIELDS = `${UI}.SelectionFields`;
 const CHART = `${UI}.Chart`;
 const CHART_TYPE_BAR = `${UI}.ChartType/Bar`;
 const CHART_TYPE_COLUMN = `${UI}.ChartType/Column`;
@@ -266,6 +267,27 @@ function createLineItem(uri: string, collection: AnnotationRecord[], qualifier?:
         }
     };
 }
+
+function createSelectionFields(
+    uri: string,
+    collection: PropertyPathExpression[],
+    qualifier?: string
+): InsertAnnotationChange {
+    return {
+        kind: ChangeType.InsertAnnotation,
+        uri,
+        content: {
+            type: 'annotation',
+            target: targetName,
+            value: {
+                term: SELECTION_FIELDS,
+                qualifier,
+                collection
+            }
+        }
+    };
+}
+
 function createLineItemWithAnnotations(
     uri: string,
     collection: AnnotationRecord[],
@@ -1631,6 +1653,33 @@ describe('fiori annotation service', () => {
                             type: 'expression',
                             value: { type: 'Path', Path: 'Test' }
                         }
+                    }
+                ]
+            });
+
+            createEditTestCase({
+                name: 'path in collection based on index',
+                projectTestModels: TEST_TARGETS,
+                getInitialChanges: (files) => [
+                    createSelectionFields(files.annotations, [{ type: 'PropertyPath', PropertyPath: 'path1' }])
+                ],
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.Insert,
+                        reference: {
+                            target: targetName,
+                            term: SELECTION_FIELDS
+                        },
+                        uri: files.annotations,
+                        pointer: '/collection',
+                        content: {
+                            type: 'expression',
+                            value: {
+                                type: 'PropertyPath',
+                                PropertyPath: 'path2'
+                            }
+                        },
+                        index: 0
                     }
                 ]
             });
