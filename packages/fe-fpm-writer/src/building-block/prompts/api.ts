@@ -5,15 +5,7 @@ import { create as createStorage } from 'mem-fs';
 import { i18nNamespaces, initI18n, translate } from '../../i18n';
 import { BuildingBlockType } from '../types';
 import type { BuildingBlockConfig } from '../types';
-import {
-    getCAPServiceChoices,
-    getChoices,
-    getEntityChoices,
-    getXPathStringsForXmlFile,
-    ProjectProvider,
-    getAnnotationPathQualifiers
-} from './utils';
-import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
+import { ProjectProvider } from './utils';
 import { relative } from 'path';
 import type {
     ChartPromptsAnswer,
@@ -28,12 +20,12 @@ import type {
     NarrowPrompt,
     PromptListChoices
 } from './types';
-import { promises as fsPromises } from 'fs';
-import { DOMParser } from '@xmldom/xmldom';
 import { generateBuildingBlock, getSerializedFileContent } from '..';
-import { getChartBuildingBlockPrompts } from './chart';
-import { getTableBuildingBlockPrompts } from './table';
-import { getFilterBarBuildingBlockPrompts } from './filter-bar';
+import {
+    getChartBuildingBlockPrompts,
+    getTableBuildingBlockPrompts,
+    getFilterBarBuildingBlockPrompts
+} from './questions';
 
 const unsupportedPrompts = (_fs: Editor, _basePath: string, _projectProvider: ProjectProvider): Prompts<Answers> => ({
     questions: []
@@ -214,9 +206,7 @@ export class PromptsAPI {
         };
     }
 
-    public submitAnswers = <
-        T extends TablePromptsAnswer | FilterBarPromptsAnswer | ChartPromptsAnswer
-    >(
+    public submitAnswers = <T extends TablePromptsAnswer | FilterBarPromptsAnswer | ChartPromptsAnswer>(
         // ToDo - different enum???
         buildingBlockType: BuildingBlockType,
         answers: T

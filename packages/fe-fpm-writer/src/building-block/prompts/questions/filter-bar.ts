@@ -1,7 +1,7 @@
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { Answers } from 'inquirer';
 import type { Editor } from 'mem-fs-editor';
-import { i18nNamespaces, initI18n, translate } from '../../i18n';
+import { i18nNamespaces, initI18n, translate } from '../../../i18n';
 import {
     getAggregationPathPrompt,
     getAnnotationPathQualifierPrompt,
@@ -11,9 +11,9 @@ import {
     getViewOrFragmentFilePrompt,
     validateElementId,
     isCapProject
-} from './utils';
-import type { ProjectProvider } from './utils';
-import type { Prompts, FilterBarPromptsAnswer } from './types';
+} from '../utils';
+import type { ProjectProvider } from '../utils';
+import type { Prompts, FilterBarPromptsAnswer } from '../types';
 
 export async function getFilterBarBuildingBlockPrompts(
     fs: Editor,

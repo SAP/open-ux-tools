@@ -2,7 +2,7 @@ import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { TFunction } from 'i18next';
 import type { Answers } from 'inquirer';
 import type { Editor } from 'mem-fs-editor';
-import { i18nNamespaces, initI18n, translate } from '../../i18n';
+import { i18nNamespaces, initI18n, translate } from '../../../i18n';
 import {
     getAggregationPathPrompt,
     getAnnotationPathQualifierPrompt,
@@ -13,9 +13,9 @@ import {
     getViewOrFragmentFilePrompt,
     isCapProject,
     validateElementId
-} from './utils';
-import type { ProjectProvider } from './utils';
-import type { ChartPromptsAnswer, Prompts } from './types';
+} from '../utils';
+import type { ProjectProvider } from '../utils';
+import type { ChartPromptsAnswer, Prompts } from '../types';
 
 /**
  * Returns a list of prompts required to generate a chart building block.

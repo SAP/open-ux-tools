@@ -2,7 +2,7 @@ import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { TFunction } from 'i18next';
 import type { Answers } from 'inquirer';
 import type { Editor } from 'mem-fs-editor';
-import { i18nNamespaces, initI18n, translate } from '../../i18n';
+import { i18nNamespaces, initI18n, translate } from '../../../i18n';
 import {
     getAggregationPathPrompt,
     getAnnotationPathQualifierPrompt,
@@ -14,9 +14,9 @@ import {
     getViewOrFragmentFilePrompt,
     validateElementId,
     isCapProject
-} from './utils';
-import type { ProjectProvider } from './utils';
-import type { Prompts, PromptsGroup, TablePromptsAnswer } from './types';
+} from '../utils';
+import type { ProjectProvider } from '../utils';
+import type { Prompts, PromptsGroup, TablePromptsAnswer } from '../types';
 
 const TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID = 'tableBuildingBlockProperties';
 const TABLE_VISUALIZATION_PROPERTIES_GROUP_ID = 'tableVisualizationProperties';
