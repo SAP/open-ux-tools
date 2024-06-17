@@ -125,7 +125,7 @@ export async function applyOptionalFeatures(
  * Generates a README file at the specified destination path using the provided configuration and file system editor.
  *
  * @param {string} destPath - The desitination path where the README file will be created.
- * @param {ReadMe} readMe - The configuration object containing the details to be included in the README file. Properties in this object are optional.
+ * @param {ReadMe} readMe - The configuration object containing the details to be included in the README file.
  * @param {Editor} fs - The file system editor instance used to write the README file.
  * @returns {Editor} The file system editor instance used to write the README file.
  */
