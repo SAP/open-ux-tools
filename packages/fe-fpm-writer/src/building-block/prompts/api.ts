@@ -165,6 +165,27 @@ export class PromptsAPI {
         return result;
     }
 
+    public submitAnswers = <T extends TablePromptsAnswer | FilterBarPromptsAnswer | ChartPromptsAnswer>(
+        // ToDo - different enum???
+        buildingBlockType: BuildingBlockType,
+        answers: T
+    ): Editor => {
+        const configData = this.getBuildingBlockConfig(answers, buildingBlockType);
+        if (!configData) {
+            throw new Error(`No writer found for building block type: ${buildingBlockType}`);
+        }
+        const fs: Editor = generateBuildingBlock(this.basePath, configData);
+        return fs;
+    };
+
+    public getCodeSnippet<T extends TablePromptsAnswer | FilterBarPromptsAnswer | ChartPromptsAnswer>(
+        buildingBlockType: BuildingBlockType,
+        answers: T
+    ): string {
+        const configData = this.getBuildingBlockConfig(answers, buildingBlockType, true);
+        return getSerializedFileContent(this.basePath, configData);
+    }
+
     private getMetaPath(entity: string, qualifier: string, placeholders = false): string {
         let entityPath = entity || (placeholders ? 'REPLACE_WITH_ENTITY' : '');
         const lastIndex = entityPath.lastIndexOf('.');
@@ -192,26 +213,5 @@ export class PromptsAPI {
                 buildingBlockType
             }
         };
-    }
-
-    public submitAnswers = <T extends TablePromptsAnswer | FilterBarPromptsAnswer | ChartPromptsAnswer>(
-        // ToDo - different enum???
-        buildingBlockType: BuildingBlockType,
-        answers: T
-    ): Editor => {
-        const configData = this.getBuildingBlockConfig(answers, buildingBlockType);
-        if (!configData) {
-            throw new Error(`No writer found for building block type: ${buildingBlockType}`);
-        }
-        const fs: Editor = generateBuildingBlock(this.basePath, configData);
-        return fs;
-    };
-
-    public getCodeSnippet<T extends TablePromptsAnswer | FilterBarPromptsAnswer | ChartPromptsAnswer>(
-        buildingBlockType: BuildingBlockType,
-        answers: T
-    ): string {
-        const configData = this.getBuildingBlockConfig(answers, buildingBlockType, true);
-        return getSerializedFileContent(this.basePath, configData);
     }
 }
