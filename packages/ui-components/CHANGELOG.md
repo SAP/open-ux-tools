@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.16.2
+
+### Patch Changes
+
+-   915e7d0c: UIContextualMenu. Wrong visualisation of menu item without text when menu contains at least one menu item with icon
+
 ## 1.16.1
 
 ### Patch Changes
