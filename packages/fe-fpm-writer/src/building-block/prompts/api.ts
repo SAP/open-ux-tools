@@ -201,7 +201,9 @@ export class PromptsAPI {
                 ...answers,
                 id,
                 metaPath,
-                type
+                type,
+                // ToDo - temp fix
+                buildingBlockType: type,
             }
         };
     }
