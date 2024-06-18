@@ -1620,6 +1620,7 @@ exports[`fiori annotation service insert reference new vocabulary from annotatio
 
 exports[`fiori annotation service insert target insert target with composition 1`] = `
 "using IncidentService as service from '../../srv/incidentservice';
+using from '../../db/schema';
 using from '../../srv/common';
 
 
