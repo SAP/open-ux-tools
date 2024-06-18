@@ -12,7 +12,7 @@ import { getConfigForLogging, isBspConfig, throwConfigMissingError } from './con
 import { promptConfirmation } from './prompt';
 import { createAbapServiceProvider, getCredentialsWithPrompts } from '@sap-ux/system-access';
 import { getAppDescriptorVariant } from './archive';
-import { validateBeforeDeploy, formatSummary, showAdditionalInfoForOnPrem } from './validate';
+import { validateBeforeDeploy, formatSummary, showAdditionalInfoForOnPrem, promptForCredentials } from './validate';
 
 /**
  * Internal deployment commands
@@ -101,27 +101,28 @@ async function handle401Error(
     config: AbapDeployConfig,
     logger: Logger,
     archive: Buffer
-) {
-    logger.warn(`${command === tryDeploy ? 'Deployment' : 'Undeployment'} failed with authentication error.`);
-    logger.info(
-        'Please maintain correct credentials to avoid seeing this error\n\t(see help: https://www.npmjs.com/package/@sap/ux-ui5-tooling#setting-environment-variables-in-a-env-file)'
-    );
-    logger.info('Please enter your credentials.');
-    const credentials = await getCredentialsWithPrompts(provider.defaults?.auth?.username);
-    if (Object.keys(credentials).length) {
-        if (config.target.serviceKey) {
-            config.target.serviceKey.uaa.username = credentials.username;
-            config.target.serviceKey.uaa.password = credentials.password;
-        } else {
-            config.credentials = credentials;
+): Promise<boolean> {
+    if (await promptForCredentials(`${config.target.destination}`)) {
+        logger.warn(`${command === tryDeploy ? 'Deployment' : 'Undeployment'} failed with authentication error.`);
+        logger.info(
+            'Please maintain correct credentials to avoid seeing this error\n\t(see help: https://www.npmjs.com/package/@sap/ux-ui5-tooling#setting-environment-variables-in-a-env-file)'
+        );
+        logger.info('Please enter your credentials.');
+        const credentials = await getCredentialsWithPrompts(provider.defaults?.auth?.username);
+        if (Object.keys(credentials).length) {
+            if (config.target.serviceKey) {
+                config.target.serviceKey.uaa.username = credentials.username;
+                config.target.serviceKey.uaa.password = credentials.password;
+            } else {
+                config.credentials = credentials;
+            }
+            // Need to re-init the provider with the updated credentials
+            provider = await createProvider(config, logger);
+            await command(provider, config, logger, archive);
+            return true;
         }
-        // Need to re-init the provider with the updated credentials
-        provider = await createProvider(config, logger);
-        await command(provider, config, logger, archive);
-        return true;
-    } else {
-        return false;
     }
+    return false;
 }
 
 /**

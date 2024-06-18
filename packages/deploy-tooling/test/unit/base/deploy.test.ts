@@ -18,6 +18,7 @@ import type { AbapDeployConfig } from '../../../src/types';
 
 const validateBeforeDeployMock = jest.spyOn(validate, 'validateBeforeDeploy');
 const showAdditionalInfoForOnPremMock = jest.spyOn(validate, 'showAdditionalInfoForOnPrem');
+const promptForCredentialsMock = jest.spyOn(validate, 'promptForCredentials');
 
 describe('base/deploy', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -139,6 +140,7 @@ describe('base/deploy', () => {
             mockedUi5RepoService.deploy.mockRejectedValueOnce(axiosError(412));
             await deploy(archive, { app, target, yes: true }, nullLogger);
             mockedUi5RepoService.deploy.mockRejectedValueOnce(axiosError(401));
+            promptForCredentialsMock.mockResolvedValue(true);
             prompts.inject(['~username', '~password']);
             await deploy(archive, { app, target, yes: true }, nullLogger);
             expect(mockCreateForAbap).toBeCalledWith(
@@ -166,6 +168,7 @@ describe('base/deploy', () => {
                 yes: true
             };
 
+            promptForCredentialsMock.mockResolvedValueOnce(true);
             mockedUi5RepoService.deploy.mockRejectedValueOnce(axiosError(401));
             prompts.inject(['~uaa-username', '~uaa-password']);
 
@@ -185,6 +188,16 @@ describe('base/deploy', () => {
                 testMode: undefined,
                 safeMode: undefined
             });
+        });
+        test('Handle 401 error with unsupported authentication type', async () => {
+            promptForCredentialsMock.mockResolvedValue(false);
+            mockedUi5RepoService.deploy.mockRejectedValueOnce(axiosError(401));
+            try {
+                await deploy(archive, { app, target, yes: true }, nullLogger);
+                fail('Should have thrown an error');
+            } catch (error) {
+                expect(error).toStrictEqual(axiosError(401));
+            }
         });
 
         test('Axios Error and no retry', async () => {

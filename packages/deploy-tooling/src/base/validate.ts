@@ -13,7 +13,8 @@ import {
 } from '@sap-ux/project-input-validator';
 import { EOL } from 'os';
 import type { AbapDeployConfig } from '../types';
-import { isAppStudio, isOnPremiseDestination, listDestinations } from '@sap-ux/btp-utils';
+import type { Destinations } from '@sap-ux/btp-utils';
+import { isAppStudio, isOnPremiseDestination, listDestinations, Authentication } from '@sap-ux/btp-utils';
 
 export type ValidationInputs = {
     appName: string;
@@ -53,6 +54,8 @@ export const summaryMessage = {
     transportNotRequired: 'Transport Request is not required for local package',
     atoAdtAccessError: 'Development prefix could not be validated. Please check manually.'
 };
+
+let cachedDestinationsList: Destinations = {};
 
 /**
  * Validation of deploy configuration before running deploy-test.
@@ -405,4 +408,37 @@ export async function showAdditionalInfoForOnPrem(destination: string): Promise<
         showInfo = isOnPremiseDestination(destinations[destination]);
     }
     return showInfo;
+}
+
+/**
+ * Returns true if specified destination authentication is NoAuthentication or BasicAuthentication.
+ *
+ * @param destination Identifier for destination to be checked.
+ * @returns Promise boolean.
+ */
+export async function promptForCredentials(destination: string): Promise<boolean> {
+    let destAuth = false;
+    if (destination && isAppStudio()) {
+        const destinations = await getDestinations();
+        const dest = destinations[destination];
+        if (
+            dest.Authentication === Authentication.NO_AUTHENTICATION ||
+            dest.Authentication === Authentication.BASIC_AUTHENTICATION
+        ) {
+            destAuth = true;
+        }
+    }
+    return destAuth;
+}
+
+/**
+ * Return a list of Destinations.
+ *
+ * @returns Array of Destination objects
+ */
+async function getDestinations(): Promise<Destinations> {
+    if (Object.keys(cachedDestinationsList).length === 0) {
+        cachedDestinationsList = await listDestinations();
+    }
+    return cachedDestinationsList;
 }
