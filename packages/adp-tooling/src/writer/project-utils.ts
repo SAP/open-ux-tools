@@ -1,7 +1,6 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
-
 import type { CloudApp, AdpWriterConfig } from '../types';
 import {
     enhanceUI5DeployYaml,
