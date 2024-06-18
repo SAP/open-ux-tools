@@ -84,7 +84,7 @@ describe('Project Utils', () => {
                 await writeUI5Yaml(projectPath, data, mockFs as unknown as Editor);
                 fail('Expected error to be thrown');
             } catch (error) {
-                expect(`Could not write ui5.yaml file. Reason: ${errMsg}`);
+                expect(error.message).toBe(`Could not write ui5.yaml file. Reason: ${errMsg}`);
             }
         });
     });
@@ -121,7 +121,7 @@ describe('Project Utils', () => {
                 await writeUI5DeployYaml(projectPath, config, mockFs as unknown as Editor);
                 fail('Expected error to be thrown');
             } catch (error) {
-                expect(`Could not write ui5-deploy.yaml file. Reason: ${errMsg}`);
+                expect(error.message).toBe(`Could not write ui5-deploy.yaml file. Reason: ${errMsg}`);
             }
         });
     });
