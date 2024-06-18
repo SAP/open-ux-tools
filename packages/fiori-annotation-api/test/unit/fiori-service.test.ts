@@ -2361,9 +2361,9 @@ describe('fiori annotation service', () => {
             });
         });
 
-        describe('PropertyValue - PropertyPath namespace alias', () => {
+        describe('PropertyValue - PropertyPath', () => {
             createEditTestCase({
-                name: 'value',
+                name: 'namespace alias',
                 projectTestModels: TEST_TARGETS,
                 getInitialChanges: (files) => [
                     {
@@ -2406,6 +2406,90 @@ describe('fiori annotation service', () => {
                             type: 'primitive',
                             expressionType: 'AnnotationPath',
                             value: 'incidentFlow/@com.sap.vocabularies.UI.v1.PresentationVariant#testsection'
+                        }
+                    }
+                ]
+            });
+
+            createEditTestCase({
+                name: 'replace text content',
+                projectTestModels: TEST_TARGETS.filter((target) => target === PROJECTS.V4_XML_START),
+                getInitialChanges: (files) => [
+                    {
+                        kind: ChangeType.InsertAnnotation,
+                        uri: files.annotations,
+                        content: {
+                            target: TARGET_INCIDENTS,
+                            type: 'annotation',
+                            value: {
+                                term: SELECTION_FIELDS,
+                                qualifier: 'abc',
+                                collection: [
+                                    {
+                                        PropertyPath: 'BookingFee',
+                                        type: 'PropertyPath'
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ],
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.Update,
+                        reference: {
+                            target: TARGET_INCIDENTS,
+                            term: SELECTION_FIELDS,
+                            qualifier: 'abc'
+                        },
+                        uri: files.annotations,
+                        pointer: '/collection/0/PropertyPath',
+                        content: {
+                            type: 'primitive',
+                            expressionType: 'PropertyPath',
+                            value: 'createdBy'
+                        }
+                    }
+                ]
+            });
+
+            createEditTestCase({
+                name: 'change element',
+                projectTestModels: TEST_TARGETS.filter((target) => target === PROJECTS.V4_XML_START),
+                getInitialChanges: (files) => [
+                    {
+                        kind: ChangeType.InsertAnnotation,
+                        uri: files.annotations,
+                        content: {
+                            target: TARGET_INCIDENTS,
+                            type: 'annotation',
+                            value: {
+                                term: SELECTION_FIELDS,
+                                qualifier: 'abc',
+                                collection: [
+                                    {
+                                        PropertyPath: 'BookingFee',
+                                        type: 'PropertyPath'
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ],
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.Update,
+                        reference: {
+                            target: TARGET_INCIDENTS,
+                            term: SELECTION_FIELDS,
+                            qualifier: 'abc'
+                        },
+                        uri: files.annotations,
+                        pointer: '/collection/0/PropertyPath',
+                        content: {
+                            type: 'primitive',
+                            expressionType: 'AnnotationPath',
+                            value: 'createdBy'
                         }
                     }
                 ]

@@ -45,7 +45,14 @@ import {
     type AnnotationFileChange,
     INSERT_ELEMENT,
     UPDATE_ATTRIBUTE_VALUE,
-    DELETE_ELEMENT
+    DELETE_ELEMENT,
+    MOVE_ELEMENT,
+    INSERT_ATTRIBUTE,
+    REPLACE_ELEMENT,
+    REPLACE_ATTRIBUTE,
+    DELETE_ATTRIBUTE,
+    INSERT_TARGET,
+    REPLACE_TEXT
 } from '../types';
 import { ApiError, ApiErrorCode } from '../error';
 
@@ -295,7 +302,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
         change: AnnotationFileChange
     ): void {
         switch (change.type) {
-            case 'insert-target': {
+            case INSERT_TARGET: {
                 const pointer = getSchemaPointer(document.ast);
                 throwIf(!pointer, `Could not process change ${change.type} ${change.uri} ${change.target}`);
                 const element = createElementNode({
@@ -331,7 +338,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                 });
                 break;
             }
-            case 'delete-element': {
+            case DELETE_ELEMENT: {
                 const pointer = getSchemaPointer(document.ast);
                 throwIf(!pointer, `Could not process change ${change.type} ${change.uri} ${change.pointer} `);
                 const fullPointer = pointer + convertPointer(document.annotationFile, change.pointer);
@@ -350,7 +357,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                 });
                 break;
             }
-            case 'delete-attribute': {
+            case DELETE_ATTRIBUTE: {
                 const pointer = getSchemaPointer(document.ast);
                 throwIf(!pointer, `Could not process change ${change.type} ${change.uri} ${change.pointer} `);
                 writer.addChange({
@@ -369,7 +376,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                 });
                 break;
             }
-            case 'replace-attribute': {
+            case REPLACE_ATTRIBUTE: {
                 const pointer = getSchemaPointer(document.ast);
                 throwIf(!pointer, `Could not process change ${change.type} ${change.uri} ${change.pointer} `);
                 writer.addChange({
@@ -384,7 +391,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                 });
                 break;
             }
-            case 'replace-element': {
+            case REPLACE_ELEMENT: {
                 const pointer = getSchemaPointer(document.ast);
                 throwIf(!pointer, `Could not process change ${change.type} ${change.uri} ${change.pointer} `);
                 writer.addChange({
@@ -394,7 +401,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                 });
                 break;
             }
-            case 'replace-element-content': {
+            case REPLACE_ELEMENT_CONTENT: {
                 const pointer = getSchemaPointer(document.ast);
                 throwIf(!pointer, `Could not process change ${change.type} ${change.uri} ${change.pointer} `);
                 writer.addChange({
@@ -404,7 +411,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                 });
                 break;
             }
-            case 'insert-attribute': {
+            case INSERT_ATTRIBUTE: {
                 const pointer = getSchemaPointer(document.ast);
                 throwIf(
                     !pointer,
@@ -418,21 +425,35 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                 });
                 break;
             }
-            case 'move-element': {
-                const pointer = getSchemaPointer(document.ast);
-                if (pointer) {
-                    const ptr = pointer + convertPointer(document.annotationFile, change.pointer);
-                    writer?.addChange({
+            case MOVE_ELEMENT: {
+                const schemaPointer = getSchemaPointer(document.ast);
+                if (schemaPointer) {
+                    const pointer = schemaPointer + convertPointer(document.annotationFile, change.pointer);
+                    writer.addChange({
                         type: 'move-collection-value',
-                        pointer: ptr,
+                        pointer,
                         index: change.index,
-                        fromPointers: change.fromPointers.map((ptr) => {
-                            return pointer + convertPointer(document.annotationFile, ptr);
-                        })
+                        fromPointers: change.fromPointers.map(
+                            (fromPointer) => schemaPointer + convertPointer(document.annotationFile, fromPointer)
+                        )
                     });
                 }
                 break;
             }
+            case REPLACE_TEXT:
+                {
+                    const schemaPointer = getSchemaPointer(document.ast);
+                    if (schemaPointer) {
+                        const pointer = schemaPointer + convertPointer(document.annotationFile, change.pointer);
+                        writer.addChange({
+                            type: REPLACE_ELEMENT_CONTENT,
+                            // ends with textContents/<index>/text we need to get the parent element
+                            pointer: pointer.split('/').slice(0, -3).join('/'),
+                            newValue: [change.text]
+                        });
+                    }
+                }
+                break;
             default:
                 break;
         }
@@ -661,8 +682,12 @@ function convertPointer(annotationFile: AnnotationFile, pointer: string): string
     let currentNode: Node | undefined = annotationFile;
     return pointer
         .split('/')
-        .map((segment, i) => {
+        .map((segment, i, self) => {
             if (segment === 'content' || segment === 'targets' || segment === 'terms') {
+                if (self[i + 2] === 'text') {
+                    currentNode = (currentNode as unknown as { [key: string]: Node }).textContents;
+                    return 'textContents';
+                }
                 if (currentNode) {
                     currentNode = (currentNode as unknown as { [key: string]: Node })[segment];
                 }

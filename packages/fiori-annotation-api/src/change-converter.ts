@@ -1,11 +1,12 @@
-import type { AliasInformation, AnnotationFile, Element } from '@sap-ux/odata-annotation-core-types';
+import type { AliasInformation, AnnotationFile, AnyNode, Element } from '@sap-ux/odata-annotation-core-types';
 import {
     ELEMENT_TYPE,
     ATTRIBUTE_TYPE,
     createElementNode,
     createTextNode,
     Edm,
-    createTarget
+    createTarget,
+    TEXT_TYPE
 } from '@sap-ux/odata-annotation-core-types';
 
 import {
@@ -479,15 +480,8 @@ export class ChangeConverter {
                 change.pointer,
                 content.expressionType
             );
-            const newValue = convertPrimitiveValueToInternal(content.expressionType ?? '', content.value, aliasInfo);
-
-            const internal: ReplaceText = {
-                type: REPLACE_TEXT,
-                uri: change.uri,
-                pointer: pointer + internalPointerForPrimitiveValues + '/text',
-                text: createTextNode(newValue)
-            };
-            this.annotationFileChanges.push(internal);
+            const replaceTextPointer = pointer + internalPointerForPrimitiveValues + '/text';
+            this.convertUpdatePrimitiveValue(file, aliasInfo, content, pointer + internalPointer, replaceTextPointer);
         } else {
             const element = convertChangeToElement(aliasInfo, file, change);
             if (element) {
@@ -633,6 +627,71 @@ export class ChangeConverter {
         }
     }
 
+    private convertUpdatePrimitiveValue(
+        file: AnnotationFile,
+        aliasInfo: AliasInformation,
+        content: PrimitiveModificationContent,
+        pointer: string,
+        replaceTextPointer: string
+    ) {
+        const newValue = convertPrimitiveValueToInternal(content.expressionType ?? '', content.value, aliasInfo);
+        const node = getGenericNodeFromPointer(file, pointer);
+        if (node?.type === TEXT_TYPE) {
+            const containerPointer = pointer.split('/').slice(0, -2).join('/');
+            const container = getGenericNodeFromPointer(file, containerPointer);
+            if (
+                container?.type === ELEMENT_TYPE &&
+                content.expressionType &&
+                container.name !== content.expressionType
+            ) {
+                const internal: ReplaceElement = {
+                    type: REPLACE_ELEMENT,
+                    uri: file.uri,
+                    pointer: containerPointer,
+                    newElement: createElementNode({
+                        name: content.expressionType,
+                        content: [createTextNode(newValue)]
+                    })
+                };
+                this.annotationFileChanges.push(internal);
+                return;
+            }
+        } else if (
+            node?.type === ELEMENT_TYPE &&
+            content.expressionType &&
+            replaceTextPointer.split('/').includes('attributes')
+        ) {
+            const oldAttributeName = replaceTextPointer.split('/').slice(-2)[0];
+            if (node.attributes[content.expressionType]) {
+                const internal: UpdateAttributeValue = {
+                    type: UPDATE_ATTRIBUTE_VALUE,
+                    uri: file.uri,
+                    pointer: `${pointer}/attributes/${content.expressionType}`,
+                    newValue
+                };
+                this.annotationFileChanges.push(internal);
+                return;
+            } else {
+                const internal: ReplaceAttribute = {
+                    type: REPLACE_ATTRIBUTE,
+                    uri: file.uri,
+                    pointer: `${pointer}/attributes/${oldAttributeName}`,
+                    newAttributeName: content.expressionType,
+                    newAttributeValue: newValue
+                };
+                this.annotationFileChanges.push(internal);
+                return;
+            }
+        }
+        const internal: ReplaceText = {
+            type: REPLACE_TEXT,
+            uri: file.uri,
+            pointer: replaceTextPointer,
+            text: createTextNode(newValue)
+        };
+        this.annotationFileChanges.push(internal);
+    }
+
     private convertMove(
         file: AnnotationFile,
         fileMergeMaps: Record<string, Record<string, string>>,
@@ -697,30 +756,41 @@ export class ChangeConverter {
     }
 
     private getValueType(schemaProvider: SchemaProvider, change: UpdateChange): string | undefined {
-        const { reference, content, uri, pointer } = change;
+        const { content } = change;
         if (content.type === 'expression') {
             if (content.previousType) {
                 return content.previousType;
             }
+            return this.getValueTypeFromSchema(schemaProvider, change);
+        }
+        // else if (content.type === 'primitive') {
+        //     if (content.expressionType) {
+        //         return content.expressionType;
+        //     }
+        //     return this.getValueTypeFromSchema(schemaProvider, change);
+        // }
+        return undefined;
+    }
 
-            const annotationLists = schemaProvider().schema.annotations[uri] ?? [];
-            const annotation = findAnnotation(annotationLists, reference);
-            if (!annotation) {
-                const refString = annotationReferenceToString(reference, uri);
-                throw new ApiError(`Could not find annotation '${refString}' in file '${uri}'.`, ApiErrorCode.General);
-            }
+    private getValueTypeFromSchema(schemaProvider: SchemaProvider, change: UpdateChange): string | undefined {
+        const { reference, uri, pointer } = change;
+        const annotationLists = schemaProvider().schema.annotations[uri] ?? [];
+        const annotation = findAnnotation(annotationLists, reference);
+        if (!annotation) {
+            const refString = annotationReferenceToString(reference, uri);
+            throw new ApiError(`Could not find annotation '${refString}' in file '${uri}'.`, ApiErrorCode.General);
+        }
 
-            const node = getAvtNodeFromPointer(annotation, pointer);
-            if (!node) {
-                const refString = annotationReferenceToString(reference, uri);
-                throw new ApiError(
-                    `Could not resolve pointer '${pointer}' from annotation '${refString}'.`,
-                    ApiErrorCode.General
-                );
-            }
-            if (this.isExpression(node)) {
-                return node.type;
-            }
+        const node = getAvtNodeFromPointer(annotation, pointer);
+        if (!node) {
+            const refString = annotationReferenceToString(reference, uri);
+            throw new ApiError(
+                `Could not resolve pointer '${pointer}' from annotation '${refString}'.`,
+                ApiErrorCode.General
+            );
+        }
+        if (this.isExpression(node)) {
+            return node.type;
         }
         return undefined;
     }
