@@ -21,7 +21,7 @@ export {
     ValidationResults
 };
 
-export const enum PromptsType {
+export enum PromptsType {
     FilterBar = 'filter-bar',
     Chart = 'chart',
     Table = 'table',
