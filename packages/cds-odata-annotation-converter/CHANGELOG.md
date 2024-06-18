@@ -1,5 +1,17 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.2.7
+
+### Patch Changes
+
+-   30064346: feat: add fiori annotation api package
+
+## 0.2.6
+
+### Patch Changes
+
+-   ca2385e5: fix: facade version
+
 ## 0.2.5
 
 ### Patch Changes

@@ -12,6 +12,9 @@ export class PromptState {
     public static isYUI = false;
 
     static reset(): void {
-        PromptState.odataService = {};
+        // Reset all values in the odataService object, do not reset the object reference itself as it may be used by external consumers
+        Object.keys(PromptState.odataService).forEach((key) => {
+            PromptState.odataService[key as keyof OdataServiceAnswers] = undefined;
+        });
     }
 }

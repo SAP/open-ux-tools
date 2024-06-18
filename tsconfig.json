@@ -81,6 +81,9 @@
       "path": "packages/feature-toggle"
     },
     {
+      "path": "packages/fiori-annotation-api"
+    },
+    {
       "path": "packages/fiori-elements-writer"
     },
     {

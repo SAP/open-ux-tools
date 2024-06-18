@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.13.1
+
+### Patch Changes
+
+-   869c1c0d: Prevents overwriting axios config params
+
 ## 1.13.0
 
 ### Minor Changes
