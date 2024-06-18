@@ -7,6 +7,17 @@ export default { title: 'Basic/Questions' };
 
 initIcons();
 
+const choices = [
+        {
+            name: 'test1',
+            value: 'test1'
+        },
+        {
+            name: 'test2',
+            value: 'test2'
+        }
+    ];
+
 const questions: PromptQuestion[] = [
     {
         name: 'Dummy1',
@@ -14,21 +25,13 @@ const questions: PromptQuestion[] = [
     },
     {
         name: 'Dummy2',
-        type: 'checkbox'
+        type: 'checkbox',
+        choices
     },
     {
         name: 'Dummy3',
         type: 'list',
-        choices: [
-            {
-                name: 'test1',
-                value: 'test1'
-            },
-            {
-                name: 'test2',
-                value: 'test2'
-            }
-        ]
+        choices
     }
 ];
 
