@@ -10,5 +10,6 @@
     "text": {
         "defaultAppTitle": "Title of {{ id }}",
         "defaultAppDescription": "Description of {{ id }}"
-    }
+    },
+    "TEXT_LAUNCH_DEFAULT" : "In order to launch the generated app, simply run the following from the generated app root folder:\n\n```\n    npm start\n```"
 }
