@@ -1,5 +1,16 @@
 # @sap-ux/adp-tooling
 
+## 0.11.1
+
+### Patch Changes
+
+-   a140cf8b: fix: incorrect fiori-tools-proxy config generated for adp
+-   Updated dependencies [a140cf8b]
+    -   @sap-ux/ui5-config@0.22.8
+    -   @sap-ux/project-access@1.22.1
+    -   @sap-ux/axios-extension@1.13.1
+    -   @sap-ux/system-access@0.4.1
+
 ## 0.11.0
 
 ### Minor Changes
