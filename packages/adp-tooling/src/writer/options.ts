@@ -112,8 +112,6 @@ function addFioriToolsMiddlwares(ui5Config: UI5Config, config: AdpWriterConfig) 
         },
         backend: [backendConfig as FioriToolsProxyConfigBackend]
     });
-
-    return;
 }
 
 /**
