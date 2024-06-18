@@ -1,4 +1,5 @@
 import type { ODataVersion } from '@sap-ux/project-access';
+import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 export const FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID = 'fiori_tools';
 
 export interface FioriOptions {
@@ -11,7 +12,7 @@ export interface FioriOptions {
     ui5Local?: boolean;
     ui5LocalVersion?: string;
     startFile?: string;
-    backendConfigs?: BackendConfig[];
+    backendConfigs?: FioriToolsProxyConfigBackend[];
     urlParameters?: string;
     visible?: boolean;
 }
@@ -32,16 +33,6 @@ export interface LaunchConfig {
     internalConsoleOptions: 'openOnSessionStart';
     outputCapture: 'std';
     env: LaunchConfigEnv;
-}
-
-export interface BackendConfig {
-    path: string;
-    name?: string;
-    url?: string;
-    client?: string;
-    destination?: string;
-    pathPrefix?: string;
-    scp?: boolean;
 }
 
 export interface LaunchConfigEnv {

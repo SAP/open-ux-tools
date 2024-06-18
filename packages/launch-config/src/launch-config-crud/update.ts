@@ -9,7 +9,7 @@ import { applyEdits, findNodeAtLocation, modify, parse, parseTree } from 'jsonc-
 export type configType = object | string | number | undefined;
 
 /**
- * Adds, modifies or deletes 'launch.json' file.
+ * Adds, modifies or deletes 'launch.json'.
  *
  * @param content content to be added to the JSON file at location specified by JSONPath. If undefined, property will be deleted.
  * @param filePath path to the json file.
@@ -81,7 +81,7 @@ function mergeArgs(newArgs: string[] | undefined, oldArgs: string[] | undefined)
     if (newArgs && oldArgs) {
         mergedArgs = mergedArgs.concat(newArgs);
         const parsedOldArgs = parseArguments(oldArgs);
-        mergedArgs = mergedArgs.concat(parsedOldArgs['_']);
+        mergedArgs = mergedArgs.concat(parsedOldArgs['_'] as string[]);
 
         return mergedArgs;
     } else {

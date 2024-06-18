@@ -84,7 +84,7 @@ export async function getAllLaunchConfigs(rootFolder: string | string[]): Promis
 export async function getLaunchConfigByName(launchConfigPath: string, name: string): Promise<LaunchConfig> {
     try {
         const config = await parse(await fs.readFile(launchConfigPath, { encoding: 'utf8' }));
-        const launchConfig = config.configurations.find((c) => c.name === name);
+        const launchConfig = config.configurations.find((c: LaunchConfig) => c.name === name);
         if (!launchConfig) {
             throw Error(`No config '${name}'`);
         }

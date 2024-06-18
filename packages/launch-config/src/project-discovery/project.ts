@@ -1,10 +1,10 @@
 import { promises as fs } from 'fs';
 import { basename, join } from 'path';
-import type { Package } from '@sap-ux/project-access';
-import { FileName, createProjectProvider, readUi5Yaml } from '@sap-ux/project-access';
-import type { ODataVersion } from '@sap-ux/project-access';
+import type { Manifest, ODataVersion, Package } from '@sap-ux/project-access';
+import { DirName, FileName, readUi5Yaml } from '@sap-ux/project-access';
 import { parse } from 'jsonc-parser';
 import type { FioriOptions } from '../types';
+import type { FioriToolsProxyConfig } from '@sap-ux/ui5-config';
 
 /**
  * Find out starting HTML file for project using package.json.
@@ -51,12 +51,16 @@ export async function getDefaultLaunchConfigOptionsForProject(projectRoot: strin
     let projectVersion; // V4 or V2
     const visible = true;
     try {
-        const projectProvider = await createProjectProvider(projectRoot);
-        projectVersion = (await projectProvider.getVersion()) as ODataVersion;
-        name = `Launch Fiori app: ${basename(projectProvider.project.root)}`;
+        const manifestPath = join(projectRoot, DirName.Webapp, FileName.Manifest);
+        const manifestContent = parse(await fs.readFile(manifestPath, { encoding: 'utf8' })) as Manifest;
+        projectVersion = manifestContent['sap.app']?.dataSources?.mainService.settings?.odataVersion as ODataVersion;
+        name = `Launch Fiori app: ${basename(projectRoot)}`;
         ui5Version = 'latest'; // reactivate code to find ui5 version in project-access
         startFile = await getStartFileFromPackageFile(projectRoot);
-        backendConfigs = await readUi5Yaml(projectRoot, FileName.Ui5Yaml);
+        const ui5YamlConfig = await readUi5Yaml(projectRoot, FileName.Ui5Yaml);
+        // read backend configurations from ui5.yaml
+        backendConfigs =
+            ui5YamlConfig.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy')?.configuration.backend;
     } catch (error) {
         console.error(`Error while getting the default configuration for project '${projectRoot}'`, error);
     }
