@@ -44,7 +44,7 @@ describe('generate/adaptation-project', () => {
         // Test execution
         const command = new Command('generate');
         addGenerateAdaptationProjectCommand(command);
-        await command.parseAsync(getArgv('--id', id, '--reference', reference, '--url', `${url}?sap-client=123`));
+        await command.parseAsync(getArgv('--id', id, '--reference', reference, '--url', `${url}?sap-client=123`, '-y'));
 
         const expectedAppRoot = join(process.cwd(), id);
         // Flow check
@@ -65,7 +65,7 @@ describe('generate/adaptation-project', () => {
         // Test execution
         const command = new Command('generate');
         addGenerateAdaptationProjectCommand(command);
-        await command.parseAsync(getArgv(appRoot, '--id', id, '--reference', reference, '--url', url));
+        await command.parseAsync(getArgv(appRoot, '--id', id, '--reference', reference, '--url', url, '-y'));
 
         // Flow check
         expect(promptSpy).not.toBeCalled();
@@ -79,7 +79,19 @@ describe('generate/adaptation-project', () => {
         const command = new Command('generate');
         addGenerateAdaptationProjectCommand(command);
         await command.parseAsync(
-            getArgv(appRoot, '--skip-install', '--id', id, '--reference', reference, '--url', url, '--package', '$tmp')
+            getArgv(
+                appRoot,
+                '--skip-install',
+                '--id',
+                id,
+                '--reference',
+                reference,
+                '--url',
+                url,
+                '--package',
+                '$tmp',
+                '-y'
+            )
         );
 
         // Flow check
@@ -93,7 +105,9 @@ describe('generate/adaptation-project', () => {
         // Test execution
         const command = new Command('generate');
         addGenerateAdaptationProjectCommand(command);
-        await command.parseAsync(getArgv(appRoot, '--simulate', '--id', id, '--reference', reference, '--url', url));
+        await command.parseAsync(
+            getArgv(appRoot, '--simulate', '--id', id, '--reference', reference, '--url', url, '-y')
+        );
 
         // Flow check
         expect(promptSpy).not.toBeCalled();

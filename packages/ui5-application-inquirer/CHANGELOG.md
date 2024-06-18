@@ -1,5 +1,31 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.4.0
+
+### Minor Changes
+
+-   3c986ab2: Supports conditional default for Enable TypeScript option, provides defaults for Advanced config if not answer provided.
+
+## 0.3.26
+
+### Patch Changes
+
+-   Updated dependencies [1ea831d5]
+    -   @sap-ux/inquirer-common@0.3.0
+
+## 0.3.25
+
+### Patch Changes
+
+-   Updated dependencies [ad93a484]
+    -   @sap-ux/project-access@1.22.0
+
+## 0.3.24
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.21.2
+
 ## 0.3.23
 
 ### Patch Changes
