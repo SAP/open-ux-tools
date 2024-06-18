@@ -238,8 +238,8 @@ describe('utils - ', () => {
             `);
         });
 
-        test('getBuildingBlockIdPrompt', () => {
-            const prompt = getBuildingBlockIdPrompt('message', 'error');
+        test('getBuildingBlockIdPrompt', async () => {
+            const prompt = await getBuildingBlockIdPrompt('message', 'error');
             expect(prompt).toMatchInlineSnapshot(`
                 Object {
                   "default": undefined,
@@ -253,7 +253,7 @@ describe('utils - ', () => {
 
             const validateFn = prompt.validate;
             expect(typeof validateFn).toBe('function');
-            expect(validateFn?.('')).toBe('error');
+            expect(await validateFn?.('')).toBe('error');
         });
 
         test('getFilterBarIdListPrompt', () => {
