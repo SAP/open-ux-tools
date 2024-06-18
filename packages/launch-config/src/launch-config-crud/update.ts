@@ -1,12 +1,41 @@
-import { readFile, readJSONWithComments, updateJSONWithComments } from '@sap-ux/project-access';
+import { promises as fs } from 'fs';
 import { createFioriLaunchConfig, parseArguments } from './common';
 import type { FioriOptions, LaunchConfig } from '../types';
 import { getLaunchConfigFile } from './read';
 import { createLaunchConfigFile } from './create';
-import type { JSONPath, Node } from 'jsonc-parser';
-import { findNodeAtLocation, parseTree } from 'jsonc-parser';
+import type { JSONPath, ModificationOptions, Node } from 'jsonc-parser';
+import { applyEdits, findNodeAtLocation, modify, parse, parseTree } from 'jsonc-parser';
 
 export type configType = object | string | number | undefined;
+
+/**
+ * Adds, modifies or deletes 'launch.json' file.
+ *
+ * @param content content to be added to the JSON file at location specified by JSONPath. If undefined, property will be deleted.
+ * @param filePath path to the json file.
+ * @param jsonPath The {@linkcode JSONPath} of the value to change. The path represents either to the document root, a property or an array item.
+ * @param options Options {@linkcode ModificationOptions} used by {@linkcode modify} when computing the modification edit operations. Default formattingOptions are used if not provided.
+ * @returns void.
+ */
+export async function updateLaunchJSON(
+    content: object | string | number | undefined,
+    filePath: string,
+    jsonPath: JSONPath,
+    options: ModificationOptions = {}
+): Promise<void> {
+    const jsonString = await fs.readFile(filePath, { encoding: 'utf8' });
+    if (!options.formattingOptions) {
+        options.formattingOptions = {
+            tabSize: 4,
+            insertSpaces: true
+        };
+    }
+    // make edits and apply them
+    const edits = modify(jsonString, jsonPath, content, options);
+    const updated = applyEdits(jsonString, edits);
+    // write changes to file
+    await fs.writeFile(filePath, updated);
+}
 
 /**
  * Adds a new launch configuration to launch.json.
@@ -16,13 +45,10 @@ export type configType = object | string | number | undefined;
  * @returns void.
  */
 async function addLaunchConfig(launchConfigPath: string, launchConfig: LaunchConfig): Promise<void> {
-    const launchJson = await readJSONWithComments<{ configurations: LaunchConfig[] }>(launchConfigPath);
-    await updateJSONWithComments(
-        launchConfig,
-        launchConfigPath,
-        ['configurations', launchJson.configurations.length + 1],
-        { isArrayInsertion: true }
-    );
+    const launchJson = parse(await fs.readFile(launchConfigPath, { encoding: 'utf8' }));
+    await updateLaunchJSON(launchConfig, launchConfigPath, ['configurations', launchJson.configurations.length + 1], {
+        isArrayInsertion: true
+    });
 }
 
 /**
@@ -180,21 +206,21 @@ export async function updateFioriElementsLaunchConfig(
 ): Promise<void> {
     const launchConfigPath = getLaunchConfigFile(rootFolder);
     if (launchConfigPath) {
-        const launchJson = await readJSONWithComments<{ configurations: LaunchConfig[] }>(launchConfigPath);
-        const jsonString = await readFile(launchConfigPath);
+        const launchJson = parse(await fs.readFile(launchConfigPath, { encoding: 'utf8' }));
+        const jsonString = await fs.readFile(launchConfigPath, { encoding: 'utf8' });
         if (options && jsonString) {
             // update
             const jsonTree = parseTree(jsonString);
             const fioriLaunchConfig = createFioriLaunchConfig(rootFolder, options);
             const oldArgs = launchJson.configurations[index].args;
             fioriLaunchConfig.args = mergeArgs(fioriLaunchConfig.args, oldArgs);
-            await traverseAndModifyObject(fioriLaunchConfig, launchConfigPath, jsonTree, updateJSONWithComments, [
+            await traverseAndModifyObject(fioriLaunchConfig, launchConfigPath, jsonTree, updateLaunchJSON, [
                 'configurations',
                 index
             ]);
         } else {
             // delete
-            await updateJSONWithComments(undefined, launchConfigPath, ['configurations', index]);
+            await updateLaunchJSON(undefined, launchConfigPath, ['configurations', index]);
         }
     }
 }

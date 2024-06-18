@@ -1,8 +1,10 @@
-import { DirName, readJSONWithComments } from '@sap-ux/project-access';
+import { promises as fs } from 'fs';
+import { DirName } from '@sap-ux/project-access';
 import { existsSync } from 'fs';
 import { join } from 'path';
 import type { LaunchConfig, LaunchConfigInfo } from '../types';
 import { launchConfigFile } from './common';
+import { parse } from 'jsonc-parser';
 
 /**
  * Returns the launch.json file for a workspace root folder. If it doesn't exist, returns undefined.
@@ -43,7 +45,7 @@ export async function getLaunchConfigs(rootFolder: string): Promise<LaunchConfig
     const launchJsonPath = getLaunchConfigFile(rootFolder);
     try {
         if (launchJsonPath) {
-            return (await readJSONWithComments<{ configurations: LaunchConfig[] }>(launchJsonPath)).configurations;
+            return parse(await fs.readFile(launchJsonPath, { encoding: 'utf8' }));
         }
         return undefined;
     } catch (err) {
@@ -63,7 +65,8 @@ export async function getAllLaunchConfigs(rootFolder: string | string[]): Promis
     const configFiles = getLaunchConfigFiles(roots);
 
     for (const filePath of configFiles) {
-        const config = await readJSONWithComments<{ configurations: LaunchConfig[] }>(filePath);
+        const config = parse(await fs.readFile(filePath, { encoding: 'utf8' }));
+
         if (Array.isArray(config.configurations)) {
             launchConfigList.push({ filePath, launchConfigs: config.configurations });
         }
@@ -80,7 +83,7 @@ export async function getAllLaunchConfigs(rootFolder: string | string[]): Promis
  */
 export async function getLaunchConfigByName(launchConfigPath: string, name: string): Promise<LaunchConfig> {
     try {
-        const config = await readJSONWithComments<{ configurations: LaunchConfig[] }>(launchConfigPath);
+        const config = await parse(await fs.readFile(launchConfigPath, { encoding: 'utf8' }));
         const launchConfig = config.configurations.find((c) => c.name === name);
         if (!launchConfig) {
             throw Error(`No config '${name}'`);

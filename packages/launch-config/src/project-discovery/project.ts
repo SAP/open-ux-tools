@@ -1,8 +1,10 @@
+import { promises as fs } from 'fs';
 import { basename, join } from 'path';
-import type { FioriOptions } from '@sap/ux-launch-config-types';
 import type { Package } from '@sap-ux/project-access';
-import { FileName, createProjectProvider, getUi5CustomMiddleware, readJSON } from '@sap-ux/project-access';
+import { FileName, createProjectProvider, readUi5Yaml } from '@sap-ux/project-access';
 import type { ODataVersion } from '@sap-ux/project-access';
+import { parse } from 'jsonc-parser';
+import type { FioriOptions } from '../types';
 
 /**
  * Find out starting HTML file for project using package.json.
@@ -12,7 +14,8 @@ import type { ODataVersion } from '@sap-ux/project-access';
  */
 async function getStartFileFromPackageFile(projectRoot: string): Promise<string | undefined> {
     const pckJsonPath = join(projectRoot, FileName.Package);
-    const scripts = (await readJSON<Package>(pckJsonPath)).scripts;
+    const packageJson = parse(await fs.readFile(pckJsonPath, { encoding: 'utf8' })) as Package;
+    const scripts = packageJson.scripts;
     // default html file
     let startHtmlFile = 'test/flpSandbox.html';
     if (scripts) {
@@ -53,7 +56,7 @@ export async function getDefaultLaunchConfigOptionsForProject(projectRoot: strin
         name = `Launch Fiori app: ${basename(projectProvider.project.root)}`;
         ui5Version = 'latest'; // reactivate code to find ui5 version in project-access
         startFile = await getStartFileFromPackageFile(projectRoot);
-        backendConfigs = (await getUi5CustomMiddleware(projectRoot)).configuration.backend;
+        backendConfigs = await readUi5Yaml(projectRoot, FileName.Ui5Yaml);
     } catch (error) {
         console.error(`Error while getting the default configuration for project '${projectRoot}'`, error);
     }

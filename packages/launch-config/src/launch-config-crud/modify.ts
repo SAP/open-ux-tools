@@ -1,8 +1,10 @@
+import { promises as fs } from 'fs';
 import type { Package } from '@sap-ux/project-access';
-import { FileName, readJSON } from '@sap-ux/project-access';
+import { FileName } from '@sap-ux/project-access';
 import { join } from 'path';
 import type { LaunchConfig, LaunchConfigEnv } from '../types';
 import { getIndexOfArgument } from './common';
+import { parse } from 'jsonc-parser';
 
 const RUN_SCRIPT = 'run-script';
 
@@ -139,7 +141,8 @@ export async function convertOldLaunchConfigToFioriRun(
         moveOldArgsToEnv(launchConfig);
         if (projectRootPath) {
             const pckJsonPath = join(projectRootPath, FileName.Package);
-            const scripts = (await readJSON<Package>(pckJsonPath)).scripts;
+            const packageJson = parse(await fs.readFile(pckJsonPath, { encoding: 'utf8' })) as Package;
+            const scripts = packageJson.scripts;
             if (scripts) {
                 convertRunScriptToFioriRun(launchConfig, scripts, runScriptName);
             }
