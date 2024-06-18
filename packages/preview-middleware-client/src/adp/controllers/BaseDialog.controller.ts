@@ -8,10 +8,11 @@ import Controller from 'sap/ui/core/mvc/Controller';
 import JSONModel from 'sap/ui/model/json/JSONModel';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
-
+import MessageToast from 'sap/m/MessageToast';
 import CommandExecutor from '../command-executor';
 import { matchesFragmentName } from '../utils';
 import type { Fragments } from '../api-handler';
+import { getError } from '../../cpe/error-utils';
 
 /**
  * @namespace open.ux.preview.client.adp.controllers
@@ -149,5 +150,17 @@ export default abstract class BaseDialog<T extends JSONModel = JSONModel> extend
     handleDialogClose() {
         this.dialog.close();
         this.dialog.destroy();
+    }
+
+    /**
+     * Function that handles runtime thrown errors with MessageToast
+     *
+     * @param e error instance
+     * @throws {Error}.
+     */
+    protected handleError(e: unknown): void {
+        const error = getError(e);
+        MessageToast.show(error.message, { duration: 5000 });
+        throw error;
     }
 }

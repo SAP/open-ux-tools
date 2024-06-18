@@ -166,21 +166,23 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
         const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as ElementOverlay;
 
         const { controllerName, viewId } = this.getControllerInfo(overlayControl);
+        const existingController = await this.getExistingController(controllerName);
+        
+        if (existingController) {
+            const { controllerExists, controllerPath, controllerPathFromRoot, isRunningInBAS } = existingController;
 
-        const { controllerExists, controllerPath, controllerPathFromRoot, isRunningInBAS } =
-            await this.getExistingController(controllerName);
+            if (controllerExists) {
+                this.updateModelForExistingController(
+                    controllerExists,
+                    controllerPath,
+                    controllerPathFromRoot,
+                    isRunningInBAS
+                );
+            } else {
+                this.updateModelForNewController(viewId);
 
-        if (controllerExists) {
-            this.updateModelForExistingController(
-                controllerExists,
-                controllerPath,
-                controllerPathFromRoot,
-                isRunningInBAS
-            );
-        } else {
-            this.updateModelForNewController(viewId);
-
-            await this.getControllers();
+                await this.getControllers();
+            }
         }
     }
 
@@ -247,15 +249,15 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
      * @param controllerName Controller name that exists in the view
      * @returns Returnsexisting controller data
      */
-    private async getExistingController(controllerName: string): Promise<CodeExtResponse> {
+    private async getExistingController(controllerName: string): Promise<CodeExtResponse | undefined> {
+        let data: CodeExtResponse | undefined;
         try {
-            const data = await getExistingController(controllerName);
-            return data;
+            data = await getExistingController(controllerName);
         } catch (e) {
-            const error = getError(e);
-            MessageToast.show(error.message, { duration: 5000 });
-            throw error;
+            this.handleError(e);
         }
+
+        return data;
     }
 
     /**
@@ -299,17 +301,5 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
             await this.getControllers();
             this.handleError(e);
         }
-    }
-
-    /**
-     * Function that handles runtime thrown errors with MessageToast
-     *
-     * @param e error instance
-     * @throws {Error}.
-     */
-    private handleError(e: unknown): void {
-        const error = getError(e);
-        MessageToast.show(error.message, { duration: 5000 });
-        throw error;
     }
 }

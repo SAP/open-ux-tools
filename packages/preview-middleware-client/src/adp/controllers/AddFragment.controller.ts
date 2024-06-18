@@ -2,7 +2,6 @@
 import Button from 'sap/m/Button';
 import type Dialog from 'sap/m/Dialog';
 import type ComboBox from 'sap/m/ComboBox';
-import MessageToast from 'sap/m/MessageToast';
 
 /** sap.ui.core */
 import type UI5Element from 'sap/ui/core/Element';
@@ -26,7 +25,6 @@ import CommandExecutor from '../command-executor';
 import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { notifyUser } from '../utils';
-import { getError } from '../../cpe/error-utils';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -225,9 +223,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
 
             this.model.setProperty('/fragmentList', fragments);
         } catch (e) {
-            const error = getError(e);
-            MessageToast.show(error.message);
-            throw error;
+            this.handleError(e);
         }
 
         this.model.setProperty('/selectedIndex', indexArray.length - 1);

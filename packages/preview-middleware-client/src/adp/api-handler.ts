@@ -1,4 +1,5 @@
 import type { Layer } from 'sap/ui/fl';
+import { getError } from '../cpe/error-utils';
 
 export const enum ApiEndpoints {
     CHANGES = '/preview/api/changes',
@@ -87,7 +88,8 @@ export async function request<T>(endpoint: ApiEndpoints, method: RequestMethod, 
                 return response.json() as T;
         }
     } catch (e) {
-        throw new Error((e as Error)?.message);
+        const error = getError(e);
+        throw new Error(error.message);
     }
 }
 
