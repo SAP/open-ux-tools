@@ -1,4 +1,10 @@
-import type { CustomMiddleware, UI5Config, CustomTask, AbapTarget } from '@sap-ux/ui5-config';
+import type {
+    CustomMiddleware,
+    UI5Config,
+    CustomTask,
+    AbapTarget,
+    FioriToolsProxyConfigBackend
+} from '@sap-ux/ui5-config';
 import type {
     CustomConfig,
     AdpWriterConfig,
@@ -18,9 +24,12 @@ import type {
  * @param config full project configuration
  */
 export function enhanceUI5Yaml(ui5Config: UI5Config, config: AdpWriterConfig) {
-    const middlewares = config.options?.fioriTools ? getFioriToolsMiddlwares(config) : getOpenSourceMiddlewares(config);
     ui5Config.setConfiguration({ propertiesFileSourceEncoding: 'UTF-8' });
-    ui5Config.addCustomMiddleware(middlewares);
+    if (config.options?.fioriTools) {
+        addFioriToolsMiddlwares(ui5Config, config);
+    } else {
+        addOpenSourceMiddlewares(ui5Config, config);
+    }
 }
 
 /**
@@ -75,20 +84,16 @@ export function enhanceUI5DeployYaml(ui5Config: UI5Config, config: AdpWriterConf
 /**
  * Get a list of required middlewares using the Fiori tools.
  *
+ * @param ui5Config configuration representing the ui5.yaml
  * @param config full project configuration
- * @returns list of required middlewares.
  */
-function getFioriToolsMiddlwares(config: AdpWriterConfig): CustomMiddleware<unknown>[] {
-    return [
-        {
-            name: 'fiori-tools-appreload',
-            afterMiddleware: 'compression',
-            configuration: {
-                port: 35729,
-                path: 'webapp',
-                delay: 300
-            }
-        },
+function addFioriToolsMiddlwares(ui5Config: UI5Config, config: AdpWriterConfig) {
+    const backendConfig: Partial<FioriToolsProxyConfigBackend> = { ...config.target };
+    backendConfig.url ??= 'https://REQUIRED_FOR_VSCODE.example';
+    backendConfig.path = '/sap';
+
+    ui5Config.addFioriToolsAppReloadMiddleware();
+    ui5Config.addCustomMiddleware([
         {
             name: 'fiori-tools-preview',
             afterMiddleware: 'fiori-tools-appreload',
@@ -98,36 +103,27 @@ function getFioriToolsMiddlwares(config: AdpWriterConfig): CustomMiddleware<unkn
                     ignoreCertErrors: false
                 }
             }
-        },
-        {
-            name: 'fiori-tools-proxy',
-            afterMiddleware: 'fiori-tools-preview',
-            configuration: {
-                ignoreCertErrors: false,
-                ui5: {
-                    version: config?.ui5?.minVersion ?? '', //default to latest if version is not set
-                    path: ['/resources', '/test-resources'],
-                    url: config?.ui5?.frameworkUrl ?? 'https://ui5.sap.com'
-                },
-                backend: [
-                    {
-                        ...config.target,
-                        path: '/sap'
-                    }
-                ]
-            }
         }
-    ];
+    ]);
+    ui5Config.addFioriToolsProxydMiddleware({
+        ui5: {
+            url: config?.ui5?.frameworkUrl,
+            version: config?.ui5?.minVersion ?? '' //default to latest if version is not set
+        },
+        backend: [backendConfig as FioriToolsProxyConfigBackend]
+    });
+
+    return;
 }
 
 /**
  * Get a list of required middlewares using the open source middlewares.
  *
+ * @param ui5Config configuration representing the ui5.yaml
  * @param config full project configuration
- * @returns list of required middlewares.
  */
-function getOpenSourceMiddlewares(config: AdpWriterConfig): CustomMiddleware<object | undefined>[] {
-    return [
+function addOpenSourceMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig) {
+    ui5Config.addCustomMiddleware([
         {
             name: 'reload-middleware',
             afterMiddleware: 'compression',
@@ -172,7 +168,7 @@ function getOpenSourceMiddlewares(config: AdpWriterConfig): CustomMiddleware<obj
                 }
             }
         }
-    ];
+    ]);
 }
 
 /**
