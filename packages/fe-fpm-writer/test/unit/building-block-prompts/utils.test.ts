@@ -270,10 +270,10 @@ describe('utils - ', () => {
             `);
         });
 
-        test.skip('getCAPServiceChoices', async () => {
+        test('getCAPServiceChoices', async () => {
             jest.spyOn(projectAccess, 'getProject').mockResolvedValue({
                 apps: {
-                    ['app\\incidents']: {
+                    [join('app/incidents')]: {
                         appRoot: '',
                         manifest: '',
                         changes: '',
@@ -295,10 +295,10 @@ describe('utils - ', () => {
             `);
         });
 
-        test.skip('getCAPServicePrompt', async () => {
+        test('getCAPServicePrompt', async () => {
             jest.spyOn(projectAccess, 'getProject').mockResolvedValue({
                 apps: {
-                    ['app\\incidents']: {
+                    [join('app/incidents')]: {
                         appRoot: '',
                         manifest: '',
                         changes: '',
@@ -312,20 +312,12 @@ describe('utils - ', () => {
             const prompt = await getCAPServicePrompt('message', capProjectProvider);
             expect(prompt).toMatchInlineSnapshot(`
                 Object {
-                  "additionalInfo": undefined,
-                  "choices": Array [
-                    Object {
-                      "name": "mappedMainServiceName",
-                      "value": "mainService",
-                    },
-                  ],
+                  "choices": [Function],
                   "default": "mainService",
                   "dependantPromptNames": undefined,
-                  "groupId": undefined,
                   "message": "message",
                   "name": "service",
                   "placeholder": "Select a service",
-                  "required": undefined,
                   "selectType": "dynamic",
                   "type": "list",
                 }
