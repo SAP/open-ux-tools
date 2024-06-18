@@ -1,7 +1,7 @@
 import { t } from '../i18n';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { MetadataFactory } from '@sap/wing-service-explorer';
+import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import LoggerHelper from './logger-helper';
+import { parseOdataVersion } from '../utils';
 
 /**
  * Validator function to verify if the specified metadata edmx version matches the specified required odata version.
@@ -14,15 +14,12 @@ export function validateODataVersion(
     edmx: string,
     requiredVersion?: OdataVersion
 ): { validationMsg?: string; version?: OdataVersion } {
-    const metadataFactory = MetadataFactory.getMetadataFactory();
     try {
-        const explorer = metadataFactory.getMetadataExplorer(edmx);
-        // Wing service explorer does not export the type of the protocol, so we need to check the string
-        const version = explorer.getProtocolType().indexOf('v4') > 0 ? OdataVersion.v4 : OdataVersion.v2;
+        const serviceOdataVersion = parseOdataVersion(edmx);
 
-        if (requiredVersion && requiredVersion !== version) {
+        if (requiredVersion && requiredVersion !== serviceOdataVersion) {
             const odataErrorMsg = t('prompts.validationMessages.odataVersionMismatch', {
-                providedOdataVersion: version,
+                providedOdataVersion: serviceOdataVersion,
                 requiredOdataVersion: requiredVersion
             });
             LoggerHelper.logger.error(odataErrorMsg);
@@ -31,11 +28,11 @@ export function validateODataVersion(
             };
         }
         return {
-            version
+            version: serviceOdataVersion
         };
     } catch (err) {
         return {
-            validationMsg: t('prompts.validationMessages.metadataInvalid')
+            validationMsg: err.message
         };
     }
 }
