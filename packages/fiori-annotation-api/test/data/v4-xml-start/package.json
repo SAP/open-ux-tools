@@ -1,0 +1,40 @@
+{
+  "name": "xml-start",
+  "version": "0.0.1",
+  "private": true,
+  "sapux": true,
+  "sapuxLayer": "VENDOR",
+  "description": "An SAP Fiori application.",
+  "keywords": [
+    "ui5",
+    "openui5",
+    "sapui5"
+  ],
+  "main": "webapp/index.html",
+  "scripts": {
+    "start": "fiori run --open 'test/flpSandbox.html#xmlstart-tile'",
+    "start-local": "fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html#xmlstart-tile'",
+    "start-noflp": "fiori run --open 'index.html'",
+    "start-variants-management": "fiori run --open \"preview.html?fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\"",
+    "build": "ui5 build -a --clean-dest --include-task=generateManifestBundle generateCachebusterInfo",
+    "deploy": "fiori verify",
+    "deploy-config": "fiori add deploy-config",
+    "int-tests": "fiori run --config ./ui5-mock.yaml --open 'test/integration/opaTests.qunit.html'",
+    "start-mock": "fiori run --config ./ui5-mock.yaml --open 'test/flpSandbox.html#xmlstart-tile'"
+  },
+  "devDependencies": {
+    "@ui5/cli": "^2.11.1",
+    "@ui5/fs": "^2.0.6",
+    "@ui5/logger": "^2.0.1",
+    "@sap/ux-ui5-tooling": "1",
+    "rimraf": "3.0.2",
+    "@sap/ux-specification": "^1.102.4",
+    "@sap-ux/ui5-middleware-fe-mockserver": "2"
+  },
+  "ui5": {
+    "dependencies": [
+      "@sap/ux-ui5-tooling",
+      "@sap-ux/ui5-middleware-fe-mockserver"
+    ]
+  }
+}

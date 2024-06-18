@@ -14,7 +14,13 @@ import {
     createForAbap,
     createForDestination
 } from '@sap-ux/axios-extension';
-import { getCredentialsFromStore, getCredentialsWithPrompts, isBasicAuth, isServiceAuth } from './credentials';
+import {
+    getCredentialsFromEnvVariables,
+    getCredentialsFromStore,
+    getCredentialsWithPrompts,
+    isBasicAuth,
+    isServiceAuth
+} from './credentials';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import { questions } from './prompts';
 import prompts from 'prompts';
@@ -109,15 +115,11 @@ async function createAbapOnPremServiceProvider(
             if (isServiceAuth(storedOpts)) {
                 throw new Error('This is an ABAP Cloud system, please correct your configuration.');
             }
-            if (prompt) {
+            options.auth ??= getCredentialsFromEnvVariables();
+            if (!options.auth && prompt) {
                 const { authType } = await prompts([questions.authType]);
                 if (authType === AuthenticationType.ReentranceTicket) {
                     target.authenticationType = AuthenticationType.ReentranceTicket;
-                    return createForAbapOnCloud({
-                        ...options,
-                        ...target,
-                        environment: AbapCloudEnvironment.EmbeddedSteampunk
-                    });
                 } else {
                     const credentials = await getCredentialsWithPrompts(storedOpts?.username);
                     options.auth = credentials;
@@ -127,7 +129,13 @@ async function createAbapOnPremServiceProvider(
             }
         }
     }
-    return createForAbap(options);
+    return target.authenticationType === AuthenticationType.ReentranceTicket
+        ? createForAbapOnCloud({
+              ...options,
+              ...target,
+              environment: AbapCloudEnvironment.EmbeddedSteampunk
+          })
+        : createForAbap(options);
 }
 
 /**

@@ -1,11 +1,12 @@
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
-import { AdpWriterConfig } from '../types';
+import type { CloudApp, AdpWriterConfig } from '../types';
 import {
     enhanceUI5DeployYaml,
     enhanceUI5Yaml,
     hasDeployConfig,
-    enhanceUI5YamlWithCustomConfig
+    enhanceUI5YamlWithCustomConfig,
+    enhanceUI5YamlWithCustomTask
 } from './options';
 import { UI5Config } from '@sap-ux/ui5-config';
 
@@ -14,7 +15,7 @@ import { UI5Config } from '@sap-ux/ui5-config';
  *
  * @param {string} templatePath - The root path of the project template.
  * @param {string} projectPath - The root path of the project.
- * @param {CfModuleData | AdpWriterConfig} data - The data to be populated in the template file.
+ * @param {AdpWriterConfig} data - The data to be populated in the template file.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
  * @returns {void}
  */
@@ -22,7 +23,7 @@ export function writeTemplateToFolder(
     templatePath: string,
     projectPath: string,
     data: AdpWriterConfig,
-    fs: Editor,
+    fs: Editor
 ): void {
     try {
         fs.copyTpl(templatePath, projectPath, data, undefined, {
@@ -49,6 +50,9 @@ export async function writeUI5Yaml(projectPath: string, data: AdpWriterConfig, f
         const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
         enhanceUI5Yaml(ui5Config, data);
         enhanceUI5YamlWithCustomConfig(ui5Config, data?.customConfig);
+        if (data.customConfig?.adp?.environment === 'C') {
+            enhanceUI5YamlWithCustomTask(ui5Config, data as AdpWriterConfig & { app: CloudApp });
+        }
 
         fs.write(ui5ConfigPath, ui5Config.toString());
     } catch (e) {
