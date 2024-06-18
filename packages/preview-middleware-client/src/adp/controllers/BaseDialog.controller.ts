@@ -14,10 +14,14 @@ import { matchesFragmentName } from '../utils';
 import type { Fragments } from '../api-handler';
 import { getError } from '../../cpe/error-utils';
 
+type BaseDialogModel = JSONModel & {
+    getProperty(sPath: '/fragmentList'): Fragments;
+}
+
 /**
  * @namespace open.ux.preview.client.adp.controllers
  */
-export default abstract class BaseDialog<T extends JSONModel = JSONModel> extends Controller {
+export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogModel> extends Controller {
     /**
      * Runtime Authoring
      */
@@ -63,7 +67,7 @@ export default abstract class BaseDialog<T extends JSONModel = JSONModel> extend
         const beginBtn = this.dialog.getBeginButton();
 
         const fragmentName: string = input.getValue();
-        const fragmentList: Fragments = this.model.getProperty('/fragmentList') as Fragments;
+        const fragmentList: Fragments = this.model.getProperty('/fragmentList');
 
         const updateDialogState = (valueState: ValueState, valueStateText = '') => {
             input.setValueState(valueState).setValueStateText(valueStateText);
