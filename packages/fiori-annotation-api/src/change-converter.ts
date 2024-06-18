@@ -1,4 +1,4 @@
-import type { AliasInformation, AnnotationFile, AnyNode, Element } from '@sap-ux/odata-annotation-core-types';
+import type { AliasInformation, AnnotationFile, Element } from '@sap-ux/odata-annotation-core-types';
 import {
     ELEMENT_TYPE,
     ATTRIBUTE_TYPE,
