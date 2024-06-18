@@ -6,8 +6,7 @@ import { useValue, getLabelRenderer } from '../../../utilities';
 
 export interface MultiSelectProps extends CheckboxQuestion {
     value?: string | number | boolean;
-    onChange: (name: string, value: string | number | undefined, dependantPromptNames?: string[]) => void;
-    dependantPromptNames?: string[];
+    onChange: (name: string, value: string | number | undefined) => void;
     required?: boolean;
     options: UIComboBoxOption[];
     pending?: boolean;
@@ -21,7 +20,6 @@ export const MultiSelect = (props: MultiSelectProps) => {
         name = '',
         message,
         onChange,
-        dependantPromptNames,
         required,
         options,
         pending,
@@ -54,7 +52,7 @@ export const MultiSelect = (props: MultiSelectProps) => {
                         .join();
                 }
                 setValue(updatedValue);
-                onChange(name, updatedValue, dependantPromptNames);
+                onChange(name, updatedValue);
             }}
             onRenderLabel={getLabelRenderer(additionalInfo)}
             errorMessage={errorMessage}

@@ -122,6 +122,6 @@ describe('Question', () => {
         fireEvent.click(options[1]);
         expect(screen.getByDisplayValue('testName1')).toBeDefined();
         expect(onChangeFn).toHaveBeenCalled();
-        expect(onChangeFn).toHaveBeenCalledWith('testStaticList', 'testValue1', ['dependantPrompt']);
+        expect(onChangeFn).toHaveBeenCalledWith('testStaticList', 'testValue1');
     });
 });

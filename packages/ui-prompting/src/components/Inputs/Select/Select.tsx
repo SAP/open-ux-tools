@@ -6,8 +6,8 @@ import { useValue, getLabelRenderer } from '../../../utilities';
 
 export interface SelectProps extends ListQuestion {
     value?: string | number | boolean;
-    onChange: (name: string, value: string | number | undefined, dependantPromptNames?: string[]) => void;
-    dependantPromptNames?: string[];
+    onChange: (name: string, value: string | number | undefined) => void;
+
     required?: boolean;
     options: UIComboBoxOption[];
     pending?: boolean;
@@ -21,7 +21,6 @@ export const Select = (props: SelectProps) => {
         name = '',
         message,
         onChange,
-        dependantPromptNames,
         required,
         options,
         pending,
@@ -33,18 +32,35 @@ export const Select = (props: SelectProps) => {
     const inputRef = React.createRef<ITextField>();
     const allowCreate = name === 'filterBarId';
 
-    const onChangeCreateSelect = (
+    const onChangeSelect = (
         event?: React.FormEvent<HTMLDivElement | UIComboBoxRef>,
         option?: UIComboBoxOption,
         index?: number,
         comboboxValue?: string
     ) => {
-        const newOption = comboboxValue === undefined ? undefined : { key: comboboxValue, text: comboboxValue };
-        setValue(option ? option.key ?? '' : (newOption?.text as string));
+        let updatedValue;
+        if (allowCreate) {
+            const newOption = comboboxValue === undefined ? undefined : { key: comboboxValue, text: comboboxValue };
+            setValue(option ? option.key ?? '' : (newOption?.text as string));
+            updatedValue = option ? option.data.value : newOption?.text;
+        } else {
+            setValue(option?.key ?? '');
+            updatedValue = option?.data?.value;
+        }
         if (name) {
-            onChange(name, option ? option.data.value : newOption?.text, dependantPromptNames);
+            onChange(name, updatedValue);
         }
     };
+
+    const onChangeTextInput = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
+        if (newValue !== undefined) {
+            setValue(newValue);
+            if (name) {
+                onChange(name, newValue);
+            }
+        }
+    };
+
     const isTextField = allowCreate && (!options || !options.length);
     const handleOnClick = () => {
         inputRef?.current?.focus();
@@ -58,14 +74,7 @@ export const Select = (props: SelectProps) => {
             placeholder={'Enter a new ID'}
             errorMessage={errorMessage}
             required={props.required}
-            onChange={(_, newValue) => {
-                if (newValue !== undefined) {
-                    setValue(newValue);
-                    if (name) {
-                        onChange(name, newValue, dependantPromptNames);
-                    }
-                }
-            }}
+            onChange={onChangeTextInput}
             onRenderLabel={getLabelRenderer(additionalInfo)}
             onClick={handleOnClick}
         />
@@ -82,16 +91,7 @@ export const Select = (props: SelectProps) => {
             selectedKey={value.toString()}
             disabled={false}
             text={allowCreate ? value.toString() : undefined}
-            onChange={
-                allowCreate
-                    ? onChangeCreateSelect
-                    : (_, option) => {
-                          setValue(option?.key ?? '');
-                          if (name) {
-                              onChange(name, option?.data?.value, dependantPromptNames);
-                          }
-                      }
-            }
+            onChange={onChangeSelect}
             onRenderLabel={getLabelRenderer(additionalInfo)}
             errorMessage={errorMessage}
             placeholder={placeholder}

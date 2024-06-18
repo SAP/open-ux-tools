@@ -8,7 +8,7 @@ import './Question.scss';
 export interface QuestionProps {
     question: PromptQuestion;
     answers: Record<string, AnswerValue>;
-    onChange: (name: string, answer: AnswerValue, dependantPromptNames?: string[]) => void;
+    onChange: (name: string, answer: AnswerValue) => void;
     choices?: PromptListChoices;
     pending?: boolean;
     additionalInfo?: string;

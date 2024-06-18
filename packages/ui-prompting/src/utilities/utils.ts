@@ -26,18 +26,18 @@ export function getDynamicQuestions(questions: PromptQuestion[]): string[] {
 
 export function updateAnswer(
     answers: Record<string, AnswerValue>,
-    questions: PromptQuestion[],
     name: string,
-    value?: AnswerValue
+    value?: AnswerValue,
+    dependantPromptNames?: string[]
 ): Record<string, AnswerValue> {
     const updatedAnswers = {
         ...answers,
         [name]: value
     };
-    const dependantPromptNames = getDependantQuestions(questions, name);
-    dependantPromptNames.forEach((dependantName) => {
-        // ToDo '' => undefined?
-        updatedAnswers[dependantName] = '';
-    });
+    dependantPromptNames?.length &&
+        dependantPromptNames.forEach((dependantName) => {
+            // ToDo '' => undefined?
+            updatedAnswers[dependantName] = '';
+        });
     return updatedAnswers;
 }
