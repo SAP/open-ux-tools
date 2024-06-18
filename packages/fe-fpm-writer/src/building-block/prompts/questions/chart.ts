@@ -11,8 +11,7 @@ import {
     getEntityPrompt,
     getFilterBarIdListPrompt,
     getViewOrFragmentFilePrompt,
-    isCapProject,
-    validateElementId
+    isCapProject
 } from '../utils';
 import type { ProjectProvider } from '../utils';
 import type { ChartPromptsAnswer, Prompts } from '../types';
@@ -31,11 +30,6 @@ export async function getChartBuildingBlockPrompts(
     // ToDO - init i18n in api contructor?
     await initI18n();
     const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.chart.');
-    const validateFn = async (value: string, answers?: Answers) => {
-        return value && answers?.viewOrFragmentFile && (await validateElementId(answers?.viewOrFragmentFile, value))
-            ? t('id.validateExistingValueMsg')
-            : true;
-    };
     const defaultAnswers: Answers = {
         id: 'Chart'
     };
@@ -49,15 +43,9 @@ export async function getChartBuildingBlockPrompts(
                 ['aggregationPath', 'filterBarId'],
                 { required: true }
             ),
-            getBuildingBlockIdPrompt(
-                t('id.message'),
-                t('id.validation'),
-                defaultAnswers.id,
-                {
-                    required: true
-                },
-                validateFn
-            ),
+            await getBuildingBlockIdPrompt(t('id.message'), t('id.validation'), defaultAnswers.id, {
+                required: true
+            }),
             ...((await isCapProject(projectProvider))
                 ? [await getCAPServicePrompt(t('service'), projectProvider, [], { required: true })]
                 : []),

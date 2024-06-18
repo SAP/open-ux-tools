@@ -9,7 +9,6 @@ import {
     getCAPServicePrompt,
     getEntityPrompt,
     getViewOrFragmentFilePrompt,
-    validateElementId,
     isCapProject
 } from '../utils';
 import type { ProjectProvider } from '../utils';
@@ -26,11 +25,6 @@ export async function getFilterBarBuildingBlockPrompts(
     const defaultAnswers: Answers = {
         id: 'FilterBar'
     };
-    const validateFn = async (value: string, answers?: Answers) => {
-        return value && answers?.viewOrFragmentFile && (await validateElementId(answers?.viewOrFragmentFile, value))
-            ? t('id.validateExistingValueMsg')
-            : true;
-    };
     return {
         questions: [
             getViewOrFragmentFilePrompt(
@@ -41,13 +35,7 @@ export async function getFilterBarBuildingBlockPrompts(
                 ['aggregationPath'],
                 { required: true }
             ),
-            getBuildingBlockIdPrompt(
-                t('id.message'),
-                t('id.validation'),
-                defaultAnswers.id,
-                { required: true },
-                validateFn
-            ),
+            await getBuildingBlockIdPrompt(t('id.message'), t('id.validation'), defaultAnswers.id, { required: true }),
             ...((await isCapProject(projectProvider))
                 ? [await getCAPServicePrompt(t('service'), projectProvider, [], { required: true })]
                 : []),

@@ -10,11 +10,16 @@
                 }
             }
         },
+        "common": {
+            "id": {
+                "existingIdValidation": "An element with this ID already exists",
+                "defaultPlaceholder": "Enter a building block ID"
+            }
+        },
         "chart": {
             "id": {
                 "message": "Building Block ID",
-                "validation": "An ID is required to generate the chart building block",
-                "validateExistingValueMsg": "An element with this ID already exists"
+                "validation": "An ID is required to generate the chart building block"
             },
             "aggregation": "Aggregation Path",
             "entity": "Entity",
@@ -52,8 +57,7 @@
         "filterBar": {
             "id": {
                 "message": "Building Block ID",
-                "validation": "An ID is required to generate the filter bar building block",
-                "validateExistingValueMsg": "An element with this ID already exists"
+                "validation": "An ID is required to generate the filter bar building block"
             },
             "viewOrFragmentFile": {
                 "message": "View or Fragment File",
@@ -85,8 +89,7 @@
             },
             "id": {
                 "message": "Building Block ID",
-                "validation": "An ID is required to generate the filter bar building block",
-                "validateExistingValueMsg": "An element with this ID already exists"
+                "validation": "An ID is required to generate the table building block"
             },
             "bindingContextType": "Binding Context Path Type",
             "entity": "Entity",

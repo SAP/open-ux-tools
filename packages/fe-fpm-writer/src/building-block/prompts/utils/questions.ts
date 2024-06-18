@@ -9,6 +9,8 @@ import { getAnnotationPathQualifiers, getEntityTypes } from './service';
 import { getCapServiceName } from '@sap-ux/project-access';
 import type { InputPromptQuestion, ListPromptQuestion } from '../types';
 import { BuildingBlockType } from '../../types';
+import { validateElementId } from './xml';
+import { i18nNamespaces, initI18n, translate } from '../../../i18n';
 
 /**
  * Returns a Prompt to choose a boolean value.
@@ -407,24 +409,33 @@ export function getBindingContextTypePrompt(
  *
  * @param message - The message to display in the prompt
  * @param validationErrorMessage - The error message to show if ID validation fails
+ * @param defaultValue
+ * @param additionalProperties
  * @returns An InputPrompt object for getting the building block ID
  */
-export function getBuildingBlockIdPrompt(
+export async function getBuildingBlockIdPrompt(
     message: string,
     validationErrorMessage: string,
     defaultValue?: string,
-    additionalProperties: Partial<InputPromptQuestion> = {},
-    // ToDo avoid any
-    validateFn?: (input: any, answers?: Answers) => string | boolean | Promise<string | boolean>
-): InputPromptQuestion {
+    additionalProperties: Partial<InputPromptQuestion> = {}
+): Promise<InputPromptQuestion> {
+    await initI18n();
+    const t = translate(i18nNamespaces.buildingBlock, 'prompts.common.');
     return {
         ...additionalProperties,
         type: 'input',
         name: 'id',
         message,
-        // ToDo avoid any
-        validate: validateFn ? validateFn : (value: any) => (value ? true : validationErrorMessage),
+        validate: async (value: string, answers?: Answers) => {
+            if (!value) {
+                return validationErrorMessage;
+            } else {
+                return answers?.viewOrFragmentFile && (await validateElementId(answers?.viewOrFragmentFile, value))
+                    ? t('id.existingIdValidation')
+                    : true;
+            }
+        },
         default: defaultValue,
-        placeholder: additionalProperties.placeholder ?? 'Enter a building block ID'
+        placeholder: additionalProperties.placeholder ?? t('id.defaultPlaceholder')
     };
 }

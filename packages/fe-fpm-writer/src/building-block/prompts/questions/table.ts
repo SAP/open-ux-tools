@@ -12,7 +12,6 @@ import {
     getEntityPrompt,
     getFilterBarIdListPrompt,
     getViewOrFragmentFilePrompt,
-    validateElementId,
     isCapProject
 } from '../utils';
 import type { ProjectProvider } from '../utils';
@@ -40,11 +39,6 @@ export async function getTableBuildingBlockPrompts(
             description: t('tableVisualizationPropertiesDescription', { returnObjects: true })
         }
     ];
-    const validateFn = async (value: string, answers?: Answers) => {
-        return value && answers?.viewOrFragmentFile && (await validateElementId(answers?.viewOrFragmentFile, value))
-            ? t('id.validateExistingValueMsg')
-            : true;
-    };
     const defaultAnswers: Answers = {
         id: 'Table',
         type: 'ResponsiveTable',
@@ -70,16 +64,10 @@ export async function getTableBuildingBlockPrompts(
                 ['aggregationPath', 'filterBarId'],
                 { groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID, required: true }
             ),
-            getBuildingBlockIdPrompt(
-                t('id.message'),
-                t('id.validation'),
-                defaultAnswers.id,
-                {
-                    groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
-                    required: true
-                },
-                validateFn
-            ),
+            await getBuildingBlockIdPrompt(t('id.message'), t('id.validation'), defaultAnswers.id, {
+                groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
+                required: true
+            }),
             ...((await isCapProject(projectProvider))
                 ? [
                       await getCAPServicePrompt(t('service'), projectProvider, [], {
