@@ -1,9 +1,10 @@
+import type { ODataVersion } from '@sap-ux/project-access';
 export const FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID = 'fiori_tools';
 
 export interface FioriOptions {
     name: string;
     projectRoot: string;
-    projectVersion?: FioriElementsVersion;
+    projectVersion?: ODataVersion;
     useMockData?: boolean;
     ui5Version?: string;
     ui5VersionUri?: string;

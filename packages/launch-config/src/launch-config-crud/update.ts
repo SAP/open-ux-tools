@@ -1,7 +1,6 @@
 import { readFile, readJSONWithComments, updateJSONWithComments } from '@sap-ux/project-access';
 import { createFioriLaunchConfig, parseArguments } from './common';
-import type { LaunchConfig } from '../types';
-import type { FioriOptions } from '@sap/ux-launch-config-types';
+import type { FioriOptions, LaunchConfig } from '../types';
 import { getLaunchConfigFile } from './read';
 import { createLaunchConfigFile } from './create';
 import type { JSONPath, Node } from 'jsonc-parser';
@@ -157,7 +156,7 @@ async function processObject(
         await traverseAndModifyObject(obj, filePath, originalJSON, callback, currentPath);
     } else {
         for (let i = 0; i < originalLength; i++) {
-            const value = node && node.children![i].children![0].value;
+            const value = node?.children![i].children![0].value;
             if (!obj[value]) {
                 // deletion of a property
                 await callback(undefined, filePath, [...currentPath, value]);

@@ -2,7 +2,7 @@ import { basename, join } from 'path';
 import type { FioriOptions } from '@sap/ux-launch-config-types';
 import type { Package } from '@sap-ux/project-access';
 import { FileName, createProjectProvider, getUi5CustomMiddleware, readJSON } from '@sap-ux/project-access';
-import type { FioriElementsVersion } from '@sap-ux/ui5-info';
+import type { ODataVersion } from '@sap-ux/project-access';
 
 /**
  * Find out starting HTML file for project using package.json.
@@ -49,7 +49,7 @@ export async function getDefaultLaunchConfigOptionsForProject(projectRoot: strin
     const visible = true;
     try {
         const projectProvider = await createProjectProvider(projectRoot);
-        projectVersion = (await projectProvider.getVersion()) as unknown as FioriElementsVersion;
+        projectVersion = (await projectProvider.getVersion()) as ODataVersion;
         name = `Launch Fiori app: ${basename(projectProvider.project.root)}`;
         ui5Version = 'latest'; // reactivate code to find ui5 version in project-access
         startFile = await getStartFileFromPackageFile(projectRoot);

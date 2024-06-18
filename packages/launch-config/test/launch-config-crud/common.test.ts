@@ -1,7 +1,6 @@
 import { buildUI5Option, createFioriLaunchConfig, getFioriOptions } from '../../src';
 import type { LaunchConfig } from '../../src';
 import { TestPaths } from '../test-data/utils';
-import { FioriElementsVersion } from '@sap-ux/ui5-info';
 
 describe('buildUI5Option', () => {
     test('Returns build UI5 option', () => {
@@ -36,7 +35,7 @@ describe('createFioriLaunchConfig', () => {
         const launchConfig = createFioriLaunchConfig('WORKSPACE_FOLDER', {
             name: 'TEST_NAME',
             projectRoot: TestPaths.v2lrop,
-            projectVersion: FioriElementsVersion.v2,
+            projectVersion: '2.0',
             useMockData: true
         });
         expect(launchConfig.args).toStrictEqual(['--config', 'ui5-mock.yaml']);
@@ -49,7 +48,7 @@ describe('createFioriLaunchConfig', () => {
         const launchConfig = createFioriLaunchConfig('WORKSPACE_FOLDER', {
             name: 'TEST_NAME',
             projectRoot: TestPaths.v2lrop,
-            projectVersion: FioriElementsVersion.v2,
+            projectVersion: '2.0',
             useMockData: true,
             ui5Local: true,
             ui5LocalVersion: '1.101.1'
@@ -64,7 +63,7 @@ describe('createFioriLaunchConfig', () => {
         const launchConfig = createFioriLaunchConfig('WORKSPACE_FOLDER', {
             name: 'TEST_NAME',
             projectRoot: TestPaths.v2lrop,
-            projectVersion: FioriElementsVersion.v2,
+            projectVersion: '2.0',
             startFile: 'index.html'
         });
         expect(launchConfig.args).toStrictEqual(['--open', 'index.html']);
@@ -89,7 +88,7 @@ describe('getFioriOptions', () => {
         outputCapture: 'std',
         env: { 'run.config': '' }
     };
-    const fioriElementsVersion = FioriElementsVersion.v2;
+    const fioriElementsVersion = '2.0';
 
     test('get default options', () => {
         const fioriOptions = getFioriOptions(defaultLaunchConfig as LaunchConfig, projectRoot, fioriElementsVersion);

@@ -1,5 +1,5 @@
 import { basename, join } from 'path';
-import type { FioriElementsVersion } from '@sap-ux/ui5-info';
+import type { ODataVersion } from '@sap-ux/project-access';
 import type { FioriOptions, LaunchConfig, LaunchConfigEnv } from '../types';
 import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID } from '../types';
 import { UI5_DEFAULT } from '@sap-ux/ui5-config';
@@ -142,13 +142,13 @@ function getProjectRootFromLaunchConfig(workspaceRoot: string, cwd: string, env?
  *
  * @param launchConfig - Launch Configuration.
  * @param rootFolder - workspace root folder for Launch Configuration where .vscode/launch.json is.
- * @param fioriElementsVersion - Fiori Elements version of the application V2/V4.
+ * @param fioriElementsVersion - OData version of the application V2/V4.
  * @returns Fiori Options of the launch config.
  */
 export function getFioriOptions(
     launchConfig: LaunchConfig,
     rootFolder: string,
-    fioriElementsVersion: FioriElementsVersion
+    fioriElementsVersion: ODataVersion
 ): FioriOptions {
     const projectRoot = getProjectRootFromLaunchConfig(rootFolder, launchConfig.cwd, launchConfig.env);
     let startFile;
