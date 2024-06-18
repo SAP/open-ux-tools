@@ -443,6 +443,9 @@ importers:
       semver:
         specifier: 7.5.4
         version: 7.5.4
+      xml-js:
+        specifier: 1.6.11
+        version: 1.6.11
     devDependencies:
       '@types/mem-fs':
         specifier: 1.1.2
@@ -453,9 +456,6 @@ importers:
       '@types/semver':
         specifier: 7.5.2
         version: 7.5.2
-      xml-js:
-        specifier: 1.6.11
-        version: 1.6.11
 
   packages/cards-editor-config-writer:
     dependencies:
@@ -743,12 +743,18 @@ importers:
         specifier: 2.4.2
         version: 2.4.2
     devDependencies:
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
       '@types/diff':
         specifier: 5.0.9
         version: 5.0.9
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -20437,7 +20443,6 @@ packages:
 
   /sax@1.2.4:
     resolution: {integrity: sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==}
-    dev: true
 
   /saxes@6.0.0:
     resolution: {integrity: sha512-xAg7SOnEhrm5zI3puOOKyy1OMcMlIJZYNJY7xLBwSze0UjhPLnWfj2GF2EpT0jmzaJKIWKHLsaSSajf35bcYnA==}
@@ -22667,7 +22672,7 @@ packages:
     hasBin: true
     dependencies:
       sax: 1.2.4
-    dev: true
+    dev: false
 
   /xml-name-validator@4.0.0:
     resolution: {integrity: sha512-ICP2e+jsHvAj2E2lIHxa5tjXRlKDJo4IdvPvCXbXQGdzSfmSpNVyIKMvoZHjDY9DP0zV17iI85o90vRFXNccRw==}

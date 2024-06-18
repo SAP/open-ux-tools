@@ -75,7 +75,7 @@ export async function validateService(
         delete PromptState.odataService.metadata;
         // Provide a more specific error message if the metadata service URL is not found
         if (ErrorHandler.getErrorType(error) === ERROR_TYPE.NOT_FOUND) {
-            // No metdata implies not a valid odata service
+            // No metadata implies not a valid odata service
             return ErrorHandler.getErrorMsgFromType(ERROR_TYPE.ODATA_URL_NOT_FOUND) ?? false;
         }
         return errorHandler.logErrorMsgs(error);
