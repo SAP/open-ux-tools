@@ -116,6 +116,7 @@ function getProjectRootFromEnv(envConfig: LaunchConfigEnv): string | undefined {
             return JSON.parse(envConfig['run.config']).runnableId;
         }
     }
+    return undefined;
 }
 
 /**

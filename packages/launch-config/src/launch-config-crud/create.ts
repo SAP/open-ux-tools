@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { DirName, createDirectory, fileExists, updateFile } from '@sap-ux/project-access';
-import type { FioriOptions } from '@sap/ux-launch-config-types';
 import { createFioriLaunchConfig, launchConfigFile } from './common';
+import type { FioriOptions } from '../types';
 
 /**
  * Creates a new launch.json file. If exists, does nothing.

@@ -18,7 +18,7 @@
         "clean:dist": "rimraf ./dist ./generators *.tsbuildinfo",
         "clean": "rimraf ./reports",
         "compile": "tsc  --build ./tsconfig.build.json --pretty",
-        "build": "npm-run-all clean compile",
+        "build": "tsc --build",
         "build:deps": "yarn lerna run --concurrency 1 --no-bail --stream --scope @sap/ux-launch-config  --include-dependencies build",
         "test": "jest --maxWorkers=1 --ci --forceExit --detectOpenHandles",
         "watch": "tsc --build --watch ./",
@@ -40,9 +40,15 @@
         "node": ">=18.x"
     },
     "dependencies": {
-        "@sap-ux/project-access": "1.20.2",
-        "@sap-ux/ui5-info": "0.5.0",
+        "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/ui5-config": "workspace:*",
+        "@sap-ux/ui5-info": "workspace:*",
         "jsonc-parser": "3.2.0",
-        "yargs-parser": "20.2.6"
+        "yargs-parser": "21.1.1"
+    },
+    "devDependencies": {
+        "@types/mem-fs": "1.1.2",
+        "@types/mem-fs-editor": "7.0.1",
+        "@types/yargs-parser": "21.0.3"
     }
 }

@@ -1,5 +1,20 @@
 export const FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID = 'fiori_tools';
 
+export interface FioriOptions {
+    name: string;
+    projectRoot: string;
+    projectVersion?: FioriElementsVersion;
+    useMockData?: boolean;
+    ui5Version?: string;
+    ui5VersionUri?: string;
+    ui5Local?: boolean;
+    ui5LocalVersion?: string;
+    startFile?: string;
+    backendConfigs?: BackendConfig[];
+    urlParameters?: string;
+    visible?: boolean;
+}
+
 export interface LaunchConfig {
     name: string;
     cwd: string;
@@ -16,6 +31,16 @@ export interface LaunchConfig {
     internalConsoleOptions: 'openOnSessionStart';
     outputCapture: 'std';
     env: LaunchConfigEnv;
+}
+
+export interface BackendConfig {
+    path: string;
+    name?: string;
+    url?: string;
+    client?: string;
+    destination?: string;
+    pathPrefix?: string;
+    scp?: boolean;
 }
 
 export interface LaunchConfigEnv {

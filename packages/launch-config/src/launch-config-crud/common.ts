@@ -1,8 +1,8 @@
 import { basename, join } from 'path';
-import type { FioriOptions } from '@sap/ux-launch-config-types';
 import type { FioriElementsVersion } from '@sap-ux/ui5-info';
-import type { LaunchConfig, LaunchConfigEnv } from '../types';
+import type { FioriOptions, LaunchConfig, LaunchConfigEnv } from '../types';
 import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID } from '../types';
+import { UI5_DEFAULT } from '@sap-ux/ui5-config';
 import { default as yargsParser } from 'yargs-parser';
 
 /**
@@ -10,11 +10,6 @@ import { default as yargsParser } from 'yargs-parser';
  */
 export const launchConfigFile = 'launch.json';
 
-/**
- * Taken from 'packages/app-generator/common/src/types/constants.ts' but didn't want to add dependency
- * to @sap/ux-generator-common just fo this.
- */
-const EXTERNAL_UI5 = 'https://ui5.sap.com';
 const INTERNAL_UI5 = 'https://sapui5preview-sapui5.dispatcher.int.sap.eu2.hana.ondemand.com';
 const FRAMEWORK_VERSION = '--framework-version';
 
@@ -40,7 +35,7 @@ export function buildUI5Option(ui5Version: string): string[] {
  * @returns UI5 version URI.
  */
 export function getUI5VersionUri(ui5Version: string): string {
-    return ui5Version.startsWith('snapshot') ? INTERNAL_UI5 : EXTERNAL_UI5;
+    return ui5Version.startsWith('snapshot') ? INTERNAL_UI5 : UI5_DEFAULT.SAPUI5_CDN;
 }
 
 /**
@@ -131,7 +126,7 @@ function getLaunchConfig(
  */
 function getProjectRootFromLaunchConfig(workspaceRoot: string, cwd: string, env?: LaunchConfigEnv): string {
     // firstly check if there is env variable for project root
-    if (env && env['run.config']) {
+    if (env?.['run.config']) {
         return JSON.parse(env['run.config']).runnableId;
     }
     // case when workspaceRoot is in opened project

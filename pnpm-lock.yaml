@@ -1246,17 +1246,30 @@ importers:
   packages/launch-config:
     dependencies:
       '@sap-ux/project-access':
-        specifier: 1.20.2
-        version: 1.20.2
+        specifier: workspace:*
+        version: link:../project-access
+      '@sap-ux/ui5-config':
+        specifier: workspace:*
+        version: link:../ui5-config
       '@sap-ux/ui5-info':
-        specifier: 0.5.0
+        specifier: workspace:*
         version: link:../ui5-info
       jsonc-parser:
         specifier: 3.2.0
         version: 3.2.0
       yargs-parser:
-        specifier: 20.2.6
-        version: 20.2.6
+        specifier: 21.1.1
+        version: 21.1.1
+    devDependencies:
+      '@types/mem-fs':
+        specifier: 1.1.2
+        version: 1.1.2
+      '@types/mem-fs-editor':
+        specifier: 7.0.1
+        version: 7.0.1
+      '@types/yargs-parser':
+        specifier: 21.0.3
+        version: 21.0.3
 
   packages/logger:
     dependencies:
@@ -7975,71 +7988,9 @@ packages:
       '@sap-ux/vocabularies-types': 0.10.0
     dev: false
 
-  /@sap-ux/i18n@0.0.6:
-    resolution: {integrity: sha512-FhCkweugj2XhuWZzNHxwzYVNjMuWPCPuFroU+AOqfV2uNl6AXpf07Ni5M7YKqVK5cvcvrkxdVKEAPGnG6RqtZA==}
-    engines: {node: '>=18.x'}
-    dependencies:
-      jsonc-parser: 3.2.0
-      vscode-languageserver-textdocument: 1.0.7
-      vscode-languageserver-types: 3.17.2
-    dev: false
-
-  /@sap-ux/logger@0.5.1:
-    resolution: {integrity: sha512-/x2l1LmiZ1938HqPc+uEjJcJGc60iJGEjBdSB+8ZBlOwjPxDJ8JzYxcd1uO/9BufBbyS2rnrESFefjj6wVzpug==}
-    engines: {node: '>=18.x'}
-    dependencies:
-      chalk: 4.1.2
-      lodash: 4.17.21
-      winston: 3.11.0
-      winston-transport: 4.7.0
-    dev: false
-
-  /@sap-ux/project-access@1.20.2:
-    resolution: {integrity: sha512-ADxypkIW3t/jgscZBdCOEBWq+HMjdV/mI8WkQ4d9+SCT7zaor84I+DREwDdYBin6uHpyJdmZPcTlEntEWIyH4Q==}
-    engines: {node: '>=18.x'}
-    dependencies:
-      '@sap-ux/i18n': 0.0.6
-      '@sap-ux/ui5-config': 0.22.5
-      fast-xml-parser: 4.2.7
-      findit2: 2.2.3
-      mem-fs: 2.1.0
-      mem-fs-editor: 9.4.0(mem-fs@2.1.0)
-    dev: false
-
-  /@sap-ux/store@0.5.0:
-    resolution: {integrity: sha512-TAhihEN+v8OvYDvxJNIDQVAMT7XhbsmfJse7agjU8r8/BjD+dq+q+V5iD04CmQkRWcTcxhBEAhi08FwNTrar4w==}
-    engines: {node: '>=18.x'}
-    dependencies:
-      '@sap-ux/logger': 0.5.1
-      i18next: 20.6.1
-      i18next-fs-backend: 1.2.0
-      pluralize: 8.0.0
-      reflect-metadata: 0.1.13
-    optionalDependencies:
-      keytar: 7.9.0
-    dev: false
-
-  /@sap-ux/ui5-config@0.22.5:
-    resolution: {integrity: sha512-Lc50qntwk+zOYCiNoqHN2TGDcJ2e14/fosATgVfDZMLjbo4pUHxNPMph8W+XCJqjTJVS7jEn6HIb6cMSbzbITw==}
-    engines: {node: '>=18.x'}
-    dependencies:
-      '@sap-ux/store': 0.5.0
-      '@sap-ux/yaml': 0.14.2
-      lodash: 4.17.21
-      semver: 7.5.4
-    dev: false
-
   /@sap-ux/vocabularies-types@0.10.0:
     resolution: {integrity: sha512-uTQ2tJJes9qGGAn8e/Npvy0grIul3mAVHzjxsj10U3lF+RZsoFawsdYGxvb6sJYkhY+YEsQzL8GTL6tyYpMv8g==}
     engines: {node: '>=18.0.0 < 19.0.0 || >=20.0.0 < 21.0.0', pnpm: '>=8'}
-    dev: false
-
-  /@sap-ux/yaml@0.14.2:
-    resolution: {integrity: sha512-8uzv2nYSTn/NVdvZm+eFdxtHiV2+dOn7U1Zy+ZN7GusjORmD1EcflRJNPGrZCY40JmaIEXuXm2s172y47ufBmg==}
-    engines: {node: '>=18.x'}
-    dependencies:
-      lodash: 4.17.21
-      yaml: 2.2.2
     dev: false
 
   /@sap/bas-sdk@3.7.7:
@@ -9865,6 +9816,10 @@ packages:
 
   /@types/yargs-parser@20.2.1:
     resolution: {integrity: sha512-7tFImggNeNBVMsn0vLrpn1H1uPrUBdnARPTpZoitY37ZrdJREzf7I16tMrlK3hen349gr1NYh8CmZQa7CTG6Aw==}
+    dev: true
+
+  /@types/yargs-parser@21.0.3:
+    resolution: {integrity: sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==}
     dev: true
 
   /@types/yargs@17.0.22:
@@ -22858,10 +22813,6 @@ packages:
       decamelize: 1.2.0
     dev: true
 
-  /yargs-parser@20.2.6:
-    resolution: {integrity: sha512-AP1+fQIWSM/sMiET8fyayjx/J+JmTPt2Mr0FkrgqB4todtfa53sOsrSAcIrJRD5XS20bKUwaDIuMkWKCEiQLKA==}
-    engines: {node: '>=10'}
-
   /yargs-parser@20.2.9:
     resolution: {integrity: sha512-y11nGElTIV+CT3Zv9t7VKl+Q3hTQoT9a1Qzezhhl6Rp21gJ/IVTW7Z3y9EWXhuUBC2Shnf+DX0antecpAwSP8w==}
     engines: {node: '>=10'}
@@ -22870,7 +22821,6 @@ packages:
   /yargs-parser@21.1.1:
     resolution: {integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==}
     engines: {node: '>=12'}
-    dev: true
 
   /yargs@15.4.1:
     resolution: {integrity: sha512-aePbxDmcYW++PaqBsJ+HYUFwCdv4LVvdnhBy78E57PIor8/OVvhMrADFFEDh8DHDFRv/O9i3lPhsENjO7QX0+A==}
@@ -22899,7 +22849,7 @@ packages:
       require-directory: 2.1.1
       string-width: 4.2.3
       y18n: 5.0.8
-      yargs-parser: 20.2.6
+      yargs-parser: 20.2.9
     dev: true
 
   /yargs@17.7.2:
