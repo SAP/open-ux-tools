@@ -29,7 +29,7 @@
         "format:fix": "prettier --write --ignore-path ../../.prettierignore",
         "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../.prettierignore",
         "storybook": "npm-run-all -l -p storybook:prepare storybook:run",
-        "storybook:prepare": "ts-node ./scripts/index.ts",
+        "storybook:prepare": "ts-node ./scripts/index.js",
         "storybook:run": "storybook dev -s static",
         "dev": "nodemon --exec \"pnpm storybook -p 60648 --no-open\" -w \".storybook/*\" -e \"ts,tsx\""
     },

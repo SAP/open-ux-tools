@@ -1,6 +1,6 @@
 const config = require('../../jest.base');
 config.testEnvironment = 'jsdom';
-config.collectCoverageFrom = ['src/**/*.{ts,tsx}', 'scripts/**/*.ts'];
+config.collectCoverageFrom = ['src/**/*.{ts,tsx}'];
 config.setupFilesAfterEnv = ['<rootDir>/test/test-shim.js'];
 config.transform = {
     '^.+\\.tsx?$': [

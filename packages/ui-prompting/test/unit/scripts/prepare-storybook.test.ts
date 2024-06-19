@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { sep } from 'path';
-import { run } from '../../../scripts/storybook';
+import run from '../../../scripts/storybook';
 
 describe('prepare-storybook.ts', () => {
     let mkdirSyncSpy: jest.SpyInstance;

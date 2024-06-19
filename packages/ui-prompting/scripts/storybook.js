@@ -1,14 +1,14 @@
-import fs from 'fs';
-import { join } from 'path';
+const fs = require('fs');
+const { join } = require('path');
 
 const StorybookFiles = {
     StorybookFolder: '.storybook',
     StylesFolder: 'static',
     ManagerFile: 'manager-head.html',
     PreviewFile: 'preview-head.html'
-} as const;
+};
 
-const SourceDir = join(__dirname, '..', '..', '..', 'packages', 'ui-components', StorybookFiles.StorybookFolder);
+const SourceDir = join(__dirname, '..', '..', 'ui-components', StorybookFiles.StorybookFolder);
 const TargetDir = join(__dirname, '..', StorybookFiles.StorybookFolder);
 
 const CmdParams = {
@@ -18,12 +18,12 @@ const CmdParams = {
 
 /**
  * Function to copy passed files from surce to target directory.
- * @param files Files to copy.
- * @param source Source directoy.
- * @param target Target directoy.
- * @param overwrite Overwrite files if files already exists in target.
+ * @param {string[]} files Files to copy.
+ * @param {string} source Source directoy.
+ * @param {string} target Target directoy.
+ * @param {boolean} overwrite Overwrite files if files already exists in target.
  */
-function copyFiles(files: string[], source: string, target: string, overwrite: boolean): void {
+function copyFiles(files, source, target, overwrite) {
     for (const file of files) {
         const styleFile = {
             source: join(source, file),
@@ -39,7 +39,7 @@ function copyFiles(files: string[], source: string, target: string, overwrite: b
  * Run command to generate macros generic schema by resolving "sap.fe.macros" api.json.
  * @param {string[]} argv Additional arguments for API retrieval and schema generation. Currently we support '--nightly' and '--update'.
  */
-export async function run(argv: string[]): Promise<void> {
+async function run(argv) {
     const overwrite = argv.includes(CmdParams.overwrite);
     // Handle/copy styles
     const styleFolder = {
@@ -54,3 +54,5 @@ export async function run(argv: string[]): Promise<void> {
     // Handle html files
     copyFiles([StorybookFiles.ManagerFile, StorybookFiles.PreviewFile], SourceDir, TargetDir, overwrite);
 }
+
+module.exports = run;
