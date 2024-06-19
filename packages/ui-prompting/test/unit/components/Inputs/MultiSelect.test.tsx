@@ -5,6 +5,7 @@ import { MultiSelect, MultiSelectProps } from '../../../../src/components';
 
 const props: MultiSelectProps = {
     value: '',
+    name: 'testList',
     onChange: jest.fn(),
     required: undefined,
     additionalInfo: '',
@@ -50,8 +51,10 @@ describe('MultiSelect', () => {
         const options = screen.queryAllByRole('option');
         fireEvent.click(options[0]);
         expect(onChangeFn).toHaveBeenCalled();
+        expect(onChangeFn).toHaveBeenCalledWith('testList', 'testKey0');
         fireEvent.click(options[1]);
         expect(onChangeFn).toHaveBeenCalledTimes(2);
+        expect(onChangeFn).toHaveBeenCalledWith('testList', 'testKey0,testKey1');
         fireEvent.click(button);
         expect(screen.getByPlaceholderText('testText0, testText1')).toBeDefined();
     });

@@ -6,6 +6,7 @@ import { InputProps } from '../../../../dist';
 
 const props: InputProps = {
     value: '',
+    name: 'testInput',
     onChange: jest.fn(),
     required: undefined,
     additionalInfo: '',
@@ -33,6 +34,7 @@ describe('Input', () => {
         expect(input).toBeDefined();
         fireEvent.change(input, { target: { value: 'new value' } });
         expect(onChangeFn).toHaveBeenCalled();
+        expect(onChangeFn).toHaveBeenLastCalledWith('testInput', 'new value');
     });
 
     it('Test property required', () => {
