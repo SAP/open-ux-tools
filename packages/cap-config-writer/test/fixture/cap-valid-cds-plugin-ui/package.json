@@ -1,6 +1,6 @@
 {
     "dependencies": {
-        "@sap/cds": "^7.9.2"
+        "@sap/cds": "^6.8.2"
     },
     "devDependencies": {
         "cds-plugin-ui5": "0.9.3"
