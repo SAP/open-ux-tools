@@ -443,6 +443,9 @@ importers:
       semver:
         specifier: 7.5.4
         version: 7.5.4
+      xml-js:
+        specifier: 1.6.11
+        version: 1.6.11
     devDependencies:
       '@types/mem-fs':
         specifier: 1.1.2
@@ -453,9 +456,6 @@ importers:
       '@types/semver':
         specifier: 7.5.2
         version: 7.5.2
-      xml-js:
-        specifier: 1.6.11
-        version: 1.6.11
 
   packages/cards-editor-config-writer:
     dependencies:
@@ -743,12 +743,18 @@ importers:
         specifier: 2.4.2
         version: 2.4.2
     devDependencies:
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
       '@types/diff':
         specifier: 5.0.9
         version: 5.0.9
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -1180,6 +1186,9 @@ importers:
       i18next:
         specifier: 23.5.1
         version: 23.5.1
+      lodash:
+        specifier: 4.17.21
+        version: 4.17.21
       semver:
         specifier: 7.5.4
         version: 7.5.4
@@ -1190,6 +1199,9 @@ importers:
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
+      '@types/lodash':
+        specifier: 4.14.202
+        version: 4.14.202
       '@types/semver':
         specifier: 7.5.4
         version: 7.5.4
@@ -1379,6 +1391,9 @@ importers:
 
   packages/odata-service-inquirer:
     dependencies:
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
@@ -1394,9 +1409,15 @@ importers:
       '@sap-ux/telemetry':
         specifier: workspace:*
         version: link:../telemetry
-      '@sap/wing-service-explorer':
-        specifier: 1.8.0
-        version: 1.8.0
+      axios:
+        specifier: 1.6.8
+        version: 1.6.8
+      axios-logger:
+        specifier: 2.8.0
+        version: 2.8.0
+      fast-xml-parser:
+        specifier: 4.2.7
+        version: 4.2.7
       i18next:
         specifier: 23.5.1
         version: 23.5.1
@@ -8071,21 +8092,6 @@ packages:
       '@sap/cds-compiler': 4.8.0
     dev: false
 
-  /@sap/wing-service-explorer@1.8.0:
-    resolution: {integrity: sha512-2TVmuxAciPkbAfSuqE3WILu6EJL7jVVVyeyT//dZhXQH0VRtrd4DzWrf81lngyl58UUzQxugPHL7OcHj6R8xLA==}
-    engines: {node: '>=8.0.0'}
-    dependencies:
-      '@vscode-logging/types': 0.1.4
-      axios: 0.21.4
-      fast-xml-parser: 4.2.4
-      fs-extra: 7.0.1
-      lodash: 4.17.21
-      vkbeautify: 0.99.3
-      xml2js: 0.5.0
-    transitivePeerDependencies:
-      - debug
-    dev: false
-
   /@sapui5/types@1.120.5:
     resolution: {integrity: sha512-5n0pzbS4sP1eA0m1bFgnD1cKQT7BJQn9b1JADWanteElZTbyJjoaTFzSHIUjrCU+vxOwkHTajCjp+/6UNJ1KbQ==}
     dependencies:
@@ -10287,10 +10293,6 @@ packages:
   /@ungap/structured-clone@1.2.0:
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
 
-  /@vscode-logging/types@0.1.4:
-    resolution: {integrity: sha512-uxuHQfpX9RbkgSj5unJFmciXRczyFSaAI2aA829MYYkE8jxlhZLRLoiJLymTNiojNVdV7fFE3CILF5Q6M+EBsA==}
-    dev: false
-
   /@vue/compiler-core@3.3.4:
     resolution: {integrity: sha512-cquyDNvZ6jTbf/+x+AgM2Arrp6G4Dzbb0R64jiG804HRMfRiFXWI6kqUVqZ6ZR0bQhIoQjB4+2bhNtVwndW15g==}
     dependencies:
@@ -11192,12 +11194,11 @@ packages:
       possible-typed-array-names: 1.0.0
     dev: true
 
-  /axios@0.21.4:
-    resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
+  /axios-logger@2.8.0:
+    resolution: {integrity: sha512-MWOBmbyAarx18rkI0xsuMDkK1oaqwROqeZjsfVgsD0Y7IGLzN3ZNZPpcnoCDKeajU0uLxjCs85186CeLU36bXg==}
     dependencies:
-      follow-redirects: 1.15.6
-    transitivePeerDependencies:
-      - debug
+      chalk: 4.1.2
+      dateformat: 3.0.3
     dev: false
 
   /axios@1.6.8:
@@ -12560,6 +12561,10 @@ packages:
     dependencies:
       yaml-ast-parser: 0.0.43
     dev: true
+
+  /dateformat@3.0.3:
+    resolution: {integrity: sha512-jyCETtSl3VMZMWeRo7iY1FL19ges1t55hMo5yaam4Jrsm5EPL89UQkoQRyiI+Yf4k8r2ZpdngkV8hr1lIdjb3Q==}
+    dev: false
 
   /debug@2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
@@ -14385,13 +14390,6 @@ packages:
     resolution: {integrity: sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA==}
     dev: true
 
-  /fast-xml-parser@4.2.4:
-    resolution: {integrity: sha512-fbfMDvgBNIdDJLdLOwacjFAPYt67tr31H9ZhWSm45CDAxvd0I6WTlSOUo7K2P/K5sA5JgMKG64PI3DMcaFdWpQ==}
-    hasBin: true
-    dependencies:
-      strnum: 1.0.5
-    dev: false
-
   /fast-xml-parser@4.2.7:
     resolution: {integrity: sha512-J8r6BriSLO1uj2miOk1NW0YVm8AGOOu3Si2HQp/cSmo6EA4m3fcwu2WKjJ4RK9wMLBtg69y1kS8baDiQBR41Ig==}
     hasBin: true
@@ -14764,6 +14762,7 @@ packages:
       graceful-fs: 4.2.11
       jsonfile: 4.0.0
       universalify: 0.1.2
+    dev: true
 
   /fs-extra@8.1.0:
     resolution: {integrity: sha512-yhlQgA6mnOJUKOsRUFsgJdQCvkKhcz8tlZG5HBQfReYZy46OwLcY+Zia0mtdHsOo9y/hP+CxMN0TU9QxoOtG4g==}
@@ -17051,6 +17050,7 @@ packages:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
     optionalDependencies:
       graceful-fs: 4.2.11
+    dev: true
 
   /jsonfile@6.1.0:
     resolution: {integrity: sha512-5dgndWOriYSm5cnYaJNhalLNDKOqFwyDB/rr1E9ZsGciGvKPs8R2xYGCacuf3z6K1YKDz182fd+fY3cn3pMqXQ==}
@@ -21992,6 +21992,7 @@ packages:
   /universalify@0.1.2:
     resolution: {integrity: sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg==}
     engines: {node: '>= 4.0.0'}
+    dev: true
 
   /universalify@0.2.0:
     resolution: {integrity: sha512-CJ1QgKmNg3CwvAv/kOFmtnEN05f0D/cn9QntgNOQlQF9dgvVTHj3t+8JPdjqawCHk7V/KA+fbUqzZ9XWhcqPUg==}
@@ -22246,10 +22247,6 @@ packages:
       cloneable-readable: 1.1.3
       remove-trailing-separator: 1.1.0
       replace-ext: 1.0.1
-
-  /vkbeautify@0.99.3:
-    resolution: {integrity: sha512-2ozZEFfmVvQcHWoHLNuiKlUfDKlhh4KGsy54U0UrlLMR1SO+XKAIDqBxtBwHgNrekurlJwE8A9K6L49T78ZQ9Q==}
-    dev: false
 
   /void-elements@3.1.0:
     resolution: {integrity: sha512-Dhxzh5HZuiHQhbvTW9AMetFfBHDMYpo23Uo9btPXgdYP+3T5S+p+jgNy7spra+veYhBP2dCSgxR/i2Y02h5/6w==}
@@ -22703,7 +22700,7 @@ packages:
     hasBin: true
     dependencies:
       sax: 1.2.4
-    dev: true
+    dev: false
 
   /xml-name-validator@4.0.0:
     resolution: {integrity: sha512-ICP2e+jsHvAj2E2lIHxa5tjXRlKDJo4IdvPvCXbXQGdzSfmSpNVyIKMvoZHjDY9DP0zV17iI85o90vRFXNccRw==}
@@ -22713,14 +22710,6 @@ packages:
   /xml-parser-xo@3.2.0:
     resolution: {integrity: sha512-8LRU6cq+d7mVsoDaMhnkkt3CTtAs4153p49fRo+HIB3I1FD1o5CeXRjRH29sQevIfVJIcPjKSsPU/+Ujhq09Rg==}
     engines: {node: '>= 10'}
-    dev: false
-
-  /xml2js@0.5.0:
-    resolution: {integrity: sha512-drPFnkQJik/O+uPKpqSgr22mpuFHqKdbS835iAQrUC73L2F5WkboIRd63ai/2Yg6I1jzifPFKH2NTK+cfglkIA==}
-    engines: {node: '>=4.0.0'}
-    dependencies:
-      sax: 1.2.4
-      xmlbuilder: 11.0.1
     dev: false
 
   /xml2js@0.6.2:
@@ -22734,6 +22723,7 @@ packages:
   /xmlbuilder@11.0.1:
     resolution: {integrity: sha512-fDlsI/kFEx7gLvbecc0/ohLG50fugQp8ryHzMTuW9vSa1GJ0XYWKnhsUx7oie3G98+r56aTQIUB4kht42R3JvA==}
     engines: {node: '>=4.0'}
+    dev: true
 
   /xmlbuilder@15.1.1:
     resolution: {integrity: sha512-yMqGBqtXyeN1e3TGYvgNgDVZ3j84W4cwkOXQswghol6APgZWaff9lnbvN7MHYJOiXsvGPXtjTYJEiC9J2wv9Eg==}
