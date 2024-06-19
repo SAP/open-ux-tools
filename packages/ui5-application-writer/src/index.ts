@@ -28,7 +28,8 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     const tmplPath = join(__dirname, '..', 'templates');
     const ignore = [ui5AppConfig.appOptions?.typescript ? '**/*.js' : '**/*.ts'];
 
-    if (ui5AppConfig.appOptions?.generateIndex === false) {
+    if (!ui5AppConfig.appOptions?.isCapProject && ui5AppConfig.appOptions?.generateIndex === false) {
+        // ignore webapp/index.html for CAP applications and if generateIndex is false
         ignore.push('**/webapp/index.html');
     }
     if (ui5AppConfig.appOptions?.isCapProject) {
