@@ -7,7 +7,6 @@ import { toReferenceUri } from '@sap-ux/project-access';
 import type { NoUndefinedNamespaceData, AnnotationFile, Reference } from '@sap-ux/odata-annotation-core';
 import {
     TextEdit,
-    isBefore,
     printOptions as defaultPrintOptions,
     Position,
     Edm,
@@ -19,7 +18,7 @@ import type { VocabularyService } from '@sap-ux/odata-vocabularies';
 
 import { createMetadataCollector, type CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
 
-import type { Annotation, AnnotationGroupItems, Collection, Record, Token } from '@sap-ux/cds-annotation-parser';
+import type { Annotation, Collection, Token } from '@sap-ux/cds-annotation-parser';
 import {
     copyRange,
     ENUM_TYPE,
@@ -42,12 +41,12 @@ import {
     printTarget
 } from '@sap-ux/cds-odata-annotation-converter';
 
-import { increaseIndent, compareTextEdits } from '../utils';
+import { increaseIndent, compareByRange } from '../utils';
 import { ApiError } from '../error';
 
 import type { Comment } from './comments';
-import type { AstNode, CDSDocument } from './document';
-import { CDS_DOCUMENT_TYPE } from './document';
+import type { AstNode, CDSDocument, ContainerNode } from './document';
+import { CDS_DOCUMENT_TYPE, getChildCount, getItems } from './document';
 import type { DeletionRange } from './deletion';
 import { getTextEditsForDeletionRanges, getDeletionRangeForNode } from './deletion';
 import { getAstNodesFromPointer } from './pointer';
@@ -202,7 +201,7 @@ export class CDSWriter implements ChangeHandler {
                 this.edits.push(...targetDeletions);
             }
         }
-        this.edits.sort(compareTextEdits);
+        this.edits.sort(compareByRange);
 
         return this.edits;
     }
@@ -275,14 +274,13 @@ export class CDSWriter implements ChangeHandler {
         }
         if (astNode?.type === COLLECTION_TYPE) {
             const content = getContainerContent(astNode, this.comments, this.tokens);
-            const insertEdits = insertIntoNodeWithContent(
+            this.insertIntoNodeWithContent(
                 content,
                 astNode,
                 [change],
                 indentLevel,
                 this.isFirstInsert(change.pointer, astNode, change.index)
             );
-            this.edits.push(...insertEdits);
         }
     };
 
@@ -305,14 +303,13 @@ export class CDSWriter implements ChangeHandler {
         }
         const indentLevel = this.getIndentLevel(change.pointer);
         const content = getContainerContent(astNode, this.comments, this.tokens);
-        const insertEdits = convertInsertNodeToTextEdits(
+        this.convertInsertNodeToTextEdits(
             content,
             astNode,
             [change],
             indentLevel,
             this.isFirstInsert(change.pointer, astNode, change.index)
         );
-        this.edits.push(...insertEdits);
     };
 
     [INSERT_EMBEDDED_ANNOTATION_CHANGE_TYPE] = (change: InsertEmbeddedAnnotation, reversePath: AstNode[]): void => {
@@ -320,14 +317,13 @@ export class CDSWriter implements ChangeHandler {
         const indentLevel = this.getIndentLevel(change.pointer);
         if (astNode?.type === RECORD_TYPE) {
             const content = getContainerContent(astNode, this.comments, this.tokens);
-            const insertEdits = insertIntoNodeWithContent(
+            this.insertIntoNodeWithContent(
                 content,
                 astNode,
                 [change],
                 indentLevel,
                 this.isFirstInsert(change.pointer, astNode, change.index)
             );
-            this.edits.push(...insertEdits);
         } else if (astNode?.type === ANNOTATION_TYPE) {
             const value = astNode.value;
             let adjustedIndentLevel = indentLevel;
@@ -337,14 +333,13 @@ export class CDSWriter implements ChangeHandler {
             if (value?.type === RECORD_TYPE) {
                 const content = getContainerContent(value, this.comments, this.tokens);
                 // existing value is record
-                const insertEdits = insertIntoNodeWithContent(
+                this.insertIntoNodeWithContent(
                     content,
                     value,
                     [change],
                     adjustedIndentLevel,
                     this.isFirstInsert(change.pointer, value, change.index)
                 );
-                this.edits.push(...insertEdits);
             } else if (astNode.value?.range) {
                 // existing value is primitive
                 const indent = ' '.repeat(adjustedIndentLevel * printOptions.tabWidth);
@@ -379,14 +374,13 @@ export class CDSWriter implements ChangeHandler {
             return;
         }
         const content = getContainerContent(astNode, this.comments, this.tokens);
-        const insertEdits = convertInsertNodeToTextEdits(
+        this.convertInsertNodeToTextEdits(
             content,
             astNode,
             [change],
             indentLevel,
             this.isFirstInsert(change.pointer, astNode, change.index)
         );
-        this.edits.push(...insertEdits);
     };
 
     [INSERT_PRIMITIVE_VALUE_TYPE] = (change: InsertPrimitiveValue, reversePath: AstNode[]): void => {
@@ -394,14 +388,13 @@ export class CDSWriter implements ChangeHandler {
         const indentLevel = this.getIndentLevel(change.pointer);
         if (astNode?.type === COLLECTION_TYPE) {
             const content = getContainerContent(astNode, this.comments, this.tokens);
-            const insertEdits = convertInsertNodeToTextEdits(
+            this.convertInsertNodeToTextEdits(
                 content,
                 astNode,
                 [change],
                 indentLevel,
                 this.isFirstInsert(change.pointer, astNode, change.index)
             );
-            this.edits.push(...insertEdits);
         } else if ((astNode?.type === RECORD_PROPERTY_TYPE || astNode?.type === ANNOTATION_TYPE) && astNode.range) {
             const textNode = change.element.content[0];
             const value = textNode?.type === TEXT_TYPE ? textNode.text : '';
@@ -739,26 +732,100 @@ export class CDSWriter implements ChangeHandler {
             this.edits.push(...conversionSteps);
         }
     };
-}
 
-function convertInsertNodeToTextEdits<
-    T extends InsertRecord | InsertRecordProperty | InsertAnnotation | InsertPrimitiveValue | InsertEmbeddedAnnotation
->(
-    content: ContainerContentBlock[],
-    parent: ContainerNode | CDSDocument,
-    changes: Array<T>,
-    childIndentLevel: number,
+    private insertIntoNodeWithContent<T extends ElementInserts>(
+        content: ContainerContentBlock[],
+        parent: ContainerNode,
+        changes: T[],
+        indentLevel: number,
+        firstInsert: boolean
+    ): void {
+        const [indices, changesByIndex] = indexInserts(changes, getChildCount(parent));
+        for (const index of indices) {
+            // change.index should not be used in this scope, because changes with indices outside the container size are merged
+            // and change.index would not correctly reflect the place where a change needs to be inserted
+            const changeSet = changesByIndex.get(index);
+            if (!changeSet || !parent.range) {
+                continue;
+            }
+            const newElements = changeSet.map(printChange(parent)).join(',\n');
+            if (getChildCount(parent) === 0) {
+                const fragments: string[] = [];
+                const range = copyRange(parent.range);
+                // we need to adjust range to exclude boundary characters
+                range.start.character++; // range includes '{' or '[' characters
+                range.end.character--; // range includes '}' or ']' characters
 
-    firstInsert: boolean
-): TextEdit[] {
-    if (changes.length === 0) {
-        return [];
+                fragments.push('\n');
+                fragments.push(newElements);
+                fragments.push(',');
+                const text = indent(deIndent(fragments.join('')), {
+                    level: indentLevel + 1,
+                    skipFirstLine: true
+                });
+                this.insertText(range, text, indentLevel, firstInsert);
+            } else {
+                const anchor = findInsertPosition(content, parent, index ?? -1);
+                if (!anchor) {
+                    continue;
+                }
+                const fragments: string[] = [];
+
+                if (firstInsert && anchor.commaPosition) {
+                    // for repeated inserts at the same spot we'll already have the trailing comma
+                    this.edits.push(TextEdit.insert(anchor.commaPosition, ','));
+                }
+
+                fragments.push('\n');
+                fragments.push(newElements);
+                fragments.push(',');
+                let finalText = fragments.join('');
+                finalText = deIndent(finalText);
+                const text = indent(finalText, {
+                    level: indentLevel + 1,
+                    skipFirstLine: true
+                });
+                this.edits.push(TextEdit.insert(anchor.position, text));
+            }
+        }
     }
-    if (parent.type !== CDS_DOCUMENT_TYPE) {
-        return insertIntoNodeWithContent(content, parent, changes, childIndentLevel, firstInsert);
+
+    private insertText(range: Range, text: string, indentLevel: number, firstInsert: boolean): void {
+        if (firstInsert) {
+            this.edits.push(TextEdit.replace(range, text + indent('\n', { level: indentLevel, skipFirstLine: true })));
+        } else {
+            // Multiple inserts will have the same replacement range, we need to group them because
+            // only one text edit with that replacement range can be applied.
+            const edit = this.edits.find((edit) => isRangesEqual(edit.range, range));
+            if (edit) {
+                const lines = edit.newText.split('\n');
+                lines[lines.length - 2] += text;
+                edit.newText = lines.join('\n');
+            }
+        }
     }
 
-    return [];
+    private convertInsertNodeToTextEdits<
+        T extends
+            | InsertRecord
+            | InsertRecordProperty
+            | InsertAnnotation
+            | InsertPrimitiveValue
+            | InsertEmbeddedAnnotation
+    >(
+        content: ContainerContentBlock[],
+        parent: ContainerNode | CDSDocument,
+        changes: Array<T>,
+        childIndentLevel: number,
+        firstInsert: boolean
+    ): void {
+        if (changes.length === 0) {
+            return;
+        }
+        if (parent.type !== CDS_DOCUMENT_TYPE) {
+            this.insertIntoNodeWithContent(content, parent, changes, childIndentLevel, firstInsert);
+        }
+    }
 }
 
 function willTargetAnnotationIncreaseIndent(changes: CDSDocumentChange[], pointer: string): boolean {
@@ -883,67 +950,6 @@ function deleteValue(
     }
 }
 
-type ContainerNode = Target | AnnotationGroupItems | Collection | Record;
-
-function insertIntoNodeWithContent<T extends ElementInserts>(
-    content: ContainerContentBlock[],
-    parent: ContainerNode,
-    changes: T[],
-    indentLevel: number,
-    firstInsert: boolean
-): TextEdit[] {
-    const edits: TextEdit[] = [];
-    const [indices, changesByIndex] = indexInserts(changes, getChildCount(parent));
-    for (const index of indices) {
-        // change.index should not be used in this scope, because changes with indices outside the container size are merged
-        // and change.index would not correctly reflect the place where a change needs to be inserted
-        const changeSet = changesByIndex.get(index);
-        if (!changeSet || !parent.range) {
-            continue;
-        }
-        const newElements = changeSet.map(printChange(parent)).join(',\n');
-        if (getChildCount(parent) === 0) {
-            const fragments: string[] = [];
-            const range = copyRange(parent.range);
-            // we need to adjust range to exclude boundary characters
-            range.start.character++; // range includes '{' or '[' characters
-            range.end.character--; // range includes '}' or ']' characters
-
-            fragments.push('\n');
-            fragments.push(newElements);
-            fragments.push(',');
-            const text = indent(deIndent(fragments.join('')), {
-                level: indentLevel + 1,
-                skipFirstLine: true
-            });
-            edits.push(TextEdit.replace(range, text + indent('\n', { level: indentLevel, skipFirstLine: true })));
-        } else {
-            const anchor = findInsertPosition(content, parent, index ?? -1);
-            if (!anchor) {
-                continue;
-            }
-            const fragments: string[] = [];
-
-            if (firstInsert && anchor.commaPosition) {
-                // for repeated inserts at the same spot we'll already have the trailing comma
-                edits.push(TextEdit.insert(anchor.commaPosition, ','));
-            }
-
-            fragments.push('\n');
-            fragments.push(newElements);
-            fragments.push(',');
-            let finalText = fragments.join('');
-            finalText = deIndent(finalText);
-            const text = indent(finalText, {
-                level: indentLevel + 1,
-                skipFirstLine: true
-            });
-            edits.push(TextEdit.insert(anchor.position, text));
-        }
-    }
-    return edits;
-}
-
 function printChange(parent: ContainerNode | undefined) {
     return function (change: ElementInserts) {
         if (change.type === INSERT_PRIMITIVE_VALUE_TYPE) {
@@ -1005,26 +1011,6 @@ function findInsertPosition(
         return { position: anchor };
     }
     return undefined;
-}
-
-function getChildCount(container: ContainerNode): number {
-    return getItems(container).length;
-}
-
-function getItems(container: ContainerNode): AstNode[] {
-    switch (container.type) {
-        case 'target':
-            return container.assignments;
-        case 'record':
-            return container.annotations?.length
-                ? [...container.properties, ...container.annotations].sort(compareRange)
-                : container.properties;
-        case 'annotation-group-items':
-        case 'collection':
-            return container.items;
-        default:
-            return [];
-    }
 }
 
 function getCommas(container: ContainerNode, tokens: CompilerToken[]): Token[] {
@@ -1227,21 +1213,6 @@ function createElementRanges(document: CDSDocument, tokens: CompilerToken[], poi
     return ranges;
 }
 
-function compareRange<T extends { range?: Range }>(a: T, b: T): number {
-    if (!a.range) {
-        return 1;
-    }
-    if (!b.range) {
-        return -1;
-    }
-    if (isBefore(a.range.start, b.range.start)) {
-        return -1;
-    } else if (isBefore(b.range.start, a.range.start)) {
-        return 1;
-    }
-    return 0;
-}
-
 function getTextEditsForMove(
     document: TextDocument,
     comments: Comment[],
@@ -1398,7 +1369,7 @@ function getContainerContent(
             ? comments.filter((comment) => rangeContained(collection.range!, comment.range))
             : []
     ).filter((comment) => !items.some((item) => item.range && rangeContained(item.range, comment.range)));
-    const source = [...commas, ...items, ...commentsInContent].sort(compareRange);
+    const source = [...commas, ...items, ...commentsInContent].sort(compareByRange);
     const content: ContainerContentBlock[] = [];
     for (const node of source) {
         processNode(content, node);
