@@ -10,7 +10,6 @@ const props: MultiSelectProps = {
     additionalInfo: '',
     errorMessage: undefined,
     placeholder: undefined,
-    dependantPromptNames: [],
     type: 'checkbox',
     options: [
         { key: 'testKey0', text: 'testText0' },

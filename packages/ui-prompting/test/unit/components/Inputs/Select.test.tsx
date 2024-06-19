@@ -11,7 +11,6 @@ const props: SelectProps = {
     additionalInfo: '',
     errorMessage: undefined,
     placeholder: undefined,
-    dependantPromptNames: [],
     options: [
         { key: 'testKey0', text: 'testText0', data: { value: 'testKey0' } },
         { key: 'testKey1', text: 'testText1', data: { value: 'testKey1' } }
