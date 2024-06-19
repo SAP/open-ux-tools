@@ -1,5 +1,25 @@
 # @sap-ux/cap-config-writer
 
+## 0.3.5
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.22.1
+-   @sap-ux/odata-service-inquirer@0.3.1
+
+## 0.3.4
+
+### Patch Changes
+
+-   d1045887: Moving xml js from dev dependency to real dependency in package json
+
+## 0.3.3
+
+### Patch Changes
+
+-   Updated dependencies [1ea831d5]
+    -   @sap-ux/odata-service-inquirer@0.3.0
+
 ## 0.3.2
 
 ### Patch Changes

@@ -40,11 +40,25 @@
             "breadcrumb": "CAP Service",
             "enterCapPathChoiceName": "Manually select CAP service folder path"
         },
+        "odataServiceUrl": {
+            "message": "OData{{odataVersion, odataVersionFormatter}} service URL"
+        },
+        "ignoreCertErrors": {
+            "message": "Do you want to continue generation with the untrusted certificate?"
+        },
+        "serviceUsername": {
+            "message": "Service username"
+        },
+        "servicePassword": {
+            "message": "Service password"
+        },
         "validationMessages": {
             "odataVersionMismatch": "The template you have chosen supports V{{requiredOdataVersion}} OData services only. The provided version is V{{providedOdataVersion}}.",
             "metadataInvalid": "The service metadata is invalid.",
             "metadataFilePathNotValid": "Metadata file does not exist or is not accessible. Please specify a valid file path.",
-            "capProjectNotFound": "The folder you have selected does not seem to contain a valid CAP project. Please check and try again."
+            "capProjectNotFound": "The folder you have selected does not seem to contain a valid CAP project. Please check and try again.",
+            "warningCertificateValidationDisabled": "User has disabled certificate validation",
+            "annotationsNotFound": "Annotations not found for specified service"
         },
         "nonUIServiceTypeWarningMessage": "Please note that {{serviceTypeDesc}} services are not intended to be used for the generation of SAP Fiori UI applications"
     },
@@ -65,13 +79,20 @@
         "internalServerError": "The URL you have provided cannot be accessed and is returning: '{{- error}}'. Please ensure that the URL is accessible externally.",
         "urlNotFound": "URL not found",
         "odataServiceUrlNotFound": "The service URL you have provided is not a valid OData Service. Fiori applications require an OData service as the data source.",
+        "badGateway": "The server returned an error: bad gateway, please check the URL and try again.",
         "destinationUnavailable": "The selected destination references an instance that is not available. Please check your destination configuration and try again.",
         "destinationNotFound": "The destination is mis-configured, HTTP Error 404 returned, the requested resource could not be found.",
         "destinationMisconfigured": "The destination is mis-configured, HTML5.DynamicDestination property is missing.",
         "noServicesAvailable": "There are no V{{version}} OData services available from the selected system and the template you have chosen supports V{{version}} OData services only",
         "redirectError": "A redirect response was received from the server",
         "abapEnvsUnavailable": "ABAP environments unavailable",
-        "noSuchHostError": "No such host is known"
+        "noSuchHostError": "No such host is known",
+        "odataServiceVersionMismatch": "The template you have chosen supports V{{requiredVersion}} OData services only. The provided version is V{{serviceVersion}}.",
+        "destinationAuthError": "The selected system is returning an authentication error. Please verify the destination configuration",
+        "serviceUrlNotFound": "Please verify the service url: {{- url}}, target system configuration and network connectivity",
+        "urlRedirect": "The service URL is redirecting",
+        "certValidationRequired": "Certificate validation is required to continue.",
+        "exitingGeneration": "Exiting generation. {{exitReason}}"
     },
     "texts": {
         "anExpiredCert": "an expired",

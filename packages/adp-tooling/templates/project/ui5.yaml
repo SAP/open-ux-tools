@@ -2,5 +2,5 @@
 
 specVersion: "3.0"
 metadata:
-  name: <%- app.id %>
+  name: <%- package.name %>
 type: application

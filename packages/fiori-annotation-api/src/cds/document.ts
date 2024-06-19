@@ -3,12 +3,18 @@ import { fileURLToPath } from 'url';
 import type { AnnotationFile, Namespace, Reference } from '@sap-ux/odata-annotation-core-types';
 import { Range } from '@sap-ux/odata-annotation-core-types';
 import type { Target } from '@sap-ux/cds-odata-annotation-converter';
-import type { Assignment, AnnotationNode } from '@sap-ux/cds-annotation-parser';
+import type {
+    Assignment,
+    AnnotationNode,
+    AnnotationGroupItems,
+    Collection,
+    Record
+} from '@sap-ux/cds-annotation-parser';
 import { type CdsCompilerFacade, type MetadataCollector, type PropagatedTargetMap } from '@sap/ux-cds-compiler-facade';
 import { toAnnotationFile, toTargetMap } from '@sap-ux/cds-odata-annotation-converter';
 import type { VocabularyService } from '@sap-ux/odata-vocabularies';
 
-import { pathFromUri } from '../utils';
+import { compareByRange, pathFromUri } from '../utils';
 import type { TextFile } from '../types';
 
 import type { Comment } from './comments';
@@ -155,4 +161,38 @@ function filterTargets(serviceName: string, annotationFile: AnnotationFile): voi
     annotationFile.targets = annotationFile.targets.filter(
         (target) => target.name.startsWith(serviceName + '.') || (aliasName && target.name.startsWith(aliasName + '.'))
     );
+}
+
+export type ContainerNode = Target | AnnotationGroupItems | Collection | Record;
+
+/**
+ * Returns the number of children in the container node.
+ *
+ * @param container - Container AST node.
+ * @returns Number of children.
+ */
+export function getChildCount(container: ContainerNode): number {
+    return getItems(container).length;
+}
+
+/**
+ * Returns child nodes for the given container node.
+ *
+ * @param container - Container AST node.
+ * @returns All child nodes of the container.
+ */
+export function getItems(container: ContainerNode): AstNode[] {
+    switch (container.type) {
+        case 'target':
+            return container.assignments;
+        case 'record':
+            return container.annotations?.length
+                ? [...container.properties, ...container.annotations].sort(compareByRange)
+                : container.properties;
+        case 'annotation-group-items':
+        case 'collection':
+            return container.items;
+        default:
+            return [];
+    }
 }

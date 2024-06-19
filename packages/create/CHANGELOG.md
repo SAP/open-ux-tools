@@ -1,5 +1,50 @@
 # @sap-ux/create
 
+## 0.5.105
+
+### Patch Changes
+
+-   Updated dependencies [a140cf8b]
+    -   @sap-ux/adp-tooling@0.11.1
+    -   @sap-ux/app-config-writer@0.3.75
+    -   @sap-ux/cards-editor-config-writer@0.3.7
+    -   @sap-ux/mockserver-config-writer@0.5.6
+    -   @sap-ux/project-access@1.22.1
+    -   @sap-ux/cap-config-writer@0.3.5
+
+## 0.5.104
+
+### Patch Changes
+
+-   a06687ce: Added internal functionality to support inquirer prompts
+
+## 0.5.103
+
+### Patch Changes
+
+-   7f8bc980: FIX: prompt user for authentication type if not known when generating an adaptation project
+-   Updated dependencies [7f8bc980]
+    -   @sap-ux/adp-tooling@0.11.0
+
+## 0.5.102
+
+### Patch Changes
+
+-   Updated dependencies [d1045887]
+    -   @sap-ux/cap-config-writer@0.3.4
+
+## 0.5.101
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.3.3
+
+## 0.5.100
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.23
+
 ## 0.5.99
 
 ### Patch Changes
