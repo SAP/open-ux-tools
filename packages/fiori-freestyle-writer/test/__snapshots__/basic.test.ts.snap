@@ -5384,7 +5384,7 @@ sap.registerComponentDependencyPaths(manifestUri)
 }
 `;
 
-exports[`Fiori freestyle template: basicTemplate Generate files for template: basic_witht_start-noflp 1`] = `
+exports[`Fiori freestyle template: basicTemplate Generate files for template: basic_with_start-noflp 1`] = `
 Object {
   ".gitignore": Object {
     "contents": "node_modules/
