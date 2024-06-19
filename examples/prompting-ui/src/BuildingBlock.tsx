@@ -2,10 +2,17 @@ import { UIDefaultButton, UISmallButton, initIcons } from '@sap-ux/ui-components
 import React, { useEffect, useState } from 'react';
 import { SupportedBuildingBlocks } from './utils';
 import { applyAnswers, getChoices, getCodeSnippet, getWebSocket, validateAnswers } from './utils/communication';
-import { Questions, PromptsLayoutType, PromptQuestion, ValidationResults, ValidationResult } from '@sap-ux/ui-prompting';
+import {
+    Questions,
+    PromptsLayoutType,
+    PromptQuestion,
+    ValidationResults,
+    ValidationResult
+} from '@sap-ux/ui-prompting';
 import { useChoices, useQuestions } from './utils/hooks';
 import { Answers } from 'inquirer';
 import { AnswerValue } from '@sap-ux/ui-prompting';
+import { getDependantQuestions } from '@sap-ux/ui-prompting/src/utilities';
 
 initIcons();
 getWebSocket();
@@ -65,6 +72,10 @@ export const BuildingBlockQuestions = (props: {
                 delete clearValidation[name];
                 setValidation(clearValidation);
             }
+        }
+        const dependantPromptNames = getDependantQuestions(questions, name);
+        if (dependantPromptNames?.length) {
+            getChoices(dependantPromptNames, type, { ...getDefaultAnswers(questions), ...newAnswers });
         }
     }
 

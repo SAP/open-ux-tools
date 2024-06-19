@@ -63,7 +63,7 @@ export const Questions = (props: QuestionsProps) => {
     const onAnswerChange = useCallback(
         (name: string, answer?: AnswerValue, dependantPromptNames?: string[]) => {
             if ((localAnswers[name] || '') !== answer) {
-                const updatedAnswers = updateAnswer(localAnswers, name, answer, dependantPromptNames);
+                const updatedAnswers = updateAnswer(localAnswers, questions, name, answer);
                 setLocalAnswers(updatedAnswers);
                 // Callback with onchange
                 onChange?.(updatedAnswers, name, answer);

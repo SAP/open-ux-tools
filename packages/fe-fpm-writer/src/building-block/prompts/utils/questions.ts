@@ -11,6 +11,7 @@ import type { InputPromptQuestion, ListPromptQuestion } from '../types';
 import { BuildingBlockType } from '../../types';
 import { validateElementId } from './xml';
 import { i18nNamespaces, initI18n, translate } from '../../../i18n';
+import { DynamicChoices } from '@sap-ux/ui-prompting';
 
 /**
  * Returns a Prompt to choose a boolean value.
@@ -66,7 +67,7 @@ export function getAnnotationPathQualifierPrompt(
             const choices = getChoices(
                 await getAnnotationPathQualifiers(projectProvider, entity, annotationTerm, true)
             );
-            if (!choices.length) {
+            if (entity && !choices.length) {
                 throw new Error(
                     `Couldn't find any existing annotations for term ${annotationTerm.join(
                         ','
@@ -210,14 +211,16 @@ export function getAggregationPathPrompt(
         name: 'aggregationPath',
         selectType: 'dynamic',
         message,
-        // ToDo avoid any
-        choices: (answers: any) => {
+        choices: (answers: DynamicChoices) => {
             const { viewOrFragmentFile } = answers;
-            const choices = getChoices(getXPathStringsForXmlFile(viewOrFragmentFile, fs));
-            if (!choices.length) {
-                throw new Error('Failed while fetching the aggregation path.');
+            if (viewOrFragmentFile) {
+                const choices = getChoices(getXPathStringsForXmlFile(viewOrFragmentFile.toString(), fs));
+                if (!choices.length) {
+                    throw new Error('Failed while fetching the aggregation path.');
+                }
+                return choices;
             }
-            return choices;
+            return [];
         },
         placeholder: additionalProperties.placeholder ?? 'Enter an aggregation path'
     };
