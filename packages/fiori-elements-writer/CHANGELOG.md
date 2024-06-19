@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.21.2
+
+### Patch Changes
+
+-   dfeb3a6b: Load i18n translations asynchronously to ensure proper initialization.
+
 ## 0.21.1
 
 ### Patch Changes
