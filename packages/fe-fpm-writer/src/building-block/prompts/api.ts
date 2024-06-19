@@ -80,9 +80,9 @@ export class PromptsAPI {
     }
 
     /**
-     * Gets building block choices.
+     * Gets prompt choices.
      *
-     * @param type - The building block type
+     * @param type - The prompt type
      * @param fieldName - The field name
      * @param answers - The answers object
      * @returns
@@ -114,18 +114,21 @@ export class PromptsAPI {
     /**
      * Validates answers: checks if required prompts have values and runs validate() if exists on prompt
      *
-     * @param questions
-     * @param answers
-     * @param type
+     * @param type The prompt type
+     * @param answers The answers object
+     * @param questions Questions to validate. If param is not passed, then all question will be validated.
      * @returns {ValidationResults} Object with question names and answer validation results
      */
     public async validateAnswers(
-        questions: Question[],
+        type: PromptsType,
         answers: Answers,
-        type: PromptsType
+        questions?: Question[]
     ): Promise<ValidationResults> {
         let originalPrompts = await this.getPrompts(type);
         let result: ValidationResults = {};
+        if (!questions) {
+            questions = (await this.getPrompts(type)).questions;
+        }
         for (const q of questions) {
             const question = originalPrompts.questions.find((blockQuestion) => q.name === blockQuestion.name);
             if (!question || !question.name) {
@@ -152,6 +155,13 @@ export class PromptsAPI {
         return result;
     }
 
+    /**
+     * Method submits answers by generating content in project for passed prompt type.
+     *
+     * @param type The prompt type
+     * @param answers The answers object
+     * @returns The updated memfs editor instance
+     */
     public submitAnswers = <T extends TablePromptsAnswer | FilterBarPromptsAnswer | ChartPromptsAnswer>(
         type: PromptsType,
         answers: T
@@ -163,6 +173,13 @@ export class PromptsAPI {
         return generateBuildingBlock(this.basePath, configData, this.fs);
     };
 
+    /**
+     * Method returns code snippet for passed answers and prompt type.
+     *
+     * @param type The prompt type
+     * @param answers The answers object
+     * @returns Code snippet content.
+     */
     public getCodeSnippet<T extends TablePromptsAnswer | FilterBarPromptsAnswer | ChartPromptsAnswer>(
         type: PromptsType,
         answers: T

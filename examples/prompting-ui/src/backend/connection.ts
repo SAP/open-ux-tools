@@ -214,9 +214,9 @@ async function handleAction(action: Actions): Promise<void> {
             }
             case VALIDATE_ANSWERS: {
                 const validationResult = await promptsAPI.validateAnswers(
-                    action.questions,
+                    action.value,
                     action.answers,
-                    action.value
+                    action.questions
                 );
                 const responseAction: SetValidationResults = {
                     type: SET_VALIDATION_RESULTS,

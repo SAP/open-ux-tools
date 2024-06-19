@@ -33,10 +33,10 @@ async function initialize(): Promise<Editor> {
  */
 export async function generateFilterBarBuildingBlock(fs: Editor): Promise<Editor> {
     const basePath = testAppPath;
-    const promptsAPI = await PromptsAPI.init(basePath);
+    const promptsAPI = await PromptsAPI.init(basePath, fs);
     const answers: FilterBarPromptsAnswer = (await inquirer.prompt(
         (
-            await promptsAPI.getPrompts(PromptsType.FilterBar, fs)
+            await promptsAPI.getPrompts(PromptsType.FilterBar)
         ).questions
     )) as FilterBarPromptsAnswer;
     fs = promptsAPI.submitAnswers<FilterBarPromptsAnswer>(PromptsType.FilterBar, answers);
@@ -51,10 +51,10 @@ export async function generateFilterBarBuildingBlock(fs: Editor): Promise<Editor
  */
 export async function generateChartBuildingBlock(fs: Editor): Promise<Editor> {
     const basePath = testAppPath;
-    const promptsAPI = await PromptsAPI.init(basePath);
+    const promptsAPI = await PromptsAPI.init(basePath, fs);
     const answers: ChartPromptsAnswer = (await inquirer.prompt(
         (
-            await promptsAPI.getPrompts(PromptsType.Chart, fs)
+            await promptsAPI.getPrompts(PromptsType.Chart)
         ).questions
     )) as ChartPromptsAnswer;
     fs = promptsAPI.submitAnswers<ChartPromptsAnswer>(PromptsType.Chart, answers);
@@ -68,10 +68,10 @@ export async function generateChartBuildingBlock(fs: Editor): Promise<Editor> {
  */
 export async function generateTableBuildingBlock(fs: Editor): Promise<Editor> {
     const basePath = testAppPath;
-    const promptsAPI = await PromptsAPI.init(basePath);
+    const promptsAPI = await PromptsAPI.init(basePath, fs);
     const answers: TablePromptsAnswer = (await inquirer.prompt(
         (
-            await promptsAPI.getPrompts(PromptsType.Table, fs)
+            await promptsAPI.getPrompts(PromptsType.Table)
         ).questions
     )) as TablePromptsAnswer;
     fs = promptsAPI.submitAnswers<TablePromptsAnswer>(PromptsType.Table, answers);
@@ -81,9 +81,9 @@ export async function generateTableBuildingBlock(fs: Editor): Promise<Editor> {
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 (async () => {
     try {
-        const promptsAPI = await PromptsAPI.init(sampleAppPath);
         let fs = await initialize();
-        const buildingBlockPrompts = await promptsAPI.getPrompts(PromptsType.BuildingBlocks, fs);
+        const promptsAPI = await PromptsAPI.init(sampleAppPath, fs);
+        const buildingBlockPrompts = await promptsAPI.getPrompts(PromptsType.BuildingBlocks);
         const answers: Partial<BuildingBlockTypePromptsAnswer> = await inquirer.prompt(buildingBlockPrompts.questions);
 
         switch (answers.buildingBlockType) {
