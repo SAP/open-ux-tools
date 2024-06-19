@@ -100,12 +100,36 @@ describe('Select', () => {
         expect(screen.getByDisplayValue('testValue')).toBeDefined();
     });
 
-    it('Test filterBarId input property onChange', () => {
+    it('Test allowCreate property onChange - no options', () => {
         const onChangeFn = jest.fn();
         render(<Select {...props} name="filterBarId" options={[]} onChange={onChangeFn} />);
         const input = screen.getByRole('textbox');
         expect(input).toBeDefined();
         fireEvent.change(input, { target: { value: 'new value' } });
+        expect(onChangeFn).toHaveBeenCalled();
+    });
+
+    it('Test allowCreate property onChange - select one of options', () => {
+        const onChangeFn = jest.fn();
+        render(<Select {...props} name="filterBarId" onChange={onChangeFn} />);
+        const input = screen.getByRole('combobox');
+        expect(input).toBeDefined();
+        const button = document.getElementsByClassName('ms-Button')[0];
+        fireEvent.click(button);
+        const options = screen.queryAllByRole('option');
+        expect(options[0]).toBeDefined();
+        fireEvent.click(options[0]);
+        expect(onChangeFn).toHaveBeenCalled();
+        expect(screen.getByDisplayValue('testKey0')).toBeDefined();
+    });
+
+    it.skip('Test allowCreate property onChange - options available but enter a new value', () => {
+        const onChangeFn = jest.fn();
+        render(<Select {...props} name="filterBarId" onChange={onChangeFn} />);
+        const input = screen.getByRole('combobox');
+        expect(input).toBeDefined();
+        fireEvent.change(input, { target: { value: 'new value' } });
+        expect(screen.getByDisplayValue('new value')).toBeDefined();
         expect(onChangeFn).toHaveBeenCalled();
     });
 
