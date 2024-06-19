@@ -38,7 +38,7 @@ export function getBackendComments(
 ): NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[] {
     const comment = [];
 
-    if (backend.authenticationType === 'basic') {
+    if (backend.authenticationType === 'reentranceTicket') {
         comment.push({
             path: `configuration.backend.${index}.authenticationType`,
             comment: ' SAML support for vscode',
