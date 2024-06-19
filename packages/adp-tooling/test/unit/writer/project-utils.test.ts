@@ -1,11 +1,7 @@
 import path from 'path';
-import { Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
 import type { AdpWriterConfig } from '../../../src';
-import {
-    writeTemplateToFolder,
-    writeUI5Yaml,
-    writeUI5DeployYaml
-} from '../../../src/writer/project-utils';
+import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml } from '../../../src/writer/project-utils';
 
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
@@ -43,12 +39,7 @@ describe('Project Utils', () => {
         const mockFs = { copyTpl: writeFilesSpy };
 
         it('should write template to the specified folder', () => {
-            writeTemplateToFolder(
-                templatePath,
-                projectPath,
-                data,
-                mockFs as unknown as Editor
-            );
+            writeTemplateToFolder(templatePath, projectPath, data, mockFs as unknown as Editor);
 
             expect(writeFilesSpy.mock.calls[0][0]).toEqual(templatePath);
             expect(writeFilesSpy.mock.calls[0][1]).toEqual(projectPath);
@@ -62,15 +53,8 @@ describe('Project Utils', () => {
             });
 
             expect(() => {
-                writeTemplateToFolder(
-                    templatePath,
-                    projectPath,
-                    data,
-                    mockFs as unknown as Editor
-                );
-            }).toThrow(
-                `Could not write template files to folder. Reason: ${errMsg}`
-            );
+                writeTemplateToFolder(templatePath, projectPath, data, mockFs as unknown as Editor);
+            }).toThrow(`Could not write template files to folder. Reason: ${errMsg}`);
         });
     });
 
@@ -85,30 +69,23 @@ describe('Project Utils', () => {
         const mockFs = { write: writeFilesSpy, read: jest.fn().mockReturnValue(ui5Yaml) };
 
         it('should write ui5.yaml to the specified folder', async () => {
-            await writeUI5Yaml(
-                projectPath,
-                data,
-                mockFs as unknown as Editor
-            );
+            await writeUI5Yaml(projectPath, data, mockFs as unknown as Editor);
 
             expect(writeFilesSpy.mock.calls[0][0]).toEqual(path.join(projectPath, 'ui5.yaml'));
         });
 
-        it('should throw error when writing ui5.yaml fails', () => {
+        it('should throw error when writing ui5.yaml fails', async () => {
             const errMsg = 'Corrupted file.';
             mockFs.write.mockImplementation(() => {
                 throw new Error(errMsg);
             });
 
-            expect(async () => {
-                await writeUI5Yaml(
-                    projectPath,
-                    data,
-                    mockFs as unknown as Editor
-                );
-            }).rejects.toThrow(
-                `Could not write ui5.yaml file. Reason: ${errMsg}`
-            );
+            try {
+                await writeUI5Yaml(projectPath, data, mockFs as unknown as Editor);
+                fail('Expected error to be thrown');
+            } catch (error) {
+                expect(error.message).toBe(`Could not write ui5.yaml file. Reason: ${errMsg}`);
+            }
         });
     });
 
@@ -129,30 +106,23 @@ describe('Project Utils', () => {
         const mockFs = { write: writeFilesSpy, read: jest.fn().mockReturnValue(ui5Yaml) };
 
         it('should write ui5-deploy.yaml to the specified folder', async () => {
-            await writeUI5DeployYaml(
-                projectPath,
-                config,
-                mockFs as unknown as Editor
-            );
+            await writeUI5DeployYaml(projectPath, config, mockFs as unknown as Editor);
 
             expect(writeFilesSpy.mock.calls[0][0]).toEqual(path.join(projectPath, 'ui5-deploy.yaml'));
         });
 
-        it('should throw error when writing ui5-deploy.yaml fails', () => {
+        it('should throw error when writing ui5-deploy.yaml fails', async () => {
             const errMsg = 'Corrupted file.';
             mockFs.write.mockImplementation(() => {
                 throw new Error(errMsg);
             });
 
-            expect(async () => {
-                await writeUI5DeployYaml(
-                    projectPath,
-                    config,
-                    mockFs as unknown as Editor
-                );
-            }).rejects.toThrow(
-                `Could not write ui5-deploy.yaml file. Reason: ${errMsg}`
-            );
+            try {
+                await writeUI5DeployYaml(projectPath, config, mockFs as unknown as Editor);
+                fail('Expected error to be thrown');
+            } catch (error) {
+                expect(error.message).toBe(`Could not write ui5-deploy.yaml file. Reason: ${errMsg}`);
+            }
         });
     });
 });
