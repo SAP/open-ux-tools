@@ -167,10 +167,6 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         }
     ];
 
-    beforeEach(() => {
-        jest.clearAllMocks(); // Clear all mocks before each test
-    });
-
     beforeAll(() => {
         removeSync(curTestOutPath); // even for in memory
     });
