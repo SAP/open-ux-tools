@@ -8,7 +8,7 @@ const StorybookFiles = {
     PreviewFile: 'preview-head.html'
 } as const;
 
-const SourceDir = join(__dirname, '..', '..', 'ui-components', StorybookFiles.StorybookFolder);
+const SourceDir = join(__dirname, '..', '..', '..', 'packages', 'ui-components', StorybookFiles.StorybookFolder);
 const TargetDir = join(__dirname, '..', StorybookFiles.StorybookFolder);
 
 const CmdParams = {
@@ -66,8 +66,3 @@ export async function run(argv: string[]): Promise<void> {
         overwrite
     );
 }
-
-/**
- * Usage through command line
- */
-run(process.argv).catch((e) => console.error(e.message));
