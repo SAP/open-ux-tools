@@ -201,7 +201,7 @@ export class PromptsAPI {
         type: PromptsType,
         placeholders = false
     ): BuildingBlockConfig<T> {
-        const { aggregationPath, viewOrFragmentFile, entity, qualifier } = answers;
+        const { aggregationPath, viewOrFragmentFile, entity, qualifier, filterBarId } = answers;
 
         const id = answers.id || (placeholders ? 'REPLACE_WITH_BUILDING_BLOCK_ID' : '');
         const metaPath = this.getMetaPath(entity, qualifier, placeholders);
@@ -210,6 +210,7 @@ export class PromptsAPI {
             viewOrFragmentPath: viewOrFragmentFile ? relative(this.basePath, viewOrFragmentFile) : '',
             buildingBlockData: {
                 ...answers,
+                filterBar: filterBarId,
                 id,
                 metaPath,
                 type,
