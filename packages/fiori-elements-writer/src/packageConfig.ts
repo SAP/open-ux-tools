@@ -13,6 +13,7 @@ import type { PackageJsonScripts } from './types';
  * @param options.startFile path that should be opened with the start script
  * @param options.localStartFile path that should be opend with the start-local script
  * @param options.generateIndex exclude the start-noflp script
+ * @param options.isCapProject exclude the start-local script for CAP projects
  * @returns package.json scripts
  */
 export function getPackageJsonTasks({
@@ -23,7 +24,8 @@ export function getPackageJsonTasks({
     flpAppId = '',
     startFile,
     localStartFile,
-    generateIndex = true
+    generateIndex = true,
+    isCapProject = false
 }: {
     localOnly: boolean;
     addMock: boolean;
@@ -33,6 +35,7 @@ export function getPackageJsonTasks({
     startFile?: string;
     localStartFile?: string;
     generateIndex?: boolean;
+    isCapProject?: boolean;
 }): PackageJsonScripts {
     // Build search param part of preview launch url
     const searchParamList: string[][] = [];
@@ -52,15 +55,18 @@ export function getPackageJsonTasks({
         : // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           `fiori run --open "${startFile || 'test/flpSandbox.html'}${params}"`;
 
-    const startLocalCommand = `fiori run --config ./ui5-local.yaml --open "${
-        //eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        localStartFile || 'test/flpSandbox.html'
-    }${params}"`;
-
     const scripts: PackageJsonScripts = {
-        start: startCommand,
-        'start-local': startLocalCommand
+        start: startCommand
     };
+    if (!isCapProject) {
+        // add start-local script only for non-CAP applications
+        const startLocalCommand = `fiori run --config ./ui5-local.yaml --open "${
+            //eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+            localStartFile || 'test/flpSandbox.html'
+        }${params}"`;
+        // Add start-local script only if not a CAP application
+        scripts['start-local'] = startLocalCommand;
+    }
 
     if (generateIndex) {
         scripts['start-noflp'] = localOnly

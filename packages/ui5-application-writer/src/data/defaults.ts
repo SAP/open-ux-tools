@@ -12,10 +12,14 @@ import merge from 'lodash/mergeWith';
  *
  * @param {string} [version] - the package version
  * @param {string} [description] - the package description
+ * @param {boolean} isCapProject - is a CAP application
  * @returns {Partial<Package>} the package instance
  */
-export function packageDefaults(version?: string, description?: string): Partial<Package> {
-    return {
+export function packageDefaults(version?: string, description?: string, isCapProject?: boolean): Partial<Package> {
+    const startScript = 'ui5 serve --config=ui5.yaml --open index.html',
+        buildScript = 'ui5 build --config=ui5.yaml --clean-dest --dest dist',
+        startLocalScript = 'ui5 serve --config=ui5-local.yaml --open index.html';
+    const packageDefaults: Partial<Package> = {
         version: version || '0.0.1',
         description: description || '',
         devDependencies: {
@@ -23,11 +27,20 @@ export function packageDefaults(version?: string, description?: string): Partial
             '@sap/ux-ui5-tooling': '1'
         },
         scripts: {
-            start: 'ui5 serve --config=ui5.yaml --open index.html',
-            'start-local': 'ui5 serve --config=ui5-local.yaml --open index.html',
-            build: 'ui5 build --config=ui5.yaml --clean-dest --dest dist'
+            start: startScript,
+            build: buildScript
         }
     };
+    // add the start-local script only if it is not a CAP application
+    // CAP applications does not require ui5-local.yaml
+    if (!isCapProject) {
+        packageDefaults.scripts = {
+            start: startScript,
+            'start-local': startLocalScript,
+            build: buildScript
+        };
+    }
+    return packageDefaults;
 }
 
 /**

@@ -3,7 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
-import { generate as addOdataService } from '@sap-ux/odata-service-writer';
+import { ServiceType, generate as addOdataService } from '@sap-ux/odata-service-writer';
 import { getPackageJsonTasks } from './packageConfig';
 import cloneDeep from 'lodash/cloneDeep';
 import type { BasicAppSettings } from './types';
@@ -87,7 +87,8 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
             flpAppId: ffApp.app.flpAppId,
             startFile: data?.app?.startFile,
             localStartFile: data?.app?.localStartFile,
-            generateIndex: ffApp.appOptions?.generateIndex
+            generateIndex: ffApp.appOptions?.generateIndex,
+            isCapProject: ffApp.service?.type === ServiceType.CDS
         })
     };
 
@@ -99,16 +100,22 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     } else {
         // Add placeholder middleware so allow adding service later
         const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
-        const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-        ui5LocalConfig.addFioriToolsProxydMiddleware({});
-        fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
+        if (!ffApp.appOptions?.isCapProject && fs.exists(ui5LocalConfigPath)) {
+            // write ui5-local.yaml only if not a CAP application and it exists
+            const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
+            ui5LocalConfig.addFioriToolsProxydMiddleware({});
+            fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
+        }
     }
 
     // Extend ui5-local.yaml with additional UI5 lib
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
-    const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-    ui5LocalConfig.addUI5Libs([ushellLib]);
-    fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
+    if (!ffApp.appOptions?.isCapProject && fs.exists(ui5LocalConfigPath)) {
+        // write ui5-local.yaml only if not a CAP application and it exists
+        const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
+        ui5LocalConfig.addUI5Libs([ushellLib]);
+        fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
+    }
 
     return fs;
 }

@@ -42,6 +42,25 @@ describe('UI5 templates', () => {
         });
     });
 
+    it('generates options: is appliocation is of type CAP', async () => {
+        const projectDir = join(outputDir, 'testapp_options');
+        const fs = await generate(projectDir, {
+            ...baseAppConfig,
+            appOptions: {
+                isCapProject: true
+            }
+        });
+        expect(fs.dump(projectDir)).toMatchSnapshot();
+        return new Promise((resolve) => {
+            // write out the files for debugging
+            if (debug) {
+                fs.commit(resolve);
+            } else {
+                resolve(true);
+            }
+        });
+    });
+
     it('option: `loadReuseLibs`', async () => {
         const projectDir = join(outputDir, 'testapp_loadReuseLibs');
         const fs = await generate(projectDir, {

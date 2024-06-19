@@ -79,6 +79,10 @@ export interface AppOptions {
      * Excludes the index.html from the template and does not add the `start-noflp` script in package.json
      */
     generateIndex?: boolean;
+    /*
+     * Excludes the ui5-local.yaml and .gitignore from the template CAP projects
+     */
+    isCapProject?: boolean;
 }
 
 export interface Ui5App {

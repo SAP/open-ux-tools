@@ -2,7 +2,13 @@ import { join, dirname, sep } from 'path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { updateManifest, updatePackageJson, updateCdsFilesWithAnnotations, writeAnnotationXmlFiles, serviceIsCds } from './updates';
+import {
+    updateManifest,
+    updatePackageJson,
+    updateCdsFilesWithAnnotations,
+    writeAnnotationXmlFiles,
+    serviceIsCds
+} from './updates';
 import type { FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
 import { UI5Config, yamlErrorCode, YAMLError } from '@sap-ux/ui5-config';
 import prettifyXml from 'prettify-xml';
@@ -86,8 +92,8 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     let ui5Config: UI5Config | undefined;
     let ui5LocalConfig: UI5Config | undefined;
     let ui5LocalConfigPath: string | undefined;
-    if (!serviceIsCds(service) &&  paths.ui5Yaml) {
-        // Dont extend backend middlewares if service type is CDS 
+    if (!serviceIsCds(service) && paths.ui5Yaml) {
+        // Dont extend backend middlewares if service type is CDS
         ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
         try {
             ui5Config.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
@@ -104,6 +110,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         // ui5-local.yaml
         ui5LocalConfigPath = join(dirname(paths.ui5Yaml), 'ui5-local.yaml');
         if (fs.exists(ui5LocalConfigPath)) {
+            // ui5LocalConfigPath will be present only if app is not a CAP application
             ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
             ui5LocalConfig.addFioriToolsProxydMiddleware({ backend: [service.previewSettings as ProxyBackend] });
         }
@@ -111,7 +118,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
 
     // Add mockserver entries
     if (!serviceIsCds(service) && service.metadata) {
-        // mockserver entries are not required if service type is CDS 
+        // mockserver entries are not required if service type is CDS
         // copy existing `ui5.yaml` as starting point for ui5-mock.yaml
         if (paths.ui5Yaml && ui5Config) {
             const webappPath = await getWebappPath(basePath, fs);
@@ -148,7 +155,8 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         updatePackageJson(paths.packageJson, fs, !!service.metadata);
     }
 
-    if (ui5LocalConfigPath && ui5LocalConfig) {
+    if (!serviceIsCds(service) && ui5LocalConfigPath && ui5LocalConfig) {
+        // write ui5LocalConfig only if application is non-CAP
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     }
 

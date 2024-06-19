@@ -48,7 +48,7 @@ Represents a set of scripts defined in a package.json file.
  */
 export interface PackageJsonScripts {
     start: string;
-    'start-local': string;
+    'start-local'?: string;
     'start-noflp'?: string;
     'start-mock'?: string;
 }
