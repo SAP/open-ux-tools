@@ -1,17 +1,18 @@
 import { join } from 'path';
-import { createDirectory, deleteDirectory, FileName, readJSON, updateFile } from '@sap-ux/project-access';
+import { promises as fs } from 'fs';
+import { FileName } from '@sap-ux/project-access';
 import { createLaunchConfigFile, getLaunchConfigFiles } from '../../src';
 import { TestPaths } from '../test-data/utils';
+import { parse } from 'jsonc-parser';
 
 beforeEach(async () => {
-    await deleteDirectory(TestPaths.tmpDir);
-    await createDirectory(TestPaths.tmpDir);
-    await createDirectory(join(TestPaths.tmpDir, 'fe-project'));
-    await updateFile(join(TestPaths.tmpDir, 'fe-project', FileName.Package), '{}');
+    await fs.mkdir(TestPaths.tmpDir);
+    await fs.mkdir(join(TestPaths.tmpDir, 'fe-project'));
+    await fs.writeFile(join(TestPaths.tmpDir, 'fe-project', FileName.Package), '{}');
 });
 
-afterAll(async () => {
-    await deleteDirectory(TestPaths.tmpDir);
+afterEach(async () => {
+    await fs.rm(TestPaths.tmpDir, { recursive: true });
 });
 
 test('Create empty launch.json', async () => {
@@ -19,7 +20,7 @@ test('Create empty launch.json', async () => {
     await createLaunchConfigFile(TestPaths.tmpDir);
     const launchConfigFiles = await getLaunchConfigFiles(TestPaths.tmpDir);
     expect(launchConfigFiles.length).toBe(1);
-    const content = await readJSON<{ configurations: object[] }>(launchConfigFiles[0]);
+    const content = parse(await fs.readFile(launchConfigFiles[0], { encoding: 'utf8' }));
     expect(content.configurations).toEqual([]);
 });
 
@@ -33,6 +34,6 @@ test('Create new launch.json with config', async () => {
     await createLaunchConfigFile(TestPaths.tmpDir, fioriOptions);
     const launchConfigFiles = await getLaunchConfigFiles(TestPaths.tmpDir);
     expect(launchConfigFiles.length).toBe(1);
-    const content = await readJSON<{ configurations: { name: string }[] }>(launchConfigFiles[0]);
+    const content = parse(await fs.readFile(launchConfigFiles[0], { encoding: 'utf8' }));
     expect(content.configurations[0]['name']).toBe('TEST_CONFIG');
 });
