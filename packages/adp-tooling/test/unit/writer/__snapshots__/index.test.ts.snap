@@ -80,18 +80,18 @@ server:
             url: http://sap.example
           ignoreCertErrors: false
     - name: fiori-tools-proxy
-      afterMiddleware: fiori-tools-preview
+      afterMiddleware: compression
       configuration:
-        ignoreCertErrors: false
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - url: http://sap.example
+            path: /sap
         ui5:
-          version: ''
           path:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-        backend:
-          - url: http://sap.example
-            path: /sap
+          version: ''
 customConfiguration:
   adp:
     safeMode: false
@@ -191,18 +191,18 @@ server:
             url: http://sap.example
           ignoreCertErrors: false
     - name: fiori-tools-proxy
-      afterMiddleware: fiori-tools-preview
+      afterMiddleware: compression
       configuration:
-        ignoreCertErrors: false
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - url: http://sap.example
+            path: /sap
         ui5:
-          version: ''
           path:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-        backend:
-          - url: http://sap.example
-            path: /sap
+          version: ''
 customConfiguration:
   adp:
     safeMode: false
@@ -489,18 +489,18 @@ server:
             url: http://sap.example
           ignoreCertErrors: false
     - name: fiori-tools-proxy
-      afterMiddleware: fiori-tools-preview
+      afterMiddleware: compression
       configuration:
-        ignoreCertErrors: false
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - url: http://sap.example
+            path: /sap
         ui5:
-          version: ''
           path:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-        backend:
-          - url: http://sap.example
-            path: /sap
+          version: ''
 ",
     "state": "modified",
   },
@@ -870,18 +870,18 @@ server:
             url: http://sap.example
           ignoreCertErrors: false
     - name: fiori-tools-proxy
-      afterMiddleware: fiori-tools-preview
+      afterMiddleware: compression
       configuration:
-        ignoreCertErrors: false
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - url: http://sap.example
+            path: /sap
         ui5:
-          version: ''
           path:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-        backend:
-          - url: http://sap.example
-            path: /sap
+          version: ''
 ",
     "state": "modified",
   },
@@ -1136,18 +1136,18 @@ server:
             url: http://sap.example
           ignoreCertErrors: false
     - name: fiori-tools-proxy
-      afterMiddleware: fiori-tools-preview
+      afterMiddleware: compression
       configuration:
-        ignoreCertErrors: false
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - url: http://sap.example
+            path: /sap
         ui5:
-          version: ''
           path:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-        backend:
-          - url: http://sap.example
-            path: /sap
+          version: ''
 customConfiguration:
   adp:
     safeMode: false
@@ -1298,18 +1298,18 @@ server:
             url: http://sap.example
           ignoreCertErrors: false
     - name: fiori-tools-proxy
-      afterMiddleware: fiori-tools-preview
+      afterMiddleware: compression
       configuration:
-        ignoreCertErrors: false
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - url: http://sap.example
+            path: /sap
         ui5:
-          version: ''
           path:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-        backend:
-          - url: http://sap.example
-            path: /sap
+          version: ''
 customConfiguration:
   adp:
     safeMode: false
@@ -1444,20 +1444,20 @@ server:
             client: '000'
           ignoreCertErrors: false
     - name: fiori-tools-proxy
-      afterMiddleware: fiori-tools-preview
+      afterMiddleware: compression
       configuration:
-        ignoreCertErrors: false
-        ui5:
-          version: ''
-          path:
-            - /resources
-            - /test-resources
-          url: https://ui5.sap.com
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - destination: test
             url: http://sap.example
             client: '000'
             path: /sap
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: ''
 customConfiguration:
   adp:
     safeMode: true
