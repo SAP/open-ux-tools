@@ -94,11 +94,10 @@ function sendMessage(action: Actions): void {
 
 export const validateProject = async (): Promise<string | undefined> => {
     try {
-        const fs = await getEditor(true);
         const currentAppPath = getProjectPath();
         const promptsAPI = await PromptsAPI.init(currentAppPath);
         // Call API to get table questions - it should validate of path is supported
-        const { questions } = await promptsAPI.getPrompts(SupportedBuildingBlocks.Table, fs);
+        const { questions } = await promptsAPI.getPrompts(SupportedBuildingBlocks.Table);
         const entityQuestion = questions.find((question) => question.name === 'entity');
         if (entityQuestion && 'choices' in entityQuestion && typeof entityQuestion.choices === 'function') {
             await entityQuestion.choices({});
@@ -110,13 +109,14 @@ export const validateProject = async (): Promise<string | undefined> => {
 
 async function handleAction(action: Actions): Promise<void> {
     try {
-        let fs = await getEditor();
+        const fs = await getEditor();
         let currentAppPath = getProjectPath();
-        const promptsAPI = await PromptsAPI.init(currentAppPath);
+        // ToDo - why init on each action handling?
+        const promptsAPI = await PromptsAPI.init(currentAppPath, fs);
         switch (action.type) {
             case GET_QUESTIONS: {
                 let responseAction: Actions | undefined;
-                const { groups, questions } = await promptsAPI.getPrompts(action.value, fs);
+                const { groups, questions } = await promptsAPI.getPrompts(action.value);
                 if (action.value === SupportedBuildingBlocks.Table) {
                     // Post processing
                     responseAction = { type: SET_TABLE_QUESTIONS, questions, groups };
@@ -179,9 +179,8 @@ async function handleAction(action: Actions): Promise<void> {
                     if (!message) {
                         currentAppPath = newProjectPath;
                     }
-                    fs = await getEditor(true);
                     // Call API to get table questions - it should validate of path is supported
-                    const { questions } = await promptsAPI.getPrompts(SupportedBuildingBlocks.Table, fs);
+                    const { questions } = await promptsAPI.getPrompts(SupportedBuildingBlocks.Table);
                     const entityQuestion = questions.find((question) => question.name === 'entity');
                     if (entityQuestion && 'choices' in entityQuestion && typeof entityQuestion.choices === 'function') {
                         // ToDo - test if can be reusaded validateProject
@@ -214,9 +213,7 @@ async function handleAction(action: Actions): Promise<void> {
                 break;
             }
             case VALIDATE_ANSWERS: {
-                const fs = await getEditor(true);
                 const validationResult = await promptsAPI.validateAnswers(
-                    fs,
                     action.questions,
                     action.answers,
                     action.value

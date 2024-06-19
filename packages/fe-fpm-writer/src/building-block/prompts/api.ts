@@ -62,17 +62,15 @@ export class PromptsAPI {
     /**
      * Returns a list of prompts for passed type.
      *
-     * @param {Editor} fs the memfs editor instance
-     * @param {Editor} fs the memfs editor instance
+     * @param type Prompt type
      * @returns List of prompts for passed type
      */
     public async getPrompts<N extends SupportedPrompts['type']>(
-        type: N,
-        fs: Editor
+        type: N
     ): Promise<Prompts<NarrowPrompt<typeof type>['answers']>> {
         const method = type in PromptsMap ? PromptsMap[type] : unsupportedPrompts;
         if (typeof method === 'function') {
-            return method(fs, this.basePath, this.projectProvider) as Promise<
+            return method(this.fs, this.basePath, this.projectProvider) as Promise<
                 Prompts<NarrowPrompt<typeof type>['answers']>
             >;
         }
@@ -87,7 +85,6 @@ export class PromptsAPI {
      * @param type - The building block type
      * @param fieldName - The field name
      * @param answers - The answers object
-     * @param rootPath - The root path
      * @returns
      */
     public async getChoices<T extends Answers>(
@@ -97,7 +94,7 @@ export class PromptsAPI {
     ): Promise<PromptListChoices> {
         try {
             // todo - cache questions
-            const prompt = await this.getPrompts(type, this.fs);
+            const prompt = await this.getPrompts(type);
             const question = prompt.questions.find((question) => question.name === fieldName);
             if (question && question.type === 'list') {
                 const choices =
@@ -117,19 +114,17 @@ export class PromptsAPI {
     /**
      * Validates answers: checks if required prompts have values and runs validate() if exists on prompt
      *
-     * @param fs
      * @param questions
      * @param answers
      * @param type
      * @returns {ValidationResults} Object with question names and answer validation results
      */
     public async validateAnswers(
-        fs: Editor,
         questions: Question[],
         answers: Answers,
         type: PromptsType
     ): Promise<ValidationResults> {
-        let originalPrompts = await this.getPrompts(type, fs);
+        let originalPrompts = await this.getPrompts(type);
         let result: ValidationResults = {};
         for (const q of questions) {
             const question = originalPrompts.questions.find((blockQuestion) => q.name === blockQuestion.name);
@@ -165,8 +160,7 @@ export class PromptsAPI {
         if (!configData) {
             throw new Error(`No writer found for building block type: ${type}`);
         }
-        const fs: Editor = generateBuildingBlock(this.basePath, configData);
-        return fs;
+        return generateBuildingBlock(this.basePath, configData, this.fs);
     };
 
     public getCodeSnippet<T extends TablePromptsAnswer | FilterBarPromptsAnswer | ChartPromptsAnswer>(
@@ -203,7 +197,7 @@ export class PromptsAPI {
                 metaPath,
                 type,
                 // ToDo - temp fix
-                buildingBlockType: type,
+                buildingBlockType: type
             }
         };
     }

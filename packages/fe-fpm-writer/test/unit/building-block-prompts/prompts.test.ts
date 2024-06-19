@@ -18,22 +18,22 @@ describe('Prompts', () => {
     });
 
     test('getBuildingBlockTypePrompts', async () => {
-        const questionnair = await promptsAPI.getPrompts(PromptsType.BuildingBlocks, fs);
+        const questionnair = await promptsAPI.getPrompts(PromptsType.BuildingBlocks);
         expect(questionnair).toMatchSnapshot();
     });
 
     test('getChartBuildingBlockPrompts', async () => {
-        const questionnair = await promptsAPI.getPrompts(PromptsType.Chart, fs);
+        const questionnair = await promptsAPI.getPrompts(PromptsType.Chart);
         expect(questionnair).toMatchSnapshot();
     });
 
     test('getFilterBarBuildingBlockPrompts', async () => {
-        const questionnair = await promptsAPI.getPrompts(PromptsType.FilterBar, fs);
+        const questionnair = await promptsAPI.getPrompts(PromptsType.FilterBar);
         expect(questionnair).toMatchSnapshot();
     });
 
     test('getTableBuildingBlockPrompts', async () => {
-        const questionnair = await promptsAPI.getPrompts(PromptsType.Table, fs);
+        const questionnair = await promptsAPI.getPrompts(PromptsType.Table);
         expect(questionnair).toMatchSnapshot();
     });
 
