@@ -1269,6 +1269,12 @@ importers:
       jsonc-parser:
         specifier: 3.2.0
         version: 3.2.0
+      mem-fs:
+        specifier: 2.1.0
+        version: 2.1.0
+      mem-fs-editor:
+        specifier: 9.4.0
+        version: 9.4.0(mem-fs@2.1.0)
       yargs-parser:
         specifier: 21.1.1
         version: 21.1.1

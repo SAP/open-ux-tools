@@ -1,10 +1,11 @@
-import { promises as fs } from 'fs';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
 import { FileName } from '@sap-ux/project-access';
 import { join } from 'path';
 import type { LaunchConfig, LaunchConfigEnv } from '../types';
 import { getIndexOfArgument } from './common';
-import { parse } from 'jsonc-parser';
+import type { Editor } from 'mem-fs-editor';
 
 const RUN_SCRIPT = 'run-script';
 
@@ -126,12 +127,17 @@ function getProjectRootFromEnv(envConfig: LaunchConfigEnv): string | undefined {
  *
  * @param launchConfig - existing launch config.
  * @param projectRoot - project root.
+ * @param fs - optional, the memfs editor instance.
  * @returns modified launch config.
  */
 export async function convertOldLaunchConfigToFioriRun(
     launchConfig: LaunchConfig,
-    projectRoot?: string
+    projectRoot?: string,
+    fs?: Editor
 ): Promise<LaunchConfig> {
+    if (!fs) {
+        fs = create(createStorage());
+    }
     // we only convert configs that previously used run-script and for BAS only
     if (isRunScriptUsed(launchConfig.runtimeArgs)) {
         const runScriptName = launchConfig.runtimeArgs[1];
@@ -141,7 +147,7 @@ export async function convertOldLaunchConfigToFioriRun(
         moveOldArgsToEnv(launchConfig);
         if (projectRootPath) {
             const pckJsonPath = join(projectRootPath, FileName.Package);
-            const packageJson = parse(await fs.readFile(pckJsonPath, { encoding: 'utf8' })) as Package;
+            const packageJson = fs?.readJSON(pckJsonPath) as Package;
             const scripts = packageJson.scripts;
             if (scripts) {
                 convertRunScriptToFioriRun(launchConfig, scripts, runScriptName);

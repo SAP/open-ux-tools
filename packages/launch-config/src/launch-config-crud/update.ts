@@ -1,10 +1,12 @@
-import { promises as fs } from 'fs';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
 import { createFioriLaunchConfig, parseArguments } from './common';
-import type { FioriOptions, LaunchConfig } from '../types';
+import type { FioriOptions, LaunchConfig, LaunchJSON } from '../types';
 import { getLaunchConfigFile } from './read';
 import { createLaunchConfigFile } from './create';
 import type { JSONPath, ModificationOptions, Node } from 'jsonc-parser';
 import { applyEdits, findNodeAtLocation, modify, parse, parseTree } from 'jsonc-parser';
+import type { Editor } from 'mem-fs-editor';
 
 export type configType = object | string | number | undefined;
 
@@ -15,15 +17,20 @@ export type configType = object | string | number | undefined;
  * @param filePath path to the json file.
  * @param jsonPath The {@linkcode JSONPath} of the value to change. The path represents either to the document root, a property or an array item.
  * @param options Options {@linkcode ModificationOptions} used by {@linkcode modify} when computing the modification edit operations. Default formattingOptions are used if not provided.
+ * @param fs - optional, the memfs editor instance.
  * @returns void.
  */
 export async function updateLaunchJSON(
     content: object | string | number | undefined,
     filePath: string,
     jsonPath: JSONPath,
-    options: ModificationOptions = {}
+    options: ModificationOptions = {},
+    fs?: Editor
 ): Promise<void> {
-    const jsonString = await fs.readFile(filePath, { encoding: 'utf8' });
+    if (!fs) {
+        fs = create(createStorage());
+    }
+    const jsonString = fs.read(filePath);
     if (!options.formattingOptions) {
         options.formattingOptions = {
             tabSize: 4,
@@ -34,7 +41,7 @@ export async function updateLaunchJSON(
     const edits = modify(jsonString, jsonPath, content, options);
     const updated = applyEdits(jsonString, edits);
     // write changes to file
-    await fs.writeFile(filePath, updated);
+    fs.write(filePath, updated);
 }
 
 /**
@@ -42,13 +49,24 @@ export async function updateLaunchJSON(
  *
  * @param launchConfigPath path to the launch.json file.
  * @param launchConfig launch config to be added to the launch.json.
+ * @param fs - optional, the memfs editor instance.
  * @returns void.
  */
-async function addLaunchConfig(launchConfigPath: string, launchConfig: LaunchConfig): Promise<void> {
-    const launchJson = parse(await fs.readFile(launchConfigPath, { encoding: 'utf8' }));
-    await updateLaunchJSON(launchConfig, launchConfigPath, ['configurations', launchJson.configurations.length + 1], {
-        isArrayInsertion: true
-    });
+async function addLaunchConfig(launchConfigPath: string, launchConfig: LaunchConfig, fs?: Editor): Promise<void> {
+    if (!fs) {
+        fs = create(createStorage());
+    }
+    const launchJsonString = fs.read(launchConfigPath);
+    const launchJson = parse(launchJsonString) as LaunchJSON;
+    await updateLaunchJSON(
+        launchConfig,
+        launchConfigPath,
+        ['configurations', launchJson.configurations.length + 1],
+        {
+            isArrayInsertion: true
+        },
+        fs
+    );
 }
 
 /**
@@ -56,15 +74,20 @@ async function addLaunchConfig(launchConfigPath: string, launchConfig: LaunchCon
  *
  * @param rootFolder - the workspace root folder.
  * @param options - options to create launch config.
+ * @param fs - optional, the memfs editor instance.
  * @returns void.
  */
-export async function addFioriElementsLaunchConfig(rootFolder: string, options: FioriOptions): Promise<void> {
-    const launchConfig = await getLaunchConfigFile(rootFolder);
+export async function addFioriElementsLaunchConfig(
+    rootFolder: string,
+    options: FioriOptions,
+    fs?: Editor
+): Promise<void> {
+    const launchConfig = await getLaunchConfigFile(rootFolder, fs);
     if (launchConfig) {
         const fioriLaunchConfig = createFioriLaunchConfig(rootFolder, options);
-        await addLaunchConfig(launchConfig, fioriLaunchConfig);
+        await addLaunchConfig(launchConfig, fioriLaunchConfig, fs);
     } else {
-        await createLaunchConfigFile(rootFolder, options);
+        await createLaunchConfigFile(rootFolder, options, fs);
     }
 }
 
@@ -197,17 +220,22 @@ async function processObject(
  * @param rootFolder - the project root folder.
  * @param index - index of the launch config.
  * @param options - optional if update is required, options to update to.
+ * @param fs - optional, the memfs editor instance.
  * @returns void.
  */
 export async function updateFioriElementsLaunchConfig(
     rootFolder: string,
     index: number,
-    options?: FioriOptions
+    options?: FioriOptions,
+    fs?: Editor
 ): Promise<void> {
-    const launchConfigPath = await getLaunchConfigFile(rootFolder);
+    if (!fs) {
+        fs = create(createStorage());
+    }
+    const launchConfigPath = await getLaunchConfigFile(rootFolder, fs);
     if (launchConfigPath) {
-        const launchJson = parse(await fs.readFile(launchConfigPath, { encoding: 'utf8' }));
-        const jsonString = await fs.readFile(launchConfigPath, { encoding: 'utf8' });
+        const jsonString = fs.read(launchConfigPath);
+        const launchJson = parse(jsonString) as LaunchJSON;
         if (options && jsonString) {
             // update
             const jsonTree = parseTree(jsonString);
@@ -220,7 +248,7 @@ export async function updateFioriElementsLaunchConfig(
             ]);
         } else {
             // delete
-            await updateLaunchJSON(undefined, launchConfigPath, ['configurations', index]);
+            await updateLaunchJSON(undefined, launchConfigPath, ['configurations', index], undefined, fs);
         }
     }
 }

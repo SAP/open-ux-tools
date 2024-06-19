@@ -44,6 +44,8 @@
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/ui5-info": "workspace:*",
         "jsonc-parser": "3.2.0",
+        "mem-fs": "2.1.0",
+        "mem-fs-editor": "9.4.0",
         "yargs-parser": "21.1.1"
     },
     "devDependencies": {

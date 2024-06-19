@@ -17,6 +17,11 @@ export interface FioriOptions {
     visible?: boolean;
 }
 
+export interface LaunchJSON {
+    version: string;
+    configurations: LaunchConfig[];
+}
+
 export interface LaunchConfig {
     name: string;
     cwd: string;
