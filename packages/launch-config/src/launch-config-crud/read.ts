@@ -1,4 +1,3 @@
-import { promises as fs } from 'fs';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { DirName } from '@sap-ux/project-access';
@@ -7,21 +6,6 @@ import type { LaunchConfig, LaunchConfigInfo, LaunchJSON } from '../types';
 import { launchConfigFile } from './common';
 import { parse } from 'jsonc-parser';
 import type { Editor } from 'mem-fs-editor';
-
-/**
- * Checks if the provided file exists in the file system.
- *
- * @param path - the file path to check
- * @returns - true if the file exists; false otherwise.
- */
-export async function fileExists(path: string): Promise<boolean> {
-    try {
-        await fs.access(path);
-        return true;
-    } catch {
-        return false;
-    }
-}
 
 /**
  * Returns the launch.json file for a workspace root folder. If it doesn't exist, returns undefined.
@@ -64,13 +48,17 @@ export async function getLaunchConfigFiles(rootFolders: string | string[], fs?: 
  * Gets launch configurations by file from the project folder.
  *
  * @param rootFolder - Single path to the root.
+ * @param fs - optional, the memfs editor instance.
  * @returns list of launch configs.
  */
-export async function getLaunchConfigs(rootFolder: string): Promise<LaunchConfig[] | undefined> {
+export async function getLaunchConfigs(rootFolder: string, fs?: Editor): Promise<LaunchConfig[] | undefined> {
+    if (!fs) {
+        fs = create(createStorage());
+    }
     const launchJsonPath = await getLaunchConfigFile(rootFolder);
     try {
         if (launchJsonPath) {
-            const launchJsonString = await fs.readFile(launchJsonPath, { encoding: 'utf8' });
+            const launchJsonString = await fs.read(launchJsonPath);
             const launchJson = parse(launchJsonString);
             return launchJson.configurations;
         }
@@ -111,11 +99,19 @@ export async function getAllLaunchConfigs(rootFolder: string | string[], fs?: Ed
  *
  * @param launchConfigPath - path to the launch.json file.
  * @param name - name of the launch config.
+ * @param fs - optional, the memfs editor instance.
  * @returns launch config.
  */
-export async function getLaunchConfigByName(launchConfigPath: string, name: string): Promise<LaunchConfig> {
+export async function getLaunchConfigByName(
+    launchConfigPath: string,
+    name: string,
+    fs?: Editor
+): Promise<LaunchConfig> {
+    if (!fs) {
+        fs = create(createStorage());
+    }
     try {
-        const config = await parse(await fs.readFile(launchConfigPath, { encoding: 'utf8' }));
+        const config = parse(fs.read(launchConfigPath));
         const launchConfig = config.configurations.find((c: LaunchConfig) => c.name === name);
         if (!launchConfig) {
             throw Error(`No config '${name}'`);
