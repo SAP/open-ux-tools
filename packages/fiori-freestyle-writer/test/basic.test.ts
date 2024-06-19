@@ -154,7 +154,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             settings: {}
         },
         {
-            name: 'basic_witht_start-noflp',
+            name: 'basic_with_start-noflp',
             config: {
                 ...commonConfig,
                 service: {
