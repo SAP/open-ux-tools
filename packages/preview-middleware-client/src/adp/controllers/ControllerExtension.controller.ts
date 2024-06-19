@@ -35,7 +35,6 @@ import {
     writeController
 } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
-import { getError } from '../../cpe/error-utils';
 
 interface ControllerExtensionService {
     add: (codeRef: string, viewId: string) => Promise<{ creation: string }>;
@@ -167,7 +166,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
 
         const { controllerName, viewId } = this.getControllerInfo(overlayControl);
         const existingController = await this.getExistingController(controllerName);
-        
+
         if (existingController) {
             const { controllerExists, controllerPath, controllerPathFromRoot, isRunningInBAS } = existingController;
 
