@@ -19,12 +19,5 @@ describe('Launch Text utility function tests', () => {
         expect(getLaunchText('Node.js', 'project1', 'test.app.project1')).toBe(
             `${t('TEXT_LAUNCH_CAP', { mvnCommand, capUrl: workspaceCapUrl })}`
         );
-
-        expect(getLaunchText('Node.js', 'project1', undefined)).toBe(
-            `${t('TEXT_LAUNCH_CAP', { mvnCommand, capUrl })}`
-        );
-        expect(getLaunchText('Node.js', 'project1', 'test.app.project1')).toBe(
-            `${t('TEXT_LAUNCH_CAP', { mvnCommand, capUrl: workspaceCapUrl })}`
-        );
     });
 });
