@@ -30,10 +30,13 @@ import {
     createDeleteRecordPropertyChange,
     createReplaceNodeChange,
     createDeleteAnnotationGroupChange,
-    DELETE_ANNOTATION_GROUP_CHANGE_TYPE
+    DELETE_ANNOTATION_GROUP_CHANGE_TYPE,
+    INSERT_PRIMITIVE_VALUE_TYPE,
+    INSERT_RECORD_CHANGE_TYPE,
+    INSERT_TARGET_CHANGE_TYPE
 } from './change';
 import type { Deletes, CDSDocumentChange } from './change';
-import type { AstNode, CDSDocument } from './document';
+import { getChildCount, type AstNode, type CDSDocument } from './document';
 import { getAstNodesFromPointer } from './pointer';
 
 /**
@@ -55,6 +58,7 @@ class ChangePreprocessor {
      * @returns Optimized CDS document changes.
      */
     run(): CDSDocumentChange[] {
+        this.normalizeInsertIndex();
         this.removeDuplicates();
         this.combineInsertsWithDeletions();
         this.expandToCompoundAnnotations();
@@ -74,6 +78,45 @@ class ChangePreprocessor {
             }
         }
         return result;
+    }
+
+    /**
+     * Makes sure that inserts in an empty container have the same insert positions.
+     */
+
+    private normalizeInsertIndex() {
+        for (let i = 0; i < this.input.length; i++) {
+            const change = this.input[i];
+            const [parent] = getAstNodesFromPointer(this.document, change.pointer).reverse();
+            if (
+                !parent ||
+                (parent.type !== COLLECTION_TYPE &&
+                    parent.type !== RECORD_TYPE &&
+                    parent.type !== ANNOTATION_GROUP_ITEMS_TYPE &&
+                    parent.type !== TARGET_TYPE)
+            ) {
+                continue;
+            }
+            if (
+                getChildCount(parent) > 0 ||
+                ![
+                    INSERT_RECORD_CHANGE_TYPE,
+                    INSERT_ANNOTATION_CHANGE_TYPE,
+                    INSERT_EMBEDDED_ANNOTATION_CHANGE_TYPE,
+                    INSERT_RECORD_PROPERTY_CHANGE_TYPE,
+                    INSERT_PRIMITIVE_VALUE_TYPE,
+                    INSERT_TARGET_CHANGE_TYPE
+                ].includes(change.type)
+            ) {
+                continue;
+            }
+            const newChange = JSON.parse(JSON.stringify(change));
+            newChange.index = 0;
+            this.commands.set(i, {
+                type: 'replace',
+                changes: [newChange]
+            });
+        }
     }
 
     private removeDuplicates() {

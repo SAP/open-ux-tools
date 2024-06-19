@@ -77,10 +77,18 @@ describe('base/prompts', () => {
                 app: {
                     id: `customer.${defaults.id}`,
                     reference: defaults.reference,
-                    layer: 'CUSTOMER_BASE'
+                    layer: 'CUSTOMER_BASE',
+                    title: undefined
+                },
+                customConfig: {
+                    adp: {
+                        environment: 'P',
+                        safeMode: true
+                    }
                 },
                 target: {
-                    url: defaults.url
+                    url: defaults.url,
+                    client: undefined
                 },
                 deploy: {
                     package: defaults.package,
@@ -110,6 +118,12 @@ describe('base/prompts', () => {
                     reference: defaults.reference,
                     layer: 'VENDOR',
                     title: 'My Title'
+                },
+                customConfig: {
+                    adp: {
+                        environment: 'P',
+                        safeMode: true
+                    }
                 },
                 target: {
                     client: undefined,

@@ -91,7 +91,7 @@ describe('Test ErrorHandler', () => {
         );
         // code: 502
         expect(errorHandler.getErrorMsg({ response: { data: { error: { code: '502' } } } })).toContain(
-            t('errors.destinationUnavailable')
+            t('errors.badGateway')
         );
 
         // code: 500
