@@ -1,15 +1,21 @@
-import type { TextEdit } from '@sap-ux/odata-annotation-core-types';
+import type { Range } from '@sap-ux/odata-annotation-core-types';
 
 /**
- *  Compares two text edits based on their ranges.
+ *  Compares two objects based on their ranges.
  *  Can be used in {@link Array.prototype.sort} to sort in ascending order.
  *
- * @param a - First text edit.
- * @param b - Second text edit.
+ * @param a - First object.
+ * @param b - Second object.
  * @returns A negative number if {@link a} should come before {@link b}; A positive number if {@link b} should come before {@link a};
- * 0 if the text edit ranges are equal.
+ * 0 if the object ranges are equal.
  */
-export function compareTextEdits(a: TextEdit, b: TextEdit): number {
+export function compareByRange<T extends { range?: Range }>(a: T, b: T): number {
+    if (!a.range) {
+        return 1;
+    }
+    if (!b.range) {
+        return -1;
+    }
     const diff = a.range.start.line - b.range.start.line;
     if (diff === 0) {
         const startCharacterDiff = a.range.start.character - b.range.start.character;

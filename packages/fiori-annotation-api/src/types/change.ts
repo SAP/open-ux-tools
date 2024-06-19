@@ -149,6 +149,11 @@ export interface InsertEmbeddedAnnotationChange {
      *  Content which shall be inserted
      */
     content: EmbeddedAnnotationModificationContent;
+    /**
+     * Element index before which the annotation should be inserted.
+     * 0 based. If not specified will insert after the last element.
+     */
+    index?: number;
 }
 
 export interface InsertChange {
