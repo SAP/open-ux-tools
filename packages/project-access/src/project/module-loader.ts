@@ -1,9 +1,9 @@
 import { existsSync } from 'fs';
 import { mkdir, rm } from 'fs/promises';
-import { homedir } from 'os';
 import { join } from 'path';
-import { spawn } from 'child_process';
 import { getNodeModulesPath } from './dependencies';
+import { FileName, moduleCacheRoot } from '../constants';
+import { execNpmCommand } from '../command';
 
 /**
  * Load module from project or app. Throws error if module is not installed.
@@ -33,26 +33,6 @@ export async function loadModuleFromProject<T>(projectRoot: string, moduleName: 
 }
 
 /**
- * npm command is platform depending: Winows 'npm.cmd', Mac 'npm'
- */
-const npmCommand = /^win/.test(process.platform) ? 'npm.cmd' : 'npm';
-
-/**
- * platform specific config for spawn to execute commands
- */
-const spawnOptions = /^win/.test(process.platform) ? { windowsVerbatimArguments: true, shell: true } : {};
-
-/**
- * Directory where fiori tools settings are stored
- */
-const fioriToolsDirectory = join(homedir(), '.fioritools');
-
-/**
- * Directory where modules are cached
- */
-const moduleCacheRoot = join(fioriToolsDirectory, 'module-cache');
-
-/**
  * Get a module, if it is not cached it will be installed and returned.
  *
  * @param module - name of the module
@@ -61,12 +41,12 @@ const moduleCacheRoot = join(fioriToolsDirectory, 'module-cache');
  */
 export async function getModule<T>(module: string, version: string): Promise<T> {
     const moduleDirectory = join(moduleCacheRoot, module, version);
-    if (!existsSync(join(moduleDirectory, 'package.json'))) {
+    if (!existsSync(join(moduleDirectory, FileName.Package))) {
         if (existsSync(moduleDirectory)) {
             await rm(moduleDirectory, { recursive: true });
         }
         await mkdir(moduleDirectory, { recursive: true });
-        await installModule(module, version, moduleDirectory);
+        await execNpmCommand(['install', `${module}@${version}`], moduleDirectory);
     }
     return loadModuleFromProject<T>(moduleDirectory, module);
 }
@@ -82,40 +62,4 @@ export async function deleteModule(module: string, version: string): Promise<voi
     if (existsSync(moduleDirectory)) {
         await rm(moduleDirectory, { recursive: true });
     }
-}
-
-/**
- * Install a module in a given directory.
- *
- * @param module - name of the module
- * @param version - version of the module
- * @param moduleDirectory - directory where the module should be installed
- */
-async function installModule(module: string, version: string, moduleDirectory: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-        let stdOut = '';
-        let stdErr = '';
-        const options = { ...spawnOptions, cwd: moduleDirectory };
-        const commandArgs = ['install', `${module}@${version}`];
-        const spawnProcess = spawn(npmCommand, commandArgs, options);
-        spawnProcess.stdout.on('data', (data) => {
-            stdOut += data.toString();
-        });
-        spawnProcess.stderr.on('data', (data) => {
-            stdErr += data.toString();
-        });
-        spawnProcess.on('exit', () => {
-            const commandString = `${npmCommand} ${commandArgs.join(' ')}`;
-            if (stdErr) {
-                console.error(`Command '${commandString}' not successful, stderr:`, stdErr);
-            }
-            if (stdOut) {
-                console.log(`Command '${commandString}' successful, stdout:`, stdOut);
-            }
-            resolve();
-        });
-        spawnProcess.on('error', (error) => {
-            reject(error);
-        });
-    });
 }
