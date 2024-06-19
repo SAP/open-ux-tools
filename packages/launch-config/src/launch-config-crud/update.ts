@@ -59,7 +59,7 @@ async function addLaunchConfig(launchConfigPath: string, launchConfig: LaunchCon
  * @returns void.
  */
 export async function addFioriElementsLaunchConfig(rootFolder: string, options: FioriOptions): Promise<void> {
-    const launchConfig = getLaunchConfigFile(rootFolder);
+    const launchConfig = await getLaunchConfigFile(rootFolder);
     if (launchConfig) {
         const fioriLaunchConfig = createFioriLaunchConfig(rootFolder, options);
         await addLaunchConfig(launchConfig, fioriLaunchConfig);
@@ -95,7 +95,7 @@ function mergeArgs(newArgs: string[] | undefined, oldArgs: string[] | undefined)
  * @param obj - the new JSON object to replace original JSON.
  * @param filePath - path to the JSON file.
  * @param originalJSON - the original JSON {@linkcode Node} before modification.
- * @param callback - function to be executed on the object property, similar to {@linkcode updateJSONWithComments}.
+ * @param callback - function to be executed on the object property.
  * @param initialPath - intial {@linkcode JSONPath} of the object to be traversed.
  * @returns void.
  */
@@ -128,7 +128,7 @@ export async function traverseAndModifyObject(
  * @param arr - array of objects.
  * @param filePath - path to the JSON file.
  * @param originalJSON - the original JSON {@linkcode Node} before modification.
- * @param callback - function to be executed on the object property, similar to {@linkcode updateJSONWithComments}.
+ * @param callback - function to be executed on the object property.
  * @param currentPath - intial {@linkcode JSONPath} of the object to be traversed.
  * @param originalLength - original lench of the array.
  * @returns void.
@@ -204,7 +204,7 @@ export async function updateFioriElementsLaunchConfig(
     index: number,
     options?: FioriOptions
 ): Promise<void> {
-    const launchConfigPath = getLaunchConfigFile(rootFolder);
+    const launchConfigPath = await getLaunchConfigFile(rootFolder);
     if (launchConfigPath) {
         const launchJson = parse(await fs.readFile(launchConfigPath, { encoding: 'utf8' }));
         const jsonString = await fs.readFile(launchConfigPath, { encoding: 'utf8' });

@@ -9,8 +9,8 @@ beforeEach(() => {
     console.error = originalConsoleError;
 });
 
-test('Get launch config files', () => {
-    const launchConfigs = getLaunchConfigFiles(TestPaths.workspaceRoots);
+test('Get launch config files', async () => {
+    const launchConfigs = await getLaunchConfigFiles(TestPaths.workspaceRoots);
     expect(launchConfigs).toEqual([
         join(TestPaths.feProjects, '.vscode', 'launch.json'),
         join(TestPaths.freestyleProjects, '.vscode', 'launch.json')

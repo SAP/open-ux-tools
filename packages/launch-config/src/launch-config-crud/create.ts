@@ -3,21 +3,7 @@ import { join } from 'path';
 import { DirName } from '@sap-ux/project-access';
 import { createFioriLaunchConfig, launchConfigFile } from './common';
 import type { FioriOptions } from '../types';
-
-/**
- * Checks if the provided file exists in the file system.
- *
- * @param path - the file path to check
- * @returns - true if the file exists; false otherwise.
- */
-export async function fileExists(path: string): Promise<boolean> {
-    try {
-        await fs.access(path);
-        return true;
-    } catch {
-        return false;
-    }
-}
+import { fileExists } from './read';
 
 /**
  * Creates a new launch.json file. If exists, does nothing.
