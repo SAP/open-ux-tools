@@ -16,16 +16,18 @@ const CmdParams = {
     overwrite: '--overwrite'
 };
 
-interface FilePaths {
-    source: string;
-    target: string;
-}
-
-function copyFiles(files: string[], paths: FilePaths, overwrite = false): void {
+/**
+ * Function to copy passed files from surce to target directory.
+ * @param files Files to copy.
+ * @param source Source directoy.
+ * @param target Target directoy.
+ * @param overwrite Overwrite files if files already exists in target.
+ */
+function copyFiles(files: string[], source: string, target: string, overwrite: boolean): void {
     for (const file of files) {
         const styleFile = {
-            source: join(paths.source, file),
-            target: join(paths.target, file)
+            source: join(source, file),
+            target: join(target, file)
         };
         if (!fs.existsSync(styleFile.target) || overwrite) {
             fs.copyFileSync(styleFile.source, styleFile.target);
@@ -48,21 +50,7 @@ export async function run(argv: string[]): Promise<void> {
         fs.mkdirSync(styleFolder.target);
     }
     const styleFiles = await fs.readdirSync(styleFolder.source);
-    copyFiles(
-        styleFiles,
-        {
-            source: styleFolder.source,
-            target: styleFolder.target
-        },
-        overwrite
-    );
+    copyFiles(styleFiles, styleFolder.source, styleFolder.target, overwrite);
     // Handle html files
-    copyFiles(
-        [StorybookFiles.ManagerFile, StorybookFiles.PreviewFile],
-        {
-            source: SourceDir,
-            target: TargetDir
-        },
-        overwrite
-    );
+    copyFiles([StorybookFiles.ManagerFile, StorybookFiles.PreviewFile], SourceDir, TargetDir, overwrite);
 }
