@@ -73,10 +73,6 @@ export const BuildingBlockQuestions = (props: {
                 setValidation(clearValidation);
             }
         }
-        const dependantPromptNames = getDependantQuestions(questions, name);
-        if (dependantPromptNames?.length) {
-            getChoices(dependantPromptNames, type, { ...getDefaultAnswers(questions), ...newAnswers });
-        }
     }
 
     async function handleApply() {

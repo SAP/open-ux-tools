@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Question } from '../Question/Question';
-import { getDynamicQuestions, updateAnswer, useDynamicQuestionsEffect } from '../../utilities';
+import { getDependantQuestions, getDynamicQuestions, updateAnswer, useDynamicQuestionsEffect } from '../../utilities';
 import { useRequestedChoices } from '../../utilities';
 import { QuestionGroup } from '../QuestionGroup';
 import type { PromptQuestion, ValidationResults, PromptsGroup, AnswerValue, DynamicChoices } from '../../types';
@@ -61,14 +61,15 @@ export const Questions = (props: QuestionsProps) => {
     }, questions);
     // Change callback
     const onAnswerChange = useCallback(
-        (name: string, answer?: AnswerValue, dependantPromptNames?: string[]) => {
+        (name: string, answer?: AnswerValue) => {
             if ((localAnswers[name] || '') !== answer) {
                 const updatedAnswers = updateAnswer(localAnswers, questions, name, answer);
                 setLocalAnswers(updatedAnswers);
                 // Callback with onchange
                 onChange?.(updatedAnswers, name, answer);
                 // Request dynamic choices for dependant questions
-                dependantPromptNames?.length && requestChoices(dependantPromptNames, updatedAnswers);
+                const deps = getDependantQuestions(questions, name);
+                deps.length && requestChoices(deps, updatedAnswers);
             }
         },
         [localAnswers, onChange]
