@@ -18,7 +18,7 @@ describe('create', () => {
         memFs.delete(memFilePath);
     });
 
-    test('Create empty launch.json - mem-fs-editor', async () => {
+    test('Create empty launch.json', async () => {
         await createLaunchConfigFile(TestPaths.tmpDir, undefined, memFs);
         const launchConfigFiles = await getLaunchConfigFiles(TestPaths.tmpDir, memFs);
         expect(launchConfigFiles.length).toBe(1);
@@ -29,7 +29,7 @@ describe('create', () => {
         });
     });
 
-    test('Create new launch.json with config - mem-fs-editor', async () => {
+    test('Create new launch.json with config', async () => {
         const fioriOptions = {
             projectRoot: join(TestPaths.tmpDir, 'fe-project'),
             name: 'TEST_CONFIG',
@@ -45,7 +45,7 @@ describe('create', () => {
             configurations: [
                 {
                     name: 'TEST_CONFIG',
-                    cwd: '${workspaceFolder}\\fe-project',
+                    cwd: join('${workspaceFolder}', 'fe-project'),
                     runtimeArgs: ['fiori', 'run'],
                     type: 'node',
                     request: 'launch',
