@@ -1,4 +1,4 @@
-import { relative } from 'path';
+import { join, relative } from 'path';
 import type { NewI18nEntry } from '@sap-ux/i18n';
 import type {
     ApplicationAccess,
@@ -7,7 +7,9 @@ import type {
     I18nBundles,
     I18nPropertiesPaths,
     ProjectType,
-    ApplicationStructure
+    ApplicationStructure,
+    Package,
+    Manifest
 } from '../types';
 
 import {
@@ -23,6 +25,8 @@ import { getProject } from './info';
 import { findAllApps } from './search';
 
 import type { Editor } from 'mem-fs-editor';
+import { updateManifestJSON, updatePackageJSON } from '../file';
+import { FileName } from '../constants';
 
 /**
  *
@@ -151,6 +155,26 @@ class ApplicationAccessImp implements ApplicationAccess {
      */
     getI18nPropertiesPaths(): Promise<I18nPropertiesPaths> {
         return getI18nPropertiesPaths(this.app.manifest);
+    }
+
+    /**
+     * Updates package.json file asynchronously by keeping the previous indentation.
+     *
+     * @param packageJson - updated package.json file content
+     * @param memFs - optional mem-fs-editor instance
+     */
+    async updatePackageJSON(packageJson: Package, memFs?: Editor): Promise<void> {
+        await updatePackageJSON(join(this.app.appRoot, FileName.Package), packageJson, memFs);
+    }
+
+    /**
+     * Updates manifest.json file asynchronously by keeping the previous indentation.
+     *
+     * @param manifest - updated manifest.json file content
+     * @param memFs - optional mem-fs-editor instance
+     */
+    async updateManifestJSON(manifest: Manifest, memFs?: Editor): Promise<void> {
+        await updateManifestJSON(this.app.manifest, manifest, memFs);
     }
 
     /**

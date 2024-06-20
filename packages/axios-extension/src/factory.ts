@@ -242,7 +242,13 @@ export function createServiceForUrl(
 ): ODataService {
     const urlObject = new URL(url);
     config.baseURL = urlObject.origin;
-    config.params = urlObject.searchParams;
+
+    const searchParams = new URLSearchParams(config.params);
+    for (const [key, val] of urlObject.searchParams.entries()) {
+        searchParams.append(key, val);
+    }
+    config.params = searchParams;
+
     const provider = createInstance(ServiceProvider, config);
 
     return provider.service(urlObject.pathname);
