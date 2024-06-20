@@ -34,7 +34,8 @@ export {
     readCapServiceMetadataEdmx,
     readUi5Yaml,
     toReferenceUri,
-    clearCdsModuleCache
+    clearCdsModuleCache,
+    findCapProjectRoot
 } from './project';
 export * from './types';
 export * from './library';

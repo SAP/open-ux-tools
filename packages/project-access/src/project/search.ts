@@ -217,7 +217,7 @@ async function findRootsForPath(path: string): Promise<{ appRoot: string; projec
  * @param path - path inside CAP project
  * @returns - CAP project root path
  */
-async function findCapProjectRoot(path: string): Promise<string | null> {
+export async function findCapProjectRoot(path: string): Promise<string | null> {
     try {
         const { root } = parse(path);
         let projectRoot = dirname(path);
