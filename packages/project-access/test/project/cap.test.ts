@@ -144,7 +144,12 @@ describe('Test getCapModelAndServices()', () => {
             }
         });
         expect(cdsMock.load).toBeCalledWith(
-            [join('PROJECT_ROOT', 'APP'), join('PROJECT_ROOT', 'SRV'), join('PROJECT_ROOT', 'DB')],
+            [
+                join('PROJECT_ROOT', 'APP'),
+                join('PROJECT_ROOT', 'SRV'),
+                join('PROJECT_ROOT', 'SRV', 'target/cds'),
+                join('PROJECT_ROOT', 'DB')
+            ],
             { root: 'PROJECT_ROOT' }
         );
         expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL', { root: 'PROJECT_ROOT' });

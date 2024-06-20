@@ -143,6 +143,7 @@ export async function getCapModelAndServices(
     const modelPaths = [
         join(_projectRoot, capProjectPaths.app),
         join(_projectRoot, capProjectPaths.srv),
+        join(_projectRoot, capProjectPaths.srv, 'target/cds'), // for Java CAP projects https://cap.cloud.sap/docs/java/building-plugins#reference-the-new-cds-model-in-an-existing-cap-java-project
         join(_projectRoot, capProjectPaths.db)
     ];
     const model = await cds.load(modelPaths, { root: _projectRoot });
