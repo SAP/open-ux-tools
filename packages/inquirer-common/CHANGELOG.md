@@ -1,5 +1,11 @@
 # @sap-ux/inquirer-common
 
+## 0.3.0
+
+### Minor Changes
+
+-   1ea831d5: Adds support for service url prompting
+
 ## 0.2.8
 
 ### Patch Changes

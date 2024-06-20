@@ -1,5 +1,11 @@
 # @sap-ux/cds-annotation-parser
 
+## 0.1.12
+
+### Patch Changes
+
+-   4d8e6c65: fix wrong text edits
+
 ## 0.1.11
 
 ### Patch Changes

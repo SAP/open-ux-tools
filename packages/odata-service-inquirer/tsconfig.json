@@ -10,6 +10,9 @@
   },
   "references": [
     {
+      "path": "../axios-extension"
+    },
+    {
       "path": "../btp-utils"
     },
     {

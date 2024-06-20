@@ -666,18 +666,19 @@ export class FlpSandbox {
      * @returns UI5 libs that should preloaded
      */
     private getUI5Libs(manifest: Manifest): string {
-        if (manifest['sap.ui5']?.dependencies?.libs) {
-            const libNames = Object.keys(manifest['sap.ui5'].dependencies.libs);
-            return libNames
-                .filter((key) => {
-                    return UI5_LIBS.some((substring) => {
-                        return key === substring || key.startsWith(substring + '.');
-                    });
-                })
-                .join(',');
-        } else {
-            return 'sap.m,sap.ui.core,sap.ushell';
-        }
+        const libs = manifest['sap.ui5']?.dependencies?.libs ?? {};
+        // add libs that should always be preloaded
+        libs['sap.m'] = {};
+        libs['sap.ui.core'] = {};
+        libs['sap.ushell'] = {};
+
+        return Object.keys(libs)
+            .filter((key) => {
+                return UI5_LIBS.some((substring) => {
+                    return key === substring || key.startsWith(substring + '.');
+                });
+            })
+            .join(',');
     }
 }
 
