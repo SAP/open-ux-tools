@@ -2168,9 +2168,6 @@ importers:
 
   packages/ui5-config:
     dependencies:
-      '@sap-ux/store':
-        specifier: workspace:*
-        version: link:../store
       '@sap-ux/yaml':
         specifier: workspace:*
         version: link:../yaml
@@ -2181,6 +2178,9 @@ importers:
         specifier: 7.5.4
         version: 7.5.4
     devDependencies:
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
