@@ -12,7 +12,7 @@ import { getConfigForLogging, isBspConfig, throwConfigMissingError } from './con
 import { promptConfirmation } from './prompt';
 import { createAbapServiceProvider, getCredentialsWithPrompts } from '@sap-ux/system-access';
 import { getAppDescriptorVariant } from './archive';
-import { validateBeforeDeploy, formatSummary, showAdditionalInfoForOnPrem, promptForCredentials } from './validate';
+import { validateBeforeDeploy, formatSummary, showAdditionalInfoForOnPrem, checkForCredentials } from './validate';
 
 /**
  * Internal deployment commands
@@ -102,8 +102,8 @@ async function handle401Error(
     logger: Logger,
     archive: Buffer
 ): Promise<boolean> {
-    if (await promptForCredentials(`${config.target.destination}`)) {
-        logger.warn(`${command === tryDeploy ? 'Deployment' : 'Undeployment'} failed with authentication error.`);
+    logger.warn(`${command === tryDeploy ? 'Deployment' : 'Undeployment'} failed with authentication error.`);
+    if (await checkForCredentials(`${config.target.destination}`)) {
         logger.info(
             'Please maintain correct credentials to avoid seeing this error\n\t(see help: https://www.npmjs.com/package/@sap/ux-ui5-tooling#setting-environment-variables-in-a-env-file)'
         );

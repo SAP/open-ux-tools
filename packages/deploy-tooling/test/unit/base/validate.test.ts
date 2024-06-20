@@ -4,7 +4,7 @@ import {
     showAdditionalInfoForOnPrem,
     summaryMessage,
     validateBeforeDeploy,
-    promptForCredentials
+    checkForCredentials
 } from '../../../src/base/validate';
 import { mockedProvider, mockedAdtService } from '../../__mocks__';
 import { green, red, yellow } from 'chalk';
@@ -482,25 +482,21 @@ describe('deploy-test validation', () => {
         );
     });
 
-    describe('Prompt for credentials check', () => {
-        const noAuthMock = { Name: 'test', Authentication: Authentication.NO_AUTHENTICATION };
-        const basicAuthMock = { Name: 'test1', Authentication: Authentication.BASIC_AUTHENTICATION };
-        const samlMock = { Name: 'test2', Authentication: Authentication.SAML_ASSERTION };
+    describe('Check for credentials', () => {
+        const noAuthMock = { Name: 'noAuth', Authentication: Authentication.NO_AUTHENTICATION };
+        const basicAuthMock = { Name: 'basicAuth', Authentication: Authentication.BASIC_AUTHENTICATION };
         const destinationsMock = {
-            'test': noAuthMock,
-            'test1': basicAuthMock,
-            'test2': samlMock
+            'noAuth': noAuthMock,
+            'basicAuth': basicAuthMock
         };
         test.each([
-            ['NoAuthentication - True', true, destinationsMock, noAuthMock.Name, true],
+            ['NoAuthentication - False', true, destinationsMock, noAuthMock.Name, false],
             ['BasicAuthentication - True', true, destinationsMock, basicAuthMock.Name, true],
-            ['SAMLAssertion - False', true, destinationsMock, samlMock.Name, false],
-            ['If destination not provided', true, destinationsMock, '', false],
-            ['Not App Studio - False', false, destinationsMock, noAuthMock.Name, false]
+            ['If destination not provided', true, destinationsMock, '', true]
         ])('%s', async (desc, isAppStudio, listDestinationsMock, destinationMock, expectedResult) => {
             mockIsAppStudio.mockReturnValue(isAppStudio);
             mockListDestinations.mockResolvedValue(listDestinationsMock);
-            const result = await promptForCredentials(destinationMock);
+            const result = await checkForCredentials(destinationMock);
             expect(result).toBe(expectedResult);
         });
     });

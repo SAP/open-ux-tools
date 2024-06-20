@@ -411,21 +411,18 @@ export async function showAdditionalInfoForOnPrem(destination: string): Promise<
 }
 
 /**
- * Returns true if specified destination authentication is NoAuthentication or BasicAuthentication.
+ * Returns false if specified destination authentication is NoAuthentication.
  *
  * @param destination Identifier for destination to be checked.
  * @returns Promise boolean.
  */
-export async function promptForCredentials(destination: string): Promise<boolean> {
-    let destAuth = false;
+export async function checkForCredentials(destination: string): Promise<boolean> {
+    let destAuth = true;
     if (destination && isAppStudio()) {
         const destinations = await getDestinations();
         const dest = destinations[destination];
-        if (
-            dest.Authentication === Authentication.NO_AUTHENTICATION ||
-            dest.Authentication === Authentication.BASIC_AUTHENTICATION
-        ) {
-            destAuth = true;
+        if (dest.Authentication === Authentication.NO_AUTHENTICATION) {
+            destAuth = false;
         }
     }
     return destAuth;

@@ -18,8 +18,13 @@ import type { AbapDeployConfig } from '../../../src/types';
 
 const validateBeforeDeployMock = jest.spyOn(validate, 'validateBeforeDeploy');
 const showAdditionalInfoForOnPremMock = jest.spyOn(validate, 'showAdditionalInfoForOnPrem');
-const promptForCredentialsMock = jest.spyOn(validate, 'promptForCredentials');
-
+const checkForCredentialsMock = jest.spyOn(validate, 'checkForCredentials');
+checkForCredentialsMock.mockImplementation(async (destination: string) => {
+    if (destination === 'NoAuthentication') {
+        return false;
+    }
+    return true;
+});
 describe('base/deploy', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
     const app: AbapDeployConfig['app'] = {
@@ -140,7 +145,6 @@ describe('base/deploy', () => {
             mockedUi5RepoService.deploy.mockRejectedValueOnce(axiosError(412));
             await deploy(archive, { app, target, yes: true }, nullLogger);
             mockedUi5RepoService.deploy.mockRejectedValueOnce(axiosError(401));
-            promptForCredentialsMock.mockResolvedValue(true);
             prompts.inject(['~username', '~password']);
             await deploy(archive, { app, target, yes: true }, nullLogger);
             expect(mockCreateForAbap).toBeCalledWith(
@@ -167,8 +171,6 @@ describe('base/deploy', () => {
                 } as AbapTarget,
                 yes: true
             };
-
-            promptForCredentialsMock.mockResolvedValueOnce(true);
             mockedUi5RepoService.deploy.mockRejectedValueOnce(axiosError(401));
             prompts.inject(['~uaa-username', '~uaa-password']);
 
@@ -190,10 +192,13 @@ describe('base/deploy', () => {
             });
         });
         test('Handle 401 error with unsupported authentication type', async () => {
-            promptForCredentialsMock.mockResolvedValue(false);
             mockedUi5RepoService.deploy.mockRejectedValueOnce(axiosError(401));
             try {
-                await deploy(archive, { app, target, yes: true }, nullLogger);
+                await deploy(
+                    archive,
+                    { app, target: { ...target, destination: 'NoAuthentication' }, yes: true },
+                    nullLogger
+                );
                 fail('Should have thrown an error');
             } catch (error) {
                 expect(error).toStrictEqual(axiosError(401));
