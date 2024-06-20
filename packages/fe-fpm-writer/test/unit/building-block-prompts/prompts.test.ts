@@ -89,4 +89,49 @@ describe('Prompts', () => {
             expect(aggregationChoices).toMatchSnapshot();
         });
     });
+
+    describe('validateAnswers', () => {
+        const types = [PromptsType.Chart, PromptsType.FilterBar, PromptsType.Table];
+        test.each(types)('Type "%s", required fields validation', async (type: PromptsType) => {
+            const result = await promptsAPI.validateAnswers(type, { id: '' });
+            expect(result).toMatchSnapshot();
+        });
+
+        describe('validate function', () => {
+            const testCases = [
+                {
+                    name: 'Validation function returns valid result',
+                    value: 'Test',
+                    result: { isValid: true }
+                },
+                {
+                    name: 'Validation function returns inalid result',
+                    value: 'FilterBar',
+                    result: { isValid: false, errorMessage: 'An element with this ID already exists' }
+                }
+            ];
+            test.each(testCases)('$name', async ({ value, result }) => {
+                const filename = 'Test.view.xml';
+                const filePath = join(projectPath, `webapp/ext/${filename}`);
+                const xml = `
+                <mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+                    xmlns:html="http://www.w3.org/1999/xhtml" controllerName="com.test.myApp.ext.main.Main"
+                    xmlns:macros="sap.fe.macros">
+                    <Page title="Main">
+                        <content>
+                            <macros:FilterBar id="FilterBar" metaPath="@com.sap.vocabularies.UI.v1.SelectionFields"/>
+                        </content>
+                    </Page>
+                </mvc:View>
+                `;
+                fs.write(filePath, xml);
+                const validation = await promptsAPI.validateAnswers(
+                    PromptsType.FilterBar,
+                    { viewOrFragmentFile: filePath, id: value },
+                    [{ name: 'id' }]
+                );
+                expect(validation['id']).toEqual(result);
+            });
+        });
+    });
 });

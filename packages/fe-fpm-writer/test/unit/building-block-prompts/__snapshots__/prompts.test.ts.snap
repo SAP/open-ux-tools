@@ -706,3 +706,135 @@ Object {
   ],
 }
 `;
+
+exports[`Prompts validateAnswers Type "chart", required fields validation 1`] = `
+Object {
+  "aggregationPath": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+  "entity": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+  "filterBarId": Object {
+    "isValid": true,
+  },
+  "id": Object {
+    "errorMessage": "Please enter a value",
+    "isValid": false,
+  },
+  "personalization": Object {
+    "isValid": true,
+  },
+  "qualifier": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+  "selectionChange": Object {
+    "isValid": true,
+  },
+  "selectionMode": Object {
+    "isValid": true,
+  },
+  "viewOrFragmentFile": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+}
+`;
+
+exports[`Prompts validateAnswers Type "filter-bar", required fields validation 1`] = `
+Object {
+  "aggregationPath": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+  "entity": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+  "filterChanged": Object {
+    "isValid": true,
+  },
+  "id": Object {
+    "errorMessage": "Please enter a value",
+    "isValid": false,
+  },
+  "qualifier": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+  "search": Object {
+    "isValid": true,
+  },
+  "viewOrFragmentFile": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+}
+`;
+
+exports[`Prompts validateAnswers Type "table", required fields validation 1`] = `
+Object {
+  "aggregationPath": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+  "displayHeader": Object {
+    "isValid": true,
+  },
+  "enableAutoColumnWidth": Object {
+    "isValid": true,
+  },
+  "enableExport": Object {
+    "isValid": true,
+  },
+  "enableFullScreen": Object {
+    "isValid": true,
+  },
+  "enablePaste": Object {
+    "isValid": true,
+  },
+  "entity": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+  "filterBarId": Object {
+    "isValid": true,
+  },
+  "header": Object {
+    "isValid": true,
+  },
+  "id": Object {
+    "errorMessage": "Please enter a value",
+    "isValid": false,
+  },
+  "isSearchable": Object {
+    "isValid": true,
+  },
+  "personalization": Object {
+    "isValid": true,
+  },
+  "qualifier": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+  "readOnly": Object {
+    "isValid": true,
+  },
+  "selectionMode": Object {
+    "isValid": true,
+  },
+  "type": Object {
+    "isValid": true,
+  },
+  "variantManagement": Object {
+    "isValid": true,
+  },
+  "viewOrFragmentFile": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+}
+`;
