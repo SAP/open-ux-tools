@@ -14,12 +14,13 @@ import {
     updatePackageJSONDependencyToUseLocalPath,
     v4TemplateSettingsTreeTable
 } from './common';
-import { ServiceType } from '@sap-ux/odata-service-writer';
+import { ServiceType, OdataService } from '@sap-ux/odata-service-writer';
 
 const TEST_NAME = 'lropTemplates';
 if (debug?.enabled) {
     jest.setTimeout(360000);
 }
+
 
 jest.mock('read-pkg-up', () => ({
     sync: jest.fn().mockReturnValue({
@@ -308,6 +309,25 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                 }),
                 service: v2Service
             } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lropV2_with_start-noflp',
+            config: {
+                ...Object.assign(feBaseConfig('lrop_v2_ts'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v2TemplateSettings
+                    },
+                    ui5: {
+                        version: '1.84.2'
+                    },
+                    appOptions: { generateIndex: true }
+                }),
+                service: {
+                    path: '/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/',
+                    version: '4'
+                } as unknown as OdataService
+            } as FioriElementsApp<LROPSettings>
         }
     ];
 
@@ -332,4 +352,5 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             await projectChecks(testPath, config, debug?.debugFull);
         });
     });
+
 });

@@ -1,5 +1,24 @@
 # @sap-ux/system-access
 
+## 0.4.2
+
+### Patch Changes
+
+-   Updated dependencies [d02be637]
+    -   @sap-ux/store@0.6.0
+
+## 0.4.1
+
+### Patch Changes
+
+-   7f8bc980: FIX: prompt user for authentication type if not known when generating an adaptation project
+
+## 0.4.0
+
+### Minor Changes
+
+-   a48a8c0b: Add support for the SAP Fiori tools CI/CD variables
+
 ## 0.3.34
 
 ### Patch Changes
