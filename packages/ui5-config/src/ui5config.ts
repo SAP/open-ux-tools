@@ -91,6 +91,17 @@ export class UI5Config {
     }
 
     /**
+     * Get the type in the yaml file.
+     *
+     * @returns {Ui5Document['type']} the type
+     * @memberof Ui5Document['type']
+     */
+    public getType(): Ui5Document['type'] {
+        const type = this.document.getNode({ path: 'type' });
+        return type as Ui5Document['type'];
+    }
+
+    /**
      * Set the type in the yaml file.
      * See also https://sap.github.io/ui5-tooling/pages/Configuration/#general-configuration for reference.
      *
@@ -335,7 +346,7 @@ export class UI5Config {
             value: {
                 name: fioriTools ? 'deploy-to-abap' : 'abap-deploy-task',
                 afterTask: 'generateCachebusterInfo',
-                configuration: { target, app }
+                configuration: { target, app, exclude: ['/test/'] }
             }
         });
         return this;
@@ -368,6 +379,30 @@ export class UI5Config {
             path: 'builder.customTasks',
             matcher: { key: 'name', value: name }
         });
+        return this;
+    }
+
+    /**
+     * Removes the entire config for the given key.
+     *
+     * @param key key of the config that is to be removed
+     * @returns {UI5Config} the UI5Config instance
+     */
+    public removeConfig(key: string): this {
+        this.document.delete(key);
+        return this;
+    }
+
+    /**
+     * Adds a comment to the ui5 config.
+     *
+     * @param root0 - the comment object
+     * @param root0.comment - the comment object's comment
+     * @param root0.location - the comment object's location
+     * @returns {UI5Config} the UI5Config instance
+     */
+    public addComment({ comment, location = 'beginning' }: { comment: string; location?: 'beginning' | 'end' }): this {
+        this.document.addDocumentComment({ comment, location });
         return this;
     }
 

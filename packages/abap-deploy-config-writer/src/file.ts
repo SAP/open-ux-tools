@@ -1,0 +1,106 @@
+import { join } from 'path';
+import fg from 'fast-glob';
+import { platform } from 'os';
+import { FileName, type Package, getWebappPath } from '@sap-ux/project-access';
+import { UI5_REPO_TEXT_FILES } from './constants';
+import type { Editor } from 'mem-fs-editor';
+
+/**
+ * Updates the package.json with a new script.
+ *
+ * @param fs - the memfs editor instance
+ * @param basePath - the base path
+ * @param scriptName - the script name
+ * @param script - the script content
+ * @returns the updated memfs editor instance
+ */
+export function updatePackageScript(fs: Editor, basePath: string, scriptName: string, script: string): Editor {
+    const filePath = join(basePath, FileName.Package);
+    const packageJson = fs.readJSON(filePath) as Partial<Package>;
+    if (!packageJson.scripts) {
+        packageJson.scripts = {};
+    }
+    packageJson.scripts[scriptName] = script;
+
+    fs.writeJSON(filePath, packageJson);
+    return fs;
+}
+
+/**
+ * Adds a new dev dependency to the package.json.
+ *
+ * @param fs - the memfs editor instance
+ * @param basePath - the base path
+ * @param depName - the dependency name
+ * @param depVersion - the dependency version
+ */
+export function addPackageDevDependency(fs: Editor, basePath: string, depName: string, depVersion: string): void {
+    const filePath = join(basePath, FileName.Package);
+    const packageJson = fs.readJSON(filePath) as Partial<Package>;
+    packageJson.devDependencies = packageJson.devDependencies ?? {};
+    if (!packageJson.devDependencies[depName]) {
+        packageJson.devDependencies[depName] = depVersion;
+    }
+    fs.writeJSON(filePath, packageJson);
+}
+
+/**
+ * Adds a new UI5 dependency to the package.json.
+ *
+ * @param fs - the memfs editor instance
+ * @param basePath - the base path
+ * @param depName - the dependency name
+ */
+export function addUi5Dependency(fs: Editor, basePath: string, depName: string): void {
+    const filePath = join(basePath, FileName.Package);
+    const packageJson = (fs.readJSON(filePath) ?? {}) as Partial<Package>;
+    packageJson.ui5 = packageJson.ui5 ?? {};
+    packageJson.ui5.dependencies = packageJson.ui5.dependencies ?? [];
+
+    if (!packageJson.ui5.dependencies.includes(depName)) {
+        packageJson.ui5.dependencies.push(depName);
+    }
+    fs.writeJSON(filePath, packageJson);
+}
+
+/**
+ * Writes the UI5 repository file.
+ *
+ * @param fs - the memfs editor instance
+ * @param basePath - the base path
+ * @param ui5RepositoryFile - the UI5 repository file
+ * @param addContent - the content to be added
+ */
+export const writeUi5RepositoryFile = (
+    fs: Editor,
+    basePath: string,
+    ui5RepositoryFile: string,
+    addContent: string
+): void => {
+    const filePath = join(basePath, ui5RepositoryFile);
+    let content: string;
+    if (fs.exists(filePath)) {
+        content = fs.read(filePath);
+        if (!content.includes(addContent)) {
+            content = `${content}\n${addContent}`;
+        }
+    } else {
+        content = addContent;
+    }
+    fs.write(filePath, content);
+};
+
+/**
+ * Writes the UI5 repository files if typescript files are found.
+ *
+ * @param fs - the memfs editor instance
+ * @param basePath - the base path
+ */
+export const writeUi5RepositoryFiles = async (fs: Editor, basePath: string): Promise<void> => {
+    const webappPath = await getWebappPath(basePath);
+    const normalisedPath = join(webappPath, '/**/*.ts').replace(platform() === 'win32' ? /\\/g : /\//g, '/');
+    const typeScriptFilesPaths: string[] = await fg(normalisedPath);
+    if (typeScriptFilesPaths?.length > 0) {
+        writeUi5RepositoryFile(fs, webappPath, UI5_REPO_TEXT_FILES, '^.*.ts$');
+    }
+};

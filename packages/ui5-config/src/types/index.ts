@@ -1,3 +1,5 @@
+import type { AuthenticationType } from '@sap-ux/store';
+
 export * from './ui5yaml';
 export * from './middlewares';
 
@@ -17,6 +19,7 @@ export interface UrlAbapTarget {
     url: string;
     client?: string;
     scp?: boolean;
+    authenticationType?: AuthenticationType;
 }
 
 export interface DestinationAbapTarget {
