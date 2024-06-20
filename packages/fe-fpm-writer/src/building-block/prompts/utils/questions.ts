@@ -9,7 +9,7 @@ import { getAnnotationPathQualifiers, getEntityTypes } from './service';
 import { getCapServiceName } from '@sap-ux/project-access';
 import type { InputPromptQuestion, ListPromptQuestion } from '../types';
 import { BuildingBlockType } from '../../types';
-import { validateElementId } from './xml';
+import { isElementIdAvailable } from './xml';
 import { i18nNamespaces, initI18n, translate } from '../../../i18n';
 import { DynamicChoices } from '@sap-ux/ui-prompting';
 
@@ -417,6 +417,7 @@ export function getBindingContextTypePrompt(
  * @returns An InputPrompt object for getting the building block ID
  */
 export async function getBuildingBlockIdPrompt(
+    fs: Editor,
     message: string,
     validationErrorMessage: string,
     defaultValue?: string,
@@ -429,11 +430,11 @@ export async function getBuildingBlockIdPrompt(
         type: 'input',
         name: 'id',
         message,
-        validate: async (value: string, answers?: Answers) => {
+        validate: (value: string, answers?: Answers) => {
             if (!value) {
                 return validationErrorMessage;
             } else {
-                return answers?.viewOrFragmentFile && (await validateElementId(answers?.viewOrFragmentFile, value))
+                return answers?.viewOrFragmentFile && !isElementIdAvailable(fs, answers.viewOrFragmentFile, value)
                     ? t('id.existingIdValidation')
                     : true;
             }

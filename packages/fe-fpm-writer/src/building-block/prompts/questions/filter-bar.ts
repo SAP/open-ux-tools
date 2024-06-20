@@ -35,7 +35,9 @@ export async function getFilterBarBuildingBlockPrompts(
                 ['aggregationPath'],
                 { required: true }
             ),
-            await getBuildingBlockIdPrompt(t('id.message'), t('id.validation'), defaultAnswers.id, { required: true }),
+            await getBuildingBlockIdPrompt(fs, t('id.message'), t('id.validation'), defaultAnswers.id, {
+                required: true
+            }),
             ...((await isCapProject(projectProvider))
                 ? [await getCAPServicePrompt(t('service'), projectProvider, [], { required: true })]
                 : []),

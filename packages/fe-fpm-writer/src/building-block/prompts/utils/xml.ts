@@ -1,12 +1,8 @@
 import { DOMParser } from '@xmldom/xmldom';
-import { promises as fsPromises } from 'fs';
+import type { Editor } from 'mem-fs-editor';
 
-export async function validateElementId(viewOrFragmentFile: string, id: string): Promise<HTMLElement | null> {
-    const xmlContent = (await fsPromises.readFile(viewOrFragmentFile)).toString();
-    const errorHandler = (level: string, message: string): void => {
-        throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
-    };
-    const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent);
-    const element = xmlDocument.getElementById(id);
-    return element;
+export function isElementIdAvailable(fs: Editor, viewOrFragmentFile: string, id: string): boolean {
+    const xmlContent = fs.read(viewOrFragmentFile).toString();
+    const xmlDocument = new DOMParser({ errorHandler: (): void => {} }).parseFromString(xmlContent);
+    return xmlDocument.documentElement ? !xmlDocument.getElementById(id) : true;
 }

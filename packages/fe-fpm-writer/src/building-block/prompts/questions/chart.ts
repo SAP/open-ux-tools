@@ -43,7 +43,7 @@ export async function getChartBuildingBlockPrompts(
                 ['aggregationPath', 'filterBarId'],
                 { required: true }
             ),
-            await getBuildingBlockIdPrompt(t('id.message'), t('id.validation'), defaultAnswers.id, {
+            await getBuildingBlockIdPrompt(fs, t('id.message'), t('id.validation'), defaultAnswers.id, {
                 required: true
             }),
             ...((await isCapProject(projectProvider))
