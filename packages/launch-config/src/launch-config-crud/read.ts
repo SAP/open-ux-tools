@@ -58,7 +58,7 @@ export async function getLaunchConfigs(rootFolder: string, fs?: Editor): Promise
     const launchJsonPath = await getLaunchConfigFile(rootFolder);
     try {
         if (launchJsonPath) {
-            const launchJsonString = await fs.read(launchJsonPath);
+            const launchJsonString = fs.read(launchJsonPath);
             const launchJson = parse(launchJsonString);
             return launchJson.configurations;
         }

@@ -25,5 +25,5 @@ export async function createLaunchConfigFile(
     const configurations = fioriOptions ? [createFioriLaunchConfig(rootFolder, fioriOptions)] : [];
     const launchConfigDirectory = join(rootFolder, DirName.VSCode);
     const launchConfigFilePath = join(launchConfigDirectory, launchConfigFile);
-    await fs.write(launchConfigFilePath, JSON.stringify({ version: '0.2.0', configurations }, null, 4));
+    fs.write(launchConfigFilePath, JSON.stringify({ version: '0.2.0', configurations }, null, 4));
 }

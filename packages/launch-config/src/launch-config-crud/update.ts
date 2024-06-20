@@ -11,7 +11,7 @@ import type { Editor } from 'mem-fs-editor';
 export type configType = object | string | number | undefined;
 
 /**
- * Adds, modifies or deletes 'launch.json'.
+ * Adds, modifies or deletes content in 'launch.json'.
  *
  * @param content content to be added to the JSON file at location specified by JSONPath. If undefined, property will be deleted.
  * @param filePath path to the json file.
