@@ -70,6 +70,20 @@ async function addLaunchConfig(launchConfigPath: string, launchConfig: LaunchCon
 }
 
 /**
+ * Enhance or create the launch.json with launch config.
+ *
+ * @param rootFolder - the workspace root folder.
+ * @param fioriOptions - options to create launch config.
+ * @param fs - optional, the memfs editor instance.
+ * @returns void.
+ */
+export async function enhanceLaunchJSON(rootFolder: string, fioriOptions: FioriOptions, fs?: Editor): Promise<void> {
+    if (!fs) {
+        fs = create(createStorage());
+    }
+}
+
+/**
  * Add a launch config to .vscode/launch.json file. Create the file if it doesn't exist.
  *
  * @param rootFolder - the workspace root folder.

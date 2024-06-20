@@ -170,29 +170,19 @@ export function getFioriOptions(
             backendConfigs = JSON.parse(launchConfig.env.FIORI_TOOLS_BACKEND_CONFIG);
         }
     }
-    if (launchConfig.args) {
-        const startFileIndex = getIndexOfArgument(launchConfig.args, '--open');
-        if (startFileIndex !== -1) {
-            startFile = launchConfig.args[startFileIndex + 1];
+    if (launchConfig.args && launchConfig.args.length > 0) {
+        const parsedArguments = parseArguments(launchConfig.args);
+        if (parsedArguments.open) {
+            startFile = parsedArguments.open;
         }
-
-        if (
-            launchConfig.args.find((arg) => {
-                return arg.indexOf('ui5-mock.yaml') !== -1;
-            })
-        ) {
+        if (parsedArguments.config === 'ui5-mock.yaml') {
             isMockDataEnabled = true;
         }
-        if (
-            launchConfig.args.find((arg) => {
-                return arg.indexOf('ui5-local.yaml') !== -1;
-            })
-        ) {
+        if (parsedArguments.config === 'ui5-local.yaml') {
             isMockDataEnabled = true;
             ui5Local = true;
-            const frameworkVersionIndex = getIndexOfArgument(launchConfig.args, FRAMEWORK_VERSION);
-            if (frameworkVersionIndex !== -1) {
-                ui5LocalVersion = launchConfig.args[frameworkVersionIndex + 1];
+            if (parsedArguments['framework-version']) {
+                ui5LocalVersion = parsedArguments['framework-version'];
             }
         }
         const stringArguments = launchConfig.args.toString().toLowerCase();
