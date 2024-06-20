@@ -239,7 +239,7 @@ describe('utils - ', () => {
         });
 
         test('getBuildingBlockIdPrompt', async () => {
-            const prompt = await getBuildingBlockIdPrompt('message', 'error');
+            const prompt = await getBuildingBlockIdPrompt(fs, 'message', 'error');
             expect(prompt).toMatchInlineSnapshot(`
                 Object {
                   "default": undefined,
