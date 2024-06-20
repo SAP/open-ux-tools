@@ -525,8 +525,8 @@ export class FlpSandbox {
             if (testConfig.framework === 'Testsuite') {
                 continue;
             }
-            const config = mergeTestConfigDefaults(testConfig);
-            testPaths.push(config.path);
+            const mergedConfig = mergeTestConfigDefaults(testConfig);
+            testPaths.push(posix.relative(posix.dirname(config.path), mergedConfig.path));
         }
 
         this.logger.debug(`Add route for ${config.init}`);
