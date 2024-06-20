@@ -485,12 +485,15 @@ describe('deploy-test validation', () => {
     describe('Check for credentials', () => {
         const noAuthMock = { Name: 'noAuth', Authentication: Authentication.NO_AUTHENTICATION };
         const basicAuthMock = { Name: 'basicAuth', Authentication: Authentication.BASIC_AUTHENTICATION };
+        const samlAuthMock = { Name: 'samlAuth', Authentication: Authentication.SAML_ASSERTION };
         const destinationsMock = {
             'noAuth': noAuthMock,
-            'basicAuth': basicAuthMock
+            'basicAuth': basicAuthMock,
+            'samlAuth': samlAuthMock
         };
         test.each([
-            ['NoAuthentication - False', true, destinationsMock, noAuthMock.Name, false],
+            ['SAMLAssertion - False', true, destinationsMock, samlAuthMock.Name, false],
+            ['NoAuthentication - True', true, destinationsMock, noAuthMock.Name, true],
             ['BasicAuthentication - True', true, destinationsMock, basicAuthMock.Name, true],
             ['If destination not provided', true, destinationsMock, '', true]
         ])('%s', async (desc, isAppStudio, listDestinationsMock, destinationMock, expectedResult) => {
