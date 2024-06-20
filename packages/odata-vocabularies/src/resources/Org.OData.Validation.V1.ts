@@ -1,4 +1,4 @@
-// Last content update: Wed Apr 03 2024 08:50:55 GMT+0200 (Central European Summer Time)
+// Last content update: Thu Jun 20 2024 13:06:42 GMT+0530 (India Standard Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
