@@ -1,6 +1,5 @@
 import type { ODataVersion } from '@sap-ux/project-access';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
-export const FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID = 'fiori_tools';
 
 export interface FioriOptions {
     name: string;
