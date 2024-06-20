@@ -59,7 +59,7 @@ export async function getDeployConfig(config: AbapDeployConfig, baseConfig: UI5C
         comment: ' yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json',
         location: 'beginning'
     });
-    ui5DeployConfig.addAbapDeployTask(target as unknown as AbapTarget, config.app, true);
+    ui5DeployConfig.addAbapDeployTask(target as unknown as AbapTarget, config.app, true, ['/test/']);
 
     return ui5DeployConfig;
 }

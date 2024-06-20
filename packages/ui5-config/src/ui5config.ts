@@ -329,10 +329,11 @@ export class UI5Config {
      * @param target system that this app is to be deployed to
      * @param app application configuration for the deployment to ABAP
      * @param fioriTools if true use the middleware included in the @sap/ux-ui5-tooling module
+     * @param exclude optional list of files that are to be excluded from the deployment configuration
      * @returns this UI5Config instance
      * @memberof UI5Config
      */
-    public addAbapDeployTask(target: AbapTarget, app: BspApp | Adp, fioriTools = true) {
+    public addAbapDeployTask(target: AbapTarget, app: BspApp | Adp, fioriTools = true, exclude?: string[]): this {
         this.document.appendTo({
             path: 'builder.resources.excludes',
             value: '/test/**'
@@ -346,7 +347,7 @@ export class UI5Config {
             value: {
                 name: fioriTools ? 'deploy-to-abap' : 'abap-deploy-task',
                 afterTask: 'generateCachebusterInfo',
-                configuration: { target, app, exclude: ['/test/'] }
+                configuration: { target, app, exclude }
             }
         });
         return this;

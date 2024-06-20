@@ -98,7 +98,8 @@ export const writeUi5RepositoryFile = (
  */
 export const writeUi5RepositoryFiles = async (fs: Editor, basePath: string): Promise<void> => {
     const webappPath = await getWebappPath(basePath);
-    const normalisedPath = join(webappPath, '/**/*.ts').replace(platform() === 'win32' ? /\\/g : /\//g, '/');
+    const typescriptPattern = join(webappPath, '/**/*.ts');
+    const normalisedPath = platform() === 'win32' ? typescriptPattern.replace(/\\/g, '/') : typescriptPattern;
     const typeScriptFilesPaths: string[] = await fg(normalisedPath);
     if (typeScriptFilesPaths?.length > 0) {
         writeUi5RepositoryFile(fs, webappPath, UI5_REPO_TEXT_FILES, '^.*.ts$');
