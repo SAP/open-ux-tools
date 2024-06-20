@@ -33,7 +33,7 @@ export default {
         AssertFormat: {
             $Kind: 'Term',
             $Nullable: true,
-            $AppliesTo: ['Property'],
+            $AppliesTo: ['Property', 'Parameter', 'Term'],
             '@Org.OData.Core.V1.Description': 'Regular expression to check input for annotated property',
             '@Org.OData.Core.V1.LongDescription': `Specifies a regular expression string (in ECMA 262 format in CAP Node.js and java.util.regex.Pattern format in CAP Java) which all string input must match. See: https://cap.cloud.sap/docs/guides/providing-services#assert-format`
         },
