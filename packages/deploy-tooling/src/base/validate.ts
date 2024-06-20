@@ -398,7 +398,7 @@ async function validateTransportRequestWithAdt(
  * Returns true if specified destination is on-premise and if environment is App Studio
  * to show additional info.
  *
- * @param destination Indentifier for destination to be checked.
+ * @param destination Identifier for destination to be checked.
  * @returns Promise boolean.
  */
 export async function showAdditionalInfoForOnPrem(destination: string): Promise<boolean> {
@@ -411,21 +411,20 @@ export async function showAdditionalInfoForOnPrem(destination: string): Promise<
 }
 
 /**
- * Returns false if specified destination authentication is NoAuthentication.
+ * Validates if the credentials are required for the destination based on the Authentication type.
  *
  * @param destination Identifier for destination to be checked.
  * @returns Promise boolean.
  */
-export async function checkForCredentials(destination: string): Promise<boolean> {
-    let destAuth = true;
+export async function checkForCredentials(destination: string | undefined): Promise<boolean> {
+    let check = true;
     if (destination && isAppStudio()) {
         const destinations = await getDestinations();
-        const dest = destinations[destination];
-        if (dest.Authentication === Authentication.NO_AUTHENTICATION) {
-            destAuth = false;
+        if (destinations[destination].Authentication === Authentication.SAML_ASSERTION) {
+            check = false;
         }
     }
-    return destAuth;
+    return check;
 }
 
 /**
