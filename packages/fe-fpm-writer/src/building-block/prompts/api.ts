@@ -131,24 +131,20 @@ export class PromptsAPI {
         }
         for (const q of questions) {
             const question = originalPrompts.questions.find((blockQuestion) => q.name === blockQuestion.name);
-            if (!question || !question.name) {
+            if (!question?.name) {
                 continue;
             }
-            if (question.required && (answers[question.name] === undefined || answers[question.name] === '')) {
-                result = {
-                    ...result,
-                    [question.name]: {
-                        isValid: false,
-                        errorMessage: question.type === 'input' ? 'Please enter a value' : 'Please select a value'
-                    }
+            const { name, required, type, validate } = question;
+            result[name] = { isValid: true };
+            if (required && (answers[name] === undefined || answers[name] === '')) {
+                result[name] = {
+                    isValid: false,
+                    errorMessage: type === 'input' ? 'Please enter a value' : 'Please select a value'
                 };
-            } else {
-                result = { ...result, [question.name]: { isValid: true } };
-                if (question && question.name && typeof question.validate === 'function') {
-                    const validationResult = await question.validate(answers[question.name], answers);
-                    if (typeof validationResult === 'string') {
-                        result = { ...result, [question.name]: { isValid: false, errorMessage: validationResult } };
-                    }
+            } else if (typeof validate === 'function') {
+                const validationResult = await validate(answers[name], answers);
+                if (typeof validationResult === 'string') {
+                    result[name] = { isValid: false, errorMessage: validationResult };
                 }
             }
         }

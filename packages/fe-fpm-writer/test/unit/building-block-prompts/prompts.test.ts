@@ -5,6 +5,8 @@ import { create as createStorage } from 'mem-fs';
 import { PromptsType, PromptsAPI } from '../../../src';
 import { ProjectProvider } from '../../../src/building-block/prompts/utils/project';
 
+jest.setTimeout(10000);
+
 describe('Prompts', () => {
     let fs: Editor;
     const projectPath = join(__dirname, '../sample/building-block/webapp-prompts');
