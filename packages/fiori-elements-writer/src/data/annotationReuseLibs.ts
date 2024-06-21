@@ -40,9 +40,10 @@ export function getAnnotationLibs(version: OdataVersion, metadata?: string) {
 
     if (metadata) {
         let match;
-        while ((match = annotationsRegex.exec(metadata)) !== null) {
-            annotationsFound.add(match[0]);
-        }
+        match = annotationsRegex.exec(metadata);
+        match?.forEach((found) => {
+            annotationsFound.add(found);
+        });
 
         // Add corresponding dependencies based on found annotations
         annotationsFound.forEach((annotation) => {
