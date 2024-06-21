@@ -41,7 +41,6 @@ describe('deploy-test validation', () => {
         mockedAdtService.getTransportRequests.mockReset();
         mockedAdtService.getAtoInfo.mockReset();
         mockedProvider.getAdtService.mockReturnValue(mockedAdtService);
-        jest.clearAllMocks();
     });
 
     describe('Input format validation', () => {
