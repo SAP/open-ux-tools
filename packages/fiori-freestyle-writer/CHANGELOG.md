@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.22.13
+
+### Patch Changes
+
+-   dfeb3a6b: Load i18n translations asynchronously to ensure proper initialization.
+
 ## 0.22.12
 
 ### Patch Changes
