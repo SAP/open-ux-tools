@@ -1,17 +1,9 @@
 import { basename, join } from 'path';
 import type { ODataVersion } from '@sap-ux/project-access';
 import type { FioriOptions, LaunchConfig, LaunchConfigEnv } from '../types';
-import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID } from '../types';
+import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID, FRAMEWORK_VERSION_ARGUMENT, INTERNAL_UI5_PATH } from '../types';
 import { UI5_DEFAULT } from '@sap-ux/ui5-config';
 import { default as yargsParser } from 'yargs-parser';
-
-/**
- * Launch configuration file name
- */
-export const launchConfigFile = 'launch.json';
-
-const INTERNAL_UI5 = 'https://sapui5preview-sapui5.dispatcher.int.sap.eu2.hana.ondemand.com';
-const FRAMEWORK_VERSION = '--framework-version';
 
 /**
  * Returns the argument that needs to be added to start with a specific UI5 version.
@@ -35,7 +27,7 @@ export function buildUI5Option(ui5Version: string): string[] {
  * @returns UI5 version URI.
  */
 export function getUI5VersionUri(ui5Version: string): string {
-    return ui5Version.startsWith('snapshot') ? INTERNAL_UI5 : UI5_DEFAULT.SAPUI5_CDN;
+    return ui5Version.startsWith('snapshot') ? INTERNAL_UI5_PATH : UI5_DEFAULT.SAPUI5_CDN;
 }
 
 /**
@@ -61,7 +53,7 @@ function getArgs(options: FioriOptions): string[] | undefined {
         args.push(config, 'ui5-local.yaml');
 
         if (options.ui5LocalVersion) {
-            args.push(FRAMEWORK_VERSION, options.ui5LocalVersion);
+            args.push(FRAMEWORK_VERSION_ARGUMENT, options.ui5LocalVersion);
         }
     }
 

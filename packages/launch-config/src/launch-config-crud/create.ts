@@ -2,7 +2,8 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
 import { DirName } from '@sap-ux/project-access';
-import { createFioriLaunchConfig, launchConfigFile } from './common';
+import { createFioriLaunchConfig } from './common';
+import { LAUNCH_JSON_FILE } from '../types';
 import type { FioriOptions } from '../types';
 import type { Editor } from 'mem-fs-editor';
 
@@ -24,6 +25,6 @@ export async function createLaunchConfigFile(
     }
     const configurations = fioriOptions ? [createFioriLaunchConfig(rootFolder, fioriOptions)] : [];
     const launchConfigDirectory = join(rootFolder, DirName.VSCode);
-    const launchConfigFilePath = join(launchConfigDirectory, launchConfigFile);
+    const launchConfigFilePath = join(launchConfigDirectory, LAUNCH_JSON_FILE);
     fs.write(launchConfigFilePath, JSON.stringify({ version: '0.2.0', configurations }, null, 4));
 }

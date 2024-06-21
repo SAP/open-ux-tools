@@ -3,7 +3,7 @@ import { create } from 'mem-fs-editor';
 import { DirName } from '@sap-ux/project-access';
 import { join } from 'path';
 import type { LaunchConfig, LaunchConfigInfo, LaunchJSON } from '../types';
-import { launchConfigFile } from './common';
+import { LAUNCH_JSON_FILE } from '../types';
 import { parse } from 'jsonc-parser';
 import type { Editor } from 'mem-fs-editor';
 
@@ -18,7 +18,7 @@ export async function getLaunchConfigFile(rootFolder: string, fs?: Editor): Prom
     if (!fs) {
         fs = create(createStorage());
     }
-    const launchConfigPath = join(rootFolder, DirName.VSCode, launchConfigFile);
+    const launchConfigPath = join(rootFolder, DirName.VSCode, LAUNCH_JSON_FILE);
     return fs.exists(launchConfigPath) ? launchConfigPath : undefined;
 }
 

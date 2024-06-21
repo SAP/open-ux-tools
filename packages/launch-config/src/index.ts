@@ -17,4 +17,3 @@ export {
     getLaunchConfigFiles
 } from './launch-config-crud/read';
 export { getDefaultLaunchConfigOptionsForProject } from './project-discovery/project';
-export { launchConfigFile } from './launch-config-crud/common';

@@ -7,7 +7,7 @@ import {
     addFioriElementsLaunchConfig,
     getLaunchConfigByName,
     getUI5VersionUri,
-    launchConfigFile,
+    LAUNCH_JSON_FILE,
     getDefaultLaunchConfigOptionsForProject
 } from '../src';
 import { TestPaths } from './test-data/utils';
@@ -28,7 +28,7 @@ const getApplicationRoot = async (appName = 'v2lrop'): Promise<string> => {
 
 describe('add config scenario', () => {
     const memFs = create(createStorage());
-    const feLaunchJsonCopy = join(TestPaths.tmpDir, DirName.VSCode, launchConfigFile);
+    const feLaunchJsonCopy = join(TestPaths.tmpDir, DirName.VSCode, LAUNCH_JSON_FILE);
 
     afterAll(async () => {
         memFs.delete(TestPaths.tmpDir);

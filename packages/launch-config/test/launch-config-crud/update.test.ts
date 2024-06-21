@@ -6,12 +6,12 @@ import type { LaunchConfig } from '../../src';
 import {
     addFioriElementsLaunchConfig,
     getAllLaunchConfigs,
-    launchConfigFile,
+    LAUNCH_JSON_FILE,
     updateFioriElementsLaunchConfig
 } from '../../src';
 import { TestPaths } from '../test-data/utils';
 
-const feLaunchJsonCopy = join(TestPaths.tmpDir, DirName.VSCode, launchConfigFile);
+const feLaunchJsonCopy = join(TestPaths.tmpDir, DirName.VSCode, LAUNCH_JSON_FILE);
 //const freestyleLaunchJsonCopy = join(TestPaths.tmpDir, 'freestyle-launch.json');
 
 function checkJSONComments(launchJsonString: string) {
