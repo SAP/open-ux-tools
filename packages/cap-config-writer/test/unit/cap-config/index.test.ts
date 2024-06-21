@@ -17,7 +17,7 @@ describe('Test enableCdsUi5Plugin()', () => {
             },
             'workspaces': ['app/*'],
             'devDependencies': {
-                'cds-plugin-ui5': '^0.9.3'
+                'cds-plugin-ui5': '^0.1.0'
             }
         });
     });
