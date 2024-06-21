@@ -1,6 +1,5 @@
 import type { Resource } from '@ui5/fs';
 import type { InternalTestConfig, TestConfig } from '../types';
-import { posix } from 'path';
 
 const DEFAULTS: Record<string, InternalTestConfig> = {
     qunit: {
@@ -38,7 +37,7 @@ export function mergeTestConfigDefaults(config: TestConfig) {
     if (!merged.init.startsWith('/')) {
         merged.init = `/${config.init}`;
     }
-    return merged as InternalTestConfig;
+    return merged;
 }
 
 /**
