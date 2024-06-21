@@ -40,7 +40,7 @@ export async function getSpecification<T>(options: { root: string; logger?: Logg
         const manifest = await readJSON<Manifest>(join(webappPath, FileName.Manifest));
         const minUI5Version = getMinimumUI5Version(manifest);
         if (minUI5Version && valid(minUI5Version)) {
-            const [mayor, minor] = minUI5Version;
+            const [mayor, minor] = minUI5Version.split('.');
             distTag = `UI5-${mayor}.${minor}`;
         }
     } catch (error) {
