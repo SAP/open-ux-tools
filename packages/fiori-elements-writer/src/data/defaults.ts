@@ -65,6 +65,14 @@ export function setDefaultTemplateSettings<T extends {}>(template: Template<T>, 
     return templateSettings;
 }
 
+/**
+ * Gets the required UI5 libs for the specified template type and OData version.
+ *
+ * @param type - The template type of the required base component
+ * @param version - The odata service version determines the appropriate base component to use
+ * @param metadata - metadata string to be checked for specific annotations
+ * @returns The UI5 libs required by the specified template type and OData version and UI5 annotation libs
+ */
 function getUi5Libs(
     type: TemplateType,
     version: OdataVersion,
