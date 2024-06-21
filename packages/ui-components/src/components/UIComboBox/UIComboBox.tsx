@@ -121,7 +121,6 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     private ignoreOpenKeys: Array<string> = ['Meta', 'Control', 'Shift', 'Tab', 'Alt', 'CapsLock'];
     private isListHidden = false;
     private calloutCollisionTransform = new CalloutCollisionTransform(this.comboboxDomRef, this.menuDomRef);
-    private _list = React.createRef<IList>();
 
     /**
      * Initializes component properties.
@@ -233,8 +232,6 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
             if (baseCombobox) {
                 this.updateHiddenOptions(baseCombobox.props.hoisted.currentOptions);
             }
-            console.log('update!!!');
-            this._list?.current?.forceUpdate();
         }
     }
 
@@ -687,15 +684,14 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
             return this.onRenderListLoading();
         }
         const { id, onRenderItem } = props ?? {};
-        console.log('aaaaaaaaa');
+        console.log('aaaaaaaaa ' + props?.options.length);
         // Render virtualized list
         return (
             <List
-                componentRef={this._list}
                 role="listbox"
                 id={`${id}-list`}
                 aria-labelledby={`${id}-label`}
-                items={props?.options}
+                items={props?.options.filter((option: any) => !option.hidden)}
                 className="ms-ComboBox-optionsContainer"
                 // eslint-disable-next-line react/jsx-no-bind
                 onRenderCell={
