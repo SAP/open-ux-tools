@@ -1,5 +1,13 @@
 import React from 'react';
-import type { IComboBoxProps, IComboBoxState, IAutofillProps, IButtonProps } from '@fluentui/react';
+import type {
+    IComboBoxProps,
+    IComboBoxState,
+    IAutofillProps,
+    IButtonProps,
+    ISelectableOption,
+    ISelectableDroppableTextProps,
+    IList
+} from '@fluentui/react';
 import {
     ComboBox,
     IComboBox,
@@ -7,7 +15,8 @@ import {
     initializeComponentRef,
     KeyCodes,
     IOnRenderComboBoxLabelProps,
-    SelectableOptionMenuItemType
+    SelectableOptionMenuItemType,
+    List
 } from '@fluentui/react';
 import { UIHighlightMenuOption } from '../UIContextualMenu/UIHighlightMenuOption';
 import './UIComboBox.scss';
@@ -64,6 +73,10 @@ export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps
     isForceEnabled?: boolean;
     readOnly?: boolean;
     calloutCollisionTransformation?: boolean;
+    /**
+     * Virtualization is enabled
+     */
+    virtualization?: boolean;
 }
 export interface UIComboBoxState {
     minWidth?: number;
@@ -100,7 +113,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     // Default values for public component properties
     static defaultProps = { openMenuOnClick: true };
     // Reference to fluent ui combobox
-    private comboBox = React.createRef<ComboBoxRef>();
+    private comboBox = React.createRef<ComboBoxRef & { _onRenderItem: any }>();
     private comboboxDomRef = React.createRef<HTMLDivElement>();
     private menuDomRef = React.createRef<HTMLDivElement>();
     private selectedElement: React.RefObject<HTMLDivElement> = React.createRef();
@@ -108,6 +121,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     private ignoreOpenKeys: Array<string> = ['Meta', 'Control', 'Shift', 'Tab', 'Alt', 'CapsLock'];
     private isListHidden = false;
     private calloutCollisionTransform = new CalloutCollisionTransform(this.comboboxDomRef, this.menuDomRef);
+    private _list = React.createRef<IList>();
 
     /**
      * Initializes component properties.
@@ -130,6 +144,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         this.onScrollToItem = this.onScrollToItem.bind(this);
         this.setFocus = this.setFocus.bind(this);
         this.onRenderIcon = this.onRenderIcon.bind(this);
+        this.onRenderList = this.onRenderList.bind(this);
 
         initializeComponentRef(this);
 
@@ -218,6 +233,8 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
             if (baseCombobox) {
                 this.updateHiddenOptions(baseCombobox.props.hoisted.currentOptions);
             }
+            console.log('update!!!');
+            this._list?.current?.forceUpdate();
         }
     }
 
@@ -296,6 +313,10 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         props?: IComboBoxOption,
         defaultRender?: (props?: IComboBoxOption) => JSX.Element | null
     ): JSX.Element | null => {
+        if (!defaultRender) {
+            // We can not pass default render when have custom render list rendered - retireve it from combobox instance
+            defaultRender = this.comboBox.current?._onRenderItem;
+        }
         if (defaultRender && props) {
             // Use data for custom onRender functions
             props.data = this.query;
@@ -658,6 +679,32 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         return defaultRender?.(props) ?? null;
     }
 
+    private onRenderList = (
+        props?: ISelectableDroppableTextProps<IComboBox, {}>,
+        defaultRender?: (props?: ISelectableDroppableTextProps<IComboBox, {}>) => JSX.Element | null
+    ): JSX.Element | null => {
+        if (this.isLoaderApplied(UIComboBoxLoaderType.List)) {
+            return this.onRenderListLoading();
+        }
+        const { id, onRenderItem } = props ?? {};
+        console.log('aaaaaaaaa');
+        // Render virtualized list
+        return (
+            <List
+                componentRef={this._list}
+                role="listbox"
+                id={`${id}-list`}
+                aria-labelledby={`${id}-label`}
+                items={props?.options}
+                className="ms-ComboBox-optionsContainer"
+                // eslint-disable-next-line react/jsx-no-bind
+                onRenderCell={
+                    onRenderItem ? (item?: ISelectableOption) => this.onRenderItem(item, onRenderItem) : () => null
+                }
+            />
+        );
+    };
+
     /**
      * @returns {JSX.Element}
      */
@@ -667,6 +714,11 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         if (this.props.readOnly) {
             disabled = true;
         }
+        const customRenderList =
+            this.props.virtualization || this.isLoaderApplied(UIComboBoxLoaderType.List)
+                ? this.onRenderList
+                : undefined;
+
         return (
             <div ref={this.props.wrapperRef} className={this.getClassNames(messageInfo)}>
                 <ComboBox
@@ -740,8 +792,8 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         onMenuOpen: this.handleRefreshButton,
                         onChange: this.handleChange
                     })}
-                    {...(this.isLoaderApplied(UIComboBoxLoaderType.List) && {
-                        onRenderList: this.onRenderListLoading
+                    {...(customRenderList && {
+                        onRenderList: customRenderList
                     })}
                     {...(this.props.multiSelect && {
                         onScrollToItem: this.onScrollToItem,
