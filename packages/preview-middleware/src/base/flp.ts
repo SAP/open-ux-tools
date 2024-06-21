@@ -589,7 +589,7 @@ export class FlpSandbox {
                         id,
                         framework: config.framework,
                         basePath: posix.relative(posix.dirname(config.path), '/') ?? '.',
-                        initPath: `${ns}${config.init.replace('.js', '')}`
+                        initPath: posix.relative(posix.dirname(config.path), config.init)
                     };
                     const html = render(htmlTemplate, templateConfig);
                     this.sendResponse(res, 'text/html', 200, html);
