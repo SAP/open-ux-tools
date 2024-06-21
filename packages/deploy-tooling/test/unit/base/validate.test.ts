@@ -41,6 +41,7 @@ describe('deploy-test validation', () => {
         mockedAdtService.getTransportRequests.mockReset();
         mockedAdtService.getAtoInfo.mockReset();
         mockedProvider.getAdtService.mockReturnValue(mockedAdtService);
+        jest.clearAllMocks();
     });
 
     describe('Input format validation', () => {
@@ -483,6 +484,12 @@ describe('deploy-test validation', () => {
     });
 
     describe('Check for credentials', () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+        const mockLogger = {
+            warn: jest.fn()
+        };
         const noAuthMock = { Name: 'noAuth', Authentication: Authentication.NO_AUTHENTICATION };
         const basicAuthMock = { Name: 'basicAuth', Authentication: Authentication.BASIC_AUTHENTICATION };
         const samlAuthMock = { Name: 'samlAuth', Authentication: Authentication.SAML_ASSERTION };
@@ -499,8 +506,13 @@ describe('deploy-test validation', () => {
         ])('%s', async (desc, isAppStudio, listDestinationsMock, destinationMock, expectedResult) => {
             mockIsAppStudio.mockReturnValue(isAppStudio);
             mockListDestinations.mockResolvedValue(listDestinationsMock);
-            const result = await checkForCredentials(destinationMock);
+            const result = await checkForCredentials(destinationMock, mockLogger as any);
             expect(result).toBe(expectedResult);
+            if (destinationMock === samlAuthMock.Name) {
+                expect(mockLogger.warn).toHaveBeenCalled();
+            } else {
+                expect(mockLogger.warn).not.toHaveBeenCalled();
+            }
         });
     });
 

@@ -414,13 +414,17 @@ export async function showAdditionalInfoForOnPrem(destination: string): Promise<
  * Validates if the credentials are required for the destination based on the Authentication type.
  *
  * @param destination Identifier for destination to be checked.
+ * @param logger Logger from the calling context.
  * @returns Promise boolean.
  */
-export async function checkForCredentials(destination: string | undefined): Promise<boolean> {
+export async function checkForCredentials(destination: string | undefined, logger: Logger): Promise<boolean> {
     let check = true;
     if (destination && isAppStudio()) {
         const destinations = await getDestinations();
         if (destinations[destination].Authentication === Authentication.SAML_ASSERTION) {
+            logger.warn(
+                `The SAP BTP destination is misconfigured, please check you have the appropriate trusts and permissions enabled.`
+            );
             check = false;
         }
     }

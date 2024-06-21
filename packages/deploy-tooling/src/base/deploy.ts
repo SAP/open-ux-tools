@@ -103,7 +103,7 @@ async function handle401Error(
     archive: Buffer
 ): Promise<boolean> {
     logger.warn(`${command === tryDeploy ? 'Deployment' : 'Undeployment'} failed with authentication error.`);
-    if (await checkForCredentials(config.target.destination)) {
+    if (await checkForCredentials(config.target.destination, logger)) {
         logger.info(
             'Please maintain correct credentials to avoid seeing this error\n\t(see help: https://www.npmjs.com/package/@sap/ux-ui5-tooling#setting-environment-variables-in-a-env-file)'
         );
