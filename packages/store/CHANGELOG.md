@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 0.6.0
+
+### Minor Changes
+
+-   d02be637: Replaces AuthenticationType with const and string literal type
+
 ## 0.5.0
 
 ### Minor Changes

@@ -117,4 +117,10 @@ describe('getVocabulary(CDS)', () => {
         // Expect
         expect(vocabularyService.getVocabulary('com.sap.cds.vocabularies.ObjectModel')).toBe(null);
     });
+
+    it('verify cds specific assert.format annotation applies to', () => {
+        const term = vocabularyService.getTerm('com.sap.vocabularies.CDS.v1.AssertFormat');
+        // Expect
+        expect(term?.appliesTo).toEqual(['Property', 'Parameter', 'Term']);
+    });
 });
