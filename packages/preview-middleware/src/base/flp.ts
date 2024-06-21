@@ -10,7 +10,7 @@ import { dirname, join, posix } from 'path';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { MiddlewareUtils } from '@ui5/server';
-import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
+import type { Manifest } from '@sap-ux/project-access';
 import {
     AdpPreview,
     type AdpPreviewConfig,
@@ -23,7 +23,7 @@ import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { deleteChange, readChanges, writeChange } from './flex';
 import { generateImportList, mergeTestConfigDefaults } from './test';
 import type { App, Editor, FlpConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
-import { getFlpConfigWithDefaults, createTemplateConfig, PREVIEW_URL } from './config';
+import { getFlpConfigWithDefaults, createTemplateConfig, PREVIEW_URL, type TemplateConfig } from './config';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
