@@ -22,7 +22,7 @@ export const annotationReuseLibs: AnnotationReuseLibs = {
 /**
  * Returns the reuse libraries associated with annotation entries in the metadata
  *
- * @param version - The odata service version reuse library supports
+ * @param version - the odata service version 
  * @param metadata - The metadata where to look for the annotation entry
  * @returns The base component library path
  */
