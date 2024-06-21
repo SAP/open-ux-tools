@@ -60,7 +60,7 @@ export async function addPackageDevDependency(
     fs?: Editor
 ): Promise<void> {
     const filePath = join(basePath, FileName.Package);
-    const packageJson = (await readJSON(filePath, fs)) as Package;
+    const packageJson = await readJSON<Package>(filePath, fs);
     packageJson.devDependencies = packageJson.devDependencies ?? {};
     if (!packageJson.devDependencies[depName]) {
         packageJson.devDependencies[depName] = depVersion;

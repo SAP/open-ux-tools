@@ -19,7 +19,7 @@ export async function updatePackageScript(
     fs?: Editor
 ): Promise<void> {
     const filePath = join(basePath, FileName.Package);
-    const packageJson = (await readJSON(filePath, fs)) as Package;
+    const packageJson = await readJSON<Package>(filePath, fs);
     if (!packageJson.scripts) {
         packageJson.scripts = {};
     }
