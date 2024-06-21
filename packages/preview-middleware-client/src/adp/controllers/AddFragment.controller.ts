@@ -36,7 +36,7 @@ const radix = 10;
 
 type AddFragmentModel = JSONModel & {
     getProperty(sPath: '/newFragmentName'): string;
-    getProperty(sPath: '/selectedIndex'): string;
+    getProperty(sPath: '/selectedIndex'): number;
     getProperty(sPath: '/selectedAggregation/value'): string;
 };
 
@@ -142,7 +142,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
         source.setEnabled(false);
 
         const fragmentName = this.model.getProperty('/newFragmentName');
-        const index = parseInt(this.model.getProperty('/selectedIndex'), radix);
+        const index = this.model.getProperty('/selectedIndex');
         const targetAggregation = this.model.getProperty('/selectedAggregation/value');
         const fragmentData = {
             index,
