@@ -1,5 +1,17 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.3.3
+
+### Patch Changes
+
+-   017d008f: Removes unimplemented message for odata service url datasource
+
+## 0.3.2
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.4.34
+
 ## 0.3.1
 
 ### Patch Changes
