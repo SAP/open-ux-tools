@@ -20,7 +20,7 @@ export const annotationReuseLibs: AnnotationReuseLibs = {
 };
 
 /**
- * Gets the reuse libraries associated with annotation entries in meatadata
+ * Returns the reuse libraries associated with annotation entries in the metadata
  *
  * @param version - The odata service version reuse library supports
  * @param metadata - The metadata where to look for the annotation entry
