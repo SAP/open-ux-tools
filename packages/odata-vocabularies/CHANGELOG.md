@@ -1,5 +1,11 @@
 # @sap-ux/odata-vocabularies
 
+## 0.3.8
+
+### Patch Changes
+
+-   d09edfd5: Update vocabularies June 2024
+
 ## 0.3.7
 
 ### Patch Changes
