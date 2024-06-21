@@ -139,6 +139,7 @@ export class PromptsAPI {
             if (required && (answers[name] === undefined || answers[name] === '')) {
                 result[name] = {
                     isValid: false,
+                    // ToDo - translation
                     errorMessage: type === 'input' ? 'Please enter a value' : 'Please select a value'
                 };
             } else if (typeof validate === 'function') {
@@ -203,7 +204,7 @@ export class PromptsAPI {
         const metaPath = this.getMetaPath(entity, qualifier, placeholders);
         return {
             aggregationPath,
-            viewOrFragmentPath: viewOrFragmentFile ? relative(this.basePath, viewOrFragmentFile) : '',
+            viewOrFragmentPath: viewOrFragmentFile,
             buildingBlockData: {
                 ...answers,
                 filterBar: filterBarId,

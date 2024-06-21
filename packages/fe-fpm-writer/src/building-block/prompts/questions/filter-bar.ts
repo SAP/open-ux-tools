@@ -35,13 +35,13 @@ export async function getFilterBarBuildingBlockPrompts(
                 ['aggregationPath'],
                 { required: true }
             ),
-            await getBuildingBlockIdPrompt(fs, t('id.message'), t('id.validation'), defaultAnswers.id, {
+            await getBuildingBlockIdPrompt(fs, t('id.message'), t('id.validation'), basePath, defaultAnswers.id, {
                 required: true
             }),
             ...((await isCapProject(projectProvider))
                 ? [await getCAPServicePrompt(t('service'), projectProvider, [], { required: true })]
                 : []),
-            getAggregationPathPrompt(t('aggregation'), fs, { required: true }),
+            getAggregationPathPrompt(t('aggregation'), fs, basePath, { required: true }),
             getEntityPrompt(t('entity'), projectProvider, ['qualifier'], { required: true }),
             getAnnotationPathQualifierPrompt(
                 'qualifier',

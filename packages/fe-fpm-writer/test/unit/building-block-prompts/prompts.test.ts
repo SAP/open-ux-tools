@@ -114,7 +114,8 @@ describe('Prompts', () => {
             ];
             test.each(testCases)('$name', async ({ value, result }) => {
                 const filename = 'Test.view.xml';
-                const filePath = join(projectPath, `webapp/ext/${filename}`);
+                const replativeFilePath = join(`webapp/ext/${filename}`);
+                const filePath = join(projectPath, replativeFilePath);
                 const xml = `
                 <mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
                     xmlns:html="http://www.w3.org/1999/xhtml" controllerName="com.test.myApp.ext.main.Main"
@@ -129,7 +130,7 @@ describe('Prompts', () => {
                 fs.write(filePath, xml);
                 const validation = await promptsAPI.validateAnswers(
                     PromptsType.FilterBar,
-                    { viewOrFragmentFile: filePath, id: value },
+                    { viewOrFragmentFile: replativeFilePath, id: value },
                     [{ name: 'id' }]
                 );
                 expect(validation['id']).toEqual(result);

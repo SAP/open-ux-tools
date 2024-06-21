@@ -3,7 +3,7 @@ import type { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/
 import { DOMParser } from '@xmldom/xmldom';
 import type { Answers, InputQuestion, ListQuestion } from 'inquirer';
 import type { Editor } from 'mem-fs-editor';
-import { relative } from 'path';
+import { join, relative } from 'path';
 import { ProjectProvider } from './project';
 import { getAnnotationPathQualifiers, getEntityTypes } from './service';
 import { getCapServiceName } from '@sap-ux/project-access';
@@ -111,10 +111,13 @@ export function getViewOrFragmentFilePrompt(
                 ['.git', 'node_modules', 'dist', 'annotations', 'localService'],
                 fs
             );
-            return files.map((file) => ({
-                name: relative(basePath, file),
-                value: file
-            }));
+            return files.map((file) => {
+                const value = relative(basePath, file);
+                return {
+                    name: value,
+                    value
+                };
+            });
         },
         validate: (value: string) => (value ? true : validationErrorMessage),
         placeholder: additionalProperties.placeholder ?? 'Select a view or fragment file'
@@ -203,6 +206,7 @@ export async function getCAPServiceChoices(
 export function getAggregationPathPrompt(
     message: string,
     fs: Editor,
+    basePath: string,
     additionalProperties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
     return {
@@ -211,10 +215,10 @@ export function getAggregationPathPrompt(
         name: 'aggregationPath',
         selectType: 'dynamic',
         message,
-        choices: (answers: DynamicChoices) => {
+        choices: (answers: Answers) => {
             const { viewOrFragmentFile } = answers;
             if (viewOrFragmentFile) {
-                const choices = getChoices(getXPathStringsForXmlFile(viewOrFragmentFile.toString(), fs));
+                const choices = getChoices(getXPathStringsForXmlFile(join(basePath, viewOrFragmentFile), fs));
                 if (!choices.length) {
                     throw new Error('Failed while fetching the aggregation path.');
                 }
@@ -328,6 +332,7 @@ export function getFilterBarIdPrompt(
 export function getFilterBarIdListPrompt(
     message: string,
     fs: Editor,
+    basePath: string,
     additionalProperties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
     return {
@@ -343,7 +348,11 @@ export function getFilterBarIdListPrompt(
                 return [];
             }
             return getChoices(
-                await getBuildingBlockIdsInFile(answers.viewOrFragmentFile, BuildingBlockType.FilterBar, fs)
+                await getBuildingBlockIdsInFile(
+                    join(basePath, answers.viewOrFragmentFile),
+                    BuildingBlockType.FilterBar,
+                    fs
+                )
             );
         }
     };
@@ -420,6 +429,7 @@ export async function getBuildingBlockIdPrompt(
     fs: Editor,
     message: string,
     validationErrorMessage: string,
+    basePath: string,
     defaultValue?: string,
     additionalProperties: Partial<InputPromptQuestion> = {}
 ): Promise<InputPromptQuestion> {
@@ -434,7 +444,9 @@ export async function getBuildingBlockIdPrompt(
             if (!value) {
                 return validationErrorMessage;
             } else {
-                return answers?.viewOrFragmentFile && !isElementIdAvailable(fs, answers.viewOrFragmentFile, value)
+                // ToDo
+                return answers?.viewOrFragmentFile &&
+                    !isElementIdAvailable(fs, join(basePath, answers.viewOrFragmentFile), value)
                     ? t('id.existingIdValidation')
                     : true;
             }

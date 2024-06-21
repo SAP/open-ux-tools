@@ -145,22 +145,22 @@ describe('utils - ', () => {
         });
 
         test('getAggregationPathPrompt', async () => {
-            const aggregationPathPrompt = getAggregationPathPrompt('AggregationPathMessage', fs);
+            const aggregationPathPrompt = getAggregationPathPrompt('AggregationPathMessage', fs, projectFolder);
             expect(aggregationPathPrompt).toMatchSnapshot();
             const choicesProp = aggregationPathPrompt.choices as Choices;
             expect(choicesProp).toBeDefined();
             let choices = await choicesProp({
-                viewOrFragmentFile: join(projectFolder, 'webapp/ext/main/Main.view.xml')
+                viewOrFragmentFile: join('webapp/ext/main/Main.view.xml')
             });
             expect(choices).toMatchSnapshot();
 
             choices = await choicesProp({
-                viewOrFragmentFile: join(projectFolder, 'webapp/ext/main/Main.view.xml')
+                viewOrFragmentFile: join('webapp/ext/main/Main.view.xml')
             });
             await expect(
                 async () =>
                     await choicesProp({
-                        viewOrFragmentFile: join(projectFolder, 'non-existing-file.xml')
+                        viewOrFragmentFile: join('non-existing-file.xml')
                     })
             ).rejects.toThrow();
         });
@@ -239,7 +239,7 @@ describe('utils - ', () => {
         });
 
         test('getBuildingBlockIdPrompt', async () => {
-            const prompt = await getBuildingBlockIdPrompt(fs, 'message', 'error');
+            const prompt = await getBuildingBlockIdPrompt(fs, 'message', 'error', projectFolder);
             expect(prompt).toMatchInlineSnapshot(`
                 Object {
                   "default": undefined,
@@ -257,7 +257,7 @@ describe('utils - ', () => {
         });
 
         test('getFilterBarIdListPrompt', () => {
-            const prompt = getFilterBarIdListPrompt('message', fs);
+            const prompt = getFilterBarIdListPrompt('message', fs, projectFolder);
             expect(prompt).toMatchInlineSnapshot(`
                 Object {
                   "choices": [Function],

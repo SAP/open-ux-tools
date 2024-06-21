@@ -64,7 +64,7 @@ export async function getTableBuildingBlockPrompts(
                 ['aggregationPath', 'filterBarId'],
                 { groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID, required: true }
             ),
-            await getBuildingBlockIdPrompt(fs, t('id.message'), t('id.validation'), defaultAnswers.id, {
+            await getBuildingBlockIdPrompt(fs, t('id.message'), t('id.validation'), basePath, defaultAnswers.id, {
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
                 required: true
             }),
@@ -92,11 +92,11 @@ export async function getTableBuildingBlockPrompts(
                     placeholder: t('qualifierPlaceholder')
                 }
             ),
-            getAggregationPathPrompt(t('aggregation'), fs, {
+            getAggregationPathPrompt(t('aggregation'), fs, basePath, {
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
                 required: true
             }),
-            getFilterBarIdListPrompt(t('filterBar.message'), fs, {
+            getFilterBarIdListPrompt(t('filterBar.message'), fs, basePath, {
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
             }),
 

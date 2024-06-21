@@ -43,7 +43,7 @@ export async function getChartBuildingBlockPrompts(
                 ['aggregationPath', 'filterBarId'],
                 { required: true }
             ),
-            await getBuildingBlockIdPrompt(fs, t('id.message'), t('id.validation'), defaultAnswers.id, {
+            await getBuildingBlockIdPrompt(fs, t('id.message'), t('id.validation'), basePath, defaultAnswers.id, {
                 required: true
             }),
             ...((await isCapProject(projectProvider))
@@ -55,10 +55,10 @@ export async function getChartBuildingBlockPrompts(
                 required: true,
                 placeholder: t('qualifierPlaceholder')
             }),
-            getAggregationPathPrompt(t('aggregation'), fs, {
+            getAggregationPathPrompt(t('aggregation'), fs, basePath, {
                 required: true
             }),
-            getFilterBarIdListPrompt(t('filterBar'), fs),
+            getFilterBarIdListPrompt(t('filterBar'), fs, basePath),
             {
                 type: 'checkbox',
                 name: 'personalization',
