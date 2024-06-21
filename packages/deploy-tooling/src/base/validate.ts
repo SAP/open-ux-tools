@@ -13,7 +13,8 @@ import {
 } from '@sap-ux/project-input-validator';
 import { EOL } from 'os';
 import type { AbapDeployConfig } from '../types';
-import { isAppStudio, isOnPremiseDestination, listDestinations } from '@sap-ux/btp-utils';
+import type { Destinations } from '@sap-ux/btp-utils';
+import { isAppStudio, isOnPremiseDestination, listDestinations, Authentication } from '@sap-ux/btp-utils';
 
 export type ValidationInputs = {
     appName: string;
@@ -53,6 +54,8 @@ export const summaryMessage = {
     transportNotRequired: 'Transport Request is not required for local package',
     atoAdtAccessError: 'Development prefix could not be validated. Please check manually.'
 };
+
+let cachedDestinationsList: Destinations = {};
 
 /**
  * Validation of deploy configuration before running deploy-test.
@@ -395,7 +398,7 @@ async function validateTransportRequestWithAdt(
  * Returns true if specified destination is on-premise and if environment is App Studio
  * to show additional info.
  *
- * @param destination Indentifier for destination to be checked.
+ * @param destination Identifier for destination to be checked.
  * @returns Promise boolean.
  */
 export async function showAdditionalInfoForOnPrem(destination: string): Promise<boolean> {
@@ -405,4 +408,37 @@ export async function showAdditionalInfoForOnPrem(destination: string): Promise<
         showInfo = isOnPremiseDestination(destinations[destination]);
     }
     return showInfo;
+}
+
+/**
+ * Validates if the credentials are required for the destination based on the Authentication type.
+ *
+ * @param destination Identifier for destination to be checked.
+ * @param logger Logger from the calling context.
+ * @returns Promise boolean.
+ */
+export async function checkForCredentials(destination: string | undefined, logger: Logger): Promise<boolean> {
+    let check = true;
+    if (destination && isAppStudio()) {
+        const destinations = await getDestinations();
+        if (destinations[destination].Authentication === Authentication.SAML_ASSERTION) {
+            logger.warn(
+                `The SAP BTP destination is misconfigured, please check you have the appropriate trusts and permissions enabled.`
+            );
+            check = false;
+        }
+    }
+    return check;
+}
+
+/**
+ * Return a list of Destinations.
+ *
+ * @returns Array of Destination objects
+ */
+async function getDestinations(): Promise<Destinations> {
+    if (Object.keys(cachedDestinationsList).length === 0) {
+        cachedDestinationsList = await listDestinations();
+    }
+    return cachedDestinationsList;
 }
