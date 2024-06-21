@@ -68,10 +68,15 @@ describe('UI5Config', () => {
         });
     });
 
-    describe('setType', () => {
+    describe('getType / setType', () => {
         test('set type', () => {
             ui5Config.setType('application');
             expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('get type', () => {
+            ui5Config.setType('module');
+            expect(ui5Config.getType()).toBe('module');
         });
 
         test('replace type', () => {
@@ -81,7 +86,7 @@ describe('UI5Config', () => {
         });
     });
 
-    describe('add/getCustomConfiguration', () => {
+    describe('add/get/remove/CustomConfiguration', () => {
         const testConfig = {
             url: 'https://test.example',
             client: '123'
@@ -96,6 +101,12 @@ describe('UI5Config', () => {
             ui5Config.addCustomConfiguration('another', anotherConfig);
             expect(ui5Config.getCustomConfiguration('target')).toEqual(testConfig);
             expect(ui5Config.getCustomConfiguration('another')).toBe(anotherConfig);
+        });
+
+        test('Remove configuration', () => {
+            ui5Config.addCustomConfiguration('config', testConfig);
+            ui5Config.removeConfig('customConfiguration');
+            expect(ui5Config.getCustomConfiguration('config')).toBeUndefined();
         });
     });
 

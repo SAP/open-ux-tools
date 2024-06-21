@@ -537,6 +537,16 @@ exports[`UI5Config getAppReloadMiddlewareConfig 1`] = `
 "
 `;
 
+exports[`UI5Config getType / setType replace type 1`] = `
+"type: library
+"
+`;
+
+exports[`UI5Config getType / setType set type 1`] = `
+"type: application
+"
+`;
+
 exports[`UI5Config setMetadata replace metadata 1`] = `
 "metadata:
   name: the.replaced.name
@@ -547,15 +557,5 @@ exports[`UI5Config setMetadata set name and copyright 1`] = `
 "metadata:
   name: test.name
   copyright: ©
-"
-`;
-
-exports[`UI5Config setType replace type 1`] = `
-"type: library
-"
-`;
-
-exports[`UI5Config setType set type 1`] = `
-"type: application
 "
 `;
