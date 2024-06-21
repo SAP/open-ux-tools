@@ -8,16 +8,16 @@ describe('Launch Text utility function tests', () => {
         const workspaceCapUrl = `http://localhost:4004/test.app.project1/index.html`;
 
         expect(getLaunchText('Java', 'project1', undefined)).toBe(
-            `${t('TEXT_LAUNCH_CAP', { mvnCommand, capUrl })}`
+            `${t('launchCapText', { mvnCommand, capUrl })}`
         );
         capUrl = `http://localhost:4004/project1/webapp/index.html`;
         mvnCommand = '';
 
         expect(getLaunchText('Node.js', 'project1', undefined)).toBe(
-            `${t('TEXT_LAUNCH_CAP', { mvnCommand, capUrl })}`
+            `${t('launchCapText', { mvnCommand, capUrl })}`
         );
         expect(getLaunchText('Node.js', 'project1', 'test.app.project1')).toBe(
-            `${t('TEXT_LAUNCH_CAP', { mvnCommand, capUrl: workspaceCapUrl })}`
+            `${t('launchCapText', { mvnCommand, capUrl: workspaceCapUrl })}`
         );
     });
 });

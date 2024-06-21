@@ -9,5 +9,5 @@
     "error": {
         "updateApplicationYaml": "Error occured while updating application yaml {{ error }}"
     },
-    "TEXT_LAUNCH_CAP": "In order to launch the generated app, simply start your CAP project{{mvnCommand}} and navigate to the following location in your browser:\n\n{{- capUrl}}"
+    "launchCapText": "In order to launch the generated app, simply start your CAP project{{mvnCommand}} and navigate to the following location in your browser:\n\n{{- capUrl}}"
 }

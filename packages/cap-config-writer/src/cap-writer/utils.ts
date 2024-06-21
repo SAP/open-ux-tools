@@ -31,5 +31,5 @@ export function getLaunchText(capType: CapRuntime, projectName: string, appId?: 
         mvnCommand = ' (```mvn spring-boot:run```)';
     }
     const capUrl = getCapUrl();
-    return `${t('TEXT_LAUNCH_CAP', { mvnCommand, capUrl })}`;
+    return `${t('launchCapText', { mvnCommand, capUrl })}`;
 }
