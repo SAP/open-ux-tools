@@ -70,7 +70,7 @@ export async function request<T>(endpoint: ApiEndpoints, method: RequestMethod, 
         const response: Response = await fetch(endpoint, config);
 
         if (!response.ok) {
-            const errorData = await response.json() as ResponseMessage;
+            const errorData = (await response.json()) as ResponseMessage;
             const message = errorData?.message ?? '';
             throw new Error(`Request failed, status: ${response.status}. ${message}`.trim());
         }
@@ -88,8 +88,7 @@ export async function request<T>(endpoint: ApiEndpoints, method: RequestMethod, 
                 return response.json() as T;
         }
     } catch (e) {
-        const error = getError(e);
-        throw new Error(error.message);
+        throw getError(e);
     }
 }
 

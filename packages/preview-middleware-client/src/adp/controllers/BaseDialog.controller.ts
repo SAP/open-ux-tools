@@ -16,7 +16,7 @@ import { getError } from '../../cpe/error-utils';
 
 type BaseDialogModel = JSONModel & {
     getProperty(sPath: '/fragmentList'): Fragments;
-}
+};
 
 /**
  * @namespace open.ux.preview.client.adp.controllers

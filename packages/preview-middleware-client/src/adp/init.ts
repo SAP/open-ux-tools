@@ -39,7 +39,7 @@ export default async function (rta: RuntimeAuthoring) {
                 try {
                     await handler(action);
                 } catch (error) {
-                        log.error('Handler Failed: ', getError(error));
+                    log.error('Handler Failed: ', getError(error));
                 }
             }
         }

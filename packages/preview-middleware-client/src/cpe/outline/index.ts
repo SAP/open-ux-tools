@@ -6,6 +6,7 @@ import type OutlineService from 'sap/ui/rta/command/OutlineService';
 
 import { transformNodes } from './nodes';
 import Log from 'sap/base/Log';
+import { getError } from '../error-utils';
 
 /**
  *
@@ -23,7 +24,7 @@ export async function initOutline(rta: RuntimeAuthoring, sendAction: (action: Ex
 
             sendAction(outlineChanged(outlineNodes));
         } catch (error) {
-            Log.error('Outline sync failed!', error as Error);
+            Log.error('Outline sync failed!', getError(error));
         }
     }
     await syncOutline();
