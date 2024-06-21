@@ -23,6 +23,7 @@ import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { deleteChange, readChanges, writeChange } from './flex';
 import { generateImportList, mergeTestConfigDefaults } from './test';
 import type { App, Editor, FlpConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
+import { getFlpConfigWithDefaults, createTemplateConfig, PREVIEW_URL } from './config';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -34,34 +35,6 @@ const DEVELOPER_MODE_CONFIG = new Map([
     ['xx-viewCache', 'false']
 ]);
 
-/**
- * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
- */
-const UI5_LIBS = [
-    'sap.apf',
-    'sap.base',
-    'sap.chart',
-    'sap.collaboration',
-    'sap.f',
-    'sap.fe',
-    'sap.fileviewer',
-    'sap.gantt',
-    'sap.landvisz',
-    'sap.m',
-    'sap.ndc',
-    'sap.ovp',
-    'sap.rules',
-    'sap.suite',
-    'sap.tnt',
-    'sap.ui',
-    'sap.uiext',
-    'sap.ushell',
-    'sap.uxap',
-    'sap.viz',
-    'sap.webanalytics',
-    'sap.zen'
-];
-
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
 /**
@@ -70,81 +43,6 @@ const DEFAULT_LIVERELOAD_PORT = 35729;
 export type EnhancedRouter = Router & {
     getAppPages?: () => string[];
 };
-
-/**
- * Default theme
- */
-const DEFAULT_THEME = 'sap_horizon';
-
-/**
- * Default path for mounting the local FLP.
- */
-const DEFAULT_PATH = '/test/flp.html';
-
-/**
- * Default intent
- */
-const DEFAULT_INTENT = {
-    object: 'app',
-    action: 'preview'
-};
-
-/**
- * Static settings
- */
-const PREVIEW_URL = {
-    client: {
-        url: '/preview/client',
-        local: join(__dirname, '../../dist/client'),
-        ns: 'open.ux.preview.client'
-    },
-    api: '/preview/api'
-};
-
-export interface CustomConnector {
-    applyConnector: string;
-    writeConnector: string;
-    custom: boolean;
-}
-
-export interface FlexConnector {
-    connector: string;
-    layers: string[];
-    url?: string;
-}
-
-/**
- * Internal structure used to fill the sandbox.html template
- */
-export interface TemplateConfig {
-    basePath: string;
-    apps: Record<
-        string,
-        {
-            title: string;
-            description: string;
-            additionalInformation: string;
-            applicationType: 'URL';
-            url: string;
-            applicationDependencies?: { manifest: boolean };
-        }
-    >;
-    ui5: {
-        libs: string;
-        theme: string;
-        flex: (CustomConnector | FlexConnector)[];
-        bootstrapOptions: string;
-        resources: Record<string, string>;
-    };
-    init?: string;
-    flex?: {
-        [key: string]: unknown;
-        layer: UI5FlexLayer;
-        developerMode: boolean;
-        pluginScript?: string;
-    };
-    locateReuseLibsScript?: boolean;
-}
 
 type OnChangeRequestHandler = (
     type: OperationType,
@@ -178,17 +76,7 @@ export class FlpSandbox {
         private readonly utils: MiddlewareUtils,
         private readonly logger: Logger
     ) {
-        this.config = {
-            path: config.flp?.path ?? DEFAULT_PATH,
-            intent: config.flp?.intent ?? DEFAULT_INTENT,
-            apps: config.flp?.apps ?? [],
-            libs: config.flp?.libs,
-            theme: config.flp?.theme,
-            init: config.flp?.init
-        };
-        if (!this.config.path.startsWith('/')) {
-            this.config.path = `/${this.config.path}`;
-        }
+        this.config = getFlpConfigWithDefaults(config.flp);
         this.test = config.test;
         this.rta = config.rta;
         logger.debug(`Config: ${JSON.stringify({ flp: this.config, rta: this.rta, test: this.test })}`);
@@ -213,28 +101,9 @@ export class FlpSandbox {
      */
     async init(manifest: Manifest, componentId?: string, resources: Record<string, string> = {}): Promise<void> {
         this.createFlexHandler();
-        const flex = this.getFlexSettings();
-        const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
-        const ui5Theme =
-            this.config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
+        this.config.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app'].id;
-        const ns = id.replace(/\./g, '/');
-        this.templateConfig = {
-            basePath: posix.relative(posix.dirname(this.config.path), '/') ?? '.',
-            apps: {},
-            init: this.config.init ? ns + this.config.init : undefined,
-            ui5: {
-                libs: this.getUI5Libs(manifest),
-                theme: ui5Theme,
-                flex,
-                resources: {
-                    ...resources,
-                    [PREVIEW_URL.client.ns]: PREVIEW_URL.client.url
-                },
-                bootstrapOptions: ''
-            },
-            locateReuseLibsScript: this.config.libs ?? (await this.hasLocateReuseLibsScript())
-        };
+        this.templateConfig = createTemplateConfig(this.config, manifest);
 
         await this.addApp(manifest, {
             componentId,
@@ -403,29 +272,6 @@ export class FlpSandbox {
                 );
             }
         }
-    }
-
-    /**
-     * Retrieves the configuration settings for UI5 flexibility services.
-     *
-     * @returns An array of flexibility service configurations, each specifying a connector
-     *          and its options, such as the layers it applies to and its service URL, if applicable.
-     */
-    private getFlexSettings(): TemplateConfig['ui5']['flex'] {
-        const localConnectorPath = 'custom.connectors.WorkspaceConnector';
-
-        return [
-            { connector: 'LrepConnector', layers: [], url: '/sap/bc/lrep' },
-            {
-                applyConnector: localConnectorPath,
-                writeConnector: localConnectorPath,
-                custom: true
-            },
-            {
-                connector: 'LocalStorageConnector',
-                layers: ['CUSTOMER', 'USER']
-            }
-        ];
     }
 
     /**
@@ -656,28 +502,6 @@ export class FlpSandbox {
             this.logger.warn('Failed to load i18n properties bundle');
         }
         return propertyI18nKey;
-    }
-
-    /**
-     * Gets the UI5 libs dependencies from manifest.json.
-     *
-     * @param manifest application manifest
-     * @returns UI5 libs that should preloaded
-     */
-    private getUI5Libs(manifest: Manifest): string {
-        const libs = manifest['sap.ui5']?.dependencies?.libs ?? {};
-        // add libs that should always be preloaded
-        libs['sap.m'] = {};
-        libs['sap.ui.core'] = {};
-        libs['sap.ushell'] = {};
-
-        return Object.keys(libs)
-            .filter((key) => {
-                return UI5_LIBS.some((substring) => {
-                    return key === substring || key.startsWith(substring + '.');
-                });
-            })
-            .join(',');
     }
 }
 
