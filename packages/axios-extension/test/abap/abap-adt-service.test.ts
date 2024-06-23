@@ -820,6 +820,10 @@ describe('Generator Service', () => {
                 `/sap/bc/adt/rap/generators/webapi/published-ui-service/content?referencedObject=%2fsap%2fbc%2fadt%2fbo%2fbehaviordefinitions%2fi_banktp&package=ztest1`
             )
             .replyWithFile(200, join(__dirname, 'mockResponses/generatorContent.json'))
+            .get(
+                `/sap/bc/adt/rap/generators/webapi/published-ui-service/schema?referencedObject=%2fsap%2fbc%2fadt%2fbo%2fbehaviordefinitions%2fi_banktp`
+            )
+            .replyWithFile(200, join(__dirname, 'mockResponses/schemaResponse.json'))
             .post(
                 `/sap/bc/adt/rap/generators/webapi/published-ui-service/validation?referencedObject=%2fsap%2fbc%2fadt%2fbo%2fbehaviordefinitions%2fi_banktp&checks=package,referencedobject,authorization`
             )
@@ -841,6 +845,9 @@ describe('Generator Service', () => {
         expect(gen).toBeInstanceOf(UiServiceGenerator);
         const content = await gen?.getContent('ztest1');
         expect(JSON.parse(content).businessService.serviceDefinition.serviceDefinitionName).toEqual('ZUI_BANKTP004_O4');
+
+        const schemaResponse = await gen.getSchema();
+        expect(schemaResponse.title).toEqual('Details for RAP artifacts generation');
 
         const validatePackage = await gen.validatePackage('ztest1');
         expect(validatePackage.validationMessages.validationMessage.severity).toEqual('OK');
