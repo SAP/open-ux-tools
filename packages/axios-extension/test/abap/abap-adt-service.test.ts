@@ -9,8 +9,7 @@ import {
     ListPackageService,
     FileStoreService,
     BusinessObjectsService,
-    GeneratorService,
-    PublishService
+    GeneratorService
 } from '../../src';
 import * as auth from '../../src/auth';
 import type { ArchiveFileNode } from '../../src/abap/types';
@@ -797,12 +796,13 @@ describe('Generator Service', () => {
             .replyWithFile(200, join(__dirname, 'mockResponses/discovery-3.xml'))
             .get(AdtServices.GENERATOR)
             .query({
-                referencedObject: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`
+                referencedObject: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`,
+                type: 'webapi'
             })
             .replyWithFile(200, join(__dirname, 'mockResponses/generatorConfig.xml'));
         const generatorService = await provider.getAdtService<GeneratorService>(GeneratorService);
         const generatorConfig = await generatorService?.getUIServiceGeneratorConfig(businessObjectName);
-        expect(generatorConfig?.id).toEqual('ui-service');
+        expect(generatorConfig?.id).toEqual('published-ui-service');
     });
 
     test('uiServiceGenerator', async () => {
@@ -812,23 +812,26 @@ describe('Generator Service', () => {
             .replyWithFile(200, join(__dirname, 'mockResponses/discovery-3.xml'))
             .get(AdtServices.GENERATOR)
             .query({
-                referencedObject: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`
+                referencedObject: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`,
+                type: 'webapi'
             })
             .replyWithFile(200, join(__dirname, 'mockResponses/generatorConfig.xml'))
             .get(
-                `/sap/bc/adt/rap/generators/ui-service/content?referencedObject=%2fsap%2fbc%2fadt%2fbo%2fbehaviordefinitions%2fi_banktp&package=ztest1`
+                `/sap/bc/adt/rap/generators/webapi/published-ui-service/content?referencedObject=%2fsap%2fbc%2fadt%2fbo%2fbehaviordefinitions%2fi_banktp&package=ztest1`
             )
             .replyWithFile(200, join(__dirname, 'mockResponses/generatorContent.json'))
             .post(
-                '/sap/bc/adt/rap/generators/ui-service?referencedObject=%2Fsap%2Fbc%2Fadt%2Fbo%2Fbehaviordefinitions%2Fi_banktp&corrNr=test_transport'
+                `/sap/bc/adt/rap/generators/webapi/published-ui-service/validation?referencedObject=%2fsap%2fbc%2fadt%2fbo%2fbehaviordefinitions%2fi_banktp&checks=package,referencedobject,authorization`
             )
-            .replyWithFile(200, join(__dirname, 'mockResponses/generationResponse.xml'))
-            .post('/sap/bc/adt/businessservices/bindings/zui_banktp004_o4')
-            .query({
-                _action: `LOCK`,
-                accessMode: 'MODIFY'
-            })
-            .replyWithFile(200, join(__dirname, 'mockResponses/generationResponse.xml'));
+            .replyWithFile(200, join(__dirname, 'mockResponses/validationResponse.xml'))
+            .get(
+                `/sap/bc/adt/rap/generators/webapi/published-ui-service/validation?referencedObject=%2fsap%2fbc%2fadt%2fbo%2fbehaviordefinitions%2fi_banktp&package=ztest1&checks=package`
+            )
+            .replyWithFile(200, join(__dirname, 'mockResponses/validationResponse.xml'))
+            .post(
+                '/sap/bc/adt/rap/generators/webapi/published-ui-service?referencedObject=%2Fsap%2Fbc%2Fadt%2Fbo%2Fbehaviordefinitions%2Fi_banktp&corrNr=test_transport'
+            )
+            .replyWithFile(200, join(__dirname, 'mockResponses/generateResponse.json'));
 
         const gen = await provider.getUiServiceGenerator({
             name: businessObjectName,
@@ -839,11 +842,14 @@ describe('Generator Service', () => {
         const content = await gen?.getContent('ztest1');
         expect(JSON.parse(content).businessService.serviceDefinition.serviceDefinitionName).toEqual('ZUI_BANKTP004_O4');
 
-        const generationReponse = await gen?.generate(content, transport);
-        expect(generationReponse.objectReference.uri).toEqual('/sap/bc/adt/businessservices/bindings/zui_banktp004_o4');
+        const validatePackage = await gen.validatePackage('ztest1');
+        expect(validatePackage.validationMessages.validationMessage.severity).toEqual('OK');
 
-        const lockGen = await provider.createLockServiceBindingGenerator(generationReponse.objectReference.uri);
-        expect(() => lockGen.lockServiceBinding()).not.toThrow();
+        const validateContent = await gen.validateContent(content);
+        expect(validateContent.severity).toEqual('OK');
+
+        const generationReponse = await gen?.generate(content, transport);
+        expect(generationReponse?.objectReferences).toEqual('');
     });
 
     test('uiServiceGenerator with no links in response', async () => {
@@ -862,31 +868,5 @@ describe('Generator Service', () => {
                 uri: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`
             })
         ).rejects.toThrowError();
-    });
-});
-
-describe('Publish Service', () => {
-    beforeAll(() => {
-        nock.disableNetConnect();
-    });
-
-    afterAll(() => {
-        nock.cleanAll();
-        nock.enableNetConnect();
-    });
-
-    const provider = createForAbap(config);
-
-    test('Publish Service - publish completed successfully', async () => {
-        nock(server)
-            .get(AdtServices.DISCOVERY)
-            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-3.xml'))
-            .post(`${AdtServices.PUBLISH}/publishjobs`)
-            .replyWithFile(200, join(__dirname, 'mockResponses/publishResponse.xml'));
-        const type = 'SRVB/SVB';
-        const name = 'ZUI_BANKTP004_O4';
-        const publishService = await provider.getAdtService<PublishService>(PublishService);
-        const publishResponse = await publishService?.publish(type, name);
-        expect(publishResponse?.SEVERITY).toEqual('OK');
     });
 });
