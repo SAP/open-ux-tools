@@ -2,16 +2,6 @@ import { spawn } from 'child_process';
 import type { Logger } from '@sap-ux/logger';
 
 /**
- * npm command is platform depending: Windows 'npm.cmd', Mac 'npm'
- */
-const npmCommand = /^win/.test(process.platform) ? 'npm.cmd' : 'npm';
-
-/**
- * default spawn options, required for platform specific config to execute commands
- */
-const defaultSpawnOptions = /^win/.test(process.platform) ? { windowsVerbatimArguments: true, shell: true } : {};
-
-/**
  * Execute an npm command.
  *
  * @param commandArguments - command arguments as array, e.g. ['install', '@sap/ux-specification@1.2.3']
@@ -28,12 +18,20 @@ export async function execNpmCommand(
     }
 ): Promise<string> {
     return new Promise((resolve, reject) => {
-        let stdOut = '';
-        let stdErr = '';
+        // Command to execute npm is platform specific, 'npm.cmd' on windows, 'npm' otherwise
+        const npmCommand = /^win/.test(process.platform) ? 'npm.cmd' : 'npm';
+
+        // Platform specific spawn options, 'windowsVerbatimArguments' and 'shell' true on windows
+        const defaultSpawnOptions = /^win/.test(process.platform)
+            ? { windowsVerbatimArguments: true, shell: true }
+            : {};
+
         const logger = options?.logger;
         const cwd = options?.cwd;
         const spawnOptions = typeof cwd === 'string' ? { ...defaultSpawnOptions, cwd } : defaultSpawnOptions;
         const spawnProcess = spawn(npmCommand, commandArguments, spawnOptions);
+        let stdOut = '';
+        let stdErr = '';
         spawnProcess.stdout.on('data', (data) => {
             stdOut += data.toString();
         });
