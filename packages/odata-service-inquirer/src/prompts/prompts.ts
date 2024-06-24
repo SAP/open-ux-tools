@@ -53,7 +53,6 @@ function getDatasourceTypeQuestion(options?: DatasourceTypePromptOptions): YUIQu
                 [
                     DatasourceType.businessHub,
                     DatasourceType.none,
-                    DatasourceType.odataServiceUrl,
                     DatasourceType.projectSpecificDestination,
                     DatasourceType.sapSystem
                 ].includes(source)
