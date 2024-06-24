@@ -58,21 +58,24 @@ describe('config', () => {
             const previewFiles = await getPreviewFiles({}, manifest);
             const paths = Object.keys(previewFiles);
             expect(paths).toHaveLength(1);
-            expect(paths[0]).toBe(DEFAULT_PATH);
+            expect(paths[0]).toBe(`${DEFAULT_PATH}#${DEFAULT_INTENT.object}-${DEFAULT_INTENT.action}`);
             expect(await previewFiles[paths[0]]()).toMatchSnapshot();
         });
 
         test('tests included and a custom path', async () => {
             const config = {
                 flp: {
-                    path: '/test/flpSandbox.html'
+                    path: '/test/flpSandbox.html',
+                    intent: { object: 'myapp', action: 'myaction' }
                 },
                 test: [{ framework: 'OPA5' }]
             } satisfies MiddlewareConfig;
             const previewFiles = await getPreviewFiles(config, manifest);
             const files = Object.values(previewFiles);
             expect(files).toHaveLength(2);
-            expect(previewFiles[config.flp.path]).toBeDefined();
+            expect(
+                previewFiles[`${config.flp.path}#${config.flp.intent.object}-${config.flp.intent.action}`]
+            ).toBeDefined();
             expect(await files[1]()).toMatchSnapshot();
         });
     });

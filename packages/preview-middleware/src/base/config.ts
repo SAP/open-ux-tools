@@ -315,7 +315,7 @@ export async function getPreviewFiles(
 
     // generate FLP configuration
     const flpConfig = getFlpConfigWithDefaults(config.flp);
-    previewFiles[flpConfig.path] = async () => {
+    previewFiles[`${flpConfig.path}#${flpConfig.intent.object}-${flpConfig.intent.action}`] = async () => {
         const flpTemplate = readFileSync(join(templatePath, 'flp/sandbox.html'), 'utf-8');
         const flpTemplConfig = createFlpTemplateConfig(flpConfig, manifest);
         await addApp(
