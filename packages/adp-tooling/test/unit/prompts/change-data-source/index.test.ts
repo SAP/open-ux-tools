@@ -24,20 +24,6 @@ describe('getPrompts', () => {
     beforeAll(async () => {
         await i18n.initI18n();
     });
-    beforeEach(() => {
-        jest.clearAllMocks();
-        jest.spyOn(i18n, 't')
-            .mockReturnValueOnce('oDataSourceLabel')
-            .mockReturnValueOnce('oDataSourceTooltip')
-            .mockReturnValueOnce('oDataSourceURILabel')
-            .mockReturnValueOnce('oDataSourceURITooltip')
-            .mockReturnValueOnce('maxAgeLabel')
-            .mockReturnValueOnce('oDataAnnotationSourceURILabel')
-            .mockReturnValueOnce('oDataAnnotationSourceURITooltip');
-    });
-    afterEach(() => {
-        jest.restoreAllMocks();
-    });
     test('return prompts', () => {
         const filteredDataSources = {
             'mainService': dataSources['mainService']
@@ -51,22 +37,22 @@ describe('getPrompts', () => {
             {
                 type: 'list',
                 name: 'id',
-                message: 'oDataSourceLabel',
+                message: i18n.t('prompts.oDataSourceLabel'),
                 choices: dataSourceIds,
                 default: dataSourceIds[0],
                 store: false,
                 guiOptions: {
                     mandatory: true,
-                    hint: 'oDataSourceTooltip'
+                    hint: i18n.t('prompts.oDataSourceTooltip')
                 }
             },
             {
                 type: 'input',
                 name: 'uri',
-                message: 'oDataSourceURILabel',
+                message: i18n.t('prompts.oDataSourceURILabel'),
                 guiOptions: {
                     mandatory: true,
-                    hint: 'oDataSourceURITooltip'
+                    hint: i18n.t('prompts.oDataSourceURITooltip')
                 },
                 validate: expect.any(Function),
                 when: true,
@@ -75,15 +61,18 @@ describe('getPrompts', () => {
             {
                 type: 'number',
                 name: 'maxAge',
-                message: 'maxAgeLabel',
+                message: i18n.t('prompts.maxAgeLabel'),
+                guiOptions: {
+                    hint: i18n.t('prompts.maxAgeTooltip')
+                },
                 when: expect.any(Function)
             },
             {
                 type: 'input',
                 name: 'annotationUri',
-                message: 'oDataAnnotationSourceURILabel',
+                message: i18n.t('prompts.oDataAnnotationSourceURILabel'),
                 guiOptions: {
-                    hint: 'oDataAnnotationSourceURITooltip'
+                    hint: i18n.t('prompts.oDataAnnotationSourceURITooltip')
                 }
             }
         ]);
@@ -99,22 +88,22 @@ describe('getPrompts', () => {
             {
                 type: 'list',
                 name: 'id',
-                message: 'oDataSourceLabel',
+                message: i18n.t('prompts.oDataSourceLabel'),
                 choices: [],
                 default: undefined,
                 store: false,
                 guiOptions: {
                     mandatory: true,
-                    hint: 'oDataSourceTooltip'
+                    hint: i18n.t('prompts.oDataSourceTooltip')
                 }
             },
             {
                 type: 'input',
                 name: 'uri',
-                message: 'oDataSourceURILabel',
+                message: i18n.t('prompts.oDataSourceURILabel'),
                 guiOptions: {
                     mandatory: true,
-                    hint: 'oDataSourceURITooltip'
+                    hint: i18n.t('prompts.oDataSourceURITooltip')
                 },
                 validate: expect.any(Function),
                 when: false,
@@ -123,15 +112,18 @@ describe('getPrompts', () => {
             {
                 type: 'number',
                 name: 'maxAge',
-                message: 'maxAgeLabel',
+                message: i18n.t('prompts.maxAgeLabel'),
+                guiOptions: {
+                    hint: i18n.t('prompts.maxAgeTooltip')
+                },
                 when: expect.any(Function)
             },
             {
                 type: 'input',
                 name: 'annotationUri',
-                message: 'oDataAnnotationSourceURILabel',
+                message: i18n.t('prompts.oDataAnnotationSourceURILabel'),
                 guiOptions: {
-                    hint: 'oDataAnnotationSourceURITooltip'
+                    hint: i18n.t('prompts.oDataAnnotationSourceURITooltip')
                 }
             }
         ]);
