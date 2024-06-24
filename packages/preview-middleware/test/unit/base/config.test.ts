@@ -25,7 +25,7 @@ describe('config', () => {
             });
         });
         test('user configured path', () => {
-            const path = '/test/flpSandBox.html';
+            const path = '/test/flpSandbox.html';
             const intent = { object: 'myapp', action: 'myaction' };
             const flpConfig = getFlpConfigWithDefaults({ path, intent });
             expect(flpConfig).toMatchObject({ path, intent });
@@ -65,7 +65,7 @@ describe('config', () => {
         test('tests included and a custom path', async () => {
             const config = {
                 flp: {
-                    path: '/test/flpSandBox.html'
+                    path: '/test/flpSandbox.html'
                 },
                 test: [{ framework: 'OPA5' }]
             } satisfies MiddlewareConfig;
