@@ -1,4 +1,4 @@
-import { AuthenticationType } from '@sap-ux/store';
+import type { AuthenticationType } from '@sap-ux/store';
 export interface UI5ProxyConfigTarget {
     path: string | string[];
     url: string;

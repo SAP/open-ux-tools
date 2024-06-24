@@ -1,6 +1,6 @@
 import { join } from 'path';
-import type { Package } from '../../src';
-import { readFile, readJSON, fileExists, writeFile } from '../../src/file';
+import type { Manifest, Package } from '../../src';
+import { readFile, readJSON, fileExists, updateManifestJSON, updatePackageJSON, writeFile } from '../../src/file';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { promises } from 'fs';
@@ -88,6 +88,78 @@ describe('fileAccess', () => {
         test('Check existing file in mem-fs, should return true', async () => {
             const exists = await fileExists(memFilePath, memFs);
             expect(exists).toBe(true);
+        });
+    });
+
+    describe('updatePackageJSON', () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+        test('Should update package.json using previous indentation with 1 space', async () => {
+            const updateFileContent = {} as unknown as Package;
+            const jsonStringifySpy = jest.spyOn(JSON, 'stringify');
+            const writeFileSpy = jest.spyOn(promises, 'writeFile').mockResolvedValue();
+            const pckgPath = join(__dirname, '..', 'test-data', 'json', 'package', 'package-single-space.json');
+            await updatePackageJSON(pckgPath, updateFileContent);
+            expect(jsonStringifySpy).toBeCalledWith(updateFileContent, null, ' ');
+            expect(writeFileSpy).toBeCalledWith(pckgPath, '{}\n', { encoding: 'utf8' });
+        });
+        test('Should update package.json using previous indentation with 2 spaces', async () => {
+            const updateFileContent = {} as unknown as Package;
+            const jsonStringifySpy = jest.spyOn(JSON, 'stringify');
+            const writeFileSpy = jest.spyOn(promises, 'writeFile').mockResolvedValue();
+            const pckgPath = join(__dirname, '..', 'test-data', 'json', 'package', 'package-double-space.json');
+            await updatePackageJSON(pckgPath, updateFileContent);
+            expect(jsonStringifySpy).toBeCalledWith(updateFileContent, null, '  ');
+            expect(writeFileSpy).toBeCalledWith(pckgPath, '{}\n', { encoding: 'utf8' });
+        });
+        test('Should update package.json using previous indentation with 4 spaces - mem-fs-editor', async () => {
+            const updateFileContent = { sapux: true } as unknown as Package;
+            const pckgPath = join(__dirname, '..', 'test-data', 'json', 'package', 'package-4-spaces.json');
+            memFs.writeJSON(pckgPath, { sapux: false }, undefined, 4);
+            await updatePackageJSON(pckgPath, updateFileContent, memFs);
+            const result = memFs.read(pckgPath);
+            expect(result).toBe(`{\n    "sapux": true\n}\n`);
+        });
+        test('Should update package.json using previous indentation with tab - mem-fs-editor', async () => {
+            const updateFileContent = { sapux: true } as unknown as Package;
+            const pckgPath = join(__dirname, '..', 'test-data', 'json', 'package', 'package-tab-spaces.json');
+            memFs.writeJSON(pckgPath, { sapux: false }, undefined, '\t');
+            await updatePackageJSON(pckgPath, updateFileContent, memFs);
+            const result = memFs.read(pckgPath);
+            expect(result).toBe(`{\n\t"sapux": true\n}\n`);
+        });
+    });
+
+    describe('updateManifestJSON', () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+        test('Should update manifest.json using previous indentation 1 space', async () => {
+            const updateFileContent = {} as unknown as Manifest;
+            const jsonStringifySpy = jest.spyOn(JSON, 'stringify');
+            const writeFileSpy = jest.spyOn(promises, 'writeFile').mockResolvedValue();
+            const manifestPath = join(__dirname, '..', 'test-data', 'json', 'manifest', 'manifest-single-space.json');
+            await updateManifestJSON(manifestPath, updateFileContent);
+            expect(jsonStringifySpy).toBeCalledWith(updateFileContent, null, ' ');
+            expect(writeFileSpy).toBeCalledWith(manifestPath, '{}\n', { encoding: 'utf8' });
+        });
+        test('Should update manifest.json using previous indentation 2 spaces', async () => {
+            const updateFileContent = {} as unknown as Manifest;
+            const jsonStringifySpy = jest.spyOn(JSON, 'stringify');
+            const writeFileSpy = jest.spyOn(promises, 'writeFile').mockResolvedValue();
+            const manifestPath = join(__dirname, '..', 'test-data', 'json', 'manifest', 'manifest-double-space.json');
+            await updateManifestJSON(manifestPath, updateFileContent);
+            expect(jsonStringifySpy).toBeCalledWith(updateFileContent, null, '  ');
+            expect(writeFileSpy).toBeCalledWith(manifestPath, '{}\n', { encoding: 'utf8' });
+        });
+        test('Should update manifest.json using previous indentation with 4 spaces - mem-fs-editor', async () => {
+            const updateFileContent = { 'sap.app': { id: 'single_apps-fiori_elements' } } as unknown as Manifest;
+            const manifestPath = join(__dirname, '..', 'test-data', 'json', 'manifest', 'manifest-4-spaces.json');
+            memFs.writeJSON(manifestPath, { 'sap.app': { id: 'dummy' } }, undefined, 4);
+            await updateManifestJSON(manifestPath, updateFileContent, memFs);
+            const result = memFs.read(manifestPath);
+            expect(result).toBe(`{\n    "sap.app": {\n        "id": "single_apps-fiori_elements"\n    }\n}\n`);
         });
     });
 });

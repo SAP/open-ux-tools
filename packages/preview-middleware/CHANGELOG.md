@@ -1,5 +1,55 @@
 # @sap-ux/preview-middleware
 
+## 0.13.67
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.2
+
+## 0.13.66
+
+### Patch Changes
+
+-   Updated dependencies [a140cf8b]
+    -   @sap-ux/adp-tooling@0.11.1
+    -   @sap-ux/project-access@1.22.1
+
+## 0.13.65
+
+### Patch Changes
+
+-   Updated dependencies [7f8bc980]
+    -   @sap-ux/adp-tooling@0.11.0
+
+## 0.13.64
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.23
+
+## 0.13.63
+
+### Patch Changes
+
+-   Updated dependencies [ad93a484]
+    -   @sap-ux/project-access@1.22.0
+    -   @sap-ux/adp-tooling@0.10.22
+
+## 0.13.62
+
+### Patch Changes
+
+-   9188fe8b: fpm v4 removed sap.fe.templates in manifest.json, now has dependency on sap.fe.core
+    sap.ushell removed from ui5-application-writer, now loaded in fiori-elements and fiori-freestyle writers respectively
+    -   @sap-ux/adp-tooling@0.10.21
+    -   @sap-ux/project-access@1.21.2
+
+## 0.13.61
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.20
+
 ## 0.13.60
 
 ### Patch Changes
