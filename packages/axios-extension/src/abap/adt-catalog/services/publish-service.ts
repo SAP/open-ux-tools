@@ -52,4 +52,26 @@ export class PublishService extends AdtService {
         const data = this.parseResponse(response.data);
         return data['abap']['values']['DATA'];
     }
+
+    /**
+     * Get OData V4 service URI
+     *
+     * @param bindingName - The name of the service binding.
+     * @returns service URI.
+     */
+    public async getODataV4ServiceUri(bindingName: string): Promise<string> {
+        const response = await this.get(`/${bindingName}`, {
+            headers: {
+                Accept: 'application/vnd.sap.adt.businessservices.odatav4.v1+xml'
+            },
+            params: {
+                servicename: bindingName,
+                serviceversion: '0001',
+                srvdname: bindingName
+            }
+        });
+
+        const data = this.parseResponse(response.data);
+        return String(data['serviceGroup']['services']['serviceUrl']);
+    }
 }

@@ -141,3 +141,16 @@ export type BusinessObject = {
 };
 
 export type PublishResponse = { SEVERITY: string; SHORT_TEXT: string; LONG_TEXT: string };
+
+// messages com.sap.adt.StatusMessage
+export type ValidationMessage = {
+    severity?: string;
+    text?: string;
+};
+
+// details of a generated OData service, needed to determine service URI
+export type GeneratedODataService = {
+    serviceName: string;
+    serviceVersion: string;
+    serviceDefinitionName: string;
+};

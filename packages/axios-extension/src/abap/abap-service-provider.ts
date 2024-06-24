@@ -10,7 +10,8 @@ import type { AtoSettings, BusinessObject } from './types';
 import { TenantType } from './types';
 // Can't use an `import type` here. We need the classname at runtime to create object instances:
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import { AdtService, AtoService, GeneratorService } from './adt-catalog/services';
+import { AdtService, AtoService, GeneratorService, RapGeneratorService } from './adt-catalog/services';
+import { ODataServiceGenerator } from './adt-catalog/generators/odata-service-generator';
 import { UiServiceGenerator } from './adt-catalog/generators/ui-service-generator';
 import type { GeneratorEntry } from './adt-catalog/generators/types';
 
@@ -231,6 +232,15 @@ export class AbapServiceProvider extends ServiceProvider {
         const gen = this.createService<UiServiceGenerator>(this.getServiceUrlFromConfig(config), UiServiceGenerator);
         gen.configure(config, bo);
         return gen;
+    }
+
+    public async getODataServiceGenerator(): Promise<ODataServiceGenerator> {
+        const generatorService = await this.getAdtService<RapGeneratorService>(RapGeneratorService);
+        if (!generatorService) {
+            throw new Error('RAP Generator are not support on this system');
+        }
+        const config = await generatorService.getRAPGeneratorConfig();
+        return this.createService<ODataServiceGenerator>(this.getServiceUrlFromConfig(config), ODataServiceGenerator);
     }
 
     /**
