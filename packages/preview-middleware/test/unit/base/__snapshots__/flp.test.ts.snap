@@ -393,7 +393,6 @@ exports[`FlpSandbox router custom opa5 path test/integration/opaTests.qunit.html
 		data-sap-ui-async=\\"true\\">
 	</script>
 
-	<script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
 	<script src=\\"opaTests.qunit.js\\"></script>
 
 	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
@@ -406,11 +405,18 @@ exports[`FlpSandbox router custom opa5 path test/integration/opaTests.qunit.html
 `;
 
 exports[`FlpSandbox router default Qunit init test/unitTests.qunit.js 1`] = `
-"QUnit.config.autostart = false;
-sap.ui.require([], function() {
-    QUnit.start();
-});
-"
+"window.QUnit ??= {};
+QUnit.config ??= {};
+QUnit.config.autostart = false;
+QUnit.config.testTimeout = 180000;
+
+sap.ui.require(['sap/ui/thirdparty/qunit-2'
+], function() {
+    'use strict';
+    sap.ui.require([], function() {
+        QUnit.start();
+    }); 
+});"
 `;
 
 exports[`FlpSandbox router default Qunit path test/unitTests.qunit.html 1`] = `
@@ -431,7 +437,6 @@ exports[`FlpSandbox router default Qunit path test/unitTests.qunit.html 1`] = `
 		data-sap-ui-async=\\"true\\">
 	</script>
 
-	<script src=\\"../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
 	<script src=\\"unitTests.qunit.js\\"></script>
 
 	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../resources/sap/ui/thirdparty/qunit-2.css\\">
