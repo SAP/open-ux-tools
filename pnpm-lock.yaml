@@ -749,8 +749,8 @@ importers:
         specifier: workspace:*
         version: link:../system-access
       '@sap-ux/ui5-config':
-        specifier: 0.22.3
-        version: 0.22.3
+        specifier: workspace:*
+        version: link:../ui5-config
       chalk:
         specifier: 4.1.2
         version: 4.1.2
@@ -8031,26 +8031,9 @@ packages:
       '@sap-ux/vocabularies-types': 0.10.0
     dev: false
 
-  /@sap-ux/ui5-config@0.22.3:
-    resolution: {integrity: sha512-9qgN9HzCT4XwGfSYP+c0bBdUyRXRyag1hVJtq2UdFCiGomRGN8ZUUmXcGppOAEdkeV5+J4YMcW5CwY0UzDWqJg==}
-    engines: {node: '>=18.x'}
-    dependencies:
-      '@sap-ux/yaml': 0.14.1
-      lodash: 4.17.21
-      semver: 7.5.4
-    dev: false
-
   /@sap-ux/vocabularies-types@0.10.0:
     resolution: {integrity: sha512-uTQ2tJJes9qGGAn8e/Npvy0grIul3mAVHzjxsj10U3lF+RZsoFawsdYGxvb6sJYkhY+YEsQzL8GTL6tyYpMv8g==}
     engines: {node: '>=18.0.0 < 19.0.0 || >=20.0.0 < 21.0.0', pnpm: '>=8'}
-    dev: false
-
-  /@sap-ux/yaml@0.14.1:
-    resolution: {integrity: sha512-8JgrgtJgcJylXciu5dtOlmaZGYt2ZYmXMxwa7HMdM79jxbIBoksJF1Dbx5/W0Y314MpPnBzHUPxmcHBTikYRIg==}
-    engines: {node: '>=18.x'}
-    dependencies:
-      lodash: 4.17.21
-      yaml: 2.2.2
     dev: false
 
   /@sap/bas-sdk@3.7.7:
