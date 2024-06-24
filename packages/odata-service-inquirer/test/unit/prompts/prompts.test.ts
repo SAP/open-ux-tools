@@ -193,17 +193,23 @@ describe('getQuestions', () => {
 
     test('datasourceTypeQuestion displays and logs not implemented yet message', async () => {
         const logWarnSpy = jest.spyOn(ToolsLogger.prototype, 'warn');
-        const datasourceType = DatasourceType.sapSystem;
         const datasourceTypeQuestion = (await getQuestions())[0];
         expect(datasourceTypeQuestion.name).toEqual('datasourceType');
 
-        const additionalMessages = (datasourceTypeQuestion.additionalMessages as Function)(datasourceType);
-        expect(additionalMessages).toMatchObject({
-            message: t('prompts.datasourceType.notYetImplementedWarningMessage', { datasourceType }),
-            severity: Severity.warning
+        [
+            DatasourceType.businessHub,
+            DatasourceType.none,
+            DatasourceType.projectSpecificDestination,
+            DatasourceType.sapSystem
+        ].forEach((datasourceType) => {
+            const additionalMessages = (datasourceTypeQuestion.additionalMessages as Function)(datasourceType);
+            expect(additionalMessages).toMatchObject({
+                message: t('prompts.datasourceType.notYetImplementedWarningMessage', { datasourceType }),
+                severity: Severity.warning
+            });
+            expect(logWarnSpy).toHaveBeenCalledWith(
+                t('prompts.datasourceType.notYetImplementedWarningMessage', { datasourceType })
+            );
         });
-        expect(logWarnSpy).toHaveBeenCalledWith(
-            t('prompts.datasourceType.notYetImplementedWarningMessage', { datasourceType })
-        );
     });
 });
