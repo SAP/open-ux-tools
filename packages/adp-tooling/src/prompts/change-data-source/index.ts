@@ -44,6 +44,9 @@ export function getPrompts(
             type: 'number',
             name: 'maxAge',
             message: t('prompts.maxAgeLabel'),
+            guiOptions: {
+                hint: t('prompts.maxAgeTooltip')
+            },
             when: (answers: ChangeDataSourceAnswers) => answers.uri !== ''
         } as NumberQuestion<ChangeDataSourceAnswers>,
         {
