@@ -428,8 +428,24 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         const parsedName = parseIdentifier(pathBase);
         const fullyQualifiedPath =
             toFullyQualifiedName(aliasInfo.aliasMap, aliasInfo.currentFileNamespace, parsedName) ?? '';
+        const fQParsedName = parseIdentifier(fullyQualifiedPath);
+
         const metadataElement = this.metadataService.getMetadataElement(fullyQualifiedPath);
-        const pathBaseOriginal = toAliasQualifiedName(metadataElement?.originalName ?? pathBase, aliasInfo);
+        let pathBaseOriginal = toAliasQualifiedName(metadataElement?.originalName ?? pathBase, aliasInfo);
+
+        // Handle special case for inline composition targets.
+        // Generally, the last segment of the target is viewed as the MDElement and the preceding segments as the namespace.
+        // However, with inline composition, the MDElement may span multiple segments.
+        // For example, in 'IncidentService.Incidents.composition', 'Incidents.composition' is the MDElement and 'IncidentService' is the namespace.
+        if (parsedName.namespaceOrAlias !== fQParsedName.namespaceOrAlias) {
+            if (
+                parsedName.namespaceOrAlias &&
+                fQParsedName.namespaceOrAlias &&
+                !pathBaseOriginal.startsWith(parsedName?.namespaceOrAlias)
+            ) {
+                pathBaseOriginal = pathBaseOriginal.replace(fQParsedName.namespaceOrAlias, parsedName.namespaceOrAlias);
+            }
+        }
         change.target.name = [pathBaseOriginal, ...pathSegments].join('/');
         writer.addChange(createInsertTargetChange('target', change.target));
     };
