@@ -39,7 +39,10 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults, simu
 
         const variant = getVariant(basePath);
         const ui5Conf = await UI5Config.newInstance(readFileSync(join(basePath, 'ui5.yaml'), 'utf-8'));
-        const adp = ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('fiori-tools-preview')?.configuration?.adp;
+        const customMiddlerware =
+            ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('fiori-tools-preview') ??
+            ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('preview-middleware');
+        const adp = customMiddlerware?.configuration?.adp;
         if (!adp) {
             throw new Error('No system configuration found in ui5.yaml');
         }

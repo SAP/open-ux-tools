@@ -122,6 +122,33 @@ describe('change/data-source', () => {
         expect(generateChangeSpy).not.toBeCalled();
     });
 
+    test('change data-source - preview-middleware custom configuration', async () => {
+        jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
+            findCustomMiddleware: jest.fn().mockImplementation((customMiddleware: string) => {
+                if (customMiddleware === 'fiori-tools-preview') {
+                    return undefined;
+                }
+                return {
+                    configuration: {
+                        adp: {
+                            target: {
+                                url: 'https://sap.example',
+                                client: '100'
+                            }
+                        }
+                    }
+                };
+            })
+        } as Partial<UI5Config> as UI5Config);
+
+        const command = new Command('data-source');
+        addChangeDataSourceCommand(command);
+        await command.parseAsync(getArgv(appRoot));
+
+        expect(promptYUIQuestionsSpy).toBeCalled();
+        expect(generateChangeSpy).toBeCalled();
+    });
+
     test('change data-source - --simulate', async () => {
         const command = new Command('data-source');
         addChangeDataSourceCommand(command);
