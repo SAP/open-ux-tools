@@ -35,14 +35,6 @@ export interface ReadMe extends OptionalEntries {
     projectDescription: string;
     /** The UI5 theme used in the project. */
     ui5Theme: string;
-    /** The minimum UI5 version required for the project. */
-    projectUI5Version: string;
-    /** Indicates if code assist is enabled in the project. */
-    enableCodeAssist: boolean;
-    /** Indicates if ESLint is enabled in the project. */
-    enableEslint: boolean;
-    /** Indicates if TypeScript is enabled in the project. */
-    enableTypeScript: boolean;
     /** The generated ID for the README configuration. */
     genId: string;
     /** The version of the generator used for creating the README file. */

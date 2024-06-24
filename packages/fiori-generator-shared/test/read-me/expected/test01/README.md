@@ -7,7 +7,7 @@
 |**Generation Platform**<br>CLI|
 |**Template Used**<br>List Report Page V4|
 |**Service Type**<br>Local Cap|
-|**Service URL**<br>N/A|
+|**Service URL**<br>serviceUrl|
 |**Module Name**<br>someProjectName|
 |**Application Title**<br>someProjectTitle|
 |**Namespace**<br>projectNamespace|

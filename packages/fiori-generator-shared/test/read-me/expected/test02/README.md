@@ -7,12 +7,12 @@
 |**Generation Platform**<br>|
 |**Template Used**<br>List Report Page V4|
 |**Service Type**<br>Local Cap|
-|**Service URL**<br>N/A|
+|**Service URL**<br>|
 |**Module Name**<br>someProjectName|
 |**Application Title**<br>someProjectTitle|
 |**Namespace**<br>projectNamespace|
 |**UI5 Theme**<br>a_ui5_theme|
-|**UI5 Version**<br>1.2.3|
+|**UI5 Version**<br>|
 |**Enable Code Assist Libraries**<br>False|
 |**Enable TypeScript**<br>False|
 |**Add Eslint configuration**<br>False|
@@ -23,11 +23,7 @@ Fiori project description
 
 ### Starting the generated app
 
--   This app has been generated using the SAP Fiori tools - App Generator, as part of the SAP Fiori tools suite.  In order to launch the generated app, simply run the following from the generated app root folder:
-
-```
-    npm start
-```
+-   This app has been generated using the SAP Fiori tools - App Generator, as part of the SAP Fiori tools suite.  
 
 #### Pre-requisites:
 

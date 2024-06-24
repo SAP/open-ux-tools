@@ -13,10 +13,10 @@
 |**Application Title**<br><%= projectTitle %>|
 |**Namespace**<br><%= projectNamespace %>|
 |**UI5 Theme**<br><%= ui5Theme %>|
-|**UI5 Version**<br><% if (projectUI5Version==="") { %><%- "Latest" %><% } else { %><%- projectUI5Version %><% } %>|
-|**Enable Code Assist Libraries**<br><% if(enableCodeAssist === true) { %><%= "True" %><% } else { %><%= "False" %><% }%>|
-|**Enable TypeScript**<br><% if(enableTypeScript === true) { %><%= "True" %><% } else { %><%= "False" %><% }%>|
-|**Add Eslint configuration**<br><% if(enableEslint === true) { %><%= "True, see https://www.npmjs.com/package/eslint-plugin-fiori-custom for the eslint rules." %><% } else { %><%= "False" %><% }%>|<% if (locals.additionalEntries) locals.additionalEntries.forEach(entry => { %>
+|**UI5 Version**<br><% if (locals.ui5Version==="") { %><%- "Latest" %><% } else { %><%- locals.ui5Version %><% } %>|
+|**Enable Code Assist Libraries**<br><% if(locals.enableCodeAssist === true) { %><%= "True" %><% } else { %><%= "False" %><% }%>|
+|**Enable TypeScript**<br><% if(locals.enableTypeScript === true) { %><%= "True" %><% } else { %><%= "False" %><% }%>|
+|**Add Eslint configuration**<br><% if(locals.enableEslint === true) { %><%= "True, see https://www.npmjs.com/package/eslint-plugin-fiori-custom for the eslint rules." %><% } else { %><%= "False" %><% }%>|<% if (locals.additionalEntries) locals.additionalEntries.forEach(entry => { %>
 |**<%= entry.label %>**<br><%= entry.value %>|<%})%>
 
 ## <%= projectName %>
@@ -25,7 +25,7 @@
 
 ### Starting the generated app
 
--   This app has been generated using the SAP Fiori tools - App Generator, as part of the SAP Fiori tools suite.  <%= launchText %><% if(locals.showMockDataInfo) {%>
+-   This app has been generated using the SAP Fiori tools - App Generator, as part of the SAP Fiori tools suite.  <%= locals.launchText %><% if(locals.showMockDataInfo) {%>
 
 - It is also possible to run the application using mock data that reflects the OData Service URL supplied during application generation.  In order to run the application with Mock Data, run the following from the generated app root folder:
 

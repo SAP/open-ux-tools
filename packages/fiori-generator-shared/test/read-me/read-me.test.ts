@@ -25,11 +25,12 @@ describe('Readme file generation tests', () => {
             genVersion: '2.0.1',
             genDate: 'Jan 01 1975',
             genPlatform: 'CLI',
+            serviceUrl: 'serviceUrl',
             projectName: 'someProjectName',
             projectTitle: 'someProjectTitle',
             projectDescription: 'Fiori project description',
             ui5Theme: 'a_ui5_theme',
-            projectUI5Version: '1.2.3',
+            ui5Version: '1.2.3',
             projectNamespace: 'projectNamespace',
             additionalEntries: [
                 { label: 'Generator Specific Label A', value: 'Generator Specific Value A' },
@@ -55,12 +56,8 @@ describe('Readme file generation tests', () => {
             projectTitle: 'someProjectTitle',
             projectDescription: 'Fiori project description',
             ui5Theme: 'a_ui5_theme',
-            projectUI5Version: '1.2.3',
             projectNamespace: 'projectNamespace',
-            genDate: 'Jan 01 1975',
-            enableEslint: false,
-            enableTypeScript: false,
-            enableCodeAssist: false
+            genDate: 'Jan 01 1975'
         };
         generateReadMe(__dirname, readMe, editor);
         expect(editor.read(readMePath)).toEqual(readFileSync(expectReadMePath, 'utf-8'));
