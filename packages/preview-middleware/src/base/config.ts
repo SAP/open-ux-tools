@@ -315,7 +315,7 @@ export async function getPreviewFiles(
 
     // generate FLP configuration
     const flpConfig = getFlpConfigWithDefaults(config.flp);
-    previewFiles[`${flpConfig.path}#${flpConfig.intent.object}-${flpConfig.intent.action}`] = async () => {
+    previewFiles[flpConfig.path] = async () => {
         const flpTemplate = readFileSync(join(templatePath, 'flp/sandbox.html'), 'utf-8');
         const flpTemplConfig = createFlpTemplateConfig(flpConfig, manifest);
         await addApp(
@@ -345,4 +345,34 @@ export async function getPreviewFiles(
     }
 
     return previewFiles;
+}
+
+/**
+ * Returns the preview paths.
+ *
+ * @param config configuration from the ui5.yaml
+ * @param logger logger instance
+ * @returns an array of preview paths
+ */
+export function getPreviewPaths(config: MiddlewareConfig, logger: ToolsLogger = new ToolsLogger()): string[] {
+    const urls: string[] = [];
+    // remove incorrect configurations
+    sanitizeConfig(config, logger);
+    // add flp preview url
+    const flpConfig = getFlpConfigWithDefaults(config.flp);
+    urls.push(`${flpConfig.path}#${flpConfig.intent.object}-${flpConfig.intent.action}`);
+    // add editor urls
+    if (config.rta) {
+        config.rta.editors.forEach((editor) => {
+            urls.push(editor.path);
+        });
+    }
+    // add test urls if configured
+    if (config.test) {
+        config.test.forEach((test) => {
+            const testConfig = mergeTestConfigDefaults(test);
+            urls.push(testConfig.path);
+        });
+    }
+    return urls;
 }

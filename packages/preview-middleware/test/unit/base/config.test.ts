@@ -5,7 +5,8 @@ import {
     createFlpTemplateConfig,
     createTestTemplateConfig,
     getPreviewFiles,
-    getFlpConfigWithDefaults
+    getFlpConfigWithDefaults,
+    getPreviewPaths
 } from '../../../src/base/config';
 import { mergeTestConfigDefaults } from '../../../src/base/test';
 import type { MiddlewareConfig } from '../../../src/types';
@@ -53,12 +54,41 @@ describe('config', () => {
         });
     });
 
+    describe('getPreviewPaths', () => {
+        test('minimum settings', async () => {
+            const paths = getPreviewPaths({});
+            expect(paths).toHaveLength(1);
+            expect(paths[0]).toBe(`${DEFAULT_PATH}#${DEFAULT_INTENT.object}-${DEFAULT_INTENT.action}`);
+        });
+
+        test('tests included and a custom path', async () => {
+            const config = {
+                flp: {
+                    path: '/test/flpSandbox.html',
+                    intent: { object: 'myapp', action: 'myaction' }
+                },
+                rta: {
+                    layer: 'CUSTOMER_BASE',
+                    editors: [{ path: '/local/editor.html', developerMode: false }]
+                },
+                test: [{ framework: 'OPA5' }]
+            } satisfies MiddlewareConfig;
+            const paths = getPreviewPaths(config);
+            expect(paths).toHaveLength(3);
+            expect(paths.includes(`${config.flp.path}#${config.flp.intent.object}-${config.flp.intent.action}`)).toBe(
+                true
+            );
+            expect(paths.includes(config.rta.editors[0].path)).toBe(true);
+            expect(paths.includes('/test/opaTests.qunit.html')).toBe(true);
+        });
+    });
+
     describe('getPreviewFiles', () => {
         test('minimum settings', async () => {
             const previewFiles = await getPreviewFiles({}, manifest);
             const paths = Object.keys(previewFiles);
             expect(paths).toHaveLength(1);
-            expect(paths[0]).toBe(`${DEFAULT_PATH}#${DEFAULT_INTENT.object}-${DEFAULT_INTENT.action}`);
+            expect(paths[0]).toBe(DEFAULT_PATH);
             expect(await previewFiles[paths[0]]()).toMatchSnapshot();
         });
 
@@ -73,9 +103,7 @@ describe('config', () => {
             const previewFiles = await getPreviewFiles(config, manifest);
             const files = Object.values(previewFiles);
             expect(files).toHaveLength(2);
-            expect(
-                previewFiles[`${config.flp.path}#${config.flp.intent.object}-${config.flp.intent.action}`]
-            ).toBeDefined();
+            expect(previewFiles[config.flp.path]).toBeDefined();
             expect(await files[1]()).toMatchSnapshot();
         });
     });
