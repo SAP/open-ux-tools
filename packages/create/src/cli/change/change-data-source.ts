@@ -3,7 +3,7 @@ import type { AdpPreviewConfig, DescriptorVariant, PromptDefaults } from '@sap-u
 import { generateChange, ChangeType, getPromptsForChangeDataSource, getManifest } from '@sap-ux/adp-tooling';
 import { getLogger, traceChanges } from '../../tracing';
 import { readFileSync, existsSync } from 'fs';
-import { join } from 'path';
+import { join, isAbsolute } from 'path';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { promptYUIQuestions } from '../../common';
 
@@ -17,8 +17,9 @@ let loginAttempts = 3;
 export function addChangeDataSourceCommand(cmd: Command): void {
     cmd.command('data-source [path]')
         .option('-s, --simulate', 'simulate only do not write or install')
+        .option('-c, --config <string>', 'Path to project configuration file in YAML format', 'ui5.yaml')
         .action(async (path, options) => {
-            await changeDataSource(path, { ...options }, !!options.simulate);
+            await changeDataSource(path, { ...options }, !!options.simulate, options.config);
         });
 }
 
@@ -28,8 +29,14 @@ export function addChangeDataSourceCommand(cmd: Command): void {
  * @param {string} basePath - The path to the adaptation project.
  * @param {PromptDefaults} defaults - The default values for the prompts.
  * @param {boolean} simulate - If set to true, then no files will be written to the filesystem.
+ * @param {string} yamlPath - The path to the project configuration file in YAML format.
  */
-async function changeDataSource(basePath: string, defaults: PromptDefaults, simulate: boolean): Promise<void> {
+async function changeDataSource(
+    basePath: string,
+    defaults: PromptDefaults,
+    simulate: boolean,
+    yamlPath: string
+): Promise<void> {
     const logger = getLogger();
     try {
         if (!basePath) {
@@ -38,7 +45,8 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults, simu
         checkEnvironment(basePath);
 
         const variant = getVariant(basePath);
-        const ui5Conf = await UI5Config.newInstance(readFileSync(join(basePath, 'ui5.yaml'), 'utf-8'));
+        const ui5ConfigPath = isAbsolute(yamlPath) ? yamlPath : join(basePath, yamlPath);
+        const ui5Conf = await UI5Config.newInstance(readFileSync(ui5ConfigPath, 'utf-8'));
         const customMiddlerware =
             ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('fiori-tools-preview') ??
             ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('preview-middleware');
@@ -69,7 +77,7 @@ async function changeDataSource(basePath: string, defaults: PromptDefaults, simu
         if (error.response?.status === 401 && loginAttempts) {
             loginAttempts--;
             logger.error(`Authentication failed. Please check your credentials. Login attempts left: ${loginAttempts}`);
-            await changeDataSource(basePath, defaults, simulate);
+            await changeDataSource(basePath, defaults, simulate, yamlPath);
             return;
         }
         logger.debug(error);

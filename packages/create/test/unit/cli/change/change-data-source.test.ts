@@ -159,6 +159,20 @@ describe('change/data-source', () => {
         expect(traceSpy).toBeCalled();
     });
 
+    test('change data-source - relative path to ui5 confir provided', async () => {
+        const command = new Command('data-source');
+        addChangeDataSourceCommand(command);
+        await command.parseAsync(getArgv(appRoot, '--simulate', '-c', 'ui5.yaml'));
+        expect(mockFs.readFileSync).toBeCalledWith(join(appRoot, 'ui5.yaml'), 'utf-8');
+    });
+
+    test('change data-source - absolute path to ui5 confir provided', async () => {
+        const command = new Command('data-source');
+        addChangeDataSourceCommand(command);
+        await command.parseAsync(getArgv(appRoot, '--simulate', '-c', '/path/to/ui5.yaml'));
+        expect(mockFs.readFileSync).toBeCalledWith('/path/to/ui5.yaml', 'utf-8');
+    });
+
     test('change data-source - authentication error', async () => {
         jest.spyOn(adp, 'getManifest').mockRejectedValueOnce({
             message: '401:Unauthorized',
