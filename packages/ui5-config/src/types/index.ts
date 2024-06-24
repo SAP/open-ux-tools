@@ -34,6 +34,7 @@ export interface AbapDeployConfig {
     target: AbapTarget;
     app: BspApp | Adp;
     ignoreCertError?: boolean;
+    index?: boolean; // generate standalone index.html during deployment
 }
 
 export interface FioriAppReloadConfig {

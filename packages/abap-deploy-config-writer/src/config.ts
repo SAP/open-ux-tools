@@ -53,13 +53,14 @@ export async function getDeployConfig(config: AbapDeployConfig, baseConfig: UI5C
         }
     }
     const baseUi5Doc = baseConfig.removeConfig('server');
-
     const ui5DeployConfig = await UI5Config.newInstance(baseUi5Doc.toString());
+
     ui5DeployConfig.addComment({
         comment: ' yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json',
         location: 'beginning'
     });
-    ui5DeployConfig.addAbapDeployTask(target as unknown as AbapTarget, config.app, true, ['/test/']);
+
+    ui5DeployConfig.addAbapDeployTask(target as unknown as AbapTarget, config.app, true, ['/test/'], config.index);
 
     return ui5DeployConfig;
 }

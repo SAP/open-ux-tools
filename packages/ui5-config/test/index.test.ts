@@ -379,7 +379,7 @@ describe('UI5Config', () => {
         });
 
         test('use open source task', () => {
-            ui5Config.addAbapDeployTask({ url, client }, app, false);
+            ui5Config.addAbapDeployTask({ url, client }, app, false, ['/test/'], true);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 

@@ -143,6 +143,9 @@ exports[`UI5Config addAbapDeployTask use open source task 1`] = `
           description: ~description
           package: ~package
           transport: ~transport
+        exclude:
+          - /test/
+        index: true
 "
 `;
 
