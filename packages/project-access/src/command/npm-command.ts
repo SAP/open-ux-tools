@@ -7,9 +7,9 @@ import type { Logger } from '@sap-ux/logger';
 const npmCommand = /^win/.test(process.platform) ? 'npm.cmd' : 'npm';
 
 /**
- * platform specific config for spawn to execute commands
+ * default spawn options, required for platform specific config to execute commands
  */
-const spawnWinOptions = /^win/.test(process.platform) ? { windowsVerbatimArguments: true, shell: true } : {};
+const defaultSpawnOptions = /^win/.test(process.platform) ? { windowsVerbatimArguments: true, shell: true } : {};
 
 /**
  * Execute an npm command.
@@ -32,7 +32,7 @@ export async function execNpmCommand(
         let stdErr = '';
         const logger = options?.logger;
         const cwd = options?.cwd;
-        const spawnOptions = typeof cwd === 'string' ? { ...spawnWinOptions, cwd } : spawnWinOptions;
+        const spawnOptions = typeof cwd === 'string' ? { ...defaultSpawnOptions, cwd } : defaultSpawnOptions;
         const spawnProcess = spawn(npmCommand, commandArguments, spawnOptions);
         spawnProcess.stdout.on('data', (data) => {
             stdOut += data.toString();
