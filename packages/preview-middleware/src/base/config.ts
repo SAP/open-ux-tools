@@ -67,12 +67,12 @@ export const PREVIEW_URL = {
 /**
  * Default theme
  */
-export const DEFAULT_THEME = 'sap_horizon' as const;
+export const DEFAULT_THEME = 'sap_horizon';
 
 /**
  * Default path for mounting the local FLP.
  */
-export const DEFAULT_PATH = '/test/flp.html' as const;
+export const DEFAULT_PATH = '/test/flp.html';
 
 /**
  * Default intent
@@ -303,7 +303,7 @@ export function createTestTemplateConfig(config: InternalTestConfig, id: string)
  * @returns a record with the preview files
  */
 export async function generatePreviewFiles(
-    config: MiddlewareConfig = {},
+    config: MiddlewareConfig,
     manifest: Manifest,
     logger: ToolsLogger = new ToolsLogger()
 ) {
