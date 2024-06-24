@@ -3,7 +3,7 @@ import memFs from 'mem-fs';
 import memFsEditor from 'mem-fs-editor';
 import { generateReadMe } from '../../src/read-me';
 import { readFileSync } from 'fs';
-import type { ReadMe } from '../../src/read-me/types';
+import type { ReadMe } from '../../src/types';
 
 function getLaunchText(): string {
     return 'In order to launch the generated app, simply start your CAP project (```mvn spring-boot:run```) and navigate to the following location in your browser:' + `\n` + `\n` +
