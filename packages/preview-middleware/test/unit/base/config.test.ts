@@ -58,7 +58,10 @@ describe('config', () => {
         test('minimum settings', async () => {
             const paths = getPreviewPaths({});
             expect(paths).toHaveLength(1);
-            expect(paths[0]).toBe(`${DEFAULT_PATH}#${DEFAULT_INTENT.object}-${DEFAULT_INTENT.action}`);
+            expect(paths[0]).toMatchObject({
+                path: `${DEFAULT_PATH}#${DEFAULT_INTENT.object}-${DEFAULT_INTENT.action}`,
+                type: 'preview'
+            });
         });
 
         test('tests included and a custom path', async () => {
@@ -73,13 +76,15 @@ describe('config', () => {
                 },
                 test: [{ framework: 'OPA5' }]
             } satisfies MiddlewareConfig;
-            const paths = getPreviewPaths(config);
-            expect(paths).toHaveLength(3);
-            expect(paths.includes(`${config.flp.path}#${config.flp.intent.object}-${config.flp.intent.action}`)).toBe(
-                true
-            );
-            expect(paths.includes(config.rta.editors[0].path)).toBe(true);
-            expect(paths.includes('/test/opaTests.qunit.html')).toBe(true);
+            const previews = getPreviewPaths(config);
+            expect(previews).toHaveLength(3);
+            expect(
+                previews.find(
+                    ({ path }) => path === `${config.flp.path}#${config.flp.intent.object}-${config.flp.intent.action}`
+                )
+            ).toBeDefined();
+            expect(previews.find(({ path }) => path === config.rta.editors[0].path)).toBeDefined();
+            expect(previews.find(({ path }) => path === '/test/opaTests.qunit.html')).toBeDefined();
         });
     });
 

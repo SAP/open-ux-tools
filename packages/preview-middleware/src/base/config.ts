@@ -347,6 +347,11 @@ export async function getPreviewFiles(
     return previewFiles;
 }
 
+export type PreviewUrls = {
+    path: string;
+    type: 'preview' | 'editor' | 'test';
+};
+
 /**
  * Returns the preview paths.
  *
@@ -354,24 +359,24 @@ export async function getPreviewFiles(
  * @param logger logger instance
  * @returns an array of preview paths
  */
-export function getPreviewPaths(config: MiddlewareConfig, logger: ToolsLogger = new ToolsLogger()): string[] {
-    const urls: string[] = [];
+export function getPreviewPaths(config: MiddlewareConfig, logger: ToolsLogger = new ToolsLogger()): PreviewUrls[] {
+    const urls: PreviewUrls[] = [];
     // remove incorrect configurations
     sanitizeConfig(config, logger);
     // add flp preview url
     const flpConfig = getFlpConfigWithDefaults(config.flp);
-    urls.push(`${flpConfig.path}#${flpConfig.intent.object}-${flpConfig.intent.action}`);
+    urls.push({ path: `${flpConfig.path}#${flpConfig.intent.object}-${flpConfig.intent.action}`, type: 'preview' });
     // add editor urls
-    if (config.rta) {
+    if (config.rta?.editors) {
         config.rta.editors.forEach((editor) => {
-            urls.push(editor.path);
+            urls.push({ path: editor.path, type: 'editor' });
         });
     }
     // add test urls if configured
     if (config.test) {
         config.test.forEach((test) => {
             const testConfig = mergeTestConfigDefaults(test);
-            urls.push(testConfig.path);
+            urls.push({ path: testConfig.path, type: 'test' });
         });
     }
     return urls;
