@@ -6,7 +6,7 @@ import { render } from 'ejs';
 import type http from 'http';
 import type { Request, RequestHandler, Response, Router, NextFunction } from 'express';
 import { readFileSync } from 'fs';
-import { dirname, join, posix } from 'path';
+import { dirname, join } from 'path';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { MiddlewareUtils } from '@ui5/server';
@@ -17,13 +17,19 @@ import {
     type CommonChangeProperties,
     type OperationType
 } from '@sap-ux/adp-tooling';
-import { createProjectAccess } from '@sap-ux/project-access';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 
 import { deleteChange, readChanges, writeChange } from './flex';
 import { generateImportList, mergeTestConfigDefaults } from './test';
-import type { App, Editor, FlpConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
-import { getFlpConfigWithDefaults, createTemplateConfig, PREVIEW_URL, type TemplateConfig } from './config';
+import type { Editor, FlpConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
+import {
+    getFlpConfigWithDefaults,
+    createFlpTemplateConfig,
+    PREVIEW_URL,
+    type TemplateConfig,
+    createTestTemplateConfig,
+    addApp
+} from './config';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -103,14 +109,19 @@ export class FlpSandbox {
         this.createFlexHandler();
         this.config.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app'].id;
-        this.templateConfig = createTemplateConfig(this.config, manifest);
+        this.templateConfig = createFlpTemplateConfig(this.config, manifest);
 
-        await this.addApp(manifest, {
-            componentId,
-            target: resources[componentId ?? id] ?? this.templateConfig.basePath,
-            local: '.',
-            intent: this.config.intent
-        });
+        await addApp(
+            this.templateConfig,
+            manifest,
+            {
+                componentId,
+                target: resources[componentId ?? id] ?? this.templateConfig.basePath,
+                local: '.',
+                intent: this.config.intent
+            },
+            this.logger
+        );
         this.addStandardRoutes();
         if (this.rta) {
             this.rta.options ??= {};
@@ -264,7 +275,7 @@ export class FlpSandbox {
                 } as Manifest;
             }
             if (manifest) {
-                await this.addApp(manifest, app);
+                await addApp(this.templateConfig, manifest, app, this.logger);
                 this.logger.info(`Adding additional intent: ${app.intent?.object}-${app.intent?.action}`);
             } else {
                 this.logger.info(
@@ -424,12 +435,7 @@ export class FlpSandbox {
                     this.logger.warn(`HTML file returned at ${config.path} is loaded from the file system.`);
                     next();
                 } else {
-                    const templateConfig = {
-                        id,
-                        framework: config.framework,
-                        basePath: posix.relative(posix.dirname(config.path), '/') ?? '.',
-                        initPath: `${ns}${config.init.replace('.js', '')}`
-                    };
+                    const templateConfig = createTestTemplateConfig(config, id);
                     const html = render(htmlTemplate, templateConfig);
                     this.sendResponse(res, 'text/html', 200, html);
                 }
@@ -455,53 +461,6 @@ export class FlpSandbox {
                 }
             }) as RequestHandler);
         }
-    }
-
-    /**
-     * Add an application to the local FLP preview.
-     *
-     * @param manifest manifest of the additional target app
-     * @param app configuration for the preview
-     */
-    async addApp(manifest: Manifest, app: App) {
-        const id = manifest['sap.app'].id;
-        app.intent ??= {
-            object: id.replace(/\./g, ''),
-            action: 'preview'
-        };
-        this.templateConfig.ui5.resources[id] = app.target;
-        this.templateConfig.apps[`${app.intent?.object}-${app.intent?.action}`] = {
-            title: (await this.getI18nTextFromProperty(app.local, manifest['sap.app'].title)) ?? id,
-            description: (await this.getI18nTextFromProperty(app.local, manifest['sap.app'].description)) ?? '',
-            additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
-            applicationType: 'URL',
-            url: app.target,
-            applicationDependencies: { manifest: true }
-        };
-    }
-
-    /**
-     * Get the i18n text of the given property.
-     *
-     * @param projectRoot absolute path to the project root
-     * @param propertyValue value of the property
-     * @returns i18n text of the property
-     * @private
-     */
-    private async getI18nTextFromProperty(projectRoot: string | undefined, propertyValue: string | undefined) {
-        //i18n model format could be {{key}} or {i18n>key}
-        if (!projectRoot || !propertyValue || propertyValue.search(/{{\w+}}|{i18n>\w+}/g) === -1) {
-            return propertyValue;
-        }
-        const propertyI18nKey = propertyValue.replace(/i18n>|[{}]/g, '');
-        const projectAccess = await createProjectAccess(projectRoot);
-        try {
-            const bundle = (await projectAccess.getApplication('').getI18nBundles())['sap.app'];
-            return bundle[propertyI18nKey]?.[0]?.value?.value ?? propertyI18nKey;
-        } catch (e) {
-            this.logger.warn('Failed to load i18n properties bundle');
-        }
-        return propertyI18nKey;
     }
 }
 
