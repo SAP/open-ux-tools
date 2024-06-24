@@ -1,5 +1,18 @@
 # @sap-ux/cap-config-writer
 
+## 0.4.0
+
+### Minor Changes
+
+-   04ed040a: update cds-plugin-ui5 version
+
+## 0.3.7
+
+### Patch Changes
+
+-   Updated dependencies [017d008f]
+    -   @sap-ux/odata-service-inquirer@0.3.3
+
 ## 0.3.6
 
 ### Patch Changes
