@@ -1,0 +1,3 @@
+{
+    "launchTextDefault" : "In order to launch the generated app, simply run the following from the generated app root folder:\n\n```\n    npm start\n```"
+}

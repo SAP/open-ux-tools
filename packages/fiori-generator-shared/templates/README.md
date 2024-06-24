@@ -5,8 +5,8 @@
 |**App Generator**<br><%= genId %>|
 |**App Generator Version**<br><%= genVersion %>|
 |**Generation Platform**<br><%= locals.genPlatform %>|
-|**Template Used**<br><%= templateLabel %>|
-|**Service Type**<br><%= dataSourceLabel %>|<% if(locals.metadataFilename) { %>
+|**Template Used**<br><%= template %>|
+|**Service Type**<br><%= serviceType %>|<% if(locals.metadataFilename) { %>
 |**Metadata File**<br><%= locals.metadataFilename %>|<% } else { %>
 |**Service URL**<br><%= locals.serviceUrl%>|<%}%>
 |**Module Name**<br><%= projectName %>|

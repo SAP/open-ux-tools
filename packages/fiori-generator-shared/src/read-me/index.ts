@@ -1,8 +1,7 @@
-import { t } from './i18n';
-import { ReadMe } from './types';
+import { t } from '../i18n';
+import type { ReadMe } from './types';
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
-
 
 /**
  * Generates a README file at the specified destination path using the provided configuration and file system editor.
@@ -14,7 +13,7 @@ import type { Editor } from 'mem-fs-editor';
  */
 export function generateReadMe(destPath: string, readMe: ReadMe, fs: Editor): Editor {
     // Apply the configuration to generate the README file
-    const templateSourcePath = join(__dirname, '..', 'templates/core/README.md');
+    const templateSourcePath = join(__dirname, '..', '..', 'templates/README.md');
     const templateDestPath = `${destPath}/README.md`;
     // pass locals with default values to be used in the template
     const locals = {
@@ -24,7 +23,7 @@ export function generateReadMe(destPath: string, readMe: ReadMe, fs: Editor): Ed
         serviceUrl: 'N/A',
         showMockDataInfo: false,
         additionalEntries: [],
-        launchText: t('TEXT_LAUNCH_DEFAULT')
+        launchText: t('launchTextDefault')
     };
     // copy template
     fs.copyTpl(templateSourcePath, templateDestPath, { ...locals, ...readMe });

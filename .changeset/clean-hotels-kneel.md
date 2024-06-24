@@ -1,5 +1,5 @@
 ---
-'@sap-ux/ui5-application-writer': minor
+'@sap-ux/fiori-generator-shared': patch
 ---
 
 Adding generate readme file functionalities

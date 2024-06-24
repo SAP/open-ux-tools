@@ -9,7 +9,6 @@ import { mergeWithDefaults } from './data';
 import { ui5TSSupport } from './data/ui5Libs';
 import { applyOptionalFeatures, enableTypescript as enableTypescriptOption } from './options';
 import { Ui5App } from './types';
-import { generateReadMe } from './read-me';
 
 /**
  * Writes the template to the memfs editor instance.
@@ -27,9 +26,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         mergeWithDefaults(ui5AppConfig);
 
     const tmplPath = join(__dirname, '..', 'templates');
-    const ignore = [ui5AppConfig.appOptions?.typescript ? '**/*.js' : '**/*.ts',
-        '**/README.md'
-    ];
+    const ignore = [ui5AppConfig.appOptions?.typescript ? '**/*.js' : '**/*.ts'];
 
     if (ui5AppConfig.appOptions?.generateIndex === false) {
         ignore.push('**/webapp/index.html');
@@ -67,10 +64,6 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     // write ui5 yamls
     fs.write(ui5ConfigPath, ui5Config.toString());
     fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
-    // generate README.md
-    if (ui5App.app?.readMe) {
-        generateReadMe(basePath, ui5App.app.readMe, fs);
-    }
 
     return fs;
 }
