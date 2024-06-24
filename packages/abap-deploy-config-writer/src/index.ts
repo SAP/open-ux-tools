@@ -42,8 +42,9 @@ async function generate(
     // base config
     const baseConfigFile = options?.baseFile ?? FileName.Ui5Yaml;
     const baseConfig = await readUi5Yaml(basePath, baseConfigFile, fs);
+    const isLib = baseConfig.getType() === 'library';
     const baseConfigPath = join(basePath, baseConfigFile);
-    updateBaseConfig(baseConfigPath, baseConfig, fs);
+    updateBaseConfig(isLib, baseConfigPath, baseConfig, fs);
 
     // deploy config
     const deployConfigFile = options?.deployFile ?? FileName.UI5DeployYaml;
@@ -63,8 +64,11 @@ async function generate(
     await updatePackageScript(basePath, 'deploy-test', deployTestModeScript, fs);
     // dependencies
     await addPackageDevDependency(basePath, RIMRAF, RIMRAF_VERSION, fs);
-    await addPackageDevDependency(basePath, UI5_TASK_FLATTEN_LIB, UI5_TASK_FLATTEN_LIB_VERSION, fs);
-    addUi5Dependency(fs, basePath, UI5_TASK_FLATTEN_LIB);
+
+    if (isLib) {
+        await addPackageDevDependency(basePath, UI5_TASK_FLATTEN_LIB, UI5_TASK_FLATTEN_LIB_VERSION, fs);
+        addUi5Dependency(fs, basePath, UI5_TASK_FLATTEN_LIB);
+    }
 
     // ui5 repo files
     await writeUi5RepositoryFiles(fs, basePath);

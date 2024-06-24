@@ -173,26 +173,30 @@ describe('UI5Config', () => {
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
-        test('add commonly configured backend (and UI5 defaults)', () => {
+        test('add / get commonly configured backend (and UI5 defaults)', () => {
+            const backend = [
+                {
+                    url,
+                    path,
+                    destination,
+                    destinationInstance
+                },
+                {
+                    url,
+                    path,
+                    destination,
+                    destinationInstance,
+                    authenticationType: AuthenticationType.ReentranceTicket
+                }
+            ];
             ui5Config.addFioriToolsProxydMiddleware({
-                backend: [
-                    {
-                        url,
-                        path,
-                        destination,
-                        destinationInstance
-                    },
-                    {
-                        url,
-                        path,
-                        destination,
-                        destinationInstance,
-                        authenticationType: AuthenticationType.ReentranceTicket
-                    }
-                ],
+                backend,
                 ui5: {}
             });
             expect(ui5Config.toString()).toMatchSnapshot();
+
+            const backendConfigs = ui5Config.getBackendConfigsFromFioriToolsProxydMiddleware();
+            expect(backendConfigs).toEqual(backend);
         });
 
         test('add backend with flexible parameters (and UI5 defaults)', () => {

@@ -16,6 +16,5 @@
         "build": "build script",
         "test": "test script"
     },
-    "sapuxLayer": "VENDOR",
-    "ui5": {}
+    "sapuxLayer": "VENDOR"
 }

@@ -2,11 +2,13 @@ import { join } from 'path';
 import fg from 'fast-glob';
 import { platform } from 'os';
 import { FileName, type Package, getWebappPath } from '@sap-ux/project-access';
-import { UI5_REPO_TEXT_FILES } from './constants';
+import { UI5_CLI_LIB, UI5_CLI_MIN_VERSION, UI5_REPO_TEXT_FILES } from './constants';
+import { coerce, satisfies } from 'semver';
 import type { Editor } from 'mem-fs-editor';
 
 /**
  * Adds a new UI5 dependency to the package.json.
+ * No longer required for `@ui5/cli` v3 and above.
  *
  * @param fs - the memfs editor instance
  * @param basePath - the base path
@@ -15,6 +17,13 @@ import type { Editor } from 'mem-fs-editor';
 export function addUi5Dependency(fs: Editor, basePath: string, depName: string): void {
     const filePath = join(basePath, FileName.Package);
     const packageJson = (fs.readJSON(filePath) ?? {}) as Package;
+
+    const ui5CliVersion = coerce(packageJson?.devDependencies?.[UI5_CLI_LIB]);
+    if (ui5CliVersion && satisfies(ui5CliVersion, `>=${UI5_CLI_MIN_VERSION}`)) {
+        // https://sap.github.io/ui5-tooling/v3/updates/migrate-v3/#changes-to-dependency-configuration
+        return;
+    }
+
     packageJson.ui5 = packageJson.ui5 ?? {};
     packageJson.ui5.dependencies = packageJson.ui5.dependencies ?? [];
 

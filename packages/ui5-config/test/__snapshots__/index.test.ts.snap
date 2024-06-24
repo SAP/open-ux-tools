@@ -186,6 +186,31 @@ exports[`UI5Config addBackendToFioriToolsProxydMiddleware should add comments wi
 "
 `;
 
+exports[`UI5Config addFioriToolsProxydMiddleware add / get commonly configured backend (and UI5 defaults) 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - url: http://localhost:8080
+            path: /~testpath~
+            destination: ~destination~
+            destinationInstance: ~destinationInstance~
+          - url: http://localhost:8080
+            path: /~testpath~
+            destination: ~destination~
+            destinationInstance: ~destinationInstance~
+            authenticationType: reentranceTicket # SAML support for vscode
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+"
+`;
+
 exports[`UI5Config addFioriToolsProxydMiddleware add backend with flexible parameters (and UI5 defaults) 1`] = `
 "server:
   customMiddleware:
@@ -235,31 +260,6 @@ exports[`UI5Config addFioriToolsProxydMiddleware add backend without path or des
         backend:
           - url: http://localhost:8080
             path: /
-        ui5:
-          path:
-            - /resources
-            - /test-resources
-          url: https://ui5.sap.com
-"
-`;
-
-exports[`UI5Config addFioriToolsProxydMiddleware add commonly configured backend (and UI5 defaults) 1`] = `
-"server:
-  customMiddleware:
-    - name: fiori-tools-proxy
-      afterMiddleware: compression
-      configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        backend:
-          - url: http://localhost:8080
-            path: /~testpath~
-            destination: ~destination~
-            destinationInstance: ~destinationInstance~
-          - url: http://localhost:8080
-            path: /~testpath~
-            destination: ~destination~
-            destinationInstance: ~destinationInstance~
-            authenticationType: reentranceTicket # SAML support for vscode
         ui5:
           path:
             - /resources

@@ -2,5 +2,7 @@
     "name": "test.ui5.lib",
     "version": "1.0.0",
     "private": true,
-    "devDependencies": {}
+    "devDependencies": {
+        "@ui5/cli": "2.9.9"
+    }
 }

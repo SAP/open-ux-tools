@@ -290,6 +290,30 @@ export class UI5Config {
     }
 
     /**
+     * Returns the backend configurations from the fiori-tools-proxy middleware.
+     *
+     * @returns {FioriToolsProxyConfigBackend[]} the backend configurations
+     */
+    public getBackendConfigsFromFioriToolsProxydMiddleware(): FioriToolsProxyConfigBackend[] {
+        let backendConfigs: FioriToolsProxyConfigBackend[];
+        try {
+            const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
+            const proxyMiddleware = this.document.findItem(
+                middlewareList,
+                (item: any) => item.name === fioriToolsProxy
+            );
+
+            const configuration = this.document.getMap({ start: proxyMiddleware as YAMLMap, path: 'configuration' });
+            backendConfigs = this.document
+                .getSequence({ start: configuration, path: 'backend' })
+                .toJSON() as FioriToolsProxyConfigBackend[];
+        } catch (e) {
+            return [];
+        }
+        return backendConfigs;
+    }
+
+    /**
      * Adds a ui configuration to an existing fiori-tools-proxy middleware. If the config does not contain a fiori-tools-proxy middleware, an error is thrown.
      *
      * @param ui5 config of backend that is to be proxied

@@ -71,6 +71,7 @@ builder:
   \\"version\\": \\"1.0.0\\",
   \\"private\\": true,
   \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"2.9.9\\",
     \\"rimraf\\": \\"^5.0.5\\",
     \\"ui5-task-flatten-library\\": \\"3.0.2\\"
   },
@@ -95,33 +96,27 @@ exports[`generate Generate deployment configs: test-js-app 1`] = `
 Object {
   "package.json": Object {
     "contents": "{
-  \\"name\\": \\"test-js-app\\",
-  \\"version\\": \\"0.0.1\\",
-  \\"sapux\\": true,
-  \\"description\\": \\"An SAP Fiori application.\\",
-  \\"keywords\\": [
-    \\"ui5\\",
-    \\"openui5\\",
-    \\"sapui5\\"
-  ],
-  \\"main\\": \\"webapp/index.html\\",
-  \\"scripts\\": {
-    \\"start\\": \\"start script\\",
-    \\"build\\": \\"build script\\",
-    \\"test\\": \\"test script\\",
-    \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
-    \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
-    \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
-  },
-  \\"devDependencies\\": {
-    \\"rimraf\\": \\"^5.0.5\\",
-    \\"ui5-task-flatten-library\\": \\"3.0.2\\"
-  },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"ui5-task-flatten-library\\"
-    ]
-  }
+    \\"name\\": \\"test-js-app\\",
+    \\"version\\": \\"0.0.1\\",
+    \\"sapux\\": true,
+    \\"description\\": \\"An SAP Fiori application.\\",
+    \\"keywords\\": [
+        \\"ui5\\",
+        \\"openui5\\",
+        \\"sapui5\\"
+    ],
+    \\"main\\": \\"webapp/index.html\\",
+    \\"scripts\\": {
+        \\"start\\": \\"start script\\",
+        \\"build\\": \\"build script\\",
+        \\"test\\": \\"test script\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
+        \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
+        \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
+    },
+    \\"devDependencies\\": {
+        \\"rimraf\\": \\"^5.0.5\\"
+    }
 }
 ",
     "state": "modified",
@@ -163,35 +158,29 @@ exports[`generate Generate deployment configs: test-ts-app 1`] = `
 Object {
   "package.json": Object {
     "contents": "{
-  \\"name\\": \\"test-ts-app\\",
-  \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
-  \\"description\\": \\"An SAP Fiori application.\\",
-  \\"keywords\\": [
-    \\"ui5\\",
-    \\"openui5\\",
-    \\"sapui5\\"
-  ],
-  \\"main\\": \\"webapp/index.html\\",
-  \\"dependencies\\": {},
-  \\"devDependencies\\": {
-    \\"rimraf\\": \\"^5.0.5\\",
-    \\"ui5-task-flatten-library\\": \\"3.0.2\\"
-  },
-  \\"scripts\\": {
-    \\"start\\": \\"start script\\",
-    \\"build\\": \\"build script\\",
-    \\"test\\": \\"test script\\",
-    \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
-    \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
-    \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
-  },
-  \\"sapuxLayer\\": \\"VENDOR\\",
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"ui5-task-flatten-library\\"
-    ]
-  }
+    \\"name\\": \\"test-ts-app\\",
+    \\"version\\": \\"0.0.1\\",
+    \\"private\\": true,
+    \\"description\\": \\"An SAP Fiori application.\\",
+    \\"keywords\\": [
+        \\"ui5\\",
+        \\"openui5\\",
+        \\"sapui5\\"
+    ],
+    \\"main\\": \\"webapp/index.html\\",
+    \\"dependencies\\": {},
+    \\"devDependencies\\": {
+        \\"rimraf\\": \\"^5.0.5\\"
+    },
+    \\"scripts\\": {
+        \\"start\\": \\"start script\\",
+        \\"build\\": \\"build script\\",
+        \\"test\\": \\"test script\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
+        \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
+        \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
+    },
+    \\"sapuxLayer\\": \\"VENDOR\\"
 }
 ",
     "state": "modified",

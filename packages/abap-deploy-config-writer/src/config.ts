@@ -2,17 +2,18 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { UI5_TASK_FLATTEN_LIB } from './constants';
 import type { Editor } from 'mem-fs-editor';
-import type { AbapDeployConfig, AbapTarget, FioriToolsProxyConfig } from '@sap-ux/ui5-config';
+import type { AbapDeployConfig, AbapTarget } from '@sap-ux/ui5-config';
 
 /**
  * Updates the base config with the required custom tasks.
  *
+ * @param isLib - whether the project is a library
  * @param basePath - the base path
  * @param baseConfig - the base config
  * @param fs - the memfs editor instance
  */
-export function updateBaseConfig(basePath: string, baseConfig: UI5Config, fs: Editor) {
-    if (baseConfig.getType() === 'library') {
+export function updateBaseConfig(isLib: boolean, basePath: string, baseConfig: UI5Config, fs: Editor) {
+    if (isLib) {
         const customTask = {
             name: UI5_TASK_FLATTEN_LIB,
             afterTask: 'generateResourcesJson'
@@ -47,11 +48,14 @@ export async function getDeployConfig(config: AbapDeployConfig, baseConfig: UI5C
     }
 
     if (!isAppStudio()) {
-        const middleware = baseConfig.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy');
-        if (middleware?.configuration?.backend?.[0].authenticationType === 'reentranceTicket') {
-            target.authenticationType = 'reentranceTicket';
+        const backendConfigs = baseConfig.getBackendConfigsFromFioriToolsProxydMiddleware();
+        for (const backend of backendConfigs) {
+            if (backend.authenticationType === 'reentranceTicket') {
+                target.authenticationType = 'reentranceTicket';
+            }
         }
     }
+
     const baseUi5Doc = baseConfig.removeConfig('server');
     const ui5DeployConfig = await UI5Config.newInstance(baseUi5Doc.toString());
 
