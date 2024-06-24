@@ -26,12 +26,12 @@ describe('Readme file generation tests', () => {
             genDate: 'Jan 01 1975',
             genPlatform: 'CLI',
             serviceUrl: 'serviceUrl',
-            projectName: 'someProjectName',
-            projectTitle: 'someProjectTitle',
-            projectDescription: 'Fiori project description',
+            appName: 'appName',
+            appTitle: 'appTitle',
+            appDescription: 'Fiori project description',
             ui5Theme: 'a_ui5_theme',
             ui5Version: '1.2.3',
-            projectNamespace: 'projectNamespace',
+            appNamespace: 'appNamespace',
             additionalEntries: [
                 { label: 'Generator Specific Label A', value: 'Generator Specific Value A' },
                 { label: 'Generator Specific Label B', value: 'Generator Specific Value B' }
@@ -52,12 +52,12 @@ describe('Readme file generation tests', () => {
             template: 'List Report Page V4',
             serviceType: 'Local Cap',
             genVersion: '2.0.1',
-            projectName: 'someProjectName',
-            projectTitle: 'someProjectTitle',
-            projectDescription: 'Fiori project description',
+            appName: 'appName',
+            appTitle: 'appTitle',
+            appDescription: 'Fiori project description',
             ui5Theme: 'a_ui5_theme',
             ui5Version: '1.2.3',
-            projectNamespace: 'projectNamespace',
+            appNamespace: 'appNamespace',
             genDate: 'Jan 01 1975'
         };
         generateReadMe(__dirname, readMe, editor);

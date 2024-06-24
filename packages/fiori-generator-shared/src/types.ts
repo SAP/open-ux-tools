@@ -25,24 +25,24 @@ interface OptionalEntries {
  * Extends OptionalEntries to include dynamic properties along with the core properties.
  */
 export interface ReadMe extends OptionalEntries {
-    /** The name of the project. */
-    projectName: string;
-    /** The title of the project. */
-    projectTitle: string;
-    /** The namespace of the project. */
-    projectNamespace: string;
-    /** The description of the project. */
-    projectDescription: string;
-    /** The UI5 theme used in the project. */
+    /** The name of the application. */
+    appName: string;
+    /** The title of the application. */
+    appTitle: string;
+    /** The namespace of the application. */
+    appNamespace: string;
+    /** The description of the application. */
+    appDescription: string;
+    /** The UI5 theme used in the application. */
     ui5Theme: string;
     /** The generated ID for the README configuration. */
     genId: string;
     /** The version of the generator used for creating the README file. */
     genVersion: string;
-    /** The ui5 version used in the project */
+    /** The ui5 version used in the application */
     ui5Version: string;
     /** The template used in generating the README file. */
     template: string;
-    /** The service type for the project. */
+    /** The service type for the application. */
     serviceType: string;
 }
