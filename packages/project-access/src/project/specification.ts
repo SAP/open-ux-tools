@@ -18,25 +18,27 @@ const specificationDistTagPath = join(fioriToolsDirectory, FileName.Specificatio
  * 1. attempts to load specification from project.
  * 2. if not installed in project, attempts to load from cache.
  *
- * @param options - options
- * @param options.root - root path of the project/app.
+ * @param root - root path of the project/app
+ * @param [options] - optional options
  * @param [options.logger] - logger instance
  * @returns - specification instance
  */
-export async function getSpecification<T>(options: { root: string; logger?: Logger }): Promise<T> {
+export async function getSpecification<T>(root: string, options?: { logger?: Logger }): Promise<T> {
     let specification: T;
+    const logger = options?.logger;
     try {
-        specification = await loadModuleFromProject<T>(options.root, '@sap/ux-specification');
+        specification = await loadModuleFromProject<T>(root, '@sap/ux-specification');
         if (specification) {
+            logger?.debug(`Specification found in project '${root}'`);
             // Early return if specification is found in project
             return specification;
         }
     } catch {
-        options.logger?.debug(`Specification not found in project '${options.root}', trying to load from cache`);
+        logger?.debug(`Specification not found in project '${root}', trying to load from cache`);
     }
     let distTag = 'latest';
     try {
-        const webappPath = await getWebappPath(options.root);
+        const webappPath = await getWebappPath(root);
         const manifest = await readJSON<Manifest>(join(webappPath, FileName.Manifest));
         const minUI5Version = getMinimumUI5Version(manifest);
         if (minUI5Version && valid(minUI5Version)) {
@@ -44,12 +46,13 @@ export async function getSpecification<T>(options: { root: string; logger?: Logg
             distTag = `UI5-${mayor}.${minor}`;
         }
     } catch (error) {
-        options.logger?.error(`Failed to get minimum UI5 version from manifest: ${error} using 'latest'`);
+        logger?.error(`Failed to get minimum UI5 version from manifest: ${error} using 'latest'`);
     }
     try {
-        specification = await getSpecificationByDistTag<T>(distTag);
+        specification = await getSpecificationByDistTag<T>(distTag, { logger });
+        logger?.debug(`Specification loaded from cache using dist-tag '${distTag}'`);
     } catch (error) {
-        options.logger?.error(`Failed to load specification: ${error}`);
+        logger?.error(`Failed to load specification: ${error}`);
         throw new Error(`Failed to load specification: ${error}`);
     }
     return specification;
@@ -62,10 +65,14 @@ export async function getSpecification<T>(options: { root: string; logger?: Logg
  * @param [options.logger] - logger instance
  */
 export async function refreshSpecificationDistTags(options?: { logger?: Logger }): Promise<void> {
+    const logger = options?.logger;
     try {
-        const distTagsString = await execNpmCommand(['view', '@sap/ux-specification', 'dist-tags', '--json']);
+        const distTagsString = await execNpmCommand(['view', '@sap/ux-specification', 'dist-tags', '--json'], {
+            logger
+        });
         const distTags = JSON.parse(distTagsString);
         await writeFile(specificationDistTagPath, JSON.stringify(distTags, null, 4));
+        logger?.debug(`Refreshed specification dist-tags: ${JSON.stringify(distTags)}`);
         const uniqueVersions = new Set(Object.values(distTags));
 
         // Check if we have cached versions that are not required anymore
@@ -77,10 +84,10 @@ export async function refreshSpecificationDistTags(options?: { logger?: Logger }
         // Delete cached versions that are not required anymore
         for (const version of removeExistingVersions) {
             await deleteModule('@sap/ux-specification', version);
-            options?.logger?.debug(`Deleted specification module '@sap/ux-specification@${version}' from cache`);
+            logger?.debug(`Deleted unused specification module '@sap/ux-specification@${version}' from cache`);
         }
     } catch (error) {
-        options?.logger?.error(`Error refreshing specification dist-tags: ${error}`);
+        logger?.error(`Error refreshing specification dist-tags: ${error}`);
     }
 }
 
@@ -88,11 +95,14 @@ export async function refreshSpecificationDistTags(options?: { logger?: Logger }
  * Loads and return specification from cache by dist-tag.
  *
  * @param distTag - dist-tag of the specification, like 'latest' or 'UI5-1.71'
+ * @param [options] - optional options
+ * @param [options.logger] - optional logger instance
  * @returns - specification instance
  */
-async function getSpecificationByDistTag<T>(distTag: string): Promise<T> {
-    const version = await convertDistTagToVersion(distTag);
-    const specification = await getModule<T>('@sap/ux-specification', version);
+async function getSpecificationByDistTag<T>(distTag: string, options?: { logger?: Logger }): Promise<T> {
+    const logger = options?.logger;
+    const version = await convertDistTagToVersion(distTag, { logger });
+    const specification = await getModule<T>('@sap/ux-specification', version, { logger });
     return specification;
 }
 
@@ -100,11 +110,15 @@ async function getSpecificationByDistTag<T>(distTag: string): Promise<T> {
  * Converts dist-tag to version.
  *
  * @param distTag - dist-tag of the specification, like 'latest' or 'UI5-1.71'
+ * @param [options] - optional options
+ * @param [options.logger] - optional logger instance
  * @returns - version for given dist-tag
  */
-async function convertDistTagToVersion(distTag: string): Promise<string> {
+async function convertDistTagToVersion(distTag: string, options?: { logger?: Logger }): Promise<string> {
+    const logger = options?.logger;
     if (!existsSync(specificationDistTagPath)) {
-        await refreshSpecificationDistTags();
+        logger?.debug(`Specification dist-tags not found at '${specificationDistTagPath}'. Trying to refresh.`);
+        await refreshSpecificationDistTags({ logger });
     }
     const specificationDistTags = await readJSON<Record<string, string>>(specificationDistTagPath);
     const version = specificationDistTags[distTag] ?? specificationDistTags.latest;

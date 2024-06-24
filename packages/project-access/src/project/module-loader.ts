@@ -1,6 +1,7 @@
 import { existsSync } from 'fs';
 import { mkdir, rm } from 'fs/promises';
 import { join } from 'path';
+import type { Logger } from '@sap-ux/logger';
 import { getNodeModulesPath } from './dependencies';
 import { FileName, moduleCacheRoot } from '../constants';
 import { execNpmCommand } from '../command';
@@ -37,16 +38,19 @@ export async function loadModuleFromProject<T>(projectRoot: string, moduleName: 
  *
  * @param module - name of the module
  * @param version - version of the module
+ * @param options - optional options
+ * @param options.logger - optional logger instance
  * @returns - module
  */
-export async function getModule<T>(module: string, version: string): Promise<T> {
+export async function getModule<T>(module: string, version: string, options?: { logger?: Logger }): Promise<T> {
+    const logger = options?.logger;
     const moduleDirectory = join(moduleCacheRoot, module, version);
     if (!existsSync(join(moduleDirectory, FileName.Package))) {
         if (existsSync(moduleDirectory)) {
             await rm(moduleDirectory, { recursive: true });
         }
         await mkdir(moduleDirectory, { recursive: true });
-        await execNpmCommand(['install', `${module}@${version}`], moduleDirectory);
+        await execNpmCommand(['install', `${module}@${version}`], { cwd: moduleDirectory, logger });
     }
     return loadModuleFromProject<T>(moduleDirectory, module);
 }
