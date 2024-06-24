@@ -6,6 +6,7 @@ import { readFileSync, existsSync } from 'fs';
 import { join, isAbsolute } from 'path';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { promptYUIQuestions } from '../../common';
+import { getAppType } from '@sap-ux/project-access';
 
 let loginAttempts = 3;
 
@@ -41,6 +42,9 @@ async function changeDataSource(
     try {
         if (!basePath) {
             basePath = process.cwd();
+        }
+        if ((await getAppType(basePath)) !== 'Fiori Adaptation') {
+            throw new Error('This command can only be used for an Adaptation Project');
         }
         checkEnvironment(basePath);
 
