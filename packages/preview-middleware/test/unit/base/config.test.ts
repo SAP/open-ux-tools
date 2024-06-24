@@ -4,7 +4,7 @@ import {
     DEFAULT_PATH,
     createFlpTemplateConfig,
     createTestTemplateConfig,
-    generatePreviewFiles,
+    getPreviewFiles,
     getFlpConfigWithDefaults
 } from '../../../src/base/config';
 import { mergeTestConfigDefaults } from '../../../src/base/test';
@@ -53,13 +53,13 @@ describe('config', () => {
         });
     });
 
-    describe('generatePreviewFiles', () => {
+    describe('getPreviewFiles', () => {
         test('minimum settings', async () => {
-            const previewFiles = await generatePreviewFiles({}, manifest);
+            const previewFiles = await getPreviewFiles({}, manifest);
             const paths = Object.keys(previewFiles);
             expect(paths).toHaveLength(1);
             expect(paths[0]).toBe(DEFAULT_PATH);
-            expect(previewFiles[paths[0]]).toMatchSnapshot();
+            expect(await previewFiles[paths[0]]()).toMatchSnapshot();
         });
 
         test('tests included and a custom path', async () => {
@@ -69,11 +69,11 @@ describe('config', () => {
                 },
                 test: [{ framework: 'OPA5' }]
             } satisfies MiddlewareConfig;
-            const previewFiles = await generatePreviewFiles(config, manifest);
+            const previewFiles = await getPreviewFiles(config, manifest);
             const files = Object.values(previewFiles);
             expect(files).toHaveLength(2);
             expect(previewFiles[config.flp.path]).toBeDefined();
-            expect(files).toMatchSnapshot();
+            expect(await files[1]()).toMatchSnapshot();
         });
     });
 });

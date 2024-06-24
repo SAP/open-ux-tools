@@ -302,12 +302,12 @@ export function createTestTemplateConfig(config: InternalTestConfig, id: string)
  * @param logger logger instance
  * @returns a record with the preview files
  */
-export async function generatePreviewFiles(
+export async function getPreviewFiles(
     config: MiddlewareConfig,
     manifest: Manifest,
     logger: ToolsLogger = new ToolsLogger()
 ) {
-    const previewFiles: Record<string, string> = {};
+    const previewFiles: Record<string, () => Promise<string>> = {};
     const templatePath = join(__dirname, '../../templates');
 
     // remove incorrect configurations
@@ -315,19 +315,21 @@ export async function generatePreviewFiles(
 
     // generate FLP configuration
     const flpConfig = getFlpConfigWithDefaults(config.flp);
-    const flpTemplate = readFileSync(join(templatePath, 'flp/sandbox.html'), 'utf-8');
-    const flpTemplConfig = createFlpTemplateConfig(flpConfig, manifest);
-    await addApp(
-        flpTemplConfig,
-        manifest,
-        {
-            target: flpTemplConfig.basePath,
-            local: '.',
-            intent: flpConfig.intent
-        },
-        logger
-    );
-    previewFiles[flpConfig.path] = render(flpTemplate, flpTemplConfig);
+    previewFiles[flpConfig.path] = async () => {
+        const flpTemplate = readFileSync(join(templatePath, 'flp/sandbox.html'), 'utf-8');
+        const flpTemplConfig = createFlpTemplateConfig(flpConfig, manifest);
+        await addApp(
+            flpTemplConfig,
+            manifest,
+            {
+                target: flpTemplConfig.basePath,
+                local: '.',
+                intent: flpConfig.intent
+            },
+            logger
+        );
+        return render(flpTemplate, flpTemplConfig);
+    };
 
     // optional test files
     if (config.test) {
@@ -335,11 +337,10 @@ export async function generatePreviewFiles(
             .filter((test) => ['QUnit', 'OPA5'].includes(test.framework))
             .forEach((test) => {
                 const testConfig = mergeTestConfigDefaults(test);
-                const testTemlpate = readFileSync(join(templatePath, 'test/qunit.html'), 'utf-8');
-                previewFiles[testConfig.path] = render(
-                    testTemlpate,
-                    createTestTemplateConfig(testConfig, manifest['sap.app'].id)
-                );
+                previewFiles[testConfig.path] = async () => {
+                    const testTemlpate = readFileSync(join(templatePath, 'test/qunit.html'), 'utf-8');
+                    return render(testTemlpate, createTestTemplateConfig(testConfig, manifest['sap.app'].id));
+                };
             });
     }
 
