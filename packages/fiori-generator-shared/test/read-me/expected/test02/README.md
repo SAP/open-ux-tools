@@ -12,7 +12,7 @@
 |**Application Title**<br>someProjectTitle|
 |**Namespace**<br>projectNamespace|
 |**UI5 Theme**<br>a_ui5_theme|
-|**UI5 Version**<br>|
+|**UI5 Version**<br>1.2.3|
 |**Enable Code Assist Libraries**<br>False|
 |**Enable TypeScript**<br>False|
 |**Add Eslint configuration**<br>False|

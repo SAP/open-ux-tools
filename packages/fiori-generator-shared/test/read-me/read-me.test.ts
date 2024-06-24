@@ -56,6 +56,7 @@ describe('Readme file generation tests', () => {
             projectTitle: 'someProjectTitle',
             projectDescription: 'Fiori project description',
             ui5Theme: 'a_ui5_theme',
+            ui5Version: '1.2.3',
             projectNamespace: 'projectNamespace',
             genDate: 'Jan 01 1975'
         };

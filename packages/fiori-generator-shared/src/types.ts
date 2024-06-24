@@ -39,6 +39,8 @@ export interface ReadMe extends OptionalEntries {
     genId: string;
     /** The version of the generator used for creating the README file. */
     genVersion: string;
+    /** The ui5 version used in the project */
+    ui5Version: string;
     /** The template used in generating the README file. */
     template: string;
     /** The service type for the project. */
