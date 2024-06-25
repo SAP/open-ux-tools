@@ -1,5 +1,5 @@
 import type { Service } from '../base/service-provider';
-import { Axios } from 'axios';
+import { Axios, isAxiosError } from 'axios';
 import type { Logger } from '@sap-ux/logger';
 
 export interface App extends Record<string, unknown> {
@@ -33,5 +33,29 @@ export abstract class AppIndexService extends Axios implements Service {
         }
         const response = await this.get('/', { params });
         return JSON.parse(response.data).results as AppIndex;
+    }
+
+    /**
+     * Returns if manifest is first supported.
+     *
+     * @param {string} appId - The id of the app.
+     * @returns {Promise<boolean>} - is manifest first supported.
+     */
+    public async getIsManiFirstSupported(appId: string): Promise<boolean> {
+        try {
+            const params = {
+                'id': appId
+            };
+            const response = await this.get('/ui5_app_mani_first_supported', { params });
+            const parseResponseData = JSON.parse(response.data);
+
+            return parseResponseData as boolean;
+        } catch (error) {
+            if (isAxiosError(error)) {
+                this.log.debug(`Fail fetching ui5_app_mani_first_supported for app with id: ${appId}.`);
+            }
+            this.log.debug(error);
+            throw error;
+        }
     }
 }

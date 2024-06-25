@@ -15,5 +15,6 @@
             "sap.app/type": "card",
             "url": "/sap/bc/ui5_ui5/sap/example_app_2/cards/mycard"
         }
-    ]
+    ],
+    "ui5_app_mani_first_supported": true
 }

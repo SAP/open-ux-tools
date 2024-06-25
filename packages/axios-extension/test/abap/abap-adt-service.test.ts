@@ -10,8 +10,10 @@ import {
     FileStoreService,
     BusinessObjectsService,
     GeneratorService,
-    PublishService
+    PublishService,
+    UI5RtVersionService
 } from '../../src';
+import type { AxiosError } from '../../src';
 import * as auth from '../../src/auth';
 import type { ArchiveFileNode } from '../../src/abap/types';
 import fs from 'fs';
@@ -45,7 +47,8 @@ enum AdtServices {
     FILE_STORE = '/sap/bc/adt/filestore/ui5-bsp/objects',
     //BUSINESS_OBJECTS = '/sap/bc/adt/repository/informationsystem/search',
     GENERATOR = '/sap/bc/adt/repository/generators',
-    PUBLISH = '/sap/bc/adt/businessservices/odatav4'
+    PUBLISH = '/sap/bc/adt/businessservices/odatav4',
+    UI5_RT_VERSION = '/sap/bc/adt/filestore/ui5-bsp/ui5-rt-version'
 }
 
 const server = 'https://server.example';
@@ -369,6 +372,92 @@ describe('Transport checks', () => {
             })
         );
         postSpy.mockClear();
+    });
+});
+
+describe('Transport Checks - getPackageAndTransportRequest', () => {
+    beforeAll(() => {
+        nock.disableNetConnect();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
+        jest.clearAllMocks();
+    });
+
+    const provider = createForAbap(config);
+
+    test('Unexpected response - invalid XML', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .post(AdtServices.TRANSPORT_CHECKS)
+            .reply(200, 'Some error message from backend');
+        const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
+        expect(await transportChecksService?.getPackageAndTransportRequest(testProjectNamespace)).toBe(null);
+    });
+
+    test('Unexpected response - error in XML', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .post(AdtServices.TRANSPORT_CHECKS)
+            .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-6.xml'));
+        const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
+        expect(await transportChecksService?.getPackageAndTransportRequest(testProjectNamespace)).toStrictEqual(null);
+        expect(loggerMock.error).toHaveBeenNthCalledWith(1, 'This is the first error message');
+        expect(loggerMock.error).toHaveBeenNthCalledWith(2, 'This is the second error message');
+    });
+
+    test('Unexpected response - unknown XML', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .post(AdtServices.TRANSPORT_CHECKS)
+            .reply(200, '<unknown></unknown>');
+        const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
+        expect(await transportChecksService?.getPackageAndTransportRequest(testProjectNamespace)).toBe(null);
+    });
+
+    test('Returns object with package and without transport request', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .post(AdtServices.TRANSPORT_CHECKS)
+            .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-7.xml'));
+        const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
+        const result = await transportChecksService?.getPackageAndTransportRequest(testProjectNamespace);
+        expect(result?.package).toBe(testNewPakcage);
+        expect(result?.transportNumber).toBe(undefined);
+    });
+
+    test('Returns object with package and transport request', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .post(AdtServices.TRANSPORT_CHECKS)
+            .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-8.xml'));
+        const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
+        const result = await transportChecksService?.getPackageAndTransportRequest(testProjectNamespace);
+        expect(result?.package).toBe(testNewPakcage);
+        expect(result?.transportNumber).toBe('NEWTRANSPORT');
+    });
+
+    test('Throw error when cannot parse package and transport request', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .post(AdtServices.TRANSPORT_CHECKS)
+            .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-9.xml'));
+        const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
+        try {
+            await transportChecksService?.getPackageAndTransportRequest(testProjectNamespace);
+            fail('The function should have thrown an error.');
+        } catch (error) {
+            expect(error).toBeDefined();
+            expect(error.message).toBe('Unable to parse ADT response');
+        }
     });
 });
 
@@ -888,5 +977,56 @@ describe('Publish Service', () => {
         const publishService = await provider.getAdtService<PublishService>(PublishService);
         const publishResponse = await publishService?.publish(type, name);
         expect(publishResponse?.SEVERITY).toEqual('OK');
+    });
+});
+
+describe('UI5 RT Version service', () => {
+    const ui5VersionMock = '1.21.1';
+    beforeAll(() => {
+        nock.disableNetConnect();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
+    });
+
+    const provider = createForAbap(config);
+
+    test('Get UI5 Version', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(AdtServices.UI5_RT_VERSION)
+            .reply(200, ui5VersionMock);
+
+        const ui5RtVersionService = await provider.getAdtService<UI5RtVersionService>(UI5RtVersionService);
+        const ui5Version = await ui5RtVersionService?.getUI5Version();
+        expect(ui5Version).toBe(ui5VersionMock);
+    });
+
+    test('Throws error when request fails', async () => {
+        const mockAxiosError = {
+            response: {
+                status: 404,
+                data: 'Not found'
+            },
+            message: 'Request failed with status code 404'
+        } as AxiosError;
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(AdtServices.UI5_RT_VERSION)
+            .replyWithError(mockAxiosError);
+
+        const ui5RtVersionService = await provider.getAdtService<UI5RtVersionService>(UI5RtVersionService);
+
+        try {
+            await ui5RtVersionService?.getUI5Version();
+            fail('The function should have thrown an error.');
+        } catch (error) {
+            expect(error).toBeDefined();
+            expect(error.message).toBe('Request failed with status code 404');
+        }
     });
 });
