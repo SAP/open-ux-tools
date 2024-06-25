@@ -234,6 +234,12 @@ export class AbapServiceProvider extends ServiceProvider {
         return gen;
     }
 
+    /**
+     * Create an OData Service generator for a given package name
+     *
+     * @param packageName - name of package to be used for generated artifacts in ABAP system
+     * @returns a OData Service generator
+     */
     public async getODataServiceGenerator(packageName: string): Promise<ODataServiceGenerator> {
         const generatorService = await this.getAdtService<RapGeneratorService>(RapGeneratorService);
         if (!generatorService) {
