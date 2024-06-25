@@ -1,6 +1,7 @@
 export { FileName, DirName, FioriToolsSettings } from './constants';
 export { getFilePaths } from './file';
 export {
+    addPackageDevDependency,
     clearCdsModuleCache,
     createApplicationAccess,
     createProjectAccess,
@@ -36,7 +37,8 @@ export {
     readCapServiceMetadataEdmx,
     readUi5Yaml,
     refreshSpecificationDistTags,
-    toReferenceUri
+    toReferenceUri,
+    updatePackageScript
 } from './project';
 export * from './types';
 export * from './library';

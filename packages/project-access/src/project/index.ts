@@ -13,7 +13,7 @@ export {
     toReferenceUri,
     clearCdsModuleCache
 } from './cap';
-export { getNodeModulesPath } from './dependencies';
+export { addPackageDevDependency, getNodeModulesPath } from './dependencies';
 export { getCapI18nFolderNames, getI18nPropertiesPaths } from './i18n';
 export {
     getAppProgrammingLanguage,
@@ -29,4 +29,5 @@ export { findAllApps, findCapProjects, findFioriArtifacts, findProjectRoot, getA
 export { getWebappPath, readUi5Yaml } from './ui5-config';
 export { getMtaPath } from './mta';
 export { createApplicationAccess, createProjectAccess } from './access';
+export { updatePackageScript } from './script';
 export { getSpecification, refreshSpecificationDistTags } from './specification';
