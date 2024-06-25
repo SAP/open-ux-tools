@@ -1,8 +1,7 @@
 import type { Logger } from '@sap-ux/logger';
 import type { GeneratorEntry } from './types';
-import type { ValidationMessage } from '../../types';
+import type { ODataServiceTechnicalDetails, ValidationMessage } from '../../types';
 import { AdtService } from '../services';
-import { XMLParser, XMLValidator } from 'fast-xml-parser';
 
 /**
  * Extension of the Generator service to generate OData services
@@ -19,14 +18,14 @@ export class ODataServiceGenerator extends AdtService {
      * Configure the UI service generator.
      *
      * @param _config - The generator configuration.
-     * @param bo - The business object.
+     * @param packageName - package to be used for generated objects
      */
     public configure(_config: GeneratorEntry, packageName: string) {
         this.packageName = packageName;
     }
 
     /**
-     * Validate input
+     * Validate input for OData Service Definition
      *
      * @param input: JSON string
      * @returns messages
@@ -45,14 +44,14 @@ export class ODataServiceGenerator extends AdtService {
     }
 
     /**
-     * Get technical name of ServiceDefinition
+     * Get technical details of (to be generated) OData service
      * - this is a workaround for the missing service definition name in the generator response
      * - actual name might be different e.g. because of name collisions at the time when the actual generation is called
      *
      * @param input: JSON string
      * @returns technical name of service definition
      */
-    public async getServiceDefinitionName(input: string): Promise<string> {
+    public async getTechnicalDetails(input: string): Promise<ODataServiceTechnicalDetails> {
         const response = await this.post(`/preview`, input, {
             headers: {
                 'Content-Type': 'application/vnd.sap.adt.repository.generator.content.v1+json',
@@ -66,11 +65,11 @@ export class ODataServiceGenerator extends AdtService {
     }
 
     /**
-     * Generate ServiceDefinition
+     * Generate OData Service Definition
      *
      * @param input: JSON string
      */
-    public async generateServiceDefinition(input: string): Promise<number> {
+    public async generate(input: string): Promise<number> {
         const response = await this.post(``, input, {
             headers: {
                 'Content-Type': 'application/vnd.sap.adt.repository.generator.content.v1+json',
@@ -88,7 +87,7 @@ export class ODataServiceGenerator extends AdtService {
      * Parse an xml document for validation messages
      *
      * @param xml response for "validation" request
-     * @returns parsed ATO settings
+     * @returns messages
      */
     private parseValidateResponse(xml: string): ValidationMessage[] {
         // we expect messages - if everything is fine we should get:
@@ -98,19 +97,12 @@ export class ODataServiceGenerator extends AdtService {
         // <validationMessages:severity>OK</validationMessages:severity>
         // </validationMessages:validationMessage>
         // </validationMessages:validationMessages>
-        if (XMLValidator.validate(xml) !== true) {
-            this.log.warn(`Invalid XML: ${xml}`);
-            return [];
+        interface ValidateResponse {
+            validationMessages: {
+                validationMessage: ValidationMessage;
+            }[];
         }
-        const options = {
-            attributeNamePrefix: '',
-            ignoreAttributes: false,
-            ignoreNameSpace: true,
-            parseAttributeValue: true,
-            removeNSPrefix: true
-        };
-        const parser: XMLParser = new XMLParser(options);
-        const parsed = parser.parse(xml, true);
+        const parsed = this.parseResponse<ValidateResponse>(xml);
         let validationMessages = parsed.validationMessages;
         if (!Array.isArray(validationMessages)) {
             validationMessages = [validationMessages];
@@ -122,9 +114,9 @@ export class ODataServiceGenerator extends AdtService {
      * Parse an XML document to find the technical name of the service definition
      *
      * @param xml response for "preview" request
-     * @returns technical name of service definition
+     * @returns technical details of service definition
      */
-    private parsePreviewResponse(xml: string): string {
+    private parsePreviewResponse(xml: string): ODataServiceTechnicalDetails | undefined {
         // we expect e.g.
         // <?xml version="1.0" encoding="UTF-8"?>
         // -<massOperation:group xmlns:massOperation="http://www.sap.com/adt/massoperation" massOperation:name="Service Artifacts">
@@ -135,30 +127,36 @@ export class ODataServiceGenerator extends AdtService {
         // <adtcore:content xmlns:adtcore="http://www.sap.com/adt/core" adtcore:type="plain/text">@EndUserText.label : 'Service Definition for ZC_BOOK000' @ObjectModel.leadingEntity.name : 'ZC_BOOK000' define service ZUI_BOOK000_O4 provider contracts odata_v4_ui {expose ZC_BOOK000 as Book; }</adtcore:content>
         // </massOperation:codeSnippet>
         // <massOperation:objectReference adtcore:name="ZUI_BOOK000_O4" xmlns:adtcore="http://www.sap.com/adt/core" adtcore:type="SRVD/SRV" adtcore:uri="/sap/bc/adt/ddic/srvd/sources/zui_book000_o4"/>
-        if (XMLValidator.validate(xml) !== true) {
-            this.log.warn(`Invalid XML: ${xml}`);
-            return '';
+        interface PreviewResponse {
+            group: {
+                group: {
+                    name: string; // group name
+                    object: {
+                        objectReference: {
+                            type: string; // object type
+                            name: string; // technical name of the object
+                        };
+                    };
+                }[];
+            };
         }
-        const options = {
-            attributeNamePrefix: '',
-            ignoreAttributes: false,
-            ignoreNameSpace: true,
-            parseAttributeValue: true,
-            removeNSPrefix: true
-        };
-        const parser: XMLParser = new XMLParser(options);
-        const parsed = parser.parse(xml, true);
+        const parsed = this.parseResponse<PreviewResponse>(xml);
         const serviceLayerGroup = (parsed.group.group || []).find((entry) => entry.name === 'Business Service Layer');
         if (!serviceLayerGroup) {
-            return '';
+            return;
         }
         const objects = !Array.isArray(serviceLayerGroup.object)
             ? [serviceLayerGroup.object]
             : serviceLayerGroup.object;
         const serviceObject = objects.find((entry) => entry.objectReference?.type === 'SRVD/SRV');
-        if (!serviceObject) {
-            return '';
+        const serviceBindingObject = objects.find((entry) => entry.objectReference?.type === 'SRVB/SVB');
+        if (!serviceObject || !serviceBindingObject) {
+            return;
         }
-        return serviceObject.objectReference?.name || ''; // TODO return GeneratedODataService
+        return {
+            serviceName: serviceBindingObject.objectReference?.name || '',
+            serviceDefinitionName: serviceObject.objectReference?.name || '',
+            serviceVersion: '0001' 
+        };
     }
 }

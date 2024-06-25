@@ -1,5 +1,5 @@
 import { AdtService } from './adt-service';
-import type { AdtCategory, PublishResponse } from '../../types';
+import type { AdtCategory, ODataServiceTechnicalDetails, PublishResponse } from '../../types';
 
 /**
  *
@@ -56,22 +56,29 @@ export class PublishService extends AdtService {
     /**
      * Get OData V4 service URI
      *
-     * @param bindingName - The name of the service binding.
+     * @param technicalDetails - technical name of OData service
      * @returns service URI.
      */
-    public async getODataV4ServiceUri(bindingName: string): Promise<string> {
-        const response = await this.get(`/${bindingName}`, {
+    public async getODataV4ServiceUri(technicalDetails: ODataServiceTechnicalDetails): Promise<string> {
+        const { serviceDefinitionName, serviceName, serviceVersion } = technicalDetails;
+        const response = await this.get(`/${serviceName}`, {
             headers: {
                 Accept: 'application/vnd.sap.adt.businessservices.odatav4.v1+xml'
             },
             params: {
-                servicename: bindingName,
-                serviceversion: '0001',
-                srvdname: bindingName
+                servicename: serviceName,
+                serviceversion: serviceVersion,
+                srvdname: serviceDefinitionName
             }
         });
-
-        const data = this.parseResponse(response.data);
-        return String(data['serviceGroup']['services']['serviceUrl']);
+        interface ServiceResponse {
+            serviceGroup: {
+                services: {
+                    serviceUrl: string;
+                };
+            };
+        }
+        const data = this.parseResponse<ServiceResponse>(response.data);
+        return String(data.serviceGroup.services.serviceUrl);
     }
 }

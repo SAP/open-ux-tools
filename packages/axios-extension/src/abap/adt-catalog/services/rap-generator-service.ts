@@ -2,7 +2,7 @@ import { AdtService } from './adt-service';
 import type { AdtCategory } from '../../types';
 import type { GeneratorEntry } from '../generators/types';
 /**
- * RapGeneratorService implements ADT requests for generating an OData Service 
+ * RapGeneratorService implements ADT requests for generating an OData Service
  * from ABAP backend system.
  */
 export class RapGeneratorService extends AdtService {

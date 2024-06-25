@@ -149,7 +149,7 @@ export type ValidationMessage = {
 };
 
 // details of a generated OData service, needed to determine service URI
-export type GeneratedODataService = {
+export type ODataServiceTechnicalDetails = {
     serviceName: string;
     serviceVersion: string;
     serviceDefinitionName: string;
