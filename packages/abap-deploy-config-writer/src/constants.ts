@@ -1,0 +1,11 @@
+export const ABAP_DEPLOY_TASK = 'deploy-to-abap';
+export const BUILD_SCRIPT = 'npm run build';
+export const DEPLOY_SCRIPT = 'fiori deploy';
+export const UNDEPLOY_SCRIPT = 'fiori undeploy';
+export const RIMRAF_VERSION = '^5.0.5';
+export const RIMRAF = 'rimraf';
+export const UI5_TASK_FLATTEN_LIB = 'ui5-task-flatten-library';
+export const UI5_TASK_FLATTEN_LIB_VERSION = '3.0.2';
+export const UI5_REPO_TEXT_FILES = '.Ui5RepositoryTextFiles';
+export const UI5_CLI_LIB = '@ui5/cli';
+export const UI5_CLI_MIN_VERSION = '3.0.0';
