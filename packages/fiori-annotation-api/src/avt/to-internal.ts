@@ -257,12 +257,12 @@ export function convertApplyToInternal(aliasInfo: AliasInformation, apply: Apply
  */
 export function convertPrimitiveValueToInternal(
     type: string,
-    value: string | number | boolean,
+    value: string | number | boolean | undefined,
     aliasInfo: AliasInformation
 ): string {
-    const text = value.toString();
+    const text = value?.toString();
     if (!text) {
-        return text;
+        return String(text);
     } else if (type === Edm.EnumMember) {
         return getAliasedEnumMember(aliasInfo, text);
     } else if (type.indexOf('Path') >= 0) {

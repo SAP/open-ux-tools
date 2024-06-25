@@ -1,4 +1,4 @@
-import type { AliasInformation, AnnotationFile, Element } from '@sap-ux/odata-annotation-core-types';
+import type { AliasInformation, AnnotationFile, Element, ElementChild } from '@sap-ux/odata-annotation-core-types';
 import {
     ELEMENT_TYPE,
     ATTRIBUTE_TYPE,
@@ -592,13 +592,17 @@ export class ChangeConverter {
                 this.annotationFileChanges.push(internalChange);
             } else if (node.name === valueType) {
                 // element notation
+                let childContent: ElementChild[] = [];
+                if (content.value.type !== Edm.Null) {
+                    childContent.push(createTextNode(newValue));
+                }
                 const internalChange: ReplaceElement = {
                     type: REPLACE_ELEMENT,
                     uri: file.uri,
                     pointer: pointer,
                     newElement: createElementNode({
                         name: content.value.type,
-                        content: [createTextNode(newValue)]
+                        content: [...childContent]
                     })
                 };
                 this.annotationFileChanges.push(internalChange);
