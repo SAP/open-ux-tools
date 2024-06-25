@@ -54,6 +54,9 @@
       "path": "packages/cds-odata-annotation-converter"
     },
     {
+      "path": "packages/cf-deploy-config-writer"
+    },
+    {
       "path": "packages/control-property-editor-common"
     },
     {

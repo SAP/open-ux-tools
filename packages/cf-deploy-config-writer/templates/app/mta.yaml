@@ -1,0 +1,12 @@
+_schema-version: "3.2"
+ID: <%- id.slice(0, 128) %>
+description: <%- mtaDescription %>
+version: <%- mtaVersion %>
+
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+
+modules: []
+
+resources: []
