@@ -113,7 +113,7 @@ export class UiServiceGenerator extends AdtService {
      * @param transport - The transport.
      * @returns The object references.
      */
-    public async generate(content: string, transport: string): Promise<any> {
+    public async generate(content: string, transport: string): Promise<unknown> {
         const response = await this.post('', content, {
             headers: {
                 'Content-Type': 'application/vnd.sap.adt.repository.generator.content.v1+json',

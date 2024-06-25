@@ -855,7 +855,7 @@ describe('Generator Service', () => {
         const validateContent = await gen.validateContent(content);
         expect(validateContent.severity).toEqual('OK');
 
-        const generationReponse = await gen?.generate(content, transport);
+        const generationReponse: any = await gen?.generate(content, transport);
         expect(generationReponse?.objectReferences).toEqual('');
     });
 
