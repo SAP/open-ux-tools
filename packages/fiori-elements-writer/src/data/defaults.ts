@@ -80,9 +80,12 @@ function getUi5Libs(
     ui5Libs?: string | string[]
 ): string[] {
     const templateLibs = getTemplateUi5Libs(type, version);
-    const annotationLibs = getAnnotationLibs(version, metadata);
-
-    return [...templateLibs, ...annotationLibs].concat(ui5Libs ?? []);
+    if (metadata) {
+        let annotationLibs = getAnnotationLibs(version, metadata);
+        return [...templateLibs, ...annotationLibs].concat(ui5Libs ?? []);
+    } else {
+        return [...templateLibs].concat(ui5Libs ?? []);
+    }
 }
 
 /**
