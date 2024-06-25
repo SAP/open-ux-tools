@@ -49,14 +49,22 @@ describe('MultiSelect', () => {
         const button = document.getElementsByClassName('ms-Button')[0];
         fireEvent.click(button);
         const options = screen.queryAllByRole('option');
+        // select 1st item
         fireEvent.click(options[0]);
         expect(onChangeFn).toHaveBeenCalled();
         expect(onChangeFn).toHaveBeenCalledWith('testList', 'testKey0');
+        expect(screen.getByPlaceholderText('testText0')).toBeDefined();
+        // select 2nd item
         fireEvent.click(options[1]);
         expect(onChangeFn).toHaveBeenCalledTimes(2);
         expect(onChangeFn).toHaveBeenCalledWith('testList', 'testKey0,testKey1');
-        fireEvent.click(button);
         expect(screen.getByPlaceholderText('testText0, testText1')).toBeDefined();
+        // deselect 2nd item
+        fireEvent.click(options[1]);
+        expect(onChangeFn).toHaveBeenCalledTimes(3);
+        expect(onChangeFn).toHaveBeenCalledWith('testList', 'testKey0');
+        fireEvent.click(button);
+        expect(screen.getByPlaceholderText('testText0')).toBeDefined();
     });
 
     it('Test property required', () => {
