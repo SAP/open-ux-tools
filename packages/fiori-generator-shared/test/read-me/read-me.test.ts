@@ -18,13 +18,13 @@ describe('Readme file generation tests', () => {
         const readMePath = path.join(__dirname, '/README.md');
         const expectReadMePath = path.join(__dirname, './expected/test01/README.md');
         const readMe: ReadMe = {
-            genId: '@sap/generator-fiori-elements',
+            generatorName: '@sap/generator-fiori-elements',
             template: 'List Report Page V4',
             serviceType: 'Local Cap',
             launchText: getLaunchText(),
-            genVersion: '2.0.1',
-            genDate: 'Jan 01 1975',
-            genPlatform: 'CLI',
+            generatorVersion: '2.0.1',
+            generatorDate: 'Jan 01 1975',
+            generatorPlatform: 'CLI',
             serviceUrl: 'serviceUrl',
             appName: 'appName',
             appTitle: 'appTitle',
@@ -48,17 +48,17 @@ describe('Readme file generation tests', () => {
         const readMePath = path.join(__dirname, '/README.md');
         const expectReadMePath = path.join(__dirname, './expected/test02/README.md');
         const readMe: ReadMe = {
-            genId: '@sap/generator-fiori-elements',
+            generatorName: '@sap/generator-fiori-elements',
             template: 'List Report Page V4',
             serviceType: 'Local Cap',
-            genVersion: '2.0.1',
+            generatorVersion: '2.0.1',
             appName: 'appName',
             appTitle: 'appTitle',
             appDescription: 'Fiori project description',
             ui5Theme: 'a_ui5_theme',
             ui5Version: '1.2.3',
             appNamespace: 'appNamespace',
-            genDate: 'Jan 01 1975'
+            generatorDate: 'Jan 01 1975'
         };
         generateReadMe(__dirname, readMe, editor);
         expect(editor.read(readMePath)).toEqual(readFileSync(expectReadMePath, 'utf-8'));

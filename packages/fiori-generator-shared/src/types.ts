@@ -24,7 +24,7 @@ interface OptionalEntries {
  * Interface representing the configuration for generating a README file.
  * Extends OptionalEntries to include dynamic properties along with the core properties.
  */
-export interface ReadMe extends OptionalEntries {
+export interface ReadMe {
     /** The name of the application. */
     appName: string;
     /** The title of the application. */
@@ -35,14 +35,23 @@ export interface ReadMe extends OptionalEntries {
     appDescription: string;
     /** The UI5 theme used in the application. */
     ui5Theme: string;
-    /** The generated ID for the README configuration. */
-    genId: string;
-    /** The node module version of the generator used to generate the application. */
-    genVersion: string;
+    /** The name of generator used. */
+    generatorName: string;
+    /** The version of the generator used */
+    generatorVersion: string;
     /** The ui5 version used in the application */
     ui5Version: string;
     /** The floorplan template name used to generate the application */
     template: string;
+    serviceUrl?: string;
     /** The service type for the application. */
-    serviceType: string;
+    serviceType?: string;
+    generatorPlatform?: string;
+    metadataFilename?: string;
+    enableCodeAssist?: boolean;
+    enableTypeScript?: boolean;
+    enableEslint?: boolean;
+    launchText?: string;
+    additionalEntries?: AdditionalEntries[];
+    generatorDate?: string;
 }

@@ -7,7 +7,7 @@
 |**Generation Platform**<br>|
 |**Template Used**<br>List Report Page V4|
 |**Service Type**<br>Local Cap|
-|**Service URL**<br>|
+|**Service URL**<br>N/A|
 |**Module Name**<br>appName|
 |**Application Title**<br>appTitle|
 |**Namespace**<br>appNamespace|
