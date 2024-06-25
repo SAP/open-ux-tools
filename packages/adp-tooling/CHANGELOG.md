@@ -1,5 +1,181 @@
 # @sap-ux/adp-tooling
 
+## 0.11.2
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.4.2
+-   @sap-ux/ui5-config@0.22.8
+
+## 0.11.1
+
+### Patch Changes
+
+-   a140cf8b: fix: incorrect fiori-tools-proxy config generated for adp
+-   Updated dependencies [a140cf8b]
+    -   @sap-ux/ui5-config@0.22.8
+    -   @sap-ux/project-access@1.22.1
+    -   @sap-ux/axios-extension@1.13.1
+    -   @sap-ux/system-access@0.4.1
+
+## 0.11.0
+
+### Minor Changes
+
+-   7f8bc980: Adds writer functionality for generation of OnPremise and Cloud Adaptation Projects
+
+### Patch Changes
+
+-   Updated dependencies [7f8bc980]
+    -   @sap-ux/system-access@0.4.1
+
+## 0.10.23
+
+### Patch Changes
+
+-   Updated dependencies [a48a8c0b]
+    -   @sap-ux/system-access@0.4.0
+
+## 0.10.22
+
+### Patch Changes
+
+-   Updated dependencies [ad93a484]
+    -   @sap-ux/project-access@1.22.0
+    -   @sap-ux/axios-extension@1.13.1
+    -   @sap-ux/system-access@0.3.34
+
+## 0.10.21
+
+### Patch Changes
+
+-   Updated dependencies [9188fe8b]
+    -   @sap-ux/ui5-config@0.22.7
+    -   @sap-ux/project-access@1.21.2
+    -   @sap-ux/axios-extension@1.13.1
+    -   @sap-ux/system-access@0.3.34
+
+## 0.10.20
+
+### Patch Changes
+
+-   Updated dependencies [869c1c0d]
+    -   @sap-ux/axios-extension@1.13.1
+    -   @sap-ux/system-access@0.3.34
+
+## 0.10.19
+
+### Patch Changes
+
+-   98b5aaee: Add new model writer has misspelled property that breaks the validation of the change
+
+## 0.10.18
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.22.6
+-   @sap-ux/project-access@1.21.1
+-   @sap-ux/axios-extension@1.13.0
+-   @sap-ux/system-access@0.3.33
+
+## 0.10.17
+
+### Patch Changes
+
+-   Updated dependencies [b2ee99fc]
+    -   @sap-ux/axios-extension@1.13.0
+    -   @sap-ux/system-access@0.3.33
+
+## 0.10.16
+
+### Patch Changes
+
+-   Updated dependencies [69b8d6de]
+    -   @sap-ux/project-access@1.21.0
+    -   @sap-ux/axios-extension@1.12.6
+    -   @sap-ux/system-access@0.3.32
+
+## 0.10.15
+
+### Patch Changes
+
+-   Updated dependencies [a7d78229]
+    -   @sap-ux/project-access@1.20.4
+    -   @sap-ux/axios-extension@1.12.6
+    -   @sap-ux/system-access@0.3.32
+
+## 0.10.14
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.20.3
+-   @sap-ux/axios-extension@1.12.6
+-   @sap-ux/system-access@0.3.32
+
+## 0.10.13
+
+### Patch Changes
+
+-   Updated dependencies [54c91c6d]
+    -   @sap-ux/project-access@1.20.2
+    -   @sap-ux/axios-extension@1.12.6
+    -   @sap-ux/system-access@0.3.32
+
+## 0.10.12
+
+### Patch Changes
+
+-   Updated dependencies [558891c2]
+    -   @sap-ux/axios-extension@1.12.6
+    -   @sap-ux/system-access@0.3.32
+
+## 0.10.11
+
+### Patch Changes
+
+-   Updated dependencies [69282b7d]
+    -   @sap-ux/axios-extension@1.12.5
+    -   @sap-ux/system-access@0.3.31
+
+## 0.10.10
+
+### Patch Changes
+
+-   Updated dependencies [3684195d]
+    -   @sap-ux/ui5-config@0.22.5
+    -   @sap-ux/project-access@1.20.1
+    -   @sap-ux/axios-extension@1.12.4
+    -   @sap-ux/system-access@0.3.30
+
+## 0.10.9
+
+### Patch Changes
+
+-   Updated dependencies [96de8f25]
+    -   @sap-ux/system-access@0.3.30
+
+## 0.10.8
+
+### Patch Changes
+
+-   Updated dependencies [895ee259]
+    -   @sap-ux/system-access@0.3.29
+
+## 0.10.7
+
+### Patch Changes
+
+-   6e3d4da4: Add config needed in BAS
+-   Updated dependencies [6e3d4da4]
+    -   @sap-ux/axios-extension@1.12.4
+    -   @sap-ux/system-access@0.3.28
+
+## 0.10.6
+
+### Patch Changes
+
+-   da5d9f0b: Fragment files are not created together with an addXML change in onChangeRequest handler
+
 ## 0.10.5
 
 ### Patch Changes

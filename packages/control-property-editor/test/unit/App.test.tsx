@@ -6,12 +6,12 @@ import { render, mockDomEventListener } from './utils';
 import { initI18n } from '../../src/i18n';
 
 import App from '../../src/App';
-import { controlSelected, scenario, showMessage } from '@sap-ux-private/control-property-editor-common';
+import { controlSelected, scenario } from '@sap-ux-private/control-property-editor-common';
 import { mockResizeObserver } from '../utils/utils';
 import { InputType } from '../../src/panels/properties/types';
 import { registerAppIcons } from '../../src/icons';
 import { DeviceType } from '../../src/devices';
-import { FilterName, SliceState, changePreviewScale, initialState } from '../../src/slice';
+import { FilterName, changePreviewScale, initialState } from '../../src/slice';
 
 jest.useFakeTimers({ advanceTimers: true });
 const windowEventListenerMock = mockDomEventListener(window);
@@ -207,7 +207,12 @@ test('renders warning message for "ADAPTATION_PROJECT" scenario', async () => {
         dialogMessage: {
             message: 'Some Text',
             shouldHideIframe: false
-        }
+        },
+        changeStack: {
+            canUndo: true,
+            canRedo: true
+        },
+        canSave: true
     };
     render(<App previewUrl="" scenario="ADAPTATION_PROJECT" />, { initialState });
 

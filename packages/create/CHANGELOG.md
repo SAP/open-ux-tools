@@ -1,5 +1,227 @@
 # @sap-ux/create
 
+## 0.5.108
+
+### Patch Changes
+
+-   Updated dependencies [04ed040a]
+    -   @sap-ux/cap-config-writer@0.4.0
+
+## 0.5.107
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.3.7
+
+## 0.5.106
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.2
+-   @sap-ux/app-config-writer@0.3.76
+-   @sap-ux/cap-config-writer@0.3.6
+
+## 0.5.105
+
+### Patch Changes
+
+-   Updated dependencies [a140cf8b]
+    -   @sap-ux/adp-tooling@0.11.1
+    -   @sap-ux/app-config-writer@0.3.75
+    -   @sap-ux/cards-editor-config-writer@0.3.7
+    -   @sap-ux/mockserver-config-writer@0.5.6
+    -   @sap-ux/project-access@1.22.1
+    -   @sap-ux/cap-config-writer@0.3.5
+
+## 0.5.104
+
+### Patch Changes
+
+-   a06687ce: Added internal functionality to support inquirer prompts
+
+## 0.5.103
+
+### Patch Changes
+
+-   7f8bc980: FIX: prompt user for authentication type if not known when generating an adaptation project
+-   Updated dependencies [7f8bc980]
+    -   @sap-ux/adp-tooling@0.11.0
+
+## 0.5.102
+
+### Patch Changes
+
+-   Updated dependencies [d1045887]
+    -   @sap-ux/cap-config-writer@0.3.4
+
+## 0.5.101
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.3.3
+
+## 0.5.100
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.23
+
+## 0.5.99
+
+### Patch Changes
+
+-   Updated dependencies [ad93a484]
+    -   @sap-ux/project-access@1.22.0
+    -   @sap-ux/adp-tooling@0.10.22
+    -   @sap-ux/app-config-writer@0.3.74
+    -   @sap-ux/cap-config-writer@0.3.2
+    -   @sap-ux/cards-editor-config-writer@0.3.6
+    -   @sap-ux/mockserver-config-writer@0.5.5
+
+## 0.5.98
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.21
+-   @sap-ux/app-config-writer@0.3.73
+-   @sap-ux/cards-editor-config-writer@0.3.6
+-   @sap-ux/mockserver-config-writer@0.5.5
+-   @sap-ux/project-access@1.21.2
+-   @sap-ux/cap-config-writer@0.3.1
+
+## 0.5.97
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.20
+-   @sap-ux/app-config-writer@0.3.72
+
+## 0.5.96
+
+### Patch Changes
+
+-   Updated dependencies [98b5aaee]
+    -   @sap-ux/adp-tooling@0.10.19
+
+## 0.5.95
+
+### Patch Changes
+
+-   Updated dependencies [64a95bd1]
+    -   @sap-ux/cap-config-writer@0.3.0
+    -   @sap-ux/adp-tooling@0.10.18
+    -   @sap-ux/app-config-writer@0.3.71
+    -   @sap-ux/cards-editor-config-writer@0.3.5
+    -   @sap-ux/mockserver-config-writer@0.5.4
+    -   @sap-ux/project-access@1.21.1
+
+## 0.5.94
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.17
+-   @sap-ux/app-config-writer@0.3.70
+
+## 0.5.93
+
+### Patch Changes
+
+-   Updated dependencies [69b8d6de]
+    -   @sap-ux/project-access@1.21.0
+    -   @sap-ux/adp-tooling@0.10.16
+    -   @sap-ux/app-config-writer@0.3.69
+    -   @sap-ux/cap-config-writer@0.2.40
+    -   @sap-ux/cards-editor-config-writer@0.3.4
+    -   @sap-ux/mockserver-config-writer@0.5.3
+
+## 0.5.92
+
+### Patch Changes
+
+-   Updated dependencies [a7d78229]
+    -   @sap-ux/project-access@1.20.4
+    -   @sap-ux/adp-tooling@0.10.15
+    -   @sap-ux/app-config-writer@0.3.68
+    -   @sap-ux/cap-config-writer@0.2.39
+    -   @sap-ux/cards-editor-config-writer@0.3.4
+    -   @sap-ux/mockserver-config-writer@0.5.3
+
+## 0.5.91
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.20.3
+-   @sap-ux/adp-tooling@0.10.14
+-   @sap-ux/app-config-writer@0.3.67
+-   @sap-ux/cap-config-writer@0.2.38
+-   @sap-ux/cards-editor-config-writer@0.3.4
+-   @sap-ux/mockserver-config-writer@0.5.3
+
+## 0.5.90
+
+### Patch Changes
+
+-   Updated dependencies [54c91c6d]
+    -   @sap-ux/project-access@1.20.2
+    -   @sap-ux/adp-tooling@0.10.13
+    -   @sap-ux/app-config-writer@0.3.66
+    -   @sap-ux/cap-config-writer@0.2.37
+    -   @sap-ux/cards-editor-config-writer@0.3.4
+    -   @sap-ux/mockserver-config-writer@0.5.3
+
+## 0.5.89
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.12
+-   @sap-ux/app-config-writer@0.3.65
+
+## 0.5.88
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.11
+-   @sap-ux/app-config-writer@0.3.64
+
+## 0.5.87
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.10
+-   @sap-ux/app-config-writer@0.3.63
+-   @sap-ux/cards-editor-config-writer@0.3.4
+-   @sap-ux/mockserver-config-writer@0.5.3
+-   @sap-ux/project-access@1.20.1
+-   @sap-ux/cap-config-writer@0.2.36
+
+## 0.5.86
+
+### Patch Changes
+
+-   96de8f25: FIX: prompt user for authentication type if not known when generating an adaptation project
+    -   @sap-ux/adp-tooling@0.10.9
+
+## 0.5.85
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.8
+
+## 0.5.84
+
+### Patch Changes
+
+-   Updated dependencies [6e3d4da4]
+    -   @sap-ux/adp-tooling@0.10.7
+    -   @sap-ux/app-config-writer@0.3.62
+
+## 0.5.83
+
+### Patch Changes
+
+-   Updated dependencies [da5d9f0b]
+    -   @sap-ux/adp-tooling@0.10.6
+
 ## 0.5.82
 
 ### Patch Changes

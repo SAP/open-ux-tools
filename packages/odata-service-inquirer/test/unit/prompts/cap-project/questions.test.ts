@@ -4,7 +4,7 @@ import { getLocalCapProjectPrompts } from '../../../../src/prompts/datasources/c
 import type { CapService } from '../../../../src/types';
 import { promptNames, hostEnvironment, type CapServiceChoice } from '../../../../src/types';
 import { type CapProjectChoice, capInternalPromptNames } from '../../../../src/prompts/datasources/cap-project/types';
-import { PromptState, getPlatform } from '../../../../src/utils';
+import { PromptState, getHostEnvironment } from '../../../../src/utils';
 import {
     enterCapPathChoiceValue,
     getCapServiceChoices as getCapServiceChoicesMock
@@ -12,10 +12,11 @@ import {
 import * as capValidators from '../../../../src/prompts/datasources/cap-project/validators';
 import type { CapCustomPaths } from '@sap-ux/project-access';
 import { errorHandler } from '../../../../src/prompts/prompt-helpers';
+import { type CdsVersionInfo } from '@sap-ux/project-access';
 
 jest.mock('../../../../src/utils', () => ({
     ...jest.requireActual('../../../../src/utils'),
-    getPlatform: jest.fn()
+    getHostEnvironment: jest.fn()
 }));
 
 jest.mock('../../../../src/error-handler/error-handler', () => ({
@@ -36,6 +37,12 @@ jest.mock('@sap-ux/project-access', () => ({
     getCapCustomPaths: jest.fn().mockImplementation(async () => mockCapCustomPaths)
 }));
 
+const mockCdsVersionInfo: CdsVersionInfo = {
+    version: '7.0.0',
+    home: '/path/to/cds/home',
+    root: '/path/to/cds/root'
+};
+
 const initialMockCapServicesChoices: CapServiceChoice[] = [
     {
         name: 'AdminService',
@@ -43,7 +50,8 @@ const initialMockCapServicesChoices: CapServiceChoice[] = [
             serviceName: 'AdminService',
             urlPath: '/admin/',
             serviceCdsPath: '../bookshop/srv/admin-service',
-            projectPath: '/cap/path/to/project1'
+            projectPath: '/cap/path/to/project1',
+            cdsVersionInfo: mockCdsVersionInfo
         }
     },
     {
@@ -52,7 +60,8 @@ const initialMockCapServicesChoices: CapServiceChoice[] = [
             serviceName: 'CatalogService',
             urlPath: '/browse/',
             serviceCdsPath: '../bookshop/srv/cat-service',
-            projectPath: '/cap/path/to/project1'
+            projectPath: '/cap/path/to/project1',
+            cdsVersionInfo: mockCdsVersionInfo
         }
     }
 ];
@@ -74,7 +83,7 @@ jest.mock('../../../../src/prompts/datasources/cap-project/cap-helpers', () => (
 
 describe('getLocalCapProjectPrompts', () => {
     beforeAll(async () => {
-        (getPlatform as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         // Wait for i18n to bootstrap so we can test localised strings
         await initI18nOdataServiceInquirer();
     });
@@ -240,7 +249,8 @@ describe('getLocalCapProjectPrompts', () => {
             appPath: 'app',
             capType: 'Node.js',
             serviceCdsPath: '../relative/services/path',
-            urlPath: 'odatav4/service/path'
+            urlPath: 'odatav4/service/path',
+            cdsVersionInfo: mockCdsVersionInfo
         };
         expect(await (capServicePrompt!.validate as Function)(capService)).toBe(true);
         expect(PromptState.odataService).toMatchInlineSnapshot(`
@@ -272,7 +282,8 @@ describe('getLocalCapProjectPrompts', () => {
             appPath: 'app',
             capType: 'Node.js',
             serviceCdsPath: '../relative/services/path',
-            urlPath: 'odatav4/service/path'
+            urlPath: 'odatav4/service/path',
+            cdsVersionInfo: mockCdsVersionInfo
         };
         expect(await (capCliStateSetterPrompt!.when as Function)({ capService })).toEqual(false);
         expect(PromptState.odataService).toMatchInlineSnapshot(`

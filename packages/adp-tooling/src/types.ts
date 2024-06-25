@@ -1,6 +1,7 @@
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
-import type { Adp } from '@sap-ux/ui5-config';
+import type { Adp, BspApp } from '@sap-ux/ui5-config';
+import type { OperationsType } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 
 export interface DescriptorVariant {
@@ -25,31 +26,88 @@ export interface AdpPreviewConfig {
     ignoreCertErrors?: boolean;
 }
 
+export interface OnpremApp {
+    /** Application variant id. */
+    id: string;
+    /** Reference associated with the ID of the base application. */
+    reference: string;
+    layer?: UI5FlexLayer;
+    title?: string;
+    /** Optional: Application variant change content. */
+    content?: Content[];
+}
+
+export interface CloudApp extends OnpremApp {
+    /** bspName associated with the ABAP Cloud repository name of the base application. */
+    bspName: string;
+    /** Cloud app active languages. */
+    languages: Language[];
+}
+
+export type App = OnpremApp | CloudApp;
+
+export type DeployConfig = Adp | BspApp;
+
 export interface AdpWriterConfig {
-    app: {
-        id: string;
-        reference: string;
-        layer?: UI5FlexLayer;
-        title?: string;
-    };
+    app: App;
     target: AbapTarget;
     ui5?: {
         minVersion?: string;
+        version?: string;
+        frameworkUrl?: string;
     };
     package?: {
         name?: string;
         description?: string;
     };
+    flp?: FlpConfig;
+    customConfig?: CustomConfig;
     /**
      * Optional: configuration for deployment to ABAP
      */
-    deploy?: Adp;
+    deploy?: DeployConfig;
     options?: {
         /**
          * Optional: if set to true then the generated project will be recognized by the SAP Fiori tools
          */
         fioriTools?: boolean;
     };
+}
+
+export interface ChangeInboundNavigation {
+    /** Identifier for the inbound navigation. */
+    inboundId: string;
+    /** Title associated with the inbound navigation. */
+    title?: string;
+    /** Subtitle associated with the inbound navigation. */
+    subTitle?: string;
+}
+
+export interface NewInboundNavigation {
+    /** Represent business entities that reflect a specific scenario. */
+    semanticObject: string;
+    /** Operations which can be performed on a semantic object. */
+    action: string;
+    //** Defined instance of the semantic object (e.g. by specifying the employee ID). */
+    additionalParameters?: object;
+    /** Title associated with the inbound navigation. */
+    title: string;
+    /** Optional: Subtitle associated with the inbound navigation. */
+    subTitle?: string;
+}
+
+export interface InternalInboundNavigation extends NewInboundNavigation {
+    /** Identifier for the inbound navigation. */
+    inboundId: string;
+    /** Flag indicating if the new inbound navigation should be added. */
+    addInboundId: boolean;
+}
+
+export type FlpConfig = ChangeInboundNavigation | NewInboundNavigation;
+
+export interface Language {
+    sap: string;
+    i18n: string;
 }
 
 export interface ManifestAppdescr {
@@ -339,4 +397,59 @@ export interface AdpProjectData {
     applicationIdx: string;
     reference: string;
     id: string;
+}
+
+export interface CustomConfig {
+    adp: {
+        safeMode: boolean;
+        environment: OperationsType;
+    };
+}
+
+export interface InboundChangeContentAddInboundId {
+    inbound: {
+        [inboundId: string]: AddInboundModel;
+    };
+}
+export interface AddInboundModel {
+    /** Represent business entities that reflect a specific scenario. */
+    semanticObject: string;
+    /** Operations which can be performed on a semantic object. */
+    action: string;
+    /** Title associated with the inbound navigation data. */
+    title: string;
+    /** Optional: Subtitle associated with the inbound navigation data. */
+    subTitle?: string;
+    signature: AddInboundSignitureModel;
+}
+export interface AddInboundSignitureModel {
+    parameters: InboundParameters;
+    //** Defined instance of the semantic object (e.g. by specifying the employee ID). */
+    additionalParameters: string;
+}
+export interface InboundParameters {
+    'sap-appvar-id'?: object;
+    'sap-priority'?: object;
+}
+
+export interface InboundChange {
+    inbound: {
+        [key: string]: {
+            /** Represent business entities that reflect a specific scenario. */
+            semanticObject: string;
+            /** Operations which can be performed on a semantic object. */
+            action: string;
+            /** Icon associated with the inbound navigation data. */
+            icon: string;
+            /** Title associated with the inbound navigation data. */
+            title: string;
+            /** Subtitle associated with the inbound navigation data. */
+            subTitle: string;
+            signature: {
+                parameters: object | string;
+                //** Defined instance of the semantic object (e.g. by specifying the employee ID). */
+                additionalParameters: 'allowed';
+            };
+        };
+    };
 }

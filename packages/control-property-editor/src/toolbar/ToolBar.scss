@@ -1,0 +1,72 @@
+.ui-toolbar {
+    // We do not need fixed if we use flexes
+    position: static;
+    top: initial;
+    left: initial;
+    &__container {
+        overflow: hidden;
+    }
+    // Move to right edge
+    .column-right {
+        width: 300px; // corresponds to .app-panel width
+        flex-grow: 0;
+    }
+    .column-left {
+        width: 300px; // corresponds to .app-panel width
+        overflow: hidden;
+        flex-grow: 0;
+    }
+    .column-center {
+        justify-content: flex-start;
+        .mode-switcher {
+            margin-right: 30px;
+        }
+    }
+    .ui-toolbar__content {
+        justify-content: space-between;
+        background-color: inherit;
+        flex-wrap: nowrap;
+        min-width: 0;
+    }
+    // Margins according to design
+    .ui-toolbar__column__content {
+        align-items: center;
+        margin: 9px 15px;
+
+        > .ms-Button:first-child {
+            margin-left: 0;
+        }
+        > .ms-Button:last-child {
+            margin-right: 0;
+        }
+    }
+    .ui-divider {
+        margin: 0;
+    }
+
+    .ms-Label {
+        margin-top: 0px;
+    }
+}
+
+.right-panel-toolbar .ui-toolbar__column__content{
+    display: flex;
+    width: 100%;
+    .rt-panel-tb-left-container {
+        display: flex;
+        flex-grow: 1;
+        align-items: center;
+        height: 100%;
+    }
+    .rt-panel-tb-right-container {
+        display: flex;
+    }
+}
+
+.app-title {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 16px;
+    color: var(--vscode-foreground);
+}

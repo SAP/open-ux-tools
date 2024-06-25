@@ -1,5 +1,61 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.22.13
+
+### Patch Changes
+
+-   dfeb3a6b: Load i18n translations asynchronously to ensure proper initialization.
+
+## 0.22.12
+
+### Patch Changes
+
+-   Updated dependencies [a140cf8b]
+    -   @sap-ux/ui5-config@0.22.8
+    -   @sap-ux/odata-service-writer@0.20.3
+    -   @sap-ux/ui5-application-writer@0.26.16
+
+## 0.22.11
+
+### Patch Changes
+
+-   9188fe8b: fpm v4 removed sap.fe.templates in manifest.json, now has dependency on sap.fe.core
+    sap.ushell removed from ui5-application-writer, now loaded in fiori-elements and fiori-freestyle writers respectively
+-   Updated dependencies [9188fe8b]
+    -   @sap-ux/ui5-application-writer@0.26.15
+    -   @sap-ux/ui5-config@0.22.7
+    -   @sap-ux/odata-service-writer@0.20.2
+
+## 0.22.10
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.22.6
+-   @sap-ux/odata-service-writer@0.20.1
+-   @sap-ux/ui5-application-writer@0.26.14
+
+## 0.22.9
+
+### Patch Changes
+
+-   Updated dependencies [e9a007af]
+    -   @sap-ux/odata-service-writer@0.20.0
+
+## 0.22.8
+
+### Patch Changes
+
+-   d2d324ff: Update flpSandbox.html to include flexibilityServices
+
+## 0.22.7
+
+### Patch Changes
+
+-   Updated dependencies [3684195d]
+    -   @sap-ux/ui5-config@0.22.5
+    -   @sap-ux/odata-service-writer@0.19.2
+    -   @sap-ux/ui5-application-writer@0.26.13
+
 ## 0.22.6
 
 ### Patch Changes

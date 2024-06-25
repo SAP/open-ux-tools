@@ -1,5 +1,133 @@
 # @sap-ux/deploy-tooling
 
+## 0.14.40
+
+### Patch Changes
+
+-   02a321be: Destination configured with SAMLAssertion a http 401 no longer displays credentials for the user to enter.
+
+## 0.14.39
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.4.2
+-   @sap-ux/ui5-config@0.22.8
+
+## 0.14.38
+
+### Patch Changes
+
+-   Updated dependencies [a140cf8b]
+    -   @sap-ux/ui5-config@0.22.8
+    -   @sap-ux/axios-extension@1.13.1
+    -   @sap-ux/system-access@0.4.1
+
+## 0.14.37
+
+### Patch Changes
+
+-   Updated dependencies [7f8bc980]
+    -   @sap-ux/system-access@0.4.1
+
+## 0.14.36
+
+### Patch Changes
+
+-   Updated dependencies [a48a8c0b]
+    -   @sap-ux/system-access@0.4.0
+
+## 0.14.35
+
+### Patch Changes
+
+-   Updated dependencies [9188fe8b]
+    -   @sap-ux/ui5-config@0.22.7
+    -   @sap-ux/axios-extension@1.13.1
+    -   @sap-ux/system-access@0.3.34
+
+## 0.14.34
+
+### Patch Changes
+
+-   Updated dependencies [869c1c0d]
+    -   @sap-ux/axios-extension@1.13.1
+    -   @sap-ux/system-access@0.3.34
+
+## 0.14.33
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.22.6
+-   @sap-ux/axios-extension@1.13.0
+-   @sap-ux/system-access@0.3.33
+
+## 0.14.32
+
+### Patch Changes
+
+-   Updated dependencies [b2ee99fc]
+    -   @sap-ux/axios-extension@1.13.0
+    -   @sap-ux/system-access@0.3.33
+
+## 0.14.31
+
+### Patch Changes
+
+-   dc9b15af: update and truncate transport request description
+
+## 0.14.30
+
+### Patch Changes
+
+-   d86989f9: adds auth type param to deploy tooling
+
+## 0.14.29
+
+### Patch Changes
+
+-   Updated dependencies [558891c2]
+    -   @sap-ux/axios-extension@1.12.6
+    -   @sap-ux/system-access@0.3.32
+
+## 0.14.28
+
+### Patch Changes
+
+-   Updated dependencies [69282b7d]
+    -   @sap-ux/axios-extension@1.12.5
+    -   @sap-ux/system-access@0.3.31
+
+## 0.14.27
+
+### Patch Changes
+
+-   Updated dependencies [3684195d]
+    -   @sap-ux/ui5-config@0.22.5
+    -   @sap-ux/axios-extension@1.12.4
+    -   @sap-ux/system-access@0.3.30
+
+## 0.14.26
+
+### Patch Changes
+
+-   Updated dependencies [96de8f25]
+    -   @sap-ux/system-access@0.3.30
+
+## 0.14.25
+
+### Patch Changes
+
+-   Updated dependencies [895ee259]
+    -   @sap-ux/system-access@0.3.29
+
+## 0.14.24
+
+### Patch Changes
+
+-   Updated dependencies [6e3d4da4]
+    -   @sap-ux/axios-extension@1.12.4
+    -   @sap-ux/system-access@0.3.28
+
 ## 0.14.23
 
 ### Patch Changes

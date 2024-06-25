@@ -1,10 +1,9 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
-import { create } from 'mem-fs-editor';
-import type { AdpWriterConfig } from '../types';
-import { UI5Config } from '@sap-ux/ui5-config';
-import { enhanceUI5Yaml, enhanceUI5DeployYaml, hasDeployConfig } from './options';
+import { create, type Editor } from 'mem-fs-editor';
+import type { AdpWriterConfig, InternalInboundNavigation } from '../types';
+import { enhanceManifestChangeContentWithFlpConfig } from './options';
+import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml } from './project-utils';
 
 const tmplPath = join(__dirname, '../../templates/project');
 
@@ -15,12 +14,14 @@ const tmplPath = join(__dirname, '../../templates/project');
  * @returns enhanced configuration with default values
  */
 function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
-    const configWithDefaults: AdpWriterConfig = {
+    const configWithDefaults: AdpWriterConfig & { flp?: InternalInboundNavigation } = {
         app: { ...config.app },
         target: { ...config.target },
         ui5: { ...config.ui5 },
         deploy: config.deploy ? { ...config.deploy } : undefined,
-        options: { ...config.options }
+        options: { ...config.options },
+        flp: config.flp ? ({ ...config.flp } as InternalInboundNavigation) : undefined,
+        customConfig: config.customConfig ? { ...config.customConfig } : undefined
     };
     configWithDefaults.app.title ??= `Adaptation of ${config.app.reference}`;
     configWithDefaults.app.layer ??= 'CUSTOMER_BASE';
@@ -29,22 +30,12 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
     configWithDefaults.package.name ??= config.app.id.toLowerCase().replace(/\./g, '-');
     configWithDefaults.package.description ??= configWithDefaults.app.title;
 
-    return configWithDefaults;
-}
-
-async function writeUi5Yaml(basePath: string, config: AdpWriterConfig, fs: Editor) {
-    // ui5.yaml
-    const ui5ConfigPath = join(basePath, 'ui5.yaml');
-    const baseUi5ConfigContent = fs.read(ui5ConfigPath);
-    const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
-    enhanceUI5Yaml(ui5Config, config);
-    fs.write(ui5ConfigPath, ui5Config.toString());
-    // ui5-deploy.yaml
-    if (hasDeployConfig(config)) {
-        const ui5DeployConfig = await UI5Config.newInstance(baseUi5ConfigContent);
-        enhanceUI5DeployYaml(ui5DeployConfig, config);
-        fs.write(join(basePath, 'ui5-deploy.yaml'), ui5DeployConfig.toString());
+    if (configWithDefaults.flp && !configWithDefaults.flp.inboundId) {
+        configWithDefaults.flp.addInboundId = true;
+        configWithDefaults.flp.inboundId = `${configWithDefaults.app.id}.InboundID`;
     }
+
+    return configWithDefaults;
 }
 
 /**
@@ -59,14 +50,19 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
     if (!fs) {
         fs = create(createStorage());
     }
+
     const fullConfig = setDefaults(config);
 
-    fs.copyTpl(join(tmplPath, '**/*.*'), join(basePath), fullConfig, undefined, {
-        globOptions: { dot: true },
-        processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
-    });
-
-    await writeUi5Yaml(basePath, fullConfig, fs);
+    if (fullConfig.customConfig?.adp.environment === 'C' && fullConfig.flp) {
+        enhanceManifestChangeContentWithFlpConfig(
+            fullConfig.flp as InternalInboundNavigation,
+            fullConfig.app.id,
+            fullConfig.app.content
+        );
+    }
+    writeTemplateToFolder(join(tmplPath, '**/*.*'), join(basePath), fullConfig, fs);
+    await writeUI5DeployYaml(basePath, fullConfig, fs);
+    await writeUI5Yaml(basePath, fullConfig, fs);
 
     return fs;
 }
@@ -79,7 +75,6 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
  * @param fs - the memfs editor instance
  * @returns the updated memfs editor instance
  */
-
 export async function migrate(basePath: string, config: AdpWriterConfig, fs?: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
@@ -101,7 +96,7 @@ export async function migrate(basePath: string, config: AdpWriterConfig, fs?: Ed
 
     // delete .che folder
     if (fs.exists(join(basePath, '.che/project.json'))) {
-        fs.delete(join(basePath, '.che/'));
+        fs.delete(join(basePath, '.che/*'));
     }
 
     // delete neo-app.json
@@ -109,7 +104,8 @@ export async function migrate(basePath: string, config: AdpWriterConfig, fs?: Ed
         fs.delete(join(basePath, 'neo-app.json'));
     }
 
-    await writeUi5Yaml(basePath, fullConfig, fs);
+    await writeUI5Yaml(basePath, fullConfig, fs);
+    await writeUI5DeployYaml(basePath, fullConfig, fs);
 
     return fs;
 }

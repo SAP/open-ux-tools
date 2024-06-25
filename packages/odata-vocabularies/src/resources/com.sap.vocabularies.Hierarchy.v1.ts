@@ -1,4 +1,4 @@
-// Last content update: Wed Apr 03 2024 08:50:55 GMT+0200 (Central European Summer Time)
+// Last content update: Thu Jun 20 2024 13:06:42 GMT+0530 (India Standard Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -82,7 +82,7 @@ export default {
                 '$Nullable': true,
                 '@Org.OData.Core.V1.Description': 'Type of a node',
                 '@Org.OData.Core.V1.LongDescription':
-                    'In a recursive hierarchy with mixed types, nodes can\n            <br>- have a type-specific (navigation) property whose name is the node type or\n            <br>- be represented by entities of different subtypes of a common entity type that is\n            annotated with the `RecursiveHierarchy` annotation. The qualified name of the subtype is the node type.'
+                    'In a recursive hierarchy with mixed types, nodes can\n- have a type-specific (navigation) property whose name is the node type or\n- be represented by entities of different subtypes of a common entity type that is\n\nannotated with the `RecursiveHierarchy` annotation. The qualified name of the subtype is the node type.'
             },
             'ChildCount': {
                 '$Type': 'Edm.Int64',
@@ -181,7 +181,7 @@ export default {
             '@Org.OData.Core.V1.Description':
                 'Instance annotation on the result of an `$apply` query option containing the number of matching nodes after hierarchical transformations',
             '@Org.OData.Core.V1.LongDescription':
-                'The service MAY designate a subset of the `$apply` result as "matching nodes".\n          For requests following the pattern described [here](#RecursiveHierarchyType), this subset is the output set of the\n          `filter` or `search` transformation that occurs as the fourth parameter\n          of the last `ancestors` transformation or occurs nested into it.<br>\n          For requests not following this pattern, the subset NEED NOT be defined.<br>\n          This instance annotation is available if [`RecursiveHierarchy/Matched`](#RecursiveHierarchyType)\n          and [`RecursiveHierarchy/MatchedDescendantCount`](#RecursiveHierarchyType) are also available.'
+                'The service MAY designate a subset of the `$apply` result as "matching nodes".\nFor requests following the pattern described [here](#RecursiveHierarchyType), this subset is the output set of the\n`filter` or `search` transformation that occurs as the fourth parameter\nof the last `ancestors` transformation or occurs nested into it.\n\nFor requests not following this pattern, the subset NEED NOT be defined.\n\nThis instance annotation is available if [`RecursiveHierarchy/Matched`](#RecursiveHierarchyType)\nand [`RecursiveHierarchy/MatchedDescendantCount`](#RecursiveHierarchyType) are also available.'
         },
         'TopLevels': [
             {

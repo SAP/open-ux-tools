@@ -20,11 +20,11 @@ export class WriterFactory {
     /**
      * Creates an instance of a writer based on the specified generator type.
      *
-     * @param {T} type - The type of the change which will be handled by the writer.
-     * @param {Editor} fs - The filesystem editor instance.
-     * @param {string} projectPath - The path to the project for which the writer is created.
-     * @returns {IWriterData<T>} An instance of the writer associated with the specified generator type.
-     * @throws {Error} If the specified generator type is not supported.
+     * @param type - The type of the change which will be handled by the writer.
+     * @param fs - The filesystem editor instance.
+     * @param projectPath - The path to the project for which the writer is created.
+     * @returns An instance of the writer associated with the specified generator type.
+     * @throws If the specified generator type is not supported.
      */
     static createWriter<T extends ChangeType>(type: T, fs: Editor, projectPath: string): IWriterData<T> {
         const WriterClass = this.writers.get(type);

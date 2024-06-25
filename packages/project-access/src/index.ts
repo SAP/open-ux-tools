@@ -19,6 +19,9 @@ export {
     getCdsServices,
     getCapI18nFolderNames,
     getI18nPropertiesPaths,
+    getMinUI5VersionFromManifest,
+    getMinUI5VersionAsArray,
+    getMinimumUI5Version,
     getMtaPath,
     getNodeModulesPath,
     getProject,
@@ -30,7 +33,8 @@ export {
     loadModuleFromProject,
     readCapServiceMetadataEdmx,
     readUi5Yaml,
-    toReferenceUri
+    toReferenceUri,
+    clearCdsModuleCache
 } from './project';
 export * from './types';
 export * from './library';

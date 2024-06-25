@@ -1,2 +1,2 @@
-export { PropertiesPanel } from './properties';
 export { LeftPanel } from './LeftPanel';
+export { PropertiesList } from './properties';

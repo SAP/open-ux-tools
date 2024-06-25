@@ -1,5 +1,17 @@
 # @sap-ux/yaml
 
+## 0.15.0
+
+### Minor Changes
+
+-   64a95bd1: Add additional cap configuration writing functionalities
+
+## 0.14.2
+
+### Patch Changes
+
+-   3684195d: adds authenticationType to fiori tools proxy backend and ability to add inline comments to yaml nodes
+
 ## 0.14.1
 
 ### Patch Changes

@@ -302,6 +302,7 @@ describe('OutlinePanel', () => {
                 controlId: '04',
                 children: [],
                 controlType: 'sap.ui.extensionpoint',
+                hasDefaultContent: true,
                 editable: true,
                 visible: true
             }
@@ -533,7 +534,11 @@ describe('OutlinePanel', () => {
             },
             icons: [],
             dialogMessage: undefined,
-            isAdpProject: false
+            isAdpProject: false,
+            appMode: 'adaptation',
+            canSave: false,
+            changeStack: { canRedo: false, canUndo: false },
+            isAppLoading: true
         };
         const { container } = render(<OutlinePanel />, { initialState });
 

@@ -1,3 +1,4 @@
+import { AuthenticationType } from '@sap-ux/store';
 import type { BspApp, UI5ProxyConfig } from '../src';
 import { UI5Config } from '../src';
 
@@ -130,6 +131,14 @@ describe('UI5Config', () => {
         });
     });
 
+    describe('addUI5Libs', () => {
+        test('addUI5Libs in framework libraries', () => {
+            ui5Config.addUI5Framework('SAPUI5', '1.64.0', ['sap.m'], 'sap_fiori_3_dark');
+            ui5Config.addUI5Libs(['sap.ushell']);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+    });
+
     describe('addFioriToolsProxydMiddleware', () => {
         test('add without backend or UI5', () => {
             ui5Config.addFioriToolsProxydMiddleware({});
@@ -155,7 +164,21 @@ describe('UI5Config', () => {
 
         test('add commonly configured backend (and UI5 defaults)', () => {
             ui5Config.addFioriToolsProxydMiddleware({
-                backend: [{ url, path, destination, destinationInstance }],
+                backend: [
+                    {
+                        url,
+                        path,
+                        destination,
+                        destinationInstance
+                    },
+                    {
+                        url,
+                        path,
+                        destination,
+                        destinationInstance,
+                        authenticationType: AuthenticationType.ReentranceTicket
+                    }
+                ],
                 ui5: {}
             });
             expect(ui5Config.toString()).toMatchSnapshot();
@@ -183,7 +206,20 @@ describe('UI5Config', () => {
     describe('addBackendToFioriToolsProxydMiddleware', () => {
         test('add proxy without out backend first and then call add backend', () => {
             ui5Config.addFioriToolsProxydMiddleware({ ui5: {} });
-            ui5Config.addBackendToFioriToolsProxydMiddleware({ url, path });
+            ui5Config.addBackendToFioriToolsProxydMiddleware({
+                url,
+                path
+            });
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('should add comments with backend authentication type as reentrance ticket', () => {
+            ui5Config.addFioriToolsProxydMiddleware({ ui5: {} });
+            ui5Config.addBackendToFioriToolsProxydMiddleware({
+                url,
+                path,
+                authenticationType: AuthenticationType.ReentranceTicket
+            });
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
