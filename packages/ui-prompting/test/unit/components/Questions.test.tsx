@@ -2,9 +2,10 @@ import * as React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { initIcons } from '@sap-ux/ui-components';
 import { Questions } from '../../../src/components';
-import { PromptsLayoutType } from '../../../src/types';
+import { ListPromptQuestion, PromptsLayoutType } from '../../../src/types';
 import { QuestionsProps } from '../../../dist';
 import { questions } from '../../mock-data/questions';
+import { getDependantQuestions } from '../../../src/utilities';
 
 describe('Questions', () => {
     initIcons();
@@ -66,6 +67,53 @@ describe('Questions', () => {
         expect(input).toBeDefined();
         fireEvent.change(input, { target: { value: 'new value' } });
         expect(onChangeFn).toHaveBeenCalledWith({ 'testInput': 'new value' }, 'testInput', 'new value');
+    });
+
+    it(`Test question dependantPromptNames onChange, onChoiceRequest`, () => {
+        const onChangeFn = jest.fn();
+        const onChoiceRequestFn = jest.fn();
+        const questionsInProps = [
+            { ...questions.staticList, dependantPromptNames: ['dependantPrompt'] } as ListPromptQuestion,
+            { ...questions.dynamicList, name: 'dependantPrompt' }
+        ];
+        render(
+            <Questions
+                {...props}
+                layoutType={undefined}
+                questions={questionsInProps}
+                answers={{
+                    testStaticList: 'testValue0'
+                }}
+                choices={{
+                    'testStaticList': [
+                        { name: 'testName0', value: 'testValue0' },
+                        { name: 'testName1', value: 'testValue1' }
+                    ]
+                }}
+                onChange={onChangeFn}
+                onChoiceRequest={onChoiceRequestFn}
+            />
+        );
+        const dependantPrompts = getDependantQuestions([questionsInProps[0]], 'testStaticList');
+        expect(dependantPrompts).toEqual(['dependantPrompt']);
+        const button = document.getElementsByClassName('ms-Button')[0];
+        fireEvent.click(button);
+        const options = screen.queryAllByRole('option');
+        expect(options[0]).toBeDefined();
+        fireEvent.click(options[1]);
+        fireEvent.click(button);
+        expect(screen.getByDisplayValue('testName1')).toBeDefined();
+        expect(onChangeFn).toHaveBeenCalled();
+        expect(onChangeFn).toHaveBeenCalledWith(
+            { 'dependantPrompt': '', 'testStaticList': 'testValue1' },
+            'testStaticList',
+            'testValue1'
+        );
+        expect(onChoiceRequestFn).toHaveBeenCalled();
+        expect(onChoiceRequestFn).toHaveBeenCalledWith(['dependantPrompt'], {
+            'dependantPrompt': '',
+            'testStaticList': 'testValue1'
+        });
     });
 
     it('Render questions component - validation', async () => {
