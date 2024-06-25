@@ -134,7 +134,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
 
         // Adds local annotations to datasources section of manifest.json and writes the annotations file
         if (service.localAnnotationsName) {
-            const namespaces = getAnnotationNamespaces(service);
+            const namespaces = getAnnotationNamespaces(service.metadata, service.annotations as EdmxAnnotationsInfo);
             fs.copyTpl(
                 join(templateRoot, 'add', 'annotation.xml'),
                 join(basePath, 'webapp', 'annotations', `${service.localAnnotationsName}.xml`),
