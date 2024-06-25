@@ -3,7 +3,14 @@ import { Question } from '../Question/Question';
 import { getDependantQuestions, getDynamicQuestions, updateAnswer, useDynamicQuestionsEffect } from '../../utilities';
 import { useRequestedChoices } from '../../utilities';
 import { QuestionGroup } from '../QuestionGroup';
-import type { PromptQuestion, ValidationResults, PromptsGroup, AnswerValue, DynamicChoices } from '../../types';
+import type {
+    PromptQuestion,
+    ValidationResults,
+    PromptsGroup,
+    AnswerValue,
+    DynamicChoices,
+    ListPromptQuestion
+} from '../../types';
 import { PromptsLayoutType } from '../../types';
 
 import './Questions.scss';
@@ -108,6 +115,7 @@ export const Questions = (props: QuestionsProps) => {
                     pending={pendingRequests[name]}
                     additionalInfo={question.additionalInfo}
                     placeholder={question.placeholder}
+                    creation={(question as ListPromptQuestion).creation}
                 />
             );
         });

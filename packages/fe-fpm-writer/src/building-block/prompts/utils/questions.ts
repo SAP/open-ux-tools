@@ -306,52 +306,45 @@ function getErrorMessage(error: Error): string {
 }
 
 /**
- * Returns a Prompt for entering filter bar ID.
+ * Returns a Prompt for selecting existing filter bar ID or entering a new one.
  *
  * @param message - prompt message
- * @returns a Input Prompt
+ * @param type - the question type 'list' or 'input'
+ * @param fs  - the file system object for reading files
+ * @param basePath - the application path
+ * @param additionalProperties
+ * @returns an Input or List Prompt
  */
 export function getFilterBarIdPrompt(
     message: string,
-    additionalProperties: Partial<InputPromptQuestion> = {}
-): InputPromptQuestion {
-    return {
-        ...additionalProperties,
+    type: 'input' | 'list',
+    fs?: Editor,
+    basePath?: string,
+    additionalProperties: Partial<ListPromptQuestion> = {}
+): ListPromptQuestion | InputPromptQuestion {
+    let prompt: InputPromptQuestion = {
         type: 'input',
         name: 'filterBar',
-        message
-    };
-}
-
-/**
- * Returns a Prompt for selecting existing filter bar ID.
- *
- * @param message - prompt message
- * @returns a List Prompt
- */
-export function getFilterBarIdListPrompt(
-    message: string,
-    fs: Editor,
-    basePath: string,
-    additionalProperties: Partial<ListPromptQuestion> = {}
-): ListPromptQuestion {
-    return {
-        ...additionalProperties,
-        type: 'list',
-        selectType: 'dynamic',
-        name: 'filterBarId',
         message,
-        placeholder: additionalProperties.placeholder ?? 'Select or enter a filter bar ID',
-        // ToDo avoid any
+        placeholder: additionalProperties.placeholder ?? 'Enter a new filter bar ID'
+    };
+    if (type === 'input') {
+        return prompt;
+    }
+    return {
+        ...prompt,
+        ...additionalProperties,
+        type,
+        selectType: 'dynamic',
         choices: async (answers: Answers) => {
             if (!answers.viewOrFragmentFile) {
                 return [];
             }
             return getChoices(
                 await getBuildingBlockIdsInFile(
-                    join(basePath, answers.viewOrFragmentFile),
+                    join(basePath!, answers.viewOrFragmentFile),
                     BuildingBlockType.FilterBar,
-                    fs
+                    fs!
                 )
             );
         }

@@ -30,6 +30,10 @@ export interface ListBasePromptQuestion extends BasePromptQuestion {
     selectType?: 'static' | 'dynamic';
 }
 
+export interface ListPromptQuestionCreationProps {
+    inputPlaceholder: string;
+}
+
 /**
  * Represents a question prompt for list question with dropdown visualization.
  * Combines properties of ListQuestion and BasePromptQuestion.
@@ -39,6 +43,10 @@ export interface ListPromptQuestion<T extends Answers = Answers> extends ListQue
      * Dependant prompt names which should be updated after value change of current prompt.
      */
     dependantPromptNames?: string[];
+    /**
+     * Properties of input field for creation mode.
+     */
+    creation?: ListPromptQuestionCreationProps;
 }
 
 /**

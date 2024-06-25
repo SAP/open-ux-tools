@@ -3,11 +3,12 @@ import type { ListQuestion } from 'inquirer';
 import { UIComboBox, UIComboBoxLoaderType, UITextInput } from '@sap-ux/ui-components';
 import type { ITextField, UIComboBoxOption, UIComboBoxRef } from '@sap-ux/ui-components';
 import { useValue, getLabelRenderer } from '../../../utilities';
+import { ListPromptQuestionCreationProps } from '../../../types';
 
 export interface SelectProps extends ListQuestion {
     value?: string | number | boolean;
     onChange: (name: string, value: string | number | undefined) => void;
-
+    creation?: ListPromptQuestionCreationProps;
     required?: boolean;
     options: UIComboBoxOption[];
     pending?: boolean;
@@ -26,11 +27,11 @@ export const Select = (props: SelectProps) => {
         pending,
         additionalInfo,
         errorMessage,
-        placeholder
+        placeholder,
+        creation
     } = props;
     const [value, setValue] = useValue('', props.value);
     const inputRef = React.createRef<ITextField>();
-    const allowCreate = name === 'filterBarId';
 
     const onChangeSelect = (
         event?: React.FormEvent<HTMLDivElement | UIComboBoxRef>,
@@ -39,7 +40,7 @@ export const Select = (props: SelectProps) => {
         comboboxValue?: string
     ) => {
         let updatedValue;
-        if (allowCreate) {
+        if (creation) {
             const newOption = comboboxValue === undefined ? undefined : { key: comboboxValue, text: comboboxValue };
             setValue(option ? option.key ?? '' : (newOption?.text as string));
             updatedValue = option ? option.data.value : newOption?.text;
@@ -61,22 +62,18 @@ export const Select = (props: SelectProps) => {
         }
     };
 
-    const isTextField = allowCreate && (!options || !options.length);
-    const handleOnClick = () => {
-        inputRef?.current?.focus();
-    };
+    const isTextField = creation && (!options || !options.length);
 
     const component = isTextField ? (
         <UITextInput
             componentRef={inputRef}
             label={typeof message === 'string' ? message : name}
             value={value.toString()}
-            placeholder={'Enter a new ID'}
+            placeholder={creation.inputPlaceholder}
             errorMessage={errorMessage}
             required={props.required}
             onChange={onChangeTextInput}
             onRenderLabel={getLabelRenderer(additionalInfo)}
-            onClick={handleOnClick}
         />
     ) : (
         <UIComboBox
@@ -90,7 +87,7 @@ export const Select = (props: SelectProps) => {
             isLoading={pending ? [UIComboBoxLoaderType.Input, UIComboBoxLoaderType.List] : undefined}
             selectedKey={value.toString()}
             disabled={false}
-            text={allowCreate ? value.toString() : undefined}
+            text={creation ? value.toString() : undefined}
             onChange={onChangeSelect}
             onRenderLabel={getLabelRenderer(additionalInfo)}
             errorMessage={errorMessage}

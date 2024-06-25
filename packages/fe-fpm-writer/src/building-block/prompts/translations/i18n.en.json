@@ -30,7 +30,12 @@
             },
             "contextPath": "Enter the context path used in the page",
             "metaPath": "Enter the relative path of the property in the meta model",
-            "filterBar": "Associated Filter Bar ID",
+            "filterBar": {
+                "message": "Associated Filter Bar ID",
+                "validation": "Enter the ID of the filter bar building block associated with the chart",
+                "placeholder": "Select or enter a filter bar ID",
+                "inputPlaceholder": "Enter a new filter bar ID"
+            },
             "bindingContextType": "Binding Context Path Type",
             "personalization": {
                 "message": "Chart Personalization",
@@ -99,7 +104,9 @@
             "aggregation": "Aggregation Path",
             "filterBar": {
                 "message": "Associated Filter Bar ID",
-                "validation": "Enter the ID of the filter bar building block associated with the table"
+                "validation": "Enter the ID of the filter bar building block associated with the table",
+                "placeholder": "Select or enter a filter bar ID",
+                "inputPlaceholder": "Enter a new filter bar ID"
             },
             "tableType": {
                 "message": "Table Type"

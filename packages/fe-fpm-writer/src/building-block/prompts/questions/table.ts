@@ -10,7 +10,7 @@ import {
     getBuildingBlockIdPrompt,
     getCAPServicePrompt,
     getEntityPrompt,
-    getFilterBarIdListPrompt,
+    getFilterBarIdPrompt,
     getViewOrFragmentFilePrompt,
     isCapProject
 } from '../utils';
@@ -61,7 +61,7 @@ export async function getTableBuildingBlockPrompts(
                 basePath,
                 t('viewOrFragmentFile.message'),
                 t('viewOrFragmentFile.validate'),
-                ['aggregationPath', 'filterBarId'],
+                ['aggregationPath', 'filterBar'],
                 { groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID, required: true }
             ),
             await getBuildingBlockIdPrompt(fs, t('id.message'), t('id.validation'), basePath, defaultAnswers.id, {
@@ -96,8 +96,10 @@ export async function getTableBuildingBlockPrompts(
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
                 required: true
             }),
-            getFilterBarIdListPrompt(t('filterBar.message'), fs, basePath, {
-                groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
+            getFilterBarIdPrompt(t('filterBar.message'), 'list', fs, basePath, {
+                groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
+                placeholder: t('filterBar.placeholder'),
+                creation: { inputPlaceholder: t('filterBar.inputPlaceholder') }
             }),
 
             //second prompt group

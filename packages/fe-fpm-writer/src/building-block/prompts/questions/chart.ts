@@ -9,7 +9,7 @@ import {
     getBuildingBlockIdPrompt,
     getCAPServicePrompt,
     getEntityPrompt,
-    getFilterBarIdListPrompt,
+    getFilterBarIdPrompt,
     getViewOrFragmentFilePrompt,
     isCapProject
 } from '../utils';
@@ -40,7 +40,7 @@ export async function getChartBuildingBlockPrompts(
                 basePath,
                 t('viewOrFragmentFile.message'),
                 t('viewOrFragmentFile.validate'),
-                ['aggregationPath', 'filterBarId'],
+                ['aggregationPath', 'filterBar'],
                 { required: true }
             ),
             await getBuildingBlockIdPrompt(fs, t('id.message'), t('id.validation'), basePath, defaultAnswers.id, {
@@ -58,7 +58,10 @@ export async function getChartBuildingBlockPrompts(
             getAggregationPathPrompt(t('aggregation'), fs, basePath, {
                 required: true
             }),
-            getFilterBarIdListPrompt(t('filterBar'), fs, basePath),
+            getFilterBarIdPrompt(t('filterBar.message'), 'list', fs, basePath, {
+                placeholder: t('filterBar.placeholder'),
+                creation: { inputPlaceholder: t('filterBar.inputPlaceholder') }
+            }),
             {
                 type: 'checkbox',
                 name: 'personalization',

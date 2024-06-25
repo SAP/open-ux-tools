@@ -1,7 +1,13 @@
 import React from 'react';
 import { Input, Select, MultiSelect } from '../Inputs';
 import { useOptions } from '../../utilities';
-import type { PromptQuestion, ValidationResults, AnswerValue, PromptListChoices } from '../../types';
+import type {
+    PromptQuestion,
+    ValidationResults,
+    AnswerValue,
+    PromptListChoices,
+    ListPromptQuestionCreationProps
+} from '../../types';
 
 import './Question.scss';
 
@@ -14,6 +20,7 @@ export interface QuestionProps {
     additionalInfo?: string;
     validation: ValidationResults;
     placeholder?: string;
+    creation?: ListPromptQuestionCreationProps;
 }
 
 export const Question = (props: QuestionProps) => {
@@ -72,6 +79,7 @@ export const Question = (props: QuestionProps) => {
                     additionalInfo={additionalInfo}
                     errorMessage={errorMessage}
                     placeholder={placeholder}
+                    creation={props.creation}
                 />
             );
             break;
