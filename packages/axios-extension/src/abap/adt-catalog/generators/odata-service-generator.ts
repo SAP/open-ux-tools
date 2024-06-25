@@ -1,4 +1,5 @@
 import type { Logger } from '@sap-ux/logger';
+import type { GeneratorEntry } from './types';
 import type { ValidationMessage } from '../../types';
 import { AdtService } from '../services';
 import { XMLParser, XMLValidator } from 'fast-xml-parser';
@@ -8,6 +9,21 @@ import { XMLParser, XMLValidator } from 'fast-xml-parser';
  */
 export class ODataServiceGenerator extends AdtService {
     public log: Logger;
+
+    /**
+     * package to be used for generated objects
+     */
+    protected packageName!: string;
+
+    /**
+     * Configure the UI service generator.
+     *
+     * @param _config - The generator configuration.
+     * @param bo - The business object.
+     */
+    public configure(_config: GeneratorEntry, packageName: string) {
+        this.packageName = packageName;
+    }
 
     /**
      * Validate input
@@ -22,7 +38,7 @@ export class ODataServiceGenerator extends AdtService {
                 Accept: 'application/vnd.sap.adt.validationMessages.v1+xml, application/vnd.sap.as+xml;charset=UTF-8;dataname=com.sap.adt.StatusMessage'
             },
             params: {
-                package: '$TMP'
+                package: this.packageName
             }
         });
         return this.parseValidateResponse(response.data);
@@ -43,7 +59,7 @@ export class ODataServiceGenerator extends AdtService {
                 Accept: 'application/vnd.sap.adt.repository.objects.massoperation.v1+xml'
             },
             params: {
-                package: '$TMP'
+                package: this.packageName
             }
         });
         return this.parsePreviewResponse(response.data);
@@ -61,7 +77,7 @@ export class ODataServiceGenerator extends AdtService {
                 'Accept': 'application/vnd.sap.adt.repository.generator.v1+json'
             },
             params: {
-                package: '$TMP'
+                package: this.packageName
             }
         });
         // return http status code as number

@@ -234,13 +234,18 @@ export class AbapServiceProvider extends ServiceProvider {
         return gen;
     }
 
-    public async getODataServiceGenerator(): Promise<ODataServiceGenerator> {
+    public async getODataServiceGenerator(packageName: string): Promise<ODataServiceGenerator> {
         const generatorService = await this.getAdtService<RapGeneratorService>(RapGeneratorService);
         if (!generatorService) {
             throw new Error('RAP Generator are not support on this system');
         }
         const config = await generatorService.getRAPGeneratorConfig();
-        return this.createService<ODataServiceGenerator>(this.getServiceUrlFromConfig(config), ODataServiceGenerator);
+        const generator = this.createService<ODataServiceGenerator>(
+            this.getServiceUrlFromConfig(config),
+            ODataServiceGenerator
+        );
+        generator.configure(config, packageName || '$TMP');
+        return generator;
     }
 
     /**
