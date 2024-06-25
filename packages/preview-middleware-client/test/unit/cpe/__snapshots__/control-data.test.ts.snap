@@ -2,6 +2,7 @@
 
 exports[`controlData buildControlData - disabled properties for noStableId 1`] = `
 Object {
+  "buildingBlock": false,
   "id": "",
   "name": "sap.m.Button",
   "properties": Array [
@@ -100,8 +101,30 @@ Object {
 }
 `;
 
+exports[`controlData buildControlData - fe 1`] = `
+Object {
+  "buildingBlock": true,
+  "id": "testID",
+  "name": "sap.fe.macros.table.TableAPI",
+  "properties": Array [
+    Object {
+      "editor": "input",
+      "isEnabled": true,
+      "isIcon": false,
+      "name": "contextPath",
+      "readableName": "Context Path",
+      "type": "string",
+      "ui5Type": undefined,
+      "value": undefined,
+    },
+  ],
+  "type": "sap.fe.macros.table.TableAPI",
+}
+`;
+
 exports[`controlData buildControlData 1`] = `
 Object {
+  "buildingBlock": false,
   "id": "testID",
   "name": "sap.m.Button",
   "properties": Array [

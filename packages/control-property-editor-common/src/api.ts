@@ -13,6 +13,10 @@ export interface Control {
     type: string;
 
     properties: ControlProperty[];
+    /**
+     * Indicates whether control is building block
+     */
+    buildingBlock?: boolean;
 }
 export type PropertyValue = string | boolean | number;
 export type PropertyChangeType = 'propertyChange' | 'propertyBindingChange';

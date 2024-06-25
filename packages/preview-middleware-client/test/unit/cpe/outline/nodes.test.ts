@@ -15,7 +15,7 @@ jest.mock('../../../../src/cpe/outline/utils', () => {
 describe('outline nodes', () => {
     const transformNodes = (nodes: OutlineViewNode[], scenario: Scenario): Promise<OutlineNode[]> =>
         tn(nodes, scenario);
-
+    const isA = jest.fn().mockReturnValue(false);
     sapCoreMock.byId.mockReturnValue({
         getMetadata: jest.fn().mockReturnValue({
             getProperty: jest
@@ -25,7 +25,8 @@ describe('outline nodes', () => {
                 .mockReturnValue(''),
             getElementName: jest.fn().mockReturnValue('some-name')
         }),
-        getProperty: jest.fn().mockReturnValueOnce('Component').mockReturnValueOnce('Component').mockReturnValue('')
+        getProperty: jest.fn().mockReturnValueOnce('Component').mockReturnValueOnce('Component').mockReturnValue(''),
+        isA
     });
 
     describe('transformNodes', () => {
@@ -138,28 +139,28 @@ describe('outline nodes', () => {
 
             expect(await transformNodes(nodes, 'ADAPTATION_PROJECT')).toStrictEqual([
                 {
-                    'controlId': 'application-app-preview-component---View1--hbox',
-                    'controlType': 'sap.m.HBox',
-                    'name': 'HBox',
-                    'editable': false,
-                    'visible': true,
-                    'children': [
+                    controlId: 'application-app-preview-component---View1--hbox',
+                    controlType: 'sap.m.HBox',
+                    name: 'HBox',
+                    editable: false,
+                    visible: true,
+                    children: [
                         {
-                            'controlId': 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
-                            'controlType': 'sap.ui.extensionpoint',
-                            'name': 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
-                            'editable': false,
-                            'visible': true,
-                            'hasDefaultContent': true,
-                            'children': [
+                            controlId: 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
+                            controlType: 'sap.ui.extensionpoint',
+                            name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
+                            editable: false,
+                            visible: true,
+                            hasDefaultContent: true,
+                            children: [
                                 {
-                                    'controlId': 'id1',
-                                    'controlType': 'some-name',
-                                    'name': 'id1',
-                                    'visible': true,
-                                    'editable': false,
-                                    'children': [],
-                                    'hasDefaultContent': false
+                                    controlId: 'id1',
+                                    controlType: 'some-name',
+                                    name: 'id1',
+                                    visible: true,
+                                    editable: false,
+                                    children: [],
+                                    hasDefaultContent: false
                                 }
                             ]
                         }
@@ -186,13 +187,13 @@ describe('outline nodes', () => {
                 {
                     children: [
                         {
-                            'children': [],
-                            'controlId': 'id1',
-                            'controlType': 'some-name',
-                            'editable': false,
-                            'hasDefaultContent': false,
-                            'name': 'id1',
-                            'visible': true
+                            children: [],
+                            controlId: 'id1',
+                            controlType: 'some-name',
+                            editable: false,
+                            hasDefaultContent: false,
+                            name: 'id1',
+                            visible: true
                         }
                     ],
                     controlId: 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
@@ -206,37 +207,36 @@ describe('outline nodes', () => {
         });
 
         test('aggregation', async () => {
-            expect(
-                await transformNodes(
-                    [
-                        {
-                            id: 'application-preview-app-component',
-                            technicalName: 'v2flex.Component',
-                            editable: false,
-                            type: 'element',
-                            visible: true,
-                            elements: [
-                                {
-                                    id: 'application-preview-app-component',
-                                    technicalName: 'rootControl',
-                                    editable: false,
-                                    type: 'aggregation',
-                                    elements: [
-                                        {
-                                            id: '__layout0',
-                                            technicalName: 'sap.f.FlexibleColumnLayout',
-                                            editable: false,
-                                            type: 'element',
-                                            visible: true
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ],
-                    'UI_ADAPTATION'
-                )
-            ).toStrictEqual([
+            const result = await transformNodes(
+                [
+                    {
+                        id: 'application-preview-app-component',
+                        technicalName: 'v2flex.Component',
+                        editable: false,
+                        type: 'element',
+                        visible: true,
+                        elements: [
+                            {
+                                id: 'application-preview-app-component',
+                                technicalName: 'rootControl',
+                                editable: false,
+                                type: 'aggregation',
+                                elements: [
+                                    {
+                                        id: '__layout0',
+                                        technicalName: 'sap.f.FlexibleColumnLayout',
+                                        editable: false,
+                                        type: 'element',
+                                        visible: true
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                'UI_ADAPTATION'
+            );
+            expect(result).toStrictEqual([
                 {
                     controlId: 'application-preview-app-component',
                     controlType: 'v2flex.Component',
@@ -253,6 +253,69 @@ describe('outline nodes', () => {
                             children: []
                         }
                     ]
+                }
+            ]);
+        });
+        test('building block - ignore children', async () => {
+            const isA = jest.fn().mockReturnValue(true);
+            sapCoreMock.byId.mockReturnValue({
+                getMetadata: jest.fn().mockReturnValue({
+                    getProperty: jest
+                        .fn()
+                        .mockReturnValueOnce('Component')
+                        .mockReturnValueOnce('Component')
+                        .mockReturnValue(''),
+                    getElementName: jest.fn().mockReturnValue('some-name')
+                }),
+                getProperty: jest
+                    .fn()
+                    .mockReturnValueOnce('Component')
+                    .mockReturnValueOnce('Component')
+                    .mockReturnValue(''),
+                isA
+            });
+            const data: OutlineViewNode[] = [
+                {
+                    id: 'test.namespace--fe::table::1::LineItem::Table',
+                    technicalName: 'sap.fe.macros.table.TableAPI',
+                    editable: false,
+                    type: 'element',
+                    visible: false,
+                    elements: [
+                        {
+                            id: 'test.namespace--fe::table::1::LineItem::Table',
+                            technicalName: 'content',
+                            editable: false,
+                            type: 'aggregation',
+                            elements: [
+                                {
+                                    id: 'test.namespace--fe::table::1::LineItem',
+                                    technicalName: 'sap.ui.mdc.Table',
+                                    editable: true,
+                                    type: 'element',
+                                    visible: false,
+                                    elements: []
+                                }
+                            ]
+                        },
+                        {
+                            id: 'test.namespace--fe::table::1::LineItem::Table',
+                            technicalName: 'actions',
+                            editable: false,
+                            type: 'aggregation'
+                        }
+                    ]
+                }
+            ];
+            const result = await transformNodes(data, 'UI_ADAPTATION');
+            expect(result).toStrictEqual([
+                {
+                    controlId: 'test.namespace--fe::table::1::LineItem::Table',
+                    controlType: 'sap.fe.macros.table.TableAPI',
+                    name: 'Component',
+                    editable: false,
+                    visible: false,
+                    children: []
                 }
             ]);
         });

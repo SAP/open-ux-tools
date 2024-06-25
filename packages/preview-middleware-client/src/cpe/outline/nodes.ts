@@ -4,6 +4,7 @@ import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
 
 import { isEditable } from './utils';
+import { FE_MACRO_API } from '../constant';
 
 interface AdditionalData {
     text?: string;
@@ -44,9 +45,13 @@ function getAdditionalData(id: string): AdditionalData {
  * Gets the children nodes of an aggregation type node.
  *
  * @param current The current node to retrieve children from
+ * @param buildingBlock Indicates whether the node is building block
  * @returns An array of children nodes, or an empty array if none are found
  */
-function getChildren(current: OutlineViewNode): OutlineViewNode[] {
+function getChildren(current: OutlineViewNode, buildingBlock = false): OutlineViewNode[] {
+    if (buildingBlock) {
+        return [];
+    }
     return (current.elements ?? []).flatMap((element: OutlineViewNode) =>
         element.type === 'aggregation' ? element.elements ?? [] : []
     );
@@ -89,9 +94,11 @@ export async function transformNodes(input: OutlineViewNode[], scenario: Scenari
         const editable = isEditable(current?.id);
         const isAdp = scenario === 'ADAPTATION_PROJECT';
         const isExtPoint = current?.type === 'extensionPoint';
-
+        const control = sap.ui.getCore().byId(current?.id);
+        const buildingBlock = control?.isA(FE_MACRO_API);
+        const visible = current?.visible ?? true;
         if (current?.type === 'element') {
-            const children = getChildren(current);
+            const children = getChildren(current, buildingBlock);
             const { text } = getAdditionalData(current.id);
             const technicalName = current.technicalName.split('.').slice(-1)[0];
 
@@ -104,7 +111,7 @@ export async function transformNodes(input: OutlineViewNode[], scenario: Scenari
                 controlType: current.technicalName,
                 name: text ?? technicalName,
                 editable,
-                visible: current.visible ?? true,
+                visible,
                 children: transformedChildren
             };
 
@@ -125,7 +132,7 @@ export async function transformNodes(input: OutlineViewNode[], scenario: Scenari
                 controlType: current.technicalName,
                 name: current.name ?? '',
                 editable,
-                visible: current.visible ?? true,
+                visible,
                 children,
                 hasDefaultContent: defaultContent.length > 0
             };

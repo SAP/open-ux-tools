@@ -16,6 +16,7 @@ import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import type { ManagedObjectMetadataProperties } from './utils';
 import { UI5ControlProperty } from './types';
 import DataType from 'sap/ui/base/DataType';
+import { FE_MACRO_API } from './constant';
 
 type AnalyzedType = Pick<UI5ControlProperty, 'isArray' | 'primitiveType' | 'ui5Type' | 'enumValues'>;
 /**
@@ -36,14 +37,20 @@ function isPropertyEnabled(analyzedType: AnalyzedType): boolean {
  * @param hasStableId - given control has stable id.
  * @param ignore - property that is ignored during design time
  * @param controlOverlay - element overlay
+ * @param {boolean} buildingBlock - Indicates whether the node is building block.
  * @returns boolean
  */
 function isControlEnabled(
     analyzedType: AnalyzedType,
     hasStableId: boolean,
     ignore: boolean,
-    controlOverlay?: ElementOverlay
+    controlOverlay?: ElementOverlay,
+    buildingBlock?: boolean
 ): boolean {
+    if (buildingBlock) {
+        return isPropertyEnabled(analyzedType) && hasStableId && !ignore;
+    }
+
     return (controlOverlay?.isSelectable() ?? false) && isPropertyEnabled(analyzedType) && hasStableId && !ignore;
 }
 
@@ -175,7 +182,7 @@ export function buildControlData(control: ManagedObject, controlOverlay?: Elemen
     const selectedControlName = controlMetadata.getName();
     const hasStableId = Utils.checkControlId(control);
     const controlProperties = controlOverlay ? controlOverlay.getDesignTimeMetadata().getData().properties : undefined;
-
+    const buildingBlock = control.isA(FE_MACRO_API);
     // Add the control's properties
     const allProperties = controlMetadata.getAllProperties() as unknown as {
         [name: string]: ManagedObjectMetadataProperties;
@@ -215,8 +222,8 @@ export function buildControlData(control: ManagedObject, controlOverlay?: Elemen
         // 1. The property supports changes
         // 2. The control has stable ID
         // 3. It is not configured to be ignored in design time
-        // 4. And control overlay is selectable
-        const isEnabled = isControlEnabled(analyzedType, hasStableId, ignore, controlOverlay);
+        // 4. And control overlay is selectable or control belongs to `sap.fe.core.buildingBlocks.BuildingBlockBase`
+        const isEnabled = isControlEnabled(analyzedType, hasStableId, ignore, controlOverlay, buildingBlock);
 
         const value = normalizeObjectPropertyValue(controlNewData.newValue);
         const isIcon =
@@ -299,6 +306,7 @@ export function buildControlData(control: ManagedObject, controlOverlay?: Elemen
         id: control.getId(), //the id of the underlying control/aggregation
         type: selectedControlName, //the name of the ui5 class of the control/aggregation
         properties: [...properties].sort((a, b) => (a.name > b.name ? 1 : -1)),
-        name: selectedControlName
+        name: selectedControlName,
+        buildingBlock
     };
 }
