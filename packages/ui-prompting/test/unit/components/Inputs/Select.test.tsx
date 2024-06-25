@@ -27,13 +27,13 @@ describe('Select', () => {
         expect(document.getElementsByClassName('.ts-ComboBox')).toBeDefined();
     });
 
-    it('Render filterBarId select', () => {
-        render(<Select {...props} name="filterBarId" />);
+    it('Render creatable select', () => {
+        render(<Select {...props} creation={{ inputPlaceholder: 'test input placeholder' }} />);
         expect(document.getElementsByClassName('.ts-ComboBox')).toBeDefined();
     });
 
-    it('Render filterBarId input', () => {
-        render(<Select {...props} name="filterBarId" options={[]} />);
+    it('Render creatable input', () => {
+        render(<Select {...props} creation={{ inputPlaceholder: 'test input placeholder' }} options={[]} />);
         expect(document.getElementsByClassName('.ts-Input')).toBeDefined();
     });
 
@@ -115,29 +115,43 @@ describe('Select', () => {
         expect(document.getElementsByClassName('ms-Spinner-circle')).toBeDefined();
     });
 
-    it('Render filterBarId input', () => {
-        render(<Select {...props} name="filterBarId" options={[]} />);
+    it('Render creatable input', () => {
+        render(<Select {...props} creation={{ inputPlaceholder: 'test input placeholder' }} options={[]} />);
         expect(document.getElementsByClassName('.ts-Input')).toBeDefined();
     });
 
-    it('Render filterBarId input with value', () => {
-        render(<Select {...props} name="filterBarId" options={[]} value="testValue" />);
+    it('Render creatable input with value', () => {
+        render(
+            <Select
+                {...props}
+                creation={{ inputPlaceholder: 'test input placeholder' }}
+                options={[]}
+                value="testValue"
+            />
+        );
         expect(screen.getByDisplayValue('testValue')).toBeDefined();
     });
 
     it('Test allowCreate property onChange - no options', () => {
         const onChangeFn = jest.fn();
-        render(<Select {...props} name="filterBarId" options={[]} onChange={onChangeFn} />);
+        render(
+            <Select
+                {...props}
+                creation={{ inputPlaceholder: 'test input placeholder' }}
+                options={[]}
+                onChange={onChangeFn}
+            />
+        );
         const input = screen.getByRole('textbox');
         expect(input).toBeDefined();
         fireEvent.change(input, { target: { value: 'new value' } });
         expect(onChangeFn).toHaveBeenCalled();
-        expect(onChangeFn).toHaveBeenCalledWith('filterBarId', 'new value');
+        expect(onChangeFn).toHaveBeenCalledWith('select', 'new value');
     });
 
     it('Test allowCreate property onChange - select one of options', () => {
         const onChangeFn = jest.fn();
-        render(<Select {...props} name="filterBarId" onChange={onChangeFn} />);
+        render(<Select {...props} creation={{ inputPlaceholder: 'test input placeholder' }} onChange={onChangeFn} />);
         const input = screen.getByRole('combobox');
         expect(input).toBeDefined();
         const button = document.getElementsByClassName('ms-Button')[0];
@@ -146,13 +160,13 @@ describe('Select', () => {
         expect(options[0]).toBeDefined();
         fireEvent.click(options[0]);
         expect(onChangeFn).toHaveBeenCalled();
-        expect(onChangeFn).toHaveBeenCalledWith('filterBarId', 'testKey0');
+        expect(onChangeFn).toHaveBeenCalledWith('select', 'testKey0');
         expect(screen.getByDisplayValue('testKey0')).toBeDefined();
     });
 
     it.skip('Test allowCreate property onChange - options available but enter a new value', () => {
         const onChangeFn = jest.fn();
-        render(<Select {...props} name="filterBarId" onChange={onChangeFn} />);
+        render(<Select {...props} creation={{ inputPlaceholder: 'test input placeholder' }} onChange={onChangeFn} />);
         const input = screen.getByRole('combobox');
         expect(input).toBeDefined();
         fireEvent.change(input, { target: { value: 'new value' } });
@@ -160,28 +174,53 @@ describe('Select', () => {
         expect(onChangeFn).toHaveBeenCalled();
     });
 
-    it('Test filterBarId input property required', () => {
-        render(<Select {...props} name="filterBarId" options={[]} required={true} />);
+    it('Test creatable input property required', () => {
+        render(
+            <Select {...props} creation={{ inputPlaceholder: 'test input placeholder' }} options={[]} required={true} />
+        );
         expect(document.getElementsByClassName('.is-required')).toBeDefined();
     });
 
-    it('Test filterBarId input property additionalInfo', () => {
-        render(<Select {...props} name="filterBarId" options={[]} additionalInfo="testInfo" />);
+    it('Test creatable input property additionalInfo', () => {
+        render(
+            <Select
+                {...props}
+                creation={{ inputPlaceholder: 'test input placeholder' }}
+                options={[]}
+                additionalInfo="testInfo"
+            />
+        );
         expect(screen.getByTitle('testInfo')).toBeDefined();
     });
 
-    it('Test filterBarId input property errorMessage', () => {
-        render(<Select {...props} name="filterBarId" options={[]} errorMessage="testErrorMessage" />);
+    it('Test creatable input property errorMessage', () => {
+        render(
+            <Select
+                {...props}
+                creation={{ inputPlaceholder: 'test input placeholder' }}
+                options={[]}
+                errorMessage="testErrorMessage"
+            />
+        );
         expect(screen.getByRole('alert')).toBeDefined();
     });
 
-    it('Test filterBarId input property placeholder', () => {
-        render(<Select {...props} name="filterBarId" options={[]} placeholder="testPlaceholder" />);
-        expect(screen.getByPlaceholderText('Enter a new ID')).toBeDefined();
+    it('Test creatable input property placeholder', () => {
+        render(
+            <Select
+                {...props}
+                creation={{ inputPlaceholder: 'test input placeholder' }}
+                options={[]}
+                placeholder="testPlaceholder"
+            />
+        );
+        expect(screen.getByPlaceholderText('test input placeholder')).toBeDefined();
     });
 
-    it('Test filterBarId input property pending', () => {
-        render(<Select {...props} name="filterBarId" options={[]} pending={true} />);
+    it('Test creatable input property pending', () => {
+        render(
+            <Select {...props} creation={{ inputPlaceholder: 'test input placeholder' }} options={[]} pending={true} />
+        );
         expect(document.getElementsByClassName('ms-Spinner-circle')).toBeDefined();
     });
 });

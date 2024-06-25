@@ -33,7 +33,7 @@ Object {
       "choices": [Function],
       "dependantPromptNames": Array [
         "aggregationPath",
-        "filterBarId",
+        "filterBar",
       ],
       "message": "View or Fragment File",
       "name": "viewOrFragmentFile",
@@ -85,8 +85,11 @@ Object {
     },
     Object {
       "choices": [Function],
+      "creation": Object {
+        "inputPlaceholder": "Enter a new filter bar ID",
+      },
       "message": "Associated Filter Bar ID",
-      "name": "filterBarId",
+      "name": "filterBar",
       "placeholder": "Select or enter a filter bar ID",
       "selectType": "dynamic",
       "type": "list",
@@ -263,7 +266,7 @@ Array [
 ]
 `;
 
-exports[`Prompts getChoices Choices for field "filterBarId" 1`] = `
+exports[`Prompts getChoices Choices for field "filterBar" 1`] = `
 Array [
   Object {
     "name": "dummyId",
@@ -424,7 +427,7 @@ Object {
       "choices": [Function],
       "dependantPromptNames": Array [
         "aggregationPath",
-        "filterBarId",
+        "filterBar",
       ],
       "groupId": "tableBuildingBlockProperties",
       "message": "View or Fragment File",
@@ -481,9 +484,12 @@ Object {
     },
     Object {
       "choices": [Function],
+      "creation": Object {
+        "inputPlaceholder": "Enter a new filter bar ID",
+      },
       "groupId": "tableBuildingBlockProperties",
       "message": "Associated Filter Bar ID",
-      "name": "filterBarId",
+      "name": "filterBar",
       "placeholder": "Select or enter a filter bar ID",
       "selectType": "dynamic",
       "type": "list",
@@ -717,7 +723,7 @@ Object {
     "errorMessage": "Please select a value",
     "isValid": false,
   },
-  "filterBarId": Object {
+  "filterBar": Object {
     "isValid": true,
   },
   "id": Object {
@@ -800,7 +806,7 @@ Object {
     "errorMessage": "Please select a value",
     "isValid": false,
   },
-  "filterBarId": Object {
+  "filterBar": Object {
     "isValid": true,
   },
   "header": Object {

@@ -14,7 +14,6 @@ import {
     getCAPServicePrompt,
     getChoices,
     getEntityPrompt,
-    getFilterBarIdListPrompt,
     getFilterBarIdPrompt,
     getViewOrFragmentFilePrompt,
     ProjectProvider,
@@ -227,12 +226,13 @@ describe('utils - ', () => {
                 }
             `);
         });
-        test('getFilterBarIdPrompt', () => {
-            const prompt = getFilterBarIdPrompt('message');
+        test('getFilterBarIdPrompt - input type', () => {
+            const prompt = getFilterBarIdPrompt('message', 'input');
             expect(prompt).toMatchInlineSnapshot(`
                 Object {
                   "message": "message",
                   "name": "filterBar",
+                  "placeholder": "Enter a new filter bar ID",
                   "type": "input",
                 }
             `);
@@ -256,13 +256,19 @@ describe('utils - ', () => {
             expect(await validateFn?.('')).toBe('error');
         });
 
-        test('getFilterBarIdListPrompt', () => {
-            const prompt = getFilterBarIdListPrompt('message', fs, projectFolder);
+        test('getFilterBarIdPrompt - list type', () => {
+            const prompt = getFilterBarIdPrompt('message', 'list', fs, projectFolder, {
+                placeholder: 'Select or enter a filter bar ID',
+                creation: { inputPlaceholder: 'Enter a new filter bar ID' }
+            });
             expect(prompt).toMatchInlineSnapshot(`
                 Object {
                   "choices": [Function],
+                  "creation": Object {
+                    "inputPlaceholder": "Enter a new filter bar ID",
+                  },
                   "message": "message",
-                  "name": "filterBarId",
+                  "name": "filterBar",
                   "placeholder": "Select or enter a filter bar ID",
                   "selectType": "dynamic",
                   "type": "list",

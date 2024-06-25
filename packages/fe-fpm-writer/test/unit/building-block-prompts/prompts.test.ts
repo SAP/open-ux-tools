@@ -63,7 +63,7 @@ describe('Prompts', () => {
             expect(aggregationChoices).toMatchSnapshot();
         });
 
-        test('Choices for field "filterBarId"', async () => {
+        test('Choices for field "filterBar"', async () => {
             const filename = 'Test.view.xml';
             const xml = `
 <mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
@@ -85,7 +85,7 @@ describe('Prompts', () => {
             const filesChoices = await promptsAPI.getChoices(PromptsType.Chart, 'viewOrFragmentFile', {});
             const fileChoice = filesChoices.find((choice) => choice.value.endsWith(filename));
             // Get "viewOrFragmentFile"
-            const aggregationChoices = await promptsAPI.getChoices(PromptsType.Chart, 'filterBarId', {
+            const aggregationChoices = await promptsAPI.getChoices(PromptsType.Chart, 'filterBar', {
                 viewOrFragmentFile: fileChoice?.value
             });
             expect(aggregationChoices).toMatchSnapshot();
