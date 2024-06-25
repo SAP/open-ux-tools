@@ -165,12 +165,12 @@ Array [
     "value": "C_CUSTOMER_OP_SRV.C_OrderIsBlockedTextVHTempType",
   },
   Object {
-    "name": "I_AccountingClerkType",
-    "value": "C_CUSTOMER_OP_SRV.I_AccountingClerkType",
-  },
-  Object {
     "name": "I_AccountingClerkStdVHType",
     "value": "C_CUSTOMER_OP_SRV.I_AccountingClerkStdVHType",
+  },
+  Object {
+    "name": "I_AccountingClerkType",
+    "value": "C_CUSTOMER_OP_SRV.I_AccountingClerkType",
   },
   Object {
     "name": "I_BillingBlockReasonType",
@@ -185,12 +185,12 @@ Array [
     "value": "C_CUSTOMER_OP_SRV.I_ChartOfAccountsStdVHType",
   },
   Object {
-    "name": "I_CompanyCodeType",
-    "value": "C_CUSTOMER_OP_SRV.I_CompanyCodeType",
-  },
-  Object {
     "name": "I_CompanyCodeStdVHType",
     "value": "C_CUSTOMER_OP_SRV.I_CompanyCodeStdVHType",
+  },
+  Object {
+    "name": "I_CompanyCodeType",
+    "value": "C_CUSTOMER_OP_SRV.I_CompanyCodeType",
   },
   Object {
     "name": "I_ContactPersonDepartmentTType",
@@ -213,6 +213,14 @@ Array [
     "value": "C_CUSTOMER_OP_SRV.I_CreditControlAreaStdVHType",
   },
   Object {
+    "name": "I_Customer_to_BusinessPartnerType",
+    "value": "C_CUSTOMER_OP_SRV.I_Customer_to_BusinessPartnerType",
+  },
+  Object {
+    "name": "I_Customer_VHType",
+    "value": "C_CUSTOMER_OP_SRV.I_Customer_VHType",
+  },
+  Object {
     "name": "I_CustomerContactOPType",
     "value": "C_CUSTOMER_OP_SRV.I_CustomerContactOPType",
   },
@@ -223,14 +231,6 @@ Array [
   Object {
     "name": "I_CustomerGroupType",
     "value": "C_CUSTOMER_OP_SRV.I_CustomerGroupType",
-  },
-  Object {
-    "name": "I_Customer_to_BusinessPartnerType",
-    "value": "C_CUSTOMER_OP_SRV.I_Customer_to_BusinessPartnerType",
-  },
-  Object {
-    "name": "I_Customer_VHType",
-    "value": "C_CUSTOMER_OP_SRV.I_Customer_VHType",
   },
   Object {
     "name": "I_DeliveryBlockReasonType",
@@ -266,16 +266,16 @@ Array [
 exports[`Prompts getChoices Choices for field "filterBarId" 1`] = `
 Array [
   Object {
+    "name": "dummyId",
+    "value": "dummyId",
+  },
+  Object {
     "name": "FilterBar",
     "value": "FilterBar",
   },
   Object {
     "name": "FilterBar2",
     "value": "FilterBar2",
-  },
-  Object {
-    "name": "dummyId",
-    "value": "dummyId",
   },
 ]
 `;

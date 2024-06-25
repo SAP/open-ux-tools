@@ -100,9 +100,9 @@ export class PromptsAPI {
                 const choices =
                     typeof question.choices === 'function' ? await question.choices(answers) : question.choices;
                 if (choices && Array.isArray(choices)) {
-                    return choices.map((choice) =>
-                        typeof choice === 'string' ? { value: choice, name: choice } : choice
-                    );
+                    return choices
+                        .map((choice) => (typeof choice === 'string' ? { value: choice, name: choice } : choice))
+                        .sort((a, b) => a.name.localeCompare(b.name));
                 }
             }
         } catch (error) {
