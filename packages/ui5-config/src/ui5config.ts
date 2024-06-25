@@ -91,6 +91,17 @@ export class UI5Config {
     }
 
     /**
+     * Get the type in the yaml file.
+     *
+     * @returns {Ui5Document['type']} the type
+     * @memberof Ui5Document['type']
+     */
+    public getType(): Ui5Document['type'] {
+        const type = this.document.getNode({ path: 'type' });
+        return type as Ui5Document['type'];
+    }
+
+    /**
      * Set the type in the yaml file.
      * See also https://sap.github.io/ui5-tooling/pages/Configuration/#general-configuration for reference.
      *
@@ -279,6 +290,30 @@ export class UI5Config {
     }
 
     /**
+     * Returns the backend configurations from the fiori-tools-proxy middleware.
+     *
+     * @returns {FioriToolsProxyConfigBackend[]} the backend configurations
+     */
+    public getBackendConfigsFromFioriToolsProxydMiddleware(): FioriToolsProxyConfigBackend[] {
+        let backendConfigs: FioriToolsProxyConfigBackend[];
+        try {
+            const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
+            const proxyMiddleware = this.document.findItem(
+                middlewareList,
+                (item: any) => item.name === fioriToolsProxy
+            );
+
+            const configuration = this.document.getMap({ start: proxyMiddleware as YAMLMap, path: 'configuration' });
+            backendConfigs = this.document
+                .getSequence({ start: configuration, path: 'backend' })
+                .toJSON() as FioriToolsProxyConfigBackend[];
+        } catch (e) {
+            return [];
+        }
+        return backendConfigs;
+    }
+
+    /**
      * Adds a ui configuration to an existing fiori-tools-proxy middleware. If the config does not contain a fiori-tools-proxy middleware, an error is thrown.
      *
      * @param ui5 config of backend that is to be proxied
@@ -318,10 +353,18 @@ export class UI5Config {
      * @param target system that this app is to be deployed to
      * @param app application configuration for the deployment to ABAP
      * @param fioriTools if true use the middleware included in the @sap/ux-ui5-tooling module
+     * @param exclude optional list of files that are to be excluded from the deployment configuration
+     * @param index if true a standalone index.html is generated during deployment
      * @returns this UI5Config instance
      * @memberof UI5Config
      */
-    public addAbapDeployTask(target: AbapTarget, app: BspApp | Adp, fioriTools = true) {
+    public addAbapDeployTask(
+        target: AbapTarget,
+        app: BspApp | Adp,
+        fioriTools = true,
+        exclude?: string[],
+        index = false
+    ): this {
         this.document.appendTo({
             path: 'builder.resources.excludes',
             value: '/test/**'
@@ -330,12 +373,20 @@ export class UI5Config {
             path: 'builder.resources.excludes',
             value: '/localService/**'
         });
+
+        const configuration: { target: AbapTarget; app: BspApp | Adp; exclude: string[] | undefined; index?: boolean } =
+            { target, app, exclude };
+
+        if (index) {
+            configuration['index'] = true;
+        }
+
         this.document.appendTo({
             path: 'builder.customTasks',
             value: {
                 name: fioriTools ? 'deploy-to-abap' : 'abap-deploy-task',
                 afterTask: 'generateCachebusterInfo',
-                configuration: { target, app }
+                configuration
             }
         });
         return this;
@@ -368,6 +419,30 @@ export class UI5Config {
             path: 'builder.customTasks',
             matcher: { key: 'name', value: name }
         });
+        return this;
+    }
+
+    /**
+     * Removes the entire config for the given key.
+     *
+     * @param key key of the config that is to be removed
+     * @returns {UI5Config} the UI5Config instance
+     */
+    public removeConfig(key: string): this {
+        this.document.delete(key);
+        return this;
+    }
+
+    /**
+     * Adds a comment to the ui5 config.
+     *
+     * @param root0 - the comment object
+     * @param root0.comment - the comment object's comment
+     * @param root0.location - the comment object's location
+     * @returns {UI5Config} the UI5Config instance
+     */
+    public addComment({ comment, location = 'beginning' }: { comment: string; location?: 'beginning' | 'end' }): this {
+        this.document.addDocumentComment({ comment, location });
         return this;
     }
 

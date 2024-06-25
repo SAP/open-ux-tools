@@ -1,5 +1,13 @@
 # @sap-ux/ui5-config
 
+## 0.22.9
+
+### Patch Changes
+
+-   399d2ad8: adds new abap deploy config writer
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/yaml@0.15.1
+
 ## 0.22.8
 
 ### Patch Changes
