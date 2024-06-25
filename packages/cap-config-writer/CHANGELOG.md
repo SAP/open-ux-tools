@@ -1,5 +1,11 @@
 # @sap-ux/cap-config-writer
 
+## 0.4.0
+
+### Minor Changes
+
+-   04ed040a: update cds-plugin-ui5 version
+
 ## 0.3.7
 
 ### Patch Changes
