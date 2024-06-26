@@ -37,12 +37,13 @@ export class GeneratorService extends AdtService {
                 Accept: 'application/atom+xml;type=feed'
             },
             params: {
-                referencedObject: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`
+                referencedObject: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`,
+                type: 'webapi'
             }
         });
 
         const data = this.parseResponse<any>(response.data).feed?.entry as GeneratorEntry;
-        if (data?.id === 'ui-service' || data?.id === 'uiservice') {
+        if (data?.id === 'published-ui-service') {
             return data;
         } else {
             throw new Error('UI Service Generator not found');

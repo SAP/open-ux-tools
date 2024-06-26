@@ -1,5 +1,16 @@
 # @sap-ux/odata-cli
 
+## 0.13.0
+
+### Minor Changes
+
+-   31cc53f8: Use new api endpoint for ui service generator
+
+### Patch Changes
+
+-   Updated dependencies [31cc53f8]
+    -   @sap-ux/axios-extension@1.14.0
+
 ## 0.12.30
 
 ### Patch Changes
