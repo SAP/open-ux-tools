@@ -1,0 +1,20 @@
+{
+    "prompts": {
+        "oDataSourceLabel": "Target OData Service",
+        "oDataSourceTooltip": "Select the OData service you want to replace",
+        "oDataSourceURILabel": "OData Source URI",
+        "oDataSourceURITooltip": "Enter the URI for the new OData source",
+        "maxAgeLabel": "New maxAge",
+        "maxAgeTooltip": "(Optional) Enter the time in seconds it takes for a cached response of the service to expire.",
+        "oDataAnnotationSourceURILabel": "OData Annotation Data Source URI",
+        "oDataAnnotationSourceURITooltip": "Server side annotations have been detected for the selected OData service. If needed, enter new annotation data source URI  for the changed service",
+        "oDataURIInfoLabel": "Have in mind that common OData Service path prefixes are '{{- v2Prefix}}' or '{{- v4Prefix}}'",
+        "isInSafeModeLabel": "Making manifest changes is not upgrade safe and the project will be set in advanced mode. Please continue if you are sure you want to have your project in advanced mode.",
+        "oDataURIV2InfoLabel": "Have in mind that you are trying to replace OData {{versionOne}} Service with OData {{versionTwo}} Service"
+    },
+    "validators": {
+        "manifestContainsNoODataServices": "Manifest contains no OData Services.",
+        "inputCannotBeEmpty": "{{input}} cannot be empty.",
+        "inpuCannotHaveSpaces": "{{input}} cannot contain spaces."
+    }
+}
