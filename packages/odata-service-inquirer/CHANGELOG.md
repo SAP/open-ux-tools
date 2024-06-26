@@ -1,5 +1,45 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.3.4
+
+### Patch Changes
+
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/project-access@1.22.2
+    -   @sap-ux/axios-extension@1.13.1
+    -   @sap-ux/telemetry@0.4.35
+
+## 0.3.3
+
+### Patch Changes
+
+-   017d008f: Removes unimplemented message for odata service url datasource
+
+## 0.3.2
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.4.34
+
+## 0.3.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.22.1
+-   @sap-ux/telemetry@0.4.33
+-   @sap-ux/axios-extension@1.13.1
+
+## 0.3.0
+
+### Minor Changes
+
+-   1ea831d5: Adds support for service url prompting
+
+### Patch Changes
+
+-   Updated dependencies [1ea831d5]
+    -   @sap-ux/inquirer-common@0.3.0
+
 ## 0.2.3
 
 ### Patch Changes

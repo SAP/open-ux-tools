@@ -576,7 +576,7 @@ exports[`fiori annotation service initial file content cds 1`] = `
 exports[`fiori annotation service initial file content xml 1`] = `
 "<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
     <edmx:Reference Uri=\\"/incident/$metadata\\">
-        <edmx:Include Namespace=\\"IncidentService\\"/>
+        <edmx:Include Namespace=\\"IncidentService\\" Alias=\\"Metadata\\"/>
     </edmx:Reference>
     <edmx:DataServices>
         <Schema xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\" Namespace=\\"IncidentService.annotations\\">
@@ -1053,6 +1053,43 @@ exports[`fiori annotation service insert primitive value null in property value 
 "
 `;
 
+exports[`fiori annotation service insert primitive value path in collection based on index CAPNodejs cap-start v4 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+annotate service.test with @(
+    UI.SelectionFields : [
+        path2,
+        path1,
+    ]
+);
+
+"
+`;
+
+exports[`fiori annotation service insert primitive value path in collection based on index EDMXBackend xml-start v4 1`] = `
+"<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/UI.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.UI.v1\\" Alias=\\"UI\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"/incident/$metadata\\">
+        <edmx:Include Namespace=\\"IncidentService\\"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\" Namespace=\\"sap.fe.demo\\">
+            <Annotations Target=\\"IncidentService.test\\">
+                <Annotation Term=\\"UI.SelectionFields\\">
+                    <Collection>
+                        <PropertyPath>path2</PropertyPath>
+                        <PropertyPath>path1</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
+"
+`;
+
 exports[`fiori annotation service insert primitive value qualifier in annotation CAPNodejs cap-start v4 1`] = `
 "using IncidentService as service from '../../srv/incidentservice';
 
@@ -1238,6 +1275,76 @@ exports[`fiori annotation service insert property value in record EDMXBackend xm
 "
 `;
 
+exports[`fiori annotation service insert property value in record consider $Type CAPNodejs cap-start v4 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+annotate service.test with @(
+    UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Label : 'Test',
+            Value : path,
+        },
+        {
+            $Type : 'UI.DataField',
+            ![@UI.Importance] : 'Test',
+            Value : path,
+        },
+    ]
+);
+
+"
+`;
+
+exports[`fiori annotation service insert property value in record without type CAPNodejs cap-start v4 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+annotate service.test with @(
+    UI.LineItem : [
+        {
+            Label : 'Test',
+            Value : path,
+        },
+        {
+            ![@UI.Importance] : 'Test',
+            Value : path,
+        },
+    ]
+);
+
+"
+`;
+
+exports[`fiori annotation service insert property value in record without type EDMXBackend xml-start v4 1`] = `
+"<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/UI.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.UI.v1\\" Alias=\\"UI\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"/incident/$metadata\\">
+        <edmx:Include Namespace=\\"IncidentService\\"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\" Namespace=\\"sap.fe.demo\\">
+            <Annotations Target=\\"IncidentService.test\\">
+                <Annotation Term=\\"UI.LineItem\\">
+                    <Collection>
+                        <Record>
+                            <PropertyValue Property=\\"Label\\" String=\\"Test\\"/>
+                            <PropertyValue Property=\\"Value\\" PropertyPath=\\"path\\"/>
+                        </Record>
+                        <Record>
+                            <Annotation Term=\\"UI.Importance\\" String=\\"Test\\"/>
+                            <PropertyValue Property=\\"Value\\" PropertyPath=\\"path\\"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
+"
+`;
+
 exports[`fiori annotation service insert record in line item CAPNodejs cap-start v4 1`] = `
 "using IncidentService as service from '../../srv/incidentservice';
 
@@ -1407,6 +1514,38 @@ exports[`fiori annotation service insert record update propertyValue value 'stri
                     <Record>
                         <PropertyValue Property=\\"Value\\" String=\\"new string\\"/>
                     </Record>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
+"
+`;
+
+exports[`fiori annotation service insert reference delete and insert in the same target CAPNodejs cap-start v4 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+annotate service.Incidents with @(
+    UI.LineItem #test1 : [
+    ]
+);
+
+"
+`;
+
+exports[`fiori annotation service insert reference delete and insert in the same target EDMXBackend xml-start v4 1`] = `
+"<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/UI.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.UI.v1\\" Alias=\\"UI\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"/incident/$metadata\\">
+        <edmx:Include Namespace=\\"IncidentService\\"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\" Namespace=\\"sap.fe.demo\\">
+            <Annotations Target=\\"IncidentService.Incidents\\">
+                <Annotation Term=\\"UI.LineItem\\" Qualifier=\\"test1\\">
+                    <Collection/>
                 </Annotation>
             </Annotations>
         </Schema>
@@ -2918,7 +3057,30 @@ Actions: [
 ActionImports: []"
 `;
 
-exports[`fiori annotation service update PropertyValue - PropertyPath namespace alias value CAPNodejs cap-start v4 1`] = `
+exports[`fiori annotation service update PropertyValue - PropertyPath change element EDMXBackend xml-start v4 1`] = `
+"<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/UI.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.UI.v1\\" Alias=\\"UI\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"/incident/$metadata\\">
+        <edmx:Include Namespace=\\"IncidentService\\"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\" Namespace=\\"sap.fe.demo\\">
+            <Annotations Target=\\"IncidentService.Incidents\\">
+                <Annotation Term=\\"UI.SelectionFields\\" Qualifier=\\"abc\\">
+                    <Collection>
+                        <AnnotationPath>createdBy</AnnotationPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
+"
+`;
+
+exports[`fiori annotation service update PropertyValue - PropertyPath namespace alias CAPNodejs cap-start v4 1`] = `
 "using IncidentService as service from '../../srv/incidentservice';
 
 annotate service.test with @(
@@ -2933,7 +3095,7 @@ annotate service.test with @(
 "
 `;
 
-exports[`fiori annotation service update PropertyValue - PropertyPath namespace alias value EDMXBackend xml-start v4 1`] = `
+exports[`fiori annotation service update PropertyValue - PropertyPath namespace alias EDMXBackend xml-start v4 1`] = `
 "<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
     <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/UI.xml\\">
         <edmx:Include Namespace=\\"com.sap.vocabularies.UI.v1\\" Alias=\\"UI\\"/>
@@ -2949,6 +3111,29 @@ exports[`fiori annotation service update PropertyValue - PropertyPath namespace 
                         <Record Type=\\"UI.ReferenceFacet\\">
                             <PropertyValue Property=\\"Target\\" AnnotationPath=\\"incidentFlow/@UI.PresentationVariant#testsection\\"/>
                         </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
+"
+`;
+
+exports[`fiori annotation service update PropertyValue - PropertyPath replace text content EDMXBackend xml-start v4 1`] = `
+"<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/UI.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.UI.v1\\" Alias=\\"UI\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"/incident/$metadata\\">
+        <edmx:Include Namespace=\\"IncidentService\\"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\" Namespace=\\"sap.fe.demo\\">
+            <Annotations Target=\\"IncidentService.Incidents\\">
+                <Annotation Term=\\"UI.SelectionFields\\" Qualifier=\\"abc\\">
+                    <Collection>
+                        <PropertyPath>createdBy</PropertyPath>
                     </Collection>
                 </Annotation>
             </Annotations>
@@ -3137,10 +3322,10 @@ exports[`fiori annotation service update expression change from and to flags (op
                         <PropertyValue Property=\\"tel\\">
                             <Collection>
                                 <Record Type=\\"Communication.PhoneNumberType\\">
-                                    <PropertyValue Property=\\"type\\" EnumMember=\\"Communication.PhoneType/work\\"/>
+                                    <PropertyValue Property=\\"type\\" EnumMember=\\"Communication.PhoneType/work Communication.PhoneType/cell\\"/>
                                 </Record>
                                 <Record Type=\\"Communication.PhoneNumberType\\">
-                                    <PropertyValue Property=\\"type\\" EnumMember=\\"Communication.PhoneType/work Communication.PhoneType/cell\\"/>
+                                    <PropertyValue Property=\\"type\\" EnumMember=\\"Communication.PhoneType/work\\"/>
                                 </Record>
                             </Collection>
                         </PropertyValue>

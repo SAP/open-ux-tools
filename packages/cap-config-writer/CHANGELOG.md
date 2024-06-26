@@ -1,5 +1,53 @@
 # @sap-ux/cap-config-writer
 
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/project-access@1.22.2
+    -   @sap-ux/yaml@0.15.1
+    -   @sap-ux/odata-service-inquirer@0.3.4
+
+## 0.4.0
+
+### Minor Changes
+
+-   04ed040a: update cds-plugin-ui5 version
+
+## 0.3.7
+
+### Patch Changes
+
+-   Updated dependencies [017d008f]
+    -   @sap-ux/odata-service-inquirer@0.3.3
+
+## 0.3.6
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.3.2
+
+## 0.3.5
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.22.1
+-   @sap-ux/odata-service-inquirer@0.3.1
+
+## 0.3.4
+
+### Patch Changes
+
+-   d1045887: Moving xml js from dev dependency to real dependency in package json
+
+## 0.3.3
+
+### Patch Changes
+
+-   Updated dependencies [1ea831d5]
+    -   @sap-ux/odata-service-inquirer@0.3.0
+
 ## 0.3.2
 
 ### Patch Changes
