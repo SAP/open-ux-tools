@@ -1,5 +1,11 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.1.0
+
+### Minor Changes
+
+-   3b795703: Adding generate readme file functionalities
+
 ## 0.0.17
 
 ### Patch Changes
