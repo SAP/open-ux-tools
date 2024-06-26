@@ -47,7 +47,6 @@ import {
     getAllNamespacesAndReferences,
     isElementWithName,
     parseIdentifier,
-    toAliasQualifiedName,
     toFullyQualifiedName
 } from '@sap-ux/odata-annotation-core';
 import { TARGET_TYPE, printTarget } from '@sap-ux/cds-odata-annotation-converter';
