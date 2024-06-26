@@ -1,20 +1,14 @@
-import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { Answers, Question } from 'inquirer';
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { i18nNamespaces, initI18n, translate } from '../../i18n';
-import { BuildingBlockType } from '../types';
 import type { BuildingBlockConfig } from '../types';
 import { ProjectProvider } from './utils';
-import { relative } from 'path';
 import type {
     ChartPromptsAnswer,
     Prompts,
     TablePromptsAnswer,
-    BuildingBlockTypePromptsAnswer,
     FilterBarPromptsAnswer,
     ValidationResults,
-    PromptQuestion,
     SupportedPrompts,
     SupportedPromptsMap,
     NarrowPrompt,
@@ -100,9 +94,9 @@ export class PromptsAPI {
                 const choices =
                     typeof question.choices === 'function' ? await question.choices(answers) : question.choices;
                 if (choices && Array.isArray(choices)) {
-                    return choices
-                        .map((choice) => (typeof choice === 'string' ? { value: choice, name: choice } : choice))
-                        .sort((a, b) => a.name.localeCompare(b.name));
+                    return choices.map((choice) =>
+                        typeof choice === 'string' ? { value: choice, name: choice } : choice
+                    );
                 }
             }
         } catch (error) {

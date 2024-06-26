@@ -1,7 +1,7 @@
 import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
 import type { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import { DOMParser } from '@xmldom/xmldom';
-import type { Answers, InputQuestion, ListQuestion } from 'inquirer';
+import type { Answers } from 'inquirer';
 import type { Editor } from 'mem-fs-editor';
 import { join, relative } from 'path';
 import { ProjectProvider } from './project';
@@ -11,7 +11,6 @@ import type { InputPromptQuestion, ListPromptQuestion } from '../types';
 import { BuildingBlockType } from '../../types';
 import { isElementIdAvailable } from './xml';
 import { i18nNamespaces, initI18n, translate } from '../../../i18n';
-import { DynamicChoices } from '@sap-ux/ui-prompting';
 
 /**
  * Returns a Prompt to choose a boolean value.
@@ -218,7 +217,7 @@ export function getAggregationPathPrompt(
         choices: (answers: Answers) => {
             const { viewOrFragmentFile } = answers;
             if (viewOrFragmentFile) {
-                const choices = getChoices(getXPathStringsForXmlFile(join(basePath, viewOrFragmentFile), fs));
+                const choices = getChoices(getXPathStringsForXmlFile(join(basePath, viewOrFragmentFile), fs), false);
                 if (!choices.length) {
                     throw new Error('Failed while fetching the aggregation path.');
                 }
@@ -288,11 +287,15 @@ export function getXPathStringsForXmlFile(xmlFilePath: string, fs: Editor): Reco
  * @param {Record<string, string> | any[]} obj - object to be converted to choices
  * @returns the list of choices
  */
-export function getChoices(obj: Record<string, string> | any[]) {
+export function getChoices(obj: Record<string, string> | any[], sort = true): { name: string; value: string }[] {
     if (Array.isArray(obj)) {
         return obj.map((el) => ({ name: el, value: el }));
     }
-    return Object.entries(obj).map(([key, value]) => ({ name: key, value }));
+    const choices = Object.entries(obj).map(([key, value]) => ({ name: key, value }));
+    if (sort) {
+        return choices.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    return choices;
 }
 
 /**
