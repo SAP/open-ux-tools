@@ -599,7 +599,7 @@ export class ChangeConverter {
                 });
             } else if (node.name === valueType) {
                 // element notation
-                let childContent: ElementChild[] = [];
+                const childContent: ElementChild[] = [];
                 if (content.value.type !== Edm.Null) {
                     childContent.push(createTextNode(newValue));
                 }
@@ -609,7 +609,7 @@ export class ChangeConverter {
                     pointer: pointer,
                     newElement: createElementNode({
                         name: content.value.type,
-                        content: [...childContent]
+                        content: childContent
                     })
                 };
                 this.annotationFileChanges.push(internalChange);
