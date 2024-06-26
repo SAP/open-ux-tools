@@ -2,7 +2,6 @@ import path from 'path';
 import memFs from 'mem-fs';
 import memFsEditor from 'mem-fs-editor';
 import { generateReadMe } from '../../src/read-me';
-import { readFileSync } from 'fs';
 import type { ReadMe } from '../../src/types';
 
 function getLaunchText(): string {
@@ -16,7 +15,6 @@ describe('Readme file generation tests', () => {
 
     it('should generate README.md with the correct content including core and optional properties', () => {
         const readMePath = path.join(__dirname, '/README.md');
-        const expectReadMePath = path.join(__dirname, './expected/test01/README.md');
         const readMe: ReadMe = {
             generatorName: '@sap/generator-fiori-elements',
             template: 'List Report Page V4',
@@ -41,12 +39,11 @@ describe('Readme file generation tests', () => {
             enableCodeAssist: false
         };
         generateReadMe(__dirname, readMe, editor);
-        expect(editor.read(readMePath)).toEqual(readFileSync(expectReadMePath, 'utf-8'));
+        expect(editor.read(readMePath)).toMatchSnapshot();
     });
 
     it('should generate README.md with core properties', () => {
         const readMePath = path.join(__dirname, '/README.md');
-        const expectReadMePath = path.join(__dirname, './expected/test02/README.md');
         const readMe: ReadMe = {
             generatorName: '@sap/generator-fiori-elements',
             template: 'List Report Page V4',
@@ -59,6 +56,6 @@ describe('Readme file generation tests', () => {
             appNamespace: 'appNamespace'
         };
         generateReadMe(__dirname, readMe, editor);
-        expect(editor.read(readMePath)).toEqual(readFileSync(expectReadMePath, 'utf-8'));
+        expect(editor.read(readMePath)).toMatchSnapshot();
     });
 });
