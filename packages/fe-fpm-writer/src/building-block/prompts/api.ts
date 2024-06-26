@@ -22,6 +22,7 @@ import {
     getFilterBarBuildingBlockPrompts,
     getBuildingBlockTypePrompts
 } from './questions';
+import { initI18n } from '../../i18n';
 
 const unsupportedPrompts = (_fs: Editor, _basePath: string, _projectProvider: ProjectProvider): Prompts<Answers> => ({
     questions: []
@@ -50,6 +51,7 @@ export class PromptsAPI {
             fs = create(createStorage());
         }
         const projectProvider = await ProjectProvider.createProject(basePath, fs);
+        await initI18n();
         return new PromptsAPI(basePath, projectProvider, fs);
     }
 

@@ -2,7 +2,7 @@ import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { TFunction } from 'i18next';
 import type { Answers } from 'inquirer';
 import type { Editor } from 'mem-fs-editor';
-import { i18nNamespaces, initI18n, translate } from '../../../i18n';
+import { i18nNamespaces, translate } from '../../../i18n';
 import {
     getAggregationPathPrompt,
     getAnnotationPathQualifierPrompt,
@@ -27,8 +27,6 @@ export async function getChartBuildingBlockPrompts(
     basePath: string,
     projectProvider: ProjectProvider
 ): Promise<Prompts<ChartPromptsAnswer>> {
-    // ToDO - init i18n in api contructor?
-    await initI18n();
     const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.chart.');
     const defaultAnswers: Answers = {
         id: 'Chart'

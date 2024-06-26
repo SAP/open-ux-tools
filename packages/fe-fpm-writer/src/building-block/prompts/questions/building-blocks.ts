@@ -1,4 +1,4 @@
-import { i18nNamespaces, initI18n, translate } from '../../../i18n';
+import { i18nNamespaces, translate } from '../../../i18n';
 import { BuildingBlockType } from '../../types';
 import type { BuildingBlockTypePromptsAnswer, Prompts } from '../types';
 
@@ -8,7 +8,6 @@ import type { BuildingBlockTypePromptsAnswer, Prompts } from '../types';
  * @returns The list of prompts for building block types selection.
  */
 export async function getBuildingBlockTypePrompts(): Promise<Prompts<BuildingBlockTypePromptsAnswer>> {
-    await initI18n();
     const t = translate(i18nNamespaces.buildingBlock, 'prompts.super.');
     return {
         questions: [

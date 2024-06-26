@@ -1,7 +1,7 @@
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { Answers } from 'inquirer';
 import type { Editor } from 'mem-fs-editor';
-import { i18nNamespaces, initI18n, translate } from '../../../i18n';
+import { i18nNamespaces, translate } from '../../../i18n';
 import {
     getAggregationPathPrompt,
     getAnnotationPathQualifierPrompt,
@@ -19,7 +19,6 @@ export async function getFilterBarBuildingBlockPrompts(
     basePath: string,
     projectProvider: ProjectProvider
 ): Promise<Prompts<FilterBarPromptsAnswer>> {
-    await initI18n();
     const t = translate(i18nNamespaces.buildingBlock, 'prompts.filterBar.');
 
     const defaultAnswers: Answers = {
