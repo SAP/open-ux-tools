@@ -14,6 +14,21 @@
             "id": {
                 "existingIdValidation": "An element with this ID already exists",
                 "defaultPlaceholder": "Enter a building block ID"
+            },
+            "service": {
+                "defaultPlaceholder": "Select a service"
+            },
+            "entity": {
+                "defaultPlaceholder": "Select an entity"
+            },
+            "aggregationPath": {
+                "defaultPlaceholder": "Enter an aggregation path"
+            },
+            "filterBar": {
+                "defaultPlaceholder": "Enter a new filter bar ID"
+            },
+            "viewOrFragmentFile": {
+                "defaultPlaceholder": "Select a view or fragment file"
             }
         },
         "chart": {

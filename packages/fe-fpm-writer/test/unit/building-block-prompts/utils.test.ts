@@ -253,7 +253,7 @@ describe('utils - ', () => {
         });
 
         test('getBuildingBlockIdPrompt', async () => {
-            const prompt = await getBuildingBlockIdPrompt(fs, 'message', 'error', projectFolder);
+            const prompt = getBuildingBlockIdPrompt(fs, 'message', 'error', projectFolder);
             expect(prompt).toMatchInlineSnapshot(`
                 Object {
                   "default": undefined,

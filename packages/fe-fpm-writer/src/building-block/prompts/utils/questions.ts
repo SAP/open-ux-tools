@@ -12,6 +12,9 @@ import { BuildingBlockType } from '../../types';
 import { isElementIdAvailable } from './xml';
 import { i18nNamespaces, initI18n, translate } from '../../../i18n';
 
+initI18n();
+const t = translate(i18nNamespaces.buildingBlock, 'prompts.common.');
+
 /**
  * Returns a Prompt to choose a boolean value.
  *
@@ -93,7 +96,7 @@ export function getViewOrFragmentFilePrompt(
     basePath: string,
     message: string,
     validationErrorMessage: string,
-    dependantPromptNames = ['aggregationPath'], // dependent prompts
+    dependantPromptNames = ['aggregationPath'],
     additionalProperties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
     return {
@@ -119,7 +122,7 @@ export function getViewOrFragmentFilePrompt(
             });
         },
         validate: (value: string) => (value ? true : validationErrorMessage),
-        placeholder: additionalProperties.placeholder ?? 'Select a view or fragment file'
+        placeholder: additionalProperties.placeholder ?? t('viewOrFragmentFile.defaultPlaceholder')
     };
 }
 
@@ -140,7 +143,7 @@ export async function getCAPServicePrompt(
         message,
         choices: getCAPServiceChoices.bind(null, projectProvider),
         default: defaultValue,
-        placeholder: additionalProperties.placeholder ?? 'Select a service'
+        placeholder: additionalProperties.placeholder ?? t('service.defaultPlaceholder')
     };
 }
 
@@ -175,7 +178,7 @@ export function getEntityPrompt(
             }
             return getChoices(entityTypeMap);
         },
-        placeholder: additionalProperties.placeholder ?? 'Select an entity'
+        placeholder: additionalProperties.placeholder ?? t('entity.defaultPlaceholder')
     };
 }
 
@@ -225,7 +228,7 @@ export function getAggregationPathPrompt(
             }
             return [];
         },
-        placeholder: additionalProperties.placeholder ?? 'Enter an aggregation path'
+        placeholder: additionalProperties.placeholder ?? t('aggregationPath.defaultPlaceholder')
     };
 }
 
@@ -329,7 +332,7 @@ export function getFilterBarIdPrompt(
         type: 'input',
         name: 'filterBar',
         message,
-        placeholder: additionalProperties.placeholder ?? 'Enter a new filter bar ID'
+        placeholder: additionalProperties.placeholder ?? t('filterBar.defaultPlaceholder')
     };
     if (type === 'input') {
         return prompt;
@@ -421,16 +424,14 @@ export function getBindingContextTypePrompt(
  * @param additionalProperties
  * @returns An InputPrompt object for getting the building block ID
  */
-export async function getBuildingBlockIdPrompt(
+export function getBuildingBlockIdPrompt(
     fs: Editor,
     message: string,
     validationErrorMessage: string,
     basePath: string,
     defaultValue?: string,
     additionalProperties: Partial<InputPromptQuestion> = {}
-): Promise<InputPromptQuestion> {
-    await initI18n();
-    const t = translate(i18nNamespaces.buildingBlock, 'prompts.common.');
+): InputPromptQuestion {
     return {
         ...additionalProperties,
         type: 'input',
