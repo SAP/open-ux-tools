@@ -2,7 +2,7 @@ import { t } from '../i18n';
 import type { CapRuntime } from '@sap-ux/odata-service-inquirer';
 
 /**
- * Determines the URL based on the project type.
+ * Returns the url to the specified cap app as served by `cds serve` or `cds watch`.
  *
  * @param capType The type of CAP runtime used in the application (e.g., 'Java' or 'Node.js').
  * @param projectName The project's name, which is the module name.
@@ -28,7 +28,7 @@ function getCapUrl(capType: CapRuntime, projectName: string, appId?: string): st
  * @param appId If appId is provided, it will be used to open the application instead of the project name. This option is available for use with npm workspaces.
  * @returns The launch text for the application.
  */
-export function getLaunchText(capType: CapRuntime, projectName: string, appId?: string): string {
+export function getAppLaunchText(capType: CapRuntime, projectName: string, appId?: string): string {
     // Determine the Maven command if the project is a Java project
     const mvnCommand = capType === 'Java' ? ' (```mvn spring-boot:run```)' : '';
     const capUrl = getCapUrl(capType, projectName, appId);
