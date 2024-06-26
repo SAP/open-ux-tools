@@ -2,7 +2,6 @@
 import type Button from 'sap/m/Button';
 import type Select from 'sap/m/Select';
 import type Dialog from 'sap/m/Dialog';
-import MessageToast from 'sap/m/MessageToast';
 
 /** sap.ui.core */
 import type UI5Element from 'sap/ui/core/Element';
@@ -21,10 +20,15 @@ import BaseDialog from './BaseDialog.controller';
 import { ExtensionPointData, ExtensionPointInfo } from '../extension-point';
 import { notifyUser } from '../utils';
 
+type ExtensionPointModel = JSONModel & {
+    getProperty(sPath: '/newFragmentName'): string;
+    getProperty(sPath: '/extensionPointName'): string;
+};
+
 /**
  * @namespace open.ux.preview.client.adp.controllers
  */
-export default class ExtensionPoint extends BaseDialog {
+export default class ExtensionPoint extends BaseDialog<ExtensionPointModel> {
     public readonly data: ExtensionPointData;
 
     constructor(name: string, _overlays: UI5Element, rta: RuntimeAuthoring, data: ExtensionPointData) {
@@ -132,8 +136,7 @@ export default class ExtensionPoint extends BaseDialog {
 
             this.model.setProperty('/fragmentList', fragments);
         } catch (e) {
-            MessageToast.show(e.message);
-            throw new Error(e.message);
+            this.handleError(e);
         }
     }
 

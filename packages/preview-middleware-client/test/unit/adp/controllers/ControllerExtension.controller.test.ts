@@ -202,7 +202,7 @@ describe('ControllerExtension', () => {
             const openSpy = jest.fn();
 
             fetchMock.mockResolvedValue({
-                json: jest.fn().mockRejectedValue({ message: errorMsg }),
+                json: jest.fn().mockRejectedValue(new Error(errorMsg)),
                 text: jest.fn(),
                 ok: true
             });
@@ -242,7 +242,7 @@ describe('ControllerExtension', () => {
                 json: jest
                     .fn()
                     .mockReturnValueOnce({ controllerExists: false, controllerPath: '', controllerPathFromRoot: '' })
-                    .mockRejectedValueOnce({ message: errorMsg }),
+                    .mockRejectedValueOnce(new Error(errorMsg)),
                 text: jest.fn(),
                 ok: true
             });
@@ -569,7 +569,7 @@ describe('ControllerExtension', () => {
 
             fetchMock.mockResolvedValue({
                 json: jest.fn().mockReturnValue([]),
-                text: jest.fn().mockRejectedValueOnce({ message: errorMsg }),
+                text: jest.fn().mockRejectedValueOnce(new Error(errorMsg)),
                 ok: true
             });
 

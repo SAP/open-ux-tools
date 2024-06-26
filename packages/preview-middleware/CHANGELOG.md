@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.13.73
+
+### Patch Changes
+
+-   fb2ff8d6: Reduce eslint warnings
+
 ## 0.13.72
 
 ### Patch Changes
