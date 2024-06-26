@@ -151,7 +151,7 @@ Object {
   "choices": [Function],
   "message": "AggregationPathMessage",
   "name": "aggregationPath",
-  "placeholder": "Enter an aggregation path",
+  "placeholder": "Select an aggregation path",
   "selectType": "dynamic",
   "type": "list",
 }

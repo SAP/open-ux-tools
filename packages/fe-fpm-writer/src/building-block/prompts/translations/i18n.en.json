@@ -22,7 +22,7 @@
                 "defaultPlaceholder": "Select an entity"
             },
             "aggregationPath": {
-                "defaultPlaceholder": "Enter an aggregation path"
+                "defaultPlaceholder": "Select an aggregation path"
             },
             "filterBar": {
                 "defaultPlaceholder": "Enter a new filter bar ID"
