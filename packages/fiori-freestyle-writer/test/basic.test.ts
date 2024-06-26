@@ -152,6 +152,18 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 appOptions: { generateIndex: false }
             },
             settings: {}
+        },
+        {
+            name: 'basic_with_start-noflp',
+            config: {
+                ...commonConfig,
+                service: {
+                    ...commonConfig.service,
+                    url: undefined // remove the URL to ensure the localOnly flag is set to true during the generation process
+                },
+                appOptions: { generateIndex: true }
+            },
+            settings: {}
         }
     ];
 

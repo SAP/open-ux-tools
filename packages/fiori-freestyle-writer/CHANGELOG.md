@@ -1,5 +1,20 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.22.14
+
+### Patch Changes
+
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/ui5-config@0.22.9
+    -   @sap-ux/odata-service-writer@0.20.4
+    -   @sap-ux/ui5-application-writer@0.26.17
+
+## 0.22.13
+
+### Patch Changes
+
+-   dfeb3a6b: Load i18n translations asynchronously to ensure proper initialization.
+
 ## 0.22.12
 
 ### Patch Changes

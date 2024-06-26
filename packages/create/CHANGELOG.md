@@ -1,5 +1,61 @@
 # @sap-ux/create
 
+## 0.5.112
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.5
+-   @sap-ux/app-config-writer@0.3.79
+-   @sap-ux/cap-config-writer@0.5.2
+
+## 0.5.111
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.4
+-   @sap-ux/app-config-writer@0.3.78
+-   @sap-ux/cap-config-writer@0.5.1
+
+## 0.5.110
+
+### Patch Changes
+
+-   Updated dependencies [200894d7]
+    -   @sap-ux/cap-config-writer@0.5.0
+
+## 0.5.109
+
+### Patch Changes
+
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/project-access@1.22.2
+    -   @sap-ux/adp-tooling@0.11.3
+    -   @sap-ux/app-config-writer@0.3.77
+    -   @sap-ux/cap-config-writer@0.4.1
+    -   @sap-ux/cards-editor-config-writer@0.3.8
+    -   @sap-ux/mockserver-config-writer@0.5.7
+
+## 0.5.108
+
+### Patch Changes
+
+-   Updated dependencies [04ed040a]
+    -   @sap-ux/cap-config-writer@0.4.0
+
+## 0.5.107
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.3.7
+
+## 0.5.106
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.2
+-   @sap-ux/app-config-writer@0.3.76
+-   @sap-ux/cap-config-writer@0.3.6
+
 ## 0.5.105
 
 ### Patch Changes
