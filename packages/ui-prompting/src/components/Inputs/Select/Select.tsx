@@ -33,17 +33,12 @@ export const Select = (props: SelectProps) => {
     const [value, setValue] = useValue('', props.value);
     const inputRef = React.createRef<ITextField>();
 
-    const onChangeSelect = (
-        event?: React.FormEvent<HTMLDivElement | UIComboBoxRef>,
-        option?: UIComboBoxOption,
-        index?: number,
-        comboboxValue?: string
-    ) => {
+    const onChangeSelect = (event?: React.FormEvent<HTMLSelectElement | UIComboBoxRef>, option?: UIComboBoxOption) => {
         let updatedValue;
-        if (creation) {
-            const newOption = comboboxValue === undefined ? undefined : { key: comboboxValue, text: comboboxValue };
-            setValue(option ? option.key ?? '' : (newOption?.text as string));
-            updatedValue = option ? option.data.value : newOption?.text;
+        if (creation && !option) {
+            const enteredValue = (event?.target as HTMLSelectElement).value ?? '';
+            setValue(enteredValue);
+            updatedValue = enteredValue;
         } else {
             setValue(option?.key ?? '');
             updatedValue = option?.data?.value;
