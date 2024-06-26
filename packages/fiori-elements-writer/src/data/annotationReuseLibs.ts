@@ -1,22 +1,16 @@
 import { OdataVersion } from '../types';
 
-interface AnnotationLibsEntry {
+type AnnotationLibs = {
     annotation: string;
     library: string;
-}
-
-type AnnotationLibs = {
-    [OdataVersion.v4]: [AnnotationLibsEntry] | [];
 };
 
-export const annotationLibs: AnnotationLibs = {
-    [OdataVersion.v4]: [
-        {
-            annotation: 'UI.Note',
-            library: 'sap.nw.core.gbt.notes.lib.reuse'
-        }
-    ]
-};
+export const annotationLibs: AnnotationLibs[] = [
+    {
+        annotation: 'UI.Note',
+        library: 'sap.nw.core.gbt.notes.lib.reuse'
+    }
+];
 
 /**
  * Returns the reuse libraries associated with annotation entries in the metadata
@@ -32,9 +26,7 @@ export function getAnnotationLibs(version: OdataVersion, metadata: string) {
     if (version === OdataVersion.v4) {
         // Create a regular expression that matches any of the annotations
         const annotationsRegex = new RegExp(
-            annotationLibs[OdataVersion.v4]
-                ?.map((annotationLib: { annotation: any }) => annotationLib.annotation)
-                .join('|'),
+            annotationLibs.map((annotationLib: { annotation: any }) => annotationLib.annotation).join('|'),
             'g'
         );
 
@@ -46,7 +38,7 @@ export function getAnnotationLibs(version: OdataVersion, metadata: string) {
 
         // Add corresponding dependencies based on found annotations
         annotationsFound.forEach((annotation) => {
-            const rule = annotationLibs[OdataVersion.v4]?.find((rule) => rule.annotation === annotation);
+            const rule = annotationLibs.find((rule) => rule.annotation === annotation);
             if (rule) {
                 libraries.push(rule.library);
             }

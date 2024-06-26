@@ -10,7 +10,6 @@ describe('getAnnotationLibs', () => {
             ...Object.assign(feBaseConfig('felrop1'), {
                 service: {
                     metadata: getTestData('annotation_v4', 'metadata') as string,
-                    type: ServiceType.EDMX,
                     version: OdataVersion.v4
                 }
             })
@@ -27,6 +26,19 @@ describe('getAnnotationLibs', () => {
                 service: {
                     version: OdataVersion.v4,
                     metadata: ''
+                }
+            })
+        } as FioriElementsApp<LROPSettings>;
+
+        expect(getAnnotationLibs(feApp.service.version, feApp.service.metadata as string)).toEqual([]);
+    });
+
+    test('Unsupported OData version for annotation to return a Reuse lib', () => {
+        const feApp: FioriElementsApp<LROPSettings> = {
+            ...Object.assign(feBaseConfig('felrop1'), {
+                service: {
+                    version: OdataVersion.v2,
+                    metadata: getTestData('annotation_v4', 'metadata') as string
                 }
             })
         } as FioriElementsApp<LROPSettings>;
