@@ -1,12 +1,12 @@
 ## Application Details
 |               |
 | ------------- |
-|**Generation Date and Time**<br>Jan 01 1975|
+|**Generation Date and Time**<br>|
 |**App Generator**<br>@sap/generator-fiori-elements|
 |**App Generator Version**<br>2.0.1|
 |**Generation Platform**<br>|
 |**Template Used**<br>List Report Page V4|
-|**Service Type**<br>Local Cap|
+|**Service Type**<br>|
 |**Service URL**<br>N/A|
 |**Module Name**<br>appName|
 |**Application Title**<br>appTitle|

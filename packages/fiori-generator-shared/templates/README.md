@@ -1,12 +1,12 @@
 ## Application Details
 |               |
 | ------------- |
-|**Generation Date and Time**<br><%= generatorDate %>|
+|**Generation Date and Time**<br><%= locals.generatorDate %>|
 |**App Generator**<br><%= generatorName %>|
 |**App Generator Version**<br><%= generatorVersion %>|
 |**Generation Platform**<br><%= locals.generatorPlatform %>|
 |**Template Used**<br><%= template %>|
-|**Service Type**<br><%= serviceType %>|<% if(locals.metadataFilename) { %>
+|**Service Type**<br><%= locals.serviceType %>|<% if(locals.metadataFilename) { %>
 |**Metadata File**<br><%= locals.metadataFilename %>|<% } else { %>
 |**Service URL**<br><%= locals.serviceUrl ? locals.serviceUrl : 'N/A' %>|<% } %>
 |**Module Name**<br><%= appName %>|

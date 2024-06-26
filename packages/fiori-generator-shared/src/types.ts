@@ -9,18 +9,6 @@ interface AdditionalEntries {
 }
 
 /**
- * Interface representing optional entries that can be included in the README configuration.
- * This interface allows dynamic properties with specified types.
- */
-interface OptionalEntries {
-    /**
-     * A dynamic property key with a value that can be a string, an array of strings, a boolean,
-     * an array of AdditionalEntries, or undefined.
-     */
-    [key: string]: string | string[] | boolean | AdditionalEntries[] | undefined;
-}
-
-/**
  * Interface representing the configuration for generating a README file.
  * Extends OptionalEntries to include dynamic properties along with the core properties.
  */
@@ -37,21 +25,32 @@ export interface ReadMe {
     ui5Theme: string;
     /** The name of generator used. */
     generatorName: string;
-    /** The version of the generator used */
+    /** The version of the generator used. */
     generatorVersion: string;
-    /** The ui5 version used in the application */
+    /** The ui5 version used in the application. */
     ui5Version: string;
-    /** The floorplan template name used to generate the application */
+    /** The floorplan template name used to generate the application. */
     template: string;
+    /** The date when the generator was run. */
+    generatorDate?: string;
+    /** The service URL of the application */
     serviceUrl?: string;
     /** The service type for the application. */
     serviceType?: string;
+    /** The platform on which the generator was run.  */
     generatorPlatform?: string;
+    /** The filename of the metadata file */
     metadataFilename?: string;
+    /** Flag indicating whether code assistance is enabled. */
     enableCodeAssist?: boolean;
+    /** Flag indicating whether TypeScript is enabled. */
     enableTypeScript?: boolean;
+    /** Flag indicating whether ESLint is enabled. */
     enableEslint?: boolean;
+    /** Flag indicating whether to show mock data info. */
+    showMockDataInfo?: boolean;
+    /** Text used to launch the application */
     launchText?: string;
+    /** Additional custom entries for the application. */
     additionalEntries?: AdditionalEntries[];
-    generatorDate?: string;
 }

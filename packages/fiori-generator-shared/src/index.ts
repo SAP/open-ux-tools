@@ -1,2 +1,2 @@
 export * from './cap';
-export * from './read-me';
+export { generateReadMe } from './read-me';

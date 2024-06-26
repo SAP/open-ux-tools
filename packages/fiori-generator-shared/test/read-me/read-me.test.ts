@@ -50,15 +50,13 @@ describe('Readme file generation tests', () => {
         const readMe: ReadMe = {
             generatorName: '@sap/generator-fiori-elements',
             template: 'List Report Page V4',
-            serviceType: 'Local Cap',
             generatorVersion: '2.0.1',
             appName: 'appName',
             appTitle: 'appTitle',
             appDescription: 'Fiori project description',
             ui5Theme: 'a_ui5_theme',
             ui5Version: '1.2.3',
-            appNamespace: 'appNamespace',
-            generatorDate: 'Jan 01 1975'
+            appNamespace: 'appNamespace'
         };
         generateReadMe(__dirname, readMe, editor);
         expect(editor.read(readMePath)).toEqual(readFileSync(expectReadMePath, 'utf-8'));
