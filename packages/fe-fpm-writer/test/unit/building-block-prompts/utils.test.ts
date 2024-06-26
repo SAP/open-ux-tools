@@ -118,6 +118,20 @@ describe('utils - ', () => {
                   },
                 ]
             `);
+
+            choices = getChoices({ 'b': 'b', 'a': 'a' }, false); // preserve order
+            expect(choices).toMatchInlineSnapshot(`
+                Array [
+                  Object {
+                    "name": "b",
+                    "value": "b",
+                  },
+                  Object {
+                    "name": "a",
+                    "value": "a",
+                  },
+                ]
+            `);
         });
 
         test('getAnnotationPathQualifierPrompt', async () => {
