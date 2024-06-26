@@ -3,9 +3,11 @@ import { ToolsLogger } from '@sap-ux/logger';
 import type { App, FlpConfig, InternalTestConfig, MiddlewareConfig } from '../types';
 import { render } from 'ejs';
 import { join, posix } from 'path';
-import { createProjectAccess, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
+import { createProjectAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
 import { readFileSync } from 'fs';
 import { mergeTestConfigDefaults } from './test';
+import { type Editor, create } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
 
 export interface CustomConnector {
     applyConnector: string;
@@ -294,59 +296,6 @@ export function createTestTemplateConfig(config: InternalTestConfig, id: string)
     };
 }
 
-/**
- * Generates the preview files.
- *
- * @param config configuration from the ui5.yaml
- * @param manifest application manifest
- * @param logger logger instance
- * @returns a record with the preview files
- */
-export async function getPreviewFiles(
-    config: MiddlewareConfig,
-    manifest: Manifest,
-    logger: ToolsLogger = new ToolsLogger()
-) {
-    const previewFiles: Record<string, () => Promise<string>> = {};
-    const templatePath = join(__dirname, '../../templates');
-
-    // remove incorrect configurations
-    sanitizeConfig(config, logger);
-
-    // generate FLP configuration
-    const flpConfig = getFlpConfigWithDefaults(config.flp);
-    previewFiles[flpConfig.path] = async () => {
-        const flpTemplate = readFileSync(join(templatePath, 'flp/sandbox.html'), 'utf-8');
-        const flpTemplConfig = createFlpTemplateConfig(flpConfig, manifest);
-        await addApp(
-            flpTemplConfig,
-            manifest,
-            {
-                target: flpTemplConfig.basePath,
-                local: '.',
-                intent: flpConfig.intent
-            },
-            logger
-        );
-        return render(flpTemplate, flpTemplConfig);
-    };
-
-    // optional test files
-    if (config.test) {
-        config.test
-            .filter((test) => ['QUnit', 'OPA5'].includes(test.framework))
-            .forEach((test) => {
-                const testConfig = mergeTestConfigDefaults(test);
-                previewFiles[testConfig.path] = async () => {
-                    const testTemlpate = readFileSync(join(templatePath, 'test/qunit.html'), 'utf-8');
-                    return render(testTemlpate, createTestTemplateConfig(testConfig, manifest['sap.app'].id));
-                };
-            });
-    }
-
-    return previewFiles;
-}
-
 export type PreviewUrls = {
     path: string;
     type: 'preview' | 'editor' | 'test';
@@ -380,4 +329,64 @@ export function getPreviewPaths(config: MiddlewareConfig, logger: ToolsLogger = 
         });
     }
     return urls;
+}
+
+/**
+ * Generates the preview files.
+ *
+ * @param basePath path to the application root
+ * @param config configuration from the ui5.yaml
+ * @param fs file system editor
+ * @param logger logger instance
+ * @returns a mem-fs editor with the preview files
+ */
+export async function generatePreviewFiles(
+    basePath: string,
+    config: MiddlewareConfig,
+    fs?: Editor,
+    logger: ToolsLogger = new ToolsLogger()
+) {
+    // remove incorrect configurations
+    sanitizeConfig(config, logger);
+
+    // create file system if not provided
+    if (!fs) {
+        fs = create(createStorage());
+    }
+
+    const templatePath = join(__dirname, '../../templates');
+    const webappPath = await getWebappPath(basePath, fs);
+    const manifest = (await fs.readJSON(join(webappPath, 'manifest.json'))) as unknown as Manifest;
+
+    // generate FLP configuration
+    const flpConfig = getFlpConfigWithDefaults(config.flp);
+    const flpTemplate = readFileSync(join(templatePath, 'flp/sandbox.html'), 'utf-8');
+    const flpTemplConfig = createFlpTemplateConfig(flpConfig, manifest);
+    await addApp(
+        flpTemplConfig,
+        manifest,
+        {
+            target: flpTemplConfig.basePath,
+            local: '.',
+            intent: flpConfig.intent
+        },
+        logger
+    );
+    fs.write(join(webappPath, flpConfig.path), render(flpTemplate, flpTemplConfig));
+
+    // optional test files
+    if (config.test) {
+        for (const test of config.test) {
+            if (['QUnit', 'OPA5'].includes(test.framework)) {
+                const testConfig = mergeTestConfigDefaults(test);
+                const testTemlpate = readFileSync(join(templatePath, 'test/qunit.html'), 'utf-8');
+                const testTemplateConfig = createTestTemplateConfig(testConfig, manifest['sap.app'].id);
+                fs.write(join(webappPath, testConfig.path), render(testTemlpate, testTemplateConfig));
+            } else if (test.framework === 'Testsuite') {
+                // TODO
+            }
+        }
+    }
+
+    return fs;
 }
