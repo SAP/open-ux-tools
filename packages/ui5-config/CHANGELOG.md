@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.22.10
+
+### Patch Changes
+
+-   1a1baeb0: Revert "feat(fiori-elements-writer): remove `sap.fe.templates` dependency
+
 ## 0.22.9
 
 ### Patch Changes
