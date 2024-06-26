@@ -260,9 +260,9 @@ export function convertPrimitiveValueToInternal(
     value: string | number | boolean | undefined,
     aliasInfo: AliasInformation
 ): string {
-    const text = value?.toString();
+    const text = String(value);
     if (!text) {
-        return String(text);
+        return text;
     } else if (type === Edm.EnumMember) {
         return getAliasedEnumMember(aliasInfo, text);
     } else if (type.indexOf('Path') >= 0) {
