@@ -260,7 +260,7 @@ export function convertPrimitiveValueToInternal(
     value: string | number | boolean | undefined,
     aliasInfo: AliasInformation
 ): string {
-    const text = value ? value.toString() : '';
+    const text = value === undefined ? '' : value.toString();
     if (!text) {
         return text;
     } else if (type === Edm.EnumMember) {
