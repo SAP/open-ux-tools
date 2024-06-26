@@ -5,3 +5,7 @@ storybook/
 storybook
 .storybook/static
 .storybook/*.html
+test-output/**
+test-output/*.*
+test-output/
+test-output
