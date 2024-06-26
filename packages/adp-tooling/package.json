@@ -37,6 +37,7 @@
     "dependencies": {
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
@@ -52,6 +53,7 @@
         "@sap-ux/store": "workspace:*",
         "@types/ejs": "3.1.2",
         "@types/express": "4.17.21",
+        "@types/inquirer": "8.2.6",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/prompts": "2.4.4",

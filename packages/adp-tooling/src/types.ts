@@ -453,3 +453,12 @@ export interface InboundChange {
         };
     };
 }
+
+export interface InboundChangeAnswers {
+    inboundId?: string;
+    inboundIdLabel: string;
+    title: string;
+    subTitle: string;
+    icon: string;
+    validationMessage: string;
+}

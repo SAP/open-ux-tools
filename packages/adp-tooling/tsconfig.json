@@ -17,6 +17,9 @@
       "path": "../btp-utils"
     },
     {
+      "path": "../inquirer-common"
+    },
+    {
       "path": "../logger"
     },
     {
