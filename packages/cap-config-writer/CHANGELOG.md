@@ -1,5 +1,11 @@
 # @sap-ux/cap-config-writer
 
+## 0.5.0
+
+### Minor Changes
+
+-   200894d7: Add support for passing launch text for Cap projects to generate README files
+
 ## 0.4.1
 
 ### Patch Changes
