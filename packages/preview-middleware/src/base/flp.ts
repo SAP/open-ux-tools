@@ -6,7 +6,7 @@ import { render } from 'ejs';
 import type http from 'http';
 import type { Request, RequestHandler, Response, Router, NextFunction } from 'express';
 import { readFileSync } from 'fs';
-import { dirname, join } from 'path';
+import { dirname, join, posix } from 'path';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { MiddlewareUtils } from '@ui5/server';
@@ -363,6 +363,7 @@ export class FlpSandbox {
         this.router.get(config.path, (async (_req, res) => {
             this.logger.debug(`Serving test route: ${config.path}`);
             const templateConfig = {
+                basePath: this.templateConfig.basePath,
                 initPath: config.init
             };
             const html = render(testsuite, templateConfig);
@@ -381,18 +382,24 @@ export class FlpSandbox {
             if (testConfig.framework === 'Testsuite') {
                 continue;
             }
-            const config = mergeTestConfigDefaults(testConfig);
-            testPaths.push(config.path);
+            const mergedConfig = mergeTestConfigDefaults(testConfig);
+            testPaths.push(posix.relative(posix.dirname(config.path), mergedConfig.path));
         }
 
         this.logger.debug(`Add route for ${config.init}`);
-        this.router.get(config.init, (async (_req, res) => {
-            this.logger.debug(`Serving test route: ${config.init}`);
-            const templateConfig = {
-                testPaths: testPaths
-            };
-            const js = render(initTemplate, templateConfig);
-            this.sendResponse(res, 'application/javascript', 200, js);
+        this.router.get(config.init, (async (_req, res, next) => {
+            const files = await this.project.byGlob(config.init.replace('.js', '.[jt]s'));
+            if (files?.length > 0) {
+                this.logger.warn(`Script returned at ${config.path} is loaded from the file system.`);
+                next();
+            } else {
+                this.logger.debug(`Serving test route: ${config.init}`);
+                const templateConfig = {
+                    testPaths: testPaths
+                };
+                const js = render(initTemplate, templateConfig);
+                this.sendResponse(res, 'application/javascript', 200, js);
+            }
         }) as RequestHandler);
     }
 
@@ -449,7 +456,7 @@ export class FlpSandbox {
             this.router.get(config.init, (async (_req, res, next) => {
                 this.logger.debug(`Serving test init script: ${config.init}`);
 
-                const files = await this.project.byGlob(config.init.replace('.js', '.*'));
+                const files = await this.project.byGlob(config.init.replace('.js', '.[jt]s'));
                 if (files?.length > 0) {
                     this.logger.warn(`Script returned at ${config.path} is loaded from the file system.`);
                     next();

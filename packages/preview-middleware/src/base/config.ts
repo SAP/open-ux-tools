@@ -287,12 +287,11 @@ export function createFlpTemplateConfig(config: FlpConfig, manifest: Manifest): 
  * @returns configuration object for the test template
  */
 export function createTestTemplateConfig(config: InternalTestConfig, id: string) {
-    const ns = id.replace(/\./g, '/');
     return {
         id,
         framework: config.framework,
         basePath: posix.relative(posix.dirname(config.path), '/') ?? '.',
-        initPath: `${ns}${config.init.replace('.js', '')}`
+        initPath: posix.relative(posix.dirname(config.path), config.init)
     };
 }
 

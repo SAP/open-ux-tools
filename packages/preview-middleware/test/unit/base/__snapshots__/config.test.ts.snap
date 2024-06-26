@@ -83,7 +83,7 @@ exports[`config generatePreviewFiles minimum settings 1`] = `
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template,sap.ushell\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_horizon_dark\\"
@@ -160,7 +160,7 @@ Object {
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template,sap.ushell\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_horizon_dark\\"
@@ -203,9 +203,10 @@ Object {
 		}'
 		data-sap-ui-animation=\\"false\\"
 		data-sap-ui-compatVersion=\\"edge\\"
-		data-sap-ui-async=\\"true\\"
-		data-sap-ui-oninit=\\"module:test/fe/v2/app/test/opaTests.qunit\\">
+		data-sap-ui-async=\\"true\\">
 	</script>
+
+	<script src=\\"opaTests.qunit.js\\"></script>
 
 	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../resources/sap/ui/thirdparty/qunit-2.css\\">
 </head>

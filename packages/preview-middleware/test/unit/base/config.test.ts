@@ -50,7 +50,7 @@ describe('config', () => {
                 basePath: '..',
                 framework: 'OPA5',
                 id: manifest['sap.app'].id,
-                initPath: 'my/app/test/opaTests.qunit'
+                initPath: 'opaTests.qunit.js'
             });
         });
     });
