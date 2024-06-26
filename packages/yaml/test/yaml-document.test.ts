@@ -356,6 +356,28 @@ seq1:
         });
     });
 
+    describe('delete', () => {
+        const serializedYaml = `key1: 42
+seq1:
+- name: name1
+  config:
+    prop1: a
+- name: name2
+`;
+        it('delete node', async () => {
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.delete('key1');
+            expect(doc.toString()).toMatchInlineSnapshot(`
+                "seq1:
+                  - name: name1
+                    config:
+                      prop1: a
+                  - name: name2
+                "
+            `);
+        });
+    });
+
     describe('deleteAt', () => {
         const serializedYaml = `key1: 42
 seq1:

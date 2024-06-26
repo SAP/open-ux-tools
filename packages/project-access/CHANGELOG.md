@@ -1,5 +1,13 @@
 # @sap-ux/project-access
 
+## 1.22.2
+
+### Patch Changes
+
+-   399d2ad8: adds new abap deploy config writer
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/ui5-config@0.22.9
+
 ## 1.22.1
 
 ### Patch Changes
