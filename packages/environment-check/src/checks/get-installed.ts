@@ -69,7 +69,7 @@ async function getExtensionsVSCode(): Promise<{ [id: string]: { version: string 
     const output = await spawnCommand(isInsiders ? 'code-insiders' : 'code', ['--list-extensions', '--show-versions']);
     const versions = output
         .split('\n')
-        .filter((ext) => ext.startsWith('SAP'))
+        .filter((ext) => ext.startsWith('sap'))
         .reduce((returnObject, current) => {
             const index = current.indexOf('.');
             const idVersion = current.slice(index + 1);
@@ -80,6 +80,17 @@ async function getExtensionsVSCode(): Promise<{ [id: string]: { version: string 
             return returnObject;
         }, {});
     return versions;
+}
+
+/**
+ * Checks if a specific extension is installed.
+ *
+ *  @param extensionName - name of the extension to be checked
+ *  @returns boolean - if extension is installed
+ */
+export async function isExtensionInstalledVsCode(extensionName: string): Promise<boolean> {
+    const extensions = await getExtensionsVSCode();
+    return !!extensions[extensionName];
 }
 
 /**

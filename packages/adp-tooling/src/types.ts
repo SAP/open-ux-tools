@@ -217,18 +217,10 @@ export type GeneratorData<T extends ChangeType> = T extends ChangeType.ADD_ANNOT
     : never;
 
 export interface AnnotationsData {
-    projectData: AdpProjectData;
-    timestamp: number;
-    /** Indicates whether the annotation is for internal use only. */
+    fileName?: string;
+    variant: DescriptorVariant;
     isInternalUsage: boolean;
-    annotation: {
-        /** Optional name of the annotation file. */
-        fileName?: string;
-        /** Data source associated with the annotation. */
-        dataSource: string;
-        /** Path to the annotation file. */
-        filePath: string;
-    };
+    answers: AddAnnotationsAnswers;
 }
 
 export interface ComponentUsagesData {
@@ -348,7 +340,7 @@ export interface ChangeDataSourceAnswers {
 export interface AddAnnotationsAnswers {
     /** Data Source identifier  */
     id: string;
-    /**   */
+    /** Selected option for Annotation File */
     fileSelectOption: number;
     /** Annotation File path */
     filePath: string;

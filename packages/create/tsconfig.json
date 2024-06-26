@@ -22,6 +22,9 @@
       "path": "../cards-editor-config-writer"
     },
     {
+      "path": "../environment-check"
+    },
+    {
       "path": "../inquirer-common"
     },
     {
