@@ -183,6 +183,12 @@ importers:
       ejs:
         specifier: 3.1.10
         version: 3.1.10
+      i18next:
+        specifier: 23.11.2
+        version: 23.11.2
+      inquirer:
+        specifier: 8.2.6
+        version: 8.2.6
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -9381,7 +9387,7 @@ packages:
     resolution: {integrity: sha512-gp/SIShAuf4WOqi8ey0nuI7qfWaVpMNCcs/xLygrh/QTQIXmlDC1E0TtVejweNW+7SGDY7g0lyxyKZIJuCKIJw==}
     deprecated: This is a stub types definition. i18next provides its own type definitions, so you do not need this installed.
     dependencies:
-      i18next: 23.5.1
+      i18next: 23.11.2
     dev: true
 
   /@types/inquirer-autocomplete-prompt@2.0.1:
@@ -15542,10 +15548,16 @@ packages:
     dependencies:
       '@babel/runtime': 7.23.2
 
+  /i18next@23.11.2:
+    resolution: {integrity: sha512-qMBm7+qT8jdpmmDw/kQD16VpmkL9BdL+XNAK5MNbNFaf1iQQq35ZbPrSlqmnNPOSUY4m342+c0t0evinF5l7sA==}
+    dependencies:
+      '@babel/runtime': 7.23.2
+
   /i18next@23.5.1:
     resolution: {integrity: sha512-JelYzcaCoFDaa+Ysbfz2JsGAKkrHiMG6S61+HLBUEIPaF40WMwW9hCPymlQGrP+wWawKxKPuSuD71WZscCsWHg==}
     dependencies:
       '@babel/runtime': 7.23.2
+    dev: false
 
   /iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
