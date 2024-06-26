@@ -3271,12 +3271,12 @@ framework:
   libraries:
     - name: sap.m
     - name: sap.ui.core
+    - name: sap.ushell
     - name: sap.fe.templates
     - name: sap.ovp
     - name: sap.ui.rta
     - name: sap.ui.layout
     - name: themelib_sap_fiori_3
-    - name: sap.ushell
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -8736,6 +8736,7 @@ appDescription=A Fiori application.",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
+        \\"sap.ushell\\": {},
         \\"sap.fe.templates\\": {},
         \\"sap.ovp\\": {},
         \\"sap.ui.rta\\": {},
@@ -8856,7 +8857,7 @@ appDescription=A Fiori application.",
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.fe.templates,sap.ovp,sap.ui.rta,sap.ui.layout,sap.ushell\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.fe.templates,sap.ovp,sap.ui.rta,sap.ui.layout\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
@@ -9210,12 +9211,12 @@ framework:
   libraries:
     - name: sap.m
     - name: sap.ui.core
+    - name: sap.ushell
     - name: sap.fe.templates
     - name: sap.ovp
     - name: sap.ui.rta
     - name: sap.ui.layout
     - name: themelib_sap_fiori_3
-    - name: sap.ushell
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -14731,6 +14732,7 @@ appDescription=A Fiori application.",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
+        \\"sap.ushell\\": {},
         \\"sap.fe.templates\\": {},
         \\"sap.ovp\\": {},
         \\"sap.ui.rta\\": {},
@@ -14851,7 +14853,7 @@ appDescription=A Fiori application.",
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.fe.templates,sap.ovp,sap.ui.rta,sap.ui.layout,sap.ushell\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.fe.templates,sap.ovp,sap.ui.rta,sap.ui.layout\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
