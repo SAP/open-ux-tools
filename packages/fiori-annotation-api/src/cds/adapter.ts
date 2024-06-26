@@ -47,7 +47,6 @@ import {
     getAllNamespacesAndReferences,
     isElementWithName,
     parseIdentifier,
-    toAliasQualifiedName,
     toFullyQualifiedName
 } from '@sap-ux/odata-annotation-core';
 import { TARGET_TYPE, printTarget } from '@sap-ux/cds-odata-annotation-converter';
@@ -429,8 +428,14 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         const fullyQualifiedPath =
             toFullyQualifiedName(aliasInfo.aliasMap, aliasInfo.currentFileNamespace, parsedName) ?? '';
         const metadataElement = this.metadataService.getMetadataElement(fullyQualifiedPath);
-        const pathBaseOriginal = toAliasQualifiedName(metadataElement?.originalName ?? pathBase, aliasInfo);
-        change.target.name = [pathBaseOriginal, ...pathSegments].join('/');
+        let originalPathBase = metadataElement?.originalName ?? pathBase;
+        if (parsedName.namespaceOrAlias !== undefined) {
+            const namespace = aliasInfo.aliasMap[parsedName.namespaceOrAlias];
+            if (namespace) {
+                originalPathBase = originalPathBase.replace(namespace, parsedName.namespaceOrAlias);
+            }
+        }
+        change.target.name = [originalPathBase, ...pathSegments].join('/');
         writer.addChange(createInsertTargetChange('target', change.target));
     };
 
