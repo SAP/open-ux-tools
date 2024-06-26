@@ -1,7 +1,7 @@
 ## Application Details
 |               |
 | ------------- |
-|**Generation Date and Time**<br><%= locals.generatorDate %>|
+|**Generation Date and Time**<br><%= locals.generationDate %>|
 |**App Generator**<br><%= generatorName %>|
 |**App Generator Version**<br><%= generatorVersion %>|
 |**Generation Platform**<br><%= locals.generatorPlatform %>|

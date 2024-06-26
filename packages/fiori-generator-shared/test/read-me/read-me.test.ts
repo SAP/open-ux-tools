@@ -23,7 +23,7 @@ describe('Readme file generation tests', () => {
             serviceType: 'Local Cap',
             launchText: getLaunchText(),
             generatorVersion: '2.0.1',
-            generatorDate: 'Jan 01 1975',
+            generationDate: 'Jan 01 1975',
             generatorPlatform: 'CLI',
             serviceUrl: 'serviceUrl',
             appName: 'appName',

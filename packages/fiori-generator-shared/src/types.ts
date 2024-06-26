@@ -32,7 +32,7 @@ export interface ReadMe {
     /** The floorplan template name used to generate the application. */
     template: string;
     /** The date when the generator was run. */
-    generatorDate?: string;
+    generationDate?: string;
     /** The service URL of the application */
     serviceUrl?: string;
     /** The service type for the application. */
