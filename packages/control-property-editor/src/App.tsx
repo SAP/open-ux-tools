@@ -58,6 +58,7 @@ export default function App(appProps: AppProps): ReactElement {
     const fitPreview = useSelector<RootState, boolean>((state) => state.fitPreview ?? false);
     const windowSize = useWindowSize();
     const dialogMessage = useSelector<RootState, ShowMessage | undefined>((state) => state.dialogMessage);
+    const [dialogQueue, setDialogQueue] = useState<ShowMessage[]>([]);
     const containerRef = useCallback(
         (node) => {
             if (node === null) {
@@ -94,13 +95,15 @@ export default function App(appProps: AppProps): ReactElement {
     }
 
     const closeAdpWarningDialog = (): void => {
-        setShouldShowDialogMessage(false);
+        setDialogQueue((prevQueue) => prevQueue.slice(1));
+        setShouldShowDialogMessage(dialogQueue.length !== 0);
     };
 
     useEffect(() => {
         if (dialogMessage && isAdpProject) {
             setShouldShowDialogMessage(true);
             setShouldHideIframe(dialogMessage.shouldHideIframe);
+            setDialogQueue((prevQueue) => [...prevQueue, dialogMessage]);
         }
     }, [dialogMessage, isAdpProject]);
 
@@ -130,21 +133,21 @@ export default function App(appProps: AppProps): ReactElement {
                 <section className="app-panel app-panel-right">
                     <PropertiesList />
                 </section>
-                {isAdpProject && shouldHideIframe && (
+                {isAdpProject && shouldHideIframe && dialogQueue.length > 0 && (
                     <UIDialog
                         hidden={!shouldShowDialogMessage}
                         dialogContentProps={{
                             title: t('TOOL_DISCLAIMER_TITLE'),
-                            subText: dialogMessage?.message
+                            subText: dialogQueue[0]?.message
                         }}
                     />
                 )}
-                {isAdpProject && !shouldHideIframe && (
+                {isAdpProject && !shouldHideIframe && dialogQueue.length > 0 && (
                     <UIDialog
                         hidden={!shouldShowDialogMessage}
                         dialogContentProps={{
                             title: t('TOOL_DISCLAIMER_TITLE'),
-                            subText: dialogMessage?.message
+                            subText: dialogQueue[0]?.message
                         }}
                         acceptButtonText={t('OK')}
                         onAccept={closeAdpWarningDialog}
