@@ -313,7 +313,7 @@ Object {
         ],
       },
     ],
-    "libs": "sap.m,sap.ui.core,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template,sap.ushell",
+    "libs": "sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template",
     "resources": Object {
       "open.ux.preview.client": "/preview/client",
       "test.fe.v2.app": "..",
@@ -323,7 +323,7 @@ Object {
 }
 `;
 
-exports[`FlpSandbox init reuse libs not part of data-sap-ui-libs 1`] = `"sap.ui.core,sap.m,sap.ushell"`;
+exports[`FlpSandbox init reuse libs not part of data-sap-ui-libs 1`] = `"sap.ui.core,sap.m"`;
 
 exports[`FlpSandbox init ui5Theme 1`] = `
 Object {
@@ -363,7 +363,7 @@ Object {
         ],
       },
     ],
-    "libs": "sap.m,sap.ui.core,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template,sap.ushell",
+    "libs": "sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template",
     "resources": Object {
       "open.ux.preview.client": "/preview/client",
       "test.fe.v2.app": "..",
@@ -511,7 +511,7 @@ exports[`FlpSandbox router editor with config 1`] = `
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template,sap.ushell,sap.ui.rta\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template,sap.ui.rta\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_horizon_dark\\"
@@ -589,7 +589,7 @@ exports[`FlpSandbox router rta 1`] = `
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template,sap.ushell,sap.ui.rta\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template,sap.ui.rta\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_horizon_dark\\"
@@ -697,7 +697,7 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template,sap.ushell,sap.ui.rta\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template,sap.ui.rta\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_horizon_dark\\"
@@ -790,7 +790,7 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template,sap.ushell,sap.ui.rta\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template,sap.ui.rta\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_horizon_dark\\"
@@ -883,7 +883,7 @@ exports[`FlpSandbox router test/flp.html 1`] = `
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template,sap.ushell\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_horizon_dark\\"
