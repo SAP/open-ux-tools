@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.13.72
+
+### Patch Changes
+
+-   1a1baeb0: Revert "feat(fiori-elements-writer): remove `sap.fe.templates` dependency
+    -   @sap-ux/adp-tooling@0.11.6
+    -   @sap-ux/project-access@1.22.3
+
 ## 0.13.71
 
 ### Patch Changes
