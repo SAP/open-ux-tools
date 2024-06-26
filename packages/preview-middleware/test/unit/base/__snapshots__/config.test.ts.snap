@@ -217,5 +217,18 @@ Object {
 </html>",
     "state": "modified",
   },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html lang=\\"en\\">
+<head>
+    <title>QUnit TestSuite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"/test/testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+</head>
+<body>
+</body>
+</html>",
+    "state": "modified",
+  },
 }
 `;

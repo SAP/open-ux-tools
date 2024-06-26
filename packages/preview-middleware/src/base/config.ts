@@ -1,6 +1,6 @@
 import type { Logger } from '@sap-ux/logger';
 import { ToolsLogger } from '@sap-ux/logger';
-import type { App, FlpConfig, InternalTestConfig, MiddlewareConfig } from '../types';
+import type { App, FlpConfig, Intent, InternalTestConfig, MiddlewareConfig } from '../types';
 import { render } from 'ejs';
 import { join, posix } from 'path';
 import { createProjectAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
@@ -82,7 +82,7 @@ export const DEFAULT_PATH = '/test/flp.html';
 export const DEFAULT_INTENT = {
     object: 'app',
     action: 'preview'
-} as const;
+} as Intent;
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -376,13 +376,18 @@ export async function generatePreviewFiles(
     // optional test files
     if (config.test) {
         for (const test of config.test) {
+            const testConfig = mergeTestConfigDefaults(test);
             if (['QUnit', 'OPA5'].includes(test.framework)) {
-                const testConfig = mergeTestConfigDefaults(test);
                 const testTemlpate = readFileSync(join(templatePath, 'test/qunit.html'), 'utf-8');
                 const testTemplateConfig = createTestTemplateConfig(testConfig, manifest['sap.app'].id);
                 fs.write(join(webappPath, testConfig.path), render(testTemlpate, testTemplateConfig));
             } else if (test.framework === 'Testsuite') {
-                // TODO
+                const testTemlpate = readFileSync(join(templatePath, 'test/testsuite.qunit.html'), 'utf-8');
+                const testTemplateConfig = {
+                    basePath: flpTemplConfig.basePath,
+                    initPath: testConfig.init
+                };
+                fs.write(join(webappPath, testConfig.path), render(testTemlpate, testTemplateConfig));
             }
         }
     }

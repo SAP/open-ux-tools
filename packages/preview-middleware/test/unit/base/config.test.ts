@@ -106,7 +106,7 @@ describe('config', () => {
                     path: '/test/flpSandbox.html',
                     intent: { object: 'myapp', action: 'myaction' }
                 },
-                test: [{ framework: 'OPA5' }]
+                test: [{ framework: 'OPA5' }, { framework: 'Testsuite' }]
             } satisfies MiddlewareConfig;
             const fs = await generatePreviewFiles(basePath, config);
             expect(fs.dump(basePath)).toMatchSnapshot();
