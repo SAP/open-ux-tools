@@ -1547,7 +1547,9 @@ exports[`fiori annotation service insert record update value to null EDMXBackend
             <Annotations Target=\\"IncidentService.test\\">
                 <Annotation Term=\\"UI.DataPoint\\">
                     <Record>
-                        <PropertyValue Property=\\"Value\\" Null=\\"undefined\\"/>
+                        <PropertyValue Property=\\"Value\\">
+                            <Null/>
+                        </PropertyValue>
                     </Record>
                 </Annotation>
             </Annotations>
