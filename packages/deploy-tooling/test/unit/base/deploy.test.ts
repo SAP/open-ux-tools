@@ -140,11 +140,15 @@ describe('base/deploy', () => {
             await deploy(archive, { app, target, yes: true }, nullLogger);
             mockedUi5RepoService.deploy.mockRejectedValueOnce(axiosError(401));
             prompts.inject(['~username', '~password']);
+            const warnSpy = jest.spyOn(nullLogger, 'warn');
+            const infoSpy = jest.spyOn(nullLogger, 'info');
             await deploy(archive, { app, target, yes: true }, nullLogger);
             expect(mockCreateForAbap).toBeCalledWith(
                 expect.objectContaining({ auth: { password: '~password', username: '~username' } })
             );
             expect(mockCreateForAbap).toBeCalledTimes(3);
+            expect(warnSpy).toBeCalledTimes(3);
+            expect(infoSpy).toBeCalledTimes(4);
         });
 
         test('Successful retry after known axios error (cloud target)', async () => {
@@ -165,7 +169,6 @@ describe('base/deploy', () => {
                 } as AbapTarget,
                 yes: true
             };
-
             mockedUi5RepoService.deploy.mockRejectedValueOnce(axiosError(401));
             prompts.inject(['~uaa-username', '~uaa-password']);
 
@@ -185,6 +188,28 @@ describe('base/deploy', () => {
                 testMode: undefined,
                 safeMode: undefined
             });
+        });
+
+        test('Handle 401 error with unsupported authentication type', async () => {
+            const checkForCredentialsMock = jest.spyOn(validate, 'checkForCredentials').mockResolvedValue(true);
+            const sameIdError = axiosError(401);
+            mockedUi5RepoService.deploy.mockRejectedValueOnce(sameIdError);
+            checkForCredentialsMock.mockResolvedValue(false);
+            const warnSpy = jest.spyOn(nullLogger, 'warn');
+            const infoSpy = jest.spyOn(nullLogger, 'info');
+            try {
+                await deploy(
+                    archive,
+                    { app, target: { ...target, destination: '~SAMLAssertionDestination' }, yes: true, retry: true },
+                    nullLogger
+                );
+                fail('Should have thrown an error');
+            } catch (error) {
+                expect(error).toBe(sameIdError);
+            }
+            expect(warnSpy).toBeCalledTimes(2);
+            expect(infoSpy).toBeCalledTimes(1);
+            expect(checkForCredentialsMock).toBeCalledTimes(1);
         });
 
         test('Axios Error and no retry', async () => {
