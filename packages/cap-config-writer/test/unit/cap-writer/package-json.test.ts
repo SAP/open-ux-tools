@@ -108,7 +108,7 @@ describe('Writing/package json files', () => {
         const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
         const devDependencies = packageJson.devDependencies;
         expect(devDependencies).toEqual({
-            'cds-plugin-ui5': '^0.6.13'
+            'cds-plugin-ui5': '^0.9.3'
         });
     });
 
