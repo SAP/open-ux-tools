@@ -1,5 +1,11 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.3.15
+
+### Patch Changes
+
+-   899cdb23: FIX: enabled running the middleware with karma
+
 ## 1.3.14
 
 ### Patch Changes
