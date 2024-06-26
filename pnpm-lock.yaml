@@ -776,9 +776,15 @@ importers:
       '@sap-ux/mockserver-config-writer':
         specifier: workspace:*
         version: link:../mockserver-config-writer
+      '@sap-ux/preview-middleware':
+        specifier: workspace:*
+        version: link:../preview-middleware
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/ui5-config':
+        specifier: workspace:*
+        version: link:../ui5-config
       chalk:
         specifier: 4.1.2
         version: 4.1.2
@@ -788,6 +794,12 @@ importers:
       diff:
         specifier: 5.1.0
         version: 5.1.0
+      mem-fs:
+        specifier: 2.1.0
+        version: 2.1.0
+      mem-fs-editor:
+        specifier: 9.4.0
+        version: 9.4.0(mem-fs@2.1.0)
       prompts:
         specifier: 2.4.2
         version: 2.4.2
@@ -12223,7 +12235,7 @@ packages:
     dev: true
 
   /concat-map@0.0.1:
-    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
+    resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
 
   /concat-stream@1.6.2:
     resolution: {integrity: sha512-27HBghJxjiZtIk3Ycvn/4kbJk/1uZuJFfuPEns6LaEvpvG1f0hTea8lilrouyo9mVc2GWdcEZ8OLoGmSADlrCw==}

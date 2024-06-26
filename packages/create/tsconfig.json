@@ -31,10 +31,16 @@
       "path": "../mockserver-config-writer"
     },
     {
+      "path": "../preview-middleware"
+    },
+    {
       "path": "../project-access"
     },
     {
       "path": "../store"
+    },
+    {
+      "path": "../ui5-config"
     }
   ]
 }
