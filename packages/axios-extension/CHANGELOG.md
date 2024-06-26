@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.14.1
+
+### Patch Changes
+
+-   844e79c4: fix for v2 catalog services
+
 ## 1.14.0
 
 ### Minor Changes
