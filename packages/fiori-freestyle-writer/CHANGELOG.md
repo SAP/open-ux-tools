@@ -1,5 +1,15 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.22.15
+
+### Patch Changes
+
+-   1a1baeb0: Revert "feat(fiori-elements-writer): remove `sap.fe.templates` dependency
+-   Updated dependencies [1a1baeb0]
+    -   @sap-ux/ui5-config@0.22.10
+    -   @sap-ux/odata-service-writer@0.20.5
+    -   @sap-ux/ui5-application-writer@0.26.18
+
 ## 0.22.14
 
 ### Patch Changes

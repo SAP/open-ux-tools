@@ -142,14 +142,6 @@ describe('UI5Config', () => {
         });
     });
 
-    describe('addUI5Libs', () => {
-        test('addUI5Libs in framework libraries', () => {
-            ui5Config.addUI5Framework('SAPUI5', '1.64.0', ['sap.m'], 'sap_fiori_3_dark');
-            ui5Config.addUI5Libs(['sap.ushell']);
-            expect(ui5Config.toString()).toMatchSnapshot();
-        });
-    });
-
     describe('addFioriToolsProxydMiddleware', () => {
         test('add without backend or UI5', () => {
             ui5Config.addFioriToolsProxydMiddleware({});

@@ -1,5 +1,31 @@
 # @sap-ux/preview-middleware
 
+## 0.13.72
+
+### Patch Changes
+
+-   1a1baeb0: Revert "feat(fiori-elements-writer): remove `sap.fe.templates` dependency
+    -   @sap-ux/adp-tooling@0.11.6
+    -   @sap-ux/project-access@1.22.3
+
+## 0.13.71
+
+### Patch Changes
+
+-   899cdb23: FIX: enabled running the middleware with karma
+
+## 0.13.70
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.5
+
+## 0.13.69
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.4
+
 ## 0.13.68
 
 ### Patch Changes
