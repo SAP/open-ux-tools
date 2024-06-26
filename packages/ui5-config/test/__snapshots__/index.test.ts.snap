@@ -502,17 +502,6 @@ exports[`UI5Config addUI5Framework Use horizon high dark theme 1`] = `
 "
 `;
 
-exports[`UI5Config addUI5Libs addUI5Libs in framework libraries 1`] = `
-"framework:
-  name: SAPUI5
-  version: 1.64.0
-  libraries:
-    - name: sap.m
-    - name: themelib_sap_fiori_3
-    - name: sap.ushell
-"
-`;
-
 exports[`UI5Config addUi5ToFioriToolsProxydMiddleware add ui5 config to empty tools middleware config 1`] = `
 "server:
   customMiddleware:
