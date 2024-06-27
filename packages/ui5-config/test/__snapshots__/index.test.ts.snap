@@ -143,6 +143,9 @@ exports[`UI5Config addAbapDeployTask use open source task 1`] = `
           description: ~description
           package: ~package
           transport: ~transport
+        exclude:
+          - /test/
+        index: true
 "
 `;
 
@@ -180,6 +183,31 @@ exports[`UI5Config addBackendToFioriToolsProxydMiddleware should add comments wi
           - url: http://localhost:8080
             path: /~testpath~
             authenticationType: reentranceTicket # SAML support for vscode
+"
+`;
+
+exports[`UI5Config addFioriToolsProxydMiddleware add / get commonly configured backend (and UI5 defaults) 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - url: http://localhost:8080
+            path: /~testpath~
+            destination: ~destination~
+            destinationInstance: ~destinationInstance~
+          - url: http://localhost:8080
+            path: /~testpath~
+            destination: ~destination~
+            destinationInstance: ~destinationInstance~
+            authenticationType: reentranceTicket # SAML support for vscode
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
 "
 `;
 
@@ -232,31 +260,6 @@ exports[`UI5Config addFioriToolsProxydMiddleware add backend without path or des
         backend:
           - url: http://localhost:8080
             path: /
-        ui5:
-          path:
-            - /resources
-            - /test-resources
-          url: https://ui5.sap.com
-"
-`;
-
-exports[`UI5Config addFioriToolsProxydMiddleware add commonly configured backend (and UI5 defaults) 1`] = `
-"server:
-  customMiddleware:
-    - name: fiori-tools-proxy
-      afterMiddleware: compression
-      configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        backend:
-          - url: http://localhost:8080
-            path: /~testpath~
-            destination: ~destination~
-            destinationInstance: ~destinationInstance~
-          - url: http://localhost:8080
-            path: /~testpath~
-            destination: ~destination~
-            destinationInstance: ~destinationInstance~
-            authenticationType: reentranceTicket # SAML support for vscode
         ui5:
           path:
             - /resources
@@ -526,6 +529,16 @@ exports[`UI5Config getAppReloadMiddlewareConfig 1`] = `
 "
 `;
 
+exports[`UI5Config getType / setType replace type 1`] = `
+"type: library
+"
+`;
+
+exports[`UI5Config getType / setType set type 1`] = `
+"type: application
+"
+`;
+
 exports[`UI5Config setMetadata replace metadata 1`] = `
 "metadata:
   name: the.replaced.name
@@ -536,15 +549,5 @@ exports[`UI5Config setMetadata set name and copyright 1`] = `
 "metadata:
   name: test.name
   copyright: ©
-"
-`;
-
-exports[`UI5Config setType replace type 1`] = `
-"type: library
-"
-`;
-
-exports[`UI5Config setType set type 1`] = `
-"type: application
 "
 `;

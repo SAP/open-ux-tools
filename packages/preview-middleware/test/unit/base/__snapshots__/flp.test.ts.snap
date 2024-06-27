@@ -390,9 +390,10 @@ exports[`FlpSandbox router custom opa5 path test/integration/opaTests.qunit.html
 		}'
 		data-sap-ui-animation=\\"false\\"
 		data-sap-ui-compatVersion=\\"edge\\"
-		data-sap-ui-async=\\"true\\"
-		data-sap-ui-oninit=\\"module:test/fe/v2/app/test/integration/opaTests.qunit\\">
+		data-sap-ui-async=\\"true\\">
 	</script>
+
+	<script src=\\"opaTests.qunit.js\\"></script>
 
 	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 </head>
@@ -404,13 +405,33 @@ exports[`FlpSandbox router custom opa5 path test/integration/opaTests.qunit.html
 `;
 
 exports[`FlpSandbox router default Qunit init test/unitTests.qunit.js 1`] = `
-"sap.ui.define([
-    'sap/ui/thirdparty/qunit-2'
-], function(QUnit) {
-        QUnit.config.autostart = false;
-        sap.ui.require([], function() {
-            QUnit.start();
-    });
+"sap.ui.loader.config({
+    shim: {
+        \\"sap/ui/qunit/qunit-junit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/qunit/qunit-coverage\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/thirdparty/sinon-qunit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon\\"]
+        },
+        \\"sap/ui/qunit/sinon-qunit-bridge\\": {
+            deps: [\\"sap/ui/thirdparty/qunit\\", \\"sap/ui/thirdparty/sinon-4\\"]
+        }        
+    }
+});
+
+sap.ui.require([
+    \\"sap/ui/thirdparty/qunit-2\\",
+    \\"sap/ui/qunit/qunit-junit\\",
+    \\"sap/ui/qunit/qunit-coverage\\"
+], function (QUnit) {
+    'use strict';
+    QUnit.config.autostart = false;
+    sap.ui.require([], function() {
+        QUnit.start();
+    }); 
 });"
 `;
 
@@ -429,9 +450,10 @@ exports[`FlpSandbox router default Qunit path test/unitTests.qunit.html 1`] = `
 		}'
 		data-sap-ui-animation=\\"false\\"
 		data-sap-ui-compatVersion=\\"edge\\"
-		data-sap-ui-async=\\"true\\"
-		data-sap-ui-oninit=\\"module:test/fe/v2/app/test/unitTests.qunit\\">
+		data-sap-ui-async=\\"true\\">
 	</script>
+
+	<script src=\\"unitTests.qunit.js\\"></script>
 
 	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../resources/sap/ui/thirdparty/qunit-2.css\\">
 </head>
@@ -698,6 +720,19 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `
     </script>
 
 
+        <!-- Hides Rta native toolbar  -->
+    <style>
+        #shell-header, .sapUiRtaToolbar {
+            visibility: hidden;
+            height: 1px;
+        } 
+        .sapUshellShellCanvas {
+            top: 0 !important;
+        }
+        .sapUiRtaMode .sapUiShellBackgroundImage.sapUiGlobalBackgroundImageForce.sapUshellShellBG {
+            background-color: transparent !important;
+        }
+    </style>
 </head>
 
 <!-- UI Content -->
@@ -778,6 +813,19 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
     </script>
 
 
+        <!-- Hides Rta native toolbar  -->
+    <style>
+        #shell-header, .sapUiRtaToolbar {
+            visibility: hidden;
+            height: 1px;
+        } 
+        .sapUshellShellCanvas {
+            top: 0 !important;
+        }
+        .sapUiRtaMode .sapUiShellBackgroundImage.sapUiGlobalBackgroundImageForce.sapUshellShellBG {
+            background-color: transparent !important;
+        }
+    </style>
 </head>
 
 <!-- UI Content -->
@@ -868,7 +916,7 @@ exports[`FlpSandbox router with test suite default with testsuite 1`] = `
 <html lang=\\"en\\">
 <head>
     <title>QUnit TestSuite</title>
-    <script src=\\"/resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
     <script src=\\"/test/testsuite.qunit.js\\" data-sap-ui-testsuite></script>
 </head>
 <body>
@@ -879,10 +927,11 @@ exports[`FlpSandbox router with test suite default with testsuite 1`] = `
 exports[`FlpSandbox router with test suite default with testsuite and init testsuite.qunit.js 1`] = `
 "window.suite = function () {
     const oSuite = new parent.jsUnitTestSuite();
+    var sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf(\\"/\\") + 1);
 
-    oSuite.addTestPage(\\"/test/unitTests.qunit.html\\");
+    oSuite.addTestPage(sContextPath + \\"unitTests.qunit.html\\");
 
-    oSuite.addTestPage(\\"/test/opaTests.qunit.html\\");
+    oSuite.addTestPage(sContextPath + \\"opaTests.qunit.html\\");
 
     return oSuite;
 }"

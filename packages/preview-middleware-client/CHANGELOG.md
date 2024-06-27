@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.9.16
+
+### Patch Changes
+
+-   fb2ff8d6: Reduce eslint warnings
+
+## 0.9.15
+
+### Patch Changes
+
+-   81026f96: Add explanation at the end of disabled context menu item due to non stable ID
+
 ## 0.9.14
 
 ### Patch Changes

@@ -8,6 +8,7 @@ import * as tracer from '../../../../src/tracing/trace';
 import * as common from '../../../../src/common';
 import * as logger from '../../../../src/tracing/logger';
 import * as adp from '@sap-ux/adp-tooling';
+import * as projectAccess from '@sap-ux/project-access';
 import { UI5Config } from '@sap-ux/ui5-config';
 import * as mockFs from 'fs';
 import { join } from 'path';
@@ -89,6 +90,7 @@ describe('change/data-source', () => {
                 }
             } as Partial<CustomMiddleware> as CustomMiddleware<object>)
         } as Partial<UI5Config> as UI5Config);
+        jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
     });
 
     test('change-data-source - CF environment', async () => {
@@ -122,6 +124,45 @@ describe('change/data-source', () => {
         expect(generateChangeSpy).not.toBeCalled();
     });
 
+    test('change-data-source - not an Adaptation Project', async () => {
+        jest.spyOn(projectAccess, 'getAppType').mockResolvedValueOnce('SAPUI5 Extension');
+
+        const command = new Command('change-data-source');
+        addChangeDataSourceCommand(command);
+        await command.parseAsync(getArgv(appRoot));
+
+        expect(loggerMock.debug).toBeCalled();
+        expect(loggerMock.error).toBeCalledWith('This command can only be used for an Adaptation Project');
+        expect(generateChangeSpy).not.toBeCalled();
+    });
+
+    test('change data-source - preview-middleware custom configuration', async () => {
+        jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
+            findCustomMiddleware: jest.fn().mockImplementation((customMiddleware: string) => {
+                if (customMiddleware === 'fiori-tools-preview') {
+                    return undefined;
+                }
+                return {
+                    configuration: {
+                        adp: {
+                            target: {
+                                url: 'https://sap.example',
+                                client: '100'
+                            }
+                        }
+                    }
+                };
+            })
+        } as Partial<UI5Config> as UI5Config);
+
+        const command = new Command('data-source');
+        addChangeDataSourceCommand(command);
+        await command.parseAsync(getArgv(appRoot));
+
+        expect(promptYUIQuestionsSpy).toBeCalled();
+        expect(generateChangeSpy).toBeCalled();
+    });
+
     test('change data-source - --simulate', async () => {
         const command = new Command('data-source');
         addChangeDataSourceCommand(command);
@@ -130,6 +171,20 @@ describe('change/data-source', () => {
         expect(promptYUIQuestionsSpy).toBeCalled();
         expect(generateChangeSpy).toBeCalled();
         expect(traceSpy).toBeCalled();
+    });
+
+    test('change data-source - relative path to ui5 confir provided', async () => {
+        const command = new Command('data-source');
+        addChangeDataSourceCommand(command);
+        await command.parseAsync(getArgv(appRoot, '--simulate', '-c', 'ui5.yaml'));
+        expect(mockFs.readFileSync).toBeCalledWith(join(appRoot, 'ui5.yaml'), 'utf-8');
+    });
+
+    test('change data-source - absolute path to ui5 confir provided', async () => {
+        const command = new Command('data-source');
+        addChangeDataSourceCommand(command);
+        await command.parseAsync(getArgv(appRoot, '--simulate', '-c', '/path/to/ui5.yaml'));
+        expect(mockFs.readFileSync).toBeCalledWith('/path/to/ui5.yaml', 'utf-8');
     });
 
     test('change data-source - authentication error', async () => {

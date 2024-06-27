@@ -166,7 +166,33 @@ describe('NewModelWriter', () => {
         expect(getChangeMock).toHaveBeenCalledWith(
             expect.anything(),
             mockData.timestamp,
-            expect.any(Object),
+            {
+                'dataSource': {
+                    'ODataService': {
+                        'uri': mockData.service.uri,
+                        'type': 'OData',
+                        'settings': {
+                            'odataVersion': mockData.service.version,
+                            'annotations': [mockData.annotation.dataSourceName]
+                        }
+                    },
+                    'ODataAnnotations': {
+                        'uri': mockData.annotation.dataSourceURI,
+                        'type': 'ODataAnnotation',
+                        'settings': {
+                            'anotherSetting': 'anotherValue'
+                        }
+                    }
+                },
+                'model': {
+                    'ODataModel': {
+                        'dataSource': mockData.service.name,
+                        'settings': {
+                            'someSetting': 'someValue'
+                        }
+                    }
+                }
+            },
             ChangeType.ADD_NEW_MODEL
         );
 

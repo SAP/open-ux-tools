@@ -1,5 +1,35 @@
 # @sap-ux/axios-extension
 
+## 1.14.2
+
+### Patch Changes
+
+-   65bfb244: Add Adaptation Project's Change Data Source generator prompting
+
+## 1.14.1
+
+### Patch Changes
+
+-   844e79c4: fix for v2 catalog services
+
+## 1.14.0
+
+### Minor Changes
+
+-   31cc53f8: Use new api endpoint for ui service generator
+
+## 1.13.1
+
+### Patch Changes
+
+-   869c1c0d: Prevents overwriting axios config params
+
+## 1.13.0
+
+### Minor Changes
+
+-   b2ee99fc: Updates how service specific annotations are requested
+
 ## 1.12.6
 
 ### Patch Changes

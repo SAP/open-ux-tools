@@ -2,6 +2,7 @@ import prompts from 'prompts';
 import type { PromptType, PromptObject } from 'prompts';
 import type { ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Answers } from 'inquirer';
+import { getLogger } from '../tracing';
 
 /**
  * Checks if a property is a function.
@@ -9,7 +10,7 @@ import type { Answers } from 'inquirer';
  * @param property property to be checked
  * @returns true if the property is a function
  */
-function isFunction(property: unknown | Function): property is Function {
+function isFunction(property: unknown): property is Function {
     return typeof property === 'function';
 }
 
@@ -47,6 +48,22 @@ async function enhanceListQuestion(
 }
 
 /**
+ * Indicates if the question is optional.
+ *
+ * @param question question to be checked
+ * @param answers rpeviously given answers
+ * @returns message of the question
+ */
+async function extractMessage<T extends Answers>(question: YUIQuestion<T>, answers: T) {
+    const message = isFunction(question.message) ? await question.message(answers) : question.message;
+    if (question.guiOptions && !question.guiOptions.mandatory) {
+        return `${message} (optional)`;
+    } else {
+        return message;
+    }
+}
+
+/**
  * Converts a YUI question to a simple prompts question.
  *
  * @param question YUI question to be converted
@@ -60,7 +77,7 @@ export async function convertQuestion<T extends Answers>(
     const prompt: PromptObject = {
         type: QUESTION_TYPE_MAP[question.type ?? 'input'] ?? question.type,
         name: question.name,
-        message: isFunction(question.message) ? await question.message(answers) : await question.message,
+        message: await extractMessage(question, answers),
         validate: async (value: unknown) =>
             isFunction(question.validate) ? await question.validate(value, answers) : question.validate ?? true,
         initial: () => (isFunction(question.default) ? question.default(answers) : question.default)
@@ -70,7 +87,6 @@ export async function convertQuestion<T extends Answers>(
     }
     return prompt;
 }
-
 /**
  * Prompt a list of YeomanUI questions with the simple prompts module.
  *
@@ -83,31 +99,39 @@ export async function promptYUIQuestions<T extends Answers>(
     useDefaults: boolean
 ): Promise<T> {
     const answers = {} as T;
-    for (let i = 0; i < questions.length; i++) {
-        const question = questions[i];
+    for (const question of questions) {
         if (isFunction(question.when) ? question.when(answers) : question.when !== false) {
             if (useDefaults) {
                 answers[question.name] = isFunction(question.default) ? question.default(answers) : question.default;
             } else {
-                const q = await convertQuestion(question, answers);
-                const answer = await prompts(q, {
-                    onCancel: () => {
-                        throw new Error('User canceled the prompt');
-                    },
-                    onSubmit: async (prompt: PromptObject, answer: unknown) => {
-                        // prompts does not handle validation for autocomplete out of the box
-                        if (prompt.type === 'autocomplete' && prompt.validate) {
-                            const valid = await (q.validate as Function)(answer);
-                            if (valid !== true) {
-                                console.error(valid);
-                                i--;
-                            }
-                        }
-                    }
-                });
-                answers[question.name] = answer[question.name];
+                answers[question.name] = await promptSingleQuestion(answers, question);
             }
         }
     }
-    return answers as T;
+    return answers;
+}
+
+/**
+ * Prompt a single YeomanUI question with the simple prompts module.
+ *
+ * @param answers previously given answers
+ * @param question question to be prompted
+ * @returns a promise with the answer of the question
+ */
+async function promptSingleQuestion<T extends Answers>(answers: T, question: YUIQuestion<T>) {
+    const q = await convertQuestion(question, answers);
+    const answer = await prompts(q, {
+        onCancel: () => {
+            throw new Error('User canceled the prompt');
+        }
+    });
+    // prompts does not handle validation for autocomplete out of the box
+    if (q.type === 'autocomplete') {
+        const valid = await (q.validate as Function)(answer[question.name]);
+        if (valid !== true) {
+            getLogger().warn(valid);
+            return promptSingleQuestion(answers, question);
+        }
+    }
+    return answer[question.name];
 }

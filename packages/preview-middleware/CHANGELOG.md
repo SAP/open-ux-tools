@@ -1,5 +1,158 @@
 # @sap-ux/preview-middleware
 
+## 0.13.74
+
+### Patch Changes
+
+-   Updated dependencies [65bfb244]
+    -   @sap-ux/adp-tooling@0.11.7
+
+## 0.13.73
+
+### Patch Changes
+
+-   fb2ff8d6: Reduce eslint warnings
+
+## 0.13.72
+
+### Patch Changes
+
+-   1a1baeb0: Revert "feat(fiori-elements-writer): remove `sap.fe.templates` dependency
+    -   @sap-ux/adp-tooling@0.11.6
+    -   @sap-ux/project-access@1.22.3
+
+## 0.13.71
+
+### Patch Changes
+
+-   899cdb23: FIX: enabled running the middleware with karma
+
+## 0.13.70
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.5
+
+## 0.13.69
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.4
+
+## 0.13.68
+
+### Patch Changes
+
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/project-access@1.22.2
+    -   @sap-ux/adp-tooling@0.11.3
+
+## 0.13.67
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.2
+
+## 0.13.66
+
+### Patch Changes
+
+-   Updated dependencies [a140cf8b]
+    -   @sap-ux/adp-tooling@0.11.1
+    -   @sap-ux/project-access@1.22.1
+
+## 0.13.65
+
+### Patch Changes
+
+-   Updated dependencies [7f8bc980]
+    -   @sap-ux/adp-tooling@0.11.0
+
+## 0.13.64
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.23
+
+## 0.13.63
+
+### Patch Changes
+
+-   Updated dependencies [ad93a484]
+    -   @sap-ux/project-access@1.22.0
+    -   @sap-ux/adp-tooling@0.10.22
+
+## 0.13.62
+
+### Patch Changes
+
+-   9188fe8b: fpm v4 removed sap.fe.templates in manifest.json, now has dependency on sap.fe.core
+    sap.ushell removed from ui5-application-writer, now loaded in fiori-elements and fiori-freestyle writers respectively
+    -   @sap-ux/adp-tooling@0.10.21
+    -   @sap-ux/project-access@1.21.2
+
+## 0.13.61
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.20
+
+## 0.13.60
+
+### Patch Changes
+
+-   98b5aaee: Add new model writer has misspelled property that breaks the validation of the change
+-   Updated dependencies [98b5aaee]
+    -   @sap-ux/adp-tooling@0.10.19
+
+## 0.13.59
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.18
+-   @sap-ux/project-access@1.21.1
+
+## 0.13.58
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.10.17
+
+## 0.13.57
+
+### Patch Changes
+
+-   Updated dependencies [69b8d6de]
+    -   @sap-ux/project-access@1.21.0
+    -   @sap-ux/adp-tooling@0.10.16
+
+## 0.13.56
+
+### Patch Changes
+
+-   Updated dependencies [a7d78229]
+    -   @sap-ux/project-access@1.20.4
+    -   @sap-ux/adp-tooling@0.10.15
+
+## 0.13.55
+
+### Patch Changes
+
+-   81026f96: Add explanation at the end of disabled context menu item due to non stable ID
+
+## 0.13.54
+
+### Patch Changes
+
+-   c1cc4f57: fix missing RTA toolbar in variant management
+
+## 0.13.53
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.20.3
+-   @sap-ux/adp-tooling@0.10.14
+
 ## 0.13.52
 
 ### Patch Changes

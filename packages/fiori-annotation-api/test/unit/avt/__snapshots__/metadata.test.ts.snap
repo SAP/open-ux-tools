@@ -1,0 +1,1611 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`avt metadata conversion (CDS) bound and unbound actions and functions 1`] = `
+Object {
+  "actionImports": Array [],
+  "actions": Array [
+    Object {
+      "_type": "Action",
+      "fullyQualifiedName": "IncidentService.EntityContainer/IntToString",
+      "isBound": false,
+      "isFunction": true,
+      "name": "IntToString",
+      "parameters": Array [],
+      "returnType": "",
+      "sourceType": "",
+    },
+    Object {
+      "_type": "Action",
+      "fullyQualifiedName": "IncidentService.CloseAll(IncidentService.Incidents)",
+      "isBound": false,
+      "isFunction": false,
+      "name": "IncidentService.CloseAll(IncidentService.Incidents)",
+      "parameters": Array [
+        Object {
+          "_type": "ActionParameter",
+          "annotations": Object {},
+          "fullyQualifiedName": "IncidentService.CloseAll(IncidentService.Incidents)/in",
+          "isCollection": true,
+          "name": "in",
+          "type": "IncidentService.Incidents",
+        },
+      ],
+      "returnType": "",
+      "sourceType": "",
+    },
+    Object {
+      "_type": "Action",
+      "fullyQualifiedName": "IncidentService.DeleteIncident(IncidentService.Incidents)",
+      "isBound": false,
+      "isFunction": false,
+      "name": "IncidentService.DeleteIncident(IncidentService.Incidents)",
+      "parameters": Array [
+        Object {
+          "_type": "ActionParameter",
+          "annotations": Object {},
+          "fullyQualifiedName": "IncidentService.DeleteIncident(IncidentService.Incidents)/in",
+          "isCollection": false,
+          "name": "in",
+          "type": "IncidentService.Incidents",
+        },
+      ],
+      "returnType": "",
+      "sourceType": "",
+    },
+    Object {
+      "_type": "Action",
+      "fullyQualifiedName": "IncidentService.ReassignIncident(IncidentService.Incidents)",
+      "isBound": false,
+      "isFunction": false,
+      "name": "IncidentService.ReassignIncident(IncidentService.Incidents)",
+      "parameters": Array [
+        Object {
+          "_type": "ActionParameter",
+          "annotations": Object {},
+          "fullyQualifiedName": "IncidentService.ReassignIncident(IncidentService.Incidents)/incident",
+          "isCollection": false,
+          "name": "incident",
+          "type": "IncidentService.Incidents",
+        },
+      ],
+      "returnType": "Edm.Boolean",
+      "sourceType": "",
+    },
+    Object {
+      "_type": "Action",
+      "fullyQualifiedName": "IncidentService.getIncidentCount(IncidentService.Incidents)",
+      "isBound": false,
+      "isFunction": true,
+      "name": "IncidentService.getIncidentCount(IncidentService.Incidents)",
+      "parameters": Array [
+        Object {
+          "_type": "ActionParameter",
+          "annotations": Object {},
+          "fullyQualifiedName": "IncidentService.getIncidentCount(IncidentService.Incidents)/in",
+          "isCollection": false,
+          "name": "in",
+          "type": "IncidentService.Incidents",
+        },
+      ],
+      "returnType": "Edm.Int32",
+      "sourceType": "",
+    },
+    Object {
+      "_type": "Action",
+      "fullyQualifiedName": "IncidentService.IntToString(Edm.Int32)",
+      "isBound": false,
+      "isFunction": true,
+      "name": "IncidentService.IntToString(Edm.Int32)",
+      "parameters": Array [
+        Object {
+          "_type": "ActionParameter",
+          "annotations": Object {},
+          "fullyQualifiedName": "IncidentService.IntToString(Edm.Int32)/P",
+          "isCollection": false,
+          "name": "P",
+          "type": "Edm.Int32",
+        },
+      ],
+      "returnType": "Edm.String",
+      "sourceType": "",
+    },
+    Object {
+      "_type": "Action",
+      "fullyQualifiedName": "IncidentService.Cleanup()",
+      "isBound": false,
+      "isFunction": false,
+      "name": "IncidentService.Cleanup()",
+      "parameters": Array [],
+      "returnType": "",
+      "sourceType": "",
+    },
+  ],
+  "annotations": Object {},
+  "associationSets": Array [],
+  "associations": Array [],
+  "complexTypes": Array [],
+  "entityContainer": Object {
+    "_type": "EntityContainer",
+    "fullyQualifiedName": "IncidentService.EntityContainer",
+    "name": "EntityContainer",
+  },
+  "entitySets": Array [
+    Object {
+      "_type": "EntitySet",
+      "entityTypeName": "IncidentService.Incidents",
+      "fullyQualifiedName": "IncidentService.EntityContainer/Incidents",
+      "name": "Incidents",
+      "navigationPropertyBinding": Object {},
+    },
+  ],
+  "entityTypes": Array [
+    Object {
+      "_type": "EntityType",
+      "actions": Object {},
+      "entityProperties": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Incidents/id",
+          "name": "id",
+          "type": "Edm.String",
+        },
+      ],
+      "fullyQualifiedName": "IncidentService.Incidents",
+      "keys": Array [],
+      "name": "IncidentService.Incidents",
+      "navigationProperties": Array [],
+    },
+  ],
+  "namespace": "IncidentService",
+  "singletons": Array [],
+  "typeDefinitions": Array [],
+}
+`;
+
+exports[`avt metadata conversion (CDS) complex types 1`] = `
+Object {
+  "actionImports": Array [],
+  "actions": Array [],
+  "annotations": Object {},
+  "associationSets": Array [],
+  "associations": Array [],
+  "complexTypes": Array [
+    Object {
+      "_type": "ComplexType",
+      "fullyQualifiedName": "IncidentService.ComplexType",
+      "name": "IncidentService.ComplexType",
+      "navigationProperties": Array [
+        Object {
+          "_type": "NavigationProperty",
+          "containsTarget": false,
+          "fullyQualifiedName": "IncidentService.ComplexType/step",
+          "isCollection": false,
+          "name": "step",
+          "partner": "",
+          "referentialConstraint": Array [],
+          "targetTypeName": "IncidentService.IncidentWorkflow",
+        },
+      ],
+      "properties": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.ComplexType/real",
+          "name": "real",
+          "type": "Edm.Decimal",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.ComplexType/estimated",
+          "name": "estimated",
+          "type": "Edm.Decimal",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.ComplexType/step",
+          "name": "step",
+          "type": "IncidentService.IncidentWorkflow",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.ComplexType/step_id",
+          "name": "step_id",
+          "type": "Edm.String",
+        },
+      ],
+    },
+  ],
+  "entityContainer": Object {
+    "_type": "EntityContainer",
+    "fullyQualifiedName": "IncidentService.EntityContainer",
+    "name": "EntityContainer",
+  },
+  "entitySets": Array [
+    Object {
+      "_type": "EntitySet",
+      "entityTypeName": "IncidentService.Incidents",
+      "fullyQualifiedName": "IncidentService.EntityContainer/Incidents",
+      "name": "Incidents",
+      "navigationPropertyBinding": Object {},
+    },
+    Object {
+      "_type": "EntitySet",
+      "entityTypeName": "IncidentService.IncidentWorkflow",
+      "fullyQualifiedName": "IncidentService.EntityContainer/IncidentWorkflow",
+      "name": "IncidentWorkflow",
+      "navigationPropertyBinding": Object {},
+    },
+  ],
+  "entityTypes": Array [
+    Object {
+      "_type": "EntityType",
+      "actions": Object {},
+      "entityProperties": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Incidents/id",
+          "name": "id",
+          "type": "Edm.String",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Incidents/data_real",
+          "name": "data_real",
+          "type": "Edm.Decimal",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Incidents/data_estimated",
+          "name": "data_estimated",
+          "type": "Edm.Decimal",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Incidents/data_step_id",
+          "name": "data_step_id",
+          "type": "Edm.String",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Incidents/data",
+          "name": "data",
+          "type": "IncidentService.ComplexType",
+        },
+      ],
+      "fullyQualifiedName": "IncidentService.Incidents",
+      "keys": Array [],
+      "name": "IncidentService.Incidents",
+      "navigationProperties": Array [
+        Object {
+          "_type": "NavigationProperty",
+          "containsTarget": false,
+          "fullyQualifiedName": "IncidentService.Incidents/data_step",
+          "isCollection": true,
+          "name": "data_step",
+          "partner": "",
+          "referentialConstraint": Array [],
+          "targetTypeName": "IncidentService.IncidentWorkflow",
+        },
+      ],
+    },
+    Object {
+      "_type": "EntityType",
+      "actions": Object {},
+      "entityProperties": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.IncidentWorkflow/id",
+          "name": "id",
+          "type": "Edm.String",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.IncidentWorkflow/step",
+          "name": "step",
+          "type": "Edm.Int32",
+        },
+      ],
+      "fullyQualifiedName": "IncidentService.IncidentWorkflow",
+      "keys": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.IncidentWorkflow/id",
+          "name": "id",
+          "type": "Edm.String",
+        },
+      ],
+      "name": "IncidentService.IncidentWorkflow",
+      "navigationProperties": Array [],
+    },
+  ],
+  "namespace": "IncidentService",
+  "singletons": Array [],
+  "typeDefinitions": Array [],
+}
+`;
+
+exports[`avt metadata conversion (CDS) entity type 1`] = `
+Object {
+  "actionImports": Array [],
+  "actions": Array [
+    Object {
+      "_type": "Action",
+      "fullyQualifiedName": "IncidentService.MarkIncident()",
+      "isBound": false,
+      "isFunction": false,
+      "name": "IncidentService.MarkIncident()",
+      "parameters": Array [
+        Object {
+          "_type": "ActionParameter",
+          "annotations": Object {},
+          "fullyQualifiedName": "IncidentService.MarkIncident()/star",
+          "isCollection": false,
+          "name": "star",
+          "type": "Edm.Int32",
+        },
+      ],
+      "returnType": "",
+      "sourceType": "",
+    },
+  ],
+  "annotations": Object {},
+  "associationSets": Array [],
+  "associations": Array [],
+  "complexTypes": Array [],
+  "entityContainer": Object {
+    "_type": "EntityContainer",
+    "fullyQualifiedName": "IncidentService.EntityContainer",
+    "name": "EntityContainer",
+  },
+  "entitySets": Array [
+    Object {
+      "_type": "EntitySet",
+      "entityTypeName": "IncidentService.Incidents",
+      "fullyQualifiedName": "IncidentService.EntityContainer/Incidents",
+      "name": "Incidents",
+      "navigationPropertyBinding": Object {},
+    },
+  ],
+  "entityTypes": Array [
+    Object {
+      "_type": "EntityType",
+      "actions": Object {},
+      "entityProperties": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Incidents/id",
+          "name": "id",
+          "type": "Edm.String",
+        },
+      ],
+      "fullyQualifiedName": "IncidentService.Incidents",
+      "keys": Array [],
+      "name": "IncidentService.Incidents",
+      "navigationProperties": Array [],
+    },
+  ],
+  "namespace": "IncidentService",
+  "singletons": Array [],
+  "typeDefinitions": Array [],
+}
+`;
+
+exports[`avt metadata conversion (CDS) entity type with navigation 1`] = `
+Object {
+  "actionImports": Array [],
+  "actions": Array [],
+  "annotations": Object {},
+  "associationSets": Array [],
+  "associations": Array [],
+  "complexTypes": Array [],
+  "entityContainer": Object {
+    "_type": "EntityContainer",
+    "fullyQualifiedName": "IncidentService.EntityContainer",
+    "name": "EntityContainer",
+  },
+  "entitySets": Array [
+    Object {
+      "_type": "EntitySet",
+      "entityTypeName": "IncidentService.Incidents",
+      "fullyQualifiedName": "IncidentService.EntityContainer/Incidents",
+      "name": "Incidents",
+      "navigationPropertyBinding": Object {},
+    },
+    Object {
+      "_type": "EntitySet",
+      "entityTypeName": "IncidentService.Category",
+      "fullyQualifiedName": "IncidentService.EntityContainer/Category",
+      "name": "Category",
+      "navigationPropertyBinding": Object {},
+    },
+  ],
+  "entityTypes": Array [
+    Object {
+      "_type": "EntityType",
+      "actions": Object {},
+      "entityProperties": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Incidents/id",
+          "name": "id",
+          "type": "Edm.String",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Incidents/category_code",
+          "name": "category_code",
+          "type": "Edm.Int32",
+        },
+      ],
+      "fullyQualifiedName": "IncidentService.Incidents",
+      "keys": Array [],
+      "name": "IncidentService.Incidents",
+      "navigationProperties": Array [
+        Object {
+          "_type": "NavigationProperty",
+          "containsTarget": false,
+          "fullyQualifiedName": "IncidentService.Incidents/category",
+          "isCollection": false,
+          "name": "category",
+          "partner": "",
+          "referentialConstraint": Array [],
+          "targetTypeName": "IncidentService.Category",
+        },
+      ],
+    },
+    Object {
+      "_type": "EntityType",
+      "actions": Object {},
+      "entityProperties": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Category/code",
+          "name": "code",
+          "type": "Edm.Int32",
+        },
+      ],
+      "fullyQualifiedName": "IncidentService.Category",
+      "keys": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Category/code",
+          "name": "code",
+          "type": "Edm.Int32",
+        },
+      ],
+      "name": "IncidentService.Category",
+      "navigationProperties": Array [],
+    },
+  ],
+  "namespace": "IncidentService",
+  "singletons": Array [],
+  "typeDefinitions": Array [],
+}
+`;
+
+exports[`avt metadata conversion (CDS) singleton 1`] = `
+Object {
+  "actionImports": Array [],
+  "actions": Array [],
+  "annotations": Object {},
+  "associationSets": Array [],
+  "associations": Array [],
+  "complexTypes": Array [],
+  "entityContainer": Object {
+    "_type": "EntityContainer",
+    "fullyQualifiedName": "IncidentService.EntityContainer",
+    "name": "EntityContainer",
+  },
+  "entitySets": Array [],
+  "entityTypes": Array [
+    Object {
+      "_type": "EntityType",
+      "actions": Object {},
+      "entityProperties": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.IncidentsConfig/id",
+          "name": "id",
+          "type": "Edm.String",
+        },
+      ],
+      "fullyQualifiedName": "IncidentService.IncidentsConfig",
+      "keys": Array [],
+      "name": "IncidentService.IncidentsConfig",
+      "navigationProperties": Array [],
+    },
+  ],
+  "namespace": "IncidentService",
+  "singletons": Array [
+    Object {
+      "_type": "Singleton",
+      "entityTypeName": "IncidentService.IncidentsConfig",
+      "fullyQualifiedName": "IncidentService.EntityContainer/IncidentsConfig",
+      "name": "IncidentsConfig",
+      "navigationPropertyBinding": Object {},
+      "nullable": false,
+    },
+  ],
+  "typeDefinitions": Array [],
+}
+`;
+
+exports[`avt metadata conversion (XML) action 1`] = `
+Object {
+  "actionImports": Array [],
+  "actions": Array [
+    Object {
+      "_type": "Action",
+      "fullyQualifiedName": "IncidentService.closeIncident()",
+      "isBound": false,
+      "isFunction": false,
+      "name": "IncidentService.closeIncident()",
+      "parameters": Array [],
+      "returnType": "",
+      "sourceType": "",
+    },
+  ],
+  "annotations": Object {},
+  "associationSets": Array [],
+  "associations": Array [],
+  "complexTypes": Array [],
+  "entityContainer": Object {
+    "_type": "EntityContainer",
+    "fullyQualifiedName": "",
+  },
+  "entitySets": Array [],
+  "entityTypes": Array [],
+  "namespace": "IncidentService",
+  "singletons": Array [],
+  "typeDefinitions": Array [],
+}
+`;
+
+exports[`avt metadata conversion (XML) action import v2 1`] = `
+Object {
+  "actionImports": Array [],
+  "actions": Array [
+    Object {
+      "_type": "Action",
+      "fullyQualifiedName": "IncidentService.EntityContainer/SEPMRA_C_PD_DeleteProductText",
+      "isBound": false,
+      "isFunction": false,
+      "name": "SEPMRA_C_PD_DeleteProductText",
+      "parameters": Array [
+        Object {
+          "_type": "ActionParameter",
+          "annotations": Object {},
+          "fullyQualifiedName": "IncidentService.EntityContainer/SEPMRA_C_PD_DeleteProductText/ProductTextDraftUUID",
+          "isCollection": false,
+          "name": "ProductTextDraftUUID",
+          "type": "Edm.Guid",
+        },
+      ],
+      "returnType": "",
+      "sourceType": "",
+    },
+  ],
+  "annotations": Object {},
+  "associationSets": Array [],
+  "associations": Array [],
+  "complexTypes": Array [],
+  "entityContainer": Object {
+    "_type": "EntityContainer",
+    "fullyQualifiedName": "IncidentService.EntityContainer",
+    "name": "EntityContainer",
+  },
+  "entitySets": Array [
+    Object {
+      "_type": "EntitySet",
+      "entityTypeName": "IncidentService.SEPMRA_C_PD_ProductTextType",
+      "fullyQualifiedName": "IncidentService.EntityContainer/SEPMRA_C_PD_ProductText",
+      "name": "SEPMRA_C_PD_ProductText",
+      "navigationPropertyBinding": Object {},
+    },
+  ],
+  "entityTypes": Array [
+    Object {
+      "_type": "EntityType",
+      "actions": Object {},
+      "entityProperties": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/ProductTextDraftUUID",
+          "name": "ProductTextDraftUUID",
+          "type": "Edm.Guid",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/ActiveProduct",
+          "name": "ActiveProduct",
+          "type": "Edm.String",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/ActiveLanguage",
+          "name": "ActiveLanguage",
+          "type": "Edm.String",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/Language",
+          "name": "Language",
+          "type": "Edm.String",
+        },
+      ],
+      "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType",
+      "keys": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/ProductTextDraftUUID",
+          "name": "ProductTextDraftUUID",
+          "type": "Edm.Guid",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/ActiveProduct",
+          "name": "ActiveProduct",
+          "type": "Edm.String",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/ActiveLanguage",
+          "name": "ActiveLanguage",
+          "type": "Edm.String",
+        },
+      ],
+      "name": "IncidentService.SEPMRA_C_PD_ProductTextType",
+      "navigationProperties": Array [],
+    },
+  ],
+  "namespace": "IncidentService",
+  "singletons": Array [],
+  "typeDefinitions": Array [],
+}
+`;
+
+exports[`avt metadata conversion (XML) action import v4 1`] = `
+Object {
+  "actionImports": Array [
+    Object {
+      "_type": "ActionImport",
+      "actionName": "IncidentService.SEPMRA_C_PD_RebuildIndexes",
+      "fullyQualifiedName": "IncidentService.EntityContainer/RebuildIndexes",
+      "name": "RebuildIndexes",
+    },
+  ],
+  "actions": Array [
+    Object {
+      "_type": "Action",
+      "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_RebuildIndexes()",
+      "isBound": false,
+      "isFunction": false,
+      "name": "IncidentService.SEPMRA_C_PD_RebuildIndexes()",
+      "parameters": Array [],
+      "returnType": "Edm.Boolean",
+      "sourceType": "",
+    },
+  ],
+  "annotations": Object {},
+  "associationSets": Array [],
+  "associations": Array [],
+  "complexTypes": Array [],
+  "entityContainer": Object {
+    "_type": "EntityContainer",
+    "fullyQualifiedName": "IncidentService.EntityContainer",
+    "name": "EntityContainer",
+  },
+  "entitySets": Array [
+    Object {
+      "_type": "EntitySet",
+      "entityTypeName": "IncidentService.SEPMRA_C_PD_ProductTextType",
+      "fullyQualifiedName": "IncidentService.EntityContainer/SEPMRA_C_PD_ProductText",
+      "name": "SEPMRA_C_PD_ProductText",
+      "navigationPropertyBinding": Object {},
+    },
+  ],
+  "entityTypes": Array [
+    Object {
+      "_type": "EntityType",
+      "actions": Object {},
+      "entityProperties": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/ProductTextDraftUUID",
+          "name": "ProductTextDraftUUID",
+          "type": "Edm.Guid",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/ActiveProduct",
+          "name": "ActiveProduct",
+          "type": "Edm.String",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/ActiveLanguage",
+          "name": "ActiveLanguage",
+          "type": "Edm.String",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/Language",
+          "name": "Language",
+          "type": "Edm.String",
+        },
+      ],
+      "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType",
+      "keys": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/ProductTextDraftUUID",
+          "name": "ProductTextDraftUUID",
+          "type": "Edm.Guid",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/ActiveProduct",
+          "name": "ActiveProduct",
+          "type": "Edm.String",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/ActiveLanguage",
+          "name": "ActiveLanguage",
+          "type": "Edm.String",
+        },
+      ],
+      "name": "IncidentService.SEPMRA_C_PD_ProductTextType",
+      "navigationProperties": Array [],
+    },
+  ],
+  "namespace": "IncidentService",
+  "singletons": Array [],
+  "typeDefinitions": Array [],
+}
+`;
+
+exports[`avt metadata conversion (XML) action with return type 1`] = `
+Object {
+  "actionImports": Array [],
+  "actions": Array [
+    Object {
+      "_type": "Action",
+      "fullyQualifiedName": "IncidentService.closeIncident()",
+      "isBound": false,
+      "isFunction": false,
+      "name": "IncidentService.closeIncident()",
+      "parameters": Array [],
+      "returnType": "Edm.String",
+      "sourceType": "",
+    },
+  ],
+  "annotations": Object {},
+  "associationSets": Array [],
+  "associations": Array [],
+  "complexTypes": Array [],
+  "entityContainer": Object {
+    "_type": "EntityContainer",
+    "fullyQualifiedName": "",
+  },
+  "entitySets": Array [],
+  "entityTypes": Array [],
+  "namespace": "IncidentService",
+  "singletons": Array [],
+  "typeDefinitions": Array [],
+}
+`;
+
+exports[`avt metadata conversion (XML) bound action import v4 1`] = `
+Object {
+  "actionImports": Array [],
+  "actions": Array [
+    Object {
+      "_type": "Action",
+      "fullyQualifiedName": "IncidentService.Activate(IncidentService.TravelType)",
+      "isBound": false,
+      "isFunction": false,
+      "name": "IncidentService.Activate(IncidentService.TravelType)",
+      "parameters": Array [
+        Object {
+          "_type": "ActionParameter",
+          "annotations": Object {},
+          "fullyQualifiedName": "IncidentService.Activate(IncidentService.TravelType)/_it",
+          "isCollection": false,
+          "name": "_it",
+          "type": "IncidentService.TravelType",
+        },
+      ],
+      "returnType": "IncidentService.TravelType",
+      "sourceType": "IncidentService.TravelType",
+    },
+  ],
+  "annotations": Object {},
+  "associationSets": Array [],
+  "associations": Array [],
+  "complexTypes": Array [],
+  "entityContainer": Object {
+    "_type": "EntityContainer",
+    "fullyQualifiedName": "IncidentService.EntityContainer",
+    "name": "EntityContainer",
+  },
+  "entitySets": Array [
+    Object {
+      "_type": "EntitySet",
+      "entityTypeName": "IncidentService.TravelType",
+      "fullyQualifiedName": "IncidentService.EntityContainer/Travel",
+      "name": "Travel",
+      "navigationPropertyBinding": Object {},
+    },
+  ],
+  "entityTypes": Array [
+    Object {
+      "_type": "EntityType",
+      "actions": Object {},
+      "entityProperties": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.TravelType/TravelUUID",
+          "name": "TravelUUID",
+          "type": "Edm.Guid",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.TravelType/TravelID",
+          "name": "TravelID",
+          "type": "Edm.String",
+        },
+      ],
+      "fullyQualifiedName": "IncidentService.TravelType",
+      "keys": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.TravelType/TravelUUID",
+          "name": "TravelUUID",
+          "type": "Edm.Guid",
+        },
+      ],
+      "name": "IncidentService.TravelType",
+      "navigationProperties": Array [],
+    },
+  ],
+  "namespace": "IncidentService",
+  "singletons": Array [],
+  "typeDefinitions": Array [],
+}
+`;
+
+exports[`avt metadata conversion (XML) complex type v2 1`] = `
+Object {
+  "actionImports": Array [],
+  "actions": Array [],
+  "annotations": Object {},
+  "associationSets": Array [],
+  "associations": Array [],
+  "complexTypes": Array [
+    Object {
+      "_type": "ComplexType",
+      "fullyQualifiedName": "IncidentService.ValidationResult",
+      "name": "IncidentService.ValidationResult",
+      "navigationProperties": Array [],
+      "properties": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.ValidationResult/IsValid",
+          "name": "IsValid",
+          "type": "Edm.Boolean",
+        },
+      ],
+    },
+  ],
+  "entityContainer": Object {
+    "_type": "EntityContainer",
+    "fullyQualifiedName": "IncidentService.EntityContainer",
+    "name": "EntityContainer",
+  },
+  "entitySets": Array [
+    Object {
+      "_type": "EntitySet",
+      "entityTypeName": "IncidentService.Incidents",
+      "fullyQualifiedName": "IncidentService.EntityContainer/Incidents",
+      "name": "Incidents",
+      "navigationPropertyBinding": Object {},
+    },
+  ],
+  "entityTypes": Array [
+    Object {
+      "_type": "EntityType",
+      "actions": Object {},
+      "entityProperties": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Incidents/validation",
+          "name": "validation",
+          "type": "IncidentService.ValidationResult",
+        },
+      ],
+      "fullyQualifiedName": "IncidentService.Incidents",
+      "keys": Array [],
+      "name": "IncidentService.Incidents",
+      "navigationProperties": Array [
+        Object {
+          "_type": "NavigationProperty",
+          "containsTarget": false,
+          "fullyQualifiedName": "IncidentService.Incidents/to_IncodentsFlow",
+          "isCollection": true,
+          "name": "to_IncodentsFlow",
+          "partner": "",
+          "referentialConstraint": Array [],
+          "targetTypeName": "IncidentService.IncidentsFlow",
+        },
+      ],
+    },
+    Object {
+      "_type": "EntityType",
+      "actions": Object {},
+      "entityProperties": Array [],
+      "fullyQualifiedName": "IncidentService.IncidentsFlow",
+      "keys": Array [],
+      "name": "IncidentService.IncidentsFlow",
+      "navigationProperties": Array [],
+    },
+  ],
+  "namespace": "IncidentService",
+  "singletons": Array [],
+  "typeDefinitions": Array [],
+}
+`;
+
+exports[`avt metadata conversion (XML) complex type v4 1`] = `
+Object {
+  "actionImports": Array [],
+  "actions": Array [],
+  "annotations": Object {},
+  "associationSets": Array [],
+  "associations": Array [],
+  "complexTypes": Array [
+    Object {
+      "_type": "ComplexType",
+      "fullyQualifiedName": "IncidentService.ValidationResult",
+      "name": "IncidentService.ValidationResult",
+      "navigationProperties": Array [
+        Object {
+          "_type": "NavigationProperty",
+          "containsTarget": false,
+          "fullyQualifiedName": "IncidentService.ValidationResult/Flow",
+          "isCollection": false,
+          "name": "Flow",
+          "partner": "",
+          "referentialConstraint": Array [],
+          "targetTypeName": "IncidentService.IncidentsFlow",
+        },
+      ],
+      "properties": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.ValidationResult/IsValid",
+          "name": "IsValid",
+          "type": "Edm.Boolean",
+        },
+      ],
+    },
+  ],
+  "entityContainer": Object {
+    "_type": "EntityContainer",
+    "fullyQualifiedName": "IncidentService.EntityContainer",
+    "name": "EntityContainer",
+  },
+  "entitySets": Array [
+    Object {
+      "_type": "EntitySet",
+      "entityTypeName": "IncidentService.Incidents",
+      "fullyQualifiedName": "IncidentService.EntityContainer/Incidents",
+      "name": "Incidents",
+      "navigationPropertyBinding": Object {},
+    },
+  ],
+  "entityTypes": Array [
+    Object {
+      "_type": "EntityType",
+      "actions": Object {},
+      "entityProperties": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Incidents/validation",
+          "name": "validation",
+          "type": "IncidentService.ValidationResult",
+        },
+      ],
+      "fullyQualifiedName": "IncidentService.Incidents",
+      "keys": Array [],
+      "name": "IncidentService.Incidents",
+      "navigationProperties": Array [],
+    },
+    Object {
+      "_type": "EntityType",
+      "actions": Object {},
+      "entityProperties": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.IncidentsFlow/ID",
+          "name": "ID",
+          "type": "Edm.String",
+        },
+      ],
+      "fullyQualifiedName": "IncidentService.IncidentsFlow",
+      "keys": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.IncidentsFlow/ID",
+          "name": "ID",
+          "type": "Edm.String",
+        },
+      ],
+      "name": "IncidentService.IncidentsFlow",
+      "navigationProperties": Array [],
+    },
+  ],
+  "namespace": "IncidentService",
+  "singletons": Array [],
+  "typeDefinitions": Array [],
+}
+`;
+
+exports[`avt metadata conversion (XML) entity type 1`] = `
+Object {
+  "actionImports": Array [],
+  "actions": Array [
+    Object {
+      "_type": "Action",
+      "fullyQualifiedName": "IncidentService.closeIncident(IncidentService.Incidents)",
+      "isBound": false,
+      "isFunction": false,
+      "name": "IncidentService.closeIncident(IncidentService.Incidents)",
+      "parameters": Array [
+        Object {
+          "_type": "ActionParameter",
+          "annotations": Object {},
+          "fullyQualifiedName": "IncidentService.closeIncident(IncidentService.Incidents)/in",
+          "isCollection": false,
+          "name": "in",
+          "type": "IncidentService.Incidents",
+        },
+      ],
+      "returnType": "",
+      "sourceType": "",
+    },
+  ],
+  "annotations": Object {},
+  "associationSets": Array [],
+  "associations": Array [],
+  "complexTypes": Array [],
+  "entityContainer": Object {
+    "_type": "EntityContainer",
+    "fullyQualifiedName": "IncidentService.EntityContainer",
+    "name": "EntityContainer",
+  },
+  "entitySets": Array [
+    Object {
+      "_type": "EntitySet",
+      "entityTypeName": "IncidentService.Incidents",
+      "fullyQualifiedName": "IncidentService.EntityContainer/Incidents",
+      "name": "Incidents",
+      "navigationPropertyBinding": Object {},
+    },
+  ],
+  "entityTypes": Array [
+    Object {
+      "_type": "EntityType",
+      "actions": Object {},
+      "entityProperties": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Incidents/createdAt",
+          "name": "createdAt",
+          "type": "Edm.DateTimeOffset",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Incidents/createdBy",
+          "name": "createdBy",
+          "type": "Edm.String",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Incidents/modifiedAt",
+          "name": "modifiedAt",
+          "type": "Edm.DateTimeOffset",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Incidents/modifiedBy",
+          "name": "modifiedBy",
+          "type": "Edm.String",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Incidents/ID",
+          "name": "ID",
+          "type": "Edm.Guid",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Incidents/identifier",
+          "name": "identifier",
+          "type": "Edm.String",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Incidents/title",
+          "name": "title",
+          "type": "Edm.String",
+        },
+      ],
+      "fullyQualifiedName": "IncidentService.Incidents",
+      "keys": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Incidents/ID",
+          "name": "ID",
+          "type": "Edm.Guid",
+        },
+      ],
+      "name": "IncidentService.Incidents",
+      "navigationProperties": Array [],
+    },
+  ],
+  "namespace": "IncidentService",
+  "singletons": Array [],
+  "typeDefinitions": Array [],
+}
+`;
+
+exports[`avt metadata conversion (XML) entity type with navigation 1`] = `
+Object {
+  "actionImports": Array [],
+  "actions": Array [],
+  "annotations": Object {},
+  "associationSets": Array [],
+  "associations": Array [],
+  "complexTypes": Array [],
+  "entityContainer": Object {
+    "_type": "EntityContainer",
+    "fullyQualifiedName": "IncidentService.EntityContainer",
+    "name": "EntityContainer",
+  },
+  "entitySets": Array [
+    Object {
+      "_type": "EntitySet",
+      "entityTypeName": "IncidentService.Incidents",
+      "fullyQualifiedName": "IncidentService.EntityContainer/Incidents",
+      "name": "Incidents",
+      "navigationPropertyBinding": Object {},
+    },
+  ],
+  "entityTypes": Array [
+    Object {
+      "_type": "EntityType",
+      "actions": Object {},
+      "entityProperties": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Incidents/ID",
+          "name": "ID",
+          "type": "Edm.Guid",
+        },
+      ],
+      "fullyQualifiedName": "IncidentService.Incidents",
+      "keys": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Incidents/ID",
+          "name": "ID",
+          "type": "Edm.Guid",
+        },
+      ],
+      "name": "IncidentService.Incidents",
+      "navigationProperties": Array [
+        Object {
+          "_type": "NavigationProperty",
+          "containsTarget": false,
+          "fullyQualifiedName": "IncidentService.Incidents/category",
+          "isCollection": false,
+          "name": "category",
+          "partner": "",
+          "referentialConstraint": Array [],
+          "targetTypeName": "IncidentService.Category",
+        },
+      ],
+    },
+    Object {
+      "_type": "EntityType",
+      "actions": Object {},
+      "entityProperties": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Category/name",
+          "name": "name",
+          "type": "Edm.String",
+        },
+      ],
+      "fullyQualifiedName": "IncidentService.Category",
+      "keys": Array [],
+      "name": "IncidentService.Category",
+      "navigationProperties": Array [],
+    },
+  ],
+  "namespace": "IncidentService",
+  "singletons": Array [],
+  "typeDefinitions": Array [],
+}
+`;
+
+exports[`avt metadata conversion (XML) function and function import V2 1`] = `
+Object {
+  "actionImports": Array [],
+  "actions": Array [
+    Object {
+      "_type": "Action",
+      "fullyQualifiedName": "IncidentService.EntityContainer/SEPMRA_C_PD_ProductTextPreparation",
+      "isBound": false,
+      "isFunction": true,
+      "name": "SEPMRA_C_PD_ProductTextPreparation",
+      "parameters": Array [
+        Object {
+          "_type": "ActionParameter",
+          "annotations": Object {},
+          "fullyQualifiedName": "IncidentService.EntityContainer/SEPMRA_C_PD_ProductTextPreparation/_it",
+          "isCollection": false,
+          "name": "_it",
+          "type": "Z2SEPMRA_C_PD_PRODUCT_CDS.SEPMRA_C_PD_ProductTextType",
+        },
+        Object {
+          "_type": "ActionParameter",
+          "annotations": Object {},
+          "fullyQualifiedName": "IncidentService.EntityContainer/SEPMRA_C_PD_ProductTextPreparation/ProductTextDraftUUID",
+          "isCollection": false,
+          "name": "ProductTextDraftUUID",
+          "type": "Edm.Guid",
+        },
+        Object {
+          "_type": "ActionParameter",
+          "annotations": Object {},
+          "fullyQualifiedName": "IncidentService.EntityContainer/SEPMRA_C_PD_ProductTextPreparation/ActiveProduct",
+          "isCollection": false,
+          "name": "ActiveProduct",
+          "type": "Edm.String",
+        },
+        Object {
+          "_type": "ActionParameter",
+          "annotations": Object {},
+          "fullyQualifiedName": "IncidentService.EntityContainer/SEPMRA_C_PD_ProductTextPreparation/ActiveLanguage",
+          "isCollection": false,
+          "name": "ActiveLanguage",
+          "type": "Edm.String",
+        },
+      ],
+      "returnType": "IncidentService.SEPMRA_C_PD_ProductTextType",
+      "sourceType": "Z2SEPMRA_C_PD_PRODUCT_CDS.SEPMRA_C_PD_ProductTextType",
+    },
+    Object {
+      "_type": "Action",
+      "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ShortProductText(IncidentService.SEPMRA_C_PD_ProductTextType)",
+      "isBound": false,
+      "isFunction": true,
+      "name": "IncidentService.SEPMRA_C_PD_ShortProductText(IncidentService.SEPMRA_C_PD_ProductTextType)",
+      "parameters": Array [
+        Object {
+          "_type": "ActionParameter",
+          "annotations": Object {},
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ShortProductText(IncidentService.SEPMRA_C_PD_ProductTextType)/in",
+          "isCollection": false,
+          "name": "in",
+          "type": "IncidentService.SEPMRA_C_PD_ProductTextType",
+        },
+      ],
+      "returnType": "Edm.String",
+      "sourceType": "",
+    },
+    Object {
+      "_type": "Action",
+      "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_RefreshData()",
+      "isBound": false,
+      "isFunction": true,
+      "name": "IncidentService.SEPMRA_C_PD_RefreshData()",
+      "parameters": Array [],
+      "returnType": "Edm.Boolean",
+      "sourceType": "",
+    },
+  ],
+  "annotations": Object {},
+  "associationSets": Array [],
+  "associations": Array [],
+  "complexTypes": Array [],
+  "entityContainer": Object {
+    "_type": "EntityContainer",
+    "fullyQualifiedName": "IncidentService.EntityContainer",
+    "name": "EntityContainer",
+  },
+  "entitySets": Array [
+    Object {
+      "_type": "EntitySet",
+      "entityTypeName": "IncidentService.SEPMRA_C_PD_ProductTextType",
+      "fullyQualifiedName": "IncidentService.EntityContainer/SEPMRA_C_PD_ProductText",
+      "name": "SEPMRA_C_PD_ProductText",
+      "navigationPropertyBinding": Object {},
+    },
+  ],
+  "entityTypes": Array [
+    Object {
+      "_type": "EntityType",
+      "actions": Object {},
+      "entityProperties": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/ProductTextDraftUUID",
+          "name": "ProductTextDraftUUID",
+          "type": "Edm.Guid",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/ActiveProduct",
+          "name": "ActiveProduct",
+          "type": "Edm.String",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/ActiveLanguage",
+          "name": "ActiveLanguage",
+          "type": "Edm.String",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/Language",
+          "name": "Language",
+          "type": "Edm.String",
+        },
+      ],
+      "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType",
+      "keys": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/ProductTextDraftUUID",
+          "name": "ProductTextDraftUUID",
+          "type": "Edm.Guid",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/ActiveProduct",
+          "name": "ActiveProduct",
+          "type": "Edm.String",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/ActiveLanguage",
+          "name": "ActiveLanguage",
+          "type": "Edm.String",
+        },
+      ],
+      "name": "IncidentService.SEPMRA_C_PD_ProductTextType",
+      "navigationProperties": Array [],
+    },
+  ],
+  "namespace": "IncidentService",
+  "singletons": Array [],
+  "typeDefinitions": Array [],
+}
+`;
+
+exports[`avt metadata conversion (XML) function and function import V4 1`] = `
+Object {
+  "actionImports": Array [
+    Object {
+      "_type": "ActionImport",
+      "actionName": "IncidentService.SEPMRA_C_PD_ProductTextPreparation",
+      "fullyQualifiedName": "IncidentService.EntityContainer/ProductTextPreparation",
+      "name": "ProductTextPreparation",
+    },
+  ],
+  "actions": Array [
+    Object {
+      "_type": "Action",
+      "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextPreparation(Edm.Guid,Edm.String,Edm.String)",
+      "isBound": false,
+      "isFunction": true,
+      "name": "IncidentService.SEPMRA_C_PD_ProductTextPreparation(Edm.Guid,Edm.String,Edm.String)",
+      "parameters": Array [
+        Object {
+          "_type": "ActionParameter",
+          "annotations": Object {},
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextPreparation(Edm.Guid,Edm.String,Edm.String)/ProductTextDraftUUID",
+          "isCollection": false,
+          "name": "ProductTextDraftUUID",
+          "type": "Edm.Guid",
+        },
+        Object {
+          "_type": "ActionParameter",
+          "annotations": Object {},
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextPreparation(Edm.Guid,Edm.String,Edm.String)/ActiveProduct",
+          "isCollection": false,
+          "name": "ActiveProduct",
+          "type": "Edm.String",
+        },
+        Object {
+          "_type": "ActionParameter",
+          "annotations": Object {},
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextPreparation(Edm.Guid,Edm.String,Edm.String)/ActiveLanguage",
+          "isCollection": false,
+          "name": "ActiveLanguage",
+          "type": "Edm.String",
+        },
+      ],
+      "returnType": "Edm.String",
+      "sourceType": "",
+    },
+  ],
+  "annotations": Object {},
+  "associationSets": Array [],
+  "associations": Array [],
+  "complexTypes": Array [],
+  "entityContainer": Object {
+    "_type": "EntityContainer",
+    "fullyQualifiedName": "IncidentService.EntityContainer",
+    "name": "EntityContainer",
+  },
+  "entitySets": Array [
+    Object {
+      "_type": "EntitySet",
+      "entityTypeName": "IncidentService.SEPMRA_C_PD_ProductTextType",
+      "fullyQualifiedName": "IncidentService.EntityContainer/SEPMRA_C_PD_ProductText",
+      "name": "SEPMRA_C_PD_ProductText",
+      "navigationPropertyBinding": Object {},
+    },
+  ],
+  "entityTypes": Array [
+    Object {
+      "_type": "EntityType",
+      "actions": Object {},
+      "entityProperties": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/ProductTextDraftUUID",
+          "name": "ProductTextDraftUUID",
+          "type": "Edm.Guid",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/ActiveProduct",
+          "name": "ActiveProduct",
+          "type": "Edm.String",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/ActiveLanguage",
+          "name": "ActiveLanguage",
+          "type": "Edm.String",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/Language",
+          "name": "Language",
+          "type": "Edm.String",
+        },
+      ],
+      "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType",
+      "keys": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/ProductTextDraftUUID",
+          "name": "ProductTextDraftUUID",
+          "type": "Edm.Guid",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/ActiveProduct",
+          "name": "ActiveProduct",
+          "type": "Edm.String",
+        },
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.SEPMRA_C_PD_ProductTextType/ActiveLanguage",
+          "name": "ActiveLanguage",
+          "type": "Edm.String",
+        },
+      ],
+      "name": "IncidentService.SEPMRA_C_PD_ProductTextType",
+      "navigationProperties": Array [],
+    },
+  ],
+  "namespace": "IncidentService",
+  "singletons": Array [],
+  "typeDefinitions": Array [],
+}
+`;
+
+exports[`avt metadata conversion (XML) singleton 1`] = `
+Object {
+  "actionImports": Array [],
+  "actions": Array [],
+  "annotations": Object {},
+  "associationSets": Array [],
+  "associations": Array [],
+  "complexTypes": Array [],
+  "entityContainer": Object {
+    "_type": "EntityContainer",
+    "fullyQualifiedName": "IncidentService.EntityContainer",
+    "name": "EntityContainer",
+  },
+  "entitySets": Array [
+    Object {
+      "_type": "EntitySet",
+      "entityTypeName": "IncidentService.Incidents",
+      "fullyQualifiedName": "IncidentService.EntityContainer/Incidents",
+      "name": "Incidents",
+      "navigationPropertyBinding": Object {},
+    },
+  ],
+  "entityTypes": Array [
+    Object {
+      "_type": "EntityType",
+      "actions": Object {},
+      "entityProperties": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Incidents/ID",
+          "name": "ID",
+          "type": "Edm.Guid",
+        },
+      ],
+      "fullyQualifiedName": "IncidentService.Incidents",
+      "keys": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Incidents/ID",
+          "name": "ID",
+          "type": "Edm.Guid",
+        },
+      ],
+      "name": "IncidentService.Incidents",
+      "navigationProperties": Array [
+        Object {
+          "_type": "NavigationProperty",
+          "containsTarget": false,
+          "fullyQualifiedName": "IncidentService.Incidents/category",
+          "isCollection": false,
+          "name": "category",
+          "partner": "",
+          "referentialConstraint": Array [],
+          "targetTypeName": "IncidentService.Category",
+        },
+      ],
+    },
+    Object {
+      "_type": "EntityType",
+      "actions": Object {},
+      "entityProperties": Array [
+        Object {
+          "_type": "Property",
+          "fullyQualifiedName": "IncidentService.Category/name",
+          "name": "name",
+          "type": "Edm.String",
+        },
+      ],
+      "fullyQualifiedName": "IncidentService.Category",
+      "keys": Array [],
+      "name": "IncidentService.Category",
+      "navigationProperties": Array [],
+    },
+  ],
+  "namespace": "IncidentService",
+  "singletons": Array [
+    Object {
+      "_type": "Singleton",
+      "entityTypeName": "IncidentService.Incidents",
+      "fullyQualifiedName": "IncidentService.EntityContainer/IncidentsFilters",
+      "name": "IncidentsFilters",
+      "navigationPropertyBinding": Object {},
+      "nullable": false,
+    },
+  ],
+  "typeDefinitions": Array [],
+}
+`;
