@@ -35,6 +35,7 @@ export {
     readCapServiceMetadataEdmx,
     readUi5Yaml,
     toReferenceUri,
+    filterDataSourcesByType,
     clearCdsModuleCache,
     updatePackageScript
 } from './project';
