@@ -3,7 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import { ChangeType } from '../../../types';
 import { DirName } from '@sap-ux/project-access';
 import type { IWriter, ComponentUsagesData } from '../../../types';
-import { parseStringToObject, getGenericChange, writeChangeToFolder } from '../../../base/change-utils';
+import { parseStringToObject, getChange, writeChangeToFolder } from '../../../base/change-utils';
 
 /**
  * Handles the creation and writing of component usages data changes for a project.
@@ -69,7 +69,12 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
         const libRefContent = this.constructLibContent(data);
 
         const shouldAddLibRef = libRefContent !== undefined;
-        const compUsagesChange = getGenericChange(data, componentUsagesContent, ChangeType.ADD_COMPONENT_USAGES);
+        const compUsagesChange = getChange(
+            data.projectData,
+            data.timestamp,
+            componentUsagesContent,
+            ChangeType.ADD_COMPONENT_USAGES
+        );
 
         writeChangeToFolder(
             this.projectPath,
@@ -81,7 +86,12 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
 
         if (shouldAddLibRef) {
             data.timestamp += 1;
-            const refLibChange = getGenericChange(data, libRefContent, ChangeType.ADD_LIBRARY_REFERENCE);
+            const refLibChange = getChange(
+                data.projectData,
+                data.timestamp,
+                libRefContent,
+                ChangeType.ADD_LIBRARY_REFERENCE
+            );
 
             writeChangeToFolder(
                 this.projectPath,

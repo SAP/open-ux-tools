@@ -3,7 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../../types';
 import type { IWriter, AnnotationsData } from '../../../types';
-import { getGenericChange, writeAnnotationChange } from '../../../base/change-utils';
+import { getChange, writeAnnotationChange } from '../../../base/change-utils';
 
 /**
  * Handles the creation and writing of annotations data changes for a project.
@@ -62,7 +62,7 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
     async write(data: AnnotationsData): Promise<void> {
         data.annotation.fileName = this.getAnnotationFileName(data);
         const content = this.constructContent(data);
-        const change = getGenericChange(data, content, ChangeType.ADD_ANNOTATIONS_TO_ODATA);
+        const change = getChange(data.projectData, data.timestamp, content, ChangeType.ADD_ANNOTATIONS_TO_ODATA);
         writeAnnotationChange(this.projectPath, data, change, this.fs);
     }
 }

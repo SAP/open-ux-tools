@@ -91,7 +91,7 @@ describe('ExtensionPoint', () => {
         test('throws error message when retrieving fragments fails', async () => {
             const errorMsg = 'Could not get fragments!';
             fetchMock.mockResolvedValue({
-                json: jest.fn().mockRejectedValue({ message: errorMsg }),
+                json: jest.fn().mockRejectedValue(new Error(errorMsg)),
                 text: jest.fn(),
                 ok: true
             });
