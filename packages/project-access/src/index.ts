@@ -38,6 +38,7 @@ export {
     readUi5Yaml,
     refreshSpecificationDistTags,
     toReferenceUri,
+    filterDataSourcesByType,
     updatePackageScript
 } from './project';
 export * from './types';
