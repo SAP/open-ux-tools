@@ -40,7 +40,6 @@ export interface BuildingBlockTypePromptsAnswer extends Answers {
 export interface BaseBuildingBlockPromptAnswer extends Answers {
     viewOrFragmentFile: string;
     aggregationPath: string;
-    id: string;
     entity: string;
     qualifier: string;
 }
