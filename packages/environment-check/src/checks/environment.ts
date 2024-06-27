@@ -16,8 +16,7 @@ import type {
     Endpoint
 } from '../types';
 import { Check, DevelopmentEnvironment, Extensions } from '../types';
-import { getInstalledExtensions, getCFCliToolVersion, getFioriGenVersion, getProcessVersions, isExtensionInstalledVsCode } from './get-installed';
-import { isFeatureEnabled } from '@sap-devx/feature-toggle-node';
+import { getInstalledExtensions, getCFCliToolVersion, getFioriGenVersion, getProcessVersions } from './get-installed';
 import { t } from '../i18n';
 
 /**
@@ -271,17 +270,4 @@ export async function checkEnvironment(options?: CheckEnvironmentOptions): Promi
         messages: logger.getMessages(),
         requestedChecks: requestedChecks
     };
-}
-
-/**
- * Check environment is running in an internal scenario.
- *
- * @returns true if running in an internal scenario, false otherwise
- */
-export async function isInternalUsage(): Promise<boolean> {
-    if (isAppStudio()) {
-        return await isFeatureEnabled('adaptation-project', 'internal');
-    }
-
-    return isExtensionInstalledVsCode('sap-ux-internal-extension');
 }

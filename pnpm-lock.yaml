@@ -205,12 +205,18 @@ importers:
 
   packages/adp-tooling:
     dependencies:
+      '@sap-devx/feature-toggle-node':
+        specifier: 2.0.2
+        version: 2.0.2
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
+      '@sap-ux/environment-check':
+        specifier: workspace:*
+        version: link:../environment-check
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common
@@ -8078,6 +8084,15 @@ packages:
       rollup: 3.29.1
     dev: true
 
+  /@sap-devx/feature-toggle-node@2.0.2:
+    resolution: {integrity: sha512-rSH/doW9t0JPz8zp3tIQuldpUNBUVJJr2gSBeSPOYbcPyMX7QTYRdMOHj5+0HNLWcOHuqHg74tJ78g4EFyF9Kw==}
+    engines: {node: '>=14.21.2'}
+    dependencies:
+      await-to-js: 3.0.0
+      node-cache: 5.1.2
+      parse-duration: 0.4.4
+    dev: false
+
   /@sap-devx/yeoman-ui-types@1.14.4:
     resolution: {integrity: sha512-HTgMqm3purAJUjirm6m57h8BaoF/Qx6wuXxiB9cy7ZilmriNHVx0aXJV514I1r8GMRdKKHCVixmhZW0/4L02hw==}
     dev: true
@@ -11258,6 +11273,11 @@ packages:
     dependencies:
       possible-typed-array-names: 1.0.0
     dev: true
+
+  /await-to-js@3.0.0:
+    resolution: {integrity: sha512-zJAaP9zxTcvTHRlejau3ZOY4V7SRpiByf3/dxx2uyKxxor19tpmpV2QRsTKikckwhaPmr2dVpxxMr7jOCYVp5g==}
+    engines: {node: '>=6.0.0'}
+    dev: false
 
   /axios-logger@2.8.0:
     resolution: {integrity: sha512-MWOBmbyAarx18rkI0xsuMDkK1oaqwROqeZjsfVgsD0Y7IGLzN3ZNZPpcnoCDKeajU0uLxjCs85186CeLU36bXg==}
@@ -18056,6 +18076,13 @@ packages:
     dev: false
     optional: true
 
+  /node-cache@5.1.2:
+    resolution: {integrity: sha512-t1QzWwnk4sjLWaQAS8CHgOJ+RAfmHpxFWmc36IWTiWHQfs0w5JDMBS1b1ZxQteo0vVVuWJvIUKHDkkeK7vIGCg==}
+    engines: {node: '>= 8.0.0'}
+    dependencies:
+      clone: 2.1.2
+    dev: false
+
   /node-dir@0.1.17:
     resolution: {integrity: sha512-tmPX422rYgofd4epzrNoOXiE8XFZYOcCq1vD7MAXCDO+O+zndlA2ztdKKMa+EeuBG5tHETpr4ml4RGgpqDCCAg==}
     engines: {node: '>= 0.10.5'}
@@ -18906,6 +18933,10 @@ packages:
     engines: {node: '>=6'}
     dependencies:
       callsites: 3.1.0
+
+  /parse-duration@0.4.4:
+    resolution: {integrity: sha512-KbAJuYGUhZkB9gotDiKLnZ7Z3VTacK3fgwmDdB6ZVDtJbMBT6MfLga0WJaYpPDu0mzqT0NgHtHDt5PY4l0nidg==}
+    dev: false
 
   /parse-json@4.0.0:
     resolution: {integrity: sha512-aOIos8bujGN93/8Ox/jPLh7RwVnPEysynVFE+fQZyg6jKELEHwzgKdLRFHUgXJL6kylijVSBC4BvN9OmsB48Rw==}
