@@ -1,4 +1,4 @@
-import type { UI5FlexLayer } from '@sap-ux/project-access';
+import type { UI5FlexLayer, ManifestNamespace } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp, BspApp } from '@sap-ux/ui5-config';
 import type { OperationsType } from '@sap-ux/axios-extension';
@@ -336,20 +336,9 @@ export interface NewModelData {
 }
 
 export interface DataSourceData {
-    projectData: AdpProjectData;
-    timestamp: number;
-    service: {
-        /** Data source identifier. */
-        name: string;
-        /** URI of the data source. */
-        uri: string;
-        /** Optional maximum age for the data source cache. */
-        maxAge?: number;
-        /** URI for the OData annotation source. */
-        annotationUri: string;
-    };
-    /** Dictionary mapping data source keys to their values. */
-    dataSourcesDictionary: { [key: string]: string };
+    variant: DescriptorVariant;
+    dataSources: Record<string, ManifestNamespace.DataSource>;
+    answers: ChangeDataSourceAnswers;
 }
 
 export interface InboundData {
@@ -390,7 +379,7 @@ export interface AdpProjectData {
     namespace: string;
     ui5Version: string;
     name: string;
-    layer: string;
+    layer: UI5FlexLayer;
     environment: string;
     safeMode: boolean;
     sourceSystem: string;
@@ -398,6 +387,19 @@ export interface AdpProjectData {
     reference: string;
     id: string;
 }
+
+export interface ChangeDataSourceAnswers {
+    /** Data Source identifier  */
+    id: string;
+    /** Data Source URI */
+    uri: string;
+    /** Data Source Max Age */
+    maxAge?: number;
+    /** Data Source Annotation URI */
+    annotationUri?: string;
+}
+
+export type DataSource = ManifestNamespace.DataSource & { dataSourceName: string; annotations: string[] };
 
 export interface CustomConfig {
     adp: {

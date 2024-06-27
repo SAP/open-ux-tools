@@ -48,6 +48,22 @@ async function enhanceListQuestion(
 }
 
 /**
+ * Indicates if the question is optional.
+ *
+ * @param question question to be checked
+ * @param answers rpeviously given answers
+ * @returns message of the question
+ */
+async function extractMessage<T extends Answers>(question: YUIQuestion<T>, answers: T) {
+    const message = isFunction(question.message) ? await question.message(answers) : question.message;
+    if (question.guiOptions && !question.guiOptions.mandatory) {
+        return `${message} (optional)`;
+    } else {
+        return message;
+    }
+}
+
+/**
  * Converts a YUI question to a simple prompts question.
  *
  * @param question YUI question to be converted
@@ -61,7 +77,7 @@ export async function convertQuestion<T extends Answers>(
     const prompt: PromptObject = {
         type: QUESTION_TYPE_MAP[question.type ?? 'input'] ?? question.type,
         name: question.name,
-        message: isFunction(question.message) ? await question.message(answers) : await question.message,
+        message: await extractMessage(question, answers),
         validate: async (value: unknown) =>
             isFunction(question.validate) ? await question.validate(value, answers) : question.validate ?? true,
         initial: () => (isFunction(question.default) ? question.default(answers) : question.default)

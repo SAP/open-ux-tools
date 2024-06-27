@@ -36,6 +36,7 @@ export {
     readUi5Yaml,
     getCapServiceName,
     toReferenceUri,
+    filterDataSourcesByType,
     clearCdsModuleCache,
     updatePackageScript
 } from './project';

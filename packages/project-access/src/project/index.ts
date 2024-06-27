@@ -14,6 +14,7 @@ export {
     toReferenceUri,
     clearCdsModuleCache
 } from './cap';
+export { filterDataSourcesByType } from './service';
 export { addPackageDevDependency, getNodeModulesPath } from './dependencies';
 export { getCapI18nFolderNames, getI18nPropertiesPaths } from './i18n';
 export {

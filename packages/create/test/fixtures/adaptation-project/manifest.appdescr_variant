@@ -1,0 +1,8 @@
+{
+  "fileName": "manifest",
+  "layer": "CUSTOMER_BASE",
+  "fileType": "appdescr_variant",
+  "reference": "ExampleApp",
+  "id": "customer.app.variant1",
+  "namespace": "apps/ExampleApp/appVariants/customer.app.variant1/"
+}
