@@ -749,6 +749,36 @@ Object {
 }
 `;
 
+exports[`Prompts submitAnswers Type "chart" 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Chart id=\\"id\\" metaPath=\\"/entity/qualifier\\" filterBar=\\"filterBar\\" selectionMode=\\"testSelectionMode\\" selectionChange=\\"true\\"/>
+        </content>
+    </Page>
+</mvc:View>"
+`;
+
+exports[`Prompts submitAnswers Type "filter-bar" 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:FilterBar id=\\"id\\" metaPath=\\"/entity/qualifier\\" search=\\"function2\\" filterChanged=\\"function1\\"/>
+        </content>
+    </Page>
+</mvc:View>"
+`;
+
+exports[`Prompts submitAnswers Type "table" 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Table id=\\"id\\" metaPath=\\"/entity/qualifier\\" filterBar=\\"filterBar\\" type=\\"table\\"/>
+        </content>
+    </Page>
+</mvc:View>"
+`;
+
 exports[`Prompts validateAnswers Type "chart", required fields validation 1`] = `
 Object {
   "aggregationPath": Object {

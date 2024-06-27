@@ -143,40 +143,39 @@ describe('Prompts', () => {
         });
     });
 
+    const types = [PromptsType.Table, PromptsType.Chart, PromptsType.FilterBar];
+    const baseAnswers = {
+        viewOrFragmentFile: join('webapp/ext/main/Main.view.xml'),
+        aggregationPath: "/mvc:View/*[local-name()='Page']/*[local-name()='content']",
+        id: 'id',
+        entity: 'test.entity',
+        bindingContextType: 'absolute' as 'absolute' | 'relative',
+        qualifier: 'qualifier'
+    };
+    const answers: { [key: string]: SupportedAnswers } = {
+        [PromptsType.Table]: {
+            ...baseAnswers,
+            filterBar: 'filterBar',
+            type: 'ResponsiveTable',
+            displayHeader: true,
+            tableHeaderText: 'header',
+            buildingBlockType: BuildingBlockType.Table
+        },
+        [PromptsType.Chart]: {
+            ...baseAnswers,
+            filterBar: 'filterBar',
+            selectionMode: 'testSelectionMode',
+            selectionChange: true,
+            buildingBlockType: BuildingBlockType.Chart
+        },
+        [PromptsType.FilterBar]: {
+            ...baseAnswers,
+            filterChanged: 'function1',
+            search: 'function2',
+            buildingBlockType: BuildingBlockType.FilterBar
+        }
+    };
     describe('getCodeSnippet', () => {
-        const types = [PromptsType.Table, PromptsType.Chart, PromptsType.FilterBar];
-        const baseAnswers = {
-            viewOrFragmentFile: join('webapp/ext/main/Main.view.xml'),
-            aggregationPath: 'aggregationPath',
-            id: 'id',
-            entity: 'test.entity',
-            bindingContextType: 'absolute' as 'absolute' | 'relative',
-            qualifier: 'qualifier'
-        };
-        const answers: { [key: string]: SupportedAnswers } = {
-            [PromptsType.Table]: {
-                ...baseAnswers,
-                filterBar: 'filterBar',
-                type: 'ResponsiveTable',
-                displayHeader: true,
-                tableHeaderText: 'header',
-                buildingBlockType: BuildingBlockType.Table
-            },
-            [PromptsType.Chart]: {
-                ...baseAnswers,
-                filterBar: 'filterBar',
-                selectionMode: 'testSelectionMode',
-                selectionChange: true,
-                buildingBlockType: BuildingBlockType.Chart
-            },
-            [PromptsType.FilterBar]: {
-                ...baseAnswers,
-                filterChanged: 'function1',
-                search: 'function2',
-                buildingBlockType: BuildingBlockType.FilterBar
-            }
-        };
-
         test.each(types)('Type "%s", get code snippet', async (type: PromptsType) => {
             const result = promptsAPI.getCodeSnippet(type, answers[type] as SupportedAnswers);
             expect(result).toMatchSnapshot();
@@ -185,6 +184,13 @@ describe('Prompts', () => {
         test('get code snippet with placeholders', async () => {
             const result = promptsAPI.getCodeSnippet(PromptsType.Table, {} as TablePromptsAnswer);
             expect(result).toMatchSnapshot();
+        });
+    });
+
+    describe('submitAnswers', () => {
+        test.each(types)('Type "%s"', async (type: PromptsType) => {
+            const result = promptsAPI.submitAnswers(type, answers[type] as SupportedAnswers);
+            expect(result.read(join(projectPath, baseAnswers.viewOrFragmentFile))).toMatchSnapshot();
         });
     });
 });
