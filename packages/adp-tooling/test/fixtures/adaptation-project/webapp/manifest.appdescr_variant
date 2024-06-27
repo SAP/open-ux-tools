@@ -26,17 +26,6 @@
       }
     },
     {
-      "changeType": "appdescr_ui5_addNewModelEnhanceWith",
-      "content": {
-        "modelId": "i18nLib",
-        "bundleUrl": "i18n/i18nLib.properties",
-        "supportedLocales": [
-          ""
-        ],
-        "fallbackLocale": ""
-      }
-    },
-    {
       "changeType": "appdescr_ui5_setMinUI5Version",
       "content": {
         "minUI5Version": "1.111.0"
