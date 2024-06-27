@@ -68,3 +68,5 @@ export interface FilterBarPromptsAnswer extends FilterBar, BaseBuildingBlockProm
     filterChanged?: string;
     search?: string;
 }
+
+export type SupportedAnswers = TablePromptsAnswer | ChartPromptsAnswer | FilterBarPromptsAnswer;

@@ -4,15 +4,13 @@ import { create as createStorage } from 'mem-fs';
 import type { BuildingBlockConfig } from '../types';
 import { ProjectProvider } from './utils';
 import type {
-    ChartPromptsAnswer,
     Prompts,
-    TablePromptsAnswer,
-    FilterBarPromptsAnswer,
     ValidationResults,
     SupportedPrompts,
     SupportedPromptsMap,
     NarrowPrompt,
-    PromptListChoices
+    PromptListChoices,
+    SupportedAnswers
 } from './types';
 import { PromptsType } from './types';
 import { generateBuildingBlock, getSerializedFileContent } from '..';
@@ -155,10 +153,7 @@ export class PromptsAPI {
      * @param answers The answers object
      * @returns The updated memfs editor instance
      */
-    public submitAnswers = <T extends TablePromptsAnswer | FilterBarPromptsAnswer | ChartPromptsAnswer>(
-        type: PromptsType,
-        answers: T
-    ): Editor => {
+    public submitAnswers = <T extends SupportedAnswers>(type: PromptsType, answers: T): Editor => {
         const configData = this.getBuildingBlockConfig(answers, type);
         if (!configData) {
             throw new Error(`No writer found for building block type: ${type}`);
@@ -173,10 +168,7 @@ export class PromptsAPI {
      * @param answers The answers object
      * @returns Code snippet content.
      */
-    public getCodeSnippet<T extends TablePromptsAnswer | FilterBarPromptsAnswer | ChartPromptsAnswer>(
-        type: PromptsType,
-        answers: T
-    ): string {
+    public getCodeSnippet<T extends SupportedAnswers>(type: PromptsType, answers: T): string {
         const configData = this.getBuildingBlockConfig(answers, type, true);
         return getSerializedFileContent(this.basePath, configData);
     }
@@ -189,7 +181,7 @@ export class PromptsAPI {
         return metaPath;
     }
 
-    private getBuildingBlockConfig<T extends TablePromptsAnswer | FilterBarPromptsAnswer | ChartPromptsAnswer>(
+    private getBuildingBlockConfig<T extends SupportedAnswers>(
         answers: T,
         type: PromptsType,
         placeholders = false

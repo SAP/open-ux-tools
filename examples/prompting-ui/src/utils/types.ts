@@ -6,9 +6,8 @@ import {
 } from '@sap-ux/fe-fpm-writer';
 // ToDo -> use directly PromptsType?
 import { PromptsType as SupportedBuildingBlocks } from '@sap-ux/fe-fpm-writer/dist/building-block/prompts/types/basic';
-import type { Answers } from 'inquirer';
 import { AddonActions } from '../addons/types';
-import type { DynamicChoices, PromptsGroup, PromptQuestion } from '@sap-ux/ui-prompting';
+import type { DynamicChoices } from '@sap-ux/ui-prompting';
 
 export type Actions =
     | GetQuestions
@@ -63,8 +62,6 @@ export interface GetQuestions {
     type: typeof GET_QUESTIONS;
     value: SupportedBuildingBlocks;
 }
-
-export type SupportedAnswers = TablePromptsAnswer | ChartPromptsAnswer | FilterBarPromptsAnswer;
 
 export interface SetTableQuestions extends Prompts<TablePromptsAnswer> {
     type: typeof SET_TABLE_QUESTIONS;
