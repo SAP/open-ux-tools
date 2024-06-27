@@ -331,6 +331,42 @@ Array [
 ]
 `;
 
+exports[`Prompts getCodeSnippet Type "chart", get code snippet 1`] = `
+"<macros:Chart
+    id=\\"id\\"
+    metaPath=\\"/entity/qualifier\\"
+    filterBar=\\"filterBar\\"
+    selectionMode=\\"testSelectionMode\\"
+    selectionChange=\\"true\\"
+/>"
+`;
+
+exports[`Prompts getCodeSnippet Type "filter-bar", get code snippet 1`] = `
+"<macros:FilterBar
+    id=\\"id\\"
+    metaPath=\\"/entity/qualifier\\"
+    search=\\"function2\\"
+    filterChanged=\\"function1\\"
+/>"
+`;
+
+exports[`Prompts getCodeSnippet Type "table", get code snippet 1`] = `
+"<macros:Table
+    id=\\"id\\"
+    metaPath=\\"/entity/qualifier\\"
+    filterBar=\\"filterBar\\"
+    type=\\"table\\"
+/>"
+`;
+
+exports[`Prompts getCodeSnippet get code snippet with placeholders 1`] = `
+"<macros:Table
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
+    type=\\"table\\"
+/>"
+`;
+
 exports[`Prompts getFilterBarBuildingBlockPrompts 1`] = `
 Object {
   "questions": Array [

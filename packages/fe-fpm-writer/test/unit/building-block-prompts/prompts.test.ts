@@ -2,7 +2,7 @@ import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { PromptsType, PromptsAPI } from '../../../src';
+import { PromptsType, PromptsAPI, TablePromptsAnswer, BuildingBlockType, SupportedAnswers } from '../../../src';
 import { ProjectProvider } from '../../../src/building-block/prompts/utils/project';
 
 jest.setTimeout(10000);
@@ -17,6 +17,11 @@ describe('Prompts', () => {
         const projectProvider = await ProjectProvider.createProject(projectPath);
         jest.spyOn(ProjectProvider, 'createProject').mockResolvedValue(projectProvider);
         promptsAPI = await PromptsAPI.init(projectPath, fs);
+    });
+
+    test('Init PromptsApi without fs', async () => {
+        const initPromptsApi = await PromptsAPI.init(projectPath);
+        expect(initPromptsApi.fs).toBeDefined();
     });
 
     test('getBuildingBlockTypePrompts', async () => {
@@ -135,6 +140,51 @@ describe('Prompts', () => {
                 );
                 expect(validation['id']).toEqual(result);
             });
+        });
+    });
+
+    describe('getCodeSnippet', () => {
+        const types = [PromptsType.Table, PromptsType.Chart, PromptsType.FilterBar];
+        const baseAnswers = {
+            viewOrFragmentFile: join('webapp/ext/main/Main.view.xml'),
+            aggregationPath: 'aggregationPath',
+            id: 'id',
+            entity: 'test.entity',
+            bindingContextType: 'absolute' as 'absolute' | 'relative',
+            qualifier: 'qualifier'
+        };
+        const answers: { [key: string]: SupportedAnswers } = {
+            [PromptsType.Table]: {
+                ...baseAnswers,
+                filterBar: 'filterBar',
+                type: 'ResponsiveTable',
+                displayHeader: true,
+                tableHeaderText: 'header',
+                buildingBlockType: BuildingBlockType.Table
+            },
+            [PromptsType.Chart]: {
+                ...baseAnswers,
+                filterBar: 'filterBar',
+                selectionMode: 'testSelectionMode',
+                selectionChange: true,
+                buildingBlockType: BuildingBlockType.Chart
+            },
+            [PromptsType.FilterBar]: {
+                ...baseAnswers,
+                filterChanged: 'function1',
+                search: 'function2',
+                buildingBlockType: BuildingBlockType.FilterBar
+            }
+        };
+
+        test.each(types)('Type "%s", get code snippet', async (type: PromptsType) => {
+            const result = promptsAPI.getCodeSnippet(type, answers[type] as SupportedAnswers);
+            expect(result).toMatchSnapshot();
+        });
+
+        test('get code snippet with placeholders', async () => {
+            const result = promptsAPI.getCodeSnippet(PromptsType.Table, {} as TablePromptsAnswer);
+            expect(result).toMatchSnapshot();
         });
     });
 });
