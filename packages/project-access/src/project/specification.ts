@@ -1,21 +1,21 @@
-import { join } from 'path';
-import { valid } from 'semver';
 import { existsSync } from 'fs';
 import { readdir } from 'fs/promises';
+import { join } from 'path';
+import { valid } from 'semver';
 import type { Logger } from '@sap-ux/logger';
-import { FileName, fioriToolsDirectory, moduleCacheRoot } from '../constants';
-import { readJSON, writeFile } from '../file';
-import type { Manifest } from '../types';
 import { deleteModule, getModule, loadModuleFromProject } from './module-loader';
 import { getWebappPath } from './ui5-config';
 import { getMinimumUI5Version } from './info';
+import { FileName, fioriToolsDirectory, moduleCacheRoot } from '../constants';
+import { readJSON, writeFile } from '../file';
+import type { Manifest, Package } from '../types';
 import { execNpmCommand } from '../command';
 
 const specificationDistTagPath = join(fioriToolsDirectory, FileName.SpecificationDistTags);
 
 /**
  * Loads and return specification from project or cache.
- * 1. attempts to load specification from project.
+ * 1. if package.json contains devDependency to specification, attempts to load from project.
  * 2. if not installed in project, attempts to load from cache.
  *
  * @param root - root path of the project/app
@@ -27,11 +27,14 @@ export async function getSpecification<T>(root: string, options?: { logger?: Log
     let specification: T;
     const logger = options?.logger;
     try {
-        specification = await loadModuleFromProject<T>(root, '@sap/ux-specification');
-        if (specification) {
-            logger?.debug(`Specification found in project '${root}'`);
-            // Early return if specification is found in project
-            return specification;
+        const packageJson = await readJSON<Package>(join(root, FileName.Package));
+        if (packageJson.devDependencies?.['@sap/ux-specification']) {
+            specification = await loadModuleFromProject<T>(root, '@sap/ux-specification');
+            if (specification) {
+                logger?.debug(`Specification found in project '${root}'`);
+                // Early return if specification is found in project
+                return specification;
+            }
         }
     } catch {
         logger?.debug(`Specification not found in project '${root}', trying to load from cache`);
@@ -72,15 +75,16 @@ export async function refreshSpecificationDistTags(options?: { logger?: Logger }
         });
         const distTags = JSON.parse(distTagsString);
         await writeFile(specificationDistTagPath, JSON.stringify(distTags, null, 4));
-        logger?.debug(`Refreshed specification dist-tags: ${JSON.stringify(distTags)}`);
         const uniqueVersions = new Set(Object.values(distTags));
 
         // Check if we have cached versions that are not required anymore
         const specificationCachePath = join(moduleCacheRoot, '@sap/ux-specification');
-        const removeExistingVersions = (await readdir(specificationCachePath, { withFileTypes: true }))
-            .filter((d) => d.isDirectory())
-            .filter((d) => !uniqueVersions.has(d.name))
-            .map((d) => d.name);
+        const removeExistingVersions = existsSync(specificationCachePath)
+            ? (await readdir(specificationCachePath, { withFileTypes: true }))
+                  .filter((d) => d.isDirectory())
+                  .filter((d) => !uniqueVersions.has(d.name))
+                  .map((d) => d.name)
+            : [];
         // Delete cached versions that are not required anymore
         for (const version of removeExistingVersions) {
             await deleteModule('@sap/ux-specification', version);
