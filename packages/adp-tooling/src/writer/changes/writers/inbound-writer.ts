@@ -5,7 +5,7 @@ import { DirName } from '@sap-ux/project-access';
 import {
     getParsedPropertyValue,
     findChangeWithInboundId,
-    getGenericChange,
+    getChange,
     writeChangeToFolder,
     writeChangeToFile
 } from '../../../base/change-utils';
@@ -104,7 +104,7 @@ export class InboundWriter implements IWriter<InboundData> {
 
         if (!changeWithInboundId) {
             const content = this.constructContent(answers);
-            const change = getGenericChange(data, content, ChangeType.CHANGE_INBOUND);
+            const change = getChange(data.projectData, data.timestamp, content, ChangeType.CHANGE_INBOUND);
 
             writeChangeToFolder(
                 this.projectPath,

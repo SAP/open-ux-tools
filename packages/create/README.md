@@ -21,6 +21,16 @@ npx sap-ux
 ## add
 Calling `sap-ux add` allows adding a feature to a project.
 
+## change
+Calling `sap-ux change` allows changing a feature of a project.
+
+### data-source
+Calling `sap-ux change data-source` allows replacing the OData Source of the base application in an adaptation project.  
+```sh
+sap-ux change data-source /path/to/adaptation-project
+```
+If the project path is not provided, the current working directory will be used.
+
 ## remove
 Calling `sap-ux remove` allows removing a feature to a project.
 
