@@ -1,6 +1,6 @@
 import path from 'path';
 import { readFileSync } from 'fs';
-import { Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
 import type { AdpWriterConfig } from '../../../src';
 import {
     writeTemplateToFolder,
@@ -108,15 +108,18 @@ describe('Project Utils', () => {
             expect(writeFilesSpy.mock.calls[0][0]).toEqual(path.join(projectPath, 'ui5.yaml'));
         });
 
-        it('should throw error when writing ui5.yaml fails', () => {
+        it('should throw error when writing ui5.yaml fails', async () => {
             const errMsg = 'Corrupted file.';
             mockFs.write.mockImplementation(() => {
                 throw new Error(errMsg);
             });
 
-            expect(async () => {
+            try {
                 await writeUI5Yaml(projectPath, data, mockFs as unknown as Editor);
-            }).rejects.toThrow(`Could not write ui5.yaml file. Reason: ${errMsg}`);
+                fail('Expected error to be thrown');
+            } catch (error) {
+                expect(error.message).toBe(`Could not write ui5.yaml file. Reason: ${errMsg}`);
+            }
         });
     });
 
@@ -142,15 +145,18 @@ describe('Project Utils', () => {
             expect(writeFilesSpy.mock.calls[0][0]).toEqual(path.join(projectPath, 'ui5-deploy.yaml'));
         });
 
-        it('should throw error when writing ui5-deploy.yaml fails', () => {
+        it('should throw error when writing ui5-deploy.yaml fails', async () => {
             const errMsg = 'Corrupted file.';
             mockFs.write.mockImplementation(() => {
                 throw new Error(errMsg);
             });
 
-            expect(async () => {
+            try {
                 await writeUI5DeployYaml(projectPath, config, mockFs as unknown as Editor);
-            }).rejects.toThrow(`Could not write ui5-deploy.yaml file. Reason: ${errMsg}`);
+                fail('Expected error to be thrown');
+            } catch (error) {
+                expect(error.message).toBe(`Could not write ui5-deploy.yaml file. Reason: ${errMsg}`);
+            }
         });
     });
 });

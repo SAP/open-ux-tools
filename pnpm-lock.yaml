@@ -154,6 +154,55 @@ importers:
         specifier: 1.6.8
         version: 1.6.8
 
+  packages/abap-deploy-config-writer:
+    dependencies:
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      '@sap-ux/system-access':
+        specifier: workspace:*
+        version: link:../system-access
+      '@sap-ux/ui5-config':
+        specifier: workspace:*
+        version: link:../ui5-config
+      fast-glob:
+        specifier: 3.3.1
+        version: 3.3.1
+      lodash:
+        specifier: 4.17.21
+        version: 4.17.21
+      mem-fs:
+        specifier: 2.1.0
+        version: 2.1.0
+      mem-fs-editor:
+        specifier: 9.4.0
+        version: 9.4.0(mem-fs@2.1.0)
+      semver:
+        specifier: 7.5.4
+        version: 7.5.4
+    devDependencies:
+      '@types/fs-extra':
+        specifier: 9.0.13
+        version: 9.0.13
+      '@types/lodash':
+        specifier: 4.14.202
+        version: 4.14.202
+      '@types/mem-fs':
+        specifier: 1.1.2
+        version: 1.1.2
+      '@types/mem-fs-editor':
+        specifier: 7.0.1
+        version: 7.0.1
+      '@types/semver':
+        specifier: 7.5.2
+        version: 7.5.2
+      fs-extra:
+        specifier: 10.0.0
+        version: 10.0.0
+
   packages/adp-tooling:
     dependencies:
       '@sap-ux/axios-extension':
@@ -1143,6 +1192,19 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      mem-fs:
+        specifier: 2.1.0
+        version: 2.1.0
+      mem-fs-editor:
+        specifier: 9.4.0
+        version: 9.4.0(mem-fs@2.1.0)
+    devDependencies:
+      '@types/mem-fs':
+        specifier: 1.1.2
+        version: 1.1.2
+      '@types/mem-fs-editor':
+        specifier: 7.0.1
+        version: 7.0.1
 
   packages/i18n:
     dependencies:
@@ -2140,9 +2202,6 @@ importers:
 
   packages/ui5-config:
     dependencies:
-      '@sap-ux/store':
-        specifier: workspace:*
-        version: link:../store
       '@sap-ux/yaml':
         specifier: workspace:*
         version: link:../yaml
@@ -2153,6 +2212,9 @@ importers:
         specifier: 7.5.4
         version: 7.5.4
     devDependencies:
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
@@ -9516,7 +9578,7 @@ packages:
       '@types/glob': 8.1.0
       '@types/json-schema': 7.0.12
       '@types/mem-fs': 1.1.2
-      '@types/node': 12.20.55
+      '@types/node': 18.11.9
       '@types/vinyl': 2.0.7
     dev: true
 

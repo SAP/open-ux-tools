@@ -109,7 +109,8 @@ describe('main', () => {
         expect(initOutlineSpy).toBeCalledWith(rta, sendActionMock);
     });
     test('init - rta exception', async () => {
-        initOutlineSpy.mockRejectedValue('error');
+        const error = new Error('Cannot init outline');
+        initOutlineSpy.mockRejectedValue(error);
         await init(rta);
         const callBackFn = spyPostMessage.mock.calls[0][1];
         const payload = {
@@ -139,6 +140,6 @@ describe('main', () => {
             payload: { saved: [], pending: [] }
         });
         expect(initOutlineSpy).toBeCalledWith(rta, sendActionMock);
-        expect(Log.error).toBeCalledWith('Error during initialization of Control Property Editor', 'error');
+        expect(Log.error).toBeCalledWith('Error during initialization of Control Property Editor', error);
     });
 });

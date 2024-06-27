@@ -3,14 +3,15 @@ import {
     formatSummary,
     showAdditionalInfoForOnPrem,
     summaryMessage,
-    validateBeforeDeploy
+    validateBeforeDeploy,
+    checkForCredentials
 } from '../../../src/base/validate';
 import { mockedProvider, mockedAdtService } from '../../__mocks__';
 import { green, red, yellow } from 'chalk';
 import { TransportChecksService } from '@sap-ux/axios-extension';
 import type { AxiosError } from '@sap-ux/axios-extension';
 import { t } from '@sap-ux/project-input-validator/src/i18n';
-import { isAppStudio, isOnPremiseDestination, listDestinations } from '@sap-ux/btp-utils';
+import { isAppStudio, isOnPremiseDestination, listDestinations, Authentication } from '@sap-ux/btp-utils';
 
 const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
 
@@ -480,6 +481,40 @@ describe('deploy-test validation', () => {
             }
         );
     });
+
+    describe('Check for credentials', () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+        const mockLogger = {
+            warn: jest.fn()
+        };
+        const noAuthMock = { Name: 'noAuth', Authentication: Authentication.NO_AUTHENTICATION };
+        const basicAuthMock = { Name: 'basicAuth', Authentication: Authentication.BASIC_AUTHENTICATION };
+        const samlAuthMock = { Name: 'samlAuth', Authentication: Authentication.SAML_ASSERTION };
+        const destinationsMock = {
+            'noAuth': noAuthMock,
+            'basicAuth': basicAuthMock,
+            'samlAuth': samlAuthMock
+        };
+        test.each([
+            ['SAMLAssertion - False', true, destinationsMock, samlAuthMock.Name, false],
+            ['NoAuthentication - True', true, destinationsMock, noAuthMock.Name, true],
+            ['BasicAuthentication - True', true, destinationsMock, basicAuthMock.Name, true],
+            ['If destination not provided', true, destinationsMock, '', true]
+        ])('%s', async (desc, isAppStudio, listDestinationsMock, destinationMock, expectedResult) => {
+            mockIsAppStudio.mockReturnValue(isAppStudio);
+            mockListDestinations.mockResolvedValue(listDestinationsMock);
+            const result = await checkForCredentials(destinationMock, mockLogger as any);
+            expect(result).toBe(expectedResult);
+            if (destinationMock === samlAuthMock.Name) {
+                expect(mockLogger.warn).toHaveBeenCalled();
+            } else {
+                expect(mockLogger.warn).not.toHaveBeenCalled();
+            }
+        });
+    });
+
     describe('Validate error does not show full stack trace', () => {
         jest.resetAllMocks();
         const mockLogger = {
