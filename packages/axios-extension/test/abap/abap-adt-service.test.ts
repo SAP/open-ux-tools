@@ -835,7 +835,7 @@ describe('Generator Service', () => {
             .post(
                 '/sap/bc/adt/rap/generators/webapi/published-ui-service?referencedObject=%2Fsap%2Fbc%2Fadt%2Fbo%2Fbehaviordefinitions%2Fi_banktp&corrNr=test_transport'
             )
-            .replyWithFile(200, join(__dirname, 'mockResponses/generateResponse.json'));
+            .replyWithFile(200, join(__dirname, 'mockResponses/generateResponse.xml'));
 
         const gen = await provider.getUiServiceGenerator({
             name: businessObjectName,
