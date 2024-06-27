@@ -105,13 +105,13 @@ describe('Questions', () => {
         expect(screen.getByDisplayValue('testName1')).toBeDefined();
         expect(onChangeFn).toHaveBeenCalled();
         expect(onChangeFn).toHaveBeenCalledWith(
-            { 'dependantPrompt': '', 'testStaticList': 'testValue1' },
+            { 'dependantPrompt': undefined, 'testStaticList': 'testValue1' },
             'testStaticList',
             'testValue1'
         );
         expect(onChoiceRequestFn).toHaveBeenCalled();
         expect(onChoiceRequestFn).toHaveBeenCalledWith(['dependantPrompt'], {
-            'dependantPrompt': '',
+            'dependantPrompt': undefined,
             'testStaticList': 'testValue1'
         });
     });
