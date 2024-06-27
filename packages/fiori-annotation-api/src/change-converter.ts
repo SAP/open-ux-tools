@@ -615,39 +615,50 @@ export class ChangeConverter {
                 this.annotationFileChanges.push(internalChange);
             }
         } else if (node?.type === ATTRIBUTE_TYPE) {
-            if (content.previousType === undefined && content.value.type === valueType) {
-                // attribute notation
-                const internalChange: UpdateAttributeValue = {
-                    type: UPDATE_ATTRIBUTE_VALUE,
-                    uri: file.uri,
-                    pointer: pointer,
-                    newValue
-                };
-                this.annotationFileChanges.push(internalChange);
-            } else if (content.value.type === Edm.Null) {
-                this.annotationFileChanges.push({
-                    type: DELETE_ATTRIBUTE,
-                    uri: file.uri,
-                    pointer: pointer
-                });
-                this.annotationFileChanges.push({
-                    type: INSERT_ELEMENT,
-                    uri: file.uri,
-                    target: targetName,
-                    pointer: pointer.split('/').slice(0, -2).join('/'),
-                    element: createElementNode({ name: Edm.Null })
-                });
-            } else {
-                // attribute notation
-                const internalChange: ReplaceAttribute = {
-                    type: REPLACE_ATTRIBUTE,
-                    uri: file.uri,
-                    pointer: pointer,
-                    newAttributeName: content.value.type,
-                    newAttributeValue: newValue
-                };
-                this.annotationFileChanges.push(internalChange);
-            }
+            this.convertUpdateExpressionForAttrributeType(file.uri, targetName, valueType, content, pointer, newValue);
+        }
+    }
+
+    private convertUpdateExpressionForAttrributeType(
+        fileUri: string,
+        targetName: string,
+        valueType: string | undefined,
+        content: ExpressionUpdateContent,
+        pointer: string,
+        newValue: string
+    ): void {
+        if (content.previousType === undefined && content.value.type === valueType) {
+            // attribute notation
+            const internalChange: UpdateAttributeValue = {
+                type: UPDATE_ATTRIBUTE_VALUE,
+                uri: fileUri,
+                pointer: pointer,
+                newValue
+            };
+            this.annotationFileChanges.push(internalChange);
+        } else if (content.value.type === Edm.Null) {
+            this.annotationFileChanges.push({
+                type: DELETE_ATTRIBUTE,
+                uri: fileUri,
+                pointer: pointer
+            });
+            this.annotationFileChanges.push({
+                type: INSERT_ELEMENT,
+                uri: fileUri,
+                target: targetName,
+                pointer: pointer.split('/').slice(0, -2).join('/'),
+                element: createElementNode({ name: Edm.Null })
+            });
+        } else {
+            // attribute notation
+            const internalChange: ReplaceAttribute = {
+                type: REPLACE_ATTRIBUTE,
+                uri: fileUri,
+                pointer: pointer,
+                newAttributeName: content.value.type,
+                newAttributeValue: newValue
+            };
+            this.annotationFileChanges.push(internalChange);
         }
     }
 
