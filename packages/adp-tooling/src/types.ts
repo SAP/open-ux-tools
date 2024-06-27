@@ -35,6 +35,8 @@ export interface OnpremApp {
     title?: string;
     /** Optional: Application variant change content. */
     content?: Content[];
+    /** Optional: Description about i18n.properties. */
+    i18nDescription?: string;
 }
 
 export interface CloudApp extends OnpremApp {
