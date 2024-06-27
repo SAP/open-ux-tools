@@ -157,8 +157,8 @@ describe('Prompts', () => {
             ...baseAnswers,
             filterBar: 'filterBar',
             type: 'ResponsiveTable',
-            displayHeader: true,
-            tableHeaderText: 'header',
+            headerVisible: true,
+            header: 'header',
             buildingBlockType: BuildingBlockType.Table
         },
         [PromptsType.Chart]: {

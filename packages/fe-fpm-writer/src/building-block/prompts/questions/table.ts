@@ -42,7 +42,7 @@ export async function getTableBuildingBlockPrompts(
         id: 'Table',
         type: 'ResponsiveTable',
         selectionMode: 'Single',
-        displayHeader: true,
+        headerVisible: true,
         variantManagement: 'None',
         readOnly: false,
         enableAutoColumnWidth: false,
@@ -128,7 +128,7 @@ export async function getTableBuildingBlockPrompts(
                 default: defaultAnswers.selectionMode,
                 groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
             },
-            getBooleanPrompt('displayHeader', t('displayHeader'), defaultAnswers.displayHeader, {
+            getBooleanPrompt('headerVisible', t('headerVisible'), defaultAnswers.headerVisible, {
                 groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
             }),
             {

@@ -135,7 +135,7 @@
                     "none": "None"
                 }
             },
-            "displayHeader": "Display Header",
+            "headerVisible": "Display Header",
             "header": { "message": "Table Header Text", "validation": "Enter a Table Header Text" },
             "personalization": {
                 "message": "Table Personalization",

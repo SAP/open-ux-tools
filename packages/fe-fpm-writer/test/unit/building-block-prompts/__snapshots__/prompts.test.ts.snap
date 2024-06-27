@@ -355,6 +355,8 @@ exports[`Prompts getCodeSnippet Type "table", get code snippet 1`] = `
     id=\\"id\\"
     metaPath=\\"/entity/qualifier\\"
     filterBar=\\"filterBar\\"
+    header=\\"header\\"
+    headerVisible=\\"true\\"
     type=\\"table\\"
 />"
 `;
@@ -586,7 +588,7 @@ Object {
       "default": true,
       "groupId": "tableVisualizationProperties",
       "message": "Display Header",
-      "name": "displayHeader",
+      "name": "headerVisible",
       "selectType": "static",
       "type": "list",
     },
@@ -773,7 +775,7 @@ exports[`Prompts submitAnswers Type "table" 1`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <Page title=\\"Main\\">
         <content>
-            <macros:Table id=\\"id\\" metaPath=\\"/entity/qualifier\\" filterBar=\\"filterBar\\" type=\\"table\\"/>
+            <macros:Table id=\\"id\\" metaPath=\\"/entity/qualifier\\" filterBar=\\"filterBar\\" header=\\"header\\" headerVisible=\\"true\\" type=\\"table\\"/>
         </content>
     </Page>
 </mvc:View>"
@@ -853,9 +855,6 @@ Object {
     "errorMessage": "Please select a value",
     "isValid": false,
   },
-  "displayHeader": Object {
-    "isValid": true,
-  },
   "enableAutoColumnWidth": Object {
     "isValid": true,
   },
@@ -876,6 +875,9 @@ Object {
     "isValid": true,
   },
   "header": Object {
+    "isValid": true,
+  },
+  "headerVisible": Object {
     "isValid": true,
   },
   "id": Object {

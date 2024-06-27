@@ -48,25 +48,12 @@ export interface BaseBuildingBlockPromptAnswer extends Answers {
 }
 
 // ToDo - not sure if should extend from Table
-export interface TablePromptsAnswer extends Table, BaseBuildingBlockPromptAnswer {
-    filterBar?: string;
-    selectionChange?: string;
-    type?: 'ResponsiveTable' | 'GridTable';
-    displayHeader?: boolean;
-    tableHeaderText?: string;
-}
+export interface TablePromptsAnswer extends Table, BaseBuildingBlockPromptAnswer {}
 
 // ToDo - not sure if should extend from Chart
-export interface ChartPromptsAnswer extends Chart, BaseBuildingBlockPromptAnswer {
-    filterBar?: string;
-    selectionMode?: string;
-    selectionChange?: string;
-}
+export interface ChartPromptsAnswer extends Chart, BaseBuildingBlockPromptAnswer {}
 
 // ToDo - not sure if should extend from FilterBar
-export interface FilterBarPromptsAnswer extends FilterBar, BaseBuildingBlockPromptAnswer {
-    filterChanged?: string;
-    search?: string;
-}
+export interface FilterBarPromptsAnswer extends FilterBar, BaseBuildingBlockPromptAnswer {}
 
 export type SupportedAnswers = TablePromptsAnswer | ChartPromptsAnswer | FilterBarPromptsAnswer;
