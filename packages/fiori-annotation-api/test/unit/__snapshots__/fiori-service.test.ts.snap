@@ -1624,12 +1624,12 @@ using from '../../db/schema';
 using from '../../srv/common';
 
 
-annotate IncidentService.Incidents.composition with @(
+annotate service.Incidents.composition with @(
     UI.LineItem : [
     ]
 );
 
-annotate IncidentService.Incidents.composition with {
+annotate service.Incidents.composition with {
     name @Common.Text : 'Something'
 };
 
