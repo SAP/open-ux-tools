@@ -42,8 +42,6 @@ export interface BaseBuildingBlockPromptAnswer extends Answers {
     aggregationPath: string;
     id: string;
     entity: string;
-    // ToDi - obsolete?
-    bindingContextType: 'relative' | 'absolute';
     qualifier: string;
 }
 

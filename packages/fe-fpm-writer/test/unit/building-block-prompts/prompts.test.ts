@@ -149,7 +149,6 @@ describe('Prompts', () => {
         aggregationPath: "/mvc:View/*[local-name()='Page']/*[local-name()='content']",
         id: 'id',
         entity: 'test.entity',
-        bindingContextType: 'absolute' as 'absolute' | 'relative',
         qualifier: 'qualifier'
     };
     const answers: { [key: string]: SupportedAnswers } = {
