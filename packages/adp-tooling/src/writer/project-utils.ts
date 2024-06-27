@@ -12,12 +12,14 @@ import {
 
 import { UI5Config } from '@sap-ux/ui5-config';
 
+type PackageJSON = { name: string; version: string };
+
 /**
  * Retrieves the package name and version from the package.json file located two levels up the directory tree.
  *
- * @returns {Object} An object containing the `name` and `version` of the package.
+ * @returns {PackageJSON} An object containing the `name` and `version` of the package.
  */
-export function getPackageJSONInfo(): { name: string; version: string } {
+export function getPackageJSONInfo(): PackageJSON {
     const defaultPackage = {
         name: '@sap-ux/adp-tooling',
         version: 'NO_VERSION_FOUND'
