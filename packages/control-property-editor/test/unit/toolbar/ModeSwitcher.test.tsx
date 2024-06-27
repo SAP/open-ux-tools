@@ -8,7 +8,7 @@ import { ModeSwitcher } from '../../../src/toolbar/ModeSwitcher';
 import { mockResizeObserver } from '../../utils/utils';
 import { initIcons } from '@sap-ux/ui-components';
 import { appLoaded, setAppMode } from '@sap-ux-private/control-property-editor-common';
-import { initialState, adpState } from '../../../src/slice';
+import { initialState, adpState, setProjectScenario } from '../../../src/slice';
 
 beforeAll(() => {
     mockResizeObserver();
@@ -40,7 +40,8 @@ test('renders ModeSwitcher', () => {
 });
 
 test('renders ModeSwitcher with changed button names for ADP', () => {
-    const { dispatch, store } = render(<ModeSwitcher />, { initialState: adpState });
+    const { dispatch, store } = render(<ModeSwitcher />, { initialState });
+    store.dispatch(setProjectScenario('ADAPTATION_PROJECT'));
     store.dispatch(appLoaded());
     dispatch.mockClear();
 

@@ -140,30 +140,6 @@ export const initialState: SliceState = {
     canSave: false,
     isAppLoading: true
 };
-export const adpState: SliceState = {
-    deviceType: DeviceType.Desktop,
-    scale: 1.0,
-    selectedControl: undefined,
-    outline: [],
-    filterQuery: filterInitOptions,
-    scenario: scenario.UiAdaptation,
-    isAdpProject: true,
-    icons: [],
-    changes: {
-        controls: {},
-        pending: [],
-        saved: [],
-        pendingChangeIds: []
-    },
-    dialogMessage: undefined,
-    appMode: 'adaptation',
-    changeStack: {
-        canUndo: false,
-        canRedo: false
-    },
-    canSave: false,
-    isAppLoading: true
-};
 const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
     name: 'app',
     initialState,
