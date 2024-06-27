@@ -9,7 +9,7 @@ import { create as createStorage } from 'mem-fs';
 import type { AdpPreviewConfig } from '@sap-ux/adp-tooling';
 
 /**
- * Add the cards-editor-config command.
+ * Adds a command to add the virtual html files hosted by the preview middleware to the file system.
  *
  * @param cmd - commander command for adding navigation inbounds config command
  */
@@ -27,7 +27,7 @@ export function addLocalHtmlFiles(cmd: Command): void {
 }
 
 /**
- * Adds an cards editor config to an app. To prevent overwriting existing inbounds will be checked.
+ * Adds the virtual html files hosted by the preview middleware to the file system.
  *
  * @param basePath - path to application root
  * @param simulate - if true, do not write but just show what would be change; otherwise write

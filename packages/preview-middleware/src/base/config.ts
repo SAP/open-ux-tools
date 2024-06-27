@@ -82,7 +82,7 @@ export const DEFAULT_PATH = '/test/flp.html';
 export const DEFAULT_INTENT = {
     object: 'app',
     action: 'preview'
-} as Intent;
+} as Readonly<Intent>;
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
