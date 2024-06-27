@@ -1,5 +1,18 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.1.7
+
+### Patch Changes
+
+-   42b2f459: Fix compositon targets for CDS
+
+## 0.1.6
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.22.3
+-   @sap-ux/cds-odata-annotation-converter@0.2.9
+
 ## 0.1.5
 
 ### Patch Changes

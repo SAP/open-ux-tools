@@ -1,5 +1,30 @@
 # @sap-ux/cap-config-writer
 
+## 0.5.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.22.3
+-   @sap-ux/odata-service-inquirer@0.3.7
+
+## 0.5.2
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.3.6
+
+## 0.5.1
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.3.5
+
+## 0.5.0
+
+### Minor Changes
+
+-   200894d7: Add support for passing launch text for Cap projects to generate README files
+
 ## 0.4.1
 
 ### Patch Changes
