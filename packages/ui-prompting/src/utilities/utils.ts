@@ -36,7 +36,7 @@ export function updateAnswers(
     const dependantPromptNames = getDependantQuestions(questions, name);
     dependantPromptNames?.length &&
         dependantPromptNames.forEach((dependantName) => {
-            updatedAnswers = setAnswer(answers, dependantName, undefined);
+            updatedAnswers = setAnswer(updatedAnswers, dependantName, undefined);
         });
     return updatedAnswers;
 }
