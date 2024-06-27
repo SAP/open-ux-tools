@@ -8,7 +8,8 @@ module.exports = {
             options: {
                 optimizationLevel: 3
             }
-        }
+        },
+        './addons/register.ts'
     ],
     webpackFinal: async (config) => {
         config.module.rules.push({
