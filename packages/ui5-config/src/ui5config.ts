@@ -393,6 +393,78 @@ export class UI5Config {
     }
 
     /**
+     * Adds the Cloud Foundry deployment task to the config.
+     *
+     * @param archiveName the name of the archive that is to be generated as part of the CF bundling
+     * @param addModulesTask if true the modules task is added to the deployment configuration
+     * @param addTranspileTask if true the transpile task is added to the deployment configuration
+     * @returns this UI5Config instance
+     * @memberof UI5Config
+     */
+    public addCloudFoundryDeployTask(archiveName: string, addModulesTask = false, addTranspileTask = false): this {
+        this.document.appendTo({
+            path: 'builder.resources.excludes',
+            value: '/test/**'
+        });
+        this.document.appendTo({
+            path: 'builder.resources.excludes',
+            value: '/localService/**'
+        });
+
+        this.document.appendTo({
+            path: 'builder.customTasks',
+            value: {
+                name: 'webide-extension-task-updateManifestJson',
+                afterTask: 'replaceVersion',
+                configuration: {
+                    appFolder: 'webapp',
+                    destDir: 'dist'
+                }
+            }
+        });
+
+        this.document.appendTo({
+            path: 'builder.customTasks',
+            value: {
+                name: 'ui5-task-zipper',
+                afterTask: 'generateCachebusterInfo',
+                configuration: {
+                    archiveName,
+                    additionalFiles: ['xs-app.json']
+                }
+            }
+        });
+
+        if (addModulesTask) {
+            this.document.appendTo({
+                path: 'builder.customTasks',
+                value: {
+                    name: 'ui5-tooling-modules-task',
+                    afterTask: 'replaceVersion',
+                    configuration: {}
+                }
+            });
+        }
+
+        if (addTranspileTask) {
+            this.document.appendTo({
+                path: 'builder.customTasks',
+                value: {
+                    name: 'ui5-tooling-transpile-task',
+                    afterTask: 'replaceVersion',
+                    configuration: {
+                        debug: true,
+                        removeConsoleStatements: true,
+                        transpileAsync: true,
+                        transpileTypeScript: true
+                    }
+                }
+            });
+        }
+        return this;
+    }
+
+    /**
      * Remove a middleware form the UI5 config.
      *
      * @param name name of the middleware that is to be removed

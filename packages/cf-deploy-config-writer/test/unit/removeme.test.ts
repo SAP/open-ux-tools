@@ -34,5 +34,15 @@ describe('CF Writer', () => {
             fs.commit(() => {});
             expect(true).toEqual(true);
         });
+        test('Generate deployment configs -standalone', async () => {
+            const fs = await generate(
+                '/Users/i313149/Documents/tools-suite-test/cap-fiori-mta-standalone',
+                { addManagedApprouter: true, destination: 'fiori-default-srv-api' },
+                undefined,
+                logger
+            );
+            fs.commit(() => {});
+            expect(true).toEqual(true);
+        });
     });
 });

@@ -28,12 +28,10 @@ export type MTADestinationType = Destination & {
 };
 export interface CFWriterConfig {
     addManagedApprouter?: boolean;
-    overwrite?: boolean;
-    destination: string;
+    destination?: string;
     apiHubConfig?: ApiHubConfig;
     addMTADestination?: boolean;
 }
-
 export interface CFConfig extends CFWriterConfig {
     appPath: string;
     capRoot: string;
@@ -45,12 +43,11 @@ export interface CFConfig extends CFWriterConfig {
     servicePath: string;
     firstServicePathSegment: string;
     appId: string;
-    mtaPath?: string;
     isFullUrlDest: boolean;
     destinationAuthType: Authentication;
     cloudServiceName?: string;
-    addMTADestination?: boolean;
     mtaId?: string;
+    isMtaRoot: boolean;
 }
 
 export const enum ApiHubType {
@@ -61,4 +58,24 @@ export const enum ApiHubType {
 export interface ApiHubConfig {
     apiHubKey: string;
     apiHubType: ApiHubType;
+}
+
+export interface XSAppRoute {
+    source?: string;
+    target?: string;
+    destination?: string;
+    csrfProtection?: boolean;
+    scope?: string;
+    service?: string;
+    endpoint?: string;
+    authenticationType?: string;
+    dependency?: string;
+}
+
+export type XSAppRouteProperties = keyof XSAppRoute;
+
+export interface XSAppDocument {
+    authenticationMethod?: string;
+    routes?: XSAppRoute[];
+    welcomeFile?: string;
 }

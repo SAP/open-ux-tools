@@ -663,7 +663,7 @@ export class MtaConfig {
      * @see https://help.sap.com/docs/SAP_HANA_PLATFORM/4505d0bdaf4948449b7f7379d24d0f0d/51ac525c78244282919029d8f5e2e35d.html?locale=en-US&version=2.0.00
      */
     public async addMtaExtensionConfig(
-        instanceDestName: string,
+        instanceDestName: string | undefined,
         destUrl: string,
         headerConfig: { key: string; value: string }
     ): Promise<void> {

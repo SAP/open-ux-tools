@@ -1,2 +1,2 @@
-export * from './cf-config';
+export * from './mta-config';
 export * from './cf-writer';

@@ -3,6 +3,7 @@ import { t } from './i18n';
 
 const cannotFindBinary = (bin: string, pkg: string): string => t('error.cannotFindBinary', { bin, pkg });
 
+export const WelcomeFile = 'welcomeFile';
 export const XSAppJson = 'xs-app.json';
 export const NoAuthType = 'NoAuthentication';
 export const MTABuildResult = 'build-result';
@@ -22,6 +23,9 @@ export const CDSExecutable = 'cds';
 export const CDSPackage = '@sap/cds-dk';
 export const MTAExecutable = 'mta';
 export const MTAPackage = 'mta';
+export const MTAVersion = '^1.2.27';
+export const RimrafVersion = '^5.0.5';
+export const Rimraf = 'rimraf';
 export const CDSAddMtaParams = ['add', 'mta'];
 export const MTAAPIDestination = {
     Name: ResourceMTADestination,
@@ -82,12 +86,12 @@ export const ServiceAPIRequires = {
 
 export const CDSBinNotFound = cannotFindBinary(CDSExecutable, CDSPackage);
 export const MTABinNotFound = cannotFindBinary(MTAExecutable, MTAPackage);
-export const BuildScript =
+export const UI5DeployBuildScript =
     'ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo';
-export const BuildMTAScript = 'rimraf resources mta_archives && mbt build --mtar archive';
+export const MTABuildScript = 'rimraf resources mta_archives && mbt build --mtar archive';
 export const AppDeployMTAScript = (args: string[] = []): string =>
     `fiori cfDeploy${args.length > 0 ? ` ${args.join(' ')}` : ''}`;
-export const UndeployMTAScript = (MTA_ID: string): string =>
-    `cf undeploy ${MTA_ID} --delete-services --delete-service-keys --delete-service-brokers`;
 export const RootDeployMTAScript = (args: string[] = []): string =>
     `cf deploy mta_archives/archive.mtar ${args.length > 0 ? `${args.join(' ')} ` : ''}--retries 1`;
+export const UndeployMTAScript = (mtaId: string): string =>
+    `cf undeploy ${mtaId} --delete-services --delete-service-keys --delete-service-brokers`;
