@@ -56,7 +56,9 @@ const objectBasedQuestions: PromptQuestion[] = [
     {
         name: 'test.dummy',
         message: 'test -> dummy',
-        type: 'input'
+        type: 'list',
+        choices,
+        dependantPromptNames: ['test.dummy2', 'test2.dummy', 'test3', 'test4.child.dummy']
     },
     {
         name: 'test.dummy2',
@@ -67,8 +69,7 @@ const objectBasedQuestions: PromptQuestion[] = [
     {
         name: 'test2.dummy',
         message: 'test2 -> dummy',
-        type: 'list',
-        choices
+        type: 'input'
     },
     {
         name: 'test3',
@@ -79,7 +80,7 @@ const objectBasedQuestions: PromptQuestion[] = [
         name: 'test4.child.dummy',
         message: 'test4 -> child -> dummy',
         type: 'input'
-    },
+    }
 ];
 export const ObjectBasedQuestions = (): JSX.Element => {
     const [saveValues] = useStorage();

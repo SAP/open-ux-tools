@@ -1,6 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Question } from '../Question/Question';
-import { getDependantQuestions, getDynamicQuestions, updateAnswer, useDynamicQuestionsEffect } from '../../utilities';
+import {
+    getAnswer,
+    getDependantQuestions,
+    getDynamicQuestions,
+    updateAnswers,
+    useDynamicQuestionsEffect
+} from '../../utilities';
 import { useRequestedChoices } from '../../utilities';
 import { QuestionGroup } from '../QuestionGroup';
 import type {
@@ -69,8 +75,9 @@ export const Questions = (props: QuestionsProps) => {
     // Change callback
     const onAnswerChange = useCallback(
         (name: string, answer?: AnswerValue) => {
-            if ((localAnswers[name] || '') !== answer) {
-                const updatedAnswers = updateAnswer(localAnswers, questions, name, answer);
+            const oldAnswer = getAnswer(localAnswers, name) || '';
+            if (oldAnswer !== answer) {
+                const updatedAnswers = updateAnswers(localAnswers, questions, name, answer);
                 setLocalAnswers(updatedAnswers);
                 // Callback with onchange
                 onChange?.(updatedAnswers, name, answer);

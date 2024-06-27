@@ -1,3 +1,4 @@
+import { Answers } from 'inquirer';
 import type { PromptQuestion, AnswerValue } from '../types';
 
 export function getDependantQuestions(
@@ -24,21 +25,48 @@ export function getDynamicQuestions(questions: PromptQuestion[]): string[] {
     return dynamicQuestions.map((question) => question.name);
 }
 
-export function updateAnswer(
+export function updateAnswers(
     answers: Record<string, AnswerValue>,
     questions: PromptQuestion[],
     name: string,
     value?: AnswerValue
 ): Record<string, AnswerValue> {
-    const updatedAnswers = {
-        ...answers,
-        [name]: value
-    };
+    // ToDo - not fully sure about spread here
+    let updatedAnswers = setAnswer({ ...answers }, name, value);
     const dependantPromptNames = getDependantQuestions(questions, name);
     dependantPromptNames?.length &&
         dependantPromptNames.forEach((dependantName) => {
-            // ToDo '' => undefined?
-            updatedAnswers[dependantName] = '';
+            updatedAnswers = setAnswer(answers, dependantName, undefined);
         });
     return updatedAnswers;
+}
+
+export function setAnswer(answers: Answers, path: string, value: unknown): Answers {
+    const keys = path.split('.');
+    let current = answers;
+
+    for (let i = 0; i < keys.length - 1; i++) {
+        const key = keys[i];
+        if (current && typeof current === 'object' && !(key in current)) {
+            current[key] = {};
+        }
+        current = current[key];
+    }
+
+    current[keys[keys.length - 1]] = value;
+    return answers;
+}
+
+export function getAnswer(answers: Answers, path: string): unknown {
+    const keys = path.split('.');
+    let current = answers;
+
+    for (const key of keys) {
+        if (typeof current !== 'object' || !(key in current)) {
+            return undefined;
+        }
+        current = current[key];
+    }
+
+    return current;
 }
