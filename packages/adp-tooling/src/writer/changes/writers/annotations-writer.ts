@@ -4,7 +4,6 @@ import type { Editor } from 'mem-fs-editor';
 import { ChangeType } from '../../../types';
 import type { IWriter, AnnotationsData } from '../../../types';
 import { getChange, writeAnnotationChange } from '../../../base/change-utils';
-import { getChange, writeAnnotationChange } from '../../../base/change-utils';
 
 /**
  * Handles the creation and writing of annotations data changes for a project.

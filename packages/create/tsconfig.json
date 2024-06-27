@@ -44,12 +44,6 @@
     },
     {
       "path": "../ui5-config"
-    },
-    {
-      "path": "../system-access"
-    },
-    {
-      "path": "../ui5-config"
     }
   ]
 }
