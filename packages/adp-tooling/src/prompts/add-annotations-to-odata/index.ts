@@ -6,8 +6,8 @@ import { filterDataSourcesByType } from '@sap-ux/project-access';
 import { isNotEmptyString } from '../../base/helper';
 
 enum AnnotationFileSelectType {
-    ExistingFile = 0,
-    NewEmptyFile = 1
+    ExistingFile = 1,
+    NewEmptyFile = 2
 }
 
 /**
@@ -42,7 +42,7 @@ export function getPrompts(
             name: 'fileSelectOption',
             message: t('prompts.fileSelectOptionLabel'),
             choices: annotationFileSelectOptions,
-            default: annotationFileSelectOptions[0].value,
+            default: 0,
             guiOptions: {
                 mandatory: true,
                 hint: t('prompts.fileSelectOptionTooltip')
