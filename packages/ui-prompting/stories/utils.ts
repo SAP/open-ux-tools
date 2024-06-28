@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { Answers } from 'inquirer';
 
 const storageKey = 'storybook-answers';
@@ -8,8 +7,5 @@ export function saveValues(answers: Answers) {
 }
 
 export function useStorage(): [(answers: Answers) => void] {
-    useEffect(() => {
-        saveValues({});
-    }, []);
     return [saveValues];
 }
