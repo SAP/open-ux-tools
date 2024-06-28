@@ -22,6 +22,12 @@ const props: SelectProps = {
 describe('Select', () => {
     initIcons();
 
+    const simulateComboboxValueInput = (input: HTMLElement, value: string): void => {
+        fireEvent.focus(input);
+        fireEvent.input(input, { target: { value: value } });
+        fireEvent.blur(input);
+    };
+
     it('Render select', () => {
         render(<Select {...props} />);
         expect(document.getElementsByClassName('.ts-ComboBox')).toBeDefined();
@@ -164,14 +170,16 @@ describe('Select', () => {
         expect(screen.getByDisplayValue('testKey0')).toBeDefined();
     });
 
-    it.skip('Test allowCreate property onChange - options available but enter a new value', () => {
+    it('Test allowCreate property onChange - options available but enter a new value', () => {
+        const value = 'new value';
         const onChangeFn = jest.fn();
         render(<Select {...props} creation={{ inputPlaceholder: 'test input placeholder' }} onChange={onChangeFn} />);
         const input = screen.getByRole('combobox');
         expect(input).toBeDefined();
-        fireEvent.change(input, { target: { value: 'new value' } });
-        expect(screen.getByDisplayValue('new value')).toBeDefined();
+        simulateComboboxValueInput(input, value);
+        expect(screen.getByDisplayValue(value)).toBeDefined();
         expect(onChangeFn).toHaveBeenCalled();
+        expect(onChangeFn).toHaveBeenCalledWith('select', value);
     });
 
     it('Test creatable input property required', () => {
