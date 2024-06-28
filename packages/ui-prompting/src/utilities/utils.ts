@@ -41,6 +41,10 @@ export function updateAnswers(
     return updatedAnswers;
 }
 
+function isValidObjectKey(key: string): boolean {
+    return key !== '__proto__' && key !== 'constructor' && key !== 'prototype';
+}
+
 export function setAnswer(answers: Answers, path: string, value: unknown): Answers {
     const keys = path.split('.');
     let current = answers;
@@ -54,7 +58,7 @@ export function setAnswer(answers: Answers, path: string, value: unknown): Answe
     }
 
     const key = keys[keys.length - 1];
-    if (key !== '__proto__' && key !== 'constructor' && key !== 'prototype') {
+    if (isValidObjectKey(key)) {
         current[key] = value;
     }
     return answers;
