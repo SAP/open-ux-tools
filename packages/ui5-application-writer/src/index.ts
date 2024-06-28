@@ -55,8 +55,8 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     ui5Config.addFioriToolsAppReloadMiddleware();
 
     // ui5-local.yaml
-    const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
     if (isEdmxProjectType) {
+        const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
         // write ui5-local.yaml only for non-CAP applications
         const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
         ui5LocalConfig.addUI5Framework(
