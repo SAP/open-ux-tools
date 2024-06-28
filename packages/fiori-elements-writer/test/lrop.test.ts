@@ -14,13 +14,12 @@ import {
     updatePackageJSONDependencyToUseLocalPath,
     v4TemplateSettingsTreeTable
 } from './common';
-import { ServiceType, OdataService } from '@sap-ux/odata-service-writer';
+import { ServiceType, type OdataService } from '@sap-ux/odata-service-writer';
 
 const TEST_NAME = 'lropTemplates';
 if (debug?.enabled) {
     jest.setTimeout(360000);
 }
-
 
 jest.mock('read-pkg-up', () => ({
     sync: jest.fn().mockReturnValue({
@@ -356,5 +355,4 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             await projectChecks(testPath, config, debug?.debugFull);
         });
     });
-
 });

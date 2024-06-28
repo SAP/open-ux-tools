@@ -1,7 +1,7 @@
 import { generate } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
-import { Ui5App } from '../src';
+import type { Ui5App } from '../src';
 
 describe('UI5 templates', () => {
     const debug = !!process.env['UX_DEBUG'];
