@@ -5,13 +5,15 @@ import { existsSync, readFileSync, readdirSync } from 'fs';
 
 import { DirName } from '@sap-ux/project-access';
 import type {
-    AdpProjectData,
     AnnotationsData,
     ChangeType,
+    DescriptorVariant,
     InboundContent,
     ManifestChangeProperties,
     PropertyValueType
 } from '../types';
+
+export type ChangeMetadata = Pick<DescriptorVariant, 'reference' | 'layer' | 'namespace'>;
 
 type InboundChangeData = { filePath: string; changeWithInboundId: InboundChange | undefined };
 interface InboundChange extends ManifestChangeProperties {
@@ -187,29 +189,26 @@ export function findChangeWithInboundId(projectPath: string, inboundId: string):
 /**
  * Constructs a generic change object based on provided parameters.
  *
- * @param data - The base data associated with the change, including project data and timestamp.
- * @param data.projectData - The project specific data.
- * @param data.timestamp - The timestamp.
+ * @param {DescriptorVariant} variant - The app descriptor variant.
+ * @param {number} timestamp - The timestamp.
  * @param {object} content - The content of the change to be applied.
  * @param {ChangeType} changeType - The type of the change.
- * @returns An object representing the change.
+ * @returns - An object representing the change
  */
-export function getGenericChange(
-    data: { projectData: AdpProjectData; timestamp: number },
+export function getChange(
+    { reference, layer, namespace }: ChangeMetadata,
+    timestamp: number,
     content: object,
     changeType: ChangeType
 ): ManifestChangeProperties {
-    const { projectData, timestamp } = data;
-    const fileName = `id_${timestamp}`;
-
     return {
-        fileName,
-        namespace: path.posix.join(projectData.namespace, DirName.Changes),
-        layer: projectData.layer,
+        fileName: `id_${timestamp}`,
+        namespace: path.posix.join(namespace, DirName.Changes),
+        layer,
         fileType: 'change',
         creation: new Date(timestamp).toISOString(),
         packageName: '$TMP',
-        reference: projectData.id,
+        reference,
         support: { generator: '@sap-ux/adp-tooling' },
         changeType,
         content

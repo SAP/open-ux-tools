@@ -83,7 +83,7 @@ function parseControlMetaModel(controlLibMetadata: SchemaForApiJsonFiles, contro
     const selectedControlMetadata = (controlLibMetadata.symbols ?? []).find((control) => control.name === controlName);
     if (selectedControlMetadata) {
         // base type info of control is available on property 'extends'
-        controlInfo.baseType = selectedControlMetadata.extends;
+        controlInfo.baseType = selectedControlMetadata.extends as string | undefined;
         controlInfo.doc = selectedControlMetadata.description ?? '';
         const properties: (Ui5Property & PropertiesInfo)[] | undefined = (
             selectedControlMetadata['ui5-metadata'] as Ui5Metadata
