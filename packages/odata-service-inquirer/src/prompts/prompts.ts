@@ -6,15 +6,18 @@ import {
     DatasourceType,
     promptNames,
     type DatasourceTypePromptOptions,
-    type OdataServicePromptOptions,
     type OdataServiceAnswers,
+    type OdataServicePromptOptions,
     type OdataServiceQuestion
 } from '../types';
-import { getMetadataFileQuestion } from './datasources/metadata-file';
-import { getDatasourceTypeChoices } from './prompt-helpers';
 import { getLocalCapProjectPrompts } from './datasources/cap-project/questions';
-import LoggerHelper from './logger-helper';
+import { getMetadataFileQuestion } from './datasources/metadata-file';
+import { getAbapOnPremQuestions } from './datasources/sap-system/abap-on-prem/questions';
+import type { NewSystemAnswers, SystemSelectionAnswer } from './datasources/sap-system/questions';
+import { newSystemChoiceValue } from './datasources/sap-system/questions';
 import { getServiceUrlQuestions } from './datasources/service-url/questions';
+import LoggerHelper from './logger-helper';
+import { getDatasourceTypeChoices } from './prompt-helpers';
 
 /**
  * Get the prompts for the OData service inquirer.
@@ -106,6 +109,24 @@ async function getDatasourceTypeConditionalQuestions(
         ...(withCondition(
             getServiceUrlQuestions(promptOptions) as Question[],
             (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.odataServiceUrl
+        ) as OdataServiceQuestion[])
+    );
+
+    /* conditionalQuestions.push(
+        ...(withCondition(
+            getAbapOnPremQuestions() as Question[],
+            (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.sapSystem
+        ) as OdataServiceQuestion[])
+    ); */
+
+    // Temp integration into Service Inquirer new system questions
+    conditionalQuestions.push(
+        ...(withCondition(
+            getAbapOnPremQuestions() as Question[],
+            (answers: Answers) =>
+                (answers as OdataServiceAnswers).datasourceType === DatasourceType.sapSystem &&
+                (answers as SystemSelectionAnswer).system === newSystemChoiceValue &&
+                (answers as NewSystemAnswers).newSystemType === 'abapOnPrem'
         ) as OdataServiceQuestion[])
     );
 

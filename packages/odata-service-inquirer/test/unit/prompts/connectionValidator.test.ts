@@ -1,12 +1,12 @@
 import * as axiosExtension from '@sap-ux/axios-extension';
-import { ODataService } from '@sap-ux/axios-extension';
+import { ODataService, ServiceProvider, AxiosRequestConfig } from '@sap-ux/axios-extension';
 import type { AxiosResponse } from 'axios';
 import { AxiosError } from 'axios';
-import { ErrorHandler } from '../../../../src/error-handler/error-handler';
-import { GUIDED_ANSWERS_LAUNCH_CMD_ID } from '../../../../src/error-handler/help/help-topics';
-import { GUIDED_ANSWERS_ICON } from '../../../../src/error-handler/help/images';
-import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
-import { ConnectionValidator } from '../../../../src/prompts/datasources/service-url/connectionValidator';
+import { ErrorHandler } from '../../../src/error-handler/error-handler';
+import { GUIDED_ANSWERS_LAUNCH_CMD_ID } from '../../../src/error-handler/help/help-topics';
+import { GUIDED_ANSWERS_ICON } from '../../../src/error-handler/help/images';
+import { initI18nOdataServiceInquirer, t } from '../../../src/i18n';
+import { ConnectionValidator } from '../../../src/prompts/connectionValidator';
 
 /**
  * Workaround to allow spyOn
@@ -108,16 +108,21 @@ describe('ConnectionValidator', () => {
             authRequired: true
         });
 
-        const createServiceSpy = jest.spyOn(axiosExtension, 'createServiceForUrl');
+        const createProviderSpy = jest.spyOn(axiosExtension, 'create');
+        const serviceProviderSpy = jest.spyOn(ServiceProvider.prototype, 'service');
+
         jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
 
         expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toBe(true);
-        const params = createServiceSpy.mock.calls[0][1]?.params;
+        const params = (createProviderSpy.mock.calls[0][0] as AxiosRequestConfig).params;
         expect((params as URLSearchParams).get('sap-client')).toBe('010');
-        expect(createServiceSpy).toHaveBeenCalledWith(
-            'https://somehost:1234/some/path/to/service/',
-            expect.objectContaining({ auth: { username: 'user1', password: 'password1' } })
+        expect(createProviderSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+                baseURL: 'https://somehost:1234',
+                auth: { username: 'user1', password: 'password1' }
+            })
         );
+        expect(serviceProviderSpy).toHaveBeenCalledWith('/some/path/to/service/');
 
         // Dont authenticate if the url is empty
         getODataServiceSpy.mockReset();
@@ -178,32 +183,41 @@ describe('ConnectionValidator', () => {
 
     test('should ignore cert errors if specified', async () => {
         const serviceUrl = 'https://localhost:8080';
-        const createServiceSpy = jest.spyOn(axiosExtension, 'createServiceForUrl');
+        const createProviderSpy = jest.spyOn(axiosExtension, 'create');
         jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
         const validator = new ConnectionValidator();
-        expect(await validator.validateUrl(serviceUrl, true)).toBe(true);
-        expect(createServiceSpy).toHaveBeenCalledWith(
-            'https://localhost:8080/',
-            expect.objectContaining({ ignoreCertErrors: true })
+        expect(await validator.validateUrl(serviceUrl, { ignoreCertError: true })).toBe(true);
+        expect(createProviderSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+                baseURL: 'https://localhost:8080',
+                ignoreCertErrors: true
+            })
         );
     });
 
     test('should pass additional params to axios-extension', async () => {
         mockIsAppStudio = true;
         const serviceUrl = 'https://somehost:1234/some/path?sap-client=010';
-
-        const createServiceSpy = jest
-            .spyOn(axiosExtension, 'createServiceForUrl')
-            .mockReturnValueOnce({} as ODataService);
+        const createProviderSpy = jest.spyOn(axiosExtension, 'create');
+        const serviceProviderSpy = jest.spyOn(ServiceProvider.prototype, 'service').mockReturnValueOnce({} as ODataService);;
         jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce('');
+
         const validator = new ConnectionValidator();
         await validator.validateUrl(serviceUrl);
 
-        const params = createServiceSpy.mock.calls[0][1]?.params;
+        const params = (createProviderSpy.mock.calls[0][0] as AxiosRequestConfig).params;
+        expect((params as URLSearchParams).get('sap-client')).toBe('010');
         expect((params as URLSearchParams).get('saml2')).toBe('disabled');
-        expect(createServiceSpy).toHaveBeenCalledWith(
-            'https://somehost:1234/some/path/',
-            expect.objectContaining({ ignoreCertErrors: false, cookies: '' })
+
+        expect(createProviderSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+                baseURL: 'https://somehost:1234',
+                ignoreCertErrors: false,
+                cookies: ''
+            })
+        );
+        expect(serviceProviderSpy).toHaveBeenCalledWith(
+            '/some/path/'
         );
     });
 
@@ -254,7 +268,7 @@ describe('ConnectionValidator', () => {
         expect(validator.validity).toEqual({ authRequired: true, reachable: true, urlFormat: true });
         // Change the response to 200 and force re-validation of the same url
         jest.spyOn(ODataService.prototype, 'get').mockRejectedValueOnce(newAxiosErrorWithStatus(200));
-        await validator.validateUrl('https://example.com/service', undefined, true);
+        await validator.validateUrl('https://example.com/service', { forceReValidation: true });
         expect(validator.validity).toEqual({
             authRequired: false,
             authenticated: true,

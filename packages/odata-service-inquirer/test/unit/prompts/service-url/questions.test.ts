@@ -14,7 +14,7 @@ const connectionValidatorMock = {
     validateUrl: validateUrlMockTrue,
     validateAuth: validateAuthTrue
 };
-jest.mock('../../../../src/prompts/datasources/service-url/connectionValidator', () => {
+jest.mock('../../../../src/prompts/connectionValidator', () => {
     return {
         ConnectionValidator: jest.fn().mockImplementation(() => connectionValidatorMock)
     };
@@ -227,7 +227,10 @@ describe('Service URL prompts', () => {
         expect(
             await (ignorableCertErrorsPrompt?.validate as Function)(true, { [promptNames.serviceUrl]: serviceUrl })
         ).toBe(true);
-        expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith(serviceUrl, true, true);
+        expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith(serviceUrl, {
+            forceReValidation: true,
+            ignoreCertError: true
+        });
         expect(serviceValidatorSpy).toHaveBeenCalledWith(
             serviceUrl,
             expect.objectContaining(connectionValidatorMock),
@@ -246,7 +249,10 @@ describe('Service URL prompts', () => {
         expect(
             await (ignorableCertErrorsPrompt?.validate as Function)(true, { [promptNames.serviceUrl]: serviceUrl })
         ).toBe('A connection error message');
-        expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith(serviceUrl, true, true);
+        expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith(serviceUrl, {
+            forceReValidation: true,
+            ignoreCertError: true
+        });
         // Should not validate service
         expect(serviceValidatorSpy).not.toHaveBeenCalled();
 
@@ -299,7 +305,10 @@ describe('Service URL prompts', () => {
         ).toBe(false);
 
         expect(loggerSpy).toHaveBeenCalledWith(t('prompts.validationMessages.warningCertificateValidationDisabled'));
-        expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith(serviceUrl, true, true);
+        expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith(serviceUrl, {
+            forceReValidation: true,
+            ignoreCertError: true
+        });
         expect(serviceValidatorSpy).toHaveBeenCalledWith(
             serviceUrl,
             expect.objectContaining(connectionValidatorMock),
@@ -322,7 +331,10 @@ describe('Service URL prompts', () => {
                 [serviceUrlInternalPromptNames.ignoreCertError]: true
             })
         ).toBe(false);
-        expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith(serviceUrl, true, true);
+        expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith(serviceUrl, {
+            forceReValidation: true,
+            ignoreCertError: true
+        });
 
         connectionValidatorMock.validity = {
             urlFormat: true,
@@ -373,7 +385,7 @@ describe('Service URL prompts', () => {
 
         let serviceValidatorSpy = jest.spyOn(serviceUrlValidators, 'validateService').mockResolvedValue(true);
         expect(await (passwordPrompt?.validate as Function)(password, { serviceUrl, username })).toBe(true);
-        expect(connectionValidatorMock.validateAuth).toHaveBeenCalledWith(serviceUrl, username, password, undefined);
+        expect(connectionValidatorMock.validateAuth).toHaveBeenCalledWith(serviceUrl, username, password, { ignoreCertError: undefined });
         expect(serviceValidatorSpy).toHaveBeenCalledWith(
             serviceUrl,
             expect.objectContaining(connectionValidatorMock),

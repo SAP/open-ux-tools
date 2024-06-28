@@ -71,6 +71,7 @@ export interface FileBrowserQuestion<A extends Answers = Answers> extends BaseIn
 export interface ListQuestion<A extends Answers = Answers> extends BaseListQuestion<A> {
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
+    additionalMessages?: YUIQuestion['additionalMessages'];
 }
 
 export interface ConfirmQuestion<A extends Answers = Answers> extends BaseConfirmQuestion<A> {

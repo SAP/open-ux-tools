@@ -36,6 +36,8 @@
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/project-input-validator": "workspace:*",
+        "@sap-ux/store": "workspace:*",
         "axios": "1.6.8",
         "axios-logger": "2.8.0",
         "fast-xml-parser": "4.2.7",

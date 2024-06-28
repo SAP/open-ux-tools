@@ -1,9 +1,10 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
-import type { Annotations } from '@sap-ux/axios-extension';
+import type { Annotations, ServiceProvider } from '@sap-ux/axios-extension';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { CdsVersionInfo } from '@sap-ux/project-access';
 import type { ListChoiceOptions } from 'inquirer';
+import type { BackendSystem } from '../../store/src';
 
 /**
  * This file contains types that are exported by the module and are needed for consumers using the APIs `prompt` and `getPrompts`.
@@ -18,6 +19,8 @@ export enum DatasourceType {
     metadataFile = 'metadataFile',
     projectSpecificDestination = 'projectSpecificDestination'
 }
+
+export type SapSystemType = 'abapOnPrem' | 'abapOnBtp';
 
 /**
  * Answers returned by the OdataServiceInquirer prompt API.
@@ -65,19 +68,25 @@ export interface OdataServiceAnswers {
     sapClient?: string;
 
     /**
-     * User name for the service where basic authentication is required.
-     */
-    username?: string;
-
-    /**
-     * Password for the service where basic authentication is required.
-     */
-    password?: string;
-
-    /**
      * Metadata file path
      */
     metadataFilePath?: string;
+
+    /**
+     * The connected system will allow downstream consumers to access the connected system without creating new connections.
+     *
+     */
+    connectedSystem?: {
+        /**
+         * Convienence property to pass the connected system
+         */
+        serviceProvider: ServiceProvider;
+
+        /**
+         * The persistable backend system representation of the connected service provider
+         */
+        backendSystem?: BackendSystem;
+    };
 }
 
 /**
@@ -179,6 +188,13 @@ export type DatasourceTypePromptOptions = {
      * Include the `projectSpecificDestination` option in the datasource type prompt
      */
     includeProjectSpecificDest?: boolean;
+};
+
+export type SapSystemPromptOptions = {
+    /**
+     * Restricts the returned service choices to those that match the specified odata version.
+     */
+    requiredOdataVersion?: OdataVersion;
 };
 
 export type MetadataPromptOptions = {

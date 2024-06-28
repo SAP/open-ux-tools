@@ -166,6 +166,65 @@ describe('getQuestions', () => {
                 "validate": [Function],
                 "when": [Function],
               },
+              {
+                "guiOptions": {
+                  "breadcrumb": true,
+                  "hint": "Enter the URL of the SAP System",
+                  "mandatory": true,
+                },
+                "message": "System URL",
+                "name": "systemUrl",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "guiOptions": {
+                  "breadcrumb": "SAP Client",
+                },
+                "message": "SAP client (leave empty for default)",
+                "name": "sapClient",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "guiOptions": {
+                  "mandatory": true,
+                },
+                "message": "System username",
+                "name": "abapSystemUsername",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "guiOptions": {
+                  "mandatory": true,
+                },
+                "guiType": "login",
+                "mask": "*",
+                "message": "System password",
+                "name": "abapSystemPassword",
+                "type": "password",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "additionalMessages": [Function],
+                "choices": [Function],
+                "default": [Function],
+                "guiOptions": {
+                  "applyDefaultWhenDirty": true,
+                  "breadcrumb": "Service",
+                  "mandatory": true,
+                },
+                "message": "Service name",
+                "name": "systemService",
+                "type": "list",
+                "validate": [Function],
+                "when": [Function],
+              },
             ]
         `);
 
