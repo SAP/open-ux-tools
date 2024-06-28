@@ -113,7 +113,7 @@ exports[`config generatePreviewFiles minimum settings 1`] = `
 
 exports[`config generatePreviewFiles multi-app setup e.g. in CAP 1`] = `
 Object {
-  "webapp/test/flpSandbox.thml": Object {
+  "test/flpSandbox.thml": Object {
     "contents": "<!DOCTYPE HTML>
 <html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
@@ -152,7 +152,7 @@ Object {
                     }
                 }
             },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/apps/other-simple-app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
+            applications:  {\\"simpleApp-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/apps/simple-app\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/apps/other-app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
         };
     </script>
 
@@ -160,15 +160,15 @@ Object {
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
-        data-sap-ui-theme=\\"sap_horizon_dark\\"
+        data-sap-ui-theme=\\"sap_horizon\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
         data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"writeConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
-        data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/apps/other-simple-app\\"}'
+        data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"/apps/simple-app\\",\\"test.fe.v2.other\\":\\"/apps/other-app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
