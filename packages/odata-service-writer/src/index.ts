@@ -148,7 +148,8 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         updatePackageJson(paths.packageJson, fs, !!service.metadata);
     }
 
-    if (ui5LocalConfigPath && ui5LocalConfig) {
+    if (!serviceIsCds(service) && ui5LocalConfigPath && ui5LocalConfig) {
+        // write ui5 local yaml if service type is not CDS
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     }
 
