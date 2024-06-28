@@ -111,5 +111,21 @@ describe('config', () => {
             const fs = await generatePreviewFiles(basePath, config);
             expect(fs.dump(basePath)).toMatchSnapshot();
         });
+
+        test('multi-app setup e.g. in CAP', async () => {
+            const config = {
+                flp: {
+                    path: '/test/flpSandbox.thml',
+                    apps: [
+                        {
+                            local: '../multi-app',
+                            target: '/apps/other-simple-app'
+                        }
+                    ]
+                }
+            } satisfies MiddlewareConfig;
+            const fs = await generatePreviewFiles(basePath, config);
+            expect(fs.dump(basePath)).toMatchSnapshot();
+        });
     });
 });

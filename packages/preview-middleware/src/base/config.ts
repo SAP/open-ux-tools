@@ -371,6 +371,15 @@ export async function generatePreviewFiles(
         },
         logger
     );
+    if (flpConfig.apps.length > 0) {
+        for (const app of flpConfig.apps) {
+            if (app.local) {
+                const appWebappPath = await getWebappPath(join(basePath, app.local), fs);
+                const appManifest = (await fs.readJSON(join(appWebappPath, 'manifest.json'))) as unknown as Manifest;
+                await addApp(flpTemplConfig, appManifest, app, logger);
+            }
+        }
+    }
     fs.write(join(webappPath, flpConfig.path), render(flpTemplate, flpTemplConfig));
 
     // optional test files
