@@ -40,6 +40,10 @@ export interface ListPromptQuestionCreationProps {
  */
 export interface ListPromptQuestion<T extends Answers = Answers> extends ListQuestion<T>, ListBasePromptQuestion {
     /**
+     * Mandatory name used in the building block config
+     */
+    name: string;
+    /**
      * Dependant prompt names which should be updated after value change of current prompt.
      */
     dependantPromptNames?: string[];
@@ -53,7 +57,12 @@ export interface ListPromptQuestion<T extends Answers = Answers> extends ListQue
  * Represents a question prompt for input with simple input visualization.
  * Combines properties of ListQuestion and BasePromptQuestion.
  */
-export interface InputPromptQuestion<T extends Answers = Answers> extends InputQuestion<T>, BasePromptQuestion {}
+export interface InputPromptQuestion<T extends Answers = Answers> extends InputQuestion<T>, BasePromptQuestion {
+    /**
+     * Mandatory name used in the building block config
+     */
+    name: string;
+}
 
 /**
  * Represents a question prompt for checkbox.
@@ -61,7 +70,12 @@ export interface InputPromptQuestion<T extends Answers = Answers> extends InputQ
  */
 export interface CheckboxPromptQuestion<T extends Answers = Answers>
     extends CheckboxQuestion<T>,
-        ListBasePromptQuestion {}
+        ListBasePromptQuestion {
+    /**
+     * Mandatory name used in the building block config
+     */
+    name: string;
+}
 
 export type PromptQuestion<T extends Answers = Answers> =
     | ListPromptQuestion<T>
