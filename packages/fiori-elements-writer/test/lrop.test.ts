@@ -118,6 +118,10 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                         addTests: true
                     }
                 }),
+                app: {
+                    ...feBaseConfig('lrop_v4_addtests_cds').app,
+                    projectType: 'CAPNodejs'
+                },
                 service: {
                     ...v4Service,
                     metadata: undefined,
