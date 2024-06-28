@@ -1,8 +1,15 @@
 import type { Command } from 'commander';
-import type { AdpPreviewConfig, DescriptorVariant, PromptDefaults } from '@sap-ux/adp-tooling';
-import { generateChange, ChangeType, getPromptsForChangeDataSource, getManifest } from '@sap-ux/adp-tooling';
+import type { AdpPreviewConfig, PromptDefaults } from '@sap-ux/adp-tooling';
+import {
+    generateChange,
+    ChangeType,
+    getPromptsForChangeDataSource,
+    getManifest,
+    isCFEnvironment,
+    getVariant
+} from '@sap-ux/adp-tooling';
 import { getLogger, traceChanges } from '../../tracing';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync } from 'fs';
 import { join, isAbsolute } from 'path';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { promptYUIQuestions } from '../../common';
@@ -46,8 +53,9 @@ async function changeDataSource(
         if ((await getAppType(basePath)) !== 'Fiori Adaptation') {
             throw new Error('This command can only be used for an Adaptation Project');
         }
-        checkEnvironment(basePath);
-
+        if (isCFEnvironment(basePath)) {
+            throw new Error('Changing data source is not supported for CF projects.');
+        }
         const variant = getVariant(basePath);
         const ui5ConfigPath = isAbsolute(yamlPath) ? yamlPath : join(basePath, yamlPath);
         const ui5Conf = await UI5Config.newInstance(readFileSync(ui5ConfigPath, 'utf-8'));
@@ -85,31 +93,5 @@ async function changeDataSource(
             return;
         }
         logger.debug(error);
-    }
-}
-
-/**
- * Get the app descriptor variant.
- *
- * @param {string} basePath - The path to the adaptation project.
- * @returns {DescriptorVariant} The app descriptor variant.
- */
-function getVariant(basePath: string): DescriptorVariant {
-    return JSON.parse(readFileSync(join(basePath, 'webapp', 'manifest.appdescr_variant'), 'utf-8'));
-}
-
-/**
- * Check if the project is a CF project.
- *
- * @param {string} basePath - The path to the adaptation project.
- * @throws {Error} If the project is a CF project.
- */
-function checkEnvironment(basePath: string): void {
-    const configJsonPath = join(basePath, '.adp', 'config.json');
-    if (existsSync(configJsonPath)) {
-        const config = JSON.parse(readFileSync(configJsonPath, 'utf-8'));
-        if (config.environment === 'CF') {
-            throw new Error('Changing data source is not supported for CF projects.');
-        }
     }
 }
