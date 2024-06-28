@@ -45,7 +45,14 @@ import {
     type AnnotationFileChange,
     INSERT_ELEMENT,
     UPDATE_ATTRIBUTE_VALUE,
-    DELETE_ELEMENT
+    DELETE_ELEMENT,
+    MOVE_ELEMENT,
+    INSERT_ATTRIBUTE,
+    REPLACE_ELEMENT,
+    REPLACE_ATTRIBUTE,
+    DELETE_ATTRIBUTE,
+    INSERT_TARGET,
+    REPLACE_TEXT
 } from '../types';
 import { ApiError, ApiErrorCode } from '../error';
 
@@ -168,7 +175,8 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                     {
                         name: metadataNamespace,
                         uri: metadataURI,
-                        type: 'reference'
+                        type: 'reference',
+                        alias: 'Metadata'
                     }
                 ],
                 targets: [],
@@ -294,7 +302,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
         change: AnnotationFileChange
     ): void {
         switch (change.type) {
-            case 'insert-target': {
+            case INSERT_TARGET: {
                 const pointer = getSchemaPointer(document.ast);
                 throwIf(!pointer, `Could not process change ${change.type} ${change.uri} ${change.target}`);
                 const element = createElementNode({
@@ -317,6 +325,11 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                     !pointer,
                     `Could not process change ${change.type} ${change.uri} ${change.pointer} ${change.element.name}`
                 );
+                const fullPointer = pointer + convertPointer(document.annotationFile, change.pointer);
+                const element = getNodeFromPointer(document.ast, fullPointer);
+                if (element?.type === 'XMLElement' && element.name === Edm.Annotations) {
+                    this.markElementInsertion(targetChildReferences, fullPointer, element);
+                }
                 writer.addChange({
                     type: INSERT_ELEMENT,
                     pointer: pointer + convertPointer(document.annotationFile, change.pointer),
@@ -325,7 +338,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                 });
                 break;
             }
-            case 'delete-element': {
+            case DELETE_ELEMENT: {
                 const pointer = getSchemaPointer(document.ast);
                 throwIf(!pointer, `Could not process change ${change.type} ${change.uri} ${change.pointer} `);
                 const fullPointer = pointer + convertPointer(document.annotationFile, change.pointer);
@@ -344,7 +357,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                 });
                 break;
             }
-            case 'delete-attribute': {
+            case DELETE_ATTRIBUTE: {
                 const pointer = getSchemaPointer(document.ast);
                 throwIf(!pointer, `Could not process change ${change.type} ${change.uri} ${change.pointer} `);
                 writer.addChange({
@@ -363,7 +376,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                 });
                 break;
             }
-            case 'replace-attribute': {
+            case REPLACE_ATTRIBUTE: {
                 const pointer = getSchemaPointer(document.ast);
                 throwIf(!pointer, `Could not process change ${change.type} ${change.uri} ${change.pointer} `);
                 writer.addChange({
@@ -378,7 +391,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                 });
                 break;
             }
-            case 'replace-element': {
+            case REPLACE_ELEMENT: {
                 const pointer = getSchemaPointer(document.ast);
                 throwIf(!pointer, `Could not process change ${change.type} ${change.uri} ${change.pointer} `);
                 writer.addChange({
@@ -388,7 +401,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                 });
                 break;
             }
-            case 'replace-element-content': {
+            case REPLACE_ELEMENT_CONTENT: {
                 const pointer = getSchemaPointer(document.ast);
                 throwIf(!pointer, `Could not process change ${change.type} ${change.uri} ${change.pointer} `);
                 writer.addChange({
@@ -398,7 +411,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                 });
                 break;
             }
-            case 'insert-attribute': {
+            case INSERT_ATTRIBUTE: {
                 const pointer = getSchemaPointer(document.ast);
                 throwIf(
                     !pointer,
@@ -412,24 +425,60 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                 });
                 break;
             }
-            case 'move-element': {
-                const pointer = getSchemaPointer(document.ast);
-                if (pointer) {
-                    const ptr = pointer + convertPointer(document.annotationFile, change.pointer);
-                    writer?.addChange({
+            case MOVE_ELEMENT: {
+                const schemaPointer = getSchemaPointer(document.ast);
+                if (schemaPointer) {
+                    const pointer = schemaPointer + convertPointer(document.annotationFile, change.pointer);
+                    writer.addChange({
                         type: 'move-collection-value',
-                        pointer: ptr,
+                        pointer,
                         index: change.index,
-                        fromPointers: change.fromPointers.map((ptr) => {
-                            return pointer + convertPointer(document.annotationFile, ptr);
-                        })
+                        fromPointers: change.fromPointers.map(
+                            (fromPointer) => schemaPointer + convertPointer(document.annotationFile, fromPointer)
+                        )
                     });
                 }
                 break;
             }
+            case REPLACE_TEXT:
+                {
+                    const schemaPointer = getSchemaPointer(document.ast);
+                    if (schemaPointer) {
+                        const pointer = schemaPointer + convertPointer(document.annotationFile, change.pointer);
+                        writer.addChange({
+                            type: REPLACE_ELEMENT_CONTENT,
+                            // ends with textContents/<index>/text we need to get the parent element
+                            pointer: pointer.split('/').slice(0, -3).join('/'),
+                            newValue: [change.text]
+                        });
+                    }
+                }
+                break;
             default:
                 break;
         }
+    }
+
+    private getTargetChildReferences(
+        targetChildReferences: Map<string, Set<string>>,
+        parentPointer: string,
+        element: XMLElement
+    ): Set<string> {
+        const result = targetChildReferences.get(parentPointer);
+
+        if (result) {
+            return result;
+        }
+
+        const pointerSet = new Set<string>();
+        for (let index = 0; index < element.subElements.length; index++) {
+            const child = element.subElements[index];
+            if (child.type === 'XMLElement') {
+                pointerSet.add(`${parentPointer}/subElements/${index}`);
+            }
+        }
+        targetChildReferences.set(parentPointer, pointerSet);
+        return pointerSet;
     }
 
     private markElementDeletion(
@@ -438,18 +487,17 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
         element: XMLElement
     ): void {
         const parentPointer = fullPointer.split('/').slice(0, -2).join('/');
-        if (!targetChildReferences.has(parentPointer)) {
-            const pointerSet = new Set<string>();
-            for (let index = 0; index < element.subElements.length; index++) {
-                const child = element.subElements[index];
-                if (child.type === 'XMLElement') {
-                    pointerSet.add(`${parentPointer}/subElements/${index}`);
-                }
-            }
-            targetChildReferences.set(parentPointer, pointerSet);
-        }
-        const annotationReferences = targetChildReferences.get(parentPointer);
-        annotationReferences?.delete(fullPointer);
+        const annotationReferences = this.getTargetChildReferences(targetChildReferences, parentPointer, element);
+        annotationReferences.delete(fullPointer);
+    }
+
+    private markElementInsertion(
+        targetChildReferences: Map<string, Set<string>>,
+        fullPointer: string,
+        element: XMLElement
+    ): void {
+        const annotationReferences = this.getTargetChildReferences(targetChildReferences, fullPointer, element);
+        annotationReferences.add(`${fullPointer}/subElements/-1`);
     }
 
     private postprocessEdits(uri: string, writer: XMLWriter, edits: TextEdit[]): TextEdit[] {
@@ -634,8 +682,12 @@ function convertPointer(annotationFile: AnnotationFile, pointer: string): string
     let currentNode: Node | undefined = annotationFile;
     return pointer
         .split('/')
-        .map((segment, i) => {
+        .map((segment, i, self) => {
             if (segment === 'content' || segment === 'targets' || segment === 'terms') {
+                if (self[i + 2] === 'text') {
+                    currentNode = (currentNode as unknown as { [key: string]: Node }).textContents;
+                    return 'textContents';
+                }
                 if (currentNode) {
                     currentNode = (currentNode as unknown as { [key: string]: Node })[segment];
                 }

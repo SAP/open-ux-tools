@@ -2,7 +2,6 @@ import { getMetadataFileQuestion } from '../../../../src/prompts/datasources/met
 import path from 'path';
 import { OdataVersion } from '../../../../src/index';
 import { t, initI18nOdataServiceInquirer } from '../../../../src/i18n';
-import isEmpty from 'lodash/isEmpty';
 import { PromptState } from '../../../../src/utils';
 
 describe('Test metadata file prompts', () => {
@@ -34,7 +33,8 @@ describe('Test metadata file prompts', () => {
         }
 
         expect(await validate('')).toBe(false);
-        expect(isEmpty(PromptState.odataService)).toBe(true);
+        // Prompt state has been reset
+        expect(Object.values(PromptState.odataService).every((a) => a === undefined)).toBe(true);
 
         const edmxV2Path = path.join(__dirname, 'fixtures/v2.xml');
         expect(await validate(edmxV2Path)).toBe(true);
@@ -47,12 +47,12 @@ describe('Test metadata file prompts', () => {
         // Bad file
         const badEdmxPath = path.join(__dirname, 'fixtures/bad-edmx.xml');
         expect(await validate(badEdmxPath)).toEqual(t('prompts.validationMessages.metadataInvalid'));
-        expect(isEmpty(PromptState.odataService)).toBe(true);
+        expect(Object.values(PromptState.odataService).every((a) => a === undefined)).toBe(true);
 
         // Bad path
         const noSuchPath = path.join(__dirname, 'fixtures/no-such-file.xml');
         expect(await validate(noSuchPath)).toEqual(t('prompts.validationMessages.metadataFilePathNotValid'));
-        expect(isEmpty(PromptState.odataService)).toBe(true);
+        expect(Object.values(PromptState.odataService).every((a) => a === undefined)).toBe(true);
     });
 
     test('getMetadataFileQuestion: odata version validation', async () => {

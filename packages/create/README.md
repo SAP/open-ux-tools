@@ -21,6 +21,22 @@ npx sap-ux
 ## add
 Calling `sap-ux add` allows adding a feature to a project.
 
+### html
+Calling `sap-ux add html` will add html files for local preview and testing to the project. It will use the configuration from the `preview-middleware` from the `ui5.yaml` as default but also allows pointing to a different yaml e.g.:
+```sh
+sap-ux change add html ui5-test.yaml
+```
+
+## change
+Calling `sap-ux change` allows changing a feature of a project.
+
+### data-source
+Calling `sap-ux change data-source` allows replacing the OData Source of the base application in an adaptation project.  
+```sh
+sap-ux change data-source /path/to/adaptation-project
+```
+If the project path is not provided, the current working directory will be used.
+
 ## remove
 Calling `sap-ux remove` allows removing a feature to a project.
 

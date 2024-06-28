@@ -1,5 +1,87 @@
 # @sap-ux/adp-tooling
 
+## 0.11.7
+
+### Patch Changes
+
+-   65bfb244: Add Adaptation Project's Change Data Source generator prompting
+-   Updated dependencies [65bfb244]
+    -   @sap-ux/axios-extension@1.14.2
+    -   @sap-ux/inquirer-common@0.3.1
+    -   @sap-ux/system-access@0.4.5
+
+## 0.11.6
+
+### Patch Changes
+
+-   Updated dependencies [1a1baeb0]
+    -   @sap-ux/ui5-config@0.22.10
+    -   @sap-ux/project-access@1.22.3
+    -   @sap-ux/axios-extension@1.14.1
+    -   @sap-ux/system-access@0.4.4
+
+## 0.11.5
+
+### Patch Changes
+
+-   Updated dependencies [844e79c4]
+    -   @sap-ux/axios-extension@1.14.1
+    -   @sap-ux/system-access@0.4.4
+
+## 0.11.4
+
+### Patch Changes
+
+-   Updated dependencies [31cc53f8]
+    -   @sap-ux/axios-extension@1.14.0
+    -   @sap-ux/system-access@0.4.3
+
+## 0.11.3
+
+### Patch Changes
+
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/project-access@1.22.2
+    -   @sap-ux/ui5-config@0.22.9
+    -   @sap-ux/axios-extension@1.13.1
+    -   @sap-ux/system-access@0.4.2
+
+## 0.11.2
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.4.2
+-   @sap-ux/ui5-config@0.22.8
+
+## 0.11.1
+
+### Patch Changes
+
+-   a140cf8b: fix: incorrect fiori-tools-proxy config generated for adp
+-   Updated dependencies [a140cf8b]
+    -   @sap-ux/ui5-config@0.22.8
+    -   @sap-ux/project-access@1.22.1
+    -   @sap-ux/axios-extension@1.13.1
+    -   @sap-ux/system-access@0.4.1
+
+## 0.11.0
+
+### Minor Changes
+
+-   7f8bc980: Adds writer functionality for generation of OnPremise and Cloud Adaptation Projects
+
+### Patch Changes
+
+-   Updated dependencies [7f8bc980]
+    -   @sap-ux/system-access@0.4.1
+
+## 0.10.23
+
+### Patch Changes
+
+-   Updated dependencies [a48a8c0b]
+    -   @sap-ux/system-access@0.4.0
+
 ## 0.10.22
 
 ### Patch Changes

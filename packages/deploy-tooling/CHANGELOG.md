@@ -1,5 +1,83 @@
 # @sap-ux/deploy-tooling
 
+## 0.14.45
+
+### Patch Changes
+
+-   Updated dependencies [65bfb244]
+    -   @sap-ux/axios-extension@1.14.2
+    -   @sap-ux/system-access@0.4.5
+
+## 0.14.44
+
+### Patch Changes
+
+-   Updated dependencies [1a1baeb0]
+    -   @sap-ux/ui5-config@0.22.10
+    -   @sap-ux/axios-extension@1.14.1
+    -   @sap-ux/system-access@0.4.4
+
+## 0.14.43
+
+### Patch Changes
+
+-   Updated dependencies [844e79c4]
+    -   @sap-ux/axios-extension@1.14.1
+    -   @sap-ux/system-access@0.4.4
+
+## 0.14.42
+
+### Patch Changes
+
+-   Updated dependencies [31cc53f8]
+    -   @sap-ux/axios-extension@1.14.0
+    -   @sap-ux/system-access@0.4.3
+
+## 0.14.41
+
+### Patch Changes
+
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/ui5-config@0.22.9
+    -   @sap-ux/axios-extension@1.13.1
+    -   @sap-ux/system-access@0.4.2
+
+## 0.14.40
+
+### Patch Changes
+
+-   02a321be: Destination configured with SAMLAssertion a http 401 no longer displays credentials for the user to enter.
+
+## 0.14.39
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.4.2
+-   @sap-ux/ui5-config@0.22.8
+
+## 0.14.38
+
+### Patch Changes
+
+-   Updated dependencies [a140cf8b]
+    -   @sap-ux/ui5-config@0.22.8
+    -   @sap-ux/axios-extension@1.13.1
+    -   @sap-ux/system-access@0.4.1
+
+## 0.14.37
+
+### Patch Changes
+
+-   Updated dependencies [7f8bc980]
+    -   @sap-ux/system-access@0.4.1
+
+## 0.14.36
+
+### Patch Changes
+
+-   Updated dependencies [a48a8c0b]
+    -   @sap-ux/system-access@0.4.0
+
 ## 0.14.35
 
 ### Patch Changes
