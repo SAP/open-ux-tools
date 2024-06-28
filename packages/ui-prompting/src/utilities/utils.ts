@@ -41,16 +41,16 @@ export function updateAnswers(
     return updatedAnswers;
 }
 
-function isValidObjectKey(key: string): boolean {
-    return key !== '__proto__' && key !== 'constructor' && key !== 'prototype';
-}
-
 export function setAnswer(answers: Answers, path: string, value: unknown): Answers {
     const keys = path.split('.');
     let current = answers;
 
     for (let i = 0; i < keys.length - 1; i++) {
         const key = keys[i];
+        if (['__proto__', 'constructor', 'prototype'].includes(key)) {
+            // Prototype-polluting assignment restriction
+            return answers;
+        }
         if (current && typeof current === 'object' && !(key in current)) {
             current[key] = {};
         }
@@ -58,7 +58,7 @@ export function setAnswer(answers: Answers, path: string, value: unknown): Answe
     }
 
     const key = keys[keys.length - 1];
-    if (isValidObjectKey(key)) {
+    if (!['__proto__', 'constructor', 'prototype'].includes(key)) {
         current[key] = value;
     }
     return answers;
