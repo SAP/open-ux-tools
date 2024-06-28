@@ -21,8 +21,8 @@ export function getPrompts(
 ): YUIQuestion<AddAnnotationsAnswers>[] {
     const dataSourceIds = Object.keys(filterDataSourcesByType(dataSources, 'OData'));
     const annotationFileSelectOptions = [
-        { name: 'Select annotation file from workspace', value: AnnotationFileSelectType.ExistingFile },
-        { name: 'Create an empty annotation file', value: AnnotationFileSelectType.NewEmptyFile }
+        { name: t('choices.annotationFile.selectFromWorkspace'), value: AnnotationFileSelectType.ExistingFile },
+        { name: t('choices.annotationFile.createEmptyFile'), value: AnnotationFileSelectType.NewEmptyFile }
     ];
     return [
         {
@@ -61,7 +61,15 @@ export function getPrompts(
             default: '',
             when: (answers: AddAnnotationsAnswers) =>
                 answers.id !== '' && answers.fileSelectOption === AnnotationFileSelectType.ExistingFile,
-            validate: isNotEmptyString
+            validate: (value) => {
+                if (!isNotEmptyString(value)) {
+                    return t('validators.cannotBeEmpty');
+                }
+                if (!value.endsWith('.xml')) {
+                    return t('validators.fileShouldBeXML');
+                }
+                return true;
+            }
         }
     ];
 }
