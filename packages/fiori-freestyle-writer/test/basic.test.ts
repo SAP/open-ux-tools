@@ -3,7 +3,7 @@ import { generate, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import { testOutputDir, debug, updatePackageJSONDependencyToUseLocalPath } from './common';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
+import { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import type { BasicAppSettings } from '../src/types';
 import { projectChecks } from './common';
 
@@ -160,6 +160,22 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 service: {
                     ...commonConfig.service,
                     url: undefined // remove the URL to ensure the localOnly flag is set to true during the generation process
+                },
+                appOptions: { generateIndex: true }
+            },
+            settings: {}
+        },
+        {
+            name: 'basic_cap',
+            config: {
+                ...commonConfig,
+                app: {
+                    ...commonConfig.app,
+                    projectType: 'CAPNodejs'
+                },
+                service: {
+                    ...commonConfig.service,
+                    type: ServiceType.CDS
                 },
                 appOptions: { generateIndex: true }
             },
