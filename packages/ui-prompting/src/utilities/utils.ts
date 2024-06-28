@@ -53,7 +53,10 @@ export function setAnswer(answers: Answers, path: string, value: unknown): Answe
         current = current[key];
     }
 
-    current[keys[keys.length - 1]] = value;
+    const key = keys[keys.length - 1];
+    if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+        current[key] = value;
+    }
     return answers;
 }
 
