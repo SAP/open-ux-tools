@@ -4,7 +4,7 @@ import type { PromptQuestion } from '../src';
 import { initIcons } from '@sap-ux/ui-components';
 import { useStorage } from './utils';
 
-export default { title: 'Basic/Questions' };
+export default { title: 'Misc/Examples' };
 
 initIcons();
 
@@ -19,66 +19,34 @@ const choices = [
     }
 ];
 
-const questions: PromptQuestion[] = [
-    {
-        name: 'Dummy1',
-        type: 'input'
-    },
-    {
-        name: 'Dummy2',
-        type: 'checkbox',
-        choices
-    },
-    {
-        name: 'Dummy3',
-        type: 'list',
-        choices
-    }
-];
-
-export const defaultUsage = (): JSX.Element => {
-    const [saveValues] = useStorage();
-    return (
-        <Questions
-            questions={questions}
-            answers={{}}
-            choices={{}}
-            onChange={(answers) => {
-                saveValues(answers);
-            }}
-            onChoiceRequest={() => {}}
-            validation={{}}
-        />
-    );
-};
-
 const objectBasedQuestions: PromptQuestion[] = [
     {
+        message: 'test -> dummy(with dependants)',
         name: 'test.dummy',
-        message: 'test -> dummy',
         type: 'list',
         choices,
         dependantPromptNames: ['test.dummy2', 'test2.dummy', 'test3', 'test4.child.dummy']
     },
     {
-        name: 'test.dummy2',
         message: 'test -> dummy2',
+        name: 'test.dummy2',
         type: 'checkbox',
         choices
     },
     {
+        message: 'test2 -> dummy(default value)',
         name: 'test2.dummy',
-        message: 'test2 -> dummy',
-        type: 'input'
+        type: 'input',
+        default: 'Default value'
     },
     {
-        name: 'test3',
         message: 'test3',
+        name: 'test3',
         type: 'input'
     },
     {
+        message: 'test4 -> child -> dummy(external value)',
         name: 'test4.child.dummy',
-        message: 'test4 -> child -> dummy',
         type: 'input'
     }
 ];
@@ -87,7 +55,14 @@ export const ObjectBasedQuestions = (): JSX.Element => {
     return (
         <Questions
             questions={objectBasedQuestions}
-            answers={{}}
+            // ToDo recheck type
+            answers={{
+                test4: {
+                    child: {
+                        dummy: 'External value'
+                    }
+                }
+            }}
             choices={{}}
             onChange={(answers) => {
                 saveValues(answers);
