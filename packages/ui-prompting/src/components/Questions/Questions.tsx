@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { Answers } from 'inquirer';
 import { Question } from '../Question/Question';
 import {
     getAnswer,
@@ -23,7 +24,8 @@ import './Questions.scss';
 
 export interface QuestionsProps {
     questions: PromptQuestion[];
-    answers?: Record<string, AnswerValue>;
+    // ToDo - is it correct type?
+    answers?: Answers;
     choices?: DynamicChoices;
     validation?: ValidationResults;
     onChoiceRequest?: (names: string[], answers: Record<string, AnswerValue>) => void;

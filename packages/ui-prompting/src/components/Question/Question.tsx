@@ -1,6 +1,6 @@
 import React from 'react';
 import { Input, Select, MultiSelect } from '../Inputs';
-import { useOptions } from '../../utilities';
+import { getAnswer, useOptions } from '../../utilities';
 import type {
     PromptQuestion,
     ValidationResults,
@@ -26,11 +26,9 @@ export interface QuestionProps {
 export const Question = (props: QuestionProps) => {
     const { question, onChange, answers, choices, pending, additionalInfo, validation = {}, placeholder } = props;
     let questionInput: JSX.Element;
-    let value: AnswerValue = '';
     let errorMessage = '';
-    if (answers?.[question.name] !== undefined) {
-        value = answers?.[question.name];
-    } else if (question.default !== undefined) {
+    let value: AnswerValue = getAnswer(answers, question.name) as AnswerValue;
+    if (value === undefined && question.default !== undefined) {
         value = question.default;
     }
     if (validation[question.name]?.isValid === false && validation[question.name]?.errorMessage) {

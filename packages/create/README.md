@@ -21,6 +21,12 @@ npx sap-ux
 ## add
 Calling `sap-ux add` allows adding a feature to a project.
 
+### html
+Calling `sap-ux add html` will add html files for local preview and testing to the project. It will use the configuration from the `preview-middleware` from the `ui5.yaml` as default but also allows pointing to a different yaml e.g.:
+```sh
+sap-ux change add html ui5-test.yaml
+```
+
 ## change
 Calling `sap-ux change` allows changing a feature of a project.
 
