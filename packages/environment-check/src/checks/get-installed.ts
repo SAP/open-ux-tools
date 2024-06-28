@@ -69,7 +69,7 @@ async function getExtensionsVSCode(): Promise<{ [id: string]: { version: string 
     const output = await spawnCommand(isInsiders ? 'code-insiders' : 'code', ['--list-extensions', '--show-versions']);
     const versions = output
         .split('\n')
-        .filter((ext) => ext.startsWith('sap'))
+        .filter((ext) => ext.startsWith('SAP'))
         .reduce((returnObject, current) => {
             const index = current.indexOf('.');
             const idVersion = current.slice(index + 1);
