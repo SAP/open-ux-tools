@@ -53,7 +53,7 @@ async function addHtmlFiles(basePath: string, simulate: boolean, yamlPath: strin
             await traceChanges(fs);
         }
     } catch (error) {
-        logger.error(`Error while executing add cards editor configuration '${(error as Error).message}'`);
+        logger.error(`Error while executing add html '${(error as Error).message}'`);
         logger.debug(error as Error);
     }
 }

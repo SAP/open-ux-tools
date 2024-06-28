@@ -1,5 +1,4 @@
 import * as tracer from '../../../../src/tracing/trace';
-import * as common from '../../../../src/common';
 import * as preview from '@sap-ux/preview-middleware';
 import { addLocalHtmlFiles } from '../../../../src/cli/add/html';
 import { Command } from 'commander';
