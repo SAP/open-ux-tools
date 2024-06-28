@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.14.0
+
+### Minor Changes
+
+-   6ad68964: Enhanced API to support getting list of virtual files and their content
+
 ## 0.13.74
 
 ### Patch Changes
