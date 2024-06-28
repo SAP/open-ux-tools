@@ -335,20 +335,19 @@ const TEMPLATE_PATH = join(__dirname, '../../templates');
  * Generate test runners.
  *
  * @param configs array of test configurations
- * @param templatePath path to the templates folder
  * @param manifest application manifest
  * @param fs mem fs editor instance
  * @param webappPath webapp path
  * @param flpTemplConfig FLP configuration
  */
 function generateTestRunners(
-    configs: TestConfig[],
+    configs: TestConfig[] | undefined,
     manifest: Manifest,
     fs: Editor,
     webappPath: string,
     flpTemplConfig: TemplateConfig
 ) {
-    for (const test of configs) {
+    for (const test of configs ?? []) {
         const testConfig = mergeTestConfigDefaults(test);
         if (['QUnit', 'OPA5'].includes(test.framework)) {
             const testTemlpate = readFileSync(join(TEMPLATE_PATH, 'test/qunit.html'), 'utf-8');
@@ -413,6 +412,7 @@ export async function generatePreviewFiles(
             },
             logger
         );
+        generateTestRunners(config.test, manifest, fs, webappPath, flpTemplConfig);
     } else {
         flpTemplConfig = createFlpTemplateConfig(flpConfig, {});
         flpPath = join(basePath, flpConfig.path);
@@ -432,11 +432,6 @@ export async function generatePreviewFiles(
         }
     }
     fs.write(flpPath, render(flpTemplate, flpTemplConfig));
-
-    // optional test files
-    if (config.test && manifest) {
-        generateTestRunners(config.test, manifest, fs, webappPath, flpTemplConfig);
-    }
 
     return fs;
 }
