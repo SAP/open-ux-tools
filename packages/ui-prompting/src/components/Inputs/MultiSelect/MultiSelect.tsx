@@ -5,6 +5,7 @@ import React from 'react';
 import { useValue, getLabelRenderer } from '../../../utilities';
 
 export interface MultiSelectProps extends CheckboxQuestion {
+    name: string;
     value?: string | number | boolean;
     onChange: (name: string, value: string | number | undefined) => void;
     required?: boolean;
@@ -16,17 +17,7 @@ export interface MultiSelectProps extends CheckboxQuestion {
 }
 
 export const MultiSelect = (props: MultiSelectProps) => {
-    const {
-        name = '',
-        message,
-        onChange,
-        required,
-        options,
-        pending,
-        additionalInfo,
-        errorMessage,
-        placeholder
-    } = props;
+    const { name, message, onChange, required, options, pending, additionalInfo, errorMessage, placeholder } = props;
     const [value, setValue] = useValue('', props.value?.toString());
 
     return (

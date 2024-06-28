@@ -107,13 +107,10 @@ export const Questions = (props: QuestionsProps) => {
     const renderQuestions = (questions: PromptQuestion[]) =>
         questions.map((question: PromptQuestion, index: number) => {
             const name = question.name;
-            const externalChoices = name !== undefined ? choices[name] : undefined;
-            if (!name) {
-                return <></>;
-            }
+            const externalChoices = choices[name];
             return (
                 <Question
-                    key={`${question.name}-${index}`}
+                    key={`${name}-${index}`}
                     question={question}
                     validation={validation}
                     answers={localAnswers}

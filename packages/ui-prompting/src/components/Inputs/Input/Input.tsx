@@ -4,6 +4,7 @@ import { UITextInput } from '@sap-ux/ui-components';
 import { useValue, getLabelRenderer } from '../../../utilities';
 
 export interface InputProps extends InputQuestion {
+    name: string;
     value?: string | number | boolean;
     onChange?: (name: string, value?: string | number | boolean) => void;
     required?: boolean;
@@ -13,7 +14,7 @@ export interface InputProps extends InputQuestion {
 }
 
 export const Input = (props: InputProps) => {
-    const { name = '', onChange, required, additionalInfo, message, errorMessage, placeholder } = props;
+    const { name, onChange, required, additionalInfo, message, errorMessage, placeholder } = props;
     const [value, setValue] = useValue('', props.value);
     const onLiveChange = (event: React.FormEvent, newValue?: string | undefined) => {
         setValue(newValue ?? '');

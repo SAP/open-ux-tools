@@ -9,7 +9,7 @@ describe('Question', () => {
     initIcons();
 
     const props: QuestionProps = {
-        question: {},
+        question: { name: 'testQuestion' },
         answers: {},
         onChange: jest.fn(),
         choices: [],

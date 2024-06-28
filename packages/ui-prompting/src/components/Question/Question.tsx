@@ -28,12 +28,12 @@ export const Question = (props: QuestionProps) => {
     let questionInput: JSX.Element;
     let value: AnswerValue = '';
     let errorMessage = '';
-    if (question.name && answers?.[question.name] !== undefined) {
+    if (answers?.[question.name] !== undefined) {
         value = answers?.[question.name];
     } else if (question.default !== undefined) {
         value = question.default;
     }
-    if (question.name && validation[question.name]?.isValid === false && validation[question.name]?.errorMessage) {
+    if (validation[question.name]?.isValid === false && validation[question.name]?.errorMessage) {
         errorMessage = validation[question.name].errorMessage!;
     }
     // ToDo -> move to MultiSelect and Select?
