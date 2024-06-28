@@ -14,6 +14,12 @@ export interface Package {
 
 export interface App {
     id: string;
+    /**
+     * The type of project being processed. This property determines the inclusion or exclusion of certain files in the template.
+     * - If the project type is 'CAPJava' or 'CAPNodejs', the files `ui5-local.yaml` and `.gitignore` are excluded from the template.
+     * - If the project type is 'EDMXBackend', these files are included by default.
+     */
+    projectType: ProjectType;
     version?: string;
     title?: string;
     description?: string;
@@ -38,12 +44,6 @@ export interface App {
          */
         toolsId?: string;
     };
-    /**
-     * The type of project being processed. This property determines the inclusion or exclusion of certain files in the template.
-     * - If the project type is 'CAPJava' or 'CAPNodejs', the files `ui5-local.yaml` and `.gitignore` are excluded from the template.
-     * - If the project type is 'EDMXBackend', these files are included by default.
-     */
-    projectType?: ProjectType;
 }
 
 export type UI5Framework = 'SAPUI5' | 'OpenUI5';

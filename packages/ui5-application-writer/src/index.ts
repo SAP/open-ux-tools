@@ -31,7 +31,8 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     if (ui5AppConfig.appOptions?.generateIndex === false) {
         ignore.push('**/webapp/index.html');
     }
-    if (ui5AppConfig.app?.projectType === 'CAPJava' || ui5AppConfig.app?.projectType === 'CAPNodejs') {
+    const isEdmxProjectType = ui5AppConfig.app.projectType ===  'EDMXBackend';
+    if (!isEdmxProjectType) {
         // ignore the ui5-local.yaml file for CAP applications
         ignore.push('**/ui5-local.yaml');
         // ignore the .gitignore.tmpl file for CAP applications
@@ -55,7 +56,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
 
     // ui5-local.yaml
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
-    if (!(ui5AppConfig.app?.projectType === 'CAPJava' || ui5AppConfig.app?.projectType === 'CAPNodejs')) {
+    if (isEdmxProjectType) {
         // write ui5-local.yaml only for non-CAP applications
         const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
         ui5LocalConfig.addUI5Framework(
