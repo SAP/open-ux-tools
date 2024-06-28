@@ -83,17 +83,6 @@ async function getExtensionsVSCode(): Promise<{ [id: string]: { version: string 
 }
 
 /**
- * Checks if a specific extension is installed.
- *
- *  @param extensionName - name of the extension to be checked
- *  @returns boolean - if extension is installed
- */
-export async function isExtensionInstalledVsCode(extensionName: string): Promise<boolean> {
-    const extensions = await getExtensionsVSCode();
-    return !!extensions[extensionName];
-}
-
-/**
  * Reads the list of extensions installed and returns the id and version.
  *
  * @param extensions - installed extensions passed from vscode

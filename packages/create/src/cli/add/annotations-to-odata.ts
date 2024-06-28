@@ -1,7 +1,12 @@
 import type { Command } from 'commander';
 import type { AdpPreviewConfig, DescriptorVariant, PromptDefaults } from '@sap-ux/adp-tooling';
-import { generateChange, ChangeType, getPromptsForAddAnnotationsToOData, getManifest } from '@sap-ux/adp-tooling';
-import { isExtensionInstalledVsCode } from '@sap-ux/environment-check';
+import {
+    generateChange,
+    ChangeType,
+    getPromptsForAddAnnotationsToOData,
+    getManifest,
+    isInternalUsage
+} from '@sap-ux/adp-tooling';
 import { join } from 'path';
 import { getLogger, traceChanges } from '../../tracing';
 import { readFileSync, existsSync } from 'fs';
@@ -49,14 +54,12 @@ async function addAnnotationsToOdata(basePath: string, defaults: PromptDefaults,
             throw new Error('No data sources found in the manifest');
         }
         const answers = await promptYUIQuestions(getPromptsForAddAnnotationsToOData(dataSources), false);
-
-        const isInternalUsage = await isExtensionInstalledVsCode('sap-ux-internal-extension');
         const fs = await generateChange<ChangeType.ADD_ANNOTATIONS_TO_ODATA>(
             basePath,
             ChangeType.ADD_ANNOTATIONS_TO_ODATA,
             {
                 variant,
-                isInternalUsage,
+                isInternalUsage: isInternalUsage(variant.layer),
                 answers
             }
         );

@@ -35,7 +35,6 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@sap-ux/environment-check": "workspace:*",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",
@@ -50,8 +49,7 @@
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "prompts": "2.4.2",
-        "sanitize-filename": "1.6.3",
-        "@sap-devx/feature-toggle-node": "2.0.2"
+        "sanitize-filename": "1.6.3"
     },
     "devDependencies": {
         "@sap-ux/store": "workspace:*",
