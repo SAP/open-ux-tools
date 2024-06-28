@@ -782,9 +782,6 @@ importers:
       '@sap-ux/cards-editor-config-writer':
         specifier: workspace:*
         version: link:../cards-editor-config-writer
-      '@sap-ux/environment-check':
-        specifier: workspace:*
-        version: link:../environment-check
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common
