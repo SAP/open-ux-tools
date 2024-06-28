@@ -21,6 +21,6 @@
     },
     "validators": {
         "cannotBeEmpty": "Cannot be empty.",
-        "fileShouldBeXML": "Incorrect file extension. Please select an XML file.",
+        "fileShouldBeXML": "Incorrect file extension. Please select an XML file."
     }
 }
