@@ -4,7 +4,7 @@ import type { UI5FlexLayer } from '@sap-ux/project-access';
 /**
  * Intent object consisting of an object and an action.
  */
-interface Intent {
+export interface Intent {
     object: string;
     action: string;
 }
