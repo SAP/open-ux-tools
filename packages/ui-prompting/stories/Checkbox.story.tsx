@@ -53,7 +53,7 @@ export const checkbox = (): JSX.Element => {
         <Questions
             questions={questions}
             answers={{
-                external: 'external value'
+                external: 'test2'
             }}
             onChange={(answers) => {
                 saveValues(answers);
