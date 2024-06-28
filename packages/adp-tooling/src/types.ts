@@ -402,37 +402,6 @@ export interface AddAnnotationsAnswers {
 
 export type DataSource = ManifestNamespace.DataSource & { dataSourceName: string; annotations: string[] };
 
-export interface ChangeDataSourceAnswers {
-    /** Data Source identifier  */
-    id: string;
-    /** Data Source URI */
-    uri: string;
-    /** Data Source Max Age */
-    maxAge?: number;
-    /** Data Source Annotation URI */
-    annotationUri?: string;
-}
-
-export interface AddAnnotationsAnswers {
-    /** Data Source identifier  */
-    id: string;
-    /** Selected option for Annotation File */
-    fileSelectOption: number;
-    /** Annotation File path */
-    filePath: string;
-}
-
-export interface ChangeDataSourceAnswers {
-    /** Data Source identifier  */
-    id: string;
-    /** Data Source URI */
-    uri: string;
-    /** Data Source Max Age */
-    maxAge?: number;
-    /** Data Source Annotation URI */
-    annotationUri?: string;
-}
-
 export interface CustomConfig {
     adp: {
         safeMode: boolean;
