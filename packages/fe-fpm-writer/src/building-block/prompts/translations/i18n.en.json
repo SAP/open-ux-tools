@@ -27,7 +27,7 @@
             "filterBar": {
                 "defaultPlaceholder": "Enter a new filter bar ID"
             },
-            "viewOrFragmentFile": {
+            "viewOrFragmentPath": {
                 "defaultPlaceholder": "Select a view or fragment file"
             }
         },
@@ -39,7 +39,7 @@
             "aggregation": "Aggregation Path",
             "entity": "Entity",
             "service": "Service",
-            "viewOrFragmentFile": {
+            "viewOrFragmentPath": {
                 "message": "View or Fragment File",
                 "validation": "A View or Fragment is required to generate the chart building block"
             },
@@ -79,7 +79,7 @@
                 "message": "Building Block ID",
                 "validation": "An ID is required to generate the filter bar building block"
             },
-            "viewOrFragmentFile": {
+            "viewOrFragmentPath": {
                 "message": "View or Fragment File",
                 "validation": "A View or Fragment is required to generate the filterbar building block"
             },
@@ -103,7 +103,7 @@
             ],
             "tableVisualizationPropertiesTitle": "Table Visualization Properties",
             "tableVisualizationPropertiesDescription": ["Configure your table using the properties below."],
-            "viewOrFragmentFile": {
+            "viewOrFragmentPath": {
                 "message": "View or Fragment File",
                 "validation": "A View or Fragment is required to generate the table building block"
             },

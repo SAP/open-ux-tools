@@ -10,7 +10,7 @@ import {
     getCAPServicePrompt,
     getEntityPrompt,
     getFilterBarIdPrompt,
-    getViewOrFragmentFilePrompt,
+    getViewOrFragmentPathPrompt,
     isCapProject
 } from '../utils';
 import type { ProjectProvider } from '../utils';
@@ -33,11 +33,11 @@ export async function getChartBuildingBlockPrompts(
     };
     return {
         questions: [
-            getViewOrFragmentFilePrompt(
+            getViewOrFragmentPathPrompt(
                 fs,
                 basePath,
-                t('viewOrFragmentFile.message'),
-                t('viewOrFragmentFile.validate'),
+                t('viewOrFragmentPath.message'),
+                t('viewOrFragmentPath.validate'),
                 ['aggregationPath', 'filterBar'],
                 { required: true }
             ),
@@ -48,7 +48,7 @@ export async function getChartBuildingBlockPrompts(
                 ? [await getCAPServicePrompt(t('service'), projectProvider, [], { required: true })]
                 : []),
             getEntityPrompt(t('entity'), projectProvider, ['qualifier'], { required: true }),
-            getAnnotationPathQualifierPrompt('qualifier', t('qualifier'), projectProvider, [UIAnnotationTerms.Chart], {
+            getAnnotationPathQualifierPrompt(t('qualifier'), projectProvider, [UIAnnotationTerms.Chart], {
                 additionalInfo: t('valuesDependentOnEntityTypeInfo'),
                 required: true,
                 placeholder: t('qualifierPlaceholder')
@@ -62,7 +62,7 @@ export async function getChartBuildingBlockPrompts(
             }),
             {
                 type: 'checkbox',
-                name: 'personalization',
+                name: 'buildingBlockData.personalization',
                 message: t('personalization.message'),
                 selectType: 'static',
                 choices: [
@@ -75,7 +75,7 @@ export async function getChartBuildingBlockPrompts(
             {
                 type: 'list',
                 selectType: 'static',
-                name: 'selectionMode',
+                name: 'buildingBlockData.selectionMode',
                 message: t('selectionMode.message'),
                 choices: [
                     { name: t('selectionMode.choices.single'), value: 'Single' },
@@ -84,7 +84,7 @@ export async function getChartBuildingBlockPrompts(
             },
             {
                 type: 'input',
-                name: 'selectionChange',
+                name: 'buildingBlockData.selectionChange',
                 message: t('selectionChange'),
                 placeholder: t('selectionChangePlaceholder')
             }

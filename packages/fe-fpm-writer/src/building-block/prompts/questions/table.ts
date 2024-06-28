@@ -11,7 +11,7 @@ import {
     getCAPServicePrompt,
     getEntityPrompt,
     getFilterBarIdPrompt,
-    getViewOrFragmentFilePrompt,
+    getViewOrFragmentPathPrompt,
     isCapProject
 } from '../utils';
 import type { ProjectProvider } from '../utils';
@@ -55,11 +55,11 @@ export async function getTableBuildingBlockPrompts(
         groups,
         questions: [
             //first prompt group
-            getViewOrFragmentFilePrompt(
+            getViewOrFragmentPathPrompt(
                 fs,
                 basePath,
-                t('viewOrFragmentFile.message'),
-                t('viewOrFragmentFile.validate'),
+                t('viewOrFragmentPath.message'),
+                t('viewOrFragmentPath.validate'),
                 ['aggregationPath', 'filterBar'],
                 { groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID, required: true }
             ),
@@ -79,18 +79,12 @@ export async function getTableBuildingBlockPrompts(
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
                 required: true
             }),
-            getAnnotationPathQualifierPrompt(
-                'qualifier',
-                t('qualifier'),
-                projectProvider,
-                [UIAnnotationTerms.LineItem],
-                {
-                    additionalInfo: t('valuesDependentOnEntityTypeInfo'),
-                    groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
-                    required: true,
-                    placeholder: t('qualifierPlaceholder')
-                }
-            ),
+            getAnnotationPathQualifierPrompt(t('qualifier'), projectProvider, [UIAnnotationTerms.LineItem], {
+                additionalInfo: t('valuesDependentOnEntityTypeInfo'),
+                groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
+                required: true,
+                placeholder: t('qualifierPlaceholder')
+            }),
             getAggregationPathPrompt(t('aggregation'), fs, basePath, {
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
                 required: true
@@ -104,7 +98,7 @@ export async function getTableBuildingBlockPrompts(
             //second prompt group
             {
                 type: 'list',
-                name: 'type',
+                name: 'buildingBlockData.type',
                 message: t('tableType.message'),
                 choices: [
                     // ResponsiveTable | GridTable
@@ -116,7 +110,7 @@ export async function getTableBuildingBlockPrompts(
             },
             {
                 type: 'list',
-                name: 'selectionMode',
+                name: 'buildingBlockData.selectionMode',
                 message: t('selectionMode.message'),
                 choices: [
                     // None, Single, Multi or Auto
@@ -128,18 +122,18 @@ export async function getTableBuildingBlockPrompts(
                 default: defaultAnswers.selectionMode,
                 groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
             },
-            getBooleanPrompt('headerVisible', t('headerVisible'), defaultAnswers.headerVisible, {
+            getBooleanPrompt('buildingBlockData.headerVisible', t('headerVisible'), defaultAnswers.headerVisible, {
                 groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
             }),
             {
                 type: 'input',
-                name: 'header',
+                name: 'buildingBlockData.header',
                 message: t('header.message'),
                 groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
             },
             {
                 type: 'checkbox',
-                name: 'personalization',
+                name: 'buildingBlockData.personalization',
                 message: t('personalization.message'),
                 choices: [
                     { name: t('personalization.choices.Sort'), value: 'Sort' },
@@ -150,7 +144,7 @@ export async function getTableBuildingBlockPrompts(
             },
             {
                 type: 'list',
-                name: 'variantManagement',
+                name: 'buildingBlockData.variantManagement',
                 message: t('tableVariantManagement'),
                 choices: [
                     { name: 'Page', value: 'Page' },
@@ -160,24 +154,39 @@ export async function getTableBuildingBlockPrompts(
                 default: defaultAnswers.variantManagement,
                 groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
             },
-            getBooleanPrompt('readOnly', t('readOnlyMode'), defaultAnswers.readOnly, {
+            getBooleanPrompt('buildingBlockData.readOnly', t('readOnlyMode'), defaultAnswers.readOnly, {
                 groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
             }),
-            getBooleanPrompt('enableAutoColumnWidth', t('autoColumnWidth'), defaultAnswers.enableAutoColumnWidth, {
+            getBooleanPrompt(
+                'buildingBlockData.enableAutoColumnWidth',
+                t('autoColumnWidth'),
+                defaultAnswers.enableAutoColumnWidth,
+                {
+                    groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
+                }
+            ),
+            getBooleanPrompt('buildingBlockData.enableExport', t('dataExport'), defaultAnswers.enableExport, {
                 groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
             }),
-            getBooleanPrompt('enableExport', t('dataExport'), defaultAnswers.enableExport, {
+            getBooleanPrompt(
+                'buildingBlockData.enableFullScreen',
+                t('fullScreenMode'),
+                defaultAnswers.enableFullScreen,
+                {
+                    groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
+                }
+            ),
+            getBooleanPrompt('buildingBlockData.enablePaste', t('pasteFromClipboard'), defaultAnswers.enablePaste, {
                 groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
             }),
-            getBooleanPrompt('enableFullScreen', t('fullScreenMode'), defaultAnswers.enableFullScreen, {
-                groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-            }),
-            getBooleanPrompt('enablePaste', t('pasteFromClipboard'), defaultAnswers.enablePaste, {
-                groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-            }),
-            getBooleanPrompt('isSearchable', t('tableSearchableToggle'), defaultAnswers.isSearchable, {
-                groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-            })
+            getBooleanPrompt(
+                'buildingBlockData.isSearchable',
+                t('tableSearchableToggle'),
+                defaultAnswers.isSearchable,
+                {
+                    groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
+                }
+            )
         ]
     };
 }

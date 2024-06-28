@@ -52,7 +52,6 @@ export function getBooleanPrompt(
  * @returns prompt for choosing the annotation term
  */
 export function getAnnotationPathQualifierPrompt(
-    name: string,
     message: string,
     projectProvider: ProjectProvider,
     annotationTerm: UIAnnotationTerms[],
@@ -61,7 +60,8 @@ export function getAnnotationPathQualifierPrompt(
     return {
         ...additionalProperties,
         type: 'list',
-        name,
+        // ToDo - buildingBlockData.metadata.qualifier???
+        name: 'qualifier',
         selectType: 'dynamic',
         message,
         choices: async (answers) => {
@@ -91,7 +91,7 @@ export function getAnnotationPathQualifierPrompt(
  * @param dependantPromptNames - Dependant prompts names
  * @returns a prompt
  */
-export function getViewOrFragmentFilePrompt(
+export function getViewOrFragmentPathPrompt(
     fs: Editor,
     basePath: string,
     message: string,
@@ -103,7 +103,7 @@ export function getViewOrFragmentFilePrompt(
         ...additionalProperties,
         type: 'list',
         selectType: 'dynamic',
-        name: 'viewOrFragmentFile',
+        name: 'viewOrFragmentPath',
         message,
         dependantPromptNames,
         choices: async () => {
@@ -122,7 +122,7 @@ export function getViewOrFragmentFilePrompt(
             });
         },
         validate: (value: string) => (value ? true : validationErrorMessage),
-        placeholder: additionalProperties.placeholder ?? t('viewOrFragmentFile.defaultPlaceholder')
+        placeholder: additionalProperties.placeholder ?? t('viewOrFragmentPath.defaultPlaceholder')
     };
 }
 
@@ -137,6 +137,7 @@ export async function getCAPServicePrompt(
     return {
         ...additionalProperties,
         type: 'list',
+        // ToDo - where it fits?
         name: 'service',
         selectType: 'dynamic',
         dependantPromptNames,
@@ -164,6 +165,7 @@ export function getEntityPrompt(
     return {
         ...additionalProperties,
         type: 'list',
+        // ToDo - buildingBlockData.metadata.entity???
         name: 'entity',
         selectType: 'dynamic',
         dependantPromptNames,
@@ -218,9 +220,9 @@ export function getAggregationPathPrompt(
         selectType: 'dynamic',
         message,
         choices: (answers: Answers) => {
-            const { viewOrFragmentFile } = answers;
-            if (viewOrFragmentFile) {
-                const choices = getChoices(getXPathStringsForXmlFile(join(basePath, viewOrFragmentFile), fs), false);
+            const { viewOrFragmentPath } = answers;
+            if (viewOrFragmentPath) {
+                const choices = getChoices(getXPathStringsForXmlFile(join(basePath, viewOrFragmentPath), fs), false);
                 if (!choices.length) {
                     throw new Error('Failed while fetching the aggregation path.');
                 }
@@ -330,7 +332,7 @@ export function getFilterBarIdPrompt(
 ): ListPromptQuestion | InputPromptQuestion {
     let prompt: InputPromptQuestion = {
         type: 'input',
-        name: 'filterBar',
+        name: 'buildingBlockData.filterBar',
         message,
         placeholder: additionalProperties.placeholder ?? t('filterBar.defaultPlaceholder')
     };
@@ -343,12 +345,12 @@ export function getFilterBarIdPrompt(
         type,
         selectType: 'dynamic',
         choices: async (answers: Answers) => {
-            if (!answers.viewOrFragmentFile) {
+            if (!answers.viewOrFragmentPath) {
                 return [];
             }
             return getChoices(
                 await getBuildingBlockIdsInFile(
-                    join(basePath!, answers.viewOrFragmentFile),
+                    join(basePath!, answers.viewOrFragmentPath),
                     BuildingBlockType.FilterBar,
                     fs!
                 )
@@ -358,7 +360,7 @@ export function getFilterBarIdPrompt(
 }
 
 async function getBuildingBlockIdsInFile(
-    viewOrFragmentFile: string,
+    viewOrFragmentPath: string,
     buildingBlockType: BuildingBlockType,
     fs: Editor
 ): Promise<string[]> {
@@ -376,7 +378,7 @@ async function getBuildingBlockIdsInFile(
             break;
     }
     if (buildingBlockSelector) {
-        const xmlContent = fs.read(viewOrFragmentFile);
+        const xmlContent = fs.read(viewOrFragmentPath);
         const errorHandler = (level: string, message: string): void => {
             throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
         };
@@ -435,15 +437,15 @@ export function getBuildingBlockIdPrompt(
     return {
         ...additionalProperties,
         type: 'input',
-        name: 'id',
+        name: 'buildingBlockData.id',
         message,
         validate: (value: string, answers?: Answers) => {
             if (!value) {
                 return validationErrorMessage;
             } else {
                 // ToDo
-                return answers?.viewOrFragmentFile &&
-                    !isElementIdAvailable(fs, join(basePath, answers.viewOrFragmentFile), value)
+                return answers?.viewOrFragmentPath &&
+                    !isElementIdAvailable(fs, join(basePath, answers.viewOrFragmentPath), value)
                     ? t('id.existingIdValidation')
                     : true;
             }

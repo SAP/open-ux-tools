@@ -8,7 +8,7 @@ import {
     getBuildingBlockIdPrompt,
     getCAPServicePrompt,
     getEntityPrompt,
-    getViewOrFragmentFilePrompt,
+    getViewOrFragmentPathPrompt,
     isCapProject
 } from '../utils';
 import type { ProjectProvider } from '../utils';
@@ -26,11 +26,11 @@ export async function getFilterBarBuildingBlockPrompts(
     };
     return {
         questions: [
-            getViewOrFragmentFilePrompt(
+            getViewOrFragmentPathPrompt(
                 fs,
                 basePath,
-                t('viewOrFragmentFile.message'),
-                t('viewOrFragmentFile.validate'),
+                t('viewOrFragmentPath.message'),
+                t('viewOrFragmentPath.validate'),
                 ['aggregationPath'],
                 { required: true }
             ),
@@ -42,25 +42,19 @@ export async function getFilterBarBuildingBlockPrompts(
                 : []),
             getAggregationPathPrompt(t('aggregation'), fs, basePath, { required: true }),
             getEntityPrompt(t('entity'), projectProvider, ['qualifier'], { required: true }),
-            getAnnotationPathQualifierPrompt(
-                'qualifier',
-                t('qualifier'),
-                projectProvider,
-                [UIAnnotationTerms.SelectionFields],
-                {
-                    additionalInfo: t('valuesDependentOnEntityTypeInfo'),
-                    required: true,
-                    placeholder: t('qualifierPlaceholder')
-                }
-            ),
+            getAnnotationPathQualifierPrompt(t('qualifier'), projectProvider, [UIAnnotationTerms.SelectionFields], {
+                additionalInfo: t('valuesDependentOnEntityTypeInfo'),
+                required: true,
+                placeholder: t('qualifierPlaceholder')
+            }),
             {
                 type: 'input',
-                name: 'filterChanged',
+                name: 'buildingBlockData.filterChanged',
                 message: t('filterChanged')
             },
             {
                 type: 'input',
-                name: 'search',
+                name: 'buildingBlockData.search',
                 message: t('search')
             }
         ]
