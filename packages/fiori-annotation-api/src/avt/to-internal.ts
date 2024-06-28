@@ -262,7 +262,7 @@ export function convertPrimitiveValueToInternal(
 ): string {
     const text = value === undefined ? '' : value.toString();
     if (!text) {
-        return text;
+        return type === Edm.Null ? 'null' : text;
     } else if (type === Edm.EnumMember) {
         return getAliasedEnumMember(aliasInfo, text);
     } else if (type.indexOf('Path') >= 0) {
