@@ -34,8 +34,8 @@ const choices = [
         value: 1
     },
     {
-        name: '0(string)',
-        value: '0'
+        name: '2(string)',
+        value: '2'
     }
 ];
 
