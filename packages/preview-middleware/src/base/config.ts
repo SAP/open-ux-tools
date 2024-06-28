@@ -1,16 +1,8 @@
-import type { Logger } from '@sap-ux/logger';
-import { ToolsLogger } from '@sap-ux/logger';
+import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import type { App, FlpConfig, Intent, InternalTestConfig, MiddlewareConfig } from '../types';
 import { render } from 'ejs';
 import { join, posix } from 'path';
-import {
-    createProjectAccess,
-    getWebappPath,
-    isCapNodeJsProject,
-    isCapProject,
-    type Manifest,
-    type UI5FlexLayer
-} from '@sap-ux/project-access';
+import { createProjectAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
 import { readFileSync } from 'fs';
 import { mergeTestConfigDefaults } from './test';
 import { type Editor, create } from 'mem-fs-editor';
@@ -408,7 +400,6 @@ export async function generatePreviewFiles(
 
     // optional test files
     if (config.test && manifest) {
-        const webappPath = await getWebappPath(basePath, fs);
         for (const test of config.test) {
             const testConfig = mergeTestConfigDefaults(test);
             if (['QUnit', 'OPA5'].includes(test.framework)) {
