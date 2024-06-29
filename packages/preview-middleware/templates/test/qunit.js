@@ -11,9 +11,13 @@ sap.ui.loader.config({
         },
         "sap/ui/qunit/sinon-qunit-bridge": {
             deps: ["sap/ui/thirdparty/qunit", "sap/ui/thirdparty/sinon-4"]
-        }        
+        }
     }
 });
+
+window.QUnit ??= {};
+window.QUnit.config ??= {};
+window.QUnit.config.autostart ??= false;
 
 sap.ui.require([
     "sap/ui/thirdparty/qunit-2",
@@ -21,8 +25,7 @@ sap.ui.require([
     "sap/ui/qunit/qunit-coverage"
 ], function (QUnit) {
     'use strict';
-    QUnit.config.autostart = false;
     sap.ui.require(<%- JSON.stringify(tests) %>, function() {
         QUnit.start();
-    }); 
+    });
 });
