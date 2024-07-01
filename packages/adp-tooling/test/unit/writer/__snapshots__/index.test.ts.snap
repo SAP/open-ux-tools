@@ -364,9 +364,7 @@ server:
     "state": "modified",
   },
   "../minimal/webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for my.test.app
-
-#Texts for manifest.json
+    "contents": "some-description
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app
@@ -589,7 +587,9 @@ server:
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "some-description
+    "contents": "# This is the resource bundle for my.test.app
+
+#Texts for manifest.json
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app
@@ -632,7 +632,7 @@ my.test.app_sap.app.title=Adaptation of the.original.app
 }
 `;
 
-exports[`ADP writer generate minimal config without i18n description 1`] = `
+exports[`ADP writer generate minimal config with i18n description 1`] = `
 Object {
   ".gitignore": Object {
     "contents": "node_modules/
@@ -714,9 +714,7 @@ server:
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for my.test.app
-
-#Texts for manifest.json
+    "contents": "some-description
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app
@@ -1133,9 +1131,7 @@ server:
     "state": "modified",
   },
   "../minimal/webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for my.test.app
-
-#Texts for manifest.json
+    "contents": "some-description
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app

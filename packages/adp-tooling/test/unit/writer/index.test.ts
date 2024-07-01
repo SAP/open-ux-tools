@@ -29,6 +29,16 @@ describe('ADP writer', () => {
     const config: AdpWriterConfig = {
         app: {
             id: 'my.test.app',
+            reference: 'the.original.app'
+        },
+        target: {
+            url: 'http://sap.example'
+        }
+    };
+
+    const configWithI18n: AdpWriterConfig = {
+        app: {
+            id: 'my.test.app',
             reference: 'the.original.app',
             i18nDescription: 'some-description'
         },
@@ -44,10 +54,9 @@ describe('ADP writer', () => {
             expect(fs.dump(projectDir)).toMatchSnapshot();
         });
 
-        test('minimal config without i18n description', async () => {
+        test('minimal config with i18n description', async () => {
             const projectDir = join(outputDir, 'minimal');
-            delete config.app.i18nDescription;
-            await generate(projectDir, config, fs);
+            await generate(projectDir, configWithI18n, fs);
             expect(fs.dump(projectDir)).toMatchSnapshot();
         });
 
