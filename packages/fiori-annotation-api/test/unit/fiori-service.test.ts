@@ -87,7 +87,7 @@ interface EditTestCase<T extends Record<string, string>> {
     getChanges: (files: T) => Change[];
     fsEditor?: Editor;
     log?: boolean;
-    expcetTextEditChanges?: boolean;
+    expectUpdate?: boolean;
 }
 interface CustomTest<T extends Record<string, string>> {
     (testCase: EditTestCase<T>, timeout?: number): void;
@@ -96,38 +96,40 @@ interface CustomTest<T extends Record<string, string>> {
 }
 
 const createEditTestCase = (<T extends Record<string, string>>(): CustomTest<T> => {
-    const run = (testCase: EditTestCase<T>, timeout?: number) => () => {
-        for (const model of testCase.projectTestModels) {
-            const { info, root, files, serviceName } = model;
-            const name = `${info.type} ${info.name} ${info.version}`;
-            if (SKIP_TARGETS.has(model)) {
-                test.skip(name, () => {});
-            } else {
-                test(
-                    name,
-                    async () => {
-                        const { changedText, totalChangedFiles } = await testEdit(
-                            root,
-                            testCase.getInitialChanges ? testCase.getInitialChanges(files) : [],
-                            testCase.getChanges(files),
-                            serviceName,
-                            testCase.fsEditor,
-                            testCase.log
-                        );
-                        if (totalChangedFiles > 0) {
-                            expect(changedText).toMatchSnapshot();
-                        }
+    const run =
+        ({ expectUpdate = true, ...testCase }: EditTestCase<T>, timeout?: number) =>
+        () => {
+            for (const model of testCase.projectTestModels) {
+                const { info, root, files, serviceName } = model;
+                const name = `${info.type} ${info.name} ${info.version}`;
+                if (SKIP_TARGETS.has(model)) {
+                    test.skip(name, () => {});
+                } else {
+                    test(
+                        name,
+                        async () => {
+                            const { changedText, totalChangedFiles } = await testEdit(
+                                root,
+                                testCase.getInitialChanges ? testCase.getInitialChanges(files) : [],
+                                testCase.getChanges(files),
+                                serviceName,
+                                testCase.fsEditor,
+                                testCase.log
+                            );
+                            if (totalChangedFiles > 0) {
+                                expect(changedText).toMatchSnapshot();
+                            }
 
-                        if (!testCase.expcetTextEditChanges) {
-                            expect(changedText).toBe('');
-                            expect(totalChangedFiles).toEqual(0);
-                        }
-                    },
-                    timeout
-                );
+                            if (!expectUpdate) {
+                                expect(changedText).toBe('');
+                                expect(totalChangedFiles).toEqual(0);
+                            }
+                        },
+                        timeout
+                    );
+                }
             }
-        }
-    };
+        };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const runner: any = (testCase: EditTestCase<T>, timeout?: number): void => {
         describe(testCase.name, run(testCase, timeout));
@@ -781,7 +783,7 @@ describe('fiori annotation service', () => {
 `
                 );
                 fsEditor.write(path, updatedSchemaFile);
-                const text = await testEdit(
+                const { changedText: text } = await testEdit(
                     root,
                     [],
                     [
@@ -1412,7 +1414,7 @@ describe('fiori annotation service', () => {
                         }
                     }
                 ],
-                expcetTextEditChanges: false
+                expectUpdate: false
             });
             createEditTestCase({
                 name: "update propertyValue value 'string' value",
@@ -2057,7 +2059,7 @@ describe('fiori annotation service', () => {
                 };
                 `;
                 fsEditor.write(path, testData);
-                const text = await testEdit(
+                const { changedText: text } = await testEdit(
                     root,
                     [],
                     [
@@ -3081,7 +3083,7 @@ describe('fiori annotation service', () => {
                 }
             };`;
             fsEditor.write(mdPath, mdTestData);
-            const text = await testEdit(
+            const { changedText: text } = await testEdit(
                 root,
                 [],
                 [
@@ -3270,7 +3272,7 @@ describe('fiori annotation service', () => {
                 },
             );`;
             fsEditor.write(path, testData);
-            const text = await testEdit(
+            const { changedText: text } = await testEdit(
                 root,
                 [],
                 [
@@ -3319,7 +3321,7 @@ describe('fiori annotation service', () => {
                 }
             );`;
             fsEditor.write(path, testData);
-            const text = await testEdit(
+            const { changedText } = await testEdit(
                 root,
                 [],
                 [
@@ -3356,7 +3358,7 @@ describe('fiori annotation service', () => {
                 false
             );
 
-            expect(text).toMatchSnapshot();
+            expect(changedText).toMatchSnapshot();
         });
         test('multiple levels', async () => {
             const project = PROJECTS.V4_CDS_START;
@@ -3377,7 +3379,7 @@ describe('fiori annotation service', () => {
             // UI.KPI.DataPoint.Responsible.nickname: record/0/record/1/record/0
             // UI.KPI.DataPoint.Responsible.fn: record/0/record/1/record/1
             fsEditor.write(path, testData);
-            const text = await testEdit(
+            const { changedText } = await testEdit(
                 root,
                 [],
                 [
@@ -3396,7 +3398,7 @@ describe('fiori annotation service', () => {
                 false
             );
 
-            expect(text).toMatchSnapshot();
+            expect(changedText).toMatchSnapshot();
         });
     });
 });
