@@ -24,7 +24,7 @@ export function getAnnotationV4Libs(metadata: string) {
 
     // Create a regular expression that matches any of the annotations
     const annotationsRegex = new RegExp(
-        annotationLibs.map((annotationLib: { annotation: any }) => annotationLib.annotation).join('|'),
+        annotationLibs.map((annotationLib: { annotation: string }) => annotationLib.annotation).join('|'),
         'g'
     );
 
