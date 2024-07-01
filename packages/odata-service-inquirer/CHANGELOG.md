@@ -1,5 +1,12 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.3.10
+
+### Patch Changes
+
+-   Updated dependencies [4492fe10]
+    -   @sap-ux/axios-extension@1.14.4
+
 ## 0.3.9
 
 ### Patch Changes
