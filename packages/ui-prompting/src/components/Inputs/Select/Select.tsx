@@ -44,7 +44,7 @@ export const Select = (props: SelectProps) => {
         }
     };
 
-    const isTextField = creation && (!options || !options.length);
+    const isTextField = creation && (!options || !options.length) && !pending; // show loader in comboBox
 
     const component = isTextField ? (
         <UITextInput
