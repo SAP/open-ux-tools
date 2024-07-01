@@ -31,7 +31,8 @@ describe('client/command-executor', () => {
         });
 
         test('throws error when pushAndExecute fails', async () => {
-            pushAndExecuteSpy.mockRejectedValueOnce({ message: 'Could not execute command!' });
+
+            pushAndExecuteSpy.mockRejectedValueOnce(new Error('Could not execute command!'));
             const commandExecutor = new CommandExecutor(rta as unknown as RuntimeAuthoring);
             try {
                 await commandExecutor.pushAndExecuteCommand({} as FlexCommand);
