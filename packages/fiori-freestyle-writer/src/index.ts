@@ -66,19 +66,11 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     const isEdmxProjectType = ffApp.app.projectType === 'EDMXBackend';
     // package.json
     const packagePath = join(basePath, 'package.json');
-    if (isEdmxProjectType) {
-        fs.extendJSON(
-            packagePath,
-            JSON.parse(render(fs.read(join(tmplPath, 'common', 'extend', 'package.json')), ffApp, {}))
-        );
-    } else {
-        // Add deploy-config script for CAP projects
-        fs.extendJSON(packagePath, {
-            "scripts": {
-                "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf"
-            }
-        });
-    }
+    // extend package.json with scripts for non-CAP projects
+    fs.extendJSON(
+        packagePath,
+        JSON.parse(render(fs.read(join(tmplPath, 'common', 'extend', 'package.json')), ffApp, {}))
+    );
     
     const packageJson: Package = JSON.parse(fs.read(packagePath));
     if (isEdmxProjectType) {
@@ -95,6 +87,11 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
                 generateIndex: ffApp.appOptions?.generateIndex
             })
         };
+    } else { 
+        // Add deploy-config for CAP applications
+        packageJson.scripts = {
+            "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf"
+        }
     }
     fs.writeJSON(packagePath, packageJson);
     

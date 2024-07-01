@@ -40,14 +40,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     }
 
     fs.copyTpl(join(tmplPath, 'core', '**/*.*'), 
-        join(basePath),
-        { 
-            ...ui5App, 
-            frameworkUrl: isEdmxProjectType ? undefined : ui5App.ui5.frameworkUrl, 
-            version: isEdmxProjectType ? undefined : ui5App.ui5.version 
-        }, 
-        undefined, 
-        {
+        join(basePath), ui5App, undefined,  {
             globOptions: { dot: true, ignore },
             processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
         });

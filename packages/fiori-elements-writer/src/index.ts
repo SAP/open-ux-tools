@@ -83,8 +83,8 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
 
     const coercedUI5Version = semVer.coerce(feApp.ui5?.version)!;
     const templateOptions: TemplateOptions = {
-        changesPreview:  isEdmxProjectType ? feApp.ui5?.version ? semVer.lt(coercedUI5Version, changesPreviewToVersion) : false : false,
-        changesLoader: isEdmxProjectType ? feApp.service.version === OdataVersion.v2 : false
+        changesPreview: feApp.ui5?.version ? semVer.lt(coercedUI5Version, changesPreviewToVersion) : false,
+        changesLoader: feApp.service.version === OdataVersion.v2
     };
 
     // Add new files from templates e.g.
@@ -96,21 +96,12 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     if (feApp.appOptions?.typescript === true) {
         ignore = getTypeScriptIgnoreGlob(feApp, coercedUI5Version);
     }
-    const appConfig = {
-        ...feApp,
-        ui5: {
-            ...feApp.ui5,
-            frameworkUrl: isEdmxProjectType ? undefined : feApp.ui5?.frameworkUrl,
-            version: isEdmxProjectType ? undefined : feApp.ui5?.version,
-            ui5Libs: isEdmxProjectType ? feApp.ui5?.ui5Libs : undefined
-        }
-    }
     
     fs.copyTpl(
         join(rootTemplatesPath, 'common', 'add', '**/*.*'),
         basePath,
         {
-            ...appConfig,
+            ...feApp,
             templateOptions,
             escapeFLPText
         },
@@ -122,21 +113,10 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
 
     // Extend common files
     const packagePath = join(basePath, 'package.json');
-    
-    if(isEdmxProjectType) {
-        // Extend package.json
-        fs.extendJSON(
-            packagePath,
-            JSON.parse(render(fs.read(join(rootTemplatesPath, 'common', 'extend', 'package.json')), feApp, {}))
-        );
-    } else {
-        // Add deploy-config script for CAP projects
-        fs.extendJSON(packagePath, {
-            "scripts": {
-                "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf"
-            }
-        });
-    }
+    fs.extendJSON(
+        packagePath,
+        JSON.parse(render(fs.read(join(rootTemplatesPath, 'common', 'extend', 'package.json')), feApp, {}))
+    );
 
     // Special handling for FPM because it is not based on template files but used the fpm writer
     if (feApp.template.type === TemplateType.FlexibleProgrammingModel) {
@@ -191,6 +171,11 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
                 generateIndex: feApp.appOptions?.generateIndex
             })
         });
+    } else { 
+        // Add deploy-config script for CAP projects
+        packageJson.scripts = {
+            "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf"
+        }
     }
     fs.writeJSON(packagePath, packageJson);
 
