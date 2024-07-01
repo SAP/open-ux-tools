@@ -1,5 +1,15 @@
 # @sap-ux/adp-tooling
 
+## 0.11.7
+
+### Patch Changes
+
+-   65bfb244: Add Adaptation Project's Change Data Source generator prompting
+-   Updated dependencies [65bfb244]
+    -   @sap-ux/axios-extension@1.14.2
+    -   @sap-ux/inquirer-common@0.3.1
+    -   @sap-ux/system-access@0.4.5
+
 ## 0.11.6
 
 ### Patch Changes

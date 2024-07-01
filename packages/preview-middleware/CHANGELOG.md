@@ -1,5 +1,24 @@
 # @sap-ux/preview-middleware
 
+## 0.15.0
+
+### Minor Changes
+
+-   da2704c7: Add support for using the preview in CAP projects
+
+## 0.14.0
+
+### Minor Changes
+
+-   6ad68964: Enhanced API to support getting list of virtual files and their content
+
+## 0.13.74
+
+### Patch Changes
+
+-   Updated dependencies [65bfb244]
+    -   @sap-ux/adp-tooling@0.11.7
+
 ## 0.13.73
 
 ### Patch Changes

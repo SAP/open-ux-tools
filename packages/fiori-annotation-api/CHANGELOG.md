@@ -1,5 +1,11 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.1.8
+
+### Patch Changes
+
+-   3afada7e: fix exception while setting annotation value to null and insert element notation for null cases in xml
+
 ## 0.1.7
 
 ### Patch Changes

@@ -1,8 +1,17 @@
 import { AppIndexService, createForAbap } from '../../src';
 import nock from 'nock';
 import appIndexMock from './mockResponses/appIndex.json';
+import appInfoJsonMock from './mockResponses/ui5AppInfo.json';
+import type { ToolsLogger } from '@sap-ux/logger';
+import * as Logger from '@sap-ux/logger';
 
-nock.disableNetConnect();
+const loggerMock: ToolsLogger = {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn()
+} as Partial<ToolsLogger> as ToolsLogger;
+jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 
 describe('AppIndexService', () => {
     const server = 'https://sap.example';
@@ -11,6 +20,18 @@ describe('AppIndexService', () => {
     };
 
     beforeAll(() => {
+        nock.disableNetConnect();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
+    });
+
+    describe('search', () => {
+        const provider = createForAbap(config);
+        const service: AppIndexService = provider.getAppIndex();
+
         nock(server)
             .get((path) => path.startsWith(AppIndexService.PATH))
             .reply(200, (path) => {
@@ -33,11 +54,6 @@ describe('AppIndexService', () => {
                 }
             })
             .persist();
-    });
-
-    describe('search', () => {
-        const provider = createForAbap(config);
-        const service: AppIndexService = provider.getAppIndex();
 
         test('no filter', async () => {
             const appIndex = await service.search();
@@ -59,6 +75,52 @@ describe('AppIndexService', () => {
             expect(appIndex).toBeDefined();
             expect(appIndex.length).toBe(2);
             expect(appIndex[0].url).toBeDefined();
+        });
+    });
+
+    describe('getAppInfo', () => {
+        const provider = createForAbap(config);
+        const service: AppIndexService = provider.getAppIndex();
+
+        test('get the app info', async () => {
+            nock.cleanAll();
+            nock(server)
+                .get((path) => path.includes('/ui5_app_info_json'))
+                .reply(200, appInfoJsonMock)
+                .persist();
+            const appInfo = await service.getAppInfo('ExampleApp');
+            expect(appInfo).toStrictEqual(appInfoJsonMock);
+        });
+
+        test('get app info fails, application not found', async () => {
+            nock.cleanAll();
+            nock(server)
+                .get((path) => path.includes('/ui5_app_info_json'))
+                .reply(404)
+                .persist();
+
+            try {
+                await service.getAppInfo('ExampleApp');
+                fail('The function should have thrown an error.');
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toBe('Request failed with status code 404');
+            }
+        });
+
+        test('get app info fails, invalid json', async () => {
+            nock.cleanAll();
+            nock(server)
+                .get((path) => path.includes('/ui5_app_info_json'))
+                .reply(200, () => 'test')
+                .persist();
+
+            try {
+                await service.getAppInfo('ExampleApp');
+                fail('The function should have thrown an error.');
+            } catch (error) {
+                expect(error).toBeDefined();
+            }
         });
     });
 });

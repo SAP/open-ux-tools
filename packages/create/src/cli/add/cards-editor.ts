@@ -33,7 +33,7 @@ async function addCardsEditorConfig(basePath: string, simulate: boolean, skipIns
     const logger = getLogger();
     try {
         logger.debug(`Called add cards-editor-config for path '${basePath}', simulate is '${simulate}'`);
-        validateBasePath(basePath);
+        await validateBasePath(basePath);
 
         const fs = await enableCardsEditor(basePath);
         if (!simulate) {

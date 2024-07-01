@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.14.2
+
+### Patch Changes
+
+-   65bfb244: Add Adaptation Project's Change Data Source generator prompting
+
 ## 1.14.1
 
 ### Patch Changes
