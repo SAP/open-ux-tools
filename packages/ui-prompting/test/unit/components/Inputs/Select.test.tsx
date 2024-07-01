@@ -99,6 +99,17 @@ describe('Select', () => {
         expect(screen.getByDisplayValue('testText1')).toBeDefined();
     });
 
+    it('Test property onChange - delete the selected value', async () => {
+        const onChangeFn = jest.fn();
+        render(<Select {...props} onChange={onChangeFn} value="testKey1" />);
+        const input = screen.getByRole('combobox');
+        expect(input).toBeDefined();
+        expect(screen.getByDisplayValue('testText1')).toBeDefined();
+        simulateComboboxValueInput(input, '');
+        expect(onChangeFn).toHaveBeenCalled();
+        expect(screen.queryAllByDisplayValue('testText1')).toHaveLength(0);
+    });
+
     it('Test property required', () => {
         render(<Select {...props} required={true} />);
         expect(document.getElementsByClassName('.is-required')).toBeDefined();
@@ -170,6 +181,17 @@ describe('Select', () => {
                 expect(screen.getByDisplayValue(value)).toBeDefined();
                 expect(onChangeFn).toHaveBeenCalled();
                 expect(onChangeFn).toHaveBeenCalledWith('select', value);
+            });
+
+            it('Test creatable select property onChange - delete the selected value', async () => {
+                const onChangeFn = jest.fn();
+                render(<Select {...creatableProps} onChange={onChangeFn} value="testKey1" />);
+                const input = screen.getByRole('combobox');
+                expect(input).toBeDefined();
+                simulateComboboxValueInput(input, '');
+                expect(screen.queryAllByDisplayValue('testKey1')).toHaveLength(0);
+                expect(onChangeFn).toHaveBeenCalled();
+                expect(onChangeFn).toHaveBeenCalledWith('select', '');
             });
         });
 

@@ -33,6 +33,9 @@ export const Select = (props: SelectProps) => {
         } else if (option) {
             setValue(option.key);
             updatedValue = option.data.value;
+        } else if ((event?.target as HTMLSelectElement).value === '') {
+            setValue('');
+            updatedValue = '';
         }
         updatedValue !== undefined && onChange(name, updatedValue);
     };
