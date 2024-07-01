@@ -1,7 +1,7 @@
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { DescriptorVariant } from '../types';
-import { readFileSync, existsSync } from 'fs';
-import { join } from 'path';
+import { readFileSync, existsSync, readdirSync } from 'fs';
+import { join, sep } from 'path';
 /**
  * Checks if the input is a non-empty string.
  *
@@ -57,4 +57,30 @@ export function isCFEnvironment(basePath: string): boolean {
         }
     }
     return false;
+}
+
+/**
+ * Check if the file exists.
+ *
+ * @param {string} filePath - The path to the file.
+ * @returns {boolean} true if the file exists, false otherwise
+ */
+export function checkFileExists(filePath: string): boolean {
+    return existsSync(filePath);
+}
+
+/**
+ * Check if a file already exists in a directory.
+ *
+ * @param {string} filePath - The path to the file.
+ * @param {string} checkDirectory - The directory to check.
+ * @returns {boolean} true if the file exists in the directory, false otherwise
+ */
+export function checkDuplicateFile(filePath: string, checkDirectory: string): boolean {
+    const fileName = filePath.split(sep).pop();
+    if (!existsSync(checkDirectory)) {
+        return false;
+    }
+    const files = readdirSync(checkDirectory);
+    return !!files.find((file) => file === fileName);
 }

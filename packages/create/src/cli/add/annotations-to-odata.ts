@@ -59,7 +59,7 @@ async function addAnnotationsToOdata(
         }
         const variant = getVariant(basePath);
         const ui5ConfigPath = isAbsolute(yamlPath) ? yamlPath : join(basePath, yamlPath);
-        const ui5Conf = await UI5Config.newInstance(readFileSync(join(basePath, ui5ConfigPath), 'utf-8'));
+        const ui5Conf = await UI5Config.newInstance(readFileSync(ui5ConfigPath, 'utf-8'));
         const adp = ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('fiori-tools-preview')?.configuration?.adp;
         if (!adp) {
             throw new Error('No system configuration found in ui5.yaml');
@@ -69,7 +69,7 @@ async function addAnnotationsToOdata(
         if (!dataSources) {
             throw new Error('No data sources found in the manifest');
         }
-        const answers = await promptYUIQuestions(getPromptsForAddAnnotationsToOData(dataSources), false);
+        const answers = await promptYUIQuestions(getPromptsForAddAnnotationsToOData(basePath, dataSources), false);
         const fs = await generateChange<ChangeType.ADD_ANNOTATIONS_TO_ODATA>(
             basePath,
             ChangeType.ADD_ANNOTATIONS_TO_ODATA,

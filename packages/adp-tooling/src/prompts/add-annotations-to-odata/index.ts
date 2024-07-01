@@ -3,7 +3,8 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { AddAnnotationsAnswers } from '../../types';
 import { t } from '../../i18n';
 import { filterDataSourcesByType } from '@sap-ux/project-access';
-import { isNotEmptyString } from '../../base/helper';
+import { isNotEmptyString, checkFileExists, checkDuplicateFile } from '../../base/helper';
+import { join, isAbsolute } from 'path';
 
 enum AnnotationFileSelectType {
     ExistingFile = 1,
@@ -13,10 +14,12 @@ enum AnnotationFileSelectType {
 /**
  * Gets the prompts for adding annotations to OData service.
  *
+ * @param {string} basePath - The base path of the project.
  * @param {Record<string, ManifestNamespace.DataSource>} dataSources - Data sources from the manifest.
  * @returns {YUIQuestion<AddAnnotationsAnswers>[]} The questions/prompts.
  */
 export function getPrompts(
+    basePath: string,
     dataSources: Record<string, ManifestNamespace.DataSource>
 ): YUIQuestion<AddAnnotationsAnswers>[] {
     const dataSourceIds = Object.keys(filterDataSourcesByType(dataSources, 'OData'));
@@ -65,8 +68,12 @@ export function getPrompts(
                 if (!isNotEmptyString(value)) {
                     return t('validators.cannotBeEmpty');
                 }
-                if (!value.endsWith('.xml')) {
-                    return t('validators.fileShouldBeXML');
+                const filePath = isAbsolute(value) ? value : join(basePath, value);
+                if (!checkFileExists(filePath)) {
+                    return t('validators.fileDoesNotExist');
+                }
+                if (checkDuplicateFile(filePath, join(basePath, 'webapp', 'changes', 'annotations'))) {
+                    return t('validators.annotationFileAlreadyExists');
                 }
                 return true;
             }

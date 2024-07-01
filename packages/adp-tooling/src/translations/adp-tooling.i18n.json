@@ -22,6 +22,7 @@
     },
     "validators": {
         "cannotBeEmpty": "Cannot be empty.",
-        "fileShouldBeXML": "Incorrect file extension. Please select an XML file."
+        "fileDoesNotExist": "The file doesn't exist",
+        "annotationFileAlreadyExists": "There is already an annotation file with the same name, please choose another file or rename the file and select it again"
     }
 }

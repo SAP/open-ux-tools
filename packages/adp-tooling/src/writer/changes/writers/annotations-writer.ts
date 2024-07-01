@@ -1,4 +1,4 @@
-import path from 'path';
+import path, { isAbsolute } from 'path';
 import type { Editor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../../types';
@@ -63,6 +63,9 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
     async write(data: AnnotationsData): Promise<void> {
         const { variant } = data;
         data.fileName = this.getAnnotationFileName(data);
+        data.answers.filePath = isAbsolute(data.answers.filePath)
+            ? data.answers.filePath
+            : path.join(this.projectPath, data.answers.filePath);
         const content = this.constructContent(data);
         const timestamp = Date.now();
         const change = getChange(variant, timestamp, content, ChangeType.ADD_ANNOTATIONS_TO_ODATA);
