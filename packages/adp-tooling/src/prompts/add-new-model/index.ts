@@ -38,7 +38,7 @@ function getODataVersionChoices(): {
  *
  * @returns {YUIQuestion<ChangeDataSourceAnswers>[]} The questions/prompts.
  */
-export async function getPrompts(projectPath: string, layer: UI5FlexLayer): Promise<YUIQuestion<NewModelAnswers>[]> {
+export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestion<NewModelAnswers>[] {
     const isInternal = isInternalUsage(layer);
     const oDataVersions = getODataVersionChoices();
     const defaultSeviceName = getDefaultServiceName(isInternal);

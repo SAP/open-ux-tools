@@ -310,16 +310,11 @@ export interface ComponentUsagesData {
 
 export interface NewModelData {
     variant: DescriptorVariant;
-    annotation: NewModelAnnotationAnswers;
-    service: NewModelServiceAnswers;
-    /** Indicates whether annotation mode is added. */
-    addAnnotationMode: boolean;
+    answers: NewModelAnswers;
 }
 
-export interface NewModelAnswers extends NewModelServiceAnswers, NewModelAnnotationAnswers {
+export interface NewModelAnswers {
     addAnnotationMode: boolean;
-}
-export interface NewModelServiceAnswers {
     /** Name of the OData service. */
     name: string;
     /** URI of the OData service. */
@@ -330,9 +325,6 @@ export interface NewModelServiceAnswers {
     version: string;
     /** Settings for the OData service model. */
     modelSettings: string;
-}
-
-export interface NewModelAnnotationAnswers {
     /** Name of the OData annotation data source. */
     dataSourceName: string;
     /** Optional URI of the OData annotation data source. */
