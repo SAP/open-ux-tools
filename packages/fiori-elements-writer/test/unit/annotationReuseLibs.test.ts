@@ -1,11 +1,10 @@
-import { ServiceType } from '@sap-ux/odata-service-writer';
 import type { FioriElementsApp, LROPSettings } from '../../src';
 import { OdataVersion, TemplateType } from '../../src';
 import { feBaseConfig, getTestData } from '../common';
 import { getAnnotationV4Libs } from '../../src/data/annotationReuseLibs';
 import { getUi5Libs } from '../../src/data/defaults';
 
-describe('getAnnotationLibs', () => {
+describe('getAnnotationV4Libs', () => {
     test('Metadata has the required annotation to return a Reuse lib', () => {
         const feApp: FioriElementsApp<LROPSettings> = {
             ...Object.assign(feBaseConfig('felrop1'), {
