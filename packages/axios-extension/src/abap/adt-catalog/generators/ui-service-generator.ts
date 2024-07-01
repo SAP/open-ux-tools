@@ -124,6 +124,6 @@ export class UiServiceGenerator extends AdtService {
                 corrNr: transport
             }
         });
-        return JSON.parse(response.data);
+        return this.parseResponse(response.data);
     }
 }
