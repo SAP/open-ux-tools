@@ -33,6 +33,9 @@ export const Select = (props: SelectProps) => {
         } else if (option) {
             setValue(option.key);
             updatedValue = option.data.value;
+        } else if ((event?.target as HTMLSelectElement).value === '') {
+            setValue('');
+            updatedValue = '';
         }
         updatedValue !== undefined && onChange(name, updatedValue);
     };
@@ -44,7 +47,7 @@ export const Select = (props: SelectProps) => {
         }
     };
 
-    const isTextField = creation && (!options || !options.length);
+    const isTextField = creation && (!options || !options.length) && !pending; // show loader in comboBox
 
     const component = isTextField ? (
         <UITextInput
