@@ -32,10 +32,15 @@ export function setDefaults(ffApp: FreestyleApp<unknown>): void {
 
     // Add template information
     if (!ffApp.app.sourceTemplate?.version || !ffApp.app.sourceTemplate?.id) {
-        const packageInfo = readPkgUp.sync({ cwd: __dirname });
+        // const packageInfo = readPkgUp.sync({ cwd: __dirname });
+        // ffApp.app.sourceTemplate = {
+        //     id: `${packageInfo?.packageJson.name}:${ffApp.template.type}`,
+        //     version: packageInfo?.packageJson.version,
+        //     toolsId: ffApp.app.sourceTemplate?.toolsId
+        // };
         ffApp.app.sourceTemplate = {
-            id: `${packageInfo?.packageJson.name}:${ffApp.template.type}`,
-            version: packageInfo?.packageJson.version,
+            id: `@sap/generator-fiori:${ffApp.template.type}`,
+            version: "1.13.5",
             toolsId: ffApp.app.sourceTemplate?.toolsId
         };
     }

@@ -64,6 +64,9 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     await initI18n();
     // Clone rather than modifying callers refs
     const feApp: FioriElementsApp<T> = cloneDeep(data);
+    // Determine if the project type is 'EDMXBackend'.
+    const isEdmxProjectType = feApp.app.projectType === 'EDMXBackend';
+    
     // Ensure input data contains at least the mandatory properties required for app generation
     validateRequiredProperties(feApp);
 
@@ -80,8 +83,8 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
 
     const coercedUI5Version = semVer.coerce(feApp.ui5?.version)!;
     const templateOptions: TemplateOptions = {
-        changesPreview: feApp.ui5?.version ? semVer.lt(coercedUI5Version, changesPreviewToVersion) : false,
-        changesLoader: feApp.service.version === OdataVersion.v2
+        changesPreview:  isEdmxProjectType ? feApp.ui5?.version ? semVer.lt(coercedUI5Version, changesPreviewToVersion) : false : false,
+        changesLoader: isEdmxProjectType ? feApp.service.version === OdataVersion.v2 : false
     };
 
     // Add new files from templates e.g.
@@ -93,12 +96,21 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     if (feApp.appOptions?.typescript === true) {
         ignore = getTypeScriptIgnoreGlob(feApp, coercedUI5Version);
     }
-
+    const appConfig = {
+        ...feApp,
+        ui5: {
+            ...feApp.ui5,
+            frameworkUrl: isEdmxProjectType ? undefined : feApp.ui5?.frameworkUrl,
+            version: isEdmxProjectType ? undefined : feApp.ui5?.version,
+            ui5Libs: isEdmxProjectType ? feApp.ui5?.ui5Libs : undefined
+        }
+    }
+    
     fs.copyTpl(
         join(rootTemplatesPath, 'common', 'add', '**/*.*'),
         basePath,
         {
-            ...feApp,
+            ...appConfig,
             templateOptions,
             escapeFLPText
         },
@@ -110,12 +122,21 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
 
     // Extend common files
     const packagePath = join(basePath, 'package.json');
-
-    // Extend package.json
-    fs.extendJSON(
-        packagePath,
-        JSON.parse(render(fs.read(join(rootTemplatesPath, 'common', 'extend', 'package.json')), feApp, {}))
-    );
+    
+    if(isEdmxProjectType) {
+        // Extend package.json
+        fs.extendJSON(
+            packagePath,
+            JSON.parse(render(fs.read(join(rootTemplatesPath, 'common', 'extend', 'package.json')), feApp, {}))
+        );
+    } else {
+        // Add deploy-config script for CAP projects
+        fs.extendJSON(packagePath, {
+            "scripts": {
+                "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf"
+            }
+        });
+    }
 
     // Special handling for FPM because it is not based on template files but used the fpm writer
     if (feApp.template.type === TemplateType.FlexibleProgrammingModel) {
@@ -156,19 +177,21 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
         feApp.service?.version === OdataVersion.v4 &&
         (!!feApp.service?.metadata || feApp.service.type === ServiceType.CDS);
 
-    packageJson.scripts = Object.assign(packageJson.scripts ?? {}, {
-        ...getPackageJsonTasks({
-            localOnly: !feApp.service?.url,
-            addMock: !!feApp.service?.metadata,
-            addTest,
-            sapClient: feApp.service?.client,
-            flpAppId: feApp.app.flpAppId,
-            startFile: data?.app?.startFile,
-            localStartFile: data?.app?.localStartFile,
-            generateIndex: feApp.appOptions?.generateIndex
-        })
-    });
-
+    if (isEdmxProjectType) {
+        // Add scripts to package.json only for non-CAP projects
+        packageJson.scripts = Object.assign(packageJson.scripts ?? {}, {
+            ...getPackageJsonTasks({
+                localOnly: !feApp.service?.url,
+                addMock: !!feApp.service?.metadata,
+                addTest,
+                sapClient: feApp.service?.client,
+                flpAppId: feApp.app.flpAppId,
+                startFile: data?.app?.startFile,
+                localStartFile: data?.app?.localStartFile,
+                generateIndex: feApp.appOptions?.generateIndex
+            })
+        });
+    }
     fs.writeJSON(packagePath, packageJson);
 
     if (addTest) {

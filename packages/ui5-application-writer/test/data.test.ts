@@ -294,6 +294,49 @@ describe('Setting defaults', () => {
         expect(mergeWithDefaults(input).package).toEqual(expectedPackage);
     });
 
+    it('merge Ui5App.package settings with defaults for cap projects', async () => {
+        const input: Ui5App = {
+            app: {
+                id: 'test_appId_cap',
+                description: 'Should be default package description',
+                projectType: 'CAPJava'
+            },
+            'package': {
+                name: 'test-package-name',
+                dependencies: {
+                    depA: '1.2.3',
+                    depB: '3.4.5'
+                },
+                devDependencies: {
+                    '@ui5/cli': '3.0.0'
+                },
+                scripts: {
+                    doTaskA: 'echo "Doing task A"',
+                    doTaskB: 'echo "Doing task B"'
+                }
+            }
+        };
+
+        const expectedPackage = {
+            dependencies: {
+                depA: '1.2.3',
+                depB: '3.4.5'
+            },
+            description: 'Should be default package description',
+            devDependencies: {
+                '@ui5/cli': '3.0.0',
+                '@sap/ux-ui5-tooling': '1'
+            },
+            name: 'test-package-name',
+            scripts: {
+                doTaskA: 'echo "Doing task A"',
+                doTaskB: 'echo "Doing task B"'
+            },
+            version: '0.0.1'
+        };
+        expect(mergeWithDefaults(input).package).toEqual(expectedPackage);
+    });
+
     // Test function `mergeApp` sets the correct defaults
     describe('mergeApp', () => {
         const baseInput: App = {
