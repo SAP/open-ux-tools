@@ -72,7 +72,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     ensureExists(basePath, ['webapp/manifest.json'], fs);
     enhanceData(service);
     // set isServiceTypeEdmx true if service is EDMX
-    const isServiceTypeEdmx = (service.type ?? ServiceType.EDMX) === ServiceType.EDMX;
+    const isServiceTypeEdmx = service.type === ServiceType.EDMX;
     // merge content into existing files
     const templateRoot = join(__dirname, '../templates');
 

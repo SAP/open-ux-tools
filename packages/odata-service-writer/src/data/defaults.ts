@@ -57,12 +57,14 @@ export function enhanceData(service: OdataService): void {
     setDefaultServicePath(service);
     setDefaultServiceName(service);
     setDefaultServiceModel(service);
+    // set service type to EDMX if not defined
+    service.type = service.type ?? ServiceType.EDMX;
     /**
      * In the manifest EJS template, annotation names are used to add annotations to the manifest.json.
      * For CAP projects, annotations are added to the annotations.cds file instead of the manifest.json.
      * If the service type is EDMX, this function sets the default annotation names to be included in the manifest.json.
      */
-    if ((service.type ??  ServiceType.EDMX) === ServiceType.EDMX) {
+    if (service.type === ServiceType.EDMX) {
         setDefaultAnnotationsName(service);
     }
     

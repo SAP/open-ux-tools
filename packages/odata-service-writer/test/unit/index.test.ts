@@ -288,6 +288,7 @@ describe('generate', () => {
                     "path": "/V2",
                     "url": "https://services.odata.org",
                   },
+                  "type": "edmx",
                   "url": "https://services.odata.org",
                   "version": "2",
                 }
@@ -304,6 +305,7 @@ describe('generate', () => {
                     "path": "/V2",
                     "url": "https://services.odata.org",
                   },
+                  "type": "edmx",
                   "url": "https://services.odata.org",
                   "version": "2",
                 }
@@ -321,6 +323,7 @@ describe('generate', () => {
                     "path": "/",
                     "url": "https://services.odata.org",
                   },
+                  "type": "edmx",
                   "url": "https://services.odata.org",
                   "version": "2",
                 }
