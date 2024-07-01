@@ -134,8 +134,7 @@ export async function getAnnotationPathQualifiers(
 function getAnnotationPathQualifiersForEntityType(
     entityType: EntityType,
     annotationTerms: UIAnnotationTerms[],
-    // ToDo avoid any
-    result: any,
+    result: Record<string, string>,
     useNamespace: boolean
 ) {
     addAnnotationPathQualifierToResult(entityType, '', annotationTerms, result, useNamespace);
@@ -168,8 +167,7 @@ function addAnnotationPathQualifierToResult(
     entityType: EntityType,
     navigationPropertyName: string,
     annotationTerms: UIAnnotationTerms[],
-    // ToDo avoid any
-    result: any,
+    result: Record<string, string>,
     useNamespace = false
 ) {
     annotationTerms.forEach((uiAnnotationTerm) => {
