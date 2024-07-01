@@ -364,9 +364,7 @@ server:
     "state": "modified",
   },
   "../minimal/webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for my.test.app
-
-#Texts for manifest.json
+    "contents": "some-description
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app
@@ -589,9 +587,7 @@ server:
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for my.test.app
-
-#Texts for manifest.json
+    "contents": "some-description
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app
@@ -742,9 +738,7 @@ server:
     "state": "modified",
   },
   "../deploy/webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for my.test.app
-
-#Texts for manifest.json
+    "contents": "some-description
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app
@@ -886,9 +880,7 @@ server:
     "state": "modified",
   },
   "../fiori-tools/webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for my.test.app
-
-#Texts for manifest.json
+    "contents": "some-description
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app
@@ -1008,9 +1000,7 @@ server:
     "state": "modified",
   },
   "../minimal/webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for my.test.app
-
-#Texts for manifest.json
+    "contents": "some-description
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app
@@ -1165,9 +1155,7 @@ builder:
     "state": "modified",
   },
   "../s4hana/webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for my.test.app
-
-#Texts for manifest.json
+    "contents": "some-description
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app
@@ -1327,9 +1315,7 @@ builder:
     "state": "modified",
   },
   "../s4hanaWithInboundId/webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for my.test.app
-
-#Texts for manifest.json
+    "contents": "some-description
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app

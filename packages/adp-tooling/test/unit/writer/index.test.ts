@@ -29,7 +29,8 @@ describe('ADP writer', () => {
     const config: AdpWriterConfig = {
         app: {
             id: 'my.test.app',
-            reference: 'the.original.app'
+            reference: 'the.original.app',
+            i18nDescription: 'some-description'
         },
         target: {
             url: 'http://sap.example'
