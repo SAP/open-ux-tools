@@ -13,7 +13,7 @@ import type { AdpPreviewConfig } from '@sap-ux/adp-tooling';
  *
  * @param cmd - commander command for adding navigation inbounds config command
  */
-export function addLocalHtmlFiles(cmd: Command): void {
+export function addAddHtmlFilesCmd(cmd: Command): void {
     cmd.command('html [path]')
         .option('-c, --config <string>', 'Path to project configuration file in YAML format', 'ui5.yaml')
         .option('-s, --simulate', 'simulate only do not write config; sets also --verbose')
