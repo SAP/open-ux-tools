@@ -15,35 +15,32 @@ export const annotationLibs: AnnotationLibs[] = [
 /**
  * Returns the reuse libraries associated with annotation entries in the metadata
  *
- * @param version - the odata service version
  * @param metadata - metadata string to be checked for specific annotations
  * @returns The base component library path
  */
-export function getAnnotationLibs(version: OdataVersion, metadata: string) {
+export function getAnnotationV4Libs(metadata: string) {
     const libraries: string[] = [];
     const annotationsFound = new Set();
 
-    if (version === OdataVersion.v4) {
-        // Create a regular expression that matches any of the annotations
-        const annotationsRegex = new RegExp(
-            annotationLibs.map((annotationLib: { annotation: any }) => annotationLib.annotation).join('|'),
-            'g'
-        );
+    // Create a regular expression that matches any of the annotations
+    const annotationsRegex = new RegExp(
+        annotationLibs.map((annotationLib: { annotation: any }) => annotationLib.annotation).join('|'),
+        'g'
+    );
 
-        let match;
-        match = annotationsRegex.exec(metadata);
-        match?.forEach((found) => {
-            annotationsFound.add(found);
-        });
+    let match;
+    match = annotationsRegex.exec(metadata);
+    match?.forEach((found) => {
+        annotationsFound.add(found);
+    });
 
-        // Add corresponding dependencies based on found annotations
-        annotationsFound.forEach((annotation) => {
-            const rule = annotationLibs.find((rule) => rule.annotation === annotation);
-            if (rule) {
-                libraries.push(rule.library);
-            }
-        });
-    }
+    // Add corresponding dependencies based on found annotations
+    annotationsFound.forEach((annotation) => {
+        const rule = annotationLibs.find((rule) => rule.annotation === annotation);
+        if (rule) {
+            libraries.push(rule.library);
+        }
+    });
 
     return Array.from(libraries);
 }

@@ -12,7 +12,7 @@ import type {
 } from '../types';
 import { TableSelectionMode, TableType, TemplateType } from '../types';
 import { getBaseComponent, getTemplateUi5Libs, TemplateTypeAttributes } from './templateAttributes';
-import { getAnnotationLibs } from './annotationReuseLibs';
+import { getAnnotationV4Libs } from './annotationReuseLibs';
 
 const defaultModelName = 'mainModel'; // UI5 default model name is '' but some floorplans require a named default model
 
@@ -73,15 +73,15 @@ export function setDefaultTemplateSettings<T extends {}>(template: Template<T>, 
  * @param metadata - metadata string to be checked for specific annotations
  * @returns The UI5 libs required by the specified template type and OData version and UI5 annotation libs
  */
-function getUi5Libs(
+export function getUi5Libs(
     type: TemplateType,
     version: OdataVersion,
     metadata?: string,
     ui5Libs?: string | string[]
 ): string[] {
     const templateLibs = getTemplateUi5Libs(type, version);
-    if (metadata) {
-        let annotationLibs = getAnnotationLibs(version, metadata);
+    if (version === OdataVersion.v4 && metadata) {
+        let annotationLibs = getAnnotationV4Libs(metadata);
         return [...templateLibs, ...annotationLibs].concat(ui5Libs ?? []);
     } else {
         return [...templateLibs].concat(ui5Libs ?? []);
