@@ -20,7 +20,6 @@ export const annotationLibs: AnnotationLibs[] = [
  */
 export function getAnnotationV4Libs(metadata: string) {
     const libraries: string[] = [];
-    const annotationsFound = new Set();
 
     // Create a regular expression that matches any of the annotations
     const annotationsRegex = new RegExp(
@@ -28,14 +27,8 @@ export function getAnnotationV4Libs(metadata: string) {
         'g'
     );
 
-    let match;
-    match = annotationsRegex.exec(metadata);
-    match?.forEach((found) => {
-        annotationsFound.add(found);
-    });
-
-    // Add corresponding dependencies based on found annotations
-    annotationsFound.forEach((annotation) => {
+    const foundAnnotations = annotationsRegex.exec(metadata);
+    foundAnnotations?.forEach((annotation) => {
         const rule = annotationLibs.find((rule) => rule.annotation === annotation);
         if (rule) {
             libraries.push(rule.library);
