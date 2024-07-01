@@ -1,6 +1,6 @@
 import * as tracer from '../../../../src/tracing/trace';
 import * as preview from '@sap-ux/preview-middleware';
-import { addLocalHtmlFiles } from '../../../../src/cli/add/html';
+import { addAddHtmlFilesCmd } from '../../../../src/cli/add/html';
 import { Command } from 'commander';
 import type { Store } from 'mem-fs';
 import type { Editor, create } from 'mem-fs-editor';
@@ -32,7 +32,7 @@ describe('add/html', () => {
     test('add html', async () => {
         // Test execution
         const command = new Command('add');
-        addLocalHtmlFiles(command);
+        addAddHtmlFilesCmd(command);
         await command.parseAsync(testArgv([]));
 
         // Flow check
@@ -43,7 +43,7 @@ describe('add/html', () => {
     test('add html --simulate', async () => {
         // Test execution
         const command = new Command('add');
-        addLocalHtmlFiles(command);
+        addAddHtmlFilesCmd(command);
         await command.parseAsync(testArgv(['--simulate']));
 
         // Flow check
