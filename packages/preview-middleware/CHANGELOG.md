@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.15.0
+
+### Minor Changes
+
+-   da2704c7: Add support for using the preview in CAP projects
+
 ## 0.14.0
 
 ### Minor Changes
