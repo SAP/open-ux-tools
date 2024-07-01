@@ -6,17 +6,18 @@ import type {
     ConfirmQuestion
 } from '@sap-ux/inquirer-common';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
-import { ChangeType, type NewModelAnswers } from '../../types';
+
 import { t } from '../../i18n';
-import {
-    isNotEmptyString,
-    validateAnnotationJSON,
-    validateUri,
-    isInternalUsage,
-    validateDuplication,
-    validateDuplicateName
-} from '../../base/helper';
 import { getChangesByType } from '../../base/change-utils';
+import { ChangeType, type NewModelAnswers } from '../../types';
+import { isInternalUsage, isCFEnvironment } from '../../base/helper';
+import {
+    validateDuplication,
+    validateDuplicateName,
+    validateUri,
+    validateAnnotationJSON,
+    isNotEmptyString
+} from '../../base/validators';
 
 function getDefaultServiceName(isInternalUsage: boolean): string {
     return isInternalUsage ? '' : 'customer.';
@@ -37,14 +38,11 @@ function getODataVersionChoices(): {
  *
  * @returns {YUIQuestion<ChangeDataSourceAnswers>[]} The questions/prompts.
  */
-export async function getPrompts(
-    projectPath: string,
-    layer: UI5FlexLayer,
-    isCFEnv: boolean
-): Promise<YUIQuestion<NewModelAnswers>[]> {
+export async function getPrompts(projectPath: string, layer: UI5FlexLayer): Promise<YUIQuestion<NewModelAnswers>[]> {
     const isInternal = isInternalUsage(layer);
     const oDataVersions = getODataVersionChoices();
     const defaultSeviceName = getDefaultServiceName(isInternal);
+    const isCFEnv = isCFEnvironment(projectPath);
 
     const changeFiles = getChangesByType(projectPath, ChangeType.ADD_NEW_MODEL, 'manifest');
 

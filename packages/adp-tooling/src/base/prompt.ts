@@ -5,7 +5,7 @@ import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { Logger } from '@sap-ux/logger';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { AppIndex } from '@sap-ux/axios-extension';
-import { isNotEmptyString, isValidSapClient } from './helper';
+import { isNotEmptyString, isValidSapClient } from './validators';
 
 export type PromptDefaults = {
     id?: string;
