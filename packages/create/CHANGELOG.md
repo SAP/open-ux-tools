@@ -1,5 +1,29 @@
 # @sap-ux/create
 
+## 0.6.0
+
+### Minor Changes
+
+-   6ad68964: New 'add html' command creating html files for local testing
+
+### Patch Changes
+
+-   Updated dependencies [6ad68964]
+    -   @sap-ux/preview-middleware@0.14.0
+
+## 0.5.114
+
+### Patch Changes
+
+-   65bfb244: Add Adaptation Project's Change Data Source generator prompting
+-   65bfb244: Added internal functionality to support inquirer prompts
+-   Updated dependencies [65bfb244]
+    -   @sap-ux/adp-tooling@0.11.7
+    -   @sap-ux/inquirer-common@0.3.1
+    -   @sap-ux/app-config-writer@0.3.81
+    -   @sap-ux/system-access@0.4.5
+    -   @sap-ux/cap-config-writer@0.5.4
+
 ## 0.5.113
 
 ### Patch Changes
