@@ -90,8 +90,8 @@ describe('config', () => {
     });
 
     describe('generatePreviewFiles', () => {
-        const basePath = join(__dirname, '../../fixtures/simple-app');
         test('minimum settings', async () => {
+            const basePath = join(__dirname, '../../fixtures/simple-app');
             const fs = await generatePreviewFiles(basePath, {});
             const files = fs.dump(basePath);
             const paths = Object.keys(files);
@@ -101,12 +101,38 @@ describe('config', () => {
         });
 
         test('tests included and a custom path', async () => {
+            const basePath = join(__dirname, '../../fixtures/simple-app');
             const config = {
                 flp: {
                     path: '/test/flpSandbox.html',
                     intent: { object: 'myapp', action: 'myaction' }
                 },
                 test: [{ framework: 'OPA5' }, { framework: 'Testsuite' }]
+            } satisfies MiddlewareConfig;
+            const fs = await generatePreviewFiles(basePath, config);
+            expect(fs.dump(basePath)).toMatchSnapshot();
+        });
+
+        test('multi-app setup e.g. in CAP', async () => {
+            const basePath = join(__dirname, '../../fixtures');
+            const config = {
+                flp: {
+                    path: '/test/flpSandbox.thml',
+                    apps: [
+                        {
+                            local: '/simple-app',
+                            target: '/apps/simple-app',
+                            intent: {
+                                object: 'simpleApp',
+                                action: 'preview'
+                            }
+                        },
+                        {
+                            local: '/multi-app',
+                            target: '/apps/other-app'
+                        }
+                    ]
+                }
             } satisfies MiddlewareConfig;
             const fs = await generatePreviewFiles(basePath, config);
             expect(fs.dump(basePath)).toMatchSnapshot();
