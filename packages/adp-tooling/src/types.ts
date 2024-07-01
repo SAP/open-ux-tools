@@ -309,30 +309,36 @@ export interface ComponentUsagesData {
 }
 
 export interface NewModelData {
-    projectData: AdpProjectData;
-    timestamp: number;
-    annotation: {
-        /** Name of the OData annotation data source. */
-        dataSourceName: string;
-        /** Optional URI of the OData annotation data source. */
-        dataSourceURI?: string;
-        /** Optional settings for the OData annotation. */
-        settings?: string;
-    };
-    service: {
-        /** Name of the OData service. */
-        name: string;
-        /** URI of the OData service. */
-        uri: string;
-        /** Name of the OData service model. */
-        modelName: string;
-        /** Version of OData used. */
-        version: string;
-        /** Settings for the OData service model. */
-        modelSettings: string;
-    };
+    variant: DescriptorVariant;
+    annotation: NewModelAnnotationAnswers;
+    service: NewModelServiceAnswers;
     /** Indicates whether annotation mode is added. */
     addAnnotationMode: boolean;
+}
+
+export interface NewModelAnswers extends NewModelServiceAnswers, NewModelAnnotationAnswers {
+    addAnnotationMode: boolean;
+}
+export interface NewModelServiceAnswers {
+    /** Name of the OData service. */
+    name: string;
+    /** URI of the OData service. */
+    uri: string;
+    /** Name of the OData service model. */
+    modelName: string;
+    /** Version of OData used. */
+    version: string;
+    /** Settings for the OData service model. */
+    modelSettings: string;
+}
+
+export interface NewModelAnnotationAnswers {
+    /** Name of the OData annotation data source. */
+    dataSourceName: string;
+    /** Optional URI of the OData annotation data source. */
+    dataSourceURI?: string;
+    /** Optional settings for the OData annotation. */
+    settings?: string;
 }
 
 export interface DataSourceData {

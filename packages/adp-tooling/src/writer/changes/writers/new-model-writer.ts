@@ -77,15 +77,10 @@ export class NewModelWriter implements IWriter<NewModelData> {
      * @returns {Promise<void>} A promise that resolves when the change writing process is completed.
      */
     async write(data: NewModelData): Promise<void> {
+        const timestamp = Date.now();
         const content = this.constructContent(data);
-        const change = getChange(data.projectData, data.timestamp, content, ChangeType.ADD_NEW_MODEL);
+        const change = getChange(data.variant, timestamp, content, ChangeType.ADD_NEW_MODEL);
 
-        writeChangeToFolder(
-            this.projectPath,
-            change,
-            `id_${data.timestamp}_addNewModel.change`,
-            this.fs,
-            DirName.Manifest
-        );
+        writeChangeToFolder(this.projectPath, change, `id_${timestamp}_addNewModel.change`, this.fs, DirName.Manifest);
     }
 }
