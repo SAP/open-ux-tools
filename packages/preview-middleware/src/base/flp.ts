@@ -263,7 +263,7 @@ export class FlpSandbox {
         for (const app of this.config.apps) {
             let manifest: Manifest | undefined;
             if (app.local) {
-                manifest = JSON.parse(readFileSync(join(app.local, 'webapp/manifest.json'), 'utf-8'));
+                manifest = JSON.parse(readFileSync(join(app.local, 'webapp', 'manifest.json'), 'utf-8'));
                 this.router.use(app.target, serveStatic(join(app.local, 'webapp')));
                 this.logger.info(`Serving additional application at ${app.target} from ${app.local}`);
             } else if (app.componentId) {
