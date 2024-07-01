@@ -44,6 +44,13 @@ describe('ADP writer', () => {
             expect(fs.dump(projectDir)).toMatchSnapshot();
         });
 
+        test('minimal config without i18n description', async () => {
+            const projectDir = join(outputDir, 'minimal');
+            delete config.app.i18nDescription;
+            await generate(projectDir, config, fs);
+            expect(fs.dump(projectDir)).toMatchSnapshot();
+        });
+
         test('config without passed memfs editor instance', async () => {
             const projectDir = join(outputDir, 'memfs');
             await generate(projectDir, config);
