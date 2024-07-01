@@ -22,15 +22,15 @@ export const newSystemChoiceValue = '!@£*&937newSystem*X~qy^' as const;
 
 const newSystemPromptNames = {
     newSystemType: 'newSystemType',
-    newSystemName: 'newSystemName'
+    userSystemName: 'userSystemName'
 } as const;
 
 /**
  * Internal only answers to service URL prompting not returned with OdataServiceAnswers.
  */
-export interface NewSystemAnswers extends OdataServiceAnswers {
+export interface NewSystemAnswers {
     [newSystemPromptNames.newSystemType]?: SapSystemType;
-    [newSystemPromptNames.newSystemName]?: string;
+    [newSystemPromptNames.userSystemName]?: string;
 }
 
 const systemSelectionPromptNames = {
@@ -42,6 +42,7 @@ export interface SystemSelectionAnswer extends OdataServiceAnswers {
     [systemSelectionPromptNames.system]?: string;
 }
 
+// The new system prompting is currently bypassed
 /**
  * Provides prompts that allow the creation of a new system connection.
  *
@@ -75,15 +76,24 @@ export function getNewSystemQuestions(): Question<NewSystemAnswers>[] {
         )
     );
 
+    return questions;
+}
+
+/**
+ * Get a prompt for new system name.
+ *
+ * @returns the new system name prompt
+ */
+export function getNewSystemNameQuestion(): InputQuestion<NewSystemAnswers> {
     let defaultSystemName: string;
-    questions.push({
+    const newSystemNamePrompt = {
         type: 'input',
         guiOptions: {
             hint: t('prompts.systemName.hint'),
             applyDefaultWhenDirty: true,
             breadcrumb: true
         },
-        name: newSystemPromptNames.newSystemName,
+        name: newSystemPromptNames.userSystemName,
         message: t('prompts.systemName.message'),
         default: async (answers: AbapOnPremAnswers & NewSystemAnswers) => {
             if (answers.newSystemType === 'abapOnPrem' && answers.systemUrl) {
@@ -105,7 +115,7 @@ export function getNewSystemQuestions(): Question<NewSystemAnswers>[] {
                     url: answers.systemUrl!,
                     client: answers.sapClient,
                     username: answers.abapSystemUsername,
-                    password: answers.abapSystemUsername
+                    password: answers.abapSystemPassword
                 });
                 if (PromptState.odataService.connectedSystem) {
                     PromptState.odataService.connectedSystem.backendSystem = backendSystem;
@@ -113,7 +123,7 @@ export function getNewSystemQuestions(): Question<NewSystemAnswers>[] {
             }
             return validationResult;
         }
-    } as InputQuestion<NewSystemAnswers>);
+    } as InputQuestion<NewSystemAnswers>;
 
-    return questions;
+    return newSystemNamePrompt;
 }

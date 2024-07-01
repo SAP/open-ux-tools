@@ -29,12 +29,11 @@ import { validateSystemName } from './validators';
  * Provides a system name suggestion based on the system URL, system ID, and client, validating the name is unique against the secure store.
  *
  * @param systemUrl
- * @param systemId
  * @param client
  * @returns
  */
-export async function suggestSystemName(systemUrl: string, systemId?: string, client?: string): Promise<string> {
-    const initialSystemName = systemId || systemUrl + (client ? t('texts.suggestedSystemNameClient', { client }) : '');
+export async function suggestSystemName(systemUrl: string, client?: string): Promise<string> {
+    const initialSystemName = systemUrl + (client ? t('texts.suggestedSystemNameClient', { client }) : '');
 
     if ((await validateSystemName(initialSystemName)) === true) {
         return initialSystemName;

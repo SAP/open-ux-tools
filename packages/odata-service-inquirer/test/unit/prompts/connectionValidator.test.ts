@@ -1,5 +1,6 @@
 import * as axiosExtension from '@sap-ux/axios-extension';
-import { ODataService, ServiceProvider, AxiosRequestConfig } from '@sap-ux/axios-extension';
+import type { AxiosRequestConfig } from '@sap-ux/axios-extension';
+import { ODataService, ServiceProvider } from '@sap-ux/axios-extension';
 import type { AxiosResponse } from 'axios';
 import { AxiosError } from 'axios';
 import { ErrorHandler } from '../../../src/error-handler/error-handler';
@@ -115,7 +116,7 @@ describe('ConnectionValidator', () => {
 
         expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toBe(true);
         const params = (createProviderSpy.mock.calls[0][0] as AxiosRequestConfig).params;
-        expect((params as URLSearchParams).get('sap-client')).toBe('010');
+        expect(params['sap-client']).toBe('010');
         expect(createProviderSpy).toHaveBeenCalledWith(
             expect.objectContaining({
                 baseURL: 'https://somehost:1234',
@@ -199,15 +200,17 @@ describe('ConnectionValidator', () => {
         mockIsAppStudio = true;
         const serviceUrl = 'https://somehost:1234/some/path?sap-client=010';
         const createProviderSpy = jest.spyOn(axiosExtension, 'create');
-        const serviceProviderSpy = jest.spyOn(ServiceProvider.prototype, 'service').mockReturnValueOnce({} as ODataService);;
+        const serviceProviderSpy = jest
+            .spyOn(ServiceProvider.prototype, 'service')
+            .mockReturnValueOnce({} as ODataService);
         jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce('');
 
         const validator = new ConnectionValidator();
         await validator.validateUrl(serviceUrl);
 
         const params = (createProviderSpy.mock.calls[0][0] as AxiosRequestConfig).params;
-        expect((params as URLSearchParams).get('sap-client')).toBe('010');
-        expect((params as URLSearchParams).get('saml2')).toBe('disabled');
+        expect(params['sap-client']).toBe('010');
+        expect(params['saml2']).toBe('disabled');
 
         expect(createProviderSpy).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -216,9 +219,7 @@ describe('ConnectionValidator', () => {
                 cookies: ''
             })
         );
-        expect(serviceProviderSpy).toHaveBeenCalledWith(
-            '/some/path/'
-        );
+        expect(serviceProviderSpy).toHaveBeenCalledWith('/some/path/');
     });
 
     test('should reset connection validity if url changed', async () => {

@@ -385,7 +385,9 @@ describe('Service URL prompts', () => {
 
         let serviceValidatorSpy = jest.spyOn(serviceUrlValidators, 'validateService').mockResolvedValue(true);
         expect(await (passwordPrompt?.validate as Function)(password, { serviceUrl, username })).toBe(true);
-        expect(connectionValidatorMock.validateAuth).toHaveBeenCalledWith(serviceUrl, username, password, { ignoreCertError: undefined });
+        expect(connectionValidatorMock.validateAuth).toHaveBeenCalledWith(serviceUrl, username, password, {
+            ignoreCertError: undefined
+        });
         expect(serviceValidatorSpy).toHaveBeenCalledWith(
             serviceUrl,
             expect.objectContaining(connectionValidatorMock),

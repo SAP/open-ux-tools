@@ -211,11 +211,23 @@ describe('getQuestions', () => {
                 "when": [Function],
               },
               {
+                "default": [Function],
+                "guiOptions": {
+                  "applyDefaultWhenDirty": true,
+                  "breadcrumb": true,
+                  "hint": "Entering a system name will save the connection for re-use.",
+                },
+                "message": "System name",
+                "name": "userSystemName",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
                 "additionalMessages": [Function],
                 "choices": [Function],
                 "default": [Function],
                 "guiOptions": {
-                  "applyDefaultWhenDirty": true,
                   "breadcrumb": "Service",
                   "mandatory": true,
                 },

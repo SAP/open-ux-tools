@@ -200,11 +200,14 @@ function getPasswordPrompt(
         message: t('prompts.servicePassword.message'),
         guiType: 'login',
         mask: '*',
-        validate: async (password: string, { username, serviceUrl, ignoreCertError }: ServiceUrlAnswers) => {
+        validate: async (password: string, { username, serviceUrl, ignoreCertError, sapClient }: ServiceUrlAnswers) => {
             if (!serviceUrl || !username || !password) {
                 return false;
             }
-            const validAuth = await connectValidator.validateAuth(serviceUrl, username, password, { ignoreCertError });
+            const validAuth = await connectValidator.validateAuth(serviceUrl, username, password, {
+                ignoreCertError,
+                sapClient
+            });
             if (validAuth === true) {
                 return validateService(serviceUrl, connectValidator, requiredVersion, ignoreCertError);
             }

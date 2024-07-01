@@ -1,7 +1,7 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Annotations, AxiosRequestConfig, CatalogService, ServiceProvider } from '@sap-ux/axios-extension';
 import { ODataVersion, create } from '@sap-ux/axios-extension';
-import type { ListQuestion } from '@sap-ux/inquirer-common';
+import { withCondition, type ListQuestion } from '@sap-ux/inquirer-common';
 import { validateClient } from '@sap-ux/project-input-validator';
 import type { InputQuestion, ListChoiceOptions, PasswordQuestion, Question } from 'inquirer';
 import { t } from '../../../../i18n';
@@ -13,6 +13,7 @@ import { getServiceChoices } from './service-helper';
 import { errorHandler } from '../../../prompt-helpers';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import LoggerHelper from '../../../logger-helper';
+import { getNewSystemNameQuestion } from '../questions';
 
 export enum abapOnPremInternalPromptNames {
     systemUrl = 'systemUrl',
@@ -22,7 +23,7 @@ export enum abapOnPremInternalPromptNames {
     systemService = 'systemService'
 }
 
-export interface AbapOnPremAnswers extends OdataServiceAnswers {
+export interface AbapOnPremAnswers extends Partial<OdataServiceAnswers> {
     [abapOnPremInternalPromptNames.systemUrl]?: string;
     [abapOnPremInternalPromptNames.systemUsername]?: string;
     [abapOnPremInternalPromptNames.systemPassword]?: string;
@@ -50,11 +51,14 @@ export const SERVICE_TYPE = {
  *
  * @returns property questions for the Abap on-premise datasource
  */
-export function getAbapOnPremQuestions(): Question<OdataServiceAnswers>[] {
+export function getAbapOnPremQuestions(): Question<AbapOnPremAnswers>[] {
     PromptState.reset();
     errorHandler.resetErrorState();
     const connectValidator = new ConnectionValidator();
-    let serviceChoices: ListChoiceOptions<ServiceAnswer>[] = [];
+    let serviceChoices: ListChoiceOptions<ServiceAnswer>[];
+    // Prevent re-requesting services repeatedly by only requesting them once and when the system is changed
+    let lastSystemUrl: string | undefined;
+    let lastService: ServiceAnswer | undefined;
 
     const questions: Question<AbapOnPremAnswers>[] = [
         {
@@ -66,7 +70,16 @@ export function getAbapOnPremQuestions(): Question<OdataServiceAnswers>[] {
                 mandatory: true,
                 breadcrumb: true
             },
-            validate: async (url) => await connectValidator.validateUrl(url, { isSystem: true })
+            validate: async (url) => {
+                const valResult = await connectValidator.validateUrl(url, { isSystem: true });
+                if (valResult === true) {
+                    PromptState.odataService.connectedSystem = {
+                        serviceProvider: connectValidator.serviceProvider
+                    };
+                    lastSystemUrl = url;
+                }
+                return valResult;
+            }
         } as InputQuestion<AbapOnPremAnswers>,
         {
             type: 'input',
@@ -97,26 +110,30 @@ export function getAbapOnPremQuestions(): Question<OdataServiceAnswers>[] {
             message: t('prompts.systemPassword.message'),
             guiType: 'login',
             mask: '*',
-            validate: async (password, { systemUrl, abapSystemUsername }: AbapOnPremAnswers) => {
+            validate: async (password, { systemUrl, abapSystemUsername, sapClient }: AbapOnPremAnswers) => {
                 if (!(systemUrl && abapSystemUsername && password)) {
                     return false;
                 }
-                return await connectValidator.validateAuth(systemUrl, abapSystemUsername, password, { isSystem: true });
+                const valResult = await connectValidator.validateAuth(systemUrl, abapSystemUsername, password, {
+                    isSystem: true,
+                    sapClient
+                });
+                if (valResult === true) {
+                    PromptState.odataService.connectedSystem = {
+                        serviceProvider: connectValidator.serviceProvider
+                    };
+                    lastSystemUrl = systemUrl;
+                }
+                return valResult;
             }
         } as PasswordQuestion<AbapOnPremAnswers>,
-        /* {
-            when: async (answers: AbapOnPremAnswers): Promise<boolean> => {
-                if (
-                    answers.systemUrl &&
-                    (connectValidator.validity.authenticated || !connectValidator.validity.authRequired === false)
-                ) {
-                    // todo: Assign the connected backend to the answers for re-use and persistance
-                    PromptState.odataService.systemBackend = {};
-                }
-                return false;
-            },
-            name: 'setBackend'
-        }, */
+        // New system question will allow user to give the system a user friendly name
+        withCondition(
+            [getNewSystemNameQuestion()],
+            (answers: AbapOnPremAnswers) =>
+                !!answers.systemUrl &&
+                (connectValidator.validity.authenticated || connectValidator.validity.authRequired !== true)
+        )[0],
         {
             when: (): boolean =>
                 connectValidator.validity.authenticated || connectValidator.validity.authRequired === false,
@@ -124,30 +141,34 @@ export function getAbapOnPremQuestions(): Question<OdataServiceAnswers>[] {
             type: 'list',
             message: t('prompts.systemService.message'),
             guiOptions: {
-                applyDefaultWhenDirty: true, // If system changes reset,
                 breadcrumb: t('prompts.systemService.breadcrumb'),
                 mandatory: true
             },
-            choices: async () => {
-                serviceChoices = await getServiceChoices(Object.values(connectValidator.catalogs));
+            choices: async (answers) => {
+                if (!serviceChoices || lastSystemUrl !== answers.systemUrl) {
+                    serviceChoices = await getServiceChoices(Object.values(connectValidator.catalogs));
+                }
                 return serviceChoices;
             },
             additionalMessages: (selectedService: ServiceAnswer) => {
-                if (selectedService.serviceType && selectedService.serviceType !== SERVICE_TYPE.UI) {
+                if (selectedService?.serviceType && selectedService.serviceType !== SERVICE_TYPE.UI) {
                     return {
                         message: t('prompts.nonUIServiceTypeWarningMessage', { serviceTypeDesc: 'A2X' }),
                         severity: Severity.warning
                     };
                 }
 
-                if (serviceChoices.length === 0) {
+                if (serviceChoices?.length === 0) {
                     return {
                         message: t('prompts.noServicesWarning'),
                         severity: Severity.warning
                     };
                 }
             },
-            default: () => {
+            default: (answers: AbapOnPremAnswers) => {
+                if (answers.systemService) {
+                    return answers.systemService;
+                }
                 return serviceChoices.length > 1 ? undefined : 0;
             },
             // Warning: only executes in YUI not cli
@@ -158,32 +179,47 @@ export function getAbapOnPremQuestions(): Question<OdataServiceAnswers>[] {
                 if (errorHandler.hasError()) {
                     return errorHandler.getValidationErrorHelp() ?? false;
                 }
-                if (service) {
-                    // serviceType = await getServiceType(sapSystem, choice.serviceType, service);
-                    const serviceResult = await getServiceMetadata(
-                        service.servicePath,
-                        connectValidator.catalogs[service.serviceODataVersion],
-                        connectValidator.axiosConfig
-                    );
-                    if (typeof serviceResult === 'string') {
-                        return serviceResult;
-                    }
-                    PromptState.odataService.annotations = serviceResult?.annotations;
-                    PromptState.odataService.metadata = serviceResult?.metadata;
-                    PromptState.odataService.connectedSystem = {
-                        serviceProvider: serviceResult.serviceProvider
-                    };
-                    PromptState.odataService.odataVersion =
-                        service.serviceODataVersion === ODataVersion.v2 ? OdataVersion.v2 : OdataVersion.v4;
-                    PromptState.odataService.servicePath = service.servicePath;
-                    PromptState.odataService.origin = answers.systemUrl;
-                    return true;
+                if (service && lastService?.servicePath !== service.servicePath) {
+                    lastService = service;
+                    return getServiceDetails(service, answers.systemUrl!, connectValidator);
                 }
-                return false;
+                return true;
             }
         } as ListQuestion<AbapOnPremAnswers>
     ];
     return questions;
+}
+
+/**
+ * Gets the serice details and sets the PromptState.odataService properties.
+ * If an error occurs, the error message is returned for use in validators.
+ *
+ * @param service
+ * @param systemUrl
+ * @param connectionValidator
+ * @returns true if successful, setting the PromptState.odataService properties, or an error message indicating why the service details could not be retrieved.
+ */
+async function getServiceDetails(
+    service: ServiceAnswer,
+    systemUrl: string,
+    connectionValidator: ConnectionValidator
+): Promise<string | boolean> {
+    // serviceType = await getServiceType(sapSystem, choice.serviceType, service);
+    const serviceResult = await getServiceMetadata(
+        service.servicePath,
+        connectionValidator.catalogs[service.serviceODataVersion],
+        connectionValidator.axiosConfig
+    );
+    if (typeof serviceResult === 'string') {
+        return serviceResult;
+    }
+    PromptState.odataService.annotations = serviceResult?.annotations;
+    PromptState.odataService.metadata = serviceResult?.metadata;
+    PromptState.odataService.odataVersion =
+        service.serviceODataVersion === ODataVersion.v2 ? OdataVersion.v2 : OdataVersion.v4;
+    PromptState.odataService.servicePath = service.servicePath;
+    PromptState.odataService.origin = systemUrl;
+    return true;
 }
 
 /**

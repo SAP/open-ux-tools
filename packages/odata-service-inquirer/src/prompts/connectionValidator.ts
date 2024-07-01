@@ -16,6 +16,7 @@ import { t } from '../i18n';
 import LoggerHelper from './logger-helper';
 import { errorHandler } from './prompt-helpers';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
+import { SAP_CLIENT_KEY } from '../types';
 
 /**
  * Structure to store validity information about url to be validated.
@@ -76,6 +77,14 @@ export class ConnectionValidator {
     }
 
     /**
+     *
+     * @returns the current connections service provider
+     */
+    public get serviceProvider(): ServiceProvider {
+        return this._serviceProvider;
+    }
+
+    /**
      * Calls a given service or system url to test its reachability and authentication requirements.
      * If the url is a system url, it will attempt to use the catalog service to get the service info.
      *
@@ -108,7 +117,7 @@ export class ConnectionValidator {
             }
 
             let axiosConfig: AxiosRequestConfig & ProviderConfiguration = {
-                params: url.searchParams,
+                params: Object.fromEntries(url.searchParams),
                 ignoreCertErrors: ignoreCertError,
                 cookies: '',
                 baseURL: url.origin
@@ -285,13 +294,18 @@ export class ConnectionValidator {
      * @param options
      * @param options.ignoreCertError ignore some certificate errors
      * @param options.isSystem if true, the url will be treated as a system url rather than a service url
+     * @param options.sapClient
      * @returns true if the authentication is successful, false if not, or an error message string
      */
     public async validateAuth(
         url: string,
         username: string,
         password: string,
-        { ignoreCertError = false, isSystem = false }: { ignoreCertError?: boolean; isSystem?: boolean } = {}
+        {
+            ignoreCertError = false,
+            isSystem = false,
+            sapClient
+        }: { ignoreCertError?: boolean; isSystem?: boolean; sapClient?: string } = {}
     ): Promise<boolean | string> {
         if (!url) {
             return false;
@@ -300,8 +314,12 @@ export class ConnectionValidator {
             return false;
         }
         try {
+            const urlObject = new URL(url);
+            if (sapClient) {
+                urlObject.searchParams.append(SAP_CLIENT_KEY, sapClient);
+            }
             this.validity.authenticated =
-                (await this.checkSapService(new URL(url), username, password, { ignoreCertError, isSystem })) === 200;
+                (await this.checkSapService(urlObject, username, password, { ignoreCertError, isSystem })) === 200;
             return this.validity.authenticated === true ? true : t('errors.authenticationFailed');
         } catch (error) {
             return errorHandler.getErrorMsg(error) ?? false;
