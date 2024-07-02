@@ -278,6 +278,12 @@ export interface AnnotationsData {
     answers: AddAnnotationsAnswers;
 }
 
+export const enum AnnotationFileSelectType {
+    ExistingFile = 1,
+    NewEmptyFile = 2
+}
+
+
 export interface ComponentUsagesData {
     projectData: AdpProjectData;
     timestamp: number;
@@ -398,7 +404,7 @@ export interface AddAnnotationsAnswers {
     /** Selected option for Annotation File */
     fileSelectOption: number;
     /** Annotation File path */
-    filePath: string;
+    filePath?: string;
 }
 
 export type DataSource = ManifestNamespace.DataSource & { dataSourceName: string; annotations: string[] };

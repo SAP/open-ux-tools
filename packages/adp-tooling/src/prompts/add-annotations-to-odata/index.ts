@@ -1,15 +1,10 @@
 import type { ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { AddAnnotationsAnswers } from '../../types';
+import { AnnotationFileSelectType, type AddAnnotationsAnswers } from '../../types';
 import { t } from '../../i18n';
 import { filterDataSourcesByType } from '@sap-ux/project-access';
 import { isNotEmptyString, checkFileExists, checkDuplicateFile } from '../../base/helper';
 import { join, isAbsolute } from 'path';
-
-enum AnnotationFileSelectType {
-    ExistingFile = 1,
-    NewEmptyFile = 2
-}
 
 /**
  * Gets the prompts for adding annotations to OData service.

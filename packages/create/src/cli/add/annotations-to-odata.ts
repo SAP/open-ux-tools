@@ -5,7 +5,6 @@ import {
     ChangeType,
     getPromptsForAddAnnotationsToOData,
     getManifest,
-    isInternalUsage,
     isCFEnvironment,
     getVariant
 } from '@sap-ux/adp-tooling';
