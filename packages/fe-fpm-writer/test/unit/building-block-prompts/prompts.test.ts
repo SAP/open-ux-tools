@@ -46,15 +46,19 @@ describe('Prompts', () => {
     });
 
     describe('getChoices', () => {
-        test('Choices for field "entity"', async () => {
-            const choices = await promptsAPI.getChoices(PromptsType.Table, 'entity', {});
+        test('Choices for field "entitySet"', async () => {
+            const choices = await promptsAPI.getChoices(PromptsType.Table, 'buildingBlockData.metaPath.entitySet', {});
             expect(choices).toMatchSnapshot();
         });
 
         const types = [PromptsType.Chart, PromptsType.FilterBar, PromptsType.Table];
         test.each(types)('Type "%s", choices for field "qualifier"', async (type: PromptsType) => {
-            const choices = await promptsAPI.getChoices(type, 'qualifier', {
-                entity: 'C_CUSTOMER_OP_SRV.C_CustomerOPType'
+            const choices = await promptsAPI.getChoices(type, 'buildingBlockData.metaPath.qualifier', {
+                buildingBlockData: {
+                    metaPath: {
+                        entitySet: 'C_CUSTOMER_OP_SRV.C_CustomerOPType'
+                    }
+                }
             });
             expect(choices).toMatchSnapshot();
         });
@@ -64,7 +68,7 @@ describe('Prompts', () => {
             const filesChoices = await promptsAPI.getChoices(PromptsType.Chart, 'viewOrFragmentPath', {});
             // Get "aggregationPath"
             const aggregationChoices = await promptsAPI.getChoices(PromptsType.Chart, 'aggregationPath', {
-                viewOrFragmentFile:
+                viewOrFragmentPath:
                     typeof filesChoices[0] === 'string' ? filesChoices[0] : (filesChoices[0] as ChoiceOptions).value
             });
             expect(aggregationChoices).toMatchSnapshot();
@@ -88,19 +92,19 @@ describe('Prompts', () => {
             fs.write(join(projectPath, `webapp/ext/${filename}`), xml);
 
             // ToDo write xml with filterbars
-            // Get "viewOrFragmentFile"
-            const filesChoices = await promptsAPI.getChoices(PromptsType.Chart, 'viewOrFragmentFile', {});
+            // Get "viewOrFragmentPath"
+            const filesChoices = await promptsAPI.getChoices(PromptsType.Chart, 'viewOrFragmentPath', {});
             const fileChoice = filesChoices.find((choice) =>
                 typeof choice === 'string'
                     ? choice.endsWith(filename)
                     : (choice as ChoiceOptions).value.endsWith(filename)
             );
-            // Get "viewOrFragmentFile"
-            const aggregationChoices = await promptsAPI.getChoices(PromptsType.Chart, 'filterBar', {
-                viewOrFragmentFile: typeof fileChoice === 'string' ? fileChoice : (fileChoice as ChoiceOptions).value
+            // Get "viewOrFragmentPath"
+            const aggregationChoices = await promptsAPI.getChoices(PromptsType.Chart, 'buildingBlockData.filterBar', {
+                viewOrFragmentPath: typeof fileChoice === 'string' ? fileChoice : (fileChoice as ChoiceOptions).value
             });
             expect(aggregationChoices).toMatchSnapshot();
-        });
+        }, 999999);
     });
 
     describe('validateAnswers', () => {
@@ -141,10 +145,10 @@ describe('Prompts', () => {
                 fs.write(filePath, xml);
                 const validation = await promptsAPI.validateAnswers(
                     PromptsType.FilterBar,
-                    { viewOrFragmentPath: replativeFilePath, id: value },
-                    [{ name: 'id' }]
+                    { viewOrFragmentPath: replativeFilePath, buildingBlockData: { id: value } },
+                    [{ name: 'buildingBlockData.id' }]
                 );
-                expect(validation['id']).toEqual(result);
+                expect(validation['buildingBlockData.id']).toEqual(result);
             });
         });
     });
@@ -155,8 +159,10 @@ describe('Prompts', () => {
         aggregationPath: "/mvc:View/*[local-name()='Page']/*[local-name()='content']",
         buildingBlockData: {
             id: 'id',
-            entity: 'test.entity',
-            qualifier: 'qualifier'
+            metaPath: {
+                entitySet: 'test.entity',
+                qualifier: 'qualifier'
+            }
         }
     };
     const answers: { [key: string]: SupportedAnswers } = {

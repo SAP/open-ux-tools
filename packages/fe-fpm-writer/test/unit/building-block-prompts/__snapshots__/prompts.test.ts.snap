@@ -36,7 +36,7 @@ Object {
         "filterBar",
       ],
       "message": "View or Fragment File",
-      "name": "viewOrFragmentFile",
+      "name": "viewOrFragmentPath",
       "placeholder": "Select a view or fragment file",
       "required": true,
       "selectType": "dynamic",
@@ -46,7 +46,7 @@ Object {
     Object {
       "default": "Chart",
       "message": "Building Block ID",
-      "name": "id",
+      "name": "buildingBlockData.id",
       "placeholder": "Enter a building block ID",
       "required": true,
       "type": "input",
@@ -55,10 +55,10 @@ Object {
     Object {
       "choices": [Function],
       "dependantPromptNames": Array [
-        "qualifier",
+        "buildingBlockData.metaPath.qualifier",
       ],
       "message": "Entity",
-      "name": "entity",
+      "name": "buildingBlockData.metaPath.entitySet",
       "placeholder": "Select an entity",
       "required": true,
       "selectType": "dynamic",
@@ -68,7 +68,7 @@ Object {
       "additionalInfo": "Values are dependent on entity type",
       "choices": [Function],
       "message": "Chart Qualifier",
-      "name": "qualifier",
+      "name": "buildingBlockData.metaPath.qualifier",
       "placeholder": "Select chart qualifier",
       "required": true,
       "selectType": "dynamic",
@@ -89,7 +89,7 @@ Object {
         "inputPlaceholder": "Enter a new filter bar ID",
       },
       "message": "Associated Filter Bar ID",
-      "name": "filterBar",
+      "name": "buildingBlockData.filterBar",
       "placeholder": "Select or enter a filter bar ID",
       "selectType": "dynamic",
       "type": "list",
@@ -110,7 +110,7 @@ Object {
         },
       ],
       "message": "Chart Personalization",
-      "name": "personalization",
+      "name": "buildingBlockData.personalization",
       "placeholder": "Select chart personalization",
       "selectType": "static",
       "type": "checkbox",
@@ -127,13 +127,13 @@ Object {
         },
       ],
       "message": "Selection Mode",
-      "name": "selectionMode",
+      "name": "buildingBlockData.selectionMode",
       "selectType": "static",
       "type": "list",
     },
     Object {
       "message": "Selection Change Function",
-      "name": "selectionChange",
+      "name": "buildingBlockData.selectionChange",
       "placeholder": "Enter a selecton change function",
       "type": "input",
     },
@@ -141,7 +141,7 @@ Object {
 }
 `;
 
-exports[`Prompts getChoices Choices for field "entity" 1`] = `
+exports[`Prompts getChoices Choices for field "entitySet" 1`] = `
 Array [
   Object {
     "name": "C_CustomerBankDetailsOPType",
@@ -274,7 +274,7 @@ Array [
 ]
 `;
 
-exports[`Prompts getChoices Choices for field "viewOrFragmentFile" and "aggregationPath" 1`] = `
+exports[`Prompts getChoices Choices for field "viewOrFragmentPath" and "aggregationPath" 1`] = `
 Array [
   Object {
     "name": "/mvc:View",
@@ -292,6 +292,19 @@ Array [
 `;
 
 exports[`Prompts getChoices Type "chart", choices for field "qualifier" 1`] = `
+Array [
+  Object {
+    "name": "@UI.Chart",
+    "value": "@com.sap.vocabularies.UI.v1.Chart",
+  },
+  Object {
+    "name": "to_CustomerBankDetails/@UI.Chart#C_CustomerBankDetailsOPType",
+    "value": "to_CustomerBankDetails/@com.sap.vocabularies.UI.v1.Chart#C_CustomerBankDetailsOPType",
+  },
+]
+`;
+
+exports[`Prompts getChoices Type "chart", choices for field "qualifier" 2`] = `
 Array [
   Object {
     "name": "@UI.Chart",
@@ -369,7 +382,7 @@ Object {
         "aggregationPath",
       ],
       "message": "View or Fragment File",
-      "name": "viewOrFragmentFile",
+      "name": "viewOrFragmentPath",
       "placeholder": "Select a view or fragment file",
       "required": true,
       "selectType": "dynamic",
@@ -379,7 +392,7 @@ Object {
     Object {
       "default": "FilterBar",
       "message": "Building Block ID",
-      "name": "id",
+      "name": "buildingBlockData.id",
       "placeholder": "Enter a building block ID",
       "required": true,
       "type": "input",
@@ -397,10 +410,10 @@ Object {
     Object {
       "choices": [Function],
       "dependantPromptNames": Array [
-        "qualifier",
+        "buildingBlockData.metaPath.qualifier",
       ],
       "message": "Entity",
-      "name": "entity",
+      "name": "buildingBlockData.metaPath.entitySet",
       "placeholder": "Select an entity",
       "required": true,
       "selectType": "dynamic",
@@ -410,7 +423,7 @@ Object {
       "additionalInfo": "Values are dependent on entity type",
       "choices": [Function],
       "message": "Selection Fields Qualifier",
-      "name": "qualifier",
+      "name": "buildingBlockData.metaPath.qualifier",
       "placeholder": "Select selection fields qualifier",
       "required": true,
       "selectType": "dynamic",
@@ -418,12 +431,12 @@ Object {
     },
     Object {
       "message": "Filter Function",
-      "name": "filterChanged",
+      "name": "buildingBlockData.filterChanged",
       "type": "input",
     },
     Object {
       "message": "Search Function",
-      "name": "search",
+      "name": "buildingBlockData.search",
       "type": "input",
     },
   ],
@@ -460,7 +473,7 @@ Object {
       ],
       "groupId": "tableBuildingBlockProperties",
       "message": "View or Fragment File",
-      "name": "viewOrFragmentFile",
+      "name": "viewOrFragmentPath",
       "placeholder": "Select a view or fragment file",
       "required": true,
       "selectType": "dynamic",
@@ -471,7 +484,7 @@ Object {
       "default": "Table",
       "groupId": "tableBuildingBlockProperties",
       "message": "Building Block ID",
-      "name": "id",
+      "name": "buildingBlockData.id",
       "placeholder": "Enter a building block ID",
       "required": true,
       "type": "input",
@@ -480,11 +493,11 @@ Object {
     Object {
       "choices": [Function],
       "dependantPromptNames": Array [
-        "qualifier",
+        "buildingBlockData.metaPath.qualifier",
       ],
       "groupId": "tableBuildingBlockProperties",
       "message": "Entity",
-      "name": "entity",
+      "name": "buildingBlockData.metaPath.entitySet",
       "placeholder": "Select an entity",
       "required": true,
       "selectType": "dynamic",
@@ -495,7 +508,7 @@ Object {
       "choices": [Function],
       "groupId": "tableBuildingBlockProperties",
       "message": "Line Item Qualifier",
-      "name": "qualifier",
+      "name": "buildingBlockData.metaPath.qualifier",
       "placeholder": "Select a line item qualifier",
       "required": true,
       "selectType": "dynamic",
@@ -518,7 +531,7 @@ Object {
       },
       "groupId": "tableBuildingBlockProperties",
       "message": "Associated Filter Bar ID",
-      "name": "filterBar",
+      "name": "buildingBlockData.filterBar",
       "placeholder": "Select or enter a filter bar ID",
       "selectType": "dynamic",
       "type": "list",
@@ -537,7 +550,7 @@ Object {
       "default": "ResponsiveTable",
       "groupId": "tableVisualizationProperties",
       "message": "Table Type",
-      "name": "type",
+      "name": "buildingBlockData.type",
       "type": "list",
     },
     Object {
@@ -562,7 +575,7 @@ Object {
       "default": "Single",
       "groupId": "tableVisualizationProperties",
       "message": "Select a Selection Mode",
-      "name": "selectionMode",
+      "name": "buildingBlockData.selectionMode",
       "type": "list",
     },
     Object {
@@ -579,14 +592,14 @@ Object {
       "default": true,
       "groupId": "tableVisualizationProperties",
       "message": "Display Header",
-      "name": "headerVisible",
+      "name": "buildingBlockData.headerVisible",
       "selectType": "static",
       "type": "list",
     },
     Object {
       "groupId": "tableVisualizationProperties",
       "message": "Table Header Text",
-      "name": "header",
+      "name": "buildingBlockData.header",
       "type": "input",
     },
     Object {
@@ -606,7 +619,7 @@ Object {
       ],
       "groupId": "tableVisualizationProperties",
       "message": "Table Personalization",
-      "name": "personalization",
+      "name": "buildingBlockData.personalization",
       "type": "checkbox",
     },
     Object {
@@ -627,7 +640,7 @@ Object {
       "default": "None",
       "groupId": "tableVisualizationProperties",
       "message": "Select a Table Variant Management",
-      "name": "variantManagement",
+      "name": "buildingBlockData.variantManagement",
       "type": "list",
     },
     Object {
@@ -644,7 +657,7 @@ Object {
       "default": false,
       "groupId": "tableVisualizationProperties",
       "message": "Enable Read Only Mode",
-      "name": "readOnly",
+      "name": "buildingBlockData.readOnly",
       "selectType": "static",
       "type": "list",
     },
@@ -662,7 +675,7 @@ Object {
       "default": false,
       "groupId": "tableVisualizationProperties",
       "message": "Enable Auto Column Width",
-      "name": "enableAutoColumnWidth",
+      "name": "buildingBlockData.enableAutoColumnWidth",
       "selectType": "static",
       "type": "list",
     },
@@ -680,7 +693,7 @@ Object {
       "default": false,
       "groupId": "tableVisualizationProperties",
       "message": "Enable Data Export",
-      "name": "enableExport",
+      "name": "buildingBlockData.enableExport",
       "selectType": "static",
       "type": "list",
     },
@@ -698,7 +711,7 @@ Object {
       "default": false,
       "groupId": "tableVisualizationProperties",
       "message": "Enable Full Screen Mode",
-      "name": "enableFullScreen",
+      "name": "buildingBlockData.enableFullScreen",
       "selectType": "static",
       "type": "list",
     },
@@ -716,7 +729,7 @@ Object {
       "default": false,
       "groupId": "tableVisualizationProperties",
       "message": "Enable Paste From Clipboard",
-      "name": "enablePaste",
+      "name": "buildingBlockData.enablePaste",
       "selectType": "static",
       "type": "list",
     },
@@ -734,7 +747,7 @@ Object {
       "default": true,
       "groupId": "tableVisualizationProperties",
       "message": "Table Searchable Toggle",
-      "name": "isSearchable",
+      "name": "buildingBlockData.isSearchable",
       "selectType": "static",
       "type": "list",
     },
@@ -778,31 +791,31 @@ Object {
     "errorMessage": "Please select a value",
     "isValid": false,
   },
-  "entity": Object {
-    "errorMessage": "Please select a value",
-    "isValid": false,
-  },
-  "filterBar": Object {
+  "buildingBlockData.filterBar": Object {
     "isValid": true,
   },
-  "id": Object {
+  "buildingBlockData.id": Object {
     "errorMessage": "Please enter a value",
     "isValid": false,
   },
-  "personalization": Object {
-    "isValid": true,
-  },
-  "qualifier": Object {
+  "buildingBlockData.metaPath.entitySet": Object {
     "errorMessage": "Please select a value",
     "isValid": false,
   },
-  "selectionChange": Object {
+  "buildingBlockData.metaPath.qualifier": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+  "buildingBlockData.personalization": Object {
     "isValid": true,
   },
-  "selectionMode": Object {
+  "buildingBlockData.selectionChange": Object {
     "isValid": true,
   },
-  "viewOrFragmentFile": Object {
+  "buildingBlockData.selectionMode": Object {
+    "isValid": true,
+  },
+  "viewOrFragmentPath": Object {
     "errorMessage": "Please select a value",
     "isValid": false,
   },
@@ -815,25 +828,25 @@ Object {
     "errorMessage": "Please select a value",
     "isValid": false,
   },
-  "entity": Object {
-    "errorMessage": "Please select a value",
-    "isValid": false,
-  },
-  "filterChanged": Object {
+  "buildingBlockData.filterChanged": Object {
     "isValid": true,
   },
-  "id": Object {
+  "buildingBlockData.id": Object {
     "errorMessage": "Please enter a value",
     "isValid": false,
   },
-  "qualifier": Object {
+  "buildingBlockData.metaPath.entitySet": Object {
     "errorMessage": "Please select a value",
     "isValid": false,
   },
-  "search": Object {
+  "buildingBlockData.metaPath.qualifier": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+  "buildingBlockData.search": Object {
     "isValid": true,
   },
-  "viewOrFragmentFile": Object {
+  "viewOrFragmentPath": Object {
     "errorMessage": "Please select a value",
     "isValid": false,
   },
@@ -846,58 +859,58 @@ Object {
     "errorMessage": "Please select a value",
     "isValid": false,
   },
-  "enableAutoColumnWidth": Object {
+  "buildingBlockData.enableAutoColumnWidth": Object {
     "isValid": true,
   },
-  "enableExport": Object {
+  "buildingBlockData.enableExport": Object {
     "isValid": true,
   },
-  "enableFullScreen": Object {
+  "buildingBlockData.enableFullScreen": Object {
     "isValid": true,
   },
-  "enablePaste": Object {
+  "buildingBlockData.enablePaste": Object {
     "isValid": true,
   },
-  "entity": Object {
-    "errorMessage": "Please select a value",
-    "isValid": false,
-  },
-  "filterBar": Object {
+  "buildingBlockData.filterBar": Object {
     "isValid": true,
   },
-  "header": Object {
+  "buildingBlockData.header": Object {
     "isValid": true,
   },
-  "headerVisible": Object {
+  "buildingBlockData.headerVisible": Object {
     "isValid": true,
   },
-  "id": Object {
+  "buildingBlockData.id": Object {
     "errorMessage": "Please enter a value",
     "isValid": false,
   },
-  "isSearchable": Object {
+  "buildingBlockData.isSearchable": Object {
     "isValid": true,
   },
-  "personalization": Object {
-    "isValid": true,
-  },
-  "qualifier": Object {
+  "buildingBlockData.metaPath.entitySet": Object {
     "errorMessage": "Please select a value",
     "isValid": false,
   },
-  "readOnly": Object {
+  "buildingBlockData.metaPath.qualifier": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+  "buildingBlockData.personalization": Object {
     "isValid": true,
   },
-  "selectionMode": Object {
+  "buildingBlockData.readOnly": Object {
     "isValid": true,
   },
-  "type": Object {
+  "buildingBlockData.selectionMode": Object {
     "isValid": true,
   },
-  "variantManagement": Object {
+  "buildingBlockData.type": Object {
     "isValid": true,
   },
-  "viewOrFragmentFile": Object {
+  "buildingBlockData.variantManagement": Object {
+    "isValid": true,
+  },
+  "viewOrFragmentPath": Object {
     "errorMessage": "Please select a value",
     "isValid": false,
   },
