@@ -1,5 +1,33 @@
 # @sap-ux/adp-tooling
 
+## 0.11.11
+
+### Patch Changes
+
+-   73c741ef: Add option to add description in i18n.properties
+
+## 0.11.10
+
+### Patch Changes
+
+-   c442d2bc: fix: Duplicate i18n model in manifest.appdescr_variant for Adp Project
+
+## 0.11.9
+
+### Patch Changes
+
+-   Updated dependencies [4492fe10]
+    -   @sap-ux/axios-extension@1.14.4
+    -   @sap-ux/system-access@0.4.7
+
+## 0.11.8
+
+### Patch Changes
+
+-   Updated dependencies [d5d3626c]
+    -   @sap-ux/axios-extension@1.14.3
+    -   @sap-ux/system-access@0.4.6
+
 ## 0.11.7
 
 ### Patch Changes
