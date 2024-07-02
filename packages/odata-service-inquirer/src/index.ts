@@ -5,6 +5,7 @@ import { type ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
 import { ErrorHandler, ERROR_TYPE } from './error-handler/error-handler';
 import { getQuestions } from './prompts';
 import LoggerHelper from './prompts/logger-helper';
+import type { SapSystemType } from './types';
 import {
     DatasourceType,
     promptNames,
@@ -16,6 +17,8 @@ import {
 } from './types';
 import { PromptState, setTelemetryClient } from './utils';
 import { initI18nOdataServiceInquirer } from './i18n';
+import { newSystemChoiceValue } from './prompts/datasources/sap-system/questions';
+import autocomplete from 'inquirer-autocomplete-prompt';
 
 /**
  * Get the inquirer prompts for odata service.
@@ -68,6 +71,10 @@ async function prompt(
     telemetryClient?: ToolsSuiteTelemetryClient,
     isYUI = false
 ): Promise<OdataServiceAnswers> {
+    if (adapter?.promptModule && promptOptions?.serviceSelection?.useAutoComplete) {
+        const pm = adapter.promptModule;
+        pm.registerPrompt('autocomplete', autocomplete);
+    }
     const odataServicePrompts = (await getPrompts(promptOptions, logger, enableGuidedAnswers, telemetryClient, isYUI))
         .prompts;
     const answers = await adapter.prompt<OdataServiceAnswers>(odataServicePrompts);
@@ -89,5 +96,7 @@ export {
     type OdataServicePromptOptions,
     // These exports are to facilitate migration to open-ux-tools and will be removed in a future release
     ERROR_TYPE,
-    ErrorHandler
+    ErrorHandler,
+    type SapSystemType,
+    newSystemChoiceValue
 };
