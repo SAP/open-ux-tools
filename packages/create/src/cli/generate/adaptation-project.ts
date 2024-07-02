@@ -71,6 +71,7 @@ async function generateAdaptationProject(
         if (!basePath) {
             basePath = join(process.cwd(), config.app.id);
         }
+        addChangeForResourceModel(config);
         const fs = await generate(basePath, config);
 
         if (!simulate) {
@@ -116,4 +117,23 @@ function createConfigFromDefaults(defaults: PromptDefaults): AdpWriterConfig {
     } else {
         throw new Error('Missing required parameters. Please provide --id, --reference and --url.');
     }
+}
+
+/**
+ * Add a change for a new resource model to the given configuration.
+ *
+ * @param config configuration to be enhanced
+ */
+function addChangeForResourceModel(config: AdpWriterConfig): void {
+    config.app.content = [
+        {
+            changeType: 'appdescr_ui5_addNewModelEnhanceWith',
+            content: {
+                modelId: 'i18n',
+                bundleUrl: 'i18n/i18n.properties',
+                supportedLocales: [''],
+                fallbackLocale: ''
+            }
+        }
+    ];
 }
