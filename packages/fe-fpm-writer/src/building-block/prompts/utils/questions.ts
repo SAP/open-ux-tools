@@ -7,7 +7,7 @@ import { join, relative } from 'path';
 import { ProjectProvider } from './project';
 import { getAnnotationPathQualifiers, getEntityTypes } from './service';
 import { getCapServiceName } from '@sap-ux/project-access';
-import type { InputPromptQuestion, ListPromptQuestion } from '../types';
+import type { InputPromptQuestion, ListPromptQuestion, PromptListChoices } from '../types';
 import { BuildingBlockType } from '../../types';
 import { isElementIdAvailable } from './xml';
 import { i18nNamespaces, initI18n, translate } from '../../../i18n';
@@ -66,7 +66,7 @@ export function getAnnotationPathQualifierPrompt(
         message,
         choices: async (answers) => {
             const { entity } = answers;
-            const choices = getChoices(
+            const choices = transformChoices(
                 await getAnnotationPathQualifiers(projectProvider, entity, annotationTerm, true)
             );
             if (entity && !choices.length) {
@@ -113,13 +113,7 @@ export function getViewOrFragmentFilePrompt(
                 ['.git', 'node_modules', 'dist', 'annotations', 'localService'],
                 fs
             );
-            return files.map((file) => {
-                const value = relative(basePath, file);
-                return {
-                    name: value,
-                    value
-                };
-            });
+            return transformChoices(files.map((file) => relative(basePath, file)));
         },
         validate: (value: string) => (value ? true : validationErrorMessage),
         placeholder: additionalProperties.placeholder ?? t('viewOrFragmentFile.defaultPlaceholder')
@@ -133,7 +127,8 @@ export async function getCAPServicePrompt(
     additionalProperties: Partial<ListPromptQuestion> = {}
 ): Promise<ListPromptQuestion> {
     const services = await getCAPServiceChoices(projectProvider);
-    const defaultValue = services.length === 1 ? services[0].value : undefined;
+    const defaultValue: string | undefined =
+        services.length === 1 ? (services[0] as { name: string; value: string }).value : undefined;
     return {
         ...additionalProperties,
         type: 'list',
@@ -176,15 +171,13 @@ export function getEntityPrompt(
                 const qualifierParts = value.split('.');
                 entityTypeMap[qualifierParts[qualifierParts.length - 1]] = value;
             }
-            return getChoices(entityTypeMap);
+            return transformChoices(entityTypeMap);
         },
         placeholder: additionalProperties.placeholder ?? t('entity.defaultPlaceholder')
     };
 }
 
-export async function getCAPServiceChoices(
-    projectProvider: ProjectProvider
-): Promise<Array<{ name: string; value: string }>> {
+export async function getCAPServiceChoices(projectProvider: ProjectProvider): Promise<PromptListChoices> {
     const project = await projectProvider.getProject();
     const services = project.apps[projectProvider.appId]?.services;
     const servicesMap: { [key: string]: string } = {};
@@ -195,7 +188,7 @@ export async function getCAPServiceChoices(
         );
         servicesMap[mappedServiceName] = serviceKey;
     }
-    return getChoices(servicesMap);
+    return transformChoices(servicesMap);
 }
 
 /**
@@ -220,7 +213,10 @@ export function getAggregationPathPrompt(
         choices: (answers: Answers) => {
             const { viewOrFragmentFile } = answers;
             if (viewOrFragmentFile) {
-                const choices = getChoices(getXPathStringsForXmlFile(join(basePath, viewOrFragmentFile), fs), false);
+                const choices = transformChoices(
+                    getXPathStringsForXmlFile(join(basePath, viewOrFragmentFile), fs),
+                    false
+                );
                 if (!choices.length) {
                     throw new Error('Failed while fetching the aggregation path.');
                 }
@@ -287,16 +283,19 @@ export function getXPathStringsForXmlFile(xmlFilePath: string, fs: Editor): Reco
 
 /**
  *
- * @param {Record<string, string> | any[]} obj - object to be converted to choices
+ * @param {Record<string, string> | string[]} obj - object to be converted to choices
  * @returns the list of choices
  */
-export function getChoices(obj: Record<string, string> | any[], sort = true): { name: string; value: string }[] {
-    if (Array.isArray(obj)) {
-        return obj.map((el) => ({ name: el, value: el }));
-    }
-    const choices = Object.entries(obj).map(([key, value]) => ({ name: key, value }));
-    if (sort) {
-        return choices.sort((a, b) => a.name.localeCompare(b.name));
+export function transformChoices(obj: Record<string, string> | string[], sort = true): PromptListChoices {
+    let choices: PromptListChoices = [];
+    if (!Array.isArray(obj)) {
+        choices = Object.entries(obj).map(([key, value]) => ({ name: key, value }));
+        if (sort) {
+            choices = (choices as { name: string; value: string }[]).sort((a, b) => a.name.localeCompare(b.name));
+        }
+    } else {
+        obj = [...new Set(obj)];
+        choices = sort ? obj.sort((a, b) => a.localeCompare(b)) : obj;
     }
     return choices;
 }
@@ -346,7 +345,7 @@ export function getFilterBarIdPrompt(
             if (!answers.viewOrFragmentFile) {
                 return [];
             }
-            return getChoices(
+            return transformChoices(
                 await getBuildingBlockIdsInFile(
                     join(basePath!, answers.viewOrFragmentFile),
                     BuildingBlockType.FilterBar,
@@ -408,8 +407,8 @@ export function getBindingContextTypePrompt(
         selectType: 'static',
         message,
         choices: [
-            { name: 'Relative', value: 'relative' },
-            { name: 'Absolute', value: 'absolute' }
+            { name: t('bindingContextType.option.relative'), value: 'relative' },
+            { name: t('bindingContextType.option.absolute'), value: 'absolute' }
         ],
         default: defaultValue
     };

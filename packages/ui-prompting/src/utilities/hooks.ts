@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { UIComboBoxOption } from '@sap-ux/ui-components';
 import { getDynamicQuestions } from './utils';
 import type { PromptQuestion, DynamicChoices, PromptListChoices } from '../types';
+import { ChoiceOptions } from 'inquirer';
 
 interface RequestedChoices {
     [key: string]: boolean;
@@ -33,13 +34,20 @@ function getOptions(question: PromptQuestion, choices?: PromptListChoices): UICo
     }
     if (resolvedChoices?.length) {
         return resolvedChoices.map((choice) => {
-            const { name, value } = choice;
-            return {
-                key: value.toString(),
-                text: typeof name === 'string' ? name : '',
-                // ToDo create new type
-                data: choice
-            };
+            if (typeof choice === 'string') {
+                return {
+                    key: choice,
+                    text: choice,
+                    data: { value: choice }
+                };
+            } else {
+                return {
+                    key: (choice as ChoiceOptions).value.toString(),
+                    text: (choice as ChoiceOptions).name ?? '',
+                    // ToDo create new type
+                    data: choice
+                };
+            }
         });
     }
     // Default options

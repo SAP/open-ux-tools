@@ -29,6 +29,12 @@
             },
             "viewOrFragmentFile": {
                 "defaultPlaceholder": "Select a view or fragment file"
+            },
+            "bindingContextType": {
+                "option": {
+                    "relative": "Relative",
+                    "absolute": "Absolute"
+                }
             }
         },
         "chart": {
