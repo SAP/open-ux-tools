@@ -75,7 +75,6 @@ async function addAnnotationsToOdata(
             ChangeType.ADD_ANNOTATIONS_TO_ODATA,
             {
                 variant,
-                isInternalUsage: isInternalUsage(variant.layer),
                 answers
             }
         );

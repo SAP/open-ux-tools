@@ -28,8 +28,8 @@ export function isValidSapClient(input: string | undefined): boolean {
  * @param layer - UI5 Flex layer
  * @returns true if running in an internal scenario, false otherwise
  */
-export function isInternalUsage(layer: UI5FlexLayer): boolean {
-    return layer === 'VENDOR' ? true : false;
+export function isCustomerBase(layer: UI5FlexLayer): boolean {
+    return layer === 'CUSTOMER_BASE' ? true : false;
 }
 
 /**

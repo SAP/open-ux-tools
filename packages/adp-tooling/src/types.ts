@@ -273,7 +273,6 @@ export type GeneratorData<T extends ChangeType> = T extends ChangeType.ADD_ANNOT
 export interface AnnotationsData {
     fileName?: string;
     variant: DescriptorVariant;
-    isInternalUsage: boolean;
     answers: AddAnnotationsAnswers;
 }
 
