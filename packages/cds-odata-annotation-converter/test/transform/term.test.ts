@@ -2,7 +2,7 @@ import { VocabularyService } from '@sap-ux/odata-vocabularies';
 import type { TestCaseName } from '../setup';
 import { getAst, getDiagnostics, getPaths, getTerm } from '../setup';
 import { Position, Range } from 'vscode-languageserver-types';
-import { initI18n } from '../../src';
+import { initI18n } from '../../src/i18n';
 import type { Assignment } from '@sap-ux/cds-annotation-parser';
 import { parse } from '@sap-ux/cds-annotation-parser';
 import type { Element, TextNode } from '@sap-ux/odata-annotation-core';
