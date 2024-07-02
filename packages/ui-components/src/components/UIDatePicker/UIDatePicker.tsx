@@ -3,10 +3,11 @@ import type { ITextField } from '../UIInput';
 import { UITextInput } from '../UIInput';
 import { UIIcon } from '../UIIcon';
 import { UiIcons } from '../Icons';
+import { UIMessagesExtendedProps } from '../../helper/ValidationMessage';
 
 import './UIDatePicker.scss';
 
-export type UIDatePickerProps = {
+export interface UIDatePickerProps extends UIMessagesExtendedProps {
     componentRef?: React.RefObject<ITextField>;
     errorMessage?: string | JSX.Element;
     defaultValue?: string;
@@ -14,7 +15,8 @@ export type UIDatePickerProps = {
     onChange?: (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue: string) => void;
     onKeyDown?: (event: React.KeyboardEvent) => void;
     onClick?: (event: React.MouseEvent) => void;
-};
+    label?: string;
+}
 
 /**
  * UIDatePicker component.
@@ -82,6 +84,10 @@ export class UIDatePicker extends React.Component<UIDatePickerProps> {
                 <UITextInput
                     componentRef={this.props.componentRef}
                     errorMessage={this.props.errorMessage}
+                    warningMessage={this.props.warningMessage}
+                    isAbsolute={this.props.isAbsolute}
+                    infoMessage={this.props.infoMessage}
+                    label={this.props.label}
                     value={this.state.value}
                     onChange={this.onInputChange}
                 />
