@@ -133,7 +133,6 @@ export const initialState: SliceState = {
     },
     dialogMessage: undefined,
     appMode: 'adaptation',
-
     changeStack: {
         canUndo: false,
         canRedo: false
