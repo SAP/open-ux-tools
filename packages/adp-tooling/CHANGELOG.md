@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.11.10
+
+### Patch Changes
+
+-   c442d2bc: fix: Duplicate i18n model in manifest.appdescr_variant for Adp Project
+
 ## 0.11.9
 
 ### Patch Changes
