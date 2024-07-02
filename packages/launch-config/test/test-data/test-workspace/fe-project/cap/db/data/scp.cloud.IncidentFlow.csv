@@ -1,0 +1,49 @@
+id;processStep;stepStatus;criticality;safetyIncident_ID;stepStartDate;stepEndDate
+2feec9ec-c192-48c6-8971-e3c4838cb801;Incident Reporting;Done;3;2feec9ec-c192-48c6-8971-e3c4838cb861;2020-06-10;2020-06-24
+2feec9ec-c192-48c6-8971-e3c4838cb802;Incident Record Review;Done;3;2feec9ec-c192-48c6-8971-e3c4838cb861;2020-06-15;2020-06-30
+2feec9ec-c192-48c6-8971-e3c4838cb803;Incident Investigation;Blocked;1;2feec9ec-c192-48c6-8971-e3c4838cb861;2020-06-20;2020-08-31
+2feec9ec-c192-48c6-8971-e3c4838cb804;Incident Report Generation;Open;2;2feec9ec-c192-48c6-8971-e3c4838cb861;2020-08-31;2020-09-15
+2feec9ec-c192-48c6-8971-e3c4838cb811;Incident Reporting;Done;3;919f1a94-0281-4226-ad3a-9148af4cb5d2;2020-06-07;2020-06-21
+2feec9ec-c192-48c6-8971-e3c4838cb812;Incident Record Review;Done;3;919f1a94-0281-4226-ad3a-9148af4cb5d2;2020-06-20;2020-07-05
+2feec9ec-c192-48c6-8971-e3c4838cb813;Incident Investigation;Blocked;1;919f1a94-0281-4226-ad3a-9148af4cb5d2;2020-07-05;2020-09-11
+2feec9ec-c192-48c6-8971-e3c4838cb814;Incident Report Generation;Open;2;919f1a94-0281-4226-ad3a-9148af4cb5d2;2020-08-31;2020-09-15
+2feec9ec-c192-48c6-8971-e3c4838cb821;Incident Reporting;Done;3;f1c73988-bc83-4b5b-8169-80a946852c9a;2020-06-12;2020-06-26
+2feec9ec-c192-48c6-8971-e3c4838cb822;Incident Record Review;Done;3;f1c73988-bc83-4b5b-8169-80a946852c9a;2020-06-24;2020-07-05
+2feec9ec-c192-48c6-8971-e3c4838cb823;Incident Investigation;Blocked;1;f1c73988-bc83-4b5b-8169-80a946852c9a;2020-07-05;2020-09-11
+2feec9ec-c192-48c6-8971-e3c4838cb824;Incident Report Generation;Open;2;f1c73988-bc83-4b5b-8169-80a946852c9a;2020-09-09;2020-09-15
+2feec9ec-c192-48c6-8971-e3c4838cb831;Incident Reporting;Done;3;4e507caf-c53d-445b-abf9-341839aec969;2020-06-18;2020-07-02
+2feec9ec-c192-48c6-8971-e3c4838cb832;Incident Record Review;Done;3;4e507caf-c53d-445b-abf9-341839aec969;2020-06-29;2020-07-05
+2feec9ec-c192-48c6-8971-e3c4838cb833;Incident Investigation;Blocked;1;4e507caf-c53d-445b-abf9-341839aec969;2020-07-05;2020-09-05
+2feec9ec-c192-48c6-8971-e3c4838cb834;Incident Report Generation;Open;2;4e507caf-c53d-445b-abf9-341839aec969;2020-09-08;2020-09-26
+2feec9ec-c192-48c6-8971-e3c4838cb841;Incident Reporting;Done;3;82165023-8db0-4a82-89df-a6bd6665b11a;2020-06-07;2020-06-21
+2feec9ec-c192-48c6-8971-e3c4838cb842;Incident Record Review;Done;3;82165023-8db0-4a82-89df-a6bd6665b11a;2020-06-20;2020-07-05
+2feec9ec-c192-48c6-8971-e3c4838cb843;Incident Investigation;Blocked;1;82165023-8db0-4a82-89df-a6bd6665b11a;2020-07-10;2020-08-19
+2feec9ec-c192-48c6-8971-e3c4838cb844;Incident Report Generation;Open;2;82165023-8db0-4a82-89df-a6bd6665b11a;2020-09-13;2020-09-26
+2feec9ec-c192-48c6-8971-e3c4838cb851;Incident Reporting;Done;3;9e4f49cf-9ffb-499d-8813-1a2ed8b98605;2020-06-12;2020-06-26
+2feec9ec-c192-48c6-8971-e3c4838cb852;Incident Record Review;Done;3;9e4f49cf-9ffb-499d-8813-1a2ed8b98605;2020-06-24;2020-07-09
+2feec9ec-c192-48c6-8971-e3c4838cb853;Incident Investigation;Blocked;1;9e4f49cf-9ffb-499d-8813-1a2ed8b98605;2020-07-10;2020-08-08
+2feec9ec-c192-48c6-8971-e3c4838cb854;Incident Report Generation;Open;2;9e4f49cf-9ffb-499d-8813-1a2ed8b98605;2020-08-31;2020-09-15
+2feec9ec-c192-48c6-8971-e3c4838cb861;Incident Reporting;Done;3;6cf360ec-2dc5-40b9-b782-4b8a8b488dad;2020-06-18;2020-07-02
+2feec9ec-c192-48c6-8971-e3c4838cb862;Incident Record Review;Done;3;6cf360ec-2dc5-40b9-b782-4b8a8b488dad;2020-06-29;2020-07-14
+2feec9ec-c192-48c6-8971-e3c4838cb863;Incident Investigation;Blocked;1;6cf360ec-2dc5-40b9-b782-4b8a8b488dad;2020-07-19;2020-09-11
+2feec9ec-c192-48c6-8971-e3c4838cb864;Incident Report Generation;Open;2;6cf360ec-2dc5-40b9-b782-4b8a8b488dad;2020-08-31;2020-09-15
+2feec9ec-c192-48c6-8971-e3c4838cb871;Incident Reporting;Done;3;7cf360ec-2dc5-40b9-b782-4b8a8b488dad;2020-06-01;2020-06-15
+2feec9ec-c192-48c6-8971-e3c4838cb872;Incident Record Review;Done;3;7cf360ec-2dc5-40b9-b782-4b8a8b488dad;2020-06-15;2020-06-30
+2feec9ec-c192-48c6-8971-e3c4838cb873;Incident Investigation;Blocked;1;7cf360ec-2dc5-40b9-b782-4b8a8b488dad;2020-06-30;2020-09-05
+2feec9ec-c192-48c6-8971-e3c4838cb874;Incident Report Generation;Open;2;7cf360ec-2dc5-40b9-b782-4b8a8b488dad;2020-09-02;2020-09-14
+2feec9ec-c192-48c6-8971-e3c4838cb881;Incident Reporting;Done;3;8cf360ec-2dc5-40b9-b782-4b8a8b488dad;2020-06-07;2020-06-21
+2feec9ec-c192-48c6-8971-e3c4838cb882;Incident Record Review;Done;3;8cf360ec-2dc5-40b9-b782-4b8a8b488dad;2020-06-20;2020-07-05
+2feec9ec-c192-48c6-8971-e3c4838cb883;Incident Investigation;Blocked;1;8cf360ec-2dc5-40b9-b782-4b8a8b488dad;2020-07-05;2020-08-31
+2feec9ec-c192-48c6-8971-e3c4838cb884;Incident Report Generation;Open;2;8cf360ec-2dc5-40b9-b782-4b8a8b488dad;2020-08-26;2020-09-16
+2feec9ec-c192-48c6-8971-e3c4838cb891;Incident Reporting;Done;3;9cf360ec-2dc5-40b9-b782-4b8a8b488dad;2020-06-12;2020-06-26
+2feec9ec-c192-48c6-8971-e3c4838cb892;Incident Record Review;Done;3;9cf360ec-2dc5-40b9-b782-4b8a8b488dad;2020-06-24;2020-07-09
+2feec9ec-c192-48c6-8971-e3c4838cb893;Incident Investigation;Blocked;1;9cf360ec-2dc5-40b9-b782-4b8a8b488dad;2020-07-10;2020-09-05
+2feec9ec-c192-48c6-8971-e3c4838cb894;Incident Report Generation;Open;2;9cf360ec-2dc5-40b9-b782-4b8a8b488dad;2020-08-31;2020-09-15
+2feec9ec-c192-48c6-8971-e3c4838cb991;Incident Reporting;Done;3;1df360ec-2dc5-40b9-b782-4b8a8b488dad;2020-06-18;2020-07-02
+2feec9ec-c192-48c6-8971-e3c4838cb992;Incident Record Review;Done;3;1df360ec-2dc5-40b9-b782-4b8a8b488dad;2020-06-29;2020-07-14
+2feec9ec-c192-48c6-8971-e3c4838cb993;Incident Investigation;Blocked;1;1df360ec-2dc5-40b9-b782-4b8a8b488dad;2020-07-14;2020-08-23
+2feec9ec-c192-48c6-8971-e3c4838cb994;Incident Report Generation;Open;2;1df360ec-2dc5-40b9-b782-4b8a8b488dad;2020-09-11;2020-09-15
+3feec9ec-c192-48c6-8971-e3c4838cb991;Incident Reporting;Done;3;2df360ec-2dc5-40b9-b782-4b8a8b488dad;2020-06-01;2020-06-15
+3feec9ec-c192-48c6-8971-e3c4838cb992;Incident Record Review;Done;3;2df360ec-2dc5-40b9-b782-4b8a8b488dad;2020-06-15;2020-06-30
+3feec9ec-c192-48c6-8971-e3c4838cb993;Incident Investigation;Blocked;1;2df360ec-2dc5-40b9-b782-4b8a8b488dad;2020-06-20;2020-08-31
+3feec9ec-c192-48c6-8971-e3c4838cb994;Incident Report Generation;Open;2;2df360ec-2dc5-40b9-b782-4b8a8b488dad;2020-08-31;2020-09-15

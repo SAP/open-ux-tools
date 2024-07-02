@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Get launch config by name 1`] = `
+Object {
+  "console": "integratedTerminal",
+  "cwd": "\${workspaceFolder}/v2lrop",
+  "env": Object {
+    "DEBUG": "--inspect",
+  },
+  "internalConsoleOptions": "neverOpen",
+  "name": "Start v2lrop",
+  "port": 9229,
+  "request": "launch",
+  "runtimeArgs": Array [
+    "run-script",
+    "start",
+  ],
+  "runtimeExecutable": "npm",
+  "type": "node",
+  "windows": Object {
+    "runtimeExecutable": "npm.cmd",
+  },
+}
+`;

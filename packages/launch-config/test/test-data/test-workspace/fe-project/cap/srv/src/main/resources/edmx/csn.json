@@ -1,0 +1,4233 @@
+{
+  "definitions": {
+    "Country": {
+      "kind": "type",
+      "@Common.Label": "{i18n>Country}",
+      "@Core.Description": "{i18n>CountryCode.Description}",
+      "@cds.persistence.name": "COUNTRY",
+      "type": "cds.Association",
+      "target": "sap.common.Countries",
+      "keys": [
+        {
+          "ref": ["code"]
+        }
+      ]
+    },
+    "Currency": {
+      "kind": "type",
+      "@Common.Label": "{i18n>Currency}",
+      "@Core.Description": "{i18n>CurrencyCode.Description}",
+      "@cds.persistence.name": "CURRENCY",
+      "type": "cds.Association",
+      "target": "sap.common.Currencies",
+      "keys": [
+        {
+          "ref": ["code"]
+        }
+      ]
+    },
+    "IncidentService": {
+      "kind": "service"
+    },
+    "IncidentService.Category": {
+      "kind": "entity",
+      "@Capabilities.DeleteRestrictions.Deletable": false,
+      "@Capabilities.InsertRestrictions.Insertable": false,
+      "@Capabilities.UpdateRestrictions.Updatable": false,
+      "@UI.Identification": [
+        {
+          "=": "name"
+        }
+      ],
+      "@cds.autoexpose": true,
+      "@cds.odata.valuelist": true,
+      "@cds.persistence.name": "INCIDENTSERVICE_CATEGORY",
+      "@cds.persistence.skip": "if-unused",
+      "@readonly": true,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["scp.cloud.Category"]
+          }
+        }
+      },
+      "elements": {
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@cds.persistence.name": "NAME",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@cds.persistence.name": "DESCR",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        },
+        "texts": {
+          "@cds.persistence.name": "TEXTS",
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "IncidentService.Category_texts",
+          "on": [
+            {
+              "ref": ["texts", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            }
+          ]
+        },
+        "localized": {
+          "@cds.persistence.name": "LOCALIZED",
+          "type": "cds.Association",
+          "target": "IncidentService.Category_texts",
+          "on": [
+            {
+              "ref": ["localized", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            },
+            "and",
+            {
+              "ref": ["localized", "locale"]
+            },
+            "=",
+            {
+              "ref": ["$user", "locale"]
+            }
+          ]
+        }
+      },
+      "$syntax": "projection"
+    },
+    "IncidentService.Category_texts": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.autoexposed": true,
+      "@cds.persistence.name": "INCIDENTSERVICE_CATEGORY_TEXTS",
+      "@odata.draft.enabled": false,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["scp.cloud.Category_texts"]
+          }
+        }
+      },
+      "elements": {
+        "locale": {
+          "@cds.persistence.name": "LOCALE",
+          "key": true,
+          "type": "cds.String",
+          "length": 5
+        },
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@cds.persistence.name": "NAME",
+          "localized": false,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@cds.persistence.name": "DESCR",
+          "localized": false,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@cds.odata.v4.ignore": true,
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        }
+      }
+    },
+    "IncidentService.IncidentPhotos": {
+      "kind": "entity",
+      "@cds.persistence.name": "INCIDENTSERVICE_INCIDENTPHOTOS",
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["scp.cloud.IncidentPhotos"]
+          }
+        }
+      },
+      "elements": {
+        "createdAt": {
+          "@Common.Label": "{i18n>CreatedAt}",
+          "@Core.Computed": true,
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "CREATEDAT",
+          "@odata.on.insert": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@Common.Label": "{i18n>CreatedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "CREATEDBY",
+          "@odata.on.insert": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@Common.Label": "{i18n>ChangedAt}",
+          "@Core.Computed": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "MODIFIEDAT",
+          "@odata.on.update": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@Common.Label": "{i18n>ChangedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "MODIFIEDBY",
+          "@odata.on.update": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "id": {
+          "@cds.persistence.name": "ID",
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "imageType": {
+          "@Core.isMediaType": true,
+          "@cds.persistence.name": "IMAGETYPE",
+          "type": "cds.String"
+        },
+        "image": {
+          "@Core.MediaType": {
+            "=": "ImageType"
+          },
+          "@cds.persistence.name": "IMAGE",
+          "type": "cds.LargeBinary"
+        },
+        "safetyIncident": {
+          "@cds.persistence.name": "SAFETYINCIDENT",
+          "type": "cds.Association",
+          "target": "scp.cloud.SafetyIncidents",
+          "keys": [
+            {
+              "ref": ["ID"],
+              "$generatedFieldName": "safetyIncident_ID"
+            }
+          ]
+        },
+        "safetyIncident_ID": {
+          "@cds.persistence.name": "SAFETYINCIDENT_ID",
+          "@odata.foreignKey4": "safetyIncident",
+          "type": "cds.UUID"
+        }
+      },
+      "$syntax": "projection"
+    },
+    "IncidentService.IncidentStatus": {
+      "kind": "entity",
+      "@UI.Identification": [
+        {
+          "=": "name"
+        }
+      ],
+      "@cds.autoexpose": true,
+      "@cds.autoexposed": true,
+      "@cds.odata.valuelist": true,
+      "@cds.persistence.name": "INCIDENTSERVICE_INCIDENTSTATUS",
+      "@cds.persistence.skip": "if-unused",
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["scp.cloud.IncidentStatus"]
+          }
+        }
+      },
+      "elements": {
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@cds.persistence.name": "NAME",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@cds.persistence.name": "DESCR",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        },
+        "texts": {
+          "@cds.persistence.name": "TEXTS",
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "IncidentService.IncidentStatus_texts",
+          "on": [
+            {
+              "ref": ["texts", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            }
+          ]
+        },
+        "localized": {
+          "@cds.persistence.name": "LOCALIZED",
+          "type": "cds.Association",
+          "target": "IncidentService.IncidentStatus_texts",
+          "on": [
+            {
+              "ref": ["localized", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            },
+            "and",
+            {
+              "ref": ["localized", "locale"]
+            },
+            "=",
+            {
+              "ref": ["$user", "locale"]
+            }
+          ]
+        }
+      }
+    },
+    "IncidentService.IncidentStatus_texts": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.autoexposed": true,
+      "@cds.persistence.name": "INCIDENTSERVICE_INCIDENTSTATUS_TEXTS",
+      "@odata.draft.enabled": false,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["scp.cloud.IncidentStatus_texts"]
+          }
+        }
+      },
+      "elements": {
+        "locale": {
+          "@cds.persistence.name": "LOCALE",
+          "key": true,
+          "type": "cds.String",
+          "length": 5
+        },
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@cds.persistence.name": "NAME",
+          "localized": false,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@cds.persistence.name": "DESCR",
+          "localized": false,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@cds.odata.v4.ignore": true,
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        }
+      }
+    },
+    "IncidentService.IncidentsByCategory": {
+      "kind": "entity",
+      "@cds.persistence.name": "INCIDENTSERVICE_INCIDENTSBYCATEGORY",
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["scp.cloud.SafetyIncidents"]
+          },
+          "columns": [
+            {
+              "func": "count",
+              "args": [
+                {
+                  "ref": ["ID"]
+                }
+              ],
+              "as": "categories",
+              "cast": {
+                "type": "cds.Integer"
+              }
+            },
+            {
+              "key": true,
+              "ref": ["category"]
+            }
+          ],
+          "groupBy": [
+            {
+              "ref": ["category"]
+            }
+          ]
+        }
+      },
+      "elements": {
+        "categories": {
+          "@Core.Computed": true,
+          "@cds.persistence.name": "CATEGORIES",
+          "type": "cds.Integer"
+        },
+        "category": {
+          "@Common.Label": "Category",
+          "@Common.ValueList.viaAssociation": {
+            "=": "category"
+          },
+          "@cds.persistence.name": "CATEGORY",
+          "key": true,
+          "type": "cds.Association",
+          "target": "IncidentService.Category",
+          "keys": [
+            {
+              "ref": ["code"],
+              "$generatedFieldName": "category_code"
+            }
+          ]
+        },
+        "category_code": {
+          "@Common.Label": "Category",
+          "@cds.persistence.name": "CATEGORY_CODE",
+          "@odata.foreignKey4": "category",
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        }
+      },
+      "$syntax": "entity"
+    },
+    "IncidentService.Individual": {
+      "kind": "entity",
+      "@cds.persistence.name": "INCIDENTSERVICE_INDIVIDUAL",
+      "@readyonly": true,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["scp.cloud.Individual"]
+          }
+        }
+      },
+      "elements": {
+        "createdAt": {
+          "@Common.Label": "{i18n>CreatedAt}",
+          "@Core.Computed": true,
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "CREATEDAT",
+          "@odata.on.insert": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@Common.Label": "{i18n>CreatedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "CREATEDBY",
+          "@odata.on.insert": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@Common.Label": "{i18n>ChangedAt}",
+          "@Core.Computed": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "MODIFIEDAT",
+          "@odata.on.update": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@Common.Label": "{i18n>ChangedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "MODIFIEDBY",
+          "@odata.on.update": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "ID": {
+          "@cds.persistence.name": "ID",
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "firstName": {
+          "@Common.Label": "First Name",
+          "@cds.persistence.name": "FIRSTNAME",
+          "type": "cds.String"
+        },
+        "lastName": {
+          "@Common.Label": "Last Name",
+          "@cds.persistence.name": "LASTNAME",
+          "type": "cds.String"
+        },
+        "emailAddress": {
+          "@Common.Label": "Email Address",
+          "@cds.persistence.name": "EMAILADDRESS",
+          "type": "cds.String"
+        },
+        "safetyIncidents": {
+          "@cds.persistence.name": "SAFETYINCIDENTS",
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "scp.cloud.SafetyIncidents",
+          "on": [
+            {
+              "ref": ["safetyIncidents", "assignedIndividual"]
+            },
+            "=",
+            {
+              "ref": ["$self"]
+            }
+          ]
+        }
+      },
+      "$syntax": "projection"
+    },
+    "IncidentService.Priority": {
+      "kind": "entity",
+      "@Capabilities.DeleteRestrictions.Deletable": false,
+      "@Capabilities.InsertRestrictions.Insertable": false,
+      "@Capabilities.UpdateRestrictions.Updatable": false,
+      "@UI.Identification": [
+        {
+          "=": "name"
+        }
+      ],
+      "@cds.autoexpose": true,
+      "@cds.odata.valuelist": true,
+      "@cds.persistence.name": "INCIDENTSERVICE_PRIORITY",
+      "@cds.persistence.skip": "if-unused",
+      "@readonly": true,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["scp.cloud.Priority"]
+          }
+        }
+      },
+      "elements": {
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@cds.persistence.name": "NAME",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@cds.persistence.name": "DESCR",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        },
+        "texts": {
+          "@cds.persistence.name": "TEXTS",
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "IncidentService.Priority_texts",
+          "on": [
+            {
+              "ref": ["texts", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            }
+          ]
+        },
+        "localized": {
+          "@cds.persistence.name": "LOCALIZED",
+          "type": "cds.Association",
+          "target": "IncidentService.Priority_texts",
+          "on": [
+            {
+              "ref": ["localized", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            },
+            "and",
+            {
+              "ref": ["localized", "locale"]
+            },
+            "=",
+            {
+              "ref": ["$user", "locale"]
+            }
+          ]
+        }
+      },
+      "$syntax": "projection"
+    },
+    "IncidentService.Priority_texts": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.autoexposed": true,
+      "@cds.persistence.name": "INCIDENTSERVICE_PRIORITY_TEXTS",
+      "@odata.draft.enabled": false,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["scp.cloud.Priority_texts"]
+          }
+        }
+      },
+      "elements": {
+        "locale": {
+          "@cds.persistence.name": "LOCALE",
+          "key": true,
+          "type": "cds.String",
+          "length": 5
+        },
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@cds.persistence.name": "NAME",
+          "localized": false,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@cds.persistence.name": "DESCR",
+          "localized": false,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@cds.odata.v4.ignore": true,
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        }
+      }
+    },
+    "IncidentService.SafetyIncidents": {
+      "kind": "entity",
+      "@cds.persistence.name": "INCIDENTSERVICE_SAFETYINCIDENTS",
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["scp.cloud.SafetyIncidents"]
+          }
+        }
+      },
+      "elements": {
+        "createdAt": {
+          "@Common.Label": "{i18n>CreatedAt}",
+          "@Core.Computed": true,
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "CREATEDAT",
+          "@odata.on.insert": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@Common.Label": "{i18n>CreatedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "CREATEDBY",
+          "@odata.on.insert": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@Common.Label": "{i18n>ChangedAt}",
+          "@Core.Computed": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "MODIFIEDAT",
+          "@odata.on.update": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@Common.Label": "{i18n>ChangedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "MODIFIEDBY",
+          "@odata.on.update": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "ID": {
+          "@cds.persistence.name": "ID",
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "title": {
+          "@Common.Label": "Title",
+          "@cds.persistence.name": "TITLE",
+          "type": "cds.String",
+          "length": 50
+        },
+        "category": {
+          "@Common.Label": "Category",
+          "@Common.ValueList.viaAssociation": {
+            "=": "category"
+          },
+          "@cds.persistence.name": "CATEGORY",
+          "type": "cds.Association",
+          "target": "IncidentService.Category",
+          "keys": [
+            {
+              "ref": ["code"],
+              "$generatedFieldName": "category_code"
+            }
+          ]
+        },
+        "priority": {
+          "@Common.Label": "Priority",
+          "@Common.ValueList.viaAssociation": {
+            "=": "priority"
+          },
+          "@cds.persistence.name": "PRIORITY",
+          "type": "cds.Association",
+          "target": "IncidentService.Priority",
+          "keys": [
+            {
+              "ref": ["code"],
+              "$generatedFieldName": "priority_code"
+            }
+          ]
+        },
+        "incidentStatus": {
+          "@Common.Label": "IncidentStatus",
+          "@Common.ValueList.viaAssociation": {
+            "=": "incidentStatus"
+          },
+          "@cds.persistence.name": "INCIDENTSTATUS",
+          "type": "cds.Association",
+          "target": "IncidentService.IncidentStatus",
+          "keys": [
+            {
+              "ref": ["code"],
+              "$generatedFieldName": "incidentStatus_code"
+            }
+          ]
+        },
+        "description": {
+          "@Common.Label": "Description",
+          "@cds.persistence.name": "DESCRIPTION",
+          "type": "cds.String",
+          "length": 1000
+        },
+        "incidentResolutionDate": {
+          "@Common.Label": "ResolutionDate",
+          "@cds.persistence.name": "INCIDENTRESOLUTIONDATE",
+          "type": "cds.Date"
+        },
+        "assignedIndividual": {
+          "@cds.persistence.name": "ASSIGNEDINDIVIDUAL",
+          "type": "cds.Association",
+          "target": "IncidentService.Individual",
+          "keys": [
+            {
+              "ref": ["ID"],
+              "$generatedFieldName": "assignedIndividual_ID"
+            }
+          ]
+        },
+        "incidentPhotos": {
+          "@cds.persistence.name": "INCIDENTPHOTOS",
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "IncidentService.IncidentPhotos",
+          "on": [
+            {
+              "ref": ["incidentPhotos", "safetyIncident"]
+            },
+            "=",
+            {
+              "ref": ["$self"]
+            }
+          ]
+        },
+        "category_code": {
+          "@Common.Label": "Category",
+          "@cds.persistence.name": "CATEGORY_CODE",
+          "@odata.foreignKey4": "category",
+          "type": "cds.String",
+          "length": 20
+        },
+        "priority_code": {
+          "@Common.Label": "Priority",
+          "@cds.persistence.name": "PRIORITY_CODE",
+          "@odata.foreignKey4": "priority",
+          "type": "cds.String",
+          "length": 20
+        },
+        "incidentStatus_code": {
+          "@Common.Label": "IncidentStatus",
+          "@cds.persistence.name": "INCIDENTSTATUS_CODE",
+          "@odata.foreignKey4": "incidentStatus",
+          "type": "cds.String",
+          "length": 20
+        },
+        "assignedIndividual_ID": {
+          "@cds.persistence.name": "ASSIGNEDINDIVIDUAL_ID",
+          "@odata.foreignKey4": "assignedIndividual",
+          "type": "cds.UUID"
+        }
+      },
+      "$syntax": "projection"
+    },
+    "Language": {
+      "kind": "type",
+      "@Common.Label": "{i18n>Language}",
+      "@Core.Description": "{i18n>LanguageCode.Description}",
+      "@cds.persistence.name": "LANGUAGE",
+      "type": "cds.Association",
+      "target": "sap.common.Languages",
+      "keys": [
+        {
+          "ref": ["code"]
+        }
+      ]
+    },
+    "User": {
+      "kind": "type",
+      "@Common.Label": "{i18n>UserID}",
+      "@Core.Description": "{i18n>UserID.Description}",
+      "@cds.persistence.name": "USER",
+      "type": "cds.String",
+      "length": 255
+    },
+    "cuid": {
+      "kind": "entity",
+      "@cds.persistence.name": "CUID",
+      "abstract": true,
+      "elements": {
+        "ID": {
+          "@cds.persistence.name": "ID",
+          "key": true,
+          "type": "cds.UUID"
+        }
+      }
+    },
+    "localized.IncidentService.Category": {
+      "kind": "entity",
+      "@UI.Identification": [
+        {
+          "=": "name"
+        }
+      ],
+      "@cds.autoexpose": true,
+      "@cds.odata.valuelist": true,
+      "@cds.persistence.name": "LOCALIZED_INCIDENTSERVICE_CATEGORY",
+      "@cds.persistence.skip": "if-unused",
+      "@odata.draft.enabled": false,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["localized.scp.cloud.Category"]
+          }
+        }
+      },
+      "elements": {
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@Core.Computed": true,
+          "@cds.persistence.name": "NAME",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@Core.Computed": true,
+          "@cds.persistence.name": "DESCR",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        },
+        "texts": {
+          "@cds.persistence.name": "TEXTS",
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "IncidentService.Category_texts",
+          "on": [
+            {
+              "ref": ["texts", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            }
+          ]
+        },
+        "localized": {
+          "@cds.persistence.name": "LOCALIZED",
+          "type": "cds.Association",
+          "target": "IncidentService.Category_texts",
+          "on": [
+            {
+              "ref": ["localized", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            },
+            "and",
+            {
+              "ref": ["localized", "locale"]
+            },
+            "=",
+            {
+              "ref": ["$user", "locale"]
+            }
+          ]
+        }
+      }
+    },
+    "localized.IncidentService.IncidentPhotos": {
+      "kind": "entity",
+      "@cds.persistence.name": "LOCALIZED_INCIDENTSERVICE_INCIDENTPHOTOS",
+      "@odata.draft.enabled": false,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["localized.scp.cloud.IncidentPhotos"]
+          }
+        }
+      },
+      "elements": {
+        "createdAt": {
+          "@Common.Label": "{i18n>CreatedAt}",
+          "@Core.Computed": true,
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "CREATEDAT",
+          "@odata.on.insert": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@Common.Label": "{i18n>CreatedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "CREATEDBY",
+          "@odata.on.insert": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@Common.Label": "{i18n>ChangedAt}",
+          "@Core.Computed": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "MODIFIEDAT",
+          "@odata.on.update": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@Common.Label": "{i18n>ChangedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "MODIFIEDBY",
+          "@odata.on.update": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "id": {
+          "@cds.persistence.name": "ID",
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "imageType": {
+          "@Core.isMediaType": true,
+          "@cds.persistence.name": "IMAGETYPE",
+          "type": "cds.String"
+        },
+        "image": {
+          "@Core.MediaType": {
+            "=": "ImageType"
+          },
+          "@cds.persistence.name": "IMAGE",
+          "type": "cds.LargeBinary"
+        },
+        "safetyIncident": {
+          "@cds.persistence.name": "SAFETYINCIDENT",
+          "type": "cds.Association",
+          "target": "localized.scp.cloud.SafetyIncidents",
+          "keys": [
+            {
+              "ref": ["ID"],
+              "$generatedFieldName": "safetyIncident_ID"
+            }
+          ]
+        },
+        "safetyIncident_ID": {
+          "@cds.persistence.name": "SAFETYINCIDENT_ID",
+          "@odata.foreignKey4": "safetyIncident",
+          "type": "cds.UUID"
+        }
+      }
+    },
+    "localized.IncidentService.IncidentStatus": {
+      "kind": "entity",
+      "@UI.Identification": [
+        {
+          "=": "name"
+        }
+      ],
+      "@cds.autoexpose": true,
+      "@cds.odata.valuelist": true,
+      "@cds.persistence.name": "LOCALIZED_INCIDENTSERVICE_INCIDENTSTATUS",
+      "@cds.persistence.skip": "if-unused",
+      "@odata.draft.enabled": false,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["localized.scp.cloud.IncidentStatus"]
+          }
+        }
+      },
+      "elements": {
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@Core.Computed": true,
+          "@cds.persistence.name": "NAME",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@Core.Computed": true,
+          "@cds.persistence.name": "DESCR",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        },
+        "texts": {
+          "@cds.persistence.name": "TEXTS",
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "IncidentService.IncidentStatus_texts",
+          "on": [
+            {
+              "ref": ["texts", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            }
+          ]
+        },
+        "localized": {
+          "@cds.persistence.name": "LOCALIZED",
+          "type": "cds.Association",
+          "target": "IncidentService.IncidentStatus_texts",
+          "on": [
+            {
+              "ref": ["localized", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            },
+            "and",
+            {
+              "ref": ["localized", "locale"]
+            },
+            "=",
+            {
+              "ref": ["$user", "locale"]
+            }
+          ]
+        }
+      }
+    },
+    "localized.IncidentService.IncidentsByCategory": {
+      "kind": "entity",
+      "@cds.persistence.name": "LOCALIZED_INCIDENTSERVICE_INCIDENTSBYCATEGORY",
+      "@odata.draft.enabled": false,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["localized.scp.cloud.SafetyIncidents"]
+          },
+          "columns": [
+            {
+              "func": "count",
+              "args": [
+                {
+                  "ref": ["ID"]
+                }
+              ],
+              "as": "categories",
+              "cast": {
+                "type": "cds.Integer"
+              }
+            },
+            {
+              "key": true,
+              "ref": ["category"]
+            }
+          ],
+          "groupBy": [
+            {
+              "ref": ["category"]
+            }
+          ]
+        }
+      },
+      "elements": {
+        "categories": {
+          "@Core.Computed": true,
+          "@cds.persistence.name": "CATEGORIES",
+          "type": "cds.Integer"
+        },
+        "category": {
+          "@Common.Label": "Category",
+          "@Common.ValueList.viaAssociation": {
+            "=": "category"
+          },
+          "@cds.persistence.name": "CATEGORY",
+          "key": true,
+          "type": "cds.Association",
+          "target": "localized.IncidentService.Category",
+          "keys": [
+            {
+              "ref": ["code"],
+              "$generatedFieldName": "category_code"
+            }
+          ]
+        },
+        "category_code": {
+          "@Common.Label": "Category",
+          "@cds.persistence.name": "CATEGORY_CODE",
+          "@odata.foreignKey4": "category",
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        }
+      }
+    },
+    "localized.IncidentService.Individual": {
+      "kind": "entity",
+      "@cds.persistence.name": "LOCALIZED_INCIDENTSERVICE_INDIVIDUAL",
+      "@odata.draft.enabled": false,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["localized.scp.cloud.Individual"]
+          }
+        }
+      },
+      "elements": {
+        "createdAt": {
+          "@Common.Label": "{i18n>CreatedAt}",
+          "@Core.Computed": true,
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "CREATEDAT",
+          "@odata.on.insert": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@Common.Label": "{i18n>CreatedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "CREATEDBY",
+          "@odata.on.insert": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@Common.Label": "{i18n>ChangedAt}",
+          "@Core.Computed": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "MODIFIEDAT",
+          "@odata.on.update": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@Common.Label": "{i18n>ChangedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "MODIFIEDBY",
+          "@odata.on.update": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "ID": {
+          "@cds.persistence.name": "ID",
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "firstName": {
+          "@Common.Label": "First Name",
+          "@cds.persistence.name": "FIRSTNAME",
+          "type": "cds.String"
+        },
+        "lastName": {
+          "@Common.Label": "Last Name",
+          "@cds.persistence.name": "LASTNAME",
+          "type": "cds.String"
+        },
+        "emailAddress": {
+          "@Common.Label": "Email Address",
+          "@cds.persistence.name": "EMAILADDRESS",
+          "type": "cds.String"
+        },
+        "safetyIncidents": {
+          "@cds.persistence.name": "SAFETYINCIDENTS",
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "localized.scp.cloud.SafetyIncidents",
+          "on": [
+            {
+              "ref": ["safetyIncidents", "assignedIndividual"]
+            },
+            "=",
+            {
+              "ref": ["$self"]
+            }
+          ]
+        }
+      }
+    },
+    "localized.IncidentService.Priority": {
+      "kind": "entity",
+      "@UI.Identification": [
+        {
+          "=": "name"
+        }
+      ],
+      "@cds.autoexpose": true,
+      "@cds.odata.valuelist": true,
+      "@cds.persistence.name": "LOCALIZED_INCIDENTSERVICE_PRIORITY",
+      "@cds.persistence.skip": "if-unused",
+      "@odata.draft.enabled": false,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["localized.scp.cloud.Priority"]
+          }
+        }
+      },
+      "elements": {
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@Core.Computed": true,
+          "@cds.persistence.name": "NAME",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@Core.Computed": true,
+          "@cds.persistence.name": "DESCR",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        },
+        "texts": {
+          "@cds.persistence.name": "TEXTS",
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "IncidentService.Priority_texts",
+          "on": [
+            {
+              "ref": ["texts", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            }
+          ]
+        },
+        "localized": {
+          "@cds.persistence.name": "LOCALIZED",
+          "type": "cds.Association",
+          "target": "IncidentService.Priority_texts",
+          "on": [
+            {
+              "ref": ["localized", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            },
+            "and",
+            {
+              "ref": ["localized", "locale"]
+            },
+            "=",
+            {
+              "ref": ["$user", "locale"]
+            }
+          ]
+        }
+      }
+    },
+    "localized.IncidentService.SafetyIncidents": {
+      "kind": "entity",
+      "@cds.persistence.name": "LOCALIZED_INCIDENTSERVICE_SAFETYINCIDENTS",
+      "@odata.draft.enabled": false,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["localized.scp.cloud.SafetyIncidents"]
+          }
+        }
+      },
+      "elements": {
+        "createdAt": {
+          "@Common.Label": "{i18n>CreatedAt}",
+          "@Core.Computed": true,
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "CREATEDAT",
+          "@odata.on.insert": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@Common.Label": "{i18n>CreatedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "CREATEDBY",
+          "@odata.on.insert": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@Common.Label": "{i18n>ChangedAt}",
+          "@Core.Computed": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "MODIFIEDAT",
+          "@odata.on.update": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@Common.Label": "{i18n>ChangedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "MODIFIEDBY",
+          "@odata.on.update": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "ID": {
+          "@cds.persistence.name": "ID",
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "title": {
+          "@Common.Label": "Title",
+          "@cds.persistence.name": "TITLE",
+          "type": "cds.String",
+          "length": 50
+        },
+        "category": {
+          "@Common.Label": "Category",
+          "@Common.ValueList.viaAssociation": {
+            "=": "category"
+          },
+          "@cds.persistence.name": "CATEGORY",
+          "type": "cds.Association",
+          "target": "localized.IncidentService.Category",
+          "keys": [
+            {
+              "ref": ["code"],
+              "$generatedFieldName": "category_code"
+            }
+          ]
+        },
+        "priority": {
+          "@Common.Label": "Priority",
+          "@Common.ValueList.viaAssociation": {
+            "=": "priority"
+          },
+          "@cds.persistence.name": "PRIORITY",
+          "type": "cds.Association",
+          "target": "localized.IncidentService.Priority",
+          "keys": [
+            {
+              "ref": ["code"],
+              "$generatedFieldName": "priority_code"
+            }
+          ]
+        },
+        "incidentStatus": {
+          "@Common.Label": "IncidentStatus",
+          "@Common.ValueList.viaAssociation": {
+            "=": "incidentStatus"
+          },
+          "@cds.persistence.name": "INCIDENTSTATUS",
+          "type": "cds.Association",
+          "target": "localized.IncidentService.IncidentStatus",
+          "keys": [
+            {
+              "ref": ["code"],
+              "$generatedFieldName": "incidentStatus_code"
+            }
+          ]
+        },
+        "description": {
+          "@Common.Label": "Description",
+          "@cds.persistence.name": "DESCRIPTION",
+          "type": "cds.String",
+          "length": 1000
+        },
+        "incidentResolutionDate": {
+          "@Common.Label": "ResolutionDate",
+          "@cds.persistence.name": "INCIDENTRESOLUTIONDATE",
+          "type": "cds.Date"
+        },
+        "assignedIndividual": {
+          "@cds.persistence.name": "ASSIGNEDINDIVIDUAL",
+          "type": "cds.Association",
+          "target": "localized.IncidentService.Individual",
+          "keys": [
+            {
+              "ref": ["ID"],
+              "$generatedFieldName": "assignedIndividual_ID"
+            }
+          ]
+        },
+        "incidentPhotos": {
+          "@cds.persistence.name": "INCIDENTPHOTOS",
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "localized.IncidentService.IncidentPhotos",
+          "on": [
+            {
+              "ref": ["incidentPhotos", "safetyIncident"]
+            },
+            "=",
+            {
+              "ref": ["$self"]
+            }
+          ]
+        },
+        "category_code": {
+          "@Common.Label": "Category",
+          "@cds.persistence.name": "CATEGORY_CODE",
+          "@odata.foreignKey4": "category",
+          "type": "cds.String",
+          "length": 20
+        },
+        "priority_code": {
+          "@Common.Label": "Priority",
+          "@cds.persistence.name": "PRIORITY_CODE",
+          "@odata.foreignKey4": "priority",
+          "type": "cds.String",
+          "length": 20
+        },
+        "incidentStatus_code": {
+          "@Common.Label": "IncidentStatus",
+          "@cds.persistence.name": "INCIDENTSTATUS_CODE",
+          "@odata.foreignKey4": "incidentStatus",
+          "type": "cds.String",
+          "length": 20
+        },
+        "assignedIndividual_ID": {
+          "@cds.persistence.name": "ASSIGNEDINDIVIDUAL_ID",
+          "@odata.foreignKey4": "assignedIndividual",
+          "type": "cds.UUID"
+        }
+      }
+    },
+    "localized.sap.common.Countries": {
+      "kind": "entity",
+      "@UI.Identification": [
+        {
+          "=": "name"
+        }
+      ],
+      "@cds.autoexpose": true,
+      "@cds.odata.valuelist": true,
+      "@cds.persistence.name": "LOCALIZED_SAP_COMMON_COUNTRIES",
+      "@cds.persistence.skip": "if-unused",
+      "@odata.draft.enabled": false,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["sap.common.Countries"],
+            "as": "L"
+          },
+          "columns": [
+            "*",
+            {
+              "func": "coalesce",
+              "args": [
+                {
+                  "ref": ["L", "localized", "name"]
+                },
+                {
+                  "ref": ["L", "name"]
+                }
+              ],
+              "as": "name"
+            },
+            {
+              "func": "coalesce",
+              "args": [
+                {
+                  "ref": ["L", "localized", "descr"]
+                },
+                {
+                  "ref": ["L", "descr"]
+                }
+              ],
+              "as": "descr"
+            }
+          ]
+        }
+      },
+      "elements": {
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@Core.Computed": true,
+          "@cds.persistence.name": "NAME",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@Core.Computed": true,
+          "@cds.persistence.name": "DESCR",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@Common.Label": "{i18n>CountryCode}",
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        },
+        "texts": {
+          "@cds.persistence.name": "TEXTS",
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "sap.common.Countries_texts",
+          "on": [
+            {
+              "ref": ["texts", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            }
+          ]
+        },
+        "localized": {
+          "@cds.persistence.name": "LOCALIZED",
+          "type": "cds.Association",
+          "target": "sap.common.Countries_texts",
+          "on": [
+            {
+              "ref": ["localized", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            },
+            "and",
+            {
+              "ref": ["localized", "locale"]
+            },
+            "=",
+            {
+              "ref": ["$user", "locale"]
+            }
+          ]
+        }
+      }
+    },
+    "localized.sap.common.Currencies": {
+      "kind": "entity",
+      "@UI.Identification": [
+        {
+          "=": "name"
+        }
+      ],
+      "@cds.autoexpose": true,
+      "@cds.odata.valuelist": true,
+      "@cds.persistence.name": "LOCALIZED_SAP_COMMON_CURRENCIES",
+      "@cds.persistence.skip": "if-unused",
+      "@odata.draft.enabled": false,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["sap.common.Currencies"],
+            "as": "L"
+          },
+          "columns": [
+            "*",
+            {
+              "func": "coalesce",
+              "args": [
+                {
+                  "ref": ["L", "localized", "name"]
+                },
+                {
+                  "ref": ["L", "name"]
+                }
+              ],
+              "as": "name"
+            },
+            {
+              "func": "coalesce",
+              "args": [
+                {
+                  "ref": ["L", "localized", "descr"]
+                },
+                {
+                  "ref": ["L", "descr"]
+                }
+              ],
+              "as": "descr"
+            }
+          ]
+        }
+      },
+      "elements": {
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@Core.Computed": true,
+          "@cds.persistence.name": "NAME",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@Core.Computed": true,
+          "@cds.persistence.name": "DESCR",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@Common.Label": "{i18n>CurrencyCode}",
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        },
+        "symbol": {
+          "@Common.Label": "{i18n>CurrencySymbol}",
+          "@cds.persistence.name": "SYMBOL",
+          "type": "cds.String",
+          "length": 5
+        },
+        "texts": {
+          "@cds.persistence.name": "TEXTS",
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "sap.common.Currencies_texts",
+          "on": [
+            {
+              "ref": ["texts", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            }
+          ]
+        },
+        "localized": {
+          "@cds.persistence.name": "LOCALIZED",
+          "type": "cds.Association",
+          "target": "sap.common.Currencies_texts",
+          "on": [
+            {
+              "ref": ["localized", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            },
+            "and",
+            {
+              "ref": ["localized", "locale"]
+            },
+            "=",
+            {
+              "ref": ["$user", "locale"]
+            }
+          ]
+        }
+      }
+    },
+    "localized.sap.common.Languages": {
+      "kind": "entity",
+      "@UI.Identification": [
+        {
+          "=": "name"
+        }
+      ],
+      "@cds.autoexpose": true,
+      "@cds.odata.valuelist": true,
+      "@cds.persistence.name": "LOCALIZED_SAP_COMMON_LANGUAGES",
+      "@cds.persistence.skip": "if-unused",
+      "@odata.draft.enabled": false,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["sap.common.Languages"],
+            "as": "L"
+          },
+          "columns": [
+            "*",
+            {
+              "func": "coalesce",
+              "args": [
+                {
+                  "ref": ["L", "localized", "name"]
+                },
+                {
+                  "ref": ["L", "name"]
+                }
+              ],
+              "as": "name"
+            },
+            {
+              "func": "coalesce",
+              "args": [
+                {
+                  "ref": ["L", "localized", "descr"]
+                },
+                {
+                  "ref": ["L", "descr"]
+                }
+              ],
+              "as": "descr"
+            }
+          ]
+        }
+      },
+      "elements": {
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@Core.Computed": true,
+          "@cds.persistence.name": "NAME",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@Core.Computed": true,
+          "@cds.persistence.name": "DESCR",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@Common.Label": "{i18n>LanguageCode}",
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 14
+        },
+        "texts": {
+          "@cds.persistence.name": "TEXTS",
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "sap.common.Languages_texts",
+          "on": [
+            {
+              "ref": ["texts", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            }
+          ]
+        },
+        "localized": {
+          "@cds.persistence.name": "LOCALIZED",
+          "type": "cds.Association",
+          "target": "sap.common.Languages_texts",
+          "on": [
+            {
+              "ref": ["localized", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            },
+            "and",
+            {
+              "ref": ["localized", "locale"]
+            },
+            "=",
+            {
+              "ref": ["$user", "locale"]
+            }
+          ]
+        }
+      }
+    },
+    "localized.scp.cloud.Category": {
+      "kind": "entity",
+      "@UI.Identification": [
+        {
+          "=": "name"
+        }
+      ],
+      "@cds.autoexpose": true,
+      "@cds.odata.valuelist": true,
+      "@cds.persistence.name": "LOCALIZED_SCP_CLOUD_CATEGORY",
+      "@cds.persistence.skip": "if-unused",
+      "@odata.draft.enabled": false,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["scp.cloud.Category"],
+            "as": "L"
+          },
+          "columns": [
+            "*",
+            {
+              "func": "coalesce",
+              "args": [
+                {
+                  "ref": ["L", "localized", "name"]
+                },
+                {
+                  "ref": ["L", "name"]
+                }
+              ],
+              "as": "name"
+            },
+            {
+              "func": "coalesce",
+              "args": [
+                {
+                  "ref": ["L", "localized", "descr"]
+                },
+                {
+                  "ref": ["L", "descr"]
+                }
+              ],
+              "as": "descr"
+            }
+          ]
+        }
+      },
+      "elements": {
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@Core.Computed": true,
+          "@cds.persistence.name": "NAME",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@Core.Computed": true,
+          "@cds.persistence.name": "DESCR",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        },
+        "texts": {
+          "@cds.persistence.name": "TEXTS",
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "scp.cloud.Category_texts",
+          "on": [
+            {
+              "ref": ["texts", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            }
+          ]
+        },
+        "localized": {
+          "@cds.persistence.name": "LOCALIZED",
+          "type": "cds.Association",
+          "target": "scp.cloud.Category_texts",
+          "on": [
+            {
+              "ref": ["localized", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            },
+            "and",
+            {
+              "ref": ["localized", "locale"]
+            },
+            "=",
+            {
+              "ref": ["$user", "locale"]
+            }
+          ]
+        }
+      }
+    },
+    "localized.scp.cloud.IncidentPhotos": {
+      "kind": "entity",
+      "@cds.persistence.name": "LOCALIZED_SCP_CLOUD_INCIDENTPHOTOS",
+      "@odata.draft.enabled": false,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["scp.cloud.IncidentPhotos"],
+            "as": "L"
+          },
+          "columns": ["*"]
+        }
+      },
+      "elements": {
+        "createdAt": {
+          "@Common.Label": "{i18n>CreatedAt}",
+          "@Core.Computed": true,
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "CREATEDAT",
+          "@odata.on.insert": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@Common.Label": "{i18n>CreatedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "CREATEDBY",
+          "@odata.on.insert": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@Common.Label": "{i18n>ChangedAt}",
+          "@Core.Computed": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "MODIFIEDAT",
+          "@odata.on.update": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@Common.Label": "{i18n>ChangedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "MODIFIEDBY",
+          "@odata.on.update": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "id": {
+          "@cds.persistence.name": "ID",
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "imageType": {
+          "@Core.isMediaType": true,
+          "@cds.persistence.name": "IMAGETYPE",
+          "type": "cds.String"
+        },
+        "image": {
+          "@Core.MediaType": {
+            "=": "ImageType"
+          },
+          "@cds.persistence.name": "IMAGE",
+          "type": "cds.LargeBinary"
+        },
+        "safetyIncident": {
+          "@cds.persistence.name": "SAFETYINCIDENT",
+          "type": "cds.Association",
+          "target": "localized.scp.cloud.SafetyIncidents",
+          "keys": [
+            {
+              "ref": ["ID"],
+              "$generatedFieldName": "safetyIncident_ID"
+            }
+          ]
+        },
+        "safetyIncident_ID": {
+          "@cds.persistence.name": "SAFETYINCIDENT_ID",
+          "@odata.foreignKey4": "safetyIncident",
+          "type": "cds.UUID"
+        }
+      }
+    },
+    "localized.scp.cloud.IncidentStatus": {
+      "kind": "entity",
+      "@UI.Identification": [
+        {
+          "=": "name"
+        }
+      ],
+      "@cds.autoexpose": true,
+      "@cds.odata.valuelist": true,
+      "@cds.persistence.name": "LOCALIZED_SCP_CLOUD_INCIDENTSTATUS",
+      "@cds.persistence.skip": "if-unused",
+      "@odata.draft.enabled": false,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["scp.cloud.IncidentStatus"],
+            "as": "L"
+          },
+          "columns": [
+            "*",
+            {
+              "func": "coalesce",
+              "args": [
+                {
+                  "ref": ["L", "localized", "name"]
+                },
+                {
+                  "ref": ["L", "name"]
+                }
+              ],
+              "as": "name"
+            },
+            {
+              "func": "coalesce",
+              "args": [
+                {
+                  "ref": ["L", "localized", "descr"]
+                },
+                {
+                  "ref": ["L", "descr"]
+                }
+              ],
+              "as": "descr"
+            }
+          ]
+        }
+      },
+      "elements": {
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@Core.Computed": true,
+          "@cds.persistence.name": "NAME",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@Core.Computed": true,
+          "@cds.persistence.name": "DESCR",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        },
+        "texts": {
+          "@cds.persistence.name": "TEXTS",
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "scp.cloud.IncidentStatus_texts",
+          "on": [
+            {
+              "ref": ["texts", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            }
+          ]
+        },
+        "localized": {
+          "@cds.persistence.name": "LOCALIZED",
+          "type": "cds.Association",
+          "target": "scp.cloud.IncidentStatus_texts",
+          "on": [
+            {
+              "ref": ["localized", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            },
+            "and",
+            {
+              "ref": ["localized", "locale"]
+            },
+            "=",
+            {
+              "ref": ["$user", "locale"]
+            }
+          ]
+        }
+      }
+    },
+    "localized.scp.cloud.IncidentsCodeList": {
+      "kind": "entity",
+      "@UI.Identification": [
+        {
+          "=": "name"
+        }
+      ],
+      "@cds.autoexpose": true,
+      "@cds.odata.valuelist": true,
+      "@cds.persistence.name": "LOCALIZED_SCP_CLOUD_INCIDENTSCODELIST",
+      "@cds.persistence.skip": "if-unused",
+      "@odata.draft.enabled": false,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["scp.cloud.IncidentsCodeList"],
+            "as": "L"
+          },
+          "columns": [
+            "*",
+            {
+              "func": "coalesce",
+              "args": [
+                {
+                  "ref": ["L", "localized", "name"]
+                },
+                {
+                  "ref": ["L", "name"]
+                }
+              ],
+              "as": "name"
+            },
+            {
+              "func": "coalesce",
+              "args": [
+                {
+                  "ref": ["L", "localized", "descr"]
+                },
+                {
+                  "ref": ["L", "descr"]
+                }
+              ],
+              "as": "descr"
+            }
+          ]
+        }
+      },
+      "elements": {
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@Core.Computed": true,
+          "@cds.persistence.name": "NAME",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@Core.Computed": true,
+          "@cds.persistence.name": "DESCR",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        },
+        "texts": {
+          "@cds.persistence.name": "TEXTS",
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "scp.cloud.IncidentsCodeList_texts",
+          "on": [
+            {
+              "ref": ["texts", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            }
+          ]
+        },
+        "localized": {
+          "@cds.persistence.name": "LOCALIZED",
+          "type": "cds.Association",
+          "target": "scp.cloud.IncidentsCodeList_texts",
+          "on": [
+            {
+              "ref": ["localized", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            },
+            "and",
+            {
+              "ref": ["localized", "locale"]
+            },
+            "=",
+            {
+              "ref": ["$user", "locale"]
+            }
+          ]
+        }
+      }
+    },
+    "localized.scp.cloud.Individual": {
+      "kind": "entity",
+      "@cds.persistence.name": "LOCALIZED_SCP_CLOUD_INDIVIDUAL",
+      "@odata.draft.enabled": false,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["scp.cloud.Individual"],
+            "as": "L"
+          },
+          "columns": ["*"]
+        }
+      },
+      "elements": {
+        "createdAt": {
+          "@Common.Label": "{i18n>CreatedAt}",
+          "@Core.Computed": true,
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "CREATEDAT",
+          "@odata.on.insert": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@Common.Label": "{i18n>CreatedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "CREATEDBY",
+          "@odata.on.insert": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@Common.Label": "{i18n>ChangedAt}",
+          "@Core.Computed": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "MODIFIEDAT",
+          "@odata.on.update": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@Common.Label": "{i18n>ChangedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "MODIFIEDBY",
+          "@odata.on.update": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "ID": {
+          "@cds.persistence.name": "ID",
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "firstName": {
+          "@Common.Label": "First Name",
+          "@cds.persistence.name": "FIRSTNAME",
+          "type": "cds.String"
+        },
+        "lastName": {
+          "@Common.Label": "Last Name",
+          "@cds.persistence.name": "LASTNAME",
+          "type": "cds.String"
+        },
+        "emailAddress": {
+          "@Common.Label": "Email Address",
+          "@cds.persistence.name": "EMAILADDRESS",
+          "type": "cds.String"
+        },
+        "safetyIncidents": {
+          "@cds.persistence.name": "SAFETYINCIDENTS",
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "localized.scp.cloud.SafetyIncidents",
+          "on": [
+            {
+              "ref": ["safetyIncidents", "assignedIndividual"]
+            },
+            "=",
+            {
+              "ref": ["$self"]
+            }
+          ]
+        }
+      }
+    },
+    "localized.scp.cloud.Priority": {
+      "kind": "entity",
+      "@UI.Identification": [
+        {
+          "=": "name"
+        }
+      ],
+      "@cds.autoexpose": true,
+      "@cds.odata.valuelist": true,
+      "@cds.persistence.name": "LOCALIZED_SCP_CLOUD_PRIORITY",
+      "@cds.persistence.skip": "if-unused",
+      "@odata.draft.enabled": false,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["scp.cloud.Priority"],
+            "as": "L"
+          },
+          "columns": [
+            "*",
+            {
+              "func": "coalesce",
+              "args": [
+                {
+                  "ref": ["L", "localized", "name"]
+                },
+                {
+                  "ref": ["L", "name"]
+                }
+              ],
+              "as": "name"
+            },
+            {
+              "func": "coalesce",
+              "args": [
+                {
+                  "ref": ["L", "localized", "descr"]
+                },
+                {
+                  "ref": ["L", "descr"]
+                }
+              ],
+              "as": "descr"
+            }
+          ]
+        }
+      },
+      "elements": {
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@Core.Computed": true,
+          "@cds.persistence.name": "NAME",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@Core.Computed": true,
+          "@cds.persistence.name": "DESCR",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        },
+        "texts": {
+          "@cds.persistence.name": "TEXTS",
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "scp.cloud.Priority_texts",
+          "on": [
+            {
+              "ref": ["texts", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            }
+          ]
+        },
+        "localized": {
+          "@cds.persistence.name": "LOCALIZED",
+          "type": "cds.Association",
+          "target": "scp.cloud.Priority_texts",
+          "on": [
+            {
+              "ref": ["localized", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            },
+            "and",
+            {
+              "ref": ["localized", "locale"]
+            },
+            "=",
+            {
+              "ref": ["$user", "locale"]
+            }
+          ]
+        }
+      }
+    },
+    "localized.scp.cloud.SafetyIncidents": {
+      "kind": "entity",
+      "@cds.persistence.name": "LOCALIZED_SCP_CLOUD_SAFETYINCIDENTS",
+      "@odata.draft.enabled": false,
+      "query": {
+        "SELECT": {
+          "from": {
+            "ref": ["scp.cloud.SafetyIncidents"],
+            "as": "L"
+          },
+          "columns": ["*"]
+        }
+      },
+      "elements": {
+        "createdAt": {
+          "@Common.Label": "{i18n>CreatedAt}",
+          "@Core.Computed": true,
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "CREATEDAT",
+          "@odata.on.insert": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@Common.Label": "{i18n>CreatedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "CREATEDBY",
+          "@odata.on.insert": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@Common.Label": "{i18n>ChangedAt}",
+          "@Core.Computed": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "MODIFIEDAT",
+          "@odata.on.update": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@Common.Label": "{i18n>ChangedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "MODIFIEDBY",
+          "@odata.on.update": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "ID": {
+          "@cds.persistence.name": "ID",
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "title": {
+          "@Common.Label": "Title",
+          "@cds.persistence.name": "TITLE",
+          "type": "cds.String",
+          "length": 50
+        },
+        "category": {
+          "@Common.Label": "Category",
+          "@cds.persistence.name": "CATEGORY",
+          "type": "cds.Association",
+          "target": "localized.scp.cloud.Category",
+          "keys": [
+            {
+              "ref": ["code"],
+              "$generatedFieldName": "category_code"
+            }
+          ]
+        },
+        "priority": {
+          "@Common.Label": "Priority",
+          "@cds.persistence.name": "PRIORITY",
+          "type": "cds.Association",
+          "target": "localized.scp.cloud.Priority",
+          "keys": [
+            {
+              "ref": ["code"],
+              "$generatedFieldName": "priority_code"
+            }
+          ]
+        },
+        "incidentStatus": {
+          "@Common.Label": "IncidentStatus",
+          "@cds.persistence.name": "INCIDENTSTATUS",
+          "type": "cds.Association",
+          "target": "localized.scp.cloud.IncidentStatus",
+          "keys": [
+            {
+              "ref": ["code"],
+              "$generatedFieldName": "incidentStatus_code"
+            }
+          ]
+        },
+        "description": {
+          "@Common.Label": "Description",
+          "@cds.persistence.name": "DESCRIPTION",
+          "type": "cds.String",
+          "length": 1000
+        },
+        "incidentResolutionDate": {
+          "@Common.Label": "ResolutionDate",
+          "@cds.persistence.name": "INCIDENTRESOLUTIONDATE",
+          "type": "cds.Date"
+        },
+        "assignedIndividual": {
+          "@cds.persistence.name": "ASSIGNEDINDIVIDUAL",
+          "type": "cds.Association",
+          "target": "localized.scp.cloud.Individual",
+          "keys": [
+            {
+              "ref": ["ID"],
+              "$generatedFieldName": "assignedIndividual_ID"
+            }
+          ]
+        },
+        "incidentPhotos": {
+          "@cds.persistence.name": "INCIDENTPHOTOS",
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "localized.scp.cloud.IncidentPhotos",
+          "on": [
+            {
+              "ref": ["incidentPhotos", "safetyIncident"]
+            },
+            "=",
+            {
+              "ref": ["$self"]
+            }
+          ]
+        },
+        "category_code": {
+          "@Common.Label": "Category",
+          "@cds.persistence.name": "CATEGORY_CODE",
+          "@odata.foreignKey4": "category",
+          "type": "cds.String",
+          "length": 20
+        },
+        "priority_code": {
+          "@Common.Label": "Priority",
+          "@cds.persistence.name": "PRIORITY_CODE",
+          "@odata.foreignKey4": "priority",
+          "type": "cds.String",
+          "length": 20
+        },
+        "incidentStatus_code": {
+          "@Common.Label": "IncidentStatus",
+          "@cds.persistence.name": "INCIDENTSTATUS_CODE",
+          "@odata.foreignKey4": "incidentStatus",
+          "type": "cds.String",
+          "length": 20
+        },
+        "assignedIndividual_ID": {
+          "@cds.persistence.name": "ASSIGNEDINDIVIDUAL_ID",
+          "@odata.foreignKey4": "assignedIndividual",
+          "type": "cds.UUID"
+        }
+      }
+    },
+    "managed": {
+      "kind": "type",
+      "@cds.persistence.name": "MANAGED",
+      "elements": {
+        "createdAt": {
+          "@Common.Label": "{i18n>CreatedAt}",
+          "@Core.Computed": true,
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "CREATEDAT",
+          "@odata.on.insert": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@Common.Label": "{i18n>CreatedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "CREATEDBY",
+          "@odata.on.insert": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@Common.Label": "{i18n>ChangedAt}",
+          "@Core.Computed": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "MODIFIEDAT",
+          "@odata.on.update": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@Common.Label": "{i18n>ChangedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "MODIFIEDBY",
+          "@odata.on.update": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        }
+      },
+      "$syntax": "aspect"
+    },
+    "sap.common": {
+      "kind": "context"
+    },
+    "sap.common.CodeList": {
+      "kind": "type",
+      "@UI.Identification": [
+        {
+          "=": "name"
+        }
+      ],
+      "@cds.autoexpose": true,
+      "@cds.odata.valuelist": true,
+      "@cds.persistence.name": "SAP_COMMON_CODELIST",
+      "@cds.persistence.skip": "if-unused",
+      "elements": {
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@cds.persistence.name": "NAME",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@cds.persistence.name": "DESCR",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        }
+      },
+      "$syntax": "aspect"
+    },
+    "sap.common.Countries": {
+      "kind": "entity",
+      "@UI.Identification": [
+        {
+          "=": "name"
+        }
+      ],
+      "@cds.autoexpose": true,
+      "@cds.odata.valuelist": true,
+      "@cds.persistence.name": "SAP_COMMON_COUNTRIES",
+      "@cds.persistence.skip": "if-unused",
+      "includes": ["sap.common.CodeList"],
+      "elements": {
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@cds.persistence.name": "NAME",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@cds.persistence.name": "DESCR",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@Common.Label": "{i18n>CountryCode}",
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        },
+        "texts": {
+          "@cds.persistence.name": "TEXTS",
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "sap.common.Countries_texts",
+          "on": [
+            {
+              "ref": ["texts", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            }
+          ]
+        },
+        "localized": {
+          "@cds.persistence.name": "LOCALIZED",
+          "type": "cds.Association",
+          "target": "sap.common.Countries_texts",
+          "on": [
+            {
+              "ref": ["localized", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            },
+            "and",
+            {
+              "ref": ["localized", "locale"]
+            },
+            "=",
+            {
+              "ref": ["$user", "locale"]
+            }
+          ]
+        }
+      }
+    },
+    "sap.common.Countries_texts": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.persistence.name": "SAP_COMMON_COUNTRIES_TEXTS",
+      "@odata.draft.enabled": false,
+      "elements": {
+        "locale": {
+          "@cds.persistence.name": "LOCALE",
+          "key": true,
+          "type": "cds.String",
+          "length": 5
+        },
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@cds.persistence.name": "NAME",
+          "localized": false,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@cds.persistence.name": "DESCR",
+          "localized": false,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@Common.Label": "{i18n>CountryCode}",
+          "@cds.odata.v4.ignore": true,
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        }
+      }
+    },
+    "sap.common.Currencies": {
+      "kind": "entity",
+      "@UI.Identification": [
+        {
+          "=": "name"
+        }
+      ],
+      "@cds.autoexpose": true,
+      "@cds.odata.valuelist": true,
+      "@cds.persistence.name": "SAP_COMMON_CURRENCIES",
+      "@cds.persistence.skip": "if-unused",
+      "includes": ["sap.common.CodeList"],
+      "elements": {
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@cds.persistence.name": "NAME",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@cds.persistence.name": "DESCR",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@Common.Label": "{i18n>CurrencyCode}",
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        },
+        "symbol": {
+          "@Common.Label": "{i18n>CurrencySymbol}",
+          "@cds.persistence.name": "SYMBOL",
+          "type": "cds.String",
+          "length": 5
+        },
+        "texts": {
+          "@cds.persistence.name": "TEXTS",
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "sap.common.Currencies_texts",
+          "on": [
+            {
+              "ref": ["texts", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            }
+          ]
+        },
+        "localized": {
+          "@cds.persistence.name": "LOCALIZED",
+          "type": "cds.Association",
+          "target": "sap.common.Currencies_texts",
+          "on": [
+            {
+              "ref": ["localized", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            },
+            "and",
+            {
+              "ref": ["localized", "locale"]
+            },
+            "=",
+            {
+              "ref": ["$user", "locale"]
+            }
+          ]
+        }
+      }
+    },
+    "sap.common.Currencies_texts": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.persistence.name": "SAP_COMMON_CURRENCIES_TEXTS",
+      "@odata.draft.enabled": false,
+      "elements": {
+        "locale": {
+          "@cds.persistence.name": "LOCALE",
+          "key": true,
+          "type": "cds.String",
+          "length": 5
+        },
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@cds.persistence.name": "NAME",
+          "localized": false,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@cds.persistence.name": "DESCR",
+          "localized": false,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@Common.Label": "{i18n>CurrencyCode}",
+          "@cds.odata.v4.ignore": true,
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 3
+        }
+      }
+    },
+    "sap.common.Languages": {
+      "kind": "entity",
+      "@UI.Identification": [
+        {
+          "=": "name"
+        }
+      ],
+      "@cds.autoexpose": true,
+      "@cds.odata.valuelist": true,
+      "@cds.persistence.name": "SAP_COMMON_LANGUAGES",
+      "@cds.persistence.skip": "if-unused",
+      "includes": ["sap.common.CodeList"],
+      "elements": {
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@cds.persistence.name": "NAME",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@cds.persistence.name": "DESCR",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@Common.Label": "{i18n>LanguageCode}",
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 14
+        },
+        "texts": {
+          "@cds.persistence.name": "TEXTS",
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "sap.common.Languages_texts",
+          "on": [
+            {
+              "ref": ["texts", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            }
+          ]
+        },
+        "localized": {
+          "@cds.persistence.name": "LOCALIZED",
+          "type": "cds.Association",
+          "target": "sap.common.Languages_texts",
+          "on": [
+            {
+              "ref": ["localized", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            },
+            "and",
+            {
+              "ref": ["localized", "locale"]
+            },
+            "=",
+            {
+              "ref": ["$user", "locale"]
+            }
+          ]
+        }
+      }
+    },
+    "sap.common.Languages_texts": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.persistence.name": "SAP_COMMON_LANGUAGES_TEXTS",
+      "@odata.draft.enabled": false,
+      "elements": {
+        "locale": {
+          "@cds.persistence.name": "LOCALE",
+          "key": true,
+          "type": "cds.String",
+          "length": 5
+        },
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@cds.persistence.name": "NAME",
+          "localized": false,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@cds.persistence.name": "DESCR",
+          "localized": false,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@Common.Label": "{i18n>LanguageCode}",
+          "@cds.odata.v4.ignore": true,
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 14
+        }
+      }
+    },
+    "scp.cloud.Category": {
+      "kind": "entity",
+      "@UI.Identification": [
+        {
+          "=": "name"
+        }
+      ],
+      "@cds.autoexpose": true,
+      "@cds.odata.valuelist": true,
+      "@cds.persistence.name": "SCP_CLOUD_CATEGORY",
+      "@cds.persistence.skip": "if-unused",
+      "includes": ["scp.cloud.IncidentsCodeList"],
+      "elements": {
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@cds.persistence.name": "NAME",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@cds.persistence.name": "DESCR",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        },
+        "texts": {
+          "@cds.persistence.name": "TEXTS",
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "scp.cloud.Category_texts",
+          "on": [
+            {
+              "ref": ["texts", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            }
+          ]
+        },
+        "localized": {
+          "@cds.persistence.name": "LOCALIZED",
+          "type": "cds.Association",
+          "target": "scp.cloud.Category_texts",
+          "on": [
+            {
+              "ref": ["localized", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            },
+            "and",
+            {
+              "ref": ["localized", "locale"]
+            },
+            "=",
+            {
+              "ref": ["$user", "locale"]
+            }
+          ]
+        }
+      }
+    },
+    "scp.cloud.Category_texts": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.persistence.name": "SCP_CLOUD_CATEGORY_TEXTS",
+      "@odata.draft.enabled": false,
+      "elements": {
+        "locale": {
+          "@cds.persistence.name": "LOCALE",
+          "key": true,
+          "type": "cds.String",
+          "length": 5
+        },
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@cds.persistence.name": "NAME",
+          "localized": false,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@cds.persistence.name": "DESCR",
+          "localized": false,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@cds.odata.v4.ignore": true,
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        }
+      }
+    },
+    "scp.cloud.IncidentPhotos": {
+      "kind": "entity",
+      "@cds.persistence.name": "SCP_CLOUD_INCIDENTPHOTOS",
+      "includes": ["managed"],
+      "elements": {
+        "createdAt": {
+          "@Common.Label": "{i18n>CreatedAt}",
+          "@Core.Computed": true,
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "CREATEDAT",
+          "@odata.on.insert": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@Common.Label": "{i18n>CreatedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "CREATEDBY",
+          "@odata.on.insert": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@Common.Label": "{i18n>ChangedAt}",
+          "@Core.Computed": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "MODIFIEDAT",
+          "@odata.on.update": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@Common.Label": "{i18n>ChangedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "MODIFIEDBY",
+          "@odata.on.update": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "id": {
+          "@cds.persistence.name": "ID",
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "imageType": {
+          "@Core.isMediaType": true,
+          "@cds.persistence.name": "IMAGETYPE",
+          "type": "cds.String"
+        },
+        "image": {
+          "@Core.MediaType": {
+            "=": "ImageType"
+          },
+          "@cds.persistence.name": "IMAGE",
+          "type": "cds.LargeBinary"
+        },
+        "safetyIncident": {
+          "@cds.persistence.name": "SAFETYINCIDENT",
+          "type": "cds.Association",
+          "target": "scp.cloud.SafetyIncidents",
+          "keys": [
+            {
+              "ref": ["ID"],
+              "$generatedFieldName": "safetyIncident_ID"
+            }
+          ]
+        },
+        "safetyIncident_ID": {
+          "@cds.persistence.name": "SAFETYINCIDENT_ID",
+          "@odata.foreignKey4": "safetyIncident",
+          "type": "cds.UUID"
+        }
+      }
+    },
+    "scp.cloud.IncidentStatus": {
+      "kind": "entity",
+      "@UI.Identification": [
+        {
+          "=": "name"
+        }
+      ],
+      "@cds.autoexpose": true,
+      "@cds.odata.valuelist": true,
+      "@cds.persistence.name": "SCP_CLOUD_INCIDENTSTATUS",
+      "@cds.persistence.skip": "if-unused",
+      "includes": ["scp.cloud.IncidentsCodeList"],
+      "elements": {
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@cds.persistence.name": "NAME",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@cds.persistence.name": "DESCR",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        },
+        "texts": {
+          "@cds.persistence.name": "TEXTS",
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "scp.cloud.IncidentStatus_texts",
+          "on": [
+            {
+              "ref": ["texts", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            }
+          ]
+        },
+        "localized": {
+          "@cds.persistence.name": "LOCALIZED",
+          "type": "cds.Association",
+          "target": "scp.cloud.IncidentStatus_texts",
+          "on": [
+            {
+              "ref": ["localized", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            },
+            "and",
+            {
+              "ref": ["localized", "locale"]
+            },
+            "=",
+            {
+              "ref": ["$user", "locale"]
+            }
+          ]
+        }
+      }
+    },
+    "scp.cloud.IncidentStatus_texts": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.persistence.name": "SCP_CLOUD_INCIDENTSTATUS_TEXTS",
+      "@odata.draft.enabled": false,
+      "elements": {
+        "locale": {
+          "@cds.persistence.name": "LOCALE",
+          "key": true,
+          "type": "cds.String",
+          "length": 5
+        },
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@cds.persistence.name": "NAME",
+          "localized": false,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@cds.persistence.name": "DESCR",
+          "localized": false,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@cds.odata.v4.ignore": true,
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        }
+      }
+    },
+    "scp.cloud.IncidentsCodeList": {
+      "kind": "entity",
+      "@UI.Identification": [
+        {
+          "=": "name"
+        }
+      ],
+      "@cds.autoexpose": true,
+      "@cds.odata.valuelist": true,
+      "@cds.persistence.name": "SCP_CLOUD_INCIDENTSCODELIST",
+      "@cds.persistence.skip": "if-unused",
+      "includes": ["sap.common.CodeList"],
+      "elements": {
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@cds.persistence.name": "NAME",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@cds.persistence.name": "DESCR",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        },
+        "texts": {
+          "@cds.persistence.name": "TEXTS",
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "scp.cloud.IncidentsCodeList_texts",
+          "on": [
+            {
+              "ref": ["texts", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            }
+          ]
+        },
+        "localized": {
+          "@cds.persistence.name": "LOCALIZED",
+          "type": "cds.Association",
+          "target": "scp.cloud.IncidentsCodeList_texts",
+          "on": [
+            {
+              "ref": ["localized", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            },
+            "and",
+            {
+              "ref": ["localized", "locale"]
+            },
+            "=",
+            {
+              "ref": ["$user", "locale"]
+            }
+          ]
+        }
+      }
+    },
+    "scp.cloud.IncidentsCodeList_texts": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.persistence.name": "SCP_CLOUD_INCIDENTSCODELIST_TEXTS",
+      "@odata.draft.enabled": false,
+      "elements": {
+        "locale": {
+          "@cds.persistence.name": "LOCALE",
+          "key": true,
+          "type": "cds.String",
+          "length": 5
+        },
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@cds.persistence.name": "NAME",
+          "localized": false,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@cds.persistence.name": "DESCR",
+          "localized": false,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@cds.odata.v4.ignore": true,
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        }
+      }
+    },
+    "scp.cloud.Individual": {
+      "kind": "entity",
+      "@cds.persistence.name": "SCP_CLOUD_INDIVIDUAL",
+      "includes": ["managed"],
+      "elements": {
+        "createdAt": {
+          "@Common.Label": "{i18n>CreatedAt}",
+          "@Core.Computed": true,
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "CREATEDAT",
+          "@odata.on.insert": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@Common.Label": "{i18n>CreatedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "CREATEDBY",
+          "@odata.on.insert": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@Common.Label": "{i18n>ChangedAt}",
+          "@Core.Computed": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "MODIFIEDAT",
+          "@odata.on.update": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@Common.Label": "{i18n>ChangedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "MODIFIEDBY",
+          "@odata.on.update": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "ID": {
+          "@cds.persistence.name": "ID",
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "firstName": {
+          "@Common.Label": "First Name",
+          "@cds.persistence.name": "FIRSTNAME",
+          "type": "cds.String"
+        },
+        "lastName": {
+          "@Common.Label": "Last Name",
+          "@cds.persistence.name": "LASTNAME",
+          "type": "cds.String"
+        },
+        "emailAddress": {
+          "@Common.Label": "Email Address",
+          "@cds.persistence.name": "EMAILADDRESS",
+          "type": "cds.String"
+        },
+        "safetyIncidents": {
+          "@cds.persistence.name": "SAFETYINCIDENTS",
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "scp.cloud.SafetyIncidents",
+          "on": [
+            {
+              "ref": ["safetyIncidents", "assignedIndividual"]
+            },
+            "=",
+            {
+              "ref": ["$self"]
+            }
+          ]
+        }
+      }
+    },
+    "scp.cloud.Priority": {
+      "kind": "entity",
+      "@UI.Identification": [
+        {
+          "=": "name"
+        }
+      ],
+      "@cds.autoexpose": true,
+      "@cds.odata.valuelist": true,
+      "@cds.persistence.name": "SCP_CLOUD_PRIORITY",
+      "@cds.persistence.skip": "if-unused",
+      "includes": ["scp.cloud.IncidentsCodeList"],
+      "elements": {
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@cds.persistence.name": "NAME",
+          "localized": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@cds.persistence.name": "DESCR",
+          "localized": true,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        },
+        "texts": {
+          "@cds.persistence.name": "TEXTS",
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "scp.cloud.Priority_texts",
+          "on": [
+            {
+              "ref": ["texts", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            }
+          ]
+        },
+        "localized": {
+          "@cds.persistence.name": "LOCALIZED",
+          "type": "cds.Association",
+          "target": "scp.cloud.Priority_texts",
+          "on": [
+            {
+              "ref": ["localized", "code"]
+            },
+            "=",
+            {
+              "ref": ["code"]
+            },
+            "and",
+            {
+              "ref": ["localized", "locale"]
+            },
+            "=",
+            {
+              "ref": ["$user", "locale"]
+            }
+          ]
+        }
+      }
+    },
+    "scp.cloud.Priority_texts": {
+      "kind": "entity",
+      "@cds.autoexpose": true,
+      "@cds.persistence.name": "SCP_CLOUD_PRIORITY_TEXTS",
+      "@odata.draft.enabled": false,
+      "elements": {
+        "locale": {
+          "@cds.persistence.name": "LOCALE",
+          "key": true,
+          "type": "cds.String",
+          "length": 5
+        },
+        "name": {
+          "@Common.Label": "{i18n>Name}",
+          "@cds.persistence.name": "NAME",
+          "localized": false,
+          "type": "cds.String",
+          "length": 255
+        },
+        "descr": {
+          "@Common.Label": "{i18n>Description}",
+          "@cds.persistence.name": "DESCR",
+          "localized": false,
+          "type": "cds.String",
+          "length": 1000
+        },
+        "code": {
+          "@cds.odata.v4.ignore": true,
+          "@cds.persistence.name": "CODE",
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        }
+      }
+    },
+    "scp.cloud.SafetyIncidents": {
+      "kind": "entity",
+      "@cds.persistence.name": "SCP_CLOUD_SAFETYINCIDENTS",
+      "includes": ["managed"],
+      "elements": {
+        "createdAt": {
+          "@Common.Label": "{i18n>CreatedAt}",
+          "@Core.Computed": true,
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "CREATEDAT",
+          "@odata.on.insert": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "createdBy": {
+          "@Common.Label": "{i18n>CreatedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@Core.Immutable": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "CREATEDBY",
+          "@odata.on.insert": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "modifiedAt": {
+          "@Common.Label": "{i18n>ChangedAt}",
+          "@Core.Computed": true,
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$now"
+          },
+          "@cds.on.update": {
+            "=": "$now"
+          },
+          "@cds.persistence.name": "MODIFIEDAT",
+          "@odata.on.update": {
+            "#": "now"
+          },
+          "@readonly": true,
+          "type": "cds.Timestamp"
+        },
+        "modifiedBy": {
+          "@Common.Label": "{i18n>ChangedBy}",
+          "@Core.Computed": true,
+          "@Core.Description": "{i18n>UserID.Description}",
+          "@UI.HiddenFilter": true,
+          "@cds.on.insert": {
+            "=": "$user"
+          },
+          "@cds.on.update": {
+            "=": "$user"
+          },
+          "@cds.persistence.name": "MODIFIEDBY",
+          "@odata.on.update": {
+            "#": "user"
+          },
+          "@readonly": true,
+          "type": "cds.String",
+          "length": 255
+        },
+        "ID": {
+          "@cds.persistence.name": "ID",
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "title": {
+          "@Common.Label": "Title",
+          "@cds.persistence.name": "TITLE",
+          "type": "cds.String",
+          "length": 50
+        },
+        "category": {
+          "@Common.Label": "Category",
+          "@cds.persistence.name": "CATEGORY",
+          "type": "cds.Association",
+          "target": "scp.cloud.Category",
+          "keys": [
+            {
+              "ref": ["code"],
+              "$generatedFieldName": "category_code"
+            }
+          ]
+        },
+        "priority": {
+          "@Common.Label": "Priority",
+          "@cds.persistence.name": "PRIORITY",
+          "type": "cds.Association",
+          "target": "scp.cloud.Priority",
+          "keys": [
+            {
+              "ref": ["code"],
+              "$generatedFieldName": "priority_code"
+            }
+          ]
+        },
+        "incidentStatus": {
+          "@Common.Label": "IncidentStatus",
+          "@cds.persistence.name": "INCIDENTSTATUS",
+          "type": "cds.Association",
+          "target": "scp.cloud.IncidentStatus",
+          "keys": [
+            {
+              "ref": ["code"],
+              "$generatedFieldName": "incidentStatus_code"
+            }
+          ]
+        },
+        "description": {
+          "@Common.Label": "Description",
+          "@cds.persistence.name": "DESCRIPTION",
+          "type": "cds.String",
+          "length": 1000
+        },
+        "incidentResolutionDate": {
+          "@Common.Label": "ResolutionDate",
+          "@cds.persistence.name": "INCIDENTRESOLUTIONDATE",
+          "type": "cds.Date"
+        },
+        "assignedIndividual": {
+          "@cds.persistence.name": "ASSIGNEDINDIVIDUAL",
+          "type": "cds.Association",
+          "target": "scp.cloud.Individual",
+          "keys": [
+            {
+              "ref": ["ID"],
+              "$generatedFieldName": "assignedIndividual_ID"
+            }
+          ]
+        },
+        "incidentPhotos": {
+          "@cds.persistence.name": "INCIDENTPHOTOS",
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "scp.cloud.IncidentPhotos",
+          "on": [
+            {
+              "ref": ["incidentPhotos", "safetyIncident"]
+            },
+            "=",
+            {
+              "ref": ["$self"]
+            }
+          ]
+        },
+        "category_code": {
+          "@Common.Label": "Category",
+          "@cds.persistence.name": "CATEGORY_CODE",
+          "@odata.foreignKey4": "category",
+          "type": "cds.String",
+          "length": 20
+        },
+        "priority_code": {
+          "@Common.Label": "Priority",
+          "@cds.persistence.name": "PRIORITY_CODE",
+          "@odata.foreignKey4": "priority",
+          "type": "cds.String",
+          "length": 20
+        },
+        "incidentStatus_code": {
+          "@Common.Label": "IncidentStatus",
+          "@cds.persistence.name": "INCIDENTSTATUS_CODE",
+          "@odata.foreignKey4": "incidentStatus",
+          "type": "cds.String",
+          "length": 20
+        },
+        "assignedIndividual_ID": {
+          "@cds.persistence.name": "ASSIGNEDINDIVIDUAL_ID",
+          "@odata.foreignKey4": "assignedIndividual",
+          "type": "cds.UUID"
+        }
+      }
+    },
+    "temporal": {
+      "kind": "type",
+      "@cds.persistence.name": "TEMPORAL",
+      "elements": {
+        "validFrom": {
+          "@cds.persistence.name": "VALIDFROM",
+          "@cds.valid.from": true,
+          "type": "cds.DateTime"
+        },
+        "validTo": {
+          "@cds.persistence.name": "VALIDTO",
+          "@cds.valid.to": true,
+          "type": "cds.DateTime"
+        }
+      },
+      "$syntax": "aspect"
+    }
+  },
+  "meta": {
+    "creator": "CDS Compiler v1.22.1-20200129203006-SNAPSHOT"
+  },
+  "$version": "1.0",
+  "@sql_mapping": "plain"
+}
