@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.11.11
+
+### Patch Changes
+
+-   73c741ef: Add option to add description in i18n.properties
+
 ## 0.11.10
 
 ### Patch Changes
