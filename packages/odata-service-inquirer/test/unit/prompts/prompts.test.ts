@@ -232,9 +232,14 @@ describe('getQuestions', () => {
                   "mandatory": true,
                 },
                 "message": "Service name",
-                "name": "systemService",
+                "name": "serviceSelection",
+                "source": [Function],
                 "type": "list",
                 "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "name": "cliServicePromptName",
                 "when": [Function],
               },
             ]

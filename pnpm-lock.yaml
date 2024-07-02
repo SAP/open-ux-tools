@@ -1488,6 +1488,9 @@ importers:
       i18next:
         specifier: 23.5.1
         version: 23.5.1
+      inquirer-autocomplete-prompt:
+        specifier: 2.0.1
+        version: 2.0.1(inquirer@8.2.6)
       os-name:
         specifier: 4.0.1
         version: 4.0.1

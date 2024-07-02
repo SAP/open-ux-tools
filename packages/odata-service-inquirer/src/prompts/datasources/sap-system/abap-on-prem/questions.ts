@@ -1,13 +1,13 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Annotations, AxiosRequestConfig, CatalogService, ServiceProvider } from '@sap-ux/axios-extension';
 import { ODataVersion, create } from '@sap-ux/axios-extension';
-import { withCondition, type ListQuestion } from '@sap-ux/inquirer-common';
+import { searchChoices, withCondition, type ListQuestion } from '@sap-ux/inquirer-common';
 import { validateClient } from '@sap-ux/project-input-validator';
 import type { InputQuestion, ListChoiceOptions, PasswordQuestion, Question } from 'inquirer';
 import { t } from '../../../../i18n';
-import type { ValidationLink } from '../../../../types';
-import { type OdataServiceAnswers } from '../../../../types';
-import { PromptState } from '../../../../utils';
+import type { ValidationLink, serviceSelectionPromptOptions } from '../../../../types';
+import { hostEnvironment, promptNames, type OdataServiceAnswers } from '../../../../types';
+import { PromptState, getHostEnvironment } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
 import { getServiceChoices } from './service-helper';
 import { errorHandler } from '../../../prompt-helpers';
@@ -20,15 +20,17 @@ export enum abapOnPremInternalPromptNames {
     sapClient = 'sapClient',
     systemUsername = 'abapSystemUsername',
     systemPassword = 'abapSystemPassword',
-    systemService = 'systemService'
+    selectedService = 'selectedService'
 }
 
 export interface AbapOnPremAnswers extends Partial<OdataServiceAnswers> {
     [abapOnPremInternalPromptNames.systemUrl]?: string;
     [abapOnPremInternalPromptNames.systemUsername]?: string;
     [abapOnPremInternalPromptNames.systemPassword]?: string;
-    [abapOnPremInternalPromptNames.systemService]?: ServiceAnswer;
+    [abapOnPremInternalPromptNames.selectedService]?: ServiceAnswer;
 }
+
+const cliServicePromptName = 'cliServicePromptName';
 
 /**
  * Sap System service answer
@@ -49,9 +51,12 @@ export const SERVICE_TYPE = {
 /**
  * Get the Abap on-premise datasource questions.
  *
+ * @param serviceSelectionPromptOptions
  * @returns property questions for the Abap on-premise datasource
  */
-export function getAbapOnPremQuestions(): Question<AbapOnPremAnswers>[] {
+export function getAbapOnPremQuestions(
+    serviceSelectionPromptOptions?: serviceSelectionPromptOptions
+): Question<AbapOnPremAnswers>[] {
     PromptState.reset();
     errorHandler.resetErrorState();
     const connectValidator = new ConnectionValidator();
@@ -137,13 +142,15 @@ export function getAbapOnPremQuestions(): Question<AbapOnPremAnswers>[] {
         {
             when: (): boolean =>
                 connectValidator.validity.authenticated || connectValidator.validity.authRequired === false,
-            name: abapOnPremInternalPromptNames.systemService,
-            type: 'list',
+            name: promptNames.serviceSelection,
+            type: serviceSelectionPromptOptions?.useAutoComplete ? 'autocomplete' : 'list',
             message: t('prompts.systemService.message'),
             guiOptions: {
                 breadcrumb: t('prompts.systemService.breadcrumb'),
                 mandatory: true
             },
+            source: (prevAnswers: AbapOnPremAnswers, input: string) =>
+                searchChoices(input, serviceChoices as ListChoiceOptions[]),
             choices: async (answers) => {
                 if (!serviceChoices || lastSystemUrl !== answers.systemUrl) {
                     serviceChoices = await getServiceChoices(Object.values(connectValidator.catalogs));
@@ -166,10 +173,10 @@ export function getAbapOnPremQuestions(): Question<AbapOnPremAnswers>[] {
                 }
             },
             default: (answers: AbapOnPremAnswers) => {
-                if (answers.systemService) {
-                    return answers.systemService;
+                if (answers.selectedService) {
+                    return answers.selectedService;
                 }
-                return serviceChoices.length > 1 ? undefined : 0;
+                return serviceChoices?.length > 1 ? undefined : 0;
             },
             // Warning: only executes in YUI not cli
             validate: async (
@@ -187,11 +194,32 @@ export function getAbapOnPremQuestions(): Question<AbapOnPremAnswers>[] {
             }
         } as ListQuestion<AbapOnPremAnswers>
     ];
+
+    // Only for CLI use as `list` prompt validation does not run on CLI
+    if (getHostEnvironment() === hostEnvironment.cli) {
+        questions.push({
+            when: async (answers: AbapOnPremAnswers): Promise<boolean> => {
+                if (!errorHandler.hasError(true) && answers.selectedService && answers.systemUrl) {
+                    const result = await getServiceDetails(
+                        answers.selectedService,
+                        answers.systemUrl,
+                        connectValidator
+                    );
+                    if (typeof result === 'string') {
+                        LoggerHelper.logger.error(result);
+                    }
+                }
+                return false;
+            },
+            name: cliServicePromptName
+        } as Question);
+    }
+
     return questions;
 }
 
 /**
- * Gets the serice details and sets the PromptState.odataService properties.
+ * Gets the serice details and internally sets the PromptState.odataService properties.
  * If an error occurs, the error message is returned for use in validators.
  *
  * @param service

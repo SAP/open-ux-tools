@@ -116,7 +116,11 @@ export enum promptNames {
     /**
      * password
      */
-    serviceUrlPassword = 'serviceUrlPassword'
+    serviceUrlPassword = 'serviceUrlPassword',
+    /**
+     * Service selection
+     */
+    serviceSelection = 'serviceSelection'
 }
 
 export type CapRuntime = 'Node.js' | 'Java';
@@ -204,6 +208,14 @@ export type MetadataPromptOptions = {
     requiredOdataVersion?: OdataVersion;
 };
 
+export type serviceSelectionPromptOptions = {
+    /**
+     * Determines if the service selection prompt should use auto complete prompt for service names.
+     * Note that the auto-complete module must be registered with the inquirer instance to use this feature.
+     */
+    useAutoComplete?: boolean;
+};
+
 export type OdataServiceUrlPromptOptions = {
     /**
      * Used to validate the service specified by the url is of the required odata version edmx
@@ -221,7 +233,8 @@ type odataServiceInquirerPromptOptions = Record<promptNames.datasourceType, Data
     Record<promptNames.capProject, CapProjectPromptOptions> &
     Record<promptNames.capService, CapServicePromptOptions> &
     Record<promptNames.serviceUrl, OdataServiceUrlPromptOptions> &
-    Record<promptNames.serviceUrlPassword, OdataServiceUrlPasswordOptions>;
+    Record<promptNames.serviceUrlPassword, OdataServiceUrlPasswordOptions> &
+    Record<promptNames.serviceSelection, serviceSelectionPromptOptions>;
 
 export type OdataServiceQuestion = YUIQuestion<OdataServiceAnswers>;
 

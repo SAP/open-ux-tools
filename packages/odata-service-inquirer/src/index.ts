@@ -18,6 +18,7 @@ import {
 import { PromptState, setTelemetryClient } from './utils';
 import { initI18nOdataServiceInquirer } from './i18n';
 import { newSystemChoiceValue } from './prompts/datasources/sap-system/questions';
+import autocomplete from 'inquirer-autocomplete-prompt';
 
 /**
  * Get the inquirer prompts for odata service.
@@ -70,6 +71,10 @@ async function prompt(
     telemetryClient?: ToolsSuiteTelemetryClient,
     isYUI = false
 ): Promise<OdataServiceAnswers> {
+    if (adapter?.promptModule && promptOptions?.serviceSelection?.useAutoComplete) {
+        const pm = adapter.promptModule;
+        pm.registerPrompt('autocomplete', autocomplete);
+    }
     const odataServicePrompts = (await getPrompts(promptOptions, logger, enableGuidedAnswers, telemetryClient, isYUI))
         .prompts;
     const answers = await adapter.prompt<OdataServiceAnswers>(odataServicePrompts);

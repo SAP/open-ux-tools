@@ -71,7 +71,7 @@ export function getNewSystemQuestions(): Question<NewSystemAnswers>[] {
     ];
     questions.push(
         ...withCondition(
-            getAbapOnPremQuestions() as Question[],
+            getAbapOnPremQuestions(/* todo: pass prompt options */) as Question[],
             (answers: Answers) => (answers as NewSystemAnswers).newSystemType === 'abapOnPrem'
         )
     );

@@ -122,7 +122,7 @@ async function getDatasourceTypeConditionalQuestions(
     // Temp integration into Service Inquirer new system questions
     conditionalQuestions.push(
         ...(withCondition(
-            getAbapOnPremQuestions() as Question[],
+            getAbapOnPremQuestions(promptOptions?.serviceSelection) as Question[],
             (answers: Answers) =>
                 (answers as OdataServiceAnswers).datasourceType === DatasourceType.sapSystem &&
                 (answers as SystemSelectionAnswer).system === newSystemChoiceValue &&
