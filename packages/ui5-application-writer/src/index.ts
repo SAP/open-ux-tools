@@ -31,8 +31,17 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     if (ui5AppConfig.appOptions?.generateIndex === false) {
         ignore.push('**/webapp/index.html');
     }
-
-    fs.copyTpl(join(tmplPath, 'core', '**/*.*'), join(basePath), ui5App, undefined, {
+    const isEdmxProjectType = ui5AppConfig.app.projectType === 'EDMXBackend';
+    // pass frameworkUrl and version only for CAP projects
+    const templateOptions = {
+        ...ui5App,
+        ui5: {
+            ...ui5App.ui5,
+            frameworkUrl: isEdmxProjectType ? undefined : ui5App.ui5.frameworkUrl,
+            version: isEdmxProjectType ? undefined : ui5App.ui5.version
+        }
+    }
+    fs.copyTpl(join(tmplPath, 'core', '**/*.*'), join(basePath), templateOptions, undefined, {
         globOptions: { dot: true, ignore },
         processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
     });
