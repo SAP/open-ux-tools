@@ -111,8 +111,8 @@ export function getBaseComponent(type: TemplateType, version: OdataVersion): str
  * @param version - The odata service version determines the appropriate base component to use
  * @returns The Ui5 libs required by the specified template type and OData version
  */
-export function getUi5Libs(type: TemplateType, version: OdataVersion): string[] | undefined {
-    return templateLibs[version][type]?.ui5Libs;
+export function getTemplateUi5Libs(type: TemplateType, version: OdataVersion): string[] {
+    return templateLibs[version][type]?.ui5Libs ?? [];
 }
 
 // Additional attributes associated with TemplateType
