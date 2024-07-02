@@ -1,5 +1,43 @@
 # @sap-ux/create
 
+## 0.6.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.9
+-   @sap-ux/app-config-writer@0.3.83
+-   @sap-ux/preview-middleware@0.15.2
+-   @sap-ux/system-access@0.4.7
+-   @sap-ux/cap-config-writer@0.5.6
+
+## 0.6.2
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.8
+-   @sap-ux/app-config-writer@0.3.82
+-   @sap-ux/preview-middleware@0.15.1
+-   @sap-ux/system-access@0.4.6
+-   @sap-ux/cap-config-writer@0.5.5
+
+## 0.6.1
+
+### Patch Changes
+
+-   Updated dependencies [da2704c7]
+    -   @sap-ux/preview-middleware@0.15.0
+
+## 0.6.0
+
+### Minor Changes
+
+-   6ad68964: New 'add html' command creating html files for local testing
+
+### Patch Changes
+
+-   Updated dependencies [6ad68964]
+    -   @sap-ux/preview-middleware@0.14.0
+
 ## 0.5.114
 
 ### Patch Changes

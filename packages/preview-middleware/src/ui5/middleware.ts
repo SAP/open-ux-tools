@@ -3,24 +3,7 @@ import type { RequestHandler } from 'express';
 import type { MiddlewareParameters } from '@ui5/server';
 import { FlpSandbox, initAdp } from '../base/flp';
 import type { MiddlewareConfig } from '../types';
-
-/**
- * The developer mode is only supported for adaptation projects, therefore, notify the user if it is wrongly configured and then disable it.
- *
- * @param config configurations from the ui5.yaml
- * @param logger logger instance
- */
-function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger): void {
-    if (config.rta && config.adp === undefined) {
-        config.rta.editors = config.rta.editors.filter((editor) => {
-            if (editor.developerMode) {
-                logger.error('developerMode is ONLY supported for SAP UI5 adaptation projects.');
-                logger.warn(`developerMode for ${editor.path} disabled`);
-            }
-            return !editor.developerMode;
-        });
-    }
-}
+import { getPreviewPaths, sanitizeConfig } from '../base/config';
 
 /**
  * Create the router that is to be exposed as UI5 middleware.
@@ -55,7 +38,7 @@ async function createRouter(
         }
     }
     // add exposed endpoints for cds-plugin-ui5
-    flp.router.getAppPages = () => [`${flp.config.path}#${flp.config.intent.object}-${flp.config.intent.action}`];
+    flp.router.getAppPages = () => getPreviewPaths(config).map(({ path }) => path);
     return flp.router;
 }
 

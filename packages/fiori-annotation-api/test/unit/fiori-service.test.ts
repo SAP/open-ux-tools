@@ -1310,6 +1310,52 @@ describe('fiori annotation service', () => {
                     }
                 ]
             });
+
+            createEditTestCase({
+                name: 'update value to null',
+                projectTestModels: TEST_TARGETS,
+                getInitialChanges: (files) => [
+                    {
+                        kind: ChangeType.InsertAnnotation,
+                        uri: files.annotations,
+                        content: {
+                            type: 'annotation',
+                            target: targetName,
+                            value: {
+                                term: DATA_POINT,
+                                record: {
+                                    propertyValues: [
+                                        {
+                                            name: 'Value',
+                                            value: {
+                                                type: 'String',
+                                                String: 'testString'
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                ],
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.Update,
+                        reference: {
+                            target: targetName,
+                            term: DATA_POINT
+                        },
+                        uri: files.annotations,
+                        pointer: 'record/propertyValues/0/value',
+                        content: {
+                            type: 'expression',
+                            value: {
+                                type: 'Null'
+                            }
+                        }
+                    }
+                ]
+            });
             createEditTestCase({
                 name: "update propertyValue value 'string' value",
                 projectTestModels: TEST_TARGETS,
