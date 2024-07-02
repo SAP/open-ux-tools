@@ -41,7 +41,7 @@ export async function getFilterBarBuildingBlockPrompts(
                 ? [await getCAPServicePrompt(t('service'), projectProvider, [], { required: true })]
                 : []),
             getAggregationPathPrompt(t('aggregation'), fs, basePath, { required: true }),
-            getEntityPrompt(t('entity'), projectProvider, ['qualifier'], { required: true }),
+            getEntityPrompt(t('entity'), projectProvider, ['buildingBlockData.metaPath.qualifier'], { required: true }),
             getAnnotationPathQualifierPrompt(t('qualifier'), projectProvider, [UIAnnotationTerms.SelectionFields], {
                 additionalInfo: t('valuesDependentOnEntityTypeInfo'),
                 required: true,

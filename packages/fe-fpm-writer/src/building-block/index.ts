@@ -101,6 +101,14 @@ function getTemplateContent<T extends BuildingBlock>(
 ): string {
     const templateFolderName = buildingBlockData.buildingBlockType;
     const templateFilePath = getTemplatePath(`/building-block/${templateFolderName}/View.xml`);
+    if (typeof buildingBlockData.metaPath === 'object') {
+        // Convert object based metapath to string
+        const { entitySet, qualifier } = buildingBlockData.metaPath;
+        let entityPath = entitySet;
+        const lastIndex = entityPath.lastIndexOf('.');
+        entityPath = lastIndex >= 0 ? entityPath.substring?.(lastIndex + 1) : entityPath;
+        buildingBlockData = { ...buildingBlockData, metaPath: `/${entityPath}/${qualifier}` };
+    }
     return render(
         fs.read(templateFilePath),
         {

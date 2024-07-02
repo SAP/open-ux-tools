@@ -2,7 +2,8 @@ import type { Answers, Question } from 'inquirer';
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import type { BuildingBlockConfig } from '../types';
-import { ProjectProvider } from './utils';
+import { BuildingBlockType } from '../types';
+import { ProjectProvider, getAnswer } from './utils';
 import type {
     Prompts,
     ValidationResults,
@@ -32,6 +33,12 @@ const PromptsMap: SupportedPromptsMap = {
     [PromptsType.FilterBar]: getFilterBarBuildingBlockPrompts,
     [PromptsType.BuildingBlocks]: getBuildingBlockTypePrompts
 };
+
+const TEMP_MAP: Map<PromptsType, BuildingBlockType> = new Map([
+    [PromptsType.Chart, BuildingBlockType.Chart],
+    [PromptsType.Table, BuildingBlockType.Table],
+    [PromptsType.FilterBar, BuildingBlockType.FilterBar]
+]);
 
 export class PromptsAPI {
     basePath: string;
@@ -130,14 +137,15 @@ export class PromptsAPI {
             }
             const { name, required, type, validate } = question;
             result[name] = { isValid: true };
-            if (required && (answers[name] === undefined || answers[name] === '')) {
+            const answer = getAnswer(answers, name);
+            if (required && (answer === undefined || answer === '')) {
                 result[name] = {
                     isValid: false,
                     // ToDo - translation
                     errorMessage: type === 'input' ? 'Please enter a value' : 'Please select a value'
                 };
             } else if (typeof validate === 'function') {
-                const validationResult = await validate(answers[name], answers);
+                const validationResult = await validate(answer, answers);
                 if (typeof validationResult === 'string') {
                     result[name] = { isValid: false, errorMessage: validationResult };
                 }
@@ -153,12 +161,13 @@ export class PromptsAPI {
      * @param answers The answers object
      * @returns The updated memfs editor instance
      */
-    public submitAnswers = <T extends SupportedAnswers>(type: PromptsType, answers: T): Editor => {
-        const configData = this.getBuildingBlockConfig(answers, type);
-        if (!configData) {
-            throw new Error(`No writer found for building block type: ${type}`);
+    public submitAnswers = (type: PromptsType, answers: SupportedAnswers): Editor => {
+        // ToDo 'buildingBlockType' - should be different( support initial values for answers?)
+        const buildingBlockType = TEMP_MAP.get(type);
+        if (answers.buildingBlockData && buildingBlockType) {
+            answers.buildingBlockData.buildingBlockType = buildingBlockType;
         }
-        return generateBuildingBlock(this.basePath, configData, this.fs);
+        return generateBuildingBlock(this.basePath, answers, this.fs);
     };
 
     /**
@@ -168,39 +177,20 @@ export class PromptsAPI {
      * @param answers The answers object
      * @returns Code snippet content.
      */
-    public getCodeSnippet<T extends SupportedAnswers>(type: PromptsType, answers: T): string {
-        const configData = this.getBuildingBlockConfig(answers, type, true);
-        return getSerializedFileContent(this.basePath, configData);
+    public getCodeSnippet(type: PromptsType, answers: SupportedAnswers): string {
+        // ToDo 'buildingBlockType' - should be different( support initial values for answers?)
+        const buildingBlockType = TEMP_MAP.get(type);
+        if (answers.buildingBlockData && buildingBlockType) {
+            answers.buildingBlockData.buildingBlockType = buildingBlockType;
+        }
+        return getSerializedFileContent(this.basePath, answers);
     }
 
-    private getMetaPath(entity: string, qualifier: string, placeholders = false): string {
-        let entityPath = entity || (placeholders ? 'REPLACE_WITH_ENTITY' : '');
-        const lastIndex = entityPath.lastIndexOf('.');
-        entityPath = lastIndex >= 0 ? entityPath.substring?.(lastIndex + 1) : entityPath;
-        const metaPath = `/${entityPath}/${qualifier || (placeholders ? 'REPLACE_WITH_A_QUALIFIER' : '')}`;
-        return metaPath;
-    }
-
-    private getBuildingBlockConfig<T extends SupportedAnswers>(
-        answers: T,
-        type: PromptsType,
-        placeholders = false
-    ): BuildingBlockConfig<T> {
-        const { aggregationPath, viewOrFragmentFile, entity, qualifier } = answers;
-
-        const id = answers.id || (placeholders ? 'REPLACE_WITH_BUILDING_BLOCK_ID' : '');
-        const metaPath = this.getMetaPath(entity, qualifier, placeholders);
-        return {
-            aggregationPath,
-            viewOrFragmentPath: viewOrFragmentFile,
-            buildingBlockData: {
-                ...answers,
-                id,
-                metaPath,
-                type,
-                // ToDo - temp fix
-                buildingBlockType: type
-            }
-        };
-    }
+    // private getMetaPath(entity: string, qualifier: string, placeholders = false): string {
+    //     let entityPath = entity || (placeholders ? 'REPLACE_WITH_ENTITY' : '');
+    //     const lastIndex = entityPath.lastIndexOf('.');
+    //     entityPath = lastIndex >= 0 ? entityPath.substring?.(lastIndex + 1) : entityPath;
+    //     const metaPath = `/${entityPath}/${qualifier || (placeholders ? 'REPLACE_WITH_A_QUALIFIER' : '')}`;
+    //     return metaPath;
+    // }
 }

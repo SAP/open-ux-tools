@@ -32,7 +32,12 @@ export interface BuildingBlock {
     /**
      * Defines the relative path of the property in the metamodel, based on the current contextPath.
      */
-    metaPath?: string;
+    metaPath?:
+        | string
+        | {
+              entitySet: string;
+              qualifier: string;
+          };
 }
 
 /**

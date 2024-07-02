@@ -47,7 +47,7 @@ export async function getChartBuildingBlockPrompts(
             ...((await isCapProject(projectProvider))
                 ? [await getCAPServicePrompt(t('service'), projectProvider, [], { required: true })]
                 : []),
-            getEntityPrompt(t('entity'), projectProvider, ['qualifier'], { required: true }),
+            getEntityPrompt(t('entity'), projectProvider, ['buildingBlockData.metaPath.qualifier'], { required: true }),
             getAnnotationPathQualifierPrompt(t('qualifier'), projectProvider, [UIAnnotationTerms.Chart], {
                 additionalInfo: t('valuesDependentOnEntityTypeInfo'),
                 required: true,

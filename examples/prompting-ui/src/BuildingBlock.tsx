@@ -12,7 +12,7 @@ import {
 import { useChoices, useQuestions } from './utils/hooks';
 import { Answers } from 'inquirer';
 import { AnswerValue } from '@sap-ux/ui-prompting';
-import { getDependantQuestions } from '@sap-ux/ui-prompting/src/utilities';
+import { getAnswer, getDependantQuestions, setAnswer } from '@sap-ux/ui-prompting/src/utilities';
 
 initIcons();
 getWebSocket();
@@ -30,13 +30,24 @@ const STYLE_FLEX = {
     display: 'flex'
 };
 
-const getDefaultAnswers = (questions: PromptQuestion[]) =>
-    questions.reduce((acc: Answers, q: PromptQuestion) => {
-        if (q.name) {
-            acc = { ...acc, [q.name]: q.default };
+// const getDefaultAnswers = (questions: PromptQuestion[]) =>
+//     questions.reduce((acc: Answers, q: PromptQuestion) => {
+//         if (q.name) {
+//             acc = { ...acc, [q.name]: q.default };
+//         }
+//         return acc;
+//     }, {});
+
+const updateWithDefaultAnswers = (answers: Answers, questions: PromptQuestion[]): Answers => {
+    // return {};
+    const updatedAnswers = { ...answers };
+    for (const question of questions) {
+        if (question.default !== undefined && getAnswer(updatedAnswers, question.name) === undefined) {
+            setAnswer(updatedAnswers, question.name, question.default);
         }
-        return acc;
-    }, {});
+    }
+    return updatedAnswers;
+};
 
 export const BuildingBlockQuestions = (props: {
     type: SupportedBuildingBlocks;
@@ -51,21 +62,17 @@ export const BuildingBlockQuestions = (props: {
     });
     const choices = useChoices();
     const { groups, questions } = useQuestions(type, visibleQuestions);
-    const [answers, setAnswers] = useState<Answers>({ ...getDefaultAnswers(questions), ...externalAnswers });
+    const [answers, setAnswers] = useState<Answers>(updateWithDefaultAnswers(externalAnswers, questions));
     const [validation, setValidation] = useState<ValidationResults>({});
 
-    useEffect(() => setAnswers({ ...getDefaultAnswers(questions), ...externalAnswers }), [questions]);
+    useEffect(() => setAnswers(updateWithDefaultAnswers(externalAnswers, questions)), [questions]);
 
     async function updateAnswers(newAnswers: Answers, name: string, answer: AnswerValue) {
-        setAnswers({
-            ...getDefaultAnswers(questions),
-            ...newAnswers
-        });
+        setAnswers(updateWithDefaultAnswers(newAnswers, questions));
         if (liveValidation) {
-            await validateAnswers(type, [{ name }], {
-                ...getDefaultAnswers(questions),
-                ...newAnswers
-            }).then((validationResults) => setValidation({ ...validation, ...validationResults }));
+            await validateAnswers(type, [{ name }], updateWithDefaultAnswers(newAnswers, questions)).then(
+                (validationResults) => setValidation({ ...validation, ...validationResults })
+            );
         } else {
             const clearValidation = { ...validation };
             if (clearValidation[name]) {
@@ -90,7 +97,7 @@ export const BuildingBlockQuestions = (props: {
     }
 
     function handleReset() {
-        setAnswers(getDefaultAnswers(questions));
+        setAnswers(updateWithDefaultAnswers({}, questions));
         setValidation({});
     }
 

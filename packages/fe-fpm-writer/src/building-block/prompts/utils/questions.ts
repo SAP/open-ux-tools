@@ -60,16 +60,15 @@ export function getAnnotationPathQualifierPrompt(
     return {
         ...additionalProperties,
         type: 'list',
-        // ToDo - buildingBlockData.metadata.qualifier???
-        name: 'qualifier',
+        name: 'buildingBlockData.metaPath.qualifier',
         selectType: 'dynamic',
         message,
         choices: async (answers) => {
-            const { entity } = answers;
+            const { entitySet } = answers.buildingBlockData.metaPath;
             const choices = getChoices(
-                await getAnnotationPathQualifiers(projectProvider, entity, annotationTerm, true)
+                await getAnnotationPathQualifiers(projectProvider, entitySet, annotationTerm, true)
             );
-            if (entity && !choices.length) {
+            if (entitySet && !choices.length) {
                 throw new Error(
                     `Couldn't find any existing annotations for term ${annotationTerm.join(
                         ','
@@ -165,8 +164,7 @@ export function getEntityPrompt(
     return {
         ...additionalProperties,
         type: 'list',
-        // ToDo - buildingBlockData.metadata.entity???
-        name: 'entity',
+        name: 'buildingBlockData.metaPath.entitySet',
         selectType: 'dynamic',
         dependantPromptNames,
         message,
@@ -453,4 +451,18 @@ export function getBuildingBlockIdPrompt(
         default: defaultValue,
         placeholder: additionalProperties.placeholder ?? t('id.defaultPlaceholder')
     };
+}
+
+export function getAnswer(answers: Answers, path: string): unknown {
+    const keys = path.split('.');
+    let current = answers;
+
+    for (const key of keys) {
+        if (typeof current !== 'object' || !(key in current)) {
+            return undefined;
+        }
+        current = current[key];
+    }
+
+    return current;
 }

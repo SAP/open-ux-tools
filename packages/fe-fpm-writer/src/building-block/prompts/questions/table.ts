@@ -75,7 +75,7 @@ export async function getTableBuildingBlockPrompts(
                       })
                   ]
                 : []),
-            getEntityPrompt(t('entity'), projectProvider, ['qualifier'], {
+            getEntityPrompt(t('entity'), projectProvider, ['buildingBlockData.metaPath.qualifier'], {
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
                 required: true
             }),
