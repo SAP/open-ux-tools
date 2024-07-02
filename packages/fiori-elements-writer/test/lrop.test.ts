@@ -129,6 +129,35 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } as FioriElementsApp<LROPSettings>
         },
         {
+            name: 'lrop_v4_addtests_cds_with_ui5',
+            config: {
+                ...Object.assign(feBaseConfig('lrop_v4_addtests_cds_with_ui5_frameworkUrl', true), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v4TemplateSettings
+                    },
+                    appOptions: {
+                        ...feBaseConfig('lrop_v4_addtests_cds_with_ui5_frameworkUrl', true).appOptions,
+                        generateIndex: true,
+                        addTests: true
+                    }
+                }),
+                app: {
+                    ...feBaseConfig('lrop_v4_addtests_cds_with_ui5_frameworkUrl', true).app,
+                    projectType: 'CAPNodejs'
+                },
+                service: {
+                    ...v4Service,
+                    metadata: undefined,
+                    type: ServiceType.CDS
+                },
+                ui5: {
+                    ...feBaseConfig('lrop_v4_addtests_cds_with_ui5_frameworkUrl', true).ui5,
+                    //version: undefined // dont pass ui5 version to check if url is being formatted correctly
+                }
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
             name: 'lrop_v2',
             config: {
                 ...Object.assign(feBaseConfig('felrop2'), {

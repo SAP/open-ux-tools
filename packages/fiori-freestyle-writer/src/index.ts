@@ -26,6 +26,8 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     await initI18n();
     // Clone rather than modifying callers refs
     const ffApp = cloneDeep(data);
+    // Determine if the project type is 'EDMXBackend'.
+    const isEdmxProjectType = ffApp.app.projectType === 'EDMXBackend';
     // set defaults
     setDefaults(ffApp);
     const isTypeScriptEnabled = ffApp.appOptions?.typescript;
@@ -35,7 +37,22 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     const tmplPath = join(__dirname, '..', 'templates');
     // Common files
     const ignore = [isTypeScriptEnabled ? '**/*.js' : '**/*.ts'];
-    fs.copyTpl(join(tmplPath, 'common', 'add'), basePath, { ...ffApp, escapeFLPText }, undefined, {
+    const appConfig = {
+        ...ffApp,
+        ui5: {
+            ...ffApp.ui5,
+            frameworkUrl: isEdmxProjectType ? undefined : ffApp.ui5?.frameworkUrl,
+            version: isEdmxProjectType ? undefined : ffApp.ui5?.version,
+            ui5Libs: isEdmxProjectType ? ffApp.ui5?.ui5Libs : undefined
+        }
+    }
+    fs.copyTpl(
+        join(tmplPath, 'common', 'add'), 
+        basePath, { 
+            ...appConfig, 
+            escapeFLPText 
+        }, 
+        undefined, {
         globOptions: { ignore, dot: true }
     });
     fs.copyTpl(join(tmplPath, ffApp.template.type, 'add'), basePath, ffApp, undefined, {
@@ -62,8 +79,6 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         render(fs.read(join(extRoot, 'i18n', 'i18n.properties')), ffApp, {})
     );
 
-    // Determine if the project type is 'EDMXBackend'.
-    const isEdmxProjectType = ffApp.app.projectType === 'EDMXBackend';
     // package.json
     const packagePath = join(basePath, 'package.json');
     if (isEdmxProjectType) {

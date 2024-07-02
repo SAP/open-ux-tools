@@ -105,6 +105,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
             ui5Libs: isEdmxProjectType ? feApp.ui5?.ui5Libs : undefined
         }
     }
+    console.log("appConfig ***", appConfig.ui5, "rootTemplatesPath", rootTemplatesPath)
     
     fs.copyTpl(
         join(rootTemplatesPath, 'common', 'add', '**/*.*'),
