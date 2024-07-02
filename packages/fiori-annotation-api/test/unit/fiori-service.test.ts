@@ -3300,6 +3300,52 @@ describe('fiori annotation service', () => {
 
             expect(text).toMatchSnapshot();
         });
+        
+        test('delete common text and textArrangement', async () => {
+            const project = PROJECTS.V4_CDS_START;
+            const root = project.root;
+            const fsEditor = await createFsEditorForProject(root);
+            const path = pathFromUri(project.files.annotations);
+            const content = fsEditor.read(path);
+            const testData = `${content}
+            annotate IncidentService.Incidents with { 
+                assignedIndividual @Common: {
+                                                Text: assignedIndividual.modifiedBy, 
+                                                TextArrangement : #TextLast 
+                                            } };
+            `;
+            fsEditor.write(path, testData);
+            const text = await testEdit(
+                root,
+                [],
+                [
+                    {
+                        kind: ChangeType.Delete,
+                        reference: {
+                            target: 'IncidentService.Incidents/assignedIndividual',
+                            term: `${COMMON}.Text`
+                        },
+                        uri: project.files.annotations,
+                        pointer: ''
+                    },
+                    {
+                        kind: ChangeType.Delete,
+                        reference: {
+                            target: 'IncidentService.Incidents/assignedIndividual',
+                            term: `${COMMON}.TextArrangement`
+                        },
+                        uri: project.files.annotations,
+                        pointer: ''
+                    }
+                ],
+                'IncidentService',
+                fsEditor,
+                false
+            );
+
+            expect(text).toMatchSnapshot();
+        });
+
         test('multiple levels', async () => {
             const project = PROJECTS.V4_CDS_START;
             const root = project.root;
