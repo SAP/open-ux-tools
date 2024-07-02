@@ -10,3 +10,4 @@ typings/
 pnpm-lock.yaml
 **/playwright-report
 **/test-results
+/.nx/workspace-data
