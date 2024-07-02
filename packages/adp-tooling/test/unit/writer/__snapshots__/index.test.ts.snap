@@ -387,17 +387,6 @@ my.test.app_sap.app.title=Adaptation of the.original.app
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
       }
-    },
-    {
-      \\"changeType\\": \\"appdescr_ui5_addNewModelEnhanceWith\\",
-      \\"content\\": {
-        \\"modelId\\": \\"i18n\\",
-        \\"bundleUrl\\": \\"i18n/i18n.properties\\",
-        \\"supportedLocales\\": [
-          \\"\\"
-        ],
-        \\"fallbackLocale\\": \\"\\"
-      }
     }
   ]
 }
@@ -611,17 +600,6 @@ my.test.app_sap.app.title=Adaptation of the.original.app
       \\"content\\": {},
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
-      }
-    },
-    {
-      \\"changeType\\": \\"appdescr_ui5_addNewModelEnhanceWith\\",
-      \\"content\\": {
-        \\"modelId\\": \\"i18n\\",
-        \\"bundleUrl\\": \\"i18n/i18n.properties\\",
-        \\"supportedLocales\\": [
-          \\"\\"
-        ],
-        \\"fallbackLocale\\": \\"\\"
       }
     }
   ]
@@ -890,17 +868,6 @@ my.test.app_sap.app.title=Adaptation of the.original.app
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
       }
-    },
-    {
-      \\"changeType\\": \\"appdescr_ui5_addNewModelEnhanceWith\\",
-      \\"content\\": {
-        \\"modelId\\": \\"i18n\\",
-        \\"bundleUrl\\": \\"i18n/i18n.properties\\",
-        \\"supportedLocales\\": [
-          \\"\\"
-        ],
-        \\"fallbackLocale\\": \\"\\"
-      }
     }
   ]
 }
@@ -1034,17 +1001,6 @@ my.test.app_sap.app.title=Adaptation of the.original.app
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
       }
-    },
-    {
-      \\"changeType\\": \\"appdescr_ui5_addNewModelEnhanceWith\\",
-      \\"content\\": {
-        \\"modelId\\": \\"i18n\\",
-        \\"bundleUrl\\": \\"i18n/i18n.properties\\",
-        \\"supportedLocales\\": [
-          \\"\\"
-        ],
-        \\"fallbackLocale\\": \\"\\"
-      }
     }
   ]
 }
@@ -1153,17 +1109,6 @@ my.test.app_sap.app.title=Adaptation of the.original.app
       \\"content\\": {},
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
-      }
-    },
-    {
-      \\"changeType\\": \\"appdescr_ui5_addNewModelEnhanceWith\\",
-      \\"content\\": {
-        \\"modelId\\": \\"i18n\\",
-        \\"bundleUrl\\": \\"i18n/i18n.properties\\",
-        \\"supportedLocales\\": [
-          \\"\\"
-        ],
-        \\"fallbackLocale\\": \\"\\"
       }
     }
   ]
@@ -1316,17 +1261,6 @@ my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.subTitle=test
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
       }
-    },
-    {
-      \\"changeType\\": \\"appdescr_ui5_addNewModelEnhanceWith\\",
-      \\"content\\": {
-        \\"modelId\\": \\"i18n\\",
-        \\"bundleUrl\\": \\"i18n/i18n.properties\\",
-        \\"supportedLocales\\": [
-          \\"\\"
-        ],
-        \\"fallbackLocale\\": \\"\\"
-      }
     }
   ]
 }
@@ -1477,17 +1411,6 @@ my.test.app_sap.app.crossNavigation.inbounds.sampleId.subTitle=sampleSubTitle
       \\"content\\": {},
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
-      }
-    },
-    {
-      \\"changeType\\": \\"appdescr_ui5_addNewModelEnhanceWith\\",
-      \\"content\\": {
-        \\"modelId\\": \\"i18n\\",
-        \\"bundleUrl\\": \\"i18n/i18n.properties\\",
-        \\"supportedLocales\\": [
-          \\"\\"
-        ],
-        \\"fallbackLocale\\": \\"\\"
       }
     }
   ]
