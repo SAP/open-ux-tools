@@ -87,8 +87,8 @@ interface EditTestCase<T extends Record<string, string>> {
     getChanges: (files: T) => Change[];
     fsEditor?: Editor;
     log?: boolean;
+    expectUpdate?: boolean;
 }
-
 interface CustomTest<T extends Record<string, string>> {
     (testCase: EditTestCase<T>, timeout?: number): void;
     only: CustomTest<T>;
@@ -96,32 +96,40 @@ interface CustomTest<T extends Record<string, string>> {
 }
 
 const createEditTestCase = (<T extends Record<string, string>>(): CustomTest<T> => {
-    const run = (testCase: EditTestCase<T>, timeout?: number) => () => {
-        for (const model of testCase.projectTestModels) {
-            const { info, root, files, serviceName } = model;
-            const name = `${info.type} ${info.name} ${info.version}`;
-            if (SKIP_TARGETS.has(model)) {
-                test.skip(name, () => {});
-            } else {
-                test(
-                    name,
-                    async () => {
-                        const text = await testEdit(
-                            root,
-                            testCase.getInitialChanges ? testCase.getInitialChanges(files) : [],
-                            testCase.getChanges(files),
-                            serviceName,
-                            testCase.fsEditor,
-                            testCase.log
-                        );
+    const run =
+        ({ expectUpdate = true, ...testCase }: EditTestCase<T>, timeout?: number) =>
+        () => {
+            for (const model of testCase.projectTestModels) {
+                const { info, root, files, serviceName } = model;
+                const name = `${info.type} ${info.name} ${info.version}`;
+                if (SKIP_TARGETS.has(model)) {
+                    test.skip(name, () => {});
+                } else {
+                    test(
+                        name,
+                        async () => {
+                            const { changedText, totalChangedFiles } = await testEdit(
+                                root,
+                                testCase.getInitialChanges ? testCase.getInitialChanges(files) : [],
+                                testCase.getChanges(files),
+                                serviceName,
+                                testCase.fsEditor,
+                                testCase.log
+                            );
+                            if (totalChangedFiles > 0) {
+                                expect(changedText).toMatchSnapshot();
+                            }
 
-                        expect(text).toMatchSnapshot();
-                    },
-                    timeout
-                );
+                            if (!expectUpdate) {
+                                expect(changedText).toBe('');
+                                expect(totalChangedFiles).toEqual(0);
+                            }
+                        },
+                        timeout
+                    );
+                }
             }
-        }
-    };
+        };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const runner: any = (testCase: EditTestCase<T>, timeout?: number): void => {
         describe(testCase.name, run(testCase, timeout));
@@ -142,7 +150,7 @@ async function testEdit(
     serviceName: string,
     fsEditor?: Editor,
     log?: boolean
-): Promise<string> {
+): Promise<{ changedText: string; totalChangedFiles: number }> {
     const editor = fsEditor ?? (await createFsEditorForProject(root));
     const project = await getProject(root);
     const service = await FioriAnnotationService.createService(project, serviceName, '', editor, {
@@ -163,23 +171,30 @@ async function testEdit(
     }
 
     const changedFileUris = applyChanges(service, changes);
-    await service.save();
+    const changedFile = await service.save();
 
-    for (const uri of changedFileUris.values()) {
-        const path = pathFromUri(uri);
-        const original = await promises.readFile(path, { encoding: 'utf-8' });
-        const afterInitialChanges = initialChangeCache.get(uri);
-        const textAfterEdit = editor.read(path);
-        if (log) {
-            console.log('Original: \n', original);
-            if (afterInitialChanges !== undefined) {
-                console.log('After initial changes: \n', afterInitialChanges);
+    if (changedFile.files > 0) {
+        for (const uri of changedFileUris.values()) {
+            const path = pathFromUri(uri);
+            const original = await promises.readFile(path, { encoding: 'utf-8' });
+            const afterInitialChanges = initialChangeCache.get(uri);
+            const textAfterEdit = editor.read(path);
+            if (log) {
+                console.log('Original: \n', original);
+                if (afterInitialChanges !== undefined) {
+                    console.log('After initial changes: \n', afterInitialChanges);
+                }
+                console.log('After test changes: \n', textAfterEdit);
             }
-            console.log('After test changes: \n', textAfterEdit);
+            return (
+                { changedText: textAfterEdit, totalChangedFiles: changedFile.files } ?? {
+                    changedText: '',
+                    totalChangedFiles: changedFile.files
+                }
+            );
         }
-        return textAfterEdit ?? '';
     }
-    return '';
+    return { changedText: '', totalChangedFiles: changedFile.files };
 }
 
 function applyChanges(service: FioriAnnotationService, changes: Change[]): Set<string> {
@@ -768,7 +783,7 @@ describe('fiori annotation service', () => {
 `
                 );
                 fsEditor.write(path, updatedSchemaFile);
-                const text = await testEdit(
+                const { changedText: text } = await testEdit(
                     root,
                     [],
                     [
@@ -1355,6 +1370,51 @@ describe('fiori annotation service', () => {
                         }
                     }
                 ]
+            });
+            createEditTestCase({
+                name: 'no update expected when value is already null',
+                projectTestModels: TEST_TARGETS,
+                getInitialChanges: (files) => [
+                    {
+                        kind: ChangeType.InsertAnnotation,
+                        uri: files.annotations,
+                        content: {
+                            type: 'annotation',
+                            target: targetName,
+                            value: {
+                                term: DATA_POINT,
+                                record: {
+                                    propertyValues: [
+                                        {
+                                            name: 'Value',
+                                            value: {
+                                                type: 'Null'
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                ],
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.Update,
+                        reference: {
+                            target: targetName,
+                            term: DATA_POINT
+                        },
+                        uri: files.annotations,
+                        pointer: 'record/propertyValues/0/value',
+                        content: {
+                            type: 'expression',
+                            value: {
+                                type: 'Null'
+                            }
+                        }
+                    }
+                ],
+                expectUpdate: false
             });
             createEditTestCase({
                 name: "update propertyValue value 'string' value",
@@ -1999,7 +2059,7 @@ describe('fiori annotation service', () => {
                 };
                 `;
                 fsEditor.write(path, testData);
-                const text = await testEdit(
+                const { changedText: text } = await testEdit(
                     root,
                     [],
                     [
@@ -3023,7 +3083,7 @@ describe('fiori annotation service', () => {
                 }
             };`;
             fsEditor.write(mdPath, mdTestData);
-            const text = await testEdit(
+            const { changedText: text } = await testEdit(
                 root,
                 [],
                 [
@@ -3212,7 +3272,7 @@ describe('fiori annotation service', () => {
                 },
             );`;
             fsEditor.write(path, testData);
-            const text = await testEdit(
+            const { changedText: text } = await testEdit(
                 root,
                 [],
                 [
@@ -3261,7 +3321,7 @@ describe('fiori annotation service', () => {
                 }
             );`;
             fsEditor.write(path, testData);
-            const text = await testEdit(
+            const { changedText } = await testEdit(
                 root,
                 [],
                 [
@@ -3298,7 +3358,7 @@ describe('fiori annotation service', () => {
                 false
             );
 
-            expect(text).toMatchSnapshot();
+            expect(changedText).toMatchSnapshot();
         });
         test('multiple levels', async () => {
             const project = PROJECTS.V4_CDS_START;
@@ -3319,7 +3379,7 @@ describe('fiori annotation service', () => {
             // UI.KPI.DataPoint.Responsible.nickname: record/0/record/1/record/0
             // UI.KPI.DataPoint.Responsible.fn: record/0/record/1/record/1
             fsEditor.write(path, testData);
-            const text = await testEdit(
+            const { changedText } = await testEdit(
                 root,
                 [],
                 [
@@ -3338,7 +3398,7 @@ describe('fiori annotation service', () => {
                 false
             );
 
-            expect(text).toMatchSnapshot();
+            expect(changedText).toMatchSnapshot();
         });
     });
 });
