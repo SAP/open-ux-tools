@@ -1,5 +1,11 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.1.9
+
+### Patch Changes
+
+-   e669a2da: fix: update access modifier
+
 ## 0.1.8
 
 ### Patch Changes
