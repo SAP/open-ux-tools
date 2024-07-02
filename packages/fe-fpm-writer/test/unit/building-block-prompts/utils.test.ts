@@ -12,7 +12,7 @@ import {
     getBuildingBlockIdPrompt,
     getCAPServiceChoices,
     getCAPServicePrompt,
-    getChoices,
+    transformChoices,
     getEntityPrompt,
     getFilterBarIdPrompt,
     getViewOrFragmentFilePrompt,
@@ -98,8 +98,15 @@ describe('utils - ', () => {
             await expect(async () => await (entityPrompt.choices as Choices)()).rejects.toThrowError();
         });
 
-        test('getChoices', async () => {
-            let choices = getChoices(['test']);
+        test('transformChoices', async () => {
+            let choices = transformChoices(['test']);
+            expect(choices).toMatchInlineSnapshot(`
+                Array [
+                  "test",
+                ]
+            `);
+
+            choices = transformChoices({ 'test': 'test' });
             expect(choices).toMatchInlineSnapshot(`
                 Array [
                   Object {
@@ -109,17 +116,15 @@ describe('utils - ', () => {
                 ]
             `);
 
-            choices = getChoices({ 'test': 'test' });
+            choices = transformChoices(['b', 'a'], false); // preserve order
             expect(choices).toMatchInlineSnapshot(`
                 Array [
-                  Object {
-                    "name": "test",
-                    "value": "test",
-                  },
+                  "b",
+                  "a",
                 ]
             `);
 
-            choices = getChoices({ 'b': 'b', 'a': 'a' }, false); // preserve order
+            choices = transformChoices({ 'b': 'b', 'a': 'a' }, false); // preserve order
             expect(choices).toMatchInlineSnapshot(`
                 Array [
                   Object {
@@ -130,6 +135,13 @@ describe('utils - ', () => {
                     "name": "a",
                     "value": "a",
                   },
+                ]
+            `);
+
+            choices = transformChoices(['a', 'a'], false); // filter duplicates
+            expect(choices).toMatchInlineSnapshot(`
+                Array [
+                  "a",
                 ]
             `);
         });
