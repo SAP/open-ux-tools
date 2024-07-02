@@ -15,7 +15,7 @@ import {
     transformChoices,
     getEntityPrompt,
     getFilterBarIdPrompt,
-    getViewOrFragmentFilePrompt,
+    getViewOrFragmentPathPrompt,
     ProjectProvider,
     getAnnotationPathQualifiers,
     getAnnotationTermAlias,
@@ -147,24 +147,29 @@ describe('utils - ', () => {
         });
 
         test('getAnnotationPathQualifierPrompt', async () => {
-            const annotationPathPrompt = getAnnotationPathQualifierPrompt(
-                'testAnnotationPath',
-                'testMessage',
-                projectProvider,
-                [UIAnnotationTerms.LineItem]
-            );
+            const annotationPathPrompt = getAnnotationPathQualifierPrompt('testMessage', projectProvider, [
+                UIAnnotationTerms.LineItem
+            ]);
             expect(annotationPathPrompt).toMatchSnapshot();
             const choicesProp = annotationPathPrompt.choices as Choices;
             expect(choicesProp).toBeDefined();
             const choices = await choicesProp({
-                entity: ENTITY_TYPE
+                buildingBlockData: {
+                    metaPath: {
+                        entitySet: ENTITY_TYPE
+                    }
+                }
             });
             expect(choices).toMatchSnapshot();
 
             await expect(
                 async () =>
                     await choicesProp({
-                        entity: 'error'
+                        buildingBlockData: {
+                            metaPath: {
+                                entitySet: 'error'
+                            }
+                        }
                     })
             ).rejects.toThrowError();
         });
@@ -175,34 +180,34 @@ describe('utils - ', () => {
             const choicesProp = aggregationPathPrompt.choices as Choices;
             expect(choicesProp).toBeDefined();
             let choices = await choicesProp({
-                viewOrFragmentFile: join('webapp/ext/main/Main.view.xml')
+                viewOrFragmentPath: join('webapp/ext/main/Main.view.xml')
             });
             expect(choices).toMatchSnapshot();
 
             choices = await choicesProp({
-                viewOrFragmentFile: join('webapp/ext/main/Main.view.xml')
+                viewOrFragmentPath: join('webapp/ext/main/Main.view.xml')
             });
             await expect(
                 async () =>
                     await choicesProp({
-                        viewOrFragmentFile: join('non-existing-file.xml')
+                        viewOrFragmentPath: join('non-existing-file.xml')
                     })
             ).rejects.toThrow();
         });
-        test('getViewOrFragmentFilePrompt', async () => {
-            const viewOrFragmentFilePrompt = getViewOrFragmentFilePrompt(
+        test('getViewOrFragmentPathPrompt', async () => {
+            const viewOrFragmentPathPrompt = getViewOrFragmentPathPrompt(
                 fs,
                 projectFolder,
                 'testMessage',
                 'validationError'
             );
-            expect(viewOrFragmentFilePrompt).toMatchSnapshot();
-            const choicesProp = viewOrFragmentFilePrompt.choices as Choices;
+            expect(viewOrFragmentPathPrompt).toMatchSnapshot();
+            const choicesProp = viewOrFragmentPathPrompt.choices as Choices;
             expect(choicesProp).toBeDefined();
             const choices = await choicesProp();
             expect(choices.length).toBe(1);
 
-            const validateFn = viewOrFragmentFilePrompt.validate;
+            const validateFn = viewOrFragmentPathPrompt.validate;
             expect(typeof validateFn).toBe('function');
             expect(validateFn?.('')).toBe('validationError');
             expect(validateFn?.('valid')).toBe(true);
@@ -257,7 +262,7 @@ describe('utils - ', () => {
             expect(prompt).toMatchInlineSnapshot(`
                 Object {
                   "message": "message",
-                  "name": "filterBar",
+                  "name": "buildingBlockData.filterBar",
                   "placeholder": "Enter a new filter bar ID",
                   "type": "input",
                 }
@@ -270,7 +275,7 @@ describe('utils - ', () => {
                 Object {
                   "default": undefined,
                   "message": "message",
-                  "name": "id",
+                  "name": "buildingBlockData.id",
                   "placeholder": "Enter a building block ID",
                   "type": "input",
                   "validate": [Function],
@@ -294,7 +299,7 @@ describe('utils - ', () => {
                     "inputPlaceholder": "Enter a new filter bar ID",
                   },
                   "message": "message",
-                  "name": "filterBar",
+                  "name": "buildingBlockData.filterBar",
                   "placeholder": "Select or enter a filter bar ID",
                   "selectType": "dynamic",
                   "type": "list",

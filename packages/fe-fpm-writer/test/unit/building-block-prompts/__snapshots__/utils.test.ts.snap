@@ -14,7 +14,7 @@ Object {
   "choices": [Function],
   "dependantPromptNames": undefined,
   "message": "entity",
-  "name": "entity",
+  "name": "buildingBlockData.metaPath.entitySet",
   "placeholder": "Select an entity",
   "selectType": "dynamic",
   "type": "list",
@@ -178,7 +178,7 @@ exports[`utils -  prompts getAnnotationPathQualifierPrompt 1`] = `
 Object {
   "choices": [Function],
   "message": "testMessage",
-  "name": "testAnnotationPath",
+  "name": "buildingBlockData.metaPath.qualifier",
   "selectType": "dynamic",
   "type": "list",
 }
@@ -193,14 +193,14 @@ Array [
 ]
 `;
 
-exports[`utils -  prompts getViewOrFragmentFilePrompt 1`] = `
+exports[`utils -  prompts getViewOrFragmentPathPrompt 1`] = `
 Object {
   "choices": [Function],
   "dependantPromptNames": Array [
     "aggregationPath",
   ],
   "message": "testMessage",
-  "name": "viewOrFragmentFile",
+  "name": "viewOrFragmentPath",
   "placeholder": "Select a view or fragment file",
   "selectType": "dynamic",
   "type": "list",

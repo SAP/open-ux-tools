@@ -64,7 +64,10 @@ export function getAnnotationPathQualifierPrompt(
         selectType: 'dynamic',
         message,
         choices: async (answers) => {
-            const { entitySet } = answers.buildingBlockData.metaPath;
+            const { entitySet } = answers.buildingBlockData?.metaPath ?? {};
+            if (!entitySet) {
+                return [];
+            }
             const choices = transformChoices(
                 await getAnnotationPathQualifiers(projectProvider, entitySet, annotationTerm, true)
             );
