@@ -3,7 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
 import type { Chart, Field, FilterBar, Table } from '../../src';
-import { BuildingBlockType, generateBuildingBlock } from '../../src';
+import { BuildingBlockType, generateBuildingBlock, getSerializedFileContent } from '../../src';
 import * as testManifestContent from './sample/building-block/webapp/manifest.json';
 import { promises as fsPromises } from 'fs';
 import { clearTestOutput, writeFilesForDebugging } from '../common';
@@ -361,5 +361,29 @@ describe('Building Blocks', () => {
             );
             await writeFilesForDebugging(fs);
         });
+
+        test.each(testInput)(
+            'getSerializedFileContent for $buildingBlockData.buildingBlockType building block',
+            async (testData) => {
+                const basePath = join(
+                    testAppPath,
+                    `generate-${testData.buildingBlockData.buildingBlockType}-with-optional-params`
+                );
+                const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+                fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+                const codeSnippet = getSerializedFileContent(
+                    basePath,
+                    {
+                        viewOrFragmentPath: xmlViewFilePath,
+                        aggregationPath,
+                        buildingBlockData: testData.buildingBlockData
+                    },
+                    fs
+                );
+
+                expect(codeSnippet).toMatchSnapshot();
+            }
+        );
     });
 });

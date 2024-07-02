@@ -34,6 +34,7 @@ export {
     loadModuleFromProject,
     readCapServiceMetadataEdmx,
     readUi5Yaml,
+    getCapServiceName,
     toReferenceUri,
     filterDataSourcesByType,
     clearCdsModuleCache,
