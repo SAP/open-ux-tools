@@ -30,7 +30,7 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@sap-ux/axios-extension": "workspace:*",
+        "@sap-ux/system-access": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/store": "workspace:*",
@@ -43,6 +43,7 @@
         "proxy-from-env": "1.1.0"
     },
     "devDependencies": {
+        "@sap-ux/axios-extension": "workspace:*",
         "@types/express": "4.17.21",
         "@types/http-proxy": "^1.17.5",
         "@types/prompts": "2.4.4",
