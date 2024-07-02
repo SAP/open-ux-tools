@@ -24,6 +24,7 @@ interface InboundChange extends ManifestChangeProperties {
  * Writes annotation changes to the specified project path using the provided `mem-fs-editor` instance.
  *
  * @param {string} projectPath - The root path of the project.
+ * @param {number} timestamp - The timestamp of the change.
  * @param {AnnotationsData} data - The data object containing information about the annotation change.
  * @param {ManifestChangeProperties} change - The annotation data change that will be written.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
@@ -31,12 +32,13 @@ interface InboundChange extends ManifestChangeProperties {
  */
 export function writeAnnotationChange(
     projectPath: string,
+    timestamp: number,
     data: AnnotationsData,
     change: ManifestChangeProperties,
     fs: Editor
 ): void {
     try {
-        const { timestamp, annotation } = data;
+        const { fileName, answers } = data;
         const changeFileName = `id_${timestamp}_addAnnotationsToOData.change`;
         const changesFolderPath = path.join(projectPath, DirName.Webapp, DirName.Changes);
         const changeFilePath = path.join(changesFolderPath, DirName.Manifest, changeFileName);
@@ -44,13 +46,12 @@ export function writeAnnotationChange(
 
         writeChangeToFile(changeFilePath, change, fs);
 
-        if (!annotation.filePath) {
-            fs.write(path.join(annotationsFolderPath, annotation.fileName ?? ''), '');
+        if (!answers.filePath) {
+            fs.write(path.join(annotationsFolderPath, fileName ?? ''), '');
         } else {
-            const { filePath, fileName } = annotation;
-            const selectedDir = path.dirname(filePath);
+            const selectedDir = path.dirname(answers.filePath);
             if (selectedDir !== annotationsFolderPath) {
-                fs.copy(filePath, path.join(annotationsFolderPath, fileName ?? ''));
+                fs.copy(answers.filePath, path.join(annotationsFolderPath, fileName ?? ''));
             }
         }
     } catch (e) {
