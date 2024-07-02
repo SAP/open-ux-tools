@@ -1,19 +1,41 @@
+import { join } from 'path';
+import { existsSync, readFileSync } from 'fs';
+
+import { UI5FlexLayer } from '@sap-ux/project-access';
+import { DescriptorVariant } from '../types';
+
 /**
- * Checks if the input is a non-empty string.
+ * Check environment is running in an internal scenario.
  *
- * @param input - input to check
- * @returns true if the input is a non-empty string
+ * @returns true if running in an internal scenario, false otherwise
  */
-export function isNotEmptyString(input: string | undefined): boolean {
-    return typeof input === 'string' && input.trim().length > 0;
+export function isInternalUsage(layer: UI5FlexLayer): boolean {
+    return layer === 'VENDOR';
 }
 
 /**
- * Checks if the input is a valid SAP client.
+ * Check if the project is a CF project.
  *
- * @param input - input to check
- * @returns true if the input is a valid SAP client
+ * @param {string} basePath - The path to the adaptation project.
+ * @returns {boolean} true if the project is a CF project, false otherwise
  */
-export function isValidSapClient(input: string | undefined): boolean {
-    return !input || (input.length < 4 && !!new RegExp(/^\d*$/).exec(input));
+export function isCFEnvironment(basePath: string): boolean {
+    const configJsonPath = join(basePath, '.adp', 'config.json');
+    if (existsSync(configJsonPath)) {
+        const config = JSON.parse(readFileSync(configJsonPath, 'utf-8'));
+        if (config.environment === 'CF') {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * Get the app descriptor variant.
+ *
+ * @param {string} basePath - The path to the adaptation project.
+ * @returns {DescriptorVariant} The app descriptor variant.
+ */
+export function getVariant(basePath: string): DescriptorVariant {
+    return JSON.parse(readFileSync(join(basePath, 'webapp', 'manifest.appdescr_variant'), 'utf-8'));
 }

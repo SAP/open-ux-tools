@@ -1,4 +1,4 @@
-import { isNotEmptyString, isValidSapClient } from '../../../src/base/helper';
+import { isNotEmptyString, isValidSapClient } from '../../../src/base/validators';
 
 describe('helper', () => {
     test('isNotEmptyString', () => {
