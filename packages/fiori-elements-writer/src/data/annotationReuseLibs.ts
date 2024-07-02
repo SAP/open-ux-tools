@@ -1,5 +1,3 @@
-import { OdataVersion } from '../types';
-
 type AnnotationLibs = {
     annotation: string;
     library: string;
