@@ -3,26 +3,9 @@ import type { Editor } from 'mem-fs-editor';
 import path, { join } from 'path';
 import { t } from './i18n';
 import type { OdataService, CdsAnnotationsInfo, EdmxAnnotationsInfo } from './types';
-import { ServiceType } from './types';
 import semVer from 'semver';
 import prettifyXml from 'prettify-xml';
 import type { Manifest } from '@sap-ux/project-access';
-
-/**
- * Function to check if the service type is CDS.
- *
- * @param service - the OData service instance
- * @returns true if the service type is CDS
- */
-export function serviceIsCds(service: OdataService): boolean {
-    // if service type is not defined, set EDMX as default
-    let serviceType = service.type;
-    serviceType ||= ServiceType.EDMX;
-    if (serviceType === ServiceType.CDS) {
-        return true;
-    }
-    return false;
-}
 
 /**
  * Internal function that updates the manifest.json based on the given service configuration.
@@ -87,9 +70,6 @@ async function updateCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotatio
  * @param {OdataService} service - The OData service information.
  */
 export function writeAnnotationXmlFiles(fs: Editor, basePath: string, service: OdataService): void {
-    if (serviceIsCds(service)) {
-        return;
-    }
     // Write annotation xml if annotations are provided and service type is EDMX
     const annotations = service.annotations as EdmxAnnotationsInfo;
     if (annotations?.xml) {
