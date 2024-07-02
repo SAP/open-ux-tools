@@ -803,6 +803,35 @@ appDescription=Test App Description",
             });
             return libOrCompKeysStringTmp;
         }
+        /* \\"sap.ui5\\"/componentUsages has a structure like: 
+         componentUsages: {
+            \\"componentUsage1\\": {
+                \\"name\\": \\"sap.nw.core.applogs.lib.reuse.smarttemplate\\",
+                \\"lazy\\": true
+            }, 
+            \\"componentUsage2\\": {
+                \\"name\\": \\"sap.s4.cfnd.bpf.lib.reuse.component.smarttemplate\\",
+                \\"lazy\\": true
+            }
+            So the call to /sap/bc/ui2/app_index/ui5_app_info should include component name not the local reference key.
+        }*/
+        function getComponentUsageNames(compUsages, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            var compNames = Object.keys(compUsages).map(function (compUsageKey) {
+                return compUsages[compUsageKey].name;
+            });
+            compNames.forEach(function (compName) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return compName === substring || compName.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + compName;
+                    } else {
+                        libOrCompKeysStringTmp = compName;
+                    }
+                }
+            });
+            return libOrCompKeysStringTmp;
+        }
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -822,7 +851,7 @@ appDescription=Test App Description",
                             manifest[\\"sap.ui5\\"] &&
                             manifest[\\"sap.ui5\\"].componentUsages
                         ) {
-                            result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
+                            result = getComponentUsageNames(manifest[\\"sap.ui5\\"].componentUsages, result);
                         }
                     }
                     resolve(result);
