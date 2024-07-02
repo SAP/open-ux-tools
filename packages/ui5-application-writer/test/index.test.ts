@@ -44,6 +44,17 @@ describe('UI5 templates', () => {
         }
     } as Ui5App;
 
+    const assertUi5YamlContainsMiddleware = (path: string) => {
+        // check if middleware is written to ui5.yaml if no appOptions are provided
+        const ui5File = fs.read(join(path, 'ui5.yaml'));
+        // Check if the ui5File snapshot contains "customMiddleware"
+        expect(ui5File).toMatch(/customMiddleware/);
+        // Check if the ui5File snapshot contains "name: fiori-tools-proxy"
+        expect(ui5File).toMatch(/name: fiori-tools-proxy/);
+        // Check if the ui5File snapshot contains "name: fiori-tools-appreload"
+        expect(ui5File).toMatch(/name: fiori-tools-appreload/);
+    };
+
     it('generates files correctly', async () => {
         let projectDir = join(outputDir, 'testapp-simple');
         await generate(projectDir, ui5AppConfig, fs);
@@ -65,6 +76,42 @@ describe('UI5 templates', () => {
               "version": "1.2.3-test",
             }
         `);
+        assertUi5YamlContainsMiddleware(projectDir);
+    });
+
+    it('generates files correctly with middleware configration written when excludeMiddleware option is true', async () => {
+        let projectDir = join(outputDir, 'testapp-simple');
+        await generate(projectDir, ui5AppConfig, fs);
+        // ensure the middleware is written to the ui5.yaml if excludeMiddleware is set to true
+        ui5AppConfig.appOptions = {
+            excludeMiddleware: true
+        };
+        projectDir = join(outputDir, 'testapp-withtoolsid');
+        await generate(projectDir, ui5AppConfig, fs);
+        await updatePackageJSONDependencyToUseLocalPath(projectDir, fs);
+        const ui5File = fs.read(join(projectDir, 'ui5.yaml'));
+        expect(ui5File).toMatchInlineSnapshot(`
+            "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+            specVersion: \\"3.1\\"
+            metadata:
+              name: testAppId
+            type: application
+            "
+        `);
+    });
+
+    it('generates files correctly with middleware configration written when excludeMiddleware option is false', async () => {
+        let projectDir = join(outputDir, 'testapp-simple');
+        await generate(projectDir, ui5AppConfig, fs);
+        // ensure the middleware is written to the ui5.yaml if excludeMiddleware is set to true
+        ui5AppConfig.appOptions = {
+            excludeMiddleware: false
+        };
+        projectDir = join(outputDir, 'testapp-withtoolsid');
+        await generate(projectDir, ui5AppConfig, fs);
+        await updatePackageJSONDependencyToUseLocalPath(projectDir, fs);
+        assertUi5YamlContainsMiddleware(projectDir);
     });
 
     // Test to ensure the appid does not contain any characters that result in malfored docs
