@@ -268,18 +268,9 @@ Array [
 
 exports[`Prompts getChoices Choices for field "filterBar" 1`] = `
 Array [
-  Object {
-    "name": "FilterBar",
-    "value": "FilterBar",
-  },
-  Object {
-    "name": "FilterBar2",
-    "value": "FilterBar2",
-  },
-  Object {
-    "name": "dummyId",
-    "value": "dummyId",
-  },
+  "dummyId",
+  "FilterBar",
+  "FilterBar2",
 ]
 `;
 

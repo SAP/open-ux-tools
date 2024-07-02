@@ -100,11 +100,7 @@ export class PromptsAPI {
             if (question && question.type === 'list') {
                 const choices =
                     typeof question.choices === 'function' ? await question.choices(answers) : question.choices;
-                if (choices && Array.isArray(choices)) {
-                    return choices.map((choice) =>
-                        typeof choice === 'string' ? { value: choice, name: choice } : choice
-                    );
-                }
+                return choices ?? [];
             }
         } catch (error) {
             console.error(error);

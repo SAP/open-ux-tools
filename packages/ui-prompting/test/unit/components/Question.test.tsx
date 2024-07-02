@@ -34,9 +34,37 @@ describe('Question', () => {
             question.message && expect(screen.getByDisplayValue('testName0')).toBeDefined();
         });
 
+        it(`Render question default value - ${question.name} with choices as string array`, () => {
+            render(
+                <Question
+                    {...props}
+                    question={{ ...question, default: 'Page' }}
+                    choices={['Page', 'Control', 'None']}
+                />
+            );
+            question.message && expect(screen.getByDisplayValue('Page')).toBeDefined();
+        });
+
         it(`Render question required - ${question.name} with message`, () => {
             render(<Question {...props} question={{ ...question, required: true }} />);
             expect(document.getElementsByClassName('is-required')).toBeDefined();
+        });
+
+        it(`Test question answers - ${question.name} with choices as string array`, () => {
+            render(
+                <Question
+                    {...props}
+                    question={question}
+                    answers={{
+                        testInput: 'None',
+                        testStaticList: 'None',
+                        testDynamicList: 'None',
+                        testCheckbox: 'None'
+                    }}
+                    choices={['Page', 'Control', 'None']}
+                />
+            );
+            expect(screen.getByDisplayValue('None')).toBeDefined();
         });
 
         it(`Test question answers - ${question.name}`, () => {
@@ -73,6 +101,11 @@ describe('Question', () => {
             expect(screen.getByRole('alert')).toBeDefined();
         });
     }
+
+    it(`Render question - unsupported type`, () => {
+        render(<Question {...props} question={{ ...questions.input, type: undefined }} />);
+        expect(screen.getByText('Unsupported')).toBeDefined();
+    });
 
     it(`Test question choices - ${questions.dynamicList.name}`, () => {
         render(

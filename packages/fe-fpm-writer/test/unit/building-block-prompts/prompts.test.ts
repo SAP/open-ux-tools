@@ -4,6 +4,7 @@ import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { PromptsType, PromptsAPI, TablePromptsAnswer, BuildingBlockType, SupportedAnswers } from '../../../src';
 import { ProjectProvider } from '../../../src/building-block/prompts/utils/project';
+import { ChoiceOptions } from 'inquirer';
 
 jest.setTimeout(10000);
 
@@ -63,7 +64,8 @@ describe('Prompts', () => {
             const filesChoices = await promptsAPI.getChoices(PromptsType.Chart, 'viewOrFragmentPath', {});
             // Get "aggregationPath"
             const aggregationChoices = await promptsAPI.getChoices(PromptsType.Chart, 'aggregationPath', {
-                viewOrFragmentPath: filesChoices[0].value
+                viewOrFragmentFile:
+                    typeof filesChoices[0] === 'string' ? filesChoices[0] : (filesChoices[0] as ChoiceOptions).value
             });
             expect(aggregationChoices).toMatchSnapshot();
         });
@@ -86,12 +88,16 @@ describe('Prompts', () => {
             fs.write(join(projectPath, `webapp/ext/${filename}`), xml);
 
             // ToDo write xml with filterbars
-            // Get "viewOrFragmentPath"
-            const filesChoices = await promptsAPI.getChoices(PromptsType.Chart, 'viewOrFragmentPath', {});
-            const fileChoice = filesChoices.find((choice) => choice.value.endsWith(filename));
-            // Get "filterBar"
+            // Get "viewOrFragmentFile"
+            const filesChoices = await promptsAPI.getChoices(PromptsType.Chart, 'viewOrFragmentFile', {});
+            const fileChoice = filesChoices.find((choice) =>
+                typeof choice === 'string'
+                    ? choice.endsWith(filename)
+                    : (choice as ChoiceOptions).value.endsWith(filename)
+            );
+            // Get "viewOrFragmentFile"
             const aggregationChoices = await promptsAPI.getChoices(PromptsType.Chart, 'filterBar', {
-                viewOrFragmentPath: fileChoice?.value
+                viewOrFragmentFile: typeof fileChoice === 'string' ? fileChoice : (fileChoice as ChoiceOptions).value
             });
             expect(aggregationChoices).toMatchSnapshot();
         });

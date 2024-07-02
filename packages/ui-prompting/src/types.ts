@@ -1,4 +1,4 @@
-import type { Answers, CheckboxQuestion, ChoiceOptions, DistinctChoice, InputQuestion, ListQuestion } from 'inquirer';
+import type { Answers, CheckboxQuestion, DistinctChoice, InputQuestion, ListQuestion } from 'inquirer';
 
 /**
  * Interfaces for questions.
@@ -91,13 +91,7 @@ export interface ValidationResults {
     [questionName: string]: ValidationResult;
 }
 
-/**
- * Choices.
- */
-export { DistinctChoice, ChoiceOptions };
-
-// ToDo - change and consume DistinctChoice instead of ChoiceOptions
-export type PromptListChoices = ReadonlyArray<ChoiceOptions>;
+export type PromptListChoices = ReadonlyArray<DistinctChoice>;
 
 export interface DynamicChoices {
     [key: string]: PromptListChoices;
