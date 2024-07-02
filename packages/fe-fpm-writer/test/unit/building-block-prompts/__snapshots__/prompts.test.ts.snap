@@ -304,19 +304,6 @@ Array [
 ]
 `;
 
-exports[`Prompts getChoices Type "chart", choices for field "qualifier" 2`] = `
-Array [
-  Object {
-    "name": "@UI.Chart",
-    "value": "@com.sap.vocabularies.UI.v1.Chart",
-  },
-  Object {
-    "name": "to_CustomerBankDetails/@UI.Chart#C_CustomerBankDetailsOPType",
-    "value": "to_CustomerBankDetails/@com.sap.vocabularies.UI.v1.Chart#C_CustomerBankDetailsOPType",
-  },
-]
-`;
-
 exports[`Prompts getChoices Type "filter-bar", choices for field "qualifier" 1`] = `
 Array [
   Object {
@@ -341,7 +328,7 @@ exports[`Prompts getCodeSnippet Type "chart", get code snippet 1`] = `
     metaPath=\\"/entity/qualifier\\"
     filterBar=\\"filterBar\\"
     selectionMode=\\"testSelectionMode\\"
-    selectionChange=\\"true\\"
+    selectionChange=\\"function1\\"
 />"
 `;
 
@@ -361,7 +348,7 @@ exports[`Prompts getCodeSnippet Type "table", get code snippet 1`] = `
     filterBar=\\"filterBar\\"
     header=\\"header\\"
     headerVisible=\\"true\\"
-    type=\\"table\\"
+    type=\\"ResponsiveTable\\"
 />"
 `;
 
@@ -759,7 +746,7 @@ exports[`Prompts submitAnswers Type "chart" 1`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <Page title=\\"Main\\">
         <content>
-            <macros:Chart id=\\"id\\" metaPath=\\"/entity/qualifier\\" filterBar=\\"filterBar\\" selectionMode=\\"testSelectionMode\\" selectionChange=\\"true\\"/>
+            <macros:Chart id=\\"id\\" metaPath=\\"/entity/qualifier\\" filterBar=\\"filterBar\\" selectionMode=\\"testSelectionMode\\" selectionChange=\\"function1\\"/>
         </content>
     </Page>
 </mvc:View>"
@@ -779,7 +766,7 @@ exports[`Prompts submitAnswers Type "table" 1`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <Page title=\\"Main\\">
         <content>
-            <macros:Table id=\\"id\\" metaPath=\\"/entity/qualifier\\" filterBar=\\"filterBar\\" header=\\"header\\" headerVisible=\\"true\\" type=\\"table\\"/>
+            <macros:Table id=\\"id\\" metaPath=\\"/entity/qualifier\\" filterBar=\\"filterBar\\" header=\\"header\\" headerVisible=\\"true\\" type=\\"ResponsiveTable\\"/>
         </content>
     </Page>
 </mvc:View>"

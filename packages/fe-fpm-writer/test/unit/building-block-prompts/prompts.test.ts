@@ -197,19 +197,20 @@ describe('Prompts', () => {
             }
         }
     };
-    describe.skip('getCodeSnippet', () => {
+    describe('getCodeSnippet', () => {
         test.each(types)('Type "%s", get code snippet', async (type: PromptsType) => {
             const result = promptsAPI.getCodeSnippet(type, answers[type] as SupportedAnswers);
             expect(result).toMatchSnapshot();
         });
 
-        test('get code snippet with placeholders', async () => {
+        // ToDo - missing support
+        test.skip('get code snippet with placeholders', async () => {
             const result = promptsAPI.getCodeSnippet(PromptsType.Table, {} as TablePromptsAnswer);
             expect(result).toMatchSnapshot();
         });
     });
 
-    describe.skip('submitAnswers', () => {
+    describe('submitAnswers', () => {
         test.each(types)('Type "%s"', async (type: PromptsType) => {
             const result = promptsAPI.submitAnswers(type, answers[type] as SupportedAnswers);
             expect(result.read(join(projectPath, baseAnswers.viewOrFragmentPath))).toMatchSnapshot();
