@@ -1,5 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
-import { join } from 'path';
+import { join, relative } from 'path';
 import { DirName, FileName } from '../constants';
 import { fileExists, findFilesByExtension, readJSON } from '../file';
 import type {
@@ -14,7 +14,7 @@ import type {
 } from '../types';
 import { getCapProjectType } from './cap';
 import { getI18nPropertiesPaths } from './i18n/i18n';
-import { findFioriArtifacts } from './search';
+import { findAllApps, findFioriArtifacts } from './search';
 import { getMainService, getServicesAndAnnotations } from './service';
 import { getWebappPath } from './ui5-config';
 import { gte, valid } from 'semver';
@@ -26,11 +26,23 @@ import { gte, valid } from 'semver';
  * @returns - project structure with project info like project type, apps, root folder
  */
 export async function getProject(root: string): Promise<Project> {
-    const checkCapType = await getCapProjectType(root);
-    const projectType = checkCapType ?? 'EDMXBackend';
+    const capProjectType = await getCapProjectType(root);
+    const projectType = capProjectType ?? 'EDMXBackend';
     const packageJson = await readJSON<Package>(join(root, FileName.Package));
-    const appFolders = getAppFolders(packageJson);
-    const apps = await getApps(root, appFolders);
+    const sapuxAppFolders = getAppFolders(packageJson);
+    const apps = await getApps(root, sapuxAppFolders);
+    if (projectType === capProjectType) {
+        const allApps = await findAllApps([root]);
+        for (const app of allApps) {
+            const appId = relative(app.projectRoot, app.appRoot);
+            if (!Object.keys(apps).some((checkAppId) => appId === checkAppId)) {
+                const appStructure = await getApplicationStructure(root, appId);
+                if (appStructure) {
+                    apps[appId] = appStructure;
+                }
+            }
+        }
+    }
     return {
         root,
         projectType,
@@ -80,6 +92,7 @@ async function getApps(root: string, appFolders: string[]): Promise<{ [index: st
 async function getApplicationStructure(root: string, appFolder: string): Promise<ApplicationStructure | undefined> {
     const appRoot = join(root, appFolder);
     const absoluteWebappPath = await getWebappPath(appRoot);
+    const appType = (await getAppType(appRoot)) as AppType;
     const manifest = join(absoluteWebappPath, FileName.Manifest);
     if (!(await fileExists(manifest))) {
         return undefined;
@@ -91,6 +104,7 @@ async function getApplicationStructure(root: string, appFolder: string): Promise
     const services = await getServicesAndAnnotations(manifest, manifestObject);
     return {
         appRoot,
+        appType,
         manifest,
         changes,
         i18n,
