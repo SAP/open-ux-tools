@@ -8,7 +8,7 @@ import { ModeSwitcher } from '../../../src/toolbar/ModeSwitcher';
 import { mockResizeObserver } from '../../utils/utils';
 import { initIcons } from '@sap-ux/ui-components';
 import { appLoaded, setAppMode } from '@sap-ux-private/control-property-editor-common';
-import { initialState, adpState, setProjectScenario } from '../../../src/slice';
+import { initialState, setProjectScenario } from '../../../src/slice';
 
 beforeAll(() => {
     mockResizeObserver();

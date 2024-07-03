@@ -39,7 +39,7 @@ export function ModeSwitcher(): ReactElement {
                 checked={mode === 'adaptation'}
                 onClick={handleAdaptationClick}
                 disabled={disabled}>
-                { isAdpProject ? t("UI_ADAPTATION"): t('EDIT')}
+                { isAdpProject ? t("UI_ADAPTATION") : t('EDIT')}
             </UIDefaultButton>
             <UIDefaultButton
                 transparent={true}
