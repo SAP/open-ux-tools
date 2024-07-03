@@ -127,4 +127,16 @@ describe('UI5 templates', () => {
         const indexHtml = fs.read(indexHtmlPath);
         expect(indexHtml).toContain('src="https://ui5.sap.com/1.96.1/resources/sap-ui-core.js"');
     });
+
+    it('Check webapp/index.html templates are generated correctly for EDMX application', async () => {
+        const projectDir = join(outputDir, 'testapp-cap');
+        ui5AppConfig.app.projectType = 'EDMXBackend';
+        const fs = await generate(projectDir, { ...ui5AppConfig, ui5: { version: '1.96.1' } });
+        const indexHtmlPath = join(projectDir, 'webapp/index.html');
+        // Check if webapp/index.html exists
+        expect(fs.exists(indexHtmlPath)).toBe(true);
+        // Check if the index.html contains the correct UI5 framework URL with version included
+        const indexHtml = fs.read(indexHtmlPath);
+        expect(indexHtml).toContain('src="resources/sap-ui-core.js"');
+    });
 });

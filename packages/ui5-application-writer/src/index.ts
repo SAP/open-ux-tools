@@ -32,13 +32,15 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         ignore.push('**/webapp/index.html');
     }
     const isEdmxProjectType = ui5AppConfig.app.projectType === 'EDMXBackend';
-    // pass frameworkUrl and version only for CAP projects
+    // Determine the framework URL and version based on the project type, if project is not EDMX  include ui5App.ui5.frameworkUrl & ui5App.ui5.version
+    const frameworkUrl = !isEdmxProjectType && ui5App.ui5.frameworkUrl ? ui5App.ui5.frameworkUrl + '/' : undefined;
+    const version = !isEdmxProjectType && ui5App.ui5.version ? ui5App.ui5.version + '/' : undefined;
     const templateOptions = {
         ...ui5App,
         ui5: {
             ...ui5App.ui5,
-            frameworkUrl: isEdmxProjectType ? undefined : ui5App.ui5.frameworkUrl,
-            version: isEdmxProjectType ? undefined : ui5App.ui5.version
+            frameworkUrl,
+            version
         }
     }
     fs.copyTpl(join(tmplPath, 'core', '**/*.*'), join(basePath), templateOptions, undefined, {
