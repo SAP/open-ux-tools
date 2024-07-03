@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.22.0
+
+### Minor Changes
+
+-   cfe6da80: Add a reuse library for UI.Note annotation
+
 ## 0.21.4
 
 ### Patch Changes
