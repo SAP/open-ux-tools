@@ -208,7 +208,7 @@ export type MetadataPromptOptions = {
     requiredOdataVersion?: OdataVersion;
 };
 
-export type serviceSelectionPromptOptions = {
+export type ServiceSelectionPromptOptions = {
     /**
      * Determines if the service selection prompt should use auto complete prompt for service names.
      * Note that the auto-complete module must be registered with the inquirer instance to use this feature.
@@ -234,7 +234,7 @@ type odataServiceInquirerPromptOptions = Record<promptNames.datasourceType, Data
     Record<promptNames.capService, CapServicePromptOptions> &
     Record<promptNames.serviceUrl, OdataServiceUrlPromptOptions> &
     Record<promptNames.serviceUrlPassword, OdataServiceUrlPasswordOptions> &
-    Record<promptNames.serviceSelection, serviceSelectionPromptOptions>;
+    Record<promptNames.serviceSelection, ServiceSelectionPromptOptions>;
 
 export type OdataServiceQuestion = YUIQuestion<OdataServiceAnswers>;
 

@@ -8,7 +8,7 @@ import { withCondition } from '@sap-ux/inquirer-common';
 import { BackendSystem } from '@sap-ux/store';
 import type { Answers, InputQuestion, ListQuestion, Question } from 'inquirer';
 import { t } from '../../../i18n';
-import type { OdataServiceAnswers, SapSystemType } from '../../../types';
+import type { OdataServiceAnswers, SapSystemType, ServiceSelectionPromptOptions } from '../../../types';
 import { PromptState } from '../../../utils';
 import LoggerHelper from '../../logger-helper';
 import type { AbapOnPremAnswers } from './abap-on-prem/questions';
@@ -46,9 +46,12 @@ export interface SystemSelectionAnswer extends OdataServiceAnswers {
 /**
  * Provides prompts that allow the creation of a new system connection.
  *
+ * @param serviceSelectionPromptOptions options for the service selection prompt
  * @returns questions for creating a new system connection
  */
-export function getNewSystemQuestions(): Question<NewSystemAnswers>[] {
+export function getNewSystemQuestions(
+    serviceSelectionPromptOptions?: ServiceSelectionPromptOptions
+): Question<NewSystemAnswers>[] {
     const questions: Question<NewSystemAnswers>[] = [
         {
             type: 'list',
@@ -71,7 +74,7 @@ export function getNewSystemQuestions(): Question<NewSystemAnswers>[] {
     ];
     questions.push(
         ...withCondition(
-            getAbapOnPremQuestions(/* todo: pass prompt options */) as Question[],
+            getAbapOnPremQuestions(serviceSelectionPromptOptions) as Question[],
             (answers: Answers) => (answers as NewSystemAnswers).newSystemType === 'abapOnPrem'
         )
     );

@@ -2,18 +2,18 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Annotations, AxiosRequestConfig, CatalogService, ServiceProvider } from '@sap-ux/axios-extension';
 import { ODataVersion, create } from '@sap-ux/axios-extension';
 import { searchChoices, withCondition, type ListQuestion } from '@sap-ux/inquirer-common';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { validateClient } from '@sap-ux/project-input-validator';
 import type { InputQuestion, ListChoiceOptions, PasswordQuestion, Question } from 'inquirer';
 import { t } from '../../../../i18n';
-import type { ValidationLink, serviceSelectionPromptOptions } from '../../../../types';
+import type { ServiceSelectionPromptOptions, ValidationLink } from '../../../../types';
 import { hostEnvironment, promptNames, type OdataServiceAnswers } from '../../../../types';
 import { PromptState, getHostEnvironment } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
-import { getServiceChoices } from './service-helper';
-import { errorHandler } from '../../../prompt-helpers';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
 import LoggerHelper from '../../../logger-helper';
+import { errorHandler } from '../../../prompt-helpers';
 import { getNewSystemNameQuestion } from '../questions';
+import { getServiceChoices } from './service-helper';
 
 export enum abapOnPremInternalPromptNames {
     systemUrl = 'systemUrl',
@@ -54,7 +54,7 @@ export const SERVICE_TYPE = {
  * @returns property questions for the Abap on-premise datasource
  */
 export function getAbapOnPremQuestions(
-    serviceSelectionPromptOptions?: serviceSelectionPromptOptions
+    serviceSelectionPromptOptions?: ServiceSelectionPromptOptions
 ): Question<AbapOnPremAnswers>[] {
     PromptState.reset();
     errorHandler.resetErrorState();
@@ -219,7 +219,7 @@ export function getAbapOnPremQuestions(
 }
 
 /**
- * Gets the serice details and internally sets the PromptState.odataService properties.
+ * Gets the service details and internally sets the PromptState.odataService properties.
  * If an error occurs, the error message is returned for use in validators.
  *
  * @param service
