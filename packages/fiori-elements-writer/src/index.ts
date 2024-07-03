@@ -21,7 +21,7 @@ import {
 import { changesPreviewToVersion, escapeFLPText } from './data/templateAttributes';
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
-import { UI5Config } from '@sap-ux/ui5-config';
+import { initI18n } from './i18n';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -59,6 +59,9 @@ function getTypeScriptIgnoreGlob<T extends {}>(feApp: FioriElementsApp<T>, coerc
  * @returns Reference to a mem-fs-editor
  */
 async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T>, fs?: Editor): Promise<Editor> {
+    // Load i18n translations asynchronously to ensure proper initialization.
+    // This addresses occasional issues where i18n is not initialized in time, causing tests to fail.
+    await initI18n();
     // Clone rather than modifying callers refs
     const feApp: FioriElementsApp<T> = cloneDeep(data);
     // Ensure input data contains at least the mandatory properties required for app generation
@@ -91,18 +94,11 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
         ignore = getTypeScriptIgnoreGlob(feApp, coercedUI5Version);
     }
 
-    // Check if sap.ushell is already in the ui5Libs array
-    const ushellLib = 'sap.ushell';
-    const ui5Libs = Array.isArray(feApp.ui5?.ui5Libs) ? feApp.ui5.ui5Libs : [feApp.ui5?.ui5Libs];
-    if (!ui5Libs.includes(ushellLib)) {
-        ui5Libs.push(ushellLib);
-    }
     fs.copyTpl(
         join(rootTemplatesPath, 'common', 'add', '**/*.*'),
         basePath,
         {
             ...feApp,
-            ui5: { ...feApp.ui5, ui5Libs },
             templateOptions,
             escapeFLPText
         },
@@ -111,12 +107,6 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
             globOptions: { ignore, dot: true }
         }
     );
-
-    // Extend ui5-local.yaml
-    const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
-    const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-    ui5LocalConfig.addUI5Libs([ushellLib]);
-    fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
 
     // Extend common files
     const packagePath = join(basePath, 'package.json');
@@ -140,14 +130,6 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
             },
             fs
         );
-        // Updating ui5-local for V4 FPM specific libs
-        if (feApp.service.version === OdataVersion.v4) {
-            const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
-            const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-            const ui5Libs = ['sap.fe.templates'];
-            ui5LocalConfig.addUI5Libs(ui5Libs);
-            fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
-        }
     } else {
         // Copy odata version specific common templates and version specific, floorplan specific templates
         const templateVersionPath = join(rootTemplatesPath, `v${feApp.service?.version}`);

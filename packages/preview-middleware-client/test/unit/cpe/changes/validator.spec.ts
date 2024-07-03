@@ -35,7 +35,7 @@ describe('vaildateBindingModel', () => {
         } catch (error) {
             expect(error).toBeInstanceOf(SyntaxError);
             expect(error.message).toBe(
-                'Invalid key in the binding string. Supported value pattern is {i18n>YOUR_KEY}. Check if the key already exists in i18n.properties. If not, add the key in the i18n.properties file and reload the editor for the new key to take effect.'
+                'Invalid key in the binding string. Supported value pattern is {i18n>YOUR_KEY}. Check if the key already exists in i18n.properties.If not, add the key in the i18n.properties file and reload the editor for the new key to take effect.'
             );
         }
     });

@@ -5,7 +5,7 @@ import type { Question } from 'inquirer';
 import { t } from '../../../i18n';
 import type { CapServiceChoice, OdataServicePromptOptions } from '../../../types';
 import { promptNames, hostEnvironment } from '../../../types';
-import { PromptState, getPlatform } from '../../../utils';
+import { PromptState, getHostEnvironment } from '../../../utils';
 import { errorHandler } from '../../prompt-helpers';
 import { enterCapPathChoiceValue, getCapEdmx, getCapProjectChoices, getCapServiceChoices } from './cap-helpers';
 import {
@@ -159,7 +159,7 @@ export function getLocalCapProjectPrompts(
         } as ListQuestion<CapServiceAnswers>
     ];
 
-    if (getPlatform() === hostEnvironment.cli) {
+    if (getHostEnvironment() === hostEnvironment.cli) {
         prompts.push({
             when: async (answers: CapServiceAnswers): Promise<boolean> => {
                 if (answers?.capService) {

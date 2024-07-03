@@ -22,7 +22,7 @@ import {
 import type { SourcePosition, XMLAstNode, XMLAttribute, XMLDocument, XMLElement } from '@xml-tools/ast';
 import { DEFAULT_NS } from '@xml-tools/ast';
 
-import { compareTextEdits } from '../utils';
+import { compareByRange } from '../utils';
 import type { Comment } from './comments';
 import type {
     DeleteAttribute,
@@ -77,7 +77,7 @@ export class XMLWriter {
         for (const pointer of Object.keys(batches)) {
             edits.push(...this.getTextEditsForPointer(pointer, batches[pointer]));
         }
-        edits.sort(compareTextEdits);
+        edits.sort(compareByRange);
         return edits;
     }
 

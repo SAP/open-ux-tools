@@ -1,8 +1,8 @@
 import Log from 'sap/base/Log';
 import type AppLifeCycle from 'sap/ushell/services/AppLifeCycle';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
-import type { RTAOptions, FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
 import scenarios, { type Scenario } from 'sap/ui/fl/Scenario';
+import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import AppState from 'sap/ushell/services/AppState';
@@ -36,6 +36,27 @@ const UI5_LIBS = [
     'sap.zen'
 ];
 
+interface Manifest {
+    ['sap.ui5']?: {
+        dependencies?: {
+            libs: Record<string, unknown>;
+            components: Record<string, unknown>;
+        };
+        componentUsages?: Record<string, unknown>;
+    };
+}
+
+type AppIndexData = Record<
+    string,
+    {
+        dependencies?: {
+            url?: string;
+            type?: string;
+            componentId: string;
+        }[];
+    }
+>;
+
 /**
  * Check whether a specific dependency is a custom library, and if yes, add it to the map.
  *
@@ -67,9 +88,9 @@ async function getManifestLibs(appUrls: string[]): Promise<string> {
     for (const url of appUrls) {
         promises.push(
             fetch(`${url}/manifest.json`).then(async (resp) => {
-                const manifest = await resp.json();
+                const manifest = (await resp.json()) as Manifest;
                 if (manifest) {
-                    if (manifest['sap.ui5'] && manifest['sap.ui5'].dependencies) {
+                    if (manifest['sap.ui5']?.dependencies) {
                         if (manifest['sap.ui5'].dependencies.libs) {
                             addKeys(manifest['sap.ui5'].dependencies.libs, result);
                         }
@@ -77,7 +98,7 @@ async function getManifestLibs(appUrls: string[]): Promise<string> {
                             addKeys(manifest['sap.ui5'].dependencies.components, result);
                         }
                     }
-                    if (manifest['sap.ui5'] && manifest['sap.ui5'].componentUsages) {
+                    if (manifest['sap.ui5']?.componentUsages) {
                         addKeys(manifest['sap.ui5'].componentUsages, result);
                     }
                 }
@@ -92,18 +113,7 @@ async function getManifestLibs(appUrls: string[]): Promise<string> {
  *
  * @param dataFromAppIndex data returned from the app index service
  */
-function registerModules(
-    dataFromAppIndex: Record<
-        string,
-        {
-            dependencies?: {
-                url?: string;
-                type?: string;
-                componentId: string;
-            }[];
-        }
-    >
-) {
+function registerModules(dataFromAppIndex: AppIndexData) {
     Object.keys(dataFromAppIndex).forEach(function (moduleDefinitionKey) {
         const moduleDefinition = dataFromAppIndex[moduleDefinitionKey];
         if (moduleDefinition && moduleDefinition.dependencies) {
@@ -153,7 +163,7 @@ export async function registerComponentDependencyPaths(appUrls: string[], urlPar
         }
         const response = await fetch(url);
         try {
-            registerModules(await response.json());
+            registerModules((await response.json()) as AppIndexData);
         } catch (error) {
             Log.error(`Registering of reuse libs failed. Error:${error}`);
         }
@@ -244,6 +254,7 @@ export async function init({
                 const version = sap.ui.version;
                 const minor = parseInt(version.split('.')[1], 10);
                 const view = event.getParameter('componentInstance');
+                const flexSettings = JSON.parse(flex) as FlexSettings;
                 const pluginScript = flexSettings.pluginScript ?? '';
 
                 let libs: string[] = [];

@@ -480,11 +480,11 @@ describe('getQuestions', () => {
         expect(enableTypeScriptQuestion?.default).toEqual(false);
         questions = getQuestions([], {
             enableTypeScript: {
-                default: true
+                default: () => true
             }
         });
         enableTypeScriptQuestion = questions.find((question) => question.name === promptNames.enableTypeScript);
-        expect(enableTypeScriptQuestion?.default).toEqual(true);
+        expect(enableTypeScriptQuestion?.default()).toEqual(true);
 
         // when
         expect((enableTypeScriptQuestion?.when as Function)()).toEqual(true);

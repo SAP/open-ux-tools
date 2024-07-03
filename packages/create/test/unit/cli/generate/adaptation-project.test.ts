@@ -28,6 +28,17 @@ describe('generate/adaptation-project', () => {
     const reference = 'test.reference';
     const layer = 'CUSTOMER_BASE';
     const url = 'http://sap.example';
+    const content = [
+        {
+            changeType: 'appdescr_ui5_addNewModelEnhanceWith',
+            content: {
+                modelId: 'i18n',
+                bundleUrl: 'i18n/i18n.properties',
+                supportedLocales: [''],
+                fallbackLocale: ''
+            }
+        }
+    ];
 
     // mocks
     const traceSpy = jest.spyOn(tracer, 'traceChanges');
@@ -44,7 +55,7 @@ describe('generate/adaptation-project', () => {
         // Test execution
         const command = new Command('generate');
         addGenerateAdaptationProjectCommand(command);
-        await command.parseAsync(getArgv('--id', id, '--reference', reference, '--url', `${url}?sap-client=123`));
+        await command.parseAsync(getArgv('--id', id, '--reference', reference, '--url', `${url}?sap-client=123`, '-y'));
 
         const expectedAppRoot = join(process.cwd(), id);
         // Flow check
@@ -55,7 +66,7 @@ describe('generate/adaptation-project', () => {
         expect(generateSpy).toBeCalledWith(
             expectedAppRoot,
             expect.objectContaining({
-                app: { id, reference, layer },
+                app: { id, reference, layer, content },
                 target: { url, client: '123' }
             } as Partial<adp.AdpWriterConfig>)
         );
@@ -65,7 +76,7 @@ describe('generate/adaptation-project', () => {
         // Test execution
         const command = new Command('generate');
         addGenerateAdaptationProjectCommand(command);
-        await command.parseAsync(getArgv(appRoot, '--id', id, '--reference', reference, '--url', url));
+        await command.parseAsync(getArgv(appRoot, '--id', id, '--reference', reference, '--url', url, '-y'));
 
         // Flow check
         expect(promptSpy).not.toBeCalled();
@@ -79,7 +90,19 @@ describe('generate/adaptation-project', () => {
         const command = new Command('generate');
         addGenerateAdaptationProjectCommand(command);
         await command.parseAsync(
-            getArgv(appRoot, '--skip-install', '--id', id, '--reference', reference, '--url', url, '--package', '$tmp')
+            getArgv(
+                appRoot,
+                '--skip-install',
+                '--id',
+                id,
+                '--reference',
+                reference,
+                '--url',
+                url,
+                '--package',
+                '$tmp',
+                '-y'
+            )
         );
 
         // Flow check
@@ -93,7 +116,9 @@ describe('generate/adaptation-project', () => {
         // Test execution
         const command = new Command('generate');
         addGenerateAdaptationProjectCommand(command);
-        await command.parseAsync(getArgv(appRoot, '--simulate', '--id', id, '--reference', reference, '--url', url));
+        await command.parseAsync(
+            getArgv(appRoot, '--simulate', '--id', id, '--reference', reference, '--url', url, '-y')
+        );
 
         // Flow check
         expect(promptSpy).not.toBeCalled();
@@ -125,7 +150,7 @@ describe('generate/adaptation-project', () => {
         expect(generateSpy).toBeCalledWith(
             appRoot,
             expect.objectContaining({
-                app: { id, reference, layer },
+                app: { id, reference, layer, content },
                 target: { url }
             } as Partial<adp.AdpWriterConfig>)
         );
