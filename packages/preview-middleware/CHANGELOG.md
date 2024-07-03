@@ -1,5 +1,18 @@
 # @sap-ux/preview-middleware
 
+## 0.15.6
+
+### Patch Changes
+
+-   Updated dependencies [fa4c088c]
+    -   @sap-ux/adp-tooling@0.11.12
+
+## 0.15.5
+
+### Patch Changes
+
+-   0e0c2864: Fix Error message regression
+
 ## 0.15.4
 
 ### Patch Changes
