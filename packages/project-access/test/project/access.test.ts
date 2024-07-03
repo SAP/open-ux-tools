@@ -325,9 +325,10 @@ describe('Test function createApplicationAccess()', () => {
 
     test('Get instance of specification (mocked)', async () => {
         // Mock setup
+        const appRoot = join(sampleRoot, 'fiori_elements');
         jest.spyOn(specMock, 'getSpecification').mockResolvedValueOnce({ test: 'specification' });
         // Test execution
-        const appAccess = await createApplicationAccess('');
+        const appAccess = await createApplicationAccess(appRoot);
         const spec = await appAccess.getSpecification();
         // Result check
         expect(spec).toEqual({ test: 'specification' });

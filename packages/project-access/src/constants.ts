@@ -21,7 +21,6 @@ export const FileName = {
 
 export const DirName = {
     Changes: 'changes',
-    DotFioritools: '.fioritools',
     ModuleCache: 'module-cache',
     Schemas: '.schemas',
     Pages: 'pages',
@@ -57,7 +56,7 @@ export const SchemaName = {
 /**
  * Directory where fiori tools settings are stored
  */
-export const fioriToolsDirectory = join(homedir(), DirName.DotFioritools);
+export const fioriToolsDirectory = join(homedir(), FioriToolsSettings.dir);
 
 /**
  * Directory where modules are cached
