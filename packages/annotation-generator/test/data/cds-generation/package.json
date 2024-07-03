@@ -2,7 +2,7 @@
   "name": "cdsAnnotationGenerationTest",
   "description": "",
   "dependencies": {
-    "@sap/cds": "^4"
+    "@sap/cds": "7.9.3"
   },
   "scripts": {
     "start": "npx cds run"
@@ -22,7 +22,7 @@
     }
   },
   "sapux": [
-    "app\\project1"
+    "app/project1"
   ],
   "devDependencies": {
     "@sap/ux-specification": "^1.84.6"
