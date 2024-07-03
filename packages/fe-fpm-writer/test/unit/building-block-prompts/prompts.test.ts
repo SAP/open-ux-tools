@@ -204,8 +204,12 @@ describe('Prompts', () => {
         });
 
         // ToDo - missing support
-        test.skip('get code snippet with placeholders', async () => {
-            const result = promptsAPI.getCodeSnippet(PromptsType.Table, {} as TablePromptsAnswer);
+        test('get code snippet with placeholders', async () => {
+            const result = promptsAPI.getCodeSnippet(PromptsType.Table, {
+                buildingBlockData: {
+                    type: 'GridTable'
+                }
+            } as TablePromptsAnswer);
             expect(result).toMatchSnapshot();
         });
     });

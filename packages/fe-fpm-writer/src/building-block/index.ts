@@ -3,12 +3,18 @@ import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
-import type { BuildingBlock, BuildingBlockConfig } from './types';
+import type { BuildingBlock, BuildingBlockConfig, BuildingBlockMetaPath } from './types';
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import * as xpath from 'xpath';
 import format from 'xml-formatter';
 import { getErrorMessage, validateBasePath } from '../common/validate';
 import { getTemplatePath } from '../templates';
+
+const PLACEHOLDERS = {
+    'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',
+    'entitySet': 'REPLACE_WITH_ENTITY',
+    'qualifier': 'REPLACE_WITH_A_QUALIFIER'
+};
 
 /**
  * Generates a building block into the provided xml view file.
@@ -87,27 +93,45 @@ function getOrAddMacrosNamespace(ui5XmlDocument: Document): string {
 }
 
 /**
+ * Method converts object based metaPath to string.
+ *
+ * @param {BuildingBlockMetaPath} metaPath - object based metaPath.
+ * @param {boolean} usePlaceholders - apply placeholder values if value for attribute/property is not provided
+ * @returns {string} Resolved string metaPath.
+ */
+function getMetaPath(metaPath?: BuildingBlockMetaPath, usePlaceholders?: boolean): string {
+    const { entitySet = '', qualifier = '' } = metaPath ?? {};
+    let entityPath = entitySet || (usePlaceholders ? PLACEHOLDERS.entitySet : '');
+    const lastIndex = entityPath.lastIndexOf('.');
+    entityPath = lastIndex >= 0 ? entityPath.substring?.(lastIndex + 1) : entityPath;
+    return `/${entityPath}/${qualifier || (usePlaceholders ? PLACEHOLDERS.qualifier : '')}`;
+}
+
+/**
  * Returns the content of the xml file document.
  *
  * @param {BuildingBlock} buildingBlockData - the building block data
  * @param {Document} viewDocument - the view xml file document
  * @param {Editor} fs - the memfs editor instance
+ * @param {boolean} usePlaceholders - apply placeholder values if value for attribute/property is not provided
  * @returns {string} the template xml file content
  */
 function getTemplateContent<T extends BuildingBlock>(
     buildingBlockData: T,
     viewDocument: Document | undefined,
-    fs: Editor
+    fs: Editor,
+    usePlaceholders?: boolean
 ): string {
     const templateFolderName = buildingBlockData.buildingBlockType;
     const templateFilePath = getTemplatePath(`/building-block/${templateFolderName}/View.xml`);
-    if (typeof buildingBlockData.metaPath === 'object') {
+    if (typeof buildingBlockData.metaPath === 'object' || buildingBlockData.metaPath == undefined) {
         // Convert object based metapath to string
-        const { entitySet, qualifier } = buildingBlockData.metaPath;
-        let entityPath = entitySet;
-        const lastIndex = entityPath.lastIndexOf('.');
-        entityPath = lastIndex >= 0 ? entityPath.substring?.(lastIndex + 1) : entityPath;
-        buildingBlockData = { ...buildingBlockData, metaPath: `/${entityPath}/${qualifier}` };
+        const metaPath = getMetaPath(buildingBlockData.metaPath, usePlaceholders);
+        buildingBlockData = { ...buildingBlockData, metaPath };
+    }
+    // Apply placeholders
+    if (!buildingBlockData.id) {
+        buildingBlockData.id = PLACEHOLDERS.id;
     }
     return render(
         fs.read(templateFilePath),
@@ -206,5 +230,5 @@ export function getSerializedFileContent<T extends BuildingBlock>(
     const xmlDocument = config.viewOrFragmentPath
         ? getUI5XmlDocument(basePath, config.viewOrFragmentPath, fs)
         : undefined;
-    return getTemplateContent(config.buildingBlockData, xmlDocument, fs);
+    return getTemplateContent(config.buildingBlockData, xmlDocument, fs, true);
 }

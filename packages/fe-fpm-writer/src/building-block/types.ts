@@ -11,6 +11,14 @@ export enum BuildingBlockType {
 }
 
 /**
+ * Represents a building block metaPath object.
+ */
+export interface BuildingBlockMetaPath {
+    entitySet: string;
+    qualifier: string;
+}
+
+/**
  * Represents a building block control.
  */
 export interface BuildingBlock {
@@ -32,12 +40,7 @@ export interface BuildingBlock {
     /**
      * Defines the relative path of the property in the metamodel, based on the current contextPath.
      */
-    metaPath?:
-        | string
-        | {
-              entitySet: string;
-              qualifier: string;
-          };
+    metaPath?: string | BuildingBlockMetaPath;
 }
 
 /**

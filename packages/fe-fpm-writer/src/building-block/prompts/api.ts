@@ -173,7 +173,8 @@ export class PromptsAPI {
      * @param answers The answers object
      * @returns Code snippet content.
      */
-    public getCodeSnippet(type: PromptsType, answers: SupportedAnswers): string {
+    public getCodeSnippet<T extends SupportedAnswers>(type: PromptsType, answers: T): string {
+        // public getCodeSnippet(type: PromptsType, answers: SupportedAnswers): string {
         // ToDo 'buildingBlockType' - should be different( support initial values for answers?)
         const buildingBlockType = TEMP_MAP.get(type);
         if (answers.buildingBlockData && buildingBlockType) {
@@ -181,12 +182,4 @@ export class PromptsAPI {
         }
         return getSerializedFileContent(this.basePath, answers);
     }
-
-    // private getMetaPath(entity: string, qualifier: string, placeholders = false): string {
-    //     let entityPath = entity || (placeholders ? 'REPLACE_WITH_ENTITY' : '');
-    //     const lastIndex = entityPath.lastIndexOf('.');
-    //     entityPath = lastIndex >= 0 ? entityPath.substring?.(lastIndex + 1) : entityPath;
-    //     const metaPath = `/${entityPath}/${qualifier || (placeholders ? 'REPLACE_WITH_A_QUALIFIER' : '')}`;
-    //     return metaPath;
-    // }
 }
