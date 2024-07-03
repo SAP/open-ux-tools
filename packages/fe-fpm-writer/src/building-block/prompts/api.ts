@@ -27,11 +27,25 @@ const unsupportedPrompts = (_fs: Editor, _basePath: string, _projectProvider: Pr
     questions: []
 });
 
-const PromptsMap: SupportedPromptsMap = {
+const PromptsQuestionsMap: SupportedPromptsMap = {
     [PromptsType.Chart]: getChartBuildingBlockPrompts,
     [PromptsType.Table]: getTableBuildingBlockPrompts,
     [PromptsType.FilterBar]: getFilterBarBuildingBlockPrompts,
     [PromptsType.BuildingBlocks]: getBuildingBlockTypePrompts
+};
+
+const PromptsGeneratorsMap = {
+    [PromptsType.Chart]: generateBuildingBlock,
+    [PromptsType.Table]: generateBuildingBlock,
+    [PromptsType.FilterBar]: generateBuildingBlock,
+    [PromptsType.BuildingBlocks]: undefined
+};
+
+const PromptsCodePreviewMap = {
+    [PromptsType.Chart]: getSerializedFileContent,
+    [PromptsType.Table]: getSerializedFileContent,
+    [PromptsType.FilterBar]: getSerializedFileContent,
+    [PromptsType.BuildingBlocks]: undefined
 };
 
 const TEMP_MAP: Map<PromptsType, BuildingBlockType> = new Map([
@@ -69,7 +83,7 @@ export class PromptsAPI {
     public async getPrompts<N extends SupportedPrompts['type']>(
         type: N
     ): Promise<Prompts<NarrowPrompt<typeof type>['answers']>> {
-        const method = type in PromptsMap ? PromptsMap[type] : unsupportedPrompts;
+        const method = type in PromptsQuestionsMap ? PromptsQuestionsMap[type] : unsupportedPrompts;
         if (typeof method === 'function') {
             return method(this.fs, this.basePath, this.projectProvider) as Promise<
                 Prompts<NarrowPrompt<typeof type>['answers']>
@@ -157,14 +171,15 @@ export class PromptsAPI {
      * @param answers The answers object
      * @returns The updated memfs editor instance
      */
-    public submitAnswers = (type: PromptsType, answers: SupportedAnswers): Editor => {
+    public submitAnswers<T extends SupportedAnswers>(type: PromptsType, answers: T): Editor {
         // ToDo 'buildingBlockType' - should be different( support initial values for answers?)
         const buildingBlockType = TEMP_MAP.get(type);
         if (answers.buildingBlockData && buildingBlockType) {
             answers.buildingBlockData.buildingBlockType = buildingBlockType;
         }
-        return generateBuildingBlock(this.basePath, answers, this.fs);
-    };
+        const generator = PromptsGeneratorsMap[type];
+        return generator?.(this.basePath, answers, this.fs) ?? this.fs;
+    }
 
     /**
      * Method returns code snippet for passed answers and prompt type.
@@ -174,12 +189,12 @@ export class PromptsAPI {
      * @returns Code snippet content.
      */
     public getCodeSnippet<T extends SupportedAnswers>(type: PromptsType, answers: T): string {
-        // public getCodeSnippet(type: PromptsType, answers: SupportedAnswers): string {
         // ToDo 'buildingBlockType' - should be different( support initial values for answers?)
         const buildingBlockType = TEMP_MAP.get(type);
         if (answers.buildingBlockData && buildingBlockType) {
             answers.buildingBlockData.buildingBlockType = buildingBlockType;
         }
-        return getSerializedFileContent(this.basePath, answers);
+        const codePreviewGenerator = PromptsCodePreviewMap[type];
+        return codePreviewGenerator?.(this.basePath, answers) ?? '';
     }
 }

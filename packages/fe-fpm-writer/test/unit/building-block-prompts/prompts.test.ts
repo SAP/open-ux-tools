@@ -203,7 +203,6 @@ describe('Prompts', () => {
             expect(result).toMatchSnapshot();
         });
 
-        // ToDo - missing support
         test('get code snippet with placeholders', async () => {
             const result = promptsAPI.getCodeSnippet(PromptsType.Table, {
                 buildingBlockData: {
