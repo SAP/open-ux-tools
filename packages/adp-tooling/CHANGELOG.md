@@ -1,5 +1,15 @@
 # @sap-ux/adp-tooling
 
+## 0.11.13
+
+### Patch Changes
+
+-   9ea58ad4: fix: Release version of @sap-ux/project-access with filterDataSourcesByType
+-   Updated dependencies [9ea58ad4]
+    -   @sap-ux/project-access@1.22.4
+    -   @sap-ux/axios-extension@1.14.4
+    -   @sap-ux/system-access@0.4.7
+
 ## 0.11.12
 
 ### Patch Changes
