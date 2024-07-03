@@ -71,10 +71,10 @@
             "breadcrumb": "SAP Client"
         },
         "systemUsername": {
-            "message": "System username"
+            "message": "Username"
         },
         "systemPassword": {
-            "message": "System password"
+            "message": "Password"
         },
         "systemService": {
             "message": "Service name",

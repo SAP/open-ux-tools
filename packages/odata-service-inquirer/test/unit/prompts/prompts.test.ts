@@ -192,7 +192,7 @@ describe('getQuestions', () => {
                 "guiOptions": {
                   "mandatory": true,
                 },
-                "message": "System username",
+                "message": "Username",
                 "name": "abapSystemUsername",
                 "type": "input",
                 "validate": [Function],
@@ -204,7 +204,7 @@ describe('getQuestions', () => {
                 },
                 "guiType": "login",
                 "mask": "*",
-                "message": "System password",
+                "message": "Password",
                 "name": "abapSystemPassword",
                 "type": "password",
                 "validate": [Function],

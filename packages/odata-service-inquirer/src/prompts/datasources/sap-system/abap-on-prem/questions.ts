@@ -19,15 +19,14 @@ export enum abapOnPremInternalPromptNames {
     systemUrl = 'systemUrl',
     sapClient = 'sapClient',
     systemUsername = 'abapSystemUsername',
-    systemPassword = 'abapSystemPassword',
-    selectedService = 'selectedService'
+    systemPassword = 'abapSystemPassword'
 }
 
 export interface AbapOnPremAnswers extends Partial<OdataServiceAnswers> {
     [abapOnPremInternalPromptNames.systemUrl]?: string;
     [abapOnPremInternalPromptNames.systemUsername]?: string;
     [abapOnPremInternalPromptNames.systemPassword]?: string;
-    [abapOnPremInternalPromptNames.selectedService]?: ServiceAnswer;
+    [promptNames.serviceSelection]?: ServiceAnswer;
 }
 
 const cliServicePromptName = 'cliServicePromptName';
@@ -137,6 +136,7 @@ export function getAbapOnPremQuestions(
             [getNewSystemNameQuestion()],
             (answers: AbapOnPremAnswers) =>
                 !!answers.systemUrl &&
+                connectValidator.validity.reachable === true &&
                 (connectValidator.validity.authenticated || connectValidator.validity.authRequired !== true)
         )[0],
         {
@@ -173,8 +173,8 @@ export function getAbapOnPremQuestions(
                 }
             },
             default: (answers: AbapOnPremAnswers) => {
-                if (answers.selectedService) {
-                    return answers.selectedService;
+                if (answers.serviceSelection) {
+                    return answers.serviceSelection;
                 }
                 return serviceChoices?.length > 1 ? undefined : 0;
             },
@@ -199,9 +199,9 @@ export function getAbapOnPremQuestions(
     if (getHostEnvironment() === hostEnvironment.cli) {
         questions.push({
             when: async (answers: AbapOnPremAnswers): Promise<boolean> => {
-                if (!errorHandler.hasError(true) && answers.selectedService && answers.systemUrl) {
+                if (!errorHandler.hasError(true) && answers.serviceSelection && answers.systemUrl) {
                     const result = await getServiceDetails(
-                        answers.selectedService,
+                        answers.serviceSelection,
                         answers.systemUrl,
                         connectValidator
                     );
