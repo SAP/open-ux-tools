@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.22.4
+
+### Patch Changes
+
+-   9ea58ad4: fix: Release version of @sap-ux/project-access with filterDataSourcesByType
+
 ## 1.22.3
 
 ### Patch Changes
