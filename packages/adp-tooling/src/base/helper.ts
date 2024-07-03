@@ -1,8 +1,8 @@
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { DescriptorVariant, AdpPreviewConfig } from '../types';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { ManifestNamespace } from '@sap-ux/project-access';
-import { getManifest } from './abap'
+import type { ManifestNamespace } from '@sap-ux/project-access';
+import { getManifest } from './abap';
 import { readFileSync, existsSync, readdirSync } from 'fs';
 import { join, sep, isAbsolute } from 'path';
 import { UI5Config } from '@sap-ux/ui5-config';
@@ -109,7 +109,7 @@ export async function getAdpConfig(basePath: string, yamlPath: string): Promise<
     return adp;
 }
 
-type DataSources = Record<string, ManifestNamespace.DataSource>
+type DataSources = Record<string, ManifestNamespace.DataSource>;
 
 /**
  * Returns the Adaptation Project configuration, throws an error if not found.
@@ -119,7 +119,11 @@ type DataSources = Record<string, ManifestNamespace.DataSource>
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<DataSources>} data sources from base application manifest
  */
-export async function getManifestDataSources(reference: string, adpConfig: AdpPreviewConfig, logger: ToolsLogger ): Promise<DataSources> {
+export async function getManifestDataSources(
+    reference: string,
+    adpConfig: AdpPreviewConfig,
+    logger: ToolsLogger
+): Promise<DataSources> {
     const manifest = await getManifest(reference, adpConfig, logger);
     const dataSources = manifest['sap.app'].dataSources;
     if (!dataSources) {

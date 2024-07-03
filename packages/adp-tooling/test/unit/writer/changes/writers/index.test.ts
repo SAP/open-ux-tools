@@ -12,7 +12,9 @@ import type {
     AnnotationsData,
     ComponentUsagesData,
     DataSourceData,
-    InboundData
+    InboundData,
+    DescriptorVariant,
+    AddAnnotationsAnswers
 } from '../../../../../src';
 import {
     AnnotationsWriter,
@@ -47,21 +49,30 @@ describe('AnnotationsWriter', () => {
 
     it('should correctly construct content and write annotation change', async () => {
         const mockData: AnnotationsData = {
-            annotation: {
-                dataSource: '/sap/opu/odata/source',
-                filePath: '/mock/path/to/annotation/file.xml',
-                fileName: 'mockAnnotation.xml'
-            },
-            projectData: { namespace: 'apps/mock', layer: 'VENDOR', id: 'mockId' } as AdpProjectData,
-            timestamp: Date.now(),
-            isInternalUsage: false
+            variant: {
+                layer: 'CUSTOMER_BASE',
+                reference: 'mock.reference',
+                id: 'adp.mock.variant',
+                namespace: 'apps/adp.mock.variant'
+            } as DescriptorVariant,
+            answers: {
+                id: '/sap/opu/odata/source',
+                fileSelectOption: 0,
+                filePath: '/mock/path/to/annotation/file.xml'
+            } as AddAnnotationsAnswers
         };
 
         const writer = new AnnotationsWriter({} as Editor, mockProjectPath);
 
         await writer.write(mockData);
 
-        expect(writeAnnotationChangeMock).toHaveBeenCalledWith(mockProjectPath, mockData, expect.any(Object), {});
+        expect(writeAnnotationChangeMock).toHaveBeenCalledWith(
+            mockProjectPath,
+            expect.any(Number),
+            mockData,
+            expect.any(Object),
+            {}
+        );
     });
 });
 

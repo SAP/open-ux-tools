@@ -64,7 +64,7 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
     async write(data: AnnotationsData): Promise<void> {
         const { variant } = data;
         data.fileName = this.getAnnotationFileName(data);
-        if(data.answers.filePath) {
+        if (data.answers.filePath) {
             data.answers.filePath = isAbsolute(data.answers.filePath)
                 ? data.answers.filePath
                 : path.join(this.projectPath, data.answers.filePath);
