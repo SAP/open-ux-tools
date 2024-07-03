@@ -1,19 +1,15 @@
 import type { Command } from 'commander';
-import type { AdpPreviewConfig, PromptDefaults } from '@sap-ux/adp-tooling';
 import {
     generateChange,
     ChangeType,
     getPromptsForAddAnnotationsToOData,
-    getManifest,
-    isCFEnvironment,
+    getAdpConfig,
+    getManifestDataSources,
     getVariant
 } from '@sap-ux/adp-tooling';
-import { join, isAbsolute } from 'path';
 import { getLogger, traceChanges } from '../../tracing';
-import { readFileSync } from 'fs';
-import { UI5Config } from '@sap-ux/ui5-config';
 import { promptYUIQuestions } from '../../common';
-import { getAppType } from '@sap-ux/project-access';
+import { validateAdpProject } from '../../validation/validation'
 
 let loginAttempts = 3;
 
@@ -27,7 +23,7 @@ export function addChangeDataSourceCommand(cmd: Command): void {
         .option('-s, --simulate', 'simulate only do not write or install')
         .option('-c, --config <string>', 'Path to project configuration file in YAML format', 'ui5.yaml')
         .action(async (path, options) => {
-            await addAnnotationsToOdata(path, { ...options }, !!options.simulate, options.config);
+            await addAnnotationsToOdata(path, !!options.simulate, options.config);
         });
 }
 
@@ -41,7 +37,6 @@ export function addChangeDataSourceCommand(cmd: Command): void {
  */
 async function addAnnotationsToOdata(
     basePath: string,
-    defaults: PromptDefaults,
     simulate: boolean,
     yamlPath: string
 ): Promise<void> {
@@ -50,25 +45,12 @@ async function addAnnotationsToOdata(
         if (!basePath) {
             basePath = process.cwd();
         }
-        if ((await getAppType(basePath)) !== 'Fiori Adaptation') {
-            throw new Error('This command can only be used for an Adaptation Project');
-        }
-        if (isCFEnvironment(basePath)) {
-            throw new Error('Changing data source is not supported for CF projects.');
-        }
+        validateAdpProject(basePath);
         const variant = getVariant(basePath);
-        const ui5ConfigPath = isAbsolute(yamlPath) ? yamlPath : join(basePath, yamlPath);
-        const ui5Conf = await UI5Config.newInstance(readFileSync(ui5ConfigPath, 'utf-8'));
-        const adp = ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('fiori-tools-preview')?.configuration?.adp;
-        if (!adp) {
-            throw new Error('No system configuration found in ui5.yaml');
-        }
-        const manifest = await getManifest(variant.reference, adp, logger);
-        const dataSources = manifest['sap.app'].dataSources;
-        if (!dataSources) {
-            throw new Error('No data sources found in the manifest');
-        }
+        const adpConfig = await getAdpConfig(basePath, yamlPath);
+        const dataSources = await getManifestDataSources(variant.reference, adpConfig, logger);
         const answers = await promptYUIQuestions(getPromptsForAddAnnotationsToOData(basePath, dataSources), false);
+
         const fs = await generateChange<ChangeType.ADD_ANNOTATIONS_TO_ODATA>(
             basePath,
             ChangeType.ADD_ANNOTATIONS_TO_ODATA,
@@ -88,7 +70,7 @@ async function addAnnotationsToOdata(
         if (error.response?.status === 401 && loginAttempts) {
             loginAttempts--;
             logger.error(`Authentication failed. Please check your credentials. Login attempts left: ${loginAttempts}`);
-            await addAnnotationsToOdata(basePath, defaults, simulate, yamlPath);
+            await addAnnotationsToOdata(basePath, simulate, yamlPath);
             return;
         }
         logger.debug(error);

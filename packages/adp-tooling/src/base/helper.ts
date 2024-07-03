@@ -1,7 +1,11 @@
 import type { UI5FlexLayer } from '@sap-ux/project-access';
-import type { DescriptorVariant } from '../types';
+import type { DescriptorVariant, AdpPreviewConfig } from '../types';
+import type { ToolsLogger } from '@sap-ux/logger';
+import { ManifestNamespace } from '@sap-ux/project-access';
+import { getManifest } from './abap'
 import { readFileSync, existsSync, readdirSync } from 'fs';
-import { join, sep } from 'path';
+import { join, sep, isAbsolute } from 'path';
+import { UI5Config } from '@sap-ux/ui5-config';
 /**
  * Checks if the input is a non-empty string.
  *
@@ -83,4 +87,43 @@ export function checkDuplicateFile(filePath: string, checkDirectory: string): bo
     }
     const files = readdirSync(checkDirectory);
     return !!files.find((file) => file === fileName);
+}
+
+/**
+ * Returns the Adaptation Project configuration, throws an error if not found.
+ *
+ * @param {string} basePath - The path to the Adaptation Project.
+ * @param {string} yamlPath - The path to yaml configuration file.
+ * @returns {Promise<AdpPreviewConfig>} the adp configuration
+ */
+export async function getAdpConfig(basePath: string, yamlPath: string): Promise<AdpPreviewConfig> {
+    const ui5ConfigPath = isAbsolute(yamlPath) ? yamlPath : join(basePath, yamlPath);
+    const ui5Conf = await UI5Config.newInstance(readFileSync(ui5ConfigPath, 'utf-8'));
+    const customMiddlerware =
+        ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('fiori-tools-preview') ??
+        ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('preview-middleware');
+    const adp = customMiddlerware?.configuration?.adp;
+    if (!adp) {
+        throw new Error('No system configuration found in ui5.yaml');
+    }
+    return adp;
+}
+
+type DataSources = Record<string, ManifestNamespace.DataSource>
+
+/**
+ * Returns the Adaptation Project configuration, throws an error if not found.
+ *
+ * @param {string} reference - The base application id.
+ * @param {AdpPreviewConfig} adpConfig - The Adaptation Project configuration.
+ * @param {ToolsLogger} logger - The logger.
+ * @returns {Promise<DataSources>} data sources from base application manifest
+ */
+export async function getManifestDataSources(reference: string, adpConfig: AdpPreviewConfig, logger: ToolsLogger ): Promise<DataSources> {
+    const manifest = await getManifest(reference, adpConfig, logger);
+    const dataSources = manifest['sap.app'].dataSources;
+    if (!dataSources) {
+        throw new Error('No data sources found in the manifest');
+    }
+    return dataSources;
 }
