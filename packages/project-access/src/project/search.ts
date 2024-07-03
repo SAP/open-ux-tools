@@ -229,7 +229,11 @@ async function findCapProjectRoot(path: string): Promise<string | null> {
                     return projectRoot;
                 }
             }
-            projectRoot = dirname(projectRoot);
+            const projectRootDirname = dirname(projectRoot);
+            if (projectRootDirname === projectRoot) {
+                break;
+            }
+            projectRoot = projectRootDirname;
         }
     } catch {
         // No project root can be found at parent folder.
