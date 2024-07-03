@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.11.12
+
+### Patch Changes
+
+-   fa4c088c: fix: Incorrect change mapping for 'reference' property for Adaptation Project's writers
+
 ## 0.11.11
 
 ### Patch Changes
