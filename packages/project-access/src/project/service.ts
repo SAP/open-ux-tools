@@ -88,7 +88,7 @@ function getServiceSpecification(
  * Filters data sources by type.
  *
  * @param {Record<string, ManifestNamespace.DataSource>} dataSources - Data sources from the manifest.
- * @param {string} type - Data source type.
+ * @param {string} type - Data source type to filter by.
  * @returns {Record<string, ManifestNamespace.DataSource>} Data source IDs.
  */
 export function filterDataSourcesByType(
