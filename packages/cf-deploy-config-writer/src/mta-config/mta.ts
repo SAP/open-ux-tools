@@ -25,7 +25,9 @@ import {
     UI5Destination,
     MTAAPIDestination,
     UI5StandaloneModuleDestination,
-    ServiceAPIRequires
+    ServiceAPIRequires,
+    deployMode,
+    enableParallelDeployments
 } from '../constants';
 import { t } from '../i18n';
 import type { Logger } from '@sap-ux/logger';
@@ -403,10 +405,17 @@ export class MtaConfig {
      * Updates the mta parameters i.e. build-parameters -> before-all.
      *
      * @param parameters
+     * @param applyDefaults
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
-    public async updateParameters(parameters: mta.Parameters): Promise<void> {
-        await this.mta.updateParameters(parameters);
+    public async updateParameters(parameters?: mta.Parameters, applyDefaults = true): Promise<void> {
+        let params = parameters ?? (await this.mta.getParameters());
+        if (applyDefaults) {
+            params = { ...(params || {}), ...{} } as mta.Parameters;
+            params[deployMode] = 'html5-repo';
+            params[enableParallelDeployments] = true;
+        }
+        await this.mta.updateParameters(params);
     }
 
     /**
@@ -547,12 +556,12 @@ export class MtaConfig {
      * Append ABAP service to the modules and resources.
      *
      * @param newAbapServiceChoice ABAP service name selected from user input
-     * @param {string} newAbapServiceChoice.label
-     * @param {string} newAbapServiceChoice.service
+     * @param {string} serviceName
+     * @param {string} service
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
-    public async addAbapService(newAbapServiceChoice: { label: string; service: string }): Promise<void> {
-        const newResourceName = `${this.prefix}-abap-${newAbapServiceChoice.label}`;
+    public async addAbapService(serviceName: string, service: string): Promise<void> {
+        const newResourceName = `${this.prefix}-abap-${serviceName}`;
         const cfExistingSrvResource: CloudFoundryServiceType = 'org.cloudfoundry.existing-service';
 
         const router = this.modules.get('approuter.nodejs');
@@ -566,9 +575,9 @@ export class MtaConfig {
             name: newResourceName,
             type: cfExistingSrvResource,
             parameters: {
-                'service-name': newAbapServiceChoice.label,
+                'service-name': serviceName,
                 protocol: ['ODataV2'],
-                service: newAbapServiceChoice.service,
+                service,
                 'service-plan': '16_abap_64_db'
             }
         };

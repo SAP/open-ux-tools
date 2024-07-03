@@ -1,7 +1,8 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { ConsoleTransport, ToolsLogger, LogLevel } from '@sap-ux/logger';
-import { generate } from '../../src';
+import { generate, generateRootConfig } from '../../src';
+import { CFAppConfig, CFBaseConfig } from '../../src/types';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -26,8 +27,11 @@ describe('CF Writer', () => {
     describe('Generate', () => {
         test('Generate deployment configs', async () => {
             const fs = await generate(
-                '/Users/i313149/Documents/tools-suite-test/testmtagenerate/',
-                { addManagedApprouter: true, destination: 'testme' },
+                {
+                    appPath: '/Users/i313149/Documents/tools-suite-test/testmtagenerate/',
+                    addManagedApprouter: true,
+                    destination: 'testme'
+                } as CFAppConfig,
                 undefined,
                 logger
             );
@@ -35,9 +39,12 @@ describe('CF Writer', () => {
             expect(true).toEqual(true);
         });
         test('Generate deployment configs -standalone', async () => {
-            const fs = await generate(
-                '/Users/i313149/Documents/tools-suite-test/cap-fiori-mta-standalone',
-                { addManagedApprouter: true, destination: 'fiori-default-srv-api' },
+            const fs = await generateRootConfig(
+                {
+                    appPath: '/Users/i313149/Documents/tools-suite-test/cap-fiori-mta-standalone',
+                    mtaId: 'teststandalone',
+                    routerType: 'standalone'
+                } as CFBaseConfig,
                 undefined,
                 logger
             );

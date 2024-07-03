@@ -4,7 +4,8 @@ import { t } from './i18n';
 const cannotFindBinary = (bin: string, pkg: string): string => t('error.cannotFindBinary', { bin, pkg });
 
 export const WelcomeFile = 'welcomeFile';
-export const XSAppJson = 'xs-app.json';
+export const XSAppFile = 'xs-app.json';
+export const XSSecurityFile = 'xs-security.json';
 export const NoAuthType = 'NoAuthentication';
 export const MTABuildResult = 'build-result';
 export const MTABuildParams = 'build-parameters';
@@ -19,6 +20,7 @@ export const MTAYamlFile = 'mta.yaml';
 export const RouterModule = 'router';
 export const CloudFoundry = 'cf';
 export const deployMode = 'deploy_mode';
+export const enableParallelDeployments = 'enable-parallel-deployments';
 export const CDSExecutable = 'cds';
 export const CDSPackage = '@sap/cds-dk';
 export const MTAExecutable = 'mta';

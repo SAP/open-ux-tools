@@ -1,0 +1,7 @@
+{
+  "xsappname": "<%- id.slice(0, 100) %>",
+  "tenant-mode": "dedicated",
+  "description": "Security profile of called application",
+  "scopes": [],
+  "role-templates": []
+}

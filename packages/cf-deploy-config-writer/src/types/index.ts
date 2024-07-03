@@ -26,28 +26,45 @@ export type MTADestinationType = Destination & {
     ServiceKeyName: string;
     'sap.cloud.service': string;
 };
-export interface CFWriterConfig {
+export enum RouterModuleType {
+    Standard = 'Standard',
+    Managed = 'Managed'
+}
+export interface MTABaseConfig {
+    mtaId: string;
+    mtaPath: string;
+    mtaDescription?: string;
+    mtaVersion?: string;
+}
+export interface CFBaseConfig extends MTABaseConfig {
+    routerType: RouterModuleType;
+    addConnectivityService?: boolean;
+    addDestinationService?: boolean;
+    useAbapDirectSrvBinding?: boolean;
+    abapServiceName?: string;
+    abapService?: string;
+}
+export interface CFAppConfig {
+    appPath: string;
     addManagedApprouter?: boolean;
     destination?: string;
     apiHubConfig?: ApiHubConfig;
     addMTADestination?: boolean;
+    serviceHost?: string; // Data service host
 }
-export interface CFConfig extends CFWriterConfig {
-    appPath: string;
-    capRoot: string;
-    isCap: boolean;
-    rootPath: string;
-    lcapMode: boolean;
-    useAbapDirectSrvBinding: boolean;
-    serviceBase: string;
-    servicePath: string;
-    firstServicePathSegment: string;
+export interface CFConfig extends CFAppConfig, CFBaseConfig {
     appId: string;
-    isFullUrlDest: boolean;
-    destinationAuthType: Authentication;
+    rootPath: string;
+    serviceBase: string;
+    capRoot?: string;
+    isCap?: boolean;
+    lcapMode?: boolean;
+    servicePath?: string;
+    firstServicePathSegment?: string;
+    isFullUrlDest?: boolean;
+    destinationAuthType?: Authentication;
     cloudServiceName?: string;
-    mtaId?: string;
-    isMtaRoot: boolean;
+    isMtaRoot?: boolean;
 }
 
 export const enum ApiHubType {
