@@ -1,5 +1,117 @@
 # @sap-ux/preview-middleware
 
+## 0.15.8
+
+### Patch Changes
+
+-   8f57ac28: i18n bindings validation fails for nested \*.properties files
+
+## 0.15.7
+
+### Patch Changes
+
+-   Updated dependencies [9ea58ad4]
+    -   @sap-ux/adp-tooling@0.11.13
+    -   @sap-ux/project-access@1.22.4
+
+## 0.15.6
+
+### Patch Changes
+
+-   Updated dependencies [fa4c088c]
+    -   @sap-ux/adp-tooling@0.11.12
+
+## 0.15.5
+
+### Patch Changes
+
+-   0e0c2864: Fix Error message regression
+
+## 0.15.4
+
+### Patch Changes
+
+-   Updated dependencies [73c741ef]
+    -   @sap-ux/adp-tooling@0.11.11
+
+## 0.15.3
+
+### Patch Changes
+
+-   Updated dependencies [c442d2bc]
+    -   @sap-ux/adp-tooling@0.11.10
+
+## 0.15.2
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.9
+
+## 0.15.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.8
+
+## 0.15.0
+
+### Minor Changes
+
+-   da2704c7: Add support for using the preview in CAP projects
+
+## 0.14.0
+
+### Minor Changes
+
+-   6ad68964: Enhanced API to support getting list of virtual files and their content
+
+## 0.13.74
+
+### Patch Changes
+
+-   Updated dependencies [65bfb244]
+    -   @sap-ux/adp-tooling@0.11.7
+
+## 0.13.73
+
+### Patch Changes
+
+-   fb2ff8d6: Reduce eslint warnings
+
+## 0.13.72
+
+### Patch Changes
+
+-   1a1baeb0: Revert "feat(fiori-elements-writer): remove `sap.fe.templates` dependency
+    -   @sap-ux/adp-tooling@0.11.6
+    -   @sap-ux/project-access@1.22.3
+
+## 0.13.71
+
+### Patch Changes
+
+-   899cdb23: FIX: enabled running the middleware with karma
+
+## 0.13.70
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.5
+
+## 0.13.69
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.4
+
+## 0.13.68
+
+### Patch Changes
+
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/project-access@1.22.2
+    -   @sap-ux/adp-tooling@0.11.3
+
 ## 0.13.67
 
 ### Patch Changes
