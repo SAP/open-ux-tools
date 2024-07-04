@@ -31,7 +31,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     if (ui5AppConfig.appOptions?.generateIndex === false) {
         ignore.push('**/webapp/index.html');
     }
-    const isEdmxProjectType = ui5AppConfig.app.projectType ===  'EDMXBackend';
+    const isEdmxProjectType = ui5AppConfig.app.projectType === 'EDMXBackend';
     if (!isEdmxProjectType) {
         // ignore the ui5-local.yaml file for CAP applications
         ignore.push('**/ui5-local.yaml');
