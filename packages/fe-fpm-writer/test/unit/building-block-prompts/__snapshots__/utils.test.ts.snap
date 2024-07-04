@@ -8,6 +8,14 @@ Object {
 }
 `;
 
+exports[`utils -  annotation service -  getAnnotationPathQualifiers - existing annotations, absolute binding context path, use namespace 1`] = `
+Object {
+  "@UI.Chart": "@com.sap.vocabularies.UI.v1.Chart",
+  "@UI.LineItem": "@com.sap.vocabularies.UI.v1.LineItem",
+  "@UI.SelectionFields": "@com.sap.vocabularies.UI.v1.SelectionFields",
+}
+`;
+
 exports[`utils -  annotation service -  getAnnotationPathQualifiers - existing annotations, relative binding context path 1`] = `
 Object {
   "to_CustomerBankDetails/@UI.Chart#C_CustomerBankDetailsOPType": "to_CustomerBankDetails/@UI.Chart#C_CustomerBankDetailsOPType",
