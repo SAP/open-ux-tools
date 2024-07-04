@@ -181,6 +181,25 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 appOptions: { generateIndex: true }
             },
             settings: {}
+        },
+        {
+            name: 'basic_cap_typescript',
+            config: {
+                ...commonConfig,
+                app: {
+                    ...commonConfig.app,
+                    projectType: 'CAPNodejs'
+                },
+                service: {
+                    ...commonConfig.service,
+                    type: ServiceType.CDS
+                },
+                appOptions: { 
+                    generateIndex: true,
+                    typescript: true
+                }
+            },
+            settings: {}
         }
     ];
 

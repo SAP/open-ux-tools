@@ -1,5 +1,17 @@
 # @sap-ux/axios-extension
 
+## 1.14.4
+
+### Patch Changes
+
+-   4492fe10: fix for ui service generation response parsing
+
+## 1.14.3
+
+### Patch Changes
+
+-   d5d3626c: chore - Update to "qs": "6.11.0"
+
 ## 1.14.2
 
 ### Patch Changes

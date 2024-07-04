@@ -12,7 +12,8 @@ import {
     v2Service,
     projectChecks,
     updatePackageJSONDependencyToUseLocalPath,
-    v4TemplateSettingsTreeTable
+    v4TemplateSettingsTreeTable,
+    getTestData
 } from './common';
 import { ServiceType, type OdataService } from '@sap-ux/odata-service-writer';
 
@@ -115,6 +116,31 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                         ...feBaseConfig('lrop_v4_addtests_cds').appOptions,
                         generateIndex: true,
                         addTests: true
+                    }
+                }),
+                app: {
+                    ...feBaseConfig('lrop_v4_addtests_cds').app,
+                    projectType: 'CAPNodejs'
+                },
+                service: {
+                    ...v4Service,
+                    metadata: undefined,
+                    type: ServiceType.CDS
+                }
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lrop_v4_addtests_cds_typescript',
+            config: {
+                ...Object.assign(feBaseConfig('lrop_v4_addtests_cds'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v4TemplateSettings
+                    },
+                    appOptions: {
+                        ...feBaseConfig('lrop_v4_addtests_cds').appOptions,
+                        addTests: true,
+                        typescript: true
                     }
                 }),
                 app: {
@@ -331,7 +357,28 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     version: '4'
                 } as unknown as OdataService
             } as FioriElementsApp<LROPSettings>
-        }
+        },
+        {
+            name: 'lrop_v4_annotation_reuse_lib',
+            config: {
+                ...Object.assign(feBaseConfig('lrop_v4_annotation_reuse_lib'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v4TemplateSettings
+                    },
+                    appOptions: {
+                        ...feBaseConfig('lrop_v4_annotation_reuse_lib').appOptions,
+                        generateIndex: true,
+                        addTests: true
+                    }
+                }),
+                service: {
+                    ...v4Service,
+                    metadata: getTestData('annotation_v4', 'metadata'),
+                    type: ServiceType.EDMX
+                }
+            } as FioriElementsApp<LROPSettings>
+        },
     ];
 
     beforeAll(() => {

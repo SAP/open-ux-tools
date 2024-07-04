@@ -127,7 +127,7 @@ export class ChangeService {
 
                     const error = getError(exception);
                     // eslint-disable-next-line  @typescript-eslint/no-unsafe-call
-                    const modifiedMessage = modifyRTAErrorMessage(error.message, id, name);
+                    const modifiedMessage = modifyRTAErrorMessage(error.toString(), id, name);
                     const errorMessage =
                         modifiedMessage || `RTA Exception applying expression "${action.payload.value}"`;
                     const propertyChangeFailedAction = propertyChangeFailed({ ...action.payload, errorMessage });

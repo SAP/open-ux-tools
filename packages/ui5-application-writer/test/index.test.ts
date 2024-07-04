@@ -6,12 +6,6 @@ import type { Ui5App } from '../src';
 import { generate, isTypescriptEnabled, enableTypescript } from '../src';
 import { updatePackageJSONDependencyToUseLocalPath } from './common';
 
-// Function to check if `ui5-local.yaml` or `.gitignore` exists in `fs.dump(projectDir)`
-function hasFileInFsDump(dump: any, fileName: string): boolean {
-    const files = Object.keys(dump);
-    return files.includes(fileName);
-}
-
 describe('UI5 templates', () => {
     const fs = create(createStorage());
     const debug = !!process.env['UX_DEBUG'];
@@ -115,10 +109,10 @@ describe('UI5 templates', () => {
         ui5AppConfig.app.projectType = 'CAPNodejs';
         const fs = await generate(projectDir, { ...ui5AppConfig, ui5: { minUI5Version: '1.96.1' } });
         // Check if ui5-local.yaml does not exist
-        expect(hasFileInFsDump(fs.dump(projectDir), 'ui5-local.yaml')).toBe(false);
+        expect(fs.exists(join(projectDir, 'ui5-local.yaml'))).toBe(false);
         // Check if gitignore does not exist
-        expect(hasFileInFsDump(fs.dump(projectDir), '.gitignore')).toBe(false);
+        expect(fs.exists(join(projectDir, '.gitignore'))).toBe(false);
         // Check if ui5.yaml exist
-        expect(hasFileInFsDump(fs.dump(projectDir), 'ui5.yaml')).toBe(true);
+        expect(fs.exists(join(projectDir, 'ui5.yaml'))).toBe(true);
     });
 });
