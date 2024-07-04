@@ -66,20 +66,57 @@ describe('utils - ', () => {
             const entityTypes = await getEntityTypes(projectProvider);
             expect(entityTypes.length).toBe(30);
         });
-        test('getAnnotationPathQualifiers - existing annotations', async () => {
-            const annotationPathQualifiers = await getAnnotationPathQualifiers(projectProvider, ENTITY_TYPE, [
-                UIAnnotationTerms.Chart,
-                UIAnnotationTerms.LineItem,
-                UIAnnotationTerms.SelectionFields
-            ]);
+
+        test('getAnnotationPathQualifiers - existing annotations, absolute binding context path', async () => {
+            const annotationPathQualifiers = await getAnnotationPathQualifiers(
+                projectProvider,
+                ENTITY_TYPE,
+                [UIAnnotationTerms.Chart, UIAnnotationTerms.LineItem, UIAnnotationTerms.SelectionFields],
+                { type: 'absolute' }
+            );
             expect(annotationPathQualifiers).toMatchSnapshot();
         });
-        test('getAnnotationPathQualifiers - non existing annotations', async () => {
-            const annotationPathQualifiers = await getAnnotationPathQualifiers(projectProvider, '', [
-                UIAnnotationTerms.SelectionVariant
-            ]);
+
+        test('getAnnotationPathQualifiers - non existing annotations, absolute binding context path', async () => {
+            const annotationPathQualifiers = await getAnnotationPathQualifiers(
+                projectProvider,
+                '',
+                [UIAnnotationTerms.SelectionVariant],
+                { type: 'absolute' }
+            );
             expect(annotationPathQualifiers).toMatchObject({});
         });
+
+        test('getAnnotationPathQualifiers - existing annotations, relative binding context path', async () => {
+            const annotationPathQualifiers = await getAnnotationPathQualifiers(
+                projectProvider,
+                ENTITY_TYPE,
+                [UIAnnotationTerms.Chart, UIAnnotationTerms.LineItem, UIAnnotationTerms.SelectionFields],
+                { type: 'relative' }
+            );
+            expect(annotationPathQualifiers).toMatchSnapshot();
+        });
+
+        test('getAnnotationPathQualifiers - non existing annotations, relative binding context path', async () => {
+            const annotationPathQualifiers = await getAnnotationPathQualifiers(
+                projectProvider,
+                '',
+                [UIAnnotationTerms.SelectionVariant],
+                { type: 'relative' }
+            );
+            expect(annotationPathQualifiers).toMatchObject({});
+        });
+
+        test('getAnnotationPathQualifiers - existing annotations, relative binding context path, filter isCollection', async () => {
+            const annotationPathQualifiers = await getAnnotationPathQualifiers(
+                projectProvider,
+                ENTITY_TYPE,
+                [UIAnnotationTerms.LineItem],
+                { type: 'relative', isCollection: true }
+            );
+            expect(annotationPathQualifiers).toMatchSnapshot();
+        });
+
         test('getAnnotationTermAlias', async () => {
             const alias = getAnnotationTermAlias(UIAnnotationTerms.LineItem).join('.');
             expect(alias).toBe('UI.LineItem');
@@ -228,6 +265,9 @@ describe('utils - ', () => {
                     },
                   ],
                   "default": undefined,
+                  "dependantPromptNames": Array [
+                    "buildingBlockData.metaPath.qualifier",
+                  ],
                   "message": "bindingContext",
                   "name": "bindingContextType",
                   "selectType": "static",

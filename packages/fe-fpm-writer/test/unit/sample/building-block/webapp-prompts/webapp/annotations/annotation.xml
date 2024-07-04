@@ -53,6 +53,11 @@
                 </Annotation>
             </Annotations>
             <Annotations Target="C_CUSTOMER_OP_SRV.C_CustomerBankDetailsOPType">
+            <Annotation Term="UI.LineItem" Qualifier="test">
+                    <Collection>
+                        <PropertyPath>Dummy</PropertyPath>
+                    </Collection>
+                </Annotation>
                 <Annotation Term="UI.Chart" Qualifier="C_CustomerBankDetailsOPType">
                     <Record Type="UI.ChartDefinitionType">
                         <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Area" />

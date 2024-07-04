@@ -53,6 +53,27 @@ Object {
       "validate": [Function],
     },
     Object {
+      "choices": Array [
+        Object {
+          "name": "Relative",
+          "value": "relative",
+        },
+        Object {
+          "name": "Absolute",
+          "value": "absolute",
+        },
+      ],
+      "default": "relative",
+      "dependantPromptNames": Array [
+        "buildingBlockData.metaPath.qualifier",
+      ],
+      "message": "Binding Context Path Type",
+      "name": "bindingContextType",
+      "required": true,
+      "selectType": "static",
+      "type": "list",
+    },
+    Object {
       "choices": [Function],
       "dependantPromptNames": Array [
         "buildingBlockData.metaPath.qualifier",
@@ -297,10 +318,6 @@ Array [
     "name": "@UI.Chart",
     "value": "@com.sap.vocabularies.UI.v1.Chart",
   },
-  Object {
-    "name": "to_CustomerBankDetails/@UI.Chart#C_CustomerBankDetailsOPType",
-    "value": "to_CustomerBankDetails/@com.sap.vocabularies.UI.v1.Chart#C_CustomerBankDetailsOPType",
-  },
 ]
 `;
 
@@ -476,6 +493,28 @@ Object {
       "required": true,
       "type": "input",
       "validate": [Function],
+    },
+    Object {
+      "choices": Array [
+        Object {
+          "name": "Relative",
+          "value": "relative",
+        },
+        Object {
+          "name": "Absolute",
+          "value": "absolute",
+        },
+      ],
+      "default": "relative",
+      "dependantPromptNames": Array [
+        "buildingBlockData.metaPath.qualifier",
+      ],
+      "groupId": "tableBuildingBlockProperties",
+      "message": "Binding Context Path Type",
+      "name": "bindingContextType",
+      "required": true,
+      "selectType": "static",
+      "type": "list",
     },
     Object {
       "choices": [Function],
@@ -778,6 +817,10 @@ Object {
     "errorMessage": "Please select a value",
     "isValid": false,
   },
+  "bindingContextType": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
   "buildingBlockData.filterBar": Object {
     "isValid": true,
   },
@@ -843,6 +886,10 @@ Object {
 exports[`Prompts validateAnswers Type "table", required fields validation 1`] = `
 Object {
   "aggregationPath": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+  "bindingContextType": Object {
     "errorMessage": "Please select a value",
     "isValid": false,
   },

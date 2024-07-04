@@ -1,11 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`utils -  annotation service -  getAnnotationPathQualifiers - existing annotations 1`] = `
+exports[`utils -  annotation service -  getAnnotationPathQualifiers - existing annotations, absolute binding context path 1`] = `
 Object {
   "@UI.Chart": "@UI.Chart",
   "@UI.LineItem": "@UI.LineItem",
   "@UI.SelectionFields": "@UI.SelectionFields",
+}
+`;
+
+exports[`utils -  annotation service -  getAnnotationPathQualifiers - existing annotations, relative binding context path 1`] = `
+Object {
   "to_CustomerBankDetails/@UI.Chart#C_CustomerBankDetailsOPType": "to_CustomerBankDetails/@UI.Chart#C_CustomerBankDetailsOPType",
+  "to_CustomerBankDetails/@UI.LineItem#test": "to_CustomerBankDetails/@UI.LineItem#test",
+}
+`;
+
+exports[`utils -  annotation service -  getAnnotationPathQualifiers - existing annotations, relative binding context path, filter isCollection 1`] = `
+Object {
+  "to_CustomerBankDetails/@UI.LineItem#test": "to_CustomerBankDetails/@UI.LineItem#test",
 }
 `;
 
