@@ -177,7 +177,7 @@ export class PromptsAPI {
         if (answers.buildingBlockData && buildingBlockType) {
             answers.buildingBlockData.buildingBlockType = buildingBlockType;
         }
-        const generator = PromptsGeneratorsMap[type];
+        const generator = PromptsGeneratorsMap.hasOwnProperty(type) ? PromptsGeneratorsMap[type] : undefined;
         return generator?.(this.basePath, answers, this.fs) ?? this.fs;
     }
 
@@ -194,7 +194,9 @@ export class PromptsAPI {
         if (answers.buildingBlockData && buildingBlockType) {
             answers.buildingBlockData.buildingBlockType = buildingBlockType;
         }
-        const codePreviewGenerator = PromptsCodePreviewMap[type];
+        const codePreviewGenerator = PromptsCodePreviewMap.hasOwnProperty(type)
+            ? PromptsCodePreviewMap[type]
+            : undefined;
         return codePreviewGenerator?.(this.basePath, answers) ?? '';
     }
 }
