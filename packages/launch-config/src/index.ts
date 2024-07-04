@@ -8,7 +8,11 @@ export {
 } from './launch-config-crud/common';
 export { convertOldLaunchConfigToFioriRun } from './launch-config-crud/modify';
 export { createLaunchConfigFile } from './launch-config-crud/create';
+export { createLaunchConfig } from './launch-config-crud-new/create';
 export { addFioriElementsLaunchConfig, updateFioriElementsLaunchConfig } from './launch-config-crud/update';
+export { updateLaunchConfig } from './launch-config-crud-new/update';
+export { deleteLaunchConfig } from './launch-config-crud-new/delete';
+
 export {
     getLaunchConfigFile,
     getLaunchConfigs,

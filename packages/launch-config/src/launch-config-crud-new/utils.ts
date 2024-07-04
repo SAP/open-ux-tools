@@ -74,6 +74,27 @@ export function getIndexOfArgument(args: Array<string>, arg: string): number {
 }
 
 /**
+ * Merges the new and the existing cli arguments of a run configuration.
+ *
+ * @param newArgs new cli arguments specified in the run config wizard.
+ * @param oldArgs existing cli arguments of a run configuration.
+ * @returns merged launch config arguments.
+ */
+export function mergeArgs(newArgs: string[] | undefined, oldArgs: string[] | undefined): string[] {
+    let mergedArgs: string[] = [];
+
+    if (newArgs && oldArgs) {
+        mergedArgs = mergedArgs.concat(newArgs);
+        const parsedOldArgs = parseArguments(oldArgs);
+        mergedArgs = mergedArgs.concat(parsedOldArgs['_'] as string[]);
+
+        return mergedArgs;
+    } else {
+        return mergedArgs;
+    }
+}
+
+/**
  * Returns the launch config object.
  *
  * @param name - name of the launch config.
