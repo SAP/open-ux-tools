@@ -71,7 +71,8 @@ export const feBaseConfig = (
             sourceTemplate: {
                 version: '1.2.3-test',
                 id: 'test-fe-template'
-            }
+            },
+            projectType: 'EDMXBackend'
         },
         appOptions: {
             loadReuseLibs: true
