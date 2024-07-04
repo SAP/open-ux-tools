@@ -18,7 +18,7 @@ let loginAttempts = 3;
  *
  * @param {Command} cmd - The command to add the add annotations-to-odata sub-command to.
  */
-export function addChangeDataSourceCommand(cmd: Command): void {
+export function addAnnotationsToOdataCommand(cmd: Command): void {
     cmd.command('annotations-to-odata [path]')
         .option('-s, --simulate', 'simulate only do not write or install')
         .option('-c, --config <string>', 'Path to project configuration file in YAML format', 'ui5.yaml')

@@ -2,7 +2,7 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { Command } from 'commander';
-import { addChangeDataSourceCommand } from '../../../../src/cli/change/change-data-source';
+import { addAnnotationsToOdataCommand } from '../../../../src/cli/add/annotations-to-odata';
 import * as tracer from '../../../../src/tracing/trace';
 import * as common from '../../../../src/common';
 import * as logger from '../../../../src/tracing/logger';
@@ -59,7 +59,7 @@ jest.mock('@sap-ux/system-access', () => {
     };
 });
 
-describe('change/data-source', () => {
+describe('add/annotations-to-odata', () => {
     let loggerMock: ToolsLogger;
     const memFsEditorMock = {
         create: jest.fn().mockReturnValue({
@@ -71,7 +71,7 @@ describe('change/data-source', () => {
     const generateChangeSpy = jest
         .spyOn(adp, 'generateChange')
         .mockResolvedValue(memFsEditorMock as Partial<Editor> as Editor);
-    const getArgv = (...arg: string[]) => ['', '', 'data-source', ...arg];
+    const getArgv = (...arg: string[]) => ['', '', 'annotations-to-odata', ...arg];
     const mockAnswers = {
         targetODataSource: 'mainService',
         targetODataUrl: '/sap/opu/odata/test',
@@ -99,13 +99,13 @@ describe('change/data-source', () => {
         jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
     });
 
-    test('change-data-source - CF environment', async () => {
+    test('annotations-to-odata - CF environment', async () => {
         jest.spyOn(validations, 'validateAdpProject').mockRejectedValueOnce(
             new Error('This command is not supported for CF projects.')
         );
 
-        const command = new Command('change-data-source');
-        addChangeDataSourceCommand(command);
+        const command = new Command('annotations-to-odata');
+        addAnnotationsToOdataCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
         expect(loggerMock.debug).toBeCalled();
@@ -113,11 +113,11 @@ describe('change/data-source', () => {
         expect(generateChangeSpy).not.toBeCalled();
     });
 
-    test('change-data-source - no system configuration', async () => {
+    test('annotations-to-odata - no system configuration', async () => {
         jest.spyOn(adp, 'getAdpConfig').mockRejectedValueOnce(new Error('No system configuration found in ui5.yaml'));
 
-        const command = new Command('change-data-source');
-        addChangeDataSourceCommand(command);
+        const command = new Command('annotations-to-odata');
+        addAnnotationsToOdataCommand(command);
         await command.parseAsync(getArgv());
 
         expect(loggerMock.debug).toBeCalled();
@@ -125,13 +125,13 @@ describe('change/data-source', () => {
         expect(generateChangeSpy).not.toBeCalled();
     });
 
-    test('change-data-source - not an Adaptation Project', async () => {
+    test('annotations-to-odata - not an Adaptation Project', async () => {
         jest.spyOn(validations, 'validateAdpProject').mockRejectedValueOnce(
             new Error('This command can only be used for an Adaptation Project')
         );
 
-        const command = new Command('change-data-source');
-        addChangeDataSourceCommand(command);
+        const command = new Command('annotations-to-odata');
+        addAnnotationsToOdataCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
         expect(loggerMock.debug).toBeCalled();
@@ -139,7 +139,7 @@ describe('change/data-source', () => {
         expect(generateChangeSpy).not.toBeCalled();
     });
 
-    test('change data-source - preview-middleware custom configuration', async () => {
+    test('annotations-to-odata - preview-middleware custom configuration', async () => {
         jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
             findCustomMiddleware: jest.fn().mockImplementation((customMiddleware: string) => {
                 if (customMiddleware === 'fiori-tools-preview') {
@@ -159,16 +159,16 @@ describe('change/data-source', () => {
         } as Partial<UI5Config> as UI5Config);
 
         const command = new Command('data-source');
-        addChangeDataSourceCommand(command);
+        addAnnotationsToOdataCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
         expect(promptYUIQuestionsSpy).toBeCalled();
         expect(generateChangeSpy).toBeCalled();
     });
 
-    test('change data-source - --simulate', async () => {
+    test('annotations-to-odata - --simulate', async () => {
         const command = new Command('data-source');
-        addChangeDataSourceCommand(command);
+        addAnnotationsToOdataCommand(command);
         await command.parseAsync(getArgv(appRoot, '--simulate'));
 
         expect(promptYUIQuestionsSpy).toBeCalled();
@@ -176,14 +176,14 @@ describe('change/data-source', () => {
         expect(traceSpy).toBeCalled();
     });
 
-    test('change data-source - authentication error', async () => {
+    test('annotations-to-odata - authentication error', async () => {
         jest.spyOn(adp, 'getManifestDataSources').mockRejectedValueOnce({
             message: '401:Unauthorized',
             response: { status: 401 }
         });
 
         const command = new Command('data-source');
-        addChangeDataSourceCommand(command);
+        addAnnotationsToOdataCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
         expect(loggerMock.error).toBeCalledWith('401:Unauthorized');
@@ -195,13 +195,13 @@ describe('change/data-source', () => {
         expect(generateChangeSpy).toBeCalled();
     });
 
-    test('change data-source - no data sources in manifest', async () => {
+    test('annotations-to-odata - no data sources in manifest', async () => {
         jest.spyOn(adp, 'getManifestDataSources').mockRejectedValueOnce(
             new Error('No data sources found in the manifest')
         );
 
         const command = new Command('data-source');
-        addChangeDataSourceCommand(command);
+        addAnnotationsToOdataCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
         expect(loggerMock.error).toBeCalledWith('No data sources found in the manifest');

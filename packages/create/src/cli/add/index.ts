@@ -4,7 +4,7 @@ import { addAddSmartLinksConfigCommand } from './smartlinks-config';
 import { addAddCdsPluginUi5Command } from './cds-plugin-ui';
 import { addInboundNavigationConfigCommand } from './navigation-config';
 import { addCardsEditorConfigCommand } from './cards-editor';
-import { addChangeDataSourceCommand } from './annotations-to-odata';
+import { addAnnotationsToOdataCommand } from './annotations-to-odata';
 import { addAddHtmlFilesCmd } from './html';
 
 /**
@@ -25,7 +25,7 @@ export function getAddCommands(): Command {
     // create-fiori add cards-editor
     addCardsEditorConfigCommand(addCommands);
     // create-fiori add annotations-to-odata
-    addChangeDataSourceCommand(addCommands);
+    addAnnotationsToOdataCommand(addCommands);
     // create-fiori add html
     addAddHtmlFilesCmd(addCommands);
     return addCommands;
