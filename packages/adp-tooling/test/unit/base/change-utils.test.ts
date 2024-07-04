@@ -128,7 +128,7 @@ describe('Change Utils', () => {
             projectData: {
                 namespace: 'mockNamespace',
                 layer: 'mockLayer' as UI5FlexLayer,
-                reference: 'mockReference'
+                id: 'mockId'
             },
             timestamp: Date.now()
         };
@@ -149,7 +149,7 @@ describe('Change Utils', () => {
                 fileType: 'change',
                 creation: expect.any(String),
                 packageName: '$TMP',
-                reference: mockData.projectData.reference,
+                reference: mockData.projectData.id,
                 support: { generator: '@sap-ux/adp-tooling' },
                 changeType: ChangeType.ADD_ANNOTATIONS_TO_ODATA,
                 content: mockContent
