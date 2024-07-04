@@ -12,6 +12,14 @@ import { updateLaunchJSON } from './writer';
 
 export type configType = object | string | number | undefined;
 
+type WriteCallback = (
+    config: configType,
+    filePath: string,
+    jsonPath: JSONPath,
+    options?: ModificationOptions,
+    fs?: Editor
+) => Promise<void>;
+
 /**
  * Traverses each element of an object and executes callback function on it.
  *
@@ -19,27 +27,18 @@ export type configType = object | string | number | undefined;
  * @param filePath - path to the JSON file.
  * @param originalJSON - the original JSON {@linkcode Node} before modification.
  * @param callback - function to be executed on the object property.
+ * @param fs - the memfs editor instance.
  * @param initialPath - intial {@linkcode JSONPath} of the object to be traversed.
- * @param fs - optional, the memfs editor instance.
  * @returns void.
  */
 export async function traverseAndModifyObject(
     obj: any,
     filePath: string,
     originalJSON: Node | undefined,
-    callback: (
-        config: configType,
-        filePath: string,
-        jsonPath: JSONPath,
-        options?: ModificationOptions,
-        fs?: Editor
-    ) => Promise<void>,
-    initialPath: JSONPath = [],
-    fs?: Editor
+    callback: WriteCallback,
+    fs: Editor,
+    initialPath: JSONPath = []
 ): Promise<void> {
-    if (!fs) {
-        fs = create(createStorage());
-    }
     for (const key in obj) {
         // Build the current JSONPath by appending the current key
         const currentPath = [...initialPath, key];
@@ -65,23 +64,17 @@ export async function traverseAndModifyObject(
  * @param callback - function to be executed on the object property.
  * @param currentPath - intial {@linkcode JSONPath} of the object to be traversed.
  * @param originalLength - original lench of the array.
- * @param fs - optional, the memfs editor instance.
+ * @param fs - the memfs editor instance.
  * @returns void.
  */
 async function processArray(
     arr: any[],
     filePath: string,
     originalJSON: Node | undefined,
-    callback: (
-        config: configType,
-        filePath: string,
-        jsonPath: JSONPath,
-        options?: ModificationOptions,
-        fs?: Editor
-    ) => Promise<void>,
+    callback: WriteCallback,
     currentPath: JSONPath,
     originalLength: number,
-    fs?: Editor
+    fs: Editor
 ): Promise<void> {
     if (!fs) {
         fs = create(createStorage());
@@ -89,7 +82,7 @@ async function processArray(
     const maxLength = Math.max(arr.length, originalLength);
     for (let i = 0, j = maxLength; i < maxLength; i++) {
         if (typeof arr[i] === 'object') {
-            await traverseAndModifyObject(arr[i], filePath, originalJSON, callback, [...currentPath, i]);
+            await traverseAndModifyObject(arr[i], filePath, originalJSON, callback, fs, [...currentPath, i]);
         } else if (arr.length >= originalLength || arr[i]) {
             await callback(arr[i], filePath, [...currentPath, i], undefined, fs);
         } else {
@@ -109,28 +102,22 @@ async function processArray(
  * @param currentPath - intial {@linkcode JSONPath} of the object to be traversed.
  * @param originalLength - intial {@linkcode JSONPath} of the object to be traversed.
  * @param node - object node.
- * @param fs - optional, the memfs editor instance.
+ * @param fs - the memfs editor instance.
  * @returns void.
  */
 async function processObject(
     obj: any,
     filePath: string,
     originalJSON: Node | undefined,
-    callback: (
-        config: configType,
-        filePath: string,
-        jsonPath: JSONPath,
-        options?: ModificationOptions,
-        fs?: Editor
-    ) => Promise<void>,
+    callback: WriteCallback,
     currentPath: JSONPath,
     originalLength: number,
     node: Node | undefined,
-    fs?: Editor
+    fs: Editor
 ): Promise<void> {
     const length = Object.keys(obj).length;
     if (length >= originalLength) {
-        await traverseAndModifyObject(obj, filePath, originalJSON, callback, currentPath, fs);
+        await traverseAndModifyObject(obj, filePath, originalJSON, callback, fs, currentPath);
     } else {
         for (let i = 0; i < originalLength; i++) {
             const value = node?.children![i].children![0].value;
@@ -169,14 +156,10 @@ export async function updateLaunchConfig(
         const launchConfig = generateNewFioriLaunchConfig(rootFolder, fioriOptions);
         const oldArgs = launchJSON.configurations[index].args;
         launchConfig.args = mergeArgs(launchConfig.args, oldArgs);
-        await traverseAndModifyObject(
-            launchConfig,
-            launchJSONPath,
-            launchJSONTree,
-            updateLaunchJSON,
-            ['configurations', index],
-            fs
-        );
+        await traverseAndModifyObject(launchConfig, launchJSONPath, launchJSONTree, updateLaunchJSON, fs, [
+            'configurations',
+            index
+        ]);
     }
     return fs;
 }
