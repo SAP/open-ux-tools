@@ -1,5 +1,4 @@
 import type { Command } from 'commander';
-import type { PromptDefaults } from '@sap-ux/adp-tooling';
 import {
     generateChange,
     ChangeType,
@@ -10,7 +9,7 @@ import {
 } from '@sap-ux/adp-tooling';
 import { getLogger, traceChanges } from '../../tracing';
 import { promptYUIQuestions } from '../../common';
-import { validateAdpProject } from '../../validation/validation'
+import { validateAdpProject } from '../../validation/validation';
 
 let loginAttempts = 3;
 
@@ -32,21 +31,16 @@ export function addChangeDataSourceCommand(cmd: Command): void {
  * Changes the data source of an adaptation project.
  *
  * @param {string} basePath - The path to the adaptation project.
- * @param {PromptDefaults} defaults - The default values for the prompts.
  * @param {boolean} simulate - If set to true, then no files will be written to the filesystem.
  * @param {string} yamlPath - The path to the project configuration file in YAML format.
  */
-async function changeDataSource(
-    basePath: string,
-    simulate: boolean,
-    yamlPath: string
-): Promise<void> {
+async function changeDataSource(basePath: string, simulate: boolean, yamlPath: string): Promise<void> {
     const logger = getLogger();
     try {
         if (!basePath) {
             basePath = process.cwd();
         }
-        validateAdpProject(basePath);
+        await validateAdpProject(basePath);
         const variant = getVariant(basePath);
         const adpConfig = await getAdpConfig(basePath, yamlPath);
         const dataSources = await getManifestDataSources(variant.reference, adpConfig, logger);

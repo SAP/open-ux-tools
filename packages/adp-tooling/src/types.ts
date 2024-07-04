@@ -283,7 +283,6 @@ export const enum AnnotationFileSelectType {
     NewEmptyFile = 2
 }
 
-
 export interface ComponentUsagesData {
     projectData: AdpProjectData;
     timestamp: number;
