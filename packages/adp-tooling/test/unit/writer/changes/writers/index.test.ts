@@ -74,6 +74,62 @@ describe('AnnotationsWriter', () => {
             {}
         );
     });
+
+    it('should correctly construct content without filePath', async () => {
+        const mockData: AnnotationsData = {
+            variant: {
+                layer: 'CUSTOMER_BASE',
+                reference: 'mock.reference',
+                id: 'adp.mock.variant',
+                namespace: 'apps/adp.mock.variant'
+            } as DescriptorVariant,
+            answers: {
+                id: '/sap/opu/odata/source',
+                fileSelectOption: 1,
+                filePath: ''
+            } as AddAnnotationsAnswers
+        };
+
+        const writer = new AnnotationsWriter({} as Editor, mockProjectPath);
+
+        await writer.write(mockData);
+
+        expect(writeAnnotationChangeMock).toHaveBeenCalledWith(
+            mockProjectPath,
+            expect.any(Number),
+            mockData,
+            expect.any(Object),
+            {}
+        );
+    });
+
+    it('should correctly construct content with relative path', async () => {
+        const mockData: AnnotationsData = {
+            variant: {
+                layer: 'CUSTOMER_BASE',
+                reference: 'mock.reference',
+                id: 'adp.mock.variant',
+                namespace: 'apps/adp.mock.variant'
+            } as DescriptorVariant,
+            answers: {
+                id: '/sap/opu/odata/source',
+                fileSelectOption: 0,
+                filePath: 'file.xml'
+            } as AddAnnotationsAnswers
+        };
+
+        const writer = new AnnotationsWriter({} as Editor, mockProjectPath);
+
+        await writer.write(mockData);
+
+        expect(writeAnnotationChangeMock).toHaveBeenCalledWith(
+            mockProjectPath,
+            expect.any(Number),
+            mockData,
+            expect.any(Object),
+            {}
+        );
+    });
 });
 
 describe('ComponentUsagesWriter', () => {
