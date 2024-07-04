@@ -16,7 +16,7 @@ const specificationDistTagPath = join(fioriToolsDirectory, FileName.Specificatio
 /**
  * Loads and return specification from project or cache.
  * 1. if package.json contains devDependency to specification, attempts to load from project.
- * 2. if not installed in project, attempts to load from cache.
+ * 2. if not in package.json of project, attempts to load from cache.
  *
  * @param root - root path of the project/app
  * @param [options] - optional options
@@ -29,12 +29,9 @@ export async function getSpecification<T>(root: string, options?: { logger?: Log
     try {
         const packageJson = await readJSON<Package>(join(root, FileName.Package));
         if (packageJson.devDependencies?.['@sap/ux-specification']) {
-            specification = await loadModuleFromProject<T>(root, '@sap/ux-specification');
-            if (specification) {
-                logger?.debug(`Specification found in project '${root}'`);
-                // Early return if specification is found in project
-                return specification;
-            }
+            logger?.debug(`Specification found in devDependencies of project '${root}', trying to load`);
+            // Early return with load module from project. If it throws an error it is not handled here.
+            return loadModuleFromProject<T>(root, '@sap/ux-specification');
         }
     } catch {
         logger?.debug(`Specification not found in project '${root}', trying to load from cache`);
