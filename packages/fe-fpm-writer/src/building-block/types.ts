@@ -24,6 +24,7 @@ export type BindingContextType = 'absolute' | 'relative';
 export interface BuildingBlockMetaPath {
     entitySet: string;
     qualifier: string;
+    bindingContextType?: BindingContextType;
 }
 
 /**
@@ -373,11 +374,6 @@ export interface BuildingBlockConfig<T extends BuildingBlock> {
      * The aggregation xpath.
      */
     aggregationPath: string;
-
-    /**
-     * If not specified defaults to 'absolute'.
-     */
-    bindingContextType?: BindingContextType;
 
     /**
      * The building block parameters.

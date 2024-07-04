@@ -40,7 +40,7 @@ export function generateBuildingBlock<T extends BuildingBlock>(
 
     // Read the view xml and template files and update contents of the view xml file
     const xmlDocument = getUI5XmlDocument(basePath, config.viewOrFragmentPath, fs);
-    const templateDocument = getTemplateDocument(config.buildingBlockData, xmlDocument, fs, config.bindingContextType);
+    const templateDocument = getTemplateDocument(config.buildingBlockData, xmlDocument, fs);
     fs = updateViewFile(basePath, config.viewOrFragmentPath, config.aggregationPath, xmlDocument, templateDocument, fs);
 
     return fs;
@@ -99,20 +99,16 @@ function getOrAddMacrosNamespace(ui5XmlDocument: Document): string {
  * @param {boolean} usePlaceholders - apply placeholder values if value for attribute/property is not provided
  * @returns {string} Resolved string metaPath.
  */
-function getMetaPath(
-    metaPath?: BuildingBlockMetaPath,
-    usePlaceholders?: boolean,
-    bindingContextType?: BindingContextType
-): string {
+function getMetaPath(metaPath?: BuildingBlockMetaPath, usePlaceholders?: boolean): string {
     if (!metaPath) {
         return usePlaceholders ? `/${PLACEHOLDERS.entitySet}/${PLACEHOLDERS.qualifier}` : '';
     }
-    const { entitySet = '', qualifier = '' } = metaPath;
+    const { entitySet = '', qualifier = '', bindingContextType = 'absolute' } = metaPath;
     let entityPath = entitySet || (usePlaceholders ? PLACEHOLDERS.entitySet : '');
     const lastIndex = entityPath.lastIndexOf('.');
     entityPath = lastIndex >= 0 ? entityPath.substring?.(lastIndex + 1) : entityPath;
     const qualifierOrPlaceholder = qualifier || (usePlaceholders ? PLACEHOLDERS.qualifier : '');
-    return bindingContextType === 'relative' ? qualifierOrPlaceholder : `/${entityPath}/${qualifierOrPlaceholder}`;
+    return bindingContextType === 'absolute' ? `/${entityPath}/${qualifierOrPlaceholder}` : qualifierOrPlaceholder;
 }
 
 /**
@@ -128,14 +124,13 @@ function getTemplateContent<T extends BuildingBlock>(
     buildingBlockData: T,
     viewDocument: Document | undefined,
     fs: Editor,
-    bindingContextType?: BindingContextType,
     usePlaceholders?: boolean
 ): string {
     const templateFolderName = buildingBlockData.buildingBlockType;
     const templateFilePath = getTemplatePath(`/building-block/${templateFolderName}/View.xml`);
     if (typeof buildingBlockData.metaPath === 'object' || buildingBlockData.metaPath === undefined) {
         // Convert object based metapath to string
-        const metaPath = getMetaPath(buildingBlockData.metaPath, usePlaceholders, bindingContextType);
+        const metaPath = getMetaPath(buildingBlockData.metaPath, usePlaceholders);
         buildingBlockData = { ...buildingBlockData, metaPath };
     }
     // Apply placeholders
@@ -163,10 +158,9 @@ function getTemplateContent<T extends BuildingBlock>(
 function getTemplateDocument<T extends BuildingBlock>(
     buildingBlockData: T,
     viewDocument: Document | undefined,
-    fs: Editor,
-    bindingContextType?: BindingContextType
+    fs: Editor
 ): Document {
-    const templateContent = getTemplateContent(buildingBlockData, viewDocument, fs, bindingContextType);
+    const templateContent = getTemplateContent(buildingBlockData, viewDocument, fs);
     const errorHandler = (level: string, message: string) => {
         throw new Error(`Unable to parse template file with building block data. Details: [${level}] - ${message}`);
     };
@@ -240,5 +234,5 @@ export function getSerializedFileContent<T extends BuildingBlock>(
     const xmlDocument = config.viewOrFragmentPath
         ? getUI5XmlDocument(basePath, config.viewOrFragmentPath, fs)
         : undefined;
-    return getTemplateContent(config.buildingBlockData, xmlDocument, fs, config.bindingContextType, true);
+    return getTemplateContent(config.buildingBlockData, xmlDocument, fs, true);
 }

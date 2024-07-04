@@ -64,17 +64,16 @@ export function getAnnotationPathQualifierPrompt(
         selectType: 'dynamic',
         message,
         choices: async (answers) => {
-            const { entitySet } = answers.buildingBlockData?.metaPath ?? {};
-            const { bindingContextType } = answers;
+            const { entitySet, bindingContextType } = answers.buildingBlockData?.metaPath ?? {};
             if (!entitySet) {
                 return [];
             }
-            const bindingContext = bindingContextType
+            const bindingContext: { type: BindingContextType; isCollection?: boolean } = bindingContextType
                 ? {
-                      type: bindingContextType as BindingContextType,
-                      isCollection: answers.buildingBlockType === BuildingBlockType.Table
+                      type: bindingContextType,
+                      isCollection: answers.buildingBlockData.type === BuildingBlockType.Table //TODO: BB type
                   }
-                : { type: 'absolute' as BindingContextType };
+                : { type: 'absolute' };
             const choices = transformChoices(
                 await getAnnotationPathQualifiers(projectProvider, entitySet, annotationTerm, bindingContext, true)
             );
@@ -414,7 +413,7 @@ export function getBindingContextTypePrompt(
     return {
         ...additionalProperties,
         type: 'list',
-        name: 'bindingContextType',
+        name: 'buildingBlockData.metaPath.bindingContextType',
         selectType: 'static',
         message,
         dependantPromptNames,
