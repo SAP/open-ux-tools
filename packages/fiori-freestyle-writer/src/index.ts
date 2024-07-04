@@ -35,21 +35,9 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     const tmplPath = join(__dirname, '..', 'templates');
     // Common files
     const ignore = [isTypeScriptEnabled ? '**/*.js' : '**/*.ts'];
-    // Check if sap.ushell is already in the ui5Libs array
-    const ushellLib = 'sap.ushell';
-    const ui5Libs = Array.isArray(ffApp.ui5?.ui5Libs) ? ffApp.ui5.ui5Libs : [ffApp.ui5?.ui5Libs];
-    if (!ui5Libs.includes(ushellLib)) {
-        ui5Libs.push(ushellLib);
-    }
-    fs.copyTpl(
-        join(tmplPath, 'common', 'add'),
-        basePath,
-        { ...ffApp, ui5: { ...ffApp.ui5, ui5Libs }, escapeFLPText },
-        undefined,
-        {
-            globOptions: { ignore, dot: true }
-        }
-    );
+    fs.copyTpl(join(tmplPath, 'common', 'add'), basePath, { ...ffApp, escapeFLPText }, undefined, {
+        globOptions: { ignore, dot: true }
+    });
     fs.copyTpl(join(tmplPath, ffApp.template.type, 'add'), basePath, ffApp, undefined, {
         globOptions: { ignore, dot: true }
     });
@@ -107,12 +95,6 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         ui5LocalConfig.addFioriToolsProxydMiddleware({});
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     }
-
-    // Extend ui5-local.yaml with additional UI5 lib
-    const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
-    const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-    ui5LocalConfig.addUI5Libs([ushellLib]);
-    fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
 
     return fs;
 }

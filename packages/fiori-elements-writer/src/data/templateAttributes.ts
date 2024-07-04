@@ -32,7 +32,7 @@ const commonUi5Libs: FrameworkLibs = {
         'sap.ui.generic.app',
         'sap.suite.ui.generic.template'
     ],
-    [OdataVersion.v4]: ['sap.m']
+    [OdataVersion.v4]: ['sap.m', 'sap.ushell', 'sap.fe.templates']
 };
 
 type TemplateLibsEntry = {
@@ -68,27 +68,27 @@ const templateLibs: TemplateLibs = {
     [OdataVersion.v4]: {
         [TemplateType.ListReportObjectPage]: {
             baseComponent: appComponentLibFioriElements,
-            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.fe.templates']
+            ui5Libs: commonUi5Libs[OdataVersion.v4]
         },
         [TemplateType.FormEntryObjectPage]: {
             baseComponent: appComponentLibFioriElements,
-            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.fe.templates']
+            ui5Libs: commonUi5Libs[OdataVersion.v4]
         },
         [TemplateType.AnalyticalListPage]: {
             baseComponent: appComponentLibFioriElements,
-            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.fe.templates']
+            ui5Libs: commonUi5Libs[OdataVersion.v4]
         },
         [TemplateType.Worklist]: {
             baseComponent: appComponentLibFioriElements,
-            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.fe.templates']
+            ui5Libs: commonUi5Libs[OdataVersion.v4]
         },
         [TemplateType.OverviewPage]: {
             baseComponent: appComponentLibOVP,
-            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.fe.templates', 'sap.ovp', 'sap.ui.rta', 'sap.ui.layout']
+            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.ovp', 'sap.ui.rta', 'sap.ui.layout']
         },
         [TemplateType.FlexibleProgrammingModel]: {
             baseComponent: appComponentLibFioriElements,
-            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.fe.core']
+            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.fe.templates']
         }
     }
 };
@@ -111,8 +111,8 @@ export function getBaseComponent(type: TemplateType, version: OdataVersion): str
  * @param version - The odata service version determines the appropriate base component to use
  * @returns The Ui5 libs required by the specified template type and OData version
  */
-export function getUi5Libs(type: TemplateType, version: OdataVersion): string[] | undefined {
-    return templateLibs[version][type]?.ui5Libs;
+export function getTemplateUi5Libs(type: TemplateType, version: OdataVersion): string[] {
+    return templateLibs[version][type]?.ui5Libs ?? [];
 }
 
 // Additional attributes associated with TemplateType
