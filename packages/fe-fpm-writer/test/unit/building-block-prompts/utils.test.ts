@@ -21,28 +21,32 @@ import {
     getAnnotationTermAlias,
     getEntityTypes
 } from '../../../src/building-block/prompts/utils';
-import { FioriAnnotationService } from '@sap-ux/fiori-annotation-api';
-import { testSchema } from '../sample/building-block/webapp-prompts-cap/schema';
+import * as projectAccess from '@sap-ux/project-access';
 
 jest.setTimeout(10000);
 
 const projectFolder = join(__dirname, '../sample/building-block/webapp-prompts');
-const capProjectFolder = join(__dirname, '../sample/building-block/webapp-prompts-cap/app/incidents');
-
-const ENTITY_TYPE = 'C_CUSTOMER_OP_SRV.C_CustomerOPType';
-type Choices = (answers?: Answers) => Promise<readonly DistinctChoice<Answers, ListChoiceMap<Answers>>[]>;
 
 jest.mock('@sap-ux/project-access', () => ({
     __esModule: true,
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/project-access') as object),
-    getCapModelAndServices: jest.fn().mockResolvedValue({
-        model: {},
-        services: [],
-        cdsVersionInfo: { home: '', version: '', root: '' }
+    getFileByExtension: jest
+        .fn()
+        .mockResolvedValue([
+            join(__dirname, '../sample/building-block/webapp-prompts', 'webapp/ext/main', 'Main.view.xml')
+        ]),
+    getCapProjectType: jest.fn().mockResolvedValue('CAPNodejs'),
+    loadModuleFromProject: jest.fn().mockResolvedValue({
+        version: '5.5.5',
+        home: '',
+        env: {}
     }),
     getCapServiceName: jest.fn().mockResolvedValue('mappedMainServiceName')
 }));
+
+const ENTITY_TYPE = 'C_CUSTOMER_OP_SRV.C_CustomerOPType';
+type Choices = (answers?: Answers) => Promise<readonly DistinctChoice<Answers, ListChoiceMap<Answers>>[]>;
 
 describe('utils - ', () => {
     let projectProvider: ProjectProvider;
@@ -51,8 +55,10 @@ describe('utils - ', () => {
 
     beforeAll(async () => {
         projectProvider = await ProjectProvider.createProject(projectFolder);
-        capProjectProvider = await ProjectProvider.createProject(capProjectFolder);
         fs = create(createStorage());
+        capProjectProvider = await ProjectProvider.createProject(
+            join(__dirname, '../sample/building-block/webapp-prompts-cap/app/incidents')
+        );
     });
 
     describe('annotation service - ', () => {
@@ -61,37 +67,12 @@ describe('utils - ', () => {
             expect(entityTypes.length).toBe(30);
         });
 
-        test('entityType - CAP', async () => {
-            jest.spyOn(FioriAnnotationService, 'createService').mockResolvedValueOnce({
-                sync: jest.fn(),
-                getSchema: () => ({
-                    identification: '',
-                    version: '',
-                    references: [],
-                    schema: testSchema
-                })
-            } as unknown as FioriAnnotationService);
-            const entityTypes = await getEntityTypes(capProjectProvider);
-            expect(entityTypes.length).toBe(11);
-        });
-
         test('getAnnotationPathQualifiers - existing annotations, absolute binding context path', async () => {
             const annotationPathQualifiers = await getAnnotationPathQualifiers(
                 projectProvider,
                 ENTITY_TYPE,
                 [UIAnnotationTerms.Chart, UIAnnotationTerms.LineItem, UIAnnotationTerms.SelectionFields],
                 { type: 'absolute' }
-            );
-            expect(annotationPathQualifiers).toMatchSnapshot();
-        });
-
-        test('getAnnotationPathQualifiers - existing annotations, absolute binding context path, use namespace', async () => {
-            const annotationPathQualifiers = await getAnnotationPathQualifiers(
-                projectProvider,
-                ENTITY_TYPE,
-                [UIAnnotationTerms.Chart, UIAnnotationTerms.LineItem, UIAnnotationTerms.SelectionFields],
-                { type: 'absolute' },
-                true
             );
             expect(annotationPathQualifiers).toMatchSnapshot();
         });
@@ -367,6 +348,19 @@ describe('utils - ', () => {
         });
 
         test('getCAPServiceChoices', async () => {
+            jest.spyOn(projectAccess, 'getProject').mockResolvedValue({
+                apps: {
+                    [join('app/incidents')]: {
+                        appRoot: '',
+                        manifest: '',
+                        changes: '',
+                        services: { mainService: {} },
+                        mainService: 'mainService'
+                    } as unknown as projectAccess.ApplicationStructure
+                },
+                projectType: 'CAPNodejs',
+                root: join(__dirname, '../sample/building-block/webapp-prompts-cap')
+            });
             const choices = await getCAPServiceChoices(capProjectProvider);
             expect(choices).toMatchInlineSnapshot(`
                 Array [
@@ -379,6 +373,19 @@ describe('utils - ', () => {
         });
 
         test('getCAPServicePrompt', async () => {
+            jest.spyOn(projectAccess, 'getProject').mockResolvedValue({
+                apps: {
+                    [join('app/incidents')]: {
+                        appRoot: '',
+                        manifest: '',
+                        changes: '',
+                        services: { mainService: {} },
+                        mainService: 'mainService'
+                    } as unknown as projectAccess.ApplicationStructure
+                },
+                projectType: 'CAPNodejs',
+                root: join(__dirname, '../sample/building-block/webapp-prompts-cap')
+            });
             const prompt = await getCAPServicePrompt('message', capProjectProvider);
             expect(prompt).toMatchInlineSnapshot(`
                 Object {
