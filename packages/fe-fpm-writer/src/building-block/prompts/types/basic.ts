@@ -10,6 +10,16 @@ import type {
 } from '@sap-ux/ui-prompting';
 import type { Chart, FilterBar, Table, BuildingBlockConfig } from '../../types';
 
+export type Subset<K> = {
+    [attr in keyof K]?: K[attr] extends object
+        ? Subset<K[attr]>
+        : K[attr] extends object | null
+        ? Subset<K[attr]> | null
+        : K[attr] extends object | null | undefined
+        ? Subset<K[attr]> | null | undefined
+        : K[attr];
+};
+
 export {
     PromptQuestion,
     PromptListChoices,
@@ -29,8 +39,9 @@ export enum PromptsType {
 }
 
 export interface Prompts<T extends Answers = Answers> {
-    questions: PromptQuestion<Partial<T>>[];
+    questions: PromptQuestion<Subset<T>>[];
     groups?: PromptsGroup[];
+    initialAnswers?: Subset<T>;
 }
 
 export interface BuildingBlockTypePromptsAnswer extends Answers {

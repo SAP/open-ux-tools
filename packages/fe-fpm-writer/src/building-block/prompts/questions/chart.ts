@@ -16,6 +16,7 @@ import {
 } from '../utils';
 import type { ProjectProvider } from '../utils';
 import type { ChartPromptsAnswer, Prompts } from '../types';
+import { BuildingBlockType } from '../../types';
 
 /**
  * Returns a list of prompts required to generate a chart building block.
@@ -97,6 +98,11 @@ export async function getChartBuildingBlockPrompts(
                 message: t('selectionChange'),
                 placeholder: t('selectionChangePlaceholder')
             }
-        ]
+        ],
+        initialAnswers: {
+            buildingBlockData: {
+                buildingBlockType: BuildingBlockType.Chart
+            }
+        }
     };
 }

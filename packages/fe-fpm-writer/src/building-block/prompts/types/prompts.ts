@@ -4,6 +4,7 @@ import type {
     ChartPromptsAnswer,
     FilterBarPromptsAnswer,
     Prompts,
+    Subset,
     TablePromptsAnswer
 } from './basic';
 import { PromptsType } from './basic';
@@ -20,6 +21,7 @@ type AnswerMapping = {
 type BasePrompt<T extends keyof AnswerMapping> = {
     type: T;
     answers: AnswerMapping[T];
+    initialAnswers?: Subset<AnswerMapping[T]>;
 };
 
 export type SupportedPrompts =

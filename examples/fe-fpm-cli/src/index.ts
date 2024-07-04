@@ -1,5 +1,10 @@
 import { PromptsType, PromptsAPI } from '@sap-ux/fe-fpm-writer';
-import type { FilterBarPromptsAnswer, ChartPromptsAnswer, BuildingBlockTypePromptsAnswer } from '@sap-ux/fe-fpm-writer';
+import type {
+    FilterBarPromptsAnswer,
+    ChartPromptsAnswer,
+    BuildingBlockTypePromptsAnswer,
+    BuildingBlockType
+} from '@sap-ux/fe-fpm-writer';
 import type { TablePromptsAnswer } from '@sap-ux/fe-fpm-writer/src/building-block/prompts';
 import inquirer from 'inquirer';
 import { create as createStorage } from 'mem-fs';
@@ -34,10 +39,10 @@ async function initialize(): Promise<Editor> {
 export async function generateFilterBarBuildingBlock(fs: Editor): Promise<Editor> {
     const basePath = testAppPath;
     const promptsAPI = await PromptsAPI.init(basePath, fs);
+    const prompt = await promptsAPI.getPrompts(PromptsType.FilterBar);
     const answers: FilterBarPromptsAnswer = (await inquirer.prompt(
-        (
-            await promptsAPI.getPrompts(PromptsType.FilterBar)
-        ).questions
+        prompt.questions,
+        prompt.initialAnswers
     )) as FilterBarPromptsAnswer;
     fs = promptsAPI.submitAnswers<FilterBarPromptsAnswer>(PromptsType.FilterBar, answers);
     return fs;
@@ -52,10 +57,10 @@ export async function generateFilterBarBuildingBlock(fs: Editor): Promise<Editor
 export async function generateChartBuildingBlock(fs: Editor): Promise<Editor> {
     const basePath = testAppPath;
     const promptsAPI = await PromptsAPI.init(basePath, fs);
+    const prompt = await promptsAPI.getPrompts(PromptsType.Chart);
     const answers: ChartPromptsAnswer = (await inquirer.prompt(
-        (
-            await promptsAPI.getPrompts(PromptsType.Chart)
-        ).questions
+        prompt.questions,
+        prompt.initialAnswers
     )) as ChartPromptsAnswer;
     fs = promptsAPI.submitAnswers<ChartPromptsAnswer>(PromptsType.Chart, answers);
     return fs;
@@ -69,10 +74,10 @@ export async function generateChartBuildingBlock(fs: Editor): Promise<Editor> {
 export async function generateTableBuildingBlock(fs: Editor): Promise<Editor> {
     const basePath = testAppPath;
     const promptsAPI = await PromptsAPI.init(basePath, fs);
+    const prompt = await promptsAPI.getPrompts(PromptsType.Table);
     const answers: TablePromptsAnswer = (await inquirer.prompt(
-        (
-            await promptsAPI.getPrompts(PromptsType.Table)
-        ).questions
+        prompt.questions,
+        prompt.initialAnswers
     )) as TablePromptsAnswer;
     fs = promptsAPI.submitAnswers<TablePromptsAnswer>(PromptsType.Table, answers);
     return fs;

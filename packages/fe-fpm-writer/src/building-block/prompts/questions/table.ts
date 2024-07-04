@@ -17,6 +17,7 @@ import {
 } from '../utils';
 import type { ProjectProvider } from '../utils';
 import type { Prompts, PromptsGroup, TablePromptsAnswer } from '../types';
+import { BuildingBlockType } from '../../types';
 
 const TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID = 'tableBuildingBlockProperties';
 const TABLE_VISUALIZATION_PROPERTIES_GROUP_ID = 'tableVisualizationProperties';
@@ -197,6 +198,11 @@ export async function getTableBuildingBlockPrompts(
                     groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
                 }
             )
-        ]
+        ],
+        initialAnswers: {
+            buildingBlockData: {
+                buildingBlockType: BuildingBlockType.Table
+            }
+        }
     };
 }

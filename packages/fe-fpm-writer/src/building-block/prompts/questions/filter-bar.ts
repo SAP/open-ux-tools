@@ -13,6 +13,7 @@ import {
 } from '../utils';
 import type { ProjectProvider } from '../utils';
 import type { Prompts, FilterBarPromptsAnswer } from '../types';
+import { BuildingBlockType } from '../../types';
 
 export async function getFilterBarBuildingBlockPrompts(
     fs: Editor,
@@ -57,6 +58,11 @@ export async function getFilterBarBuildingBlockPrompts(
                 name: 'buildingBlockData.search',
                 message: t('search')
             }
-        ]
+        ],
+        initialAnswers: {
+            buildingBlockData: {
+                buildingBlockType: BuildingBlockType.FilterBar
+            }
+        }
     };
 }
