@@ -21786,6 +21786,19 @@ sap.registerComponentDependencyPaths(manifestUri)
 
 exports[`Fiori Elements template: lropTemplates Generate files for template: lrop_v4_addtests_cds 1`] = `
 Object {
+  ".gitignore": Object {
+    "contents": "node_modules/
+dist/
+.scp/
+.env
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip
+.*_mta_build_tmp",
+    "state": "modified",
+  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"lrop_v4_addtests_cds\\",
@@ -21815,6 +21828,33 @@ Object {
   },
   \\"sapux\\": true
 }
+",
+    "state": "modified",
+  },
+  "ui5-local.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"3.1\\"
+metadata:
+  name: lrop_v4_addtests_cds
+type: application
+framework:
+  name: SAPUI5
+  version: 1.86.3
+  libraries:
+    - name: sap.m
+    - name: sap.ui.core
+    - name: sap.ushell
+    - name: sap.fe.templates
+    - name: themelib_sap_belize
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
 ",
     "state": "modified",
   },

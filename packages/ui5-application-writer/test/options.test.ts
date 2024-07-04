@@ -1,18 +1,16 @@
 import { generate } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
-import type { Ui5App } from '../src';
 
 describe('UI5 templates', () => {
     const debug = !!process.env['UX_DEBUG'];
     const outputDir = join(__dirname, '/test-output');
 
-    const baseAppConfig: Ui5App = {
+    const baseAppConfig = {
         app: {
             id: 'app.with.namespace',
             title: 'Test App Title',
-            description: 'Test App Description',
-            projectType: 'EDMXBackend'
+            description: 'Test App Description'
         },
         'package': {
             name: 'testPackageName'

@@ -20,8 +20,7 @@ describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
             sourceTemplate: {
                 version: '1.2.3-test',
                 id: 'test-template'
-            },
-            projectType: 'EDMXBackend'
+            }
         },
         package: {
             name: 'test.me'

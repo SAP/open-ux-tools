@@ -15,12 +15,13 @@ import {
     v4TemplateSettingsTreeTable,
     getTestData
 } from './common';
-import { ServiceType, type OdataService } from '@sap-ux/odata-service-writer';
+import { ServiceType, OdataService } from '@sap-ux/odata-service-writer';
 
 const TEST_NAME = 'lropTemplates';
 if (debug?.enabled) {
     jest.setTimeout(360000);
 }
+
 
 jest.mock('read-pkg-up', () => ({
     sync: jest.fn().mockReturnValue({
@@ -118,10 +119,6 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                         addTests: true
                     }
                 }),
-                app: {
-                    ...feBaseConfig('lrop_v4_addtests_cds').app,
-                    projectType: 'CAPNodejs'
-                },
                 service: {
                     ...v4Service,
                     metadata: undefined,
@@ -377,4 +374,5 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             await projectChecks(testPath, config, debug?.debugFull);
         });
     });
+
 });
