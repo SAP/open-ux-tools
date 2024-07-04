@@ -1,4 +1,20 @@
 /**
+ * Parses the UI5 version
+ * Returns NaN for snapshot or snapshot-untested
+ * Returns x.xx for snapshot-x.xx
+ *
+ * @param version the UI5 version to parse
+ * @returns The major and the minor version, e.g. 1.86
+ */
+function parseUI5Version(version: string): { major: number; minor: number } {
+    const versionParts = version.replace(/snapshot-untested|snapshot-|snapshot/, '').split('.');
+    const major = parseInt(versionParts[0], 10);
+    const minor = parseInt(versionParts[1], 10);
+
+    return { major, minor };
+}
+
+/**
  * Checks if the given version is lower than the required minimal version.
  * @param version to check
  * @param minVersion to check
@@ -34,18 +50,3 @@ export function getUI5VersionValidationMessage(ui5Version: string): string | und
     return undefined;
 }
 
-/**
- * Parses the UI5 version
- * Returns NaN for snapshot or snapshot-untested
- * Returns x.xx for snapshot-x.xx
- *
- * @param version the UI5 version to parse
- * @returns The major and the minor version, e.g. 1.86
- */
-function parseUI5Version(version: string): { major: number; minor: number } {
-    const versionParts = version.replace(/snapshot-untested|snapshot-|snapshot/, '').split('.');
-    const major = parseInt(versionParts[0], 10);
-    const minor = parseInt(versionParts[1], 10);
-
-    return { major, minor };
-}

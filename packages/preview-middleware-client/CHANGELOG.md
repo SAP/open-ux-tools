@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.9.17
+
+### Patch Changes
+
+-   0e0c2864: Fix Error message regression
+
+## 0.9.16
+
+### Patch Changes
+
+-   fb2ff8d6: Reduce eslint warnings
+
 ## 0.9.15
 
 ### Patch Changes
