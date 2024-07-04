@@ -12,7 +12,9 @@ import type {
     AnnotationsData,
     ComponentUsagesData,
     DataSourceData,
-    InboundData
+    DescriptorVariant,
+    InboundData,
+    NewModelData
 } from '../../../../../src';
 import {
     AnnotationsWriter,
@@ -143,41 +145,38 @@ describe('NewModelWriter', () => {
     });
 
     it('should correctly construct content and write new model change', async () => {
-        const mockData = {
-            projectData: {} as AdpProjectData,
-            service: {
+        const mockData: NewModelData = {
+            variant: {} as DescriptorVariant,
+            answers: {
                 name: 'ODataService',
                 uri: '/sap/opu/odata/custom',
                 version: '4.0',
                 modelName: 'ODataModel',
-                modelSettings: '"someSetting": "someValue"'
-            },
-            annotation: {
+                modelSettings: '"someSetting": "someValue"',
                 dataSourceName: 'ODataAnnotations',
                 dataSourceURI: 'some/path/annotations.xml',
-                settings: '"anotherSetting": "anotherValue"'
-            },
-            addAnnotationMode: true,
-            timestamp: 1234567890
+                settings: '"anotherSetting": "anotherValue"',
+                addAnnotationMode: true
+            }
         };
 
         await writer.write(mockData);
 
         expect(getChangeMock).toHaveBeenCalledWith(
             expect.anything(),
-            mockData.timestamp,
+            expect.anything(),
             {
                 'dataSource': {
                     'ODataService': {
-                        'uri': mockData.service.uri,
+                        'uri': mockData.answers.uri,
                         'type': 'OData',
                         'settings': {
-                            'odataVersion': mockData.service.version,
-                            'annotations': [mockData.annotation.dataSourceName]
+                            'odataVersion': mockData.answers.version,
+                            'annotations': [mockData.answers.dataSourceName]
                         }
                     },
                     'ODataAnnotations': {
-                        'uri': mockData.annotation.dataSourceURI,
+                        'uri': mockData.answers.dataSourceURI,
                         'type': 'ODataAnnotation',
                         'settings': {
                             'anotherSetting': 'anotherValue'
@@ -186,7 +185,7 @@ describe('NewModelWriter', () => {
                 },
                 'model': {
                     'ODataModel': {
-                        'dataSource': mockData.service.name,
+                        'dataSource': mockData.answers.name,
                         'settings': {
                             'someSetting': 'someValue'
                         }
@@ -199,7 +198,7 @@ describe('NewModelWriter', () => {
         expect(writeChangeToFolderMock).toHaveBeenCalledWith(
             mockProjectPath,
             expect.any(Object),
-            `id_${mockData.timestamp}_addNewModel.change`,
+            expect.stringContaining('_addNewModel.change'),
             {},
             'manifest'
         );
