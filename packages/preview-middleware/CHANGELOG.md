@@ -1,5 +1,19 @@
 # @sap-ux/preview-middleware
 
+## 0.15.8
+
+### Patch Changes
+
+-   8f57ac28: i18n bindings validation fails for nested \*.properties files
+
+## 0.15.7
+
+### Patch Changes
+
+-   Updated dependencies [9ea58ad4]
+    -   @sap-ux/adp-tooling@0.11.13
+    -   @sap-ux/project-access@1.22.4
+
 ## 0.15.6
 
 ### Patch Changes
