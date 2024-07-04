@@ -269,7 +269,7 @@ describe('utils - ', () => {
                     "buildingBlockData.metaPath.qualifier",
                   ],
                   "message": "bindingContext",
-                  "name": "bindingContextType",
+                  "name": "buildingBlockData.metaPath.bindingContextType",
                   "selectType": "static",
                   "type": "list",
                 }

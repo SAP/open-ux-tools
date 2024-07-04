@@ -68,7 +68,7 @@ Object {
         "buildingBlockData.metaPath.qualifier",
       ],
       "message": "Binding Context Path Type",
-      "name": "bindingContextType",
+      "name": "buildingBlockData.metaPath.bindingContextType",
       "required": true,
       "selectType": "static",
       "type": "list",
@@ -511,7 +511,7 @@ Object {
       ],
       "groupId": "tableBuildingBlockProperties",
       "message": "Binding Context Path Type",
-      "name": "bindingContextType",
+      "name": "buildingBlockData.metaPath.bindingContextType",
       "required": true,
       "selectType": "static",
       "type": "list",
@@ -817,15 +817,15 @@ Object {
     "errorMessage": "Please select a value",
     "isValid": false,
   },
-  "bindingContextType": Object {
-    "errorMessage": "Please select a value",
-    "isValid": false,
-  },
   "buildingBlockData.filterBar": Object {
     "isValid": true,
   },
   "buildingBlockData.id": Object {
     "errorMessage": "Please enter a value",
+    "isValid": false,
+  },
+  "buildingBlockData.metaPath.bindingContextType": Object {
+    "errorMessage": "Please select a value",
     "isValid": false,
   },
   "buildingBlockData.metaPath.entitySet": Object {
@@ -889,10 +889,6 @@ Object {
     "errorMessage": "Please select a value",
     "isValid": false,
   },
-  "bindingContextType": Object {
-    "errorMessage": "Please select a value",
-    "isValid": false,
-  },
   "buildingBlockData.enableAutoColumnWidth": Object {
     "isValid": true,
   },
@@ -920,6 +916,10 @@ Object {
   },
   "buildingBlockData.isSearchable": Object {
     "isValid": true,
+  },
+  "buildingBlockData.metaPath.bindingContextType": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
   },
   "buildingBlockData.metaPath.entitySet": Object {
     "errorMessage": "Please select a value",
