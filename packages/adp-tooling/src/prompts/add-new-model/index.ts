@@ -10,7 +10,7 @@ import type { UI5FlexLayer } from '@sap-ux/project-access';
 import { t } from '../../i18n';
 import { getChangesByType } from '../../base/change-utils';
 import { ChangeType, type NewModelAnswers } from '../../types';
-import { isInternalUsage, isCFEnvironment } from '../../base/helper';
+import { isCustomerBase, isCFEnvironment } from '../../base/helper';
 import {
     validateDuplication,
     validateDuplicateName,
@@ -18,10 +18,6 @@ import {
     validateAnnotationJSON,
     isNotEmptyString
 } from '../../base/validators';
-
-function getDefaultServiceName(isInternalUsage: boolean): string {
-    return isInternalUsage ? '' : 'customer.';
-}
 
 function getODataVersionChoices(): {
     name: string;
@@ -39,9 +35,9 @@ function getODataVersionChoices(): {
  * @returns {YUIQuestion<ChangeDataSourceAnswers>[]} The questions/prompts.
  */
 export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestion<NewModelAnswers>[] {
-    const isInternal = isInternalUsage(layer);
+    const isCustomer = isCustomerBase(layer);
     const oDataVersions = getODataVersionChoices();
-    const defaultSeviceName = getDefaultServiceName(isInternal);
+    const defaultSeviceName = isCustomer ? 'customer.' : '';
     const isCFEnv = isCFEnvironment(projectPath);
 
     const changeFiles = getChangesByType(projectPath, ChangeType.ADD_NEW_MODEL, 'manifest');
@@ -58,7 +54,7 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
                     value,
                     'dataSource',
                     changeFiles,
-                    !isInternal,
+                    isCustomer,
                     t('prompts.oDataServiceNameLabel'),
                     t('prompts.oDataService') + ' or ' + t('prompts.oDataAnnotation')
                 );
@@ -124,7 +120,7 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
                     value,
                     'model',
                     changeFiles,
-                    !isInternal,
+                    isCustomer,
                     t('prompts.oDataServiceModelNameLabel'),
                     t('prompts.sapUi5Model')
                 );
@@ -157,7 +153,7 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
                     value,
                     'dataSource',
                     changeFiles,
-                    !isInternal,
+                    isCustomer,
                     t('prompts.oDataAnnotationDataSourceNameLabel'),
                     t('prompts.oDataAnnotation') + ' or ' + t('prompts.oDataService')
                 );

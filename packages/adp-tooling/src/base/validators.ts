@@ -91,11 +91,11 @@ export function validateDuplication(
     value: string,
     propertyName: string,
     changeFiles: ManifestChangeProperties[],
-    isExternalUsage: boolean,
+    isCustomerBase: boolean,
     inputName: string,
     componentName: string
 ): boolean | string {
-    const prevalidation = validateEmptyAndUserState(value, isExternalUsage, inputName);
+    const prevalidation = validateEmptyAndUserState(value, isCustomerBase, inputName);
 
     if (typeof prevalidation === 'string') {
         return prevalidation;
@@ -122,7 +122,7 @@ export function validateDuplication(
  *
  * @returns {boolean | string} True if validation passes, or an error message if validation fails.
  */
-export function validateEmptyAndUserState(value: string, isExternalUsage: boolean, input: string): string | boolean {
+export function validateEmptyAndUserState(value: string, isCustomerBase: boolean, input: string): string | boolean {
     const validation = validateSpecialChars(value, input);
 
     if (typeof validation === 'string') {
@@ -130,7 +130,7 @@ export function validateEmptyAndUserState(value: string, isExternalUsage: boolea
     }
 
     const prefix = 'customer.';
-    if (isExternalUsage && (!value.toLowerCase().startsWith(prefix) || value.length <= prefix.length)) {
+    if (isCustomerBase && (!value.toLowerCase().startsWith(prefix) || value.length <= prefix.length)) {
         return t('validators.errorInputInvalidValuePrefix', { value: input, prefix });
     }
 

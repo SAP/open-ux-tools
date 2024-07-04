@@ -1,10 +1,10 @@
 import type { Command } from 'commander';
 
-import { getAppType } from '@sap-ux/project-access';
 import { generateChange, ChangeType, getPromptsForNewModel, getVariant, isCFEnvironment } from '@sap-ux/adp-tooling';
 
 import { promptYUIQuestions } from '../../common';
 import { getLogger, traceChanges } from '../../tracing';
+import { validateAdpProject } from '../../validation/validation';
 
 /**
  * Add a new sub-command to add new odata service and new sapui5 model of an adaptation project to the given command.
@@ -34,13 +34,7 @@ async function addNewModel(basePath: string, simulate: boolean, yamlPath: string
             basePath = process.cwd();
         }
 
-        if ((await getAppType(basePath)) !== 'Fiori Adaptation') {
-            throw new Error('This command can only be used for an Adaptation Project');
-        }
-
-        if (isCFEnvironment(basePath)) {
-            throw new Error('Changing data source is not supported for CF projects.');
-        }
+        validateAdpProject(basePath);
 
         const variant = getVariant(basePath);
 

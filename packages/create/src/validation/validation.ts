@@ -1,7 +1,9 @@
-import { getWebappPath } from '@sap-ux/project-access';
+import { join } from 'path';
 import { existsSync } from 'fs';
 import type { Editor } from 'mem-fs-editor';
-import { join } from 'path';
+
+import { isCFEnvironment } from '@sap-ux/adp-tooling';
+import { getAppType, getWebappPath } from '@sap-ux/project-access';
 
 /**
  * Validate base path of app, throw error if file is missing.
@@ -30,4 +32,19 @@ export async function validateBasePath(basePath: string, ui5YamlPath?: string): 
 export function hasFileDeletes(fs: Editor): boolean {
     const changedFiles = fs.dump() || {};
     return !!Object.keys(changedFiles).find((fileName) => changedFiles[fileName].state === 'deleted');
+}
+
+/**
+ * Validate if Adaptation Project is supported for command, throws an error if not supported.
+ *
+ * @param basePath - path to the Adaptation Project
+ */
+export async function validateAdpProject(basePath: string): Promise<void> {
+    if ((await getAppType(basePath)) !== 'Fiori Adaptation') {
+        throw new Error('This command can only be used for an Adaptation Project');
+    }
+
+    if (isCFEnvironment(basePath)) {
+        throw new Error('This command is not supported for CF projects.');
+    }
 }
