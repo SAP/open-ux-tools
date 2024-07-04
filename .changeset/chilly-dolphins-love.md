@@ -3,4 +3,4 @@
 '@sap-ux/preview-middleware': patch
 ---
 
-Add UI Adaptation and Navigation button labels in toolbar in ADP case
+Live and Edit buttons are visible as Navigation and UI Adpatation only when in ADP scenario.
