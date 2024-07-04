@@ -26,6 +26,11 @@ Calling `sap-ux add html` will add html files for local preview and testing to t
 ```sh
 sap-ux change add html ui5-test.yaml
 ```
+### annotations-to-odata
+Calling `sap-ux add annotations-to-odata` allows adding an annotation to the OData Source of the base application in an adaptation project.
+```sh
+sap-ux add annotations-to-odata /path/to/adaptation-project
+```
 
 ## change
 Calling `sap-ux change` allows changing a feature of a project.
