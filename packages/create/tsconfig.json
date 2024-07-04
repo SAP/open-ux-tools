@@ -22,16 +22,28 @@
       "path": "../cards-editor-config-writer"
     },
     {
+      "path": "../inquirer-common"
+    },
+    {
       "path": "../logger"
     },
     {
       "path": "../mockserver-config-writer"
     },
     {
+      "path": "../preview-middleware"
+    },
+    {
       "path": "../project-access"
     },
     {
       "path": "../store"
+    },
+    {
+      "path": "../system-access"
+    },
+    {
+      "path": "../ui5-config"
     }
   ]
 }

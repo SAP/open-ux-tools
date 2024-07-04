@@ -1,6 +1,6 @@
 import type { Logger } from '@sap-ux/logger';
 import type { GeneratorEntry } from './types';
-import type { BusinessObject } from '../../types';
+import type { BusinessObject, ValidationResponse } from '../../types';
 import { AdtService } from '../services';
 
 /**
@@ -19,6 +19,23 @@ export class UiServiceGenerator extends AdtService {
      */
     public configure(_config: GeneratorEntry, bo: BusinessObject) {
         this.bo = bo;
+    }
+
+    /**
+     * Get the schema of the service binding.
+     *
+     * @returns The schema of the service binding.
+     */
+    public async getSchema(): Promise<any> {
+        const response = await this.get('/schema', {
+            headers: {
+                Accept: 'application/vnd.sap.adt.repository.generator.schema.v1+json'
+            },
+            params: {
+                referencedObject: this.bo.uri
+            }
+        });
+        return JSON.parse(response.data);
     }
 
     /**
@@ -49,13 +66,54 @@ export class UiServiceGenerator extends AdtService {
     }
 
     /**
+     * Validate the package before generation.
+     *
+     * @param pckg - The package to be validated.
+     * @returns The response of the validation.
+     */
+    public async validatePackage(pckg: string): Promise<any> {
+        const response = await this.get('/validation', {
+            headers: {
+                Accept: 'application/vnd.sap.adt.validationMessages.v1+xml'
+            },
+            params: {
+                referencedObject: this.bo.uri,
+                package: pckg,
+                checks: 'package'
+            }
+        });
+        return this.parseResponse(response.data);
+    }
+
+    /**
+     * Validate the service content and package before generation.
+     *
+     * @param content - The content to be validated.
+     * @returns The response of the validation.
+     */
+    public async validateContent(content: string): Promise<ValidationResponse> {
+        const response = await this.post('/validation', content, {
+            headers: {
+                'Content-Type': 'application/vnd.sap.adt.repository.generator.content.v1+json',
+                Accept: 'application/vnd.sap.adt.validationMessages.v1+xml'
+            },
+            params: {
+                referencedObject: this.bo.uri,
+                checks: 'package,referencedobject,authorization'
+            }
+        });
+        const data = this.parseResponse<any>(response.data);
+        return data.validationMessages?.validationMessage;
+    }
+
+    /**
      * Generate the service binding.
      *
      * @param content - The content of the service binding.
      * @param transport - The transport.
      * @returns The object references.
      */
-    public async generate(content: string, transport: string): Promise<any> {
+    public async generate(content: string, transport: string): Promise<unknown> {
         const response = await this.post('', content, {
             headers: {
                 'Content-Type': 'application/vnd.sap.adt.repository.generator.content.v1+json',
@@ -66,25 +124,6 @@ export class UiServiceGenerator extends AdtService {
                 corrNr: transport
             }
         });
-        // Service binding is in XML format, ready to be used for the subsequent activation and publish.
-        const data = this.parseResponse<any>(response.data);
-        return data.objectReferences;
-    }
-
-    /**
-     * Lock the service binding. The class should be configured with the uri of the service binding
-     * The uri is returned from the generate method.
-     */
-    public async lockServiceBinding() {
-        await this.post('', '', {
-            headers: {
-                Accept: 'application/*,application/vnd.sap.as+xml;charset=UTF-8;dataname=com.sap.adt.lock.result',
-                'x-sap-adt-sessiontype': 'stateful'
-            },
-            params: {
-                _action: `LOCK`,
-                accessMode: 'MODIFY'
-            }
-        });
+        return this.parseResponse(response.data);
     }
 }

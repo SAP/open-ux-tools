@@ -13,6 +13,16 @@ export interface NodeComment<T> {
 }
 
 /**
+ * Converts a YAML document object into a YAML string.
+ *
+ * @param {YamlDocument} yamlDocument The YAML document object to convert into a string.
+ * @returns {string} The YAML string representation of the input YAML document.
+ */
+export function yamlDocumentToYamlString(yamlDocument: YamlDocument): string {
+    return yaml.stringify(yamlDocument);
+}
+
+/**
  * Represents a yaml document with utility functions to manipulate the document.
  *
  * @class YamlDocument
@@ -291,6 +301,16 @@ export class YamlDocument {
         seq.items.splice(seq.items.indexOf(node), 1, newNode);
 
         return this;
+    }
+
+    /**
+     * Simplified method to delete a value in the yaml document.
+     *
+     * @param key - key of the yaml node to delete
+     * @returns `true` if the item was found and removed.
+     */
+    delete(key: string): boolean {
+        return this.documents[0].delete(key);
     }
 
     /**

@@ -6,6 +6,7 @@ import isNil from 'lodash/isNil';
 import { getQuestions } from './prompts';
 import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from './types';
 import { promptNames } from './types';
+import { initI18nUi5AppInquirer } from './i18n';
 /**
  * Get the inquirer prompts for ui5 library inquirer.
  *
@@ -19,6 +20,8 @@ async function getPrompts(
     capCdsInfo?: CdsUi5PluginInfo,
     isYUI = false
 ): Promise<UI5ApplicationQuestion[]> {
+    // prompt texts must be loaded before the prompts are created, wait for the i18n bundle to be initialized
+    await initI18nUi5AppInquirer();
     const filterOptions: UI5VersionFilterOptions = {
         useCache: true,
         includeMaintained: true,
@@ -55,45 +58,87 @@ async function prompt(
     const answers = await adapter.prompt<UI5ApplicationAnswers>(ui5AppPrompts);
     // Apply default values to prompts in case they have not been executed
     if (promptOptions) {
-        Object.assign(answers, await getDefaults(answers, promptOptions));
+        const defaultAnswers = applyPromptOptionDefaults(answers, ui5AppPrompts, promptOptions, capCdsInfo);
+        Object.assign(answers, defaultAnswers);
     }
 
     return answers;
 }
 
 /**
- * Return the default values for prompts that did not provide an answer.
- * This can be derived from user input, or a fallback default in case an answer was not provided due to the prompt not having been executed.
+ * Apply prompt option default values to prompt answers in case they have not been executed by the user selections.
+ * This can occur where some prompts are hidden by advanced option selections.
  *
- * @param answers - the answers from previous prompting, which if present will be used instead of defaults
- * @param promptOptions - the prompt options
- * @returns answer values
+ * @param answers the answers from previous prompting, only answers without a value will be considered for defaulting
+ * @param ui5AppPrompts the prompts that were used to prompt the user, will be used to apply default values if not answered or no default provided
+ * @param promptOptions the prompt options which may provide default values or functions
+ * @param capCdsInfo will be passed as additional answer to default functions that depend on it to determine the default value
+ * @returns the default values for the unanswered prompts, based on the prompt options
  */
-function getDefaults(
+function applyPromptOptionDefaults(
     answers: Partial<UI5ApplicationAnswers>,
-    promptOptions: UI5ApplicationPromptOptions
+    ui5AppPrompts: UI5ApplicationQuestion[],
+    promptOptions: UI5ApplicationPromptOptions,
+    capCdsInfo?: CdsUi5PluginInfo
 ): Partial<UI5ApplicationAnswers> {
     const defaultAnswers: Partial<UI5ApplicationAnswers> = {};
     Object.entries(promptOptions).forEach(([key, promptOpt]) => {
         const promptKey = key as keyof typeof promptNames;
-        // Do we have an answer, if not apply the default, either specified or fallback
-        const defaultProperty = (promptOpt as PromptDefaultValue<string | boolean>).default;
-        if (isNil(answers[promptKey]) && (defaultProperty ?? promptKey === promptNames.ui5Theme)) {
+        // Do we have an answer, if not apply the default
+        const defaultValueOrFunc = (promptOpt as PromptDefaultValue<string | boolean>).default;
+
+        // A prompt option for ui5Theme is not supported (as its dependant on the ui5Version) and is special cased
+        // `enableTypeScript` is dependent on the CdsUi5PluginInfo and is special cased
+        if (
+            isNil(answers[promptKey]) &&
+            ((defaultValueOrFunc ?? promptKey === promptNames.ui5Theme) || promptOpt.advancedOption === true)
+        ) {
             let defaultValue;
-            if (typeof defaultProperty === 'function') {
-                defaultValue = (defaultProperty as Function)(answers);
-            } else if (defaultProperty) {
-                defaultValue = defaultProperty;
-            } else if (promptKey === promptNames.ui5Theme) {
+            if (promptKey === promptNames.ui5Theme) {
                 defaultValue = getDefaultUI5Theme(answers.ui5Version);
+            } else if (promptKey === promptNames.enableTypeScript) {
+                // TypeScript default value is dependent on the CdsUi5PluginInfo
+                const enableTypeScriptOpts = promptOpt as UI5ApplicationPromptOptions['enableTypeScript'];
+                // If an enableTypeScript default function is provided, use it to determine the default value
+                // otherwise override with the provided default value
+                defaultValue =
+                    typeof enableTypeScriptOpts?.default === 'function'
+                        ? enableTypeScriptOpts.default({ ...answers, capCdsInfo })
+                        : defaultValueOrFunc;
+            } else if (defaultValueOrFunc !== undefined) {
+                defaultValue = getDefaultValue(answers, defaultValueOrFunc);
+            } else if (promptOpt.advancedOption) {
+                // Apply the orginal default value if it was not answered
+                const originalDefault = ui5AppPrompts.find((prompt) => prompt.name === promptKey)?.default;
+                defaultValue = getDefaultValue(answers, originalDefault);
             }
             Object.assign(defaultAnswers, {
                 [promptKey]: defaultValue
             });
         }
     });
-
     return defaultAnswers;
+}
+
+/**
+ * Get the default value for a prompt based on the provided default value or function.
+ * If a function is provided, it will be called with the current answers to determine the default value.
+ *
+ * @param answers the current answers provided to default functions
+ * @param promptDefault the default value or function to determine the default value
+ * @returns the default value for the prompt or undefined if no default value is provided
+ */
+function getDefaultValue(
+    answers: Partial<UI5ApplicationAnswers>,
+    promptDefault?: PromptDefaultValue<string | boolean>['default']
+) {
+    if (typeof promptDefault === 'function') {
+        return (promptDefault as Function)(answers);
+    }
+    if (promptDefault !== undefined) {
+        return promptDefault;
+    }
+    return undefined;
 }
 
 export {

@@ -10,6 +10,7 @@ import type { BasicAppSettings } from './types';
 import { FreestyleApp, TemplateType } from './types';
 import { setDefaults, escapeFLPText } from './defaults';
 import { UI5Config } from '@sap-ux/ui5-config';
+import { initI18n } from './i18n';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -20,6 +21,9 @@ import { UI5Config } from '@sap-ux/ui5-config';
  * @returns Reference to a mem-fs-editor
  */
 async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor): Promise<Editor> {
+    // Load i18n translations asynchronously to ensure proper initialization.
+    // This addresses occasional issues where i18n is not initialized in time, causing tests to fail.
+    await initI18n();
     // Clone rather than modifying callers refs
     const ffApp = cloneDeep(data);
     // set defaults

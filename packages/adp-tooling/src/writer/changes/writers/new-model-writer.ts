@@ -3,7 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import { ChangeType } from '../../../types';
 import { DirName } from '@sap-ux/project-access';
 import type { IWriter, NewModelData, DataSourceItem } from '../../../types';
-import { parseStringToObject, getGenericChange, writeChangeToFolder } from '../../../base/change-utils';
+import { parseStringToObject, getChange, writeChangeToFolder } from '../../../base/change-utils';
 
 type NewModelContent = {
     model: {
@@ -40,7 +40,7 @@ export class NewModelWriter implements IWriter<NewModelData> {
                     uri: service.uri,
                     type: 'OData',
                     settings: {
-                        version: service.version
+                        odataVersion: service.version
                     }
                 }
             },
@@ -78,7 +78,7 @@ export class NewModelWriter implements IWriter<NewModelData> {
      */
     async write(data: NewModelData): Promise<void> {
         const content = this.constructContent(data);
-        const change = getGenericChange(data, content, ChangeType.ADD_NEW_MODEL);
+        const change = getChange(data.projectData, data.timestamp, content, ChangeType.ADD_NEW_MODEL);
 
         writeChangeToFolder(
             this.projectPath,

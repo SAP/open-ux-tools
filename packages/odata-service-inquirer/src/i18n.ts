@@ -1,6 +1,7 @@
 import type { TOptions } from 'i18next';
 import i18next from 'i18next';
 import translations from './translations/odata-service-inquirer.i18n.json';
+import type { OdataVersion } from '@sap-ux/odata-service-writer';
 
 const odataServiceInquirerNamespace = 'odata-service-inquirer';
 export const defaultProjectNumber = 1;
@@ -12,7 +13,12 @@ export async function initI18nOdataServiceInquirer(): Promise<void> {
         {
             lng: 'en',
             fallbackLng: 'en',
-            missingInterpolationHandler: () => ''
+            missingInterpolationHandler: () => '',
+            interpolation: {
+                format: function odataVersionFormatter(odataVersion: OdataVersion) {
+                    return odataVersion ? ` V${odataVersion}` : '';
+                }
+            }
         },
         () => i18next.addResourceBundle('en', odataServiceInquirerNamespace, translations)
     );

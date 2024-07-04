@@ -1,5 +1,73 @@
 # @sap-ux/system-access
 
+## 0.4.7
+
+### Patch Changes
+
+-   Updated dependencies [4492fe10]
+    -   @sap-ux/axios-extension@1.14.4
+
+## 0.4.6
+
+### Patch Changes
+
+-   Updated dependencies [d5d3626c]
+    -   @sap-ux/axios-extension@1.14.3
+
+## 0.4.5
+
+### Patch Changes
+
+-   Updated dependencies [65bfb244]
+    -   @sap-ux/axios-extension@1.14.2
+
+## 0.4.4
+
+### Patch Changes
+
+-   Updated dependencies [844e79c4]
+    -   @sap-ux/axios-extension@1.14.1
+
+## 0.4.3
+
+### Patch Changes
+
+-   Updated dependencies [31cc53f8]
+    -   @sap-ux/axios-extension@1.14.0
+
+## 0.4.2
+
+### Patch Changes
+
+-   Updated dependencies [d02be637]
+    -   @sap-ux/store@0.6.0
+
+## 0.4.1
+
+### Patch Changes
+
+-   7f8bc980: FIX: prompt user for authentication type if not known when generating an adaptation project
+
+## 0.4.0
+
+### Minor Changes
+
+-   a48a8c0b: Add support for the SAP Fiori tools CI/CD variables
+
+## 0.3.34
+
+### Patch Changes
+
+-   Updated dependencies [869c1c0d]
+    -   @sap-ux/axios-extension@1.13.1
+
+## 0.3.33
+
+### Patch Changes
+
+-   Updated dependencies [b2ee99fc]
+    -   @sap-ux/axios-extension@1.13.0
+
 ## 0.3.32
 
 ### Patch Changes

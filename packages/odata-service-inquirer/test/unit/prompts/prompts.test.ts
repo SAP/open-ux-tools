@@ -27,7 +27,7 @@ describe('getQuestions', () => {
         jest.restoreAllMocks();
     });
     test('getQuestions', async () => {
-        jest.spyOn(utils, 'getPlatform').mockReturnValueOnce(hostEnvironment.cli);
+        jest.spyOn(utils, 'getHostEnvironment').mockReturnValueOnce(hostEnvironment.cli);
         // Tests all declaritive values
         expect(await getQuestions()).toMatchInlineSnapshot(`
             [
@@ -119,6 +119,53 @@ describe('getQuestions', () => {
                 "name": "capCliStateSetter",
                 "when": [Function],
               },
+              {
+                "guiOptions": {
+                  "breadcrumb": true,
+                  "hint": "https://<hostname>:<port>/path/to/odata/service/",
+                  "mandatory": true,
+                },
+                "message": "OData service URL",
+                "name": "serviceUrl",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "default": false,
+                "message": "Do you want to continue generation with the untrusted certificate?",
+                "name": "ignoreCertError",
+                "type": "confirm",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "name": "cliIgnoreCertValidate",
+                "when": [Function],
+              },
+              {
+                "guiOptions": {
+                  "mandatory": true,
+                },
+                "message": "Service username",
+                "name": "username",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "guiOptions": {
+                  "applyDefaultWhenDirty": true,
+                  "mandatory": true,
+                },
+                "guiType": "login",
+                "mask": "*",
+                "message": "Service password",
+                "name": "serviceUrlPassword",
+                "type": "password",
+                "validate": [Function],
+                "when": [Function],
+              },
             ]
         `);
 
@@ -146,17 +193,23 @@ describe('getQuestions', () => {
 
     test('datasourceTypeQuestion displays and logs not implemented yet message', async () => {
         const logWarnSpy = jest.spyOn(ToolsLogger.prototype, 'warn');
-        const datasourceType = DatasourceType.sapSystem;
         const datasourceTypeQuestion = (await getQuestions())[0];
         expect(datasourceTypeQuestion.name).toEqual('datasourceType');
 
-        const additionalMessages = (datasourceTypeQuestion.additionalMessages as Function)(datasourceType);
-        expect(additionalMessages).toMatchObject({
-            message: t('prompts.datasourceType.notYetImplementedWarningMessage', { datasourceType }),
-            severity: Severity.warning
+        [
+            DatasourceType.businessHub,
+            DatasourceType.none,
+            DatasourceType.projectSpecificDestination,
+            DatasourceType.sapSystem
+        ].forEach((datasourceType) => {
+            const additionalMessages = (datasourceTypeQuestion.additionalMessages as Function)(datasourceType);
+            expect(additionalMessages).toMatchObject({
+                message: t('prompts.datasourceType.notYetImplementedWarningMessage', { datasourceType }),
+                severity: Severity.warning
+            });
+            expect(logWarnSpy).toHaveBeenCalledWith(
+                t('prompts.datasourceType.notYetImplementedWarningMessage', { datasourceType })
+            );
         });
-        expect(logWarnSpy).toHaveBeenCalledWith(
-            t('prompts.datasourceType.notYetImplementedWarningMessage', { datasourceType })
-        );
     });
 });

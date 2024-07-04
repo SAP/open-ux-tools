@@ -5,7 +5,6 @@ import { generate } from '../../../src';
 import type { AdpWriterConfig } from '../../../src/types';
 import { rimraf } from 'rimraf';
 import { migrate } from '../../../src/writer';
-import { OperationsType } from '@sap-ux/axios-extension';
 
 describe('ADP writer', () => {
     const fs = create(createStorage());
@@ -37,10 +36,33 @@ describe('ADP writer', () => {
         }
     };
 
+    const configWithI18n: AdpWriterConfig = {
+        app: {
+            id: 'my.test.app',
+            reference: 'the.original.app',
+            i18nDescription: 'some-description'
+        },
+        target: {
+            url: 'http://sap.example'
+        }
+    };
+
     describe('generate', () => {
         test('minimal config', async () => {
             const projectDir = join(outputDir, 'minimal');
             await generate(projectDir, config, fs);
+            expect(fs.dump(projectDir)).toMatchSnapshot();
+        });
+
+        test('minimal config with i18n description', async () => {
+            const projectDir = join(outputDir, 'minimal');
+            await generate(projectDir, configWithI18n, fs);
+            expect(fs.dump(projectDir)).toMatchSnapshot();
+        });
+
+        test('config without passed memfs editor instance', async () => {
+            const projectDir = join(outputDir, 'memfs');
+            await generate(projectDir, config);
             expect(fs.dump(projectDir)).toMatchSnapshot();
         });
 
@@ -75,6 +97,93 @@ describe('ADP writer', () => {
                     },
                     options: {
                         fioriTools: true
+                    }
+                },
+                fs
+            );
+            expect(
+                fs.dump(
+                    projectDir,
+                    (file) =>
+                        file.dirname === projectDir &&
+                        ['package.json', 'ui5.yaml', 'ui5-deploy.yaml'].includes(file.basename)
+                )
+            ).toMatchSnapshot();
+        });
+
+        test('S/4HANA cloud config', async () => {
+            const projectDir = join(outputDir, 's4hana');
+            Object.assign(config.app, {
+                bspName: 'bsp.test.app',
+                languages: [
+                    {
+                        sap: 'testId',
+                        i18n: 'testKey'
+                    }
+                ]
+            });
+            await generate(
+                projectDir,
+                {
+                    ...config,
+                    deploy: {
+                        package: '$TMP'
+                    },
+                    options: {
+                        fioriTools: true
+                    },
+                    ui5: {
+                        version: '1.122.1'
+                    },
+                    flp: {
+                        semanticObject: 'sampleObj',
+                        action: 'sampleAction',
+                        title: 'testTitle',
+                        subTitle: 'testSubTitle'
+                    },
+                    customConfig: {
+                        adp: {
+                            safeMode: false,
+                            environment: 'C'
+                        }
+                    }
+                },
+                fs
+            );
+            expect(
+                fs.dump(
+                    projectDir,
+                    (file) =>
+                        file.dirname === projectDir &&
+                        ['package.json', 'ui5.yaml', 'ui5-deploy.yaml'].includes(file.basename)
+                )
+            ).toMatchSnapshot();
+        });
+
+        test('S/4HANA cloud config with inboundId', async () => {
+            const projectDir = join(outputDir, 's4hanaWithInboundId');
+            await generate(
+                projectDir,
+                {
+                    ...config,
+                    deploy: {
+                        package: '$TMP'
+                    },
+                    options: {
+                        fioriTools: true
+                    },
+                    ui5: {
+                        version: '1.122.1'
+                    },
+                    flp: {
+                        inboundId: 'sampleId',
+                        subTitle: 'sampleSubTitle'
+                    },
+                    customConfig: {
+                        adp: {
+                            safeMode: false,
+                            environment: 'C'
+                        }
                     }
                 },
                 fs

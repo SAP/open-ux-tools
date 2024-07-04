@@ -24,6 +24,9 @@
   },
   "references": [
     {
+      "path": "packages/abap-deploy-config-writer"
+    },
+    {
       "path": "packages/adp-tooling"
     },
     {
@@ -76,6 +79,9 @@
     },
     {
       "path": "packages/feature-toggle"
+    },
+    {
+      "path": "packages/fiori-annotation-api"
     },
     {
       "path": "packages/fiori-elements-writer"
