@@ -13,7 +13,7 @@ import type {
     PropertyValueType
 } from '../types';
 
-export type ChangeMetadata = Pick<DescriptorVariant, 'reference' | 'layer' | 'namespace'>;
+export type ChangeMetadata = Pick<DescriptorVariant, 'id' | 'layer' | 'namespace'>;
 
 type InboundChangeData = { filePath: string; changeWithInboundId: InboundChange | undefined };
 interface InboundChange extends ManifestChangeProperties {
@@ -196,7 +196,7 @@ export function findChangeWithInboundId(projectPath: string, inboundId: string):
  * @returns - An object representing the change
  */
 export function getChange(
-    { reference, layer, namespace }: ChangeMetadata,
+    { id, layer, namespace }: ChangeMetadata,
     timestamp: number,
     content: object,
     changeType: ChangeType
@@ -208,7 +208,7 @@ export function getChange(
         fileType: 'change',
         creation: new Date(timestamp).toISOString(),
         packageName: '$TMP',
-        reference,
+        reference: id,
         support: { generator: '@sap-ux/adp-tooling' },
         changeType,
         content
