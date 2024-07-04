@@ -130,6 +130,31 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } as FioriElementsApp<LROPSettings>
         },
         {
+            name: 'lrop_v4_addtests_cds_typescript',
+            config: {
+                ...Object.assign(feBaseConfig('lrop_v4_addtests_cds'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v4TemplateSettings
+                    },
+                    appOptions: {
+                        ...feBaseConfig('lrop_v4_addtests_cds').appOptions,
+                        addTests: true,
+                        typescript: true
+                    }
+                }),
+                app: {
+                    ...feBaseConfig('lrop_v4_addtests_cds').app,
+                    projectType: 'CAPNodejs'
+                },
+                service: {
+                    ...v4Service,
+                    metadata: undefined,
+                    type: ServiceType.CDS
+                }
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
             name: 'lrop_v2',
             config: {
                 ...Object.assign(feBaseConfig('felrop2'), {
