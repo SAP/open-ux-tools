@@ -7,6 +7,7 @@ import { convert } from '@sap-ux/annotation-converter';
 import { FioriAnnotationService } from '@sap-ux/fiori-annotation-api';
 import { getCapServiceName } from '@sap-ux/project-access';
 import type { Project } from '@sap-ux/project-access';
+import { BindingContextType } from '../../types';
 
 export async function getMappedServiceName(project: Project, serviceName: string, appName: string): Promise<string> {
     let mappedServiceName = serviceName;
@@ -97,6 +98,7 @@ export async function getAnnotationPathQualifiers(
     projectProvider: ProjectProvider,
     entity: string,
     annotationTerm: UIAnnotationTerms[],
+    bindingContext: { type: BindingContextType; isCollection?: boolean },
     useNamespace = false
 ) {
     const result: Record<string, string> = {};
@@ -116,7 +118,7 @@ export async function getAnnotationPathQualifiers(
             }
         }
         if (entityType) {
-            getAnnotationPathQualifiersForEntityType(entityType, annotationTerm, result, useNamespace);
+            getAnnotationPathQualifiersForEntityType(entityType, annotationTerm, result, useNamespace, bindingContext);
         }
     } catch (error) {
         throw new Error(`An error occurred while reading the annotation path qualifiers. Details: ${error}`);
@@ -135,24 +137,30 @@ function getAnnotationPathQualifiersForEntityType(
     entityType: EntityType,
     annotationTerms: UIAnnotationTerms[],
     result: Record<string, string>,
-    useNamespace: boolean
+    useNamespace: boolean,
+    bindingContext: { type: BindingContextType; isCollection?: boolean }
 ) {
-    addAnnotationPathQualifierToResult(entityType, '', annotationTerms, result, useNamespace);
-    entityType.navigationProperties.forEach((navigationProperty) => {
-        if (
-            navigationProperty.targetType &&
-            navigationProperty.targetType._type === 'EntityType' &&
-            navigationProperty.name !== 'SiblingEntity'
-        ) {
-            addAnnotationPathQualifierToResult(
-                navigationProperty.targetType,
-                navigationProperty.name,
-                annotationTerms,
-                result,
-                useNamespace
-            );
-        }
-    });
+    if (bindingContext.type === 'absolute') {
+        addAnnotationPathQualifierToResult(entityType, '', annotationTerms, result, useNamespace);
+    } else if (bindingContext.type === 'relative') {
+        entityType.navigationProperties.forEach((navigationProperty) => {
+            if (
+                navigationProperty.targetType &&
+                navigationProperty.targetType._type === 'EntityType' &&
+                navigationProperty.name !== 'SiblingEntity'
+            ) {
+                if (!bindingContext.isCollection || (bindingContext.isCollection && navigationProperty.isCollection)) {
+                    addAnnotationPathQualifierToResult(
+                        navigationProperty.targetType,
+                        navigationProperty.name,
+                        annotationTerms,
+                        result,
+                        useNamespace
+                    );
+                }
+            }
+        });
+    }
 }
 
 /**

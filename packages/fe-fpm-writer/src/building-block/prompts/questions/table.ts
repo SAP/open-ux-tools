@@ -6,6 +6,7 @@ import { i18nNamespaces, translate } from '../../../i18n';
 import {
     getAggregationPathPrompt,
     getAnnotationPathQualifierPrompt,
+    getBindingContextTypePrompt,
     getBooleanPrompt,
     getBuildingBlockIdPrompt,
     getCAPServicePrompt,
@@ -67,6 +68,15 @@ export async function getTableBuildingBlockPrompts(
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
                 required: true
             }),
+            getBindingContextTypePrompt(
+                'Binding Context Path Type',
+                'relative',
+                ['buildingBlockData.metaPath.qualifier'],
+                {
+                    groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
+                    required: true
+                }
+            ),
             ...((await isCapProject(projectProvider))
                 ? [
                       await getCAPServicePrompt(t('service'), projectProvider, [], {

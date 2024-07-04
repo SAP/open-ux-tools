@@ -8,7 +8,7 @@ import { ProjectProvider } from './project';
 import { getAnnotationPathQualifiers, getEntityTypes } from './service';
 import { getCapServiceName } from '@sap-ux/project-access';
 import type { InputPromptQuestion, ListPromptQuestion, PromptListChoices } from '../types';
-import { BuildingBlockType } from '../../types';
+import { BindingContextType, BuildingBlockType } from '../../types';
 import { isElementIdAvailable } from './xml';
 import { i18nNamespaces, initI18n, translate } from '../../../i18n';
 
@@ -65,11 +65,18 @@ export function getAnnotationPathQualifierPrompt(
         message,
         choices: async (answers) => {
             const { entitySet } = answers.buildingBlockData?.metaPath ?? {};
+            const { bindingContextType } = answers;
             if (!entitySet) {
                 return [];
             }
+            const bindingContext = bindingContextType
+                ? {
+                      type: bindingContextType as BindingContextType,
+                      isCollection: answers.buildingBlockType === BuildingBlockType.Table
+                  }
+                : { type: 'absolute' as BindingContextType };
             const choices = transformChoices(
-                await getAnnotationPathQualifiers(projectProvider, entitySet, annotationTerm, true)
+                await getAnnotationPathQualifiers(projectProvider, entitySet, annotationTerm, bindingContext, true)
             );
             if (entitySet && !choices.length) {
                 throw new Error(
@@ -401,6 +408,7 @@ async function getBuildingBlockIdsInFile(
 export function getBindingContextTypePrompt(
     message: string,
     defaultValue?: string,
+    dependantPromptNames = ['buildingBlockData.metaPath.qualifier'],
     additionalProperties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
     return {
@@ -409,6 +417,7 @@ export function getBindingContextTypePrompt(
         name: 'bindingContextType',
         selectType: 'static',
         message,
+        dependantPromptNames,
         choices: [
             { name: t('bindingContextType.option.relative'), value: 'relative' },
             { name: t('bindingContextType.option.absolute'), value: 'absolute' }
