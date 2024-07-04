@@ -12,7 +12,7 @@ import { updateLaunchJSON } from './writer';
 
 export type configType = object | string | number | undefined;
 
-type WriteCallback = (
+type UpdateCallback = (
     config: configType,
     filePath: string,
     jsonPath: JSONPath,
@@ -35,7 +35,7 @@ export async function traverseAndModifyObject(
     obj: any,
     filePath: string,
     originalJSON: Node | undefined,
-    callback: WriteCallback,
+    callback: UpdateCallback,
     fs: Editor,
     initialPath: JSONPath = []
 ): Promise<void> {
@@ -71,7 +71,7 @@ async function processArray(
     arr: any[],
     filePath: string,
     originalJSON: Node | undefined,
-    callback: WriteCallback,
+    callback: UpdateCallback,
     currentPath: JSONPath,
     originalLength: number,
     fs: Editor
@@ -109,7 +109,7 @@ async function processObject(
     obj: any,
     filePath: string,
     originalJSON: Node | undefined,
-    callback: WriteCallback,
+    callback: UpdateCallback,
     currentPath: JSONPath,
     originalLength: number,
     node: Node | undefined,
@@ -136,7 +136,7 @@ async function processObject(
  * @param fioriOptions - options for the new launch config.
  * @param index - index of the launch config to edit.
  * @param fs - optional, the memfs editor instance.
- * @returns void.
+ * @returns memfs editor instance.
  */
 export async function updateLaunchConfig(
     rootFolder: string,

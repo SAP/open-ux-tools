@@ -12,7 +12,7 @@ import { updateLaunchJSON } from './writer';
  * @param rootFolder - workspace root folder.
  * @param index - index of the launch config to edit.
  * @param fs - optional, the memfs editor instance.
- * @returns void.
+ * @returns memfs editor instance.
  */
 export async function deleteLaunchConfig(rootFolder: string, index: number, fs?: Editor): Promise<Editor> {
     if (!fs) {

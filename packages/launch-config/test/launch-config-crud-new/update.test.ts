@@ -6,8 +6,6 @@ import { createLaunchConfig, LAUNCH_JSON_FILE, updateLaunchConfig } from '../../
 import { TestPaths } from '../test-data/utils';
 import { parse } from 'jsonc-parser';
 
-const feLaunchJsonCopy = join(TestPaths.tmpDir, DirName.VSCode, LAUNCH_JSON_FILE);
-
 function checkJSONComments(launchJsonString: string) {
     expect(launchJsonString).toMatch('// test json with comments - comment 1');
     for (let i = 2; i < 12; i++) {
@@ -16,14 +14,16 @@ function checkJSONComments(launchJsonString: string) {
 }
 
 describe('update', () => {
+    const launchJSONPath = join(TestPaths.tmpDir, DirName.VSCode, LAUNCH_JSON_FILE);
     const memFs = create(createStorage());
 
     beforeAll(async () => {
-        memFs.copy(TestPaths.feProjectsLaunchConfig, feLaunchJsonCopy);
+        // copy launch.json from existing project
+        memFs.copy(TestPaths.feProjectsLaunchConfig, launchJSONPath);
     });
 
     afterEach(async () => {
-        const launchJsonString = memFs.read(feLaunchJsonCopy);
+        const launchJsonString = memFs.read(launchJSONPath);
         checkJSONComments(launchJsonString);
     });
 
@@ -36,7 +36,15 @@ describe('update', () => {
         const launchJSONPath = join(TestPaths.feProjectsLaunchConfig);
         let result = await createLaunchConfig(
             TestPaths.feProjects,
-            { name: 'LaunchConfig_One', projectRoot: TestPaths.feProjects },
+            {
+                name: 'LaunchConfig_One',
+                projectRoot: TestPaths.feProjects,
+                backendConfigs: [{ path: 'TEST_PATH', url: 'TEST_URL' }],
+                ui5Version: 'TEST_UI5_VERSION',
+                ui5VersionUri: 'https://ui5.sap.com',
+                useMockData: true,
+                urlParameters: 'sap-ui-xx-viewCache=false'
+            },
             memFs
         );
         let launchJSONString = result.read(launchJSONPath);
@@ -45,9 +53,14 @@ describe('update', () => {
             'run.config': JSON.stringify({
                 handlerId: 'fiori_tools',
                 runnableId: join(TestPaths.feProjects)
-            })
+            }),
+            FIORI_TOOLS_BACKEND_CONFIG: `[{\"path\":\"TEST_PATH\",\"url\":\"TEST_URL\"}]`,
+            FIORI_TOOLS_UI5_URI: 'https://ui5.sap.com',
+            FIORI_TOOLS_UI5_VERSION: 'TEST_UI5_VERSION',
+            FIORI_TOOLS_URL_PARAMS: 'sap-ui-xx-viewCache=false'
         };
         expect(launchJSON.configurations[6]).toStrictEqual({
+            args: ['--config', 'ui5-mock.yaml'],
             console: 'internalConsole',
             cwd: '${workspaceFolder}',
             env: expectedEnv,
@@ -75,10 +88,17 @@ describe('update', () => {
         );
         launchJSONString = result.read(launchJSONPath);
         launchJSON = parse(launchJSONString);
+        const expectedEnvUpdate = {
+            'run.config': JSON.stringify({
+                handlerId: 'fiori_tools',
+                runnableId: join(TestPaths.feProjects)
+            })
+        };
         expect(launchJSON.configurations[6]).toStrictEqual({
+            args: ['--config', 'ui5-mock.yaml'],
             console: 'internalConsole',
             cwd: '${workspaceFolder}',
-            env: expectedEnv,
+            env: expectedEnvUpdate,
             internalConsoleOptions: 'openOnSessionStart',
             name: 'Changed config during test',
             outputCapture: 'std',
@@ -164,6 +184,7 @@ describe('update', () => {
         const launchJSONString = result.read(launchJSONPath);
         const launchJSON = parse(launchJSONString);
         expect(launchJSON.configurations[6]).toStrictEqual({
+            args: [],
             console: 'internalConsole',
             cwd: '${workspaceFolder}',
             env: expectedEnv,
@@ -204,6 +225,7 @@ describe('update', () => {
         const launchJSONString = result.read(launchJSONPath);
         const launchJSON = parse(launchJSONString);
         expect(launchJSON.configurations[6]).toStrictEqual({
+            args: ['--config', 'ui5-local.yaml', '--framework-version', 'snapshot'],
             console: 'internalConsole',
             cwd: '${workspaceFolder}',
             env: expectedEnv,

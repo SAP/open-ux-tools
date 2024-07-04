@@ -15,7 +15,7 @@ import { updateLaunchJSON } from './writer';
  * @param rootFolder - workspace root folder.
  * @param fioriOptions - options for the new launch config.
  * @param fs - optional, the memfs editor instance.
- * @returns void.
+ * @returns memfs editor instance.
  */
 export async function createLaunchConfig(rootFolder: string, fioriOptions: FioriOptions, fs?: Editor): Promise<Editor> {
     if (!fs) {
