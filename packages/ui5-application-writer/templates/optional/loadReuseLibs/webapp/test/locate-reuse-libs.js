@@ -240,7 +240,9 @@ sap.registerComponentDependencyPaths(manifestUri)
             sap.ui.getCore().attachInit(function () {
                 registerSAPFonts();
                 // initialize the ushell sandbox component
-                sap.ushell.Container.createRenderer().placeAt("content");
+                sap.ushell.Container.createRenderer(true).then(function (component) {
+                    component.placeAt("content");
+                });
             });
         }
     });
