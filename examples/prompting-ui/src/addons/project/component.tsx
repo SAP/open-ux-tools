@@ -55,9 +55,11 @@ export const ProjectPathForm = memo(() => {
         if (storedPath) {
             updateSavedPath(storedPath);
         } else {
-            getProjectPath().then((projectPath) => {
-                updateSavedPath(projectPath);
-            });
+            getProjectPath()
+                .then((projectPath) => {
+                    updateSavedPath(projectPath);
+                })
+                .catch(() => console.log('Error while getting project path'));
         }
     }, []);
 
@@ -74,18 +76,20 @@ export const ProjectPathForm = memo(() => {
     const onSubmit = (_event?: React.MouseEventHandler, submitPath = pendingPath) => {
         console.log('Submit!');
         setBusy(true);
-        updateProjectPath(submitPath).then((payload) => {
-            const { saved, path, message } = payload;
-            if (saved && path) {
-                updateSavedPath(path);
-                setStoredPath(path);
-                // Reload preview to apply new project path
-                reloadPreview();
-            } else if (message) {
-                setMessage(message);
-            }
-            setBusy(false);
-        });
+        updateProjectPath(submitPath)
+            .then((payload) => {
+                const { saved, path, message } = payload;
+                if (saved && path) {
+                    updateSavedPath(path);
+                    setStoredPath(path);
+                    // Reload preview to apply new project path
+                    reloadPreview();
+                } else if (message) {
+                    setMessage(message);
+                }
+                setBusy(false);
+            })
+            .catch(() => console.log('Error while updating project path'));
     };
     // Reset project path to default mock path
     const onReset = () => {
@@ -123,6 +127,8 @@ export const ProjectPathForm = memo(() => {
         </AddonPanel>
     );
 });
+
+ProjectPathForm.displayName = 'ProjectPathForm';
 
 export const render = (props: { active?: boolean }): React.ReactElement => {
     const { active = false } = props;

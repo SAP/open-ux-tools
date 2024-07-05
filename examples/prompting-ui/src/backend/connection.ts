@@ -49,6 +49,7 @@ const connections: WebSocket[] = [];
 
 /**
  * Initializes the memfs and copies over the sample Fiori elements application.
+ *
  * @param forceUpdate Overwrite cached editor
  * @returns {Promise<Editor>} the memfs editor object.
  */

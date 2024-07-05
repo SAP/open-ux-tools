@@ -82,10 +82,12 @@ export const BuildingBlockQuestions = (props: {
             // Call API to apply changes
             console.log('Applying changes... FPM Writer');
             if (!Object.values(validationResults).some((result: ValidationResult) => result.isValid === false)) {
-                applyAnswers(type, answers).then(() => {
-                    setAnswers({});
-                    setValidation({});
-                });
+                applyAnswers(type, answers)
+                    .then(() => {
+                        setAnswers({});
+                        setValidation({});
+                    })
+                    .catch(() => console.log('Error while applying answers'));
             }
         });
     }

@@ -36,19 +36,21 @@ export function useQuestions(
     });
 
     useEffect(() => {
-        getQuestions(type).then(({ groups, questions }) => {
-            if (filterQuestions) {
-                const resolvedQuestions: typeof questions = [];
-                for (const name of filterQuestions) {
-                    const question = questions.find((question) => question.name === name);
-                    if (question) {
-                        resolvedQuestions.push(question);
+        getQuestions(type)
+            .then(({ groups, questions }) => {
+                if (filterQuestions) {
+                    const resolvedQuestions: typeof questions = [];
+                    for (const name of filterQuestions) {
+                        const question = questions.find((question) => question.name === name);
+                        if (question) {
+                            resolvedQuestions.push(question);
+                        }
                     }
+                    questions = resolvedQuestions;
                 }
-                questions = resolvedQuestions;
-            }
-            setQuestions({ groups, questions });
-        });
+                setQuestions({ groups, questions });
+            })
+            .catch(() => console.log('Error while getting prompt questions'));
     }, []);
 
     return questions;
