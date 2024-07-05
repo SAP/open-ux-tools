@@ -92,7 +92,7 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
             message: t('prompts.oDataServiceVersionLabel'),
             choices: oDataVersions,
             default: (answers: NewModelAnswers) => {
-                if (answers?.uri.startsWith(isCFEnv ? 'odata/v4/' : '/sap/opu/odata4/')) {
+                if (answers.uri?.startsWith(isCFEnv ? 'odata/v4/' : '/sap/opu/odata4/')) {
                     return oDataVersions[1].value;
                 }
 
