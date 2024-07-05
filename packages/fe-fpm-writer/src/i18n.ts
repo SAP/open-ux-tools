@@ -56,5 +56,5 @@ export function translate(
     keyPrefix?: string
 ): (key: string, options?: string | TOptions<StringMap & TOptionsBase>) => string {
     return (key: string, options?: any): string =>
-        i18nInstance.t(`${namespace}:${keyPrefix || ''}${key}`, options) || '';
+        i18nInstance.t(`${namespace}:${keyPrefix ?? ''}${key}`, options) || '';
 }

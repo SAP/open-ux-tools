@@ -19,10 +19,9 @@ export const QuestionGroup = (props: QuestionGroupProps) => {
                 </div>
             </ul>
             {showDescription &&
-                description &&
-                description.map((descriptionParagraph, i) => (
-                    <div className="prompts-group-description" key={i}>
-                        <ReactMarkdown key={i}>{descriptionParagraph}</ReactMarkdown>
+                description?.map((descriptionParagraph) => (
+                    <div className="prompts-group-description" key={descriptionParagraph}>
+                        <ReactMarkdown key={descriptionParagraph}>{descriptionParagraph}</ReactMarkdown>
                     </div>
                 ))}
             <div className="prompt-entries-group">{children}</div>

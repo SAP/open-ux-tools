@@ -32,7 +32,7 @@ export const Input = (props: InputProps) => {
             value={value.toString()}
             onChange={onLiveChange}
             errorMessage={errorMessage}
-            placeholder={placeholder || 'Enter a value'}
+            placeholder={placeholder ?? 'Enter a value'}
         />
     );
 };

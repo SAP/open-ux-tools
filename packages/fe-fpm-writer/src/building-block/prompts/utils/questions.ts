@@ -193,7 +193,7 @@ export async function getCAPServiceChoices(projectProvider: ProjectProvider): Pr
     for (const serviceKey of Object.keys(services)) {
         const mappedServiceName = await getCapServiceName(
             project.root,
-            project.apps[projectProvider.appId].services[serviceKey]?.uri || ''
+            project.apps[projectProvider.appId].services[serviceKey]?.uri ?? ''
         );
         servicesMap[mappedServiceName] = serviceKey;
     }
