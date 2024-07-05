@@ -1,5 +1,18 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.1.2
+
+### Patch Changes
+
+-   bb7ebe9a: Fix: Include Templates in 'files' Array of fiori-generator-shared Package.json
+
+## 0.1.1
+
+### Patch Changes
+
+-   Updated dependencies [9ea58ad4]
+    -   @sap-ux/project-access@1.22.4
+
 ## 0.1.0
 
 ### Minor Changes
