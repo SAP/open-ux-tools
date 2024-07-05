@@ -557,29 +557,29 @@ async function readPackageNameForFolder(baseUri: string, relativeUri: string): P
     return packageName;
 }
 
-let globalCdsPathCache: string;
+let globalCdsModulePromise: Promise<CdsFacade> | undefined;
 
 /**
  * Try to load global installation of @sap/cds, usually child of @sap/cds-dk.
  *
  * @returns - module @sap/cds from global installed @sap/cds-dk
  */
-async function loadGlobalCdsModule<T>(): Promise<T> {
-    if (!globalCdsPathCache) {
+async function loadGlobalCdsModule(): Promise<CdsFacade> {
+    globalCdsModulePromise = globalCdsModulePromise ?? new Promise<CdsFacade>(async resolve => {
         const versions = await getCdsVersionInfo();
         if (!versions.home) {
             throw Error('Can not find global installation of module @sap/cds, which should be part of @sap/cds-dk');
         }
-        globalCdsPathCache = versions.home;
-    }
-    return loadModuleFromProject<T>(globalCdsPathCache, '@sap/cds');
+        resolve(loadModuleFromProject<CdsFacade>(versions.home, '@sap/cds'));
+    });
+    return globalCdsModulePromise;
 }
 
 /**
  * Clear cache of path to global cds module.
  */
 export function clearGlobalCdsPathCache() {
-    globalCdsPathCache = '';
+    globalCdsModulePromise = undefined;
 }
 
 /**
