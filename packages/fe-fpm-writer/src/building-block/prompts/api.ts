@@ -38,15 +38,13 @@ const PromptsQuestionsMap: SupportedPromptsMap = {
 const PromptsGeneratorsMap = {
     [PromptsType.Chart]: generateBuildingBlock,
     [PromptsType.Table]: generateBuildingBlock,
-    [PromptsType.FilterBar]: generateBuildingBlock,
-    [PromptsType.BuildingBlocks]: undefined
+    [PromptsType.FilterBar]: generateBuildingBlock
 };
 
 const PromptsCodePreviewMap = {
     [PromptsType.Chart]: getSerializedFileContent,
     [PromptsType.Table]: getSerializedFileContent,
-    [PromptsType.FilterBar]: getSerializedFileContent,
-    [PromptsType.BuildingBlocks]: undefined
+    [PromptsType.FilterBar]: getSerializedFileContent
 };
 
 const TEMP_MAP: Map<PromptsType, BuildingBlockType> = new Map([
