@@ -45,14 +45,9 @@ export async function getChartBuildingBlockPrompts(
             getBuildingBlockIdPrompt(fs, t('id.message'), t('id.validation'), basePath, defaultAnswers.id, {
                 required: true
             }),
-            getBindingContextTypePrompt(
-                'Binding Context Path Type',
-                'relative',
-                ['buildingBlockData.metaPath.qualifier'],
-                {
-                    required: true
-                }
-            ),
+            getBindingContextTypePrompt(t('bindingContextType'), 'relative', ['buildingBlockData.metaPath.qualifier'], {
+                required: true
+            }),
             ...((await isCapProject(projectProvider))
                 ? [await getCAPServicePrompt(t('service'), projectProvider, [], { required: true })]
                 : []),
