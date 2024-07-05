@@ -13,6 +13,13 @@ export { addFioriElementsLaunchConfig, updateFioriElementsLaunchConfig } from '.
 export { updateLaunchConfig } from './launch-config-crud-new/update';
 export { deleteLaunchConfig } from './launch-config-crud-new/delete';
 export {
+    getLaunchJSONFilePath,
+    getLaunchJSONFilePaths
+    // getLaunchConfigs,
+    // getAllLaunchConfigs,
+    // getLaunchConfigByName
+} from './launch-config-crud-new/read';
+export {
     // getFioriOptions,
     generateNewFioriLaunchConfig
     // buildUI5Option,
