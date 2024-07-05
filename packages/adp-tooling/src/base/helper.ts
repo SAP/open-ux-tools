@@ -1,7 +1,6 @@
-import type { UI5FlexLayer } from '@sap-ux/project-access';
+import type { UI5FlexLayer, ManifestNamespace } from '@sap-ux/project-access';
 import type { DescriptorVariant, AdpPreviewConfig } from '../types';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { ManifestNamespace } from '@sap-ux/project-access';
 import { getManifest } from './abap';
 import { readFileSync, existsSync, readdirSync } from 'fs';
 import { join, sep, isAbsolute } from 'path';
@@ -33,7 +32,7 @@ export function isValidSapClient(input: string | undefined): boolean {
  * @returns true if running in an internal scenario, false otherwise
  */
 export function isCustomerBase(layer: UI5FlexLayer): boolean {
-    return layer === 'CUSTOMER_BASE' ? true : false;
+    return layer === 'CUSTOMER_BASE';
 }
 
 /**

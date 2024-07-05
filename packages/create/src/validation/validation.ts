@@ -1,8 +1,7 @@
-import { getWebappPath } from '@sap-ux/project-access';
-import { existsSync } from 'fs';
 import type { Editor } from 'mem-fs-editor';
+import { getWebappPath, getAppType } from '@sap-ux/project-access';
+import { existsSync } from 'fs';
 import { join } from 'path';
-import { getAppType } from '@sap-ux/project-access';
 import { isCFEnvironment } from '@sap-ux/adp-tooling';
 
 /**
