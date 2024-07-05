@@ -64,5 +64,5 @@ export abstract class CatalogService extends ODataService {
     }
 
     abstract getAnnotations({ id, title, path }: FilterOptions): Promise<Annotations[]>;
-    abstract getServiceType(path: string): Promise<ServiceType>;
+    abstract getServiceType(path: string): Promise<ServiceType | undefined>;
 }

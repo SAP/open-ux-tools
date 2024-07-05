@@ -114,7 +114,7 @@ describe('V4CatalogService', () => {
 
         it('get the service type', async () => {
             const serviceType = catalog.getServiceType('mock/v4/service');
-            await expect(serviceType).resolves.toBe('');
+            await expect(serviceType).resolves.toBe(undefined);
         });
     });
 });

@@ -111,9 +111,9 @@ export class V4CatalogService extends CatalogService {
     /**
      * For OData v4, no additonal call is required to retrieve the service type.
      *
-     * @returns an empty string
+     * @returns undefined
      */
-    public getServiceType(): Promise<ServiceType> {
-        return Promise.resolve('' as unknown as ServiceType);
+    public getServiceType(): Promise<undefined> {
+        return Promise.resolve(undefined);
     }
 }
