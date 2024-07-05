@@ -28,30 +28,29 @@ import type {
     UpdateCodeSnippet,
     SetValidationResults
 } from '../../src/utils/types';
-import { AddonActions } from '../addons/types';
+import type { AddonActions } from '../addons/types';
 import { handleAction as handleAddonAction } from '../addons/project';
 import { existsSync } from 'fs';
 import { testAppPath, getProjectPath } from '../addons/project';
 import {
     GET_PROJECT_PATH,
     SET_PROJECT_PATH,
-    SetProjectPath,
     UPDATE_PROJECT_PATH,
     UPDATE_PROJECT_PATH_RESULT,
-    UpdateProjectPathResult,
     VALIDATE_ANSWERS
 } from '../addons/project/types';
-import { DynamicChoices } from '@sap-ux/ui-prompting';
+import type { SetProjectPath, UpdateProjectPathResult } from '../addons/project/types';
+import type { DynamicChoices } from '@sap-ux/ui-prompting';
 
 const sampleAppPath = join(__dirname, '../../../fe-fpm-cli/sample/fe-app');
 
 let fsEditor: Editor | undefined;
-let connections: WebSocket[] = [];
+const connections: WebSocket[] = [];
 
 /**
  * Initializes the memfs and copies over the sample Fiori elements application.
- *
- * @returns {Promise<Editor>} the memfs editor object
+ * @param forceUpdate Overwrite cached editor
+ * @returns {Promise<Editor>} the memfs editor object.
  */
 export async function getEditor(forceUpdate = false): Promise<Editor> {
     if (fsEditor && !forceUpdate) {
@@ -175,7 +174,7 @@ async function handleAction(action: Actions): Promise<void> {
                 break;
             }
             case UPDATE_PROJECT_PATH: {
-                let newProjectPath = action.path ? join(action.path) : testAppPath;
+                const newProjectPath = action.path ? join(action.path) : testAppPath;
                 let message: string | undefined;
                 try {
                     if (action.path && !existsSync(newProjectPath)) {
