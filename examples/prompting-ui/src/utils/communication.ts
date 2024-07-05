@@ -1,24 +1,24 @@
-import { Answers } from 'inquirer';
+import type { Answers } from 'inquirer';
 import {
     GET_PROJECT_PATH,
-    GetProjectPath,
     SET_PROJECT_PATH,
     UPDATE_PROJECT_PATH,
     UPDATE_PROJECT_PATH_RESULT,
+    VALIDATE_ANSWERS
+} from '../addons/project/types';
+import type {
+    GetProjectPath,
     UpdateProjectPath,
     UpdateProjectPathResultPayload,
-    VALIDATE_ANSWERS,
     ValidateAnswers
 } from '../addons/project/types';
-import type { DynamicChoices, PromptQuestion, ValidationResults } from '@sap-ux/ui-prompting';
-import { PromptsGroup } from '@sap-ux/ui-prompting';
-import type { Actions, GetChoices, GetCodeSnippet } from './types';
+import type { DynamicChoices, PromptQuestion, ValidationResults, PromptsGroup } from '@sap-ux/ui-prompting';
+import type { Actions, GetChoices, GetCodeSnippet, GetQuestions } from './types';
 import {
     APPLY_ANSWERS,
     GET_CHOICES,
     GET_CODE_SNIPPET,
     GET_QUESTIONS,
-    GetQuestions,
     SET_CHART_QUESTIONS,
     SET_CHOICES,
     SET_FILTERBAR_QUESTIONS,
@@ -26,7 +26,6 @@ import {
     SET_VALIDATION_RESULTS,
     SupportedBuildingBlocks
 } from './types';
-import { ProjectActions } from '../addons/project';
 
 let ws: WebSocket | undefined;
 
@@ -92,7 +91,7 @@ const QUESTIONS_TYPE_MAP = new Map([
 export function getQuestions<T extends Answers>(
     type: SupportedBuildingBlocks
 ): Promise<{ questions: PromptQuestion<T>[]; groups?: PromptsGroup[] }> {
-    return new Promise((resolve, error) => {
+    return new Promise((resolve, reject) => {
         const getAction: GetQuestions = {
             type: GET_QUESTIONS,
             value: type
@@ -100,7 +99,7 @@ export function getQuestions<T extends Answers>(
         sendMessage(getAction);
         const expectedActionType = QUESTIONS_TYPE_MAP.get(type);
         if (!expectedActionType) {
-            return error('Unsupported type');
+            return reject('Unsupported type');
         }
         const handleMessage = (action: Actions) => {
             if ('questions' in action && Array.isArray(action.questions)) {
@@ -140,7 +139,7 @@ export function applyAnswers(
     buildingBlockType: SupportedBuildingBlocks,
     answers: unknown
 ): Promise<{ buildingBlockType: SupportedBuildingBlocks }> {
-    return new Promise((resolve, error) => {
+    return new Promise((resolve) => {
         const getAction = {
             type: APPLY_ANSWERS,
             answers,
@@ -156,7 +155,7 @@ export function validateAnswers(
     questions: PromptQuestion[],
     answers: Answers
 ): Promise<ValidationResults> {
-    return new Promise((resolve, error) => {
+    return new Promise((resolve) => {
         const getAction: ValidateAnswers = {
             type: VALIDATE_ANSWERS,
             value,

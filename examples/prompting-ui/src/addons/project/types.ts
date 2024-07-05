@@ -1,6 +1,6 @@
-import { Answers } from 'inquirer';
-import { SupportedBuildingBlocks } from '../../../src/utils';
-import { PromptQuestion } from '@sap-ux/ui-prompting';
+import type { Answers } from 'inquirer';
+import type { SupportedBuildingBlocks } from '../../../src/utils';
+import type { PromptQuestion } from '@sap-ux/ui-prompting';
 
 export type ProjectActions =
     | GetProjectPath

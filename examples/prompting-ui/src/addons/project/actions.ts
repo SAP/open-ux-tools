@@ -6,7 +6,7 @@ import { getProjectPath, setProjectPath, testAppPath } from './project';
 import { validateProject } from '../../backend';
 
 export async function handleAction(action: ProjectActions): Promise<ProjectActions | undefined> {
-    let responseAction: ProjectActions | undefined = undefined;
+    let responseAction: ProjectActions | undefined;
     switch (action.type) {
         case GET_PROJECT_PATH: {
             responseAction = {
@@ -16,7 +16,7 @@ export async function handleAction(action: ProjectActions): Promise<ProjectActio
             break;
         }
         case UPDATE_PROJECT_PATH: {
-            let newProjectPath = action.path ? join(action.path) : testAppPath;
+            const newProjectPath = action.path ? join(action.path) : testAppPath;
             let message: string | undefined;
             if (action.path && !existsSync(newProjectPath)) {
                 message = 'Provided path does not exist';

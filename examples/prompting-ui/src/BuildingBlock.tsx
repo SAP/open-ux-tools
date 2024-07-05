@@ -1,18 +1,12 @@
 import { UIDefaultButton, UISmallButton, initIcons } from '@sap-ux/ui-components';
 import React, { useEffect, useState } from 'react';
-import { SupportedBuildingBlocks } from './utils';
+import type { SupportedBuildingBlocks } from './utils';
 import { applyAnswers, getChoices, getCodeSnippet, getWebSocket, validateAnswers } from './utils/communication';
-import {
-    Questions,
-    PromptsLayoutType,
-    PromptQuestion,
-    ValidationResults,
-    ValidationResult
-} from '@sap-ux/ui-prompting';
+import { Questions, PromptsLayoutType } from '@sap-ux/ui-prompting';
+import type { PromptQuestion, ValidationResults, ValidationResult } from '@sap-ux/ui-prompting';
 import { useChoices, useQuestions } from './utils/hooks';
-import { Answers } from 'inquirer';
-import { AnswerValue } from '@sap-ux/ui-prompting';
-import { getAnswer, getDependantQuestions, setAnswer } from '@sap-ux/ui-prompting/src/utilities';
+import type { Answers } from 'inquirer';
+import { getAnswer, setAnswer } from '@sap-ux/ui-prompting/src/utilities';
 
 initIcons();
 getWebSocket();
@@ -67,7 +61,7 @@ export const BuildingBlockQuestions = (props: {
 
     useEffect(() => setAnswers(updateWithDefaultAnswers(externalAnswers, questions)), [questions]);
 
-    async function updateAnswers(newAnswers: Answers, name: string, answer: AnswerValue) {
+    async function updateAnswers(newAnswers: Answers, name: string) {
         setAnswers(updateWithDefaultAnswers(newAnswers, questions));
         if (liveValidation) {
             await validateAnswers(type, [{ name }], updateWithDefaultAnswers(newAnswers, questions)).then(
@@ -88,7 +82,7 @@ export const BuildingBlockQuestions = (props: {
             // Call API to apply changes
             console.log('Applying changes... FPM Writer');
             if (!Object.values(validationResults).some((result: ValidationResult) => result.isValid === false)) {
-                applyAnswers(type, answers).then(({ buildingBlockType }) => {
+                applyAnswers(type, answers).then(() => {
                     setAnswers({});
                     setValidation({});
                 });

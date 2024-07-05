@@ -6,7 +6,7 @@ import {
 } from '@sap-ux/fe-fpm-writer';
 // ToDo -> use directly PromptsType?
 import { PromptsType as SupportedBuildingBlocks } from '@sap-ux/fe-fpm-writer/dist/building-block/prompts/types/basic';
-import { AddonActions } from '../addons/types';
+import type { AddonActions } from '../addons/types';
 import type { DynamicChoices } from '@sap-ux/ui-prompting';
 
 export type Actions =

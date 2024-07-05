@@ -17,11 +17,17 @@ import {
     APPLY_ANSWERS,
     RESET_ANSWERS,
     UPDATE_CODE_SNIPPET,
-    UpdateCodeSnippet,
     SET_VALIDATION_RESULTS,
+    GET_CODE_SNIPPET
+} from '../../src/utils/types';
+import type {
+    Actions,
+    ResetAnswers,
+    SetChoices,
+    GetChoices,
+    UpdateCodeSnippet,
     SetValidationResults
 } from '../../src/utils/types';
-import { Actions, GET_CODE_SNIPPET, ResetAnswers, SetChoices, GetChoices } from '../../src/utils/types';
 import { AddonActions } from '../addons/types';
 import { handleAction as handleAddonAction } from '../addons/project';
 import { existsSync } from 'fs';

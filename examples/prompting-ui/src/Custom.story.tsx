@@ -20,4 +20,3 @@ export const customChart = (): JSX.Element => {
         />
     );
 };
-

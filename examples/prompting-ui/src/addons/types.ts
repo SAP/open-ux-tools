@@ -1,3 +1,3 @@
-import { ProjectActions } from './project';
+import type { ProjectActions } from './project';
 
 export type AddonActions = ProjectActions;
