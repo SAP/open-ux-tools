@@ -116,13 +116,16 @@ const check = async (param: { page: Page }) => {
 const UI5Versions = JSON.parse(process.env.UI5Versions ?? '[]') as UI5Version[];
 
 for (const { version } of UI5Versions) {
-    test.describe(`UI5 version: ${version}`, () => {
-        test.afterEach(async () => {
-            await teardownServer();
+    // Skip for older versions as bootstrap does not work
+    if (!['1.96.33', '1.84.48', '1.71.69', '1.38.62'].includes(version)) {
+        test.describe(`UI5 version: ${version}`, () => {
+            test.afterEach(async () => {
+                await teardownServer();
+            });
+            test('Click on Go button and check an element ', async ({ page }) => {
+                await prepare(version);
+                await check({ page });
+            });
         });
-        test('Click on Go button and check an element ', async ({ page }) => {
-            await prepare(version);
-            await check({ page });
-        });
-    });
+    }
 }

@@ -17,7 +17,7 @@ export async function getMappedServiceName(project: Project, serviceName: string
         if (appServiceName) {
             mappedServiceName = await getCapServiceName(
                 project.root,
-                project.apps[appName].services[appServiceName].uri || ''
+                project.apps[appName].services[appServiceName].uri ?? ''
             );
         }
     }
@@ -60,7 +60,7 @@ function getMainService(project: Project, appId?: string): string {
         }
         mainService = app.mainService;
     }
-    return mainService || 'mainService';
+    return mainService ?? 'mainService';
 }
 
 /**
