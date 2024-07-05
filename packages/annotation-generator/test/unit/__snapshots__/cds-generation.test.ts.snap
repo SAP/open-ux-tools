@@ -1,0 +1,387 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`annotation generation (CDS) example 1`] = `
+"using MainService as service from '../../srv/service';
+
+annotate service.Capex with @(
+    
+    UI.RecommendationState  : 1,
+    UI.FieldGroup #GeneratedGroup1 : {
+        $Type : 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type : 'UI.DataField',
+                Value : requestid,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : title,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : firstname,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : lastname,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : email,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : userid,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : comments,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : totalcost,
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : 'type_type',
+                Value : type_type,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : capex,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : opex,
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : 'currency_code',
+                Value : currency_code,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : roi,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : irr,
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : 'country_code',
+                Value : country_code,
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : 'business_unit_business_unit',
+                Value : business_unit_business_unit,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : description,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : energy_efficiency,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : co2_efficiency,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : energy_cost_savings,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : water_savings,
+            },
+        ],
+    },
+    UI.Facets : [
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID : 'GeneratedFacet1',
+            Label : 'General Information',
+            Target : '@UI.FieldGroup#GeneratedGroup1',
+        },
+    ],
+    UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : requestid,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : title,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : firstname,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : lastname,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : email,
+        },
+    ],
+);
+annotate service.Capex with {
+    type @Common.ValueList : {
+        $Type : 'Common.ValueListType',
+        CollectionPath : 'CapexType',
+        Parameters : [
+            {
+                $Type : 'Common.ValueListParameterInOut',
+                LocalDataProperty : type_type,
+                ValueListProperty : 'type',
+            },
+            {
+                $Type : 'Common.ValueListParameterDisplayOnly',
+                ValueListProperty : 'typedescription',
+            },
+        ],
+    }
+};
+
+annotate service.Capex with {
+    business_unit @Common.ValueList : {
+        $Type : 'Common.ValueListType',
+        CollectionPath : 'BusinessUnits',
+        Parameters : [
+            {
+                $Type : 'Common.ValueListParameterInOut',
+                LocalDataProperty : business_unit_business_unit,
+                ValueListProperty : 'business_unit',
+            },
+            {
+                $Type : 'Common.ValueListParameterDisplayOnly',
+                ValueListProperty : 'name',
+            },
+            {
+                $Type : 'Common.ValueListParameterDisplayOnly',
+                ValueListProperty : 'email',
+            },
+            {
+                $Type : 'Common.ValueListParameterDisplayOnly',
+                ValueListProperty : 'phone',
+            },
+            {
+                $Type : 'Common.ValueListParameterDisplayOnly',
+                ValueListProperty : 'mobile',
+            },
+        ],
+    }
+};
+
+"
+`;
+
+exports[`annotation generation (CDS) generate default LineItems 1`] = `
+"using MainService as service from '../../srv/service';
+
+annotate service.Capex with @(
+    
+    UI.RecommendationState  : 1,
+);
+annotate service.Consultants with @(
+    UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : identifier,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : name,
+        },
+        {
+            $Type : 'UI.DataField',
+            Label : 'address',
+            Value : address,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : street,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : building,
+        },
+    ]
+);
+
+"
+`;
+
+exports[`annotation generation (CDS) generate default facets 1`] = `
+"using MainService as service from '../../srv/service';
+
+annotate service.Capex with @(
+    
+    UI.RecommendationState  : 1,
+    UI.FieldGroup #GeneratedGroup1 : {
+        $Type : 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type : 'UI.DataField',
+                Value : requestid,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : title,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : firstname,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : lastname,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : email,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : userid,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : comments,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : totalcost,
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : 'type_type',
+                Value : type_type,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : capex,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : opex,
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : 'currency_code',
+                Value : currency_code,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : roi,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : irr,
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : 'country_code',
+                Value : country_code,
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : 'business_unit_business_unit',
+                Value : business_unit_business_unit,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : description,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : energy_efficiency,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : co2_efficiency,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : energy_cost_savings,
+            },
+            {
+                $Type : 'UI.DataField',
+                Value : water_savings,
+            },
+        ],
+    },
+    UI.Facets : [
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID : 'GeneratedFacet1',
+            Label : 'General Information',
+            Target : '@UI.FieldGroup#GeneratedGroup1',
+        },
+    ],
+);
+"
+`;
+
+exports[`annotation generation (CDS) value helps generate value helps 1`] = `
+"using MainService as service from '../../srv/service';
+
+annotate service.Capex with @(
+    
+    UI.RecommendationState  : 1,
+);
+annotate service.Capex with {
+    type @Common.ValueList : {
+        $Type : 'Common.ValueListType',
+        CollectionPath : 'CapexType',
+        Parameters : [
+            {
+                $Type : 'Common.ValueListParameterInOut',
+                LocalDataProperty : type_type,
+                ValueListProperty : 'type',
+            },
+            {
+                $Type : 'Common.ValueListParameterDisplayOnly',
+                ValueListProperty : 'typedescription',
+            },
+        ],
+    }
+};
+
+annotate service.Capex with {
+    business_unit @Common.ValueList : {
+        $Type : 'Common.ValueListType',
+        CollectionPath : 'BusinessUnits',
+        Parameters : [
+            {
+                $Type : 'Common.ValueListParameterInOut',
+                LocalDataProperty : business_unit_business_unit,
+                ValueListProperty : 'business_unit',
+            },
+            {
+                $Type : 'Common.ValueListParameterDisplayOnly',
+                ValueListProperty : 'name',
+            },
+            {
+                $Type : 'Common.ValueListParameterDisplayOnly',
+                ValueListProperty : 'email',
+            },
+            {
+                $Type : 'Common.ValueListParameterDisplayOnly',
+                ValueListProperty : 'phone',
+            },
+            {
+                $Type : 'Common.ValueListParameterDisplayOnly',
+                ValueListProperty : 'mobile',
+            },
+        ],
+    }
+};
+
+"
+`;
