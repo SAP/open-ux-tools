@@ -180,29 +180,6 @@ export class UI5Config {
     }
 
     /**
-     *  Adds UI5 libraries to the yaml configuration if they do not already exist.
-     *
-     * @param {string[]} addLibs - to add these libraries
-     * @returns {UI5Config} the UI5Config instance
-     * @memberof UI5Config
-     */
-    public addUI5Libs(addLibs: string[]): this {
-        const libs = this.document.getSequence({ path: 'framework.libraries' });
-        if (libs) {
-            addLibs.forEach((libName) => {
-                if (!this.document.findItem(libs, (lib: any) => lib.name === libName)) {
-                    libs.add({ name: libName });
-                }
-            });
-            this.document.setIn({
-                path: 'framework.libraries',
-                value: libs.toJSON()
-            });
-        }
-        return this;
-    }
-
-    /**
      * Adds a list of custom tasks to the config.
      *
      * @param {CustomTask<any>[]} tasks - the list of custom tasks

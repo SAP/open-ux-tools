@@ -1,5 +1,142 @@
 # @sap-ux/create
 
+## 0.6.9
+
+### Patch Changes
+
+-   Updated dependencies [8f57ac28]
+    -   @sap-ux/preview-middleware@0.15.8
+
+## 0.6.8
+
+### Patch Changes
+
+-   Updated dependencies [9ea58ad4]
+    -   @sap-ux/adp-tooling@0.11.13
+    -   @sap-ux/project-access@1.22.4
+    -   @sap-ux/preview-middleware@0.15.7
+    -   @sap-ux/app-config-writer@0.3.84
+    -   @sap-ux/cap-config-writer@0.5.7
+    -   @sap-ux/cards-editor-config-writer@0.3.9
+    -   @sap-ux/mockserver-config-writer@0.5.8
+    -   @sap-ux/system-access@0.4.7
+
+## 0.6.7
+
+### Patch Changes
+
+-   Updated dependencies [fa4c088c]
+    -   @sap-ux/adp-tooling@0.11.12
+    -   @sap-ux/preview-middleware@0.15.6
+
+## 0.6.6
+
+### Patch Changes
+
+-   Updated dependencies [0e0c2864]
+    -   @sap-ux/preview-middleware@0.15.5
+
+## 0.6.5
+
+### Patch Changes
+
+-   Updated dependencies [73c741ef]
+    -   @sap-ux/adp-tooling@0.11.11
+    -   @sap-ux/preview-middleware@0.15.4
+
+## 0.6.4
+
+### Patch Changes
+
+-   Updated dependencies [c442d2bc]
+    -   @sap-ux/adp-tooling@0.11.10
+    -   @sap-ux/preview-middleware@0.15.3
+
+## 0.6.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.9
+-   @sap-ux/app-config-writer@0.3.83
+-   @sap-ux/preview-middleware@0.15.2
+-   @sap-ux/system-access@0.4.7
+-   @sap-ux/cap-config-writer@0.5.6
+
+## 0.6.2
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.8
+-   @sap-ux/app-config-writer@0.3.82
+-   @sap-ux/preview-middleware@0.15.1
+-   @sap-ux/system-access@0.4.6
+-   @sap-ux/cap-config-writer@0.5.5
+
+## 0.6.1
+
+### Patch Changes
+
+-   Updated dependencies [da2704c7]
+    -   @sap-ux/preview-middleware@0.15.0
+
+## 0.6.0
+
+### Minor Changes
+
+-   6ad68964: New 'add html' command creating html files for local testing
+
+### Patch Changes
+
+-   Updated dependencies [6ad68964]
+    -   @sap-ux/preview-middleware@0.14.0
+
+## 0.5.114
+
+### Patch Changes
+
+-   65bfb244: Add Adaptation Project's Change Data Source generator prompting
+-   65bfb244: Added internal functionality to support inquirer prompts
+-   Updated dependencies [65bfb244]
+    -   @sap-ux/adp-tooling@0.11.7
+    -   @sap-ux/inquirer-common@0.3.1
+    -   @sap-ux/app-config-writer@0.3.81
+    -   @sap-ux/system-access@0.4.5
+    -   @sap-ux/cap-config-writer@0.5.4
+
+## 0.5.113
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.6
+-   @sap-ux/app-config-writer@0.3.80
+-   @sap-ux/cards-editor-config-writer@0.3.9
+-   @sap-ux/mockserver-config-writer@0.5.8
+-   @sap-ux/project-access@1.22.3
+-   @sap-ux/cap-config-writer@0.5.3
+
+## 0.5.112
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.5
+-   @sap-ux/app-config-writer@0.3.79
+-   @sap-ux/cap-config-writer@0.5.2
+
+## 0.5.111
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.4
+-   @sap-ux/app-config-writer@0.3.78
+-   @sap-ux/cap-config-writer@0.5.1
+
+## 0.5.110
+
+### Patch Changes
+
+-   Updated dependencies [200894d7]
+    -   @sap-ux/cap-config-writer@0.5.0
+
 ## 0.5.109
 
 ### Patch Changes
