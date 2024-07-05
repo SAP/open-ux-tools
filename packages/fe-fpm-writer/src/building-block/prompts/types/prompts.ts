@@ -30,6 +30,11 @@ export type SupportedPrompts =
     | BasePrompt<PromptsType.FilterBar>
     | BasePrompt<PromptsType.BuildingBlocks>;
 
+export type SupportedGeneratorPrompts =
+    | BasePrompt<PromptsType.Chart>
+    | BasePrompt<PromptsType.Table>
+    | BasePrompt<PromptsType.FilterBar>;
+
 export type NarrowPrompt<T, N = SupportedPrompts> = N extends { type: T } ? N : never;
 
 export type SupportedPromptsMap = {

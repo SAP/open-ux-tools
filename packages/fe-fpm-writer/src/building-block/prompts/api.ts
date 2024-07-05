@@ -11,7 +11,8 @@ import type {
     SupportedPromptsMap,
     NarrowPrompt,
     PromptListChoices,
-    SupportedAnswers
+    SupportedAnswers,
+    SupportedGeneratorPrompts
 } from './types';
 import { PromptsType } from './types';
 import { generateBuildingBlock, getSerializedFileContent } from '..';
@@ -171,14 +172,23 @@ export class PromptsAPI {
      * @param answers The answers object
      * @returns The updated memfs editor instance
      */
-    public submitAnswers<T extends SupportedAnswers>(type: PromptsType, answers: T): Editor {
+    public submitAnswers<N extends SupportedPrompts['type']>(
+        type: N,
+        answers: NarrowPrompt<typeof type>['answers']
+    ): Editor {
+        const config = { type, answers };
+        if (!this.isGenerationSupported(config)) {
+            return this.fs;
+        }
         // ToDo 'buildingBlockType' - should be different( support initial values for answers?)
         const buildingBlockType = TEMP_MAP.get(type);
         if (answers.buildingBlockData && buildingBlockType) {
             answers.buildingBlockData.buildingBlockType = buildingBlockType;
         }
-        const generator = PromptsGeneratorsMap.hasOwnProperty(type) ? PromptsGeneratorsMap[type] : undefined;
-        return generator?.(this.basePath, answers, this.fs) ?? this.fs;
+        const generator = PromptsGeneratorsMap.hasOwnProperty(config.type)
+            ? PromptsGeneratorsMap[config.type]
+            : undefined;
+        return generator?.(this.basePath, config.answers, this.fs) ?? this.fs;
     }
 
     /**
@@ -188,15 +198,29 @@ export class PromptsAPI {
      * @param answers The answers object
      * @returns Code snippet content.
      */
-    public getCodeSnippet<T extends SupportedAnswers>(type: PromptsType, answers: T): string {
+    public getCodeSnippet<N extends SupportedPrompts['type']>(
+        type: N,
+        answers: NarrowPrompt<typeof type>['answers']
+    ): string {
+        const config = { type, answers };
+        if (!this.isGenerationSupported(config)) {
+            return '';
+        }
         // ToDo 'buildingBlockType' - should be different( support initial values for answers?)
         const buildingBlockType = TEMP_MAP.get(type);
         if (answers.buildingBlockData && buildingBlockType) {
             answers.buildingBlockData.buildingBlockType = buildingBlockType;
         }
-        const codePreviewGenerator = PromptsCodePreviewMap.hasOwnProperty(type)
-            ? PromptsCodePreviewMap[type]
+        const codePreviewGenerator = PromptsCodePreviewMap.hasOwnProperty(config.type)
+            ? PromptsCodePreviewMap[config.type]
             : undefined;
-        return codePreviewGenerator?.(this.basePath, answers) ?? '';
+        return codePreviewGenerator?.(this.basePath, config.answers) ?? '';
+    }
+
+    private isGenerationSupported(config: {
+        type: SupportedPrompts['type'];
+        answers: SupportedPrompts['answers'];
+    }): config is SupportedGeneratorPrompts {
+        return config.type in PromptsCodePreviewMap;
     }
 }
