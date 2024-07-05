@@ -169,7 +169,7 @@ describe('connect', () => {
                 // mock a 401 response if no auth is provided
                 nock(`https://${destination.Name}.dest`)
                     .get(/.*/)
-                    .reply(function() {
+                    .reply(function () {
                         return this.req.headers.authorization ? [200] : [401];
                     })
                     .persist();
