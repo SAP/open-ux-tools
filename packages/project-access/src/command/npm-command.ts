@@ -18,13 +18,12 @@ export async function execNpmCommand(
     }
 ): Promise<string> {
     return new Promise((resolve, reject) => {
+        const isWin = process.platform.startsWith('win');
         // Command to execute npm is platform specific, 'npm.cmd' on windows, 'npm' otherwise
-        const npmCommand = /^win/.test(process.platform) ? 'npm.cmd' : 'npm';
+        const npmCommand = isWin ? 'npm.cmd' : 'npm';
 
         // Platform specific spawn options, 'windowsVerbatimArguments' and 'shell' true on windows
-        const defaultSpawnOptions = /^win/.test(process.platform)
-            ? { windowsVerbatimArguments: true, shell: true }
-            : {};
+        const defaultSpawnOptions = isWin ? { windowsVerbatimArguments: true, shell: true } : {};
 
         const logger = options?.logger;
         const cwd = options?.cwd;
