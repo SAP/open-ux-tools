@@ -187,6 +187,9 @@ export async function testDeployUndeployDTA(
  *
  * @param provider instance of a service provider
  * @param env object representing the content of the .env file.
+ * @param env.TEST_BO_NAME
+ * @param env.TEST_PACKAGE
+ * @param env.TEST_TRANSPORT
  */
 export async function testUiServiceGenerator(
     provider: AbapServiceProvider,
