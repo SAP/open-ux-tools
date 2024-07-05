@@ -21,7 +21,7 @@ type UpdateCallback = (
 ) => Promise<void>;
 
 /**
- * Traverses each element of an object and executes callback function on it.
+ * Traverses each property in launch config object and executes callback function on it.
  *
  * @param obj - the new JSON object to replace original JSON.
  * @param filePath - path to the JSON file.
@@ -31,7 +31,7 @@ type UpdateCallback = (
  * @param initialPath - intial {@linkcode JSONPath} of the object to be traversed.
  * @returns void.
  */
-export async function traverseAndModifyObject(
+export async function traverseAndModifyLaunchConfig(
     obj: any,
     filePath: string,
     originalJSON: Node | undefined,
@@ -46,9 +46,18 @@ export async function traverseAndModifyObject(
         const originalLength = node?.children?.length as number;
 
         if (Array.isArray(obj[key])) {
-            await processArray(obj[key], filePath, originalJSON, callback, currentPath, originalLength, fs);
+            await processArrayProperty(obj[key], filePath, originalJSON, callback, currentPath, originalLength, fs);
         } else if (typeof obj[key] === 'object') {
-            await processObject(obj[key], filePath, originalJSON, callback, currentPath, originalLength, node, fs);
+            await processObjectProperty(
+                obj[key],
+                filePath,
+                originalJSON,
+                callback,
+                currentPath,
+                originalLength,
+                node,
+                fs
+            );
         } else {
             await callback(obj[key], filePath, [...currentPath], undefined, fs);
         }
@@ -56,7 +65,7 @@ export async function traverseAndModifyObject(
 }
 
 /**
- * Processes each element of an array of objects and executes callback function on it.
+ * Processes each element of launch config array property and executes callback function on it.
  *
  * @param arr - array of objects.
  * @param filePath - path to the JSON file.
@@ -67,7 +76,7 @@ export async function traverseAndModifyObject(
  * @param fs - the memfs editor instance.
  * @returns void.
  */
-async function processArray(
+async function processArrayProperty(
     arr: any[],
     filePath: string,
     originalJSON: Node | undefined,
@@ -82,7 +91,7 @@ async function processArray(
     const maxLength = Math.max(arr.length, originalLength);
     for (let i = 0, j = maxLength; i < maxLength; i++) {
         if (typeof arr[i] === 'object') {
-            await traverseAndModifyObject(arr[i], filePath, originalJSON, callback, fs, [...currentPath, i]);
+            await traverseAndModifyLaunchConfig(arr[i], filePath, originalJSON, callback, fs, [...currentPath, i]);
         } else if (arr.length >= originalLength || arr[i]) {
             await callback(arr[i], filePath, [...currentPath, i], undefined, fs);
         } else {
@@ -93,9 +102,9 @@ async function processArray(
 }
 
 /**
- * Processes each object in object of objects and executes callback function on it.
+ * Processes each element of launch config object property and executes callback function on it.
  *
- * @param obj - object of objects.
+ * @param obj - object property to traverse and replace.
  * @param filePath - path to the JSON file.
  * @param originalJSON - the original JSON {@linkcode Node} before modification.
  * @param callback - function to be executed on the object property, similar to {@linkcode updateJSONWithComments}.
@@ -105,7 +114,7 @@ async function processArray(
  * @param fs - the memfs editor instance.
  * @returns void.
  */
-async function processObject(
+async function processObjectProperty(
     obj: any,
     filePath: string,
     originalJSON: Node | undefined,
@@ -117,12 +126,12 @@ async function processObject(
 ): Promise<void> {
     const length = Object.keys(obj).length;
     if (length >= originalLength) {
-        await traverseAndModifyObject(obj, filePath, originalJSON, callback, fs, currentPath);
+        await traverseAndModifyLaunchConfig(obj, filePath, originalJSON, callback, fs, currentPath);
     } else {
         for (let i = 0; i < originalLength; i++) {
             const value = node?.children![i].children![0].value;
             if (!obj[value]) {
-                // deletion of a property
+                // delete property
                 await callback(undefined, filePath, [...currentPath, value], undefined, fs);
             }
         }
@@ -156,7 +165,7 @@ export async function updateLaunchConfig(
         const launchConfig = generateNewFioriLaunchConfig(rootFolder, fioriOptions);
         const oldArgs = launchJSON.configurations[index].args;
         launchConfig.args = mergeArgs(launchConfig.args, oldArgs);
-        await traverseAndModifyObject(launchConfig, launchJSONPath, launchJSONTree, updateLaunchJSON, fs, [
+        await traverseAndModifyLaunchConfig(launchConfig, launchJSONPath, launchJSONTree, updateLaunchJSON, fs, [
             'configurations',
             index
         ]);
