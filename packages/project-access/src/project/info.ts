@@ -26,23 +26,13 @@ import { gte, valid } from 'semver';
  * @returns - project structure with project info like project type, apps, root folder
  */
 export async function getProject(root: string): Promise<Project> {
+    if (!(await fileExists(join(root, FileName.Package)))) {
+        throw new Error(`The project root folder '${root}' is not a Fiori project. No 'package.json' found.`);
+    }
     const capProjectType = await getCapProjectType(root);
     const projectType = capProjectType ?? 'EDMXBackend';
-    const packageJson = await readJSON<Package>(join(root, FileName.Package));
-    const sapuxAppFolders = getAppFolders(packageJson);
-    const apps = await getApps(root, sapuxAppFolders);
-    if (projectType === capProjectType) {
-        const allApps = await findAllApps([root]);
-        for (const app of allApps) {
-            const appId = relative(app.projectRoot, app.appRoot);
-            if (!Object.keys(apps).some((checkAppId) => appId === checkAppId)) {
-                const appStructure = await getApplicationStructure(root, appId);
-                if (appStructure) {
-                    apps[appId] = appStructure;
-                }
-            }
-        }
-    }
+    const appFolders = await getAppFolders(root);
+    const apps = await getApps(root, appFolders);
     return {
         root,
         projectType,
@@ -51,17 +41,16 @@ export async function getProject(root: string): Promise<Project> {
 }
 
 /**
- * Returns the application folders from sapux flag of the package.json. For single app
+ * Returns the applications for the project. For single app
  * projects, this is just an array with one empty string. For CAP projects, this is an
  * array of operating system specific relative paths to the apps.
  *
- * @param packageJson - parsed package.json
+ * @param root - project root folder
  * @returns - array of operating specific application folders
  */
-function getAppFolders(packageJson: Package): string[] {
-    return Array.isArray(packageJson.sapux)
-        ? packageJson.sapux.map((appFolder) => join(...appFolder.split(/[/\\]/)))
-        : [''];
+async function getAppFolders(root: string): Promise<string[]> {
+    const apps = await findAllApps([root]);
+    return apps.length > 0 ? apps.map((app) => relative(root, app.appRoot)) : [''];
 }
 
 /**
