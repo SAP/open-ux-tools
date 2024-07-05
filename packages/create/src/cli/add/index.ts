@@ -4,7 +4,7 @@ import { addAddSmartLinksConfigCommand } from './smartlinks-config';
 import { addAddCdsPluginUi5Command } from './cds-plugin-ui';
 import { addInboundNavigationConfigCommand } from './navigation-config';
 import { addCardsEditorConfigCommand } from './cards-editor';
-import { addLocalHtmlFiles } from './html';
+import { addAddHtmlFilesCmd } from './html';
 
 /**
  * Return 'create-fiori add *' commands. Commands include also the handler action.
@@ -24,6 +24,6 @@ export function getAddCommands(): Command {
     // create-fiori add cards-editor
     addCardsEditorConfigCommand(addCommands);
     // create-fiori add html
-    addLocalHtmlFiles(addCommands);
+    addAddHtmlFilesCmd(addCommands);
     return addCommands;
 }

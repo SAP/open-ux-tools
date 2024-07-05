@@ -1,5 +1,95 @@
 # @sap-ux/create
 
+## 0.6.9
+
+### Patch Changes
+
+-   Updated dependencies [8f57ac28]
+    -   @sap-ux/preview-middleware@0.15.8
+
+## 0.6.8
+
+### Patch Changes
+
+-   Updated dependencies [9ea58ad4]
+    -   @sap-ux/adp-tooling@0.11.13
+    -   @sap-ux/project-access@1.22.4
+    -   @sap-ux/preview-middleware@0.15.7
+    -   @sap-ux/app-config-writer@0.3.84
+    -   @sap-ux/cap-config-writer@0.5.7
+    -   @sap-ux/cards-editor-config-writer@0.3.9
+    -   @sap-ux/mockserver-config-writer@0.5.8
+    -   @sap-ux/system-access@0.4.7
+
+## 0.6.7
+
+### Patch Changes
+
+-   Updated dependencies [fa4c088c]
+    -   @sap-ux/adp-tooling@0.11.12
+    -   @sap-ux/preview-middleware@0.15.6
+
+## 0.6.6
+
+### Patch Changes
+
+-   Updated dependencies [0e0c2864]
+    -   @sap-ux/preview-middleware@0.15.5
+
+## 0.6.5
+
+### Patch Changes
+
+-   Updated dependencies [73c741ef]
+    -   @sap-ux/adp-tooling@0.11.11
+    -   @sap-ux/preview-middleware@0.15.4
+
+## 0.6.4
+
+### Patch Changes
+
+-   Updated dependencies [c442d2bc]
+    -   @sap-ux/adp-tooling@0.11.10
+    -   @sap-ux/preview-middleware@0.15.3
+
+## 0.6.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.9
+-   @sap-ux/app-config-writer@0.3.83
+-   @sap-ux/preview-middleware@0.15.2
+-   @sap-ux/system-access@0.4.7
+-   @sap-ux/cap-config-writer@0.5.6
+
+## 0.6.2
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.8
+-   @sap-ux/app-config-writer@0.3.82
+-   @sap-ux/preview-middleware@0.15.1
+-   @sap-ux/system-access@0.4.6
+-   @sap-ux/cap-config-writer@0.5.5
+
+## 0.6.1
+
+### Patch Changes
+
+-   Updated dependencies [da2704c7]
+    -   @sap-ux/preview-middleware@0.15.0
+
+## 0.6.0
+
+### Minor Changes
+
+-   6ad68964: New 'add html' command creating html files for local testing
+
+### Patch Changes
+
+-   Updated dependencies [6ad68964]
+    -   @sap-ux/preview-middleware@0.14.0
+
 ## 0.5.114
 
 ### Patch Changes
