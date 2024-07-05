@@ -7,12 +7,6 @@ jest.mock('fs');
 
 describe('helper', () => {
     const basePath = join(__dirname, '../../fixtures', 'adaptation-project');
-    const mockAdp = {
-        target: {
-            url: 'https://sap.example',
-            client: '100'
-        }
-    };
 
     beforeEach(() => {
         jest.clearAllMocks();
