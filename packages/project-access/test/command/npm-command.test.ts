@@ -102,9 +102,6 @@ describe('Test execNpmCommand(), simulate windows', () => {
 
     test('Install node module with logger', async () => {
         // Mock setup
-        Object.defineProperty(process, 'platform', {
-            value: 'darwin'
-        });
         const processMock = getProcessMock((event, cb) => {
             if (event === 'exit') {
                 cb();
@@ -117,14 +114,14 @@ describe('Test execNpmCommand(), simulate windows', () => {
 
         // Result check
         expect(stdout).toBe('data-STDOUT_MOCK_DATA');
-        expect(spawnMock).toHaveBeenCalledWith('npm', ['install', '@scope/module@1.2.3'], {});
+        expect(spawnMock).toHaveBeenCalledWith('npm.cmd', ['install', '@scope/module@1.2.3'], {
+            windowsVerbatimArguments: true,
+            shell: true
+        });
     });
 
     test('Install node module, windows, cwd', async () => {
         // Mock setup
-        Object.defineProperty(process, 'platform', {
-            value: 'win'
-        });
         const processMock = getProcessMock((event, cb) => {
             if (event === 'exit') {
                 cb();
