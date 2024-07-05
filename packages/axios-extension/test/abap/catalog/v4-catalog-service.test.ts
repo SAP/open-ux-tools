@@ -106,4 +106,15 @@ describe('V4CatalogService', () => {
             }
         });
     });
+
+    describe('getServiceType', () => {
+        // create a catalog for testing
+        const provider = createForAbap(config);
+        const catalog = provider.catalog(ODataVersion.v4);
+
+        it('get the service type', async () => {
+            const serviceType = catalog.getServiceType('mock/v4/service');
+            await expect(serviceType).resolves.toBe(undefined);
+        });
+    });
 });
