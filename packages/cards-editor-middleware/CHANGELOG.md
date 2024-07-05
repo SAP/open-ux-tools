@@ -1,5 +1,17 @@
 # @sap-ux/cards-editor-middleware
 
+## 0.4.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/logger@0.6.0
+    -   @sap-ux/project-access@1.23.0
+
 ## 0.3.18
 
 ### Patch Changes

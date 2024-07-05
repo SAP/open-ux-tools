@@ -24,8 +24,8 @@ jest.mock('@sap-ux/adp-tooling', () => {
 });
 
 class FlpSandbox extends FlpSandboxUnderTest {
-    public templateConfig: TemplateConfig;
-    public readonly config: FlpConfig;
+    public declare templateConfig: TemplateConfig;
+    public declare readonly config: FlpConfig;
 }
 
 describe('FlpSandbox', () => {
