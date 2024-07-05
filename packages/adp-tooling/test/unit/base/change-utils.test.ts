@@ -1,4 +1,4 @@
-import path from 'path';
+import path, { resolve } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import { readFileSync, existsSync, readdirSync } from 'fs';
@@ -7,6 +7,7 @@ import { type AnnotationsData, type PropertyValueType, ChangeType, type Manifest
 import {
     findChangeWithInboundId,
     getChange,
+    getChangesByType,
     getParsedPropertyValue,
     parseStringToObject,
     writeAnnotationChange,
@@ -18,6 +19,11 @@ jest.mock('fs', () => ({
     existsSync: jest.fn(),
     readdirSync: jest.fn(),
     readFileSync: jest.fn()
+}));
+
+jest.mock('path', () => ({
+    ...jest.requireActual('path'),
+    resolve: jest.fn()
 }));
 
 describe('Change Utils', () => {
@@ -147,6 +153,88 @@ describe('Change Utils', () => {
                 changeType: ChangeType.ADD_ANNOTATIONS_TO_ODATA,
                 content: mockContent
             });
+        });
+    });
+
+    describe('getChangesByType', () => {
+        const mockFiles = [
+            { name: 'id_addNewModel.change', isFile: () => true },
+            { name: 'id_changeDataSource.change', isFile: () => true }
+        ];
+
+        const mockChange1 = {
+            fileName: 'id_addNewModel.change',
+            changeType: 'appdescr_ui5_addNewModel'
+        };
+        const mockChange2 = {
+            fileName: 'id_changeDataSource.change',
+            changeType: 'appdescr_app_changeDataSource'
+        };
+
+        beforeEach(() => {
+            jest.resetAllMocks();
+        });
+
+        const existsSyncMock = existsSync as jest.Mock;
+        const readdirSyncMock = readdirSync as jest.Mock;
+        const readFileSyncMock = readFileSync as jest.Mock;
+        const resolveMock = path.resolve as jest.Mock;
+
+        beforeEach(() => {
+            existsSyncMock.mockReturnValue(true);
+            readdirSyncMock.mockReturnValue(mockFiles);
+            readFileSyncMock
+                .mockReturnValueOnce(JSON.stringify(mockChange1))
+                .mockReturnValueOnce(JSON.stringify(mockChange2));
+            resolveMock.mockImplementation((_, fileName) => `mock/path/${fileName}`);
+        });
+
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
+
+        it('should return an array of change objects for a specific change type', () => {
+            const results = getChangesByType('mock/project', ChangeType.ADD_NEW_MODEL);
+
+            expect(results).toHaveLength(1);
+            expect(results[0]).toMatchObject(mockChange1);
+        });
+
+        it('should return an empty array if no matching files are found', () => {
+            readdirSyncMock.mockReturnValue([]);
+            const results = getChangesByType('mock/project', ChangeType.ADD_NEW_MODEL);
+
+            expect(results).toHaveLength(0);
+        });
+
+        it('should handle subdirectories correctly', () => {
+            getChangesByType('mock/project', ChangeType.ADD_NEW_MODEL, 'manifest');
+
+            expect(resolve).toHaveBeenCalledWith('mock/project/webapp/changes/manifest', 'id_addNewModel.change');
+        });
+
+        it('should return an empty array if the target directory does not exist', () => {
+            existsSyncMock.mockReturnValue(false);
+            const results = getChangesByType('mock/project', ChangeType.ADD_NEW_MODEL);
+
+            expect(results).toHaveLength(0);
+        });
+
+        it('should return an empty array if the subdirectory is given and target directory does not exist', () => {
+            existsSyncMock.mockReturnValueOnce(true).mockReturnValueOnce(false);
+            const results = getChangesByType('mock/project', ChangeType.ADD_NEW_MODEL, 'manifest');
+
+            expect(results).toHaveLength(0);
+        });
+
+        it('should throw an error if there is an issue reading the change files', () => {
+            readdirSyncMock.mockImplementation(() => {
+                throw new Error('Failed to read');
+            });
+
+            expect(() => getChangesByType('mock/project', ChangeType.ADD_NEW_MODEL)).toThrow(
+                'Error reading change files: Failed to read'
+            );
         });
     });
 
