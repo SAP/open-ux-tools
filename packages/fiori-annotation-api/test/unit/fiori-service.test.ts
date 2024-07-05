@@ -3300,7 +3300,7 @@ describe('fiori annotation service', () => {
 
             expect(text).toMatchSnapshot();
         });
-        
+
         test('delete common text and textArrangement', async () => {
             const project = PROJECTS.V4_CDS_START;
             const root = project.root;
