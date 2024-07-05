@@ -1,7 +1,0 @@
-code;name;descr
-new;New;An incident that has been logged but not yet worked on.
-assigned;Assigned;Incident has been asssigned to a technician
-in process;In Process;Case is being actively worked on
-on hold;On Hold;Incident has been put on hold
-resolved;Resolved;Resolution has been found
-closed;Closed;Incident was acknowleged closed by end user
