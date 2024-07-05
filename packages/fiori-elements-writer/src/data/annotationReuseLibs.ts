@@ -11,8 +11,7 @@ export const annotationLibs: AnnotationLibs[] = [
 ];
 
 /**
- * Returns the reuse libraries associated with annotation entries in the metadata
- *
+ * @description Returns the reuse libraries associated with annotation entries in the metadata.
  * @param metadata - metadata string to be checked for specific annotations
  * @returns The base component library path
  */

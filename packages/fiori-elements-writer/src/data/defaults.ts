@@ -71,6 +71,7 @@ export function setDefaultTemplateSettings<T extends {}>(template: Template<T>, 
  * @param type - The template type of the required base component
  * @param version - The odata service version determines the appropriate base component to use
  * @param metadata - metadata string to be checked for specific annotations
+ * @param ui5Libs - ui5 libs
  * @returns The UI5 libs required by the specified template type and OData version and UI5 annotation libs
  */
 export function getUi5Libs(
@@ -81,7 +82,7 @@ export function getUi5Libs(
 ): string[] {
     const templateLibs = getTemplateUi5Libs(type, version);
     if (version === OdataVersion.v4 && metadata) {
-        let annotationLibs = getAnnotationV4Libs(metadata);
+        const annotationLibs = getAnnotationV4Libs(metadata);
         return [...templateLibs, ...annotationLibs].concat(ui5Libs ?? []);
     } else {
         return [...templateLibs].concat(ui5Libs ?? []);
