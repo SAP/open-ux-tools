@@ -228,7 +228,7 @@ export class V2CatalogService extends CatalogService {
      * @param path service path
      * @returns service type
      */
-    public async getServiceType(path: string): Promise<ServiceType> {
+    public async getServiceType(path: string): Promise<ServiceType | undefined> {
         let serviceType: ServiceType;
         const { ID: id } = await this.findService({ path });
 
