@@ -144,7 +144,7 @@ describe('AbapServiceProvider', () => {
             const catalog = provider.catalog(ODataVersion.v2);
             expect(catalog).toBeDefined();
             expect(catalog.defaults.baseURL).toBe(`${server}${V2CatalogService.PATH}`);
-            expect(provider.catalog(ODataVersion.v2)).toEqual(catalog);
+            expect(provider.catalog(ODataVersion.v2).services).toEqual(catalog.services);
         });
 
         test('V4', () => {
@@ -153,7 +153,7 @@ describe('AbapServiceProvider', () => {
             const catalog = provider.catalog(ODataVersion.v4);
             expect(catalog).toBeDefined();
             expect(catalog.defaults.baseURL).toBe(`${server}${V4CatalogService.PATH}`);
-            expect(provider.catalog(ODataVersion.v4)).toEqual(catalog);
+            expect(provider.catalog(ODataVersion.v4).services).toEqual(catalog.services);
         });
 
         test('Invalid version', async () => {

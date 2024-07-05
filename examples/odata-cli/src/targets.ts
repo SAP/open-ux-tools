@@ -13,12 +13,13 @@ import { logger } from './types';
 /**
  * Read the required values for connecting to an on-premise SAP system from the env variable, create a provider instance and execute the system agnostic example script.
  *
- * @param env object reprensenting the content of the .env file.
+ * @param env object representing the content of the .env file.
  * @param env.TEST_SYSTEM base url of the test system
  * @param env.TEST_USER optional username
  * @param env.TEST_PASSWORD optional password
+ * @param env.TEST_CLIENT optional client
  * @param activity Test Activity
- * @returns a promise recolving to an AbapServiceProvider instance
+ * @returns a promise resolving to an AbapServiceProvider instance
  */
 export async function testWithAbapSystem(
     env: {
@@ -46,10 +47,10 @@ export async function testWithAbapSystem(
 /**
  * Read the required values for connecting to an ABAP environment on BTP from the env variable, create a provider instance and execute the system agnostic example script.
  *
- * @param env object reprensenting the content of the .env file.
+ * @param env object representing the content of the .env file.
  * @param env.TEST_SERVICE_INFO_PATH path to a local copy of the service configuration file
  * @param env.TEST_PACKAGE optional package name for testing fetch transport numbers
- * @param env.TEST_APP optioanl project name for testing fetch transport numbers, new project doesn't exist on backend is also allowed
+ * @param env.TEST_APP optional project name for testing fetch transport numbers, new project doesn't exist on backend is also allowed
  * @param activity Test Activity
  * @returns Promise<void>
  */
@@ -87,9 +88,9 @@ export async function testWithAbapBtpSystem(
 /**
  * Read the required values for connecting to a Cloud ABAP environment from the env variable, create a provider instance and execute the system agnostic example script.
  *
- * @param env object reprensenting the content of the .env file.
+ * @param env object representing the content of the .env file.
  * @param env.TEST_SYSTEM base url of the test system
- * @param env.TEST_IGNORE_CERT_ERRORS optional, ignore certifcate errors or not
+ * @param env.TEST_IGNORE_CERT_ERRORS optional, ignore certificate errors or not
  * @param activity Test Activity
  * @returns Promise<void>
  */
@@ -108,7 +109,7 @@ export async function testWithCloudAbapSystem(
 /**
  * Read the required values for connecting to a destination from the env variable, create a provider instance and execute the system agnostic example script.
  *
- * @param env object reprensenting the content of the .env file.
+ * @param env object representing the content of the .env file.
  * @param env.TEST_DESTINATION name of destination
  * @param env.TEST_USER optional username
  * @param env.TEST_PASSWORD optional password
