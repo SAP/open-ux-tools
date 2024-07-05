@@ -842,7 +842,7 @@ export class CDSWriter implements ChangeHandler {
                 !previousElement.trailingComma &&
                 previousElement.element.range
             ) {
-                if (!isPointerInDeletionList(this.changes, insertionPointer, previousContentIndex)) {
+                if (!isPointerInDeletionList(this.changes, content, this.document, previousContentIndex)) {
                     return {
                         position: anchor,
                         commaPosition: copyPosition(previousElement.element.range.end)
@@ -1399,21 +1399,20 @@ function processNode(content: ContainerContentBlock[], item: Comment | AstNode):
         content.push(element);
     }
 }
-function isPointerInDeletionList(changes: CDSDocumentChange[], insertionPointer: string, insertAfterIndex: number) {
-    const segments = insertionPointer.split('/');
-    let insertAfterPointer = '';
-    // insertionPointer could be pointing to a container node or to sibling node eg: 'record/properties' or 'record/properties/4' respectively
-    if (Number.isInteger(segments[segments.length - 1])) {
-        segments.pop();
-    }
-    segments.push(String(insertAfterIndex));
-    insertAfterPointer = segments.join('/');
+function isPointerInDeletionList(
+    changes: CDSDocumentChange[],
+    content: ContainerContentBlock[],
+    document: CDSDocument,
+    insertAfterIndex: number
+) {
     return !!changes.find((change) => {
-        if (!change.type.startsWith('delete')) {
+        if (!change.type.startsWith('delete') || content.length === 1) {
             return false;
         }
-        const isSamePointer = insertAfterPointer === change.pointer;
-        if (isSamePointer) {
+        const astNodes = getAstNodesFromPointer(document, change.pointer);
+        const toBeDeletedNodes = astNodes[astNodes.length - 1];
+        const node = content[insertAfterIndex];
+        if (node.type === 'element' && node?.element === toBeDeletedNodes) {
             return true;
         } else {
             return false;
