@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.16.86
+
+### Patch Changes
+
+-   e32ee947: add sap client to params
+
 ## 0.16.85
 
 ### Patch Changes
