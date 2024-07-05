@@ -1,4 +1,4 @@
-import type { ListQuestion, InputQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { ListQuestion, FileBrowserQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import { AnnotationFileSelectType, type AddAnnotationsAnswers } from '../../types';
 import { t } from '../../i18n';
@@ -72,6 +72,6 @@ export function getPrompts(
                 }
                 return true;
             }
-        } as InputQuestion<AddAnnotationsAnswers>
+        } as FileBrowserQuestion<AddAnnotationsAnswers>
     ];
 }
