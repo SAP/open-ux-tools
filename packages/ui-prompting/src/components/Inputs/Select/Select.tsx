@@ -37,7 +37,9 @@ export const Select = (props: SelectProps) => {
             setValue('');
             updatedValue = '';
         }
-        updatedValue !== undefined && onChange(name, updatedValue);
+        if (updatedValue !== undefined) {
+            onChange(name, updatedValue);
+        }
     };
 
     const onChangeTextInput = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {

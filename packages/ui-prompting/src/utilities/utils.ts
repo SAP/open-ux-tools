@@ -1,6 +1,15 @@
 import type { Answers } from 'inquirer';
 import type { PromptQuestion, AnswerValue } from '../types';
 
+/**
+ * Method finds dependant question names for passed question.
+ * Method goes into recursion and finds dependant questions on deeper levels.
+ *
+ * @param questions - All questions
+ * @param name - Question name for which dependant question names should be resolved
+ * @param dependantPromptNames - Existing dependant names to update
+ * @returns Found dependant question names for passed question.
+ */
 export function getDependantQuestions(
     questions: PromptQuestion[],
     name: string,
@@ -17,6 +26,12 @@ export function getDependantQuestions(
     return dependantPromptNames;
 }
 
+/**
+ * Method finds all dynamic questions.
+ *
+ * @param questions - All questions
+ * @returns Found dynamic questions.
+ */
 export function getDynamicQuestions(questions: PromptQuestion[]): string[] {
     const dynamicQuestions = questions.filter(
         (question): question is Required<Pick<PromptQuestion, 'name'>> =>
@@ -25,6 +40,15 @@ export function getDynamicQuestions(questions: PromptQuestion[]): string[] {
     return dynamicQuestions.map((question) => question.name);
 }
 
+/**
+ * Method updates answer value and resets dependant questions answer.
+ *
+ * @param answers - Latest answers
+ * @param questions - All questions
+ * @param name - Answer to update
+ * @param value - New value of answer
+ * @returns New reference of updated answers.
+ */
 export function updateAnswers(
     answers: Record<string, AnswerValue>,
     questions: PromptQuestion[],
@@ -41,6 +65,14 @@ export function updateAnswers(
     return updatedAnswers;
 }
 
+/**
+ * Method updates single answer in answers object.
+ *
+ * @param answers - Answers to update
+ * @param path - Path to answer
+ * @param value - Value of answer
+ * @returns Updated answers.
+ */
 export function setAnswer(answers: Answers, path: string, value: unknown): Answers {
     const keys = path.split('.');
     let current = answers;
@@ -64,6 +96,13 @@ export function setAnswer(answers: Answers, path: string, value: unknown): Answe
     return answers;
 }
 
+/**
+ * Method gets answer value by passed path.
+ *
+ * @param answers - All answers
+ * @param path - Path to answer
+ * @returns Answer value.
+ */
 export function getAnswer(answers: Answers, path: string): unknown {
     const keys = path.split('.');
     let current = answers;

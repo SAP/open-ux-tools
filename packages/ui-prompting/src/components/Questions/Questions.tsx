@@ -85,7 +85,9 @@ export const Questions = (props: QuestionsProps) => {
                 onChange?.(updatedAnswers, name, answer);
                 // Request dynamic choices for dependant questions
                 const deps = getDependantQuestions(questions, name);
-                deps.length && requestChoices(deps, updatedAnswers);
+                if (deps.length) {
+                    requestChoices(deps, updatedAnswers);
+                }
             }
         },
         [localAnswers, onChange]

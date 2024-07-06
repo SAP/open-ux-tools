@@ -8,6 +8,13 @@ interface RequestedChoices {
     [key: string]: boolean;
 }
 
+/**
+ * Hook for value update for input components.
+ *
+ * @param initialValue - Initial/default value
+ * @param propValue - External value from component properties
+ * @returns Returns a stateful value, and a function to update it.
+ */
 export function useValue<S>(initialValue: S, propValue?: S): [S, (value: S) => void] {
     const [value, setValue] = useState(propValue ?? initialValue);
 
@@ -25,6 +32,14 @@ export function useValue<S>(initialValue: S, propValue?: S): [S, (value: S) => v
     return [value, updateValue];
 }
 
+// ToDo - move from hooks?
+/**
+ * Method returns dropdown/combobox options for passed question.
+ *
+ * @param question - Question with choices
+ * @param choices - External choices(if param is passed then choices would be used on top of "question.choices")
+ * @returns Returns dropdown/combobox options.
+ */
 function getOptions(question: PromptQuestion, choices?: PromptListChoices): UIComboBoxOption[] {
     // Use external/dynamicly populated choices
     let resolvedChoices = choices;
@@ -54,6 +69,13 @@ function getOptions(question: PromptQuestion, choices?: PromptListChoices): UICo
     return [];
 }
 
+/**
+ * Hook for dropdown/combobox options for dropdown components.
+ *
+ * @param question - Question with choices
+ * @param choices - External choices(if param is passed then choices would be used on top of "question.choices")
+ * @returns Returns dropdown/combobox options.
+ */
 export function useOptions(question: PromptQuestion, choices?: PromptListChoices): UIComboBoxOption[] {
     const [options, setOptions] = useState<UIComboBoxOption[]>([]);
     useEffect(() => {
@@ -63,6 +85,13 @@ export function useOptions(question: PromptQuestion, choices?: PromptListChoices
     return options;
 }
 
+/**
+ * Hook for requested choices update.
+ *
+ * @param initialValue - Initial/default choices
+ * @param latestChoices - Latest choices from component properties
+ * @returns Returns a stateful value, and a function to update it.
+ */
 export function useRequestedChoices(
     initialValue: RequestedChoices,
     latestChoices: DynamicChoices = {}
@@ -96,6 +125,13 @@ export function useRequestedChoices(
     return [pendingRequests, setRequestedChoices];
 }
 
+/**
+ * Method checks if array of dynamic questions are equal.
+ *
+ * @param values1 - First array of choices
+ * @param values2 - Second array of choices
+ * @returns Returns true if all values in both arays exists.
+ */
 function isDynamicQuestionsEquals(values1: string[], values2: string[]): boolean {
     return (
         values1.length === values2.length &&
@@ -104,6 +140,12 @@ function isDynamicQuestionsEquals(values1: string[], values2: string[]): boolean
     );
 }
 
+/**
+ * Hook as effect to detect when dynamic choices should be requested.
+ *
+ * @param effect - Effect which triggered when update/refresh for dynamic questions should be requested
+ * @param questions - Current questions
+ */
 export function useDynamicQuestionsEffect(effect: (names: string[]) => void, questions: PromptQuestion[]): void {
     const dynamicChoices = useRef<string[]>([]);
     useEffect(() => {

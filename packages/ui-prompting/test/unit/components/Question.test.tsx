@@ -20,6 +20,7 @@ describe('Question', () => {
     for (const question of Object.values(questions)) {
         it(`Render question - ${question.name} with message`, () => {
             render(<Question {...props} question={question} placeholder={`${question.name} placeholder`} />);
+            // ToDo improve code(lint)
             question.message && expect(screen.getByText(question.message.toString())).toBeDefined();
             question.message && expect(screen.getByPlaceholderText(`${question.name} placeholder`)).toBeDefined();
         });
@@ -32,6 +33,7 @@ describe('Question', () => {
                     choices={[{ name: 'testName0', value: 'testValue0' }]}
                 />
             );
+            // ToDo improve code(lint)
             question.message && expect(screen.getByDisplayValue('testName0')).toBeDefined();
         });
 
@@ -43,6 +45,7 @@ describe('Question', () => {
                     choices={['Page', 'Control', 'None']}
                 />
             );
+            // ToDo improve code(lint)
             question.message && expect(screen.getByDisplayValue('Page')).toBeDefined();
         });
 
