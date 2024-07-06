@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { initIcons } from '@sap-ux/ui-components';
-import { MultiSelect, MultiSelectProps } from '../../../../src/components';
+import type { MultiSelectProps } from '../../../../src/components';
+import { MultiSelect } from '../../../../src/components';
 
 const props: MultiSelectProps = {
     value: '',

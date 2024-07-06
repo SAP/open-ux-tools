@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { initIcons } from '@sap-ux/ui-components';
-import { Question, QuestionProps } from '../../../src/components';
-import { ListPromptQuestion } from '../../../src/types';
+import { Question } from '../../../src/components';
+import type { QuestionProps } from '../../../src/components';
+import type { ListPromptQuestion } from '../../../src/types';
 import { questions } from '../../mock-data/questions';
 
 describe('Question', () => {

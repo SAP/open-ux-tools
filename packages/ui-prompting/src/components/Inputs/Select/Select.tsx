@@ -3,7 +3,7 @@ import type { ListQuestion } from 'inquirer';
 import { UIComboBox, UIComboBoxLoaderType, UITextInput } from '@sap-ux/ui-components';
 import type { ITextField, UIComboBoxOption, UIComboBoxRef } from '@sap-ux/ui-components';
 import { useValue, getLabelRenderer } from '../../../utilities';
-import { ListPromptQuestionCreationProps } from '../../../types';
+import type { ListPromptQuestionCreationProps } from '../../../types';
 
 export interface SelectProps extends ListQuestion {
     name: string;

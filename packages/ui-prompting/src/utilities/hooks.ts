@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { UIComboBoxOption } from '@sap-ux/ui-components';
 import { getDynamicQuestions } from './utils';
 import type { PromptQuestion, DynamicChoices, PromptListChoices } from '../types';
-import { ChoiceOptions } from 'inquirer';
+import type { ChoiceOptions } from 'inquirer';
 
 interface RequestedChoices {
     [key: string]: boolean;

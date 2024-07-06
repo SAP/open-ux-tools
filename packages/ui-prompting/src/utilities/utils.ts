@@ -1,4 +1,4 @@
-import { Answers } from 'inquirer';
+import type { Answers } from 'inquirer';
 import type { PromptQuestion, AnswerValue } from '../types';
 
 export function getDependantQuestions(

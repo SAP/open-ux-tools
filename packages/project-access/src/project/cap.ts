@@ -642,6 +642,13 @@ function getMajorVersion(versionString: string): number {
     return parseInt(/\d+/.exec(versionString.split('.')[0])?.[0] ?? '0', 10);
 }
 
+/**
+ * Method resolves cap service name for passed project root and service uri.
+ *
+ * @param projectRoot - project root
+ * @param datasourceUri - service uri
+ * @returns - found cap service name
+ */
 export async function getCapServiceName(projectRoot: string, datasourceUri: string): Promise<string> {
     const services = (await getCapModelAndServices(projectRoot)).services;
     const service = findServiceByUri(services, datasourceUri);

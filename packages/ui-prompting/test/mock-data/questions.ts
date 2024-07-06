@@ -1,4 +1,4 @@
-import { PromptQuestion } from '../../src';
+import type { PromptQuestion } from '../../src';
 
 export const questions: { [key: string]: PromptQuestion } = {
     input: {

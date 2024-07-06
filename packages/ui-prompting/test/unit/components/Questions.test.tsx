@@ -2,8 +2,9 @@ import * as React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { initIcons } from '@sap-ux/ui-components';
 import { Questions } from '../../../src/components';
-import { ListPromptQuestion, PromptsLayoutType } from '../../../src/types';
-import { QuestionsProps } from '../../../dist';
+import { PromptsLayoutType } from '../../../src/types';
+import type { ListPromptQuestion } from '../../../src/types';
+import type { QuestionsProps } from '../../../dist';
 import { questions } from '../../mock-data/questions';
 import { getDependantQuestions } from '../../../src/utilities';
 

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { initIcons } from '@sap-ux/ui-components';
 import { Input } from '../../../../src/components';
-import { InputProps } from '../../../../dist';
+import type { InputProps } from '../../../../src/components';
 
 const props: InputProps = {
     value: '',

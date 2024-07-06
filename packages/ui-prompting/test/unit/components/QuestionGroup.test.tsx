@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import { initIcons } from '@sap-ux/ui-components';
-import { QuestionGroup, QuestionGroupProps } from '../../../src/components/QuestionGroup';
+import { QuestionGroup } from '../../../src/components/QuestionGroup';
+import type { QuestionGroupProps } from '../../../src/components/QuestionGroup';
 import { Question } from '../../../dist';
 import { questions } from '../../mock-data/questions';
 
@@ -31,12 +32,17 @@ describe('QuestionGroup', () => {
 
     it('Test question group - children', async () => {
         render(
-            <QuestionGroup
-                {...props}
-                children={Object.values(questions).map((question) => (
-                    <Question answers={{}} validation={{}} onChange={jest.fn()} question={question} />
+            <QuestionGroup {...props}>
+                {Object.values(questions).map((question) => (
+                    <Question
+                        key={question.name}
+                        answers={{}}
+                        validation={{}}
+                        onChange={jest.fn()}
+                        question={question}
+                    />
                 ))}
-            />
+            </QuestionGroup>
         );
         expect(screen.getByText('Group Title')).toBeDefined();
         expect(document.getElementsByClassName('prompt-entry')).toHaveLength(4);

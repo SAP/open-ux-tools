@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { initIcons } from '@sap-ux/ui-components';
-import { Select, SelectProps } from '../../../../src/components';
+import type { SelectProps } from '../../../../src/components';
+import { Select } from '../../../../src/components';
 
 const props: SelectProps = {
     name: 'select',
