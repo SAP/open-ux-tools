@@ -9,6 +9,11 @@ import { getCapServiceName } from '@sap-ux/project-access';
 import type { Project } from '@sap-ux/project-access';
 import type { BindingContextType } from '../../types';
 
+interface BindingContext {
+    type: BindingContextType;
+    isCollection?: boolean;
+}
+
 /**
  * Method returns service name for passed CAP project service.
  *
@@ -117,7 +122,7 @@ export async function getAnnotationPathQualifiers(
     projectProvider: ProjectProvider,
     entity: string,
     annotationTerm: UIAnnotationTerms[],
-    bindingContext: { type: BindingContextType; isCollection?: boolean },
+    bindingContext: BindingContext,
     useNamespace = false
 ) {
     const result: Record<string, string> = {};
@@ -158,7 +163,7 @@ function getAnnotationPathQualifiersForEntityType(
     annotationTerms: UIAnnotationTerms[],
     result: Record<string, string>,
     useNamespace: boolean,
-    bindingContext: { type: BindingContextType; isCollection?: boolean }
+    bindingContext: BindingContext
 ) {
     if (bindingContext.type === 'absolute') {
         addAnnotationPathQualifierToResult(entityType, '', annotationTerms, result, useNamespace);
