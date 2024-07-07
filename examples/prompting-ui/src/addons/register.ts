@@ -21,7 +21,7 @@ for (const addon of ADDONS) {
         addons.add(id, {
             title: title,
             type: types.PANEL,
-            match: ({ viewMode }) => !!(viewMode && viewMode.match(/^(story|docs)$/)),
+            match: ({ viewMode }) => !!viewMode?.match(/^(story|docs)$/),
             render: render
         });
     });

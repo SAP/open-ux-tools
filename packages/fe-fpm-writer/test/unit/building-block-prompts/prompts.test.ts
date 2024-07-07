@@ -5,7 +5,7 @@ import { create as createStorage } from 'mem-fs';
 import { PromptsType, PromptsAPI, BuildingBlockType } from '../../../src';
 import type { TablePromptsAnswer, SupportedAnswers } from '../../../src';
 import { ProjectProvider } from '../../../src/building-block/prompts/utils/project';
-import { ChoiceOptions } from 'inquirer';
+import type { ChoiceOptions } from 'inquirer';
 
 jest.setTimeout(10000);
 

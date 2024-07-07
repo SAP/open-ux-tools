@@ -42,6 +42,10 @@ export class ProjectProvider {
     }
 }
 
+/**
+ *
+ * @param projectProvider
+ */
 export async function isCapProject(projectProvider: ProjectProvider): Promise<boolean> {
     const projectType = (await projectProvider.getProject()).projectType;
     return ['CAPJava', 'CAPNodejs'].includes(projectType);

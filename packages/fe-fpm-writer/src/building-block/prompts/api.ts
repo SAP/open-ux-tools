@@ -51,11 +51,20 @@ const TEMP_MAP: Map<PromptsType, BuildingBlockType> = new Map([
     [PromptsType.FilterBar, BuildingBlockType.FilterBar]
 ]);
 
+/**
+ *
+ */
 export class PromptsAPI {
     basePath: string;
     projectProvider: ProjectProvider;
     fs: Editor;
 
+    /**
+     *
+     * @param basePath
+     * @param projectProvider
+     * @param fs
+     */
     constructor(basePath: string, projectProvider: ProjectProvider, fs: Editor) {
         this.basePath = basePath;
         this.projectProvider = projectProvider;
@@ -224,6 +233,8 @@ export class PromptsAPI {
      * Method checks if passed type of prompt supports generation and code preview.
      *
      * @param config Prompt configuration
+     * @param config.type
+     * @param config.answers
      * @returns true if code generation is supported.
      */
     private isGenerationSupported(config: {

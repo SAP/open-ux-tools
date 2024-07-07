@@ -60,6 +60,10 @@ export async function getAnnotationService(
     return service;
 }
 
+/**
+ *
+ * @param annotationService
+ */
 export function getMergedMetadata(annotationService: FioriAnnotationService): ConvertedMetadata {
     const rawMetadata = annotationService.getSchema();
     return convert(rawMetadata);
@@ -71,6 +75,11 @@ const getServiceMetadata = async (project: Project, serviceName: string, appName
 };
 
 // ToDo - is there otherway?
+/**
+ *
+ * @param project
+ * @param appId
+ */
 function getMainService(project: Project, appId?: string): string {
     let mainService: string | undefined;
     if (appId === undefined) {
