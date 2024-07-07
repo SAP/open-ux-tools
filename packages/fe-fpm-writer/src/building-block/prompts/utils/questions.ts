@@ -13,7 +13,8 @@ import type { BindingContextType } from '../../types';
 import { isElementIdAvailable } from './xml';
 import { i18nNamespaces, initI18n, translate } from '../../../i18n';
 
-// ToDo - lint issue
+// ToDo - recheck if can avoid lint disable
+/* eslint-disable @typescript-eslint/no-floating-promises */
 initI18n();
 const t = translate(i18nNamespaces.buildingBlock, 'prompts.common.');
 

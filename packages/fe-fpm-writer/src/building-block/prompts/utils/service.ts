@@ -7,8 +7,16 @@ import { convert } from '@sap-ux/annotation-converter';
 import { FioriAnnotationService } from '@sap-ux/fiori-annotation-api';
 import { getCapServiceName } from '@sap-ux/project-access';
 import type { Project } from '@sap-ux/project-access';
-import { BindingContextType } from '../../types';
+import type { BindingContextType } from '../../types';
 
+/**
+ * Method returns service name for passed CAP project service.
+ *
+ * @param project - project
+ * @param serviceName - service name to lookup
+ * @param appName  - app name in CAP project
+ * @returns resolved service name
+ */
 export async function getMappedServiceName(project: Project, serviceName: string, appName: string): Promise<string> {
     let mappedServiceName = serviceName;
     if (['CAPJava', 'CAPNodejs'].includes(project.projectType)) {
@@ -23,6 +31,16 @@ export async function getMappedServiceName(project: Project, serviceName: string
     }
     return mappedServiceName;
 }
+
+/**
+ * Method returns service object for passed service name.
+ *
+ * @param project - project
+ * @param serviceName - service name to lookup
+ * @param appName - app name in CAP project
+ * @param sync -
+ * @returns resolved service name
+ */
 export async function getAnnotationService(
     project: Project,
     serviceName: string,
@@ -92,6 +110,7 @@ export function getAnnotationTermAlias(annotationTerm: UIAnnotationTerms): [keyo
  * @param projectProvider
  * @param entity
  * @param annotationTerm
+ * @param bindingContext
  * @param useNamespace
  */
 export async function getAnnotationPathQualifiers(

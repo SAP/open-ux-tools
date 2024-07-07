@@ -62,6 +62,13 @@ export class PromptsAPI {
         this.fs = fs;
     }
 
+    /**
+     * Static method to initialize prompt api.
+     *
+     * @param basePath application path
+     * @param fs the file system object for reading files
+     * @returns Instance of prompt api.
+     */
     public static async init(basePath: string, fs?: Editor): Promise<PromptsAPI> {
         if (!fs) {
             fs = create(createStorage());
@@ -75,7 +82,7 @@ export class PromptsAPI {
      * Returns a list of prompts for passed type.
      *
      * @param type Prompt type
-     * @returns List of prompts for passed type
+     * @returns List of prompts for passed type.
      */
     public async getPrompts<N extends SupportedPrompts['type']>(
         type: N
@@ -213,6 +220,13 @@ export class PromptsAPI {
         return codePreviewGenerator?.(this.basePath, config.answers) ?? '';
     }
 
+    /**
+     * Method checks if passed type of prompt supports generation and code preview.
+     *
+     * @param type The prompt type
+     * @param answers The answers object
+     * @returns true if code generation is supported.
+     */
     private isGenerationSupported(config: {
         type: SupportedPrompts['type'];
         answers: SupportedPrompts['answers'];
