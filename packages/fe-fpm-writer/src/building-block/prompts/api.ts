@@ -223,8 +223,7 @@ export class PromptsAPI {
     /**
      * Method checks if passed type of prompt supports generation and code preview.
      *
-     * @param type The prompt type
-     * @param answers The answers object
+     * @param config Prompt configuration
      * @returns true if code generation is supported.
      */
     private isGenerationSupported(config: {

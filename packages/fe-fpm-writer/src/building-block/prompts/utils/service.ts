@@ -151,6 +151,7 @@ export async function getAnnotationPathQualifiers(
  * @param annotationTerms
  * @param result
  * @param useNamespace
+ * @param bindingContext
  */
 function getAnnotationPathQualifiersForEntityType(
     entityType: EntityType,
