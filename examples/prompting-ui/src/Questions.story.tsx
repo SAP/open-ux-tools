@@ -32,6 +32,6 @@ const questions: PromptQuestion[] = [
     }
 ];
 
-export const defaultUsage = (): JSX.Element => {
+export const DefaultUsage = (): JSX.Element => {
     return <Questions questions={questions} />;
 };

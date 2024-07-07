@@ -89,6 +89,11 @@ export async function createWebSocketConnection(): Promise<void> {
     });
 }
 
+/**
+ * Method sends action to UI using WebSocket connection.
+ *
+ * @param action - Action object
+ */
 function sendMessage(action: Actions): void {
     if (!connections.length) {
         return;
@@ -98,6 +103,11 @@ function sendMessage(action: Actions): void {
     }
 }
 
+/**
+ * Method validates current saved/stored project path.
+ *
+ * @returns "undefined" if project path is valid or error message if project path is invalid.
+ */
 export const validateProject = async (): Promise<string | undefined> => {
     try {
         const currentAppPath = getProjectPath();
@@ -113,6 +123,11 @@ export const validateProject = async (): Promise<string | undefined> => {
     }
 };
 
+/**
+ * Method handles passed action from UI.
+ *
+ * @param action Action to handle.
+ */
 async function handleAction(action: Actions): Promise<void> {
     try {
         const fs = await getEditor();

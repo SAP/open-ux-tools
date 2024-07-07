@@ -31,6 +31,14 @@ let ws: WebSocket | undefined;
 
 export type Listener = (action: Actions) => void;
 const listeners: { [key: string]: Listener[] } = {};
+
+/**
+ * Method creates and returns WebSocket connection.
+ * Creation happens only on first call and cached connection is returned on continuous calls.
+ *
+ * @param log Log message about received message
+ * @returns WebSocket connection.
+ */
 export function getWebSocket(log = true): WebSocket {
     if (!ws) {
         // Connect to the WebSocket server from the preview
@@ -52,22 +60,40 @@ export function getWebSocket(log = true): WebSocket {
     return ws;
 }
 
-function waitForConnection(callback: () => void, interval = 500) {
+/**
+ * Method waits till WebSocket connection is created and is open to send messages.
+ *
+ * @param callback Callback triggered when connection is open
+ * @param interval Interval to check for open connection if connection was closed on previous try
+ */
+function waitForOpenConnection(callback: () => void, interval = 500): void {
     if (ws?.readyState === 1) {
         callback();
     } else {
         setTimeout(function () {
-            waitForConnection(callback, interval);
+            waitForOpenConnection(callback, interval);
         }, interval);
     }
 }
 
+/**
+ * Method sends message through WebSocket connection.
+ *
+ * @param action Action to send as message
+ */
 export function sendMessage(action: unknown): void {
-    waitForConnection(() => {
+    waitForOpenConnection(() => {
         getWebSocket().send(JSON.stringify(action));
     });
 }
 
+/**
+ * Attach listener to specific message/action type.
+ * When message with attached action type is send - attached listener would be called/triggered.
+ *
+ * @param type Action/message type
+ * @param listener Listener function
+ */
 export function onMessageAttach(type: string, listener: Listener): void {
     if (!listeners[type]) {
         listeners[type] = [];
@@ -75,6 +101,12 @@ export function onMessageAttach(type: string, listener: Listener): void {
     listeners[type].push(listener);
 }
 
+/**
+ * Detach listener of specific message/action type.
+ *
+ * @param type Action/message type
+ * @param listener Listener function
+ */
 export function onMessageDetach(type: string, listener: Listener): void {
     if (listeners[type]) {
         const index = listeners[type].indexOf(listener);
@@ -88,6 +120,12 @@ const QUESTIONS_TYPE_MAP = new Map([
     [SupportedBuildingBlocks.FilterBar, SET_FILTERBAR_QUESTIONS]
 ]);
 
+/**
+ * Method returns prompt questions for passed prompt type.
+ *
+ * @param type Prompt type
+ * @returns Prompt with questions for passed prompt type.
+ */
 export function getQuestions<T extends Answers>(
     type: SupportedBuildingBlocks
 ): Promise<{ questions: PromptQuestion<T>[]; groups?: PromptsGroup[] }> {
@@ -111,6 +149,13 @@ export function getQuestions<T extends Answers>(
     });
 }
 
+/**
+ * Method requests choices for passed question names.
+ *
+ * @param names Question names
+ * @param buildingBlockType Prompt type
+ * @param answers Latest answers
+ */
 export function getChoices(names: string[], buildingBlockType: SupportedBuildingBlocks, answers: unknown): void {
     const getAction: GetChoices = {
         type: GET_CHOICES,
@@ -121,6 +166,12 @@ export function getChoices(names: string[], buildingBlockType: SupportedBuilding
     sendMessage(getAction);
 }
 
+/**
+ * Method to subscribe on dynamic choices update event.
+ *
+ * @param cb Callback when dynamic choices are resolved.
+ * @returns Listener reference.
+ */
 export function subscribeOnChoicesUpdate(cb: (choices: DynamicChoices) => void): Listener {
     const handleMessage = (action: Actions) => {
         if ('choices' in action) {
@@ -131,14 +182,22 @@ export function subscribeOnChoicesUpdate(cb: (choices: DynamicChoices) => void):
     return handleMessage;
 }
 
+/**
+ * Method to unsubscribe from dynamic choices update event.
+ *
+ * @param listener Listener reference
+ */
 export function unsubscribeOnChoicesUpdate(listener: Listener): void {
     onMessageDetach(SET_CHOICES, listener);
 }
 
-export function applyAnswers(
-    buildingBlockType: SupportedBuildingBlocks,
-    answers: unknown
-): Promise<{ buildingBlockType: SupportedBuildingBlocks }> {
+/**
+ * Method applies/saves answers.
+ *
+ * @param buildingBlockType Prompt type.
+ * @param answers Answers to apply/save.
+ */
+export function applyAnswers(buildingBlockType: SupportedBuildingBlocks, answers: unknown): Promise<void> {
     return new Promise((resolve) => {
         const getAction = {
             type: APPLY_ANSWERS,
@@ -146,19 +205,27 @@ export function applyAnswers(
             buildingBlockType
         };
         sendMessage(getAction);
-        resolve({ buildingBlockType: buildingBlockType });
+        resolve();
     });
 }
 
+/**
+ * Method validates passed answers.
+ *
+ * @param promptType Prompt type
+ * @param questions Question to validate
+ * @param answers Answers to validate
+ * @returns Validation result.
+ */
 export function validateAnswers(
-    value: SupportedBuildingBlocks,
+    promptType: SupportedBuildingBlocks,
     questions: PromptQuestion[],
     answers: Answers
 ): Promise<ValidationResults> {
     return new Promise((resolve) => {
         const getAction: ValidateAnswers = {
             type: VALIDATE_ANSWERS,
-            value,
+            value: promptType,
             questions,
             answers
         };
@@ -173,6 +240,11 @@ export function validateAnswers(
     });
 }
 
+/**
+ * Method returns curently saved/stored project path.
+ *
+ * @returns Curently saved/stored project path.
+ */
 export function getProjectPath(): Promise<string> {
     return new Promise((resolve) => {
         const getAction: GetProjectPath = {
@@ -189,6 +261,12 @@ export function getProjectPath(): Promise<string> {
     });
 }
 
+/**
+ * Method updates current/stored project path with new path.
+ *
+ * @param path New path to project
+ * @returns Update result information.
+ */
 export function updateProjectPath(path: string): Promise<UpdateProjectPathResultPayload> {
     return new Promise((resolve) => {
         const action: UpdateProjectPath = {
@@ -206,6 +284,12 @@ export function updateProjectPath(path: string): Promise<UpdateProjectPathResult
     });
 }
 
+/**
+ * Method requests code snippet for passed answers.
+ *
+ * @param buildingBlockType Prompt type
+ * @param answers Answers which would be used to generate code snippet
+ */
 export function getCodeSnippet(buildingBlockType: SupportedBuildingBlocks, answers: unknown): void {
     const action: GetCodeSnippet = {
         type: GET_CODE_SNIPPET,

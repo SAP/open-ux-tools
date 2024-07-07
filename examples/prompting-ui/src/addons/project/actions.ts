@@ -5,6 +5,12 @@ import type { ProjectActions } from './types';
 import { getProjectPath, setProjectPath, testAppPath } from './project';
 import { validateProject } from '../../backend';
 
+/**
+ * Method handles backend actions for project switch addon.
+ *
+ * @param action - Project addon action
+ * @returns Response action to update UI.
+ */
 export async function handleAction(action: ProjectActions): Promise<ProjectActions | undefined> {
     let responseAction: ProjectActions | undefined;
     switch (action.type) {

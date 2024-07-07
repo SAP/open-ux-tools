@@ -61,6 +61,12 @@ export const BuildingBlockQuestions = (props: {
 
     useEffect(() => setAnswers(updateWithDefaultAnswers(externalAnswers, questions)), [questions]);
 
+    /**
+     * Method updates answers and validation state.
+     *
+     * @param newAnswers - Updated values of all answers
+     * @param name - Associated answer's question name.
+     */
     async function updateAnswers(newAnswers: Answers, name: string) {
         setAnswers(updateWithDefaultAnswers(newAnswers, questions));
         if (liveValidation) {
@@ -80,7 +86,6 @@ export const BuildingBlockQuestions = (props: {
         await validateAnswers(type, questions, answers).then((validationResults) => {
             setValidation(validationResults);
             // Call API to apply changes
-            console.log('Applying changes... FPM Writer');
             if (!Object.values(validationResults).some((result: ValidationResult) => result.isValid === false)) {
                 applyAnswers(type, answers)
                     .then(() => {
@@ -92,11 +97,19 @@ export const BuildingBlockQuestions = (props: {
         });
     }
 
+    /**
+     * Method resets answers to default state.
+     */
     function handleReset() {
         setAnswers(updateWithDefaultAnswers({}, questions));
         setValidation({});
     }
 
+    /**
+     * Method toggles/switches layouting.
+     *
+     * @param name - Layout setting name.
+     */
     function toggleLayout(name: keyof CustomizationSettings): void {
         setLayoutSettings({
             ...layoutSettings,

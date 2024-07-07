@@ -4,7 +4,7 @@ import { BuildingBlockQuestions } from './BuildingBlock';
 
 export default { title: 'Building Blocks/Custom' };
 
-export const customChart = (): JSX.Element => {
+export const CustomChart = (): JSX.Element => {
     return (
         <BuildingBlockQuestions
             type={SupportedBuildingBlocks.Chart}

@@ -4,11 +4,21 @@ import type { DynamicChoices, PromptQuestion } from '@sap-ux/ui-prompting';
 import type { SupportedBuildingBlocks } from './types';
 import type { PromptsGroup } from '@sap-ux/ui-prompting';
 
+/**
+ * Hook to retrieve dynamic choices.
+ *
+ * @returns Dynamic choices.
+ */
 export function useChoices(): DynamicChoices {
     const [choices, setChoices] = useState({});
     const internalChoices = useRef<DynamicChoices>({});
 
     useEffect(() => {
+        /**
+         * Method updates local choices with received dynamic choices.
+         *
+         * @param newChoices New received dynamic choices.
+         */
         function onChoicesReceived(newChoices: DynamicChoices) {
             internalChoices.current = {
                 ...internalChoices.current,
@@ -26,6 +36,13 @@ export function useChoices(): DynamicChoices {
     return choices;
 }
 
+/**
+ * Hook to retrieve prompt with questions.
+ *
+ * @param type Prompt type
+ * @param filterQuestions Optional filter to filter by passed question names
+ * @returns Prompt with questions.
+ */
 export function useQuestions(
     type: SupportedBuildingBlocks,
     filterQuestions?: string[]

@@ -3,6 +3,6 @@ import { Input } from '@sap-ux/ui-prompting';
 
 export default { title: 'Basic/Input' };
 
-export const defaultUsage = (): JSX.Element => {
+export const DefaultUsage = (): JSX.Element => {
     return <Input name="test input" />;
 };

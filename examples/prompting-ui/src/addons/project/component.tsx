@@ -74,7 +74,6 @@ export const ProjectPathForm = memo(() => {
     };
     // Submit project path with pending path or passed path
     const onSubmit = (_event?: React.MouseEventHandler, submitPath = pendingPath) => {
-        console.log('Submit!');
         setBusy(true);
         updateProjectPath(submitPath)
             .then((payload) => {
