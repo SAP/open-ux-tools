@@ -3,7 +3,7 @@ import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
-import type { BindingContextType, BuildingBlock, BuildingBlockConfig, BuildingBlockMetaPath } from './types';
+import type { BuildingBlock, BuildingBlockConfig, BuildingBlockMetaPath } from './types';
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import * as xpath from 'xpath';
 import format from 'xml-formatter';

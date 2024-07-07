@@ -35,7 +35,6 @@ export class ProjectProvider {
      * Retrieves the new project structure from @sap-ux/project-access
      * getProject() and converts it to the old structure.
      *
-     * @param root - root path of the project
      * @returns - project structure
      */
     async getProject(): Promise<Project> {

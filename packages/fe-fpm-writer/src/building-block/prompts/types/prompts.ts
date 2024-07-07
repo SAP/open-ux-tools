@@ -5,9 +5,9 @@ import type {
     FilterBarPromptsAnswer,
     Prompts,
     Subset,
-    TablePromptsAnswer
+    TablePromptsAnswer,
+    PromptsType
 } from './basic';
-import { PromptsType } from './basic';
 import type { ProjectProvider } from '../utils';
 
 // ToDo constand or new enum instead of BuildingBlockType enum?

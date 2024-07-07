@@ -2,7 +2,8 @@ import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { PromptsType, PromptsAPI, TablePromptsAnswer, BuildingBlockType, SupportedAnswers } from '../../../src';
+import { PromptsType, PromptsAPI, BuildingBlockType } from '../../../src';
+import type { TablePromptsAnswer, SupportedAnswers } from '../../../src';
 import { ProjectProvider } from '../../../src/building-block/prompts/utils/project';
 import { ChoiceOptions } from 'inquirer';
 

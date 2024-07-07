@@ -21,8 +21,10 @@ import { BuildingBlockType } from '../../types';
 /**
  * Returns a list of prompts required to generate a chart building block.
  *
- * @param {Editor} fs the memfs editor instance
- * @returns {Promise<PromptObject<keyof ChartPromptsAnswer>[]>}
+ * @param fs the memfs editor instance
+ * @param basePath Path to project
+ * @param projectProvider Project provider
+ * @returns Prompt with questions for chart.
  */
 export async function getChartBuildingBlockPrompts(
     fs: Editor,

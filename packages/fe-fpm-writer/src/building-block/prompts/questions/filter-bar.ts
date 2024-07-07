@@ -15,6 +15,14 @@ import type { ProjectProvider } from '../utils';
 import type { Prompts, FilterBarPromptsAnswer } from '../types';
 import { BuildingBlockType } from '../../types';
 
+/**
+ * Returns a list of prompts required to generate a filterbar building block.
+ *
+ * @param fs the memfs editor instance
+ * @param basePath Path to project
+ * @param projectProvider Project provider
+ * @returns Prompt with questions for filterbar.
+ */
 export async function getFilterBarBuildingBlockPrompts(
     fs: Editor,
     basePath: string,

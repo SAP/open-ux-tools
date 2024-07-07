@@ -2262,7 +2262,7 @@ export const testSchema = {
                     }
                 ]
             }
-        ],
+        ]
     },
     entitySets: [
         {

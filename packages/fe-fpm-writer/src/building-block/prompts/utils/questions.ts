@@ -4,23 +4,27 @@ import { DOMParser } from '@xmldom/xmldom';
 import type { Answers } from 'inquirer';
 import type { Editor } from 'mem-fs-editor';
 import { join, relative } from 'path';
-import { ProjectProvider } from './project';
+import type { ProjectProvider } from './project';
 import { getAnnotationPathQualifiers, getEntityTypes } from './service';
 import { getCapServiceName } from '@sap-ux/project-access';
 import type { InputPromptQuestion, ListPromptQuestion, PromptListChoices } from '../types';
-import { BindingContextType, BuildingBlockType } from '../../types';
+import { BuildingBlockType } from '../../types';
+import type { BindingContextType } from '../../types';
 import { isElementIdAvailable } from './xml';
 import { i18nNamespaces, initI18n, translate } from '../../../i18n';
 
+// ToDo - lint issue
 initI18n();
 const t = translate(i18nNamespaces.buildingBlock, 'prompts.common.');
 
 /**
  * Returns a Prompt to choose a boolean value.
  *
- * @param name - The name of the prompt
- * @param message - The message to display in the prompt
- * @returns a boolean prompt
+ * @param name - the name of the prompt
+ * @param message - the message to display in the prompt
+ * @param defaultValue - default value
+ * @param additionalProperties - object with additional properties of question
+ * @returns a boolean prompt.
  */
 export function getBooleanPrompt(
     name: string,
@@ -45,11 +49,11 @@ export function getBooleanPrompt(
 /**
  * Returns the prompt for choosing the existing annotation term.
  *
- * @param name - The name of the prompt
- * @param message - The message to display in the prompt
- * @param projectProvider - The project provider
- * @param annotationTerm - The annotation term
- * @returns prompt for choosing the annotation term
+ * @param message - the message to display in the prompt
+ * @param projectProvider - the project provider
+ * @param annotationTerm - the annotation term
+ * @param additionalProperties - object with additional properties of question
+ * @returns prompt for choosing the annotation term.
  */
 export function getAnnotationPathQualifierPrompt(
     message: string,
@@ -92,12 +96,13 @@ export function getAnnotationPathQualifierPrompt(
 /**
  * Returns the prompt for choosing a View or a Fragment file.
  *
- * @param fs - The file system object for reading files
- * @param basePath - The base path to search for files
- * @param message - The message to display in the prompt
- * @param validationErrorMessage - The error message to show if validation fails
- * @param dependantPromptNames - Dependant prompts names
- * @returns a prompt
+ * @param fs - the file system object for reading files
+ * @param basePath - the base path to search for files
+ * @param message - the message to display in the prompt
+ * @param validationErrorMessage - the error message to show if validation fails
+ * @param dependantPromptNames - dependant prompts names
+ * @param additionalProperties - object with additional properties of question
+ * @returns prompt for choosing the fragment file.
  */
 export function getViewOrFragmentPathPrompt(
     fs: Editor,
@@ -128,6 +133,15 @@ export function getViewOrFragmentPathPrompt(
     };
 }
 
+/**
+ * Returns the prompt for choosing CAP service.
+ *
+ * @param message - the message to display in the prompt
+ * @param projectProvider - the project provider
+ * @param dependantPromptNames - dependant prompts names
+ * @param additionalProperties - object with additional properties of question
+ * @returns prompt for choosing CAP service.
+ */
 export async function getCAPServicePrompt(
     message: string,
     projectProvider: ProjectProvider,
@@ -154,10 +168,11 @@ export async function getCAPServicePrompt(
 /**
  * Returns a Prompt for choosing an entity.
  *
- * @param message - The message to display in the prompt
- * @param projectProvider - The project provider
- * @param dependantPromptNames - Dependant prompts names
- * @returns entity question
+ * @param message - the message to display in the prompt
+ * @param projectProvider - the project provider
+ * @param dependantPromptNames - dependant prompts names
+ * @param additionalProperties - object with additional properties of question
+ * @returns prompt for choosing entity.
  */
 export function getEntityPrompt(
     message: string,
@@ -186,6 +201,12 @@ export function getEntityPrompt(
     };
 }
 
+/**
+ * Method returns choices for cap service selection.
+ *
+ * @param projectProvider - the project provider
+ * @returns choices for cap service selection.
+ */
 export async function getCAPServiceChoices(projectProvider: ProjectProvider): Promise<PromptListChoices> {
     const project = await projectProvider.getProject();
     const services = project.apps[projectProvider.appId]?.services;
@@ -203,9 +224,11 @@ export async function getCAPServiceChoices(projectProvider: ProjectProvider): Pr
 /**
  * Return a Prompt for choosing the aggregation path.
  *
- * @param message - The message to display in the prompt
- * @param fs - The file system object for reading files
- * @returns A ListQuestion object representing the prompt
+ * @param message - the message to display in the prompt
+ * @param fs - the file system object for reading files
+ * @param basePath - the base path to search for aggregations
+ * @param additionalProperties - object with additional properties of question
+ * @returns prompt for choosing aggregation path of selected xml file.
  */
 export function getAggregationPathPrompt(
     message: string,
@@ -241,8 +264,8 @@ export function getAggregationPathPrompt(
  * Converts the provided xpath string from `/mvc:View/Page/content` to
  * `/mvc:View/*[local-name()='Page']/*[local-name()='content']`.
  *
- * @param {string} path - the xpath string
- * @returns {string} the augmented xpath string
+ * @param path - the xpath string
+ * @returns the augmented xpath string.
  */
 export const augmentXpathWithLocalNames = (path: string): string => {
     const result = [];
@@ -255,9 +278,9 @@ export const augmentXpathWithLocalNames = (path: string): string => {
 /**
  * Returns a list of xpath strings for each element of the xml file provided.
  *
- * @param {string} xmlFilePath - the xml file path
- * @param fs - The file system object for reading files
- * @returns {Record<string, string>} the list of xpath strings
+ * @param xmlFilePath - the xml file path
+ * @param fs - the file system object for reading files
+ * @returns the list of xpath strings.
  */
 export function getXPathStringsForXmlFile(xmlFilePath: string, fs: Editor): Record<string, string> {
     const result: Record<string, string> = {};
@@ -291,9 +314,11 @@ export function getXPathStringsForXmlFile(xmlFilePath: string, fs: Editor): Reco
 }
 
 /**
+ * Method converts choices to "PromptListChoices" type.
  *
- * @param {Record<string, string> | string[]} obj - object to be converted to choices
- * @returns the list of choices
+ * @param obj - object to be converted to choices
+ * @param sort - apply alphabetical sort(default is "true")
+ * @returns the list of choices.
  */
 export function transformChoices(obj: Record<string, string> | string[], sort = true): PromptListChoices {
     let choices: PromptListChoices = [];
@@ -313,7 +338,7 @@ export function transformChoices(obj: Record<string, string> | string[], sort = 
  * Returns the message property if the error is an instance of `Error` else a string representation of the error.
  *
  * @param {Error} error  - the error instance
- * @returns {string} the error message
+ * @returns {string} the error message.
  */
 function getErrorMessage(error: Error): string {
     return error instanceof Error ? error.message : String(error);
@@ -326,7 +351,7 @@ function getErrorMessage(error: Error): string {
  * @param type - the question type 'list' or 'input'
  * @param fs  - the file system object for reading files
  * @param basePath - the application path
- * @param additionalProperties
+ * @param additionalProperties - Object with additional properties of question
  * @returns an Input or List Prompt
  */
 export function getFilterBarIdPrompt(
@@ -336,7 +361,7 @@ export function getFilterBarIdPrompt(
     basePath?: string,
     additionalProperties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion | InputPromptQuestion {
-    let prompt: InputPromptQuestion = {
+    const prompt: InputPromptQuestion = {
         type: 'input',
         name: 'buildingBlockData.filterBar',
         message,
@@ -365,6 +390,14 @@ export function getFilterBarIdPrompt(
     };
 }
 
+/**
+ * Method returns ids of specific macro element found in passed xml file.
+ *
+ * @param viewOrFragmentPath - path to fragment or view file
+ * @param buildingBlockType - building block type
+ * @param fs  - the file system object for reading files
+ * @returns an array of ids found in passed xml file.
+ */
 async function getBuildingBlockIdsInFile(
     viewOrFragmentPath: string,
     buildingBlockType: BuildingBlockType,
@@ -402,7 +435,10 @@ async function getBuildingBlockIdsInFile(
  * Returns the Binding Context Type Prompt.
  *
  * @param message - prompt message
- * @returns a List Prompt
+ * @param defaultValue - default value
+ * @param dependantPromptNames - array of dependant question names
+ * @param additionalProperties - object with additional properties of question
+ * @returns prompt for choosing binding context type.
  */
 export function getBindingContextTypePrompt(
     message: string,
@@ -428,11 +464,13 @@ export function getBindingContextTypePrompt(
 /**
  * Returns a Prompt for entering a Building block ID.
  *
+ * @param fs  - the file system object for reading files
  * @param message - The message to display in the prompt
  * @param validationErrorMessage - The error message to show if ID validation fails
- * @param defaultValue
- * @param additionalProperties
- * @returns An InputPrompt object for getting the building block ID
+ * @param basePath - the application path
+ * @param defaultValue - default value
+ * @param additionalProperties - object with additional properties of question
+ * @returns an InputPrompt object for getting the building block ID
  */
 export function getBuildingBlockIdPrompt(
     fs: Editor,
@@ -463,6 +501,13 @@ export function getBuildingBlockIdPrompt(
     };
 }
 
+/**
+ * Method returns value of answer by given path.
+ *
+ * @param answers - answers object
+ * @param path - question name of path to answer
+ * @returns value of answer
+ */
 export function getAnswer(answers: Answers, path: string): unknown {
     const keys = path.split('.');
     let current = answers;

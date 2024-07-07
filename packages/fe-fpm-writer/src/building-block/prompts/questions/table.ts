@@ -22,6 +22,14 @@ import { BuildingBlockType } from '../../types';
 const TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID = 'tableBuildingBlockProperties';
 const TABLE_VISUALIZATION_PROPERTIES_GROUP_ID = 'tableVisualizationProperties';
 
+/**
+ * Returns a list of prompts required to generate a table building block.
+ *
+ * @param fs the memfs editor instance
+ * @param basePath Path to project
+ * @param projectProvider Project provider
+ * @returns Prompt with questions for table.
+ */
 export async function getTableBuildingBlockPrompts(
     fs: Editor,
     basePath: string,

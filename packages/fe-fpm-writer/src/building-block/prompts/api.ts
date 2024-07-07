@@ -1,7 +1,6 @@
 import type { Answers, Question } from 'inquirer';
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import type { BuildingBlockConfig } from '../types';
 import { BuildingBlockType } from '../types';
 import { ProjectProvider, getAnswer } from './utils';
 import type {
@@ -11,7 +10,6 @@ import type {
     SupportedPromptsMap,
     NarrowPrompt,
     PromptListChoices,
-    SupportedAnswers,
     SupportedGeneratorPrompts
 } from './types';
 import { PromptsType } from './types';
@@ -122,20 +120,20 @@ export class PromptsAPI {
     }
 
     /**
-     * Validates answers: checks if required prompts have values and runs validate() if exists on prompt
+     * Validates answers: checks if required prompts have values and runs validate() if exists on prompt.
      *
      * @param type The prompt type
      * @param answers The answers object
-     * @param questions Questions to validate. If param is not passed, then all question will be validated.
-     * @returns {ValidationResults} Object with question names and answer validation results
+     * @param questions Questions to validate - If param is not passed, then all question will be validated
+     * @returns Object with question names and answer validation results
      */
     public async validateAnswers(
         type: PromptsType,
         answers: Answers,
         questions?: Question[]
     ): Promise<ValidationResults> {
-        let originalPrompts = await this.getPrompts(type);
-        let result: ValidationResults = {};
+        const originalPrompts = await this.getPrompts(type);
+        const result: ValidationResults = {};
         if (!questions) {
             questions = (await this.getPrompts(type)).questions;
         }
