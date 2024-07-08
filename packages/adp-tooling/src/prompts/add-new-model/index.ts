@@ -12,21 +12,34 @@ import { getChangesByType } from '../../base/change-utils';
 import { ChangeType, type NewModelAnswers } from '../../types';
 import { isCustomerBase, isCFEnvironment } from '../../base/helper';
 import {
-    validateDuplication,
-    validateDuplicateName,
-    validateUri,
-    validateAnnotationJSON,
+    validateContentDuplication,
+    validateNonEmptyNoSpaces,
+    validateJSON,
     isNotEmptyString
 } from '../../base/validators';
 
-function getODataVersionChoices(): {
-    name: string;
-    value: any;
-}[] {
-    return [
-        { name: '2.0', value: '2.0' },
-        { name: '4.0', value: '4.0' }
-    ];
+const oDataVersions = [
+    { name: '2.0', value: '2.0' },
+    { name: '4.0', value: '4.0' }
+];
+
+/**
+ * Validates that two field values are not the same.
+ *
+ * @param fieldValue The value of the first field.
+ * @param comparativeValue The value of the second field to compare against.
+ * @param value1 The name of the first value.
+ * @param value2 The name of the second value.
+ *
+ * @returns {string | boolean} An error message if the values are the same, or true if they are different.
+ */
+export function validateDuplicateName(
+    fieldValue: string,
+    comparativeValue: string,
+    value1: string,
+    value2: string
+): string | boolean {
+    return fieldValue === comparativeValue ? t('validators.errorDuplicateNames', { value1, value2 }) : true;
 }
 
 /**
@@ -36,7 +49,6 @@ function getODataVersionChoices(): {
  */
 export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestion<NewModelAnswers>[] {
     const isCustomer = isCustomerBase(layer);
-    const oDataVersions = getODataVersionChoices();
     const defaultSeviceName = isCustomer ? 'customer.' : '';
     const isCFEnv = isCFEnvironment(projectPath);
 
@@ -50,7 +62,7 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
             default: defaultSeviceName,
             store: false,
             validate: (value: string, answers: NewModelAnswers) => {
-                const duplicationResult = validateDuplication(
+                const duplicationResult = validateContentDuplication(
                     value,
                     'dataSource',
                     changeFiles,
@@ -83,7 +95,7 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
                 mandatory: true,
                 hint: t('prompts.oDataServiceUriTooltip')
             },
-            validate: (value: string) => validateUri(value, t('prompts.oDataServiceUriLabel')),
+            validate: (value: string) => validateNonEmptyNoSpaces(value, t('prompts.oDataServiceUriLabel')),
             store: false
         } as InputQuestion<NewModelAnswers>,
         {
@@ -116,7 +128,7 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
             },
             default: defaultSeviceName,
             validate: (value: string) => {
-                return validateDuplication(
+                return validateContentDuplication(
                     value,
                     'model',
                     changeFiles,
@@ -132,7 +144,7 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
             name: 'modelSettings',
             message: t('prompts.oDataServiceModelSettingsLabel'),
             store: false,
-            validate: (value: string) => validateAnnotationJSON(value, t('prompts.oDataServiceModelSettingsLabel')),
+            validate: (value: string) => validateJSON(value, t('prompts.oDataServiceModelSettingsLabel')),
             guiOptions: {
                 mandatory: false,
                 hint: t('prompts.oDataServiceModelSettingsTooltip')
@@ -149,7 +161,7 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
             name: 'dataSourceName',
             message: t('prompts.oDataAnnotationDataSourceNameLabel'),
             validate: (value: string, answers: NewModelAnswers) => {
-                const duplicationResult = validateDuplication(
+                const duplicationResult = validateContentDuplication(
                     value,
                     'dataSource',
                     changeFiles,
@@ -181,7 +193,8 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
             type: 'input',
             name: 'dataSourceURI',
             message: t('prompts.oDataAnnotationDataSourceUriLabel'),
-            validate: (value: string) => validateUri(value, t('prompts.oDataAnnotationDataSourceUriLabel')),
+            validate: (value: string) =>
+                validateNonEmptyNoSpaces(value, t('prompts.oDataAnnotationDataSourceUriLabel')),
             store: false,
             guiOptions: {
                 mandatory: true,
@@ -193,7 +206,7 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
             type: 'editor',
             name: 'annotationSettings',
             message: t('prompts.oDataAnnotationSettingsLabel'),
-            validate: (value: string) => validateAnnotationJSON(value, t('prompts.oDataAnnotationSettingsLabel')),
+            validate: (value: string) => validateJSON(value, t('prompts.oDataAnnotationSettingsLabel')),
             store: false,
             guiOptions: {
                 mandatory: false,

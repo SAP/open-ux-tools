@@ -3,14 +3,15 @@ import {
     isNotEmptyString,
     isValidJSON,
     isValidSapClient,
-    validateAnnotationJSON,
-    validateDuplicateName,
-    validateDuplication,
     validateEmptyAndUserState,
     validateSpecialChars,
-    validateUri
+    validateContentDuplication,
+    hasEmptySpaces,
+    validateJSON,
+    validateNonEmptyNoSpaces
 } from '../../../src/base/validators';
 import { ManifestChangeProperties } from '../../../src';
+import { validateDuplicateName } from '../../../src/prompts/add-new-model';
 
 describe('validators', () => {
     describe('isNotEmptyString', () => {
@@ -33,39 +34,49 @@ describe('validators', () => {
         });
     });
 
-    describe('validateUri', () => {
-        const label = t('prompts.oDataServiceUriLabel');
-
-        it('should return true for valid URIs', () => {
-            expect(validateUri('/sap/opu/odata/', label)).toBe(true);
-        });
-
-        it('should return an error message if the URI is empty and mandatory', () => {
-            expect(validateUri('', label, true)).toBe(`${label} cannot be empty.`);
-        });
-
-        it('should return true if the URI is empty but not mandatory', () => {
-            expect(validateUri('', label, false)).toBe(true);
-        });
-
-        it('should return an error message if the URI contains spaces', () => {
-            expect(validateUri('/sap/opu /odata/', label)).toBe(`${label} cannot contain spaces.`);
+    describe('hasEmptySpaces', () => {
+        test('should return correct value based on input', () => {
+            expect(hasEmptySpaces('hello world')).toBe(true);
+            expect(hasEmptySpaces('helloworld')).toBe(false);
+            expect(hasEmptySpaces('')).toBe(false);
+            expect(hasEmptySpaces(' hello ')).toBe(true);
+            expect(hasEmptySpaces(' ')).toBe(true);
         });
     });
 
-    describe('validateAnnotationJSON', () => {
+    describe('validateNonEmptyNoSpaces', () => {
+        const label = t('prompts.oDataServiceUriLabel');
+
+        it('should return true for valid URIs', () => {
+            expect(validateNonEmptyNoSpaces('/sap/opu/odata/', label)).toBe(true);
+        });
+
+        it('should return an error message if the URI is empty and mandatory', () => {
+            expect(validateNonEmptyNoSpaces('', label, true)).toBe(`${label} cannot be empty.`);
+        });
+
+        it('should return true if the URI is empty but not mandatory', () => {
+            expect(validateNonEmptyNoSpaces('', label, false)).toBe(true);
+        });
+
+        it('should return an error message if the URI contains spaces', () => {
+            expect(validateNonEmptyNoSpaces('/sap/opu /odata/', label)).toBe(`${label} cannot contain spaces.`);
+        });
+    });
+
+    describe('validateJSON', () => {
         const label = t('prompts.oDataServiceModelSettingsLabel');
 
         it('should return true for valid JSON strings', () => {
-            expect(validateAnnotationJSON('"key":"value"', label)).toBe(true);
+            expect(validateJSON('"key":"value"', label)).toBe(true);
         });
 
         it('should return true for an empty string', () => {
-            expect(validateAnnotationJSON('', label)).toBe(true);
+            expect(validateJSON('', label)).toBe(true);
         });
 
         it('should return an error message for invalid JSON strings', () => {
-            expect(validateAnnotationJSON('{key:value}', label)).toBe(`Invalid ${label}`);
+            expect(validateJSON('{key:value}', label)).toBe(`Invalid ${label}`);
         });
     });
 
@@ -79,7 +90,7 @@ describe('validators', () => {
         });
     });
 
-    describe('validateDuplication', () => {
+    describe('validateContentDuplication', () => {
         const mockChangeFiles = [
             {
                 content: {
@@ -104,7 +115,7 @@ describe('validators', () => {
 
         it('should return true if no duplication is found', () => {
             expect(
-                validateDuplication(
+                validateContentDuplication(
                     'newValue',
                     'dataSource',
                     mockChangeFiles,
@@ -117,7 +128,7 @@ describe('validators', () => {
 
         it('should return an error message if duplication is found', () => {
             expect(
-                validateDuplication(
+                validateContentDuplication(
                     'customer.test',
                     'dataSource',
                     mockChangeFiles,

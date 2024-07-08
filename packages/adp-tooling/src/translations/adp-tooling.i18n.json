@@ -34,9 +34,9 @@
     },
     "validators": {
         "manifestContainsNoODataServices": "Manifest contains no OData Services.",
-        "inputCannotBeEmpty": "{{input}} cannot be empty.",
-        "inpuCannotHaveSpaces": "{{input}} cannot contain spaces.",
-        "inputInvalidValue": "Invalid {{input}}",
+        "cannotBeEmpty": "{{input}} cannot be empty.",
+        "cannotHaveSpaces": "{{input}} cannot contain spaces.",
+        "invalidValue": "Invalid {{input}}",
         "errorDuplicatedValue": "{{value}} with the same name was already added to the project",
         "errorDuplicateNames": "{{value1}} must be different from {{value2}}",
         "errorInputInvalidValuePrefix": "{{value}} should start with '{{prefix}}'",

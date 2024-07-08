@@ -2,16 +2,6 @@ import { t } from '../i18n';
 import { ManifestChangeProperties } from '../types';
 
 /**
- * Checks if the input is a non-empty string.
- *
- * @param input - input to check
- * @returns true if the input is a non-empty string
- */
-export function isNotEmptyString(input: string | undefined): boolean {
-    return typeof input === 'string' && input.trim().length > 0;
-}
-
-/**
  * Checks if the input is a valid SAP client.
  *
  * @param input - input to check
@@ -22,20 +12,44 @@ export function isValidSapClient(input: string | undefined): boolean {
 }
 
 /**
- * Validates a URI to ensure it meets specific criteria.
+ * Checks if the input is a non-empty string.
  *
- * @param {string} value - The URI to validate.
- * @param {string | undefined} input - The name of the input field being validated, used for error messaging.
- * @param {boolean} [isMandatory=true] - Whether the URI is mandatory; if false, an empty URI is considered valid.
- * @returns {string | boolean} - Returns true if the URI is valid. If invalid, returns a localized error message.
+ * @param input - input to check
+ * @returns true if the input is a non-empty string
  */
-export function validateUri(value: string, input: string | undefined, isMandatory = true): string | boolean {
-    if (value.length === 0) {
-        return isMandatory ? t('validators.inputCannotBeEmpty', { input }) : true;
+export function isNotEmptyString(input: string | undefined): boolean {
+    return typeof input === 'string' && input.trim().length > 0;
+}
+
+/**
+ * Checks if the given string contains any whitespace characters.
+ *
+ * @param {string} value - The string to check for whitespace characters.
+ * @returns {boolean} Returns true if the string contains any whitespace; otherwise, returns false.
+ */
+export function hasEmptySpaces(value: string): boolean {
+    return /\s/.test(value);
+}
+
+/**
+ * Validates that the input is non-empty and contains no whitespace characters.
+ *
+ * @param {string} value - The input value to validate.
+ * @param {string | undefined} input - The name of the input field being validated, used for error messaging.
+ * @param {boolean} [isMandatory=true] - Indicates whether the input is mandatory.
+ * @returns {string | boolean} Returns true if the input is valid. If invalid, returns a localized error message.
+ */
+export function validateNonEmptyNoSpaces(
+    value: string,
+    input: string | undefined,
+    isMandatory = true
+): string | boolean {
+    if (!isNotEmptyString(value)) {
+        return isMandatory ? t('validators.cannotBeEmpty', { input }) : true;
     }
 
-    if (value.indexOf(' ') >= 0) {
-        return t('validators.inpuCannotHaveSpaces', { input });
+    if (hasEmptySpaces(value)) {
+        return t('validators.cannotHaveSpaces', { input });
     }
 
     return true;
@@ -48,7 +62,7 @@ export function validateUri(value: string, input: string | undefined, isMandator
  * @param {string} input - The name of the input field being validated.
  * @returns {string | boolean} - Returns true if the string is valid JSON. If invalid, returns an error message.
  */
-export function validateAnnotationJSON(value: string, input: string): string | boolean {
+export function validateJSON(value: string, input: string): string | boolean {
     if (value.length === 0) {
         return true;
     }
@@ -57,7 +71,7 @@ export function validateAnnotationJSON(value: string, input: string): string | b
         return true;
     }
 
-    return t('validators.inputInvalidValue', { input });
+    return t('validators.invalidValue', { input });
 }
 
 /**
@@ -87,7 +101,7 @@ export function isValidJSON(value: string): boolean {
  *
  * @returns {boolean | string} True if no duplication is found, or an error message if validation fails.
  */
-export function validateDuplication(
+export function validateContentDuplication(
     value: string,
     propertyName: string,
     changeFiles: ManifestChangeProperties[],
@@ -154,11 +168,11 @@ export function validateSpecialChars(
     errorMsg?: string
 ): boolean | string {
     if (value.length === 0) {
-        return t('validators.inputCannotBeEmpty', { input });
+        return t('validators.cannotBeEmpty', { input });
     }
 
     if (value.indexOf(' ') >= 0) {
-        return t('validators.inpuCannotHaveSpaces', { input });
+        return t('validators.cannotHaveSpaces', { input });
     }
 
     const regex = new RegExp(regexp, 'g');
@@ -168,23 +182,4 @@ export function validateSpecialChars(
     }
 
     return true;
-}
-
-/**
- * Validates that two field values are not the same.
- *
- * @param fieldValue The value of the first field.
- * @param comparativeValue The value of the second field to compare against.
- * @param value1 The name of the first value.
- * @param value2 The name of the second value.
- *
- * @returns {string | boolean} An error message if the values are the same, or true if they are different.
- */
-export function validateDuplicateName(
-    fieldValue: string,
-    comparativeValue: string,
-    value1: string,
-    value2: string
-): string | boolean {
-    return fieldValue === comparativeValue ? t('validators.errorDuplicateNames', { value1, value2 }) : true;
 }
