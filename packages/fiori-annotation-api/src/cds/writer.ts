@@ -842,7 +842,7 @@ export class CDSWriter implements ChangeHandler {
                 !previousElement.trailingComma &&
                 previousElement.element.range
             ) {
-                if (!isPointerInDeletionList(this.changes, content, this.document, previousContentIndex)) {
+                if (!skipCommaInsertion(this.changes, content, this.document, previousContentIndex)) {
                     return {
                         position: anchor,
                         commaPosition: copyPosition(previousElement.element.range.end)
@@ -1399,20 +1399,23 @@ function processNode(content: ContainerContentBlock[], item: Comment | AstNode):
         content.push(element);
     }
 }
-function isPointerInDeletionList(
+function skipCommaInsertion(
     changes: CDSDocumentChange[],
     content: ContainerContentBlock[],
     document: CDSDocument,
     insertAfterIndex: number
 ) {
     return !!changes.find((change) => {
-        if (!change.type.startsWith('delete') || content.length === 1) {
+        if (!change.type.startsWith('delete')) {
             return false;
         }
         const astNodes = getAstNodesFromPointer(document, change.pointer);
         const toBeDeletedNodes = astNodes[astNodes.length - 1];
         const node = content[insertAfterIndex];
         if (node.type === 'element' && node?.element === toBeDeletedNodes) {
+            if (toBeDeletedNodes.type === 'annotation' && content.length === 1) {
+                return false;
+            }
             return true;
         } else {
             return false;

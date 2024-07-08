@@ -772,7 +772,7 @@ annotate S.E with {
     ];`
                 );
             });
-            test('by default at the end when deleting property', async () => {
+            test('by default inserting at the end when deleting property', async () => {
                 const fixture = `
     Service S { entity E {}; };
     annotate S.E with @UI.LineItem : [
@@ -812,7 +812,7 @@ annotate S.E with {
     ];`
                 );
             });
-            test('by default at the end when deleting property - datapoint', async () => {
+            test('by default inserting at the end when deleting property - datapoint', async () => {
                 const fixture = `
     Service S { entity E {}; };
     annotate S.E with @UI.DataPoint  : {
@@ -848,6 +848,40 @@ annotate S.E with {
     };`
                 );
             });
+            test('by default inserting at the end when deleting only property - datapoint2', async () => {
+                const fixture = `
+    Service S { entity E {}; };
+    annotate S.E with @UI.DataPoint  : {
+        $Type : 'UI.DataPointType'
+    };`;
+                await testWriter(
+                    fixture,
+                    [
+                        {
+                            type: 'insert-record-property',
+                            pointer: '/targets/0/assignments/0/value',
+                            element: createElementNode({
+                                name: Edm.PropertyValue,
+                                attributes: {
+                                    [Edm.Property]: createAttributeNode(Edm.Property, 'CriticalityLabels'),
+                                    [Edm.String]: createAttributeNode(Edm.String, 'testLabel')
+                                }
+                            })
+                        },
+                        {
+                            type: 'delete-record-property',
+                            pointer: '/targets/0/assignments/0/value/properties/0'
+                        }
+                    ],
+                    `
+    Service S { entity E {}; };
+    annotate S.E with @UI.DataPoint  : {
+        
+        CriticalityLabels : 'testLabel',
+    };`
+                );
+            });
+    
         });
         test('collection', async () => {
             const fixture = `Service S { entity E {}; };
