@@ -18,7 +18,7 @@ describe('Prompts', () => {
         // fs.delete(projectPath);
         const projectProvider = await ProjectProvider.createProject(projectPath);
         jest.spyOn(ProjectProvider, 'createProject').mockResolvedValue(projectProvider);
-        promptsAPI = await PromptsAPI.init(projectPath, fs);
+        promptsAPI = await PromptsAPI.init(projectPath, undefined, fs);
     });
 
     test('Init PromptsApi without fs', async () => {
