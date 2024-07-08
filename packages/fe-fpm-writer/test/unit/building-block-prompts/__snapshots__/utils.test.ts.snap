@@ -1,5 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`utils -  annotation service -  getAnnotationPathQualifiers - existing annotations for EntitySet, absolute binding context path 1`] = `
+Object {
+  "@UI.Chart#C_CustomerBankDetailsOPType": "@UI.Chart#C_CustomerBankDetailsOPType",
+  "@UI.LineItem#test": "@UI.LineItem#test",
+}
+`;
+
 exports[`utils -  annotation service -  getAnnotationPathQualifiers - existing annotations, absolute binding context path 1`] = `
 Object {
   "@UI.Chart": "@UI.Chart",
