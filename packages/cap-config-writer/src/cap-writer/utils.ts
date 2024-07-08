@@ -32,7 +32,7 @@ export function getAppLaunchText(capType: CapRuntime, projectName: string, appId
     // Determine the Maven command if the project is a Java project
     const mvnCommand = capType === 'Java' ? ' (```mvn spring-boot:run```)' : '';
     const capUrl = getCapUrl(capType, projectName, appId);
-    
+
     // Return launch text
     return `${t('launchCapText', { mvnCommand, capUrl })}`;
 }
