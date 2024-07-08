@@ -270,7 +270,7 @@ export function getApplication(): Promise<ApplicationInformation> {
 /**
  * Method updates current/stored project path with new path.
  *
- * @param path New path to project
+ * @param application Information about application paths
  * @returns Update result information.
  */
 export function updateProjectPath(application: ApplicationInformation): Promise<UpdateProjectPathResultPayload> {
