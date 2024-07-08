@@ -18,15 +18,10 @@ export const i18nNamespaces = {
  * @returns {string} the translation file path
  */
 function getTranslationFilePath(language: string, namespace: string): string {
-    let filePath = '';
-    switch (namespace) {
-        case i18nNamespaces.buildingBlock:
-            filePath = join(__dirname, `./building-block/prompts/translations/i18n.${language}.json`);
-            break;
-        default:
-            break;
+    if (namespace === i18nNamespaces.buildingBlock) {
+        return join(__dirname, `./building-block/prompts/translations/i18n.${language}.json`);
     }
-    return filePath;
+    return '';
 }
 
 /**

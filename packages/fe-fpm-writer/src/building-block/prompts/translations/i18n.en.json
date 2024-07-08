@@ -35,6 +35,12 @@
                     "relative": "Relative",
                     "absolute": "Absolute"
                 }
+            },
+            "validation": {
+                "errorMessage": {
+                    "input": "Please enter a value",
+                    "select": "Please select a value"
+                }
             }
         },
         "chart": {

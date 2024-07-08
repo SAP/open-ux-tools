@@ -1,9 +1,7 @@
 import { UIIcon, UiIcons } from '@sap-ux/ui-components';
 import React from 'react';
 
-interface IRenderFunction<P> {
-    (props?: P, defaultRender?: (props?: P) => JSX.Element | null): JSX.Element | null;
-}
+type IRenderFunction<P> = (props?: P, defaultRender?: (props?: P) => JSX.Element | null) => JSX.Element | null;
 
 export const onLabelRender = function <P>(
     tooltipText?: string,

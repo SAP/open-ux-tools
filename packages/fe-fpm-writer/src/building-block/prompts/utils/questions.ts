@@ -298,8 +298,8 @@ export function getXPathStringsForXmlFile(xmlFilePath: string, fs: Editor): Reco
                 continue;
             }
             result[`${parentNode}/${node.nodeName}`] = augmentXpathWithLocalNames(`${parentNode}/${node.nodeName}`);
-            for (let index = 0; index < node.childNodes.length; index++) {
-                const childNode = node.childNodes[index];
+            const childNodes = Array.from(node.childNodes);
+            for (const childNode of childNodes) {
                 if (childNode.nodeType === childNode.ELEMENT_NODE) {
                     nodes.push({
                         parentNode: `${parentNode}/${node.nodeName}`,
@@ -330,7 +330,11 @@ export function transformChoices(obj: Record<string, string> | string[], sort = 
         }
     } else {
         obj = [...new Set(obj)];
-        choices = sort ? obj.sort((a, b) => a.localeCompare(b)) : obj;
+        choices = obj;
+        if (sort) {
+            const sorted = obj.sort((a, b) => a.localeCompare(b));
+            return sorted;
+        }
     }
     return choices;
 }
@@ -423,9 +427,9 @@ async function getBuildingBlockIdsInFile(
             throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
         };
         const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent);
-        const elements = xmlDocument.getElementsByTagName(buildingBlockSelector);
-        for (let i = 0; i < elements.length; i++) {
-            const id = elements[i].getAttributeNode('id')?.value;
+        const elements = Array.from(xmlDocument.getElementsByTagName(buildingBlockSelector));
+        for (const element of elements) {
+            const id = element.getAttributeNode('id')?.value;
             id && ids.push(id);
         }
     }

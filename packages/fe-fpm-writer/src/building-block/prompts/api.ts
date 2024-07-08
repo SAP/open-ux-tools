@@ -9,7 +9,8 @@ import type {
     SupportedPromptsMap,
     NarrowPrompt,
     PromptListChoices,
-    SupportedGeneratorPrompts
+    SupportedGeneratorPrompts,
+    PromptQuestion
 } from './types';
 import { PromptsType } from './types';
 import { generateBuildingBlock, getSerializedFileContent } from '..';
@@ -19,7 +20,7 @@ import {
     getFilterBarBuildingBlockPrompts,
     getBuildingBlockTypePrompts
 } from './questions';
-import { initI18n } from '../../i18n';
+import { i18nNamespaces, initI18n, translate } from '../../i18n';
 
 const unsupportedPrompts = (_fs: Editor, _basePath: string, _projectProvider: ProjectProvider): Prompts<Answers> => ({
     questions: []
@@ -147,23 +148,25 @@ export class PromptsAPI {
             questions = (await this.getPrompts(type)).questions;
         }
         for (const q of questions) {
-            const question = originalPrompts.questions.find((blockQuestion) => q.name === blockQuestion.name);
-            if (!question?.name) {
-                continue;
-            }
-            const { name, required, type, validate } = question;
-            result[name] = { isValid: true };
-            const answer = getAnswer(answers, name);
-            if (required && (answer === undefined || answer === '')) {
-                result[name] = {
-                    isValid: false,
-                    // ToDo - translation
-                    errorMessage: type === 'input' ? 'Please enter a value' : 'Please select a value'
-                };
-            } else if (typeof validate === 'function') {
-                const validationResult = await validate(answer, answers);
-                if (typeof validationResult === 'string') {
-                    result[name] = { isValid: false, errorMessage: validationResult };
+            const question: PromptQuestion | undefined = originalPrompts.questions.find(
+                (blockQuestion) => q.name === blockQuestion.name
+            );
+            if (question) {
+                const t = translate(i18nNamespaces.buildingBlock, 'prompts.common.');
+                const { name, required, type, validate } = question;
+                result[name] = { isValid: true };
+                const answer = getAnswer(answers, name);
+                if (required && (answer === undefined || answer === '')) {
+                    result[name] = {
+                        isValid: false,
+                        errorMessage:
+                            type === 'input' ? t('validation.errorMessage.input') : t('validation.errorMessage.select')
+                    };
+                } else if (typeof validate === 'function') {
+                    const validationResult = await validate(answer, answers);
+                    if (typeof validationResult === 'string') {
+                        result[name] = { isValid: false, errorMessage: validationResult };
+                    }
                 }
             }
         }
