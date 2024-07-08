@@ -330,11 +330,7 @@ export function transformChoices(obj: Record<string, string> | string[], sort = 
         }
     } else {
         obj = [...new Set(obj)];
-        choices = obj;
-        if (sort) {
-            const sorted = obj.sort((a, b) => a.localeCompare(b));
-            return sorted;
-        }
+        return sort ? [...obj].sort((a, b) => a.localeCompare(b)) : obj;
     }
     return choices;
 }

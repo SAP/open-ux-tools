@@ -156,7 +156,7 @@ export class PromptsAPI {
                 const { name, required, type, validate } = question;
                 result[name] = { isValid: true };
                 const answer = getAnswer(answers, name);
-                if (required && (answer === undefined || answer === '')) {
+                if (required && !answer) {
                     result[name] = {
                         isValid: false,
                         errorMessage:
