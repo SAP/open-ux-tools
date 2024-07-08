@@ -56,9 +56,9 @@ export interface BaseBuildingBlockPromptAnswer extends Answers {
 }
 
 // export interface TablePromptsAnswer2 extends BuildingBlockConfig<Table>, BaseBuildingBlockPromptAnswer {}
-export type TablePromptsAnswer = BuildingBlockConfig<Table>;
-export type ChartPromptsAnswer = BuildingBlockConfig<Chart>;
-export type FilterBarPromptsAnswer = BuildingBlockConfig<FilterBar>;
+export type TablePromptsAnswer = BuildingBlockConfig<Table> & Answers;
+export type ChartPromptsAnswer = BuildingBlockConfig<Chart> & Answers;
+export type FilterBarPromptsAnswer = BuildingBlockConfig<FilterBar> & Answers;
 
 // // ToDo - not sure if should extend from Table
 // export interface TablePromptsAnswer extends Table, BaseBuildingBlockPromptAnswer {}

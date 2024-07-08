@@ -13,22 +13,25 @@ export const ExternalValues = (): JSX.Element => {
         <BuildingBlockQuestions
             type={SupportedBuildingBlocks.Table}
             externalAnswers={{
-                id: 'Table',
-                filterBar: 'FilterBar',
-                bindingContextType: 'absolute',
-                entity: 'C_CUSTOMER_OP_SRV.C_CustomerOPType',
-                qualifier: '@com.sap.vocabularies.UI.v1.LineItem#test',
-                type: 'GridTable',
-                selectionMode: 'Multiple',
-                header: 'Table header',
-                personalization: ['Item', 'Sort'],
-                variantManagement: ['Control'],
-                readOnly: true,
-                enableAutoColumnWidth: false,
-                enableExport: false,
-                enableFullScreen: false,
-                enablePaste: true,
-                isSearchable: false
+                buildingBlockData: {
+                    buildingBlockType: 'table',
+                    id: 'Table',
+                    filterBar: 'FilterBar',
+                    bindingContextType: 'absolute',
+                    entity: 'C_CUSTOMER_OP_SRV.C_CustomerOPType',
+                    qualifier: '@com.sap.vocabularies.UI.v1.LineItem#test',
+                    type: 'GridTable',
+                    selectionMode: 'Multiple',
+                    header: 'Table header',
+                    personalization: ['Item', 'Sort'],
+                    variantManagement: ['Control'],
+                    readOnly: true,
+                    enableAutoColumnWidth: false,
+                    enableExport: false,
+                    enableFullScreen: false,
+                    enablePaste: true,
+                    isSearchable: false
+                }
             }}
         />
     );

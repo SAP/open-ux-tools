@@ -1,7 +1,6 @@
 import type { Answers, Question } from 'inquirer';
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { BuildingBlockType } from '../types';
 import { ProjectProvider, getAnswer } from './utils';
 import type {
     Prompts,
@@ -44,12 +43,6 @@ const PromptsCodePreviewMap = {
     [PromptsType.Table]: getSerializedFileContent,
     [PromptsType.FilterBar]: getSerializedFileContent
 };
-
-const TEMP_MAP: Map<PromptsType, BuildingBlockType> = new Map([
-    [PromptsType.Chart, BuildingBlockType.Chart],
-    [PromptsType.Table, BuildingBlockType.Table],
-    [PromptsType.FilterBar, BuildingBlockType.FilterBar]
-]);
 
 /**
  *
@@ -192,11 +185,6 @@ export class PromptsAPI {
         if (!this.isGenerationSupported(config)) {
             return this.fs;
         }
-        // ToDo 'buildingBlockType' - should be different( support initial values for answers?)
-        const buildingBlockType = TEMP_MAP.get(type);
-        if (answers.buildingBlockData && buildingBlockType) {
-            answers.buildingBlockData.buildingBlockType = buildingBlockType;
-        }
         const generator = PromptsGeneratorsMap.hasOwnProperty(config.type)
             ? PromptsGeneratorsMap[config.type]
             : undefined;
@@ -217,11 +205,6 @@ export class PromptsAPI {
         const config = { type, answers };
         if (!this.isGenerationSupported(config)) {
             return '';
-        }
-        // ToDo 'buildingBlockType' - should be different( support initial values for answers?)
-        const buildingBlockType = TEMP_MAP.get(type);
-        if (answers.buildingBlockData && buildingBlockType) {
-            answers.buildingBlockData.buildingBlockType = buildingBlockType;
         }
         const codePreviewGenerator = PromptsCodePreviewMap.hasOwnProperty(config.type)
             ? PromptsCodePreviewMap[config.type]

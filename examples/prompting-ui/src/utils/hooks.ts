@@ -3,6 +3,7 @@ import { getQuestions, subscribeOnChoicesUpdate, unsubscribeOnChoicesUpdate } fr
 import type { DynamicChoices, PromptQuestion } from '@sap-ux/ui-prompting';
 import type { SupportedBuildingBlocks } from './types';
 import type { PromptsGroup } from '@sap-ux/ui-prompting';
+import { Answers } from 'inquirer';
 
 /**
  * Hook to retrieve dynamic choices.
@@ -46,15 +47,19 @@ export function useChoices(): DynamicChoices {
 export function useQuestions(
     type: SupportedBuildingBlocks,
     filterQuestions?: string[]
-): { questions: PromptQuestion[]; groups?: PromptsGroup[] } {
-    const [questions, setQuestions] = useState<{ questions: PromptQuestion[]; groups?: PromptsGroup[] }>({
+): { questions: PromptQuestion[]; groups?: PromptsGroup[]; initialAnswers?: Partial<Answers> } {
+    const [questions, setQuestions] = useState<{
+        questions: PromptQuestion[];
+        groups?: PromptsGroup[];
+        initialAnswers?: Partial<Answers>;
+    }>({
         groups: undefined,
         questions: []
     });
 
     useEffect(() => {
         getQuestions(type)
-            .then(({ groups, questions }) => {
+            .then(({ groups, questions, initialAnswers }) => {
                 if (filterQuestions) {
                     const resolvedQuestions: typeof questions = [];
                     for (const name of filterQuestions) {
@@ -65,7 +70,7 @@ export function useQuestions(
                     }
                     questions = resolvedQuestions;
                 }
-                setQuestions({ groups, questions });
+                setQuestions({ groups, questions, initialAnswers });
             })
             .catch(() => console.log('Error while getting prompt questions'));
     }, []);

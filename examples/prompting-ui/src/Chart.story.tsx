@@ -13,14 +13,17 @@ export const ExternalValues = (): JSX.Element => {
         <BuildingBlockQuestions
             type={SupportedBuildingBlocks.Chart}
             externalAnswers={{
-                id: 'Chart',
-                filterBar: 'FilterBar',
-                personalization: ['Item', 'Sort'],
-                entity: 'C_CUSTOMER_OP_SRV.C_CustomerOPType',
-                qualifier: '@com.sap.vocabularies.UI.v1.Chart',
-                selectionChange: 'onSelectionChange',
-                bindingContextType: 'absolute',
-                selectionMode: 'Multiple'
+                buildingBlockData: {
+                    buildingBlockType: 'chart',
+                    id: 'Chart',
+                    filterBar: 'FilterBar',
+                    personalization: ['Item', 'Sort'],
+                    entity: 'C_CUSTOMER_OP_SRV.C_CustomerOPType',
+                    qualifier: '@com.sap.vocabularies.UI.v1.Chart',
+                    selectionChange: 'onSelectionChange',
+                    bindingContextType: 'absolute',
+                    selectionMode: 'Multiple'
+                }
             }}
         />
     );

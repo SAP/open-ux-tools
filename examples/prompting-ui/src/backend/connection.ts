@@ -1,5 +1,6 @@
 import { join } from 'path';
 import { PromptsAPI } from '@sap-ux/fe-fpm-writer';
+import type { ChartPromptsAnswer, FilterBarPromptsAnswer, TablePromptsAnswer } from '@sap-ux/fe-fpm-writer';
 import { promisify } from 'util';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
@@ -137,16 +138,31 @@ async function handleAction(action: Actions): Promise<void> {
         switch (action.type) {
             case GET_QUESTIONS: {
                 let responseAction: Actions | undefined;
-                const { groups, questions } = await promptsAPI.getPrompts(action.value);
+                const { groups, questions, initialAnswers } = await promptsAPI.getPrompts(action.value);
                 if (action.value === SupportedBuildingBlocks.Table) {
                     // Post processing
-                    responseAction = { type: SET_TABLE_QUESTIONS, questions, groups };
+                    responseAction = {
+                        type: SET_TABLE_QUESTIONS,
+                        questions,
+                        groups,
+                        initialAnswers: initialAnswers as Partial<TablePromptsAnswer>
+                    };
                 } else if (action.value === SupportedBuildingBlocks.Chart) {
                     // Post processing
-                    responseAction = { type: SET_CHART_QUESTIONS, questions, groups };
+                    responseAction = {
+                        type: SET_CHART_QUESTIONS,
+                        questions,
+                        groups,
+                        initialAnswers: initialAnswers as Partial<ChartPromptsAnswer>
+                    };
                 } else if (action.value === SupportedBuildingBlocks.FilterBar) {
                     // Post processing
-                    responseAction = { type: SET_FILTERBAR_QUESTIONS, questions, groups };
+                    responseAction = {
+                        type: SET_FILTERBAR_QUESTIONS,
+                        questions,
+                        groups,
+                        initialAnswers: initialAnswers as Partial<FilterBarPromptsAnswer>
+                    };
                 }
                 if (responseAction) {
                     sendMessage(responseAction);

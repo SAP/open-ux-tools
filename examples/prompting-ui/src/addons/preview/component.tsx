@@ -1,5 +1,6 @@
 import { AddonPanel, Form, SyntaxHighlighter } from '@storybook/components';
 import React, { useEffect, useState } from 'react';
+import { addons } from '@storybook/addons';
 import { UPDATE_CODE_SNIPPET, getWebSocket, onMessageAttach } from '../../../src/utils';
 import type { Actions } from '../../../src/utils';
 
@@ -28,6 +29,14 @@ export const render = (props: { active?: boolean }): React.ReactElement => {
             }
         };
         onMessageAttach(UPDATE_CODE_SNIPPET, handleMessage);
+        const channel = addons.getChannel();
+        channel.on('storyChanged', (storyId) => {
+            // Reset to default when story is changed
+            setPreview({
+                answers: {},
+                code: ''
+            });
+        });
     }, []);
 
     return (

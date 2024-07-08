@@ -13,11 +13,14 @@ export const ExternalValues = (): JSX.Element => {
         <BuildingBlockQuestions
             type={SupportedBuildingBlocks.FilterBar}
             externalAnswers={{
-                id: 'FilterBar',
-                filterChanged: 'onFilterChanged',
-                search: 'onSearch',
-                entity: 'C_CUSTOMER_OP_SRV.C_CustomerOPType',
-                qualifier: '@com.sap.vocabularies.UI.v1.SelectionFields'
+                buildingBlockData: {
+                    buildingBlockType: 'filter-bar',
+                    id: 'FilterBar',
+                    filterChanged: 'onFilterChanged',
+                    search: 'onSearch',
+                    entity: 'C_CUSTOMER_OP_SRV.C_CustomerOPType',
+                    qualifier: '@com.sap.vocabularies.UI.v1.SelectionFields'
+                }
             }}
         />
     );

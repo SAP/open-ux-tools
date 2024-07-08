@@ -49,17 +49,19 @@ export const BuildingBlockQuestions = (props: {
     externalAnswers?: Answers;
     liveValidation?: boolean;
 }): JSX.Element => {
-    const { type, visibleQuestions, externalAnswers = {}, liveValidation = true } = props;
+    const { type, visibleQuestions, externalAnswers, liveValidation = true } = props;
     const [layoutSettings, setLayoutSettings] = useState<CustomizationSettings>({
         multiColumn: true,
         showDescriptions: true
     });
     const choices = useChoices();
-    const { groups, questions } = useQuestions(type, visibleQuestions);
-    const [answers, setAnswers] = useState<Answers>(updateWithDefaultAnswers(externalAnswers, questions));
+    const { groups, questions, initialAnswers = {} } = useQuestions(type, visibleQuestions);
+    const [answers, setAnswers] = useState<Answers>(
+        updateWithDefaultAnswers(externalAnswers ?? initialAnswers, questions)
+    );
     const [validation, setValidation] = useState<ValidationResults>({});
 
-    useEffect(() => setAnswers(updateWithDefaultAnswers(externalAnswers, questions)), [questions]);
+    useEffect(() => setAnswers(updateWithDefaultAnswers(externalAnswers ?? initialAnswers, questions)), [questions]);
 
     /**
      * Method updates answers and validation state.

@@ -41,7 +41,8 @@ export {
     Prompts,
     ValidationResults,
     Answers,
-    SupportedAnswers
+    SupportedAnswers,
+    Subset
 } from './building-block/prompts';
 
 export { ControllerExtension, ControllerExtensionPageType } from './controller-extension/types';

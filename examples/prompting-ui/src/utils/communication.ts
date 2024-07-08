@@ -26,6 +26,7 @@ import {
     SET_VALIDATION_RESULTS,
     SupportedBuildingBlocks
 } from './types';
+import { Subset } from '@sap-ux/fe-fpm-writer/src/building-block/prompts';
 
 let ws: WebSocket | undefined;
 
@@ -128,7 +129,7 @@ const QUESTIONS_TYPE_MAP = new Map([
  */
 export function getQuestions<T extends Answers>(
     type: SupportedBuildingBlocks
-): Promise<{ questions: PromptQuestion<T>[]; groups?: PromptsGroup[] }> {
+): Promise<{ questions: PromptQuestion<T>[]; groups?: PromptsGroup[]; initialAnswers?: Subset<T> }> {
     return new Promise((resolve, reject) => {
         const getAction: GetQuestions = {
             type: GET_QUESTIONS,
@@ -142,7 +143,11 @@ export function getQuestions<T extends Answers>(
         const handleMessage = (action: Actions) => {
             if ('questions' in action && Array.isArray(action.questions)) {
                 onMessageDetach(expectedActionType, handleMessage);
-                resolve({ questions: action.questions, groups: 'groups' in action ? action.groups : undefined });
+                resolve({
+                    questions: action.questions,
+                    groups: 'groups' in action ? action.groups : undefined,
+                    initialAnswers: 'initialAnswers' in action ? action.initialAnswers : undefined
+                });
             }
         };
         onMessageAttach(expectedActionType, handleMessage);
