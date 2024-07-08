@@ -1,12 +1,15 @@
 import { join } from 'path';
+import type { ApplicationInformation } from './types';
 
 export const testAppPath = join(__dirname, `../../../test-output/fe-app-${Date.now()}`);
-let currentAppPath = testAppPath;
-
-export const setProjectPath = (path: string): void => {
-    currentAppPath = path;
+let currentApp: ApplicationInformation = {
+    projectPath: testAppPath
 };
 
-export const getProjectPath = (): string => {
-    return currentAppPath;
+export const setApplication = (data: ApplicationInformation): void => {
+    currentApp = data;
+};
+
+export const getApplication = (): ApplicationInformation => {
+    return currentApp;
 };

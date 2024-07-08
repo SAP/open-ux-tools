@@ -15,24 +15,29 @@ export const SET_PROJECT_PATH = 'SET_PROJECT_PATH';
 export const UPDATE_PROJECT_PATH_RESULT = 'UPDATE_PROJECT_PATH_RESULT';
 export const VALIDATE_ANSWERS = 'VALIDATE_ANSWERS';
 
+export interface ApplicationInformation {
+    projectPath: string;
+    appId?: string;
+}
+
 export interface GetProjectPath {
     type: typeof GET_PROJECT_PATH;
 }
 
 export interface SetProjectPath {
     type: typeof SET_PROJECT_PATH;
-    path: string;
+    application: ApplicationInformation;
 }
 
 export interface UpdateProjectPath {
     type: typeof UPDATE_PROJECT_PATH;
-    path: string;
+    application: ApplicationInformation;
 }
 
 export interface UpdateProjectPathResultPayload {
     saved: boolean;
     message?: string;
-    path?: string;
+    application?: ApplicationInformation;
 }
 
 export interface UpdateProjectPathResult extends UpdateProjectPathResultPayload {

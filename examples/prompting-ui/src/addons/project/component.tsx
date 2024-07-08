@@ -1,16 +1,24 @@
 import React, { useState, memo } from 'react';
 import { Form, Blockquote, Loader, AddonPanel } from '@storybook/components';
-import { getProjectPath, getWebSocket, updateProjectPath } from '../../../src/utils';
+import { getApplication, getWebSocket, updateProjectPath } from '../../../src/utils';
+import type { ApplicationInformation } from './types';
 
 getWebSocket();
 
-const setStoredPath = (path: string) => {
-    localStorage.setItem('projectPath', path);
+const setStoredApp = (app: ApplicationInformation): void => {
+    localStorage.setItem('projectPath', app.projectPath);
+    localStorage.setItem('appId', app.appId ?? '');
 };
 
-const getStoredPath = (): string | null => {
-    const path = localStorage.getItem('projectPath');
-    return path;
+const getStoredApp = (): ApplicationInformation | null => {
+    const projectPath = localStorage.getItem('projectPath');
+    const appId = localStorage.getItem('appId');
+    return projectPath
+        ? {
+              projectPath,
+              appId: appId ?? ''
+          }
+        : null;
 };
 
 // Reload preview to apply new project path
@@ -37,27 +45,33 @@ const BlockerLoader = () => {
 };
 
 export const ProjectPathForm = memo(() => {
-    const [pendingPath, setPendingPath] = useState('');
-    const [savedPath, setSavedPath] = useState('');
+    const [pendingApp, setPendingApp] = useState<ApplicationInformation>({
+        projectPath: '',
+        appId: ''
+    });
+    const [savedApp, setSavedApp] = useState<ApplicationInformation>({
+        projectPath: '',
+        appId: ''
+    });
     const [message, setMessage] = useState('');
     const [busy, setBusy] = useState(false);
-    const isSubmitEnabled = savedPath !== pendingPath;
+    const isSubmitEnabled = savedApp.projectPath !== pendingApp.projectPath || savedApp.appId !== pendingApp.appId;
     // Method to update both - pending and currently saved path
-    const updateSavedPath = (path: string) => {
-        setPendingPath(path);
-        setSavedPath(path);
+    const updateSavedApp = (app: ApplicationInformation) => {
+        setPendingApp(app);
+        setSavedApp(app);
     };
     // Resolve initial saved path:
     // 1. Read saved path from localStorage
     // 2. Read default proejct path
     React.useEffect(() => {
-        const storedPath = getStoredPath();
-        if (storedPath) {
-            updateSavedPath(storedPath);
+        const storedApp = getStoredApp();
+        if (storedApp) {
+            updateSavedApp(storedApp);
         } else {
-            getProjectPath()
-                .then((projectPath) => {
-                    updateSavedPath(projectPath);
+            getApplication()
+                .then((application) => {
+                    updateSavedApp(application);
                 })
                 .catch(() => console.log('Error while getting project path'));
         }
@@ -68,8 +82,17 @@ export const ProjectPathForm = memo(() => {
         if (message) {
             setMessage('');
         }
-        if ('value' in event.target && typeof event.target.value === 'string') {
-            setPendingPath(event.target.value);
+        if (
+            'value' in event.target &&
+            'name' in event.target &&
+            typeof event.target.value === 'string' &&
+            typeof event.target.name === 'string'
+        ) {
+            const name = event.target.name;
+            setPendingApp({
+                ...pendingApp,
+                [name]: event.target.value
+            });
         }
     };
     // Submit project path with pending path or passed path
@@ -77,10 +100,10 @@ export const ProjectPathForm = memo(() => {
         setBusy(true);
         updateProjectPath(submitPath)
             .then((payload) => {
-                const { saved, path, message } = payload;
-                if (saved && path) {
-                    updateSavedPath(path);
-                    setStoredPath(path);
+                const { saved, application, message } = payload;
+                if (saved && application) {
+                    updateSavedApp(application);
+                    setStoredApp(application);
                     // Reload preview to apply new project path
                     reloadPreview();
                 } else if (message) {
@@ -110,7 +133,17 @@ export const ProjectPathForm = memo(() => {
                     </Form.Field>
                 )}
                 <Form.Field label="Path">
-                    <Form.Input rev="" size="100%" value={pendingPath} onChange={onPathInput} />
+                    <Form.Input
+                        rev=""
+                        size="100%"
+                        value={pendingApp.projectPath}
+                        name="projectPath"
+                        onChange={onPathInput}
+                    />
+                    <Form.Button onClick={onReset}>Reset to default</Form.Button>
+                </Form.Field>
+                <Form.Field label="App Folder(CAP project only)">
+                    <Form.Input rev="" size="100%" value={pendingApp.appId} name="appId" onChange={onPathInput} />
                     <Form.Button onClick={onReset}>Reset to default</Form.Button>
                 </Form.Field>
                 <div style={{ padding: '15px 0 0 130px' }}>

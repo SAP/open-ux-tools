@@ -7,6 +7,7 @@ import {
     VALIDATE_ANSWERS
 } from '../addons/project/types';
 import type {
+    ApplicationInformation,
     GetProjectPath,
     UpdateProjectPath,
     UpdateProjectPathResultPayload,
@@ -250,7 +251,7 @@ export function validateAnswers(
  *
  * @returns Curently saved/stored project path.
  */
-export function getProjectPath(): Promise<string> {
+export function getApplication(): Promise<ApplicationInformation> {
     return new Promise((resolve) => {
         const getAction: GetProjectPath = {
             type: GET_PROJECT_PATH
@@ -258,7 +259,7 @@ export function getProjectPath(): Promise<string> {
         sendMessage(getAction);
         const handleMessage = (action: Actions) => {
             if (action.type === SET_PROJECT_PATH) {
-                resolve(action.path);
+                resolve(action.application);
             }
             onMessageDetach(SET_PROJECT_PATH, handleMessage);
         };

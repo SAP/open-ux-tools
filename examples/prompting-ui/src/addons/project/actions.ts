@@ -2,7 +2,7 @@ import { join } from 'path';
 import { existsSync } from 'fs';
 import { GET_PROJECT_PATH, UPDATE_PROJECT_PATH, UPDATE_PROJECT_PATH_RESULT, SET_PROJECT_PATH } from './types';
 import type { ProjectActions } from './types';
-import { getProjectPath, setProjectPath, testAppPath } from './project';
+import { getApplication, setApplication, testAppPath } from './project';
 import { validateProject } from '../../backend';
 
 /**
@@ -17,14 +17,16 @@ export async function handleAction(action: ProjectActions): Promise<ProjectActio
         case GET_PROJECT_PATH: {
             responseAction = {
                 type: SET_PROJECT_PATH,
-                path: getProjectPath()
+                application: getApplication()
             };
             break;
         }
         case UPDATE_PROJECT_PATH: {
-            const newProjectPath = action.path ? join(action.path) : testAppPath;
+            const { application } = action;
+            const { projectPath } = application;
+            const newProjectPath = projectPath ? join(projectPath) : testAppPath;
             let message: string | undefined;
-            if (action.path && !existsSync(newProjectPath)) {
+            if (projectPath && !existsSync(newProjectPath)) {
                 message = 'Provided path does not exist';
             }
             if (!message) {
@@ -32,7 +34,9 @@ export async function handleAction(action: ProjectActions): Promise<ProjectActio
                 message = await validateProject(newProjectPath);
                 // If no error update path
                 if (!message) {
-                    setProjectPath(newProjectPath);
+                    setApplication({
+                        projectPath: newProjectPath
+                    });
                 }
             }
 
@@ -40,7 +44,7 @@ export async function handleAction(action: ProjectActions): Promise<ProjectActio
                 type: UPDATE_PROJECT_PATH_RESULT,
                 saved: !message,
                 message,
-                path: !message ? getProjectPath() : undefined
+                application: !message ? getApplication() : undefined
             };
             break;
         }

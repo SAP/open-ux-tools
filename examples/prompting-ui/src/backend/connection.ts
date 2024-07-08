@@ -30,7 +30,7 @@ import type {
 } from '../../src/utils/types';
 import type { AddonActions } from '../addons/types';
 import { handleAction as handleAddonAction } from '../addons/project';
-import { testAppPath, getProjectPath } from '../addons/project';
+import { testAppPath, getApplication } from '../addons/project';
 import { GET_PROJECT_PATH, SET_PROJECT_PATH, VALIDATE_ANSWERS } from '../addons/project/types';
 import type { SetProjectPath } from '../addons/project/types';
 import type { DynamicChoices } from '@sap-ux/ui-prompting';
@@ -53,7 +53,7 @@ export async function getEditor(forceUpdate = false): Promise<Editor> {
     }
     fsEditor = create(createStorage());
 
-    if (testAppPath === getProjectPath()) {
+    if (testAppPath === getApplication().projectPath) {
         fsEditor.copy([join(sampleAppPath)], join(testAppPath));
     }
 
@@ -105,8 +105,8 @@ function sendMessage(action: Actions): void {
 async function handleAction(action: Actions): Promise<void> {
     try {
         const fs = await getEditor();
-        const currentAppPath = getProjectPath();
-        const promptsAPI = await getPromptApi(currentAppPath, fs, '');
+        const currentApp = getApplication();
+        const promptsAPI = await getPromptApi(currentApp.projectPath, fs, currentApp.appId);
         switch (action.type) {
             case GET_QUESTIONS: {
                 let responseAction: Actions | undefined;
@@ -160,7 +160,6 @@ async function handleAction(action: Actions): Promise<void> {
                 const { answers, buildingBlockType } = action;
                 // ToDo recheck after cleanup for answers
                 const _fs = promptsAPI.submitAnswers(buildingBlockType, answers as any);
-                console.log(currentAppPath);
                 await promisify(_fs.commit).call(_fs);
                 const responseAction: ResetAnswers = {
                     type: RESET_ANSWERS,
@@ -172,7 +171,7 @@ async function handleAction(action: Actions): Promise<void> {
             case GET_PROJECT_PATH: {
                 const responseAction: SetProjectPath = {
                     type: SET_PROJECT_PATH,
-                    path: currentAppPath
+                    application: currentApp
                 };
                 sendMessage(responseAction);
                 break;
