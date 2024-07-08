@@ -47,6 +47,7 @@ async function addRoutingConfig(config: CFBaseConfig, fs: Editor, logger?: Logge
         await mtaConfigInstance.addRoutingModules(true);
     }
     await mtaConfigInstance.updateParameters();
+    await mtaConfigInstance.updateBuildParams();
     await mtaConfigInstance.save();
 }
 

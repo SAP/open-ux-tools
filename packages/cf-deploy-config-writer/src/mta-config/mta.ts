@@ -400,7 +400,7 @@ export class MtaConfig {
     }
 
     /**
-     * Updates the mta parameters i.e. build-parameters -> before-all.
+     * Update the MTA parameters.
      *
      * @param parameters
      * @param applyDefaults
@@ -414,6 +414,24 @@ export class MtaConfig {
             params[enableParallelDeployments] = true;
         }
         await this.mta.updateParameters(params);
+    }
+
+    /**
+     * Update the MTA build parameters i.e. build-parameters -> before-all.
+     *
+     * @param parameters
+     * @param applyDefaults
+     * @returns {Promise<void>} A promise that resolves when the change request has been processed.
+     */
+    public async updateBuildParams(parameters?: mta.ProjectBuildParameters, applyDefaults = true): Promise<void> {
+        let params = parameters ?? (await this.mta.getBuildParameters());
+        if (applyDefaults) {
+            params = { ...(params || {}), ...{} } as mta.ProjectBuildParameters;
+            params['before-all'] ||= [];
+            const buildParams: mta.BuildParameters = { builder: 'custom', commands: ['npm install'] };
+            params['before-all'].push(buildParams);
+        }
+        await this.mta.updateBuildParameters(params);
     }
 
     /**

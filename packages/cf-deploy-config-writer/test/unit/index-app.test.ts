@@ -5,8 +5,8 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import * as btp from '@sap-ux/btp-utils';
-import { generateAppConfig, generateBaseConfig } from '../../src';
-import { RouterModuleType } from '../../src/types';
+import { generateAppConfig } from '../../src';
+import { Editor } from 'mem-fs-editor';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -28,7 +28,7 @@ describe('CF Writer', () => {
             Host: 'MockHost'
         }
     };
-    const unitTestFs = create(createStorage());
+    let unitTestFs: Editor;
     const logger = new ToolsLogger({
         transports: [new NullTransport()]
     });
@@ -40,6 +40,7 @@ describe('CF Writer', () => {
         jest.restoreAllMocks();
         isAppStudioMock = jest.spyOn(btp, 'isAppStudio');
         listDestinationsMock = jest.spyOn(btp, 'listDestinations');
+        unitTestFs: Editor = create(createStorage());
     });
 
     beforeAll(async () => {
@@ -107,45 +108,4 @@ describe('CF Writer', () => {
             expect(unitTestFs.read(join(appPath, 'mta.yaml'))).toMatchSnapshot();
         });
     });
-    //
-    // describe('Generate Root Config', () => {
-    //     test('Generate deployment configs - standalone', async () => {
-    //         const debugSpy = jest.spyOn(logger, 'debug');
-    //         const mtaId = 'standalone';
-    //         const mtaPath = join(outputDir, mtaId);
-    //         fsExtra.mkdirSync(outputDir, { recursive: true });
-    //         fsExtra.mkdirSync(mtaPath);
-    //         await generateBaseConfig(
-    //             {
-    //                 mtaPath,
-    //                 mtaId,
-    //                 mtaDescription: 'MyStandaloneDescription',
-    //                 routerType: RouterModuleType.Standard
-    //             },
-    //             unitTestFs,
-    //             logger
-    //         );
-    //         expect(debugSpy).toBeCalledTimes(1);
-    //         expect(unitTestFs.dump(mtaPath)).toMatchSnapshot();
-    //     });
-    //     test('Generate deployment configs - managed', async () => {
-    //         const debugSpy = jest.spyOn(logger, 'debug');
-    //         const mtaId = 'managed';
-    //         const mtaPath = join(outputDir, mtaId);
-    //         fsExtra.mkdirSync(outputDir, { recursive: true });
-    //         fsExtra.mkdirSync(mtaPath);
-    //         await generateBaseConfig(
-    //             {
-    //                 mtaPath,
-    //                 mtaId,
-    //                 mtaDescription: 'MyManagedDescription',
-    //                 routerType: RouterModuleType.Managed
-    //             },
-    //             unitTestFs,
-    //             logger
-    //         );
-    //         expect(debugSpy).toBeCalledTimes(1);
-    //         expect(unitTestFs.dump(mtaPath)).toMatchSnapshot();
-    //     });
-    // });
 });
