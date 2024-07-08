@@ -1,4 +1,4 @@
-import { createForAbap, ODataVersion, V2CatalogService } from '../../../src';
+import { createForAbap, ODataVersion, V2CatalogService, ServiceType } from '../../../src';
 import { join } from 'path';
 import nock from 'nock';
 
@@ -146,6 +146,45 @@ describe('V2CatalogService', () => {
             // service uri contains segment parameters
             const annotationsByPathWithSegParams = await catalog.getAnnotations({ path: pathWithSegParams });
             expect(annotationsByPathWithSegParams[0].Definitions).toBe(annotations[0].Definitions);
+        });
+    });
+
+    describe('getServiceType', () => {
+        // test service properties
+        const id = 'TEST_SERVICE';
+        const title = 'TEST_SERVICE';
+        const path = `/TEST/${title}`;
+
+        // create a catalog for testing
+        const provider = createForAbap(config);
+        const catalog = provider.catalog(ODataVersion.v2);
+
+        it('get the service type', async () => {
+            nock(server)
+                .get(
+                    `${V2CatalogService.PATH}/ServiceCollection?$format=json&$filter=Title eq '${title}' and TechnicalServiceVersion eq 1`
+                )
+                .reply(200, {
+                    d: {
+                        results: [
+                            {
+                                ID: id,
+                                ServiceUrl: path,
+                                ServiceType: 'Not Determined'
+                            },
+                            {}
+                        ]
+                    }
+                });
+
+            nock(server)
+                .get(`${V2CatalogService.PATH}/ServiceTypeForHUBServices('${encodeURIComponent(id)}')?$format=json`)
+                .reply(200, {
+                    d: { ServiceIdentifier: id, ServiceName: title, ServiceVersion: '002', ServiceType: 'UI' }
+                });
+
+            const serviceType = catalog.getServiceType(path);
+            await expect(serviceType).resolves.toBe(ServiceType.UI);
         });
     });
 });

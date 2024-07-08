@@ -1,4 +1,4 @@
-import type { ODataServiceInfo, Annotations, FilterOptions } from './base';
+import type { ODataServiceInfo, Annotations, FilterOptions, ServiceType } from './base';
 import { CatalogService } from './base';
 import { ODataVersion } from '../../base/odata-service';
 import { ODataRequestError } from '../../base/odata-request-error';
@@ -21,6 +21,7 @@ export interface ODataServiceV2Info {
     TechnicalServiceName: string;
     Version: string;
     TechnicalServiceVersion: number;
+    ServiceType: ServiceType;
 }
 
 /**
@@ -68,7 +69,8 @@ export class V2CatalogService extends CatalogService {
                 name: service.TechnicalServiceName,
                 path: path,
                 serviceVersion: service.TechnicalServiceVersion + '',
-                odataVersion: ODataVersion.v2
+                odataVersion: ODataVersion.v2,
+                serviceType: service.ServiceType
             };
         });
     }
@@ -218,5 +220,26 @@ export class V2CatalogService extends CatalogService {
             }
         }
         return annotations;
+    }
+
+    /**
+     * Calls endpoint `ServiceTypeForHUBServices` to determine the service type.
+     *
+     * @param path service path
+     * @returns service type
+     */
+    public async getServiceType(path: string): Promise<ServiceType | undefined> {
+        let serviceType: ServiceType;
+        const { ID: id } = await this.findService({ path });
+
+        if (id) {
+            const result = await this.get<ODataServiceV2Info>(
+                `/ServiceTypeForHUBServices('${encodeURIComponent(id)}')`
+            );
+            if (result) {
+                serviceType = result.odata().ServiceType;
+            }
+        }
+        return serviceType;
     }
 }
