@@ -91,7 +91,7 @@ describe('outline nodes', () => {
             ]);
         });
 
-        test('extension point with default content', async () => {
+        test('extension point with default content and no created controls present', async () => {
             const node1 = {
                 id: 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
                 technicalName: 'sap.ui.extensionpoint',
@@ -100,8 +100,7 @@ describe('outline nodes', () => {
                 type: 'extensionPoint',
                 visible: true,
                 extensionPointInfo: {
-                    defaultContent: ['id1'],
-                    createdControls: []
+                    defaultContent: ['id1']
                 }
             };
 
