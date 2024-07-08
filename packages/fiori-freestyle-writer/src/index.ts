@@ -11,6 +11,7 @@ import { FreestyleApp, TemplateType } from './types';
 import { setDefaults, escapeFLPText } from './defaults';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { initI18n } from './i18n';
+import { getResourceUrlsForUi5Bootstrap } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -35,16 +36,13 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 
     // add new and overwrite files from templates e.g.
     const tmplPath = join(__dirname, '..', 'templates');
-    // Common files
     const ignore = [isTypeScriptEnabled ? '**/*.js' : '**/*.ts'];
+    
+    const { uShellBootstrapResourceUrl, uiBootsrapResourceUrl } = getResourceUrlsForUi5Bootstrap(isEdmxProjectType, ffApp.ui5?.frameworkUrl, ffApp.ui5?.version);
     const appConfig = {
         ...ffApp,
-        ui5: {
-            ...ffApp.ui5,
-            frameworkUrl: isEdmxProjectType ? undefined : ffApp.ui5?.frameworkUrl,
-            version: isEdmxProjectType ? undefined : ffApp.ui5?.version,
-            ui5Libs: isEdmxProjectType ? ffApp.ui5?.ui5Libs : undefined
-        }
+        uShellBootstrapResourceUrl,
+        uiBootsrapResourceUrl 
     }
     fs.copyTpl(
         join(tmplPath, 'common', 'add'), 

@@ -36,6 +36,7 @@
         "@sap-ux/fe-fpm-writer": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/ui5-test-writer": "workspace:*",
+        "@sap-ux/fiori-generator-shared": "workspace:*",
         "ejs": "3.1.10",
         "i18next": "20.6.1",
         "lodash": "4.17.21",

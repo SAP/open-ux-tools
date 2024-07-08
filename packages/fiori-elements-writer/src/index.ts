@@ -22,6 +22,7 @@ import { changesPreviewToVersion, escapeFLPText } from './data/templateAttribute
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
 import { initI18n } from './i18n';
+import { getResourceUrlsForUi5Bootstrap } from '@sap-ux/fiori-generator-shared';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -96,17 +97,13 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     if (feApp.appOptions?.typescript === true) {
         ignore = getTypeScriptIgnoreGlob(feApp, coercedUI5Version);
     }
+    
+    const { uShellBootstrapResourceUrl, uiBootsrapResourceUrl } = getResourceUrlsForUi5Bootstrap(isEdmxProjectType, feApp.ui5?.frameworkUrl, feApp.ui5?.version);
     const appConfig = {
         ...feApp,
-        ui5: {
-            ...feApp.ui5,
-            frameworkUrl: isEdmxProjectType ? undefined : feApp.ui5?.frameworkUrl,
-            version: isEdmxProjectType ? undefined : feApp.ui5?.version,
-            ui5Libs: isEdmxProjectType ? feApp.ui5?.ui5Libs : undefined
-        }
+        uShellBootstrapResourceUrl,
+        uiBootsrapResourceUrl 
     }
-    console.log("appConfig ***", appConfig.ui5, "rootTemplatesPath", rootTemplatesPath)
-    
     fs.copyTpl(
         join(rootTemplatesPath, 'common', 'add', '**/*.*'),
         basePath,
