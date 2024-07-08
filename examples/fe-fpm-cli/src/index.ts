@@ -33,7 +33,7 @@ async function initialize(): Promise<Editor> {
  */
 export async function generateFilterBarBuildingBlock(fs: Editor): Promise<Editor> {
     const basePath = testAppPath;
-    const promptsAPI = await PromptsAPI.init(basePath, fs);
+    const promptsAPI = await PromptsAPI.init(basePath, undefined, fs);
     const prompt = await promptsAPI.getPrompts(PromptsType.FilterBar);
     const answers: FilterBarPromptsAnswer = (await inquirer.prompt(
         prompt.questions,
@@ -51,7 +51,7 @@ export async function generateFilterBarBuildingBlock(fs: Editor): Promise<Editor
  */
 export async function generateChartBuildingBlock(fs: Editor): Promise<Editor> {
     const basePath = testAppPath;
-    const promptsAPI = await PromptsAPI.init(basePath, fs);
+    const promptsAPI = await PromptsAPI.init(basePath, undefined, fs);
     const prompt = await promptsAPI.getPrompts(PromptsType.Chart);
     const answers: ChartPromptsAnswer = (await inquirer.prompt(
         prompt.questions,
@@ -68,7 +68,7 @@ export async function generateChartBuildingBlock(fs: Editor): Promise<Editor> {
  */
 export async function generateTableBuildingBlock(fs: Editor): Promise<Editor> {
     const basePath = testAppPath;
-    const promptsAPI = await PromptsAPI.init(basePath, fs);
+    const promptsAPI = await PromptsAPI.init(basePath, undefined, fs);
     const prompt = await promptsAPI.getPrompts(PromptsType.Table);
     const answers: TablePromptsAnswer = (await inquirer.prompt(
         prompt.questions,
@@ -82,7 +82,7 @@ export async function generateTableBuildingBlock(fs: Editor): Promise<Editor> {
 (async () => {
     try {
         let fs = await initialize();
-        const promptsAPI = await PromptsAPI.init(sampleAppPath, fs);
+        const promptsAPI = await PromptsAPI.init(sampleAppPath, undefined, fs);
         const buildingBlockPrompts = await promptsAPI.getPrompts(PromptsType.BuildingBlocks);
         const answers: Partial<BuildingBlockTypePromptsAnswer> = await inquirer.prompt(buildingBlockPrompts.questions);
 
