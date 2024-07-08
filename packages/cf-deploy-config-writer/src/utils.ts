@@ -1,9 +1,11 @@
-import type { Editor } from 'mem-fs-editor';
-import type { Manifest } from '@sap-ux/project-access';
+import { type Editor } from 'mem-fs-editor';
 import { join, normalize, posix } from 'path';
-import type { Destinations } from '@sap-ux/btp-utils';
 import { isAppStudio, listDestinations, isFullUrlDestination, Authentication } from '@sap-ux/btp-utils';
-import type { XSAppDocument, XSAppRoute, XSAppRouteProperties } from './types';
+import { coerce, satisfies } from 'semver';
+import { MTAVersion, XSSecurityFile } from './constants';
+import type { Manifest } from '@sap-ux/project-access';
+import type { XSAppDocument, XSAppRoute, XSAppRouteProperties, MTABaseConfig } from './types';
+import type { Destinations } from '@sap-ux/btp-utils';
 
 let cachedDestinationsList: Destinations = {};
 
@@ -16,12 +18,13 @@ export function getTemplatePath(relativeTemplatePath: string = ''): string {
 }
 
 /**
+ *  Convert an app name to an MTA ID that is suitable for CF deployment.
  *
- * @param namespacedAppName Name of the app, like `sap.ux.app`
+ * @param id Name of the app, like `sap.ux.app`
  * @returns Name that's acceptable in an mta.yaml
  */
-export function toMtaModuleName(appId: string): string {
-    return appId.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>]/gi, '');
+export function toMtaModuleName(id: string): string {
+    return id.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>]/gi, '');
 }
 
 export function toPosixPath(dirPath: string): string {
@@ -66,4 +69,34 @@ export async function getDestinations(): Promise<Destinations> {
         cachedDestinationsList = await listDestinations();
     }
     return cachedDestinationsList;
+}
+
+/**
+ * Validates the MTA version passed in the config.
+ *
+ * @param mtaVersion
+ * @returns true if the version is valid
+ */
+export function validateVersion(mtaVersion?: string): boolean {
+    const version = coerce(mtaVersion);
+    if ((mtaVersion && !version) || (version && !satisfies(version, `>=${MTAVersion}`))) {
+        throw new Error('Invalid MTA version specified. Please use version 0.0.1 or higher.');
+    }
+    return true;
+}
+
+export function addXSSecurity({ mtaPath, mtaId }: MTABaseConfig, fs: Editor): void {
+    fs.copyTpl(getTemplatePath(`common/${XSSecurityFile}`), join(mtaPath, XSSecurityFile), {
+        id: mtaId.slice(0, 100)
+    });
+}
+
+export function addGitIgnore(targetPath: string, fs: Editor): void {
+    fs.copyTpl(getTemplatePath('gitignore.tmpl'), join(targetPath, '.gitignore'), {});
+}
+
+export function addRootPackage({ mtaPath, mtaId }: MTABaseConfig, fs: Editor): void {
+    fs.copyTpl(getTemplatePath('package.json'), join(mtaPath, 'package.json'), {
+        mtaId: mtaId
+    });
 }

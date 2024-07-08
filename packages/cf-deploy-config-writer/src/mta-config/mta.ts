@@ -27,18 +27,16 @@ import {
     UI5StandaloneModuleDestination,
     ServiceAPIRequires,
     deployMode,
-    enableParallelDeployments
+    enableParallelDeployments,
+    HTMLAppBuildParams,
+    MTAVersion
 } from '../constants';
 import { t } from '../i18n';
 import type { Logger } from '@sap-ux/logger';
 import type { YAMLMap, YAMLSeq } from '@sap-ux/yaml';
-import type {
-    CloudFoundryServiceType,
-    ModuleType,
-    ResourceType,
-    ManagedServiceType,
-    MTADestinationType
-} from '../types';
+import { type ModuleType, type ResourceType, type MTADestinationType } from '../types';
+import { HTML5App } from '../types';
+import { CloudFoundryServiceType } from '../types';
 
 /**
  * A class representing interactions with the MTA binary, found at https://sap.github.io/cloud-mta-build-tool/.
@@ -124,7 +122,7 @@ export class MtaConfig {
                     );
                 } else if (resource.parameters?.service === 'xsuaa') {
                     this.resources.set(ManagedXSUAA, resource);
-                } else if (resource.type === 'org.cloudfoundry.existing-service') {
+                } else if (resource.type === CloudFoundryServiceType.Existing) {
                     this.resources.set(resource.name, resource);
                 } else {
                     this.resources.set(resource.parameters.service, resource);
@@ -160,7 +158,7 @@ export class MtaConfig {
         const appHostName = this.resources.get('html5-apps-repo:app-host')?.name;
         if (appHostName) {
             const deployer: Module = {
-                name: `${this.prefix}-app-content`,
+                name: `${this.prefix.slice(0, 38)}-app-content`,
                 type: 'com.sap.application.content',
                 path: '.',
                 requires: [
@@ -184,7 +182,7 @@ export class MtaConfig {
 
     private async addUaa(): Promise<void> {
         const resource: Resource = {
-            name: `${this.prefix}-uaa`,
+            name: `${this.prefix.slice(0, 46)}-uaa`,
             type: 'org.cloudfoundry.managed-service',
             parameters: {
                 'service-plan': 'application',
@@ -199,7 +197,7 @@ export class MtaConfig {
 
     private async addHtml5Runtime(): Promise<void> {
         const resource: Resource = {
-            name: this.prefix + '-html5-repo-runtime',
+            name: `${this.prefix.slice(0, 29)}-html5-repo-runtime`,
             type: 'org.cloudfoundry.managed-service',
             parameters: { 'service-plan': 'app-runtime', service: 'html5-apps-repo' }
         };
@@ -209,12 +207,12 @@ export class MtaConfig {
     }
 
     private async addHtml5Host(): Promise<void> {
-        const html5host = `${this.prefix}-repo-host`; // Need to cater for -key being added too!
+        const html5host = `${this.prefix.slice(0, 40)}-repo-host`; // Need to cater for -key being added too!
         const resource: Resource = {
             name: html5host,
             type: 'org.cloudfoundry.managed-service',
             parameters: {
-                'service-name': `${this.prefix}-html5-srv`,
+                'service-name': `${this.prefix.slice(0, 40)}-html5-srv`,
                 'service-plan': 'app-host',
                 service: 'html5-apps-repo'
             }
@@ -225,7 +223,7 @@ export class MtaConfig {
     }
 
     private async addDestinationResource(isManagedApp = false): Promise<void> {
-        const destinationName = `${this.prefix}-destination-service`;
+        const destinationName = `${this.prefix.slice(0, 30)}-destination-service`;
         const resource: Resource = {
             name: destinationName,
             type: 'org.cloudfoundry.managed-service',
@@ -298,7 +296,7 @@ export class MtaConfig {
 
     private async addManagedUaa(): Promise<void> {
         const resource: Resource = {
-            name: `${this.prefix}-uaa`,
+            name: `${this.prefix.slice(0, 46)}-uaa`,
             type: 'org.cloudfoundry.managed-service',
             parameters: {
                 path: './xs-security.json',
@@ -450,26 +448,11 @@ export class MtaConfig {
         // Add application module
         const html5Module = this.apps.get(appModule);
         if (!html5Module) {
-            const app: {
-                path: string;
-                'build-parameters': {
-                    'supported-platforms': [];
-                    builder: string;
-                    'build-result': string;
-                    commands: string[];
-                };
-                name: string;
-                type: string;
-            } = {
-                name: appModule.slice(0, 128),
+            const app: HTML5App = {
+                name: appModule.slice(0, 50),
                 type: 'html5',
                 path: appPath,
-                'build-parameters': {
-                    builder: 'custom',
-                    'build-result': 'dist',
-                    commands: ['npm install', 'npm run build:cf'],
-                    'supported-platforms': []
-                }
+                'build-parameters': HTMLAppBuildParams as HTML5App['build-parameters']
             };
             await this.mta.addModule(app);
             this.apps.set(appModule, app);
@@ -484,8 +467,8 @@ export class MtaConfig {
      */
     public async addConnectivityResource(): Promise<void> {
         const serviceType: ResourceType = 'connectivity';
-        const resourceType: ManagedServiceType = 'org.cloudfoundry.managed-service';
-        const resourceName = `${this.prefix}-connectivity`;
+        const resourceType = CloudFoundryServiceType.Managed;
+        const resourceName = `${this.prefix.slice(0, 37)}-connectivity`;
 
         const router = this.modules.get('approuter.nodejs');
         if (router) {
@@ -530,7 +513,8 @@ export class MtaConfig {
             this.modules.get('com.sap.application.content:destination'),
             this.modules.get('approuter.nodejs')
         ].filter((elem) => elem !== undefined)) {
-            const destinationName = this.resources.get('destination')?.name ?? `${this.prefix}-destination-service`;
+            const destinationName =
+                this.resources.get('destination')?.name ?? `${this.prefix.slice(0, 30)}-destination-service`;
             if (module?.requires?.findIndex((app) => app.name === destinationName) === -1) {
                 if (module.type === 'approuter.nodejs') {
                     module.requires.push({
@@ -555,15 +539,12 @@ export class MtaConfig {
     /**
      * Append ABAP service to the modules and resources.
      *
-     * @param newAbapServiceChoice ABAP service name selected from user input
      * @param {string} serviceName
      * @param {string} service
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
     public async addAbapService(serviceName: string, service: string): Promise<void> {
-        const newResourceName = `${this.prefix}-abap-${serviceName}`;
-        const cfExistingSrvResource: CloudFoundryServiceType = 'org.cloudfoundry.existing-service';
-
+        const newResourceName = `${this.prefix.slice(0, 24)}-abap-${serviceName.slice(0, 20)}`;
         const router = this.modules.get('approuter.nodejs');
         if (router) {
             if (router.requires?.findIndex((resource) => resource.name === newResourceName) === -1) {
@@ -573,7 +554,7 @@ export class MtaConfig {
         }
         const abapServiceResource: Resource = {
             name: newResourceName,
-            type: cfExistingSrvResource,
+            type: CloudFoundryServiceType.Existing,
             parameters: {
                 'service-name': serviceName,
                 protocol: ['ODataV2'],
@@ -628,7 +609,7 @@ export class MtaConfig {
         const destinationName = this.resources.get('destination')?.name;
         if (destinationName && xsuaaName && appRuntimeName) {
             const router: Module = {
-                name: `${this.prefix}-router`,
+                name: `${this.prefix.slice(0, 43)}-router`,
                 type: 'approuter.nodejs',
                 path: fromServerGenerator ? `${RouterModule}` : `${CloudFoundry}/${RouterModule}`,
                 parameters: {
@@ -714,7 +695,7 @@ export class MtaConfig {
                 headerKey: headerConfig.key,
                 headerValue: headerConfig.value,
                 destinationServiceName: destinationServiceName,
-                mtaVersion: '1.0.0'
+                mtaVersion: MTAVersion
             };
             const mtaExtTemplate = readFileSync(join(__dirname, `../../templates/app/${MTAFileExtension}`), 'utf-8');
             writeFileSync(mtaExtFilePath, render(mtaExtTemplate, mtaExt));
@@ -827,7 +808,7 @@ export class MtaConfig {
         const managedXSUAAServiceName = this.resources.get(ManagedXSUAA)?.parameters?.['service-name'];
         if (destinationName && appHostName && managedXSUAAName && managedXSUAAServiceName) {
             const router: Module = {
-                name: `${this.prefix}-destination-content`,
+                name: `${this.prefix.slice(0, 30)}-destination-content`,
                 type: 'com.sap.application.content',
                 requires: [
                     {
@@ -858,14 +839,14 @@ export class MtaConfig {
                         instance: {
                             destinations: [
                                 {
-                                    Name: `${this.prefix}_html_repo_host`,
+                                    Name: `${this.prefix.slice(0, 35)}_html_repo_host`,
                                     ServiceInstanceName: appHostServiceName,
                                     ServiceKeyName: `${appHostName}-key`,
                                     'sap.cloud.service': `${this.prefix}`
                                 },
                                 {
                                     Authentication: 'OAuth2UserTokenExchange',
-                                    Name: `${this.prefix}_uaa`,
+                                    Name: `${this.prefix.slice(0, 46)}_uaa`,
                                     ServiceInstanceName: managedXSUAAServiceName,
                                     ServiceKeyName: `${managedXSUAAName}-key`,
                                     'sap.cloud.service': `${this.prefix}`

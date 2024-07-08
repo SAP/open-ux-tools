@@ -1,13 +1,12 @@
-import { MtaConfig } from './mta';
-import { MTABaseConfig, RouterModuleType } from '../types';
-import { Editor } from 'mem-fs-editor';
-import { getTemplatePath } from '../utils';
-import { deployMode, enableParallelDeployments, MTAYamlFile } from '../constants';
-import { render } from 'ejs';
-import { t } from '../i18n';
 import fileSystem from 'fs';
 import { join } from 'path';
-import { mta } from '@sap/mta-lib';
+import { render } from 'ejs';
+import { MtaConfig } from './mta';
+import { getTemplatePath } from '../utils';
+import { MTAYamlFile, MTAVersion } from '../constants';
+import { t } from '../i18n';
+import type { Editor } from 'mem-fs-editor';
+import type { MTABaseConfig } from '../types';
 
 export async function getMtaId(rootPath: string): Promise<string | undefined> {
     return (await getMtaConfig(rootPath))?.prefix;
@@ -27,22 +26,18 @@ export function toMtaModuleName(appId: string): string {
     return appId.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>]/gi, '').slice(0, 128);
 }
 
-export async function createMta(config: MTABaseConfig, fs: Editor): Promise<void> {
-    const mtaTemplate = fs.read(getTemplatePath(`app/${MTAYamlFile}`));
-    const mtaContents = render(mtaTemplate, {
-        id: config.mtaId,
-        mtaDescription: config.mtaDescription ?? t('DEFAULT_MTA_DESCRIPTION'),
-        mtaVersion: '0.0.1'
-    });
-    fileSystem.writeFileSync(join(config.mtaPath, MTAYamlFile), mtaContents);
-}
-
+/**
+ * Create an MTA file in the target folder, needs to be written to disk as subsequent calls are dependent on it being on the file system.
+ *
+ * @param config
+ * @param fs
+ */
 export function createMTA(config: MTABaseConfig, fs: Editor): void {
     const mtaTemplate = fs.read(getTemplatePath(`app/${MTAYamlFile}`));
     const mtaContents = render(mtaTemplate, {
         id: config.mtaId,
         mtaDescription: config.mtaDescription ?? t('DEFAULT_MTA_DESCRIPTION'),
-        mtaVersion: config.mtaVersion ?? '0.0.1'
+        mtaVersion: config.mtaVersion ?? MTAVersion
     });
     fileSystem.writeFileSync(join(config.mtaPath, MTAYamlFile), mtaContents);
 }

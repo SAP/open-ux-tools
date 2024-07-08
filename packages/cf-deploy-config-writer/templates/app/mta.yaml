@@ -1,5 +1,5 @@
 _schema-version: "3.2"
-ID: <%- id.slice(0, 128) %>
+ID: <%- id %>
 description: <%- mtaDescription %>
 version: <%- mtaVersion %>
 

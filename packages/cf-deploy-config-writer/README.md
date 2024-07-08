@@ -1,6 +1,6 @@
 # @sap-ux/cf-deploy-config-writer
 
-Add or amend Cloud Foundry deployment configuration for SAP projects.
+Add or amend Cloud Foundry deployment configuration to SAP projects.
 
 ## Installation
 Npm
@@ -34,14 +34,14 @@ await mtaConfig.addMtaExtensionConfig('mynewdestination', 'https://my-service-ur
 await mtaConfig.save();
 ```
 
-Calling the `generate` function;
+Calling the `generate` function to append Cloud Foundry configuration to a HTML5 project;
 ```Typescript
-import { generate } from '@sap-ux/cf-deploy-config-writer'
+import { generateAppConfig } from '@sap-ux/cf-deploy-config-writer'
 import { join } from 'path';
 
 const exampleWriter = async () => {
   const projectDir = join(__dirname, 'testapp');
-  const fs = await generate(projectDir);
+  const fs = await generateAppConfig(projectDir);
   return new Promise((resolve) => {
       fs.commit(resolve); // When using with Yeoman it handle the fs commit.
   });
@@ -49,7 +49,22 @@ const exampleWriter = async () => {
 
 // Calling the function
 await exampleWriter();
+```
 
+Calling the `generateRootConfig` function to generate a new Cloud Foundry configuration, supporting managed | standalone configurations;
+```Typescript
+import { generateRootConfig } from '@sap-ux/cf-deploy-config-writer'
+import { join } from 'path';
+
+const exampleWriter = async () => {
+  const mtaPath = join(__dirname, 'testapp');
+  const fs = await generateRootConfig({mtaId: 'myapp', version: '0.0.1', description: 'My app description', routerType: 'standard', mtaPath});
+  return new Promise((resolve) => {
+      fs.commit(resolve); // When using with Yeoman it handle the fs commit.
+  });
+}
+// Calling the function
+await exampleWriter();
 ```
 
 ## Keywords

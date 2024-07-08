@@ -1,5 +1,5 @@
 {
-  "xsappname": "<%- appName.slice(0, 100) %>",
+  "xsappname": "<%- id %>",
   "tenant-mode": "dedicated",
   "description": "Security profile of called application",
   "scopes": [],

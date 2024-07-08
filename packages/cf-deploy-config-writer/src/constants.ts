@@ -1,8 +1,6 @@
 import { UI5_DEFAULT } from '@sap-ux/ui5-config';
 import { t } from './i18n';
 
-const cannotFindBinary = (bin: string, pkg: string): string => t('error.cannotFindBinary', { bin, pkg });
-
 export const WelcomeFile = 'welcomeFile';
 export const XSAppFile = 'xs-app.json';
 export const XSSecurityFile = 'xs-security.json';
@@ -25,7 +23,8 @@ export const CDSExecutable = 'cds';
 export const CDSPackage = '@sap/cds-dk';
 export const MTAExecutable = 'mta';
 export const MTAPackage = 'mta';
-export const MTAVersion = '^1.2.27';
+export const MTAPackageVersion = '^1.2.27';
+export const MTAVersion = '0.0.1';
 export const RimrafVersion = '^5.0.5';
 export const Rimraf = 'rimraf';
 export const CDSAddMtaParams = ['add', 'mta'];
@@ -85,9 +84,12 @@ export const ServiceAPIRequires = {
         'srv-url': DefaultServiceURL
     }
 };
-
-export const CDSBinNotFound = cannotFindBinary(CDSExecutable, CDSPackage);
-export const MTABinNotFound = cannotFindBinary(MTAExecutable, MTAPackage);
+export const HTMLAppBuildParams = {
+    builder: 'custom',
+    'build-result': 'dist',
+    commands: ['npm install', 'npm run build:cf'],
+    'supported-platforms': []
+};
 export const UI5DeployBuildScript =
     'ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo';
 export const MTABuildScript = 'rimraf resources mta_archives && mbt build --mtar archive';
@@ -97,3 +99,6 @@ export const RootDeployMTAScript = (args: string[] = []): string =>
     `cf deploy mta_archives/archive.mtar ${args.length > 0 ? `${args.join(' ')} ` : ''}--retries 1`;
 export const UndeployMTAScript = (mtaId: string): string =>
     `cf undeploy ${mtaId} --delete-services --delete-service-keys --delete-service-brokers`;
+const cannotFindBinary = (bin: string, pkg: string): string => t('error.cannotFindBinary', { bin, pkg });
+export const CDSBinNotFound = cannotFindBinary(CDSExecutable, CDSPackage);
+export const MTABinNotFound = cannotFindBinary(MTAExecutable, MTAPackage);

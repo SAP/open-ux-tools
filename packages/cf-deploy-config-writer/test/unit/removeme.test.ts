@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { ConsoleTransport, ToolsLogger, LogLevel } from '@sap-ux/logger';
-import { generate, generateRootConfig } from '../../src';
+import { generateAppConfig, generateRootConfig } from '../../src';
 import { CFAppConfig, CFBaseConfig } from '../../src/types';
 
 jest.mock('@sap-ux/btp-utils', () => ({
@@ -26,7 +26,7 @@ describe('CF Writer', () => {
 
     describe('Generate', () => {
         test('Generate deployment configs', async () => {
-            const fs = await generate(
+            const fs = await generateAppConfig(
                 {
                     appPath: '/Users/i313149/Documents/tools-suite-test/testmtagenerate/',
                     addManagedApprouter: true,

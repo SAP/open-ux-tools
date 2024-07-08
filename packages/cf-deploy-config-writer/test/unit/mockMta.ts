@@ -1,14 +1,13 @@
-import type { Mta, mta } from '@sap/mta-lib';
 import { join } from 'path';
 import * as fs from 'fs';
 import yaml, { dump } from 'js-yaml';
+import type { Mta, mta } from '@sap/mta-lib';
 
 // Cannot directly use the `Mta` class as interface
 // We'll need to "implement" private properties and methods as well
 // Which means that we'll effectively need to extend the class
 // Extending means having to call the super constructor and we
-// don't want that
-// Extract the interface instead
+// don't want that, extract the interface instead.
 type MtaInterface = Pick<Mta, keyof Mta>;
 
 /**

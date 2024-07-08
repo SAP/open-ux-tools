@@ -18,17 +18,18 @@ export type ModuleType =
     | 'com.sap.application.content:resource'
     | 'html5'
     | 'com.sap.portal.content';
-export type CloudFoundryServiceType = ExistingServiceType | ManagedServiceType;
-export type ExistingServiceType = 'org.cloudfoundry.existing-service';
-export type ManagedServiceType = 'org.cloudfoundry.managed-service';
+export enum CloudFoundryServiceType {
+    Existing = 'org.cloudfoundry.existing-service',
+    Managed = 'org.cloudfoundry.managed-service'
+}
 export type MTADestinationType = Destination & {
     ServiceInstanceName: string;
     ServiceKeyName: string;
     'sap.cloud.service': string;
 };
 export enum RouterModuleType {
-    Standard = 'Standard',
-    Managed = 'Managed'
+    Standard = 'standard',
+    Managed = 'managed'
 }
 export interface MTABaseConfig {
     mtaId: string;
@@ -66,17 +67,14 @@ export interface CFConfig extends CFAppConfig, CFBaseConfig {
     cloudServiceName?: string;
     isMtaRoot?: boolean;
 }
-
 export const enum ApiHubType {
     apiHub = 'API_HUB',
     apiHubEnterprise = 'API_HUB_ENTERPRISE'
 }
-
 export interface ApiHubConfig {
     apiHubKey: string;
     apiHubType: ApiHubType;
 }
-
 export interface XSAppRoute {
     source?: string;
     target?: string;
@@ -88,11 +86,20 @@ export interface XSAppRoute {
     authenticationType?: string;
     dependency?: string;
 }
-
 export type XSAppRouteProperties = keyof XSAppRoute;
-
 export interface XSAppDocument {
     authenticationMethod?: string;
     routes?: XSAppRoute[];
     welcomeFile?: string;
+}
+export interface HTML5App {
+    path: string;
+    'build-parameters': {
+        builder: string;
+        'build-result': string;
+        commands: string[];
+        'supported-platforms': string[];
+    };
+    name: string;
+    type: string;
 }

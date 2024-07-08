@@ -5,7 +5,8 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import * as btp from '@sap-ux/btp-utils';
-import { generate } from '../../src';
+import { generateAppConfig, generateRootConfig } from '../../src';
+import { RouterModuleType } from '../../src/types';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -59,22 +60,65 @@ describe('CF Writer', () => {
         });
     });
 
-    describe('Generate', () => {
+    describe('Generate HTML5 App Config', () => {
         test('Generate deployment configs', async () => {
             isAppStudioMock.mockResolvedValue(true);
             listDestinationsMock.mockResolvedValue(destinationsMock);
             const debugSpy = jest.spyOn(logger, 'debug');
             const appName = 'basicapp';
-            const testPath = join(outputDir, appName);
+            const appPath = join(outputDir, appName);
             fsExtra.mkdirSync(outputDir, { recursive: true });
-            fsExtra.mkdirSync(testPath);
-            fsExtra.copySync(join(__dirname, `../sample/${appName}`), testPath);
+            fsExtra.mkdirSync(appPath);
+            fsExtra.copySync(join(__dirname, `../sample/${appName}`), appPath);
 
-            await generate(testPath, { destination: destinationsMock.ABC123.Name }, unitTestFs, logger);
+            await generateAppConfig({ appPath, destination: destinationsMock.ABC123.Name }, unitTestFs, logger);
             expect(isAppStudioMock).toBeCalledTimes(1);
             expect(listDestinationsMock).toBeCalledTimes(1);
             expect(debugSpy).toBeCalledWith();
-            unitTestFs.dump(testPath);
+            unitTestFs.dump(appPath);
+            //expect(unitTestFs.dump(testPath)).toMatchSnapshot();
+        });
+    });
+
+    describe('Generate Root Config', () => {
+        test('Generate deployment configs - standalone', async () => {
+            const debugSpy = jest.spyOn(logger, 'debug');
+            const mtaId = 'standalone';
+            const mtaPath = join(outputDir, mtaId);
+            fsExtra.mkdirSync(outputDir, { recursive: true });
+            fsExtra.mkdirSync(mtaPath);
+            await generateRootConfig(
+                {
+                    mtaPath,
+                    mtaId,
+                    mtaDescription: 'MyStandaloneDescription',
+                    routerType: RouterModuleType.Standard
+                },
+                unitTestFs,
+                logger
+            );
+            expect(debugSpy).toBeCalledWith();
+            unitTestFs.dump(mtaPath);
+            //expect(unitTestFs.dump(testPath)).toMatchSnapshot();
+        });
+        test('Generate deployment configs - managed', async () => {
+            const debugSpy = jest.spyOn(logger, 'debug');
+            const mtaId = 'managed';
+            const mtaPath = join(outputDir, mtaId);
+            fsExtra.mkdirSync(outputDir, { recursive: true });
+            fsExtra.mkdirSync(mtaPath);
+            await generateRootConfig(
+                {
+                    mtaPath,
+                    mtaId,
+                    mtaDescription: 'MyManagedDescription',
+                    routerType: RouterModuleType.Managed
+                },
+                unitTestFs,
+                logger
+            );
+            expect(debugSpy).toBeCalledWith();
+            unitTestFs.dump(mtaPath);
             //expect(unitTestFs.dump(testPath)).toMatchSnapshot();
         });
     });
