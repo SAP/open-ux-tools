@@ -41,11 +41,10 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
 
     // Construct resourcePath based on project type and frameworkUrl availability
     const ui5ResourceUrl = isEdmxProjectType
-        // If the project is of type EDMXBackend, use a relative resource path
-        ? 'resources/sap-ui-core.js'
-        // If the project is CAP, construct the resource URL using frameworkUrl, version, and the resource filename
-        : `${ui5App.ui5.frameworkUrl}/${ui5App.ui5.version}/resources/sap-ui-core.js`;
-
+        ? 'resources/sap-ui-core.js' // Use relative path for Edmx projects
+        : ui5App.ui5?.frameworkUrl
+            ? `${ui5App.ui5?.frameworkUrl}${ui5App.ui5?.version ? `/${ui5App.ui5?.version}` : ''}/resources/sap-ui-core.js` // Use framework URL and version if available
+            : 'resources/sap-ui-core.js'; // Use absolute path if frameworkUrl is not available
     const templateOptions = {
         ...ui5App,
         ui5ResourceUrl
