@@ -114,7 +114,7 @@ export async function transformNodes(
                 children: transformedChildren
             };
 
-            await fillReuseComponents(reuseComponentsIds, current, scenario, minor);
+            fillReuseComponents(reuseComponentsIds, current, scenario, minor);
 
             items.push(node);
         }
@@ -152,12 +152,12 @@ export async function transformNodes(
  * @param scenario type of project
  * @param minorUI5Version miner UI5 version
  */
-async function fillReuseComponents(
+function fillReuseComponents(
     reuseComponentsIds: Set<string>,
     node: OutlineViewNode,
     scenario: Scenario,
     minorUI5Version: number
-): Promise<void> {
+): void {
     if (scenario === 'ADAPTATION_PROJECT' && node?.component && isReuseComponent(node.id, minorUI5Version)) {
         reuseComponentsIds.add(node.id);
     }

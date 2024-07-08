@@ -53,4 +53,4 @@ export const isReuseComponent = (controlId: string, minorUI5Version: number): bo
     }
 
     return manifest['sap.app']?.type === 'component';
-}
+};
