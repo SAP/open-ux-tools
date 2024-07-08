@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/odata-entity-model",
-    "version": "0.2.1",
+    "version": "0.3.0",
     "description": "OData model representation without annotations",
     "main": "dist/index.js",
     "author": "SAP SE",

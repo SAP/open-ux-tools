@@ -1,4 +1,4 @@
-// Last content update: Wed Apr 03 2024 08:50:55 GMT+0200 (Central European Summer Time)
+// Last content update: Thu Jun 20 2024 13:06:42 GMT+0530 (India Standard Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -34,7 +34,7 @@ export default {
         '@Org.OData.Core.V1.Description':
             'Terms to describe which data in a given entity model can be aggregated, and how.',
         '@Org.OData.Core.V1.LongDescription':
-            'Related to the specfication document [OData-Data-Agg-v4.0](http://docs.oasis-open.org/odata/odata-data-aggregation-ext/v4.0/odata-data-aggregation-ext-v4.0.html).',
+            'Related to the specification document [OData-Data-Agg-v4.0](http://docs.oasis-open.org/odata/odata-data-aggregation-ext/v4.0/odata-data-aggregation-ext-v4.0.html).',
         '@Org.OData.Core.V1.Links': [
             {
                 'rel': 'alternate',
@@ -63,7 +63,7 @@ export default {
             '@Org.OData.Core.V1.Description':
                 'Default support of the `$apply` system query option for all collection-valued resources in the container',
             '@Org.OData.Core.V1.LongDescription':
-                'Annotating term [`ApplySupported`](#ApplySupported) for a specific collection-valued resource overrides the default support with the specified properties using PATCH semantics:\n\n- Primitive or collection-valued properties specified in `ApplySupported` replace the corresponding properties specified in `ApplySupportedDefaults`\n\n- Complex-valued properties specified in `ApplySupported` override the corresponding properties specified in `ApplySupportedDefaults` using PATCH semantics recursively\n\n- Properties specified neither in `ApplySupported` nor in `ApplySupportedDefaults` have their default value\n          '
+                'Annotating term [`ApplySupported`](#ApplySupported) for a specific collection-valued resource overrides the default support with the specified properties using PATCH semantics:\n- Primitive or collection-valued properties specified in `ApplySupported` replace the corresponding properties specified in `ApplySupportedDefaults`\n- Complex-valued properties specified in `ApplySupported` override the corresponding properties specified in `ApplySupportedDefaults` using PATCH semantics recursively\n- Properties specified neither in `ApplySupported` nor in `ApplySupportedDefaults` have their default value'
         },
         'ApplySupportedBase': {
             '$Kind': 'ComplexType',

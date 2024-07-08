@@ -13,6 +13,7 @@ import { ActionHandler } from '../cpe/types';
 import VersionInfo from 'sap/ui/VersionInfo';
 import { getUI5VersionValidationMessage } from './ui5-version-utils';
 import UI5Element from 'sap/ui/dt/Element';
+import { getError } from '../cpe/error-utils';
 
 export default async function (rta: RuntimeAuthoring) {
     const { version } = (await VersionInfo.load()) as { version: string };
@@ -38,7 +39,7 @@ export default async function (rta: RuntimeAuthoring) {
                 try {
                     await handler(action);
                 } catch (error) {
-                    log.error('Handler Failed: ', error);
+                    log.error('Handler Failed: ', getError(error));
                 }
             }
         }
@@ -77,7 +78,7 @@ export default async function (rta: RuntimeAuthoring) {
 
 /**
  * Get Ids for all sync views
- * 
+ *
  * @param minor UI5 Version
  *
  * @returns array of Ids for application sync views
@@ -103,7 +104,7 @@ async function getAllSyncViewsIds(minor: number): Promise<string[]> {
             });
         }
     } catch (error) {
-        log.error('Could not get application sync views', error);
+        log.error('Could not get application sync views', getError(error));
     }
 
     return syncViewIds;

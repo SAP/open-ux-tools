@@ -1,5 +1,110 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [abf491a7]
+    -   @sap-ux/axios-extension@1.15.1
+
+## 0.4.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/axios-extension@1.15.0
+    -   @sap-ux/btp-utils@0.15.0
+    -   @sap-ux/inquirer-common@0.4.0
+    -   @sap-ux/logger@0.6.0
+    -   @sap-ux/project-access@1.23.0
+    -   @sap-ux/telemetry@0.5.0
+
+## 0.3.11
+
+### Patch Changes
+
+-   Updated dependencies [9ea58ad4]
+    -   @sap-ux/project-access@1.22.4
+    -   @sap-ux/axios-extension@1.14.4
+    -   @sap-ux/telemetry@0.4.37
+
+## 0.3.10
+
+### Patch Changes
+
+-   Updated dependencies [4492fe10]
+    -   @sap-ux/axios-extension@1.14.4
+
+## 0.3.9
+
+### Patch Changes
+
+-   Updated dependencies [d5d3626c]
+    -   @sap-ux/axios-extension@1.14.3
+
+## 0.3.8
+
+### Patch Changes
+
+-   Updated dependencies [65bfb244]
+    -   @sap-ux/axios-extension@1.14.2
+    -   @sap-ux/inquirer-common@0.3.1
+
+## 0.3.7
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.22.3
+-   @sap-ux/telemetry@0.4.36
+-   @sap-ux/axios-extension@1.14.1
+
+## 0.3.6
+
+### Patch Changes
+
+-   Updated dependencies [844e79c4]
+    -   @sap-ux/axios-extension@1.14.1
+
+## 0.3.5
+
+### Patch Changes
+
+-   Updated dependencies [31cc53f8]
+    -   @sap-ux/axios-extension@1.14.0
+
+## 0.3.4
+
+### Patch Changes
+
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/project-access@1.22.2
+    -   @sap-ux/axios-extension@1.13.1
+    -   @sap-ux/telemetry@0.4.35
+
+## 0.3.3
+
+### Patch Changes
+
+-   017d008f: Removes unimplemented message for odata service url datasource
+
+## 0.3.2
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.4.34
+
+## 0.3.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.22.1
+-   @sap-ux/telemetry@0.4.33
+-   @sap-ux/axios-extension@1.13.1
+
 ## 0.3.0
 
 ### Minor Changes

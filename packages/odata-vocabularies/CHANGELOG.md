@@ -1,5 +1,22 @@
 # @sap-ux/odata-vocabularies
 
+## 0.4.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/odata-annotation-core-types@0.4.0
+
+## 0.3.8
+
+### Patch Changes
+
+-   d09edfd5: Update vocabularies June 2024
+
 ## 0.3.7
 
 ### Patch Changes

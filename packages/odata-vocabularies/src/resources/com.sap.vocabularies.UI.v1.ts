@@ -1,4 +1,4 @@
-// Last content update: Wed Apr 03 2024 08:50:55 GMT+0200 (Central European Summer Time)
+// Last content update: Thu Jun 20 2024 13:06:42 GMT+0530 (India Standard Time)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -1609,10 +1609,52 @@ export default {
         },
         'Placeholder': {
             '$Kind': 'Term',
-            '$AppliesTo': ['Property'],
+            '$AppliesTo': ['Property', 'Parameter'],
             '@Org.OData.Core.V1.Description':
                 'A short, human-readable text that gives a hint or an example to help the user with data entry',
             '@Org.OData.Core.V1.IsLanguageDependent': true
+        },
+        'InputMask': {
+            '$Kind': 'Term',
+            '$Type': 'com.sap.vocabularies.UI.v1.InputMaskType',
+            '$AppliesTo': ['Property', 'Parameter'],
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            '@Org.OData.Core.V1.Description':
+                'Properties or parameters annotated with this term will get a mask in edit mode',
+            '@Org.OData.Core.V1.LongDescription':
+                'Input masks improve readability and help to enter data correctly. \nSo, masks can be especially useful for input fields that have a fixed pattern, e.g. DUNS numbers or similar. \n[Here](../examples/UI.InputMask-sample.xml) you can find an example for this annotation'
+        },
+        'InputMaskType': {
+            '$Kind': 'ComplexType',
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            'Mask': {
+                '@Org.OData.Core.V1.Description': 'The mask to be applied to the property or the parameter'
+            },
+            'Placeholder': {
+                '$MaxLength': 1,
+                '$DefaultValue': '_',
+                '@Org.OData.Core.V1.Description':
+                    'A single character symbol to be shown where the user can type a character'
+            },
+            'Rules': {
+                '$Collection': true,
+                '$Type': 'com.sap.vocabularies.UI.v1.InputMaskRuleType',
+                '@Org.OData.Core.V1.Description': 'Rules that define valid values for one symbol in the mask',
+                '@Org.OData.Core.V1.LongDescription':
+                    "The following rules are defined as default and don't need to be listed here: * = ., C = [a-zA-Z], 9 = [0-9]"
+            }
+        },
+        'InputMaskRuleType': {
+            '$Kind': 'ComplexType',
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            'MaskSymbol': {
+                '$MaxLength': 1,
+                '@Org.OData.Core.V1.Description':
+                    'A symbol in the mask that stands for a regular expression which must be matched by the user input in every position where this symbol occurs'
+            },
+            'RegExp': {
+                '@Org.OData.Core.V1.Description': 'Regular expression that defines the valid values for the mask symbol'
+            }
         },
         'TextArrangement': {
             '$Kind': 'Term',
@@ -1620,7 +1662,7 @@ export default {
             '$AppliesTo': ['Annotation', 'EntityType'],
             '@Org.OData.Core.V1.Description': 'Describes the arrangement of a code or ID value and its text',
             '@Org.OData.Core.V1.LongDescription':
-                'This term annotates one of the following:<br>\n          (1) a [`Common.Text`](Common.md#Text) annotation of the code or ID property where the annotation value is the text<br>\n          (2) an entity type, this has the same effect as annotating all `Common.Text` annotations of properties of that entity type.'
+                'This term annotates one of the following:\n1. a [`Common.Text`](Common.md#Text) annotation of the code or ID property where the annotation value is the text\n2. an entity type, this has the same effect as annotating all `Common.Text` annotations of properties of that entity type.'
         },
         'TextArrangementType': {
             '$Kind': 'EnumType',

@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/logger",
-    "version": "0.5.1",
+    "version": "0.6.0",
     "description": "A simple logging module",
     "repository": {
         "type": "git",

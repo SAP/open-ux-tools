@@ -17,7 +17,7 @@ describe('Test enableCdsUi5Plugin()', () => {
             },
             'workspaces': ['app/*'],
             'devDependencies': {
-                'cds-plugin-ui5': '^0.6.13'
+                'cds-plugin-ui5': '^0.9.3'
             }
         });
     });
@@ -39,7 +39,7 @@ describe('Test enableCdsUi5Plugin()', () => {
             },
             'workspaces': ['app/*'],
             'devDependencies': {
-                'cds-plugin-ui5': '^0.6.13'
+                'cds-plugin-ui5': '^0.9.3'
             }
         });
     });
@@ -53,7 +53,7 @@ describe('Test enableCdsUi5Plugin()', () => {
         });
         const fs = await enableCdsUi5Plugin(__dirname, memFs);
         const packageJson = fs.readJSON(join(__dirname, 'package.json')) as projectAccessMock.Package;
-        expect(packageJson.devDependencies).toEqual({ 'cds-plugin-ui5': '^0.6.13' });
+        expect(packageJson.devDependencies).toEqual({ 'cds-plugin-ui5': '^0.9.3' });
     });
 
     test('CAP with custom app path and mem-fs editor', async () => {
@@ -87,9 +87,7 @@ describe('Test checkCdsUi5PluginEnabled()', () => {
 
     test('CAP project with valid cds-plugin-ui', async () => {
         expect(await checkCdsUi5PluginEnabled(join(fixturesPath, 'cap-valid-cds-plugin-ui'))).toBe(true);
-        expect(
-            await checkCdsUi5PluginEnabled(join(fixturesPath, 'cap-valid-cds-plugin-ui'), undefined, true)
-        ).toEqual({
+        expect(await checkCdsUi5PluginEnabled(join(fixturesPath, 'cap-valid-cds-plugin-ui'), undefined, true)).toEqual({
             hasCdsUi5Plugin: true,
             hasMinCdsVersion: true,
             isCdsUi5PluginEnabled: true,
