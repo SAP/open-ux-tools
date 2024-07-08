@@ -2,29 +2,45 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
 import { DirName } from '@sap-ux/project-access';
-import { createFioriLaunchConfig } from './common';
 import { LAUNCH_JSON_FILE } from '../types';
-import type { FioriOptions } from '../types';
+import type { FioriOptions, LaunchJSON } from '../types';
 import type { Editor } from 'mem-fs-editor';
+import { generateNewFioriLaunchConfig } from './utils';
+import { parse } from 'jsonc-parser';
+import { updateLaunchJSON } from './writer';
 
 /**
- * Creates a new launch.json file. If exists, does nothing.
+ * Enhance or create the launch.json file with new launch config.
  *
  * @param rootFolder - workspace root folder.
- * @param fioriOptions - optional, fiori options of config to add.
+ * @param fioriOptions - options for the new launch config.
  * @param fs - optional, the memfs editor instance.
- * @returns parsed arguments.
+ * @returns memfs editor instance.
  */
-export async function createLaunchConfigFile(
-    rootFolder: string,
-    fioriOptions?: FioriOptions,
-    fs?: Editor
-): Promise<void> {
+export async function createLaunchConfig(rootFolder: string, fioriOptions: FioriOptions, fs?: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
-    const configurations = fioriOptions ? [createFioriLaunchConfig(rootFolder, fioriOptions)] : [];
-    const launchConfigDirectory = join(rootFolder, DirName.VSCode);
-    const launchConfigFilePath = join(launchConfigDirectory, LAUNCH_JSON_FILE);
-    fs.write(launchConfigFilePath, JSON.stringify({ version: '0.2.0', configurations }, null, 4));
+    const launchJSONPath = join(rootFolder, DirName.VSCode, LAUNCH_JSON_FILE);
+    if (fs.exists(launchJSONPath)) {
+        // launch.json exists, enhance existing file with new config
+        const launchConfig = generateNewFioriLaunchConfig(rootFolder, fioriOptions);
+        const launchJsonString = fs.read(launchJSONPath);
+        const launchJson = parse(launchJsonString) as LaunchJSON;
+        await updateLaunchJSON(
+            launchConfig,
+            launchJSONPath,
+            ['configurations', launchJson.configurations.length + 1],
+            {
+                isArrayInsertion: true
+            },
+            fs
+        );
+    } else {
+        // launch.json is missing, new file with new config
+        const configurations = generateNewFioriLaunchConfig(rootFolder, fioriOptions);
+        const newLaunchJSONContent = { version: '0.2.0', configurations: [configurations] };
+        fs.write(launchJSONPath, JSON.stringify(newLaunchJSONContent, null, 4));
+    }
+    return fs;
 }

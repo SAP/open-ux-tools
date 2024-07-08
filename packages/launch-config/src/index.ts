@@ -1,37 +1,23 @@
 export * from './types';
-export {
-    getFioriOptions,
-    createFioriLaunchConfig,
-    buildUI5Option,
-    getIndexOfArgument,
-    getUI5VersionUri
-} from './launch-config-crud/common';
+export { createLaunchConfig } from './launch-config-crud/create';
+export { deleteLaunchConfig } from './launch-config-crud/delete';
 export { convertOldLaunchConfigToFioriRun } from './launch-config-crud/modify';
-export { createLaunchConfigFile } from './launch-config-crud/create';
-export { createLaunchConfig } from './launch-config-crud-new/create';
-export { addFioriElementsLaunchConfig, updateFioriElementsLaunchConfig } from './launch-config-crud/update';
-export { updateLaunchConfig } from './launch-config-crud-new/update';
-export { deleteLaunchConfig } from './launch-config-crud-new/delete';
 export {
     getLaunchJSONFilePath,
-    getLaunchJSONFilePaths
-    // getLaunchConfigs,
-    // getAllLaunchConfigs,
-    // getLaunchConfigByName
-} from './launch-config-crud-new/read';
-export {
-    // getFioriOptions,
-    generateNewFioriLaunchConfig
-    // buildUI5Option,
-    // getIndexOfArgument,
-    // getUI5VersionUri
-} from './launch-config-crud-new/utils';
-
-export {
-    getLaunchConfigFile,
+    getLaunchJSONFilePaths,
     getLaunchConfigs,
     getAllLaunchConfigs,
-    getLaunchConfigByName,
-    getLaunchConfigFiles
+    getLaunchConfigByName
 } from './launch-config-crud/read';
+export { traverseAndModifyLaunchConfig, updateLaunchConfig } from './launch-config-crud/update';
+export {
+    buildUI5Option,
+    getUI5VersionUri,
+    getIndexOfArgument,
+    mergeArgs,
+    getFioriOptions,
+    generateNewFioriLaunchConfig,
+    parseArguments
+} from './launch-config-crud/utils';
+export { updateLaunchJSON } from './launch-config-crud/writer';
 export { getDefaultLaunchConfigOptionsForProject } from './project-discovery/project';

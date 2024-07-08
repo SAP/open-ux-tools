@@ -1,148 +1,44 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { createFioriLaunchConfig, parseArguments } from './common';
-import type { FioriOptions, LaunchConfig, LaunchJSON } from '../types';
-import { getLaunchConfigFile } from './read';
-import { createLaunchConfigFile } from './create';
+import type { FioriOptions, LaunchJSON } from '../types';
+import { LAUNCH_JSON_FILE } from '../types';
 import type { JSONPath, ModificationOptions, Node } from 'jsonc-parser';
-import { applyEdits, findNodeAtLocation, modify, parse, parseTree } from 'jsonc-parser';
+import { findNodeAtLocation, parse, parseTree } from 'jsonc-parser';
 import type { Editor } from 'mem-fs-editor';
+import { generateNewFioriLaunchConfig, mergeArgs } from './utils';
+import { join } from 'path';
+import { DirName } from '@sap-ux/project-access';
+import { updateLaunchJSON } from './writer';
 
 export type configType = object | string | number | undefined;
 
-/**
- * Adds, modifies or deletes content in 'launch.json'.
- *
- * @param content content to be added to the JSON file at location specified by JSONPath. If undefined, property will be deleted.
- * @param filePath path to the json file.
- * @param jsonPath The {@linkcode JSONPath} of the value to change. The path represents either to the document root, a property or an array item.
- * @param options Options {@linkcode ModificationOptions} used by {@linkcode modify} when computing the modification edit operations. Default formattingOptions are used if not provided.
- * @param fs - optional, the memfs editor instance.
- * @returns void.
- */
-export async function updateLaunchJSON(
-    content: object | string | number | undefined,
+type UpdateCallback = (
+    config: configType,
     filePath: string,
     jsonPath: JSONPath,
-    options: ModificationOptions = {},
+    options?: ModificationOptions,
     fs?: Editor
-): Promise<void> {
-    if (!fs) {
-        fs = create(createStorage());
-    }
-    const jsonString = fs.read(filePath);
-    if (!options.formattingOptions) {
-        options.formattingOptions = {
-            tabSize: 4,
-            insertSpaces: true
-        };
-    }
-    // make edits and apply them
-    const edits = modify(jsonString, jsonPath, content, options);
-    const updated = applyEdits(jsonString, edits);
-    // write changes to file
-    fs.write(filePath, updated);
-}
+) => Promise<void>;
 
 /**
- * Adds a new launch configuration to launch.json.
- *
- * @param launchConfigPath path to the launch.json file.
- * @param launchConfig launch config to be added to the launch.json.
- * @param fs - optional, the memfs editor instance.
- * @returns void.
- */
-async function addLaunchConfig(launchConfigPath: string, launchConfig: LaunchConfig, fs?: Editor): Promise<void> {
-    if (!fs) {
-        fs = create(createStorage());
-    }
-    const launchJsonString = fs.read(launchConfigPath);
-    const launchJson = parse(launchJsonString) as LaunchJSON;
-    await updateLaunchJSON(
-        launchConfig,
-        launchConfigPath,
-        ['configurations', launchJson.configurations.length + 1],
-        {
-            isArrayInsertion: true
-        },
-        fs
-    );
-}
-
-/**
- * Add a launch config to .vscode/launch.json file. Create the file if it doesn't exist.
- *
- * @param rootFolder - the workspace root folder.
- * @param options - options to create launch config.
- * @param fs - optional, the memfs editor instance.
- * @returns void.
- */
-export async function addFioriElementsLaunchConfig(
-    rootFolder: string,
-    options: FioriOptions,
-    fs?: Editor
-): Promise<void> {
-    if (!fs) {
-        fs = create(createStorage());
-    }
-    const launchConfig = await getLaunchConfigFile(rootFolder, fs);
-    if (launchConfig) {
-        const fioriLaunchConfig = createFioriLaunchConfig(rootFolder, options);
-        await addLaunchConfig(launchConfig, fioriLaunchConfig, fs);
-    } else {
-        await createLaunchConfigFile(rootFolder, options, fs);
-    }
-}
-
-/**
- * Merges the new and the existing cli arguments of a run configuration.
- *
- * @param newArgs new cli arguments specified in the run config wizard.
- * @param oldArgs existing cli arguments of a run configuration.
- * @returns merged launch config arguments.
- */
-function mergeArgs(newArgs: string[] | undefined, oldArgs: string[] | undefined): string[] {
-    let mergedArgs: string[] = [];
-
-    if (newArgs && oldArgs) {
-        mergedArgs = mergedArgs.concat(newArgs);
-        const parsedOldArgs = parseArguments(oldArgs);
-        mergedArgs = mergedArgs.concat(parsedOldArgs['_'] as string[]);
-
-        return mergedArgs;
-    } else {
-        return mergedArgs;
-    }
-}
-
-/**
- * Traverses each element of an object and executes callback function on it.
+ * Traverses each property in launch config object and executes callback function on it.
  *
  * @param obj - the new JSON object to replace original JSON.
  * @param filePath - path to the JSON file.
  * @param originalJSON - the original JSON {@linkcode Node} before modification.
  * @param callback - function to be executed on the object property.
+ * @param fs - the memfs editor instance.
  * @param initialPath - intial {@linkcode JSONPath} of the object to be traversed.
- * @param fs - optional, the memfs editor instance.
  * @returns void.
  */
-export async function traverseAndModifyObject(
+export async function traverseAndModifyLaunchConfig(
     obj: any,
     filePath: string,
     originalJSON: Node | undefined,
-    callback: (
-        config: configType,
-        filePath: string,
-        jsonPath: JSONPath,
-        options?: ModificationOptions,
-        fs?: Editor
-    ) => Promise<void>,
-    initialPath: JSONPath = [],
-    fs?: Editor
+    callback: UpdateCallback,
+    fs: Editor,
+    initialPath: JSONPath = []
 ): Promise<void> {
-    if (!fs) {
-        fs = create(createStorage());
-    }
     for (const key in obj) {
         // Build the current JSONPath by appending the current key
         const currentPath = [...initialPath, key];
@@ -150,9 +46,18 @@ export async function traverseAndModifyObject(
         const originalLength = node?.children?.length as number;
 
         if (Array.isArray(obj[key])) {
-            await processArray(obj[key], filePath, originalJSON, callback, currentPath, originalLength, fs);
+            await processArrayProperty(obj[key], filePath, originalJSON, callback, currentPath, originalLength, fs);
         } else if (typeof obj[key] === 'object') {
-            await processObject(obj[key], filePath, originalJSON, callback, currentPath, originalLength, node, fs);
+            await processObjectProperty(
+                obj[key],
+                filePath,
+                originalJSON,
+                callback,
+                currentPath,
+                originalLength,
+                node,
+                fs
+            );
         } else {
             await callback(obj[key], filePath, [...currentPath], undefined, fs);
         }
@@ -160,7 +65,7 @@ export async function traverseAndModifyObject(
 }
 
 /**
- * Processes each element of an array of objects and executes callback function on it.
+ * Processes each element of launch config array property and executes callback function on it.
  *
  * @param arr - array of objects.
  * @param filePath - path to the JSON file.
@@ -168,23 +73,17 @@ export async function traverseAndModifyObject(
  * @param callback - function to be executed on the object property.
  * @param currentPath - intial {@linkcode JSONPath} of the object to be traversed.
  * @param originalLength - original lench of the array.
- * @param fs - optional, the memfs editor instance.
+ * @param fs - the memfs editor instance.
  * @returns void.
  */
-async function processArray(
+async function processArrayProperty(
     arr: any[],
     filePath: string,
     originalJSON: Node | undefined,
-    callback: (
-        config: configType,
-        filePath: string,
-        jsonPath: JSONPath,
-        options?: ModificationOptions,
-        fs?: Editor
-    ) => Promise<void>,
+    callback: UpdateCallback,
     currentPath: JSONPath,
     originalLength: number,
-    fs?: Editor
+    fs: Editor
 ): Promise<void> {
     if (!fs) {
         fs = create(createStorage());
@@ -192,7 +91,7 @@ async function processArray(
     const maxLength = Math.max(arr.length, originalLength);
     for (let i = 0, j = maxLength; i < maxLength; i++) {
         if (typeof arr[i] === 'object') {
-            await traverseAndModifyObject(arr[i], filePath, originalJSON, callback, [...currentPath, i]);
+            await traverseAndModifyLaunchConfig(arr[i], filePath, originalJSON, callback, fs, [...currentPath, i]);
         } else if (arr.length >= originalLength || arr[i]) {
             await callback(arr[i], filePath, [...currentPath, i], undefined, fs);
         } else {
@@ -203,42 +102,36 @@ async function processArray(
 }
 
 /**
- * Processes each object in object of objects and executes callback function on it.
+ * Processes each element of launch config object property and executes callback function on it.
  *
- * @param obj - object of objects.
+ * @param obj - object property to traverse and replace.
  * @param filePath - path to the JSON file.
  * @param originalJSON - the original JSON {@linkcode Node} before modification.
  * @param callback - function to be executed on the object property, similar to {@linkcode updateJSONWithComments}.
  * @param currentPath - intial {@linkcode JSONPath} of the object to be traversed.
  * @param originalLength - intial {@linkcode JSONPath} of the object to be traversed.
  * @param node - object node.
- * @param fs - optional, the memfs editor instance.
+ * @param fs - the memfs editor instance.
  * @returns void.
  */
-async function processObject(
+async function processObjectProperty(
     obj: any,
     filePath: string,
     originalJSON: Node | undefined,
-    callback: (
-        config: configType,
-        filePath: string,
-        jsonPath: JSONPath,
-        options?: ModificationOptions,
-        fs?: Editor
-    ) => Promise<void>,
+    callback: UpdateCallback,
     currentPath: JSONPath,
     originalLength: number,
     node: Node | undefined,
-    fs?: Editor
+    fs: Editor
 ): Promise<void> {
     const length = Object.keys(obj).length;
     if (length >= originalLength) {
-        await traverseAndModifyObject(obj, filePath, originalJSON, callback, currentPath, fs);
+        await traverseAndModifyLaunchConfig(obj, filePath, originalJSON, callback, fs, currentPath);
     } else {
         for (let i = 0; i < originalLength; i++) {
             const value = node?.children![i].children![0].value;
             if (!obj[value]) {
-                // deletion of a property
+                // delete property
                 await callback(undefined, filePath, [...currentPath, value], undefined, fs);
             }
         }
@@ -246,44 +139,36 @@ async function processObject(
 }
 
 /**
- * Updates then launch config in .vscode/launch.json file. If options are passed then updates otherwise - deletes.
+ * Update existing launch config in launch.json file.
  *
- * @param rootFolder - the project root folder.
- * @param index - index of the launch config.
- * @param options - optional if update is required, options to update to.
+ * @param rootFolder - workspace root folder.
+ * @param fioriOptions - options for the new launch config.
+ * @param index - index of the launch config to edit.
  * @param fs - optional, the memfs editor instance.
- * @returns void.
+ * @returns memfs editor instance.
  */
-export async function updateFioriElementsLaunchConfig(
+export async function updateLaunchConfig(
     rootFolder: string,
+    fioriOptions: FioriOptions,
     index: number,
-    options?: FioriOptions,
     fs?: Editor
-): Promise<void> {
+): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
-    const launchConfigPath = await getLaunchConfigFile(rootFolder, fs);
-    if (launchConfigPath) {
-        const jsonString = fs.read(launchConfigPath);
-        const launchJson = parse(jsonString) as LaunchJSON;
-        if (options && jsonString) {
-            // update
-            const jsonTree = parseTree(jsonString);
-            const fioriLaunchConfig = createFioriLaunchConfig(rootFolder, options);
-            const oldArgs = launchJson.configurations[index].args;
-            fioriLaunchConfig.args = mergeArgs(fioriLaunchConfig.args, oldArgs);
-            await traverseAndModifyObject(
-                fioriLaunchConfig,
-                launchConfigPath,
-                jsonTree,
-                updateLaunchJSON,
-                ['configurations', index],
-                fs
-            );
-        } else {
-            // delete
-            await updateLaunchJSON(undefined, launchConfigPath, ['configurations', index], undefined, fs);
-        }
+    const launchJSONPath = join(rootFolder, DirName.VSCode, LAUNCH_JSON_FILE);
+    if (fs.exists(launchJSONPath)) {
+        // edit existing launch config
+        const launchJSONString = fs.read(launchJSONPath);
+        const launchJSON = parse(launchJSONString) as LaunchJSON;
+        const launchJSONTree = parseTree(launchJSONString);
+        const launchConfig = generateNewFioriLaunchConfig(rootFolder, fioriOptions);
+        const oldArgs = launchJSON.configurations[index].args;
+        launchConfig.args = mergeArgs(launchConfig.args, oldArgs);
+        await traverseAndModifyLaunchConfig(launchConfig, launchJSONPath, launchJSONTree, updateLaunchJSON, fs, [
+            'configurations',
+            index
+        ]);
     }
+    return fs;
 }

@@ -3,8 +3,8 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
 import {
-    getLaunchConfigFiles,
-    addFioriElementsLaunchConfig,
+    getLaunchJSONFilePaths,
+    createLaunchConfig,
     getLaunchConfigByName,
     getUI5VersionUri,
     LAUNCH_JSON_FILE,
@@ -54,7 +54,7 @@ describe('add config scenario', () => {
         const backendConfigs = [{ path: 'TEST_PATH', name: 'TEST_DESTINAME', url: 'dummy' }];
 
         // // Add the launch config
-        await addFioriElementsLaunchConfig(
+        await createLaunchConfig(
             TestPaths.tmpDir,
             {
                 name,
@@ -67,7 +67,7 @@ describe('add config scenario', () => {
         );
 
         // // Get launch config files in workspace
-        const launchConfigs = await getLaunchConfigFiles(TestPaths.tmpDir, memFs);
+        const launchConfigs = await getLaunchJSONFilePaths(TestPaths.tmpDir, memFs);
         expect(launchConfigs.length).toBe(1);
         const launchConfigPath = launchConfigs.pop() as string;
 
@@ -94,7 +94,7 @@ describe('add config scenario', () => {
         const backendConfigs = [{ path: 'TEST_PATH', url: 'TEST_URL', client: 'TEST_CLIENT' }];
 
         // Add the launch config
-        await addFioriElementsLaunchConfig(
+        await createLaunchConfig(
             TestPaths.tmpDir,
             {
                 name,
@@ -107,7 +107,7 @@ describe('add config scenario', () => {
         );
 
         // Get launch config files in workspace
-        const launchConfigs = await getLaunchConfigFiles(TestPaths.tmpDir, memFs);
+        const launchConfigs = await getLaunchJSONFilePaths(TestPaths.tmpDir, memFs);
         expect(launchConfigs.length).toBe(1);
         const launchConfigPath = launchConfigs.pop() as string;
 

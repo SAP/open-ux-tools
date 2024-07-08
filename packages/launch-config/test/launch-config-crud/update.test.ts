@@ -2,17 +2,9 @@ import { DirName } from '@sap-ux/project-access';
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { LaunchConfig } from '../../src';
-import {
-    addFioriElementsLaunchConfig,
-    getAllLaunchConfigs,
-    LAUNCH_JSON_FILE,
-    updateFioriElementsLaunchConfig
-} from '../../src';
+import { createLaunchConfig, LAUNCH_JSON_FILE, updateLaunchConfig } from '../../src';
 import { TestPaths } from '../test-data/utils';
-
-const feLaunchJsonCopy = join(TestPaths.tmpDir, DirName.VSCode, LAUNCH_JSON_FILE);
-//const freestyleLaunchJsonCopy = join(TestPaths.tmpDir, 'freestyle-launch.json');
+import { parse } from 'jsonc-parser';
 
 function checkJSONComments(launchJsonString: string) {
     expect(launchJsonString).toMatch('// test json with comments - comment 1');
@@ -22,14 +14,16 @@ function checkJSONComments(launchJsonString: string) {
 }
 
 describe('update', () => {
+    const launchJSONPath = join(TestPaths.tmpDir, DirName.VSCode, LAUNCH_JSON_FILE);
     const memFs = create(createStorage());
 
     beforeAll(async () => {
-        memFs.copy(TestPaths.feProjectsLaunchConfig, feLaunchJsonCopy);
+        // copy launch.json from existing project
+        memFs.copy(TestPaths.feProjectsLaunchConfig, launchJSONPath);
     });
 
     afterEach(async () => {
-        const launchJsonString = memFs.read(feLaunchJsonCopy);
+        const launchJsonString = memFs.read(launchJSONPath);
         checkJSONComments(launchJsonString);
     });
 
@@ -37,12 +31,14 @@ describe('update', () => {
         memFs.delete(TestPaths.tmpDir);
     });
 
-    test('Add launch config', async (): Promise<void> => {
-        await addFioriElementsLaunchConfig(
-            TestPaths.tmpDir,
+    test('Create and then update existing launch config in launch.json', async (): Promise<void> => {
+        // create a new
+        const launchJSONPath = join(TestPaths.feProjectsLaunchConfig);
+        let result = await createLaunchConfig(
+            TestPaths.feProjects,
             {
-                name: 'Added config during test',
-                projectRoot: TestPaths.v2lrop,
+                name: 'LaunchConfig_One',
+                projectRoot: TestPaths.feProjects,
                 backendConfigs: [{ path: 'TEST_PATH', url: 'TEST_URL' }],
                 ui5Version: 'TEST_UI5_VERSION',
                 ui5VersionUri: 'https://ui5.sap.com',
@@ -51,138 +47,198 @@ describe('update', () => {
             },
             memFs
         );
-
-        const launchConfigs = await getAllLaunchConfigs(TestPaths.tmpDir, memFs);
-        const addedConfig = launchConfigs[0].launchConfigs.find((c) => c.name === 'Added config during test');
-        expect(addedConfig?.cwd).toBe(TestPaths.v2lrop);
-        expect(addedConfig?.env.FIORI_TOOLS_BACKEND_CONFIG).toEqual('[{"path":"TEST_PATH","url":"TEST_URL"}]');
-        expect(addedConfig?.env.FIORI_TOOLS_UI5_VERSION).toEqual('TEST_UI5_VERSION');
-        expect(addedConfig?.env.FIORI_TOOLS_UI5_URI).toEqual('https://ui5.sap.com');
-        expect(addedConfig?.env.FIORI_TOOLS_URL_PARAMS).toEqual('sap-ui-xx-viewCache=false');
-        expect(addedConfig?.args![0]).toEqual('--config');
-        expect(addedConfig?.args![1]).toEqual('ui5-mock.yaml');
-    });
-
-    test('Update added launch config', async (): Promise<void> => {
-        let launchConfigs = await getAllLaunchConfigs(TestPaths.tmpDir, memFs);
-        const addedConfigIndex = launchConfigs[0].launchConfigs.findIndex((c) => c.name === 'Added config during test');
-        await updateFioriElementsLaunchConfig(
-            TestPaths.tmpDir,
-            addedConfigIndex,
+        let launchJSONString = result.read(launchJSONPath);
+        let launchJSON = parse(launchJSONString);
+        const expectedEnv = {
+            'run.config': JSON.stringify({
+                handlerId: 'fiori_tools',
+                runnableId: join(TestPaths.feProjects)
+            }),
+            FIORI_TOOLS_BACKEND_CONFIG: `[{\"path\":\"TEST_PATH\",\"url\":\"TEST_URL\"}]`,
+            FIORI_TOOLS_UI5_URI: 'https://ui5.sap.com',
+            FIORI_TOOLS_UI5_VERSION: 'TEST_UI5_VERSION',
+            FIORI_TOOLS_URL_PARAMS: 'sap-ui-xx-viewCache=false'
+        };
+        expect(launchJSON.configurations[6]).toStrictEqual({
+            args: ['--config', 'ui5-mock.yaml'],
+            console: 'internalConsole',
+            cwd: '${workspaceFolder}',
+            env: expectedEnv,
+            internalConsoleOptions: 'openOnSessionStart',
+            name: 'LaunchConfig_One',
+            outputCapture: 'std',
+            request: 'launch',
+            runtimeArgs: ['fiori', 'run'],
+            runtimeExecutable: 'npx',
+            type: 'node',
+            windows: {
+                runtimeExecutable: 'npx.cmd'
+            }
+        });
+        // update created
+        result = await updateLaunchConfig(
+            TestPaths.feProjects,
             {
                 name: 'Changed config during test',
-                projectRoot: TestPaths.tmpDir,
+                projectRoot: TestPaths.feProjects,
                 useMockData: true
             },
+            6,
             memFs
         );
-        launchConfigs = await getAllLaunchConfigs(TestPaths.tmpDir, memFs);
-        const changedConfigIndex = launchConfigs[0].launchConfigs.findIndex(
-            (c: LaunchConfig) => c.name === 'Changed config during test'
-        );
-        expect(addedConfigIndex).toBe(changedConfigIndex);
-        const changedConfig = launchConfigs[0].launchConfigs[changedConfigIndex];
-        expect(changedConfig?.args![0]).toEqual('--config');
-        expect(changedConfig?.args![1]).toEqual('ui5-mock.yaml');
-    });
-
-    test('Update existing launch config with comments', async (): Promise<void> => {
-        let launchConfigs = await getAllLaunchConfigs(TestPaths.tmpDir, memFs);
-        const existingConfigIndex = launchConfigs[0].launchConfigs.findIndex(
-            (c) => c.name === 'Existing launch config with json comments'
-        );
-        const updatedConfig = {
-            name: 'Existing config changed',
-            projectRoot: TestPaths.tmpDir,
-            backendConfigs: [
-                {
-                    path: 'PATH_CHANGED',
-                    url: 'NEW_TEST_URL'
-                }
-            ],
-            ui5Version: 'TEST_UI5_VERSION_UPDATED',
-            ui5VersionUri: 'https://ui5.sap.com.updated'
+        launchJSONString = result.read(launchJSONPath);
+        launchJSON = parse(launchJSONString);
+        const expectedEnvUpdate = {
+            'run.config': JSON.stringify({
+                handlerId: 'fiori_tools',
+                runnableId: join(TestPaths.feProjects)
+            })
         };
-        await updateFioriElementsLaunchConfig(TestPaths.tmpDir, existingConfigIndex, updatedConfig, memFs);
-        launchConfigs = await getAllLaunchConfigs(TestPaths.tmpDir, memFs);
-        const changedConfigIndex = launchConfigs[0].launchConfigs.findIndex(
-            (c: LaunchConfig) => c.name === 'Existing config changed'
-        );
-        expect(existingConfigIndex).toBe(changedConfigIndex);
-
-        const changedConfig = launchConfigs[0].launchConfigs[changedConfigIndex];
-        expect(changedConfig.env.FIORI_TOOLS_BACKEND_CONFIG).toEqual('[{"path":"PATH_CHANGED","url":"NEW_TEST_URL"}]');
-        expect(changedConfig.env.FIORI_TOOLS_UI5_VERSION).toEqual('TEST_UI5_VERSION_UPDATED');
-        expect(changedConfig.env.FIORI_TOOLS_UI5_URI).toEqual('https://ui5.sap.com.updated');
+        expect(launchJSON.configurations[6]).toStrictEqual({
+            args: ['--config', 'ui5-mock.yaml'],
+            console: 'internalConsole',
+            cwd: '${workspaceFolder}',
+            env: expectedEnvUpdate,
+            internalConsoleOptions: 'openOnSessionStart',
+            name: 'Changed config during test',
+            outputCapture: 'std',
+            request: 'launch',
+            runtimeArgs: ['fiori', 'run'],
+            runtimeExecutable: 'npx',
+            type: 'node',
+            windows: {
+                runtimeExecutable: 'npx.cmd'
+            }
+        });
     });
 
-    test('Update added launch config - deselct mock data', async (): Promise<void> => {
-        let launchConfigs = await getAllLaunchConfigs(TestPaths.tmpDir, memFs);
-        const configIndex = launchConfigs[0].launchConfigs.findIndex((c) => c.name === 'Changed config during test');
-        await updateFioriElementsLaunchConfig(
-            TestPaths.tmpDir,
-            configIndex,
+    test('Update existing launch config in launch.json that has commented code', async (): Promise<void> => {
+        const launchJSONPath = join(TestPaths.feProjectsLaunchConfig);
+        const result = await updateLaunchConfig(
+            TestPaths.feProjects,
             {
-                name: 'Changed config during test 2',
-                projectRoot: TestPaths.tmpDir,
+                name: 'Existing config changed',
+                projectRoot: TestPaths.feProjects,
+                backendConfigs: [
+                    {
+                        path: 'PATH_CHANGED',
+                        url: 'NEW_TEST_URL'
+                    }
+                ],
+                ui5Version: 'TEST_UI5_VERSION_UPDATED',
+                ui5VersionUri: 'https://ui5.sap.com.updated'
+            },
+            5,
+            memFs
+        );
+        const expectedEnv = {
+            'run.config': JSON.stringify({
+                handlerId: 'fiori_tools',
+                runnableId: join(TestPaths.feProjects)
+            }),
+            FIORI_TOOLS_BACKEND_CONFIG: JSON.stringify([{ path: 'PATH_CHANGED', url: 'NEW_TEST_URL' }]),
+            FIORI_TOOLS_UI5_URI: 'https://ui5.sap.com.updated',
+            FIORI_TOOLS_UI5_VERSION: 'TEST_UI5_VERSION_UPDATED'
+        };
+        const launchJSONString = result.read(launchJSONPath);
+        const launchJSON = parse(launchJSONString);
+        expect(launchJSON.configurations[5]).toStrictEqual({
+            console: 'internalConsole',
+            cwd: '${workspaceFolder}',
+            env: expectedEnv,
+            internalConsoleOptions: 'openOnSessionStart',
+            name: 'Existing config changed',
+            outputCapture: 'std',
+            request: 'launch',
+            runtimeArgs: ['fiori', 'run'],
+            runtimeExecutable: 'npx',
+            type: 'node',
+            windows: {
+                runtimeExecutable: 'npx.cmd'
+            }
+        });
+    });
+
+    test('Update existing launch config in launch.json - deselct mock data', async (): Promise<void> => {
+        const launchJSONPath = join(TestPaths.feProjectsLaunchConfig);
+        const result = await updateLaunchConfig(
+            TestPaths.feProjects,
+            {
+                name: 'Existing config changed 2',
+                projectRoot: TestPaths.feProjects,
                 useMockData: false,
-                ui5Version: 'TEST_UI5_VERSION2',
+                ui5Version: 'TEST_UI5_VERSION_UPDATED2',
                 ui5VersionUri: 'https://ui5.sap.com.updated2'
             },
+            6,
             memFs
         );
-        launchConfigs = await getAllLaunchConfigs(TestPaths.tmpDir, memFs);
-        const changedConfigIndex = launchConfigs[0].launchConfigs.findIndex(
-            (c) => c.name === 'Changed config during test 2'
-        );
-        expect(configIndex).toBe(changedConfigIndex);
-
-        const changedConfig = launchConfigs[0].launchConfigs[changedConfigIndex];
-        expect(changedConfig.args?.length).toBe(0);
-        expect(changedConfig.env.FIORI_TOOLS_UI5_VERSION).toEqual('TEST_UI5_VERSION2');
-        expect(changedConfig.env.FIORI_TOOLS_UI5_URI).toEqual('https://ui5.sap.com.updated2');
+        const expectedEnv = {
+            'run.config': JSON.stringify({
+                handlerId: 'fiori_tools',
+                runnableId: join(TestPaths.feProjects)
+            }),
+            FIORI_TOOLS_UI5_URI: 'https://ui5.sap.com.updated2',
+            FIORI_TOOLS_UI5_VERSION: 'TEST_UI5_VERSION_UPDATED2'
+        };
+        const launchJSONString = result.read(launchJSONPath);
+        const launchJSON = parse(launchJSONString);
+        expect(launchJSON.configurations[6]).toStrictEqual({
+            args: [],
+            console: 'internalConsole',
+            cwd: '${workspaceFolder}',
+            env: expectedEnv,
+            internalConsoleOptions: 'openOnSessionStart',
+            name: 'Existing config changed 2',
+            outputCapture: 'std',
+            request: 'launch',
+            runtimeArgs: ['fiori', 'run'],
+            runtimeExecutable: 'npx',
+            type: 'node',
+            windows: {
+                runtimeExecutable: 'npx.cmd'
+            }
+        });
     });
 
-    test('Update added launch config - select ui5 local sources with snapshot', async (): Promise<void> => {
-        let launchConfigs = await getAllLaunchConfigs(TestPaths.tmpDir, memFs);
-        const configIndex = launchConfigs[0].launchConfigs.findIndex((c) => c.name === 'Changed config during test 2');
-        await updateFioriElementsLaunchConfig(
-            TestPaths.tmpDir,
-            configIndex,
+    test('Update existing launch config in launch.json - select ui5 local sources with snapshot', async (): Promise<void> => {
+        const launchJSONPath = join(TestPaths.feProjectsLaunchConfig);
+        const result = await updateLaunchConfig(
+            TestPaths.feProjects,
             {
-                name: 'Changed config during test 3',
-                projectRoot: TestPaths.tmpDir,
+                name: 'Existing config changed 3',
+                projectRoot: TestPaths.feProjects,
                 ui5Local: true,
                 ui5Version: 'TEST_UI5_VERSION_UPDATED',
                 ui5VersionUri: 'https://ui5.sap.com.updated',
                 ui5LocalVersion: 'snapshot'
             },
+            6,
             memFs
         );
-        launchConfigs = await getAllLaunchConfigs(TestPaths.tmpDir, memFs);
-        const changedConfigIndex = launchConfigs[0].launchConfigs.findIndex(
-            (c) => c.name === 'Changed config during test 3'
-        );
-        expect(configIndex).toBe(changedConfigIndex);
-
-        const changedConfig = launchConfigs[0].launchConfigs[changedConfigIndex];
-        expect(changedConfig?.args![0]).toEqual('--config');
-        expect(changedConfig?.args![1]).toEqual('ui5-local.yaml');
-        expect(changedConfig?.args![2]).toEqual('--framework-version');
-        expect(changedConfig?.args![3]).toEqual('snapshot');
-        expect(changedConfig.env.FIORI_TOOLS_UI5_VERSION).toBeUndefined();
-        expect(changedConfig.env.FIORI_TOOLS_UI5_URI).toBeUndefined();
-    });
-
-    test('Delete added launch config', async (): Promise<void> => {
-        let launchConfigs = await getAllLaunchConfigs(TestPaths.tmpDir, memFs);
-        let addedConfigIndex = launchConfigs[0].launchConfigs.findIndex(
-            (c: LaunchConfig) => c.name === 'Changed config during test 3'
-        );
-        expect(addedConfigIndex).toBe(6);
-        await updateFioriElementsLaunchConfig(TestPaths.tmpDir, addedConfigIndex, undefined, memFs);
-        launchConfigs = await getAllLaunchConfigs(TestPaths.tmpDir, memFs);
-        addedConfigIndex = launchConfigs[0].launchConfigs.findIndex((c) => c.name === 'Changed config during test 3');
-        expect(addedConfigIndex).toBe(-1);
+        const expectedEnv = {
+            'run.config': JSON.stringify({
+                handlerId: 'fiori_tools',
+                runnableId: join(TestPaths.feProjects)
+            })
+        };
+        const launchJSONString = result.read(launchJSONPath);
+        const launchJSON = parse(launchJSONString);
+        expect(launchJSON.configurations[6]).toStrictEqual({
+            args: ['--config', 'ui5-local.yaml', '--framework-version', 'snapshot'],
+            console: 'internalConsole',
+            cwd: '${workspaceFolder}',
+            env: expectedEnv,
+            internalConsoleOptions: 'openOnSessionStart',
+            name: 'Existing config changed 3',
+            outputCapture: 'std',
+            request: 'launch',
+            runtimeArgs: ['fiori', 'run'],
+            runtimeExecutable: 'npx',
+            type: 'node',
+            windows: {
+                runtimeExecutable: 'npx.cmd'
+            }
+        });
     });
 });

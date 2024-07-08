@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Get launch config by name 1`] = `
+exports[`read should return launch config by name 1`] = `
 Object {
   "console": "integratedTerminal",
   "cwd": "\${workspaceFolder}/v2lrop",

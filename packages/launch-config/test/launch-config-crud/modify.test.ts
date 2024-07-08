@@ -1,12 +1,12 @@
 import type { LaunchConfig } from '../../src';
-import { convertOldLaunchConfigToFioriRun, createFioriLaunchConfig } from '../../src';
+import { convertOldLaunchConfigToFioriRun, generateNewFioriLaunchConfig } from '../../src';
 import { TestPaths } from '../test-data/utils';
 
 describe('modify', () => {
     const runnableId = JSON.stringify({
         runnableId: TestPaths.v2lrop
     });
-    test('Modify old config that uses run-scripts without args defined', async () => {
+    it('should modify old config that uses run-scripts without args defined', async () => {
         const launchConfig: LaunchConfig = {
             name: '',
             cwd: '',
@@ -40,7 +40,7 @@ describe('modify', () => {
         expect(modified.runtimeArgs).toEqual(['fiori', 'run']);
     });
 
-    test('Modify old config that uses run-scripts without args defined: start script contains short args keys', async () => {
+    it('should modify old config that uses run-scripts without args defined: start script contains short args keys', async () => {
         const launchConfig: LaunchConfig = {
             name: '',
             cwd: '',
@@ -78,7 +78,7 @@ describe('modify', () => {
         expect(modified.runtimeArgs).toEqual(['fiori', 'run']);
     });
 
-    test('Modify old config that uses run-scripts with args defined', async () => {
+    it('should modify old config that uses run-scripts with args defined', async () => {
         const launchConfig: LaunchConfig = {
             name: '',
             cwd: '',
@@ -120,7 +120,7 @@ describe('modify', () => {
         expect(modified.runtimeArgs).toEqual(['fiori', 'run']);
     });
 
-    test('Modify old config that uses run-scripts with no start script and args defined', async () => {
+    it('should modify old config that uses run-scripts with no start script and args defined', async () => {
         const launchConfig: LaunchConfig = {
             name: '',
             cwd: '',
@@ -149,8 +149,8 @@ describe('modify', () => {
         expect(modified.runtimeArgs).toEqual(['fiori', 'run']);
     });
 
-    test('Modify nothing, launch config is defined for fiori run', async () => {
-        const launchConfig = createFioriLaunchConfig('WORKSPACE_FOLDER', {
+    it('should modify nothing, launch config is defined for fiori run', async () => {
+        const launchConfig = generateNewFioriLaunchConfig('WORKSPACE_FOLDER', {
             name: 'TEST_NAME',
             projectRoot: TestPaths.v2lrop,
             ui5Version: 'snapshot',
@@ -162,7 +162,7 @@ describe('modify', () => {
         expect(modified).toStrictEqual(expected);
     });
 
-    test('Do not modify other types of run configurations', async () => {
+    it('should not modify other types of run configurations', async () => {
         const launchConfig = {
             name: 'Some run config',
             type: 'node',
@@ -178,7 +178,7 @@ describe('modify', () => {
         expect(modified).toStrictEqual(expected);
     });
 
-    test('Do not modify only if no project root', async () => {
+    it('should not modify, only if no project root', async () => {
         const launchConfig = {
             name: 'Some run config',
             runtimeArgs: ['run-script', 'start'],

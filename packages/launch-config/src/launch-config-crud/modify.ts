@@ -4,7 +4,7 @@ import type { Package } from '@sap-ux/project-access';
 import { FileName } from '@sap-ux/project-access';
 import { join } from 'path';
 import type { LaunchConfig, LaunchConfigEnv } from '../types';
-import { getIndexOfArgument } from './common';
+import { getIndexOfArgument } from './utils';
 import type { Editor } from 'mem-fs-editor';
 
 const RUN_SCRIPT = 'run-script';
