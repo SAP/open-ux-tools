@@ -1,6 +1,15 @@
 import type { ODataVersion } from '../../base/odata-service';
 import { ODataService } from '../../base/odata-service';
 
+export const ServiceType = {
+    UI: 'UI',
+    NotClassified: 'Not Classified',
+    WebApi: 'WEB_API',
+    NotDetermined: 'Not Determined'
+} as const;
+
+export type ServiceType = (typeof ServiceType)[keyof typeof ServiceType];
+
 export interface ODataServiceInfo {
     id: string;
     name: string;
@@ -8,6 +17,7 @@ export interface ODataServiceInfo {
     path: string;
     odataVersion: ODataVersion;
     serviceVersion: string;
+    serviceType?: ServiceType;
 }
 
 /**
@@ -54,4 +64,5 @@ export abstract class CatalogService extends ODataService {
     }
 
     abstract getAnnotations({ id, title, path }: FilterOptions): Promise<Annotations[]>;
+    abstract getServiceType(path: string): Promise<ServiceType | undefined>;
 }
