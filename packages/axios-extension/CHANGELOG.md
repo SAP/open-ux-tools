@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.15.1
+
+### Patch Changes
+
+-   abf491a7: add service type to catalog request results
+
 ## 1.15.0
 
 ### Minor Changes
