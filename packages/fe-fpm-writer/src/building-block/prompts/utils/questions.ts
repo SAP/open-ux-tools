@@ -76,7 +76,7 @@ export function getAnnotationPathQualifierPrompt(
             const bindingContext: { type: BindingContextType; isCollection?: boolean } = bindingContextType
                 ? {
                       type: bindingContextType,
-                      isCollection: answers.buildingBlockData.type === BuildingBlockType.Table //TODO: BB type
+                      isCollection: answers.buildingBlockData.buildingBlockType === BuildingBlockType.Table
                   }
                 : { type: 'absolute' };
             const choices = transformChoices(
