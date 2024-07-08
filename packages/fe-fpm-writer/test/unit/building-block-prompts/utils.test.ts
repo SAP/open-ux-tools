@@ -86,6 +86,12 @@ describe('utils - ', () => {
             ).toBe('mappedMainServiceName');
         });
 
+        test('getMappedServiceName - CAP, appId = undefined', async () => {
+            expect(await getMappedServiceName(await capProjectProvider.getProject(), 'mainService', undefined!)).toBe(
+                'mappedMainServiceName'
+            );
+        });
+
         test('getMappedServiceName - CAP, no app for appId found throws error', async () => {
             const project = await capProjectProvider.getProject();
             await expect(getMappedServiceName(project, 'mainService', 'invalidAppId')).rejects.toThrow(

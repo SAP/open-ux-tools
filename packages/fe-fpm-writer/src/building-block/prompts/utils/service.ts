@@ -35,7 +35,7 @@ export async function getMappedServiceName(project: Project, serviceName: string
         if (appServiceName) {
             mappedServiceName = await getCapServiceName(
                 project.root,
-                project.apps[appName].services[appServiceName].uri ?? ''
+                project.apps[appName]?.services?.[appServiceName].uri ?? ''
             );
         }
     }

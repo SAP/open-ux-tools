@@ -105,7 +105,7 @@ describe('Prompts', () => {
                 viewOrFragmentPath: typeof fileChoice === 'string' ? fileChoice : (fileChoice as ChoiceOptions).value
             });
             expect(aggregationChoices).toMatchSnapshot();
-        }, 999999);
+        });
     });
 
     describe('validateAnswers', () => {

@@ -6,9 +6,9 @@ import {
     getDependantQuestions,
     getDynamicQuestions,
     updateAnswers,
-    useDynamicQuestionsEffect
+    useDynamicQuestionsEffect,
+    useRequestedChoices
 } from '../../utilities';
-import { useRequestedChoices } from '../../utilities';
 import { QuestionGroup } from '../QuestionGroup';
 import type {
     PromptQuestion,
