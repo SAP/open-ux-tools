@@ -1,5 +1,45 @@
 # @sap-ux/project-access
 
+## 1.23.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/i18n@0.1.0
+    -   @sap-ux/ui5-config@0.23.0
+
+## 1.22.4
+
+### Patch Changes
+
+-   9ea58ad4: fix: Release version of @sap-ux/project-access with filterDataSourcesByType
+
+## 1.22.3
+
+### Patch Changes
+
+-   Updated dependencies [1a1baeb0]
+    -   @sap-ux/ui5-config@0.22.10
+
+## 1.22.2
+
+### Patch Changes
+
+-   399d2ad8: adds new abap deploy config writer
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/ui5-config@0.22.9
+
+## 1.22.1
+
+### Patch Changes
+
+-   Updated dependencies [a140cf8b]
+    -   @sap-ux/ui5-config@0.22.8
+
 ## 1.22.0
 
 ### Minor Changes

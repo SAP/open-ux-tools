@@ -173,6 +173,15 @@ export class FioriAnnotationService {
     }
 
     /**
+     * Returns a vocabulary service instance.
+     *
+     * @returns Vocabulary service instance.
+     */
+    public getVocabularyAPI(): VocabularyService {
+        return this.vocabularyAPI;
+    }
+
+    /**
      * Returns a list of files which describe the service. The order is from least important to the most important file
      * Annotations defined in the last file would overwrite the ones defined in the previous ones.
      * You can only create changes for files which are not marked as `readOnly`.

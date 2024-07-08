@@ -1,5 +1,111 @@
 # @sap-ux/cap-config-writer
 
+## 0.6.1
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.4.1
+
+## 0.6.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/logger@0.6.0
+    -   @sap-ux/odata-service-inquirer@0.4.0
+    -   @sap-ux/project-access@1.23.0
+    -   @sap-ux/yaml@0.16.0
+
+## 0.5.7
+
+### Patch Changes
+
+-   Updated dependencies [9ea58ad4]
+    -   @sap-ux/project-access@1.22.4
+    -   @sap-ux/odata-service-inquirer@0.3.11
+
+## 0.5.6
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.3.10
+
+## 0.5.5
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.3.9
+
+## 0.5.4
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.3.8
+
+## 0.5.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.22.3
+-   @sap-ux/odata-service-inquirer@0.3.7
+
+## 0.5.2
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.3.6
+
+## 0.5.1
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.3.5
+
+## 0.5.0
+
+### Minor Changes
+
+-   200894d7: Add support for passing launch text for Cap projects to generate README files
+
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/project-access@1.22.2
+    -   @sap-ux/yaml@0.15.1
+    -   @sap-ux/odata-service-inquirer@0.3.4
+
+## 0.4.0
+
+### Minor Changes
+
+-   04ed040a: update cds-plugin-ui5 version
+
+## 0.3.7
+
+### Patch Changes
+
+-   Updated dependencies [017d008f]
+    -   @sap-ux/odata-service-inquirer@0.3.3
+
+## 0.3.6
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.3.2
+
+## 0.3.5
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.22.1
+-   @sap-ux/odata-service-inquirer@0.3.1
+
 ## 0.3.4
 
 ### Patch Changes

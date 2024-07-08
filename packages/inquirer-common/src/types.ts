@@ -5,6 +5,7 @@ import type {
     InputQuestion as BaseInputQuestion,
     ListQuestion as BaseListQuestion,
     CheckboxQuestion as BaseCheckBoxQuestion,
+    NumberQuestion as BaseNumberQuestion,
     ListChoiceOptions,
     PromptFunction,
     PromptModule,
@@ -89,6 +90,10 @@ export interface CheckBoxQuestion<A extends Answers = Answers> extends BaseCheck
     additionalMessages?: YUIQuestion['additionalMessages'];
 }
 
+export interface NumberQuestion<A extends Answers = Answers> extends BaseNumberQuestion<A> {
+    name: YUIQuestion['name'];
+    guiOptions?: YUIQuestion['guiOptions'];
+}
 /**
  * Defines prompt/question default values and/or whether or not they should be shown.
  */

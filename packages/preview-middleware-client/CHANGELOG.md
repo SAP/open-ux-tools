@@ -1,5 +1,35 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.10.1
+
+### Patch Changes
+
+-   b2d5843: fix: Missing Scenario API in lower SAPUI5 versions
+
+## 0.10.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+## 0.9.18
+
+### Patch Changes
+
+-   8f57ac28: i18n bindings validation fails for nested \*.properties files
+
+## 0.9.17
+
+### Patch Changes
+
+-   0e0c2864: Fix Error message regression
+
+## 0.9.16
+
+### Patch Changes
+
+-   fb2ff8d6: Reduce eslint warnings
+
 ## 0.9.15
 
 ### Patch Changes

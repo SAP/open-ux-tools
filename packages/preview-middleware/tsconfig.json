@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.json",
   "include": [
     "../../types/ui5.d.ts",
+    "../../types/mem-fs-editor.d.ts",
     "src",
     "src/**/*.json"
   ],

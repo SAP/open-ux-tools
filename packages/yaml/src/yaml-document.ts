@@ -304,6 +304,16 @@ export class YamlDocument {
     }
 
     /**
+     * Simplified method to delete a value in the yaml document.
+     *
+     * @param key - key of the yaml node to delete
+     * @returns `true` if the item was found and removed.
+     */
+    delete(key: string): boolean {
+        return this.documents[0].delete(key);
+    }
+
+    /**
      * Deletes a node in a sequence in the document.
      *
      * @param path - hierarchical path where the node will be deleted

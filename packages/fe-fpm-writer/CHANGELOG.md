@@ -1,5 +1,17 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.25.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+## 0.24.16
+
+### Patch Changes
+
+-   1a1baeb0: Revert "feat(fiori-elements-writer): remove `sap.fe.templates` dependency
+
 ## 0.24.15
 
 ### Patch Changes
