@@ -1,5 +1,20 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.23.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/fe-fpm-writer@0.25.0
+    -   @sap-ux/odata-service-writer@0.21.0
+    -   @sap-ux/ui5-application-writer@0.27.0
+    -   @sap-ux/ui5-config@0.23.0
+    -   @sap-ux/ui5-test-writer@0.4.0
+
 ## 0.22.0
 
 ### Minor Changes

@@ -1,5 +1,36 @@
 # @sap-ux/create
 
+## 0.7.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.1
+-   @sap-ux/app-config-writer@0.4.1
+-   @sap-ux/preview-middleware@0.16.1
+-   @sap-ux/system-access@0.5.1
+-   @sap-ux/cap-config-writer@0.6.1
+
+## 0.7.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/adp-tooling@0.12.0
+    -   @sap-ux/app-config-writer@0.4.0
+    -   @sap-ux/cap-config-writer@0.6.0
+    -   @sap-ux/cards-editor-config-writer@0.4.0
+    -   @sap-ux/inquirer-common@0.4.0
+    -   @sap-ux/logger@0.6.0
+    -   @sap-ux/mockserver-config-writer@0.6.0
+    -   @sap-ux/preview-middleware@0.16.0
+    -   @sap-ux/project-access@1.23.0
+    -   @sap-ux/system-access@0.5.0
+    -   @sap-ux/ui5-config@0.23.0
+
 ## 0.6.9
 
 ### Patch Changes
