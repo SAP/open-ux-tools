@@ -207,6 +207,7 @@ describe('Prompts', () => {
         test('get code snippet with placeholders', async () => {
             const result = promptsAPI.getCodeSnippet(PromptsType.Table, {
                 buildingBlockData: {
+                    buildingBlockType: BuildingBlockType.Table,
                     type: 'GridTable'
                 }
             } as TablePromptsAnswer);

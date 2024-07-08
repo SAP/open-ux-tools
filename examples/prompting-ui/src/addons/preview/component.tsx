@@ -30,7 +30,7 @@ export const render = (props: { active?: boolean }): React.ReactElement => {
         };
         onMessageAttach(UPDATE_CODE_SNIPPET, handleMessage);
         const channel = addons.getChannel();
-        channel.on('storyChanged', (storyId) => {
+        channel.on('storyChanged', () => {
             // Reset to default when story is changed
             setPreview({
                 answers: {},
