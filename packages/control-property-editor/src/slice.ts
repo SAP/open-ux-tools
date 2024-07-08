@@ -19,7 +19,7 @@ import {
     propertyChanged,
     propertyChangeFailed,
     showMessage,
-    scenario,
+    SCENARIO,
     reloadApplication,
     storageFileChanged,
     setAppMode,
@@ -122,7 +122,7 @@ export const initialState: SliceState = {
     selectedControl: undefined,
     outline: [],
     filterQuery: filterInitOptions,
-    scenario: scenario.UiAdaptation,
+    scenario: SCENARIO.UiAdaptation,
     isAdpProject: false,
     icons: [],
     changes: {
@@ -147,7 +147,7 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
     reducers: {
         setProjectScenario: (state, action: PayloadAction<Scenario>) => {
             state.scenario = action.payload;
-            state.isAdpProject = action.payload === scenario.AdaptationProject;
+            state.isAdpProject = action.payload === SCENARIO.AdaptationProject;
         }
     },
     extraReducers: (builder) =>
