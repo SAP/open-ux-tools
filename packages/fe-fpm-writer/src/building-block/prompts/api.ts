@@ -65,6 +65,7 @@ export class PromptsAPI {
         this.basePath = projectPath;
         this.projectProvider = projectProvider;
         this.fs = fs;
+        this.appId = appId;
     }
 
     /**
@@ -81,7 +82,7 @@ export class PromptsAPI {
         }
         const projectProvider = await ProjectProvider.createProject(projectPath, fs);
         await initI18n();
-        return new PromptsAPI(projectPath, projectProvider, fs);
+        return new PromptsAPI(projectPath, projectProvider, fs, appId);
     }
 
     /**
