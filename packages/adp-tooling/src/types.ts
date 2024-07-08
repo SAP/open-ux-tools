@@ -460,9 +460,10 @@ export interface InboundChange {
 
 export interface InboundChangeAnswers {
     inboundId?: string;
-    inboundIdLabel: string;
+    /** Title associated with the inbound navigation data. */
     title: string;
+    /** Subtitle associated with the inbound navigation data. */
     subTitle: string;
+    /** Icon associated with the inbound navigation data. */
     icon: string;
-    validationMessage: string;
 }

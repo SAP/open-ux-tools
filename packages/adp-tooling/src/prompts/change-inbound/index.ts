@@ -3,6 +3,12 @@ import { t } from '../../base/i18n';
 import type { InboundChangeAnswers } from '../../types';
 import { isNotEmptyString } from '../../base/helper';
 
+/**
+ * Gets the prompts for Inbound Change.
+ *
+ * @param {string} inboundId - Inbound Id of the Adp Project.
+ * @returns {YUIQuestion<InboundChangeAnswers>[]} The questions/prompts.
+ */
 export function getPrompts(inboundId: string): YUIQuestion<InboundChangeAnswers>[] {
     return [
         {
@@ -24,6 +30,8 @@ export function getPrompts(inboundId: string): YUIQuestion<InboundChangeAnswers>
             guiOptions: {
                 hint: t('tooltips.title')
             },
+            validate: (value: string, answers: InboundChangeAnswers) =>
+                answers.subTitle || answers.icon !== '' || value ? true : t('missingIconOrTitleOrSubtitle'),
             store: false
         } as InputQuestion<InboundChangeAnswers>,
         {
@@ -33,6 +41,8 @@ export function getPrompts(inboundId: string): YUIQuestion<InboundChangeAnswers>
             guiOptions: {
                 hint: t('tooltips.subtitle')
             },
+            validate: (value: string, answers: InboundChangeAnswers) =>
+                value || answers.icon !== '' || answers.title !== '' ? true : t('missingIconOrTitleOrSubtitle'),
             store: false
         } as InputQuestion<InboundChangeAnswers>,
         {
@@ -42,16 +52,9 @@ export function getPrompts(inboundId: string): YUIQuestion<InboundChangeAnswers>
             guiOptions: {
                 hint: t('tooltips.icon')
             },
-            store: false
-        } as InputQuestion<InboundChangeAnswers>,
-        {
-            type: 'input',
-            name: 'validationMessage',
-            message: ' ',
             store: false,
-            validate: (answers: InboundChangeAnswers) =>
-                !answers.title && !answers.subTitle && !answers.icon ? 'Test' : true,
-            when: (answers: InboundChangeAnswers) => !answers.title && !answers.subTitle && !answers.icon
+            validate: (value: string, answers: InboundChangeAnswers) =>
+                answers.subTitle || value || answers.title !== '' ? true : t('missingIconOrTitleOrSubtitle')
         } as InputQuestion<InboundChangeAnswers>
     ];
 }

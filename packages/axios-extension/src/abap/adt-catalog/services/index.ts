@@ -6,4 +6,3 @@ export { ListPackageService } from './list-package-service';
 export { FileStoreService } from './filestore-service';
 export { GeneratorService } from './generator-service';
 export { BusinessObjectsService } from './businessobjects-service';
-export { UI5RtVersionService } from './ui5-rt-version-service';

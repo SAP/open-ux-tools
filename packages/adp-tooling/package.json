@@ -36,11 +36,7 @@
     ],
     "dependencies": {
         "@sap-ux/axios-extension": "workspace:*",
-<<<<<<< HEAD
-        "@sap-ux/project-access": "workspace:*",
-=======
         "@sap-ux/btp-utils": "workspace:*",
->>>>>>> main
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
@@ -61,10 +57,6 @@
         "@types/ejs": "3.1.2",
         "@types/express": "4.17.21",
         "@types/inquirer": "8.2.6",
-<<<<<<< HEAD
-        "@types/inquirer": "8.2.6",
-=======
->>>>>>> main
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/prompts": "2.4.4",
