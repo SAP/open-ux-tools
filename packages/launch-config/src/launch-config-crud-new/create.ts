@@ -23,7 +23,7 @@ export async function createLaunchConfig(rootFolder: string, fioriOptions: Fiori
     }
     const launchJSONPath = join(rootFolder, DirName.VSCode, LAUNCH_JSON_FILE);
     if (fs.exists(launchJSONPath)) {
-        // launch.json exists, enhance existing file with new config or update/delete existing
+        // launch.json exists, enhance existing file with new config
         const launchConfig = generateNewFioriLaunchConfig(rootFolder, fioriOptions);
         const launchJsonString = fs.read(launchJSONPath);
         const launchJson = parse(launchJsonString) as LaunchJSON;
