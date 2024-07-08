@@ -6,7 +6,7 @@
  * @param {string} [version] - The version of the UI5 framework.
  * @returns {{ uShellBootstrapResourceUrl: string, uiBootsrapResourceUrl: string }} - The resource URLs for UShell bootstrap and UI bootstrap.
  */
-export function getResourceUrlsForUi5Bootstrap(
+export function getBootstrapResourceUrls(
     isEdmxProjectType: boolean,
     frameworkUrl?: string,
     version?: string

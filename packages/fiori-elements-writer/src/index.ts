@@ -22,7 +22,7 @@ import { changesPreviewToVersion, escapeFLPText } from './data/templateAttribute
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
 import { initI18n } from './i18n';
-import { getResourceUrlsForUi5Bootstrap } from '@sap-ux/fiori-generator-shared';
+import { getBootstrapResourceUrls } from '@sap-ux/fiori-generator-shared';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -108,7 +108,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
         ignore = getTypeScriptIgnoreGlob(feApp, coercedUI5Version);
     }
     // Get the resource URLs for the UShell bootstrap and UI bootstrap based on the project type and UI5 framework details
-    const { uShellBootstrapResourceUrl, uiBootsrapResourceUrl } = getResourceUrlsForUi5Bootstrap(
+    const { uShellBootstrapResourceUrl, uiBootsrapResourceUrl } = getBootstrapResourceUrls(
         isEdmxProjectType, 
         feApp.ui5?.frameworkUrl, 
         feApp.ui5?.version

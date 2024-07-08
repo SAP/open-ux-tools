@@ -11,7 +11,7 @@ import { FreestyleApp, TemplateType } from './types';
 import { setDefaults, escapeFLPText } from './defaults';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { initI18n } from './i18n';
-import { getResourceUrlsForUi5Bootstrap } from '@sap-ux/fiori-generator-shared';
+import { getBootstrapResourceUrls } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -39,7 +39,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     const ignore = [isTypeScriptEnabled ? '**/*.js' : '**/*.ts'];
     
     // Get the resource URLs for the UShell bootstrap and UI bootstrap based on the project type and UI5 framework details
-    const { uShellBootstrapResourceUrl, uiBootsrapResourceUrl } = getResourceUrlsForUi5Bootstrap(isEdmxProjectType, ffApp.ui5?.frameworkUrl, ffApp.ui5?.version);
+    const { uShellBootstrapResourceUrl, uiBootsrapResourceUrl } = getBootstrapResourceUrls(isEdmxProjectType, ffApp.ui5?.frameworkUrl, ffApp.ui5?.version);
     const appConfig = {
         ...ffApp,
         uShellBootstrapResourceUrl,
