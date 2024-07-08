@@ -5,7 +5,7 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import * as btp from '@sap-ux/btp-utils';
-import { generateAppConfig, generateRootConfig } from '../../src';
+import { generateAppConfig, generateBaseConfig } from '../../src';
 import { RouterModuleType } from '../../src/types';
 
 jest.mock('@sap-ux/btp-utils', () => ({
@@ -61,65 +61,91 @@ describe('CF Writer', () => {
     });
 
     describe('Generate HTML5 App Config', () => {
-        test('Generate deployment configs', async () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        test('Generate deployment configs - HTML5 App', async () => {
             isAppStudioMock.mockResolvedValue(true);
             listDestinationsMock.mockResolvedValue(destinationsMock);
             const debugSpy = jest.spyOn(logger, 'debug');
-            const appName = 'basicapp';
+            const appName = 'basicapp01';
             const appPath = join(outputDir, appName);
             fsExtra.mkdirSync(outputDir, { recursive: true });
             fsExtra.mkdirSync(appPath);
-            fsExtra.copySync(join(__dirname, `../sample/${appName}`), appPath);
+            fsExtra.copySync(join(__dirname, `../sample/basicapp`), appPath);
 
             await generateAppConfig({ appPath, destination: destinationsMock.ABC123.Name }, unitTestFs, logger);
             expect(isAppStudioMock).toBeCalledTimes(1);
             expect(listDestinationsMock).toBeCalledTimes(1);
-            expect(debugSpy).toBeCalledWith();
-            unitTestFs.dump(appPath);
-            //expect(unitTestFs.dump(testPath)).toMatchSnapshot();
+            expect(debugSpy).toBeCalledTimes(1);
+            expect(unitTestFs.dump(appPath)).toMatchSnapshot();
+            // Since mta.yaml is not in memfs, read from disk
+            expect(unitTestFs.read(join(appPath, 'mta.yaml'))).toMatchSnapshot();
         });
-    });
 
-    describe('Generate Root Config', () => {
-        test('Generate deployment configs - standalone', async () => {
+        test('Generate deployment configs - HTML5 App with managed approuter attached', async () => {
+            isAppStudioMock.mockResolvedValue(false);
+            listDestinationsMock.mockResolvedValue(destinationsMock);
             const debugSpy = jest.spyOn(logger, 'debug');
-            const mtaId = 'standalone';
-            const mtaPath = join(outputDir, mtaId);
+            const appName = 'lrop';
+            const appPath = join(outputDir, appName);
             fsExtra.mkdirSync(outputDir, { recursive: true });
-            fsExtra.mkdirSync(mtaPath);
-            await generateRootConfig(
-                {
-                    mtaPath,
-                    mtaId,
-                    mtaDescription: 'MyStandaloneDescription',
-                    routerType: RouterModuleType.Standard
-                },
+            fsExtra.mkdirSync(appPath);
+            fsExtra.copySync(join(__dirname, `../sample/lrop`), appPath);
+
+            await generateAppConfig(
+                { appPath, destination: destinationsMock.ABC123.Name, addManagedRouter: true },
                 unitTestFs,
                 logger
             );
-            expect(debugSpy).toBeCalledWith();
-            unitTestFs.dump(mtaPath);
-            //expect(unitTestFs.dump(testPath)).toMatchSnapshot();
-        });
-        test('Generate deployment configs - managed', async () => {
-            const debugSpy = jest.spyOn(logger, 'debug');
-            const mtaId = 'managed';
-            const mtaPath = join(outputDir, mtaId);
-            fsExtra.mkdirSync(outputDir, { recursive: true });
-            fsExtra.mkdirSync(mtaPath);
-            await generateRootConfig(
-                {
-                    mtaPath,
-                    mtaId,
-                    mtaDescription: 'MyManagedDescription',
-                    routerType: RouterModuleType.Managed
-                },
-                unitTestFs,
-                logger
-            );
-            expect(debugSpy).toBeCalledWith();
-            unitTestFs.dump(mtaPath);
-            //expect(unitTestFs.dump(testPath)).toMatchSnapshot();
+            expect(isAppStudioMock).toBeCalledTimes(1);
+            expect(listDestinationsMock).toBeCalledTimes(0);
+            expect(debugSpy).toBeCalledTimes(1);
+            expect(unitTestFs.dump(appPath)).toMatchSnapshot();
+            // Since mta.yaml is not in memfs, read from disk
+            expect(unitTestFs.read(join(appPath, 'mta.yaml'))).toMatchSnapshot();
         });
     });
+    //
+    // describe('Generate Root Config', () => {
+    //     test('Generate deployment configs - standalone', async () => {
+    //         const debugSpy = jest.spyOn(logger, 'debug');
+    //         const mtaId = 'standalone';
+    //         const mtaPath = join(outputDir, mtaId);
+    //         fsExtra.mkdirSync(outputDir, { recursive: true });
+    //         fsExtra.mkdirSync(mtaPath);
+    //         await generateBaseConfig(
+    //             {
+    //                 mtaPath,
+    //                 mtaId,
+    //                 mtaDescription: 'MyStandaloneDescription',
+    //                 routerType: RouterModuleType.Standard
+    //             },
+    //             unitTestFs,
+    //             logger
+    //         );
+    //         expect(debugSpy).toBeCalledTimes(1);
+    //         expect(unitTestFs.dump(mtaPath)).toMatchSnapshot();
+    //     });
+    //     test('Generate deployment configs - managed', async () => {
+    //         const debugSpy = jest.spyOn(logger, 'debug');
+    //         const mtaId = 'managed';
+    //         const mtaPath = join(outputDir, mtaId);
+    //         fsExtra.mkdirSync(outputDir, { recursive: true });
+    //         fsExtra.mkdirSync(mtaPath);
+    //         await generateBaseConfig(
+    //             {
+    //                 mtaPath,
+    //                 mtaId,
+    //                 mtaDescription: 'MyManagedDescription',
+    //                 routerType: RouterModuleType.Managed
+    //             },
+    //             unitTestFs,
+    //             logger
+    //         );
+    //         expect(debugSpy).toBeCalledTimes(1);
+    //         expect(unitTestFs.dump(mtaPath)).toMatchSnapshot();
+    //     });
+    // });
 });

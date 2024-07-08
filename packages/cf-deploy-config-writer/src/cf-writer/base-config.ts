@@ -5,32 +5,37 @@ import { create, type Editor } from 'mem-fs-editor';
 import hasbin = require('hasbin');
 import { apiGetInstanceCredentials } from '@sap/cf-tools';
 import { MTAExecutable, MTABinNotFound, RouterModule, XSAppFile } from '../constants';
-import { getTemplatePath, toMtaModuleName, validateVersion } from '../utils';
+import {
+    getTemplatePath,
+    toMtaModuleName,
+    validateVersion,
+    addGitIgnore,
+    addRootPackage,
+    addXSSecurity
+} from '../utils';
 import { MtaConfig, createMTA } from '../mta-config';
-import { t } from '../i18n';
 import { type Logger } from '@sap-ux/logger';
 import { type CFBaseConfig, RouterModuleType } from '../types';
 import { type MTABaseConfig } from '../types';
-import { addGitIgnore, addRootPackage, addXSSecurity } from '../utils';
 
 /**
  * Add a standalone | managed approuter to an empty target folder.
  *
- * @param cfConfig writer configuration
+ * @param config writer configuration
  * @param fs file system reference
  * @param logger logger
  * @returns file system reference
  */
-export async function generateRootConfig(cfConfig: CFBaseConfig, fs?: Editor, logger?: Logger): Promise<Editor> {
+export async function generateBaseConfig(config: CFBaseConfig, fs?: Editor, logger?: Logger): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
-    validateMtaConfig(cfConfig);
-    updateBaseConfig(cfConfig);
-    createMTA(cfConfig as MTABaseConfig, fs);
-    await addRoutingConfig(cfConfig, fs);
-    await addSupportingConfig(cfConfig, fs);
-    logger?.debug(`CF Config written: ${JSON.stringify(cfConfig, null, 2)}`);
+    validateMtaConfig(config);
+    updateBaseConfig(config);
+    createMTA(config as MTABaseConfig, fs);
+    await addRoutingConfig(config, fs);
+    await addSupportingConfig(config, fs);
+    logger?.debug(`CF Config written: ${JSON.stringify(config, null, 2)}`);
     return fs;
 }
 
@@ -42,7 +47,7 @@ async function addRoutingConfig(config: CFBaseConfig, fs: Editor, logger?: Logge
         await mtaConfigInstance.addRoutingModules(true);
     }
     await mtaConfigInstance.updateParameters();
-    await saveMta(mtaConfigInstance, logger);
+    await mtaConfigInstance.save();
 }
 
 function updateBaseConfig(cfConfig: CFBaseConfig): void {
@@ -89,15 +94,6 @@ async function addStandaloneRouter(
             getTemplatePath('router/xs-app-server.json'),
             join(cfConfig.mtaPath, `${RouterModule}/${XSAppFile}`)
         );
-    }
-}
-
-async function saveMta(mtaConfig: MtaConfig, logger?: Logger): Promise<void> {
-    try {
-        await mtaConfig.save();
-    } catch (error) {
-        logger?.debug(t('debug.logError', { error, method: 'saveMta' }));
-        throw error;
     }
 }
 

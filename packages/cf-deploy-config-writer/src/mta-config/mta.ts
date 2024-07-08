@@ -212,7 +212,7 @@ export class MtaConfig {
             name: html5host,
             type: 'org.cloudfoundry.managed-service',
             parameters: {
-                'service-name': `${this.prefix.slice(0, 40)}-html5-srv`,
+                'service-name': `${this.prefix.slice(0, 36)}-html5-service`,
                 'service-plan': 'app-host',
                 service: 'html5-apps-repo'
             }

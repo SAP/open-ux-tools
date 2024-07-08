@@ -1,2 +1,2 @@
 export { generateAppConfig } from './app-config';
-export { generateRootConfig } from './base-config';
+export { generateBaseConfig } from './base-config';

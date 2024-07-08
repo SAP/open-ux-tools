@@ -14,5 +14,4 @@
         "mtaExtensionCreated": "Created file: {{mtaExtFile}} to extend mta module {{appMtaId}} with destination configuration",
         "mtaExtensionUpdated": "Updated file: {{mtaExtFile}} with module destination configuration"
     }
-
 }

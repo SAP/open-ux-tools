@@ -2,8 +2,19 @@ import { type Editor } from 'mem-fs-editor';
 import { join, normalize, posix } from 'path';
 import { isAppStudio, listDestinations, isFullUrlDestination, Authentication } from '@sap-ux/btp-utils';
 import { coerce, satisfies } from 'semver';
-import { MTAVersion, XSSecurityFile } from './constants';
-import type { Manifest } from '@sap-ux/project-access';
+import {
+    MbtPackage,
+    MbtPackageVersion,
+    MTAVersion,
+    Rimraf,
+    RimrafVersion,
+    UI5BuilderWebIdePackage,
+    UI5BuilderWebIdePackageVersion,
+    UI5TaskZipperPackage,
+    UI5TaskZipperPackageVersion,
+    XSSecurityFile
+} from './constants';
+import { addPackageDevDependency, type Manifest } from '@sap-ux/project-access';
 import type { XSAppDocument, XSAppRoute, XSAppRouteProperties, MTABaseConfig } from './types';
 import type { Destinations } from '@sap-ux/btp-utils';
 
@@ -99,4 +110,17 @@ export function addRootPackage({ mtaPath, mtaId }: MTABaseConfig, fs: Editor): v
     fs.copyTpl(getTemplatePath('package.json'), join(mtaPath, 'package.json'), {
         mtaId: mtaId
     });
+}
+
+/**
+ * Add common dependencies to the HTML5 app package.json.
+ *
+ * @param packagePath
+ * @param fs
+ */
+export async function addCommonDependencies(packagePath: string, fs: Editor): Promise<void> {
+    await addPackageDevDependency(packagePath, Rimraf, RimrafVersion, fs);
+    await addPackageDevDependency(packagePath, MbtPackage, MbtPackageVersion, fs);
+    await addPackageDevDependency(packagePath, UI5BuilderWebIdePackage, UI5BuilderWebIdePackageVersion, fs);
+    await addPackageDevDependency(packagePath, UI5TaskZipperPackage, UI5TaskZipperPackageVersion, fs);
 }

@@ -1,6 +1,6 @@
 specVersion: '2.4'
 metadata:
-  name: 'basicapp'
+  name: 'lrop'
 type: application
 server:
   customMiddleware:

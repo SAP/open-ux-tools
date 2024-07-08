@@ -47,7 +47,7 @@ export interface CFBaseConfig extends MTABaseConfig {
 }
 export interface CFAppConfig {
     appPath: string;
-    addManagedApprouter?: boolean;
+    addManagedRouter?: boolean;
     destination?: string;
     apiHubConfig?: ApiHubConfig;
     addMTADestination?: boolean;

@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { ConsoleTransport, ToolsLogger, LogLevel } from '@sap-ux/logger';
-import { generateAppConfig, generateRootConfig } from '../../src';
+import { generateAppConfig, generateBaseConfig } from '../../src';
 import { CFAppConfig, CFBaseConfig } from '../../src/types';
 
 jest.mock('@sap-ux/btp-utils', () => ({
@@ -39,7 +39,7 @@ describe('CF Writer', () => {
             expect(true).toEqual(true);
         });
         test('Generate deployment configs -standalone', async () => {
-            const fs = await generateRootConfig(
+            const fs = await generateBaseConfig(
                 {
                     appPath: '/Users/i313149/Documents/tools-suite-test/cap-fiori-mta-standalone',
                     mtaId: 'teststandalone',

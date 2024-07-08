@@ -13,7 +13,7 @@ Pnpm
 `pnpm add @sap-ux/cf-deploy-config-writer`
 
 ## Usage
-Calling the MtaConfig class;
+Calling the MtaConfig library to add routing modules, HTML5 apps, destinations, and mta extension configurations to an existing MTA configuration file. Dependent on the [MTA Tool](https://www.npmjs.com/package/mta) for exploring and validating the changes being made.
 ```Typescript
 import { MtaConfig } from '@sap-ux/cf-deploy-config-writer';
 // Create a new instance of MtaConfig
@@ -40,8 +40,9 @@ import { generateAppConfig } from '@sap-ux/cf-deploy-config-writer'
 import { join } from 'path';
 
 const exampleWriter = async () => {
-  const projectDir = join(__dirname, 'testapp');
-  const fs = await generateAppConfig(projectDir);
+  const appPath = join(__dirname, 'testapp');
+  const fs = await generateAppConfig({ appPath });
+  // const fs = await generateAppConfig({appPath, addManagedRouter: true}); // To append managed approuter configuration
   return new Promise((resolve) => {
       fs.commit(resolve); // When using with Yeoman it handle the fs commit.
   });
@@ -51,14 +52,14 @@ const exampleWriter = async () => {
 await exampleWriter();
 ```
 
-Calling the `generateRootConfig` function to generate a new Cloud Foundry configuration, supporting managed | standalone configurations;
+Calling the `generateBaseConfig` function to generate a new Cloud Foundry configuration, supporting managed | standalone configurations;
 ```Typescript
-import { generateRootConfig } from '@sap-ux/cf-deploy-config-writer'
+import { generateBaseConfig } from '@sap-ux/cf-deploy-config-writer'
 import { join } from 'path';
 
 const exampleWriter = async () => {
   const mtaPath = join(__dirname, 'testapp');
-  const fs = await generateRootConfig({mtaId: 'myapp', version: '0.0.1', description: 'My app description', routerType: 'standard', mtaPath});
+  const fs = await generateBaseConfig({ mtaId: 'myapp', version: '0.0.1', description: 'My app description', routerType: 'standard', mtaPath });
   return new Promise((resolve) => {
       fs.commit(resolve); // When using with Yeoman it handle the fs commit.
   });

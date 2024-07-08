@@ -1,65 +1,19 @@
 {
-    "_version": "1.8.0",
+    "_version": "1.59.0",
     "sap.app": {
-        "id": "com.fiori.tools.travel",
+        "id": "basicapp",
         "type": "application",
         "i18n": "i18n/i18n.properties",
         "applicationVersion": {
-            "version": "1.0.0"
+            "version": "0.0.1"
         },
         "title": "{{appTitle}}",
         "description": "{{appDescription}}",
-        "tags": {
-            "keywords": []
-        },
-        "ach": "",
         "resources": "resources.json",
-        "dataSources": {
-            "mainService": {
-                "uri": "/sap/opu/odata/sap/ZUI_RAP_TRAVEL_M_U025/",
-                "type": "OData",
-                "settings": {
-                    "annotations": [
-                        "ZUI_RAP_TRAVEL_M_U025_VAN",
-                        "annotation"
-                    ],
-                    "localUri": "localService/metadata.xml"
-                }
-            },
-            "ZUI_RAP_TRAVEL_M_U025_VAN": {
-                "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='ZUI_RAP_TRAVEL_M_U025_VAN',Version='0001')/$value/",
-                "type": "ODataAnnotation",
-                "settings": {
-                    "localUri": "localService/ZUI_RAP_TRAVEL_M_U025_VAN.xml"
-                }
-            },
-            "annotation": {
-                "type": "ODataAnnotation",
-                "uri": "annotations/annotation.xml",
-                "settings": {
-                    "localUri": "annotations/annotation.xml"
-                }
-            }
-        },
-        "offline": false,
         "sourceTemplate": {
-            "id": "ui5template.smartTemplate",
-            "version": "1.40.12"
-        },
-        "crossNavigation": {
-            "inbounds": {
-                "com-fiori-tools-travel-inbound": {
-                    "signature": {
-                        "parameters": {},
-                        "additionalParameters": "allowed"
-                    },
-                    "semanticObject": "Travel",
-                    "action": "display",
-                    "title": "Travel",
-                    "subTitle": "",
-                    "icon": ""
-                }
-            }
+            "id": "@sap/generator-fiori:basic",
+            "version": "1.14.2-pre-20240708140014-4973a7ece.0",
+            "toolsId": "c1c8a120-2e9a-4d6e-8363-7e2622948044"
         }
     },
     "sap.ui": {
@@ -76,111 +30,76 @@
             "desktop": true,
             "tablet": true,
             "phone": true
-        },
-        "supportedThemes": [
-            "sap_hcb",
-            "sap_belize"
-        ]
+        }
     },
     "sap.ui5": {
-        "resources": {
-            "js": [],
-            "css": []
-        },
+        "flexEnabled": true,
         "dependencies": {
-            "minUI5Version": "1.65.0",
-            "libs": {},
-            "components": {}
-        },
-        "models": {
-            "i18n": {
-                "type": "sap.ui.model.resource.ResourceModel",
-                "uri": "i18n/i18n.properties"
-            },
-            "@i18n": {
-                "type": "sap.ui.model.resource.ResourceModel",
-                "uri": "i18n/i18n.properties"
-            },
-            "i18n|sap.suite.ui.generic.template.ListReport|Travel": {
-                "type": "sap.ui.model.resource.ResourceModel",
-                "uri": "i18n/ListReport/Travel/i18n.properties"
-            },
-            "i18n|sap.suite.ui.generic.template.ObjectPage|Travel": {
-                "type": "sap.ui.model.resource.ResourceModel",
-                "uri": "i18n/ObjectPage/Travel/i18n.properties"
-            },
-            "i18n|sap.suite.ui.generic.template.ObjectPage|Booking": {
-                "type": "sap.ui.model.resource.ResourceModel",
-                "uri": "i18n/ObjectPage/Booking/i18n.properties"
-            },
-            "": {
-                "dataSource": "mainService",
-                "preload": true,
-                "settings": {
-                    "defaultBindingMode": "TwoWay",
-                    "defaultCountMode": "Inline",
-                    "refreshAfterChange": false,
-                    "metadataUrlParams": {
-                        "sap-value-list": "none"
-                    }
-                }
+            "minUI5Version": "1.125.1",
+            "libs": {
+                "sap.m": {},
+                "sap.ui.core": {},
+                "sap.f": {},
+                "sap.suite.ui.generic.template": {},
+                "sap.ui.comp": {},
+                "sap.ui.generic.app": {},
+                "sap.ui.table": {},
+                "sap.ushell": {}
             }
-        },
-        "extends": {
-            "extensions": {}
         },
         "contentDensities": {
             "compact": true,
             "cozy": true
-        }
-    },
-    "sap.ui.generic.app": {
-        "_version": "1.3.0",
-        "settings": {
-            "forceGlobalRefresh": false,
-            "objectPageHeaderType": "Dynamic",
-            "showDraftToggle": false
         },
-        "pages": {
-            "ListReport|Travel": {
-                "entitySet": "Travel",
-                "component": {
-                    "name": "sap.suite.ui.generic.template.ListReport",
-                    "list": true,
-                    "settings": {
-                        "condensedTableLayout": true,
-                        "smartVariantManagement": true,
-                        "enableTableFilterInPageVariant": true
-                    }
-                },
-                "pages": {
-                    "ObjectPage|Travel": {
-                        "entitySet": "Travel",
-                        "component": {
-                            "name": "sap.suite.ui.generic.template.ObjectPage"
-                        },
-                        "pages": {
-                            "ObjectPage|to_Booking": {
-                                "navigationProperty": "to_Booking",
-                                "entitySet": "Booking",
-                                "component": {
-                                    "name": "sap.suite.ui.generic.template.ObjectPage"
-                                }
-                            }
-                        }
-                    }
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "basicapp.i18n.i18n"
                 }
             }
+        },
+        "resources": {
+            "css": [
+                {
+                    "uri": "css/style.css"
+                }
+            ]
+        },
+        "routing": {
+            "config": {
+                "routerClass": "sap.m.routing.Router",
+                "viewType": "XML",
+                "async": true,
+                "viewPath": "basicapp.view",
+                "controlAggregation": "pages",
+                "controlId": "app",
+                "clearControlAggregation": false
+            },
+            "routes": [
+                {
+                    "name": "RouteView1",
+                    "pattern": ":?query:",
+                    "target": [
+                        "TargetView1"
+                    ]
+                }
+            ],
+            "targets": {
+                "TargetView1": {
+                    "viewType": "XML",
+                    "transition": "slide",
+                    "clearControlAggregation": false,
+                    "viewId": "View1",
+                    "viewName": "View1"
+                }
+            }
+        },
+        "rootView": {
+            "viewName": "basicapp.view.App",
+            "type": "XML",
+            "async": true,
+            "id": "App"
         }
-    },
-    "sap.platform.abap": {
-        "uri": ""
-    },
-    "sap.fiori": {
-        "registrationIds": [],
-        "archeType": "transactional"
-    },
-    "sap.platform.hcp": {
-        "uri": ""
     }
 }

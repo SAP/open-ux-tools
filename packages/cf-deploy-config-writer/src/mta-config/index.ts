@@ -3,8 +3,7 @@ import { join } from 'path';
 import { render } from 'ejs';
 import { MtaConfig } from './mta';
 import { getTemplatePath } from '../utils';
-import { MTAYamlFile, MTAVersion } from '../constants';
-import { t } from '../i18n';
+import { MTAYamlFile, MTAVersion, MTADescription } from '../constants';
 import type { Editor } from 'mem-fs-editor';
 import type { MTABaseConfig } from '../types';
 
@@ -36,7 +35,7 @@ export function createMTA(config: MTABaseConfig, fs: Editor): void {
     const mtaTemplate = fs.read(getTemplatePath(`app/${MTAYamlFile}`));
     const mtaContents = render(mtaTemplate, {
         id: config.mtaId,
-        mtaDescription: config.mtaDescription ?? t('DEFAULT_MTA_DESCRIPTION'),
+        mtaDescription: config.mtaDescription ?? MTADescription,
         mtaVersion: config.mtaVersion ?? MTAVersion
     });
     fileSystem.writeFileSync(join(config.mtaPath, MTAYamlFile), mtaContents);
