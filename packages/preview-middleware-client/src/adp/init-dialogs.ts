@@ -39,7 +39,7 @@ type Controller = AddFragment | ControllerExtension | ExtensionPoint;
  * @returns boolean whether menu item is enabled or not
  */
 export const isControllerExtensionEnabled = (overlays: ElementOverlay[], syncViewsIds: string[], minorUI5Version: number): boolean => {
-    if (overlays.length === 0 || overlays.length > 1) return false;
+    if (overlays.length === 0 || overlays.length > 1) {return false;}
 
     const clickedControlId = FlUtils.getViewForControl(overlays[0].getElement()).getId();
     const isClickedControlReuseComponent = isReuseComponent(clickedControlId, minorUI5Version);
@@ -56,7 +56,7 @@ export const isControllerExtensionEnabled = (overlays: ElementOverlay[], syncVie
  * @returns {boolean} True if the fragment command is enabled, false otherwise.
  */
 export const isFragmentCommandEnabled = (overlays: ElementOverlay[], minorUI5Version: number): boolean => {
-    if (overlays.length === 0 || overlays.length > 1) return false;
+    if (overlays.length === 0 || overlays.length > 1) {return false;}
 
     const control = overlays[0].getElement();
 
