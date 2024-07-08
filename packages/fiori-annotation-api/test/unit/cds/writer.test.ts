@@ -8,6 +8,7 @@ import {
     MOVE_COLLECTION_VALUE_CHANGE_TYPE,
     createDeleteAnnotationChange,
     createDeleteAnnotationGroupChange,
+    createDeleteAnnotationGroupItemsChange,
     createDeleteTargetChange,
     createInsertAnnotationChange
 } from '../../../src/cds/change';
@@ -1802,6 +1803,28 @@ annotate S.E with @UI.LineItem: [
                 await testWriter(
                     fixture,
                     [createDeleteAnnotationGroupChange('/targets/0/assignments/0')],
+                    `
+                Service S { entity E {}; };
+                annotate S.E with @(
+                    Common.Label: 'test',
+                );`
+                );
+            });
+            test('group items', async () => {
+                const fixture = `
+                Service S { entity E {}; };
+                annotate S.E with @(
+                    UI : {
+                        HeaderInfo : {
+                            TypeName: 'a'
+                        },
+                        LineItem: [],
+                    },
+                    Common.Label: 'test',
+                );`;
+                await testWriter(
+                    fixture,
+                    [createDeleteAnnotationGroupItemsChange('/targets/0/assignments/0/items')],
                     `
                 Service S { entity E {}; };
                 annotate S.E with @(
