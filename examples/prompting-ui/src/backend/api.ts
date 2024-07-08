@@ -2,6 +2,7 @@ import { PromptsAPI } from '@sap-ux/fe-fpm-writer';
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { SupportedBuildingBlocks } from '../utils';
+import type { ApplicationInformation } from '../addons/project';
 
 const api: { [key: string]: PromptsAPI } = {};
 
@@ -27,10 +28,12 @@ export const getPromptApi = async (projectPath: string, fs: Editor, appId?: stri
 /**
  * Method validates current saved/stored project path.
  *
+ * @param application Application to validate
  * @returns "undefined" if project path is valid or error message if project path is invalid.
  */
-export const validateProject = async (projectPath: string, appId?: string): Promise<string | undefined> => {
+export const validateProject = async (application: ApplicationInformation): Promise<string | undefined> => {
     try {
+        const { projectPath, appId } = application;
         const promptsAPI = await PromptsAPI.init(projectPath, appId);
         // Call API to get table questions - it should validate of path is supported
         const { questions } = await promptsAPI.getPrompts(SupportedBuildingBlocks.Table);

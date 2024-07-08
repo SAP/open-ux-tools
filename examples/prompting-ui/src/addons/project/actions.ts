@@ -31,7 +31,7 @@ export async function handleAction(action: ProjectActions): Promise<ProjectActio
             }
             if (!message) {
                 // Trigger validation to validate project path
-                message = await validateProject(newProjectPath);
+                message = await validateProject(application);
                 // If no error update path
                 if (!message) {
                     setApplication({
