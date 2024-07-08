@@ -3,7 +3,7 @@ import { getQuestions, subscribeOnChoicesUpdate, unsubscribeOnChoicesUpdate } fr
 import type { DynamicChoices, PromptQuestion } from '@sap-ux/ui-prompting';
 import type { SupportedBuildingBlocks } from './types';
 import type { PromptsGroup } from '@sap-ux/ui-prompting';
-import { Answers } from 'inquirer';
+import type { Answers } from 'inquirer';
 
 /**
  * Hook to retrieve dynamic choices.

@@ -26,7 +26,7 @@ import {
     SET_VALIDATION_RESULTS,
     SupportedBuildingBlocks
 } from './types';
-import { Subset } from '@sap-ux/fe-fpm-writer/src/building-block/prompts';
+import type { Subset } from '@sap-ux/fe-fpm-writer/src/building-block/prompts';
 
 let ws: WebSocket | undefined;
 
