@@ -39,12 +39,18 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         ignore.push('**/gitignore.tmpl');
     }
 
-    // Construct resourcePath based on project type and frameworkUrl availability
-    const ui5ResourceUrl = isEdmxProjectType
-        ? 'resources/sap-ui-core.js' // Use relative path for Edmx projects
-        : ui5App.ui5?.frameworkUrl
-            ? `${ui5App.ui5?.frameworkUrl}${ui5App.ui5?.version ? `/${ui5App.ui5?.version}` : ''}/resources/sap-ui-core.js` // Use framework URL and version if available
-            : 'resources/sap-ui-core.js'; // Use absolute path if frameworkUrl is not available
+    // Determine the UI5 resource URL based on project type and UI5 framework details
+    let ui5ResourceUrl: string;
+
+    if (isEdmxProjectType) {
+        ui5ResourceUrl = 'resources/sap-ui-core.js'; // Use relative path for Edmx projects
+    } else if (ui5App.ui5?.frameworkUrl) {
+        const frameworkUrl = ui5App.ui5.frameworkUrl;
+        const version = ui5App.ui5.version ? `/${ui5App.ui5.version}` : '';
+        ui5ResourceUrl = `${frameworkUrl}${version}/resources/sap-ui-core.js`; // Use framework URL and version if available
+    } else {
+        ui5ResourceUrl = 'resources/sap-ui-core.js'; // Use absolute path if frameworkUrl is not available
+    }
     const templateOptions = {
         ...ui5App,
         ui5ResourceUrl
