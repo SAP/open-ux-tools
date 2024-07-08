@@ -149,3 +149,4 @@ export type BusinessObject = {
 };
 
 export type PublishResponse = { SEVERITY: string; SHORT_TEXT: string; LONG_TEXT: string };
+export type ValidationResponse = { severity: string; short_text: string; long_text: string };

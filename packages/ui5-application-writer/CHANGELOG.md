@@ -1,5 +1,30 @@
 # @sap-ux/ui5-application-writer
 
+## 0.27.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/ui5-config@0.23.0
+
+## 0.26.18
+
+### Patch Changes
+
+-   Updated dependencies [1a1baeb0]
+    -   @sap-ux/ui5-config@0.22.10
+
+## 0.26.17
+
+### Patch Changes
+
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/ui5-config@0.22.9
+
 ## 0.26.16
 
 ### Patch Changes

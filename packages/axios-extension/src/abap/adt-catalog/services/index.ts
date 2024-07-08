@@ -5,6 +5,5 @@ export { TransportRequestService, NewUi5ObjectRequestParams } from './transportr
 export { ListPackageService } from './list-package-service';
 export { FileStoreService } from './filestore-service';
 export { GeneratorService } from './generator-service';
-export { PublishService } from './publish-service';
 export { BusinessObjectsService } from './businessobjects-service';
 export { UI5RtVersionService } from './ui5-rt-version-service';

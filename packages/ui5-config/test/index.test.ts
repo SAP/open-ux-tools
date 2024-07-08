@@ -68,10 +68,15 @@ describe('UI5Config', () => {
         });
     });
 
-    describe('setType', () => {
+    describe('getType / setType', () => {
         test('set type', () => {
             ui5Config.setType('application');
             expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('get type', () => {
+            ui5Config.setType('module');
+            expect(ui5Config.getType()).toBe('module');
         });
 
         test('replace type', () => {
@@ -81,7 +86,7 @@ describe('UI5Config', () => {
         });
     });
 
-    describe('add/getCustomConfiguration', () => {
+    describe('add/get/remove/CustomConfiguration', () => {
         const testConfig = {
             url: 'https://test.example',
             client: '123'
@@ -96,6 +101,12 @@ describe('UI5Config', () => {
             ui5Config.addCustomConfiguration('another', anotherConfig);
             expect(ui5Config.getCustomConfiguration('target')).toEqual(testConfig);
             expect(ui5Config.getCustomConfiguration('another')).toBe(anotherConfig);
+        });
+
+        test('Remove configuration', () => {
+            ui5Config.addCustomConfiguration('config', testConfig);
+            ui5Config.removeConfig('customConfiguration');
+            expect(ui5Config.getCustomConfiguration('config')).toBeUndefined();
         });
     });
 
@@ -131,14 +142,6 @@ describe('UI5Config', () => {
         });
     });
 
-    describe('addUI5Libs', () => {
-        test('addUI5Libs in framework libraries', () => {
-            ui5Config.addUI5Framework('SAPUI5', '1.64.0', ['sap.m'], 'sap_fiori_3_dark');
-            ui5Config.addUI5Libs(['sap.ushell']);
-            expect(ui5Config.toString()).toMatchSnapshot();
-        });
-    });
-
     describe('addFioriToolsProxydMiddleware', () => {
         test('add without backend or UI5', () => {
             ui5Config.addFioriToolsProxydMiddleware({});
@@ -162,26 +165,30 @@ describe('UI5Config', () => {
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
-        test('add commonly configured backend (and UI5 defaults)', () => {
+        test('add / get commonly configured backend (and UI5 defaults)', () => {
+            const backend = [
+                {
+                    url,
+                    path,
+                    destination,
+                    destinationInstance
+                },
+                {
+                    url,
+                    path,
+                    destination,
+                    destinationInstance,
+                    authenticationType: AuthenticationType.ReentranceTicket
+                }
+            ];
             ui5Config.addFioriToolsProxydMiddleware({
-                backend: [
-                    {
-                        url,
-                        path,
-                        destination,
-                        destinationInstance
-                    },
-                    {
-                        url,
-                        path,
-                        destination,
-                        destinationInstance,
-                        authenticationType: AuthenticationType.ReentranceTicket
-                    }
-                ],
+                backend,
                 ui5: {}
             });
             expect(ui5Config.toString()).toMatchSnapshot();
+
+            const backendConfigs = ui5Config.getBackendConfigsFromFioriToolsProxydMiddleware();
+            expect(backendConfigs).toEqual(backend);
         });
 
         test('add backend with flexible parameters (and UI5 defaults)', () => {
@@ -368,7 +375,7 @@ describe('UI5Config', () => {
         });
 
         test('use open source task', () => {
-            ui5Config.addAbapDeployTask({ url, client }, app, false);
+            ui5Config.addAbapDeployTask({ url, client }, app, false, ['/test/'], true);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 

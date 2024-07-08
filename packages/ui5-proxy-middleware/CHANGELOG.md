@@ -1,5 +1,37 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.4.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/logger@0.6.0
+    -   @sap-ux/ui5-config@0.23.0
+
+## 1.3.16
+
+### Patch Changes
+
+-   Updated dependencies [1a1baeb0]
+    -   @sap-ux/ui5-config@0.22.10
+
+## 1.3.15
+
+### Patch Changes
+
+-   899cdb23: FIX: enabled running the middleware with karma
+
+## 1.3.14
+
+### Patch Changes
+
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/ui5-config@0.22.9
+
 ## 1.3.13
 
 ### Patch Changes

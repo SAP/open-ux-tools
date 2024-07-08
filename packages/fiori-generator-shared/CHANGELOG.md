@@ -1,5 +1,48 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.2.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/project-access@1.23.0
+
+## 0.1.2
+
+### Patch Changes
+
+-   bb7ebe9a: Fix: Include Templates in 'files' Array of fiori-generator-shared Package.json
+
+## 0.1.1
+
+### Patch Changes
+
+-   Updated dependencies [9ea58ad4]
+    -   @sap-ux/project-access@1.22.4
+
+## 0.1.0
+
+### Minor Changes
+
+-   3b795703: Adding generate readme file functionalities
+
+## 0.0.17
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.22.3
+
+## 0.0.16
+
+### Patch Changes
+
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/project-access@1.22.2
+
 ## 0.0.15
 
 ### Patch Changes

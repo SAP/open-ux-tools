@@ -1,4 +1,4 @@
-import type { AliasInformation, AnnotationFile, Element } from '@sap-ux/odata-annotation-core-types';
+import type { AliasInformation, AnnotationFile, Element, ElementChild } from '@sap-ux/odata-annotation-core-types';
 import {
     ELEMENT_TYPE,
     ATTRIBUTE_TYPE,
@@ -473,7 +473,14 @@ export class ChangeConverter {
                 this.annotationFileChanges.push(internalChange);
             }
         } else if (content.type === 'expression') {
-            this.convertUpdateExpression(file, aliasInfo, content, pointer + internalPointer, valueType);
+            this.convertUpdateExpression(
+                file,
+                aliasInfo,
+                content,
+                pointer + internalPointer,
+                valueType,
+                reference.target
+            );
         } else if (content.type === 'primitive' && content.value !== undefined) {
             const internalPointerForPrimitiveValues = convertPointerInAnnotationToInternal(
                 element,
@@ -554,7 +561,8 @@ export class ChangeConverter {
         aliasInfo: AliasInformation,
         content: ExpressionUpdateContent,
         pointer: string,
-        valueType: string | undefined
+        valueType: string | undefined,
+        targetName: string
     ): void {
         const rawPrimitiveValue = this.getExpressionValue(content);
         const newValue = convertPrimitiveValueToInternal(content.value.type, rawPrimitiveValue, aliasInfo);
@@ -582,48 +590,75 @@ export class ChangeConverter {
                 this.annotationFileChanges.push(internalChange);
             } else if (node.attributes[type]) {
                 // attribute notation
-                const internalChange: ReplaceAttribute = {
+                this.annotationFileChanges.push({
                     type: REPLACE_ATTRIBUTE,
                     uri: file.uri,
                     pointer: pointer + `/attributes/${type}`,
                     newAttributeName: content.value.type,
                     newAttributeValue: newValue
-                };
-                this.annotationFileChanges.push(internalChange);
+                });
             } else if (node.name === valueType) {
                 // element notation
+                const childContent: ElementChild[] = [];
+                if (content.value.type !== Edm.Null) {
+                    childContent.push(createTextNode(newValue));
+                }
                 const internalChange: ReplaceElement = {
                     type: REPLACE_ELEMENT,
                     uri: file.uri,
                     pointer: pointer,
                     newElement: createElementNode({
                         name: content.value.type,
-                        content: [createTextNode(newValue)]
+                        content: childContent
                     })
                 };
                 this.annotationFileChanges.push(internalChange);
             }
         } else if (node?.type === ATTRIBUTE_TYPE) {
-            if (content.previousType === undefined && content.value.type === valueType) {
-                // attribute notation
-                const internalChange: UpdateAttributeValue = {
-                    type: UPDATE_ATTRIBUTE_VALUE,
-                    uri: file.uri,
-                    pointer: pointer,
-                    newValue
-                };
-                this.annotationFileChanges.push(internalChange);
-            } else {
-                // attribute notation
-                const internalChange: ReplaceAttribute = {
-                    type: REPLACE_ATTRIBUTE,
-                    uri: file.uri,
-                    pointer: pointer,
-                    newAttributeName: content.value.type,
-                    newAttributeValue: newValue
-                };
-                this.annotationFileChanges.push(internalChange);
-            }
+            this.convertUpdateExpressionForAttrributeType(file.uri, targetName, valueType, content, pointer, newValue);
+        }
+    }
+
+    private convertUpdateExpressionForAttrributeType(
+        fileUri: string,
+        targetName: string,
+        valueType: string | undefined,
+        content: ExpressionUpdateContent,
+        pointer: string,
+        newValue: string
+    ): void {
+        if (content.previousType === undefined && content.value.type === valueType) {
+            // attribute notation
+            const internalChange: UpdateAttributeValue = {
+                type: UPDATE_ATTRIBUTE_VALUE,
+                uri: fileUri,
+                pointer: pointer,
+                newValue
+            };
+            this.annotationFileChanges.push(internalChange);
+        } else if (content.value.type === Edm.Null) {
+            this.annotationFileChanges.push({
+                type: DELETE_ATTRIBUTE,
+                uri: fileUri,
+                pointer: pointer
+            });
+            this.annotationFileChanges.push({
+                type: INSERT_ELEMENT,
+                uri: fileUri,
+                target: targetName,
+                pointer: pointer.split('/').slice(0, -2).join('/'),
+                element: createElementNode({ name: Edm.Null })
+            });
+        } else {
+            // attribute notation
+            const internalChange: ReplaceAttribute = {
+                type: REPLACE_ATTRIBUTE,
+                uri: fileUri,
+                pointer: pointer,
+                newAttributeName: content.value.type,
+                newAttributeValue: newValue
+            };
+            this.annotationFileChanges.push(internalChange);
         }
     }
 

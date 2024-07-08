@@ -1,5 +1,30 @@
 # @sap-ux/mockserver-config-writer
 
+## 0.6.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/ui5-config@0.23.0
+
+## 0.5.8
+
+### Patch Changes
+
+-   Updated dependencies [1a1baeb0]
+    -   @sap-ux/ui5-config@0.22.10
+
+## 0.5.7
+
+### Patch Changes
+
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/ui5-config@0.22.9
+
 ## 0.5.6
 
 ### Patch Changes

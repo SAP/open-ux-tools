@@ -1,5 +1,30 @@
 # @sap-ux/ui5-config
 
+## 0.23.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/yaml@0.16.0
+
+## 0.22.10
+
+### Patch Changes
+
+-   1a1baeb0: Revert "feat(fiori-elements-writer): remove `sap.fe.templates` dependency
+
+## 0.22.9
+
+### Patch Changes
+
+-   399d2ad8: adds new abap deploy config writer
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/yaml@0.15.1
+
 ## 0.22.8
 
 ### Patch Changes
