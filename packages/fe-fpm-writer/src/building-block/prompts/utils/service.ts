@@ -9,8 +9,13 @@ import { getCapServiceName } from '@sap-ux/project-access';
 import type { Project } from '@sap-ux/project-access';
 import type { BindingContextType } from '../../types';
 
+/**
+ * Defines binding context to filter annotation terms.
+ */
 interface BindingContext {
+    // binding context type: 'absolute' or 'relative'
     type: BindingContextType;
+    // indiates whether to filter navigation properties with 1 to n relationship if context type is 'relative'
     isCollection?: boolean;
 }
 
@@ -43,8 +48,8 @@ export async function getMappedServiceName(project: Project, serviceName: string
  * @param project - project
  * @param serviceName - service name to lookup
  * @param appName - app name in CAP project
- * @param sync -
- * @returns resolved service name
+ * @param sync - option to refresh file content from the file system
+ * @returns resolved Annotation service
  */
 export async function getAnnotationService(
     project: Project,
@@ -61,24 +66,40 @@ export async function getAnnotationService(
 }
 
 /**
+ * Method to get and convert metadata.
  *
- * @param annotationService
+ * @param annotationService - Fiori Annotation service
+ * @returns coverted metadata object
  */
 export function getMergedMetadata(annotationService: FioriAnnotationService): ConvertedMetadata {
     const rawMetadata = annotationService.getSchema();
     return convert(rawMetadata);
 }
 
-const getServiceMetadata = async (project: Project, serviceName: string, appName: string) => {
+/**
+ * Method returns converted metadata object.
+ *
+ * @param project - project
+ * @param serviceName - project service name
+ * @param appName - application id
+ * @returns resolved converted metadata object
+ */
+const getServiceMetadata = async (
+    project: Project,
+    serviceName: string,
+    appName: string
+): Promise<ConvertedMetadata> => {
     const annotationService = await getAnnotationService(project, serviceName, appName);
     return getMergedMetadata(annotationService);
 };
 
 // ToDo - is there otherway?
 /**
+ * Method returns main service of the application.
  *
- * @param project
- * @param appId
+ * @param project = project
+ * @param appId - application id
+ * @returns main service name
  */
 function getMainService(project: Project, appId?: string): string {
     let mainService: string | undefined;
@@ -96,11 +117,12 @@ function getMainService(project: Project, appId?: string): string {
 }
 
 /**
+ * Method gets available entity types in project.
  *
- * @param projectProvider
- * @returns
+ * @param projectProvider = project provider
+ * @returns an array of entity types
  */
-export async function getEntityTypes(projectProvider: ProjectProvider) {
+export async function getEntityTypes(projectProvider: ProjectProvider): Promise<EntityType[]> {
     const project = await projectProvider.getProject();
     const metadata = await getServiceMetadata(
         project,
@@ -111,8 +133,10 @@ export async function getEntityTypes(projectProvider: ProjectProvider) {
 }
 
 /**
+ * Method to get the annotation term alias.
  *
- * @param annotationTerm
+ * @param annotationTerm - annotation term
+ * @returns an array of entity type annotations with annotation term name
  */
 export function getAnnotationTermAlias(annotationTerm: UIAnnotationTerms): [keyof EntityTypeAnnotations, string] {
     const [, , , vocabularyName, , annotationTermName] = annotationTerm.split('.');
@@ -120,12 +144,14 @@ export function getAnnotationTermAlias(annotationTerm: UIAnnotationTerms): [keyo
 }
 
 /**
+ * Method to get the annotation path qualifiers for entity.
  *
- * @param projectProvider
- * @param entity
- * @param annotationTerm
- * @param bindingContext
- * @param useNamespace
+ * @param projectProvider - project provider
+ * @param entity - entity or entity type name
+ * @param annotationTerm - annotation term names to search
+ * @param bindingContext - binding context to filter the annotations
+ * @param useNamespace - indicates to use namespace or namespace alias
+ * @returns a record of annotation path qualifier terms
  */
 export async function getAnnotationPathQualifiers(
     projectProvider: ProjectProvider,
@@ -133,7 +159,7 @@ export async function getAnnotationPathQualifiers(
     annotationTerm: UIAnnotationTerms[],
     bindingContext: BindingContext,
     useNamespace = false
-) {
+): Promise<Record<string, string>> {
     const result: Record<string, string> = {};
     try {
         const project = await projectProvider.getProject();
@@ -160,12 +186,13 @@ export async function getAnnotationPathQualifiers(
 }
 
 /**
+ * Method to get annotation path qualifiers and add to result.
  *
- * @param entityType
- * @param annotationTerms
- * @param result
- * @param useNamespace
- * @param bindingContext
+ * @param entityType - entity type name
+ * @param annotationTerms - annotation term names to search
+ * @param result - a record of annotation path qualifier terms
+ * @param useNamespace - indicates to use namespace or namespace alias
+ * @param bindingContext - binding context to filter the annotations
  */
 function getAnnotationPathQualifiersForEntityType(
     entityType: EntityType,
@@ -173,7 +200,7 @@ function getAnnotationPathQualifiersForEntityType(
     result: Record<string, string>,
     useNamespace: boolean,
     bindingContext: BindingContext
-) {
+): void {
     if (bindingContext.type === 'absolute') {
         addAnnotationPathQualifierToResult(entityType, '', annotationTerms, result, useNamespace);
     } else if (bindingContext.type === 'relative') {
@@ -198,12 +225,13 @@ function getAnnotationPathQualifiersForEntityType(
 }
 
 /**
+ *  Method to add found annotation paths to result.
  *
- * @param entityType
- * @param navigationPropertyName
- * @param annotationTerms
- * @param result
- * @param useNamespace
+ * @param entityType - entity type name
+ * @param navigationPropertyName - navigation property name to include in the annotation path
+ * @param annotationTerms - annotation term names to search
+ * @param result - a record of annotation path qualifier terms
+ * @param useNamespace - indicates to use namespace or namespace alias
  */
 function addAnnotationPathQualifierToResult(
     entityType: EntityType,
@@ -211,7 +239,7 @@ function addAnnotationPathQualifierToResult(
     annotationTerms: UIAnnotationTerms[],
     result: Record<string, string>,
     useNamespace = false
-) {
+): void {
     annotationTerms.forEach((uiAnnotationTerm) => {
         const [namespaceAlias, annotationTerm] = getAnnotationTermAlias(uiAnnotationTerm);
         const namespace = uiAnnotationTerm.substring(0, uiAnnotationTerm.lastIndexOf('.'));
