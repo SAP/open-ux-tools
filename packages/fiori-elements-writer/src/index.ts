@@ -83,11 +83,21 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     await addOdataService(basePath, feApp.service, fs);
 
     const coercedUI5Version = semVer.coerce(feApp.ui5?.version)!;
+    // Determine if the changes preview should be enabled based on the project type and UI5 version
+    const changesPreview = isEdmxProjectType 
+        ? feApp.ui5?.version 
+            ? semVer.lt(coercedUI5Version, changesPreviewToVersion) // Check if the coerced version is less than the required version
+            : false 
+        : false;
+    // Determine if the changes loader should be enabled based on the project type and service version
+    const changesLoader = isEdmxProjectType 
+        ? feApp.service.version === OdataVersion.v2 
+        : false;
+    // Define template options with the determined changes preview and changes loader settings
     const templateOptions: TemplateOptions = {
-        changesPreview:  isEdmxProjectType ? feApp.ui5?.version ? semVer.lt(coercedUI5Version, changesPreviewToVersion) : false : false,
-        changesLoader: isEdmxProjectType ? feApp.service.version === OdataVersion.v2 : false
+        changesPreview,
+        changesLoader
     };
-
     // Add new files from templates e.g.
     const rootTemplatesPath = join(__dirname, '..', 'templates');
     // Add templates common to all template types
@@ -97,13 +107,17 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     if (feApp.appOptions?.typescript === true) {
         ignore = getTypeScriptIgnoreGlob(feApp, coercedUI5Version);
     }
-    
-    const { uShellBootstrapResourceUrl, uiBootsrapResourceUrl } = getResourceUrlsForUi5Bootstrap(isEdmxProjectType, feApp.ui5?.frameworkUrl, feApp.ui5?.version);
+    // Get the resource URLs for the UShell bootstrap and UI bootstrap based on the project type and UI5 framework details
+    const { uShellBootstrapResourceUrl, uiBootsrapResourceUrl } = getResourceUrlsForUi5Bootstrap(
+        isEdmxProjectType, 
+        feApp.ui5?.frameworkUrl, 
+        feApp.ui5?.version
+    );
     const appConfig = {
         ...feApp,
         uShellBootstrapResourceUrl,
         uiBootsrapResourceUrl 
-    }
+    };
     fs.copyTpl(
         join(rootTemplatesPath, 'common', 'add', '**/*.*'),
         basePath,
@@ -121,7 +135,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     // Extend common files
     const packagePath = join(basePath, 'package.json');
     
-    if(isEdmxProjectType) {
+    if (isEdmxProjectType) {
         // Extend package.json
         fs.extendJSON(
             packagePath,
@@ -130,8 +144,8 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     } else {
         // Add deploy-config script for CAP projects
         fs.extendJSON(packagePath, {
-            "scripts": {
-                "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf"
+            'scripts': {
+                'deploy-config': "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf"
             }
         });
     }

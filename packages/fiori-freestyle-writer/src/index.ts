@@ -38,6 +38,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     const tmplPath = join(__dirname, '..', 'templates');
     const ignore = [isTypeScriptEnabled ? '**/*.js' : '**/*.ts'];
     
+    // Get the resource URLs for the UShell bootstrap and UI bootstrap based on the project type and UI5 framework details
     const { uShellBootstrapResourceUrl, uiBootsrapResourceUrl } = getResourceUrlsForUi5Bootstrap(isEdmxProjectType, ffApp.ui5?.frameworkUrl, ffApp.ui5?.version);
     const appConfig = {
         ...ffApp,
