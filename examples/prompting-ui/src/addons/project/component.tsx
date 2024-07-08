@@ -82,23 +82,24 @@ export const ProjectPathForm = memo(() => {
         if (message) {
             setMessage('');
         }
+        const { target } = event;
         if (
-            'value' in event.target &&
-            'name' in event.target &&
-            typeof event.target.value === 'string' &&
-            typeof event.target.name === 'string'
+            'value' in target &&
+            'name' in target &&
+            typeof target.value === 'string' &&
+            typeof target.name === 'string'
         ) {
-            const name = event.target.name;
+            const { name, value } = target;
             setPendingApp({
                 ...pendingApp,
-                [name]: event.target.value
+                [name]: value
             });
         }
     };
     // Submit project path with pending path or passed path
-    const onSubmit = (_event?: React.MouseEventHandler, submitPath = pendingPath) => {
+    const onSubmit = (_event?: React.MouseEventHandler, application: ApplicationInformation = pendingApp) => {
         setBusy(true);
-        updateProjectPath(submitPath)
+        updateProjectPath(application)
             .then((payload) => {
                 const { saved, application, message } = payload;
                 if (saved && application) {
@@ -115,7 +116,10 @@ export const ProjectPathForm = memo(() => {
     };
     // Reset project path to default mock path
     const onReset = () => {
-        onSubmit(undefined, '');
+        onSubmit(undefined, {
+            projectPath: '',
+            appId: ''
+        });
     };
     // Submit form when 'Enter' key is pressed
     const onKeyPress = (event: React.KeyboardEvent) => {
@@ -142,9 +146,8 @@ export const ProjectPathForm = memo(() => {
                     />
                     <Form.Button onClick={onReset}>Reset to default</Form.Button>
                 </Form.Field>
-                <Form.Field label="App Folder(CAP project only)">
+                <Form.Field label="App Folder(CAP only)">
                     <Form.Input rev="" size="100%" value={pendingApp.appId} name="appId" onChange={onPathInput} />
-                    <Form.Button onClick={onReset}>Reset to default</Form.Button>
                 </Form.Field>
                 <div style={{ padding: '15px 0 0 130px' }}>
                     <Form.Button

@@ -273,11 +273,11 @@ export function getApplication(): Promise<ApplicationInformation> {
  * @param path New path to project
  * @returns Update result information.
  */
-export function updateProjectPath(path: string): Promise<UpdateProjectPathResultPayload> {
+export function updateProjectPath(application: ApplicationInformation): Promise<UpdateProjectPathResultPayload> {
     return new Promise((resolve) => {
         const action: UpdateProjectPath = {
             type: UPDATE_PROJECT_PATH,
-            path
+            application
         };
         sendMessage(action);
         const handleMessage = (responseAction: Actions) => {
