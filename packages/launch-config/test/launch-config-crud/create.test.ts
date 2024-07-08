@@ -31,7 +31,7 @@ describe('create', () => {
             })
         };
         const launchJSONPath = join(TestPaths.tmpDir, '.vscode', 'launch.json');
-        expect(result.exists(launchJSONPath));
+        expect(result.exists(launchJSONPath)).toBe(true);
         expect(result.readJSON(launchJSONPath)).toStrictEqual({
             version: '0.2.0',
             configurations: [
@@ -75,7 +75,7 @@ describe('create', () => {
                 runnableId: join(TestPaths.tmpDir, 'fe-project')
             })
         };
-        expect(result.exists(launchJSONPath));
+        expect(result.exists(launchJSONPath)).toBe(true);
         expect(result.readJSON(launchJSONPath)).toStrictEqual({
             version: '0.2.0',
             configurations: [

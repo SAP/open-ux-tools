@@ -9,15 +9,13 @@ export {
     getAllLaunchConfigs,
     getLaunchConfigByName
 } from './launch-config-crud/read';
-export { traverseAndModifyLaunchConfig, updateLaunchConfig } from './launch-config-crud/update';
+export { updateLaunchConfig } from './launch-config-crud/update';
 export {
     buildUI5Option,
     getUI5VersionUri,
     getIndexOfArgument,
-    mergeArgs,
     getFioriOptions,
-    generateNewFioriLaunchConfig,
-    parseArguments
+    generateNewFioriLaunchConfig
 } from './launch-config-crud/utils';
 export { updateLaunchJSON } from './launch-config-crud/writer';
 export { getDefaultLaunchConfigOptionsForProject } from './project-discovery/project';

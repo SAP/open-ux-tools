@@ -31,7 +31,7 @@ type UpdateCallback = (
  * @param initialPath - intial {@linkcode JSONPath} of the object to be traversed.
  * @returns void.
  */
-export async function traverseAndModifyLaunchConfig(
+async function traverseAndModifyLaunchConfig(
     obj: any,
     filePath: string,
     originalJSON: Node | undefined,
