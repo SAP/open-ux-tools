@@ -1,4 +1,3 @@
-import { AuthenticationType } from '@sap-ux/store';
 import type {
     FioriToolsProxyConfigBackend,
     CustomMiddleware,
@@ -39,7 +38,7 @@ export function getBackendComments(
 ): NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[] {
     const comment = [];
 
-    if (backend.authenticationType === AuthenticationType.ReentranceTicket) {
+    if (backend.authenticationType === 'reentranceTicket') {
         comment.push({
             path: `configuration.backend.${index}.authenticationType`,
             comment: ' SAML support for vscode',
@@ -94,7 +93,7 @@ export function getFioriToolsProxyMiddlewareConfig(
             path: ui5.path ?? ['/resources', '/test-resources'],
             url: ui5.url ?? 'https://ui5.sap.com'
         };
-        if (ui5.version) {
+        if (ui5.version !== undefined) {
             fioriToolsProxy.configuration['ui5'].version = ui5.version;
         }
         if (ui5.directLoad) {

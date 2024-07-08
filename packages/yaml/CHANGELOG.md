@@ -1,5 +1,17 @@
 # @sap-ux/yaml
 
+## 0.16.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+## 0.15.1
+
+### Patch Changes
+
+-   399d2ad8: adds new abap deploy config writer
+
 ## 0.15.0
 
 ### Minor Changes

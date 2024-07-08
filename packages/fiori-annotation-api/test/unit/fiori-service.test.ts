@@ -7,7 +7,7 @@ import { create as createEditor } from 'mem-fs-editor';
 
 import type { Project } from '@sap-ux/project-access';
 
-import type { AnnotationRecord, Collection, RawAnnotation } from '@sap-ux/vocabularies-types';
+import type { AnnotationRecord, Collection, PropertyPathExpression, RawAnnotation } from '@sap-ux/vocabularies-types';
 import { getProject } from '@sap-ux/project-access';
 
 import type { Change, DeleteChange, InsertAnnotationChange, TextFile } from '../../src/types';
@@ -69,6 +69,7 @@ const PHONE_TYPE_CELL = `${COMMUNICATION}.PhoneType/cell`;
 const UI = 'com.sap.vocabularies.UI.v1';
 const COMMON = 'com.sap.vocabularies.Common.v1';
 const LINE_ITEM = `${UI}.LineItem`;
+const SELECTION_FIELDS = `${UI}.SelectionFields`;
 const CHART = `${UI}.Chart`;
 const CHART_TYPE_BAR = `${UI}.ChartType/Bar`;
 const CHART_TYPE_COLUMN = `${UI}.ChartType/Column`;
@@ -251,13 +252,18 @@ function createVolume(root: string): Editor {
     return editor;
 }
 
-function createLineItem(uri: string, collection: AnnotationRecord[], qualifier?: string): InsertAnnotationChange {
+function createLineItem(
+    uri: string,
+    collection: AnnotationRecord[],
+    qualifier?: string,
+    target = targetName
+): InsertAnnotationChange {
     return {
         kind: ChangeType.InsertAnnotation,
         uri,
         content: {
             type: 'annotation',
-            target: targetName,
+            target,
             value: {
                 term: LINE_ITEM,
                 qualifier,
@@ -266,6 +272,27 @@ function createLineItem(uri: string, collection: AnnotationRecord[], qualifier?:
         }
     };
 }
+
+function createSelectionFields(
+    uri: string,
+    collection: PropertyPathExpression[],
+    qualifier?: string
+): InsertAnnotationChange {
+    return {
+        kind: ChangeType.InsertAnnotation,
+        uri,
+        content: {
+            type: 'annotation',
+            target: targetName,
+            value: {
+                term: SELECTION_FIELDS,
+                qualifier,
+                collection
+            }
+        }
+    };
+}
+
 function createLineItemWithAnnotations(
     uri: string,
     collection: AnnotationRecord[],
@@ -277,9 +304,8 @@ function createLineItemWithAnnotations(
     return change;
 }
 
-function createDataField(value = 'path', annotations: RawAnnotation[] = []): AnnotationRecord {
-    return {
-        type: DATA_FIELD_TYPE,
+function createDataField(value = 'path', annotations: RawAnnotation[] = [], type = true): AnnotationRecord {
+    const record: AnnotationRecord = {
         propertyValues: [
             {
                 name: 'Value',
@@ -291,6 +317,10 @@ function createDataField(value = 'path', annotations: RawAnnotation[] = []): Ann
         ],
         annotations
     };
+    if (type) {
+        record.type = DATA_FIELD_TYPE;
+    }
+    return record;
 }
 function createDataWithLabel(value = 'sample'): AnnotationRecord {
     return {
@@ -868,6 +898,27 @@ describe('fiori annotation service', () => {
                     }
                 ]
             });
+
+            createEditTestCase({
+                name: 'delete and insert in the same target',
+                projectTestModels: TEST_TARGETS,
+                getInitialChanges: (files) => [
+                    createLineItem(files.annotations, [createDataWithLabel('one')], 'test0', TARGET_INCIDENTS)
+                ],
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.Delete,
+                        reference: {
+                            target: TARGET_INCIDENTS,
+                            term: `${UI}.LineItem`,
+                            qualifier: 'test0'
+                        },
+                        uri: files.annotations,
+                        pointer: ''
+                    },
+                    createLineItem(files.annotations, [], 'test1', TARGET_INCIDENTS)
+                ]
+            });
         });
 
         describe('embedded annotation', () => {
@@ -1259,6 +1310,52 @@ describe('fiori annotation service', () => {
                     }
                 ]
             });
+
+            createEditTestCase({
+                name: 'update value to null',
+                projectTestModels: TEST_TARGETS,
+                getInitialChanges: (files) => [
+                    {
+                        kind: ChangeType.InsertAnnotation,
+                        uri: files.annotations,
+                        content: {
+                            type: 'annotation',
+                            target: targetName,
+                            value: {
+                                term: DATA_POINT,
+                                record: {
+                                    propertyValues: [
+                                        {
+                                            name: 'Value',
+                                            value: {
+                                                type: 'String',
+                                                String: 'testString'
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                ],
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.Update,
+                        reference: {
+                            target: targetName,
+                            term: DATA_POINT
+                        },
+                        uri: files.annotations,
+                        pointer: 'record/propertyValues/0/value',
+                        content: {
+                            type: 'expression',
+                            value: {
+                                type: 'Null'
+                            }
+                        }
+                    }
+                ]
+            });
             createEditTestCase({
                 name: "update propertyValue value 'string' value",
                 projectTestModels: TEST_TARGETS,
@@ -1436,6 +1533,110 @@ describe('fiori annotation service', () => {
                                 }
                             }
                         }
+                    }
+                ]
+            });
+
+            // relevant only for cds
+            createEditTestCase({
+                name: 'in record consider $Type',
+                projectTestModels: TEST_TARGETS.filter((target) => target === PROJECTS.V4_CDS_START),
+                getInitialChanges: (files) => [
+                    createLineItem(files.annotations, [createDataField('path'), createDataField('path')])
+                ],
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.Insert,
+                        reference: {
+                            target: targetName,
+                            term: LINE_ITEM
+                        },
+                        uri: files.annotations,
+                        pointer: 'collection/0/propertyValues',
+                        content: {
+                            type: 'property-value',
+                            value: {
+                                name: 'Label',
+                                value: {
+                                    type: 'String',
+                                    String: 'Test'
+                                }
+                            }
+                        },
+                        index: 0 // adjusts index if $Type/$value/$edmJson is found
+                    },
+                    {
+                        kind: ChangeType.InsertEmbeddedAnnotation,
+                        reference: {
+                            target: targetName,
+                            term: LINE_ITEM
+                        },
+                        uri: files.annotations,
+                        pointer: 'collection/1/annotations',
+                        content: {
+                            type: 'embedded-annotation',
+                            value: {
+                                term: `${UI}.Importance`,
+                                value: {
+                                    type: 'String',
+                                    String: 'Test'
+                                }
+                            }
+                        },
+                        index: 0 // adjusts index if $Type/$value/$edmJson is found
+                    }
+                ]
+            });
+
+            createEditTestCase({
+                name: 'in record without type',
+                projectTestModels: TEST_TARGETS,
+                getInitialChanges: (files) => [
+                    createLineItem(files.annotations, [
+                        createDataField('path', [], false),
+                        createDataField('path', [], false)
+                    ])
+                ],
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.Insert,
+                        reference: {
+                            target: targetName,
+                            term: LINE_ITEM
+                        },
+                        uri: files.annotations,
+                        pointer: 'collection/0/propertyValues',
+                        content: {
+                            type: 'property-value',
+                            value: {
+                                name: 'Label',
+                                value: {
+                                    type: 'String',
+                                    String: 'Test'
+                                }
+                            }
+                        },
+                        index: 0 // index not adjusted as $Type/$value/$edmJson not found
+                    },
+                    {
+                        kind: ChangeType.InsertEmbeddedAnnotation,
+                        reference: {
+                            target: targetName,
+                            term: LINE_ITEM
+                        },
+                        uri: files.annotations,
+                        pointer: 'collection/1/annotations',
+                        content: {
+                            type: 'embedded-annotation',
+                            value: {
+                                term: `${UI}.Importance`,
+                                value: {
+                                    type: 'String',
+                                    String: 'Test'
+                                }
+                            }
+                        },
+                        index: 0 // index not adjusted as $Type/$value/$edmJson not found
                     }
                 ]
             });
@@ -1631,6 +1832,33 @@ describe('fiori annotation service', () => {
                             type: 'expression',
                             value: { type: 'Path', Path: 'Test' }
                         }
+                    }
+                ]
+            });
+
+            createEditTestCase({
+                name: 'path in collection based on index',
+                projectTestModels: TEST_TARGETS,
+                getInitialChanges: (files) => [
+                    createSelectionFields(files.annotations, [{ type: 'PropertyPath', PropertyPath: 'path1' }])
+                ],
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.Insert,
+                        reference: {
+                            target: targetName,
+                            term: SELECTION_FIELDS
+                        },
+                        uri: files.annotations,
+                        pointer: '/collection',
+                        content: {
+                            type: 'expression',
+                            value: {
+                                type: 'PropertyPath',
+                                PropertyPath: 'path2'
+                            }
+                        },
+                        index: 0
                     }
                 ]
             });
@@ -2179,9 +2407,9 @@ describe('fiori annotation service', () => {
             });
         });
 
-        describe('PropertyValue - PropertyPath namespace alias', () => {
+        describe('PropertyValue - PropertyPath', () => {
             createEditTestCase({
-                name: 'value',
+                name: 'namespace alias',
                 projectTestModels: TEST_TARGETS,
                 getInitialChanges: (files) => [
                     {
@@ -2224,6 +2452,90 @@ describe('fiori annotation service', () => {
                             type: 'primitive',
                             expressionType: 'AnnotationPath',
                             value: 'incidentFlow/@com.sap.vocabularies.UI.v1.PresentationVariant#testsection'
+                        }
+                    }
+                ]
+            });
+
+            createEditTestCase({
+                name: 'replace text content',
+                projectTestModels: TEST_TARGETS.filter((target) => target === PROJECTS.V4_XML_START),
+                getInitialChanges: (files) => [
+                    {
+                        kind: ChangeType.InsertAnnotation,
+                        uri: files.annotations,
+                        content: {
+                            target: TARGET_INCIDENTS,
+                            type: 'annotation',
+                            value: {
+                                term: SELECTION_FIELDS,
+                                qualifier: 'abc',
+                                collection: [
+                                    {
+                                        PropertyPath: 'BookingFee',
+                                        type: 'PropertyPath'
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ],
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.Update,
+                        reference: {
+                            target: TARGET_INCIDENTS,
+                            term: SELECTION_FIELDS,
+                            qualifier: 'abc'
+                        },
+                        uri: files.annotations,
+                        pointer: '/collection/0/PropertyPath',
+                        content: {
+                            type: 'primitive',
+                            expressionType: 'PropertyPath',
+                            value: 'createdBy'
+                        }
+                    }
+                ]
+            });
+
+            createEditTestCase({
+                name: 'change element',
+                projectTestModels: TEST_TARGETS.filter((target) => target === PROJECTS.V4_XML_START),
+                getInitialChanges: (files) => [
+                    {
+                        kind: ChangeType.InsertAnnotation,
+                        uri: files.annotations,
+                        content: {
+                            target: TARGET_INCIDENTS,
+                            type: 'annotation',
+                            value: {
+                                term: SELECTION_FIELDS,
+                                qualifier: 'abc',
+                                collection: [
+                                    {
+                                        PropertyPath: 'BookingFee',
+                                        type: 'PropertyPath'
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ],
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.Update,
+                        reference: {
+                            target: TARGET_INCIDENTS,
+                            term: SELECTION_FIELDS,
+                            qualifier: 'abc'
+                        },
+                        uri: files.annotations,
+                        pointer: '/collection/0/PropertyPath',
+                        content: {
+                            type: 'primitive',
+                            expressionType: 'AnnotationPath',
+                            value: 'createdBy'
                         }
                     }
                 ]

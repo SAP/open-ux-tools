@@ -11,7 +11,8 @@ import type {
     WorklistSettings
 } from '../types';
 import { TableSelectionMode, TableType, TemplateType } from '../types';
-import { getBaseComponent, getUi5Libs, TemplateTypeAttributes } from './templateAttributes';
+import { getBaseComponent, getTemplateUi5Libs, TemplateTypeAttributes } from './templateAttributes';
+import { getAnnotationV4Libs } from './annotationReuseLibs';
 
 const defaultModelName = 'mainModel'; // UI5 default model name is '' but some floorplans require a named default model
 
@@ -65,6 +66,30 @@ export function setDefaultTemplateSettings<T extends {}>(template: Template<T>, 
 }
 
 /**
+ * Gets the required UI5 libs for the specified template type and OData version.
+ *
+ * @param type - The template type of the required base component
+ * @param version - The odata service version determines the appropriate base component to use
+ * @param metadata - metadata string to be checked for specific annotations
+ * @param ui5Libs - ui5 libs
+ * @returns The UI5 libs required by the specified template type and OData version and UI5 annotation libs
+ */
+export function getUi5Libs(
+    type: TemplateType,
+    version: OdataVersion,
+    metadata?: string,
+    ui5Libs?: string | string[]
+): string[] {
+    const templateLibs = getTemplateUi5Libs(type, version);
+    if (version === OdataVersion.v4 && metadata) {
+        const annotationLibs = getAnnotationV4Libs(metadata);
+        return [...templateLibs, ...annotationLibs].concat(ui5Libs ?? []);
+    } else {
+        return [...templateLibs].concat(ui5Libs ?? []);
+    }
+}
+
+/**
  * Sets defaults for the specified Fiori elements application.
  *
  * @param feApp - Fiori elements application config
@@ -89,7 +114,7 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
     // Dups will be removed by call to `generateUI5Project`
     feApp.ui5 = {
         ...feApp.ui5,
-        ui5Libs: getUi5Libs(feApp.template.type, feApp.service.version)?.concat(feApp.ui5?.ui5Libs ?? [])
+        ui5Libs: getUi5Libs(feApp.template.type, feApp.service.version, feApp.service.metadata, feApp.ui5?.ui5Libs)
     };
 
     // Assign a default annotation name if the service type is EDMX and no local annotation name is provided

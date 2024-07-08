@@ -1,11 +1,12 @@
-import type { AliasInformation, AnnotationFile, Element } from '@sap-ux/odata-annotation-core-types';
+import type { AliasInformation, AnnotationFile, Element, ElementChild } from '@sap-ux/odata-annotation-core-types';
 import {
     ELEMENT_TYPE,
     ATTRIBUTE_TYPE,
     createElementNode,
     createTextNode,
     Edm,
-    createTarget
+    createTarget,
+    TEXT_TYPE
 } from '@sap-ux/odata-annotation-core-types';
 
 import {
@@ -206,7 +207,8 @@ export class ChangeConverter {
             uri: change.uri,
             target: change.reference.target,
             element: convertAnnotationToInternal(content.value, aliasInfo),
-            pointer: targetPointer + internalPointer
+            pointer: targetPointer + internalPointer,
+            index: change.index
         };
         this.annotationFileChanges.push(internal);
     }
@@ -214,7 +216,7 @@ export class ChangeConverter {
     private convertInsert(
         file: AnnotationFile,
         fileMergeMaps: Record<string, Record<string, string>>,
-        aliasInfoMod: AliasInformation,
+        aliasInfo: AliasInformation,
         change: InsertChange | UpdateChange
     ): void {
         const { reference, content } = change;
@@ -223,21 +225,22 @@ export class ChangeConverter {
             targetPointer: pointer,
             internalPointer
         } = findAnnotationByReference(
-            aliasInfoMod,
+            aliasInfo,
             file,
             fileMergeMaps[change.uri],
             reference,
             change.pointer,
             this.splitAnnotationSupport
         );
+        const index = change.kind === ChangeType.Insert ? change.index : undefined;
         if (content.type === 'record') {
             const internal: InsertElement = {
                 type: INSERT_ELEMENT,
                 uri: change.uri,
                 target: change.reference.target,
                 pointer: pointer + internalPointer,
-                element: convertRecordToInternal(aliasInfoMod, content.value),
-                index: change.kind === ChangeType.Insert ? change.index : undefined
+                element: convertRecordToInternal(aliasInfo, content.value),
+                index
             };
             this.annotationFileChanges.push(internal);
         } else if (content.type === 'property-value') {
@@ -246,8 +249,8 @@ export class ChangeConverter {
                 uri: change.uri,
                 target: change.reference.target,
                 pointer: pointer + internalPointer,
-                element: convertPropertyValueToInternal(aliasInfoMod, content.value),
-                index: change.kind === ChangeType.Insert ? change.index : undefined
+                element: convertPropertyValueToInternal(aliasInfo, content.value),
+                index
             };
             this.annotationFileChanges.push(internal);
         } else if (content.type === 'collection') {
@@ -256,14 +259,14 @@ export class ChangeConverter {
                 uri: change.uri,
                 target: change.reference.target,
                 pointer: pointer + internalPointer,
-                element: convertCollectionToInternal(aliasInfoMod, content.value),
-                index: change.kind === ChangeType.Insert ? change.index : undefined
+                element: convertCollectionToInternal(aliasInfo, content.value),
+                index
             };
             this.annotationFileChanges.push(internal);
         } else if (content.type === 'expression') {
-            this.convertInsertExpression(file, aliasInfoMod, pointer + internalPointer, change, content);
+            this.convertInsertExpression(file, aliasInfo, pointer + internalPointer, change, content, index);
         } else if (content.type === 'primitive') {
-            this.convertInsertPrimitive(element, aliasInfoMod, pointer, internalPointer, change, content);
+            this.convertInsertPrimitive(element, aliasInfo, pointer, internalPointer, change, content, index);
         }
     }
 
@@ -272,7 +275,8 @@ export class ChangeConverter {
         aliasInfoMod: AliasInformation,
         pointer: string,
         change: InsertChange | UpdateChange,
-        content: ExpressionModificationContent | ExpressionUpdateContent
+        content: ExpressionModificationContent | ExpressionUpdateContent,
+        index: number | undefined
     ): void {
         const node = getGenericNodeFromPointer(file, pointer);
         if (node?.type === ELEMENT_TYPE && node.name === Edm.Collection) {
@@ -283,7 +287,8 @@ export class ChangeConverter {
                     uri: change.uri,
                     target: change.reference.target,
                     pointer: pointer,
-                    element: expression
+                    element: expression,
+                    index
                 };
                 this.annotationFileChanges.push(internal);
             }
@@ -301,7 +306,8 @@ export class ChangeConverter {
                         uri: change.uri,
                         target: change.reference.target,
                         pointer: pointer,
-                        element: expression
+                        element: expression,
+                        index
                     };
                     this.annotationFileChanges.push(internal);
                     return;
@@ -327,7 +333,8 @@ export class ChangeConverter {
         pointer: string,
         internalPointer: string,
         change: InsertChange | UpdateChange,
-        content: PrimitiveModificationContent
+        content: PrimitiveModificationContent,
+        index: number | undefined
     ): void {
         if (content.expressionType === ExpressionType.Unknown) {
             const attributePointer = convertPointerInAnnotationToInternal(
@@ -353,7 +360,8 @@ export class ChangeConverter {
                 uri: change.uri,
                 target: change.reference.target,
                 pointer: pointer + internalPointer,
-                element: createElementNode({ name: Edm.Null })
+                element: createElementNode({ name: Edm.Null }),
+                index
             };
             this.annotationFileChanges.push(internal);
         } else if (typeof content.expressionType === 'string') {
@@ -465,22 +473,22 @@ export class ChangeConverter {
                 this.annotationFileChanges.push(internalChange);
             }
         } else if (content.type === 'expression') {
-            this.convertUpdateExpression(file, aliasInfo, content, pointer + internalPointer, valueType);
+            this.convertUpdateExpression(
+                file,
+                aliasInfo,
+                content,
+                pointer + internalPointer,
+                valueType,
+                reference.target
+            );
         } else if (content.type === 'primitive' && content.value !== undefined) {
             const internalPointerForPrimitiveValues = convertPointerInAnnotationToInternal(
                 element,
                 change.pointer,
                 content.expressionType
             );
-            const newValue = convertPrimitiveValueToInternal(content.expressionType ?? '', content.value, aliasInfo);
-
-            const internal: ReplaceText = {
-                type: REPLACE_TEXT,
-                uri: change.uri,
-                pointer: pointer + internalPointerForPrimitiveValues + '/text',
-                text: createTextNode(newValue)
-            };
-            this.annotationFileChanges.push(internal);
+            const replaceTextPointer = pointer + internalPointerForPrimitiveValues + '/text';
+            this.convertUpdatePrimitiveValue(file, aliasInfo, content, pointer + internalPointer, replaceTextPointer);
         } else {
             const element = convertChangeToElement(aliasInfo, file, change);
             if (element) {
@@ -553,7 +561,8 @@ export class ChangeConverter {
         aliasInfo: AliasInformation,
         content: ExpressionUpdateContent,
         pointer: string,
-        valueType: string | undefined
+        valueType: string | undefined,
+        targetName: string
     ): void {
         const rawPrimitiveValue = this.getExpressionValue(content);
         const newValue = convertPrimitiveValueToInternal(content.value.type, rawPrimitiveValue, aliasInfo);
@@ -581,49 +590,141 @@ export class ChangeConverter {
                 this.annotationFileChanges.push(internalChange);
             } else if (node.attributes[type]) {
                 // attribute notation
-                const internalChange: ReplaceAttribute = {
+                this.annotationFileChanges.push({
                     type: REPLACE_ATTRIBUTE,
                     uri: file.uri,
                     pointer: pointer + `/attributes/${type}`,
                     newAttributeName: content.value.type,
                     newAttributeValue: newValue
-                };
-                this.annotationFileChanges.push(internalChange);
+                });
             } else if (node.name === valueType) {
                 // element notation
+                const childContent: ElementChild[] = [];
+                if (content.value.type !== Edm.Null) {
+                    childContent.push(createTextNode(newValue));
+                }
                 const internalChange: ReplaceElement = {
                     type: REPLACE_ELEMENT,
                     uri: file.uri,
                     pointer: pointer,
                     newElement: createElementNode({
                         name: content.value.type,
-                        content: [createTextNode(newValue)]
+                        content: childContent
                     })
                 };
                 this.annotationFileChanges.push(internalChange);
             }
         } else if (node?.type === ATTRIBUTE_TYPE) {
-            if (content.previousType === undefined && content.value.type === valueType) {
-                // attribute notation
-                const internalChange: UpdateAttributeValue = {
+            this.convertUpdateExpressionForAttrributeType(file.uri, targetName, valueType, content, pointer, newValue);
+        }
+    }
+
+    private convertUpdateExpressionForAttrributeType(
+        fileUri: string,
+        targetName: string,
+        valueType: string | undefined,
+        content: ExpressionUpdateContent,
+        pointer: string,
+        newValue: string
+    ): void {
+        if (content.previousType === undefined && content.value.type === valueType) {
+            // attribute notation
+            const internalChange: UpdateAttributeValue = {
+                type: UPDATE_ATTRIBUTE_VALUE,
+                uri: fileUri,
+                pointer: pointer,
+                newValue
+            };
+            this.annotationFileChanges.push(internalChange);
+        } else if (content.value.type === Edm.Null) {
+            this.annotationFileChanges.push({
+                type: DELETE_ATTRIBUTE,
+                uri: fileUri,
+                pointer: pointer
+            });
+            this.annotationFileChanges.push({
+                type: INSERT_ELEMENT,
+                uri: fileUri,
+                target: targetName,
+                pointer: pointer.split('/').slice(0, -2).join('/'),
+                element: createElementNode({ name: Edm.Null })
+            });
+        } else {
+            // attribute notation
+            const internalChange: ReplaceAttribute = {
+                type: REPLACE_ATTRIBUTE,
+                uri: fileUri,
+                pointer: pointer,
+                newAttributeName: content.value.type,
+                newAttributeValue: newValue
+            };
+            this.annotationFileChanges.push(internalChange);
+        }
+    }
+
+    private convertUpdatePrimitiveValue(
+        file: AnnotationFile,
+        aliasInfo: AliasInformation,
+        content: PrimitiveModificationContent,
+        pointer: string,
+        replaceTextPointer: string
+    ) {
+        const newValue = convertPrimitiveValueToInternal(content.expressionType ?? '', content.value, aliasInfo);
+        const node = getGenericNodeFromPointer(file, pointer);
+        if (node?.type === TEXT_TYPE) {
+            const containerPointer = pointer.split('/').slice(0, -2).join('/');
+            const container = getGenericNodeFromPointer(file, containerPointer);
+            if (
+                container?.type === ELEMENT_TYPE &&
+                content.expressionType &&
+                container.name !== content.expressionType
+            ) {
+                const internal: ReplaceElement = {
+                    type: REPLACE_ELEMENT,
+                    uri: file.uri,
+                    pointer: containerPointer,
+                    newElement: createElementNode({
+                        name: content.expressionType,
+                        content: [createTextNode(newValue)]
+                    })
+                };
+                this.annotationFileChanges.push(internal);
+                return;
+            }
+        } else if (
+            node?.type === ELEMENT_TYPE &&
+            content.expressionType &&
+            replaceTextPointer.split('/').includes('attributes')
+        ) {
+            const oldAttributeName = replaceTextPointer.split('/').slice(-2)[0];
+            if (node.attributes[content.expressionType]) {
+                const internal: UpdateAttributeValue = {
                     type: UPDATE_ATTRIBUTE_VALUE,
                     uri: file.uri,
-                    pointer: pointer,
+                    pointer: `${pointer}/attributes/${content.expressionType}`,
                     newValue
                 };
-                this.annotationFileChanges.push(internalChange);
+                this.annotationFileChanges.push(internal);
+                return;
             } else {
-                // attribute notation
-                const internalChange: ReplaceAttribute = {
+                const internal: ReplaceAttribute = {
                     type: REPLACE_ATTRIBUTE,
                     uri: file.uri,
-                    pointer: pointer,
-                    newAttributeName: content.value.type,
+                    pointer: `${pointer}/attributes/${oldAttributeName}`,
+                    newAttributeName: content.expressionType,
                     newAttributeValue: newValue
                 };
-                this.annotationFileChanges.push(internalChange);
+                this.annotationFileChanges.push(internal);
+                return;
             }
         }
+        const internal: ReplaceText = {
+            type: REPLACE_TEXT,
+            uri: file.uri,
+            pointer: replaceTextPointer,
+            text: createTextNode(newValue)
+        };
+        this.annotationFileChanges.push(internal);
     }
 
     private convertMove(
@@ -690,30 +791,41 @@ export class ChangeConverter {
     }
 
     private getValueType(schemaProvider: SchemaProvider, change: UpdateChange): string | undefined {
-        const { reference, content, uri, pointer } = change;
+        const { content } = change;
         if (content.type === 'expression') {
             if (content.previousType) {
                 return content.previousType;
             }
+            return this.getValueTypeFromSchema(schemaProvider, change);
+        }
+        // else if (content.type === 'primitive') {
+        //     if (content.expressionType) {
+        //         return content.expressionType;
+        //     }
+        //     return this.getValueTypeFromSchema(schemaProvider, change);
+        // }
+        return undefined;
+    }
 
-            const annotationLists = schemaProvider().schema.annotations[uri] ?? [];
-            const annotation = findAnnotation(annotationLists, reference);
-            if (!annotation) {
-                const refString = annotationReferenceToString(reference, uri);
-                throw new ApiError(`Could not find annotation '${refString}' in file '${uri}'.`, ApiErrorCode.General);
-            }
+    private getValueTypeFromSchema(schemaProvider: SchemaProvider, change: UpdateChange): string | undefined {
+        const { reference, uri, pointer } = change;
+        const annotationLists = schemaProvider().schema.annotations[uri] ?? [];
+        const annotation = findAnnotation(annotationLists, reference);
+        if (!annotation) {
+            const refString = annotationReferenceToString(reference, uri);
+            throw new ApiError(`Could not find annotation '${refString}' in file '${uri}'.`, ApiErrorCode.General);
+        }
 
-            const node = getAvtNodeFromPointer(annotation, pointer);
-            if (!node) {
-                const refString = annotationReferenceToString(reference, uri);
-                throw new ApiError(
-                    `Could not resolve pointer '${pointer}' from annotation '${refString}'.`,
-                    ApiErrorCode.General
-                );
-            }
-            if (this.isExpression(node)) {
-                return node.type;
-            }
+        const node = getAvtNodeFromPointer(annotation, pointer);
+        if (!node) {
+            const refString = annotationReferenceToString(reference, uri);
+            throw new ApiError(
+                `Could not resolve pointer '${pointer}' from annotation '${refString}'.`,
+                ApiErrorCode.General
+            );
+        }
+        if (this.isExpression(node)) {
+            return node.type;
         }
         return undefined;
     }

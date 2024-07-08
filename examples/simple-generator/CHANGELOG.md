@@ -1,5 +1,118 @@
 # @sap-ux/generator-simple-fe
 
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [abf491a7]
+    -   @sap-ux/axios-extension@1.15.1
+    -   @sap-ux/system-access@0.5.1
+
+## 0.4.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/axios-extension@1.15.0
+    -   @sap-ux/btp-utils@0.15.0
+    -   @sap-ux/fiori-elements-writer@0.23.0
+    -   @sap-ux/fiori-freestyle-writer@0.23.0
+    -   @sap-ux/logger@0.6.0
+    -   @sap-ux/system-access@0.5.0
+
+## 0.3.86
+
+### Patch Changes
+
+-   Updated dependencies [cfe6da80]
+    -   @sap-ux/fiori-elements-writer@0.22.0
+
+## 0.3.85
+
+### Patch Changes
+
+-   Updated dependencies [4492fe10]
+    -   @sap-ux/axios-extension@1.14.4
+    -   @sap-ux/system-access@0.4.7
+
+## 0.3.84
+
+### Patch Changes
+
+-   Updated dependencies [d5d3626c]
+    -   @sap-ux/axios-extension@1.14.3
+    -   @sap-ux/system-access@0.4.6
+
+## 0.3.83
+
+### Patch Changes
+
+-   Updated dependencies [65bfb244]
+    -   @sap-ux/axios-extension@1.14.2
+    -   @sap-ux/system-access@0.4.5
+
+## 0.3.82
+
+### Patch Changes
+
+-   Updated dependencies [1a1baeb0]
+    -   @sap-ux/fiori-elements-writer@0.21.4
+    -   @sap-ux/fiori-freestyle-writer@0.22.15
+    -   @sap-ux/axios-extension@1.14.1
+    -   @sap-ux/system-access@0.4.4
+
+## 0.3.81
+
+### Patch Changes
+
+-   Updated dependencies [844e79c4]
+    -   @sap-ux/axios-extension@1.14.1
+    -   @sap-ux/system-access@0.4.4
+
+## 0.3.80
+
+### Patch Changes
+
+-   Updated dependencies [31cc53f8]
+    -   @sap-ux/axios-extension@1.14.0
+    -   @sap-ux/system-access@0.4.3
+
+## 0.3.79
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.13.1
+-   @sap-ux/system-access@0.4.2
+-   @sap-ux/fiori-elements-writer@0.21.3
+-   @sap-ux/fiori-freestyle-writer@0.22.14
+
+## 0.3.78
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.4.2
+
+## 0.3.77
+
+### Patch Changes
+
+-   Updated dependencies [dfeb3a6b]
+    -   @sap-ux/fiori-freestyle-writer@0.22.13
+    -   @sap-ux/fiori-elements-writer@0.21.2
+
+## 0.3.76
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.21.1
+-   @sap-ux/fiori-freestyle-writer@0.22.12
+-   @sap-ux/axios-extension@1.13.1
+-   @sap-ux/system-access@0.4.1
+
 ## 0.3.75
 
 ### Patch Changes

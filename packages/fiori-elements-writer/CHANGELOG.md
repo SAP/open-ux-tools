@@ -1,5 +1,66 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.23.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/fe-fpm-writer@0.25.0
+    -   @sap-ux/odata-service-writer@0.21.0
+    -   @sap-ux/ui5-application-writer@0.27.0
+    -   @sap-ux/ui5-config@0.23.0
+    -   @sap-ux/ui5-test-writer@0.4.0
+
+## 0.22.0
+
+### Minor Changes
+
+-   cfe6da80: Add a reuse library for UI.Note annotation
+
+## 0.21.4
+
+### Patch Changes
+
+-   1a1baeb0: Revert "feat(fiori-elements-writer): remove `sap.fe.templates` dependency
+-   Updated dependencies [1a1baeb0]
+    -   @sap-ux/fe-fpm-writer@0.24.16
+    -   @sap-ux/ui5-config@0.22.10
+    -   @sap-ux/odata-service-writer@0.20.5
+    -   @sap-ux/ui5-application-writer@0.26.18
+    -   @sap-ux/ui5-test-writer@0.3.3
+
+## 0.21.3
+
+### Patch Changes
+
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/ui5-config@0.22.9
+    -   @sap-ux/fe-fpm-writer@0.24.15
+    -   @sap-ux/odata-service-writer@0.20.4
+    -   @sap-ux/ui5-application-writer@0.26.17
+    -   @sap-ux/ui5-test-writer@0.3.3
+
+## 0.21.2
+
+### Patch Changes
+
+-   dfeb3a6b: Load i18n translations asynchronously to ensure proper initialization.
+
+## 0.21.1
+
+### Patch Changes
+
+-   Updated dependencies [a140cf8b]
+    -   @sap-ux/ui5-config@0.22.8
+    -   @sap-ux/odata-service-writer@0.20.3
+    -   @sap-ux/ui5-application-writer@0.26.16
+    -   @sap-ux/fe-fpm-writer@0.24.15
+    -   @sap-ux/ui5-test-writer@0.3.3
+
 ## 0.21.0
 
 ### Minor Changes

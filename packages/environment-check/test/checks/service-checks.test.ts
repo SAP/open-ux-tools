@@ -2,7 +2,8 @@ import {
     checkAtoCatalog,
     checkUi5AbapRepository,
     checkTransportRequests,
-    checkCatalogServices
+    checkCatalogServices,
+    getServiceProvider
 } from '../../src/checks/service-checks';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { Severity } from '../../src/types';
@@ -446,5 +447,29 @@ describe('Test service check functions', () => {
         expect(transportRequestResult.messages.length).toBe(3);
         expect(transportRequestResult.messages[1].severity).toBe(Severity.Warning);
         expect(transportRequestResult.messages[1].text).toBe(t('warning.guidedAnswersLink'));
+    });
+
+    test('getServiceProvider (abap on premise)', () => {
+        const endpoint = {
+            Name: 'ABAP_ON_PREM_SYSTEM',
+            Url: 'https://mockurl:8000',
+            Client: '001',
+            Scp: false,
+            Credentials: {
+                username: 'mockUser',
+                password: 'mockPassword'
+            }
+        };
+        const provider = getServiceProvider(endpoint);
+        expect(provider.defaults.auth).toEqual({ username: 'mockUser', password: 'mockPassword' });
+        expect(provider).toEqual(
+            expect.objectContaining({
+                defaults: expect.objectContaining({
+                    params: {
+                        'sap-client': '001'
+                    }
+                })
+            })
+        );
     });
 });

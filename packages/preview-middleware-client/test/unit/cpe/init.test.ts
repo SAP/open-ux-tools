@@ -72,7 +72,7 @@ describe('main', () => {
         attachSelectionChange,
         getSelection: jest.fn().mockReturnValue([{ setSelected: jest.fn() }, { setSelected: jest.fn() }]),
         attachUndoRedoStackModified: jest.fn(),
-        getFlexSettings: jest.fn().mockReturnValue({ layer: 'VENDOR', scenario: common.scenario.UiAdaptation }),
+        getFlexSettings: jest.fn().mockReturnValue({ layer: 'VENDOR', scenario: common.SCENARIO.UiAdaptation }),
         getRootControlInstance: jest.fn().mockReturnValue({
             getManifest: jest.fn().mockReturnValue({ 'sap.app': { id: 'testId' } })
         }),
@@ -109,7 +109,8 @@ describe('main', () => {
         expect(initOutlineSpy).toBeCalledWith(rta, sendActionMock);
     });
     test('init - rta exception', async () => {
-        initOutlineSpy.mockRejectedValue('error');
+        const error = new Error('Cannot init outline');
+        initOutlineSpy.mockRejectedValue(error);
         await init(rta);
         const callBackFn = spyPostMessage.mock.calls[0][1];
         const payload = {
@@ -139,6 +140,6 @@ describe('main', () => {
             payload: { saved: [], pending: [] }
         });
         expect(initOutlineSpy).toBeCalledWith(rta, sendActionMock);
-        expect(Log.error).toBeCalledWith('Error during initialization of Control Property Editor', 'error');
+        expect(Log.error).toBeCalledWith('Error during initialization of Control Property Editor', error);
     });
 });
