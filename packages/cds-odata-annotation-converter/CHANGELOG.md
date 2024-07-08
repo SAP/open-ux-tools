@@ -1,5 +1,18 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.3.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/cds-annotation-parser@0.2.0
+    -   @sap-ux/odata-annotation-core@0.2.0
+    -   @sap-ux/odata-vocabularies@0.4.0
+
 ## 0.2.9
 
 ### Patch Changes
