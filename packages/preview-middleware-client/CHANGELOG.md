@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.10.1
+
+### Patch Changes
+
+-   b2d5843: fix: Missing Scenario API in lower SAPUI5 versions
+
 ## 0.10.0
 
 ### Minor Changes
