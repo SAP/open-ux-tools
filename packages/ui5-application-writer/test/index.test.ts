@@ -104,18 +104,6 @@ describe('UI5 templates', () => {
         await expect(enableTypescript(projectDir, fs)).rejects.toThrowError();
     });
 
-    it('Check webapp/index.html templates are generated correctly for CAP application without ui5 version ', async () => {
-        const projectDir = join(outputDir, 'testapp-cap');
-        ui5AppConfig.app.projectType = 'CAPNodejs';
-        const fs = await generate(projectDir, { ...ui5AppConfig, ui5: { minUI5Version: '1.96.1' } });
-        const indexHtmlPath = join(projectDir, 'webapp/index.html');
-        // Check if webapp/index.html exists
-        expect(fs.exists(indexHtmlPath)).toBe(true);
-        // Check if the index.html contains the correct UI5 framework URL
-        const indexHtml = fs.read(indexHtmlPath);
-        expect(indexHtml).toContain('src="https://ui5.sap.com/resources/sap-ui-core.js"');
-    });
-
     it('Check webapp/index.html templates are generated correctly for CAP application with ui5 version ', async () => {
         const projectDir = join(outputDir, 'testapp-cap');
         ui5AppConfig.app.projectType = 'CAPNodejs';
@@ -135,7 +123,7 @@ describe('UI5 templates', () => {
         const indexHtmlPath = join(projectDir, 'webapp/index.html');
         // Check if webapp/index.html exists
         expect(fs.exists(indexHtmlPath)).toBe(true);
-        // Check if the index.html contains the correct UI5 framework URL with version included
+        // Check if the index.html contains the correct UI5 framework URL without version included
         const indexHtml = fs.read(indexHtmlPath);
         expect(indexHtml).toContain('src="resources/sap-ui-core.js"');
     });

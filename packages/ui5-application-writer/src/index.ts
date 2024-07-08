@@ -39,16 +39,16 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         ignore.push('**/gitignore.tmpl');
     }
 
-    // Determine the framework URL and version based on the project type, if project is not EDMX  include ui5App.ui5.frameworkUrl & ui5App.ui5.version
-    const frameworkUrl = !isEdmxProjectType && ui5App.ui5.frameworkUrl ? ui5App.ui5.frameworkUrl + '/' : undefined;
-    const version = !isEdmxProjectType && ui5App.ui5.version ? ui5App.ui5.version + '/' : undefined;
+    // Construct resourcePath based on project type and frameworkUrl availability
+    const ui5ResourceUrl = isEdmxProjectType
+        // If the project is of type EDMXBackend, use a relative resource path
+        ? 'resources/sap-ui-core.js'
+        // If the project is CAP, construct the resource URL using frameworkUrl, version, and the resource filename
+        : `${ui5App.ui5.frameworkUrl}/${ui5App.ui5.version}/resources/sap-ui-core.js`;
+
     const templateOptions = {
         ...ui5App,
-        ui5: {
-            ...ui5App.ui5,
-            frameworkUrl,
-            version
-        }
+        ui5ResourceUrl
     }
     fs.copyTpl(join(tmplPath, 'core', '**/*.*'), join(basePath), templateOptions, undefined, {
         globOptions: { dot: true, ignore },
