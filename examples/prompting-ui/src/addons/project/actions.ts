@@ -27,12 +27,15 @@ export async function handleAction(action: ProjectActions): Promise<ProjectActio
             if (action.path && !existsSync(newProjectPath)) {
                 message = 'Provided path does not exist';
             }
-            // Reset fs
             if (!message) {
-                setProjectPath(newProjectPath);
+                // Trigger validation to validate project path
+                message = await validateProject(newProjectPath);
+                // If no error update path
+                if (!message) {
+                    setProjectPath(newProjectPath);
+                }
             }
-            // Trigger validation to validate project path
-            await validateProject();
+
             responseAction = {
                 type: UPDATE_PROJECT_PATH_RESULT,
                 saved: !message,

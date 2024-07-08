@@ -50,16 +50,18 @@ const PromptsCodePreviewMap = {
 export class PromptsAPI {
     basePath: string;
     projectProvider: ProjectProvider;
+    appId?: string;
     fs: Editor;
 
     /**
      *
-     * @param basePath
+     * @param projectPath project path
      * @param projectProvider
-     * @param fs
+     * @param fs the file system object for reading files
+     * @param appId app id in CAP project
      */
-    constructor(basePath: string, projectProvider: ProjectProvider, fs: Editor) {
-        this.basePath = basePath;
+    constructor(projectPath: string, projectProvider: ProjectProvider, fs: Editor, appId?: string) {
+        this.basePath = projectPath;
         this.projectProvider = projectProvider;
         this.fs = fs;
     }
@@ -67,17 +69,18 @@ export class PromptsAPI {
     /**
      * Static method to initialize prompt api.
      *
-     * @param basePath application path
+     * @param projectPath project path
+     * @param appId app id in CAP project
      * @param fs the file system object for reading files
      * @returns Instance of prompt api.
      */
-    public static async init(basePath: string, fs?: Editor): Promise<PromptsAPI> {
+    public static async init(projectPath: string, appId?: string, fs?: Editor): Promise<PromptsAPI> {
         if (!fs) {
             fs = create(createStorage());
         }
-        const projectProvider = await ProjectProvider.createProject(basePath, fs);
+        const projectProvider = await ProjectProvider.createProject(projectPath, fs);
         await initI18n();
-        return new PromptsAPI(basePath, projectProvider, fs);
+        return new PromptsAPI(projectPath, projectProvider, fs);
     }
 
     /**

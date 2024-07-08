@@ -1,5 +1,4 @@
 import { join } from 'path';
-import { PromptsAPI } from '@sap-ux/fe-fpm-writer';
 import type { ChartPromptsAnswer, FilterBarPromptsAnswer, TablePromptsAnswer } from '@sap-ux/fe-fpm-writer';
 import { promisify } from 'util';
 import { create as createStorage } from 'mem-fs';
@@ -31,17 +30,11 @@ import type {
 } from '../../src/utils/types';
 import type { AddonActions } from '../addons/types';
 import { handleAction as handleAddonAction } from '../addons/project';
-import { existsSync } from 'fs';
 import { testAppPath, getProjectPath } from '../addons/project';
-import {
-    GET_PROJECT_PATH,
-    SET_PROJECT_PATH,
-    UPDATE_PROJECT_PATH,
-    UPDATE_PROJECT_PATH_RESULT,
-    VALIDATE_ANSWERS
-} from '../addons/project/types';
-import type { SetProjectPath, UpdateProjectPathResult } from '../addons/project/types';
+import { GET_PROJECT_PATH, SET_PROJECT_PATH, VALIDATE_ANSWERS } from '../addons/project/types';
+import type { SetProjectPath } from '../addons/project/types';
 import type { DynamicChoices } from '@sap-ux/ui-prompting';
+import { getPromptApi } from './api';
 
 const sampleAppPath = join(__dirname, '../../../fe-fpm-cli/sample/fe-app');
 
@@ -105,26 +98,6 @@ function sendMessage(action: Actions): void {
 }
 
 /**
- * Method validates current saved/stored project path.
- *
- * @returns "undefined" if project path is valid or error message if project path is invalid.
- */
-export const validateProject = async (): Promise<string | undefined> => {
-    try {
-        const currentAppPath = getProjectPath();
-        const promptsAPI = await PromptsAPI.init(currentAppPath);
-        // Call API to get table questions - it should validate of path is supported
-        const { questions } = await promptsAPI.getPrompts(SupportedBuildingBlocks.Table);
-        const entityQuestion = questions.find((question) => question.name === 'entity');
-        if (entityQuestion && 'choices' in entityQuestion && typeof entityQuestion.choices === 'function') {
-            await entityQuestion.choices({});
-        }
-    } catch (e) {
-        return `Error: ${e.message || e}`;
-    }
-};
-
-/**
  * Method handles passed action from UI.
  *
  * @param action Action to handle.
@@ -132,9 +105,8 @@ export const validateProject = async (): Promise<string | undefined> => {
 async function handleAction(action: Actions): Promise<void> {
     try {
         const fs = await getEditor();
-        let currentAppPath = getProjectPath();
-        // ToDo - why init on each action handling?
-        const promptsAPI = await PromptsAPI.init(currentAppPath, fs);
+        const currentAppPath = getProjectPath();
+        const promptsAPI = await getPromptApi(currentAppPath, fs, '');
         switch (action.type) {
             case GET_QUESTIONS: {
                 let responseAction: Actions | undefined;
@@ -201,37 +173,6 @@ async function handleAction(action: Actions): Promise<void> {
                 const responseAction: SetProjectPath = {
                     type: SET_PROJECT_PATH,
                     path: currentAppPath
-                };
-                sendMessage(responseAction);
-                break;
-            }
-            case UPDATE_PROJECT_PATH: {
-                const newProjectPath = action.path ? join(action.path) : testAppPath;
-                let message: string | undefined;
-                try {
-                    if (action.path && !existsSync(newProjectPath)) {
-                        message = 'Provided path does not exist';
-                    }
-                    // Reset fs
-                    if (!message) {
-                        currentAppPath = newProjectPath;
-                    }
-                    // Call API to get table questions - it should validate of path is supported
-                    const { questions } = await promptsAPI.getPrompts(SupportedBuildingBlocks.Table);
-                    const entityQuestion = questions.find((question) => question.name === 'entity');
-                    if (entityQuestion && 'choices' in entityQuestion && typeof entityQuestion.choices === 'function') {
-                        // ToDo - test if can be reusaded validateProject
-                        await entityQuestion.choices({});
-                    }
-                } catch (e) {
-                    message = `Error: ${e.message || e}`;
-                    console.log(e);
-                }
-                const responseAction: UpdateProjectPathResult = {
-                    type: UPDATE_PROJECT_PATH_RESULT,
-                    saved: !message,
-                    message,
-                    path: !message ? currentAppPath : undefined
                 };
                 sendMessage(responseAction);
                 break;
