@@ -881,7 +881,6 @@ annotate S.E with {
     };`
                 );
             });
-    
         });
         test('collection', async () => {
             const fixture = `Service S { entity E {}; };
