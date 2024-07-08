@@ -19,7 +19,8 @@ import {
     ProjectProvider,
     getAnnotationPathQualifiers,
     getAnnotationTermAlias,
-    getEntityTypes
+    getEntityTypes,
+    getMappedServiceName
 } from '../../../src/building-block/prompts/utils';
 import { FioriAnnotationService } from '@sap-ux/fiori-annotation-api';
 import { testSchema } from '../sample/building-block/webapp-prompts-cap/schema';
@@ -75,10 +76,37 @@ describe('utils - ', () => {
             expect(entityTypes.length).toBe(11);
         });
 
+        test('getMappedServiceName - CAP', async () => {
+            expect(
+                await getMappedServiceName(
+                    await capProjectProvider.getProject(),
+                    'mainService',
+                    capProjectProvider.appId
+                )
+            ).toBe('mappedMainServiceName');
+        });
+
+        test('getMappedServiceName - CAP, no app for appId found throws error', async () => {
+            const project = await capProjectProvider.getProject();
+            await expect(getMappedServiceName(project, 'mainService', 'invalidAppId')).rejects.toThrow(
+                'ERROR_INVALID_APP_ID'
+            );
+        });
+
         test('getAnnotationPathQualifiers - existing annotations, absolute binding context path', async () => {
             const annotationPathQualifiers = await getAnnotationPathQualifiers(
                 projectProvider,
                 ENTITY_TYPE,
+                [UIAnnotationTerms.Chart, UIAnnotationTerms.LineItem, UIAnnotationTerms.SelectionFields],
+                { type: 'absolute' }
+            );
+            expect(annotationPathQualifiers).toMatchSnapshot();
+        });
+
+        test('getAnnotationPathQualifiers - existing annotations for EntitySet, absolute binding context path', async () => {
+            const annotationPathQualifiers = await getAnnotationPathQualifiers(
+                projectProvider,
+                'C_CustomerBankDetailsOP',
                 [UIAnnotationTerms.Chart, UIAnnotationTerms.LineItem, UIAnnotationTerms.SelectionFields],
                 { type: 'absolute' }
             );
