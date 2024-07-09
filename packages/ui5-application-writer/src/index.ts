@@ -54,11 +54,9 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     const ui5LibsLocal = ui5App.ui5.ui5ReuseLibs as string[];
 
     //remove reuse libs
-    var reuseLibfound = false;
     if (ui5LibsLocal) {
-        for (var i = 0; i < ui5LibsArray.length; i++) {
+        for (let i = 0; i < ui5LibsArray.length; i++) {
             if (ui5LibsLocal.indexOf(ui5LibsArray[i]) > -1) {
-                reuseLibfound = true;
                 ui5LibsArray.splice(i, 1);
             }
         }
