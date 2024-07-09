@@ -23,7 +23,7 @@ export async function handleAction(action: ProjectActions): Promise<ProjectActio
         }
         case UPDATE_PROJECT_PATH: {
             const { application } = action;
-            const { projectPath } = application;
+            const { projectPath, appId } = application;
             const newProjectPath = projectPath ? join(projectPath) : testAppPath;
             let message: string | undefined;
             if (projectPath && !existsSync(newProjectPath)) {
@@ -35,7 +35,8 @@ export async function handleAction(action: ProjectActions): Promise<ProjectActio
                 // If no error update path
                 if (!message) {
                     setApplication({
-                        projectPath: newProjectPath
+                        projectPath: newProjectPath,
+                        appId
                     });
                 }
             }
