@@ -80,36 +80,26 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 
     // package.json
     const packagePath = join(basePath, 'package.json');
-    if (isEdmxProjectType) {
-        fs.extendJSON(
-            packagePath,
-            JSON.parse(render(fs.read(join(tmplPath, 'common', 'extend', 'package.json')), ffApp, {}))
-        );
-    } else {
-        // Add deploy-config script for CAP projects
-        fs.extendJSON(packagePath, {
-            "scripts": {
-                "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf"
-            }
-        });
-    }
+    fs.extendJSON(
+        packagePath,
+        JSON.parse(render(fs.read(join(tmplPath, 'common', 'extend', 'package.json')), ffApp, {}))
+    );
     
     const packageJson: Package = JSON.parse(fs.read(packagePath));
-    if (isEdmxProjectType) {
-        // Add scripts for non-CAP applications
-        packageJson.scripts = {
-            ...packageJson.scripts,
-            ...getPackageJsonTasks({
-                localOnly: !!ffApp.service && !ffApp.service?.url,
-                addMock: !!ffApp.service?.metadata,
-                sapClient: ffApp.service?.client,
-                flpAppId: ffApp.app.flpAppId,
-                startFile: data?.app?.startFile,
-                localStartFile: data?.app?.localStartFile,
-                generateIndex: ffApp.appOptions?.generateIndex
-            })
-        };
-    }
+    
+    // Add scripts for non-CAP applications
+    packageJson.scripts = {
+        ...packageJson.scripts,
+        ...getPackageJsonTasks({
+            localOnly: !!ffApp.service && !ffApp.service?.url,
+            addMock: !!ffApp.service?.metadata,
+            sapClient: ffApp.service?.client,
+            flpAppId: ffApp.app.flpAppId,
+            startFile: data?.app?.startFile,
+            localStartFile: data?.app?.localStartFile,
+            generateIndex: ffApp.appOptions?.generateIndex
+        })
+    };
     fs.writeJSON(packagePath, packageJson);
     
     // Add service to the project if provided
