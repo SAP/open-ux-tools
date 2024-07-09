@@ -59,7 +59,7 @@ jest.mock('@sap-ux/system-access', () => {
     };
 });
 
-describe('add/annotations-to-odata', () => {
+describe('add/annotations', () => {
     let loggerMock: ToolsLogger;
     const memFsEditorMock = {
         create: jest.fn().mockReturnValue({
@@ -71,7 +71,7 @@ describe('add/annotations-to-odata', () => {
     const generateChangeSpy = jest
         .spyOn(adp, 'generateChange')
         .mockResolvedValue(memFsEditorMock as Partial<Editor> as Editor);
-    const getArgv = (...arg: string[]) => ['', '', 'annotations-to-odata', ...arg];
+    const getArgv = (...arg: string[]) => ['', '', 'annotations', ...arg];
     const mockAnswers = {
         targetODataSource: 'mainService',
         targetODataUrl: '/sap/opu/odata/test',
@@ -105,7 +105,7 @@ describe('add/annotations-to-odata', () => {
             new Error('This command is not supported for CF projects.')
         );
 
-        const command = new Command('annotations-to-odata');
+        const command = new Command('annotations');
         addAnnotationsToOdataCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
@@ -117,7 +117,7 @@ describe('add/annotations-to-odata', () => {
     test('should result in error when system configuration is missing', async () => {
         jest.spyOn(adp, 'getAdpConfig').mockRejectedValueOnce(new Error('No system configuration found in ui5.yaml'));
 
-        const command = new Command('annotations-to-odata');
+        const command = new Command('annotations');
         addAnnotationsToOdataCommand(command);
         await command.parseAsync(getArgv());
 
@@ -131,7 +131,7 @@ describe('add/annotations-to-odata', () => {
             new Error('This command can only be used for an Adaptation Project')
         );
 
-        const command = new Command('annotations-to-odata');
+        const command = new Command('annotations');
         addAnnotationsToOdataCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
