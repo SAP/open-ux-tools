@@ -2,8 +2,8 @@ import type { UI5FlexLayer, ManifestNamespace } from '@sap-ux/project-access';
 import type { DescriptorVariant, AdpPreviewConfig } from '../types';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { getManifest } from './abap';
-import { readFileSync, existsSync, readdirSync } from 'fs';
-import { join, sep, isAbsolute } from 'path';
+import { readFileSync, existsSync } from 'fs';
+import { join, isAbsolute } from 'path';
 import { UI5Config } from '@sap-ux/ui5-config';
 
 /**
