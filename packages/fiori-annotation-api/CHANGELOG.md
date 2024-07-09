@@ -1,5 +1,13 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.1.14
+
+### Patch Changes
+
+-   94cee16: Cds compiler facade version bump in dependencies
+-   Updated dependencies [94cee16]
+    -   @sap-ux/cds-odata-annotation-converter@0.3.1
+
 ## 0.1.13
 
 ### Patch Changes

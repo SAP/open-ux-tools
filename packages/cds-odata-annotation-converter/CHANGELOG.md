@@ -1,5 +1,11 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.3.1
+
+### Patch Changes
+
+-   94cee16: Cds compiler facade version bump in dependencies
+
 ## 0.3.0
 
 ### Minor Changes
