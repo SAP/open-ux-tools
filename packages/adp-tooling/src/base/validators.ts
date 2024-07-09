@@ -1,5 +1,5 @@
 import { t } from '../i18n';
-import { ManifestChangeProperties } from '../types';
+import type { ManifestChangeProperties } from '../types';
 
 /**
  * Checks if the input is a valid SAP client.
@@ -36,7 +36,7 @@ export function hasEmptySpaces(value: string): boolean {
  *
  * @param {string} value - The input value to validate.
  * @param {string | undefined} input - The name of the input field being validated, used for error messaging.
- * @param {boolean} [isMandatory=true] - Indicates whether the input is mandatory.
+ * @param {boolean} isMandatory - Indicates whether the input is mandatory.
  * @returns {string | boolean} Returns true if the input is valid. If invalid, returns a localized error message.
  */
 export function validateNonEmptyNoSpaces(
@@ -95,10 +95,9 @@ export function isValidJSON(value: string): boolean {
  * @param value The value to check for duplication.
  * @param propertyName The property name in the change file objects to check.
  * @param changeFiles The list of existing change files to check against.
- * @param isExternalUsage Whether the validation is for external usage.
+ * @param isCustomerBase Whether the validation is for customer usage.
  * @param inputName The name of the input field.
  * @param componentName The name of the component.
- *
  * @returns {boolean | string} True if no duplication is found, or an error message if validation fails.
  */
 export function validateContentDuplication(
@@ -131,9 +130,8 @@ export function validateContentDuplication(
  * Validates a field for empty value and user state.
  *
  * @param value The value to validate.
- * @param isExternalUsage Whether the validation is for external usage.
+ * @param isCustomerBase Whether the validation is for customer usage.
  * @param input The name of the input field.
- *
  * @returns {boolean | string} True if validation passes, or an error message if validation fails.
  */
 export function validateEmptyAndUserState(value: string, isCustomerBase: boolean, input: string): string | boolean {
@@ -158,7 +156,6 @@ export function validateEmptyAndUserState(value: string, isCustomerBase: boolean
  * @param input The name of the input field.
  * @param regexp The regex expression for allowed special characters.
  * @param errorMsg The error message if validation fails.
- *
  * @returns {boolean | string} True if validation passes, or an error message if validation fails.
  */
 export function validateSpecialChars(

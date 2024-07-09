@@ -147,7 +147,6 @@ export function getParsedPropertyValue(propertyValue: PropertyValueType): Proper
  * @param {string} projectPath - The base path of the project.
  * @param {ChangeType} changeType - The type of changes to filter by, ensuring only changes of this type are returned.
  * @param {string} [subDir] - Optional subdirectory within the main changes directory.
- *
  * @returns An array of change objects matching the specified change type.
  */
 export function getChangesByType(

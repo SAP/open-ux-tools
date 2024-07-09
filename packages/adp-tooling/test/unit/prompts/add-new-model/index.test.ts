@@ -1,7 +1,6 @@
-import * as projectAccess from '@sap-ux/project-access';
-
 import * as i18n from '../../../../src/i18n';
-import { NewModelAnswers, isCFEnvironment, isCustomerBase } from '../../../../src';
+import type { NewModelAnswers } from '../../../../src';
+import { isCFEnvironment, isCustomerBase } from '../../../../src';
 import { getPrompts } from '../../../../src/prompts/add-new-model';
 
 import { getChangesByType } from '../../../../src/base/change-utils';

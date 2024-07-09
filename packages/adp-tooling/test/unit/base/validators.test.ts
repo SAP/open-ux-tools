@@ -10,7 +10,7 @@ import {
     validateJSON,
     validateNonEmptyNoSpaces
 } from '../../../src/base/validators';
-import { ManifestChangeProperties } from '../../../src';
+import type { ManifestChangeProperties } from '../../../src';
 import { validateDuplicateName } from '../../../src/prompts/add-new-model';
 
 describe('validators', () => {

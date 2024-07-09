@@ -30,7 +30,6 @@ const oDataVersions = [
  * @param comparativeValue The value of the second field to compare against.
  * @param value1 The name of the first value.
  * @param value2 The name of the second value.
- *
  * @returns {string | boolean} An error message if the values are the same, or true if they are different.
  */
 export function validateDuplicateName(
@@ -45,7 +44,9 @@ export function validateDuplicateName(
 /**
  * Gets the prompts for adding the new model.
  *
- * @returns {YUIQuestion<ChangeDataSourceAnswers>[]} The questions/prompts.
+ * @param {string} projectPath - The root path of the project.
+ * @param {UI5FlexLayer} layer - UI5 Flex layer.
+ * @returns {YUIQuestion<NewModelAnswers>[]} The questions/prompts.
  */
 export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestion<NewModelAnswers>[] {
     const isCustomer = isCustomerBase(layer);

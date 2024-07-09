@@ -1,8 +1,8 @@
 import { join } from 'path';
 import { existsSync, readFileSync } from 'fs';
 
-import { UI5FlexLayer } from '@sap-ux/project-access';
-import { DescriptorVariant } from '../types';
+import type { UI5FlexLayer } from '@sap-ux/project-access';
+import type { DescriptorVariant } from '../types';
 
 /**
  * Check environment is running in an internal scenario.
