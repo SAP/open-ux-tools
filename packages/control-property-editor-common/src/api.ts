@@ -43,7 +43,7 @@ export const INPUT_EDITOR_TYPE = 'input';
 export const DROPDOWN_EDITOR_TYPE = 'dropdown';
 export const CHECKBOX_EDITOR_TYPE = 'checkbox';
 
-export const scenario = {
+export const SCENARIO = {
     AppVariant: 'APP_VARIANT',
     VersionedAppVariant: 'VERSIONED_APP_VARIANT',
     AdaptationProject: 'ADAPTATION_PROJECT',
@@ -51,7 +51,7 @@ export const scenario = {
     UiAdaptation: 'UI_ADAPTATION'
 } as const;
 
-export type Scenario = (typeof scenario)[keyof typeof scenario];
+export type Scenario = (typeof SCENARIO)[keyof typeof SCENARIO];
 
 interface ControlPropertyBase<T, V, E> {
     type: T;

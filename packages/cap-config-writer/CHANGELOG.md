@@ -1,5 +1,41 @@
 # @sap-ux/cap-config-writer
 
+## 0.6.3
+
+### Patch Changes
+
+-   Updated dependencies [f076dd3]
+    -   @sap-ux/project-access@1.25.0
+    -   @sap-ux/odata-service-inquirer@0.4.3
+
+## 0.6.2
+
+### Patch Changes
+
+-   Updated dependencies [0ae685e]
+    -   @sap-ux/project-access@1.24.0
+    -   @sap-ux/odata-service-inquirer@0.4.2
+
+## 0.6.1
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.4.1
+
+## 0.6.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/logger@0.6.0
+    -   @sap-ux/odata-service-inquirer@0.4.0
+    -   @sap-ux/project-access@1.23.0
+    -   @sap-ux/yaml@0.16.0
+
 ## 0.5.7
 
 ### Patch Changes

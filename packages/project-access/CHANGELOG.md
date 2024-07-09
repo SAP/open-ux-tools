@@ -1,5 +1,29 @@
 # @sap-ux/project-access
 
+## 1.25.0
+
+### Minor Changes
+
+-   f076dd3: Add freestyle CAP app support.
+
+## 1.24.0
+
+### Minor Changes
+
+-   0ae685e: Add feature to cache node modules locally, consumed by specification
+
+## 1.23.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/i18n@0.1.0
+    -   @sap-ux/ui5-config@0.23.0
+
 ## 1.22.4
 
 ### Patch Changes
