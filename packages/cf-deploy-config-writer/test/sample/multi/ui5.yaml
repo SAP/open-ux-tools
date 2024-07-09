@@ -1,6 +1,6 @@
 specVersion: '2.4'
 metadata:
-  name: 'lrop'
+  name: 'multi'
 type: application
 server:
   customMiddleware:

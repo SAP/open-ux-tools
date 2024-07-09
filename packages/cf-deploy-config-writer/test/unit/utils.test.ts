@@ -12,7 +12,7 @@ describe('CF utils', () => {
 
     describe('Utils methods', () => {
         test('Validate - validateVersion', async () => {
-            //expect(() => validateVersion('0.0.0')).toThrowError();
+            expect(() => validateVersion('0.0.0')).toThrowError();
             expect(() => validateVersion('~Version')).toThrow();
             expect(() => validateVersion()).not.toThrowError();
             expect(validateVersion(MTAVersion)).toBeTruthy();

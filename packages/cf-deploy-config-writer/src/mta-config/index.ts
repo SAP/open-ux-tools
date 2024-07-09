@@ -55,21 +55,6 @@ export function createMTA(config: MTABaseConfig, fs: Editor): void {
 }
 
 /**
- *  Returns true | false if ABAP service binding is enabled.
- *
- * @param mtaPath path to mta.yaml
- * @returns true | false
- */
-export async function useAbapDirectServiceBinding(mtaPath: string): Promise<boolean> {
-    try {
-        const mtaConfig = await getMtaConfig(mtaPath);
-        return mtaConfig?.isAbapDirectServiceBinding ?? false;
-    } catch (error) {
-        return false;
-    }
-}
-
-/**
  *  Add the build parameters to the MTA configuration.
  *
  * @param mtaInstance MTA instance

@@ -41,9 +41,10 @@ export interface CFBaseConfig extends MTABaseConfig {
     routerType: RouterModuleType;
     addConnectivityService?: boolean;
     addDestinationService?: boolean;
-    useAbapDirectSrvBinding?: boolean;
-    abapServiceName?: string;
-    abapService?: string;
+    abapServiceProvider?: {
+        abapServiceName?: string;
+        abapService?: string;
+    };
 }
 export interface CFAppConfig {
     appPath: string;
@@ -52,6 +53,7 @@ export interface CFAppConfig {
     apiHubConfig?: ApiHubConfig;
     addMTADestination?: boolean;
     serviceHost?: string; // Data service host
+    lcapMode?: boolean;
 }
 export interface CFConfig extends CFAppConfig, CFBaseConfig {
     appId: string;
@@ -59,7 +61,6 @@ export interface CFConfig extends CFAppConfig, CFBaseConfig {
     serviceBase: string;
     capRoot?: string;
     isCap?: boolean;
-    lcapMode?: boolean;
     servicePath?: string;
     firstServicePathSegment?: string;
     isFullUrlDest?: boolean;

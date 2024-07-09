@@ -1,5 +1,4 @@
 import { join, normalize, posix } from 'path';
-import { type Editor } from 'mem-fs-editor';
 import { isAppStudio, listDestinations, isFullUrlDestination, Authentication } from '@sap-ux/btp-utils';
 import { coerce, satisfies } from 'semver';
 import {
@@ -15,13 +14,14 @@ import {
     XSSecurityFile
 } from './constants';
 import { addPackageDevDependency, type Manifest } from '@sap-ux/project-access';
-import type { XSAppDocument, XSAppRoute, XSAppRouteProperties, MTABaseConfig } from './types';
+import { type Editor } from 'mem-fs-editor';
 import type { Destinations } from '@sap-ux/btp-utils';
+import type { MTABaseConfig } from './types';
 
 let cachedDestinationsList: Destinations = {};
 
 /**
- *  Read manifest file.
+ *  Read manifest file for processing.
  *
  * @param manifestPath Path to the manifest file
  * @param fs reference to a mem-fs editor
@@ -62,32 +62,6 @@ export function toPosixPath(dirPath: string): string {
 }
 
 /**
- * Get the route properties from the xs-app.json file.
- *
- * @param xsAppObj xs-app.json object
- * @param keys the keys to search for i.e. ['source', 'target']
- * @param values optional values to search for i.e. ['^/odata', 'my-odata-service']
- * @returns XSAppRoute | undefined
- */
-export function findRoute(
-    xsAppObj: XSAppDocument,
-    keys: XSAppRouteProperties[],
-    values?: string[]
-): XSAppRoute | undefined {
-    let xsAppRoute: XSAppRoute | undefined;
-    xsAppObj['routes']?.forEach((route: XSAppRoute) => {
-        keys.forEach((searchKey: XSAppRouteProperties, searchKeyIndex: number) => {
-            if (route[searchKey] && route[searchKey] === values?.[searchKeyIndex]) {
-                xsAppRoute = route;
-            } else if (route[searchKey]) {
-                xsAppRoute = route;
-            }
-        });
-    });
-    return xsAppRoute;
-}
-
-/**
  * Get the destination properties, based on the destination value.
  *
  * @param destination destination name
@@ -100,10 +74,12 @@ export async function getDestinationProperties(
         isFullUrlDest: false,
         destinationAuthType: Authentication.NO_AUTHENTICATION
     };
-    if (destination && isAppStudio()) {
+    if (isAppStudio() && destination) {
         const destinations = await getBTPDestinations();
-        destinationProperties.isFullUrlDest = isFullUrlDestination(destinations[destination]);
-        destinationProperties.destinationAuthType = destinations[destination].Authentication as Authentication;
+        if (destinations[destination]) {
+            destinationProperties.isFullUrlDest = isFullUrlDestination(destinations[destination]);
+            destinationProperties.destinationAuthType = destinations[destination].Authentication as Authentication;
+        }
     }
     return destinationProperties;
 }

@@ -529,7 +529,6 @@ export class MtaConfig {
      */
     public async addRoutingModules(isManagedApp = false): Promise<void> {
         if (isManagedApp && !this.modules.has('com.sap.application.content:destination')) {
-            // Don't duplicate the destination resource, only add it if it doesn't exist
             await this.addManagedAppRouter();
         }
 
@@ -602,7 +601,7 @@ export class MtaConfig {
      *
      * @returns {boolean} true | false if mta.yaml contains an abap resource
      */
-    public get isAbapDirectServiceBinding(): boolean {
+    public get isABAPServiceFound(): boolean {
         let isAbapDirectServiceBinding = false;
         const resourceNames = Array.from(this.resources.keys());
         for (const resourceName of resourceNames) {
@@ -955,10 +954,10 @@ export function isMTAFound(dir: string): boolean {
  * @param {string} appPath UI5 Fiori project folder path
  * @param {boolean} findMtaPath If findMtaPath=true, need to validate if the Fiori app is inside MTA project.
  * @param {string} mtaPath If findMtaPath=false, the generator already knows if the Fiori app
- * @param {Logger} logger - logger instance
+ * @param {Logger} logger - option logger instance
  * @returns {boolean} true if mta.yaml is found and ABAP service binding is found
  */
-export async function isAbapDirectServiceBinding(
+export async function useAbapDirectServiceBinding(
     appPath: string,
     findMtaPath: boolean,
     mtaPath = '',
@@ -977,7 +976,7 @@ export async function isAbapDirectServiceBinding(
 
         if (rootPath) {
             const mtaConfig = await MtaConfig.newInstance(rootPath, logger);
-            return mtaConfig.isAbapDirectServiceBinding;
+            return mtaConfig.isABAPServiceFound;
         } else {
             return false;
         }

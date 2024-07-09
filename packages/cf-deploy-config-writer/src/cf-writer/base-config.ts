@@ -1,5 +1,4 @@
 import { join } from 'path';
-import { existsSync } from 'fs';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import hasbin = require('hasbin');
@@ -30,7 +29,7 @@ export async function generateBaseConfig(config: CFBaseConfig, fs?: Editor, logg
     if (!fs) {
         fs = create(createStorage());
     }
-    validateMtaConfig(config);
+    validateMtaConfig(config, fs);
     updateBaseConfig(config);
     createMTA(config as MTABaseConfig, fs);
     await addRoutingConfig(config, fs);
@@ -65,7 +64,6 @@ async function addRoutingConfig(config: CFBaseConfig, fs: Editor, logger?: Logge
  */
 function updateBaseConfig(config: CFBaseConfig): void {
     config.mtaPath = config.mtaPath.replace(/\/$/, '');
-    config.useAbapDirectSrvBinding ||= false;
     config.addConnectivityService ||= false;
     config.mtaId = toMtaModuleName(config.mtaId);
 }
@@ -73,7 +71,7 @@ function updateBaseConfig(config: CFBaseConfig): void {
 /**
  *  Add standalone approuter to the target folder.
  *
- * @param cfConfig wrtier configuration
+ * @param cfConfig writer configuration
  * @param mtaInstance MTA configuration instance
  * @param fs reference to a mem-fs editor
  * @param logger optional logger instance
@@ -88,23 +86,23 @@ async function addStandaloneRouter(
     if (cfConfig.addConnectivityService) {
         await mtaInstance.addConnectivityResource();
     }
-    if (cfConfig.useAbapDirectSrvBinding && cfConfig.abapServiceName && cfConfig.abapService) {
-        await mtaInstance.addAbapService(cfConfig.abapServiceName, cfConfig.abapService);
+    const { abapServiceName, abapService } = cfConfig.abapServiceProvider ?? {};
+    if (abapServiceName && abapService) {
+        await mtaInstance.addAbapService(abapServiceName, abapService);
     }
 
     fs.copyTpl(getTemplatePath(`router/package.json`), join(cfConfig.mtaPath, `${RouterModule}/package.json`));
 
-    if (cfConfig.abapServiceName) {
+    if (abapServiceName) {
         let serviceKey;
         try {
-            const instanceCredentials = await apiGetInstanceCredentials(cfConfig.abapServiceName);
+            const instanceCredentials = await apiGetInstanceCredentials(abapServiceName);
             serviceKey = instanceCredentials?.credentials;
         } catch {
             logger?.error('Failed to fetch service key');
         }
         const endpoints = serviceKey?.endpoints ? Object.keys(serviceKey.endpoints) : [''];
         const service = serviceKey ? serviceKey['sap.cloud.service'] : '';
-
         fs.copyTpl(
             getTemplatePath('router/xs-app-abapservice.json'),
             join(cfConfig.mtaPath, `${RouterModule}/${XSAppFile}`),
@@ -133,31 +131,35 @@ function addSupportingConfig(config: CFBaseConfig, fs: Editor): void {
 /**
  * Validate the writer configuration to ensure all required parameters are present.
  *
- * @param cfConfig writer configuration
+ * @param config writer configuration
+ * @param fs reference to a mem-fs editor
  */
-function validateMtaConfig(cfConfig: CFBaseConfig): void {
+function validateMtaConfig(config: CFBaseConfig, fs: Editor): void {
     // We use mta-lib, which in turn relies on the mta executable being installed and available in the path
     if (!hasbin.sync(MTAExecutable)) {
         throw new Error(MTABinNotFound);
     }
 
-    if (!cfConfig.routerType || !cfConfig.mtaId || !cfConfig.mtaPath) {
-        throw new Error('Missing required parameters, MTA path, router type or MTA ID');
+    if (!config.routerType || !config.mtaId || !config.mtaPath) {
+        throw new Error('Missing required parameters, MTA path, MTA ID or router type');
     }
 
-    if (!cfConfig.mtaId.match(/^[a-zA-Z_]+[a-zA-Z0-9_\-.]*$/)) {
+    if (!config.mtaId.match(/^[a-zA-Z_]+[a-zA-Z0-9_\-.]*$/)) {
         throw new Error(
             'The MTA ID can only contain letters, numbers, dashes, periods and underscores (but no spaces)'
         );
     }
 
-    validateVersion(cfConfig.mtaVersion);
+    validateVersion(config.mtaVersion);
 
-    if (existsSync(join(cfConfig.mtaPath, cfConfig.mtaId))) {
-        throw new Error('A folder with same name already exists at {{destinationRoot}}');
+    if (
+        config.abapServiceProvider &&
+        (!config.abapServiceProvider.abapService || !config.abapServiceProvider.abapServiceName)
+    ) {
+        throw new Error('Missing ABAP service details for direct service binding');
     }
 
-    if (cfConfig.useAbapDirectSrvBinding && !cfConfig.abapService && !cfConfig.abapServiceName) {
-        throw new Error('Missing ABAP service details for direct service binding');
+    if (fs.exists(join(config.mtaPath, config.mtaId))) {
+        throw new Error('A folder with same name already exists in the target directory');
     }
 }

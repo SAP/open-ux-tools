@@ -18,13 +18,12 @@ type MtaInterface = Pick<Mta, keyof Mta>;
  */
 export class MockMta implements Partial<MtaInterface> {
     private readonly contents: mta.MtaDescriptor;
-    private readonly CONFIG_FILE_NAME = 'mta.yaml';
     public readonly mtaDirPath: string;
     private readonly mtaPath: string;
 
     constructor(mtaDirPath: string) {
         this.mtaDirPath = mtaDirPath;
-        this.mtaPath = join(mtaDirPath, this.CONFIG_FILE_NAME);
+        this.mtaPath = join(mtaDirPath, 'mta.yaml');
         this.contents = yaml.load(fs.readFileSync(this.mtaPath).toString()) as mta.MtaDescriptor;
     }
     create(_descriptor: mta.MtaDescriptor): Promise<void> {

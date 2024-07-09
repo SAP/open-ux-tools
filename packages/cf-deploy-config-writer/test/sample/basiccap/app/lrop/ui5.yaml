@@ -11,6 +11,8 @@ server:
         backend:
           - path: /sap
             url: https://abap.hanavlab.ondemand.com
+            scp: true
+            destination: TestDestination
         ui5:
           path:
             - /resources

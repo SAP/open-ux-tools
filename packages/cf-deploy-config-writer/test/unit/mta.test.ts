@@ -2,7 +2,7 @@ import { join } from 'path';
 import fs from 'fs';
 import * as memfs from 'memfs';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { isMTAFound, isAbapDirectServiceBinding, MtaConfig } from '../../src/';
+import { isMTAFound, useAbapDirectServiceBinding, MtaConfig } from '../../src/';
 import { deployMode, ResourceMTADestination } from '../../src/constants';
 import type { mta } from '@sap/mta-lib';
 
@@ -61,8 +61,8 @@ describe('Validate common functionality', () => {
             },
             '/'
         );
-        expect(await isAbapDirectServiceBinding('/testpath', true)).toBeFalsy();
-        expect(await isAbapDirectServiceBinding('/testpath', false, '/testpath')).toBeFalsy();
+        expect(await useAbapDirectServiceBinding('/testpath', true)).toBeFalsy();
+        expect(await useAbapDirectServiceBinding('/testpath', false, '/testpath')).toBeFalsy();
     });
 
     it('Validate isAbapDirectServiceBinding is true', async () => {
@@ -72,7 +72,7 @@ describe('Validate common functionality', () => {
             },
             '/'
         );
-        expect(await isAbapDirectServiceBinding(`${OUTPUT_DIR_PREFIX}/app1/`, true)).toBeTruthy();
+        expect(await useAbapDirectServiceBinding(`${OUTPUT_DIR_PREFIX}/app1/`, true)).toBeTruthy();
     });
 
     it('Validate isAbapDirectServiceBinding handles exception', async () => {
@@ -82,11 +82,11 @@ describe('Validate common functionality', () => {
             },
             '/'
         );
-        expect(await isAbapDirectServiceBinding(`/`, false, OUTPUT_DIR_PREFIX, nullLogger)).toBeFalsy();
+        expect(await useAbapDirectServiceBinding(`/`, false, OUTPUT_DIR_PREFIX, nullLogger)).toBeFalsy();
     });
 });
 
-describe('Validate MtaConfig', () => {
+describe('Validate MtaConfig Instance', () => {
     const OUTPUT_DIR_PREFIX = '/managed-cap';
     const managedRouterConfigCapMissingDestinations = fs.readFileSync(
         join(__dirname, 'fixtures/mta-types/managed-cap-missing-destinations/mta.yaml'),
@@ -118,7 +118,7 @@ describe('Validate MtaConfig', () => {
         );
         const mtaConfig = await MtaConfig.newInstance(appDir);
         expect(mtaConfig.getExposedDestinations()).toMatchInlineSnapshot(`Array []`);
-        expect(mtaConfig.isAbapDirectServiceBinding).toBeFalsy();
+        expect(mtaConfig.isABAPServiceFound).toBeFalsy();
         expect(await mtaConfig.getParameters()).toMatchInlineSnapshot(`
             Object {
               "enable-parallel-deployments": true,

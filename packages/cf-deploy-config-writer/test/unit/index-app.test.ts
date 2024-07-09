@@ -16,11 +16,12 @@ jest.mock('@sap-ux/btp-utils', () => ({
 
 let isAppStudioMock: jest.SpyInstance;
 let listDestinationsMock: jest.SpyInstance;
+let unitTestFs: Editor;
 
 describe('CF Writer', () => {
     const destinationsMock = {
-        'ABC123': {
-            Name: 'ABC123',
+        'TestDestination': {
+            Name: 'TestDestination',
             Type: 'MockType',
             Authentication: 'NoAuthentication',
             ProxyType: 'NoProxy',
@@ -28,7 +29,6 @@ describe('CF Writer', () => {
             Host: 'MockHost'
         }
     };
-    let unitTestFs: Editor;
     const logger = new ToolsLogger({
         transports: [new NullTransport()]
     });
@@ -62,11 +62,7 @@ describe('CF Writer', () => {
     });
 
     describe('Generate HTML5 App Config', () => {
-        beforeEach(() => {
-            jest.clearAllMocks();
-        });
-
-        test('Generate deployment configs - HTML5 App', async () => {
+        test('Generate deployment configs - HTML5 App and destination read from ui5.yaml', async () => {
             isAppStudioMock.mockResolvedValue(true);
             listDestinationsMock.mockResolvedValue(destinationsMock);
             const debugSpy = jest.spyOn(logger, 'debug');
@@ -74,9 +70,8 @@ describe('CF Writer', () => {
             const appPath = join(outputDir, appName);
             fsExtra.mkdirSync(outputDir, { recursive: true });
             fsExtra.mkdirSync(appPath);
-            fsExtra.copySync(join(__dirname, `../sample/basicapp`), appPath);
-
-            await generateAppConfig({ appPath, destination: destinationsMock.ABC123.Name }, unitTestFs, logger);
+            fsExtra.copySync(join(__dirname, '../sample/basicapp'), appPath);
+            await generateAppConfig({ appPath }, unitTestFs, logger);
             expect(isAppStudioMock).toBeCalledTimes(1);
             expect(listDestinationsMock).toBeCalledTimes(1);
             expect(debugSpy).toBeCalledTimes(1);
@@ -85,7 +80,7 @@ describe('CF Writer', () => {
             expect(unitTestFs.read(join(appPath, 'mta.yaml'))).toMatchSnapshot();
         });
 
-        test('Generate deployment configs - HTML5 App with managed approuter attached', async () => {
+        test('Generate deployment configs - HTML5 App with managed approuter attached with no destination available', async () => {
             isAppStudioMock.mockResolvedValue(false);
             listDestinationsMock.mockResolvedValue(destinationsMock);
             const debugSpy = jest.spyOn(logger, 'debug');
@@ -94,18 +89,33 @@ describe('CF Writer', () => {
             fsExtra.mkdirSync(outputDir, { recursive: true });
             fsExtra.mkdirSync(appPath);
             fsExtra.copySync(join(__dirname, `../sample/lrop`), appPath);
-
-            await generateAppConfig(
-                { appPath, destination: destinationsMock.ABC123.Name, addManagedRouter: true },
-                unitTestFs,
-                logger
-            );
+            await generateAppConfig({ appPath, addManagedRouter: true }, unitTestFs, logger);
             expect(isAppStudioMock).toBeCalledTimes(1);
             expect(listDestinationsMock).toBeCalledTimes(0);
             expect(debugSpy).toBeCalledTimes(1);
             expect(unitTestFs.dump(appPath)).toMatchSnapshot();
             // Since mta.yaml is not in memfs, read from disk
             expect(unitTestFs.read(join(appPath, 'mta.yaml'))).toMatchSnapshot();
+        });
+
+        test('Generate deployment configs - HTML5 App with managed approuter attached to a multi target application', async () => {
+            isAppStudioMock.mockResolvedValue(false);
+            listDestinationsMock.mockResolvedValue(destinationsMock);
+            const appName = 'multi';
+            const appPath = join(outputDir, appName);
+            fsExtra.mkdirSync(outputDir, { recursive: true });
+            fsExtra.mkdirSync(appPath);
+            fsExtra.copySync(join(__dirname, `../sample/multi`), appPath);
+            await generateAppConfig({ appPath, addManagedRouter: true }, unitTestFs);
+            expect(unitTestFs.dump(appPath)).toMatchSnapshot();
+            // Since mta.yaml is not in memfs, read from disk
+            expect(unitTestFs.read(join(appPath, 'mta.yaml'))).toMatchSnapshot();
+        });
+
+        test('Throw an exception if the appPath is not found', async () => {
+            const appName = 'validate';
+            const appPath = join(outputDir, appName);
+            await expect(generateAppConfig({ appPath }, unitTestFs, logger)).rejects.toThrowError();
         });
     });
 });
