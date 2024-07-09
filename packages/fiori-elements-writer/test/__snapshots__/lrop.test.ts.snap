@@ -22691,7 +22691,6 @@ framework:
     - name: sap.ui.core
     - name: sap.ushell
     - name: sap.fe.templates
-    - name: sap.nw.core.gbt.notes.lib.reuse
     - name: themelib_sap_belize
 server:
   customMiddleware:
