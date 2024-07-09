@@ -3,7 +3,6 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
 import {
-    getLaunchJSONFilePaths,
     createLaunchConfig,
     getLaunchConfigByName,
     getUI5VersionUri,
@@ -11,6 +10,7 @@ import {
     getDefaultLaunchConfigOptionsForProject
 } from '../src';
 import { TestPaths } from './test-data/utils';
+import { getLaunchJSONFilePaths } from '../src/launch-config-crud/read';
 
 const getApplicationRoot = async (appName = 'v2lrop'): Promise<string> => {
     // Get all projects

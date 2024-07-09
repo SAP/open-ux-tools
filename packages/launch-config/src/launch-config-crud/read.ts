@@ -11,7 +11,7 @@ import { promises as fs } from 'fs';
  *
  * @param rootFolder - workspace root folder.
  * @param memFs - optional, the memfs editor instance.
- * @returns paths to the launch config file.
+ * @returns {string | undefined} path to the launch config file.
  */
 export async function getLaunchJSONFilePath(rootFolder: string, memFs?: Editor): Promise<string | undefined> {
     const launchConfigPath = join(rootFolder, DirName.VSCode, LAUNCH_JSON_FILE);
@@ -32,7 +32,7 @@ export async function getLaunchJSONFilePath(rootFolder: string, memFs?: Editor):
  *
  * @param rootFolders - list of root folders in workspace.
  * @param memFs - optional, the memfs editor instance.
- * @returns list of launch.json files.
+ * @returns {string[]} list of launch.json files.
  */
 export async function getLaunchJSONFilePaths(rootFolders: string | string[], memFs?: Editor): Promise<string[]> {
     const roots = Array.isArray(rootFolders) ? rootFolders : [rootFolders];
@@ -51,21 +51,22 @@ export async function getLaunchJSONFilePaths(rootFolders: string | string[], mem
  *
  * @param rootFolder - Single path to the root.
  * @param memFs - optional, the memfs editor instance.
- * @returns list of launch configs.
+ * @returns {LaunchConfig[] | undefined} list of launch configs.
  */
 export async function getLaunchConfigs(rootFolder: string, memFs?: Editor): Promise<LaunchConfig[] | undefined> {
     const launchJsonPath = await getLaunchJSONFilePath(rootFolder, memFs);
+    let launchJsonString;
+    let launchJson;
     try {
         if (launchJsonPath) {
             if (memFs) {
-                const launchJsonString = memFs.read(launchJsonPath);
-                const launchJson = parse(launchJsonString);
-                return launchJson.configurations;
+                launchJsonString = memFs.read(launchJsonPath);
+                launchJson = parse(launchJsonString);
             } else {
-                const launchJsonString = await fs.readFile(launchJsonPath, { encoding: 'utf8' });
-                const launchJson = parse(launchJsonString);
-                return launchJson.configurations;
+                launchJsonString = await fs.readFile(launchJsonPath, { encoding: 'utf8' });
+                launchJson = parse(launchJsonString);
             }
+            return launchJson.configurations;
         }
         return undefined;
     } catch (err) {
@@ -78,7 +79,7 @@ export async function getLaunchConfigs(rootFolder: string, memFs?: Editor): Prom
  *
  * @param rootFolder - Single path to root or list of root folders.
  * @param memFs - optional, the memfs editor instance.
- * @returns list of launch configs.
+ * @returns {LaunchConfigInfo[]} list of launch configs.
  */
 export async function getAllLaunchConfigs(rootFolder: string | string[], memFs?: Editor): Promise<LaunchConfigInfo[]> {
     const launchConfigList: LaunchConfigInfo[] = [];
@@ -113,29 +114,28 @@ export async function getAllLaunchConfigs(rootFolder: string | string[], memFs?:
  * @param launchConfigPath - path to the launch.json file.
  * @param name - name of the launch config.
  * @param memFs - optional, the memfs editor instance.
- * @returns launch config.
+ * @returns {LaunchConfig} launch config.
  */
 export async function getLaunchConfigByName(
     launchConfigPath: string,
     name: string,
     memFs?: Editor
 ): Promise<LaunchConfig> {
+    let launchJsonString;
+    let launchJson;
     try {
         if (memFs) {
-            const config = parse(memFs.read(launchConfigPath));
-            const launchConfig = config.configurations.find((c: LaunchConfig) => c.name === name);
-            if (!launchConfig) {
-                throw Error(`No config '${name}'`);
-            }
-            return launchConfig;
+            launchJsonString = memFs.read(launchConfigPath);
+            launchJson = parse(launchJsonString);
         } else {
-            const config = parse(await fs.readFile(launchConfigPath, { encoding: 'utf8' }));
-            const launchConfig = config.configurations.find((c: LaunchConfig) => c.name === name);
-            if (!launchConfig) {
-                throw Error(`No config '${name}'`);
-            }
-            return launchConfig;
+            launchJsonString = await fs.readFile(launchConfigPath, { encoding: 'utf8' });
+            launchJson = parse(launchJsonString);
         }
+        const launchConfig = launchJson.configurations.find((c: LaunchConfig) => c.name === name);
+        if (!launchConfig) {
+            throw Error(`No config '${name}'`);
+        }
+        return launchConfig;
     } catch (error) {
         console.error(`Could not find launch config '${name}' in '${launchConfigPath}'`, error);
         throw error;

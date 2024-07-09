@@ -2,13 +2,7 @@ export * from './types';
 export { createLaunchConfig } from './launch-config-crud/create';
 export { deleteLaunchConfig } from './launch-config-crud/delete';
 export { convertOldLaunchConfigToFioriRun } from './launch-config-crud/modify';
-export {
-    getLaunchJSONFilePath,
-    getLaunchJSONFilePaths,
-    getLaunchConfigs,
-    getAllLaunchConfigs,
-    getLaunchConfigByName
-} from './launch-config-crud/read';
+export { getLaunchConfigs, getLaunchConfigByName } from './launch-config-crud/read';
 export { updateLaunchConfig } from './launch-config-crud/update';
 export {
     buildUI5Option,
