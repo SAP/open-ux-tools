@@ -1,11 +1,13 @@
 import { isValidSapClient, isNotEmptyString } from '../../../src/base/validators';
 
 describe('validators', () => {
-    test('isNotEmptyString', () => {
-        expect(isNotEmptyString(undefined)).toBe(false);
-        expect(isNotEmptyString('')).toBe(false);
-        expect(isNotEmptyString(' ')).toBe(false);
-        expect(isNotEmptyString('a')).toBe(true);
+    describe('isNotEmptyString', () => {
+        test('should return correct value based on input', () => {
+            expect(isNotEmptyString(undefined)).toBe(false);
+            expect(isNotEmptyString('')).toBe(false);
+            expect(isNotEmptyString(' ')).toBe(false);
+            expect(isNotEmptyString('a')).toBe(true);
+        });
     });
 
     describe('isValidSapClient', () => {

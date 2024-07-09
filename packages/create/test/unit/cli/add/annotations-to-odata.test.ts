@@ -100,7 +100,7 @@ describe('add/annotations-to-odata', () => {
         jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
     });
 
-    test('annotations-to-odata - CF environment', async () => {
+    test('should result in error when executed for CF projects', async () => {
         jest.spyOn(validations, 'validateAdpProject').mockRejectedValueOnce(
             new Error('This command is not supported for CF projects.')
         );
@@ -114,7 +114,7 @@ describe('add/annotations-to-odata', () => {
         expect(generateChangeSpy).not.toBeCalled();
     });
 
-    test('annotations-to-odata - no system configuration', async () => {
+    test('should result in error when system configuration is missing', async () => {
         jest.spyOn(adp, 'getAdpConfig').mockRejectedValueOnce(new Error('No system configuration found in ui5.yaml'));
 
         const command = new Command('annotations-to-odata');
@@ -126,7 +126,7 @@ describe('add/annotations-to-odata', () => {
         expect(generateChangeSpy).not.toBeCalled();
     });
 
-    test('annotations-to-odata - not an Adaptation Project', async () => {
+    test('should result in error when the project is not Adaptation Project', async () => {
         jest.spyOn(validations, 'validateAdpProject').mockRejectedValueOnce(
             new Error('This command can only be used for an Adaptation Project')
         );
@@ -140,22 +140,24 @@ describe('add/annotations-to-odata', () => {
         expect(generateChangeSpy).not.toBeCalled();
     });
 
-    test('annotations-to-odata - preview-middleware custom configuration', async () => {
+    test('should pass succesfully when missing fiori-tools-preview configuration but has preview-middleware configuration', async () => {
         jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
             findCustomMiddleware: jest.fn().mockImplementation((customMiddleware: string) => {
                 if (customMiddleware === 'fiori-tools-preview') {
                     return undefined;
                 }
-                return {
-                    configuration: {
-                        adp: {
-                            target: {
-                                url: 'https://sap.example',
-                                client: '100'
+                if (customMiddleware === 'preview-middleware') {
+                    return {
+                        configuration: {
+                            adp: {
+                                target: {
+                                    url: 'https://sap.example',
+                                    client: '100'
+                                }
                             }
                         }
-                    }
-                };
+                    };
+                }
             })
         } as Partial<UI5Config> as UI5Config);
 
@@ -167,7 +169,7 @@ describe('add/annotations-to-odata', () => {
         expect(generateChangeSpy).toBeCalled();
     });
 
-    test('annotations-to-odata - --simulate', async () => {
+    test('should not commit changes when called with simulate', async () => {
         const command = new Command('data-source');
         addAnnotationsToOdataCommand(command);
         await command.parseAsync(getArgv(appRoot, '--simulate'));
@@ -177,7 +179,7 @@ describe('add/annotations-to-odata', () => {
         expect(traceSpy).toBeCalled();
     });
 
-    test('annotations-to-odata - authentication error', async () => {
+    test('should fail with authentication error after 3 attempts', async () => {
         jest.spyOn(adp, 'getManifestDataSources').mockRejectedValueOnce({
             message: '401:Unauthorized',
             response: { status: 401 }
@@ -196,7 +198,7 @@ describe('add/annotations-to-odata', () => {
         expect(generateChangeSpy).toBeCalled();
     });
 
-    test('annotations-to-odata - no data sources in manifest', async () => {
+    test('should fail when no data sources found in base application manifest', async () => {
         jest.spyOn(adp, 'getManifestDataSources').mockRejectedValueOnce(
             new Error('No data sources found in the manifest')
         );
