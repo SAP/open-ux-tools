@@ -28,6 +28,7 @@
     "validators": {
         "manifestContainsNoODataServices": "Manifest contains no OData Services.",
         "inputCannotBeEmpty": "{{input}} cannot be empty.",
-        "inpuCannotHaveSpaces": "{{input}} cannot contain spaces."
+        "inpuCannotHaveSpaces": "{{input}} cannot contain spaces.",
+        "missingIconOrTitleOrSubtitle": "At least one of Title, Subtitle and Icon should have a value."
     }
 }

@@ -7,6 +7,7 @@ import { join, isAbsolute } from 'path';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { promptYUIQuestions } from '../../common';
 import { getAppType } from '@sap-ux/project-access';
+import { getVariant } from '../../common/utils';
 
 let loginAttempts = 3;
 
@@ -86,16 +87,6 @@ async function changeDataSource(
         }
         logger.debug(error);
     }
-}
-
-/**
- * Get the app descriptor variant.
- *
- * @param {string} basePath - The path to the adaptation project.
- * @returns {DescriptorVariant} The app descriptor variant.
- */
-function getVariant(basePath: string): DescriptorVariant {
-    return JSON.parse(readFileSync(join(basePath, 'webapp', 'manifest.appdescr_variant'), 'utf-8'));
 }
 
 /**

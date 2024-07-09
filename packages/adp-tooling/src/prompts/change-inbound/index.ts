@@ -1,7 +1,6 @@
 import type { InputQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import { t } from '../../base/i18n';
 import type { InboundChangeAnswers } from '../../types';
-import { isNotEmptyString } from '../../base/helper';
 
 /**
  * Gets the prompts for Inbound Change.
@@ -9,20 +8,8 @@ import { isNotEmptyString } from '../../base/helper';
  * @param {string} inboundId - Inbound Id of the Adp Project.
  * @returns {YUIQuestion<InboundChangeAnswers>[]} The questions/prompts.
  */
-export function getPrompts(inboundId: string | undefined): YUIQuestion<InboundChangeAnswers>[] {
+export function getPrompts(): YUIQuestion<InboundChangeAnswers>[] {
     return [
-        {
-            type: 'input',
-            name: 'inboundId',
-            message: t('prompts.inboundId'),
-            store: false,
-            guiOptions: {
-                mandatory: true,
-                hint: t('tooltips.inboundId')
-            },
-            validate: isNotEmptyString,
-            when: !inboundId
-        } as InputQuestion<InboundChangeAnswers>,
         {
             type: 'input',
             name: 'title',
