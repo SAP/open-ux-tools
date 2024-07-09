@@ -32,10 +32,20 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         ignore.push('**/webapp/index.html');
     }
 
-    fs.copyTpl(join(tmplPath, 'core', '**/*.*'), join(basePath), ui5App, undefined, {
-        globOptions: { dot: true, ignore },
-        processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
-    });
+    if (ui5App.ui5.ui5ReuseLibs) {
+        const ui5AppCopyWithReuseLibs = { ...ui5App };
+        (ui5AppCopyWithReuseLibs.ui5.ui5Libs as string[]).concat(ui5AppCopyWithReuseLibs.ui5.ui5ReuseLibs as string[]);
+
+        fs.copyTpl(join(tmplPath, 'core', '**/*.*'), join(basePath), ui5AppCopyWithReuseLibs, undefined, {
+            globOptions: { dot: true, ignore },
+            processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
+        });
+    } else {
+        fs.copyTpl(join(tmplPath, 'core', '**/*.*'), join(basePath), ui5App, undefined, {
+            globOptions: { dot: true, ignore },
+            processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
+        });
+    }
 
     // ui5.yaml
     const ui5ConfigPath = join(basePath, 'ui5.yaml');

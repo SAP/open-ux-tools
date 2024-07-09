@@ -108,7 +108,7 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
     // Dups will be removed by call to `generateUI5Project`
     feApp.ui5 = {
         ...feApp.ui5,
-        ui5Libs: getUi5Libs(feApp.template.type, feApp.service.version, feApp.ui5?.ui5Libs).concat(ui5ReuseLibs),
+        ui5Libs: getUi5Libs(feApp.template.type, feApp.service.version, feApp.ui5?.ui5Libs),
         ui5ReuseLibs: ui5ReuseLibs
     };
 
