@@ -111,10 +111,13 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
         feApp.ui5?.frameworkUrl, 
         feApp.ui5?.version
     );
+    // Get the UI5 libraries required for the project based on the project type
+    const ui5Libs = isEdmxProjectType ? feApp.ui5?.ui5Libs : undefined;
     const appConfig = {
         ...feApp,
         uShellBootstrapResourceUrl,
-        uiBootstrapResourceUrl 
+        uiBootstrapResourceUrl,
+        ui5Libs 
     };
     fs.copyTpl(
         join(rootTemplatesPath, 'common', 'add', '**/*.*'),
