@@ -1,8 +1,8 @@
 import type { Answers, Question } from 'inquirer';
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import type { Project } from '@sap-ux/project-access';
-import { ProjectProvider, getAnswer } from './utils';
+import { getProject, type Project } from '@sap-ux/project-access';
+import { getAnswer } from './utils';
 import type {
     Prompts,
     ValidationResults,
@@ -57,16 +57,14 @@ export class PromptsAPI {
     /**
      *
      * @param projectPath project path
-     * @param projectProvider
      * @param fs the file system object for reading files
      * @param project
      * @param appId app id in CAP project
      */
-    constructor(projectPath: string, projectProvider: ProjectProvider, fs: Editor, project: Project, appId = '') {
+    constructor(projectPath: string, fs: Editor, project: Project, appId = '') {
         this.context = {
             fs,
             projectPath,
-            projectProvider,
             project: project,
             appId: appId,
             appPath: join(projectPath, appId)
@@ -85,10 +83,9 @@ export class PromptsAPI {
         if (!fs) {
             fs = create(createStorage());
         }
-        const projectProvider = await ProjectProvider.createProject(projectPath, fs);
         await initI18n();
-        const project = await projectProvider.getProject();
-        return new PromptsAPI(projectPath, projectProvider, fs, project, appId);
+        const project = await getProject(projectPath);
+        return new PromptsAPI(projectPath, fs, project, appId);
     }
 
     /**

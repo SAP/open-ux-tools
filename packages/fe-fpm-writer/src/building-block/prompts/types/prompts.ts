@@ -9,13 +9,10 @@ import type {
     TablePromptsAnswer,
     PromptsType
 } from './basic';
-import type { ProjectProvider } from '../utils';
 
 export interface PromptContext {
     fs: Editor;
     project: Project;
-    // ToDo - remove
-    projectProvider: ProjectProvider;
     // ToDo - projectPath can be used from project?
     projectPath: string;
     appPath: string;
