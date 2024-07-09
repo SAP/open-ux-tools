@@ -114,7 +114,11 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
     // Dups will be removed by call to `generateUI5Project`
     feApp.ui5 = {
         ...feApp.ui5,
-        ui5Libs: getUi5Libs(feApp.template.type, feApp.service.version, feApp.service.metadata, feApp.ui5?.ui5Libs)
+        ui5Libs: getUi5Libs(feApp.template.type, feApp.service.version, feApp.service.metadata, feApp.ui5?.ui5Libs),
+        ui5ReuseLibs:
+            feApp.service.version === OdataVersion.v4 && feApp.service.metadata
+                ? getAnnotationV4Libs(feApp.service.metadata)
+                : ''
     };
 
     // Assign a default annotation name if the service type is EDMX and no local annotation name is provided
