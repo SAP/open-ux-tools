@@ -1,5 +1,14 @@
 # @sap-ux/adp-tooling
 
+## 0.12.2
+
+### Patch Changes
+
+-   Updated dependencies [0ae685e]
+    -   @sap-ux/project-access@1.24.0
+    -   @sap-ux/axios-extension@1.15.1
+    -   @sap-ux/system-access@0.5.1
+
 ## 0.12.1
 
 ### Patch Changes
