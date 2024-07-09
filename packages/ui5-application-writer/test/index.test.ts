@@ -38,7 +38,6 @@ describe('UI5 templates', () => {
         },
         ui5: {
             framework: 'OpenUI5',
-            ui5Libs: ['sap.m', 'sap.ui.core', 'sap.ushell', 'sap.fe.templates', 'sap.nw.core.gbt.notes.lib.reuse'],
             ui5ReuseLibs: ['sap.nw.core.gbt.notes.lib.reuse']
         },
         'package': {
