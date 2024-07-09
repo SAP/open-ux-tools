@@ -84,15 +84,13 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
 
     const coercedUI5Version = semVer.coerce(feApp.ui5?.version)!;
     // Determine if the changes preview should be enabled based on the project type and UI5 version
-    const changesPreview = isEdmxProjectType 
-        ? feApp.ui5?.version 
-            ? semVer.lt(coercedUI5Version, changesPreviewToVersion) // Check if the coerced version is less than the required version
-            : false 
+    const changesPreview = isEdmxProjectType && feApp.ui5?.version
+        ? semVer.lt(coercedUI5Version, changesPreviewToVersion) // Check if the coerced version is less than the required version
         : false;
+
     // Determine if the changes loader should be enabled based on the project type and service version
-    const changesLoader = isEdmxProjectType 
-        ? feApp.service.version === OdataVersion.v2 
-        : false;
+    const changesLoader = isEdmxProjectType && feApp.service.version === OdataVersion.v2;
+
     // Define template options with the determined changes preview and changes loader settings
     const templateOptions: TemplateOptions = {
         changesPreview,
@@ -180,8 +178,6 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
         feApp.service?.version === OdataVersion.v4 &&
         (!!feApp.service?.metadata || feApp.service.type === ServiceType.CDS);
 
-    
-    // Add scripts to package.json only for non-CAP projects
     packageJson.scripts = Object.assign(packageJson.scripts ?? {}, {
         ...getPackageJsonTasks({
             localOnly: !feApp.service?.url,
