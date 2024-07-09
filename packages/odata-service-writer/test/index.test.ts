@@ -54,8 +54,7 @@ describe('ODataService templates', () => {
         const ui5Yaml = (await UI5Config.newInstance('')).addFioriToolsProxydMiddleware({ ui5: {} }).toString();
         fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
         fs.write(join(testDir, 'ui5-local.yaml'), '');
-        const packageJson = serviceType === ServiceType.CDS ? {} : { ui5: { dependencies: [] } };
-        fs.writeJSON(join(testDir, 'package.json'), packageJson);
+        fs.writeJSON(join(testDir, 'package.json'), {});
         fs.write(
             join(testDir, 'webapp/manifest.json'),
             JSON.stringify({
