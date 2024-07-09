@@ -2,6 +2,7 @@ import { join } from 'path';
 import type { Manifest, Package } from '../../src';
 import { createApplicationAccess, createProjectAccess } from '../../src';
 import * as i18nMock from '../../src/project/i18n/write';
+import * as specMock from '../../src/project/specification';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { promises } from 'fs';
@@ -147,7 +148,7 @@ describe('Test function createApplicationAccess()', () => {
         const appRoot = join(sampleRoot, 'fiori_elements');
 
         // Test execution
-        const appAccess = await createApplicationAccess(appRoot, memFs);
+        const appAccess = await createApplicationAccess(appRoot, { fs: memFs });
         await appAccess.createAnnotationI18nEntries([
             {
                 key: 'newKey',
@@ -322,6 +323,17 @@ describe('Test function createApplicationAccess()', () => {
         // Result check
         const result = memFs.read(manifestPath);
         expect(result).toBe('{\n    "sap.app": {}\n}\n');
+    });
+
+    test('Get instance of specification (mocked)', async () => {
+        // Mock setup
+        const appRoot = join(sampleRoot, 'fiori_elements');
+        jest.spyOn(specMock, 'getSpecification').mockResolvedValueOnce({ test: 'specification' });
+        // Test execution
+        const appAccess = await createApplicationAccess(appRoot);
+        const spec = await appAccess.getSpecification();
+        // Result check
+        expect(spec).toEqual({ test: 'specification' });
     });
 
     test('Error handling for non existing app', async () => {
