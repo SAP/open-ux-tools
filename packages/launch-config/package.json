@@ -19,7 +19,7 @@
         "clean": "rimraf ./reports",
         "compile": "tsc  --build ./tsconfig.build.json --pretty",
         "build": "tsc --build",
-        "build:deps": "yarn lerna run --concurrency 1 --no-bail --stream --scope @sap/ux-launch-config  --include-dependencies build",
+        "build:deps": "yarn lerna run --concurrency 1 --no-bail --stream --scope @sap-ux/launch-config  --include-dependencies build",
         "test": "jest --maxWorkers=1 --ci --forceExit --detectOpenHandles",
         "watch": "tsc --build --watch ./",
         "lint": "eslint . --ext .ts,.tsx",
