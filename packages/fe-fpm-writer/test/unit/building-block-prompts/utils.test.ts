@@ -24,6 +24,7 @@ import {
 } from '../../../src/building-block/prompts/utils';
 import { FioriAnnotationService } from '@sap-ux/fiori-annotation-api';
 import { testSchema } from '../sample/building-block/webapp-prompts-cap/schema';
+import type { PromptContext } from '../../../src/building-block/prompts/types';
 
 jest.setTimeout(10000);
 
@@ -49,11 +50,20 @@ describe('utils - ', () => {
     let projectProvider: ProjectProvider;
     let capProjectProvider: ProjectProvider;
     let fs: Editor;
+    let context: PromptContext;
 
     beforeAll(async () => {
         projectProvider = await ProjectProvider.createProject(projectFolder);
         capProjectProvider = await ProjectProvider.createProject(capProjectFolder);
         fs = create(createStorage());
+        context = {
+            projectProvider,
+            fs,
+            projectPath: projectFolder,
+            appId: '',
+            appPath: projectFolder,
+            project: await projectProvider.getProject()
+        };
     });
 
     describe('annotation service - ', () => {
@@ -178,7 +188,7 @@ describe('utils - ', () => {
 
     describe('prompts', () => {
         test('entityPrompt', async () => {
-            let entityPrompt = getEntityPrompt(projectProvider, {
+            let entityPrompt = getEntityPrompt(context, {
                 message: 'entity'
             });
             expect(entityPrompt).toMatchSnapshot();
@@ -186,9 +196,15 @@ describe('utils - ', () => {
             const choices = await (entityPrompt.choices as Choices)();
             expect(choices).toMatchSnapshot();
 
-            entityPrompt = getEntityPrompt({ getXmlFiles: () => [] } as unknown as ProjectProvider, {
-                message: 'entity'
-            });
+            entityPrompt = getEntityPrompt(
+                {
+                    ...context,
+                    projectProvider: { getXmlFiles: () => [] } as unknown as ProjectProvider
+                },
+                {
+                    message: 'entity'
+                }
+            );
             await expect(async () => await (entityPrompt.choices as Choices)()).rejects.toThrowError();
         });
 
@@ -242,11 +258,11 @@ describe('utils - ', () => {
 
         test('getAnnotationPathQualifierPrompt', async () => {
             const annotationPathPrompt = getAnnotationPathQualifierPrompt(
-                projectProvider,
-                [UIAnnotationTerms.LineItem],
+                context,
                 {
                     message: 'testMessage'
-                }
+                },
+                [UIAnnotationTerms.LineItem]
             );
             expect(annotationPathPrompt).toMatchSnapshot();
             const choicesProp = annotationPathPrompt.choices as Choices;
@@ -273,7 +289,7 @@ describe('utils - ', () => {
         });
 
         test('getAggregationPathPrompt', async () => {
-            const aggregationPathPrompt = getAggregationPathPrompt(fs, projectFolder, {
+            const aggregationPathPrompt = getAggregationPathPrompt(context, {
                 message: 'AggregationPathMessage'
             });
             expect(aggregationPathPrompt).toMatchSnapshot();
@@ -295,7 +311,7 @@ describe('utils - ', () => {
             ).rejects.toThrow();
         });
         test('getViewOrFragmentPathPrompt', async () => {
-            const viewOrFragmentPathPrompt = getViewOrFragmentPathPrompt(fs, projectFolder, 'validationError', {
+            const viewOrFragmentPathPrompt = getViewOrFragmentPathPrompt(context, 'validationError', {
                 message: 'testMessage',
                 dependantPromptNames: ['aggregationPath']
             });
@@ -360,7 +376,7 @@ describe('utils - ', () => {
             `);
         });
         test('getFilterBarIdPrompt - input type', () => {
-            const prompt = getFilterBarIdPrompt(fs, '', { message: 'message', type: 'input' });
+            const prompt = getFilterBarIdPrompt(context, { message: 'message', type: 'input' });
             expect(prompt).toMatchInlineSnapshot(`
                 Object {
                   "message": "message",
@@ -372,7 +388,7 @@ describe('utils - ', () => {
         });
 
         test('getBuildingBlockIdPrompt', async () => {
-            const prompt = getBuildingBlockIdPrompt(fs, 'error', projectFolder, {
+            const prompt = getBuildingBlockIdPrompt(context, 'error', {
                 message: 'message'
             });
             expect(prompt).toMatchInlineSnapshot(`
@@ -391,7 +407,7 @@ describe('utils - ', () => {
         });
 
         test('getFilterBarIdPrompt - list type', () => {
-            const prompt = getFilterBarIdPrompt(fs, projectFolder, {
+            const prompt = getFilterBarIdPrompt(context, {
                 message: 'message',
                 type: 'list',
                 placeholder: 'Select or enter a filter bar ID',
@@ -425,7 +441,7 @@ describe('utils - ', () => {
         });
 
         test('getCAPServicePrompt', async () => {
-            const prompt = await getCAPServicePrompt(capProjectProvider, {
+            const prompt = await getCAPServicePrompt(context, {
                 message: 'message'
             });
             expect(prompt).toMatchInlineSnapshot(`

@@ -7,7 +7,7 @@ import { join, relative } from 'path';
 import type { ProjectProvider } from './project';
 import { getAnnotationPathQualifiers, getEntityTypes } from './service';
 import { getCapServiceName } from '@sap-ux/project-access';
-import type { InputPromptQuestion, ListPromptQuestion, PromptListChoices, WithRequired } from '../types';
+import type { InputPromptQuestion, ListPromptQuestion, PromptListChoices, WithRequired, PromptContext } from '../types';
 import { BuildingBlockType } from '../../types';
 import type { BindingContextType } from '../../types';
 import { getXPathStringsForXmlFile, isElementIdAvailable } from './xml';
@@ -39,16 +39,17 @@ export function getBooleanPrompt(properties: WithRequired<Partial<ListPromptQues
 /**
  * Returns the prompt for choosing the existing annotation term.
  *
- * @param projectProvider - the project provider
- * @param annotationTerm - the annotation term
+ * @param context - prompt context including data about project
  * @param properties - object with additional properties of question
+ * @param annotationTerm - the annotation term
  * @returns prompt for choosing the annotation term.
  */
 export function getAnnotationPathQualifierPrompt(
-    projectProvider: ProjectProvider,
-    annotationTerm: UIAnnotationTerms[],
-    properties: Partial<ListPromptQuestion> = {}
+    context: PromptContext,
+    properties: Partial<ListPromptQuestion> = {},
+    annotationTerm: UIAnnotationTerms[] = []
 ): ListPromptQuestion {
+    const { projectProvider } = context;
     return {
         ...properties,
         type: 'list',
@@ -83,18 +84,17 @@ export function getAnnotationPathQualifierPrompt(
 /**
  * Returns the prompt for choosing a View or a Fragment file.
  *
- * @param fs - the file system object for reading files
- * @param basePath - the base path to search for files
+ * @param context - prompt context including data about project
  * @param validationErrorMessage - the error message to show if validation fails
  * @param properties - object with additional properties of question
  * @returns prompt for choosing the fragment file.
  */
 export function getViewOrFragmentPathPrompt(
-    fs: Editor,
-    basePath: string,
+    context: PromptContext,
     validationErrorMessage: string,
     properties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
+    const { fs, appPath } = context;
     return {
         ...properties,
         type: 'list',
@@ -103,11 +103,11 @@ export function getViewOrFragmentPathPrompt(
         choices: async () => {
             const files = await findFilesByExtension(
                 '.xml',
-                basePath,
+                appPath,
                 ['.git', 'node_modules', 'dist', 'annotations', 'localService'],
                 fs
             );
-            return transformChoices(files.map((file) => relative(basePath, file)));
+            return transformChoices(files.map((file) => relative(appPath, file)));
         },
         validate: (value: string) => (value ? true : validationErrorMessage),
         placeholder: properties.placeholder ?? t('viewOrFragmentPath.defaultPlaceholder')
@@ -117,14 +117,15 @@ export function getViewOrFragmentPathPrompt(
 /**
  * Returns the prompt for choosing CAP service.
  *
- * @param projectProvider - the project provider
+ * @param context - prompt context including data about project
  * @param properties - object with additional properties of question
  * @returns prompt for choosing CAP service.
  */
 export async function getCAPServicePrompt(
-    projectProvider: ProjectProvider,
+    context: PromptContext,
     properties: Partial<ListPromptQuestion> = {}
 ): Promise<ListPromptQuestion> {
+    const { projectProvider } = context;
     const services = await getCAPServiceChoices(projectProvider);
     const defaultValue: string | undefined =
         services.length === 1 ? (services[0] as { name: string; value: string }).value : undefined;
@@ -142,14 +143,15 @@ export async function getCAPServicePrompt(
 /**
  * Returns a Prompt for choosing an entity.
  *
- * @param projectProvider - the project provider
+ * @param context - prompt context including data about project
  * @param properties - object with additional properties of question
  * @returns prompt for choosing entity.
  */
 export function getEntityPrompt(
-    projectProvider: ProjectProvider,
+    context: PromptContext,
     properties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
+    const { projectProvider } = context;
     return {
         ...properties,
         type: 'list',
@@ -192,16 +194,15 @@ export async function getCAPServiceChoices(projectProvider: ProjectProvider): Pr
 /**
  * Return a Prompt for choosing the aggregation path.
  *
- * @param fs - the file system object for reading files
- * @param basePath - the base path to search for aggregations
+ * @param context - prompt context including data about project
  * @param properties - object with additional properties of question
  * @returns prompt for choosing aggregation path of selected xml file.
  */
 export function getAggregationPathPrompt(
-    fs: Editor,
-    basePath: string,
+    context: PromptContext,
     properties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
+    const { fs, appPath } = context;
     return {
         ...properties,
         type: 'list',
@@ -211,7 +212,7 @@ export function getAggregationPathPrompt(
             const { viewOrFragmentPath } = answers;
             if (viewOrFragmentPath) {
                 const choices = transformChoices(
-                    getXPathStringsForXmlFile(join(basePath, viewOrFragmentPath), fs),
+                    getXPathStringsForXmlFile(join(appPath, viewOrFragmentPath), fs),
                     false
                 );
                 if (!choices.length) {
@@ -225,7 +226,6 @@ export function getAggregationPathPrompt(
     };
 }
 
-// ToDo - move to utils?
 /**
  * Method converts choices to "PromptListChoices" type.
  *
@@ -250,16 +250,15 @@ export function transformChoices(obj: Record<string, string> | string[], sort = 
 /**
  * Returns a Prompt for selecting existing filter bar ID or entering a new one.
  *
- * @param fs  - the file system object for reading files
- * @param basePath - the application path
+ * @param context - prompt context including data about project
  * @param properties - Object with additional properties of question
  * @returns an Input or List Prompt
  */
 export function getFilterBarIdPrompt(
-    fs: Editor,
-    basePath: string,
+    context: PromptContext,
     properties: WithRequired<Partial<ListPromptQuestion | InputPromptQuestion>, 'type'>
 ): ListPromptQuestion | InputPromptQuestion {
+    const { fs, appPath } = context;
     const prompt: InputPromptQuestion = {
         ...properties,
         type: 'input',
@@ -279,7 +278,7 @@ export function getFilterBarIdPrompt(
             }
             return transformChoices(
                 await getBuildingBlockIdsInFile(
-                    join(basePath!, answers.viewOrFragmentPath),
+                    join(appPath!, answers.viewOrFragmentPath),
                     BuildingBlockType.FilterBar,
                     fs!
                 )
@@ -352,18 +351,17 @@ export function getBindingContextTypePrompt(properties: Partial<ListPromptQuesti
 /**
  * Returns a Prompt for entering a Building block ID.
  *
- * @param fs  - the file system object for reading files
+ * @param context - prompt context including data about project
  * @param validationErrorMessage - The error message to show if ID validation fails
- * @param basePath - the application path
  * @param properties - object with additional properties of question
  * @returns an InputPrompt object for getting the building block ID
  */
 export function getBuildingBlockIdPrompt(
-    fs: Editor,
+    context: PromptContext,
     validationErrorMessage: string,
-    basePath: string,
     properties: Partial<InputPromptQuestion> = {}
 ): InputPromptQuestion {
+    const { fs, appPath } = context;
     return {
         ...properties,
         type: 'input',
@@ -374,7 +372,7 @@ export function getBuildingBlockIdPrompt(
             } else {
                 // ToDo
                 return answers?.viewOrFragmentPath &&
-                    !isElementIdAvailable(fs, join(basePath, answers.viewOrFragmentPath), value)
+                    !isElementIdAvailable(fs, join(appPath, answers.viewOrFragmentPath), value)
                     ? t('id.existingIdValidation')
                     : true;
             }

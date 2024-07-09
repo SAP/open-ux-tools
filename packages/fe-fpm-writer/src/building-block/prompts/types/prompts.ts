@@ -9,6 +9,18 @@ import type {
     PromptsType
 } from './basic';
 import type { ProjectProvider } from '../utils';
+import { Project } from '@sap-ux/project-access';
+
+export interface PromptContext {
+    fs: Editor;
+    project: Project;
+    // ToDo - remove
+    projectProvider: ProjectProvider;
+    // ToDo - projectPath can be used from project?
+    projectPath: string;
+    appPath: string;
+    appId: string;
+}
 
 // ToDo constand or new enum instead of BuildingBlockType enum?
 type AnswerMapping = {
@@ -39,8 +51,6 @@ export type NarrowPrompt<T, N = SupportedPrompts> = N extends { type: T } ? N : 
 
 export type SupportedPromptsMap = {
     [N in SupportedPrompts as N['type']]: (
-        fs: Editor,
-        basePath: string,
-        projectProvider: ProjectProvider
+        context: PromptContext
     ) => Promise<Prompts<N['answers']>> | Prompts<N['answers']>;
 };

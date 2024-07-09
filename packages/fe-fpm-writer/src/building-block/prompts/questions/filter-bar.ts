@@ -1,6 +1,5 @@
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { Answers } from 'inquirer';
-import type { Editor } from 'mem-fs-editor';
 import { i18nNamespaces, translate } from '../../../i18n';
 import {
     getAggregationPathPrompt,
@@ -11,23 +10,19 @@ import {
     getViewOrFragmentPathPrompt,
     isCapProject
 } from '../utils';
-import type { ProjectProvider } from '../utils';
-import type { Prompts, FilterBarPromptsAnswer } from '../types';
+import type { Prompts, FilterBarPromptsAnswer, PromptContext } from '../types';
 import { BuildingBlockType } from '../../types';
 
 /**
  * Returns a list of prompts required to generate a filterbar building block.
  *
- * @param fs the memfs editor instance
- * @param basePath Path to project
- * @param projectProvider Project provider
+ * @param context - prompt context including data about project
  * @returns Prompt with questions for filterbar.
  */
 export async function getFilterBarBuildingBlockPrompts(
-    fs: Editor,
-    basePath: string,
-    projectProvider: ProjectProvider
+    context: PromptContext
 ): Promise<Prompts<FilterBarPromptsAnswer>> {
+    const { projectProvider } = context;
     const t = translate(i18nNamespaces.buildingBlock, 'prompts.filterBar.');
 
     const defaultAnswers: Answers = {
@@ -35,37 +30,41 @@ export async function getFilterBarBuildingBlockPrompts(
     };
     return {
         questions: [
-            getViewOrFragmentPathPrompt(fs, basePath, t('viewOrFragmentPath.validate'), {
+            getViewOrFragmentPathPrompt(context, t('viewOrFragmentPath.validate'), {
                 required: true,
                 message: t('viewOrFragmentPath.message'),
                 dependantPromptNames: ['aggregationPath']
             }),
-            getBuildingBlockIdPrompt(fs, t('id.validation'), basePath, {
+            getBuildingBlockIdPrompt(context, t('id.validation'), {
                 message: t('id.message'),
                 default: defaultAnswers.id,
                 required: true
             }),
             ...((await isCapProject(projectProvider))
                 ? [
-                      await getCAPServicePrompt(projectProvider, {
+                      await getCAPServicePrompt(context, {
                           required: true,
                           message: t('service'),
                           dependantPromptNames: []
                       })
                   ]
                 : []),
-            getAggregationPathPrompt(fs, basePath, { message: t('aggregation'), required: true }),
-            getEntityPrompt(projectProvider, {
+            getAggregationPathPrompt(context, { message: t('aggregation'), required: true }),
+            getEntityPrompt(context, {
                 message: t('entity'),
                 dependantPromptNames: ['buildingBlockData.metaPath.qualifier'],
                 required: true
             }),
-            getAnnotationPathQualifierPrompt(projectProvider, [UIAnnotationTerms.SelectionFields], {
-                message: t('qualifier'),
-                additionalInfo: t('valuesDependentOnEntityTypeInfo'),
-                required: true,
-                placeholder: t('qualifierPlaceholder')
-            }),
+            getAnnotationPathQualifierPrompt(
+                context,
+                {
+                    message: t('qualifier'),
+                    additionalInfo: t('valuesDependentOnEntityTypeInfo'),
+                    required: true,
+                    placeholder: t('qualifierPlaceholder')
+                },
+                [UIAnnotationTerms.SelectionFields]
+            ),
             {
                 type: 'input',
                 name: 'buildingBlockData.filterChanged',

@@ -1,7 +1,6 @@
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { TFunction } from 'i18next';
 import type { Answers } from 'inquirer';
-import type { Editor } from 'mem-fs-editor';
 import { i18nNamespaces, translate } from '../../../i18n';
 import {
     getAggregationPathPrompt,
@@ -14,35 +13,29 @@ import {
     getViewOrFragmentPathPrompt,
     isCapProject
 } from '../utils';
-import type { ProjectProvider } from '../utils';
-import type { ChartPromptsAnswer, Prompts } from '../types';
+import type { ChartPromptsAnswer, PromptContext, Prompts } from '../types';
 import { BuildingBlockType } from '../../types';
 
 /**
  * Returns a list of prompts required to generate a chart building block.
  *
- * @param fs the memfs editor instance
- * @param basePath Path to project
- * @param projectProvider Project provider
+ * @param context - prompt context including data about project
  * @returns Prompt with questions for chart.
  */
-export async function getChartBuildingBlockPrompts(
-    fs: Editor,
-    basePath: string,
-    projectProvider: ProjectProvider
-): Promise<Prompts<ChartPromptsAnswer>> {
+export async function getChartBuildingBlockPrompts(context: PromptContext): Promise<Prompts<ChartPromptsAnswer>> {
+    const { projectProvider } = context;
     const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.chart.');
     const defaultAnswers: Answers = {
         id: 'Chart'
     };
     return {
         questions: [
-            getViewOrFragmentPathPrompt(fs, basePath, t('viewOrFragmentPath.validate'), {
+            getViewOrFragmentPathPrompt(context, t('viewOrFragmentPath.validate'), {
                 required: true,
                 message: t('viewOrFragmentPath.message'),
                 dependantPromptNames: ['aggregationPath', 'filterBar']
             }),
-            getBuildingBlockIdPrompt(fs, t('id.validation'), basePath, {
+            getBuildingBlockIdPrompt(context, t('id.validation'), {
                 message: t('id.message'),
                 default: defaultAnswers.id,
                 required: true
@@ -55,29 +48,33 @@ export async function getChartBuildingBlockPrompts(
             }),
             ...((await isCapProject(projectProvider))
                 ? [
-                      await getCAPServicePrompt(projectProvider, {
+                      await getCAPServicePrompt(context, {
                           required: true,
                           message: t('service'),
                           dependantPromptNames: []
                       })
                   ]
                 : []),
-            getEntityPrompt(projectProvider, {
+            getEntityPrompt(context, {
                 message: t('entity'),
                 dependantPromptNames: ['buildingBlockData.metaPath.qualifier'],
                 required: true
             }),
-            getAnnotationPathQualifierPrompt(projectProvider, [UIAnnotationTerms.Chart], {
-                message: t('qualifier'),
-                additionalInfo: t('valuesDependentOnEntityTypeInfo'),
-                required: true,
-                placeholder: t('qualifierPlaceholder')
-            }),
-            getAggregationPathPrompt(fs, basePath, {
+            getAnnotationPathQualifierPrompt(
+                context,
+                {
+                    message: t('qualifier'),
+                    additionalInfo: t('valuesDependentOnEntityTypeInfo'),
+                    required: true,
+                    placeholder: t('qualifierPlaceholder')
+                },
+                [UIAnnotationTerms.Chart]
+            ),
+            getAggregationPathPrompt(context, {
                 message: t('aggregation'),
                 required: true
             }),
-            getFilterBarIdPrompt(fs, basePath, {
+            getFilterBarIdPrompt(context, {
                 message: t('filterBar.message'),
                 type: 'list',
                 placeholder: t('filterBar.placeholder'),

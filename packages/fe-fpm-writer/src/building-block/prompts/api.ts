@@ -21,8 +21,11 @@ import {
     getBuildingBlockTypePrompts
 } from './questions';
 import { i18nNamespaces, initI18n, translate } from '../../i18n';
+import { PromptContext } from './types';
+import { Project } from '@sap-ux/project-access';
+import { join } from 'path';
 
-const unsupportedPrompts = (_fs: Editor, _basePath: string, _projectProvider: ProjectProvider): Prompts<Answers> => ({
+const unsupportedPrompts = (): Prompts<Answers> => ({
     questions: []
 });
 
@@ -49,10 +52,7 @@ const PromptsCodePreviewMap = {
  *
  */
 export class PromptsAPI {
-    basePath: string;
-    projectProvider: ProjectProvider;
-    appId?: string;
-    fs: Editor;
+    public context: PromptContext;
 
     /**
      *
@@ -61,11 +61,15 @@ export class PromptsAPI {
      * @param fs the file system object for reading files
      * @param appId app id in CAP project
      */
-    constructor(projectPath: string, projectProvider: ProjectProvider, fs: Editor, appId?: string) {
-        this.basePath = projectPath;
-        this.projectProvider = projectProvider;
-        this.fs = fs;
-        this.appId = appId;
+    constructor(projectPath: string, projectProvider: ProjectProvider, fs: Editor, project: Project, appId = '') {
+        this.context = {
+            fs,
+            projectPath,
+            projectProvider,
+            project: project,
+            appId: appId,
+            appPath: join(projectPath, appId)
+        };
     }
 
     /**
@@ -82,7 +86,8 @@ export class PromptsAPI {
         }
         const projectProvider = await ProjectProvider.createProject(projectPath, fs);
         await initI18n();
-        return new PromptsAPI(projectPath, projectProvider, fs, appId);
+        const project = await projectProvider.getProject();
+        return new PromptsAPI(projectPath, projectProvider, fs, project, appId);
     }
 
     /**
@@ -96,9 +101,7 @@ export class PromptsAPI {
     ): Promise<Prompts<NarrowPrompt<typeof type>['answers']>> {
         const method = type in PromptsQuestionsMap ? PromptsQuestionsMap[type] : unsupportedPrompts;
         if (typeof method === 'function') {
-            return method(this.fs, this.basePath, this.projectProvider) as Promise<
-                Prompts<NarrowPrompt<typeof type>['answers']>
-            >;
+            return method(this.context) as Promise<Prompts<NarrowPrompt<typeof type>['answers']>>;
         }
         return {
             questions: []
@@ -190,12 +193,12 @@ export class PromptsAPI {
     ): Editor {
         const config = { type, answers };
         if (!this.isGenerationSupported(config)) {
-            return this.fs;
+            return this.context.fs;
         }
         const generator = PromptsGeneratorsMap.hasOwnProperty(config.type)
             ? PromptsGeneratorsMap[config.type]
             : undefined;
-        return generator?.(this.basePath, config.answers, this.fs) ?? this.fs;
+        return generator?.(this.context.appPath, config.answers, this.context.fs) ?? this.context.fs;
     }
 
     /**
@@ -216,7 +219,7 @@ export class PromptsAPI {
         const codePreviewGenerator = PromptsCodePreviewMap.hasOwnProperty(config.type)
             ? PromptsCodePreviewMap[config.type]
             : undefined;
-        return codePreviewGenerator?.(this.basePath, config.answers) ?? '';
+        return codePreviewGenerator?.(this.context.appPath, config.answers) ?? '';
     }
 
     /**

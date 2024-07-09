@@ -1,7 +1,6 @@
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { TFunction } from 'i18next';
 import type { Answers } from 'inquirer';
-import type { Editor } from 'mem-fs-editor';
 import { i18nNamespaces, translate } from '../../../i18n';
 import {
     getAggregationPathPrompt,
@@ -15,8 +14,7 @@ import {
     getViewOrFragmentPathPrompt,
     isCapProject
 } from '../utils';
-import type { ProjectProvider } from '../utils';
-import type { Prompts, PromptsGroup, TablePromptsAnswer } from '../types';
+import type { PromptContext, Prompts, PromptsGroup, TablePromptsAnswer } from '../types';
 import { BuildingBlockType } from '../../types';
 
 const TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID = 'tableBuildingBlockProperties';
@@ -25,16 +23,11 @@ const TABLE_VISUALIZATION_PROPERTIES_GROUP_ID = 'tableVisualizationProperties';
 /**
  * Returns a list of prompts required to generate a table building block.
  *
- * @param fs the memfs editor instance
- * @param basePath Path to project
- * @param projectProvider Project provider
+ * @param context - prompt context including data about project
  * @returns Prompt with questions for table.
  */
-export async function getTableBuildingBlockPrompts(
-    fs: Editor,
-    basePath: string,
-    projectProvider: ProjectProvider
-): Promise<Prompts<TablePromptsAnswer>> {
+export async function getTableBuildingBlockPrompts(context: PromptContext): Promise<Prompts<TablePromptsAnswer>> {
+    const { projectProvider } = context;
     const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.table.');
     const groups: PromptsGroup[] = [
         {
@@ -65,13 +58,13 @@ export async function getTableBuildingBlockPrompts(
         groups,
         questions: [
             //first prompt group
-            getViewOrFragmentPathPrompt(fs, basePath, t('viewOrFragmentPath.validate'), {
+            getViewOrFragmentPathPrompt(context, t('viewOrFragmentPath.validate'), {
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
                 required: true,
                 message: t('viewOrFragmentPath.message'),
                 dependantPromptNames: ['aggregationPath', 'filterBar']
             }),
-            getBuildingBlockIdPrompt(fs, t('id.validation'), basePath, {
+            getBuildingBlockIdPrompt(context, t('id.validation'), {
                 message: t('id.message'),
                 default: defaultAnswers.id,
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
@@ -86,7 +79,7 @@ export async function getTableBuildingBlockPrompts(
             }),
             ...((await isCapProject(projectProvider))
                 ? [
-                      await getCAPServicePrompt(projectProvider, {
+                      await getCAPServicePrompt(context, {
                           groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
                           required: true,
                           message: t('service'),
@@ -94,25 +87,29 @@ export async function getTableBuildingBlockPrompts(
                       })
                   ]
                 : []),
-            getEntityPrompt(projectProvider, {
+            getEntityPrompt(context, {
                 message: t('entity'),
                 dependantPromptNames: ['buildingBlockData.metaPath.qualifier'],
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
                 required: true
             }),
-            getAnnotationPathQualifierPrompt(projectProvider, [UIAnnotationTerms.LineItem], {
-                message: t('qualifier'),
-                additionalInfo: t('valuesDependentOnEntityTypeInfo'),
-                groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
-                required: true,
-                placeholder: t('qualifierPlaceholder')
-            }),
-            getAggregationPathPrompt(fs, basePath, {
+            getAnnotationPathQualifierPrompt(
+                context,
+                {
+                    message: t('qualifier'),
+                    additionalInfo: t('valuesDependentOnEntityTypeInfo'),
+                    groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
+                    required: true,
+                    placeholder: t('qualifierPlaceholder')
+                },
+                [UIAnnotationTerms.LineItem]
+            ),
+            getAggregationPathPrompt(context, {
                 message: t('aggregation'),
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
                 required: true
             }),
-            getFilterBarIdPrompt(fs, basePath, {
+            getFilterBarIdPrompt(context, {
                 message: t('filterBar.message'),
                 type: 'list',
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,

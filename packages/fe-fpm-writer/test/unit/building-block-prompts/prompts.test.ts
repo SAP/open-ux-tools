@@ -15,7 +15,6 @@ describe('Prompts', () => {
     let promptsAPI: PromptsAPI;
     beforeEach(async () => {
         fs = create(createStorage());
-        // fs.delete(projectPath);
         const projectProvider = await ProjectProvider.createProject(projectPath);
         jest.spyOn(ProjectProvider, 'createProject').mockResolvedValue(projectProvider);
         promptsAPI = await PromptsAPI.init(projectPath, undefined, fs);
@@ -23,7 +22,7 @@ describe('Prompts', () => {
 
     test('Init PromptsApi without fs', async () => {
         const initPromptsApi = await PromptsAPI.init(projectPath);
-        expect(initPromptsApi.fs).toBeDefined();
+        expect(initPromptsApi.context.fs).toBeDefined();
     });
 
     test('getBuildingBlockTypePrompts', async () => {
