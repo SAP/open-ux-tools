@@ -12,7 +12,8 @@ import type {
     AnnotationsData,
     ComponentUsagesData,
     DataSourceData,
-    InboundData
+    InboundData,
+    DescriptorVariant
 } from '../../../../../src';
 import {
     AnnotationsWriter,
@@ -293,19 +294,19 @@ describe('InboundWriter', () => {
     });
 
     it('should create a new inbound change when no existing change is found', async () => {
-        const mockData = {
+        const mockData: InboundData = {
             inboundId: 'testInboundId',
-            timestamp: 1234567890,
-            flp: {
+            answers: {
                 title: 'Test Title',
                 subTitle: 'Test SubTitle',
                 icon: 'Test Icon'
-            }
+            },
+            variant: {} as DescriptorVariant
         };
 
         findChangeWithInboundIdMock.mockReturnValue({ changeWithInboundId: null, filePath: '' });
 
-        await writer.write(mockData as InboundData);
+        await writer.write(mockData);
 
         expect(getChangeMock).toHaveBeenCalled();
         expect(writeChangeToFolderMock).toHaveBeenCalled();
@@ -314,12 +315,12 @@ describe('InboundWriter', () => {
     it('should enhance existing inbound change content when found', async () => {
         const mockData = {
             inboundId: 'testInboundId',
-            timestamp: 1234567890,
-            flp: {
+            answers: {
                 title: 'New Title',
                 subTitle: 'New SubTitle',
                 icon: 'New Icon'
-            }
+            },
+            variant: {} as DescriptorVariant
         };
 
         const existingChangeContent = { inboundId: 'testInboundId', entityPropertyChange: [] };
