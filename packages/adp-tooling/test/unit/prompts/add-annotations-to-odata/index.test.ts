@@ -153,8 +153,7 @@ describe('getPrompts', () => {
 
         test('should fail with file already exists in change directory message', () => {
             jest.spyOn(validators, 'isNotEmptyString').mockReturnValueOnce(true);
-            jest.spyOn(helper, 'checkFileExists').mockReturnValueOnce(true);
-            jest.spyOn(helper, 'checkDuplicateFile').mockReturnValueOnce(true);
+            jest.spyOn(helper, 'checkFileExists').mockReturnValueOnce(true).mockReturnValueOnce(true);
 
             const filePathValidator = (getPrompts(mockBasePath, dataSources)[2] as any).validate;
 
@@ -162,8 +161,7 @@ describe('getPrompts', () => {
         });
         test('should pass with relative file path input', () => {
             jest.spyOn(validators, 'isNotEmptyString').mockReturnValueOnce(true);
-            jest.spyOn(helper, 'checkFileExists').mockReturnValueOnce(true);
-            jest.spyOn(helper, 'checkDuplicateFile').mockReturnValueOnce(false);
+            jest.spyOn(helper, 'checkFileExists').mockReturnValueOnce(true).mockReturnValueOnce(false);
 
             const filePathValidator = (getPrompts(mockBasePath, dataSources)[2] as any).validate;
 
@@ -171,8 +169,7 @@ describe('getPrompts', () => {
         });
         test('should pass with absolute file path input', () => {
             jest.spyOn(validators, 'isNotEmptyString').mockReturnValueOnce(true);
-            jest.spyOn(helper, 'checkFileExists').mockReturnValueOnce(true);
-            jest.spyOn(helper, 'checkDuplicateFile').mockReturnValueOnce(false);
+            jest.spyOn(helper, 'checkFileExists').mockReturnValueOnce(true).mockReturnValueOnce(false);
 
             const filePathValidator = (getPrompts(mockBasePath, dataSources)[2] as any).validate;
 

@@ -54,22 +54,6 @@ export function checkFileExists(filePath: string): boolean {
 }
 
 /**
- * Check if a file already exists in a directory.
- *
- * @param {string} filePath - The path to the file.
- * @param {string} checkDirectory - The directory to check.
- * @returns {boolean} true if the file exists in the directory, false otherwise
- */
-export function checkDuplicateFile(filePath: string, checkDirectory: string): boolean {
-    const fileName = filePath.split(sep).pop();
-    if (!existsSync(checkDirectory)) {
-        return false;
-    }
-    const files = readdirSync(checkDirectory);
-    return files.some((file) => file === fileName);
-}
-
-/**
  * Returns the Adaptation Project configuration, throws an error if not found.
  *
  * @param {string} basePath - The path to the Adaptation Project.

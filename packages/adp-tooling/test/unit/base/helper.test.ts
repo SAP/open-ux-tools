@@ -8,7 +8,6 @@ import {
     getVariant,
     isCFEnvironment,
     checkFileExists,
-    checkDuplicateFile,
     getAdpConfig,
     getManifestDataSources
 } from '../../../src/base/helper';
@@ -86,36 +85,6 @@ describe('helper', () => {
             jest.spyOn(mockFs, 'existsSync').mockImplementation(() => true);
 
             expect(checkFileExists(basePath)).toBe(true);
-        });
-    });
-
-    describe('checkDuplicateFile', () => {
-        beforeEach(() => {
-            jest.clearAllMocks();
-        });
-
-        test('should return false when file is not duplicate', () => {
-            jest.spyOn(mockFs, 'existsSync').mockImplementation(() => true);
-            jest.spyOn(mockFs, 'readdirSync').mockImplementationOnce(() => {
-                return [] as any;
-            });
-
-            expect(checkDuplicateFile(join(basePath, 'test.file'), '/test/check/directory')).toBe(false);
-        });
-
-        test('should return false when file does not exist', () => {
-            jest.spyOn(mockFs, 'existsSync').mockImplementation(() => false);
-
-            expect(checkDuplicateFile(join(basePath, 'test.file'), '/test/check/directory')).toBe(false);
-        });
-
-        test('should return true when file is duplicate', () => {
-            jest.spyOn(mockFs, 'existsSync').mockImplementation(() => true);
-            jest.spyOn(mockFs, 'readdirSync').mockImplementationOnce(() => {
-                return ['test.file'] as any;
-            });
-
-            expect(checkDuplicateFile(join(basePath, 'test.file'), '/test/check/directory')).toBe(true);
         });
     });
 

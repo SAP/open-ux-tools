@@ -3,9 +3,9 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 import { AnnotationFileSelectType, type AddAnnotationsAnswers } from '../../types';
 import { t } from '../../i18n';
 import { filterDataSourcesByType } from '@sap-ux/project-access';
-import { checkFileExists, checkDuplicateFile } from '../../base/helper';
+import { checkFileExists } from '../../base/helper';
 import { isNotEmptyString } from '../../base/validators';
-import { join, isAbsolute } from 'path';
+import { join, isAbsolute, sep } from 'path';
 
 /**
  * Gets the prompts for adding annotations to OData service.
@@ -68,7 +68,8 @@ export function getPrompts(
                 if (!checkFileExists(filePath)) {
                     return t('validators.fileDoesNotExist');
                 }
-                if (checkDuplicateFile(filePath, join(basePath, 'webapp', 'changes', 'annotations'))) {
+                const fileName = filePath.split(sep).pop();
+                if (checkFileExists(join(basePath, 'webapp', 'changes', 'annotations', fileName))) {
                     return t('validators.annotationFileAlreadyExists');
                 }
                 return true;
