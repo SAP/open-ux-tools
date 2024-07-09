@@ -1,4 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
+import type { Project } from '@sap-ux/project-access';
 import type {
     BuildingBlockTypePromptsAnswer,
     ChartPromptsAnswer,
@@ -9,7 +10,6 @@ import type {
     PromptsType
 } from './basic';
 import type { ProjectProvider } from '../utils';
-import { Project } from '@sap-ux/project-access';
 
 export interface PromptContext {
     fs: Editor;

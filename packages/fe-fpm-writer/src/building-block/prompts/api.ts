@@ -1,6 +1,7 @@
 import type { Answers, Question } from 'inquirer';
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
+import type { Project } from '@sap-ux/project-access';
 import { ProjectProvider, getAnswer } from './utils';
 import type {
     Prompts,
@@ -10,7 +11,8 @@ import type {
     NarrowPrompt,
     PromptListChoices,
     SupportedGeneratorPrompts,
-    PromptQuestion
+    PromptQuestion,
+    PromptContext
 } from './types';
 import { PromptsType } from './types';
 import { generateBuildingBlock, getSerializedFileContent } from '..';
@@ -21,8 +23,6 @@ import {
     getBuildingBlockTypePrompts
 } from './questions';
 import { i18nNamespaces, initI18n, translate } from '../../i18n';
-import { PromptContext } from './types';
-import { Project } from '@sap-ux/project-access';
 import { join } from 'path';
 
 const unsupportedPrompts = (): Prompts<Answers> => ({
@@ -59,6 +59,7 @@ export class PromptsAPI {
      * @param projectPath project path
      * @param projectProvider
      * @param fs the file system object for reading files
+     * @param project
      * @param appId app id in CAP project
      */
     constructor(projectPath: string, projectProvider: ProjectProvider, fs: Editor, project: Project, appId = '') {
