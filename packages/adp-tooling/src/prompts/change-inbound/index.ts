@@ -9,7 +9,7 @@ import { isNotEmptyString } from '../../base/helper';
  * @param {string} inboundId - Inbound Id of the Adp Project.
  * @returns {YUIQuestion<InboundChangeAnswers>[]} The questions/prompts.
  */
-export function getPrompts(inboundId: string): YUIQuestion<InboundChangeAnswers>[] {
+export function getPrompts(inboundId: string | undefined): YUIQuestion<InboundChangeAnswers>[] {
     return [
         {
             type: 'input',
