@@ -25,7 +25,9 @@ describe('Test function createApplicationAccess()', () => {
         expect(appAccess.projectType).toBe('CAPNodejs');
         expect(appAccess.getAppId()).toBe(join('apps/two'));
         expect(appAccess.getAppRoot()).toBe(appRoot);
-        expect(Object.keys(appAccess.project.apps)).toEqual([join('apps/one'), join('apps/two')]);
+        expect(Object.keys(appAccess.project.apps).sort()).toEqual(
+            [join('apps/one'), join('apps/two'), join('apps/freestyle')].sort()
+        );
     });
 
     test('Standalone app', async () => {
@@ -353,7 +355,9 @@ describe('Test function createProjectAccess()', () => {
         expect(projectAccess).toBeDefined();
         expect(projectAccess.root).toBe(projectRoot);
         expect(projectAccess.projectType).toBe('CAPNodejs');
-        expect(projectAccess.getApplicationIds()).toEqual([join('apps/one'), join('apps/two')]);
+        expect(projectAccess.getApplicationIds().sort()).toEqual(
+            [join('apps/one'), join('apps/two'), join('apps/freestyle')].sort()
+        );
         expect(projectAccess.getApplication(join('apps/one')).getAppId()).toBe(join('apps/one'));
     });
 
