@@ -646,8 +646,8 @@ importers:
         specifier: workspace:*
         version: link:../odata-vocabularies
       '@sap/ux-cds-compiler-facade':
-        specifier: 1.13.6
-        version: 1.13.6(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
+        specifier: 1.14.0
+        version: 1.14.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
       i18next:
         specifier: 20.6.1
         version: 20.6.1
@@ -1102,8 +1102,8 @@ importers:
         specifier: workspace:*
         version: link:../xml-odata-annotation-converter
       '@sap/ux-cds-compiler-facade':
-        specifier: 1.13.6
-        version: 1.13.6(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
+        specifier: 1.14.0
+        version: 1.14.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
       '@xml-tools/ast':
         specifier: 5.0.5
         version: 5.0.5
@@ -9130,13 +9130,13 @@ packages:
       url: 0.11.0
     dev: false
 
-  /@sap/ux-cds-compiler-facade@1.13.6(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access):
-    resolution: {integrity: sha512-yShhK6VyV7ZzPJYVr4dBihCi8989xzldFQTPs+yYId+A6nepHBYAi+TNB4nnR1Iih8OtbHfy6kHy6fMqNZNkBg==}
+  /@sap/ux-cds-compiler-facade@1.14.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access):
+    resolution: {integrity: sha512-MIPJ29PdbHbJ9cR+CUL71lzQHBQ5CqTzbwa3+Gb+kOI04N4V9JJdu5RyOabnnSganf1PQcdEd62ZGvXQQ5XR0g==}
     engines: {node: '>=18.16.0'}
     peerDependencies:
       '@sap-ux/odata-annotation-core': '>=0.1.8'
       '@sap-ux/odata-annotation-core-types': '>=0.3.1'
-      '@sap-ux/project-access': 1.20.0
+      '@sap-ux/project-access': 1.22.2
     dependencies:
       '@sap-ux/odata-annotation-core': link:packages/odata-annotation-core
       '@sap-ux/odata-annotation-core-types': link:packages/odata-annotation-core-types
