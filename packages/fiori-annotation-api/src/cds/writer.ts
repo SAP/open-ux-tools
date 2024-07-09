@@ -740,7 +740,7 @@ export class CDSWriter implements ChangeHandler {
         indentLevel: number,
         firstInsert: boolean
     ): void {
-        const [index] = indexInserts(change, getChildCount(parent));
+        const index = getIndexForInsertion(getChildCount(parent), change.index);
         // change.index should not be used in this scope, because changes with indices outside the container size are merged
         // and change.index would not correctly reflect the place where a change needs to be inserted
         if (!change || !parent.range) {
@@ -990,10 +990,10 @@ function printChange(parent: ContainerNode | undefined) {
     };
 }
 
-function indexInserts<T extends ElementInserts>(change: T, containerSize: number): [number | undefined, T] {
-    const index =
-        change.index !== undefined && change.index > -1 ? Math.min(change.index, containerSize) : containerSize;
-    return [index, change];
+function getIndexForInsertion(containerSize: number, insertionIndex?: number): number {
+    return insertionIndex !== undefined && insertionIndex > -1
+        ? Math.min(insertionIndex, containerSize)
+        : containerSize;
 }
 
 function getCommas(container: ContainerNode, tokens: CompilerToken[]): Token[] {
