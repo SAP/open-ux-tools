@@ -13,6 +13,10 @@ import {
 import type { Prompts, FilterBarPromptsAnswer, PromptContext } from '../types';
 import { BuildingBlockType } from '../../types';
 
+const defaultAnswers: Answers = {
+    id: 'FilterBar'
+};
+
 /**
  * Returns a list of prompts required to generate a filterbar building block.
  *
@@ -25,9 +29,6 @@ export async function getFilterBarBuildingBlockPrompts(
     const { project } = context;
     const t = translate(i18nNamespaces.buildingBlock, 'prompts.filterBar.');
 
-    const defaultAnswers: Answers = {
-        id: 'FilterBar'
-    };
     return {
         questions: [
             getViewOrFragmentPathPrompt(context, t('viewOrFragmentPath.validate'), {

@@ -16,6 +16,10 @@ import {
 import type { ChartPromptsAnswer, PromptContext, Prompts } from '../types';
 import { BuildingBlockType } from '../../types';
 
+const defaultAnswers: Answers = {
+    id: 'Chart'
+};
+
 /**
  * Returns a list of prompts required to generate a chart building block.
  *
@@ -25,9 +29,6 @@ import { BuildingBlockType } from '../../types';
 export async function getChartBuildingBlockPrompts(context: PromptContext): Promise<Prompts<ChartPromptsAnswer>> {
     const { project } = context;
     const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.chart.');
-    const defaultAnswers: Answers = {
-        id: 'Chart'
-    };
     return {
         questions: [
             getViewOrFragmentPathPrompt(context, t('viewOrFragmentPath.validate'), {
