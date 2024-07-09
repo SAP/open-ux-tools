@@ -1,7 +1,7 @@
 import React from 'react';
-import type { ListQuestion } from 'inquirer';
+import type { ChoiceOptions, ListQuestion } from 'inquirer';
 import { UIComboBox, UIComboBoxLoaderType, UITextInput } from '@sap-ux/ui-components';
-import type { ITextField, UIComboBoxOption, UIComboBoxRef } from '@sap-ux/ui-components';
+import type { ITextField, UIComboBoxRef, UISelectableOption } from '@sap-ux/ui-components';
 import { useValue, getLabelRenderer } from '../../../utilities';
 import type { ListPromptQuestionCreationProps } from '../../../types';
 
@@ -11,7 +11,7 @@ export interface SelectProps extends ListQuestion {
     onChange: (name: string, value: string | number | undefined) => void;
     creation?: ListPromptQuestionCreationProps;
     required?: boolean;
-    options: UIComboBoxOption[];
+    options: UISelectableOption<ChoiceOptions>[];
     pending?: boolean;
     additionalInfo?: string;
     errorMessage?: string;
@@ -24,7 +24,10 @@ export const Select = (props: SelectProps) => {
     const [value, setValue] = useValue('', props.value);
     const inputRef = React.createRef<ITextField>();
 
-    const onChangeSelect = (event?: React.FormEvent<HTMLSelectElement | UIComboBoxRef>, option?: UIComboBoxOption) => {
+    const onChangeSelect = (
+        event?: React.FormEvent<HTMLSelectElement | UIComboBoxRef>,
+        option?: UISelectableOption<ChoiceOptions>
+    ) => {
         let updatedValue: string | undefined;
         if (creation && !option) {
             const enteredValue = (event?.target as HTMLSelectElement).value ?? '';
@@ -32,7 +35,7 @@ export const Select = (props: SelectProps) => {
             updatedValue = enteredValue;
         } else if (option) {
             setValue(option.key);
-            updatedValue = option.data.value;
+            updatedValue = option.data?.value;
         } else if ((event?.target as HTMLSelectElement).value === '') {
             setValue('');
             updatedValue = '';

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { UIComboBoxOption } from '@sap-ux/ui-components';
+import type { UIComboBoxOption, UISelectableOption } from '@sap-ux/ui-components';
 import { getDynamicQuestions } from './utils';
 import type { PromptQuestion, DynamicChoices, PromptListChoices } from '../types';
 import type { ChoiceOptions } from 'inquirer';
@@ -40,33 +40,33 @@ export function useValue<S>(initialValue: S, propValue?: S): [S, (value: S) => v
  * @param choices - External choices(if param is passed then choices would be used on top of "question.choices")
  * @returns Returns dropdown/combobox options.
  */
-function getOptions(question: PromptQuestion, choices?: PromptListChoices): UIComboBoxOption[] {
+function getOptions(question: PromptQuestion, choices?: PromptListChoices): UISelectableOption<ChoiceOptions>[] {
     // Use external/dynamicly populated choices
     let resolvedChoices = choices;
     // Use static choices if dynamic choices are not available
     if (!resolvedChoices && 'choices' in question && Array.isArray(question.choices)) {
         resolvedChoices = question.choices;
     }
-    if (resolvedChoices?.length) {
-        return resolvedChoices.map((choice) => {
-            if (typeof choice === 'string') {
-                return {
-                    key: choice,
-                    text: choice,
-                    data: { value: choice }
-                };
-            } else {
-                return {
-                    key: (choice as ChoiceOptions).value.toString(),
-                    text: (choice as ChoiceOptions).name ?? '',
-                    // ToDo create new type
-                    data: choice
-                };
-            }
-        });
+    if (!resolvedChoices?.length) {
+        return [];
     }
-    // Default options
-    return [];
+    const options: UISelectableOption<ChoiceOptions>[] = [];
+    for (const choice of resolvedChoices) {
+        if (typeof choice === 'string') {
+            options.push({
+                key: choice,
+                text: choice,
+                data: { value: choice }
+            });
+        } else if ('value' in choice) {
+            options.push({
+                key: choice.value,
+                text: choice.name ?? '',
+                data: choice
+            });
+        }
+    }
+    return options;
 }
 
 /**
