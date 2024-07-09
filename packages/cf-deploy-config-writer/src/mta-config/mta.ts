@@ -2,13 +2,10 @@ import { format } from 'util';
 import { dirname, join } from 'path';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { render } from 'ejs';
-import { Mta, mta } from '@sap/mta-lib';
+import { Mta, type mta } from '@sap/mta-lib';
 import { WebIDEUsage as WebIDEUsageType } from '@sap-ux/btp-utils';
 import { YamlDocument } from '@sap-ux/yaml';
 import { getMtaPath } from '@sap-ux/project-access';
-import Module = mta.Module;
-import Resource = mta.Resource;
-import Requires = mta.Requires;
 import {
     CloudFoundry,
     RouterModule,
@@ -26,26 +23,28 @@ import {
     MTAAPIDestination,
     UI5StandaloneModuleDestination,
     ServiceAPIRequires,
-    deployMode,
-    enableParallelDeployments,
     HTMLAppBuildParams,
     MTAVersion
 } from '../constants';
 import { t } from '../i18n';
 import type { Logger } from '@sap-ux/logger';
 import type { YAMLMap, YAMLSeq } from '@sap-ux/yaml';
-import { type ModuleType, type ResourceType, type MTADestinationType } from '../types';
-import { HTML5App } from '../types';
-import { CloudFoundryServiceType } from '../types';
+import {
+    CloudFoundryServiceType,
+    type HTML5App,
+    type ModuleType,
+    type ResourceType,
+    type MTADestinationType
+} from '../types';
 
 /**
  * A class representing interactions with the MTA binary, found at https://sap.github.io/cloud-mta-build-tool/.
  */
 export class MtaConfig {
     private readonly mta: Mta;
-    private apps: Map<string, Module> = new Map();
-    private modules: Map<ModuleType | string, Module> = new Map();
-    private resources: Map<ResourceType | string, Resource> = new Map();
+    private apps: Map<string, mta.Module> = new Map();
+    private modules: Map<ModuleType | string, mta.Module> = new Map();
+    private resources: Map<ResourceType | string, mta.Resource> = new Map();
     private dirty = false;
     private mtaId: string;
     private log: Logger | undefined;
@@ -93,11 +92,12 @@ export class MtaConfig {
     /**
      * Determines if the MTA configuration contains a known resource or module.
      *
-     * @param {Requires[]} requires - resource to validate
-     * @param {string} resourceType - managed or existing service
-     * @returns {boolean}
+     * @param requires resource to validate
+     * @param resourceType managed or existing service
+     * @returns true if the resource exists, false otherwise
+     * @private
      */
-    private targetExists(requires: Requires[], resourceType: string): boolean {
+    private targetExists(requires: mta.Requires[], resourceType: string): boolean {
         return (
             requires &&
             requires.findIndex(
@@ -157,7 +157,7 @@ export class MtaConfig {
         // Setup the basic module template, artifacts will be added in another step
         const appHostName = this.resources.get('html5-apps-repo:app-host')?.name;
         if (appHostName) {
-            const deployer: Module = {
+            const deployer: mta.Module = {
                 name: `${this.prefix.slice(0, 38)}-app-content`,
                 type: 'com.sap.application.content',
                 path: '.',
@@ -181,7 +181,7 @@ export class MtaConfig {
     }
 
     private async addUaa(): Promise<void> {
-        const resource: Resource = {
+        const resource: mta.Resource = {
             name: `${this.prefix.slice(0, 46)}-uaa`,
             type: 'org.cloudfoundry.managed-service',
             parameters: {
@@ -196,7 +196,7 @@ export class MtaConfig {
     }
 
     private async addHtml5Runtime(): Promise<void> {
-        const resource: Resource = {
+        const resource: mta.Resource = {
             name: `${this.prefix.slice(0, 29)}-html5-repo-runtime`,
             type: 'org.cloudfoundry.managed-service',
             parameters: { 'service-plan': 'app-runtime', service: 'html5-apps-repo' }
@@ -208,7 +208,7 @@ export class MtaConfig {
 
     private async addHtml5Host(): Promise<void> {
         const html5host = `${this.prefix.slice(0, 40)}-repo-host`; // Need to cater for -key being added too!
-        const resource: Resource = {
+        const resource: mta.Resource = {
             name: html5host,
             type: 'org.cloudfoundry.managed-service',
             parameters: {
@@ -222,9 +222,14 @@ export class MtaConfig {
         this.dirty = true;
     }
 
+    /**
+     * Add a destination service to the MTA.
+     *
+     * @param isManagedApp - If the destination service is for a managed app
+     */
     private async addDestinationResource(isManagedApp = false): Promise<void> {
         const destinationName = `${this.prefix.slice(0, 30)}-destination-service`;
-        const resource: Resource = {
+        const resource: mta.Resource = {
             name: destinationName,
             type: 'org.cloudfoundry.managed-service',
             parameters: {
@@ -242,6 +247,11 @@ export class MtaConfig {
         this.dirty = true;
     }
 
+    /**
+     * Update the destination service in the MTA if not already present.
+     *
+     * @param isManagedApp - If the destination service is for a managed app, false by default
+     */
     private async updateDestinationResource(isManagedApp = false): Promise<void> {
         const resource = this.resources.get('destination');
         if (resource) {
@@ -274,6 +284,11 @@ export class MtaConfig {
         }
     }
 
+    /**
+     * Update the server module to include the required dependencies to ensure endpoints are secured.
+     *
+     * @param moduleType known module type
+     */
     private async updateServerModule(moduleType: ModuleType): Promise<void> {
         // Update the CAP API to only allow xsuaa calls, this requires the security.json to be present
         const uaaResource = this.resources.get(ManagedXSUAA);
@@ -295,7 +310,7 @@ export class MtaConfig {
     }
 
     private async addManagedUaa(): Promise<void> {
-        const resource: Resource = {
+        const resource: mta.Resource = {
             name: `${this.prefix.slice(0, 46)}-uaa`,
             type: 'org.cloudfoundry.managed-service',
             parameters: {
@@ -315,7 +330,7 @@ export class MtaConfig {
      *
      * @param {boolean} checkWebIDEUsage - boolean flag to check WebIDEUsage
      * @param {MTADestinationType} destination - destination object
-     * @returns {boolean}
+     * @returns {boolean} - true if the destination is valid, false otherwise
      */
     private verifyDestination(checkWebIDEUsage: boolean, destination: MTADestinationType): boolean {
         if (checkWebIDEUsage) {
@@ -391,47 +406,41 @@ export class MtaConfig {
     }
 
     /**
-     * Returns the mta parameters i.e. build-parameters -> before-all.
+     * Returns the mta parameters.
      *
-     * @returns {Promise<mta.Parameters>}
+     * @returns {Promise<mta.Parameters>} the MTA parameters
      */
     public async getParameters(): Promise<mta.Parameters> {
         return this.mta.getParameters();
     }
 
     /**
+     * Returns the mta build parameters.
+     *
+     * @returns {Promise<mta.Parameters>} the MTA build parameters
+     */
+    public async getBuildParameters(): Promise<mta.ProjectBuildParameters> {
+        return this.mta.getBuildParameters();
+    }
+
+    /**
      * Update the MTA parameters.
      *
-     * @param parameters
-     * @param applyDefaults
+     * @param parameters the MTA parameters being applied
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
-    public async updateParameters(parameters?: mta.Parameters, applyDefaults = true): Promise<void> {
-        let params = parameters ?? (await this.mta.getParameters());
-        if (applyDefaults) {
-            params = { ...(params || {}), ...{} } as mta.Parameters;
-            params[deployMode] = 'html5-repo';
-            params[enableParallelDeployments] = true;
-        }
-        await this.mta.updateParameters(params);
+    public async updateParameters(parameters: mta.Parameters): Promise<void> {
+        await this.mta.updateParameters(parameters);
     }
 
     /**
      * Update the MTA build parameters i.e. build-parameters -> before-all.
      *
-     * @param parameters
-     * @param applyDefaults
+     * @param parameters the MTA build parameters being applied
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
-    public async updateBuildParams(parameters?: mta.ProjectBuildParameters, applyDefaults = true): Promise<void> {
-        let params = parameters ?? (await this.mta.getBuildParameters());
-        if (applyDefaults) {
-            params = { ...(params || {}), ...{} } as mta.ProjectBuildParameters;
-            params['before-all'] ||= [];
-            const buildParams: mta.BuildParameters = { builder: 'custom', commands: ['npm install'] };
-            params['before-all'].push(buildParams);
-        }
-        await this.mta.updateBuildParameters(params);
+    public async updateBuildParams(parameters: mta.ProjectBuildParameters): Promise<void> {
+        await this.mta.updateBuildParameters(parameters);
     }
 
     /**
@@ -451,7 +460,7 @@ export class MtaConfig {
             contentModule[MTABuildParams].requires = contentModule[MTABuildParams].requires ?? [];
             if (
                 contentModule[MTABuildParams].requires?.findIndex(
-                    (app: Requires) => app.name === appModule.slice(0, 128)
+                    (app: mta.Requires) => app.name === appModule.slice(0, 128)
                 ) === -1
             ) {
                 contentModule[MTABuildParams].requires.push({
@@ -496,7 +505,7 @@ export class MtaConfig {
             }
         }
 
-        const connectivityResource: Resource = {
+        const connectivityResource: mta.Resource = {
             name: resourceName,
             type: resourceType,
             parameters: {
@@ -557,11 +566,11 @@ export class MtaConfig {
     /**
      * Append ABAP service to the modules and resources.
      *
-     * @param {string} serviceName
-     * @param {string} service
+     * @param {string} serviceName The name of the service i.e. myabapservice-abap-service
+     * @param {string} btpService The SAP BTP service i.e. xsuaa | html5-apps-repo | app-host | destination
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
-    public async addAbapService(serviceName: string, service: string): Promise<void> {
+    public async addAbapService(serviceName: string, btpService: string): Promise<void> {
         const newResourceName = `${this.prefix.slice(0, 24)}-abap-${serviceName.slice(0, 20)}`;
         const router = this.modules.get('approuter.nodejs');
         if (router) {
@@ -570,13 +579,13 @@ export class MtaConfig {
                 await this.mta.updateModule(router);
             }
         }
-        const abapServiceResource: Resource = {
+        const abapServiceResource: mta.Resource = {
             name: newResourceName,
             type: CloudFoundryServiceType.Existing,
             parameters: {
                 'service-name': serviceName,
                 protocol: ['ODataV2'],
-                service,
+                service: btpService,
                 'service-plan': '16_abap_64_db'
             }
         };
@@ -626,7 +635,7 @@ export class MtaConfig {
         const xsuaaName = this.resources.get('xsuaa')?.name;
         const destinationName = this.resources.get('destination')?.name;
         if (destinationName && xsuaaName && appRuntimeName) {
-            const router: Module = {
+            const router: mta.Module = {
                 name: `${this.prefix.slice(0, 43)}-router`,
                 type: 'approuter.nodejs',
                 path: fromServerGenerator ? `${RouterModule}` : `${CloudFoundry}/${RouterModule}`,
@@ -665,8 +674,8 @@ export class MtaConfig {
      * @param {string} instanceDestName The name of the instance destination that will be created
      * @param {string} destUrl The URL of the instance destination that will be created, usually the url base, the service path is provided by the manifest.json
      * @param headerConfig The additional header config of the instance destination
-     * @param {string} headerConfig.key
-     * @param {string} headerConfig.value
+     * @param {string} headerConfig.key The key of the header config
+     * @param {string} headerConfig.value  The value of the header config
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      * @see https://help.sap.com/docs/SAP_HANA_PLATFORM/4505d0bdaf4948449b7f7379d24d0f0d/51ac525c78244282919029d8f5e2e35d.html?locale=en-US&version=2.0.00
      */
@@ -825,7 +834,7 @@ export class MtaConfig {
         const managedXSUAAName = this.resources.get(ManagedXSUAA)?.name;
         const managedXSUAAServiceName = this.resources.get(ManagedXSUAA)?.parameters?.['service-name'];
         if (destinationName && appHostName && managedXSUAAName && managedXSUAAServiceName) {
-            const router: Module = {
+            const router: mta.Module = {
                 name: `${this.prefix.slice(0, 30)}-destination-content`,
                 type: 'com.sap.application.content',
                 requires: [

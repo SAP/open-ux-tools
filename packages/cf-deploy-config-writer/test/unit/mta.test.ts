@@ -245,7 +245,7 @@ describe('Validate common flows', () => {
         await mtaConfig.addStandaloneRouter(true);
         await mtaConfig.addRoutingModules();
         await mtaConfig.addApp('myhtml5app', './');
-        await mtaConfig.addAbapService({ label: 'abapservice', service: 'abapservice' });
+        await mtaConfig.addAbapService('abapservice', 'abapservice');
         await mtaConfig.addConnectivityResource(); //typical for onpremise destinations
         await mtaConfig.save();
         expect(mtaConfig.standaloneRouterPath).toEqual('router');

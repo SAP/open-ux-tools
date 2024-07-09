@@ -1,7 +1,7 @@
 import { join } from 'path';
 import fs from 'fs';
 import * as memfs from 'memfs';
-import { MtaConfig } from '../../src/cf-config';
+import { MtaConfig } from '../../src/';
 import { MTAFileExtension } from '../../src/constants';
 
 jest.mock('fs', () => {
@@ -53,7 +53,7 @@ describe('Adding and Updating mta extension configuration', () => {
             _schema-version: \\"3.2\\"
             ID: test-mta-ext
             extends: test-mta
-            version: 1.0.0
+            version: 0.0.1
 
             resources:
             - name: test-mta-destination-service

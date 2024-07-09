@@ -27,7 +27,7 @@ modules:
         instance:
           destinations:
             - Name: basicApp_html_repo_host
-              ServiceInstanceName: basicApp-html5-srv
+              ServiceInstanceName: basicApp-html5-service
               ServiceKeyName: basicApp-repo-host-key
               sap.cloud.service: basicApp
             - Authentication: OAuth2UserTokenExchange
@@ -91,7 +91,7 @@ resources:
   - name: basicApp-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
-      service-name: basicApp-html5-srv
+      service-name: basicApp-html5-service
       service-plan: app-host
       service: html5-apps-repo
   - name: basicApp-connectivity
@@ -159,7 +159,7 @@ modules:
         instance:
           destinations:
             - Name: managedAppCAPProject_html_repo_host
-              ServiceInstanceName: managedAppCAPProject-html5-srv
+              ServiceInstanceName: managedAppCAPProject-html5-service
               ServiceKeyName: managedAppCAPProject-repo-host-key
               sap.cloud.service: managedAppCAPProject
             - Authentication: OAuth2UserTokenExchange
@@ -237,7 +237,7 @@ resources:
   - name: managedAppCAPProject-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
-      service-name: managedAppCAPProject-html5-srv
+      service-name: managedAppCAPProject-html5-service
       service-plan: app-host
       service: html5-apps-repo
 "
@@ -333,7 +333,7 @@ resources:
   - name: standaloneBasic-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
-      service-name: standaloneBasic-html5-srv
+      service-name: standaloneBasic-html5-service
       service-plan: app-host
       service: html5-apps-repo
   - name: standaloneBasic-abap-abapservice
@@ -416,7 +416,7 @@ resources:
   - name: standaloneApp-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
-      service-name: standaloneApp-html5-srv
+      service-name: standaloneApp-html5-service
       service-plan: app-host
       service: html5-apps-repo
 parameters:

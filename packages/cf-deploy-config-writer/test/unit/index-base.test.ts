@@ -6,7 +6,7 @@ import { create } from 'mem-fs-editor';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { generateBaseConfig } from '../../src';
 import { RouterModuleType } from '../../src/types';
-import { Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),

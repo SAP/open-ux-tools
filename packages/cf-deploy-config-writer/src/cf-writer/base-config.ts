@@ -13,7 +13,7 @@ import {
     addRootPackage,
     addXSSecurity
 } from '../utils';
-import { MtaConfig, createMTA } from '../mta-config';
+import { MtaConfig, createMTA, addParameters, addBuildParams } from '../mta-config';
 import { type Logger } from '@sap-ux/logger';
 import { type CFBaseConfig, RouterModuleType } from '../types';
 import { type MTABaseConfig } from '../types';
@@ -22,8 +22,8 @@ import { type MTABaseConfig } from '../types';
  * Add a standalone | managed approuter to an empty target folder.
  *
  * @param config writer configuration
- * @param fs file system reference
- * @param logger logger
+ * @param fs an optional reference to a mem-fs editor
+ * @param logger optional logger instance
  * @returns file system reference
  */
 export async function generateBaseConfig(config: CFBaseConfig, fs?: Editor, logger?: Logger): Promise<Editor> {
@@ -39,6 +39,13 @@ export async function generateBaseConfig(config: CFBaseConfig, fs?: Editor, logg
     return fs;
 }
 
+/**
+ * Add standalone or managed approuter to the target folder.
+ *
+ * @param config writer configuration
+ * @param fs reference to a mem-fs editor
+ * @param logger optional logger instance
+ */
 async function addRoutingConfig(config: CFBaseConfig, fs: Editor, logger?: Logger): Promise<void> {
     const mtaConfigInstance = await MtaConfig.newInstance(config.mtaPath);
     if (config.routerType === RouterModuleType.Standard) {
@@ -46,30 +53,43 @@ async function addRoutingConfig(config: CFBaseConfig, fs: Editor, logger?: Logge
     } else {
         await mtaConfigInstance.addRoutingModules(true);
     }
-    await mtaConfigInstance.updateParameters();
-    await mtaConfigInstance.updateBuildParams();
+    await addParameters(mtaConfigInstance);
+    await addBuildParams(mtaConfigInstance);
     await mtaConfigInstance.save();
 }
 
-function updateBaseConfig(cfConfig: CFBaseConfig): void {
-    cfConfig.mtaPath = cfConfig.mtaPath.replace(/\/$/, '');
-    cfConfig.useAbapDirectSrvBinding ||= false;
-    cfConfig.addConnectivityService ||= false;
-    cfConfig.mtaId = toMtaModuleName(cfConfig.mtaId);
+/**
+ * Update the writer configuration with defaults.
+ *
+ * @param config writer configuration
+ */
+function updateBaseConfig(config: CFBaseConfig): void {
+    config.mtaPath = config.mtaPath.replace(/\/$/, '');
+    config.useAbapDirectSrvBinding ||= false;
+    config.addConnectivityService ||= false;
+    config.mtaId = toMtaModuleName(config.mtaId);
 }
 
+/**
+ *  Add standalone approuter to the target folder.
+ *
+ * @param cfConfig wrtier configuration
+ * @param mtaInstance MTA configuration instance
+ * @param fs reference to a mem-fs editor
+ * @param logger optional logger instance
+ */
 async function addStandaloneRouter(
     cfConfig: CFBaseConfig,
-    mtaConfig: MtaConfig,
+    mtaInstance: MtaConfig,
     fs: Editor,
     logger?: Logger
 ): Promise<void> {
-    await mtaConfig.addStandaloneRouter(true);
+    await mtaInstance.addStandaloneRouter(true);
     if (cfConfig.addConnectivityService) {
-        await mtaConfig.addConnectivityResource();
+        await mtaInstance.addConnectivityResource();
     }
     if (cfConfig.useAbapDirectSrvBinding && cfConfig.abapServiceName && cfConfig.abapService) {
-        await mtaConfig.addAbapService(cfConfig.abapServiceName, cfConfig.abapService);
+        await mtaInstance.addAbapService(cfConfig.abapServiceName, cfConfig.abapService);
     }
 
     fs.copyTpl(getTemplatePath(`router/package.json`), join(cfConfig.mtaPath, `${RouterModule}/package.json`));
@@ -98,12 +118,23 @@ async function addStandaloneRouter(
     }
 }
 
-function addSupportingConfig(cfConfig: CFBaseConfig, fs: Editor): void {
-    addRootPackage(cfConfig, fs);
-    addGitIgnore(cfConfig.mtaPath, fs);
-    addXSSecurity(cfConfig, fs);
+/**
+ * Add supporting configuration to the target folder.
+ *
+ * @param config writer configuration
+ * @param fs reference to a mem-fs editor
+ */
+function addSupportingConfig(config: CFBaseConfig, fs: Editor): void {
+    addRootPackage(config, fs);
+    addGitIgnore(config.mtaPath, fs);
+    addXSSecurity(config, fs);
 }
 
+/**
+ * Validate the writer configuration to ensure all required parameters are present.
+ *
+ * @param cfConfig writer configuration
+ */
 function validateMtaConfig(cfConfig: CFBaseConfig): void {
     // We use mta-lib, which in turn relies on the mta executable being installed and available in the path
     if (!hasbin.sync(MTAExecutable)) {

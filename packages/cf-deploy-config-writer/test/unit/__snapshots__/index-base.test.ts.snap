@@ -278,7 +278,7 @@ resources:
             URL: https://ui5.sap.com
           existing_destinations_policy: update
       version: 1.0.0
-    service: destinationf
+    service: destination
     service-name: standalone-destination-service
     service-plan: lite
 parameters:

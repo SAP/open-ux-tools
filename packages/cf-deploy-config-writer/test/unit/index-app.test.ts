@@ -6,7 +6,7 @@ import { create } from 'mem-fs-editor';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import * as btp from '@sap-ux/btp-utils';
 import { generateAppConfig } from '../../src';
-import { Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -40,7 +40,7 @@ describe('CF Writer', () => {
         jest.restoreAllMocks();
         isAppStudioMock = jest.spyOn(btp, 'isAppStudio');
         listDestinationsMock = jest.spyOn(btp, 'listDestinations');
-        unitTestFs: Editor = create(createStorage());
+        unitTestFs = create(createStorage());
     });
 
     beforeAll(async () => {

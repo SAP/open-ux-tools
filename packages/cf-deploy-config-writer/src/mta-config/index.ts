@@ -3,14 +3,27 @@ import { join } from 'path';
 import { render } from 'ejs';
 import { MtaConfig } from './mta';
 import { getTemplatePath } from '../utils';
-import { MTAYamlFile, MTAVersion, MTADescription } from '../constants';
+import { MTAYamlFile, MTAVersion, MTADescription, deployMode, enableParallelDeployments } from '../constants';
+import type { mta } from '@sap/mta-lib';
 import type { Editor } from 'mem-fs-editor';
 import type { MTABaseConfig } from '../types';
 
+/**
+ * Get the MTA ID, read from the root path specified.
+ *
+ * @param rootPath Path to the root folder
+ * @returns MTA ID if found
+ */
 export async function getMtaId(rootPath: string): Promise<string | undefined> {
     return (await getMtaConfig(rootPath))?.prefix;
 }
 
+/**
+ *  Get the MTA configuration from the target folder.
+ *
+ * @param rootPath Path to the root folder
+ * @returns MtaConfig instance if found
+ */
 export async function getMtaConfig(rootPath: string): Promise<MtaConfig | undefined> {
     return await MtaConfig.newInstance(rootPath);
 }
@@ -28,8 +41,8 @@ export function toMtaModuleName(appId: string): string {
 /**
  * Create an MTA file in the target folder, needs to be written to disk as subsequent calls are dependent on it being on the file system.
  *
- * @param config
- * @param fs
+ * @param config writer configuration
+ * @param fs reference to a mem-fs editor
  */
 export function createMTA(config: MTABaseConfig, fs: Editor): void {
     const mtaTemplate = fs.read(getTemplatePath(`app/${MTAYamlFile}`));
@@ -41,6 +54,12 @@ export function createMTA(config: MTABaseConfig, fs: Editor): void {
     fileSystem.writeFileSync(join(config.mtaPath, MTAYamlFile), mtaContents);
 }
 
+/**
+ *  Returns true | false if ABAP service binding is enabled.
+ *
+ * @param mtaPath path to mta.yaml
+ * @returns true | false
+ */
 export async function useAbapDirectServiceBinding(mtaPath: string): Promise<boolean> {
     try {
         const mtaConfig = await getMtaConfig(mtaPath);
@@ -48,6 +67,33 @@ export async function useAbapDirectServiceBinding(mtaPath: string): Promise<bool
     } catch (error) {
         return false;
     }
+}
+
+/**
+ *  Add the build parameters to the MTA configuration.
+ *
+ * @param mtaInstance MTA instance
+ */
+export async function addBuildParams(mtaInstance: MtaConfig): Promise<void> {
+    let params = await mtaInstance.getBuildParameters();
+    params = { ...(params || {}), ...{} } as mta.ProjectBuildParameters;
+    params['before-all'] ||= [];
+    const buildParams: mta.BuildParameters = { builder: 'custom', commands: ['npm install'] };
+    params['before-all'].push(buildParams);
+    await mtaInstance.updateBuildParams(params);
+}
+
+/**
+ * Add the deploy parameters to the MTA configuration.
+ *
+ * @param mtaInstance MTA instance
+ */
+export async function addParameters(mtaInstance: MtaConfig): Promise<void> {
+    let params = await mtaInstance.getParameters();
+    params = { ...(params || {}), ...{} } as mta.Parameters;
+    params[deployMode] = 'html5-repo';
+    params[enableParallelDeployments] = true;
+    await mtaInstance.updateParameters(params);
 }
 
 export * from './mta';
