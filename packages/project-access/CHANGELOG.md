@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.25.0
+
+### Minor Changes
+
+-   f076dd3: Add freestyle CAP app support.
+
 ## 1.24.0
 
 ### Minor Changes
