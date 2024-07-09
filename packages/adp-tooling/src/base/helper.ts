@@ -5,25 +5,6 @@ import { getManifest } from './abap';
 import { readFileSync, existsSync, readdirSync } from 'fs';
 import { join, sep, isAbsolute } from 'path';
 import { UI5Config } from '@sap-ux/ui5-config';
-/**
- * Checks if the input is a non-empty string.
- *
- * @param input - input to check
- * @returns true if the input is a non-empty string
- */
-export function isNotEmptyString(input: string | undefined): boolean {
-    return typeof input === 'string' && input.trim().length > 0;
-}
-
-/**
- * Checks if the input is a valid SAP client.
- *
- * @param input - input to check
- * @returns true if the input is a valid SAP client
- */
-export function isValidSapClient(input: string | undefined): boolean {
-    return !input || (input.length < 4 && !!new RegExp(/^\d*$/).exec(input));
-}
 
 /**
  * Check environment is running in an internal scenario.
@@ -85,7 +66,7 @@ export function checkDuplicateFile(filePath: string, checkDirectory: string): bo
         return false;
     }
     const files = readdirSync(checkDirectory);
-    return !!files.find((file) => file === fileName);
+    return files.some((file) => file === fileName);
 }
 
 /**

@@ -3,6 +3,7 @@ import * as i18n from '../../../../src/i18n';
 import * as projectAccess from '@sap-ux/project-access';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import * as helper from '../../../../src/base/helper';
+import * as validators from '../../../../src/base/validators';
 
 describe('getPrompts', () => {
     const mockBasePath = '/path/to/project';
@@ -68,8 +69,8 @@ describe('getPrompts', () => {
                 type: 'input',
                 name: 'filePath',
                 message: i18n.t('prompts.filePathLabel'),
+                guiType: 'file-browser',
                 guiOptions: {
-                    type: 'file-browser',
                     mandatory: true,
                     hint: i18n.t('prompts.filePathTooltip')
                 },
@@ -117,8 +118,8 @@ describe('getPrompts', () => {
                 type: 'input',
                 name: 'filePath',
                 message: i18n.t('prompts.filePathLabel'),
+                guiType: 'file-browser',
                 guiOptions: {
-                    type: 'file-browser',
                     mandatory: true,
                     hint: i18n.t('prompts.filePathTooltip')
                 },
@@ -134,33 +135,33 @@ describe('getPrompts', () => {
     });
 
     test('filePath validation - empty string', () => {
-        jest.spyOn(helper, 'isNotEmptyString').mockReturnValueOnce(false);
+        jest.spyOn(validators, 'isNotEmptyString').mockReturnValueOnce(false);
         const filePathValidator = (getPrompts(mockBasePath, dataSources)[2] as any).validate;
-        expect(filePathValidator('')).toBe(i18n.t('validators.cannotBeEmpty'));
+        expect(filePathValidator('')).toBe(i18n.t('validators.inputCannotBeEmpty'));
     });
     test('filePath validation - file does not exist', () => {
-        jest.spyOn(helper, 'isNotEmptyString').mockReturnValueOnce(true);
+        jest.spyOn(validators, 'isNotEmptyString').mockReturnValueOnce(true);
         jest.spyOn(helper, 'checkFileExists').mockReturnValueOnce(false);
         const filePathValidator = (getPrompts(mockBasePath, dataSources)[2] as any).validate;
         expect(filePathValidator('non-existing-file.xml')).toBe(i18n.t('validators.fileDoesNotExist'));
     });
 
     test('filePath validation - file is duplicate', () => {
-        jest.spyOn(helper, 'isNotEmptyString').mockReturnValueOnce(true);
+        jest.spyOn(validators, 'isNotEmptyString').mockReturnValueOnce(true);
         jest.spyOn(helper, 'checkFileExists').mockReturnValueOnce(true);
         jest.spyOn(helper, 'checkDuplicateFile').mockReturnValueOnce(true);
         const filePathValidator = (getPrompts(mockBasePath, dataSources)[2] as any).validate;
         expect(filePathValidator('existing-file.xml')).toBe(i18n.t('validators.annotationFileAlreadyExists'));
     });
     test('filePath validation - relative path', () => {
-        jest.spyOn(helper, 'isNotEmptyString').mockReturnValueOnce(true);
+        jest.spyOn(validators, 'isNotEmptyString').mockReturnValueOnce(true);
         jest.spyOn(helper, 'checkFileExists').mockReturnValueOnce(true);
         jest.spyOn(helper, 'checkDuplicateFile').mockReturnValueOnce(false);
         const filePathValidator = (getPrompts(mockBasePath, dataSources)[2] as any).validate;
         expect(filePathValidator('existing-file.xml')).toBeTruthy();
     });
     test('filePath validation - absolute path', () => {
-        jest.spyOn(helper, 'isNotEmptyString').mockReturnValueOnce(true);
+        jest.spyOn(validators, 'isNotEmptyString').mockReturnValueOnce(true);
         jest.spyOn(helper, 'checkFileExists').mockReturnValueOnce(true);
         jest.spyOn(helper, 'checkDuplicateFile').mockReturnValueOnce(false);
         const filePathValidator = (getPrompts(mockBasePath, dataSources)[2] as any).validate;

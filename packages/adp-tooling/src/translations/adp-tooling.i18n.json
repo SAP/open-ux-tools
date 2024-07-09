@@ -21,7 +21,7 @@
         }
     },
     "validators": {
-        "cannotBeEmpty": "Cannot be empty.",
+        "inputCannotBeEmpty": "Input cannot be empty.",
         "fileDoesNotExist": "The file doesn't exist",
         "annotationFileAlreadyExists": "There is already an annotation file with the same name, please choose another file or rename the file and select it again"
     }

@@ -3,7 +3,8 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 import { AnnotationFileSelectType, type AddAnnotationsAnswers } from '../../types';
 import { t } from '../../i18n';
 import { filterDataSourcesByType } from '@sap-ux/project-access';
-import { isNotEmptyString, checkFileExists, checkDuplicateFile } from '../../base/helper';
+import { checkFileExists, checkDuplicateFile } from '../../base/helper';
+import { isNotEmptyString } from '../../base/validators';
 import { join, isAbsolute } from 'path';
 
 /**
@@ -51,8 +52,8 @@ export function getPrompts(
             type: 'input',
             name: 'filePath',
             message: t('prompts.filePathLabel'),
+            guiType: 'file-browser',
             guiOptions: {
-                type: 'file-browser',
                 mandatory: true,
                 hint: t('prompts.filePathTooltip')
             },
@@ -61,7 +62,7 @@ export function getPrompts(
                 answers.id !== '' && answers.fileSelectOption === AnnotationFileSelectType.ExistingFile,
             validate: (value) => {
                 if (!isNotEmptyString(value)) {
-                    return t('validators.cannotBeEmpty');
+                    return t('validators.inputCannotBeEmpty');
                 }
                 const filePath = isAbsolute(value) ? value : join(basePath, value);
                 if (!checkFileExists(filePath)) {

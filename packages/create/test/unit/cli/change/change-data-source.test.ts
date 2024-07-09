@@ -87,6 +87,7 @@ describe('change/data-source', () => {
     });
     jest.spyOn(validations, 'validateAdpProject').mockResolvedValue(undefined);
     jest.spyOn(adp, 'getManifestDataSources').mockResolvedValue(mockDataSources);
+    jest.spyOn(adp, 'getPromptsForChangeDataSource').mockImplementation(() => []);
     const appRoot = join(__dirname, '../../../fixtures');
     beforeEach(() => {
         jest.clearAllMocks();

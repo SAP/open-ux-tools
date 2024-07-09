@@ -53,10 +53,6 @@ export interface GuiOptions {
      * Indicate state in the left hand navigation panel in YUI
      */
     breadcrumb?: boolean | string;
-    /**
-     * Indicates the type of the prompt
-     */
-    type?: string;
 }
 
 export type PromptSeverityMessage = (input?: unknown, previousAnswers?: Answers) => IMessageSeverity | undefined;
