@@ -20,6 +20,15 @@ type UpdateCallback = (
     fs?: Editor
 ) => Promise<void>;
 
+interface LaunchConfigObjectProperty {
+    obj: any;
+    filePath: string;
+    originalJSON?: Node;
+    currentPath: JSONPath;
+    originalLength: number;
+    node?: Node;
+}
+
 /**
  * Traverses each property in launch config object and executes callback function on it.
  *
@@ -49,13 +58,15 @@ async function traverseAndModifyLaunchConfig(
             await processArrayProperty(obj[key], filePath, originalJSON, callback, currentPath, originalLength, fs);
         } else if (typeof obj[key] === 'object') {
             await processObjectProperty(
-                obj[key],
-                filePath,
-                originalJSON,
+                {
+                    obj: obj[key],
+                    filePath,
+                    originalJSON,
+                    currentPath,
+                    originalLength,
+                    node
+                },
                 callback,
-                currentPath,
-                originalLength,
-                node,
                 fs
             );
         } else {
@@ -102,28 +113,19 @@ async function processArrayProperty(
 }
 
 /**
- * Processes each element of launch config object property and executes callback function on it.
+ * Processes each element of launch config object and executes callback function on it.
  *
- * @param obj - object property to traverse and replace.
- * @param filePath - path to the JSON file.
- * @param originalJSON - the original JSON {@linkcode Node} before modification.
- * @param callback - function to be executed on the object property, similar to {@linkcode updateJSONWithComments}.
- * @param currentPath - intial {@linkcode JSONPath} of the object to be traversed.
- * @param originalLength - intial {@linkcode JSONPath} of the object to be traversed.
- * @param node - object node.
+ * @param launchConfigObject - launch config object properties.
+ * @param callback - function to be executed on the object property.
  * @param fs - the memfs editor instance.
  * @returns void.
  */
 async function processObjectProperty(
-    obj: any,
-    filePath: string,
-    originalJSON: Node | undefined,
+    launchConfigObject: LaunchConfigObjectProperty,
     callback: UpdateCallback,
-    currentPath: JSONPath,
-    originalLength: number,
-    node: Node | undefined,
     fs: Editor
 ): Promise<void> {
+    const { obj, originalLength, filePath, originalJSON, currentPath, node } = launchConfigObject;
     const length = Object.keys(obj).length;
     if (length >= originalLength) {
         await traverseAndModifyLaunchConfig(obj, filePath, originalJSON, callback, fs, currentPath);
