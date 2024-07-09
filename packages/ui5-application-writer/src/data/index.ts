@@ -27,7 +27,6 @@ export function mergeWithDefaults(ui5App: Ui5App): {
     ui5App.package = mergeObjects(packageDefaults(ui5App.package.version, ui5App.app.description), ui5App.package);
 
     if (ui5App.appOptions.sapux) {
-        // Add @sap/ux-specification to devDependencies only for non-CAP projects
         ui5App.package.devDependencies = ui5App.package.devDependencies || {};
         ui5App.package.devDependencies['@sap/ux-specification'] = getSpecTagVersion(ui5App.ui5.version);
     }

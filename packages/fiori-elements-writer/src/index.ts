@@ -108,7 +108,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
         ignore = getTypeScriptIgnoreGlob(feApp, coercedUI5Version);
     }
     // Get the resource URLs for the UShell bootstrap and UI bootstrap based on the project type and UI5 framework details
-    const { uShellBootstrapResourceUrl, uiBootsrapResourceUrl } = getBootstrapResourceUrls(
+    const { uShellBootstrapResourceUrl, uiBootstrapResourceUrl } = getBootstrapResourceUrls(
         isEdmxProjectType, 
         feApp.ui5?.frameworkUrl, 
         feApp.ui5?.version
@@ -116,7 +116,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     const appConfig = {
         ...feApp,
         uShellBootstrapResourceUrl,
-        uiBootsrapResourceUrl 
+        uiBootstrapResourceUrl 
     };
     fs.copyTpl(
         join(rootTemplatesPath, 'common', 'add', '**/*.*'),

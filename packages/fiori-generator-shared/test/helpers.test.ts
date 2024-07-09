@@ -5,7 +5,7 @@ describe('getResourceUrlsForUi5Bootstrap', () => {
         const result = getBootstrapResourceUrls(true);
         expect(result).toEqual({
             uShellBootstrapResourceUrl: '../test-resources/sap/ushell/bootstrap/sandbox.js',
-            uiBootsrapResourceUrl: '../resources/sap-ui-core.js'
+            uiBootstrapResourceUrl: '../resources/sap-ui-core.js'
         });
     });
 
@@ -13,7 +13,7 @@ describe('getResourceUrlsForUi5Bootstrap', () => {
         const result = getBootstrapResourceUrls(false, 'https://ui5.sap.com', '1.84.0');
         expect(result).toEqual({
             uShellBootstrapResourceUrl: 'https://ui5.sap.com/1.84.0/test-resources/sap/ushell/bootstrap/sandbox.js',
-            uiBootsrapResourceUrl: 'https://ui5.sap.com/1.84.0/resources/sap-ui-core.js'
+            uiBootstrapResourceUrl: 'https://ui5.sap.com/1.84.0/resources/sap-ui-core.js'
         });
     });
 
@@ -21,7 +21,7 @@ describe('getResourceUrlsForUi5Bootstrap', () => {
         const result = getBootstrapResourceUrls(false);
         expect(result).toEqual({
             uShellBootstrapResourceUrl: '../test-resources/sap/ushell/bootstrap/sandbox.js',
-            uiBootsrapResourceUrl: '../resources/sap-ui-core.js'
+            uiBootstrapResourceUrl: '../resources/sap-ui-core.js'
         });
     });
 
@@ -29,7 +29,7 @@ describe('getResourceUrlsForUi5Bootstrap', () => {
         const result = getBootstrapResourceUrls(false, 'https://ui5.sap.com');
         expect(result).toEqual({
             uShellBootstrapResourceUrl: 'https://ui5.sap.com/test-resources/sap/ushell/bootstrap/sandbox.js',
-            uiBootsrapResourceUrl: 'https://ui5.sap.com/resources/sap-ui-core.js'
+            uiBootstrapResourceUrl: 'https://ui5.sap.com/resources/sap-ui-core.js'
         });
     });
 
@@ -38,7 +38,7 @@ describe('getResourceUrlsForUi5Bootstrap', () => {
         const result = getBootstrapResourceUrls(false, undefined, '1.84.0');
         expect(result).toEqual({
             uShellBootstrapResourceUrl: '../test-resources/sap/ushell/bootstrap/sandbox.js',
-            uiBootsrapResourceUrl: '../resources/sap-ui-core.js'
+            uiBootstrapResourceUrl: '../resources/sap-ui-core.js'
         });
     });
 });

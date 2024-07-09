@@ -39,7 +39,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         ignore.push('**/gitignore.tmpl');
     }
 
-    fs.copyTpl(join(tmplPath, 'core', '**/*.*'),  join(basePath), ui5App, undefined, {
+    fs.copyTpl(join(tmplPath, 'core', '**/*.*'), join(basePath), ui5App, undefined, {
         globOptions: { dot: true, ignore },
         processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
     });
@@ -53,6 +53,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         }
     });
     ui5Config.addFioriToolsAppReloadMiddleware();
+
     // ui5-local.yaml
     if (isEdmxProjectType) {
         const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
@@ -72,7 +73,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     }
     else { 
         // Add optional features
-       await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config]);
+        await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config]);
     }
     // write ui5 yaml
     fs.write(ui5ConfigPath, ui5Config.toString());
