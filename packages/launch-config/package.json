@@ -14,22 +14,13 @@
     "private": false,
     "main": "dist/index.js",
     "scripts": {
-        "pre-commit": "lint-staged",
-        "clean:dist": "rimraf ./dist ./generators *.tsbuildinfo",
-        "clean": "rimraf ./reports",
-        "compile": "tsc  --build ./tsconfig.build.json --pretty",
         "build": "tsc --build",
-        "build:deps": "yarn lerna run --concurrency 1 --no-bail --stream --scope @sap-ux/launch-config  --include-dependencies build",
-        "test": "jest --maxWorkers=1 --ci --forceExit --detectOpenHandles",
-        "watch": "tsc --build --watch ./",
-        "lint": "eslint . --ext .ts,.tsx",
-        "lint:summary": "eslint . --ext .ts,.tsx -f summary",
-        "lint:fix": "eslint --fix",
-        "lint:fix:all": "eslint . --ext .ts,.tsx --fix",
-        "lint:report": "eslint . --ext .ts,.tsx -f multiple ",
-        "format:fix": "prettier --write --loglevel silent --ignore-path ../../../../.prettierignore",
-        "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../../.prettierignore",
-        "madge": "madge --warning --circular --extensions ts ./"
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "watch": "tsc --watch"
     },
     "files": [
         "dist/",
