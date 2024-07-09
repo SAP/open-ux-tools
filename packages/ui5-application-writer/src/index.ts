@@ -41,20 +41,18 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
 
     // Determine the UI5 resource URL based on project type and UI5 framework details
     let ui5ResourceUrl: string;
+    const { frameworkUrl, version } = ui5App.ui5 || {};
+    const resourcePath = 'resources/sap-ui-core.js';
 
-    if (isEdmxProjectType) {
-        ui5ResourceUrl = 'resources/sap-ui-core.js'; // Use relative path for Edmx projects
-    } else if (ui5App.ui5?.frameworkUrl) {
-        const frameworkUrl = ui5App.ui5.frameworkUrl;
-        const version = ui5App.ui5.version ? `/${ui5App.ui5.version}` : '';
-        ui5ResourceUrl = `${frameworkUrl}${version}/resources/sap-ui-core.js`; // Use framework URL and version if available
+    if (isEdmxProjectType || !frameworkUrl) {
+        ui5ResourceUrl = resourcePath; // Use relative path for Edmx projects or if frameworkUrl is not available
     } else {
-        ui5ResourceUrl = 'resources/sap-ui-core.js'; // Use absolute path if frameworkUrl is not available
+        ui5ResourceUrl = `${frameworkUrl}${version ? `/${version}` : ''}/${resourcePath}`; // Use framework URL and version if available
     }
     const templateOptions = {
         ...ui5App,
         ui5ResourceUrl
-    }
+    };
     fs.copyTpl(join(tmplPath, 'core', '**/*.*'), join(basePath), templateOptions, undefined, {
         globOptions: { dot: true, ignore },
         processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
