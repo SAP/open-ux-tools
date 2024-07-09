@@ -51,7 +51,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
     const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
     const ui5LibsArray = ui5App.ui5.ui5Libs as string[];
-    const ui5LibsLocal = ui5App.ui5.ui5ReuseLibs as string[];
+    const ui5LibsLocal = ui5App.ui5.ui5ReuseLibs;
 
     //remove reuse libs
     if (ui5LibsLocal) {

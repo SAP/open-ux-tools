@@ -2,7 +2,7 @@ import type { FioriElementsApp, LROPSettings } from '../../src';
 import { OdataVersion, TemplateType } from '../../src';
 import { feBaseConfig, getTestData } from '../common';
 import { getAnnotationV4Libs } from '../../src/data/annotationReuseLibs';
-import { getUi5Libs, setAppDefaults } from '../../src/data/defaults';
+import { setAppDefaults } from '../../src/data/defaults';
 
 describe('getAnnotationV4Libs', () => {
     test('Metadata has the required annotation to return a Reuse lib', () => {
