@@ -296,8 +296,7 @@ class ChangePreprocessor {
         deletionMap: Record<string, DeletionIndex[]>,
         insertionMap: Record<string, boolean>
     ) {
-        const parentPointerForGroup = parentPointer.split('/').slice(0, -1).join('/');
-        if (!insertionMap[parentPointerForGroup]) {
+        if (!insertionMap[parentPointer]) {
             // most probably this if-check is redundant but is left just for safety reasons
             this.bubbleUpDeleteChange(deletionMap, parent, grandParent, parentPointer);
         }
@@ -401,7 +400,7 @@ class ChangePreprocessor {
         } else if (grandParent.type === ANNOTATION_GROUP_TYPE) {
             return createDeleteAnnotationGroupChange(parentPointer);
         } else if (grandParent.type === ANNOTATION_GROUP_ITEMS_TYPE) {
-            return createDeleteAnnotationGroupItemsChange(parentPointer.split('/').slice(0, -1).join('/'));
+            return createDeleteAnnotationGroupItemsChange(grandParentPointer);
         }
         return undefined;
     }
