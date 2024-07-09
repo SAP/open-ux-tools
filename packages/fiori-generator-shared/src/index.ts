@@ -1,3 +1,3 @@
 export * from './cap';
-export * from './common';
+export { getBootstrapResourceUrls } from './helpers';
 export { generateReadMe } from './read-me';

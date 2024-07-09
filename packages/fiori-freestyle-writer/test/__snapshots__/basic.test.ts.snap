@@ -21,6 +21,9 @@ Object {
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
+    \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
+    \\"start-local\\": \\"ui5 serve --config=ui5-local.yaml --open index.html\\",
+    \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"deploy-config\\": \\"npx -p @sap/ux-ui5-tooling fiori add deploy-config cf\\"
   }
 }
@@ -158,7 +161,7 @@ title=App Title",
     </style>
     <script
         id=\\"sap-ui-bootstrap\\"
-        src=\\"https://ui5.sap.com/1.78.11/resources/sap-ui-core.js\\"
+        src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_belize\\"
         data-sap-ui-resourceroots='{
             \\"nods1\\": \\"./\\"
@@ -692,6 +695,9 @@ Object {
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
+    \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
+    \\"start-local\\": \\"ui5 serve --config=ui5-local.yaml --open index.html\\",
+    \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"lint\\": \\"eslint ./\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
     \\"prestart\\": \\"npm run ts-typecheck\\",
@@ -868,7 +874,7 @@ title=App Title",
     </style>
     <script
         id=\\"sap-ui-bootstrap\\"
-        src=\\"https://ui5.sap.com/1.78.11/resources/sap-ui-core.js\\"
+        src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_belize\\"
         data-sap-ui-resourceroots='{
             \\"nods1\\": \\"./\\"
