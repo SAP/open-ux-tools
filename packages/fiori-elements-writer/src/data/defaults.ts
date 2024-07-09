@@ -99,7 +99,7 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     feApp.app.baseComponent = feApp.app.baseComponent || getBaseComponent(feApp.template.type, feApp.service.version);
 
-    let ui5ReuseLibs =
+    const ui5ReuseLibs =
         feApp.service.version === OdataVersion.v4 && feApp.service.metadata
             ? getAnnotationV4Libs(feApp.service.metadata)
             : [];
