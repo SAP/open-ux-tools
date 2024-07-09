@@ -27,10 +27,10 @@ Calling `sap-ux add html` will add html files for local preview and testing to t
 sap-ux change add html ui5-test.yaml
 ```
 
-### new-model
-Calling `sap-ux add new-model` allows to add new OData Service and SAPUI5 Model to an existing adaptation project.  
+### model
+Calling `sap-ux add model` allows to add new OData Service and SAPUI5 Model to an existing adaptation project.  
 ```sh
-sap-ux add new-model /path/to/adaptation-project
+sap-ux add model /path/to/adaptation-project
 ```
 If the project path is not provided, the current working directory will be used.
 

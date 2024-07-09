@@ -46,9 +46,9 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     getPromptsForNewModel: jest.fn()
 }));
 
-const getArgv = (...arg: string[]) => ['', '', 'new-model', ...arg];
+const getArgv = (...arg: string[]) => ['', '', 'model', ...arg];
 
-describe('add/new-model', () => {
+describe('add/model', () => {
     let loggerMock: ToolsLogger;
     let traceSpy: jest.SpyInstance;
 
@@ -71,7 +71,7 @@ describe('add/new-model', () => {
     });
 
     test('should generate change with correct data', async () => {
-        const command = new Command('new-model');
+        const command = new Command('model');
         addNewModelCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
@@ -84,7 +84,7 @@ describe('add/new-model', () => {
     });
 
     test('should generate change with no base path and simulate true', async () => {
-        const command = new Command('new-model');
+        const command = new Command('model');
         addNewModelCommand(command);
         await command.parseAsync(getArgv('', '-s'));
 
@@ -100,7 +100,7 @@ describe('add/new-model', () => {
         getPromptsForNewModelMock.mockImplementation(() => {
             throw new Error('Failed');
         });
-        const command = new Command('new-model');
+        const command = new Command('model');
         addNewModelCommand(command);
         await command.parseAsync(getArgv(appRoot));
 

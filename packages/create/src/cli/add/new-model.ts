@@ -12,7 +12,7 @@ import { validateAdpProject } from '../../validation/validation';
  * @param {Command} cmd - The command to add the change data-source sub-command to.
  */
 export function addNewModelCommand(cmd: Command): void {
-    cmd.command('new-model [path]')
+    cmd.command('model [path]')
         .option('-s, --simulate', 'simulate only do not write or install')
         .action(async (path, options) => {
             await addNewModel(path, !!options.simulate);
