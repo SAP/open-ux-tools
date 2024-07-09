@@ -14,9 +14,8 @@ import { validateAdpProject } from '../../validation/validation';
 export function addNewModelCommand(cmd: Command): void {
     cmd.command('new-model [path]')
         .option('-s, --simulate', 'simulate only do not write or install')
-        .option('-c, --config <string>', 'Path to project configuration file in YAML format', 'ui5.yaml')
         .action(async (path, options) => {
-            await addNewModel(path, !!options.simulate, options.config);
+            await addNewModel(path, !!options.simulate);
         });
 }
 
@@ -25,16 +24,15 @@ export function addNewModelCommand(cmd: Command): void {
  *
  * @param {string} basePath - The path to the adaptation project.
  * @param {boolean} simulate - If set to true, then no files will be written to the filesystem.
- * @param {string} yamlPath - The path to the project configuration file in YAML format.
  */
-async function addNewModel(basePath: string, simulate: boolean, yamlPath: string): Promise<void> {
+async function addNewModel(basePath: string, simulate: boolean): Promise<void> {
     const logger = getLogger();
     try {
         if (!basePath) {
             basePath = process.cwd();
         }
 
-        validateAdpProject(basePath);
+        await validateAdpProject(basePath);
 
         const variant = getVariant(basePath);
 
