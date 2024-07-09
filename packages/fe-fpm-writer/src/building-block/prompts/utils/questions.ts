@@ -1,12 +1,12 @@
-import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
 import type { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import { DOMParser } from '@xmldom/xmldom';
 import type { Answers } from 'inquirer';
 import type { Editor } from 'mem-fs-editor';
 import { join, relative } from 'path';
-import type { ProjectProvider } from './project';
 import { getAnnotationPathQualifiers, getEntityTypes } from './service';
 import { getCapServiceName } from '@sap-ux/project-access';
+import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
+import type { Project } from '@sap-ux/project-access';
 import type { InputPromptQuestion, ListPromptQuestion, PromptListChoices, WithRequired, PromptContext } from '../types';
 import { BuildingBlockType } from '../../types';
 import type { BindingContextType } from '../../types';
@@ -49,7 +49,7 @@ export function getAnnotationPathQualifierPrompt(
     properties: Partial<ListPromptQuestion> = {},
     annotationTerm: UIAnnotationTerms[] = []
 ): ListPromptQuestion {
-    const { projectProvider } = context;
+    const { project, appId } = context;
     return {
         ...properties,
         type: 'list',
@@ -67,7 +67,7 @@ export function getAnnotationPathQualifierPrompt(
                   }
                 : { type: 'absolute' };
             const choices = transformChoices(
-                await getAnnotationPathQualifiers(projectProvider, entitySet, annotationTerm, bindingContext, true)
+                await getAnnotationPathQualifiers(project, appId, entitySet, annotationTerm, bindingContext, true)
             );
             if (entitySet && !choices.length) {
                 throw new Error(
@@ -125,8 +125,8 @@ export async function getCAPServicePrompt(
     context: PromptContext,
     properties: Partial<ListPromptQuestion> = {}
 ): Promise<ListPromptQuestion> {
-    const { projectProvider } = context;
-    const services = await getCAPServiceChoices(projectProvider);
+    const { project, appId } = context;
+    const services = await getCAPServiceChoices(project, appId);
     const defaultValue: string | undefined =
         services.length === 1 ? (services[0] as { name: string; value: string }).value : undefined;
     return {
@@ -134,7 +134,7 @@ export async function getCAPServicePrompt(
         type: 'list',
         name: 'service',
         selectType: 'dynamic',
-        choices: getCAPServiceChoices.bind(null, projectProvider),
+        choices: getCAPServiceChoices.bind(null, project, appId),
         default: defaultValue,
         placeholder: properties.placeholder ?? t('service.defaultPlaceholder')
     };
@@ -151,14 +151,14 @@ export function getEntityPrompt(
     context: PromptContext,
     properties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
-    const { projectProvider } = context;
+    const { project, appId } = context;
     return {
         ...properties,
         type: 'list',
         name: 'buildingBlockData.metaPath.entitySet',
         selectType: 'dynamic',
         choices: async () => {
-            const entityTypes = await getEntityTypes(projectProvider);
+            const entityTypes = await getEntityTypes(project, appId);
             const entityTypeMap: { [key: string]: string } = {};
             for (const entityType of entityTypes) {
                 const value = entityType.fullyQualifiedName;
@@ -174,17 +174,17 @@ export function getEntityPrompt(
 /**
  * Method returns choices for cap service selection.
  *
- * @param projectProvider - the project provider
+ * @param project = project
+ * @param appId - application id
  * @returns choices for cap service selection.
  */
-export async function getCAPServiceChoices(projectProvider: ProjectProvider): Promise<PromptListChoices> {
-    const project = await projectProvider.getProject();
-    const services = project.apps[projectProvider.appId]?.services;
+export async function getCAPServiceChoices(project: Project, appId: string): Promise<PromptListChoices> {
+    const services = project.apps[appId]?.services;
     const servicesMap: { [key: string]: string } = {};
     for (const serviceKey of Object.keys(services)) {
         const mappedServiceName = await getCapServiceName(
             project.root,
-            project.apps[projectProvider.appId].services[serviceKey]?.uri ?? ''
+            project.apps[appId].services[serviceKey]?.uri ?? ''
         );
         servicesMap[mappedServiceName] = serviceKey;
     }

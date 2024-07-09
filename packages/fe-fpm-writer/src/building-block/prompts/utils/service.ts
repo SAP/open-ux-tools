@@ -2,7 +2,6 @@
 import type { ConvertedMetadata, EntityType } from '@sap-ux/vocabularies-types';
 import type { EntityTypeAnnotations } from '@sap-ux/vocabularies-types/vocabularies/Edm_Types';
 import type { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import type { ProjectProvider } from './project';
 import { convert } from '@sap-ux/annotation-converter';
 import { FioriAnnotationService } from '@sap-ux/fiori-annotation-api';
 import { getCapServiceName } from '@sap-ux/project-access';
@@ -101,7 +100,7 @@ const getServiceMetadata = async (
  * @param appId - application id
  * @returns main service name
  */
-function getMainService(project: Project, appId?: string): string {
+function getMainService(project: Project, appId: string): string {
     let mainService: string | undefined;
     if (appId === undefined) {
         const appIds = Object.keys(project.apps);
@@ -119,16 +118,12 @@ function getMainService(project: Project, appId?: string): string {
 /**
  * Method gets available entity types in project.
  *
- * @param projectProvider = project provider
+ * @param project = project
+ * @param appId = app id
  * @returns an array of entity types
  */
-export async function getEntityTypes(projectProvider: ProjectProvider): Promise<EntityType[]> {
-    const project = await projectProvider.getProject();
-    const metadata = await getServiceMetadata(
-        project,
-        getMainService(project, projectProvider.appId),
-        projectProvider.appId
-    );
+export async function getEntityTypes(project: Project, appId: string): Promise<EntityType[]> {
+    const metadata = await getServiceMetadata(project, getMainService(project, appId), appId);
     return Array.from(metadata.entityTypes);
 }
 
@@ -146,7 +141,8 @@ export function getAnnotationTermAlias(annotationTerm: UIAnnotationTerms): [keyo
 /**
  * Method to get the annotation path qualifiers for entity.
  *
- * @param projectProvider - project provider
+ * @param project - project
+ * @param appId app id in CAP project
  * @param entity - entity or entity type name
  * @param annotationTerm - annotation term names to search
  * @param bindingContext - binding context to filter the annotations
@@ -154,7 +150,8 @@ export function getAnnotationTermAlias(annotationTerm: UIAnnotationTerms): [keyo
  * @returns a record of annotation path qualifier terms
  */
 export async function getAnnotationPathQualifiers(
-    projectProvider: ProjectProvider,
+    project: Project,
+    appId: string,
     entity: string,
     annotationTerm: UIAnnotationTerms[],
     bindingContext: BindingContext,
@@ -162,12 +159,7 @@ export async function getAnnotationPathQualifiers(
 ): Promise<Record<string, string>> {
     const result: Record<string, string> = {};
     try {
-        const project = await projectProvider.getProject();
-        const annotationService = await getAnnotationService(
-            project,
-            getMainService(project, projectProvider.appId),
-            projectProvider.appId
-        );
+        const annotationService = await getAnnotationService(project, getMainService(project, appId), appId);
         const mergedMetadata = getMergedMetadata(annotationService);
         let entityType = mergedMetadata.entityTypes.by_fullyQualifiedName(entity);
         if (!entityType) {

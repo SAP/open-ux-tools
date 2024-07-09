@@ -22,7 +22,7 @@ import { BuildingBlockType } from '../../types';
 export async function getFilterBarBuildingBlockPrompts(
     context: PromptContext
 ): Promise<Prompts<FilterBarPromptsAnswer>> {
-    const { projectProvider } = context;
+    const { project } = context;
     const t = translate(i18nNamespaces.buildingBlock, 'prompts.filterBar.');
 
     const defaultAnswers: Answers = {
@@ -40,7 +40,7 @@ export async function getFilterBarBuildingBlockPrompts(
                 default: defaultAnswers.id,
                 required: true
             }),
-            ...((await isCapProject(projectProvider))
+            ...((await isCapProject(project))
                 ? [
                       await getCAPServicePrompt(context, {
                           required: true,

@@ -27,7 +27,7 @@ const TABLE_VISUALIZATION_PROPERTIES_GROUP_ID = 'tableVisualizationProperties';
  * @returns Prompt with questions for table.
  */
 export async function getTableBuildingBlockPrompts(context: PromptContext): Promise<Prompts<TablePromptsAnswer>> {
-    const { projectProvider } = context;
+    const { project } = context;
     const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.table.');
     const groups: PromptsGroup[] = [
         {
@@ -77,7 +77,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
                 default: 'relative',
                 required: true
             }),
-            ...((await isCapProject(projectProvider))
+            ...((await isCapProject(project))
                 ? [
                       await getCAPServicePrompt(context, {
                           groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,

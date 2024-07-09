@@ -23,7 +23,7 @@ import { BuildingBlockType } from '../../types';
  * @returns Prompt with questions for chart.
  */
 export async function getChartBuildingBlockPrompts(context: PromptContext): Promise<Prompts<ChartPromptsAnswer>> {
-    const { projectProvider } = context;
+    const { project } = context;
     const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.chart.');
     const defaultAnswers: Answers = {
         id: 'Chart'
@@ -46,7 +46,7 @@ export async function getChartBuildingBlockPrompts(context: PromptContext): Prom
                 default: 'relative',
                 required: true
             }),
-            ...((await isCapProject(projectProvider))
+            ...((await isCapProject(project))
                 ? [
                       await getCAPServicePrompt(context, {
                           required: true,

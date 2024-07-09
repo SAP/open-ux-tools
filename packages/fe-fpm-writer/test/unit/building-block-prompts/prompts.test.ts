@@ -4,7 +4,6 @@ import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { PromptsType, PromptsAPI, BuildingBlockType } from '../../../src';
 import type { TablePromptsAnswer, SupportedAnswers } from '../../../src';
-import { ProjectProvider } from '../../../src/building-block/prompts/utils/project';
 import type { ChoiceOptions } from 'inquirer';
 
 jest.setTimeout(10000);
@@ -15,8 +14,6 @@ describe('Prompts', () => {
     let promptsAPI: PromptsAPI;
     beforeEach(async () => {
         fs = create(createStorage());
-        const projectProvider = await ProjectProvider.createProject(projectPath);
-        jest.spyOn(ProjectProvider, 'createProject').mockResolvedValue(projectProvider);
         promptsAPI = await PromptsAPI.init(projectPath, undefined, fs);
     });
 

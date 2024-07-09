@@ -4,6 +4,8 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
+import { getProject } from '@sap-ux/project-access';
+import type { Project } from '@sap-ux/project-access';
 import {
     getAggregationPathPrompt,
     getAnnotationPathQualifierPrompt,
@@ -16,7 +18,6 @@ import {
     getEntityPrompt,
     getFilterBarIdPrompt,
     getViewOrFragmentPathPrompt,
-    ProjectProvider,
     getAnnotationPathQualifiers,
     getAnnotationTermAlias,
     getEntityTypes,
@@ -29,7 +30,8 @@ import type { PromptContext } from '../../../src/building-block/prompts/types';
 jest.setTimeout(10000);
 
 const projectFolder = join(__dirname, '../sample/building-block/webapp-prompts');
-const capProjectFolder = join(__dirname, '../sample/building-block/webapp-prompts-cap/app/incidents');
+const capProjectFolder = join(__dirname, '../sample/building-block/webapp-prompts-cap');
+const capAppFolder = join('app/incidents');
 
 const ENTITY_TYPE = 'C_CUSTOMER_OP_SRV.C_CustomerOPType';
 type Choices = (answers?: Answers) => Promise<readonly DistinctChoice<Answers, ListChoiceMap<Answers>>[]>;
@@ -47,28 +49,27 @@ jest.mock('@sap-ux/project-access', () => ({
 }));
 
 describe('utils - ', () => {
-    let projectProvider: ProjectProvider;
-    let capProjectProvider: ProjectProvider;
+    let project: Project;
+    let capProject: Project;
     let fs: Editor;
     let context: PromptContext;
 
     beforeAll(async () => {
-        projectProvider = await ProjectProvider.createProject(projectFolder);
-        capProjectProvider = await ProjectProvider.createProject(capProjectFolder);
+        project = await getProject(projectFolder);
+        capProject = await getProject(capProjectFolder);
         fs = create(createStorage());
         context = {
-            projectProvider,
             fs,
             projectPath: projectFolder,
             appId: '',
             appPath: projectFolder,
-            project: await projectProvider.getProject()
+            project
         };
     });
 
     describe('annotation service - ', () => {
         test('entityType', async () => {
-            const entityTypes = await getEntityTypes(projectProvider);
+            const entityTypes = await getEntityTypes(project, '');
             expect(entityTypes.length).toBe(30);
         });
 
@@ -82,36 +83,28 @@ describe('utils - ', () => {
                     schema: testSchema
                 })
             } as unknown as FioriAnnotationService);
-            const entityTypes = await getEntityTypes(capProjectProvider);
+            const entityTypes = await getEntityTypes(capProject, capAppFolder);
             expect(entityTypes.length).toBe(11);
         });
 
         test('getMappedServiceName - CAP', async () => {
-            expect(
-                await getMappedServiceName(
-                    await capProjectProvider.getProject(),
-                    'mainService',
-                    capProjectProvider.appId
-                )
-            ).toBe('mappedMainServiceName');
+            expect(await getMappedServiceName(capProject, 'mainService', capAppFolder)).toBe('mappedMainServiceName');
         });
 
         test('getMappedServiceName - CAP, appId = undefined', async () => {
-            expect(await getMappedServiceName(await capProjectProvider.getProject(), 'mainService', undefined!)).toBe(
-                'mappedMainServiceName'
-            );
+            expect(await getMappedServiceName(capProject, 'mainService', undefined!)).toBe('mappedMainServiceName');
         });
 
         test('getMappedServiceName - CAP, no app for appId found throws error', async () => {
-            const project = await capProjectProvider.getProject();
-            await expect(getMappedServiceName(project, 'mainService', 'invalidAppId')).rejects.toThrow(
+            await expect(getMappedServiceName(capProject, 'mainService', 'invalidAppId')).rejects.toThrow(
                 'ERROR_INVALID_APP_ID'
             );
         });
 
         test('getAnnotationPathQualifiers - existing annotations, absolute binding context path', async () => {
             const annotationPathQualifiers = await getAnnotationPathQualifiers(
-                projectProvider,
+                project,
+                '',
                 ENTITY_TYPE,
                 [UIAnnotationTerms.Chart, UIAnnotationTerms.LineItem, UIAnnotationTerms.SelectionFields],
                 { type: 'absolute' }
@@ -121,7 +114,8 @@ describe('utils - ', () => {
 
         test('getAnnotationPathQualifiers - existing annotations for EntitySet, absolute binding context path', async () => {
             const annotationPathQualifiers = await getAnnotationPathQualifiers(
-                projectProvider,
+                project,
+                '',
                 'C_CustomerBankDetailsOP',
                 [UIAnnotationTerms.Chart, UIAnnotationTerms.LineItem, UIAnnotationTerms.SelectionFields],
                 { type: 'absolute' }
@@ -131,7 +125,8 @@ describe('utils - ', () => {
 
         test('getAnnotationPathQualifiers - existing annotations, absolute binding context path, use namespace', async () => {
             const annotationPathQualifiers = await getAnnotationPathQualifiers(
-                projectProvider,
+                project,
+                '',
                 ENTITY_TYPE,
                 [UIAnnotationTerms.Chart, UIAnnotationTerms.LineItem, UIAnnotationTerms.SelectionFields],
                 { type: 'absolute' },
@@ -142,7 +137,8 @@ describe('utils - ', () => {
 
         test('getAnnotationPathQualifiers - non existing annotations, absolute binding context path', async () => {
             const annotationPathQualifiers = await getAnnotationPathQualifiers(
-                projectProvider,
+                project,
+                '',
                 '',
                 [UIAnnotationTerms.SelectionVariant],
                 { type: 'absolute' }
@@ -152,7 +148,8 @@ describe('utils - ', () => {
 
         test('getAnnotationPathQualifiers - existing annotations, relative binding context path', async () => {
             const annotationPathQualifiers = await getAnnotationPathQualifiers(
-                projectProvider,
+                project,
+                '',
                 ENTITY_TYPE,
                 [UIAnnotationTerms.Chart, UIAnnotationTerms.LineItem, UIAnnotationTerms.SelectionFields],
                 { type: 'relative' }
@@ -162,7 +159,8 @@ describe('utils - ', () => {
 
         test('getAnnotationPathQualifiers - non existing annotations, relative binding context path', async () => {
             const annotationPathQualifiers = await getAnnotationPathQualifiers(
-                projectProvider,
+                project,
+                '',
                 '',
                 [UIAnnotationTerms.SelectionVariant],
                 { type: 'relative' }
@@ -172,7 +170,8 @@ describe('utils - ', () => {
 
         test('getAnnotationPathQualifiers - existing annotations, relative binding context path, filter isCollection', async () => {
             const annotationPathQualifiers = await getAnnotationPathQualifiers(
-                projectProvider,
+                project,
+                '',
                 ENTITY_TYPE,
                 [UIAnnotationTerms.LineItem],
                 { type: 'relative', isCollection: true }
@@ -199,7 +198,7 @@ describe('utils - ', () => {
             entityPrompt = getEntityPrompt(
                 {
                     ...context,
-                    projectProvider: { getXmlFiles: () => [] } as unknown as ProjectProvider
+                    project: {} as unknown as Project
                 },
                 {
                     message: 'entity'
@@ -429,7 +428,7 @@ describe('utils - ', () => {
         });
 
         test('getCAPServiceChoices', async () => {
-            const choices = await getCAPServiceChoices(capProjectProvider);
+            const choices = await getCAPServiceChoices(capProject, capAppFolder);
             expect(choices).toMatchInlineSnapshot(`
                 Array [
                   Object {
