@@ -3,30 +3,69 @@ import {
     registerComponentDependencyPaths,
     registerSAPFonts,
     setI18nTitle,
-    resetAppState
+    resetAppState,
+    loadI18nResourceBundle
 } from '../../../src/flp/init';
 import IconPoolMock from 'mock/sap/ui/core/IconPool';
-import { mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
+import { default as mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
+import * as apiHandler from '../../../src/adp/api-handler';
 import { fetchMock, sapMock } from 'mock/window';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
+import type { Scenario } from '@sap-ux-private/control-property-editor-common';
 
 describe('flp/init', () => {
     test('registerSAPFonts', () => {
         registerSAPFonts();
         expect(IconPoolMock.registerFont).toBeCalledTimes(2);
     });
-
     test('setI18nTitle', () => {
         const title = '~testTitle';
-        mockBundle.getText.mockReturnValue(title);
+        const mockResourceBundle = {
+            hasText: jest.fn().mockReturnValueOnce(true),
+            getText: jest.fn().mockReturnValueOnce(title)
+        };
 
-        mockBundle.hasText.mockReturnValueOnce(true);
-        setI18nTitle();
+        setI18nTitle(mockResourceBundle, title);
         expect(document.title).toBe(title);
 
-        mockBundle.hasText.mockReturnValueOnce(false);
-        setI18nTitle();
+        mockResourceBundle.hasText.mockReturnValueOnce(false);
+        setI18nTitle(mockResourceBundle);
         expect(document.title).toBe(title);
+    });
+    test('loadI18nResourceBundle', async () => {
+        jest.spyOn(apiHandler, 'getManifestAppdescr').mockResolvedValueOnce({
+            content: [
+                {
+                    texts: {
+                        i18n: 'i18n/test/i18n.properties'
+                    }
+                }
+            ]
+        } as unknown as apiHandler.ManifestAppdescr);
+        await loadI18nResourceBundle('other' as Scenario);
+        expect(mockBundle.create).toBeCalledWith({
+            url: 'i18n/i18n.properties',
+        });
+    });
+    test('loadI18nResourceBundle - adaptation project', async () => {
+        jest.spyOn(apiHandler, 'getManifestAppdescr').mockResolvedValueOnce({
+            content: [
+                {
+                    texts: {
+                        i18n: 'i18n/test/i18n.properties'
+                    }
+                }
+            ]
+        } as unknown as apiHandler.ManifestAppdescr);
+        await loadI18nResourceBundle('ADAPTATION_PROJECT');
+        expect(mockBundle.create).toBeCalledWith({
+            url: '../i18n/i18n.properties',
+            enhanceWith: [
+                {
+                    bundleUrl: '../i18n/test/i18n.properties'
+                }
+            ]
+        });
     });
 
     describe('registerComponentDependencyPaths', () => {
@@ -161,7 +200,7 @@ describe('flp/init', () => {
                 expect.anything()
             );
 
-            const requireCb = sapMock.ui.require.mock.calls[1][1] as (
+            const requireCb = sapMock.ui.require.mock.calls[0][1] as (
                 startAdaptation: StartAdaptation,
                 pluginScript?: RTAPlugin
             ) => void;
@@ -199,7 +238,7 @@ describe('flp/init', () => {
                 expect.anything()
             );
 
-            const requireCb = sapMock.ui.require.mock.calls[1][1] as (
+            const requireCb = sapMock.ui.require.mock.calls[0][1] as (
                 initRta: InitRtaScript,
                 pluginScript?: RTAPlugin
             ) => Promise<void>;

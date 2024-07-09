@@ -59,7 +59,8 @@ export function enhanceManifestAndGetActionsElementReference(manifest: any, targ
         // In: 'options/settings/content/body/sections/<customSection>/actions'
         page.options.settings.content = page.options.settings.content || {};
         page.options.settings.content[target.control] = page.options.settings.content[target.control] || {};
-        page.options.settings.content[target.control].sections = page.options.settings.content[target.control].sections || {};
+        page.options.settings.content[target.control].sections =
+            page.options.settings.content[target.control].sections || {};
         page.options.settings.content[target.control].sections[target.customSectionKey] =
             page.options.settings.content[target.control].sections[target.customSectionKey] || {};
         page.options.settings.content[target.control].sections[target.customSectionKey].actions =

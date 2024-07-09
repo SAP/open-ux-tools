@@ -27,7 +27,9 @@ declare module 'sap/ui/fl/Change' {
 
     export default Change;
 }
-
+/**
+ * Available since version `1.102` of SAPUI5 
+**/
 declare module 'sap/ui/fl/Scenario' {
     const scenario = {
         AppVariant: 'APP_VARIANT',

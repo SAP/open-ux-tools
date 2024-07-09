@@ -1,4 +1,4 @@
-import type { Annotations, ODataServiceInfo } from './base';
+import type { Annotations, ODataServiceInfo, ServiceType } from './base';
 import { CatalogService } from './base';
 import { ODataVersion } from '../../base/odata-service';
 import { ODataRequestError } from '../../base/odata-request-error';
@@ -13,6 +13,7 @@ export interface V4Service {
     ServiceAlias: string;
     Description: string;
     ServiceUrl: string;
+    ServiceType: ServiceType;
 }
 
 /**
@@ -54,7 +55,8 @@ export class V4CatalogService extends CatalogService {
                             path: service.ServiceUrl.split('?').shift(),
                             name: `${group.GroupId} > ${service.ServiceAlias || service.ServiceId}`,
                             serviceVersion: service.ServiceVersion,
-                            odataVersion: ODataVersion.v4
+                            odataVersion: ODataVersion.v4,
+                            serviceType: service.ServiceType
                         };
                     })
                 );
@@ -104,5 +106,14 @@ export class V4CatalogService extends CatalogService {
      */
     public getAnnotations(): Promise<Annotations[]> {
         return Promise.resolve([]);
+    }
+
+    /**
+     * For OData v4, no additonal call is required to retrieve the service type.
+     *
+     * @returns undefined
+     */
+    public getServiceType(): Promise<undefined> {
+        return Promise.resolve(undefined);
     }
 }
