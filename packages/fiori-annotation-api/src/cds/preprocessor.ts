@@ -159,54 +159,61 @@ class ChangePreprocessor {
         }
     }
 
+    private processChangesInputEntry(
+        deletionMap: Record<string, DeletionIndex[]>,
+        insertionMap: Record<string, boolean>,
+        index: number
+    ) {
+        const command = this.commands.get(index);
+        if (command?.type === 'drop') {
+            // if the change is already dropped it is not relevant for further processing
+            return;
+        }
+        const change = this.input[index];
+        if (change.type === DELETE_TARGET_CHANGE_TYPE) {
+            const deletionsInParent = (deletionMap[change.pointer] ??= []);
+            deletionsInParent.push({
+                change,
+                index
+            });
+        }
+        if (
+            change.type === DELETE_ANNOTATION_CHANGE_TYPE ||
+            change.type === DELETE_ANNOTATION_GROUP_CHANGE_TYPE ||
+            change.type === DELETE_EMBEDDED_ANNOTATION_CHANGE_TYPE ||
+            change.type === DELETE_RECORD_PROPERTY_CHANGE_TYPE
+        ) {
+            const parentPointer = change.pointer.split('/').slice(0, -2).join('/');
+            const realPointer = parentPointer === '' ? change.pointer : parentPointer;
+            const deletionsInParent = (deletionMap[realPointer] ??= []);
+            deletionsInParent.push({
+                change,
+                index
+            });
+        }
+        if (change.type === DELETE_ANNOTATION_GROUP_ITEMS_CHANGE_TYPE) {
+            const parentPointer = change.pointer.split('/').slice(0, -1).join('/');
+            const deletionsInParent = (deletionMap[parentPointer] ??= []);
+            deletionsInParent.push({
+                change,
+                index
+            });
+        }
+        if (
+            change.type === INSERT_RECORD_PROPERTY_CHANGE_TYPE ||
+            change.type === INSERT_EMBEDDED_ANNOTATION_CHANGE_TYPE ||
+            change.type === INSERT_ANNOTATION_CHANGE_TYPE
+        ) {
+            insertionMap[change.pointer] = true;
+        }
+    }
+
     private mergeDeletes() {
         const deletionMap: Record<string, DeletionIndex[]> = {};
         const insertionMap: Record<string, boolean> = {};
         // optimize deletion changes
-
         for (let index = 0; index < this.input.length; index++) {
-            const command = this.commands.get(index);
-            if (command?.type === 'drop') {
-                // if the change is already dropped it is not relevant for further processing
-                continue;
-            }
-            const change = this.input[index];
-            if (change.type === DELETE_TARGET_CHANGE_TYPE) {
-                const deletionsInParent = (deletionMap[change.pointer] ??= []);
-                deletionsInParent.push({
-                    change,
-                    index
-                });
-            }
-            if (
-                change.type === DELETE_ANNOTATION_CHANGE_TYPE ||
-                change.type === DELETE_ANNOTATION_GROUP_CHANGE_TYPE ||
-                change.type === DELETE_EMBEDDED_ANNOTATION_CHANGE_TYPE ||
-                change.type === DELETE_RECORD_PROPERTY_CHANGE_TYPE
-            ) {
-                const parentPointer = change.pointer.split('/').slice(0, -2).join('/');
-                const realPointer = parentPointer === '' ? change.pointer : parentPointer;
-                const deletionsInParent = (deletionMap[realPointer] ??= []);
-                deletionsInParent.push({
-                    change,
-                    index
-                });
-            }
-            if (change.type === DELETE_ANNOTATION_GROUP_ITEMS_CHANGE_TYPE) {
-                const parentPointer = change.pointer.split('/').slice(0, -1).join('/');
-                const deletionsInParent = (deletionMap[parentPointer] ??= []);
-                deletionsInParent.push({
-                    change,
-                    index
-                });
-            }
-            if (
-                change.type === INSERT_RECORD_PROPERTY_CHANGE_TYPE ||
-                change.type === INSERT_EMBEDDED_ANNOTATION_CHANGE_TYPE ||
-                change.type === INSERT_ANNOTATION_CHANGE_TYPE
-            ) {
-                insertionMap[change.pointer] = true;
-            }
+            this.processChangesInputEntry(deletionMap, insertionMap, index);
         }
         this.processDeletionMap(deletionMap, insertionMap);
     }
