@@ -49,7 +49,8 @@
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "prompts": "2.4.2",
-        "sanitize-filename": "1.6.3"
+        "sanitize-filename": "1.6.3",
+        "uuid": "10.0.0"
     },
     "devDependencies": {
         "@sap-ux/store": "workspace:*",
@@ -61,6 +62,7 @@
         "@types/mem-fs-editor": "7.0.1",
         "@types/prompts": "2.4.4",
         "@types/supertest": "2.0.12",
+        "@types/uuid": "10.0.0",
         "dotenv": "16.3.1",
         "express": "4.19.2",
         "nock": "13.4.0",
