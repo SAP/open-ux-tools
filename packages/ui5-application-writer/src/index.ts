@@ -50,19 +50,12 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     // ui5-local.yaml
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
     const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-    const ui5Libs = ui5App.ui5.ui5Libs as string[];
-    const ui5ReuseLibs = ui5App.ui5.ui5ReuseLibs;
-
-    //remove reuse libs
-    if (ui5ReuseLibs) {
-        for (let i = 0; i < ui5Libs.length; i++) {
-            if (ui5ReuseLibs.indexOf(ui5Libs[i]) > -1) {
-                ui5Libs.splice(i, 1);
-            }
-        }
-    }
-
-    ui5LocalConfig.addUI5Framework(ui5App.ui5.framework, ui5App.ui5.localVersion, ui5Libs, ui5App.ui5.ui5Theme);
+    ui5LocalConfig.addUI5Framework(
+        ui5App.ui5.framework,
+        ui5App.ui5.localVersion,
+        ui5App.ui5.ui5Libs as string[],
+        ui5App.ui5.ui5Theme
+    );
     ui5LocalConfig.addFioriToolsAppReloadMiddleware();
 
     // Add optional features
