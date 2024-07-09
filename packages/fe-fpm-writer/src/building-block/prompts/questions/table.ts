@@ -65,45 +65,56 @@ export async function getTableBuildingBlockPrompts(
         groups,
         questions: [
             //first prompt group
-            getViewOrFragmentPathPrompt(
-                fs,
-                basePath,
-                t('viewOrFragmentPath.message'),
-                t('viewOrFragmentPath.validate'),
-                ['aggregationPath', 'filterBar'],
-                { groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID, required: true }
-            ),
-            getBuildingBlockIdPrompt(fs, t('id.message'), t('id.validation'), basePath, defaultAnswers.id, {
+            getViewOrFragmentPathPrompt(fs, basePath, t('viewOrFragmentPath.validate'), {
+                groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
+                required: true,
+                message: t('viewOrFragmentPath.message'),
+                dependantPromptNames: ['aggregationPath', 'filterBar']
+            }),
+            getBuildingBlockIdPrompt(fs, t('id.validation'), basePath, {
+                message: t('id.message'),
+                default: defaultAnswers.id,
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
                 required: true
             }),
-            getBindingContextTypePrompt(t('bindingContextType'), 'relative', ['buildingBlockData.metaPath.qualifier'], {
+            getBindingContextTypePrompt({
+                message: t('bindingContextType'),
+                dependantPromptNames: ['buildingBlockData.metaPath.qualifier'],
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
+                default: 'relative',
                 required: true
             }),
             ...((await isCapProject(projectProvider))
                 ? [
-                      await getCAPServicePrompt(t('service'), projectProvider, [], {
+                      await getCAPServicePrompt(projectProvider, {
                           groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
-                          required: true
+                          required: true,
+                          message: t('service'),
+                          dependantPromptNames: []
                       })
                   ]
                 : []),
-            getEntityPrompt(t('entity'), projectProvider, ['buildingBlockData.metaPath.qualifier'], {
+            getEntityPrompt(projectProvider, {
+                message: t('entity'),
+                dependantPromptNames: ['buildingBlockData.metaPath.qualifier'],
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
                 required: true
             }),
-            getAnnotationPathQualifierPrompt(t('qualifier'), projectProvider, [UIAnnotationTerms.LineItem], {
+            getAnnotationPathQualifierPrompt(projectProvider, [UIAnnotationTerms.LineItem], {
+                message: t('qualifier'),
                 additionalInfo: t('valuesDependentOnEntityTypeInfo'),
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
                 required: true,
                 placeholder: t('qualifierPlaceholder')
             }),
-            getAggregationPathPrompt(t('aggregation'), fs, basePath, {
+            getAggregationPathPrompt(fs, basePath, {
+                message: t('aggregation'),
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
                 required: true
             }),
-            getFilterBarIdPrompt(t('filterBar.message'), 'list', fs, basePath, {
+            getFilterBarIdPrompt(fs, basePath, {
+                message: t('filterBar.message'),
+                type: 'list',
                 groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
                 placeholder: t('filterBar.placeholder'),
                 creation: { inputPlaceholder: t('filterBar.inputPlaceholder') }
@@ -136,7 +147,10 @@ export async function getTableBuildingBlockPrompts(
                 default: defaultAnswers.selectionMode,
                 groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
             },
-            getBooleanPrompt('buildingBlockData.headerVisible', t('headerVisible'), defaultAnswers.headerVisible, {
+            getBooleanPrompt({
+                name: 'buildingBlockData.headerVisible',
+                message: t('headerVisible'),
+                default: defaultAnswers.headerVisible,
                 groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
             }),
             {
@@ -168,39 +182,42 @@ export async function getTableBuildingBlockPrompts(
                 default: defaultAnswers.variantManagement,
                 groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
             },
-            getBooleanPrompt('buildingBlockData.readOnly', t('readOnlyMode'), defaultAnswers.readOnly, {
+            getBooleanPrompt({
+                name: 'buildingBlockData.readOnly',
+                message: t('readOnlyMode'),
+                default: defaultAnswers.readOnly,
                 groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
             }),
-            getBooleanPrompt(
-                'buildingBlockData.enableAutoColumnWidth',
-                t('autoColumnWidth'),
-                defaultAnswers.enableAutoColumnWidth,
-                {
-                    groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-                }
-            ),
-            getBooleanPrompt('buildingBlockData.enableExport', t('dataExport'), defaultAnswers.enableExport, {
+            getBooleanPrompt({
+                name: 'buildingBlockData.enableAutoColumnWidth',
+                message: t('autoColumnWidth'),
+                default: defaultAnswers.enableAutoColumnWidth,
                 groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
             }),
-            getBooleanPrompt(
-                'buildingBlockData.enableFullScreen',
-                t('fullScreenMode'),
-                defaultAnswers.enableFullScreen,
-                {
-                    groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-                }
-            ),
-            getBooleanPrompt('buildingBlockData.enablePaste', t('pasteFromClipboard'), defaultAnswers.enablePaste, {
+            getBooleanPrompt({
+                name: 'buildingBlockData.enableExport',
+                message: t('dataExport'),
+                default: defaultAnswers.enableExport,
                 groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
             }),
-            getBooleanPrompt(
-                'buildingBlockData.isSearchable',
-                t('tableSearchableToggle'),
-                defaultAnswers.isSearchable,
-                {
-                    groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-                }
-            )
+            getBooleanPrompt({
+                name: 'buildingBlockData.enableFullScreen',
+                message: t('fullScreenMode'),
+                default: defaultAnswers.enableFullScreen,
+                groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
+            }),
+            getBooleanPrompt({
+                name: 'buildingBlockData.enablePaste',
+                message: t('pasteFromClipboard'),
+                default: defaultAnswers.enablePaste,
+                groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
+            }),
+            getBooleanPrompt({
+                name: 'buildingBlockData.isSearchable',
+                message: t('tableSearchableToggle'),
+                default: defaultAnswers.isSearchable,
+                groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
+            })
         ],
         initialAnswers: {
             buildingBlockData: {

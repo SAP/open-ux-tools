@@ -7,10 +7,10 @@ import { join, relative } from 'path';
 import type { ProjectProvider } from './project';
 import { getAnnotationPathQualifiers, getEntityTypes } from './service';
 import { getCapServiceName } from '@sap-ux/project-access';
-import type { InputPromptQuestion, ListPromptQuestion, PromptListChoices } from '../types';
+import type { InputPromptQuestion, ListPromptQuestion, PromptListChoices, WithRequired } from '../types';
 import { BuildingBlockType } from '../../types';
 import type { BindingContextType } from '../../types';
-import { isElementIdAvailable } from './xml';
+import { getXPathStringsForXmlFile, isElementIdAvailable } from './xml';
 import { i18nNamespaces, initI18n, translate } from '../../../i18n';
 
 // ToDo - recheck if can avoid lint disable
@@ -21,53 +21,39 @@ const t = translate(i18nNamespaces.buildingBlock, 'prompts.common.');
 /**
  * Returns a Prompt to choose a boolean value.
  *
- * @param name - the name of the prompt
- * @param message - the message to display in the prompt
- * @param defaultValue - default value
- * @param additionalProperties - object with additional properties of question
+ * @param properties - object with additional properties of question
  * @returns a boolean prompt.
  */
-export function getBooleanPrompt(
-    name: string,
-    message: string,
-    defaultValue?: string,
-    additionalProperties: Partial<ListPromptQuestion> = {}
-): ListPromptQuestion {
+export function getBooleanPrompt(properties: WithRequired<Partial<ListPromptQuestion>, 'name'>): ListPromptQuestion {
     return {
-        ...additionalProperties,
+        ...properties,
         type: 'list',
-        name,
         selectType: 'static',
-        message,
         choices: [
             { name: 'False', value: false },
             { name: 'True', value: true }
-        ],
-        default: defaultValue
+        ]
     };
 }
 
 /**
  * Returns the prompt for choosing the existing annotation term.
  *
- * @param message - the message to display in the prompt
  * @param projectProvider - the project provider
  * @param annotationTerm - the annotation term
- * @param additionalProperties - object with additional properties of question
+ * @param properties - object with additional properties of question
  * @returns prompt for choosing the annotation term.
  */
 export function getAnnotationPathQualifierPrompt(
-    message: string,
     projectProvider: ProjectProvider,
     annotationTerm: UIAnnotationTerms[],
-    additionalProperties: Partial<ListPromptQuestion> = {}
+    properties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
     return {
-        ...additionalProperties,
+        ...properties,
         type: 'list',
         name: 'buildingBlockData.metaPath.qualifier',
         selectType: 'dynamic',
-        message,
         choices: async (answers) => {
             const { entitySet, bindingContextType } = answers.buildingBlockData?.metaPath ?? {};
             if (!entitySet) {
@@ -99,27 +85,21 @@ export function getAnnotationPathQualifierPrompt(
  *
  * @param fs - the file system object for reading files
  * @param basePath - the base path to search for files
- * @param message - the message to display in the prompt
  * @param validationErrorMessage - the error message to show if validation fails
- * @param dependantPromptNames - dependant prompts names
- * @param additionalProperties - object with additional properties of question
+ * @param properties - object with additional properties of question
  * @returns prompt for choosing the fragment file.
  */
 export function getViewOrFragmentPathPrompt(
     fs: Editor,
     basePath: string,
-    message: string,
     validationErrorMessage: string,
-    dependantPromptNames = ['aggregationPath'],
-    additionalProperties: Partial<ListPromptQuestion> = {}
+    properties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
     return {
-        ...additionalProperties,
+        ...properties,
         type: 'list',
         selectType: 'dynamic',
         name: 'viewOrFragmentPath',
-        message,
-        dependantPromptNames,
         choices: async () => {
             const files = await findFilesByExtension(
                 '.xml',
@@ -130,64 +110,51 @@ export function getViewOrFragmentPathPrompt(
             return transformChoices(files.map((file) => relative(basePath, file)));
         },
         validate: (value: string) => (value ? true : validationErrorMessage),
-        placeholder: additionalProperties.placeholder ?? t('viewOrFragmentPath.defaultPlaceholder')
+        placeholder: properties.placeholder ?? t('viewOrFragmentPath.defaultPlaceholder')
     };
 }
 
 /**
  * Returns the prompt for choosing CAP service.
  *
- * @param message - the message to display in the prompt
  * @param projectProvider - the project provider
- * @param dependantPromptNames - dependant prompts names
- * @param additionalProperties - object with additional properties of question
+ * @param properties - object with additional properties of question
  * @returns prompt for choosing CAP service.
  */
 export async function getCAPServicePrompt(
-    message: string,
     projectProvider: ProjectProvider,
-    dependantPromptNames?: string[],
-    additionalProperties: Partial<ListPromptQuestion> = {}
+    properties: Partial<ListPromptQuestion> = {}
 ): Promise<ListPromptQuestion> {
     const services = await getCAPServiceChoices(projectProvider);
     const defaultValue: string | undefined =
         services.length === 1 ? (services[0] as { name: string; value: string }).value : undefined;
     return {
-        ...additionalProperties,
+        ...properties,
         type: 'list',
-        // ToDo - where it fits?
         name: 'service',
         selectType: 'dynamic',
-        dependantPromptNames,
-        message,
         choices: getCAPServiceChoices.bind(null, projectProvider),
         default: defaultValue,
-        placeholder: additionalProperties.placeholder ?? t('service.defaultPlaceholder')
+        placeholder: properties.placeholder ?? t('service.defaultPlaceholder')
     };
 }
 
 /**
  * Returns a Prompt for choosing an entity.
  *
- * @param message - the message to display in the prompt
  * @param projectProvider - the project provider
- * @param dependantPromptNames - dependant prompts names
- * @param additionalProperties - object with additional properties of question
+ * @param properties - object with additional properties of question
  * @returns prompt for choosing entity.
  */
 export function getEntityPrompt(
-    message: string,
     projectProvider: ProjectProvider,
-    dependantPromptNames?: string[],
-    additionalProperties: Partial<ListPromptQuestion> = {}
+    properties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
     return {
-        ...additionalProperties,
+        ...properties,
         type: 'list',
         name: 'buildingBlockData.metaPath.entitySet',
         selectType: 'dynamic',
-        dependantPromptNames,
-        message,
         choices: async () => {
             const entityTypes = await getEntityTypes(projectProvider);
             const entityTypeMap: { [key: string]: string } = {};
@@ -198,7 +165,7 @@ export function getEntityPrompt(
             }
             return transformChoices(entityTypeMap);
         },
-        placeholder: additionalProperties.placeholder ?? t('entity.defaultPlaceholder')
+        placeholder: properties.placeholder ?? t('entity.defaultPlaceholder')
     };
 }
 
@@ -225,24 +192,21 @@ export async function getCAPServiceChoices(projectProvider: ProjectProvider): Pr
 /**
  * Return a Prompt for choosing the aggregation path.
  *
- * @param message - the message to display in the prompt
  * @param fs - the file system object for reading files
  * @param basePath - the base path to search for aggregations
- * @param additionalProperties - object with additional properties of question
+ * @param properties - object with additional properties of question
  * @returns prompt for choosing aggregation path of selected xml file.
  */
 export function getAggregationPathPrompt(
-    message: string,
     fs: Editor,
     basePath: string,
-    additionalProperties: Partial<ListPromptQuestion> = {}
+    properties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
     return {
-        ...additionalProperties,
+        ...properties,
         type: 'list',
         name: 'aggregationPath',
         selectType: 'dynamic',
-        message,
         choices: (answers: Answers) => {
             const { viewOrFragmentPath } = answers;
             if (viewOrFragmentPath) {
@@ -257,63 +221,11 @@ export function getAggregationPathPrompt(
             }
             return [];
         },
-        placeholder: additionalProperties.placeholder ?? t('aggregationPath.defaultPlaceholder')
+        placeholder: properties.placeholder ?? t('aggregationPath.defaultPlaceholder')
     };
 }
 
-/**
- * Converts the provided xpath string from `/mvc:View/Page/content` to
- * `/mvc:View/*[local-name()='Page']/*[local-name()='content']`.
- *
- * @param path - the xpath string
- * @returns the augmented xpath string.
- */
-export const augmentXpathWithLocalNames = (path: string): string => {
-    const result = [];
-    for (const token of path.split('/')) {
-        result.push(token === '' || token.includes(':') ? token : `*[local-name()='${token}']`);
-    }
-    return result.join('/');
-};
-
-/**
- * Returns a list of xpath strings for each element of the xml file provided.
- *
- * @param xmlFilePath - the xml file path
- * @param fs - the file system object for reading files
- * @returns the list of xpath strings.
- */
-export function getXPathStringsForXmlFile(xmlFilePath: string, fs: Editor): Record<string, string> {
-    const result: Record<string, string> = {};
-    try {
-        const xmlContent = fs.read(xmlFilePath);
-        const errorHandler = (level: string, message: string) => {
-            throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
-        };
-        const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent);
-        const nodes = [{ parentNode: '', node: xmlDocument.firstChild }];
-        while (nodes && nodes.length > 0) {
-            const { parentNode, node } = nodes.shift()!;
-            if (!node) {
-                continue;
-            }
-            result[`${parentNode}/${node.nodeName}`] = augmentXpathWithLocalNames(`${parentNode}/${node.nodeName}`);
-            const childNodes = Array.from(node.childNodes);
-            for (const childNode of childNodes) {
-                if (childNode.nodeType === childNode.ELEMENT_NODE) {
-                    nodes.push({
-                        parentNode: `${parentNode}/${node.nodeName}`,
-                        node: childNode
-                    });
-                }
-            }
-        }
-    } catch (error) {
-        throw new Error(`An error occurred while parsing the view or fragment xml. Details: ${getErrorMessage(error)}`);
-    }
-    return result;
-}
-
+// ToDo - move to utils?
 /**
  * Method converts choices to "PromptListChoices" type.
  *
@@ -336,45 +248,30 @@ export function transformChoices(obj: Record<string, string> | string[], sort = 
 }
 
 /**
- * Returns the message property if the error is an instance of `Error` else a string representation of the error.
- *
- * @param {Error} error  - the error instance
- * @returns {string} the error message.
- */
-function getErrorMessage(error: Error): string {
-    return error instanceof Error ? error.message : String(error);
-}
-
-/**
  * Returns a Prompt for selecting existing filter bar ID or entering a new one.
  *
- * @param message - prompt message
- * @param type - the question type 'list' or 'input'
  * @param fs  - the file system object for reading files
  * @param basePath - the application path
- * @param additionalProperties - Object with additional properties of question
+ * @param properties - Object with additional properties of question
  * @returns an Input or List Prompt
  */
 export function getFilterBarIdPrompt(
-    message: string,
-    type: 'input' | 'list',
-    fs?: Editor,
-    basePath?: string,
-    additionalProperties: Partial<ListPromptQuestion> = {}
+    fs: Editor,
+    basePath: string,
+    properties: WithRequired<Partial<ListPromptQuestion | InputPromptQuestion>, 'type'>
 ): ListPromptQuestion | InputPromptQuestion {
     const prompt: InputPromptQuestion = {
+        ...properties,
         type: 'input',
         name: 'buildingBlockData.filterBar',
-        message,
-        placeholder: additionalProperties.placeholder ?? t('filterBar.defaultPlaceholder')
+        placeholder: properties.placeholder ?? t('filterBar.defaultPlaceholder')
     };
-    if (type === 'input') {
+    if (properties.type === 'input') {
         return prompt;
     }
     return {
         ...prompt,
-        ...additionalProperties,
-        type,
+        type: 'list',
         selectType: 'dynamic',
         choices: async (answers: Answers) => {
             if (!answers.viewOrFragmentPath) {
@@ -391,6 +288,7 @@ export function getFilterBarIdPrompt(
     };
 }
 
+// ToDo - move to utils/xml?
 /**
  * Method returns ids of specific macro element found in passed xml file.
  *
@@ -435,30 +333,19 @@ async function getBuildingBlockIdsInFile(
 /**
  * Returns the Binding Context Type Prompt.
  *
- * @param message - prompt message
- * @param defaultValue - default value
- * @param dependantPromptNames - array of dependant question names
- * @param additionalProperties - object with additional properties of question
+ * @param properties - object with additional properties of question
  * @returns prompt for choosing binding context type.
  */
-export function getBindingContextTypePrompt(
-    message: string,
-    defaultValue?: string,
-    dependantPromptNames = ['buildingBlockData.metaPath.qualifier'],
-    additionalProperties: Partial<ListPromptQuestion> = {}
-): ListPromptQuestion {
+export function getBindingContextTypePrompt(properties: Partial<ListPromptQuestion> = {}): ListPromptQuestion {
     return {
-        ...additionalProperties,
+        ...properties,
         type: 'list',
         name: 'buildingBlockData.metaPath.bindingContextType',
         selectType: 'static',
-        message,
-        dependantPromptNames,
         choices: [
             { name: t('bindingContextType.option.relative'), value: 'relative' },
             { name: t('bindingContextType.option.absolute'), value: 'absolute' }
-        ],
-        default: defaultValue
+        ]
     };
 }
 
@@ -466,26 +353,21 @@ export function getBindingContextTypePrompt(
  * Returns a Prompt for entering a Building block ID.
  *
  * @param fs  - the file system object for reading files
- * @param message - The message to display in the prompt
  * @param validationErrorMessage - The error message to show if ID validation fails
  * @param basePath - the application path
- * @param defaultValue - default value
- * @param additionalProperties - object with additional properties of question
+ * @param properties - object with additional properties of question
  * @returns an InputPrompt object for getting the building block ID
  */
 export function getBuildingBlockIdPrompt(
     fs: Editor,
-    message: string,
     validationErrorMessage: string,
     basePath: string,
-    defaultValue?: string,
-    additionalProperties: Partial<InputPromptQuestion> = {}
+    properties: Partial<InputPromptQuestion> = {}
 ): InputPromptQuestion {
     return {
-        ...additionalProperties,
+        ...properties,
         type: 'input',
         name: 'buildingBlockData.id',
-        message,
         validate: (value: string, answers?: Answers) => {
             if (!value) {
                 return validationErrorMessage;
@@ -497,8 +379,7 @@ export function getBuildingBlockIdPrompt(
                     : true;
             }
         },
-        default: defaultValue,
-        placeholder: additionalProperties.placeholder ?? t('id.defaultPlaceholder')
+        placeholder: properties.placeholder ?? t('id.defaultPlaceholder')
     };
 }
 

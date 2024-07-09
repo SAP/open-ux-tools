@@ -37,33 +37,49 @@ export async function getChartBuildingBlockPrompts(
     };
     return {
         questions: [
-            getViewOrFragmentPathPrompt(
-                fs,
-                basePath,
-                t('viewOrFragmentPath.message'),
-                t('viewOrFragmentPath.validate'),
-                ['aggregationPath', 'filterBar'],
-                { required: true }
-            ),
-            getBuildingBlockIdPrompt(fs, t('id.message'), t('id.validation'), basePath, defaultAnswers.id, {
+            getViewOrFragmentPathPrompt(fs, basePath, t('viewOrFragmentPath.validate'), {
+                required: true,
+                message: t('viewOrFragmentPath.message'),
+                dependantPromptNames: ['aggregationPath', 'filterBar']
+            }),
+            getBuildingBlockIdPrompt(fs, t('id.validation'), basePath, {
+                message: t('id.message'),
+                default: defaultAnswers.id,
                 required: true
             }),
-            getBindingContextTypePrompt(t('bindingContextType'), 'relative', ['buildingBlockData.metaPath.qualifier'], {
+            getBindingContextTypePrompt({
+                message: t('bindingContextType'),
+                dependantPromptNames: ['buildingBlockData.metaPath.qualifier'],
+                default: 'relative',
                 required: true
             }),
             ...((await isCapProject(projectProvider))
-                ? [await getCAPServicePrompt(t('service'), projectProvider, [], { required: true })]
+                ? [
+                      await getCAPServicePrompt(projectProvider, {
+                          required: true,
+                          message: t('service'),
+                          dependantPromptNames: []
+                      })
+                  ]
                 : []),
-            getEntityPrompt(t('entity'), projectProvider, ['buildingBlockData.metaPath.qualifier'], { required: true }),
-            getAnnotationPathQualifierPrompt(t('qualifier'), projectProvider, [UIAnnotationTerms.Chart], {
+            getEntityPrompt(projectProvider, {
+                message: t('entity'),
+                dependantPromptNames: ['buildingBlockData.metaPath.qualifier'],
+                required: true
+            }),
+            getAnnotationPathQualifierPrompt(projectProvider, [UIAnnotationTerms.Chart], {
+                message: t('qualifier'),
                 additionalInfo: t('valuesDependentOnEntityTypeInfo'),
                 required: true,
                 placeholder: t('qualifierPlaceholder')
             }),
-            getAggregationPathPrompt(t('aggregation'), fs, basePath, {
+            getAggregationPathPrompt(fs, basePath, {
+                message: t('aggregation'),
                 required: true
             }),
-            getFilterBarIdPrompt(t('filterBar.message'), 'list', fs, basePath, {
+            getFilterBarIdPrompt(fs, basePath, {
+                message: t('filterBar.message'),
+                type: 'list',
                 placeholder: t('filterBar.placeholder'),
                 creation: { inputPlaceholder: t('filterBar.inputPlaceholder') }
             }),

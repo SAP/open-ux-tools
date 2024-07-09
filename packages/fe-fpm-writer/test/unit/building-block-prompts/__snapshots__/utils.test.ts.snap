@@ -39,7 +39,6 @@ Object {
 exports[`utils -  prompts entityPrompt 1`] = `
 Object {
   "choices": [Function],
-  "dependantPromptNames": undefined,
   "message": "entity",
   "name": "buildingBlockData.metaPath.entitySet",
   "placeholder": "Select an entity",

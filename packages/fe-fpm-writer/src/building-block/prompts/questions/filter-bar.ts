@@ -35,23 +35,33 @@ export async function getFilterBarBuildingBlockPrompts(
     };
     return {
         questions: [
-            getViewOrFragmentPathPrompt(
-                fs,
-                basePath,
-                t('viewOrFragmentPath.message'),
-                t('viewOrFragmentPath.validate'),
-                ['aggregationPath'],
-                { required: true }
-            ),
-            getBuildingBlockIdPrompt(fs, t('id.message'), t('id.validation'), basePath, defaultAnswers.id, {
+            getViewOrFragmentPathPrompt(fs, basePath, t('viewOrFragmentPath.validate'), {
+                required: true,
+                message: t('viewOrFragmentPath.message'),
+                dependantPromptNames: ['aggregationPath']
+            }),
+            getBuildingBlockIdPrompt(fs, t('id.validation'), basePath, {
+                message: t('id.message'),
+                default: defaultAnswers.id,
                 required: true
             }),
             ...((await isCapProject(projectProvider))
-                ? [await getCAPServicePrompt(t('service'), projectProvider, [], { required: true })]
+                ? [
+                      await getCAPServicePrompt(projectProvider, {
+                          required: true,
+                          message: t('service'),
+                          dependantPromptNames: []
+                      })
+                  ]
                 : []),
-            getAggregationPathPrompt(t('aggregation'), fs, basePath, { required: true }),
-            getEntityPrompt(t('entity'), projectProvider, ['buildingBlockData.metaPath.qualifier'], { required: true }),
-            getAnnotationPathQualifierPrompt(t('qualifier'), projectProvider, [UIAnnotationTerms.SelectionFields], {
+            getAggregationPathPrompt(fs, basePath, { message: t('aggregation'), required: true }),
+            getEntityPrompt(projectProvider, {
+                message: t('entity'),
+                dependantPromptNames: ['buildingBlockData.metaPath.qualifier'],
+                required: true
+            }),
+            getAnnotationPathQualifierPrompt(projectProvider, [UIAnnotationTerms.SelectionFields], {
+                message: t('qualifier'),
                 additionalInfo: t('valuesDependentOnEntityTypeInfo'),
                 required: true,
                 placeholder: t('qualifierPlaceholder')
