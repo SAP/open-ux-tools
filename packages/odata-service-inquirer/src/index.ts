@@ -17,7 +17,7 @@ import {
 } from './types';
 import { PromptState, setTelemetryClient } from './utils';
 import { initI18nOdataServiceInquirer } from './i18n';
-import { newSystemChoiceValue } from './prompts/datasources/sap-system/questions';
+import { newSystemChoiceValue } from './prompts/datasources/sap-system/new-system/questions';
 import autocomplete from 'inquirer-autocomplete-prompt';
 
 /**

@@ -60,7 +60,12 @@
             "warningCertificateValidationDisabled": "User has disabled certificate validation",
             "annotationsNotFound": "Annotations not found for specified service"
         },
-        "nonUIServiceTypeWarningMessage": "Please note that {{serviceTypeDesc}} services are not intended to be used for the generation of SAP Fiori UI applications",
+        "warnings": {
+            "nonUIServiceTypeWarningMessage": "Please note that {{serviceType}} services are not intended to be used for the generation of SAP Fiori UI applications",
+            "noServicesAvailable": "No services available for the selected system, see logs for furthur details.",
+            "noServicesAvailableForOdataVersion": "There are no V{{odataVersion}} OData services available from the selected system and the template you have chosen supports V{{odataVersion}} OData services only"
+
+        },
         "systemUrl" : {
             "message": "System URL",
             "description": "Enter the URL of the SAP System",

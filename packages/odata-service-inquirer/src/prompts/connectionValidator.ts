@@ -15,7 +15,6 @@ import { ERROR_TYPE, ErrorHandler } from '../error-handler/error-handler';
 import { t } from '../i18n';
 import LoggerHelper from './logger-helper';
 import { errorHandler } from './prompt-helpers';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { SAP_CLIENT_KEY } from '../types';
 
 /**
@@ -65,14 +64,14 @@ export class ConnectionValidator {
     }
 
     /**
-     * Get the catalogs for the odata versions.
+     * Get the catalogs for the odata versions. Note that one of these may not be defined where a specific odata version is required.
      *
      * @returns the catalog services for each the odata versions
      */
     public get catalogs(): Record<ODataVersion, CatalogService> {
         return {
             [ODataVersion.v2]: this._catalogV2,
-            [OdataVersion.v4]: this._catalogV4
+            [ODataVersion.v4]: this._catalogV4
         };
     }
 
@@ -94,13 +93,18 @@ export class ConnectionValidator {
      * @param options
      * @param options.ignoreCertError ignore some certificate errors
      * @param options.isSystem if true, the url will be treated as a system url rather than a service url
+     * @param options.odataVersion if specified will restrict catalog requests to only the specified odata version
      * @returns the status code or error returned by the connection attempt
      */
     private async checkSapService(
         url: URL,
         username?: string,
         password?: string,
-        { ignoreCertError = false, isSystem = false }: { ignoreCertError?: boolean; isSystem?: boolean } = {}
+        {
+            ignoreCertError = false,
+            isSystem = false,
+            odataVersion
+        }: { ignoreCertError?: boolean; isSystem?: boolean; odataVersion?: ODataVersion } = {}
     ): Promise<number | string> {
         const isBAS = isAppStudio();
         try {
@@ -134,23 +138,26 @@ export class ConnectionValidator {
 
             this._axiosConfig = axiosConfig;
 
-            // If system, use catalog service to get the service info
+            // If system, use catalog service to get the services info
             if (isSystem) {
                 this._serviceProvider = createForAbap(this._axiosConfig);
-                // todo: Pass requiredOdataVersion and if specified, only create the relevant catalog service
-                this._catalogV2 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v2);
-                this._catalogV4 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v4);
-                // services are cached
                 LoggerHelper.attachAxiosLogger(this._serviceProvider.interceptors);
+
+                if (!odataVersion || odataVersion === ODataVersion.v2) {
+                    this._catalogV2 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v2);
+                }
+                if (!odataVersion || odataVersion === ODataVersion.v4) {
+                    this._catalogV4 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v4);
+                }
                 try {
-                    await this._catalogV2.listServices();
+                    this._catalogV2 ? await this._catalogV2.listServices() : await this._catalogV4.listServices();
                 } catch (error) {
-                    // v2 catalog may not be enabled
-                    if ((error as AxiosError).response?.status === 404) {
-                        this._catalogV4 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v4);
+                    // We will try the v4 catalog if v2 returns a 404
+                    if ((error as AxiosError).response?.status === 404 && this._catalogV4) {
                         await this._catalogV4.listServices();
+                    } else {
+                        throw error;
                     }
-                    throw error;
                 }
             } else {
                 // Full service URL
@@ -186,6 +193,7 @@ export class ConnectionValidator {
      * @param options.ignoreCertError ignore some certificate errors
      * @param options.forceReValidation force re-validation of the url
      * @param options.isSystem if true, the url will be treated as a system url rather than a service url
+     * @param options.odataVersion if specified will restrict catalog requests to only the specified odata version
      * @returns true if the url is reachable, false if not, or an error message string
      */
     public async validateUrl(
@@ -193,8 +201,14 @@ export class ConnectionValidator {
         {
             ignoreCertError = false,
             forceReValidation = false,
-            isSystem = false
-        }: { ignoreCertError?: boolean; forceReValidation?: boolean; isSystem?: boolean } = {}
+            isSystem = false,
+            odataVersion
+        }: {
+            ignoreCertError?: boolean;
+            forceReValidation?: boolean;
+            isSystem?: boolean;
+            odataVersion?: ODataVersion;
+        } = {}
     ): Promise<boolean | string | IValidationLink> {
         if (this.isEmptyString(serviceUrl)) {
             this.resetValidity();
@@ -210,7 +224,11 @@ export class ConnectionValidator {
                 return t('errors.invalidUrl');
             }
             // Ignore path if a system url
-            const status = await this.checkSapService(url, undefined, undefined, { ignoreCertError, isSystem });
+            const status = await this.checkSapService(url, undefined, undefined, {
+                ignoreCertError,
+                isSystem,
+                odataVersion
+            });
             LoggerHelper.logger.debug(`ConnectionValidator.validateUrl() - status: ${status}; url: ${serviceUrl}`);
             this.validity.urlFormat = true;
             this._validatedUrl = serviceUrl;
@@ -295,6 +313,7 @@ export class ConnectionValidator {
      * @param options.ignoreCertError ignore some certificate errors
      * @param options.isSystem if true, the url will be treated as a system url rather than a service url
      * @param options.sapClient
+     * @param options.odataVersion
      * @returns true if the authentication is successful, false if not, or an error message string
      */
     public async validateAuth(
@@ -304,8 +323,9 @@ export class ConnectionValidator {
         {
             ignoreCertError = false,
             isSystem = false,
-            sapClient
-        }: { ignoreCertError?: boolean; isSystem?: boolean; sapClient?: string } = {}
+            sapClient,
+            odataVersion
+        }: { ignoreCertError?: boolean; isSystem?: boolean; odataVersion?: ODataVersion; sapClient?: string } = {}
     ): Promise<boolean | string> {
         if (!url) {
             return false;
@@ -319,7 +339,11 @@ export class ConnectionValidator {
                 urlObject.searchParams.append(SAP_CLIENT_KEY, sapClient);
             }
             this.validity.authenticated =
-                (await this.checkSapService(urlObject, username, password, { ignoreCertError, isSystem })) === 200;
+                (await this.checkSapService(urlObject, username, password, {
+                    ignoreCertError,
+                    isSystem,
+                    odataVersion
+                })) === 200;
             return this.validity.authenticated === true ? true : t('errors.authenticationFailed');
         } catch (error) {
             return errorHandler.getErrorMsg(error) ?? false;

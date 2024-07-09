@@ -214,6 +214,10 @@ export type ServiceSelectionPromptOptions = {
      * Note that the auto-complete module must be registered with the inquirer instance to use this feature.
      */
     useAutoComplete?: boolean;
+    /**
+     * Used to validate the selected service is of the required odata version
+     */
+    requiredOdataVersion?: OdataVersion;
 };
 
 export type OdataServiceUrlPromptOptions = {

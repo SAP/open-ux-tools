@@ -13,8 +13,8 @@ import {
 import { getLocalCapProjectPrompts } from './datasources/cap-project/questions';
 import { getMetadataFileQuestion } from './datasources/metadata-file';
 import { getAbapOnPremQuestions } from './datasources/sap-system/abap-on-prem/questions';
-import type { NewSystemAnswers, SystemSelectionAnswer } from './datasources/sap-system/questions';
-import { newSystemChoiceValue } from './datasources/sap-system/questions';
+import type { NewSystemAnswers, SystemSelectionAnswer } from './datasources/sap-system/new-system/questions';
+import { newSystemChoiceValue } from './datasources/sap-system/new-system/questions';
 import { getServiceUrlQuestions } from './datasources/service-url/questions';
 import LoggerHelper from './logger-helper';
 import { getDatasourceTypeChoices } from './prompt-helpers';

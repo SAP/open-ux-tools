@@ -3,6 +3,8 @@ import type { ListChoiceOptions } from 'inquirer';
 import LoggerHelper from '../../../logger-helper';
 import type { ServiceAnswer } from './questions';
 
+// Service ids continaining these paths should not be offered as UI compatible services
+const nonUIServicePaths = ['/IWBEP/COMMON/'];
 /**
  * Builds and formats the service choices list.
  *
@@ -14,7 +16,8 @@ const createServiceChoices = (serviceInfos?: ODataServiceInfo[]): ListChoiceOpti
     //const isLogTrace = LoggerHelper.logger. === 'trace';
 
     serviceInfos
-        ?.filter((service) => !service.id?.includes('/IWBEP/COMMON'))
+        // Exclude non-UI compatible services
+        ?.filter((service) => !nonUIServicePaths.some((path) => service.path.includes(path)))
         .forEach((service) => {
             let serviceName = service.name;
             const servicePath = service.path;
@@ -56,6 +59,8 @@ export async function getServiceChoices(catalogs: CatalogService[]): Promise<Lis
         }
     });
     const serviceInfos: ODataServiceInfo[][] = await Promise.all(listServicesRequests);
+    const flatServices = serviceInfos?.flat() ?? [];
+    LoggerHelper.logger.debug(`Number of services available: ${flatServices.length}`);
 
-    return createServiceChoices(serviceInfos.flat());
+    return createServiceChoices(flatServices);
 }

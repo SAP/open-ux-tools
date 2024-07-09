@@ -1,6 +1,6 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Annotations, AxiosRequestConfig, CatalogService, ServiceProvider } from '@sap-ux/axios-extension';
-import { ODataVersion, create } from '@sap-ux/axios-extension';
+import { ODataVersion, ServiceType, create } from '@sap-ux/axios-extension';
 import { searchChoices, withCondition, type ListQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { validateClient } from '@sap-ux/project-input-validator';
@@ -12,7 +12,7 @@ import { PromptState, getHostEnvironment } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
-import { getNewSystemNameQuestion } from '../questions';
+import { getNewSystemNameQuestion } from '../new-system/questions';
 import { getServiceChoices } from './service-helper';
 
 export enum abapOnPremInternalPromptNames {
@@ -40,13 +40,20 @@ export type ServiceAnswer = {
     toString: () => string;
     serviceType?: string;
 };
-// todo: Replace with axios-extension exported type
-export const SERVICE_TYPE = {
-    UI: 'UI',
-    NOT_CLASSIFIED: 'Not Classified',
-    WEB_API: 'WEB_API',
-    NOT_DETERMINED: 'Not Determined'
-};
+
+/**
+ * Convert the odata version type from the prompt (odata-service-writer) type to the axios-extension type.
+ *
+ * @param odataVersion
+ * @returns
+ */
+function convertODataVersionType(odataVersion?: OdataVersion): ODataVersion | undefined {
+    if (!odataVersion) {
+        return odataVersion;
+    }
+    return odataVersion === OdataVersion.v2 ? ODataVersion.v2 : ODataVersion.v4;
+}
+
 /**
  * Get the Abap on-premise datasource questions.
  *
@@ -63,6 +70,7 @@ export function getAbapOnPremQuestions(
     // Prevent re-requesting services repeatedly by only requesting them once and when the system is changed
     let lastSystemUrl: string | undefined;
     let lastService: ServiceAnswer | undefined;
+    const requiredOdataVersion = serviceSelectionPromptOptions?.requiredOdataVersion;
 
     const questions: Question<AbapOnPremAnswers>[] = [
         {
@@ -75,7 +83,10 @@ export function getAbapOnPremQuestions(
                 breadcrumb: true
             },
             validate: async (url) => {
-                const valResult = await connectValidator.validateUrl(url, { isSystem: true });
+                const valResult = await connectValidator.validateUrl(url, {
+                    isSystem: true,
+                    odataVersion: convertODataVersionType(requiredOdataVersion)
+                });
                 if (valResult === true) {
                     PromptState.odataService.connectedSystem = {
                         serviceProvider: connectValidator.serviceProvider
@@ -139,6 +150,7 @@ export function getAbapOnPremQuestions(
                 connectValidator.validity.reachable === true &&
                 (connectValidator.validity.authenticated || connectValidator.validity.authRequired !== true)
         )[0],
+        // Note: Service selection is required for multiple datasource types, so this definition may be moved up a level for reuse across multiple sap-system prompts.
         {
             when: (): boolean =>
                 connectValidator.validity.authenticated || connectValidator.validity.authRequired === false,
@@ -151,44 +163,56 @@ export function getAbapOnPremQuestions(
             },
             source: (prevAnswers: AbapOnPremAnswers, input: string) =>
                 searchChoices(input, serviceChoices as ListChoiceOptions[]),
-            choices: async (answers) => {
+            choices: async (answers: AbapOnPremAnswers) => {
                 if (!serviceChoices || lastSystemUrl !== answers.systemUrl) {
-                    serviceChoices = await getServiceChoices(Object.values(connectValidator.catalogs));
+                    let catalogs: CatalogService[] = [];
+                    if (requiredOdataVersion) {
+                        catalogs.push(connectValidator.catalogs[requiredOdataVersion]);
+                    } else {
+                        catalogs = Object.values(connectValidator.catalogs);
+                    }
+                    serviceChoices = await getServiceChoices(catalogs);
                 }
                 return serviceChoices;
             },
             additionalMessages: (selectedService: ServiceAnswer) => {
-                if (selectedService?.serviceType && selectedService.serviceType !== SERVICE_TYPE.UI) {
-                    return {
-                        message: t('prompts.nonUIServiceTypeWarningMessage', { serviceTypeDesc: 'A2X' }),
-                        severity: Severity.warning
-                    };
-                }
-
                 if (serviceChoices?.length === 0) {
+                    if (requiredOdataVersion) {
+                        return {
+                            message: t('prompts.warnings.noServicesAvailableForOdataVersion', {
+                                odataVersion: requiredOdataVersion
+                            }),
+                            severity: Severity.warning
+                        };
+                    } else {
+                        return {
+                            message: t('prompts.warnings.noServicesAvailable'),
+                            severity: Severity.warning
+                        };
+                    }
+                }
+                if (selectedService?.serviceType && selectedService.serviceType !== ServiceType.UI) {
                     return {
-                        message: t('prompts.noServicesWarning'),
+                        message: t('prompts.warnings.nonUIServiceTypeWarningMessage', { serviceType: 'A2X' }),
                         severity: Severity.warning
                     };
                 }
             },
-            default: (answers: AbapOnPremAnswers) => {
-                if (answers.serviceSelection) {
-                    return answers.serviceSelection;
-                }
-                return serviceChoices?.length > 1 ? undefined : 0;
-            },
+            default: () => (serviceChoices?.length > 1 ? undefined : 0),
             // Warning: only executes in YUI not cli
             validate: async (
                 service: ServiceAnswer,
                 answers: Partial<AbapOnPremAnswers>
             ): Promise<string | boolean | ValidationLink> => {
+                if (!answers.systemUrl) {
+                    return false;
+                }
                 if (errorHandler.hasError()) {
                     return errorHandler.getValidationErrorHelp() ?? false;
                 }
                 if (service && lastService?.servicePath !== service.servicePath) {
                     lastService = service;
-                    return getServiceDetails(service, answers.systemUrl!, connectValidator);
+                    return getServiceDetails(service, answers.systemUrl, connectValidator);
                 }
                 return true;
             }
@@ -199,6 +223,22 @@ export function getAbapOnPremQuestions(
     if (getHostEnvironment() === hostEnvironment.cli) {
         questions.push({
             when: async (answers: AbapOnPremAnswers): Promise<boolean> => {
+                // todo ?
+                /**
+                 * if (serviceSelectionPromptOptions?.requiredOdataVersion) {
+                        return {
+                            message: t('prompts.warnings.noServicesAvailableForOdataVersion', {
+                                odataVersion: serviceSelectionPromptOptions.requiredOdataVersion
+                            }),
+                            severity: Severity.warning
+                        };
+                    } else {
+                        return {
+                            message: t('prompts.warnings.noServicesAvailable'),
+                            severity: Severity.warning
+                        };
+                    }
+                 */
                 if (!errorHandler.hasError(true) && answers.serviceSelection && answers.systemUrl) {
                     const result = await getServiceDetails(
                         answers.serviceSelection,

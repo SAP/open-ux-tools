@@ -1,20 +1,18 @@
 /**
- * Questions that are shared across all sap system datasource types
- *
+ * New system prompting questions for re-use in multiple sap-system datasource prompt sets.
  */
-
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { withCondition } from '@sap-ux/inquirer-common';
 import { BackendSystem } from '@sap-ux/store';
 import type { Answers, InputQuestion, ListQuestion, Question } from 'inquirer';
-import { t } from '../../../i18n';
-import type { OdataServiceAnswers, SapSystemType, ServiceSelectionPromptOptions } from '../../../types';
-import { PromptState } from '../../../utils';
-import LoggerHelper from '../../logger-helper';
-import type { AbapOnPremAnswers } from './abap-on-prem/questions';
-import { getAbapOnPremQuestions } from './abap-on-prem/questions';
-import { suggestSystemName } from './prompt-helpers';
-import { validateSystemName } from './validators';
+import { t } from '../../../../i18n';
+import type { OdataServiceAnswers, SapSystemType, ServiceSelectionPromptOptions } from '../../../../types';
+import { PromptState } from '../../../../utils';
+import LoggerHelper from '../../../logger-helper';
+import type { AbapOnPremAnswers } from '../abap-on-prem/questions';
+import { getAbapOnPremQuestions } from '../abap-on-prem/questions';
+import { suggestSystemName } from '../prompt-helpers';
+import { validateSystemName } from '../validators';
 
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
 // since it will be used as a new system value in the system selection prompt.
@@ -22,7 +20,7 @@ export const newSystemChoiceValue = '!@£*&937newSystem*X~qy^' as const;
 
 const newSystemPromptNames = {
     newSystemType: 'newSystemType',
-    userSystemName: 'userSystemName'
+    userSystemName: 'newSystemName'
 } as const;
 
 /**
@@ -78,6 +76,15 @@ export function getNewSystemQuestions(
             (answers: Answers) => (answers as NewSystemAnswers).newSystemType === 'abapOnPrem'
         )
     );
+    // todo: System selection prompt not yet implemented
+    /**
+     * questions.push(
+        ...withCondition(
+            getAbapOnBTPQuestions(serviceSelectionPromptOptions) as Question[],
+            (answers: Answers) => (answers as NewSystemAnswers).newSystemType === 'abapOnPrem'
+        )
+    );
+     */
 
     return questions;
 }
