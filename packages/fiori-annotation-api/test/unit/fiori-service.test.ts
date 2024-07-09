@@ -610,6 +610,7 @@ describe('fiori annotation service', () => {
                     projectType: 'EDMXBackend',
                     apps: {
                         '': {
+                            appType: 'SAP Fiori elements',
                             appRoot: '',
                             i18n: {
                                 'sap.app': '',

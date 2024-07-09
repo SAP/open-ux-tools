@@ -50,6 +50,11 @@ export interface ApplicationStructure {
      * Service information with annotation references and local annotation files.
      */
     services: { [index: string]: ServiceSpecification };
+
+    /**
+     * Application type.
+     */
+    appType: AppType;
 }
 
 export interface I18nPropertiesPaths {
