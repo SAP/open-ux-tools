@@ -111,8 +111,13 @@ export async function applyOptionalFeatures(
     tmplPath: string,
     ui5Configs: UI5Config[]
 ) {
+    const isEdmxProjectType = ui5App.app.projectType === 'EDMXBackend';
     if (ui5App.appOptions) {
         for (const [key, value] of Object.entries(ui5App.appOptions)) {
+            if(key === 'sapux' && !isEdmxProjectType) {
+                // Skip sapux feature for CAP projects
+                return;
+            }
             if (value === true) {
                 await factories[key]?.({ ui5App, fs, basePath, tmplPath, ui5Configs });
             }

@@ -31,7 +31,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     if (ui5AppConfig.appOptions?.generateIndex === false) {
         ignore.push('**/webapp/index.html');
     }
-    const isEdmxProjectType = ui5AppConfig.app.projectType ===  'EDMXBackend';
+    const isEdmxProjectType = ui5AppConfig.app.projectType === 'EDMXBackend';
     if (!isEdmxProjectType) {
         // ignore the ui5-local.yaml file for CAP applications
         ignore.push('**/ui5-local.yaml');
@@ -67,7 +67,6 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         }
     });
     ui5Config.addFioriToolsAppReloadMiddleware();
-
     // ui5-local.yaml
     if (isEdmxProjectType) {
         const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
@@ -87,7 +86,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     }
     else { 
         // Add optional features
-        await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config]);
+       await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config]);
     }
     // write ui5 yaml
     fs.write(ui5ConfigPath, ui5Config.toString());
