@@ -318,7 +318,8 @@ describe('questions', () => {
             await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({
                 systemUrl: 'http://some.abap.system:1234'
             })
-        ).toEqual([{
+        ).toEqual([
+            {
                 name: 'DMO_GRP > /DMO/FLIGHT (0001) - OData V4',
                 value: {
                     serviceODataVersion: '4',
@@ -326,7 +327,8 @@ describe('questions', () => {
                     serviceType: 'WEB_API',
                     toString: expect.any(Function)
                 }
-            }, {
+            },
+            {
                 name: 'ZTRAVEL_DESK_SRV (2) - OData V2',
                 value: {
                     serviceODataVersion: '2',
