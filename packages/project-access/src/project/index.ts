@@ -38,3 +38,4 @@ export { getWebappPath, readUi5Yaml } from './ui5-config';
 export { getMtaPath } from './mta';
 export { createApplicationAccess, createProjectAccess } from './access';
 export { updatePackageScript } from './script';
+export { getSpecification, refreshSpecificationDistTags } from './specification';

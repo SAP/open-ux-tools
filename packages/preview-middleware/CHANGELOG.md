@@ -1,5 +1,60 @@
 # @sap-ux/preview-middleware
 
+## 0.16.6
+
+### Patch Changes
+
+-   dbb490a: Add missing test suite default paths to readme
+
+## 0.16.5
+
+### Patch Changes
+
+-   Updated dependencies [5f074a7]
+    -   @sap-ux/adp-tooling@0.12.4
+
+## 0.16.4
+
+### Patch Changes
+
+-   Updated dependencies [f076dd3]
+    -   @sap-ux/project-access@1.25.0
+    -   @sap-ux/adp-tooling@0.12.3
+
+## 0.16.3
+
+### Patch Changes
+
+-   Updated dependencies [0ae685e]
+    -   @sap-ux/project-access@1.24.0
+    -   @sap-ux/adp-tooling@0.12.2
+
+## 0.16.2
+
+### Patch Changes
+
+-   b2d5843: fix: Missing Scenario API in lower SAPUI5 versions
+
+## 0.16.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.1
+
+## 0.16.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/adp-tooling@0.12.0
+    -   @sap-ux/btp-utils@0.15.0
+    -   @sap-ux/logger@0.6.0
+    -   @sap-ux/project-access@1.23.0
+
 ## 0.15.8
 
 ### Patch Changes
