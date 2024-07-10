@@ -89,6 +89,7 @@ describe('questions', () => {
                 "choices": [Function],
                 "default": [Function],
                 "guiOptions": {
+                  "applyDefaultWhenDirty": true,
                   "breadcrumb": "Service",
                   "mandatory": true,
                 },

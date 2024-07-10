@@ -133,7 +133,8 @@
         "urlRedirect": "The service URL is redirecting",
         "certValidationRequired": "Certificate validation is required to continue.",
         "exitingGeneration": "Exiting generation. {{exitReason}}",
-        "serviceMetadataError": "An error occurred reading service metadata for service: {{- servicePath}}. See log for more details."
+        "serviceMetadataError": "An error occurred reading service metadata for service: {{- servicePath}}. See log for more details.",
+        "serviceTypeRequestError": "Error retrieving service type: {{- error}}"
     },
     "texts": {
         "anExpiredCert": "an expired",

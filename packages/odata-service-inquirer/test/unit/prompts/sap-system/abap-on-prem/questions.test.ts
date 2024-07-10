@@ -1,29 +1,40 @@
-import type { ODataServiceInfo } from '@sap-ux/axios-extension';
+import { Severity } from '@sap-devx/yeoman-ui-types';
+import type { ODataService, ODataServiceInfo, ServiceProvider } from '@sap-ux/axios-extension';
 import { ODataVersion } from '@sap-ux/axios-extension';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
+import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-system/abap-on-prem/questions';
 import { getAbapOnPremQuestions } from '../../../../../src/prompts/datasources/sap-system/abap-on-prem/questions';
 import LoggerHelper from '../../../../../src/prompts/logger-helper';
 import { PromptState } from '../../../../../src/utils';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { Severity } from '@sap-devx/yeoman-ui-types';
 
-const validateUrlMockTrue = jest.fn().mockResolvedValue(true);
-const validateAuthTrue = jest.fn().mockResolvedValue(true);
+const v2Metadata =
+    '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"></edmx:Edmx>';
+const v2Annotations = `<?xml version="1.0" encoding="utf-8"?>
+        <edmx:Edmx Version="1.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+            <edmx:Reference Uri="../../catalogservice;v=2/Vocabularies(TechnicalName=\'%2FIWBEP%2FVOC_COMMON\',Version=\'0001\',SAP__Origin=\'\')/$value">
+                <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
+            </edmx:Reference>
+        </edmx:Edmx>`;
+const validateUrlMock = jest.fn().mockResolvedValue(true);
+const validateAuthMock = jest.fn().mockResolvedValue(true);
+const serviceProviderMock = {} as Partial<ServiceProvider>;
+
 const catalogs = {
     [ODataVersion.v2]: {
         listServices: jest.fn().mockResolvedValue([])
-    },
+    } as { listServices: Function; getAnnotations?: Function },
     [ODataVersion.v4]: {
         listServices: jest.fn().mockResolvedValue([])
-    }
+    } as { listServices: Function; getAnnotations?: Function }
 };
 const connectionValidatorMock = {
     validity: {} as ConnectionValidator['validity'],
-    validateUrl: validateUrlMockTrue,
-    validateAuth: validateAuthTrue,
-    serviceProvider: 'dummyServiceProvider', // Mocking ConnectionValidator, use this value to ensure the serviceProvider is set correctly
+    validateUrl: validateUrlMock,
+    validateAuth: validateAuthMock,
+    serviceProvider: serviceProviderMock,
     catalogs
 };
 jest.mock('../../../../../src/prompts/connectionValidator', () => {
@@ -35,7 +46,7 @@ jest.mock('../../../../../src/prompts/connectionValidator', () => {
 const serviceV4a = {
     id: '/DMO/FLIGHT',
     serviceVersion: '0001',
-    serviceType: undefined,
+    serviceType: 'WEB_API',
     group: 'DMO_GRP',
     name: 'DMO_GRP > /DMO/FLIGHT',
     path: '/sap/opu/odata4/dmo/flight/0001/?sap-client=000',
@@ -47,7 +58,7 @@ const serviceV2a = {
     serviceVersion: '2',
     serviceType: 'Not Classified',
     name: 'ZTRAVEL_DESK_SRV',
-    path: 'https://some.abap.system:1234/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002',
+    path: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002',
     odataVersion: ODataVersion.v2
 } as ODataServiceInfo;
 
@@ -61,9 +72,10 @@ describe('questions', () => {
         // Restore default mock implementations
         jest.restoreAllMocks();
         connectionValidatorMock.validity = {};
-        connectionValidatorMock.validateUrl = validateUrlMockTrue;
-        connectionValidatorMock.validateAuth = validateAuthTrue;
+        connectionValidatorMock.validateUrl = validateUrlMock;
+        connectionValidatorMock.validateAuth = validateAuthMock;
         connectionValidatorMock.catalogs = catalogs;
+        connectionValidatorMock.serviceProvider = serviceProviderMock;
     });
 
     test('should return expected questions', () => {
@@ -130,6 +142,7 @@ describe('questions', () => {
                 "choices": [Function],
                 "default": [Function],
                 "guiOptions": {
+                  "applyDefaultWhenDirty": true,
                   "breadcrumb": "Service",
                   "mandatory": true,
                 },
@@ -158,7 +171,7 @@ describe('questions', () => {
             'odataVersion': undefined
         });
         // Prompt state should be updated with the connected system
-        expect(PromptState.odataService.connectedSystem?.serviceProvider).toBe('dummyServiceProvider');
+        expect(PromptState.odataService.connectedSystem?.serviceProvider).toEqual(serviceProviderMock);
         // Prompt state should not be updated with the connected system if the system url validation fails
         connectionValidatorMock.validateUrl = jest.fn().mockResolvedValue('Authentication needed');
         connectionValidatorMock.validity = {
@@ -236,7 +249,7 @@ describe('questions', () => {
             isSystem: true,
             sapClient: undefined
         });
-        expect(PromptState.odataService.connectedSystem?.serviceProvider).toBe('dummyServiceProvider');
+        expect(PromptState.odataService.connectedSystem?.serviceProvider).toBe(serviceProviderMock);
     });
 
     test('should prompt for new system name and create Backend System for storage (VSCode)', async () => {
@@ -281,7 +294,11 @@ describe('questions', () => {
         expect(await (serviceSelectionPrompt?.when as Function)()).toBe(true);
         // Should offer service selection choices from the catolog service
         const loggerSpy = jest.spyOn(LoggerHelper.logger, 'debug');
-        expect(await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)()).toEqual([]);
+        expect(
+            await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({
+                systemUrl: 'http://some.abap.system:1234'
+            })
+        ).toEqual([]);
         expect(loggerSpy).toHaveBeenCalledWith('Number of services available: 0');
 
         // Reset state and service choices
@@ -297,22 +314,24 @@ describe('questions', () => {
             }
         };
 
-        expect(await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)()).toEqual([
-            {
-                name: 'ZTRAVEL_DESK_SRV (2) - OData V2',
-                value: {
-                    serviceODataVersion: '2',
-                    servicePath: 'https://some.abap.system:1234/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002',
-                    serviceType: 'Not implemented',
-                    toString: expect.any(Function)
-                }
-            },
-            {
+        expect(
+            await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({
+                systemUrl: 'http://some.abap.system:1234'
+            })
+        ).toEqual([{
                 name: 'DMO_GRP > /DMO/FLIGHT (0001) - OData V4',
                 value: {
                     serviceODataVersion: '4',
                     servicePath: '/sap/opu/odata4/dmo/flight/0001/?sap-client=000',
-                    serviceType: 'Not implemented',
+                    serviceType: 'WEB_API',
+                    toString: expect.any(Function)
+                }
+            }, {
+                name: 'ZTRAVEL_DESK_SRV (2) - OData V2',
+                value: {
+                    serviceODataVersion: '2',
+                    servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002',
+                    serviceType: 'Not Classified',
                     toString: expect.any(Function)
                 }
             }
@@ -321,13 +340,17 @@ describe('questions', () => {
         // The services choices should be restricted to the specified required odata version
         newSystemQuestions = getAbapOnPremQuestions({ requiredOdataVersion: OdataVersion.v2 });
         serviceSelectionPrompt = newSystemQuestions.find((question) => question.name === 'serviceSelection');
-        expect(await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)()).toEqual([
+        expect(
+            await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({
+                systemUrl: 'http://some.abap.system:1234'
+            })
+        ).toEqual([
             {
                 name: 'ZTRAVEL_DESK_SRV (2) - OData V2',
                 value: {
                     serviceODataVersion: '2',
-                    servicePath: 'https://some.abap.system:1234/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002',
-                    serviceType: 'Not implemented',
+                    servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002',
+                    serviceType: 'Not Classified',
                     toString: expect.any(Function)
                 }
             }
@@ -339,7 +362,11 @@ describe('questions', () => {
         let serviceSelectionPrompt = newSystemQuestions.find((question) => question.name === 'serviceSelection');
 
         // No services warnings should be shown if no services are available
-        expect(await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)()).toEqual([]);
+        expect(
+            await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({
+                systemUrl: 'http://some.abap.system:1234'
+            })
+        ).toEqual([]);
 
         let message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)();
 
@@ -360,7 +387,11 @@ describe('questions', () => {
                 listServices: jest.fn().mockResolvedValue([serviceV4a])
             }
         };
-        expect(await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)()).toEqual([]);
+        expect(
+            await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({
+                systemUrl: 'http://some.abap.system:1234'
+            })
+        ).toEqual([]);
 
         message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)();
 
@@ -385,7 +416,9 @@ describe('questions', () => {
 
         const newSystemQuestions = getAbapOnPremQuestions();
         const serviceSelectionPrompt = newSystemQuestions.find((question) => question.name === 'serviceSelection');
-        const choices = await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)();
+        const choices = await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({
+            systemUrl: 'http://some.abap.system:1234'
+        });
         expect(choices.length).toBe(2);
 
         const message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)(
@@ -410,10 +443,14 @@ describe('questions', () => {
         let newSystemQuestions = getAbapOnPremQuestions();
         let serviceSelectionPrompt = newSystemQuestions.find((question) => question.name === 'serviceSelection');
         // load choices
-        let choices = await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)();
+        let choices = await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({
+            systemUrl: 'http://some.abap.system:1234'
+        });
         expect(choices.length).toBe(1);
 
-        let defaultIndex = await ((serviceSelectionPrompt as ListQuestion)?.default as Function)();
+        let defaultIndex = await ((serviceSelectionPrompt as ListQuestion)?.default as Function)({
+            systemUrl: 'http://some.abap.system:1234'
+        });
         expect(defaultIndex).toEqual(0);
 
         // More than one, no pre-selection
@@ -435,13 +472,51 @@ describe('questions', () => {
     });
 
     test('Should validate the selected service by loading the service metadata', async () => {
-        /*
+        const annotations = [
+            {
+                Definitions: v2Annotations,
+                TechnicalName: 'ZTRAVEL_DESK_SRV',
+                Version: '0001',
+                Uri: 'http://some.abap.system:1234/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002'
+            }
+        ];
+        connectionValidatorMock.catalogs = {
+            [ODataVersion.v2]: {
+                listServices: jest.fn().mockResolvedValue([serviceV2a]),
+                getAnnotations: jest.fn().mockResolvedValue(annotations)
+            },
+            [ODataVersion.v4]: {
+                listServices: jest.fn().mockResolvedValue([serviceV4a])
+            }
+        };
+
+        connectionValidatorMock.serviceProvider = {
+            service: jest.fn().mockReturnValue({
+                metadata: jest.fn().mockResolvedValue(v2Metadata)
+            } as Partial<ODataService>)
+        } as Partial<ServiceProvider>;
+        const serviceSpy = jest.spyOn(connectionValidatorMock.serviceProvider, 'service');
+
         const newSystemQuestions = getAbapOnPremQuestions();
         const serviceSelectionPrompt = newSystemQuestions.find((question) => question.name === 'serviceSelection');
 
-        const validationResult = await (serviceSelectionPrompt?.validate as Function)(serviceV2a, {
+        const selectedService = {
+            servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002',
+            serviceODataVersion: '2',
+            serviceType: 'Not implemented'
+        } as ServiceAnswer;
+
+        const validationResult = await (serviceSelectionPrompt?.validate as Function)(selectedService, {
             systemUrl: 'http://some.abap.system:1234'
-        }); */
-        // todo: Finish test
+        });
+        expect(validationResult).toBe(true);
+        expect(serviceSpy).toHaveBeenCalledWith(selectedService.servicePath);
+        expect(PromptState.odataService).toEqual({
+            annotations: annotations,
+            metadata: v2Metadata,
+            odataVersion: '2',
+            origin: 'http://some.abap.system:1234',
+            servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002'
+        });
     });
 });

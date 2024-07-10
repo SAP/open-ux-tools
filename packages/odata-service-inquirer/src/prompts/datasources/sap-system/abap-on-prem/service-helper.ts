@@ -1,5 +1,13 @@
-import type { CatalogService, ODataServiceInfo } from '@sap-ux/axios-extension';
+import type { V2CatalogService } from '@sap-ux/axios-extension';
+import {
+    ServiceType,
+    type Annotations,
+    type CatalogService,
+    type ODataServiceInfo,
+    type ServiceProvider
+} from '@sap-ux/axios-extension';
 import type { ListChoiceOptions } from 'inquirer';
+import { t } from '../../../../i18n';
 import LoggerHelper from '../../../logger-helper';
 import type { ServiceAnswer } from './questions';
 
@@ -8,12 +16,17 @@ const nonUIServicePaths = ['/IWBEP/COMMON/'];
 /**
  * Builds and formats the service choices list.
  *
- * @param serviceInfos service information to build the choices from. Services with a service id contains=ing '/IWBEP/COMMON' are ignored.
+ * @param serviceInfos service information to build the choices from. Services with a service id containing '/IWBEP/COMMON' are ignored.
  * @returns service choices list
  */
 const createServiceChoices = (serviceInfos?: ODataServiceInfo[]): ListChoiceOptions<ServiceAnswer>[] => {
     const choices: ListChoiceOptions<ServiceAnswer>[] = [];
-    //const isLogTrace = LoggerHelper.logger. === 'trace';
+    // Provide additional service information in trace mode (YUI only)
+    let isLogTrace = false;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Only specific loggers have this method
+    if (typeof (LoggerHelper.logger as any).getLogLevel === 'function') {
+        isLogTrace = (LoggerHelper.logger as any).getLogLevel() === 'trace';
+    }
 
     serviceInfos
         // Exclude non-UI compatible services
@@ -24,21 +37,21 @@ const createServiceChoices = (serviceInfos?: ODataServiceInfo[]): ListChoiceOpti
 
             serviceName = `${serviceName} (${service.serviceVersion}) - OData V${service.odataVersion}`;
 
-            /*  if (isLogTrace) {
-            serviceName = `${serviceName} Service Type: ${service.ServiceType}`;
-        } */
+            if (isLogTrace) {
+                serviceName = `${serviceName} Service Type: ${service.serviceType}`;
+            }
 
-            choices?.push({
+            choices.push({
                 name: serviceName,
                 value: {
                     servicePath,
                     serviceODataVersion: service.odataVersion,
                     toString: () => serviceName,
-                    serviceType: (service as any).ServiceType ?? 'Not implemented' // Not implemented yet
+                    serviceType: service.serviceType
                 }
             }) as ListChoiceOptions<ServiceAnswer>;
         });
-    return choices;
+    return choices.sort((a, b) => a.name!.localeCompare(b.name!));
 };
 
 /**
@@ -63,4 +76,63 @@ export async function getServiceChoices(catalogs: CatalogService[]): Promise<Lis
     LoggerHelper.logger.debug(`Number of services available: ${flatServices.length}`);
 
     return createServiceChoices(flatServices);
+}
+
+/**
+ * Gets the service metadata and annotations for the specified service path.
+ *
+ * @param servicePath service path
+ * @param catalog the catalog service used to get the annotations for the specified service path
+ * @param serviceProvider the service provider for the connected system
+ * @returns Promise<string | boolean>, string error message or true if successful
+ */
+export async function getServiceMetadata(
+    servicePath: string,
+    catalog: CatalogService,
+    serviceProvider: ServiceProvider
+): Promise<{ annotations: Annotations[]; metadata: string; serviceProvider: ServiceProvider } | string> {
+    let annotations: Annotations[] = [];
+    try {
+        try {
+            annotations = await catalog.getAnnotations({ path: servicePath });
+        } catch {
+            LoggerHelper.logger.info(t('prompts.validationMessages.noAnnotations'));
+        }
+
+        const odataService = serviceProvider.service(servicePath);
+        const metadata = await odataService.metadata();
+        return {
+            annotations,
+            metadata,
+            serviceProvider
+        };
+    } catch (error) {
+        LoggerHelper.logger.error(
+            `An error occurred while getting service metadata for service : ${servicePath}, error: ${error}`
+        );
+        return t('errors.serviceMetadataError', { servicePath });
+    }
+}
+
+/**
+ * Get service type for 'Not Determined' services from `ServiceTypeForHUBServices()`
+ *
+ * @param servicePath service path
+ * @param serviceType service type
+ * @param catalog the catalog service used to get the service type for the specified service path
+ * @returns service type
+ */
+export async function getServiceType(
+    servicePath: string,
+    serviceType: string | undefined,
+    catalog: V2CatalogService
+): Promise<string | undefined> {
+    if (serviceType === ServiceType.NotDetermined) {
+        try {
+            serviceType = (await catalog.getServiceType(servicePath)) ?? ServiceType.NotDetermined;
+        } catch (e) {
+            LoggerHelper.logger.error(t('errors.serviceTypeRequestError', { error: e.message }));
+        }
+    }
+    return serviceType;
 }

@@ -278,4 +278,8 @@ describe('ConnectionValidator', () => {
         });
         expect(getODataServiceSpy).toHaveBeenCalledTimes(2);
     });
+
+    test('should update axios-config with sap-client with calling validateAuth', async () => {
+        // todo:...
+    });
 });

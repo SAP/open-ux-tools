@@ -1,6 +1,6 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
-import type { Annotations, AxiosRequestConfig, CatalogService, ServiceProvider } from '@sap-ux/axios-extension';
-import { ODataVersion, ServiceType, create } from '@sap-ux/axios-extension';
+import type { CatalogService } from '@sap-ux/axios-extension';
+import { ODataVersion, ServiceType, V2CatalogService } from '@sap-ux/axios-extension';
 import { searchChoices, withCondition, type ListQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { validateClient } from '@sap-ux/project-input-validator';
@@ -11,9 +11,8 @@ import { hostEnvironment, promptNames, type OdataServiceAnswers } from '../../..
 import { PromptState, getHostEnvironment } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
-import { errorHandler } from '../../../prompt-helpers';
 import { getNewSystemNameQuestion } from '../new-system/questions';
-import { getServiceChoices } from './service-helper';
+import { getServiceChoices, getServiceMetadata, getServiceType } from './service-helper';
 
 export enum abapOnPremInternalPromptNames {
     systemUrl = 'systemUrl',
@@ -64,12 +63,11 @@ export function getAbapOnPremQuestions(
     serviceSelectionPromptOptions?: ServiceSelectionPromptOptions
 ): Question<AbapOnPremAnswers>[] {
     PromptState.reset();
-    errorHandler.resetErrorState();
     const connectValidator = new ConnectionValidator();
     let serviceChoices: ListChoiceOptions<ServiceAnswer>[];
     // Prevent re-requesting services repeatedly by only requesting them once and when the system is changed
-    let lastSystemUrl: string | undefined;
-    let lastService: ServiceAnswer | undefined;
+    let previousSystemUrl: string | undefined;
+    let previousService: ServiceAnswer | undefined;
     const requiredOdataVersion = serviceSelectionPromptOptions?.requiredOdataVersion;
 
     const questions: Question<AbapOnPremAnswers>[] = [
@@ -91,7 +89,6 @@ export function getAbapOnPremQuestions(
                     PromptState.odataService.connectedSystem = {
                         serviceProvider: connectValidator.serviceProvider
                     };
-                    lastSystemUrl = url;
                 }
                 return valResult;
             }
@@ -137,7 +134,6 @@ export function getAbapOnPremQuestions(
                     PromptState.odataService.connectedSystem = {
                         serviceProvider: connectValidator.serviceProvider
                     };
-                    lastSystemUrl = systemUrl;
                 }
                 return valResult;
             }
@@ -159,18 +155,20 @@ export function getAbapOnPremQuestions(
             message: t('prompts.systemService.message'),
             guiOptions: {
                 breadcrumb: t('prompts.systemService.breadcrumb'),
-                mandatory: true
+                mandatory: true,
+                applyDefaultWhenDirty: true
             },
             source: (prevAnswers: AbapOnPremAnswers, input: string) =>
                 searchChoices(input, serviceChoices as ListChoiceOptions[]),
             choices: async (answers: AbapOnPremAnswers) => {
-                if (!serviceChoices || lastSystemUrl !== answers.systemUrl) {
+                if (!serviceChoices || previousSystemUrl !== answers.systemUrl) {
                     let catalogs: CatalogService[] = [];
                     if (requiredOdataVersion) {
                         catalogs.push(connectValidator.catalogs[requiredOdataVersion]);
                     } else {
                         catalogs = Object.values(connectValidator.catalogs);
                     }
+                    previousSystemUrl = answers.systemUrl;
                     serviceChoices = await getServiceChoices(catalogs);
                 }
                 return serviceChoices;
@@ -202,17 +200,15 @@ export function getAbapOnPremQuestions(
             // Warning: only executes in YUI not cli
             validate: async (
                 service: ServiceAnswer,
-                answers: Partial<AbapOnPremAnswers>
+                { systemUrl }: Partial<AbapOnPremAnswers> = {}
             ): Promise<string | boolean | ValidationLink> => {
-                if (!answers.systemUrl) {
+                if (!systemUrl) {
                     return false;
                 }
-                if (errorHandler.hasError()) {
-                    return errorHandler.getValidationErrorHelp() ?? false;
-                }
-                if (service && lastService?.servicePath !== service.servicePath) {
-                    lastService = service;
-                    return getServiceDetails(service, answers.systemUrl, connectValidator);
+                // Dont keep requesting the same service details
+                if (service && previousService?.servicePath !== service.servicePath) {
+                    previousService = service;
+                    return getServiceDetails(service, systemUrl, connectValidator);
                 }
                 return true;
             }
@@ -239,7 +235,7 @@ export function getAbapOnPremQuestions(
                         };
                     }
                  */
-                if (!errorHandler.hasError(true) && answers.serviceSelection && answers.systemUrl) {
+                if (answers.serviceSelection && answers.systemUrl) {
                     const result = await getServiceDetails(
                         answers.serviceSelection,
                         answers.systemUrl,
@@ -272,11 +268,14 @@ async function getServiceDetails(
     systemUrl: string,
     connectionValidator: ConnectionValidator
 ): Promise<string | boolean> {
-    // serviceType = await getServiceType(sapSystem, choice.serviceType, service);
+    const serviceCatalog = connectionValidator.catalogs[service.serviceODataVersion];
+    if (serviceCatalog instanceof V2CatalogService) {
+        await getServiceType(service.servicePath, service.serviceType, serviceCatalog);
+    }
     const serviceResult = await getServiceMetadata(
         service.servicePath,
-        connectionValidator.catalogs[service.serviceODataVersion],
-        connectionValidator.axiosConfig
+        serviceCatalog,
+        connectionValidator.serviceProvider
     );
     if (typeof serviceResult === 'string') {
         return serviceResult;
@@ -288,40 +287,4 @@ async function getServiceDetails(
     PromptState.odataService.servicePath = service.servicePath;
     PromptState.odataService.origin = systemUrl;
     return true;
-}
-
-/**
- * Gets the service metadata and annotations for the specified service path.
- *
- * @param servicePath service path
- * @param catalog the catalog service used to get the annotations
- * @param axiosConfig the axios configuration used to create the odata service provider when getting the metadata
- * @returns Promise<string | boolean>, string error message or true if successful
- */
-async function getServiceMetadata(
-    servicePath: string,
-    catalog: CatalogService,
-    axiosConfig: AxiosRequestConfig
-): Promise<{ annotations: Annotations[]; metadata: string; serviceProvider: ServiceProvider } | string> {
-    let annotations: Annotations[] = [];
-    try {
-        try {
-            annotations = await catalog.getAnnotations({ path: servicePath });
-        } catch {
-            LoggerHelper.logger.info(t('prompts.validationMessages.noAnnotations'));
-        }
-        // todo: Do we really need to create a new service provider for each service? We already have a catalog service connection
-        const serviceProvider = create(axiosConfig);
-        const odataService = serviceProvider.service(servicePath);
-        LoggerHelper.attachAxiosLogger(serviceProvider.interceptors);
-        const metadata = await odataService.metadata();
-        return {
-            annotations,
-            metadata,
-            serviceProvider
-        };
-    } catch (error) {
-        LoggerHelper.logger.error(`An error occurred while getting service metadata for service : ${servicePath}`);
-        return t('errors.serviceMetadataError', { servicePath });
-    }
 }
