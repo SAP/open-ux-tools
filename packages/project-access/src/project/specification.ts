@@ -3,7 +3,7 @@ import { readdir } from 'fs/promises';
 import { join } from 'path';
 import { valid } from 'semver';
 import type { Logger } from '@sap-ux/logger';
-import { deleteModule, getModule, loadModuleFromProject } from './module-loader';
+import { deleteModule, getModule, getModulePath, loadModuleFromProject } from './module-loader';
 import { getWebappPath } from './ui5-config';
 import { getMinimumUI5Version } from './info';
 import { FileName, fioriToolsDirectory, moduleCacheRoot } from '../constants';
@@ -160,4 +160,26 @@ async function convertDistTagToVersion(distTag: string, options?: { logger?: Log
     const specificationDistTags = await readJSON<Record<string, string>>(specificationDistTagPath);
     const version = specificationDistTags[distTag] ?? specificationDistTags.latest;
     return version;
+}
+
+async function getSpecificationVersion(root: string, options?: { logger?: Logger }): Promise<string> {
+    const logger = options?.logger;
+    const distTag = await getProjectDistTag(root, { logger });
+    return await convertDistTagToVersion(distTag, { logger });
+}
+
+export async function getSpecificationPath(root: string, options?: { logger?: Logger }): Promise<string> {
+    const logger = options?.logger;
+    const moduleName = '@sap/ux-specification';
+    if (await hasSpecificationDevDependency(root)) {
+        const modulePath = await getModulePath(root, moduleName);
+        logger?.debug(`Specification root found in project '${root}'`);
+        return modulePath.slice(0, modulePath.lastIndexOf(moduleName) + moduleName.length);
+    }
+    logger?.debug(`Specification not found in project '${root}', trying to find in cache`);
+    await getSpecificationModule(root, { logger });
+    const version = await getSpecificationVersion(root, { logger });
+    const moduleRoot = join(moduleCacheRoot, moduleName, version);
+    const modulePath = await getModulePath(moduleRoot, moduleName);
+    return modulePath.slice(0, modulePath.lastIndexOf(moduleName) + moduleName.length);
 }
