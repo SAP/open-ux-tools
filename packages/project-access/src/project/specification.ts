@@ -14,7 +14,7 @@ import { execNpmCommand } from '../command';
 const specificationDistTagPath = join(fioriToolsDirectory, FileName.SpecificationDistTags);
 
 /**
- * Gets the dist-tag for the provided project/app and returns it
+ * Gets the dist-tag for the provided project/app and returns it.
  *
  * @param root - root path of the project/app
  * @param [options] - optional options
@@ -49,7 +49,7 @@ async function hasSpecificationDevDependency(root: string): Promise<boolean> {
 }
 
 /**
- * Loads the specification module from cache and returns it
+ * Loads the specification module from cache and returns it.
  *
  * @param root - root path of the project/app
  * @param [options] - optional options
@@ -162,12 +162,29 @@ async function convertDistTagToVersion(distTag: string, options?: { logger?: Log
     return version;
 }
 
+/**
+ * Gets the dist-tag of a project specification and returns the version from it.
+ *
+ * @param root - root path of the project/app
+ * @param [options] - optional options
+ * @param [options.logger] - optional logger instance
+ * @returns - version of specification
+ */
 async function getSpecificationVersion(root: string, options?: { logger?: Logger }): Promise<string> {
     const logger = options?.logger;
     const distTag = await getProjectDistTag(root, { logger });
     return await convertDistTagToVersion(distTag, { logger });
 }
 
+/**
+ * Returns the path to the specification used.
+ * Can be path to node_modules in project, or cache.
+ *
+ * @param root - root path of the project/app
+ * @param [options] - optional options
+ * @param [options.logger] - optional logger instance
+ * @returns - path to specification
+ */
 export async function getSpecificationPath(root: string, options?: { logger?: Logger }): Promise<string> {
     const logger = options?.logger;
     const moduleName = '@sap/ux-specification';
