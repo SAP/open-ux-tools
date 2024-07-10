@@ -1,11 +1,11 @@
-import { create as createStorage } from 'mem-fs';
-import { create } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
 import { FileName } from '@sap-ux/project-access';
 import { join } from 'path';
 import type { LaunchConfig, LaunchConfigEnv } from '../types';
 import { getIndexOfArgument } from './utils';
+import { parse } from 'jsonc-parser';
 import type { Editor } from 'mem-fs-editor';
+import { promises as fs } from 'fs';
 
 const RUN_SCRIPT = 'run-script';
 
@@ -127,27 +127,30 @@ function getProjectRootFromEnv(envConfig: LaunchConfigEnv): string | undefined {
  *
  * @param launchConfig - existing launch config.
  * @param projectRoot - project root.
- * @param fs - optional, the memfs editor instance.
+ * @param memFs - optional, the memfs editor instance.
  * @returns modified launch config.
  */
 export async function convertOldLaunchConfigToFioriRun(
     launchConfig: LaunchConfig,
     projectRoot?: string,
-    fs?: Editor
+    memFs?: Editor
 ): Promise<LaunchConfig> {
-    if (!fs) {
-        fs = create(createStorage());
-    }
-    // we only convert configs that previously used run-script and for BAS only
+    // we only convert configs that uses run-script
     if (isRunScriptUsed(launchConfig.runtimeArgs)) {
         const runScriptName = launchConfig.runtimeArgs[1];
-        // read projec root from parameter or else from launch config
-        const projectRootPath = projectRoot ? projectRoot : getProjectRootFromEnv(launchConfig.env);
-        // check if there is already args defined for UI5 and backendconfig
+        // read projec root from parameter or else from actual launch config
+        const projectRootPath = projectRoot ?? getProjectRootFromEnv(launchConfig.env);
+        // check if there is already args defined for UI5 and backend config
         moveOldArgsToEnv(launchConfig);
         if (projectRootPath) {
             const pckJsonPath = join(projectRootPath, FileName.Package);
-            const packageJson = fs?.readJSON(pckJsonPath) as Package;
+            let packageJsonString;
+            if (memFs) {
+                packageJsonString = memFs.read(pckJsonPath);
+            } else {
+                packageJsonString = await fs.readFile(pckJsonPath, { encoding: 'utf8' });
+            }
+            const packageJson = parse(packageJsonString) as Package;
             const scripts = packageJson.scripts;
             if (scripts) {
                 convertRunScriptToFioriRun(launchConfig, scripts, runScriptName);
