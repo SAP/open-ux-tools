@@ -4,7 +4,12 @@ import { join } from 'path';
 import type { TestActivity, TestTarget } from './types';
 import { logger } from './types';
 import { testWithAbapSystem, testWithDestination, testWithAbapBtpSystem, testWithCloudAbapSystem } from './targets';
-import { testDeployUndeployDTA, testUiServiceGenerator, useAdtServices, useCatalogAndFetchSomeMetadata } from './activities';
+import {
+    testDeployUndeployDTA,
+    testUiServiceGenerator,
+    useAdtServices,
+    useCatalogAndFetchSomeMetadata
+} from './activities';
 
 const targets: { [name: string]: TestTarget } = {
     abap: testWithAbapSystem,
@@ -48,4 +53,6 @@ if (isAppStudio()) {
     target = args.length > 0 ? args[0] : 'unknown';
     activity = args.length > 1 ? args[1] : 'odata';
 }
-targets[target](processEnv, activities[activity]).then(() => console.log('done')).catch((error) => console.error(error));
+targets[target](processEnv, activities[activity])
+    .then(() => console.log('done'))
+    .catch((error) => console.error(error));

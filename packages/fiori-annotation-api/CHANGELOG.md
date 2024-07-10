@@ -1,5 +1,49 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.1.15
+
+### Patch Changes
+
+-   8ef805b: cds writer improvement. skip generating additional comma when elements are deleted and added from same pointer.
+
+## 0.1.14
+
+### Patch Changes
+
+-   94cee16: Cds compiler facade version bump in dependencies
+-   Updated dependencies [94cee16]
+    -   @sap-ux/cds-odata-annotation-converter@0.3.1
+
+## 0.1.13
+
+### Patch Changes
+
+-   Updated dependencies [f076dd3]
+    -   @sap-ux/project-access@1.25.0
+    -   @sap-ux/cds-odata-annotation-converter@0.3.0
+
+## 0.1.12
+
+### Patch Changes
+
+-   Updated dependencies [0ae685e]
+    -   @sap-ux/project-access@1.24.0
+    -   @sap-ux/cds-odata-annotation-converter@0.3.0
+
+## 0.1.11
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/cds-annotation-parser@0.2.0
+    -   @sap-ux/cds-odata-annotation-converter@0.3.0
+    -   @sap-ux/odata-annotation-core@0.2.0
+    -   @sap-ux/odata-annotation-core-types@0.4.0
+    -   @sap-ux/odata-entity-model@0.3.0
+    -   @sap-ux/odata-vocabularies@0.4.0
+    -   @sap-ux/project-access@1.23.0
+    -   @sap-ux/xml-odata-annotation-converter@0.3.0
+
 ## 0.1.10
 
 ### Patch Changes

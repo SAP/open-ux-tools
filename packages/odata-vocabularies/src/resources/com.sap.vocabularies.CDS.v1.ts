@@ -34,7 +34,8 @@ export default {
             $Kind: 'Term',
             $Nullable: true,
             $AppliesTo: ['Property', 'Parameter', 'Term'],
-            '@Org.OData.Core.V1.Description': 'The pattern that a string property, parameter, or term must match. This SHOULD be a valid regular expression, according to the ECMA 262 regular expression dialect.',
+            '@Org.OData.Core.V1.Description':
+                'The pattern that a string property, parameter, or term must match. This SHOULD be a valid regular expression, according to the ECMA 262 regular expression dialect.',
             '@Org.OData.Core.V1.LongDescription': `Specifies a regular expression string (in ECMA 262 format in CAP Node.js and java.util.regex.Pattern format in CAP Java) which all string input must match. See: https://cap.cloud.sap/docs/guides/providing-services#assert-format`
         },
         AssertNotNull: {

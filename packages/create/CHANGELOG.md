@@ -1,5 +1,87 @@
 # @sap-ux/create
 
+## 0.7.5
+
+### Patch Changes
+
+-   5f074a7: Add toolsId in ui5.yaml for Adaptation Project writers and remove safeMode
+-   Updated dependencies [5f074a7]
+    -   @sap-ux/adp-tooling@0.12.4
+    -   @sap-ux/preview-middleware@0.16.5
+
+## 0.7.4
+
+### Patch Changes
+
+-   Updated dependencies [f076dd3]
+    -   @sap-ux/project-access@1.25.0
+    -   @sap-ux/adp-tooling@0.12.3
+    -   @sap-ux/app-config-writer@0.4.3
+    -   @sap-ux/cap-config-writer@0.6.3
+    -   @sap-ux/cards-editor-config-writer@0.4.0
+    -   @sap-ux/mockserver-config-writer@0.6.0
+    -   @sap-ux/preview-middleware@0.16.4
+    -   @sap-ux/system-access@0.5.1
+
+## 0.7.3
+
+### Patch Changes
+
+-   Updated dependencies [0ae685e]
+    -   @sap-ux/project-access@1.24.0
+    -   @sap-ux/adp-tooling@0.12.2
+    -   @sap-ux/app-config-writer@0.4.2
+    -   @sap-ux/cap-config-writer@0.6.2
+    -   @sap-ux/cards-editor-config-writer@0.4.0
+    -   @sap-ux/mockserver-config-writer@0.6.0
+    -   @sap-ux/preview-middleware@0.16.3
+    -   @sap-ux/system-access@0.5.1
+
+## 0.7.2
+
+### Patch Changes
+
+-   Updated dependencies [b2d5843]
+    -   @sap-ux/preview-middleware@0.16.2
+
+## 0.7.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.1
+-   @sap-ux/app-config-writer@0.4.1
+-   @sap-ux/preview-middleware@0.16.1
+-   @sap-ux/system-access@0.5.1
+-   @sap-ux/cap-config-writer@0.6.1
+
+## 0.7.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/adp-tooling@0.12.0
+    -   @sap-ux/app-config-writer@0.4.0
+    -   @sap-ux/cap-config-writer@0.6.0
+    -   @sap-ux/cards-editor-config-writer@0.4.0
+    -   @sap-ux/inquirer-common@0.4.0
+    -   @sap-ux/logger@0.6.0
+    -   @sap-ux/mockserver-config-writer@0.6.0
+    -   @sap-ux/preview-middleware@0.16.0
+    -   @sap-ux/project-access@1.23.0
+    -   @sap-ux/system-access@0.5.0
+    -   @sap-ux/ui5-config@0.23.0
+
+## 0.6.9
+
+### Patch Changes
+
+-   Updated dependencies [8f57ac28]
+    -   @sap-ux/preview-middleware@0.15.8
+
 ## 0.6.8
 
 ### Patch Changes
