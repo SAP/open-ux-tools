@@ -4,7 +4,7 @@ import type { AbapTarget } from '@sap-ux/system-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { Logger } from '@sap-ux/logger';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
-import type { AppIndex } from '@sap-ux/axios-extension'
+import type { AppIndex } from '@sap-ux/axios-extension';
 import { isNotEmptyString, isValidSapClient } from './validators';
 import { v4 as uuidv4 } from 'uuid';
 import { getPackageJSONInfo } from '../writer/project-utils';
