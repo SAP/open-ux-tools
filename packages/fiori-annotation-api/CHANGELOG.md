@@ -1,5 +1,11 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.1.16
+
+### Patch Changes
+
+-   e10cf9e: fix: delete text and textArranmgnet
+
 ## 0.1.15
 
 ### Patch Changes
