@@ -14,28 +14,14 @@ import { execNpmCommand } from '../command';
 const specificationDistTagPath = join(fioriToolsDirectory, FileName.SpecificationDistTags);
 
 /**
- * Loads and return specification from project or cache.
- * 1. if package.json contains devDependency to specification, attempts to load from project.
- * 2. if not in package.json of project, attempts to load from cache.
+ * Gets the dist-tag for the provided project/app and returns it
  *
  * @param root - root path of the project/app
  * @param [options] - optional options
  * @param [options.logger] - logger instance
  * @returns - specification instance
  */
-export async function getSpecification<T>(root: string, options?: { logger?: Logger }): Promise<T> {
-    let specification: T;
-    const logger = options?.logger;
-    try {
-        const packageJson = await readJSON<Package>(join(root, FileName.Package));
-        if (packageJson.devDependencies?.['@sap/ux-specification']) {
-            logger?.debug(`Specification found in devDependencies of project '${root}', trying to load`);
-            // Early return with load module from project. If it throws an error it is not handled here.
-            return loadModuleFromProject<T>(root, '@sap/ux-specification');
-        }
-    } catch {
-        logger?.debug(`Specification not found in project '${root}', trying to load from cache`);
-    }
+async function getProjectDistTag(root: string, options?: { logger?: Logger }): Promise<string> {
     let distTag = 'latest';
     try {
         const webappPath = await getWebappPath(root);
@@ -46,8 +32,34 @@ export async function getSpecification<T>(root: string, options?: { logger?: Log
             distTag = `UI5-${mayor}.${minor}`;
         }
     } catch (error) {
-        logger?.error(`Failed to get minimum UI5 version from manifest: ${error} using 'latest'`);
+        options?.logger?.error(`Failed to get minimum UI5 version from manifest: ${error} using 'latest'`);
     }
+    return distTag;
+}
+
+/**
+ * Checks if package.json contains dev dependency to specification.
+ *
+ * @param root - root path of the project/app
+ * @returns If dev dependency to specification is found in package.json
+ */
+async function hasSpecificationDevDependency(root: string): Promise<boolean> {
+    const packageJson = await readJSON<Package>(join(root, FileName.Package));
+    return !!packageJson.devDependencies?.['@sap/ux-specification'];
+}
+
+/**
+ * Loads the specification module from cache and returns it
+ *
+ * @param root - root path of the project/app
+ * @param [options] - optional options
+ * @param [options.logger] - logger instance
+ * @returns - specification instance
+ */
+async function getSpecificationModule<T>(root: string, options?: { logger?: Logger }): Promise<T> {
+    const logger = options?.logger;
+    let specification: T;
+    const distTag = await getProjectDistTag(root, { logger });
     try {
         specification = await getSpecificationByDistTag<T>(distTag, { logger });
         logger?.debug(`Specification loaded from cache using dist-tag '${distTag}'`);
@@ -56,6 +68,30 @@ export async function getSpecification<T>(root: string, options?: { logger?: Log
         throw new Error(`Failed to load specification: ${error}`);
     }
     return specification;
+}
+
+/**
+ * Loads and return specification from project or cache.
+ * 1. if package.json contains devDependency to specification, attempts to load from project.
+ * 2. if not in package.json of project, attempts to load from cache.
+ *
+ * @param root - root path of the project/app
+ * @param [options] - optional options
+ * @param [options.logger] - logger instance
+ * @returns - specification instance
+ */
+export async function getSpecification<T>(root: string, options?: { logger?: Logger }): Promise<T> {
+    const logger = options?.logger;
+    try {
+        if (await hasSpecificationDevDependency(root)) {
+            logger?.debug(`Specification found in devDependencies of project '${root}', trying to load`);
+            // Early return with load module from project. If it throws an error it is not handled here.
+            return loadModuleFromProject<T>(root, '@sap/ux-specification');
+        }
+    } catch {
+        logger?.debug(`Specification not found in project '${root}', trying to load from cache`);
+    }
+    return await getSpecificationModule(root, { logger });
 }
 
 /**
