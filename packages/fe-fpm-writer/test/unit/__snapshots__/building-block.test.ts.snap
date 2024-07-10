@@ -240,6 +240,13 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 />"
 `;
 
+exports[`Building Blocks Generate with optional parameters getSerializedFileContent for chart building block 2`] = `
+"<macros:Chart
+    id=\\"testChart\\"
+    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
+/>"
+`;
+
 exports[`Building Blocks Generate with optional parameters getSerializedFileContent for field building block 1`] = `
 "<macros:Field
     id=\\"testField\\"
@@ -251,6 +258,13 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 />"
 `;
 
+exports[`Building Blocks Generate with optional parameters getSerializedFileContent for field building block 2`] = `
+"<macros:Field
+    id=\\"testField\\"
+    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
+/>"
+`;
+
 exports[`Building Blocks Generate with optional parameters getSerializedFileContent for filter-bar building block 1`] = `
 "<macros:FilterBar
     id=\\"testFilterBar\\"
@@ -258,6 +272,13 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
     contextPath=\\"testContextPath\\"
     search=\\"testOnSearch\\"
     filterChanged=\\"testOnFilterChanged\\"
+/>"
+`;
+
+exports[`Building Blocks Generate with optional parameters getSerializedFileContent for filter-bar building block 2`] = `
+"<macros:FilterBar
+    id=\\"testFilterBar\\"
+    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
 />"
 `;
 
@@ -279,5 +300,12 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
     readOnly=\\"true\\"
     type=\\"ResponsiveTable\\"
     variantManagement=\\"None\\"
+/>"
+`;
+
+exports[`Building Blocks Generate with optional parameters getSerializedFileContent for table building block 2`] = `
+"<macros:Table
+    id=\\"testTable\\"
+    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
 />"
 `;

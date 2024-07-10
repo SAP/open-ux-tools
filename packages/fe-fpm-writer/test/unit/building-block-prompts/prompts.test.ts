@@ -3,7 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { PromptsType, PromptsAPI, BuildingBlockType } from '../../../src';
-import type { TablePromptsAnswer, SupportedAnswers } from '../../../src';
+import type { TablePromptsAnswer, SupportedAnswers, BuildingBlockTypePromptsAnswer } from '../../../src';
 import type { ChoiceOptions } from 'inquirer';
 
 jest.setTimeout(10000);
@@ -209,6 +209,15 @@ describe('Prompts', () => {
                 }
             } as TablePromptsAnswer);
             expect(result.viewOrFragmentPath.content).toMatchSnapshot();
+        });
+
+        test('get code snippet withnot supported type', async () => {
+            const result = promptsAPI.getCodeSnippets(PromptsType.BuildingBlocks, {
+                buildingBlockData: {
+                    buildingBlockType: PromptsType.BuildingBlocks
+                }
+            } as unknown as BuildingBlockTypePromptsAnswer);
+            expect(result).toStrictEqual({});
         });
     });
 

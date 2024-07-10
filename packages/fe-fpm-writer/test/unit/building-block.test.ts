@@ -386,5 +386,33 @@ describe('Building Blocks', () => {
                 expect(codeSnippet.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
             }
         );
+
+        test.each(testInput)(
+            'getSerializedFileContent for $buildingBlockData.buildingBlockType building block',
+            async (testData) => {
+                const basePath = join(
+                    testAppPath,
+                    `generate-${testData.buildingBlockData.buildingBlockType}-with-optional-params`
+                );
+                const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+                fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+                const codeSnippet = getSerializedFileContent(
+                    basePath,
+                    {
+                        viewOrFragmentPath: '',
+                        aggregationPath,
+                        buildingBlockData: {
+                            buildingBlockType: testData.buildingBlockData.buildingBlockType,
+                            id: testData.buildingBlockData.id
+                        }
+                    },
+                    fs
+                );
+
+                expect(codeSnippet.viewOrFragmentPath.content).toMatchSnapshot();
+                expect(codeSnippet.viewOrFragmentPath.filePathProps?.fileName).toBeUndefined();
+            }
+        );
     });
 });
