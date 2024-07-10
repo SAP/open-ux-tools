@@ -9,7 +9,6 @@ import * as logger from '../../../../src/tracing/logger';
 import * as validations from '../../../../src/validation/validation';
 import * as adp from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
-import { UI5Config } from '@sap-ux/ui5-config';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
@@ -28,18 +27,18 @@ const abapServicesMock = {
 };
 
 const mockDataSources = {
-    'SEPMRA_PROD_MAN_ANNO_MDL': {
-        'settings': { 'localUri': 'localService/SEPMRA_PROD_MAN_ANNO_MDL.xml' },
+    'annotation': {
+        'settings': { 'localUri': 'localService/annotation.xml' },
         'type': 'ODataAnnotation',
-        'uri': "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/?sap-language=EN"
+        'uri': "/path/to/annotation;v=2/Annotations(TechnicalName='annotation',Version='0001')/$value/?sap-language=EN"
     },
-    'mainService': {
+    'service': {
         'settings': {
-            'annotations': ['SEPMRA_PROD_MAN_ANNO_MDL'],
+            'annotations': ['annotation'],
             'localUri': 'localService/mockdata/metadata.xml'
         },
         'type': 'OData',
-        'uri': '/sap/opu/odata/sap/SEPMRA_PROD_MAN/'
+        'uri': '/path/to/odata/service/'
     }
 } as unknown as Record<string, ManifestNamespace.DataSource>;
 
@@ -67,7 +66,6 @@ describe('add/annotations', () => {
         })
     };
     const traceSpy = jest.spyOn(tracer, 'traceChanges');
-    jest.spyOn(adp, 'getManifest').mockResolvedValue(JSON.parse(appManifest));
     const generateChangeSpy = jest
         .spyOn(adp, 'generateChange')
         .mockResolvedValue(memFsEditorMock as Partial<Editor> as Editor);
@@ -89,6 +87,7 @@ describe('add/annotations', () => {
     jest.spyOn(adp, 'getManifestDataSources').mockResolvedValue(mockDataSources);
     jest.spyOn(adp, 'getPromptsForAddAnnotationsToOData').mockImplementation(() => []);
     const appRoot = join(__dirname, '../../../fixtures');
+
     beforeEach(() => {
         jest.clearAllMocks();
         loggerMock = {
@@ -141,26 +140,6 @@ describe('add/annotations', () => {
     });
 
     test('should pass succesfully when missing fiori-tools-preview configuration but has preview-middleware configuration', async () => {
-        jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
-            findCustomMiddleware: jest.fn().mockImplementation((customMiddleware: string) => {
-                if (customMiddleware === 'fiori-tools-preview') {
-                    return undefined;
-                }
-                if (customMiddleware === 'preview-middleware') {
-                    return {
-                        configuration: {
-                            adp: {
-                                target: {
-                                    url: 'https://sap.example',
-                                    client: '100'
-                                }
-                            }
-                        }
-                    };
-                }
-            })
-        } as Partial<UI5Config> as UI5Config);
-
         const command = new Command('data-source');
         addAnnotationsToOdataCommand(command);
         await command.parseAsync(getArgv(appRoot));
