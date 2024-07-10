@@ -78,9 +78,11 @@
   "CONTROL": "Selector Id: ",
   "MODE": "Mode",
   "LIVE": "Live",
-  "EDIT": "Edit",
+  "EDIT": "Edit",  
+  "UI_ADAPTATION": "UI Adaptation",
   "SAVE": "Save",
   "UNDO": "Undo",
   "REDO": "Redo",
+  "NAVIGATION": "Navigation",
   "NAVIGATE": "Navigate"
 }
