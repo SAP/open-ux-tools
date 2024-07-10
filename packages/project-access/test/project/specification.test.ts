@@ -7,7 +7,7 @@ jest.doMock('../../src/constants', () => ({
 }));
 import * as fsMock from 'fs';
 import type { Logger } from '@sap-ux/logger';
-import { getSpecification, refreshSpecificationDistTags } from '../../src';
+import { getSpecification, getSpecificationPath, refreshSpecificationDistTags } from '../../src';
 import * as commandMock from '../../src/command';
 import * as moduleMock from '../../src/project/module-loader';
 import * as fileMock from '../../src/file';
@@ -74,6 +74,28 @@ describe('Test getSpecification', () => {
         } catch (error) {
             expect(error.message).toContain('Failed to load specification');
         }
+    });
+
+    test('Get specification path from project', async () => {
+        const logger = getMockLogger();
+        const root = join(__dirname, '../test-data/module-loader/@sap/ux-specification/0.1.2');
+        const path = await getSpecificationPath(root, { logger });
+        expect(path).toBe(join(root, 'node_modules', '@sap', 'ux-specification'));
+        expect(logger.debug).toHaveBeenCalledWith(`Specification root found in project '${root}'`);
+    });
+
+    test('Get specification path from cache', async () => {
+        const logger = getMockLogger();
+        const moduleRoot = join(
+            __dirname,
+            '../test-data/module-loader/@sap/ux-specification/0.1.2/node_modules/@sap/ux-specification'
+        );
+        const root = join(__dirname, '../test-data/specification/app');
+        const path = await getSpecificationPath(root, { logger });
+        expect(path).toBe(moduleRoot);
+        expect(logger.debug).toHaveBeenCalledWith(
+            `Specification not found in project '${root}', trying to find in cache`
+        );
     });
 });
 
