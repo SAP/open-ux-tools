@@ -21801,19 +21801,11 @@ Object {
   \\"dependencies\\": {},
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
-    \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"UI5-1.92\\"
+    \\"@sap/ux-ui5-tooling\\": \\"1\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#lrop_v4_addtests_cds-tile\\\\\\"\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#lrop_v4_addtests_cds-tile\\\\\\"\\",
-    \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
-    \\"deploy\\": \\"fiori verify\\",
-    \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"int-test\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/integration/opaTests.qunit.html\\\\\\"\\"
-  },
-  \\"sapux\\": true
+    \\"deploy-config\\": \\"npx -p @sap/ux-ui5-tooling fiori add deploy-config cf\\"
+  }
 }
 ",
     "state": "modified",
@@ -22613,7 +22605,6 @@ Object {
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"UI5-1.92\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
     \\"typescript\\": \\"^5.1.6\\",
@@ -22622,19 +22613,8 @@ Object {
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#lrop_v4_addtests_cds-tile\\\\\\"\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#lrop_v4_addtests_cds-tile\\\\\\"\\",
-    \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
-    \\"lint\\": \\"eslint ./\\",
-    \\"ts-typecheck\\": \\"tsc --noEmit\\",
-    \\"prestart\\": \\"npm run ts-typecheck\\",
-    \\"prebuild\\": \\"npm run ts-typecheck\\",
-    \\"deploy\\": \\"fiori verify\\",
-    \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"int-test\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/integration/opaTests.qunit.html\\\\\\"\\"
-  },
-  \\"sapux\\": true
+    \\"deploy-config\\": \\"npx -p @sap/ux-ui5-tooling fiori add deploy-config cf\\"
+  }
 }
 ",
     "state": "modified",

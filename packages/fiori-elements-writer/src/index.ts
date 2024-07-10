@@ -181,19 +181,26 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
         feApp.service?.version === OdataVersion.v4 &&
         (!!feApp.service?.metadata || feApp.service.type === ServiceType.CDS);
 
-    packageJson.scripts = Object.assign(packageJson.scripts ?? {}, {
-        ...getPackageJsonTasks({
-            localOnly: !feApp.service?.url,
-            addMock: !!feApp.service?.metadata,
-            addTest,
-            sapClient: feApp.service?.client,
-            flpAppId: feApp.app.flpAppId,
-            startFile: data?.app?.startFile,
-            localStartFile: data?.app?.localStartFile,
-            generateIndex: feApp.appOptions?.generateIndex
-        })
-    });
-    
+    if (isEdmxProjectType) {
+        // Add scripts to package.json only for non-CAP projects
+        packageJson.scripts = Object.assign(packageJson.scripts ?? {}, {
+            ...getPackageJsonTasks({
+                localOnly: !feApp.service?.url,
+                addMock: !!feApp.service?.metadata,
+                addTest,
+                sapClient: feApp.service?.client,
+                flpAppId: feApp.app.flpAppId,
+                startFile: data?.app?.startFile,
+                localStartFile: data?.app?.localStartFile,
+                generateIndex: feApp.appOptions?.generateIndex
+            })
+        });
+    } else { 
+        // Add deploy-config script for CAP projects
+        packageJson.scripts = {
+            "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf"
+        }
+    }
     fs.writeJSON(packagePath, packageJson);
 
     if (addTest) {
