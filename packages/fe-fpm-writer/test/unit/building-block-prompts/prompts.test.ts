@@ -196,18 +196,19 @@ describe('Prompts', () => {
     };
     describe('getCodeSnippet', () => {
         test.each(types)('Type "%s", get code snippet', async (type: PromptsType) => {
-            const result = promptsAPI.getCodeSnippet(type, answers[type] as SupportedAnswers);
-            expect(result).toMatchSnapshot();
+            const result = promptsAPI.getCodeSnippets(type, answers[type] as SupportedAnswers);
+            expect(result.viewOrFragmentPath.content).toMatchSnapshot();
+            expect(result.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
         });
 
         test('get code snippet with placeholders', async () => {
-            const result = promptsAPI.getCodeSnippet(PromptsType.Table, {
+            const result = promptsAPI.getCodeSnippets(PromptsType.Table, {
                 buildingBlockData: {
                     buildingBlockType: BuildingBlockType.Table,
                     type: 'GridTable'
                 }
             } as TablePromptsAnswer);
-            expect(result).toMatchSnapshot();
+            expect(result.viewOrFragmentPath.content).toMatchSnapshot();
         });
     });
 

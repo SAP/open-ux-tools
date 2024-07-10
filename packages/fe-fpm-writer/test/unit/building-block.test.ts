@@ -382,7 +382,8 @@ describe('Building Blocks', () => {
                     fs
                 );
 
-                expect(codeSnippet).toMatchSnapshot();
+                expect(codeSnippet.viewOrFragmentPath.content).toMatchSnapshot();
+                expect(codeSnippet.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
             }
         );
     });
