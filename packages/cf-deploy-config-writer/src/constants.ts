@@ -100,10 +100,14 @@ export const HTMLAppBuildParams = {
 export const UI5DeployBuildScript =
     'ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo';
 export const MTABuildScript = 'rimraf resources mta_archives && mbt build --mtar archive';
-export const appDeployMTAScript = (args: string[]): string =>
-    `fiori cfDeploy${args.length > 0 ? ` ${args.join(' ')}` : ''}`;
-export const rootDeployMTAScript = (args: string[]): string =>
-    `cf deploy mta_archives/archive.mtar ${args.length > 0 ? `${args.join(' ')} ` : ''}--retries 1`;
+export const appDeployMTAScript = (args: string[]): string => {
+    const mtaArgs = args.length > 0 ? ` ${args.join(' ')}` : '';
+    return `fiori cfDeploy${mtaArgs}`;
+};
+export const rootDeployMTAScript = (args: string[]): string => {
+    const mtaArgs = args.length > 0 ? `${args.join(' ')} ` : '';
+    return `cf deploy mta_archives/archive.mtar ${mtaArgs}--retries 1`;
+};
 export const undeployMTAScript = (mtaId: string): string =>
     `cf undeploy ${mtaId} --delete-services --delete-service-keys --delete-service-brokers`;
 const cannotFindBinary = (bin: string, pkg: string): string => t('error.cannotFindBinary', { bin, pkg });

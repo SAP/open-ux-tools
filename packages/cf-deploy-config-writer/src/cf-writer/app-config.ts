@@ -286,7 +286,7 @@ async function updateMtaConfig(cfConfig: CFConfig, logger?: Logger): Promise<voi
         await mtaInstance.addRoutingModules(cfConfig.addManagedRouter);
         const appModule = cfConfig.appId;
         const appRelativePath = toPosixPath(relative(cfConfig.rootPath, cfConfig.appPath));
-        await mtaInstance.addApp(appModule, appRelativePath ? appRelativePath : '.');
+        await mtaInstance.addApp(appModule, appRelativePath ?? '.');
         await addParameters(mtaInstance);
         if ((cfConfig.destination && cfConfig.isCap) || cfConfig.destination === DefaultMTADestination) {
             // If the destination instance identifier is passed, create a destination instance

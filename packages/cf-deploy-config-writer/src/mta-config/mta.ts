@@ -43,8 +43,8 @@ import {
 export class MtaConfig {
     private readonly mta: Mta;
     private apps: Map<string, mta.Module> = new Map();
-    private modules: Map<ModuleType | string, mta.Module> = new Map();
-    private resources: Map<ResourceType | string, mta.Resource> = new Map();
+    private modules: Map<string, mta.Module> = new Map();
+    private resources: Map<string, mta.Resource> = new Map();
     private dirty = false;
     private mtaId: string;
     private log: Logger | undefined;
@@ -335,10 +335,10 @@ export class MtaConfig {
     private verifyDestination(checkWebIDEUsage: boolean, destination: MTADestinationType): boolean {
         if (checkWebIDEUsage) {
             const webIdeUsage = destination['WebIDEUsage'];
-            return webIdeUsage &&
+            return !!(
+                webIdeUsage &&
                 (webIdeUsage === WebIDEUsageType.ODATA_GENERIC || webIdeUsage === WebIDEUsageType.ODATA_ABAP)
-                ? true
-                : false;
+            );
         } else {
             return true;
         }

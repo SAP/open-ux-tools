@@ -33,7 +33,7 @@ export async function generateBaseConfig(config: CFBaseConfig, fs?: Editor, logg
     updateBaseConfig(config);
     createMTA(config as MTABaseConfig);
     await addRoutingConfig(config, fs);
-    await addSupportingConfig(config, fs);
+    addSupportingConfig(config, fs);
     logger?.debug(`CF Config ${JSON.stringify(config, null, 2)}`);
     return fs;
 }
@@ -143,7 +143,7 @@ function validateMtaConfig(config: CFBaseConfig, fs: Editor): void {
     if (!config.routerType || !config.mtaId || !config.mtaPath) {
         throw new Error('Missing required parameters, MTA path, MTA ID or router type');
     }
-    if (!/^[A-Za-z0-9_\-\.]+$/.test(config.mtaId)) {
+    if (!/^[A-Za-z0-9_\-]+$/.test(config.mtaId)) {
         throw new Error(
             'The MTA ID can only contain letters, numbers, dashes, periods and underscores (but no spaces)'
         );
