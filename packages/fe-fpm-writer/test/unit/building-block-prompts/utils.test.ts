@@ -25,7 +25,7 @@ import {
 } from '../../../src/building-block/prompts/utils';
 import { FioriAnnotationService } from '@sap-ux/fiori-annotation-api';
 import { testSchema } from '../sample/building-block/webapp-prompts-cap/schema';
-import type { PromptContext } from '../../../src/building-block/prompts/types';
+import type { ListPromptQuestion, PromptContext } from '../../../src/building-block/prompts/types';
 
 jest.setTimeout(10000);
 
@@ -195,15 +195,10 @@ describe('utils - ', () => {
             const choices = await (entityPrompt.choices as Choices)();
             expect(choices).toMatchSnapshot();
 
-            entityPrompt = getEntityPrompt(
-                {
-                    ...context,
-                    project: {} as unknown as Project
-                },
-                {
-                    message: 'entity'
-                }
-            );
+            entityPrompt = getEntityPrompt({
+                ...context,
+                project: {} as unknown as Project
+            });
             await expect(async () => await (entityPrompt.choices as Choices)()).rejects.toThrowError();
         });
 
@@ -256,7 +251,7 @@ describe('utils - ', () => {
         });
 
         test('getAnnotationPathQualifierPrompt', async () => {
-            const annotationPathPrompt = getAnnotationPathQualifierPrompt(
+            let annotationPathPrompt = getAnnotationPathQualifierPrompt(
                 context,
                 {
                     message: 'testMessage'
@@ -266,7 +261,7 @@ describe('utils - ', () => {
             expect(annotationPathPrompt).toMatchSnapshot();
             const choicesProp = annotationPathPrompt.choices as Choices;
             expect(choicesProp).toBeDefined();
-            const choices = await choicesProp({
+            let choices = await choicesProp({
                 buildingBlockData: {
                     metaPath: {
                         entitySet: ENTITY_TYPE
@@ -275,6 +270,7 @@ describe('utils - ', () => {
             });
             expect(choices).toMatchSnapshot();
 
+            // throws error
             await expect(
                 async () =>
                     await choicesProp({
@@ -285,10 +281,22 @@ describe('utils - ', () => {
                         }
                     })
             ).rejects.toThrowError();
+
+            // no entity set in answers
+            choices = await choicesProp({
+                buildingBlockData: {
+                    metaPath: {}
+                }
+            });
+            expect(choices).toStrictEqual([]);
+
+            // prompt has no properties or annotation terms
+            annotationPathPrompt = getAnnotationPathQualifierPrompt(context);
+            expect(annotationPathPrompt).toMatchSnapshot();
         });
 
         test('getAggregationPathPrompt', async () => {
-            const aggregationPathPrompt = getAggregationPathPrompt(context, {
+            let aggregationPathPrompt = getAggregationPathPrompt(context, {
                 message: 'AggregationPathMessage'
             });
             expect(aggregationPathPrompt).toMatchSnapshot();
@@ -308,9 +316,13 @@ describe('utils - ', () => {
                         viewOrFragmentPath: join('non-existing-file.xml')
                     })
             ).rejects.toThrow();
+
+            // no properties
+            aggregationPathPrompt = getAggregationPathPrompt(context);
+            expect(aggregationPathPrompt).toMatchSnapshot();
         });
         test('getViewOrFragmentPathPrompt', async () => {
-            const viewOrFragmentPathPrompt = getViewOrFragmentPathPrompt(context, 'validationError', {
+            let viewOrFragmentPathPrompt = getViewOrFragmentPathPrompt(context, 'validationError', {
                 message: 'testMessage',
                 dependantPromptNames: ['aggregationPath']
             });
@@ -324,34 +336,22 @@ describe('utils - ', () => {
             expect(typeof validateFn).toBe('function');
             expect(validateFn?.('')).toBe('validationError');
             expect(validateFn?.('valid')).toBe(true);
+
+            // no properties
+            viewOrFragmentPathPrompt = getViewOrFragmentPathPrompt(context, 'validationError');
+            expect(viewOrFragmentPathPrompt).toMatchSnapshot();
         });
 
         test('getBindingContextType', async () => {
-            const bindingContextPrompt = getBindingContextTypePrompt({
+            let bindingContextPrompt = getBindingContextTypePrompt({
                 message: 'bindingContext',
                 dependantPromptNames: ['buildingBlockData.metaPath.qualifier']
             });
-            expect(bindingContextPrompt).toMatchInlineSnapshot(`
-                Object {
-                  "choices": Array [
-                    Object {
-                      "name": "Relative",
-                      "value": "relative",
-                    },
-                    Object {
-                      "name": "Absolute",
-                      "value": "absolute",
-                    },
-                  ],
-                  "dependantPromptNames": Array [
-                    "buildingBlockData.metaPath.qualifier",
-                  ],
-                  "message": "bindingContext",
-                  "name": "buildingBlockData.metaPath.bindingContextType",
-                  "selectType": "static",
-                  "type": "list",
-                }
-            `);
+            expect(bindingContextPrompt).toMatchSnapshot();
+
+            // no properties
+            bindingContextPrompt = getBindingContextTypePrompt();
+            expect(bindingContextPrompt).toMatchSnapshot();
         });
         test('getBooleanPrompt', async () => {
             const booleanPrompt = getBooleanPrompt({ name: 'name', message: 'message' });
@@ -374,7 +374,7 @@ describe('utils - ', () => {
                 }
             `);
         });
-        test('getFilterBarIdPrompt - input type', () => {
+        test('getFilterBarIdPrompt - input type', async () => {
             const prompt = getFilterBarIdPrompt(context, { message: 'message', type: 'input' });
             expect(prompt).toMatchInlineSnapshot(`
                 Object {
@@ -387,7 +387,7 @@ describe('utils - ', () => {
         });
 
         test('getBuildingBlockIdPrompt', async () => {
-            const prompt = getBuildingBlockIdPrompt(context, 'error', {
+            let prompt = getBuildingBlockIdPrompt(context, 'error', {
                 message: 'message'
             });
             expect(prompt).toMatchInlineSnapshot(`
@@ -403,15 +403,26 @@ describe('utils - ', () => {
             const validateFn = prompt.validate;
             expect(typeof validateFn).toBe('function');
             expect(await validateFn?.('')).toBe('error');
+
+            // no properties
+            prompt = getBuildingBlockIdPrompt(context, 'error');
+            expect(prompt).toMatchInlineSnapshot(`
+                Object {
+                  "name": "buildingBlockData.id",
+                  "placeholder": "Enter a building block ID",
+                  "type": "input",
+                  "validate": [Function],
+                }
+            `);
         });
 
-        test('getFilterBarIdPrompt - list type', () => {
+        test('getFilterBarIdPrompt - list type', async () => {
             const prompt = getFilterBarIdPrompt(context, {
                 message: 'message',
                 type: 'list',
                 placeholder: 'Select or enter a filter bar ID',
                 creation: { inputPlaceholder: 'Enter a new filter bar ID' }
-            });
+            }) as ListPromptQuestion;
             expect(prompt).toMatchInlineSnapshot(`
                 Object {
                   "choices": [Function],
@@ -425,6 +436,14 @@ describe('utils - ', () => {
                   "type": "list",
                 }
             `);
+
+            const choicesProp = prompt.choices as Choices;
+            expect(choicesProp).toBeDefined();
+            let choices = await choicesProp({});
+            expect(choices).toStrictEqual([]);
+
+            choices = await choicesProp({ viewOrFragmentPath: join('webapp/ext/main/Main.view.xml') });
+            expect(choices).toStrictEqual([]);
         });
 
         test('getCAPServiceChoices', async () => {
@@ -440,7 +459,7 @@ describe('utils - ', () => {
         });
 
         test('getCAPServicePrompt', async () => {
-            const prompt = await getCAPServicePrompt(context, {
+            let prompt = await getCAPServicePrompt(context, {
                 message: 'message'
             });
             expect(prompt).toMatchInlineSnapshot(`
@@ -448,6 +467,19 @@ describe('utils - ', () => {
                   "choices": [Function],
                   "default": "mainService",
                   "message": "message",
+                  "name": "service",
+                  "placeholder": "Select a service",
+                  "selectType": "dynamic",
+                  "type": "list",
+                }
+            `);
+
+            // no properties
+            prompt = await getCAPServicePrompt(context);
+            expect(prompt).toMatchInlineSnapshot(`
+                Object {
+                  "choices": [Function],
+                  "default": "mainService",
                   "name": "service",
                   "placeholder": "Select a service",
                   "selectType": "dynamic",

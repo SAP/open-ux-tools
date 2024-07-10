@@ -200,6 +200,16 @@ Array [
 ]
 `;
 
+exports[`utils -  prompts getAggregationPathPrompt 3`] = `
+Object {
+  "choices": [Function],
+  "name": "aggregationPath",
+  "placeholder": "Select an aggregation path",
+  "selectType": "dynamic",
+  "type": "list",
+}
+`;
+
 exports[`utils -  prompts getAnnotationPathQualifierPrompt 1`] = `
 Object {
   "choices": [Function],
@@ -219,6 +229,55 @@ Array [
 ]
 `;
 
+exports[`utils -  prompts getAnnotationPathQualifierPrompt 3`] = `
+Object {
+  "choices": [Function],
+  "name": "buildingBlockData.metaPath.qualifier",
+  "selectType": "dynamic",
+  "type": "list",
+}
+`;
+
+exports[`utils -  prompts getBindingContextType 1`] = `
+Object {
+  "choices": Array [
+    Object {
+      "name": "Relative",
+      "value": "relative",
+    },
+    Object {
+      "name": "Absolute",
+      "value": "absolute",
+    },
+  ],
+  "dependantPromptNames": Array [
+    "buildingBlockData.metaPath.qualifier",
+  ],
+  "message": "bindingContext",
+  "name": "buildingBlockData.metaPath.bindingContextType",
+  "selectType": "static",
+  "type": "list",
+}
+`;
+
+exports[`utils -  prompts getBindingContextType 2`] = `
+Object {
+  "choices": Array [
+    Object {
+      "name": "Relative",
+      "value": "relative",
+    },
+    Object {
+      "name": "Absolute",
+      "value": "absolute",
+    },
+  ],
+  "name": "buildingBlockData.metaPath.bindingContextType",
+  "selectType": "static",
+  "type": "list",
+}
+`;
+
 exports[`utils -  prompts getViewOrFragmentPathPrompt 1`] = `
 Object {
   "choices": [Function],
@@ -226,6 +285,17 @@ Object {
     "aggregationPath",
   ],
   "message": "testMessage",
+  "name": "viewOrFragmentPath",
+  "placeholder": "Select a view or fragment file",
+  "selectType": "dynamic",
+  "type": "list",
+  "validate": [Function],
+}
+`;
+
+exports[`utils -  prompts getViewOrFragmentPathPrompt 2`] = `
+Object {
+  "choices": [Function],
   "name": "viewOrFragmentPath",
   "placeholder": "Select a view or fragment file",
   "selectType": "dynamic",
