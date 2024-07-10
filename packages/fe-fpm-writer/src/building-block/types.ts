@@ -380,3 +380,25 @@ export interface BuildingBlockConfig<T extends BuildingBlock> {
      */
     buildingBlockData: T;
 }
+
+export enum CodeSnippetLanguage {
+    JSON = 'json',
+    CDS = 'cds',
+    XML = 'xml',
+    JS = 'javascript',
+    TS = 'typescript',
+    ABAPCDS = 'abapCds'
+}
+
+export interface FilePathProps {
+    fileName?: string;
+    relativePath?: string;
+    fullPath?: string;
+}
+
+export interface CodeSnippet {
+    language: CodeSnippetLanguage;
+    content: string;
+    index?: number;
+    filePathProps?: FilePathProps;
+}

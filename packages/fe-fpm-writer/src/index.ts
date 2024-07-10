@@ -27,7 +27,8 @@ export {
     Field,
     FieldFormatOptions,
     Table,
-    BuildingBlockConfig
+    BuildingBlockConfig,
+    CodeSnippet
 } from './building-block/types';
 export { generateBuildingBlock, getSerializedFileContent } from './building-block';
 export {

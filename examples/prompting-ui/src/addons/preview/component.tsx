@@ -8,10 +8,12 @@ getWebSocket(false);
 
 export const render = (props: { active?: boolean }): React.ReactElement => {
     const { active = false } = props;
-    const [preview, setPreview] = useState<{ code: string; answers: unknown }>({
-        answers: {},
-        code: ''
-    });
+    const [preview, setPreview] = useState<{ codeSnippets: { content: string; fileName: string }[]; answers: unknown }>(
+        {
+            answers: {},
+            codeSnippets: []
+        }
+    );
 
     useEffect(function () {
         const handleMessage = (responseAction: Actions) => {
@@ -23,7 +25,10 @@ export const render = (props: { active?: boolean }): React.ReactElement => {
                     answersPreview = '{}';
                 }
                 setPreview({
-                    code: responseAction.codeSnippet,
+                    codeSnippets: Object.values(responseAction.codeSnippets).map((snippet) => ({
+                        content: snippet.content,
+                        fileName: snippet.filePathProps?.fileName ?? 'Please select a file'
+                    })),
                     answers: answersPreview
                 });
             }
@@ -34,16 +39,18 @@ export const render = (props: { active?: boolean }): React.ReactElement => {
             // Reset to default when story is changed
             setPreview({
                 answers: {},
-                code: ''
+                codeSnippets: []
             });
         });
     }, []);
 
     return (
         <AddonPanel key="panel" active={active}>
-            <Form.Field label="XML">
-                <SyntaxHighlighter language="html">{preview.code}</SyntaxHighlighter>
-            </Form.Field>
+            {preview.codeSnippets.map((snippet) => (
+                <Form.Field label={snippet.fileName} key={snippet.fileName}>
+                    <SyntaxHighlighter language="html">{snippet.content}</SyntaxHighlighter>
+                </Form.Field>
+            ))}
             <Form.Field label="Answers">
                 <SyntaxHighlighter language="json">{preview.answers}</SyntaxHighlighter>
             </Form.Field>

@@ -8,6 +8,7 @@ import {
 import { PromptsType as SupportedBuildingBlocks } from '@sap-ux/fe-fpm-writer/dist/building-block/prompts/types/basic';
 import type { AddonActions } from '../addons/types';
 import type { DynamicChoices } from '@sap-ux/ui-prompting';
+import type { CodeSnippet } from '@sap-ux/fe-fpm-writer';
 
 export type Actions =
     | GetQuestions
@@ -91,7 +92,7 @@ export interface GetCodeSnippet {
 
 export interface UpdateCodeSnippetPayload {
     buildingBlockType: SupportedBuildingBlocks;
-    codeSnippet: string;
+    codeSnippets: { [questionName: string]: CodeSnippet };
     answers: unknown;
 }
 export interface UpdateCodeSnippet extends UpdateCodeSnippetPayload {

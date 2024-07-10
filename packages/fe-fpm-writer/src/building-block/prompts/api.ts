@@ -15,7 +15,6 @@ import type {
     PromptContext
 } from './types';
 import { PromptsType } from './types';
-import { generateBuildingBlock, getSerializedFileContent } from '..';
 import {
     getChartBuildingBlockPrompts,
     getTableBuildingBlockPrompts,
@@ -24,6 +23,8 @@ import {
 } from './questions';
 import { i18nNamespaces, initI18n, translate } from '../../i18n';
 import { join } from 'path';
+import { generateBuildingBlock, getSerializedFileContent } from '..';
+import type { CodeSnippet } from '../types';
 
 const unsupportedPrompts = (): Prompts<Answers> => ({
     questions: []
@@ -206,18 +207,18 @@ export class PromptsAPI {
      * @param answers The answers object
      * @returns Code snippet content.
      */
-    public getCodeSnippet<N extends SupportedPrompts['type']>(
+    public getCodeSnippets<N extends SupportedPrompts['type']>(
         type: N,
         answers: NarrowPrompt<typeof type>['answers']
-    ): string {
+    ): { [questionName: string]: CodeSnippet } {
         const config = { type, answers };
         if (!this.isGenerationSupported(config)) {
-            return '';
+            return {};
         }
         const codePreviewGenerator = PromptsCodePreviewMap.hasOwnProperty(config.type)
             ? PromptsCodePreviewMap[config.type]
             : undefined;
-        return codePreviewGenerator?.(this.context.appPath, config.answers) ?? '';
+        return codePreviewGenerator?.(this.context.appPath, config.answers) ?? {};
     }
 
     /**

@@ -2,8 +2,15 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
-import { join } from 'path';
-import type { BuildingBlock, BuildingBlockConfig, BuildingBlockMetaPath } from './types';
+import { join, parse } from 'path';
+import type { CodeSnippet } from './types';
+import {
+    CodeSnippetLanguage,
+    type BuildingBlock,
+    type BuildingBlockConfig,
+    type BuildingBlockMetaPath,
+    type FilePathProps
+} from './types';
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import * as xpath from 'xpath';
 import format from 'xml-formatter';
@@ -214,18 +221,36 @@ function updateViewFile(
 }
 
 /**
+ * Gets the properties for the file if the relative path is defined.
+ *
+ * @param {string} basePath - The base path
+ * @param {string} relativePath - The relative path to the file in the config
+ * @returns {FilePathProps} An object with file properties
+ */
+function getFilePathProps(basePath: string, relativePath?: string): FilePathProps {
+    if (relativePath) {
+        return {
+            fileName: parse(relativePath).base,
+            relativePath,
+            fullPath: join(basePath, relativePath)
+        };
+    }
+    return {};
+}
+
+/**
  * Gets the serialized content of the updated view file.
  *
  * @param {string} basePath - The base path
  * @param {BuildingBlockConfig} config - The building block configuration
  * @param {Editor} [fs] - The memfs editor instance
- * @returns {string} The serialized content of the updated view file
+ * @returns {{ [questionName: string]: CodeSnippet }} An object with serialized code snippet content and file props
  */
 export function getSerializedFileContent<T extends BuildingBlock>(
     basePath: string,
     config: BuildingBlockConfig<T>,
     fs?: Editor
-): string {
+): { [questionName: string]: CodeSnippet } {
     // Validate the base and view paths
     if (!fs) {
         fs = create(createStorage());
@@ -234,5 +259,13 @@ export function getSerializedFileContent<T extends BuildingBlock>(
     const xmlDocument = config.viewOrFragmentPath
         ? getUI5XmlDocument(basePath, config.viewOrFragmentPath, fs)
         : undefined;
-    return getTemplateContent(config.buildingBlockData, xmlDocument, fs, true);
+    const content = getTemplateContent(config.buildingBlockData, xmlDocument, fs, true);
+    const filePathProps = getFilePathProps(basePath, config.viewOrFragmentPath);
+    return {
+        viewOrFragmentPath: {
+            content,
+            language: CodeSnippetLanguage.XML,
+            filePathProps
+        }
+    };
 }

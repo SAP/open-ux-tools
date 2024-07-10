@@ -179,11 +179,11 @@ async function handleAction(action: Actions): Promise<void> {
             case GET_CODE_SNIPPET: {
                 const { answers, buildingBlockType } = action;
                 // ToDo recheck after cleanup for answers
-                const codeSnippet = promptsAPI.getCodeSnippet(buildingBlockType, answers as any);
+                const codeSnippets = promptsAPI.getCodeSnippets(buildingBlockType, answers as any);
                 const responseAction: UpdateCodeSnippet = {
                     type: UPDATE_CODE_SNIPPET,
                     buildingBlockType,
-                    codeSnippet,
+                    codeSnippets,
                     answers
                 };
                 sendMessage(responseAction);
