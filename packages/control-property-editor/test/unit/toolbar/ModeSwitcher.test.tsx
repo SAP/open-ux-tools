@@ -51,7 +51,6 @@ test('renders ModeSwitcher with changed button names for ADP', () => {
 
     expect(screen.getByText(/mode:/i)).toBeInTheDocument();
 
-
     const uiAdaptationBtn = screen.getByRole('button', { name: /ui adaptation/i });
     expect(uiAdaptationBtn).toBeInTheDocument();
 
@@ -63,4 +62,4 @@ test('renders ModeSwitcher with changed button names for ADP', () => {
 
     uiAdaptationBtn.click();
     expect(dispatch).toBeCalledWith(setAppMode('adaptation'));
-})
+});
