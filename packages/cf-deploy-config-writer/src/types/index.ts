@@ -51,7 +51,6 @@ export interface CFAppConfig {
     addManagedRouter?: boolean;
     destination?: string;
     apiHubConfig?: ApiHubConfig;
-    addMTADestination?: boolean;
     serviceHost?: string; // Data service host
     lcapMode?: boolean;
 }

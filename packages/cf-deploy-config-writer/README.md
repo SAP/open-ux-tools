@@ -2,6 +2,10 @@
 
 Add or amend Cloud Foundry deployment configuration to SAP projects.
 
+## Prerequisites
+* For CAP Projects a CDS binary is required, for more information refer to the [CDS Tool](https://www.npmjs.com/package/@sap/cds)
+* For HTML5 Projects an MTA binary is required, for more information refer to the [MTA Tool](https://www.npmjs.com/package/mta), this is required to support the [mta-lib](https://www.npmjs.com/package/@sap/mta-lib) library which handles the flows for interacting with the `mta.yaml` configuration. 
+
 ## Installation
 Npm
 `npm install --save @sap-ux/cf-deploy-config-writer`
@@ -36,30 +40,32 @@ await mtaConfig.save();
 
 Calling the `generate` function to append Cloud Foundry configuration to a HTML5 project;
 ```Typescript
-import { generateAppConfig } from '@sap-ux/cf-deploy-config-writer'
+import { generateAppConfig, DefaultMTADestination } from '@sap-ux/cf-deploy-config-writer'
 import { join } from 'path';
 
 const exampleWriter = async () => {
   const appPath = join(__dirname, 'testapp');
-  const fs = await generateAppConfig({ appPath });
-  // const fs = await generateAppConfig({appPath, addManagedRouter: true}); // To append managed approuter configuration
+  // To append managed approuter configuration by default, else toggle `addManagedRouter` to false
+  const fs = await generateAppConfig({appPath, destination: 'SAPBTPDestination'}); 
+  // For CAP flows, set the destination to DefaultMTADestination to create a destination service instance between the HTML5 and CAP Project
+  // const fs = await generateAppConfig({appPath, destination: DefaultMTADestination});
   return new Promise((resolve) => {
       fs.commit(resolve); // When using with Yeoman it handle the fs commit.
   });
 }
-
 // Calling the function
 await exampleWriter();
 ```
 
 Calling the `generateBaseConfig` function to generate a new Cloud Foundry configuration, supporting managed | standalone configurations;
 ```Typescript
-import { generateBaseConfig } from '@sap-ux/cf-deploy-config-writer'
+import { generateBaseConfig, RouterModuleType } from '@sap-ux/cf-deploy-config-writer'
 import { join } from 'path';
 
 const exampleWriter = async () => {
   const mtaPath = join(__dirname, 'testapp');
-  const fs = await generateBaseConfig({ mtaId: 'myapp', version: '0.0.1', description: 'My app description', routerType: 'standard', mtaPath });
+  // Generate a managed approuter configuration, toggle the routerType to Standard for a standalone configuration
+  const fs = await generateBaseConfig({ mtaId: 'myapp', routerType: RouterModuleType.Managed, mtaPath });
   return new Promise((resolve) => {
       fs.commit(resolve); // When using with Yeoman it handle the fs commit.
   });

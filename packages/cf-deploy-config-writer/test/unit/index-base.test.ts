@@ -25,7 +25,6 @@ describe('CF Writer', () => {
         transports: [new NullTransport()]
     });
     const outputDir = join(__dirname, '../test-output');
-    const debug = !!process.env['UX_DEBUG'];
 
     beforeEach(() => {
         jest.resetAllMocks();
@@ -33,22 +32,14 @@ describe('CF Writer', () => {
         unitTestFs = create(createStorage());
     });
 
-    beforeAll(async () => {
+    beforeAll(() => {
         jest.clearAllMocks();
         jest.spyOn(hasbin, 'sync').mockReturnValue(true);
         fsExtra.removeSync(outputDir);
     });
 
-    afterAll(async () => {
+    afterAll(() => {
         jest.resetAllMocks();
-        return new Promise((resolve) => {
-            // write out the files for debugging
-            if (debug) {
-                unitTestFs.commit(resolve);
-            } else {
-                resolve(true);
-            }
-        });
     });
 
     describe('Generate Base Config - Standalone', () => {

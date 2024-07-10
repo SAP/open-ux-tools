@@ -12,10 +12,10 @@ import {
     addRootPackage,
     addXSSecurity
 } from '../utils';
+import { t } from '../i18n';
 import { MtaConfig, createMTA, addParameters, addBuildParams } from '../mta-config';
 import { type Logger } from '@sap-ux/logger';
-import { type CFBaseConfig, RouterModuleType } from '../types';
-import { type MTABaseConfig } from '../types';
+import { type CFBaseConfig, RouterModuleType, type MTABaseConfig } from '../types';
 
 /**
  * Add a standalone | managed approuter to an empty target folder.
@@ -31,10 +31,10 @@ export async function generateBaseConfig(config: CFBaseConfig, fs?: Editor, logg
     }
     validateMtaConfig(config, fs);
     updateBaseConfig(config);
-    createMTA(config as MTABaseConfig, fs);
+    createMTA(config as MTABaseConfig);
     await addRoutingConfig(config, fs);
     await addSupportingConfig(config, fs);
-    logger?.debug(`CF Config written: ${JSON.stringify(config, null, 2)}`);
+    logger?.debug(`CF Config ${JSON.stringify(config, null, 2)}`);
     return fs;
 }
 
@@ -99,7 +99,7 @@ async function addStandaloneRouter(
             const instanceCredentials = await apiGetInstanceCredentials(abapServiceName);
             serviceKey = instanceCredentials?.credentials;
         } catch {
-            logger?.error('Failed to fetch service key');
+            logger?.error(t('error.serviceKeyFailed'));
         }
         const endpoints = serviceKey?.endpoints ? Object.keys(serviceKey.endpoints) : [''];
         const service = serviceKey ? serviceKey['sap.cloud.service'] : '';

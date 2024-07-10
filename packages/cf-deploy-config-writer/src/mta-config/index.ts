@@ -1,11 +1,10 @@
-import fileSystem from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { render } from 'ejs';
 import { MtaConfig } from './mta';
 import { getTemplatePath } from '../utils';
 import { MTAYamlFile, MTAVersion, MTADescription, deployMode, enableParallelDeployments } from '../constants';
 import type { mta } from '@sap/mta-lib';
-import type { Editor } from 'mem-fs-editor';
 import type { MTABaseConfig } from '../types';
 
 /**
@@ -39,19 +38,19 @@ export function toMtaModuleName(appId: string): string {
 }
 
 /**
- * Create an MTA file in the target folder, needs to be written to disk as subsequent calls are dependent on it being on the file system.
+ * Create an MTA file in the target folder, needs to be written to disk as subsequent calls are dependent on it being on the file system i.e mta-lib.
  *
  * @param config writer configuration
- * @param fs reference to a mem-fs editor
  */
-export function createMTA(config: MTABaseConfig, fs: Editor): void {
-    const mtaTemplate = fs.read(getTemplatePath(`app/${MTAYamlFile}`));
+export function createMTA(config: MTABaseConfig): void {
+    const mtaTemplate = readFileSync(getTemplatePath(`app/${MTAYamlFile}`), 'utf-8');
     const mtaContents = render(mtaTemplate, {
         id: config.mtaId,
         mtaDescription: config.mtaDescription ?? MTADescription,
         mtaVersion: config.mtaVersion ?? MTAVersion
     });
-    fileSystem.writeFileSync(join(config.mtaPath, MTAYamlFile), mtaContents);
+    // Written to disk immediately
+    writeFileSync(join(config.mtaPath, MTAYamlFile), mtaContents);
 }
 
 /**

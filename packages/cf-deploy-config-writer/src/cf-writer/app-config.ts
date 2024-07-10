@@ -20,7 +20,6 @@ import {
     MTABinNotFound,
     NoAuthType,
     CDSAddMtaParams,
-    MTAYamlFile,
     DefaultMTADestination,
     EmptyDestination,
     XSAppFile,
@@ -97,10 +96,9 @@ async function getUpdatedConfig(cfAppConfig: CFAppConfig, fs: Editor, logger?: L
     const config = {
         appPath: cfAppConfig.appPath.replace(/\/$/, ''),
         destination: cfAppConfig.destination ?? destination,
-        addManagedRouter: cfAppConfig.addManagedRouter ?? false,
+        addManagedRouter: cfAppConfig.addManagedRouter ?? true,
         lcapMode: !isCap ? false : isLCAP,
         isMtaRoot: hasRoot ?? false,
-        addMTADestination: cfAppConfig.addMTADestination ?? true,
         serviceBase: cfAppConfig.serviceHost ?? serviceBase,
         mtaId,
         mtaPath,
@@ -184,7 +182,7 @@ async function processUI5Config(
             firstServicePathSegment = toolsConfig?.configuration?.backend[0].path;
         }
     } catch (error) {
-        logger?.debug(`File ${FileName.Ui5Yaml} not existing`);
+        logger?.debug(t('debug.ui5YamlDoesNotExist'));
     }
     return { destination, serviceBase, firstServicePathSegment };
 }
@@ -221,7 +219,7 @@ async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor, logger
     const cfConfig = await getUpdatedConfig(cfAppConfig, fs);
     // Generate MTA Config, LCAP will generate the mta.yaml on the fly so we dont care about it!
     if (!cfConfig.lcapMode) {
-        createMTAConfig(cfConfig, fs, logger);
+        createMTAConfig(cfConfig);
         await generateSupportingConfig(cfConfig, fs);
         await updateMtaConfig(cfConfig, logger);
     }
@@ -236,10 +234,8 @@ async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor, logger
  * Creates the MTA configuration file.
  *
  * @param cfConfig writer configuration
- * @param fs reference to a mem-fs editor
- * @param logger optional logger instance
  */
-function createMTAConfig(cfConfig: CFConfig, fs: Editor, logger?: Logger): void {
+function createMTAConfig(cfConfig: CFConfig): void {
     if (!cfConfig.mtaId) {
         if (cfConfig.isCap) {
             const result = spawnSync(CDSExecutable, CDSAddMtaParams, {
@@ -249,11 +245,10 @@ function createMTAConfig(cfConfig: CFConfig, fs: Editor, logger?: Logger): void 
                 throw new Error(CDSBinNotFound);
             }
         } else {
-            createMTA({ mtaId: cfConfig.appId, mtaPath: cfConfig.mtaPath ?? cfConfig.rootPath } as MTABaseConfig, fs);
+            createMTA({ mtaId: cfConfig.appId, mtaPath: cfConfig.mtaPath ?? cfConfig.rootPath } as MTABaseConfig);
         }
         cfConfig.mtaId = cfConfig.appId;
         cfConfig.mtaPath = cfConfig.rootPath;
-        logger?.debug(`MTA Created at ${join(cfConfig.rootPath, MTAYamlFile)}`);
     }
 }
 
@@ -293,7 +288,7 @@ async function updateMtaConfig(cfConfig: CFConfig, logger?: Logger): Promise<voi
         const appRelativePath = toPosixPath(relative(cfConfig.rootPath, cfConfig.appPath));
         await mtaInstance.addApp(appModule, appRelativePath ? appRelativePath : '.');
         await addParameters(mtaInstance);
-        if ((cfConfig.addMTADestination && cfConfig.isCap) || cfConfig.destination === DefaultMTADestination) {
+        if ((cfConfig.destination && cfConfig.isCap) || cfConfig.destination === DefaultMTADestination) {
             // If the destination instance identifier is passed, create a destination instance
             cfConfig.destination =
                 cfConfig.destination === DefaultMTADestination
@@ -327,7 +322,7 @@ async function saveMta(cfConfig: CFConfig, mtaInstance: MtaConfig, logger?: Logg
                     value: cfConfig.apiHubConfig.apiHubKey
                 });
             } catch (error) {
-                logger?.error(t('ERROR_MTA_EXTENSION_FOR_ABHE_FAILED', { error }));
+                logger?.error(t('error.mtaExtensionFailed', { error }));
             }
         }
     }
