@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.9
+
+### Patch Changes
+
+-   671242b: Disable add fragment and controller extension rt-a menu items if clicked element is from reuse component view
+
 ## 0.16.8
 
 ### Patch Changes
