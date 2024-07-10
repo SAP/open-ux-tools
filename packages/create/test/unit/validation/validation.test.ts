@@ -6,10 +6,10 @@ jest.mock('@sap-ux/adp-tooling');
 
 describe('validation', () => {
     describe('validateAdpProject', () => {
-        test('validateAdpProject - not Adaptation Project', async () => {
+        test('validateAdpProject - not adaptation project', async () => {
             jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('SAP Fiori elements');
             await expect(validateAdpProject('')).rejects.toThrow(
-                'This command can only be used for an Adaptation Project'
+                'This command can only be used for an adaptation project'
             );
         });
 

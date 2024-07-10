@@ -125,9 +125,9 @@ describe('add/annotations', () => {
         expect(generateChangeSpy).not.toBeCalled();
     });
 
-    test('should result in error when the project is not Adaptation Project', async () => {
+    test('should result in error when the project is not adaptation project', async () => {
         jest.spyOn(validations, 'validateAdpProject').mockRejectedValueOnce(
-            new Error('This command can only be used for an Adaptation Project')
+            new Error('This command can only be used for an adaptation project')
         );
 
         const command = new Command('annotations');
@@ -135,7 +135,7 @@ describe('add/annotations', () => {
         await command.parseAsync(getArgv(appRoot));
 
         expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.error).toBeCalledWith('This command can only be used for an Adaptation Project');
+        expect(loggerMock.error).toBeCalledWith('This command can only be used for an adaptation project');
         expect(generateChangeSpy).not.toBeCalled();
     });
 

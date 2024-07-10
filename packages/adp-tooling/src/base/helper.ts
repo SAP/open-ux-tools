@@ -54,9 +54,9 @@ export function checkFileExists(filePath: string): boolean {
 }
 
 /**
- * Returns the Adaptation Project configuration, throws an error if not found.
+ * Returns the adaptation project configuration, throws an error if not found.
  *
- * @param {string} basePath - The path to the Adaptation Project.
+ * @param {string} basePath - The path to the adaptation project.
  * @param {string} yamlPath - The path to yaml configuration file.
  * @returns {Promise<AdpPreviewConfig>} the adp configuration
  */
@@ -76,10 +76,10 @@ export async function getAdpConfig(basePath: string, yamlPath: string): Promise<
 type DataSources = Record<string, ManifestNamespace.DataSource>;
 
 /**
- * Returns the Adaptation Project configuration, throws an error if not found.
+ * Returns the adaptation project configuration, throws an error if not found.
  *
  * @param {string} reference - The base application id.
- * @param {AdpPreviewConfig} adpConfig - The Adaptation Project configuration.
+ * @param {AdpPreviewConfig} adpConfig - The adaptation project configuration.
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<DataSources>} data sources from base application manifest
  */
