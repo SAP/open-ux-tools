@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 0.16.9
+
+### Patch Changes
+
+-   671242b: Disable add fragment and controller extension rt-a menu items if clicked element is from reuse component view
+
+## 0.16.8
+
+### Patch Changes
+
+-   cec4a97: Live and Edit buttons are visible as Navigation and UI Adpatation only when in ADP scenario.
+
 ## 0.16.7
 
 ### Patch Changes
