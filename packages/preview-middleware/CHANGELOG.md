@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.6
+
+### Patch Changes
+
+-   dbb490a: Add missing test suite default paths to readme
+
 ## 0.16.5
 
 ### Patch Changes
