@@ -1,5 +1,19 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.1.17
+
+### Patch Changes
+
+-   Updated dependencies [0f3cf6b]
+    -   @sap-ux/project-access@1.25.1
+    -   @sap-ux/cds-odata-annotation-converter@0.3.1
+
+## 0.1.16
+
+### Patch Changes
+
+-   e10cf9e: fix: delete text and textArranmgnet
+
 ## 0.1.15
 
 ### Patch Changes
