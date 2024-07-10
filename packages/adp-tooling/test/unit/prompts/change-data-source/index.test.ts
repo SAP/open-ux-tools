@@ -17,7 +17,7 @@ describe('getPrompts', () => {
             'uri': '/sap/opu/odata/second/service/',
             'type': 'ODataAnnotation',
             'settings': {
-                'localUri': 'localService/SEPMRA_PROD_MAN_ANNO_MDL.xml'
+                'localUri': 'localService/annotation.xml'
             }
         }
     } as Record<string, ManifestNamespace.DataSource>;

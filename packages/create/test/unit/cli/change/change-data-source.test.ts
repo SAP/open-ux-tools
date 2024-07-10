@@ -28,18 +28,18 @@ const abapServicesMock = {
 };
 
 const mockDataSources = {
-    'SEPMRA_PROD_MAN_ANNO_MDL': {
-        'settings': { 'localUri': 'localService/SEPMRA_PROD_MAN_ANNO_MDL.xml' },
+    'annotation': {
+        'settings': { 'localUri': 'localService/annotation.xml' },
         'type': 'ODataAnnotation',
-        'uri': "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/?sap-language=EN"
+        'uri': "/path/to/annotation;v=2/Annotations(TechnicalName='annotation',Version='0001')/$value/?sap-language=EN"
     },
-    'mainService': {
+    'service': {
         'settings': {
-            'annotations': ['SEPMRA_PROD_MAN_ANNO_MDL'],
+            'annotations': ['annotation'],
             'localUri': 'localService/mockdata/metadata.xml'
         },
         'type': 'OData',
-        'uri': '/sap/opu/odata/sap/SEPMRA_PROD_MAN/'
+        'uri': '/path/to/odata/service/'
     }
 } as unknown as Record<string, ManifestNamespace.DataSource>;
 
