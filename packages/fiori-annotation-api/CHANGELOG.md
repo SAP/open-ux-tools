@@ -1,5 +1,11 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.1.15
+
+### Patch Changes
+
+-   8ef805b: cds writer improvement. skip generating additional comma when elements are deleted and added from same pointer.
+
 ## 0.1.14
 
 ### Patch Changes
