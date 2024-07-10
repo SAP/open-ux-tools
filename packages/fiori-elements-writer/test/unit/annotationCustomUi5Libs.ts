@@ -1,7 +1,7 @@
 import type { FioriElementsApp, LROPSettings } from '../../src';
 import { OdataVersion, TemplateType } from '../../src';
 import { feBaseConfig, getTestData } from '../common';
-import { getAnnotationV4Libs } from '../../src/data/annotationReuseLibs';
+import { getAnnotationV4Libs } from '../../src/data/annotationCustomUi5Libs';
 import { setAppDefaults } from '../../src/data/defaults';
 
 describe('getAnnotationV4Libs', () => {
@@ -20,7 +20,7 @@ describe('getAnnotationV4Libs', () => {
         } as FioriElementsApp<LROPSettings>;
 
         setAppDefaults(feApp);
-        expect(feApp.ui5?.ui5ReuseLibs).toContain('sap.nw.core.gbt.notes.lib.reuse');
+        expect(feApp.ui5?.customUi5Libs).toContain('sap.nw.core.gbt.notes.lib.reuse');
     });
 
     test('Metadata does not contain the required annotation to return a Reuse lib', () => {
@@ -38,7 +38,7 @@ describe('getAnnotationV4Libs', () => {
         } as FioriElementsApp<LROPSettings>;
 
         setAppDefaults(feApp);
-        expect(feApp.ui5?.ui5ReuseLibs).not.toContain('sap.nw.core.gbt.notes.lib.reuse');
+        expect(feApp.ui5?.customUi5Libs).not.toContain('sap.nw.core.gbt.notes.lib.reuse');
         expect(getAnnotationV4Libs(feApp.service.metadata as string)).toEqual([]);
     });
 
@@ -57,6 +57,6 @@ describe('getAnnotationV4Libs', () => {
         } as FioriElementsApp<LROPSettings>;
 
         setAppDefaults(feApp);
-        expect(feApp.ui5?.ui5ReuseLibs).not.toContain('sap.nw.core.gbt.notes.lib.reuse');
+        expect(feApp.ui5?.customUi5Libs).not.toContain('sap.nw.core.gbt.notes.lib.reuse');
     });
 });

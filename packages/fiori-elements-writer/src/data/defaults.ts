@@ -12,7 +12,7 @@ import type {
 } from '../types';
 import { TableSelectionMode, TableType, TemplateType } from '../types';
 import { getBaseComponent, getTemplateUi5Libs, TemplateTypeAttributes } from './templateAttributes';
-import { getAnnotationV4Libs } from './annotationReuseLibs';
+import { getAnnotationV4Libs } from './annotationCustomUi5Libs';
 
 const defaultModelName = 'mainModel'; // UI5 default model name is '' but some floorplans require a named default model
 
@@ -99,7 +99,7 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     feApp.app.baseComponent = feApp.app.baseComponent || getBaseComponent(feApp.template.type, feApp.service.version);
 
-    const ui5ReuseLibs =
+    const customUi5Libs =
         feApp.service.version === OdataVersion.v4 && feApp.service.metadata
             ? getAnnotationV4Libs(feApp.service.metadata)
             : [];
@@ -109,7 +109,7 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
     feApp.ui5 = {
         ...feApp.ui5,
         ui5Libs: getUi5Libs(feApp.template.type, feApp.service.version, feApp.ui5?.ui5Libs),
-        ui5ReuseLibs: ui5ReuseLibs
+        customUi5Libs: customUi5Libs
     };
 
     // Assign a default annotation name if the service type is EDMX and no local annotation name is provided
