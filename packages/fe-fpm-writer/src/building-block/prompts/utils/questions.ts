@@ -276,13 +276,7 @@ export function getFilterBarIdPrompt(
             if (!answers.viewOrFragmentPath) {
                 return [];
             }
-            return transformChoices(
-                await getBuildingBlockIdsInFile(
-                    join(appPath!, answers.viewOrFragmentPath),
-                    BuildingBlockType.FilterBar,
-                    fs!
-                )
-            );
+            return transformChoices(await getFilterBarIdsInFile(join(appPath!, answers.viewOrFragmentPath), fs!));
         }
     };
 }
@@ -296,35 +290,18 @@ export function getFilterBarIdPrompt(
  * @param fs  - the file system object for reading files
  * @returns an array of ids found in passed xml file.
  */
-async function getBuildingBlockIdsInFile(
-    viewOrFragmentPath: string,
-    buildingBlockType: BuildingBlockType,
-    fs: Editor
-): Promise<string[]> {
+async function getFilterBarIdsInFile(viewOrFragmentPath: string, fs: Editor): Promise<string[]> {
     const ids: string[] = [];
-    let buildingBlockSelector;
-    switch (buildingBlockType) {
-        case BuildingBlockType.FilterBar:
-            buildingBlockSelector = 'macros:FilterBar';
-            break;
-        case BuildingBlockType.Table:
-            buildingBlockSelector = 'macros:Table';
-            break;
-        case BuildingBlockType.Chart:
-            buildingBlockSelector = 'macros:Chart';
-            break;
-    }
-    if (buildingBlockSelector) {
-        const xmlContent = fs.read(viewOrFragmentPath);
-        const errorHandler = (level: string, message: string): void => {
-            throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
-        };
-        const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent);
-        const elements = Array.from(xmlDocument.getElementsByTagName(buildingBlockSelector));
-        for (const element of elements) {
-            const id = element.getAttributeNode('id')?.value;
-            id && ids.push(id);
-        }
+    let buildingBlockSelector = 'macros:FilterBar';
+    const xmlContent = fs.read(viewOrFragmentPath);
+    const errorHandler = (level: string, message: string): void => {
+        throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
+    };
+    const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent);
+    const elements = Array.from(xmlDocument.getElementsByTagName(buildingBlockSelector));
+    for (const element of elements) {
+        const id = element.getAttributeNode('id')?.value;
+        id && ids.push(id);
     }
     return ids;
 }
