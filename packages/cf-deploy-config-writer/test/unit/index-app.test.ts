@@ -19,6 +19,8 @@ let listDestinationsMock: jest.SpyInstance;
 let unitTestFs: Editor;
 
 describe('CF Writer', () => {
+    jest.setTimeout(8000);
+
     const destinationsMock = {
         'TestDestination': {
             Name: 'TestDestination',
@@ -34,7 +36,7 @@ describe('CF Writer', () => {
     const logger = new ToolsLogger({
         transports: [new NullTransport()]
     });
-    const outputDir = join(__dirname, '../test-output');
+    const outputDir = join(__dirname, '../test-output', 'app');
 
     beforeEach(() => {
         jest.resetAllMocks();

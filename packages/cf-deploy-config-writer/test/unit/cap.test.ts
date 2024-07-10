@@ -29,7 +29,7 @@ let spawnMock: jest.SpyInstance;
 let unitTestFs: Editor;
 
 describe('CF Writer', () => {
-    const outputDir = join(__dirname, '../test-output');
+    const outputDir = join(__dirname, '../test-output', 'cap');
     const debug = !!process.env['UX_DEBUG'];
 
     beforeEach(() => {

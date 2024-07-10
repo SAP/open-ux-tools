@@ -3,12 +3,12 @@ import fsExtra from 'fs-extra';
 import hasbin from 'hasbin';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+import { apiGetInstanceCredentials } from '@sap/cf-tools';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { type CFBaseConfig, generateBaseConfig } from '../../src';
 import { RouterModuleType } from '../../src/types';
-import type { Editor } from 'mem-fs-editor';
 import { MTABinNotFound } from '../../src/constants';
-import { apiGetInstanceCredentials } from '@sap/cf-tools';
+import type { Editor } from 'mem-fs-editor';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -24,7 +24,7 @@ describe('CF Writer', () => {
     const logger = new ToolsLogger({
         transports: [new NullTransport()]
     });
-    const outputDir = join(__dirname, '../test-output');
+    const outputDir = join(__dirname, '../test-output', 'base');
 
     beforeEach(() => {
         jest.resetAllMocks();
