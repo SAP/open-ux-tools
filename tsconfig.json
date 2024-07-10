@@ -72,9 +72,6 @@
       "path": "packages/create"
     },
     {
-      "path": "packages/deploy-config-writer"
-    },
-    {
       "path": "packages/deploy-tooling"
     },
     {
