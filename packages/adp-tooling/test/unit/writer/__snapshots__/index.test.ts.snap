@@ -94,7 +94,10 @@ server:
           version: ''
 customConfiguration:
   adp:
-    safeMode: false
+    support:
+      id: '@package/name'
+      toolsId: uuidv4
+      version: 0.0.1
 builder:
   customTasks:
     - name: app-variant-bundler-build
@@ -205,7 +208,10 @@ server:
           version: ''
 customConfiguration:
   adp:
-    safeMode: false
+    support:
+      id: '@package/name'
+      toolsId: uuidv4
+      version: 0.0.1
 builder:
   customTasks:
     - name: app-variant-bundler-build
@@ -1205,7 +1211,10 @@ server:
           version: ''
 customConfiguration:
   adp:
-    safeMode: false
+    support:
+      id: '@package/name'
+      toolsId: uuidv4
+      version: 0.0.1
 builder:
   customTasks:
     - name: app-variant-bundler-build
@@ -1356,7 +1365,10 @@ server:
           version: ''
 customConfiguration:
   adp:
-    safeMode: false
+    support:
+      id: '@package/name'
+      toolsId: uuidv4
+      version: 0.0.1
 builder:
   customTasks:
     - name: app-variant-bundler-build
@@ -1493,7 +1505,10 @@ server:
           version: ''
 customConfiguration:
   adp:
-    safeMode: true
+    support:
+      id: '@package/name'
+      toolsId: uuidv4
+      version: 0.0.1
 ",
     "state": "modified",
   },

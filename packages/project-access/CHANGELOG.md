@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.25.1
+
+### Patch Changes
+
+-   0f3cf6b: feat: Add path to specification
+
 ## 1.25.0
 
 ### Minor Changes
