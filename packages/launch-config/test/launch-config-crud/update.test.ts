@@ -59,7 +59,7 @@ describe('update', () => {
             FIORI_TOOLS_UI5_VERSION: 'TEST_UI5_VERSION',
             FIORI_TOOLS_URL_PARAMS: 'sap-ui-xx-viewCache=false'
         };
-        expect(launchJSON.configurations[6]).toStrictEqual({
+        expect(launchJSON.configurations[7]).toStrictEqual({
             args: ['--config', 'ui5-mock.yaml'],
             console: 'internalConsole',
             cwd: '${workspaceFolder}',
@@ -83,7 +83,7 @@ describe('update', () => {
                 projectRoot: TestPaths.feProjects,
                 useMockData: true
             },
-            6,
+            7,
             memFs
         );
         launchJSONString = result.read(launchJSONPath);
@@ -94,7 +94,7 @@ describe('update', () => {
                 runnableId: join(TestPaths.feProjects)
             })
         };
-        expect(launchJSON.configurations[6]).toStrictEqual({
+        expect(launchJSON.configurations[7]).toStrictEqual({
             args: ['--config', 'ui5-mock.yaml'],
             console: 'internalConsole',
             cwd: '${workspaceFolder}',
@@ -128,7 +128,7 @@ describe('update', () => {
                 ui5Version: 'TEST_UI5_VERSION_UPDATED',
                 ui5VersionUri: 'https://ui5.sap.com.updated'
             },
-            5,
+            6,
             memFs
         );
         const expectedEnv = {
@@ -142,7 +142,7 @@ describe('update', () => {
         };
         const launchJSONString = result.read(launchJSONPath);
         const launchJSON = parse(launchJSONString);
-        expect(launchJSON.configurations[5]).toStrictEqual({
+        expect(launchJSON.configurations[6]).toStrictEqual({
             console: 'internalConsole',
             cwd: '${workspaceFolder}',
             env: expectedEnv,
@@ -170,7 +170,7 @@ describe('update', () => {
                 ui5Version: 'TEST_UI5_VERSION_UPDATED2',
                 ui5VersionUri: 'https://ui5.sap.com.updated2'
             },
-            6,
+            7,
             memFs
         );
         const expectedEnv = {
@@ -183,7 +183,7 @@ describe('update', () => {
         };
         const launchJSONString = result.read(launchJSONPath);
         const launchJSON = parse(launchJSONString);
-        expect(launchJSON.configurations[6]).toStrictEqual({
+        expect(launchJSON.configurations[7]).toStrictEqual({
             args: [],
             console: 'internalConsole',
             cwd: '${workspaceFolder}',
@@ -213,7 +213,7 @@ describe('update', () => {
                 ui5VersionUri: 'https://ui5.sap.com.updated',
                 ui5LocalVersion: 'snapshot'
             },
-            6,
+            7,
             memFs
         );
         const expectedEnv = {
@@ -224,7 +224,7 @@ describe('update', () => {
         };
         const launchJSONString = result.read(launchJSONPath);
         const launchJSON = parse(launchJSONString);
-        expect(launchJSON.configurations[6]).toStrictEqual({
+        expect(launchJSON.configurations[7]).toStrictEqual({
             args: ['--config', 'ui5-local.yaml', '--framework-version', 'snapshot'],
             console: 'internalConsole',
             cwd: '${workspaceFolder}',

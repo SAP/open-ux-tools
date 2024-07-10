@@ -1,4 +1,3 @@
-import { join } from 'path';
 import { getDefaultLaunchConfigOptionsForProject } from '../../src';
 import { TestPaths } from '../test-data/utils';
 
@@ -17,15 +16,25 @@ describe('project', () => {
         console.error = originalConsoleError;
     });
 
-    it('Should get default options for project', async () => {
-        const options = await getDefaultLaunchConfigOptionsForProject(join(TestPaths.feProjects, 'v2lrop'));
-        expect(options.name).toBe('Launch Fiori app: v2lrop');
-        expect(options.projectRoot).toBe(join(TestPaths.feProjects, 'v2lrop'));
+    it('should get default options for project (v2)', async () => {
+        const options = await getDefaultLaunchConfigOptionsForProject(TestPaths.v2);
+        expect(options.name).toBe('Launch Fiori app: fiori-elements-v2');
+        expect(options.projectVersion).toBe('2.0');
+        expect(options.projectRoot).toBe(TestPaths.v2);
         expect(options.ui5Version).toEqual('latest');
         expect(options.backendConfigs).toEqual([{ path: '/sap', url: 'DUMMY_BACKEND_URL' }]);
     });
 
-    it('Should get default options for invalid project', async () => {
+    it('should get default options for project (v4)', async () => {
+        const options = await getDefaultLaunchConfigOptionsForProject(TestPaths.v4);
+        expect(options.name).toBe('Launch Fiori app: fiori-elements-v4');
+        expect(options.projectVersion).toBe('4.0');
+        expect(options.projectRoot).toBe(TestPaths.v4);
+        expect(options.ui5Version).toEqual('latest');
+        expect(options.backendConfigs).toEqual([{ path: '/sap', url: 'DUMMY_BACKEND_URL' }]);
+    });
+
+    it('should get default options for invalid project', async () => {
         console.error = jest.fn();
         const defaultConfig = await getDefaultLaunchConfigOptionsForProject('INVALID_PROJECT_PATH');
         expect(defaultConfig).toEqual({

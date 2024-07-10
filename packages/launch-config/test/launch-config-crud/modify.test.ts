@@ -4,7 +4,7 @@ import { TestPaths } from '../test-data/utils';
 
 describe('modify', () => {
     const runnableId = JSON.stringify({
-        runnableId: TestPaths.v2lrop
+        runnableId: TestPaths.v2
     });
     it('should modify old config that uses run-scripts without args defined', async () => {
         const launchConfig: LaunchConfig = {
@@ -152,7 +152,7 @@ describe('modify', () => {
     it('should modify nothing, launch config is defined for fiori run', async () => {
         const launchConfig = generateNewFioriLaunchConfig('WORKSPACE_FOLDER', {
             name: 'TEST_NAME',
-            projectRoot: TestPaths.v2lrop,
+            projectRoot: TestPaths.v2,
             ui5Version: 'snapshot',
             ui5VersionUri: 'https://sapui5preview-sapui5.dispatcher.int.sap.eu2.hana.ondemand.com'
         });

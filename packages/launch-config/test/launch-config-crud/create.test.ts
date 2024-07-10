@@ -8,7 +8,7 @@ import { getUI5VersionUri } from '../../src';
 
 describe('create', () => {
     const memFs = create(createStorage());
-    const memFilePath = join(TestPaths.tmpDir, 'fe-project', FileName.Package);
+    const memFilePath = join(TestPaths.tmpDir, 'fe-projects', FileName.Package);
     const memFileContent = '{}\n';
 
     beforeEach(() => {
@@ -22,13 +22,13 @@ describe('create', () => {
     test('launch.json file is missing, create new file with new config', async () => {
         const result = await createLaunchConfig(
             TestPaths.tmpDir,
-            { name: 'LaunchConfig_One', projectRoot: join(TestPaths.tmpDir, 'fe-project') },
+            { name: 'LaunchConfig_One', projectRoot: join(TestPaths.tmpDir, 'fe-projects') },
             memFs
         );
         const expectedEnv = {
             'run.config': JSON.stringify({
                 handlerId: 'fiori_tools',
-                runnableId: join(TestPaths.tmpDir, 'fe-project')
+                runnableId: join(TestPaths.tmpDir, 'fe-projects')
             })
         };
         const launchJSONPath = join(TestPaths.tmpDir, '.vscode', 'launch.json');
@@ -38,7 +38,7 @@ describe('create', () => {
             configurations: [
                 {
                     console: 'internalConsole',
-                    cwd: join('${workspaceFolder}', 'fe-project'),
+                    cwd: join('${workspaceFolder}', 'fe-projects'),
                     env: expectedEnv,
                     internalConsoleOptions: 'openOnSessionStart',
                     name: 'LaunchConfig_One',
@@ -69,7 +69,7 @@ describe('create', () => {
             TestPaths.tmpDir,
             {
                 name: 'LaunchConfig_One',
-                projectRoot: join(TestPaths.tmpDir, 'fe-project'),
+                projectRoot: join(TestPaths.tmpDir, 'fe-projects'),
                 ui5Version,
                 ui5VersionUri,
                 backendConfigs
@@ -82,7 +82,7 @@ describe('create', () => {
             FIORI_TOOLS_UI5_VERSION: 'myLatest',
             'run.config': JSON.stringify({
                 handlerId: 'fiori_tools',
-                runnableId: join(TestPaths.tmpDir, 'fe-project')
+                runnableId: join(TestPaths.tmpDir, 'fe-projects')
             })
         };
         expect(result.exists(launchJSONPath)).toBe(true);
@@ -91,7 +91,7 @@ describe('create', () => {
             configurations: [
                 {
                     console: 'internalConsole',
-                    cwd: join('${workspaceFolder}', 'fe-project'),
+                    cwd: join('${workspaceFolder}', 'fe-projects'),
                     env: expectedEnv,
                     internalConsoleOptions: 'openOnSessionStart',
                     name: 'LaunchConfig_One',
@@ -120,13 +120,13 @@ describe('create', () => {
         });
         const result = await createLaunchConfig(
             TestPaths.tmpDir,
-            { name: 'LaunchConfig_Two', projectRoot: join(TestPaths.tmpDir, 'fe-project') },
+            { name: 'LaunchConfig_Two', projectRoot: join(TestPaths.tmpDir, 'fe-projects') },
             memFs
         );
         const expectedEnv = {
             'run.config': JSON.stringify({
                 handlerId: 'fiori_tools',
-                runnableId: join(TestPaths.tmpDir, 'fe-project')
+                runnableId: join(TestPaths.tmpDir, 'fe-projects')
             })
         };
         expect(result.exists(launchJSONPath)).toBe(true);
@@ -138,7 +138,7 @@ describe('create', () => {
                 },
                 {
                     console: 'internalConsole',
-                    cwd: join('${workspaceFolder}', 'fe-project'),
+                    cwd: join('${workspaceFolder}', 'fe-projects'),
                     env: expectedEnv,
                     internalConsoleOptions: 'openOnSessionStart',
                     name: 'LaunchConfig_Two',

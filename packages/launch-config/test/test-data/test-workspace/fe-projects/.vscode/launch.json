@@ -1,13 +1,39 @@
 {
   // test json with comments - comment 1
   "version": "0.2.0", // comment 2
-  "configurations": [ 
+  "configurations": [
     {
-      "name": "Start v2lrop", // comment 3
+      "name": "Start fiori-elements-v4",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npx",
+      "cwd": "${workspaceFolder}/fiori-elements-v4",
+      "windows": {
+          "runtimeExecutable": "npx.cmd"
+      },
+      "runtimeArgs": [
+          "fiori",
+          "run"
+      ],
+      "args": [
+          "--open",
+          "test/flpSandbox.html#fiorielementsv4-tile"
+      ],
+      "console": "internalConsole",
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std",
+      "port": 9229,
+      "env": {
+          "DEBUG": "--inspect",
+          "FIORI_TOOLS_URL_PARAMS": "sap-ui-xx-viewCache=false"
+      }
+    },
+    {
+      "name": "Start fiori-elements-v2", // comment 3
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "npm",
-      "cwd": "${workspaceFolder}/v2lrop",
+      "cwd": "${workspaceFolder}/fiori-elements-v2",
       "windows": {
         "runtimeExecutable": "npm.cmd"
       },
@@ -20,11 +46,11 @@
       }
     },
     { // comment 4
-      "name": "Start v2lrop with UI5 Version",
+      "name": "Start fiori-elements-v2 with UI5 Version",
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "npm",
-      "cwd": "${workspaceFolder}/v2lrop",
+      "cwd": "${workspaceFolder}/fiori-elements-v2",
       "windows": {
         "runtimeExecutable": "npm.cmd"
       },
@@ -38,10 +64,10 @@
       }
     },
     { // comment 5
-      "name": "Start v2lrop Mock",
+      "name": "Start fiori-elements-v2 Mock",
       "type": "node",
       "request": "launch",
-      "cwd": "${workspaceFolder}/v2lrop",
+      "cwd": "${workspaceFolder}/fiori-elements-v2",
       "runtimeExecutable": "npm",
       "windows": {
         "runtimeExecutable": "npm.cmd"
@@ -53,10 +79,10 @@
       "env": {}
     },
     {
-      "name": "Start v2lrop Mock with UI5 Version",
+      "name": "Start fiori-elements-v2 Mock with UI5 Version",
       "type": "node",
       "request": "launch",
-      "cwd": "${workspaceFolder}/v2lrop",
+      "cwd": "${workspaceFolder}/fiori-elements-v2",
       "runtimeExecutable": "npm",
       "windows": {
         "runtimeExecutable": "npm.cmd"
@@ -68,10 +94,10 @@
       "port": 9229
     },
     { 
-      "name": "Start v2lrop Local",
+      "name": "Start fiori-elements-v2 Local",
       "type": "node",
       "request": "launch",
-      "cwd": "${workspaceFolder}/v2lrop", // comment 6
+      "cwd": "${workspaceFolder}/fiori-elements-v2", // comment 6
       "runtimeExecutable": "npm",
       "windows": {
         "runtimeExecutable": "npm.cmd"
@@ -84,7 +110,7 @@
     },
     {
       "name": "Existing launch config with json comments", // comment 7
-      "cwd": "${workspaceFolder}/v2lrop",
+      "cwd": "${workspaceFolder}/fiori-elements-v2",
       "runtimeArgs": [
           "fiori",  // comment 8
           "run"

@@ -19,7 +19,7 @@ describe('utils', () => {
         it('should generate Launch config with internal UI5 version', () => {
             const launchConfig = generateNewFioriLaunchConfig('WORKSPACE_FOLDER', {
                 name: 'TEST_NAME',
-                projectRoot: TestPaths.v2lrop,
+                projectRoot: TestPaths.v2,
                 ui5Version: 'snapshot',
                 ui5VersionUri: 'https://sapui5preview-sapui5.dispatcher.int.sap.eu2.hana.ondemand.com'
             });
@@ -35,7 +35,7 @@ describe('utils', () => {
         it('should generate Launch config with mock data', () => {
             const launchConfig = generateNewFioriLaunchConfig('WORKSPACE_FOLDER', {
                 name: 'TEST_NAME',
-                projectRoot: TestPaths.v2lrop,
+                projectRoot: TestPaths.v2,
                 projectVersion: '2.0',
                 useMockData: true
             });
@@ -48,7 +48,7 @@ describe('utils', () => {
         it('should generate Launch config with mock data and ui5 local', () => {
             const launchConfig = generateNewFioriLaunchConfig('WORKSPACE_FOLDER', {
                 name: 'TEST_NAME',
-                projectRoot: TestPaths.v2lrop,
+                projectRoot: TestPaths.v2,
                 projectVersion: '2.0',
                 useMockData: true,
                 ui5Local: true,
@@ -63,7 +63,7 @@ describe('utils', () => {
         it('should generate Launch config with start file', () => {
             const launchConfig = generateNewFioriLaunchConfig('WORKSPACE_FOLDER', {
                 name: 'TEST_NAME',
-                projectRoot: TestPaths.v2lrop,
+                projectRoot: TestPaths.v2,
                 projectVersion: '2.0',
                 startFile: 'index.html'
             });

@@ -4,6 +4,7 @@ import { create } from 'mem-fs-editor';
 import { getLaunchConfigs, getLaunchConfigByName } from '../../src';
 import { TestPaths } from '../test-data/utils';
 import { getAllLaunchConfigs, getLaunchJSONFilePaths } from '../../src/launch-config-crud/read';
+import { DirName } from '@sap-ux/project-access';
 
 const originalConsoleError = console.error;
 
@@ -16,19 +17,14 @@ describe('read', () => {
     it('should return launch configuration files', async () => {
         const launchConfigs = await getLaunchJSONFilePaths(TestPaths.workspaceRoots);
         expect(launchConfigs).toEqual([
-            join(TestPaths.feProjects, '.vscode', 'launch.json'),
-            join(TestPaths.freestyleProjects, '.vscode', 'launch.json')
+            join(TestPaths.feProjects, DirName.VSCode, 'launch.json'),
+            join(TestPaths.freestyleProjects, DirName.VSCode, 'launch.json')
         ]);
     });
 
     it('should return all launch configurations', async () => {
         const allLaunchConfigs = await getLaunchConfigs(TestPaths.feProjects);
-        expect(allLaunchConfigs?.length).toBe(6);
-    });
-
-    it('should return all launch configurations', async () => {
-        const allLaunchConfigs = await getLaunchConfigs(TestPaths.feProjects);
-        expect(allLaunchConfigs?.length).toBe(6);
+        expect(allLaunchConfigs?.length).toBe(7);
     });
 
     it('should not return launch configurations from dummy path', async () => {
@@ -48,7 +44,8 @@ describe('read', () => {
         let allLaunchConfigs = await getAllLaunchConfigs(TestPaths.workspaceRoots);
 
         expect(allLaunchConfigs.length).toBe(2);
-        expect(allLaunchConfigs[0].launchConfigs[0].name).toBe('Start v2lrop');
+        expect(allLaunchConfigs[0].launchConfigs[0].name).toBe('Start fiori-elements-v4');
+        expect(allLaunchConfigs[0].launchConfigs[1].name).toBe('Start fiori-elements-v2');
         expect(allLaunchConfigs[1].launchConfigs[0].name).toBe('Start freestyle');
 
         allLaunchConfigs = await getAllLaunchConfigs(TestPaths.freestyleProjects);
@@ -56,14 +53,14 @@ describe('read', () => {
     });
 
     it('should return launch config by name', async () => {
-        const launchConfig = await getLaunchConfigByName(TestPaths.feProjectsLaunchConfig, 'Start v2lrop');
+        const launchConfig = await getLaunchConfigByName(TestPaths.feProjectsLaunchConfig, 'Start fiori-elements-v2');
         expect(launchConfig).toMatchSnapshot();
     });
 
     it('should try to get invalid launch config', async () => {
         console.error = jest.fn();
         try {
-            await getLaunchConfigByName('WRONG_PATH', 'Start v2lrop');
+            await getLaunchConfigByName('WRONG_PATH', 'Start fiori-elements-v2');
             fail('Get a launch config from non existing path did not threw error.');
         } catch (error) {
             expect(error.message).toContain('WRONG_PATH');
@@ -86,19 +83,14 @@ describe('read', () => {
         it('should return launch configuration files', async () => {
             const launchConfigs = await getLaunchJSONFilePaths(TestPaths.workspaceRoots, memFs);
             expect(launchConfigs).toEqual([
-                join(TestPaths.feProjects, '.vscode', 'launch.json'),
-                join(TestPaths.freestyleProjects, '.vscode', 'launch.json')
+                join(TestPaths.feProjects, DirName.VSCode, 'launch.json'),
+                join(TestPaths.freestyleProjects, DirName.VSCode, 'launch.json')
             ]);
         });
 
         it('should return all launch configurations', async () => {
             const allLaunchConfigs = await getLaunchConfigs(TestPaths.feProjects, memFs);
-            expect(allLaunchConfigs?.length).toBe(6);
-        });
-
-        it('should return all launch configurations', async () => {
-            const allLaunchConfigs = await getLaunchConfigs(TestPaths.feProjects, memFs);
-            expect(allLaunchConfigs?.length).toBe(6);
+            expect(allLaunchConfigs?.length).toBe(7);
         });
 
         it('should not return launch configurations from dummy path', async () => {
@@ -118,7 +110,8 @@ describe('read', () => {
             let allLaunchConfigs = await getAllLaunchConfigs(TestPaths.workspaceRoots, memFs);
 
             expect(allLaunchConfigs.length).toBe(2);
-            expect(allLaunchConfigs[0].launchConfigs[0].name).toBe('Start v2lrop');
+            expect(allLaunchConfigs[0].launchConfigs[0].name).toBe('Start fiori-elements-v4');
+            expect(allLaunchConfigs[0].launchConfigs[1].name).toBe('Start fiori-elements-v2');
             expect(allLaunchConfigs[1].launchConfigs[0].name).toBe('Start freestyle');
 
             allLaunchConfigs = await getAllLaunchConfigs(TestPaths.freestyleProjects, memFs);
@@ -126,14 +119,18 @@ describe('read', () => {
         });
 
         it('should return launch config by name', async () => {
-            const launchConfig = await getLaunchConfigByName(TestPaths.feProjectsLaunchConfig, 'Start v2lrop', memFs);
+            const launchConfig = await getLaunchConfigByName(
+                TestPaths.feProjectsLaunchConfig,
+                'Start fiori-elements-v2',
+                memFs
+            );
             expect(launchConfig).toMatchSnapshot();
         });
 
         it('should try to get invalid launch config', async () => {
             console.error = jest.fn();
             try {
-                await getLaunchConfigByName('WRONG_PATH', 'Start v2lrop', memFs);
+                await getLaunchConfigByName('WRONG_PATH', 'Start fiori-elements-v2', memFs);
                 fail('Get a launch config from non existing path did not threw error.');
             } catch (error) {
                 expect(error.message).toContain('WRONG_PATH');

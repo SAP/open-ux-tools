@@ -23,11 +23,11 @@ describe('delete', () => {
         const launchJSONPath = join(TestPaths.feProjectsLaunchConfig);
         let launchJSONString = memFs.read(launchJSONPath);
         let launchJSON = parse(launchJSONString);
-        expect(launchJSON.configurations.length).toBe(6);
+        expect(launchJSON.configurations.length).toBe(7);
 
-        const result = await deleteLaunchConfig(TestPaths.feProjects, 5, memFs);
+        const result = await deleteLaunchConfig(TestPaths.feProjects, 6, memFs);
         launchJSONString = result.read(launchJSONPath);
         launchJSON = parse(launchJSONString);
-        expect(launchJSON.configurations.length).toBe(5);
+        expect(launchJSON.configurations.length).toBe(6);
     });
 });
