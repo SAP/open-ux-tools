@@ -144,8 +144,8 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         }
     }
 
-    // update package.json if required
-    if (paths.packageJson && paths.ui5Yaml) {
+    // update package.json for non-cap applications
+    if (isServiceTypeEdmx && paths.packageJson && paths.ui5Yaml) {
         updatePackageJson(paths.packageJson, fs, !!service.metadata);
     }
 
