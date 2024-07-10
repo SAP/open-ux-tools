@@ -103,7 +103,8 @@ import {
     REPLACE_TEXT_VALUE_CHANGE_TYPE,
     DELETE_TARGET_CHANGE_TYPE,
     CONVERT_TO_COMPOUND_ANNOTATION_CHANGE_TYPE,
-    DELETE_ANNOTATION_GROUP_CHANGE_TYPE
+    DELETE_ANNOTATION_GROUP_CHANGE_TYPE,
+    DELETE_ANNOTATION_GROUP_ITEMS_CHANGE_TYPE
 } from './change';
 import { preprocessChanges } from './preprocessor';
 import type { CompilerToken } from './cds-compiler-tokens';
@@ -490,6 +491,11 @@ export class CDSWriter implements ChangeHandler {
         const content = getContainerContent(parent, this.comments, this.tokens);
         const { startContentIndex } = findContentIndices(content, index, index);
         deleteBlock(this.edits, content, startContentIndex);
+    };
+
+    [DELETE_ANNOTATION_GROUP_ITEMS_CHANGE_TYPE] = (): void => {
+        // should never be called
+        // preprocessor converts these changes to DeleteAnnotationGroup
     };
 
     private getDeletionRange(annotation: Annotation, target: Target, index: number): DeletionRange | undefined {

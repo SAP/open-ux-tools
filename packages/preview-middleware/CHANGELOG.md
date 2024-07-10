@@ -1,5 +1,19 @@
 # @sap-ux/preview-middleware
 
+## 0.16.7
+
+### Patch Changes
+
+-   Updated dependencies [0f3cf6b]
+    -   @sap-ux/project-access@1.25.1
+    -   @sap-ux/adp-tooling@0.12.5
+
+## 0.16.6
+
+### Patch Changes
+
+-   dbb490a: Add missing test suite default paths to readme
+
 ## 0.16.5
 
 ### Patch Changes
