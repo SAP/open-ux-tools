@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.12.4
+
+### Patch Changes
+
+-   5f074a7: Add toolsId in ui5.yaml for Adaptation Project writers and remove safeMode
+
 ## 0.12.3
 
 ### Patch Changes
