@@ -99,7 +99,7 @@
       "internalConsoleOptions": "openOnSessionStart",
       "outputCapture": "std",
       "env": {
-          "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"fe-project/v2lrop\"}",
+          "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"TEST_ID\"}",
           "FIORI_TOOLS_BACKEND_CONFIG": "[{\"path\":\"TEST_PATH\",\"url\":\"TEST_URL\"}]", // comment 10
           "FIORI_TOOLS_UI5_VERSION": "TEST_UI5_VERSION",
           "FIORI_TOOLS_UI5_URI": "https://ui5.sap.com"

@@ -1,23 +1,7 @@
 {
   "name": "freestyle",
-  "version": "0.0.1",
-  "private": true,
-  "description": "An SAP Fiori application.",
-  "keywords": [
-    "ui5",
-    "openui5",
-    "sapui5"
-  ],
   "main": "webapp/index.html",
   "scripts": {
     "start": "fiori run -o test/flpSandbox.html?sap-client=100#masterDetail-display -c ui5.yaml"
-  },
-  "devDependencies": {
-    "@sap/ux-ui5-tooling": "1"
-  },
-  "ui5": {
-    "dependencies": [
-      "@sap/ux-ui5-tooling"
-    ]
   }
 }
