@@ -25,12 +25,12 @@ const isAppStudioMock = isAppStudio as jest.Mock;
 
 jest.mock('child_process');
 
+let hasSyncMock: jest.SpyInstance;
 let spawnMock: jest.SpyInstance;
 let unitTestFs: Editor;
 
 describe('CF Writer', () => {
     const outputDir = join(__dirname, '../test-output', 'cap');
-    const debug = !!process.env['UX_DEBUG'];
 
     beforeEach(() => {
         jest.resetAllMocks();
@@ -38,24 +38,23 @@ describe('CF Writer', () => {
         unitTestFs = create(createStorage());
         spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => ({ status: 0 } as any));
         isAppStudioMock.mockReturnValue(false);
+        hasSyncMock = jest.spyOn(hasbin, 'sync').mockImplementation(() => true);
     });
 
     beforeAll(async () => {
         jest.clearAllMocks();
         jest.spyOn(hasbin, 'sync').mockReturnValue(true);
         fsExtra.removeSync(outputDir);
+        jest.mock('hasbin', () => {
+            return {
+                ...(jest.requireActual('hasbin') as {}),
+                sync: hasSyncMock
+            };
+        });
     });
 
     afterAll(async () => {
         jest.resetAllMocks();
-        return new Promise((resolve) => {
-            // write out the files for debugging
-            if (debug) {
-                unitTestFs.commit(resolve);
-            } else {
-                resolve(true);
-            }
-        });
     });
 
     describe('Generate deployment config for CAP project', () => {
@@ -82,7 +81,7 @@ describe('CF Writer', () => {
         });
 
         test('Validate dependency on MTA binary', async () => {
-            jest.spyOn(hasbin, 'sync').mockReturnValue(false);
+            hasSyncMock.mockReturnValue(false);
             const capPath = join(outputDir, 'cap');
             await expect(generateAppConfig({ appPath: capPath }, unitTestFs)).rejects.toThrowError(MTABinNotFound);
         });

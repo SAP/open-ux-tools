@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
-import hasbin = require('hasbin');
+import { sync } from 'hasbin';
 import { apiGetInstanceCredentials } from '@sap/cf-tools';
 import { MTAExecutable, MTABinNotFound, RouterModule, XSAppFile } from '../constants';
 import {
@@ -136,7 +136,7 @@ function addSupportingConfig(config: CFBaseConfig, fs: Editor): void {
  */
 function validateMtaConfig(config: CFBaseConfig, fs: Editor): void {
     // We use mta-lib, which in turn relies on the mta executable being installed and available in the path
-    if (!hasbin.sync(MTAExecutable)) {
+    if (!sync(MTAExecutable)) {
         throw new Error(MTABinNotFound);
     }
 
