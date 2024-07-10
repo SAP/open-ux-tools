@@ -22,7 +22,7 @@ describe('project', () => {
         expect(options.name).toBe('Launch Fiori app: v2lrop');
         expect(options.projectRoot).toBe(join(TestPaths.feProjects, 'v2lrop'));
         expect(options.ui5Version).toEqual('latest');
-        expect(options.backendConfigs).toEqual([{ path: '/sap', url: 'http://ims.saplabs.com:50017' }]);
+        expect(options.backendConfigs).toEqual([{ path: '/sap', url: 'DUMMY_BACKEND_URL' }]);
     });
 
     it('Should get default options for invalid project', async () => {

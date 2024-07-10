@@ -11,7 +11,7 @@ server:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - path: /sap
-            url: http://ims.saplabs.com:50017
+            url: DUMMY_BACKEND_URL
         ui5:
           path:
             - /resources

@@ -84,7 +84,7 @@
     },
     {
       "name": "Existing launch config with json comments", // comment 7
-      "cwd": "/Users/I334255/SAPDevelop/git/ux-engineering2/tools-suite2/packages/lib/launch-config/core/test/test-data/test-workspace/fe-project/v2lrop",
+      "cwd": "${workspaceFolder}/v2lrop",
       "runtimeArgs": [
           "fiori",  // comment 8
           "run"
@@ -99,7 +99,7 @@
       "internalConsoleOptions": "openOnSessionStart",
       "outputCapture": "std",
       "env": {
-          "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"/Users/I334255/SAPDevelop/git/ux-engineering2/tools-suite2/packages/lib/launch-config/core/test/test-data/test-workspace/fe-project/v2lrop\"}",
+          "run.config": "{\"handlerId\":\"fiori_tools\",\"runnableId\":\"fe-project/v2lrop\"}",
           "FIORI_TOOLS_BACKEND_CONFIG": "[{\"path\":\"TEST_PATH\",\"url\":\"TEST_URL\"}]", // comment 10
           "FIORI_TOOLS_UI5_VERSION": "TEST_UI5_VERSION",
           "FIORI_TOOLS_UI5_URI": "https://ui5.sap.com"

@@ -23,7 +23,7 @@ server:
       configuration:
         backend:
           - path: /sap
-            url: http://ims.saplabs.com:50017
+            url: DUMMY_BACKEND_URL
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
