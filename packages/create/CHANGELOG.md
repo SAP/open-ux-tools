@@ -1,5 +1,21 @@
 # @sap-ux/create
 
+## 0.7.6
+
+### Patch Changes
+
+-   Updated dependencies [dbb490a]
+    -   @sap-ux/preview-middleware@0.16.6
+
+## 0.7.5
+
+### Patch Changes
+
+-   5f074a7: Add toolsId in ui5.yaml for Adaptation Project writers and remove safeMode
+-   Updated dependencies [5f074a7]
+    -   @sap-ux/adp-tooling@0.12.4
+    -   @sap-ux/preview-middleware@0.16.5
+
 ## 0.7.4
 
 ### Patch Changes
