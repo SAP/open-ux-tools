@@ -3,13 +3,13 @@ import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
 import { join, parse } from 'path';
-import type { CodeSnippet } from './types';
 import {
     CodeSnippetLanguage,
     type BuildingBlock,
     type BuildingBlockConfig,
     type BuildingBlockMetaPath,
-    type FilePathProps
+    type FilePathProps,
+    type CodeSnippet
 } from './types';
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import * as xpath from 'xpath';
