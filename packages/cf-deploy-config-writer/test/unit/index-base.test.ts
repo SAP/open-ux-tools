@@ -1,6 +1,6 @@
 import { join } from 'path';
 import fsExtra from 'fs-extra';
-import hasbin from 'hasbin';
+import * as hasbin from 'hasbin';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { apiGetInstanceCredentials } from '@sap/cf-tools';
@@ -16,26 +16,40 @@ jest.mock('@sap-ux/btp-utils', () => ({
     listDestinations: jest.fn()
 }));
 
+jest.mock('hasbin', () => {
+    return {
+        ...(jest.requireActual('hasbin') as {}),
+        sync: jest.fn()
+    };
+});
+
 jest.mock('@sap/cf-tools');
-const apiGetInstanceCredentialsMock = apiGetInstanceCredentials as jest.Mock;
+
+let hasSyncMock: jest.SpyInstance;
 
 describe('CF Writer', () => {
-    let unitTestFs: Editor;
     const logger = new ToolsLogger({
         transports: [new NullTransport()]
     });
     const outputDir = join(__dirname, '../test-output', 'base');
+    let unitTestFs: Editor;
 
     beforeEach(() => {
         jest.resetAllMocks();
         jest.restoreAllMocks();
         unitTestFs = create(createStorage());
+        hasSyncMock = jest.spyOn(hasbin, 'sync').mockImplementation(() => true);
     });
 
     beforeAll(() => {
         jest.clearAllMocks();
-        jest.spyOn(hasbin, 'sync').mockReturnValue(true);
         fsExtra.removeSync(outputDir);
+        jest.mock('hasbin', () => {
+            return {
+                ...(jest.requireActual('hasbin') as {}),
+                sync: hasSyncMock
+            };
+        });
     });
 
     afterAll(() => {
@@ -66,6 +80,7 @@ describe('CF Writer', () => {
         });
 
         test('Generate deployment configs - standalone with ABAP service provider', async () => {
+            const apiGetInstanceCredentialsMock = apiGetInstanceCredentials as jest.Mock;
             apiGetInstanceCredentialsMock.mockResolvedValue({
                 credentials: {
                     endpoints: { TestEndPoint: '' },
@@ -148,7 +163,7 @@ describe('CF Writer', () => {
             await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrowError(
                 'Missing required parameters, MTA path, MTA ID or router type'
             );
-            jest.spyOn(hasbin, 'sync').mockReturnValue(false);
+            hasSyncMock.mockReturnValue(false);
             await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrowError(MTABinNotFound);
         });
     });

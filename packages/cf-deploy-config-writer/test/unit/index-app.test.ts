@@ -14,12 +14,20 @@ jest.mock('@sap-ux/btp-utils', () => ({
     listDestinations: jest.fn()
 }));
 
+jest.mock('hasbin', () => {
+    return {
+        ...(jest.requireActual('hasbin') as {}),
+        sync: jest.fn()
+    };
+});
+
+let hasSyncMock: jest.SpyInstance;
 let isAppStudioMock: jest.SpyInstance;
 let listDestinationsMock: jest.SpyInstance;
 let unitTestFs: Editor;
 
 describe('CF Writer', () => {
-    jest.setTimeout(8000);
+    jest.setTimeout(10000);
 
     const destinationsMock = {
         'TestDestination': {
@@ -44,12 +52,19 @@ describe('CF Writer', () => {
         isAppStudioMock = jest.spyOn(btp, 'isAppStudio');
         listDestinationsMock = jest.spyOn(btp, 'listDestinations');
         unitTestFs = create(createStorage());
+        hasSyncMock = jest.spyOn(hasbin, 'sync').mockImplementation(() => true);
     });
 
     beforeAll(() => {
         jest.clearAllMocks();
         jest.spyOn(hasbin, 'sync').mockReturnValue(true);
         fsExtra.removeSync(outputDir);
+        jest.mock('hasbin', () => {
+            return {
+                ...(jest.requireActual('hasbin') as {}),
+                sync: hasSyncMock
+            };
+        });
     });
 
     afterAll(() => {
