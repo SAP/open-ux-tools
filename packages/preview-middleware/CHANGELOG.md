@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.8
+
+### Patch Changes
+
+-   cec4a97: Live and Edit buttons are visible as Navigation and UI Adpatation only when in ADP scenario.
+
 ## 0.16.7
 
 ### Patch Changes
