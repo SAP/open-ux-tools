@@ -21,6 +21,7 @@ export {
     getCdsServices,
     getCapI18nFolderNames,
     getSpecification,
+    getSpecificationPath,
     getI18nPropertiesPaths,
     getMinUI5VersionFromManifest,
     getMinUI5VersionAsArray,

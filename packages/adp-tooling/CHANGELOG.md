@@ -1,5 +1,20 @@
 # @sap-ux/adp-tooling
 
+## 0.12.5
+
+### Patch Changes
+
+-   Updated dependencies [0f3cf6b]
+    -   @sap-ux/project-access@1.25.1
+    -   @sap-ux/axios-extension@1.15.1
+    -   @sap-ux/system-access@0.5.1
+
+## 0.12.4
+
+### Patch Changes
+
+-   5f074a7: Add toolsId in ui5.yaml for Adaptation Project writers and remove safeMode
+
 ## 0.12.3
 
 ### Patch Changes

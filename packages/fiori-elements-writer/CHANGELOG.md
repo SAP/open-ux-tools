@@ -1,5 +1,13 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.23.1
+
+### Patch Changes
+
+-   8b7ee1f: Do not add reuse libraries to the ui5-local.yaml
+-   Updated dependencies [8b7ee1f]
+    -   @sap-ux/ui5-application-writer@0.27.1
+
 ## 0.23.0
 
 ### Minor Changes

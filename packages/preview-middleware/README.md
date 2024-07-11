@@ -57,12 +57,12 @@ Array of additional application configurations:
 | `developerMode` | `boolean` optional | Enables/disables the runtime adaptation developer mode (only supported for adaptation projects) |
 
 ### `test`
-| Option          | Type               | Description                                                                                                                                                    |
-| --------------- | -------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `framework`     | `string` mandatory | Currently `OPA5`, `QUnit` and `Testsuite` are supported. `Testsuite` will generate a testsuite for all configured frameworks that can be be used with a test runner (like e.g. karma) |
-| `path`          | `string` optional  | The mount point to be used for test suite                                                                                                                      |
-| `init`          | `string` optional  | The mount point to be used for test runner script                                                                                                              |
-| `pattern`       | `string` optional  | Optional glob pattern to find the tests. By default `/test/**/*Journey.*` is used for `OPA5` and `/test/**/*Test.*` is used for `QUnit` (n.a. for `Testsuite`) |
+| Option          | Type               | Description                                                                                                                                                                                                     |
+| --------------- | -------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `framework`     | `string` mandatory | Currently `OPA5`, `QUnit` and `Testsuite` are supported. `Testsuite` will generate a testsuite for all configured frameworks that can be be used with a test runner (like e.g. karma)                           |
+| `path`          | `string` optional  | The mount point to be used for test suite. By default `/test/opaTests.qunit.html` is used for `OPA5`, `/test/unitTests.qunit.html` is used for `QUnit` and `/test/testsuite.qunit.html` is used for `Testsuite` |
+| `init`          | `string` optional  | The mount point to be used for custom test runner script                                                                                                                                                        |
+| `pattern`       | `string` optional  | Optional glob pattern to find the tests. By default `/test/**/*Journey.*` is used for `OPA5` and `/test/**/*Test.*` is used for `QUnit` (n.a. for `Testsuite`)                                                  |
 
 
 ## Usage
@@ -136,6 +136,7 @@ server:
     afterMiddleware: compression
     configuration:
       test:
+        - framework: Testsuite
         - framework: QUnit
         - framework: OPA5
 ```
