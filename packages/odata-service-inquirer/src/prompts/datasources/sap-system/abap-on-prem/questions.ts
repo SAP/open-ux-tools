@@ -13,6 +13,7 @@ import { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { getNewSystemNameQuestion } from '../new-system/questions';
 import { getServiceChoices, getServiceMetadata, getServiceType } from './service-helper';
+import { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 
 export enum abapOnPremInternalPromptNames {
     systemUrl = 'systemUrl',
@@ -222,29 +223,13 @@ export function getAbapOnPremQuestions(
                 }
                 return true;
             }
-        } as ListQuestion<AbapOnPremAnswers>
+        } as ListQuestion<AbapOnPremAnswers> | AutocompleteQuestionOptions<AbapOnPremAnswers>
     ];
 
     // Only for CLI use as `list` prompt validation does not run on CLI
     if (getHostEnvironment() === hostEnvironment.cli) {
         questions.push({
             when: async (answers: AbapOnPremAnswers): Promise<boolean> => {
-                // todo ?
-                /**
-                 * if (serviceSelectionPromptOptions?.requiredOdataVersion) {
-                        return {
-                            message: t('prompts.warnings.noServicesAvailableForOdataVersion', {
-                                odataVersion: serviceSelectionPromptOptions.requiredOdataVersion
-                            }),
-                            severity: Severity.warning
-                        };
-                    } else {
-                        return {
-                            message: t('prompts.warnings.noServicesAvailable'),
-                            severity: Severity.warning
-                        };
-                    }
-                 */
                 if (answers.serviceSelection && answers.systemUrl) {
                     const result = await getServiceDetails(
                         answers.serviceSelection,

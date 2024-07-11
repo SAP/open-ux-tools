@@ -357,11 +357,6 @@ export class ErrorHandler {
         return errorMsg;
     }
 
-    public resetErrorState(): void {
-        this.currentErrorMsg = null;
-        this.currentErrorType = null;
-    }
-
     /**
      * Used by validate functions to report in-line user friendly errors messages with help links.
      * If the error type is unknown, this will find a mapped error type and return the help (ValidationLink) if it exists.

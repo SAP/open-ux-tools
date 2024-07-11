@@ -3,6 +3,7 @@ import type { ODataService, ODataServiceInfo, ServiceProvider } from '@sap-ux/ax
 import { ODataVersion, ServiceType } from '@sap-ux/axios-extension';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
+import { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-system/abap-on-prem/questions';
@@ -564,5 +565,31 @@ describe('questions', () => {
             origin: 'http://some.abap.system:1234',
             servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002'
         });
+    });
+
+    test('Should support type-ahead serivce search when using autocomplete option', async () => {
+        connectionValidatorMock.catalogs = {
+            [ODataVersion.v2]: {
+                listServices: jest.fn().mockResolvedValue([serviceV2a])
+            },
+            [ODataVersion.v4]: {
+                listServices: jest.fn().mockResolvedValue([serviceV4a])
+            }
+        };
+        const newSystemQuestions = getAbapOnPremQuestions({ useAutoComplete: true });
+        const serviceSelectionPrompt = newSystemQuestions.find((question) => question.name === 'serviceSelection');
+        // load choices from mock catalog service and find the choice for the flight service
+        const flightChoice = (
+            (await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({
+                systemUrl: 'http://some.abap.system:1234'
+            })) as { name: string; value: ServiceAnswer }[]
+        ).find((choice) => choice.name === 'DMO_GRP > /DMO/FLIGHT (0001) - OData V4');
+
+        expect(serviceSelectionPrompt?.type).toBe('autocomplete');
+
+        let found = await ((serviceSelectionPrompt as AutocompleteQuestionOptions)?.source as Function)({}, 'FLIGHT');
+        expect(found).toEqual([flightChoice]);
+        found = await ((serviceSelectionPrompt as AutocompleteQuestionOptions)?.source as Function)({}, 'not found');
+        expect(found).toEqual([]);
     });
 });
