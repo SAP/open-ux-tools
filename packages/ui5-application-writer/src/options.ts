@@ -6,12 +6,13 @@ import { getFilePaths } from '@sap-ux/project-access';
 import type { UI5Config } from '@sap-ux/ui5-config';
 import { ui5NPMSupport, ui5TSSupport } from './data/ui5Libs';
 import { mergeObjects, UI5_DEFAULT } from '@sap-ux/ui5-config';
+import type { ProjectType } from '@sap-ux/project-access';
 
 /**
  * Input required to enable optional features.
  */
 export interface FeatureInput {
-    ui5App: { app: { id: string; baseComponent?: string } };
+    ui5App: { app: { id: string; baseComponent?: string; projectType?: ProjectType } };
     fs: Editor;
     basePath: string;
     tmplPath: string;
@@ -56,7 +57,11 @@ const factories: { [key: string]: (input: FeatureInput) => Promise<void> } = {
     codeAssist: async (input: FeatureInput) => await copyTemplates('codeAssist', input),
     eslint: async (input: FeatureInput) => await copyTemplates('eslint', input),
     loadReuseLibs: async (input: FeatureInput) => await copyTemplates('loadReuseLibs', input),
-    sapux: async (input: FeatureInput) => await copyTemplates('sapux', input),
+    sapux: async (input: FeatureInput) => {
+        if (input.ui5App.app.projectType === 'EDMXBackend') {
+            await copyTemplates('sapux', input);
+        }
+    },
     typescript: async (input: FeatureInput) => await enableTypescript(input),
     npmPackageConsumption: async (input: FeatureInput) => await enableNpmPackageConsumption(input)
 };
@@ -111,13 +116,8 @@ export async function applyOptionalFeatures(
     tmplPath: string,
     ui5Configs: UI5Config[]
 ) {
-    const isEdmxProjectType = ui5App.app.projectType === 'EDMXBackend';
     if (ui5App.appOptions) {
         for (const [key, value] of Object.entries(ui5App.appOptions)) {
-            if(key === 'sapux' && !isEdmxProjectType) {
-                // Skip sapux feature for CAP projects
-                return;
-            }
             if (value === true) {
                 await factories[key]?.({ ui5App, fs, basePath, tmplPath, ui5Configs });
             }
