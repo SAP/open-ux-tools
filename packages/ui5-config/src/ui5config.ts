@@ -230,14 +230,15 @@ export class UI5Config {
      * Adds a instance of the Fiori tools proxy middleware to the config.
      *
      * @param proxyConfig proxy configuration containing an optional array of backend and an option UI5 host configuration
+     * @param afterMiddleware middleware after which fiori-tools-proxy middleware will be started
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addFioriToolsProxydMiddleware(proxyConfig: FioriToolsProxyConfig): UI5Config {
+    public addFioriToolsProxydMiddleware(proxyConfig: FioriToolsProxyConfig, afterMiddleware?: string): UI5Config {
         const { config, comments } = getFioriToolsProxyMiddlewareConfig(
             proxyConfig.backend,
             proxyConfig.ui5,
-            proxyConfig.afterMiddleware
+            afterMiddleware
         );
         this.document.appendTo({
             path: 'server.customMiddleware',

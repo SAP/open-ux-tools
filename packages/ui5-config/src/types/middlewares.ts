@@ -38,7 +38,6 @@ export interface FioriToolsProxyConfig {
     backend?: FioriToolsProxyConfigBackend[];
     ui5?: Partial<FioriToolsProxyConfigUI5>;
     ignoreCertError?: boolean;
-    afterMiddleware?: string;
 }
 
 export interface MockserverConfig {
