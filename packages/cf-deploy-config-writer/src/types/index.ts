@@ -48,7 +48,7 @@ export interface CFBaseConfig extends MTABaseConfig {
 }
 export interface CFAppConfig {
     appPath: string;
-    addManagedRouter?: boolean;
+    addManagedRouter?: boolean; // Enabled by default
     destination?: string;
     apiHubConfig?: ApiHubConfig;
     serviceHost?: string; // Data service host

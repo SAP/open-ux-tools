@@ -45,7 +45,7 @@ import { join } from 'path';
 
 const exampleWriter = async () => {
   const appPath = join(__dirname, 'testapp');
-  // To append managed approuter configuration by default, else toggle `addManagedRouter` to false
+  // Append managed approuter configuration, toggle `addManagedRouter` to false to ommit the managed approuter configuration being appended to the mta.yaml
   const fs = await generateAppConfig({appPath, destination: 'SAPBTPDestination'}); 
   // For CAP flows, set the destination to DefaultMTADestination to create a destination service instance between the HTML5 and CAP Project
   // const fs = await generateAppConfig({appPath, destination: DefaultMTADestination});

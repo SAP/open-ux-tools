@@ -49,7 +49,7 @@ import { type UI5Config, type FioriToolsProxyConfig } from '@sap-ux/ui5-config';
 import { type CFConfig, type CFAppConfig, ApiHubType, type MTABaseConfig } from '../types';
 
 /**
- * Adds a standalone | managed approuter configuration to an existing HTML5 application.
+ * Add a managed approuter configuration to an existing HTML5 application.
  *
  * @param cfAppConfig writer configuration
  * @param fs an optional reference to a mem-fs editor
