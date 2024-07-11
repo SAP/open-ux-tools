@@ -557,7 +557,8 @@ async function readPackageNameForFolder(baseUri: string, relativeUri: string): P
     return packageName;
 }
 
-let globalCdsModulePromise: Promise<CdsFacade> | undefined;
+// Cache for request to read path from global cds. Cache the promise to avoid starting multiple identical requests in parallel. 
+let globalCdsPathPromise: Promise<CdsFacade> | undefined;
 
 /**
  * Try to load global installation of @sap/cds, usually child of @sap/cds-dk.
@@ -565,7 +566,7 @@ let globalCdsModulePromise: Promise<CdsFacade> | undefined;
  * @returns - module @sap/cds from global installed @sap/cds-dk
  */
 async function loadGlobalCdsModule(): Promise<CdsFacade> {
-    globalCdsModulePromise = globalCdsModulePromise ?? new Promise<CdsFacade>(async (resolve, reject) => {
+    globalCdsPathPromise = globalCdsPathPromise ?? new Promise<CdsFacade>(async (resolve, reject) => {
         try {
             const versions = await getCdsVersionInfo();
             if (!versions.home) {
@@ -576,14 +577,14 @@ async function loadGlobalCdsModule(): Promise<CdsFacade> {
             reject(error);
         }
     });
-    return globalCdsModulePromise;
+    return globalCdsPathPromise;
 }
 
 /**
- * Clear cache of path to global cds module.
+ * Clear cache of request to read version info from global cds module.
  */
 export function clearGlobalCdsPathCache() {
-    globalCdsModulePromise = undefined;
+    globalCdsPathPromise = undefined;
 }
 
 /**
