@@ -3,7 +3,7 @@ import * as childProcess from 'child_process';
 import * as projectModuleMock from '../../src/project/module-loader';
 import type { Package } from '../../src';
 import { FileName } from '../../src/constants';
-import { clearCdsModuleCache, clearGlobalCdsPathCache } from '../../src/project/cap';
+import { clearCdsModuleCache, clearGlobalCdsModulePromiseCache } from '../../src/project/cap';
 import {
     getCapCustomPaths,
     getCapEnvironment,
@@ -75,7 +75,7 @@ describe('Test isCapJavaProject()', () => {
 describe('Test getCapModelAndServices()', () => {
     afterEach(() => {
         jest.clearAllMocks();
-        clearGlobalCdsPathCache();
+        clearGlobalCdsModulePromiseCache();
     });
 
     test('Get valid model and services, mock cds with local cds from devDependencies', async () => {
