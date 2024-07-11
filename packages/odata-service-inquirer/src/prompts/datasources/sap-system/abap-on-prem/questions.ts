@@ -13,7 +13,7 @@ import { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { getNewSystemNameQuestion } from '../new-system/questions';
 import { getServiceChoices, getServiceMetadata, getServiceType } from './service-helper';
-import { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
+import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 
 export enum abapOnPremInternalPromptNames {
     systemUrl = 'systemUrl',

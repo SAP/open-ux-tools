@@ -3,7 +3,7 @@ import type { ODataService, ODataServiceInfo, ServiceProvider } from '@sap-ux/ax
 import { ODataVersion, ServiceType } from '@sap-ux/axios-extension';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
+import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-system/abap-on-prem/questions';
