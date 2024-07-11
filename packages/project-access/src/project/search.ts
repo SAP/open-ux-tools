@@ -1,4 +1,4 @@
-import { basename, dirname, join, parse, sep } from 'path';
+import { basename, dirname, isAbsolute, join, parse, sep } from 'path';
 import type {
     AdaptationResults,
     AllAppResults,
@@ -219,6 +219,9 @@ async function findRootsForPath(path: string): Promise<{ appRoot: string; projec
  */
 async function findCapProjectRoot(path: string): Promise<string | null> {
     try {
+        if (!isAbsolute(path)) {
+            return null;
+        }
         const { root } = parse(path);
         let projectRoot = dirname(path);
         while (projectRoot !== root) {

@@ -19,7 +19,8 @@ import {
     createUpdatePrimitiveValueChange,
     type CDSDocumentChange,
     createDeletePrimitiveValueChange,
-    createDeleteAnnotationGroupChange
+    createDeleteAnnotationGroupChange,
+    createDeleteAnnotationGroupItemsChange
 } from '../../../src/cds/change';
 import { preprocessChanges } from '../../../src/cds/preprocessor';
 
@@ -124,6 +125,65 @@ describe('cds preprocessor', () => {
                 await runTest(
                     fixture,
                     [createDeleteRecordPropertyChange('/targets/0/assignments/0/items/items/0/value/properties/0')],
+                    [createDeleteTargetChange('/targets/0')]
+                );
+            });
+            test('all annotations in group', async () => {
+                const fixture = `Service S { entity E {}; };
+                annotate S.E with @(
+                    UI : {
+                        HeaderInfo : 'a',
+                        LineItem: []
+                    }
+                );`;
+
+                await runTest(
+                    fixture,
+                    [
+                        createDeleteAnnotationChange('/targets/0/assignments/0/items/items/0'),
+                        createDeleteAnnotationChange('/targets/0/assignments/0/items/items/1')
+                    ],
+                    [createDeleteTargetChange('/targets/0')]
+                );
+            });
+            test('all annotations in group + insert', async () => {
+                const fixture = `Service S { entity E {}; };
+                annotate S.E with @(
+                    UI : {
+                        HeaderInfo : 'a',
+                        LineItem: []
+                    }
+                );`;
+
+                const changes = [
+                    createDeleteAnnotationChange('/targets/0/assignments/0/items/items/0'),
+                    createDeleteAnnotationChange('/targets/0/assignments/0/items/items/1'),
+                    createInsertAnnotationChange(
+                        '/targets/0/assignments/0',
+                        createElementNode({
+                            name: Edm.Annotation,
+                            attributes: {
+                                [Edm.Term]: createAttributeNode(Edm.Term, 'UI.Chart'),
+                                [Edm.String]: createAttributeNode(Edm.String, 'value')
+                            }
+                        })
+                    )
+                ];
+
+                await runTest(fixture, changes, changes);
+            });
+            test('annotation group items', async () => {
+                const fixture = `Service S { entity E {}; };
+                annotate S.E with @(
+                    UI : {
+                        HeaderInfo : 'a',
+                        LineItem: []
+                    }
+                );`;
+
+                await runTest(
+                    fixture,
+                    [createDeleteAnnotationGroupItemsChange('/targets/0/assignments/0/items')],
                     [createDeleteTargetChange('/targets/0')]
                 );
             });
