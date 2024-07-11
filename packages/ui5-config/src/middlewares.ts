@@ -66,7 +66,7 @@ export function getFioriToolsProxyMiddlewareConfig(
 } {
     const fioriToolsProxy: CustomMiddleware<FioriToolsProxyConfig> = {
         name: 'fiori-tools-proxy',
-        afterMiddleware: afterMiddleware,
+        afterMiddleware,
         configuration: {
             ignoreCertError: false
         }
