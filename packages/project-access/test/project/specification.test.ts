@@ -39,7 +39,7 @@ describe('Test getSpecification', () => {
         const root = join(__dirname, '../test-data/specification/app');
         const specification = await getSpecification<Specification>(root, { logger });
         expect(specification.exec()).toBe('specification-mock');
-        expect(logger.debug).toHaveBeenCalledWith("Specification loaded from cache using dist-tag 'UI5-1.2'");
+        expect(logger.debug).toHaveBeenCalledWith("Specification loaded from cache using version '0.1.2'");
     });
 
     test('Get specification from cache with dist tag refresh', async () => {
@@ -94,7 +94,7 @@ describe('Test getSpecification', () => {
         const path = await getSpecificationPath(root, { logger });
         expect(path).toBe(moduleRoot);
         expect(logger.debug).toHaveBeenCalledWith(
-            `Specification not found in project '${root}', trying to find in cache`
+            `Specification not found in project '${root}', using path from cache with version '0.1.2'`
         );
     });
 });
