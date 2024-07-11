@@ -176,7 +176,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 },
                 service: {
                     ...commonConfig.service,
-                    type: ServiceType.CDS
+                    type: ServiceType.CDS,
+                    metadata: undefined
                 },
                 appOptions: { generateIndex: true }
             },
@@ -192,7 +193,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 },
                 service: {
                     ...commonConfig.service,
-                    type: ServiceType.CDS
+                    type: ServiceType.CDS,
+                    metadata: undefined
                 },
                 appOptions: { 
                     generateIndex: true,
