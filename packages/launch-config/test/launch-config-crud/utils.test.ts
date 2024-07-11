@@ -22,7 +22,7 @@ describe('utils', () => {
             const launchConfig = generateNewFioriLaunchConfig('WORKSPACE_FOLDER', {
                 name: 'TEST_NAME',
                 projectRoot: TestPaths.v2,
-                projectVersion: '2.0',
+                oDataVersion: '2.0',
                 useMockData: true
             });
             expect(launchConfig.args).toStrictEqual(['--config', 'ui5-mock.yaml']);
@@ -35,7 +35,7 @@ describe('utils', () => {
             const launchConfig = generateNewFioriLaunchConfig('WORKSPACE_FOLDER', {
                 name: 'TEST_NAME',
                 projectRoot: TestPaths.v2,
-                projectVersion: '2.0',
+                oDataVersion: '2.0',
                 useMockData: true,
                 ui5Local: true,
                 ui5LocalVersion: '1.101.1'
@@ -50,7 +50,7 @@ describe('utils', () => {
             const launchConfig = generateNewFioriLaunchConfig('WORKSPACE_FOLDER', {
                 name: 'TEST_NAME',
                 projectRoot: TestPaths.v2,
-                projectVersion: '2.0',
+                oDataVersion: '2.0',
                 startFile: 'index.html'
             });
             expect(launchConfig.args).toStrictEqual(['--open', 'index.html']);
@@ -75,19 +75,15 @@ describe('utils', () => {
             outputCapture: 'std',
             env: { 'run.config': '' }
         };
-        const fioriElementsVersion = '2.0';
+        const oDataVersion = '2.0';
 
         it('should get default options', () => {
-            const fioriOptions = getFioriOptions(
-                defaultLaunchConfig as LaunchConfig,
-                projectRoot,
-                fioriElementsVersion
-            );
+            const fioriOptions = getFioriOptions(defaultLaunchConfig as LaunchConfig, projectRoot, oDataVersion);
             expect(fioriOptions).toEqual(
                 expect.objectContaining({
                     name: 'start app',
                     projectRoot: projectRoot,
-                    projectVersion: fioriElementsVersion,
+                    oDataVersion,
                     ui5Local: false,
                     useMockData: false,
                     visible: true
@@ -99,7 +95,7 @@ describe('utils', () => {
             const fioriOptions = getFioriOptions(
                 { ...defaultLaunchConfig, args: ['--open', 'index.html'] } as LaunchConfig,
                 projectRoot,
-                fioriElementsVersion
+                oDataVersion
             );
             expect(fioriOptions).toEqual(expect.objectContaining({ startFile: 'index.html' }));
         });
@@ -108,7 +104,7 @@ describe('utils', () => {
             const fioriOptions = getFioriOptions(
                 { ...defaultLaunchConfig, args: ['--config', 'ui5-mock.yaml'] } as LaunchConfig,
                 projectRoot,
-                fioriElementsVersion
+                oDataVersion
             );
             expect(fioriOptions).toEqual(expect.objectContaining({ useMockData: true }));
         });
@@ -117,7 +113,7 @@ describe('utils', () => {
             const fioriOptions = getFioriOptions(
                 { ...defaultLaunchConfig, args: ['--config', 'ui5-local.yaml'] } as LaunchConfig,
                 projectRoot,
-                fioriElementsVersion
+                oDataVersion
             );
             expect(fioriOptions).toEqual(expect.objectContaining({ useMockData: true, ui5Local: true }));
         });
@@ -129,7 +125,7 @@ describe('utils', () => {
                     args: ['--config', 'ui5-local.yaml', '--framework-version', '1.100.1']
                 } as LaunchConfig,
                 projectRoot,
-                fioriElementsVersion
+                oDataVersion
             );
             expect(fioriOptions).toEqual(expect.objectContaining({ ui5LocalVersion: '1.100.1' }));
         });
@@ -147,7 +143,7 @@ describe('utils', () => {
                     }
                 } as LaunchConfig,
                 projectRoot,
-                fioriElementsVersion
+                oDataVersion
             );
             expect(fioriOptions).toEqual(
                 expect.objectContaining({
@@ -162,17 +158,13 @@ describe('utils', () => {
 
         it('should not resolve a fiori launch config', () => {
             expect(() => {
-                getFioriOptions(
-                    { env: {}, cwd: '${workspaceFolder}' } as LaunchConfig,
-                    projectRoot,
-                    fioriElementsVersion
-                );
+                getFioriOptions({ env: {}, cwd: '${workspaceFolder}' } as LaunchConfig, projectRoot, oDataVersion);
             }).not.toThrow();
         });
 
         it('should return workspaceRoot if cwd is not set', () => {
             const workspaceRoot = 'my/workspace/root';
-            const result = getFioriOptions({ type: 'node' } as LaunchConfig, workspaceRoot, fioriElementsVersion);
+            const result = getFioriOptions({ type: 'node' } as LaunchConfig, workspaceRoot, oDataVersion);
             expect(result.projectRoot).toEqual(workspaceRoot);
         });
 
@@ -180,7 +172,7 @@ describe('utils', () => {
             const result = getFioriOptions(
                 { env: {}, cwd: '${workspaceFolder}', type: 'chrome' } as unknown as LaunchConfig,
                 projectRoot,
-                fioriElementsVersion
+                oDataVersion
             );
             expect(result.visible).toBeFalsy();
         });

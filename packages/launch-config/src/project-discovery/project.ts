@@ -3,7 +3,7 @@ import { basename, join } from 'path';
 import type { Manifest, ODataVersion, Package } from '@sap-ux/project-access';
 import { DirName, FileName, readUi5Yaml } from '@sap-ux/project-access';
 import { parse } from 'jsonc-parser';
-import type { FioriOptions } from '../types';
+import { Arguments, type FioriOptions } from '../types';
 import type { FioriToolsProxyConfig } from '@sap-ux/ui5-config';
 
 /**
@@ -26,7 +26,9 @@ async function getStartFileFromPackageFile(projectRoot: string): Promise<string 
                 const scriptParts = value?.split(' ');
                 // search for --open argument
                 const openIndex =
-                    scriptParts?.indexOf('--open') !== -1 ? scriptParts?.indexOf('--open') : scriptParts.indexOf('-o');
+                    scriptParts?.indexOf(Arguments.Open) !== -1
+                        ? scriptParts?.indexOf(Arguments.Open)
+                        : scriptParts.indexOf('-o');
                 if (openIndex !== undefined && openIndex !== -1 && scriptParts) {
                     startHtmlFile = scriptParts[openIndex + 1];
                 }
@@ -48,12 +50,12 @@ export async function getDefaultLaunchConfigOptionsForProject(projectRoot: strin
     let ui5Version = '';
     let startFile;
     let backendConfigs;
-    let projectVersion; // V4 or V2
+    let oDataVersion; // 4.0 or 2.0
     const visible = true;
     try {
         const manifestPath = join(projectRoot, DirName.Webapp, FileName.Manifest);
         const manifestContent = parse(await fs.readFile(manifestPath, { encoding: 'utf8' })) as Manifest;
-        projectVersion = manifestContent['sap.app']?.dataSources?.mainService.settings?.odataVersion as ODataVersion;
+        oDataVersion = manifestContent['sap.app']?.dataSources?.mainService.settings?.odataVersion as ODataVersion;
         name = `Launch Fiori app: ${basename(projectRoot)}`;
         ui5Version = 'latest'; // reactivate code to find ui5 version in project-access
         startFile = await getStartFileFromPackageFile(projectRoot);
@@ -67,7 +69,7 @@ export async function getDefaultLaunchConfigOptionsForProject(projectRoot: strin
     return {
         name,
         projectRoot,
-        projectVersion,
+        oDataVersion,
         ui5Version,
         startFile,
         backendConfigs,

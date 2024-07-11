@@ -2,6 +2,7 @@ import type { Package } from '@sap-ux/project-access';
 import { FileName } from '@sap-ux/project-access';
 import { join } from 'path';
 import type { LaunchConfig, LaunchConfigEnv } from '../types';
+import { Arguments } from '../types';
 import { getIndexOfArgument } from './utils';
 import { parse } from 'jsonc-parser';
 import type { Editor } from 'mem-fs-editor';
@@ -53,14 +54,15 @@ function moveOldArgsToEnv(launchConfig: LaunchConfig): LaunchConfig {
  */
 function addArgs(scriptArgs: string[]) {
     const args: string[] = [];
-    const openIndex = scriptArgs.indexOf('--open') !== -1 ? scriptArgs.indexOf('--open') : scriptArgs.indexOf('-o');
+    const openIndex =
+        scriptArgs.indexOf(Arguments.Open) !== -1 ? scriptArgs.indexOf(Arguments.Open) : scriptArgs.indexOf('-o');
     const configIndex =
-        scriptArgs.indexOf('--config') !== -1 ? scriptArgs.indexOf('--config') : scriptArgs.indexOf('-c');
+        scriptArgs.indexOf(Arguments.Config) !== -1 ? scriptArgs.indexOf(Arguments.Config) : scriptArgs.indexOf('-c');
     if (openIndex !== -1) {
-        args.push('--open', scriptArgs[openIndex + 1]);
+        args.push(Arguments.Open, scriptArgs[openIndex + 1]);
     }
     if (configIndex !== -1) {
-        args.push('--config', scriptArgs[configIndex + 1]);
+        args.push(Arguments.Config, scriptArgs[configIndex + 1]);
     }
 
     return args;

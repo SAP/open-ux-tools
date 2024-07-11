@@ -1,10 +1,16 @@
 import type { ODataVersion } from '@sap-ux/project-access';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 
+export enum Arguments {
+    FrameworkVersion = '--framework-version',
+    Open = '--open',
+    Config = '--config'
+}
+
 export interface FioriOptions {
     name: string;
     projectRoot: string;
-    projectVersion?: ODataVersion;
+    oDataVersion?: ODataVersion;
     useMockData?: boolean;
     ui5Version?: string;
     ui5VersionUri?: string;

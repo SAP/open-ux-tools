@@ -1,7 +1,7 @@
 import { basename, join } from 'path';
 import type { ODataVersion } from '@sap-ux/project-access';
 import type { FioriOptions, LaunchConfig, LaunchConfigEnv } from '../types';
-import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID, FRAMEWORK_VERSION_ARGUMENT } from '../types';
+import { Arguments, FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID } from '../types';
 import { default as yargsParser } from 'yargs-parser';
 
 /**
@@ -13,21 +13,21 @@ import { default as yargsParser } from 'yargs-parser';
 function getArgs(options: FioriOptions): string[] | undefined {
     const args = [];
     if (options.startFile) {
-        const open = '--open';
+        const open = Arguments.Open;
         args.push(open, options.startFile);
     }
 
     if (options.useMockData && !options.ui5Local) {
-        const config = '--config';
+        const config = Arguments.Config;
         args.push(config, 'ui5-mock.yaml');
     }
 
     if (options.ui5Local) {
-        const config = '--config';
+        const config = Arguments.Config;
         args.push(config, 'ui5-local.yaml');
 
         if (options.ui5LocalVersion) {
-            args.push(FRAMEWORK_VERSION_ARGUMENT, options.ui5LocalVersion);
+            args.push(Arguments.FrameworkVersion, options.ui5LocalVersion);
         }
     }
 
@@ -128,16 +128,16 @@ function getProjectRootFromLaunchConfig(workspaceRoot: string, cwd: string, env?
  * Returns Fiori Options from Launch Configuration object.
  *
  * @param launchConfig - Launch Configuration.
- * @param rootFolder - workspace root folder for Launch Configuration where .vscode/launch.json is.
- * @param fioriElementsVersion - OData version of the application V2/V4.
+ * @param launchJSONRootPath - workspace root folder for Launch Configuration where .vscode/launch.json is.
+ * @param oDataVersion - OData version of the application V2/V4.
  * @returns Fiori Options of the launch config.
  */
 export function getFioriOptions(
     launchConfig: LaunchConfig,
-    rootFolder: string,
-    fioriElementsVersion: ODataVersion
+    launchJSONRootPath: string,
+    oDataVersion: ODataVersion
 ): FioriOptions {
-    const projectRoot = getProjectRootFromLaunchConfig(rootFolder, launchConfig.cwd, launchConfig.env);
+    const projectRoot = getProjectRootFromLaunchConfig(launchJSONRootPath, launchConfig.cwd, launchConfig.env);
     let startFile;
     let isMockDataEnabled = false;
     let ui5Version;
@@ -179,7 +179,7 @@ export function getFioriOptions(
     return {
         name: launchConfig.name,
         projectRoot,
-        projectVersion: fioriElementsVersion,
+        oDataVersion,
         useMockData: isMockDataEnabled,
         ui5Version,
         ui5VersionUri,

@@ -19,7 +19,7 @@ describe('project', () => {
     it('should get default options for project (v2)', async () => {
         const options = await getDefaultLaunchConfigOptionsForProject(TestPaths.v2);
         expect(options.name).toBe('Launch Fiori app: fiori-elements-v2');
-        expect(options.projectVersion).toBe('2.0');
+        expect(options.oDataVersion).toBe('2.0');
         expect(options.projectRoot).toBe(TestPaths.v2);
         expect(options.ui5Version).toEqual('latest');
         expect(options.backendConfigs).toEqual([{ path: '/sap', url: 'DUMMY_BACKEND_URL' }]);
@@ -28,7 +28,7 @@ describe('project', () => {
     it('should get default options for project (v4)', async () => {
         const options = await getDefaultLaunchConfigOptionsForProject(TestPaths.v4);
         expect(options.name).toBe('Launch Fiori app: fiori-elements-v4');
-        expect(options.projectVersion).toBe('4.0');
+        expect(options.oDataVersion).toBe('4.0');
         expect(options.projectRoot).toBe(TestPaths.v4);
         expect(options.ui5Version).toEqual('latest');
         expect(options.backendConfigs).toEqual([{ path: '/sap', url: 'DUMMY_BACKEND_URL' }]);
@@ -39,7 +39,7 @@ describe('project', () => {
         const defaultConfig = await getDefaultLaunchConfigOptionsForProject('INVALID_PROJECT_PATH');
         expect(defaultConfig).toEqual({
             name: '',
-            projectVersion: undefined,
+            oDataVersion: undefined,
             startFile: undefined,
             projectRoot: 'INVALID_PROJECT_PATH',
             ui5Version: '',
