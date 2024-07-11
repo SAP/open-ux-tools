@@ -7,7 +7,7 @@ import { UI5Config, getEsmTypesVersion, getTypesPackage } from '@sap-ux/ui5-conf
 import type { Manifest } from '@sap-ux/project-access';
 import { mergeWithDefaults } from './data';
 import { ui5TSSupport } from './data/ui5Libs';
-import { applyOptionalFeatures, enableTypescript as enableTypescriptOption } from './options';
+import { applyOptionalFeatures, enableTypescript as enableTypescriptOption, getTemplateOptions } from './options';
 import { Ui5App } from './types';
 
 /**
@@ -38,17 +38,8 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         // ignore the .gitignore.tmpl file for CAP applications
         ignore.push('**/gitignore.tmpl');
     }
-
     // Determine the UI5 resource URL based on project type and UI5 framework details
-    let ui5ResourceUrl: string;
-    const { frameworkUrl, version } = ui5App.ui5 || {};
-    const resourcePath = 'resources/sap-ui-core.js';
-
-    if (isEdmxProjectType || !frameworkUrl) {
-        ui5ResourceUrl = resourcePath; // Use relative path for Edmx projects or if frameworkUrl is not available
-    } else {
-        ui5ResourceUrl = `${frameworkUrl}${version ? `/${version}` : ''}/${resourcePath}`; // Use framework URL and version if available
-    }
+    const ui5ResourceUrl = getTemplateOptions(isEdmxProjectType, ui5App.ui5?.frameworkUrl, ui5App.ui5?.version)
     const templateOptions = {
         ...ui5App,
         ui5ResourceUrl
