@@ -1,6 +1,6 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { ODataService, ODataServiceInfo, ServiceProvider } from '@sap-ux/axios-extension';
-import { ODataVersion } from '@sap-ux/axios-extension';
+import { ODataVersion, ServiceType } from '@sap-ux/axios-extension';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
@@ -25,7 +25,7 @@ const serviceProviderMock = {} as Partial<ServiceProvider>;
 const catalogs = {
     [ODataVersion.v2]: {
         listServices: jest.fn().mockResolvedValue([])
-    } as { listServices: Function; getAnnotations?: Function },
+    } as { listServices: Function; getAnnotations?: Function; getServiceType?: Function },
     [ODataVersion.v4]: {
         listServices: jest.fn().mockResolvedValue([])
     } as { listServices: Function; getAnnotations?: Function }
@@ -318,7 +318,8 @@ describe('questions', () => {
             await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({
                 systemUrl: 'http://some.abap.system:1234'
             })
-        ).toEqual([{
+        ).toEqual([
+            {
                 name: 'DMO_GRP > /DMO/FLIGHT (0001) - OData V4',
                 value: {
                     serviceODataVersion: '4',
@@ -326,7 +327,8 @@ describe('questions', () => {
                     serviceType: 'WEB_API',
                     toString: expect.any(Function)
                 }
-            }, {
+            },
+            {
                 name: 'ZTRAVEL_DESK_SRV (2) - OData V2',
                 value: {
                     serviceODataVersion: '2',
@@ -416,15 +418,59 @@ describe('questions', () => {
 
         const newSystemQuestions = getAbapOnPremQuestions();
         const serviceSelectionPrompt = newSystemQuestions.find((question) => question.name === 'serviceSelection');
-        const choices = await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({
+        let choices: { name: string; value: ServiceAnswer }[] = await (
+            (serviceSelectionPrompt as ListQuestion)?.choices as Function
+        )({
             systemUrl: 'http://some.abap.system:1234'
         });
         expect(choices.length).toBe(2);
 
-        const message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)(
+        let message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)(
             choices[1].value
         );
 
+        expect(message).toMatchObject({
+            message: t('prompts.warnings.nonUIServiceTypeWarningMessage', { serviceType: 'A2X' }),
+            severity: Severity.warning
+        });
+
+        // For OData V2 services, where the service type is 'Not Determined', and additional call is made to get the service type from 'ServiceTypeForHUBServices'
+        const v2ServiceTypeNotDetermined = { ...serviceV2a, serviceType: ServiceType.NotDetermined };
+        connectionValidatorMock.catalogs = {
+            [ODataVersion.v2]: {
+                listServices: jest.fn().mockResolvedValue([v2ServiceTypeNotDetermined]),
+                getServiceType: jest.fn().mockResolvedValue(ServiceType.UI)
+            },
+            [ODataVersion.v4]: {
+                listServices: jest.fn().mockResolvedValue([serviceV4a])
+            }
+        };
+
+        // Using a new URL will force re-assignment of service choices
+        choices = await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({
+            systemUrl: 'http://some.abap.system:1235'
+        });
+
+        let choiceV2 = choices.find((choice) => choice.value.serviceODataVersion === ODataVersion.v2);
+        message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)(choiceV2?.value);
+        expect(message).toBeUndefined();
+
+        connectionValidatorMock.catalogs = {
+            [ODataVersion.v2]: {
+                listServices: jest.fn().mockResolvedValue([v2ServiceTypeNotDetermined]),
+                getServiceType: jest.fn().mockResolvedValue(ServiceType.WebApi)
+            },
+            [ODataVersion.v4]: {
+                listServices: jest.fn().mockResolvedValue([serviceV4a])
+            }
+        };
+
+        choices = (await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({
+            systemUrl: 'http://some.abap.system:1236'
+        })) as { name: string; value: ServiceAnswer }[];
+
+        choiceV2 = choices.find((choice) => choice.value.serviceODataVersion === ODataVersion.v2);
+        message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)(choiceV2?.value);
         expect(message).toMatchObject({
             message: t('prompts.warnings.nonUIServiceTypeWarningMessage', { serviceType: 'A2X' }),
             severity: Severity.warning

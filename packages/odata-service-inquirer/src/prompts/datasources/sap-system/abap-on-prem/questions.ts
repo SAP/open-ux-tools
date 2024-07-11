@@ -1,6 +1,6 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
-import type { CatalogService } from '@sap-ux/axios-extension';
-import { ODataVersion, ServiceType, V2CatalogService } from '@sap-ux/axios-extension';
+import type { CatalogService, V2CatalogService } from '@sap-ux/axios-extension';
+import { ODataVersion, ServiceType } from '@sap-ux/axios-extension';
 import { searchChoices, withCondition, type ListQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { validateClient } from '@sap-ux/project-input-validator';
@@ -173,7 +173,7 @@ export function getAbapOnPremQuestions(
                 }
                 return serviceChoices;
             },
-            additionalMessages: (selectedService: ServiceAnswer) => {
+            additionalMessages: async (selectedService: ServiceAnswer) => {
                 if (serviceChoices?.length === 0) {
                     if (requiredOdataVersion) {
                         return {
@@ -189,11 +189,21 @@ export function getAbapOnPremQuestions(
                         };
                     }
                 }
-                if (selectedService?.serviceType && selectedService.serviceType !== ServiceType.UI) {
-                    return {
-                        message: t('prompts.warnings.nonUIServiceTypeWarningMessage', { serviceType: 'A2X' }),
-                        severity: Severity.warning
-                    };
+                if (selectedService) {
+                    let serviceType = selectedService.serviceType;
+                    if (selectedService.serviceODataVersion === ODataVersion.v2) {
+                        serviceType = await getServiceType(
+                            selectedService.servicePath,
+                            selectedService.serviceType,
+                            connectValidator.catalogs[ODataVersion.v2] as V2CatalogService
+                        );
+                    }
+                    if (serviceType && serviceType !== ServiceType.UI) {
+                        return {
+                            message: t('prompts.warnings.nonUIServiceTypeWarningMessage', { serviceType: 'A2X' }),
+                            severity: Severity.warning
+                        };
+                    }
                 }
             },
             default: () => (serviceChoices?.length > 1 ? undefined : 0),
@@ -205,7 +215,7 @@ export function getAbapOnPremQuestions(
                 if (!systemUrl) {
                     return false;
                 }
-                // Dont keep requesting the same service details
+                // Dont re-request the same service details
                 if (service && previousService?.servicePath !== service.servicePath) {
                     previousService = service;
                     return getServiceDetails(service, systemUrl, connectValidator);
@@ -255,7 +265,7 @@ export function getAbapOnPremQuestions(
 }
 
 /**
- * Gets the service details and internally sets the PromptState.odataService properties.
+ * Requests and sets the service details to the PromptState.odataService properties.
  * If an error occurs, the error message is returned for use in validators.
  *
  * @param service
@@ -269,9 +279,7 @@ async function getServiceDetails(
     connectionValidator: ConnectionValidator
 ): Promise<string | boolean> {
     const serviceCatalog = connectionValidator.catalogs[service.serviceODataVersion];
-    if (serviceCatalog instanceof V2CatalogService) {
-        await getServiceType(service.servicePath, service.serviceType, serviceCatalog);
-    }
+
     const serviceResult = await getServiceMetadata(
         service.servicePath,
         serviceCatalog,

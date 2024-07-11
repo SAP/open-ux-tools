@@ -126,13 +126,14 @@ export async function getServiceType(
     servicePath: string,
     serviceType: string | undefined,
     catalog: V2CatalogService
-): Promise<string | undefined> {
+): Promise<ServiceType | undefined> {
+    let resolvedServiceType: ServiceType | undefined;
     if (serviceType === ServiceType.NotDetermined) {
         try {
-            serviceType = (await catalog.getServiceType(servicePath)) ?? ServiceType.NotDetermined;
+            resolvedServiceType = (await catalog.getServiceType(servicePath)) ?? ServiceType.NotDetermined;
         } catch (e) {
             LoggerHelper.logger.error(t('errors.serviceTypeRequestError', { error: e.message }));
         }
     }
-    return serviceType;
+    return resolvedServiceType ?? (serviceType as ServiceType);
 }
