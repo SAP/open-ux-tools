@@ -1,32 +1,18 @@
-import { buildUI5Option, generateNewFioriLaunchConfig, getFioriOptions } from '../../src';
+import { generateNewFioriLaunchConfig, getFioriOptions } from '../../src';
 import type { LaunchConfig } from '../../src';
 import { TestPaths } from '../test-data/utils';
 
 describe('utils', () => {
-    describe('buildUI5Option', () => {
-        it('should return build UI5 option', () => {
-            expect(buildUI5Option('Latest')).toStrictEqual(['--ui5', ' ', '--ui5Uri', 'https://ui5.sap.com']);
-            expect(buildUI5Option('snapshot')).toStrictEqual([
-                '--ui5',
-                'snapshot',
-                '--ui5Uri',
-                'https://sapui5preview-sapui5.dispatcher.int.sap.eu2.hana.ondemand.com'
-            ]);
-        });
-    });
-
     describe('generateNewFioriLaunchConfig', () => {
         it('should generate Launch config with internal UI5 version', () => {
             const launchConfig = generateNewFioriLaunchConfig('WORKSPACE_FOLDER', {
                 name: 'TEST_NAME',
                 projectRoot: TestPaths.v2,
-                ui5Version: 'snapshot',
-                ui5VersionUri: 'https://sapui5preview-sapui5.dispatcher.int.sap.eu2.hana.ondemand.com'
+                ui5Version: 'DUMMY_UI5_VERSION',
+                ui5VersionUri: 'DUMMY_UI5_URI'
             });
-            expect(launchConfig.env.FIORI_TOOLS_UI5_VERSION).toEqual('snapshot');
-            expect(launchConfig.env.FIORI_TOOLS_UI5_URI).toEqual(
-                'https://sapui5preview-sapui5.dispatcher.int.sap.eu2.hana.ondemand.com'
-            );
+            expect(launchConfig.env.FIORI_TOOLS_UI5_VERSION).toEqual('DUMMY_UI5_VERSION');
+            expect(launchConfig.env.FIORI_TOOLS_UI5_URI).toEqual('DUMMY_UI5_URI');
             expect(launchConfig.env.FIORI_TOOLS_BACKEND_CONFIG).toBeUndefined();
             expect(launchConfig.runtimeExecutable).toEqual('npx');
             expect(launchConfig.windows.runtimeExecutable).toEqual('npx.cmd');

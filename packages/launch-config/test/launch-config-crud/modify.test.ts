@@ -153,8 +153,8 @@ describe('modify', () => {
         const launchConfig = generateNewFioriLaunchConfig('WORKSPACE_FOLDER', {
             name: 'TEST_NAME',
             projectRoot: TestPaths.v2,
-            ui5Version: 'snapshot',
-            ui5VersionUri: 'https://sapui5preview-sapui5.dispatcher.int.sap.eu2.hana.ondemand.com'
+            ui5Version: 'DUMMY_UI5_VERSION',
+            ui5VersionUri: 'DUMMY_UI5_URI'
         });
         // clone object to create a new reference
         const expected: LaunchConfig = Object.assign({}, launchConfig);

@@ -4,7 +4,6 @@ import { create } from 'mem-fs-editor';
 import { createLaunchConfig } from '../../src/launch-config-crud/create';
 import { DirName, FileName } from '@sap-ux/project-access';
 import { TestPaths } from '../test-data/utils';
-import { getUI5VersionUri } from '../../src';
 
 describe('create', () => {
     const memFs = create(createStorage());
@@ -60,9 +59,9 @@ describe('create', () => {
         // delete existing file
         memFs.delete(launchJSONPath);
         // Select UI5 version
-        const ui5Version = 'myLatest';
+        const ui5Version = 'DUMMY_UI5_VERSION';
         // Set ui5VersionUri
-        const ui5VersionUri = getUI5VersionUri(ui5Version);
+        const ui5VersionUri = 'DUMMY_UI5_URI';
         // Select destination
         const backendConfigs = [{ path: 'TEST_PATH', name: 'TEST_DESTINAME', url: 'dummy' }];
         const result = await createLaunchConfig(
@@ -78,8 +77,8 @@ describe('create', () => {
         );
         const expectedEnv = {
             FIORI_TOOLS_BACKEND_CONFIG: JSON.stringify(backendConfigs),
-            FIORI_TOOLS_UI5_URI: 'https://ui5.sap.com',
-            FIORI_TOOLS_UI5_VERSION: 'myLatest',
+            FIORI_TOOLS_UI5_URI: ui5VersionUri,
+            FIORI_TOOLS_UI5_VERSION: ui5Version,
             'run.config': JSON.stringify({
                 handlerId: 'fiori_tools',
                 runnableId: join(TestPaths.tmpDir, 'fe-projects')

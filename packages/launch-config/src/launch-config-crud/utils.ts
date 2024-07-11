@@ -1,34 +1,8 @@
 import { basename, join } from 'path';
 import type { ODataVersion } from '@sap-ux/project-access';
 import type { FioriOptions, LaunchConfig, LaunchConfigEnv } from '../types';
-import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID, FRAMEWORK_VERSION_ARGUMENT, INTERNAL_UI5_PATH } from '../types';
-import { UI5_DEFAULT } from '@sap-ux/ui5-config';
+import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID, FRAMEWORK_VERSION_ARGUMENT } from '../types';
 import { default as yargsParser } from 'yargs-parser';
-
-/**
- * Returns the argument that needs to be added to start with a specific UI5 version.
- *
- * @param ui5Version - the ui5 version, e.g. 1.82.0 or snapshot-1.83, or empty string for the latest version.
- * @returns argument that needs to be added to start with a specific UI5 version.
- */
-export function buildUI5Option(ui5Version: string): string[] {
-    // check for latest version, pass empty if true
-    const ui5Uri = getUI5VersionUri(ui5Version);
-    if (ui5Version === 'Latest') {
-        return ['--ui5', ' ', '--ui5Uri', ui5Uri];
-    }
-    return ['--ui5', ui5Version, '--ui5Uri', ui5Uri];
-}
-
-/**
- * Returns UI5 version URI.
- *
- * @param ui5Version - the ui5 version, e.g. 1.82.0 or snapshot-1.83, or empty string for the latest version.
- * @returns UI5 version URI.
- */
-export function getUI5VersionUri(ui5Version: string): string {
-    return ui5Version.startsWith('snapshot') ? INTERNAL_UI5_PATH : UI5_DEFAULT.SAPUI5_CDN;
-}
 
 /**
  * Returns the string array of 'args' required in the launch config.
