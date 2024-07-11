@@ -27,7 +27,7 @@ import {
     SET_VALIDATION_RESULTS,
     SupportedBuildingBlocks
 } from './types';
-import type { Subset } from '@sap-ux/fe-fpm-writer/src/building-block/prompts';
+import type { Subset, SupportedAnswers } from '@sap-ux/fe-fpm-writer/src/building-block/prompts';
 
 let ws: WebSocket | undefined;
 
@@ -162,7 +162,7 @@ export function getQuestions<T extends Answers>(
  * @param buildingBlockType Prompt type
  * @param answers Latest answers
  */
-export function getChoices(names: string[], buildingBlockType: SupportedBuildingBlocks, answers: unknown): void {
+export function getChoices(names: string[], buildingBlockType: SupportedBuildingBlocks, answers: Answers): void {
     const getAction: GetChoices = {
         type: GET_CHOICES,
         answers,
@@ -203,7 +203,7 @@ export function unsubscribeOnChoicesUpdate(listener: Listener): void {
  * @param buildingBlockType Prompt type.
  * @param answers Answers to apply/save.
  */
-export function applyAnswers(buildingBlockType: SupportedBuildingBlocks, answers: unknown): Promise<void> {
+export function applyAnswers(buildingBlockType: SupportedBuildingBlocks, answers: Answers): Promise<void> {
     return new Promise((resolve) => {
         const getAction = {
             type: APPLY_ANSWERS,
@@ -296,8 +296,8 @@ export function updateProjectPath(application: ApplicationInformation): Promise<
  * @param buildingBlockType Prompt type
  * @param answers Answers which would be used to generate code snippet
  */
-export function getCodeSnippet(buildingBlockType: SupportedBuildingBlocks, answers: unknown): void {
-    const action: GetCodeSnippet = {
+export function getCodeSnippet(buildingBlockType: SupportedBuildingBlocks, answers: Answers): void {
+    const action = {
         type: GET_CODE_SNIPPET,
         buildingBlockType,
         answers
