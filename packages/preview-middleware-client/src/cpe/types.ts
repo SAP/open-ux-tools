@@ -1,4 +1,4 @@
-import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
+import type { ExternalAction, OutlineNode } from '@sap-ux-private/control-property-editor-common';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 export interface UI5AdaptationOptions {
@@ -40,3 +40,7 @@ export interface Service {
     init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): void;
 }
 
+export interface ControlTreeIndex {
+    // TODO: we probably need a new interface instead of OutlineNode
+    [controlType: string]: OutlineNode[]
+}

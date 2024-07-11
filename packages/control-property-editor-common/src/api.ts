@@ -167,6 +167,11 @@ export interface ShowMessage {
     shouldHideIframe: boolean;
 }
 
+export interface QuickAction {
+    type: string;
+    title: string;
+}
+
 /**
  * ACTIONS
  */
@@ -243,6 +248,8 @@ export const appLoaded = createExternalAction<void>('app-loaded');
 export const undo = createExternalAction<void>('undo');
 export const redo = createExternalAction<void>('redo');
 export const save = createExternalAction<void>('save');
+export const quickActionListChanged = createExternalAction<QuickAction[]>('quick-action-list-changed');
+export const executeQuickAction = createExternalAction<QuickAction>('execute-quick-action');
 
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
@@ -264,4 +271,6 @@ export type ExternalAction =
     | ReturnType<typeof undo>
     | ReturnType<typeof redo>
     | ReturnType<typeof save>
-    | ReturnType<typeof appLoaded>;
+    | ReturnType<typeof appLoaded>
+    | ReturnType<typeof quickActionListChanged>
+    | ReturnType<typeof executeQuickAction>;

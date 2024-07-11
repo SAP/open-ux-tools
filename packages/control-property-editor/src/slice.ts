@@ -7,6 +7,7 @@ import type {
     OutlineNode,
     PendingPropertyChange,
     PropertyChange,
+    QuickAction,
     SavedPropertyChange,
     Scenario,
     ShowMessage
@@ -25,7 +26,8 @@ import {
     setAppMode,
     setUndoRedoEnablement,
     setSaveEnablement,
-    appLoaded
+    appLoaded,
+    quickActionListChanged
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -53,6 +55,7 @@ interface SliceState {
     };
     canSave: boolean;
     isAppLoading: boolean;
+    quickActions: QuickAction[];
 }
 
 export interface ChangesSlice {
@@ -138,8 +141,10 @@ export const initialState: SliceState = {
         canRedo: false
     },
     canSave: false,
-    isAppLoading: true
+    isAppLoading: true,
+    quickActions: []
 };
+
 const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
     name: 'app',
     initialState,
@@ -306,6 +311,12 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
             .addMatcher(appLoaded.match, (state): void => {
                 state.isAppLoading = false;
             })
+            .addMatcher(
+                quickActionListChanged.match,
+                (state: SliceState, action: ReturnType<typeof quickActionListChanged>): void => {
+                    state.quickActions = action.payload;
+                }
+            )
 });
 
 export const { setProjectScenario } = slice.actions;

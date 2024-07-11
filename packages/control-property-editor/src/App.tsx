@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { UIDialog, UILink, UIToggle } from '@sap-ux/ui-components';
 import type { Scenario, ShowMessage } from '@sap-ux-private/control-property-editor-common';
-import { LeftPanel, PropertiesList } from './panels';
+import { LeftPanel, RightPanel } from './panels';
 import { Toolbar } from './toolbar';
 import { useLocalStorage } from './use-local-storage';
 import type { RootState } from './store';
@@ -131,7 +131,7 @@ export default function App(appProps: AppProps): ReactElement {
                     </div>
                 </section>
                 <section className="app-panel app-panel-right">
-                    <PropertiesList />
+                    <RightPanel />
                 </section>
                 {isAdpProject && shouldHideIframe && dialogQueue.length > 0 && (
                     <UIDialog
