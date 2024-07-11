@@ -1,21 +1,16 @@
 import React from 'react';
-import type { ChoiceOptions, ListQuestion } from 'inquirer';
+import type { ChoiceOptions } from 'inquirer';
 import { UIComboBox, UIComboBoxLoaderType, UITextInput } from '@sap-ux/ui-components';
 import type { ITextField, UIComboBoxRef, UISelectableOption } from '@sap-ux/ui-components';
 import { useValue, getLabelRenderer } from '../../../utilities';
-import type { ListPromptQuestionCreationProps } from '../../../types';
+import type { ListPromptQuestion } from '../../../types';
 
-export interface SelectProps extends ListQuestion {
-    name: string;
+export interface SelectProps extends ListPromptQuestion {
     value?: string | number | boolean;
     onChange: (name: string, value: string | number | undefined) => void;
-    creation?: ListPromptQuestionCreationProps;
-    required?: boolean;
     options: UISelectableOption<ChoiceOptions>[];
     pending?: boolean;
-    additionalInfo?: string;
     errorMessage?: string;
-    placeholder?: string;
 }
 
 export const Select = (props: SelectProps) => {

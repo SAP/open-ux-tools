@@ -1,16 +1,12 @@
 import React, { useEffect } from 'react';
-import type { InputQuestion } from 'inquirer';
 import { UITextInput } from '@sap-ux/ui-components';
 import { useValue, getLabelRenderer } from '../../../utilities';
+import type { InputPromptQuestion } from '../../../types';
 
-export interface InputProps extends InputQuestion {
-    name: string;
+export interface InputProps extends InputPromptQuestion {
     value?: string | number | boolean;
     onChange?: (name: string, value?: string | number | boolean) => void;
-    required?: boolean;
-    additionalInfo?: string;
     errorMessage?: string;
-    placeholder?: string;
 }
 
 export const Input = (props: InputProps) => {
