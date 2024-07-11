@@ -2,9 +2,8 @@ import path, { isAbsolute } from 'path';
 import type { Editor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../../types';
-import type { IWriter, AnnotationsData } from '../../../types';
+import { customerBase, type IWriter, type AnnotationsData } from '../../../types';
 import { getChange, writeAnnotationChange } from '../../../base/change-utils';
-import { isCustomerBase } from '../../../base/helper';
 
 /**
  * Handles the creation and writing of annotations data changes for a project.
@@ -29,9 +28,10 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
             answers: { id }
         } = data;
         const annotationFileNameWithoutExtension = fileName?.toLocaleLowerCase().replace('.xml', '');
-        const annotationNameSpace = isCustomerBase(layer)
-            ? `customer.annotation.${annotationFileNameWithoutExtension}`
-            : `annotation.${annotationFileNameWithoutExtension}`;
+        const annotationNameSpace =
+            layer === customerBase
+                ? `customer.annotation.${annotationFileNameWithoutExtension}`
+                : `annotation.${annotationFileNameWithoutExtension}`;
         return {
             dataSourceId: `${id}`,
             annotations: [annotationNameSpace],

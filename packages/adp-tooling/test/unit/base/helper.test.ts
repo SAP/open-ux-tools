@@ -1,6 +1,6 @@
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import * as mockFs from 'fs';
-import { isCustomerBase, getVariant, checkFileExists, getAdpConfig } from '../../../src/base/helper';
+import { getVariant, getAdpConfig } from '../../../src/base/helper';
 import { join } from 'path';
 import { UI5Config } from '@sap-ux/ui5-config';
 
@@ -15,13 +15,6 @@ describe('helper', () => {
         }
     };
 
-    describe('isCustomerBase', () => {
-        test('should return correct value based on input', () => {
-            expect(isCustomerBase('CUSTOMER_BASE')).toBe(true);
-            expect(isCustomerBase('VENDOR')).toBe(false);
-        });
-    });
-
     describe('getVariant', () => {
         beforeEach(() => {
             jest.clearAllMocks();
@@ -33,24 +26,6 @@ describe('helper', () => {
             jest.spyOn(mockFs, 'readFileSync').mockImplementation(() => mockVariant);
 
             expect(getVariant(basePath)).toStrictEqual(JSON.parse(mockVariant));
-        });
-    });
-
-    describe('checkFileExists', () => {
-        beforeEach(() => {
-            jest.clearAllMocks();
-        });
-
-        test('should return false when file does not exist', () => {
-            jest.spyOn(mockFs, 'existsSync').mockImplementation(() => false);
-
-            expect(checkFileExists(basePath)).toBe(false);
-        });
-
-        test('should return true when file exists', () => {
-            jest.spyOn(mockFs, 'existsSync').mockImplementation(() => true);
-
-            expect(checkFileExists(basePath)).toBe(true);
         });
     });
 

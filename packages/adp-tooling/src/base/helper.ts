@@ -1,18 +1,7 @@
-import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { DescriptorVariant, AdpPreviewConfig } from '../types';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync } from 'fs';
 import { join, isAbsolute } from 'path';
 import { UI5Config } from '@sap-ux/ui5-config';
-
-/**
- * Check environment is running in an internal scenario.
- *
- * @param layer - UI5 Flex layer
- * @returns true if running in an internal scenario, false otherwise
- */
-export function isCustomerBase(layer: UI5FlexLayer): boolean {
-    return layer === 'CUSTOMER_BASE';
-}
 
 /**
  * Get the app descriptor variant.
@@ -22,16 +11,6 @@ export function isCustomerBase(layer: UI5FlexLayer): boolean {
  */
 export function getVariant(basePath: string): DescriptorVariant {
     return JSON.parse(readFileSync(join(basePath, 'webapp', 'manifest.appdescr_variant'), 'utf-8'));
-}
-
-/**
- * Check if the file exists.
- *
- * @param {string} filePath - The path to the file.
- * @returns {boolean} true if the file exists, false otherwise
- */
-export function checkFileExists(filePath: string): boolean {
-    return existsSync(filePath);
 }
 
 /**

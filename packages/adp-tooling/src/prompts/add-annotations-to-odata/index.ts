@@ -3,7 +3,7 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 import { AnnotationFileSelectType, type AddAnnotationsAnswers } from '../../types';
 import { t } from '../../i18n';
 import { filterDataSourcesByType } from '@sap-ux/project-access';
-import { checkFileExists } from '../../base/helper';
+import { existsSync } from 'fs';
 import { isNotEmptyString } from '../../base/validators';
 import { join, isAbsolute, sep } from 'path';
 
@@ -65,11 +65,11 @@ export function getPrompts(
                     return t('validators.inputCannotBeEmpty');
                 }
                 const filePath = isAbsolute(value) ? value : join(basePath, value);
-                if (!checkFileExists(filePath)) {
+                if (!existsSync(filePath)) {
                     return t('validators.fileDoesNotExist');
                 }
                 const fileName = filePath.split(sep).pop();
-                if (checkFileExists(join(basePath, 'webapp', 'changes', 'annotations', fileName))) {
+                if (existsSync(join(basePath, 'webapp', 'changes', 'annotations', fileName))) {
                     return t('validators.annotationFileAlreadyExists');
                 }
                 return true;

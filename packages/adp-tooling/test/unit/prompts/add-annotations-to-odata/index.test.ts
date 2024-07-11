@@ -2,8 +2,10 @@ import { getPrompts } from '../../../../src/prompts/add-annotations-to-odata/ind
 import * as i18n from '../../../../src/i18n';
 import * as projectAccess from '@sap-ux/project-access';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import * as helper from '../../../../src/base/helper';
 import * as validators from '../../../../src/base/validators';
+import * as fs from 'fs';
+
+jest.mock('fs');
 
 describe('getPrompts', () => {
     const mockBasePath = '/path/to/project';
@@ -149,7 +151,7 @@ describe('getPrompts', () => {
 
         test('should fail with file doesn not exist message', () => {
             jest.spyOn(validators, 'isNotEmptyString').mockReturnValueOnce(true);
-            jest.spyOn(helper, 'checkFileExists').mockReturnValueOnce(false);
+            jest.spyOn(fs, 'existsSync').mockReturnValueOnce(false);
 
             const filePathValidator = (getPrompts(mockBasePath, dataSources)[2] as any).validate;
 
@@ -158,7 +160,7 @@ describe('getPrompts', () => {
 
         test('should fail with file already exists in change directory message', () => {
             jest.spyOn(validators, 'isNotEmptyString').mockReturnValueOnce(true);
-            jest.spyOn(helper, 'checkFileExists').mockReturnValueOnce(true).mockReturnValueOnce(true);
+            jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true).mockReturnValueOnce(true);
 
             const filePathValidator = (getPrompts(mockBasePath, dataSources)[2] as any).validate;
 
@@ -167,7 +169,7 @@ describe('getPrompts', () => {
 
         test('should pass with relative file path input', () => {
             jest.spyOn(validators, 'isNotEmptyString').mockReturnValueOnce(true);
-            jest.spyOn(helper, 'checkFileExists').mockReturnValueOnce(true).mockReturnValueOnce(false);
+            jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true).mockReturnValueOnce(false);
 
             const filePathValidator = (getPrompts(mockBasePath, dataSources)[2] as any).validate;
 
@@ -176,7 +178,7 @@ describe('getPrompts', () => {
 
         test('should pass with absolute file path input', () => {
             jest.spyOn(validators, 'isNotEmptyString').mockReturnValueOnce(true);
-            jest.spyOn(helper, 'checkFileExists').mockReturnValueOnce(true).mockReturnValueOnce(false);
+            jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true).mockReturnValueOnce(false);
 
             const filePathValidator = (getPrompts(mockBasePath, dataSources)[2] as any).validate;
 
