@@ -1,7 +1,7 @@
 import { PromptsAPI } from '@sap-ux/fe-fpm-writer';
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
-import { SupportedBuildingBlocks } from '../utils';
+import { PromptsType } from '../utils';
 import type { ApplicationInformation } from '../addons/project';
 
 const api: { [key: string]: PromptsAPI } = {};
@@ -36,7 +36,7 @@ export const validateProject = async (application: ApplicationInformation): Prom
         const { projectPath, appId } = application;
         const promptsAPI = await PromptsAPI.init(projectPath, appId);
         // Call API to get table questions - it should validate of path is supported
-        const { questions } = await promptsAPI.getPrompts(SupportedBuildingBlocks.Table);
+        const { questions } = await promptsAPI.getPrompts(PromptsType.Table);
         const entityQuestion = questions.find((question) => question.name === 'entity');
         if (entityQuestion && 'choices' in entityQuestion && typeof entityQuestion.choices === 'function') {
             await entityQuestion.choices({});

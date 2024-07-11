@@ -1,5 +1,5 @@
 import type { Answers } from 'inquirer';
-import type { SupportedBuildingBlocks } from '../../../src/utils';
+import type { PromptsType } from '../../../src/utils';
 import type { PromptQuestion } from '@sap-ux/ui-prompting';
 
 export type ProjectActions =
@@ -48,5 +48,5 @@ export interface ValidateAnswers {
     type: typeof VALIDATE_ANSWERS;
     questions: PromptQuestion[];
     answers: Answers;
-    value: SupportedBuildingBlocks;
+    value: PromptsType;
 }

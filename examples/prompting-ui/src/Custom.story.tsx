@@ -1,5 +1,5 @@
 import React from 'react';
-import { SupportedBuildingBlocks } from './utils';
+import { PromptsType } from './utils';
 import { BuildingBlockQuestions } from './BuildingBlock';
 
 export default { title: 'Building Blocks/Custom' };
@@ -7,7 +7,7 @@ export default { title: 'Building Blocks/Custom' };
 export const CustomChart = (): JSX.Element => {
     return (
         <BuildingBlockQuestions
-            type={SupportedBuildingBlocks.Chart}
+            type={PromptsType.Chart}
             visibleQuestions={[
                 'id',
                 'entity',
