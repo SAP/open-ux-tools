@@ -136,6 +136,7 @@ export interface MarkdownWriter {
     addDetails: (description: string, details: string) => void;
     addSub: (text: string) => void;
     addTable: (table: Array<Array<string>>) => void;
+    addTableInDetails: (summary: string, table: Array<Array<string>>) => void;
     toString: () => string;
 }
 

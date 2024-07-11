@@ -104,6 +104,18 @@ function getMarkdownWriter(): MarkdownWriter {
                 }
             }
         },
+        addTableInDetails: (summary: string, table: Array<Array<string>>): void => {
+            result += `<details>\n<summary>${summary}</summary>\n\n`;
+            if (table.length > 0) {
+                const header = table.shift();
+                result += `|${header.join('|')}|\n`;
+                result += `|${'--|'.repeat(header.length)}\n`;
+                for (const row of table) {
+                    result += `|${row.join('|')}|\n`;
+                }
+            }
+            result += `\n</details>\n`;
+        },
         toString: (): string => result
     };
 }
@@ -282,7 +294,7 @@ function writeDestinationResults(
                 Array.from(destinationTableFields.values()),
                 Array.from(destinationTableFields.keys()).map((f) => destination?.[f])
             ];
-            writer.addTable(table);
+            writer.addTableInDetails(t('markdownText.showDestinations'), table);
         }
     } else {
         writer.addLine(t('markdownText.noDestinationDetails'));
@@ -349,6 +361,8 @@ export function convertResultsToMarkdown(results: EnvironmentCheckResult): strin
         writeDestinationResults(writer, results.endpointResults, results.endpoints);
     }
 
+    writeMessages(writer, results.messages);
+
     if (results.requestedChecks?.includes(Check.Destinations)) {
         writeDestinations(writer, results.endpoints);
     }
@@ -363,8 +377,6 @@ export function convertResultsToMarkdown(results: EnvironmentCheckResult): strin
     if (results.requestedChecks?.includes(Check.Environment)) {
         writeEnvironment(writer, results.environment);
     }
-
-    writeMessages(writer, results.messages);
 
     writer.addSub(
         `${t('markdownText.createdAt')} ${new Date().toISOString().replace('T', ' ').substring(0, 19)} (UTC)`
