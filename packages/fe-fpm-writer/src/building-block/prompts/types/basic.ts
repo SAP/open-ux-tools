@@ -50,25 +50,8 @@ export interface BuildingBlockTypePromptsAnswer extends Answers {
     buildingBlockType: PromptsType;
 }
 
-export interface BaseBuildingBlockPromptAnswer extends Answers {
-    viewOrFragmentPath: string;
-    aggregationPath: string;
-    entity: string;
-    qualifier: string;
-}
-
-// export interface TablePromptsAnswer2 extends BuildingBlockConfig<Table>, BaseBuildingBlockPromptAnswer {}
 export type TablePromptsAnswer = BuildingBlockConfig<Table> & Answers;
 export type ChartPromptsAnswer = BuildingBlockConfig<Chart> & Answers;
 export type FilterBarPromptsAnswer = BuildingBlockConfig<FilterBar> & Answers;
-
-// // ToDo - not sure if should extend from Table
-// export interface TablePromptsAnswer extends Table, BaseBuildingBlockPromptAnswer {}
-
-// // ToDo - not sure if should extend from Chart
-// export interface ChartPromptsAnswer extends Chart, BaseBuildingBlockPromptAnswer {}
-
-// // ToDo - not sure if should extend from FilterBar
-// export interface FilterBarPromptsAnswer extends FilterBar, BaseBuildingBlockPromptAnswer {}
 
 export type SupportedAnswers = TablePromptsAnswer | ChartPromptsAnswer | FilterBarPromptsAnswer;
