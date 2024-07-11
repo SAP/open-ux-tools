@@ -294,7 +294,7 @@ function writeDestinationResults(
                 Array.from(destinationTableFields.values()),
                 Array.from(destinationTableFields.keys()).map((f) => destination?.[f])
             ];
-            writer.addTableInDetails(t('markdownText.showDestinations'), table);
+            writer.addTable(table);
         }
     } else {
         writer.addLine(t('markdownText.noDestinationDetails'));
@@ -315,7 +315,7 @@ function writeDestinations(writer: MarkdownWriter, destinations: Endpoint[] = []
             .sort((a, b) => a.Name.localeCompare(b.Name, undefined, { numeric: true, caseFirst: 'lower' }))
             .map((d) => Array.from(destinationTableFields.keys()).map((f) => d[f]));
         table.unshift(Array.from(destinationTableFields.values()));
-        writer.addTable(table);
+        writer.addTableInDetails(t('markdownText.showDestinations'), table);
     } else {
         writer.addLine(t('markdownText.noDestinations'));
     }
