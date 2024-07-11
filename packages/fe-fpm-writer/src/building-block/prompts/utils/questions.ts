@@ -291,7 +291,7 @@ export function getFilterBarIdPrompt(
  */
 async function getFilterBarIdsInFile(viewOrFragmentPath: string, fs: Editor): Promise<string[]> {
     const ids: string[] = [];
-    let buildingBlockSelector = 'macros:FilterBar';
+    const buildingBlockSelector = 'macros:FilterBar';
     const xmlContent = fs.read(viewOrFragmentPath);
     const errorHandler = (level: string, message: string): void => {
         throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
