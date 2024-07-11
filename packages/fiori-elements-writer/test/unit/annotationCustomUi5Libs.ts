@@ -1,8 +1,8 @@
 import type { FioriElementsApp, LROPSettings } from '../../src';
 import { OdataVersion, TemplateType } from '../../src';
 import { feBaseConfig, getTestData } from '../common';
-import { getAnnotationV4Libs } from '../../src/data/annotationReuseLibs';
-import { getUi5Libs } from '../../src/data/defaults';
+import { getAnnotationV4Libs } from '../../src/data/annotationCustomUi5Libs';
+import { setAppDefaults } from '../../src/data/defaults';
 
 describe('getAnnotationV4Libs', () => {
     test('Metadata has the required annotation to return a Reuse lib', () => {
@@ -19,9 +19,8 @@ describe('getAnnotationV4Libs', () => {
             })
         } as FioriElementsApp<LROPSettings>;
 
-        expect(getUi5Libs(feApp.template.type, feApp.service.version, feApp.service.metadata as string)).toContain(
-            'sap.nw.core.gbt.notes.lib.reuse'
-        );
+        setAppDefaults(feApp);
+        expect(feApp.ui5?.customUi5Libs).toContain('sap.nw.core.gbt.notes.lib.reuse');
     });
 
     test('Metadata does not contain the required annotation to return a Reuse lib', () => {
@@ -38,9 +37,8 @@ describe('getAnnotationV4Libs', () => {
             })
         } as FioriElementsApp<LROPSettings>;
 
-        expect(getUi5Libs(feApp.template.type, feApp.service.version, feApp.service.metadata as string)).not.toContain(
-            'sap.nw.core.gbt.notes.lib.reuse'
-        );
+        setAppDefaults(feApp);
+        expect(feApp.ui5?.customUi5Libs).not.toContain('sap.nw.core.gbt.notes.lib.reuse');
         expect(getAnnotationV4Libs(feApp.service.metadata as string)).toEqual([]);
     });
 
@@ -58,8 +56,7 @@ describe('getAnnotationV4Libs', () => {
             })
         } as FioriElementsApp<LROPSettings>;
 
-        expect(getUi5Libs(feApp.template.type, feApp.service.version, feApp.service.metadata as string)).not.toContain(
-            'sap.nw.core.gbt.notes.lib.reuse'
-        );
+        setAppDefaults(feApp);
+        expect(feApp.ui5?.customUi5Libs).not.toContain('sap.nw.core.gbt.notes.lib.reuse');
     });
 });

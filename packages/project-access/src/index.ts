@@ -2,6 +2,7 @@ export { FileName, DirName, FioriToolsSettings } from './constants';
 export { getFilePaths } from './file';
 export {
     addPackageDevDependency,
+    clearCdsModuleCache,
     createApplicationAccess,
     createProjectAccess,
     findAllApps,
@@ -19,6 +20,8 @@ export {
     getCdsRoots,
     getCdsServices,
     getCapI18nFolderNames,
+    getSpecification,
+    getSpecificationPath,
     getI18nPropertiesPaths,
     getMinUI5VersionFromManifest,
     getMinUI5VersionAsArray,
@@ -34,9 +37,9 @@ export {
     loadModuleFromProject,
     readCapServiceMetadataEdmx,
     readUi5Yaml,
+    refreshSpecificationDistTags,
     toReferenceUri,
     filterDataSourcesByType,
-    clearCdsModuleCache,
     updatePackageScript
 } from './project';
 export * from './types';
