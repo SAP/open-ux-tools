@@ -10,6 +10,8 @@ import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-s
 import { getAbapOnPremQuestions } from '../../../../../src/prompts/datasources/sap-system/abap-on-prem/questions';
 import LoggerHelper from '../../../../../src/prompts/logger-helper';
 import { PromptState } from '../../../../../src/utils';
+import * as utils from '../../../../../src/utils';
+import { hostEnvironment } from '../../../../../src/types';
 
 const v2Metadata =
     '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"></edmx:Edmx>';
@@ -518,7 +520,7 @@ describe('questions', () => {
         expect(defaultIndex).toEqual(undefined);
     });
 
-    test('Should validate the selected service by loading the service metadata', async () => {
+    test('Should validate the selected service by retreiving the service information', async () => {
         const annotations = [
             {
                 Definitions: v2Annotations,
@@ -558,6 +560,53 @@ describe('questions', () => {
         });
         expect(validationResult).toBe(true);
         expect(serviceSpy).toHaveBeenCalledWith(selectedService.servicePath);
+        expect(PromptState.odataService).toEqual({
+            annotations: annotations,
+            metadata: v2Metadata,
+            odataVersion: '2',
+            origin: 'http://some.abap.system:1234',
+            servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002'
+        });
+    });
+
+    test('Should get the service detailed on CLI using `when` condition(list validators dont run on CLI)', async () => {
+        const getHostEnvSpy = jest.spyOn(utils, 'getHostEnvironment').mockReturnValueOnce(hostEnvironment.cli);
+        const annotations = [
+            {
+                Definitions: v2Annotations,
+                TechnicalName: 'ZTRAVEL_DESK_SRV',
+                Version: '0001',
+                Uri: 'http://some.abap.system:1234/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002'
+            }
+        ];
+        connectionValidatorMock.catalogs = {
+            [ODataVersion.v2]: {
+                listServices: jest.fn().mockResolvedValue([serviceV2a]),
+                getAnnotations: jest.fn().mockResolvedValue(annotations)
+            },
+            [ODataVersion.v4]: {
+                listServices: jest.fn().mockResolvedValue([serviceV4a])
+            }
+        };
+        connectionValidatorMock.serviceProvider = {
+            service: jest.fn().mockReturnValue({
+                metadata: jest.fn().mockResolvedValue(v2Metadata)
+            } as Partial<ODataService>)
+        } as Partial<ServiceProvider>;
+
+        const newSystemQuestions = getAbapOnPremQuestions();
+        expect(getHostEnvSpy).toHaveBeenCalled();
+        const cliServicePromptName = newSystemQuestions.find((question) => question.name === 'cliServicePromptName');
+        expect(
+            await (cliServicePromptName?.when as Function)({
+                systemUrl: 'http://some.abap.system:1234',
+                serviceSelection: {
+                    servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002',
+                    serviceODataVersion: '2',
+                    serviceType: 'Not Classified'
+                }
+            })
+        ).toBe(false); // We will never show this prompt
         expect(PromptState.odataService).toEqual({
             annotations: annotations,
             metadata: v2Metadata,
