@@ -110,7 +110,8 @@ function addFioriToolsMiddlwares(ui5Config: UI5Config, config: AdpWriterConfig) 
             url: config?.ui5?.frameworkUrl,
             version: config?.ui5?.minVersion ?? '' //default to latest if version is not set
         },
-        backend: [backendConfig as FioriToolsProxyConfigBackend]
+        backend: [backendConfig as FioriToolsProxyConfigBackend],
+        afterMiddleware: 'fiori-tools-preview'
     });
 }
 
