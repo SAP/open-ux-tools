@@ -1,7 +1,5 @@
-import type { UI5FlexLayer, ManifestNamespace } from '@sap-ux/project-access';
+import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { DescriptorVariant, AdpPreviewConfig } from '../types';
-import type { ToolsLogger } from '@sap-ux/logger';
-import { getManifest } from './abap';
 import { readFileSync, existsSync } from 'fs';
 import { join, isAbsolute } from 'path';
 import { UI5Config } from '@sap-ux/ui5-config';
@@ -24,23 +22,6 @@ export function isCustomerBase(layer: UI5FlexLayer): boolean {
  */
 export function getVariant(basePath: string): DescriptorVariant {
     return JSON.parse(readFileSync(join(basePath, 'webapp', 'manifest.appdescr_variant'), 'utf-8'));
-}
-
-/**
- * Check if the project is a CF project.
- *
- * @param {string} basePath - The path to the adaptation project.
- * @returns {boolean} true if the project is a CF project, false otherwise
- */
-export function isCFEnvironment(basePath: string): boolean {
-    const configJsonPath = join(basePath, '.adp', 'config.json');
-    if (existsSync(configJsonPath)) {
-        const config = JSON.parse(readFileSync(configJsonPath, 'utf-8'));
-        if (config.environment === 'CF') {
-            return true;
-        }
-    }
-    return false;
 }
 
 /**
@@ -71,27 +52,4 @@ export async function getAdpConfig(basePath: string, yamlPath: string): Promise<
         throw new Error('No system configuration found in ui5.yaml');
     }
     return adp;
-}
-
-type DataSources = Record<string, ManifestNamespace.DataSource>;
-
-/**
- * Returns the adaptation project configuration, throws an error if not found.
- *
- * @param {string} reference - The base application id.
- * @param {AdpPreviewConfig} adpConfig - The adaptation project configuration.
- * @param {ToolsLogger} logger - The logger.
- * @returns {Promise<DataSources>} data sources from base application manifest
- */
-export async function getManifestDataSources(
-    reference: string,
-    adpConfig: AdpPreviewConfig,
-    logger: ToolsLogger
-): Promise<DataSources> {
-    const manifest = await getManifest(reference, adpConfig, logger);
-    const dataSources = manifest['sap.app'].dataSources;
-    if (!dataSources) {
-        throw new Error('No data sources found in the manifest');
-    }
-    return dataSources;
 }

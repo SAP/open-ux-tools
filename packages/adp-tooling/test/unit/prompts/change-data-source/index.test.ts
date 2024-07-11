@@ -21,9 +21,11 @@ describe('getPrompts', () => {
             }
         }
     } as Record<string, ManifestNamespace.DataSource>;
+
     beforeAll(async () => {
         await i18n.initI18n();
     });
+
     test('return prompts', () => {
         const filteredDataSources = {
             'mainService': dataSources['mainService']
