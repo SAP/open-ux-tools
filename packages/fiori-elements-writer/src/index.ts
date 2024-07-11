@@ -23,6 +23,7 @@ import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
 import { initI18n } from './i18n';
 import { getBootstrapResourceUrls } from '@sap-ux/fiori-generator-shared';
+import { getTemplateOptions } from './data/defaults';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -65,8 +66,6 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     await initI18n();
     // Clone rather than modifying callers refs
     const feApp: FioriElementsApp<T> = cloneDeep(data);
-    // Determine if the project type is 'EDMXBackend'.
-    const isEdmxProjectType = feApp.app.projectType === 'EDMXBackend';
     
     // Ensure input data contains at least the mandatory properties required for app generation
     validateRequiredProperties(feApp);
@@ -83,19 +82,6 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     await addOdataService(basePath, feApp.service, fs);
 
     const coercedUI5Version = semVer.coerce(feApp.ui5?.version)!;
-    // Determine if the changes preview should be enabled based on the project type and UI5 version
-    const changesPreview = isEdmxProjectType && feApp.ui5?.version
-        ? semVer.lt(coercedUI5Version, changesPreviewToVersion) // Check if the coerced version is less than the required version
-        : false;
-
-    // Determine if the changes loader should be enabled based on the project type and service version
-    const changesLoader = isEdmxProjectType && feApp.service.version === OdataVersion.v2;
-
-    // Define template options with the determined changes preview and changes loader settings
-    const templateOptions: TemplateOptions = {
-        changesPreview,
-        changesLoader
-    };
     // Add new files from templates e.g.
     const rootTemplatesPath = join(__dirname, '..', 'templates');
     // Add templates common to all template types
@@ -105,20 +91,44 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     if (feApp.appOptions?.typescript === true) {
         ignore = getTypeScriptIgnoreGlob(feApp, coercedUI5Version);
     }
-    // Get the resource URLs for the UShell bootstrap and UI bootstrap based on the project type and UI5 framework details
+    // Determine if the project type is 'EDMXBackend'.
+    const isEdmxProjectType = feApp.app.projectType === 'EDMXBackend';
+    // Get resource bootstrap URLs based on the project type
     const { uShellBootstrapResourceUrl, uiBootstrapResourceUrl } = getBootstrapResourceUrls(
-        isEdmxProjectType, 
-        feApp.ui5?.frameworkUrl, 
+        isEdmxProjectType,
+        feApp.ui5?.frameworkUrl,
         feApp.ui5?.version
     );
-    // Get the UI5 libraries required for the project based on the project type
     const ui5Libs = isEdmxProjectType ? feApp.ui5?.ui5Libs : undefined;
+    // Define template options with changes preview and loader settings based on project type
+    const templateOptions = getTemplateOptions(
+        isEdmxProjectType,
+        feApp.service.version,
+        feApp.ui5?.version
+    );
+
     const appConfig = {
         ...feApp,
+        templateOptions,
         uShellBootstrapResourceUrl,
         uiBootstrapResourceUrl,
-        ui5Libs 
+        ui5Libs,
     };
+
+    // Copy templates with configuration
+    fs.copyTpl(
+        join(rootTemplatesPath, 'common', 'add', '**/*.*'),
+        basePath,
+        {
+            ...appConfig,
+            escapeFLPText,
+        },
+        undefined,
+        {
+            globOptions: { ignore, dot: true },
+        }
+    );
+
     fs.copyTpl(
         join(rootTemplatesPath, 'common', 'add', '**/*.*'),
         basePath,
