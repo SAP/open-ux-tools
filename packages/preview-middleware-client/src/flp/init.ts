@@ -36,6 +36,9 @@ const UI5_LIBS = [
     'sap.zen'
 ];
 
+export const sandboxPathUi5V1 = `/test-resources/sap/ushell/bootstrap/sandbox.js`;
+export const sandboxPathUi5V2 = `/test-resources/sap/ushell/bootstrap/sandbox2.js`;
+
 interface Manifest {
     ['sap.ui5']?: {
         dependencies?: {
@@ -230,20 +233,28 @@ export function setI18nTitle(resourceBundle: ResourceBundle, i18nKey = 'appTitle
  * @param params.appUrls JSON containing a string array of application urls
  * @param params.flex JSON containing the flex configuration
  * @param params.customInit path to the custom init module to be called
- * @returns promise
+ * @param params.bootstrapPath path to the right sandbox js for the bootstrap
  */
 export async function init({
     appUrls,
     flex,
-    customInit
+    customInit,
+    bootstrapPath
 }: {
     appUrls?: string | null;
     flex?: string | null;
     customInit?: string | null;
+    bootstrapPath: string | null; 
 }): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
     const container = sap?.ushell?.Container ?? (sap.ui.require('sap/ushell/Container') as typeof sap.ushell.Container);
     let scenario: string = '';
+    const version = sap.ui.version;
+    const major = parseInt(version.split('.')[0], 10);
+    if (bootstrapPath && major >= 2) {
+        bootstrapPath.replace(sandboxPathUi5V1, sandboxPathUi5V2);
+    }
+
     // Register RTA if configured
     if (flex) {
         const flexSettings = JSON.parse(flex) as FlexSettings;
@@ -251,7 +262,6 @@ export async function init({
         container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
-                const version = sap.ui.version;
                 const minor = parseInt(version.split('.')[1], 10);
                 const view = event.getParameter('componentInstance');
                 const flexSettings = JSON.parse(flex) as FlexSettings;
@@ -313,6 +323,7 @@ if (bootstrapConfig) {
     init({
         appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
         flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
-        customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit')
+        customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit'),
+        bootstrapPath: bootstrapConfig.getAttribute('data-open-ux-preview-bootstrapPath'),
     }).catch(() => Log.error('Sandbox initialization failed.'));
 }

@@ -40,6 +40,7 @@ export interface TemplateConfig {
         libs: string;
         theme: string;
         flex: (CustomConnector | FlexConnector)[];
+        bootstrapPath: string;
         bootstrapOptions: string;
         resources: Record<string, string>;
     };
@@ -64,6 +65,9 @@ export const PREVIEW_URL = {
     },
     api: '/preview/api'
 } as const;
+
+export const sandboxPathUi5V1 = `/test-resources/sap/ushell/bootstrap/sandbox.js` as const;
+
 
 /**
  * Default theme
@@ -261,8 +265,9 @@ export function createFlpTemplateConfig(config: FlpConfig, manifest: Partial<Man
     const ui5Theme = config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
     const id = manifest['sap.app']?.id ?? '';
     const ns = id.replace(/\./g, '/');
+    const basePath = posix.relative(posix.dirname(config.path), '/') ?? '.';
     return {
-        basePath: posix.relative(posix.dirname(config.path), '/') ?? '.',
+        basePath,
         apps: {},
         init: config.init ? ns + config.init : undefined,
         ui5: {
@@ -272,7 +277,8 @@ export function createFlpTemplateConfig(config: FlpConfig, manifest: Partial<Man
             resources: {
                 [PREVIEW_URL.client.ns]: PREVIEW_URL.client.url
             },
-            bootstrapOptions: ''
+            bootstrapOptions: '',
+            bootstrapPath: `${basePath}${sandboxPathUi5V1}`
         },
         locateReuseLibsScript: config.libs
     };
