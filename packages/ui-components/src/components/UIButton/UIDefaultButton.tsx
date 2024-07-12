@@ -41,7 +41,8 @@ const ICON_SELECTOR = 'svg > path, svg > rect';
 export interface UIDefaultButtonProps extends IButtonProps {
     /**
      * Changes the visual presentation of the button to be transparent.
-     * @defaultvalue false
+     *
+     * @default false
      */
     transparent?: boolean;
 }
@@ -70,7 +71,6 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
      * @param checked Is styles for checked state.
      * @param primary Is button primary.
      * @param transparent Is button transparent.
-     *
      * @returns Styles for hover and press States of root button element.
      */
     private getInteractionStyle(checked: boolean, primary?: boolean, transparent?: boolean): IStyle {
@@ -135,7 +135,6 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
      * Method returns styles of root button element.
      *
      * @param props Button props.
-     *
      * @returns Styles of root button element.
      */
     protected setStyle = (props: UIDefaultButtonProps): IButtonStyles => {

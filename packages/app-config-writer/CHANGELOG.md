@@ -1,5 +1,52 @@
 # @sap-ux/app-config-writer
 
+## 0.4.4
+
+### Patch Changes
+
+-   Updated dependencies [0f3cf6b]
+    -   @sap-ux/project-access@1.25.1
+    -   @sap-ux/axios-extension@1.15.1
+
+## 0.4.3
+
+### Patch Changes
+
+-   Updated dependencies [f076dd3]
+    -   @sap-ux/project-access@1.25.0
+    -   @sap-ux/axios-extension@1.15.1
+
+## 0.4.2
+
+### Patch Changes
+
+-   Updated dependencies [0ae685e]
+    -   @sap-ux/project-access@1.24.0
+    -   @sap-ux/axios-extension@1.15.1
+
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [abf491a7]
+    -   @sap-ux/axios-extension@1.15.1
+
+## 0.4.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/axios-extension@1.15.0
+    -   @sap-ux/btp-utils@0.15.0
+    -   @sap-ux/logger@0.6.0
+    -   @sap-ux/project-access@1.23.0
+    -   @sap-ux/store@0.7.0
+    -   @sap-ux/ui5-config@0.23.0
+
 ## 0.3.84
 
 ### Patch Changes
