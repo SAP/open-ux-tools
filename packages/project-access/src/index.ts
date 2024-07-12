@@ -40,7 +40,8 @@ export {
     refreshSpecificationDistTags,
     toReferenceUri,
     filterDataSourcesByType,
-    updatePackageScript
+    updatePackageScript,
+    findCapProjectRoot
 } from './project';
 export * from './types';
 export * from './library';
