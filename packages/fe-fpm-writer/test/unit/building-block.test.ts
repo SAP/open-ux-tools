@@ -1,4 +1,3 @@
-import type { Store } from 'mem-fs';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import { join } from 'path';
