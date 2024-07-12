@@ -255,40 +255,34 @@ export async function findAllApps(
     return findResults.applications ?? [];
 }
 
-type innerResult = {relevant: boolean, value?: AllAppResults};
-async function inner (manifestPath: string): Promise<innerResult> {
-    try {
-        const manifest = await readJSON<Manifest>(manifestPath);
-        if (manifest['sap.app']?.id && manifest['sap.app'].type === 'application') {
-            const roots = await findRootsForPath(dirname(manifestPath));
-            if (roots && !(await fileExists(join(roots.appRoot, '.adp', FileName.AdaptationConfig)))) {
-                return {relevant: true, value: { appRoot: roots.appRoot, projectRoot: roots.projectRoot, manifest, manifestPath }};
-            }
-        }
-    } catch {
-// ignore exceptions for invalid manifests
-    }
-    return {relevant: false};
-}
-
 /**
  * Filter Fiori apps from a list of files.
  *
  * @param pathMap - map of files. Key is the path, on first read parsed content will be set as value to prevent multiple reads of a file.
  * @returns - results as path to apps plus files already parsed, e.g. manifest.json
  */
-async function filterApplications(pathMap: FileMapAndCache, parallel: boolean = false): Promise<AllAppResults[]> {
-    const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
-    let innerResults: innerResult[] = [];
-    if (parallel){
-        innerResults = await Promise.all(manifestPaths.map(inner));
-    } else {
-        for (const manifestPath of manifestPaths) {
-                innerResults.push(await (inner)(manifestPath));
+async function filterApplications(pathMap: FileMapAndCache): Promise<AllAppResults[]> {
+    const filterApplicationByManifest = async (manifestPath: string) => {
+        pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
+        const manifest: Manifest = pathMap[manifestPath] as Manifest;   // cast needed as pathMap also allows strings and any other objects
+                                                                        // cast allowed, as this is the only place pathMap is filled for manifests
+        if (manifest['sap.app'].id && manifest['sap.app'].type === 'application') {
+            const roots = await findRootsForPath(dirname(manifestPath));
+            if (roots && !(await fileExists(join(roots.appRoot, '.adp', FileName.AdaptationConfig)))) {
+                return { appRoot: roots.appRoot, projectRoot: roots.projectRoot, manifest: manifest, manifestPath };
+            }
         }
+        throw new Error("Not relevant");
     }
-    return innerResults.filter(innerResult => innerResult.relevant)  // returning only valid applications
-        .map(innerResult => innerResult.value) as AllAppResults[];   // casting needed (innerResult.value allows also undefined) and allowed due to filtering
+
+    const isFulFilled = (input: PromiseSettledResult<AllAppResults>): input is PromiseFulfilledResult<AllAppResults> => input.status === "fulfilled";
+
+    const manifestPaths = Object.keys(pathMap)
+        .filter(path => basename(path) === FileName.Manifest);
+
+    return (await Promise.allSettled(manifestPaths.map(filterApplicationByManifest)))
+        .filter(isFulFilled)                // returning only valid applications
+        .map(({value}) => value);  
 }
 
 /**
@@ -425,7 +419,7 @@ function getFilterFileNames(artifacts: FioriArtifactTypes[]): string[] {
 export async function findFioriArtifacts(options: {
     wsFolders?: readonly WorkspaceFolder[] | string[];
     artifacts: FioriArtifactTypes[];
-}, parallel: boolean = false): Promise<FoundFioriArtifacts> {
+}): Promise<FoundFioriArtifacts> {
     const results: FoundFioriArtifacts = {};
     const fileNames: string[] = getFilterFileNames(options.artifacts);
     const wsRoots = wsFoldersToRootPaths(options.wsFolders);
@@ -443,7 +437,7 @@ export async function findFioriArtifacts(options: {
         }
     }
     if (options.artifacts.includes('applications')) {
-        results.applications = await filterApplications(pathMap, parallel);
+        results.applications = await filterApplications(pathMap);
     }
     if (options.artifacts.includes('adaptations')) {
         results.adaptations = await filterAdaptations(pathMap);
