@@ -68,7 +68,6 @@ export const PREVIEW_URL = {
 
 export const sandboxPathUi5V1 = `/test-resources/sap/ushell/bootstrap/sandbox.js` as const;
 
-
 /**
  * Default theme
  */

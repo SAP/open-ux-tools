@@ -324,6 +324,6 @@ if (bootstrapConfig) {
         appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
         flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
         customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit'),
-        bootstrapPath: bootstrapConfig.getAttribute('data-open-ux-preview-bootstrapPath'),
+        bootstrapPath: bootstrapConfig.getAttribute('data-open-ux-preview-bootstrapPath')
     }).catch(() => Log.error('Sandbox initialization failed.'));
 }
