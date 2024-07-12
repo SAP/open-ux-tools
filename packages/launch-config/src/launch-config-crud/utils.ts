@@ -1,5 +1,6 @@
 import { basename, join } from 'path';
 import type { ODataVersion } from '@sap-ux/project-access';
+import { FileName } from '@sap-ux/project-access';
 import type { FioriOptions, LaunchConfig, LaunchConfigEnv } from '../types';
 import { Arguments, FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID } from '../types';
 import { default as yargsParser } from 'yargs-parser';
@@ -19,12 +20,12 @@ function getArgs(options: FioriOptions): string[] | undefined {
 
     if (options.useMockData && !options.ui5Local) {
         const config = Arguments.Config;
-        args.push(config, 'ui5-mock.yaml');
+        args.push(config, FileName.Ui5MockYaml);
     }
 
     if (options.ui5Local) {
         const config = Arguments.Config;
-        args.push(config, 'ui5-local.yaml');
+        args.push(config, FileName.Ui5LocalYaml);
 
         if (options.ui5LocalVersion) {
             args.push(Arguments.FrameworkVersion, options.ui5LocalVersion);
@@ -162,10 +163,10 @@ export function getFioriOptions(
         if (parsedArguments.open) {
             startFile = parsedArguments.open;
         }
-        if (parsedArguments.config === 'ui5-mock.yaml') {
+        if (parsedArguments.config === FileName.Ui5MockYaml) {
             isMockDataEnabled = true;
         }
-        if (parsedArguments.config === 'ui5-local.yaml') {
+        if (parsedArguments.config === FileName.Ui5LocalYaml) {
             isMockDataEnabled = true;
             ui5Local = true;
             if (parsedArguments['framework-version']) {
