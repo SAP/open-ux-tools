@@ -22,6 +22,8 @@ import { changesPreviewToVersion, escapeFLPText } from './data/templateAttribute
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
 import { initI18n } from './i18n';
+import { getBootstrapResourceUrls } from '@sap-ux/fiori-generator-shared';
+import { getTemplateOptions } from './data/defaults';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -64,8 +66,6 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     await initI18n();
     // Clone rather than modifying callers refs
     const feApp: FioriElementsApp<T> = cloneDeep(data);
-    // Determine if the project type is 'EDMXBackend'.
-    const isEdmxProjectType = feApp.app.projectType === 'EDMXBackend';
     
     // Ensure input data contains at least the mandatory properties required for app generation
     validateRequiredProperties(feApp);
@@ -82,11 +82,6 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     await addOdataService(basePath, feApp.service, fs);
 
     const coercedUI5Version = semVer.coerce(feApp.ui5?.version)!;
-    const templateOptions: TemplateOptions = {
-        changesPreview: feApp.ui5?.version ? semVer.lt(coercedUI5Version, changesPreviewToVersion) : false,
-        changesLoader: feApp.service.version === OdataVersion.v2
-    };
-
     // Add new files from templates e.g.
     const rootTemplatesPath = join(__dirname, '..', 'templates');
     // Add templates common to all template types
@@ -96,12 +91,49 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     if (feApp.appOptions?.typescript === true) {
         ignore = getTypeScriptIgnoreGlob(feApp, coercedUI5Version);
     }
-    
+    // Determine if the project type is 'EDMXBackend'.
+    const isEdmxProjectType = feApp.app.projectType === 'EDMXBackend';
+    // Get resource bootstrap URLs based on the project type
+    const { uShellBootstrapResourceUrl, uiBootstrapResourceUrl } = getBootstrapResourceUrls(
+        isEdmxProjectType,
+        feApp.ui5?.frameworkUrl,
+        feApp.ui5?.version
+    );
+    const ui5Libs = isEdmxProjectType ? feApp.ui5?.ui5Libs : undefined;
+    // Define template options with changes preview and loader settings based on project type
+    const templateOptions = getTemplateOptions(
+        isEdmxProjectType,
+        feApp.service.version,
+        feApp.ui5?.version
+    );
+
+    const appConfig = {
+        ...feApp,
+        templateOptions,
+        uShellBootstrapResourceUrl,
+        uiBootstrapResourceUrl,
+        ui5Libs,
+    };
+
+    // Copy templates with configuration
     fs.copyTpl(
         join(rootTemplatesPath, 'common', 'add', '**/*.*'),
         basePath,
         {
-            ...feApp,
+            ...appConfig,
+            escapeFLPText,
+        },
+        undefined,
+        {
+            globOptions: { ignore, dot: true },
+        }
+    );
+
+    fs.copyTpl(
+        join(rootTemplatesPath, 'common', 'add', '**/*.*'),
+        basePath,
+        {
+            ...appConfig,
             templateOptions,
             escapeFLPText
         },
@@ -113,6 +145,8 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
 
     // Extend common files
     const packagePath = join(basePath, 'package.json');
+    
+    // Extend package.json
     fs.extendJSON(
         packagePath,
         JSON.parse(render(fs.read(join(rootTemplatesPath, 'common', 'extend', 'package.json')), feApp, {}))

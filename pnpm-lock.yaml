@@ -1097,6 +1097,9 @@ importers:
       '@sap-ux/fe-fpm-writer':
         specifier: workspace:*
         version: link:../fe-fpm-writer
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
         version: link:../odata-service-writer
@@ -1158,6 +1161,9 @@ importers:
 
   packages/fiori-freestyle-writer:
     dependencies:
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
         version: link:../odata-service-writer

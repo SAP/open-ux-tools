@@ -11,6 +11,7 @@ import { FreestyleApp, TemplateType } from './types';
 import { setDefaults, escapeFLPText } from './defaults';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { initI18n } from './i18n';
+import { getBootstrapResourceUrls } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -33,9 +34,24 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 
     // add new and overwrite files from templates e.g.
     const tmplPath = join(__dirname, '..', 'templates');
-    // Common files
     const ignore = [isTypeScriptEnabled ? '**/*.js' : '**/*.ts'];
-    fs.copyTpl(join(tmplPath, 'common', 'add'), basePath, { ...ffApp, escapeFLPText }, undefined, {
+    
+    // Determine if the project type is 'EDMXBackend'.
+    const isEdmxProjectType = ffApp.app.projectType === 'EDMXBackend';
+    // Get the resource URLs for the UShell bootstrap and UI bootstrap based on the project type and UI5 framework details
+    const { uShellBootstrapResourceUrl, uiBootstrapResourceUrl } = getBootstrapResourceUrls(isEdmxProjectType, ffApp.ui5?.frameworkUrl, ffApp.ui5?.version);
+    const appConfig = {
+        ...ffApp,
+        uShellBootstrapResourceUrl,
+        uiBootstrapResourceUrl 
+    }
+    fs.copyTpl(
+        join(tmplPath, 'common', 'add'), 
+        basePath, { 
+            ...appConfig, 
+            escapeFLPText 
+        }, 
+        undefined, {
         globOptions: { ignore, dot: true }
     });
     fs.copyTpl(join(tmplPath, ffApp.template.type, 'add'), basePath, ffApp, undefined, {
@@ -62,8 +78,6 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         render(fs.read(join(extRoot, 'i18n', 'i18n.properties')), ffApp, {})
     );
 
-    // Determine if the project type is 'EDMXBackend'.
-    const isEdmxProjectType = ffApp.app.projectType === 'EDMXBackend';
     // package.json
     const packagePath = join(basePath, 'package.json');
     // extend package.json with scripts for non-CAP projects
