@@ -186,7 +186,7 @@ async function getSpecificationVersion(root: string, options?: { logger?: Logger
  */
 export async function getSpecificationPath(root: string, options?: { logger?: Logger }): Promise<string> {
     const logger = options?.logger;
-    const moduleName = '@sap/ux-specification';
+    const moduleName = join('@sap', 'ux-specification');
     if (await hasSpecificationDevDependency(root)) {
         const modulePath = await getModulePath(root, moduleName);
         logger?.debug(`Specification root found in project '${root}'`);
