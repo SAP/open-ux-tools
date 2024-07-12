@@ -64,6 +64,14 @@ const questions: PromptQuestion[] = [
         name: 'validation',
         type: 'list',
         choices
+    },
+    {
+        message: 'With description and placeholder',
+        name: 'description',
+        type: 'list',
+        additionalInfo: 'Test description',
+        placeholder: 'Test placeholder',
+        choices
     }
 ];
 
