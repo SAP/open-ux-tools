@@ -8,19 +8,6 @@ import * as testManifestContent from './sample/building-block/webapp/manifest.js
 import { promises as fsPromises } from 'fs';
 import { clearTestOutput, writeFilesForDebugging } from '../common';
 
-const memFsEditor = { create };
-jest.mock('mem-fs-editor', () => {
-    const editor = jest.requireActual<{ create: typeof create }>('mem-fs-editor');
-    return {
-        ...editor,
-        create: jest.fn().mockImplementation((store: Store) => {
-            const memFs: Editor = editor.create(store);
-            memFs.commit = jest.fn().mockImplementation((cb) => cb());
-            return memFs;
-        })
-    };
-});
-
 describe('Building Blocks', () => {
     let fs: Editor;
     let testAppPath: string;
@@ -184,31 +171,23 @@ describe('Building Blocks', () => {
 
     test('fails to read view content', async () => {
         const basePath = join(testAppPath, 'validate-aggregation-path');
-        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
-        jest.spyOn(fs, 'exists').mockReturnValue(true);
-        // Test generator with an xml file existing but fails to read
+        // Test code snippet with unexisting xml file
         expect(() =>
-            generateBuildingBlock<FilterBar>(
-                basePath,
-                {
-                    viewOrFragmentPath: 'invalidXmlViewFilePath',
-                    aggregationPath: 'testAggregationPath',
-                    buildingBlockData: {
-                        id: 'testFilterBar',
-                        buildingBlockType: BuildingBlockType.FilterBar
-                    }
-                },
-                fs
-            )
+            getSerializedFileContent<FilterBar>(basePath, {
+                viewOrFragmentPath: 'invalidXmlViewFilePath',
+                aggregationPath: 'testAggregationPath',
+                buildingBlockData: {
+                    id: 'testFilterBar',
+                    buildingBlockType: BuildingBlockType.FilterBar
+                }
+            })
         ).toThrowError(/Unable to read xml view file/);
     });
 
-    test('generate building block, create fs', async () => {
+    test('generate building block, no fs', async () => {
         const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
         const basePath = join(__dirname, 'sample/building-block/webapp-prompts');
-        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
-        const createFsSpy = jest.spyOn(memFsEditor, 'create');
-        generateBuildingBlock<FilterBar>(basePath, {
+        const testFS = generateBuildingBlock<FilterBar>(basePath, {
             viewOrFragmentPath: xmlViewFilePath,
             aggregationPath: aggregationPath,
             buildingBlockData: {
@@ -216,7 +195,7 @@ describe('Building Blocks', () => {
                 buildingBlockType: BuildingBlockType.FilterBar
             }
         });
-        expect(createFsSpy).toHaveBeenCalled();
+        expect(testFS.read(join(basePath, xmlViewFilePath))).toMatchSnapshot();
     });
 
     describe('Generate with just ID and xml view without macros namespace', () => {
