@@ -1,5 +1,13 @@
 # @sap-ux/cap-config-writer
 
+## 0.6.6
+
+### Patch Changes
+
+-   Updated dependencies [e7b9184]
+    -   @sap-ux/project-access@1.25.3
+    -   @sap-ux/odata-service-inquirer@0.4.6
+
 ## 0.6.5
 
 ### Patch Changes
