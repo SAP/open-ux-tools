@@ -110,7 +110,7 @@ function getMetaPath(metaPath?: BuildingBlockMetaPath, usePlaceholders?: boolean
     if (!metaPath) {
         return usePlaceholders ? `/${PLACEHOLDERS.entitySet}/${PLACEHOLDERS.qualifier}` : '';
     }
-    const { entitySet = '', qualifier = '', bindingContextType = 'absolute' } = metaPath;
+    const { entitySet, qualifier, bindingContextType = 'absolute' } = metaPath;
     let entityPath = entitySet || (usePlaceholders ? PLACEHOLDERS.entitySet : '');
     const lastIndex = entityPath.lastIndexOf('.');
     entityPath = lastIndex >= 0 ? entityPath.substring?.(lastIndex + 1) : entityPath;

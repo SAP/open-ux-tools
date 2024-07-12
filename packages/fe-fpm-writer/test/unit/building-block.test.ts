@@ -1,12 +1,24 @@
-import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
-import { create } from 'mem-fs-editor';
+import { create as createStorage, Store } from 'mem-fs';
+import { create, type Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import type { Chart, Field, FilterBar, Table } from '../../src';
 import { BuildingBlockType, generateBuildingBlock, getSerializedFileContent } from '../../src';
 import * as testManifestContent from './sample/building-block/webapp/manifest.json';
 import { promises as fsPromises } from 'fs';
 import { clearTestOutput, writeFilesForDebugging } from '../common';
+
+const memFsEditor = { create };
+jest.mock('mem-fs-editor', () => {
+    const editor = jest.requireActual<{ create: typeof create }>('mem-fs-editor');
+    return {
+        ...editor,
+        create: jest.fn().mockImplementation((store: Store) => {
+            const memFs: Editor = editor.create(store);
+            memFs.commit = jest.fn().mockImplementation((cb) => cb());
+            return memFs;
+        })
+    };
+});
 
 describe('Building Blocks', () => {
     let fs: Editor;
@@ -21,6 +33,7 @@ describe('Building Blocks', () => {
     });
 
     beforeEach(async () => {
+        jest.requireActual('mem-fs-editor');
         fs = create(createStorage());
         testAppPath = join(testOutputRoot, `${Date.now()}`);
         fs.delete(testAppPath);
@@ -166,6 +179,43 @@ describe('Building Blocks', () => {
                 fs
             )
         ).toThrowError(/Unable to parse xml view file/);
+    });
+
+    test('fails to read view content', async () => {
+        const basePath = join(testAppPath, 'validate-aggregation-path');
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        jest.spyOn(fs, 'exists').mockReturnValue(true);
+        // Test generator with an xml file existing but fails to read
+        expect(() =>
+            generateBuildingBlock<FilterBar>(
+                basePath,
+                {
+                    viewOrFragmentPath: 'invalidXmlViewFilePath',
+                    aggregationPath: 'testAggregationPath',
+                    buildingBlockData: {
+                        id: 'testFilterBar',
+                        buildingBlockType: BuildingBlockType.FilterBar
+                    }
+                },
+                fs
+            )
+        ).toThrowError(/Unable to read xml view file/);
+    });
+
+    test('generate building block, create fs', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+        const basePath = join(__dirname, 'sample/building-block/webapp-prompts');
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        const createFsSpy = jest.spyOn(memFsEditor, 'create');
+        generateBuildingBlock<FilterBar>(basePath, {
+            viewOrFragmentPath: xmlViewFilePath,
+            aggregationPath: aggregationPath,
+            buildingBlockData: {
+                id: 'testFilterBar',
+                buildingBlockType: BuildingBlockType.FilterBar
+            }
+        });
+        expect(createFsSpy).toHaveBeenCalled();
     });
 
     describe('Generate with just ID and xml view without macros namespace', () => {
@@ -361,6 +411,40 @@ describe('Building Blocks', () => {
             );
             await writeFilesForDebugging(fs);
         });
+
+        test.each(testInput)(
+            'generate $buildingBlockData.buildingBlockType building block with metaPath as object',
+            async (testData) => {
+                const basePath = join(
+                    testAppPath,
+                    `generate-${testData.buildingBlockData.buildingBlockType}-with-optional-params`
+                );
+                const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+                fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+                fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+                generateBuildingBlock(
+                    basePath,
+                    {
+                        viewOrFragmentPath: xmlViewFilePath,
+                        aggregationPath,
+                        buildingBlockData: {
+                            ...testData.buildingBlockData,
+                            metaPath: {
+                                entitySet: 'testEntitySet',
+                                qualifier: 'testQualifier',
+                                bindingContextType: 'relative'
+                            }
+                        }
+                    },
+                    fs
+                );
+                expect(fs.dump(testAppPath)).toMatchSnapshot(
+                    `generate-${testData.buildingBlockData.buildingBlockType}-with-optional-params`
+                );
+                await writeFilesForDebugging(fs);
+            }
+        );
 
         test.each(testInput)(
             'getSerializedFileContent for $buildingBlockData.buildingBlockType building block',
