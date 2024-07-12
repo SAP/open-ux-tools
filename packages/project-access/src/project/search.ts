@@ -264,25 +264,25 @@ export async function findAllApps(
 async function filterApplications(pathMap: FileMapAndCache): Promise<AllAppResults[]> {
     const filterApplicationByManifest = async (manifestPath: string) => {
         pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
-        const manifest: Manifest = pathMap[manifestPath] as Manifest;   // cast needed as pathMap also allows strings and any other objects
-                                                                        // cast allowed, as this is the only place pathMap is filled for manifests
+        const manifest: Manifest = pathMap[manifestPath] as Manifest; // cast needed as pathMap also allows strings and any other objects
+        // cast allowed, as this is the only place pathMap is filled for manifests
         if (manifest['sap.app'].id && manifest['sap.app'].type === 'application') {
             const roots = await findRootsForPath(dirname(manifestPath));
             if (roots && !(await fileExists(join(roots.appRoot, '.adp', FileName.AdaptationConfig)))) {
                 return { appRoot: roots.appRoot, projectRoot: roots.projectRoot, manifest: manifest, manifestPath };
             }
         }
-        throw new Error("Not relevant");
-    }
+        throw new Error('Not relevant');
+    };
 
-    const isFulFilled = (input: PromiseSettledResult<AllAppResults>): input is PromiseFulfilledResult<AllAppResults> => input.status === "fulfilled";
+    const isFulFilled = (input: PromiseSettledResult<AllAppResults>): input is PromiseFulfilledResult<AllAppResults> =>
+        input.status === 'fulfilled';
 
-    const manifestPaths = Object.keys(pathMap)
-        .filter(path => basename(path) === FileName.Manifest);
+    const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
 
     return (await Promise.allSettled(manifestPaths.map(filterApplicationByManifest)))
-        .filter(isFulFilled)                // returning only valid applications
-        .map(({value}) => value);  
+        .filter(isFulFilled) // returning only valid applications
+        .map(({ value }) => value);
 }
 
 /**
