@@ -15,7 +15,7 @@ export interface BasePromptQuestion {
     /**
      * Additional prompt/field description.
      */
-    additionalInfo?: string;
+    description?: string;
     // ToDo recheck if it is common property
     placeholder?: string;
 }

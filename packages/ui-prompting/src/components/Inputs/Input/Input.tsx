@@ -10,7 +10,7 @@ export interface InputProps extends InputPromptQuestion {
 }
 
 export const Input = (props: InputProps) => {
-    const { name, onChange, required, additionalInfo, message, errorMessage, placeholder } = props;
+    const { name, onChange, required, description, message, errorMessage, placeholder } = props;
     const [value, setValue] = useValue('', props.value);
     const onLiveChange = (event: React.FormEvent, newValue?: string | undefined) => {
         setValue(newValue ?? '');
@@ -22,7 +22,7 @@ export const Input = (props: InputProps) => {
 
     return (
         <UITextInput
-            onRenderLabel={getLabelRenderer(additionalInfo)}
+            onRenderLabel={getLabelRenderer(description)}
             required={required}
             label={typeof message === 'string' ? message : name}
             value={value.toString()}

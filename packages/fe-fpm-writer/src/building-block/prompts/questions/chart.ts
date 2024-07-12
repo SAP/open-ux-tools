@@ -65,7 +65,7 @@ export async function getChartBuildingBlockPrompts(context: PromptContext): Prom
                 context,
                 {
                     message: t('qualifier'),
-                    additionalInfo: t('valuesDependentOnEntityTypeInfo'),
+                    description: t('valuesDependentOnEntityTypeInfo'),
                     required: true,
                     placeholder: t('qualifierPlaceholder')
                 },

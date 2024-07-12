@@ -91,7 +91,7 @@ Object {
       "type": "list",
     },
     Object {
-      "additionalInfo": "Values are dependent on entity type",
+      "description": "Values are dependent on entity type",
       "choices": [Function],
       "message": "Chart Qualifier",
       "name": "buildingBlockData.metaPath.qualifier",
@@ -434,7 +434,7 @@ Object {
       "type": "list",
     },
     Object {
-      "additionalInfo": "Values are dependent on entity type",
+      "description": "Values are dependent on entity type",
       "choices": [Function],
       "message": "Selection Fields Qualifier",
       "name": "buildingBlockData.metaPath.qualifier",
@@ -545,7 +545,7 @@ Object {
       "type": "list",
     },
     Object {
-      "additionalInfo": "Values are dependent on entity type",
+      "description": "Values are dependent on entity type",
       "choices": [Function],
       "groupId": "tableBuildingBlockProperties",
       "message": "Line Item Qualifier",

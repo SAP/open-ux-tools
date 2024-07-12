@@ -14,7 +14,7 @@ export interface SelectProps extends ListPromptQuestion {
 }
 
 export const Select = (props: SelectProps) => {
-    const { name, message, onChange, required, options, pending, additionalInfo, errorMessage, placeholder, creation } =
+    const { name, message, onChange, required, options, pending, description, errorMessage, placeholder, creation } =
         props;
     const [value, setValue] = useValue('', props.value);
     const inputRef = React.createRef<ITextField>();
@@ -58,7 +58,7 @@ export const Select = (props: SelectProps) => {
             errorMessage={errorMessage}
             required={props.required}
             onChange={onChangeTextInput}
-            onRenderLabel={getLabelRenderer(additionalInfo)}
+            onRenderLabel={getLabelRenderer(description)}
         />
     ) : (
         <UIComboBox
@@ -74,7 +74,7 @@ export const Select = (props: SelectProps) => {
             disabled={false}
             text={creation ? value.toString() : undefined}
             onChange={onChangeSelect}
-            onRenderLabel={getLabelRenderer(additionalInfo)}
+            onRenderLabel={getLabelRenderer(description)}
             errorMessage={errorMessage}
             placeholder={placeholder}
         />

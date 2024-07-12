@@ -9,7 +9,7 @@ const props: SelectProps = {
     value: '',
     onChange: jest.fn(),
     required: undefined,
-    additionalInfo: '',
+    description: '',
     errorMessage: undefined,
     placeholder: undefined,
     options: [
@@ -116,8 +116,8 @@ describe('Select', () => {
         expect(document.getElementsByClassName('.is-required')).toBeDefined();
     });
 
-    it('Test property additionalInfo', () => {
-        render(<Select {...props} additionalInfo="testInfo" />);
+    it('Test property description', () => {
+        render(<Select {...props} description="testInfo" />);
         expect(screen.getByTitle('testInfo')).toBeDefined();
     });
 
@@ -224,8 +224,8 @@ describe('Select', () => {
                 expect(document.getElementsByClassName('.is-required')).toBeDefined();
             });
 
-            it('Test creatable input property additionalInfo', () => {
-                render(<Select {...creatablePropsNoOptions} additionalInfo="testInfo" />);
+            it('Test creatable input property description', () => {
+                render(<Select {...creatablePropsNoOptions} description="testInfo" />);
                 expect(screen.getByTitle('testInfo')).toBeDefined();
             });
 

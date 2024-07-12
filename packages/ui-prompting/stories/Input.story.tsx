@@ -34,7 +34,7 @@ const questions: PromptQuestion[] = [
         message: 'With description and placeholder',
         name: 'description',
         type: 'input',
-        additionalInfo: 'Test description',
+        description: 'Test description',
         placeholder: 'Test placeholder'
     }
 ];

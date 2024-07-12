@@ -14,7 +14,7 @@ export interface MultiSelectProps extends CheckboxPromptQuestion {
 }
 
 export const MultiSelect = (props: MultiSelectProps) => {
-    const { name, message, onChange, required, options, pending, additionalInfo, errorMessage, placeholder } = props;
+    const { name, message, onChange, required, options, pending, description, errorMessage, placeholder } = props;
     const [value, setValue] = useValue('', props.value?.toString());
 
     return (
@@ -42,7 +42,7 @@ export const MultiSelect = (props: MultiSelectProps) => {
                 setValue(updatedValue);
                 onChange(name, updatedValue);
             }}
-            onRenderLabel={getLabelRenderer(additionalInfo)}
+            onRenderLabel={getLabelRenderer(description)}
             errorMessage={errorMessage}
             placeholder={placeholder}
         />

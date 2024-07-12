@@ -49,7 +49,7 @@ const questions: PromptQuestion[] = [
         message: 'With description and placeholder',
         name: 'description',
         type: 'checkbox',
-        additionalInfo: 'Test description',
+        description: 'Test description',
         placeholder: 'Test placeholder',
         choices
     }
