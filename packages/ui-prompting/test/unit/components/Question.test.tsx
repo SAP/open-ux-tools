@@ -19,7 +19,7 @@ describe('Question', () => {
 
     for (const question of Object.values(questions)) {
         it(`Render question - ${question.name} with message`, () => {
-            render(<Question {...props} question={question} placeholder={`${question.name} placeholder`} />);
+            render(<Question {...props} question={{ ...question, placeholder: `${question.name} placeholder` }} />);
             // ToDo improve code(lint)
             question.message && expect(screen.getByText(question.message.toString())).toBeDefined();
             question.message && expect(screen.getByPlaceholderText(`${question.name} placeholder`)).toBeDefined();

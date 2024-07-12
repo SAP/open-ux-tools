@@ -57,18 +57,16 @@ export class PromptsAPI {
 
     /**
      *
-     * @param projectPath project path
      * @param fs the file system object for reading files
      * @param project
      * @param appId app id in CAP project
      */
-    constructor(projectPath: string, fs: Editor, project: Project, appId = '') {
+    constructor(fs: Editor, project: Project, appId = '') {
         this.context = {
             fs,
-            projectPath,
             project: project,
             appId: appId,
-            appPath: join(projectPath, appId)
+            appPath: join(project.root, appId)
         };
     }
 
@@ -86,7 +84,7 @@ export class PromptsAPI {
         }
         await initI18n();
         const project = await getProject(projectPath);
-        return new PromptsAPI(projectPath, fs, project, appId);
+        return new PromptsAPI(fs, project, appId);
     }
 
     /**
@@ -157,22 +155,23 @@ export class PromptsAPI {
             const question: PromptQuestion | undefined = originalPrompts.questions.find(
                 (blockQuestion) => q.name === blockQuestion.name
             );
-            if (question) {
-                const t = translate(i18nNamespaces.buildingBlock, 'prompts.common.');
-                const { name, required, type, validate } = question;
-                result[name] = { isValid: true };
-                const answer = getAnswer(answers, name);
-                if (required && !answer) {
-                    result[name] = {
-                        isValid: false,
-                        errorMessage:
-                            type === 'input' ? t('validation.errorMessage.input') : t('validation.errorMessage.select')
-                    };
-                } else if (typeof validate === 'function') {
-                    const validationResult = await validate(answer, answers);
-                    if (typeof validationResult === 'string') {
-                        result[name] = { isValid: false, errorMessage: validationResult };
-                    }
+            if (!question) {
+                continue;
+            }
+            const t = translate(i18nNamespaces.buildingBlock, 'prompts.common.');
+            const { name, required, type, validate } = question;
+            result[name] = { isValid: true };
+            const answer = getAnswer(answers, name);
+            if (required && !answer) {
+                result[name] = {
+                    isValid: false,
+                    errorMessage:
+                        type === 'input' ? t('validation.errorMessage.input') : t('validation.errorMessage.select')
+                };
+            } else if (typeof validate === 'function') {
+                const validationResult = await validate(answer, answers);
+                if (typeof validationResult === 'string') {
+                    result[name] = { isValid: false, errorMessage: validationResult };
                 }
             }
         }

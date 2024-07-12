@@ -77,3 +77,26 @@ export function getXPathStringsForXmlFile(xmlFilePath: string, fs: Editor): Reco
 function getErrorMessage(error: Error): string {
     return error instanceof Error ? error.message : String(error);
 }
+
+/**
+ * Method returns ids of specific macro element found in passed xml file.
+ *
+ * @param viewOrFragmentPath - path to fragment or view file
+ * @param fs  - the file system object for reading files
+ * @returns an array of ids found in passed xml file.
+ */
+export async function getFilterBarIdsInFile(viewOrFragmentPath: string, fs: Editor): Promise<string[]> {
+    const ids: string[] = [];
+    const buildingBlockSelector = 'macros:FilterBar';
+    const xmlContent = fs.read(viewOrFragmentPath);
+    const errorHandler = (level: string, message: string): void => {
+        throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
+    };
+    const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent);
+    const elements = Array.from(xmlDocument.getElementsByTagName(buildingBlockSelector));
+    for (const element of elements) {
+        const id = element.getAttributeNode('id')?.value;
+        id && ids.push(id);
+    }
+    return ids;
+}

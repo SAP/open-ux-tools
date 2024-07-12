@@ -1,7 +1,5 @@
 import type { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import { DOMParser } from '@xmldom/xmldom';
 import type { Answers } from 'inquirer';
-import type { Editor } from 'mem-fs-editor';
 import { join, relative } from 'path';
 import { getAnnotationPathQualifiers, getEntityTypes } from './service';
 import { getCapServiceName } from '@sap-ux/project-access';
@@ -10,7 +8,7 @@ import type { Project } from '@sap-ux/project-access';
 import type { InputPromptQuestion, ListPromptQuestion, PromptListChoices, WithRequired, PromptContext } from '../types';
 import { BuildingBlockType } from '../../types';
 import type { BindingContextType } from '../../types';
-import { getXPathStringsForXmlFile, isElementIdAvailable } from './xml';
+import { getFilterBarIdsInFile, getXPathStringsForXmlFile, isElementIdAvailable } from './xml';
 import { i18nNamespaces, initI18n, translate } from '../../../i18n';
 
 // ToDo - recheck if can avoid lint disable
@@ -281,33 +279,9 @@ export function getFilterBarIdPrompt(
             if (!answers.viewOrFragmentPath) {
                 return [];
             }
-            return transformChoices(await getFilterBarIdsInFile(join(appPath!, answers.viewOrFragmentPath), fs!));
+            return transformChoices(await getFilterBarIdsInFile(join(appPath, answers.viewOrFragmentPath), fs));
         }
     };
-}
-
-// ToDo - move to utils/xml?
-/**
- * Method returns ids of specific macro element found in passed xml file.
- *
- * @param viewOrFragmentPath - path to fragment or view file
- * @param fs  - the file system object for reading files
- * @returns an array of ids found in passed xml file.
- */
-async function getFilterBarIdsInFile(viewOrFragmentPath: string, fs: Editor): Promise<string[]> {
-    const ids: string[] = [];
-    const buildingBlockSelector = 'macros:FilterBar';
-    const xmlContent = fs.read(viewOrFragmentPath);
-    const errorHandler = (level: string, message: string): void => {
-        throw new Error(`Unable to parse the xml view file. Details: [${level}] - ${message}`);
-    };
-    const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent);
-    const elements = Array.from(xmlDocument.getElementsByTagName(buildingBlockSelector));
-    for (const element of elements) {
-        const id = element.getAttributeNode('id')?.value;
-        id && ids.push(id);
-    }
-    return ids;
 }
 
 /**
@@ -351,7 +325,6 @@ export function getBuildingBlockIdPrompt(
             if (!value) {
                 return validationErrorMessage;
             } else {
-                // ToDo
                 return answers?.viewOrFragmentPath &&
                     !isElementIdAvailable(fs, join(appPath, answers.viewOrFragmentPath), value)
                     ? t('id.existingIdValidation')

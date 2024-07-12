@@ -60,7 +60,7 @@ export async function getFilterBarBuildingBlockPrompts(
                 context,
                 {
                     message: t('qualifier'),
-                    additionalInfo: t('valuesDependentOnEntityTypeInfo'),
+                    description: t('valuesDependentOnEntityTypeInfo'),
                     required: true,
                     placeholder: t('qualifierPlaceholder')
                 },

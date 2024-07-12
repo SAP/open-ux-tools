@@ -44,6 +44,14 @@ const questions: PromptQuestion[] = [
         name: 'validation',
         type: 'checkbox',
         choices
+    },
+    {
+        message: 'With description and placeholder',
+        name: 'description',
+        type: 'checkbox',
+        description: 'Test description',
+        placeholder: 'Test placeholder',
+        choices
     }
 ];
 

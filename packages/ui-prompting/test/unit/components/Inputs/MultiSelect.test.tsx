@@ -9,7 +9,7 @@ const props: MultiSelectProps = {
     name: 'testList',
     onChange: jest.fn(),
     required: undefined,
-    additionalInfo: '',
+    description: '',
     errorMessage: undefined,
     placeholder: undefined,
     type: 'checkbox',
@@ -73,8 +73,8 @@ describe('MultiSelect', () => {
         expect(document.getElementsByClassName('.is-required')).toBeDefined();
     });
 
-    it('Test property additionalInfo', () => {
-        render(<MultiSelect {...props} additionalInfo="testInfo" />);
+    it('Test property description', () => {
+        render(<MultiSelect {...props} description="testInfo" />);
         expect(screen.getByTitle('testInfo')).toBeDefined();
     });
 

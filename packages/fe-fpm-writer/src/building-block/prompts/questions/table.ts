@@ -100,7 +100,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
                 context,
                 {
                     message: t('qualifier'),
-                    additionalInfo: t('valuesDependentOnEntityTypeInfo'),
+                    description: t('valuesDependentOnEntityTypeInfo'),
                     groupId: groupIds.commonBlockProperties,
                     required: true,
                     placeholder: t('qualifierPlaceholder')

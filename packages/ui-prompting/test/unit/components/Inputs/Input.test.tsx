@@ -9,7 +9,7 @@ const props: InputProps = {
     name: 'testInput',
     onChange: jest.fn(),
     required: undefined,
-    additionalInfo: '',
+    description: '',
     errorMessage: undefined,
     placeholder: undefined
 };
@@ -42,8 +42,8 @@ describe('Input', () => {
         expect(document.getElementsByClassName('is-required')).toBeDefined();
     });
 
-    it('Test property additionalInfo', () => {
-        render(<Input {...props} additionalInfo="testInfo" />);
+    it('Test property description', () => {
+        render(<Input {...props} description="testInfo" />);
         expect(screen.getByTitle('testInfo')).toBeDefined();
     });
 
