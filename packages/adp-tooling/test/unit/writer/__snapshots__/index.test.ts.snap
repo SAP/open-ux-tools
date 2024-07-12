@@ -64,6 +64,12 @@ type: application
 resources:
   configuration:
     propertiesFileSourceEncoding: UTF-8
+customConfiguration:
+  adp:
+    support:
+      id: '@package/name'
+      toolsId: uuidv4
+      version: 0.0.1
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -92,12 +98,6 @@ server:
             - /test-resources
           url: https://ui5.sap.com
           version: ''
-customConfiguration:
-  adp:
-    support:
-      id: '@package/name'
-      toolsId: uuidv4
-      version: 0.0.1
 builder:
   customTasks:
     - name: app-variant-bundler-build
@@ -178,6 +178,12 @@ type: application
 resources:
   configuration:
     propertiesFileSourceEncoding: UTF-8
+customConfiguration:
+  adp:
+    support:
+      id: '@package/name'
+      toolsId: uuidv4
+      version: 0.0.1
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -206,12 +212,6 @@ server:
             - /test-resources
           url: https://ui5.sap.com
           version: ''
-customConfiguration:
-  adp:
-    support:
-      id: '@package/name'
-      toolsId: uuidv4
-      version: 0.0.1
 builder:
   customTasks:
     - name: app-variant-bundler-build
@@ -1181,6 +1181,12 @@ type: application
 resources:
   configuration:
     propertiesFileSourceEncoding: UTF-8
+customConfiguration:
+  adp:
+    support:
+      id: '@package/name'
+      toolsId: uuidv4
+      version: 0.0.1
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -1209,12 +1215,6 @@ server:
             - /test-resources
           url: https://ui5.sap.com
           version: ''
-customConfiguration:
-  adp:
-    support:
-      id: '@package/name'
-      toolsId: uuidv4
-      version: 0.0.1
 builder:
   customTasks:
     - name: app-variant-bundler-build
@@ -1335,6 +1335,12 @@ type: application
 resources:
   configuration:
     propertiesFileSourceEncoding: UTF-8
+customConfiguration:
+  adp:
+    support:
+      id: '@package/name'
+      toolsId: uuidv4
+      version: 0.0.1
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -1363,12 +1369,6 @@ server:
             - /test-resources
           url: https://ui5.sap.com
           version: ''
-customConfiguration:
-  adp:
-    support:
-      id: '@package/name'
-      toolsId: uuidv4
-      version: 0.0.1
 builder:
   customTasks:
     - name: app-variant-bundler-build
@@ -1471,6 +1471,12 @@ type: application
 resources:
   configuration:
     propertiesFileSourceEncoding: UTF-8
+customConfiguration:
+  adp:
+    support:
+      id: '@package/name'
+      toolsId: uuidv4
+      version: 0.0.1
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -1503,12 +1509,6 @@ server:
             - /test-resources
           url: https://ui5.sap.com
           version: ''
-customConfiguration:
-  adp:
-    support:
-      id: '@package/name'
-      toolsId: uuidv4
-      version: 0.0.1
 ",
     "state": "modified",
   },
