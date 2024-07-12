@@ -258,7 +258,10 @@ describe('Change Utils', () => {
                 mockChange
             );
 
-            expect(writeSpy).toHaveBeenCalledWith(expect.stringContaining('mockAnnotation.xml'), '');
+            expect(copySpy).toHaveBeenCalledWith(
+                expect.stringContaining(path.join('templates', 'add', 'annotation.xml')),
+                expect.stringContaining('mockAnnotation.xml')
+            );
         });
 
         it('should copy the annotation file to the correct directory if not creating a new empty file', () => {
@@ -303,7 +306,7 @@ describe('Change Utils', () => {
         it('should throw error when write operation fails', () => {
             mockData.answers.filePath = '';
 
-            mockFs.write.mockImplementation(() => {
+            mockFs.writeJSON.mockImplementation(() => {
                 throw new Error('Failed to write JSON');
             });
 
@@ -315,7 +318,15 @@ describe('Change Utils', () => {
                     mockChange as unknown as ManifestChangeProperties,
                     mockFs as unknown as Editor
                 );
-            }).toThrow('Could not write annotation changes. Reason: Failed to write JSON');
+            }).toThrow(
+                `Could not write annotation changes. Reason: Could not write change to file: ${path.join(
+                    mockProjectPath,
+                    'webapp',
+                    'changes',
+                    'manifest',
+                    'id_123456789_addAnnotationsToOData.change'
+                )}. Reason: Failed to write JSON`
+            );
         });
     });
 });

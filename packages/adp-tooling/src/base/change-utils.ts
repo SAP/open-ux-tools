@@ -4,13 +4,14 @@ import type { Editor } from 'mem-fs-editor';
 import { existsSync, readFileSync, readdirSync } from 'fs';
 
 import { DirName } from '@sap-ux/project-access';
-import type {
-    AnnotationsData,
-    ChangeType,
-    DescriptorVariant,
-    InboundContent,
-    ManifestChangeProperties,
-    PropertyValueType
+import {
+    TemplateFileName,
+    type AnnotationsData,
+    type ChangeType,
+    type DescriptorVariant,
+    type InboundContent,
+    type ManifestChangeProperties,
+    type PropertyValueType
 } from '../types';
 
 export type ChangeMetadata = Pick<DescriptorVariant, 'id' | 'layer' | 'namespace'>;
@@ -47,7 +48,15 @@ export function writeAnnotationChange(
         writeChangeToFile(changeFilePath, change, fs);
 
         if (!answers.filePath) {
-            fs.write(path.join(annotationsFolderPath, fileName ?? ''), '');
+            const annotationsTemplate = path.join(
+                __dirname,
+                '..',
+                '..',
+                'templates',
+                'add',
+                TemplateFileName.Annotation
+            );
+            fs.copy(annotationsTemplate, path.join(annotationsFolderPath, fileName ?? ''));
         } else {
             const selectedDir = path.dirname(answers.filePath);
             if (selectedDir !== annotationsFolderPath) {
