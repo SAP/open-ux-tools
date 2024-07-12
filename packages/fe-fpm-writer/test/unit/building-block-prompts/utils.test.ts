@@ -60,7 +60,6 @@ describe('utils - ', () => {
         fs = create(createStorage());
         context = {
             fs,
-            projectPath: projectFolder,
             appId: '',
             appPath: projectFolder,
             project

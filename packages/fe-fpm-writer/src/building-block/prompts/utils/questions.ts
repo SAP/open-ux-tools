@@ -351,7 +351,6 @@ export function getBuildingBlockIdPrompt(
             if (!value) {
                 return validationErrorMessage;
             } else {
-                // ToDo
                 return answers?.viewOrFragmentPath &&
                     !isElementIdAvailable(fs, join(appPath, answers.viewOrFragmentPath), value)
                     ? t('id.existingIdValidation')

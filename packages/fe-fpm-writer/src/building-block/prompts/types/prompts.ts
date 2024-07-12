@@ -17,7 +17,6 @@ export interface PromptContext {
     appId: string;
 }
 
-// ToDo constand or new enum instead of BuildingBlockType enum?
 type AnswerMapping = {
     [PromptsType.Chart]: ChartPromptsAnswer;
     [PromptsType.Table]: TablePromptsAnswer;
