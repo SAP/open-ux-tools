@@ -1,5 +1,14 @@
 # @sap-ux/create
 
+## 0.7.12
+
+### Patch Changes
+
+-   9e4ce4d: Remove safeMode from adp-tooling types and change order of ui5.yaml custom configuration
+-   Updated dependencies [9e4ce4d]
+    -   @sap-ux/adp-tooling@0.12.8
+    -   @sap-ux/preview-middleware@0.16.12
+
 ## 0.7.11
 
 ### Patch Changes
