@@ -155,22 +155,23 @@ export class PromptsAPI {
             const question: PromptQuestion | undefined = originalPrompts.questions.find(
                 (blockQuestion) => q.name === blockQuestion.name
             );
-            if (question) {
-                const t = translate(i18nNamespaces.buildingBlock, 'prompts.common.');
-                const { name, required, type, validate } = question;
-                result[name] = { isValid: true };
-                const answer = getAnswer(answers, name);
-                if (required && !answer) {
-                    result[name] = {
-                        isValid: false,
-                        errorMessage:
-                            type === 'input' ? t('validation.errorMessage.input') : t('validation.errorMessage.select')
-                    };
-                } else if (typeof validate === 'function') {
-                    const validationResult = await validate(answer, answers);
-                    if (typeof validationResult === 'string') {
-                        result[name] = { isValid: false, errorMessage: validationResult };
-                    }
+            if (!question) {
+                continue;
+            }
+            const t = translate(i18nNamespaces.buildingBlock, 'prompts.common.');
+            const { name, required, type, validate } = question;
+            result[name] = { isValid: true };
+            const answer = getAnswer(answers, name);
+            if (required && !answer) {
+                result[name] = {
+                    isValid: false,
+                    errorMessage:
+                        type === 'input' ? t('validation.errorMessage.input') : t('validation.errorMessage.select')
+                };
+            } else if (typeof validate === 'function') {
+                const validationResult = await validate(answer, answers);
+                if (typeof validationResult === 'string') {
+                    result[name] = { isValid: false, errorMessage: validationResult };
                 }
             }
         }
