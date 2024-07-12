@@ -76,12 +76,14 @@ export function updateAnswers(
 export function setAnswer(answers: Answers, path: string, value: unknown): Answers {
     const keys = path.split('.');
     let current = answers;
+    let validPath = true;
 
     for (let i = 0; i < keys.length - 1; i++) {
         const key = keys[i];
         if (['__proto__', 'constructor', 'prototype'].includes(key)) {
             // Prototype-polluting assignment restriction
-            return answers;
+            validPath = false;
+            break;
         }
         if (current && typeof current === 'object' && !(key in current)) {
             current[key] = {};
@@ -89,9 +91,11 @@ export function setAnswer(answers: Answers, path: string, value: unknown): Answe
         current = current[key];
     }
 
-    const key = keys[keys.length - 1];
-    if (!['__proto__', 'constructor', 'prototype'].includes(key)) {
-        current[key] = value;
+    if (validPath) {
+        const key = keys[keys.length - 1];
+        if (!['__proto__', 'constructor', 'prototype'].includes(key)) {
+            current[key] = value;
+        }
     }
     return answers;
 }

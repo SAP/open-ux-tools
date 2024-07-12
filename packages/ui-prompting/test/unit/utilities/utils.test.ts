@@ -72,6 +72,33 @@ describe('utils', () => {
                 }
             });
         });
+
+        const testCases = [
+            {
+                name: 'Restriction at the end of path',
+                path: 'test.prototype'
+            },
+            {
+                name: 'Restriction in the middle of path',
+                path: 'test.prototype.dummy'
+            }
+        ];
+        test.each(testCases)('Restricted properties. $name', async ({ path }) => {
+            const result = setAnswer(
+                {
+                    test: {
+                        dummy: 1
+                    }
+                },
+                path,
+                1
+            );
+            expect(result).toEqual({
+                test: {
+                    dummy: 1
+                }
+            });
+        });
     });
 
     describe('getAnswer', () => {
