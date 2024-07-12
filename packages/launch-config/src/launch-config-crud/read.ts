@@ -5,6 +5,7 @@ import { LAUNCH_JSON_FILE } from '../types';
 import { parse } from 'jsonc-parser';
 import type { Editor } from 'mem-fs-editor';
 import { promises as fs } from 'fs';
+import type { Logger } from '@sap-ux/logger';
 
 /**
  * Returns path to the launch.json file (if exists) for a given root folder.
@@ -113,16 +114,20 @@ export async function getAllLaunchConfigs(rootFolder: string | string[], memFs?:
  *
  * @param launchConfigPath - path to the launch.json file.
  * @param name - name of the launch config.
- * @param memFs - optional, the memfs editor instance.
+ * @param options - optional options.
+ * @param options.memFs - optional, the memfs editor instance.
+ * @param options.logger - optional, the logger instance.
  * @returns {LaunchConfig} launch config.
  */
 export async function getLaunchConfigByName(
     launchConfigPath: string,
     name: string,
-    memFs?: Editor
+    options?: { memFs?: Editor; logger?: Logger }
 ): Promise<LaunchConfig> {
     let launchJsonString;
     let launchJson;
+    const memFs = options?.memFs;
+    const logger = options?.logger;
     try {
         if (memFs) {
             launchJsonString = memFs.read(launchConfigPath);
@@ -137,7 +142,7 @@ export async function getLaunchConfigByName(
         }
         return launchConfig;
     } catch (error) {
-        console.error(`Could not find launch config '${name}' in '${launchConfigPath}'`, error);
+        logger?.error(`Could not find launch config '${name}' in '${launchConfigPath}'`);
         throw error;
     }
 }

@@ -5,6 +5,7 @@ import { DirName, FileName, readUi5Yaml } from '@sap-ux/project-access';
 import { parse } from 'jsonc-parser';
 import { Arguments, type FioriOptions } from '../types';
 import type { FioriToolsProxyConfig } from '@sap-ux/ui5-config';
+import type { Logger } from '@sap-ux/logger';
 
 /**
  * Find out starting HTML file for project using package.json.
@@ -43,9 +44,15 @@ async function getStartFileFromPackageFile(projectRoot: string): Promise<string 
  * Try to find out default values for the configuration for a given project root.
  *
  * @param projectRoot - root of the project, where package.json is.
+ * @param options - optional options.
+ * @param options.logger - optional, the logger instance.
  * @returns default configuration options.
  */
-export async function getDefaultLaunchConfigOptionsForProject(projectRoot: string): Promise<FioriOptions> {
+export async function getDefaultLaunchConfigOptionsForProject(
+    projectRoot: string,
+    options?: { logger?: Logger }
+): Promise<FioriOptions> {
+    const logger = options?.logger;
     let name = '';
     let ui5Version = '';
     let startFile;
@@ -64,7 +71,7 @@ export async function getDefaultLaunchConfigOptionsForProject(projectRoot: strin
         backendConfigs =
             ui5YamlConfig.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy')?.configuration.backend;
     } catch (error) {
-        console.error(`Error while getting the default configuration for project '${projectRoot}'`, error);
+        logger?.error(`Error while getting the default configuration for project '${projectRoot}'`);
     }
     return {
         name,

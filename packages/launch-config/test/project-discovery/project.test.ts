@@ -1,7 +1,7 @@
 import { getDefaultLaunchConfigOptionsForProject } from '../../src';
 import { TestPaths } from '../test-data/utils';
+import type { Logger } from '@sap-ux/logger';
 
-const originalConsoleError = console.error;
 interface Mock {
     mock: { calls: [[string]] };
 }
@@ -9,11 +9,6 @@ interface Mock {
 describe('project', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        console.error = originalConsoleError;
-    });
-
-    afterAll(() => {
-        console.error = originalConsoleError;
     });
 
     it('should get default options for project (v2)', async () => {
@@ -35,8 +30,11 @@ describe('project', () => {
     });
 
     it('should get default options for invalid project', async () => {
-        console.error = jest.fn();
-        const defaultConfig = await getDefaultLaunchConfigOptionsForProject('INVALID_PROJECT_PATH');
+        const logger = {
+            info: jest.fn(),
+            error: jest.fn()
+        } as unknown as Logger;
+        const defaultConfig = await getDefaultLaunchConfigOptionsForProject('INVALID_PROJECT_PATH', { logger });
         expect(defaultConfig).toEqual({
             name: '',
             oDataVersion: undefined,
@@ -45,6 +43,6 @@ describe('project', () => {
             ui5Version: '',
             visible: true
         });
-        expect((console.error as unknown as Mock).mock.calls[0][0]).toContain('INVALID_PROJECT_PATH');
+        expect((logger.error as unknown as Mock).mock.calls[0][0]).toContain('INVALID_PROJECT_PATH');
     });
 });

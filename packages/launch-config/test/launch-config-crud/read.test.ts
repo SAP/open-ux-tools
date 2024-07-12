@@ -5,13 +5,11 @@ import { getLaunchConfigs, getLaunchConfigByName } from '../../src';
 import { TestPaths } from '../test-data/utils';
 import { getAllLaunchConfigs, getLaunchJSONFilePaths } from '../../src/launch-config-crud/read';
 import { DirName } from '@sap-ux/project-access';
-
-const originalConsoleError = console.error;
+import type { Logger } from '@sap-ux/logger';
 
 describe('read', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        console.error = originalConsoleError;
     });
 
     it('should return launch configuration files', async () => {
@@ -58,24 +56,27 @@ describe('read', () => {
     });
 
     it('should try to get invalid launch config', async () => {
-        console.error = jest.fn();
+        const logger = {
+            info: jest.fn(),
+            error: jest.fn()
+        } as unknown as Logger;
         try {
-            await getLaunchConfigByName('WRONG_PATH', 'Start fiori-elements-v2');
+            await getLaunchConfigByName('WRONG_PATH', 'Start fiori-elements-v2', { logger });
             fail('Get a launch config from non existing path did not threw error.');
         } catch (error) {
             expect(error.message).toContain('WRONG_PATH');
         }
-        expect(console.error).toBeCalledTimes(1);
+        expect(logger.error).toBeCalledTimes(1);
 
         jest.clearAllMocks();
 
         try {
-            await getLaunchConfigByName(TestPaths.feProjectsLaunchConfig, 'NON EXISTING CONFIG');
+            await getLaunchConfigByName(TestPaths.feProjectsLaunchConfig, 'NON EXISTING CONFIG', { logger });
             fail('Get a launch config from non existing path did not threw error.');
         } catch (error) {
             expect(error.message).toContain('NON EXISTING CONFIG');
         }
-        expect(console.error).toBeCalledTimes(1);
+        expect(logger.error).toBeCalledTimes(1);
     });
 
     describe('using memfs', () => {
@@ -122,30 +123,33 @@ describe('read', () => {
             const launchConfig = await getLaunchConfigByName(
                 TestPaths.feProjectsLaunchConfig,
                 'Start fiori-elements-v2',
-                memFs
+                { memFs }
             );
             expect(launchConfig).toMatchSnapshot();
         });
 
         it('should try to get invalid launch config', async () => {
-            console.error = jest.fn();
+            const logger = {
+                info: jest.fn(),
+                error: jest.fn()
+            } as unknown as Logger;
             try {
-                await getLaunchConfigByName('WRONG_PATH', 'Start fiori-elements-v2', memFs);
+                await getLaunchConfigByName('WRONG_PATH', 'Start fiori-elements-v2', { memFs, logger });
                 fail('Get a launch config from non existing path did not threw error.');
             } catch (error) {
                 expect(error.message).toContain('WRONG_PATH');
             }
-            expect(console.error).toBeCalledTimes(1);
+            expect(logger.error).toBeCalledTimes(1);
 
             jest.clearAllMocks();
 
             try {
-                await getLaunchConfigByName(TestPaths.feProjectsLaunchConfig, 'NON EXISTING CONFIG', memFs);
+                await getLaunchConfigByName(TestPaths.feProjectsLaunchConfig, 'NON EXISTING CONFIG', { memFs, logger });
                 fail('Get a launch config from non existing path did not threw error.');
             } catch (error) {
                 expect(error.message).toContain('NON EXISTING CONFIG');
             }
-            expect(console.error).toBeCalledTimes(1);
+            expect(logger.error).toBeCalledTimes(1);
         });
     });
 });

@@ -40,6 +40,7 @@
         "yargs-parser": "21.1.1"
     },
     "devDependencies": {
+        "@sap-ux/logger": "workspace:*",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/yargs-parser": "21.0.3"
