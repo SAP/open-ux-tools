@@ -13,8 +13,6 @@ import type {
 export interface PromptContext {
     fs: Editor;
     project: Project;
-    // ToDo - projectPath can be used from project?
-    projectPath: string;
     appPath: string;
     appId: string;
 }

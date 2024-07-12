@@ -57,18 +57,16 @@ export class PromptsAPI {
 
     /**
      *
-     * @param projectPath project path
      * @param fs the file system object for reading files
      * @param project
      * @param appId app id in CAP project
      */
-    constructor(projectPath: string, fs: Editor, project: Project, appId = '') {
+    constructor(fs: Editor, project: Project, appId = '') {
         this.context = {
             fs,
-            projectPath,
             project: project,
             appId: appId,
-            appPath: join(projectPath, appId)
+            appPath: join(project.root, appId)
         };
     }
 
@@ -86,7 +84,7 @@ export class PromptsAPI {
         }
         await initI18n();
         const project = await getProject(projectPath);
-        return new PromptsAPI(projectPath, fs, project, appId);
+        return new PromptsAPI(fs, project, appId);
     }
 
     /**
