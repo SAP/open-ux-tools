@@ -80,7 +80,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                     } as WorklistSettings
                 },
                 service: v2Service
-            }
+            } 
         },
         {
             name: 'worklist_metadata_v4',
