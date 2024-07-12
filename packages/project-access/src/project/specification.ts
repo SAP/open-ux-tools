@@ -186,16 +186,16 @@ async function getSpecificationVersion(root: string, options?: { logger?: Logger
  */
 export async function getSpecificationPath(root: string, options?: { logger?: Logger }): Promise<string> {
     const logger = options?.logger;
-    const moduleName = join('@sap', 'ux-specification');
+    const moduleName = '@sap/ux-specification';
     if (await hasSpecificationDevDependency(root)) {
         const modulePath = await getModulePath(root, moduleName);
         logger?.debug(`Specification root found in project '${root}'`);
-        return modulePath.slice(0, modulePath.lastIndexOf(moduleName) + moduleName.length);
+        return modulePath.slice(0, modulePath.lastIndexOf(join(moduleName)) + join(moduleName).length);
     }
     await getSpecificationModule(root, { logger });
     const version = await getSpecificationVersion(root, { logger });
     logger?.debug(`Specification not found in project '${root}', using path from cache with version '${version}'`);
     const moduleRoot = join(moduleCacheRoot, moduleName, version);
     const modulePath = await getModulePath(moduleRoot, moduleName);
-    return modulePath.slice(0, modulePath.lastIndexOf(moduleName) + moduleName.length);
+    return modulePath.slice(0, modulePath.lastIndexOf(join(moduleName)) + join(moduleName).length);
 }
