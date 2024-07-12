@@ -27,8 +27,6 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     await initI18n();
     // Clone rather than modifying callers refs
     const ffApp = cloneDeep(data);
-    // Determine if the project type is 'EDMXBackend'.
-    const isEdmxProjectType = ffApp.app.projectType === 'EDMXBackend';
     // set defaults
     setDefaults(ffApp);
     const isTypeScriptEnabled = ffApp.appOptions?.typescript;
@@ -38,6 +36,8 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     const tmplPath = join(__dirname, '..', 'templates');
     const ignore = [isTypeScriptEnabled ? '**/*.js' : '**/*.ts'];
     
+    // Determine if the project type is 'EDMXBackend'.
+    const isEdmxProjectType = ffApp.app.projectType === 'EDMXBackend';
     // Get the resource URLs for the UShell bootstrap and UI bootstrap based on the project type and UI5 framework details
     const { uShellBootstrapResourceUrl, uiBootstrapResourceUrl } = getBootstrapResourceUrls(isEdmxProjectType, ffApp.ui5?.frameworkUrl, ffApp.ui5?.version);
     const appConfig = {
