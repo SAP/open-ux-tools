@@ -259,7 +259,7 @@ describe('Change Utils', () => {
             );
 
             expect(copySpy).toHaveBeenCalledWith(
-                expect.stringContaining(path.join('templates', 'add', 'annotation.xml')),
+                expect.stringContaining(path.join('templates', 'changes', 'annotation.xml')),
                 expect.stringContaining('mockAnnotation.xml')
             );
         });

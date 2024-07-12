@@ -53,7 +53,7 @@ export function writeAnnotationChange(
                 '..',
                 '..',
                 'templates',
-                'add',
+                'changes',
                 TemplateFileName.Annotation
             );
             fs.copy(annotationsTemplate, path.join(annotationsFolderPath, fileName ?? ''));
