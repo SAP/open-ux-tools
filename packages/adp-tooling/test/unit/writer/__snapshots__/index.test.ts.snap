@@ -80,7 +80,7 @@ server:
             url: http://sap.example
           ignoreCertErrors: false
     - name: fiori-tools-proxy
-      afterMiddleware: compression
+      afterMiddleware: fiori-tools-preview
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
@@ -194,7 +194,7 @@ server:
             url: http://sap.example
           ignoreCertErrors: false
     - name: fiori-tools-proxy
-      afterMiddleware: compression
+      afterMiddleware: fiori-tools-preview
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
@@ -482,7 +482,7 @@ server:
             url: http://sap.example
           ignoreCertErrors: false
     - name: fiori-tools-proxy
-      afterMiddleware: compression
+      afterMiddleware: fiori-tools-preview
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
@@ -955,7 +955,7 @@ server:
             url: http://sap.example
           ignoreCertErrors: false
     - name: fiori-tools-proxy
-      afterMiddleware: compression
+      afterMiddleware: fiori-tools-preview
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
@@ -1197,7 +1197,7 @@ server:
             url: http://sap.example
           ignoreCertErrors: false
     - name: fiori-tools-proxy
-      afterMiddleware: compression
+      afterMiddleware: fiori-tools-preview
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
@@ -1351,7 +1351,7 @@ server:
             url: http://sap.example
           ignoreCertErrors: false
     - name: fiori-tools-proxy
-      afterMiddleware: compression
+      afterMiddleware: fiori-tools-preview
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
@@ -1489,7 +1489,7 @@ server:
             client: '000'
           ignoreCertErrors: false
     - name: fiori-tools-proxy
-      afterMiddleware: compression
+      afterMiddleware: fiori-tools-preview
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:

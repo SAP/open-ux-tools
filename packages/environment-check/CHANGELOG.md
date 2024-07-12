@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.17.5
+
+### Patch Changes
+
+-   c19a93b: update environment check results order, All destinations in toggle dropdown
+
 ## 0.17.4
 
 ### Patch Changes
