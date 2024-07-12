@@ -7,8 +7,8 @@ import {
     TransportRequestService,
     ListPackageService,
     FileStoreService,
-    BusinessObjectsService,
-    AbapCDSViewService
+    BusinessObjectsService
+    //AbapCDSViewService
 } from '@sap-ux/axios-extension';
 import { logger } from './types';
 
