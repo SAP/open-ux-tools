@@ -97,12 +97,7 @@ export class PromptsAPI {
         type: N
     ): Promise<Prompts<NarrowPrompt<typeof type>['answers']>> {
         const method = type in PromptsQuestionsMap ? PromptsQuestionsMap[type] : unsupportedPrompts;
-        if (typeof method === 'function') {
-            return method(this.context) as Promise<Prompts<NarrowPrompt<typeof type>['answers']>>;
-        }
-        return {
-            questions: []
-        };
+        return method(this.context) as Promise<Prompts<NarrowPrompt<typeof type>['answers']>>;
     }
 
     /**
@@ -128,7 +123,7 @@ export class PromptsAPI {
                 return choices ?? [];
             }
         } catch (error) {
-            console.error(error);
+            throw new Error(`Failed to get choices. Details: ${error}`);
         }
         return [];
     }

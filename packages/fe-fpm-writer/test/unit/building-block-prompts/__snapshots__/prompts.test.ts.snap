@@ -317,6 +317,19 @@ Array [
 ]
 `;
 
+exports[`Prompts getChoices Choices for field of static list type 1`] = `
+Array [
+  Object {
+    "name": "Responsive Table",
+    "value": "ResponsiveTable",
+  },
+  Object {
+    "name": "Grid Table",
+    "value": "GridTable",
+  },
+]
+`;
+
 exports[`Prompts getChoices Type "chart", choices for field "qualifier" 1`] = `
 Array [
   Object {
@@ -822,6 +835,16 @@ exports[`Prompts submitAnswers Type "table" 1`] = `
         <content>
             <macros:Table id=\\"id\\" metaPath=\\"/entity/qualifier\\" filterBar=\\"filterBar\\" header=\\"header\\" headerVisible=\\"true\\" type=\\"ResponsiveTable\\"/>
         </content>
+    </Page>
+</mvc:View>"
+`;
+
+exports[`Prompts submitAnswers Type generation prompts type without generator 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\"
+    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\"
+    xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content />
     </Page>
 </mvc:View>"
 `;

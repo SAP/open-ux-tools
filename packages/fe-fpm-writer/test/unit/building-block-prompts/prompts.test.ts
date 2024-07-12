@@ -42,10 +42,25 @@ describe('Prompts', () => {
         expect(questionnair).toMatchSnapshot();
     });
 
+    test('get prompts for invalid propmts type', async () => {
+        const questionnair = await promptsAPI.getPrompts('notValid' as PromptsType);
+        expect(questionnair).toStrictEqual({ questions: [] });
+    });
+
     describe('getChoices', () => {
         test('Choices for field "entitySet"', async () => {
             const choices = await promptsAPI.getChoices(PromptsType.Table, 'buildingBlockData.metaPath.entitySet', {});
             expect(choices).toMatchSnapshot();
+        });
+
+        test('Choices for field of static list type', async () => {
+            const choices = await promptsAPI.getChoices(PromptsType.Table, 'buildingBlockData.type', {});
+            expect(choices).toMatchSnapshot();
+        });
+
+        test('Choices for field of input type', async () => {
+            const choices = await promptsAPI.getChoices(PromptsType.Table, 'buildingBlockData.id', {});
+            expect(choices).toStrictEqual([]);
         });
 
         const types = [PromptsType.Chart, PromptsType.FilterBar, PromptsType.Table];
@@ -102,6 +117,14 @@ describe('Prompts', () => {
             });
             expect(aggregationChoices).toMatchSnapshot();
         });
+
+        test('Choices for field "filterBar", no xml file throws error', async () => {
+            await expect(
+                promptsAPI.getChoices(PromptsType.Chart, 'buildingBlockData.filterBar', {
+                    viewOrFragmentPath: 'non-existent'
+                })
+            ).rejects.toThrowError(/Failed to get choices/);
+        });
     });
 
     describe('validateAnswers', () => {
@@ -109,6 +132,11 @@ describe('Prompts', () => {
         test.each(types)('Type "%s", required fields validation', async (type: PromptsType) => {
             const result = await promptsAPI.validateAnswers(type, { id: '' });
             expect(result).toMatchSnapshot();
+        });
+
+        test('validate non-existing question', async () => {
+            const result = await promptsAPI.validateAnswers(PromptsType.Chart, { type: '' }, [{ name: 'type' }]);
+            expect(result).toStrictEqual({});
         });
 
         describe('validate function', () => {
@@ -224,6 +252,14 @@ describe('Prompts', () => {
     describe('submitAnswers', () => {
         test.each(types)('Type "%s"', async (type: PromptsType) => {
             const result = promptsAPI.submitAnswers(type, answers[type] as SupportedAnswers);
+            expect(result.read(join(projectPath, baseAnswers.viewOrFragmentPath))).toMatchSnapshot();
+        });
+
+        test('Type generation prompts type without generator', async () => {
+            const result = promptsAPI.submitAnswers(
+                PromptsType.BuildingBlocks,
+                {} as unknown as BuildingBlockTypePromptsAnswer
+            );
             expect(result.read(join(projectPath, baseAnswers.viewOrFragmentPath))).toMatchSnapshot();
         });
     });
