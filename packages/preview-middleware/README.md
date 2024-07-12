@@ -158,6 +158,13 @@ server:
           - path: /test/adaptation-editor.html
             developerMode: true
 ```
+When the middleware is used in an adaptation project together with a middleware proxying requests to the backend e.g. the `backend-proxy-middleware`, then it is critically important that the `preview-middleware` is handling requests before the backend proxy because it intercepts requests to the `manifest.json` of the original application and merges it with the local variant.
+```Yaml
+- name: preview-middleware
+  afterMiddleware: rcompression
+- name: backend-proxy-middleware
+  afterMiddleware: preview-middleware
+```
 
 ### Programmatic Usage
 Alternatively you can use the underlying middleware fuction programmatically, e.g. for the case when you want to incorporate the `preview-middleware` functionality in your own middleware.
