@@ -101,9 +101,17 @@ export interface DynamicChoices {
  * Interfaces for groups.
  */
 export interface PromptsGroup {
-    // ToDo annotate properties(comments are missing)
+    /**
+     * Unique id of group, which can be used to map with questions
+     */
     id: string;
+    /**
+     * Title of group
+     */
     title: string;
+    /**
+     * Description texts
+     */
     description: string[];
 }
 

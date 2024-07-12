@@ -1,7 +1,5 @@
 import type { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import { DOMParser } from '@xmldom/xmldom';
 import type { Answers } from 'inquirer';
-import type { Editor } from 'mem-fs-editor';
 import { join, relative } from 'path';
 import { getAnnotationPathQualifiers, getEntityTypes } from './service';
 import { getCapServiceName } from '@sap-ux/project-access';
