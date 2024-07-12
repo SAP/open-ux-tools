@@ -133,7 +133,9 @@
         "urlRedirect": "The service URL is redirecting",
         "certValidationRequired": "Certificate validation is required to continue.",
         "exitingGeneration": "Exiting generation. {{exitReason}}",
-        "serviceMetadataError": "An error occurred reading service metadata for service: {{- servicePath}}. See log for more details.",
+        "serviceMetadataError": "An error occurred reading service metadata for service: {{- servicePath}}",
+        "serviceMetadataErrorUI": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }). $t(texts.seeLogForDetails)",
+        "serviceMetadataErrorLog": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }). {{error}}",
         "serviceTypeRequestError": "Error retrieving service type: {{- error}}"
     },
     "texts": {
@@ -141,7 +143,8 @@
         "aSelfSignedCert": "a self-signed",
         "anUnknownOrInvalidCert": "an unknown or invalid",
         "anUntrustedRootCert": "an untrusted root",
-        "suggestedSystemNameClient": ", client {{client}}"
+        "suggestedSystemNameClient": ", client {{client}}",
+        "seeLogForDetails": "See log for more details."
     },
     "guidedAnswers": {
         "validationErrorHelpText": "Need help with this error?"

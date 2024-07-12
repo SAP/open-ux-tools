@@ -112,13 +112,6 @@ async function getDatasourceTypeConditionalQuestions(
         ) as OdataServiceQuestion[])
     );
 
-    /* conditionalQuestions.push(
-        ...(withCondition(
-            getAbapOnPremQuestions() as Question[],
-            (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.sapSystem
-        ) as OdataServiceQuestion[])
-    ); */
-
     // Temp integration into Service Inquirer new system questions
     conditionalQuestions.push(
         ...(withCondition(

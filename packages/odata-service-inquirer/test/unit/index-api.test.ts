@@ -227,7 +227,7 @@ describe('API tests', () => {
                   "hint": "Entering a system name will save the connection for re-use.",
                 },
                 "message": "System name",
-                "name": "newSystemName",
+                "name": "userSystemName",
                 "type": "input",
                 "validate": [Function],
                 "when": [Function],

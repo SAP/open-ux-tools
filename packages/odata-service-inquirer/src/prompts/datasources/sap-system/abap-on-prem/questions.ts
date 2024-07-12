@@ -11,7 +11,8 @@ import { hostEnvironment, promptNames, type OdataServiceAnswers } from '../../..
 import { PromptState, getHostEnvironment } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
-import { getNewSystemNameQuestion } from '../new-system/questions';
+import type { NewSystemAnswers } from '../new-system/questions';
+import { getUserSystemNameQuestion } from '../new-system/questions';
 import { getServiceChoices, getServiceMetadata, getServiceType } from './service-helper';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 
@@ -22,7 +23,7 @@ export enum abapOnPremInternalPromptNames {
     systemPassword = 'abapSystemPassword'
 }
 
-export interface AbapOnPremAnswers extends Partial<OdataServiceAnswers> {
+export interface AbapOnPremAnswers extends Partial<OdataServiceAnswers>, NewSystemAnswers {
     [abapOnPremInternalPromptNames.systemUrl]?: string;
     [abapOnPremInternalPromptNames.systemUsername]?: string;
     [abapOnPremInternalPromptNames.systemPassword]?: string;
@@ -141,7 +142,7 @@ export function getAbapOnPremQuestions(
         } as PasswordQuestion<AbapOnPremAnswers>,
         // New system question will allow user to give the system a user friendly name
         withCondition(
-            [getNewSystemNameQuestion()],
+            [getUserSystemNameQuestion()],
             (answers: AbapOnPremAnswers) =>
                 !!answers.systemUrl &&
                 connectValidator.validity.reachable === true &&

@@ -20,7 +20,7 @@ export const newSystemChoiceValue = '!@£*&937newSystem*X~qy^' as const;
 
 const newSystemPromptNames = {
     newSystemType: 'newSystemType',
-    userSystemName: 'newSystemName'
+    userSystemName: 'userSystemName'
 } as const;
 
 /**
@@ -76,15 +76,6 @@ export function getNewSystemQuestions(
             (answers: Answers) => (answers as NewSystemAnswers).newSystemType === 'abapOnPrem'
         )
     );
-    // todo: System selection prompt not yet implemented
-    /**
-     * questions.push(
-        ...withCondition(
-            getAbapOnBTPQuestions(serviceSelectionPromptOptions) as Question[],
-            (answers: Answers) => (answers as NewSystemAnswers).newSystemType === 'abapOnPrem'
-        )
-    );
-     */
 
     return questions;
 }
@@ -94,7 +85,7 @@ export function getNewSystemQuestions(
  *
  * @returns the new system name prompt
  */
-export function getNewSystemNameQuestion(): InputQuestion<NewSystemAnswers> {
+export function getUserSystemNameQuestion(): InputQuestion<NewSystemAnswers> {
     let defaultSystemName: string;
     const newSystemNamePrompt = {
         type: 'input',

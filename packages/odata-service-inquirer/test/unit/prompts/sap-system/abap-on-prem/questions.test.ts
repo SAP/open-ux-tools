@@ -135,7 +135,7 @@ describe('questions', () => {
                   "hint": "Entering a system name will save the connection for re-use.",
                 },
                 "message": "System name",
-                "name": "newSystemName",
+                "name": "userSystemName",
                 "type": "input",
                 "validate": [Function],
                 "when": [Function],
@@ -264,22 +264,22 @@ describe('questions', () => {
         };
         // Should show new system name prompt only once authenticated or authentication not required
         const newSystemQuestions = getAbapOnPremQuestions();
-        const newSystemNamePrompt = newSystemQuestions.find((question) => question.name === 'newSystemName');
+        const userSystemNamePrompt = newSystemQuestions.find((question) => question.name === 'userSystemName');
 
-        expect(await (newSystemNamePrompt?.when as Function)({ systemUrl })).toBe(false);
+        expect(await (userSystemNamePrompt?.when as Function)({ systemUrl })).toBe(false);
 
         connectionValidatorMock.validity = {
             authenticated: true,
             authRequired: true,
             reachable: true
         };
-        expect(await (newSystemNamePrompt?.when as Function)({ systemUrl })).toBe(true);
+        expect(await (userSystemNamePrompt?.when as Function)({ systemUrl })).toBe(true);
         connectionValidatorMock.validity = {
             authenticated: false,
             authRequired: false,
             reachable: true
         };
-        expect(await (newSystemNamePrompt?.when as Function)({ systemUrl })).toBe(true);
+        expect(await (userSystemNamePrompt?.when as Function)({ systemUrl })).toBe(true);
     });
 
     test('should prompt for service selection', async () => {
@@ -640,5 +640,42 @@ describe('questions', () => {
         expect(found).toEqual([flightChoice]);
         found = await ((serviceSelectionPrompt as AutocompleteQuestionOptions)?.source as Function)({}, 'not found');
         expect(found).toEqual([]);
+    });
+
+    test('Should show and log error message when service validation fails', async () => {
+        connectionValidatorMock.catalogs = {
+            [ODataVersion.v2]: {
+                listServices: jest.fn().mockResolvedValue([serviceV2a])
+            },
+            [ODataVersion.v4]: {
+                listServices: jest.fn().mockResolvedValue([serviceV4a])
+            }
+        };
+        connectionValidatorMock.serviceProvider = {
+            service: jest.fn().mockReturnValue({
+                metadata: jest.fn().mockRejectedValue(new Error('Failed to get metadata'))
+            } as Partial<ODataService>)
+        } as Partial<ServiceProvider>;
+
+        const loggerSpy = jest.spyOn(LoggerHelper.logger, 'error');
+        const newSystemQuestions = getAbapOnPremQuestions();
+        const serviceSelectionPrompt = newSystemQuestions.find((question) => question.name === 'serviceSelection');
+
+        const selectedService = {
+            servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002',
+            serviceODataVersion: '2',
+            serviceType: 'Not implemented'
+        } as ServiceAnswer;
+
+        const validationResult = await (serviceSelectionPrompt?.validate as Function)(selectedService, {
+            systemUrl: 'http://some.abap.system:1234'
+        });
+        expect(loggerSpy).toHaveBeenCalledWith(
+            t('errors.serviceMetadataErrorLog', {
+                servicePath: selectedService.servicePath,
+                error: 'Error: Failed to get metadata'
+            })
+        );
+        expect(validationResult).toBe(t('errors.serviceMetadataErrorUI', { servicePath: selectedService.servicePath }));
     });
 });

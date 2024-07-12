@@ -51,7 +51,7 @@ const createServiceChoices = (serviceInfos?: ODataServiceInfo[]): ListChoiceOpti
                 }
             }) as ListChoiceOptions<ServiceAnswer>;
         });
-    return choices.sort((a, b) => a.name!.localeCompare(b.name!));
+    return choices.sort((a, b) => (a.name ? a.name.localeCompare(b.name ?? '') : 0));
 };
 
 /**
@@ -107,10 +107,8 @@ export async function getServiceMetadata(
             serviceProvider
         };
     } catch (error) {
-        LoggerHelper.logger.error(
-            `An error occurred while getting service metadata for service : ${servicePath}, error: ${error}`
-        );
-        return t('errors.serviceMetadataError', { servicePath });
+        LoggerHelper.logger.error(t('errors.serviceMetadataErrorLog', { servicePath, error }));
+        return t('errors.serviceMetadataErrorUI', { servicePath });
     }
 }
 
