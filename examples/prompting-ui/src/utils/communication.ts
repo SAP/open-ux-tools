@@ -14,7 +14,7 @@ import type {
     ValidateAnswers
 } from '../addons/project/types';
 import type { DynamicChoices, PromptQuestion, ValidationResults, PromptsGroup } from '@sap-ux/ui-prompting';
-import type { Actions, GetChoices, GetCodeSnippet, GetQuestions } from './types';
+import type { Actions, GetChoices, GetQuestions } from './types';
 import {
     APPLY_ANSWERS,
     GET_CHOICES,
@@ -25,7 +25,7 @@ import {
     SET_FILTERBAR_QUESTIONS,
     SET_TABLE_QUESTIONS,
     SET_VALIDATION_RESULTS,
-    SupportedBuildingBlocks
+    PromptsType
 } from './types';
 import type { Subset } from '@sap-ux/fe-fpm-writer/src/building-block/prompts';
 
@@ -117,9 +117,9 @@ export function onMessageDetach(type: string, listener: Listener): void {
 }
 
 const QUESTIONS_TYPE_MAP = new Map([
-    [SupportedBuildingBlocks.Table, SET_TABLE_QUESTIONS],
-    [SupportedBuildingBlocks.Chart, SET_CHART_QUESTIONS],
-    [SupportedBuildingBlocks.FilterBar, SET_FILTERBAR_QUESTIONS]
+    [PromptsType.Table, SET_TABLE_QUESTIONS],
+    [PromptsType.Chart, SET_CHART_QUESTIONS],
+    [PromptsType.FilterBar, SET_FILTERBAR_QUESTIONS]
 ]);
 
 /**
@@ -129,7 +129,7 @@ const QUESTIONS_TYPE_MAP = new Map([
  * @returns Prompt with questions for passed prompt type.
  */
 export function getQuestions<T extends Answers>(
-    type: SupportedBuildingBlocks
+    type: PromptsType
 ): Promise<{ questions: PromptQuestion<T>[]; groups?: PromptsGroup[]; initialAnswers?: Subset<T> }> {
     return new Promise((resolve, reject) => {
         const getAction: GetQuestions = {
@@ -162,7 +162,7 @@ export function getQuestions<T extends Answers>(
  * @param buildingBlockType Prompt type
  * @param answers Latest answers
  */
-export function getChoices(names: string[], buildingBlockType: SupportedBuildingBlocks, answers: unknown): void {
+export function getChoices(names: string[], buildingBlockType: PromptsType, answers: Answers): void {
     const getAction: GetChoices = {
         type: GET_CHOICES,
         answers,
@@ -203,7 +203,7 @@ export function unsubscribeOnChoicesUpdate(listener: Listener): void {
  * @param buildingBlockType Prompt type.
  * @param answers Answers to apply/save.
  */
-export function applyAnswers(buildingBlockType: SupportedBuildingBlocks, answers: unknown): Promise<void> {
+export function applyAnswers(buildingBlockType: PromptsType, answers: Answers): Promise<void> {
     return new Promise((resolve) => {
         const getAction = {
             type: APPLY_ANSWERS,
@@ -224,7 +224,7 @@ export function applyAnswers(buildingBlockType: SupportedBuildingBlocks, answers
  * @returns Validation result.
  */
 export function validateAnswers(
-    promptType: SupportedBuildingBlocks,
+    promptType: PromptsType,
     questions: PromptQuestion[],
     answers: Answers
 ): Promise<ValidationResults> {
@@ -296,8 +296,8 @@ export function updateProjectPath(application: ApplicationInformation): Promise<
  * @param buildingBlockType Prompt type
  * @param answers Answers which would be used to generate code snippet
  */
-export function getCodeSnippet(buildingBlockType: SupportedBuildingBlocks, answers: unknown): void {
-    const action: GetCodeSnippet = {
+export function getCodeSnippet(buildingBlockType: PromptsType, answers: Answers): void {
+    const action = {
         type: GET_CODE_SNIPPET,
         buildingBlockType,
         answers

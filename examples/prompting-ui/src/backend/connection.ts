@@ -11,7 +11,7 @@ import {
     SET_TABLE_QUESTIONS,
     SET_CHART_QUESTIONS,
     SET_FILTERBAR_QUESTIONS,
-    SupportedBuildingBlocks,
+    PromptsType,
     GET_CHOICES,
     SET_CHOICES,
     APPLY_ANSWERS,
@@ -111,7 +111,7 @@ async function handleAction(action: Actions): Promise<void> {
             case GET_QUESTIONS: {
                 let responseAction: Actions | undefined;
                 const { groups, questions, initialAnswers } = await promptsAPI.getPrompts(action.value);
-                if (action.value === SupportedBuildingBlocks.Table) {
+                if (action.value === PromptsType.Table) {
                     // Post processing
                     responseAction = {
                         type: SET_TABLE_QUESTIONS,
@@ -119,7 +119,7 @@ async function handleAction(action: Actions): Promise<void> {
                         groups,
                         initialAnswers: initialAnswers as Partial<TablePromptsAnswer>
                     };
-                } else if (action.value === SupportedBuildingBlocks.Chart) {
+                } else if (action.value === PromptsType.Chart) {
                     // Post processing
                     responseAction = {
                         type: SET_CHART_QUESTIONS,
@@ -127,7 +127,7 @@ async function handleAction(action: Actions): Promise<void> {
                         groups,
                         initialAnswers: initialAnswers as Partial<ChartPromptsAnswer>
                     };
-                } else if (action.value === SupportedBuildingBlocks.FilterBar) {
+                } else if (action.value === PromptsType.FilterBar) {
                     // Post processing
                     responseAction = {
                         type: SET_FILTERBAR_QUESTIONS,
@@ -158,8 +158,7 @@ async function handleAction(action: Actions): Promise<void> {
             }
             case APPLY_ANSWERS: {
                 const { answers, buildingBlockType } = action;
-                // ToDo recheck after cleanup for answers
-                const _fs = promptsAPI.submitAnswers(buildingBlockType, answers as any);
+                const _fs = promptsAPI.submitAnswers(buildingBlockType, answers);
                 await promisify(_fs.commit).call(_fs);
                 const responseAction: ResetAnswers = {
                     type: RESET_ANSWERS,
@@ -178,8 +177,7 @@ async function handleAction(action: Actions): Promise<void> {
             }
             case GET_CODE_SNIPPET: {
                 const { answers, buildingBlockType } = action;
-                // ToDo recheck after cleanup for answers
-                const codeSnippets = promptsAPI.getCodeSnippets(buildingBlockType, answers as any);
+                const codeSnippets = promptsAPI.getCodeSnippets(buildingBlockType, answers);
                 const responseAction: UpdateCodeSnippet = {
                     type: UPDATE_CODE_SNIPPET,
                     buildingBlockType,

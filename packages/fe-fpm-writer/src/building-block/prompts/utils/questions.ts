@@ -5,7 +5,7 @@ import type { Editor } from 'mem-fs-editor';
 import { join, relative } from 'path';
 import { getAnnotationPathQualifiers, getEntityTypes } from './service';
 import { getCapServiceName } from '@sap-ux/project-access';
-import { findBy } from '@sap-ux/project-access/dist/file';
+import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
 import type { Project } from '@sap-ux/project-access';
 import type { InputPromptQuestion, ListPromptQuestion, PromptListChoices, WithRequired, PromptContext } from '../types';
 import { BuildingBlockType } from '../../types';
@@ -101,13 +101,18 @@ export function getViewOrFragmentPathPrompt(
         selectType: 'dynamic',
         name: 'viewOrFragmentPath',
         choices: async () => {
-            const files = await findBy({
-                extensionNames: ['fragment.xml', 'view.xml'],
-                root: appPath,
-                excludeFolders: ['.git', 'node_modules', 'dist', 'annotations', 'localService'],
-                memFs: fs
-            });
-            return transformChoices(files.map((file) => relative(appPath, file)));
+            const files = await findFilesByExtension(
+                '.xml',
+                appPath,
+                ['.git', 'node_modules', 'dist', 'annotations', 'localService'],
+                fs
+            );
+            const lookupFiles = ['.fragment.xml', '.view.xml'];
+            return transformChoices(
+                files
+                    .filter((fileName) => lookupFiles.some((lookupFile) => fileName.endsWith(lookupFile)))
+                    .map((file) => relative(appPath, file))
+            );
         },
         validate: (value: string) => (value ? true : validationErrorMessage),
         placeholder: properties.placeholder ?? t('viewOrFragmentPath.defaultPlaceholder')

@@ -1,17 +1,17 @@
 import React from 'react';
-import { SupportedBuildingBlocks } from './utils';
+import { PromptsType } from './utils';
 import { BuildingBlockQuestions } from './BuildingBlock';
 
 export default { title: 'Building Blocks/FilterBar' };
 
 export const Default = (): JSX.Element => {
-    return <BuildingBlockQuestions type={SupportedBuildingBlocks.FilterBar} />;
+    return <BuildingBlockQuestions type={PromptsType.FilterBar} />;
 };
 
 export const ExternalValues = (): JSX.Element => {
     return (
         <BuildingBlockQuestions
-            type={SupportedBuildingBlocks.FilterBar}
+            type={PromptsType.FilterBar}
             externalAnswers={{
                 buildingBlockData: {
                     buildingBlockType: 'filter-bar',
@@ -27,5 +27,5 @@ export const ExternalValues = (): JSX.Element => {
 };
 
 export const WithoutLiveValidation = (): JSX.Element => {
-    return <BuildingBlockQuestions type={SupportedBuildingBlocks.FilterBar} liveValidation={false} />;
+    return <BuildingBlockQuestions type={PromptsType.FilterBar} liveValidation={false} />;
 };

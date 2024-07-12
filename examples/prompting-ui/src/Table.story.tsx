@@ -1,17 +1,17 @@
 import React from 'react';
-import { SupportedBuildingBlocks } from './utils';
+import { PromptsType } from './utils';
 import { BuildingBlockQuestions } from './BuildingBlock';
 
 export default { title: 'Building Blocks/Table' };
 
 export const Default = (): JSX.Element => {
-    return <BuildingBlockQuestions type={SupportedBuildingBlocks.Table} />;
+    return <BuildingBlockQuestions type={PromptsType.Table} />;
 };
 
 export const ExternalValues = (): JSX.Element => {
     return (
         <BuildingBlockQuestions
-            type={SupportedBuildingBlocks.Table}
+            type={PromptsType.Table}
             externalAnswers={{
                 buildingBlockData: {
                     buildingBlockType: 'table',
@@ -38,5 +38,5 @@ export const ExternalValues = (): JSX.Element => {
 };
 
 export const WithoutLiveValidation = (): JSX.Element => {
-    return <BuildingBlockQuestions type={SupportedBuildingBlocks.Table} liveValidation={false} />;
+    return <BuildingBlockQuestions type={PromptsType.Table} liveValidation={false} />;
 };

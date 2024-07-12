@@ -1,19 +1,16 @@
 import type { UIComboBoxOption } from '@sap-ux/ui-components';
 import { UIComboBox, UIComboBoxLoaderType } from '@sap-ux/ui-components';
-import type { CheckboxQuestion } from 'inquirer';
 import React from 'react';
 import { useValue, getLabelRenderer } from '../../../utilities';
+import type { CheckboxPromptQuestion } from '../../../types';
 
-export interface MultiSelectProps extends CheckboxQuestion {
-    name: string;
+export interface MultiSelectProps extends CheckboxPromptQuestion {
     value?: string | number | boolean;
     onChange: (name: string, value: string | number | undefined) => void;
-    required?: boolean;
+    // ToDo - why options interface differs between multiselect and select?
     options: UIComboBoxOption[];
     pending?: boolean;
-    additionalInfo?: string;
     errorMessage?: string;
-    placeholder?: string;
 }
 
 export const MultiSelect = (props: MultiSelectProps) => {

@@ -1,6 +1,6 @@
 import { UIDefaultButton, UISmallButton, initIcons } from '@sap-ux/ui-components';
 import React, { useEffect, useState } from 'react';
-import type { SupportedBuildingBlocks } from './utils';
+import type { PromptsType } from './utils';
 import { applyAnswers, getChoices, getCodeSnippet, getWebSocket, validateAnswers } from './utils/communication';
 import { Questions, PromptsLayoutType } from '@sap-ux/ui-prompting';
 import type { PromptQuestion, ValidationResults, ValidationResult } from '@sap-ux/ui-prompting';
@@ -44,7 +44,7 @@ const updateWithDefaultAnswers = (answers: Answers, questions: PromptQuestion[])
 };
 
 export const BuildingBlockQuestions = (props: {
-    type: SupportedBuildingBlocks;
+    type: PromptsType;
     visibleQuestions?: string[];
     externalAnswers?: Answers;
     liveValidation?: boolean;

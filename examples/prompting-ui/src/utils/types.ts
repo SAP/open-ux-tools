@@ -4,11 +4,10 @@ import {
     type TablePromptsAnswer,
     type Prompts
 } from '@sap-ux/fe-fpm-writer';
-// ToDo -> use directly PromptsType?
-import { PromptsType as SupportedBuildingBlocks } from '@sap-ux/fe-fpm-writer/dist/building-block/prompts/types/basic';
+import { PromptsType } from '@sap-ux/fe-fpm-writer/dist/building-block/prompts/types/basic';
 import type { AddonActions } from '../addons/types';
 import type { DynamicChoices } from '@sap-ux/ui-prompting';
-import type { CodeSnippet } from '@sap-ux/fe-fpm-writer';
+import type { Answers, CodeSnippet, SupportedAnswers } from '@sap-ux/fe-fpm-writer';
 
 export type Actions =
     | GetQuestions
@@ -34,25 +33,24 @@ export const APPLY_ANSWERS = 'APPLY_ANSWERS';
 export const RESET_ANSWERS = 'RESET_ANSWERS';
 export const SET_VALIDATION_RESULTS = 'SET_VALIDATION_RESULTS';
 
-// ToDo use new exported enum from fpm-writer/api
-export { SupportedBuildingBlocks };
+export { PromptsType };
 
 export interface ApplyAnswers {
     type: typeof APPLY_ANSWERS;
-    answers: unknown;
-    buildingBlockType: SupportedBuildingBlocks;
+    answers: SupportedAnswers;
+    buildingBlockType: PromptsType;
 }
 
 export interface ResetAnswers {
     type: typeof RESET_ANSWERS;
-    buildingBlockType: SupportedBuildingBlocks;
+    buildingBlockType: PromptsType;
 }
 
 export interface GetChoices {
     type: typeof GET_CHOICES;
     names: string[];
-    answers: any;
-    buildingBlockType: SupportedBuildingBlocks;
+    answers: Answers;
+    buildingBlockType: PromptsType;
 }
 
 export interface SetChoices {
@@ -61,7 +59,7 @@ export interface SetChoices {
 }
 export interface GetQuestions {
     type: typeof GET_QUESTIONS;
-    value: SupportedBuildingBlocks;
+    value: PromptsType;
 }
 
 export interface SetTableQuestions extends Prompts<TablePromptsAnswer> {
@@ -86,14 +84,14 @@ export const GET_CODE_SNIPPET = 'GET_CODE_SNIPPET';
 export const UPDATE_CODE_SNIPPET = 'UPDATE_CODE_SNIPPET';
 export interface GetCodeSnippet {
     type: typeof GET_CODE_SNIPPET;
-    buildingBlockType: SupportedBuildingBlocks;
-    answers: unknown;
+    buildingBlockType: PromptsType;
+    answers: SupportedAnswers;
 }
 
 export interface UpdateCodeSnippetPayload {
-    buildingBlockType: SupportedBuildingBlocks;
+    buildingBlockType: PromptsType;
     codeSnippets: { [questionName: string]: CodeSnippet };
-    answers: unknown;
+    answers: SupportedAnswers;
 }
 export interface UpdateCodeSnippet extends UpdateCodeSnippetPayload {
     type: typeof UPDATE_CODE_SNIPPET;
