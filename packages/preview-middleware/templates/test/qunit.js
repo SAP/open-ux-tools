@@ -10,7 +10,7 @@ sap.ui.loader.config({
             deps: ["sap/ui/thirdparty/qunit-2", "sap/ui/thirdparty/sinon"]
         },
         "sap/ui/qunit/sinon-qunit-bridge": {
-            deps: ["sap/ui/thirdparty/qunit", "sap/ui/thirdparty/sinon-4"]
+            deps: ["sap/ui/thirdparty/qunit-2", "sap/ui/thirdparty/sinon-4"]
         }
     }
 });
