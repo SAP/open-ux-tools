@@ -15,9 +15,7 @@ sap.ui.loader.config({
     }
 });
 
-window.QUnit ??= {};
-window.QUnit.config ??= {};
-window.QUnit.config.autostart ??= false;
+window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
 
 sap.ui.require([
     "sap/ui/thirdparty/qunit-2",
