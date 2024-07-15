@@ -1,5 +1,73 @@
 # @sap-ux/adp-tooling
 
+## 0.12.9
+
+### Patch Changes
+
+-   Updated dependencies [173b5f2]
+    -   @sap-ux/project-access@1.25.4
+    -   @sap-ux/axios-extension@1.15.1
+    -   @sap-ux/system-access@0.5.1
+
+## 0.12.8
+
+### Patch Changes
+
+-   9e4ce4d: Remove safeMode from adp-tooling types and change order of ui5.yaml custom configuration
+
+## 0.12.7
+
+### Patch Changes
+
+-   Updated dependencies [e7b9184]
+    -   @sap-ux/project-access@1.25.3
+    -   @sap-ux/axios-extension@1.15.1
+    -   @sap-ux/system-access@0.5.1
+
+## 0.12.6
+
+### Patch Changes
+
+-   22e4ad8: Generate correct ui5.yaml
+-   Updated dependencies [22e4ad8]
+    -   @sap-ux/ui5-config@0.23.1
+    -   @sap-ux/project-access@1.25.2
+    -   @sap-ux/axios-extension@1.15.1
+    -   @sap-ux/system-access@0.5.1
+
+## 0.12.5
+
+### Patch Changes
+
+-   Updated dependencies [0f3cf6b]
+    -   @sap-ux/project-access@1.25.1
+    -   @sap-ux/axios-extension@1.15.1
+    -   @sap-ux/system-access@0.5.1
+
+## 0.12.4
+
+### Patch Changes
+
+-   5f074a7: Add toolsId in ui5.yaml for Adaptation Project writers and remove safeMode
+
+## 0.12.3
+
+### Patch Changes
+
+-   Updated dependencies [f076dd3]
+    -   @sap-ux/project-access@1.25.0
+    -   @sap-ux/axios-extension@1.15.1
+    -   @sap-ux/system-access@0.5.1
+
+## 0.12.2
+
+### Patch Changes
+
+-   Updated dependencies [0ae685e]
+    -   @sap-ux/project-access@1.24.0
+    -   @sap-ux/axios-extension@1.15.1
+    -   @sap-ux/system-access@0.5.1
+
 ## 0.12.1
 
 ### Patch Changes

@@ -6,7 +6,7 @@ import { render, mockDomEventListener } from './utils';
 import { initI18n } from '../../src/i18n';
 
 import App from '../../src/App';
-import { controlSelected, scenario } from '@sap-ux-private/control-property-editor-common';
+import { controlSelected, SCENARIO } from '@sap-ux-private/control-property-editor-common';
 import { mockResizeObserver } from '../utils/utils';
 import { InputType } from '../../src/panels/properties/types';
 import { registerAppIcons } from '../../src/icons';
@@ -195,7 +195,7 @@ test('renders warning message for "ADAPTATION_PROJECT" scenario', async () => {
             { name: FilterName.changeSummaryFilterQuery, value: '' },
             { name: FilterName.showEditableProperties, value: true }
         ],
-        scenario: scenario.AdaptationProject,
+        scenario: SCENARIO.AdaptationProject,
         isAdpProject: true,
         icons: [],
         changes: {
@@ -220,6 +220,14 @@ test('renders warning message for "ADAPTATION_PROJECT" scenario', async () => {
     expect(warningDialog).toBeInTheDocument();
     const okButton = screen.getByText(/ok/i);
     expect(okButton).toBeInTheDocument();
+    fireEvent.click(okButton);
+    let notFoundException = null;
+    try {
+        screen.getByText(/Some Text/i);
+    } catch (e) {
+        notFoundException = e;
+    }
+    expect(notFoundException).toBeTruthy();
 });
 
 const testCases = [
