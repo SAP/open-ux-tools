@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.23.1
+
+### Patch Changes
+
+-   22e4ad8: Generate correct ui5.yaml
+
 ## 0.23.0
 
 ### Minor Changes
