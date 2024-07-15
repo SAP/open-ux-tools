@@ -4,8 +4,7 @@ import {
     registerSAPFonts,
     setI18nTitle,
     resetAppState,
-    loadI18nResourceBundle,
-    sandboxPathUi5V1
+    loadI18nResourceBundle
 } from '../../../src/flp/init';
 import IconPoolMock from 'mock/sap/ui/core/IconPool';
 import { default as mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
@@ -167,7 +166,7 @@ describe('flp/init', () => {
         });
 
         test('nothing configured', async () => {
-            await init({bootstrapPath: sandboxPathUi5V1});
+            await init({});
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).not.toBeCalled();
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
             expect(sapMock.ushell.Container.getServiceAsync).toBeCalledWith('AppState');
@@ -179,7 +178,7 @@ describe('flp/init', () => {
                 pluginScript: 'my/script'
             };
             sapMock.ui.version = '1.84.50';
-            await init({ flex: JSON.stringify(flexSettings) , bootstrapPath: sandboxPathUi5V1});
+            await init({ flex: JSON.stringify(flexSettings)});
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
             const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
@@ -217,7 +216,7 @@ describe('flp/init', () => {
                 pluginScript: 'my/script'
             };
             sapMock.ui.version = '1.71.60';
-            await init({ flex: JSON.stringify(flexSettings), bootstrapPath: sandboxPathUi5V1 });
+            await init({ flex: JSON.stringify(flexSettings) });
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
             const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
@@ -253,7 +252,7 @@ describe('flp/init', () => {
             const customInit = 'my/app/test/integration/opaTests.qunit';
             sapMock.ui.version = '1.120.09';
 
-            await init({ customInit: customInit, bootstrapPath: sandboxPathUi5V1 });
+            await init({ customInit: customInit });
 
             expect(sapMock.ui.require).toBeCalledWith([customInit]);
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
@@ -263,7 +262,7 @@ describe('flp/init', () => {
             const customInit = 'my/app/test/integration/opaTests.qunit';
             sapMock.ui.version = '2.0.0';
 
-            await init({ customInit: customInit, bootstrapPath: sandboxPathUi5V1 });
+            await init({ customInit: customInit });
 
             expect(sapMock.ui.require).toBeCalledWith([customInit]);
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);

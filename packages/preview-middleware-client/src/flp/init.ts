@@ -238,21 +238,26 @@ export function setI18nTitle(resourceBundle: ResourceBundle, i18nKey = 'appTitle
 export async function init({
     appUrls,
     flex,
-    customInit,
-    bootstrapPath
+    customInit
 }: {
     appUrls?: string | null;
     flex?: string | null;
     customInit?: string | null;
-    bootstrapPath: string | null; 
 }): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
     const container = sap?.ushell?.Container ?? (sap.ui.require('sap/ushell/Container') as typeof sap.ushell.Container);
     let scenario: string = '';
     const version = sap.ui.version;
+
+    // Choose different sandbox in case of SAP UI5 2.x
     const major = parseInt(version.split('.')[0], 10);
-    if (bootstrapPath && major >= 2) {
-        bootstrapPath = sandboxPathUi5V2;
+    if (major >= 2) {
+        const bootstrap = document.getElementById('sap-ushell-bootstrap');
+        if (bootstrap) {
+            const oldPath = bootstrap.getAttribute('src');
+            const newPath = oldPath ? oldPath.replace(sandboxPathUi5V1, sandboxPathUi5V2) : '';
+            bootstrap.setAttribute('src', newPath);
+        }
     }
 
     // Register RTA if configured
@@ -323,7 +328,6 @@ if (bootstrapConfig) {
     init({
         appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
         flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
-        customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit'),
-        bootstrapPath: bootstrapConfig.getAttribute('data-open-ux-preview-bootstrapPath')
+        customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit')
     }).catch(() => Log.error('Sandbox initialization failed.'));
 }

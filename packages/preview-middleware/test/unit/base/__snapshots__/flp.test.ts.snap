@@ -51,7 +51,6 @@ Object {
   "locateReuseLibsScript": false,
   "ui5": Object {
     "bootstrapOptions": "",
-    "bootstrapPath": "../test-resources/sap/ushell/bootstrap/sandbox.js",
     "flex": Array [
       Object {
         "connector": "LrepConnector",
@@ -103,7 +102,6 @@ Object {
   "locateReuseLibsScript": false,
   "ui5": Object {
     "bootstrapOptions": "",
-    "bootstrapPath": "../test-resources/sap/ushell/bootstrap/sandbox.js",
     "flex": Array [
       Object {
         "connector": "LrepConnector",
@@ -152,7 +150,6 @@ Object {
   "locateReuseLibsScript": false,
   "ui5": Object {
     "bootstrapOptions": "",
-    "bootstrapPath": "../test-resources/sap/ushell/bootstrap/sandbox.js",
     "flex": Array [
       Object {
         "connector": "LrepConnector",
@@ -201,7 +198,6 @@ Object {
   "locateReuseLibsScript": false,
   "ui5": Object {
     "bootstrapOptions": "",
-    "bootstrapPath": "../test-resources/sap/ushell/bootstrap/sandbox.js",
     "flex": Array [
       Object {
         "connector": "LrepConnector",
@@ -250,7 +246,6 @@ Object {
   "locateReuseLibsScript": false,
   "ui5": Object {
     "bootstrapOptions": "",
-    "bootstrapPath": "../test-resources/sap/ushell/bootstrap/sandbox.js",
     "flex": Array [
       Object {
         "connector": "LrepConnector",
@@ -299,7 +294,6 @@ Object {
   "locateReuseLibsScript": false,
   "ui5": Object {
     "bootstrapOptions": "",
-    "bootstrapPath": "../test-resources/sap/ushell/bootstrap/sandbox.js",
     "flex": Array [
       Object {
         "connector": "LrepConnector",
@@ -350,7 +344,6 @@ Object {
   "locateReuseLibsScript": false,
   "ui5": Object {
     "bootstrapOptions": "",
-    "bootstrapPath": "../test-resources/sap/ushell/bootstrap/sandbox.js",
     "flex": Array [
       Object {
         "connector": "LrepConnector",
@@ -534,7 +527,6 @@ exports[`FlpSandbox router editor with config 1`] = `
         data-sap-ui-xx-suppressDeactivationOfControllerCode=\\"true\\"
         data-sap-ui-xx-viewCache=\\"false\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
-        data-open-ux-preview-bootstrapPath='../test-resources/sap/ushell/bootstrap/sandbox.js'
         >
     </script>
 
@@ -611,7 +603,6 @@ exports[`FlpSandbox router rta 1`] = `
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
-        data-open-ux-preview-bootstrapPath='../test-resources/sap/ushell/bootstrap/sandbox.js'
         
           data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/preview-middleware\\",\\"developerMode\\":false}'
         >
@@ -725,7 +716,6 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `
         data-sap-ui-xx-suppressDeactivationOfControllerCode=\\"true\\"
         data-sap-ui-xx-viewCache=\\"false\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
-        data-open-ux-preview-bootstrapPath='../test-resources/sap/ushell/bootstrap/sandbox.js'
         
           data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/preview/client/cpe/init\\"}'
         >
@@ -821,7 +811,6 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
         data-sap-ui-xx-suppressDeactivationOfControllerCode=\\"true\\"
         data-sap-ui-xx-viewCache=\\"false\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
-        data-open-ux-preview-bootstrapPath='../test-resources/sap/ushell/bootstrap/sandbox.js'
         
           data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/tools/plugin\\"}'
         >
@@ -914,7 +903,6 @@ exports[`FlpSandbox router test/flp.html 1`] = `
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
-        data-open-ux-preview-bootstrapPath='../test-resources/sap/ushell/bootstrap/sandbox.js'
         >
     </script>
 

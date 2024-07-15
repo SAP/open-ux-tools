@@ -8,7 +8,6 @@ Object {
   "locateReuseLibsScript": undefined,
   "ui5": Object {
     "bootstrapOptions": "",
-    "bootstrapPath": "../test-resources/sap/ushell/bootstrap/sandbox.js",
     "flex": Array [
       Object {
         "connector": "LrepConnector",
@@ -96,7 +95,6 @@ exports[`config generatePreviewFiles minimum settings 1`] = `
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
-        data-open-ux-preview-bootstrapPath='../test-resources/sap/ushell/bootstrap/sandbox.js'
         >
     </script>
 
@@ -175,7 +173,6 @@ Object {
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
-        data-open-ux-preview-bootstrapPath='../test-resources/sap/ushell/bootstrap/sandbox.js'
         >
     </script>
 
@@ -257,7 +254,6 @@ Object {
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
-        data-open-ux-preview-bootstrapPath='../test-resources/sap/ushell/bootstrap/sandbox.js'
         >
     </script>
 
