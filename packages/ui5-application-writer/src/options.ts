@@ -140,6 +140,11 @@ export function getTemplateOptions(isEdmxProjectType: boolean, frameworkUrl?: st
         return resourcePath;
     } else {
         // return the full URL for CAP projects
-        return `${frameworkUrl}${version ? `/${version}` : ''}/${resourcePath}`;
+        let url = frameworkUrl;
+        if (version) {
+            url += `/${version}`;
+        }
+        url += `/${resourcePath}`;
+        return url;
     }
 }
