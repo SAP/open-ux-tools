@@ -161,6 +161,11 @@ export class ConnectionValidator {
         }
     }
 
+    /**
+     *
+     * @param url
+     * @param axiosConfig
+     */
     private async initServiceConnection(url: URL, axiosConfig: AxiosRequestConfig) {
         this._axiosConfig = axiosConfig;
         this._serviceProvider = create(this._axiosConfig);
@@ -169,6 +174,11 @@ export class ConnectionValidator {
         await this._odataService.get('');
     }
 
+    /**
+     *
+     * @param odataVersion
+     * @param axiosConfig
+     */
     private async initSystemConnection(odataVersion: ODataVersion | undefined, axiosConfig: AxiosRequestConfig) {
         this._axiosConfig = axiosConfig;
         this._serviceProvider = createForAbap(this._axiosConfig);
