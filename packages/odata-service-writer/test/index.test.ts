@@ -49,7 +49,7 @@ describe('ODataService templates', () => {
      * @param name testDir name
      * @returns testDir Path
      */
-    async function createTestDir(name: string, serviceType?: ServiceType): Promise<string> {
+    async function createTestDir(name: string): Promise<string> {
         const testDir = join(outputDir, name);
         const ui5Yaml = (await UI5Config.newInstance('')).addFioriToolsProxydMiddleware({ ui5: {} }).toString();
         fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
@@ -73,11 +73,11 @@ describe('ODataService templates', () => {
         const packagePath = join(testDir, 'package.json');
         expect(fs.readJSON(packagePath)).toEqual({
             ui5: {
-              dependencies: [ '@sap-ux/ui5-middleware-fe-mockserver', '@sap/ux-ui5-tooling' ]
+                dependencies: [ '@sap-ux/ui5-middleware-fe-mockserver', '@sap/ux-ui5-tooling' ]
             },
             devDependencies: {
-              '@sap-ux/ui5-middleware-fe-mockserver': '2',
-              '@sap/ux-ui5-tooling': '1'
+                '@sap-ux/ui5-middleware-fe-mockserver': '2',
+                '@sap/ux-ui5-tooling': '1'
             },
             scripts: { 'start-mock': 'fiori run --config ./ui5-mock.yaml --open "/"' }
         });
@@ -107,7 +107,7 @@ describe('ODataService templates', () => {
             version: OdataVersion.v2,
             type: ServiceType.CDS
         };
-        const testDir = await createTestDir('cds-service', config.type);
+        const testDir = await createTestDir('cds-service');
         await generate(testDir, config, fs);
         const packagePath = join(testDir, 'package.json');
         expect(fs.readJSON(packagePath)).toEqual({});
