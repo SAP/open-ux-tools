@@ -252,7 +252,7 @@ export async function init({
     const version = sap.ui.version;
     const major = parseInt(version.split('.')[0], 10);
     if (bootstrapPath && major >= 2) {
-        bootstrapPath.replace(sandboxPathUi5V1, sandboxPathUi5V2);
+        bootstrapPath = sandboxPathUi5V2;
     }
 
     // Register RTA if configured

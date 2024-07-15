@@ -252,10 +252,20 @@ describe('flp/init', () => {
         test('custom init module configured & ui5 version is 1.120.9', async () => {
             const customInit = 'my/app/test/integration/opaTests.qunit';
             sapMock.ui.version = '1.120.09';
+
             await init({ customInit: customInit, bootstrapPath: sandboxPathUi5V1 });
 
             expect(sapMock.ui.require).toBeCalledWith([customInit]);
+            expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
+        });
 
+        test('custom init module configured & ui5 version is 2.0.0', async () => {
+            const customInit = 'my/app/test/integration/opaTests.qunit';
+            sapMock.ui.version = '2.0.0';
+
+            await init({ customInit: customInit, bootstrapPath: sandboxPathUi5V1 });
+
+            expect(sapMock.ui.require).toBeCalledWith([customInit]);
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
         });
     });

@@ -40,7 +40,7 @@
         };
     </script>
 
-    <script src='<%- ui5.bootstrapPath %>' id="sap-ushell-bootstrap"></script>
+    <script src="<%- ui5.bootstrapPath %>" id="sap-ushell-bootstrap"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions="allow"'' is a NON-SECURE setting for test environments -->
     <script id="sap-ui-bootstrap"
         src="<%- basePath %>/resources/sap-ui-core.js"
@@ -56,7 +56,7 @@
         data-sap-ui-frameOptions="allow"
         data-sap-ui-xx-componentPreload="off"<%- ui5.bootstrapOptions %>
         data-sap-ui-oninit="module:open/ux/preview/client/flp/init"
-        data-open-ux-preview-bootstrapPath='<%- locals.bootstrapPath %>'
+        data-open-ux-preview-bootstrapPath='<%- ui5.bootstrapPath %>'
         <% if (locals.init) { %>
           data-open-ux-preview-customInit='<%- init %>'
         <% } 
