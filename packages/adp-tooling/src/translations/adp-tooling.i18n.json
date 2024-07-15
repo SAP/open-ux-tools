@@ -2,19 +2,60 @@
     "prompts": {
         "oDataSourceLabel": "Target OData Service",
         "oDataSourceTooltip": "Select the OData service you want to replace",
+
         "oDataSourceURILabel": "OData Source URI",
         "oDataSourceURITooltip": "Enter the URI for the new OData source",
+
         "maxAgeLabel": "New maxAge",
         "maxAgeTooltip": "(Optional) Enter the time in seconds it takes for a cached response of the service to expire.",
+
         "oDataAnnotationSourceURILabel": "OData Annotation Data Source URI",
         "oDataAnnotationSourceURITooltip": "Server side annotations have been detected for the selected OData service. If needed, enter new annotation data source URI  for the changed service",
+
         "oDataURIInfoLabel": "Have in mind that common OData Service path prefixes are '{{- v2Prefix}}' or '{{- v4Prefix}}'",
         "isInSafeModeLabel": "Making manifest changes is not upgrade safe and the project will be set in advanced mode. Please continue if you are sure you want to have your project in advanced mode.",
-        "oDataURIV2InfoLabel": "Have in mind that you are trying to replace OData {{versionOne}} Service with OData {{versionTwo}} Service"
+        "oDataURIV2InfoLabel": "Have in mind that you are trying to replace OData {{versionOne}} Service with OData {{versionTwo}} Service",
+
+        "componentUsage": "Component usage",
+        "componentUsageIdLabel": "Component Usage ID",
+        "componentUsageIdTooltip": "Enter the component usage ID you want to add",
+
+        "componentNameLabel": "Component Name",
+        "componentNameTooltip": "Enter the name of the component you want to add",
+
+        "componentIsLazyLabel": "Set Component as Lazy",
+        "componentIsLazyTooltip": "Select if the component should be lazy or not",
+
+        "componentSettingsLabel": "Component Settings",
+
+        "componendDataLabel": "Component Data",
+        
+        "componentTooltip": "If needed enter any additional {{input}} in the  \"key1\":\"value1\",\"key2\":\"value2\" format",
+
+        "componentshouldAddLibraryLabel": "Do you want to add library reference?",
+        "componentshouldAddLibraryTooltip": "Choose if you want to add library reference",
+
+        "componentLibraryLabel": "Library Reference",
+        "componentLibraryTooltip": "Enter the library reference",
+
+        "componentLibraryIsLazyLabel": "Set Library as Lazy",
+        "componentLibraryIsLazyTooltip": "Choose if you want the library reference to be lazy or not"
+
+    },
+    "choices": {
+        "true": "true",
+        "false": "false"
     },
     "validators": {
         "manifestContainsNoODataServices": "Manifest contains no OData Services.",
         "inputCannotBeEmpty": "{{input}} cannot be empty.",
-        "inpuCannotHaveSpaces": "{{input}} cannot contain spaces."
+        "inpuCannotHaveSpaces": "{{input}} cannot contain spaces.",
+        "cannotBeEmpty": "{{input}} cannot be empty.",
+        "cannotHaveSpaces": "{{input}} cannot contain spaces.",
+        "invalidValue": "Invalid {{input}}",
+        "errorDuplicatedValue": "{{value}} with the same name was already added to the project",
+        "errorDuplicateNames": "{{value1}} must be different from {{value2}}",
+        "errorInputInvalidValuePrefix": "{{value}} should start with '{{prefix}}'",
+        "errorInvalidValueForSpecialChars": "{{value}} must contain only Latin alphanumeric characters or the following symbols: '-','_','$' and '.'"
     }
 }

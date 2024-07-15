@@ -1,5 +1,5 @@
 import type { Dirent } from 'fs';
-import path from 'path';
+import path, { resolve } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { existsSync, readFileSync, readdirSync } from 'fs';
 
@@ -137,6 +137,57 @@ export function getParsedPropertyValue(propertyValue: PropertyValueType): Proper
         return value;
     } catch (e) {
         return propertyValue;
+    }
+}
+
+/**
+ * Retrieves all change files from a specified project path that match a given change type,
+ * optionally within a specific subdirectory.
+ *
+ * @param {string} projectPath - The base path of the project.
+ * @param {ChangeType} changeType - The type of changes to filter by, ensuring only changes of this type are returned.
+ * @param {string} [subDir] - Optional subdirectory within the main changes directory.
+ * @returns An array of change objects matching the specified change type.
+ */
+export function getChangesByType(
+    projectPath: string,
+    changeType: ChangeType,
+    subDir?: string
+): ManifestChangeProperties[] {
+    try {
+        let targetDir = `${projectPath}/webapp/changes`;
+
+        if (!existsSync(targetDir)) {
+            return [];
+        }
+
+        if (subDir) {
+            targetDir = `${targetDir}/${subDir}`;
+            if (!existsSync(targetDir)) {
+                return [];
+            }
+        }
+
+        const fileNames = readdirSync(targetDir, { withFileTypes: true })
+            .filter((dirent) => dirent.isFile() && dirent.name.endsWith('.change'))
+            .map((dirent) => dirent.name);
+
+        if (fileNames.length === 0) {
+            return [];
+        }
+
+        const changeFiles: ManifestChangeProperties[] = fileNames
+            .map((fileName) => {
+                const filePath = resolve(targetDir, fileName);
+                const fileContent = readFileSync(filePath, 'utf-8');
+                const change: ManifestChangeProperties = JSON.parse(fileContent);
+                return change;
+            })
+            .filter((changeFileObject) => changeFileObject.changeType === changeType);
+
+        return changeFiles;
+    } catch (e) {
+        throw new Error(`Error reading change files: ${e.message}`);
     }
 }
 
