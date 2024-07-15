@@ -480,6 +480,9 @@ importers:
 
   packages/cap-config-writer:
     dependencies:
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger

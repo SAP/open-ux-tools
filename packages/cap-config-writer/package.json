@@ -32,6 +32,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/odata-service-inquirer": "workspace:*",
         "@sap-ux/yaml": "workspace:*",
+        "@sap-ux/fiori-generator-shared": "workspace:*",
         "i18next": "20.6.1",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
