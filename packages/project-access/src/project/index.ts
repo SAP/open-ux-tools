@@ -26,8 +26,16 @@ export {
     getProjectType
 } from './info';
 export { loadModuleFromProject } from './module-loader';
-export { findAllApps, findCapProjects, findFioriArtifacts, findProjectRoot, getAppRootFromWebappPath } from './search';
+export {
+    findAllApps,
+    findCapProjects,
+    findFioriArtifacts,
+    findProjectRoot,
+    getAppRootFromWebappPath,
+    findCapProjectRoot
+} from './search';
 export { getWebappPath, readUi5Yaml } from './ui5-config';
 export { getMtaPath } from './mta';
 export { createApplicationAccess, createProjectAccess } from './access';
 export { updatePackageScript } from './script';
+export { getSpecification, getSpecificationPath, refreshSpecificationDistTags } from './specification';
