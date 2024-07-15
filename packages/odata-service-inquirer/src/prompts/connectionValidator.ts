@@ -28,6 +28,8 @@ interface Validity {
     canSkipCertError?: boolean;
 }
 
+type ValidationResult = string | boolean | IValidationLink;
+
 // Cert errors that may be ignored by prompt user
 const ignorableCertErrors = [ERROR_TYPE.CERT_SELF_SIGNED, ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN];
 
@@ -216,7 +218,7 @@ export class ConnectionValidator {
             isSystem?: boolean;
             odataVersion?: ODataVersion;
         } = {}
-    ): Promise<boolean | string | IValidationLink> {
+    ): Promise<ValidationResult> {
         if (this.isEmptyString(serviceUrl)) {
             this.resetValidity();
             return false;
@@ -333,7 +335,7 @@ export class ConnectionValidator {
             sapClient,
             odataVersion
         }: { ignoreCertError?: boolean; isSystem?: boolean; odataVersion?: ODataVersion; sapClient?: string } = {}
-    ): Promise<boolean | string | IValidationLink> {
+    ): Promise<ValidationResult> {
         if (!url) {
             return false;
         }
