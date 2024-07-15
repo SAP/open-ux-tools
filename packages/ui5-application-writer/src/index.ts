@@ -39,7 +39,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         ignore.push('**/gitignore.tmpl');
     }
     // Determine the UI5 resource URL based on project type and UI5 framework details
-    const ui5ResourceUrl = getTemplateOptions(isEdmxProjectType, ui5App.ui5?.frameworkUrl, ui5App.ui5?.version)
+    const ui5ResourceUrl = getTemplateOptions(isEdmxProjectType, ui5App.ui5?.frameworkUrl, ui5App.ui5?.version);
     const templateOptions = {
         ...ui5App,
         ui5ResourceUrl
@@ -74,10 +74,9 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config, ui5LocalConfig]);
         // write ui5 local yaml
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
-    }
-    else { 
+    } else {
         // Add optional features
-       await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config]);
+        await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config]);
     }
     // write ui5 yaml
     fs.write(ui5ConfigPath, ui5Config.toString());

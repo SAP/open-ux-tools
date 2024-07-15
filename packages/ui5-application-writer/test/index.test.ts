@@ -139,7 +139,7 @@ describe('UI5 templates', () => {
         const indexHtml = fs.read(indexHtmlPath);
         expect(indexHtml).toContain('src="resources/sap-ui-core.js"');
     });
-    
+
     it('Check that no ui5-local.yaml file is generated for CAP application', async () => {
         const projectDir = join(outputDir, 'testapp-cap');
         ui5AppConfig.app.projectType = 'CAPNodejs';

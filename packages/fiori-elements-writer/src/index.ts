@@ -64,7 +64,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     await initI18n();
     // Clone rather than modifying callers refs
     const feApp: FioriElementsApp<T> = cloneDeep(data);
-    
+
     // Ensure input data contains at least the mandatory properties required for app generation
     validateRequiredProperties(feApp);
 
@@ -99,18 +99,14 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     );
     const ui5Libs = isEdmxProjectType ? feApp.ui5?.ui5Libs : undefined;
     // Define template options with changes preview and loader settings based on project type
-    const templateOptions = getTemplateOptions(
-        isEdmxProjectType,
-        feApp.service.version,
-        feApp.ui5?.version
-    );
+    const templateOptions = getTemplateOptions(isEdmxProjectType, feApp.service.version, feApp.ui5?.version);
 
     const appConfig = {
         ...feApp,
         templateOptions,
         uShellBootstrapResourceUrl,
         uiBootstrapResourceUrl,
-        ui5Libs,
+        ui5Libs
     };
 
     // Copy templates with configuration
@@ -119,11 +115,11 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
         basePath,
         {
             ...appConfig,
-            escapeFLPText,
+            escapeFLPText
         },
         undefined,
         {
-            globOptions: { ignore, dot: true },
+            globOptions: { ignore, dot: true }
         }
     );
 
@@ -143,7 +139,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
 
     // Extend common files
     const packagePath = join(basePath, 'package.json');
-    
+
     // Extend package.json
     fs.extendJSON(
         packagePath,
@@ -203,11 +199,11 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
                 generateIndex: feApp.appOptions?.generateIndex
             })
         });
-    } else { 
+    } else {
         // Add deploy-config script for CAP projects
         packageJson.scripts = {
-            "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf"
-        }
+            'deploy-config': 'npx -p @sap/ux-ui5-tooling fiori add deploy-config cf'
+        };
     }
     fs.writeJSON(packagePath, packageJson);
 

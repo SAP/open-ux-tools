@@ -35,25 +35,32 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     // add new and overwrite files from templates e.g.
     const tmplPath = join(__dirname, '..', 'templates');
     const ignore = [isTypeScriptEnabled ? '**/*.js' : '**/*.ts'];
-    
+
     // Determine if the project type is 'EDMXBackend'.
     const isEdmxProjectType = ffApp.app.projectType === 'EDMXBackend';
     // Get the resource URLs for the UShell bootstrap and UI bootstrap based on the project type and UI5 framework details
-    const { uShellBootstrapResourceUrl, uiBootstrapResourceUrl } = getBootstrapResourceUrls(isEdmxProjectType, ffApp.ui5?.frameworkUrl, ffApp.ui5?.version);
+    const { uShellBootstrapResourceUrl, uiBootstrapResourceUrl } = getBootstrapResourceUrls(
+        isEdmxProjectType,
+        ffApp.ui5?.frameworkUrl,
+        ffApp.ui5?.version
+    );
     const appConfig = {
         ...ffApp,
         uShellBootstrapResourceUrl,
-        uiBootstrapResourceUrl 
-    }
+        uiBootstrapResourceUrl
+    };
     fs.copyTpl(
-        join(tmplPath, 'common', 'add'), 
-        basePath, { 
-            ...appConfig, 
-            escapeFLPText 
-        }, 
-        undefined, {
-        globOptions: { ignore, dot: true }
-    });
+        join(tmplPath, 'common', 'add'),
+        basePath,
+        {
+            ...appConfig,
+            escapeFLPText
+        },
+        undefined,
+        {
+            globOptions: { ignore, dot: true }
+        }
+    );
     fs.copyTpl(join(tmplPath, ffApp.template.type, 'add'), basePath, ffApp, undefined, {
         globOptions: { ignore, dot: true }
     });
@@ -85,7 +92,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         packagePath,
         JSON.parse(render(fs.read(join(tmplPath, 'common', 'extend', 'package.json')), ffApp, {}))
     );
-    
+
     const packageJson: Package = JSON.parse(fs.read(packagePath));
     if (isEdmxProjectType) {
         // Add scripts for non-CAP applications
@@ -101,14 +108,14 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
                 generateIndex: ffApp.appOptions?.generateIndex
             })
         };
-    } else { 
+    } else {
         // Add deploy-config for CAP applications
         packageJson.scripts = {
-            "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf"
-        }
+            'deploy-config': 'npx -p @sap/ux-ui5-tooling fiori add deploy-config cf'
+        };
     }
     fs.writeJSON(packagePath, packageJson);
-    
+
     // Add service to the project if provided
     if (ffApp.service) {
         await addOdataService(basePath, ffApp.service, fs);

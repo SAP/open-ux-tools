@@ -24,7 +24,7 @@ export function packageDefaults(version?: string, description?: string, isEdmxPr
             '@sap/ux-ui5-tooling': '1'
         }
     };
-    if(isEdmxProjectType) {
+    if (isEdmxProjectType) {
         // Add scripts for non-CAP projects
         return {
             ...defaults,

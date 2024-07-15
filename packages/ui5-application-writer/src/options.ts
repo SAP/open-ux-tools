@@ -127,7 +127,7 @@ export async function applyOptionalFeatures(
 
 /**
  * Generates the resource URL based on the project type and ui5 framework details.
- * 
+ *
  * @param {boolean} isEdmxProjectType Indicates if the project type is Edmx or CAP.
  * @param {string} [frameworkUrl] URL of the ui5 framework.
  * @param {string} [version] version of the ui5 framework.
@@ -137,7 +137,7 @@ export function getTemplateOptions(isEdmxProjectType: boolean, frameworkUrl?: st
     const resourcePath = 'resources/sap-ui-core.js';
     if (isEdmxProjectType || !frameworkUrl) {
         // Use relative path for Edmx projects or if frameworkUrl is not available
-        return resourcePath; 
+        return resourcePath;
     } else {
         // return the full URL for CAP projects
         return `${frameworkUrl}${version ? `/${version}` : ''}/${resourcePath}`;

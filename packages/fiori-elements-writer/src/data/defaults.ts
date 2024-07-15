@@ -11,7 +11,12 @@ import type {
     WorklistSettings
 } from '../types';
 import { TableSelectionMode, TableType, TemplateType } from '../types';
-import { getBaseComponent, getTemplateUi5Libs, TemplateTypeAttributes, changesPreviewToVersion } from './templateAttributes';
+import {
+    getBaseComponent,
+    getTemplateUi5Libs,
+    TemplateTypeAttributes,
+    changesPreviewToVersion
+} from './templateAttributes';
 import { getAnnotationV4Libs } from './annotationCustomUi5Libs';
 import { type TemplateOptions } from './templateAttributes';
 import semVer from 'semver';
@@ -144,17 +149,23 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
 
 /**
  * Generates template options on project type and version information.
+ *
  * @param {boolean} isEdmxProjectType Indicates if the project type is 'EDMXBackend'.
  * @param {string} serviceVersion The version of the service being used.
  * @param {string} [ui5Version] The version of UI5 framework being used.
  * @returns {TemplateOptions} An template objects containing options related to changes preview and loader.
  */
-export function getTemplateOptions (isEdmxProjectType: boolean, serviceVersion: string, ui5Version?: string): TemplateOptions {
+export function getTemplateOptions(
+    isEdmxProjectType: boolean,
+    serviceVersion: string,
+    ui5Version?: string
+): TemplateOptions {
     const coercedUI5Version = semVer.coerce(ui5Version)!;
     // Determine if the changes preview should be enabled based on the project type and UI5 version
-    const changesPreview = isEdmxProjectType && ui5Version
-        ? semVer.lt(coercedUI5Version, changesPreviewToVersion) // Check if the coerced version is less than the required version
-        : false;
+    const changesPreview =
+        isEdmxProjectType && ui5Version
+            ? semVer.lt(coercedUI5Version, changesPreviewToVersion) // Check if the coerced version is less than the required version
+            : false;
 
     // Determine if the changes loader should be enabled based on the project type and service version
     const changesLoader = isEdmxProjectType && serviceVersion === OdataVersion.v2;

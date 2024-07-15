@@ -1,4 +1,4 @@
-import { ProjectType } from '@sap-ux/project-access';
+import type { ProjectType } from '@sap-ux/project-access';
 export interface Package {
     name: string;
     version?: string;
@@ -14,7 +14,7 @@ export interface Package {
 export interface App {
     id: string;
     /**
-     * The type of project being processed. 
+     * The type of project being processed.
      * For projects of type 'CAPJava' or 'CAPNodejs':
      *  - Exclude `ui5-local.yaml` and `.gitignore` from the template.
      *  - Update `package.json` to include only the script `deploy-config`.

@@ -73,7 +73,7 @@ describe('ODataService templates', () => {
         const packagePath = join(testDir, 'package.json');
         expect(fs.readJSON(packagePath)).toEqual({
             ui5: {
-                dependencies: [ '@sap-ux/ui5-middleware-fe-mockserver', '@sap/ux-ui5-tooling' ]
+                dependencies: ['@sap-ux/ui5-middleware-fe-mockserver', '@sap/ux-ui5-tooling']
             },
             devDependencies: {
                 '@sap-ux/ui5-middleware-fe-mockserver': '2',

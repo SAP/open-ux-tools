@@ -26,7 +26,10 @@ export function mergeWithDefaults(ui5App: Ui5App): {
     ui5App.ui5 = mergeUi5(ui5App.ui5 || {}, ui5App.appOptions);
     // Determine if the project type is 'EDMXBackend'.
     const isEdmxProjectType = ui5App.app.projectType === 'EDMXBackend';
-    ui5App.package = mergeObjects(packageDefaults(ui5App.package.version, ui5App.app.description, isEdmxProjectType), ui5App.package);
+    ui5App.package = mergeObjects(
+        packageDefaults(ui5App.package.version, ui5App.app.description, isEdmxProjectType),
+        ui5App.package
+    );
 
     if (ui5App.appOptions.sapux && isEdmxProjectType) {
         // Add @sap/ux-specification to devDependencies only for non-CAP projects
