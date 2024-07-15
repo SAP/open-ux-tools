@@ -64,6 +64,12 @@ type: application
 resources:
   configuration:
     propertiesFileSourceEncoding: UTF-8
+customConfiguration:
+  adp:
+    support:
+      id: '@package/name'
+      toolsId: uuidv4
+      version: 0.0.1
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -80,7 +86,7 @@ server:
             url: http://sap.example
           ignoreCertErrors: false
     - name: fiori-tools-proxy
-      afterMiddleware: compression
+      afterMiddleware: fiori-tools-preview
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
@@ -92,9 +98,6 @@ server:
             - /test-resources
           url: https://ui5.sap.com
           version: ''
-customConfiguration:
-  adp:
-    safeMode: false
 builder:
   customTasks:
     - name: app-variant-bundler-build
@@ -175,6 +178,12 @@ type: application
 resources:
   configuration:
     propertiesFileSourceEncoding: UTF-8
+customConfiguration:
+  adp:
+    support:
+      id: '@package/name'
+      toolsId: uuidv4
+      version: 0.0.1
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -191,7 +200,7 @@ server:
             url: http://sap.example
           ignoreCertErrors: false
     - name: fiori-tools-proxy
-      afterMiddleware: compression
+      afterMiddleware: fiori-tools-preview
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
@@ -203,9 +212,6 @@ server:
             - /test-resources
           url: https://ui5.sap.com
           version: ''
-customConfiguration:
-  adp:
-    safeMode: false
 builder:
   customTasks:
     - name: app-variant-bundler-build
@@ -476,7 +482,7 @@ server:
             url: http://sap.example
           ignoreCertErrors: false
     - name: fiori-tools-proxy
-      afterMiddleware: compression
+      afterMiddleware: fiori-tools-preview
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
@@ -949,7 +955,7 @@ server:
             url: http://sap.example
           ignoreCertErrors: false
     - name: fiori-tools-proxy
-      afterMiddleware: compression
+      afterMiddleware: fiori-tools-preview
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
@@ -1175,6 +1181,12 @@ type: application
 resources:
   configuration:
     propertiesFileSourceEncoding: UTF-8
+customConfiguration:
+  adp:
+    support:
+      id: '@package/name'
+      toolsId: uuidv4
+      version: 0.0.1
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -1191,7 +1203,7 @@ server:
             url: http://sap.example
           ignoreCertErrors: false
     - name: fiori-tools-proxy
-      afterMiddleware: compression
+      afterMiddleware: fiori-tools-preview
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
@@ -1203,9 +1215,6 @@ server:
             - /test-resources
           url: https://ui5.sap.com
           version: ''
-customConfiguration:
-  adp:
-    safeMode: false
 builder:
   customTasks:
     - name: app-variant-bundler-build
@@ -1326,6 +1335,12 @@ type: application
 resources:
   configuration:
     propertiesFileSourceEncoding: UTF-8
+customConfiguration:
+  adp:
+    support:
+      id: '@package/name'
+      toolsId: uuidv4
+      version: 0.0.1
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -1342,7 +1357,7 @@ server:
             url: http://sap.example
           ignoreCertErrors: false
     - name: fiori-tools-proxy
-      afterMiddleware: compression
+      afterMiddleware: fiori-tools-preview
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
@@ -1354,9 +1369,6 @@ server:
             - /test-resources
           url: https://ui5.sap.com
           version: ''
-customConfiguration:
-  adp:
-    safeMode: false
 builder:
   customTasks:
     - name: app-variant-bundler-build
@@ -1459,6 +1471,12 @@ type: application
 resources:
   configuration:
     propertiesFileSourceEncoding: UTF-8
+customConfiguration:
+  adp:
+    support:
+      id: '@package/name'
+      toolsId: uuidv4
+      version: 0.0.1
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -1477,7 +1495,7 @@ server:
             client: '000'
           ignoreCertErrors: false
     - name: fiori-tools-proxy
-      afterMiddleware: compression
+      afterMiddleware: fiori-tools-preview
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
@@ -1491,9 +1509,6 @@ server:
             - /test-resources
           url: https://ui5.sap.com
           version: ''
-customConfiguration:
-  adp:
-    safeMode: true
 ",
     "state": "modified",
   },
