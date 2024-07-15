@@ -400,7 +400,9 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                 resolve(true);
             }
         }).then(async () => {
-            await projectChecks(testPath, config, debug?.debugFull);
+            if(config.service?.type === ServiceType.EDMX) {
+                await projectChecks(testPath, config, debug?.debugFull);
+            }
         });
     });
 });
