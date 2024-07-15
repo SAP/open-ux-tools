@@ -1,5 +1,101 @@
 # @sap-ux/create
 
+## 0.7.13
+
+### Patch Changes
+
+-   Updated dependencies [173b5f2]
+    -   @sap-ux/project-access@1.25.4
+    -   @sap-ux/adp-tooling@0.12.9
+    -   @sap-ux/app-config-writer@0.4.7
+    -   @sap-ux/cap-config-writer@0.6.7
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/preview-middleware@0.16.13
+    -   @sap-ux/system-access@0.5.1
+
+## 0.7.12
+
+### Patch Changes
+
+-   9e4ce4d: Remove safeMode from adp-tooling types and change order of ui5.yaml custom configuration
+-   Updated dependencies [9e4ce4d]
+    -   @sap-ux/adp-tooling@0.12.8
+    -   @sap-ux/preview-middleware@0.16.12
+
+## 0.7.11
+
+### Patch Changes
+
+-   Updated dependencies [e7b9184]
+    -   @sap-ux/project-access@1.25.3
+    -   @sap-ux/adp-tooling@0.12.7
+    -   @sap-ux/app-config-writer@0.4.6
+    -   @sap-ux/cap-config-writer@0.6.6
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/preview-middleware@0.16.11
+    -   @sap-ux/system-access@0.5.1
+
+## 0.7.10
+
+### Patch Changes
+
+-   Updated dependencies [22e4ad8]
+    -   @sap-ux/adp-tooling@0.12.6
+    -   @sap-ux/ui5-config@0.23.1
+    -   @sap-ux/preview-middleware@0.16.10
+    -   @sap-ux/app-config-writer@0.4.5
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/project-access@1.25.2
+    -   @sap-ux/cap-config-writer@0.6.5
+    -   @sap-ux/system-access@0.5.1
+
+## 0.7.9
+
+### Patch Changes
+
+-   Updated dependencies [671242b]
+    -   @sap-ux/preview-middleware@0.16.9
+
+## 0.7.8
+
+### Patch Changes
+
+-   Updated dependencies [cec4a97]
+    -   @sap-ux/preview-middleware@0.16.8
+
+## 0.7.7
+
+### Patch Changes
+
+-   Updated dependencies [0f3cf6b]
+    -   @sap-ux/project-access@1.25.1
+    -   @sap-ux/adp-tooling@0.12.5
+    -   @sap-ux/app-config-writer@0.4.4
+    -   @sap-ux/cap-config-writer@0.6.4
+    -   @sap-ux/cards-editor-config-writer@0.4.0
+    -   @sap-ux/mockserver-config-writer@0.6.0
+    -   @sap-ux/preview-middleware@0.16.7
+    -   @sap-ux/system-access@0.5.1
+
+## 0.7.6
+
+### Patch Changes
+
+-   Updated dependencies [dbb490a]
+    -   @sap-ux/preview-middleware@0.16.6
+
+## 0.7.5
+
+### Patch Changes
+
+-   5f074a7: Add toolsId in ui5.yaml for Adaptation Project writers and remove safeMode
+-   Updated dependencies [5f074a7]
+    -   @sap-ux/adp-tooling@0.12.4
+    -   @sap-ux/preview-middleware@0.16.5
+
 ## 0.7.4
 
 ### Patch Changes

@@ -1,5 +1,30 @@
 # @sap-ux/project-access
 
+## 1.25.4
+
+### Patch Changes
+
+-   173b5f2: export findCapProjectRoot, required by other modules
+
+## 1.25.3
+
+### Patch Changes
+
+-   e7b9184: fix: outputs specification version when loading from cache
+
+## 1.25.2
+
+### Patch Changes
+
+-   Updated dependencies [22e4ad8]
+    -   @sap-ux/ui5-config@0.23.1
+
+## 1.25.1
+
+### Patch Changes
+
+-   0f3cf6b: feat: Add path to specification
+
 ## 1.25.0
 
 ### Minor Changes

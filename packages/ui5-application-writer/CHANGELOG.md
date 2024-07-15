@@ -1,5 +1,18 @@
 # @sap-ux/ui5-application-writer
 
+## 0.27.2
+
+### Patch Changes
+
+-   Updated dependencies [22e4ad8]
+    -   @sap-ux/ui5-config@0.23.1
+
+## 0.27.1
+
+### Patch Changes
+
+-   8b7ee1f: Do not add reuse libraries to the ui5-local.yaml
+
 ## 0.27.0
 
 ### Minor Changes

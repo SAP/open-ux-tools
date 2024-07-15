@@ -8,8 +8,10 @@ import {
     MOVE_COLLECTION_VALUE_CHANGE_TYPE,
     createDeleteAnnotationChange,
     createDeleteAnnotationGroupChange,
+    createDeleteAnnotationGroupItemsChange,
     createDeleteTargetChange,
-    createInsertAnnotationChange
+    createInsertAnnotationChange,
+    createInsertRecordPropertyChange
 } from '../../../src/cds/change';
 import { CDSWriter } from '../../../src/cds/writer';
 
@@ -703,6 +705,18 @@ annotate S.E with {
             });
         });
         describe('record property', () => {
+            function createRecordProperty(
+                propName = 'Label',
+                propValue: { type: Edm; value: string } = { type: Edm.String, value: 'testLabel' }
+            ) {
+                return createElementNode({
+                    name: Edm.PropertyValue,
+                    attributes: {
+                        [Edm.Property]: createAttributeNode(Edm.Property, propName),
+                        [propValue.type]: createAttributeNode(Edm.String, propValue.value)
+                    }
+                });
+            }
             test('by default at the end', async () => {
                 const fixture = `
     Service S { entity E {}; };
@@ -714,17 +728,10 @@ annotate S.E with {
                 await testWriter(
                     fixture,
                     [
-                        {
-                            type: 'insert-record-property',
-                            pointer: '/targets/0/assignments/0/value/items/0',
-                            element: createElementNode({
-                                name: Edm.PropertyValue,
-                                attributes: {
-                                    [Edm.Property]: createAttributeNode(Edm.Property, 'Value'),
-                                    [Edm.PropertyPath]: createAttributeNode(Edm.PropertyPath, 'test')
-                                }
-                            })
-                        }
+                        createInsertRecordPropertyChange(
+                            '/targets/0/assignments/0/value/items/0',
+                            createRecordProperty('Value', { type: Edm.PropertyPath, value: 'test' })
+                        )
                     ],
                     `
     Service S { entity E {}; };
@@ -748,18 +755,11 @@ annotate S.E with {
                 await testWriter(
                     fixture,
                     [
-                        {
-                            type: 'insert-record-property',
-                            pointer: '/targets/0/assignments/0/value/items/0',
-                            element: createElementNode({
-                                name: Edm.PropertyValue,
-                                attributes: {
-                                    [Edm.Property]: createAttributeNode(Edm.Property, 'Label'),
-                                    [Edm.String]: createAttributeNode(Edm.String, 'abc')
-                                }
-                            }),
-                            index: 1
-                        }
+                        createInsertRecordPropertyChange(
+                            '/targets/0/assignments/0/value/items/0',
+                            createRecordProperty('Label', { type: Edm.String, value: 'abc' }),
+                            1
+                        )
                     ],
                     `
     Service S { entity E {}; };
@@ -770,6 +770,94 @@ annotate S.E with {
             Value : test,
         },
     ];`
+                );
+            });
+            test('by default inserting at the end when deleting property', async () => {
+                const fixture = `
+    Service S { entity E {}; };
+    annotate S.E with @UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : test,
+            Criticality : #Critical
+        },
+    ];`;
+                await testWriter(
+                    fixture,
+                    [
+                        createInsertRecordPropertyChange(
+                            '/targets/0/assignments/0/value/items/0',
+                            createRecordProperty()
+                        ),
+                        {
+                            type: 'delete-record-property',
+                            pointer: '/targets/0/assignments/0/value/items/0/properties/2'
+                        }
+                    ],
+                    `
+    Service S { entity E {}; };
+    annotate S.E with @UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : test,
+            Label : 'testLabel',
+        },
+    ];`
+                );
+            });
+            test('by default inserting at the end when deleting property - datapoint', async () => {
+                const fixture = `
+    Service S { entity E {}; };
+    annotate S.E with @UI.DataPoint  : {
+        $Type : 'UI.DataPointType',
+        Value : ID,
+        Criticality: #Critical
+    };`;
+                await testWriter(
+                    fixture,
+                    [
+                        createInsertRecordPropertyChange(
+                            '/targets/0/assignments/0/value',
+                            createRecordProperty('CriticalityLabels')
+                        ),
+                        {
+                            type: 'delete-record-property',
+                            pointer: '/targets/0/assignments/0/value/properties/2'
+                        }
+                    ],
+                    `
+    Service S { entity E {}; };
+    annotate S.E with @UI.DataPoint  : {
+        $Type : 'UI.DataPointType',
+        Value : ID,
+        CriticalityLabels : 'testLabel',
+    };`
+                );
+            });
+            test('by default inserting at the end when deleting only property - datapoint2', async () => {
+                const fixture = `
+    Service S { entity E {}; };
+    annotate S.E with @UI.DataPoint  : {
+        $Type : 'UI.DataPointType'
+    };`;
+                await testWriter(
+                    fixture,
+                    [
+                        createInsertRecordPropertyChange(
+                            '/targets/0/assignments/0/value',
+                            createRecordProperty('CriticalityLabels')
+                        ),
+                        {
+                            type: 'delete-record-property',
+                            pointer: '/targets/0/assignments/0/value/properties/0'
+                        }
+                    ],
+                    `
+    Service S { entity E {}; };
+    annotate S.E with @UI.DataPoint  : {
+        
+        CriticalityLabels : 'testLabel',
+    };`
                 );
             });
         });
@@ -1802,6 +1890,28 @@ annotate S.E with @UI.LineItem: [
                 await testWriter(
                     fixture,
                     [createDeleteAnnotationGroupChange('/targets/0/assignments/0')],
+                    `
+                Service S { entity E {}; };
+                annotate S.E with @(
+                    Common.Label: 'test',
+                );`
+                );
+            });
+            test('group items', async () => {
+                const fixture = `
+                Service S { entity E {}; };
+                annotate S.E with @(
+                    UI : {
+                        HeaderInfo : {
+                            TypeName: 'a'
+                        },
+                        LineItem: [],
+                    },
+                    Common.Label: 'test',
+                );`;
+                await testWriter(
+                    fixture,
+                    [createDeleteAnnotationGroupItemsChange('/targets/0/assignments/0/items')],
                     `
                 Service S { entity E {}; };
                 annotate S.E with @(
