@@ -247,7 +247,8 @@ describe('Setting defaults', () => {
         const input: Ui5App = {
             app: {
                 id: 'test_appId',
-                description: 'Should be default package description'
+                description: 'Should be default package description',
+                projectType: 'EDMXBackend'
             },
             'package': {
                 name: 'test-package-name',
@@ -340,7 +341,8 @@ describe('Setting defaults', () => {
     describe('mergeApp', () => {
         const baseInput: App = {
             id: 'test_appId',
-            description: 'Should be default package description'
+            description: 'Should be default package description',
+            projectType: 'EDMXBackend'
         };
 
         const expectedApp = {
@@ -352,7 +354,8 @@ describe('Setting defaults', () => {
                 version: ''
             },
             title: 'Title of test_appId',
-            version: '0.0.1'
+            version: '0.0.1',
+            projectType: 'EDMXBackend'
         } as App;
 
         test('minimal input', async () => {

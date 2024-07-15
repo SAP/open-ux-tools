@@ -34,7 +34,8 @@ describe('UI5 templates', () => {
             sourceTemplate: {
                 version: '1.2.3-test',
                 id: '@sap/test-ui5-template-id'
-            }
+            },
+            projectType: 'EDMXBackend'
         },
         ui5: {
             framework: 'OpenUI5'
@@ -73,12 +74,12 @@ describe('UI5 templates', () => {
 
         // Ensure double-quote cannot be used
         await expect(
-            generate(projectDir, { ...ui5AppConfig, app: { id: 'test"AppId' } })
+            generate(projectDir, { ...ui5AppConfig, app: { id: 'test"AppId', projectType: 'EDMXBackend' } })
         ).rejects.toThrowErrorMatchingInlineSnapshot(`"The property: app.id contains disallowed characters: \\""`);
 
         // Ensure undefined, null or '' cannot be used
         await expect(
-            generate(projectDir, { ...ui5AppConfig, app: { id: '' } })
+            generate(projectDir, { ...ui5AppConfig, app: { id: '', projectType: 'EDMXBackend' } })
         ).rejects.toThrowErrorMatchingInlineSnapshot(`"The property: app.id must have a value"`);
     });
 
