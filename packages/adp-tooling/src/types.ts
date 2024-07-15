@@ -388,7 +388,6 @@ export interface AdpProjectData {
     name: string;
     layer: UI5FlexLayer;
     environment: string;
-    safeMode: boolean;
     sourceSystem: string;
     applicationIdx: string;
     reference: string;
