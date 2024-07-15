@@ -5,7 +5,7 @@ import * as mockFs from 'fs';
 jest.mock('fs');
 
 describe('helper', () => {
-    const basePath = join(__dirname, '../../fixtures', 'adaptation-project');
+    
     test('isNotEmptyString', () => {
         expect(isNotEmptyString(undefined)).toBe(false);
         expect(isNotEmptyString('')).toBe(false);
@@ -20,19 +20,20 @@ describe('helper', () => {
         expect(isValidSapClient('123')).toBe(true);
         expect(isValidSapClient('1234')).toBe(false);
         expect(isValidSapClient('a')).toBe(false);
+    });
 
-        describe('getVariant', () => {
-            beforeEach(() => {
-                jest.clearAllMocks();
-            });
+    describe('getVariant', () => {
+        const basePath = join(__dirname, '../../fixtures', 'adaptation-project');
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
 
-            test('should return variant', () => {
-                const mockPath = join(basePath, 'webapp', 'manifest.appdescr_variant');
-                const mockVariant = jest.requireActual('fs').readFileSync(mockPath, 'utf-8');
-                jest.spyOn(mockFs, 'readFileSync').mockImplementation(() => mockVariant);
+        test('should return variant', () => {
+            const mockPath = join(basePath, 'webapp', 'manifest.appdescr_variant');
+            const mockVariant = jest.requireActual('fs').readFileSync(mockPath, 'utf-8');
+            jest.spyOn(mockFs, 'readFileSync').mockImplementation(() => mockVariant);
 
-                expect(getVariant(basePath)).toStrictEqual(JSON.parse(mockVariant));
-            });
+            expect(getVariant(basePath)).toStrictEqual(JSON.parse(mockVariant));
         });
     });
 });

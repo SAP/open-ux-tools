@@ -4,6 +4,7 @@ import { Command } from 'commander';
 import * as mockFs from 'fs';
 import * as tracer from '../../../../src/tracing/trace';
 import * as common from '../../../../src/common';
+import * as projectAccess from '@sap-ux/project-access';
 import { join } from 'path';
 import * as validations from '../../../../src/validation/validation';
 import { addChangeInboundCommand } from '../../../../src/cli/change/change-inbound';
@@ -41,6 +42,19 @@ describe('change/inbound', () => {
     const promptYUIQuestionsSpy = jest.spyOn(common, 'promptYUIQuestions').mockResolvedValue(mockAnswers);
     const getArgv = (...arg: string[]) => ['', '', 'inbound', ...arg];
     const appRoot = join(__dirname, '../../../fixtures');
+    jest.spyOn(validations, 'validateAdpProject').mockResolvedValue(undefined);
+    //jest.spyOn(adp, 'get').mockImplementation(() => []);
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        loggerMock = {
+            debug: jest.fn(),
+            error: jest.fn()
+        } as Partial<ToolsLogger> as ToolsLogger;
+        jest.spyOn(logger, 'getLogger').mockImplementation(() => loggerMock);
+        jest.spyOn(adp, 'getVariant').mockReturnValue(cloudDescriptorVariant);
+        jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
+    });
 
     test('should result in error when the project is not adaptation project', async () => {
         jest.spyOn(validations, 'validateAdpProject').mockRejectedValueOnce(
