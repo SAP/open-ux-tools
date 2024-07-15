@@ -400,7 +400,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                 resolve(true);
             }
         }).then(async () => {
-            if(config.service?.type === ServiceType.EDMX) {
+            if (config.service?.type === ServiceType.EDMX) {
                 await projectChecks(testPath, config, debug?.debugFull);
             }
         });
