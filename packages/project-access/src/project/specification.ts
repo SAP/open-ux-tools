@@ -59,10 +59,10 @@ async function hasSpecificationDevDependency(root: string): Promise<boolean> {
 async function getSpecificationModule<T>(root: string, options?: { logger?: Logger }): Promise<T> {
     const logger = options?.logger;
     let specification: T;
-    const distTag = await getProjectDistTag(root, { logger });
+    const version = await getSpecificationVersion(root, { logger });
     try {
-        specification = await getSpecificationByDistTag<T>(distTag, { logger });
-        logger?.debug(`Specification loaded from cache using dist-tag '${distTag}'`);
+        specification = await getSpecificationByVersion<T>(version, { logger });
+        logger?.debug(`Specification loaded from cache using version '${version}'`);
     } catch (error) {
         logger?.error(`Failed to load specification: ${error}`);
         throw new Error(`Failed to load specification: ${error}`);
@@ -129,16 +129,15 @@ export async function refreshSpecificationDistTags(options?: { logger?: Logger }
 }
 
 /**
- * Loads and return specification from cache by dist-tag.
+ * Loads and return specification from cache by version.
  *
- * @param distTag - dist-tag of the specification, like 'latest' or 'UI5-1.71'
+ * @param version - version of the specification
  * @param [options] - optional options
  * @param [options.logger] - optional logger instance
  * @returns - specification instance
  */
-async function getSpecificationByDistTag<T>(distTag: string, options?: { logger?: Logger }): Promise<T> {
+async function getSpecificationByVersion<T>(version: string, options?: { logger?: Logger }): Promise<T> {
     const logger = options?.logger;
-    const version = await convertDistTagToVersion(distTag, { logger });
     const specification = await getModule<T>('@sap/ux-specification', version, { logger });
     return specification;
 }
@@ -191,12 +190,12 @@ export async function getSpecificationPath(root: string, options?: { logger?: Lo
     if (await hasSpecificationDevDependency(root)) {
         const modulePath = await getModulePath(root, moduleName);
         logger?.debug(`Specification root found in project '${root}'`);
-        return modulePath.slice(0, modulePath.lastIndexOf(moduleName) + moduleName.length);
+        return modulePath.slice(0, modulePath.lastIndexOf(join(moduleName)) + join(moduleName).length);
     }
-    logger?.debug(`Specification not found in project '${root}', trying to find in cache`);
     await getSpecificationModule(root, { logger });
     const version = await getSpecificationVersion(root, { logger });
+    logger?.debug(`Specification not found in project '${root}', using path from cache with version '${version}'`);
     const moduleRoot = join(moduleCacheRoot, moduleName, version);
     const modulePath = await getModulePath(moduleRoot, moduleName);
-    return modulePath.slice(0, modulePath.lastIndexOf(moduleName) + moduleName.length);
+    return modulePath.slice(0, modulePath.lastIndexOf(join(moduleName)) + join(moduleName).length);
 }

@@ -70,8 +70,9 @@ export async function writeUI5Yaml(projectPath: string, data: AdpWriterConfig, f
         const ui5ConfigPath = join(projectPath, 'ui5.yaml');
         const baseUi5ConfigContent = fs.read(ui5ConfigPath);
         const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
-        enhanceUI5Yaml(ui5Config, data);
+        ui5Config.setConfiguration({ propertiesFileSourceEncoding: 'UTF-8' });
         enhanceUI5YamlWithCustomConfig(ui5Config, data?.customConfig);
+        enhanceUI5Yaml(ui5Config, data);
         if (data.customConfig?.adp?.environment === 'C') {
             enhanceUI5YamlWithCustomTask(ui5Config, data as AdpWriterConfig & { app: CloudApp });
         }
