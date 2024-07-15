@@ -16,7 +16,7 @@ import { validateSystemName } from '../validators';
 
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
 // since it will be used as a new system value in the system selection prompt.
-export const newSystemChoiceValue = '!@£*&937newSystem*X~qy^' as const;
+export const newSystemChoiceValue = '!@£*&937newSystem*X~qy^';
 
 const newSystemPromptNames = {
     newSystemType: 'newSystemType',
@@ -35,7 +35,6 @@ const systemSelectionPromptNames = {
     system: 'system'
 } as const;
 
-// todo: System selection prompt not yet implemented
 export interface SystemSelectionAnswer extends OdataServiceAnswers {
     [systemSelectionPromptNames.system]?: string;
 }

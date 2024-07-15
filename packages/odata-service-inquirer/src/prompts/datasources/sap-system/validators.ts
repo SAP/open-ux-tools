@@ -9,7 +9,6 @@ import LoggerHelper from '../../logger-helper';
  * @returns true if the system name is already in use, otherwise false
  */
 async function isSystemNameInUse(systemName: string): Promise<boolean> {
-    // todo: should we cache the system list?
     const backendSystems = await new SystemService(LoggerHelper.logger).getAll();
     return !!backendSystems.find((system) => system.name === systemName);
 }

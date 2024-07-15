@@ -5,16 +5,21 @@ import { searchChoices, withCondition, type ListQuestion } from '@sap-ux/inquire
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { validateClient } from '@sap-ux/project-input-validator';
 import type { InputQuestion, ListChoiceOptions, PasswordQuestion, Question } from 'inquirer';
+import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import { t } from '../../../../i18n';
-import type { ServiceSelectionPromptOptions, ValidationLink } from '../../../../types';
-import { hostEnvironment, promptNames, type OdataServiceAnswers } from '../../../../types';
+import {
+    hostEnvironment,
+    promptNames,
+    type OdataServiceAnswers,
+    type ServiceSelectionPromptOptions,
+    type ValidationLink
+} from '../../../../types';
 import { PromptState, getHostEnvironment } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import type { NewSystemAnswers } from '../new-system/questions';
 import { getUserSystemNameQuestion } from '../new-system/questions';
 import { getServiceChoices, getServiceMetadata, getServiceType } from './service-helper';
-import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 
 export enum abapOnPremInternalPromptNames {
     systemUrl = 'systemUrl',

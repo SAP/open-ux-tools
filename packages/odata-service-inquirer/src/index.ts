@@ -5,7 +5,6 @@ import { type ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
 import { ErrorHandler, ERROR_TYPE } from './error-handler/error-handler';
 import { getQuestions } from './prompts';
 import LoggerHelper from './prompts/logger-helper';
-import type { SapSystemType } from './types';
 import {
     DatasourceType,
     promptNames,
@@ -13,7 +12,8 @@ import {
     type CapService,
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
-    type OdataServiceQuestion
+    type OdataServiceQuestion,
+    type SapSystemType
 } from './types';
 import { PromptState, setTelemetryClient } from './utils';
 import { initI18nOdataServiceInquirer } from './i18n';

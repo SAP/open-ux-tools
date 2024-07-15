@@ -1,8 +1,8 @@
-import type { V2CatalogService } from '@sap-ux/axios-extension';
 import {
     ServiceType,
     type Annotations,
     type CatalogService,
+    type V2CatalogService,
     type ODataServiceInfo,
     type ServiceProvider
 } from '@sap-ux/axios-extension';
