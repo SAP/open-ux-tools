@@ -122,21 +122,12 @@ export class ConnectionValidator {
                 url.searchParams.append('saml2', 'disabled');
             }
 
-            let axiosConfig: AxiosRequestConfig & ProviderConfiguration = {
-                params: Object.fromEntries(url.searchParams),
-                ignoreCertErrors: ignoreCertError,
-                cookies: '',
-                baseURL: url.origin
-            };
-
-            if (username && password) {
-                axiosConfig = Object.assign(axiosConfig, {
-                    auth: {
-                        username,
-                        password
-                    }
-                });
-            }
+            const axiosConfig: AxiosRequestConfig & ProviderConfiguration = this.createAxiosConfig(
+                url,
+                ignoreCertError,
+                username,
+                password
+            );
             // If system, use catalog service to get the services info
             if (isSystem) {
                 await this.initSystemConnection(odataVersion, axiosConfig);
@@ -161,6 +152,30 @@ export class ConnectionValidator {
             // Reset global cert validation
             ConnectionValidator.setGlobalRejectUnauthorized(true);
         }
+    }
+
+    private createAxiosConfig(
+        url: URL,
+        ignoreCertError: boolean,
+        username: string | undefined,
+        password: string | undefined
+    ) {
+        let axiosConfig: AxiosRequestConfig & ProviderConfiguration = {
+            params: Object.fromEntries(url.searchParams),
+            ignoreCertErrors: ignoreCertError,
+            cookies: '',
+            baseURL: url.origin
+        };
+
+        if (username && password) {
+            axiosConfig = Object.assign(axiosConfig, {
+                auth: {
+                    username,
+                    password
+                }
+            });
+        }
+        return axiosConfig;
     }
 
     private async initServiceConnection(url: URL, axiosConfig: AxiosRequestConfig) {
