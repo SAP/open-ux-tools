@@ -2,7 +2,17 @@ import { join, dirname, sep } from 'path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
+<<<<<<< HEAD
 import { updateManifest, updatePackageJson, updateCdsFilesWithAnnotations, writeAnnotationXmlFiles } from './updates';
+=======
+import {
+    updateManifest,
+    updatePackageJson,
+    updateCdsFilesWithAnnotations,
+    writeAnnotationXmlFiles,
+    serviceIsCds
+} from './updates';
+>>>>>>> main
 import type { FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
 import { UI5Config, yamlErrorCode, YAMLError } from '@sap-ux/ui5-config';
 import prettifyXml from 'prettify-xml';

@@ -31,8 +31,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             sourceTemplate: {
                 version: '1.2.3-test',
                 id: 'test-template'
-            },
-            projectType: 'EDMXBackend'
+            }
         },
         package: {
             name: 'nods1',
@@ -231,8 +230,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     test("app id prefix correctly generated in template's Component.js", async () => {
         const freestyleApp: FreestyleApp<any> = {
             app: {
-                id: 'my.demo.App',
-                projectType: 'EDMXBackend'
+                id: 'my.demo.App'
             },
             package: {
                 name: 'my.demo.App'
@@ -255,8 +253,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         const viewPrefix = 'MainView';
         const freestyleApp: FreestyleApp<BasicAppSettings> = {
             app: {
-                id: 'someId',
-                projectType: 'EDMXBackend'
+                id: 'someId'
             },
             package: {
                 name: 'someId'

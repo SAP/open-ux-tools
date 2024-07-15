@@ -1,5 +1,4 @@
-import type { ProjectType } from '@sap-ux/project-access';
-
+import { ProjectType } from '@sap-ux/project-access';
 export interface Package {
     name: string;
     version?: string;
@@ -65,6 +64,7 @@ export interface UI5 {
     descriptorVersion: string;
     ui5Libs: string | string[];
     ui5Theme: string;
+    customUi5Libs?: string[];
 }
 
 // Additional configurable features

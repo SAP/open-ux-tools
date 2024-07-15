@@ -12,6 +12,12 @@ export interface DescriptorVariant {
     content: object[];
 }
 
+export interface ToolsSupport {
+    id: string;
+    version: string;
+    toolsId: string;
+}
+
 /**
  * Reduce the options exposed as target configuration.
  */
@@ -383,7 +389,6 @@ export interface AdpProjectData {
     name: string;
     layer: UI5FlexLayer;
     environment: string;
-    safeMode: boolean;
     sourceSystem: string;
     applicationIdx: string;
     reference: string;
@@ -405,8 +410,8 @@ export type DataSource = ManifestNamespace.DataSource & { dataSourceName: string
 
 export interface CustomConfig {
     adp: {
-        safeMode: boolean;
         environment: OperationsType;
+        support: ToolsSupport;
     };
 }
 

@@ -1,5 +1,118 @@
 # @sap-ux/preview-middleware
 
+## 0.16.14
+
+### Patch Changes
+
+-   e0ddba7: Fix potential racing condition in qunit tests
+
+## 0.16.13
+
+### Patch Changes
+
+-   Updated dependencies [173b5f2]
+    -   @sap-ux/project-access@1.25.4
+    -   @sap-ux/adp-tooling@0.12.9
+
+## 0.16.12
+
+### Patch Changes
+
+-   Updated dependencies [9e4ce4d]
+    -   @sap-ux/adp-tooling@0.12.8
+
+## 0.16.11
+
+### Patch Changes
+
+-   Updated dependencies [e7b9184]
+    -   @sap-ux/project-access@1.25.3
+    -   @sap-ux/adp-tooling@0.12.7
+
+## 0.16.10
+
+### Patch Changes
+
+-   22e4ad8: Generate correct ui5.yaml
+-   Updated dependencies [22e4ad8]
+    -   @sap-ux/adp-tooling@0.12.6
+    -   @sap-ux/project-access@1.25.2
+
+## 0.16.9
+
+### Patch Changes
+
+-   671242b: Disable add fragment and controller extension rt-a menu items if clicked element is from reuse component view
+
+## 0.16.8
+
+### Patch Changes
+
+-   cec4a97: Live and Edit buttons are visible as Navigation and UI Adpatation only when in ADP scenario.
+
+## 0.16.7
+
+### Patch Changes
+
+-   Updated dependencies [0f3cf6b]
+    -   @sap-ux/project-access@1.25.1
+    -   @sap-ux/adp-tooling@0.12.5
+
+## 0.16.6
+
+### Patch Changes
+
+-   dbb490a: Add missing test suite default paths to readme
+
+## 0.16.5
+
+### Patch Changes
+
+-   Updated dependencies [5f074a7]
+    -   @sap-ux/adp-tooling@0.12.4
+
+## 0.16.4
+
+### Patch Changes
+
+-   Updated dependencies [f076dd3]
+    -   @sap-ux/project-access@1.25.0
+    -   @sap-ux/adp-tooling@0.12.3
+
+## 0.16.3
+
+### Patch Changes
+
+-   Updated dependencies [0ae685e]
+    -   @sap-ux/project-access@1.24.0
+    -   @sap-ux/adp-tooling@0.12.2
+
+## 0.16.2
+
+### Patch Changes
+
+-   b2d5843: fix: Missing Scenario API in lower SAPUI5 versions
+
+## 0.16.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.1
+
+## 0.16.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/adp-tooling@0.12.0
+    -   @sap-ux/btp-utils@0.15.0
+    -   @sap-ux/logger@0.6.0
+    -   @sap-ux/project-access@1.23.0
+
 ## 0.15.8
 
 ### Patch Changes

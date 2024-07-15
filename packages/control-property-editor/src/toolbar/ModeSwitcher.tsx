@@ -21,6 +21,7 @@ export function ModeSwitcher(): ReactElement {
 
     const mode = useSelector<RootState, 'navigation' | 'adaptation'>((state) => state.appMode);
     const disabled = useSelector<RootState, boolean>((state) => state.isAppLoading);
+    const isAdpProject = useSelector<RootState, boolean>((state) => state.isAdpProject);
 
     const handleAdaptationClick = useCallback(() => {
         dispatch(setAppMode('adaptation'));
@@ -38,14 +39,14 @@ export function ModeSwitcher(): ReactElement {
                 checked={mode === 'adaptation'}
                 onClick={handleAdaptationClick}
                 disabled={disabled}>
-                {t('EDIT')}
+                {isAdpProject ? t('UI_ADAPTATION') : t('EDIT')}
             </UIDefaultButton>
             <UIDefaultButton
                 transparent={true}
                 checked={mode === 'navigation'}
                 onClick={handleNavigationClick}
                 disabled={disabled}>
-                {t('LIVE')}
+                {isAdpProject ? t('NAVIGATION') : t('LIVE')}
             </UIDefaultButton>
         </div>
     );

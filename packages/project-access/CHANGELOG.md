@@ -1,5 +1,54 @@
 # @sap-ux/project-access
 
+## 1.25.4
+
+### Patch Changes
+
+-   173b5f2: export findCapProjectRoot, required by other modules
+
+## 1.25.3
+
+### Patch Changes
+
+-   e7b9184: fix: outputs specification version when loading from cache
+
+## 1.25.2
+
+### Patch Changes
+
+-   Updated dependencies [22e4ad8]
+    -   @sap-ux/ui5-config@0.23.1
+
+## 1.25.1
+
+### Patch Changes
+
+-   0f3cf6b: feat: Add path to specification
+
+## 1.25.0
+
+### Minor Changes
+
+-   f076dd3: Add freestyle CAP app support.
+
+## 1.24.0
+
+### Minor Changes
+
+-   0ae685e: Add feature to cache node modules locally, consumed by specification
+
+## 1.23.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/i18n@0.1.0
+    -   @sap-ux/ui5-config@0.23.0
+
 ## 1.22.4
 
 ### Patch Changes

@@ -81,6 +81,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     }
     // write ui5 yaml
     fs.write(ui5ConfigPath, ui5Config.toString());
+
     return fs;
 }
 

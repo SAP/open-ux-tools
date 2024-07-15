@@ -112,8 +112,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     // Add service to the project if provided
     if (ffApp.service) {
         await addOdataService(basePath, ffApp.service, fs);
-    } else if (ffApp.app.projectType === 'EDMXBackend') {
-        // write ui5-local.yaml with Fiori Tools proxy middleware only for non-CAP applications
+    } else {
         // Add placeholder middleware so allow adding service later
         const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
         const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));

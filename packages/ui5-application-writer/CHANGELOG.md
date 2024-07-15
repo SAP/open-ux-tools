@@ -1,5 +1,29 @@
 # @sap-ux/ui5-application-writer
 
+## 0.27.2
+
+### Patch Changes
+
+-   Updated dependencies [22e4ad8]
+    -   @sap-ux/ui5-config@0.23.1
+
+## 0.27.1
+
+### Patch Changes
+
+-   8b7ee1f: Do not add reuse libraries to the ui5-local.yaml
+
+## 0.27.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/ui5-config@0.23.0
+
 ## 0.26.18
 
 ### Patch Changes
