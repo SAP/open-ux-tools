@@ -92,7 +92,7 @@ export class ConnectionValidator {
      * @param url a service url (<protocol://<host>:<port>/<service-path>) or a system url (<protocol://<host>:<port>)
      * @param username optional username
      * @param password optional password
-     * @param options
+     * @param options options for the connection validation
      * @param options.ignoreCertError ignore some certificate errors
      * @param options.isSystem if true, the url will be treated as a system url rather than a service url
      * @param options.odataVersion if specified will restrict catalog requests to only the specified odata version
@@ -130,10 +130,10 @@ export class ConnectionValidator {
             );
             // If system, use catalog service to get the services info
             if (isSystem) {
-                await this.initSystemConnection(odataVersion, axiosConfig);
+                await this.createSystemConnection(axiosConfig, odataVersion);
             } else {
                 // Full service URL
-                await this.initServiceConnection(url, axiosConfig);
+                await this.createServiceConnection(axiosConfig, url.pathname);
             }
 
             return 200;
@@ -154,6 +154,15 @@ export class ConnectionValidator {
         }
     }
 
+    /**
+     * Create the axios configuration object for the service or system connection.
+     *
+     * @param url the service or system url
+     * @param ignoreCertError if true the config will be set to ignore cert errors
+     * @param username provided for basic authentication
+     * @param password provided for basic authentication
+     * @returns the axios configuration object
+     */
     private createAxiosConfig(
         url: URL,
         ignoreCertError: boolean,
@@ -178,15 +187,27 @@ export class ConnectionValidator {
         return axiosConfig;
     }
 
-    private async initServiceConnection(url: URL, axiosConfig: AxiosRequestConfig) {
+    /**
+     * Create the connection for a service url. The base url should be provided with the axios config property.
+     *
+     * @param axiosConfig the axios request configuration
+     * @param servicePath the service path without the origin
+     */
+    private async createServiceConnection(axiosConfig: AxiosRequestConfig, servicePath: string) {
         this._axiosConfig = axiosConfig;
         this._serviceProvider = create(this._axiosConfig);
-        this._odataService = this._serviceProvider.service(url.pathname);
+        this._odataService = this._serviceProvider.service(servicePath);
         LoggerHelper.attachAxiosLogger(this._serviceProvider.interceptors);
         await this._odataService.get('');
     }
 
-    private async initSystemConnection(odataVersion: ODataVersion | undefined, axiosConfig: AxiosRequestConfig) {
+    /**
+     * Create the connection for a system url. The system url should be provided as a base url axios config property.
+     *
+     * @param axiosConfig the axios request configuration
+     * @param odataVersion the odata version to restrict the catalog requests if only a specific version is required
+     */
+    private async createSystemConnection(axiosConfig: AxiosRequestConfig, odataVersion?: ODataVersion) {
         this._axiosConfig = axiosConfig;
         this._serviceProvider = createForAbap(this._axiosConfig);
         LoggerHelper.attachAxiosLogger(this._serviceProvider.interceptors);
@@ -213,7 +234,7 @@ export class ConnectionValidator {
      * Validates the service url format as well as its reachability.
      *
      * @param serviceUrl the odata service url to validate
-     * @param options
+     * @param options options for the connection validation
      * @param options.ignoreCertError ignore some certificate errors
      * @param options.forceReValidation force re-validation of the url
      * @param options.isSystem if true, the url will be treated as a system url rather than a service url
@@ -333,11 +354,11 @@ export class ConnectionValidator {
      * @param url the url to validate
      * @param username user name
      * @param password password
-     * @param options
+     * @param options options for the connection authentication validation
      * @param options.ignoreCertError ignore some certificate errors
      * @param options.isSystem if true, the url will be treated as a system url rather than a service url
-     * @param options.sapClient
-     * @param options.odataVersion
+     * @param options.sapClient the sap client to use for the connection
+     * @param options.odataVersion if specified will restrict catalog requests to only the specified odata version
      * @returns true if the authentication is successful, false if not, or an error message string
      */
     public async validateAuth(

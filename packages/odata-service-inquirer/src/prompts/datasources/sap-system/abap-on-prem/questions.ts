@@ -50,12 +50,12 @@ export type ServiceAnswer = {
 /**
  * Convert the odata version type from the prompt (odata-service-writer) type to the axios-extension type.
  *
- * @param odataVersion
- * @returns
+ * @param odataVersion The odata version to convert
+ * @returns The converted odata version
  */
 function convertODataVersionType(odataVersion?: OdataVersion): ODataVersion | undefined {
     if (!odataVersion) {
-        return odataVersion;
+        return undefined;
     }
     return odataVersion === OdataVersion.v2 ? ODataVersion.v2 : ODataVersion.v4;
 }
@@ -63,7 +63,7 @@ function convertODataVersionType(odataVersion?: OdataVersion): ODataVersion | un
 /**
  * Get the Abap on-premise datasource questions.
  *
- * @param serviceSelectionPromptOptions
+ * @param serviceSelectionPromptOptions options for the service selection prompt see {@link ServiceSelectionPromptOptions}
  * @returns property questions for the Abap on-premise datasource
  */
 export function getAbapOnPremQuestions(
@@ -259,9 +259,9 @@ export function getAbapOnPremQuestions(
  * Requests and sets the service details to the PromptState.odataService properties.
  * If an error occurs, the error message is returned for use in validators.
  *
- * @param service
- * @param systemUrl
- * @param connectionValidator
+ * @param service the specific service to get details for
+ * @param systemUrl the system origin where the service is hosted
+ * @param connectionValidator a reference to the connection validator
  * @returns true if successful, setting the PromptState.odataService properties, or an error message indicating why the service details could not be retrieved.
  */
 async function getServiceDetails(
