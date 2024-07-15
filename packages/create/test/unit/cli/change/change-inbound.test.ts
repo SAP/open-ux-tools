@@ -1,7 +1,6 @@
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { Command } from 'commander';
-import * as mockFs from 'fs';
 import * as tracer from '../../../../src/tracing/trace';
 import * as common from '../../../../src/common';
 import * as projectAccess from '@sap-ux/project-access';
@@ -108,7 +107,5 @@ describe('change/inbound', () => {
         expect(traceSpy).toBeCalled();
     });
 
-    test('should pass succesfully', async () => {
-
-    });
+    test('should pass succesfully', async () => {});
 });

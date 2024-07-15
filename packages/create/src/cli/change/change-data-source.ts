@@ -1,5 +1,5 @@
 import type { Command } from 'commander';
-import type { AdpPreviewConfig, DescriptorVariant, PromptDefaults } from '@sap-ux/adp-tooling';
+import type { AdpPreviewConfig, PromptDefaults } from '@sap-ux/adp-tooling';
 import { generateChange, ChangeType, getPromptsForChangeDataSource, getManifest } from '@sap-ux/adp-tooling';
 import { getLogger, traceChanges } from '../../tracing';
 import { readFileSync, existsSync } from 'fs';
