@@ -1,6 +1,7 @@
 import * as i18n from '../../../../src/i18n';
 import type { NewModelAnswers } from '../../../../src';
-import { isCFEnvironment, isCustomerBase } from '../../../../src';
+import { isCustomerBase } from '../../../../src';
+import { isCFEnvironment } from '../../../../src/base/cf';
 import { getPrompts } from '../../../../src/prompts/add-new-model';
 
 import { getChangesByType } from '../../../../src/base/change-utils';
@@ -16,7 +17,10 @@ jest.mock('../../../../src/base/change-utils.ts', () => ({
 }));
 
 jest.mock('../../../../src/base/helper.ts', () => ({
-    isCustomerBase: jest.fn(),
+    isCustomerBase: jest.fn()
+}));
+
+jest.mock('../../../../src/base/cf.ts', () => ({
     isCFEnvironment: jest.fn()
 }));
 

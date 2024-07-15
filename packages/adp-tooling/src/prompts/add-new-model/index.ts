@@ -10,7 +10,8 @@ import type { UI5FlexLayer } from '@sap-ux/project-access';
 import { t } from '../../i18n';
 import { getChangesByType } from '../../base/change-utils';
 import { ChangeType, type NewModelAnswers } from '../../types';
-import { isCustomerBase, isCFEnvironment } from '../../base/helper';
+import { isCustomerBase } from '../../base/helper';
+import { isCFEnvironment } from '../../base/cf';
 import {
     validateContentDuplication,
     validateNonEmptyNoSpaces,

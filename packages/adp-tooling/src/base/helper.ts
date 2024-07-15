@@ -23,20 +23,3 @@ export function isCustomerBase(layer: UI5FlexLayer): boolean {
 export function getVariant(basePath: string): DescriptorVariant {
     return JSON.parse(readFileSync(join(basePath, 'webapp', 'manifest.appdescr_variant'), 'utf-8'));
 }
-
-/**
- * Check if the project is a CF project.
- *
- * @param {string} basePath - The path to the adaptation project.
- * @returns {boolean} true if the project is a CF project, false otherwise
- */
-export function isCFEnvironment(basePath: string): boolean {
-    const configJsonPath = join(basePath, '.adp', 'config.json');
-    if (existsSync(configJsonPath)) {
-        const config = JSON.parse(readFileSync(configJsonPath, 'utf-8'));
-        if (config.environment === 'CF') {
-            return true;
-        }
-    }
-    return false;
-}
