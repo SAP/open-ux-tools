@@ -135,36 +135,12 @@ export class ConnectionValidator {
                     }
                 });
             }
-
-            this._axiosConfig = axiosConfig;
-
             // If system, use catalog service to get the services info
             if (isSystem) {
-                this._serviceProvider = createForAbap(this._axiosConfig);
-                LoggerHelper.attachAxiosLogger(this._serviceProvider.interceptors);
-
-                if (!odataVersion || odataVersion === ODataVersion.v2) {
-                    this._catalogV2 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v2);
-                }
-                if (!odataVersion || odataVersion === ODataVersion.v4) {
-                    this._catalogV4 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v4);
-                }
-                try {
-                    this._catalogV2 ? await this._catalogV2.listServices() : await this._catalogV4.listServices();
-                } catch (error) {
-                    // We will try the v4 catalog if v2 returns a 404
-                    if ((error as AxiosError).response?.status === 404 && this._catalogV4) {
-                        await this._catalogV4.listServices();
-                    } else {
-                        throw error;
-                    }
-                }
+                await this.initSystemConnection(odataVersion, axiosConfig);
             } else {
                 // Full service URL
-                this._serviceProvider = create(this._axiosConfig);
-                this._odataService = this._serviceProvider.service(url.pathname);
-                LoggerHelper.attachAxiosLogger(this._serviceProvider.interceptors);
-                await this._odataService.get('');
+                await this.initServiceConnection(url, axiosConfig);
             }
 
             return 200;
@@ -182,6 +158,37 @@ export class ConnectionValidator {
         } finally {
             // Reset global cert validation
             ConnectionValidator.setGlobalRejectUnauthorized(true);
+        }
+    }
+
+    private async initServiceConnection(url: URL, , axiosConfig: AxiosRequestConfig) {
+        this._axiosConfig = axiosConfig;
+        this._serviceProvider = create(this._axiosConfig);
+        this._odataService = this._serviceProvider.service(url.pathname);
+        LoggerHelper.attachAxiosLogger(this._serviceProvider.interceptors);
+        await this._odataService.get('');
+    }   
+
+    private async initSystemConnection(odataVersion: ODataVersion | undefined, axiosConfig: AxiosRequestConfig) {
+        this._axiosConfig = axiosConfig;
+        this._serviceProvider = createForAbap(this._axiosConfig);
+        LoggerHelper.attachAxiosLogger(this._serviceProvider.interceptors);
+
+        if (!odataVersion || odataVersion === ODataVersion.v2) {
+            this._catalogV2 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v2);
+        }
+        if (!odataVersion || odataVersion === ODataVersion.v4) {
+            this._catalogV4 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v4);
+        }
+        try {
+            this._catalogV2 ? await this._catalogV2.listServices() : await this._catalogV4.listServices();
+        } catch (error) {
+            // We will try the v4 catalog if v2 returns a 404
+            if ((error as AxiosError).response?.status === 404 && this._catalogV4) {
+                await this._catalogV4.listServices();
+            } else {
+                throw error;
+            }
         }
     }
 
