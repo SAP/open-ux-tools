@@ -290,7 +290,8 @@ export function createTestTemplateConfig(config: InternalTestConfig, id: string)
         id,
         framework: config.framework,
         basePath: posix.relative(posix.dirname(config.path), '/') ?? '.',
-        initPath: posix.relative(posix.dirname(config.path), config.init)
+        initPath: posix.relative(posix.dirname(config.path), config.init),
+        theme: DEFAULT_THEME
     };
 }
 
