@@ -6,3 +6,4 @@ export { generateChange } from './writer/editors';
 export { promptGeneratorInput, PromptDefaults } from './base/prompt';
 export { getPromptsForChangeInbound } from './prompts';
 export { getManifest } from './base/abap';
+export { isCFEnvironment } from './base/cf';

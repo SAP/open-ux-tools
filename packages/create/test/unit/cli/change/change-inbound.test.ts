@@ -1,7 +1,16 @@
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
+import { Command } from 'commander';
 import * as mockFs from 'fs';
+import * as tracer from '../../../../src/tracing/trace';
+import * as common from '../../../../src/common';
 import { join } from 'path';
+import * as validations from '../../../../src/validation/validation';
+import { addChangeInboundCommand } from '../../../../src/cli/change/change-inbound';
+import * as adp from '@sap-ux/adp-tooling';
+
+jest.mock('prompts');
+jest.mock('@sap-ux/adp-tooling');
 
 const cloudDescriptorVariant = JSON.parse(
     jest
@@ -11,11 +20,6 @@ const cloudDescriptorVariant = JSON.parse(
             'utf-8'
         )
 );
-const onPremiseDescriptorVariant = JSON.parse(
-    jest
-        .requireActual('fs')
-        .readFileSync(join(__dirname, '../../../fixtures/adaptation-project', 'manifest.appdescr_variant'), 'utf-8')
-);
 
 describe('change/inbound', () => {
     let loggerMock: ToolsLogger;
@@ -24,4 +28,73 @@ describe('change/inbound', () => {
             commit: jest.fn().mockImplementation((cb) => cb())
         })
     };
-})
+    const mockAnswers = {
+        title: 'Some Title',
+        subTutle: 'Some Subtitle',
+        icon: 'Some Icon'
+    };
+
+    const traceSpy = jest.spyOn(tracer, 'traceChanges');
+    const generateChangeSpy = jest
+        .spyOn(adp, 'generateChange')
+        .mockResolvedValue(memFsEditorMock as Partial<Editor> as Editor);
+    const promptYUIQuestionsSpy = jest.spyOn(common, 'promptYUIQuestions').mockResolvedValue(mockAnswers);
+    const getArgv = (...arg: string[]) => ['', '', 'inbound', ...arg];
+    const appRoot = join(__dirname, '../../../fixtures');
+
+    test('should result in error when the project is not adaptation project', async () => {
+        jest.spyOn(validations, 'validateAdpProject').mockRejectedValueOnce(
+            new Error('This command can only be used for an adaptation project')
+        );
+
+        const command = new Command('inbound');
+        addChangeInboundCommand(command);
+        await command.parseAsync(getArgv(appRoot));
+
+        expect(loggerMock.debug).toBeCalled();
+        expect(loggerMock.error).toBeCalledWith('This command can only be used for an adaptation project');
+        expect(generateChangeSpy).not.toBeCalled();
+    });
+
+    test('should result in error when executed for CF projects', async () => {
+        jest.spyOn(validations, 'validateAdpProject').mockRejectedValueOnce(
+            new Error('This command is not supported for CF projects.')
+        );
+
+        const command = new Command('inbound');
+        addChangeInboundCommand(command);
+        await command.parseAsync(getArgv(appRoot));
+
+        expect(loggerMock.debug).toBeCalled();
+        expect(loggerMock.error).toBeCalledWith('This command is not supported for CF projects.');
+        expect(generateChangeSpy).not.toBeCalled();
+    });
+
+    test('should result in error when executed for onPremise projects', async () => {
+        jest.spyOn(validations, 'validateAdpProject').mockRejectedValueOnce(
+            new Error('This command can only be used for Cloud Adaptation Project')
+        );
+
+        const command = new Command('inbound');
+        addChangeInboundCommand(command);
+        await command.parseAsync(getArgv(appRoot));
+
+        expect(loggerMock.debug).toBeCalled();
+        expect(loggerMock.error).toBeCalledWith('This command can only be used for Cloud Adaptation Project');
+        expect(generateChangeSpy).not.toBeCalled();
+    });
+
+    test('should not commit changes when called with simulate', async () => {
+        const command = new Command('inbound');
+        addChangeInboundCommand(command);
+        await command.parseAsync(getArgv(appRoot, '--simulate'));
+
+        expect(promptYUIQuestionsSpy).toBeCalled();
+        expect(generateChangeSpy).toBeCalled();
+        expect(traceSpy).toBeCalled();
+    });
+
+    test('should pass succesfully', async () => {
+
+    });
+});

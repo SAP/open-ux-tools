@@ -1,3 +1,7 @@
+import { join } from "path";
+import type { DescriptorVariant } from "../types";
+import { readFileSync } from "fs";
+
 /**
  * Checks if the input is a non-empty string.
  *
@@ -16,4 +20,14 @@ export function isNotEmptyString(input: string | undefined): boolean {
  */
 export function isValidSapClient(input: string | undefined): boolean {
     return !input || (input.length < 4 && !!new RegExp(/^\d*$/).exec(input));
+}
+
+/**
+ * Get the app descriptor variant.
+ *
+ * @param {string} basePath - The path to the adaptation project.
+ * @returns {DescriptorVariant} The app descriptor variant.
+ */
+export function getVariant(basePath: string): DescriptorVariant {
+    return JSON.parse(readFileSync(join(basePath, 'webapp', 'manifest.appdescr_variant'), 'utf-8'));
 }

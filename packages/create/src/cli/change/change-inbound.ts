@@ -2,9 +2,9 @@ import type { Command } from 'commander';
 import { getLogger, traceChanges } from '../../tracing';
 import { ChangeType, generateChange, getPromptsForChangeInbound } from '@sap-ux/adp-tooling';
 import type { DescriptorVariantContent } from '@sap-ux/adp-tooling';
-import { getAppType } from '@sap-ux/project-access';
 import { promptYUIQuestions } from '../../common';
 import { getVariant } from '../../common/utils';
+import { validateAdpProject } from '../../validation/validation';
 
 /**
  * Add a new sub-command to change the inbound of an adaptation project to the given command.
@@ -32,7 +32,7 @@ async function changeInbound(basePath: string, simulate: boolean): Promise<void>
             basePath = process.cwd();
         }
 
-        await validateProject(basePath);
+        await validateAdpProject(basePath, true);
         const variant = getVariant(basePath);
         const change = variant.content.find(
             (change: DescriptorVariantContent) => change.changeType === 'appdescr_app_removeAllInboundsExceptOne'
@@ -53,25 +53,5 @@ async function changeInbound(basePath: string, simulate: boolean): Promise<void>
     } catch (error) {
         logger.error(error?.message);
         logger.debug(error);
-    }
-}
-
-/**
- * Validate if Adaptation Project is supported for command, throws an error if not supported.
- *
- * @param basePath - path to the Adaptation Project
- */
-async function validateProject(basePath: string): Promise<void> {
-    if ((await getAppType(basePath)) !== 'Fiori Adaptation') {
-        throw new Error('This command can only be used for an Adaptation Project');
-    }
-
-    const manifest = getVariant(basePath);
-    if (
-        !manifest.content.some(
-            (change: DescriptorVariantContent) => change.changeType === 'appdescr_app_removeAllInboundsExceptOne'
-        )
-    ) {
-        throw new Error('This command can only be used for Cloud Adaptation Project');
     }
 }
