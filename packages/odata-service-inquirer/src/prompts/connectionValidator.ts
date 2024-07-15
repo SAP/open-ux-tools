@@ -13,9 +13,9 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import https from 'https';
 import { ERROR_TYPE, ErrorHandler } from '../error-handler/error-handler';
 import { t } from '../i18n';
+import { SAP_CLIENT_KEY } from '../types';
 import LoggerHelper from './logger-helper';
 import { errorHandler } from './prompt-helpers';
-import { SAP_CLIENT_KEY } from '../types';
 
 /**
  * Structure to store validity information about url to be validated.
@@ -252,7 +252,7 @@ export class ConnectionValidator {
      * Sets the instance validity state based on the status code.
      *
      * @param status a http request status code used to determine the validation result
-     * @returns
+     * @returns true if the url is reachable, false if not, or an error message string
      */
     private getValidationResultFromStatusCode(status: string | number): boolean | string | IValidationLink {
         if (status === 200) {
@@ -326,25 +326,29 @@ export class ConnectionValidator {
             sapClient,
             odataVersion
         }: { ignoreCertError?: boolean; isSystem?: boolean; odataVersion?: ODataVersion; sapClient?: string } = {}
-    ): Promise<boolean | string> {
+    ): Promise<boolean | string | IValidationLink> {
         if (!url) {
             return false;
         }
-        if (!this.validity.reachable) {
-            return false;
-        }
+
         try {
             const urlObject = new URL(url);
             if (sapClient) {
                 urlObject.searchParams.append(SAP_CLIENT_KEY, sapClient);
             }
-            this.validity.authenticated =
-                (await this.checkSapService(urlObject, username, password, {
-                    ignoreCertError,
-                    isSystem,
-                    odataVersion
-                })) === 200;
-            return this.validity.authenticated === true ? true : t('errors.authenticationFailed');
+
+            const status = await this.checkSapService(urlObject, username, password, {
+                ignoreCertError,
+                isSystem,
+                odataVersion
+            });
+
+            const valResult = this.getValidationResultFromStatusCode(status);
+
+            if (valResult === true && this.validity.authenticated === true) {
+                return true;
+            }
+            return valResult;
         } catch (error) {
             return errorHandler.getErrorMsg(error) ?? false;
         }

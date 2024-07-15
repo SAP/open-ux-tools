@@ -136,13 +136,10 @@ describe('ConnectionValidator', () => {
         await validator.validateUrl(serviceUrl);
         getODataServiceSpy.mockClear();
 
-        expect(validator.validity).toEqual({
-            urlFormat: true,
-            reachable: false
-        });
-        expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toBe(false);
+        getODataServiceSpy = jest.spyOn(ODataService.prototype, 'get').mockRejectedValue(newAxiosErrorWithStatus(404));
+        expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toBe('URL not found');
         expect(validator.validity).toEqual({ urlFormat: true, reachable: false });
-        expect(getODataServiceSpy).not.toHaveBeenCalled();
+        expect(getODataServiceSpy).toHaveBeenCalled();
     });
 
     test('should handle redirect errors', async () => {
@@ -279,7 +276,64 @@ describe('ConnectionValidator', () => {
         expect(getODataServiceSpy).toHaveBeenCalledTimes(2);
     });
 
-    test('should update axios-config with sap-client with calling validateAuth', async () => {
-        // todo:...
+    test('should update axios-config with sap-client with calling validateAuth when connecting to sap system', async () => {
+        const createProviderSpy = jest.spyOn(axiosExtension, 'createForAbap');
+        jest.spyOn(axiosExtension.V2CatalogService.prototype, 'listServices').mockResolvedValueOnce([]);
+
+        const connectValidator = new ConnectionValidator();
+        await connectValidator.validateAuth('https://example.com:1234', 'user1', 'pword1', {
+            isSystem: true,
+            sapClient: '999'
+        });
+        expect(createProviderSpy).toHaveBeenCalledWith({
+            auth: {
+                password: 'pword1',
+                username: 'user1'
+            },
+            baseURL: 'https://example.com:1234',
+            cookies: '',
+            ignoreCertErrors: false,
+            params: {
+                'sap-client': '999',
+                saml2: 'disabled'
+            }
+        });
+    });
+
+    test('should validate connectivity with `listServices` when connecting to sap systems', async () => {
+        let listServicesV2Mock = jest
+            .spyOn(axiosExtension.V2CatalogService.prototype, 'listServices')
+            .mockResolvedValueOnce([]);
+        const listServicesV4Mock = jest
+            .spyOn(axiosExtension.V4CatalogService.prototype, 'listServices')
+            .mockResolvedValueOnce([]);
+        const connectValidator = new ConnectionValidator();
+        await connectValidator.validateUrl('https://example.com:1234', { isSystem: true });
+
+        expect(connectValidator.catalogs[axiosExtension.ODataVersion.v2]).toBeInstanceOf(
+            axiosExtension.V2CatalogService
+        );
+        expect(connectValidator.catalogs[axiosExtension.ODataVersion.v4]).toBeInstanceOf(
+            axiosExtension.V4CatalogService
+        );
+
+        expect(listServicesV2Mock).toHaveBeenCalled();
+        expect(listServicesV4Mock).not.toHaveBeenCalled();
+
+        // If the V2 catalog service fails, the V4 catalog service should be called
+        listServicesV2Mock = jest
+            .spyOn(axiosExtension.V2CatalogService.prototype, 'listServices')
+            .mockRejectedValue(newAxiosErrorWithStatus(404));
+        await connectValidator.validateUrl('https://example1.com:1234', { isSystem: true });
+
+        expect(connectValidator.catalogs[axiosExtension.ODataVersion.v2]).toBeInstanceOf(
+            axiosExtension.V2CatalogService
+        );
+        expect(connectValidator.catalogs[axiosExtension.ODataVersion.v4]).toBeInstanceOf(
+            axiosExtension.V4CatalogService
+        );
+
+        expect(listServicesV2Mock).toHaveBeenCalled();
+        expect(listServicesV4Mock).toHaveBeenCalled();
     });
 });
