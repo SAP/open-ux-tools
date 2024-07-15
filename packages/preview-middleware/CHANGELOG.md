@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.14
+
+### Patch Changes
+
+-   e0ddba7: Fix potential racing condition in qunit tests
+
 ## 0.16.13
 
 ### Patch Changes
