@@ -193,7 +193,7 @@ export interface CodeExtChange extends CommonChangeProperties {
     };
 }
 
-export const customerBase = 'CUSTOMER_BASE';
+export const CUSTOMER_BASE = 'CUSTOMER_BASE';
 
 export const enum TemplateFileName {
     Fragment = 'fragment.xml',

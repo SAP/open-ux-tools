@@ -2,7 +2,7 @@ import path, { isAbsolute } from 'path';
 import type { Editor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../../types';
-import { customerBase, type IWriter, type AnnotationsData } from '../../../types';
+import { CUSTOMER_BASE, type IWriter, type AnnotationsData } from '../../../types';
 import { getChange, writeAnnotationChange } from '../../../base/change-utils';
 
 /**
@@ -29,7 +29,7 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
         } = data;
         const annotationFileNameWithoutExtension = fileName?.toLocaleLowerCase().replace('.xml', '');
         const annotationNameSpace =
-            layer === customerBase
+            layer === CUSTOMER_BASE
                 ? `customer.annotation.${annotationFileNameWithoutExtension}`
                 : `annotation.${annotationFileNameWithoutExtension}`;
         return {
