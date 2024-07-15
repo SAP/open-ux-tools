@@ -161,13 +161,13 @@ export class ConnectionValidator {
         }
     }
 
-    private async initServiceConnection(url: URL, , axiosConfig: AxiosRequestConfig) {
+    private async initServiceConnection(url: URL, axiosConfig: AxiosRequestConfig) {
         this._axiosConfig = axiosConfig;
         this._serviceProvider = create(this._axiosConfig);
         this._odataService = this._serviceProvider.service(url.pathname);
         LoggerHelper.attachAxiosLogger(this._serviceProvider.interceptors);
         await this._odataService.get('');
-    }   
+    }
 
     private async initSystemConnection(odataVersion: ODataVersion | undefined, axiosConfig: AxiosRequestConfig) {
         this._axiosConfig = axiosConfig;
