@@ -107,7 +107,7 @@ export class AbapServiceProvider extends ServiceProvider {
      *
      * @returns AdtCatalogService
      */
-    public getAdtCatalogService(): AdtCatalogService {
+    private getAdtCatalogService(): AdtCatalogService {
         if (!this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH]) {
             const adtCatalogService = this.createService<AdtCatalogService>(
                 AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH,
