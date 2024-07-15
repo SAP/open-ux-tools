@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { existsSync, readFileSync } from 'fs';
+import { readFileSync } from 'fs';
 
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { DescriptorVariant } from '../types';
