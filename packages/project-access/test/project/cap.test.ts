@@ -434,6 +434,8 @@ describe('Test getCapCustomPaths()', () => {
 describe('Test getCapEnvironment()', () => {
     afterEach(() => {
         jest.restoreAllMocks();
+        // clearing cache after each test to make tests independent of each other
+        clearGlobalCdsModulePromiseCache();
     });
 
     test('without default property', async () => {
