@@ -462,3 +462,13 @@ export interface InboundChange {
         };
     };
 }
+
+export interface TargetEnvAnswers {
+    targetEnv: OperationsType;
+}
+
+export interface BasicInfoAnswers {
+    projectName: string;
+    applicationTitle: string;
+    namespace: string;
+}

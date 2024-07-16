@@ -1,19 +1,12 @@
-/**
- * Checks if the input is a non-empty string.
- *
- * @param input - input to check
- * @returns true if the input is a non-empty string
- */
-export function isNotEmptyString(input: string | undefined): boolean {
-    return typeof input === 'string' && input.trim().length > 0;
-}
+import { UI5FlexLayer } from '@sap-ux/project-access';
+import { getProjectNames } from './file-system';
 
 /**
- * Checks if the input is a valid SAP client.
+ * Check environment is running in an customer scenario.
  *
- * @param input - input to check
- * @returns true if the input is a valid SAP client
+ * @param layer - UI5 Flex layer
+ * @returns true if running in an customer scenario, false otherwise
  */
-export function isValidSapClient(input: string | undefined): boolean {
-    return !input || (input.length < 4 && !!new RegExp(/^\d*$/).exec(input));
+export function isCustomerBase(layer: UI5FlexLayer): boolean {
+    return layer === 'CUSTOMER_BASE';
 }
