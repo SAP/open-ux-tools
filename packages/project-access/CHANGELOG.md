@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.25.4
+
+### Patch Changes
+
+-   173b5f2: export findCapProjectRoot, required by other modules
+
 ## 1.25.3
 
 ### Patch Changes
