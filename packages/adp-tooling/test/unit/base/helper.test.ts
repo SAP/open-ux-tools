@@ -5,7 +5,6 @@ import * as mockFs from 'fs';
 jest.mock('fs');
 
 describe('helper', () => {
-    
     test('isNotEmptyString', () => {
         expect(isNotEmptyString(undefined)).toBe(false);
         expect(isNotEmptyString('')).toBe(false);

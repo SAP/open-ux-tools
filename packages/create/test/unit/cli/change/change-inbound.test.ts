@@ -3,6 +3,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { Command } from 'commander';
 import * as tracer from '../../../../src/tracing/trace';
 import * as common from '../../../../src/common';
+import * as logger from '../../../../src/tracing/logger';
 import * as projectAccess from '@sap-ux/project-access';
 import { join } from 'path';
 import * as validations from '../../../../src/validation/validation';
