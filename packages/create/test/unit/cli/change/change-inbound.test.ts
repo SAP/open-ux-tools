@@ -43,7 +43,6 @@ describe('change/inbound', () => {
     const getArgv = (...arg: string[]) => ['', '', 'inbound', ...arg];
     const appRoot = join(__dirname, '../../../fixtures');
     jest.spyOn(validations, 'validateAdpProject').mockResolvedValue(undefined);
-    //jest.spyOn(adp, 'get').mockImplementation(() => []);
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -56,7 +55,7 @@ describe('change/inbound', () => {
         jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
     });
 
-    test('should result in error when the project is not adaptation project', async () => {
+    test('change-inbound - not an Adaptation Project', async () => {
         jest.spyOn(validations, 'validateAdpProject').mockRejectedValueOnce(
             new Error('This command can only be used for an adaptation project')
         );
@@ -70,7 +69,7 @@ describe('change/inbound', () => {
         expect(generateChangeSpy).not.toBeCalled();
     });
 
-    test('should result in error when executed for CF projects', async () => {
+    test('change-inbound - CF environment', async () => {
         jest.spyOn(validations, 'validateAdpProject').mockRejectedValueOnce(
             new Error('This command is not supported for CF projects.')
         );
@@ -84,7 +83,7 @@ describe('change/inbound', () => {
         expect(generateChangeSpy).not.toBeCalled();
     });
 
-    test('should result in error when executed for onPremise projects', async () => {
+    test('change-inbound - onPremise project', async () => {
         jest.spyOn(validations, 'validateAdpProject').mockRejectedValueOnce(
             new Error('This command can only be used for Cloud Adaptation Project')
         );
@@ -92,21 +91,32 @@ describe('change/inbound', () => {
         const command = new Command('inbound');
         addChangeInboundCommand(command);
         await command.parseAsync(getArgv(appRoot));
-
         expect(loggerMock.debug).toBeCalled();
         expect(loggerMock.error).toBeCalledWith('This command can only be used for Cloud Adaptation Project');
         expect(generateChangeSpy).not.toBeCalled();
     });
 
-    test('should not commit changes when called with simulate', async () => {
+    test('change-inbound - --simulate', async () => {
         const command = new Command('inbound');
         addChangeInboundCommand(command);
         await command.parseAsync(getArgv(appRoot, '--simulate'));
-
         expect(promptYUIQuestionsSpy).toBeCalled();
         expect(generateChangeSpy).toBeCalled();
         expect(traceSpy).toBeCalled();
     });
 
-    test('should pass succesfully', async () => {});
+    test('change-inbound - cloudProject', async () => {
+        const command = new Command('inbound');
+        addChangeInboundCommand(command);
+        await command.parseAsync(getArgv(appRoot));
+        expect(promptYUIQuestionsSpy).toBeCalled();
+        expect(generateChangeSpy).toBeCalled();
+    });
+
+    test('change-inbound - no basePath', async () => {
+        const command = new Command('inbound');
+        addChangeInboundCommand(command);
+        await command.parseAsync(getArgv(''));
+        expect(generateChangeSpy).toBeCalled();
+    });
 });
