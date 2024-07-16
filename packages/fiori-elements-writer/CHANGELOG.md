@@ -1,5 +1,12 @@
 # @sap-ux/fiori-elements-writer
 
+## 1.0.1
+
+### Patch Changes
+
+-   Updated dependencies [1a0e478]
+    -   @sap-ux/ui5-application-writer@1.1.0
+
 ## 1.0.0
 
 ### Major Changes

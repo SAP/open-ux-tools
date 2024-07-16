@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 1.1.0
+
+### Minor Changes
+
+-   1a0e478: Removal of private: true Flag from Package.json Templates
+
 ## 1.0.0
 
 ### Major Changes
