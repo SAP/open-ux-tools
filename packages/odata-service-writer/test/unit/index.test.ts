@@ -77,6 +77,15 @@ describe('generate', () => {
             expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
         });
 
+        it('No ui5-local.yaml should be generated if service type is cds', async () => {
+            const capConfig = {
+                ...config,
+                type: ServiceType.CDS
+            };
+            await generate(root, capConfig, fs);
+            expect(fs.exists(join(root, 'ui5-local.yaml'))).toBe(false);
+        });
+
         it('No ui5.yaml - only manifest updates', async () => {
             const packagePath = join(root, 'package.json');
             fs.writeJSON(packagePath, {});
@@ -279,6 +288,7 @@ describe('generate', () => {
                     "path": "/V2",
                     "url": "https://services.odata.org",
                   },
+                  "type": "edmx",
                   "url": "https://services.odata.org",
                   "version": "2",
                 }
@@ -295,6 +305,7 @@ describe('generate', () => {
                     "path": "/V2",
                     "url": "https://services.odata.org",
                   },
+                  "type": "edmx",
                   "url": "https://services.odata.org",
                   "version": "2",
                 }
@@ -312,6 +323,7 @@ describe('generate', () => {
                     "path": "/",
                     "url": "https://services.odata.org",
                   },
+                  "type": "edmx",
                   "url": "https://services.odata.org",
                   "version": "2",
                 }
