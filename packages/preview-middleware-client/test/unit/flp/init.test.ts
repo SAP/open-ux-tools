@@ -262,24 +262,22 @@ describe('flp/init', () => {
             const customInit = 'my/app/test/integration/opaTests.qunit';
             sapMock.ui.version = '2.0.0';
 
-            const elementMock = {
+            const elementMock: Partial<HTMLElement> = {
                 getAttribute: jest.fn(),
                 setAttribute: jest.fn()
             };
             const getAttributeSpy = jest.spyOn(elementMock, 'getAttribute');
             const setAttributeSpy = jest.spyOn(elementMock, 'setAttribute');
 
-            const getElementSpy = jest.spyOn(documentMock, 'getElementById').mockImplementation(() => {
+            jest.spyOn(documentMock, 'getElementById').mockImplementation(() => {
                 return elementMock;
             });
 
-            await init({ customInit: customInit });
+            await init({ customInit: customInit, bootstrap: elementMock as HTMLElement });
 
             expect(sapMock.ui.require).toBeCalledWith([customInit]);
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
 
-            expect(getElementSpy).toBeCalledTimes(1);
-            expect(getElementSpy).toHaveBeenCalledWith('sap-ushell-bootstrap');
             expect(getAttributeSpy).toBeCalledTimes(1);
             expect(getAttributeSpy).toHaveBeenCalledWith('src');
             expect(setAttributeSpy).toBeCalledTimes(1);
