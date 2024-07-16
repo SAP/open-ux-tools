@@ -12,10 +12,9 @@
         "isInSafeModeLabel": "Making manifest changes is not upgrade safe and the project will be set in advanced mode. Please continue if you are sure you want to have your project in advanced mode.",
         "oDataURIV2InfoLabel": "Have in mind that you are trying to replace OData {{versionOne}} Service with OData {{versionTwo}} Service",
         "inboundId": "Inbound ID",
-       "inboundIdLabel": "Inbound ID {{}}",
-       "title": "Title",
-       "subtitle": "Subtitle",
-       "icon": "Icon"
+        "title": "Title",
+        "subtitle": "Subtitle",
+        "icon": "Icon"
     },
     "tooltips": {
         "inboundId": "Enter the Id of the inbound that you want to change",
@@ -23,7 +22,6 @@
         "title": "Enter title for your FLP configuration",
         "subtitle": "Enter subtitle for your FLP configuration",
         "icon": "Enter icon path for your FLP configuration"
-
     },
     "validators": {
         "manifestContainsNoODataServices": "Manifest contains no OData Services.",
