@@ -7,6 +7,7 @@ import { validateClient } from '@sap-ux/project-input-validator';
 import type { InputQuestion, ListChoiceOptions, PasswordQuestion, Question } from 'inquirer';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import { t } from '../../../../i18n';
+import type { OdataServicePromptOptions, SystemNamePromptOptions } from '../../../../types';
 import {
     hostEnvironment,
     promptNames,
@@ -63,19 +64,139 @@ function convertODataVersionType(odataVersion?: OdataVersion): ODataVersion | un
 /**
  * Get the Abap on-premise datasource questions.
  *
- * @param serviceSelectionPromptOptions options for the service selection prompt see {@link ServiceSelectionPromptOptions}
+ * @param promptOptions options for prompts. Applicable options are: {@link ServiceSelectionPromptOptions}, {@link SystemNamePromptOptions}
  * @returns property questions for the Abap on-premise datasource
  */
-export function getAbapOnPremQuestions(
-    serviceSelectionPromptOptions?: ServiceSelectionPromptOptions
-): Question<AbapOnPremAnswers>[] {
+export function getAbapOnPremQuestions(promptOptions?: OdataServicePromptOptions): Question<AbapOnPremAnswers>[] {
     PromptState.reset();
     const connectValidator = new ConnectionValidator();
     let serviceChoices: ListChoiceOptions<ServiceAnswer>[];
     // Prevent re-requesting services repeatedly by only requesting them once and when the system is changed
     let previousSystemUrl: string | undefined;
     let previousService: ServiceAnswer | undefined;
-    const requiredOdataVersion = serviceSelectionPromptOptions?.requiredOdataVersion;
+    // Prompt options
+    const requiredOdataVersion = promptOptions?.serviceSelection?.requiredOdataVersion;
+
+    const questions: Question<AbapOnPremAnswers>[] = getAbapOnPremSystemQuestions(
+        promptOptions?.userSystemName,
+        connectValidator,
+        requiredOdataVersion
+    );
+
+    questions.push({
+        when: (): boolean =>
+            connectValidator.validity.authenticated || connectValidator.validity.authRequired === false,
+        name: promptNames.serviceSelection,
+        type: promptOptions?.serviceSelection?.useAutoComplete ? 'autocomplete' : 'list',
+        message: t('prompts.systemService.message'),
+        guiOptions: {
+            breadcrumb: t('prompts.systemService.breadcrumb'),
+            mandatory: true,
+            applyDefaultWhenDirty: true
+        },
+        source: (prevAnswers: AbapOnPremAnswers, input: string) =>
+            searchChoices(input, serviceChoices as ListChoiceOptions[]),
+        choices: async (answers: AbapOnPremAnswers) => {
+            if (!serviceChoices || previousSystemUrl !== answers.systemUrl) {
+                let catalogs: CatalogService[] = [];
+                if (requiredOdataVersion) {
+                    catalogs.push(connectValidator.catalogs[requiredOdataVersion]);
+                } else {
+                    catalogs = Object.values(connectValidator.catalogs);
+                }
+                previousSystemUrl = answers.systemUrl;
+                serviceChoices = await getServiceChoices(catalogs);
+            }
+            return serviceChoices;
+        },
+        additionalMessages: async (selectedService: ServiceAnswer) => {
+            if (serviceChoices?.length === 0) {
+                if (requiredOdataVersion) {
+                    return {
+                        message: t('prompts.warnings.noServicesAvailableForOdataVersion', {
+                            odataVersion: requiredOdataVersion
+                        }),
+                        severity: Severity.warning
+                    };
+                } else {
+                    return {
+                        message: t('prompts.warnings.noServicesAvailable'),
+                        severity: Severity.warning
+                    };
+                }
+            }
+            if (selectedService) {
+                let serviceType = selectedService.serviceType;
+                if (selectedService.serviceODataVersion === ODataVersion.v2) {
+                    serviceType = await getServiceType(
+                        selectedService.servicePath,
+                        selectedService.serviceType,
+                        connectValidator.catalogs[ODataVersion.v2] as V2CatalogService
+                    );
+                }
+                if (serviceType && serviceType !== ServiceType.UI) {
+                    return {
+                        message: t('prompts.warnings.nonUIServiceTypeWarningMessage', { serviceType: 'A2X' }),
+                        severity: Severity.warning
+                    };
+                }
+            }
+        },
+        default: () => (serviceChoices?.length > 1 ? undefined : 0),
+        // Warning: only executes in YUI not cli
+        validate: async (
+            service: ServiceAnswer,
+            { systemUrl }: Partial<AbapOnPremAnswers> = {}
+        ): Promise<string | boolean | ValidationLink> => {
+            if (!systemUrl) {
+                return false;
+            }
+            // Dont re-request the same service details
+            if (service && previousService?.servicePath !== service.servicePath) {
+                previousService = service;
+                return getServiceDetails(service, systemUrl, connectValidator);
+            }
+            return true;
+        }
+    } as ListQuestion<AbapOnPremAnswers> | AutocompleteQuestionOptions<AbapOnPremAnswers>);
+
+    // Only for CLI use as `list` prompt validation does not run on CLI
+    if (getHostEnvironment() === hostEnvironment.cli) {
+        questions.push({
+            when: async (answers: AbapOnPremAnswers): Promise<boolean> => {
+                if (answers.serviceSelection && answers.systemUrl) {
+                    const result = await getServiceDetails(
+                        answers.serviceSelection,
+                        answers.systemUrl,
+                        connectValidator
+                    );
+                    if (typeof result === 'string') {
+                        LoggerHelper.logger.error(result);
+                    }
+                }
+                return false;
+            },
+            name: cliServicePromptName
+        } as Question);
+    }
+
+    return questions;
+}
+
+/**
+ * Gets the Abap on-premise system questions.
+ *
+ * @param systemNamePromptOptions options for the system name prompt see {@link SystemNamePromptOptions}
+ * @param connectionValidator reference to the existing connection validator, a new one will be created otherwise
+ * @param requiredOdataVersion the required OData version for the service, this will be used to narrow the catalog service connections
+ * @returns the Abap on-premise system questions
+ */
+export function getAbapOnPremSystemQuestions(
+    systemNamePromptOptions?: SystemNamePromptOptions,
+    connectionValidator?: ConnectionValidator,
+    requiredOdataVersion?: OdataVersion
+): Question<AbapOnPremAnswers>[] {
+    const connectValidator = connectionValidator ?? new ConnectionValidator();
 
     const questions: Question<AbapOnPremAnswers>[] = [
         {
@@ -144,112 +265,20 @@ export function getAbapOnPremQuestions(
                 }
                 return valResult;
             }
-        } as PasswordQuestion<AbapOnPremAnswers>,
-        // New system question will allow user to give the system a user friendly name
-        withCondition(
-            [getUserSystemNameQuestion()],
-            (answers: AbapOnPremAnswers) =>
-                !!answers.systemUrl &&
-                connectValidator.validity.reachable === true &&
-                (connectValidator.validity.authenticated || connectValidator.validity.authRequired !== true)
-        )[0],
-        // Note: Service selection is required for multiple datasource types, so this definition may be moved up a level for reuse across multiple sap-system prompts.
-        {
-            when: (): boolean =>
-                connectValidator.validity.authenticated || connectValidator.validity.authRequired === false,
-            name: promptNames.serviceSelection,
-            type: serviceSelectionPromptOptions?.useAutoComplete ? 'autocomplete' : 'list',
-            message: t('prompts.systemService.message'),
-            guiOptions: {
-                breadcrumb: t('prompts.systemService.breadcrumb'),
-                mandatory: true,
-                applyDefaultWhenDirty: true
-            },
-            source: (prevAnswers: AbapOnPremAnswers, input: string) =>
-                searchChoices(input, serviceChoices as ListChoiceOptions[]),
-            choices: async (answers: AbapOnPremAnswers) => {
-                if (!serviceChoices || previousSystemUrl !== answers.systemUrl) {
-                    let catalogs: CatalogService[] = [];
-                    if (requiredOdataVersion) {
-                        catalogs.push(connectValidator.catalogs[requiredOdataVersion]);
-                    } else {
-                        catalogs = Object.values(connectValidator.catalogs);
-                    }
-                    previousSystemUrl = answers.systemUrl;
-                    serviceChoices = await getServiceChoices(catalogs);
-                }
-                return serviceChoices;
-            },
-            additionalMessages: async (selectedService: ServiceAnswer) => {
-                if (serviceChoices?.length === 0) {
-                    if (requiredOdataVersion) {
-                        return {
-                            message: t('prompts.warnings.noServicesAvailableForOdataVersion', {
-                                odataVersion: requiredOdataVersion
-                            }),
-                            severity: Severity.warning
-                        };
-                    } else {
-                        return {
-                            message: t('prompts.warnings.noServicesAvailable'),
-                            severity: Severity.warning
-                        };
-                    }
-                }
-                if (selectedService) {
-                    let serviceType = selectedService.serviceType;
-                    if (selectedService.serviceODataVersion === ODataVersion.v2) {
-                        serviceType = await getServiceType(
-                            selectedService.servicePath,
-                            selectedService.serviceType,
-                            connectValidator.catalogs[ODataVersion.v2] as V2CatalogService
-                        );
-                    }
-                    if (serviceType && serviceType !== ServiceType.UI) {
-                        return {
-                            message: t('prompts.warnings.nonUIServiceTypeWarningMessage', { serviceType: 'A2X' }),
-                            severity: Severity.warning
-                        };
-                    }
-                }
-            },
-            default: () => (serviceChoices?.length > 1 ? undefined : 0),
-            // Warning: only executes in YUI not cli
-            validate: async (
-                service: ServiceAnswer,
-                { systemUrl }: Partial<AbapOnPremAnswers> = {}
-            ): Promise<string | boolean | ValidationLink> => {
-                if (!systemUrl) {
-                    return false;
-                }
-                // Dont re-request the same service details
-                if (service && previousService?.servicePath !== service.servicePath) {
-                    previousService = service;
-                    return getServiceDetails(service, systemUrl, connectValidator);
-                }
-                return true;
-            }
-        } as ListQuestion<AbapOnPremAnswers> | AutocompleteQuestionOptions<AbapOnPremAnswers>
+        } as PasswordQuestion<AbapOnPremAnswers>
     ];
 
-    // Only for CLI use as `list` prompt validation does not run on CLI
-    if (getHostEnvironment() === hostEnvironment.cli) {
-        questions.push({
-            when: async (answers: AbapOnPremAnswers): Promise<boolean> => {
-                if (answers.serviceSelection && answers.systemUrl) {
-                    const result = await getServiceDetails(
-                        answers.serviceSelection,
-                        answers.systemUrl,
-                        connectValidator
-                    );
-                    if (typeof result === 'string') {
-                        LoggerHelper.logger.error(result);
-                    }
-                }
-                return false;
-            },
-            name: cliServicePromptName
-        } as Question);
+    if (systemNamePromptOptions?.exclude !== true) {
+        // New system question will allow user to give the system a user friendly name
+        questions.push(
+            withCondition(
+                [getUserSystemNameQuestion()],
+                (answers: AbapOnPremAnswers) =>
+                    !!answers.systemUrl &&
+                    connectValidator.validity.reachable === true &&
+                    (connectValidator.validity.authenticated || connectValidator.validity.authRequired !== true)
+            )[0]
+        );
     }
 
     return questions;

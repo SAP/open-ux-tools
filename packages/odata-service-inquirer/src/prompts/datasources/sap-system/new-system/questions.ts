@@ -6,7 +6,8 @@ import { withCondition } from '@sap-ux/inquirer-common';
 import { BackendSystem } from '@sap-ux/store';
 import type { Answers, InputQuestion, ListQuestion, Question } from 'inquirer';
 import { t } from '../../../../i18n';
-import type { OdataServiceAnswers, SapSystemType, ServiceSelectionPromptOptions } from '../../../../types';
+import type { OdataServiceAnswers, OdataServicePromptOptions, SapSystemType } from '../../../../types';
+import { promptNames } from '../../../../types';
 import { PromptState } from '../../../../utils';
 import LoggerHelper from '../../../logger-helper';
 import type { AbapOnPremAnswers } from '../abap-on-prem/questions';
@@ -19,8 +20,7 @@ import { validateSystemName } from '../validators';
 export const newSystemChoiceValue = '!@£*&937newSystem*X~qy^';
 
 const newSystemPromptNames = {
-    newSystemType: 'newSystemType',
-    userSystemName: 'userSystemName'
+    newSystemType: 'newSystemType'
 } as const;
 
 /**
@@ -28,7 +28,7 @@ const newSystemPromptNames = {
  */
 export interface NewSystemAnswers {
     [newSystemPromptNames.newSystemType]?: SapSystemType;
-    [newSystemPromptNames.userSystemName]?: string;
+    [promptNames.userSystemName]?: string;
 }
 
 const systemSelectionPromptNames = {
@@ -39,16 +39,13 @@ export interface SystemSelectionAnswer extends OdataServiceAnswers {
     [systemSelectionPromptNames.system]?: string;
 }
 
-// The new system prompting is currently bypassed
 /**
  * Provides prompts that allow the creation of a new system connection.
  *
- * @param serviceSelectionPromptOptions options for the service selection prompt
+ * @param promptOptions options for the new system prompts see {@link OdataServicePromptOptions}
  * @returns questions for creating a new system connection
  */
-export function getNewSystemQuestions(
-    serviceSelectionPromptOptions?: ServiceSelectionPromptOptions
-): Question<NewSystemAnswers>[] {
+export function getNewSystemQuestions(promptOptions?: OdataServicePromptOptions): Question<NewSystemAnswers>[] {
     const questions: Question<NewSystemAnswers>[] = [
         {
             type: 'list',
@@ -71,7 +68,7 @@ export function getNewSystemQuestions(
     ];
     questions.push(
         ...withCondition(
-            getAbapOnPremQuestions(serviceSelectionPromptOptions) as Question[],
+            getAbapOnPremQuestions(promptOptions) as Question[],
             (answers: Answers) => (answers as NewSystemAnswers).newSystemType === 'abapOnPrem'
         )
     );
@@ -93,7 +90,7 @@ export function getUserSystemNameQuestion(): InputQuestion<NewSystemAnswers> {
             applyDefaultWhenDirty: true,
             breadcrumb: true
         },
-        name: newSystemPromptNames.userSystemName,
+        name: promptNames.userSystemName,
         message: t('prompts.systemName.message'),
         default: async (answers: AbapOnPremAnswers & NewSystemAnswers) => {
             if (answers.newSystemType === 'abapOnPrem' && answers.systemUrl) {

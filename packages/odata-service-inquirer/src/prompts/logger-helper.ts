@@ -44,16 +44,16 @@ export default class LoggerHelper {
                     data: true,
                     prefixText: '@sap-ux/odata-service-inquirer',
                     headers: true,
-                    logger: LoggerHelper.logger.debug.bind(this)
+                    logger: LoggerHelper.logger.debug.bind(LoggerHelper.logger)
                 });
-            },
+            } /* ,
             (error) => {
                 return AxiosLogger.errorLogger(error, {
                     logger: LoggerHelper.logger.debug
                 });
-            }
+            } */
         );
-        interceptors.response.use(
+        /* interceptors.response.use(
             (response) => {
                 return AxiosLogger.responseLogger(response, {
                     data: true,
@@ -68,6 +68,6 @@ export default class LoggerHelper {
                     logger: LoggerHelper.logger.debug
                 });
             }
-        );
+        ); */
     }
 }

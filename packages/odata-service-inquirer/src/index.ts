@@ -1,10 +1,17 @@
 import { type InquirerAdapter } from '@sap-ux/inquirer-common';
-import { ToolsLogger, type Logger } from '@sap-ux/logger';
+import { type Logger } from '@sap-ux/logger';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { type ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
-import { ErrorHandler, ERROR_TYPE } from './error-handler/error-handler';
+import type { Question } from 'inquirer';
+import autocomplete from 'inquirer-autocomplete-prompt';
+import { ERROR_TYPE, ErrorHandler } from './error-handler/error-handler';
+import { initI18nOdataServiceInquirer } from './i18n';
 import { getQuestions } from './prompts';
+import type { AbapOnPremAnswers } from './prompts/datasources/sap-system/abap-on-prem/questions';
+import { getAbapOnPremSystemQuestions } from './prompts/datasources/sap-system/abap-on-prem/questions';
+import { newSystemChoiceValue } from './prompts/datasources/sap-system/new-system/questions';
 import LoggerHelper from './prompts/logger-helper';
+import type { SystemNamePromptOptions } from './types';
 import {
     DatasourceType,
     promptNames,
@@ -16,9 +23,6 @@ import {
     type SapSystemType
 } from './types';
 import { PromptState, setTelemetryClient } from './utils';
-import { initI18nOdataServiceInquirer } from './i18n';
-import { newSystemChoiceValue } from './prompts/datasources/sap-system/new-system/questions';
-import autocomplete from 'inquirer-autocomplete-prompt';
 
 /**
  * Get the inquirer prompts for odata service.
@@ -39,7 +43,9 @@ async function getPrompts(
 ): Promise<{ prompts: OdataServiceQuestion[]; answers: Partial<OdataServiceAnswers> }> {
     // prompt texts must be loaded before the prompts are created, wait for the i18n bundle to be initialized
     await initI18nOdataServiceInquirer();
-    LoggerHelper.logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/odata-service-inquirer' });
+    if (logger) {
+        LoggerHelper.logger = logger;
+    }
     ErrorHandler.logger = LoggerHelper.logger;
     ErrorHandler.guidedAnswersEnabled = enableGuidedAnswers;
     PromptState.isYUI = isYUI;
@@ -83,10 +89,34 @@ async function prompt(
     return answers;
 }
 
+/**
+ * Get the prompts for an abap on premis system. This can be used to create a new system connection.
+ *
+ * @param systemNamePromptOptions options for the system name prompt see {@link SystemNamePromptOptions}
+ * @param logger a logger compatible with the {@link Logger} interface
+ * @returns questions for creating a new abap on prem system connection
+ */
+async function getAbapOnPremSystemPrompts(
+    systemNamePromptOptions: SystemNamePromptOptions,
+    logger?: Logger
+): Promise<Question<AbapOnPremAnswers>[]> {
+    if (logger) {
+        LoggerHelper.logger = logger;
+    }
+    // prompt texts must be loaded before the prompts are created, wait for the i18n bundle to be initialized
+    await initI18nOdataServiceInquirer();
+    return getAbapOnPremSystemQuestions(systemNamePromptOptions);
+}
+
 export {
     DatasourceType,
+    // These exports are to facilitate migration to open-ux-tools and will be removed in a future release
+    ERROR_TYPE,
+    ErrorHandler,
     OdataVersion,
+    getAbapOnPremSystemPrompts,
     getPrompts,
+    newSystemChoiceValue,
     prompt,
     promptNames,
     type CapRuntime,
@@ -94,9 +124,5 @@ export {
     type InquirerAdapter,
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
-    // These exports are to facilitate migration to open-ux-tools and will be removed in a future release
-    ERROR_TYPE,
-    ErrorHandler,
-    type SapSystemType,
-    newSystemChoiceValue
+    type SapSystemType
 };

@@ -120,7 +120,11 @@ export enum promptNames {
     /**
      * Service selection
      */
-    serviceSelection = 'serviceSelection'
+    serviceSelection = 'serviceSelection',
+    /**
+     * Newly created systems can be named for storage
+     */
+    userSystemName = 'userSystemName'
 }
 
 export type CapRuntime = 'Node.js' | 'Java';
@@ -194,13 +198,6 @@ export type DatasourceTypePromptOptions = {
     includeProjectSpecificDest?: boolean;
 };
 
-export type SapSystemPromptOptions = {
-    /**
-     * Restricts the returned service choices to those that match the specified odata version.
-     */
-    requiredOdataVersion?: OdataVersion;
-};
-
 export type MetadataPromptOptions = {
     /**
      * Used to validate the metadata file contains the required odata version edmx
@@ -218,6 +215,14 @@ export type ServiceSelectionPromptOptions = {
      * Used to validate the selected service is of the required odata version
      */
     requiredOdataVersion?: OdataVersion;
+} & Pick<CommonPromptOptions, 'additionalMessages'>; // Service selection prompts allow extension with additional messages;
+
+export type SystemNamePromptOptions = {
+    /**
+     * This option allows the prompt to be excluded where later storage of the system with the provided name is not required.
+     * If this propmt is not included then a BackendSystem will not be returned for the connected system.
+     */
+    exclude?: boolean;
 };
 
 export type OdataServiceUrlPromptOptions = {
@@ -238,7 +243,8 @@ type odataServiceInquirerPromptOptions = Record<promptNames.datasourceType, Data
     Record<promptNames.capService, CapServicePromptOptions> &
     Record<promptNames.serviceUrl, OdataServiceUrlPromptOptions> &
     Record<promptNames.serviceUrlPassword, OdataServiceUrlPasswordOptions> &
-    Record<promptNames.serviceSelection, ServiceSelectionPromptOptions>;
+    Record<promptNames.serviceSelection, ServiceSelectionPromptOptions> &
+    Record<promptNames.userSystemName, SystemNamePromptOptions>;
 
 export type OdataServiceQuestion = YUIQuestion<OdataServiceAnswers>;
 

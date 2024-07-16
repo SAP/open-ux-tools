@@ -164,6 +164,13 @@ describe('questions', () => {
         `);
     });
 
+    test('Should exclude specific system prompts based on prompt options', () => {
+        const newSystemQuestions = getAbapOnPremQuestions({
+            userSystemName: { exclude: true }
+        });
+        expect(newSystemQuestions.find((question) => question.name === 'userSystemName')).toBeFalsy();
+    });
+
     test('Should connect to abap-on-prem system url using ConnectionValidator', async () => {
         const newSystemQuestions = getAbapOnPremQuestions();
         const systemUrlQuestion = newSystemQuestions.find((question) => question.name === 'systemUrl');
@@ -343,7 +350,7 @@ describe('questions', () => {
         ]);
 
         // The services choices should be restricted to the specified required odata version
-        newSystemQuestions = getAbapOnPremQuestions({ requiredOdataVersion: OdataVersion.v2 });
+        newSystemQuestions = getAbapOnPremQuestions({ serviceSelection: { requiredOdataVersion: OdataVersion.v2 } });
         serviceSelectionPrompt = newSystemQuestions.find((question) => question.name === 'serviceSelection');
         expect(
             await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({
@@ -381,7 +388,7 @@ describe('questions', () => {
         });
 
         // No odata version specific (`requiredOdataVersion`) service available
-        newSystemQuestions = getAbapOnPremQuestions({ requiredOdataVersion: OdataVersion.v2 });
+        newSystemQuestions = getAbapOnPremQuestions({ serviceSelection: { requiredOdataVersion: OdataVersion.v2 } });
         serviceSelectionPrompt = newSystemQuestions.find((question) => question.name === 'serviceSelection');
         // Choices must be initialised before we show additional messages
         connectionValidatorMock.catalogs = {
@@ -625,7 +632,7 @@ describe('questions', () => {
                 listServices: jest.fn().mockResolvedValue([serviceV4a])
             }
         };
-        const newSystemQuestions = getAbapOnPremQuestions({ useAutoComplete: true });
+        const newSystemQuestions = getAbapOnPremQuestions({ serviceSelection: { useAutoComplete: true } });
         const serviceSelectionPrompt = newSystemQuestions.find((question) => question.name === 'serviceSelection');
         // load choices from mock catalog service and find the choice for the flight service
         const flightChoice = (
