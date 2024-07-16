@@ -22586,7 +22586,6 @@ Object {
     "contents": "{
   \\"name\\": \\"lrop_v4_addtests_cds\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
