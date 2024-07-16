@@ -19,7 +19,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"felrop2\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -3604,7 +3603,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"felrop2\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -7197,7 +7195,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"lrop_v2_ts\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -10676,7 +10673,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"felrop1\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -14321,7 +14317,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"felrop194\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -17966,7 +17961,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"lrop_v4_addtests\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -21790,7 +21784,6 @@ Object {
     "contents": "{
   \\"name\\": \\"lrop_v4_addtests_cds\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -22593,7 +22586,6 @@ Object {
     "contents": "{
   \\"name\\": \\"lrop_v4_addtests_cds\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -23460,7 +23452,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"lrop_v4_annotation_reuse_lib\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -24769,7 +24760,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"felropui5\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -28414,7 +28404,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"felropui5\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -32060,7 +32049,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"felrop3\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -35647,7 +35635,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"felrop4\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -39017,7 +39004,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"lropv2_set_toolsid\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -42603,7 +42589,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"lropv2_set_toolsid_only\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -46197,7 +46182,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"lropv2_ts_ui5_1_108\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -49673,7 +49657,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"lropv2_ts_ui5_1_111\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -53149,7 +53132,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"lropv2_ts_ui5_1_113\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -56617,7 +56599,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"lrop_v2_ts\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -57061,7 +57042,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"lrop_v2_ts\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
