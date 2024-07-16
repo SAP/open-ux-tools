@@ -1391,6 +1391,43 @@ importers:
         specifier: 2.0.2
         version: 2.0.2
 
+  packages/launch-config:
+    dependencies:
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      '@sap-ux/ui5-config':
+        specifier: workspace:*
+        version: link:../ui5-config
+      '@sap-ux/ui5-info':
+        specifier: workspace:*
+        version: link:../ui5-info
+      jsonc-parser:
+        specifier: 3.2.0
+        version: 3.2.0
+      mem-fs:
+        specifier: 2.1.0
+        version: 2.1.0
+      mem-fs-editor:
+        specifier: 9.4.0
+        version: 9.4.0(mem-fs@2.1.0)
+      yargs-parser:
+        specifier: 21.1.1
+        version: 21.1.1
+    devDependencies:
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@types/mem-fs':
+        specifier: 1.1.2
+        version: 1.1.2
+      '@types/mem-fs-editor':
+        specifier: 7.0.1
+        version: 7.0.1
+      '@types/yargs-parser':
+        specifier: 21.0.3
+        version: 21.0.3
+
   packages/logger:
     dependencies:
       chalk:
@@ -10960,14 +10997,14 @@ packages:
       '@types/node': 18.11.9
     dev: true
 
-  /@types/yargs-parser@20.2.1:
-    resolution: {integrity: sha512-7tFImggNeNBVMsn0vLrpn1H1uPrUBdnARPTpZoitY37ZrdJREzf7I16tMrlK3hen349gr1NYh8CmZQa7CTG6Aw==}
+  /@types/yargs-parser@21.0.3:
+    resolution: {integrity: sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==}
     dev: true
 
   /@types/yargs@17.0.22:
     resolution: {integrity: sha512-pet5WJ9U8yPVRhkwuEIp5ktAeAqRZOq4UdAyWLWzxbtpyXnzbtLdKiXAjJzi/KLmPGS9wk86lUFWZFN6sISo4g==}
     dependencies:
-      '@types/yargs-parser': 20.2.1
+      '@types/yargs-parser': 21.0.3
     dev: true
 
   /@types/yauzl@2.10.3:
@@ -24007,7 +24044,6 @@ packages:
   /yargs-parser@21.1.1:
     resolution: {integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==}
     engines: {node: '>=12'}
-    dev: true
 
   /yargs@16.2.0:
     resolution: {integrity: sha512-D1mvvtDG0L5ft/jGWkLpG1+m0eQxOfaBvTNELraWj22wSVUMWxZUvYgJYcKh6jGGIkJFhH4IZPQhR4TKpc8mBw==}
