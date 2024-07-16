@@ -4,15 +4,15 @@ exports[`ODataService templates generate: project with local annotations 1`] = `
 Object {
   "package.json": Object {
     "contents": "{
+  \\"devDependencies\\": {
+    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\"
+  },
   \\"ui5\\": {
     \\"dependencies\\": [
       \\"@sap-ux/ui5-middleware-fe-mockserver\\",
       \\"@sap/ux-ui5-tooling\\"
     ]
-  },
-  \\"devDependencies\\": {
-    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\",
-    \\"@sap/ux-ui5-tooling\\": \\"1\\"
   },
   \\"scripts\\": {
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/\\\\\\"\\"
@@ -2784,15 +2784,15 @@ exports[`ODataService templates generate: valid project with standard valid inpu
 Object {
   "package.json": Object {
     "contents": "{
+  \\"devDependencies\\": {
+    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\"
+  },
   \\"ui5\\": {
     \\"dependencies\\": [
       \\"@sap-ux/ui5-middleware-fe-mockserver\\",
       \\"@sap/ux-ui5-tooling\\"
     ]
-  },
-  \\"devDependencies\\": {
-    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\",
-    \\"@sap/ux-ui5-tooling\\": \\"1\\"
   },
   \\"scripts\\": {
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"/\\\\\\"\\"

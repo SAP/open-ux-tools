@@ -1,0 +1,135 @@
+{
+  "nodes": [
+    {
+      "id": "1",
+      "lane": "0",
+      "title": "Incident Report",
+      "titleAbbreviation": "IR 1",
+      "children": [10, 11, 12, 13],
+      "state": "Positive",
+      "stateText": "Done",
+      "focused": true,
+      "highlighted": false,
+      "texts": ["Initial Recording of incident"]
+    },
+    {
+      "id": "10",
+      "lane": "1",
+      "title": "Incident Review Document",
+      "titleAbbreviation": "RD 40",
+      "children": [20, 21, 22],
+      "state": "Positive",
+      "stateText": "Done",
+      "focused": false,
+      "highlighted": false,
+      "texts": null
+    },
+    {
+      "id": "11",
+      "lane": "1",
+      "title": "Inquiry",
+      "titleAbbreviation": "I 43",
+      "children": null,
+      "state": "Positive",
+      "stateText": "Done",
+      "focused": false,
+      "highlighted": false,
+      "texts": null
+    },
+    {
+      "id": "12",
+      "lane": "1",
+      "title": "Risk Assessment",
+      "titleAbbreviation": "RA 45",
+      "children": null,
+      "state": "Positive",
+      "stateText": "Done",
+      "focused": false,
+      "highlighted": false,
+      "texts": null
+    },
+    {
+      "id": "13",
+      "lane": "1",
+      "title": "Track Record Fin. Impact",
+      "titleAbbreviation": "FI 9",
+      "children": null,
+      "state": "Positive",
+      "stateText": "Done",
+      "focused": false,
+      "highlighted": false,
+      "texts": null
+    },
+    {
+      "id": "20",
+      "lane": "2",
+      "title": "Incident Investigation",
+      "titleAbbreviation": "II 0",
+      "children": [30],
+      "state": "PlannedNegative",
+      "stateText": "Blocked",
+      "focused": false,
+      "highlighted": false,
+      "texts": null
+    },
+    {
+      "id": "21",
+      "lane": "2",
+      "title": "Prioritization",
+      "titleAbbreviation": "II 1",
+      "children": null,
+      "state": "Neutral",
+      "stateText": "In Progress",
+      "focused": false,
+      "highlighted": false
+    },
+    {
+      "id": "22",
+      "lane": "2",
+      "title": "Categorization",
+      "titleAbbreviation": "II 2",
+      "children": null,
+      "state": "PlannedNegative",
+      "stateText": "Blocked",
+      "focused": false,
+      "highlighted": false
+    },
+    {
+      "id": "30",
+      "lane": "3",
+      "title": "Final Report",
+      "titleAbbreviation": "II 3",
+      "children": null,
+      "state": "Critical",
+      "stateText": "Open",
+      "focused": false,
+      "highlighted": false
+    }
+  ],
+  "lanes": [
+    {
+      "id": "0",
+      "icon": "sap-icon://nurse",
+      "label": "Incident Reporting",
+      "position": 0
+    },
+    {
+      "id": "1",
+      "icon": "sap-icon://incident",
+      "label": "Incident Record Review",
+      "position": 1
+    },
+    {
+      "id": "2",
+      "icon": "sap-icon://search",
+      "label": "Incident Investigation",
+      "position": 2
+    },
+    {
+      "id": "3",
+      "icon": "sap-icon://manager-insight",
+      "label": "Report Generation",
+      "position": 3
+    }
+  ]
+}
