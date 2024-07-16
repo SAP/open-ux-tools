@@ -9,7 +9,7 @@ import {
 import IconPoolMock from 'mock/sap/ui/core/IconPool';
 import { default as mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
 import * as apiHandler from '../../../src/adp/api-handler';
-import { fetchMock, sapMock } from 'mock/window';
+import { fetchMock, sapMock, documentMock } from 'mock/window';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
 import type { Scenario } from '@sap-ux-private/control-property-editor-common';
 
@@ -44,7 +44,7 @@ describe('flp/init', () => {
         } as unknown as apiHandler.ManifestAppdescr);
         await loadI18nResourceBundle('other' as Scenario);
         expect(mockBundle.create).toBeCalledWith({
-            url: 'i18n/i18n.properties',
+            url: 'i18n/i18n.properties'
         });
     });
     test('loadI18nResourceBundle - adaptation project', async () => {
@@ -178,7 +178,7 @@ describe('flp/init', () => {
                 pluginScript: 'my/script'
             };
             sapMock.ui.version = '1.84.50';
-            await init({ flex: JSON.stringify(flexSettings)});
+            await init({ flex: JSON.stringify(flexSettings) });
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
             const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
@@ -262,10 +262,27 @@ describe('flp/init', () => {
             const customInit = 'my/app/test/integration/opaTests.qunit';
             sapMock.ui.version = '2.0.0';
 
+            const elementMock = {
+                getAttribute: jest.fn(),
+                setAttribute: jest.fn()
+            };
+            const getAttributeSpy = jest.spyOn(elementMock, 'getAttribute');
+            const setAttributeSpy = jest.spyOn(elementMock, 'setAttribute');
+
+            const getElementSpy = jest.spyOn(documentMock, 'getElementById').mockImplementation(() => {
+                return elementMock;
+            });
+
             await init({ customInit: customInit });
 
             expect(sapMock.ui.require).toBeCalledWith([customInit]);
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
+
+            expect(getElementSpy).toBeCalledTimes(1);
+            expect(getElementSpy).toHaveBeenCalledWith('sap-ushell-bootstrap');
+            expect(getAttributeSpy).toBeCalledTimes(1);
+            expect(getAttributeSpy).toHaveBeenCalledWith('src');
+            expect(setAttributeSpy).toBeCalledTimes(1);
         });
     });
 });
