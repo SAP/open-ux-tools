@@ -1,6 +1,6 @@
-import { join } from "path";
-import type { DescriptorVariant } from "../types";
-import { readFileSync } from "fs";
+import { join } from 'path';
+import type { DescriptorVariant } from '../types';
+import { readFileSync } from 'fs';
 
 /**
  * Checks if the input is a non-empty string.

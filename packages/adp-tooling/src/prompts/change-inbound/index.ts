@@ -5,7 +5,6 @@ import type { InboundChangeAnswers } from '../../types';
 /**
  * Gets the prompts for Inbound Change.
  *
- * @param {string} inboundId - Inbound Id of the Adp Project.
  * @returns {YUIQuestion<InboundChangeAnswers>[]} The questions/prompts.
  */
 export function getPrompts(): YUIQuestion<InboundChangeAnswers>[] {
