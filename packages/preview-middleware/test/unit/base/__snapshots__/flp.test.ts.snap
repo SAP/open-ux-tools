@@ -384,7 +384,7 @@ exports[`FlpSandbox router custom opa5 path test/integration/opaTests.qunit.html
 
 	<script
 		src=\\"../../resources/sap-ui-core.js\\"
-		data-sap-ui-theme='sap_horizon'
+		data-sap-ui-theme='sap_horizon_dark'
 		data-sap-ui-resourceroots='{
 			\\"test.fe.v2.app\\": \\"../..\\"
 		}'
@@ -445,7 +445,7 @@ exports[`FlpSandbox router default Qunit path test/unitTests.qunit.html 1`] = `
 
 	<script
 		src=\\"../resources/sap-ui-core.js\\"
-		data-sap-ui-theme='sap_horizon'
+		data-sap-ui-theme='sap_horizon_dark'
 		data-sap-ui-resourceroots='{
 			\\"test.fe.v2.app\\": \\"..\\"
 		}'

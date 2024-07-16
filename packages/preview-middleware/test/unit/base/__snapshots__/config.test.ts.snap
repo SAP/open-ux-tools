@@ -277,7 +277,7 @@ Object {
 
 	<script
 		src=\\"../resources/sap-ui-core.js\\"
-		data-sap-ui-theme='sap_horizon'
+		data-sap-ui-theme='sap_horizon_dark'
 		data-sap-ui-resourceroots='{
 			\\"test.fe.v2.app\\": \\"..\\"
 		}'
