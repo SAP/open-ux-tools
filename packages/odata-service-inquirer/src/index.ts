@@ -110,13 +110,9 @@ async function getAbapOnPremSystemPrompts(
 
 export {
     DatasourceType,
-    // These exports are to facilitate migration to open-ux-tools and will be removed in a future release
-    ERROR_TYPE,
-    ErrorHandler,
     OdataVersion,
     getAbapOnPremSystemPrompts,
     getPrompts,
-    newSystemChoiceValue,
     prompt,
     promptNames,
     type CapRuntime,
@@ -124,5 +120,9 @@ export {
     type InquirerAdapter,
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
-    type SapSystemType
+    type SapSystemType,
+    // These exports are to facilitate migration to open-ux-tools and will be removed in a future release
+    newSystemChoiceValue,
+    ERROR_TYPE,
+    ErrorHandler
 };
