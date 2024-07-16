@@ -1,2 +1,2 @@
-export { applyCAPUpdates, applyCAPJavaUpdates } from './updates';
+export { applyCAPUpdates } from './updates';
 export { getAppLaunchText } from './utils';
