@@ -17,8 +17,6 @@
         "icon": "Icon"
     },
     "tooltips": {
-        "inboundId": "Enter the Id of the inbound that you want to change",
-        "inboundIdLabel": "Enter the Id of the inbound that you want to change",
         "title": "Enter title for your FLP configuration",
         "subtitle": "Enter subtitle for your FLP configuration",
         "icon": "Enter icon path for your FLP configuration"
