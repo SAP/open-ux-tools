@@ -101,7 +101,8 @@ export default class extends Generator {
         this.app = {
             app: {
                 id: name,
-                flpAppId: 'app-preview'
+                flpAppId: 'app-preview',
+                projectType: 'EDMXBackend'
             },
             appOptions: {
                 loadReuseLibs: true
