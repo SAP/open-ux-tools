@@ -17,8 +17,6 @@ export function isVisible(isCFEnv: boolean, isLoggedIn: boolean): boolean {
     return !isCFEnv || (isCFEnv && isLoggedIn);
 }
 
-// export enum Environment
-
 function getEnvironments(isCfInstalled: boolean): ChoiceOption<OperationsType>[] {
     const choices: ChoiceOption<OperationsType>[] = [{ name: 'OnPremise', value: 'P' }];
 
@@ -62,61 +60,6 @@ export function getProjectNameTooltip(isCustomerBase: boolean) {
 export function generateValidNamespace(projectName: string, isCustomerBase: boolean): string {
     return !isCustomerBase ? projectName : 'customer.' + projectName;
 }
-
-/**
- * Determines whether the namespace prompt should be visible.
- *
- * @param {boolean} isCustomerBase - Whether the internal mode is enabled.
- * @param {boolean} isCfMode - Cloud Foundry mode state.
- * @param {boolean} isLoggedIn - User's login state.
- * @returns {Function} A function that determines visibility based on answers.
- */
-function determineVisibility(
-    isCustomerBase: boolean,
-    isCfMode: boolean,
-    isLoggedIn: boolean
-): (answers: BasicInfoAnswers) => boolean {
-    return (answers: BasicInfoAnswers) => (!isCustomerBase ? !!answers.projectName : isVisible(isCfMode, isLoggedIn));
-}
-
-/**
- * Sets up validation for the namespace if needed.
- *
- * @param {boolean} isCustomerBase - Whether the internal mode is enabled.
- * @param {boolean} isCfMode - Cloud Foundry mode state.
- * @param {boolean} isLoggedIn - User's login state.
- * @returns {(value: string, answers: BasicInfoAnswers) => boolean | string} Validation function or undefined.
- */
-function setupValidation(
-    isCustomerBase: boolean,
-    isCfMode: boolean,
-    isLoggedIn: boolean
-): (value: string, answers: BasicInfoAnswers) => boolean | string {
-    return !isCustomerBase && isVisible(isCfMode, isLoggedIn)
-        ? () => true
-        : (value: string, answers: BasicInfoAnswers) => validateNamespace(value, answers.projectName, isCustomerBase);
-}
-
-// export function getNamespacePrompt(
-//     isCustomerBase: boolean,
-//     isCfMode: boolean,
-//     isLoggedIn: boolean
-// ): YUIQuestion<BasicInfoAnswers> {
-//     return {
-//         type: 'input',
-//         name: 'namespace',
-//         message: t('prompts.namespaceLabel'),
-//         guiOptions: {
-//             applyDefaultWhenDirty: true,
-//             mandatory: isCustomerBase,
-//             type: !isCustomerBase ? 'label' : 'input'
-//         },
-//         default: (answers: BasicInfoAnswers) => generateValidNamespace(answers.projectName, isCustomerBase),
-//         when: determineVisibility(isCustomerBase, isCfMode, isLoggedIn),
-//         store: false,
-//         validate: setupValidation(isCustomerBase, isCfMode, isLoggedIn)
-//     } as InputQuestion<BasicInfoAnswers>;
-// }
 
 export function getNamespacePrompt(
     isCustomerBase: boolean,
