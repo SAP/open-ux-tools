@@ -3,6 +3,7 @@ import axios from 'axios';
 import snapshotResponse from './testdata/snapshot-response.json';
 import officialResponse from './testdata/official-response.json';
 import overviewResponse from './testdata/overview-response.json';
+import officialOutOfMaintenanceResponse from './testdata/official-response-latest-out-of-maintenance.json';
 
 import { getLatestUI5Version, getUI5Versions } from '../src/ui5-version-info';
 import * as commands from '../src/commands';
@@ -130,6 +131,22 @@ describe('getUI5Versions', () => {
         expect(supportedCount).toEqual(65);
         expect(notSupportedCount).toEqual(80);
         expect(versions).toMatchSnapshot();
+    });
+
+    test('filterOptions: markLatestMaintainedAsDefault', async () => {
+        nock.cleanAll();
+        nock(ui5VersionRequestInfo.OfficialUrl)
+            .get(`/${ui5VersionRequestInfo.VersionsFile}`)
+            .reply(200, officialOutOfMaintenanceResponse);
+
+        const versions = await getUI5Versions({
+            markLatestMaintainedAsDefault: true,
+            useCache: true,
+            includeMaintained: true
+        });
+
+        expect(versions[1].version).toEqual('1.125.1');
+        expect(versions[1].default).toEqual(true);
     });
 });
 

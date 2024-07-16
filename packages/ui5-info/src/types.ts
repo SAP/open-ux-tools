@@ -39,6 +39,10 @@ export interface UI5VersionFilterOptions {
      * Includes only versions filtered by latest patch.
      */
     onlyLatestPatchVersion?: boolean;
+    /**
+     * Marks the latest maintained version as default
+     */
+    markLatestMaintainedAsDefault?: boolean;
 }
 
 export interface UI5Version {

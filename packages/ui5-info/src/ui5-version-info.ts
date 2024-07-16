@@ -360,6 +360,9 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
         if (filterOptions?.includeDefault && defaultUI5Version === ui5) {
             ui5Version.default = true;
         }
+        if (filterOptions?.markLatestMaintainedAsDefault && latestUI5Version === ui5) {
+            ui5Version.default = true;
+        }
         if (filterOptions?.includeMaintained === true && ui5VersionsOverview !== undefined) {
             ui5Version.maintained = ui5VersionsOverview.some((v): boolean | undefined =>
                 v !== undefined
