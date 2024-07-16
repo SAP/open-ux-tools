@@ -568,18 +568,14 @@ let globalCdsModulePromise: Promise<CdsFacade> | undefined;
 async function loadGlobalCdsModule(): Promise<CdsFacade> {
     globalCdsModulePromise =
         globalCdsModulePromise ??
-        new Promise<CdsFacade>(async (resolve, reject) => {
-            try {
-                const versions = await getCdsVersionInfo();
+        new Promise<CdsFacade>((resolve, reject) => {
+            getCdsVersionInfo().then(versions => {
                 if (!versions.home) {
-                    throw Error(
-                        'Can not find global installation of module @sap/cds, which should be part of @sap/cds-dk'
-                    );
+                    reject(new Error('Can not find global installation of module @sap/cds, which should be part of @sap/cds-dk'));
+                } else {
+                    resolve(loadModuleFromProject<CdsFacade>(versions.home, '@sap/cds'));
                 }
-                resolve(loadModuleFromProject<CdsFacade>(versions.home, '@sap/cds'));
-            } catch (error) {
-                reject(error);
-            }
+            }, reject);
         });
     return globalCdsModulePromise;
 }
