@@ -1,5 +1,6 @@
 import { getPrompts } from '../../../../src/prompts/change-inbound';
 import * as i18n from '../../../../src/i18n';
+import type { InboundChangeAnswers } from '../../../../src/types';
 
 describe('getPrompts', () => {
     beforeAll(async () => {
@@ -40,5 +41,36 @@ describe('getPrompts', () => {
                 validate: expect.any(Function)
             }
         ]);
+    });
+
+    test('test validation', () => {
+        const prompts = getPrompts();
+        const titlePrompt = prompts.find((p) => p.name === 'title');
+        const titleValidation =
+            titlePrompt?.validate &&
+            titlePrompt?.validate('Some title', {
+                subtitle: 'Some subtitle',
+                icon: 'Some icon'
+            } as unknown as InboundChangeAnswers);
+
+        const subTitlePrompt = prompts.find((p) => p.name === 'subtitle');
+        const subtitleValidation =
+            subTitlePrompt?.validate &&
+            subTitlePrompt?.validate('Some subtitle', {
+                title: 'Some title',
+                icon: 'Some icon'
+            } as unknown as InboundChangeAnswers);
+
+        const iconPrompt = prompts.find((p) => p.name === 'icon');
+        const iconValidation =
+            iconPrompt?.validate &&
+            iconPrompt?.validate('Some icon', {
+                subtitle: 'Some title',
+                icon: 'Some icon'
+            } as unknown as InboundChangeAnswers);
+
+        expect(titleValidation).toBe(true);
+        expect(subtitleValidation).toBe(true);
+        expect(iconValidation).toBe(true);
     });
 });
