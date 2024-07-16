@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.17.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
 ## 1.16.3
 
 ### Patch Changes

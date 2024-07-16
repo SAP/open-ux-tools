@@ -196,7 +196,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                     type: ServiceType.CDS,
                     metadata: undefined
                 },
-                appOptions: { 
+                appOptions: {
                     generateIndex: true,
                     typescript: true
                 }

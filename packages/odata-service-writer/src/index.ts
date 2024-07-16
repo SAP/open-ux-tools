@@ -112,7 +112,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
 
     // Add mockserver entries
     if (isServiceTypeEdmx && service.metadata) {
-        // mockserver entries are not required if service type is CDS 
+        // mockserver entries are not required if service type is CDS
         // copy existing `ui5.yaml` as starting point for ui5-mock.yaml
         if (paths.ui5Yaml && ui5Config) {
             const webappPath = await getWebappPath(basePath, fs);

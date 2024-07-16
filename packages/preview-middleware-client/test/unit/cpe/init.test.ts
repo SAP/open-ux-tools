@@ -72,7 +72,7 @@ describe('main', () => {
         attachSelectionChange,
         getSelection: jest.fn().mockReturnValue([{ setSelected: jest.fn() }, { setSelected: jest.fn() }]),
         attachUndoRedoStackModified: jest.fn(),
-        getFlexSettings: jest.fn().mockReturnValue({ layer: 'VENDOR', scenario: common.scenario.UiAdaptation }),
+        getFlexSettings: jest.fn().mockReturnValue({ layer: 'VENDOR', scenario: common.SCENARIO.UiAdaptation }),
         getRootControlInstance: jest.fn().mockReturnValue({
             getManifest: jest.fn().mockReturnValue({ 'sap.app': { id: 'testId' } })
         }),

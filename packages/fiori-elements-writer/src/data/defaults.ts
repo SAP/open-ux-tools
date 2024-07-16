@@ -11,9 +11,14 @@ import type {
     WorklistSettings
 } from '../types';
 import { TableSelectionMode, TableType, TemplateType } from '../types';
-import { getBaseComponent, getTemplateUi5Libs, TemplateTypeAttributes, changesPreviewToVersion } from './templateAttributes';
+import {
+    getBaseComponent,
+    getTemplateUi5Libs,
+    TemplateTypeAttributes,
+    changesPreviewToVersion
+} from './templateAttributes';
+import { getAnnotationV4Libs } from './annotationCustomUi5Libs';
 import { type TemplateOptions } from './templateAttributes';
-import { getAnnotationV4Libs } from './annotationReuseLibs';
 import semVer from 'semver';
 
 const defaultModelName = 'mainModel'; // UI5 default model name is '' but some floorplans require a named default model
@@ -72,22 +77,12 @@ export function setDefaultTemplateSettings<T extends {}>(template: Template<T>, 
  *
  * @param type - The template type of the required base component
  * @param version - The odata service version determines the appropriate base component to use
- * @param metadata - metadata string to be checked for specific annotations
+ * @param ui5Libs - ui5 libs
  * @returns The UI5 libs required by the specified template type and OData version and UI5 annotation libs
  */
-export function getUi5Libs(
-    type: TemplateType,
-    version: OdataVersion,
-    metadata?: string,
-    ui5Libs?: string | string[]
-): string[] {
+export function getUi5Libs(type: TemplateType, version: OdataVersion, ui5Libs?: string | string[]): string[] {
     const templateLibs = getTemplateUi5Libs(type, version);
-    if (version === OdataVersion.v4 && metadata) {
-        let annotationLibs = getAnnotationV4Libs(metadata);
-        return [...templateLibs, ...annotationLibs].concat(ui5Libs ?? []);
-    } else {
-        return [...templateLibs].concat(ui5Libs ?? []);
-    }
+    return [...templateLibs].concat(ui5Libs ?? []);
 }
 
 /**
@@ -111,11 +106,17 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     feApp.app.baseComponent = feApp.app.baseComponent || getBaseComponent(feApp.template.type, feApp.service.version);
 
+    const customUi5Libs =
+        feApp.service.version === OdataVersion.v4 && feApp.service.metadata
+            ? getAnnotationV4Libs(feApp.service.metadata)
+            : [];
+
     // Add ui5 libs for specified template and odata version
     // Dups will be removed by call to `generateUI5Project`
     feApp.ui5 = {
         ...feApp.ui5,
-        ui5Libs: getUi5Libs(feApp.template.type, feApp.service.version, feApp.service.metadata, feApp.ui5?.ui5Libs)
+        ui5Libs: getUi5Libs(feApp.template.type, feApp.service.version, feApp.ui5?.ui5Libs),
+        customUi5Libs: customUi5Libs
     };
 
     // Assign a default annotation name if the service type is EDMX and no local annotation name is provided
@@ -148,17 +149,23 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
 
 /**
  * Generates template options on project type and version information.
+ *
  * @param {boolean} isEdmxProjectType Indicates if the project type is 'EDMXBackend'.
  * @param {string} serviceVersion The version of the service being used.
  * @param {string} [ui5Version] The version of UI5 framework being used.
  * @returns {TemplateOptions} An template objects containing options related to changes preview and loader.
  */
-export function getTemplateOptions (isEdmxProjectType: boolean, serviceVersion: string, ui5Version?: string): TemplateOptions {
+export function getTemplateOptions(
+    isEdmxProjectType: boolean,
+    serviceVersion: string,
+    ui5Version?: string
+): TemplateOptions {
     const coercedUI5Version = semVer.coerce(ui5Version)!;
     // Determine if the changes preview should be enabled based on the project type and UI5 version
-    const changesPreview = isEdmxProjectType && ui5Version
-        ? semVer.lt(coercedUI5Version, changesPreviewToVersion) // Check if the coerced version is less than the required version
-        : false;
+    const changesPreview =
+        isEdmxProjectType && ui5Version
+            ? semVer.lt(coercedUI5Version, changesPreviewToVersion) // Check if the coerced version is less than the required version
+            : false;
 
     // Determine if the changes loader should be enabled based on the project type and service version
     const changesLoader = isEdmxProjectType && serviceVersion === OdataVersion.v2;

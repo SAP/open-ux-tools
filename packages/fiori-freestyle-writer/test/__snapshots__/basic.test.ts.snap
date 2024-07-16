@@ -157,7 +157,7 @@ title=App Title",
     </style>
     <script
         id=\\"sap-ui-bootstrap\\"
-        src=\\"resources/sap-ui-core.js\\"
+        src=\\"https://ui5.sap.com/1.78.11/resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_belize\\"
         data-sap-ui-resourceroots='{
             \\"nods1\\": \\"./\\"
@@ -861,7 +861,7 @@ title=App Title",
     </style>
     <script
         id=\\"sap-ui-bootstrap\\"
-        src=\\"resources/sap-ui-core.js\\"
+        src=\\"https://ui5.sap.com/1.78.11/resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_belize\\"
         data-sap-ui-resourceroots='{
             \\"nods1\\": \\"./\\"

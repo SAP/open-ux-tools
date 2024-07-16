@@ -10,22 +10,22 @@ export function getBootstrapResourceUrls(
     isEdmxProjectType: boolean,
     frameworkUrl?: string,
     version?: string
-): { uShellBootstrapResourceUrl: string, uiBootstrapResourceUrl: string } {
+): { uShellBootstrapResourceUrl: string; uiBootstrapResourceUrl: string } {
     // Constants for relative paths
     const relativeUshellPath = '/test-resources/sap/ushell/bootstrap/sandbox.js';
     const relativeUiPath = '/resources/sap-ui-core.js';
     // Construct version path if version is provided
     const versionPath = version ? `/${version}` : '';
-    
+
     // Determine the resource URL for the UShell bootstrap based on the project type and framework URL availability
-    const uShellBootstrapResourceUrl = isEdmxProjectType || !frameworkUrl
-        ? `..${relativeUshellPath}`
-        : `${frameworkUrl}${versionPath}${relativeUshellPath}`;
+    const uShellBootstrapResourceUrl =
+        isEdmxProjectType || !frameworkUrl
+            ? `..${relativeUshellPath}`
+            : `${frameworkUrl}${versionPath}${relativeUshellPath}`;
 
     // Determine the resource URL for the UI5 bootstrap based on the project type and framework URL availability
-    const uiBootstrapResourceUrl = isEdmxProjectType || !frameworkUrl
-        ? `..${relativeUiPath}`
-        : `${frameworkUrl}${versionPath}${relativeUiPath}`;
+    const uiBootstrapResourceUrl =
+        isEdmxProjectType || !frameworkUrl ? `..${relativeUiPath}` : `${frameworkUrl}${versionPath}${relativeUiPath}`;
 
     return { uShellBootstrapResourceUrl, uiBootstrapResourceUrl };
 }

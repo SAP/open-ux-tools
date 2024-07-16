@@ -7,7 +7,7 @@ import { UI5Config, getEsmTypesVersion, getTypesPackage } from '@sap-ux/ui5-conf
 import type { Manifest } from '@sap-ux/project-access';
 import { mergeWithDefaults } from './data';
 import { ui5TSSupport } from './data/ui5Libs';
-import { applyOptionalFeatures, enableTypescript as enableTypescriptOption } from './options';
+import { applyOptionalFeatures, enableTypescript as enableTypescriptOption, getTemplateOptions } from './options';
 import { Ui5App } from './types';
 
 /**
@@ -38,12 +38,16 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         // ignore the .gitignore.tmpl file for CAP applications
         ignore.push('**/gitignore.tmpl');
     }
-
-    fs.copyTpl(join(tmplPath, 'core', '**/*.*'), 
-        join(basePath), ui5App, undefined,  {
-            globOptions: { dot: true, ignore },
-            processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
-        });
+    // Determine the UI5 resource URL based on project type and UI5 framework details
+    const ui5ResourceUrl = getTemplateOptions(isEdmxProjectType, ui5App.ui5?.frameworkUrl, ui5App.ui5?.version);
+    const templateOptions = {
+        ...ui5App,
+        ui5ResourceUrl
+    };
+    fs.copyTpl(join(tmplPath, 'core', '**/*.*'), join(basePath), templateOptions, undefined, {
+        globOptions: { dot: true, ignore },
+        processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
+    });
 
     // ui5.yaml
     const ui5ConfigPath = join(basePath, 'ui5.yaml');
@@ -70,13 +74,13 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config, ui5LocalConfig]);
         // write ui5 local yaml
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
-    }
-    else { 
+    } else {
         // Add optional features
-       await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config]);
+        await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config]);
     }
     // write ui5 yaml
     fs.write(ui5ConfigPath, ui5Config.toString());
+
     return fs;
 }
 

@@ -1,9 +1,8 @@
 import type { OutlineNode } from '@sap-ux-private/control-property-editor-common';
-
 import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
-
-import { isEditable } from './utils';
+import { isEditable, isReuseComponent } from './utils';
+import VersionInfo from 'sap/ui/VersionInfo';
 
 interface AdditionalData {
     text?: string;
@@ -78,12 +77,19 @@ function addChildToExtensionPoint(id: string, children: OutlineNode[]) {
  *
  * @param input outline view node
  * @param scenario type of project
- * @param extPointIDs ids that need are filled when extension point has default content or created controls inside
+ * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
  * @returns {Promise<OutlineNode[]>} transformed outline tree nodes
  */
-export async function transformNodes(input: OutlineViewNode[], scenario: Scenario): Promise<OutlineNode[]> {
+export async function transformNodes(
+    input: OutlineViewNode[],
+    scenario: Scenario,
+    reuseComponentsIds: Set<string>
+): Promise<OutlineNode[]> {
     const stack = [...input];
     const items: OutlineNode[] = [];
+    const { version } = (await VersionInfo.load()) as { version: string };
+    const versionParts = version.split('.');
+    const minor = parseInt(versionParts[1], 10);
     while (stack.length) {
         const current = stack.shift();
         const editable = isEditable(current?.id);
@@ -96,8 +102,8 @@ export async function transformNodes(input: OutlineViewNode[], scenario: Scenari
             const technicalName = current.technicalName.split('.').slice(-1)[0];
 
             const transformedChildren = isAdp
-                ? await handleDuplicateNodes(children, scenario)
-                : await transformNodes(children, scenario);
+                ? await handleDuplicateNodes(children, scenario, reuseComponentsIds)
+                : await transformNodes(children, scenario, reuseComponentsIds);
 
             const node: OutlineNode = {
                 controlId: current.id,
@@ -107,6 +113,8 @@ export async function transformNodes(input: OutlineViewNode[], scenario: Scenari
                 visible: current.visible ?? true,
                 children: transformedChildren
             };
+
+            fillReuseComponents(reuseComponentsIds, current, scenario, minor);
 
             items.push(node);
         }
@@ -137,14 +145,37 @@ export async function transformNodes(input: OutlineViewNode[], scenario: Scenari
 }
 
 /**
+ * Fill reuse components ids.
+ *
+ * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
+ * @param node view node
+ * @param scenario type of project
+ * @param minorUI5Version miner UI5 version
+ */
+function fillReuseComponents(
+    reuseComponentsIds: Set<string>,
+    node: OutlineViewNode,
+    scenario: Scenario,
+    minorUI5Version: number
+): void {
+    if (scenario === 'ADAPTATION_PROJECT' && node?.component && isReuseComponent(node.id, minorUI5Version)) {
+        reuseComponentsIds.add(node.id);
+    }
+}
+/**
  * Handles duplicate nodes that are retrieved from extension point default content and created controls,
  * if they exist under an extension point these controls are removed from the children array
  *
  * @param children outline view node children
  * @param scenario type of project
+ * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
  * @returns transformed outline tree nodes
  */
-export async function handleDuplicateNodes(children: OutlineViewNode[], scenario: Scenario): Promise<OutlineNode[]> {
+export async function handleDuplicateNodes(
+    children: OutlineViewNode[],
+    scenario: Scenario,
+    reuseComponentsIds: Set<string>
+): Promise<OutlineNode[]> {
     const extPointIDs = new Set<string>();
 
     children.forEach((child: OutlineViewNode) => {
@@ -156,5 +187,5 @@ export async function handleDuplicateNodes(children: OutlineViewNode[], scenario
 
     const uniqueChildren = children.filter((child) => !extPointIDs.has(child.id));
 
-    return transformNodes(uniqueChildren, scenario);
+    return transformNodes(uniqueChildren, scenario, reuseComponentsIds);
 }

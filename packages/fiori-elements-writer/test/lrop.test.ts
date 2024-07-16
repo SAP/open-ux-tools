@@ -15,7 +15,8 @@ import {
     v4TemplateSettingsTreeTable,
     getTestData
 } from './common';
-import { ServiceType, type OdataService } from '@sap-ux/odata-service-writer';
+import { ServiceType } from '@sap-ux/odata-service-writer';
+import { type OdataService } from '@sap-ux/odata-service-writer';
 
 const TEST_NAME = 'lropTemplates';
 if (debug?.enabled) {
@@ -378,7 +379,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     type: ServiceType.EDMX
                 }
             } as FioriElementsApp<LROPSettings>
-        },
+        }
     ];
 
     beforeAll(() => {

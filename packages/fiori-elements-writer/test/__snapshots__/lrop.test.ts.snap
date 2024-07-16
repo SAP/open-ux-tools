@@ -21879,7 +21879,7 @@ appDescription=A Fiori application.",
     </style>
     <script
         id=\\"sap-ui-bootstrap\\"
-        src=\\"resources/sap-ui-core.js\\"
+        src=\\"https://ui5.sap.com/1.92.0/resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_belize\\"
         data-sap-ui-resourceroots='{
             \\"lrop_v4_addtests_cds\\": \\"./\\"
@@ -22741,7 +22741,7 @@ appDescription=A Fiori application.",
     </style>
     <script
         id=\\"sap-ui-bootstrap\\"
-        src=\\"resources/sap-ui-core.js\\"
+        src=\\"https://ui5.sap.com/1.92.0/resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_belize\\"
         data-sap-ui-resourceroots='{
             \\"lrop_v4_addtests_cds\\": \\"./\\"
@@ -23505,7 +23505,6 @@ framework:
     - name: sap.ui.core
     - name: sap.ushell
     - name: sap.fe.templates
-    - name: sap.nw.core.gbt.notes.lib.reuse
     - name: themelib_sap_belize
 server:
   customMiddleware:
@@ -24314,7 +24313,7 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.fe.templates,sap.nw.core.gbt.notes.lib.reuse\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.fe.templates\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_belize\\"

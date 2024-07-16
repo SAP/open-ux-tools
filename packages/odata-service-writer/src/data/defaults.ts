@@ -67,7 +67,7 @@ export function enhanceData(service: OdataService): void {
     if (service.type === ServiceType.EDMX) {
         setDefaultAnnotationsName(service);
     }
-    
+
     // enhance preview settings with service configuration
     service.previewSettings = service.previewSettings || {};
     service.previewSettings.path =
