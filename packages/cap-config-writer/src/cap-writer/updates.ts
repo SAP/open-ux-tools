@@ -71,7 +71,7 @@ export async function applyCAPUpdates(
         fs,
         packageName,
         sapux,
-        capService as CapServiceCdsInfo,
+        capService,
         appId,
         log as unknown as ToolsLogger,
         enableNPMWorkspaces
