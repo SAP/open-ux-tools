@@ -51,11 +51,11 @@ export async function validateAdpProject(basePath: string, isCloudProject: boole
     if (isCloudProject) {
         const manifest = getVariant(basePath);
         if (
-            !manifest.content.some(
+            !manifest?.content?.some(
                 (change: DescriptorVariantContent) => change.changeType === 'appdescr_app_removeAllInboundsExceptOne'
             )
         ) {
-            throw new Error('This command can only be used for Cloud Adaptation Project');
+            throw new Error('This command can only be used for Cloud Adaptation Project.');
         }
     }
 }
