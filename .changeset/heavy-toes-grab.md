@@ -1,6 +1,0 @@
----
-'@sap-ux/ui5-application-writer': minor
-'@sap-ux/ui5-library-writer': minor
----
-
-Removal of private: true Flag from Package.json Templates
