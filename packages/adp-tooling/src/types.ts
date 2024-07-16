@@ -9,7 +9,13 @@ export interface DescriptorVariant {
     reference: string;
     id: string;
     namespace: string;
-    content: object[];
+    content: DescriptorVariantContent[];
+}
+
+export interface DescriptorVariantContent {
+    changeType: string;
+    content: Record<string, unknown>;
+    texts?: string;
 }
 
 export interface ToolsSupport {
@@ -349,21 +355,20 @@ export interface DataSourceData {
     answers: ChangeDataSourceAnswers;
 }
 
+export interface InboundChangeAnswers {
+    /** Title associated with the inbound navigation data. */
+    title: string;
+    /** Subtitle associated with the inbound navigation data. */
+    subTitle: string;
+    /** Icon associated with the inbound navigation data. */
+    icon: string;
+}
+
 export interface InboundData {
-    projectData: AdpProjectData;
-    timestamp: number;
     /** Identifier for the inbound navigation data. */
     inboundId: string;
-    flp: {
-        /** Title associated with the inbound navigation data. */
-        title: PropertyValueType;
-        /** Subtitle associated with the inbound navigation data. */
-        subTitle: PropertyValueType;
-        /** Icon associated with the inbound navigation data. */
-        icon: PropertyValueType;
-    };
-    /** Optional flag indicating if the project is in safe mode. */
-    isInSafeMode?: boolean;
+    variant: DescriptorVariant;
+    answers: InboundChangeAnswers;
 }
 
 export interface InboundContent {
