@@ -146,4 +146,3 @@ describe('applyCAPJavaUpdates', () => {
         expect(updateStaticLocationsInApplicationYaml).toHaveBeenCalledTimes(0);
     });
 });
-     
