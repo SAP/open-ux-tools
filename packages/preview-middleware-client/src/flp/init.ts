@@ -233,18 +233,15 @@ export function setI18nTitle(resourceBundle: ResourceBundle, i18nKey = 'appTitle
  * @param params.appUrls JSON containing a string array of application urls
  * @param params.flex JSON containing the flex configuration
  * @param params.customInit path to the custom init module to be called
- * @param params.bootstrap Element of the document comprising the bootstrap
  */
 export async function init({
     appUrls,
     flex,
-    customInit,
-    bootstrap
+    customInit
 }: {
     appUrls?: string | null;
     flex?: string | null;
     customInit?: string | null;
-    bootstrap?: HTMLElement;
 }): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
     const container = sap?.ushell?.Container ?? (sap.ui.require('sap/ushell/Container') as typeof sap.ushell.Container);
@@ -253,10 +250,11 @@ export async function init({
 
     // Choose different sandbox in case of SAP UI5 2.x
     const major = parseInt(version.split('.')[0], 10);
-    if (bootstrap && major >= 2) {
-        const oldPath = bootstrap.getAttribute('src');
+    const ushellBootstrap = document.getElementById('sap-ushell-bootstrap');
+    if (ushellBootstrap && major >= 2) {
+        const oldPath = ushellBootstrap.getAttribute('src');
         const newPath = oldPath ? oldPath.replace(sandboxPathUi5V1, sandboxPathUi5V2) : '';
-        bootstrap.setAttribute('src', newPath);
+        ushellBootstrap.setAttribute('src', newPath);
     }
 
     // Register RTA if configured
@@ -322,12 +320,11 @@ export async function init({
     renderer.placeAt('content');
 }
 
-const bootstrap = document.getElementById('sap-ui-bootstrap');
-if (bootstrap) {
+const uiBootstrap = document.getElementById('sap-ui-bootstrap');
+if (uiBootstrap) {
     init({
-        appUrls: bootstrap.getAttribute('data-open-ux-preview-libs-manifests'),
-        flex: bootstrap.getAttribute('data-open-ux-preview-flex-settings'),
-        customInit: bootstrap.getAttribute('data-open-ux-preview-customInit'),
-        bootstrap
+        appUrls: uiBootstrap.getAttribute('data-open-ux-preview-libs-manifests'),
+        flex: uiBootstrap.getAttribute('data-open-ux-preview-flex-settings'),
+        customInit: uiBootstrap.getAttribute('data-open-ux-preview-customInit')
     }).catch(() => Log.error('Sandbox initialization failed.'));
 }

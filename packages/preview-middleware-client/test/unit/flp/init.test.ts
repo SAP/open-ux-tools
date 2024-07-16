@@ -273,7 +273,7 @@ describe('flp/init', () => {
                 return elementMock;
             });
 
-            await init({ customInit: customInit, bootstrap: elementMock as HTMLElement });
+            await init({ customInit: customInit });
 
             expect(sapMock.ui.require).toBeCalledWith([customInit]);
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
