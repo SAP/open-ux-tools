@@ -472,3 +472,8 @@ export interface BasicInfoAnswers {
     applicationTitle: string;
     namespace: string;
 }
+
+export interface ConfigurationInfoAnswers {
+    system: string;
+    client: string;
+}

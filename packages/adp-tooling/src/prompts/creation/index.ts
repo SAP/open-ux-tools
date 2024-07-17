@@ -1,12 +1,21 @@
-import type { NumberQuestion, ListQuestion, InputQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
-import type { ManifestNamespace, UI5FlexLayer } from '@sap-ux/project-access';
 import { t } from '../../i18n';
-import { filterDataSourcesByType } from '@sap-ux/project-access';
 import { isCustomerBase } from '../../base/helper';
-import { OperationsType } from '@sap-ux/axios-extension';
-import { isNotEmptyString, validateEnvironment, validateNamespace, validateProjectName } from '../../base/validators';
-import { BasicInfoAnswers, TargetEnvAnswers } from '../../types';
 import { getProjectNames } from '../../base/file-system';
+import { BasicInfoAnswers, ConfigurationInfoAnswers, TargetEnvAnswers } from '../../types';
+import {
+    isNotEmptyString,
+    validateClient,
+    validateEnvironment,
+    validateNamespace,
+    validateProjectName
+} from '../../base/validators';
+
+import { isAppStudio } from '@sap-ux/btp-utils';
+import { OperationsType } from '@sap-ux/axios-extension';
+import { checkEndpoints } from '@sap-ux/environment-check';
+import { filterDataSourcesByType } from '@sap-ux/project-access';
+import type { ManifestNamespace, UI5FlexLayer } from '@sap-ux/project-access';
+import type { NumberQuestion, ListQuestion, InputQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 
 export interface ChoiceOption<T = string> {
     name: string;
@@ -96,6 +105,87 @@ export function getNamespacePrompt(
     return prompt;
 }
 
+export async function getSystemPrompt(systems: string[]) {
+    return isAppStudio() ? await getSystemListPrompt(systems) : await getSystemNativePrompt(systems);
+}
+
+export async function getSystems(): Promise<Array<string>> {
+    let destinationNames: Array<string> = [];
+
+    try {
+        const { endpoints, messages } = await checkEndpoints();
+        if (endpoints) {
+            destinationNames = Object.keys(endpoints)
+                .map((item: any) => {
+                    return endpoints[item].Name;
+                })
+                .sort((a, b) => {
+                    return a.toLowerCase().localeCompare(b.toLowerCase(), 'en', { sensitivity: 'base' });
+                });
+        }
+    } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+    }
+
+    return destinationNames;
+}
+
+export async function getSystemListPrompt(systems: string[]): Promise<YUIQuestion<ConfigurationInfoAnswers>> {
+    // TODO: fetch all systems
+
+    return {
+        type: 'list',
+        name: 'system',
+        message: t('prompts.systemLabel'),
+        choices: () => systems,
+        guiOptions: {
+            hint: t('prompts.systemTooltip')
+        }
+        // when: isAppStudio() ? this.systemInfo?.adaptationProjectTypes?.length : true, // TODO:
+        // validate: this._systemPromptValidationHandler.bind(this) // TODO:
+    } as ListQuestion<ConfigurationInfoAnswers>;
+}
+
+export async function getSystemNativePrompt(systems: string[]) {
+    // check for extension installed if not installed prompt getSystemInputPrompt
+    if (!systems || systems.length === 0) {
+    }
+    return getSystemListPrompt(systems);
+}
+
+export function getSystemInputPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
+    return {
+        type: 'input',
+        name: 'system',
+        message: 'System URL',
+        // validate: this._systemPromptValidationHandler.bind(this), TODO:
+        guiOptions: {
+            mandatory: true
+        },
+        store: false
+    } as InputQuestion<ConfigurationInfoAnswers>;
+}
+
+export function getSystemClientPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
+    return {
+        type: 'input',
+        name: 'client',
+        message: 'System client',
+        validate: validateClient,
+        when: (answers: ConfigurationInfoAnswers) => {
+            if (answers.system) {
+                return isAppStudio() ? false : true;
+                // return isAppStudio() ? false : !this.localDestinationService.getIsExtensionInstalled(); // TODO:
+            }
+            return false;
+        },
+        guiOptions: {
+            mandatory: true
+        },
+        store: false
+    } as InputQuestion<ConfigurationInfoAnswers>;
+}
+
 export default class ProjectPrompter {
     private isCustomerBase: boolean;
 
@@ -159,5 +249,11 @@ export default class ProjectPrompter {
             } as InputQuestion<BasicInfoAnswers>,
             getNamespacePrompt(this.isCustomerBase, isCFEnv, isLoggedIn)
         ];
+    }
+
+    public async getConfigurationPrompts(): Promise<YUIQuestion<ConfigurationInfoAnswers>[]> {
+        const systems = await getSystems();
+
+        return [await getSystemPrompt(systems), getSystemClientPrompt()];
     }
 }

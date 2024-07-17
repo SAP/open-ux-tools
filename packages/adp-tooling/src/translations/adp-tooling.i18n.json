@@ -17,7 +17,10 @@
         "appTitleLabel": "Application Title",
         "appTitleTooltip": "Enter an application title for your application variant",
         "appTitleDefault": "App Variant Title",
-        "namespaceLabel": "Namespace"
+        "namespaceLabel": "Namespace",
+        "systemLabel": "Select System",
+        "systemTooltip": "Select a system to load its application list",
+        "systemClientLabel": "System client"
     },
     "validators": {
         "manifestContainsNoODataServices": "Manifest contains no OData Services.",
@@ -32,6 +35,7 @@
         "projectNameUppercaseError": "The name cannot contain uppercase letters.",
         "namespaceSameAsProjectNameError": "Namespace should be the same as Project Name.",
         "namespaceLengthError": "Namespace cannot contain more than 61 characters or end with 'component'.",
-        "namespaceValidationError": "The namespace must contain only Latin alphanumeric characters. Different parts can be separated by period and every part must start with a letter."
+        "namespaceValidationError": "The namespace must contain only Latin alphanumeric characters. Different parts can be separated by period and every part must start with a letter.",
+        "systemClientMandatoryError": "System client can contain only digits."
     }
 }

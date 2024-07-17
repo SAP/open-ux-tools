@@ -167,3 +167,15 @@ export function validateNamespace(namespace: string, projectName: string, isCust
 
     return true;
 }
+
+export function validateClient(value: string): string | boolean {
+    if (!isNotEmptyString) {
+        return t('prompts.inputCannotBeEmpty');
+    }
+
+    if (!value.match(/^([0-9])*$/)) {
+        return t('validators.systemClientMandatoryError');
+    }
+
+    return true;
+}
