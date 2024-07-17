@@ -12,6 +12,7 @@ import * as apiHandler from '../../../src/adp/api-handler';
 import { fetchMock, sapMock, documentMock } from 'mock/window';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
 import type { Scenario } from '@sap-ux-private/control-property-editor-common';
+import VersionInfo from 'mock/sap/ui/VersionInfo';
 
 describe('flp/init', () => {
     test('registerSAPFonts', () => {
@@ -166,6 +167,7 @@ describe('flp/init', () => {
         });
 
         test('nothing configured', async () => {
+            VersionInfo.load.mockResolvedValue({ version: '1.118.1' });
             await init({});
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).not.toBeCalled();
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
@@ -177,7 +179,7 @@ describe('flp/init', () => {
                 layer: 'CUSTOMER_BASE',
                 pluginScript: 'my/script'
             };
-            sapMock.ui.version = '1.84.50';
+            VersionInfo.load.mockResolvedValue({ version: '1.84.50' });
             await init({ flex: JSON.stringify(flexSettings) });
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
@@ -215,7 +217,7 @@ describe('flp/init', () => {
                 layer: 'CUSTOMER_BASE',
                 pluginScript: 'my/script'
             };
-            sapMock.ui.version = '1.71.60';
+            VersionInfo.load.mockResolvedValue({ version: '1.71.60' });
             await init({ flex: JSON.stringify(flexSettings) });
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
@@ -250,7 +252,7 @@ describe('flp/init', () => {
 
         test('custom init module configured & ui5 version is 1.120.9', async () => {
             const customInit = 'my/app/test/integration/opaTests.qunit';
-            sapMock.ui.version = '1.120.09';
+            VersionInfo.load.mockResolvedValue({ version: '1.120.9' });
 
             await init({ customInit: customInit });
 
@@ -260,7 +262,7 @@ describe('flp/init', () => {
 
         test('custom init module configured & ui5 version is 2.0.0', async () => {
             const customInit = 'my/app/test/integration/opaTests.qunit';
-            sapMock.ui.version = '2.0.0';
+            VersionInfo.load.mockResolvedValue({ version: '2.0.0' });
 
             const elementMock: Partial<HTMLElement> = {
                 getAttribute: jest.fn(),

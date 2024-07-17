@@ -14,6 +14,12 @@ import type { Url } from 'url';
 import { getProxyForUrl } from 'proxy-from-env';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 
+const UI52TestUrls = [
+    'https://sapui5untested2.int.sap.eu2.hana.ondemand.com',
+    'https://sapui5untestedv2.int.sap.eu2.hana.ondemand.com',
+    'https://legacyfreesdknightly.int.sap.eu2.hana.ondemand.com'
+];
+
 /**
  * Function for proxying UI5 sources.
  *
@@ -28,7 +34,7 @@ export const ui5Proxy = (config: ProxyConfig, options?: Options, filter?: Filter
     });
     const today = new Date();
     const etag = `W/"${config.version || 'ui5-latest-' + today.getDate() + today.getMonth() + today.getFullYear()}"`;
-    const ui5Ver = config.version ? `/${config.version}` : '';
+    const ui5Ver = !UI52TestUrls.includes(config.url) && config.version ? `/${config.version}` : '';
     const proxyConfig: Options = {
         target: config.url,
         changeOrigin: true,

@@ -11,7 +11,7 @@
  */
 export function initConnectors(): void {
     const version = sap.ui.version;
-    const minor = parseInt(version.split('.')[1], 10);
+    const minor = version ? parseInt(version.split('.')[1], 10) : 99;
 
     if (minor < 72) {
         sap.ui.require(['open/ux/preview/client/flp/enableFakeConnector'], function (enableFakeConnector: () => void) {
