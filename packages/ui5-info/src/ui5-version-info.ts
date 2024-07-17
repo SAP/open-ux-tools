@@ -357,7 +357,11 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
         const ui5Version: UI5Version = {
             version: ui5
         };
-        if (filterOptions?.includeDefault && defaultUI5Version === ui5) {
+        if (
+            filterOptions?.includeDefault &&
+            defaultUI5Version === ui5 &&
+            !filterOptions.markLatestMaintainedAsDefault
+        ) {
             ui5Version.default = true;
         }
         if (filterOptions?.markLatestMaintainedAsDefault && latestUI5Version === ui5) {

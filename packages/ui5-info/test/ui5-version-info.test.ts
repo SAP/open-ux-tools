@@ -132,19 +132,22 @@ describe('getUI5Versions', () => {
         expect(notSupportedCount).toEqual(80);
         expect(versions).toMatchSnapshot();
     });
-
-    test('filterOptions: markLatestMaintainedAsDefault', async () => {
+});
+describe('filterOptions: markLatestMaintainedAsDefault', () => {
+    afterEach(() => {
+        jest.clearAllMocks();
         nock.cleanAll();
+    });
+    test('filterOptions: markLatestMaintainedAsDefault', async () => {
         nock(ui5VersionRequestInfo.OfficialUrl)
             .get(`/${ui5VersionRequestInfo.VersionsFile}`)
             .reply(200, officialOutOfMaintenanceResponse);
 
         const versions = await getUI5Versions({
-            markLatestMaintainedAsDefault: true,
-            useCache: true,
-            includeMaintained: true
+            includeDefault: true,
+            includeMaintained: true,
+            markLatestMaintainedAsDefault: true
         });
-
         expect(versions[1].version).toEqual('1.125.1');
         expect(versions[1].default).toEqual(true);
     });
