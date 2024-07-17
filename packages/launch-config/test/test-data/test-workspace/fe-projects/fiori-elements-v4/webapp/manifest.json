@@ -1,0 +1,16 @@
+{
+  "sap.app": {
+    "id": "fiorielementsv4",
+    "applicationVersion": {
+      "version": "${project.version}"
+    },
+    "dataSources": {
+      "mainService": {
+        "type": "OData",
+        "settings": {
+          "odataVersion": "4.0"
+        }
+      }
+    }
+  }
+}

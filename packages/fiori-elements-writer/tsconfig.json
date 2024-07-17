@@ -17,6 +17,9 @@
       "path": "../fe-fpm-writer"
     },
     {
+      "path": "../fiori-generator-shared"
+    },
+    {
       "path": "../odata-service-writer"
     },
     {
