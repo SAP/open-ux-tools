@@ -37,9 +37,6 @@ const UI5_LIBS = [
     'sap.zen'
 ];
 
-export const sandboxPathUi5V1 = `/test-resources/sap/ushell/bootstrap/sandbox.js`;
-export const sandboxPathUi5V2 = `/test-resources/sap/ushell/bootstrap/sandbox2.js`;
-
 interface Manifest {
     ['sap.ui5']?: {
         dependencies?: {
@@ -248,16 +245,6 @@ export async function init({
     const container = sap?.ushell?.Container ?? (sap.ui.require('sap/ushell/Container') as typeof sap.ushell.Container);
     let scenario: string = '';
     const { version } = (await VersionInfo.load()) as { version: string };      
-    //const version = sap.ui.version;
-
-    // Choose different sandbox in case of SAP UI5 2.x
-    const major = parseInt(version.split('.')[0], 10);
-    const ushellBootstrap = document.getElementById('sap-ushell-bootstrap');
-    if (ushellBootstrap && major >= 2) {
-        const oldPath = ushellBootstrap.getAttribute('src');
-        const newPath = oldPath ? oldPath.replace(sandboxPathUi5V1, sandboxPathUi5V2) : '';
-        ushellBootstrap.setAttribute('src', newPath);
-    }
 
     // Register RTA if configured
     if (flex) {
