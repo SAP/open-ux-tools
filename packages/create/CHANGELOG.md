@@ -1,5 +1,64 @@
 # @sap-ux/create
 
+## 0.7.14
+
+### Patch Changes
+
+-   Updated dependencies [e0ddba7]
+    -   @sap-ux/preview-middleware@0.16.14
+
+## 0.7.13
+
+### Patch Changes
+
+-   Updated dependencies [173b5f2]
+    -   @sap-ux/project-access@1.25.4
+    -   @sap-ux/adp-tooling@0.12.9
+    -   @sap-ux/app-config-writer@0.4.7
+    -   @sap-ux/cap-config-writer@0.6.7
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/preview-middleware@0.16.13
+    -   @sap-ux/system-access@0.5.1
+
+## 0.7.12
+
+### Patch Changes
+
+-   9e4ce4d: Remove safeMode from adp-tooling types and change order of ui5.yaml custom configuration
+-   Updated dependencies [9e4ce4d]
+    -   @sap-ux/adp-tooling@0.12.8
+    -   @sap-ux/preview-middleware@0.16.12
+
+## 0.7.11
+
+### Patch Changes
+
+-   Updated dependencies [e7b9184]
+    -   @sap-ux/project-access@1.25.3
+    -   @sap-ux/adp-tooling@0.12.7
+    -   @sap-ux/app-config-writer@0.4.6
+    -   @sap-ux/cap-config-writer@0.6.6
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/preview-middleware@0.16.11
+    -   @sap-ux/system-access@0.5.1
+
+## 0.7.10
+
+### Patch Changes
+
+-   Updated dependencies [22e4ad8]
+    -   @sap-ux/adp-tooling@0.12.6
+    -   @sap-ux/ui5-config@0.23.1
+    -   @sap-ux/preview-middleware@0.16.10
+    -   @sap-ux/app-config-writer@0.4.5
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/project-access@1.25.2
+    -   @sap-ux/cap-config-writer@0.6.5
+    -   @sap-ux/system-access@0.5.1
+
 ## 0.7.9
 
 ### Patch Changes

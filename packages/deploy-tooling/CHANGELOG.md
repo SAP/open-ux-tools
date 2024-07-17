@@ -1,5 +1,14 @@
 # @sap-ux/deploy-tooling
 
+## 0.15.2
+
+### Patch Changes
+
+-   Updated dependencies [22e4ad8]
+    -   @sap-ux/ui5-config@0.23.1
+    -   @sap-ux/axios-extension@1.15.1
+    -   @sap-ux/system-access@0.5.1
+
 ## 0.15.1
 
 ### Patch Changes
