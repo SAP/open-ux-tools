@@ -136,6 +136,20 @@ describe('Select', () => {
         expect(document.getElementsByClassName('ms-Spinner-circle')).toBeDefined();
     });
 
+    it('Test value reset', () => {
+        const options = [
+            { text: 'False', key: 'false', data: { value: false } },
+            { text: 'True', key: 'true', data: { value: true } }
+        ];
+        const { rerender } = render(<Select {...props} value={true} options={options} />);
+        let input = screen.getByRole('combobox');
+        expect(input).toBeDefined();
+        expect(input.getAttribute('value')).toEqual('True');
+        rerender(<Select {...props} value={undefined} options={options} />);
+        input = screen.getByRole('combobox');
+        expect(input.getAttribute('value')).toEqual('');
+    });
+
     describe('Select with creation enabled: ', () => {
         describe('With options', () => {
             it('Render creatable select', () => {
