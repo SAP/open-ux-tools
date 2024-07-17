@@ -3,6 +3,7 @@ import type {
     Answers,
     ConfirmQuestion as BaseConfirmQuestion,
     InputQuestion as BaseInputQuestion,
+    PasswordQuestion as BasePasswordQuestion,
     ListQuestion as BaseListQuestion,
     CheckboxQuestion as BaseCheckBoxQuestion,
     NumberQuestion as BaseNumberQuestion,
@@ -84,6 +85,11 @@ export interface ConfirmQuestion<A extends Answers = Answers> extends BaseConfir
 }
 
 export interface InputQuestion<A extends Answers = Answers> extends BaseInputQuestion<A> {
+    name: YUIQuestion['name'];
+    guiOptions?: YUIQuestion['guiOptions'];
+}
+
+export interface PasswordQuestion<A extends Answers = Answers> extends BasePasswordQuestion<A> {
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
 }

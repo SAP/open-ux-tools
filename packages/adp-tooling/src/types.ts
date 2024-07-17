@@ -476,4 +476,25 @@ export interface BasicInfoAnswers {
 export interface ConfigurationInfoAnswers {
     system: string;
     client: string;
+    username: string;
+    password: string;
+}
+
+/**
+ * Structure of the system info reponse data.
+ */
+export interface SystemInfo {
+    adaptationProjectTypes: ProjectType[];
+    activeLanguages: Language[];
+}
+
+export interface Language {
+    sap: string;
+    description: string;
+    i18n: string;
+}
+
+export const enum ProjectType {
+    CLOUD_READY = 'cloudReady',
+    ON_PREMISE = 'onPremise'
 }

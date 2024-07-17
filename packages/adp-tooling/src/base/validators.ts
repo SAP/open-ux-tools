@@ -2,6 +2,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { OperationsType } from '@sap-ux/axios-extension';
 import { t } from '../i18n';
 import { existsSync } from 'fs';
+import { ProjectType, SystemInfo } from '../types';
 
 /**
  * Checks if the input is a valid SAP client.
@@ -58,7 +59,7 @@ export function validateNonEmptyNoSpaces(
 }
 
 export async function validateEnvironment(value: OperationsType, loginEnabled: boolean) {
-    if (!isNotEmptyString) {
+    if (!isNotEmptyString(value)) {
         return t('prompts.inputCannotBeEmpty');
     }
 
@@ -77,7 +78,7 @@ export function validateProjectName(
     isCustomerBase: boolean,
     isCFEnv: boolean
 ): boolean | string {
-    if (!isNotEmptyString) {
+    if (!isNotEmptyString(value)) {
         return t('prompts.inputCannotBeEmpty');
     }
 
@@ -142,7 +143,7 @@ export function validateDuplicateProjectName(
 }
 
 export function validateNamespace(namespace: string, projectName: string, isCustomerBase: boolean): string | boolean {
-    if (!isNotEmptyString) {
+    if (!isNotEmptyString(namespace)) {
         return t('prompts.inputCannotBeEmpty');
     }
 
@@ -169,8 +170,8 @@ export function validateNamespace(namespace: string, projectName: string, isCust
 }
 
 export function validateClient(value: string): string | boolean {
-    if (!isNotEmptyString) {
-        return t('prompts.inputCannotBeEmpty');
+    if (!isNotEmptyString(value)) {
+        return t('validators.inputCannotBeEmpty');
     }
 
     if (!value.match(/^([0-9])*$/)) {

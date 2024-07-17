@@ -20,7 +20,9 @@
         "namespaceLabel": "Namespace",
         "systemLabel": "Select System",
         "systemTooltip": "Select a system to load its application list",
-        "systemClientLabel": "System client"
+        "systemClientLabel": "System client",
+        "usernameLabel": "Enter the user name for the backend system",
+        "passwordLabel": "Enter the password for the backend system"
     },
     "validators": {
         "manifestContainsNoODataServices": "Manifest contains no OData Services.",
@@ -36,6 +38,10 @@
         "namespaceSameAsProjectNameError": "Namespace should be the same as Project Name.",
         "namespaceLengthError": "Namespace cannot contain more than 61 characters or end with 'component'.",
         "namespaceValidationError": "The namespace must contain only Latin alphanumeric characters. Different parts can be separated by period and every part must start with a letter.",
-        "systemClientMandatoryError": "System client can contain only digits."
+        "systemClientMandatoryError": "System client can contain only digits.",
+        "unsupportedSystemInt": "The system that you have selected cannot be detected to be of type OnPremise. You should select system of this type in order to continue with the generation of the project.",
+        "unsupportedSystemExt": "The system that you have selected cannot be detected to be of type OnPremise or of type CloudReady. You should select system of either of both types in order to continue with the generation of the project.",
+        "unsupportedCloudSystemInt": "You have selected system that does not support OnPremise adaptation projects. Please select such system.",
+        "selectCannotBeEmptyError": "{{value}} has to be selected"
     }
 }
