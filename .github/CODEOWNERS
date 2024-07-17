@@ -96,6 +96,12 @@
 # Module: odata-entity-model
 /packages/odata-entity-model/ @SAP/ux-tools-annotations
 
+# Module: fiori-annotation-api
+/packages/fiori-annotation-api/ @SAP/ux-tools-annotations
+
+# Module: fiori-annotation-api
+/packages/annotation-generator/ @SAP/ux-tools-annotations
+
 # Admin
 /.github/ @SAP/ux-tools-admin
 /.LICENSES/ @SAP/ux-tools-admin

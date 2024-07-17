@@ -7,7 +7,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "lib": [
-      "es6",
+      "ES2022",
       "dom",
       "dom.iterable"
     ],
@@ -17,14 +17,20 @@
     "sourceMap": true,
     "strict": true,
     "strictPropertyInitialization": false,
-    "target": "ES6",
+    "target": "ES2022",
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "useUnknownInCatchVariables": false
   },
   "references": [
     {
+      "path": "packages/abap-deploy-config-writer"
+    },
+    {
       "path": "packages/adp-tooling"
+    },
+    {
+      "path": "packages/annotation-generator"
     },
     {
       "path": "packages/app-config-writer"
@@ -78,6 +84,9 @@
       "path": "packages/feature-toggle"
     },
     {
+      "path": "packages/fiori-annotation-api"
+    },
+    {
       "path": "packages/fiori-elements-writer"
     },
     {
@@ -97,6 +106,9 @@
     },
     {
       "path": "packages/jest-runner-puppeteer"
+    },
+    {
+      "path": "packages/launch-config"
     },
     {
       "path": "packages/logger"

@@ -1,0 +1,25 @@
+{
+  "_version": "1.15.0",
+  "sap.app": {
+    "id": "sap.fe.demo.incidents",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "ach": "CA-UI5-FE",
+    "dataSources": {
+      "mainService": {
+        "uri": "/incident/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "4.0"
+        }
+      }
+    },
+    "offline": false,
+    "resources": "resources.json"
+  }
+}

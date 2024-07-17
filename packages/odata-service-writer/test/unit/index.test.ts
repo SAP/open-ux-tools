@@ -1,5 +1,5 @@
 import type { OdataService } from '../../src';
-import { generate, OdataVersion } from '../../src';
+import { generate, OdataVersion, ServiceType } from '../../src';
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -16,7 +16,8 @@ const commonConfig = {
     url: 'http://localhost',
     path: '/sap/odata/testme',
     client: '012',
-    metadata: '<HELLO WORLD />'
+    metadata: '<HELLO WORLD />',
+    type: ServiceType.EDMX
 };
 
 describe('generate', () => {
@@ -74,6 +75,15 @@ describe('generate', () => {
             await generate(root, config, fs);
             const manifest = fs.readJSON(join(root, 'webapp/manifest.json')) as any;
             expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
+        });
+
+        it('No ui5-local.yaml should be generated if service type is cds', async () => {
+            const capConfig = {
+                ...config,
+                type: ServiceType.CDS
+            };
+            await generate(root, capConfig, fs);
+            expect(fs.exists(join(root, 'ui5-local.yaml'))).toBe(false);
         });
 
         it('No ui5.yaml - only manifest updates', async () => {
@@ -278,6 +288,7 @@ describe('generate', () => {
                     "path": "/V2",
                     "url": "https://services.odata.org",
                   },
+                  "type": "edmx",
                   "url": "https://services.odata.org",
                   "version": "2",
                 }
@@ -294,6 +305,7 @@ describe('generate', () => {
                     "path": "/V2",
                     "url": "https://services.odata.org",
                   },
+                  "type": "edmx",
                   "url": "https://services.odata.org",
                   "version": "2",
                 }
@@ -311,6 +323,7 @@ describe('generate', () => {
                     "path": "/",
                     "url": "https://services.odata.org",
                   },
+                  "type": "edmx",
                   "url": "https://services.odata.org",
                   "version": "2",
                 }

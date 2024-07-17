@@ -11,16 +11,17 @@ import cloneDeep from 'lodash/cloneDeep';
 import type { FioriElementsApp, FPMSettings } from './types';
 import { TemplateType } from './types';
 import { validateApp, validateRequiredProperties } from './validate';
-import { setAppDefaults, setDefaultTemplateSettings } from './data/defaults';
+import { setAppDefaults, setDefaultTemplateSettings, getTemplateOptions } from './data/defaults';
 import {
-    type TemplateOptions,
     TemplateTypeAttributes,
     minSupportedUI5Version,
-    minSupportedUI5VersionV4
+    minSupportedUI5VersionV4,
+    escapeFLPText
 } from './data/templateAttributes';
-import { changesPreviewToVersion, escapeFLPText } from './data/templateAttributes';
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
+import { initI18n } from './i18n';
+import { getBootstrapResourceUrls } from '@sap-ux/fiori-generator-shared';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -58,8 +59,12 @@ function getTypeScriptIgnoreGlob<T extends {}>(feApp: FioriElementsApp<T>, coerc
  * @returns Reference to a mem-fs-editor
  */
 async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T>, fs?: Editor): Promise<Editor> {
+    // Load i18n translations asynchronously to ensure proper initialization.
+    // This addresses occasional issues where i18n is not initialized in time, causing tests to fail.
+    await initI18n();
     // Clone rather than modifying callers refs
     const feApp: FioriElementsApp<T> = cloneDeep(data);
+
     // Ensure input data contains at least the mandatory properties required for app generation
     validateRequiredProperties(feApp);
 
@@ -75,11 +80,6 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     await addOdataService(basePath, feApp.service, fs);
 
     const coercedUI5Version = semVer.coerce(feApp.ui5?.version)!;
-    const templateOptions: TemplateOptions = {
-        changesPreview: feApp.ui5?.version ? semVer.lt(coercedUI5Version, changesPreviewToVersion) : false,
-        changesLoader: feApp.service.version === OdataVersion.v2
-    };
-
     // Add new files from templates e.g.
     const rootTemplatesPath = join(__dirname, '..', 'templates');
     // Add templates common to all template types
@@ -89,12 +89,45 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     if (feApp.appOptions?.typescript === true) {
         ignore = getTypeScriptIgnoreGlob(feApp, coercedUI5Version);
     }
+    // Determine if the project type is 'EDMXBackend'.
+    const isEdmxProjectType = feApp.app.projectType === 'EDMXBackend';
+    // Get resource bootstrap URLs based on the project type
+    const { uShellBootstrapResourceUrl, uiBootstrapResourceUrl } = getBootstrapResourceUrls(
+        isEdmxProjectType,
+        feApp.ui5?.frameworkUrl,
+        feApp.ui5?.version
+    );
+    const ui5Libs = isEdmxProjectType ? feApp.ui5?.ui5Libs : undefined;
+    // Define template options with changes preview and loader settings based on project type
+    const templateOptions = getTemplateOptions(isEdmxProjectType, feApp.service.version, feApp.ui5?.version);
+
+    const appConfig = {
+        ...feApp,
+        templateOptions,
+        uShellBootstrapResourceUrl,
+        uiBootstrapResourceUrl,
+        ui5Libs
+    };
+
+    // Copy templates with configuration
+    fs.copyTpl(
+        join(rootTemplatesPath, 'common', 'add', '**/*.*'),
+        basePath,
+        {
+            ...appConfig,
+            escapeFLPText
+        },
+        undefined,
+        {
+            globOptions: { ignore, dot: true }
+        }
+    );
 
     fs.copyTpl(
         join(rootTemplatesPath, 'common', 'add', '**/*.*'),
         basePath,
         {
-            ...feApp,
+            ...appConfig,
             templateOptions,
             escapeFLPText
         },
@@ -152,19 +185,26 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
         feApp.service?.version === OdataVersion.v4 &&
         (!!feApp.service?.metadata || feApp.service.type === ServiceType.CDS);
 
-    packageJson.scripts = Object.assign(packageJson.scripts ?? {}, {
-        ...getPackageJsonTasks({
-            localOnly: !feApp.service?.url,
-            addMock: !!feApp.service?.metadata,
-            addTest,
-            sapClient: feApp.service?.client,
-            flpAppId: feApp.app.flpAppId,
-            startFile: data?.app?.startFile,
-            localStartFile: data?.app?.localStartFile,
-            generateIndex: feApp.appOptions?.generateIndex
-        })
-    });
-
+    if (isEdmxProjectType) {
+        // Add scripts to package.json only for non-CAP projects
+        packageJson.scripts = Object.assign(packageJson.scripts ?? {}, {
+            ...getPackageJsonTasks({
+                localOnly: !feApp.service?.url,
+                addMock: !!feApp.service?.metadata,
+                addTest,
+                sapClient: feApp.service?.client,
+                flpAppId: feApp.app.flpAppId,
+                startFile: data?.app?.startFile,
+                localStartFile: data?.app?.localStartFile,
+                generateIndex: feApp.appOptions?.generateIndex
+            })
+        });
+    } else {
+        // Add deploy-config script for CAP projects
+        packageJson.scripts = {
+            'deploy-config': 'npx -p @sap/ux-ui5-tooling fiori add deploy-config cf'
+        };
+    }
     fs.writeJSON(packagePath, packageJson);
 
     if (addTest) {

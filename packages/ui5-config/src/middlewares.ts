@@ -1,4 +1,3 @@
-import { AuthenticationType } from '@sap-ux/store';
 import type {
     FioriToolsProxyConfigBackend,
     CustomMiddleware,
@@ -39,7 +38,7 @@ export function getBackendComments(
 ): NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[] {
     const comment = [];
 
-    if (backend.authenticationType === AuthenticationType.ReentranceTicket) {
+    if (backend.authenticationType === 'reentranceTicket') {
         comment.push({
             path: `configuration.backend.${index}.authenticationType`,
             comment: ' SAML support for vscode',
@@ -54,18 +53,20 @@ export function getBackendComments(
  *
  * @param backends configuration of backends
  * @param ui5 UI5 configuration
+ * @param afterMiddleware middleware after which fiori-tools-proxy middleware will be started
  * @returns {{config, comments}} configuration and comments
  */
 export function getFioriToolsProxyMiddlewareConfig(
     backends?: FioriToolsProxyConfigBackend[],
-    ui5?: Partial<FioriToolsProxyConfigUI5>
+    ui5?: Partial<FioriToolsProxyConfigUI5>,
+    afterMiddleware = 'compression'
 ): {
     config: CustomMiddleware<FioriToolsProxyConfig>;
     comments: NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[];
 } {
     const fioriToolsProxy: CustomMiddleware<FioriToolsProxyConfig> = {
         name: 'fiori-tools-proxy',
-        afterMiddleware: 'compression',
+        afterMiddleware,
         configuration: {
             ignoreCertError: false
         }
@@ -94,7 +95,7 @@ export function getFioriToolsProxyMiddlewareConfig(
             path: ui5.path ?? ['/resources', '/test-resources'],
             url: ui5.url ?? 'https://ui5.sap.com'
         };
-        if (ui5.version) {
+        if (ui5.version !== undefined) {
             fioriToolsProxy.configuration['ui5'].version = ui5.version;
         }
         if (ui5.directLoad) {

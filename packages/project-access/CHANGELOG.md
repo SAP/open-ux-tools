@@ -1,5 +1,126 @@
 # @sap-ux/project-access
 
+## 1.25.5
+
+### Patch Changes
+
+-   421f3ca: fix: module-loader fails to install specification dependecy in '.fioritools' folder when user has 'node_modules' in user home folder
+
+## 1.25.4
+
+### Patch Changes
+
+-   173b5f2: export findCapProjectRoot, required by other modules
+
+## 1.25.3
+
+### Patch Changes
+
+-   e7b9184: fix: outputs specification version when loading from cache
+
+## 1.25.2
+
+### Patch Changes
+
+-   Updated dependencies [22e4ad8]
+    -   @sap-ux/ui5-config@0.23.1
+
+## 1.25.1
+
+### Patch Changes
+
+-   0f3cf6b: feat: Add path to specification
+
+## 1.25.0
+
+### Minor Changes
+
+-   f076dd3: Add freestyle CAP app support.
+
+## 1.24.0
+
+### Minor Changes
+
+-   0ae685e: Add feature to cache node modules locally, consumed by specification
+
+## 1.23.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/i18n@0.1.0
+    -   @sap-ux/ui5-config@0.23.0
+
+## 1.22.4
+
+### Patch Changes
+
+-   9ea58ad4: fix: Release version of @sap-ux/project-access with filterDataSourcesByType
+
+## 1.22.3
+
+### Patch Changes
+
+-   Updated dependencies [1a1baeb0]
+    -   @sap-ux/ui5-config@0.22.10
+
+## 1.22.2
+
+### Patch Changes
+
+-   399d2ad8: adds new abap deploy config writer
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/ui5-config@0.22.9
+
+## 1.22.1
+
+### Patch Changes
+
+-   Updated dependencies [a140cf8b]
+    -   @sap-ux/ui5-config@0.22.8
+
+## 1.22.0
+
+### Minor Changes
+
+-   ad93a484: Update functions for package.json and manifest.json that keeps previous indentation.
+
+## 1.21.2
+
+### Patch Changes
+
+-   Updated dependencies [9188fe8b]
+    -   @sap-ux/ui5-config@0.22.7
+
+## 1.21.1
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.22.6
+
+## 1.21.0
+
+### Minor Changes
+
+-   69b8d6de: Introduces enhanced functionality by returning CDS information, extracted during the prompt phase, and is made available for later use .
+
+## 1.20.4
+
+### Patch Changes
+
+-   a7d78229: Added new functions for retrieving the minUI5Version(s) from manifest
+
+## 1.20.3
+
+### Patch Changes
+
+-   Updated dependencies [f80a4256]
+    -   @sap-ux/i18n@0.0.7
+
 ## 1.20.2
 
 ### Patch Changes

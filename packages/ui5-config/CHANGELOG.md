@@ -1,5 +1,56 @@
 # @sap-ux/ui5-config
 
+## 0.23.1
+
+### Patch Changes
+
+-   22e4ad8: Generate correct ui5.yaml
+
+## 0.23.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/yaml@0.16.0
+
+## 0.22.10
+
+### Patch Changes
+
+-   1a1baeb0: Revert "feat(fiori-elements-writer): remove `sap.fe.templates` dependency
+
+## 0.22.9
+
+### Patch Changes
+
+-   399d2ad8: adds new abap deploy config writer
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/yaml@0.15.1
+
+## 0.22.8
+
+### Patch Changes
+
+-   a140cf8b: fix: incorrect fiori-tools-proxy config generated for adp
+
+## 0.22.7
+
+### Patch Changes
+
+-   9188fe8b: fpm v4 removed sap.fe.templates in manifest.json, now has dependency on sap.fe.core
+    sap.ushell removed from ui5-application-writer, now loaded in fiori-elements and fiori-freestyle writers respectively
+
+## 0.22.6
+
+### Patch Changes
+
+-   Updated dependencies [64a95bd1]
+    -   @sap-ux/yaml@0.15.0
+
 ## 0.22.5
 
 ### Patch Changes

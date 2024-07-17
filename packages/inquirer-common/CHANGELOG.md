@@ -1,5 +1,28 @@
 # @sap-ux/inquirer-common
 
+## 0.4.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/ui5-info@0.6.0
+
+## 0.3.1
+
+### Patch Changes
+
+-   65bfb244: Add Adaptation Project's Change Data Source generator prompting
+
+## 0.3.0
+
+### Minor Changes
+
+-   1ea831d5: Adds support for service url prompting
+
 ## 0.2.8
 
 ### Patch Changes

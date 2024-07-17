@@ -1,8 +1,11 @@
 import { join } from 'path';
+import type { Manifest, Package } from '../../src';
 import { createApplicationAccess, createProjectAccess } from '../../src';
 import * as i18nMock from '../../src/project/i18n/write';
+import * as specMock from '../../src/project/specification';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+import { promises } from 'fs';
 
 describe('Test function createApplicationAccess()', () => {
     const memFs = create(createStorage());
@@ -22,7 +25,9 @@ describe('Test function createApplicationAccess()', () => {
         expect(appAccess.projectType).toBe('CAPNodejs');
         expect(appAccess.getAppId()).toBe(join('apps/two'));
         expect(appAccess.getAppRoot()).toBe(appRoot);
-        expect(Object.keys(appAccess.project.apps)).toEqual([join('apps/one'), join('apps/two')]);
+        expect(Object.keys(appAccess.project.apps).sort()).toEqual(
+            [join('apps/one'), join('apps/two'), join('apps/freestyle')].sort()
+        );
     });
 
     test('Standalone app', async () => {
@@ -143,7 +148,7 @@ describe('Test function createApplicationAccess()', () => {
         const appRoot = join(sampleRoot, 'fiori_elements');
 
         // Test execution
-        const appAccess = await createApplicationAccess(appRoot, memFs);
+        const appAccess = await createApplicationAccess(appRoot, { fs: memFs });
         await appAccess.createAnnotationI18nEntries([
             {
                 key: 'newKey',
@@ -237,6 +242,100 @@ describe('Test function createApplicationAccess()', () => {
         );
     });
 
+    test('Update package.json of standalone app (mocked)', async () => {
+        // Mock setup
+        const appRoot = join(sampleRoot, 'fiori_elements');
+        const updateFileContent = { sapux: false } as unknown as Package;
+        const writeFileSpy = jest.spyOn(promises, 'writeFile').mockResolvedValue();
+        const pckgPath = join(appRoot, 'package.json');
+        // Test execution
+        const appAccess = await createApplicationAccess(appRoot);
+        await appAccess.updatePackageJSON(updateFileContent);
+        // Result check
+        expect(writeFileSpy).toBeCalledWith(pckgPath, '{\n    "sapux": false\n}\n', { encoding: 'utf8' });
+    });
+
+    test('Update package.json of standalone app - mem-fs-editor (mocked)', async () => {
+        // Mock setup
+        const appRoot = join(sampleRoot, 'fiori_elements');
+        const updateFileContent = { sapux: false } as unknown as Package;
+        const pckgPath = join(appRoot, 'package.json');
+        memFs.writeJSON(pckgPath, { sapux: true }, undefined, 4);
+        // Test execution
+        const appAccess = await createApplicationAccess(appRoot);
+        await appAccess.updatePackageJSON(updateFileContent, memFs);
+        // Result check
+        const result = memFs.read(pckgPath);
+        expect(result).toBe('{\n    "sapux": false\n}\n');
+    });
+
+    test('Update package.json of app in CAP project (mocked)', async () => {
+        // Mock setup
+        const projectRoot = join(sampleRoot, 'cap-project');
+        const appRoot = join(projectRoot, 'apps/one');
+        const updateFileContent = { name: 'two' } as unknown as Package;
+        const writeFileSpy = jest.spyOn(promises, 'writeFile').mockResolvedValue();
+        const pckgPath = join(appRoot, 'package.json');
+        // Test execution
+        const appAccess = await createApplicationAccess(appRoot);
+        await appAccess.updatePackageJSON(updateFileContent);
+        // Result check
+        expect(writeFileSpy).toBeCalledWith(pckgPath, '{\n    "name": "two"\n}\n', { encoding: 'utf8' });
+    });
+
+    test('Update package.json of app in CAP project - mem-fs-editor (mocked)', async () => {
+        // Mock setup
+        const projectRoot = join(sampleRoot, 'cap-project');
+        const appRoot = join(projectRoot, 'apps/one');
+        const updateFileContent = { name: 'two' } as unknown as Package;
+        const pckgPath = join(appRoot, 'package.json');
+        memFs.writeJSON(pckgPath, { name: 'one' }, undefined, 4);
+        // Test execution
+        const appAccess = await createApplicationAccess(appRoot);
+        await appAccess.updatePackageJSON(updateFileContent, memFs);
+        // Result check
+        const result = memFs.read(pckgPath);
+        expect(result).toBe('{\n    "name": "two"\n}\n');
+    });
+
+    test('Update manifest.json of standalone app (mocked)', async () => {
+        // Mock setup
+        const appRoot = join(sampleRoot, 'fiori_elements');
+        const updateFileContent = { 'sap.app': {} } as unknown as Manifest;
+        const writeFileSpy = jest.spyOn(promises, 'writeFile').mockResolvedValue();
+        const manifestPath = join(appRoot, 'webapp', 'manifest.json');
+        // Test execution
+        const appAccess = await createApplicationAccess(appRoot);
+        await appAccess.updateManifestJSON(updateFileContent);
+        // Result check
+        expect(writeFileSpy).toBeCalledWith(manifestPath, '{\n    "sap.app": {}\n}\n', { encoding: 'utf8' });
+    });
+
+    test('Update manifest.json of standalone app - mem-fs-editor (mocked)', async () => {
+        // Mock setup
+        const appRoot = join(sampleRoot, 'fiori_elements');
+        const updateFileContent = { 'sap.app': {} } as unknown as Manifest;
+        const manifestPath = join(appRoot, 'webapp', 'manifest.json');
+        memFs.writeJSON(manifestPath, { 'sap.app': { id: 'single_apps-fiori_elements' } }, undefined, 4);
+        // Test execution
+        const appAccess = await createApplicationAccess(appRoot);
+        await appAccess.updateManifestJSON(updateFileContent, memFs);
+        // Result check
+        const result = memFs.read(manifestPath);
+        expect(result).toBe('{\n    "sap.app": {}\n}\n');
+    });
+
+    test('Get instance of specification (mocked)', async () => {
+        // Mock setup
+        const appRoot = join(sampleRoot, 'fiori_elements');
+        jest.spyOn(specMock, 'getSpecification').mockResolvedValueOnce({ test: 'specification' });
+        // Test execution
+        const appAccess = await createApplicationAccess(appRoot);
+        const spec = await appAccess.getSpecification();
+        // Result check
+        expect(spec).toEqual({ test: 'specification' });
+    });
+
     test('Error handling for non existing app', async () => {
         try {
             await createApplicationAccess('non-existing-app');
@@ -256,7 +355,9 @@ describe('Test function createProjectAccess()', () => {
         expect(projectAccess).toBeDefined();
         expect(projectAccess.root).toBe(projectRoot);
         expect(projectAccess.projectType).toBe('CAPNodejs');
-        expect(projectAccess.getApplicationIds()).toEqual([join('apps/one'), join('apps/two')]);
+        expect(projectAccess.getApplicationIds().sort()).toEqual(
+            [join('apps/one'), join('apps/two'), join('apps/freestyle')].sort()
+        );
         expect(projectAccess.getApplication(join('apps/one')).getAppId()).toBe(join('apps/one'));
     });
 

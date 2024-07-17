@@ -20,6 +20,7 @@ import { ServiceProvider } from './base/service-provider';
 import type { ODataService } from './base/odata-service';
 import { AbapServiceProvider } from './abap';
 import { inspect } from 'util';
+import { TlsPatch } from './base/patchTls';
 
 type Class<T> = new (...args: any[]) => T;
 
@@ -67,6 +68,10 @@ function createInstance<T extends ServiceProvider>(
         config.cookies.split(';').forEach((singleCookieStr: string) => {
             instance.cookies.addCookie(singleCookieStr.trim());
         });
+    }
+
+    if (TlsPatch.isPatchRequired(config.baseURL)) {
+        TlsPatch.apply();
     }
     return instance;
 }
@@ -237,7 +242,13 @@ export function createServiceForUrl(
 ): ODataService {
     const urlObject = new URL(url);
     config.baseURL = urlObject.origin;
-    config.params = urlObject.searchParams;
+
+    const searchParams = new URLSearchParams(config.params);
+    for (const [key, val] of urlObject.searchParams.entries()) {
+        searchParams.append(key, val);
+    }
+    config.params = searchParams;
+
     const provider = createInstance(ServiceProvider, config);
 
     return provider.service(urlObject.pathname);

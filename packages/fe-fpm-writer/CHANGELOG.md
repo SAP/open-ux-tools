@@ -1,5 +1,36 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.25.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+## 0.24.16
+
+### Patch Changes
+
+-   1a1baeb0: Revert "feat(fiori-elements-writer): remove `sap.fe.templates` dependency
+
+## 0.24.15
+
+### Patch Changes
+
+-   9188fe8b: fpm v4 removed sap.fe.templates in manifest.json, now has dependency on sap.fe.core
+    sap.ushell removed from ui5-application-writer, now loaded in fiori-elements and fiori-freestyle writers respectively
+
+## 0.24.14
+
+### Patch Changes
+
+-   d2063073: Fixed custom action path when it's generated in custom section.
+
+## 0.24.13
+
+### Patch Changes
+
+-   f69d72c1: Fixed custom action path when it's generated within custom section.
+
 ## 0.24.12
 
 ### Patch Changes

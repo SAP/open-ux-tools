@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/feature-toggle",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "description": "Feature toggle manager for Fiori tools",
     "repository": {
         "type": "git",
@@ -28,7 +28,7 @@
     ],
     "devDependencies": {
         "@types/jest-when": "2.7.0",
-        "jest-when": "3.4.2",
+        "jest-when": "3.6.0",
         "rimraf": "5.0.5",
         "typescript": "^5.1.6",
         "@types/vscode": "1.73.1"

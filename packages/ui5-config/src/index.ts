@@ -15,6 +15,7 @@ export {
     BspApp,
     AbapTarget,
     AbapDeployConfig,
+    Ui5Document,
     UI5ProxyConfig,
     UI5ProxyConfigTarget
 } from './types';

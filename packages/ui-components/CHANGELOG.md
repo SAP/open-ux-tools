@@ -1,5 +1,24 @@
 # @sap-ux/ui-components
 
+## 1.17.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+## 1.16.3
+
+### Patch Changes
+
+-   ccd9256d: Update Icons.tsx
+    Icon16/ThumbsUp Icon16/ThumbsDown
+
+## 1.16.2
+
+### Patch Changes
+
+-   915e7d0c: UIContextualMenu. Wrong visualisation of menu item without text when menu contains at least one menu item with icon
+
 ## 1.16.1
 
 ### Patch Changes

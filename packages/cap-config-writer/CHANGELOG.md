@@ -1,5 +1,227 @@
 # @sap-ux/cap-config-writer
 
+## 0.6.8
+
+### Patch Changes
+
+-   Updated dependencies [421f3ca]
+    -   @sap-ux/project-access@1.25.5
+    -   @sap-ux/odata-service-inquirer@0.4.8
+
+## 0.6.7
+
+### Patch Changes
+
+-   Updated dependencies [173b5f2]
+    -   @sap-ux/project-access@1.25.4
+    -   @sap-ux/odata-service-inquirer@0.4.7
+
+## 0.6.6
+
+### Patch Changes
+
+-   Updated dependencies [e7b9184]
+    -   @sap-ux/project-access@1.25.3
+    -   @sap-ux/odata-service-inquirer@0.4.6
+
+## 0.6.5
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.25.2
+-   @sap-ux/odata-service-inquirer@0.4.5
+
+## 0.6.4
+
+### Patch Changes
+
+-   Updated dependencies [0f3cf6b]
+    -   @sap-ux/project-access@1.25.1
+    -   @sap-ux/odata-service-inquirer@0.4.4
+
+## 0.6.3
+
+### Patch Changes
+
+-   Updated dependencies [f076dd3]
+    -   @sap-ux/project-access@1.25.0
+    -   @sap-ux/odata-service-inquirer@0.4.3
+
+## 0.6.2
+
+### Patch Changes
+
+-   Updated dependencies [0ae685e]
+    -   @sap-ux/project-access@1.24.0
+    -   @sap-ux/odata-service-inquirer@0.4.2
+
+## 0.6.1
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.4.1
+
+## 0.6.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/logger@0.6.0
+    -   @sap-ux/odata-service-inquirer@0.4.0
+    -   @sap-ux/project-access@1.23.0
+    -   @sap-ux/yaml@0.16.0
+
+## 0.5.7
+
+### Patch Changes
+
+-   Updated dependencies [9ea58ad4]
+    -   @sap-ux/project-access@1.22.4
+    -   @sap-ux/odata-service-inquirer@0.3.11
+
+## 0.5.6
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.3.10
+
+## 0.5.5
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.3.9
+
+## 0.5.4
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.3.8
+
+## 0.5.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.22.3
+-   @sap-ux/odata-service-inquirer@0.3.7
+
+## 0.5.2
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.3.6
+
+## 0.5.1
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.3.5
+
+## 0.5.0
+
+### Minor Changes
+
+-   200894d7: Add support for passing launch text for Cap projects to generate README files
+
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/project-access@1.22.2
+    -   @sap-ux/yaml@0.15.1
+    -   @sap-ux/odata-service-inquirer@0.3.4
+
+## 0.4.0
+
+### Minor Changes
+
+-   04ed040a: update cds-plugin-ui5 version
+
+## 0.3.7
+
+### Patch Changes
+
+-   Updated dependencies [017d008f]
+    -   @sap-ux/odata-service-inquirer@0.3.3
+
+## 0.3.6
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.3.2
+
+## 0.3.5
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.22.1
+-   @sap-ux/odata-service-inquirer@0.3.1
+
+## 0.3.4
+
+### Patch Changes
+
+-   d1045887: Moving xml js from dev dependency to real dependency in package json
+
+## 0.3.3
+
+### Patch Changes
+
+-   Updated dependencies [1ea831d5]
+    -   @sap-ux/odata-service-inquirer@0.3.0
+
+## 0.3.2
+
+### Patch Changes
+
+-   Updated dependencies [ad93a484]
+    -   @sap-ux/project-access@1.22.0
+    -   @sap-ux/odata-service-inquirer@0.2.3
+
+## 0.3.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.21.2
+-   @sap-ux/odata-service-inquirer@0.2.2
+
+## 0.3.0
+
+### Minor Changes
+
+-   64a95bd1: Add additional cap configuration writing functionalities
+
+### Patch Changes
+
+-   Updated dependencies [64a95bd1]
+    -   @sap-ux/yaml@0.15.0
+    -   @sap-ux/project-access@1.21.1
+    -   @sap-ux/odata-service-inquirer@0.2.1
+
+## 0.2.40
+
+### Patch Changes
+
+-   Updated dependencies [69b8d6de]
+    -   @sap-ux/project-access@1.21.0
+
+## 0.2.39
+
+### Patch Changes
+
+-   Updated dependencies [a7d78229]
+    -   @sap-ux/project-access@1.20.4
+
+## 0.2.38
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.20.3
+
 ## 0.2.37
 
 ### Patch Changes

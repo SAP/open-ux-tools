@@ -1,5 +1,174 @@
 # @sap-ux/fiori-elements-writer
 
+## 1.0.2
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.25.0
+-   @sap-ux/fiori-generator-shared@0.3.1
+-   @sap-ux/odata-service-writer@0.22.0
+-   @sap-ux/ui5-application-writer@1.1.0
+-   @sap-ux/ui5-test-writer@0.4.0
+
+## 1.0.1
+
+### Patch Changes
+
+-   Updated dependencies [1a0e478]
+    -   @sap-ux/ui5-application-writer@1.1.0
+
+## 1.0.0
+
+### Major Changes
+
+-   5b243ac: Add `projectType` mandatory option to `App` interface to specify the type of project being processed. This option determines file inclusion/exclusion and script updates in the template:
+    -   For projects of type 'CAPJava' or 'CAPNodejs':
+        -   Exclude `ui5-local.yaml` and `.gitignore` from the template.
+        -   Update `package.json` to include only the script `deploy-config`.
+        -   Use full URLs to determine resource URLs in `webapp/index.html` and `flpSandbox.html`.
+    -   For projects of type 'EDMXBackend':
+        -   Include `ui5-local.yaml` and `.gitignore` in the template.
+        -   Update `package.json` to include the following scripts: start, start-local, build, start-noflp, start-mock, int-test, deploy, and sap-ux.
+        -   Include relative URLs to determine resource URLs in `webapp/index.html` and `flpSandbox.html`.
+
+### Patch Changes
+
+-   Updated dependencies [5b243ac]
+    -   @sap-ux/ui5-application-writer@1.0.0
+    -   @sap-ux/fiori-generator-shared@0.3.0
+    -   @sap-ux/odata-service-writer@0.22.0
+
+## 0.23.2
+
+### Patch Changes
+
+-   Updated dependencies [22e4ad8]
+    -   @sap-ux/ui5-config@0.23.1
+    -   @sap-ux/odata-service-writer@0.21.1
+    -   @sap-ux/ui5-application-writer@0.27.2
+    -   @sap-ux/fe-fpm-writer@0.25.0
+    -   @sap-ux/ui5-test-writer@0.4.0
+
+## 0.23.1
+
+### Patch Changes
+
+-   8b7ee1f: Do not add reuse libraries to the ui5-local.yaml
+-   Updated dependencies [8b7ee1f]
+    -   @sap-ux/ui5-application-writer@0.27.1
+
+## 0.23.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/fe-fpm-writer@0.25.0
+    -   @sap-ux/odata-service-writer@0.21.0
+    -   @sap-ux/ui5-application-writer@0.27.0
+    -   @sap-ux/ui5-config@0.23.0
+    -   @sap-ux/ui5-test-writer@0.4.0
+
+## 0.22.0
+
+### Minor Changes
+
+-   cfe6da80: Add a reuse library for UI.Note annotation
+
+## 0.21.4
+
+### Patch Changes
+
+-   1a1baeb0: Revert "feat(fiori-elements-writer): remove `sap.fe.templates` dependency
+-   Updated dependencies [1a1baeb0]
+    -   @sap-ux/fe-fpm-writer@0.24.16
+    -   @sap-ux/ui5-config@0.22.10
+    -   @sap-ux/odata-service-writer@0.20.5
+    -   @sap-ux/ui5-application-writer@0.26.18
+    -   @sap-ux/ui5-test-writer@0.3.3
+
+## 0.21.3
+
+### Patch Changes
+
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/ui5-config@0.22.9
+    -   @sap-ux/fe-fpm-writer@0.24.15
+    -   @sap-ux/odata-service-writer@0.20.4
+    -   @sap-ux/ui5-application-writer@0.26.17
+    -   @sap-ux/ui5-test-writer@0.3.3
+
+## 0.21.2
+
+### Patch Changes
+
+-   dfeb3a6b: Load i18n translations asynchronously to ensure proper initialization.
+
+## 0.21.1
+
+### Patch Changes
+
+-   Updated dependencies [a140cf8b]
+    -   @sap-ux/ui5-config@0.22.8
+    -   @sap-ux/odata-service-writer@0.20.3
+    -   @sap-ux/ui5-application-writer@0.26.16
+    -   @sap-ux/fe-fpm-writer@0.24.15
+    -   @sap-ux/ui5-test-writer@0.3.3
+
+## 0.21.0
+
+### Minor Changes
+
+-   9188fe8b: fpm v4 removed sap.fe.templates in manifest.json, now has dependency on sap.fe.core
+    sap.ushell removed from ui5-application-writer, now loaded in fiori-elements and fiori-freestyle writers respectively
+
+### Patch Changes
+
+-   Updated dependencies [9188fe8b]
+    -   @sap-ux/ui5-application-writer@0.26.15
+    -   @sap-ux/fe-fpm-writer@0.24.15
+    -   @sap-ux/ui5-config@0.22.7
+    -   @sap-ux/odata-service-writer@0.20.2
+    -   @sap-ux/ui5-test-writer@0.3.3
+
+## 0.20.1
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.22.6
+-   @sap-ux/odata-service-writer@0.20.1
+-   @sap-ux/ui5-application-writer@0.26.14
+-   @sap-ux/fe-fpm-writer@0.24.14
+-   @sap-ux/ui5-test-writer@0.3.3
+
+## 0.20.0
+
+### Minor Changes
+
+-   e9a007af: Add support for CAP project services and annotations, based on the service type.
+
+### Patch Changes
+
+-   Updated dependencies [e9a007af]
+    -   @sap-ux/odata-service-writer@0.20.0
+
+## 0.19.11
+
+### Patch Changes
+
+-   Updated dependencies [d2063073]
+    -   @sap-ux/fe-fpm-writer@0.24.14
+
+## 0.19.10
+
+### Patch Changes
+
+-   Updated dependencies [f69d72c1]
+    -   @sap-ux/fe-fpm-writer@0.24.13
+
 ## 0.19.9
 
 ### Patch Changes

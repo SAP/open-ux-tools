@@ -1,16 +1,18 @@
 import { generate } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
+import type { Ui5App } from '../src';
 
 describe('UI5 templates', () => {
     const debug = !!process.env['UX_DEBUG'];
     const outputDir = join(__dirname, '/test-output');
 
-    const baseAppConfig = {
+    const baseAppConfig: Ui5App = {
         app: {
             id: 'app.with.namespace',
             title: 'Test App Title',
-            description: 'Test App Description'
+            description: 'Test App Description',
+            projectType: 'EDMXBackend'
         },
         'package': {
             name: 'testPackageName'
@@ -40,6 +42,23 @@ describe('UI5 templates', () => {
                 resolve(true);
             }
         });
+    });
+
+    it('generates options: `sapux` shouldnt be included for CAP project', async () => {
+        const projectDir = join(outputDir, 'testapp_options');
+        const fs = await generate(projectDir, {
+            ...baseAppConfig,
+            app: {
+                ...baseAppConfig.app,
+                projectType: 'CAPJava'
+            },
+            appOptions: {
+                sapux: true
+            }
+        });
+        const packagePath = join(projectDir, 'package.json');
+        const packageJson = fs.readJSON(packagePath) as any;
+        expect(packageJson['sapux']).toBeUndefined();
     });
 
     it('option: `loadReuseLibs`', async () => {
