@@ -78,7 +78,7 @@ export abstract class AppIndexService extends Axios implements Service {
             throw error;
         }
     }
-     /**
+    /**
      * Gets the app info for the specified id.
      *
      * @param {string} appId - The id of the app.

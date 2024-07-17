@@ -79,7 +79,7 @@ describe('AppIndexService', () => {
             expect(appIndex[0].url).toBeDefined();
         });
     });
-  
+
     describe('getIsManiFirstSupported', () => {
         const provider = createForAbap(config);
         const service: AppIndexService = provider.getAppIndex();
@@ -113,14 +113,14 @@ describe('AppIndexService', () => {
 
             try {
                 await service.getIsManiFirstSupported('appId');
-              fail('The function should have thrown an error.');
+                fail('The function should have thrown an error.');
             } catch (error) {
                 expect(error).toBeDefined();
                 expect(error.message).toBe('Request failed with status code 404');
             }
         });
     });
-  describe('getAppInfo', () => {
+    describe('getAppInfo', () => {
         const provider = createForAbap(config);
         const service: AppIndexService = provider.getAppIndex();
 
@@ -163,6 +163,6 @@ describe('AppIndexService', () => {
             } catch (error) {
                 expect(error).toBeDefined();
             }
-       });
-  });
+        });
+    });
 });
