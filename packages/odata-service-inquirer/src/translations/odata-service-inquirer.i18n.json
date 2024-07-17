@@ -62,7 +62,7 @@
         },
         "warnings": {
             "nonUIServiceTypeWarningMessage": "Please note that {{serviceType}} services are not intended to be used for the generation of SAP Fiori UI applications",
-            "noServicesAvailable": "No services available for the selected system, see logs for furthur details.",
+            "noServicesAvailable": "No services available for the selected system, see logs for further details.",
             "noServicesAvailableForOdataVersion": "There are no V{{odataVersion}} OData services available from the selected system and the template you have chosen supports V{{odataVersion}} OData services only"
 
         },
@@ -84,7 +84,7 @@
         "systemService": {
             "message": "Service name",
             "breadcrumb": "Service",
-            "noServicesWarning": "No services available for the selected system, see logs for furthur details."
+            "noServicesWarning": "No services available for the selected system, see logs for further details."
         },
         "systemType": {
             "choiceAbapOnPrem": "ABAP On Premise",
