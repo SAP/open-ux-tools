@@ -35,7 +35,7 @@ export class UI5RtVersionService extends AdtService {
             return result.data as string;
         } catch (error) {
             if (isAxiosError) {
-                this.log.debug('Could not fetch UI5 Version.');
+                this.log.error('Could not fetch UI5 Version.');
             }
             this.log.debug(error);
             throw error;
