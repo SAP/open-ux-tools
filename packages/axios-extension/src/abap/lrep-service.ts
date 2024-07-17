@@ -77,13 +77,21 @@ export interface Message {
 }
 
 /**
+ * All available adaptation project types from system.
+ */
+export enum AdaptationProjectType {
+    ON_PREMISE = 'onPremise',
+    CLOUD_READY = 'cloudReady'
+}
+
+/**
  * Structure of the system info reponse data.
  */
 export interface SystemInfo {
     /**
      * Supported adaptation project types from system.
      */
-    adaptationProjectTypes: string[];
+    adaptationProjectTypes: AdaptationProjectType[];
     activeLanguages: Language[];
 }
 

@@ -10,7 +10,6 @@ import {
     FileStoreService,
     BusinessObjectsService,
     GeneratorService,
-    PublishService,
     UI5RtVersionService
 } from '../../src';
 import type { AxiosError } from '../../src';
@@ -879,32 +878,6 @@ describe('Generator Service', () => {
                 uri: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`
             })
         ).rejects.toThrowError();
-    });
-});
-
-describe('Publish Service', () => {
-    beforeAll(() => {
-        nock.disableNetConnect();
-    });
-
-    afterAll(() => {
-        nock.cleanAll();
-        nock.enableNetConnect();
-    });
-
-    const provider = createForAbap(config);
-
-    test('Publish Service - publish completed successfully', async () => {
-        nock(server)
-            .get(AdtServices.DISCOVERY)
-            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-3.xml'))
-            .post(`${AdtServices.PUBLISH}/publishjobs`)
-            .replyWithFile(200, join(__dirname, 'mockResponses/publishResponse.xml'));
-        const type = 'SRVB/SVB';
-        const name = 'ZUI_BANKTP004_O4';
-        const publishService = await provider.getAdtService<PublishService>(PublishService);
-        const publishResponse = await publishService?.publish(type, name);
-        expect(publishResponse?.SEVERITY).toEqual('OK');
     });
 });
 

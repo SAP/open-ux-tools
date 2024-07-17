@@ -71,7 +71,11 @@ export abstract class AppIndexService extends Axios implements Service {
             return parseResponseData as boolean;
         } catch (error) {
             if (isAxiosError(error)) {
-                this.log.debug(`Fail fetching ui5_app_mani_first_supported for app with id: ${appId}.`);
+                this.log.error(`Fail fetching ui5_app_mani_first_supported for app with id: ${appId}.`);
+            } else {
+                this.log.error(
+                    `Fail fetching ui5_app_mani_first_supported is not in expected format for app with id: ${appId}.`
+                );
             }
             this.log.debug(error);
             throw error;
