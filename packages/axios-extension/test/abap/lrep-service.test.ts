@@ -302,7 +302,7 @@ describe('LayeredRepositoryService', () => {
         test('throws error when request fails', async () => {
             nock(server)
                 .get((path) => path.startsWith(`${LayeredRepositoryService.PATH}/dta_folder/system_info`))
-                .reply(405);
+                .reply(500);
             try {
                 await service.getSystemInfo('Z_TEST_PACKAGE');
                 fail('The function should have thrown an error.');

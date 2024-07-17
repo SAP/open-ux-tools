@@ -80,6 +80,9 @@ export interface Message {
  * Structure of the system info reponse data.
  */
 export interface SystemInfo {
+    /**
+     * Supported adaptation project types from system.
+     */
     adaptationProjectTypes: string[];
     activeLanguages: Language[];
 }
@@ -89,7 +92,6 @@ interface Language {
     description: string;
     i18n: string;
 }
-
 /**
  * Technically supported layers, however, in practice only `CUSTOMER_BASE` is used
  */
@@ -280,7 +282,7 @@ export class LayeredRepositoryService extends Axios implements Service {
     public async getSystemInfo(language: string = 'EN', cloudPackage?: string): Promise<SystemInfo> {
         try {
             const params = {
-                'sap-languag': language
+                'sap-language': language
             };
             if (cloudPackage) {
                 params['package'] = cloudPackage;
@@ -292,9 +294,6 @@ export class LayeredRepositoryService extends Axios implements Service {
         } catch (error) {
             this.log.error('Getting system data failed.');
             this.log.debug(error);
-            if (isAxiosError(error) && error.response?.status === 405) {
-                this.log.error('Newer version of SAP_UI required!');
-            }
 
             throw error;
         }
