@@ -15,7 +15,7 @@ export interface MultiSelectProps extends CheckboxPromptQuestion {
 
 export const MultiSelect = (props: MultiSelectProps) => {
     const { name, message, onChange, required, options, pending, description, errorMessage, placeholder } = props;
-    const [value, setValue] = useValue('', props.value?.toString());
+    const [value, setValue] = useValue('', props.value?.toString() ?? '');
 
     return (
         <UIComboBox

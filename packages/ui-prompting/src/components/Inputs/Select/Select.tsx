@@ -16,7 +16,8 @@ export interface SelectProps extends ListPromptQuestion {
 export const Select = (props: SelectProps) => {
     const { name, message, onChange, required, options, pending, description, errorMessage, placeholder, creation } =
         props;
-    const [value, setValue] = useValue('', props.value);
+    // ToDo - recheck props.value ?? ''
+    const [value, setValue] = useValue('', props.value ?? '');
     const inputRef = React.createRef<ITextField>();
 
     const onChangeSelect = (

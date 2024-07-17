@@ -33,8 +33,8 @@ const STYLE_FLEX = {
 //     }, {});
 
 const updateWithDefaultAnswers = (answers: Answers, questions: PromptQuestion[]): Answers => {
-    // return {};
-    const updatedAnswers = { ...answers };
+    // ToDo - temp fix
+    const updatedAnswers = structuredClone(answers);
     for (const question of questions) {
         if (question.default !== undefined && getAnswer(updatedAnswers, question.name) === undefined) {
             setAnswer(updatedAnswers, question.name, question.default);
@@ -103,7 +103,7 @@ export const BuildingBlockQuestions = (props: {
      * Method resets answers to default state.
      */
     function handleReset() {
-        setAnswers(updateWithDefaultAnswers({}, questions));
+        setAnswers(updateWithDefaultAnswers(externalAnswers ?? initialAnswers ?? {}, questions));
         setValidation({});
     }
 
