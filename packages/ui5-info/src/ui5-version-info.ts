@@ -343,40 +343,30 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
         );
         filteredUI5Versions = defaultUi5Versions.slice();
     }
+
     const defaultUI5Version = filteredUI5Versions[0];
+    const ui5VersionsOverview = filterOptions?.includeMaintained
+        ? ((await retrieveUI5VersionsCache(ui5VersionsType.overview, filterOptions.useCache)) as UI5VersionOverview[])
+        : undefined;
 
-    let ui5VersionsOverview: UI5VersionOverview[] | undefined;
-    if (filterOptions?.includeMaintained === true) {
-        ui5VersionsOverview = (await retrieveUI5VersionsCache(
-            ui5VersionsType.overview,
-            filterOptions?.useCache
-        )) as UI5VersionOverview[];
-    }
+    const isMaintained = (ui5: string) =>
+        ui5VersionsOverview?.some(
+            (v) =>
+                v &&
+                `${major(v.version)}.${minor(v.version)}` === `${major(ui5)}.${minor(ui5)}` &&
+                v.support === 'Maintenance'
+        ) ?? false;
 
-    return filteredUI5Versions.map((ui5: string) => {
-        const ui5Version: UI5Version = {
-            version: ui5
-        };
-        if (
-            filterOptions?.includeDefault &&
-            defaultUI5Version === ui5 &&
-            !filterOptions.markLatestMaintainedAsDefault
-        ) {
-            ui5Version.default = true;
-        }
-        if (filterOptions?.markLatestMaintainedAsDefault && latestUI5Version === ui5) {
-            ui5Version.default = true;
-        }
-        if (filterOptions?.includeMaintained === true && ui5VersionsOverview !== undefined) {
-            ui5Version.maintained = ui5VersionsOverview.some((v): boolean | undefined =>
-                v !== undefined
-                    ? `${major(v.version)}.${minor(v.version)}` === `${major(ui5)}.${minor(ui5)}` &&
-                      v.support === 'Maintenance'
-                    : undefined
-            );
-        }
-        return ui5Version;
-    });
+    const finalDefaultUI5Version =
+        filterOptions?.includeDefault && filterOptions.includeMaintained && !isMaintained(defaultUI5Version)
+            ? filteredUI5Versions.find(isMaintained) ?? defaultUI5Version
+            : defaultUI5Version;
+
+    return filteredUI5Versions.map((ui5) => ({
+        version: ui5,
+        ...(filterOptions?.includeDefault && { default: finalDefaultUI5Version === ui5 }),
+        ...(filterOptions?.includeMaintained && { maintained: isMaintained(ui5) })
+    }));
 }
 
 /**

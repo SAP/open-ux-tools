@@ -4,6 +4,7 @@ import snapshotResponse from './testdata/snapshot-response.json';
 import officialResponse from './testdata/official-response.json';
 import overviewResponse from './testdata/overview-response.json';
 import officialOutOfMaintenanceResponse from './testdata/official-response-latest-out-of-maintenance.json';
+import overviewOutOfMaintenanceResponse from './testdata/overview-response-latest-out-of-maintenance.json';
 
 import { getLatestUI5Version, getUI5Versions } from '../src/ui5-version-info';
 import * as commands from '../src/commands';
@@ -132,22 +133,21 @@ describe('getUI5Versions', () => {
         expect(notSupportedCount).toEqual(80);
         expect(versions).toMatchSnapshot();
     });
-});
-describe('filterOptions: markLatestMaintainedAsDefault', () => {
-    afterEach(() => {
-        jest.clearAllMocks();
+
+    test('filterOptions: includeDefault and includeMaintained combined look for next maintained version if latest one is Out of maintenance', async () => {
         nock.cleanAll();
-    });
-    test('filterOptions: markLatestMaintainedAsDefault', async () => {
         nock(ui5VersionRequestInfo.OfficialUrl)
             .get(`/${ui5VersionRequestInfo.VersionsFile}`)
             .reply(200, officialOutOfMaintenanceResponse);
+        nock(ui5VersionRequestInfo.OfficialUrl)
+            .get(`/${ui5VersionRequestInfo.VersionsOverview}`)
+            .reply(200, overviewOutOfMaintenanceResponse);
 
         const versions = await getUI5Versions({
             includeDefault: true,
-            includeMaintained: true,
-            markLatestMaintainedAsDefault: true
+            includeMaintained: true
         });
+        // Returns next maintained version if latest is `Out of maintenance`
         expect(versions[1].version).toEqual('1.125.1');
         expect(versions[1].default).toEqual(true);
     });
