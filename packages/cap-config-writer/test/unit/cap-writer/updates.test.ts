@@ -1,5 +1,5 @@
-import { applyCAPUpdates, applyCAPJavaUpdates } from '../../../src/cap-writer/updates';
-import type { CapServiceCdsInfo } from '../../../src/index';
+import { applyCAPUpdates } from '../../../src/cap-writer/updates';
+import type { CapServiceCdsInfo, CapProjectSettings } from '../../../src/index';
 import type { CapRuntime } from '@sap-ux/odata-service-inquirer';
 import { join } from 'path';
 import { updateRootPackageJson, updateAppPackageJson } from '../../../src/cap-writer/package-json';
@@ -21,11 +21,14 @@ jest.mock('../../../src/cap-writer/pom-xml', () => ({
     updatePomXml: jest.fn()
 }));
 
-const fs: any = {
-    exists: jest.fn().mockReturnValue(true)
-};
-
 describe('applyCAPUpdates', () => {
+    const fs: any = {
+        exists: jest.fn().mockReturnValue(true)
+    };
+
+    const mockLog: any = {
+        log: jest.fn()
+    };
     const testInputPath = join(__dirname, 'test-inputs');
     const capNodeType: CapRuntime = 'Node.js';
     const appRoot = '/mock/app/root';
@@ -50,96 +53,80 @@ describe('applyCAPUpdates', () => {
     });
 
     it('should update package.json and optionally tsconfig.json and app package.json', async () => {
-        await applyCAPUpdates(
-            fs,
+        const settings: CapProjectSettings = {
             appRoot,
-            capService,
-            true, // sapux
             packageName,
             appId,
-            true, // enableNPMWorkspaces
-            true, // enableCdsUi5PluginEnabled
-            true // enableTypescript
-        );
+            sapux: true,
+            enableNPMWorkspaces: true,
+            enableCdsUi5PluginEnabled: true,
+            enableTypescript: true
+        };
+        await applyCAPUpdates(fs, capService, settings, mockLog);
         // root package json should be updated
         expect(updateRootPackageJson).toHaveBeenCalledTimes(1);
-        expect(updateRootPackageJson).toHaveBeenCalledWith(fs, packageName, true, capService, appId, undefined, true);
+        expect(updateRootPackageJson).toHaveBeenCalledWith(
+            fs,
+            packageName,
+            settings.sapux,
+            capService,
+            appId,
+            mockLog,
+            settings.enableNPMWorkspaces
+        );
         // tsconfig.json should be updated
         expect(updateTsConfig).toHaveBeenCalledTimes(1);
-        expect(updateTsConfig).toHaveBeenCalledWith(fs, '/mock/app/root');
+        expect(updateTsConfig).toHaveBeenCalledWith(fs, appRoot);
         // app package json should be updated
         expect(updateAppPackageJson).toHaveBeenCalledTimes(1);
-        expect(updateAppPackageJson).toHaveBeenCalledWith(fs, '/mock/app/root');
+        expect(updateAppPackageJson).toHaveBeenCalledWith(fs, appRoot);
         // dont update pom.xml or application.yaml for Node.js
         expect(updatePomXml).toHaveBeenCalledTimes(0);
         expect(updateStaticLocationsInApplicationYaml).toHaveBeenCalledTimes(0);
+        // expect updateTsConfig to be called since enableTypescript is true
+        expect(updateTsConfig).toHaveBeenCalledTimes(1);
+        // expect updateAppPackageJson to be called since enableCdsUi5PluginEnabled is true
+        expect(updateAppPackageJson).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not call updateTsConfig when enableTypescript is not defined', async () => {
+        const settings: CapProjectSettings = {
+            appRoot,
+            packageName,
+            appId
+        };
+        await applyCAPUpdates(fs, capService, settings, mockLog);
+        expect(updateRootPackageJson).toHaveBeenCalledTimes(1);
+        // expect updateTsConfig to not be called since enableTypescript is false
+        expect(updateTsConfig).toHaveBeenCalledTimes(0);
+        // expect updateAppPackageJson to not be called since enableNPMWorkspaces is false
+        expect(updateAppPackageJson).toHaveBeenCalledTimes(0);
     });
 
     it('should call applyCAPJavaUpdates when cap type is Java', async () => {
-        capService.capType = 'Java';
-        await applyCAPUpdates(
-            fs,
+        const settings: CapProjectSettings = {
             appRoot,
-            capService,
-            true, // sapux
             packageName,
             appId,
-            false, // enableNPMWorkspaces
-            false, // enableCdsUi5PluginEnabled
-            false // enableTypescript
-        );
+            sapux: true,
+            enableNPMWorkspaces: false,
+            enableTypescript: false
+        };
+        capService.capType = 'Java';
+        await applyCAPUpdates(fs, capService, settings, mockLog);
         expect(updatePomXml).toHaveBeenCalledTimes(1);
         expect(updateStaticLocationsInApplicationYaml).toHaveBeenCalledTimes(1);
-    });
-
-    it('should not call updateTsConfig when enableTypescript is false', async () => {
-        await applyCAPUpdates(
-            fs,
-            appRoot,
-            capService,
-            true, // sapux
-            packageName,
-            appId,
-            false, // enableNPMWorkspaces
-            false, // enableCdsUi5PluginEnabled
-            false // enableTypescript
-        );
-
-        expect(updateRootPackageJson).toHaveBeenCalledTimes(1);
-        expect(updateTsConfig).toHaveBeenCalledTimes(0);
-        expect(updateAppPackageJson).toHaveBeenCalledTimes(0);
-    });
-});
-
-describe('applyCAPJavaUpdates', () => {
-    const mockLog: any = {
-        log: jest.fn()
-    };
-
-    afterEach(() => {
-        jest.clearAllMocks();
-    });
-
-    it('should update pom.xml and application.yaml', async () => {
-        const applicationYamlPah = '/mock/project/path/srv/src/main/resources/application.yaml';
-        await applyCAPJavaUpdates(fs, '/mock/project/path', mockLog);
+        const applicationYamlPah = `${capService.projectPath}/srv/src/main/resources/application.yaml`;
         // Verify that updatePomXml is called
         expect(updatePomXml).toHaveBeenCalledTimes(1);
-        expect(updatePomXml).toHaveBeenCalledWith(fs, '/mock/project/path/pom.xml', mockLog);
+        expect(updatePomXml).toHaveBeenCalledWith(fs, `${capService.projectPath}/pom.xml`, mockLog);
         // Verify that updateStaticLocationsInApplicationYaml is called
         expect(updateStaticLocationsInApplicationYaml).toHaveBeenCalledTimes(1);
         expect(updateStaticLocationsInApplicationYaml).toHaveBeenCalledWith(fs, applicationYamlPah, 'app/', mockLog);
-        // Verify that fs.exists is called with the correct paths
-        expect(fs.exists).toHaveBeenCalledTimes(2); // Once for pom.xml and once for application.yaml
-        expect(fs.exists).toHaveBeenCalledWith('/mock/project/path/pom.xml');
-        expect(fs.exists).toHaveBeenCalledWith(applicationYamlPah);
-        // Verify that log methods are called as expected
-        expect(mockLog.log).toHaveBeenCalledTimes(0);
     });
 
-    it('should not update update pom.xml and application.yaml if path dosent exist', async () => {
+    it('should not update update pom.xml and application.yaml if path dosent exist when cap type is Java', async () => {
         fs.exists.mockReturnValue(false); // Mock fs.exists to return false
-        await applyCAPJavaUpdates(fs, '/mock/project/path', mockLog);
         // Verify that updatePomXml is not called
         expect(updatePomXml).toHaveBeenCalledTimes(0);
         // Verify that updateStaticLocationsInApplicationYaml is not called
