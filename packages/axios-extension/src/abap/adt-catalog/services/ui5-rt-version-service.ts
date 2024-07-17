@@ -1,7 +1,6 @@
 import { isAxiosError } from 'axios';
 import type { AdtCategory } from '../../types';
 import { AdtService } from './adt-service';
-import type { Logger } from '@sap-ux/logger';
 
 /**
  * UI5RtVersionService implements ADT requests to get UI5 Version
@@ -15,9 +14,6 @@ export class UI5RtVersionService extends AdtService {
         scheme: 'http://www.sap.com/adt/categories/filestore',
         term: 'ui5-rt-version'
     };
-
-    // Instantiated by calling ServiceProvider.createService()
-    public log: Logger;
 
     /**
      * Get ADT scheme ID.

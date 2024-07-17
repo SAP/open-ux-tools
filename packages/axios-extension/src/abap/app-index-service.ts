@@ -1,7 +1,6 @@
 import type { Service } from '../base/service-provider';
 import { Axios, isAxiosError } from 'axios';
 import type { Logger } from '@sap-ux/logger';
-import { isAxiosError } from '../base/odata-request-error';
 
 export interface App extends Record<string, unknown> {
     'sap.app/id': string;
