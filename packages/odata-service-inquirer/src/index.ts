@@ -90,7 +90,7 @@ async function prompt(
 }
 
 /**
- * Get the prompts for an abap on premis system. This can be used to create a new system connection.
+ * Get the prompts for an abap on premise system. This can be used to create a new system connection.
  *
  * @param systemNamePromptOptions options for the system name prompt see {@link SystemNamePromptOptions}
  * @param logger a logger compatible with the {@link Logger} interface
