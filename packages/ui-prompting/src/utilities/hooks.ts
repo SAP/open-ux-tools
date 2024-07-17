@@ -52,17 +52,18 @@ function getOptions(question: PromptQuestion, choices?: PromptListChoices): UISe
     }
     const options: UISelectableOption<ChoiceOptions>[] = [];
     for (const choice of resolvedChoices) {
-        if (typeof choice === 'string') {
+        if (typeof choice === 'object' && 'value' in choice) {
             options.push({
-                key: choice,
-                text: choice,
-                data: { value: choice }
-            });
-        } else if ('value' in choice) {
-            options.push({
-                key: choice.value,
+                key: choice.value.toString(),
                 text: choice.name ?? '',
                 data: choice
+            });
+        } else {
+            const choiceText = choice.toString();
+            options.push({
+                key: choiceText,
+                text: choiceText,
+                data: { value: choice }
             });
         }
     }
