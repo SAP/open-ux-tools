@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`read should return launch config by name 1`] = `
+Object {
+  "console": "integratedTerminal",
+  "cwd": "\${workspaceFolder}/fiori-elements-v2",
+  "env": Object {
+    "DEBUG": "--inspect",
+  },
+  "internalConsoleOptions": "neverOpen",
+  "name": "Start fiori-elements-v2",
+  "port": 9229,
+  "request": "launch",
+  "runtimeArgs": Array [
+    "run-script",
+    "start",
+  ],
+  "runtimeExecutable": "npm",
+  "type": "node",
+  "windows": Object {
+    "runtimeExecutable": "npm.cmd",
+  },
+}
+`;
+
+exports[`read using memfs should return launch config by name 1`] = `
+Object {
+  "console": "integratedTerminal",
+  "cwd": "\${workspaceFolder}/fiori-elements-v2",
+  "env": Object {
+    "DEBUG": "--inspect",
+  },
+  "internalConsoleOptions": "neverOpen",
+  "name": "Start fiori-elements-v2",
+  "port": 9229,
+  "request": "launch",
+  "runtimeArgs": Array [
+    "run-script",
+    "start",
+  ],
+  "runtimeExecutable": "npm",
+  "type": "node",
+  "windows": Object {
+    "runtimeExecutable": "npm.cmd",
+  },
+}
+`;
