@@ -1,11 +1,10 @@
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import { OdataVersion, promptNames } from '../../../../src/index';
 import * as serviceUrlValidators from '../../../../src/prompts/datasources/service-url/validators';
-import * as utils from '../../../../src/utils';
+import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
 import { getServiceUrlQuestions } from '../../../../src/prompts/datasources/service-url/questions';
 import { serviceUrlInternalPromptNames } from '../../../../src/prompts/datasources/service-url/types';
 import LoggerHelper from '../../../../src/prompts/logger-helper';
-import { hostEnvironment } from '../../../../src/types';
 
 const validateUrlMockTrue = jest.fn().mockResolvedValue(true);
 const validateAuthTrue = jest.fn().mockResolvedValue(true);
@@ -19,6 +18,11 @@ jest.mock('../../../../src/prompts/datasources/service-url/connectionValidator',
         ConnectionValidator: jest.fn().mockImplementation(() => connectionValidatorMock)
     };
 });
+
+jest.mock('@sap-ux/fiori-generator-shared', () => ({
+    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
+    getHostEnvironment: jest.fn()
+}));
 
 describe('Service URL prompts', () => {
     beforeAll(async () => {
@@ -34,6 +38,7 @@ describe('Service URL prompts', () => {
         connectionValidatorMock.validateAuth = validateAuthTrue;
     });
     test('getQuestions', async () => {
+        jest.spyOn(fioriGenShared, 'getHostEnvironment').mockReturnValueOnce(fioriGenShared.hostEnvironment.cli);
         let questions = getServiceUrlQuestions();
         expect(questions).toMatchInlineSnapshot(`
             [
@@ -265,7 +270,7 @@ describe('Service URL prompts', () => {
     });
 
     test('Test prompt: cliIgnoreCertValidate', async () => {
-        jest.spyOn(utils, 'getHostEnvironment').mockReturnValueOnce(hostEnvironment.cli);
+        jest.spyOn(fioriGenShared, 'getHostEnvironment').mockReturnValueOnce(fioriGenShared.hostEnvironment.cli);
         connectionValidatorMock.validity = {
             urlFormat: true,
             reachable: true,

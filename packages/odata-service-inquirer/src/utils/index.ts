@@ -1,8 +1,7 @@
-import { isAppStudio } from '@sap-ux/btp-utils';
 import type { TelemetryEvent, TelemetryProperties, ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
 import { SampleRate } from '@sap-ux/telemetry';
 import osName from 'os-name';
-import { hostEnvironment } from '../types';
+import { getHostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { PromptState } from './prompt-state';
 import { XMLParser } from 'fast-xml-parser';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
@@ -10,19 +9,6 @@ import LoggerHelper from '../prompts/logger-helper';
 import { t } from '../i18n';
 
 const osVersionName = osName();
-
-/**
- * Determine if the current prompting environment is cli or a hosted extension (app studio or vscode).
- *
- * @returns the platform name and technical name
- */
-export function getHostEnvironment(): { name: string; technical: string } {
-    if (!PromptState.isYUI) {
-        return hostEnvironment.cli;
-    } else {
-        return isAppStudio() ? hostEnvironment.bas : hostEnvironment.vscode;
-    }
-}
 
 let telemetryClient: ToolsSuiteTelemetryClient | undefined;
 
@@ -58,7 +44,7 @@ export function sendTelemetryEvent(eventName: string, telemetryData: TelemetryPr
  */
 function createTelemetryEvent(eventName: string, telemetryData: TelemetryProperties): TelemetryEvent {
     const telemProps: TelemetryProperties = Object.assign(telemetryData, {
-        Platform: getHostEnvironment().technical,
+        Platform: getHostEnvironment(PromptState.isYUI).technical,
         OperatingSystem: osVersionName
     });
     return {

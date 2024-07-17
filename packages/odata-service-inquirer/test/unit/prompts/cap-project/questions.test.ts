@@ -1,10 +1,11 @@
 import type { ListQuestion } from 'inquirer';
+import { hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import { getLocalCapProjectPrompts } from '../../../../src/prompts/datasources/cap-project/questions';
 import type { CapService } from '../../../../src/types';
-import { promptNames, hostEnvironment, type CapServiceChoice } from '../../../../src/types';
+import { promptNames, type CapServiceChoice } from '../../../../src/types';
 import { type CapProjectChoice, capInternalPromptNames } from '../../../../src/prompts/datasources/cap-project/types';
-import { PromptState, getHostEnvironment } from '../../../../src/utils';
+import { PromptState } from '../../../../src/utils';
 import {
     enterCapPathChoiceValue,
     getCapServiceChoices as getCapServiceChoicesMock
@@ -14,8 +15,8 @@ import type { CapCustomPaths } from '@sap-ux/project-access';
 import { errorHandler } from '../../../../src/prompts/prompt-helpers';
 import { type CdsVersionInfo } from '@sap-ux/project-access';
 
-jest.mock('../../../../src/utils', () => ({
-    ...jest.requireActual('../../../../src/utils'),
+jest.mock('@sap-ux/fiori-generator-shared', () => ({
+    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
     getHostEnvironment: jest.fn()
 }));
 

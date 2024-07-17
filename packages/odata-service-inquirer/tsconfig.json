@@ -1,37 +1,37 @@
 {
-  "extends": "../../tsconfig.json",
-  "include": [
-    "src",
-    "src/**/*.json"
-  ],
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist"
-  },
-  "references": [
-    {
-      "path": "../axios-extension"
+    "extends": "../../tsconfig.json",
+    "include": ["src", "src/**/*.json"],
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "dist"
     },
-    {
-      "path": "../btp-utils"
-    },
-    {
-      "path": "../feature-toggle"
-    },
-    {
-      "path": "../inquirer-common"
-    },
-    {
-      "path": "../logger"
-    },
-    {
-      "path": "../odata-service-writer"
-    },
-    {
-      "path": "../project-access"
-    },
-    {
-      "path": "../telemetry"
-    }
-  ]
+    "references": [
+        {
+            "path": "../axios-extension"
+        },
+        {
+            "path": "../btp-utils"
+        },
+        {
+            "path": "../feature-toggle"
+        },
+        {
+            "path": "../fiori-generator-shared"
+        },
+        {
+            "path": "../inquirer-common"
+        },
+        {
+            "path": "../logger"
+        },
+        {
+            "path": "../odata-service-writer"
+        },
+        {
+            "path": "../project-access"
+        },
+        {
+            "path": "../telemetry"
+        }
+    ]
 }
