@@ -11,7 +11,6 @@ import type { AbapOnPremAnswers } from './prompts/datasources/sap-system/abap-on
 import { getAbapOnPremSystemQuestions } from './prompts/datasources/sap-system/abap-on-prem/questions';
 import { newSystemChoiceValue } from './prompts/datasources/sap-system/new-system/questions';
 import LoggerHelper from './prompts/logger-helper';
-import type { SystemNamePromptOptions } from './types';
 import {
     DatasourceType,
     promptNames,
@@ -20,7 +19,8 @@ import {
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
     type OdataServiceQuestion,
-    type SapSystemType
+    type SapSystemType,
+    type SystemNamePromptOptions
 } from './types';
 import { PromptState, setTelemetryClient } from './utils';
 

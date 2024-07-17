@@ -7,13 +7,14 @@ import { validateClient } from '@sap-ux/project-input-validator';
 import type { InputQuestion, ListChoiceOptions, PasswordQuestion, Question } from 'inquirer';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import { t } from '../../../../i18n';
-import type { OdataServicePromptOptions, SystemNamePromptOptions } from '../../../../types';
 import {
     hostEnvironment,
     promptNames,
     type OdataServiceAnswers,
     type ServiceSelectionPromptOptions,
-    type ValidationLink
+    type ValidationLink,
+    type OdataServicePromptOptions,
+    type SystemNamePromptOptions
 } from '../../../../types';
 import { PromptState, getHostEnvironment } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
