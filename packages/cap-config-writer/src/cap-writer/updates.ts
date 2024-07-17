@@ -5,7 +5,7 @@ import { updateTsConfig, updateStaticLocationsInApplicationYaml } from './tsconf
 import { updatePomXml } from './pom-xml';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
-import type { ToolsLogger } from '@sap-ux/logger';
+import type { Logger } from '@sap-ux/logger';
 
 /**
  * Applies updates to a CAP project based on the provided options.
@@ -21,14 +21,14 @@ import type { ToolsLogger } from '@sap-ux/logger';
  * @param {boolean} capProjectSettings.enableNPMWorkspaces - Indicates if NPM workspaces are enabled.
  * @param {boolean} [capProjectSettings.enableCdsUi5PluginEnabled] - Indicates if CDS UI5 plugin is enabled.
  * @param {boolean} [capProjectSettings.enableTypescript] - Indicates if TypeScript is enabled.
- * @param {ToolsLogger} [log] - logger for logging information.
+ * @param {Logger} [log] - logger for logging information.
  * @returns {Promise<void>} A promise that resolves when the updates are applied.
  */
 export async function applyCAPUpdates(
     fs: Editor,
     capService: CapServiceCdsInfo,
     capProjectSettings: CapProjectSettings,
-    log?: ToolsLogger
+    log?: Logger
 ): Promise<void> {
     const {
         appRoot,
@@ -47,7 +47,7 @@ export async function applyCAPUpdates(
         sapux,
         capService,
         appId,
-        log as unknown as ToolsLogger,
+        log,
         enableNPMWorkspaces
     );
 
