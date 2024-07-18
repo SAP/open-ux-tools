@@ -6,10 +6,10 @@ import { SAP_CLIENT_KEY } from '../../../types';
 import { PromptState, originToRelative, parseOdataVersion } from '../../../utils';
 import LoggerHelper from '../../logger-helper';
 import { errorHandler } from '../../prompt-helpers';
-import { ConnectionValidator } from './connectionValidator';
+import { ConnectionValidator } from '../../connectionValidator';
 
 /**
- * Validates that a service specified by the odata service is accessible, has the required version and returns valid metadata.
+ * Validates that a service specified by the service url is accessible, has the required version and returns valid metadata.
  * Retrieves annotations (from Abap backends) if available and stores them in the PromptState.
  *
  * @param url the full odata service url including query parameters
