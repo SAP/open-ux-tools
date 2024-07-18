@@ -3891,8 +3891,7 @@ exports[`serializeTarget xml cds Delete Criticality and criticality Representati
 
                   annotate IncidentService.Incidents with @UI : {
                     FieldGroup #DateData1 : {Data : [
-                        { $Type : 'UI.DataField', Value : title,
-                           }
+                        { $Type : 'UI.DataField', Value : title, }
                       ]}
                     };
                 "
