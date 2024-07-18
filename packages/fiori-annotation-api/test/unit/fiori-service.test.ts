@@ -3445,6 +3445,56 @@ describe('serializeTarget', () => {
                 const result = service.serializeTarget({ target: targetPath, annotations: [annotation] });
                 expect(result).toMatchSnapshot();
             });
+            test('Delete Criticality and criticality Representation', async () => {
+                const project = PROJECTS.V4_CDS_START;
+                const root = project.root;
+                const fsEditor = await createFsEditorForProject(root);
+                const path = pathFromUri(project.files.annotations);
+                const content = fsEditor.read(path);
+                const testData = `${content}
+                  annotate IncidentService.Incidents with @UI : {
+                    FieldGroup #DateData1 : {Data : [
+                        { $Type : 'UI.DataField', Value : title,
+                          Criticality : priority.criticality,
+                          CriticalityRepresentation : #WithIcon }
+                      ]}
+                    };
+                `;
+                fsEditor.write(path, testData);
+                const text = await testEdit(
+                    root,
+                    [],
+                    [
+                        {
+                            kind: ChangeType.Delete,
+                            reference: {
+                                target: 'IncidentService.Incidents',
+                                term: `com.sap.vocabularies.UI.v1.FieldGroup`,
+                                qualifier: 'DateData1'
+                            },
+                            uri: project.files.annotations,
+                            pointer: '/record/propertyValues/0/value/Collection/0/propertyValues/1'
+                        },
+                        {
+                            kind: ChangeType.Delete,
+                            reference: {
+                                target: 'IncidentService.Incidents',
+                                term: `com.sap.vocabularies.UI.v1.FieldGroup`,
+                                qualifier: 'DateData1'
+                            },
+                            uri: project.files.annotations,
+                            pointer: '/record/propertyValues/0/value/Collection/0/propertyValues/2'
+                        }
+                        
+                    ],
+                    'IncidentService',
+                    fsEditor,
+                    false
+                );
+    
+                expect(text).toMatchSnapshot();
+            }, 20000000);
+    
         });
     });
 });
