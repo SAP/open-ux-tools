@@ -1,4 +1,4 @@
-import type { Manifest } from '@sap-ux/project-access';
+import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { AdpPreviewConfig } from '../types';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
@@ -39,4 +39,27 @@ export async function getManifest(appId: string, adpConfig: AdpPreviewConfig, lo
         logger.debug(error);
         throw error;
     }
+}
+
+type DataSources = Record<string, ManifestNamespace.DataSource>;
+
+/**
+ * Returns the adaptation project configuration, throws an error if not found.
+ *
+ * @param {string} reference - The base application id.
+ * @param {AdpPreviewConfig} adpConfig - The adaptation project configuration.
+ * @param {ToolsLogger} logger - The logger.
+ * @returns {Promise<DataSources>} data sources from base application manifest
+ */
+export async function getManifestDataSources(
+    reference: string,
+    adpConfig: AdpPreviewConfig,
+    logger: ToolsLogger
+): Promise<DataSources> {
+    const manifest = await exports.getManifest(reference, adpConfig, logger);
+    const dataSources = manifest['sap.app'].dataSources;
+    if (!dataSources) {
+        throw new Error('No data sources found in the manifest');
+    }
+    return dataSources;
 }
