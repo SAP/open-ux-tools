@@ -14,8 +14,10 @@ import type {
     ObjectPage,
     ListReport,
     Navigation,
-    InternalListReport
+    InternalListReport,
+    Libraries
 } from './types';
+import { PageType } from './types';
 import type { Manifest } from '../common/types';
 import { FCL_ROUTER } from '../common/defaults';
 import { extendJSON } from '../common/file';
@@ -152,6 +154,28 @@ export function getFclConfig(manifest: Manifest, navigation?: Navigation): FCL {
         }
     }
     return config;
+}
+
+/**
+ * Get the library dependencies for a given page type.
+ *
+ * @param PageType Page type for which the dependencies are to be added
+ * @returns Library dependencies
+ */
+export function getLibraryDependencies(pageType: PageType): Libraries {
+    const libraries: Libraries = {};
+    switch (pageType) {
+        case PageType.CustomPage: {
+            libraries['sap.fe.core'] = {};
+            break;
+        }
+        case PageType.ListReport:
+        case PageType.ObjectPage: {
+            libraries['sap.fe.templates'] = {};
+            break;
+        }
+    }
+    return libraries;
 }
 
 /**
