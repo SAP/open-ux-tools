@@ -229,7 +229,7 @@ export function getMinUI5VersionFromManifest(manifest: Manifest): string | strin
  * @returns minUI5Version, as an array of strings
  */
 export function getMinUI5VersionAsArray(manifest: Manifest): string[] {
-    let result: string[] = [];
+    const result: string[] = [];
     const minUI5Version = getMinUI5VersionFromManifest(manifest);
     if (minUI5Version) {
         const minUI5VersionArray = Array.isArray(minUI5Version) ? minUI5Version : [minUI5Version];
