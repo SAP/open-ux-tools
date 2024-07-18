@@ -68,6 +68,15 @@ describe('MultiSelect', () => {
         expect(screen.getByPlaceholderText('testText0')).toBeDefined();
     });
 
+    it('Test value reset', () => {
+        const { rerender } = render(<MultiSelect {...props} value={'testKey0,testKey1'} />);
+        let input = screen.getByRole('combobox');
+        expect(input.getAttribute('value')).toEqual('testText0, testText1');
+        rerender(<MultiSelect {...props} value={undefined} />);
+        input = screen.getByRole('combobox');
+        expect(input.getAttribute('value')).toEqual('');
+    });
+
     it('Test property required', () => {
         render(<MultiSelect {...props} required={true} />);
         expect(document.getElementsByClassName('.is-required')).toBeDefined();
