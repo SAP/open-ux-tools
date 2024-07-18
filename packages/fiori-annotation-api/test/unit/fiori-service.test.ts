@@ -3485,16 +3485,14 @@ describe('serializeTarget', () => {
                             uri: project.files.annotations,
                             pointer: '/record/propertyValues/0/value/Collection/0/propertyValues/2'
                         }
-                        
                     ],
                     'IncidentService',
                     fsEditor,
                     false
                 );
-    
+
                 expect(text).toMatchSnapshot();
             }, 20000000);
-    
         });
     });
 });
