@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.12.13
+
+### Patch Changes
+
+-   4c06318: Add Adaptation Project's Add Annotations To OData generator prompting
+
 ## 0.12.12
 
 ### Patch Changes
