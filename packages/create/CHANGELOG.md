@@ -1,5 +1,14 @@
 # @sap-ux/create
 
+## 0.7.20
+
+### Patch Changes
+
+-   4c06318: Add Adaptation Project's Add Annotations To OData generator prompting
+-   Updated dependencies [4c06318]
+    -   @sap-ux/adp-tooling@0.12.13
+    -   @sap-ux/preview-middleware@0.16.19
+
 ## 0.7.19
 
 ### Patch Changes
