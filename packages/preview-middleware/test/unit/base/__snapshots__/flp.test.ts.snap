@@ -508,7 +508,6 @@ exports[`FlpSandbox router editor with config 1`] = `
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -533,7 +532,11 @@ exports[`FlpSandbox router editor with config 1`] = `
         (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
+    <script type=\\"text/javascript\\" id=\\"sap-ushell-bootstrap\\">
+        (() => sap.ui.require(['open/ux/preview/client/flp/initUshellBootstrap']))()
+    </script>
 
+    
 </head>
 
 <!-- UI Content -->
@@ -586,7 +589,6 @@ exports[`FlpSandbox router rta 1`] = `
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -609,7 +611,11 @@ exports[`FlpSandbox router rta 1`] = `
         (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
+    <script type=\\"text/javascript\\" id=\\"sap-ushell-bootstrap\\">
+        (() => sap.ui.require(['open/ux/preview/client/flp/initUshellBootstrap']))()
+    </script>
 
+    
 </head>
 
 <!-- UI Content -->
@@ -694,7 +700,6 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -720,19 +725,23 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `
         (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
+    <script type=\\"text/javascript\\" id=\\"sap-ushell-bootstrap\\">
+        (() => sap.ui.require(['open/ux/preview/client/flp/initUshellBootstrap']))()
+    </script>
 
+    
         <!-- Hides Rta native toolbar  -->
-    <style>
+        <style>
         #shell-header, .sapUiRtaToolbar {
-            visibility: hidden;
-            height: 1px;
-        } 
-        .sapUshellShellCanvas {
-            top: 0 !important;
-        }
-        .sapUiRtaMode .sapUiShellBackgroundImage.sapUiGlobalBackgroundImageForce.sapUshellShellBG {
-            background-color: transparent !important;
-        }
+                visibility: hidden;
+                height: 1px;
+            }
+            .sapUshellShellCanvas {
+                top: 0 !important;
+            }
+            .sapUiRtaMode .sapUiShellBackgroundImage.sapUiGlobalBackgroundImageForce.sapUshellShellBG {
+                background-color: transparent !important;
+            }
     </style>
 </head>
 
@@ -787,7 +796,6 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -813,19 +821,23 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
         (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
+    <script type=\\"text/javascript\\" id=\\"sap-ushell-bootstrap\\">
+        (() => sap.ui.require(['open/ux/preview/client/flp/initUshellBootstrap']))()
+    </script>
 
+    
         <!-- Hides Rta native toolbar  -->
-    <style>
+        <style>
         #shell-header, .sapUiRtaToolbar {
-            visibility: hidden;
-            height: 1px;
-        } 
-        .sapUshellShellCanvas {
-            top: 0 !important;
-        }
-        .sapUiRtaMode .sapUiShellBackgroundImage.sapUiGlobalBackgroundImageForce.sapUshellShellBG {
-            background-color: transparent !important;
-        }
+                visibility: hidden;
+                height: 1px;
+            }
+            .sapUshellShellCanvas {
+                top: 0 !important;
+            }
+            .sapUiRtaMode .sapUiShellBackgroundImage.sapUiGlobalBackgroundImageForce.sapUshellShellBG {
+                background-color: transparent !important;
+            }
     </style>
 </head>
 
@@ -880,7 +892,6 @@ exports[`FlpSandbox router test/flp.html 1`] = `
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -902,7 +913,11 @@ exports[`FlpSandbox router test/flp.html 1`] = `
         (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
+    <script type=\\"text/javascript\\" id=\\"sap-ushell-bootstrap\\">
+        (() => sap.ui.require(['open/ux/preview/client/flp/initUshellBootstrap']))()
+    </script>
 
+    
 </head>
 
 <!-- UI Content -->

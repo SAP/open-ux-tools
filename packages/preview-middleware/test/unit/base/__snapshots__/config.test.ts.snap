@@ -79,7 +79,6 @@ exports[`config generatePreviewFiles minimum settings 1`] = `
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -101,7 +100,11 @@ exports[`config generatePreviewFiles minimum settings 1`] = `
         (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
+    <script type=\\"text/javascript\\" id=\\"sap-ushell-bootstrap\\">
+        (() => sap.ui.require(['open/ux/preview/client/flp/initUshellBootstrap']))()
+    </script>
 
+    
 </head>
 
 <!-- UI Content -->
@@ -156,7 +159,6 @@ Object {
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -178,7 +180,11 @@ Object {
         (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
+    <script type=\\"text/javascript\\" id=\\"sap-ushell-bootstrap\\">
+        (() => sap.ui.require(['open/ux/preview/client/flp/initUshellBootstrap']))()
+    </script>
 
+    
 </head>
 
 <!-- UI Content -->
@@ -236,7 +242,6 @@ Object {
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -258,7 +263,11 @@ Object {
         (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
+    <script type=\\"text/javascript\\" id=\\"sap-ushell-bootstrap\\">
+        (() => sap.ui.require(['open/ux/preview/client/flp/initUshellBootstrap']))()
+    </script>
 
+    
 </head>
 
 <!-- UI Content -->
