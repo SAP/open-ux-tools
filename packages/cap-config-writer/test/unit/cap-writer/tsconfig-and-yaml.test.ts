@@ -38,7 +38,7 @@ describe('Writing tsConfig and yaml files', () => {
     test('should update static location in application yaml files corectly when spring is undefined', async () => {
         const projectName = 'test-cap-java';
         const projectPath = join(testInputPath, projectName);
-        const applicationYamlPath = join(projectPath, 'application.yaml');
+        const applicationYamlPath = join(projectPath, 'srv/src/main/resources', 'application.yaml');
         const mockedResponse = {
             documents: [{ spring: { 'web.resources.static-locations': undefined } }]
         } as unknown as YamlDocument;
@@ -52,7 +52,7 @@ describe('Writing tsConfig and yaml files', () => {
     test('should not update static location in application yaml file if not found', async () => {
         const projectName = 'test-cap-java';
         const projectPath = join(testInputPath, projectName);
-        const applicationYamlPath = join(projectPath, 'application-test.yaml');
+        const applicationYamlPath = join(projectPath, 'srv/src/main/resources', 'application-test.yaml');
         jest.spyOn(fs, 'write');
         await updateStaticLocationsInApplicationYaml(fs, applicationYamlPath, 'capCustomPathsApp');
         expect(fs.write).not.toHaveBeenCalled();
