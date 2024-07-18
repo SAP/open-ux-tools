@@ -185,12 +185,18 @@ export function initializeTargetSettings(
  * @param basePath - the base path
  * @param config - the custom page configuration
  * @param fs - the memfs editor instance
+ * @param dependencies - expected dependencies
  * @returns the updated memfs editor instance
  */
-export function validatePageConfig(basePath: string, config: CustomPage | ObjectPage, fs: Editor): Editor {
+export function validatePageConfig(
+    basePath: string,
+    config: CustomPage | ObjectPage,
+    fs: Editor,
+    dependencies = []
+): Editor {
     // common validators
 
-    validateBasePath(basePath, fs);
+    validateBasePath(basePath, fs, dependencies);
 
     // validate config against the manifest
     if (config.navigation?.sourcePage) {
