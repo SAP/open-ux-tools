@@ -18,6 +18,8 @@ import AddFragment from './controllers/AddFragment.controller';
 import ControllerExtension from './controllers/ControllerExtension.controller';
 import { ExtensionPointData } from './extension-point';
 import ExtensionPoint from './controllers/ExtensionPoint.controller';
+import ManagedObject from 'sap/ui/base/ManagedObject';
+import { isReuseComponent } from '../cpe/outline/utils';
 
 export const enum DialogNames {
     ADD_FRAGMENT = 'AddFragment',
@@ -27,33 +29,54 @@ export const enum DialogNames {
 
 type Controller = AddFragment | ControllerExtension | ExtensionPoint;
 
- /**
+/**
  * Handler for enablement of Extend With Controller context menu entry
  *
  * @param overlays Control overlays
  * @param syncViewsIds Runtime Authoring
+ * @param minorUI5Version minor UI5 version
  *
- * @returns boolean
+ * @returns boolean whether menu item is enabled or not
  */
-export const isControllerExtensionEnabled = (overlays: ElementOverlay[], syncViewsIds: string[]): boolean => {
-    const clickedControlId = FlUtils.getViewForControl(overlays[0].getElement()).getId();
+export const isControllerExtensionEnabled = (
+    overlays: ElementOverlay[],
+    syncViewsIds: string[],
+    minorUI5Version: number
+): boolean => {
+    if (overlays.length === 0 || overlays.length > 1) {
+        return false;
+    }
 
-    return overlays.length <= 1 && !syncViewsIds.includes(clickedControlId);
+    const clickedControlId = FlUtils.getViewForControl(overlays[0].getElement()).getId();
+    const isClickedControlReuseComponent = isReuseComponent(clickedControlId, minorUI5Version);
+
+    return !syncViewsIds.includes(clickedControlId) && !isClickedControlReuseComponent;
 };
 
 /**
  * Determines whether the fragment command should be enabled based on the provided overlays.
  *
  * @param {ElementOverlay[]} overlays - An array of ElementOverlay objects representing the UI overlays.
+ * @param minorUI5Version minor UI5 version
  * @returns {boolean} True if the fragment command is enabled, false otherwise.
  */
-export const isFragmentCommandEnabled = (overlays: ElementOverlay[]): boolean => {
-    if (overlays.length === 0) {return false;}
+export const isFragmentCommandEnabled = (overlays: ElementOverlay[], minorUI5Version: number): boolean => {
+    if (overlays.length === 0 || overlays.length > 1) {
+        return false;
+    }
 
     const control = overlays[0].getElement();
-    const hasStableId = FlUtils.checkControlId(control);
 
-    return hasStableId && overlays.length <= 1;
+    return hasStableId(control) && !isReuseComponent(control.getId(), minorUI5Version);
+};
+
+/**
+ * Determines whether control has stable id
+ * @param {ManagedObject} control - ManagedObject object representing the UI control.
+ * @returns {boolean} True if control has stable Id, false otherwise
+ */
+const hasStableId = (control: ManagedObject): boolean => {
+    return FlUtils.checkControlId(control);
 };
 
 /**
@@ -63,7 +86,8 @@ export const isFragmentCommandEnabled = (overlays: ElementOverlay[]): boolean =>
  * @returns {string} The text of the Add Fragment context menu item.
  */
 export const getAddFragmentItemText = (overlay: ElementOverlay) => {
-    if (!isFragmentCommandEnabled([overlay])) {
+    const control = overlay.getElement();
+    if (control && !hasStableId(control)) {
         return 'Add: Fragment (Unavailable due to unstable ID of the control or its parent control)';
     }
 
@@ -119,16 +143,17 @@ export async function handler(
  *
  * @param rta Runtime Authoring
  * @param syncViewsIds Ids of all application sync views
+ * @param minorUI5Version minor UI5 version
  */
-export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[]): void => {
+export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[], minorUI5Version: number): void => {
     const contextMenu = rta.getDefaultPlugins().contextMenu;
 
     contextMenu.addMenuItem({
         id: 'ADD_FRAGMENT',
         text: getAddFragmentItemText,
         handler: async (overlays: UI5Element[]) => await handler(overlays[0], rta, DialogNames.ADD_FRAGMENT),
-        enabled: isFragmentCommandEnabled,
-        icon: 'sap-icon://attachment-html'
+        icon: 'sap-icon://attachment-html',
+        enabled: (overlays: ElementOverlay[]) => isFragmentCommandEnabled(overlays, minorUI5Version)
     });
 
     contextMenu.addMenuItem({
@@ -136,6 +161,6 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[]): void
         text: 'Extend With Controller',
         handler: async (overlays: UI5Element[]) => await handler(overlays[0], rta, DialogNames.CONTROLLER_EXTENSION),
         icon: 'sap-icon://create-form',
-        enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds)
+        enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds, minorUI5Version)
     });
 };

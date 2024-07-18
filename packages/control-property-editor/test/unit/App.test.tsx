@@ -220,6 +220,14 @@ test('renders warning message for "ADAPTATION_PROJECT" scenario', async () => {
     expect(warningDialog).toBeInTheDocument();
     const okButton = screen.getByText(/ok/i);
     expect(okButton).toBeInTheDocument();
+    fireEvent.click(okButton);
+    let notFoundException = null;
+    try {
+        screen.getByText(/Some Text/i);
+    } catch (e) {
+        notFoundException = e;
+    }
+    expect(notFoundException).toBeTruthy();
 });
 
 const testCases = [

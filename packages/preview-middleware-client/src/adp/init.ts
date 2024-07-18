@@ -46,7 +46,7 @@ export default async function (rta: RuntimeAuthoring) {
     );
 
     const syncViewsIds = await getAllSyncViewsIds(minor);
-    initDialogs(rta, syncViewsIds);
+    initDialogs(rta, syncViewsIds, minor);
 
     if (minor > 77) {
         const ExtensionPointService = (await import('open/ux/preview/client/adp/extension-point')).default;
@@ -62,6 +62,7 @@ export default async function (rta: RuntimeAuthoring) {
 
         return;
     }
+
     if (syncViewsIds.length > 0) {
         sendAction(
             showMessage({

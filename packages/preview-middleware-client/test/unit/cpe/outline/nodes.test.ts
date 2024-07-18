@@ -5,17 +5,22 @@ import type { Scenario } from 'sap/ui/fl/Scenario';
 
 import { transformNodes as tn } from '../../../../src/cpe/outline/nodes';
 import { sapCoreMock } from 'mock/window';
+import ComponentMock from 'mock/sap/ui/core/Component';
+import VersionInfo from 'mock/sap/ui/VersionInfo';
 
 jest.mock('../../../../src/cpe/outline/utils', () => {
     return {
-        isEditable: () => false
+        isEditable: () => false,
+        isReuseComponent: () => true
     };
 });
 
 describe('outline nodes', () => {
-    const transformNodes = (nodes: OutlineViewNode[], scenario: Scenario): Promise<OutlineNode[]> =>
-        tn(nodes, scenario);
-
+    const transformNodes = (
+        nodes: OutlineViewNode[],
+        scenario: Scenario,
+        reuseComponentsIds: Set<string> = new Set<string>()
+    ): Promise<OutlineNode[]> => tn(nodes, scenario, reuseComponentsIds);
     sapCoreMock.byId.mockReturnValue({
         getMetadata: jest.fn().mockReturnValue({
             getProperty: jest
@@ -27,6 +32,10 @@ describe('outline nodes', () => {
         }),
         getProperty: jest.fn().mockReturnValueOnce('Component').mockReturnValueOnce('Component').mockReturnValue('')
     });
+
+    beforeAll(() => {
+        VersionInfo.load.mockResolvedValue({ version: '1.118.1' });
+    })
 
     describe('transformNodes', () => {
         test('empty tree', async () => {
@@ -91,7 +100,7 @@ describe('outline nodes', () => {
             ]);
         });
 
-        test('extension point with default content', async () => {
+        test('extension point with default content and no created controls present', async () => {
             const node1 = {
                 id: 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
                 technicalName: 'sap.ui.extensionpoint',
@@ -100,8 +109,7 @@ describe('outline nodes', () => {
                 type: 'extensionPoint',
                 visible: true,
                 extensionPointInfo: {
-                    defaultContent: ['id1'],
-                    createdControls: []
+                    defaultContent: ['id1']
                 }
             };
 
@@ -255,6 +263,49 @@ describe('outline nodes', () => {
                     ]
                 }
             ]);
+        });
+
+        test('fill reuse components', async () => {
+            ComponentMock.getComponentById = jest.fn().mockReturnValue({
+                getManifest: () => {
+                    return {
+                        ['sap.app']: {
+                            type: 'component'
+                        }
+                    };
+                }
+            });
+            const nodes: OutlineViewNode[] = [
+                {
+                    id: 'application-preview-app-component',
+                    technicalName: 'v2flex.Component',
+                    editable: false,
+                    type: 'element',
+                    visible: true,
+                    component: true,
+                    elements: [
+                        {
+                            id: 'application-preview-app-component',
+                            technicalName: 'rootControl',
+                            editable: false,
+                            type: 'aggregation',
+                            elements: [
+                                {
+                                    id: '__layout0',
+                                    technicalName: 'sap.f.FlexibleColumnLayout',
+                                    editable: false,
+                                    type: 'element',
+                                    visible: true
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ];
+            const reuseComponentsIds = new Set<string>();
+
+            await transformNodes(nodes, 'ADAPTATION_PROJECT', reuseComponentsIds);
+            expect(reuseComponentsIds.size).toBe(1);
         });
     });
 });

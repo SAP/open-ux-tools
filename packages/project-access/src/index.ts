@@ -21,6 +21,7 @@ export {
     getCdsServices,
     getCapI18nFolderNames,
     getSpecification,
+    getSpecificationPath,
     getI18nPropertiesPaths,
     getMinUI5VersionFromManifest,
     getMinUI5VersionAsArray,
@@ -39,7 +40,8 @@ export {
     refreshSpecificationDistTags,
     toReferenceUri,
     filterDataSourcesByType,
-    updatePackageScript
+    updatePackageScript,
+    findCapProjectRoot
 } from './project';
 export * from './types';
 export * from './library';
