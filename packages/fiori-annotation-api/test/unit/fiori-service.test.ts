@@ -3492,7 +3492,7 @@ describe('serializeTarget', () => {
                 );
 
                 expect(text).toMatchSnapshot();
-            }, 20000000);
+            });
         });
     });
 });
