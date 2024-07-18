@@ -20,9 +20,7 @@ describe('CustomPage', () => {
             },
             'sap.ui5': {
                 dependencies: {
-                    libs: {
-                        'sap.fe.templates': {}
-                    }
+                    libs: {}
                 },
                 routing: {
                     routes: [
@@ -50,15 +48,15 @@ describe('CustomPage', () => {
     test('validateBasePath', () => {
         const target = join(testDir, 'validateBasePath');
         fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
-        expect(validateBasePath(target, fs)).toBeTruthy();
+        expect(validateBasePath(target, fs, [])).toBeTruthy();
 
-        expect(() => validateBasePath(join(testDir, '' + Date.now()))).toThrowError();
+        expect(() => validateBasePath(join(testDir, '' + Date.now()), fs, [])).toThrowError();
         expect(() => generateCustomPage(join(testDir, '' + Date.now()), {} as CustomPage)).toThrowError();
 
         const invalidManifest = JSON.parse(testAppManifest);
         delete invalidManifest['sap.ui5'].dependencies?.libs['sap.fe.templates'];
         fs.writeJSON(join(target, 'webapp/manifest.json'), invalidManifest);
-        expect(() => validateBasePath(target, fs)).toThrowError();
+        expect(() => validateBasePath(target, fs, [])).not.toThrowError();
     });
 
     describe('generateCustomPage: different versions or target folder', () => {
@@ -335,5 +333,21 @@ describe('CustomPage', () => {
             //check
             expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.ts'))).toMatchSnapshot();
         });
+    });
+
+    test('Add library dependency `sap.fe.core`', () => {
+        const expandedManifest = JSON.parse(testAppManifest);
+        expandedManifest['sap.ui5'].dependencies.libs = { 'existing.library': {} };
+
+        const minimalInput: CustomPage = {
+            name: 'CustomPage',
+            entity: 'RootEntity'
+        };
+        const target = join(testDir, 'libraryDependency');
+        fs.write(join(target, 'webapp/manifest.json'), JSON.stringify(expandedManifest));
+        //act
+        generateCustomPage(target, minimalInput, fs);
+        //check
+        expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].dependencies).toMatchSnapshot();
     });
 });
