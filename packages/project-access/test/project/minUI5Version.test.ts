@@ -35,13 +35,14 @@ describe('getters for minUI5Version', () => {
     describe('getMinUI5VersionAsArray', () => {
         const testVersions: Array<TestCase> = [
             { minUI5Version: undefined, expectedResult: [] },
-            { minUI5Version: 'a.b.c', expectedResult: ['a.b.c'] },
-            { minUI5Version: ['a.b.c'], expectedResult: ['a.b.c'] },
+            { minUI5Version: 'a.b.c', expectedResult: [] },
+            { minUI5Version: ['a.b.c'], expectedResult: [] },
             { minUI5Version: '1.76.32', expectedResult: ['1.76.32'] },
-            { minUI5Version: '1.76', expectedResult: ['1.76'] },
+            { minUI5Version: '1.76', expectedResult: [] },
+            { minUI5Version: '1.76-snapshot', expectedResult: [] },
             { minUI5Version: ['1.120.3'], expectedResult: ['1.120.3'] },
-            { minUI5Version: ['1.125'], expectedResult: ['1.125'] },
-            { minUI5Version: ['1.120.13', 'a.b.c.'], expectedResult: ['1.120.13', 'a.b.c.'] }
+            { minUI5Version: ['1.125'], expectedResult: [] },
+            { minUI5Version: ['1.120.13', 'a.b.c.'], expectedResult: ['1.120.13'] }
         ];
 
         testVersions.forEach((testCase) => {

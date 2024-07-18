@@ -232,7 +232,12 @@ export function getMinUI5VersionAsArray(manifest: Manifest): string[] {
     let result: string[] = [];
     const minUI5Version = getMinUI5VersionFromManifest(manifest);
     if (minUI5Version) {
-        result = Array.isArray(minUI5Version) ? minUI5Version : [minUI5Version];
+        const minUI5VersionArray = Array.isArray(minUI5Version) ? minUI5Version : [minUI5Version];
+        minUI5VersionArray.forEach((version) => {
+            if (valid(version)) {
+                result.push(version);
+            }
+        });
     }
     return result;
 }
@@ -246,10 +251,10 @@ export function getMinUI5VersionAsArray(manifest: Manifest): string[] {
  */
 export function getMinimumUI5Version(manifest: Manifest): string | undefined {
     let result: string | undefined;
-    const minUI5VersionArray = getMinUI5VersionAsArray(manifest);
-    if (minUI5VersionArray.length > 0) {
-        minUI5VersionArray.forEach((version) => {
-            if (valid(version) && (!result || gte(result, version))) {
+    const validVersionsArray = getMinUI5VersionAsArray(manifest);
+    if (validVersionsArray.length > 0) {
+        validVersionsArray.forEach((version) => {
+            if (!result || gte(result, version)) {
                 result = version;
             }
         });
