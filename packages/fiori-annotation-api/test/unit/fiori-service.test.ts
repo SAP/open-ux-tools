@@ -517,18 +517,16 @@ describe('fiori annotation service', () => {
             const files = service.getAllFiles();
             expect(convertFilesForSnapshots(PROJECTS.V4_CDS_START.root, files)).toMatchSnapshot();
         });
-
-        test('cds layering', async () => {
-            const service = await testRead(PROJECTS.CDS_LAYERING.root, [], 'TravelService');
-            const files = service.getAllFiles();
-            expect(convertFilesForSnapshots(PROJECTS.CDS_LAYERING.root, files)).toMatchSnapshot();
-        });
-
         test('cds with ghost files', async () => {
             const service = await testRead(PROJECTS.V4_CDS_START.root, [], 'IncidentService');
             const files = service.getAllFiles(true);
             expect(convertFilesForSnapshots(PROJECTS.V4_CDS_START.root, files)).toMatchSnapshot();
         });
+        test('cds layering', async () => {
+            const service = await testRead(PROJECTS.CDS_LAYERING.root, [], 'TravelService');
+            const files = service.getAllFiles();
+            expect(convertFilesForSnapshots(PROJECTS.CDS_LAYERING.root, files)).toMatchSnapshot();
+        }, 5000);
     });
     describe('initial file content', () => {
         test('xml', async () => {
