@@ -3492,7 +3492,7 @@ describe('serializeTarget', () => {
                     false
                 );
 
-                 expect(text).toMatchSnapshot();
+                expect(text).toMatchSnapshot();
             });
         });
     });
