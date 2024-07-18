@@ -55,10 +55,10 @@ export abstract class AppIndexService extends Axios implements Service {
     }
 
     /**
-     * Returns if manifest is first supported.
+     * Check for a given app id whether the manifest first is supported.
      *
      * @param {string} appId - The id of the app.
-     * @returns {Promise<boolean>} - is manifest first supported.
+     * @returns {Promise<boolean>} - "true" for apps supporting manifest first which are apps with minUI5Version at least 1.30 and not scaffolding-based (i.e. dependency to sap.ca.scfld.md library), otherwise it returns "false".
      */
     public async getIsManiFirstSupported(appId: string): Promise<boolean> {
         try {
@@ -66,17 +66,11 @@ export abstract class AppIndexService extends Axios implements Service {
                 'id': appId
             };
             const response = await this.get('/ui5_app_mani_first_supported', { params });
-            const parseResponseData = JSON.parse(response.data);
+            const isManiFirstSupported = JSON.parse(response.data);
 
-            return parseResponseData as boolean;
+            return isManiFirstSupported;
         } catch (error) {
-            if (isAxiosError(error)) {
-                this.log.error(`Fail fetching ui5_app_mani_first_supported for app with id: ${appId}.`);
-            } else {
-                this.log.error(
-                    `Fail fetching ui5_app_mani_first_supported is not in expected format for app with id: ${appId}.`
-                );
-            }
+            this.log.error(`Fail fetching ui5_app_mani_first_supported for app with id: ${appId}.`);
             this.log.debug(error);
             throw error;
         }

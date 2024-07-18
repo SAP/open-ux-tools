@@ -1,4 +1,3 @@
-import { isAxiosError } from 'axios';
 import type { AdtCategory } from '../../types';
 import { AdtService } from './adt-service';
 
@@ -34,9 +33,7 @@ export class UI5RtVersionService extends AdtService {
             const result = await this.get('');
             return result.data as string;
         } catch (error) {
-            if (isAxiosError) {
-                this.log.error('Could not fetch UI5 Version.');
-            }
+            this.log.error('Could not fetch UI5 Version.');
             this.log.debug(error);
             throw error;
         }
