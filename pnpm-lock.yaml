@@ -527,6 +527,9 @@ importers:
 
   packages/cap-config-writer:
     dependencies:
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
@@ -1557,6 +1560,12 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/project-input-validator':
+        specifier: workspace:*
+        version: link:../project-input-validator
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
       '@sap-ux/telemetry':
         specifier: workspace:*
         version: link:../telemetry
@@ -1572,6 +1581,9 @@ importers:
       i18next:
         specifier: 23.5.1
         version: 23.5.1
+      inquirer-autocomplete-prompt:
+        specifier: 2.0.1
+        version: 2.0.1(inquirer@8.2.6)
       os-name:
         specifier: 4.0.1
         version: 4.0.1
