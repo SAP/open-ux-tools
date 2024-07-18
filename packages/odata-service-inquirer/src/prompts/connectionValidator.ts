@@ -1,12 +1,21 @@
-import { isAppStudio } from '@sap-ux/btp-utils';
-import { ERROR_TYPE, ErrorHandler } from '../../../error-handler/error-handler';
-import { errorHandler } from '../../prompt-helpers';
-import { t } from '../../../i18n';
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
+import type {
+    AbapServiceProvider,
+    AxiosError,
+    AxiosRequestConfig,
+    CatalogService,
+    ODataService,
+    ProviderConfiguration,
+    ServiceProvider
+} from '@sap-ux/axios-extension';
+import { ODataVersion, create, createForAbap } from '@sap-ux/axios-extension';
+import { isAppStudio } from '@sap-ux/btp-utils';
 import https from 'https';
-import LoggerHelper from '../../logger-helper';
-import type { AxiosRequestConfig, ODataService, ProviderConfiguration } from '@sap-ux/axios-extension';
-import { createServiceForUrl } from '@sap-ux/axios-extension';
+import { ERROR_TYPE, ErrorHandler } from '../error-handler/error-handler';
+import { t } from '../i18n';
+import { SAP_CLIENT_KEY } from '../types';
+import LoggerHelper from './logger-helper';
+import { errorHandler } from './prompt-helpers';
 
 /**
  * Structure to store validity information about url to be validated.
@@ -18,6 +27,8 @@ interface Validity {
     authenticated?: boolean;
     canSkipCertError?: boolean;
 }
+
+type ValidationResult = string | boolean | IValidationLink;
 
 // Cert errors that may be ignored by prompt user
 const ignorableCertErrors = [ERROR_TYPE.CERT_SELF_SIGNED, ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN];
@@ -32,7 +43,10 @@ export class ConnectionValidator {
     public readonly validity: Validity = {};
     private _validatedUrl: string | undefined;
     private _odataService: ODataService;
+    private _serviceProvider: ServiceProvider;
     private _axiosConfig: AxiosRequestConfig;
+    private _catalogV2: CatalogService;
+    private _catalogV4: CatalogService;
     /**
      * Getter for the axios configuration.
      *
@@ -52,19 +66,47 @@ export class ConnectionValidator {
     }
 
     /**
-     * Calls a given service url to test its reachability and authentication requirements.
+     * Get the catalogs for the odata versions. Note that one of these may not be defined where a specific odata version is required.
      *
-     * @param url a service url (<protocol://<host>:<port>/<service-path>)
+     * @returns the catalog services for each the odata versions
+     */
+    public get catalogs(): Record<ODataVersion, CatalogService> {
+        return {
+            [ODataVersion.v2]: this._catalogV2,
+            [ODataVersion.v4]: this._catalogV4
+        };
+    }
+
+    /**
+     *
+     * @returns the current connections service provider
+     */
+    public get serviceProvider(): ServiceProvider {
+        return this._serviceProvider;
+    }
+
+    /**
+     * Calls a given service or system url to test its reachability and authentication requirements.
+     * If the url is a system url, it will attempt to use the catalog service to get the service info.
+     *
+     * @param url a service url (<protocol://<host>:<port>/<service-path>) or a system url (<protocol://<host>:<port>)
      * @param username optional username
      * @param password optional password
-     * @param [ignoreCertError] optional, ignore some certificate errors
+     * @param options options for the connection validation
+     * @param options.ignoreCertError ignore some certificate errors
+     * @param options.isSystem if true, the url will be treated as a system url rather than a service url
+     * @param options.odataVersion if specified will restrict catalog requests to only the specified odata version
      * @returns the status code or error returned by the connection attempt
      */
     private async checkSapService(
         url: URL,
         username?: string,
         password?: string,
-        ignoreCertError = false
+        {
+            ignoreCertError = false,
+            isSystem = false,
+            odataVersion
+        }: { ignoreCertError?: boolean; isSystem?: boolean; odataVersion?: ODataVersion } = {}
     ): Promise<number | string> {
         const isBAS = isAppStudio();
         try {
@@ -80,25 +122,20 @@ export class ConnectionValidator {
                 url.searchParams.append('saml2', 'disabled');
             }
 
-            let axiosConfig: AxiosRequestConfig & ProviderConfiguration = {
-                params: url.searchParams,
-                ignoreCertErrors: ignoreCertError,
-                cookies: ''
-            };
-
-            if (username && password) {
-                axiosConfig = Object.assign(axiosConfig, {
-                    auth: {
-                        username,
-                        password
-                    }
-                });
+            const axiosConfig: AxiosRequestConfig & ProviderConfiguration = this.createAxiosConfig(
+                url,
+                ignoreCertError,
+                username,
+                password
+            );
+            // If system, use catalog service to get the services info
+            if (isSystem) {
+                await this.createSystemConnection(axiosConfig, odataVersion);
+            } else {
+                // Full service URL
+                await this.createServiceConnection(axiosConfig, url.pathname);
             }
 
-            this._axiosConfig = axiosConfig;
-            this._odataService = createServiceForUrl(url.origin + url.pathname, this._axiosConfig);
-            LoggerHelper.attachAxiosLogger(this._odataService.interceptors);
-            await this._odataService.get('');
             return 200;
         } catch (e) {
             LoggerHelper.logger.debug(`ConnectionValidator.checkSapService() - error: ${e.message}`);
@@ -118,18 +155,106 @@ export class ConnectionValidator {
     }
 
     /**
+     * Create the axios configuration object for the service or system connection.
+     *
+     * @param url the service or system url
+     * @param ignoreCertError if true the config will be set to ignore cert errors
+     * @param username provided for basic authentication
+     * @param password provided for basic authentication
+     * @returns the axios configuration object
+     */
+    private createAxiosConfig(
+        url: URL,
+        ignoreCertError: boolean,
+        username: string | undefined,
+        password: string | undefined
+    ) {
+        let axiosConfig: AxiosRequestConfig & ProviderConfiguration = {
+            params: Object.fromEntries(url.searchParams),
+            ignoreCertErrors: ignoreCertError,
+            cookies: '',
+            baseURL: url.origin
+        };
+
+        if (username && password) {
+            axiosConfig = Object.assign(axiosConfig, {
+                auth: {
+                    username,
+                    password
+                }
+            });
+        }
+        return axiosConfig;
+    }
+
+    /**
+     * Create the connection for a service url. The base url should be provided with the axios config property.
+     *
+     * @param axiosConfig the axios request configuration
+     * @param servicePath the service path without the origin
+     */
+    private async createServiceConnection(axiosConfig: AxiosRequestConfig, servicePath: string) {
+        this._axiosConfig = axiosConfig;
+        this._serviceProvider = create(this._axiosConfig);
+        this._odataService = this._serviceProvider.service(servicePath);
+        LoggerHelper.attachAxiosLogger(this._serviceProvider.interceptors);
+        await this._odataService.get('');
+    }
+
+    /**
+     * Create the connection for a system url. The system url should be provided as a base url axios config property.
+     *
+     * @param axiosConfig the axios request configuration
+     * @param odataVersion the odata version to restrict the catalog requests if only a specific version is required
+     */
+    private async createSystemConnection(axiosConfig: AxiosRequestConfig, odataVersion?: ODataVersion) {
+        this._axiosConfig = axiosConfig;
+        this._serviceProvider = createForAbap(this._axiosConfig);
+        LoggerHelper.attachAxiosLogger(this._serviceProvider.interceptors);
+
+        if (!odataVersion || odataVersion === ODataVersion.v2) {
+            this._catalogV2 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v2);
+        }
+        if (!odataVersion || odataVersion === ODataVersion.v4) {
+            this._catalogV4 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v4);
+        }
+        try {
+            this._catalogV2 ? await this._catalogV2.listServices() : await this._catalogV4.listServices();
+        } catch (error) {
+            // We will try the v4 catalog if v2 returns a 404
+            if ((error as AxiosError).response?.status === 404 && this._catalogV4) {
+                await this._catalogV4.listServices();
+            } else {
+                throw error;
+            }
+        }
+    }
+
+    /**
      * Validates the service url format as well as its reachability.
      *
      * @param serviceUrl the odata service url to validate
-     * @param ignoreCertError ignore some certificate errors
-     * @param forceReValidation force re-validation of the url
+     * @param options options for the connection validation
+     * @param options.ignoreCertError ignore some certificate errors
+     * @param options.forceReValidation force re-validation of the url
+     * @param options.isSystem if true, the url will be treated as a system url rather than a service url
+     * @param options.odataVersion if specified will restrict catalog requests to only the specified odata version
      * @returns true if the url is reachable, false if not, or an error message string
      */
     public async validateUrl(
         serviceUrl: string,
-        ignoreCertError = false,
-        forceReValidation = false
-    ): Promise<boolean | string | IValidationLink> {
+        {
+            ignoreCertError = false,
+            forceReValidation = false,
+            isSystem = false,
+            odataVersion
+        }: {
+            ignoreCertError?: boolean;
+            forceReValidation?: boolean;
+            isSystem?: boolean;
+            odataVersion?: ODataVersion;
+        } = {}
+    ): Promise<ValidationResult> {
         if (this.isEmptyString(serviceUrl)) {
             this.resetValidity();
             return false;
@@ -144,7 +269,11 @@ export class ConnectionValidator {
                 return t('errors.invalidUrl');
             }
             // Ignore path if a system url
-            const status = await this.checkSapService(url, undefined, undefined, ignoreCertError);
+            const status = await this.checkSapService(url, undefined, undefined, {
+                ignoreCertError,
+                isSystem,
+                odataVersion
+            });
             LoggerHelper.logger.debug(`ConnectionValidator.validateUrl() - status: ${status}; url: ${serviceUrl}`);
             this.validity.urlFormat = true;
             this._validatedUrl = serviceUrl;
@@ -168,7 +297,7 @@ export class ConnectionValidator {
      * Sets the instance validity state based on the status code.
      *
      * @param status a http request status code used to determine the validation result
-     * @returns
+     * @returns true if the url is reachable, false if not, or an error message string
      */
     private getValidationResultFromStatusCode(status: string | number): boolean | string | IValidationLink {
         if (status === 200) {
@@ -222,29 +351,49 @@ export class ConnectionValidator {
     /**
      * Test the connectivity with the specified service url using the provided credentials.
      *
-     * @param serviceUrl optional, the service url to validate
+     * @param url the url to validate
      * @param username user name
      * @param password password
-     * @param ignoreCertError optional, ignore some certificate errors
+     * @param options options for the connection authentication validation
+     * @param options.ignoreCertError ignore some certificate errors
+     * @param options.isSystem if true, the url will be treated as a system url rather than a service url
+     * @param options.sapClient the sap client to use for the connection
+     * @param options.odataVersion if specified will restrict catalog requests to only the specified odata version
      * @returns true if the authentication is successful, false if not, or an error message string
      */
     public async validateAuth(
-        serviceUrl: string,
+        url: string,
         username: string,
         password: string,
-        ignoreCertError = false
-    ): Promise<boolean | string> {
-        if (!serviceUrl) {
+        {
+            ignoreCertError = false,
+            isSystem = false,
+            sapClient,
+            odataVersion
+        }: { ignoreCertError?: boolean; isSystem?: boolean; odataVersion?: ODataVersion; sapClient?: string } = {}
+    ): Promise<ValidationResult> {
+        if (!url) {
             return false;
         }
-        if (!this.validity.reachable) {
-            return false;
-        }
+
         try {
-            const url = new URL(serviceUrl);
-            this.validity.authenticated =
-                (await this.checkSapService(url, username, password, ignoreCertError)) === 200;
-            return this.validity.authenticated === true ? true : t('errors.authenticationFailed');
+            const urlObject = new URL(url);
+            if (sapClient) {
+                urlObject.searchParams.append(SAP_CLIENT_KEY, sapClient);
+            }
+
+            const status = await this.checkSapService(urlObject, username, password, {
+                ignoreCertError,
+                isSystem,
+                odataVersion
+            });
+
+            const valResult = this.getValidationResultFromStatusCode(status);
+
+            if (valResult === true && this.validity.authenticated === true) {
+                return true;
+            }
+            return valResult;
         } catch (error) {
             return errorHandler.getErrorMsg(error) ?? false;
         }

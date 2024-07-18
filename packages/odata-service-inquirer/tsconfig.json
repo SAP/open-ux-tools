@@ -31,6 +31,12 @@
       "path": "../project-access"
     },
     {
+      "path": "../project-input-validator"
+    },
+    {
+      "path": "../store"
+    },
+    {
       "path": "../telemetry"
     }
   ]
