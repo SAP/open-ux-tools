@@ -31,88 +31,88 @@ export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<A
         {
             type: 'input',
             name: `id`,
-            message: t('prompts.componentUsageIDLabel'),
+            message: t('prompts.component.usageIdLabel'),
             validate: (value: string) =>
                 validateContentDuplication(
                     value,
                     'componentUsages',
                     componentUsageChangeFiles,
                     isCustomer,
-                    t('prompts.componentUsageIDLabel'),
-                    t('prompts.componentUsage')
+                    t('prompts.component.usageIdLabel'),
+                    t('prompts.component.usage')
                 ),
             default: isCustomer ? 'customer.' : '',
             store: false,
             guiOptions: {
                 mandatory: true,
-                hint: t('prompts.componentUsageIDTooltip')
+                hint: t('prompts.component.usageIdTooltip')
             }
         } as InputQuestion<AddComponentUsageAnswers>,
         {
             type: 'input',
             name: 'name',
-            message: t('prompts.componentNameLabel'),
-            validate: (value: string) => validateSpecialChars(value, t('prompts.componentNameLabel')),
+            message: t('prompts.component.nameLabel'),
+            validate: (value: string) => validateSpecialChars(value, t('prompts.component.nameLabel')),
             store: false,
             guiOptions: {
                 mandatory: true,
-                hint: t('prompts.componentNameTooltip')
+                hint: t('prompts.component.nameTooltip')
             }
         } as InputQuestion<AddComponentUsageAnswers>,
         {
             type: 'list',
             name: 'isLazy',
-            message: t('prompts.componentIsLazyLabel'),
+            message: t('prompts.component.isLazyLabel'),
             choices: isLazyDropDownOptions,
             default: isLazyDropDownOptions[1].value,
             store: false,
             guiOptions: {
                 mandatory: true,
-                hint: t('prompts.componentIsLazyTooltip')
+                hint: t('prompts.component.isLazyTooltip')
             }
         } as ListQuestion<AddComponentUsageAnswers>,
         {
             type: 'editor',
             name: `settings`,
-            message: t('prompts.componentSettingsLabel'),
+            message: t('prompts.component.settingsLabel'),
             validate: (value: string) => {
-                return validateJSON(value, t('prompts.componentSettingsLabel'));
+                return validateJSON(value, t('prompts.component.settingsLabel'));
             },
             store: false,
             guiOptions: {
                 mandatory: false,
-                hint: t('componentSettingsTooltip')
+                hint: t('component.settingsTooltip')
             }
         } as EditorQuestion<AddComponentUsageAnswers>,
         {
             type: 'editor',
             name: `data`,
-            message: t('prompts.componentDataLabel'),
+            message: t('prompts.component.dataLabel'),
             validate: (value: string) => {
-                return validateJSON(value, t('prompts.componentDataLabel'));
+                return validateJSON(value, t('prompts.component.dataLabel'));
             },
             store: false,
             guiOptions: {
                 mandatory: false,
-                hint: t('componentTooltip', { input: t('prompts.componentDataLabel') })
+                hint: t('componentTooltip', { input: t('prompts.component.dataLabel') })
             }
         } as EditorQuestion<AddComponentUsageAnswers>,
         {
             type: 'confirm',
             name: 'shouldAddLibrary',
-            message: t('prompts.shouldAddLibraryLabel'),
+            message: t('prompts.component.shouldAddLibraryLabel'),
             default: false,
             guiOptions: {
-                hint: t('prompts.shouldAddLibraryTooltip')
+                hint: t('prompts.component.shouldAddLibraryTooltip')
             }
         } as ConfirmQuestion<AddComponentUsageAnswers>,
         {
             type: 'input',
             name: 'library',
-            message: t('prompts.componentLibraryLabel'),
+            message: t('prompts.component.libraryLabel'),
             guiOptions: {
                 mandatory: true,
-                hint: t('prompts.componentLibraryTooltip')
+                hint: t('prompts.component.libraryTooltip')
             },
             validate: (value: string) =>
                 validateContentDuplication(
@@ -120,8 +120,8 @@ export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<A
                     'libraries',
                     libraryChangeFiles,
                     isCustomer,
-                    t('prompts.componentLibraryLabel'),
-                    t('prompts.componentLibraryLabel')
+                    t('prompts.component.libraryLabel'),
+                    t('prompts.component.libraryLabel')
                 ),
             store: false,
             when: (answers: AddComponentUsageAnswers) => answers.shouldAddLibrary
@@ -129,13 +129,13 @@ export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<A
         {
             type: 'list',
             name: `libraryIsLazy`,
-            message: t('prompts.componentLibraryIsLazyLabel'),
+            message: t('prompts.component.libraryIsLazyLabel'),
             choices: isLazyDropDownOptions,
             default: isLazyDropDownOptions[1].value,
             store: false,
             guiOptions: {
                 mandatory: true,
-                hint: t('prompts.componentLibraryIsLazyTooltip')
+                hint: t('prompts.component.libraryIsLazyTooltip')
             },
             when: (answers: AddComponentUsageAnswers) => answers.shouldAddLibrary
         } as ListQuestion<AddComponentUsageAnswers>

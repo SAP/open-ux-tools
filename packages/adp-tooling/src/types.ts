@@ -314,8 +314,8 @@ export interface AddComponentUsageAnswers {
     /** Indicates whether a library reference should be added */
     shouldAddLibrary: boolean;
     /** Reference to the component's library. */
-    library: string;
-    /** Optional flag indicating if the library reference is lazy. */
+    library?: string;
+    /** Indicates whether the library reference is loaded lazily. */
     libraryIsLazy?: string;
 }
 

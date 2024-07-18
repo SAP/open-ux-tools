@@ -5,6 +5,7 @@ import { addAddCdsPluginUi5Command } from './cds-plugin-ui';
 import { addInboundNavigationConfigCommand } from './navigation-config';
 import { addCardsEditorConfigCommand } from './cards-editor';
 import { addAddHtmlFilesCmd } from './html';
+import { addComponentUsagesCommand } from './component-usages';
 
 /**
  * Return 'create-fiori add *' commands. Commands include also the handler action.
@@ -25,5 +26,7 @@ export function getAddCommands(): Command {
     addCardsEditorConfigCommand(addCommands);
     // create-fiori add html
     addAddHtmlFilesCmd(addCommands);
+    // create-fiori add component-usages
+    addComponentUsagesCommand(addCommands);
     return addCommands;
 }
