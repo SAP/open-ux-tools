@@ -1,5 +1,38 @@
 # @sap-ux/preview-middleware
 
+## 0.16.20
+
+### Patch Changes
+
+-   Updated dependencies [a9fac04]
+    -   @sap-ux/project-access@1.25.6
+    -   @sap-ux/adp-tooling@0.12.14
+
+## 0.16.19
+
+### Patch Changes
+
+-   Updated dependencies [4c06318]
+    -   @sap-ux/adp-tooling@0.12.13
+
+## 0.16.18
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.12
+
+## 0.16.17
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.11
+
+## 0.16.16
+
+### Patch Changes
+
+-   90a8291: Extension points break the outline tree sync for apps with UI5 version =< 1.96.33
+
 ## 0.16.15
 
 ### Patch Changes
