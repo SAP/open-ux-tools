@@ -1,5 +1,24 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.0
+
+### Minor Changes
+
+-   108336f: Adds prompts for abap on premise systems to odata-service-inquirer
+
+### Patch Changes
+
+-   Updated dependencies [108336f]
+    -   @sap-ux/project-input-validator@0.3.1
+    -   @sap-ux/inquirer-common@0.4.1
+
+## 0.4.9
+
+### Patch Changes
+
+-   Updated dependencies [3a878f3]
+    -   @sap-ux/axios-extension@1.16.0
+
 ## 0.4.8
 
 ### Patch Changes

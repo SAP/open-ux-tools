@@ -8,6 +8,7 @@ import {
     ListPackageService,
     FileStoreService,
     BusinessObjectsService
+    //AbapCDSViewService
 } from '@sap-ux/axios-extension';
 import { logger } from './types';
 
@@ -209,6 +210,11 @@ export async function testUiServiceGenerator(
     const bos = await businessObjectsService.getBusinessObjects();
     const bo = bos.find((bo) => bo.name === env.TEST_BO_NAME);
     logger.debug(bos.map((bo) => bo.name));
+
+    //This is used for manually testing, this blocked commented should not be run together with business object search and can be uncommented and used for testing when needed.
+    // Get Abap CDS Views
+    // const cdsViewService = await provider.getAdtService<AbapCDSViewService>(AbapCDSViewService);
+    // const cdsViews = await cdsViewService.getAbapCDSViews();
 
     // Get generator service
     const generator = await provider.getUiServiceGenerator(bo);

@@ -1,5 +1,24 @@
 # @sap-ux/cap-config-writer
 
+## 0.7.0
+
+### Minor Changes
+
+-   cac5277: Consolidates multiple export functions into a single function applyCAPUpdates, which handles updates for both Node.js and Java CAP projects
+
+## 0.6.10
+
+### Patch Changes
+
+-   Updated dependencies [108336f]
+    -   @sap-ux/odata-service-inquirer@0.5.0
+
+## 0.6.9
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.4.9
+
 ## 0.6.8
 
 ### Patch Changes
