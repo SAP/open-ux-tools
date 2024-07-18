@@ -159,7 +159,7 @@ export function getFclConfig(manifest: Manifest, navigation?: Navigation): FCL {
 /**
  * Get the library dependencies for a given page type.
  *
- * @param PageType Page type for which the dependencies are to be added
+ * @param pageType - Page type for which the dependencies are to be added
  * @returns Library dependencies
  */
 export function getLibraryDependencies(pageType: PageType): Libraries {
