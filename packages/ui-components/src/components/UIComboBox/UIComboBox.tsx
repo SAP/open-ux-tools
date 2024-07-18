@@ -30,7 +30,7 @@ export {
 
 export enum UIComboBoxLoaderType {
     /**
-     * Loader within dropdown list
+     * Loader within dropdown list test
      */
     List = 'List',
     /**
