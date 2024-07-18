@@ -19,7 +19,7 @@ import type { Logger } from '@sap-ux/logger';
  * @param {string} capProjectSettings.appId - The application's ID, including its namespace and the module name.
  * @param {boolean} capProjectSettings.sapux - Indicates if SAP UX is enabled.
  * @param {boolean} capProjectSettings.enableNPMWorkspaces - Indicates if NPM workspaces are enabled.
- * @param {boolean} [capProjectSettings.enableCdsUi5PluginEnabled] - Indicates if CDS UI5 plugin is enabled.
+ * @param {boolean} capProjectSettings.enableCdsUi5Plugin - Indicates if the CDS UI5 plugin is enabled.
  * @param {boolean} [capProjectSettings.enableTypescript] - Indicates if TypeScript is enabled.
  * @param {Logger} [log] - logger for logging information.
  * @returns {Promise<void>} A promise that resolves when the updates are applied.
@@ -36,20 +36,12 @@ export async function applyCAPUpdates(
         appId,
         sapux = false,
         enableNPMWorkspaces = false,
-        enableCdsUi5PluginEnabled = false,
+        enableCdsUi5Plugin = false,
         enableTypescript = false
     } = capProjectSettings;
 
     // update root package.json
-    await updateRootPackageJson(
-        fs,
-        packageName,
-        sapux,
-        capService,
-        appId,
-        log,
-        enableNPMWorkspaces
-    );
+    await updateRootPackageJson(fs, packageName, sapux, capService, appId, log, enableNPMWorkspaces);
 
     if (capService.capType === 'Java') {
         const capProjectPath = capService.projectPath;
@@ -78,7 +70,7 @@ export async function applyCAPUpdates(
         // update tsconfig.json if TypeScript is enabled
         updateTsConfig(fs, appRoot);
     }
-    if (enableCdsUi5PluginEnabled || enableNPMWorkspaces) {
+    if (enableCdsUi5Plugin || enableNPMWorkspaces) {
         // update app package.json if CDS UI5 plugin is enabled or NPM workspaces are enabled
         updateAppPackageJson(fs, appRoot);
     }

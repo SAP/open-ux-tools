@@ -29,6 +29,6 @@ export interface CapProjectSettings {
     appId: string;
     sapux?: boolean;
     enableNPMWorkspaces?: boolean;
-    enableCdsUi5PluginEnabled?: boolean;
+    enableCdsUi5Plugin?: boolean;
     enableTypescript?: boolean;
 }

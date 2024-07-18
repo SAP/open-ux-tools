@@ -1,135 +1,211 @@
-import { applyCAPUpdates } from '../../../src/cap-writer/updates';
-import type { CapServiceCdsInfo, CapProjectSettings } from '../../../src/index';
-import type { CapRuntime } from '@sap-ux/odata-service-inquirer';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
 import { join } from 'path';
-import { updateRootPackageJson, updateAppPackageJson } from '../../../src/cap-writer/package-json';
-import { updateTsConfig, updateStaticLocationsInApplicationYaml } from '../../../src/cap-writer/tsconfig-and-yaml';
-import { updatePomXml } from '../../../src/cap-writer/pom-xml';
+import { applyCAPUpdates } from '../../../src/cap-writer';
+import type { CapServiceCdsInfo, CapProjectSettings } from '../../../src/cap-config/types';
+import type { Editor } from 'mem-fs-editor';
+import { YamlDocument } from '@sap-ux/yaml';
+import type { Package } from '@sap-ux/project-access';
 
-// Mocks
-jest.mock('../../../src/cap-writer/package-json', () => ({
-    updateRootPackageJson: jest.fn(),
-    updateAppPackageJson: jest.fn()
+jest.mock('@sap-ux/yaml', () => ({
+    ...jest.requireActual('@sap-ux/yaml'),
+    YamlDocument: {
+        newInstance: jest.fn()
+    }
 }));
 
-jest.mock('../../../src/cap-writer/tsconfig-and-yaml', () => ({
-    updateTsConfig: jest.fn(),
-    updateStaticLocationsInApplicationYaml: jest.fn()
-}));
-
-jest.mock('../../../src/cap-writer/pom-xml', () => ({
-    updatePomXml: jest.fn()
-}));
-
-describe('applyCAPUpdates', () => {
-    const fs: any = {
-        exists: jest.fn().mockReturnValue(true)
+describe('Test applyCAPUpdates updates files correctly', () => {
+    let fs: Editor;
+    const capAppFolder = 'app';
+    const cdsUi5PluginInfo = {
+        isCdsUi5PluginEnabled: false,
+        hasMinCdsVersion: true,
+        isWorkspaceEnabled: false,
+        hasCdsUi5Plugin: false
+    };
+    const capInfo = {
+        serviceName: 'TestService',
+        serviceCdsPath: 'srv/test-service',
+        appPath: capAppFolder,
+        cdsUi5PluginInfo
     };
 
-    const mockLog: any = {
-        log: jest.fn()
-    };
-    const testInputPath = join(__dirname, 'test-inputs');
-    const capNodeType: CapRuntime = 'Node.js';
-    const appRoot = '/mock/app/root';
-    const packageName = 'mock-package';
-    const appId = 'mock-app-id';
-    const capService: CapServiceCdsInfo = {
-        projectPath: join(testInputPath, 'test-cap-package-sapux'),
-        serviceName: 'AdminService',
-        serviceCdsPath: 'srv/admin-service',
-        appPath: 'app',
-        capType: capNodeType,
-        cdsUi5PluginInfo: {
-            isCdsUi5PluginEnabled: false,
-            hasMinCdsVersion: true,
-            isWorkspaceEnabled: false,
-            hasCdsUi5Plugin: false
-        }
-    };
-
-    afterEach(() => {
-        jest.clearAllMocks();
+    beforeEach(() => {
+        fs = create(createStorage());
     });
 
-    it('should update package.json and optionally tsconfig.json and app package.json', async () => {
+    test('applyCAPUpdates updates specific files for CAP Node js projects', async () => {
+        const testCapProject = 'test-cap-package-sapux';
+        const testOutput = join(__dirname, '../test-inputs', testCapProject);
+        const testProjectName = 'test-cap-app1';
+
+        const capService: CapServiceCdsInfo = {
+            ...capInfo,
+            projectPath: testOutput,
+            capType: 'Node.js'
+        };
+
         const settings: CapProjectSettings = {
-            appRoot,
-            packageName,
-            appId,
+            appRoot: join(__dirname, '../cap-writer/test-inputs', testCapProject),
+            packageName: testProjectName,
+            appId: `${testProjectName}-id`,
             sapux: true,
             enableNPMWorkspaces: true,
-            enableCdsUi5PluginEnabled: true,
+            enableCdsUi5Plugin: true,
             enableTypescript: true
         };
-        await applyCAPUpdates(fs, capService, settings, mockLog);
-        // root package json should be updated
-        expect(updateRootPackageJson).toHaveBeenCalledTimes(1);
-        expect(updateRootPackageJson).toHaveBeenCalledWith(
-            fs,
-            packageName,
-            settings.sapux,
-            capService,
-            appId,
-            mockLog,
-            settings.enableNPMWorkspaces
-        );
-        // tsconfig.json should be updated
-        expect(updateTsConfig).toHaveBeenCalledTimes(1);
-        expect(updateTsConfig).toHaveBeenCalledWith(fs, appRoot);
-        // app package json should be updated
-        expect(updateAppPackageJson).toHaveBeenCalledTimes(1);
-        expect(updateAppPackageJson).toHaveBeenCalledWith(fs, appRoot);
-        // dont update pom.xml or application.yaml for Node.js
-        expect(updatePomXml).toHaveBeenCalledTimes(0);
-        expect(updateStaticLocationsInApplicationYaml).toHaveBeenCalledTimes(0);
-        // expect updateTsConfig to be called since enableTypescript is true
-        expect(updateTsConfig).toHaveBeenCalledTimes(1);
-        // expect updateAppPackageJson to be called since enableCdsUi5PluginEnabled is true
-        expect(updateAppPackageJson).toHaveBeenCalledTimes(1);
+        await applyCAPUpdates(fs, capService, settings);
+        // package json file should be updated
+        const packageJsonPath = join(capService.projectPath, 'package.json');
+        const packageJson = fs.readJSON(packageJsonPath) as Package;
+        const scripts = packageJson.scripts;
+        expect(scripts).toEqual({
+            // package json file should be updated with scripts where watch command uses appName since enableNPMWorkspaces is provided
+            'watch-test-cap-app1':
+                'cds watch --open test-cap-app1-id/index.html?sap-ui-xx-viewCache=false --livereload false'
+        });
+        // sapux array should be updated since sapux is true
+        const sapUxArray = packageJson.sapux;
+        expect(sapUxArray).toEqual(['app/test-cap-app1']);
+        // tsconfig.json file should be updated
+        const tsConfigPath = join(settings.appRoot, 'tsconfig.json');
+        // ../../node_modules/@types should be added to typeRoots since enableTypescript is true
+        expect(fs.readJSON(tsConfigPath)).toEqual({
+            compilerOptions: {
+                typeRoots: ['./node_modules/@types', '../../node_modules/@types']
+            }
+        });
+        // app package json file should be updated
+        const appPackageJsonPath = join(settings.appRoot, 'package.json');
+        // sapux array should be deleted from app package json since enableCdsUi5Plugin is true
+        const appPackageJson = fs.readJSON(appPackageJsonPath) as Package;
+        const appPackageSapUxArray = appPackageJson.sapux;
+        expect(appPackageSapUxArray).toBeUndefined();
     });
 
-    it('should not call updateTsConfig when enableTypescript is not defined', async () => {
-        const settings: CapProjectSettings = {
-            appRoot,
-            packageName,
-            appId
+    test('applyCAPUpdates updates specific files for CAP Node js projects when CapProjectSettings optional parameters are not provided', async () => {
+        const testCapProject = 'test-cap-package-sapux';
+        const testOutput = join(__dirname, '../test-inputs', testCapProject);
+        const testProjectName = 'test-cap-app1';
+
+        const capService: CapServiceCdsInfo = {
+            ...capInfo,
+            projectPath: testOutput,
+            capType: 'Node.js'
         };
-        await applyCAPUpdates(fs, capService, settings, mockLog);
-        expect(updateRootPackageJson).toHaveBeenCalledTimes(1);
-        // expect updateTsConfig to not be called since enableTypescript is false
-        expect(updateTsConfig).toHaveBeenCalledTimes(0);
-        // expect updateAppPackageJson to not be called since enableNPMWorkspaces is false
-        expect(updateAppPackageJson).toHaveBeenCalledTimes(0);
-    });
 
-    it('should call applyCAPJavaUpdates when cap type is Java', async () => {
         const settings: CapProjectSettings = {
-            appRoot,
-            packageName,
-            appId,
-            sapux: true,
-            enableNPMWorkspaces: false,
-            enableTypescript: false
+            appRoot: join(__dirname, '../cap-writer/test-inputs', testCapProject),
+            packageName: testProjectName,
+            appId: `${testProjectName}-id`
         };
-        capService.capType = 'Java';
-        await applyCAPUpdates(fs, capService, settings, mockLog);
-        expect(updatePomXml).toHaveBeenCalledTimes(1);
-        expect(updateStaticLocationsInApplicationYaml).toHaveBeenCalledTimes(1);
-        const applicationYamlPah = `${capService.projectPath}/srv/src/main/resources/application.yaml`;
-        // Verify that updatePomXml is called
-        expect(updatePomXml).toHaveBeenCalledTimes(1);
-        expect(updatePomXml).toHaveBeenCalledWith(fs, `${capService.projectPath}/pom.xml`, mockLog);
-        // Verify that updateStaticLocationsInApplicationYaml is called
-        expect(updateStaticLocationsInApplicationYaml).toHaveBeenCalledTimes(1);
-        expect(updateStaticLocationsInApplicationYaml).toHaveBeenCalledWith(fs, applicationYamlPah, 'app/', mockLog);
+        await applyCAPUpdates(fs, capService, settings);
+        const packageJsonPath = join(capService.projectPath, 'package.json');
+        const packageJson = fs.readJSON(packageJsonPath) as Package;
+        const scripts = packageJson.scripts;
+        // package json file should be updated with scripts only where watch command uses projectName since enableNPMWorkspaces is not provided
+        expect(scripts).toEqual({
+            'watch-test-cap-app1': 'cds watch --open test-cap-app1/webapp/index.html?sap-ui-xx-viewCache=false'
+        });
+        // tsconfig.json file should be updated
+        const tsConfigPath = join(settings.appRoot, 'tsconfig.json');
+        // ../../node_modules/@types should not be added to typeRoots since enableTypescript is not provided
+        expect(fs.readJSON(tsConfigPath)).toEqual({
+            compilerOptions: {
+                typeRoots: ['./node_modules/@types']
+            }
+        });
+        // app package json file should be updated
+        const appPackageJsonPath = join(settings.appRoot, 'package.json');
+        // sapux array should not be deleted from app package json since enableNPMWorkspaces is not provided
+        const appPackageJson = fs.readJSON(appPackageJsonPath) as Package;
+        const sapUxArray = appPackageJson.sapux;
+        expect(sapUxArray).toBeDefined();
     });
 
-    it('should not update update pom.xml and application.yaml if path dosent exist when cap type is Java', async () => {
-        fs.exists.mockReturnValue(false); // Mock fs.exists to return false
-        // Verify that updatePomXml is not called
-        expect(updatePomXml).toHaveBeenCalledTimes(0);
-        // Verify that updateStaticLocationsInApplicationYaml is not called
-        expect(updateStaticLocationsInApplicationYaml).toHaveBeenCalledTimes(0);
+    test('applyCAPUpdates updates specific files for CAP Node js projects when CdsUi5Plugin is not enabled but enableNPMWorkspaces is enabled', async () => {
+        const testCapProject = 'test-cap-package-sapux';
+        const testOutput = join(__dirname, '../test-inputs', testCapProject);
+        const testProjectName = 'test-cap-app1';
+
+        const capService: CapServiceCdsInfo = {
+            ...capInfo,
+            projectPath: testOutput,
+            capType: 'Node.js'
+        };
+        const settings: CapProjectSettings = {
+            appRoot: join(__dirname, '../cap-writer/test-inputs', testCapProject),
+            packageName: testProjectName,
+            appId: `${testProjectName}-id`,
+            enableNPMWorkspaces: true
+        };
+        await applyCAPUpdates(fs, capService, settings);
+        // app package json file should be updated
+        const appPackageJsonPath = join(settings.appRoot, 'package.json');
+        // sapux array should be deleted from app package json since enableNPMWorkspaces is true
+        const appPackageJson = fs.readJSON(appPackageJsonPath) as Package;
+        const sapUxArray = appPackageJson.sapux;
+        expect(sapUxArray).toBeUndefined();
+    });
+
+    test('applyCAPUpdates updates specific files for CAP Java projects', async () => {
+        const testProjectName = 'test-cap-java';
+        const capService: CapServiceCdsInfo = {
+            ...capInfo,
+            projectPath: join(__dirname, '../cap-writer/test-inputs', testProjectName),
+            capType: 'Java'
+        };
+        const settings: CapProjectSettings = {
+            appRoot: join(__dirname, '../cap-writer/test-inputs', testProjectName),
+            packageName: testProjectName,
+            appId: `${testProjectName}-id`
+        };
+        const mockedResponse = {
+            documents: [{ spring: { 'web.resources.static-locations': undefined } }]
+        } as unknown as YamlDocument;
+        (YamlDocument.newInstance as jest.Mock).mockResolvedValue(mockedResponse);
+        await applyCAPUpdates(fs, capService, settings);
+        // package json file should not be updated with watch scripts since its a Java project
+        const packageJsonPath = join(capService.projectPath, 'package.json');
+        const packageJson = fs.readJSON(packageJsonPath) as Package;
+        const scripts = packageJson.scripts;
+        expect(scripts).toEqual({
+            'test-script': 'Run some scripts here',
+            'int-test': 'test command',
+            start: 'start command'
+        });
+        // pom.xml file should be updated
+        const pomXmlPath = join(settings.appRoot, 'pom.xml');
+        expect(fs.read(pomXmlPath).toString()).toContain('spring-boot-maven-plugin');
+        // application.yaml file should be updated
+        const applicationYamlPath = join(capService.projectPath, 'srv/src/main/resources', 'application.yaml');
+        const applicationYaml = fs.read(applicationYamlPath).toString();
+        expect(applicationYaml).toContain('spring:\n  web.resources.static-locations: file:./app/');
+    });
+
+    test('applyCAPUpdates skips updating watch scripts in package.json for CAP Node.js projects when hasMinCdsVersion is false and minimum cds version is not specified', async () => {
+        const testProjectName = 'test-cap-package-no-min-cds-version';
+        const capService: CapServiceCdsInfo = {
+            ...capInfo,
+            cdsUi5PluginInfo: {
+                ...cdsUi5PluginInfo,
+                hasMinCdsVersion: false
+            },
+            projectPath: join(__dirname, '../cap-writer/test-inputs', testProjectName),
+            capType: 'Node.js'
+        };
+        const settings: CapProjectSettings = {
+            appRoot: join(__dirname, '../cap-writer/test-inputs', testProjectName),
+            packageName: testProjectName,
+            appId: `${testProjectName}-id`
+        };
+        await applyCAPUpdates(fs, capService, settings);
+        const packageJsonPath = join(capService.projectPath, 'package.json');
+        const packageJson = fs.readJSON(packageJsonPath) as Package;
+        const scripts = packageJson.scripts;
+        expect(scripts).toEqual({
+            // package json file should not be updated with watch scripts since hasMinCdsVersion is false & minimum cds version is not specified
+            'test-script': 'Run some scripts here'
+        });
     });
 });
