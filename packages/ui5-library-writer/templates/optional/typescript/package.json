@@ -1,7 +1,6 @@
 {
     "name": "<%= libraryName %>",
     "version": "1.0.0",
-    "private": true,
     "devDependencies": {
       "<%= tsTypes %>": "<%= tsTypesVersion %>",
       "@typescript-eslint/eslint-plugin": "^7.1.1",
