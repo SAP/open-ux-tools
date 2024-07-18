@@ -1,5 +1,5 @@
 ---
-'@sap-ux/project-access': major
+'@sap-ux/project-access': patch
 ---
 
 Caching promise to load global cds module:
