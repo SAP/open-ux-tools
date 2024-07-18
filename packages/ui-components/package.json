@@ -27,7 +27,7 @@
         "lint:fix": "eslint . --ext .ts,.tsx --fix",
         "format:fix": "prettier --write --ignore-path ../../.prettierignore",
         "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../.prettierignore",
-        "storybook": "storybook dev -s static",
+        "storybook": "storybook dev",
         "build:storybook": "storybook build -o ./storybook",
         "test": "jest --ci --forceExit --colors --silent",
         "test-u": "jest --ci --forceExit --colors  --silent -u"
