@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.10.3
+
+### Patch Changes
+
+-   90a8291: Extension points break the outline tree sync for apps with UI5 version =< 1.96.33
+
+## 0.10.2
+
+### Patch Changes
+
+-   671242b: Disable add fragment and controller extension rt-a menu items if clicked element is from reuse component view
+
 ## 0.10.1
 
 ### Patch Changes

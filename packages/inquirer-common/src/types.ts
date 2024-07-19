@@ -56,7 +56,10 @@ export interface GuiOptions {
     breadcrumb?: boolean | string;
 }
 
-export type PromptSeverityMessage = (input?: unknown, previousAnswers?: Answers) => IMessageSeverity | undefined;
+export type PromptSeverityMessage = (
+    input?: unknown,
+    previousAnswers?: Answers
+) => IMessageSeverity | undefined | Promise<IMessageSeverity | undefined>;
 
 export type YUIQuestion<A extends Answers = Answers> = Question<A> & {
     name: string;
@@ -73,6 +76,7 @@ export interface FileBrowserQuestion<A extends Answers = Answers> extends BaseIn
 export interface ListQuestion<A extends Answers = Answers> extends BaseListQuestion<A> {
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
+    additionalMessages?: YUIQuestion['additionalMessages'];
 }
 
 export interface ConfirmQuestion<A extends Answers = Answers> extends BaseConfirmQuestion<A> {

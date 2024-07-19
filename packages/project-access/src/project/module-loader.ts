@@ -1,10 +1,24 @@
 import { existsSync } from 'fs';
-import { mkdir, rm } from 'fs/promises';
+import { mkdir, rm, writeFile } from 'fs/promises';
 import { join } from 'path';
 import type { Logger } from '@sap-ux/logger';
 import { getNodeModulesPath } from './dependencies';
 import { FileName, moduleCacheRoot } from '../constants';
 import { execNpmCommand } from '../command';
+
+/**
+ * Get the module path from project or app. Throws error if module is not installed.
+ *
+ * @param projectRoot - root path of the project/app.
+ * @param moduleName - name of the node module.
+ * @returns - path to module.
+ */
+export async function getModulePath(projectRoot: string, moduleName: string): Promise<string> {
+    if (!getNodeModulesPath(projectRoot, moduleName)) {
+        throw Error('Path to module not found.');
+    }
+    return require.resolve(moduleName, { paths: [projectRoot] });
+}
 
 /**
  * Load module from project or app. Throws error if module is not installed.
@@ -22,10 +36,7 @@ import { execNpmCommand } from '../command';
 export async function loadModuleFromProject<T>(projectRoot: string, moduleName: string): Promise<T> {
     let module: T;
     try {
-        if (!getNodeModulesPath(projectRoot, moduleName)) {
-            throw Error('Path to module not found.');
-        }
-        const modulePath = require.resolve(moduleName, { paths: [projectRoot] });
+        const modulePath = await getModulePath(projectRoot, moduleName);
         module = (await import(modulePath)) as T;
     } catch (error) {
         throw Error(`Module '${moduleName}' not installed in project '${projectRoot}'.\n${error.toString()}`);
@@ -45,11 +56,13 @@ export async function loadModuleFromProject<T>(projectRoot: string, moduleName: 
 export async function getModule<T>(module: string, version: string, options?: { logger?: Logger }): Promise<T> {
     const logger = options?.logger;
     const moduleDirectory = join(moduleCacheRoot, module, version);
-    if (!existsSync(join(moduleDirectory, FileName.Package))) {
+    const modulePackagePath = join(moduleDirectory, FileName.Package);
+    if (!existsSync(modulePackagePath)) {
         if (existsSync(moduleDirectory)) {
             await rm(moduleDirectory, { recursive: true });
         }
         await mkdir(moduleDirectory, { recursive: true });
+        await writeFile(modulePackagePath, '{}');
         await execNpmCommand(['install', `${module}@${version}`], { cwd: moduleDirectory, logger });
     }
     return loadModuleFromProject<T>(moduleDirectory, module);

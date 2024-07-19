@@ -3,7 +3,7 @@ import { readdir } from 'fs/promises';
 import { join } from 'path';
 import { valid } from 'semver';
 import type { Logger } from '@sap-ux/logger';
-import { deleteModule, getModule, loadModuleFromProject } from './module-loader';
+import { deleteModule, getModule, getModulePath, loadModuleFromProject } from './module-loader';
 import { getWebappPath } from './ui5-config';
 import { getMinimumUI5Version } from './info';
 import { FileName, fioriToolsDirectory, moduleCacheRoot } from '../constants';
@@ -12,6 +12,63 @@ import type { Manifest, Package } from '../types';
 import { execNpmCommand } from '../command';
 
 const specificationDistTagPath = join(fioriToolsDirectory, FileName.SpecificationDistTags);
+
+/**
+ * Gets the dist-tag for the provided project/app and returns it.
+ *
+ * @param root - root path of the project/app
+ * @param [options] - optional options
+ * @param [options.logger] - logger instance
+ * @returns - specification instance
+ */
+async function getProjectDistTag(root: string, options?: { logger?: Logger }): Promise<string> {
+    let distTag = 'latest';
+    try {
+        const webappPath = await getWebappPath(root);
+        const manifest = await readJSON<Manifest>(join(webappPath, FileName.Manifest));
+        const minUI5Version = getMinimumUI5Version(manifest);
+        if (minUI5Version && valid(minUI5Version)) {
+            const [mayor, minor] = minUI5Version.split('.');
+            distTag = `UI5-${mayor}.${minor}`;
+        }
+    } catch (error) {
+        options?.logger?.error(`Failed to get minimum UI5 version from manifest: ${error} using 'latest'`);
+    }
+    return distTag;
+}
+
+/**
+ * Checks if package.json contains dev dependency to specification.
+ *
+ * @param root - root path of the project/app
+ * @returns If dev dependency to specification is found in package.json
+ */
+async function hasSpecificationDevDependency(root: string): Promise<boolean> {
+    const packageJson = await readJSON<Package>(join(root, FileName.Package));
+    return !!packageJson.devDependencies?.['@sap/ux-specification'];
+}
+
+/**
+ * Loads the specification module from cache and returns it.
+ *
+ * @param root - root path of the project/app
+ * @param [options] - optional options
+ * @param [options.logger] - logger instance
+ * @returns - specification instance
+ */
+async function getSpecificationModule<T>(root: string, options?: { logger?: Logger }): Promise<T> {
+    const logger = options?.logger;
+    let specification: T;
+    const version = await getSpecificationVersion(root, { logger });
+    try {
+        specification = await getSpecificationByVersion<T>(version, { logger });
+        logger?.debug(`Specification loaded from cache using version '${version}'`);
+    } catch (error) {
+        logger?.error(`Failed to load specification: ${error}`);
+        throw new Error(`Failed to load specification: ${error}`);
+    }
+    return specification;
+}
 
 /**
  * Loads and return specification from project or cache.
@@ -24,11 +81,9 @@ const specificationDistTagPath = join(fioriToolsDirectory, FileName.Specificatio
  * @returns - specification instance
  */
 export async function getSpecification<T>(root: string, options?: { logger?: Logger }): Promise<T> {
-    let specification: T;
     const logger = options?.logger;
     try {
-        const packageJson = await readJSON<Package>(join(root, FileName.Package));
-        if (packageJson.devDependencies?.['@sap/ux-specification']) {
+        if (await hasSpecificationDevDependency(root)) {
             logger?.debug(`Specification found in devDependencies of project '${root}', trying to load`);
             // Early return with load module from project. If it throws an error it is not handled here.
             return loadModuleFromProject<T>(root, '@sap/ux-specification');
@@ -36,26 +91,7 @@ export async function getSpecification<T>(root: string, options?: { logger?: Log
     } catch {
         logger?.debug(`Specification not found in project '${root}', trying to load from cache`);
     }
-    let distTag = 'latest';
-    try {
-        const webappPath = await getWebappPath(root);
-        const manifest = await readJSON<Manifest>(join(webappPath, FileName.Manifest));
-        const minUI5Version = getMinimumUI5Version(manifest);
-        if (minUI5Version && valid(minUI5Version)) {
-            const [mayor, minor] = minUI5Version.split('.');
-            distTag = `UI5-${mayor}.${minor}`;
-        }
-    } catch (error) {
-        logger?.error(`Failed to get minimum UI5 version from manifest: ${error} using 'latest'`);
-    }
-    try {
-        specification = await getSpecificationByDistTag<T>(distTag, { logger });
-        logger?.debug(`Specification loaded from cache using dist-tag '${distTag}'`);
-    } catch (error) {
-        logger?.error(`Failed to load specification: ${error}`);
-        throw new Error(`Failed to load specification: ${error}`);
-    }
-    return specification;
+    return await getSpecificationModule(root, { logger });
 }
 
 /**
@@ -93,16 +129,15 @@ export async function refreshSpecificationDistTags(options?: { logger?: Logger }
 }
 
 /**
- * Loads and return specification from cache by dist-tag.
+ * Loads and return specification from cache by version.
  *
- * @param distTag - dist-tag of the specification, like 'latest' or 'UI5-1.71'
+ * @param version - version of the specification
  * @param [options] - optional options
  * @param [options.logger] - optional logger instance
  * @returns - specification instance
  */
-async function getSpecificationByDistTag<T>(distTag: string, options?: { logger?: Logger }): Promise<T> {
+async function getSpecificationByVersion<T>(version: string, options?: { logger?: Logger }): Promise<T> {
     const logger = options?.logger;
-    const version = await convertDistTagToVersion(distTag, { logger });
     const specification = await getModule<T>('@sap/ux-specification', version, { logger });
     return specification;
 }
@@ -124,4 +159,43 @@ async function convertDistTagToVersion(distTag: string, options?: { logger?: Log
     const specificationDistTags = await readJSON<Record<string, string>>(specificationDistTagPath);
     const version = specificationDistTags[distTag] ?? specificationDistTags.latest;
     return version;
+}
+
+/**
+ * Gets the dist-tag of a project specification and returns the version from it.
+ *
+ * @param root - root path of the project/app
+ * @param [options] - optional options
+ * @param [options.logger] - optional logger instance
+ * @returns - version of specification
+ */
+async function getSpecificationVersion(root: string, options?: { logger?: Logger }): Promise<string> {
+    const logger = options?.logger;
+    const distTag = await getProjectDistTag(root, { logger });
+    return await convertDistTagToVersion(distTag, { logger });
+}
+
+/**
+ * Returns the path to the specification used.
+ * Can be path to node_modules in project, or cache.
+ *
+ * @param root - root path of the project/app
+ * @param [options] - optional options
+ * @param [options.logger] - optional logger instance
+ * @returns - path to specification
+ */
+export async function getSpecificationPath(root: string, options?: { logger?: Logger }): Promise<string> {
+    const logger = options?.logger;
+    const moduleName = '@sap/ux-specification';
+    if (await hasSpecificationDevDependency(root)) {
+        const modulePath = await getModulePath(root, moduleName);
+        logger?.debug(`Specification root found in project '${root}'`);
+        return modulePath.slice(0, modulePath.lastIndexOf(join(moduleName)) + join(moduleName).length);
+    }
+    await getSpecificationModule(root, { logger });
+    const version = await getSpecificationVersion(root, { logger });
+    logger?.debug(`Specification not found in project '${root}', using path from cache with version '${version}'`);
+    const moduleRoot = join(moduleCacheRoot, moduleName, version);
+    const modulePath = await getModulePath(moduleRoot, moduleName);
+    return modulePath.slice(0, modulePath.lastIndexOf(join(moduleName)) + join(moduleName).length);
 }
