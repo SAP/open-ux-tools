@@ -25,7 +25,7 @@
         "manifestContainsNoODataServices": "Manifest contains no OData Services.",
         "inputCannotBeEmpty": "{{input}} cannot be empty.",
         "inpuCannotHaveSpaces": "{{input}} cannot contain spaces.",
-        "missingIconOrTitleOrSubtitle": "At least one of Title, Subtitle and Icon should have a value."
+        "missingIconOrTitleOrSubtitle": "At least one of Title, Subtitle and Icon should have a value.",
         "addAnnotationOdataSourceTooltip": "Select the annotation file from your workspace",
         "fileSelectOptionLabel": "Annotation XML",
         "fileSelectOptionTooltip": "Select the annotation file source",
