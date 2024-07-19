@@ -25,7 +25,7 @@ export function getAddCommands(): Command {
     addInboundNavigationConfigCommand(addCommands);
     // create-fiori add cards-editor
     addCardsEditorConfigCommand(addCommands);
-    // create-fiori add new model
+    // create-fiori add model
     addNewModelCommand(addCommands);
     // create-fiori add annotations-to-odata
     addAnnotationsToOdataCommand(addCommands);
