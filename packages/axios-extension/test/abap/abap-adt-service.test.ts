@@ -10,7 +10,8 @@ import {
     FileStoreService,
     BusinessObjectsService,
     GeneratorService,
-    UI5RtVersionService
+    UI5RtVersionService,
+    AbapCDSViewService
 } from '../../src';
 import type { AxiosError } from '../../src';
 import * as auth from '../../src/auth';
@@ -780,6 +781,94 @@ describe('Business Object Service', () => {
     });
 });
 
+describe('Abap CDS View Service', () => {
+    beforeAll(() => {
+        nock.disableNetConnect();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
+    });
+
+    const provider = createForAbap(config);
+
+    test('Abap CDS View Service - multiple cds views returned', async () => {
+        const maxResults = 100;
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(AdtServices.LIST_PACKAGES)
+            .query({
+                operation: 'quickSearch',
+                query: `*`,
+                maxResults: maxResults,
+                objectType: 'DDLS',
+                releaseState: 'USE_IN_CLOUD_DEVELOPMENT'
+            })
+            .replyWithFile(200, join(__dirname, 'mockResponses/cdsViews-1.xml'));
+        const cdsViewService = await provider.getAdtService<AbapCDSViewService>(AbapCDSViewService);
+        const cdsViews = await cdsViewService?.getAbapCDSViews(maxResults);
+        expect(cdsViews).toHaveLength(100);
+    });
+
+    test('Abap CDS View Service - invalid response', async () => {
+        const maxResults = 100;
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(AdtServices.LIST_PACKAGES)
+            .query({
+                operation: 'quickSearch',
+                query: `*`,
+                maxResults: maxResults,
+                objectType: 'DDLS',
+                releaseState: 'USE_IN_CLOUD_DEVELOPMENT'
+            })
+            .replyWithFile(200, join(__dirname, 'mockResponses/cdsViews-invalid.xml'));
+        const cdsViewService = await provider.getAdtService<AbapCDSViewService>(AbapCDSViewService);
+        const cdsViews = await cdsViewService?.getAbapCDSViews(maxResults);
+        expect(cdsViews).toHaveLength(0);
+    });
+
+    test('Abap CDS View Service - test max results param', async () => {
+        const cdsViewSpy = jest.spyOn(AbapCDSViewService.prototype, 'getAbapCDSViews');
+        const getSpy = jest.spyOn(AbapCDSViewService.prototype, 'get');
+        const maxResults = 10000;
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(AdtServices.LIST_PACKAGES)
+            .query({
+                operation: 'quickSearch',
+                query: `*`,
+                maxResults: maxResults,
+                objectType: 'DDLS',
+                releaseState: 'USE_IN_CLOUD_DEVELOPMENT'
+            })
+            .replyWithFile(200, join(__dirname, 'mockResponses/cdsViews-invalid.xml'));
+        const cdsViewService = await provider.getAdtService<AbapCDSViewService>(AbapCDSViewService);
+        const cdsViews = await cdsViewService?.getAbapCDSViews();
+        expect(cdsViewSpy).toHaveBeenCalledWith();
+        expect(getSpy).toHaveBeenCalledWith(
+            expect.any(String),
+            expect.objectContaining({
+                headers: {
+                    Accept: 'application/xml'
+                },
+                params: {
+                    operation: 'quickSearch',
+                    query: `*`,
+                    maxResults: maxResults,
+                    objectType: 'DDLS',
+                    releaseState: 'USE_IN_CLOUD_DEVELOPMENT'
+                }
+            })
+        );
+        expect(cdsViews).toHaveLength(0);
+    });
+});
+
 describe('Generator Service', () => {
     beforeAll(() => {
         nock.disableNetConnect();
@@ -792,6 +881,11 @@ describe('Generator Service', () => {
 
     const provider = createForAbap(config);
     const businessObjectName = 'I_BANKTP';
+    const businessObject = {
+        name: businessObjectName,
+        uri: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`,
+        description: 'test'
+    };
 
     test('Generator Service - generator config returned', async () => {
         nock(server)
@@ -804,7 +898,7 @@ describe('Generator Service', () => {
             })
             .replyWithFile(200, join(__dirname, 'mockResponses/generatorConfig.xml'));
         const generatorService = await provider.getAdtService<GeneratorService>(GeneratorService);
-        const generatorConfig = await generatorService?.getUIServiceGeneratorConfig(businessObjectName);
+        const generatorConfig = await generatorService?.getUIServiceGeneratorConfig(businessObject.uri);
         expect(generatorConfig?.id).toEqual('published-ui-service');
     });
 

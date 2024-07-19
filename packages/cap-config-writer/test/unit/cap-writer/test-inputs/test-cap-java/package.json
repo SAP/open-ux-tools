@@ -1,0 +1,10 @@
+{
+  "name": "test_java_cap",
+  "version": "0",
+  "description": "Test file",
+  "scripts": {
+    "test-script": "Run some scripts here",
+    "int-test": "test command",
+    "start": "start command"
+  }
+}
