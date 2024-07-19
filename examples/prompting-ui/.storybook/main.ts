@@ -12,6 +12,7 @@ module.exports = {
         },
         '../src/addons/register.ts'
     ],
+    staticDirs: ['./static'],
     webpackFinal: async function (config) {
         config.module.rules.push({
             test: /\.(ts|tsx)$/,
