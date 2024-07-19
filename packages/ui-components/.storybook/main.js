@@ -10,6 +10,7 @@ module.exports = {
             }
         }
     ],
+    staticDirs: ['./static'],
     webpackFinal: async (config) => {
         config.module.rules.push({
             test: /\.(ts|tsx)$/,

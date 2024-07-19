@@ -199,9 +199,12 @@ export interface CodeExtChange extends CommonChangeProperties {
     };
 }
 
+export const CUSTOMER_BASE = 'CUSTOMER_BASE';
+
 export const enum TemplateFileName {
     Fragment = 'fragment.xml',
-    Controller = 'controller.ejs'
+    Controller = 'controller.ejs',
+    Annotation = 'annotation.xml'
 }
 
 export const enum HttpStatusCodes {
@@ -285,18 +288,14 @@ export type GeneratorData<T extends ChangeType> = T extends ChangeType.ADD_ANNOT
     : never;
 
 export interface AnnotationsData {
-    projectData: AdpProjectData;
-    timestamp: number;
-    /** Indicates whether the annotation is for internal use only. */
-    isInternalUsage: boolean;
-    annotation: {
-        /** Optional name of the annotation file. */
-        fileName?: string;
-        /** Data source associated with the annotation. */
-        dataSource: string;
-        /** Path to the annotation file. */
-        filePath: string;
-    };
+    fileName?: string;
+    variant: DescriptorVariant;
+    answers: AddAnnotationsAnswers;
+}
+
+export const enum AnnotationFileSelectType {
+    ExistingFile = 1,
+    NewEmptyFile = 2
 }
 
 export interface ComponentUsagesData {
@@ -409,6 +408,15 @@ export interface ChangeDataSourceAnswers {
     maxAge?: number;
     /** Data Source Annotation URI */
     annotationUri?: string;
+}
+
+export interface AddAnnotationsAnswers {
+    /** Data Source identifier  */
+    id: string;
+    /** Selected option for Annotation File */
+    fileSelectOption: number;
+    /** Annotation File path */
+    filePath?: string;
 }
 
 export type DataSource = ManifestNamespace.DataSource & { dataSourceName: string; annotations: string[] };

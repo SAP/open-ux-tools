@@ -1,5 +1,16 @@
 # @sap-ux/odata-cli
 
+## 0.15.0
+
+### Minor Changes
+
+-   3a878f3: Add support for abap cds view service generation
+
+### Patch Changes
+
+-   Updated dependencies [3a878f3]
+    -   @sap-ux/axios-extension@1.16.0
+
 ## 0.14.1
 
 ### Patch Changes

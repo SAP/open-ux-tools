@@ -175,6 +175,79 @@ describe('API tests', () => {
                 "validate": [Function],
                 "when": [Function],
               },
+              {
+                "guiOptions": {
+                  "breadcrumb": true,
+                  "hint": "Enter the URL of the SAP System",
+                  "mandatory": true,
+                },
+                "message": "System URL",
+                "name": "systemUrl",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "guiOptions": {
+                  "breadcrumb": "SAP Client",
+                },
+                "message": "SAP client (leave empty for default)",
+                "name": "sapClient",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "guiOptions": {
+                  "mandatory": true,
+                },
+                "message": "Username",
+                "name": "abapSystemUsername",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "guiOptions": {
+                  "mandatory": true,
+                },
+                "guiType": "login",
+                "mask": "*",
+                "message": "Password",
+                "name": "abapSystemPassword",
+                "type": "password",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "default": [Function],
+                "guiOptions": {
+                  "applyDefaultWhenDirty": true,
+                  "breadcrumb": true,
+                  "hint": "Entering a system name will save the connection for re-use.",
+                },
+                "message": "System name",
+                "name": "userSystemName",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "additionalMessages": [Function],
+                "choices": [Function],
+                "default": [Function],
+                "guiOptions": {
+                  "applyDefaultWhenDirty": true,
+                  "breadcrumb": "Service",
+                  "mandatory": true,
+                },
+                "message": "Service name",
+                "name": "serviceSelection",
+                "source": [Function],
+                "type": "list",
+                "validate": [Function],
+                "when": [Function],
+              },
             ]
         `);
     });

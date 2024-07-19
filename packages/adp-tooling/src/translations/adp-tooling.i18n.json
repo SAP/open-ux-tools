@@ -26,5 +26,18 @@
         "inputCannotBeEmpty": "{{input}} cannot be empty.",
         "inpuCannotHaveSpaces": "{{input}} cannot contain spaces.",
         "missingIconOrTitleOrSubtitle": "At least one of Title, Subtitle and Icon should have a value."
+        "addAnnotationOdataSourceTooltip": "Select the annotation file from your workspace",
+        "fileSelectOptionLabel": "Annotation XML",
+        "fileSelectOptionTooltip": "Select the annotation file source",
+        "filePathLabel": "Annotation File path",
+        "filePathTooltip": "Select the annotation file from your workspace",
+        "fileDoesNotExist": "The file doesn't exist",
+        "annotationFileAlreadyExists": "There is already an annotation file with the same name, please choose another file or rename the file and select it again"
+    },
+    "choices": {
+        "annotationFile": {
+            "selectFromWorkspace": "Select annotation file from workspace",
+            "createEmptyFile": "Create an empty annotation file"
+        }
     }
 }
