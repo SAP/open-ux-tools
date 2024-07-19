@@ -45,7 +45,6 @@
         }
     },
     "validators": {
-        "manifestContainsNoODataServices": "Manifest contains no OData Services.",
         "inputCannotBeEmpty": "Input cannot be empty.",
         "cannotHaveSpaces": "Input cannot contain spaces.",
         "fileDoesNotExist": "The file doesn't exist",
