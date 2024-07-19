@@ -11,14 +11,27 @@ import {
 } from '../../base/validators';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { OperationsType } from '@sap-ux/axios-extension';
-import { checkEndpoints } from '@sap-ux/environment-check';
+import {
+    AbapServiceProvider,
+    AxiosRequestConfig,
+    OperationsType,
+    ProviderConfiguration,
+    UIFlexService
+} from '@sap-ux/axios-extension';
+import { Endpoint, checkEndpoints, isExtensionInstalledVsCode } from '@sap-ux/environment-check';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { ListQuestion, InputQuestion, YUIQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
+import { AbapTarget, createAbapServiceProvider } from '@sap-ux/system-access';
+import { Logger, LoggerOptions } from '@sap-ux/logger';
 
 export interface FlexUISupportedSystem {
     isUIFlex: boolean;
     isOnPremise: boolean;
+}
+
+export interface Auth {
+    url?: string;
+    client?: string;
 }
 
 export interface ChoiceOption<T = string> {
@@ -109,11 +122,15 @@ export function getNamespacePrompt(
     return prompt;
 }
 
-export async function getSystems(): Promise<Array<string>> {
+export async function getEndpoints(): Promise<Endpoint[]> {
+    const { endpoints } = await checkEndpoints();
+    return endpoints;
+}
+
+export async function getSystemNames(endpoints: Endpoint[]): Promise<Array<string>> {
     let destinationNames: Array<string> = [];
 
     try {
-        const { endpoints, messages } = await checkEndpoints();
         if (endpoints) {
             destinationNames = Object.keys(endpoints)
                 .map((item: any) => {
@@ -131,6 +148,7 @@ export async function getSystems(): Promise<Array<string>> {
 }
 
 export default class ProjectPrompter {
+    private logger: Logger;
     private isCustomerBase: boolean;
     private hasSystemAuthentication: boolean;
     private isLoginSuccessfull: boolean;
@@ -140,8 +158,16 @@ export default class ProjectPrompter {
     private applicationIds: any;
     private ui5VersionDetected = true;
 
+    private systemNames: string[];
+    private endpoints: Endpoint[];
+
+    private provider: AbapServiceProvider;
+
+    private readonly isExtensionInstalled: boolean;
+
     constructor(layer: UI5FlexLayer) {
         this.isCustomerBase = isCustomerBase(layer);
+        this.isExtensionInstalled = isExtensionInstalledVsCode('sapse.sap-ux-application-modeler-extension');
     }
 
     private modifyAdaptationProjectTypes(): void {
@@ -174,6 +200,33 @@ export default class ProjectPrompter {
         return true;
     }
 
+    private async setAbapConnectionService(
+        system: string,
+        username?: string,
+        password?: string,
+        client?: string
+    ): Promise<void> {
+        if (isAppStudio()) {
+            if (this.hasSystemAuthentication && username && password) {
+                // this.abapConnectionService = this.abapConnectionManager.getService(system, username, password, client);
+            } else {
+                // this.abapConnectionService = this.abapConnectionManager.getService(system);
+            }
+        } else {
+            if (!isAppStudio() && this.isExtensionInstalled) {
+                // const systemAuthDetails = await this.localDestinationService.getSystemAuthDetails(system);
+                // this.abapConnectionService = this.abapConnectionManager.getService(
+                //     systemAuthDetails?.url,
+                //     systemAuthDetails?.username,
+                //     systemAuthDetails?.password,
+                //     systemAuthDetails?.client
+                // );
+            } else {
+                // this.abapConnectionService = this.abapConnectionManager.getService(system, username, password, client);
+            }
+        }
+    }
+
     private async systemPromptValidationHandler(value: string): Promise<boolean | string> {
         this.applicationIds = [];
         this.ui5VersionDetected = true;
@@ -186,10 +239,10 @@ export default class ProjectPrompter {
             return t('validators.inputCannotBeEmpty');
         }
         // TODO:
-        // this.hasSystemAuthentication = await this.abapConnectionManager.getSystemRequiresAuthentication(value);
+        this.hasSystemAuthentication = await this.getSystemRequiresAuth(value);
         if (!this.hasSystemAuthentication) {
             try {
-                // await this._getSystemData(value);
+                await this.getSystemData(value);
                 // this.versionsOnSystem = await this._systemUI5VersionHandler(value);
                 if (isAppStudio()) {
                     return this.validateAdaptationProjectTypes();
@@ -205,21 +258,111 @@ export default class ProjectPrompter {
         return true;
     }
 
-    private async _getSystemData(system: string, username?: string, password?: string, client?: string): Promise<void> {
-        // TODO:
-        // await this._setAbapConnectionService(system, username, password, client);
-        // this.flexUISystem = await this.abapConnectionService.isFlexUISupportedSystem();
+    private async setProvider(system: string, client?: string, username?: string, password?: string) {
+        let target: AbapTarget;
+
+        if (isAppStudio()) {
+            target = {
+                destination: system
+            };
+        } else {
+            const auth = this.getSystemAuthDetails(system);
+            target = {
+                url: auth?.url,
+                client: client ?? auth?.client,
+                destination: ''
+            };
+        }
+
+        const requestOptions: AxiosRequestConfig & Partial<ProviderConfiguration> = {
+            ignoreCertErrors: false
+        };
+
+        if (username && password) {
+            requestOptions.auth = { username, password };
+        }
+
+        this.provider = await createAbapServiceProvider(target, requestOptions, true, {} as Logger);
+    }
+
+    private async getSystemData(system: string, client?: string, username?: string, password?: string): Promise<void> {
+        await this.setProvider(system, client);
+        this.flexUISystem = await this.isFlexUISupportedSystem();
         if (isAppStudio()) {
             try {
+                // TODO:
                 // this.systemInfo = await this.abapConnectionService.getSystemInfo();
-            } catch (error) {
-                //in case request to /sap/bc/lrep/dta_folder/system_info throws error we continue to standart onPremise flow
+            } catch (e) {
+                // in case request to /sap/bc/lrep/dta_folder/system_info throws error we continue to standart onPremise flow
                 this.systemInfo = {
                     adaptationProjectTypes: [ProjectType.ON_PREMISE],
                     activeLanguages: []
                 };
             }
         }
+    }
+
+    private async isFlexUISupportedSystem(): Promise<FlexUISupportedSystem | undefined> {
+        if (!this.isCustomerBase) {
+            return {
+                isOnPremise: true,
+                isUIFlex: true
+            };
+        }
+
+        const adtService = await this.provider.getAdtService<UIFlexService>(UIFlexService);
+        const settings = await adtService?.getUIFlex();
+
+        return settings;
+    }
+
+    private async getSystemRequiresAuth(systemName: string): Promise<boolean> {
+        return isAppStudio()
+            ? this.getDestinationRequiresAuth(systemName)
+            : await this.getSystemRequiresAuthentication(systemName);
+    }
+
+    private getSystemAuthDetails(system: string): Auth | undefined {
+        const foundSystemByName = this.endpoints.find((backEndSystem) => backEndSystem.Name === system);
+
+        if (foundSystemByName) {
+            return {
+                client: foundSystemByName.Client,
+                url: foundSystemByName.Url
+            };
+        }
+
+        const foundSystemByUrl = this.endpoints.find((backEndSystem) => backEndSystem.Url === system);
+
+        return foundSystemByUrl
+            ? {
+                  client: foundSystemByUrl.Client,
+                  url: foundSystemByUrl.Url
+              }
+            : undefined;
+    }
+
+    private getDestinationRequiresAuth(systemName: string) {
+        const found = this.endpoints.find((endpoint: Endpoint) => {
+            return endpoint.Name === systemName;
+        });
+
+        return found?.Authentication === 'NoAuthentication';
+    }
+
+    private async getSystemRequiresAuthentication(systemName: string) {
+        if (!this.isExtensionInstalled) {
+            return true;
+        }
+
+        if (this.endpoints.length === 0) {
+            return true;
+        }
+
+        return !(
+            this.endpoints.filter((backEndSystem) => backEndSystem.Url === systemName).length > 0 ||
+            this.endpoints.filter((backEndSystem) => backEndSystem.Name === systemName).length > 0
+        );
     }
 
     public getTargetEnvPrompt(loginEnabled: boolean, isCfInstalled: boolean): YUIQuestion<TargetEnvAnswers>[] {
@@ -315,28 +458,26 @@ export default class ProjectPrompter {
         ];
     }
 
-    private async getSystemPrompt(systems: string[]) {
-        return isAppStudio() ? await this.getSystemListPrompt(systems) : await this.getSystemNativePrompt(systems);
+    private async getSystemPrompt() {
+        return isAppStudio() ? await this.getSystemListPrompt() : await this.getSystemNativePrompt();
     }
 
-    private async getSystemListPrompt(systems: string[]): Promise<YUIQuestion<ConfigurationInfoAnswers>> {
+    private async getSystemListPrompt(): Promise<YUIQuestion<ConfigurationInfoAnswers>> {
         return {
             type: 'list',
             name: 'system',
             message: t('prompts.systemLabel'),
-            choices: () => systems,
+            choices: () => this.systemNames,
             guiOptions: {
                 hint: t('prompts.systemTooltip')
             },
             // when: isAppStudio() ? this.systemInfo?.adaptationProjectTypes?.length : true, // TODO:
-            validate: this.systemPromptValidationHandler
+            validate: this.systemPromptValidationHandler.bind(this)
         } as ListQuestion<ConfigurationInfoAnswers>;
     }
 
-    private async getSystemNativePrompt(systems: string[]): Promise<YUIQuestion<ConfigurationInfoAnswers>> {
-        // TODO: check for extension installed if not installed prompt getSystemInputPrompt
-
-        return this.getSystemListPrompt(systems);
+    private async getSystemNativePrompt(): Promise<YUIQuestion<ConfigurationInfoAnswers>> {
+        return this.isExtensionInstalled ? this.getSystemListPrompt() : this.getSystemInputPrompt();
     }
 
     private getSystemInputPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
@@ -344,7 +485,7 @@ export default class ProjectPrompter {
             type: 'input',
             name: 'system',
             message: 'System URL',
-            // validate: this._systemPromptValidationHandler.bind(this), TODO:
+            validate: this.systemPromptValidationHandler.bind(this),
             guiOptions: {
                 mandatory: true
             },
@@ -360,8 +501,7 @@ export default class ProjectPrompter {
             validate: validateClient,
             when: (answers: ConfigurationInfoAnswers) => {
                 if (answers.system) {
-                    return isAppStudio() ? false : true;
-                    // return isAppStudio() ? false : !this.localDestinationService.getIsExtensionInstalled(); // TODO:
+                    return isAppStudio() ? false : !this.isExtensionInstalled;
                 }
                 return false;
             },
@@ -412,7 +552,7 @@ export default class ProjectPrompter {
                 // answers.password not set yet, use "value" instead
                 try {
                     // TODO:
-                    // await this._getSystemData(answers.system, answers.username, value, answers.client);
+                    await this.getSystemData(answers.system, answers.client, answers.username, value);
                     // this.versionsOnSystem = await this._systemUI5VersionHandler(answers.system);
                     // await this._getApplications(answers.system, answers.username, value, answers.client);
                     this.isLoginSuccessfull = true;
@@ -442,10 +582,11 @@ export default class ProjectPrompter {
     }
 
     public async getConfigurationPrompts(): Promise<YUIQuestion<ConfigurationInfoAnswers>[]> {
-        const systems = await getSystems();
+        this.endpoints = await getEndpoints();
+        this.systemNames = await getSystemNames(this.endpoints);
 
         return [
-            await this.getSystemPrompt(systems),
+            await this.getSystemPrompt(),
             this.getSystemClientPrompt(),
             this.getUsernamePrompt(),
             this.getPasswordPrompt()

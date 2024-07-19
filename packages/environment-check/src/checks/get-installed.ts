@@ -83,6 +83,22 @@ async function getExtensionsVSCode(): Promise<{ [id: string]: { version: string 
 }
 
 /**
+ * Checks if a specific extension is installed.
+ *
+ *  @param extensionName - name of the extension to be checked
+ *  @returns boolean - if extension is installed
+ */
+export function isExtensionInstalledVsCode(extensionName: string): boolean {
+    try {
+        const vscode = require('vscode');
+        return !!vscode.extensions.getExtension(extensionName);
+    } catch (e) {
+        // "vscode" is unavailable in CLI context, and we are unable to check whether the extension is installed
+        return true;
+    }
+}
+
+/**
  * Reads the list of extensions installed and returns the id and version.
  *
  * @param extensions - installed extensions passed from vscode
