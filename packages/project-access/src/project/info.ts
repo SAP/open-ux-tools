@@ -223,18 +223,19 @@ export function getMinUI5VersionFromManifest(manifest: Manifest): string | strin
 }
 
 /**
- * Returns the minUI5Version as string[].
+ * Returns the valid minUI5Version(s) as string[].
  *
  * @param manifest - manifest object
+ * @param noValidation - disables the semver validation
  * @returns minUI5Version, as an array of strings
  */
-export function getMinUI5VersionAsArray(manifest: Manifest): string[] {
+export function getMinUI5VersionAsArray(manifest: Manifest, noValidation = false): string[] {
     const result: string[] = [];
     const minUI5Version = getMinUI5VersionFromManifest(manifest);
     if (minUI5Version) {
         const minUI5VersionArray = Array.isArray(minUI5Version) ? minUI5Version : [minUI5Version];
         minUI5VersionArray.forEach((version) => {
-            if (valid(version)) {
+            if (noValidation || valid(version)) {
                 result.push(version);
             }
         });
@@ -243,8 +244,8 @@ export function getMinUI5VersionAsArray(manifest: Manifest): string[] {
 }
 
 /**
- * Returns the minUI5Version in string format.
- * If it is defined as an arry, returns the minimum version from it.
+ * Returns the minUI5Version in string format (if valid).
+ * If it is defined as an array, returns the minimum valid version from it.
  *
  * @param manifest - manifest object
  * @returns the minimum version as string
