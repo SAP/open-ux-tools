@@ -15,6 +15,7 @@ import {
 import { promisify } from 'util';
 import { exec as execCP } from 'child_process';
 const exec = promisify(execCP);
+import { ServiceType } from '@sap-ux/odata-service-writer';
 
 export const testOutputDir = join(__dirname, 'test-output');
 
@@ -71,7 +72,8 @@ export const feBaseConfig = (
             sourceTemplate: {
                 version: '1.2.3-test',
                 id: 'test-fe-template'
-            }
+            },
+            projectType: 'EDMXBackend'
         },
         appOptions: {
             loadReuseLibs: true
@@ -174,7 +176,7 @@ export const projectChecks = async (
             console.log('stderr:', npmResult.stderr);
 
             // run checks on the project
-            if (config.appOptions?.typescript) {
+            if (config.appOptions?.typescript && config.service?.type === ServiceType.EDMX) {
                 // Check TS Types
                 npmResult = await exec(`${npm} run ts-typecheck`, { cwd: rootPath });
                 console.log('stdout:', npmResult.stdout);

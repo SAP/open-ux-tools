@@ -1,4 +1,4 @@
-import { promises } from 'fs';
+import { existsSync, promises } from 'fs';
 import { join } from 'path';
 import { create as createStore } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
@@ -9,7 +9,10 @@ async function collectPaths(root: string): Promise<string[]> {
     const children = await Promise.all(
         fileOrFolder.flatMap(async function (relativePath: string) {
             const path = join(root, relativePath);
-            const stats = await promises.stat(path);
+            const stats = await promises.lstat(path);
+            if (stats.isSymbolicLink() && !existsSync(path)) {
+                return Promise.resolve([null]);
+            }
             if (stats.isDirectory()) {
                 return collectPaths(path);
             } else {
@@ -18,7 +21,7 @@ async function collectPaths(root: string): Promise<string[]> {
         })
     );
 
-    return children.flat();
+    return children.flat().filter((path) => path !== null) as string[];
 }
 
 const projectCache = new Map<string, Record<string, string>>();

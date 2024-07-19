@@ -26,18 +26,18 @@ export class GeneratorService extends AdtService {
     private id: string;
 
     /**
-     * Get the UI service generator for the given business object.
+     * Get the UI service generator for the given referenced object.
      *
-     * @param businessObjectName - The business object name.
+     * @param objectUri - The object (business object or abap cds view) uri.
      * @returns TBD
      */
-    public async getUIServiceGeneratorConfig(businessObjectName: string): Promise<GeneratorEntry> {
+    public async getUIServiceGeneratorConfig(objectUri: string): Promise<GeneratorEntry> {
         const response = await this.get('', {
             headers: {
                 Accept: 'application/atom+xml;type=feed'
             },
             params: {
-                referencedObject: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`,
+                referencedObject: objectUri,
                 type: 'webapi'
             }
         });
