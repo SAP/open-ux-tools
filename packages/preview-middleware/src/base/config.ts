@@ -58,7 +58,8 @@ export interface TemplateConfig {
  */
 export const PREVIEW_URL = {
     client: {
-        url: '/preview/client',
+        path: '/preview/client',
+        getUrl: (basePath: string) => join(basePath, '/preview/client'),
         local: join(__dirname, '../../dist/client'),
         ns: 'open.ux.preview.client'
     },
@@ -261,8 +262,9 @@ export function createFlpTemplateConfig(config: FlpConfig, manifest: Partial<Man
     const ui5Theme = config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
     const id = manifest['sap.app']?.id ?? '';
     const ns = id.replace(/\./g, '/');
+    const basePath = posix.relative(posix.dirname(config.path), '/') ?? '.';
     return {
-        basePath: posix.relative(posix.dirname(config.path), '/') ?? '.',
+        basePath: basePath,
         apps: {},
         init: config.init ? ns + config.init : undefined,
         ui5: {
@@ -270,7 +272,7 @@ export function createFlpTemplateConfig(config: FlpConfig, manifest: Partial<Man
             theme: ui5Theme,
             flex,
             resources: {
-                [PREVIEW_URL.client.ns]: PREVIEW_URL.client.url
+                [PREVIEW_URL.client.ns]: PREVIEW_URL.client.getUrl(basePath)
             },
             bootstrapOptions: ''
         },
