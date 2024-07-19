@@ -57,7 +57,7 @@
         "errorDuplicatedValue": "{{value}} with the same name was already added to the project",
         "errorDuplicateNames": "{{value1}} must be different from {{value2}}",
         "errorInputInvalidValuePrefix": "{{value}} should start with '{{prefix}}'",
-        "errorInvalidValueForSpecialChars": "{{value}} must contain only Latin alphanumeric characters or the following symbols: '-','_','$' and '.'"
+        "errorInvalidValueForSpecialChars": "{{value}} must contain only Latin alphanumeric characters or the following symbols: '-','_','$' and '.'",
         "addAnnotationOdataSourceTooltip": "Select the annotation file from your workspace",
         "fileSelectOptionLabel": "Annotation XML",
         "fileSelectOptionTooltip": "Select the annotation file source",

@@ -18,9 +18,10 @@ export function addComponentUsagesCommand(cmd: Command): void {
 }
 
 /**
- * Add a new sub-command to add component usages of an adaptation project to the given command.
+ * Adds component usages to the adaptation project.
  *
- * @param {Command} cmd - The command to add the add component-usages sub-command to.
+ * @param {string} basePath - The path to the adaptation project.
+ * @param {boolean} simulate - If set to true, then no files will be written to the filesystem.
  */
 export async function addComponentUsages(basePath: string, simulate: boolean): Promise<void> {
     const logger = getLogger();
