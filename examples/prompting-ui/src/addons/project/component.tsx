@@ -97,7 +97,7 @@ export const ProjectPathForm = memo(() => {
         }
     };
     // Submit project path with pending path or passed path
-    const onSubmit = (_event?: React.MouseEventHandler, application: ApplicationInformation = pendingApp) => {
+    const onSubmit = (_event?: React.SyntheticEvent, application: ApplicationInformation = pendingApp) => {
         setBusy(true);
         updateProjectPath(application)
             .then((payload) => {
@@ -152,7 +152,7 @@ export const ProjectPathForm = memo(() => {
                 <div style={{ padding: '15px 0 0 130px' }}>
                     <Form.Button
                         onClick={onSubmit}
-                        disabled={isSubmitEnabled ? undefined : 'true'}
+                        disabled={isSubmitEnabled ? undefined : true}
                         title={isSubmitEnabled ? '' : 'No changes to update'}>
                         Update
                     </Form.Button>
