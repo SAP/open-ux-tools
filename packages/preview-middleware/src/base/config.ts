@@ -59,7 +59,7 @@ export interface TemplateConfig {
 export const PREVIEW_URL = {
     client: {
         path: '/preview/client',
-        getUrl: (basePath: string) => join(basePath, '/preview/client'),
+        getUrl: (basePath: string) => posix.join(basePath, 'preview', 'client'),
         local: join(__dirname, '../../dist/client'),
         ns: 'open.ux.preview.client'
     },
