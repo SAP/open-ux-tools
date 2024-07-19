@@ -9,7 +9,7 @@ import { validateAdpProject } from '../../validation/validation';
 /**
  * Add a new sub-command to add new odata service and new sapui5 model of an adaptation project to the given command.
  *
- * @param {Command} cmd - The command to add the change data-source sub-command to.
+ * @param {Command} cmd - The command to add the new model sub-command to.
  */
 export function addNewModelCommand(cmd: Command): void {
     cmd.command('model [path]')

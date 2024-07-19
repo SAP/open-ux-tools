@@ -35,13 +35,13 @@ export function hasFileDeletes(fs: Editor): boolean {
 }
 
 /**
- * Validate if Adaptation Project is supported for command, throws an error if not supported.
+ * Validate if adaptation project is supported for command, throws an error if not supported.
  *
- * @param basePath - path to the Adaptation Project
+ * @param basePath - path to the adaptation project
  */
 export async function validateAdpProject(basePath: string): Promise<void> {
     if ((await getAppType(basePath)) !== 'Fiori Adaptation') {
-        throw new Error('This command can only be used for an Adaptation Project');
+        throw new Error('This command can only be used for an adaptation project');
     }
 
     if (isCFEnvironment(basePath)) {

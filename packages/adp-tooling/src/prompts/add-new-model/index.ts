@@ -97,7 +97,7 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
                 mandatory: true,
                 hint: t('prompts.oDataServiceUriTooltip')
             },
-            validate: (value: string) => validateNonEmptyNoSpaces(value, t('prompts.oDataServiceUriLabel')),
+            validate: (value: string) => validateNonEmptyNoSpaces(value),
             store: false
         } as InputQuestion<NewModelAnswers>,
         {
@@ -195,8 +195,7 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
             type: 'input',
             name: 'dataSourceURI',
             message: t('prompts.oDataAnnotationDataSourceUriLabel'),
-            validate: (value: string) =>
-                validateNonEmptyNoSpaces(value, t('prompts.oDataAnnotationDataSourceUriLabel')),
+            validate: (value: string) => validateNonEmptyNoSpaces(value),
             store: false,
             guiOptions: {
                 mandatory: true,

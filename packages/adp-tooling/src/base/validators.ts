@@ -35,21 +35,16 @@ export function hasEmptySpaces(value: string): boolean {
  * Validates that the input is non-empty and contains no whitespace characters.
  *
  * @param {string} value - The input value to validate.
- * @param {string | undefined} input - The name of the input field being validated, used for error messaging.
  * @param {boolean} isMandatory - Indicates whether the input is mandatory.
  * @returns {string | boolean} Returns true if the input is valid. If invalid, returns a localized error message.
  */
-export function validateNonEmptyNoSpaces(
-    value: string,
-    input: string | undefined,
-    isMandatory = true
-): string | boolean {
+export function validateNonEmptyNoSpaces(value: string, isMandatory = true): string | boolean {
     if (!isNotEmptyString(value)) {
-        return isMandatory ? t('validators.cannotBeEmpty', { input }) : true;
+        return isMandatory ? t('validators.inputCannotBeEmpty') : true;
     }
 
     if (hasEmptySpaces(value)) {
-        return t('validators.cannotHaveSpaces', { input });
+        return t('validators.cannotHaveSpaces');
     }
 
     return true;
@@ -135,7 +130,7 @@ export function validateContentDuplication(
  * @returns {boolean | string} True if validation passes, or an error message if validation fails.
  */
 export function validateEmptyAndUserState(value: string, isCustomerBase: boolean, input: string): string | boolean {
-    const validation = validateSpecialChars(value, input);
+    const validation = validateSpecialChars(value);
 
     if (typeof validation === 'string') {
         return validation;
@@ -153,23 +148,21 @@ export function validateEmptyAndUserState(value: string, isCustomerBase: boolean
  * Validates a value for special characters.
  *
  * @param value The value to validate.
- * @param input The name of the input field.
  * @param regexp The regex expression for allowed special characters.
  * @param errorMsg The error message if validation fails.
  * @returns {boolean | string} True if validation passes, or an error message if validation fails.
  */
 export function validateSpecialChars(
     value: string,
-    input: string,
     regexp = '^[a-zA-Z0-9_$.\\-]+$',
     errorMsg?: string
 ): boolean | string {
     if (value.length === 0) {
-        return t('validators.cannotBeEmpty', { input });
+        return t('validators.inputCannotBeEmpty');
     }
 
     if (value.indexOf(' ') >= 0) {
-        return t('validators.cannotHaveSpaces', { input });
+        return t('validators.cannotHaveSpaces');
     }
 
     const regex = new RegExp(regexp, 'g');

@@ -12,6 +12,12 @@
         "isInSafeModeLabel": "Making manifest changes is not upgrade safe and the project will be set in advanced mode. Please continue if you are sure you want to have your project in advanced mode.",
         "oDataURIV2InfoLabel": "Have in mind that you are trying to replace OData {{versionOne}} Service with OData {{versionTwo}} Service",
 
+        "fileSelectOptionLabel": "Annotation XML",
+        "fileSelectOptionTooltip": "Select the annotation file source",
+        "filePathLabel": "Annotation File path",
+        "filePathTooltip": "Select the annotation file from your workspace",
+        "addAnnotationOdataSourceTooltip": "Select the annotation file from your workspace",
+
         "sapUi5Model": "SAPUI5 Model",
         "oDataService": "OData Service",
         "oDataAnnotation": "OData Annotation",
@@ -32,10 +38,18 @@
         "oDataAnnotationSettingsLabel": "OData Annotation Settings",
         "oDataAnnotationSettingsTooltip": "If needed enter any additional {{value}} settings in the 'key':'value1','key2':'value2' format"
     },
+    "choices": {
+        "annotationFile": {
+            "selectFromWorkspace": "Select annotation file from workspace",
+            "createEmptyFile": "Create an empty annotation file"
+        }
+    },
     "validators": {
         "manifestContainsNoODataServices": "Manifest contains no OData Services.",
-        "cannotBeEmpty": "{{input}} cannot be empty.",
-        "cannotHaveSpaces": "{{input}} cannot contain spaces.",
+        "inputCannotBeEmpty": "Input cannot be empty.",
+        "cannotHaveSpaces": "Input cannot contain spaces.",
+        "fileDoesNotExist": "The file doesn't exist",
+        "annotationFileAlreadyExists": "There is already an annotation file with the same name, please choose another file or rename the file and select it again",
         "invalidValue": "Invalid {{input}}",
         "errorDuplicatedValue": "{{value}} with the same name was already added to the project",
         "errorDuplicateNames": "{{value1}} must be different from {{value2}}",

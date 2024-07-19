@@ -3,7 +3,14 @@ import type { Editor } from 'mem-fs-editor';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import { readFileSync, existsSync, readdirSync } from 'fs';
 
-import { type AnnotationsData, type PropertyValueType, ChangeType, type ManifestChangeProperties } from '../../../src';
+import {
+    type AnnotationsData,
+    type PropertyValueType,
+    ChangeType,
+    type ManifestChangeProperties,
+    type DescriptorVariant,
+    type AddAnnotationsAnswers
+} from '../../../src';
 import {
     findChangeWithInboundId,
     getChange,
@@ -303,12 +310,18 @@ describe('Change Utils', () => {
 
         const mockProjectPath = 'mock/project/path';
         const mockData = {
-            timestamp: 123456789,
-            annotation: {
-                filePath: '',
-                fileName: 'mockAnnotation.xml'
-            }
-        };
+            fileName: 'mockAnnotation.xml',
+            variant: {
+                layer: 'CUSTOMER_BASE',
+                reference: 'mock.reference',
+                id: 'adp.mock.variant',
+                namespace: 'apps/adp.mock.variant'
+            } as DescriptorVariant,
+            answers: {
+                id: '/sap/opu/odata/source',
+                fileSelectOption: 1
+            } as AddAnnotationsAnswers
+        } as AnnotationsData;
         const mockChange = { key: 'value' };
         const writeJsonSpy = jest.fn();
         const writeSpy = jest.fn();
@@ -322,6 +335,7 @@ describe('Change Utils', () => {
         it('should write the change file and an empty annotation file for NewEmptyFile option', () => {
             writeAnnotationChange(
                 mockProjectPath,
+                123456789,
                 mockData as unknown as AnnotationsData,
                 mockChange as unknown as ManifestChangeProperties,
                 mockFs as unknown as Editor
@@ -332,27 +346,31 @@ describe('Change Utils', () => {
                 mockChange
             );
 
-            expect(writeSpy).toHaveBeenCalledWith(expect.stringContaining('mockAnnotation.xml'), '');
+            expect(copySpy).toHaveBeenCalledWith(
+                expect.stringContaining(path.join('templates', 'changes', 'annotation.xml')),
+                expect.stringContaining('mockAnnotation.xml')
+            );
         });
 
         it('should copy the annotation file to the correct directory if not creating a new empty file', () => {
-            mockData.annotation.filePath = `mock/path/to/annotation/file.xml`;
+            mockData.answers.filePath = `mock/path/to/annotation/file.xml`;
 
             writeAnnotationChange(
                 mockProjectPath,
+                123456789,
                 mockData as unknown as AnnotationsData,
                 mockChange as unknown as ManifestChangeProperties,
                 mockFs as unknown as Editor
             );
 
             expect(copySpy).toHaveBeenCalledWith(
-                mockData.annotation.filePath,
+                mockData.answers.filePath,
                 expect.stringContaining('mockAnnotation.xml')
             );
         });
 
         it('should not copy the annotation file if the selected directory is the same as the target', () => {
-            mockData.annotation.filePath = path.join(
+            mockData.answers.filePath = path.join(
                 'mock',
                 'project',
                 'path',
@@ -364,6 +382,7 @@ describe('Change Utils', () => {
 
             writeAnnotationChange(
                 mockProjectPath,
+                123456789,
                 mockData as unknown as AnnotationsData,
                 mockChange as unknown as ManifestChangeProperties,
                 mockFs as unknown as Editor
@@ -373,20 +392,29 @@ describe('Change Utils', () => {
         });
 
         it('should throw error when write operation fails', () => {
-            mockData.annotation.filePath = '';
+            mockData.answers.filePath = '';
 
-            mockFs.write.mockImplementation(() => {
+            mockFs.writeJSON.mockImplementation(() => {
                 throw new Error('Failed to write JSON');
             });
 
             expect(() => {
                 writeAnnotationChange(
                     mockProjectPath,
+                    123456789,
                     mockData as unknown as AnnotationsData,
                     mockChange as unknown as ManifestChangeProperties,
                     mockFs as unknown as Editor
                 );
-            }).toThrow('Could not write annotation changes. Reason: Failed to write JSON');
+            }).toThrow(
+                `Could not write annotation changes. Reason: Could not write change to file: ${path.join(
+                    mockProjectPath,
+                    'webapp',
+                    'changes',
+                    'manifest',
+                    'id_123456789_addAnnotationsToOData.change'
+                )}. Reason: Failed to write JSON`
+            );
         });
     });
 });

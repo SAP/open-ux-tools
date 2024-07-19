@@ -45,22 +45,20 @@ describe('validators', () => {
     });
 
     describe('validateNonEmptyNoSpaces', () => {
-        const label = t('prompts.oDataServiceUriLabel');
-
         it('should return true for valid URIs', () => {
-            expect(validateNonEmptyNoSpaces('/sap/opu/odata/', label)).toBe(true);
+            expect(validateNonEmptyNoSpaces('/sap/opu/odata/')).toBe(true);
         });
 
         it('should return an error message if the URI is empty and mandatory', () => {
-            expect(validateNonEmptyNoSpaces('', label, true)).toBe(`${label} cannot be empty.`);
+            expect(validateNonEmptyNoSpaces('', true)).toBe('Input cannot be empty.');
         });
 
         it('should return true if the URI is empty but not mandatory', () => {
-            expect(validateNonEmptyNoSpaces('', label, false)).toBe(true);
+            expect(validateNonEmptyNoSpaces('', false)).toBe(true);
         });
 
         it('should return an error message if the URI contains spaces', () => {
-            expect(validateNonEmptyNoSpaces('/sap/opu /odata/', label)).toBe(`${label} cannot contain spaces.`);
+            expect(validateNonEmptyNoSpaces('/sap/opu /odata/')).toBe(`Input cannot contain spaces.`);
         });
     });
 
@@ -153,24 +151,22 @@ describe('validators', () => {
 
         it('should validate empty values correctly', () => {
             expect(validateEmptyAndUserState('', false, t('prompts.oDataServiceNameLabel'))).toBe(
-                'OData Service Name cannot be empty.'
+                'Input cannot be empty.'
             );
         });
     });
 
     describe('validateSpecialChars', () => {
         it('should return true for valid input', () => {
-            expect(validateSpecialChars('validInput', t('prompts.oDataServiceNameLabel'))).toBe(true);
+            expect(validateSpecialChars('validInput')).toBe(true);
         });
 
         it('should return an error message for input with spaces', () => {
-            expect(validateSpecialChars('invalid input', t('prompts.oDataServiceNameLabel'))).toBe(
-                `${t('prompts.oDataServiceNameLabel')} cannot contain spaces.`
-            );
+            expect(validateSpecialChars('invalid input')).toBe('Input cannot contain spaces.');
         });
 
         it('should validate special characters correctly', () => {
-            expect(validateSpecialChars('value@', t('prompts.oDataServiceNameLabel'))).toBe(
+            expect(validateSpecialChars('value@')).toBe(
                 "value@ must contain only Latin alphanumeric characters or the following symbols: '-','_','$' and '.'"
             );
         });
