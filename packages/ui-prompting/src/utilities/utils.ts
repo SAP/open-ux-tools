@@ -125,7 +125,7 @@ export function getAnswer(answers: Answers, path: string): unknown {
 /**
  * Method convert choices(inquirer) to dropdown/combobox options(ui-components).
  *
- * @param question - Array of choices
+ * @param choices - Array of choices
  * @returns Returns dropdown/combobox options.
  */
 export function convertChoicesToOptions(choices: PromptListChoices): UISelectableOption<ChoiceOptions>[] {
