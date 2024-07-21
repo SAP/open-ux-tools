@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { UITextInput } from '@sap-ux/ui-components';
 import { useValue, getLabelRenderer } from '../../../utilities';
-import type { InputPromptQuestion } from '../../../types';
+import type { AnswerValue, InputPromptQuestion } from '../../../types';
 
 export interface InputProps extends InputPromptQuestion {
-    value?: string | number | boolean;
-    onChange?: (name: string, value?: string | number | boolean) => void;
+    value?: AnswerValue;
+    onChange?: (name: string, value?: AnswerValue) => void;
     errorMessage?: string;
 }
 

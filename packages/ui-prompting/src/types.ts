@@ -115,7 +115,6 @@ export interface PromptsGroup {
     description: string[];
 }
 
-// ToDo -recheck type
 export type AnswerValue = string | number | boolean | undefined;
 
 export const enum PromptsLayoutType {
