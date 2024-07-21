@@ -1,14 +1,14 @@
-import type { UIComboBoxOption } from '@sap-ux/ui-components';
+import type { UISelectableOption } from '@sap-ux/ui-components';
 import { UIComboBox, UIComboBoxLoaderType } from '@sap-ux/ui-components';
 import React from 'react';
 import { useValue, getLabelRenderer } from '../../../utilities';
 import type { AnswerValue, CheckboxPromptQuestion } from '../../../types';
+import { ChoiceOptions } from 'inquirer';
 
 export interface MultiSelectProps extends CheckboxPromptQuestion {
     value?: AnswerValue;
     onChange: (name: string, value: AnswerValue) => void;
-    // ToDo - why options interface differs between multiselect and select?
-    options: UIComboBoxOption[];
+    options: UISelectableOption<ChoiceOptions>[];
     pending?: boolean;
     errorMessage?: string;
 }

@@ -77,7 +77,7 @@ function getOptions(question: PromptQuestion, choices?: PromptListChoices): UISe
  * @param choices - External choices(if param is passed then choices would be used on top of "question.choices")
  * @returns Returns dropdown/combobox options.
  */
-export function useOptions(question: PromptQuestion, choices?: PromptListChoices): UIComboBoxOption[] {
+export function useOptions(question: PromptQuestion, choices?: PromptListChoices): UISelectableOption<ChoiceOptions>[] {
     const [options, setOptions] = useState<UIComboBoxOption[]>([]);
     useEffect(() => {
         const options = getOptions(question, choices);
