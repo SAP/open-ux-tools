@@ -1,5 +1,6 @@
-import type { Answers } from 'inquirer';
-import type { PromptQuestion, AnswerValue } from '../types';
+import type { Answers, ChoiceOptions } from 'inquirer';
+import type { PromptQuestion, AnswerValue, PromptListChoices } from '../types';
+import type { UISelectableOption } from '@sap-ux/ui-components';
 
 /**
  * Method finds dependant question names for passed question.
@@ -119,4 +120,34 @@ export function getAnswer(answers: Answers, path: string): unknown {
     }
 
     return current;
+}
+
+/**
+ * Method convert choices(inquirer) to dropdown/combobox options(ui-components).
+ *
+ * @param question - Array of choices
+ * @returns Returns dropdown/combobox options.
+ */
+export function convertChoicesToOptions(choices: PromptListChoices): UISelectableOption<ChoiceOptions>[] {
+    if (!choices.length) {
+        return [];
+    }
+    const options: UISelectableOption<ChoiceOptions>[] = [];
+    for (const choice of choices) {
+        if (typeof choice === 'object' && 'value' in choice) {
+            options.push({
+                key: choice.value.toString(),
+                text: choice.name ?? '',
+                data: choice
+            });
+        } else {
+            const choiceText = choice.toString();
+            options.push({
+                key: choiceText,
+                text: choiceText,
+                data: { value: choice }
+            });
+        }
+    }
+    return options;
 }
