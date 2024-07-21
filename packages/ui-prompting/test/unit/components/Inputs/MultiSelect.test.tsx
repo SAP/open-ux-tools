@@ -13,9 +13,9 @@ const props: MultiSelectProps = {
     errorMessage: undefined,
     placeholder: undefined,
     type: 'checkbox',
-    options: [
-        { key: 'testKey0', text: 'testText0' },
-        { key: 'testKey1', text: 'testText1' }
+    choices: [
+        { name: 'testText0', value: 'testValue0' },
+        { name: 'testText1', value: 'testValue1' }
     ],
     pending: false
 };
@@ -29,7 +29,7 @@ describe('MultiSelect', () => {
     });
 
     it('Render multiselect with value', () => {
-        render(<MultiSelect {...props} value="testKey1" />);
+        render(<MultiSelect {...props} value="testValue1" />);
         expect(screen.getByDisplayValue('testText1')).toBeDefined();
     });
 
@@ -53,23 +53,23 @@ describe('MultiSelect', () => {
         // select 1st item
         fireEvent.click(options[0]);
         expect(onChangeFn).toHaveBeenCalled();
-        expect(onChangeFn).toHaveBeenCalledWith('testList', 'testKey0');
+        expect(onChangeFn).toHaveBeenCalledWith('testList', 'testValue0');
         expect(screen.getByPlaceholderText('testText0')).toBeDefined();
         // select 2nd item
         fireEvent.click(options[1]);
         expect(onChangeFn).toHaveBeenCalledTimes(2);
-        expect(onChangeFn).toHaveBeenCalledWith('testList', 'testKey0,testKey1');
+        expect(onChangeFn).toHaveBeenCalledWith('testList', 'testValue0,testValue1');
         expect(screen.getByPlaceholderText('testText0, testText1')).toBeDefined();
         // deselect 2nd item
         fireEvent.click(options[1]);
         expect(onChangeFn).toHaveBeenCalledTimes(3);
-        expect(onChangeFn).toHaveBeenCalledWith('testList', 'testKey0');
+        expect(onChangeFn).toHaveBeenCalledWith('testList', 'testValue0');
         fireEvent.click(button);
         expect(screen.getByPlaceholderText('testText0')).toBeDefined();
     });
 
     it('Test value reset', () => {
-        const { rerender } = render(<MultiSelect {...props} value={'testKey0,testKey1'} />);
+        const { rerender } = render(<MultiSelect {...props} value={'testValue0,testValue1'} />);
         let input = screen.getByRole('combobox');
         expect(input.getAttribute('value')).toEqual('testText0, testText1');
         rerender(<MultiSelect {...props} value={undefined} />);

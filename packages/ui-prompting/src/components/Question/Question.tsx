@@ -1,6 +1,6 @@
 import React from 'react';
 import { Input, Select, MultiSelect } from '../Inputs';
-import { getAnswer, useOptions } from '../../utilities';
+import { getAnswer } from '../../utilities';
 import type { PromptQuestion, ValidationResults, AnswerValue, PromptListChoices } from '../../types';
 
 import './Question.scss';
@@ -25,8 +25,6 @@ export const Question = (props: QuestionProps) => {
     if (validation[question.name]?.isValid === false && validation[question.name]?.errorMessage) {
         errorMessage = validation[question.name].errorMessage!;
     }
-    // ToDo -> move to MultiSelect and Select?
-    const options = useOptions(question, choices);
     switch (question?.type) {
         case 'input': {
             questionInput = <Input value={value} {...question} onChange={onChange} errorMessage={errorMessage} />;
@@ -38,8 +36,8 @@ export const Question = (props: QuestionProps) => {
                     // change to pass the relevant answer
                     value={value}
                     {...question}
+                    dynamicChoices={choices}
                     onChange={onChange}
-                    options={options}
                     errorMessage={errorMessage}
                 />
             );
@@ -51,8 +49,8 @@ export const Question = (props: QuestionProps) => {
                     // change to pass the relevant answer
                     value={value}
                     {...question}
+                    dynamicChoices={choices}
                     onChange={onChange}
-                    options={options}
                     pending={pending}
                     errorMessage={errorMessage}
                 />

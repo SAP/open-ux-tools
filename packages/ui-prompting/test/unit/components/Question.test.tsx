@@ -111,19 +111,47 @@ describe('Question', () => {
         expect(screen.getByText('Unsupported')).toBeDefined();
     });
 
-    it(`Test question choices - ${questions.dynamicList.name}`, () => {
-        render(
-            <Question
-                {...props}
-                question={{ ...questions.dynamicList, choices: [] } as ListPromptQuestion}
-                choices={[{ value: 'testName0', name: 'testValue0' }]}
-            />
-        );
-        const input = screen.getByRole('combobox');
-        expect(input).toBeDefined();
-        const button = document.getElementsByClassName('ms-Button')[0];
-        fireEvent.click(button);
-        expect(screen.queryAllByRole('option')).toHaveLength(1);
+    describe('Test question choices', () => {
+        const testCases = [
+            {
+                name: 'Dynamic choices applied',
+                choices: [
+                    { value: 'testValue0', name: 'testName0' },
+                    { value: 'testValue1', name: 'testName1' }
+                ],
+                expected: ['testName0', 'testName1']
+            },
+            {
+                name: 'Dynamic choices applied - empty',
+                choices: [],
+                expected: []
+            },
+            {
+                name: 'Dynamic choices are not applied - use original',
+                choices: undefined,
+                expected: ['original1']
+            }
+        ];
+        test.each(testCases)('Restricted properties. $name', async ({ choices, expected }) => {
+            render(
+                <Question
+                    {...props}
+                    question={
+                        {
+                            ...questions.dynamicList,
+                            choices: [{ value: 'original1', name: 'original1' }]
+                        } as ListPromptQuestion
+                    }
+                    choices={choices}
+                />
+            );
+            const input = screen.getByRole('combobox');
+            expect(input).toBeDefined();
+            const button = document.getElementsByClassName('ms-Button')[0];
+            fireEvent.click(button);
+            expect(screen.queryAllByRole('option')).toHaveLength(expected.length);
+            expect(screen.queryAllByRole('option').map((option) => option.textContent)).toEqual(expected);
+        });
     });
 
     it(`Test question validate - ${questions.input.name}`, () => {

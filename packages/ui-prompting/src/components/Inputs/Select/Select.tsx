@@ -2,22 +2,33 @@ import React from 'react';
 import type { ChoiceOptions } from 'inquirer';
 import { UIComboBox, UIComboBoxLoaderType, UITextInput } from '@sap-ux/ui-components';
 import type { ITextField, UIComboBoxRef, UISelectableOption } from '@sap-ux/ui-components';
-import { useValue, getLabelRenderer } from '../../../utilities';
-import type { AnswerValue, ListPromptQuestion } from '../../../types';
+import { useValue, getLabelRenderer, useOptions } from '../../../utilities';
+import type { AnswerValue, ListPromptQuestion, PromptListChoices } from '../../../types';
 
 export interface SelectProps extends ListPromptQuestion {
     value?: AnswerValue;
     onChange: (name: string, value: AnswerValue) => void;
-    options: UISelectableOption<ChoiceOptions>[];
+    dynamicChoices?: PromptListChoices;
     pending?: boolean;
     errorMessage?: string;
 }
 
 export const Select = (props: SelectProps) => {
-    const { name, message, onChange, required, options, pending, description, errorMessage, placeholder, creation } =
-        props;
+    const {
+        name,
+        message,
+        onChange,
+        required,
+        pending,
+        description,
+        errorMessage,
+        placeholder,
+        creation,
+        dynamicChoices
+    } = props;
     const [value, setValue] = useValue('', props.value ?? '');
     const inputRef = React.createRef<ITextField>();
+    const options = useOptions(props, dynamicChoices);
 
     const onChangeSelect = (
         event?: React.FormEvent<HTMLSelectElement | UIComboBoxRef>,

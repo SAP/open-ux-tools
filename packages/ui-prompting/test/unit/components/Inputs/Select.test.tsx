@@ -12,9 +12,9 @@ const props: SelectProps = {
     description: '',
     errorMessage: undefined,
     placeholder: undefined,
-    options: [
-        { key: 'testKey0', text: 'testText0', data: { value: 'testValue0' } },
-        { key: 'testKey1', text: 'testText1', data: { value: 'testValue1' } }
+    choices: [
+        { name: 'testText0', value: 'testValue0' },
+        { name: 'testText1', value: 'testValue1' }
     ],
     pending: false,
     type: 'list'
@@ -37,17 +37,39 @@ describe('Select', () => {
     });
 
     it('Render select with value', () => {
-        render(<Select {...props} value="testKey1" />);
+        render(<Select {...props} value="testValue1" />);
         expect(screen.getByDisplayValue('testText1')).toBeDefined();
     });
 
-    it('Test property options', () => {
+    it('Test internal choices', () => {
         render(<Select {...props} />);
         const input = screen.getByRole('combobox');
         expect(input).toBeDefined();
         const button = document.getElementsByClassName('ms-Button')[0];
         fireEvent.click(button);
         expect(screen.queryAllByRole('option')).toHaveLength(2);
+        expect(screen.queryAllByRole('option').map((option) => option.textContent)).toEqual(['testText0', 'testText1']);
+    });
+
+    it('Test dynamic choices', () => {
+        render(
+            <Select
+                {...props}
+                dynamicChoices={[
+                    { name: 'dynamicTest0', value: 'dynamicValue0' },
+                    { name: 'dynamicTest1', value: 'dynamicValue1' }
+                ]}
+            />
+        );
+        const input = screen.getByRole('combobox');
+        expect(input).toBeDefined();
+        const button = document.getElementsByClassName('ms-Button')[0];
+        fireEvent.click(button);
+        expect(screen.queryAllByRole('option')).toHaveLength(2);
+        expect(screen.queryAllByRole('option').map((option) => option.textContent)).toEqual([
+            'dynamicTest0',
+            'dynamicTest1'
+        ]);
     });
 
     it('Test property onChange', () => {
@@ -71,9 +93,9 @@ describe('Select', () => {
             <Select
                 {...props}
                 onChange={onChangeFn}
-                options={[
-                    { text: 'False', key: 'false', data: { value: false } },
-                    { text: 'True', key: 'true', data: { value: true } }
+                choices={[
+                    { name: 'False', value: false },
+                    { name: 'True', value: true }
                 ]}
             />
         );
@@ -91,7 +113,7 @@ describe('Select', () => {
 
     it('Test property onChange - input non-existent value does not reset selected option', () => {
         const onChangeFn = jest.fn();
-        render(<Select {...props} onChange={onChangeFn} value="testKey1" />);
+        render(<Select {...props} onChange={onChangeFn} value="testValue1" />);
         const input = screen.getByRole('combobox');
         expect(input).toBeDefined();
         expect(screen.getByDisplayValue('testText1')).toBeDefined();
@@ -102,7 +124,7 @@ describe('Select', () => {
 
     it('Test property onChange - delete the selected value', async () => {
         const onChangeFn = jest.fn();
-        render(<Select {...props} onChange={onChangeFn} value="testKey1" />);
+        render(<Select {...props} onChange={onChangeFn} value="testValue1" />);
         const input = screen.getByRole('combobox');
         expect(input).toBeDefined();
         expect(screen.getByDisplayValue('testText1')).toBeDefined();
@@ -137,15 +159,15 @@ describe('Select', () => {
     });
 
     it('Test value reset', () => {
-        const options = [
-            { text: 'False', key: 'false', data: { value: false } },
-            { text: 'True', key: 'true', data: { value: true } }
+        const choices = [
+            { name: 'False', value: false },
+            { name: 'True', value: true }
         ];
-        const { rerender } = render(<Select {...props} value={true} options={options} />);
+        const { rerender } = render(<Select {...props} value={true} choices={choices} />);
         let input = screen.getByRole('combobox');
         expect(input).toBeDefined();
         expect(input.getAttribute('value')).toEqual('True');
-        rerender(<Select {...props} value={undefined} options={options} />);
+        rerender(<Select {...props} value={undefined} choices={choices} />);
         input = screen.getByRole('combobox');
         expect(input.getAttribute('value')).toEqual('');
     });
@@ -158,8 +180,8 @@ describe('Select', () => {
             });
 
             it('Render creatable select with value', () => {
-                render(<Select {...creatableProps} value="testKey1" />);
-                expect(screen.getByDisplayValue('testKey1')).toBeDefined();
+                render(<Select {...creatableProps} value="testValue1" />);
+                expect(screen.getByDisplayValue('testValue1')).toBeDefined();
             });
 
             it('Test creatable select property onChange - select an option', () => {
@@ -167,9 +189,9 @@ describe('Select', () => {
                 render(
                     <Select
                         {...creatableProps}
-                        options={[
-                            { key: 'testKey0', text: 'testText0', data: { value: 'testValue0' } },
-                            { key: 'testKey1', text: 'testText1', data: { value: 'testValue1' } }
+                        choices={[
+                            { name: 'testText0', value: 'testValue0' },
+                            { name: 'testText1', value: 'testValue1' }
                         ]}
                         onChange={onChangeFn}
                     />
@@ -183,7 +205,7 @@ describe('Select', () => {
                 fireEvent.click(options[0]);
                 expect(onChangeFn).toHaveBeenCalled();
                 expect(onChangeFn).toHaveBeenCalledWith('select', 'testValue0');
-                expect(screen.getByDisplayValue('testKey0')).toBeDefined();
+                expect(screen.getByDisplayValue('testValue0')).toBeDefined();
             });
 
             it('Test creatable select property onChange - options available but enter a new value', () => {
@@ -200,18 +222,18 @@ describe('Select', () => {
 
             it('Test creatable select property onChange - delete the selected value', async () => {
                 const onChangeFn = jest.fn();
-                render(<Select {...creatableProps} onChange={onChangeFn} value="testKey1" />);
+                render(<Select {...creatableProps} onChange={onChangeFn} value="testValue1" />);
                 const input = screen.getByRole('combobox');
                 expect(input).toBeDefined();
                 simulateComboboxValueInput(input, '');
-                expect(screen.queryAllByDisplayValue('testKey1')).toHaveLength(0);
+                expect(screen.queryAllByDisplayValue('testValue1')).toHaveLength(0);
                 expect(onChangeFn).toHaveBeenCalled();
                 expect(onChangeFn).toHaveBeenCalledWith('select', '');
             });
         });
 
         describe('No options', () => {
-            const creatablePropsNoOptions = { ...creatableProps, options: [] };
+            const creatablePropsNoOptions = { ...creatableProps, choices: [] };
 
             it('Render creatable input', () => {
                 render(<Select {...creatablePropsNoOptions} />);

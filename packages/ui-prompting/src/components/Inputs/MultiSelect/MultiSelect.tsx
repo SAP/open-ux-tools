@@ -1,21 +1,21 @@
-import type { UISelectableOption } from '@sap-ux/ui-components';
-import { UIComboBox, UIComboBoxLoaderType } from '@sap-ux/ui-components';
 import React from 'react';
-import { useValue, getLabelRenderer } from '../../../utilities';
-import type { AnswerValue, CheckboxPromptQuestion } from '../../../types';
-import { ChoiceOptions } from 'inquirer';
+import { UIComboBox, UIComboBoxLoaderType } from '@sap-ux/ui-components';
+import { useValue, getLabelRenderer, useOptions } from '../../../utilities';
+import type { AnswerValue, CheckboxPromptQuestion, PromptListChoices } from '../../../types';
 
 export interface MultiSelectProps extends CheckboxPromptQuestion {
     value?: AnswerValue;
     onChange: (name: string, value: AnswerValue) => void;
-    options: UISelectableOption<ChoiceOptions>[];
+    dynamicChoices?: PromptListChoices;
     pending?: boolean;
     errorMessage?: string;
 }
 
 export const MultiSelect = (props: MultiSelectProps) => {
-    const { name, message, onChange, required, options, pending, description, errorMessage, placeholder } = props;
+    const { name, message, onChange, required, pending, description, errorMessage, placeholder, dynamicChoices } =
+        props;
     const [value, setValue] = useValue('', props.value?.toString() ?? '');
+    const options = useOptions(props, dynamicChoices);
 
     return (
         <UIComboBox
