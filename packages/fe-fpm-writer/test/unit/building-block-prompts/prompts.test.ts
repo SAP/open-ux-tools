@@ -119,11 +119,10 @@ describe('Prompts', () => {
         });
 
         test('Choices for field "filterBar", no xml file throws error', async () => {
-            await expect(
-                promptsAPI.getChoices(PromptsType.Chart, 'buildingBlockData.filterBar', {
-                    viewOrFragmentPath: 'non-existent'
-                })
-            ).rejects.toThrowError(/Failed to get choices/);
+            const choices = await promptsAPI.getChoices(PromptsType.Chart, 'buildingBlockData.filterBar', {
+                viewOrFragmentPath: 'non-existent'
+            });
+            expect(choices).toEqual([]);
         });
     });
 

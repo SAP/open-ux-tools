@@ -123,7 +123,7 @@ export class PromptsAPI {
                 return choices ?? [];
             }
         } catch (error) {
-            throw new Error(`Failed to get choices. Details: ${error}`);
+            // In case of issues, fall back to the defaults
         }
         return [];
     }
