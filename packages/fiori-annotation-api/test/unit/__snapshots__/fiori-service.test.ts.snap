@@ -3885,19 +3885,19 @@ annotate service.Individual with {
 "
 `;
 
-exports[`serializeTarget xml cds Delete Criticality and criticality Representation 1`] = `
+exports[`serializeTarget cds Delete Criticality and criticality Representation 1`] = `
 "using IncidentService as service from '../../srv/incidentservice';
 
 
-                  annotate IncidentService.Incidents with @UI : {
-                    FieldGroup #DateData1 : {Data : [
-                        { $Type : 'UI.DataField', Value : title, }
-                      ]}
-                    };
-                "
+              annotate IncidentService.Incidents with @UI : {
+                FieldGroup #DateData1 : {Data : [
+                    { $Type : 'UI.DataField', Value : title, }
+                  ]}
+                };
+            "
 `;
 
-exports[`serializeTarget xml cds cap-start 1`] = `
+exports[`serializeTarget cds cap-start 1`] = `
 "annotate IncidentService.Incidents with @(
     UI.Facets : [
         {
