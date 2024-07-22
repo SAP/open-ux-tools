@@ -31,6 +31,47 @@ export interface FPMConfig {
 export const MIN_VERSION = '1.94.0';
 
 /**
+ * If a minUI5Version is set and it is smaller than the minimum required, increase it.
+ *
+ * @param {Manifest} manifest - content of the mnaifest.json
+ * @param {Editor} fs - the mem-fs editor instance
+ * @param {string} manifestPath - path to the manifest.json file
+ */
+function adaptMinUI5Version(manifest: Manifest, fs: Editor, manifestPath: string) {
+    const minUI5VersionArray = getMinUI5VersionAsArray(manifest, true);
+    if (minUI5VersionArray?.length > 0) {
+        let update = false;
+        for (let index = 0; index < minUI5VersionArray.length; index++) {
+            const minUI5Version = minUI5VersionArray[index];
+            if (minUI5Version && valid(minUI5Version) && lt(minUI5Version, MIN_VERSION)) {
+                minUI5VersionArray[index] = MIN_VERSION;
+
+                update = true;
+            }
+        }
+        if (update) {
+            if (minUI5VersionArray.length === 1) {
+                fs.extendJSON(manifestPath, {
+                    'sap.ui5': {
+                        dependencies: {
+                            minUI5Version: minUI5VersionArray[0]
+                        }
+                    }
+                });
+            } else if (minUI5VersionArray.length > 1) {
+                fs.extendJSON(manifestPath, {
+                    'sap.ui5': {
+                        dependencies: {
+                            minUI5Version: minUI5VersionArray
+                        }
+                    }
+                });
+            }
+        }
+    }
+}
+
+/**
  * Enable the flexible programming model for an application.
  *
  * @param {string} basePath - the base path
@@ -63,37 +104,7 @@ export function enableFPM(basePath: string, config: FPMConfig = {}, fs?: Editor)
     }
 
     // if a minUI5Version is set and it is smaller than the minimum required, increase it
-    const minUI5VersionArray = getMinUI5VersionAsArray(manifest, true);
-    if (minUI5VersionArray && minUI5VersionArray.length > 0) {
-        let update = false;
-        for (let index = 0; index < minUI5VersionArray.length; index++) {
-            const minUI5Version = minUI5VersionArray[index];
-            if (minUI5Version && valid(minUI5Version) && lt(minUI5Version, MIN_VERSION)) {
-                minUI5VersionArray[index] = MIN_VERSION;
-
-                update = true;
-            }
-        }
-        if (update) {
-            if (minUI5VersionArray.length === 1) {
-                fs.extendJSON(manifestPath, {
-                    'sap.ui5': {
-                        dependencies: {
-                            minUI5Version: minUI5VersionArray[0]
-                        }
-                    }
-                });
-            } else if (minUI5VersionArray.length > 1) {
-                fs.extendJSON(manifestPath, {
-                    'sap.ui5': {
-                        dependencies: {
-                            minUI5Version: minUI5VersionArray
-                        }
-                    }
-                });
-            }
-        }
-    }
+    adaptMinUI5Version(manifest, fs, manifestPath);
 
     // add type extensions if required
     if (config.typescript) {
