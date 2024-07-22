@@ -17,13 +17,15 @@ describe('getPrompts', () => {
             'uri': '/sap/opu/odata/second/service/',
             'type': 'ODataAnnotation',
             'settings': {
-                'localUri': 'localService/SEPMRA_PROD_MAN_ANNO_MDL.xml'
+                'localUri': 'localService/annotation.xml'
             }
         }
     } as Record<string, ManifestNamespace.DataSource>;
+
     beforeAll(async () => {
         await i18n.initI18n();
     });
+
     test('return prompts', () => {
         const filteredDataSources = {
             'mainService': dataSources['mainService']
