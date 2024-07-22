@@ -3,12 +3,12 @@
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 
 <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Local FLP Sandbox</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Local FLP Sandbox</title>
 
-    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
+  <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
 
          The renderer is specified in the global Unified Shell configuration object "sap-ushell-config".
 
@@ -23,24 +23,24 @@
          The sandbox platform is restricted to development or demo use cases and must NOT be used
          for productive scenarios.
     -->
-    <script type="text/javascript">
-        window["sap-ushell-config"] = {
-            defaultRenderer: "fiori2",
-            renderers: {
-                fiori2: {
-                    componentData: {
-                        config: {
-                            search: "hidden",
-                            enableSearch: false
-                        }
-                    }
-                }
-            },
-            applications:  <%- JSON.stringify(apps) %>
-        };
-    </script>
+  <script type="text/javascript">
+    window["sap-ushell-config"] = {
+      defaultRenderer: "fiori2",
+      renderers: {
+        fiori2: {
+          componentData: {
+            config: {
+              search: "hidden",
+              enableSearch: false
+            }
+          }
+        }
+      },
+      applications: <%- JSON.stringify(apps) %>
+    };
+  </script>
 
-    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions="allow"'' is a NON-SECURE setting for test environments -->
+  <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions="allow"'' is a NON-SECURE setting for test environments -->
     <script id="sap-ui-bootstrap"
         src="<%- basePath %>/resources/sap-ui-core.js"
         data-sap-ui-libs="<%- ui5.libs %>"
@@ -58,33 +58,37 @@
         data-open-ux-preview-customInit='<%- init %>'<% } if (locals.flex) { %>
         data-open-ux-preview-flex-settings='<%- JSON.stringify(flex) %>'<% } if (locals.locateReuseLibsScript) { %>
         data-open-ux-preview-libs-manifests='<%- JSON.stringify(Object.values(apps).map(app => app.url)) %>'<% } %>>
-    </script>
+  </script>
 
-    <script type="text/javascript">
-        (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
-    </script>
+  <script type="text/javascript">
+    (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
+  </script>
 
-    <script type="text/javascript" id="sap-ushell-bootstrap">
-        (() => sap.ui.require(['open/ux/preview/client/flp/initUshellBootstrap']))()
-    </script>
+  <script type="text/javascript" id="sap-ushell-bootstrap">
+    (() => sap.ui.require(['open/ux/preview/client/flp/initUshellBootstrap']))()
+  </script>
 
-    <% if (locals.flex && flex?.developerMode) { %>
-        <!-- Hides Rta native toolbar  -->
-        <style>
-        #shell-header, .sapUiRtaToolbar {
-                visibility: hidden;
-                height: 1px;
-            }
-            .sapUshellShellCanvas {
-                top: 0 !important;
-            }
-            .sapUiRtaMode .sapUiShellBackgroundImage.sapUiGlobalBackgroundImageForce.sapUshellShellBG {
-                background-color: transparent !important;
-            }
-    </style><% } %>
+  <% if (locals.flex && flex?.developerMode) { %>
+  <!-- Hides Rta native toolbar  -->
+  <style>
+    #shell-header,
+    .sapUiRtaToolbar {
+      visibility: hidden;
+      height: 1px;
+    }
+
+    .sapUshellShellCanvas {
+      top: 0 !important;
+    }
+
+    .sapUiRtaMode .sapUiShellBackgroundImage.sapUiGlobalBackgroundImageForce.sapUshellShellBG {
+      background-color: transparent !important;
+    }
+  </style><% } %>
 </head>
 
 <!-- UI Content -->
+
 <body class="sapUiBody" id="content">
 </body>
 

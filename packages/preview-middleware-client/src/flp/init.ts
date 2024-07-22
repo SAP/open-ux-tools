@@ -8,6 +8,7 @@ import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import AppState from 'sap/ushell/services/AppState';
 import { getManifestAppdescr } from '../adp/api-handler';
 import VersionInfo from 'sap/ui/VersionInfo';
+import initUshellBootstrap from './initUshellBootstrap';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -241,11 +242,11 @@ export async function init({
     flex?: string | null;
     customInit?: string | null;
 }): Promise<void> {
-    const urlParams = new URLSearchParams(window.location.search);
-    const container = sap?.ushell?.Container ?? (sap.ui.require('sap/ushell/Container') as typeof sap.ushell.Container);
-    let scenario: string = '';
     const { version } = (await VersionInfo.load()) as { version: string };      
-
+    const urlParams = new URLSearchParams(window.location.search);
+    const container =  (sap.ui.require('sap/ushell/Container') as typeof sap.ushell.Container);
+    let scenario: string = '';
+  
     // Register RTA if configured
     if (flex) {
         const flexSettings = JSON.parse(flex) as FlexSettings;
@@ -315,5 +316,5 @@ if (uiBootstrap) {
         appUrls: uiBootstrap.getAttribute('data-open-ux-preview-libs-manifests'),
         flex: uiBootstrap.getAttribute('data-open-ux-preview-flex-settings'),
         customInit: uiBootstrap.getAttribute('data-open-ux-preview-customInit')
-    }).catch(() => Log.error('Sandbox initialization failed.'));
+    }).catch((e) => Log.error('Sandbox initialization failed: ' + e.message));
 }
