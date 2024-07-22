@@ -1,5 +1,5 @@
 import React from 'react';
-import { Answers } from 'inquirer';
+import type { Answers } from 'inquirer';
 import { Input, Select, MultiSelect } from '../Inputs';
 import { getAnswer } from '../../utilities';
 import type { PromptQuestion, ValidationResults, AnswerValue, PromptListChoices } from '../../types';
