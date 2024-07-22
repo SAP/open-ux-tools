@@ -92,7 +92,6 @@ const getServiceMetadata = async (
     return getMergedMetadata(annotationService);
 };
 
-// ToDo - is there otherway?
 /**
  * Method returns main service of the application.
  *
