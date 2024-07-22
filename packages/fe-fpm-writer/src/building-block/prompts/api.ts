@@ -53,7 +53,10 @@ const PromptsCodePreviewMap = {
  *
  */
 export class PromptsAPI {
+    // Prompts context containing information about project and other reusable properties
     public context: PromptContext;
+    // Cached questions
+    private cache: { [N in SupportedPrompts as N['type']]?: Prompts<N['answers']> } = {};
 
     /**
      *
@@ -97,7 +100,13 @@ export class PromptsAPI {
         type: N
     ): Promise<Prompts<NarrowPrompt<typeof type>['answers']>> {
         const method = type in PromptsQuestionsMap ? PromptsQuestionsMap[type] : unsupportedPrompts;
-        return method(this.context) as Promise<Prompts<NarrowPrompt<typeof type>['answers']>>;
+        const prompt = await (method(this.context) as Promise<Prompts<NarrowPrompt<typeof type>['answers']>>);
+        // Update cache
+        this.cache = {
+            ...this.cache,
+            [type]: prompt
+        };
+        return prompt;
     }
 
     /**
@@ -114,8 +123,7 @@ export class PromptsAPI {
         answers: T
     ): Promise<PromptListChoices> {
         try {
-            // todo - cache questions
-            const prompt = await this.getPrompts(type);
+            const prompt = this.cache[type] ?? (await this.getPrompts(type));
             const question = prompt.questions.find((question) => question.name === fieldName);
             if (question && question.type === 'list') {
                 const choices =
@@ -141,10 +149,10 @@ export class PromptsAPI {
         answers: Answers,
         questions?: Question[]
     ): Promise<ValidationResults> {
-        const originalPrompts = await this.getPrompts(type);
+        const originalPrompts = this.cache[type] ?? (await this.getPrompts(type));
         const result: ValidationResults = {};
         if (!questions) {
-            questions = (await this.getPrompts(type)).questions;
+            questions = originalPrompts.questions;
         }
         for (const q of questions) {
             const question: PromptQuestion | undefined = originalPrompts.questions.find(

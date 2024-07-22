@@ -63,6 +63,16 @@ describe('Prompts', () => {
             expect(choices).toStrictEqual([]);
         });
 
+        test('Test question cache', async () => {
+            const getPromptsSpy = jest.spyOn(promptsAPI, 'getPrompts');
+            // First call - read questions
+            await promptsAPI.getChoices(PromptsType.Table, 'buildingBlockData.id', {});
+            expect(getPromptsSpy).toBeCalledTimes(1);
+            // Second call - use cached questions
+            await promptsAPI.getChoices(PromptsType.Table, 'buildingBlockData.id', {});
+            expect(getPromptsSpy).toBeCalledTimes(1);
+        });
+
         const types = [PromptsType.Chart, PromptsType.FilterBar, PromptsType.Table];
         test.each(types)('Type "%s", choices for field "qualifier"', async (type: PromptsType) => {
             const choices = await promptsAPI.getChoices(type, 'buildingBlockData.metaPath.qualifier', {
@@ -136,6 +146,16 @@ describe('Prompts', () => {
         test('validate non-existing question', async () => {
             const result = await promptsAPI.validateAnswers(PromptsType.Chart, { type: '' }, [{ name: 'type' }]);
             expect(result).toStrictEqual({});
+        });
+
+        test('Test question cache', async () => {
+            const getPromptsSpy = jest.spyOn(promptsAPI, 'getPrompts');
+            // First call - read questions
+            await promptsAPI.validateAnswers(PromptsType.Chart, { type: '' }, [{ name: 'type' }]);
+            expect(getPromptsSpy).toBeCalledTimes(1);
+            // Second call - use cached questions
+            await promptsAPI.validateAnswers(PromptsType.Chart, { type: '' }, [{ name: 'type' }]);
+            expect(getPromptsSpy).toBeCalledTimes(1);
         });
 
         describe('validate function', () => {
