@@ -63,7 +63,7 @@ export function enableFPM(basePath: string, config: FPMConfig = {}, fs?: Editor)
     }
 
     // if a minUI5Version is set and it is smaller than the minimum required, increase it
-    const minUI5VersionArray = getMinUI5VersionAsArray(manifest);
+    const minUI5VersionArray = getMinUI5VersionAsArray(manifest, true);
     if (minUI5VersionArray && minUI5VersionArray.length > 0) {
         let update = false;
         for (let index = 0; index < minUI5VersionArray.length; index++) {

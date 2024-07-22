@@ -79,6 +79,22 @@ describe('CustomApp', () => {
             expect(manifest['sap.ui5']?.dependencies?.minUI5Version).toStrictEqual(['1.120.4', '2.0.0']);
         });
 
+        test('valid app with array of one version, too low minimum versions', async () => {
+            const target = join(testDir, 'minimal-input-low-version');
+            fs.writeJSON(join(target, 'webapp/manifest.json'), getTestManifest({ minVersion: ['1.23.4'] }));
+            await enableFPM(target, {}, fs);
+            const manifest = fs.readJSON(join(target, 'webapp/manifest.json')) as Manifest;
+            expect(manifest['sap.ui5']?.dependencies?.minUI5Version).toStrictEqual(MIN_VERSION);
+        });
+
+        test('valid app with array of two versions, too low minimum versions', async () => {
+            const target = join(testDir, 'minimal-input-low-version');
+            fs.writeJSON(join(target, 'webapp/manifest.json'), getTestManifest({ minVersion: ['1.23.4', '2.0.0'] }));
+            await enableFPM(target, {}, fs);
+            const manifest = fs.readJSON(join(target, 'webapp/manifest.json')) as Manifest;
+            expect(manifest['sap.ui5']?.dependencies?.minUI5Version).toStrictEqual([MIN_VERSION, '2.0.0']);
+        });
+
         test('enable FCL', async () => {
             const target = join(testDir, 'fcl-enabled');
             fs.writeJSON(join(target, 'webapp/manifest.json'), getTestManifest());
