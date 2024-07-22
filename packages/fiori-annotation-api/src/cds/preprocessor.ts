@@ -1,7 +1,7 @@
 import { TARGET_TYPE } from '@sap-ux/odata-annotation-core-types';
 import type { Target } from '@sap-ux/cds-odata-annotation-converter';
 
-import type { AnnotationGroup, Record as RecordNode } from '@sap-ux/cds-annotation-parser';
+import type { AnnotationGroup, AnnotationGroupItems, Record as RecordNode } from '@sap-ux/cds-annotation-parser';
 import {
     ANNOTATION_GROUP_ITEMS_TYPE,
     ANNOTATION_GROUP_TYPE,
@@ -33,7 +33,9 @@ import {
     DELETE_ANNOTATION_GROUP_CHANGE_TYPE,
     INSERT_PRIMITIVE_VALUE_TYPE,
     INSERT_RECORD_CHANGE_TYPE,
-    INSERT_TARGET_CHANGE_TYPE
+    INSERT_TARGET_CHANGE_TYPE,
+    createDeleteAnnotationGroupItemsChange,
+    DELETE_ANNOTATION_GROUP_ITEMS_CHANGE_TYPE
 } from './change';
 import type { Deletes, CDSDocumentChange } from './change';
 import { getChildCount, type AstNode, type CDSDocument } from './document';
@@ -157,46 +159,61 @@ class ChangePreprocessor {
         }
     }
 
+    private processChangesInputEntry(
+        deletionMap: Record<string, DeletionIndex[]>,
+        insertionMap: Record<string, boolean>,
+        index: number
+    ) {
+        const command = this.commands.get(index);
+        if (command?.type === 'drop') {
+            // if the change is already dropped it is not relevant for further processing
+            return;
+        }
+        const change = this.input[index];
+        if (change.type === DELETE_TARGET_CHANGE_TYPE) {
+            const deletionsInParent = (deletionMap[change.pointer] ??= []);
+            deletionsInParent.push({
+                change,
+                index
+            });
+        }
+        if (
+            change.type === DELETE_ANNOTATION_CHANGE_TYPE ||
+            change.type === DELETE_ANNOTATION_GROUP_CHANGE_TYPE ||
+            change.type === DELETE_EMBEDDED_ANNOTATION_CHANGE_TYPE ||
+            change.type === DELETE_RECORD_PROPERTY_CHANGE_TYPE
+        ) {
+            const parentPointer = change.pointer.split('/').slice(0, -2).join('/');
+            const realPointer = parentPointer === '' ? change.pointer : parentPointer;
+            const deletionsInParent = (deletionMap[realPointer] ??= []);
+            deletionsInParent.push({
+                change,
+                index
+            });
+        }
+        if (change.type === DELETE_ANNOTATION_GROUP_ITEMS_CHANGE_TYPE) {
+            const parentPointer = change.pointer.split('/').slice(0, -1).join('/');
+            const deletionsInParent = (deletionMap[parentPointer] ??= []);
+            deletionsInParent.push({
+                change,
+                index
+            });
+        }
+        if (
+            change.type === INSERT_RECORD_PROPERTY_CHANGE_TYPE ||
+            change.type === INSERT_EMBEDDED_ANNOTATION_CHANGE_TYPE ||
+            change.type === INSERT_ANNOTATION_CHANGE_TYPE
+        ) {
+            insertionMap[change.pointer] = true;
+        }
+    }
+
     private mergeDeletes() {
         const deletionMap: Record<string, DeletionIndex[]> = {};
         const insertionMap: Record<string, boolean> = {};
         // optimize deletion changes
-
         for (let index = 0; index < this.input.length; index++) {
-            const command = this.commands.get(index);
-            if (command?.type === 'drop') {
-                // if the change is already dropped it is not relevant for further processing
-                continue;
-            }
-            const change = this.input[index];
-            if (change.type === DELETE_TARGET_CHANGE_TYPE) {
-                const deletionsInParent = (deletionMap[change.pointer] ??= []);
-                deletionsInParent.push({
-                    change,
-                    index
-                });
-            }
-            if (
-                change.type === DELETE_ANNOTATION_CHANGE_TYPE ||
-                change.type === DELETE_ANNOTATION_GROUP_CHANGE_TYPE ||
-                change.type === DELETE_EMBEDDED_ANNOTATION_CHANGE_TYPE ||
-                change.type === DELETE_RECORD_PROPERTY_CHANGE_TYPE
-            ) {
-                const parentPointer = change.pointer.split('/').slice(0, -2).join('/');
-                const realPointer = parentPointer === '' ? change.pointer : parentPointer;
-                const deletionsInParent = (deletionMap[realPointer] ??= []);
-                deletionsInParent.push({
-                    change,
-                    index
-                });
-            }
-            if (
-                change.type === INSERT_RECORD_PROPERTY_CHANGE_TYPE ||
-                change.type === INSERT_EMBEDDED_ANNOTATION_CHANGE_TYPE ||
-                change.type === INSERT_ANNOTATION_CHANGE_TYPE
-            ) {
-                insertionMap[change.pointer] = true;
-            }
+            this.processChangesInputEntry(deletionMap, insertionMap, index);
         }
         this.processDeletionMap(deletionMap, insertionMap);
     }
@@ -225,6 +242,12 @@ class ChangePreprocessor {
                 this.processTargetDeletion(parent, parentPointer, deletionMap, insertionMap);
             } else if (parent?.type === ANNOTATION_GROUP_TYPE && grandParent?.type === TARGET_TYPE) {
                 this.processAnnotationGroupDeletion(parent, grandParent, parentPointer, deletionMap, insertionMap);
+            } else if (
+                parent?.type === ANNOTATION_GROUP_ITEMS_TYPE &&
+                grandParent.type === ANNOTATION_GROUP_TYPE &&
+                greatGrandParent?.type === TARGET_TYPE
+            ) {
+                this.processAnnotationGroupItemsDeletion(parent, grandParent, parentPointer, deletionMap, insertionMap);
             }
 
             delete deletionMap[parentPointer];
@@ -273,12 +296,29 @@ class ChangePreprocessor {
         deletionMap: Record<string, DeletionIndex[]>,
         insertionMap: Record<string, boolean>
     ) {
-        const childPointers = new Set([...parent.items.items.map((_, i) => `${parentPointer}/items/items/${i}`)]);
+        if (!insertionMap[parentPointer]) {
+            // most probably this if-check is redundant but is left just for safety reasons
+            this.bubbleUpDeleteChange(deletionMap, parent, grandParent, parentPointer);
+        }
+    }
+
+    private processAnnotationGroupItemsDeletion(
+        parent: AnnotationGroupItems,
+        grandParent: AnnotationGroup,
+        parentPointer: string,
+        deletionMap: Record<string, DeletionIndex[]>,
+        insertionMap: Record<string, boolean>
+    ) {
+        const childPointers = new Set([...parent.items.map((_, i) => `${parentPointer}/items/${i}`)]);
         for (const indexedValue of deletionMap[parentPointer]) {
             childPointers.delete(indexedValue.change.pointer);
         }
 
-        if (childPointers.size === 0 && !insertionMap[parentPointer]) {
+        if (
+            childPointers.size === 0 &&
+            !insertionMap[parentPointer] &&
+            !insertionMap[parentPointer.split('/').slice(0, -1).join('/')]
+        ) {
             this.bubbleUpDeleteChange(deletionMap, parent, grandParent, parentPointer);
         }
     }
@@ -323,7 +363,12 @@ class ChangePreprocessor {
         if (greatGrandParent?.type === RECORD_TYPE) {
             return parentPointer.split('/').slice(0, -3).join('/');
         } else if (greatGrandParent?.type === ANNOTATION_GROUP_ITEMS_TYPE) {
-            return parentPointer.split('/').slice(0, -4).join('/');
+            return parentPointer.split('/').slice(0, -3).join('/');
+        } else if (
+            grandParent?.type === ANNOTATION_GROUP_ITEMS_TYPE &&
+            greatGrandParent?.type === ANNOTATION_GROUP_TYPE
+        ) {
+            return parentPointer.split('/').slice(0, -1).join('/');
         } else if (greatGrandParent?.type === TARGET_TYPE) {
             if (grandParent?.type === ANNOTATION_GROUP_TYPE) {
                 return parentPointer.split('/').slice(0, -2).join('/');
@@ -354,6 +399,8 @@ class ChangePreprocessor {
             return createDeleteTargetChange(parentPointer);
         } else if (grandParent.type === ANNOTATION_GROUP_TYPE) {
             return createDeleteAnnotationGroupChange(parentPointer);
+        } else if (grandParent.type === ANNOTATION_GROUP_ITEMS_TYPE) {
+            return createDeleteAnnotationGroupItemsChange(grandParentPointer);
         }
         return undefined;
     }

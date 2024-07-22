@@ -1,7 +1,7 @@
 import Log from 'sap/base/Log';
 import type AppLifeCycle from 'sap/ushell/services/AppLifeCycle';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
-import scenarios, { type Scenario } from 'sap/ui/fl/Scenario';
+import { SCENARIO, type Scenario } from '@sap-ux-private/control-property-editor-common';
 import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
@@ -218,7 +218,7 @@ export function registerSAPFonts() {
  * @param scenario to be used for the resource bundle.
  */
 export async function loadI18nResourceBundle(scenario: Scenario): Promise<ResourceBundle> {
-    if (scenario === scenarios.AdaptationProject) {
+    if (scenario === SCENARIO.AdaptationProject) {
         const manifest = await getManifestAppdescr();
         const enhanceWith = (manifest.content as { texts: { i18n: string } }[])
             .filter((content) => content.texts?.i18n)

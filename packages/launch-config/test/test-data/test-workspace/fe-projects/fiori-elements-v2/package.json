@@ -1,0 +1,9 @@
+{
+  "name": "fiori-elements-v2",
+  "sapux": true,
+  "scripts": {
+    "start": "fiori run --open test/flpSandbox.html?sap-client=100#masterDetail-display --config ui5.yaml",
+    "start-mock": "fiori run --open test/flpSandboxMockServer.html?sap-client=100#masterDetail-display",
+    "start-local": "fiori run --config ./ui5-local.yaml --open test/flpSandboxMockServer.html?sap-client=100#masterDetail-display"
+  }
+}

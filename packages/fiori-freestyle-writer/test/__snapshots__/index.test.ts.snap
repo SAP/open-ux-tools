@@ -19,7 +19,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"test.me\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"Test App Description\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -1367,7 +1366,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"test.me\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"Test App Description\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -4031,7 +4029,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"test.me\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"Test App Description\\",
   \\"keywords\\": [
     \\"ui5\\",

@@ -389,6 +389,13 @@ exports[`fiori annotation service delete record complete value EDMXBackend xml-s
 "
 `;
 
+exports[`fiori annotation service flattened annotations delete common text and textArrangement 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+
+            "
+`;
+
 exports[`fiori annotation service flattened annotations delete record property value 1`] = `
 "using IncidentService as service from '../../srv/incidentservice';
 
@@ -3878,7 +3885,19 @@ annotate service.Individual with {
 "
 `;
 
-exports[`serializeTarget xml cds cap-start 1`] = `
+exports[`serializeTarget cds Delete Criticality and criticality Representation 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+
+              annotate IncidentService.Incidents with @UI : {
+                FieldGroup #DateData1 : {Data : [
+                    { $Type : 'UI.DataField', Value : title, }
+                  ]}
+                };
+            "
+`;
+
+exports[`serializeTarget cds cap-start 1`] = `
 "annotate IncidentService.Incidents with @(
     UI.Facets : [
         {

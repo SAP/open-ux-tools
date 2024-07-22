@@ -19,7 +19,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"fefeop1\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -3690,7 +3689,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"fefeop2ts\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",

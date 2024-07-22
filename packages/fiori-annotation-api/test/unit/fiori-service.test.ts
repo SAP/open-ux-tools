@@ -522,6 +522,7 @@ describe('fiori annotation service', () => {
             const files = service.getAllFiles(true);
             expect(convertFilesForSnapshots(PROJECTS.V4_CDS_START.root, files)).toMatchSnapshot();
         });
+
         test('cds layering', async () => {
             const service = await testRead(PROJECTS.CDS_LAYERING.root, [], 'TravelService');
             const files = service.getAllFiles();
@@ -595,6 +596,7 @@ describe('fiori annotation service', () => {
                     projectType: 'EDMXBackend',
                     apps: {
                         '': {
+                            appType: 'SAP Fiori elements',
                             appRoot: '',
                             i18n: {
                                 'sap.app': '',
@@ -3300,6 +3302,52 @@ describe('fiori annotation service', () => {
 
             expect(text).toMatchSnapshot();
         });
+
+        test('delete common text and textArrangement', async () => {
+            const project = PROJECTS.V4_CDS_START;
+            const root = project.root;
+            const fsEditor = await createFsEditorForProject(root);
+            const path = pathFromUri(project.files.annotations);
+            const content = fsEditor.read(path);
+            const testData = `${content}
+            annotate IncidentService.Incidents with { 
+                assignedIndividual @Common: {
+                                                Text: assignedIndividual.modifiedBy, 
+                                                TextArrangement : #TextLast 
+                                            } };
+            `;
+            fsEditor.write(path, testData);
+            const text = await testEdit(
+                root,
+                [],
+                [
+                    {
+                        kind: ChangeType.Delete,
+                        reference: {
+                            target: 'IncidentService.Incidents/assignedIndividual',
+                            term: `${COMMON}.Text`
+                        },
+                        uri: project.files.annotations,
+                        pointer: ''
+                    },
+                    {
+                        kind: ChangeType.Delete,
+                        reference: {
+                            target: 'IncidentService.Incidents/assignedIndividual',
+                            term: `${COMMON}.TextArrangement`
+                        },
+                        uri: project.files.annotations,
+                        pointer: ''
+                    }
+                ],
+                'IncidentService',
+                fsEditor,
+                false
+            );
+
+            expect(text).toMatchSnapshot();
+        });
+
         test('multiple levels', async () => {
             const project = PROJECTS.V4_CDS_START;
             const root = project.root;
@@ -3371,33 +3419,82 @@ describe('serializeTarget', () => {
             const result = service.serializeTarget({ target: targetPath, annotations: [annotation] });
             expect(result).toMatchSnapshot();
         });
+    });
 
-        describe('cds', () => {
-            test('cap-start', async () => {
-                const service = await testRead(PROJECTS.V4_CDS_START.root, [], 'IncidentService');
-                const targetPath = 'IncidentService.Incidents';
-                const annotation: RawAnnotation = {
-                    term: 'com.sap.vocabularies.UI.v1.Facets',
-                    collection: [
-                        {
-                            type: 'com.sap.vocabularies.UI.v1.ReferenceFacet',
-                            propertyValues: [
-                                { name: 'Label', value: { type: 'String', String: 'title' } },
-                                { name: 'ID', value: { type: 'String', String: 'incidentID' } },
-                                {
-                                    name: 'Target',
-                                    value: {
-                                        type: 'AnnotationPath',
-                                        AnnotationPath: '@UI.FieldGroup#GeneralInformation'
-                                    }
+    describe('cds', () => {
+        test('cap-start', async () => {
+            const service = await testRead(PROJECTS.V4_CDS_START.root, [], 'IncidentService');
+            const targetPath = 'IncidentService.Incidents';
+            const annotation: RawAnnotation = {
+                term: 'com.sap.vocabularies.UI.v1.Facets',
+                collection: [
+                    {
+                        type: 'com.sap.vocabularies.UI.v1.ReferenceFacet',
+                        propertyValues: [
+                            { name: 'Label', value: { type: 'String', String: 'title' } },
+                            { name: 'ID', value: { type: 'String', String: 'incidentID' } },
+                            {
+                                name: 'Target',
+                                value: {
+                                    type: 'AnnotationPath',
+                                    AnnotationPath: '@UI.FieldGroup#GeneralInformation'
                                 }
-                            ]
-                        }
-                    ]
+                            }
+                        ]
+                    }
+                ]
+            };
+            const result = service.serializeTarget({ target: targetPath, annotations: [annotation] });
+            expect(result).toMatchSnapshot();
+        });
+
+        test('Delete Criticality and criticality Representation', async () => {
+            const project = PROJECTS.V4_CDS_START;
+            const root = project.root;
+            const fsEditor = await createFsEditorForProject(root);
+            const path = pathFromUri(project.files.annotations);
+            const content = fsEditor.read(path);
+            const testData = `${content}
+              annotate IncidentService.Incidents with @UI : {
+                FieldGroup #DateData1 : {Data : [
+                    { $Type : 'UI.DataField', Value : title, 
+                      Criticality : priority.criticality,
+                      CriticalityRepresentation : #WithIcon }
+                  ]}
                 };
-                const result = service.serializeTarget({ target: targetPath, annotations: [annotation] });
-                expect(result).toMatchSnapshot();
-            });
+            `;
+            fsEditor.write(path, testData);
+            const text = await testEdit(
+                root,
+                [],
+                [
+                    {
+                        kind: ChangeType.Delete,
+                        reference: {
+                            target: 'IncidentService.Incidents',
+                            term: `com.sap.vocabularies.UI.v1.FieldGroup`,
+                            qualifier: 'DateData1'
+                        },
+                        uri: project.files.annotations,
+                        pointer: '/record/propertyValues/0/value/Collection/0/propertyValues/1'
+                    },
+                    {
+                        kind: ChangeType.Delete,
+                        reference: {
+                            target: 'IncidentService.Incidents',
+                            term: `com.sap.vocabularies.UI.v1.FieldGroup`,
+                            qualifier: 'DateData1'
+                        },
+                        uri: project.files.annotations,
+                        pointer: '/record/propertyValues/0/value/Collection/0/propertyValues/2'
+                    }
+                ],
+                'IncidentService',
+                fsEditor,
+                false
+            );
+
+            expect(text).toMatchSnapshot();
         });
     });
 });

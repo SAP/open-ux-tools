@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.17.1
+
+### Patch Changes
+
+-   9b7f144: adjust storybook after stroybook update from "7.6.18" to "8.1.11"
+
 ## 1.17.0
 
 ### Minor Changes
