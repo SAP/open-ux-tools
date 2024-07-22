@@ -936,11 +936,39 @@ function deleteBlock(edits: TextEdit[], content: ContainerContentBlock[], blockI
         edits.push(TextEdit.del(Range.create(block.range.end, next.range.start)));
     } else if (previous?.range) {
         // if the last child element is being deleted then white space between the last and previous should be removed as well
-        const edit = TextEdit.del(Range.create(previous.range.end, block.range.start));
-        // other deletion edits with the same range may already exist
-        if (!edits.some((item) => isRangesEqual(item.range, edit.range))) {
-            edits.push(edit);
+        deletePreviousElementWhiteSpaces(previous, block, edits);
+        // iterate over the previous of previous element, if the previous element is already deleted.ß
+        enhanceDeletionRange(edits, content, blockIndex);
+    }
+}
+
+function enhanceDeletionRange(edits: TextEdit[], content: ContainerContentBlock[], blockIndex: number) {
+    for (let i = blockIndex - 1; i > -1; i--) {
+        const prev = content[i];
+        if (edits.some((item) => isRangesEqual(item.range, prev.range))) {
+            // previous element is being deleted
+            // the space above it should be included in deletion scope
+            const beforePrev = content[i - 1];
+            if (beforePrev?.range) {
+                deletePreviousElementWhiteSpaces(beforePrev, prev, edits);
+            } else {
+                break;
+            }
+        } else {
+            break;
         }
+    }
+}
+
+function deletePreviousElementWhiteSpaces(
+    previousElement: ContainerContentBlock,
+    currentBlock: ContainerContentBlock,
+    edits: TextEdit[]
+): void {
+    const edit = TextEdit.del(Range.create(previousElement.range!.end, currentBlock.range!.start));
+    // other deletion edits with the same range may already exist
+    if (!edits.some((item) => isRangesEqual(item.range, edit.range))) {
+        edits.push(edit);
     }
 }
 
