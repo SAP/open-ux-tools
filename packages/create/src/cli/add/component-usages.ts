@@ -1,5 +1,5 @@
 import type { Command } from 'commander';
-import { generateChange, getVariant, ChangeType, getPromptsForAddComponentSettings } from '@sap-ux/adp-tooling';
+import { generateChange, getVariant, ChangeType, getPromptsForAddComponentUsages } from '@sap-ux/adp-tooling';
 import { getLogger, traceChanges } from '../../tracing';
 import { validateAdpProject } from '../../validation/validation';
 import { promptYUIQuestions } from '../../common';
@@ -33,7 +33,7 @@ export async function addComponentUsages(basePath: string, simulate: boolean): P
 
         const variant = getVariant(basePath);
 
-        const answers = await promptYUIQuestions(getPromptsForAddComponentSettings(basePath, variant.layer), false);
+        const answers = await promptYUIQuestions(getPromptsForAddComponentUsages(basePath, variant.layer), false);
 
         const fs = await generateChange<ChangeType.ADD_COMPONENT_USAGES>(basePath, ChangeType.ADD_COMPONENT_USAGES, {
             variant,
