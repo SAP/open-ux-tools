@@ -101,6 +101,4 @@ describe('add/component-usages', () => {
         expect(generateChangeSpy).toBeCalled();
         expect(traceSpy).toBeCalled();
     });
-
-
 });
