@@ -1,4 +1,5 @@
 import React from 'react';
+import { Answers } from 'inquirer';
 import { Input, Select, MultiSelect } from '../Inputs';
 import { getAnswer } from '../../utilities';
 import type { PromptQuestion, ValidationResults, AnswerValue, PromptListChoices } from '../../types';
@@ -7,7 +8,7 @@ import './Question.scss';
 
 export interface QuestionProps {
     question: PromptQuestion;
-    answers: Record<string, AnswerValue>;
+    answers: Answers;
     onChange: (name: string, answer: AnswerValue) => void;
     choices?: PromptListChoices;
     pending?: boolean;

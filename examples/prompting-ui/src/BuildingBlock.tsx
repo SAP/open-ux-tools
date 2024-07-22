@@ -34,7 +34,7 @@ const STYLE_FLEX = {
 
 const updateWithDefaultAnswers = (answers: Answers, questions: PromptQuestion[]): Answers => {
     // ToDo - temp fix
-    const updatedAnswers = structuredClone(answers);
+    const updatedAnswers = { ...answers };
     for (const question of questions) {
         if (question.default !== undefined && getAnswer(updatedAnswers, question.name) === undefined) {
             setAnswer(updatedAnswers, question.name, question.default);

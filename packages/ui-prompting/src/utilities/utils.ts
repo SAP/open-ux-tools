@@ -51,13 +51,13 @@ export function getDynamicQuestions(questions: PromptQuestion[]): string[] {
  * @returns New reference of updated answers.
  */
 export function updateAnswers(
-    answers: Record<string, AnswerValue>,
+    answers: Answers,
     questions: PromptQuestion[],
     name: string,
     value?: AnswerValue
-): Record<string, AnswerValue> {
+): Answers {
     // ToDo - not fully sure about spread here
-    let updatedAnswers = setAnswer({ ...answers }, name, value);
+    let updatedAnswers = setAnswer(structuredClone(answers), name, value);
     const dependantPromptNames = getDependantQuestions(questions, name);
     dependantPromptNames?.length &&
         dependantPromptNames.forEach((dependantName) => {

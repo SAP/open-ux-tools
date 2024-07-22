@@ -1,4 +1,5 @@
-import { getAnswer, setAnswer } from '../../../src/utilities/utils';
+import { getAnswer, setAnswer, updateAnswers } from '../../../src/utilities/utils';
+import type { PromptQuestion } from '../../../src/types';
 
 describe('utils', () => {
     describe('setAnswer', () => {
@@ -138,6 +139,78 @@ describe('utils', () => {
             expect(getAnswer(testObject, path)).toEqual(expectedValue);
             // Avoid mutation
             expect(testObject).toStrictEqual(originalObject);
+        });
+    });
+
+    describe('updateAnswers', () => {
+        test('Update answers without dependants', async () => {
+            const original = {
+                test1: {
+                    dummy1: 1
+                },
+                test2: {
+                    dummy2: 2
+                }
+            };
+            const result = updateAnswers(original, [], 'test2.dummy2', 'New');
+            expect(result).toEqual({
+                test1: {
+                    dummy1: 1
+                },
+                test2: {
+                    dummy2: 'New'
+                }
+            });
+            expect(result.test1 !== original.test1).toBeTruthy();
+        });
+
+        const testCases: Array<{ name: string; type?: 'list'; expected: unknown }> = [
+            {
+                name: 'Type => list',
+                type: 'list',
+                expected: {
+                    test1: {
+                        dummy1: undefined
+                    },
+                    test2: {
+                        dummy2: 'New'
+                    }
+                }
+            },
+            {
+                name: 'Type -> unknown',
+                type: undefined,
+                expected: {
+                    test1: {
+                        dummy1: 1
+                    },
+                    test2: {
+                        dummy2: 'New'
+                    }
+                }
+            }
+        ];
+        test.each(testCases)('Update answers with dependants. $name', async ({ type, expected }) => {
+            const original = {
+                test1: {
+                    dummy1: 1
+                },
+                test2: {
+                    dummy2: 2
+                }
+            };
+            const questions: PromptQuestion[] = [
+                {
+                    name: 'test1.dummy1'
+                },
+                {
+                    name: 'test2.dummy2',
+                    type: type,
+                    dependantPromptNames: ['test1.dummy1']
+                }
+            ];
+            const result = updateAnswers(original, questions, 'test2.dummy2', 'New');
+            expect(result).toEqual(expected);
         });
     });
 });

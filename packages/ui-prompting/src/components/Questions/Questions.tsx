@@ -21,13 +21,8 @@ export interface QuestionsProps {
     answers?: Answers;
     choices?: DynamicChoices;
     validation?: ValidationResults;
-    onChoiceRequest?: (names: string[], answers: Record<string, AnswerValue>) => void;
-    onChange?: (
-        answers: Record<string, AnswerValue>,
-        name: string,
-        answer: AnswerValue,
-        dependantPromptNames?: string[]
-    ) => void;
+    onChoiceRequest?: (names: string[], answers: Answers) => void;
+    onChange?: (answers: Answers, name: string, answer: AnswerValue, dependantPromptNames?: string[]) => void;
     layoutType?: PromptsLayoutType;
     groups?: Array<PromptsGroup>;
     showDescriptions?: boolean;
@@ -48,7 +43,7 @@ export const Questions = (props: QuestionsProps) => {
     const [localAnswers, setLocalAnswers] = useState({ ...answers });
     const [pendingRequests, setRequestedChoices] = useRequestedChoices({}, choices);
     const requestChoices = useCallback(
-        (names: string[], answers: Record<string, AnswerValue>) => {
+        (names: string[], answers: Answers) => {
             // Call external callback
             if (names.length) {
                 onChoiceRequest?.(names, answers);

@@ -7,3 +7,10 @@
 global.requestAnimationFrame = function (callback) {
     setTimeout(callback, 0);
 };
+
+/**
+ * Mock for "structuredClone" function.
+ */
+global.structuredClone = (value) => {
+    return JSON.parse(JSON.stringify(value));
+};
