@@ -8,7 +8,8 @@ import type {
     PendingPropertyChange,
     PropertyChange,
     SavedPropertyChange,
-    Scenario
+    Scenario,
+    ShowMessage
 } from '@sap-ux-private/control-property-editor-common';
 import {
     changeStackModified,
@@ -18,9 +19,13 @@ import {
     propertyChanged,
     propertyChangeFailed,
     showMessage,
-    scenario,
+    SCENARIO,
     reloadApplication,
-    storageFileChanged
+    storageFileChanged,
+    setAppMode,
+    setUndoRedoEnablement,
+    setSaveEnablement,
+    appLoaded
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -39,8 +44,15 @@ interface SliceState {
     isAdpProject: boolean;
     icons: IconDetails[];
     changes: ChangesSlice;
-    dialogMessage: string | undefined;
+    dialogMessage: ShowMessage | undefined;
     fileChanges?: string[];
+    appMode: 'navigation' | 'adaptation';
+    changeStack: {
+        canUndo: boolean;
+        canRedo: boolean;
+    };
+    canSave: boolean;
+    isAppLoading: boolean;
 }
 
 export interface ChangesSlice {
@@ -89,20 +101,28 @@ const filterInitOptions: FilterOptions[] = [
     { name: FilterName.showEditableProperties, value: true }
 ];
 
-export const changeProperty = createAction<PropertyChange>('app/change-property');
+export const changeProperty = createAction<PropertyChange, 'app/change-property'>('app/change-property');
 export const changePreviewScale = createAction<number>('app/change-preview-scale');
 export const changePreviewScaleMode = createAction<'fit' | 'fixed'>('app/change-preview-scale-mode');
 export const changeDeviceType = createAction<DeviceType>('app/change-device-type');
 export const filterNodes = createAction<FilterOptions[]>('app/filter-nodes');
 export const fileChanged = createAction<string[]>('app/file-changed');
-export const initializeLivereload = createAction<number>('app/initialize-livereload');
+interface LivereloadOptions {
+    port: number;
+
+    /**
+     * Url used to connect to the livereload service. If provided, port option is ignored.
+     */
+    url?: string;
+}
+export const initializeLivereload = createAction<LivereloadOptions>('app/initialize-livereload');
 export const initialState: SliceState = {
     deviceType: DeviceType.Desktop,
     scale: 1.0,
     selectedControl: undefined,
     outline: [],
     filterQuery: filterInitOptions,
-    scenario: scenario.UiAdaptation,
+    scenario: SCENARIO.UiAdaptation,
     isAdpProject: false,
     icons: [],
     changes: {
@@ -111,7 +131,14 @@ export const initialState: SliceState = {
         saved: [],
         pendingChangeIds: []
     },
-    dialogMessage: undefined
+    dialogMessage: undefined,
+    appMode: 'adaptation',
+    changeStack: {
+        canUndo: false,
+        canRedo: false
+    },
+    canSave: false,
+    isAppLoading: true
 };
 const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
     name: 'app',
@@ -119,7 +146,7 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
     reducers: {
         setProjectScenario: (state, action: PayloadAction<Scenario>) => {
             state.scenario = action.payload;
-            state.isAdpProject = action.payload === scenario.AdaptationProject;
+            state.isAdpProject = action.payload === SCENARIO.AdaptationProject;
         }
     },
     extraReducers: (builder) =>
@@ -256,12 +283,28 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
             })
             .addMatcher(reloadApplication.match, (state): void => {
                 state.fileChanges = [];
+                state.isAppLoading = true;
             })
             .addMatcher(storageFileChanged.match, (state, action: ReturnType<typeof storageFileChanged>): void => {
                 const fileName = action.payload;
                 if (fileName) {
                     state.changes.pendingChangeIds.push(fileName);
                 }
+            })
+            .addMatcher(setAppMode.match, (state, action: ReturnType<typeof setAppMode>): void => {
+                state.appMode = action.payload;
+            })
+            .addMatcher(
+                setUndoRedoEnablement.match,
+                (state, action: ReturnType<typeof setUndoRedoEnablement>): void => {
+                    state.changeStack = action.payload;
+                }
+            )
+            .addMatcher(setSaveEnablement.match, (state, action: ReturnType<typeof setSaveEnablement>): void => {
+                state.canSave = action.payload;
+            })
+            .addMatcher(appLoaded.match, (state): void => {
+                state.isAppLoading = false;
             })
 });
 

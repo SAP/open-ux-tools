@@ -1,3 +1,6 @@
+import { homedir } from 'os';
+import { join } from 'path';
+
 export const FileName = {
     AdaptationConfig: 'config.json',
     CapJavaApplicationYaml: 'application.yaml',
@@ -8,6 +11,7 @@ export const FileName = {
     MtaYaml: 'mta.yaml',
     Package: 'package.json',
     Pom: 'pom.xml',
+    SpecificationDistTags: 'specification-dist-tags.json',
     Tsconfig: 'tsconfig.json',
     Ui5Yaml: 'ui5.yaml',
     Ui5LocalYaml: 'ui5-local.yaml',
@@ -17,6 +21,7 @@ export const FileName = {
 
 export const DirName = {
     Changes: 'changes',
+    ModuleCache: 'module-cache',
     Schemas: '.schemas',
     Pages: 'pages',
     Webapp: 'webapp',
@@ -38,3 +43,22 @@ export const DirName = {
     Manifest: 'manifest',
     Annotations: 'annotations'
 } as const;
+
+export const FioriToolsSettings = {
+    dir: '.fioritools',
+    migrationSettingsFile: 'migrationSettings.json'
+} as const;
+
+export const SchemaName = {
+    Ftfs: 'ftfs'
+} as const;
+
+/**
+ * Directory where fiori tools settings are stored
+ */
+export const fioriToolsDirectory = join(homedir(), FioriToolsSettings.dir);
+
+/**
+ * Directory where modules are cached
+ */
+export const moduleCacheRoot = join(fioriToolsDirectory, DirName.ModuleCache);

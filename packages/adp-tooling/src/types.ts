@@ -1,6 +1,7 @@
-import type { UI5FlexLayer } from '@sap-ux/project-access';
+import type { UI5FlexLayer, ManifestNamespace } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
-import type { Adp } from '@sap-ux/ui5-config';
+import type { Adp, BspApp } from '@sap-ux/ui5-config';
+import type { OperationsType } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 
 export interface DescriptorVariant {
@@ -9,6 +10,12 @@ export interface DescriptorVariant {
     id: string;
     namespace: string;
     content: object[];
+}
+
+export interface ToolsSupport {
+    id: string;
+    version: string;
+    toolsId: string;
 }
 
 /**
@@ -25,31 +32,90 @@ export interface AdpPreviewConfig {
     ignoreCertErrors?: boolean;
 }
 
+export interface OnpremApp {
+    /** Application variant id. */
+    id: string;
+    /** Reference associated with the ID of the base application. */
+    reference: string;
+    layer?: UI5FlexLayer;
+    title?: string;
+    /** Optional: Application variant change content. */
+    content?: Content[];
+    /** Optional: Description about i18n.properties. */
+    i18nDescription?: string;
+}
+
+export interface CloudApp extends OnpremApp {
+    /** bspName associated with the ABAP Cloud repository name of the base application. */
+    bspName: string;
+    /** Cloud app active languages. */
+    languages: Language[];
+}
+
+export type App = OnpremApp | CloudApp;
+
+export type DeployConfig = Adp | BspApp;
+
 export interface AdpWriterConfig {
-    app: {
-        id: string;
-        reference: string;
-        layer?: UI5FlexLayer;
-        title?: string;
-    };
+    app: App;
     target: AbapTarget;
     ui5?: {
         minVersion?: string;
+        version?: string;
+        frameworkUrl?: string;
     };
     package?: {
         name?: string;
         description?: string;
     };
+    flp?: FlpConfig;
+    customConfig?: CustomConfig;
     /**
      * Optional: configuration for deployment to ABAP
      */
-    deploy?: Adp;
+    deploy?: DeployConfig;
     options?: {
         /**
          * Optional: if set to true then the generated project will be recognized by the SAP Fiori tools
          */
         fioriTools?: boolean;
     };
+}
+
+export interface ChangeInboundNavigation {
+    /** Identifier for the inbound navigation. */
+    inboundId: string;
+    /** Title associated with the inbound navigation. */
+    title?: string;
+    /** Subtitle associated with the inbound navigation. */
+    subTitle?: string;
+}
+
+export interface NewInboundNavigation {
+    /** Represent business entities that reflect a specific scenario. */
+    semanticObject: string;
+    /** Operations which can be performed on a semantic object. */
+    action: string;
+    //** Defined instance of the semantic object (e.g. by specifying the employee ID). */
+    additionalParameters?: object;
+    /** Title associated with the inbound navigation. */
+    title: string;
+    /** Optional: Subtitle associated with the inbound navigation. */
+    subTitle?: string;
+}
+
+export interface InternalInboundNavigation extends NewInboundNavigation {
+    /** Identifier for the inbound navigation. */
+    inboundId: string;
+    /** Flag indicating if the new inbound navigation should be added. */
+    addInboundId: boolean;
+}
+
+export type FlpConfig = ChangeInboundNavigation | NewInboundNavigation;
+
+export interface Language {
+    sap: string;
+    i18n: string;
 }
 
 export interface ManifestAppdescr {
@@ -69,7 +135,7 @@ export interface Content {
     texts?: object;
 }
 
-interface CommonChangeProperties {
+export interface CommonChangeProperties {
     changeType: string;
     reference: string;
     namespace: string;
@@ -127,9 +193,12 @@ export interface CodeExtChange extends CommonChangeProperties {
     };
 }
 
+export const CUSTOMER_BASE = 'CUSTOMER_BASE';
+
 export const enum TemplateFileName {
     Fragment = 'fragment.xml',
-    Controller = 'controller.ejs'
+    Controller = 'controller.ejs',
+    Annotation = 'annotation.xml'
 }
 
 export const enum HttpStatusCodes {
@@ -146,6 +215,8 @@ export const enum HttpStatusCodes {
     NOT_IMPLEMETED = 501,
     SERVICE_UNAVAILABLE = 503
 }
+
+export type OperationType = 'read' | 'write' | 'delete';
 
 /**
  * Represents a constructor type that creates an instance of IWriter.
@@ -211,18 +282,14 @@ export type GeneratorData<T extends ChangeType> = T extends ChangeType.ADD_ANNOT
     : never;
 
 export interface AnnotationsData {
-    projectData: AdpProjectData;
-    timestamp: number;
-    /** Indicates whether the annotation is for internal use only. */
-    isInternalUsage: boolean;
-    annotation: {
-        /** Optional name of the annotation file. */
-        fileName?: string;
-        /** Data source associated with the annotation. */
-        dataSource: string;
-        /** Path to the annotation file. */
-        filePath: string;
-    };
+    fileName?: string;
+    variant: DescriptorVariant;
+    answers: AddAnnotationsAnswers;
+}
+
+export const enum AnnotationFileSelectType {
+    ExistingFile = 1,
+    NewEmptyFile = 2
 }
 
 export interface ComponentUsagesData {
@@ -276,20 +343,9 @@ export interface NewModelData {
 }
 
 export interface DataSourceData {
-    projectData: AdpProjectData;
-    timestamp: number;
-    service: {
-        /** Data source identifier. */
-        name: string;
-        /** URI of the data source. */
-        uri: string;
-        /** Optional maximum age for the data source cache. */
-        maxAge?: number;
-        /** URI for the OData annotation source. */
-        annotationUri: string;
-    };
-    /** Dictionary mapping data source keys to their values. */
-    dataSourcesDictionary: { [key: string]: string };
+    variant: DescriptorVariant;
+    dataSources: Record<string, ManifestNamespace.DataSource>;
+    answers: ChangeDataSourceAnswers;
 }
 
 export interface InboundData {
@@ -330,11 +386,87 @@ export interface AdpProjectData {
     namespace: string;
     ui5Version: string;
     name: string;
-    layer: string;
+    layer: UI5FlexLayer;
     environment: string;
-    safeMode: boolean;
     sourceSystem: string;
     applicationIdx: string;
     reference: string;
     id: string;
+}
+
+export interface ChangeDataSourceAnswers {
+    /** Data Source identifier  */
+    id: string;
+    /** Data Source URI */
+    uri: string;
+    /** Data Source Max Age */
+    maxAge?: number;
+    /** Data Source Annotation URI */
+    annotationUri?: string;
+}
+
+export interface AddAnnotationsAnswers {
+    /** Data Source identifier  */
+    id: string;
+    /** Selected option for Annotation File */
+    fileSelectOption: number;
+    /** Annotation File path */
+    filePath?: string;
+}
+
+export type DataSource = ManifestNamespace.DataSource & { dataSourceName: string; annotations: string[] };
+
+export interface CustomConfig {
+    adp: {
+        environment: OperationsType;
+        support: ToolsSupport;
+    };
+}
+
+export interface InboundChangeContentAddInboundId {
+    inbound: {
+        [inboundId: string]: AddInboundModel;
+    };
+}
+export interface AddInboundModel {
+    /** Represent business entities that reflect a specific scenario. */
+    semanticObject: string;
+    /** Operations which can be performed on a semantic object. */
+    action: string;
+    /** Title associated with the inbound navigation data. */
+    title: string;
+    /** Optional: Subtitle associated with the inbound navigation data. */
+    subTitle?: string;
+    signature: AddInboundSignitureModel;
+}
+export interface AddInboundSignitureModel {
+    parameters: InboundParameters;
+    //** Defined instance of the semantic object (e.g. by specifying the employee ID). */
+    additionalParameters: string;
+}
+export interface InboundParameters {
+    'sap-appvar-id'?: object;
+    'sap-priority'?: object;
+}
+
+export interface InboundChange {
+    inbound: {
+        [key: string]: {
+            /** Represent business entities that reflect a specific scenario. */
+            semanticObject: string;
+            /** Operations which can be performed on a semantic object. */
+            action: string;
+            /** Icon associated with the inbound navigation data. */
+            icon: string;
+            /** Title associated with the inbound navigation data. */
+            title: string;
+            /** Subtitle associated with the inbound navigation data. */
+            subTitle: string;
+            signature: {
+                parameters: object | string;
+                //** Defined instance of the semantic object (e.g. by specifying the employee ID). */
+                additionalParameters: 'allowed';
+            };
+        };
+    };
 }

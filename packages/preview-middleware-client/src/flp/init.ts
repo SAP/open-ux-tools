@@ -1,10 +1,12 @@
 import Log from 'sap/base/Log';
 import type AppLifeCycle from 'sap/ushell/services/AppLifeCycle';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
-import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import { SCENARIO, type Scenario } from '@sap-ux-private/control-property-editor-common';
+import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
-import UriParameters from 'sap/base/util/UriParameters';
+import AppState from 'sap/ushell/services/AppState';
+import { getManifestAppdescr } from '../adp/api-handler';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -34,6 +36,27 @@ const UI5_LIBS = [
     'sap.zen'
 ];
 
+interface Manifest {
+    ['sap.ui5']?: {
+        dependencies?: {
+            libs: Record<string, unknown>;
+            components: Record<string, unknown>;
+        };
+        componentUsages?: Record<string, unknown>;
+    };
+}
+
+type AppIndexData = Record<
+    string,
+    {
+        dependencies?: {
+            url?: string;
+            type?: string;
+            componentId: string;
+        }[];
+    }
+>;
+
 /**
  * Check whether a specific dependency is a custom library, and if yes, add it to the map.
  *
@@ -59,15 +82,15 @@ function addKeys(dependency: Record<string, unknown>, customLibs: Record<string,
  * @param appUrls urls pointing to included applications
  * @returns Promise of a comma separated list of all required libraries.
  */
-function getManifestLibs(appUrls: string[]): Promise<string> {
+async function getManifestLibs(appUrls: string[]): Promise<string> {
     const result = {} as Record<string, true>;
     const promises = [];
     for (const url of appUrls) {
         promises.push(
             fetch(`${url}/manifest.json`).then(async (resp) => {
-                const manifest = await resp.json();
+                const manifest = (await resp.json()) as Manifest;
                 if (manifest) {
-                    if (manifest['sap.ui5'] && manifest['sap.ui5'].dependencies) {
+                    if (manifest['sap.ui5']?.dependencies) {
                         if (manifest['sap.ui5'].dependencies.libs) {
                             addKeys(manifest['sap.ui5'].dependencies.libs, result);
                         }
@@ -75,7 +98,7 @@ function getManifestLibs(appUrls: string[]): Promise<string> {
                             addKeys(manifest['sap.ui5'].dependencies.components, result);
                         }
                     }
-                    if (manifest['sap.ui5'] && manifest['sap.ui5'].componentUsages) {
+                    if (manifest['sap.ui5']?.componentUsages) {
                         addKeys(manifest['sap.ui5'].componentUsages, result);
                     }
                 }
@@ -90,18 +113,7 @@ function getManifestLibs(appUrls: string[]): Promise<string> {
  *
  * @param dataFromAppIndex data returned from the app index service
  */
-function registerModules(
-    dataFromAppIndex: Record<
-        string,
-        {
-            dependencies?: {
-                url?: string;
-                type?: string;
-                componentId: string;
-            }[];
-        }
-    >
-) {
+function registerModules(dataFromAppIndex: AppIndexData) {
     Object.keys(dataFromAppIndex).forEach(function (moduleDefinitionKey) {
         const moduleDefinition = dataFromAppIndex[moduleDefinitionKey];
         if (moduleDefinition && moduleDefinition.dependencies) {
@@ -121,22 +133,37 @@ function registerModules(
 }
 
 /**
+ * Fetch the app state from the given application urls, then reset the app state.
+ *
+ * @param container the UShell container
+ */
+export async function resetAppState(container: typeof sap.ushell.Container): Promise<void> {
+    const appStateService = await container.getServiceAsync<AppState>('AppState');
+    const urlParams = new URLSearchParams(window.location.hash);
+    const appStateValue = urlParams.get('sap-iapp-state') ?? urlParams.get('/?sap-iapp-state');
+    if (appStateValue) {
+        appStateService.deleteAppState(appStateValue);
+    }
+}
+
+/**
  * Fetch the manifest from the given application urls, then parse them for custom libs, and finally request their urls.
  *
  * @param appUrls application urls
+ * @param urlParams URLSearchParams object
  * @returns returns a promise when the registration is completed.
  */
-export async function registerComponentDependencyPaths(appUrls: string[]): Promise<void> {
+export async function registerComponentDependencyPaths(appUrls: string[], urlParams: URLSearchParams): Promise<void> {
     const libs = await getManifestLibs(appUrls);
     if (libs && libs.length > 0) {
         let url = '/sap/bc/ui2/app_index/ui5_app_info?id=' + libs;
-        const sapClient = UriParameters.fromQuery(window.location.search).get('sap-client');
+        const sapClient = urlParams.get('sap-client');
         if (sapClient && sapClient.length === 3) {
             url = url + '&sap-client=' + sapClient;
         }
         const response = await fetch(url);
         try {
-            registerModules(await response.json());
+            registerModules((await response.json()) as AppIndexData);
         } catch (error) {
             Log.error(`Registering of reuse libs failed. Error:${error}`);
         }
@@ -164,16 +191,33 @@ export function registerSAPFonts() {
 }
 
 /**
+ * Create Resource Bundle based on the scenario.
+ *
+ * @param scenario to be used for the resource bundle.
+ */
+export async function loadI18nResourceBundle(scenario: Scenario): Promise<ResourceBundle> {
+    if (scenario === SCENARIO.AdaptationProject) {
+        const manifest = await getManifestAppdescr();
+        const enhanceWith = (manifest.content as { texts: { i18n: string } }[])
+            .filter((content) => content.texts?.i18n)
+            .map((content) => ({ bundleUrl: `../${content.texts.i18n}` }));
+        return ResourceBundle.create({
+            url: '../i18n/i18n.properties',
+            enhanceWith
+        });
+    }
+    return ResourceBundle.create({
+        url: 'i18n/i18n.properties'
+    });
+}
+
+/**
  * Read the application title from the resource bundle and set it as document title.
  *
+ * @param resourceBundle resource bundle to read the title from.
  * @param i18nKey optional parameter to define the i18n key to be used for the title.
  */
-export function setI18nTitle(i18nKey = 'appTitle') {
-    const locale = sap.ui.getCore().getConfiguration().getLanguage();
-    const resourceBundle = ResourceBundle.create({
-        url: 'i18n/i18n.properties',
-        locale
-    }) as ResourceBundle;
+export function setI18nTitle(resourceBundle: ResourceBundle, i18nKey = 'appTitle') {
     if (resourceBundle.hasText(i18nKey)) {
         document.title = resourceBundle.getText(i18nKey) ?? document.title;
     }
@@ -197,15 +241,20 @@ export async function init({
     flex?: string | null;
     customInit?: string | null;
 }): Promise<void> {
+    const urlParams = new URLSearchParams(window.location.search);
+    const container = sap?.ushell?.Container ?? (sap.ui.require('sap/ushell/Container') as typeof sap.ushell.Container);
+    let scenario: string = '';
     // Register RTA if configured
     if (flex) {
-        sap.ushell.Container.attachRendererCreatedEvent(async function () {
-            const lifecycleService = await sap.ushell.Container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
+        const flexSettings = JSON.parse(flex) as FlexSettings;
+        scenario = flexSettings.scenario;
+        container.attachRendererCreatedEvent(async function () {
+            const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
                 const version = sap.ui.version;
                 const minor = parseInt(version.split('.')[1], 10);
                 const view = event.getParameter('componentInstance');
-                const flexSettings = JSON.parse(flex);
+                const flexSettings = JSON.parse(flex) as FlexSettings;
                 const pluginScript = flexSettings.pluginScript ?? '';
 
                 let libs: string[] = [];
@@ -216,7 +265,7 @@ export async function init({
                 }
 
                 if (flexSettings.pluginScript) {
-                    libs.push(pluginScript);
+                    libs.push(pluginScript as string);
                     delete flexSettings.pluginScript;
                 }
 
@@ -236,9 +285,14 @@ export async function init({
         });
     }
 
+    // reset app state if requested
+    if (urlParams.get('fiori-tools-iapp-state')?.toLocaleLowerCase() !== 'true') {
+        await resetAppState(container);
+    }
+
     // Load custom library paths if configured
     if (appUrls) {
-        await registerComponentDependencyPaths(JSON.parse(appUrls));
+        await registerComponentDependencyPaths(JSON.parse(appUrls), urlParams);
     }
 
     // Load custom initialization module
@@ -247,9 +301,10 @@ export async function init({
     }
 
     // init
-    setI18nTitle();
+    const resourceBundle = await loadI18nResourceBundle(scenario as Scenario);
+    setI18nTitle(resourceBundle);
     registerSAPFonts();
-    const renderer = await sap.ushell.Container.createRenderer(undefined, true);
+    const renderer = await container.createRenderer(undefined, true);
     renderer.placeAt('content');
 }
 

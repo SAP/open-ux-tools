@@ -3,16 +3,18 @@ import type { Editor } from 'mem-fs-editor';
 import {
     writeAnnotationChange,
     writeChangeToFolder,
-    getGenericChange,
     findChangeWithInboundId,
-    writeChangeToFile
+    writeChangeToFile,
+    getChange
 } from '../../../../../src/base/change-utils';
 import type {
     AdpProjectData,
     AnnotationsData,
     ComponentUsagesData,
     DataSourceData,
-    InboundData
+    InboundData,
+    DescriptorVariant,
+    AddAnnotationsAnswers
 } from '../../../../../src';
 import {
     AnnotationsWriter,
@@ -27,13 +29,13 @@ jest.mock('../../../../../src/base/change-utils', () => ({
     ...jest.requireActual('../../../../../src/base/change-utils'),
     writeAnnotationChange: jest.fn(),
     writeChangeToFolder: jest.fn(),
-    getGenericChange: jest.fn().mockReturnValue({}),
+    getChange: jest.fn().mockReturnValue({}),
     findChangeWithInboundId: jest.fn(),
     writeChangeToFile: jest.fn()
 }));
 
 const writeAnnotationChangeMock = writeAnnotationChange as jest.Mock;
-const getGenericChangeMock = getGenericChange as jest.Mock;
+const getChangeMock = getChange as jest.Mock;
 const writeChangeToFolderMock = writeChangeToFolder as jest.Mock;
 const findChangeWithInboundIdMock = findChangeWithInboundId as jest.Mock;
 const writeChangeToFileMock = writeChangeToFile as jest.Mock;
@@ -47,26 +49,92 @@ describe('AnnotationsWriter', () => {
 
     it('should correctly construct content and write annotation change', async () => {
         const mockData: AnnotationsData = {
-            annotation: {
-                dataSource: '/sap/opu/odata/source',
-                filePath: '/mock/path/to/annotation/file.xml',
-                fileName: 'mockAnnotation.xml'
-            },
-            projectData: { namespace: 'apps/mock', layer: 'VENDOR', id: 'mockId' } as AdpProjectData,
-            timestamp: Date.now(),
-            isInternalUsage: false
+            variant: {
+                layer: 'CUSTOMER_BASE',
+                reference: 'mock.reference',
+                id: 'adp.mock.variant',
+                namespace: 'apps/adp.mock.variant'
+            } as DescriptorVariant,
+            answers: {
+                id: '/sap/opu/odata/source',
+                fileSelectOption: 0,
+                filePath: '/mock/path/to/annotation/file.xml'
+            } as AddAnnotationsAnswers
         };
 
         const writer = new AnnotationsWriter({} as Editor, mockProjectPath);
 
         await writer.write(mockData);
 
-        expect(writeAnnotationChangeMock).toHaveBeenCalledWith(mockProjectPath, mockData, expect.any(Object), {});
+        expect(writeAnnotationChangeMock).toHaveBeenCalledWith(
+            mockProjectPath,
+            expect.any(Number),
+            mockData,
+            expect.any(Object),
+            {}
+        );
+    });
+
+    it('should correctly construct content without filePath', async () => {
+        const mockData: AnnotationsData = {
+            variant: {
+                layer: 'CUSTOMER_BASE',
+                reference: 'mock.reference',
+                id: 'adp.mock.variant',
+                namespace: 'apps/adp.mock.variant'
+            } as DescriptorVariant,
+            answers: {
+                id: '/sap/opu/odata/source',
+                fileSelectOption: 1,
+                filePath: ''
+            } as AddAnnotationsAnswers
+        };
+
+        const writer = new AnnotationsWriter({} as Editor, mockProjectPath);
+
+        await writer.write(mockData);
+
+        expect(writeAnnotationChangeMock).toHaveBeenCalledWith(
+            mockProjectPath,
+            expect.any(Number),
+            mockData,
+            expect.any(Object),
+            {}
+        );
+    });
+
+    it('should correctly construct content with relative path', async () => {
+        const mockData: AnnotationsData = {
+            variant: {
+                layer: 'CUSTOMER_BASE',
+                reference: 'mock.reference',
+                id: 'adp.mock.variant',
+                namespace: 'apps/adp.mock.variant'
+            } as DescriptorVariant,
+            answers: {
+                id: '/sap/opu/odata/source',
+                fileSelectOption: 0,
+                filePath: 'file.xml'
+            } as AddAnnotationsAnswers
+        };
+
+        const writer = new AnnotationsWriter({} as Editor, mockProjectPath);
+
+        await writer.write(mockData);
+
+        expect(writeAnnotationChangeMock).toHaveBeenCalledWith(
+            mockProjectPath,
+            expect.any(Number),
+            mockData,
+            expect.any(Object),
+            {}
+        );
     });
 });
 
 describe('ComponentUsagesWriter', () => {
     const mockData = {
+        projectData: { namespace: 'apps/mock', layer: 'VENDOR', reference: 'reference' } as AdpProjectData,
         component: {
             usageId: 'mockID',
             name: 'mockName',
@@ -91,13 +159,24 @@ describe('ComponentUsagesWriter', () => {
     it('should write component usages and library reference changes when required', async () => {
         await writer.write(mockData as ComponentUsagesData);
 
-        expect(getGenericChangeMock).toHaveBeenCalledWith(
+        expect(getChangeMock).toHaveBeenCalledWith(
             expect.anything(),
-            expect.objectContaining({ componentUsages: expect.anything() }),
+            expect.anything(),
+            expect.objectContaining({
+                componentUsages: {
+                    [mockData.component.usageId]: {
+                        name: mockData.component.name,
+                        lazy: true,
+                        settings: { key: 'value' },
+                        data: { key: 'value' }
+                    }
+                }
+            }),
             ChangeType.ADD_COMPONENT_USAGES
         );
 
-        expect(getGenericChangeMock).toHaveBeenCalledWith(
+        expect(getChangeMock).toHaveBeenCalledWith(
+            expect.anything(),
             expect.anything(),
             expect.objectContaining({ libraries: { mockLibrary: { lazy: false } } }),
             ChangeType.ADD_LIBRARY_REFERENCE
@@ -151,9 +230,36 @@ describe('NewModelWriter', () => {
 
         await writer.write(mockData);
 
-        expect(getGenericChangeMock).toHaveBeenCalledWith(
+        expect(getChangeMock).toHaveBeenCalledWith(
             expect.anything(),
-            expect.any(Object),
+            mockData.timestamp,
+            {
+                'dataSource': {
+                    'ODataService': {
+                        'uri': mockData.service.uri,
+                        'type': 'OData',
+                        'settings': {
+                            'odataVersion': mockData.service.version,
+                            'annotations': [mockData.annotation.dataSourceName]
+                        }
+                    },
+                    'ODataAnnotations': {
+                        'uri': mockData.annotation.dataSourceURI,
+                        'type': 'ODataAnnotation',
+                        'settings': {
+                            'anotherSetting': 'anotherValue'
+                        }
+                    }
+                },
+                'model': {
+                    'ODataModel': {
+                        'dataSource': mockData.service.name,
+                        'settings': {
+                            'someSetting': 'someValue'
+                        }
+                    }
+                }
+            },
             ChangeType.ADD_NEW_MODEL
         );
 
@@ -169,16 +275,26 @@ describe('NewModelWriter', () => {
 
 describe('DataSourceWriter', () => {
     const mockData: DataSourceData = {
-        service: {
-            name: 'CustomOData',
+        answers: {
+            id: 'CustomOData',
             uri: '/sap/opu/odata/custom',
             annotationUri: '',
             maxAge: 60
         },
-        projectData: {} as AdpProjectData,
-        timestamp: 1234567890,
-        dataSourcesDictionary: {
-            CustomODataOData1: 'DataSource1'
+        dataSources: {
+            'CustomOData': {
+                settings: {
+                    annotations: ['CustomAnnotation']
+                },
+                uri: '/datasource/uri'
+            }
+        },
+        variant: {
+            layer: 'VENDOR',
+            reference: '',
+            id: '',
+            namespace: '',
+            content: []
         }
     };
 
@@ -190,22 +306,25 @@ describe('DataSourceWriter', () => {
     });
 
     it('should write data source change with provided data', async () => {
-        await writer.write(mockData as unknown as DataSourceData);
-
-        expect(getGenericChangeMock).toHaveBeenCalledWith(
+        const systemTime = new Date('2024-03-10');
+        jest.useFakeTimers().setSystemTime(systemTime);
+        await writer.write(mockData);
+        jest.useRealTimers();
+        expect(getChangeMock).toHaveBeenCalledWith(
+            expect.anything(),
             expect.anything(),
             expect.objectContaining({
-                dataSourceId: mockData.service.name,
+                dataSourceId: mockData.answers.id,
                 entityPropertyChange: expect.arrayContaining([
                     expect.objectContaining({
                         propertyPath: 'uri',
                         operation: 'UPDATE',
-                        propertyValue: mockData.service.uri
+                        propertyValue: mockData.answers.uri
                     }),
                     expect.objectContaining({
                         propertyPath: 'settings/maxAge',
                         operation: 'UPSERT',
-                        propertyValue: mockData.service.maxAge
+                        propertyValue: mockData.answers.maxAge
                     })
                 ])
             }),
@@ -215,18 +334,18 @@ describe('DataSourceWriter', () => {
         expect(writeChangeToFolder).toHaveBeenCalledWith(
             mockProjectPath,
             expect.any(Object),
-            `id_${mockData.timestamp}_changeDataSource.change`,
+            `id_${systemTime.getTime()}_changeDataSource.change`,
             {},
             'manifest'
         );
     });
 
     it('should add annotation change if annotationUri is provided', async () => {
-        mockData.service.annotationUri = 'some/path/annotations';
+        mockData.answers.annotationUri = 'some/path/annotations';
 
         await writer.write(mockData);
 
-        expect(getGenericChange).toHaveBeenCalledTimes(2);
+        expect(getChange).toHaveBeenCalledTimes(2);
         expect(writeChangeToFolder).toHaveBeenCalledTimes(2);
     });
 });
@@ -255,7 +374,7 @@ describe('InboundWriter', () => {
 
         await writer.write(mockData as InboundData);
 
-        expect(getGenericChangeMock).toHaveBeenCalled();
+        expect(getChangeMock).toHaveBeenCalled();
         expect(writeChangeToFolderMock).toHaveBeenCalled();
     });
 

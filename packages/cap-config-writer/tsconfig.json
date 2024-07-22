@@ -1,13 +1,29 @@
 {
-    "extends": "../../tsconfig.json",
-    "include": ["../../types/mem-fs-editor.d.ts", "src", "src/**/*.json"],
-    "compilerOptions": {
-        "rootDir": "src",
-        "outDir": "dist"
+  "extends": "../../tsconfig.json",
+  "include": [
+    "../../types/mem-fs-editor.d.ts",
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../fiori-generator-shared"
     },
-    "references": [
-        {
-            "path": "../project-access"
-        }
-    ]
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../odata-service-inquirer"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../yaml"
+    }
+  ]
 }

@@ -1,5 +1,22 @@
 # @sap-ux/ui5-info
 
+## 0.6.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/logger@0.6.0
+
+## 0.5.0
+
+### Minor Changes
+
+-   5d4c0dec: Added minUi5VersionV4Template, minUI5VersionForLocalDev, getLatestUI5Version(), and getSapSystemUI5Version()
+
 ## 0.4.0
 
 ### Minor Changes

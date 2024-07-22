@@ -19,7 +19,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"alp2\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -38,10 +37,10 @@ archive.zip
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#alp2-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#alp2-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#alp2-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#alp2-tile\\\\\\"\\"
+    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -5961,7 +5960,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"alp1\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -5980,10 +5978,10 @@ archive.zip
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#alp1-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#alp1-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#alp1-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#alp1-tile\\\\\\"\\"
+    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\"
   },
   \\"sapux\\": true
 }

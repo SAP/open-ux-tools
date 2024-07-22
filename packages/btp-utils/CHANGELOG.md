@@ -1,5 +1,17 @@
 # @sap-ux/btp-utils
 
+## 0.15.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+## 0.14.4
+
+### Patch Changes
+
+-   9a32e102: fix preview reload on SBAS, by exposing livereload server port over url
+
 ## 0.14.3
 
 ### Patch Changes

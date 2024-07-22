@@ -132,7 +132,7 @@ export class Ui5AbapRepositoryService extends ODataService {
             const response = await this.get<AppInfo>(`/Repositories('${encodeURIComponent(app)}')`);
             return response.odata();
         } catch (error) {
-            this.log.debug(`Retrieving application ${app}, ${error}`);
+            this.log.debug(`Retrieving application ${app} from ${Ui5AbapRepositoryService.PATH}, ${error}`);
             if (isAxiosError(error) && error.response?.status === 404) {
                 return undefined;
             }
@@ -183,7 +183,11 @@ export class Ui5AbapRepositoryService extends ODataService {
             bsp.description || 'Deployed with SAP Fiori tools',
             info ? info.Package : bsp.package
         );
-        this.log.debug(`Payload:\n${payload}`);
+        this.log.debug(
+            `Payload:\n ID: ${this.publicUrl}/Repositories('${bsp.name}') \n ABAP Package: ${
+                info ? info.Package : bsp.package
+            }`
+        );
         const config = this.createConfig(bsp.transport, testMode, safeMode);
         const frontendUrl = this.getAbapFrontendUrl();
         try {

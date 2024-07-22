@@ -1,26 +1,71 @@
-import { init, registerComponentDependencyPaths, registerSAPFonts, setI18nTitle } from '../../../src/flp/init';
+import {
+    init,
+    registerComponentDependencyPaths,
+    registerSAPFonts,
+    setI18nTitle,
+    resetAppState,
+    loadI18nResourceBundle
+} from '../../../src/flp/init';
 import IconPoolMock from 'mock/sap/ui/core/IconPool';
-import { mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
+import { default as mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
+import * as apiHandler from '../../../src/adp/api-handler';
 import { fetchMock, sapMock } from 'mock/window';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
+import type { Scenario } from '@sap-ux-private/control-property-editor-common';
 
 describe('flp/init', () => {
     test('registerSAPFonts', () => {
         registerSAPFonts();
         expect(IconPoolMock.registerFont).toBeCalledTimes(2);
     });
-
     test('setI18nTitle', () => {
         const title = '~testTitle';
-        mockBundle.getText.mockReturnValue(title);
+        const mockResourceBundle = {
+            hasText: jest.fn().mockReturnValueOnce(true),
+            getText: jest.fn().mockReturnValueOnce(title)
+        };
 
-        mockBundle.hasText.mockReturnValueOnce(true);
-        setI18nTitle();
+        setI18nTitle(mockResourceBundle, title);
         expect(document.title).toBe(title);
 
-        mockBundle.hasText.mockReturnValueOnce(false);
-        setI18nTitle();
+        mockResourceBundle.hasText.mockReturnValueOnce(false);
+        setI18nTitle(mockResourceBundle);
         expect(document.title).toBe(title);
+    });
+    test('loadI18nResourceBundle', async () => {
+        jest.spyOn(apiHandler, 'getManifestAppdescr').mockResolvedValueOnce({
+            content: [
+                {
+                    texts: {
+                        i18n: 'i18n/test/i18n.properties'
+                    }
+                }
+            ]
+        } as unknown as apiHandler.ManifestAppdescr);
+        await loadI18nResourceBundle('other' as Scenario);
+        expect(mockBundle.create).toBeCalledWith({
+            url: 'i18n/i18n.properties',
+        });
+    });
+    test('loadI18nResourceBundle - adaptation project', async () => {
+        jest.spyOn(apiHandler, 'getManifestAppdescr').mockResolvedValueOnce({
+            content: [
+                {
+                    texts: {
+                        i18n: 'i18n/test/i18n.properties'
+                    }
+                }
+            ]
+        } as unknown as apiHandler.ManifestAppdescr);
+        await loadI18nResourceBundle('ADAPTATION_PROJECT');
+        expect(mockBundle.create).toBeCalledWith({
+            url: '../i18n/i18n.properties',
+            enhanceWith: [
+                {
+                    bundleUrl: '../i18n/test/i18n.properties'
+                }
+            ]
+        });
     });
 
     describe('registerComponentDependencyPaths', () => {
@@ -39,7 +84,7 @@ describe('flp/init', () => {
 
         test('single app, no reuse libs', async () => {
             fetchMock.mockResolvedValueOnce({ json: () => testManifest });
-            await registerComponentDependencyPaths(['/']);
+            await registerComponentDependencyPaths(['/'], new URLSearchParams());
             expect(loaderMock).not.toBeCalled();
         });
 
@@ -54,7 +99,7 @@ describe('flp/init', () => {
                     }
                 })
             });
-            await registerComponentDependencyPaths(['/']);
+            await registerComponentDependencyPaths(['/'], new URLSearchParams());
             expect(loaderMock).toBeCalledWith({ paths: { 'test/lib/component': '~url' } });
         });
 
@@ -68,10 +113,48 @@ describe('flp/init', () => {
                 }
             });
             try {
-                await registerComponentDependencyPaths(['/']);
+                await registerComponentDependencyPaths(['/'], new URLSearchParams());
             } catch (error) {
                 expect(error).toEqual('Error');
             }
+        });
+    });
+
+    describe('resetAppState', () => {
+        let Container: typeof sap.ushell.Container;
+
+        const mockService = {
+            deleteAppState: jest.fn()
+        };
+
+        beforeEach(() => {
+            Container = sap.ushell.Container;
+            sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService);
+        });
+
+        afterEach(() => {
+            jest.clearAllMocks();
+            window.location.hash = '';
+        });
+
+        test('default', async () => {
+            window.location.hash = 'preview-app';
+            await resetAppState(Container);
+            expect(mockService.deleteAppState).not.toBeCalled();
+        });
+
+        test('hash key equals "/?sap-iapp-state"', async () => {
+            window.location.hash = 'preview-app&/?sap-iapp-state=dummyHash1234';
+            await resetAppState(Container);
+            expect(mockService.deleteAppState).toBeCalled();
+            expect(mockService.deleteAppState).toBeCalledWith('dummyHash1234');
+        });
+
+        test('hash key equals "sap-iapp-state"', async () => {
+            window.location.hash = 'preview-app&/?sap-iapp-state-history&sap-iapp-state=dummyHash5678';
+            await resetAppState(Container);
+            expect(mockService.deleteAppState).toBeCalled();
+            expect(mockService.deleteAppState).toBeCalledWith('dummyHash5678');
         });
     });
 
@@ -79,12 +162,14 @@ describe('flp/init', () => {
         beforeEach(() => {
             sapMock.ushell.Container.attachRendererCreatedEvent.mockReset();
             sapMock.ui.require.mockReset();
+            jest.clearAllMocks();
         });
 
         test('nothing configured', async () => {
             await init({});
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).not.toBeCalled();
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
+            expect(sapMock.ushell.Container.getServiceAsync).toBeCalledWith('AppState');
         });
 
         test('flex configured', async () => {

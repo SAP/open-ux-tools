@@ -19,7 +19,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"feovp1\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -38,10 +37,10 @@ archive.zip
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp1-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp1-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp1-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp1-tile\\\\\\"\\"
+    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -1682,7 +1681,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"feovp1\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -1711,10 +1709,10 @@ archive.zip
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
     \\"prestart\\": \\"npm run ts-typecheck\\",
     \\"prebuild\\": \\"npm run ts-typecheck\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp1-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp1-tile\\\\\\"\\"
+    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -2895,7 +2893,7 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
                 })
                     .then(function(sChangesFolderContent) {
                         const regex = /(\\\\/changes\\\\/[^\\"]*\\\\.[a-zA-Z]*)/g;
-                        const result = regex.exec(sChangesFolderContent);
+                        let result = regex.exec(sChangesFolderContent);
                         const aChanges = [];
                         while (result !== null) {
                             aChanges.push(result[1]);
@@ -3229,7 +3227,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"feovp2\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -3248,10 +3245,10 @@ archive.zip
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp2-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp2-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp2-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp2-tile\\\\\\"\\"
+    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -9130,7 +9127,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"feovp2\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -9159,10 +9155,10 @@ archive.zip
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
     \\"prestart\\": \\"npm run ts-typecheck\\",
     \\"prebuild\\": \\"npm run ts-typecheck\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp2-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp2-tile\\\\\\"\\"
+    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\"
   },
   \\"sapux\\": true
 }

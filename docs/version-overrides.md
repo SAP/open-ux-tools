@@ -24,6 +24,7 @@ This document lists the version overrides for vulnerable (nested) dependencies a
 :warning: Attention :warning: 
 * `@adobe/css-tools`` is used in packages/ui-components > `@testing-library/jest-dom`, which can't be updated to the very latest version due peer dependency to react 18.
 
+```
 ┌─────────────────────┬────────────────────────────────────────────────────────┐
 │ moderate            │ Axios Cross-Site Request Forgery Vulnerability         │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
@@ -38,82 +39,13 @@ This document lists the version overrides for vulnerable (nested) dependencies a
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ More info           │ https://github.com/advisories/GHSA-wf5p-g6vw-rhxx      │
 └─────────────────────┴────────────────────────────────────────────────────────┘
+```
 
 Fix not available yet with latest @nrwl/nx-cloud
 
-┌─────────────────────┬────────────────────────────────────────────────────────┐
-│ moderate            │ follow-redirects' Proxy-Authorization header kept      │
-│                     │ across hosts                                           │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Package             │ follow-redirects                                       │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Vulnerable versions │ <=1.15.5                                               │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Patched versions    │ >=1.15.6                                               │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Paths               │ . > @nrwl/nx-cloud@16.5.2 > nx-cloud@16.5.2 >          │
-│                     │ axios@1.6.1 > follow-redirects@1.15.4                  │
-│                     │                                                        │
-│                     │ . > nx@16.4.0 > axios@1.6.1 > follow-redirects@1.15.4  │
-│                     │                                                        │
-│                     │ examples\odata-cli >                                   │
-│                     │ @sap-ux/axios-extension@link:../../packages/axios-     │
-│                     │ extension >                                            │
-│                     │ @sap-ux/btp-utils@link:../../packages/btp-utils >      │
-│                     │ axios@1.6.1 > follow-redirects@1.15.4                  │
-│                     │                                                        │
-│                     │ ... Found 72 paths, run `pnpm why follow-redirects`    │
-│                     │ for more information                                   │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ More info           │ https://github.com/advisories/GHSA-cxjh-pqwp-8mfp      │
-└─────────────────────┴────────────────────────────────────────────────────────┘
-
 `follows-redirects upgrade` achieved by `axios` upgrade to 1.6.8
 
-No fix for `@sap/bas-sdk` to upgrade `axios` to get the latest `follow-redirects` yet.
-
-No fix available for `http-proxy` to upgrade to latest `follow-redirects`
-
-┌─────────────────────┬────────────────────────────────────────────────────────┐
-│ moderate            │ NPM IP package incorrectly identifies some private IP  │
-│                     │ addresses as public                                    │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Package             │ ip                                                     │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Vulnerable versions │ =2.0.0                                                 │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Patched versions    │ >=2.0.1                                                │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Paths               │ packages\ui-components > storybook@7.4.3 >             │
-│                     │ @storybook/cli@7.4.3 > @storybook/core-server@7.4.3 >  │
-│                     │ ip@2.0.0                                               │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ More info           │ https://github.com/advisories/GHSA-78xj-cgh5-2h22      │
-└─────────────────────┴────────────────────────────────────────────────────────┘
-
-`socks` updated to no longer use `ip`, but `socks-proxy-agent` not upgraded to use the latest `socks`
-
-`@storybook/core-server` involves major version upgrade to consume the `ip` module fix
-
-┌─────────────────────┬────────────────────────────────────────────────────────┐
-│ high                │ Path traversal in webpack-dev-middleware               │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Package             │ webpack-dev-middleware                                 │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Vulnerable versions │ >=6.0.0 <6.1.2                                         │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Patched versions    │ >=6.1.2                                                │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Paths               │ packages/ui-components >                               │
-│                     │ @storybook/react-webpack5@7.4.3 >                      │
-│                     │ @storybook/builder-webpack5@7.4.3 >                    │
-│                     │ webpack-dev-middleware@6.1.1                           │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ More info           │ https://github.com/advisories/GHSA-wr3j-pwj9-hqq6      │
-└─────────────────────┴────────────────────────────────────────────────────────┘
-
-No fix available for `@storybook/builder-webpack5` to upgrade to latest `webpack-dev-middleware`
-
+```
 ┌─────────────────────┬────────────────────────────────────────────────────────┐
 │ moderate            │ Denial of service while parsing a tar file due to lack │
 │                     │ of folders count validation                            │
@@ -140,4 +72,91 @@ No fix available for `@storybook/builder-webpack5` to upgrade to latest `webpack
 │                     │ information                                            │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ More info           │ https://github.com/advisories/GHSA-f5x3-32g6-xq36      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
+```
+
+Fix not available yet with latest @nrwl/nx-cloud
+
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ moderate            │ Axios Cross-Site Request Forgery Vulnerability         │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ axios                                                  │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ >=0.8.1 <0.28.0                                        │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=0.28.0                                               │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ packages/odata-service-inquirer >                      │
+│                     │ @sap/wing-service-explorer@1.8.0 > axios@0.21.4        │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-wf5p-g6vw-rhxx      │
+
+
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ low                 │ fast-xml-parser regex vulnerability patch could be     │
+│                     │ improved from a safety perspective                     │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ fast-xml-parser                                        │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ =4.2.4                                                 │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=4.2.5                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ packages/odata-service-inquirer >                      │
+│                     │ @sap/wing-service-explorer@1.8.0 >                     │
+│                     │ fast-xml-parser@4.2.4                                  │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-gpv5-7x3g-ghjv      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
+
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ high                │ Uncontrolled resource consumption in braces            │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ braces                                                 │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ <3.0.3                                                 │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=3.0.3                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ . > @changesets/cli@2.27.7 >                           │
+│                     │ @changesets/apply-release-plan@7.0.4 >                 │
+│                     │ @changesets/config@3.0.2 >                             │
+│                     │ @changesets/get-dependents-graph@2.1.1 >               │
+│                     │ @manypkg/get-packages@1.1.3 > globby@11.1.0 >          │
+│                     │ fast-glob@3.3.1 > micromatch@4.0.5 > braces@3.0.2      │
+│                     │                                                        │
+│                     │ . > @changesets/cli@2.27.7 >                           │
+│                     │ @changesets/apply-release-plan@7.0.4 >                 │
+│                     │ @changesets/config@3.0.2 > @manypkg/get-packages@1.1.3 │
+│                     │ > globby@11.1.0 > fast-glob@3.3.1 > micromatch@4.0.5 > │
+│                     │ braces@3.0.2                                           │
+│                     │                                                        │
+│                     │ . > @changesets/cli@2.27.7 >                           │
+│                     │ @changesets/apply-release-plan@7.0.4 >                 │
+│                     │ @changesets/config@3.0.2 > micromatch@4.0.5 >          │
+│                     │ braces@3.0.2                                           │
+│                     │                                                        │
+│                     │ ... Found 5897 paths, run `pnpm why braces` for more   │
+│                     │ information                                            │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-grv7-fg5c-xmjg      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ high                │ ws affected by a DoS when handling a request with many │
+│                     │ HTTP headers                                           │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ ws                                                     │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ >=8.0.0 <8.17.1                                        │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=8.17.1                                               │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ packages/ui-components > jest-environment-jsdom@29.7.0 │
+│                     │ > jsdom@20.0.3 > ws@8.13.0                             │
+│                     │                                                        │
+│                     │ packages/ui-components > storybook@8.1.11 >            │
+│                     │ @storybook/cli@8.1.11 > @storybook/core-server@8.1.11  │
+│                     │ > ws@8.13.0                                            │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-3h5v-q93c-6h6q      │
 └─────────────────────┴────────────────────────────────────────────────────────┘

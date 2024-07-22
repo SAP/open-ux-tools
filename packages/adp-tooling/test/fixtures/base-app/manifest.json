@@ -1,0 +1,23 @@
+{
+  "sap.app": {
+    "dataSources": {
+      "service": {
+        "uri": "/path/to/odata/service/",
+        "type": "OData",
+        "settings": {
+          "annotations": [
+            "annotation"
+          ],
+          "localUri": "localService/mockdata/metadata.xml"
+        }
+      },
+      "annotation": {
+        "uri": "/path/to/annotation;v=2/Annotations(TechnicalName='annotation',Version='0001')/$value/?sap-language=EN",
+        "type": "ODataAnnotation",
+        "settings": {
+          "localUri": "localService/annotation.xml"
+        }
+      }
+    }
+  }
+}

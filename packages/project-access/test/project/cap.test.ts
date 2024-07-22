@@ -3,7 +3,7 @@ import * as childProcess from 'child_process';
 import * as projectModuleMock from '../../src/project/module-loader';
 import type { Package } from '../../src';
 import { FileName } from '../../src/constants';
-import { clearGlobalCdsPathCache } from '../../src/project/cap';
+import { clearCdsModuleCache, clearGlobalCdsModulePromiseCache } from '../../src/project/cap';
 import {
     getCapCustomPaths,
     getCapEnvironment,
@@ -75,7 +75,7 @@ describe('Test isCapJavaProject()', () => {
 describe('Test getCapModelAndServices()', () => {
     afterEach(() => {
         jest.clearAllMocks();
-        clearGlobalCdsPathCache();
+        clearGlobalCdsModulePromiseCache();
     });
 
     test('Get valid model and services, mock cds with local cds from devDependencies', async () => {
@@ -109,7 +109,10 @@ describe('Test getCapModelAndServices()', () => {
                         }
                     ])
                 }
-            }
+            },
+            home: '/path/to/cds/home',
+            version: '7.0.0',
+            root: '/path/to/cds/root'
         };
         jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
 
@@ -133,7 +136,12 @@ describe('Test getCapModelAndServices()', () => {
                     'urlPath': 'url',
                     'runtime': 'Node.js'
                 }
-            ]
+            ],
+            cdsVersionInfo: {
+                home: '/path/to/cds/home',
+                version: '7.0.0',
+                root: '/path/to/cds/root'
+            }
         });
         expect(cdsMock.load).toBeCalledWith(
             [join('PROJECT_ROOT', 'APP'), join('PROJECT_ROOT', 'SRV'), join('PROJECT_ROOT', 'DB')],
@@ -168,6 +176,11 @@ describe('Test getCapModelAndServices()', () => {
 
         // Check results
         expect(capMS.services).toEqual([]);
+        expect(capMS.cdsVersionInfo).toEqual({
+            home: undefined,
+            version: undefined,
+            root: undefined
+        });
         expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL_NO_SERVICES', { root: 'ROOT_PATH' });
     });
 
@@ -257,6 +270,7 @@ describe('Test getCapModelAndServices()', () => {
             );
         } catch (error) {
             // Result check
+            expect(error.code).toBe('CDS_VERSION_MISMATCH');
             ['@sap/cds major version', '6.0.0', '7.0.0'].forEach((testString) => {
                 expect(error.toString()).toContain(testString);
             });
@@ -420,6 +434,8 @@ describe('Test getCapCustomPaths()', () => {
 describe('Test getCapEnvironment()', () => {
     afterEach(() => {
         jest.restoreAllMocks();
+        // clearing cache after each test to make tests independent of each other
+        clearGlobalCdsModulePromiseCache();
     });
 
     test('without default property', async () => {
@@ -833,6 +849,51 @@ describe('Test getCdsServices()', () => {
         } catch (error) {
             expect(error.toString()).toContain('CDS_LOAD_ERROR');
         }
+    });
+});
+
+describe('clearCdsModuleCache', () => {
+    const projectRoot = 'PROJECT_ROOT';
+    test('Clear CDS cache', async () => {
+        // Mock setup
+        const cdsMock = {
+            load: jest.fn().mockImplementation(() => Promise.resolve('MODEL')),
+            resolve: {
+                cache: {
+                    'dummy': {
+                        'cached': {
+                            'dummyPath': 'dummyValue'
+                        }
+                    }
+                }
+            }
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+
+        // Test execution
+        const result = await clearCdsModuleCache(projectRoot);
+
+        // Check results
+        expect(result).toEqual(true);
+        expect(cdsMock.resolve.cache).toStrictEqual({});
+    });
+
+    test('Unresolvable cds module - error is thrown', async () => {
+        // Mock setup
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(undefined));
+        // Test execution
+        const result = await clearCdsModuleCache(projectRoot);
+        expect(result).toEqual(false);
+    });
+
+    test('Unresolvable cds module - error is not thrown', async () => {
+        // Mock setup
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() =>
+            Promise.resolve({ default: undefined })
+        );
+        // Test execution
+        const result = await clearCdsModuleCache(projectRoot);
+        expect(result).toEqual(false);
     });
 });
 

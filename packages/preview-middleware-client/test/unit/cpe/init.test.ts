@@ -7,9 +7,11 @@ import Log from 'mock/sap/base/Log';
 import { fetchMock, sapCoreMock } from 'mock/window';
 import * as ui5Utils from '../../../src/cpe/ui5-utils';
 import connector from '../../../src/flp/WorkspaceConnector';
+import VersionInfo from 'mock/sap/ui/VersionInfo';
 
 describe('main', () => {
     let sendActionMock: jest.Mock;
+    VersionInfo.load.mockResolvedValue({ version: '1.120.4' });
     const applyChangeSpy = jest
         .spyOn(flexChange, 'applyChange')
         .mockResolvedValueOnce()
@@ -70,11 +72,12 @@ describe('main', () => {
         attachSelectionChange,
         getSelection: jest.fn().mockReturnValue([{ setSelected: jest.fn() }, { setSelected: jest.fn() }]),
         attachUndoRedoStackModified: jest.fn(),
-        getFlexSettings: jest.fn().mockReturnValue({ layer: 'VENDOR', scenario: common.scenario.UiAdaptation }),
+        getFlexSettings: jest.fn().mockReturnValue({ layer: 'VENDOR', scenario: common.SCENARIO.UiAdaptation }),
         getRootControlInstance: jest.fn().mockReturnValue({
             getManifest: jest.fn().mockReturnValue({ 'sap.app': { id: 'testId' } })
         }),
-        attachStop: jest.fn()
+        attachStop: jest.fn(),
+        attachModeChanged: jest.fn()
     } as any;
 
     const spyPostMessage = jest.spyOn(common, 'startPostMessageCommunication').mockImplementation(() => {
@@ -104,10 +107,10 @@ describe('main', () => {
         //assert
         expect(applyChangeSpy).toBeCalledWith({ rta: rta }, payload);
         expect(initOutlineSpy).toBeCalledWith(rta, sendActionMock);
-        expect(sendActionMock).toBeCalledWith(common.storageFileChanged('testFile'));
     });
     test('init - rta exception', async () => {
-        initOutlineSpy.mockRejectedValue('error');
+        const error = new Error('Cannot init outline');
+        initOutlineSpy.mockRejectedValue(error);
         await init(rta);
         const callBackFn = spyPostMessage.mock.calls[0][1];
         const payload = {
@@ -129,10 +132,14 @@ describe('main', () => {
             payload: mockIconResult
         });
         expect(sendActionMock).toHaveBeenNthCalledWith(2, {
+            type: '[ext] app-loaded',
+            payload: undefined
+        });
+        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
             type: '[ext] change-stack-modified',
             payload: { saved: [], pending: [] }
         });
         expect(initOutlineSpy).toBeCalledWith(rta, sendActionMock);
-        expect(Log.error).toBeCalledWith('Error during initialization of Control Property Editor', 'error');
+        expect(Log.error).toBeCalledWith('Error during initialization of Control Property Editor', error);
     });
 });

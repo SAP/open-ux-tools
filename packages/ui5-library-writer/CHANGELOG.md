@@ -1,5 +1,274 @@
 # @sap-ux/ui5-library-writer
 
+## 0.5.2
+
+### Patch Changes
+
+-   Updated dependencies [a9fac04]
+    -   @sap-ux/project-access@1.25.6
+    -   @sap-ux/ui5-application-writer@1.1.0
+
+## 0.5.1
+
+### Patch Changes
+
+-   Updated dependencies [421f3ca]
+    -   @sap-ux/project-access@1.25.5
+    -   @sap-ux/ui5-application-writer@1.1.0
+
+## 0.5.0
+
+### Minor Changes
+
+-   1a0e478: Removal of private: true Flag from Package.json Templates
+
+### Patch Changes
+
+-   Updated dependencies [1a0e478]
+    -   @sap-ux/ui5-application-writer@1.1.0
+
+## 0.4.8
+
+### Patch Changes
+
+-   Updated dependencies [5b243ac]
+    -   @sap-ux/ui5-application-writer@1.0.0
+
+## 0.4.7
+
+### Patch Changes
+
+-   Updated dependencies [173b5f2]
+    -   @sap-ux/project-access@1.25.4
+    -   @sap-ux/ui5-application-writer@0.27.2
+
+## 0.4.6
+
+### Patch Changes
+
+-   Updated dependencies [e7b9184]
+    -   @sap-ux/project-access@1.25.3
+    -   @sap-ux/ui5-application-writer@0.27.2
+
+## 0.4.5
+
+### Patch Changes
+
+-   Updated dependencies [22e4ad8]
+    -   @sap-ux/ui5-config@0.23.1
+    -   @sap-ux/project-access@1.25.2
+    -   @sap-ux/ui5-application-writer@0.27.2
+
+## 0.4.4
+
+### Patch Changes
+
+-   Updated dependencies [8b7ee1f]
+    -   @sap-ux/ui5-application-writer@0.27.1
+
+## 0.4.3
+
+### Patch Changes
+
+-   Updated dependencies [0f3cf6b]
+    -   @sap-ux/project-access@1.25.1
+    -   @sap-ux/ui5-application-writer@0.27.0
+
+## 0.4.2
+
+### Patch Changes
+
+-   Updated dependencies [f076dd3]
+    -   @sap-ux/project-access@1.25.0
+    -   @sap-ux/ui5-application-writer@0.27.0
+
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [0ae685e]
+    -   @sap-ux/project-access@1.24.0
+    -   @sap-ux/ui5-application-writer@0.27.0
+
+## 0.4.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/project-access@1.23.0
+    -   @sap-ux/ui5-application-writer@0.27.0
+    -   @sap-ux/ui5-config@0.23.0
+
+## 0.3.50
+
+### Patch Changes
+
+-   Updated dependencies [9ea58ad4]
+    -   @sap-ux/project-access@1.22.4
+    -   @sap-ux/ui5-application-writer@0.26.18
+
+## 0.3.49
+
+### Patch Changes
+
+-   Updated dependencies [1a1baeb0]
+    -   @sap-ux/ui5-config@0.22.10
+    -   @sap-ux/project-access@1.22.3
+    -   @sap-ux/ui5-application-writer@0.26.18
+
+## 0.3.48
+
+### Patch Changes
+
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/project-access@1.22.2
+    -   @sap-ux/ui5-config@0.22.9
+    -   @sap-ux/ui5-application-writer@0.26.17
+
+## 0.3.47
+
+### Patch Changes
+
+-   Updated dependencies [a140cf8b]
+    -   @sap-ux/ui5-config@0.22.8
+    -   @sap-ux/project-access@1.22.1
+    -   @sap-ux/ui5-application-writer@0.26.16
+
+## 0.3.46
+
+### Patch Changes
+
+-   Updated dependencies [ad93a484]
+    -   @sap-ux/project-access@1.22.0
+    -   @sap-ux/ui5-application-writer@0.26.15
+
+## 0.3.45
+
+### Patch Changes
+
+-   Updated dependencies [9188fe8b]
+    -   @sap-ux/ui5-application-writer@0.26.15
+    -   @sap-ux/ui5-config@0.22.7
+    -   @sap-ux/project-access@1.21.2
+
+## 0.3.44
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.22.6
+-   @sap-ux/project-access@1.21.1
+-   @sap-ux/ui5-application-writer@0.26.14
+
+## 0.3.43
+
+### Patch Changes
+
+-   Updated dependencies [69b8d6de]
+    -   @sap-ux/project-access@1.21.0
+    -   @sap-ux/ui5-application-writer@0.26.13
+
+## 0.3.42
+
+### Patch Changes
+
+-   Updated dependencies [a7d78229]
+    -   @sap-ux/project-access@1.20.4
+    -   @sap-ux/ui5-application-writer@0.26.13
+
+## 0.3.41
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.20.3
+-   @sap-ux/ui5-application-writer@0.26.13
+
+## 0.3.40
+
+### Patch Changes
+
+-   Updated dependencies [54c91c6d]
+    -   @sap-ux/project-access@1.20.2
+    -   @sap-ux/ui5-application-writer@0.26.13
+
+## 0.3.39
+
+### Patch Changes
+
+-   Updated dependencies [3684195d]
+    -   @sap-ux/ui5-config@0.22.5
+    -   @sap-ux/project-access@1.20.1
+    -   @sap-ux/ui5-application-writer@0.26.13
+
+## 0.3.38
+
+### Patch Changes
+
+-   Updated dependencies [e3d2324c]
+    -   @sap-ux/project-access@1.20.0
+    -   @sap-ux/ui5-config@0.22.4
+    -   @sap-ux/ui5-application-writer@0.26.12
+
+## 0.3.37
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+-   Updated dependencies [4e267684]
+    -   @sap-ux/ui5-application-writer@0.26.11
+
+## 0.3.36
+
+### Patch Changes
+
+-   Updated dependencies [6684f851]
+    -   @sap-ux/ui5-application-writer@0.26.10
+
+## 0.3.35
+
+### Patch Changes
+
+-   Updated dependencies [7f8105c7]
+    -   @sap-ux/ui5-config@0.22.3
+    -   @sap-ux/project-access@1.19.14
+    -   @sap-ux/ui5-application-writer@0.26.9
+
+## 0.3.34
+
+### Patch Changes
+
+-   Updated dependencies [99bca62c]
+    -   @sap-ux/project-access@1.19.13
+    -   @sap-ux/ui5-application-writer@0.26.8
+
+## 0.3.33
+
+### Patch Changes
+
+-   Updated dependencies [b7d95fb3]
+    -   @sap-ux/project-access@1.19.12
+    -   @sap-ux/ui5-config@0.22.2
+    -   @sap-ux/ui5-application-writer@0.26.8
+
+## 0.3.32
+
+### Patch Changes
+
+-   Updated dependencies [4389c528]
+    -   @sap-ux/project-access@1.19.11
+    -   @sap-ux/ui5-application-writer@0.26.7
+
+## 0.3.31
+
+### Patch Changes
+
+-   Updated dependencies [f8e16120]
+    -   @sap-ux/project-access@1.19.10
+    -   @sap-ux/ui5-application-writer@0.26.7
+
 ## 0.3.30
 
 ### Patch Changes

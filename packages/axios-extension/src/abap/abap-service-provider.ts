@@ -6,18 +6,18 @@ import { AppIndexService } from './app-index-service';
 import { ODataVersion } from '../base/odata-service';
 import { LayeredRepositoryService } from './lrep-service';
 import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
-import type { AtoSettings } from './types';
+import type { AbapCDSView, AtoSettings, BusinessObject } from './types';
 import { TenantType } from './types';
 // Can't use an `import type` here. We need the classname at runtime to create object instances:
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import { AdtService, AtoService } from './adt-catalog/services';
+import { AdtService, AtoService, GeneratorService } from './adt-catalog/services';
+import { UiServiceGenerator } from './adt-catalog/generators/ui-service-generator';
+import type { GeneratorEntry } from './adt-catalog/generators/types';
 
 /**
  * Extension of the service provider for ABAP services.
  */
 export class AbapServiceProvider extends ServiceProvider {
-    public s4Cloud: boolean | undefined;
-
     protected atoSettings: AtoSettings;
 
     /**
@@ -91,21 +91,15 @@ export class AbapServiceProvider extends ServiceProvider {
      * @returns true if it an S/4HANA cloud system
      */
     public async isS4Cloud(): Promise<boolean> {
-        if (this.s4Cloud === undefined) {
-            try {
-                const settings = await this.getAtoInfo();
-                this.s4Cloud =
-                    settings.tenantType === TenantType.Customer &&
-                    settings.operationsType === 'C' &&
-                    settings.isExtensibilityDevelopmentSystem === true &&
-                    settings.developmentPrefix !== '' &&
-                    settings.developmentPackage !== '';
-            } catch (error) {
-                this.log.warn('Failed to detect whether this is an SAP S/4HANA Cloud system or not.');
-                this.s4Cloud = false;
-            }
+        if (this.atoSettings === undefined) {
+            await this.getAtoInfo();
         }
-        return this.s4Cloud;
+        return (
+            this.atoSettings.tenantType === TenantType.Customer &&
+            this.atoSettings.operationsType === 'C' &&
+            this.atoSettings.developmentPrefix !== '' &&
+            this.atoSettings.developmentPackage !== ''
+        );
     }
 
     /**
@@ -220,5 +214,48 @@ export class AbapServiceProvider extends ServiceProvider {
         }
 
         return this.services[subclassName] as T;
+    }
+
+    /**
+     * Create a UI Service generator for the given referenced object.
+     *
+     * @param referencedObject - referenced object (business object or abap cds view)
+     * @returns a UI Service generator
+     */
+    public async getUiServiceGenerator(referencedObject: BusinessObject | AbapCDSView): Promise<UiServiceGenerator> {
+        const generatorService = await this.getAdtService<GeneratorService>(GeneratorService);
+        if (!generatorService) {
+            throw new Error('Generators are not supported on this system');
+        }
+        const config = await generatorService.getUIServiceGeneratorConfig(referencedObject.uri);
+        const gen = this.createService<UiServiceGenerator>(this.getServiceUrlFromConfig(config), UiServiceGenerator);
+        gen.configure(config, referencedObject);
+        return gen;
+    }
+
+    /**
+     * Get the service URL from the generator config.
+     *
+     * @param config - generator config
+     * @returns the service URL
+     */
+    private getServiceUrlFromConfig(config: GeneratorEntry): string {
+        // make code in this function defensive against undefined href
+        if (Array.isArray(config.link) && !config.link[0]?.href) {
+            throw new Error('No service URL found in the generator config');
+        }
+        const endIndex = config.link[0].href.indexOf(config.id) + config.id.length;
+        return config.link[0].href.substring(0, endIndex);
+    }
+
+    /**
+     * Create a service provider to lock a binding path.
+     *
+     * @param path - service binding path
+     * @returns a service provider instance to lock the service binding
+     */
+    public async createLockServiceBindingGenerator(path: string): Promise<UiServiceGenerator> {
+        const gen = this.createService<UiServiceGenerator>(path, UiServiceGenerator);
+        return gen;
     }
 }

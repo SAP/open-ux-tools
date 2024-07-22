@@ -1,11 +1,13 @@
 import prompts, { type Answers } from 'prompts';
-import type { AdpWriterConfig } from '../types';
+import type { CustomConfig, AdpWriterConfig } from '../types';
 import type { AbapTarget } from '@sap-ux/system-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { Logger } from '@sap-ux/logger';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { AppIndex } from '@sap-ux/axios-extension';
-import { isNotEmptyString, isValidSapClient } from './helper';
+import { isNotEmptyString, isValidSapClient } from './validators';
+import { v4 as uuidv4 } from 'uuid';
+import { getPackageJSONInfo } from '../writer/project-utils';
 
 export type PromptDefaults = {
     id?: string;
@@ -30,7 +32,7 @@ export async function promptGeneratorInput(
     logger: Logger
 ): Promise<AdpWriterConfig> {
     defaults = defaults ?? {};
-    const { target, apps, layer } = await promptTarget(defaults, logger);
+    const { target, apps, layer, customConfig } = await promptTarget(defaults, logger);
     const app = await prompts([
         {
             type: 'autocomplete',
@@ -101,7 +103,8 @@ export async function promptGeneratorInput(
         },
         target,
         options,
-        deploy
+        deploy,
+        customConfig
     };
 }
 
@@ -115,7 +118,7 @@ export async function promptGeneratorInput(
 export async function promptTarget(
     defaults: PromptDefaults,
     logger: Logger
-): Promise<{ apps: AppIndex; layer: UI5FlexLayer; target: AbapTarget }> {
+): Promise<{ apps: AppIndex; layer: UI5FlexLayer; target: AbapTarget; customConfig: CustomConfig }> {
     let count = 0;
     let target: Answers<'url' | 'client'> = { url: defaults.url, client: defaults.client };
     while (count < 3) {
@@ -171,7 +174,7 @@ async function fetchSystemInformation(
     target: prompts.Answers<'url' | 'client'>,
     ignoreCertErrors: boolean | undefined,
     logger: Logger
-): Promise<{ apps: AppIndex; layer: UI5FlexLayer }> {
+): Promise<{ apps: AppIndex; layer: UI5FlexLayer; customConfig: CustomConfig }> {
     const provider = await createAbapServiceProvider(
         target,
         {
@@ -183,15 +186,29 @@ async function fetchSystemInformation(
     logger.info('Fetching system information...');
     const ato = await provider.getAtoInfo();
     const layer = ato.tenantType === 'SAP' ? 'VENDOR' : 'CUSTOMER_BASE';
+    const packageJson = getPackageJSONInfo();
+    const customConfig: CustomConfig = {
+        adp: {
+            environment: ato.operationsType ?? 'P',
+            support: {
+                id: packageJson.name,
+                version: packageJson.version,
+                toolsId: uuidv4()
+            }
+        }
+    };
     logger.info(`Target layer: ${layer}`);
     logger.info('Fetching list of available applications... (it can take a moment)');
     const appIndex = provider.getAppIndex();
-    const apps = await appIndex.search(
-        {
-            'sap.ui/technology': 'UI5',
-            'sap.app/type': 'application'
-        },
-        ['sap.app/id', 'sap.app/title', 'sap.fiori/registrationIds']
-    );
-    return { apps, layer };
+
+    const searchParams: Record<string, string> = {
+        'sap.ui/technology': 'UI5',
+        'sap.app/type': 'application'
+    };
+    if (customConfig.adp.environment === 'C') {
+        searchParams['sap.fiori/cloudDevAdaptationStatus'] = 'released';
+    }
+
+    const apps = await appIndex.search(searchParams, ['sap.app/id', 'sap.app/title', 'sap.fiori/registrationIds']);
+    return { apps, layer, customConfig };
 }

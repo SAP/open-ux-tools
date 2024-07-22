@@ -1,5 +1,160 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.8.2
+
+### Patch Changes
+
+-   Updated dependencies [3a878f3]
+    -   @sap-ux/axios-extension@1.16.0
+
+## 0.8.1
+
+### Patch Changes
+
+-   Updated dependencies [abf491a7]
+    -   @sap-ux/axios-extension@1.15.1
+
+## 0.8.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/axios-extension@1.15.0
+    -   @sap-ux/btp-utils@0.15.0
+    -   @sap-ux/logger@0.6.0
+    -   @sap-ux/store@0.7.0
+
+## 0.7.41
+
+### Patch Changes
+
+-   Updated dependencies [4492fe10]
+    -   @sap-ux/axios-extension@1.14.4
+
+## 0.7.40
+
+### Patch Changes
+
+-   Updated dependencies [d5d3626c]
+    -   @sap-ux/axios-extension@1.14.3
+
+## 0.7.39
+
+### Patch Changes
+
+-   Updated dependencies [65bfb244]
+    -   @sap-ux/axios-extension@1.14.2
+
+## 0.7.38
+
+### Patch Changes
+
+-   Updated dependencies [844e79c4]
+    -   @sap-ux/axios-extension@1.14.1
+
+## 0.7.37
+
+### Patch Changes
+
+-   Updated dependencies [31cc53f8]
+    -   @sap-ux/axios-extension@1.14.0
+
+## 0.7.36
+
+### Patch Changes
+
+-   Updated dependencies [d02be637]
+    -   @sap-ux/store@0.6.0
+
+## 0.7.35
+
+### Patch Changes
+
+-   Updated dependencies [869c1c0d]
+    -   @sap-ux/axios-extension@1.13.1
+
+## 0.7.34
+
+### Patch Changes
+
+-   Updated dependencies [b2ee99fc]
+    -   @sap-ux/axios-extension@1.13.0
+
+## 0.7.33
+
+### Patch Changes
+
+-   Updated dependencies [558891c2]
+    -   @sap-ux/axios-extension@1.12.6
+
+## 0.7.32
+
+### Patch Changes
+
+-   Updated dependencies [69282b7d]
+    -   @sap-ux/axios-extension@1.12.5
+
+## 0.7.31
+
+### Patch Changes
+
+-   Updated dependencies [6e3d4da4]
+    -   @sap-ux/axios-extension@1.12.4
+
+## 0.7.30
+
+### Patch Changes
+
+-   Updated dependencies [19ec0f01]
+    -   @sap-ux/axios-extension@1.12.3
+
+## 0.7.29
+
+### Patch Changes
+
+-   Updated dependencies [a41bbd95]
+    -   @sap-ux/axios-extension@1.12.2
+
+## 0.7.28
+
+### Patch Changes
+
+-   Updated dependencies [1b5f7442]
+    -   @sap-ux/axios-extension@1.12.1
+
+## 0.7.27
+
+### Patch Changes
+
+-   Updated dependencies [312919ec]
+    -   @sap-ux/axios-extension@1.12.0
+
+## 0.7.26
+
+### Patch Changes
+
+-   Updated dependencies [9a32e102]
+    -   @sap-ux/btp-utils@0.14.4
+    -   @sap-ux/axios-extension@1.11.9
+
+## 0.7.25
+
+### Patch Changes
+
+-   Updated dependencies [56b77fd9]
+    -   @sap-ux/axios-extension@1.11.8
+
+## 0.7.24
+
+### Patch Changes
+
+-   Updated dependencies [31f5027c]
+    -   @sap-ux/axios-extension@1.11.7
+
 ## 0.7.23
 
 ### Patch Changes

@@ -13,24 +13,24 @@ When this middleware is used together with the `reload-middleware`, then the ord
 ```
 
 ## Configuration Options
-| Option                 | Type      | Default Value    | Description                                                                                                                         |
-| ---------------------- | --------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `flp`                  |           |                  | Optional configuration object for the local Fiori launchpad                                                                         |
-| `flp.path`             | `string`  | `/test/flp.html` | The mount point of the local Fiori launchpad.                                                                                       |
-| `flp.init`             | `string`  | `undefined`      | Optional UI5 module/script to be executed after the standard initialization                                                         |
-| `flp.intent`           |           |                  | Optional intent to be used for the application                                                                                      |
-| `flp.intent.object`    | `string`  | `app`            | Optional intent object                                                                                                              |
-| `flp.intent.action`    | `string`  | `preview`        | Optional intent action                                                                                                              |
-| `flp.apps`             | `array`   | `undefined`      | Optional additional local apps that are available in local Fiori launchpad                                                          |
+| Option                 | Type      | Default Value    | Description                                                                                                                                                                                                                                               |
+| ---------------------- | --------- | ---------------- |-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `flp`                  |           |                  | Optional configuration object for the local Fiori launchpad                                                                                                                                                                                               |
+| `flp.path`             | `string`  | `/test/flp.html` | The mount point of the local Fiori launchpad.                                                                                                                                                                                                             |
+| `flp.init`             | `string`  | `undefined`      | Optional UI5 module/script to be executed after the standard initialization                                                                                                                                                                               |
+| `flp.intent`           |           |                  | Optional intent to be used for the application                                                                                                                                                                                                            |
+| `flp.intent.object`    | `string`  | `app`            | Optional intent object                                                                                                                                                                                                                                    |
+| `flp.intent.action`    | `string`  | `preview`        | Optional intent action                                                                                                                                                                                                                                    |
+| `flp.apps`             | `array`   | `undefined`      | Optional additional local apps that are available in local Fiori launchpad                                                                                                                                                                                |
 | `flp.libs`             | `boolean` | `undefined`      | Optional flag to add a generic script fetching the paths of used libraries not available in UI5. To disable set it to `false`, if not set, then the project is checked for a `load-reuse-libs` script and if available the libraries are fetched as well. |
-| `flp.theme`             | `string` | `undefined`      | Optional flag for setting the UI5 Theme. |
-| `adp.target`           |           |                  | Required configuration for adaptation projects defining the connected backend                                                       |
-| `adp.ignoreCertErrors` | `boolean` | `false`          | Optional setting to ignore certification validation errors when working with e.g. development systems with self signed certificates |
-| `rta`                  |           |                  | Optional configuration allowing to add mount points for runtime adaptation                                                          |
-| `rta.layer`            | `string`  | `(calculated)`   | Optional property for defining the runtime adaptation layer for changes (default is `CUSTOMER_BASE` or read from the project for adaptation projects) |
-| `rta.editors`          | `array`   | `undefined`      | Optional list of mount points for editing                                                                                           |
-| `test`                 | `array`   | `undefined`      | Optional list of configurations for automated testing                                                                               |
-| `debug`                | `boolean` | `false`          | Enables debug output                                                                                                                |
+| `flp.theme`             | `string` | `undefined`      | Optional flag for setting the UI5 Theme.                                                                                                                                                                                                                  |
+| `adp.target`           |           |                  | Required configuration for adaptation projects defining the connected backend                                                                                                                                                                             |
+| `adp.ignoreCertErrors` | `boolean` | `false`          | Optional setting to ignore certification validation errors when working with e.g. development systems with self signed certificates                                                                                                                       |
+| `rta`                  |           |                  | Optional configuration allowing to add mount points for runtime adaptation                                                                                                                                                                                |
+| `rta.layer`            | `string`  | `(calculated)`   | Optional property for defining the runtime adaptation layer for changes (default is `CUSTOMER_BASE` or read from the project for adaptation projects)                                                                                                     |
+| `rta.editors`          | `array`   | `undefined`      | Optional list of mount points for editing                                                                                                                                                                                                                 |
+| `test`                 | `array`   | `undefined`      | Optional list of configurations for automated testing.                                                                                                                                                                                                    |
+| `debug`                | `boolean` | `false`          | Enables debug output                                                                                                                                                                                                                                      |
 
 ### `flp.apps`
 Array of additional application configurations:
@@ -57,12 +57,12 @@ Array of additional application configurations:
 | `developerMode` | `boolean` optional | Enables/disables the runtime adaptation developer mode (only supported for adaptation projects) |
 
 ### `test`
-| Option          | Type               | Description                                                                                    |
-| --------------- | -------------------| -----------------------------------------------------------------------------------------------|
-| `framework`     | `string` mandatory | Currently `OPA5` and `QUnit` are supported                                                     |
-| `path`          | `string` optional  | The mount point to be used for test suite                                                      |
-| `init`          | `string` optional  | The mount point to be used for test runner script                                              |
-| `pattern`       | `string` optional  | Optional glob pattern to find the tests. By default `/test/**/*Journey.*` is used for `OPA5` and `/test/**/*Test.*` is used for `QUnit`|
+| Option          | Type               | Description                                                                                                                                                                                                     |
+| --------------- | -------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `framework`     | `string` mandatory | Currently `OPA5`, `QUnit` and `Testsuite` are supported. `Testsuite` will generate a testsuite for all configured frameworks that can be be used with a test runner (like e.g. karma)                           |
+| `path`          | `string` optional  | The mount point to be used for test suite. By default `/test/opaTests.qunit.html` is used for `OPA5`, `/test/unitTests.qunit.html` is used for `QUnit` and `/test/testsuite.qunit.html` is used for `Testsuite` |
+| `init`          | `string` optional  | The mount point to be used for custom test runner script                                                                                                                                                        |
+| `pattern`       | `string` optional  | Optional glob pattern to find the tests. By default `/test/**/*Journey.*` is used for `OPA5` and `/test/**/*Test.*` is used for `QUnit` (n.a. for `Testsuite`)                                                  |
 
 
 ## Usage
@@ -136,6 +136,7 @@ server:
     afterMiddleware: compression
     configuration:
       test:
+        - framework: Testsuite
         - framework: QUnit
         - framework: OPA5
 ```
@@ -156,6 +157,13 @@ server:
         editors:
           - path: /test/adaptation-editor.html
             developerMode: true
+```
+When the middleware is used in an adaptation project together with a middleware proxying requests to the backend e.g. the `backend-proxy-middleware`, then it is critically important that the `preview-middleware` is handling requests before the backend proxy because it intercepts requests to the `manifest.json` of the original application and merges it with the local variant.
+```Yaml
+- name: preview-middleware
+  afterMiddleware: rcompression
+- name: backend-proxy-middleware
+  afterMiddleware: preview-middleware
 ```
 
 ### Programmatic Usage

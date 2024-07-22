@@ -1,26 +1,29 @@
 {
-    "extends": "../../tsconfig.json",
-    "include": [
-        "../../types/mem-fs-editor.d.ts",
-        "src",
-        "src/**/*.json"
-    ],
-    "compilerOptions": {
-        "rootDir": "src",
-        "outDir": "dist"
+  "extends": "../../tsconfig.json",
+  "include": [
+    "../../types/mem-fs-editor.d.ts",
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../eslint-plugin-fiori-tools"
     },
-    "references": [
-        {
-            "path": "../eslint-plugin-fiori-tools"
-        },
-        {
-            "path": "../odata-service-writer"
-        },
-        {
-            "path": "../ui5-application-writer"
-        },
-        {
-            "path": "../ui5-config"
-        }
-    ]
+    {
+      "path": "../fiori-generator-shared"
+    },
+    {
+      "path": "../odata-service-writer"
+    },
+    {
+      "path": "../ui5-application-writer"
+    },
+    {
+      "path": "../ui5-config"
+    }
+  ]
 }

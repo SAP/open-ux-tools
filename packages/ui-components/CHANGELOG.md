@@ -1,5 +1,62 @@
 # @sap-ux/ui-components
 
+## 1.17.1
+
+### Patch Changes
+
+-   9b7f144: adjust storybook after stroybook update from "7.6.18" to "8.1.11"
+
+## 1.17.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+## 1.16.3
+
+### Patch Changes
+
+-   ccd9256d: Update Icons.tsx
+    Icon16/ThumbsUp Icon16/ThumbsDown
+
+## 1.16.2
+
+### Patch Changes
+
+-   915e7d0c: UIContextualMenu. Wrong visualisation of menu item without text when menu contains at least one menu item with icon
+
+## 1.16.1
+
+### Patch Changes
+
+-   33f1df85: Update build in themes(`dark`, `light`, `hcb`) by syncing from latest VSCode 1.89.1
+
+## 1.16.0
+
+### Minor Changes
+
+-   43b0ebdd: Buttons. New property 'transparent' for UIDefaultButton and minor coloring styles correction
+
+## 1.15.15
+
+### Patch Changes
+
+-   fcc980f9: Save icon update
+    Icon was in wrong position for some reason, so I've recentered it.
+
+## 1.15.14
+
+### Patch Changes
+
+-   833718a0: Update Icons.tsx
+    New icons for dev efforts
+
+## 1.15.13
+
+### Patch Changes
+
+-   494fd0f1: fix: UISections splitter resize issue after window resize
+
 ## 1.15.12
 
 ### Patch Changes

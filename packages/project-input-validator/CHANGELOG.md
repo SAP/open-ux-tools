@@ -1,5 +1,17 @@
 # @sap-ux/project-input-validator
 
+## 0.3.1
+
+### Patch Changes
+
+-   108336f: Adds prompts for abap on premise systems to odata-service-inquirer
+
+## 0.3.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
 ## 0.2.3
 
 ### Patch Changes

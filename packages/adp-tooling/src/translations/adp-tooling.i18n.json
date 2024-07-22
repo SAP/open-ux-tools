@@ -1,0 +1,28 @@
+{
+    "prompts": {
+        "oDataSourceLabel": "Target OData Service",
+        "oDataSourceTooltip": "Select the OData service you want to replace",
+        "oDataSourceURILabel": "OData Source URI",
+        "oDataSourceURITooltip": "Enter the URI for the new OData source",
+        "maxAgeLabel": "New maxAge",
+        "maxAgeTooltip": "(Optional) Enter the time in seconds it takes for a cached response of the service to expire.",
+        "oDataAnnotationSourceURILabel": "OData Annotation Data Source URI",
+        "oDataAnnotationSourceURITooltip": "Server side annotations have been detected for the selected OData service. If needed, enter new annotation data source URI  for the changed service",
+        "addAnnotationOdataSourceTooltip": "Select the annotation file from your workspace",
+        "fileSelectOptionLabel": "Annotation XML",
+        "fileSelectOptionTooltip": "Select the annotation file source",
+        "filePathLabel": "Annotation File path",
+        "filePathTooltip": "Select the annotation file from your workspace"
+    },
+    "choices": {
+        "annotationFile": {
+            "selectFromWorkspace": "Select annotation file from workspace",
+            "createEmptyFile": "Create an empty annotation file"
+        }
+    },
+    "validators": {
+        "inputCannotBeEmpty": "Input cannot be empty.",
+        "fileDoesNotExist": "The file doesn't exist",
+        "annotationFileAlreadyExists": "There is already an annotation file with the same name, please choose another file or rename the file and select it again"
+    }
+}

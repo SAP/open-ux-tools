@@ -5,10 +5,13 @@ import type {
     InputQuestion as BaseInputQuestion,
     ListQuestion as BaseListQuestion,
     CheckboxQuestion as BaseCheckBoxQuestion,
+    NumberQuestion as BaseNumberQuestion,
     ListChoiceOptions,
     PromptFunction,
     PromptModule,
-    Question
+    Question,
+    Validator,
+    AsyncDynamicQuestionProperty
 } from 'inquirer';
 
 export interface UI5VersionChoice extends ListChoiceOptions {
@@ -52,8 +55,10 @@ export interface GuiOptions {
     breadcrumb?: boolean | string;
 }
 
-export type PromptSeverityMessage = (input?: unknown, previousAnswers?: Answers) => IMessageSeverity | undefined;
-export type validate<T> = (input: any, answers?: T) => boolean | string | Promise<boolean | string>;
+export type PromptSeverityMessage = (
+    input?: unknown,
+    previousAnswers?: Answers
+) => IMessageSeverity | undefined | Promise<IMessageSeverity | undefined>;
 
 export type YUIQuestion<A extends Answers = Answers> = Question<A> & {
     name: string;
@@ -70,6 +75,7 @@ export interface FileBrowserQuestion<A extends Answers = Answers> extends BaseIn
 export interface ListQuestion<A extends Answers = Answers> extends BaseListQuestion<A> {
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
+    additionalMessages?: YUIQuestion['additionalMessages'];
 }
 
 export interface ConfirmQuestion<A extends Answers = Answers> extends BaseConfirmQuestion<A> {
@@ -87,3 +93,21 @@ export interface CheckBoxQuestion<A extends Answers = Answers> extends BaseCheck
     guiOptions?: YUIQuestion['guiOptions'];
     additionalMessages?: YUIQuestion['additionalMessages'];
 }
+
+export interface NumberQuestion<A extends Answers = Answers> extends BaseNumberQuestion<A> {
+    name: YUIQuestion['name'];
+    guiOptions?: YUIQuestion['guiOptions'];
+}
+/**
+ * Defines prompt/question default values and/or whether or not they should be shown.
+ */
+export type CommonPromptOptions<T extends Answers = Answers> = {
+    hide?: boolean;
+    validate?: Validator<T>;
+    additionalMessages?: PromptSeverityMessage;
+};
+
+// Default value type for input prompt options
+export type PromptDefaultValue<T> = {
+    default?: AsyncDynamicQuestionProperty<T>;
+};

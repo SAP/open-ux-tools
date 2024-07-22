@@ -7,7 +7,10 @@ import {
     TransportRequestService,
     TransportChecksService,
     ListPackageService,
-    FileStoreService
+    FileStoreService,
+    BusinessObjectsService,
+    GeneratorService,
+    AbapCDSViewService
 } from '../../src';
 import * as auth from '../../src/auth';
 import type { ArchiveFileNode } from '../../src/abap/types';
@@ -16,6 +19,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import { Uaa } from '../../src/auth/uaa';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
+import { UiServiceGenerator } from '../../src/abap/adt-catalog/generators/ui-service-generator';
 
 const loggerMock: ToolsLogger = {
     debug: jest.fn(),
@@ -38,7 +42,10 @@ enum AdtServices {
     TRANSPORT_CHECKS = '/sap/bc/adt/cts/transportchecks',
     TRANSPORT_REQUEST = '/sap/bc/adt/cts/transports',
     LIST_PACKAGES = '/sap/bc/adt/repository/informationsystem/search',
-    FILE_STORE = '/sap/bc/adt/filestore/ui5-bsp/objects'
+    FILE_STORE = '/sap/bc/adt/filestore/ui5-bsp/objects',
+    //BUSINESS_OBJECTS = '/sap/bc/adt/repository/informationsystem/search',
+    GENERATOR = '/sap/bc/adt/repository/generators',
+    PUBLISH = '/sap/bc/adt/businessservices/odatav4'
 }
 
 const server = 'https://server.example';
@@ -64,10 +71,16 @@ const configForAbapOnCloud = {
     } as any,
     environment: AbapCloudEnvironment.Standalone
 };
-const existingCookieConfigForAbapOnCloud = {
+const existingCookieConfigForAbapOnCloudStandalone = {
     service: {},
     cookies: 'sap-usercontext=sap-client=100;SAP_SESSIONID_Y05_100=abc',
     environment: AbapCloudEnvironment.Standalone
+};
+
+const existingCookieConfigForAbapOnCloudEmbeddedSteampunk = {
+    service: {},
+    cookies: 'sap-usercontext=sap-client=100;SAP_SESSIONID_X01_100=abc',
+    environment: AbapCloudEnvironment.EmbeddedSteampunk
 };
 
 const testPackage = 'ZSPD';
@@ -361,6 +374,8 @@ describe('Transport checks', () => {
 
 describe('Use existing connection session', () => {
     const attachUaaAuthInterceptorSpy = jest.spyOn(auth, 'attachUaaAuthInterceptor');
+    const attachReentranceTicketAuthInterceptorSpy = jest.spyOn(auth, 'attachReentranceTicketAuthInterceptor');
+
     beforeAll(() => {
         nock.disableNetConnect();
     });
@@ -368,6 +383,8 @@ describe('Use existing connection session', () => {
     beforeEach(() => {
         nock.cleanAll();
         attachUaaAuthInterceptorSpy.mockRestore();
+        attachReentranceTicketAuthInterceptorSpy.mockRestore();
+
         Uaa.prototype.getAccessToken = jest.fn();
         Uaa.prototype.getAccessTokenWithClientCredentials = jest.fn();
     });
@@ -383,19 +400,31 @@ describe('Use existing connection session', () => {
         expect(provider.cookies.toString()).toBe('sap-usercontext=sap-client=100; SAP_SESSIONID_Y05_100=abc');
     });
 
-    test('abap service provider for cloud', async () => {
+    test('abap service provider for cloud (standalone)', async () => {
         nock(server)
             .get(AdtServices.DISCOVERY)
             .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
             .get(AdtServices.ATO_SETTINGS)
             .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsS4C.xml'));
 
-        const provider = createForAbapOnCloud(existingCookieConfigForAbapOnCloud as any);
+        const provider = createForAbapOnCloud(existingCookieConfigForAbapOnCloudStandalone as any);
         expect(provider.cookies.toString()).toBe('sap-usercontext=sap-client=100; SAP_SESSIONID_Y05_100=abc');
         expect(await provider.isS4Cloud()).toBe(false);
         expect(attachUaaAuthInterceptorSpy).toBeCalledTimes(0);
         expect(Uaa.prototype.getAccessToken).toBeCalledTimes(0);
         expect(Uaa.prototype.getAccessTokenWithClientCredentials).toBeCalledTimes(0);
+    });
+
+    test('abap service provider for cloud (embedded steampunk)', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(AdtServices.ATO_SETTINGS)
+            .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsS4C.xml'));
+
+        const provider = createForAbapOnCloud(existingCookieConfigForAbapOnCloudEmbeddedSteampunk as any);
+        expect(provider.cookies.toString()).toBe('sap-usercontext=sap-client=100; SAP_SESSIONID_X01_100=abc');
+        expect(attachReentranceTicketAuthInterceptorSpy).toBeCalledTimes(0);
     });
 
     test('abap service provider for cloud - require authentication', async () => {
@@ -658,5 +687,287 @@ describe('File Store Service', () => {
             .reply(200, 'Invalid XML');
         const fsService = await provider.getAdtService<FileStoreService>(FileStoreService);
         await expect(fsService?.getAppArchiveContent('folder', 'ZTESTAPP')).rejects.toThrow('Invalid XML content');
+    });
+});
+
+describe('Business Object Service', () => {
+    beforeAll(() => {
+        nock.disableNetConnect();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
+    });
+
+    const provider = createForAbap(config);
+
+    test('Business Object Service - multiple business objects returned', async () => {
+        const maxResults = 100;
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(AdtServices.LIST_PACKAGES)
+            .query({
+                operation: 'quickSearch',
+                query: `*`,
+                maxResults: maxResults,
+                objectType: 'BDEF',
+                releaseState: 'USE_IN_CLOUD_DEVELOPMENT'
+            })
+            .replyWithFile(200, join(__dirname, 'mockResponses/businessObjects-1.xml'));
+        const businessObjectService = await provider.getAdtService<BusinessObjectsService>(BusinessObjectsService);
+        const businessObjects = await businessObjectService?.getBusinessObjects(maxResults);
+        expect(businessObjects).toHaveLength(100);
+    });
+
+    test('Business Object Service - invalid response', async () => {
+        const maxResults = 100;
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(AdtServices.LIST_PACKAGES)
+            .query({
+                operation: 'quickSearch',
+                query: `*`,
+                maxResults: maxResults,
+                objectType: 'BDEF',
+                releaseState: 'USE_IN_CLOUD_DEVELOPMENT'
+            })
+            .replyWithFile(200, join(__dirname, 'mockResponses/businessObjects-invalid.xml'));
+        const businessObjectService = await provider.getAdtService<BusinessObjectsService>(BusinessObjectsService);
+        const businessObjects = await businessObjectService?.getBusinessObjects(maxResults);
+        expect(businessObjects).toHaveLength(0);
+    });
+
+    test('Business Object Service - test max results param', async () => {
+        const boSpy = jest.spyOn(BusinessObjectsService.prototype, 'getBusinessObjects');
+        const getSpy = jest.spyOn(BusinessObjectsService.prototype, 'get');
+        const maxResults = 10000;
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(AdtServices.LIST_PACKAGES)
+            .query({
+                operation: 'quickSearch',
+                query: `*`,
+                maxResults: maxResults,
+                objectType: 'BDEF',
+                releaseState: 'USE_IN_CLOUD_DEVELOPMENT'
+            })
+            .replyWithFile(200, join(__dirname, 'mockResponses/businessObjects-invalid.xml'));
+        const businessObjectService = await provider.getAdtService<BusinessObjectsService>(BusinessObjectsService);
+        const businessObjects = await businessObjectService?.getBusinessObjects();
+        expect(boSpy).toHaveBeenCalledWith();
+        expect(getSpy).toHaveBeenCalledWith(
+            expect.any(String),
+            expect.objectContaining({
+                headers: {
+                    Accept: 'application/xml'
+                },
+                params: {
+                    operation: 'quickSearch',
+                    query: `*`,
+                    maxResults: maxResults,
+                    objectType: 'BDEF',
+                    releaseState: 'USE_IN_CLOUD_DEVELOPMENT'
+                }
+            })
+        );
+        expect(businessObjects).toHaveLength(0);
+    });
+});
+
+describe('Abap CDS View Service', () => {
+    beforeAll(() => {
+        nock.disableNetConnect();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
+    });
+
+    const provider = createForAbap(config);
+
+    test('Abap CDS View Service - multiple cds views returned', async () => {
+        const maxResults = 100;
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(AdtServices.LIST_PACKAGES)
+            .query({
+                operation: 'quickSearch',
+                query: `*`,
+                maxResults: maxResults,
+                objectType: 'DDLS',
+                releaseState: 'USE_IN_CLOUD_DEVELOPMENT'
+            })
+            .replyWithFile(200, join(__dirname, 'mockResponses/cdsViews-1.xml'));
+        const cdsViewService = await provider.getAdtService<AbapCDSViewService>(AbapCDSViewService);
+        const cdsViews = await cdsViewService?.getAbapCDSViews(maxResults);
+        expect(cdsViews).toHaveLength(100);
+    });
+
+    test('Abap CDS View Service - invalid response', async () => {
+        const maxResults = 100;
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(AdtServices.LIST_PACKAGES)
+            .query({
+                operation: 'quickSearch',
+                query: `*`,
+                maxResults: maxResults,
+                objectType: 'DDLS',
+                releaseState: 'USE_IN_CLOUD_DEVELOPMENT'
+            })
+            .replyWithFile(200, join(__dirname, 'mockResponses/cdsViews-invalid.xml'));
+        const cdsViewService = await provider.getAdtService<AbapCDSViewService>(AbapCDSViewService);
+        const cdsViews = await cdsViewService?.getAbapCDSViews(maxResults);
+        expect(cdsViews).toHaveLength(0);
+    });
+
+    test('Abap CDS View Service - test max results param', async () => {
+        const cdsViewSpy = jest.spyOn(AbapCDSViewService.prototype, 'getAbapCDSViews');
+        const getSpy = jest.spyOn(AbapCDSViewService.prototype, 'get');
+        const maxResults = 10000;
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(AdtServices.LIST_PACKAGES)
+            .query({
+                operation: 'quickSearch',
+                query: `*`,
+                maxResults: maxResults,
+                objectType: 'DDLS',
+                releaseState: 'USE_IN_CLOUD_DEVELOPMENT'
+            })
+            .replyWithFile(200, join(__dirname, 'mockResponses/cdsViews-invalid.xml'));
+        const cdsViewService = await provider.getAdtService<AbapCDSViewService>(AbapCDSViewService);
+        const cdsViews = await cdsViewService?.getAbapCDSViews();
+        expect(cdsViewSpy).toHaveBeenCalledWith();
+        expect(getSpy).toHaveBeenCalledWith(
+            expect.any(String),
+            expect.objectContaining({
+                headers: {
+                    Accept: 'application/xml'
+                },
+                params: {
+                    operation: 'quickSearch',
+                    query: `*`,
+                    maxResults: maxResults,
+                    objectType: 'DDLS',
+                    releaseState: 'USE_IN_CLOUD_DEVELOPMENT'
+                }
+            })
+        );
+        expect(cdsViews).toHaveLength(0);
+    });
+});
+
+describe('Generator Service', () => {
+    beforeAll(() => {
+        nock.disableNetConnect();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
+    });
+
+    const provider = createForAbap(config);
+    const businessObjectName = 'I_BANKTP';
+    const businessObject = {
+        name: businessObjectName,
+        uri: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`,
+        description: 'test'
+    };
+
+    test('Generator Service - generator config returned', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-3.xml'))
+            .get(AdtServices.GENERATOR)
+            .query({
+                referencedObject: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`,
+                type: 'webapi'
+            })
+            .replyWithFile(200, join(__dirname, 'mockResponses/generatorConfig.xml'));
+        const generatorService = await provider.getAdtService<GeneratorService>(GeneratorService);
+        const generatorConfig = await generatorService?.getUIServiceGeneratorConfig(businessObject.uri);
+        expect(generatorConfig?.id).toEqual('published-ui-service');
+    });
+
+    test('uiServiceGenerator', async () => {
+        const transport = 'test_transport';
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-3.xml'))
+            .get(AdtServices.GENERATOR)
+            .query({
+                referencedObject: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`,
+                type: 'webapi'
+            })
+            .replyWithFile(200, join(__dirname, 'mockResponses/generatorConfig.xml'))
+            .get(
+                `/sap/bc/adt/rap/generators/webapi/published-ui-service/content?referencedObject=%2fsap%2fbc%2fadt%2fbo%2fbehaviordefinitions%2fi_banktp&package=ztest1`
+            )
+            .replyWithFile(200, join(__dirname, 'mockResponses/generatorContent.json'))
+            .get(
+                `/sap/bc/adt/rap/generators/webapi/published-ui-service/schema?referencedObject=%2fsap%2fbc%2fadt%2fbo%2fbehaviordefinitions%2fi_banktp`
+            )
+            .replyWithFile(200, join(__dirname, 'mockResponses/schemaResponse.json'))
+            .post(
+                `/sap/bc/adt/rap/generators/webapi/published-ui-service/validation?referencedObject=%2fsap%2fbc%2fadt%2fbo%2fbehaviordefinitions%2fi_banktp&checks=package,referencedobject,authorization`
+            )
+            .replyWithFile(200, join(__dirname, 'mockResponses/validationResponse.xml'))
+            .get(
+                `/sap/bc/adt/rap/generators/webapi/published-ui-service/validation?referencedObject=%2fsap%2fbc%2fadt%2fbo%2fbehaviordefinitions%2fi_banktp&package=ztest1&checks=package`
+            )
+            .replyWithFile(200, join(__dirname, 'mockResponses/validationResponse.xml'))
+            .post(
+                '/sap/bc/adt/rap/generators/webapi/published-ui-service?referencedObject=%2Fsap%2Fbc%2Fadt%2Fbo%2Fbehaviordefinitions%2Fi_banktp&corrNr=test_transport'
+            )
+            .replyWithFile(200, join(__dirname, 'mockResponses/generateResponse.xml'));
+
+        const gen = await provider.getUiServiceGenerator({
+            name: businessObjectName,
+            description: 'test',
+            uri: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`
+        });
+        expect(gen).toBeInstanceOf(UiServiceGenerator);
+        const content = await gen?.getContent('ztest1');
+        expect(JSON.parse(content).businessService.serviceDefinition.serviceDefinitionName).toEqual('ZUI_BANKTP004_O4');
+
+        const schemaResponse = await gen.getSchema();
+        expect(schemaResponse.title).toEqual('Details for RAP artifacts generation');
+
+        const validatePackage = await gen.validatePackage('ztest1');
+        expect(validatePackage.validationMessages.validationMessage.severity).toEqual('OK');
+
+        const validateContent = await gen.validateContent(content);
+        expect(validateContent.severity).toEqual('OK');
+
+        const generationReponse: any = await gen?.generate(content, transport);
+        expect(generationReponse?.objectReferences).toEqual('');
+    });
+
+    test('uiServiceGenerator with no links in response', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-3.xml'))
+            .get(AdtServices.GENERATOR)
+            .query({
+                referencedObject: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`
+            })
+            .replyWithFile(200, join(__dirname, 'mockResponses/generatorConfigNoLink1.xml'));
+        await expect(
+            provider.getUiServiceGenerator({
+                name: businessObjectName,
+                description: 'test',
+                uri: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`
+            })
+        ).rejects.toThrowError();
     });
 });

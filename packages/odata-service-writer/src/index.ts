@@ -2,14 +2,15 @@ import { join, dirname, sep } from 'path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { updateManifest, updatePackageJson } from './updates';
+import { updateManifest, updatePackageJson, updateCdsFilesWithAnnotations, writeAnnotationXmlFiles } from './updates';
 import type { FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
 import { UI5Config, yamlErrorCode, YAMLError } from '@sap-ux/ui5-config';
 import prettifyXml from 'prettify-xml';
 import { enhanceData, getAnnotationNamespaces } from './data';
 import { t } from './i18n';
-import { OdataService, OdataVersion, ServiceType } from './types';
-import type { ManifestNamespace } from '@sap-ux/project-access';
+import { OdataService, OdataVersion, ServiceType, CdsAnnotationsInfo, EdmxAnnotationsInfo } from './types';
+import { getWebappPath } from '@sap-ux/project-access';
+import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
 
 /**
  * Ensures the existence of the given files in the provided base path. If a file in the provided list does not exit, an error would be thrown.
@@ -55,32 +56,6 @@ export async function findProjectFiles(
 }
 
 /**
- * Generate annotations config, using `dataSources` read manifest.json.
- *
- * @param {string} basePath - the root path of an existing UI5 application
- * @param {Editor} [fs] - the memfs editor instance
- * @returns {Promise<Array<{ localPath: string, urlPath: string }>>} An array with annotations config
- */
-async function generateODataAnnotationConfig(
-    basePath: string,
-    fs: Editor
-): Promise<Array<{ localPath: string; urlPath: string }>> {
-    const manifest = fs.readJSON(join(basePath, 'webapp', 'manifest.json'));
-    const result: { [k: string]: ManifestNamespace.DataSource } = {};
-    const dataSources = manifest?.['sap.app']?.dataSources ?? {};
-    for (const dataSource in dataSources) {
-        if (dataSources[dataSource].uri && dataSources[dataSource].type === 'ODataAnnotation') {
-            result[dataSource] = dataSources[dataSource];
-        }
-    }
-    const annotationSource = Object.values(result);
-    return annotationSource.map((annotation) => ({
-        localPath: `./webapp/${annotation.settings?.localUri}`,
-        urlPath: annotation.uri
-    }));
-}
-
-/**
  * Writes the odata service related file updates to an existing UI5 project specified by the base path.
  *
  * @param {string} basePath - the root path of an existing UI5 application
@@ -96,10 +71,15 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     const paths = await findProjectFiles(basePath, fs);
     ensureExists(basePath, ['webapp/manifest.json'], fs);
     enhanceData(service);
-
+    // set isServiceTypeEdmx true if service is EDMX
+    const isServiceTypeEdmx = service.type === ServiceType.EDMX;
     // merge content into existing files
     const templateRoot = join(__dirname, '../templates');
 
+    // update cds files with annotations only if service type is CDS and annotations are provided
+    if (!isServiceTypeEdmx && service.annotations) {
+        await updateCdsFilesWithAnnotations(service.annotations as CdsAnnotationsInfo, fs);
+    }
     // manifest.json
     updateManifest(basePath, service, fs, templateRoot);
 
@@ -107,7 +87,8 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     let ui5Config: UI5Config | undefined;
     let ui5LocalConfig: UI5Config | undefined;
     let ui5LocalConfigPath: string | undefined;
-    if (paths.ui5Yaml) {
+    if (isServiceTypeEdmx && paths.ui5Yaml) {
+        // Dont extend backend middlewares if service type is CDS.
         ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
         try {
             ui5Config.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
@@ -130,14 +111,17 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     }
 
     // Add mockserver entries
-    if (service.metadata) {
+    if (isServiceTypeEdmx && service.metadata) {
+        // mockserver entries are not required if service type is CDS
         // copy existing `ui5.yaml` as starting point for ui5-mock.yaml
         if (paths.ui5Yaml && ui5Config) {
-            const ui5MockConfig = await UI5Config.newInstance(ui5Config.toString());
-            ui5MockConfig.addMockServerMiddleware(service.path, await generateODataAnnotationConfig(basePath, fs));
-            fs.write(join(dirname(paths.ui5Yaml), 'ui5-mock.yaml'), ui5MockConfig.toString());
-
-            // also add mockserver middleware to ui5-local.yaml
+            const webappPath = await getWebappPath(basePath, fs);
+            const config = {
+                webappPath: webappPath,
+                ui5MockYamlConfig: { path: service.path }
+            };
+            await generateMockserverConfig(basePath, config, fs);
+            // add mockserver middleware to ui5-local.yaml
             if (ui5LocalConfig) {
                 ui5LocalConfig.addMockServerMiddleware(service.path);
             }
@@ -160,23 +144,22 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         }
     }
 
-    // update package.json if required
-    if (paths.packageJson && paths.ui5Yaml) {
+    // update package.json for non-cap applications
+    if (isServiceTypeEdmx && paths.packageJson && paths.ui5Yaml) {
         updatePackageJson(paths.packageJson, fs, !!service.metadata);
     }
 
-    if (ui5LocalConfigPath && ui5LocalConfig) {
+    if (isServiceTypeEdmx && ui5LocalConfigPath && ui5LocalConfig) {
+        // write ui5 local yaml if service type is not CDS
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     }
 
-    if (service.annotations?.xml) {
-        fs.write(
-            join(basePath, 'webapp', 'localService', `${service.annotations.technicalName}.xml`),
-            prettifyXml(service.annotations.xml, { indent: 4 })
-        );
+    // Write annotation xml if annotations are provided and service type is EDMX
+    if (isServiceTypeEdmx) {
+        writeAnnotationXmlFiles(fs, basePath, service);
     }
 
     return fs;
 }
 
-export { generate, OdataVersion, OdataService, ServiceType };
+export { generate, OdataVersion, OdataService, ServiceType, EdmxAnnotationsInfo, CdsAnnotationsInfo };

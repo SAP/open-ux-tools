@@ -1,6 +1,7 @@
 {
   "APPLICATION_PREVIEW_TITLE": "Application Preview",
   "ADD_FRAGMENT_AT_EXTENSION_POINT": "Add Fragment at Extension Point",
+  "EXTENSION_POINT_HAS_DEFAULT_CONTENT_TEXT": "{{name}} (has default content)",
   "PROPERTIES": "PROPERTIES",
   "COPIED_TO_CLIPBOARD_TOAST_MESSAGE": "✓ Copied to clipboard: {{value}}",
   "CONTROL_ID_LABEL": "CONTROL ID",
@@ -18,6 +19,7 @@
   "NO_CONTROL_FOUND": "No control found",
   "MODIFY_SEARCH_INPUT": "Modify the search input",
   "APP_TITLE": "Control Property Editor",
+  "APP_TITLE_ADAPTATION_EDITOR": "Adaptation Editor",
   "DEVICE_TYPE_DESKTOP": "Desktop",
   "DEVICE_TYPE_TABLET": "Tablet",
   "DEVICE_TYPE_PHONE": "Phone",
@@ -73,5 +75,14 @@
   "NO_CONTROL_CHANGES_FOUND": "No Control Changes Found",
   "CHANGE": "Change",
   "FILE": "File: ",
-  "CONTROL": "Selector Id: "
+  "CONTROL": "Selector Id: ",
+  "MODE": "Mode",
+  "LIVE": "Live",
+  "EDIT": "Edit",  
+  "UI_ADAPTATION": "UI Adaptation",
+  "SAVE": "Save",
+  "UNDO": "Undo",
+  "REDO": "Redo",
+  "NAVIGATION": "Navigation",
+  "NAVIGATE": "Navigate"
 }

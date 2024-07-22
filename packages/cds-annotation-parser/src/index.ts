@@ -68,5 +68,5 @@ export {
 } from './transformer';
 
 export { arePositionsEqual, copyPosition, copyRange, areRangesEqual } from './transformer';
-export { ReservedProperties } from './constants';
+export { ReservedProperties, isReservedProperty } from './constants';
 export { findAnnotationNode, getNode, getAstNodes } from './find-annotation-node';

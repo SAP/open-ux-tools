@@ -1,5 +1,192 @@
 # @sap-ux/project-access
 
+## 1.25.6
+
+### Patch Changes
+
+-   a9fac04: Caching promise to load global cds module:
+    -   When loading the global installed cds module is required, we call `cds --version` to locate the path to load from. As this call is quite expensive, so far, after the result was retrieved, the path was cached. Now, we already cache the promise waiting for the result and resolving to the loaded module.
+    -   When `loadGlobalCdsModule` was called a second time before the first execution was finished, by this, we can avoid a useless second expensive call to `cds --version`.
+    -   If your code is calling `loadGlobalCdsModule` (or any method using it) several times, you could possibly have observed sequential execution being faster than parallel execution. In that case you should consider to gain performance by changing to parallel execution now.
+
+## 1.25.5
+
+### Patch Changes
+
+-   421f3ca: fix: module-loader fails to install specification dependecy in '.fioritools' folder when user has 'node_modules' in user home folder
+
+## 1.25.4
+
+### Patch Changes
+
+-   173b5f2: export findCapProjectRoot, required by other modules
+
+## 1.25.3
+
+### Patch Changes
+
+-   e7b9184: fix: outputs specification version when loading from cache
+
+## 1.25.2
+
+### Patch Changes
+
+-   Updated dependencies [22e4ad8]
+    -   @sap-ux/ui5-config@0.23.1
+
+## 1.25.1
+
+### Patch Changes
+
+-   0f3cf6b: feat: Add path to specification
+
+## 1.25.0
+
+### Minor Changes
+
+-   f076dd3: Add freestyle CAP app support.
+
+## 1.24.0
+
+### Minor Changes
+
+-   0ae685e: Add feature to cache node modules locally, consumed by specification
+
+## 1.23.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/i18n@0.1.0
+    -   @sap-ux/ui5-config@0.23.0
+
+## 1.22.4
+
+### Patch Changes
+
+-   9ea58ad4: fix: Release version of @sap-ux/project-access with filterDataSourcesByType
+
+## 1.22.3
+
+### Patch Changes
+
+-   Updated dependencies [1a1baeb0]
+    -   @sap-ux/ui5-config@0.22.10
+
+## 1.22.2
+
+### Patch Changes
+
+-   399d2ad8: adds new abap deploy config writer
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/ui5-config@0.22.9
+
+## 1.22.1
+
+### Patch Changes
+
+-   Updated dependencies [a140cf8b]
+    -   @sap-ux/ui5-config@0.22.8
+
+## 1.22.0
+
+### Minor Changes
+
+-   ad93a484: Update functions for package.json and manifest.json that keeps previous indentation.
+
+## 1.21.2
+
+### Patch Changes
+
+-   Updated dependencies [9188fe8b]
+    -   @sap-ux/ui5-config@0.22.7
+
+## 1.21.1
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.22.6
+
+## 1.21.0
+
+### Minor Changes
+
+-   69b8d6de: Introduces enhanced functionality by returning CDS information, extracted during the prompt phase, and is made available for later use .
+
+## 1.20.4
+
+### Patch Changes
+
+-   a7d78229: Added new functions for retrieving the minUI5Version(s) from manifest
+
+## 1.20.3
+
+### Patch Changes
+
+-   Updated dependencies [f80a4256]
+    -   @sap-ux/i18n@0.0.7
+
+## 1.20.2
+
+### Patch Changes
+
+-   54c91c6d: Export method 'clearCdsModuleCache' to provide option to clear cds module cache for passed project root path.
+
+## 1.20.1
+
+### Patch Changes
+
+-   Updated dependencies [3684195d]
+    -   @sap-ux/ui5-config@0.22.5
+
+## 1.20.0
+
+### Minor Changes
+
+-   e3d2324c: Improvements for consumption
+
+### Patch Changes
+
+-   Updated dependencies [e3d2324c]
+    -   @sap-ux/ui5-config@0.22.4
+
+## 1.19.14
+
+### Patch Changes
+
+-   Updated dependencies [7f8105c7]
+    -   @sap-ux/ui5-config@0.22.3
+
+## 1.19.13
+
+### Patch Changes
+
+-   99bca62c: Add error code for cds mismatch
+
+## 1.19.12
+
+### Patch Changes
+
+-   b7d95fb3: fix paths and config writers
+-   Updated dependencies [b7d95fb3]
+    -   @sap-ux/ui5-config@0.22.2
+
+## 1.19.11
+
+### Patch Changes
+
+-   4389c528: expose library types
+
+## 1.19.10
+
+### Patch Changes
+
+-   f8e16120: Add missing fiori tools settings enum
+
 ## 1.19.9
 
 ### Patch Changes

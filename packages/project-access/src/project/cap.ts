@@ -8,7 +8,9 @@ import type {
     csn,
     LinkedModel,
     Package,
-    ServiceDefinitions
+    ServiceDefinitions,
+    ServiceInfo,
+    CdsVersionInfo
 } from '../types';
 import { fileExists, readFile, readJSON } from '../file';
 import { loadModuleFromProject } from './module-loader';
@@ -33,12 +35,6 @@ interface CdsFacade {
 interface ResolveWithCache {
     (files: string | string[], options?: { skipModelCache: boolean }): string[];
     cache: Record<string, { cached: Record<string, string[]>; paths: string[] }>;
-}
-
-interface ServiceInfo {
-    name: string;
-    urlPath: string;
-    runtime?: string;
 }
 
 /**
@@ -128,11 +124,11 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
  * Return the CAP model and all services. The cds.root will be set to the provided project root path.
  *
  * @param projectRoot - CAP project root where package.json resides or object specifying project root and optional logger to log additional info
- * @returns {Promise<{ model: csn; services: ServiceInfo[] }>} - CAP Model and Services
+ * @returns {Promise<{ model: csn; services: ServiceInfo[]; cdsVersionInfo: CdsVersionInfo }>} - CAP Model and Services
  */
 export async function getCapModelAndServices(
     projectRoot: string | { projectRoot: string; logger?: Logger }
-): Promise<{ model: csn; services: ServiceInfo[] }> {
+): Promise<{ model: csn; services: ServiceInfo[]; cdsVersionInfo: CdsVersionInfo }> {
     let _projectRoot;
     let _logger;
     if (typeof projectRoot === 'object') {
@@ -167,7 +163,12 @@ export async function getCapModelAndServices(
     }
     return {
         model,
-        services
+        services,
+        cdsVersionInfo: {
+            home: cds.home,
+            version: cds.version,
+            root: cds.root
+        }
     };
 }
 
@@ -221,7 +222,7 @@ export async function getCdsRoots(projectRoot: string, clearCache = false): Prom
     // clear cache is enforced to also resolve newly created cds file at design time
     const cds = await loadCdsModuleFromProject(projectRoot);
     if (clearCache) {
-        cds.resolve.cache = {};
+        clearCdsResolveCache(cds);
     }
     for (const cdsEnvRoot of cdsEnvRoots) {
         const resolvedRoots =
@@ -408,9 +409,11 @@ async function loadCdsModuleFromProject(capProjectPath: string, strict: boolean 
         if (typeof cdsDependencyVersion === 'string') {
             const globalCdsVersion = cds.version;
             if (getMajorVersion(cdsDependencyVersion) !== getMajorVersion(globalCdsVersion)) {
-                throw Error(
+                const error = new Error(
                     `The @sap/cds major version (${cdsDependencyVersion}) specified in your CAP project is different to the @sap/cds version you have installed globally (${globalCdsVersion}). Please run 'npm install' on your CAP project to ensure that the correct CDS version is loaded.`
-                );
+                ) as Error & { code: string };
+                error.code = 'CDS_VERSION_MISMATCH';
+                throw error;
             }
         }
     }
@@ -421,6 +424,35 @@ async function loadCdsModuleFromProject(capProjectPath: string, strict: boolean 
     }
 
     return cds;
+}
+
+/**
+ * Method to clear CAP CDS module cache for passed project path.
+ *
+ * @param projectRoot root of a CAP project.
+ * @returns True if cache cleared successfully.
+ */
+export async function clearCdsModuleCache(projectRoot: string): Promise<boolean> {
+    let result = false;
+    try {
+        const cds = await loadCdsModuleFromProject(projectRoot);
+        if (cds) {
+            clearCdsResolveCache(cds);
+            result = true;
+        }
+    } catch (e) {
+        // ignore exception
+    }
+    return result;
+}
+
+/**
+ * Method to clear CAP CDS module cache for passed cds module.
+ *
+ * @param cds CAP CDS module
+ */
+function clearCdsResolveCache(cds: CdsFacade): void {
+    cds.resolve.cache = {};
 }
 
 /**
@@ -525,29 +557,38 @@ async function readPackageNameForFolder(baseUri: string, relativeUri: string): P
     return packageName;
 }
 
-let globalCdsPathCache: string;
+// Cache for request to load global cds. Cache the promise to avoid starting multiple identical requests in parallel.
+let globalCdsModulePromise: Promise<CdsFacade> | undefined;
 
 /**
  * Try to load global installation of @sap/cds, usually child of @sap/cds-dk.
  *
  * @returns - module @sap/cds from global installed @sap/cds-dk
  */
-async function loadGlobalCdsModule<T>(): Promise<T> {
-    if (!globalCdsPathCache) {
-        const versions = await getCdsVersionInfo();
-        if (!versions.home) {
-            throw Error('Can not find global installation of module @sap/cds, which should be part of @sap/cds-dk');
-        }
-        globalCdsPathCache = versions.home;
-    }
-    return loadModuleFromProject<T>(globalCdsPathCache, '@sap/cds');
+async function loadGlobalCdsModule(): Promise<CdsFacade> {
+    globalCdsModulePromise =
+        globalCdsModulePromise ??
+        new Promise<CdsFacade>((resolve, reject) => {
+            return getCdsVersionInfo().then((versions) => {
+                if (versions.home) {
+                    resolve(loadModuleFromProject<CdsFacade>(versions.home, '@sap/cds'));
+                } else {
+                    reject(
+                        new Error(
+                            'Can not find global installation of module @sap/cds, which should be part of @sap/cds-dk'
+                        )
+                    );
+                }
+            }, reject);
+        });
+    return globalCdsModulePromise;
 }
 
 /**
- * Clear cache of path to global cds module.
+ * Clear cache of request to load global cds module.
  */
-export function clearGlobalCdsPathCache() {
-    globalCdsPathCache = '';
+export function clearGlobalCdsModulePromiseCache() {
+    globalCdsModulePromise = undefined;
 }
 
 /**

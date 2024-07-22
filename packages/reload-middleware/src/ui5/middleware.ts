@@ -39,7 +39,7 @@ module.exports = async ({ options, middlewareUtil }: MiddlewareParameters<Reload
             livereloadServer.watch(watchPath);
         }
 
-        return getConnectLivereload({ ...defaultConnectLivereloadOpts, ...connectOptions, port: livereloadPort });
+        return await getConnectLivereload({ ...defaultConnectLivereloadOpts, ...connectOptions, port: livereloadPort });
     } else {
         const message = 'No configuration found for the reload-middleware, using default configuration.';
         logger.info(message);
@@ -48,6 +48,6 @@ module.exports = async ({ options, middlewareUtil }: MiddlewareParameters<Reload
         logger.info(`Livereload server started on port ${livereloadPort} for path ${sourcePath}`);
         livereloadServer.watch(sourcePath);
 
-        return getConnectLivereload({ ...defaultConnectLivereloadOpts, port: livereloadPort });
+        return await getConnectLivereload({ ...defaultConnectLivereloadOpts, port: livereloadPort });
     }
 };

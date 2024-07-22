@@ -91,7 +91,7 @@ describe('ExtensionPoint', () => {
         test('throws error message when retrieving fragments fails', async () => {
             const errorMsg = 'Could not get fragments!';
             fetchMock.mockResolvedValue({
-                json: jest.fn().mockRejectedValue({ message: errorMsg }),
+                json: jest.fn().mockRejectedValue(new Error(errorMsg)),
                 text: jest.fn(),
                 ok: true
             });
@@ -104,7 +104,10 @@ describe('ExtensionPoint', () => {
                 'adp.extension.controllers.ExtensionPoint',
                 overlays as unknown as UI5Element,
                 {} as unknown as RuntimeAuthoring,
-                { name: 'ExtensionPoint1' } as ExtensionPointData
+                {
+                    name: 'ExtensionPoint1',
+                    info: [{ name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product', defaultContent: [{}] }]
+                } as ExtensionPointData
             );
 
             const openSpy = jest.fn();
@@ -156,7 +159,6 @@ describe('ExtensionPoint', () => {
 
             fetchMock.mockResolvedValue({
                 json: jest.fn().mockReturnValue([]),
-                text: jest.fn().mockReturnValue('XML Fragment was created!'),
                 ok: true
             });
 
@@ -168,6 +170,7 @@ describe('ExtensionPoint', () => {
 
             expect(resolveSpy).toHaveBeenCalledWith({
                 extensionPointName,
+                fragment: `<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>`,
                 fragmentPath: 'fragments/Share.fragment.xml'
             });
         });
@@ -226,7 +229,7 @@ describe('ExtensionPoint', () => {
                 'adp.extension.controllers.ExtensionPoint',
                 {} as unknown as UI5Element,
                 {} as unknown as RuntimeAuthoring,
-                {} as unknown as ExtensionPointData
+                { info: [] } as unknown as ExtensionPointData
             );
 
             const setPropertySpy = jest.fn();

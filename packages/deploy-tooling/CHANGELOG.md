@@ -1,5 +1,324 @@
 # @sap-ux/deploy-tooling
 
+## 0.15.4
+
+### Patch Changes
+
+-   Updated dependencies [108336f]
+    -   @sap-ux/project-input-validator@0.3.1
+
+## 0.15.3
+
+### Patch Changes
+
+-   Updated dependencies [3a878f3]
+    -   @sap-ux/axios-extension@1.16.0
+    -   @sap-ux/system-access@0.5.2
+
+## 0.15.2
+
+### Patch Changes
+
+-   Updated dependencies [22e4ad8]
+    -   @sap-ux/ui5-config@0.23.1
+    -   @sap-ux/axios-extension@1.15.1
+    -   @sap-ux/system-access@0.5.1
+
+## 0.15.1
+
+### Patch Changes
+
+-   Updated dependencies [abf491a7]
+    -   @sap-ux/axios-extension@1.15.1
+    -   @sap-ux/system-access@0.5.1
+
+## 0.15.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/axios-extension@1.15.0
+    -   @sap-ux/btp-utils@0.15.0
+    -   @sap-ux/logger@0.6.0
+    -   @sap-ux/project-input-validator@0.3.0
+    -   @sap-ux/system-access@0.5.0
+    -   @sap-ux/ui5-config@0.23.0
+
+## 0.14.47
+
+### Patch Changes
+
+-   Updated dependencies [4492fe10]
+    -   @sap-ux/axios-extension@1.14.4
+    -   @sap-ux/system-access@0.4.7
+
+## 0.14.46
+
+### Patch Changes
+
+-   Updated dependencies [d5d3626c]
+    -   @sap-ux/axios-extension@1.14.3
+    -   @sap-ux/system-access@0.4.6
+
+## 0.14.45
+
+### Patch Changes
+
+-   Updated dependencies [65bfb244]
+    -   @sap-ux/axios-extension@1.14.2
+    -   @sap-ux/system-access@0.4.5
+
+## 0.14.44
+
+### Patch Changes
+
+-   Updated dependencies [1a1baeb0]
+    -   @sap-ux/ui5-config@0.22.10
+    -   @sap-ux/axios-extension@1.14.1
+    -   @sap-ux/system-access@0.4.4
+
+## 0.14.43
+
+### Patch Changes
+
+-   Updated dependencies [844e79c4]
+    -   @sap-ux/axios-extension@1.14.1
+    -   @sap-ux/system-access@0.4.4
+
+## 0.14.42
+
+### Patch Changes
+
+-   Updated dependencies [31cc53f8]
+    -   @sap-ux/axios-extension@1.14.0
+    -   @sap-ux/system-access@0.4.3
+
+## 0.14.41
+
+### Patch Changes
+
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/ui5-config@0.22.9
+    -   @sap-ux/axios-extension@1.13.1
+    -   @sap-ux/system-access@0.4.2
+
+## 0.14.40
+
+### Patch Changes
+
+-   02a321be: Destination configured with SAMLAssertion a http 401 no longer displays credentials for the user to enter.
+
+## 0.14.39
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.4.2
+-   @sap-ux/ui5-config@0.22.8
+
+## 0.14.38
+
+### Patch Changes
+
+-   Updated dependencies [a140cf8b]
+    -   @sap-ux/ui5-config@0.22.8
+    -   @sap-ux/axios-extension@1.13.1
+    -   @sap-ux/system-access@0.4.1
+
+## 0.14.37
+
+### Patch Changes
+
+-   Updated dependencies [7f8bc980]
+    -   @sap-ux/system-access@0.4.1
+
+## 0.14.36
+
+### Patch Changes
+
+-   Updated dependencies [a48a8c0b]
+    -   @sap-ux/system-access@0.4.0
+
+## 0.14.35
+
+### Patch Changes
+
+-   Updated dependencies [9188fe8b]
+    -   @sap-ux/ui5-config@0.22.7
+    -   @sap-ux/axios-extension@1.13.1
+    -   @sap-ux/system-access@0.3.34
+
+## 0.14.34
+
+### Patch Changes
+
+-   Updated dependencies [869c1c0d]
+    -   @sap-ux/axios-extension@1.13.1
+    -   @sap-ux/system-access@0.3.34
+
+## 0.14.33
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.22.6
+-   @sap-ux/axios-extension@1.13.0
+-   @sap-ux/system-access@0.3.33
+
+## 0.14.32
+
+### Patch Changes
+
+-   Updated dependencies [b2ee99fc]
+    -   @sap-ux/axios-extension@1.13.0
+    -   @sap-ux/system-access@0.3.33
+
+## 0.14.31
+
+### Patch Changes
+
+-   dc9b15af: update and truncate transport request description
+
+## 0.14.30
+
+### Patch Changes
+
+-   d86989f9: adds auth type param to deploy tooling
+
+## 0.14.29
+
+### Patch Changes
+
+-   Updated dependencies [558891c2]
+    -   @sap-ux/axios-extension@1.12.6
+    -   @sap-ux/system-access@0.3.32
+
+## 0.14.28
+
+### Patch Changes
+
+-   Updated dependencies [69282b7d]
+    -   @sap-ux/axios-extension@1.12.5
+    -   @sap-ux/system-access@0.3.31
+
+## 0.14.27
+
+### Patch Changes
+
+-   Updated dependencies [3684195d]
+    -   @sap-ux/ui5-config@0.22.5
+    -   @sap-ux/axios-extension@1.12.4
+    -   @sap-ux/system-access@0.3.30
+
+## 0.14.26
+
+### Patch Changes
+
+-   Updated dependencies [96de8f25]
+    -   @sap-ux/system-access@0.3.30
+
+## 0.14.25
+
+### Patch Changes
+
+-   Updated dependencies [895ee259]
+    -   @sap-ux/system-access@0.3.29
+
+## 0.14.24
+
+### Patch Changes
+
+-   Updated dependencies [6e3d4da4]
+    -   @sap-ux/axios-extension@1.12.4
+    -   @sap-ux/system-access@0.3.28
+
+## 0.14.23
+
+### Patch Changes
+
+-   Updated dependencies [e3d2324c]
+    -   @sap-ux/ui5-config@0.22.4
+    -   @sap-ux/axios-extension@1.12.3
+    -   @sap-ux/system-access@0.3.27
+
+## 0.14.22
+
+### Patch Changes
+
+-   Updated dependencies [19ec0f01]
+    -   @sap-ux/axios-extension@1.12.3
+    -   @sap-ux/system-access@0.3.27
+
+## 0.14.21
+
+### Patch Changes
+
+-   Updated dependencies [a41bbd95]
+    -   @sap-ux/axios-extension@1.12.2
+    -   @sap-ux/system-access@0.3.26
+
+## 0.14.20
+
+### Patch Changes
+
+-   Updated dependencies [1b5f7442]
+    -   @sap-ux/axios-extension@1.12.1
+    -   @sap-ux/system-access@0.3.25
+
+## 0.14.19
+
+### Patch Changes
+
+-   Updated dependencies [312919ec]
+    -   @sap-ux/axios-extension@1.12.0
+    -   @sap-ux/system-access@0.3.24
+
+## 0.14.18
+
+### Patch Changes
+
+-   Updated dependencies [9a32e102]
+    -   @sap-ux/btp-utils@0.14.4
+    -   @sap-ux/axios-extension@1.11.9
+    -   @sap-ux/system-access@0.3.23
+
+## 0.14.17
+
+### Patch Changes
+
+-   Updated dependencies [56b77fd9]
+    -   @sap-ux/axios-extension@1.11.8
+    -   @sap-ux/system-access@0.3.22
+
+## 0.14.16
+
+### Patch Changes
+
+-   7f8105c7: move replaceEnvVariables to ui5-config and export
+-   Updated dependencies [7f8105c7]
+    -   @sap-ux/ui5-config@0.22.3
+    -   @sap-ux/axios-extension@1.11.7
+    -   @sap-ux/system-access@0.3.21
+
+## 0.14.15
+
+### Patch Changes
+
+-   Updated dependencies [b7d95fb3]
+    -   @sap-ux/ui5-config@0.22.2
+    -   @sap-ux/axios-extension@1.11.7
+    -   @sap-ux/system-access@0.3.21
+
+## 0.14.14
+
+### Patch Changes
+
+-   Updated dependencies [31f5027c]
+    -   @sap-ux/axios-extension@1.11.7
+    -   @sap-ux/system-access@0.3.21
+
 ## 0.14.13
 
 ### Patch Changes

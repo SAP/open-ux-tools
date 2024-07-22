@@ -4,7 +4,7 @@ import {
     propertyChanged,
     propertyChangeFailed,
     reloadApplication,
-    scenario,
+    SCENARIO,
     showMessage,
     storageFileChanged
 } from '@sap-ux-private/control-property-editor-common';
@@ -167,8 +167,8 @@ describe('main redux slice', () => {
 
         test('setProjectScenario', () => {
             expect(
-                reducer({ scenario: scenario.UiAdaptation } as any, setProjectScenario(scenario.AdaptationProject))
-            ).toStrictEqual({ scenario: scenario.AdaptationProject, isAdpProject: true });
+                reducer({ scenario: SCENARIO.UiAdaptation } as any, setProjectScenario(SCENARIO.AdaptationProject))
+            ).toStrictEqual({ scenario: SCENARIO.AdaptationProject, isAdpProject: true });
         });
 
         test('non existing property', () => {
@@ -389,8 +389,8 @@ describe('main redux slice', () => {
         });
 
         test('show message', () => {
-            expect(reducer({} as any, showMessage('testMessage'))).toStrictEqual({
-                dialogMessage: 'testMessage'
+            expect(reducer({} as any, showMessage({ message: 'testMessage', shouldHideIframe: false }))).toStrictEqual({
+                dialogMessage: { message: 'testMessage', shouldHideIframe: false }
             });
         });
         test('reload application', () => {
@@ -402,7 +402,8 @@ describe('main redux slice', () => {
                     reloadApplication()
                 )
             ).toStrictEqual({
-                fileChanges: []
+                fileChanges: [],
+                isAppLoading: true
             });
         });
     });

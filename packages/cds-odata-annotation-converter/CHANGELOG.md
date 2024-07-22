@@ -1,5 +1,51 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.3.1
+
+### Patch Changes
+
+-   94cee16: Cds compiler facade version bump in dependencies
+
+## 0.3.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/cds-annotation-parser@0.2.0
+    -   @sap-ux/odata-annotation-core@0.2.0
+    -   @sap-ux/odata-vocabularies@0.4.0
+
+## 0.2.9
+
+### Patch Changes
+
+-   Updated dependencies [d09edfd5]
+    -   @sap-ux/odata-vocabularies@0.3.8
+    -   @sap-ux/cds-annotation-parser@0.1.13
+
+## 0.2.8
+
+### Patch Changes
+
+-   Updated dependencies [4d8e6c65]
+    -   @sap-ux/cds-annotation-parser@0.1.12
+
+## 0.2.7
+
+### Patch Changes
+
+-   30064346: feat: add fiori annotation api package
+
+## 0.2.6
+
+### Patch Changes
+
+-   ca2385e5: fix: facade version
+
 ## 0.2.5
 
 ### Patch Changes

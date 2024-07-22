@@ -50,6 +50,11 @@ export interface ApplicationStructure {
      * Service information with annotation references and local annotation files.
      */
     services: { [index: string]: ServiceSpecification };
+
+    /**
+     * Application type.
+     */
+    appType: AppType;
 }
 
 export interface I18nPropertiesPaths {
@@ -67,10 +72,11 @@ export interface I18nPropertiesPaths {
     };
 }
 
+export type ODataVersion = NonNullable<ManifestNamespace.Setting['odataVersion']>;
 export interface ServiceSpecification {
     uri?: string;
     local?: string;
-    odataVersion?: ManifestNamespace.Setting['odataVersion'];
+    odataVersion?: ODataVersion;
     annotations?: {
         uri?: string;
         /**

@@ -91,7 +91,13 @@ export type OperationsType = 'C' | 'P';
 export interface AtoSettings {
     developmentPackage?: string;
     developmentPrefix?: string;
+    /**
+     * Operations type cloud or on premise.
+     */
     operationsType?: OperationsType;
+    /**
+     * True if it is an S/4HANA Cloud Public Edition client for key user extensibility.
+     */
     isExtensibilityDevelopmentSystem?: boolean;
     tenantType?: TenantType;
     isTransportRequestRequired?: boolean;
@@ -127,3 +133,18 @@ export interface ArchiveFileNode {
 export type ArchiveFileNodeType = 'file' | 'folder';
 
 export type ArchiveFileContentType<T> = T extends 'file' ? string : T extends 'folder' ? ArchiveFileNode[] : never;
+
+export type BusinessObject = {
+    name: string;
+    uri: string;
+    description?: string;
+};
+
+export type AbapCDSView = {
+    name: string;
+    uri: string;
+    description?: string;
+};
+
+export type PublishResponse = { SEVERITY: string; SHORT_TEXT: string; LONG_TEXT: string };
+export type ValidationResponse = { severity: string; short_text: string; long_text: string };

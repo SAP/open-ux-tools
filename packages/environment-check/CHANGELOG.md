@@ -1,5 +1,391 @@
 # @sap-ux/environment-check
 
+## 0.17.11
+
+### Patch Changes
+
+-   Updated dependencies [a9fac04]
+    -   @sap-ux/project-access@1.25.6
+    -   @sap-ux/axios-extension@1.16.0
+
+## 0.17.10
+
+### Patch Changes
+
+-   Updated dependencies [3a878f3]
+    -   @sap-ux/axios-extension@1.16.0
+
+## 0.17.9
+
+### Patch Changes
+
+-   Updated dependencies [421f3ca]
+    -   @sap-ux/project-access@1.25.5
+    -   @sap-ux/axios-extension@1.15.1
+
+## 0.17.8
+
+### Patch Changes
+
+-   Updated dependencies [173b5f2]
+    -   @sap-ux/project-access@1.25.4
+    -   @sap-ux/axios-extension@1.15.1
+
+## 0.17.7
+
+### Patch Changes
+
+-   Updated dependencies [e7b9184]
+    -   @sap-ux/project-access@1.25.3
+    -   @sap-ux/axios-extension@1.15.1
+
+## 0.17.6
+
+### Patch Changes
+
+-   Updated dependencies [22e4ad8]
+    -   @sap-ux/ui5-config@0.23.1
+    -   @sap-ux/project-access@1.25.2
+    -   @sap-ux/axios-extension@1.15.1
+
+## 0.17.5
+
+### Patch Changes
+
+-   c19a93b: update environment check results order, All destinations in toggle dropdown
+
+## 0.17.4
+
+### Patch Changes
+
+-   Updated dependencies [0f3cf6b]
+    -   @sap-ux/project-access@1.25.1
+    -   @sap-ux/axios-extension@1.15.1
+
+## 0.17.3
+
+### Patch Changes
+
+-   Updated dependencies [f076dd3]
+    -   @sap-ux/project-access@1.25.0
+    -   @sap-ux/axios-extension@1.15.1
+
+## 0.17.2
+
+### Patch Changes
+
+-   Updated dependencies [0ae685e]
+    -   @sap-ux/project-access@1.24.0
+    -   @sap-ux/axios-extension@1.15.1
+
+## 0.17.1
+
+### Patch Changes
+
+-   Updated dependencies [abf491a7]
+    -   @sap-ux/axios-extension@1.15.1
+
+## 0.17.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/axios-extension@1.15.0
+    -   @sap-ux/btp-utils@0.15.0
+    -   @sap-ux/logger@0.6.0
+    -   @sap-ux/project-access@1.23.0
+    -   @sap-ux/store@0.7.0
+    -   @sap-ux/ui5-config@0.23.0
+
+## 0.16.86
+
+### Patch Changes
+
+-   e32ee947: add sap client to params
+
+## 0.16.85
+
+### Patch Changes
+
+-   Updated dependencies [9ea58ad4]
+    -   @sap-ux/project-access@1.22.4
+    -   @sap-ux/axios-extension@1.14.4
+
+## 0.16.84
+
+### Patch Changes
+
+-   Updated dependencies [4492fe10]
+    -   @sap-ux/axios-extension@1.14.4
+
+## 0.16.83
+
+### Patch Changes
+
+-   Updated dependencies [d5d3626c]
+    -   @sap-ux/axios-extension@1.14.3
+
+## 0.16.82
+
+### Patch Changes
+
+-   Updated dependencies [65bfb244]
+    -   @sap-ux/axios-extension@1.14.2
+
+## 0.16.81
+
+### Patch Changes
+
+-   Updated dependencies [1a1baeb0]
+    -   @sap-ux/ui5-config@0.22.10
+    -   @sap-ux/project-access@1.22.3
+    -   @sap-ux/axios-extension@1.14.1
+
+## 0.16.80
+
+### Patch Changes
+
+-   Updated dependencies [844e79c4]
+    -   @sap-ux/axios-extension@1.14.1
+
+## 0.16.79
+
+### Patch Changes
+
+-   Updated dependencies [31cc53f8]
+    -   @sap-ux/axios-extension@1.14.0
+
+## 0.16.78
+
+### Patch Changes
+
+-   Updated dependencies [399d2ad8]
+    -   @sap-ux/project-access@1.22.2
+    -   @sap-ux/ui5-config@0.22.9
+    -   @sap-ux/axios-extension@1.13.1
+
+## 0.16.77
+
+### Patch Changes
+
+-   Updated dependencies [d02be637]
+    -   @sap-ux/store@0.6.0
+    -   @sap-ux/ui5-config@0.22.8
+
+## 0.16.76
+
+### Patch Changes
+
+-   Updated dependencies [a140cf8b]
+    -   @sap-ux/ui5-config@0.22.8
+    -   @sap-ux/project-access@1.22.1
+    -   @sap-ux/axios-extension@1.13.1
+
+## 0.16.75
+
+### Patch Changes
+
+-   Updated dependencies [ad93a484]
+    -   @sap-ux/project-access@1.22.0
+    -   @sap-ux/axios-extension@1.13.1
+
+## 0.16.74
+
+### Patch Changes
+
+-   Updated dependencies [9188fe8b]
+    -   @sap-ux/ui5-config@0.22.7
+    -   @sap-ux/project-access@1.21.2
+    -   @sap-ux/axios-extension@1.13.1
+
+## 0.16.73
+
+### Patch Changes
+
+-   Updated dependencies [869c1c0d]
+    -   @sap-ux/axios-extension@1.13.1
+
+## 0.16.72
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.22.6
+-   @sap-ux/project-access@1.21.1
+-   @sap-ux/axios-extension@1.13.0
+
+## 0.16.71
+
+### Patch Changes
+
+-   Updated dependencies [b2ee99fc]
+    -   @sap-ux/axios-extension@1.13.0
+
+## 0.16.70
+
+### Patch Changes
+
+-   Updated dependencies [69b8d6de]
+    -   @sap-ux/project-access@1.21.0
+    -   @sap-ux/axios-extension@1.12.6
+
+## 0.16.69
+
+### Patch Changes
+
+-   Updated dependencies [a7d78229]
+    -   @sap-ux/project-access@1.20.4
+    -   @sap-ux/axios-extension@1.12.6
+
+## 0.16.68
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.20.3
+-   @sap-ux/axios-extension@1.12.6
+
+## 0.16.67
+
+### Patch Changes
+
+-   Updated dependencies [54c91c6d]
+    -   @sap-ux/project-access@1.20.2
+    -   @sap-ux/axios-extension@1.12.6
+
+## 0.16.66
+
+### Patch Changes
+
+-   Updated dependencies [558891c2]
+    -   @sap-ux/axios-extension@1.12.6
+
+## 0.16.65
+
+### Patch Changes
+
+-   Updated dependencies [69282b7d]
+    -   @sap-ux/axios-extension@1.12.5
+
+## 0.16.64
+
+### Patch Changes
+
+-   Updated dependencies [3684195d]
+    -   @sap-ux/ui5-config@0.22.5
+    -   @sap-ux/project-access@1.20.1
+    -   @sap-ux/axios-extension@1.12.4
+
+## 0.16.63
+
+### Patch Changes
+
+-   Updated dependencies [6e3d4da4]
+    -   @sap-ux/axios-extension@1.12.4
+
+## 0.16.62
+
+### Patch Changes
+
+-   Updated dependencies [e3d2324c]
+    -   @sap-ux/project-access@1.20.0
+    -   @sap-ux/ui5-config@0.22.4
+    -   @sap-ux/axios-extension@1.12.3
+
+## 0.16.61
+
+### Patch Changes
+
+-   Updated dependencies [19ec0f01]
+    -   @sap-ux/axios-extension@1.12.3
+
+## 0.16.60
+
+### Patch Changes
+
+-   Updated dependencies [a41bbd95]
+    -   @sap-ux/axios-extension@1.12.2
+
+## 0.16.59
+
+### Patch Changes
+
+-   Updated dependencies [1b5f7442]
+    -   @sap-ux/axios-extension@1.12.1
+
+## 0.16.58
+
+### Patch Changes
+
+-   Updated dependencies [312919ec]
+    -   @sap-ux/axios-extension@1.12.0
+
+## 0.16.57
+
+### Patch Changes
+
+-   Updated dependencies [9a32e102]
+    -   @sap-ux/btp-utils@0.14.4
+    -   @sap-ux/axios-extension@1.11.9
+
+## 0.16.56
+
+### Patch Changes
+
+-   Updated dependencies [56b77fd9]
+    -   @sap-ux/axios-extension@1.11.8
+
+## 0.16.55
+
+### Patch Changes
+
+-   Updated dependencies [7f8105c7]
+    -   @sap-ux/ui5-config@0.22.3
+    -   @sap-ux/project-access@1.19.14
+    -   @sap-ux/axios-extension@1.11.7
+
+## 0.16.54
+
+### Patch Changes
+
+-   Updated dependencies [99bca62c]
+    -   @sap-ux/project-access@1.19.13
+    -   @sap-ux/axios-extension@1.11.7
+
+## 0.16.53
+
+### Patch Changes
+
+-   Updated dependencies [b7d95fb3]
+    -   @sap-ux/project-access@1.19.12
+    -   @sap-ux/ui5-config@0.22.2
+    -   @sap-ux/axios-extension@1.11.7
+
+## 0.16.52
+
+### Patch Changes
+
+-   Updated dependencies [4389c528]
+    -   @sap-ux/project-access@1.19.11
+    -   @sap-ux/axios-extension@1.11.7
+
+## 0.16.51
+
+### Patch Changes
+
+-   Updated dependencies [31f5027c]
+    -   @sap-ux/axios-extension@1.11.7
+
+## 0.16.50
+
+### Patch Changes
+
+-   Updated dependencies [f8e16120]
+    -   @sap-ux/project-access@1.19.10
+    -   @sap-ux/axios-extension@1.11.6
+
 ## 0.16.49
 
 ### Patch Changes

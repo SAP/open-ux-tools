@@ -7,6 +7,8 @@ import VersionInfo from 'mock/sap/ui/VersionInfo';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import ElementRegistry from 'mock/sap/ui/core/ElementRegistry';
+import Element from 'mock/sap/ui/core/Element';
 
 describe('adp', () => {
     const addMenuItemSpy = jest.fn();
@@ -17,7 +19,7 @@ describe('adp', () => {
     rtaMock.attachUndoRedoStackModified = jest.fn();
     rtaMock.attachSelectionChange = jest.fn();
     rtaMock.getFlexSettings.mockReturnValue({
-        telemetry: false,
+        telemetry: true,
         scenario: 'ADAPTATION_PROJECT'
     });
 
@@ -47,13 +49,11 @@ describe('adp', () => {
     });
 
     beforeEach(() => {
-        rtaMock.getDefaultPlugins
-            .mockReturnValueOnce({
-                contextMenu: {
-                    addMenuItem: addMenuItemSpy
-                }
-            })
-            .mockReturnValueOnce({});
+        rtaMock.getDefaultPlugins.mockReturnValue({
+            contextMenu: {
+                addMenuItem: addMenuItemSpy
+            }
+        });
     });
 
     afterEach(() => {
@@ -64,6 +64,7 @@ describe('adp', () => {
         const spyPostMessage = jest.spyOn(common, 'startPostMessageCommunication').mockImplementation(() => {
             return { dispose: jest.fn(), sendAction: jest.fn() };
         });
+        const enableTelemetry = jest.spyOn(common, 'enableTelemetry');
         VersionInfo.load.mockResolvedValue({ version: '1.118.1' });
 
         await init(rtaMock as unknown as RuntimeAuthoring);
@@ -71,6 +72,7 @@ describe('adp', () => {
         expect(initOutlineSpy).toBeCalledTimes(1);
         expect(addMenuItemSpy).toBeCalledTimes(2);
         expect(setPluginsSpy).toBeCalledTimes(1);
+        expect(enableTelemetry).toBeCalledTimes(2);
 
         const callBackFn = spyPostMessage.mock.calls[0][1];
 
@@ -95,10 +97,92 @@ describe('adp', () => {
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
+        expect(sendActionMock).toHaveBeenNthCalledWith(1, {
+            type: '[ext] icons-loaded',
+            payload: []
+        });
+
         expect(sendActionMock).toHaveBeenNthCalledWith(2, {
+            type: '[ext] app-loaded',
+            payload: undefined
+        });
+
+        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
             type: '[ext] show-dialog-message',
-            payload:
-                'The current SAPUI5 version set for this Adaptation project is 1.70.0. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is 1.71'
+            payload: {
+                message:
+                    'The current SAPUI5 version set for this Adaptation project is 1.70.0. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is 1.71',
+                shouldHideIframe: true
+            }
+        });
+    });
+
+    test('init - send notification existence of sync views for minor UI5 version bigger than 120', async () => {
+        jest.spyOn(common, 'startPostMessageCommunication').mockImplementation(() => {
+            return { dispose: jest.fn(), sendAction: sendActionMock };
+        });
+
+        const mockUI5Element = {
+            getMetadata: jest.fn().mockReturnValue({
+                getName: jest.fn().mockReturnValue('XMLView')
+            }),
+            oAsyncState: undefined
+        };
+
+        ElementRegistry.all.mockReturnValue({
+            'application-app-preview-component---fin.ar.lineitems.display.appView': mockUI5Element
+        });
+
+        VersionInfo.load.mockResolvedValue({ version: '1.123.1' });
+
+        await init(rtaMock as unknown as RuntimeAuthoring);
+
+        expect(sendActionMock).toHaveBeenNthCalledWith(1, {
+            type: '[ext] icons-loaded',
+            payload: []
+        });
+
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
+            type: '[ext] app-loaded',
+            payload: undefined
+        });
+
+        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
+            type: '[ext] show-dialog-message',
+            payload: {
+                message:
+                    'Have in mind that synchronous views are detected for this application and controller extensions are not supported for such views. Controller extension functionality on these views will be disabled.',
+                shouldHideIframe: false
+            }
+        });
+    });
+
+    test('init - send notification existence of sync views for minor UI5 version lower than 120', async () => {
+        jest.spyOn(common, 'startPostMessageCommunication').mockImplementation(() => {
+            return { dispose: jest.fn(), sendAction: sendActionMock };
+        });
+
+        const mockUI5Element = {
+            getMetadata: jest.fn().mockReturnValue({
+                getName: jest.fn().mockReturnValue('XMLView')
+            }),
+            oAsyncState: undefined,
+            getId: jest.fn().mockReturnValue('application-app-preview-component---fin.ar.lineitems.display.appView')
+        };
+
+        Element.registry.filter.mockReturnValue([mockUI5Element]);
+
+        VersionInfo.load.mockResolvedValue({ version: '1.118.1' });
+
+        await init(rtaMock as unknown as RuntimeAuthoring);
+
+        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
+            type: '[ext] show-dialog-message',
+            payload: {
+                message:
+                    'Have in mind that synchronous views are detected for this application and controller extensions are not supported for such views. Controller extension functionality on these views will be disabled.',
+                shouldHideIframe: false
+            }
         });
     });
 });

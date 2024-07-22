@@ -30,7 +30,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"testpackagename\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"Test App Description\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -72,7 +71,8 @@ archive.zip
             \\"@sapui5/ts-types\\"
         ]
     }
-}",
+}
+",
     "state": "modified",
   },
   "ui5-local.yaml": Object {
@@ -295,7 +295,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"testpackagename\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"Test App Description\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -539,7 +538,6 @@ archive.zip
     "contents": "{
     \\"name\\": \\"testpackagename\\",
     \\"version\\": \\"0.0.1\\",
-    \\"private\\": true,
     \\"description\\": \\"Test App Description\\",
     \\"keywords\\": [
         \\"ui5\\",
@@ -985,7 +983,6 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
 "{
   \\"name\\": \\"testpackagename\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"Test App Description\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -1082,7 +1079,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"testpackagename\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"Test App Description\\",
   \\"keywords\\": [
     \\"ui5\\",

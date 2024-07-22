@@ -18,6 +18,7 @@ import type { NodeComment, YAMLMap, YAMLSeq } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
 import {
     getAppReloadMiddlewareConfig,
+    getBackendComments,
     getFioriToolsProxyMiddlewareConfig,
     getMockServerMiddlewareConfig
 } from './middlewares';
@@ -87,6 +88,17 @@ export class UI5Config {
     public setMetadata(value: Ui5Document['metadata']): UI5Config {
         this.document.setIn({ path: 'metadata', value });
         return this;
+    }
+
+    /**
+     * Get the type in the yaml file.
+     *
+     * @returns {Ui5Document['type']} the type
+     * @memberof Ui5Document['type']
+     */
+    public getType(): Ui5Document['type'] {
+        const type = this.document.getNode({ path: 'type' });
+        return type as Ui5Document['type'];
     }
 
     /**
@@ -218,11 +230,16 @@ export class UI5Config {
      * Adds a instance of the Fiori tools proxy middleware to the config.
      *
      * @param proxyConfig proxy configuration containing an optional array of backend and an option UI5 host configuration
+     * @param afterMiddleware middleware after which fiori-tools-proxy middleware will be started
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addFioriToolsProxydMiddleware(proxyConfig: FioriToolsProxyConfig): UI5Config {
-        const { config, comments } = getFioriToolsProxyMiddlewareConfig(proxyConfig.backend, proxyConfig.ui5);
+    public addFioriToolsProxydMiddleware(proxyConfig: FioriToolsProxyConfig, afterMiddleware?: string): UI5Config {
+        const { config, comments } = getFioriToolsProxyMiddlewareConfig(
+            proxyConfig.backend,
+            proxyConfig.ui5,
+            afterMiddleware
+        );
         this.document.appendTo({
             path: 'server.customMiddleware',
             value: config,
@@ -244,8 +261,38 @@ export class UI5Config {
         if (!proxyMiddleware) {
             throw new Error('Could not find fiori-tools-proxy');
         }
-        this.document.getMap({ start: proxyMiddleware as YAMLMap, path: 'configuration' }).set('backend', [backend]);
+        const comments = getBackendComments(backend);
+        const backendNode = this.document.createNode({ value: backend, comments });
+
+        this.document
+            .getMap({ start: proxyMiddleware as YAMLMap, path: 'configuration' })
+            .set('backend', [backendNode]);
+
         return this;
+    }
+
+    /**
+     * Returns the backend configurations from the fiori-tools-proxy middleware.
+     *
+     * @returns {FioriToolsProxyConfigBackend[]} the backend configurations
+     */
+    public getBackendConfigsFromFioriToolsProxydMiddleware(): FioriToolsProxyConfigBackend[] {
+        let backendConfigs: FioriToolsProxyConfigBackend[];
+        try {
+            const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
+            const proxyMiddleware = this.document.findItem(
+                middlewareList,
+                (item: any) => item.name === fioriToolsProxy
+            );
+
+            const configuration = this.document.getMap({ start: proxyMiddleware as YAMLMap, path: 'configuration' });
+            backendConfigs = this.document
+                .getSequence({ start: configuration, path: 'backend' })
+                .toJSON() as FioriToolsProxyConfigBackend[];
+        } catch (e) {
+            return [];
+        }
+        return backendConfigs;
     }
 
     /**
@@ -288,10 +335,18 @@ export class UI5Config {
      * @param target system that this app is to be deployed to
      * @param app application configuration for the deployment to ABAP
      * @param fioriTools if true use the middleware included in the @sap/ux-ui5-tooling module
+     * @param exclude optional list of files that are to be excluded from the deployment configuration
+     * @param index if true a standalone index.html is generated during deployment
      * @returns this UI5Config instance
      * @memberof UI5Config
      */
-    public addAbapDeployTask(target: AbapTarget, app: BspApp | Adp, fioriTools = true) {
+    public addAbapDeployTask(
+        target: AbapTarget,
+        app: BspApp | Adp,
+        fioriTools = true,
+        exclude?: string[],
+        index = false
+    ): this {
         this.document.appendTo({
             path: 'builder.resources.excludes',
             value: '/test/**'
@@ -300,12 +355,20 @@ export class UI5Config {
             path: 'builder.resources.excludes',
             value: '/localService/**'
         });
+
+        const configuration: { target: AbapTarget; app: BspApp | Adp; exclude: string[] | undefined; index?: boolean } =
+            { target, app, exclude };
+
+        if (index) {
+            configuration['index'] = true;
+        }
+
         this.document.appendTo({
             path: 'builder.customTasks',
             value: {
                 name: fioriTools ? 'deploy-to-abap' : 'abap-deploy-task',
                 afterTask: 'generateCachebusterInfo',
-                configuration: { target, app }
+                configuration
             }
         });
         return this;
@@ -338,6 +401,30 @@ export class UI5Config {
             path: 'builder.customTasks',
             matcher: { key: 'name', value: name }
         });
+        return this;
+    }
+
+    /**
+     * Removes the entire config for the given key.
+     *
+     * @param key key of the config that is to be removed
+     * @returns {UI5Config} the UI5Config instance
+     */
+    public removeConfig(key: string): this {
+        this.document.delete(key);
+        return this;
+    }
+
+    /**
+     * Adds a comment to the ui5 config.
+     *
+     * @param root0 - the comment object
+     * @param root0.comment - the comment object's comment
+     * @param root0.location - the comment object's location
+     * @returns {UI5Config} the UI5Config instance
+     */
+    public addComment({ comment, location = 'beginning' }: { comment: string; location?: 'beginning' | 'end' }): this {
+        this.document.addDocumentComment({ comment, location });
         return this;
     }
 
@@ -410,6 +497,26 @@ export class UI5Config {
     }
 
     /**
+     * Merges existing custom middleware with the passed config.
+     *
+     * @param middleware - middleware config
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    private mergeCustomMiddleware(middleware: CustomMiddleware<unknown>): this {
+        const name = middleware.name;
+        if (this.findCustomMiddleware(name)) {
+            this.document.updateAt({
+                path: 'server.customMiddleware',
+                matcher: { key: 'name', value: name },
+                value: middleware,
+                mode: 'merge'
+            });
+        }
+        return this;
+    }
+
+    /**
      * Returns the serve static config.
      *
      * @param addFioriToolProxy - if true, `fiori-tools-proxy` config is added, otherwise a `compression` config will be added
@@ -452,6 +559,13 @@ export class UI5Config {
                 this.updateCustomMiddleware({
                     name: serveStatic,
                     beforeMiddleware: fioriToolsProxy,
+                    configuration: {
+                        paths: [...serveStaticConfig.configuration.paths, ...serveStaticPaths]
+                    }
+                });
+            } else {
+                this.mergeCustomMiddleware({
+                    name: serveStatic,
                     configuration: {
                         paths: [...serveStaticConfig.configuration.paths, ...serveStaticPaths]
                     }
