@@ -1,5 +1,76 @@
 # @sap-ux/create
 
+## 0.7.21
+
+### Patch Changes
+
+-   Updated dependencies [a9fac04]
+    -   @sap-ux/project-access@1.25.6
+    -   @sap-ux/adp-tooling@0.12.14
+    -   @sap-ux/app-config-writer@0.4.10
+    -   @sap-ux/cap-config-writer@0.7.1
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/preview-middleware@0.16.20
+    -   @sap-ux/system-access@0.5.2
+
+## 0.7.20
+
+### Patch Changes
+
+-   4c06318: Add Adaptation Project's Add Annotations To OData generator prompting
+-   Updated dependencies [4c06318]
+    -   @sap-ux/adp-tooling@0.12.13
+    -   @sap-ux/preview-middleware@0.16.19
+
+## 0.7.19
+
+### Patch Changes
+
+-   Updated dependencies [cac5277]
+    -   @sap-ux/cap-config-writer@0.7.0
+
+## 0.7.18
+
+### Patch Changes
+
+-   Updated dependencies [108336f]
+    -   @sap-ux/inquirer-common@0.4.1
+    -   @sap-ux/cap-config-writer@0.6.10
+    -   @sap-ux/adp-tooling@0.12.12
+    -   @sap-ux/preview-middleware@0.16.18
+
+## 0.7.17
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.11
+-   @sap-ux/app-config-writer@0.4.9
+-   @sap-ux/preview-middleware@0.16.17
+-   @sap-ux/system-access@0.5.2
+-   @sap-ux/cap-config-writer@0.6.9
+
+## 0.7.16
+
+### Patch Changes
+
+-   Updated dependencies [90a8291]
+    -   @sap-ux/preview-middleware@0.16.16
+
+## 0.7.15
+
+### Patch Changes
+
+-   Updated dependencies [421f3ca]
+    -   @sap-ux/project-access@1.25.5
+    -   @sap-ux/adp-tooling@0.12.10
+    -   @sap-ux/app-config-writer@0.4.8
+    -   @sap-ux/cap-config-writer@0.6.8
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/preview-middleware@0.16.15
+    -   @sap-ux/system-access@0.5.1
+
 ## 0.7.14
 
 ### Patch Changes

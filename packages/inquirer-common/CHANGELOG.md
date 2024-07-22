@@ -1,5 +1,11 @@
 # @sap-ux/inquirer-common
 
+## 0.4.1
+
+### Patch Changes
+
+-   108336f: Adds prompts for abap on premise systems to odata-service-inquirer
+
 ## 0.4.0
 
 ### Minor Changes
