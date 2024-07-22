@@ -3,6 +3,7 @@ import { ControlTreeIndex } from '../../types';
 
 export interface ActivationContext {
     controlIndex: ControlTreeIndex;
+    rta: RuntimeAuthoring;
 }
 
 export interface ExecutionContext {

@@ -106,7 +106,7 @@ declare module 'sap/ui/rta/command/OutlineService' {
         instanceName?: string;
         name?: string;
         icon?: string;
-        component?: boolean; 
+        component?: boolean;
     }
 
     export interface AggregationOutlineViewNode extends BaseOutlineViewNode {
@@ -206,6 +206,14 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         validateAppVersion: boolean;
     }
 
+    export interface FEAppPage {
+        hasStyleClass(className: string): boolean;
+        getContent(): {
+            getComponentInstance(): Component;
+        }[];
+        getDomRef(): Element | null;
+    }
+
     export default class RuntimeAuthoring {
         constructor(_: RTAOptions) {}
 
@@ -223,6 +231,9 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         setPlugins: (defaultPlugins: object) => void;
         getRootControlInstance: () => {
             getManifest(): Manifest;
+            getRootControl(): {
+                getPages(): FEAppPage[];
+            };
         } & Component;
         stop: (bSkipSave, bSkipRestart) => Promise<void>;
         attachStop: (handler: (event: Event) => void) => void;

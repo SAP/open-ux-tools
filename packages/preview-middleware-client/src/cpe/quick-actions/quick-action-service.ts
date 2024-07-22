@@ -42,11 +42,13 @@ export class QuickActionService implements Service {
      */
     public async init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): Promise<void> {
         this.sendAction = sendAction;
-        this.actionService = await this.rta.getService('action')
+        this.actionService = await this.rta.getService('action');
 
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (executeQuickAction.match(action)) {
-                const definition = QUICK_ACTION_DEFINITIONS.find((quickAction) => quickAction.type === action.payload.type);
+                const definition = QUICK_ACTION_DEFINITIONS.find(
+                    (quickAction) => quickAction.type === action.payload.type
+                );
                 if (!definition) {
                     return;
                 }
@@ -57,7 +59,8 @@ export class QuickActionService implements Service {
 
     public reloadQuickActions(controlIndex: ControlTreeIndex): void {
         const context: ActivationContext = {
-            controlIndex
+            controlIndex,
+            rta: this.rta
         };
         this.executionContext = {
             controlIndex,
