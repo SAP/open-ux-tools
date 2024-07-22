@@ -1,5 +1,58 @@
 # @sap-ux/generator-simple-fe
 
+## 1.0.4
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.16.0
+-   @sap-ux/system-access@0.5.2
+-   @sap-ux/fiori-elements-writer@1.0.3
+-   @sap-ux/fiori-freestyle-writer@1.0.3
+
+## 1.0.3
+
+### Patch Changes
+
+-   Updated dependencies [3a878f3]
+    -   @sap-ux/axios-extension@1.16.0
+    -   @sap-ux/system-access@0.5.2
+
+## 1.0.2
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.15.1
+-   @sap-ux/system-access@0.5.1
+-   @sap-ux/fiori-elements-writer@1.0.2
+-   @sap-ux/fiori-freestyle-writer@1.0.2
+
+## 1.0.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@1.0.1
+-   @sap-ux/fiori-freestyle-writer@1.0.1
+
+## 1.0.0
+
+### Major Changes
+
+-   5b243ac: Add `projectType` mandatory option to `App` interface to specify the type of project being processed. This option determines file inclusion/exclusion and script updates in the template:
+    -   For projects of type 'CAPJava' or 'CAPNodejs':
+        -   Exclude `ui5-local.yaml` and `.gitignore` from the template.
+        -   Update `package.json` to include only the script `deploy-config`.
+        -   Use full URLs to determine resource URLs in `webapp/index.html` and `flpSandbox.html`.
+    -   For projects of type 'EDMXBackend':
+        -   Include `ui5-local.yaml` and `.gitignore` in the template.
+        -   Update `package.json` to include the following scripts: start, start-local, build, start-noflp, start-mock, int-test, deploy, and sap-ux.
+        -   Include relative URLs to determine resource URLs in `webapp/index.html` and `flpSandbox.html`.
+
+### Patch Changes
+
+-   Updated dependencies [5b243ac]
+    -   @sap-ux/fiori-freestyle-writer@1.0.0
+    -   @sap-ux/fiori-elements-writer@1.0.0
+
 ## 0.4.3
 
 ### Patch Changes

@@ -1,5 +1,5 @@
 import { existsSync } from 'fs';
-import { mkdir, rm } from 'fs/promises';
+import { mkdir, rm, writeFile } from 'fs/promises';
 import { join } from 'path';
 import type { Logger } from '@sap-ux/logger';
 import { getNodeModulesPath } from './dependencies';
@@ -56,11 +56,13 @@ export async function loadModuleFromProject<T>(projectRoot: string, moduleName: 
 export async function getModule<T>(module: string, version: string, options?: { logger?: Logger }): Promise<T> {
     const logger = options?.logger;
     const moduleDirectory = join(moduleCacheRoot, module, version);
-    if (!existsSync(join(moduleDirectory, FileName.Package))) {
+    const modulePackagePath = join(moduleDirectory, FileName.Package);
+    if (!existsSync(modulePackagePath)) {
         if (existsSync(moduleDirectory)) {
             await rm(moduleDirectory, { recursive: true });
         }
         await mkdir(moduleDirectory, { recursive: true });
+        await writeFile(modulePackagePath, '{}');
         await execNpmCommand(['install', `${module}@${version}`], { cwd: moduleDirectory, logger });
     }
     return loadModuleFromProject<T>(moduleDirectory, module);

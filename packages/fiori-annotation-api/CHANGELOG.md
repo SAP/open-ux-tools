@@ -1,5 +1,27 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.1.23
+
+### Patch Changes
+
+-   cd12eed: fix: cds formatting issue when deleting properties
+
+## 0.1.22
+
+### Patch Changes
+
+-   Updated dependencies [a9fac04]
+    -   @sap-ux/project-access@1.25.6
+    -   @sap-ux/cds-odata-annotation-converter@0.3.1
+
+## 0.1.21
+
+### Patch Changes
+
+-   Updated dependencies [421f3ca]
+    -   @sap-ux/project-access@1.25.5
+    -   @sap-ux/cds-odata-annotation-converter@0.3.1
+
 ## 0.1.20
 
 ### Patch Changes
