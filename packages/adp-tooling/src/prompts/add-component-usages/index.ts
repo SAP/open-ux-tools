@@ -81,7 +81,7 @@ export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<A
             store: false,
             guiOptions: {
                 mandatory: false,
-                hint: t('component.settingsTooltip')
+                hint: t('prompts.component.tooltip', { input: t('prompts.component.settingsLabel') })
             }
         } as EditorQuestion<AddComponentUsageAnswers>,
         {
@@ -94,7 +94,7 @@ export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<A
             store: false,
             guiOptions: {
                 mandatory: false,
-                hint: t('componentTooltip', { input: t('prompts.component.dataLabel') })
+                hint: t('prompts.component.tooltip', { input: t('prompts.component.dataLabel') })
             }
         } as EditorQuestion<AddComponentUsageAnswers>,
         {
