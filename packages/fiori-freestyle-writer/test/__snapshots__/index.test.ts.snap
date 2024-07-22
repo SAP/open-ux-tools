@@ -1115,18 +1115,6 @@ function (JSONModel, Device) {
             });
             return libOrCompKeysStringTmp;
         }
-        /* \\"sap.ui5\\"/componentUsages has a structure like: 
-         componentUsages: {
-            \\"componentUsage1\\": {
-                \\"name\\": \\"sap.nw.core.applogs.lib.reuse.smarttemplate\\",
-                \\"lazy\\": true
-            }, 
-            \\"componentUsage2\\": {
-                \\"name\\": \\"sap.s4.cfnd.bpf.lib.reuse.component.smarttemplate\\",
-                \\"lazy\\": true
-            }
-            So the call to /sap/bc/ui2/app_index/ui5_app_info should include component name not the local reference key.
-        }*/
         function getComponentUsageNames(compUsages, libOrCompKeysString) {
             var libOrCompKeysStringTmp = libOrCompKeysString;
             var compNames = Object.keys(compUsages).map(function (compUsageKey) {
@@ -3499,18 +3487,6 @@ function (JSONModel, Device) {
             });
             return libOrCompKeysStringTmp;
         }
-        /* \\"sap.ui5\\"/componentUsages has a structure like: 
-         componentUsages: {
-            \\"componentUsage1\\": {
-                \\"name\\": \\"sap.nw.core.applogs.lib.reuse.smarttemplate\\",
-                \\"lazy\\": true
-            }, 
-            \\"componentUsage2\\": {
-                \\"name\\": \\"sap.s4.cfnd.bpf.lib.reuse.component.smarttemplate\\",
-                \\"lazy\\": true
-            }
-            So the call to /sap/bc/ui2/app_index/ui5_app_info should include component name not the local reference key.
-        }*/
         function getComponentUsageNames(compUsages, libOrCompKeysString) {
             var libOrCompKeysStringTmp = libOrCompKeysString;
             var compNames = Object.keys(compUsages).map(function (compUsageKey) {
@@ -5704,18 +5680,6 @@ function (JSONModel, Device) {
             });
             return libOrCompKeysStringTmp;
         }
-        /* \\"sap.ui5\\"/componentUsages has a structure like: 
-         componentUsages: {
-            \\"componentUsage1\\": {
-                \\"name\\": \\"sap.nw.core.applogs.lib.reuse.smarttemplate\\",
-                \\"lazy\\": true
-            }, 
-            \\"componentUsage2\\": {
-                \\"name\\": \\"sap.s4.cfnd.bpf.lib.reuse.component.smarttemplate\\",
-                \\"lazy\\": true
-            }
-            So the call to /sap/bc/ui2/app_index/ui5_app_info should include component name not the local reference key.
-        }*/
         function getComponentUsageNames(compUsages, libOrCompKeysString) {
             var libOrCompKeysStringTmp = libOrCompKeysString;
             var compNames = Object.keys(compUsages).map(function (compUsageKey) {
