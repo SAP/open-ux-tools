@@ -56,7 +56,6 @@ export function updateAnswers(
     name: string,
     value?: AnswerValue
 ): Answers {
-    // ToDo - not fully sure about spread here
     let updatedAnswers = setAnswer(structuredClone(answers), name, value);
     const dependantPromptNames = getDependantQuestions(questions, name);
     dependantPromptNames?.length &&
