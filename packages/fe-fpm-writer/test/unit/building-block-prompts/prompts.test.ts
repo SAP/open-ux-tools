@@ -283,3 +283,111 @@ describe('Prompts', () => {
         });
     });
 });
+
+describe('Prompts - no project', () => {
+    let fs: Editor;
+    let promptsAPI: PromptsAPI;
+    beforeEach(async () => {
+        fs = create(createStorage());
+        promptsAPI = new PromptsAPI(fs, undefined);
+    });
+
+    test('Init PromptsApi without fs, empty project path', async () => {
+        const initPromptsApi = await PromptsAPI.init('');
+        expect(initPromptsApi.context.fs).toBeDefined();
+    });
+
+    test('getBuildingBlockTypePrompts', async () => {
+        const questionnair = await promptsAPI.getPrompts(PromptsType.BuildingBlocks);
+        expect(questionnair).toMatchSnapshot();
+    });
+
+    test('getChartBuildingBlockPrompts', async () => {
+        const questionnair = await promptsAPI.getPrompts(PromptsType.Chart);
+        expect(questionnair).toMatchSnapshot();
+    });
+
+    test('getFilterBarBuildingBlockPrompts', async () => {
+        const questionnair = await promptsAPI.getPrompts(PromptsType.FilterBar);
+        expect(questionnair).toMatchSnapshot();
+    });
+
+    test('getTableBuildingBlockPrompts', async () => {
+        const questionnair = await promptsAPI.getPrompts(PromptsType.Table);
+        expect(questionnair).toMatchSnapshot();
+    });
+
+    test('get prompts for invalid propmts type', async () => {
+        const questionnair = await promptsAPI.getPrompts('notValid' as PromptsType);
+        expect(questionnair).toStrictEqual({ questions: [] });
+    });
+
+    describe('getChoices', () => {
+        test('Choices for field "entitySet"', async () => {
+            const choices = await promptsAPI.getChoices(PromptsType.Table, 'buildingBlockData.metaPath.entitySet', {});
+            expect(choices).toStrictEqual([]);
+        });
+
+        test('Choices for field of static list type', async () => {
+            const choices = await promptsAPI.getChoices(PromptsType.Table, 'buildingBlockData.type', {});
+            expect(choices).toMatchSnapshot();
+        });
+
+        test('Choices for field of input type', async () => {
+            const choices = await promptsAPI.getChoices(PromptsType.Table, 'buildingBlockData.id', {});
+            expect(choices).toStrictEqual([]);
+        });
+
+        test('Choices for field "viewOrFragmentPath" and "aggregationPath"', async () => {
+            // Get "viewOrFragmentPath"
+            const filesChoices = await promptsAPI.getChoices(PromptsType.Chart, 'viewOrFragmentPath', {});
+            expect(filesChoices).toStrictEqual([]);
+        });
+    });
+
+    describe('validateAnswers', () => {
+        const types = [PromptsType.Chart, PromptsType.FilterBar, PromptsType.Table];
+        test.each(types)('Type "%s", required fields validation', async (type: PromptsType) => {
+            const result = await promptsAPI.validateAnswers(type, { id: '' });
+            expect(result).toMatchSnapshot();
+        });
+
+        test('validate non-existing question', async () => {
+            const result = await promptsAPI.validateAnswers(PromptsType.Chart, { type: '' }, [{ name: 'type' }]);
+            expect(result).toStrictEqual({});
+        });
+    });
+
+    const types = [PromptsType.Table, PromptsType.Chart, PromptsType.FilterBar];
+    const baseAnswers = (buildingBlockType: PromptsType) => ({
+        buildingBlockData: {
+            buildingBlockType,
+            id: 'id'
+        }
+    });
+    describe('getCodeSnippet', () => {
+        test.each(types)('Type "%s", get code snippet', async (type: PromptsType) => {
+            const result = promptsAPI.getCodeSnippets(type, baseAnswers(type) as unknown as SupportedAnswers);
+            expect(result.viewOrFragmentPath.content).toMatchSnapshot();
+        });
+
+        test('get code snippet with placeholders', async () => {
+            const result = promptsAPI.getCodeSnippets(PromptsType.Table, {
+                buildingBlockData: {
+                    buildingBlockType: BuildingBlockType.Table,
+                    type: 'GridTable'
+                }
+            } as TablePromptsAnswer);
+            expect(result.viewOrFragmentPath.content).toMatchSnapshot();
+        });
+
+        test('get code snippet without supported type', async () => {
+            const result = promptsAPI.getCodeSnippets(PromptsType.BuildingBlocks, {
+                buildingBlockData: {
+                    buildingBlockType: PromptsType.BuildingBlocks
+                }
+            } as unknown as BuildingBlockTypePromptsAnswer);
+            expect(result).toStrictEqual({});
+        });
+    });
+});

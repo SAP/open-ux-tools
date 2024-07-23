@@ -1,5 +1,768 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Prompts - no project getBuildingBlockTypePrompts 1`] = `
+Object {
+  "questions": Array [
+    Object {
+      "choices": Array [
+        Object {
+          "name": "Chart",
+          "value": "chart",
+        },
+        Object {
+          "name": "Filter Bar",
+          "value": "filter-bar",
+        },
+        Object {
+          "name": "Table",
+          "value": "table",
+        },
+      ],
+      "message": "Select a building block",
+      "name": "buildingBlockType",
+      "type": "list",
+    },
+  ],
+}
+`;
+
+exports[`Prompts - no project getChartBuildingBlockPrompts 1`] = `
+Object {
+  "initialAnswers": Object {
+    "buildingBlockData": Object {
+      "buildingBlockType": "chart",
+    },
+  },
+  "questions": Array [
+    Object {
+      "choices": Array [],
+      "dependantPromptNames": Array [
+        "aggregationPath",
+        "filterBar",
+      ],
+      "message": "View or Fragment File",
+      "name": "viewOrFragmentPath",
+      "placeholder": "Select a view or fragment file",
+      "required": true,
+      "selectType": "dynamic",
+      "type": "list",
+      "validate": [Function],
+    },
+    Object {
+      "default": "Chart",
+      "message": "Building Block ID",
+      "name": "buildingBlockData.id",
+      "placeholder": "Enter a building block ID",
+      "required": true,
+      "type": "input",
+      "validate": [Function],
+    },
+    Object {
+      "choices": Array [
+        Object {
+          "name": "Relative",
+          "value": "relative",
+        },
+        Object {
+          "name": "Absolute",
+          "value": "absolute",
+        },
+      ],
+      "default": "relative",
+      "dependantPromptNames": Array [
+        "buildingBlockData.metaPath.qualifier",
+      ],
+      "message": "Binding Context Path Type",
+      "name": "buildingBlockData.metaPath.bindingContextType",
+      "required": true,
+      "selectType": "static",
+      "type": "list",
+    },
+    Object {
+      "choices": Array [],
+      "dependantPromptNames": Array [
+        "buildingBlockData.metaPath.qualifier",
+      ],
+      "message": "Entity",
+      "name": "buildingBlockData.metaPath.entitySet",
+      "placeholder": "Select an entity",
+      "required": true,
+      "selectType": "dynamic",
+      "type": "list",
+    },
+    Object {
+      "choices": Array [],
+      "description": "Values are dependent on entity type",
+      "message": "Chart Qualifier",
+      "name": "buildingBlockData.metaPath.qualifier",
+      "placeholder": "Select chart qualifier",
+      "required": true,
+      "selectType": "dynamic",
+      "type": "list",
+    },
+    Object {
+      "choices": Array [],
+      "message": "Aggregation Path",
+      "name": "aggregationPath",
+      "placeholder": "Select an aggregation path",
+      "required": true,
+      "selectType": "dynamic",
+      "type": "list",
+    },
+    Object {
+      "choices": Array [],
+      "creation": Object {
+        "inputPlaceholder": "Enter a new filter bar ID",
+      },
+      "message": "Associated Filter Bar ID",
+      "name": "buildingBlockData.filterBar",
+      "placeholder": "Select or enter a filter bar ID",
+      "selectType": "dynamic",
+      "type": "list",
+    },
+    Object {
+      "choices": Array [
+        Object {
+          "name": "Type",
+          "value": "Type",
+        },
+        Object {
+          "name": "Item",
+          "value": "Item",
+        },
+        Object {
+          "name": "Sort",
+          "value": "Sort",
+        },
+      ],
+      "message": "Chart Personalization",
+      "name": "buildingBlockData.personalization",
+      "placeholder": "Select chart personalization",
+      "selectType": "static",
+      "type": "checkbox",
+    },
+    Object {
+      "choices": Array [
+        Object {
+          "name": "Single",
+          "value": "Single",
+        },
+        Object {
+          "name": "Multiple",
+          "value": "Multiple",
+        },
+      ],
+      "message": "Selection Mode",
+      "name": "buildingBlockData.selectionMode",
+      "selectType": "static",
+      "type": "list",
+    },
+    Object {
+      "message": "Selection Change Function",
+      "name": "buildingBlockData.selectionChange",
+      "placeholder": "Enter a selecton change function",
+      "type": "input",
+    },
+  ],
+}
+`;
+
+exports[`Prompts - no project getChoices Choices for field of static list type 1`] = `
+Array [
+  Object {
+    "name": "Responsive Table",
+    "value": "ResponsiveTable",
+  },
+  Object {
+    "name": "Grid Table",
+    "value": "GridTable",
+  },
+]
+`;
+
+exports[`Prompts - no project getCodeSnippet Type "chart", get code snippet 1`] = `
+"<macros:Chart
+    id=\\"id\\"
+    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
+/>"
+`;
+
+exports[`Prompts - no project getCodeSnippet Type "filter-bar", get code snippet 1`] = `
+"<macros:FilterBar
+    id=\\"id\\"
+    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
+/>"
+`;
+
+exports[`Prompts - no project getCodeSnippet Type "table", get code snippet 1`] = `
+"<macros:Table
+    id=\\"id\\"
+    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
+/>"
+`;
+
+exports[`Prompts - no project getCodeSnippet get code snippet with placeholders 1`] = `
+"<macros:Table
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
+    type=\\"GridTable\\"
+/>"
+`;
+
+exports[`Prompts - no project getFilterBarBuildingBlockPrompts 1`] = `
+Object {
+  "initialAnswers": Object {
+    "buildingBlockData": Object {
+      "buildingBlockType": "filter-bar",
+    },
+  },
+  "questions": Array [
+    Object {
+      "choices": Array [],
+      "dependantPromptNames": Array [
+        "aggregationPath",
+      ],
+      "message": "View or Fragment File",
+      "name": "viewOrFragmentPath",
+      "placeholder": "Select a view or fragment file",
+      "required": true,
+      "selectType": "dynamic",
+      "type": "list",
+      "validate": [Function],
+    },
+    Object {
+      "default": "FilterBar",
+      "message": "Building Block ID",
+      "name": "buildingBlockData.id",
+      "placeholder": "Enter a building block ID",
+      "required": true,
+      "type": "input",
+      "validate": [Function],
+    },
+    Object {
+      "choices": Array [],
+      "message": "Aggregation Path",
+      "name": "aggregationPath",
+      "placeholder": "Select an aggregation path",
+      "required": true,
+      "selectType": "dynamic",
+      "type": "list",
+    },
+    Object {
+      "choices": Array [],
+      "dependantPromptNames": Array [
+        "buildingBlockData.metaPath.qualifier",
+      ],
+      "message": "Entity",
+      "name": "buildingBlockData.metaPath.entitySet",
+      "placeholder": "Select an entity",
+      "required": true,
+      "selectType": "dynamic",
+      "type": "list",
+    },
+    Object {
+      "choices": Array [],
+      "description": "Values are dependent on entity type",
+      "message": "Selection Fields Qualifier",
+      "name": "buildingBlockData.metaPath.qualifier",
+      "placeholder": "Select selection fields qualifier",
+      "required": true,
+      "selectType": "dynamic",
+      "type": "list",
+    },
+    Object {
+      "message": "Filter Function",
+      "name": "buildingBlockData.filterChanged",
+      "type": "input",
+    },
+    Object {
+      "message": "Search Function",
+      "name": "buildingBlockData.search",
+      "type": "input",
+    },
+  ],
+}
+`;
+
+exports[`Prompts - no project getTableBuildingBlockPrompts 1`] = `
+Object {
+  "groups": Array [
+    Object {
+      "description": Array [
+        "Select the \`View or Fragment File\` where you would like to insert the table building block and provide a \`Building Block ID\` to identify the table.",
+        "Select an \`Entity Type\`, and a \`Line Item Qualifier\` you would like to use for the table building block.",
+        "Select an \`Aggregation Path\` to determine where you would like the table to be placed on the page.",
+        "If you would like to link the table to an existing filter bar, provide the \`Associated Filter Bar ID\`.",
+      ],
+      "id": "tableBuildingBlockProperties",
+      "title": "Table Building Block Properties",
+    },
+    Object {
+      "description": Array [
+        "Configure your table using the properties below.",
+      ],
+      "id": "tableVisualizationProperties",
+      "title": "Table Visualization Properties",
+    },
+  ],
+  "initialAnswers": Object {
+    "buildingBlockData": Object {
+      "buildingBlockType": "table",
+    },
+  },
+  "questions": Array [
+    Object {
+      "choices": Array [],
+      "dependantPromptNames": Array [
+        "aggregationPath",
+        "filterBar",
+      ],
+      "groupId": "tableBuildingBlockProperties",
+      "message": "View or Fragment File",
+      "name": "viewOrFragmentPath",
+      "placeholder": "Select a view or fragment file",
+      "required": true,
+      "selectType": "dynamic",
+      "type": "list",
+      "validate": [Function],
+    },
+    Object {
+      "default": "Table",
+      "groupId": "tableBuildingBlockProperties",
+      "message": "Building Block ID",
+      "name": "buildingBlockData.id",
+      "placeholder": "Enter a building block ID",
+      "required": true,
+      "type": "input",
+      "validate": [Function],
+    },
+    Object {
+      "choices": Array [
+        Object {
+          "name": "Relative",
+          "value": "relative",
+        },
+        Object {
+          "name": "Absolute",
+          "value": "absolute",
+        },
+      ],
+      "default": "relative",
+      "dependantPromptNames": Array [
+        "buildingBlockData.metaPath.qualifier",
+      ],
+      "groupId": "tableBuildingBlockProperties",
+      "message": "Binding Context Path Type",
+      "name": "buildingBlockData.metaPath.bindingContextType",
+      "required": true,
+      "selectType": "static",
+      "type": "list",
+    },
+    Object {
+      "choices": Array [],
+      "dependantPromptNames": Array [
+        "buildingBlockData.metaPath.qualifier",
+      ],
+      "groupId": "tableBuildingBlockProperties",
+      "message": "Entity",
+      "name": "buildingBlockData.metaPath.entitySet",
+      "placeholder": "Select an entity",
+      "required": true,
+      "selectType": "dynamic",
+      "type": "list",
+    },
+    Object {
+      "choices": Array [],
+      "description": "Values are dependent on entity type",
+      "groupId": "tableBuildingBlockProperties",
+      "message": "Line Item Qualifier",
+      "name": "buildingBlockData.metaPath.qualifier",
+      "placeholder": "Select a line item qualifier",
+      "required": true,
+      "selectType": "dynamic",
+      "type": "list",
+    },
+    Object {
+      "choices": Array [],
+      "groupId": "tableBuildingBlockProperties",
+      "message": "Aggregation Path",
+      "name": "aggregationPath",
+      "placeholder": "Select an aggregation path",
+      "required": true,
+      "selectType": "dynamic",
+      "type": "list",
+    },
+    Object {
+      "choices": Array [],
+      "creation": Object {
+        "inputPlaceholder": "Enter a new filter bar ID",
+      },
+      "groupId": "tableBuildingBlockProperties",
+      "message": "Associated Filter Bar ID",
+      "name": "buildingBlockData.filterBar",
+      "placeholder": "Select or enter a filter bar ID",
+      "selectType": "dynamic",
+      "type": "list",
+    },
+    Object {
+      "choices": Array [
+        Object {
+          "name": "Responsive Table",
+          "value": "ResponsiveTable",
+        },
+        Object {
+          "name": "Grid Table",
+          "value": "GridTable",
+        },
+      ],
+      "default": "ResponsiveTable",
+      "groupId": "tableVisualizationProperties",
+      "message": "Table Type",
+      "name": "buildingBlockData.type",
+      "type": "list",
+    },
+    Object {
+      "choices": Array [
+        Object {
+          "name": "Single",
+          "value": "Single",
+        },
+        Object {
+          "name": "Multiple",
+          "value": "Multi",
+        },
+        Object {
+          "name": "Auto",
+          "value": "Auto",
+        },
+        Object {
+          "name": "None",
+          "value": "None",
+        },
+      ],
+      "default": "Single",
+      "groupId": "tableVisualizationProperties",
+      "message": "Select a Selection Mode",
+      "name": "buildingBlockData.selectionMode",
+      "type": "list",
+    },
+    Object {
+      "choices": Array [
+        Object {
+          "name": "False",
+          "value": false,
+        },
+        Object {
+          "name": "True",
+          "value": true,
+        },
+      ],
+      "default": true,
+      "groupId": "tableVisualizationProperties",
+      "message": "Display Header",
+      "name": "buildingBlockData.headerVisible",
+      "selectType": "static",
+      "type": "list",
+    },
+    Object {
+      "groupId": "tableVisualizationProperties",
+      "message": "Table Header Text",
+      "name": "buildingBlockData.header",
+      "type": "input",
+    },
+    Object {
+      "choices": Array [
+        Object {
+          "name": "Sort",
+          "value": "Sort",
+        },
+        Object {
+          "name": "Column",
+          "value": "Column",
+        },
+        Object {
+          "name": "Filter",
+          "value": "Filter",
+        },
+      ],
+      "groupId": "tableVisualizationProperties",
+      "message": "Table Personalization",
+      "name": "buildingBlockData.personalization",
+      "type": "checkbox",
+    },
+    Object {
+      "choices": Array [
+        Object {
+          "name": "Page",
+          "value": "Page",
+        },
+        Object {
+          "name": "Control",
+          "value": "Control",
+        },
+        Object {
+          "name": "None",
+          "value": "None",
+        },
+      ],
+      "default": "None",
+      "groupId": "tableVisualizationProperties",
+      "message": "Select a Table Variant Management",
+      "name": "buildingBlockData.variantManagement",
+      "type": "list",
+    },
+    Object {
+      "choices": Array [
+        Object {
+          "name": "False",
+          "value": false,
+        },
+        Object {
+          "name": "True",
+          "value": true,
+        },
+      ],
+      "default": false,
+      "groupId": "tableVisualizationProperties",
+      "message": "Enable Read Only Mode",
+      "name": "buildingBlockData.readOnly",
+      "selectType": "static",
+      "type": "list",
+    },
+    Object {
+      "choices": Array [
+        Object {
+          "name": "False",
+          "value": false,
+        },
+        Object {
+          "name": "True",
+          "value": true,
+        },
+      ],
+      "default": false,
+      "groupId": "tableVisualizationProperties",
+      "message": "Enable Auto Column Width",
+      "name": "buildingBlockData.enableAutoColumnWidth",
+      "selectType": "static",
+      "type": "list",
+    },
+    Object {
+      "choices": Array [
+        Object {
+          "name": "False",
+          "value": false,
+        },
+        Object {
+          "name": "True",
+          "value": true,
+        },
+      ],
+      "default": false,
+      "groupId": "tableVisualizationProperties",
+      "message": "Enable Data Export",
+      "name": "buildingBlockData.enableExport",
+      "selectType": "static",
+      "type": "list",
+    },
+    Object {
+      "choices": Array [
+        Object {
+          "name": "False",
+          "value": false,
+        },
+        Object {
+          "name": "True",
+          "value": true,
+        },
+      ],
+      "default": false,
+      "groupId": "tableVisualizationProperties",
+      "message": "Enable Full Screen Mode",
+      "name": "buildingBlockData.enableFullScreen",
+      "selectType": "static",
+      "type": "list",
+    },
+    Object {
+      "choices": Array [
+        Object {
+          "name": "False",
+          "value": false,
+        },
+        Object {
+          "name": "True",
+          "value": true,
+        },
+      ],
+      "default": false,
+      "groupId": "tableVisualizationProperties",
+      "message": "Enable Paste From Clipboard",
+      "name": "buildingBlockData.enablePaste",
+      "selectType": "static",
+      "type": "list",
+    },
+    Object {
+      "choices": Array [
+        Object {
+          "name": "False",
+          "value": false,
+        },
+        Object {
+          "name": "True",
+          "value": true,
+        },
+      ],
+      "default": true,
+      "groupId": "tableVisualizationProperties",
+      "message": "Table Searchable Toggle",
+      "name": "buildingBlockData.isSearchable",
+      "selectType": "static",
+      "type": "list",
+    },
+  ],
+}
+`;
+
+exports[`Prompts - no project validateAnswers Type "chart", required fields validation 1`] = `
+Object {
+  "aggregationPath": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+  "buildingBlockData.filterBar": Object {
+    "isValid": true,
+  },
+  "buildingBlockData.id": Object {
+    "errorMessage": "Please enter a value",
+    "isValid": false,
+  },
+  "buildingBlockData.metaPath.bindingContextType": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+  "buildingBlockData.metaPath.entitySet": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+  "buildingBlockData.metaPath.qualifier": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+  "buildingBlockData.personalization": Object {
+    "isValid": true,
+  },
+  "buildingBlockData.selectionChange": Object {
+    "isValid": true,
+  },
+  "buildingBlockData.selectionMode": Object {
+    "isValid": true,
+  },
+  "viewOrFragmentPath": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+}
+`;
+
+exports[`Prompts - no project validateAnswers Type "filter-bar", required fields validation 1`] = `
+Object {
+  "aggregationPath": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+  "buildingBlockData.filterChanged": Object {
+    "isValid": true,
+  },
+  "buildingBlockData.id": Object {
+    "errorMessage": "Please enter a value",
+    "isValid": false,
+  },
+  "buildingBlockData.metaPath.entitySet": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+  "buildingBlockData.metaPath.qualifier": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+  "buildingBlockData.search": Object {
+    "isValid": true,
+  },
+  "viewOrFragmentPath": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+}
+`;
+
+exports[`Prompts - no project validateAnswers Type "table", required fields validation 1`] = `
+Object {
+  "aggregationPath": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+  "buildingBlockData.enableAutoColumnWidth": Object {
+    "isValid": true,
+  },
+  "buildingBlockData.enableExport": Object {
+    "isValid": true,
+  },
+  "buildingBlockData.enableFullScreen": Object {
+    "isValid": true,
+  },
+  "buildingBlockData.enablePaste": Object {
+    "isValid": true,
+  },
+  "buildingBlockData.filterBar": Object {
+    "isValid": true,
+  },
+  "buildingBlockData.header": Object {
+    "isValid": true,
+  },
+  "buildingBlockData.headerVisible": Object {
+    "isValid": true,
+  },
+  "buildingBlockData.id": Object {
+    "errorMessage": "Please enter a value",
+    "isValid": false,
+  },
+  "buildingBlockData.isSearchable": Object {
+    "isValid": true,
+  },
+  "buildingBlockData.metaPath.bindingContextType": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+  "buildingBlockData.metaPath.entitySet": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+  "buildingBlockData.metaPath.qualifier": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+  "buildingBlockData.personalization": Object {
+    "isValid": true,
+  },
+  "buildingBlockData.readOnly": Object {
+    "isValid": true,
+  },
+  "buildingBlockData.selectionMode": Object {
+    "isValid": true,
+  },
+  "buildingBlockData.type": Object {
+    "isValid": true,
+  },
+  "buildingBlockData.variantManagement": Object {
+    "isValid": true,
+  },
+  "viewOrFragmentPath": Object {
+    "errorMessage": "Please select a value",
+    "isValid": false,
+  },
+}
+`;
+
 exports[`Prompts getBuildingBlockTypePrompts 1`] = `
 Object {
   "questions": Array [
