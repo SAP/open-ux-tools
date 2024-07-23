@@ -38,7 +38,7 @@ export function validateBasePath(basePath: string, fs?: Editor, dependencies = [
         const manifest = fs.readJSON(manifestPath) as any;
         const libs = manifest['sap.ui5']?.dependencies?.libs;
         dependencies.forEach((dependency) => {
-            if ((libs?.[dependency] !== undefined) === false) {
+            if (libs?.[dependency] === undefined) {
                 throw new Error(
                     `Dependency ${dependency} is missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries.`
                 );
