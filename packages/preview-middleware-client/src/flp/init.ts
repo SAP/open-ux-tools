@@ -231,6 +231,7 @@ export function setI18nTitle(resourceBundle: ResourceBundle, i18nKey = 'appTitle
  * @param params.appUrls JSON containing a string array of application urls
  * @param params.flex JSON containing the flex configuration
  * @param params.customInit path to the custom init module to be called
+ * @returns promise
  */
 export async function init({
     appUrls,

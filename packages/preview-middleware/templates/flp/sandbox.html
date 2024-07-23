@@ -24,20 +24,20 @@
          for productive scenarios.
     -->
     <script type="text/javascript">
-      window["sap-ushell-config"] = {
-        defaultRenderer: "fiori2",
-        renderers: {
-          fiori2: {
-            componentData: {
-              config: {
-                search: "hidden",
-               enableSearch: false
+        window["sap-ushell-config"] = {
+            defaultRenderer: "fiori2",
+            renderers: {
+                fiori2: {
+                  componentData: {
+                      config: {
+                        search: "hidden",
+                        enableSearch: false
+                      }
+                  }
               }
-            }
-          }
-        },
-        applications: <%- JSON.stringify(apps) %>
-      };
+          },
+          applications: <%- JSON.stringify(apps) %>
+        };
     </script>
 
     <script src="<%- basePath %>/<%- bootstrapPath %>" id="sap-ushell-bootstrap"></script>
@@ -62,30 +62,24 @@
     </script>
 
     <script type="text/javascript">
-      (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
-    </script>
-
-    <script type="text/javascript" id="sap-ushell-bootstrap">
-      (() => sap.ui.require(['open/ux/preview/client/flp/initUshellBootstrap']))()
+        (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
     <% if (locals.flex && flex?.developerMode) { %>
-    <!-- Hides Rta native toolbar  -->
-    <style>
-      #shell-header,
-      .sapUiRtaToolbar {
-        visibility: hidden;
-        height: 1px;
-      }
-
-      .sapUshellShellCanvas {
-        top: 0 !important;
-      }
-
-      .sapUiRtaMode .sapUiShellBackgroundImage.sapUiGlobalBackgroundImageForce.sapUshellShellBG {
-        background-color: transparent !important;
-      }
-    </style><% } %>
+        <!-- Hides Rta native toolbar  -->
+        <style>
+            #shell-header,
+            .sapUiRtaToolbar {
+                visibility: hidden;
+                height: 1px;
+            }
+            .sapUshellShellCanvas {
+                top: 0 !important;
+            }
+            .sapUiRtaMode .sapUiShellBackgroundImage.sapUiGlobalBackgroundImageForce.sapUshellShellBG {
+                background-color: transparent !important;
+            }
+        </style><% } %>
 </head>
 
 <!-- UI Content -->
