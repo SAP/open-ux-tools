@@ -41,7 +41,8 @@
         "currentUI5VersionTooltip": "This is the current latest UI5 version which is available in cloud systems",
         "fioriIdLabel": "Fiori ID",
         "fioriIdHint": "This is an one-time, semantic identifier for the app variant. The Fiori ID will be shown in the 'About' section of the app for ease of identification and will also be available in the Fiori Apps Reference Library.",
-        "adpNotSupported": "NOTE: The selected application is not supported by Adaptation Project"
+        "adpNotSupported": "NOTE: The selected application is not supported by Adaptation Project",
+        "notSupportedAdpOverAdpLabel": "You have selected Adaptation Project as base. The selected system has SAPUI5 version lower than 1.90 and it does not support Adaptation Project as а base for a new Adaptation Project. You will be able to create such а project, but after deployment it will not work until the UI5 version of the system is updated."
     },
     "choices": {
         "annotationFile": {
@@ -77,6 +78,7 @@
         "ui5VersionNotReachableError": "The url of the UI5 version you have selected is not reachable. <URL> should be made accessible through cloud connector and destination configuration in order to be consumed within SAPUI5 Adaptation project and its SAPUI5 Visual Editor.",
         "ui5VersionOutdatedError": "The SAPUI5 version you have selected is not compatible with SAPUI5 Visual Editor. Please select a different version.",
         "ui5VersionCannotBeEmpty": "Version cannot be empty",
-        "ui5VersionNotDetectedError": "The UI5 version of the selected system could not be determined. You will be able to create and edit Adaptation project with the newest version, but it will not be usable on this system until system`s UI5 version is not upgraded to at least 1.71."
+        "ui5VersionNotDetectedError": "The UI5 version of the selected system could not be determined. You will be able to create and edit Adaptation project with the newest version, but it will not be usable on this system until system`s UI5 version is not upgraded to at least 1.71.",
+        "adpPluginSmartTemplateProjectError": "Select a different application. Adaptation project doesn't support the selected application."
     }
 }

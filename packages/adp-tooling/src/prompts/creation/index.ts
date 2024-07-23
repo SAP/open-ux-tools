@@ -26,6 +26,7 @@ import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import type { ListQuestion, InputQuestion, YUIQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
 import { AbapTarget, createAbapServiceProvider } from '@sap-ux/system-access';
 import { Logger, LoggerOptions } from '@sap-ux/logger';
+import AppUtils from '../../base/app-utils';
 
 export interface FlexUISupportedSystem {
     isUIFlex: boolean;
@@ -202,8 +203,11 @@ export default class ProjectPrompter {
     private ui5VersionDetected = true;
     private isCloudProject: boolean;
     private isApplicationSupported: boolean;
-    private appSync: boolean;
     private isV4AppInternalMode: boolean;
+    private isSupportedAdpOverAdp: boolean;
+    private isPartiallySupportedAdpOverAdp: boolean;
+
+    private appSync: boolean;
 
     private latestVersion: string;
     private publicVersions: UI5Version[];
@@ -514,18 +518,107 @@ export default class ProjectPrompter {
     public async isAppSupported(appId: string): Promise<boolean> {
         this.appManifest = null;
         this.appManifestUrl = null;
+
         const appIndex = this.provider.getAppIndex();
         const supportsManifest: boolean = await appIndex.getIsManiFirstSupported(appId);
+
         if (supportsManifest === true) {
-            return Promise.resolve(true); // TODO: Remove this fake resolve
-            // return await this.checkManifestUrlExists(appId);
+            return await this.checkManifestUrlExists(appId);
         } else {
             throw new Error(t('validators.appDoesNotSupportManifest'));
         }
     }
 
+    private async getManifestUrl(appId: string): Promise<string> {
+        const appIndex = this.provider.getAppIndex();
+        const data = await appIndex.getAppInfo(appId);
+
+        let manifestUrl: string = '';
+        if (data) {
+            const appInfo = Object.values(data)[0];
+            manifestUrl = appInfo?.manifestUrl ?? appInfo?.manifest ?? '';
+        }
+
+        return manifestUrl;
+    }
+
+    private async checkManifestUrlExists(id: string) {
+        const sManifestUrl = await this.getManifestUrl(id);
+        if (sManifestUrl) {
+            return true;
+        } else {
+            throw new Error(t('validators.adpPluginSmartTemplateProjectError'));
+        }
+    }
+
+    public async validateSelectedApplication(
+        applicationData: { fileType: string },
+        checkForAdpOverAdpSupport: boolean,
+        checkForAdpOverAdpPartialSupport: boolean,
+        manifest: Manifest
+    ): Promise<void> {
+        if (!applicationData) {
+            throw new Error(t('validators.selectCannotBeEmptyError', { value: 'Application' }));
+        }
+
+        this.isV4AppInternalMode = false;
+        const fileType = applicationData.fileType;
+
+        this.setAdpOverAdpSupport(checkForAdpOverAdpSupport, checkForAdpOverAdpPartialSupport, fileType);
+        await this.validateSmartTemplateApplication(manifest);
+    }
+
+    private setAdpOverAdpSupport(
+        checkForAdpOverAdpSupport: boolean,
+        checkForAdpOverAdpPartialSupport: boolean,
+        fileType: string
+    ) {
+        this.isSupportedAdpOverAdp = !(checkForAdpOverAdpSupport && fileType === 'appdescr_variant');
+        this.isPartiallySupportedAdpOverAdp = checkForAdpOverAdpPartialSupport && fileType === 'appdescr_variant';
+    }
+
+    public isV4App(manifest: Manifest): boolean {
+        return !!(
+            manifest['sap.ui5'] &&
+            manifest['sap.ui5']['dependencies'] &&
+            manifest['sap.ui5']['dependencies']['libs'] &&
+            manifest['sap.ui5']['dependencies']['libs']['sap.fe.templates']
+        );
+    }
+
+    private checkForSyncLoadedViews(ui5Settings: Manifest['sap.ui5']) {
+        if (ui5Settings?.rootView) {
+            // @ts-ignore // TODO:
+            this.appSync = !ui5Settings['rootView']['async'];
+            return;
+        }
+        if (ui5Settings?.routing && ui5Settings['routing']['config']) {
+            this.appSync = !ui5Settings['routing']['config']['async'];
+            return;
+        }
+        this.appSync = false;
+    }
+
+    private async validateSmartTemplateApplication(appManifest: Manifest) {
+        const manifest = appManifest;
+        const isV4App = AppUtils.isV4App(manifest);
+        this.isV4AppInternalMode = isV4App && !this.isCustomerBase;
+        const sAppType = AppUtils.getApplicationType(manifest);
+
+        if (AppUtils.isSupportedAppTypeForAdaptationProject(sAppType)) {
+            if (manifest['sap.ui5']) {
+                if (manifest['sap.ui5'].flexEnabled === false) {
+                    throw new Error(t('validators.appDoesNotSupportAdaptation'));
+                }
+                this.checkForSyncLoadedViews(manifest['sap.ui5']);
+            }
+        } else {
+            throw new Error(t('validators.adpPluginSmartTemplateProjectError'));
+        }
+    }
+
     private async applicationPromptValidationHandler(
-        value: string,
+        value: { id: string; fileType: string }, // TODO: Make interface
         answers: ConfigurationInfoAnswers
     ): Promise<boolean | string> {
         if (value) {
@@ -537,26 +630,38 @@ export default class ProjectPrompter {
                     this.ui5VersionDetected &&
                     checkForAdpOverAdpSupport &&
                     this.isFeatureSupportedVersion('1.90.0', systemVersion);
-                // const res = await this.abapConnectionService.isAppSupported(value.id);
-                // if (res) {
-                // const manifestURL = await this.abapConnectionService.getCachedManifestUrl(value.id);
-                // const manifest = await this.abapConnectionService.getCachedManifest(manifestURL);
-                // await this.applicationValidator.validateSelectedApplication(
-                //     value,
-                //     checkForAdpOverAdpSupport,
-                //     checkForAdpOverAdpPartialSupport,
-                //     manifest
-                // );
-                // }
+                const res = await this.isAppSupported(value.id);
+                if (res) {
+                    const manifestURL = await this.getManifestUrl(value.id);
+
+                    const appIndex = this.provider.getAppIndex();
+                    const manifest = await appIndex.getManifest(manifestURL);
+                    console.log(manifest);
+                    await this.validateSelectedApplication(
+                        value,
+                        checkForAdpOverAdpSupport,
+                        checkForAdpOverAdpPartialSupport,
+                        manifest
+                    );
+                    // const manifest = await this.abapConnectionService.getCachedManifest(manifestURL);
+                }
                 this.isApplicationSupported = true;
             } catch (e) {
-                this.logger.log(e);
+                // this.logger.log(e);
                 return e.message;
             }
         } else {
             return t('validators.selectCannotBeEmptyError', { value: 'Application' });
         }
         return true;
+    }
+
+    public getIsSupportedAdpOverAdp() {
+        return this.isSupportedAdpOverAdp && !this.isPartiallySupportedAdpOverAdp;
+    }
+
+    public getIsPartiallySupportedAdpOverAdp() {
+        return this.isPartiallySupportedAdpOverAdp;
     }
 
     private async systemPromptValidationHandler(value: string): Promise<boolean | string> {
@@ -1077,7 +1182,7 @@ export default class ProjectPrompter {
                 applyDefaultWhenDirty: true,
                 hint: t('prompts.applicationListTooltip')
             },
-            validate: async (value: string, answers: ConfigurationInfoAnswers) => {
+            validate: async (value: { id: string; fileType: string }, answers: ConfigurationInfoAnswers) => {
                 // TODO:
                 const validationResult = await this.applicationPromptValidationHandler(value, answers);
 
@@ -1108,6 +1213,23 @@ export default class ProjectPrompter {
             store: false,
             guiOptions: {
                 hint: t('prompts.applicationListTooltip')
+            }
+        } as InputQuestion<ConfigurationInfoAnswers>;
+    }
+
+    private getAdpOverAdpInfoPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
+        return {
+            type: 'input',
+            name: 'adpOverAdpInfo',
+            message: t('prompts.notSupportedAdpOverAdpLabel'),
+            when: (answers: ConfigurationInfoAnswers) =>
+                !!answers.application &&
+                !this.getIsSupportedAdpOverAdp() &&
+                !this.getIsPartiallySupportedAdpOverAdp() &&
+                this.isApplicationSupported,
+            guiOptions: {
+                type: 'label',
+                applyDefaultWhenDirty: true
             }
         } as InputQuestion<ConfigurationInfoAnswers>;
     }
@@ -1262,7 +1384,7 @@ export default class ProjectPrompter {
             // ....
             // ....
             this.getApplicationPrompt(),
-            // ....
+            this.getAdpOverAdpInfoPrompt(),
             // ....
             this.getApplicationInfoPrompt(),
             this.getApplicationV4InfoPrompt(),
