@@ -51,21 +51,21 @@ export const RENAME_SECTION: QuickActionDefinition = {
                 )[0];
             }
             const section = sap.ui.getCore().byId(toBeRenameControl.controlId);
-            const controlOverlay = await OverlayUtil.getClosestOverlayFor(section);
+            const controlOverlay = OverlayUtil.getClosestOverlayFor(section);
             if (controlOverlay) {
                 controlOverlay.setSelected(true);
             }
             // can we wait here?
             const handlers = context.onQuickActionExecution();
             const actionHandler = async (action: ExternalAction): Promise<void> => {
+                setTimeout(() => {
+                    handlers.unSubscribe(actionHandler);
+                }, 500);
                 if (outlineScrollUpdated.match(action)) {
                     await (context.actionService as any).execute(toBeRenameControl.controlId, ACTION_ID);
-                    console.log('in execute action handler outlineScrollUpdated match');
-                    // handlers.unSubscribe(actionHandler);
                 }
             };
             handlers.subscribe(actionHandler);
-            console.log('in execute ');
         }
     },
     children: (context: BaseContext, index = 0): string[] => {
@@ -94,11 +94,19 @@ function getControl(context: BaseContext): OutlineNode | undefined {
             return controls.find((ctrl) => {
                 const opLayout = sap.ui.getCore().byId(ctrl.controlId);
                 if (opLayout) {
-                    return component === Component.getOwnerIdFor(opLayout);
+                    const result = component === Component.getOwnerIdFor(opLayout);
+                    if (result) {
+                        // need to select OP layout first to initiate outline scrolling when section is selected
+                        const controlOverlay = OverlayUtil.getClosestOverlayFor(opLayout);
+                        if (controlOverlay) {
+                            controlOverlay.setSelected(true);
+                        }
+                    }
+                    return result;
                 }
                 return false;
             });
         }
     }
-    return;
+    return undefined;
 }

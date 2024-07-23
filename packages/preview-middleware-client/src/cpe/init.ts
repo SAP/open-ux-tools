@@ -57,9 +57,9 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
         const { sendAction } = startPostMessageCommunication<ExternalAction>(
             window.parent,
             async function onAction(action) {
+                console.trace(new Date().toISOString() + ' ------- ' + action.type);
                 for (const handler of actionHandlers) {
                     try {
-                        console.trace(new Date().toISOString()+ " ------- " + action.type);
                         await handler(action);
                     } catch (error) {
                         Log.error('Handler Failed: ', getError(error));
