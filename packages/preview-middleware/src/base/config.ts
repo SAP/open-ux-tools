@@ -272,7 +272,9 @@ export function createFlpTemplateConfig(config: FlpConfig, manifest: Partial<Man
     const version = getMinimumUI5Version(manifest as Manifest);
     const major = version ? parseInt(version.split('.')[0], 10) : 2;
     const bootstrapPath =
-        major >= 2 ? '/resources/sap/ushell/bootstrap/sandbox2.js' : '/test-resources/sap/ushell/bootstrap/sandbox.js';
+        major >= 2
+            ? basePath + '/resources/sap/ushell/bootstrap/sandbox2.js'
+            : basePath + '/test-resources/sap/ushell/bootstrap/sandbox.js';
     return {
         bootstrapPath,
         basePath,

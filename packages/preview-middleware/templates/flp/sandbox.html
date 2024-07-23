@@ -28,19 +28,19 @@
             defaultRenderer: "fiori2",
             renderers: {
                 fiori2: {
-                  componentData: {
-                      config: {
-                        search: "hidden",
-                        enableSearch: false
-                      }
-                  }
+                    componentData: {
+                        config: {
+                            search: "hidden",
+                            enableSearch: false
+                        }
+                    }
               }
           },
           applications: <%- JSON.stringify(apps) %>
         };
     </script>
 
-    <script src="<%- basePath %>/<%- bootstrapPath %>" id="sap-ushell-bootstrap"></script>
+    <script src="<%- bootstrapPath %>" id="sap-ushell-bootstrap"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions="allow"'' is a NON-SECURE setting for test environments -->
     <script id="sap-ui-bootstrap"
         src="<%- basePath %>/resources/sap-ui-core.js"

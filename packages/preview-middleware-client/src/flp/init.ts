@@ -245,12 +245,12 @@ export async function init({
     const urlParams = new URLSearchParams(window.location.search);
     const container = sap?.ushell?.Container ?? (sap.ui.require('sap/ushell/Container') as typeof sap.ushell.Container);
     let scenario: string = '';
+    const { version } = (await VersionInfo.load()) as { version: string };
 
     // Register RTA if configured
     if (flex) {
         const flexSettings = JSON.parse(flex) as FlexSettings;
         scenario = flexSettings.scenario;
-        const { version } = (await VersionInfo.load()) as { version: string };
         container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
@@ -306,7 +306,11 @@ export async function init({
     const resourceBundle = await loadI18nResourceBundle(scenario as Scenario);
     setI18nTitle(resourceBundle);
     registerSAPFonts();
-    const renderer = await container.createRenderer(undefined, true);
+    const major = version ? parseInt(version.split('.')[0], 10) : 2;
+    const renderer =
+        major < 2
+            ? await container.createRenderer(undefined, true)
+            : await (container as any).createRendererInternal(undefined, true);
     renderer.placeAt('content');
 }
 
