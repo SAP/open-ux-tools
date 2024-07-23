@@ -86,7 +86,7 @@ declare module 'sap/ui/rta/command/CommandFactory' {
 
         static async getCommandFor<T extends FlexCommand = FlexCommand>(
             control: Element | ManagedObject | string,
-            commandType: string,
+            commandType: string, // type of
             settings: object,
             designTimeMetadata?: DesignTimeMetadata | null,
             flexSettings?: FlexSettings

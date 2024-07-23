@@ -3,22 +3,24 @@ import { ActivationContext, ExecutionContext, QuickActionDefinition } from './qu
 
 export const ADD_FIELD_TO_HEADER_TYPE = 'add-field-to-header';
 const ACTION_ID = 'CTX_ADD_ELEMENTS_AS_CHILD';
-const CONTROL_TYPE = 'sap.uxap.ObjectPageDynamicHeaderTitle';
+// Eg: adp.fe no ObjectPageDynamicHeaderTitle
+// fe.v2.lrop.customer ObjectPageDynamicHeaderTitle exists
+const CONTROL_TYPES = ['sap.uxap.ObjectPageDynamicHeaderTitle', 'sap.uxap.ObjectPageHeader'];
 
 export const ADD_FIELD_TO_HEADER: QuickActionDefinition = {
     type: ADD_FIELD_TO_HEADER_TYPE,
     title: 'Add Field to Header',
     isActive: (context: ActivationContext): boolean => {
-        const controls = context.controlIndex[CONTROL_TYPE];
+        const controlName = CONTROL_TYPES.find((type) => context.controlIndex[type]);
 
-        if (controls?.length === 1) {
+        if (controlName) {
             const pages = getFEAppPagesMap(context.rta);
-            const control = controls[0];
+            const control = context.controlIndex[controlName][0];
             const isActionApplicable = Object.keys(pages).some(
                 (key) =>
                     key.split('.').pop() === 'ObjectPage' &&
-                    !pages[key].isInvisible &&
-                    isPageContainsControlById(pages[key].page, control.controlId)
+                    !pages[key][0].isInvisible &&
+                    isPageContainsControlById(pages[key][0].page, control.controlId)
             );
 
             if (!isActionApplicable) {
@@ -30,9 +32,9 @@ export const ADD_FIELD_TO_HEADER: QuickActionDefinition = {
         return false;
     },
     execute: async (context: ExecutionContext): Promise<void> => {
-        const controls = context.controlIndex[CONTROL_TYPE];
-        if (controls?.length === 1) {
-            const control = controls[0];
+        const controlName = CONTROL_TYPES.find((type) => context.controlIndex[type]);
+        if (controlName) {
+            const control = context.controlIndex[controlName][0];
             await (context.actionService as any).execute(control.controlId, ACTION_ID);
         }
     }

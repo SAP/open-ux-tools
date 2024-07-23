@@ -38,6 +38,13 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
         actionHandlers.push(handler);
     }
 
+    function unSubscribe(handler: ActionHandler): void {
+        const idx = actionHandlers.indexOf(handler);
+        if (idx > -1) {
+            actionHandlers.splice(idx, 1);
+        }
+    }
+
     const selectionService = new SelectionService(rta);
 
     const changesService = new ChangeService({ rta }, selectionService);
@@ -52,6 +59,7 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
             async function onAction(action) {
                 for (const handler of actionHandlers) {
                     try {
+                        console.trace(new Date().toISOString()+ " ------- " + action.type);
                         await handler(action);
                     } catch (error) {
                         Log.error('Handler Failed: ', getError(error));
@@ -62,7 +70,7 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
         );
 
         for (const service of services) {
-            service.init(sendAction, subscribe);
+            service.init(sendAction, subscribe, unSubscribe);
         }
         // For initOutline to complete the RTA needs to already running (to access RTA provided services).
         // That can only happen if the plugin initialization has completed.

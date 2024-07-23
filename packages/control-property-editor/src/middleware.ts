@@ -13,7 +13,8 @@ import {
     redo,
     save,
     setAppMode,
-    executeQuickAction
+    executeQuickAction,
+    outlineScrollUpdated
 } from '@sap-ux-private/control-property-editor-common';
 
 import { changeProperty } from './slice';
@@ -58,6 +59,7 @@ export const communicationMiddleware: Middleware<Dispatch<ExternalAction>> = (st
                 case redo.type:
                 case save.type:
                 case selectControl.type:
+                case outlineScrollUpdated.type:
                 case addExtensionPoint.type: {
                     sendAction(action);
                     break;

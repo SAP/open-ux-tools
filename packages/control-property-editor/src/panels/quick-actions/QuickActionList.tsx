@@ -4,11 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { Label } from '@fluentui/react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { UILink } from '@sap-ux/ui-components';
-import { executeQuickAction, type QuickAction } from '@sap-ux-private/control-property-editor-common';
+import type { QuickAction } from '@sap-ux-private/control-property-editor-common';
 
 import type { RootState } from '../../store';
 import { sectionHeaderFontSize } from '../properties/constants';
+import { QuickActionListItem } from './QuickActionListItem';
+import './QuickAction.scss';
 
 /**
  * React element for all properties including id & type and property editors.
@@ -35,11 +36,11 @@ export function QuickActionList(): ReactElement {
                     }}>
                     {t('QUICK_ACTIONS')}
                 </Label>
-                {quickActions.map((quickAction) => (
-                    <UILink key={quickAction.type} onClick={() => dispatch(executeQuickAction(quickAction))}>
-                        {quickAction.title}
-                    </UILink>
-                ))}
+                <div className={`quick-action-items`}>
+                    {quickActions.map((quickAction) => (
+                        <QuickActionListItem {...quickAction} />
+                    ))}
+                </div>
             </div>
         </>
     );

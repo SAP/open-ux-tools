@@ -170,6 +170,8 @@ export interface ShowMessage {
 export interface QuickAction {
     type: string;
     title: string;
+    children?: string[];
+    index?: number;
 }
 
 /**
@@ -232,6 +234,7 @@ export const selectControl = createExternalAction<string>('select-control');
 export const addExtensionPoint = createExternalAction<OutlineNode>('add-extension-point');
 export const deletePropertyChanges = createExternalAction<PropertyChangeDeletionDetails>('delete-property-changes');
 export const outlineChanged = createExternalAction<OutlineNode[]>('outline-changed');
+export const outlineScrollUpdated = createExternalAction<boolean>('outline-scroll-updated');
 export const changeProperty = createExternalAction<PropertyChange>('change-property');
 export const propertyChanged = createExternalAction<PropertyChanged>('property-changed');
 export const propertyChangeFailed = createExternalAction<PropertyChangeFailed>('change-property-failed');
@@ -258,6 +261,7 @@ export type ExternalAction =
     | ReturnType<typeof changeProperty>
     | ReturnType<typeof propertyChanged>
     | ReturnType<typeof outlineChanged>
+    | ReturnType<typeof outlineScrollUpdated>
     | ReturnType<typeof selectControl>
     | ReturnType<typeof addExtensionPoint>
     | ReturnType<typeof propertyChangeFailed>

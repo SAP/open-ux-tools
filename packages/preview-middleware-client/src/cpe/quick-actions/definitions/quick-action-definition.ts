@@ -1,27 +1,38 @@
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import { ControlTreeIndex } from '../../types';
+import { ActionHandler, ControlTreeIndex } from '../../types';
+import { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
+import { ExternalAction } from '@sap-ux-private/control-property-editor-common';
 
-export interface ActivationContext {
+export interface BaseContext {
     controlIndex: ControlTreeIndex;
+    actionService: unknown;
     rta: RuntimeAuthoring;
 }
 
-export interface ExecutionContext {
-    controlIndex: ControlTreeIndex;
+export interface ActivationContext extends BaseContext {
+    manifest: Manifest;
+}
+
+export interface ExecutionContext extends BaseContext {
     // TODO: we should not access RTA directly,
     // provide flex settings and a method for modifying command stack instead (or return a command and service can call the "pushAndExecute" method).
-    rta: RuntimeAuthoring;
-    actionService: unknown;
+    //rta: RuntimeAuthoring;
+    onQuickActionExecution: () => OnQuickActionExectutionReturnType;
 }
 
-export type QuickActionActivationFunction = (context: ActivationContext) => boolean;
+export interface OnQuickActionExectutionReturnType {
+    subscribe: (handler: ActionHandler) => void, unSubscribe: (handler: ActionHandler) => void
+}
+export type QuickActionActivationFunction = (context: ActivationContext) => boolean | Promise<boolean>;
+export type QuickActionFunctionGetChildren = (context: BaseContext) => string[];
 export type QuickActionExecuteFunction =
-    | ((context: ExecutionContext) => void)
-    | ((context: ExecutionContext) => Promise<void>);
+    | ((context: ExecutionContext, index?: number) => void)
+    | ((context: ExecutionContext, index?: number) => Promise<void>);
 
 export interface QuickActionDefinition {
     type: string;
     title: string;
     isActive: QuickActionActivationFunction;
     execute: QuickActionExecuteFunction;
+    children?: QuickActionFunctionGetChildren;
 }

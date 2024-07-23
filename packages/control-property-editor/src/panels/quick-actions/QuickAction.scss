@@ -1,0 +1,30 @@
+// .quick-action-items {
+//     .quick-action-item {
+//         display: inline-block;
+//     }
+// }
+
+.quick-action-item {
+    size: 13px;
+    line-height: 18px;
+    display: flex;
+    margin-right: 5px;
+    button.ms-Link {
+        font-weight: 700;
+        font-size: 13px;
+        height: 18px;
+    }
+    .icon-down {
+        margin-right: 5px;
+        line-height: 18px;
+        display: flex;
+    }
+}
+
+.action-callout-children {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    font-size: 13px;
+    font-weight: 400;
+}

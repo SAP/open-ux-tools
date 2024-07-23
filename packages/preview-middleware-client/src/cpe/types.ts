@@ -35,9 +35,10 @@ export interface UI5ControlData {
 export type ActionHandler = (action: ExternalAction) => Promise<void>;
 export type ActionSenderFunction = (action: ExternalAction) => void;
 export type SubscribeFunction = (handler: ActionHandler) => void;
+export type UnSubscribeFunction = (handler: ActionHandler) => void;
 
 export interface Service {
-    init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): void;
+    init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction, unSubscribe: UnSubscribeFunction): void;
 }
 
 export interface ControlTreeIndex {

@@ -19,8 +19,8 @@ export const ENABLE_CLEAR_FILTER_BAR: QuickActionDefinition = {
             const isActionApplicable = Object.keys(pages).some(
                 (key) =>
                     key.split('.').pop() === 'ListReport' &&
-                    !pages[key].isInvisible &&
-                    isPageContainsControlById(pages[key].page, control.controlId)
+                    !pages[key][0].isInvisible &&
+                    isPageContainsControlById(pages[key][0].page, control.controlId)
             );
 
             const modifiedControl = sap.ui.getCore().byId(control.controlId);

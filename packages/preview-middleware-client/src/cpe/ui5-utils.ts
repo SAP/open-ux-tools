@@ -2,6 +2,7 @@ import type { IconDetails } from '@sap-ux-private/control-property-editor-common
 import Component from 'sap/ui/core/Component';
 import type { ID } from 'sap/ui/core/library';
 import IconPool from 'sap/ui/core/IconPool';
+import ManagedObject from 'sap/ui/base/ManagedObject';
 
 /**
  * Gets Component by id.
@@ -15,6 +16,18 @@ export function getComponent<T extends Component>(id: ID): T | undefined {
     } else {
         // Older version must be still supported until maintenance period.
         return sap.ui.getCore().getComponent(id) as T; // NOSONAR
+    }
+}
+
+/**
+ * Gets Component by id.
+ *
+ * @param id - unique identifier for control
+ * @returns Component | undefined
+ */
+export function getOwnerComponent<T extends Component>(obj: ManagedObject): T | undefined {
+    if (Component?.getOwnerIdFor) {
+        return Component.getOwnerIdFor(obj) as T;
     }
 }
 

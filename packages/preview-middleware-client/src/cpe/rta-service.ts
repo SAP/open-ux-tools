@@ -14,7 +14,7 @@ export interface FEAppPagesMap {
     [key: string]: {
         page: FEAppPage;
         isInvisible: boolean;
-    };
+    }[];
 }
 
 /**
@@ -78,10 +78,13 @@ export function getFEAppPagesMap(rta: RuntimeAuthoring): FEAppPagesMap {
         if (pageContent?.length) {
             const pageName = pageContent[0].getComponentInstance()?.getMetadata().getComponentName();
             const isInvisible = page.hasStyleClass('sapMNavItemHidden');
-            pagesMap[pageName] = {
+            if (!pagesMap[pageName]) {
+                pagesMap[pageName] = [];
+            }
+            pagesMap[pageName].push({
                 page,
                 isInvisible
-            };
+            });
         }
     }
     return pagesMap;

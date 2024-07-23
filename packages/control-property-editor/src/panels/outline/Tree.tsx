@@ -6,7 +6,12 @@ import { Icon } from '@fluentui/react';
 import { UIList, UiIcons } from '@sap-ux/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { selectControl, reportTelemetry, addExtensionPoint } from '@sap-ux-private/control-property-editor-common';
+import {
+    selectControl,
+    reportTelemetry,
+    addExtensionPoint,
+    outlineScrollUpdated
+} from '@sap-ux-private/control-property-editor-common';
 import type { Control, OutlineNode } from '@sap-ux-private/control-property-editor-common';
 
 import type { RootState } from '../../store';
@@ -51,22 +56,28 @@ export const Tree = (): ReactElement => {
     useEffect(() => {
         if (selection.cell === undefined && selection.group === undefined && selectedControl !== undefined) {
             updateSelectionFromPreview(selectedControl);
+            console.log("in Tree useEffect1");
         }
 
         if (selection.cell !== undefined && selectedControl !== undefined) {
             if (selection.cell.controlId !== selectedControl.id) {
                 updateSelectionFromPreview(selectedControl);
+                console.log("in Tree useEffect2");
             }
         }
 
         if (selection.group !== undefined && selectedControl !== undefined) {
             if (selection.group.key !== selectedControl.id) {
                 updateSelectionFromPreview(selectedControl);
+                console.log("in Tree useEffect3");
             }
         }
     }, [selectedControl]);
+
+    
     useMemo(() => {
         adaptExpandCollapsed(groups, collapsed);
+        console.log("in Tree useMemo");
     }, [groups, collapsed, selection]);
 
     const scrollRef = useCallback((node: Element) => {
@@ -78,6 +89,8 @@ export const Tree = (): ReactElement => {
                 if (rect.top <= 20 || rect.bottom >= outlineContainer?.clientHeight) {
                     node.scrollIntoView(true);
                 }
+                console.log("in Tree scroll");
+                dispatch(outlineScrollUpdated(true));
             }, 0);
         }
     }, []);
@@ -206,6 +219,7 @@ export const Tree = (): ReactElement => {
         if (!Array.isArray(current) && current) {
             current.isCollapsed = false;
         }
+        console.log("in Tree setCurrentItem");
         return current;
     }
 
@@ -301,7 +315,7 @@ export const Tree = (): ReactElement => {
         const cellName = hasDefaultContent
             ? t('EXTENSION_POINT_HAS_DEFAULT_CONTENT_TEXT', { name: item?.name })
             : item?.name;
-
+        console.log("in Tree onRenderCell");
         return item && typeof itemIndex === 'number' && itemIndex > -1 ? (
             <div
                 aria-hidden
@@ -395,7 +409,7 @@ export const Tree = (): ReactElement => {
         const headerName = hasDefaultContent
             ? t('EXTENSION_POINT_HAS_DEFAULT_CONTENT_TEXT', { name: groupName })
             : groupName;
-
+        console.log("in Tree onRenderHeader");
         return (
             <div
                 {...refProps}

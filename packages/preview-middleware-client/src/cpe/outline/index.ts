@@ -29,8 +29,9 @@ export async function initOutline(
             const viewNodes = await outline.get();
             const controlIndex: ControlTreeIndex = {};
             const outlineNodes = await transformNodes(viewNodes, scenario, reuseComponentsIds, controlIndex);
-            quickActionService.reloadQuickActions(controlIndex);
+            await quickActionService.reloadQuickActions(controlIndex);
             sendAction(outlineChanged(outlineNodes));
+            console.log("Inside syncOutline");
             if (reuseComponentsIds.size > 0 && scenario === 'ADAPTATION_PROJECT' && !hasSentWarning) {
                 sendAction(
                     showMessage({

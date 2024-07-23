@@ -196,7 +196,7 @@ export class SelectionService implements Service {
                         Log.error('Failed to report telemetry', getError(error));
                     } finally {
                         const controlData = buildControlData(runtimeControl, overlayControl);
-                        await addDocumentationForProperties(runtimeControl, controlData);
+                       // await addDocumentationForProperties(runtimeControl, controlData);
                         const action = controlSelected(controlData);
                         sendAction(action);
                         eventOrigin.delete('outline');

@@ -7,7 +7,14 @@ import {
     quickActionListChanged
 } from '@sap-ux-private/control-property-editor-common';
 
-import { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction } from '../types';
+import {
+    ActionHandler,
+    ActionSenderFunction,
+    ControlTreeIndex,
+    Service,
+    SubscribeFunction,
+    UnSubscribeFunction
+} from '../types';
 
 import { QUICK_ACTION_DEFINITIONS } from './definitions/index';
 
@@ -20,6 +27,8 @@ export class QuickActionService implements Service {
     private sendAction: ActionSenderFunction = () => {};
     private executionContext: ExecutionContext;
     private actionService: unknown;
+    private subscribeFn: SubscribeFunction;
+    private unSubscribeFn: UnSubscribeFunction;
 
     /**
      *
@@ -30,7 +39,11 @@ export class QuickActionService implements Service {
         this.executionContext = {
             controlIndex: {},
             rta,
-            actionService: undefined
+            actionService: undefined,
+            onQuickActionExecution: () => ({
+                subscribe: () => {},
+                unSubscribe: () => {}
+            })
         };
     }
 
@@ -40,10 +53,15 @@ export class QuickActionService implements Service {
      * @param sendAction action sender function
      * @param subscribe subscriber function
      */
-    public async init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): Promise<void> {
+    public async init(
+        sendAction: ActionSenderFunction,
+        subscribe: SubscribeFunction,
+        unSubscribe: UnSubscribeFunction
+    ): Promise<void> {
         this.sendAction = sendAction;
         this.actionService = await this.rta.getService('action');
-
+        this.subscribeFn = subscribe;
+        this.unSubscribeFn = unSubscribe;
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (executeQuickAction.match(action)) {
                 const definition = QUICK_ACTION_DEFINITIONS.find(
@@ -52,28 +70,50 @@ export class QuickActionService implements Service {
                 if (!definition) {
                     return;
                 }
-                await definition.execute(this.executionContext);
+                await definition.execute(this.executionContext, action.payload.index);
             }
         });
     }
 
-    public reloadQuickActions(controlIndex: ControlTreeIndex): void {
+    public async reloadQuickActions(controlIndex: ControlTreeIndex): Promise<void> {
         const context: ActivationContext = {
             controlIndex,
+            manifest: this.rta.getRootControlInstance().getManifest(),
+            actionService: this.actionService,
             rta: this.rta
         };
+        const that = this;
         this.executionContext = {
             controlIndex,
             rta: this.rta,
-            actionService: this.actionService
+            actionService: this.actionService,
+            onQuickActionExecution: () => {
+                return {
+                    subscribe(action) {
+                        that.subscribeFn(action);
+                    },
+                    unSubscribe(handler: ActionHandler) {
+                        that.unSubscribeFn(handler);
+                    }
+                };
+            }
         };
         const quickActions: QuickAction[] = [];
         for (const definition of QUICK_ACTION_DEFINITIONS) {
-            if (definition.isActive(context)) {
-                quickActions.push({
+            if (await definition.isActive(context)) {
+                const quickAction = {
                     type: definition.type,
-                    title: definition.title
-                });
+                    title: definition.title,
+                    children: new Array<string>()
+                };
+                if (definition.children) {
+                    quickAction.children = definition?.children({
+                        controlIndex,
+                        actionService: this.actionService,
+                        rta: this.rta
+                    });
+                }
+                quickActions.push(quickAction);
             }
         }
         const action = quickActionListChanged(quickActions);

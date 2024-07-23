@@ -1,7 +1,7 @@
 import log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import init from '../cpe/init';
-import { initDialogs } from './init-dialogs';
+import { initActionSettings, initDialogs } from './init-dialogs';
 import {
     ExternalAction,
     showMessage,
@@ -47,6 +47,7 @@ export default async function (rta: RuntimeAuthoring) {
 
     const syncViewsIds = await getAllSyncViewsIds(minor);
     initDialogs(rta, syncViewsIds, minor);
+    // await initActionSettings(rta, syncViewsIds, minor);
 
     if (minor > 77) {
         const ExtensionPointService = (await import('open/ux/preview/client/adp/extension-point')).default;
