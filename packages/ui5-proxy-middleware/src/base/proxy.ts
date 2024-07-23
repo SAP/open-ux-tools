@@ -1,6 +1,7 @@
 import type { Filter, Options } from 'http-proxy-middleware';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
+import type { Request } from 'express';
 import type { ProxyConfig } from './types';
 import {
     proxyRequestHandler,
@@ -36,8 +37,8 @@ export const ui5Proxy = (config: ProxyConfig, options?: Options, filter?: Filter
             proxyRequestHandler(proxyReq, res, etag, logger);
         },
         pathRewrite: { [config.path]: ui5Ver + config.path },
-        onProxyRes: (proxyRes: IncomingMessage): void => {
-            proxyResponseHandler(proxyRes, etag);
+        onProxyRes: (proxyRes: IncomingMessage, req: Request): void => {
+            proxyResponseHandler(proxyRes, req, etag);
         },
         onError: (
             err: Error & { code?: string },

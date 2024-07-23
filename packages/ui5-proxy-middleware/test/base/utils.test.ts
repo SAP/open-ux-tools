@@ -36,8 +36,11 @@ describe('utils', () => {
         const proxyRes = {
             headers: {} as any
         };
+        const proxyReq = {
+            headers: {} as any
+        };
         const etag = 'W/MyEtag';
-        proxyResponseHandler(proxyRes as any, etag);
+        proxyResponseHandler(proxyRes as any, proxyReq as any, etag);
         expect(proxyRes.headers['Etag']).toEqual(etag);
         expect(proxyRes.headers['cache-control']).toEqual('no-cache');
     });

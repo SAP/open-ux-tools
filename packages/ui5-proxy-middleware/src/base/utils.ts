@@ -15,11 +15,16 @@ import { t } from '../i18n';
  * Sets an Etag which will be used for re-validation of the cached UI5 sources.
  *
  * @param proxyRes - proxy response object
+ * @param req
  * @param etag - ETag for the cached sources, normally the UI5 version
  */
-export const proxyResponseHandler = (proxyRes: IncomingMessage, etag: string): void => {
+export const proxyResponseHandler = (proxyRes: IncomingMessage, req: Request, etag: string): void => {
     proxyRes.headers['Etag'] = etag;
     proxyRes.headers['cache-control'] = 'no-cache';
+    if (proxyRes.statusCode === 404 && req.path.includes('/resources/sap/ushell/bootstrap/sandbox2.js')) {
+        proxyRes.statusCode = 302;
+        proxyRes.headers['location'] = '/test-resources/sap/ushell/bootstrap/sandbox.js';
+    }
 };
 
 /**
