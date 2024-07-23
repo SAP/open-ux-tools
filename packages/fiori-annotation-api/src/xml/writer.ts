@@ -288,15 +288,14 @@ function adjustFragmentIndentation(text: string, requiredIndent: number): string
     const lines = text.split('\n');
     lines.forEach((line, idx) => {
         if (line.length) {
-            let newLine = line;
             if (actual < requiredIndent) {
-                newLine = tab.repeat(requiredIndent - actual) + line;
+                line = tab.repeat(requiredIndent - actual) + line;
             } else if (line.startsWith(tab.repeat(requiredIndent))) {
-                newLine = line.substring(tab.repeat(actual - requiredIndent).length);
+                line = line.substring(tab.repeat(actual - requiredIndent).length);
             } else {
-                newLine = line.trim();
+                line = line.trim();
             }
-            lines[idx] = newLine;
+            lines[idx] = line;
         }
     });
     return lines.join('\n');
