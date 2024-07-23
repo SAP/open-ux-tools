@@ -8,7 +8,6 @@ import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import AppState from 'sap/ushell/services/AppState';
 import { getManifestAppdescr } from '../adp/api-handler';
 import VersionInfo from 'sap/ui/VersionInfo';
-import initUshellBootstrap from './initUshellBootstrap';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -242,15 +241,15 @@ export async function init({
     flex?: string | null;
     customInit?: string | null;
 }): Promise<void> {
-    const { version } = (await VersionInfo.load()) as { version: string };      
     const urlParams = new URLSearchParams(window.location.search);
-    const container =  (sap.ui.require('sap/ushell/Container') as typeof sap.ushell.Container);
+    const container = sap?.ushell?.Container ?? (sap.ui.require('sap/ushell/Container') as typeof sap.ushell.Container);
     let scenario: string = '';
-  
+
     // Register RTA if configured
     if (flex) {
         const flexSettings = JSON.parse(flex) as FlexSettings;
         scenario = flexSettings.scenario;
+        const { version } = (await VersionInfo.load()) as { version: string };
         container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {

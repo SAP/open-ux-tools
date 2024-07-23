@@ -2,7 +2,13 @@ import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import type { App, FlpConfig, Intent, InternalTestConfig, MiddlewareConfig, TestConfig } from '../types';
 import { render } from 'ejs';
 import { join, posix } from 'path';
-import { createProjectAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
+import {
+    createProjectAccess,
+    getMinimumUI5Version,
+    getWebappPath,
+    type Manifest,
+    type UI5FlexLayer
+} from '@sap-ux/project-access';
 import { readFileSync } from 'fs';
 import { mergeTestConfigDefaults } from './test';
 import { type Editor, create } from 'mem-fs-editor';
@@ -25,6 +31,7 @@ export interface FlexConnector {
  */
 export interface TemplateConfig {
     basePath: string;
+    bootstrapPath: string;
     apps: Record<
         string,
         {
@@ -262,7 +269,12 @@ export function createFlpTemplateConfig(config: FlpConfig, manifest: Partial<Man
     const id = manifest['sap.app']?.id ?? '';
     const ns = id.replace(/\./g, '/');
     const basePath = posix.relative(posix.dirname(config.path), '/') ?? '.';
+    const version = getMinimumUI5Version(manifest as Manifest);
+    const major = version ? parseInt(version.split('.')[0], 10) : 2;
+    const bootstrapPath =
+        major >= 2 ? '/resources/sap/ushell/bootstrap/sandbox2.js' : '/test-resources/sap/ushell/bootstrap/sandbox.js';
     return {
+        bootstrapPath,
         basePath,
         apps: {},
         init: config.init ? ns + config.init : undefined,
