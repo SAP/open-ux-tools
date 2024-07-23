@@ -27,4 +27,15 @@
     padding: 10px;
     font-size: 13px;
     font-weight: 400;
+    button.ms-Link.quick-action-child-link {
+        text-decoration: none;
+        color: var(--vscode-foreground);
+        &:hover,
+        &:hover:focus,
+        &:hover:active {
+            color: var(--vscode-textLink-foreground);
+            text-decoration: underline;
+        }
+    }
 }
+
