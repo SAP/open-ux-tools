@@ -9,7 +9,7 @@ import {
 import IconPoolMock from 'mock/sap/ui/core/IconPool';
 import { default as mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
 import * as apiHandler from '../../../src/adp/api-handler';
-import { fetchMock, sapMock, documentMock } from 'mock/window';
+import { fetchMock, sapMock } from 'mock/window';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
 import type { Scenario } from '@sap-ux-private/control-property-editor-common';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
