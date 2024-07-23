@@ -4,7 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { App, AppOptions, Package, UI5 } from './types';
 import { UI5Config, getEsmTypesVersion, getTypesPackage } from '@sap-ux/ui5-config';
-import type { Manifest } from '@sap-ux/project-access';
+import { getMinimumUI5Version, type Manifest } from '@sap-ux/project-access';
 import { mergeWithDefaults } from './data';
 import { ui5TSSupport } from './data/ui5Libs';
 import { applyOptionalFeatures, enableTypescript as enableTypescriptOption, getTemplateOptions } from './options';
@@ -131,7 +131,8 @@ async function enableTypescript(basePath: string, fs?: Editor): Promise<Editor> 
     const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
 
     const tmplPath = join(__dirname, '..', 'templates');
-    const typesVersion = getEsmTypesVersion(manifest['sap.ui5']?.dependencies?.minUI5Version);
+    //By chosing getMinimumUI5Version we assume that the esm type is compatible if there are multiple versions.
+    const typesVersion = getEsmTypesVersion(getMinimumUI5Version(manifest));
     const typesPackage = getTypesPackage(typesVersion);
     const ui5App = {
         app: manifest['sap.app'],
