@@ -23,13 +23,24 @@ export async function handleAction(action: ProjectActions): Promise<ProjectActio
         }
         case UPDATE_PROJECT_PATH: {
             const { application } = action;
-            const { projectPath, appId } = application;
-            const newProjectPath = projectPath ? join(projectPath) : testAppPath;
+            const projectPath = application?.projectPath;
+            const appId = application?.appId;
+            let newProjectPath: string | undefined;
+            if (projectPath) {
+                newProjectPath = join(projectPath);
+            } else if (projectPath === undefined) {
+                newProjectPath = testAppPath;
+            } else {
+                newProjectPath = '';
+            }
             let message: string | undefined;
+            if (!newProjectPath) {
+                setApplication(undefined);
+            }
             if (projectPath && !existsSync(newProjectPath)) {
                 message = 'Provided path does not exist';
             }
-            if (!message) {
+            if (!message && application) {
                 // Trigger validation to validate project path
                 message = await validateProject(application);
                 // If no error update path
@@ -40,7 +51,6 @@ export async function handleAction(action: ProjectActions): Promise<ProjectActio
                     });
                 }
             }
-
             responseAction = {
                 type: UPDATE_PROJECT_PATH_RESULT,
                 saved: !message,

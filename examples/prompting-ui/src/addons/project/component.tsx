@@ -6,7 +6,11 @@ import type { ApplicationInformation } from './types';
 getWebSocket();
 
 const setStoredApp = (app: ApplicationInformation): void => {
-    localStorage.setItem('projectPath', app.projectPath);
+    if (app.projectPath === undefined) {
+        localStorage.removeItem('projectPath');
+    } else {
+        localStorage.setItem('projectPath', app.projectPath);
+    }
     localStorage.setItem('appId', app.appId ?? '');
 };
 
@@ -45,19 +49,19 @@ const BlockerLoader = () => {
 };
 
 export const ProjectPathForm = memo(() => {
-    const [pendingApp, setPendingApp] = useState<ApplicationInformation>({
+    const [pendingApp, setPendingApp] = useState<ApplicationInformation | undefined>({
         projectPath: '',
         appId: ''
     });
-    const [savedApp, setSavedApp] = useState<ApplicationInformation>({
+    const [savedApp, setSavedApp] = useState<ApplicationInformation | undefined>({
         projectPath: '',
         appId: ''
     });
     const [message, setMessage] = useState('');
     const [busy, setBusy] = useState(false);
-    const isSubmitEnabled = savedApp.projectPath !== pendingApp.projectPath || savedApp.appId !== pendingApp.appId;
+    const isSubmitEnabled = savedApp?.projectPath !== pendingApp?.projectPath || savedApp?.appId !== pendingApp?.appId;
     // Method to update both - pending and currently saved path
-    const updateSavedApp = (app: ApplicationInformation) => {
+    const updateSavedApp = (app: ApplicationInformation | undefined) => {
         setPendingApp(app);
         setSavedApp(app);
     };
@@ -90,14 +94,18 @@ export const ProjectPathForm = memo(() => {
             typeof target.name === 'string'
         ) {
             const { name, value } = target;
-            setPendingApp({
-                ...pendingApp,
-                [name]: value
-            });
+            if (pendingApp) {
+                setPendingApp({
+                    ...pendingApp,
+                    [name]: value
+                });
+            } else {
+                setPendingApp(undefined);
+            }
         }
     };
     // Submit project path with pending path or passed path
-    const onSubmit = (_event?: React.SyntheticEvent, application: ApplicationInformation = pendingApp) => {
+    const onSubmit = (_event?: React.SyntheticEvent, application: ApplicationInformation | undefined = pendingApp) => {
         setBusy(true);
         updateProjectPath(application)
             .then((payload) => {
@@ -117,7 +125,7 @@ export const ProjectPathForm = memo(() => {
     // Reset project path to default mock path
     const onReset = () => {
         onSubmit(undefined, {
-            projectPath: '',
+            projectPath: undefined,
             appId: ''
         });
     };
@@ -140,14 +148,14 @@ export const ProjectPathForm = memo(() => {
                     <Form.Input
                         rev=""
                         size="100%"
-                        value={pendingApp.projectPath}
+                        value={pendingApp?.projectPath}
                         name="projectPath"
                         onChange={onPathInput}
                     />
                     <Form.Button onClick={onReset}>Reset to default</Form.Button>
                 </Form.Field>
                 <Form.Field label="App Folder(CAP only)">
-                    <Form.Input rev="" size="100%" value={pendingApp.appId} name="appId" onChange={onPathInput} />
+                    <Form.Input rev="" size="100%" value={pendingApp?.appId} name="appId" onChange={onPathInput} />
                 </Form.Field>
                 <div style={{ padding: '15px 0 0 130px' }}>
                     <Form.Button

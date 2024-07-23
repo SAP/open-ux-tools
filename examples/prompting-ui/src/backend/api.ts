@@ -14,12 +14,16 @@ const api: { [key: string]: PromptsAPI } = {};
  * @param appId app id in CAP project
  * @returns instance of prompt api.
  */
-export const getPromptApi = async (projectPath: string, fs: Editor, appId?: string): Promise<PromptsAPI> => {
-    const key = join(projectPath, appId ?? '');
+export const getPromptApi = async (
+    projectPath: string | undefined,
+    fs: Editor,
+    appId?: string
+): Promise<PromptsAPI> => {
+    const key = projectPath ? join(projectPath, appId ?? '') : '';
     if (api[key]) {
         return api[key];
     }
-    const promptsAPI = await PromptsAPI.init(projectPath, appId, fs);
+    const promptsAPI = await PromptsAPI.init(projectPath ?? '', appId, fs);
     // Cache entry
     api[key] = promptsAPI;
     return promptsAPI;
@@ -34,7 +38,7 @@ export const getPromptApi = async (projectPath: string, fs: Editor, appId?: stri
 export const validateProject = async (application: ApplicationInformation): Promise<string | undefined> => {
     try {
         const { projectPath, appId } = application;
-        const promptsAPI = await PromptsAPI.init(projectPath, appId);
+        const promptsAPI = await PromptsAPI.init(projectPath ?? '', appId);
         // Call API to get table questions - it should validate of path is supported
         const { questions } = await promptsAPI.getPrompts(PromptsType.Table);
         const entityQuestion = questions.find((question) => question.name === 'entity');

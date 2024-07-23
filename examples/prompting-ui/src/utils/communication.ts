@@ -251,7 +251,7 @@ export function validateAnswers(
  *
  * @returns Curently saved/stored project path.
  */
-export function getApplication(): Promise<ApplicationInformation> {
+export function getApplication(): Promise<ApplicationInformation | undefined> {
     return new Promise((resolve) => {
         const getAction: GetProjectPath = {
             type: GET_PROJECT_PATH
@@ -273,7 +273,9 @@ export function getApplication(): Promise<ApplicationInformation> {
  * @param application Information about application paths
  * @returns Update result information.
  */
-export function updateProjectPath(application: ApplicationInformation): Promise<UpdateProjectPathResultPayload> {
+export function updateProjectPath(
+    application: ApplicationInformation | undefined
+): Promise<UpdateProjectPathResultPayload> {
     return new Promise((resolve) => {
         const action: UpdateProjectPath = {
             type: UPDATE_PROJECT_PATH,

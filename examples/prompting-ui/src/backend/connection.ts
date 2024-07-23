@@ -53,7 +53,7 @@ export async function getEditor(forceUpdate = false): Promise<Editor> {
     }
     fsEditor = create(createStorage());
 
-    if (testAppPath === getApplication().projectPath) {
+    if (testAppPath === getApplication()?.projectPath) {
         fsEditor.copy([join(sampleAppPath)], join(testAppPath));
     }
 
@@ -106,7 +106,7 @@ async function handleAction(action: Actions): Promise<void> {
     try {
         const fs = await getEditor();
         const currentApp = getApplication();
-        const promptsAPI = await getPromptApi(currentApp.projectPath, fs, currentApp.appId);
+        const promptsAPI = await getPromptApi(currentApp?.projectPath, fs, currentApp?.appId);
         switch (action.type) {
             case GET_QUESTIONS: {
                 let responseAction: Actions | undefined;

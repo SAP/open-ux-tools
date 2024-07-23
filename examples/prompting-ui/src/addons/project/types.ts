@@ -16,7 +16,7 @@ export const UPDATE_PROJECT_PATH_RESULT = 'UPDATE_PROJECT_PATH_RESULT';
 export const VALIDATE_ANSWERS = 'VALIDATE_ANSWERS';
 
 export interface ApplicationInformation {
-    projectPath: string;
+    projectPath?: string;
     appId?: string;
 }
 
@@ -26,12 +26,12 @@ export interface GetProjectPath {
 
 export interface SetProjectPath {
     type: typeof SET_PROJECT_PATH;
-    application: ApplicationInformation;
+    application: ApplicationInformation | undefined;
 }
 
 export interface UpdateProjectPath {
     type: typeof UPDATE_PROJECT_PATH;
-    application: ApplicationInformation;
+    application: ApplicationInformation | undefined;
 }
 
 export interface UpdateProjectPathResultPayload {
