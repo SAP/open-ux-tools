@@ -34,7 +34,14 @@
         "applicationListLabel": "Select Application",
         "applicationListTooltip": "Select the application for which you want to create an app variant",
         "appInfoLabel": "Have in mind that synchronous views are detected for this application and controller extensions are not supported for such views. Controller extension functionality on these views will be disabled.",
-        "v4AppNotOfficialLabel": "You have selected an app based on SAP Fiori elements for OData V4. Note the following important information when you create adaptation changes: https://wiki.wdf.sap.corp/wiki/display/fioritech/Adaptation+Project+Support"
+        "v4AppNotOfficialLabel": "You have selected an app based on SAP Fiori elements for OData V4. Note the following important information when you create adaptation changes: https://wiki.wdf.sap.corp/wiki/display/fioritech/Adaptation+Project+Support",
+        "ui5VersionLabel": "Select SAP UI5 version",
+        "ui5VersionTooltip": "Select the SAP UI5 version you want to use for preview of your app variant",
+        "currentUI5VersionLabel": "UI5 version: {{version}}",
+        "currentUI5VersionTooltip": "This is the current latest UI5 version which is available in cloud systems",
+        "fioriIdLabel": "Fiori ID",
+        "fioriIdHint": "This is an one-time, semantic identifier for the app variant. The Fiori ID will be shown in the 'About' section of the app for ease of identification and will also be available in the Fiori Apps Reference Library.",
+        "adpNotSupported": "NOTE: The selected application is not supported by Adaptation Project"
     },
     "choices": {
         "annotationFile": {
@@ -66,6 +73,10 @@
 
         "cannotLoadApplicationsError": "Cannot load applications from the system.",
         "appDoesNotSupportManifest": "Select a different application. The selected application is not supported by Adaptation Project. Please refer to SAPUI5 Adaptation Project documentation for more information.",
-        "appDoesNotSupportAdaptation": "Select a different application. Selected application does not support Flexibility and therefore it does not support Adaptation Project."
+        "appDoesNotSupportAdaptation": "Select a different application. Selected application does not support Flexibility and therefore it does not support Adaptation Project.",
+        "ui5VersionNotReachableError": "The url of the UI5 version you have selected is not reachable. <URL> should be made accessible through cloud connector and destination configuration in order to be consumed within SAPUI5 Adaptation project and its SAPUI5 Visual Editor.",
+        "ui5VersionOutdatedError": "The SAPUI5 version you have selected is not compatible with SAPUI5 Visual Editor. Please select a different version.",
+        "ui5VersionCannotBeEmpty": "Version cannot be empty",
+        "ui5VersionNotDetectedError": "The UI5 version of the selected system could not be determined. You will be able to create and edit Adaptation project with the newest version, but it will not be usable on this system until system`s UI5 version is not upgraded to at least 1.71."
     }
 }

@@ -488,4 +488,7 @@ export interface ConfigurationInfoAnswers {
     password: string;
     projectType: AdaptationProjectType;
     application: string;
+    ui5Version: string;
+    latestUI5version: string;
+    versionInfo: string;
 }
