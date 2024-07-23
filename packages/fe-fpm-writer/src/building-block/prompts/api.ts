@@ -64,12 +64,12 @@ export class PromptsAPI {
      * @param project
      * @param appId app id in CAP project
      */
-    constructor(fs: Editor, project: Project, appId = '') {
+    constructor(fs: Editor, project: Project | undefined, appId = '') {
         this.context = {
             fs,
             project: project,
             appId: appId,
-            appPath: join(project.root, appId)
+            appPath: project ? join(project.root, appId) : ''
         };
     }
 
@@ -86,7 +86,7 @@ export class PromptsAPI {
             fs = create(createStorage());
         }
         await initI18n();
-        const project = await getProject(projectPath);
+        const project = projectPath ? await getProject(projectPath) : undefined;
         return new PromptsAPI(fs, project, appId);
     }
 

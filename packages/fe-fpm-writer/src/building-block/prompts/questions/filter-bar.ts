@@ -41,7 +41,7 @@ export async function getFilterBarBuildingBlockPrompts(
                 default: defaultAnswers.id,
                 required: true
             }),
-            ...((await isCapProject(project))
+            ...(project && isCapProject(project)
                 ? [
                       await getCAPServicePrompt(context, {
                           required: true,

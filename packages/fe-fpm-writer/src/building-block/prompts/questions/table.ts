@@ -80,7 +80,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
                 default: 'relative',
                 required: true
             }),
-            ...((await isCapProject(project))
+            ...(project && isCapProject(project)
                 ? [
                       await getCAPServicePrompt(context, {
                           groupId: groupIds.commonBlockProperties,

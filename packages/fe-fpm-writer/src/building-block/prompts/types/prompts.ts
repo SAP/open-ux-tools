@@ -12,7 +12,7 @@ import type {
 
 export interface PromptContext {
     fs: Editor;
-    project: Project;
+    project?: Project;
     appPath: string;
     appId: string;
 }
