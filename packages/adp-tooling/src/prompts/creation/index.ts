@@ -1,7 +1,7 @@
 import { t } from '../../i18n';
 import { isCustomerBase } from '../../base/helper';
 import { getProjectNames } from '../../base/file-system';
-import { BasicInfoAnswers, ConfigurationInfoAnswers, ProjectType, SystemInfo, TargetEnvAnswers } from '../../types';
+import { BasicInfoAnswers, ConfigurationInfoAnswers, TargetEnvAnswers } from '../../types';
 import {
     isNotEmptyString,
     validateClient,
@@ -13,9 +13,12 @@ import {
 import { isAppStudio } from '@sap-ux/btp-utils';
 import {
     AbapServiceProvider,
+    AdaptationProjectType,
     AxiosRequestConfig,
     OperationsType,
     ProviderConfiguration,
+    SystemInfo,
+    UI5RtVersionService,
     UIFlexService
 } from '@sap-ux/axios-extension';
 import { Endpoint, checkEndpoints, isExtensionInstalledVsCode } from '@sap-ux/environment-check';
@@ -34,6 +37,16 @@ export interface Auth {
     client?: string;
 }
 
+interface Application {
+    'sap.app/id': string;
+    'sap.app/title': string;
+    'sap.app/ach': string;
+    'sap.fiori/registrationIds': string;
+    'fileType': string;
+    'url': string;
+    'repoName': string;
+}
+
 export interface ChoiceOption<T = string> {
     name: string;
     value: T;
@@ -42,6 +55,28 @@ export interface ChoiceOption<T = string> {
 export function isVisible(isCFEnv: boolean, isLoggedIn: boolean): boolean {
     return !isCFEnv || (isCFEnv && isLoggedIn);
 }
+
+const S4HANAAppsParams = {
+    'sap.app/type': 'application',
+    'sap.fiori/cloudDevAdaptationStatus': 'released',
+    'fields':
+        'sap.app/id,repoName,sap.fiori/cloudDevAdaptationStatus,sap.app/ach,sap.fiori/registrationIds,sap.app/title,url,fileType'
+};
+
+const ABAPAppsParams = {
+    'fields': 'sap.app/id,sap.app/ach,sap.fiori/registrationIds,sap.app/title,url,fileType,repoName',
+    'sap.ui/technology': 'UI5',
+    'sap.app/type': 'application',
+    'fileType': 'appdescr'
+};
+
+const ABAPVariantsAppsParams = {
+    'fields': 'sap.app/id,sap.app/ach,sap.fiori/registrationIds,sap.app/title,url,fileType,repoName',
+    'sap.ui/technology': 'UI5',
+    'sap.app/type': 'application',
+    'fileType': 'appdescr_variant',
+    'originLayer': 'VENDOR'
+};
 
 function getEnvironments(isCfInstalled: boolean): ChoiceOption<OperationsType>[] {
     const choices: ChoiceOption<OperationsType>[] = [{ name: 'OnPremise', value: 'P' }];
@@ -157,7 +192,12 @@ export default class ProjectPrompter {
     private systemInfo: SystemInfo;
     private applicationIds: any;
     private ui5VersionDetected = true;
+    private isCloudProject: boolean;
+    private isApplicationSupported: boolean;
+    private appSync: boolean;
+    private isV4AppInternalMode: boolean;
 
+    private versionsOnSystem: string[];
     private systemNames: string[];
     private endpoints: Endpoint[];
 
@@ -172,9 +212,9 @@ export default class ProjectPrompter {
 
     private modifyAdaptationProjectTypes(): void {
         const { adaptationProjectTypes } = this.systemInfo;
-        if (adaptationProjectTypes.includes(ProjectType.CLOUD_READY) && !this.isCustomerBase) {
+        if (adaptationProjectTypes.includes(AdaptationProjectType.CLOUD_READY) && !this.isCustomerBase) {
             this.systemInfo.adaptationProjectTypes = adaptationProjectTypes.filter(
-                (type) => type != ProjectType.CLOUD_READY
+                (type) => type != AdaptationProjectType.CLOUD_READY
             );
         }
     }
@@ -187,7 +227,7 @@ export default class ProjectPrompter {
 
         if (
             adaptationProjectTypes.length === 1 &&
-            adaptationProjectTypes[0] === ProjectType.CLOUD_READY &&
+            adaptationProjectTypes[0] === AdaptationProjectType.CLOUD_READY &&
             !isCustomerBase
         ) {
             this.systemInfo.adaptationProjectTypes = [];
@@ -227,6 +267,22 @@ export default class ProjectPrompter {
         }
     }
 
+    private async systemUI5VersionHandler(value: string): Promise<string[]> {
+        if (value) {
+            try {
+                const service = await this.provider.getAdtService<UI5RtVersionService>(UI5RtVersionService);
+                const version = await service?.getUI5Version();
+                // this.versionsOnSystem = await UI5VersionsUtils.getSystemRelevantVersions(version);
+            } catch (e) {
+                // this.versionsOnSystem = await UI5VersionsUtils.getRelevantVersions();
+            }
+        } else {
+            // this.versionsOnSystem = await UI5VersionsUtils.getRelevantVersions();
+        }
+        // this.ui5VersionDetected = UI5VersionsUtils.getDetectedVersion();
+        return this.versionsOnSystem;
+    }
+
     private async systemPromptValidationHandler(value: string): Promise<boolean | string> {
         this.applicationIds = [];
         this.ui5VersionDetected = true;
@@ -243,15 +299,15 @@ export default class ProjectPrompter {
         if (!this.hasSystemAuthentication) {
             try {
                 await this.getSystemData(value);
-                // this.versionsOnSystem = await this._systemUI5VersionHandler(value);
+                this.versionsOnSystem = await this.systemUI5VersionHandler(value);
                 if (isAppStudio()) {
                     return this.validateAdaptationProjectTypes();
                 } else {
-                    // await this._getApplications(value);
+                    await this.getApplications(value);
                 }
             } catch (e) {
                 // this.logger.log(e);
-                return e.message;
+                return e.message; // TODO: uncomment
             }
         }
 
@@ -286,16 +342,18 @@ export default class ProjectPrompter {
     }
 
     private async getSystemData(system: string, client?: string, username?: string, password?: string): Promise<void> {
-        await this.setProvider(system, client);
-        this.flexUISystem = await this.isFlexUISupportedSystem();
+        await this.setProvider(system, client, username, password);
+        // this.flexUISystem = await this.isFlexUISupportedSystem(); // TODO: Does not work
+        this.flexUISystem = { isOnPremise: true, isUIFlex: true }; // TODO: remove fake assign
         if (isAppStudio()) {
             try {
                 // TODO:
-                // this.systemInfo = await this.abapConnectionService.getSystemInfo();
+                const lrep = this.provider.getLayeredRepository();
+                this.systemInfo = await lrep.getSystemInfo();
             } catch (e) {
                 // in case request to /sap/bc/lrep/dta_folder/system_info throws error we continue to standart onPremise flow
                 this.systemInfo = {
-                    adaptationProjectTypes: [ProjectType.ON_PREMISE],
+                    adaptationProjectTypes: [AdaptationProjectType.ON_PREMISE],
                     activeLanguages: []
                 };
             }
@@ -314,6 +372,81 @@ export default class ProjectPrompter {
         const settings = await adtService?.getUIFlex();
 
         return settings;
+    }
+
+    public async getApps(isCustomerBase: boolean, isCloudSystem: boolean) {
+        let applicationIds = [];
+        let result: any = [];
+
+        const appIndex = this.provider.getAppIndex();
+
+        try {
+            if (isCloudSystem) {
+                result = await appIndex.search(S4HANAAppsParams);
+            } else {
+                result = await appIndex.search(ABAPAppsParams);
+
+                if (isCustomerBase) {
+                    const extraApps = await appIndex.search(ABAPVariantsAppsParams);
+                    result = result.concat(extraApps);
+                }
+            }
+
+            applicationIds = result
+                .map((app: Application) => {
+                    return {
+                        id: app['sap.app/id'],
+                        title: app['sap.app/title'],
+                        ach: app['sap.app/ach'],
+                        registrationIds: app['sap.fiori/registrationIds'],
+                        fileType: app['fileType'],
+                        bspUrl: app['url'],
+                        bspName: app['repoName']
+                    };
+                })
+                .sort((appA: { title: string; id: string }, appB: { title: string; id: string }) => {
+                    let titleA = appA.title.toUpperCase();
+                    let titleB = appB.title.toUpperCase();
+                    if (!titleA.trim()) {
+                        titleA = appA.id.toUpperCase();
+                    }
+
+                    if (!titleB.trim()) {
+                        titleB = appB.id.toUpperCase();
+                    }
+
+                    if (titleA < titleB) {
+                        return -1;
+                    }
+                    if (titleA > titleB) {
+                        return 1;
+                    }
+                    return 0;
+                });
+        } catch (e) {
+            throw new Error(t('validators.cannotLoadApplicationsError'));
+        }
+        return applicationIds;
+    }
+
+    private async getApplications(
+        system: string,
+        username?: string,
+        password?: string,
+        client?: string
+    ): Promise<void> {
+        await this.setProvider(system, client, username, password);
+        if (!this.flexUISystem) {
+            this.flexUISystem = await this.isFlexUISupportedSystem();
+        }
+
+        this.applicationIds =
+            this.isCloudProject || (this.flexUISystem && (this.flexUISystem.isOnPremise || this.flexUISystem.isUIFlex))
+                ? await this.getApps(this.isCustomerBase, this.isCloudProject)
+                : [];
+        if (this.applicationIds.length === 0) {
+            this.logger.log('Applications list is empty. No errors were thrown during execution of the request.');
+        }
     }
 
     private async getSystemRequiresAuth(systemName: string): Promise<boolean> {
@@ -340,6 +473,10 @@ export default class ProjectPrompter {
                   url: foundSystemByUrl.Url
               }
             : undefined;
+    }
+
+    private shouldAuthenticate(answers: ConfigurationInfoAnswers): boolean | string {
+        return answers.system && this.hasSystemAuthentication && (answers.username === '' || answers.password === '');
     }
 
     private getDestinationRequiresAuth(systemName: string) {
@@ -471,7 +608,7 @@ export default class ProjectPrompter {
             guiOptions: {
                 hint: t('prompts.systemTooltip')
             },
-            // when: isAppStudio() ? this.systemInfo?.adaptationProjectTypes?.length : true, // TODO:
+            when: isAppStudio() ? this.systemInfo?.adaptationProjectTypes?.length : true,
             validate: this.systemPromptValidationHandler.bind(this)
         } as ListQuestion<ConfigurationInfoAnswers>;
     }
@@ -560,7 +697,8 @@ export default class ProjectPrompter {
                         return this.validateAdaptationProjectTypes();
                     }
                 } catch (e) {
-                    this.flexUISystem = undefined;
+                    // this.flexUISystem = undefined;
+                    this.flexUISystem = { isOnPremise: true, isUIFlex: true }; // TODO: Remove this fake assign
                     this.isCFLoginSuccessfull = false;
                     // return MessageUtils.getLoginErrorMessage(e?.response);
                 }
@@ -581,6 +719,151 @@ export default class ProjectPrompter {
         } as PasswordQuestion<ConfigurationInfoAnswers>;
     }
 
+    private getProjectTypeListPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
+        return {
+            type: 'list',
+            name: 'projectType',
+            message: t('prompts.projectTypeLabel'),
+            when: (answers: ConfigurationInfoAnswers) =>
+                !!answers.system &&
+                !this.shouldAuthenticate(answers) &&
+                this.systemInfo?.adaptationProjectTypes?.length &&
+                this.systemInfo.adaptationProjectTypes.length > 1 &&
+                isAppStudio() &&
+                (this.hasSystemAuthentication ? this.isLoginSuccessfull : true),
+            choices: () => this.systemInfo.adaptationProjectTypes,
+            default: () =>
+                this.systemInfo.adaptationProjectTypes.includes(AdaptationProjectType.ON_PREMISE)
+                    ? AdaptationProjectType.ON_PREMISE
+                    : this.systemInfo.adaptationProjectTypes[0],
+            validate: async (value: AdaptationProjectType, answers: ConfigurationInfoAnswers) => {
+                this.isCloudProject = value === AdaptationProjectType.CLOUD_READY;
+                // this._setAdditionalPagesForCloudProjects(); // TODO:
+
+                try {
+                    await this.getApplications(answers.system, answers.username, answers.password, answers.client);
+                } catch (e) {
+                    return e.message;
+                }
+
+                if (!isNotEmptyString(value)) {
+                    return t('prompts.inputCannotBeEmpty');
+                }
+
+                return true;
+            },
+            guiOptions: {
+                hint: t('prompts.projectTypeTooltip'),
+                applyDefaultWhenDirty: true
+            }
+        } as ListQuestion<ConfigurationInfoAnswers>;
+    }
+
+    private getApplicationPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
+        return true ? this.getApplicationListPrompt() : this.getApplicationInputPrompt();
+        // return this.isInYeomanUIContext ? this._getApplicationListPrompt() : this._getApplicationInputPrompt(); // TODO: ?
+    }
+
+    private getApplicationListPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
+        return {
+            type: 'list',
+            name: 'application',
+            message: t('prompts.applicationListLabel'),
+            when: (answers: ConfigurationInfoAnswers) => {
+                // show the field when the system is selected and the user is authenticated if needed
+                return (
+                    !!answers.system &&
+                    !this.shouldAuthenticate(answers) &&
+                    (this.hasSystemAuthentication ? this.isLoginSuccessfull : true) &&
+                    // In vscode the flow does not rely on systemInfo
+                    (isAppStudio() ? this.systemInfo?.adaptationProjectTypes?.length : true)
+                );
+            },
+            choices: () => {
+                return Array.isArray(this.applicationIds)
+                    ? this.applicationIds.map((app) => {
+                          const name = app.title
+                              ? `${app.title} (${app.id}, ${app.registrationIds}, ${app.ach})`
+                              : `${app.id} (${app.registrationIds}, ${app.ach})`;
+                          return {
+                              value: { id: app.id, fileType: app.fileType, bspUrl: app.bspUrl, bspName: app.bspName },
+                              name: name
+                                  .replace('(, )', '')
+                                  .replace(', , ', ', ')
+                                  .replace(', )', ')')
+                                  .replace('(, ', '(')
+                          };
+                      })
+                    : this.applicationIds;
+            },
+            default: '',
+            guiOptions: {
+                applyDefaultWhenDirty: true,
+                hint: t('prompts.applicationListTooltip')
+            },
+            validate: async (value: string, answers: ConfigurationInfoAnswers) => {
+                // TODO:
+                // const validationResult = await this._applicationPromptValidationHandler(value, answers);
+                const validationResult = '';
+
+                if (!isAppStudio()) {
+                    return validationResult;
+                }
+
+                if (
+                    validationResult === t('validators.appDoesNotSupportManifest') ||
+                    validationResult === t('validators.appDoesNotSupportAdaptation')
+                ) {
+                    this.isApplicationSupported = false;
+                    return true;
+                }
+
+                return validationResult;
+            }
+        } as ListQuestion<ConfigurationInfoAnswers>;
+    }
+
+    private getApplicationInputPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
+        return {
+            type: 'input',
+            name: 'application',
+            message: t('prompts.applicationListLabel'),
+            // TODO:
+            // validate: this._applicationPromptValidationHandler.bind(this),
+            store: false,
+            guiOptions: {
+                hint: t('prompts.applicationListTooltip')
+            }
+        } as InputQuestion<ConfigurationInfoAnswers>;
+    }
+
+    private getApplicationInfoPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
+        return {
+            type: 'input',
+            name: 'appInfo',
+            message: t('prompts.appInfoLabel'),
+            when: (answers: ConfigurationInfoAnswers) =>
+                this.appSync && this.isApplicationSupported && !!answers.application,
+            guiOptions: {
+                type: 'label',
+                applyDefaultWhenDirty: true
+            }
+        } as InputQuestion<ConfigurationInfoAnswers>;
+    }
+
+    private getApplicationV4InfoPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
+        return {
+            type: 'input',
+            name: 'v4Info',
+            message: t('prompts.v4AppNotOfficialLabel'),
+            when: () => this.isV4AppInternalMode,
+            guiOptions: {
+                type: 'label',
+                applyDefaultWhenDirty: true
+            }
+        } as InputQuestion<ConfigurationInfoAnswers>;
+    }
+
     public async getConfigurationPrompts(): Promise<YUIQuestion<ConfigurationInfoAnswers>[]> {
         this.endpoints = await getEndpoints();
         this.systemNames = await getSystemNames(this.endpoints);
@@ -589,7 +872,18 @@ export default class ProjectPrompter {
             await this.getSystemPrompt(),
             this.getSystemClientPrompt(),
             this.getUsernamePrompt(),
-            this.getPasswordPrompt()
+            this.getPasswordPrompt(),
+            this.getProjectTypeListPrompt(),
+            // ....
+            // ....
+            // ....
+            // ....
+            // ....
+            this.getApplicationPrompt(),
+            // ....
+            // ....
+            this.getApplicationInfoPrompt(),
+            this.getApplicationV4InfoPrompt()
         ];
     }
 }

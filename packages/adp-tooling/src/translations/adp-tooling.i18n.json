@@ -28,7 +28,13 @@
         "systemTooltip": "Select a system to load its application list",
         "systemClientLabel": "System client",
         "usernameLabel": "Enter the user name for the backend system",
-        "passwordLabel": "Enter the password for the backend system"
+        "passwordLabel": "Enter the password for the backend system",
+        "projectTypeLabel": "Select Project Type",
+        "projectTypeTooltip": "Select the type of the project you want to create",
+        "applicationListLabel": "Select Application",
+        "applicationListTooltip": "Select the application for which you want to create an app variant",
+        "appInfoLabel": "Have in mind that synchronous views are detected for this application and controller extensions are not supported for such views. Controller extension functionality on these views will be disabled.",
+        "v4AppNotOfficialLabel": "You have selected an app based on SAP Fiori elements for OData V4. Note the following important information when you create adaptation changes: https://wiki.wdf.sap.corp/wiki/display/fioritech/Adaptation+Project+Support"
     },
     "choices": {
         "annotationFile": {
@@ -56,6 +62,10 @@
         "unsupportedSystemInt": "The system that you have selected cannot be detected to be of type OnPremise. You should select system of this type in order to continue with the generation of the project.",
         "unsupportedSystemExt": "The system that you have selected cannot be detected to be of type OnPremise or of type CloudReady. You should select system of either of both types in order to continue with the generation of the project.",
         "unsupportedCloudSystemInt": "You have selected system that does not support OnPremise adaptation projects. Please select such system.",
-        "selectCannotBeEmptyError": "{{value}} has to be selected"
+        "selectCannotBeEmptyError": "{{value}} has to be selected",
+
+        "cannotLoadApplicationsError": "Cannot load applications from the system.",
+        "appDoesNotSupportManifest": "Select a different application. The selected application is not supported by Adaptation Project. Please refer to SAPUI5 Adaptation Project documentation for more information.",
+        "appDoesNotSupportAdaptation": "Select a different application. Selected application does not support Flexibility and therefore it does not support Adaptation Project."
     }
 }

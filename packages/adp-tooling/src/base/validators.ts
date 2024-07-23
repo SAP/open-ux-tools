@@ -2,7 +2,6 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { OperationsType } from '@sap-ux/axios-extension';
 import { t } from '../i18n';
 import { existsSync } from 'fs';
-import { ProjectType, SystemInfo } from '../types';
 
 /**
  * Checks if the input is a valid SAP client.

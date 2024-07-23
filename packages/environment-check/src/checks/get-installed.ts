@@ -91,7 +91,7 @@ async function getExtensionsVSCode(): Promise<{ [id: string]: { version: string 
 export function isExtensionInstalledVsCode(extensionName: string): boolean {
     try {
         const vscode = require('vscode');
-        return !!vscode.extensions.getExtension(extensionName);
+        return !!vscode?.extensions.getExtension(extensionName);
     } catch (e) {
         // "vscode" is unavailable in CLI context, and we are unable to check whether the extension is installed
         return true;

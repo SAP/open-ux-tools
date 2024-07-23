@@ -1,7 +1,7 @@
 import type { UI5FlexLayer, ManifestNamespace } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp, BspApp } from '@sap-ux/ui5-config';
-import type { OperationsType } from '@sap-ux/axios-extension';
+import type { AdaptationProjectType, OperationsType } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 
 export interface DescriptorVariant {
@@ -486,23 +486,6 @@ export interface ConfigurationInfoAnswers {
     client: string;
     username: string;
     password: string;
-}
-
-/**
- * Structure of the system info reponse data.
- */
-export interface SystemInfo {
-    adaptationProjectTypes: ProjectType[];
-    activeLanguages: Language[];
-}
-
-export interface Language {
-    sap: string;
-    description: string;
-    i18n: string;
-}
-
-export const enum ProjectType {
-    CLOUD_READY = 'cloudReady',
-    ON_PREMISE = 'onPremise'
+    projectType: AdaptationProjectType;
+    application: string;
 }
