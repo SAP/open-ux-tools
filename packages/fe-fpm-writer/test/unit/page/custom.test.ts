@@ -45,6 +45,12 @@ describe('CustomPage', () => {
         fs.delete(testDir);
     });
 
+    test('validateBasePath - standard required lib `sap.fe.templates`', () => {
+        const target = join(testDir, 'validateBasePathRequired');
+        fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+        expect(() => validateBasePath(target, fs)).toThrowError('Dependency sap.fe.templates is missing');
+    });
+
     test('validateBasePath', () => {
         const target = join(testDir, 'validateBasePath');
         fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
