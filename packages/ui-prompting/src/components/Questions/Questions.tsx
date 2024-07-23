@@ -17,7 +17,6 @@ import './Questions.scss';
 
 export interface QuestionsProps {
     questions: PromptQuestion[];
-    // ToDo - is it correct type?
     answers?: Answers;
     choices?: DynamicChoices;
     validation?: ValidationResults;
