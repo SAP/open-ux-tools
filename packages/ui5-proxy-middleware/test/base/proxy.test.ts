@@ -132,7 +132,7 @@ describe('proxy', () => {
         if (typeof proxyConfig?.onProxyRes === 'function') {
             proxyConfig?.onProxyRes({} as any, {} as any, {} as any);
             expect(proxyResponseHandlerSpy).toHaveBeenCalledTimes(1);
-            expect(proxyResponseHandlerSpy).toHaveBeenCalledWith({}, 'W/"1.0.0"');
+            expect(proxyResponseHandlerSpy).toHaveBeenCalledWith({}, {}, 'W/"1.0.0"');
         }
         expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
             utils.filterCompressedHtmlFiles,

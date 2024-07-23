@@ -4,7 +4,7 @@ exports[`config createFlpTemplateConfig minimum settings 1`] = `
 Object {
   "apps": Object {},
   "basePath": "..",
-  "bootstrapPath": "/resources/sap/ushell/bootstrap/sandbox2.js",
+  "bootstrapPath": "../resources/sap/ushell/bootstrap/sandbox2.js",
   "init": undefined,
   "locateReuseLibsScript": undefined,
   "ui5": Object {
@@ -68,19 +68,19 @@ exports[`config generatePreviewFiles minimum settings 1`] = `
             defaultRenderer: \\"fiori2\\",
             renderers: {
                 fiori2: {
-                  componentData: {
-                      config: {
-                        search: \\"hidden\\",
-                        enableSearch: false
-                      }
-                  }
+                    componentData: {
+                        config: {
+                            search: \\"hidden\\",
+                            enableSearch: false
+                        }
+                    }
               }
           },
           applications: {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
         };
     </script>
 
-    <script src=\\"..//test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -146,19 +146,19 @@ Object {
             defaultRenderer: \\"fiori2\\",
             renderers: {
                 fiori2: {
-                  componentData: {
-                      config: {
-                        search: \\"hidden\\",
-                        enableSearch: false
-                      }
-                  }
+                    componentData: {
+                        config: {
+                            search: \\"hidden\\",
+                            enableSearch: false
+                        }
+                    }
               }
           },
           applications: {\\"simpleApp-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/apps/simple-app\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/apps/other-app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
         };
     </script>
 
-    <script src=\\"..//resources/sap/ushell/bootstrap/sandbox2.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script src=\\"../resources/sap/ushell/bootstrap/sandbox2.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -227,19 +227,19 @@ Object {
             defaultRenderer: \\"fiori2\\",
             renderers: {
                 fiori2: {
-                  componentData: {
-                      config: {
-                        search: \\"hidden\\",
-                        enableSearch: false
-                      }
-                  }
+                    componentData: {
+                        config: {
+                            search: \\"hidden\\",
+                            enableSearch: false
+                        }
+                    }
               }
           },
           applications: {\\"myapp-myaction\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
         };
     </script>
 
-    <script src=\\"..//test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
