@@ -272,11 +272,11 @@ function getTextFragmentIndentation(text: string): number {
     const lines = text.split('\n');
     const linesWithTextIndices = lines.map((line, idx) => (line.length > 0 ? idx : -1));
     const indentTextIndex = linesWithTextIndices.find((idx) => idx > -1);
-    if (indentTextIndex == undefined) {
+    if (indentTextIndex === undefined) {
         return 0;
     }
     const indentLineText = lines[indentTextIndex];
-    return Math.ceil(indentLineText.length - indentLineText.trimStart().length) / 4;
+    return Math.ceil((indentLineText.length - indentLineText.trimStart().length) / 4);
 }
 
 function adjustFragmentIndentation(text: string, requiredIndent: number): string {
