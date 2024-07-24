@@ -69,7 +69,9 @@ export function ChangeIndicator(props: ChangeIndicatorProps): ReactElement {
  * @param props.type  - either control or property
  * @returns ReactElement
  */
-function ChangeIndicatorTooltip(props: Readonly<{ changeIndicatorProps: ChangeIndicatorProps; type: string }>): ReactElement {
+function ChangeIndicatorTooltip(
+    props: Readonly<{ changeIndicatorProps: ChangeIndicatorProps; type: string }>
+): ReactElement {
     const { saved, pending } = props.changeIndicatorProps;
     const { t } = useTranslation();
     if (saved > 0 && pending === 0) {
