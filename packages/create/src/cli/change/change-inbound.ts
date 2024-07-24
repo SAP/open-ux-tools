@@ -3,7 +3,7 @@ import { getLogger, traceChanges } from '../../tracing';
 import { ChangeType, generateChange, getPromptsForChangeInbound, getVariant } from '@sap-ux/adp-tooling';
 import type { DescriptorVariantContent } from '@sap-ux/adp-tooling';
 import { promptYUIQuestions } from '../../common';
-import { validateAdpProject } from '../../validation';
+import { validateAdpProject, validateCloudAdpProject } from '../../validation';
 
 /**
  * Add a new sub-command to change the inbound of an adaptation project to the given command.
@@ -31,7 +31,8 @@ async function changeInbound(basePath: string, simulate: boolean): Promise<void>
             basePath = process.cwd();
         }
 
-        await validateAdpProject(basePath, true);
+        await validateAdpProject(basePath);
+        validateCloudAdpProject(basePath);
         const variant = getVariant(basePath);
         const change = variant.content.find(
             (change: DescriptorVariantContent) => change.changeType === 'appdescr_app_removeAllInboundsExceptOne'
