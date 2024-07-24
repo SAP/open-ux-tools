@@ -4,9 +4,13 @@ import type { Logger } from '@sap-ux/logger';
 import { isAxiosError } from '../base/odata-request-error';
 
 export interface App extends Record<string, unknown> {
+    [key: string]: string | string[];
     'sap.app/id': string;
     'sap.app/title': string;
     'sap.fiori/registrationIds': string[];
+    'sap.app/ach': string;
+    fileType: string;
+    repoName: string;
     url: string;
 }
 
@@ -72,26 +76,6 @@ export abstract class AppIndexService extends Axios implements Service {
             return isManiFirstSupported;
         } catch (error) {
             this.log.error(`Fail fetching ui5_app_mani_first_supported for app with id: ${appId}.`);
-            this.log.debug(error);
-            throw error;
-        }
-    }
-
-    public async getManifest(manifestUrl: string) {
-        try {
-            const config: AxiosRequestConfig = {
-                url: manifestUrl
-            };
-
-            const response = await this.request(config);
-
-            if (typeof response.data !== 'object') {
-                throw new Error('Manifest parsing error: Manifest is not in expected format.');
-            }
-
-            return response.data;
-        } catch (error) {
-            this.log.error(`Failed to fetch the manifest with url ${manifestUrl}.`);
             this.log.debug(error);
             throw error;
         }

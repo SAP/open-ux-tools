@@ -471,6 +471,19 @@ export interface InboundChange {
     };
 }
 
+export interface IPrompt {
+    name: string;
+    description: string;
+}
+export declare class Prompts {
+    private readonly items;
+    private callback;
+    constructor(items?: IPrompt[]);
+    splice(start: number, deleteCount: number, items?: IPrompt[]): void;
+    setCallback(callback: any): void;
+    size(): number;
+}
+
 export interface TargetEnvAnswers {
     targetEnv: OperationsType;
 }
@@ -492,6 +505,48 @@ export interface ConfigurationInfoAnswers {
     latestUI5version: string;
     versionInfo: string;
 }
+export interface FlexUISupportedSystem {
+    isUIFlex: boolean;
+    isOnPremise: boolean;
+}
+
+export interface Auth {
+    url?: string;
+    client?: string;
+}
+
+export interface AppIndex {
+    'sap.app/id': string;
+    'sap.app/title': string;
+    'sap.app/ach': string;
+    'sap.fiori/registrationIds': string;
+    'fileType': string;
+    'url': string;
+    'repoName': string;
+}
+
+export interface Application {
+    id: string;
+    fileType: string;
+    bspUrl: string;
+    bspName: string;
+}
+
+export interface UI5Version {
+    latest: VersionDetail;
+    [key: string]: VersionDetail;
+}
+
+export interface VersionDetail {
+    version: string;
+    support: string;
+    lts: boolean;
+}
+
+export interface ChoiceOption<T = string> {
+    name: string;
+    value: T;
+}
 
 export interface ParamCheck {
     shouldApply: boolean;
@@ -510,4 +565,8 @@ export interface Parameter {
 export interface Value {
     value: string;
     format: string;
+<<<<<<< HEAD
+=======
+>>>>>>> 9ed45527d (feat: add flo config prompts)
+>>>>>>> 861d76e938b7719c29df1531843cb956910b8660
 }

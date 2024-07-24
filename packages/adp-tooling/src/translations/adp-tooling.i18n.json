@@ -47,6 +47,13 @@
         "projectTypeInfoTooltip": "The only available project type from the selected system is: {{type}}.",
         "achLabel": "Application Component Hierarchy",
         "achHint": "The purpose of ACH components is to enable the support organization to indicate which BCP/ticket component might be responsible for a particular issue.",
+<<<<<<< HEAD
+=======
+        "flpConfigurationStep": "Fiori Launchpad Configuration",
+        "flpConfigurationDescription": "Configure Fiori Launchpad Settings",
+        "deploymentConfigStep": "Deployment Configuration",
+        "deploymentConfigDescription": "Configure Deployment Settings",
+>>>>>>> 861d76e938b7719c29df1531843cb956910b8660
         "inboundId": "Inbound ID",
         "flpInfo": "Original application target mapping and the default parameters can be found in Fiori reference library under Implementation Information -> Configuration -> Target Mapping(s) in",
         "flpConfigurationType": "FLP configuration: Add new tile",

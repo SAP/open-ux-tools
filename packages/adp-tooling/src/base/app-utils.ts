@@ -1,3 +1,5 @@
+import { Manifest } from '@sap-ux/project-access';
+
 export enum ApplicationType {
     FIORI_ELEMENTS = 'FioriElements',
     FIORI_ELEMENTS_OVP = 'FioriElementsOVP',
@@ -5,54 +7,74 @@ export enum ApplicationType {
     NONE = ''
 }
 
-export default class AppUtils {
-    public static getApplicationType(oManifest: any): ApplicationType {
-        if (Object.keys(oManifest).length > 0) {
-            const oAppInfo = oManifest['sap.app'];
-            const oSmartTemplateIdentifier = oManifest['sap.ui.generic.app'];
-            if (oManifest['sap.ovp']) {
-                return ApplicationType.FIORI_ELEMENTS_OVP;
-            } else if (
-                oAppInfo &&
-                oAppInfo.sourceTemplate &&
-                (oAppInfo.sourceTemplate.id.toLowerCase() === 'ui5template.smarttemplate' || oSmartTemplateIdentifier)
-            ) {
-                return ApplicationType.FIORI_ELEMENTS;
-            } else {
-                return ApplicationType.FREE_STYLE;
-            }
+/**
+ * Determines the type of UI5 application based on the content of its manifest file.
+ * This function checks various properties within the manifest to classify the application
+ * into predefined types such as Fiori Elements, Fiori Elements OVP, Free Style, or None.
+ *
+ * @param {Manifest} manifest - The manifest configuration object of the application.
+ * @returns {ApplicationType} The type of the application as defined by the ApplicationType enum.
+ *
+ * The classification is done based on the presence and values of specific keys in the manifest:
+ * - 'sap.ovp' indicates a Fiori Elements Overview Page (OVP).
+ * - 'sap.ui.generic.app' or 'sap.app' with a specific sourceTemplate id indicates a Fiori Elements application.
+ * - If none of these conditions are met, the function defaults to categorizing the application as Free Style.
+ * - If the manifest is empty, it returns None.
+ */
+export function getApplicationType(manifest: Manifest): ApplicationType {
+    if (Object.keys(manifest).length > 0) {
+        const appInfo = manifest['sap.app'];
+        const isSmartTemplate = !!manifest['sap.ui.generic.app'];
+        const hasSmartTemplateId = appInfo?.sourceTemplate?.id?.toLowerCase() === 'ui5template.smarttemplate';
+
+        if (manifest['sap.ovp']) {
+            return ApplicationType.FIORI_ELEMENTS_OVP;
+        } else if (hasSmartTemplateId || isSmartTemplate) {
+            return ApplicationType.FIORI_ELEMENTS;
         } else {
-            return ApplicationType.NONE;
+            return ApplicationType.FREE_STYLE;
         }
+    } else {
+        return ApplicationType.NONE;
     }
+}
 
-    public static isFioriElementsApp(sAppType: string): boolean {
-        if (sAppType === ApplicationType.FIORI_ELEMENTS || sAppType === ApplicationType.FIORI_ELEMENTS_OVP) {
-            return true;
-        }
-        return false;
-    }
+/**
+ * Checks if the given application type is a Fiori Elements application.
+ *
+ * @param {string} type - The application type to check.
+ * @returns {boolean} True if the application is a Fiori Elements or Fiori Elements OVP app.
+ */
+export function isFioriElementsApp(type: string): boolean {
+    return type === ApplicationType.FIORI_ELEMENTS || type === ApplicationType.FIORI_ELEMENTS_OVP;
+}
 
-    public static isOVPApp(sAppType: string): boolean {
-        if (sAppType === ApplicationType.FIORI_ELEMENTS_OVP) {
-            return true;
-        }
-        return false;
-    }
+/**
+ * Determines if the application type is specifically a Fiori Elements Overview Page (OVP).
+ *
+ * @param {string} type - The application type to check.
+ * @returns {boolean} True if the application type is Fiori Elements OVP.
+ */
+export function isOVPApp(type: string): boolean {
+    return type === ApplicationType.FIORI_ELEMENTS_OVP;
+}
 
-    public static isSupportedAppTypeForAdaptationProject(sAppType: string): boolean {
-        if (this.isFioriElementsApp(sAppType) || sAppType === ApplicationType.FREE_STYLE) {
-            return true;
-        }
-        return false;
-    }
+/**
+ * Checks if the application type is supported for adaptation projects.
+ *
+ * @param {string} type - The application type to evaluate.
+ * @returns {boolean} True if the type is either Fiori Elements or a free style application.
+ */
+export function isSupportedAppTypeForAdaptationProject(type: string): boolean {
+    return isFioriElementsApp(type) || type === ApplicationType.FREE_STYLE;
+}
 
-    public static isV4App(oManifest: any): boolean {
-        return !!(
-            oManifest['sap.ui5'] &&
-            oManifest['sap.ui5']['dependencies'] &&
-            oManifest['sap.ui5']['dependencies']['libs'] &&
-            oManifest['sap.ui5']['dependencies']['libs']['sap.fe.templates']
-        );
-    }
+/**
+ * Evaluates whether the application described by the manifest is a SAP Fiori Elements version 4 application.
+ *
+ * @param {Manifest} manifest - The application manifest to evaluate.
+ * @returns {boolean} True if the application uses SAP Fiori Elements version 4 libraries.
+ */
+export function isV4Application(manifest: Manifest): boolean {
+    return !!manifest['sap.ui5']?.dependencies?.libs?.['sap.fe.templates'];
 }
