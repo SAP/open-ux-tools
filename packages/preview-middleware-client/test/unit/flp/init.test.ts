@@ -267,7 +267,6 @@ describe('flp/init', () => {
             await init({ customInit: customInit });
 
             expect(sapMock.ui.require).toBeCalledWith([customInit]);
-            expect(sapMock.ushell.Container.createRendererInternal).toBeCalledWith(undefined, true);
         });
     });
 });

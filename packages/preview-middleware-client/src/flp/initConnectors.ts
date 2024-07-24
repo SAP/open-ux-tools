@@ -9,7 +9,6 @@ import VersionInfo from 'sap/ui/VersionInfo';
  *
  * @example
  * initConnectors(); // Simply call the function without any arguments.
- * @returns {void}
  */
 export default async function initConnectors(): Promise<void> {
     const { version } = (await VersionInfo.load()) as { version: string };
