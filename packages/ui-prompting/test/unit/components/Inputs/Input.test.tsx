@@ -27,7 +27,12 @@ describe('Input', () => {
         expect(screen.getByDisplayValue('testValue')).toBeDefined();
     });
 
-    it('Test property onChange', () => {
+    it('Test property "id"', async () => {
+        render(<Input {...props} id="test-id" />);
+        expect(document.getElementById('test-id')).not.toBeNull();
+    });
+
+    it('Test property "onChange"', () => {
         const onChangeFn = jest.fn();
         render(<Input {...props} onChange={onChangeFn} />);
         const input = screen.getByRole('textbox');
@@ -37,22 +42,22 @@ describe('Input', () => {
         expect(onChangeFn).toHaveBeenLastCalledWith('testInput', 'new value');
     });
 
-    it('Test property required', () => {
+    it('Test property "required"', () => {
         render(<Input {...props} required={true} />);
         expect(document.getElementsByClassName('is-required')).toBeDefined();
     });
 
-    it('Test property description', () => {
+    it('Test property "description"', () => {
         render(<Input {...props} description="testInfo" />);
         expect(screen.getByTitle('testInfo')).toBeDefined();
     });
 
-    it('Test property errorMessage', () => {
+    it('Test property "errorMessage"', () => {
         render(<Input {...props} errorMessage="testErrorMessage" />);
         expect(screen.getByRole('alert')).toBeDefined();
     });
 
-    it('Test property placeholder', () => {
+    it('Test property "placeholder"', () => {
         render(<Input {...props} placeholder="testPlaceholder" />);
         expect(screen.getByPlaceholderText('testPlaceholder')).toBeDefined();
     });

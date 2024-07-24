@@ -8,6 +8,7 @@ import {
     updateAnswers,
     useAnswers,
     useDynamicQuestionsEffect,
+    useId,
     useRequestedChoices
 } from '../../utilities';
 import { QuestionGroup } from '../QuestionGroup';
@@ -17,6 +18,7 @@ import { PromptsLayoutType } from '../../types';
 import './Questions.scss';
 
 export interface QuestionsProps {
+    id?: string;
     questions: PromptQuestion[];
     answers?: Answers;
     choices?: DynamicChoices;
@@ -28,8 +30,23 @@ export interface QuestionsProps {
     showDescriptions?: boolean;
 }
 
+/**
+ * Method returns classes for question's component root DOM element.
+ *
+ * @param type - Layout type
+ * @returns Class names for component's root DOM element.
+ */
+const getComponentClasses = (type?: PromptsLayoutType): string => {
+    const classes = ['prompt-entries-wrapper'];
+    classes.push(
+        type === PromptsLayoutType.MultiColumn ? 'prompt-entries-wrapper-multi' : 'prompt-entries-wrapper-single'
+    );
+    return classes.join(' ');
+};
+
 export const Questions = (props: QuestionsProps) => {
     const {
+        id,
         groups = [],
         questions,
         onChoiceRequest,
@@ -40,6 +57,7 @@ export const Questions = (props: QuestionsProps) => {
         showDescriptions,
         validation = {}
     } = props;
+    const componentId = useId(id);
     const [localAnswers, setLocalAnswers] = useAnswers(questions, answers, (answers: Answers) => {
         onChange?.(answers);
     });
@@ -100,6 +118,7 @@ export const Questions = (props: QuestionsProps) => {
             const externalChoices = choices[name];
             return (
                 <Question
+                    id={`${componentId}--${question.name}`}
                     key={`${name}-${index}`}
                     question={question}
                     validation={validation}
@@ -112,17 +131,13 @@ export const Questions = (props: QuestionsProps) => {
         });
 
     return (
-        <div
-            className={
-                layoutType === PromptsLayoutType.MultiColumn
-                    ? 'prompt-entries-wrapper-multi'
-                    : 'prompt-entries-wrapper-single'
-            }>
+        <div id={componentId} className={getComponentClasses(layoutType)}>
             <div className="prompt-entries">
                 {layoutType === PromptsLayoutType.MultiColumn && groups?.length
                     ? groupsWithQuestions.map((group) => {
                           return (
                               <QuestionGroup
+                                  id={`${componentId}--${group.id}`}
                                   key={group.id}
                                   title={group.title}
                                   description={group.description}

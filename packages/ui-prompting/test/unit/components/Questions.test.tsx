@@ -4,7 +4,7 @@ import { initIcons } from '@sap-ux/ui-components';
 import { Questions } from '../../../src/components';
 import { PromptsLayoutType } from '../../../src/types';
 import type { ListPromptQuestion, PromptQuestion } from '../../../src/types';
-import type { QuestionsProps } from '../../../dist';
+import type { QuestionsProps } from '../../../src';
 import { questions } from '../../mock-data/questions';
 import { getDependantQuestions } from '../../../src/utilities';
 
@@ -27,8 +27,13 @@ describe('Questions', () => {
         return screen.queryByLabelText(label)?.parentNode?.querySelector('input')?.getAttribute('value');
     };
 
+    const getRootElementId = (): string | undefined => {
+        const rootElement = document.querySelector('.prompt-entries-wrapper');
+        return rootElement?.getAttribute('id') ?? undefined;
+    };
+
     it('Render questions component - empty question array, SingleColumn layout', async () => {
-        render(<Questions {...props} layoutType={undefined} />);
+        render(<Questions {...props} />);
         expect(document.getElementsByClassName('prompt-entries')).toBeDefined();
         expect(document.getElementsByClassName('prompt-entries-wrapper-single')[0]).toBeDefined();
     });
@@ -54,20 +59,13 @@ describe('Questions', () => {
 
     it('Render questions component - onChoiceRequest', async () => {
         const onChoiceRequestFn = jest.fn();
-        render(
-            <Questions
-                {...props}
-                layoutType={undefined}
-                questions={[questions.dynamicList]}
-                onChoiceRequest={onChoiceRequestFn}
-            />
-        );
+        render(<Questions {...props} questions={[questions.dynamicList]} onChoiceRequest={onChoiceRequestFn} />);
         expect(onChoiceRequestFn).toHaveBeenCalled();
     });
 
     it('Render questions component - onChange', async () => {
         const onChangeFn = jest.fn();
-        render(<Questions {...props} layoutType={undefined} questions={[questions.input]} onChange={onChangeFn} />);
+        render(<Questions {...props} questions={[questions.input]} onChange={onChangeFn} />);
         const input = screen.getByRole('textbox');
         expect(input).toBeDefined();
         fireEvent.change(input, { target: { value: 'new value' } });
@@ -84,7 +82,6 @@ describe('Questions', () => {
         render(
             <Questions
                 {...props}
-                layoutType={undefined}
                 questions={questionsInProps}
                 answers={{
                     testStaticList: 'testValue0'
@@ -122,14 +119,11 @@ describe('Questions', () => {
     });
 
     it('Render questions component - validation', async () => {
-        const { rerender } = render(
-            <Questions {...props} layoutType={undefined} questions={Object.values(questions)} />
-        );
+        const { rerender } = render(<Questions {...props} questions={Object.values(questions)} />);
         expect(screen.queryAllByRole('alert')).toHaveLength(0);
         rerender(
             <Questions
                 {...props}
-                layoutType={undefined}
                 questions={Object.values(questions)}
                 validation={{
                     testInput: { isValid: false, errorMessage: 'validation failure' },
@@ -140,6 +134,34 @@ describe('Questions', () => {
             />
         );
         expect(screen.queryAllByRole('alert')).toHaveLength(4);
+    });
+
+    describe('Test component "id"', () => {
+        it('Render without external id', async () => {
+            const { rerender } = render(<Questions {...props} questions={Object.values(questions)} />);
+            const firstRenderId = getRootElementId();
+            expect(firstRenderId?.startsWith('ui-prompt')).toEqual(true);
+            // Check if input elements for questions with id exists
+            for (const key in questions) {
+                expect(document.querySelector(`[id="${firstRenderId}--${questions[key].name}--input"]`)).not.toEqual(
+                    null
+                );
+            }
+            // Rerender should not generate new id
+            rerender(<Questions {...props} questions={Object.values(questions)} />);
+            const secondRenderId = getRootElementId();
+            expect(firstRenderId).toEqual(secondRenderId);
+        });
+
+        it('Render with external id', async () => {
+            render(<Questions {...props} questions={Object.values(questions)} id="my-prompt" />);
+            const firstRenderId = getRootElementId();
+            expect(firstRenderId).toEqual('my-prompt');
+            // Check if input elements for questions with id exists
+            for (const key in questions) {
+                expect(document.querySelector(`[id="my-prompt--${questions[key].name}--input"]`)).not.toEqual(null);
+            }
+        });
     });
 
     describe('Handle answers', () => {
@@ -165,7 +187,6 @@ describe('Questions', () => {
             render(
                 <Questions
                     {...props}
-                    layoutType={undefined}
                     questions={Object.values(questions)}
                     answers={{
                         testInput: 'testName0',
@@ -194,13 +215,7 @@ describe('Questions', () => {
                 }
             };
             const { rerender } = render(
-                <Questions
-                    {...props}
-                    layoutType={undefined}
-                    onChange={onChangeFn}
-                    questions={testQuestions}
-                    answers={externalAnswers}
-                />
+                <Questions {...props} onChange={onChangeFn} questions={testQuestions} answers={externalAnswers} />
             );
             expect(onChangeFn).toBeCalledTimes(1);
             expect(onChangeFn).toBeCalledWith({
@@ -216,13 +231,7 @@ describe('Questions', () => {
             expect(getValueByLabel('test2.key1')).toEqual('External value 2');
             expect(getValueByLabel('test2.key2')).toEqual('');
             rerender(
-                <Questions
-                    {...props}
-                    layoutType={undefined}
-                    onChange={onChangeFn}
-                    questions={testQuestions}
-                    answers={externalAnswers}
-                />
+                <Questions {...props} onChange={onChangeFn} questions={testQuestions} answers={externalAnswers} />
             );
             // Should not trigger change as value was not changed
             expect(onChangeFn).toBeCalledTimes(1);
@@ -241,13 +250,7 @@ describe('Questions', () => {
                 }
             };
             const { rerender } = render(
-                <Questions
-                    {...props}
-                    layoutType={undefined}
-                    onChange={onChangeFn}
-                    questions={questionsTemp}
-                    answers={externalAnswers}
-                />
+                <Questions {...props} onChange={onChangeFn} questions={questionsTemp} answers={externalAnswers} />
             );
             expect(onChangeFn).toBeCalledTimes(1);
             expect(onChangeFn).toBeCalledWith({
@@ -266,7 +269,6 @@ describe('Questions', () => {
             rerender(
                 <Questions
                     {...props}
-                    layoutType={undefined}
                     onChange={onChangeFn}
                     questions={questionsTemp}
                     answers={{ ...externalAnswers }}

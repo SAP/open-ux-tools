@@ -202,3 +202,32 @@ export function useAnswers(
 
     return [localAnswers, setLocalAnswers];
 }
+
+let GENERATED_PROMPT_ID_INDEX = 0;
+/**
+ * Method to generate id for prompt component.
+ *
+ * @returns Generated id for prompt component.
+ */
+export function getId(): string {
+    // Update global index
+    const index = GENERATED_PROMPT_ID_INDEX++;
+    return `ui-prompt${index}`;
+}
+
+/**
+ * Hook for unique id for component or DOM element.
+ *
+ * @param externalId - external id
+ * @returns Resolved id for component or DOM.
+ */
+export function useId(externalId?: string): string {
+    const currentExternalId = useRef<string | undefined>(externalId);
+    const [id, setId] = useState<string>(() => externalId ?? getId());
+    useEffect(() => {
+        if (currentExternalId.current !== externalId) {
+            setId(externalId ?? getId());
+        }
+    }, [externalId]);
+    return id;
+}

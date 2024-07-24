@@ -30,6 +30,11 @@ describe('QuestionGroup', () => {
         expect(screen.getByText('description')).toBeDefined();
     });
 
+    it('Test property "id"', async () => {
+        render(<QuestionGroup {...props} id="test-id" />);
+        expect(document.getElementById('test-id')).not.toBeNull();
+    });
+
     it('Test question group - children', async () => {
         render(
             <QuestionGroup {...props}>

@@ -6,6 +6,7 @@ import { useValue, getLabelRenderer, useOptions } from '../../../utilities';
 import type { AnswerValue, ListPromptQuestion, PromptListChoices } from '../../../types';
 
 export interface SelectProps extends ListPromptQuestion {
+    id?: string;
     value?: AnswerValue;
     onChange: (name: string, value: AnswerValue) => void;
     dynamicChoices?: PromptListChoices;
@@ -24,7 +25,8 @@ export const Select = (props: SelectProps) => {
         errorMessage,
         placeholder,
         creation,
-        dynamicChoices
+        dynamicChoices,
+        id
     } = props;
     const [value, setValue] = useValue('', props.value ?? '');
     const inputRef = React.createRef<ITextField>();
@@ -70,6 +72,7 @@ export const Select = (props: SelectProps) => {
             required={props.required}
             onChange={onChangeTextInput}
             onRenderLabel={getLabelRenderer(description)}
+            id={id}
         />
     ) : (
         <UIComboBox
@@ -88,6 +91,7 @@ export const Select = (props: SelectProps) => {
             onRenderLabel={getLabelRenderer(description)}
             errorMessage={errorMessage}
             placeholder={placeholder}
+            id={id}
         />
     );
     return <>{component}</>;

@@ -7,6 +7,7 @@ import type { PromptQuestion, ValidationResults, AnswerValue, PromptListChoices 
 import './Question.scss';
 
 export interface QuestionProps {
+    id?: string;
     question: PromptQuestion;
     answers: Answers;
     onChange: (name: string, answer: AnswerValue) => void;
@@ -16,16 +17,19 @@ export interface QuestionProps {
 }
 
 export const Question = (props: QuestionProps) => {
-    const { question, onChange, answers, choices, pending, validation = {} } = props;
+    const { question, onChange, answers, choices, pending, validation = {}, id } = props;
     let questionInput: JSX.Element;
     let errorMessage = '';
     const value: AnswerValue = getAnswer(answers, question.name) as AnswerValue;
     if (validation[question.name]?.isValid === false && validation[question.name]?.errorMessage) {
         errorMessage = validation[question.name].errorMessage!;
     }
+    const inputId = id ? `${id}--input` : undefined;
     switch (question?.type) {
         case 'input': {
-            questionInput = <Input value={value} {...question} onChange={onChange} errorMessage={errorMessage} />;
+            questionInput = (
+                <Input value={value} {...question} onChange={onChange} errorMessage={errorMessage} id={inputId} />
+            );
             break;
         }
         case 'checkbox': {
@@ -37,6 +41,7 @@ export const Question = (props: QuestionProps) => {
                     dynamicChoices={choices}
                     onChange={onChange}
                     errorMessage={errorMessage}
+                    id={inputId}
                 />
             );
             break;
@@ -51,6 +56,7 @@ export const Question = (props: QuestionProps) => {
                     onChange={onChange}
                     pending={pending}
                     errorMessage={errorMessage}
+                    id={inputId}
                 />
             );
             break;

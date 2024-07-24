@@ -4,6 +4,7 @@ import { useValue, getLabelRenderer, useOptions } from '../../../utilities';
 import type { AnswerValue, CheckboxPromptQuestion, PromptListChoices } from '../../../types';
 
 export interface MultiSelectProps extends CheckboxPromptQuestion {
+    id?: string;
     value?: AnswerValue;
     onChange: (name: string, value: AnswerValue) => void;
     dynamicChoices?: PromptListChoices;
@@ -12,7 +13,7 @@ export interface MultiSelectProps extends CheckboxPromptQuestion {
 }
 
 export const MultiSelect = (props: MultiSelectProps) => {
-    const { name, message, onChange, required, pending, description, errorMessage, placeholder, dynamicChoices } =
+    const { name, message, onChange, required, pending, description, errorMessage, placeholder, dynamicChoices, id } =
         props;
     const [value, setValue] = useValue('', props.value?.toString() ?? '');
     const options = useOptions(props, dynamicChoices);
@@ -45,6 +46,7 @@ export const MultiSelect = (props: MultiSelectProps) => {
             onRenderLabel={getLabelRenderer(description)}
             errorMessage={errorMessage}
             placeholder={placeholder}
+            id={id}
         />
     );
 };

@@ -28,6 +28,11 @@ describe('MultiSelect', () => {
         expect(document.getElementsByClassName('.ts-ComboBox')).toBeDefined();
     });
 
+    it('Test property "id"', async () => {
+        render(<MultiSelect {...props} id="test-id" />);
+        expect(document.getElementById('test-id')).not.toBeNull();
+    });
+
     it('Render multiselect with value', () => {
         render(<MultiSelect {...props} value="testValue1" />);
         expect(screen.getByDisplayValue('testText1')).toBeDefined();
