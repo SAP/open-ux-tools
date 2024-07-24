@@ -1,5 +1,20 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.3
+
+### Patch Changes
+
+-   Updated dependencies [d549173]
+    -   @sap-ux/project-access@1.25.7
+    -   @sap-ux/axios-extension@1.16.0
+    -   @sap-ux/telemetry@0.5.9
+
+## 0.5.2
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.2
+
 ## 0.5.1
 
 ### Patch Changes
