@@ -20,7 +20,8 @@ export const ExternalValues = (): JSX.Element => {
                     personalization: ['Item', 'Sort'],
                     metaPath: {
                         entitySet: 'C_CUSTOMER_OP_SRV.C_CustomerOPType',
-                        qualifier: 'to_CustomerBankDetails/@com.sap.vocabularies.UI.v1.Chart#C_CustomerBankDetailsOPType'
+                        qualifier:
+                            'to_CustomerBankDetails/@com.sap.vocabularies.UI.v1.Chart#C_CustomerBankDetailsOPType'
                     },
                     selectionChange: 'onSelectionChange',
                     bindingContextType: 'absolute',
