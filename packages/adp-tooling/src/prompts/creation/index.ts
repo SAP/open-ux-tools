@@ -31,9 +31,12 @@ import {
 import {
     isNotEmptyString,
     validateAch,
+    validateByRegex,
     validateClient,
+    validateEmptyInput,
     validateEnvironment,
     validateNamespace,
+    validateParameters,
     validateProjectName
 } from '../../base/validators';
 
@@ -118,6 +121,16 @@ export function getNamespacePrompt(
     return prompt;
 }
 
+export function getInboundIds(manifest: Manifest): string[] {
+    let inboundIds: string[] = [];
+    if (manifest['sap.app'].crossNavigation && manifest['sap.app'].crossNavigation.inbounds) {
+        // we are taking the first inbound id from the manifest
+        inboundIds = Object.keys(manifest['sap.app'].crossNavigation.inbounds);
+    }
+
+    return inboundIds;
+}
+
 export default class ProjectPrompter {
     private logger: Logger;
     private isCustomerBase: boolean;
@@ -143,6 +156,8 @@ export default class ProjectPrompter {
 
     private appManifest: Manifest | null;
     private appManifestUrl: string | null;
+
+    private inboundIds: string[];
 
     private readonly isExtensionInstalled: boolean;
 
@@ -1230,6 +1245,147 @@ export default class ProjectPrompter {
             this.getACHprompt(),
             this.getAppInfoErrorPrompt()
             // ....
+        ];
+    }
+
+    //FLP Configuration prompts
+    private getInboundListPrompt() {
+        return {
+            type: 'list',
+            name: 'inboundId',
+            message: t('prompts.inboundId'),
+            choices: this.inboundIds,
+            default: this.inboundIds[0],
+            validate: (value: string) => validateEmptyInput(value, 'inboundId'),
+            when: this.isCloudProject && this.inboundIds.length > 0,
+            guiOptions: {
+                hint: t('tooltips.inboundId')
+            }
+        };
+    }
+
+    private getFlpInfoPrompt(appId: string) {
+        return {
+            type: 'input',
+            message: t('prompts.flpInfo'),
+            guiOptions: {
+                type: 'label',
+                mandatory: false,
+                link: {
+                    text: 'application page.',
+                    url: `https://fioriappslibrary.hana.ondemand.com/sap/fix/externalViewer/${
+                        appId ? `index.html?appId=${appId}&releaseGroupTextCombined=SC` : '#/home'
+                    }`
+                }
+            },
+            when: this.isCloudProject && this.inboundIds.length === 0
+        };
+    }
+
+    private getFlpConfigurationTypePrompt() {
+        return {
+            type: 'input',
+            name: 'flpConfigurationTypeLabel',
+            message: t('prompts.flpConfigurationType'),
+            when: this.isCloudProject,
+            validate: true,
+            guiOptions: {
+                type: 'label',
+                hint: t('tooltips.flpConfigurationType'),
+                mandatory: false
+            }
+        };
+    }
+
+    private getSemanticObjectPrompt() {
+        return {
+            type: 'input',
+            name: 'semanticObject',
+            message: t('prompts.semanticObject'),
+            validate: (value: string) => validateByRegex(value, 'semanticObject', '^[A-Za-z0-9_]{0,30}$'),
+            guiOptions: {
+                hint: t('prompts.semanticObject'),
+                mandatory: true
+            },
+            when: this.isCloudProject && !this.inboundIds.length
+        };
+    }
+
+    private getActionPrompt() {
+        return {
+            type: 'input',
+            name: 'action',
+            message: t('prompts.action'),
+            validate: (value: string) => validateByRegex(value, 'action', '^[A-Za-z0-9_]{0,60}$'),
+            guiOptions: {
+                hint: t('tooltips.action'),
+                mandatory: true
+            },
+            when: this.isCloudProject && !this.inboundIds.length
+        };
+    }
+
+    public getTitlePrompt() {
+        return {
+            type: 'input',
+            name: 'title',
+            message: t('prompts.title'),
+            guiOptions: {
+                mandatory: true,
+                hint: t('tooltips.title')
+            },
+            when: this.isCloudProject,
+            validate: (value: string) => validateEmptyInput(value, 'title')
+        };
+    }
+
+    public getSubtitlePrompt() {
+        return {
+            type: 'input',
+            name: 'subtitle',
+            message: t('prompts.subtitle'),
+            guiOptions: {
+                hint: t('tooltips.subtitle')
+            },
+            when: this.isCloudProject
+        };
+    }
+
+    public getParametersPrompt() {
+        return {
+            type: 'editor',
+            name: 'parameters',
+            message: t('prompts.parameters'),
+            validate: (value: string) => validateParameters(value),
+            store: false,
+            guiOptions: {
+                hint: t('tooltips.parameters'),
+                mandatory: false
+            },
+            when: this.isCloudProject && this.inboundIds.length === 0
+        };
+    }
+
+    public async getFlpConfigurationPrompts(appId: string): Promise<any> {
+        if (!this.appManifest) {
+            if (!this.appManifestUrl) {
+                this.appManifestUrl = await this.getManifestUrl(appId);
+            }
+
+            this.appManifest = await this.getManifest(this.appManifestUrl);
+        }
+
+        this.inboundIds = getInboundIds(this.appManifest);
+
+        return [
+            this.getInboundListPrompt(),
+            this.getFlpInfoPrompt(appId),
+            this.getFlpConfigurationTypePrompt(),
+            this.getSemanticObjectPrompt(),
+            this.getActionPrompt(),
+            this.getTitlePrompt(),
+            this.getSubtitlePrompt(),
+            this.getParametersPrompt()
         ];
     }
 }

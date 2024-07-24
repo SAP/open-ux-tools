@@ -506,6 +506,7 @@ export interface ConfigurationInfoAnswers {
     versionInfo: string;
 }
 
+<<<<<<< HEAD
 export interface FlexUISupportedSystem {
     isUIFlex: boolean;
     isOnPremise: boolean;
@@ -547,4 +548,23 @@ export interface VersionDetail {
 export interface ChoiceOption<T = string> {
     name: string;
     value: T;
+=======
+export interface ParamCheck {
+    shouldApply: boolean;
+    value: string | undefined;
+}
+
+export interface Parameter {
+    [key: string]: {
+        required: boolean;
+        filter?: Value;
+        defaultValue?: Value;
+        renameTo?: string;
+    };
+}
+
+export interface Value {
+    value: string;
+    format: string;
+>>>>>>> 9ed45527d (feat: add flo config prompts)
 }
