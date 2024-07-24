@@ -1,6 +1,38 @@
+import { getProjectNames } from '../../base/file-system';
+import { t } from '../../i18n';
+
 export interface PageLabel {
     name: string;
     description: string;
+}
+
+export function getDefaultProjectName(path: string): string {
+    const projectNames = getProjectNames(path);
+    const defaultPrefix = 'app.variant';
+
+    if (projectNames.length === 0) {
+        return `${defaultPrefix}1`;
+    }
+
+    const lastProject = projectNames[0];
+    const lastProjectIdx = lastProject.replace(defaultPrefix, '');
+    const adpProjectIndex = parseInt(lastProjectIdx) + 1;
+
+    return `${defaultPrefix}${adpProjectIndex}`;
+}
+
+export function getProjectNameTooltip(isCustomerBase: boolean) {
+    return !isCustomerBase
+        ? `${t('prompts.inputCannotBeEmpty')} ${t('validators.projectNameLengthErrorInt')} ${t(
+              'validators.projectNameValidationErrorInt'
+          )}`
+        : `${t('prompts.inputCannotBeEmpty')} ${t('validators.projectNameLengthErrorExt')} ${t(
+              'validators.projectNameValidationErrorExt'
+          )}`;
+}
+
+export function generateValidNamespace(projectName: string, isCustomerBase: boolean): string {
+    return !isCustomerBase ? projectName : 'customer.' + projectName;
 }
 
 export function getUIPageLabels(isCFEnv: boolean): PageLabel[] {

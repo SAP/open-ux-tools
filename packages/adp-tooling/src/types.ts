@@ -471,6 +471,19 @@ export interface InboundChange {
     };
 }
 
+export interface IPrompt {
+    name: string;
+    description: string;
+}
+export declare class Prompts {
+    private readonly items;
+    private callback;
+    constructor(items?: IPrompt[]);
+    splice(start: number, deleteCount: number, items?: IPrompt[]): void;
+    setCallback(callback: any): void;
+    size(): number;
+}
+
 export interface TargetEnvAnswers {
     targetEnv: OperationsType;
 }
@@ -503,7 +516,7 @@ export interface Auth {
     client?: string;
 }
 
-export interface Application {
+export interface AppIndex {
     'sap.app/id': string;
     'sap.app/title': string;
     'sap.app/ach': string;
@@ -511,6 +524,13 @@ export interface Application {
     'fileType': string;
     'url': string;
     'repoName': string;
+}
+
+export interface Application {
+    id: string;
+    fileType: string;
+    bspUrl: string;
+    bspName: string;
 }
 
 export interface UI5Version {

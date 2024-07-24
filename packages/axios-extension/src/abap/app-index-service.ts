@@ -4,9 +4,13 @@ import type { Logger } from '@sap-ux/logger';
 import { isAxiosError } from '../base/odata-request-error';
 
 export interface App extends Record<string, unknown> {
+    [key: string]: string | string[];
     'sap.app/id': string;
     'sap.app/title': string;
     'sap.fiori/registrationIds': string[];
+    'sap.app/ach': string;
+    fileType: string;
+    repoName: string;
     url: string;
 }
 

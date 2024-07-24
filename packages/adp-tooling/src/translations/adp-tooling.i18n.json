@@ -46,7 +46,12 @@
         "isPartiallySupportedAdpOverAdpLabel": "You have selected Adaptation Project as а base. The selected system has SAPUI5 version lower than 1.96 and in order for your Adaptation Project based on Adaptation Project to work after deployment, you will need to apply SAP Note 756 SP0 on your system.",
         "projectTypeInfoTooltip": "The only available project type from the selected system is: {{type}}.",
         "achLabel": "Application Component Hierarchy",
-        "achHint": "The purpose of ACH components is to enable the support organization to indicate which BCP/ticket component might be responsible for a particular issue."
+        "achHint": "The purpose of ACH components is to enable the support organization to indicate which BCP/ticket component might be responsible for a particular issue.",
+
+        "flpConfigurationStep": "Fiori Launchpad Configuration",
+        "flpConfigurationDescription": "Configure Fiori Launchpad Settings",
+        "deploymentConfigStep": "Deployment Configuration",
+        "deploymentConfigDescription": "Configure Deployment Settings"
     },
     "choices": {
         "annotationFile": {
