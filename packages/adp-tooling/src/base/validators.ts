@@ -179,3 +179,16 @@ export function validateClient(value: string): string | boolean {
 
     return true;
 }
+
+export function validateAch(value: string, isCustomerBase: boolean): string | boolean {
+    if (!isNotEmptyString(value)) {
+        return t('validators.inputCannotBeEmpty');
+    }
+    const isValid = value.toUpperCase().match(/^([A-Z0-9]{2,3})(\-[A-Z0-9]{1,6})*$/);
+
+    if (!isCustomerBase && !isValid) {
+        return t('validators.achMandatoryError');
+    }
+
+    return true;
+}
