@@ -152,8 +152,8 @@ const mergeAllAnswers = (answers: Answers, questions: PromptQuestion[]): { merge
     const newAnswers = structuredClone(answers);
     let merged = false;
     for (const question of questions) {
-        if (question.default !== undefined && getAnswer(answers, question.name) === undefined) {
-            setAnswer(answers, question.name, question.default);
+        if (question.default !== undefined && getAnswer(newAnswers, question.name) === undefined) {
+            setAnswer(newAnswers, question.name, question.default);
             merged = true;
         }
     }
@@ -176,11 +176,12 @@ export function useAnswers(
     externalAnswers?: Answers,
     onInitialChange?: (value: Answers) => void
 ): [Answers, (value: Answers) => void] {
-    const currentExternalAnswers = useRef<Answers>(() => {
+    const currentExternalAnswers = useRef<Answers>({});
+    const [localAnswers, setLocalAnswers] = useState(() => {
+        // Initial value
         const merge = mergeAllAnswers(externalAnswers ?? {}, questions);
         return merge.answers ?? {};
     });
-    const [localAnswers, setLocalAnswers] = useState(currentExternalAnswers.current);
 
     useEffect(() => {
         let updated: boolean = false;
@@ -192,7 +193,6 @@ export function useAnswers(
         }
         const { merged, answers: newAnswers } = mergeAllAnswers(answers, questions);
         updated = merged || updated;
-        // ToDo - test to avoid inifinitive sets
         if (updated && newAnswers) {
             setLocalAnswers(newAnswers);
             // Callback function - notify about answers change

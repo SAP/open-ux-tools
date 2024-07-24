@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { initIcons } from '@sap-ux/ui-components';
 import { Questions } from '../../../src/components';
 import { PromptsLayoutType } from '../../../src/types';
-import type { ListPromptQuestion } from '../../../src/types';
+import type { ListPromptQuestion, PromptQuestion } from '../../../src/types';
 import type { QuestionsProps } from '../../../dist';
 import { questions } from '../../mock-data/questions';
 import { getDependantQuestions } from '../../../src/utilities';
@@ -142,77 +142,138 @@ describe('Questions', () => {
         expect(screen.queryAllByRole('alert')).toHaveLength(4);
     });
 
-    it('Render questions component - answers and choices', async () => {
-        render(
-            <Questions
-                {...props}
-                layoutType={undefined}
-                questions={Object.values(questions)}
-                answers={{
-                    testInput: 'testName0',
-                    testStaticList: 'testValue0',
-                    testDynamicList: 'testValue0',
-                    testCheckbox: 'testValue0'
-                }}
-                choices={{
-                    testStaticList: [{ name: 'testName0', value: 'testValue0' }],
-                    testDynamicList: [{ name: 'testName0', value: 'testValue0' }],
-                    testCheckbox: [{ name: 'testName0', value: 'testValue0' }]
-                }}
-            />
-        );
-        expect(screen.queryAllByDisplayValue('testName0')).toHaveLength(4);
-    });
-
-    it('Render questions component - external answers and questions with default answers', async () => {
-        const onChangeFn = jest.fn();
-        render(
-            <Questions
-                {...props}
-                layoutType={undefined}
-                onChange={onChangeFn}
-                questions={[
-                    {
-                        type: 'input',
-                        name: 'test1.key1',
-                        default: 'Default value'
-                    },
-                    {
-                        type: 'input',
-                        name: 'test1.key2'
-                    },
-                    {
-                        type: 'input',
-                        name: 'test2.key1'
-                    },
-                    {
-                        type: 'input',
-                        name: 'test2.key2'
-                    }
-                ]}
-                answers={{
-                    test1: {
-                        key2: 'External value 1'
-                    },
-                    test2: {
-                        key1: 'External value 2'
-                    }
-                }}
-            />
-        );
-        expect(onChangeFn).toBeCalledTimes(1);
-        expect(onChangeFn).toBeCalledWith({
-            'test1': {
-                'key1': 'Default value',
-                'key2': 'External value 1'
+    describe('Handle answers', () => {
+        const testQuestions: PromptQuestion[] = [
+            {
+                type: 'input',
+                name: 'test1.key1'
             },
-            'test2': {
-                'key1': 'External value 2'
+            {
+                type: 'input',
+                name: 'test1.key2'
+            },
+            {
+                type: 'input',
+                name: 'test2.key1'
+            },
+            {
+                type: 'input',
+                name: 'test2.key2'
             }
+        ];
+        it('Render questions component - answers and choices', async () => {
+            render(
+                <Questions
+                    {...props}
+                    layoutType={undefined}
+                    questions={Object.values(questions)}
+                    answers={{
+                        testInput: 'testName0',
+                        testStaticList: 'testValue0',
+                        testDynamicList: 'testValue0',
+                        testCheckbox: 'testValue0'
+                    }}
+                    choices={{
+                        testStaticList: [{ name: 'testName0', value: 'testValue0' }],
+                        testDynamicList: [{ name: 'testName0', value: 'testValue0' }],
+                        testCheckbox: [{ name: 'testName0', value: 'testValue0' }]
+                    }}
+                />
+            );
+            expect(screen.queryAllByDisplayValue('testName0')).toHaveLength(4);
         });
-        expect(getValueByLabel('test1.key1')).toEqual('Default value');
-        expect(getValueByLabel('test1.key2')).toEqual('External value 1');
-        expect(getValueByLabel('test2.key1')).toEqual('External value 2');
-        expect(getValueByLabel('test2.key2')).toEqual('');
+
+        it('Render questions component - external answers only', async () => {
+            const onChangeFn = jest.fn();
+            const externalAnswers = {
+                test1: {
+                    key2: 'External value 1'
+                },
+                test2: {
+                    key1: 'External value 2'
+                }
+            };
+            const { rerender } = render(
+                <Questions
+                    {...props}
+                    layoutType={undefined}
+                    onChange={onChangeFn}
+                    questions={testQuestions}
+                    answers={externalAnswers}
+                />
+            );
+            expect(onChangeFn).toBeCalledTimes(1);
+            expect(onChangeFn).toBeCalledWith({
+                'test1': {
+                    'key2': 'External value 1'
+                },
+                'test2': {
+                    'key1': 'External value 2'
+                }
+            });
+            expect(getValueByLabel('test1.key1')).toEqual('');
+            expect(getValueByLabel('test1.key2')).toEqual('External value 1');
+            expect(getValueByLabel('test2.key1')).toEqual('External value 2');
+            expect(getValueByLabel('test2.key2')).toEqual('');
+            rerender(
+                <Questions
+                    {...props}
+                    layoutType={undefined}
+                    onChange={onChangeFn}
+                    questions={testQuestions}
+                    answers={externalAnswers}
+                />
+            );
+            // Should not trigger change as value was not changed
+            expect(onChangeFn).toBeCalledTimes(1);
+        });
+
+        it('Render questions component - merge external answers and questions with default answers', async () => {
+            const questionsTemp: PromptQuestion[] = JSON.parse(JSON.stringify(testQuestions));
+            questionsTemp[0].default = 'Default value';
+            const onChangeFn = jest.fn();
+            const externalAnswers = {
+                test1: {
+                    key2: 'External value 1'
+                },
+                test2: {
+                    key1: 'External value 2'
+                }
+            };
+            const { rerender } = render(
+                <Questions
+                    {...props}
+                    layoutType={undefined}
+                    onChange={onChangeFn}
+                    questions={questionsTemp}
+                    answers={externalAnswers}
+                />
+            );
+            expect(onChangeFn).toBeCalledTimes(1);
+            expect(onChangeFn).toBeCalledWith({
+                'test1': {
+                    'key1': 'Default value',
+                    'key2': 'External value 1'
+                },
+                'test2': {
+                    'key1': 'External value 2'
+                }
+            });
+            expect(getValueByLabel('test1.key1')).toEqual('Default value');
+            expect(getValueByLabel('test1.key2')).toEqual('External value 1');
+            expect(getValueByLabel('test2.key1')).toEqual('External value 2');
+            expect(getValueByLabel('test2.key2')).toEqual('');
+            rerender(
+                <Questions
+                    {...props}
+                    layoutType={undefined}
+                    onChange={onChangeFn}
+                    questions={questionsTemp}
+                    answers={{ ...externalAnswers }}
+                />
+            );
+            // Should not trigger change as value was not changed
+            expect(onChangeFn).toBeCalledTimes(1);
+        });
     });
 });

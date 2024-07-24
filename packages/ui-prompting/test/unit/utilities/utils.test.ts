@@ -1,5 +1,5 @@
-import { getAnswer, setAnswer, updateAnswers } from '../../../src/utilities/utils';
-import type { PromptQuestion } from '../../../src/types';
+import { getAnswer, setAnswer, updateAnswers, isDeepEqual } from '../../../src/utilities/utils';
+import type { Answers, PromptQuestion } from '../../../src/types';
 
 describe('utils', () => {
     describe('setAnswer', () => {
@@ -211,6 +211,90 @@ describe('utils', () => {
             ];
             const result = updateAnswers(original, questions, 'test2.dummy2', 'New');
             expect(result).toEqual(expected);
+        });
+    });
+
+    describe('isDeepEqual', () => {
+        const testCases: Array<{ name: string; obj1: Answers; obj2: Answers; expected: boolean }> = [
+            {
+                name: 'Empty objects',
+                obj1: {},
+                obj2: {},
+                expected: true
+            },
+            {
+                name: 'Matching objects',
+                obj1: {
+                    test1: {
+                        key1: 'Default value',
+                        key2: 'External value 1'
+                    },
+                    test2: {
+                        key1: 'External value 2'
+                    }
+                },
+                obj2: {
+                    test1: {
+                        key1: 'Default value',
+                        key2: 'External value 1'
+                    },
+                    test2: {
+                        key1: 'External value 2'
+                    }
+                },
+                expected: true
+            },
+            {
+                name: 'Property added',
+                obj1: {
+                    test1: {
+                        key1: 'Default value',
+                        key2: 'External value 1'
+                    }
+                },
+                obj2: {
+                    test1: {
+                        key1: 'Default value',
+                        key2: 'External value 1',
+                        newProperty: true
+                    }
+                },
+                expected: false
+            },
+            {
+                name: 'Property removed',
+                obj1: {
+                    test1: {
+                        key1: 'Default value',
+                        key2: 'External value 1'
+                    }
+                },
+                obj2: {
+                    test1: {
+                        key1: 'Default value'
+                    }
+                },
+                expected: false
+            },
+            {
+                name: 'Property changed',
+                obj1: {
+                    test1: {
+                        key1: 'Default value',
+                        key2: 'External value 1'
+                    }
+                },
+                obj2: {
+                    test1: {
+                        key1: 'Default value',
+                        key2: 'changed'
+                    }
+                },
+                expected: false
+            }
+        ];
+        test.each(testCases)('$name', async ({ obj1, obj2, expected }) => {
+            expect(isDeepEqual(obj1, obj2)).toEqual(expected);
         });
     });
 });
