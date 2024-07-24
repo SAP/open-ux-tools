@@ -27,7 +27,7 @@ describe('ChangeIndicator', () => {
               xmlns="http://www.w3.org/2000/svg"
             >
               <title>
-                Modified & Saved
+                All changes on this property are saved
               </title>
               <circle
                 cx="4"
@@ -51,7 +51,7 @@ describe('ChangeIndicator', () => {
               xmlns="http://www.w3.org/2000/svg"
             >
               <title>
-                Modified & Unsaved
+                All changes on this property are not saved
               </title>
               <circle
                 cx="4"
@@ -75,7 +75,7 @@ describe('ChangeIndicator', () => {
               xmlns="http://www.w3.org/2000/svg"
             >
               <title>
-                Saved & Unsaved
+                This property has previously saved changes and currently unsaved changes
               </title>
               <circle
                 cx="4"
@@ -106,7 +106,7 @@ describe('ChangeIndicator', () => {
               xmlns="http://www.w3.org/2000/svg"
             >
               <title>
-                Modified & Saved
+                All changes on this property are saved
               </title>
               <circle
                 cx="4"
