@@ -10,7 +10,7 @@ export class UI5RtVersionService extends AdtService {
      * @see AdtService.getAdtCatagory()
      */
     private static adtCategory = {
-        scheme: 'http://www.sap.com/adt/categories/filestore',
+        scheme: 'https://www.sap.com/adt/categories/filestore',
         term: 'ui5-rt-version'
     };
 
