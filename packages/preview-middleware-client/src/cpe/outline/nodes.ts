@@ -129,7 +129,7 @@ export async function transformNodes(
         }
 
         if (isAdp && isExtPoint) {
-            const { defaultContent, createdControls } = current.extensionPointInfo;
+            const { defaultContent = [], createdControls = [] } = current.extensionPointInfo;
 
             let children: OutlineNode[] = [];
             // We can combine both because there can only be either defaultContent or createdControls for one extension point node.
@@ -190,7 +190,7 @@ export async function handleDuplicateNodes(
 
     children.forEach((child: OutlineViewNode) => {
         if (child.type === 'extensionPoint') {
-            const { defaultContent, createdControls } = child.extensionPointInfo;
+            const { defaultContent = [], createdControls = [] } = child.extensionPointInfo;
             [...defaultContent, ...createdControls].forEach((id) => extPointIDs.add(id));
         }
     });

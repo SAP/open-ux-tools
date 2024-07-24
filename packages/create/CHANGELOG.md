@@ -1,5 +1,158 @@
 # @sap-ux/create
 
+## 0.7.23
+
+### Patch Changes
+
+-   Updated dependencies [d549173]
+    -   @sap-ux/project-access@1.25.7
+    -   @sap-ux/adp-tooling@0.12.16
+    -   @sap-ux/app-config-writer@0.4.11
+    -   @sap-ux/cap-config-writer@0.7.3
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/preview-middleware@0.16.22
+    -   @sap-ux/system-access@0.5.2
+
+## 0.7.22
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.2
+-   @sap-ux/preview-middleware@0.16.21
+-   @sap-ux/adp-tooling@0.12.15
+-   @sap-ux/cap-config-writer@0.7.2
+
+## 0.7.21
+
+### Patch Changes
+
+-   Updated dependencies [a9fac04]
+    -   @sap-ux/project-access@1.25.6
+    -   @sap-ux/adp-tooling@0.12.14
+    -   @sap-ux/app-config-writer@0.4.10
+    -   @sap-ux/cap-config-writer@0.7.1
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/preview-middleware@0.16.20
+    -   @sap-ux/system-access@0.5.2
+
+## 0.7.20
+
+### Patch Changes
+
+-   4c06318: Add Adaptation Project's Add Annotations To OData generator prompting
+-   Updated dependencies [4c06318]
+    -   @sap-ux/adp-tooling@0.12.13
+    -   @sap-ux/preview-middleware@0.16.19
+
+## 0.7.19
+
+### Patch Changes
+
+-   Updated dependencies [cac5277]
+    -   @sap-ux/cap-config-writer@0.7.0
+
+## 0.7.18
+
+### Patch Changes
+
+-   Updated dependencies [108336f]
+    -   @sap-ux/inquirer-common@0.4.1
+    -   @sap-ux/cap-config-writer@0.6.10
+    -   @sap-ux/adp-tooling@0.12.12
+    -   @sap-ux/preview-middleware@0.16.18
+
+## 0.7.17
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.11
+-   @sap-ux/app-config-writer@0.4.9
+-   @sap-ux/preview-middleware@0.16.17
+-   @sap-ux/system-access@0.5.2
+-   @sap-ux/cap-config-writer@0.6.9
+
+## 0.7.16
+
+### Patch Changes
+
+-   Updated dependencies [90a8291]
+    -   @sap-ux/preview-middleware@0.16.16
+
+## 0.7.15
+
+### Patch Changes
+
+-   Updated dependencies [421f3ca]
+    -   @sap-ux/project-access@1.25.5
+    -   @sap-ux/adp-tooling@0.12.10
+    -   @sap-ux/app-config-writer@0.4.8
+    -   @sap-ux/cap-config-writer@0.6.8
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/preview-middleware@0.16.15
+    -   @sap-ux/system-access@0.5.1
+
+## 0.7.14
+
+### Patch Changes
+
+-   Updated dependencies [e0ddba7]
+    -   @sap-ux/preview-middleware@0.16.14
+
+## 0.7.13
+
+### Patch Changes
+
+-   Updated dependencies [173b5f2]
+    -   @sap-ux/project-access@1.25.4
+    -   @sap-ux/adp-tooling@0.12.9
+    -   @sap-ux/app-config-writer@0.4.7
+    -   @sap-ux/cap-config-writer@0.6.7
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/preview-middleware@0.16.13
+    -   @sap-ux/system-access@0.5.1
+
+## 0.7.12
+
+### Patch Changes
+
+-   9e4ce4d: Remove safeMode from adp-tooling types and change order of ui5.yaml custom configuration
+-   Updated dependencies [9e4ce4d]
+    -   @sap-ux/adp-tooling@0.12.8
+    -   @sap-ux/preview-middleware@0.16.12
+
+## 0.7.11
+
+### Patch Changes
+
+-   Updated dependencies [e7b9184]
+    -   @sap-ux/project-access@1.25.3
+    -   @sap-ux/adp-tooling@0.12.7
+    -   @sap-ux/app-config-writer@0.4.6
+    -   @sap-ux/cap-config-writer@0.6.6
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/preview-middleware@0.16.11
+    -   @sap-ux/system-access@0.5.1
+
+## 0.7.10
+
+### Patch Changes
+
+-   Updated dependencies [22e4ad8]
+    -   @sap-ux/adp-tooling@0.12.6
+    -   @sap-ux/ui5-config@0.23.1
+    -   @sap-ux/preview-middleware@0.16.10
+    -   @sap-ux/app-config-writer@0.4.5
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/project-access@1.25.2
+    -   @sap-ux/cap-config-writer@0.6.5
+    -   @sap-ux/system-access@0.5.1
+
 ## 0.7.9
 
 ### Patch Changes

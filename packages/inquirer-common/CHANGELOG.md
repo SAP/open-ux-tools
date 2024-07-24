@@ -1,5 +1,18 @@
 # @sap-ux/inquirer-common
 
+## 0.4.2
+
+### Patch Changes
+
+-   Updated dependencies [6ebfae0]
+    -   @sap-ux/ui5-info@0.7.0
+
+## 0.4.1
+
+### Patch Changes
+
+-   108336f: Adds prompts for abap on premise systems to odata-service-inquirer
+
 ## 0.4.0
 
 ### Minor Changes
