@@ -4075,9 +4075,9 @@ exports[`serializeTarget xml move section case 5 1`] = `
                                 <PropertyValue Property=\\"ID\\" String=\\"group1\\"/>
                                 <PropertyValue Property=\\"Facets\\">
                                     <Collection>
-                                     <Record Type=\\"UI.ReferenceFacet\\">
-                                         <PropertyValue Property=\\"Label\\" String=\\"test 1\\"/>
-                                     </Record>
+                                        <Record Type=\\"UI.ReferenceFacet\\">
+                                            <PropertyValue Property=\\"Label\\" String=\\"test 1\\"/>
+                                        </Record>
                                     </Collection>
                                 </PropertyValue>
                             </Record>

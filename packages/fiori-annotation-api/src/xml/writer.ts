@@ -268,7 +268,7 @@ function handleXmlElementAttributeInserts(element: XMLElement, attributeInserts:
     return edits;
 }
 
-function getTextFragmentIndentation(text: string): number {
+function getTextFragmentOffset(text: string): number {
     const lines = text.split('\n');
     const linesWithTextIndices = lines.map((line, idx) => (line.length > 0 ? idx : -1));
     const indentTextIndex = linesWithTextIndices.find((idx) => idx > -1);
@@ -276,22 +276,22 @@ function getTextFragmentIndentation(text: string): number {
         return 0;
     }
     const indentLineText = lines[indentTextIndex];
-    return Math.ceil((indentLineText.length - indentLineText.trimStart().length) / 4);
+    return indentLineText.length - indentLineText.trimStart().length;
 }
 
 function adjustFragmentIndentation(text: string, requiredIndent: number): string {
-    const tab = '    ';
-    const actual = getTextFragmentIndentation(text);
-    if (actual == requiredIndent) {
+    const requiredOffset = requiredIndent * 4;
+    const actual = getTextFragmentOffset(text);
+    if (actual == requiredOffset) {
         return text;
     }
     const lines = text.split('\n');
     lines.forEach((line, idx) => {
         if (line.length) {
-            if (actual < requiredIndent) {
-                line = tab.repeat(requiredIndent - actual) + line;
-            } else if (line.startsWith(tab.repeat(actual - requiredIndent))) {
-                line = line.substring(tab.repeat(actual - requiredIndent).length);
+            if (actual < requiredOffset) {
+                line = ' '.repeat(requiredOffset - actual) + line;
+            } else if (line.startsWith(' '.repeat(actual - requiredOffset))) {
+                line = line.substring(' '.repeat(actual - requiredOffset).length);
             } else {
                 line = line.trim();
             }
