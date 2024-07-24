@@ -1,5 +1,11 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.1.25
+
+### Patch Changes
+
+-   0ec9420: fix: xml formatting when moving element
+
 ## 0.1.24
 
 ### Patch Changes
