@@ -133,7 +133,7 @@ async function parseUI5Versions(url = ui5VersionRequestInfo.OfficialUrl.toString
  *
  * @returns ui5 versions
  */
-export async function parseUI5VersionsSupport(): Promise<UI5Version[]> {
+async function parseUI5VersionsSupport(): Promise<UI5Version[]> {
     let result: UI5Version[] = [];
     let versions: UI5Version[] = [];
     try {
