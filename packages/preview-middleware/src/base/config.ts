@@ -283,14 +283,16 @@ export function createFlpTemplateConfig(config: FlpConfig, manifest: Partial<Man
  *
  * @param config test configuration
  * @param id application id
+ * @param theme theme to be used
  * @returns configuration object for the test template
  */
-export function createTestTemplateConfig(config: InternalTestConfig, id: string) {
+export function createTestTemplateConfig(config: InternalTestConfig, id: string, theme: string) {
     return {
         id,
         framework: config.framework,
         basePath: posix.relative(posix.dirname(config.path), '/') ?? '.',
-        initPath: posix.relative(posix.dirname(config.path), config.init)
+        initPath: posix.relative(posix.dirname(config.path), config.init),
+        theme
     };
 }
 
@@ -351,7 +353,11 @@ function generateTestRunners(
         const testConfig = mergeTestConfigDefaults(test);
         if (['QUnit', 'OPA5'].includes(test.framework)) {
             const testTemlpate = readFileSync(join(TEMPLATE_PATH, 'test/qunit.html'), 'utf-8');
-            const testTemplateConfig = createTestTemplateConfig(testConfig, manifest['sap.app'].id);
+            const testTemplateConfig = createTestTemplateConfig(
+                testConfig,
+                manifest['sap.app'].id,
+                flpTemplConfig.ui5.theme
+            );
             fs.write(join(webappPath, testConfig.path), render(testTemlpate, testTemplateConfig));
         } else if (test.framework === 'Testsuite') {
             const testTemlpate = readFileSync(join(TEMPLATE_PATH, 'test/testsuite.qunit.html'), 'utf-8');

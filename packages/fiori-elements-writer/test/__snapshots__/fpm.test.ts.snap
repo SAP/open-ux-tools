@@ -3279,7 +3279,8 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
         \\"sap.ushell\\": {},
-        \\"sap.fe.templates\\": {}
+        \\"sap.fe.templates\\": {},
+        \\"sap.fe.core\\": {}
       }
     },
     \\"contentDensities\\": {
@@ -7092,7 +7093,8 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
         \\"sap.ushell\\": {},
-        \\"sap.fe.templates\\": {}
+        \\"sap.fe.templates\\": {},
+        \\"sap.fe.core\\": {}
       }
     },
     \\"contentDensities\\": {
