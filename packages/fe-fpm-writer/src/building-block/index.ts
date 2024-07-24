@@ -251,6 +251,9 @@ export function getSerializedFileContent<T extends BuildingBlock>(
     config: BuildingBlockConfig<T>,
     fs?: Editor
 ): { [questionName: string]: CodeSnippet } {
+    if (!config.buildingBlockData?.buildingBlockType) {
+        return {};
+    }
     // Validate the base and view paths
     if (!fs) {
         fs = create(createStorage());

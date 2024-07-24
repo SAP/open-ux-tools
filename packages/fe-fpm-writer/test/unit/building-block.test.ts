@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import { join } from 'path';
-import type { Chart, Field, FilterBar, Table } from '../../src';
+import type { BuildingBlockConfig, Chart, Field, FilterBar, Table } from '../../src';
 import { BuildingBlockType, generateBuildingBlock, getSerializedFileContent } from '../../src';
 import * as testManifestContent from './sample/building-block/webapp/manifest.json';
 import { promises as fsPromises } from 'fs';
@@ -181,6 +181,23 @@ describe('Building Blocks', () => {
                 }
             })
         ).toThrowError(/Unable to read xml view file/);
+    });
+
+    const testInput = [
+        {
+            name: 'Empty config',
+            config: {} as BuildingBlockConfig<FilterBar>
+        },
+        {
+            name: 'Unknown buildingBlockType',
+            config: { buildingBlockData: {} } as BuildingBlockConfig<FilterBar>
+        }
+    ];
+    test.each(testInput)('Unsuficient data for snippet. $name', async ({ config }) => {
+        const basePath = join(testAppPath, 'test');
+        // Test code snippet with unexisting xml file
+        const codeSnippet = getSerializedFileContent<FilterBar>(basePath, config);
+        expect(codeSnippet).toEqual({});
     });
 
     test('generate building block, no fs', async () => {
