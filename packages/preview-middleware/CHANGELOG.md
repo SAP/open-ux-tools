@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.23
+
+### Patch Changes
+
+-   ae6a213: fix: hard coded theme in test template
+
 ## 0.16.22
 
 ### Patch Changes

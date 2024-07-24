@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.25.2
+
+### Patch Changes
+
+-   29bebd2: feat: add required libraries on page addition
+
 ## 0.25.1
 
 ### Patch Changes
