@@ -166,7 +166,7 @@ export function isDeepEqual(obj1: Answers, obj2: Answers): boolean {
             return false;
         }
         // Recursively check each property
-        for (let key in obj1) {
+        for (const key in obj1) {
             if (!obj2.hasOwnProperty(key) || !isDeepEqual(obj1[key], obj2[key])) {
                 return false;
             }
