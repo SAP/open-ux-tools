@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { UITextInput } from '@sap-ux/ui-components';
 import { useValue, getLabelRenderer } from '../../../utilities';
 import type { AnswerValue, InputPromptQuestion } from '../../../types';

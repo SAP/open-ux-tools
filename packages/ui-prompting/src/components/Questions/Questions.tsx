@@ -1,12 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback } from 'react';
 import type { Answers } from 'inquirer';
 import { Question } from '../Question/Question';
 import {
     getAnswer,
     getDependantQuestions,
     getDynamicQuestions,
-    isDeepEqual,
-    setAnswer,
     updateAnswers,
     useAnswers,
     useDynamicQuestionsEffect,
