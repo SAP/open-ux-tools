@@ -3597,7 +3597,6 @@ describe('serializeTarget', () => {
             expect(text).toMatchSnapshot();
         });
 
-
         test('move section case 4', async () => {
             const project = PROJECTS.V4_XML_START;
             const root = project.root;
