@@ -6,6 +6,7 @@ interface ChangeIndicatorProps {
     saved: number;
     pending: number;
     id?: string;
+    type: string;
 }
 
 /**
@@ -15,10 +16,9 @@ interface ChangeIndicatorProps {
  * @returns ReactElement
  */
 export function ChangeIndicator(props: ChangeIndicatorProps): ReactElement {
-    const { saved, pending, id } = props;
+    const { saved, pending, id, type } = props;
     const rest = { id };
     const color = 'var(--vscode-terminal-ansiGreen)';
-    const type = id == 'sapUshellDashboardPage--ChangeIndicator' ? 'control' : 'property';
 
     if (saved > 0 && pending === 0) {
         return (
