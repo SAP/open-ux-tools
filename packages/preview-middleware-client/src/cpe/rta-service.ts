@@ -8,13 +8,14 @@ import {
     ExternalAction
 } from '@sap-ux-private/control-property-editor-common';
 import { ActionSenderFunction, SubscribeFunction } from './types';
-import RuntimeAuthoring, { type FEAppPage } from 'sap/ui/rta/RuntimeAuthoring';
+import RuntimeAuthoring, { FEAppPage } from 'sap/ui/rta/RuntimeAuthoring';
 
+export interface FEAppPageInfo {
+    page: FEAppPage;
+    isInvisible: boolean;
+}
 export interface FEAppPagesMap {
-    [key: string]: {
-        page: FEAppPage;
-        isInvisible: boolean;
-    }[];
+    [key: string]: FEAppPageInfo[];
 }
 
 /**

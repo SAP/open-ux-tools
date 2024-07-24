@@ -20,18 +20,6 @@ export function getComponent<T extends Component>(id: ID): T | undefined {
 }
 
 /**
- * Gets Component by id.
- *
- * @param id - unique identifier for control
- * @returns Component | undefined
- */
-export function getOwnerComponent<T extends Component>(obj: ManagedObject): T | undefined {
-    if (Component?.getOwnerIdFor) {
-        return Component.getOwnerIdFor(obj) as T;
-    }
-}
-
-/**
  * Get ui5 icons.
  *
  * @returns IconDetails[]

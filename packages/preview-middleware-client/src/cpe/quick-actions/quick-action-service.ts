@@ -7,14 +7,7 @@ import {
     quickActionListChanged
 } from '@sap-ux-private/control-property-editor-common';
 
-import {
-    ActionHandler,
-    ActionSenderFunction,
-    ControlTreeIndex,
-    Service,
-    SubscribeFunction,
-    UnSubscribeFunction
-} from '../types';
+import { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction } from '../types';
 
 import { QUICK_ACTION_DEFINITIONS } from './definitions/index';
 
@@ -27,8 +20,6 @@ export class QuickActionService implements Service {
     private sendAction: ActionSenderFunction = () => {};
     private executionContext: ExecutionContext;
     private actionService: unknown;
-    private subscribeFn: SubscribeFunction;
-    private unSubscribeFn: UnSubscribeFunction;
 
     /**
      *
@@ -39,11 +30,7 @@ export class QuickActionService implements Service {
         this.executionContext = {
             controlIndex: {},
             rta,
-            actionService: undefined,
-            onQuickActionExecution: () => ({
-                subscribe: () => {},
-                unSubscribe: () => {}
-            })
+            actionService: undefined
         };
     }
 
@@ -53,15 +40,9 @@ export class QuickActionService implements Service {
      * @param sendAction action sender function
      * @param subscribe subscriber function
      */
-    public async init(
-        sendAction: ActionSenderFunction,
-        subscribe: SubscribeFunction,
-        unSubscribe: UnSubscribeFunction
-    ): Promise<void> {
+    public async init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): Promise<void> {
         this.sendAction = sendAction;
         this.actionService = await this.rta.getService('action');
-        this.subscribeFn = subscribe;
-        this.unSubscribeFn = unSubscribe;
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (executeQuickAction.match(action)) {
                 const definition = QUICK_ACTION_DEFINITIONS.find(
@@ -86,17 +67,7 @@ export class QuickActionService implements Service {
         this.executionContext = {
             controlIndex,
             rta: this.rta,
-            actionService: this.actionService,
-            onQuickActionExecution: () => {
-                return {
-                    subscribe(action) {
-                        that.subscribeFn(action);
-                    },
-                    unSubscribe(handler: ActionHandler) {
-                        that.unSubscribeFn(handler);
-                    }
-                };
-            }
+            actionService: this.actionService
         };
         const quickActions: QuickAction[] = [];
         for (const definition of QUICK_ACTION_DEFINITIONS) {
