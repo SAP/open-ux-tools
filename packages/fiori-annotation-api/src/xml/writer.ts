@@ -290,13 +290,8 @@ function adjustFragmentIndentation(text: string, requiredIndent: number): string
         if (line.length) {
             if (actual < requiredIndent) {
                 line = tab.repeat(requiredIndent - actual) + line;
-            } else if (line.startsWith(tab.repeat(requiredIndent))) {
-                const lineIndentation = getTextFragmentIndentation(line);
-
-                line =
-                    actual - requiredIndent <= lineIndentation
-                        ? line.substring(tab.repeat(actual - requiredIndent).length)
-                        : line.trim();
+            } else if (line.startsWith(tab.repeat(actual - requiredIndent))) {
+                line = line.substring(tab.repeat(actual - requiredIndent).length);
             } else {
                 line = line.trim();
             }
