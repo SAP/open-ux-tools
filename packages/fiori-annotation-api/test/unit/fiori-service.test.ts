@@ -3657,7 +3657,7 @@ describe('serializeTarget', () => {
             expect(text).toMatchSnapshot();
         });
 
-        test.only('move section case 5', async () => {
+        test('move section case 5', async () => {
             const project = PROJECTS.V4_XML_START;
             const root = project.root;
             const fsEditor = await createFsEditorForProject(root);
@@ -3713,7 +3713,7 @@ describe('serializeTarget', () => {
             );
 
             expect(text).toMatchSnapshot();
-        }, 200000);
+        });
     });
 
     describe('cds', () => {
