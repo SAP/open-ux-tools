@@ -46,7 +46,15 @@
         "isPartiallySupportedAdpOverAdpLabel": "You have selected Adaptation Project as а base. The selected system has SAPUI5 version lower than 1.96 and in order for your Adaptation Project based on Adaptation Project to work after deployment, you will need to apply SAP Note 756 SP0 on your system.",
         "projectTypeInfoTooltip": "The only available project type from the selected system is: {{type}}.",
         "achLabel": "Application Component Hierarchy",
-        "achHint": "The purpose of ACH components is to enable the support organization to indicate which BCP/ticket component might be responsible for a particular issue."
+        "achHint": "The purpose of ACH components is to enable the support organization to indicate which BCP/ticket component might be responsible for a particular issue.",
+        "inboundId": "Inbound ID",
+        "flpInfo": "Original application target mapping and the default parameters can be found in Fiori reference library under Implementation Information -> Configuration -> Target Mapping(s) in",
+        "flpConfigurationType": "FLP configuration: Add new tile",
+        "semanticObject": "Semantic Object",
+        "action": "Action",
+        "title": "Title",
+        "subtitle": "Subtitle",
+        "parameters": "Parameters"
     },
     "choices": {
         "annotationFile": {
@@ -56,6 +64,7 @@
     },
     "validators": {
         "inputCannotBeEmpty": "Input cannot be empty.",
+        "inputCannotBeEmptyGeneric": "{{input}} cannot be empty",
         "inpuCannotHaveSpaces": "Input cannot contain spaces.",
 
         "fileDoesNotExist": "The file doesn't exist",
@@ -87,6 +96,17 @@
         "notDeployableNotFlexEnabledSystemError": "The system that you have selected is not an ABAP On-Premise system. Adaptation Project is supported only on such systems, so please choose ABAP On-Premise system which supports Flexibility and DTA_FOLDER deployment.",
         "notFlexEnabledError": "The system that you have selected is not an ABAP On-Premise system which supports Flexibility. Adaptation Project is supported only on such systems, so please choose ABAP On-Premise system which supports Flexibility. If you continue, you will be able to create only an Extension Project.",
         "notDeployableSystemError": "The system that you have selected is not an ABAP On-Premise system which supports DTA_FOLDER deployment. Adaptation Project is supported only on such systems, so please choose ABAP On-Premise system which supports DTA_FOLDER deployment.",
-        "achMandatoryError": "Application Component Hierarchy can contain only capital letters, digits, and dashes."
+        "achMandatoryError": "Application Component Hierarchy can contain only capital letters, digits, and dashes.",
+        "invalidsemanticObject": "Semantic Object should contain only alphanumerical characters and '_' up to 30 characters.",
+        "invalidaction": "Action should contain only alphanumerical characters and '_' up to 60 characters."
+    },
+    "tooltips": {
+        "inboundId": "Choose the inboundID that will be used to set the FLP tile configuration",
+        "flpConfigurationType": "Selected FLP Configuration type is: Add new tile",
+        "semanticObject": "Enter the semantic object for the inbound which will be created for your adaptation project",
+        "action": "Enter the action for the inbound which will be created for your adaptation project",
+        "title": "Enter title for your FLP configuration",
+        "subtitle": "Enter subtitle for your FLP configuration",
+        "parameters": "Enter the value for the parameters in the Target Mappings section from the URL mentioned above"
     }
 }

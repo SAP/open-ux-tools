@@ -492,3 +492,22 @@ export interface ConfigurationInfoAnswers {
     latestUI5version: string;
     versionInfo: string;
 }
+
+export interface ParamCheck {
+    shouldApply: boolean;
+    value: string | undefined;
+}
+
+export interface Parameter {
+    [key: string]: {
+        required: boolean;
+        filter?: Value;
+        defaultValue?: Value;
+        renameTo?: string;
+    };
+}
+
+export interface Value {
+    value: string;
+    format: string;
+}

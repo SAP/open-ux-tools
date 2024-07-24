@@ -2,6 +2,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { OperationsType } from '@sap-ux/axios-extension';
 import { t } from '../i18n';
 import { existsSync } from 'fs';
+import { parseParameters } from './helper';
 
 /**
  * Checks if the input is a valid SAP client.
@@ -188,6 +189,41 @@ export function validateAch(value: string, isCustomerBase: boolean): string | bo
 
     if (!isCustomerBase && !isValid) {
         return t('validators.achMandatoryError');
+    }
+
+    return true;
+}
+
+export function validateEmptyInput(value: string, inputName: string): string | boolean {
+    if (!isNotEmptyString(value)) {
+        return t('validators.inputCannotBeEmptyGeneric', { input: t(`prompts.${inputName}`) });
+    }
+
+    return true;
+}
+
+export function validateByRegex(value: string, inputName: string, pattern: string): string | boolean {
+    if (!isNotEmptyString(value)) {
+        return t('validators.inputCannotBeEmptyGeneric', { input: t(`prompts.${inputName}`) });
+    }
+
+    const regex = new RegExp(pattern, 'g');
+    if (!regex.test(value)) {
+        return t(`validators.invalid${inputName}`);
+    }
+
+    return true;
+}
+
+export function validateParameters(paramString: string): boolean | string {
+    if (!paramString) {
+        return true;
+    }
+
+    try {
+        parseParameters(paramString);
+    } catch (error) {
+        return error.message;
     }
 
     return true;
