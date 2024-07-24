@@ -3439,64 +3439,6 @@ describe('serializeTarget', () => {
                                     <Collection/>
                                 </PropertyValue>
                             </Record>
-                                            <Record Type="UI.ReferenceFacet">
-                                                <PropertyValue Property="Label" String="test 1"/>
-                                            </Record>
-                        </Collection>
-                    </Annotation>
-                </Annotations>
-            </Schema>`
-            )}
-            `;
-            fsEditor.write(path, testData);
-            const text = await testEdit(
-                root,
-                [],
-                [
-                    {
-                        index: 0,
-                        kind: ChangeType.Move,
-                        uri: project.files.annotations,
-                        reference: {
-                            term: 'com.sap.vocabularies.UI.v1.Facets',
-                            target: 'IncidentService.Incidents',
-                            qualifier: ''
-                        },
-                        pointer: '/collection/0/propertyValues/2/value/Collection',
-                        moveReference: [
-                            {
-                                fromPointer: ['/collection/1']
-                            }
-                        ]
-                    }
-                ],
-                'mainService',
-                fsEditor,
-                false
-            );
-
-            expect(text).toMatchSnapshot();
-        });
-
-        test('move section case 2', async () => {
-            const project = PROJECTS.V4_XML_START;
-            const root = project.root;
-            const fsEditor = await createFsEditorForProject(root);
-            const path = pathFromUri(project.files.annotations);
-            const content = fsEditor.read(path);
-            const testData = `${content.replace(
-                '</Schema>',
-                `
-                <Annotations Target="IncidentService.Incidents">
-                    <Annotation Term="UI.Facets">
-                        <Collection>
-                            <Record Type="UI.CollectionFacet">
-                                <PropertyValue Property="Label" String="group 1"/>
-                                <PropertyValue Property="ID" String="group1"/>
-                                <PropertyValue Property="Facets">
-                                    <Collection/>
-                                </PropertyValue>
-                            </Record>
                             <Record Type="UI.ReferenceFacet">
                                                      <PropertyValue Property="Label" String="test 1"/>
                                     <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup"/>
@@ -3539,7 +3481,7 @@ describe('serializeTarget', () => {
             expect(text).toMatchSnapshot();
         });
 
-        test('move section case 3', async () => {
+        test('move section case 2', async () => {
             const project = PROJECTS.V4_XML_START;
             const root = project.root;
             const fsEditor = await createFsEditorForProject(root);
@@ -3597,7 +3539,7 @@ describe('serializeTarget', () => {
             expect(text).toMatchSnapshot();
         });
 
-        test('move section case 4', async () => {
+        test('move section case 3', async () => {
             const project = PROJECTS.V4_XML_START;
             const root = project.root;
             const fsEditor = await createFsEditorForProject(root);
@@ -3623,6 +3565,66 @@ describe('serializeTarget', () => {
                     </Annotation>
                 </Annotations>
             </Schema>`
+            )}
+            `;
+            fsEditor.write(path, testData);
+            const text = await testEdit(
+                root,
+                [],
+                [
+                    {
+                        index: 0,
+                        kind: ChangeType.Move,
+                        uri: project.files.annotations,
+                        reference: {
+                            term: 'com.sap.vocabularies.UI.v1.Facets',
+                            target: 'IncidentService.Incidents',
+                            qualifier: ''
+                        },
+                        pointer: '/collection/0/propertyValues/2/value/Collection',
+                        moveReference: [
+                            {
+                                fromPointer: ['/collection/1']
+                            }
+                        ]
+                    }
+                ],
+                'mainService',
+                fsEditor,
+                false
+            );
+
+            expect(text).toMatchSnapshot();
+        });
+
+        test('move section case 4', async () => {
+            const project = PROJECTS.V4_XML_START;
+            const root = project.root;
+            const fsEditor = await createFsEditorForProject(root);
+            const path = pathFromUri(project.files.annotations);
+            const content = fsEditor.read(path);
+            const testData = `${content.replace(
+                '</Schema>',
+                `
+<Annotations Target="IncidentService.Incidents">
+<Annotation Term="UI.Facets">
+<Collection>
+<Record Type="UI.CollectionFacet">
+<PropertyValue Property="Label" String="group 1"/>
+<PropertyValue Property="ID" String="group1"/>
+<PropertyValue Property="Facets">
+<Collection/>
+</PropertyValue>
+</Record>
+                                <Record Type="UI.ReferenceFacet">
+                                    <PropertyValue Property="Label" String="test 1"/>
+                <PropertyValue Property="ID" String="test"/>
+    <PropertyValue Property="ID" String="group1"/>
+                                </Record>
+    </Collection>
+</Annotation>
+</Annotations>
+</Schema>`
             )}
             `;
             fsEditor.write(path, testData);

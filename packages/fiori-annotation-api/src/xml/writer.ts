@@ -291,10 +291,16 @@ function adjustFragmentIndentation(text: string, requiredIndent: number): string
             if (actual < requiredIndent) {
                 line = tab.repeat(requiredIndent - actual) + line;
             } else if (line.startsWith(tab.repeat(requiredIndent))) {
-                line = line.substring(tab.repeat(actual - requiredIndent).length);
+                const lineIndentation = getTextFragmentIndentation(line);
+
+                line =
+                    actual - requiredIndent <= lineIndentation
+                        ? line.substring(tab.repeat(actual - requiredIndent).length)
+                        : line.trim();
             } else {
                 line = line.trim();
             }
+
             lines[idx] = line;
         }
     });
