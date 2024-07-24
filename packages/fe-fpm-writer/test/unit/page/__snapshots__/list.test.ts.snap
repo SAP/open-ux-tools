@@ -1,5 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ListReport generate Add library dependency \`sap.fe.templates\`  1`] = `
+Object {
+  "libs": Object {
+    "sap.fe.templates": Object {},
+  },
+}
+`;
+
 exports[`ListReport generate all optional settings used 1`] = `
 Object {
   "sap.app": Object {
