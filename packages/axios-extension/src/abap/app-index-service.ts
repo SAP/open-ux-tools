@@ -77,26 +77,6 @@ export abstract class AppIndexService extends Axios implements Service {
         }
     }
 
-    public async getManifest(manifestUrl: string) {
-        try {
-            const config: AxiosRequestConfig = {
-                url: manifestUrl
-            };
-
-            const response = await this.request(config);
-
-            if (typeof response.data !== 'object') {
-                throw new Error('Manifest parsing error: Manifest is not in expected format.');
-            }
-
-            return response.data;
-        } catch (error) {
-            this.log.error(`Failed to fetch the manifest with url ${manifestUrl}.`);
-            this.log.debug(error);
-            throw error;
-        }
-    }
-
     /**
      * Gets the app info for the specified id.
      *

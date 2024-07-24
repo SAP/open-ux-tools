@@ -1,7 +1,16 @@
 import { t } from '../../i18n';
 import { isCustomerBase } from '../../base/helper';
 import { getProjectNames } from '../../base/file-system';
-import { BasicInfoAnswers, ConfigurationInfoAnswers, TargetEnvAnswers } from '../../types';
+import {
+    Application,
+    Auth,
+    BasicInfoAnswers,
+    ChoiceOption,
+    ConfigurationInfoAnswers,
+    FlexUISupportedSystem,
+    TargetEnvAnswers,
+    UI5Version
+} from '../../types';
 import {
     isNotEmptyString,
     validateAch,
@@ -27,40 +36,15 @@ import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import type { ListQuestion, InputQuestion, YUIQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
 import { AbapTarget, createAbapServiceProvider } from '@sap-ux/system-access';
 import { Logger, LoggerOptions } from '@sap-ux/logger';
-import AppUtils from '../../base/app-utils';
-
-export interface FlexUISupportedSystem {
-    isUIFlex: boolean;
-    isOnPremise: boolean;
-}
-
-export interface Auth {
-    url?: string;
-    client?: string;
-}
-
-interface Application {
-    'sap.app/id': string;
-    'sap.app/title': string;
-    'sap.app/ach': string;
-    'sap.fiori/registrationIds': string;
-    'fileType': string;
-    'url': string;
-    'repoName': string;
-}
-
-export interface UI5Version {
-    [key: string]: {
-        version: string;
-        support: string;
-        lts: boolean;
-    };
-}
-
-export interface ChoiceOption<T = string> {
-    name: string;
-    value: T;
-}
+import {
+    getOfficialBaseUI5VersionUrl,
+    getFormattedVersion,
+    UI5VersionService,
+    removeTimestampFromVersion,
+    addSnapshot,
+    isFeatureSupportedVersion
+} from '../../base/services/ui5-version-service';
+import { getApplicationType, isSupportedAppTypeForAdaptationProject, isV4Application } from '../../base/app-utils';
 
 export function isVisible(isCFEnv: boolean, isLoggedIn: boolean): boolean {
     return !isCFEnv || (isCFEnv && isLoggedIn);
@@ -210,11 +194,6 @@ export default class ProjectPrompter {
 
     private appSync: boolean;
 
-    private latestVersion: string;
-    private publicVersions: UI5Version[];
-    private releasedVersions: string[];
-    private detectedVersion: boolean;
-    private systemVersion?: string;
     private versionsOnSystem: string[];
     private systemNames: string[];
     private endpoints: Endpoint[];
@@ -232,9 +211,13 @@ export default class ProjectPrompter {
     public SNAPSHOT_UNTESTED_VERSION = 'snapshot-untested';
     public SNAPSHOT_VERSIONS = [this.SNAPSHOT_VERSION, this.SNAPSHOT_UNTESTED_VERSION];
 
+    private ui5Service: UI5VersionService;
+
     constructor(layer: UI5FlexLayer) {
         this.isCustomerBase = isCustomerBase(layer);
         this.isExtensionInstalled = isExtensionInstalledVsCode('sapse.sap-ux-application-modeler-extension');
+
+        this.ui5Service = new UI5VersionService(this.isCustomerBase);
     }
 
     private modifyAdaptationProjectTypes(): void {
@@ -267,241 +250,28 @@ export default class ProjectPrompter {
         return true;
     }
 
-    public async getSystemRelevantVersions(version: string | undefined): Promise<string[]> {
-        const versionPattern = /^[1-9]\.\d{1,3}\.\d{1,2}\.*/;
-
-        if (version) {
-            this.detectedVersion = versionPattern.test(version);
-        }
-        this.systemVersion = this.detectedVersion ? version : undefined;
-
-        return await this.getRelevantVersions(this.systemVersion);
-    }
-
-    public async getPublicVersions(): Promise<UI5Version[]> {
-        if (!this.publicVersions) {
-            const response = await fetch('https://sapui5.hana.ondemand.com/version.json');
-            this.publicVersions = await response.json();
-            // @ts-ignore
-            this.latestVersion = this.publicVersions['latest']['version'];
-        }
-        return this.publicVersions;
-    }
-
-    private removeTimestampFromVersion(version: string): string {
-        // removes timestamp part in case the version taken from the system is snapshot
-        // converts 1.95.0.34566363464 --> 1.95.0
-        const versionParts = version.split('.');
-        return `${versionParts[0]}.${versionParts[1]}.${versionParts[2]}`;
-    }
-
-    private addSnapshot(version: string): string {
-        // adds "snapshot" suffix for snapshot versions taken from selected system
-        // only if the snapshot is not already released
-        const versionParts = version.split('.');
-        return versionParts[3] && this.removeTimestampFromVersion(version) != this.latestVersion ? '-snapshot' : '';
-    }
-
-    private async getInternalVersions(): Promise<Array<string>> {
-        if (!this.releasedVersions) {
-            const response = await fetch('https://ui5.sap.com/neo-app.json');
-            const data = await response.json();
-            this.releasedVersions = data.routes.map((route: { target: { version: string } }) => {
-                const version =
-                    route.target.version === this.latestVersion
-                        ? `${route.target.version} ${this.LATEST_VERSION}`
-                        : route.target.version;
-                return version;
-            });
-        }
-        return this.releasedVersions.filter(this.isFeatureSupportedVersion.bind(this, '1.71.0'));
-    }
-
-    private isFeatureSupportedVersion(featureVersion: string, version?: string): boolean {
-        if (!version || !featureVersion) {
-            return false;
-        }
-        const snapshotVersions = ['snapshot', 'snapshot-untested'];
-        // Checks if version is higher or equal to the version from which the feature is introduced
-        const featureVersionParts = featureVersion.split('.');
-        const versionParts = version.split('.');
-        const snapshotVersion = version.split('-');
-
-        // When feature version 2.* (or n.*) is bigger than version that is passed we return false
-        if (parseInt(featureVersionParts[0]) > parseInt(version[0])) {
-            return false;
-        }
-
-        return (
-            (snapshotVersions.includes(snapshotVersion[0]) &&
-                (parseInt(versionParts[0].slice(-1)) > parseInt(featureVersionParts[0]) ||
-                    parseInt(versionParts[1]) >= parseInt(featureVersionParts[1]))) ||
-            snapshotVersions.includes(version) ||
-            version.length === 0 ||
-            parseInt(versionParts[0]) > parseInt(featureVersionParts[0]) ||
-            (parseInt(versionParts[0]) === parseInt(featureVersionParts[0]) &&
-                parseInt(versionParts[1]) > parseInt(featureVersionParts[1])) ||
-            (parseInt(versionParts[0]) === parseInt(featureVersionParts[0]) &&
-                parseInt(versionParts[1]) === parseInt(featureVersionParts[1]) &&
-                parseInt(versionParts[2]) >= parseInt(featureVersionParts[2]))
-        );
-    }
-
-    private async getHigherVersions(version: string): Promise<string[]> {
-        const allPublicVersions = await this.getPublicVersions();
-        const versionParts = version.split('.');
-        const minorVersion = parseInt(versionParts[1]);
-        const microVersion = parseInt(versionParts[2]);
-        let versions = '';
-
-        Object.keys(allPublicVersions).forEach((publicVersionKey) => {
-            // @ts-ignore
-            const versionArr = allPublicVersions[publicVersionKey]['version'].split('.');
-            if (
-                parseInt(versionArr[1]) > minorVersion ||
-                (parseInt(versionArr[1]) == minorVersion && parseInt(versionArr[2]) > microVersion)
-            ) {
-                // @ts-ignore
-                versions += allPublicVersions[publicVersionKey]['version'] + ',';
-            }
-        });
-        // @ts-ignore
-        const latestVersionRegex = new RegExp(allPublicVersions['latest']['version'], 'g');
-        const versionsLatest = versions.replace(
-            latestVersionRegex,
-            // @ts-ignore
-            `${allPublicVersions['latest']['version']} ${this.LATEST_VERSION}`
-        );
-        const result = versionsLatest.split(',');
-        result.pop();
-        return result.reverse();
-    }
-
-    public async getRelevantVersions(version?: string): Promise<string[]> {
-        // for internal users returns all internally available versions
-        // for external shows all higher versions than the one on the system
-        // if the version is not detected shows the latest released version
-
-        const allPublicVersions = await this.getPublicVersions();
-        let relevantVersions: string[];
-        let formattedVersion: string = '';
-        let systemSnapshotVersion: string = '';
-        let systemLatestVersion: string = '';
-
-        if (version) {
-            formattedVersion = this.removeTimestampFromVersion(version);
-            this.systemVersion = formattedVersion;
-            systemSnapshotVersion = this.addSnapshot(version);
-            systemLatestVersion =
-                // @ts-ignore
-                formattedVersion === allPublicVersions['latest']['version'] ? this.LATEST_VERSION : '';
-        }
-        if (!this.isCustomerBase) {
-            relevantVersions = await this.getInternalVersions();
-            if (version) {
-                let relevantVersionsAsString = relevantVersions.join();
-                const formattedVersionRegex = new RegExp(formattedVersion + ' ', 'g');
-                relevantVersionsAsString = relevantVersionsAsString.replace(
-                    formattedVersionRegex,
-                    `${formattedVersion}${systemSnapshotVersion} ${this.CURRENT_SYSTEM_VERSION}`
-                );
-                relevantVersions = relevantVersionsAsString.split(',');
-                relevantVersions.unshift(
-                    `${formattedVersion}${systemSnapshotVersion} ${this.CURRENT_SYSTEM_VERSION + systemLatestVersion}`
-                );
-            }
-            relevantVersions.unshift(this.SNAPSHOT_VERSION);
-            relevantVersions.unshift(this.SNAPSHOT_UNTESTED_VERSION);
-        } else {
-            if (version && systemSnapshotVersion === '') {
-                relevantVersions = await this.getHigherVersions(formattedVersion);
-                relevantVersions.unshift(
-                    `${formattedVersion}${systemSnapshotVersion} ${this.CURRENT_SYSTEM_VERSION + systemLatestVersion}`
-                );
-            } else {
-                // @ts-ignore
-                relevantVersions = [`${allPublicVersions['latest']['version']} ${this.LATEST_VERSION}`];
-            }
-        }
-        return [...new Set(relevantVersions)];
-    }
-
     private async systemUI5VersionHandler(value: string): Promise<string[]> {
         if (value) {
             try {
                 const service = await this.provider.getAdtService<UI5RtVersionService>(UI5RtVersionService);
                 const version = await service?.getUI5Version();
-                this.versionsOnSystem = await this.getSystemRelevantVersions(version);
+                this.versionsOnSystem = await this.ui5Service.getSystemRelevantVersions(version);
             } catch (e) {
-                this.versionsOnSystem = await this.getRelevantVersions();
+                this.versionsOnSystem = await this.ui5Service.getRelevantVersions();
             }
         } else {
-            this.versionsOnSystem = await this.getRelevantVersions();
+            this.versionsOnSystem = await this.ui5Service.getRelevantVersions();
         }
-        this.ui5VersionDetected = this.detectedVersion;
+        this.ui5VersionDetected = this.ui5Service.detectedVersion;
         return this.versionsOnSystem;
     }
 
-    public async validateUI5Version(version?: string): Promise<string | boolean> {
-        if (version) {
-            const selectedVersionURL = this.getOfficialBaseUI5VersionUrl(version);
-            const resource = version.includes('snapshot') ? 'neo-app.json' : this.getFormattedVersion(version);
-
-            try {
-                await fetch(`${selectedVersionURL}/${resource}`);
-                return true;
-            } catch (e) {
-                if (version.includes('snapshot')) {
-                    // Logger.getLogger?.log(`[ADP Creation] Error on validating ui5 snapshot version: ${e}`);
-                    const message = t('validators.ui5VersionNotReachableError');
-                    return `${message.replace('<URL>', selectedVersionURL)}`;
-                }
-                if (e.response.status === 400 || e.response.status === 404) {
-                    // Logger.getLogger?.log(`[ADP Creation] Error on validating ui5 version: ${e}`);
-                    return t('validators.ui5VersionOutdatedError');
-                }
-                // Logger.getLogger?.log(`[ADP Creation] Error on validating ui5 version: ${e}`);
-                return `Error on validating ui5 version: ${e}`;
-            }
-        }
-        return t('validators.ui5VersionCannotBeEmpty');
-    }
-
     private async getVersionDefaultValue() {
-        if (this.versionsOnSystem && (await this.validateUI5Version(this.versionsOnSystem[0])) === true) {
+        if (this.versionsOnSystem && (await this.ui5Service.validateUI5Version(this.versionsOnSystem[0])) === true) {
             return this.versionsOnSystem[0];
         } else {
             return '';
         }
-    }
-
-    private getFormattedVersion(version: string): string {
-        // remove additional information from version number
-        // reverse "specified" snapshot version 1.96.0-snapshot --> snapshot-1.96
-        version = this.removeBracketsFromVersion(version);
-        return version.toLowerCase().includes('-snapshot') ? `snapshot-${this.removeMicroPart(version)}` : version;
-    }
-
-    private removeBracketsFromVersion(version: string): string {
-        // removes additional information about the selected version (e.g. "latest")
-        if (version.indexOf('(') !== -1) {
-            const versionParts = version.split('(');
-            return versionParts[0].trim();
-        }
-        return version;
-    }
-
-    private removeMicroPart(version: string): string {
-        // snapshot url contains only the number of the version without micro part (e.g. transforms 1.87.3 --> 1.87)
-        const versionParts = version.split('.');
-        return `${versionParts[0]}.${versionParts[1]}`;
-    }
-
-    public getOfficialBaseUI5VersionUrl(version: string): string {
-        if (version.toLowerCase().includes('snapshot')) {
-            return 'https://sapui5preview-sapui5.dispatcher.int.sap.eu2.hana.ondemand.com:443';
-        }
-        return 'https://ui5.sap.com';
     }
 
     private getCachedFioriId(): string {
@@ -580,15 +350,6 @@ export default class ProjectPrompter {
         this.isPartiallySupportedAdpOverAdp = checkForAdpOverAdpPartialSupport && fileType === 'appdescr_variant';
     }
 
-    public isV4App(manifest: Manifest): boolean {
-        return !!(
-            manifest['sap.ui5'] &&
-            manifest['sap.ui5']['dependencies'] &&
-            manifest['sap.ui5']['dependencies']['libs'] &&
-            manifest['sap.ui5']['dependencies']['libs']['sap.fe.templates']
-        );
-    }
-
     private checkForSyncLoadedViews(ui5Settings: Manifest['sap.ui5']) {
         if (ui5Settings?.rootView) {
             // @ts-ignore // TODO:
@@ -603,11 +364,11 @@ export default class ProjectPrompter {
     }
 
     private async validateSmartTemplateApplication(manifest: Manifest) {
-        const isV4App = AppUtils.isV4App(manifest);
+        const isV4App = isV4Application(manifest);
         this.isV4AppInternalMode = isV4App && !this.isCustomerBase;
-        const sAppType = AppUtils.getApplicationType(manifest);
+        const sAppType = getApplicationType(manifest);
 
-        if (AppUtils.isSupportedAppTypeForAdaptationProject(sAppType)) {
+        if (isSupportedAppTypeForAdaptationProject(sAppType)) {
             if (manifest['sap.ui5']) {
                 if (manifest['sap.ui5'].flexEnabled === false) {
                     throw new Error(t('validators.appDoesNotSupportAdaptation'));
@@ -661,17 +422,19 @@ export default class ProjectPrompter {
     ): Promise<boolean | string> {
         if (value) {
             try {
-                const systemVersion = this.systemVersion;
-                const checkForAdpOverAdpSupport =
-                    this.ui5VersionDetected && !this.isFeatureSupportedVersion('1.96.0', systemVersion);
-                const checkForAdpOverAdpPartialSupport =
-                    this.ui5VersionDetected &&
-                    checkForAdpOverAdpSupport &&
-                    this.isFeatureSupportedVersion('1.90.0', systemVersion);
                 const res = await this.isAppSupported(value.id);
+
                 if (res) {
                     const manifestUrl = await this.getManifestUrl(value.id);
                     const manifest = await this.getManifest(manifestUrl);
+
+                    const systemVersion = this.ui5Service.systemVersion;
+                    const checkForAdpOverAdpSupport =
+                        this.ui5VersionDetected && !isFeatureSupportedVersion('1.96.0', systemVersion);
+                    const checkForAdpOverAdpPartialSupport =
+                        this.ui5VersionDetected &&
+                        checkForAdpOverAdpSupport &&
+                        isFeatureSupportedVersion('1.90.0', systemVersion);
 
                     await this.validateSelectedApplication(
                         value,
@@ -1417,7 +1180,7 @@ export default class ProjectPrompter {
                 applyDefaultWhenDirty: true,
                 hint: t('prompts.ui5VersionTooltip')
             },
-            validate: this.validateUI5Version.bind(this),
+            validate: this.ui5Service.validateUI5Version.bind(this),
             default: async () => await this.getVersionDefaultValue()
         } as ListQuestion<ConfigurationInfoAnswers>;
     }
@@ -1426,7 +1189,7 @@ export default class ProjectPrompter {
         return {
             type: 'input',
             name: 'latestUI5version',
-            message: t('prompts.currentUI5VersionLabel', { version: this.latestVersion }),
+            message: t('prompts.currentUI5VersionLabel', { version: this.ui5Service.latestVersion }),
             when: (answers: ConfigurationInfoAnswers) => {
                 return answers.system && !this.shouldAuthenticate(answers) && this.isCloudProject;
             },
@@ -1451,7 +1214,7 @@ export default class ProjectPrompter {
                 type: 'label',
                 applyDefaultWhenDirty: true
             }
-        };
+        } as InputQuestion<ConfigurationInfoAnswers>;
     }
 
     private getFioriIdPrompt(): YUIQuestion<ConfigurationInfoAnswers> {

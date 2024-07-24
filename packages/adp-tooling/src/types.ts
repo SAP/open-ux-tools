@@ -492,3 +492,39 @@ export interface ConfigurationInfoAnswers {
     latestUI5version: string;
     versionInfo: string;
 }
+
+export interface FlexUISupportedSystem {
+    isUIFlex: boolean;
+    isOnPremise: boolean;
+}
+
+export interface Auth {
+    url?: string;
+    client?: string;
+}
+
+export interface Application {
+    'sap.app/id': string;
+    'sap.app/title': string;
+    'sap.app/ach': string;
+    'sap.fiori/registrationIds': string;
+    'fileType': string;
+    'url': string;
+    'repoName': string;
+}
+
+export interface UI5Version {
+    latest: VersionDetail;
+    [key: string]: VersionDetail;
+}
+
+export interface VersionDetail {
+    version: string;
+    support: string;
+    lts: boolean;
+}
+
+export interface ChoiceOption<T = string> {
+    name: string;
+    value: T;
+}
