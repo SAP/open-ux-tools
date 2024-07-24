@@ -8,8 +8,6 @@
         "maxAgeTooltip": "(Optional) Enter the time in seconds it takes for a cached response of the service to expire.",
         "oDataAnnotationSourceURILabel": "OData Annotation Data Source URI",
         "oDataAnnotationSourceURITooltip": "Server side annotations have been detected for the selected OData service. If needed, enter new annotation data source URI  for the changed service",
-        "oDataURIInfoLabel": "Have in mind that common OData Service path prefixes are '{{- v2Prefix}}' or '{{- v4Prefix}}'",
-        "oDataURIV2InfoLabel": "Have in mind that you are trying to replace OData {{versionOne}} Service with OData {{versionTwo}} Service",
         "inboundId": "Inbound ID",
         "title": "Title",
         "subtitle": "Subtitle",
