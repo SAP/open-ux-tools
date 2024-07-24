@@ -7,3 +7,4 @@ export { updateLaunchConfig } from './launch-config-crud/update';
 export { getIndexOfArgument, getFioriOptions, generateNewFioriLaunchConfig } from './launch-config-crud/utils';
 export { updateLaunchJSON } from './launch-config-crud/writer';
 export { getDefaultLaunchConfigOptionsForProject } from './project-discovery/project';
+export { LaunchConfigOptions } from './debug-config/types';
