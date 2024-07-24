@@ -6,7 +6,8 @@ import { getFEAppPagesMap } from '../../rta-service';
 
 export const RENAME_SECTION_TITLE = 'rename-section-title';
 const ACTION_ID = 'CTX_RENAME';
-
+// Eg: adp.fe no ObjectPageDynamicHeaderTitle
+// fe.v2.lrop.customer ObjectPageDynamicHeaderTitle exists
 const PARENT_CONTROL_TYPE_NAMES = ['sap.uxap.ObjectPageLayout'];
 
 export const RENAME_SECTION: QuickActionDefinition = {
@@ -73,7 +74,7 @@ export const RENAME_SECTION: QuickActionDefinition = {
             }
 
             const sections = control.children.filter((child) => child.controlType === 'sap.uxap.ObjectPageSection');
-            if (sectionTabs.children.length === 0) {
+            if (sections.length === 0) {
                 children.push(...sections.map((section) => `'${section.name}' Section`));
             }
         }
