@@ -4,6 +4,16 @@ import { join, isAbsolute } from 'path';
 import { UI5Config } from '@sap-ux/ui5-config';
 
 /**
+ * Get the app descriptor variant.
+ *
+ * @param {string} basePath - The path to the adaptation project.
+ * @returns {DescriptorVariant} The app descriptor variant.
+ */
+export function getVariant(basePath: string): DescriptorVariant {
+    return JSON.parse(readFileSync(join(basePath, 'webapp', 'manifest.appdescr_variant'), 'utf-8'));
+}
+
+/**
  * Returns the adaptation project configuration, throws an error if not found.
  *
  * @param {string} basePath - The path to the adaptation project.
@@ -21,14 +31,4 @@ export async function getAdpConfig(basePath: string, yamlPath: string): Promise<
         throw new Error('No system configuration found in ui5.yaml');
     }
     return adp;
-}
-
-/**
- * Get the app descriptor variant.
- *
- * @param {string} basePath - The path to the adaptation project.
- * @returns {DescriptorVariant} The app descriptor variant.
- */
-export function getVariant(basePath: string): DescriptorVariant {
-    return JSON.parse(readFileSync(join(basePath, 'webapp', 'manifest.appdescr_variant'), 'utf-8'));
 }
