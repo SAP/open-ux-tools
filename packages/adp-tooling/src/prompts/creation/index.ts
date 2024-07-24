@@ -866,7 +866,6 @@ export default class ProjectPrompter {
 
                 // answers.password not set yet, use "value" instead
                 try {
-                    // TODO:
                     await this.getSystemData(answers.system, answers.client, answers.username, value);
                     this.versionsOnSystem = await this.systemUI5VersionHandler(answers.system);
                     await this.getApplications(answers.system, answers.username, value, answers.client);
