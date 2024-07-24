@@ -33,9 +33,9 @@ export const MultiSelect = (props: MultiSelectProps) => {
             onChange={(_, changedOption) => {
                 let updatedValue: string | undefined = '';
                 if (changedOption?.selected) {
-                    updatedValue = [...(value.split(',').filter((option) => option) ?? []), changedOption.key].join();
+                    updatedValue = [...(value?.split(',').filter((option) => option) ?? []), changedOption.key].join();
                 } else {
-                    updatedValue = (value.split(',') ?? [])
+                    updatedValue = (value?.split(',') ?? [])
                         .filter((option) => option && option !== changedOption?.key)
                         .join();
                 }

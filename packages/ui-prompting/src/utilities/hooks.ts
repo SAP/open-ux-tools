@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import type { UIComboBoxOption, UISelectableOption } from '@sap-ux/ui-components';
-import { convertChoicesToOptions, getDynamicQuestions } from './utils';
+import { convertChoicesToOptions, getAnswer, getDynamicQuestions, isDeepEqual, setAnswer } from './utils';
 import type { PromptQuestion, DynamicChoices, PromptListChoices } from '../types';
-import type { ChoiceOptions } from 'inquirer';
+import type { Answers, ChoiceOptions } from 'inquirer';
 
 interface RequestedChoices {
     [key: string]: boolean;
@@ -15,21 +15,41 @@ interface RequestedChoices {
  * @param propValue - External value from component properties
  * @returns Returns a stateful value, and a function to update it.
  */
-export function useValue<S>(initialValue: S, propValue?: S): [S, (value: S) => void] {
+export function useValue<S>(initialValue?: S, propValue?: S): [S | undefined, (value: S | undefined) => void] {
     const [value, setValue] = useState(propValue ?? initialValue);
 
     useEffect(() => {
         // Update the local state value if new value from props is received
-        if (propValue !== undefined && propValue !== value) {
+        if (propValue !== value) {
             setValue(propValue);
         }
     }, [propValue]);
 
-    const updateValue = (newValue: S) => {
+    const updateValue = (newValue: S | undefined) => {
         setValue(newValue);
     };
 
     return [value, updateValue];
+}
+
+/**
+ * Method returns dropdown options for passed question.
+ *
+ * @param question - Question with choices
+ * @param choices - External choices(if param is passed then choices would be used on top of "question.choices")
+ * @returns Returns dropdown/combobox options.
+ */
+function getQuestionOptions(
+    question: PromptQuestion,
+    choices?: PromptListChoices
+): UISelectableOption<ChoiceOptions>[] {
+    // Use external/dynamicly populated choices
+    let resolvedChoices = choices;
+    // Use static choices if dynamic choices are not available
+    if (!resolvedChoices && 'choices' in question && Array.isArray(question.choices)) {
+        resolvedChoices = question.choices;
+    }
+    return convertChoicesToOptions(resolvedChoices ?? []);
 }
 
 /**
@@ -40,15 +60,9 @@ export function useValue<S>(initialValue: S, propValue?: S): [S, (value: S) => v
  * @returns Returns dropdown/combobox options.
  */
 export function useOptions(question: PromptQuestion, choices?: PromptListChoices): UISelectableOption<ChoiceOptions>[] {
-    const [options, setOptions] = useState<UIComboBoxOption[]>([]);
+    const [options, setOptions] = useState<UIComboBoxOption[]>(() => getQuestionOptions(question, choices));
     useEffect(() => {
-        // Use external/dynamicly populated choices
-        let resolvedChoices = choices;
-        // Use static choices if dynamic choices are not available
-        if (!resolvedChoices && 'choices' in question && Array.isArray(question.choices)) {
-            resolvedChoices = question.choices;
-        }
-        const options = convertChoicesToOptions(resolvedChoices ?? []);
+        const options = getQuestionOptions(question, choices);
         setOptions(options);
     }, [question, choices]);
     return options;
@@ -125,4 +139,66 @@ export function useDynamicQuestionsEffect(effect: (names: string[]) => void, que
             effect(dynamicChoices.current);
         }
     }, [questions]);
+}
+
+/**
+ * Methods merges external answers with default values with questions and returns new reference with merged answers.
+ *
+ * @param answers - External answers to merge with default values from questions
+ * @param questions - Questions which can contain default answers
+ * @returns New reference with merged answers.
+ */
+const mergeAllAnswers = (answers: Answers, questions: PromptQuestion[]): { merged: boolean; answers?: Answers } => {
+    const newAnswers = structuredClone(answers);
+    let merged = false;
+    for (const question of questions) {
+        if (question.default !== undefined && getAnswer(answers, question.name) === undefined) {
+            setAnswer(answers, question.name, question.default);
+            merged = true;
+        }
+    }
+    return {
+        merged,
+        answers: newAnswers
+    };
+};
+
+/**
+ * Hook for question answers state object whch maintains external answers with defaul answers from questions.
+ *
+ * @param questions - Questions which can contain default answers
+ * @param externalAnswers - External answers to merge with default values from questions
+ * @param onInitialChange - Callback function which called when external or default values of questions changed
+ * @returns Returns a stateful answers, and a function to update it.
+ */
+export function useAnswers(
+    questions: PromptQuestion[],
+    externalAnswers?: Answers,
+    onInitialChange?: (value: Answers) => void
+): [Answers, (value: Answers) => void] {
+    const currentExternalAnswers = useRef<Answers>(() => {
+        const merge = mergeAllAnswers(externalAnswers ?? {}, questions);
+        return merge.answers ?? {};
+    });
+    const [localAnswers, setLocalAnswers] = useState(currentExternalAnswers.current);
+
+    useEffect(() => {
+        let updated: boolean = false;
+        let answers = localAnswers;
+        if (externalAnswers && !isDeepEqual(currentExternalAnswers.current, externalAnswers)) {
+            currentExternalAnswers.current = externalAnswers;
+            answers = externalAnswers;
+            updated = true;
+        }
+        const { merged, answers: newAnswers } = mergeAllAnswers(answers, questions);
+        updated = merged || updated;
+        // ToDo - test to avoid inifinitive sets
+        if (updated && newAnswers) {
+            setLocalAnswers(newAnswers);
+            // Callback function - notify about answers change
+            onInitialChange?.(newAnswers);
+        }
+    }, [questions, externalAnswers]);
+
+    return [localAnswers, setLocalAnswers];
 }

@@ -18,8 +18,10 @@ export const ExternalValues = (): JSX.Element => {
                     id: 'Chart',
                     filterBar: 'FilterBar',
                     personalization: ['Item', 'Sort'],
-                    entity: 'C_CUSTOMER_OP_SRV.C_CustomerOPType',
-                    qualifier: '@com.sap.vocabularies.UI.v1.Chart',
+                    metaPath: {
+                        entitySet: 'C_CUSTOMER_OP_SRV.C_CustomerOPType',
+                        qualifier: 'to_CustomerBankDetails/@com.sap.vocabularies.UI.v1.Chart#C_CustomerBankDetailsOPType'
+                    },
                     selectionChange: 'onSelectionChange',
                     bindingContextType: 'absolute',
                     selectionMode: 'Multiple'

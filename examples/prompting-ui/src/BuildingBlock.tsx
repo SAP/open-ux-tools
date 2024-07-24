@@ -3,10 +3,9 @@ import React, { useEffect, useState } from 'react';
 import type { PromptsType } from './utils';
 import { applyAnswers, getChoices, getCodeSnippet, getWebSocket, validateAnswers } from './utils/communication';
 import { Questions, PromptsLayoutType } from '@sap-ux/ui-prompting';
-import type { PromptQuestion, ValidationResults, ValidationResult } from '@sap-ux/ui-prompting';
+import type { ValidationResults, ValidationResult } from '@sap-ux/ui-prompting';
 import { useChoices, useQuestions } from './utils/hooks';
 import type { Answers } from 'inquirer';
-import { getAnswer, setAnswer } from '@sap-ux/ui-prompting/src/utilities';
 
 initIcons();
 getWebSocket();
@@ -24,25 +23,6 @@ const STYLE_FLEX = {
     display: 'flex'
 };
 
-// const getDefaultAnswers = (questions: PromptQuestion[]) =>
-//     questions.reduce((acc: Answers, q: PromptQuestion) => {
-//         if (q.name) {
-//             acc = { ...acc, [q.name]: q.default };
-//         }
-//         return acc;
-//     }, {});
-
-const updateWithDefaultAnswers = (answers: Answers, questions: PromptQuestion[]): Answers => {
-    // ToDo - temp fix
-    const updatedAnswers = { ...answers };
-    for (const question of questions) {
-        if (question.default !== undefined && getAnswer(updatedAnswers, question.name) === undefined) {
-            setAnswer(updatedAnswers, question.name, question.default);
-        }
-    }
-    return updatedAnswers;
-};
-
 export const BuildingBlockQuestions = (props: {
     type: PromptsType;
     visibleQuestions?: string[];
@@ -56,12 +36,10 @@ export const BuildingBlockQuestions = (props: {
     });
     const choices = useChoices();
     const { groups, questions, initialAnswers = {} } = useQuestions(type, visibleQuestions);
-    const [answers, setAnswers] = useState<Answers>(
-        updateWithDefaultAnswers(externalAnswers ?? initialAnswers, questions)
-    );
+    const [answers, setAnswers] = useState<Answers>(externalAnswers ?? initialAnswers);
     const [validation, setValidation] = useState<ValidationResults>({});
 
-    useEffect(() => setAnswers(updateWithDefaultAnswers(externalAnswers ?? initialAnswers, questions)), [questions]);
+    useEffect(() => setAnswers(externalAnswers ?? initialAnswers), [questions]);
 
     /**
      * Method updates answers and validation state.
@@ -69,17 +47,19 @@ export const BuildingBlockQuestions = (props: {
      * @param newAnswers - Updated values of all answers
      * @param name - Associated answer's question name.
      */
-    async function updateAnswers(newAnswers: Answers, name: string) {
-        setAnswers(updateWithDefaultAnswers(newAnswers, questions));
-        if (liveValidation) {
-            await validateAnswers(type, [{ name }], updateWithDefaultAnswers(newAnswers, questions)).then(
-                (validationResults) => setValidation({ ...validation, ...validationResults })
-            );
-        } else {
-            const clearValidation = { ...validation };
-            if (clearValidation[name]) {
-                delete clearValidation[name];
-                setValidation(clearValidation);
+    async function updateAnswers(newAnswers: Answers, name?: string) {
+        setAnswers(newAnswers);
+        if (name) {
+            if (liveValidation) {
+                await validateAnswers(type, [{ name }], newAnswers).then((validationResults) =>
+                    setValidation({ ...validation, ...validationResults })
+                );
+            } else {
+                const clearValidation = { ...validation };
+                if (clearValidation[name]) {
+                    delete clearValidation[name];
+                    setValidation(clearValidation);
+                }
             }
         }
     }
@@ -103,7 +83,7 @@ export const BuildingBlockQuestions = (props: {
      * Method resets answers to default state.
      */
     function handleReset() {
-        setAnswers(updateWithDefaultAnswers(externalAnswers ?? initialAnswers ?? {}, questions));
+        setAnswers(externalAnswers ?? initialAnswers);
         setValidation({});
     }
 

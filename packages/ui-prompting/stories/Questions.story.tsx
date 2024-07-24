@@ -58,6 +58,7 @@ export const ObjectBasedQuestions = (): JSX.Element => {
             // ToDo recheck type
             answers={{
                 test4: {
+                    externalWithoutQuestion: 'Dummy',
                     child: {
                         dummy: 'External value'
                     }

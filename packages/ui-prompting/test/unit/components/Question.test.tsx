@@ -20,33 +20,41 @@ describe('Question', () => {
     for (const question of Object.values(questions)) {
         it(`Render question - ${question.name} with message`, () => {
             render(<Question {...props} question={{ ...question, placeholder: `${question.name} placeholder` }} />);
-            // ToDo improve code(lint)
-            question.message && expect(screen.getByText(question.message.toString())).toBeDefined();
-            question.message && expect(screen.getByPlaceholderText(`${question.name} placeholder`)).toBeDefined();
+            const label = question.message?.toString() ?? question.name;
+            expect(screen.getByText(label)).toBeDefined();
+            expect(screen.getByPlaceholderText(`${question.name} placeholder`)).toBeDefined();
         });
 
         it(`Render question default value - ${question.name} with message`, () => {
             render(
                 <Question
                     {...props}
-                    question={{ ...question, default: 'testValue0' }}
+                    question={{ ...question }}
+                    answers={{
+                        [question.name]: 'testValue0'
+                    }}
                     choices={[{ name: 'testName0', value: 'testValue0' }]}
                 />
             );
-            // ToDo improve code(lint)
-            question.message && expect(screen.getByDisplayValue('testName0')).toBeDefined();
+            if (question.type === 'input') {
+                expect(screen.getByDisplayValue('testValue0')).toBeDefined();
+            } else {
+                expect(screen.getByDisplayValue('testName0')).toBeDefined();
+            }
         });
 
         it(`Render question default value - ${question.name} with choices as string array`, () => {
             render(
                 <Question
                     {...props}
-                    question={{ ...question, default: 'Page' }}
+                    question={{ ...question }}
+                    answers={{
+                        [question.name]: 'Page'
+                    }}
                     choices={['Page', 'Control', 'None']}
                 />
             );
-            // ToDo improve code(lint)
-            question.message && expect(screen.getByDisplayValue('Page')).toBeDefined();
+            expect(screen.getByDisplayValue('Page')).toBeDefined();
         });
 
         it(`Render question required - ${question.name} with message`, () => {

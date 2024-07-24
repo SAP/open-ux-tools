@@ -1,5 +1,7 @@
 import type { Answers, CheckboxQuestion, DistinctChoice, InputQuestion, ListQuestion } from 'inquirer';
 
+export { Answers };
+
 /**
  * Interfaces for questions.
  */

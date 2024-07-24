@@ -1,11 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import type { Answers } from 'inquirer';
 import { Question } from '../Question/Question';
 import {
     getAnswer,
     getDependantQuestions,
     getDynamicQuestions,
+    isDeepEqual,
+    setAnswer,
     updateAnswers,
+    useAnswers,
     useDynamicQuestionsEffect,
     useRequestedChoices
 } from '../../utilities';
@@ -21,7 +24,7 @@ export interface QuestionsProps {
     choices?: DynamicChoices;
     validation?: ValidationResults;
     onChoiceRequest?: (names: string[], answers: Answers) => void;
-    onChange?: (answers: Answers, name: string, answer: AnswerValue, dependantPromptNames?: string[]) => void;
+    onChange?: (answers: Answers, name?: string, answer?: AnswerValue, dependantPromptNames?: string[]) => void;
     layoutType?: PromptsLayoutType;
     groups?: Array<PromptsGroup>;
     showDescriptions?: boolean;
@@ -39,7 +42,9 @@ export const Questions = (props: QuestionsProps) => {
         showDescriptions,
         validation = {}
     } = props;
-    const [localAnswers, setLocalAnswers] = useState({ ...answers });
+    const [localAnswers, setLocalAnswers] = useAnswers(questions, answers, (answers: Answers) => {
+        onChange?.(answers);
+    });
     const [pendingRequests, setRequestedChoices] = useRequestedChoices({}, choices);
     const requestChoices = useCallback(
         (names: string[], answers: Answers) => {
@@ -52,10 +57,6 @@ export const Questions = (props: QuestionsProps) => {
         },
         [onChoiceRequest]
     );
-    // Store local answers
-    useEffect(() => {
-        setLocalAnswers({ ...answers });
-    }, [answers]);
     // Request dynamic choices
     useDynamicQuestionsEffect(() => {
         const dynamicChoices = getDynamicQuestions(questions);

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Questions } from '../src/components';
 import type { PromptQuestion } from '../src';
 import { initIcons } from '@sap-ux/ui-components';
 import { useStorage } from './utils';
+import { Answers } from 'inquirer';
 
-export default { title: 'Basic/Input' };
+export default { title: 'Misc/Examples' };
 
 initIcons();
 
@@ -24,32 +25,22 @@ const questions: PromptQuestion[] = [
         message: 'With external value',
         name: 'external',
         type: 'input'
-    },
-    {
-        message: 'With validation',
-        name: 'validation',
-        type: 'input'
-    },
-    {
-        message: 'With description and placeholder',
-        name: 'description',
-        type: 'input',
-        description: 'Test description',
-        placeholder: 'Test placeholder'
     }
 ];
 
-export const input = (): JSX.Element => {
+export const localState = (): JSX.Element => {
     const [saveValues] = useStorage();
+    const [answers, setAnswers] = useState<Answers>({
+        external: 'external value',
+        externalWithoutQuestion: 'testValue'
+    });
     return (
         <Questions
             questions={questions}
-            answers={{
-                external: 'external value',
-                externalWithoutQuestion: 'testValue'
-            }}
-            onChange={(answers) => {
-                saveValues(answers);
+            answers={answers}
+            onChange={(newAnswers) => {
+                saveValues(newAnswers);
+                setAnswers(newAnswers);
             }}
             validation={{
                 validation: {

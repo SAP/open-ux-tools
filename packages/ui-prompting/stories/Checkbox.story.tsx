@@ -30,7 +30,7 @@ const questions: PromptQuestion[] = [
         message: 'With default value',
         name: 'default value',
         type: 'checkbox',
-        default: 'Default',
+        default: 'test1',
         choices
     },
     {
@@ -61,7 +61,8 @@ export const checkbox = (): JSX.Element => {
         <Questions
             questions={questions}
             answers={{
-                external: 'test2'
+                external: 'test2',
+                externalWithoutQuestion: 'testValue'
             }}
             onChange={(answers) => {
                 saveValues(answers);

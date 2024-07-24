@@ -18,8 +18,10 @@ export const ExternalValues = (): JSX.Element => {
                     id: 'Table',
                     filterBar: 'FilterBar',
                     bindingContextType: 'absolute',
-                    entity: 'C_CUSTOMER_OP_SRV.C_CustomerOPType',
-                    qualifier: '@com.sap.vocabularies.UI.v1.LineItem#test',
+                    metaPath: {
+                        entitySet: 'C_CUSTOMER_OP_SRV.C_CustomerOPType',
+                        qualifier: '@com.sap.vocabularies.UI.v1.LineItem#test'
+                    },
                     type: 'GridTable',
                     selectionMode: 'Multiple',
                     header: 'Table header',

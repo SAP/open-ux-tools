@@ -14,18 +14,15 @@ export const Input = (props: InputProps) => {
     const [value, setValue] = useValue('', props.value);
     const onLiveChange = (event: React.FormEvent, newValue?: string | undefined) => {
         setValue(newValue ?? '');
+        onChange?.(name, newValue);
     };
-
-    useEffect(() => {
-        onChange?.(name, value);
-    }, [name, value]);
 
     return (
         <UITextInput
             onRenderLabel={getLabelRenderer(description)}
             required={required}
             label={typeof message === 'string' ? message : name}
-            value={value.toString()}
+            value={value ? value.toString() : ''}
             onChange={onLiveChange}
             errorMessage={errorMessage}
             placeholder={placeholder ?? 'Enter a value'}

@@ -19,10 +19,7 @@ export const Question = (props: QuestionProps) => {
     const { question, onChange, answers, choices, pending, validation = {} } = props;
     let questionInput: JSX.Element;
     let errorMessage = '';
-    let value: AnswerValue = getAnswer(answers, question.name) as AnswerValue;
-    if (value === undefined && question.default !== undefined) {
-        value = question.default;
-    }
+    const value: AnswerValue = getAnswer(answers, question.name) as AnswerValue;
     if (validation[question.name]?.isValid === false && validation[question.name]?.errorMessage) {
         errorMessage = validation[question.name].errorMessage!;
     }

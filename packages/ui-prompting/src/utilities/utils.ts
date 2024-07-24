@@ -150,3 +150,30 @@ export function convertChoicesToOptions(choices: PromptListChoices): UISelectabl
     }
     return options;
 }
+
+/**
+ * Method deeply compares two answers objects.
+ *
+ * @param obj1 - First object with answers
+ * @param obj2 - Second object with answers
+ * @returns True if objects are same.
+ */
+export function isDeepEqual(obj1: Answers, obj2: Answers): boolean {
+    // Check if both inputs are objects
+    if (typeof obj1 === 'object' && obj1 !== null && typeof obj2 === 'object' && obj2 !== null) {
+        // Check if both objects have the same number of properties
+        if (Object.keys(obj1).length !== Object.keys(obj2).length) {
+            return false;
+        }
+        // Recursively check each property
+        for (let key in obj1) {
+            if (!obj2.hasOwnProperty(key) || !isDeepEqual(obj1[key], obj2[key])) {
+                return false;
+            }
+        }
+        return true;
+    } else {
+        // For primitive values, use strict equality
+        return obj1 === obj2;
+    }
+}

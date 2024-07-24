@@ -64,7 +64,7 @@ export const Select = (props: SelectProps) => {
         <UITextInput
             componentRef={inputRef}
             label={typeof message === 'string' ? message : name}
-            value={value.toString()}
+            value={value?.toString()}
             placeholder={creation.inputPlaceholder}
             errorMessage={errorMessage}
             required={props.required}
@@ -81,9 +81,9 @@ export const Select = (props: SelectProps) => {
             autoComplete="on"
             required={required}
             isLoading={pending ? [UIComboBoxLoaderType.Input, UIComboBoxLoaderType.List] : undefined}
-            selectedKey={value.toString()}
+            selectedKey={value?.toString()}
             disabled={false}
-            text={creation ? value.toString() : undefined}
+            text={creation ? value?.toString() : undefined}
             onChange={onChangeSelect}
             onRenderLabel={getLabelRenderer(description)}
             errorMessage={errorMessage}

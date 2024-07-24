@@ -23,6 +23,10 @@ describe('Questions', () => {
         showDescriptions: undefined
     };
 
+    const getValueByLabel = (label: string): string | undefined | null => {
+        return screen.queryByLabelText(label)?.parentNode?.querySelector('input')?.getAttribute('value');
+    };
+
     it('Render questions component - empty question array, SingleColumn layout', async () => {
         render(<Questions {...props} layoutType={undefined} />);
         expect(document.getElementsByClassName('prompt-entries')).toBeDefined();
@@ -158,5 +162,57 @@ describe('Questions', () => {
             />
         );
         expect(screen.queryAllByDisplayValue('testName0')).toHaveLength(4);
+    });
+
+    it('Render questions component - external answers and questions with default answers', async () => {
+        const onChangeFn = jest.fn();
+        render(
+            <Questions
+                {...props}
+                layoutType={undefined}
+                onChange={onChangeFn}
+                questions={[
+                    {
+                        type: 'input',
+                        name: 'test1.key1',
+                        default: 'Default value'
+                    },
+                    {
+                        type: 'input',
+                        name: 'test1.key2'
+                    },
+                    {
+                        type: 'input',
+                        name: 'test2.key1'
+                    },
+                    {
+                        type: 'input',
+                        name: 'test2.key2'
+                    }
+                ]}
+                answers={{
+                    test1: {
+                        key2: 'External value 1'
+                    },
+                    test2: {
+                        key1: 'External value 2'
+                    }
+                }}
+            />
+        );
+        expect(onChangeFn).toBeCalledTimes(1);
+        expect(onChangeFn).toBeCalledWith({
+            'test1': {
+                'key1': 'Default value',
+                'key2': 'External value 1'
+            },
+            'test2': {
+                'key1': 'External value 2'
+            }
+        });
+        expect(getValueByLabel('test1.key1')).toEqual('Default value');
+        expect(getValueByLabel('test1.key2')).toEqual('External value 1');
+        expect(getValueByLabel('test2.key1')).toEqual('External value 2');
+        expect(getValueByLabel('test2.key2')).toEqual('');
     });
 });

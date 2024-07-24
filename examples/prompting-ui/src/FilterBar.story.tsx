@@ -18,8 +18,10 @@ export const ExternalValues = (): JSX.Element => {
                     id: 'FilterBar',
                     filterChanged: 'onFilterChanged',
                     search: 'onSearch',
-                    entity: 'C_CUSTOMER_OP_SRV.C_CustomerOPType',
-                    qualifier: '@com.sap.vocabularies.UI.v1.SelectionFields'
+                    metaPath: {
+                        entitySet: 'C_CUSTOMER_OP_SRV.C_CustomerOPType',
+                        qualifier: '@com.sap.vocabularies.UI.v1.SelectionFields'
+                    }
                 }
             }}
         />
