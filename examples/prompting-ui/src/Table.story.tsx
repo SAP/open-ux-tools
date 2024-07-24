@@ -20,7 +20,7 @@ export const ExternalValues = (): JSX.Element => {
                     metaPath: {
                         entitySet: 'C_CUSTOMER_OP_SRV.C_CustomerOPType',
                         qualifier: '@com.sap.vocabularies.UI.v1.LineItem#test',
-                        bindingContextType: 'absolute',
+                        bindingContextType: 'absolute'
                     },
                     type: 'GridTable',
                     selectionMode: 'Multiple',
