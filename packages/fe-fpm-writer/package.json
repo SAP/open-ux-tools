@@ -29,6 +29,7 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
+        "@sap-ux/project-access": "workspace:*",
         "@xmldom/xmldom": "0.8.10",
         "ejs": "3.1.10",
         "mem-fs": "2.1.0",
@@ -38,7 +39,6 @@
         "xpath": "0.0.33"
     },
     "devDependencies": {
-        "@sap-ux/project-access": "workspace:*",
         "@types/ejs": "3.1.2",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",

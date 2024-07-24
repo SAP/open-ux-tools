@@ -1022,6 +1022,9 @@ importers:
 
   packages/fe-fpm-writer:
     dependencies:
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
       '@xmldom/xmldom':
         specifier: 0.8.10
         version: 0.8.10
@@ -1044,9 +1047,6 @@ importers:
         specifier: 0.0.33
         version: 0.0.33
     devDependencies:
-      '@sap-ux/project-access':
-        specifier: workspace:*
-        version: link:../project-access
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
