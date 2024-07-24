@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-writer
 
+## 0.22.1
+
+### Patch Changes
+
+-   d549173: - Adjusts getMinUI5VersionAsArray so that semver valid check is included; the function now only returns valid versions.
+    -   Upgrade of @ui5/manifest to 1.66.0; adjustment of all components so that minimumUI5Version definitions as array are processed properly.
+    -   @sap-ux/mockserver-config-writer@0.6.1
+
 ## 0.22.0
 
 ### Minor Changes
