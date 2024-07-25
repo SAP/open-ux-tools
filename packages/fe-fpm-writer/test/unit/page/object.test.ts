@@ -177,5 +177,18 @@ describe('ObjectPage', () => {
                 expect(result).toEqual(expectedAfterSave);
             });
         });
+
+        test('Add library dependency `sap.fe.templates` ', () => {
+            const testManifest = JSON.parse(testAppManifest);
+            delete testManifest['sap.ui5'].dependencies;
+            const target = join(testDir, 'libraryDependency');
+            fs.write(join(target, 'webapp/manifest.json'), JSON.stringify(testManifest));
+            //act
+            generate(target, minimalInput, fs);
+            //check
+            expect(
+                (fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].dependencies
+            ).toMatchSnapshot();
+        });
     });
 });
