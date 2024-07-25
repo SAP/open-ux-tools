@@ -225,7 +225,7 @@ export function validateAbapRepository(value: string): string | boolean {
     return true;
 }
 
-export async function validatePackageChoiceInput(value: InputChoice, system: string): string | boolean {
+export async function validatePackageChoiceInput(value: InputChoice, system: string): Promise<string | boolean> {
     if (value === InputChoice.ENTER_MANUALLY) {
         return true;
     }

@@ -1345,11 +1345,11 @@ export default class ProjectPrompter {
         };
     }
 
-    public async getDeployConfigPrompts(system: string): Promise<YUIQuestion<DeployConfigAnswers>> {
-        return [
-            this.getAbapRepositoryPrompt(),
-            this.getDeployConfigDescriptionPrompt(),
-            this.getPackageInputChoicePrompt(system)
-        ];
-    }
+    // public async getDeployConfigPrompts(system: string): Promise<YUIQuestion<DeployConfigAnswers>> {
+    //     return [
+    //         this.getAbapRepositoryPrompt(),
+    //         this.getDeployConfigDescriptionPrompt(),
+    //         this.getPackageInputChoicePrompt(system)
+    //     ];
+    // }
 }
