@@ -7,7 +7,7 @@ import {
 import { PromptsType } from '@sap-ux/fe-fpm-writer/dist/building-block/prompts/types/basic';
 import type { AddonActions } from '../addons/types';
 import type { DynamicChoices } from '@sap-ux/ui-prompting';
-import type { Answers, CodeSnippet } from '@sap-ux/fe-fpm-writer';
+import type { Answers, CodeSnippet, SupportedGeneratorAnswers } from '@sap-ux/fe-fpm-writer';
 
 export type Actions =
     | GetQuestions
@@ -37,7 +37,7 @@ export { PromptsType };
 
 export interface ApplyAnswers {
     type: typeof APPLY_ANSWERS;
-    answers: SupportedAnswers;
+    answers: SupportedGeneratorAnswers;
     buildingBlockType: PromptsType;
 }
 
@@ -85,13 +85,13 @@ export const UPDATE_CODE_SNIPPET = 'UPDATE_CODE_SNIPPET';
 export interface GetCodeSnippet {
     type: typeof GET_CODE_SNIPPET;
     buildingBlockType: PromptsType;
-    answers: SupportedAnswers;
+    answers: SupportedGeneratorAnswers;
 }
 
 export interface UpdateCodeSnippetPayload {
     buildingBlockType: PromptsType;
     codeSnippets: { [questionName: string]: CodeSnippet };
-    answers: SupportedAnswers;
+    answers: SupportedGeneratorAnswers;
 }
 export interface UpdateCodeSnippet extends UpdateCodeSnippetPayload {
     type: typeof UPDATE_CODE_SNIPPET;

@@ -1,6 +1,10 @@
 import { PromptsType, PromptsAPI } from '@sap-ux/fe-fpm-writer';
-import type { FilterBarPromptsAnswer, ChartPromptsAnswer, BuildingBlockTypePromptsAnswer } from '@sap-ux/fe-fpm-writer';
-import type { TablePromptsAnswer } from '@sap-ux/fe-fpm-writer/src/building-block/prompts';
+import type {
+    FilterBarPromptsAnswer,
+    ChartPromptsAnswer,
+    TablePromptsAnswer,
+    BuildingBlockTypePromptsAnswer
+} from '@sap-ux/fe-fpm-writer';
 import inquirer from 'inquirer';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
