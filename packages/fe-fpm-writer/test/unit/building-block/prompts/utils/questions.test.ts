@@ -21,8 +21,6 @@ import {
 } from '../../../../../src/building-block/prompts/utils/questions';
 import type { ListPromptQuestion, PromptContext } from '../../../../../src/prompts/types';
 
-jest.setTimeout(10000);
-
 const projectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts');
 const capProjectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts-cap');
 const capAppFolder = join('app/incidents');

@@ -1,5 +1,4 @@
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import type { Answers, DistinctChoice, ListChoiceMap } from 'inquirer';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -14,8 +13,6 @@ import {
     getMappedServiceName
 } from '../../../../../src/building-block/prompts/utils/service';
 import { testSchema } from '../../../sample/building-block/webapp-prompts-cap/schema';
-
-jest.setTimeout(10000);
 
 const projectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts');
 const capProjectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts-cap');
@@ -38,12 +35,10 @@ jest.mock('@sap-ux/project-access', () => ({
 describe('utils - service', () => {
     let project: Project;
     let capProject: Project;
-    let fs: Editor;
 
     beforeAll(async () => {
         project = await getProject(projectFolder);
         capProject = await getProject(capProjectFolder);
-        fs = create(createStorage());
     });
 
     test('entityType', async () => {

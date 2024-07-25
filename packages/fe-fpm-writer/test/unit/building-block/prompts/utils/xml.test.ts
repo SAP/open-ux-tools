@@ -4,8 +4,6 @@ import { create } from 'mem-fs-editor';
 import { join } from 'path';
 import { isElementIdAvailable } from '../../../../../src/building-block/prompts/utils/xml';
 
-jest.setTimeout(10000);
-
 describe('utils - xml', () => {
     let fs: Editor;
     const projectPath = join(__dirname, '../sample/building-block/webapp-prompts');

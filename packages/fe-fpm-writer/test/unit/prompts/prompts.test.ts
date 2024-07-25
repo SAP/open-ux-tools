@@ -6,8 +6,6 @@ import { PromptsType, PromptsAPI, BuildingBlockType } from '../../../src';
 import type { TablePromptsAnswer, SupportedGeneratorAnswers, BuildingBlockTypePromptsAnswer } from '../../../src';
 import type { ChoiceOptions } from 'inquirer';
 
-jest.setTimeout(10000);
-
 describe('Prompts', () => {
     let fs: Editor;
     const projectPath = join(__dirname, '../sample/building-block/webapp-prompts');
