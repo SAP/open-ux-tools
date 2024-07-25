@@ -175,7 +175,7 @@ export function InputTypeWrapper(props: InputTypeWrapperProps): ReactElement {
 
     const indicator = changes ? (
         <Stack.Item>
-            <ChangeIndicator id={`${name}--ChangeIndicator`} {...changes} />
+            <ChangeIndicator id={`${name}--ChangeIndicator`} {...changes} type="property" />
         </Stack.Item>
     ) : (
         <></>
