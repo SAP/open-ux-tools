@@ -2,13 +2,7 @@ import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import type { App, FlpConfig, Intent, InternalTestConfig, MiddlewareConfig, TestConfig } from '../types';
 import { render } from 'ejs';
 import { join, posix } from 'path';
-import {
-    createProjectAccess,
-    getMinimumUI5Version,
-    getWebappPath,
-    type Manifest,
-    type UI5FlexLayer
-} from '@sap-ux/project-access';
+import { createProjectAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
 import { readFileSync } from 'fs';
 import { mergeTestConfigDefaults } from './test';
 import { type Editor, create } from 'mem-fs-editor';
@@ -31,7 +25,6 @@ export interface FlexConnector {
  */
 export interface TemplateConfig {
     basePath: string;
-    bootstrapPath: string;
     apps: Record<
         string,
         {
@@ -270,7 +263,6 @@ export function createFlpTemplateConfig(config: FlpConfig, manifest: Partial<Man
     const ns = id.replace(/\./g, '/');
     const basePath = posix.relative(posix.dirname(config.path), '/') ?? '.';
     return {
-        bootstrapPath: '/preview/client/flp/bootstrap.js',
         basePath,
         apps: {},
         init: config.init ? ns + config.init : undefined,

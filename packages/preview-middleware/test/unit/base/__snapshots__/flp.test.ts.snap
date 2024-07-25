@@ -47,7 +47,6 @@ Object {
     },
   },
   "basePath": "..",
-  "bootstrapPath": "../resources/sap/ushell/bootstrap/sandbox2.js",
   "init": undefined,
   "locateReuseLibsScript": false,
   "ui5": Object {
@@ -99,7 +98,6 @@ Object {
     },
   },
   "basePath": "..",
-  "bootstrapPath": "../resources/sap/ushell/bootstrap/sandbox2.js",
   "init": undefined,
   "locateReuseLibsScript": false,
   "ui5": Object {
@@ -148,7 +146,6 @@ Object {
     },
   },
   "basePath": "..",
-  "bootstrapPath": "../resources/sap/ushell/bootstrap/sandbox2.js",
   "init": undefined,
   "locateReuseLibsScript": false,
   "ui5": Object {
@@ -197,7 +194,6 @@ Object {
     },
   },
   "basePath": "..",
-  "bootstrapPath": "../resources/sap/ushell/bootstrap/sandbox2.js",
   "init": undefined,
   "locateReuseLibsScript": false,
   "ui5": Object {
@@ -246,7 +242,6 @@ Object {
     },
   },
   "basePath": "..",
-  "bootstrapPath": "../resources/sap/ushell/bootstrap/sandbox2.js",
   "init": undefined,
   "locateReuseLibsScript": false,
   "ui5": Object {
@@ -295,7 +290,6 @@ Object {
     },
   },
   "basePath": "..",
-  "bootstrapPath": "../test-resources/sap/ushell/bootstrap/sandbox.js",
   "init": undefined,
   "locateReuseLibsScript": false,
   "ui5": Object {
@@ -346,7 +340,6 @@ Object {
     },
   },
   "basePath": "..",
-  "bootstrapPath": "../test-resources/sap/ushell/bootstrap/sandbox.js",
   "init": undefined,
   "locateReuseLibsScript": false,
   "ui5": Object {
@@ -511,11 +504,13 @@ exports[`FlpSandbox router editor with config 1`] = `
                     }
               }
           },
+          services: {},
           applications: {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script type=\\"text/javascript\\" src=\\"'/preview/client/flp/bootstrap.js'\\" id=\\"open-ux-bootstrap\\"></script>
+    <script id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -590,11 +585,13 @@ exports[`FlpSandbox router rta 1`] = `
                     }
               }
           },
+          services: {},
           applications: {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script type=\\"text/javascript\\" src=\\"'/preview/client/flp/bootstrap.js'\\" id=\\"open-ux-bootstrap\\"></script>
+    <script id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -699,11 +696,13 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `
                     }
               }
           },
+          services: {},
           applications: {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script type=\\"text/javascript\\" src=\\"'/preview/client/flp/bootstrap.js'\\" id=\\"open-ux-bootstrap\\"></script>
+    <script id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -794,11 +793,13 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
                     }
               }
           },
+          services: {},
           applications: {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script type=\\"text/javascript\\" src=\\"'/preview/client/flp/bootstrap.js'\\" id=\\"open-ux-bootstrap\\"></script>
+    <script id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -889,11 +890,13 @@ exports[`FlpSandbox router test/flp.html 1`] = `
                     }
               }
           },
+          services: {},
           applications: {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script type=\\"text/javascript\\" src=\\"'/preview/client/flp/bootstrap.js'\\" id=\\"open-ux-bootstrap\\"></script>
+    <script id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"

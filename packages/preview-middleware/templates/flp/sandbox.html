@@ -36,11 +36,13 @@
                     }
               }
           },
+          services: {},
           applications: <%- JSON.stringify(apps) %>
         };
     </script>
 
-    <script type="text/javascript" src="<%- bootstrapPath %>" id="open-ux-bootstrap"></script>
+    <script type="text/javascript" src="'/preview/client/flp/bootstrap.js'" id="open-ux-bootstrap"></script>
+    <script id="sap-ushell-bootstrap"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions="allow"'' is a NON-SECURE setting for test environments -->
     <script id="sap-ui-bootstrap"
         src="<%- basePath %>/resources/sap-ui-core.js"

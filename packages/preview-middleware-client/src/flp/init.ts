@@ -306,10 +306,11 @@ export function init({
         setI18nTitle(resourceBundle);
         registerSAPFonts();
         const major = version ? parseInt(version.split('.')[0], 10) : 2;
-        if (major < 2) {
-            const renderer = await container.createRenderer(undefined, true);
-            renderer.placeAt('content');
-        }
+        const renderer =
+            major < 2
+                ? await container.createRenderer(undefined, true)
+                : await (container as any).createRendererInternal(undefined, true);
+        renderer.placeAt('content');
     });
 }
 
