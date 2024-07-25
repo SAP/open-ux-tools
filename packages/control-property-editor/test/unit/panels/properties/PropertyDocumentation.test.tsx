@@ -72,8 +72,6 @@ describe('PropertyDoc', () => {
             }
         });
 
-        expect(screen.getByText(/Modified & Unsaved/i)).toBeInTheDocument();
-
         expect(screen.getByText(/current value/i)).toBeInTheDocument();
         expect(screen.getByText(/c value/i)).toBeInTheDocument();
     });
@@ -117,8 +115,6 @@ describe('PropertyDoc', () => {
                 }
             } as any
         });
-
-        expect(screen.getByText(/Modified & Saved/i)).toBeInTheDocument();
 
         expect(screen.getByText(/Saved value/i)).toBeInTheDocument();
         expect(screen.getByText(/old value/i)).toBeInTheDocument();

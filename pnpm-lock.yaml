@@ -1192,12 +1192,9 @@ importers:
       '@sap-ux/annotation-converter':
         specifier: 0.8.0
         version: 0.8.0
-      '@sap-ux/edmx-parser':
-        specifier: ^0.7.0
-        version: 0.7.1
       '@sap-ux/fiori-annotation-api':
-        specifier: 0.1.4
-        version: 0.1.4
+        specifier: workspace:*
+        version: link:../fiori-annotation-api
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
@@ -2060,8 +2057,8 @@ importers:
         specifier: 7.5.2
         version: 7.5.2
       '@ui5/manifest':
-        specifier: 1.61.0
-        version: 1.61.0
+        specifier: 1.66.0
+        version: 1.66.0
       vscode-uri:
         specifier: 3.0.7
         version: 3.0.7
@@ -2595,8 +2592,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       '@ui5/manifest':
-        specifier: 1.61.0
-        version: 1.61.0
+        specifier: 1.66.0
+        version: 1.66.0
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -3249,18 +3246,6 @@ packages:
 
   /@babel/helper-create-regexp-features-plugin@7.22.15(@babel/core@7.24.6):
     resolution: {integrity: sha512-29FkPLFjn4TPEa3RE7GpW+qbE8tlsu3jntNYNfcGsc49LphF1PQIiD+vMZ1z1xVOKt+93khA9tc2JBs3kBjA7w==}
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0
-    dependencies:
-      '@babel/core': 7.24.6
-      '@babel/helper-annotate-as-pure': 7.22.5
-      regexpu-core: 5.3.2
-      semver: 6.3.1
-    dev: true
-
-  /@babel/helper-create-regexp-features-plugin@7.22.9(@babel/core@7.24.6):
-    resolution: {integrity: sha512-+svjVa/tFwsNSG4NEy1h85+HQ5imbT92Q5/bgtS7P0GTQlP8WuFdqsiABmQouhiFGyV66oGxZFpeYHza1rNsKw==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0
@@ -4005,7 +3990,7 @@ packages:
       '@babel/core': ^7.0.0
     dependencies:
       '@babel/core': 7.24.6
-      '@babel/helper-create-regexp-features-plugin': 7.22.9(@babel/core@7.24.6)
+      '@babel/helper-create-regexp-features-plugin': 7.22.15(@babel/core@7.24.6)
       '@babel/helper-plugin-utils': 7.24.0
     dev: true
 
@@ -7570,152 +7555,9 @@ packages:
       '@sap-ux/vocabularies-types': 0.10.0
     dev: false
 
-  /@sap-ux/cds-annotation-parser@0.1.13:
-    resolution: {integrity: sha512-kZ6p+UEZHGUJp3tzHqm2ZoZ7YJNKuczbFlW1OTCs5828Hua3TGMmAhGQT3LJi3hIUInnNizfG9JmBZPjbyDPDg==}
-    dependencies:
-      '@sap-ux/odata-annotation-core': 0.1.8
-      '@sap-ux/odata-entity-model': 0.2.1
-      '@sap-ux/odata-vocabularies': 0.3.8
-      chevrotain: 7.1.1
-      vscode-languageserver-types: 3.17.2
-    dev: false
-
-  /@sap-ux/cds-odata-annotation-converter@0.2.9(@sap-ux/odata-annotation-core-types@0.3.1)(@sap-ux/project-access@1.22.1):
-    resolution: {integrity: sha512-0SxKg5ohMnXOKeDuYc1rxmYNJtYv0IjRxlka1MEjKYpAnAonT7UnUDxpIPlAflF0m5FbiobKlDQuLUt7A+FxdA==}
-    dependencies:
-      '@sap-ux/cds-annotation-parser': 0.1.13
-      '@sap-ux/odata-annotation-core': 0.1.8
-      '@sap-ux/odata-vocabularies': 0.3.8
-      '@sap/ux-cds-compiler-facade': 1.13.6(@sap-ux/odata-annotation-core-types@0.3.1)(@sap-ux/odata-annotation-core@0.1.8)(@sap-ux/project-access@1.22.1)
-      i18next: 20.6.1
-      vscode-languageserver-types: 3.17.2
-    transitivePeerDependencies:
-      - '@sap-ux/odata-annotation-core-types'
-      - '@sap-ux/project-access'
-    dev: false
-
-  /@sap-ux/edmx-parser@0.7.1:
-    resolution: {integrity: sha512-1oRIOEkwlpTBveo+9GOMGLKO9Dcyr/4jcBkUL08SKun1TENtg2ab41r+rNWMXbcoKGCpFEEr4ybLDPIgFyeilA==}
-    dependencies:
-      xml-js: 1.6.11
-    dev: false
-
-  /@sap-ux/fiori-annotation-api@0.1.4:
-    resolution: {integrity: sha512-RJjVvw0TryoR1SyQXwM72xk1AwKipt6E/qs/8cIZFkhxfXLCDIKC/w04IVBpT/9lS/KkyxOnRRf9Cif+FNVjSQ==}
-    dependencies:
-      '@sap-ux/annotation-converter': 0.8.0
-      '@sap-ux/cds-annotation-parser': 0.1.13
-      '@sap-ux/cds-odata-annotation-converter': 0.2.9(@sap-ux/odata-annotation-core-types@0.3.1)(@sap-ux/project-access@1.22.1)
-      '@sap-ux/odata-annotation-core': 0.1.8
-      '@sap-ux/odata-annotation-core-types': 0.3.1
-      '@sap-ux/odata-entity-model': 0.2.1
-      '@sap-ux/odata-vocabularies': 0.3.8
-      '@sap-ux/project-access': 1.22.1
-      '@sap-ux/vocabularies-types': 0.10.0
-      '@sap-ux/xml-odata-annotation-converter': 0.2.2
-      '@sap/ux-cds-compiler-facade': 1.13.6(@sap-ux/odata-annotation-core-types@0.3.1)(@sap-ux/odata-annotation-core@0.1.8)(@sap-ux/project-access@1.22.1)
-      '@xml-tools/ast': 5.0.5
-      '@xml-tools/parser': 1.0.11
-      mem-fs: 2.1.0
-      mem-fs-editor: 9.4.0(mem-fs@2.1.0)
-      vscode-languageserver-textdocument: 1.0.8
-    dev: false
-
-  /@sap-ux/i18n@0.0.7:
-    resolution: {integrity: sha512-gYZBJmlJcML4K3RRcMAffdJTfpfXuTcUNdbb3bmOB578ozleP/9v04z4aVv45JehTc9aL/y4Fs6ecNgK+YUyjA==}
-    engines: {node: '>=18.x'}
-    dependencies:
-      jsonc-parser: 3.2.0
-      vscode-languageserver-textdocument: 1.0.7
-      vscode-languageserver-types: 3.17.2
-    dev: false
-
-  /@sap-ux/logger@0.5.1:
-    resolution: {integrity: sha512-/x2l1LmiZ1938HqPc+uEjJcJGc60iJGEjBdSB+8ZBlOwjPxDJ8JzYxcd1uO/9BufBbyS2rnrESFefjj6wVzpug==}
-    engines: {node: '>=18.x'}
-    dependencies:
-      chalk: 4.1.2
-      lodash: 4.17.21
-      winston: 3.11.0
-      winston-transport: 4.7.0
-    dev: false
-
-  /@sap-ux/odata-annotation-core-types@0.3.1:
-    resolution: {integrity: sha512-umtrNSuDha0GBEeERYPGIbr1afu9ikDumrEpwd/TjchUP7iarXiisuoTafbvSQd8vq1ZrVL5RRh0zAu8PY+JTA==}
-    dependencies:
-      vscode-languageserver-types: 3.17.2
-    dev: false
-
-  /@sap-ux/odata-annotation-core@0.1.8:
-    resolution: {integrity: sha512-yIxFV7yxRQFoDFIRNrq495hBt2GahauRu61eidNqfwxQc/kjLjJVueMvkRCfPbpzVqxbbyjPHVcAd444DvLYcQ==}
-    dependencies:
-      '@sap-ux/odata-annotation-core-types': 0.3.1
-    dev: false
-
-  /@sap-ux/odata-entity-model@0.2.1:
-    resolution: {integrity: sha512-sB4iWlQsbOHQReWVYZEQz49JJaAwIs6r5yWpGELsAScMSzkI5j5fuuUoNcgAmTNZRE8EYo+kBD35M9ipyrg6qQ==}
-    dev: false
-
-  /@sap-ux/odata-vocabularies@0.3.8:
-    resolution: {integrity: sha512-z7/f1BsO1HS/Ktt6QguBWFxjZMMVh3cVre+pmVMGlOB444NX9tSa9oRN9hx0UbpX64EZUCIwcQIlQ77NAJhO8Q==}
-    dependencies:
-      '@sap-ux/odata-annotation-core-types': 0.3.1
-    dev: false
-
-  /@sap-ux/project-access@1.22.1:
-    resolution: {integrity: sha512-J35bhKB/+sneeQW1ImOWf+bQwOSv0igsOZgHIOdYszqlD8LtFmpTAsd7kOgPu1LSe6NoHiUHmtw0nMza9ZY3kQ==}
-    engines: {node: '>=18.x'}
-    dependencies:
-      '@sap-ux/i18n': 0.0.7
-      '@sap-ux/ui5-config': 0.22.8
-      fast-xml-parser: 4.2.7
-      findit2: 2.2.3
-      json-parse-even-better-errors: 3.0.2
-      mem-fs: 2.1.0
-      mem-fs-editor: 9.4.0(mem-fs@2.1.0)
-      semver: 7.5.4
-    dev: false
-
-  /@sap-ux/store@0.5.0:
-    resolution: {integrity: sha512-TAhihEN+v8OvYDvxJNIDQVAMT7XhbsmfJse7agjU8r8/BjD+dq+q+V5iD04CmQkRWcTcxhBEAhi08FwNTrar4w==}
-    engines: {node: '>=18.x'}
-    dependencies:
-      '@sap-ux/logger': 0.5.1
-      i18next: 20.6.1
-      i18next-fs-backend: 1.2.0
-      pluralize: 8.0.0
-      reflect-metadata: 0.1.13
-    optionalDependencies:
-      keytar: 7.9.0
-    dev: false
-
-  /@sap-ux/ui5-config@0.22.8:
-    resolution: {integrity: sha512-5XLrx/d77YY7hPyBnUhJ7G//H3bhRex/b9BWcSjONCkgUdxRkdhUtVisVyZz44KTejDdur/7GbiDT5mvaNek1A==}
-    engines: {node: '>=18.x'}
-    dependencies:
-      '@sap-ux/store': 0.5.0
-      '@sap-ux/yaml': 0.15.0
-      lodash: 4.17.21
-      semver: 7.5.4
-    dev: false
-
   /@sap-ux/vocabularies-types@0.10.0:
     resolution: {integrity: sha512-uTQ2tJJes9qGGAn8e/Npvy0grIul3mAVHzjxsj10U3lF+RZsoFawsdYGxvb6sJYkhY+YEsQzL8GTL6tyYpMv8g==}
     engines: {node: '>=18.0.0 < 19.0.0 || >=20.0.0 < 21.0.0', pnpm: '>=8'}
-    dev: false
-
-  /@sap-ux/xml-odata-annotation-converter@0.2.2:
-    resolution: {integrity: sha512-HWGaUNMgxx2z/y1J8/knJQL8wLk0cu6mmay8Jw74TdbccRV1i1WHzFTfE4BMANB7Moz5Hb2LTMMpzsl1qrCyOw==}
-    dependencies:
-      '@sap-ux/odata-annotation-core': 0.1.8
-    dev: false
-
-  /@sap-ux/yaml@0.15.0:
-    resolution: {integrity: sha512-9OqBqHaXj9VlBSa86DLkkjxXub9533jblNEq12xHIk9j55mu76B4C1s174PlRZLSr66pll4PF7Y5nMNh+MU9QA==}
-    engines: {node: '>=18.x'}
-    dependencies:
-      lodash: 4.17.21
-      yaml: 2.2.2
     dev: false
 
   /@sap/bas-sdk@3.8.7:
@@ -7780,20 +7622,6 @@ packages:
       lodash: 4.17.21
       properties-reader: 2.2.0
       url: 0.11.0
-    dev: false
-
-  /@sap/ux-cds-compiler-facade@1.13.6(@sap-ux/odata-annotation-core-types@0.3.1)(@sap-ux/odata-annotation-core@0.1.8)(@sap-ux/project-access@1.22.1):
-    resolution: {integrity: sha512-yShhK6VyV7ZzPJYVr4dBihCi8989xzldFQTPs+yYId+A6nepHBYAi+TNB4nnR1Iih8OtbHfy6kHy6fMqNZNkBg==}
-    engines: {node: '>=18.16.0'}
-    peerDependencies:
-      '@sap-ux/odata-annotation-core': '>=0.1.8'
-      '@sap-ux/odata-annotation-core-types': '>=0.3.1'
-      '@sap-ux/project-access': 1.20.0
-    dependencies:
-      '@sap-ux/odata-annotation-core': 0.1.8
-      '@sap-ux/odata-annotation-core-types': 0.3.1
-      '@sap-ux/project-access': 1.22.1
-      '@sap/cds-compiler': 4.8.0
     dev: false
 
   /@sap/ux-cds-compiler-facade@1.14.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access):
@@ -9882,8 +9710,8 @@ packages:
       figures: 5.0.0
     dev: true
 
-  /@ui5/manifest@1.61.0:
-    resolution: {integrity: sha512-hs0CfNb424+CwXmViuOLPX3LcHrigsAXLAU3PZPrf102Wt3yW6mdfYqIugfytg+W0n8I1jcqE1woj4B4BJ1EJw==}
+  /@ui5/manifest@1.66.0:
+    resolution: {integrity: sha512-gbY3gXFl1HpFtaKPjyFwutSeNN417N9F94/ZeCuu7uV8nUvPzVUbDr+vFrsgvHVxaUNoF1z3KBhVtlrl/PNkeA==}
 
   /@ui5/project@3.9.0:
     resolution: {integrity: sha512-pm7FzV8oCaZtLBuoH9bVVpAtRz0pwpAJhJKg731lUHGsMkGG5zaWkmUjajBlQR/+dZtWmTlkwxjpJttjUVi43A==}
@@ -19239,6 +19067,7 @@ packages:
       prop-types: 15.8.1
       react: 16.14.0
       scheduler: 0.19.1
+    bundledDependencies: false
 
   /react-element-to-jsx-string@15.0.0(react-dom@16.14.0)(react@16.14.0):
     resolution: {integrity: sha512-UDg4lXB6BzlobN60P8fHWVPX3Kyw8ORrTeBtClmIlGdkOOE+GYQSFvmEU5iLLpwp/6v42DINwNcwOhOLfQ//FQ==}
@@ -19468,6 +19297,7 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       prop-types: 15.8.1
+    bundledDependencies: false
 
   /read-package-json-fast@3.0.2:
     resolution: {integrity: sha512-0J+Msgym3vrLOUB3hzQCuZHII0xkNGCtz/HJH9xZshwv9DbDwkw1KaE3gx/e2J5rpEY5rtOy6cyhKOPrkP7FZw==}
