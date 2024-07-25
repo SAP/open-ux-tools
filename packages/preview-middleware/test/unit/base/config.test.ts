@@ -45,12 +45,13 @@ describe('config', () => {
     describe('createTestTemplateConfig', () => {
         test('minimum settings', () => {
             const config = mergeTestConfigDefaults({ framework: 'OPA5' });
-            const templateConfig = createTestTemplateConfig(config, manifest['sap.app'].id);
+            const templateConfig = createTestTemplateConfig(config, manifest['sap.app'].id, 'sap_horizon');
             expect(templateConfig).toMatchObject({
                 basePath: '..',
                 framework: 'OPA5',
                 id: manifest['sap.app'].id,
-                initPath: 'opaTests.qunit.js'
+                initPath: 'opaTests.qunit.js',
+                theme: 'sap_horizon'
             });
         });
     });
