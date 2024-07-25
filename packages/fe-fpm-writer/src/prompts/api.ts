@@ -22,7 +22,7 @@ const unsupportedPrompts = (): Prompts<Answers> => ({
 });
 
 /**
- *
+ * API class to request and handle prompts for fpm-writer features.
  */
 export class PromptsAPI {
     // Prompts context containing information about project and other reusable properties
@@ -31,6 +31,7 @@ export class PromptsAPI {
     private cache: { [N in SupportedPrompts as N['type']]?: Prompts<N['answers']> } = {};
 
     /**
+     * Contructore of prompt API.
      *
      * @param fs the file system object for reading files
      * @param project
