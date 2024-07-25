@@ -1,42 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`utils -  annotation service -  getAnnotationPathQualifiers - existing annotations for EntitySet, absolute binding context path 1`] = `
-Object {
-  "@UI.Chart#C_CustomerBankDetailsOPType": "@UI.Chart#C_CustomerBankDetailsOPType",
-  "@UI.LineItem#test": "@UI.LineItem#test",
-}
-`;
-
-exports[`utils -  annotation service -  getAnnotationPathQualifiers - existing annotations, absolute binding context path 1`] = `
-Object {
-  "@UI.Chart": "@UI.Chart",
-  "@UI.LineItem": "@UI.LineItem",
-  "@UI.SelectionFields": "@UI.SelectionFields",
-}
-`;
-
-exports[`utils -  annotation service -  getAnnotationPathQualifiers - existing annotations, absolute binding context path, use namespace 1`] = `
-Object {
-  "@UI.Chart": "@com.sap.vocabularies.UI.v1.Chart",
-  "@UI.LineItem": "@com.sap.vocabularies.UI.v1.LineItem",
-  "@UI.SelectionFields": "@com.sap.vocabularies.UI.v1.SelectionFields",
-}
-`;
-
-exports[`utils -  annotation service -  getAnnotationPathQualifiers - existing annotations, relative binding context path 1`] = `
-Object {
-  "to_CustomerBankDetails/@UI.Chart#C_CustomerBankDetailsOPType": "to_CustomerBankDetails/@UI.Chart#C_CustomerBankDetailsOPType",
-  "to_CustomerBankDetails/@UI.LineItem#test": "to_CustomerBankDetails/@UI.LineItem#test",
-}
-`;
-
-exports[`utils -  annotation service -  getAnnotationPathQualifiers - existing annotations, relative binding context path, filter isCollection 1`] = `
-Object {
-  "to_CustomerBankDetails/@UI.LineItem#test": "to_CustomerBankDetails/@UI.LineItem#test",
-}
-`;
-
-exports[`utils -  prompts entityPrompt 1`] = `
+exports[`utils - questions entityPrompt 1`] = `
 Object {
   "choices": [Function],
   "message": "entity",
@@ -47,7 +11,7 @@ Object {
 }
 `;
 
-exports[`utils -  prompts entityPrompt 2`] = `
+exports[`utils - questions entityPrompt 2`] = `
 Array [
   Object {
     "name": "C_CustomerBankDetailsOPType",
@@ -172,7 +136,7 @@ Array [
 ]
 `;
 
-exports[`utils -  prompts getAggregationPathPrompt 1`] = `
+exports[`utils - questions getAggregationPathPrompt 1`] = `
 Object {
   "choices": [Function],
   "message": "AggregationPathMessage",
@@ -183,7 +147,7 @@ Object {
 }
 `;
 
-exports[`utils -  prompts getAggregationPathPrompt 2`] = `
+exports[`utils - questions getAggregationPathPrompt 2`] = `
 Array [
   Object {
     "name": "/mvc:View",
@@ -200,7 +164,7 @@ Array [
 ]
 `;
 
-exports[`utils -  prompts getAggregationPathPrompt 3`] = `
+exports[`utils - questions getAggregationPathPrompt 3`] = `
 Object {
   "choices": [Function],
   "name": "aggregationPath",
@@ -210,7 +174,7 @@ Object {
 }
 `;
 
-exports[`utils -  prompts getAnnotationPathQualifierPrompt 1`] = `
+exports[`utils - questions getAnnotationPathQualifierPrompt 1`] = `
 Object {
   "choices": [Function],
   "message": "testMessage",
@@ -220,7 +184,7 @@ Object {
 }
 `;
 
-exports[`utils -  prompts getAnnotationPathQualifierPrompt 2`] = `
+exports[`utils - questions getAnnotationPathQualifierPrompt 2`] = `
 Array [
   Object {
     "name": "@UI.LineItem",
@@ -229,7 +193,7 @@ Array [
 ]
 `;
 
-exports[`utils -  prompts getAnnotationPathQualifierPrompt 3`] = `
+exports[`utils - questions getAnnotationPathQualifierPrompt 3`] = `
 Object {
   "choices": [Function],
   "name": "buildingBlockData.metaPath.qualifier",
@@ -238,7 +202,7 @@ Object {
 }
 `;
 
-exports[`utils -  prompts getBindingContextType 1`] = `
+exports[`utils - questions getBindingContextType 1`] = `
 Object {
   "choices": Array [
     Object {
@@ -260,7 +224,7 @@ Object {
 }
 `;
 
-exports[`utils -  prompts getBindingContextType 2`] = `
+exports[`utils - questions getBindingContextType 2`] = `
 Object {
   "choices": Array [
     Object {
@@ -278,7 +242,7 @@ Object {
 }
 `;
 
-exports[`utils -  prompts getViewOrFragmentPathPrompt 1`] = `
+exports[`utils - questions getViewOrFragmentPathPrompt 1`] = `
 Object {
   "choices": [Function],
   "dependantPromptNames": Array [
@@ -293,7 +257,7 @@ Object {
 }
 `;
 
-exports[`utils -  prompts getViewOrFragmentPathPrompt 2`] = `
+exports[`utils - questions getViewOrFragmentPathPrompt 2`] = `
 Object {
   "choices": [Function],
   "name": "viewOrFragmentPath",
