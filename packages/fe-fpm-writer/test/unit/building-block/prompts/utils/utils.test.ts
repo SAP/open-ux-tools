@@ -6,6 +6,7 @@ import { create } from 'mem-fs-editor';
 import { join } from 'path';
 import { getProject } from '@sap-ux/project-access';
 import type { Project } from '@sap-ux/project-access';
+import { FioriAnnotationService } from '@sap-ux/fiori-annotation-api';
 import {
     getAggregationPathPrompt,
     getAnnotationPathQualifierPrompt,
@@ -22,15 +23,14 @@ import {
     getAnnotationTermAlias,
     getEntityTypes,
     getMappedServiceName
-} from '../../../src/building-block/prompts/utils';
-import { FioriAnnotationService } from '@sap-ux/fiori-annotation-api';
-import { testSchema } from '../sample/building-block/webapp-prompts-cap/schema';
-import type { ListPromptQuestion, PromptContext } from '../../../src/prompts/types';
+} from '../../../../../src/building-block/prompts/utils';
+import { testSchema } from '../../../sample/building-block/webapp-prompts-cap/schema';
+import type { ListPromptQuestion, PromptContext } from '../../../../../src/prompts/types';
 
 jest.setTimeout(10000);
 
-const projectFolder = join(__dirname, '../sample/building-block/webapp-prompts');
-const capProjectFolder = join(__dirname, '../sample/building-block/webapp-prompts-cap');
+const projectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts');
+const capProjectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts-cap');
 const capAppFolder = join('app/incidents');
 
 const ENTITY_TYPE = 'C_CUSTOMER_OP_SRV.C_CustomerOPType';
