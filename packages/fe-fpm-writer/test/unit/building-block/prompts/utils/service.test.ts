@@ -38,115 +38,121 @@ describe('utils - service', () => {
         capProject = await getProject(capProjectFolder);
     });
 
-    test('entityType', async () => {
-        const entityTypes = await getEntityTypes(project, '');
-        expect(entityTypes.length).toBe(30);
+    describe('getEntityTypes', () => {
+        test('EDMX project', async () => {
+            const entityTypes = await getEntityTypes(project, '');
+            expect(entityTypes.length).toBe(30);
+        });
+
+        test('CAP project', async () => {
+            jest.spyOn(FioriAnnotationService, 'createService').mockResolvedValueOnce({
+                sync: jest.fn(),
+                getSchema: () => ({
+                    identification: '',
+                    version: '',
+                    references: [],
+                    schema: testSchema
+                })
+            } as unknown as FioriAnnotationService);
+            const entityTypes = await getEntityTypes(capProject, capAppFolder);
+            expect(entityTypes.length).toBe(11);
+        });
     });
 
-    test('entityType - CAP', async () => {
-        jest.spyOn(FioriAnnotationService, 'createService').mockResolvedValueOnce({
-            sync: jest.fn(),
-            getSchema: () => ({
-                identification: '',
-                version: '',
-                references: [],
-                schema: testSchema
-            })
-        } as unknown as FioriAnnotationService);
-        const entityTypes = await getEntityTypes(capProject, capAppFolder);
-        expect(entityTypes.length).toBe(11);
+    describe('getMappedServiceName', () => {
+        test('CAP', async () => {
+            expect(await getMappedServiceName(capProject, 'mainService', capAppFolder)).toBe('mappedMainServiceName');
+        });
+
+        test('CAP, appId = undefined', async () => {
+            expect(await getMappedServiceName(capProject, 'mainService', undefined!)).toBe('mappedMainServiceName');
+        });
+
+        test('CAP, no app for appId found throws error', async () => {
+            await expect(getMappedServiceName(capProject, 'mainService', 'invalidAppId')).rejects.toThrow(
+                'ERROR_INVALID_APP_ID'
+            );
+        });
     });
 
-    test('getMappedServiceName - CAP', async () => {
-        expect(await getMappedServiceName(capProject, 'mainService', capAppFolder)).toBe('mappedMainServiceName');
-    });
+    describe('getAnnotationPathQualifiers', () => {
+        test('Existing annotations, absolute binding context path', async () => {
+            const annotationPathQualifiers = await getAnnotationPathQualifiers(
+                project,
+                '',
+                ENTITY_TYPE,
+                [UIAnnotationTerms.Chart, UIAnnotationTerms.LineItem, UIAnnotationTerms.SelectionFields],
+                { type: 'absolute' }
+            );
+            expect(annotationPathQualifiers).toMatchSnapshot();
+        });
 
-    test('getMappedServiceName - CAP, appId = undefined', async () => {
-        expect(await getMappedServiceName(capProject, 'mainService', undefined!)).toBe('mappedMainServiceName');
-    });
+        test('Existing annotations for EntitySet, absolute binding context path', async () => {
+            const annotationPathQualifiers = await getAnnotationPathQualifiers(
+                project,
+                '',
+                'C_CustomerBankDetailsOP',
+                [UIAnnotationTerms.Chart, UIAnnotationTerms.LineItem, UIAnnotationTerms.SelectionFields],
+                { type: 'absolute' }
+            );
+            expect(annotationPathQualifiers).toMatchSnapshot();
+        });
 
-    test('getMappedServiceName - CAP, no app for appId found throws error', async () => {
-        await expect(getMappedServiceName(capProject, 'mainService', 'invalidAppId')).rejects.toThrow(
-            'ERROR_INVALID_APP_ID'
-        );
-    });
+        test('Existing annotations, absolute binding context path, use namespace', async () => {
+            const annotationPathQualifiers = await getAnnotationPathQualifiers(
+                project,
+                '',
+                ENTITY_TYPE,
+                [UIAnnotationTerms.Chart, UIAnnotationTerms.LineItem, UIAnnotationTerms.SelectionFields],
+                { type: 'absolute' },
+                true
+            );
+            expect(annotationPathQualifiers).toMatchSnapshot();
+        });
 
-    test('getAnnotationPathQualifiers - existing annotations, absolute binding context path', async () => {
-        const annotationPathQualifiers = await getAnnotationPathQualifiers(
-            project,
-            '',
-            ENTITY_TYPE,
-            [UIAnnotationTerms.Chart, UIAnnotationTerms.LineItem, UIAnnotationTerms.SelectionFields],
-            { type: 'absolute' }
-        );
-        expect(annotationPathQualifiers).toMatchSnapshot();
-    });
+        test('Non existing annotations, absolute binding context path', async () => {
+            const annotationPathQualifiers = await getAnnotationPathQualifiers(
+                project,
+                '',
+                '',
+                [UIAnnotationTerms.SelectionVariant],
+                { type: 'absolute' }
+            );
+            expect(annotationPathQualifiers).toMatchObject({});
+        });
 
-    test('getAnnotationPathQualifiers - existing annotations for EntitySet, absolute binding context path', async () => {
-        const annotationPathQualifiers = await getAnnotationPathQualifiers(
-            project,
-            '',
-            'C_CustomerBankDetailsOP',
-            [UIAnnotationTerms.Chart, UIAnnotationTerms.LineItem, UIAnnotationTerms.SelectionFields],
-            { type: 'absolute' }
-        );
-        expect(annotationPathQualifiers).toMatchSnapshot();
-    });
+        test('Existing annotations, relative binding context path', async () => {
+            const annotationPathQualifiers = await getAnnotationPathQualifiers(
+                project,
+                '',
+                ENTITY_TYPE,
+                [UIAnnotationTerms.Chart, UIAnnotationTerms.LineItem, UIAnnotationTerms.SelectionFields],
+                { type: 'relative' }
+            );
+            expect(annotationPathQualifiers).toMatchSnapshot();
+        });
 
-    test('getAnnotationPathQualifiers - existing annotations, absolute binding context path, use namespace', async () => {
-        const annotationPathQualifiers = await getAnnotationPathQualifiers(
-            project,
-            '',
-            ENTITY_TYPE,
-            [UIAnnotationTerms.Chart, UIAnnotationTerms.LineItem, UIAnnotationTerms.SelectionFields],
-            { type: 'absolute' },
-            true
-        );
-        expect(annotationPathQualifiers).toMatchSnapshot();
-    });
+        test('Non existing annotations, relative binding context path', async () => {
+            const annotationPathQualifiers = await getAnnotationPathQualifiers(
+                project,
+                '',
+                '',
+                [UIAnnotationTerms.SelectionVariant],
+                { type: 'relative' }
+            );
+            expect(annotationPathQualifiers).toMatchObject({});
+        });
 
-    test('getAnnotationPathQualifiers - non existing annotations, absolute binding context path', async () => {
-        const annotationPathQualifiers = await getAnnotationPathQualifiers(
-            project,
-            '',
-            '',
-            [UIAnnotationTerms.SelectionVariant],
-            { type: 'absolute' }
-        );
-        expect(annotationPathQualifiers).toMatchObject({});
-    });
-
-    test('getAnnotationPathQualifiers - existing annotations, relative binding context path', async () => {
-        const annotationPathQualifiers = await getAnnotationPathQualifiers(
-            project,
-            '',
-            ENTITY_TYPE,
-            [UIAnnotationTerms.Chart, UIAnnotationTerms.LineItem, UIAnnotationTerms.SelectionFields],
-            { type: 'relative' }
-        );
-        expect(annotationPathQualifiers).toMatchSnapshot();
-    });
-
-    test('getAnnotationPathQualifiers - non existing annotations, relative binding context path', async () => {
-        const annotationPathQualifiers = await getAnnotationPathQualifiers(
-            project,
-            '',
-            '',
-            [UIAnnotationTerms.SelectionVariant],
-            { type: 'relative' }
-        );
-        expect(annotationPathQualifiers).toMatchObject({});
-    });
-
-    test('getAnnotationPathQualifiers - existing annotations, relative binding context path, filter isCollection', async () => {
-        const annotationPathQualifiers = await getAnnotationPathQualifiers(
-            project,
-            '',
-            ENTITY_TYPE,
-            [UIAnnotationTerms.LineItem],
-            { type: 'relative', isCollection: true }
-        );
-        expect(annotationPathQualifiers).toMatchSnapshot();
+        test('Existing annotations, relative binding context path, filter isCollection', async () => {
+            const annotationPathQualifiers = await getAnnotationPathQualifiers(
+                project,
+                '',
+                ENTITY_TYPE,
+                [UIAnnotationTerms.LineItem],
+                { type: 'relative', isCollection: true }
+            );
+            expect(annotationPathQualifiers).toMatchSnapshot();
+        });
     });
 
     test('getAnnotationTermAlias', async () => {

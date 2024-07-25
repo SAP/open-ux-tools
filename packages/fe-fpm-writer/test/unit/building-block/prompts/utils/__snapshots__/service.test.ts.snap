@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`utils - service getAnnotationPathQualifiers - existing annotations for EntitySet, absolute binding context path 1`] = `
+exports[`utils - service getAnnotationPathQualifiers Existing annotations for EntitySet, absolute binding context path 1`] = `
 Object {
   "@UI.Chart#C_CustomerBankDetailsOPType": "@UI.Chart#C_CustomerBankDetailsOPType",
   "@UI.LineItem#test": "@UI.LineItem#test",
 }
 `;
 
-exports[`utils - service getAnnotationPathQualifiers - existing annotations, absolute binding context path 1`] = `
+exports[`utils - service getAnnotationPathQualifiers Existing annotations, absolute binding context path 1`] = `
 Object {
   "@UI.Chart": "@UI.Chart",
   "@UI.LineItem": "@UI.LineItem",
@@ -15,7 +15,7 @@ Object {
 }
 `;
 
-exports[`utils - service getAnnotationPathQualifiers - existing annotations, absolute binding context path, use namespace 1`] = `
+exports[`utils - service getAnnotationPathQualifiers Existing annotations, absolute binding context path, use namespace 1`] = `
 Object {
   "@UI.Chart": "@com.sap.vocabularies.UI.v1.Chart",
   "@UI.LineItem": "@com.sap.vocabularies.UI.v1.LineItem",
@@ -23,14 +23,14 @@ Object {
 }
 `;
 
-exports[`utils - service getAnnotationPathQualifiers - existing annotations, relative binding context path 1`] = `
+exports[`utils - service getAnnotationPathQualifiers Existing annotations, relative binding context path 1`] = `
 Object {
   "to_CustomerBankDetails/@UI.Chart#C_CustomerBankDetailsOPType": "to_CustomerBankDetails/@UI.Chart#C_CustomerBankDetailsOPType",
   "to_CustomerBankDetails/@UI.LineItem#test": "to_CustomerBankDetails/@UI.LineItem#test",
 }
 `;
 
-exports[`utils - service getAnnotationPathQualifiers - existing annotations, relative binding context path, filter isCollection 1`] = `
+exports[`utils - service getAnnotationPathQualifiers Existing annotations, relative binding context path, filter isCollection 1`] = `
 Object {
   "to_CustomerBankDetails/@UI.LineItem#test": "to_CustomerBankDetails/@UI.LineItem#test",
 }
