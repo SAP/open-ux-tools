@@ -1,22 +1,9 @@
 {
     "name": "@sap-ux/prompting-ui",
-    "version": "1.12.4",
+    "version": "0.0.1",
+    "description": "This project contains UI storybook stories with exampleS with prompt ui and FPM based building blocks.",
     "license": "Apache-2.0",
-    "description": "SAP UI Components Library",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/SAP/open-ux-tools.git",
-        "directory": "examples/prompting-ui"
-    },
-    "bugs": {
-        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Afe-fpm-writer"
-    },
-    "private": false,
-    "files": [
-        "dist",
-        "LICENSE",
-        "storybook"
-    ],
+    "private": true,
     "main": "dist/index.js",
     "scripts": {
         "clean": "rimraf --glob dist coverage *.tsbuildinfo storybook",
@@ -30,8 +17,7 @@
         "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../.prettierignore",
         "storybook": "npm-run-all -l -p storybook:prepare storybook:run",
         "storybook:prepare": "ts-node ./scripts/index.js",
-        "storybook:run": "storybook dev",
-        "dev": "nodemon --exec \"pnpm storybook -p 60648 --no-open\" -w \".storybook/*\" -e \"ts,tsx\""
+        "storybook:run": "storybook dev"
     },
     "dependencies": {
         "@sap-ux/ui-components": "workspace:*",
@@ -69,11 +55,9 @@
         "eslint-plugin-storybook": "0.6.15",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
-        "nodemon": "3.0.2",
         "npm-run-all2": "6.2.0",
         "react": "16.14.0",
         "react-dom": "16.14.0",
-        "require-from-string": "2.0.2",
         "sass": "1.66.1",
         "sass-loader": "13.3.2",
         "storybook": "8.1.11",

@@ -1,6 +1,5 @@
 # Example: UI using the prompts and fe-fpm-writer modules
 
-This project contains scripts to prompt and generate FPM based building blocks.
 This project contains UI storybook stories with exampleS with prompt ui and FPM based building blocks.
 
 ## Usage
