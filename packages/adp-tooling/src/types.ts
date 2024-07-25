@@ -565,8 +565,4 @@ export interface Parameter {
 export interface Value {
     value: string;
     format: string;
-<<<<<<< HEAD
-=======
->>>>>>> 9ed45527d (feat: add flo config prompts)
->>>>>>> 861d76e938b7719c29df1531843cb956910b8660
 }

@@ -1,19 +1,3 @@
-import { t } from '../../i18n';
-import { isCustomerBase } from '../../base/helper';
-import { getProjectNames } from '../../base/file-system';
-import { BasicInfoAnswers, ConfigurationInfoAnswers, TargetEnvAnswers } from '../../types';
-import {
-    isNotEmptyString,
-    validateAch,
-    validateByRegex,
-    validateClient,
-    validateEmptyInput,
-    validateEnvironment,
-    validateNamespace,
-    validateParameters,
-    validateProjectName
-} from '../../base/validators';
-
 import { isAppStudio } from '@sap-ux/btp-utils';
 import {
     AbapServiceProvider,
@@ -36,7 +20,6 @@ import { t } from '../../i18n';
 import { isCustomerBase } from '../../base/helper';
 import {
     Application,
-    Auth,
     BasicInfoAnswers,
     ChoiceOption,
     ConfigurationInfoAnswers,
@@ -60,32 +43,11 @@ import { EndpointsService } from '../../base/services/endpoints-service';
 import { UI5VersionService, isFeatureSupportedVersion } from '../../base/services/ui5-version-service';
 import { generateValidNamespace, getDefaultProjectName, getProjectNameTooltip } from './prompt-helpers';
 import { getApplicationType, isSupportedAppTypeForAdaptationProject, isV4Application } from '../../base/app-utils';
+import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, S4HANA_APPS_PARAMS } from './constants';
 
 export function isVisible(isCFEnv: boolean, isLoggedIn: boolean): boolean {
     return !isCFEnv || (isCFEnv && isLoggedIn);
 }
-
-const S4HANAAppsParams = {
-    'sap.app/type': 'application',
-    'sap.fiori/cloudDevAdaptationStatus': 'released',
-    'fields':
-        'sap.app/id,repoName,sap.fiori/cloudDevAdaptationStatus,sap.app/ach,sap.fiori/registrationIds,sap.app/title,url,fileType'
-};
-
-const ABAPAppsParams = {
-    'fields': 'sap.app/id,sap.app/ach,sap.fiori/registrationIds,sap.app/title,url,fileType,repoName',
-    'sap.ui/technology': 'UI5',
-    'sap.app/type': 'application',
-    'fileType': 'appdescr'
-};
-
-const ABAPVariantsAppsParams = {
-    'fields': 'sap.app/id,sap.app/ach,sap.fiori/registrationIds,sap.app/title,url,fileType,repoName',
-    'sap.ui/technology': 'UI5',
-    'sap.app/type': 'application',
-    'fileType': 'appdescr_variant',
-    'originLayer': 'VENDOR'
-};
 
 export function getEnvironments(isCfInstalled: boolean): ChoiceOption<OperationsType>[] {
     const choices: ChoiceOption<OperationsType>[] = [{ name: 'OnPremise', value: 'P' }];
@@ -135,16 +97,6 @@ export function getNamespacePrompt(
     }
 
     return prompt;
-}
-
-export function getInboundIds(manifest: Manifest): string[] {
-    let inboundIds: string[] = [];
-    if (manifest['sap.app'].crossNavigation && manifest['sap.app'].crossNavigation.inbounds) {
-        // we are taking the first inbound id from the manifest
-        inboundIds = Object.keys(manifest['sap.app'].crossNavigation.inbounds);
-    }
-
-    return inboundIds;
 }
 
 export function getInboundIds(manifest: Manifest): string[] {
@@ -564,12 +516,12 @@ export default class ProjectPrompter {
 
         try {
             if (isCloudSystem) {
-                result = await appIndex.search(S4HANAAppsParams);
+                result = await appIndex.search(S4HANA_APPS_PARAMS);
             } else {
-                result = await appIndex.search(ABAPAppsParams);
+                result = await appIndex.search(ABAP_APPS_PARAMS);
 
                 if (isCustomerBase) {
-                    const extraApps = await appIndex.search(ABAPVariantsAppsParams);
+                    const extraApps = await appIndex.search(ABAP_VARIANT_APPS_PARAMS);
                     result = result.concat(extraApps);
                 }
             }
