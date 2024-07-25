@@ -4,7 +4,7 @@ import {
     type TablePromptsAnswer,
     type Prompts
 } from '@sap-ux/fe-fpm-writer';
-import { PromptsType } from '@sap-ux/fe-fpm-writer/dist/building-block/prompts/types/basic';
+import { PromptsType } from '@sap-ux/fe-fpm-writer/dist/prompts/types';
 import type { AddonActions } from '../addons/types';
 import type { DynamicChoices } from '@sap-ux/ui-prompting';
 import type { Answers, CodeSnippet, SupportedGeneratorAnswers } from '@sap-ux/fe-fpm-writer';
