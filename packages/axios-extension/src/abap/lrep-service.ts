@@ -100,7 +100,6 @@ interface Language {
     description: string;
     i18n: string;
 }
-
 /**
  * Technically supported layers, however, in practice only `CUSTOMER_BASE` is used
  */

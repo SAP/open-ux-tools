@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.4.26
+
+### Patch Changes
+
+-   f8a2e9e: Changed tooltip for green circles
+
 ## 0.4.25
 
 ### Patch Changes

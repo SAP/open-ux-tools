@@ -1,5 +1,12 @@
 # @sap-ux/project-access
 
+## 1.25.7
+
+### Patch Changes
+
+-   d549173: - Adjusts getMinUI5VersionAsArray so that semver valid check is included; the function now only returns valid versions.
+    -   Upgrade of @ui5/manifest to 1.66.0; adjustment of all components so that minimumUI5Version definitions as array are processed properly.
+
 ## 1.25.6
 
 ### Patch Changes
