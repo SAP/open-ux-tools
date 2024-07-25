@@ -241,7 +241,7 @@ describe('Prompts', () => {
             }
         }
     };
-    describe.only('getCodeSnippet', () => {
+    describe('getCodeSnippet', () => {
         test.each(types)('Type "%s", get code snippet', async (type: PromptsType) => {
             const result = promptsAPI.getCodeSnippets(type, answers[type] as SupportedGeneratorAnswers);
             expect(result.viewOrFragmentPath.content).toMatchSnapshot();
