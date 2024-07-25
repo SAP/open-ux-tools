@@ -9,7 +9,6 @@ import {
     getEntityTypes,
     getMappedServiceName
 } from '../../../../../src/building-block/prompts/utils/service';
-import { testSchema } from '../../../sample/building-block/webapp-prompts-cap/schema';
 
 const projectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts');
 const capProjectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts-cap');
@@ -51,11 +50,34 @@ describe('utils - service', () => {
                     identification: '',
                     version: '',
                     references: [],
-                    schema: testSchema
+                    schema: {
+                        entityTypes: [
+                            {
+                                name: 'IncidentService.Incidents',
+                                fullyQualifiedName: 'IncidentService.Incidents',
+                                keys: []
+                            },
+                            {
+                                name: 'IncidentService.IncidentFlow',
+                                fullyQualifiedName: 'IncidentService.IncidentFlow',
+                                keys: []
+                            },
+                            {
+                                name: 'IncidentService.IncidentProcessTimeline',
+                                fullyQualifiedName: 'IncidentService.IncidentProcessTimeline',
+                                keys: []
+                            }
+                        ]
+                    }
                 })
             } as unknown as FioriAnnotationService);
             const entityTypes = await getEntityTypes(capProject, capAppFolder);
-            expect(entityTypes.length).toBe(11);
+            expect(entityTypes.length).toEqual(3);
+            expect(entityTypes.map((entityType) => entityType.fullyQualifiedName)).toEqual([
+                'IncidentService.Incidents',
+                'IncidentService.IncidentFlow',
+                'IncidentService.IncidentProcessTimeline'
+            ]);
         });
     });
 
