@@ -1,7 +1,6 @@
 import type { Service } from '../base/service-provider';
-import { Axios, AxiosRequestConfig } from 'axios';
+import { Axios, isAxiosError } from 'axios';
 import type { Logger } from '@sap-ux/logger';
-import { isAxiosError } from '../base/odata-request-error';
 
 export interface App extends Record<string, unknown> {
     [key: string]: string | string[];
@@ -80,7 +79,6 @@ export abstract class AppIndexService extends Axios implements Service {
             throw error;
         }
     }
-
     /**
      * Gets the app info for the specified id.
      *

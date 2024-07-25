@@ -73,12 +73,7 @@ export async function validateEnvironment(value: OperationsType, loginEnabled: b
     return true;
 }
 
-export function validateProjectName(
-    value: string,
-    destinationPath: string,
-    isCustomerBase: boolean,
-    isCFEnv: boolean
-): boolean | string {
+export function validateProjectName(value: string, destinationPath: string, isCustomerBase: boolean): boolean | string {
     if (!isNotEmptyString(value)) {
         return t('prompts.inputCannotBeEmpty');
     }
@@ -88,34 +83,26 @@ export function validateProjectName(
     }
 
     if (!isCustomerBase) {
-        return validateProjectNameInternal(value, destinationPath, isCFEnv);
+        return validateProjectNameInternal(value, destinationPath);
     } else {
-        return validateProjectNameExternal(value, destinationPath, isCFEnv);
+        return validateProjectNameExternal(value, destinationPath);
     }
 }
 
-export function validateProjectNameExternal(
-    value: string,
-    destinationPath: string,
-    isCFEnv: boolean
-): boolean | string {
+export function validateProjectNameExternal(value: string, destinationPath: string): boolean | string {
     const pattern = /^[a-zA-Z]+((\.)?[a-zA-Z0-9])*$/;
     if (pattern.test(value)) {
         if (value.length > 61 || value.toLocaleLowerCase().endsWith('component')) {
             return t('validators.projectNameLengthErrorExt');
         }
 
-        return validateDuplicateProjectName(value, destinationPath, isCFEnv);
+        return validateDuplicateProjectName(value, destinationPath);
     } else {
         return t('validators.projectNameValidationErrorExt');
     }
 }
 
-export function validateProjectNameInternal(
-    value: string,
-    destinationPath: string,
-    isCFEnv: boolean
-): boolean | string {
+export function validateProjectNameInternal(value: string, destinationPath: string): boolean | string {
     const pattern = /^([a-z]{1,}[a-z0-9]*((\.){1}[a-z]{1,}[a-z0-9]*){1,})+$/i;
     if (pattern.test(value)) {
         if (
@@ -125,19 +112,15 @@ export function validateProjectNameInternal(
         ) {
             return t('validators.projectNameLengthErrorInt');
         }
-        return validateDuplicateProjectName(value, destinationPath, isCFEnv);
+        return validateDuplicateProjectName(value, destinationPath);
     } else {
         return t('validators.projectNameValidationErrorInt');
     }
 }
 
-export function validateDuplicateProjectName(
-    value: string,
-    destinationPath: string,
-    isCFEnv: boolean
-): boolean | string {
+export function validateDuplicateProjectName(value: string, destinationPath: string): boolean | string {
     if (existsSync(destinationPath + '/' + value)) {
-        return `${isCFEnv ? 'Module' : 'Project'} with this name already exists in your workspace`;
+        return 'Project with this name already exists in your workspace';
     }
 
     return true;

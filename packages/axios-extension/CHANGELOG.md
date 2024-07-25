@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.16.1
+
+### Patch Changes
+
+-   ad9b56d: Extend axios-extension services
+
 ## 1.16.0
 
 ### Minor Changes

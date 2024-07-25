@@ -54,45 +54,6 @@ import {
 import { getApplicationType, isSupportedAppTypeForAdaptationProject, isV4Application } from '../../base/app-utils';
 import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, S4HANA_APPS_PARAMS } from './constants';
 
-export function isVisible(isCFEnv: boolean, isLoggedIn: boolean): boolean {
-    return !isCFEnv || (isCFEnv && isLoggedIn);
-}
-
-export function getNamespacePrompt(
-    isCustomerBase: boolean,
-    isCfMode: boolean,
-    isLoggedIn: boolean
-): YUIQuestion<BasicInfoAnswers> {
-    const prompt = {
-        type: 'input',
-        name: 'namespace',
-        message: t('prompts.namespaceLabel'),
-        guiOptions: {
-            applyDefaultWhenDirty: true
-        },
-        default: (answers: BasicInfoAnswers) => generateValidNamespace(answers.projectName, isCustomerBase),
-        store: false,
-        when: () => isVisible(isCfMode, isLoggedIn)
-    } as InputQuestion<BasicInfoAnswers>;
-
-    if (!isCustomerBase && isVisible(isCfMode, isLoggedIn)) {
-        if (prompt.guiOptions) {
-            prompt.guiOptions.type = 'label';
-        }
-        prompt.when = (answers: BasicInfoAnswers) => {
-            return !!answers.projectName;
-        };
-    } else {
-        if (prompt.guiOptions) {
-            prompt.guiOptions.mandatory = true;
-        }
-        prompt.validate = (value: string, answers: BasicInfoAnswers) =>
-            validateNamespace(value, answers.projectName, isCustomerBase);
-    }
-
-    return prompt;
-}
-
 export function getInboundIds(manifest: Manifest): string[] {
     let inboundIds: string[] = [];
     if (manifest['sap.app'].crossNavigation && manifest['sap.app'].crossNavigation.inbounds) {
@@ -108,7 +69,6 @@ export default class ProjectPrompter {
     private isCustomerBase: boolean;
     private hasSystemAuthentication: boolean;
     private isLoginSuccessfull: boolean;
-    private isCFLoginSuccessfull: boolean;
     private flexUISystem: FlexUISupportedSystem | undefined;
     private systemInfo: SystemInfo;
     private applicationIds: any;
@@ -581,28 +541,7 @@ export default class ProjectPrompter {
         return answers.system && this.hasSystemAuthentication && (answers.username === '' || answers.password === '');
     }
 
-    public getTargetEnvPrompt(loginEnabled: boolean, isCfInstalled: boolean): YUIQuestion<TargetEnvAnswers>[] {
-        return [
-            {
-                type: 'list',
-                name: 'targetEnv',
-                message: t('prompts.targetEnvLabel'),
-                choices: () => getEnvironments(isCfInstalled),
-                default: () => getEnvironments(isCfInstalled)[0]?.name,
-                guiOptions: {
-                    mandatory: true,
-                    hint: t('prompts.targetEnvTooltip')
-                },
-                validate: (value: OperationsType) => validateEnvironment(value, loginEnabled)
-            } as ListQuestion<TargetEnvAnswers>
-        ];
-    }
-
-    private getNamespacePrompt(
-        isCustomerBase: boolean,
-        isCfMode: boolean,
-        isLoggedIn: boolean
-    ): YUIQuestion<BasicInfoAnswers> {
+    private getNamespacePrompt(isCustomerBase: boolean): YUIQuestion<BasicInfoAnswers> {
         const prompt: InputQuestion<BasicInfoAnswers> = {
             type: 'input',
             name: 'namespace',
@@ -611,11 +550,10 @@ export default class ProjectPrompter {
                 applyDefaultWhenDirty: true
             },
             default: (answers: BasicInfoAnswers) => generateValidNamespace(answers.projectName, isCustomerBase),
-            store: false,
-            when: () => isVisible(isCfMode, isLoggedIn)
+            store: false
         } as InputQuestion<BasicInfoAnswers>;
 
-        if (!isCustomerBase && isVisible(isCfMode, isLoggedIn)) {
+        if (!isCustomerBase) {
             if (prompt.guiOptions) {
                 prompt.guiOptions.type = 'label';
             }
@@ -633,21 +571,20 @@ export default class ProjectPrompter {
         return prompt;
     }
 
-    public getBasicInfoPrompts(path: string, isLoggedIn = false, isCFEnv = false): YUIQuestion<BasicInfoAnswers>[] {
+    public getBasicInfoPrompts(path: string): YUIQuestion<BasicInfoAnswers>[] {
         return [
             {
                 type: 'input',
                 name: 'projectName',
-                message: () => (isCFEnv ? 'Module Name' : 'Project Name'),
+                message: () => 'Project Name',
                 default: () => getDefaultProjectName(path),
                 guiOptions: {
                     mandatory: true,
                     hint: getProjectNameTooltip(this.isCustomerBase)
                 },
                 validate: (value: string) => {
-                    return validateProjectName(value, path, this.isCustomerBase, isCFEnv);
+                    return validateProjectName(value, path, this.isCustomerBase);
                 },
-                when: () => isVisible(isCFEnv, isLoggedIn),
                 store: false
             } as InputQuestion<BasicInfoAnswers>,
             {
@@ -665,12 +602,9 @@ export default class ProjectPrompter {
                     }
                     return true;
                 },
-                when: () => {
-                    return isVisible(isCFEnv, isLoggedIn);
-                },
                 store: false
             } as InputQuestion<BasicInfoAnswers>,
-            this.getNamespacePrompt(this.isCustomerBase, isCFEnv, isLoggedIn)
+            this.getNamespacePrompt(this.isCustomerBase)
         ];
     }
 
@@ -776,7 +710,6 @@ export default class ProjectPrompter {
                     }
                 } catch (e) {
                     this.flexUISystem = undefined;
-                    this.isCFLoginSuccessfull = false;
                     // return MessageUtils.getLoginErrorMessage(e?.response);
                     return e?.response;
                 }
