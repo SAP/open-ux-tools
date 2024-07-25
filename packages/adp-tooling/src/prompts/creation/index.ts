@@ -41,27 +41,17 @@ import {
 
 import { EndpointsService } from '../../base/services/endpoints-service';
 import { UI5VersionService, isFeatureSupportedVersion } from '../../base/services/ui5-version-service';
-import { generateValidNamespace, getDefaultProjectName, getProjectNameTooltip } from './prompt-helpers';
+import {
+    generateValidNamespace,
+    getDefaultProjectName,
+    getEnvironments,
+    getProjectNameTooltip
+} from './prompt-helpers';
 import { getApplicationType, isSupportedAppTypeForAdaptationProject, isV4Application } from '../../base/app-utils';
 import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, S4HANA_APPS_PARAMS } from './constants';
 
 export function isVisible(isCFEnv: boolean, isLoggedIn: boolean): boolean {
     return !isCFEnv || (isCFEnv && isLoggedIn);
-}
-
-export function getEnvironments(isCfInstalled: boolean): ChoiceOption<OperationsType>[] {
-    const choices: ChoiceOption<OperationsType>[] = [{ name: 'OnPremise', value: 'P' }];
-
-    if (isCfInstalled) {
-        choices.push({ name: 'Cloud Foundry', value: 'C' });
-    } else {
-        // TODO: What to do in case of an error case where you need to call appWizard?
-        // TODO: Make mechanism that shows errors or messages vscode style based on environment CLI or yeoman
-        // this.appWizard.showInformation(Messages.CLOUD_FOUNDRY_NOT_INSTALLED, MessageType.prompt);
-        // console.log(Messages.CLOUD_FOUNDRY_NOT_INSTALLED);
-    }
-
-    return choices;
 }
 
 export function getNamespacePrompt(

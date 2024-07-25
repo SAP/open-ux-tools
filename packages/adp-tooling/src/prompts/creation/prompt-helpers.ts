@@ -1,6 +1,8 @@
-import { getProjectNames } from '../../base/file-system';
 import { t } from '../../i18n';
+import { ChoiceOption } from '../..';
+import { getProjectNames } from '../../base/file-system';
 
+import { OperationsType } from '@sap-ux/axios-extension';
 export interface PageLabel {
     name: string;
     description: string;
@@ -33,6 +35,21 @@ export function getProjectNameTooltip(isCustomerBase: boolean) {
 
 export function generateValidNamespace(projectName: string, isCustomerBase: boolean): string {
     return !isCustomerBase ? projectName : 'customer.' + projectName;
+}
+
+export function getEnvironments(isCfInstalled: boolean): ChoiceOption<OperationsType>[] {
+    const choices: ChoiceOption<OperationsType>[] = [{ name: 'OnPremise', value: 'P' }];
+
+    if (isCfInstalled) {
+        choices.push({ name: 'Cloud Foundry', value: 'C' });
+    } else {
+        // TODO: What to do in case of an error case where you need to call appWizard?
+        // TODO: Make mechanism that shows errors or messages vscode style based on environment CLI or yeoman
+        // this.appWizard.showInformation(Messages.CLOUD_FOUNDRY_NOT_INSTALLED, MessageType.prompt);
+        // console.log(Messages.CLOUD_FOUNDRY_NOT_INSTALLED);
+    }
+
+    return choices;
 }
 
 export function getUIPageLabels(isCFEnv: boolean): PageLabel[] {
