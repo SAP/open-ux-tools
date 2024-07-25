@@ -1,5 +1,6 @@
-import { i18nNamespaces, translate } from '../../../i18n';
-import { BuildingBlockType } from '../../types';
+import { i18nNamespaces, translate } from '../../i18n';
+// todo
+import { BuildingBlockType } from '../../building-block/types';
 import type { BuildingBlockTypePromptsAnswer, Prompts } from '../types';
 
 /**

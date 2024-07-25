@@ -21,10 +21,10 @@ import {
     getFilterBarBuildingBlockPrompts,
     getBuildingBlockTypePrompts
 } from './questions';
-import { i18nNamespaces, initI18n, translate } from '../../i18n';
+import { i18nNamespaces, initI18n, translate } from '../i18n';
 import { join } from 'path';
 import { generateBuildingBlock, getSerializedFileContent } from '..';
-import type { CodeSnippet } from '../types';
+import type { CodeSnippet } from '../building-block/types';
 
 const unsupportedPrompts = (): Prompts<Answers> => ({
     questions: []

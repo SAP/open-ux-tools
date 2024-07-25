@@ -1,7 +1,7 @@
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { TFunction } from 'i18next';
 import type { Answers } from 'inquirer';
-import { i18nNamespaces, translate } from '../../../i18n';
+import { i18nNamespaces, translate } from '../../i18n';
 import {
     getAggregationPathPrompt,
     getAnnotationPathQualifierPrompt,
@@ -14,7 +14,8 @@ import {
     isCapProject
 } from '../utils';
 import type { ChartPromptsAnswer, PromptContext, Prompts } from '../types';
-import { BuildingBlockType } from '../../types';
+// todo
+import { BuildingBlockType } from '../../building-block/types';
 
 const defaultAnswers: Answers = {
     id: 'Chart'

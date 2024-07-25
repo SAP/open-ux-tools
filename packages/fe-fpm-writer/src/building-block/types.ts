@@ -381,6 +381,7 @@ export interface BuildingBlockConfig<T extends BuildingBlock> {
     buildingBlockData: T;
 }
 
+// ToDo - move to prompts types
 export enum CodeSnippetLanguage {
     JSON = 'json',
     CDS = 'cds',

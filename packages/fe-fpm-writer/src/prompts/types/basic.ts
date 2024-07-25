@@ -8,7 +8,8 @@ import type {
     PromptsGroup,
     ValidationResults
 } from '@sap-ux/ui-prompting';
-import type { Chart, FilterBar, Table, BuildingBlockConfig } from '../../types';
+// ToDo is correct
+import type { Chart, FilterBar, Table, BuildingBlockConfig } from '../../building-block/types';
 
 export type Subset<K> = {
     [attr in keyof K]?: K[attr] extends object

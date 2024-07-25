@@ -22,10 +22,10 @@ import {
     getAnnotationTermAlias,
     getEntityTypes,
     getMappedServiceName
-} from '../../../src/building-block/prompts/utils';
+} from '../../../src/prompts/utils';
 import { FioriAnnotationService } from '@sap-ux/fiori-annotation-api';
 import { testSchema } from '../sample/building-block/webapp-prompts-cap/schema';
-import type { ListPromptQuestion, PromptContext } from '../../../src/building-block/prompts/types';
+import type { ListPromptQuestion, PromptContext } from '../../../src/prompts/types';
 
 jest.setTimeout(10000);
 

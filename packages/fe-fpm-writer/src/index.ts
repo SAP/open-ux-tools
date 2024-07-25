@@ -44,7 +44,7 @@ export {
     Answers,
     SupportedAnswers,
     Subset
-} from './building-block/prompts';
+} from './prompts';
 
 export { ControllerExtension, ControllerExtensionPageType } from './controller-extension/types';
 export { generateControllerExtension } from './controller-extension';

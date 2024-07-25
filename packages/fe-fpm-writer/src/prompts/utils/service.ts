@@ -6,7 +6,8 @@ import { convert } from '@sap-ux/annotation-converter';
 import { FioriAnnotationService } from '@sap-ux/fiori-annotation-api';
 import { getCapServiceName } from '@sap-ux/project-access';
 import type { Project } from '@sap-ux/project-access';
-import type { BindingContextType } from '../../types';
+// todo ???
+import type { BindingContextType } from '../../building-block/types';
 
 /**
  * Defines binding context to filter annotation terms.

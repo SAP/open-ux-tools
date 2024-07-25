@@ -19,7 +19,8 @@ export const i18nNamespaces = {
  */
 function getTranslationFilePath(language: string, namespace: string): string {
     if (namespace === i18nNamespaces.buildingBlock) {
-        return join(__dirname, `./building-block/prompts/translations/i18n.${language}.json`);
+        // todo paths?
+        return join(__dirname, `./prompts/translations/i18n.${language}.json`);
     }
     return '';
 }

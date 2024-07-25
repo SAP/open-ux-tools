@@ -6,10 +6,11 @@ import { getCapServiceName } from '@sap-ux/project-access';
 import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
 import type { Project } from '@sap-ux/project-access';
 import type { InputPromptQuestion, ListPromptQuestion, PromptListChoices, WithRequired, PromptContext } from '../types';
-import { BuildingBlockType } from '../../types';
-import type { BindingContextType } from '../../types';
+// todo
+import { BuildingBlockType } from '../../building-block/types';
+import type { BindingContextType } from '../../building-block/types';
 import { getFilterBarIdsInFile, getXPathStringsForXmlFile, isElementIdAvailable } from './xml';
-import { i18nNamespaces, initI18n, translate } from '../../../i18n';
+import { i18nNamespaces, initI18n, translate } from '../../i18n';
 
 /* eslint-disable @typescript-eslint/no-floating-promises */
 initI18n();
