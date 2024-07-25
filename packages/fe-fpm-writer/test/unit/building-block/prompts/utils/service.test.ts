@@ -1,7 +1,4 @@
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
-import { create } from 'mem-fs-editor';
 import { join } from 'path';
 import { getProject } from '@sap-ux/project-access';
 import type { Project } from '@sap-ux/project-access';
