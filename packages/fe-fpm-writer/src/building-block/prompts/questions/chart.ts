@@ -13,7 +13,7 @@ import {
     getViewOrFragmentPathPrompt,
     isCapProject
 } from '../utils';
-import type { PromptContext, Prompts } from '../../../prompts/types/';
+import type { PromptContext, Prompts } from '../../../prompts/types';
 import { BuildingBlockType } from '../../types';
 import type { BuildingBlockConfig, Chart } from '../../types';
 

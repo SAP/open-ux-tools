@@ -1,18 +1,18 @@
-import type { PromptContext, Prompts, Subset } from './common';
-import { PromptsType } from './common';
+import type { PromptContext, Prompts, Subset } from './types';
+import { PromptsType } from './types';
 import {
     getChartBuildingBlockPrompts,
     getTableBuildingBlockPrompts,
     getFilterBarBuildingBlockPrompts,
     getBuildingBlockTypePrompts
-} from '../../building-block/prompts/questions';
+} from '../building-block/prompts/questions';
 import type {
     ChartPromptsAnswer,
     TablePromptsAnswer,
     FilterBarPromptsAnswer,
     BuildingBlockTypePromptsAnswer
-} from '../../building-block/prompts/questions';
-import { generateBuildingBlock, getSerializedFileContent } from '../../building-block';
+} from '../building-block/prompts/questions';
+import { generateBuildingBlock, getSerializedFileContent } from '../building-block';
 
 type AnswerMapping = {
     [PromptsType.Chart]: ChartPromptsAnswer;

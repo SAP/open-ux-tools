@@ -2,14 +2,11 @@ import type { Answers, Question } from 'inquirer';
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { getProject, type Project } from '@sap-ux/project-access';
-import { getAnswer } from './common';
+import { getAnswer } from './utils';
 import type {
     Prompts,
     ValidationResults,
-    SupportedPrompts,
-    NarrowPrompt,
     PromptListChoices,
-    SupportedGeneratorPrompts,
     PromptQuestion,
     PromptContext,
     CodeSnippet
@@ -17,8 +14,8 @@ import type {
 import type { PromptsType } from './types';
 import { i18nNamespaces, initI18n, translate } from '../i18n';
 import { join } from 'path';
-
-import { PromptsQuestionsMap, PromptsGeneratorsMap, PromptsCodePreviewMap } from './types/map';
+import type { SupportedPrompts, NarrowPrompt, SupportedGeneratorPrompts } from './map';
+import { PromptsQuestionsMap, PromptsGeneratorsMap, PromptsCodePreviewMap } from './map';
 
 const unsupportedPrompts = (): Prompts<Answers> => ({
     questions: []
@@ -192,7 +189,6 @@ export class PromptsAPI {
         if (!this.isGenerationSupported(config)) {
             return {};
         }
-        const x = PromptsCodePreviewMap;
         const codePreviewGenerator = PromptsCodePreviewMap.hasOwnProperty(config.type)
             ? PromptsCodePreviewMap[config.type]
             : undefined;
