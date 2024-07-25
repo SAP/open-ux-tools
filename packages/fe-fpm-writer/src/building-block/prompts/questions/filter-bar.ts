@@ -1,6 +1,6 @@
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { Answers } from 'inquirer';
-import { i18nNamespaces, translate } from '../../i18n';
+import { i18nNamespaces, translate } from '../../../i18n';
 import {
     getAggregationPathPrompt,
     getAnnotationPathQualifierPrompt,
@@ -10,9 +10,11 @@ import {
     getViewOrFragmentPathPrompt,
     isCapProject
 } from '../utils';
-import type { Prompts, FilterBarPromptsAnswer, PromptContext } from '../types';
-// todo
-import { BuildingBlockType } from '../../building-block/types';
+import type { Prompts, PromptContext } from '../../../prompts/types';
+import { BuildingBlockType } from '../../types';
+import type { BuildingBlockConfig, FilterBar } from '../../types';
+
+export type FilterBarPromptsAnswer = BuildingBlockConfig<FilterBar> & Answers;
 
 const defaultAnswers: Answers = {
     id: 'FilterBar'

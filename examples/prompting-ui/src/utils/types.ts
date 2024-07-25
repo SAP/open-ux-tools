@@ -7,7 +7,7 @@ import {
 import { PromptsType } from '@sap-ux/fe-fpm-writer/dist/building-block/prompts/types/basic';
 import type { AddonActions } from '../addons/types';
 import type { DynamicChoices } from '@sap-ux/ui-prompting';
-import type { Answers, CodeSnippet, SupportedAnswers } from '@sap-ux/fe-fpm-writer';
+import type { Answers, CodeSnippet } from '@sap-ux/fe-fpm-writer';
 
 export type Actions =
     | GetQuestions

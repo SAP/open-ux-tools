@@ -1,7 +1,7 @@
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { TFunction } from 'i18next';
 import type { Answers } from 'inquirer';
-import { i18nNamespaces, translate } from '../../i18n';
+import { i18nNamespaces, translate } from '../../../i18n';
 import {
     getAggregationPathPrompt,
     getAnnotationPathQualifierPrompt,
@@ -13,9 +13,11 @@ import {
     getViewOrFragmentPathPrompt,
     isCapProject
 } from '../utils';
-import type { ChartPromptsAnswer, PromptContext, Prompts } from '../types';
-// todo
-import { BuildingBlockType } from '../../building-block/types';
+import type { PromptContext, Prompts } from '../../../prompts/types/';
+import { BuildingBlockType } from '../../types';
+import type { BuildingBlockConfig, Chart } from '../../types';
+
+export type ChartPromptsAnswer = BuildingBlockConfig<Chart> & Answers;
 
 const defaultAnswers: Answers = {
     id: 'Chart'

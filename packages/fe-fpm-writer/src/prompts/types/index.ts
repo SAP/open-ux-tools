@@ -1,2 +1,2 @@
-export * from './basic';
-export * from './prompts';
+export * from './common';
+export * from './map';

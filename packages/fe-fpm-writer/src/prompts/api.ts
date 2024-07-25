@@ -2,52 +2,27 @@ import type { Answers, Question } from 'inquirer';
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { getProject, type Project } from '@sap-ux/project-access';
-import { getAnswer } from './utils';
+import { getAnswer } from './common';
 import type {
     Prompts,
     ValidationResults,
     SupportedPrompts,
-    SupportedPromptsMap,
     NarrowPrompt,
     PromptListChoices,
     SupportedGeneratorPrompts,
     PromptQuestion,
-    PromptContext
+    PromptContext,
+    CodeSnippet
 } from './types';
-import { PromptsType } from './types';
-import {
-    getChartBuildingBlockPrompts,
-    getTableBuildingBlockPrompts,
-    getFilterBarBuildingBlockPrompts,
-    getBuildingBlockTypePrompts
-} from './questions';
+import type { PromptsType } from './types';
 import { i18nNamespaces, initI18n, translate } from '../i18n';
 import { join } from 'path';
-import { generateBuildingBlock, getSerializedFileContent } from '..';
-import type { CodeSnippet } from '../building-block/types';
+
+import { PromptsQuestionsMap, PromptsGeneratorsMap, PromptsCodePreviewMap } from './types/map';
 
 const unsupportedPrompts = (): Prompts<Answers> => ({
     questions: []
 });
-
-const PromptsQuestionsMap: SupportedPromptsMap = {
-    [PromptsType.Chart]: getChartBuildingBlockPrompts,
-    [PromptsType.Table]: getTableBuildingBlockPrompts,
-    [PromptsType.FilterBar]: getFilterBarBuildingBlockPrompts,
-    [PromptsType.BuildingBlocks]: getBuildingBlockTypePrompts
-};
-
-const PromptsGeneratorsMap = {
-    [PromptsType.Chart]: generateBuildingBlock,
-    [PromptsType.Table]: generateBuildingBlock,
-    [PromptsType.FilterBar]: generateBuildingBlock
-};
-
-const PromptsCodePreviewMap = {
-    [PromptsType.Chart]: getSerializedFileContent,
-    [PromptsType.Table]: getSerializedFileContent,
-    [PromptsType.FilterBar]: getSerializedFileContent
-};
 
 /**
  *
@@ -217,6 +192,7 @@ export class PromptsAPI {
         if (!this.isGenerationSupported(config)) {
             return {};
         }
+        const x = PromptsCodePreviewMap;
         const codePreviewGenerator = PromptsCodePreviewMap.hasOwnProperty(config.type)
             ? PromptsCodePreviewMap[config.type]
             : undefined;

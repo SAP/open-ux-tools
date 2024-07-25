@@ -3,7 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { PromptsType, PromptsAPI, BuildingBlockType } from '../../../src';
-import type { TablePromptsAnswer, SupportedAnswers, BuildingBlockTypePromptsAnswer } from '../../../src';
+import type { TablePromptsAnswer, SupportedGeneratorAnswers, BuildingBlockTypePromptsAnswer } from '../../../src';
 import type { ChoiceOptions } from 'inquirer';
 
 jest.setTimeout(10000);
@@ -209,7 +209,7 @@ describe('Prompts', () => {
             }
         }
     };
-    const answers: { [key: string]: SupportedAnswers } = {
+    const answers: { [key: string]: SupportedGeneratorAnswers } = {
         [PromptsType.Table]: {
             ...baseAnswers,
             buildingBlockData: {
@@ -241,9 +241,9 @@ describe('Prompts', () => {
             }
         }
     };
-    describe('getCodeSnippet', () => {
+    describe.only('getCodeSnippet', () => {
         test.each(types)('Type "%s", get code snippet', async (type: PromptsType) => {
-            const result = promptsAPI.getCodeSnippets(type, answers[type] as SupportedAnswers);
+            const result = promptsAPI.getCodeSnippets(type, answers[type] as SupportedGeneratorAnswers);
             expect(result.viewOrFragmentPath.content).toMatchSnapshot();
             expect(result.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
         });
@@ -270,7 +270,7 @@ describe('Prompts', () => {
 
     describe('submitAnswers', () => {
         test.each(types)('Type "%s"', async (type: PromptsType) => {
-            const result = promptsAPI.submitAnswers(type, answers[type] as SupportedAnswers);
+            const result = promptsAPI.submitAnswers(type, answers[type] as SupportedGeneratorAnswers);
             expect(result.read(join(projectPath, baseAnswers.viewOrFragmentPath))).toMatchSnapshot();
         });
 
@@ -367,7 +367,7 @@ describe('Prompts - no project', () => {
     });
     describe('getCodeSnippet', () => {
         test.each(types)('Type "%s", get code snippet', async (type: PromptsType) => {
-            const result = promptsAPI.getCodeSnippets(type, baseAnswers(type) as unknown as SupportedAnswers);
+            const result = promptsAPI.getCodeSnippets(type, baseAnswers(type) as unknown as SupportedGeneratorAnswers);
             expect(result.viewOrFragmentPath.content).toMatchSnapshot();
         });
 

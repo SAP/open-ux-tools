@@ -27,23 +27,25 @@ export {
     Field,
     FieldFormatOptions,
     Table,
-    BuildingBlockConfig,
-    CodeSnippet
+    BuildingBlockConfig
 } from './building-block/types';
 export { generateBuildingBlock, getSerializedFileContent } from './building-block';
 export {
-    PromptsType,
-    BuildingBlockTypePromptsAnswer,
     ChartPromptsAnswer,
     FilterBarPromptsAnswer,
-    PromptsAPI,
     TablePromptsAnswer,
+    BuildingBlockTypePromptsAnswer
+} from './building-block/prompts/questions';
+export {
+    PromptsType,
+    SupportedGeneratorAnswers,
+    PromptsAPI,
     PromptsGroup,
     Prompts,
     ValidationResults,
     Answers,
-    SupportedAnswers,
-    Subset
+    Subset,
+    CodeSnippet
 } from './prompts';
 
 export { ControllerExtension, ControllerExtensionPageType } from './controller-extension/types';

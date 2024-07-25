@@ -27,7 +27,7 @@ import {
     SET_VALIDATION_RESULTS,
     PromptsType
 } from './types';
-import type { Subset } from '@sap-ux/fe-fpm-writer/src/building-block/prompts';
+import type { Subset } from '@sap-ux/fe-fpm-writer/src/prompts/types';
 
 let ws: WebSocket | undefined;
 

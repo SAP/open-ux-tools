@@ -3,19 +3,13 @@ import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
 import { join, parse } from 'path';
-import {
-    CodeSnippetLanguage,
-    type BuildingBlock,
-    type BuildingBlockConfig,
-    type BuildingBlockMetaPath,
-    type FilePathProps,
-    type CodeSnippet
-} from './types';
+import { type BuildingBlock, type BuildingBlockConfig, type BuildingBlockMetaPath } from './types';
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import * as xpath from 'xpath';
 import format from 'xml-formatter';
 import { getErrorMessage, validateBasePath } from '../common/validate';
 import { getTemplatePath } from '../templates';
+import { CodeSnippetLanguage, type FilePathProps, type CodeSnippet } from '../prompts/types';
 
 const PLACEHOLDERS = {
     'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',

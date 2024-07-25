@@ -5,12 +5,17 @@ import { getAnnotationPathQualifiers, getEntityTypes } from './service';
 import { getCapServiceName } from '@sap-ux/project-access';
 import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
 import type { Project } from '@sap-ux/project-access';
-import type { InputPromptQuestion, ListPromptQuestion, PromptListChoices, WithRequired, PromptContext } from '../types';
-// todo
-import { BuildingBlockType } from '../../building-block/types';
-import type { BindingContextType } from '../../building-block/types';
+import type {
+    InputPromptQuestion,
+    ListPromptQuestion,
+    PromptListChoices,
+    WithRequired,
+    PromptContext
+} from '../../../prompts/types';
+import { BuildingBlockType } from '../../types';
+import type { BindingContextType } from '../../types';
 import { getFilterBarIdsInFile, getXPathStringsForXmlFile, isElementIdAvailable } from './xml';
-import { i18nNamespaces, initI18n, translate } from '../../i18n';
+import { i18nNamespaces, initI18n, translate } from '../../../i18n';
 
 /* eslint-disable @typescript-eslint/no-floating-promises */
 initI18n();
@@ -346,25 +351,4 @@ export function getBuildingBlockIdPrompt(
         },
         placeholder: properties.placeholder ?? t('id.defaultPlaceholder')
     };
-}
-
-/**
- * Method returns value of answer by given path.
- *
- * @param answers - answers object
- * @param path - question name of path to answer
- * @returns value of answer
- */
-export function getAnswer(answers: Answers, path: string): unknown {
-    const keys = path.split('.');
-    let current = answers;
-
-    for (const key of keys) {
-        if (typeof current !== 'object' || !(key in current)) {
-            return undefined;
-        }
-        current = current[key];
-    }
-
-    return current;
 }

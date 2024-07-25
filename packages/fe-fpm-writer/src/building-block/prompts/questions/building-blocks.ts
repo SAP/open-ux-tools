@@ -1,7 +1,10 @@
-import { i18nNamespaces, translate } from '../../i18n';
-// todo
-import { BuildingBlockType } from '../../building-block/types';
-import type { BuildingBlockTypePromptsAnswer, Prompts } from '../types';
+import { i18nNamespaces, translate } from '../../../i18n';
+import { BuildingBlockType } from '../../types';
+import type { Answers, Prompts, PromptsType } from '../../../prompts/types';
+
+export interface BuildingBlockTypePromptsAnswer extends Answers {
+    buildingBlockType: PromptsType;
+}
 
 /**
  * Returns a list of prompts required to generate building blocks.

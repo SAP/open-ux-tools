@@ -22,7 +22,7 @@ import {
     getAnnotationTermAlias,
     getEntityTypes,
     getMappedServiceName
-} from '../../../src/prompts/utils';
+} from '../../../src/building-block/prompts/utils';
 import { FioriAnnotationService } from '@sap-ux/fiori-annotation-api';
 import { testSchema } from '../sample/building-block/webapp-prompts-cap/schema';
 import type { ListPromptQuestion, PromptContext } from '../../../src/prompts/types';

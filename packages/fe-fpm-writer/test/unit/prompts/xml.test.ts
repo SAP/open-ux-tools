@@ -2,7 +2,7 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
-import { isElementIdAvailable } from '../../../src/prompts/utils';
+import { isElementIdAvailable } from '../../../src/building-block/prompts/utils/xml';
 
 jest.setTimeout(10000);
 

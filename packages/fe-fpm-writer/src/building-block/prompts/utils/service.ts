@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/require-returns */
 import type { ConvertedMetadata, EntityType } from '@sap-ux/vocabularies-types';
 import type { EntityTypeAnnotations } from '@sap-ux/vocabularies-types/vocabularies/Edm_Types';
 import type { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
@@ -6,8 +5,7 @@ import { convert } from '@sap-ux/annotation-converter';
 import { FioriAnnotationService } from '@sap-ux/fiori-annotation-api';
 import { getCapServiceName } from '@sap-ux/project-access';
 import type { Project } from '@sap-ux/project-access';
-// todo ???
-import type { BindingContextType } from '../../building-block/types';
+import type { BindingContextType } from '../../types';
 
 /**
  * Defines binding context to filter annotation terms.

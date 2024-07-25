@@ -1,7 +1,7 @@
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { TFunction } from 'i18next';
 import type { Answers } from 'inquirer';
-import { i18nNamespaces, translate } from '../../i18n';
+import { i18nNamespaces, translate } from '../../../i18n';
 import {
     getAggregationPathPrompt,
     getAnnotationPathQualifierPrompt,
@@ -14,9 +14,11 @@ import {
     getViewOrFragmentPathPrompt,
     isCapProject
 } from '../utils';
-import type { PromptContext, Prompts, PromptsGroup, TablePromptsAnswer } from '../types';
-// todo
-import { BuildingBlockType } from '../../building-block/types';
+import type { PromptContext, Prompts, PromptsGroup } from '../../../prompts/types';
+import { BuildingBlockType } from '../../types';
+import type { BuildingBlockConfig, Table } from '../../types';
+
+export type TablePromptsAnswer = BuildingBlockConfig<Table> & Answers;
 
 const groupIds = {
     commonBlockProperties: 'tableBuildingBlockProperties',
