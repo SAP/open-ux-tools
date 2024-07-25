@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.10.4
+
+### Patch Changes
+
+-   42486a5: fix(locate-reuse-lib): corrected extraction of component name
+
 ## 0.10.3
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @sap-ux/fiori-elements-writer
 
+## 1.0.7
+
+### Patch Changes
+
+-   42486a5: fix(locate-reuse-lib): corrected extraction of component name
+-   Updated dependencies [42486a5]
+    -   @sap-ux/ui5-application-writer@1.1.2
+
 ## 1.0.6
 
 ### Patch Changes
