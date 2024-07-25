@@ -28,7 +28,7 @@ export const ui5Proxy = (config: ProxyConfig, options?: Options, filter?: Filter
     });
     const today = new Date();
     const etag = `W/"${config.version || 'ui5-latest-' + today.getDate() + today.getMonth() + today.getFullYear()}"`;
-    const ui5Ver = config.version ? `/${config.version}` : '';
+    const ui5Ver = config.version && !config.version.startsWith('2') ? `/${config.version}` : '';
     const proxyConfig: Options = {
         target: config.url,
         changeOrigin: true,
