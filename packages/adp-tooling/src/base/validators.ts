@@ -3,6 +3,7 @@ import { OperationsType } from '@sap-ux/axios-extension';
 import { t } from '../i18n';
 import { existsSync } from 'fs';
 import { parseParameters } from './helper';
+import { InputChoice } from '../types';
 
 /**
  * Checks if the input is a valid SAP client.
@@ -215,7 +216,7 @@ export function validateByRegex(value: string, inputName: string, pattern: strin
     return true;
 }
 
-export function validateParameters(paramString: string): boolean | string {
+export function validateParameters(paramString: string): string | boolean {
     if (!paramString) {
         return true;
     }
@@ -224,6 +225,26 @@ export function validateParameters(paramString: string): boolean | string {
         parseParameters(paramString);
     } catch (error) {
         return error.message;
+    }
+
+    return true;
+}
+
+export function validateAbapRepository(value: string): string | boolean {
+    if (!value) {
+        return t('validators.inputCannotBeEmptyGeneric', { input: t('prompts.abapRepository') });
+    }
+
+    if (!/^(?:[/]\w{1,8}[/])?\w{1,15}$/.test(value)) {
+        return t('validators.invalidAbapRepository');
+    }
+
+    return true;
+}
+
+export async function validatePackageChoiceInput(value: InputChoice, system: string): string | boolean {
+    if (value === InputChoice.ENTER_MANUALLY) {
+        return true;
     }
 
     return true;

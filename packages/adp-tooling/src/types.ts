@@ -566,3 +566,19 @@ export interface Value {
     value: string;
     format: string;
 }
+
+export declare enum InputChoice {
+    ENTER_MANUALLY = 'Enter manually',
+    CHOOSE_FROM_EXISTING = 'Choose from existing'
+}
+
+export interface DeployConfigAnswers {
+    abapRepository: string;
+    description?: string;
+    packageInputChoice: InputChoice;
+    packageManual?: string;
+    packageAutocomplete?: string;
+    transportInputChoice: InputChoice;
+    transportManual?: string;
+    transportAutocomplete?: string;
+}

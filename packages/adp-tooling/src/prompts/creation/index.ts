@@ -23,18 +23,22 @@ import {
     BasicInfoAnswers,
     ChoiceOption,
     ConfigurationInfoAnswers,
+    DeployConfigAnswers,
     FlexUISupportedSystem,
+    InputChoice,
     Prompts,
     TargetEnvAnswers
 } from '../../types';
 import {
     isNotEmptyString,
+    validateAbapRepository,
     validateAch,
     validateByRegex,
     validateClient,
     validateEmptyInput,
     validateEnvironment,
     validateNamespace,
+    validatePackageChoiceInput,
     validateParameters,
     validateProjectName
 } from '../../base/validators';
@@ -1293,7 +1297,7 @@ export default class ProjectPrompter {
         };
     }
 
-    public getTitlePrompt() {
+    private getTitlePrompt() {
         return {
             type: 'input',
             name: 'title',
@@ -1307,7 +1311,7 @@ export default class ProjectPrompter {
         };
     }
 
-    public getSubtitlePrompt() {
+    private getSubtitlePrompt() {
         return {
             type: 'input',
             name: 'subtitle',
@@ -1319,7 +1323,7 @@ export default class ProjectPrompter {
         };
     }
 
-    public getParametersPrompt() {
+    private getParametersPrompt() {
         return {
             type: 'editor',
             name: 'parameters',
@@ -1335,6 +1339,7 @@ export default class ProjectPrompter {
     }
 
     public async getFlpConfigurationPrompts(appId: string): Promise<any> {
+        //TODO: ADD RETURN TYPE
         if (!this.appManifest) {
             if (!this.appManifestUrl) {
                 this.appManifestUrl = await this.getManifestUrl(appId);
@@ -1354,6 +1359,64 @@ export default class ProjectPrompter {
             this.getTitlePrompt(),
             this.getSubtitlePrompt(),
             this.getParametersPrompt()
+        ];
+    }
+
+    //DEPLOY CONFIG PROMPTS
+    private getAbapRepositoryPrompt(): YUIQuestion<DeployConfigAnswers> {
+        return {
+            type: 'input',
+            name: 'abapRepository',
+            message: t('prompts.abapRepository'),
+            guiOptions: {
+                hint: t('tooltips.abapRepository'),
+                mandatory: true
+            },
+            validate: (value: string) => validateAbapRepository(value)
+        };
+    }
+
+    private getInputChoiceChoices(): ChoiceOption[] {
+        return [
+            { name: InputChoice.ENTER_MANUALLY, value: InputChoice.ENTER_MANUALLY },
+            { value: InputChoice.CHOOSE_FROM_EXISTING, name: InputChoice.CHOOSE_FROM_EXISTING }
+        ];
+    }
+
+    private getDeployConfigDescriptionPrompt(): YUIQuestion<DeployConfigAnswers> {
+        return {
+            type: 'input',
+            name: 'deployConfigDescription',
+            message: t('prompts.deployConfigDescription'),
+            guiOptions: {
+                hint: t('tooltips.deployConfigDescription')
+            }
+        };
+    }
+
+    private getPackageInputChoicePrompt(system: string): ListQuestion<DeployConfigAnswers> {
+        let packageInputChoiceValid: string | boolean = false;
+        return {
+            type: 'list',
+            name: 'packageInputChoice',
+            message: t('prompts.packageInputChoice'),
+            choices: this.getInputChoiceChoices(),
+            default: (answers: DeployConfigAnswers) => answers.packageInputChoice ?? InputChoice.ENTER_MANUALLY,
+            guiOptions: {
+                applyDefaultWhenDirty: true
+            },
+            validate: async (value: InputChoice) => {
+                packageInputChoiceValid = await validatePackageChoiceInput(value, system);
+                return packageInputChoiceValid;
+            }
+        };
+    }
+
+    public async getDeployConfigPrompts(system: string): Promise<YUIQuestion<DeployConfigAnswers>> {
+        return [
+            this.getAbapRepositoryPrompt(),
+            this.getDeployConfigDescriptionPrompt(),
+            this.getPackageInputChoicePrompt(system)
         ];
     }
 }
