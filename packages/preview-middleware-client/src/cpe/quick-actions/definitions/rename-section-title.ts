@@ -1,49 +1,67 @@
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import Component from 'sap/ui/core/Component';
-import { ActivationContext, BaseContext, ExecutionContext, QuickActionDefinition } from './quick-action-definition';
+import {
+    ActivationContext,
+    BaseContext,
+    ExecutionContext,
+    QuickActionActivationData,
+    QuickActionDefinition
+} from './quick-action-definition';
 import { OutlineNode } from '@sap-ux-private/control-property-editor-common';
 import { getFEAppPagesMap } from '../../rta-service';
 
-export const RENAME_SECTION_TITLE = 'rename-section-title';
+export const RENAME_SECTION_TITLE_TYPE = 'rename-section-title';
 const ACTION_ID = 'CTX_RENAME';
 // Eg: adp.fe no ObjectPageDynamicHeaderTitle
 // fe.v2.lrop.customer ObjectPageDynamicHeaderTitle exists
 const PARENT_CONTROL_TYPE_NAMES = ['sap.uxap.ObjectPageLayout'];
 
-export const RENAME_SECTION: QuickActionDefinition = {
-    type: RENAME_SECTION_TITLE,
-    getTitle: (): string => {
-        return 'Rename Section';
-    },
-    isActive: async (context: ActivationContext): Promise<boolean> => {
+export const RENAME_SECTION: QuickActionDefinition<undefined> = {
+    type: RENAME_SECTION_TITLE_TYPE,
+    getActivationData: async (context: ActivationContext): Promise<QuickActionActivationData> => {
+        const result: QuickActionActivationData = { isActive: false, title: 'Rename Section', children: [] };
+        if ((context.rta as any).getMode() !== 'adaptation') {
+            return result;
+        }
         const control = getControl(context);
-        let sectionWithRenameAction = false;
+
         if (control) {
-            // look for anchorbar first, as section title is same as anchorbar
+            // look for anchor bar first, as section title is same as anchorbar
             const sectionTabs = control.children.filter((child) => child.controlType === 'sap.uxap.AnchorBar')[0];
             if (sectionTabs.children.length > 1) {
-                sectionWithRenameAction = sectionTabs.children.some(
-                    async (sectionTabs) =>
-                        ((await (context.actionService as any).get(sectionTabs.controlId)) || []).filter(
-                            (action: { id: string }) => action?.id === ACTION_ID
-                        ).length
+                const sectionTabsActionsPromises = sectionTabs.children.map((child) =>
+                    context.actionService?.get(child.controlId)
                 );
+                const sectionTabsActions = await Promise.all(sectionTabsActionsPromises);
+
+                sectionTabsActions.forEach((actions, idx) => {
+                    const renameActionAvailable = !!actions?.some((action) => action.id === ACTION_ID);
+                    if (renameActionAvailable) {
+                        result.children!.push(`'${sectionTabs.children[idx].name}' Section`);
+                    }
+                });
             }
             // if no tabs exists, edit directly section header
-            if (!sectionTabs.children.length) {
-                const section = control.children.filter((child) => child.controlType === 'sap.uxap.ObjectPageSection');
-                sectionWithRenameAction = section.some(
-                    async (opSection) =>
-                        ((await (context.actionService as any).get(opSection.controlId)) || []).filter(
-                            (action: { id: string }) => action?.id === ACTION_ID
-                        ).length
+            else {
+                const sections = control.children.filter((child) => child.controlType === 'sap.uxap.ObjectPageSection');
+                const sectionsActionsPromises = sections.map((section) =>
+                    context.actionService?.get(section.controlId)
                 );
+                const sectionsActions = await Promise.all(sectionsActionsPromises);
+                sectionsActions.forEach((actions, idx) => {
+                    const renameActionAvailable = !!actions?.some((action) => action.id === ACTION_ID);
+                    if (renameActionAvailable) {
+                        result.children!.push(`'${sections[idx].name}' Section`);
+                    }
+                });
             }
-            if (sectionWithRenameAction && (context.rta as any).getMode() === 'adaptation') {
-                return true;
+            result.isActive = result.children!.length > 0;
+            if (result.children!.length < 2) {
+                // for a single section no need to show action submenu
+                delete result.children;
             }
         }
-        return false;
+        return result;
     },
     execute: async (context: ExecutionContext, index = 0): Promise<void> => {
         const control = getControl(context);
@@ -63,24 +81,8 @@ export const RENAME_SECTION: QuickActionDefinition = {
             if (controlOverlay) {
                 controlOverlay.setSelected(true);
             }
-            await (context.actionService as any).execute(toBeRenameControl.controlId, ACTION_ID);
+            await context.actionService?.execute(toBeRenameControl.controlId, ACTION_ID);
         }
-    },
-    children: (context: BaseContext, index = 0): string[] => {
-        const children = new Array<string>();
-        const control = getControl(context);
-        if (control) {
-            const sectionTabs = control.children.filter((child) => child.controlType === 'sap.uxap.AnchorBar')[0];
-            if (sectionTabs.children.length > 1) {
-                children.push(...sectionTabs.children.map((tabs) => `'${tabs.name}' Section`));
-            }
-
-            const sections = control.children.filter((child) => child.controlType === 'sap.uxap.ObjectPageSection');
-            if (sections.length === 0) {
-                children.push(...sections.map((section) => `'${section.name}' Section`));
-            }
-        }
-        return children;
     }
 };
 

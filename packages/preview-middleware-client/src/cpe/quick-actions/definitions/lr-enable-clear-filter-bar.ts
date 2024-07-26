@@ -1,7 +1,12 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 
-import { ActivationContext, ExecutionContext, QuickActionDefinition } from './quick-action-definition';
+import {
+    ActivationContext,
+    ExecutionContext,
+    QuickActionActivationData,
+    QuickActionDefinition
+} from './quick-action-definition';
 import { isPageContainsControlById } from '../../rta-service';
 import { getCurrentActivePage } from './utils';
 
@@ -9,29 +14,35 @@ export const ENABLE_CLEAR_FILTER_BAR_TYPE = 'enable-clear-filter-bar';
 const PROPERTY_NAME = 'showClearOnFB';
 
 const CONTROL_TYPE = 'sap.ui.comp.smartfilterbar.SmartFilterBar';
-export const ENABLE_CLEAR_FILTER_BAR: QuickActionDefinition = {
+export const ENABLE_CLEAR_FILTER_BAR: QuickActionDefinition<boolean> = {
     type: ENABLE_CLEAR_FILTER_BAR_TYPE,
-    getTitle: (): string => {
-        return 'Enable Clear Filter Bar Button';
-    },
-    // (getActionOption)
-    isActive: (context: ActivationContext): boolean => {
+    getActivationData: (context: ActivationContext): QuickActionActivationData<boolean> => {
+        let result: QuickActionActivationData<boolean> = {
+            isActive: false,
+            title: '',
+            executionPayload: false
+        };
         const controls = context.controlIndex[CONTROL_TYPE];
-        const activePages = getCurrentActivePage(context);
-        for (const activePage of activePages) {
-            if (controls?.length === 1) {
+        if (controls?.length === 1) {
+            const activePages = getCurrentActivePage(context);
+            for (const activePage of activePages) {
                 const control = controls[0];
                 const isActionApplicable = isPageContainsControlById(activePage.page, control.controlId);
                 const modifiedControl = sap.ui.getCore().byId(control.controlId);
-                if (!isActionApplicable || !modifiedControl) {
-                    return false;
+                if (isActionApplicable && modifiedControl) {
+                    const isClearButtonEnabled = (modifiedControl as unknown as any).getShowClearOnFB() as boolean;
+                    result = {
+                        isActive: true,
+                        title: `${isClearButtonEnabled ? 'Disable' : 'Enable'} Clear Filter Bar Button`,
+                        executionPayload: !isClearButtonEnabled
+                    };
+                    break;
                 }
-                return !(modifiedControl as unknown as any).getShowClearOnFB();
             }
         }
-        return false;
+        return result;
     },
-    execute: async (context: ExecutionContext): Promise<void> => {
+    execute: async (context: ExecutionContext, index, payload): Promise<void> => {
         const controls = context.controlIndex[CONTROL_TYPE];
         const control = controls[0];
         if (control) {
@@ -45,7 +56,7 @@ export const ENABLE_CLEAR_FILTER_BAR: QuickActionDefinition = {
             const modifiedValue = {
                 generator: flexSettings.generator,
                 propertyName: PROPERTY_NAME,
-                newValue: true
+                newValue: !!payload
             };
 
             const command = await CommandFactory.getCommandFor<FlexCommand>(

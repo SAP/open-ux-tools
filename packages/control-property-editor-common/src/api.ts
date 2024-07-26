@@ -167,11 +167,12 @@ export interface ShowMessage {
     shouldHideIframe: boolean;
 }
 
-export interface QuickAction {
+export interface QuickAction<T> {
     type: string;
     title: string;
     children?: string[];
     index?: number;
+    executionPayload?: T;
 }
 
 /**

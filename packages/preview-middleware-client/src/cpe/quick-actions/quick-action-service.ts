@@ -13,13 +13,18 @@ import { QUICK_ACTION_DEFINITIONS } from './definitions/index';
 
 import { ActivationContext, ExecutionContext } from './definitions/quick-action-definition';
 
+export type RTAActionServiceAPI = {
+    execute: (controlId: string, actionId: string) => Promise<void>;
+    get: (controlId: string) => Promise<{ id: string }[] | undefined>;
+};
+
 /**
  *
  */
 export class QuickActionService implements Service {
     private sendAction: ActionSenderFunction = () => {};
     private executionContext: ExecutionContext;
-    private actionService: unknown;
+    private actionService: RTAActionServiceAPI | undefined;
 
     /**
      *
@@ -31,7 +36,7 @@ export class QuickActionService implements Service {
             controlIndex: {},
             rta,
             actionService: undefined
-        };
+        } as ExecutionContext;
     }
 
     /**
@@ -46,12 +51,12 @@ export class QuickActionService implements Service {
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (executeQuickAction.match(action)) {
                 const definition = QUICK_ACTION_DEFINITIONS.find(
-                    (quickAction) => quickAction.type === action.payload.type
+                    (quickActionDefinition) => quickActionDefinition.type === action.payload.type
                 );
                 if (!definition) {
                     return;
                 }
-                await definition.execute(this.executionContext, action.payload.index);
+                await definition.execute(this.executionContext, action.payload.index, action.payload.executionPayload);
             }
         });
     }
@@ -63,26 +68,23 @@ export class QuickActionService implements Service {
             actionService: this.actionService,
             rta: this.rta
         };
-        const that = this;
         this.executionContext = {
             controlIndex,
             rta: this.rta,
             actionService: this.actionService
         };
-        const quickActions: QuickAction[] = [];
+        const quickActions: QuickAction<unknown>[] = [];
         for (const definition of QUICK_ACTION_DEFINITIONS) {
-            if (await definition.isActive(context)) {
+            const activationData = await definition.getActivationData(context);
+            if (activationData?.isActive) {
                 const quickAction = {
                     type: definition.type,
-                    title: definition.getTitle(),
-                    children: new Array<string>()
+                    title: activationData.title,
+                    children: new Array<string>(),
+                    executionPayload: activationData.executionPayload
                 };
-                if (definition.children) {
-                    quickAction.children = definition?.children({
-                        controlIndex,
-                        actionService: this.actionService,
-                        rta: this.rta
-                    });
+                if (activationData.children) {
+                    quickAction.children = activationData.children;
                 }
                 quickActions.push(quickAction);
             }

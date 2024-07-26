@@ -1,5 +1,10 @@
 import { getFEAppPagesMap, isPageContainsControlById } from '../../rta-service';
-import { ActivationContext, ExecutionContext, QuickActionDefinition } from './quick-action-definition';
+import {
+    ActivationContext,
+    ExecutionContext,
+    QuickActionActivationData,
+    QuickActionDefinition
+} from './quick-action-definition';
 
 export const ADD_FIELD_TO_HEADER_TYPE = 'add-field-to-header';
 const ACTION_ID = 'CTX_ADD_ELEMENTS_AS_CHILD';
@@ -7,37 +12,32 @@ const ACTION_ID = 'CTX_ADD_ELEMENTS_AS_CHILD';
 // fe.v2.lrop.customer ObjectPageDynamicHeaderTitle exists
 const CONTROL_TYPES = ['sap.uxap.ObjectPageDynamicHeaderTitle', 'sap.uxap.ObjectPageHeader'];
 
-export const ADD_FIELD_TO_HEADER: QuickActionDefinition = {
+export const ADD_FIELD_TO_HEADER: QuickActionDefinition<undefined> = {
     type: ADD_FIELD_TO_HEADER_TYPE,
-    getTitle: (): string => {
-        return 'Add Field to Header';
-    },
-    isActive: (context: ActivationContext): boolean => {
+    getActivationData: (context: ActivationContext): QuickActionActivationData => {
+        const result: QuickActionActivationData = { isActive: false, title: 'Add Field to Header' };
         const controlName = CONTROL_TYPES.find((type) => context.controlIndex[type]);
-
         if (controlName) {
             const pages = getFEAppPagesMap(context.rta);
             const control = context.controlIndex[controlName][0];
-            const isActionApplicable = Object.keys(pages).some(
-                (key) =>
-                    key.split('.').pop() === 'ObjectPage' &&
-                    !pages[key][0].isInvisible &&
-                    isPageContainsControlById(pages[key][0].page, control.controlId)
-            );
+            const isActionApplicable =
+                control &&
+                Object.keys(pages).some(
+                    (key) =>
+                        key.split('.').pop() === 'ObjectPage' &&
+                        !pages[key][0].isInvisible &&
+                        isPageContainsControlById(pages[key][0].page, control.controlId)
+                );
 
-            if (!isActionApplicable) {
-                return false;
-            }
-
-            return !!control;
+            result.isActive = isActionApplicable;
         }
-        return false;
+        return result;
     },
     execute: async (context: ExecutionContext): Promise<void> => {
         const controlName = CONTROL_TYPES.find((type) => context.controlIndex[type]);
         if (controlName) {
             const control = context.controlIndex[controlName][0];
-            await (context.actionService as any).execute(control.controlId, ACTION_ID);
+            await context.actionService?.execute(control.controlId, ACTION_ID);
         }
     }
 };
