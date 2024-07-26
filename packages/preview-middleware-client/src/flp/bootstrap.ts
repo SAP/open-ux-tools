@@ -1,10 +1,12 @@
-import { getError } from '../cpe/error-utils';
-import Log from 'sap/base/Log';
-import { Window } from 'sap/open/ux/preview/global';
-
 /**
  * Calculates the script content for accessing the right sap/ushell/bootstrap sandbox.
  */
+interface Window {
+    'sap-ui-config': {
+        [key: string]: (fnCallback: () => void) => void;
+    };
+}
+
 (window as unknown as Window)['sap-ui-config'] = {
     'xx-bootTask': ushellBootstrap
 };
@@ -27,8 +29,7 @@ function ushellBootstrap(fnCallback: () => void): void {
                 shellBootstrap.setAttribute('src', src);
             }
         })
-        .catch((e) => {
-            const error = getError(e);
-            Log.error('Sandbox initialization failed: ' + error.message);
+        .catch((error) => {
+            throw error;
         });
 }
