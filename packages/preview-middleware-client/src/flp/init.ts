@@ -49,8 +49,8 @@ interface Manifest {
 }
 
 type InternalContainer = typeof sap.ushell.Container & {
-    createRendererInternal: typeof sap.ushell.Container.createRenderer
-}
+    createRendererInternal: typeof sap.ushell.Container.createRenderer;
+};
 
 type AppIndexData = Record<
     string,
@@ -248,7 +248,7 @@ export async function init({
     customInit?: string | null;
 }): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
-    const container = (sap?.ushell?.Container ?? (sap.ui.require('sap/ushell/Container')) as InternalContainer);
+    const container = sap?.ushell?.Container ?? (sap.ui.require('sap/ushell/Container') as InternalContainer);
     let scenario: string = '';
     const { version } = (await VersionInfo.load()) as { version: string };
     // Register RTA if configured
@@ -314,19 +314,17 @@ export async function init({
     const renderer =
         major < 2
             ? await container.createRenderer(undefined, true)
-            : await (container as any).createRendererInternal(undefined, true);
+            : await (container as InternalContainer).createRendererInternal(undefined, true);
     renderer.placeAt('content');
 }
 const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
 if (bootstrapConfig) {
-    try {
-        init({
-            appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
-            flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
-            customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit')
-        });
-    } catch (e) {
+    init({
+        appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
+        flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
+        customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit')
+    }).catch((e) => {
         const error = getError(e);
         Log.error('Sandbox initialization failed: ' + error.message);
-    }
+    });
 }

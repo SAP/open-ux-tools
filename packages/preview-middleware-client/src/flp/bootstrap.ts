@@ -5,7 +5,7 @@
     'xx-bootTask': ushellBootstrap
 };
 
-function ushellBootstrap(fnCallback: Function) {
+function ushellBootstrap(fnCallback: () => void): void {
     fetch('/resources/sap-ui-version.json')
         .then((resp) => resp.json())
         .then((json) => {

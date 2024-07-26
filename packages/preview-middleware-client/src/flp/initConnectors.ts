@@ -30,4 +30,4 @@ export async function initConnectors(): Promise<void> {
     }
 }
 
-initConnectors();
+await initConnectors();
