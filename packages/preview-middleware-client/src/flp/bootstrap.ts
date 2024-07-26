@@ -1,7 +1,9 @@
+import type Window from 'sap/open/ux/tools/preview/global';
+
 /**
  * Calculates the script content for accessing the right sap/ushell/bootstrap sandbox.
  */
-(window as any)['sap-ui-config'] = {
+(window as Window)['sap-ui-config'] = {
     'xx-bootTask': ushellBootstrap
 };
 
@@ -18,7 +20,7 @@ function ushellBootstrap(fnCallback: () => void): void {
             const shellBootstrap = document.getElementById('sap-ushell-bootstrap');
             if (shellBootstrap) {
                 shellBootstrap.onload = () => {
-                    (window as any)['sap-ui-config']['xx-bootTask'](fnCallback);
+                    (window as Window)['sap-ui-config']['xx-bootTask'](fnCallback);
                 };
                 shellBootstrap.setAttribute('src', src);
             }
