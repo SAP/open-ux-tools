@@ -19,8 +19,9 @@ import type { BuildingBlockConfig, Chart } from '../../types';
 
 export type ChartPromptsAnswer = BuildingBlockConfig<Chart> & Answers;
 
-const defaultAnswers: Answers = {
-    id: 'Chart'
+const defaultAnswers = {
+    id: 'Chart',
+    bindingContextType: 'absolute'
 };
 
 /**
@@ -47,7 +48,7 @@ export async function getChartBuildingBlockPrompts(context: PromptContext): Prom
             getBindingContextTypePrompt({
                 message: t('bindingContextType'),
                 dependantPromptNames: ['buildingBlockData.metaPath.qualifier'],
-                default: 'relative',
+                default: defaultAnswers.bindingContextType,
                 required: true
             }),
             ...(project && isCapProject(project)

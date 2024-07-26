@@ -68,7 +68,7 @@ Object {
           "value": "absolute",
         },
       ],
-      "default": "relative",
+      "default": "absolute",
       "dependantPromptNames": Array [
         "buildingBlockData.metaPath.qualifier",
       ],
@@ -347,7 +347,7 @@ Object {
           "value": "absolute",
         },
       ],
-      "default": "relative",
+      "default": "absolute",
       "dependantPromptNames": Array [
         "buildingBlockData.metaPath.qualifier",
       ],
@@ -831,7 +831,7 @@ Object {
           "value": "absolute",
         },
       ],
-      "default": "relative",
+      "default": "absolute",
       "dependantPromptNames": Array [
         "buildingBlockData.metaPath.qualifier",
       ],
@@ -1296,7 +1296,7 @@ Object {
           "value": "absolute",
         },
       ],
-      "default": "relative",
+      "default": "absolute",
       "dependantPromptNames": Array [
         "buildingBlockData.metaPath.qualifier",
       ],

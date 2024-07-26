@@ -25,7 +25,7 @@ const groupIds = {
     visualisationProperties: 'tableVisualizationProperties'
 };
 
-const defaultAnswers: Answers = {
+const defaultAnswers = {
     id: 'Table',
     type: 'ResponsiveTable',
     selectionMode: 'Single',
@@ -36,7 +36,8 @@ const defaultAnswers: Answers = {
     enableExport: false,
     enableFullScreen: false,
     enablePaste: false,
-    isSearchable: true
+    isSearchable: true,
+    bindingContextType: 'absolute'
 };
 
 /**
@@ -80,7 +81,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
                 message: t('bindingContextType'),
                 dependantPromptNames: ['buildingBlockData.metaPath.qualifier'],
                 groupId: groupIds.commonBlockProperties,
-                default: 'relative',
+                default: defaultAnswers.bindingContextType,
                 required: true
             }),
             ...(project && isCapProject(project)

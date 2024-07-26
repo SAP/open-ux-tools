@@ -16,7 +16,7 @@ import type { BuildingBlockConfig, FilterBar } from '../../types';
 
 export type FilterBarPromptsAnswer = BuildingBlockConfig<FilterBar> & Answers;
 
-const defaultAnswers: Answers = {
+const defaultAnswers = {
     id: 'FilterBar'
 };
 
