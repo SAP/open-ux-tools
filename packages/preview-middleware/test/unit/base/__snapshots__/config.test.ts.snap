@@ -98,10 +98,6 @@ exports[`config generatePreviewFiles minimum settings 1`] = `
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
     </script>
 
-    <script type=\\"text/javascript\\">
-        (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
-    </script>
-
 
 </head>
 
@@ -174,10 +170,6 @@ Object {
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
-    </script>
-
-    <script type=\\"text/javascript\\">
-        (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
 
@@ -255,10 +247,6 @@ Object {
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
-    </script>
-
-    <script type=\\"text/javascript\\">
-        (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
 

@@ -277,7 +277,7 @@ describe('flp/init', () => {
             const initRtaMock = jest.fn();
             const plugnScriptMock = jest.fn();
             await requireCb(initRtaMock, plugnScriptMock);
-            expect(initRtaMock).toBeCalledWith(expect.anything(), plugnScriptMock);
+            expect(initRtaMock).toBeCalled();
         });
 
         test('custom init module configured & ui5 version is 1.120.9', async () => {

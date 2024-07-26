@@ -9,6 +9,7 @@ import AppState from 'sap/ushell/services/AppState';
 import { getManifestAppdescr } from '../adp/api-handler';
 import VersionInfo from 'sap/ui/VersionInfo';
 import { getError } from '../cpe/error-utils';
+import initConnectors from './initConnectors';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -322,6 +323,9 @@ export async function init({
     if (appUrls) {
         await registerComponentDependencyPaths(JSON.parse(appUrls), urlParams);
     }
+
+    // Load rta connector
+    await initConnectors();
 
     // Load custom initialization module
     if (customInit) {
