@@ -12,7 +12,9 @@ const PARENT_CONTROL_TYPE_NAMES = ['sap.uxap.ObjectPageLayout'];
 
 export const RENAME_SECTION: QuickActionDefinition = {
     type: RENAME_SECTION_TITLE,
-    title: 'Rename Section',
+    getTitle: (): string => {
+        return 'Rename Section';
+    },
     isActive: async (context: ActivationContext): Promise<boolean> => {
         const control = getControl(context);
         let sectionWithRenameAction = false;

@@ -27,7 +27,7 @@ export type QuickActionExecuteFunction =
 
 export interface QuickActionDefinition {
     type: string;
-    title: string;
+    getTitle: () => string;
     isActive: QuickActionActivationFunction;
     execute: QuickActionExecuteFunction;
     children?: QuickActionFunctionGetChildren;

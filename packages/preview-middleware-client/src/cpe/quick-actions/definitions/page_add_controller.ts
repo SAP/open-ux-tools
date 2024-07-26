@@ -8,13 +8,14 @@ import { getExistingController } from '../../../adp/api-handler';
 import { getCurrentActivePage, getRelevantControlFromActivePage } from './utils';
 import { getAllSyncViewsIds, getControllerInfo } from '../../utils';
 
-
 export const ADD_CONTROLLER_TO_PAGE_TYPE = 'add-controller-to-page';
 const CONTROL_TYPES = ['sap.f.DynamicPage', 'sap.uxap.ObjectPageLayout'];
 
 export const ADD_PAGE_CONTROLLER: QuickActionDefinition = {
     type: ADD_CONTROLLER_TO_PAGE_TYPE,
-    title: 'Add Controller to page',
+    getTitle: (): string => {
+        return 'Add Controller to page';
+    },
     isActive: async (context: ActivationContext): Promise<boolean> => {
         const activePages = getCurrentActivePage(context);
         for (const activePage of activePages) {
@@ -44,4 +45,3 @@ export const ADD_PAGE_CONTROLLER: QuickActionDefinition = {
         }
     }
 };
-

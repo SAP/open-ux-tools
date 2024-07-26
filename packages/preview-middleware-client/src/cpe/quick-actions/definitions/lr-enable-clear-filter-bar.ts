@@ -11,7 +11,9 @@ const PROPERTY_NAME = 'showClearOnFB';
 const CONTROL_TYPE = 'sap.ui.comp.smartfilterbar.SmartFilterBar';
 export const ENABLE_CLEAR_FILTER_BAR: QuickActionDefinition = {
     type: ENABLE_CLEAR_FILTER_BAR_TYPE,
-    title: 'Enable Clear Filter Bar Button',
+    getTitle: (): string => {
+        return 'Enable Clear Filter Bar Button';
+    },
     // (getActionOption)
     isActive: (context: ActivationContext): boolean => {
         const controls = context.controlIndex[CONTROL_TYPE];

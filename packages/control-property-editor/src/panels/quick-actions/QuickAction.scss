@@ -1,15 +1,33 @@
 .quick-action-item {
     size: 13px;
-    line-height: 18px;
+    line-height: 22px;
     display: flex;
     margin-right: 5px;
-    justify-content: space-between;
-    align-items: end;
-    button.ms-Link {
-        font-weight: 700;
+    button.ms-Link  {
+        color: var(--vscode-textLink-foreground);
         font-size: 13px;
-        height: 18px;
+        font-weight: bold;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow-x: hidden;
+        line-height: 18px;
     }
 }
 
-
+.action-callout-children {
+    display: flex;
+    flex-direction: column;
+    padding: 7px;
+    gap: 4px;
+    button.ms-Link.quick-action-child-link {
+        justify-content: space-around;
+        text-decoration: none;
+        color: var(--vscode-foreground);
+        &:hover,
+        &:hover:focus,
+        &:hover:active {
+            color: var(--vscode-textLink-foreground);
+            text-decoration: underline;
+        }
+    }
+}

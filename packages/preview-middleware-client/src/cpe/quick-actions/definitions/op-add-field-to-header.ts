@@ -9,7 +9,9 @@ const CONTROL_TYPES = ['sap.uxap.ObjectPageDynamicHeaderTitle', 'sap.uxap.Object
 
 export const ADD_FIELD_TO_HEADER: QuickActionDefinition = {
     type: ADD_FIELD_TO_HEADER_TYPE,
-    title: 'Add Field to Header',
+    getTitle: (): string => {
+        return 'Add Field to Header';
+    },
     isActive: (context: ActivationContext): boolean => {
         const controlName = CONTROL_TYPES.find((type) => context.controlIndex[type]);
 

@@ -74,7 +74,7 @@ export class QuickActionService implements Service {
             if (await definition.isActive(context)) {
                 const quickAction = {
                     type: definition.type,
-                    title: definition.title,
+                    title: definition.getTitle(),
                     children: new Array<string>()
                 };
                 if (definition.children) {
