@@ -11,7 +11,7 @@ interface Window {
     'xx-bootTask': ushellBootstrap
 };
 
-function ushellBootstrap(fnCallback: () => void): void {
+export function ushellBootstrap(fnCallback: () => void): void {
     fetch('/resources/sap-ui-version.json')
         .then((resp) => resp.json())
         .then((json) => {
