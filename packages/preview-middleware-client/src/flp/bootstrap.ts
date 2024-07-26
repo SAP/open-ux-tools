@@ -2,10 +2,10 @@
  * Calculates the script content for accessing the right sap/ushell/bootstrap sandbox.
  */
 (window as any)['sap-ui-config'] = {
-    'open-ux-bootTask': ushellBootstrap
+    'xx-bootTask': ushellBootstrap
 };
 
-function ushellBootstrap(fnCallback: any) {
+function ushellBootstrap(fnCallback: Function) {
     fetch('/resources/sap-ui-version.json')
         .then((resp) => resp.json())
         .then((json) => {
@@ -18,7 +18,7 @@ function ushellBootstrap(fnCallback: any) {
             const shellBootstrap = document.getElementById('sap-ushell-bootstrap');
             if (shellBootstrap) {
                 shellBootstrap.onload = () => {
-                    (window as any)['sap-ui-config']['open-ux-bootTask'](fnCallback);
+                    (window as any)['sap-ui-config']['xx-bootTask'](fnCallback);
                 };
                 shellBootstrap.setAttribute('src', src);
             }

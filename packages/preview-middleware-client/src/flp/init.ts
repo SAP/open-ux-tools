@@ -8,6 +8,7 @@ import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import AppState from 'sap/ushell/services/AppState';
 import { getManifestAppdescr } from '../adp/api-handler';
 import VersionInfo from 'sap/ui/VersionInfo';
+import { getError } from '../cpe/error-utils';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -45,6 +46,10 @@ interface Manifest {
         };
         componentUsages?: Record<string, unknown>;
     };
+}
+
+type InternalContainer = typeof sap.ushell.Container & {
+    createRendererInternal: typeof sap.ushell.Container.createRenderer
 }
 
 type AppIndexData = Record<
@@ -243,77 +248,75 @@ export async function init({
     customInit?: string | null;
 }): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
-    sap.ui.require(['sap/ushell/Container'], async function (container: typeof sap.ushell.Container) {
-        let scenario: string = '';
-        const { version } = (await VersionInfo.load()) as { version: string };
-        // Register RTA if configured
-        if (flex) {
-            const flexSettings = JSON.parse(flex) as FlexSettings;
-            scenario = flexSettings.scenario;
-            container.attachRendererCreatedEvent(async function () {
-                const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
-                lifecycleService.attachAppLoaded((event) => {
-                    const minor = parseInt(version.split('.')[1], 10);
-                    const view = event.getParameter('componentInstance');
-                    const flexSettings = JSON.parse(flex) as FlexSettings;
-                    const pluginScript = flexSettings.pluginScript ?? '';
+    const container = (sap?.ushell?.Container ?? (sap.ui.require('sap/ushell/Container')) as InternalContainer);
+    let scenario: string = '';
+    const { version } = (await VersionInfo.load()) as { version: string };
+    // Register RTA if configured
+    if (flex) {
+        const flexSettings = JSON.parse(flex) as FlexSettings;
+        scenario = flexSettings.scenario;
+        container.attachRendererCreatedEvent(async function () {
+            const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
+            lifecycleService.attachAppLoaded((event) => {
+                const minor = parseInt(version.split('.')[1], 10);
+                const view = event.getParameter('componentInstance');
+                const flexSettings = JSON.parse(flex) as FlexSettings;
+                const pluginScript = flexSettings.pluginScript ?? '';
 
-                    let libs: string[] = [];
-                    if (minor > 71) {
-                        libs.push('sap/ui/rta/api/startAdaptation');
-                    } else {
-                        libs.push('open/ux/preview/client/flp/initRta');
+                let libs: string[] = [];
+                if (minor > 71) {
+                    libs.push('sap/ui/rta/api/startAdaptation');
+                } else {
+                    libs.push('open/ux/preview/client/flp/initRta');
+                }
+
+                if (flexSettings.pluginScript) {
+                    libs.push(pluginScript as string);
+                    delete flexSettings.pluginScript;
+                }
+
+                const options: RTAOptions = {
+                    rootControl: view,
+                    validateAppVersion: false,
+                    flexSettings
+                };
+
+                sap.ui.require(
+                    libs,
+                    async function (startAdaptation: StartAdaptation | InitRtaScript, pluginScript: RTAPlugin) {
+                        await startAdaptation(options, pluginScript);
                     }
-
-                    if (flexSettings.pluginScript) {
-                        libs.push(pluginScript as string);
-                        delete flexSettings.pluginScript;
-                    }
-
-                    const options: RTAOptions = {
-                        rootControl: view,
-                        validateAppVersion: false,
-                        flexSettings
-                    };
-
-                    sap.ui.require(
-                        libs,
-                        async function (startAdaptation: StartAdaptation | InitRtaScript, pluginScript: RTAPlugin) {
-                            await startAdaptation(options, pluginScript);
-                        }
-                    );
-                });
+                );
             });
-        }
+        });
+    }
 
-        // reset app state if requested
-        if (urlParams.get('fiori-tools-iapp-state')?.toLocaleLowerCase() !== 'true') {
-            await resetAppState(container);
-        }
+    // reset app state if requested
+    if (urlParams.get('fiori-tools-iapp-state')?.toLocaleLowerCase() !== 'true') {
+        await resetAppState(container);
+    }
 
-        // Load custom library paths if configured
-        if (appUrls) {
-            await registerComponentDependencyPaths(JSON.parse(appUrls), urlParams);
-        }
+    // Load custom library paths if configured
+    if (appUrls) {
+        await registerComponentDependencyPaths(JSON.parse(appUrls), urlParams);
+    }
 
-        // Load custom initialization module
-        if (customInit) {
-            sap.ui.require([customInit]);
-        }
+    // Load custom initialization module
+    if (customInit) {
+        sap.ui.require([customInit]);
+    }
 
-        // init
-        const resourceBundle = await loadI18nResourceBundle(scenario as Scenario);
-        setI18nTitle(resourceBundle);
-        registerSAPFonts();
-        const major = version ? parseInt(version.split('.')[0], 10) : 2;
-        const renderer =
-            major < 2
-                ? await container.createRenderer(undefined, true)
-                : await (container as any).createRendererInternal(undefined, true);
-        renderer.placeAt('content');
-    });
+    // init
+    const resourceBundle = await loadI18nResourceBundle(scenario as Scenario);
+    setI18nTitle(resourceBundle);
+    registerSAPFonts();
+    const major = version ? parseInt(version.split('.')[0], 10) : 2;
+    const renderer =
+        major < 2
+            ? await container.createRenderer(undefined, true)
+            : await (container as any).createRendererInternal(undefined, true);
+    renderer.placeAt('content');
 }
-
 const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
 if (bootstrapConfig) {
     try {
@@ -323,6 +326,7 @@ if (bootstrapConfig) {
             customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit')
         });
     } catch (e) {
-        Log.error('Sandbox initialization failed: ' + e.message);
+        const error = getError(e);
+        Log.error('Sandbox initialization failed: ' + error.message);
     }
 }
