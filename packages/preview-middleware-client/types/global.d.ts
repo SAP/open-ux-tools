@@ -1,7 +1,7 @@
-declare module 'sap/open/ux/tools/preview/global' {
+declare module 'sap/open/ux/preview/global' {
     interface Window {
         'sap-ui-config': {
-            'xx-bootTask': (fnCallback: () => void) => void;
+            [key: string]: (fnCallback: () => void) => void;
         };
     }
 }

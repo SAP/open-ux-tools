@@ -1,9 +1,11 @@
-import type Window from 'sap/open/ux/tools/preview/global';
+import { getError } from '../cpe/error-utils';
+import Log from 'sap/base/Log';
+import { Window } from 'sap/open/ux/preview/global';
 
 /**
  * Calculates the script content for accessing the right sap/ushell/bootstrap sandbox.
  */
-(window as Window)['sap-ui-config'] = {
+(window as unknown as Window)['sap-ui-config'] = {
     'xx-bootTask': ushellBootstrap
 };
 
@@ -20,9 +22,13 @@ function ushellBootstrap(fnCallback: () => void): void {
             const shellBootstrap = document.getElementById('sap-ushell-bootstrap');
             if (shellBootstrap) {
                 shellBootstrap.onload = () => {
-                    (window as Window)['sap-ui-config']['xx-bootTask'](fnCallback);
+                    (window as unknown as Window)['sap-ui-config']['xx-bootTask'](fnCallback);
                 };
                 shellBootstrap.setAttribute('src', src);
             }
+        })
+        .catch((e) => {
+            const error = getError(e);
+            Log.error('Sandbox initialization failed: ' + error.message);
         });
 }

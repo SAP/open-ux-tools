@@ -10,7 +10,7 @@ import VersionInfo from 'sap/ui/VersionInfo';
  * @example
  * intiConnectors(); // Simply call the function without any arguments.
  */
-export async function initConnectors(): Promise<void> {
+export default async function initConnectors(): Promise<void> {
     const { version } = (await VersionInfo.load()) as { version: string };
     const versionArray = version ? version.split('.') : ['2', '99'];
     const minor = parseInt(versionArray[1], 10);
@@ -29,5 +29,3 @@ export async function initConnectors(): Promise<void> {
         );
     }
 }
-
-await initConnectors();
