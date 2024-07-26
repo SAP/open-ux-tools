@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { UICallout, UIDirectionalHint, UIIcon, UIIconButton, UILink, UiIcons } from '@sap-ux/ui-components';
+import { UICallout, UIDirectionalHint, UIIcon, UILink, UiIcons } from '@sap-ux/ui-components';
 import { executeQuickAction, type QuickAction } from '@sap-ux-private/control-property-editor-common';
 
 import type { RootState } from '../../store';

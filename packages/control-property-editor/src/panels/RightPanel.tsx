@@ -19,8 +19,8 @@ export function RightPanel(): ReactElement {
             height="100%"
             splitterType={UISplitterType.Resize}
             splitterLayoutType={UISplitterLayoutType.Compact}
-            minSectionSize={[300, 190]}
-            sizes={[60, 40]}
+            minSectionSize={[0, 190]}
+            sizes={[12, 88]}
             sizesAsPercents={true}
             animation={true}>
             <UISections.Section

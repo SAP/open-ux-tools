@@ -1,11 +1,11 @@
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import { ActionHandler, ControlTreeIndex } from '../../types';
+import { ControlTreeIndex } from '../../types';
 import { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
-import { ExternalAction } from '@sap-ux-private/control-property-editor-common';
+import { RTAActionServiceAPI } from '../quick-action-service';
 
 export interface BaseContext {
     controlIndex: ControlTreeIndex;
-    actionService: unknown;
+    actionService: RTAActionServiceAPI | undefined;
     rta: RuntimeAuthoring;
 }
 
@@ -19,16 +19,24 @@ export interface ExecutionContext extends BaseContext {
     //rta: RuntimeAuthoring;
 }
 
-export type QuickActionActivationFunction = (context: ActivationContext) => boolean | Promise<boolean>;
+export type QuickActionActivationData<T = undefined> = {
+    isActive: boolean;
+    title: string;
+    executionPayload?: T;
+    children?: string[];
+};
+export type QuickActionActivationFunction<T> = (
+    context: ActivationContext
+) => QuickActionActivationData<T> | Promise<QuickActionActivationData<T>>;
 export type QuickActionFunctionGetChildren = (context: BaseContext) => string[];
-export type QuickActionExecuteFunction =
-    | ((context: ExecutionContext, index?: number) => void)
-    | ((context: ExecutionContext, index?: number) => Promise<void>);
+export type QuickActionExecuteFunction = (
+    context: ExecutionContext,
+    index?: number,
+    payload?: unknown
+) => void | Promise<void>;
 
-export interface QuickActionDefinition {
+export interface QuickActionDefinition<T> {
     type: string;
-    getTitle: () => string;
-    isActive: QuickActionActivationFunction;
+    getActivationData: QuickActionActivationFunction<T>;
     execute: QuickActionExecuteFunction;
-    children?: QuickActionFunctionGetChildren;
 }
