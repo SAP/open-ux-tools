@@ -6,6 +6,7 @@ import { LayeredRepositoryService, createForAbap } from '../../src';
 import type { AxiosError } from '../../src';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
+import { describe } from 'node:test';
 
 const loggerMock: ToolsLogger = {
     debug: jest.fn(),
@@ -275,6 +276,35 @@ describe('LayeredRepositoryService', () => {
             nock(server).put(`${LayeredRepositoryService.PATH}/appdescr_variant_preview/`).reply(500);
             try {
                 await service.mergeAppDescriptorVariant(Buffer.from('~test'));
+                fail('The function should have thrown an error.');
+            } catch (error) {
+                expect(error).toBeDefined();
+            }
+        });
+    });
+
+    describe('getSystemInfo', () => {
+        const mockResult = {
+            adaptationProjectTypes: ['onPremise', 'cloudReady'],
+            activeLanguages: [{ sap: 'EN', description: 'EN Language', i18n: 'EN-en' }]
+        };
+
+        test('successful call with provided package and without provided language', async () => {
+            nock(server)
+                .get((path) => path.startsWith(`${LayeredRepositoryService.PATH}/dta_folder/system_info`))
+                .reply(200, (_path) => {
+                    return mockResult;
+                });
+            const systemInfo = await service.getSystemInfo('Z_TEST_PACKAGE');
+            expect(systemInfo).toEqual(mockResult);
+        });
+
+        test('throws error when request fails', async () => {
+            nock(server)
+                .get((path) => path.startsWith(`${LayeredRepositoryService.PATH}/dta_folder/system_info`))
+                .reply(500);
+            try {
+                await service.getSystemInfo('Z_TEST_PACKAGE');
                 fail('The function should have thrown an error.');
             } catch (error) {
                 expect(error).toBeDefined();
