@@ -101,6 +101,7 @@
         "notFlexEnabledError": "The system that you have selected is not an ABAP On-Premise system which supports Flexibility. Adaptation Project is supported only on such systems, so please choose ABAP On-Premise system which supports Flexibility. If you continue, you will be able to create only an Extension Project.",
         "notDeployableSystemError": "The system that you have selected is not an ABAP On-Premise system which supports DTA_FOLDER deployment. Adaptation Project is supported only on such systems, so please choose ABAP On-Premise system which supports DTA_FOLDER deployment.",
         "achMandatoryError": "Application Component Hierarchy can contain only capital letters, digits, and dashes.",
+        "manifestCouldNotBeValidated": "Manifest of the selected application could not be validated",
         "invalidsemanticObject": "Semantic Object should contain only alphanumerical characters and '_' up to 30 characters.",
         "invalidaction": "Action should contain only alphanumerical characters and '_' up to 60 characters."
     },

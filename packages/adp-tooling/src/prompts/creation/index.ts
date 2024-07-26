@@ -184,10 +184,14 @@ export default class ProjectPrompter {
         applicationData: { fileType: string },
         checkForAdpOverAdpSupport: boolean,
         checkForAdpOverAdpPartialSupport: boolean,
-        manifest: Manifest
+        manifest: Manifest | null
     ): Promise<void> {
         if (!applicationData) {
             throw new Error(t('validators.selectCannotBeEmptyError', { value: 'Application' }));
+        }
+
+        if (!manifest) {
+            throw new Error(t('validators.manifestCouldNotBeValidated'));
         }
 
         this.isV4AppInternalMode = false;
@@ -242,7 +246,7 @@ export default class ProjectPrompter {
                 const res = await this.manifestService.isAppSupported(this.provider, value.id);
 
                 if (res) {
-                    await this.manifestService.loadManifest(this.provider, this.manifestService.url);
+                    await this.manifestService.loadManifest(this.provider, value.id);
 
                     const systemVersion = this.ui5Service.systemVersion;
                     const checkForAdpOverAdpSupport =
@@ -256,7 +260,7 @@ export default class ProjectPrompter {
                         value,
                         checkForAdpOverAdpSupport,
                         checkForAdpOverAdpPartialSupport,
-                        this.manifestService.manifest
+                        this.manifestService.getManifest(value.id)
                     );
                 }
                 this.isApplicationSupported = true;
@@ -970,7 +974,10 @@ export default class ProjectPrompter {
                     this.isApplicationSupported
                 );
             },
-            default: getCachedFioriId(this.manifestService.manifest),
+            default: (answers: ConfigurationInfoAnswers) => {
+                const manifest = this.manifestService.getManifest(answers.application.id);
+                return manifest ? getCachedFioriId(manifest) : '';
+            },
             store: false
         } as InputQuestion<ConfigurationInfoAnswers>;
     }
@@ -993,8 +1000,9 @@ export default class ProjectPrompter {
                     this.isApplicationSupported
                 );
             },
-            default: () => {
-                return this.manifestService.manifest ? getCachedACH(this.manifestService.manifest) : '';
+            default: (answers: ConfigurationInfoAnswers) => {
+                const manifest = this.manifestService.getManifest(answers.application.id);
+                return manifest ? getCachedACH(manifest) : '';
             },
             validate: (value: string) => validateAch(value, this.isCustomerBase),
             store: false
@@ -1179,14 +1187,11 @@ export default class ProjectPrompter {
 
     public async getFlpConfigurationPrompts(appId: string): Promise<any> {
         //TODO: ADD RETURN TYPE
-        if (!this.manifestService.manifest) {
-            if (!this.manifestService.url) {
-                await this.manifestService.loadManifestUrl(this.provider, appId);
-            }
-
-            await this.manifestService.loadManifest(this.provider, this.manifestService.url);
+        if (!this.manifestService.getManifest(appId)) {
+            await this.manifestService.loadManifest(this.provider, appId);
         }
-        this.inboundIds = getInboundIds(this.manifestService.manifest);
+        const manifest = this.manifestService.getManifest(appId);
+        this.inboundIds = getInboundIds(manifest);
 
         return [
             this.getInboundListPrompt(),
