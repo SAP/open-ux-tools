@@ -198,6 +198,7 @@ export function getAbapOnPremSystemQuestions(
     requiredOdataVersion?: OdataVersion
 ): Question<AbapOnPremAnswers>[] {
     const connectValidator = connectionValidator ?? new ConnectionValidator();
+    let validClient = true;
 
     const questions: Question<AbapOnPremAnswers>[] = [
         {
@@ -229,10 +230,17 @@ export function getAbapOnPremSystemQuestions(
             guiOptions: {
                 breadcrumb: t('prompts.sapClient.breadcrumb')
             },
-            validate: validateClient
+            validate: (client) => {
+                const valRes = validateClient(client);
+                if (valRes === true) {
+                    return (validClient = true);
+                }
+                validClient = false;
+                return valRes;
+            }
         } as InputQuestion<AbapOnPremAnswers>,
         {
-            when: () => (connectValidator.validity.reachable ? connectValidator.validity.authRequired === true : false),
+            when: () => connectValidator.isAuthRequired(),
             type: 'input',
             name: abapOnPremInternalPromptNames.systemUsername,
             message: t('prompts.systemUsername.message'),
@@ -242,7 +250,7 @@ export function getAbapOnPremSystemQuestions(
             validate: (user: string) => user?.length > 0
         } as InputQuestion<AbapOnPremAnswers>,
         {
-            when: () => (connectValidator.validity.reachable ? connectValidator.validity.authRequired === true : false),
+            when: () => connectValidator.isAuthRequired(),
             type: 'password',
             guiOptions: {
                 mandatory: true
@@ -252,7 +260,7 @@ export function getAbapOnPremSystemQuestions(
             guiType: 'login',
             mask: '*',
             validate: async (password, { systemUrl, abapSystemUsername, sapClient }: AbapOnPremAnswers) => {
-                if (!(systemUrl && abapSystemUsername && password)) {
+                if (!(systemUrl && abapSystemUsername && password && validClient)) {
                     return false;
                 }
                 const valResult = await connectValidator.validateAuth(systemUrl, abapSystemUsername, password, {

@@ -83,6 +83,7 @@ export function getNewSystemQuestions(promptOptions?: OdataServicePromptOptions)
  */
 export function getUserSystemNameQuestion(): InputQuestion<NewSystemAnswers> {
     let defaultSystemName: string;
+    let userModifiedSystemName: boolean = false;
     const newSystemNamePrompt = {
         type: 'input',
         guiOptions: {
@@ -93,20 +94,22 @@ export function getUserSystemNameQuestion(): InputQuestion<NewSystemAnswers> {
         name: promptNames.userSystemName,
         message: t('prompts.systemName.message'),
         default: async (answers: AbapOnPremAnswers & NewSystemAnswers) => {
-            if (answers.newSystemType === 'abapOnPrem' && answers.systemUrl) {
+            if (answers.newSystemType === 'abapOnPrem' && answers.systemUrl && !userModifiedSystemName) {
                 defaultSystemName = await suggestSystemName(answers.systemUrl, answers.sapClient);
+                return defaultSystemName;
             }
-            return defaultSystemName;
+            return answers.userSystemName;
         },
         validate: async (systemName: string, answers: AbapOnPremAnswers & NewSystemAnswers) => {
-            let validationResult: boolean | string = false;
             // Dont validate the suggested default system name
             if (systemName === defaultSystemName) {
-                validationResult = true;
+                return true;
             }
-            validationResult = await validateSystemName(systemName);
+            const validationResult = await validateSystemName(systemName);
 
             if (validationResult === true) {
+                // Not the default system name, so the user modified
+                userModifiedSystemName = true;
                 const backendSystem = new BackendSystem({
                     name: systemName,
                     url: answers.systemUrl!,

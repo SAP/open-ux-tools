@@ -64,7 +64,6 @@ describe('ConnectionValidator', () => {
         const result = await validator.validateUrl(serviceUrl);
         expect(result).toBe(true);
         expect(validator.validity).toEqual({
-            authRequired: false,
             authenticated: true,
             reachable: true,
             urlFormat: true
@@ -106,7 +105,8 @@ describe('ConnectionValidator', () => {
         expect(validator.validity).toEqual({
             urlFormat: true,
             reachable: true,
-            authRequired: true
+            authRequired: true,
+            authenticated: false
         });
 
         const createProviderSpy = jest.spyOn(axiosExtension, 'create');
@@ -226,6 +226,7 @@ describe('ConnectionValidator', () => {
 
         expect(validator.validity).toEqual({
             urlFormat: true,
+            authenticated: false,
             reachable: true,
             authRequired: true
         });
@@ -234,7 +235,6 @@ describe('ConnectionValidator', () => {
         expect(validator.validity).toEqual({
             urlFormat: true,
             reachable: true,
-            authRequired: false,
             authenticated: true
         });
     });
@@ -245,7 +245,6 @@ describe('ConnectionValidator', () => {
         const result = await validator.validateUrl('https://example.com/service');
         expect(result).toBe(true);
         expect(validator.validity).toEqual({
-            authRequired: false,
             authenticated: true,
             reachable: true,
             urlFormat: true
@@ -263,12 +262,17 @@ describe('ConnectionValidator', () => {
         const validator = new ConnectionValidator();
         const result = await validator.validateUrl('https://example.com/service');
         expect(result).toBe(true);
-        expect(validator.validity).toEqual({ authRequired: true, reachable: true, urlFormat: true });
+        expect(validator.validity).toEqual({
+            authenticated: false,
+            authRequired: true,
+            reachable: true,
+            urlFormat: true
+        });
         // Change the response to 200 and force re-validation of the same url
         jest.spyOn(ODataService.prototype, 'get').mockRejectedValueOnce(newAxiosErrorWithStatus(200));
         await validator.validateUrl('https://example.com/service', { forceReValidation: true });
         expect(validator.validity).toEqual({
-            authRequired: false,
+            authRequired: true,
             authenticated: true,
             reachable: true,
             urlFormat: true
