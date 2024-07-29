@@ -29,9 +29,3 @@ declare module 'sap/ushell/services/AppState' {
 
     export default AppState;
 }
-
-declare module 'sap.ushell.Container' {
-    export interface Container extends sap.ushell.Container {
-        createRendererInternal: typeof sap.ushell.Container.createRenderer | undefined;
-    }
-}
