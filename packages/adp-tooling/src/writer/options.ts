@@ -24,9 +24,8 @@ import type {
  * @param config full project configuration
  */
 export function enhanceUI5Yaml(ui5Config: UI5Config, config: AdpWriterConfig) {
-    ui5Config.setConfiguration({ propertiesFileSourceEncoding: 'UTF-8' });
     if (config.options?.fioriTools) {
-        addFioriToolsMiddlwares(ui5Config, config);
+        addFioriToolsMiddlewares(ui5Config, config);
     } else {
         addOpenSourceMiddlewares(ui5Config, config);
     }
@@ -51,8 +50,8 @@ export function enhanceUI5YamlWithCustomTask(ui5Config: UI5Config, config: AdpWr
  */
 export function enhanceUI5YamlWithCustomConfig(ui5Config: UI5Config, config?: CustomConfig) {
     if (config?.adp) {
-        const { safeMode } = config.adp;
-        ui5Config.addCustomConfiguration('adp', { safeMode });
+        const { support } = config.adp;
+        ui5Config.addCustomConfiguration('adp', { support });
     }
 }
 
@@ -87,7 +86,7 @@ export function enhanceUI5DeployYaml(ui5Config: UI5Config, config: AdpWriterConf
  * @param ui5Config configuration representing the ui5.yaml
  * @param config full project configuration
  */
-function addFioriToolsMiddlwares(ui5Config: UI5Config, config: AdpWriterConfig) {
+function addFioriToolsMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig) {
     const backendConfig: Partial<FioriToolsProxyConfigBackend> = { ...config.target };
     backendConfig.url ??= 'https://REQUIRED_FOR_VSCODE.example';
     backendConfig.path = '/sap';
@@ -105,13 +104,16 @@ function addFioriToolsMiddlwares(ui5Config: UI5Config, config: AdpWriterConfig) 
             }
         }
     ]);
-    ui5Config.addFioriToolsProxydMiddleware({
-        ui5: {
-            url: config?.ui5?.frameworkUrl,
-            version: config?.ui5?.minVersion ?? '' //default to latest if version is not set
+    ui5Config.addFioriToolsProxydMiddleware(
+        {
+            ui5: {
+                url: config?.ui5?.frameworkUrl,
+                version: config?.ui5?.minVersion ?? '' //default to latest if version is not set
+            },
+            backend: [backendConfig as FioriToolsProxyConfigBackend]
         },
-        backend: [backendConfig as FioriToolsProxyConfigBackend]
-    });
+        'fiori-tools-preview'
+    );
 }
 
 /**

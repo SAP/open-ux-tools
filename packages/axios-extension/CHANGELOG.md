@@ -1,5 +1,17 @@
 # @sap-ux/axios-extension
 
+## 1.16.1
+
+### Patch Changes
+
+-   ad9b56d: Extend axios-extension services
+
+## 1.16.0
+
+### Minor Changes
+
+-   3a878f3: Add support for abap cds view service generation
+
 ## 1.15.1
 
 ### Patch Changes

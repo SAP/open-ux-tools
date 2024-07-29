@@ -1,7 +1,7 @@
 import Log from 'sap/base/Log';
 import type AppLifeCycle from 'sap/ushell/services/AppLifeCycle';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
-import scenarios, { type Scenario } from 'sap/ui/fl/Scenario';
+import { SCENARIO, type Scenario } from '@sap-ux-private/control-property-editor-common';
 import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
@@ -42,7 +42,7 @@ interface Manifest {
             libs: Record<string, unknown>;
             components: Record<string, unknown>;
         };
-        componentUsages?: Record<string, unknown>;
+        componentUsages?: Record<string, { name: string }>;
     };
 }
 
@@ -77,6 +77,28 @@ function addKeys(dependency: Record<string, unknown>, customLibs: Record<string,
 }
 
 /**
+ * Check whether a specific ComponentUsage is a custom component, and if yes, add it to the map.
+ *
+ * @param compUsages ComponentUsage from the manifest
+ * @param customLibs map containing the required custom libraries
+ */
+function getComponentUsageNames(compUsages: Record<string, { name: string }>, customLibs: Record<string, true>): void {
+    const compNames = Object.keys(compUsages).map(function (compUsageKey: string) {
+        return compUsages[compUsageKey].name;
+    });
+    compNames.forEach(function (key) {
+        // ignore libs or Components that start with SAPUI5 delivered namespaces
+        if (
+            !UI5_LIBS.some(function (substring) {
+                return key === substring || key.startsWith(substring + '.');
+            })
+        ) {
+            customLibs[key] = true;
+        }
+    });
+}
+
+/**
  * Fetch the manifest for all the given application urls and generate a string containing all required custom library ids.
  *
  * @param appUrls urls pointing to included applications
@@ -99,7 +121,7 @@ async function getManifestLibs(appUrls: string[]): Promise<string> {
                         }
                     }
                     if (manifest['sap.ui5']?.componentUsages) {
-                        addKeys(manifest['sap.ui5'].componentUsages, result);
+                        getComponentUsageNames(manifest['sap.ui5'].componentUsages, result);
                     }
                 }
             })
@@ -196,7 +218,7 @@ export function registerSAPFonts() {
  * @param scenario to be used for the resource bundle.
  */
 export async function loadI18nResourceBundle(scenario: Scenario): Promise<ResourceBundle> {
-    if (scenario === scenarios.AdaptationProject) {
+    if (scenario === SCENARIO.AdaptationProject) {
         const manifest = await getManifestAppdescr();
         const enhanceWith = (manifest.content as { texts: { i18n: string } }[])
             .filter((content) => content.texts?.i18n)

@@ -8,7 +8,7 @@ import type { OdataServiceAnswers, OdataServicePromptOptions } from '../../../ty
 import { promptNames } from '../../../types';
 import { PromptState } from '../../../utils';
 import LoggerHelper from '../../logger-helper';
-import { ConnectionValidator } from './connectionValidator';
+import { ConnectionValidator } from '../../connectionValidator';
 import { serviceUrlInternalPromptNames } from './types';
 import { validateService } from './validators';
 
@@ -100,7 +100,10 @@ function getIgnoreCertErrorsPrompt(
                 LoggerHelper.logger.warn(t('prompts.validationMessages.warningCertificateValidationDisabled'));
             }
 
-            const validUrl = await connectValidator.validateUrl(serviceUrl, ignoreCertError, true);
+            const validUrl = await connectValidator.validateUrl(serviceUrl, {
+                ignoreCertError,
+                forceReValidation: true
+            });
 
             if (validUrl === true) {
                 if (!connectValidator.validity.authRequired) {
@@ -136,7 +139,10 @@ function getCliIgnoreCertValidatePrompt(
                 // If the user choose to ignore cert errors, we need to re-validate
                 LoggerHelper.logger.warn(t('prompts.validationMessages.warningCertificateValidationDisabled'));
                 // Re-check if auth required as the cert error would have prevented this check earlier
-                const validUrl = await connectValidator.validateUrl(serviceUrl, ignoreCertError, true);
+                const validUrl = await connectValidator.validateUrl(serviceUrl, {
+                    ignoreCertError,
+                    forceReValidation: true
+                });
                 if (validUrl !== true) {
                     throw new Error(validUrl.toString()); // exit
                 }
@@ -195,11 +201,14 @@ function getPasswordPrompt(
         message: t('prompts.servicePassword.message'),
         guiType: 'login',
         mask: '*',
-        validate: async (password: string, { username, serviceUrl, ignoreCertError }: ServiceUrlAnswers) => {
+        validate: async (password: string, { username, serviceUrl, ignoreCertError, sapClient }: ServiceUrlAnswers) => {
             if (!serviceUrl || !username || !password) {
                 return false;
             }
-            const validAuth = await connectValidator.validateAuth(serviceUrl, username, password, ignoreCertError);
+            const validAuth = await connectValidator.validateAuth(serviceUrl, username, password, {
+                ignoreCertError,
+                sapClient
+            });
             if (validAuth === true) {
                 return validateService(serviceUrl, connectValidator, requiredVersion, ignoreCertError);
             }

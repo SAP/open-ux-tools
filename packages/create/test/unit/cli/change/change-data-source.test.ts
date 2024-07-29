@@ -1,35 +1,47 @@
-import type { Manifest } from '@sap-ux/project-access';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import { Command } from 'commander';
 import { addChangeDataSourceCommand } from '../../../../src/cli/change/change-data-source';
 import * as tracer from '../../../../src/tracing/trace';
 import * as common from '../../../../src/common';
 import * as logger from '../../../../src/tracing/logger';
+import * as validations from '../../../../src/validation/validation';
 import * as adp from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
 import { UI5Config } from '@sap-ux/ui5-config';
-import * as mockFs from 'fs';
+import { readFileSync } from 'fs';
 import { join } from 'path';
 
-const appManifest = jest
-    .requireActual('fs')
-    .readFileSync(join(__dirname, '../../../fixtures/adaptation-project', 'manifest.json'), 'utf-8');
+const appManifest = readFileSync(join(__dirname, '../../../fixtures/adaptation-project', 'manifest.json'), 'utf-8');
 const descriptorVariant = JSON.parse(
-    jest
-        .requireActual('fs')
-        .readFileSync(join(__dirname, '../../../fixtures/adaptation-project', 'manifest.appdescr_variant'), 'utf-8')
+    readFileSync(join(__dirname, '../../../fixtures/adaptation-project', 'manifest.appdescr_variant'), 'utf-8')
 );
 
-jest.mock('fs');
 jest.mock('prompts');
+jest.mock('@sap-ux/adp-tooling');
 
 const mockAppInfo = { ExampleApp: { manifestUrl: 'https://sap.example' } };
 const abapServicesMock = {
     getAppInfo: jest.fn().mockResolvedValue(mockAppInfo),
     getManifest: jest.fn().mockResolvedValue(JSON.parse(appManifest))
 };
+
+const mockDataSources = {
+    'annotation': {
+        'settings': { 'localUri': 'localService/annotation.xml' },
+        'type': 'ODataAnnotation',
+        'uri': "/path/to/annotation;v=2/Annotations(TechnicalName='annotation',Version='0001')/$value/?sap-language=EN"
+    },
+    'service': {
+        'settings': {
+            'annotations': ['annotation'],
+            'localUri': 'localService/mockdata/metadata.xml'
+        },
+        'type': 'OData',
+        'uri': '/path/to/odata/service/'
+    }
+} as unknown as Record<string, ManifestNamespace.DataSource>;
 
 jest.mock('@sap-ux/system-access', () => {
     return {
@@ -67,7 +79,15 @@ describe('change/data-source', () => {
         maxAge: 60
     };
     const promptYUIQuestionsSpy = jest.spyOn(common, 'promptYUIQuestions').mockResolvedValue(mockAnswers);
-
+    jest.spyOn(adp, 'getAdpConfig').mockResolvedValue({
+        target: {
+            url: 'https://sap.example',
+            client: '100'
+        }
+    });
+    jest.spyOn(validations, 'validateAdpProject').mockResolvedValue(undefined);
+    jest.spyOn(adp, 'getManifestDataSources').mockResolvedValue(mockDataSources);
+    jest.spyOn(adp, 'getPromptsForChangeDataSource').mockImplementation(() => []);
     const appRoot = join(__dirname, '../../../fixtures');
     beforeEach(() => {
         jest.clearAllMocks();
@@ -76,44 +96,26 @@ describe('change/data-source', () => {
             error: jest.fn()
         } as Partial<ToolsLogger> as ToolsLogger;
         jest.spyOn(logger, 'getLogger').mockImplementation(() => loggerMock);
-        jest.spyOn(mockFs, 'existsSync').mockImplementation(() => false);
-        jest.spyOn(mockFs, 'readFileSync').mockImplementation(() => JSON.stringify(descriptorVariant));
-        jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
-            findCustomMiddleware: jest.fn().mockReturnValue({
-                configuration: {
-                    adp: {
-                        target: {
-                            url: 'https://sap.example',
-                            client: '100'
-                        }
-                    }
-                }
-            } as Partial<CustomMiddleware> as CustomMiddleware<object>)
-        } as Partial<UI5Config> as UI5Config);
+        jest.spyOn(adp, 'getVariant').mockReturnValue(descriptorVariant);
         jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
     });
 
     test('change-data-source - CF environment', async () => {
-        jest.spyOn(mockFs, 'existsSync').mockImplementationOnce(() => true);
-        jest.spyOn(mockFs, 'readFileSync').mockReturnValueOnce(JSON.stringify({ environment: 'CF' }));
+        jest.spyOn(validations, 'validateAdpProject').mockRejectedValueOnce(
+            new Error('This command is not supported for CF projects.')
+        );
 
         const command = new Command('change-data-source');
         addChangeDataSourceCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
         expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.error).toBeCalledWith('Changing data source is not supported for CF projects.');
+        expect(loggerMock.error).toBeCalledWith('This command is not supported for CF projects.');
         expect(generateChangeSpy).not.toBeCalled();
     });
 
     test('change-data-source - no system configuration', async () => {
-        jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
-            findCustomMiddleware: jest.fn().mockReturnValue(undefined)
-        } as Partial<UI5Config> as UI5Config);
-        jest.spyOn(UI5Config, 'newInstance').mockResolvedValue(UI5Config.newInstance(''));
-        jest.spyOn(UI5Config.prototype, 'findCustomMiddleware').mockReturnValue({
-            configuration: { backend: [] }
-        } as Partial<CustomMiddleware> as CustomMiddleware<object>);
+        jest.spyOn(adp, 'getAdpConfig').mockRejectedValueOnce(new Error('No system configuration found in ui5.yaml'));
 
         const command = new Command('change-data-source');
         addChangeDataSourceCommand(command);
@@ -124,15 +126,17 @@ describe('change/data-source', () => {
         expect(generateChangeSpy).not.toBeCalled();
     });
 
-    test('change-data-source - not an Adaptation Project', async () => {
-        jest.spyOn(projectAccess, 'getAppType').mockResolvedValueOnce('SAPUI5 Extension');
+    test('change-data-source - not an adaptation project', async () => {
+        jest.spyOn(validations, 'validateAdpProject').mockRejectedValueOnce(
+            new Error('This command can only be used for an adaptation project')
+        );
 
         const command = new Command('change-data-source');
         addChangeDataSourceCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
         expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.error).toBeCalledWith('This command can only be used for an Adaptation Project');
+        expect(loggerMock.error).toBeCalledWith('This command can only be used for an adaptation project');
         expect(generateChangeSpy).not.toBeCalled();
     });
 
@@ -173,22 +177,8 @@ describe('change/data-source', () => {
         expect(traceSpy).toBeCalled();
     });
 
-    test('change data-source - relative path to ui5 confir provided', async () => {
-        const command = new Command('data-source');
-        addChangeDataSourceCommand(command);
-        await command.parseAsync(getArgv(appRoot, '--simulate', '-c', 'ui5.yaml'));
-        expect(mockFs.readFileSync).toBeCalledWith(join(appRoot, 'ui5.yaml'), 'utf-8');
-    });
-
-    test('change data-source - absolute path to ui5 confir provided', async () => {
-        const command = new Command('data-source');
-        addChangeDataSourceCommand(command);
-        await command.parseAsync(getArgv(appRoot, '--simulate', '-c', '/path/to/ui5.yaml'));
-        expect(mockFs.readFileSync).toBeCalledWith('/path/to/ui5.yaml', 'utf-8');
-    });
-
     test('change data-source - authentication error', async () => {
-        jest.spyOn(adp, 'getManifest').mockRejectedValueOnce({
+        jest.spyOn(adp, 'getManifestDataSources').mockRejectedValueOnce({
             message: '401:Unauthorized',
             response: { status: 401 }
         });
@@ -207,7 +197,9 @@ describe('change/data-source', () => {
     });
 
     test('change data-source - no data sources in manifest', async () => {
-        jest.spyOn(adp, 'getManifest').mockResolvedValueOnce({ 'sap.app': {} } as unknown as Manifest);
+        jest.spyOn(adp, 'getManifestDataSources').mockRejectedValueOnce(
+            new Error('No data sources found in the manifest')
+        );
 
         const command = new Command('data-source');
         addChangeDataSourceCommand(command);

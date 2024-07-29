@@ -1,5 +1,116 @@
 # @sap-ux/cap-config-writer
 
+## 0.7.5
+
+### Patch Changes
+
+-   Updated dependencies [eb1adcc]
+    -   @sap-ux/odata-service-inquirer@0.5.5
+
+## 0.7.4
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.4
+
+## 0.7.3
+
+### Patch Changes
+
+-   Updated dependencies [d549173]
+    -   @sap-ux/project-access@1.25.7
+    -   @sap-ux/odata-service-inquirer@0.5.3
+    -   @sap-ux/fiori-generator-shared@0.3.3
+
+## 0.7.2
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.2
+
+## 0.7.1
+
+### Patch Changes
+
+-   Updated dependencies [a9fac04]
+    -   @sap-ux/project-access@1.25.6
+    -   @sap-ux/fiori-generator-shared@0.3.2
+    -   @sap-ux/odata-service-inquirer@0.5.1
+
+## 0.7.0
+
+### Minor Changes
+
+-   cac5277: Consolidates multiple export functions into a single function applyCAPUpdates, which handles updates for both Node.js and Java CAP projects
+
+## 0.6.10
+
+### Patch Changes
+
+-   Updated dependencies [108336f]
+    -   @sap-ux/odata-service-inquirer@0.5.0
+
+## 0.6.9
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.4.9
+
+## 0.6.8
+
+### Patch Changes
+
+-   Updated dependencies [421f3ca]
+    -   @sap-ux/project-access@1.25.5
+    -   @sap-ux/odata-service-inquirer@0.4.8
+
+## 0.6.7
+
+### Patch Changes
+
+-   Updated dependencies [173b5f2]
+    -   @sap-ux/project-access@1.25.4
+    -   @sap-ux/odata-service-inquirer@0.4.7
+
+## 0.6.6
+
+### Patch Changes
+
+-   Updated dependencies [e7b9184]
+    -   @sap-ux/project-access@1.25.3
+    -   @sap-ux/odata-service-inquirer@0.4.6
+
+## 0.6.5
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.25.2
+-   @sap-ux/odata-service-inquirer@0.4.5
+
+## 0.6.4
+
+### Patch Changes
+
+-   Updated dependencies [0f3cf6b]
+    -   @sap-ux/project-access@1.25.1
+    -   @sap-ux/odata-service-inquirer@0.4.4
+
+## 0.6.3
+
+### Patch Changes
+
+-   Updated dependencies [f076dd3]
+    -   @sap-ux/project-access@1.25.0
+    -   @sap-ux/odata-service-inquirer@0.4.3
+
+## 0.6.2
+
+### Patch Changes
+
+-   Updated dependencies [0ae685e]
+    -   @sap-ux/project-access@1.24.0
+    -   @sap-ux/odata-service-inquirer@0.4.2
+
 ## 0.6.1
 
 ### Patch Changes

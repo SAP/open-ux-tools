@@ -11,7 +11,7 @@ import { default as mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
 import * as apiHandler from '../../../src/adp/api-handler';
 import { fetchMock, sapMock } from 'mock/window';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
-import type { Scenario } from 'sap/ui/fl/Scenario';
+import type { Scenario } from '@sap-ux-private/control-property-editor-common';
 
 describe('flp/init', () => {
     test('registerSAPFonts', () => {
@@ -44,7 +44,7 @@ describe('flp/init', () => {
         } as unknown as apiHandler.ManifestAppdescr);
         await loadI18nResourceBundle('other' as Scenario);
         expect(mockBundle.create).toBeCalledWith({
-            url: 'i18n/i18n.properties',
+            url: 'i18n/i18n.properties'
         });
     });
     test('loadI18nResourceBundle - adaptation project', async () => {
@@ -74,6 +74,12 @@ describe('flp/init', () => {
             'sap.ui5': {
                 dependencies: {
                     libs: {} as Record<string, unknown>
+                },
+                componentUsages: {
+                    componentUsage1: {
+                        'name': '',
+                        'lazy': true
+                    }
                 }
             }
         };
@@ -96,6 +102,30 @@ describe('flp/init', () => {
                 json: () => ({
                     'test.lib': {
                         dependencies: [{ url: '~url', type: 'UI5LIB', componentId: 'test.lib.component' }]
+                    }
+                })
+            });
+            await registerComponentDependencyPaths(['/'], new URLSearchParams());
+            expect(loaderMock).toBeCalledWith({ paths: { 'test/lib/component': '~url' } });
+        });
+
+        test('single app, one reuse lib and one componentUsage', async () => {
+            const manifest = JSON.parse(JSON.stringify(testManifest)) as typeof testManifest;
+            manifest['sap.ui5'].dependencies.libs['test.lib'] = {};
+            manifest['sap.ui5'].componentUsages = {
+                componentUsage1: {
+                    'name': 'test.componentUsage',
+                    'lazy': true
+                }
+            };
+            fetchMock.mockResolvedValueOnce({ json: () => manifest });
+            fetchMock.mockResolvedValueOnce({
+                json: () => ({
+                    'test.lib': {
+                        dependencies: [{ url: '~url', type: 'UI5LIB', componentId: 'test.lib.component' }]
+                    },
+                    'test.componentUsage': {
+                        dependencies: [{ url: '~url2', type: 'UI5COMP', componentId: 'test.componentUsage' }]
                     }
                 })
             });
