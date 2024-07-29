@@ -6,7 +6,6 @@ import {
     AdaptationProjectType,
     AppIndex,
     AxiosRequestConfig,
-    OperationsType,
     ProviderConfiguration,
     SystemInfo,
     UI5RtVersionService,
@@ -34,8 +33,7 @@ import {
     DeployConfigAnswers,
     FlexUISupportedSystem,
     InputChoice,
-    Prompts,
-    TargetEnvAnswers
+    Prompts
 } from '../../types';
 import {
     isNotEmptyString,
@@ -53,12 +51,7 @@ import {
 
 import { EndpointsService } from '../../base/services/endpoints-service';
 import { UI5VersionService, isFeatureSupportedVersion } from '../../base/services/ui5-version-service';
-import {
-    generateValidNamespace,
-    getDefaultProjectName,
-    getEnvironments,
-    getProjectNameTooltip
-} from './prompt-helpers';
+import { generateValidNamespace, getDefaultProjectName, getProjectNameTooltip } from './prompt-helpers';
 import { getApplicationType, isSupportedAppTypeForAdaptationProject } from '../../base/app-utils';
 import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, S4HANA_APPS_PARAMS } from './constants';
 import {
@@ -636,7 +629,7 @@ export default class ProjectPrompter {
             type: 'input',
             name: 'username',
             message: t('prompts.usernameLabel'),
-            validate: async (value: string) => {
+            validate: (value: string) => {
                 if (!isNotEmptyString(value)) {
                     return t('prompts.inputCannotBeEmpty');
                 }
@@ -679,7 +672,6 @@ export default class ProjectPrompter {
                     }
                 } catch (e) {
                     this.flexUISystem = undefined;
-                    // return MessageUtils.getLoginErrorMessage(e?.response);
                     return e?.response;
                 }
 
@@ -909,7 +901,7 @@ export default class ProjectPrompter {
             when: (answers: ConfigurationInfoAnswers) =>
                 !!answers.application &&
                 !this.getIsSupportedAdpOverAdp() &&
-                !this.getIsPartiallySupportedAdpOverAdp() &&
+                !this.isPartiallySupportedAdpOverAdp &&
                 this.isApplicationSupported,
             guiOptions: {
                 type: 'label',
@@ -974,7 +966,7 @@ export default class ProjectPrompter {
                     (this.hasSystemAuthentication ? this.isLoginSuccessfull : true)
                 );
             },
-            choices: () => Promise.resolve(this.versionsOnSystem),
+            choices: this.versionsOnSystem,
             guiOptions: {
                 applyDefaultWhenDirty: true,
                 hint: t('prompts.ui5VersionTooltip')
@@ -987,7 +979,7 @@ export default class ProjectPrompter {
     private getCurrentUI5VersionPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
             type: 'input',
-            name: 'latestUI5version',
+            name: 'latestUI5Version',
             message: t('prompts.currentUI5VersionLabel', { version: this.ui5Service.latestVersion }),
             when: (answers: ConfigurationInfoAnswers) => {
                 return answers.system && !this.shouldAuthenticate(answers) && this.isCloudProject;

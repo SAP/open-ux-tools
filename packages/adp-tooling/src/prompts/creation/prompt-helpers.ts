@@ -37,41 +37,13 @@ export function generateValidNamespace(projectName: string, isCustomerBase: bool
     return !isCustomerBase ? projectName : 'customer.' + projectName;
 }
 
-export function getEnvironments(isCfInstalled: boolean): ChoiceOption<OperationsType>[] {
-    const choices: ChoiceOption<OperationsType>[] = [{ name: 'OnPremise', value: 'P' }];
-
-    if (isCfInstalled) {
-        choices.push({ name: 'Cloud Foundry', value: 'C' });
-    } else {
-        // TODO: What to do in case of an error case where you need to call appWizard?
-        // TODO: Make mechanism that shows errors or messages vscode style based on environment CLI or yeoman
-        // this.appWizard.showInformation(Messages.CLOUD_FOUNDRY_NOT_INSTALLED, MessageType.prompt);
-        // console.log(Messages.CLOUD_FOUNDRY_NOT_INSTALLED);
-    }
-
-    return choices;
-}
-
-export function getUIPageLabels(isCFEnv: boolean): PageLabel[] {
-    if (!isCFEnv) {
-        return [
-            {
-                name: 'Adaptation Project - Basic Information',
-                description:
-                    'You are about to create a new App Variant. App Variant inherits the properties of the source application. The changes that you make will reflect only in the app variant and not in the source application.'
-            },
-            { name: 'Adaptation Project - Configuration', description: 'Adaptation Project - Configuration' }
-        ];
-    }
-
+export function getUIPageLabels(): PageLabel[] {
     return [
-        { name: 'Login to Cloud Foundry', description: 'Provide credentials.' },
-        { name: 'Project path', description: 'Provide path to MTA project.' },
         {
             name: 'Adaptation Project - Basic Information',
             description:
                 'You are about to create a new App Variant. App Variant inherits the properties of the source application. The changes that you make will reflect only in the app variant and not in the source application.'
         },
-        { name: 'Application Details', description: 'Setup application details.' }
+        { name: 'Adaptation Project - Configuration', description: 'Adaptation Project - Configuration' }
     ];
 }
