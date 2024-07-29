@@ -233,7 +233,8 @@ export function getAbapOnPremSystemQuestions(
             validate: (client) => {
                 const valRes = validateClient(client);
                 if (valRes === true) {
-                    return (validClient = true);
+                    validClient = true;
+                    return true;
                 }
                 validClient = false;
                 return valRes;
