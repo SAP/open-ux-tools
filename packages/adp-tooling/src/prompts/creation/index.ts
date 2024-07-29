@@ -63,7 +63,6 @@ import {
     isV4Application
 } from '../../base/services/manifest-service';
 
-
 export default class ProjectPrompter {
     private logger: Logger;
     private isCustomerBase: boolean;
@@ -160,7 +159,7 @@ export default class ProjectPrompter {
         return true;
     }
 
-    private _allowExtensionProject() {
+    private allowExtensionProject() {
         return (
             !this.isCloudProject &&
             this.flexUISystem &&
@@ -1103,7 +1102,7 @@ export default class ProjectPrompter {
             guiOptions: {
                 applyDefaultWhenDirty: true
             },
-            when: (answers: ConfigurationInfoAnswers) => answers.application && this._allowExtensionProject(),
+            when: (answers: ConfigurationInfoAnswers) => answers.application && this.allowExtensionProject(),
             validate: (value: boolean) => {
                 if (this.isApplicationSupported && this.appSync) {
                     return !value ? true : this.resolveNodeModuleGenerator();

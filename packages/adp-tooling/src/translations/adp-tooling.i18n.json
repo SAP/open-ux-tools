@@ -120,7 +120,6 @@
         "subtitle": "Enter subtitle for your FLP configuration",
         "parameters": "Enter the value for the parameters in the Target Mappings section from the URL mentioned above",
         "abapRepository": "Enter the SAPUI5 ABAP Repository that should be used for the deployment of your Adaptation Project. Expected format is '/<namespace>/<repository_name>' if you want to add a namespace or just a single repository name as a string. Namespace can be up to 8 symbols and repository name can be up to 15 symbols.  Both the SAPUI5 ABAP Repository and the package that will be used should start in the same way, i.e. a namespace or a Z, Y or 'SAP'",
-        "deployConfigDescription": "Enter a description for your deployment",
-        
+        "deployConfigDescription": "Enter a description for your deployment"
     }
 }

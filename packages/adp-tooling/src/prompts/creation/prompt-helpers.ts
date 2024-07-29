@@ -1,8 +1,6 @@
 import { t } from '../../i18n';
-import { ChoiceOption } from '../..';
 import { getProjectNames } from '../../base/file-system';
 
-import { OperationsType } from '@sap-ux/axios-extension';
 export interface PageLabel {
     name: string;
     description: string;
