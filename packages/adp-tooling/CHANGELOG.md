@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.12.18
+
+### Patch Changes
+
+-   2a7d3c4: Add Change Inbound prompting and cli command
+
 ## 0.12.17
 
 ### Patch Changes
