@@ -141,12 +141,12 @@ export function parseStringToObject(str: string): { [key: string]: string } {
  * // Returns the string "nonJSONValue" because it cannot be parsed as JSON
  * getParsedPropertyValue('nonJSONValue');
  */
-export function getParsedPropertyValue(propertyValue: PropertyValueType): PropertyValueType {
+export function getParsedPropertyValue(propertyValue: string): PropertyValueType {
     try {
         const value = JSON.parse(propertyValue);
         return value;
     } catch (e) {
-        return propertyValue;
+        return propertyValue as PropertyValueType;
     }
 }
 
