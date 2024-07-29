@@ -49,10 +49,6 @@ interface Manifest {
     };
 }
 
-type InternalContainer = typeof sap.ushell.Container & {
-    createRendererInternal: typeof sap.ushell.Container.createRenderer;
-};
-
 type AppIndexData = Record<
     string,
     {
@@ -271,7 +267,7 @@ export async function init({
     customInit?: string | null;
 }): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
-    const container = sap?.ushell?.Container ?? (sap.ui.require('sap/ushell/Container') as InternalContainer);
+    const container = sap?.ushell?.Container ?? sap.ui.require('sap/ushell/Container');
     let scenario: string = '';
     const { version } = (await VersionInfo.load()) as { version: string };
     // Register RTA if configured
@@ -337,10 +333,11 @@ export async function init({
     setI18nTitle(resourceBundle);
     registerSAPFonts();
     const major = version ? parseInt(version.split('.')[0], 10) : 2;
+
     const renderer =
         major < 2
             ? await container.createRenderer(undefined, true)
-            : await (container as InternalContainer).createRendererInternal(undefined, true);
+            : await container.createRendererInternal(undefined, true);
     renderer.placeAt('content');
 }
 const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
