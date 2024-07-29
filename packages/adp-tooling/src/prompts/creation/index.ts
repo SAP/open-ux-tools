@@ -1,3 +1,5 @@
+import { resolve } from 'path';
+
 import { isAppStudio } from '@sap-ux/btp-utils';
 import {
     AbapServiceProvider,
@@ -14,7 +16,13 @@ import { Logger } from '@sap-ux/logger';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { isExtensionInstalledVsCode } from '@sap-ux/environment-check';
 import { AbapTarget, createAbapServiceProvider } from '@sap-ux/system-access';
-import type { ListQuestion, InputQuestion, YUIQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
+import type {
+    ListQuestion,
+    InputQuestion,
+    YUIQuestion,
+    PasswordQuestion,
+    ConfirmQuestion
+} from '@sap-ux/inquirer-common';
 
 import { t } from '../../i18n';
 import { isCustomerBase } from '../../base/helper';
@@ -75,6 +83,7 @@ export default class ProjectPrompter {
     private isV4AppInternalMode: boolean;
     private isSupportedAdpOverAdp: boolean;
     private isPartiallySupportedAdpOverAdp: boolean;
+    private extensibilitySubGenerator: string | undefined = undefined;
 
     private appSync: boolean;
 
@@ -152,6 +161,55 @@ export default class ProjectPrompter {
 
         // Internal users are not allowed to create adp cloud projects
         this.modifyAdaptationProjectTypes();
+
+        return true;
+    }
+
+    private _allowExtensionProject() {
+        return (
+            !this.isCloudProject &&
+            this.flexUISystem &&
+            this.flexUISystem.isOnPremise &&
+            isAppStudio() &&
+            (!this.isApplicationSupported ||
+                (this.isApplicationSupported &&
+                    ((this.flexUISystem && (!this.flexUISystem.isOnPremise || !this.flexUISystem.isUIFlex)) ||
+                        this.appSync)))
+        );
+    }
+
+    private resolveNodeModuleGenerator() {
+        const nodePath = process.env['NODE_PATH'];
+        const nodePaths = nodePath?.split(':') || [];
+
+        if (this.extensibilitySubGenerator) {
+            return true;
+        }
+
+        for (let i = 0; i < nodePaths.length; i++) {
+            try {
+                this.extensibilitySubGenerator = require.resolve(
+                    resolve(nodePaths[i], '@bas-dev/generator-extensibility-sub/generators/app')
+                );
+            } catch (e) {
+                // We don't care if there's an error while resolving the module
+                // Continue with the next node_module path
+            }
+
+            if (this.extensibilitySubGenerator !== undefined) {
+                // this.logger.log(`'@bas-dev/generator-extensibility-sub' generator found for path: ${nodePaths[i]}.`);
+                break;
+            }
+        }
+
+        if (this.extensibilitySubGenerator === undefined) {
+            // this.logger.log(
+            //     `'@bas-dev/generator-extensibility-sub' generator was not found for paths: ${JSON.stringify(
+            //         nodePaths
+            //     )}.`
+            // );
+            return 'Extensibility Project generator plugin was not found in your dev space, and is required for this action. To proceed, please install the <SAPUI5 Layout Editor & Extensibility> extension.';
+        }
 
         return true;
     }
@@ -1036,9 +1094,31 @@ export default class ProjectPrompter {
         } as InputQuestion<ConfigurationInfoAnswers>;
     }
 
-    // ----
+    private getConfirmExtProjPrompt(projectName: string): YUIQuestion<ConfigurationInfoAnswers> {
+        return {
+            type: 'confirm',
+            name: 'confirmPrompt',
+            message: () => {
+                return this.isApplicationSupported && this.appSync
+                    ? t('prompts.createExtProjectWithSyncViewsLabel', { value: projectName })
+                    : t('prompts.createExtProjectLabel', { value: projectName });
+            },
+            default: false,
+            guiOptions: {
+                applyDefaultWhenDirty: true
+            },
+            when: (answers: ConfigurationInfoAnswers) => answers.application && this._allowExtensionProject(),
+            validate: (value: boolean) => {
+                if (this.isApplicationSupported && this.appSync) {
+                    return !value ? true : this.resolveNodeModuleGenerator();
+                }
 
-    public async getConfigurationPrompts(): Promise<YUIQuestion<ConfigurationInfoAnswers>[]> {
+                return !value ? 'Please select whether you want to continue' : this.resolveNodeModuleGenerator();
+            }
+        } as ConfirmQuestion<ConfigurationInfoAnswers>;
+    }
+
+    public async getConfigurationPrompts(projectName: string): Promise<YUIQuestion<ConfigurationInfoAnswers>[]> {
         await this.endpointsService.getEndpoints();
         this.systemNames = this.endpointsService.getEndpointNames();
 
@@ -1063,8 +1143,8 @@ export default class ProjectPrompter {
             this.getVersionInfoPrompt(),
             this.getFioriIdPrompt(),
             this.getACHprompt(),
-            this.getAppInfoErrorPrompt()
-            // ....
+            this.getAppInfoErrorPrompt(),
+            this.getConfirmExtProjPrompt(projectName)
         ];
     }
 

@@ -504,7 +504,9 @@ export interface ConfigurationInfoAnswers {
     ui5Version: string;
     latestUI5version: string;
     versionInfo: string;
+    confirmPrompt: boolean;
 }
+
 export interface FlexUISupportedSystem {
     isUIFlex: boolean;
     isOnPremise: boolean;

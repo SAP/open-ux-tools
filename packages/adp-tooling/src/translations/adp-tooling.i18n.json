@@ -47,6 +47,8 @@
         "projectTypeInfoTooltip": "The only available project type from the selected system is: {{type}}.",
         "achLabel": "Application Component Hierarchy",
         "achHint": "The purpose of ACH components is to enable the support organization to indicate which BCP/ticket component might be responsible for a particular issue.",
+        "createExtProjectLabel": "Do you want to create an Extension Project with name '{{value}}' instead?",
+        "createExtProjectWithSyncViewsLabel": "Do you want to create an Extension Project with name '{{value}}' instead? It will give you the ability to create controller extensions for the synchronous views as well as the asynchronous.",
         "flpConfigurationStep": "Fiori Launchpad Configuration",
         "flpConfigurationDescription": "Configure Fiori Launchpad Settings",
         "deploymentConfigStep": "Deployment Configuration",
