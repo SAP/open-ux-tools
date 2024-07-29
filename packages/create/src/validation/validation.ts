@@ -1,8 +1,9 @@
+import { getVariant, isCFEnvironment } from '@sap-ux/adp-tooling';
+import type { DescriptorVariantContent } from '@sap-ux/adp-tooling';
+import { getAppType, getWebappPath } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
-import { getWebappPath, getAppType } from '@sap-ux/project-access';
 import { existsSync } from 'fs';
 import { join } from 'path';
-import { isCFEnvironment } from '@sap-ux/adp-tooling';
 
 /**
  * Validate base path of app, throw error if file is missing.
@@ -44,5 +45,21 @@ export async function validateAdpProject(basePath: string): Promise<void> {
     }
     if (isCFEnvironment(basePath)) {
         throw new Error('This command is not supported for CF projects.');
+    }
+}
+
+/**
+ * Validate if adaptation project is cloud, throws an error if not.
+ *
+ * @param basePath - path to the adaptation project
+ */
+export function validateCloudAdpProject(basePath: string): void {
+    const manifest = getVariant(basePath);
+    if (
+        !manifest?.content?.some(
+            (change: DescriptorVariantContent) => change.changeType === 'appdescr_app_removeAllInboundsExceptOne'
+        )
+    ) {
+        throw new Error('This command can only be used for Cloud Adaptation Project.');
     }
 }

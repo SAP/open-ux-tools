@@ -1,5 +1,18 @@
 # @sap-ux/cap-config-writer
 
+## 0.7.5
+
+### Patch Changes
+
+-   Updated dependencies [eb1adcc]
+    -   @sap-ux/odata-service-inquirer@0.5.5
+
+## 0.7.4
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.4
+
 ## 0.7.3
 
 ### Patch Changes

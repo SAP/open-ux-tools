@@ -442,7 +442,7 @@ export class FlpSandbox {
                     this.logger.warn(`HTML file returned at ${config.path} is loaded from the file system.`);
                     next();
                 } else {
-                    const templateConfig = createTestTemplateConfig(config, id);
+                    const templateConfig = createTestTemplateConfig(config, id, this.templateConfig.ui5.theme);
                     const html = render(htmlTemplate, templateConfig);
                     this.sendResponse(res, 'text/html', 200, html);
                 }

@@ -1,5 +1,18 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.5
+
+### Patch Changes
+
+-   eb1adcc: Fixes multiple issues with Abap On Prem system creation
+
+## 0.5.4
+
+### Patch Changes
+
+-   Updated dependencies [ad9b56d]
+    -   @sap-ux/axios-extension@1.16.1
+
 ## 0.5.3
 
 ### Patch Changes
