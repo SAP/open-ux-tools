@@ -36,4 +36,11 @@ describe('flp/ushellBootstrap', () => {
         await ushellBootstrap(() => {});
         expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '/resources/sap/ushell/bootstrap/sandbox2.js');
     });
+
+    test('fetching version failed', async () => {
+        fetchMock.mockRejectedValueOnce('404');
+        
+        await ushellBootstrap(() => {});
+        expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '/test-resources/sap/ushell/bootstrap/sandbox.js');
+    });
 });
