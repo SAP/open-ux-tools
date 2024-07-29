@@ -58,6 +58,14 @@ export class ManifestService {
     constructor() {}
 
     /**
+     * Resets the manifest cache.
+     */
+    public resetCache(): void {
+        // TODO: Reset cache when switching systems.
+        this.manifestCache = new Map();
+    }
+
+    /**
      * Retrieves the cached manifest for a specified application.
      *
      * @param {string} id - The ID of the application whose manifest is needed.

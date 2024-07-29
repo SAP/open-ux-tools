@@ -283,6 +283,7 @@ export default class ProjectPrompter {
     }
 
     private async systemPromptValidationHandler(value: string): Promise<boolean | string> {
+        this.manifestService.resetCache();
         this.applicationIds = [];
         this.ui5VersionDetected = true;
 
