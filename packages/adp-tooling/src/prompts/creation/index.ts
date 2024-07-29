@@ -14,7 +14,7 @@ import {
 import { Logger } from '@sap-ux/logger';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { isExtensionInstalledVsCode } from '@sap-ux/environment-check';
-import { AbapTarget, createAbapServiceProvider } from '@sap-ux/system-access';
+import { AbapTarget, createAbapServiceProvider, getCredentialsFromStore } from '@sap-ux/system-access';
 import type {
     ListQuestion,
     InputQuestion,
@@ -54,6 +54,7 @@ import { UI5VersionService, isFeatureSupportedVersion } from '../../base/service
 import { generateValidNamespace, getDefaultProjectName, getProjectNameTooltip } from './prompt-helpers';
 import { getApplicationType, isSupportedAppTypeForAdaptationProject } from '../../base/app-utils';
 import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, S4HANA_APPS_PARAMS } from './constants';
+import { AuthenticationType } from '@sap-ux/store';
 import {
     ManifestService,
     getCachedACH,
@@ -61,6 +62,7 @@ import {
     getInboundIds,
     isV4Application
 } from '../../base/services/manifest-service';
+
 
 export default class ProjectPrompter {
     private logger: Logger;
@@ -121,7 +123,7 @@ export default class ProjectPrompter {
 
         const totalPagesCount = this.prompts.size();
 
-        if (this.isCloudProject && totalPagesCount === 3) {
+        if (this.isCloudProject && totalPagesCount === 2) {
             const flpConfigPageLabel = {
                 name: t('prompts.flpConfigurationStep'),
                 description: t('prompts.flpConfigurationDescription')
@@ -131,8 +133,8 @@ export default class ProjectPrompter {
                 description: t('prompts.deploymentConfigDescription')
             };
 
-            this.prompts.splice(3, 0, [flpConfigPageLabel, deployConfigPageLabel]);
-        } else if (!this.isCloudProject && totalPagesCount === 5) {
+            this.prompts.splice(2, 0, [flpConfigPageLabel, deployConfigPageLabel]);
+        } else if (!this.isCloudProject && totalPagesCount === 4) {
             this.prompts.splice(totalPagesCount - 2, 2, undefined);
         }
     }
@@ -351,11 +353,8 @@ export default class ProjectPrompter {
             try {
                 await this.getSystemData(value);
                 this.versionsOnSystem = await this.systemUI5VersionHandler(value);
-                if (isAppStudio()) {
-                    return this.validateAdaptationProjectTypes();
-                } else {
-                    await this.getApplications(value);
-                }
+                await this.getApplications(value);
+                return this.validateAdaptationProjectTypes();
             } catch (e) {
                 // this.logger.log(e);
                 return e.message;
@@ -374,11 +373,20 @@ export default class ProjectPrompter {
             };
         } else {
             const auth = this.endpointsService.getSystemAuthDetails(system);
+
             target = {
                 url: auth?.url,
                 client: client ?? auth?.client,
                 destination: ''
             };
+            const storedSystem = await getCredentialsFromStore(
+                { url: auth?.url ?? system, client: auth?.client },
+                {} as Logger
+            );
+
+            if (storedSystem?.authenticationType === AuthenticationType.ReentranceTicket) {
+                target.authenticationType = AuthenticationType.ReentranceTicket;
+            }
         }
 
         const requestOptions: AxiosRequestConfig & Partial<ProviderConfiguration> = {
@@ -396,17 +404,16 @@ export default class ProjectPrompter {
         await this.setProvider(system, client, username, password);
         // this.flexUISystem = await this.isFlexUISupportedSystem(); // TODO: Does not work
         this.flexUISystem = { isOnPremise: true, isUIFlex: true }; // TODO: remove fake assign
-        if (isAppStudio()) {
-            try {
-                const lrep = this.provider.getLayeredRepository();
-                this.systemInfo = await lrep.getSystemInfo();
-            } catch (e) {
-                // in case request to /sap/bc/lrep/dta_folder/system_info throws error we continue to standart onPremise flow
-                this.systemInfo = {
-                    adaptationProjectTypes: [AdaptationProjectType.ON_PREMISE],
-                    activeLanguages: []
-                };
-            }
+
+        try {
+            const lrep = this.provider.getLayeredRepository();
+            this.systemInfo = await lrep.getSystemInfo();
+        } catch (e) {
+            // in case request to /sap/bc/lrep/dta_folder/system_info throws error we continue to standart onPremise flow
+            this.systemInfo = {
+                adaptationProjectTypes: [AdaptationProjectType.ON_PREMISE],
+                activeLanguages: []
+            };
         }
     }
 
@@ -701,7 +708,6 @@ export default class ProjectPrompter {
                 !this.shouldAuthenticate(answers) &&
                 this.systemInfo?.adaptationProjectTypes?.length &&
                 this.systemInfo.adaptationProjectTypes.length > 1 &&
-                isAppStudio() &&
                 (this.hasSystemAuthentication ? this.isLoginSuccessfull : true),
             choices: () => this.systemInfo.adaptationProjectTypes,
             default: () =>
@@ -743,7 +749,6 @@ export default class ProjectPrompter {
                 this.systemInfo?.adaptationProjectTypes?.length &&
                 this.systemInfo.adaptationProjectTypes.length == 1 &&
                 this.systemInfo.adaptationProjectTypes[0] == projectType &&
-                isAppStudio() &&
                 (this.hasSystemAuthentication ? this.isLoginSuccessfull : true),
             validate: async (_: string, answers: ConfigurationInfoAnswers) => {
                 this.isCloudProject = projectType == AdaptationProjectType.CLOUD_READY;
@@ -777,7 +782,7 @@ export default class ProjectPrompter {
                 !this.flexUISystem.isOnPremise &&
                 !this.flexUISystem.isUIFlex &&
                 !this.isCloudProject &&
-                (isAppStudio() ? this.systemInfo?.adaptationProjectTypes?.length : true),
+                this.systemInfo?.adaptationProjectTypes?.length,
             store: false
         } as InputQuestion<ConfigurationInfoAnswers>;
     }
@@ -795,7 +800,7 @@ export default class ProjectPrompter {
                 !this.flexUISystem.isUIFlex &&
                 this.flexUISystem.isOnPremise &&
                 !this.isCloudProject &&
-                (isAppStudio() ? this.systemInfo?.adaptationProjectTypes?.length : true),
+                this.systemInfo?.adaptationProjectTypes?.length,
 
             store: false
         } as InputQuestion<ConfigurationInfoAnswers>;
@@ -814,7 +819,7 @@ export default class ProjectPrompter {
                 !this.flexUISystem.isOnPremise &&
                 this.flexUISystem.isUIFlex &&
                 !this.isCloudProject &&
-                (isAppStudio() ? this.systemInfo?.adaptationProjectTypes?.length : true),
+                this.systemInfo?.adaptationProjectTypes?.length,
             store: false
         } as InputQuestion<ConfigurationInfoAnswers>;
     }
@@ -834,8 +839,7 @@ export default class ProjectPrompter {
                     !!answers.system &&
                     !this.shouldAuthenticate(answers) &&
                     (this.hasSystemAuthentication ? this.isLoginSuccessfull : true) &&
-                    // In vscode the flow does not rely on systemInfo
-                    (isAppStudio() ? this.systemInfo?.adaptationProjectTypes?.length : true)
+                    this.systemInfo?.adaptationProjectTypes?.length
                 );
             },
             choices: () => {
@@ -962,7 +966,7 @@ export default class ProjectPrompter {
                     !!answers.system &&
                     !this.shouldAuthenticate(answers) &&
                     !this.isCloudProject &&
-                    (!isAppStudio() ? true : this.systemInfo?.adaptationProjectTypes?.length) &&
+                    this.systemInfo?.adaptationProjectTypes?.length &&
                     (this.hasSystemAuthentication ? this.isLoginSuccessfull : true)
                 );
             },
@@ -1310,23 +1314,25 @@ export default class ProjectPrompter {
         };
     }
 
-    private getPackageInputChoicePrompt(system: string): ListQuestion<DeployConfigAnswers> {
-        let packageInputChoiceValid: string | boolean = false;
-        return {
-            type: 'list',
-            name: 'packageInputChoice',
-            message: t('prompts.packageInputChoice'),
-            choices: this.getInputChoiceChoices(),
-            default: (answers: DeployConfigAnswers) => answers.packageInputChoice ?? InputChoice.ENTER_MANUALLY,
-            guiOptions: {
-                applyDefaultWhenDirty: true
-            },
-            validate: async (value: InputChoice) => {
-                packageInputChoiceValid = await validatePackageChoiceInput(value, system);
-                return packageInputChoiceValid;
-            }
-        };
-    }
+    // private getPackageInputChoicePrompt(
+    //     configurationInfoAnswers: ConfigurationInfoAnswers
+    // ): ListQuestion<DeployConfigAnswers> {
+    //     let packageInputChoiceValid: string | boolean = false;
+    //     return {
+    //         type: 'list',
+    //         name: 'packageInputChoice',
+    //         message: t('prompts.packageInputChoice'),
+    //         choices: this.getInputChoiceChoices(),
+    //         default: (answers: DeployConfigAnswers) => answers.packageInputChoice ?? InputChoice.ENTER_MANUALLY,
+    //         guiOptions: {
+    //             applyDefaultWhenDirty: true
+    //         },
+    //         validate: async (value: InputChoice) => {
+    //             packageInputChoiceValid = await validatePackageChoiceInput(value, system);
+    //             return packageInputChoiceValid;
+    //         }
+    //     };
+    // }
 
     // public async getDeployConfigPrompts(system: string): Promise<YUIQuestion<DeployConfigAnswers>> {
     //     return [
