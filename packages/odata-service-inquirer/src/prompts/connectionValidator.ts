@@ -25,7 +25,7 @@ interface Validity {
     urlFormat?: boolean;
     // True if the url is reachable
     reachable?: boolean;
-    // True if the url requires authentication (note even once authenticated, this will remain true)
+    // True if the url requires authentication, i.e. returns a 401/403  (note even once authenticated, this will remain true)
     authRequired?: boolean;
     // True if the url is authenticated and accessible
     authenticated?: boolean;
@@ -46,9 +46,9 @@ const ignorableCertErrors = [ERROR_TYPE.CERT_SELF_SIGNED, ERROR_TYPE.CERT_SELF_S
  */
 export class ConnectionValidator {
     public readonly validity: Validity = {};
-    // The current valid url (not necessarily authenticated)
+    // The current valid url (not necessarily authenticated but the url is in a valid format)
     private _validatedUrl: string | undefined;
-    // The current client code used for requests
+    // The current client code used for requests, the client code has been validated by a successful request
     private _validatedClient: string | undefined;
 
     private _odataService: ODataService;
@@ -441,7 +441,10 @@ export class ConnectionValidator {
                 isSystem,
                 odataVersion
             });
-
+            LoggerHelper.logger.debug(`ConnectionValidator.validateUrl() - status: ${status}; url: ${url}`);
+            // Since an exception was not thrown, this is a valid url
+            this.validity.urlFormat = true;
+            this._validatedUrl = url;
             const valResult = this.getValidationResultFromStatusCode(status);
 
             if (valResult === true) {
