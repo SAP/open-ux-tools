@@ -4,6 +4,7 @@ export * from './preview/adp-preview';
 export * from './base/helper';
 export * from './base/validators';
 export * from './base/abap';
+export * from './base/services';
 export { generate, migrate } from './writer';
 export { generateChange } from './writer/editors';
 export { promptGeneratorInput, PromptDefaults } from './base/prompt';
