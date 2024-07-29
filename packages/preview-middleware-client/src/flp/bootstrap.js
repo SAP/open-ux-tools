@@ -1,6 +1,8 @@
-window['sap-ui-config'] = {
-    'xx-bootTask': ushellBootstrap
-};
+/* eslint-disable @typescript-eslint/no-unsafe-assignment,
+                  @typescript-eslint/no-unsafe-member-access,
+                  @typescript-eslint/no-unsafe-assignment,
+                  @typescript-eslint/no-unsafe-argument,
+                  no-console */
 
 /**
  * Calculates the script content for accessing the right sap/ushell/bootstrap sandbox.
@@ -19,7 +21,8 @@ async function ushellBootstrap(fnCallback) {
     } catch (error) {
         console.warn('Failed to fetch sap-ui-version.json. Assuming it is a 1.x version.');
     }
-   
+
+    // eslint-disable-next-line fiori-custom/sap-no-dom-access,fiori-custom/sap-browser-api-warning
     const shellBootstrap = document.getElementById('sap-ushell-bootstrap');
     if (shellBootstrap) {
         shellBootstrap.onload = () => {
@@ -28,3 +31,8 @@ async function ushellBootstrap(fnCallback) {
         shellBootstrap.setAttribute('src', src);
     }
 }
+
+// eslint-disable-next-line fiori-custom/sap-no-global-define
+window['sap-ui-config'] = {
+    'xx-bootTask': ushellBootstrap
+};
