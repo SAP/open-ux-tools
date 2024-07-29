@@ -1,27 +1,39 @@
 import { documentMock } from 'mock/window';
-import { ushellBootstrap } from '../../../src/flp/bootstrap';
+import '../../../src/flp/bootstrap';
 
 describe('flp/ushellBootstrap', () => {
+    const htmlElement = {
+        onload: jest.fn(),
+        setAttribute: jest.fn()
+    };
+    documentMock.getElementById.mockReturnValue(htmlElement);
+    const fetchMock = jest.spyOn(global, 'fetch');
+
+    const ushellBootstrap = window['sap-ui-config']['xx-bootTask'];
+
     afterEach(() => {
-        jest.restoreAllMocks();
+        jest.clearAllMocks();
     });
 
-    function dummyCallback(): void {}
+    test('xx-boottask defined', () => {
+        expect(ushellBootstrap).toBeDefined();
+    });
 
     test('ushell src when ui5 version is 1.x', async () => {
-        const fetchSpy = jest
-            .spyOn(global, 'fetch')
-            .mockImplementation(
-                jest.fn(() => Promise.resolve({ json: () => Promise.resolve({ version: '1.126.0' }) })) as jest.Mock
-            );
-        const htmlElement = {
-            onload: jest.fn(),
-            setAttribute: jest.fn()
-        };
-        documentMock.getElementById.mockReturnValue(htmlElement);
+        fetchMock.mockResolvedValueOnce({
+            json: () => Promise.resolve({ version: '1.126.0' })
+        } as jest.Mocked<Response>);
+        
+        await ushellBootstrap(() => {});
+        expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '/test-resources/sap/ushell/bootstrap/sandbox.js');
+    });
 
-        await ushellBootstrap(dummyCallback);
-
-        expect(fetchSpy).toHaveBeenCalled();
+    test('ushell src when ui5 version is 2.0', async () => {
+        fetchMock.mockResolvedValue({
+            json: () => Promise.resolve({ version: '2.0.0' })
+        } as jest.Mocked<Response>);
+        
+        await ushellBootstrap(() => {});
+        expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '/resources/sap/ushell/bootstrap/sandbox2.js');
     });
 });
