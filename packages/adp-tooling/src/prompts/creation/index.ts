@@ -1,3 +1,5 @@
+import { resolve } from 'path';
+
 import { isAppStudio } from '@sap-ux/btp-utils';
 import {
     AbapServiceProvider,
@@ -14,7 +16,13 @@ import { Logger } from '@sap-ux/logger';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { isExtensionInstalledVsCode } from '@sap-ux/environment-check';
 import { AbapTarget, createAbapServiceProvider, getCredentialsFromStore } from '@sap-ux/system-access';
-import type { ListQuestion, InputQuestion, YUIQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
+import type {
+    ListQuestion,
+    InputQuestion,
+    YUIQuestion,
+    PasswordQuestion,
+    ConfirmQuestion
+} from '@sap-ux/inquirer-common';
 
 import { t } from '../../i18n';
 import { isCustomerBase } from '../../base/helper';
@@ -51,19 +59,17 @@ import {
     getEnvironments,
     getProjectNameTooltip
 } from './prompt-helpers';
-import { getApplicationType, isSupportedAppTypeForAdaptationProject, isV4Application } from '../../base/app-utils';
+import { getApplicationType, isSupportedAppTypeForAdaptationProject } from '../../base/app-utils';
 import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, S4HANA_APPS_PARAMS } from './constants';
 import { AuthenticationType } from '@sap-ux/store';
+import {
+    ManifestService,
+    getCachedACH,
+    getCachedFioriId,
+    getInboundIds,
+    isV4Application
+} from '../../base/services/manifest-service';
 
-export function getInboundIds(manifest: Manifest): string[] {
-    let inboundIds: string[] = [];
-    if (manifest['sap.app'].crossNavigation && manifest['sap.app'].crossNavigation.inbounds) {
-        // we are taking the first inbound id from the manifest
-        inboundIds = Object.keys(manifest['sap.app'].crossNavigation.inbounds);
-    }
-
-    return inboundIds;
-}
 
 export default class ProjectPrompter {
     private logger: Logger;
@@ -79,6 +85,7 @@ export default class ProjectPrompter {
     private isV4AppInternalMode: boolean;
     private isSupportedAdpOverAdp: boolean;
     private isPartiallySupportedAdpOverAdp: boolean;
+    private extensibilitySubGenerator: string | undefined = undefined;
 
     private appSync: boolean;
 
@@ -87,14 +94,12 @@ export default class ProjectPrompter {
 
     private provider: AbapServiceProvider;
 
-    private appManifest: Manifest | null;
-    private appManifestUrl: string | null;
-
     private inboundIds: string[];
 
     private readonly isExtensionInstalled: boolean;
 
     private ui5Service: UI5VersionService;
+    private manifestService: ManifestService;
     private endpointsService: EndpointsService;
 
     private prompts?: Prompts;
@@ -104,6 +109,7 @@ export default class ProjectPrompter {
         this.isCustomerBase = isCustomerBase(layer);
         this.isExtensionInstalled = isExtensionInstalledVsCode('sapse.sap-ux-application-modeler-extension');
 
+        this.manifestService = new ManifestService();
         this.ui5Service = new UI5VersionService(this.isCustomerBase);
         this.endpointsService = new EndpointsService(this.isExtensionInstalled);
     }
@@ -161,6 +167,55 @@ export default class ProjectPrompter {
         return true;
     }
 
+    private _allowExtensionProject() {
+        return (
+            !this.isCloudProject &&
+            this.flexUISystem &&
+            this.flexUISystem.isOnPremise &&
+            isAppStudio() &&
+            (!this.isApplicationSupported ||
+                (this.isApplicationSupported &&
+                    ((this.flexUISystem && (!this.flexUISystem.isOnPremise || !this.flexUISystem.isUIFlex)) ||
+                        this.appSync)))
+        );
+    }
+
+    private resolveNodeModuleGenerator() {
+        const nodePath = process.env['NODE_PATH'];
+        const nodePaths = nodePath?.split(':') || [];
+
+        if (this.extensibilitySubGenerator) {
+            return true;
+        }
+
+        for (let i = 0; i < nodePaths.length; i++) {
+            try {
+                this.extensibilitySubGenerator = require.resolve(
+                    resolve(nodePaths[i], '@bas-dev/generator-extensibility-sub/generators/app')
+                );
+            } catch (e) {
+                // We don't care if there's an error while resolving the module
+                // Continue with the next node_module path
+            }
+
+            if (this.extensibilitySubGenerator !== undefined) {
+                // this.logger.log(`'@bas-dev/generator-extensibility-sub' generator found for path: ${nodePaths[i]}.`);
+                break;
+            }
+        }
+
+        if (this.extensibilitySubGenerator === undefined) {
+            // this.logger.log(
+            //     `'@bas-dev/generator-extensibility-sub' generator was not found for paths: ${JSON.stringify(
+            //         nodePaths
+            //     )}.`
+            // );
+            return 'Extensibility Project generator plugin was not found in your dev space, and is required for this action. To proceed, please install the <SAPUI5 Layout Editor & Extensibility> extension.';
+        }
+
+        return true;
+    }
+
     private async systemUI5VersionHandler(value: string): Promise<string[]> {
         if (value) {
             try {
@@ -185,64 +240,18 @@ export default class ProjectPrompter {
         }
     }
 
-    private getCachedFioriId(): string {
-        if (
-            this.appManifest &&
-            this.appManifest['sap.fiori'] &&
-            this.appManifest['sap.fiori'].registrationIds &&
-            this.appManifest['sap.fiori'].registrationIds.length > 0
-        ) {
-            return this.appManifest['sap.fiori'].registrationIds.toString();
-        }
-        return '';
-    }
-
-    public async isAppSupported(appId: string): Promise<boolean> {
-        this.appManifest = null;
-        this.appManifestUrl = null;
-
-        const appIndex = this.provider.getAppIndex();
-        const supportsManifest: boolean = await appIndex.getIsManiFirstSupported(appId);
-
-        if (supportsManifest === true) {
-            return await this.checkManifestUrlExists(appId);
-        } else {
-            throw new Error(t('validators.appDoesNotSupportManifest'));
-        }
-    }
-
-    private async getManifestUrl(appId: string): Promise<string> {
-        const appIndex = this.provider.getAppIndex();
-        const data = await appIndex.getAppInfo(appId);
-
-        let manifestUrl: string = '';
-        if (data) {
-            const appInfo = Object.values(data)[0];
-            manifestUrl = appInfo?.manifestUrl ?? appInfo?.manifest ?? '';
-        }
-
-        this.appManifestUrl = manifestUrl;
-
-        return manifestUrl;
-    }
-
-    private async checkManifestUrlExists(id: string) {
-        const sManifestUrl = await this.getManifestUrl(id);
-        if (sManifestUrl) {
-            return true;
-        } else {
-            throw new Error(t('validators.adpPluginSmartTemplateProjectError'));
-        }
-    }
-
     public async validateSelectedApplication(
         applicationData: { fileType: string },
         checkForAdpOverAdpSupport: boolean,
         checkForAdpOverAdpPartialSupport: boolean,
-        manifest: Manifest
+        manifest: Manifest | null
     ): Promise<void> {
         if (!applicationData) {
             throw new Error(t('validators.selectCannotBeEmptyError', { value: 'Application' }));
+        }
+
+        if (!manifest) {
+            throw new Error(t('validators.manifestCouldNotBeValidated'));
         }
 
         this.isV4AppInternalMode = false;
@@ -291,53 +300,13 @@ export default class ProjectPrompter {
         }
     }
 
-    public async getManifest(manifestUrl: string): Promise<Manifest> {
-        try {
-            const config: AxiosRequestConfig = {
-                url: manifestUrl
-            };
-
-            const response = await this.provider.request(config);
-
-            const data = JSON.parse(response.data);
-
-            if (typeof data !== 'object') {
-                throw new Error('Manifest parsing error: Manifest is not in expected format.');
-            }
-
-            this.appManifest = data;
-
-            return data;
-        } catch (error) {
-            // this.log.error(`Failed to fetch the manifest with url ${manifestUrl}.`);
-            // this.log.debug(error);
-            throw error;
-        }
-    }
-
-    private getCachedApplicationComponentHierarchy(): string {
-        if (
-            this.appManifest &&
-            this.appManifest['sap.app'] &&
-            this.appManifest['sap.app'].ach &&
-            this.appManifest['sap.app'].ach.length > 0
-        ) {
-            return this.appManifest['sap.app'].ach.toString();
-        }
-        return '';
-    }
-
-    private async applicationPromptValidationHandler(
-        value: Application,
-        answers: ConfigurationInfoAnswers
-    ): Promise<boolean | string> {
+    private async applicationPromptValidationHandler(value: Application): Promise<boolean | string> {
         if (value) {
             try {
-                const res = await this.isAppSupported(value.id);
+                const res = await this.manifestService.isAppSupported(this.provider, value.id);
 
                 if (res) {
-                    const manifestUrl = await this.getManifestUrl(value.id);
-                    const manifest = await this.getManifest(manifestUrl);
+                    await this.manifestService.loadManifest(this.provider, value.id);
 
                     const systemVersion = this.ui5Service.systemVersion;
                     const checkForAdpOverAdpSupport =
@@ -351,7 +320,7 @@ export default class ProjectPrompter {
                         value,
                         checkForAdpOverAdpSupport,
                         checkForAdpOverAdpPartialSupport,
-                        manifest
+                        this.manifestService.getManifest(value.id)
                     );
                 }
                 this.isApplicationSupported = true;
@@ -374,6 +343,7 @@ export default class ProjectPrompter {
     }
 
     private async systemPromptValidationHandler(value: string): Promise<boolean | string> {
+        this.manifestService.resetCache();
         this.applicationIds = [];
         this.ui5VersionDetected = true;
 
@@ -902,8 +872,8 @@ export default class ProjectPrompter {
                 applyDefaultWhenDirty: true,
                 hint: t('prompts.applicationListTooltip')
             },
-            validate: async (value: Application, answers: ConfigurationInfoAnswers) => {
-                const validationResult = await this.applicationPromptValidationHandler(value, answers);
+            validate: async (value: Application) => {
+                const validationResult = await this.applicationPromptValidationHandler(value);
 
                 if (!isAppStudio()) {
                     return validationResult;
@@ -1067,7 +1037,10 @@ export default class ProjectPrompter {
                     this.isApplicationSupported
                 );
             },
-            default: this.getCachedFioriId(),
+            default: (answers: ConfigurationInfoAnswers) => {
+                const manifest = this.manifestService.getManifest(answers.application.id);
+                return manifest ? getCachedFioriId(manifest) : '';
+            },
             store: false
         } as InputQuestion<ConfigurationInfoAnswers>;
     }
@@ -1090,8 +1063,9 @@ export default class ProjectPrompter {
                     this.isApplicationSupported
                 );
             },
-            default: () => {
-                return this.appManifest ? this.getCachedApplicationComponentHierarchy() : '';
+            default: (answers: ConfigurationInfoAnswers) => {
+                const manifest = this.manifestService.getManifest(answers.application.id);
+                return manifest ? getCachedACH(manifest) : '';
             },
             validate: (value: string) => validateAch(value, this.isCustomerBase),
             store: false
@@ -1124,9 +1098,31 @@ export default class ProjectPrompter {
         } as InputQuestion<ConfigurationInfoAnswers>;
     }
 
-    // ----
+    private getConfirmExtProjPrompt(projectName: string): YUIQuestion<ConfigurationInfoAnswers> {
+        return {
+            type: 'confirm',
+            name: 'confirmPrompt',
+            message: () => {
+                return this.isApplicationSupported && this.appSync
+                    ? t('prompts.createExtProjectWithSyncViewsLabel', { value: projectName })
+                    : t('prompts.createExtProjectLabel', { value: projectName });
+            },
+            default: false,
+            guiOptions: {
+                applyDefaultWhenDirty: true
+            },
+            when: (answers: ConfigurationInfoAnswers) => answers.application && this._allowExtensionProject(),
+            validate: (value: boolean) => {
+                if (this.isApplicationSupported && this.appSync) {
+                    return !value ? true : this.resolveNodeModuleGenerator();
+                }
 
-    public async getConfigurationPrompts(): Promise<YUIQuestion<ConfigurationInfoAnswers>[]> {
+                return !value ? 'Please select whether you want to continue' : this.resolveNodeModuleGenerator();
+            }
+        } as ConfirmQuestion<ConfigurationInfoAnswers>;
+    }
+
+    public async getConfigurationPrompts(projectName: string): Promise<YUIQuestion<ConfigurationInfoAnswers>[]> {
         await this.endpointsService.getEndpoints();
         this.systemNames = this.endpointsService.getEndpointNames();
 
@@ -1151,8 +1147,8 @@ export default class ProjectPrompter {
             this.getVersionInfoPrompt(),
             this.getFioriIdPrompt(),
             this.getACHprompt(),
-            this.getAppInfoErrorPrompt()
-            // ....
+            this.getAppInfoErrorPrompt(),
+            this.getConfirmExtProjPrompt(projectName)
         ];
     }
 
@@ -1276,15 +1272,11 @@ export default class ProjectPrompter {
 
     public async getFlpConfigurationPrompts(appId: string): Promise<any> {
         //TODO: ADD RETURN TYPE
-        if (!this.appManifest) {
-            if (!this.appManifestUrl) {
-                this.appManifestUrl = await this.getManifestUrl(appId);
-            }
-
-            this.appManifest = await this.getManifest(this.appManifestUrl);
+        if (!this.manifestService.getManifest(appId)) {
+            await this.manifestService.loadManifest(this.provider, appId);
         }
-
-        this.inboundIds = getInboundIds(this.appManifest);
+        const manifest = this.manifestService.getManifest(appId);
+        this.inboundIds = getInboundIds(manifest);
 
         return [
             this.getInboundListPrompt(),

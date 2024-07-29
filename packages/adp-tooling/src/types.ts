@@ -500,11 +500,13 @@ export interface ConfigurationInfoAnswers {
     username: string;
     password: string;
     projectType: AdaptationProjectType;
-    application: string;
+    application: Application;
     ui5Version: string;
     latestUI5version: string;
     versionInfo: string;
+    confirmPrompt: boolean;
 }
+
 export interface FlexUISupportedSystem {
     isUIFlex: boolean;
     isOnPremise: boolean;

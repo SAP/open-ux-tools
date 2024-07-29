@@ -47,6 +47,8 @@
         "projectTypeInfoTooltip": "The only available project type from the selected system is: {{type}}.",
         "achLabel": "Application Component Hierarchy",
         "achHint": "The purpose of ACH components is to enable the support organization to indicate which BCP/ticket component might be responsible for a particular issue.",
+        "createExtProjectLabel": "Do you want to create an Extension Project with name '{{value}}' instead?",
+        "createExtProjectWithSyncViewsLabel": "Do you want to create an Extension Project with name '{{value}}' instead? It will give you the ability to create controller extensions for the synchronous views as well as the asynchronous.",
         "flpConfigurationStep": "Fiori Launchpad Configuration",
         "flpConfigurationDescription": "Configure Fiori Launchpad Settings",
         "deploymentConfigStep": "Deployment Configuration",
@@ -104,6 +106,7 @@
         "notFlexEnabledError": "The system that you have selected is not an ABAP On-Premise system which supports Flexibility. Adaptation Project is supported only on such systems, so please choose ABAP On-Premise system which supports Flexibility. If you continue, you will be able to create only an Extension Project.",
         "notDeployableSystemError": "The system that you have selected is not an ABAP On-Premise system which supports DTA_FOLDER deployment. Adaptation Project is supported only on such systems, so please choose ABAP On-Premise system which supports DTA_FOLDER deployment.",
         "achMandatoryError": "Application Component Hierarchy can contain only capital letters, digits, and dashes.",
+        "manifestCouldNotBeValidated": "Manifest of the selected application could not be validated",
         "invalidsemanticObject": "Semantic Object should contain only alphanumerical characters and '_' up to 30 characters.",
         "invalidaction": "Action should contain only alphanumerical characters and '_' up to 60 characters.",
         "invalidAbapRepository": "Repository name does not match the expected format. Expected format is '/<namespace>/<repository_name>'  or just a single repository name as a string. Namespace can be up to 8 symbols and repository name can be up to 15 symbols. Only alphanumeric and _ symbols are allowed"
