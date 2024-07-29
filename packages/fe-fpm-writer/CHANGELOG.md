@@ -1,5 +1,17 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.25.3
+
+### Patch Changes
+
+-   dc60d98: fix: add `@sap-ux/project-access` dependency
+
+## 0.25.2
+
+### Patch Changes
+
+-   29bebd2: feat: add required libraries on page addition
+
 ## 0.25.1
 
 ### Patch Changes
