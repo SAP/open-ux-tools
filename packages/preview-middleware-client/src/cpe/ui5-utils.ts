@@ -2,6 +2,7 @@ import type { IconDetails } from '@sap-ux-private/control-property-editor-common
 import Component from 'sap/ui/core/Component';
 import type { ID } from 'sap/ui/core/library';
 import IconPool from 'sap/ui/core/IconPool';
+import ManagedObject from 'sap/ui/base/ManagedObject';
 
 /**
  * Gets Component by id.

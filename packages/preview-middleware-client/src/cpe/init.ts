@@ -18,6 +18,7 @@ import { getIcons } from './ui5-utils';
 import { WorkspaceConnectorService } from './connector-service';
 import { RtaService } from './rta-service';
 import { getError } from './error-utils';
+import { QuickActionService } from './quick-actions/quick-action-service';
 
 export default function init(rta: RuntimeAuthoring): Promise<void> {
     Log.info('Initializing Control Property Editor');
@@ -42,7 +43,8 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
     const changesService = new ChangeService({ rta }, selectionService);
     const connectorService = new WorkspaceConnectorService();
     const rtaService = new RtaService(rta);
-    const services: Service[] = [selectionService, changesService, connectorService, rtaService];
+    const quickActionService = new QuickActionService(rta);
+    const services: Service[] = [selectionService, changesService, connectorService, rtaService, quickActionService];
     try {
         loadDefaultLibraries();
         const { sendAction } = startPostMessageCommunication<ExternalAction>(
@@ -64,7 +66,7 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
         }
         // For initOutline to complete the RTA needs to already running (to access RTA provided services).
         // That can only happen if the plugin initialization has completed.
-        initOutline(rta, sendAction).catch((error) =>
+        initOutline(rta, sendAction, quickActionService).catch((error) =>
             Log.error('Error during initialization of Control Property Editor', getError(error))
         );
         const icons = getIcons();

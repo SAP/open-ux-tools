@@ -164,3 +164,8 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[], minor
         enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds, minorUI5Version)
     });
 };
+
+export const initActionSettings = async (rta: RuntimeAuthoring, syncViewsIds: string[], minorUI5Version: number): Promise<void> => {
+    const actionService =  await rta.getService('action');
+    console.log(actionService);
+};

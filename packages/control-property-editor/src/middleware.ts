@@ -12,7 +12,8 @@ import {
     undo,
     redo,
     save,
-    setAppMode
+    setAppMode,
+    executeQuickAction
 } from '@sap-ux-private/control-property-editor-common';
 
 import { changeProperty } from './slice';
@@ -49,6 +50,7 @@ export const communicationMiddleware: Middleware<Dispatch<ExternalAction>> = (st
                     sendAction(externalChangeProperty(action.payload));
                     break;
                 }
+                case executeQuickAction.type:
                 case reloadApplication.type:
                 case deletePropertyChanges.type:
                 case setAppMode.type:

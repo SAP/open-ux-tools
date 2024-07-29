@@ -3,6 +3,7 @@ import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
 import { isEditable, isReuseComponent } from './utils';
 import VersionInfo from 'sap/ui/VersionInfo';
+import { ControlTreeIndex } from '../types';
 
 interface AdditionalData {
     text?: string;
@@ -83,7 +84,8 @@ function addChildToExtensionPoint(id: string, children: OutlineNode[]) {
 export async function transformNodes(
     input: OutlineViewNode[],
     scenario: Scenario,
-    reuseComponentsIds: Set<string>
+    reuseComponentsIds: Set<string>,
+    controlIndex: ControlTreeIndex
 ): Promise<OutlineNode[]> {
     const stack = [...input];
     const items: OutlineNode[] = [];
@@ -102,8 +104,8 @@ export async function transformNodes(
             const technicalName = current.technicalName.split('.').slice(-1)[0];
 
             const transformedChildren = isAdp
-                ? await handleDuplicateNodes(children, scenario, reuseComponentsIds)
-                : await transformNodes(children, scenario, reuseComponentsIds);
+                ? await handleDuplicateNodes(children, scenario, reuseComponentsIds, controlIndex)
+                : await transformNodes(children, scenario, reuseComponentsIds, controlIndex);
 
             const node: OutlineNode = {
                 controlId: current.id,
@@ -113,6 +115,13 @@ export async function transformNodes(
                 visible: current.visible ?? true,
                 children: transformedChildren
             };
+
+            const indexedControls = controlIndex[node.controlType];
+            if (indexedControls) {
+                indexedControls.push(node);
+            } else {
+                controlIndex[node.controlType] = [node];
+            }
 
             fillReuseComponents(reuseComponentsIds, current, scenario, minor);
 
@@ -174,7 +183,8 @@ function fillReuseComponents(
 export async function handleDuplicateNodes(
     children: OutlineViewNode[],
     scenario: Scenario,
-    reuseComponentsIds: Set<string>
+    reuseComponentsIds: Set<string>,
+    controlIndex: ControlTreeIndex
 ): Promise<OutlineNode[]> {
     const extPointIDs = new Set<string>();
 
@@ -187,5 +197,5 @@ export async function handleDuplicateNodes(
 
     const uniqueChildren = children.filter((child) => !extPointIDs.has(child.id));
 
-    return transformNodes(uniqueChildren, scenario, reuseComponentsIds);
+    return transformNodes(uniqueChildren, scenario, reuseComponentsIds, controlIndex);
 }

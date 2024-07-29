@@ -301,7 +301,6 @@ export const Tree = (): ReactElement => {
         const cellName = hasDefaultContent
             ? t('EXTENSION_POINT_HAS_DEFAULT_CONTENT_TEXT', { name: item?.name })
             : item?.name;
-
         return item && typeof itemIndex === 'number' && itemIndex > -1 ? (
             <div
                 aria-hidden
@@ -399,7 +398,6 @@ export const Tree = (): ReactElement => {
         const headerName = hasDefaultContent
             ? t('EXTENSION_POINT_HAS_DEFAULT_CONTENT_TEXT', { name: groupName })
             : groupName;
-
         return (
             <div
                 {...refProps}

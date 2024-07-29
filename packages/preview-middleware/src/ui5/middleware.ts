@@ -22,7 +22,7 @@ async function createRouter(
     // setting defaults
     const config = options.configuration ?? {};
     config.flp ??= {};
-    sanitizeConfig(config, logger);
+    // sanitizeConfig(config, logger);
 
     // configure the FLP sandbox based on information from the manifest
     const flp = new FlpSandbox(config, resources.rootProject, middlewareUtil, logger);
