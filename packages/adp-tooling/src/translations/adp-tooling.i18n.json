@@ -58,7 +58,10 @@
         "action": "Action",
         "title": "Title",
         "subtitle": "Subtitle",
-        "parameters": "Parameters"
+        "parameters": "Parameters",
+        "abapRepository": "SAPUI5 ABAP Repository",
+        "deployConfigDescription": "Deployment description",
+        "packageInputChoice": "How do you want to enter the Package"
     },
     "choices": {
         "annotationFile": {
@@ -102,7 +105,8 @@
         "notDeployableSystemError": "The system that you have selected is not an ABAP On-Premise system which supports DTA_FOLDER deployment. Adaptation Project is supported only on such systems, so please choose ABAP On-Premise system which supports DTA_FOLDER deployment.",
         "achMandatoryError": "Application Component Hierarchy can contain only capital letters, digits, and dashes.",
         "invalidsemanticObject": "Semantic Object should contain only alphanumerical characters and '_' up to 30 characters.",
-        "invalidaction": "Action should contain only alphanumerical characters and '_' up to 60 characters."
+        "invalidaction": "Action should contain only alphanumerical characters and '_' up to 60 characters.",
+        "invalidAbapRepository": "Repository name does not match the expected format. Expected format is '/<namespace>/<repository_name>'  or just a single repository name as a string. Namespace can be up to 8 symbols and repository name can be up to 15 symbols. Only alphanumeric and _ symbols are allowed"
     },
     "tooltips": {
         "inboundId": "Choose the inboundID that will be used to set the FLP tile configuration",
@@ -111,6 +115,9 @@
         "action": "Enter the action for the inbound which will be created for your adaptation project",
         "title": "Enter title for your FLP configuration",
         "subtitle": "Enter subtitle for your FLP configuration",
-        "parameters": "Enter the value for the parameters in the Target Mappings section from the URL mentioned above"
+        "parameters": "Enter the value for the parameters in the Target Mappings section from the URL mentioned above",
+        "abapRepository": "Enter the SAPUI5 ABAP Repository that should be used for the deployment of your Adaptation Project. Expected format is '/<namespace>/<repository_name>' if you want to add a namespace or just a single repository name as a string. Namespace can be up to 8 symbols and repository name can be up to 15 symbols.  Both the SAPUI5 ABAP Repository and the package that will be used should start in the same way, i.e. a namespace or a Z, Y or 'SAP'",
+        "deployConfigDescription": "Enter a description for your deployment",
+        
     }
 }

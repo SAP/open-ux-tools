@@ -227,6 +227,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
       '@sap-ux/system-access':
         specifier: workspace:*
         version: link:../system-access
@@ -261,9 +264,6 @@ importers:
         specifier: 10.0.0
         version: 10.0.0
     devDependencies:
-      '@sap-ux/store':
-        specifier: workspace:*
-        version: link:../store
       '@types/adm-zip':
         specifier: 0.5.5
         version: 0.5.5
