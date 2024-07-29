@@ -1,6 +1,8 @@
 import { AppIndexService, createForAbap } from '../../src';
 import nock from 'nock';
 import appIndexMock from './mockResponses/appIndex.json';
+import type { AxiosError } from '../../src';
+nock.disableNetConnect();
 import appInfoJsonMock from './mockResponses/ui5AppInfo.json';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
@@ -78,6 +80,46 @@ describe('AppIndexService', () => {
         });
     });
 
+    describe('getIsManiFirstSupported', () => {
+        const provider = createForAbap(config);
+        const service: AppIndexService = provider.getAppIndex();
+
+        test('get is manifest first supported', async () => {
+            nock.cleanAll();
+            nock(server)
+                .get((path) => path.startsWith(`${AppIndexService.PATH}/ui5_app_mani_first_supported`))
+                .reply(200, (_path) => {
+                    return appIndexMock['ui5_app_mani_first_supported'];
+                })
+                .persist();
+
+            const result = await service.getIsManiFirstSupported('appId');
+            expect(result).toBe(true);
+        });
+
+        test('request fails and throw error', async () => {
+            const mockAxiosError = {
+                response: {
+                    status: 404,
+                    data: 'Not found'
+                },
+                message: 'Request failed with status code 404'
+            } as AxiosError;
+            nock.cleanAll();
+            nock(server)
+                .get((path) => path.startsWith(`${AppIndexService.PATH}/ui5_app_mani_first_supported`))
+                .replyWithError(mockAxiosError)
+                .persist();
+
+            try {
+                await service.getIsManiFirstSupported('appId');
+                fail('The function should have thrown an error.');
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toBe('Request failed with status code 404');
+            }
+        });
+    });
     describe('getAppInfo', () => {
         const provider = createForAbap(config);
         const service: AppIndexService = provider.getAppIndex();
