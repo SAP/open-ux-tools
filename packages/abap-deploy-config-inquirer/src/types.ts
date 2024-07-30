@@ -13,7 +13,7 @@ export const enum ClientChoiceValue {
 }
 
 export interface BackendTarget {
-    name?: string; // name given for backend system
+    systemName?: string; // name given for backend system
     abapTarget: AbapTarget;
     abapServiceProvider?: AbapServiceProvider;
     type?: 'application' | 'library';

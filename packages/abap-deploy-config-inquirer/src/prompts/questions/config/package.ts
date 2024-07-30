@@ -98,9 +98,9 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
                 breadcrumb: true
             },
             source: async (previousAnswers: AbapDeployConfigAnswers, input: string): Promise<string[] | undefined> => {
-                let results;
-                ({ results, morePackageResultsMsg } = await getPackageChoices(isCli, input, previousAnswers, options));
-                return results;
+                const results = await getPackageChoices(isCli, input, previousAnswers, options);
+                morePackageResultsMsg = results.morePackageResultsMsg;
+                return results.packages;
             },
             additionalInfo: () => morePackageResultsMsg
         } as AutocompleteQuestionOptions<AbapDeployConfigAnswers>

@@ -6,12 +6,14 @@ import {
     validateClient,
     validateClientChoiceQuestion,
     validateConfirmQuestion,
+    validateCredentials,
     validateDestinationQuestion,
     validatePackage,
     validatePackageChoiceInput,
     validatePackageChoiceInputForCli,
     validateScpQuestion,
     validateTargetSystem,
+    validateTargetSystemUrlCli,
     validateTransportChoiceInput,
     validateTransportQuestion,
     validateUi5AbapRepoName,
@@ -27,6 +29,14 @@ import {
 } from '../../src/types';
 import * as utils from '../../src/utils';
 import { AbapTarget } from '@sap-ux/system-access';
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+
+jest.mock('@sap-ux/fiori-generator-shared', () => ({
+    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
+    getHostEnvironment: jest.fn()
+}));
+
+const mockGetHostEnvironment = getHostEnvironment as jest.Mock;
 
 describe('Test validators', () => {
     beforeAll(async () => {
@@ -128,7 +138,21 @@ describe('Test validators', () => {
         });
     });
 
-    // TODO add test for validateTargetSystemUrlCli
+    describe('validateTargetSystemUrlCli', () => {
+        it('should resolve when target is valid', () => {
+            mockGetHostEnvironment.mockReturnValueOnce(hostEnvironment.cli);
+            expect(validateTargetSystemUrlCli('https://mock.url.target1.com')).toBeUndefined();
+        });
+
+        it('should throw error when target is invalid', () => {
+            mockGetHostEnvironment.mockReturnValueOnce(hostEnvironment.cli);
+            try {
+                validateTargetSystemUrlCli('/x/inval.z');
+            } catch (e) {
+                expect(e).toStrictEqual(new Error(t('errors.invalidUrl', { url: '/x/inval.z' })));
+            }
+        });
+    });
 
     describe('validateScpQuestion', () => {
         it('should return true and update prompt state for valid SCP', () => {
@@ -192,7 +216,25 @@ describe('Test validators', () => {
         });
     });
 
-    // TODO: Validate credentials
+    describe('validateCredentials', () => {
+        it('should return true for valid credentials', async () => {
+            jest.spyOn(utils, 'initTransportConfig').mockResolvedValueOnce({
+                transportConfig: {} as any,
+                transportConfigNeedsCreds: false
+            });
+            expect(await validateCredentials({}, 'pass1', { username: 'user1' })).toBe(true);
+        });
+
+        it('should return error message for invalid credentials', async () => {
+            jest.spyOn(utils, 'initTransportConfig').mockResolvedValueOnce({
+                transportConfig: {} as any,
+                transportConfigNeedsCreds: true
+            });
+            expect(await validateCredentials({}, 'pass1', { username: 'user1' })).toBe(
+                t('errors.atoUnauthorisedSystem')
+            );
+        });
+    });
 
     describe('validateUi5AbapRepoName', () => {
         beforeEach(() => {

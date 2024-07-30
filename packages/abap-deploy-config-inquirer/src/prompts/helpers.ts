@@ -26,14 +26,16 @@ import { getSystemDisplayName } from '@sap-ux/fiori-generator-shared';
  * @returns choices for destinations
  */
 function getDestinationChoices(destinations: Destinations = {}): AbapSystemChoice[] {
-    const systemChoices: AbapSystemChoice[] = Object.values(destinations).map((destination) => {
-        return {
-            name: `${getDisplayName(destination)} - ${destination.Host}`,
-            value: destination.Name,
-            scp: isAbapEnvironmentOnBtp(destination),
-            url: destination.Host
-        };
-    });
+    const systemChoices: AbapSystemChoice[] = Object.values(destinations)
+        .sort((a, b) => a.Name.localeCompare(b.Name, undefined, { numeric: true, caseFirst: 'lower' }))
+        .map((destination) => {
+            return {
+                name: `${getDisplayName(destination)} - ${destination.Host}`,
+                value: destination.Name,
+                scp: isAbapEnvironmentOnBtp(destination),
+                url: destination.Host
+            };
+        });
     return systemChoices;
 }
 
@@ -52,8 +54,7 @@ function getBackendDisplayName({
     backendSystem: BackendSystem;
     includeUserName?: boolean;
 }): string {
-    const userDisplayName =
-        includeUserName && backendSystem.userDisplayName ? ` [${backendSystem.userDisplayName}]` : '';
+    const userDisplayName = includeUserName && backendSystem.userDisplayName ? `${backendSystem.userDisplayName}` : '';
     const systemDisplayName = getSystemDisplayName(
         backendSystem.name,
         userDisplayName,
@@ -61,7 +62,7 @@ function getBackendDisplayName({
         backendSystem.authenticationType === AuthenticationType.ReentranceTicket
     );
 
-    return systemDisplayName + userDisplayName;
+    return systemDisplayName;
 }
 
 /**
@@ -89,23 +90,27 @@ async function getBackendTargetChoices(
         target = (backendTarget.abapTarget as UrlAbapTarget) ?? {};
     }
 
-    Object.values(backendSystems).forEach((system) => {
-        targetExists = system.url === target?.url && (system.client ?? '') === (target?.client ?? '');
-        choices.push({
-            name: targetExists
-                ? `${getBackendDisplayName({ backendSystem: system })} (Source system)`
-                : getBackendDisplayName({ backendSystem: system }) ?? '',
-            value: system.url,
-            isDefault: targetExists,
-            scp: !!system.serviceKeys,
-            isS4HC: system.authenticationType === AuthenticationType.ReentranceTicket,
-            client: system.client
+    const systemChoices: AbapSystemChoice[] = Object.values(backendSystems)
+        .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, caseFirst: 'lower' }))
+        .map((system) => {
+            targetExists = system.url === target?.url && (system.client ?? '') === (target?.client ?? '');
+            return {
+                name: targetExists
+                    ? `${getBackendDisplayName({ backendSystem: system })} (Source system)`
+                    : getBackendDisplayName({ backendSystem: system }) ?? '',
+                value: system.url,
+                isDefault: targetExists,
+                scp: !!system.serviceKeys,
+                isS4HC: system.authenticationType === AuthenticationType.ReentranceTicket,
+                client: system.client
+            };
         });
-    });
 
-    if (!targetExists && target?.url) {
-        const systemName = backendTarget?.name ?? target.url;
-        const user = await backendTarget?.abapServiceProvider?.user();
+    choices.push(...systemChoices);
+
+    if (!targetExists && target?.url && backendTarget?.systemName) {
+        const systemName = backendTarget.systemName;
+        const user = await backendTarget.abapServiceProvider?.user();
         // add the target system to the list if it does not exist in the store yet
         choices.splice(1, 0, {
             name: `${getSystemDisplayName(
@@ -251,29 +256,31 @@ export async function getPackageChoices(
     input: string,
     previousAnswers: AbapDeployConfigAnswers,
     options: AbapDeployConfigPromptOptions
-): Promise<{ results: string[]; morePackageResultsMsg: string }> {
-    const results: string[] = [];
+): Promise<{ packages: string[]; morePackageResultsMsg: string }> {
+    let packages;
     let morePackageResultsMsg = '';
     // For YUI we need to ensure input is provided so the prompt is not re-rendered with no input
     if (isCli || input) {
-        const results = await queryPackages(input, options, {
+        packages = await queryPackages(input, options, {
             url: PromptState.abapDeployConfig.url,
             client: PromptState.abapDeployConfig.client,
             destination: PromptState.abapDeployConfig.destination
         });
+
         morePackageResultsMsg =
-            results && results.length === ABAP_PACKAGE_SEARCH_MAX_RESULTS
-                ? t('prompts.config.package.packageAutocomplete.sourceMessage', { numResults: results.length })
+            packages && packages.length === ABAP_PACKAGE_SEARCH_MAX_RESULTS
+                ? t('prompts.config.package.packageAutocomplete.sourceMessage', { numResults: packages.length })
                 : morePackageResultsMsg;
+
         if (previousAnswers.packageAutocomplete) {
-            const index = results.indexOf(previousAnswers.packageAutocomplete);
+            const index = packages.indexOf(previousAnswers.packageAutocomplete);
             if (index !== -1) {
-                results.splice(0, 0, results.splice(index, 1)[0]); // move previous answer to top of choices list
+                packages.splice(0, 0, packages.splice(index, 1)[0]); // move previous answer to top of choices list
             }
         }
     }
     return {
-        results,
+        packages: packages ?? [],
         morePackageResultsMsg
     };
 }

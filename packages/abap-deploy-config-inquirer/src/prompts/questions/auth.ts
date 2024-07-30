@@ -43,8 +43,8 @@ function getPasswordPrompt(options: AbapDeployConfigPromptOptions): Question<Aba
             type: 'login',
             mandatory: true
         },
-        validate: (input: string, previousAnswers: AbapDeployConfigAnswers): Promise<boolean | string> =>
-            validateCredentials(options, input, previousAnswers)
+        validate: async (input: string, previousAnswers: AbapDeployConfigAnswers): Promise<boolean | string> =>
+            await validateCredentials(options, input, previousAnswers)
     } as PasswordQuestion<AbapDeployConfigAnswers>;
 }
 

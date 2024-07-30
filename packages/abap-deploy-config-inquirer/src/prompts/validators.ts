@@ -86,7 +86,7 @@ export function validateTargetSystem(target?: string, choices?: AbapSystemChoice
         if (choice) {
             updatePromptState({
                 url: choice.value,
-                client: choice.client,
+                client: choice.client ?? '',
                 scp: !!choice.scp,
                 isS4HC: choice.isS4HC
             });
@@ -232,14 +232,15 @@ export async function validateCredentials(
         LoggerHelper.logger.info(`\n${warning}`);
         PromptState.transportAnswers.transportConfigNeedsCreds = false;
 
-        return false; // Log a warning and proceed
+        return true; // Log a warning and proceed
     } else {
         // Need to give the CLI some context why the username is shown.
         if (PromptState.transportAnswers.transportConfigNeedsCreds) {
             LoggerHelper.logger.info(t('errors.atoUnauthorisedSystem'));
+            return t('errors.atoUnauthorisedSystem');
+        } else {
+            return true;
         }
-
-        return PromptState.transportAnswers.transportConfigNeedsCreds ?? false;
     }
 }
 

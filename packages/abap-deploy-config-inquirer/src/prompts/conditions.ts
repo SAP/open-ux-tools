@@ -100,9 +100,9 @@ export function showClientQuestion(
     isS4HanaCloudSystem?: boolean
 ): boolean {
     const clientCondition = showClientCondition(isS4HanaCloudSystem);
-    // if clientChoice is new or client is not set, show client question
     const showOnCli =
         previousAnswers.clientChoice === ClientChoiceValue.New || !options?.backendTarget?.abapTarget?.client;
+
     return getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli
         ? showOnCli && clientCondition
         : clientCondition;
