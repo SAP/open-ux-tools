@@ -9,4 +9,7 @@ export * from './base/abap';
 export { generate, migrate } from './writer';
 export { generateChange } from './writer/editors';
 export { promptGeneratorInput, PromptDefaults } from './base/prompt';
+export { getManifest } from './base/abap';
 export { isCFEnvironment } from './base/cf';
+export { getPromptsForChangeInbound, getPromptsForChangeDataSource } from './prompts';
+export { getVariant } from './base/helper';

@@ -1025,6 +1025,9 @@ importers:
 
   packages/fe-fpm-writer:
     dependencies:
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
       '@xmldom/xmldom':
         specifier: 0.8.10
         version: 0.8.10
@@ -1047,9 +1050,6 @@ importers:
         specifier: 0.0.33
         version: 0.0.33
     devDependencies:
-      '@sap-ux/project-access':
-        specifier: workspace:*
-        version: link:../project-access
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
@@ -1866,8 +1866,8 @@ importers:
         specifier: 7.5.2
         version: 7.5.2
       '@ui5/manifest':
-        specifier: 1.61.0
-        version: 1.61.0
+        specifier: 1.66.0
+        version: 1.66.0
       vscode-uri:
         specifier: 3.0.7
         version: 3.0.7
@@ -2277,8 +2277,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       '@ui5/manifest':
-        specifier: 1.61.0
-        version: 1.61.0
+        specifier: 1.66.0
+        version: 1.66.0
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -10239,8 +10239,8 @@ packages:
       figures: 5.0.0
     dev: true
 
-  /@ui5/manifest@1.61.0:
-    resolution: {integrity: sha512-hs0CfNb424+CwXmViuOLPX3LcHrigsAXLAU3PZPrf102Wt3yW6mdfYqIugfytg+W0n8I1jcqE1woj4B4BJ1EJw==}
+  /@ui5/manifest@1.66.0:
+    resolution: {integrity: sha512-gbY3gXFl1HpFtaKPjyFwutSeNN417N9F94/ZeCuu7uV8nUvPzVUbDr+vFrsgvHVxaUNoF1z3KBhVtlrl/PNkeA==}
 
   /@ui5/project@3.9.0:
     resolution: {integrity: sha512-pm7FzV8oCaZtLBuoH9bVVpAtRz0pwpAJhJKg731lUHGsMkGG5zaWkmUjajBlQR/+dZtWmTlkwxjpJttjUVi43A==}

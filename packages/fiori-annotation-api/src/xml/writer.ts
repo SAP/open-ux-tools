@@ -268,6 +268,40 @@ function handleXmlElementAttributeInserts(element: XMLElement, attributeInserts:
     return edits;
 }
 
+function getTextFragmentOffset(text: string): number {
+    const lines = text.split('\n');
+    const linesWithTextIndices = lines.map((line, idx) => (line.length > 0 ? idx : -1));
+    const indentTextIndex = linesWithTextIndices.find((idx) => idx > -1);
+    if (indentTextIndex === undefined) {
+        return 0;
+    }
+    const indentLineText = lines[indentTextIndex];
+    return indentLineText.length - indentLineText.trimStart().length;
+}
+
+function adjustFragmentIndentation(text: string, requiredIndent: number): string {
+    const requiredOffset = requiredIndent * 4;
+    const actual = getTextFragmentOffset(text);
+    if (actual == requiredOffset) {
+        return text;
+    }
+    const lines = text.split('\n');
+    lines.forEach((line, idx) => {
+        if (line.length) {
+            if (actual < requiredOffset) {
+                line = ' '.repeat(requiredOffset - actual) + line;
+            } else if (line.startsWith(' '.repeat(actual - requiredOffset))) {
+                line = line.substring(' '.repeat(actual - requiredOffset).length);
+            } else {
+                line = line.trim();
+            }
+
+            lines[idx] = line;
+        }
+    });
+    return lines.join('\n');
+}
+
 function handleXmlElementMoveChange(
     element: XMLElement,
     childIndentLevel: number,
@@ -276,6 +310,7 @@ function handleXmlElementMoveChange(
 ): TextEdit[] {
     const edits: TextEdit[] = [];
     const openTagRange = transformRange(element.syntax.openBody);
+    const textWithNewIndentation = adjustFragmentIndentation(text.join(''), childIndentLevel);
     if (element.syntax.isSelfClosing && openTagRange) {
         const indent = '    '.repeat(childIndentLevel - 1);
         edits.push(
@@ -286,11 +321,11 @@ function handleXmlElementMoveChange(
                     openTagRange.end.line,
                     openTagRange.end.character
                 ),
-                `>${text.join('')}\n${indent}</${element.name}>`
+                `>${textWithNewIndentation}\n${indent}</${element.name}>`
             )
         );
     } else {
-        edits.push(TextEdit.insert(insertPosition, text.join('')));
+        edits.push(TextEdit.insert(insertPosition, textWithNewIndentation));
     }
     return edits;
 }

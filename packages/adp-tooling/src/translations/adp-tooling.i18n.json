@@ -12,12 +12,27 @@
         "isInSafeModeLabel": "Making manifest changes is not upgrade safe and the project will be set in advanced mode. Please continue if you are sure you want to have your project in advanced mode.",
         "oDataURIV2InfoLabel": "Have in mind that you are trying to replace OData {{versionOne}} Service with OData {{versionTwo}} Service",
 
+        "inboundId": "Inbound ID",
+        "title": "Title",
+        "subtitle": "Subtitle",
+        "icon": "Icon"
+    },
+    "tooltips": {
+        "title": "Enter title for your FLP configuration",
+        "subtitle": "Enter subtitle for your FLP configuration",
+        "icon": "Enter icon path for your FLP configuration"
+    },
+    "validators": {
+        "manifestContainsNoODataServices": "Manifest contains no OData Services.",
+        "inputCannotBeEmpty": "{{input}} cannot be empty.",
+        "inpuCannotHaveSpaces": "{{input}} cannot contain spaces.",
+        "missingIconOrTitleOrSubtitle": "At least one of Title, Subtitle and Icon should have a value.",
+        "addAnnotationOdataSourceTooltip": "Select the annotation file from your workspace",
         "fileSelectOptionLabel": "Annotation XML",
         "fileSelectOptionTooltip": "Select the annotation file source",
         "filePathLabel": "Annotation File path",
         "filePathTooltip": "Select the annotation file from your workspace",
         "addAnnotationOdataSourceTooltip": "Select the annotation file from your workspace",
-
         "oDataServiceNameLabel": "OData Service Name",
         "oDataServiceNameTooltip": "Enter a name for the OData service you want to add",
         "oDataServiceUriLabel": "OData Service URI",
@@ -34,19 +49,17 @@
         "oDataAnnotationDataSourceUriTooltip": "Enter URI for the OData annotation data source",
         "oDataAnnotationSettingsLabel": "OData Annotation Settings",
         "oDataAnnotationSettingsTooltip": "If needed enter any additional {{value}} settings in the 'key':'value1','key2':'value2' format"
-    },
-    "choices": {
-        "annotationFile": {
-            "selectFromWorkspace": "Select annotation file from workspace",
-            "createEmptyFile": "Create an empty annotation file"
-        }
-    },
-    "validators": {
         "fileDoesNotExist": "The file doesn't exist",
         "annotationFileAlreadyExists": "There is already an annotation file with the same name, please choose another file or rename the file and select it again",
         "errorDuplicatedValueOData": "OData Annotation or OData Service with the same name was already added to the project",
         "errorDuplicatedValueSapui5Model": "SAPUI5 Model with the same name was already added to the project",
         "errorDuplicateNamesOData": "OData Service Name must be different from OData Annotation Data Source Name",
         "errorInputInvalidValuePrefix": "{{value}} should start with '{{prefix}}'"
+    },
+    "choices": {
+        "annotationFile": {
+            "selectFromWorkspace": "Select annotation file from workspace",
+            "createEmptyFile": "Create an empty annotation file"
+        }
     }
 }
