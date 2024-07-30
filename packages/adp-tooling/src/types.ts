@@ -193,12 +193,20 @@ export interface CodeExtChange extends CommonChangeProperties {
     };
 }
 
-export const CUSTOMER_BASE = 'CUSTOMER_BASE';
-
 export const enum TemplateFileName {
     Fragment = 'fragment.xml',
     Controller = 'controller.ejs',
     Annotation = 'annotation.xml'
+}
+
+export const enum UserState {
+    customer = 'CUSTOMER_BASE',
+    vendor = 'VENDOR'
+}
+
+export const enum UserStatePrefix {
+    customer = 'customer.',
+    vendor = ''
 }
 
 export const enum HttpStatusCodes {

@@ -18,9 +18,6 @@
         "filePathTooltip": "Select the annotation file from your workspace",
         "addAnnotationOdataSourceTooltip": "Select the annotation file from your workspace",
 
-        "sapUi5Model": "SAPUI5 Model",
-        "oDataService": "OData Service",
-        "oDataAnnotation": "OData Annotation",
         "oDataServiceNameLabel": "OData Service Name",
         "oDataServiceNameTooltip": "Enter a name for the OData service you want to add",
         "oDataServiceUriLabel": "OData Service URI",
@@ -49,9 +46,10 @@
         "cannotHaveSpaces": "Input cannot contain spaces.",
         "fileDoesNotExist": "The file doesn't exist",
         "annotationFileAlreadyExists": "There is already an annotation file with the same name, please choose another file or rename the file and select it again",
-        "invalidValue": "Invalid {{input}}",
-        "errorDuplicatedValue": "{{value}} with the same name was already added to the project",
-        "errorDuplicateNames": "{{value1}} must be different from {{value2}}",
+        "invalidValue": "Invalid JSON",
+        "errorDuplicatedValueOData": "OData Annotation or OData Service with the same name was already added to the project",
+        "errorDuplicatedValueSapui5Model": "SAPUI5 Model with the same name was already added to the project",
+        "errorDuplicateNamesOData": "OData Service Name must be different from OData Annotation Data Source Name",
         "errorInputInvalidValuePrefix": "{{value}} should start with '{{prefix}}'",
         "errorInvalidValueForSpecialChars": "{{value}} must contain only Latin alphanumeric characters or the following symbols: '-','_','$' and '.'"
     }
