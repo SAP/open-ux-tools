@@ -9,8 +9,6 @@ import { type CFBaseConfig, generateBaseConfig } from '../../src';
 import { RouterModuleType } from '../../src/types';
 import { MTABinNotFound } from '../../src/constants';
 import type { Editor } from 'mem-fs-editor';
-import * as memfs from 'memfs';
-import { MtaConfig } from '../../src';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -159,7 +157,7 @@ describe('CF Writer', () => {
                 'Missing ABAP service details for direct service binding'
             );
             await expect(generateBaseConfig({ ...config, mtaId: '~sample' } as CFBaseConfig)).rejects.toThrowError(
-                'The MTA ID can only contain letters, numbers, dashes, periods and underscores (but no spaces)'
+                'The MTA ID can only contain letters, numbers, dashes, periods, underscores and must start with a letter or underscore'
             );
             delete config.routerType;
             await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrowError(
@@ -169,7 +167,7 @@ describe('CF Writer', () => {
             await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrowError(MTABinNotFound);
         });
 
-        it.each([['~sample'], ['111sample'], [' sample'], ['sample two'], ['0sample']])(
+        it.each([['~sample'], ['111sample'], [' sample'], ['sample two'], ['0sample'], ['.sample']])(
             'Validate mtaId %s',
             async (mtaId) => {
                 const config = {
@@ -183,7 +181,7 @@ describe('CF Writer', () => {
                     routerType: RouterModuleType.Managed
                 } as Partial<CFBaseConfig>;
                 await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrowError(
-                    'The MTA ID can only contain letters, numbers, dashes, periods and underscores (but no spaces)'
+                    'The MTA ID can only contain letters, numbers, dashes, periods, underscores and must start with a letter or underscore'
                 );
             }
         );

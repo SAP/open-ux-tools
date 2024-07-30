@@ -145,7 +145,7 @@ function validateMtaConfig(config: CFBaseConfig, fs: Editor): void {
     }
     if (!/^[a-zA-Z_]+[\w\-.]*$/.test(config.mtaId)) {
         throw new Error(
-            'The MTA ID can only contain letters, numbers, dashes, periods and underscores (but no spaces)'
+            'The MTA ID can only contain letters, numbers, dashes, periods, underscores and must start with a letter or underscore'
         );
     }
 
