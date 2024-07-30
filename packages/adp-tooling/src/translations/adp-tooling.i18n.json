@@ -42,15 +42,11 @@
         }
     },
     "validators": {
-        "inputCannotBeEmpty": "Input cannot be empty.",
-        "cannotHaveSpaces": "Input cannot contain spaces.",
         "fileDoesNotExist": "The file doesn't exist",
         "annotationFileAlreadyExists": "There is already an annotation file with the same name, please choose another file or rename the file and select it again",
-        "invalidValue": "Invalid JSON",
         "errorDuplicatedValueOData": "OData Annotation or OData Service with the same name was already added to the project",
         "errorDuplicatedValueSapui5Model": "SAPUI5 Model with the same name was already added to the project",
         "errorDuplicateNamesOData": "OData Service Name must be different from OData Annotation Data Source Name",
-        "errorInputInvalidValuePrefix": "{{value}} should start with '{{prefix}}'",
-        "errorInvalidValueForSpecialChars": "{{value}} must contain only Latin alphanumeric characters or the following symbols: '-','_','$' and '.'"
+        "errorInputInvalidValuePrefix": "{{value}} should start with '{{prefix}}'"
     }
 }

@@ -57,7 +57,7 @@ export function validateEmptyString(input: string): boolean | string {
  */
 export function validateEmptySpaces(value: string): boolean | string {
     if (/\s/.test(value)) {
-        return t('general.inputCannotContainSpaces');
+        return t('general.inputCannotHaveSpaces');
     }
 
     return true;

@@ -11,16 +11,10 @@ export function hasContentDuplication(
     propertyName: string,
     changeFiles: { content: object }[]
 ): boolean {
-    const isDuplicated = changeFiles.some((change: { content: object }) => {
-        if (!Object.prototype.hasOwnProperty.call(change.content, propertyName)) {
-            return false;
-        }
-
-        const contentProperty = (change.content as Record<string, object>)[propertyName];
-        return Object.keys(contentProperty).some((key: string) => key === value);
+    return changeFiles.some(({ content }) => {
+        const contentProperty = (content as Record<string, object>)[propertyName];
+        return contentProperty && Object.keys(contentProperty).includes(value);
     });
-
-    return isDuplicated;
 }
 
 /**

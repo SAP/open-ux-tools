@@ -9,8 +9,13 @@ import type { UI5FlexLayer } from '@sap-ux/project-access';
 
 import { t } from '../../i18n';
 import { getChangesByType } from '../../base/change-utils';
-import { ChangeType, UserStatePrefix, type NewModelAnswers, type ManifestChangeProperties } from '../../types';
-import { isCustomerBase } from '../../base/helper';
+import {
+    ChangeType,
+    UserStatePrefix,
+    type NewModelAnswers,
+    type ManifestChangeProperties,
+    UserState
+} from '../../types';
 import { isCFEnvironment } from '../../base/cf';
 import {
     validateEmptyString,
@@ -33,20 +38,14 @@ const oDataVersions = [
  * @param isCustomerBase Whether the validation is for customer usage.
  * @returns {string | boolean} An error message if the value is an empty string, or true if it is not.
  */
-function validateInput(value: string, isCustomerBase: boolean): boolean | string {
-    let validationResult = validateEmptyString(value);
-    if (typeof validationResult === 'string') {
-        return validationResult;
-    }
+function validatePromptInput(value: string, isCustomerBase: boolean): boolean | string {
+    const validators = [validateEmptyString, validateEmptySpaces, validateSpecialChars];
 
-    validationResult = validateEmptySpaces(value);
-    if (typeof validationResult === 'string') {
-        return validationResult;
-    }
-
-    validationResult = validateSpecialChars(value);
-    if (validateSpecialChars(value)) {
-        return validationResult;
+    for (const validator of validators) {
+        const validationResult = validator(value);
+        if (typeof validationResult === 'string') {
+            return validationResult;
+        }
     }
 
     if (isCustomerBase && !hasCustomerPrefix(value)) {
@@ -66,17 +65,12 @@ function validateInput(value: string, isCustomerBase: boolean): boolean | string
  * @returns {boolean | string} True if the JSON is valid, or an error message if validation fails.
  */
 function validatePromptJSON(value: string): boolean | string {
-    let validationResult = validateEmptyString(value);
+    const validationResult = validateEmptyString(value);
     if (typeof validationResult === 'string') {
-        return validationResult;
+        return true;
     }
 
-    validationResult = validateJSON(value);
-    if (typeof validationResult === 'string') {
-        return validationResult;
-    }
-
-    return validationResult;
+    return validateJSON(value);
 }
 
 /**
@@ -86,17 +80,12 @@ function validatePromptJSON(value: string): boolean | string {
  * @returns {string | boolean} - Returns true if the string is valid JSON. If invalid, returns an error message.
  */
 function validatePromptEmptySpaces(value: string): boolean | string {
-    let validationResult = validateEmptyString(value);
+    const validationResult = validateEmptyString(value);
     if (typeof validationResult === 'string') {
         return validationResult;
     }
 
-    validationResult = validateEmptySpaces(value);
-    if (typeof validationResult === 'string') {
-        return validationResult;
-    }
-
-    return validationResult;
+    return validateEmptySpaces(value);
 }
 
 /**
@@ -108,13 +97,13 @@ function validatePromptEmptySpaces(value: string): boolean | string {
  * @param changeFiles The list of existing change files to check against.
  * @returns {boolean | string} True if no duplication is found, or an error message if validation fails.
  */
-function validateODataName(
+function validatePromptODataName(
     value: string,
     answers: NewModelAnswers,
     isCustomerBase: boolean,
     changeFiles: ManifestChangeProperties[]
 ): boolean | string {
-    const validationResult = validateInput(value, isCustomerBase);
+    const validationResult = validatePromptInput(value, isCustomerBase);
     if (typeof validationResult === 'string') {
         return validationResult;
     }
@@ -138,17 +127,17 @@ function validateODataName(
  * @param changeFiles The list of existing change files to check against.
  * @returns {boolean | string} True if no duplication is found, or an error message if validation fails.
  */
-function validateModelName(
+function validatePromptModelName(
     value: string,
     isCustomerBase: boolean,
     changeFiles: ManifestChangeProperties[]
 ): boolean | string {
-    const validationResult = validateInput(value, isCustomerBase);
+    const validationResult = validatePromptInput(value, isCustomerBase);
     if (typeof validationResult === 'string') {
         return validationResult;
     }
 
-    if (hasContentDuplication(value, 'dataSource', changeFiles)) {
+    if (hasContentDuplication(value, 'model', changeFiles)) {
         return t('validators.errorDuplicatedValueSapui5Model');
     }
 
@@ -163,8 +152,8 @@ function validateModelName(
  * @returns {YUIQuestion<NewModelAnswers>[]} The questions/prompts.
  */
 export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestion<NewModelAnswers>[] {
-    const isCustomer = isCustomerBase(layer);
-    const defaultSeviceName = isCustomer ? UserStatePrefix.customer : '';
+    const isCustomerBase = UserState.customer === layer;
+    const defaultSeviceName = isCustomerBase ? UserStatePrefix.customer : UserStatePrefix.vendor;
     const isCFEnv = isCFEnvironment(projectPath);
 
     const changeFiles = getChangesByType(projectPath, ChangeType.ADD_NEW_MODEL, 'manifest');
@@ -177,7 +166,7 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
             default: defaultSeviceName,
             store: false,
             validate: (value: string, answers: NewModelAnswers) => {
-                return validateODataName(value, answers, isCustomer, changeFiles);
+                return validatePromptODataName(value, answers, isCustomerBase, changeFiles);
             },
             guiOptions: {
                 mandatory: true,
@@ -225,7 +214,7 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
             },
             default: defaultSeviceName,
             validate: (value: string) => {
-                return validateModelName(value, isCustomer, changeFiles);
+                return validatePromptModelName(value, isCustomerBase, changeFiles);
             },
             store: false
         } as InputQuestion<NewModelAnswers>,
@@ -250,7 +239,7 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
             name: 'dataSourceName',
             message: t('prompts.oDataAnnotationDataSourceNameLabel'),
             validate: (value: string, answers: NewModelAnswers) => {
-                return validateODataName(value, answers, isCustomer, changeFiles);
+                return validatePromptODataName(value, answers, isCustomerBase, changeFiles);
             },
             default: defaultSeviceName,
             store: false,
