@@ -33,6 +33,11 @@ export interface InquirerAdapter {
     promptModule?: PromptModule;
 }
 
+export interface LinkGuiOption {
+    text?: string;
+    url?: string;
+}
+
 /**
  * To be replaced when YUI specific types are available from `"@sap-devx/yeoman-ui-types`.
  *
@@ -58,6 +63,8 @@ export interface GuiOptions {
      * Indicates the type of the prompt
      */
     type?: string;
+
+    link?: LinkGuiOption;
 }
 
 export type PromptSeverityMessage = (
@@ -106,6 +113,17 @@ export interface CheckBoxQuestion<A extends Answers = Answers> extends BaseCheck
 
 export interface NumberQuestion<A extends Answers = Answers> extends BaseNumberQuestion<A> {
     name: YUIQuestion['name'];
+    guiOptions?: YUIQuestion['guiOptions'];
+}
+
+export interface AutocompleteQuestion<A extends Answers = Answers> extends Question<A> {
+    type: 'autocomplete' | any;
+    source: (answers: A, input: string) => Promise<string[]>;
+    suggestOnly?: boolean; // When false input cannot be used to provide an answer, which must be selected. This only applies to CLI use.
+    /**
+     * Additional messages can be shown based on auto-complete search results
+     */
+    additionalInfo: () => string;
     guiOptions?: YUIQuestion['guiOptions'];
 }
 /**

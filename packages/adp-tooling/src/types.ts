@@ -569,6 +569,15 @@ export interface Value {
     format: string;
 }
 
+export interface FlpConfigAnswers {
+    inboundId?: string;
+    title: string;
+    subtitle?: string;
+    action?: string;
+    semanticObject?: string;
+    parameters?: string;
+}
+
 export declare enum InputChoice {
     ENTER_MANUALLY = 'Enter manually',
     CHOOSE_FROM_EXISTING = 'Choose from existing'
@@ -582,5 +591,5 @@ export interface DeployConfigAnswers {
     packageAutocomplete?: string;
     transportInputChoice: InputChoice;
     transportManual?: string;
-    transportAutocomplete?: string;
+    transportFromList?: string;
 }

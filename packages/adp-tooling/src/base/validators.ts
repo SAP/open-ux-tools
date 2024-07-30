@@ -1,9 +1,11 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { OperationsType } from '@sap-ux/axios-extension';
+import { AbapServiceProvider, ListPackageService, OperationsType } from '@sap-ux/axios-extension';
 import { t } from '../i18n';
 import { existsSync } from 'fs';
 import { parseParameters } from './helper';
 import { InputChoice } from '../types';
+import { listPackages } from './services/listPackages';
+import { listTransports } from './services/listTransports';
 
 /**
  * Checks if the input is a valid SAP client.
@@ -225,10 +227,84 @@ export function validateAbapRepository(value: string): string | boolean {
     return true;
 }
 
-export async function validatePackageChoiceInput(value: InputChoice, system: string): Promise<string | boolean> {
+export async function validatePackageChoiceInput(
+    value: InputChoice,
+    provider: AbapServiceProvider
+): Promise<string | boolean> {
     if (value === InputChoice.ENTER_MANUALLY) {
         return true;
     }
+    try {
+        const packages = await listPackages('', provider);
+        if (!packages || (packages && packages.length === 0)) {
+            return t('validators.abapPackagesNotFound');
+        }
+    } catch (error) {
+        return t('validators.abapPackagesNotFound');
+    }
 
     return true;
+}
+
+export function validatePackage(value: string, repository: string): string | undefined {
+    if (!isNotEmptyString(value)) {
+        return t('validators.inputCannotBeEmptyGeneric', { input: t(`prompts.package`) });
+    }
+
+    //Validation for format
+    if (!/^(?:\/\w+\/)?[$]?\w*$/.test(value)) {
+        return t('validators.package.invalidFormat');
+    }
+
+    //Validation for repository namespace
+    if (value.startsWith('/')) {
+        const valueParts = value.split('/').filter((el) => el !== '');
+        const packageNamespace = valueParts[0];
+        if (!repository.startsWith(`/${packageNamespace}/`)) {
+            return t('validators.package.invalidRepositoryNamespace');
+        }
+
+        return undefined;
+    }
+
+    //Validation for prefix
+    const startPrefix = value.startsWith('SAP') ? 'SAP' : value[0];
+    const allowedPrefixes = ['$', 'Z', 'Y', 'SAP'];
+    if (!allowedPrefixes.find((el) => el === startPrefix)) {
+        return t('validators.package.invalidStartingPrefix');
+    }
+
+    //Validation for repository prefix
+    if (repository && !value.startsWith('$') && !repository.startsWith(startPrefix)) {
+        return t('validators.package.invalidRepositoryNamespace');
+    }
+
+    return undefined;
+}
+
+export async function validateTransportChoiceInput(
+    value: InputChoice,
+    packageName: string,
+    repository: string,
+    provider: AbapServiceProvider
+): Promise<string | boolean> {
+    try {
+        if (!value) {
+            return t('validators.chooseTransportInput');
+        }
+        if (value === InputChoice.CHOOSE_FROM_EXISTING) {
+            if (!packageName || !repository) {
+                return t('validators.invalidTranposportPrereq');
+            }
+
+            const transportList = await listTransports(packageName, repository, provider);
+            if (!transportList || (transportList && transportList.length === 0)) {
+                return t('validators.errorFetchingTransports');
+            }
+        }
+
+        return true;
+    } catch (error) {
+        return t('validators.errorFetchingTransports');
+    }
 }
