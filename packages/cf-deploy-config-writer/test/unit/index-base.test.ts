@@ -9,6 +9,8 @@ import { type CFBaseConfig, generateBaseConfig } from '../../src';
 import { RouterModuleType } from '../../src/types';
 import { MTABinNotFound } from '../../src/constants';
 import type { Editor } from 'mem-fs-editor';
+import * as memfs from 'memfs';
+import { MtaConfig } from '../../src';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -166,5 +168,24 @@ describe('CF Writer', () => {
             hasSyncMock.mockReturnValue(false);
             await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrowError(MTABinNotFound);
         });
+
+        it.each([['~sample'], ['111sample'], [' sample'], ['sample two'], ['0sample']])(
+            'Validate mtaId %s',
+            async (mtaId) => {
+                const config = {
+                    abapServiceProvider: {
+                        abapService: '~abapService',
+                        abapServiceName: '~abapService'
+                    },
+                    mtaPath: join(outputDir, mtaId),
+                    mtaId,
+                    mtaDescription: 'MyManagedDescription',
+                    routerType: RouterModuleType.Managed
+                } as Partial<CFBaseConfig>;
+                await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrowError(
+                    'The MTA ID can only contain letters, numbers, dashes, periods and underscores (but no spaces)'
+                );
+            }
+        );
     });
 });

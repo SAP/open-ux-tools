@@ -143,7 +143,7 @@ function validateMtaConfig(config: CFBaseConfig, fs: Editor): void {
     if (!config.routerType || !config.mtaId || !config.mtaPath) {
         throw new Error('Missing required parameters, MTA path, MTA ID or router type');
     }
-    if (!/^[\w_]+$/.test(config.mtaId)) {
+    if (!/^[a-zA-Z_]+[\w\-.]*$/.test(config.mtaId)) {
         throw new Error(
             'The MTA ID can only contain letters, numbers, dashes, periods and underscores (but no spaces)'
         );
