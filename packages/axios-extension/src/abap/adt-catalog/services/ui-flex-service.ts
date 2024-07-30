@@ -25,7 +25,7 @@ export class UIFlexService extends AdtService {
     /**
      * Send ADT request to fetch UI Flex settings.
      *
-     * @returns AtoSettings
+     * @returns UIFlexSettings
      */
     public async getUIFlex(): Promise<UIFlexSettings> {
         const acceptHeaders = {
