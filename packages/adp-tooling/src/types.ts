@@ -345,7 +345,7 @@ export interface NewModelAnswers {
     /** Optional URI of the OData annotation data source. */
     dataSourceURI?: string;
     /** Optional settings for the OData annotation. */
-    settings?: string;
+    annotationSettings?: string;
 }
 
 export interface DataSourceData {

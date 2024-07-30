@@ -42,7 +42,7 @@ export class NewModelWriter implements IWriter<NewModelData> {
         modelSettings,
         version,
         dataSourceURI,
-        settings
+        annotationSettings
     }: NewModelAnswers): object {
         const content: NewModelContent = {
             dataSource: {
@@ -72,8 +72,8 @@ export class NewModelWriter implements IWriter<NewModelData> {
                 type: 'ODataAnnotation'
             } as DataSourceItem;
 
-            if (settings && settings.length !== 0) {
-                content.dataSource[dataSourceName].settings = parseStringToObject(settings);
+            if (annotationSettings && annotationSettings.length !== 0) {
+                content.dataSource[dataSourceName].settings = parseStringToObject(annotationSettings);
             }
         }
 
