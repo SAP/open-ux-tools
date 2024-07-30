@@ -38,7 +38,7 @@ Object {
       "choices": Array [],
       "dependantPromptNames": Array [
         "aggregationPath",
-        "filterBar",
+        "buildingBlockData.filterBar",
       ],
       "message": "View or Fragment File",
       "name": "viewOrFragmentPath",
@@ -315,7 +315,7 @@ Object {
       "choices": Array [],
       "dependantPromptNames": Array [
         "aggregationPath",
-        "filterBar",
+        "buildingBlockData.filterBar",
       ],
       "groupId": "tableBuildingBlockProperties",
       "message": "View or Fragment File",
@@ -801,7 +801,7 @@ Object {
       "choices": [Function],
       "dependantPromptNames": Array [
         "aggregationPath",
-        "filterBar",
+        "buildingBlockData.filterBar",
       ],
       "message": "View or Fragment File",
       "name": "viewOrFragmentPath",
@@ -1264,7 +1264,7 @@ Object {
       "choices": [Function],
       "dependantPromptNames": Array [
         "aggregationPath",
-        "filterBar",
+        "buildingBlockData.filterBar",
       ],
       "groupId": "tableBuildingBlockProperties",
       "message": "View or Fragment File",

@@ -38,7 +38,7 @@ export async function getChartBuildingBlockPrompts(context: PromptContext): Prom
             getViewOrFragmentPathPrompt(context, t('viewOrFragmentPath.validate'), {
                 required: true,
                 message: t('viewOrFragmentPath.message'),
-                dependantPromptNames: ['aggregationPath', 'filterBar']
+                dependantPromptNames: ['aggregationPath', 'buildingBlockData.filterBar']
             }),
             getBuildingBlockIdPrompt(context, t('id.validation'), {
                 message: t('id.message'),
