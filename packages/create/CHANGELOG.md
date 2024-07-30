@@ -1,5 +1,20 @@
 # @sap-ux/create
 
+## 0.7.28
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.7.5
+
+## 0.7.27
+
+### Patch Changes
+
+-   2a7d3c4: Add Change Inbound prompting and cli command
+-   Updated dependencies [2a7d3c4]
+    -   @sap-ux/adp-tooling@0.12.18
+    -   @sap-ux/preview-middleware@0.16.26
+
 ## 0.7.26
 
 ### Patch Changes
