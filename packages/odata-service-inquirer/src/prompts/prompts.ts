@@ -71,7 +71,7 @@ function getDatasourceTypeQuestion(options?: DatasourceTypePromptOptions): YUIQu
             if (source === DatasourceType.businessHub) {
                 return {
                     message: t('prompts.nonUIServiceTypeWarningMessage', {
-                        serviceTypeDesc: t('prompts.datasourceType.businessHubName')
+                        serviceType: t('prompts.datasourceType.businessHubName')
                     }),
                     severity: Severity.warning
                 };

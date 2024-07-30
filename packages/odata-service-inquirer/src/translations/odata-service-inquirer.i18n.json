@@ -96,10 +96,17 @@
             "message": "System name",
             "hint": "Entering a system name will save the connection for re-use.",
             "systemNameExistsWarning": "A system with that name already exists in the secure storage. Please try a different name.",
-            "reservedSystemNameWarning": "'{{ systemName }}' is a reserved system name. Please try a different name."
+            "reservedSystemNameWarning": "'{{ systemName }}' is a reserved system name. Please try a different name.",
+            "emptySystemNameWarning": "System name cannot be empty."
         },
         "systemSelection": {
             "newSystemChoiceLabel": "New system"
+        },
+        "abapOnBTPType": {
+            "message": "ABAP environment definition source",
+            "choiceReentranceTicket": "Use Reentrance Ticket",
+            "choiceServiceKey": "Upload a Service Key File",
+            "choiceCloudFoundry": "Discover a Cloud Foundry Service"
         }
     },
     "errors": {
@@ -129,7 +136,7 @@
         "noSuchHostError": "No such host is known",
         "odataServiceVersionMismatch": "The template you have chosen supports V{{requiredVersion}} OData services only. The provided version is V{{serviceVersion}}.",
         "destinationAuthError": "The selected system is returning an authentication error. Please verify the destination configuration",
-        "serviceUrlNotFound": "Please verify the service url: {{- url}}, target system configuration and network connectivity",
+        "systemOrServiceUrlNotFound": "Please verify the url: {{- url}}, target system configuration and network connectivity",
         "urlRedirect": "The service URL is redirecting",
         "certValidationRequired": "Certificate validation is required to continue.",
         "exitingGeneration": "Exiting generation. {{exitReason}}",

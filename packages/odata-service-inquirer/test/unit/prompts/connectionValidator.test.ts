@@ -282,7 +282,7 @@ describe('ConnectionValidator', () => {
 
         const connectValidator = new ConnectionValidator();
         await connectValidator.validateAuth('https://example.com:1234', 'user1', 'pword1', {
-            isSystem: true,
+            systemAuthType: 'basic',
             sapClient: '999'
         });
         expect(createProviderSpy).toHaveBeenCalledWith({
@@ -291,6 +291,7 @@ describe('ConnectionValidator', () => {
                 username: 'user1'
             },
             baseURL: 'https://example.com:1234',
+            url: '/',
             cookies: '',
             ignoreCertErrors: false,
             params: {
@@ -308,7 +309,7 @@ describe('ConnectionValidator', () => {
             .spyOn(axiosExtension.V4CatalogService.prototype, 'listServices')
             .mockResolvedValueOnce([]);
         const connectValidator = new ConnectionValidator();
-        await connectValidator.validateUrl('https://example.com:1234', { isSystem: true });
+        await connectValidator.validateUrl('https://example.com:1234', { systemAuthType: 'basic' });
 
         expect(connectValidator.catalogs[axiosExtension.ODataVersion.v2]).toBeInstanceOf(
             axiosExtension.V2CatalogService
@@ -324,7 +325,7 @@ describe('ConnectionValidator', () => {
         listServicesV2Mock = jest
             .spyOn(axiosExtension.V2CatalogService.prototype, 'listServices')
             .mockRejectedValue(newAxiosErrorWithStatus(404));
-        await connectValidator.validateUrl('https://example1.com:1234', { isSystem: true });
+        await connectValidator.validateUrl('https://example1.com:1234', { systemAuthType: 'basic' });
 
         expect(connectValidator.catalogs[axiosExtension.ODataVersion.v2]).toBeInstanceOf(
             axiosExtension.V2CatalogService

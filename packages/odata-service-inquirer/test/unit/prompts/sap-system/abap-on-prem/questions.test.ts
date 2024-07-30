@@ -177,7 +177,7 @@ describe('questions', () => {
         const systemUrl = 'https://example.com';
         expect(await (systemUrlQuestion?.validate as Function)(systemUrl)).toBe(true);
         expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith('https://example.com', {
-            'isSystem': true,
+            'systemAuthType': 'basic',
             'odataVersion': undefined
         });
         // Prompt state should be updated with the connected system
@@ -256,7 +256,7 @@ describe('questions', () => {
 
         expect(await (passwordPrompt?.validate as Function)('pword01', { systemUrl, abapSystemUsername })).toBe(true);
         expect(connectionValidatorMock.validateAuth).toHaveBeenCalledWith(systemUrl, abapSystemUsername, password, {
-            isSystem: true,
+            systemAuthType: 'basic',
             sapClient: undefined
         });
         expect(PromptState.odataService.connectedSystem?.serviceProvider).toBe(serviceProviderMock);

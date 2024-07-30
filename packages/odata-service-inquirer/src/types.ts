@@ -20,7 +20,12 @@ export enum DatasourceType {
     projectSpecificDestination = 'projectSpecificDestination'
 }
 
-export type SapSystemType = 'abapOnPrem' | 'abapOnBtp';
+export const SapSystemTypes = {
+    abapOnPrem: 'abapOnPrem',
+    abapOnBtp: 'abapOnBtp'
+} as const;
+
+export type SapSystemType = keyof typeof SapSystemTypes;
 
 /**
  * Answers returned by the OdataServiceInquirer prompt API.

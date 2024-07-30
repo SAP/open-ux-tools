@@ -4,12 +4,16 @@ import {
     type CatalogService,
     type V2CatalogService,
     type ODataServiceInfo,
-    type ServiceProvider
+    type ServiceProvider,
+    ODataVersion
 } from '@sap-ux/axios-extension';
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../../../i18n';
 import LoggerHelper from '../../../logger-helper';
-import type { ServiceAnswer } from '../new-system/types';
+import type { ServiceAnswer } from './types';
+import type { ConnectionValidator } from '../../../connectionValidator';
+import { PromptState } from '../../../../utils';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
 
 // Service ids continaining these paths should not be offered as UI compatible services
 const nonUIServicePaths = ['/IWBEP/COMMON/'];
@@ -134,4 +138,37 @@ export async function getServiceType(
         }
     }
     return resolvedServiceType ?? (serviceType as ServiceType);
+}
+
+/**
+ * Requests and sets the service details to the PromptState.odataService properties.
+ * If an error occurs, the error message is returned for use in validators.
+ *
+ * @param service the specific service to get details for
+ * @param systemUrl the system origin where the service is hosted
+ * @param connectionValidator a reference to the connection validator
+ * @returns true if successful, setting the PromptState.odataService properties, or an error message indicating why the service details could not be retrieved.
+ */
+export async function getServiceDetails(
+    service: ServiceAnswer,
+    systemUrl: string,
+    connectionValidator: ConnectionValidator
+): Promise<string | boolean> {
+    const serviceCatalog = connectionValidator.catalogs[service.serviceODataVersion];
+
+    const serviceResult = await getServiceMetadata(
+        service.servicePath,
+        serviceCatalog,
+        connectionValidator.serviceProvider
+    );
+    if (typeof serviceResult === 'string') {
+        return serviceResult;
+    }
+    PromptState.odataService.annotations = serviceResult?.annotations;
+    PromptState.odataService.metadata = serviceResult?.metadata;
+    PromptState.odataService.odataVersion =
+        service.serviceODataVersion === ODataVersion.v2 ? OdataVersion.v2 : OdataVersion.v4;
+    PromptState.odataService.servicePath = service.servicePath;
+    PromptState.odataService.origin = systemUrl;
+    return true;
 }

@@ -104,6 +104,37 @@ describe('questions', () => {
                 "name": "cliServicePromptName",
                 "when": [Function],
               },
+              {
+                "choices": [
+                  {
+                    "name": "prompts.abapOnBtpType.cloudFoundry",
+                    "value": "cloudFoundry",
+                  },
+                  {
+                    "name": "prompts.abapOnBtpType.serviceKey",
+                    "value": "serviceKey",
+                  },
+                  {
+                    "name": "prompts.abapOnBtpType.reentranceTicket",
+                    "value": "reentranceTicket",
+                  },
+                ],
+                "message": "SCP_ABAP_SOURCE_MESSAGE",
+                "name": "abapOnBtpAuthType",
+                "type": "list",
+                "when": [Function],
+              },
+              {
+                "guiOptions": {
+                  "breadcrumb": true,
+                  "mandatory": true,
+                },
+                "message": "key 'prompts.systemUrl (en)' returned an object instead of string.",
+                "name": "abapOnBtpSystemUrl",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
             ]
         `);
     });

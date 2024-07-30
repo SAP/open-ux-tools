@@ -8,6 +8,7 @@ import { XMLParser } from 'fast-xml-parser';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import LoggerHelper from '../prompts/logger-helper';
 import { t } from '../i18n';
+import { ODataVersion } from '@sap-ux/axios-extension';
 
 const osVersionName = osName();
 
@@ -114,6 +115,19 @@ export function originToRelative(metadata: string): string {
         // Retain the original path segment after the origin, matched with capture group 5 (index 4)
         (match: string, ...patterns: string[]) => `${patterns[0]}./${patterns[4]}`
     );
+}
+
+/**
+ * Convert the odata version type from the prompt (odata-service-writer) type to the axios-extension type.
+ *
+ * @param odataVersion The odata version to convert
+ * @returns The converted odata version
+ */
+export function convertODataVersionType(odataVersion?: OdataVersion): ODataVersion | undefined {
+    if (!odataVersion) {
+        return undefined;
+    }
+    return odataVersion === OdataVersion.v2 ? ODataVersion.v2 : ODataVersion.v4;
 }
 
 export { PromptState };

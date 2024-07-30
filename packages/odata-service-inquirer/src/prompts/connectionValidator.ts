@@ -8,7 +8,13 @@ import type {
     ProviderConfiguration,
     ServiceProvider
 } from '@sap-ux/axios-extension';
-import { ODataVersion, create, createForAbap } from '@sap-ux/axios-extension';
+import {
+    AbapCloudEnvironment,
+    ODataVersion,
+    create,
+    createForAbap,
+    createForAbapOnCloud
+} from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import https from 'https';
 import { ERROR_TYPE, ErrorHandler } from '../error-handler/error-handler';
@@ -16,15 +22,21 @@ import { t } from '../i18n';
 import { SAP_CLIENT_KEY } from '../types';
 import LoggerHelper from './logger-helper';
 import { errorHandler } from './prompt-helpers';
+import type { AbapOnBTPType } from './datasources/sap-system/abap-on-btp/questions';
 
 /**
  * Structure to store validity information about url to be validated.
  */
 interface Validity {
+    // True if the url is in a valid format
     urlFormat?: boolean;
+    // True if the url is reachable
     reachable?: boolean;
+    // True if the url requires authentication, i.e. returns a 401/403  (note even once authenticated, this will remain true)
     authRequired?: boolean;
+    // True if the url is authenticated and accessible
     authenticated?: boolean;
+    // True if the url has a cert error that can be skipped
     canSkipCertError?: boolean;
 }
 
@@ -33,6 +45,13 @@ type ValidationResult = string | boolean | IValidationLink;
 // Cert errors that may be ignored by prompt user
 const ignorableCertErrors = [ERROR_TYPE.CERT_SELF_SIGNED, ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN];
 
+// Makes AxiosRequestConfig url properties required
+interface AxiosExtensionRequestConfig extends AxiosRequestConfig {
+    url: string;
+    baseURL: string;
+}
+// System specific authentication mechanism (e.g. service key, cf discovery), note this is not the same as AuthenticationType (OAuth, Basic, etc.)
+export type SystemAuthType = AbapOnBTPType | 'basic' | 'unknown';
 /**
  * Class that validates the connection to a service url or catalog url.
  * This will determine if authentication is required and if the service/catalog is reachable, generating messages to guide the user.
@@ -41,12 +60,18 @@ const ignorableCertErrors = [ERROR_TYPE.CERT_SELF_SIGNED, ERROR_TYPE.CERT_SELF_S
  */
 export class ConnectionValidator {
     public readonly validity: Validity = {};
+    // The current valid url (not necessarily authenticated but the url is in a valid format)
     private _validatedUrl: string | undefined;
+    // The current client code used for requests, the client code has been validated by a successful request
+    private _validatedClient: string | undefined;
+
     private _odataService: ODataService;
     private _serviceProvider: ServiceProvider;
-    private _axiosConfig: AxiosRequestConfig;
+    private _axiosConfig: AxiosExtensionRequestConfig & ProviderConfiguration;
     private _catalogV2: CatalogService;
     private _catalogV4: CatalogService;
+    private _systemAuthType: SystemAuthType;
+
     /**
      * Getter for the axios configuration.
      *
@@ -86,6 +111,26 @@ export class ConnectionValidator {
     }
 
     /**
+     *
+     */
+    public get systemAuthType(): SystemAuthType {
+        return this._systemAuthType;
+    }
+    /**
+     *
+     */
+    public set systemAuthType(value: SystemAuthType) {
+        this._systemAuthType = value;
+    }
+
+    /**
+     *
+     */
+    public get validatedUrl(): string | undefined {
+        return this._validatedUrl;
+    }
+
+    /**
      * Calls a given service or system url to test its reachability and authentication requirements.
      * If the url is a system url, it will attempt to use the catalog service to get the service info.
      *
@@ -122,20 +167,20 @@ export class ConnectionValidator {
                 url.searchParams.append('saml2', 'disabled');
             }
 
-            const axiosConfig: AxiosRequestConfig & ProviderConfiguration = this.createAxiosConfig(
+            const axiosConfig: AxiosExtensionRequestConfig & ProviderConfiguration = this.createAxiosConfig(
                 url,
                 ignoreCertError,
                 username,
                 password
             );
-            // If system, use catalog service to get the services info
+
             if (isSystem) {
                 await this.createSystemConnection(axiosConfig, odataVersion);
             } else {
                 // Full service URL
                 await this.createServiceConnection(axiosConfig, url.pathname);
             }
-
+            this._validatedClient = url.searchParams.get(SAP_CLIENT_KEY) ?? undefined;
             return 200;
         } catch (e) {
             LoggerHelper.logger.debug(`ConnectionValidator.checkSapService() - error: ${e.message}`);
@@ -168,12 +213,13 @@ export class ConnectionValidator {
         ignoreCertError: boolean,
         username: string | undefined,
         password: string | undefined
-    ) {
-        let axiosConfig: AxiosRequestConfig & ProviderConfiguration = {
+    ): AxiosExtensionRequestConfig & ProviderConfiguration {
+        let axiosConfig: AxiosExtensionRequestConfig & ProviderConfiguration = {
             params: Object.fromEntries(url.searchParams),
             ignoreCertErrors: ignoreCertError,
             cookies: '',
-            baseURL: url.origin
+            baseURL: url.origin,
+            url: url.pathname
         };
 
         if (username && password) {
@@ -193,7 +239,10 @@ export class ConnectionValidator {
      * @param axiosConfig the axios request configuration
      * @param servicePath the service path without the origin
      */
-    private async createServiceConnection(axiosConfig: AxiosRequestConfig, servicePath: string) {
+    private async createServiceConnection(
+        axiosConfig: AxiosExtensionRequestConfig & ProviderConfiguration,
+        servicePath: string
+    ) {
         this._axiosConfig = axiosConfig;
         this._serviceProvider = create(this._axiosConfig);
         this._odataService = this._serviceProvider.service(servicePath);
@@ -207,9 +256,18 @@ export class ConnectionValidator {
      * @param axiosConfig the axios request configuration
      * @param odataVersion the odata version to restrict the catalog requests if only a specific version is required
      */
-    private async createSystemConnection(axiosConfig: AxiosRequestConfig, odataVersion?: ODataVersion) {
+    private async createSystemConnection(
+        axiosConfig: AxiosExtensionRequestConfig & ProviderConfiguration,
+        odataVersion?: ODataVersion
+    ) {
         this._axiosConfig = axiosConfig;
-        this._serviceProvider = createForAbap(this._axiosConfig);
+
+        if (this.systemAuthType === 'reentranceTicket') {
+            this._serviceProvider = this.getAbapOnCloudServiceProvider(axiosConfig);
+        } else {
+            this._serviceProvider = createForAbap(axiosConfig);
+        }
+
         LoggerHelper.attachAxiosLogger(this._serviceProvider.interceptors);
 
         if (!odataVersion || odataVersion === ODataVersion.v2) {
@@ -231,14 +289,36 @@ export class ConnectionValidator {
     }
 
     /**
-     * Validates the service url format as well as its reachability.
      *
-     * @param serviceUrl the odata service url to validate
+     * @param axiosConfig
+     */
+    private getAbapOnCloudServiceProvider(
+        axiosConfig: AxiosExtensionRequestConfig & ProviderConfiguration
+    ): ServiceProvider {
+        const providerConfiguration: ProviderConfiguration = {
+            ignoreCertErrors: axiosConfig.ignoreCertErrors,
+            cookies: axiosConfig.cookies
+        };
+
+        return createForAbapOnCloud({
+            environment: AbapCloudEnvironment.EmbeddedSteampunk,
+            url: new URL(axiosConfig.url, axiosConfig.baseURL).toString(), // URL cannot be undefined
+            ...providerConfiguration
+        });
+    }
+
+    /**
+     * Validates the system or service url format as well as its reachability.
+     *
+     * @param serviceUrl the url to validate, may be a system or service url.
+     *     Note that if systemAuthType is specified, the url will be treated as a system url (only the origin will be considered)
      * @param options options for the connection validation
      * @param options.ignoreCertError ignore some certificate errors
      * @param options.forceReValidation force re-validation of the url
-     * @param options.isSystem if true, the url will be treated as a system url rather than a service url
+     * @param options.isSystem if true, the url will be treated as a system url rather than a service url, this value is retained for subsequent calls
      * @param options.odataVersion if specified will restrict catalog requests to only the specified odata version
+     * @param options.systemAuthType the authentication type used to connect to the system, set to 'unknown' to indicate this is a system connection, the auth type will be determined by the system connection.
+     *     Not to be specified for service connections.
      * @returns true if the url is reachable, false if not, or an error message string
      */
     public async validateUrl(
@@ -283,9 +363,8 @@ export class ConnectionValidator {
             // More helpful context specific error
             if (ErrorHandler.getErrorType(error) === ERROR_TYPE.CONNECTION) {
                 this.validity.reachable = false;
-                return errorHandler.logErrorMsgs(t('errors.serviceUrlNotFound', { url: serviceUrl }));
+                return errorHandler.logErrorMsgs(t('errors.systemOrServiceUrlNotFound', { url: serviceUrl }));
             }
-
             this.resetValidity();
             const errorMsg = errorHandler.getErrorMsg(error);
             return errorMsg ?? t('errors.invalidUrl');
@@ -293,17 +372,17 @@ export class ConnectionValidator {
     }
 
     /**
-     * Translate the status code into a validation result.
+     * Converts the http status code into 'validty' and returns true if the status code indicates that the URL was reachable.
      * Sets the instance validity state based on the status code.
      *
      * @param status a http request status code used to determine the validation result
-     * @returns true if the url is reachable, false if not, or an error message string
+     * @returns true, if the status code indicates the url is reachable, false if not, or an error message string
      */
     private getValidationResultFromStatusCode(status: string | number): boolean | string | IValidationLink {
         if (status === 200) {
+            this.validity.reachable = true;
             this.validity.authenticated = true;
-            this.validity.authRequired = false;
-        } else if (status === 404) {
+        } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.NOT_FOUND) {
             this.validity.reachable = false;
             return ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NOT_FOUND) ?? false;
         } else if (ErrorHandler.isCertError(status)) {
@@ -313,10 +392,11 @@ export class ConnectionValidator {
         } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.AUTH) {
             this.validity.reachable = true;
             this.validity.authRequired = true;
+            this.validity.authenticated = false;
         } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.REDIRECT) {
             this.validity.reachable = true;
             return t('errors.urlRedirect');
-        } else if (status !== 404) {
+        } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.CONNECTION) {
             this.validity.reachable = false;
             return ErrorHandler.getErrorMsgFromType(ERROR_TYPE.CONNECTION, `http code: ${status}`) ?? false;
         }
@@ -349,7 +429,51 @@ export class ConnectionValidator {
     }
 
     /**
-     * Test the connectivity with the specified service url using the provided credentials.
+     * Check whether basic auth is required for the given url, or for the previously validated url if none specified.
+     * This will also set the validity state for the url. This will not validate the URL.
+     *
+     * @param urlString - the url to validate, if not provided the previously validated url will be used
+     * @param client - optional, sap client code, if not provided the previously validated client will be used
+     * @param ignoreCertError
+     * @returns true if basic auth is required, false if not
+     */
+    public async isAuthRequired(
+        urlString = this._validatedUrl,
+        client = this._validatedClient,
+        ignoreCertError = false
+    ): Promise<boolean> {
+        if (!urlString) {
+            return false;
+        }
+
+        // Dont re-request if already validated
+        if (
+            this._validatedUrl === urlString &&
+            this._validatedClient === client &&
+            this.validity.authRequired !== undefined
+        ) {
+            return this.validity.authRequired;
+        }
+        // New URL or client so we need to re-request
+        try {
+            const url = new URL(urlString);
+            if (client) {
+                url.searchParams.append(SAP_CLIENT_KEY, client);
+            }
+            this.validity.authRequired = this.validity.reachable =
+                ErrorHandler.getErrorType(
+                    await this.checkSapService(url, undefined, undefined, { ignoreCertError })
+                ) === ERROR_TYPE.AUTH;
+
+            return this.validity.authRequired;
+        } catch (error) {
+            errorHandler.logErrorMsgs(error);
+            return false; // Cannot determine if auth required
+        }
+    }
+
+    /**
+     * Test the connectivity with the specified service url using the provided credentials (basic authentication).
      *
      * @param url the url to validate
      * @param username user name
@@ -367,31 +491,43 @@ export class ConnectionValidator {
         password: string,
         {
             ignoreCertError = false,
-            isSystem = false,
             sapClient,
-            odataVersion
-        }: { ignoreCertError?: boolean; isSystem?: boolean; odataVersion?: ODataVersion; sapClient?: string } = {}
+            odataVersion,
+            isSystem = false
+        }: {
+            ignoreCertError?: boolean;
+            odataVersion?: ODataVersion;
+            sapClient?: string;
+            isSystem?: boolean;
+        } = {}
     ): Promise<ValidationResult> {
         if (!url) {
             return false;
         }
-
         try {
             const urlObject = new URL(url);
             if (sapClient) {
                 urlObject.searchParams.append(SAP_CLIENT_KEY, sapClient);
             }
 
+            this.systemAuthType = 'basic';
             const status = await this.checkSapService(urlObject, username, password, {
                 ignoreCertError,
                 isSystem,
                 odataVersion
             });
-
+            LoggerHelper.logger.debug(`ConnectionValidator.validateUrl() - status: ${status}; url: ${url}`);
+            // Since an exception was not thrown, this is a valid url
+            this.validity.urlFormat = true;
+            this._validatedUrl = url;
             const valResult = this.getValidationResultFromStatusCode(status);
 
-            if (valResult === true && this.validity.authenticated === true) {
-                return true;
+            if (valResult === true) {
+                if (this.validity.authenticated === true) {
+                    return true;
+                } else if (this.validity.authenticated === false) {
+                    return t('errors.authenticationFailed');
+                }
             }
             return valResult;
         } catch (error) {

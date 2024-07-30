@@ -9,6 +9,7 @@ import { initI18nOdataServiceInquirer } from './i18n';
 import { getQuestions } from './prompts';
 import type { AbapOnPremAnswers } from './prompts/datasources/sap-system/abap-on-prem/questions';
 import { getAbapOnPremSystemQuestions } from './prompts/datasources/sap-system/abap-on-prem/questions';
+import { getAbapOnBTPSystemQuestions } from './prompts/datasources/sap-system/abap-on-btp/questions';
 import { newSystemChoiceValue } from './prompts/datasources/sap-system/new-system/questions';
 import LoggerHelper from './prompts/logger-helper';
 import {
@@ -108,10 +109,26 @@ async function getAbapOnPremSystemPrompts(
     return getAbapOnPremSystemQuestions(systemNamePromptOptions);
 }
 
+/**
+ * Get the prompts for an abap on btp systems. This can be used to create a new system connections.
+ *
+ * @param logger a logger compatible with the {@link Logger} interface
+ * @returns questions for creating a new abap on prem system connection
+ */
+async function getAbapOnBTPSystemPrompts(logger?: Logger): Promise<Question<AbapOnPremAnswers>[]> {
+    if (logger) {
+        LoggerHelper.logger = logger;
+    }
+    // prompt texts must be loaded before the prompts are created, wait for the i18n bundle to be initialized
+    await initI18nOdataServiceInquirer();
+    return getAbapOnBTPSystemQuestions();
+}
+
 export {
     DatasourceType,
     OdataVersion,
     getAbapOnPremSystemPrompts,
+    getAbapOnBTPSystemPrompts,
     getPrompts,
     prompt,
     promptNames,
