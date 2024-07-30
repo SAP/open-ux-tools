@@ -1,5 +1,33 @@
 # @sap-ux/project-access
 
+## 1.25.7
+
+### Patch Changes
+
+-   d549173: - Adjusts getMinUI5VersionAsArray so that semver valid check is included; the function now only returns valid versions.
+    -   Upgrade of @ui5/manifest to 1.66.0; adjustment of all components so that minimumUI5Version definitions as array are processed properly.
+
+## 1.25.6
+
+### Patch Changes
+
+-   a9fac04: Caching promise to load global cds module:
+    -   When loading the global installed cds module is required, we call `cds --version` to locate the path to load from. As this call is quite expensive, so far, after the result was retrieved, the path was cached. Now, we already cache the promise waiting for the result and resolving to the loaded module.
+    -   When `loadGlobalCdsModule` was called a second time before the first execution was finished, by this, we can avoid a useless second expensive call to `cds --version`.
+    -   If your code is calling `loadGlobalCdsModule` (or any method using it) several times, you could possibly have observed sequential execution being faster than parallel execution. In that case you should consider to gain performance by changing to parallel execution now.
+
+## 1.25.5
+
+### Patch Changes
+
+-   421f3ca: fix: module-loader fails to install specification dependecy in '.fioritools' folder when user has 'node_modules' in user home folder
+
+## 1.25.4
+
+### Patch Changes
+
+-   173b5f2: export findCapProjectRoot, required by other modules
+
 ## 1.25.3
 
 ### Patch Changes

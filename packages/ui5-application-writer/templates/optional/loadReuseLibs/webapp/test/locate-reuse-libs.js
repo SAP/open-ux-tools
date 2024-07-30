@@ -41,6 +41,23 @@
             });
             return libOrCompKeysStringTmp;
         }
+        function getComponentUsageNames(compUsages, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            var compNames = Object.keys(compUsages).map(function (compUsageKey) {
+                return compUsages[compUsageKey].name;
+            });
+            compNames.forEach(function (compName) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return compName === substring || compName.startsWith(substring + "."); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + "," + compName;
+                    } else {
+                        libOrCompKeysStringTmp = compName;
+                    }
+                }
+            });
+            return libOrCompKeysStringTmp;
+        }
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -60,7 +77,7 @@
                             manifest["sap.ui5"] &&
                             manifest["sap.ui5"].componentUsages
                         ) {
-                            result = getKeys(manifest["sap.ui5"].componentUsages, result);
+                            result = getComponentUsageNames(manifest["sap.ui5"].componentUsages, result);
                         }
                     }
                     resolve(result);
@@ -211,7 +228,9 @@ sap.registerComponentDependencyPaths(manifestUri)
             sap.ui.getCore().attachInit(function () {
                 registerSAPFonts();
                 // initialize the ushell sandbox component
-                sap.ushell.Container.createRenderer().placeAt("content");
+                sap.ushell.Container.createRenderer(true).then(function (component) {
+                    component.placeAt("content");
+                });
             });
         }
     });

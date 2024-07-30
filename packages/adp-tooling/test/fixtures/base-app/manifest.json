@@ -1,21 +1,21 @@
 {
   "sap.app": {
     "dataSources": {
-      "mainService": {
-        "uri": "/sap/opu/odata/sap/SEPMRA_PROD_MAN/",
+      "service": {
+        "uri": "/path/to/odata/service/",
         "type": "OData",
         "settings": {
           "annotations": [
-            "SEPMRA_PROD_MAN_ANNO_MDL"
+            "annotation"
           ],
           "localUri": "localService/mockdata/metadata.xml"
         }
       },
-      "SEPMRA_PROD_MAN_ANNO_MDL": {
-        "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/?sap-language=EN",
+      "annotation": {
+        "uri": "/path/to/annotation;v=2/Annotations(TechnicalName='annotation',Version='0001')/$value/?sap-language=EN",
         "type": "ODataAnnotation",
         "settings": {
-          "localUri": "localService/SEPMRA_PROD_MAN_ANNO_MDL.xml"
+          "localUri": "localService/annotation.xml"
         }
       }
     }

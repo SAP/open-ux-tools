@@ -1,5 +1,62 @@
 # @sap-ux/ui5-library-writer
 
+## 0.5.4
+
+### Patch Changes
+
+-   Updated dependencies [42486a5]
+    -   @sap-ux/ui5-application-writer@1.1.2
+
+## 0.5.3
+
+### Patch Changes
+
+-   Updated dependencies [d549173]
+    -   @sap-ux/project-access@1.25.7
+    -   @sap-ux/ui5-application-writer@1.1.1
+
+## 0.5.2
+
+### Patch Changes
+
+-   Updated dependencies [a9fac04]
+    -   @sap-ux/project-access@1.25.6
+    -   @sap-ux/ui5-application-writer@1.1.0
+
+## 0.5.1
+
+### Patch Changes
+
+-   Updated dependencies [421f3ca]
+    -   @sap-ux/project-access@1.25.5
+    -   @sap-ux/ui5-application-writer@1.1.0
+
+## 0.5.0
+
+### Minor Changes
+
+-   1a0e478: Removal of private: true Flag from Package.json Templates
+
+### Patch Changes
+
+-   Updated dependencies [1a0e478]
+    -   @sap-ux/ui5-application-writer@1.1.0
+
+## 0.4.8
+
+### Patch Changes
+
+-   Updated dependencies [5b243ac]
+    -   @sap-ux/ui5-application-writer@1.0.0
+
+## 0.4.7
+
+### Patch Changes
+
+-   Updated dependencies [173b5f2]
+    -   @sap-ux/project-access@1.25.4
+    -   @sap-ux/ui5-application-writer@0.27.2
+
 ## 0.4.6
 
 ### Patch Changes
