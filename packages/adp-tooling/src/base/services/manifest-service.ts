@@ -1,4 +1,3 @@
-import { AbapServiceProvider, AxiosRequestConfig } from '@sap-ux/axios-extension';
 import { Manifest } from '@sap-ux/project-access';
 
 import { t } from '../../i18n';

@@ -1,14 +1,10 @@
-import { AbapServiceProvider, AxiosRequestConfig, ProviderConfiguration } from '@sap-ux/axios-extension';
-import { isAppStudio } from '@sap-ux/btp-utils';
 import { Logger } from '@sap-ux/logger';
-import { AuthenticationType } from '@sap-ux/store';
-import {
-    getCredentialsFromStore,
-    createAbapServiceProvider,
-    DestinationAbapTarget,
-    UrlAbapTarget
-} from '@sap-ux/system-access';
 import { AbapTarget } from '@sap-ux/ui5-config';
+import { isAppStudio } from '@sap-ux/btp-utils';
+import { AuthenticationType } from '@sap-ux/store';
+import { getCredentialsFromStore, createAbapServiceProvider } from '@sap-ux/system-access';
+import { AbapServiceProvider, AxiosRequestConfig, ProviderConfiguration } from '@sap-ux/axios-extension';
+
 import { EndpointsService } from './endpoints-service';
 
 export type RequestOptions = AxiosRequestConfig & Partial<ProviderConfiguration>;

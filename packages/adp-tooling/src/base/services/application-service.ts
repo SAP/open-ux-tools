@@ -1,9 +1,9 @@
 import { t } from 'i18next';
 import { App, AppIndex } from '@sap-ux/axios-extension';
 
-import { ProviderService } from './abap-provider-service';
-import { S4HANA_APPS_PARAMS, ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS } from '../../prompts/creation/constants';
 import { Application } from '../../types';
+import { ProviderService } from './abap-provider-service';
+import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, S4HANA_APPS_PARAMS } from '../constants';
 
 interface Choice {
     name: string;

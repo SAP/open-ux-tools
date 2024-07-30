@@ -47,7 +47,6 @@ import { EndpointsService } from '../../base/services/endpoints-service';
 import { UI5VersionService, isFeatureSupportedVersion } from '../../base/services/ui5-version-service';
 import { generateValidNamespace, getDefaultProjectName, getProjectNameTooltip } from './prompt-helpers';
 import { getApplicationType, isSupportedAppTypeForAdaptationProject } from '../../base/app-utils';
-import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, S4HANA_APPS_PARAMS } from './constants';
 import {
     ManifestService,
     getCachedACH,
@@ -231,12 +230,12 @@ export default class ProjectPrompter {
     }
 
     public async validateSelectedApplication(
-        applicationData: { fileType: string },
+        application: Application,
         checkForAdpOverAdpSupport: boolean,
         checkForAdpOverAdpPartialSupport: boolean,
         manifest: Manifest | null
     ): Promise<void> {
-        if (!applicationData) {
+        if (!application) {
             throw new Error(t('validators.selectCannotBeEmptyError', { value: 'Application' }));
         }
 
@@ -245,9 +244,8 @@ export default class ProjectPrompter {
         }
 
         this.isV4AppInternalMode = false;
-        const fileType = applicationData.fileType;
+        this.setAdpOverAdpSupport(checkForAdpOverAdpSupport, checkForAdpOverAdpPartialSupport, application.fileType);
 
-        this.setAdpOverAdpSupport(checkForAdpOverAdpSupport, checkForAdpOverAdpPartialSupport, fileType);
         await this.validateSmartTemplateApplication(manifest);
     }
 
