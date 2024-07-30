@@ -2,6 +2,7 @@ import { AbapServiceProvider, AxiosRequestConfig } from '@sap-ux/axios-extension
 import { Manifest } from '@sap-ux/project-access';
 
 import { t } from '../../i18n';
+import { ProviderService } from './abap-provider-service';
 
 export interface ManifestCache {
     url: string;
@@ -55,7 +56,7 @@ export function getInboundIds(manifest: Manifest | null): string[] {
 export class ManifestService {
     private manifestCache = new Map<string, ManifestCache>();
 
-    constructor() {}
+    constructor(private providerService: ProviderService) {}
 
     /**
      * Resets the manifest cache.
@@ -91,16 +92,16 @@ export class ManifestService {
      * Retrieves and caches the manifest URL and the manifest itself for a specific application.
      * Uses caching to avoid redundant network requests.
      *
-     * @param {AbapServiceProvider} provider The ABAP service provider.
      * @param {string} id - The ID of the application for which to load the manifest.
      * @returns {Promise<void>} The manifest URL.
      */
-    public async loadManifestUrl(provider: AbapServiceProvider, id: string): Promise<void> {
+    public async loadManifestUrl(id: string): Promise<void> {
         const cached = this.manifestCache.get(id);
         if (cached && cached.url) {
             return;
         }
 
+        const provider = this.providerService.getProvider();
         const appIndex = provider.getAppIndex();
         const data = await appIndex.getAppInfo(id);
 
@@ -114,11 +115,11 @@ export class ManifestService {
     /**
      * Fetches and stores the application manifest from a URL.
      *
-     * @param {AbapServiceProvider} provider - The service provider.
      * @param {string} id - The application ID.
      * @returns {Promise<Manifest>} The fetched manifest.
      */
-    public async loadManifest(provider: AbapServiceProvider, id: string): Promise<void> {
+    public async loadManifest(id: string): Promise<void> {
+        const provider = this.providerService.getProvider();
         let cached = this.manifestCache.get(id);
 
         if (cached && cached.manifest) {
@@ -126,7 +127,7 @@ export class ManifestService {
         }
 
         if (!cached || !cached.url) {
-            await this.loadManifestUrl(provider, id);
+            await this.loadManifestUrl(id);
             cached = this.manifestCache.get(id);
         }
 
@@ -152,11 +153,11 @@ export class ManifestService {
     /**
      * Determines if the application supports manifest-first approach.
      *
-     * @param {AbapServiceProvider} provider - The service provider.
      * @param {string} id - The application ID.
      * @returns {Promise<boolean>} True if supported, otherwise throws an error.
      */
-    public async isAppSupported(provider: AbapServiceProvider, id: string): Promise<boolean> {
+    public async isAppSupported(id: string): Promise<boolean> {
+        const provider = this.providerService.getProvider();
         const appIndex = provider.getAppIndex();
         const isSupported = await appIndex.getIsManiFirstSupported(id);
 
@@ -164,18 +165,17 @@ export class ManifestService {
             throw new Error(t('validators.appDoesNotSupportManifest'));
         }
 
-        return this.checkManifestUrlExists(provider, id);
+        return this.checkManifestUrlExists(id);
     }
 
     /**
      * Checks if a manifest URL exists for a given application.
      *
-     * @param {AbapServiceProvider} provider - The service provider.
      * @param {string} id - The application ID.
      * @returns {Promise<boolean>} True if the manifest URL exists, otherwise throws an error.
      */
-    private async checkManifestUrlExists(provider: AbapServiceProvider, id: string): Promise<boolean> {
-        await this.loadManifestUrl(provider, id);
+    private async checkManifestUrlExists(id: string): Promise<boolean> {
+        await this.loadManifestUrl(id);
 
         if (!this.getUrl(id)) {
             throw new Error(t('validators.adpPluginSmartTemplateProjectError'));

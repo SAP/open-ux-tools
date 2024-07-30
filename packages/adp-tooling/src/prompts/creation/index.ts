@@ -62,6 +62,7 @@ import {
     getInboundIds,
     isV4Application
 } from '../../base/services/manifest-service';
+import { ProviderService } from '../../base/services/abap-provider-service';
 
 export default class ProjectPrompter {
     private logger: Logger;
@@ -84,7 +85,7 @@ export default class ProjectPrompter {
     private versionsOnSystem: string[];
     private systemNames: string[];
 
-    private provider: AbapServiceProvider;
+    private providerService: ProviderService;
 
     private inboundIds: string[];
 
@@ -101,9 +102,10 @@ export default class ProjectPrompter {
         this.isCustomerBase = isCustomerBase(layer);
         this.isExtensionInstalled = isExtensionInstalledVsCode('sapse.sap-ux-application-modeler-extension');
 
-        this.manifestService = new ManifestService();
         this.ui5Service = new UI5VersionService(this.isCustomerBase);
         this.endpointsService = new EndpointsService(this.isExtensionInstalled);
+        this.providerService = new ProviderService(this.endpointsService);
+        this.manifestService = new ManifestService(this.providerService);
     }
 
     private modifyAdaptationProjectTypes(): void {
@@ -211,7 +213,8 @@ export default class ProjectPrompter {
     private async systemUI5VersionHandler(value: string): Promise<string[]> {
         if (value) {
             try {
-                const service = await this.provider.getAdtService<UI5RtVersionService>(UI5RtVersionService);
+                const provider = this.providerService.getProvider();
+                const service = await provider.getAdtService<UI5RtVersionService>(UI5RtVersionService);
                 const version = await service?.getUI5Version();
                 this.versionsOnSystem = await this.ui5Service.getSystemRelevantVersions(version);
             } catch (e) {
@@ -295,10 +298,10 @@ export default class ProjectPrompter {
     private async applicationPromptValidationHandler(value: Application): Promise<boolean | string> {
         if (value) {
             try {
-                const res = await this.manifestService.isAppSupported(this.provider, value.id);
+                const res = await this.manifestService.isAppSupported(value.id);
 
                 if (res) {
-                    await this.manifestService.loadManifest(this.provider, value.id);
+                    await this.manifestService.loadManifest(value.id);
 
                     const systemVersion = this.ui5Service.systemVersion;
                     const checkForAdpOverAdpSupport =
@@ -352,7 +355,7 @@ export default class ProjectPrompter {
             try {
                 await this.getSystemData(value);
                 this.versionsOnSystem = await this.systemUI5VersionHandler(value);
-                await this.getApplications(value);
+                // await this.getApplications(value);
                 return this.validateAdaptationProjectTypes();
             } catch (e) {
                 // this.logger.log(e);
@@ -363,49 +366,14 @@ export default class ProjectPrompter {
         return true;
     }
 
-    private async setProvider(system: string, client?: string, username?: string, password?: string) {
-        let target: AbapTarget;
-
-        if (isAppStudio()) {
-            target = {
-                destination: system
-            };
-        } else {
-            const auth = this.endpointsService.getSystemAuthDetails(system);
-
-            target = {
-                url: auth?.url,
-                client: client ?? auth?.client,
-                destination: ''
-            };
-            const storedSystem = await getCredentialsFromStore(
-                { url: auth?.url ?? system, client: auth?.client },
-                {} as Logger
-            );
-
-            if (storedSystem?.authenticationType === AuthenticationType.ReentranceTicket) {
-                target.authenticationType = AuthenticationType.ReentranceTicket;
-            }
-        }
-
-        const requestOptions: AxiosRequestConfig & Partial<ProviderConfiguration> = {
-            ignoreCertErrors: false
-        };
-
-        if (username && password) {
-            requestOptions.auth = { username, password };
-        }
-
-        this.provider = await createAbapServiceProvider(target, requestOptions, true, {} as Logger);
-    }
-
     private async getSystemData(system: string, client?: string, username?: string, password?: string): Promise<void> {
-        await this.setProvider(system, client, username, password);
+        await this.providerService.setProvider(system, client, username, password);
         // this.flexUISystem = await this.isFlexUISupportedSystem(); // TODO: Does not work
         this.flexUISystem = { isOnPremise: true, isUIFlex: true }; // TODO: remove fake assign
 
         try {
-            const lrep = this.provider.getLayeredRepository();
+            const provider = this.providerService.getProvider();
+            const lrep = provider.getLayeredRepository();
             this.systemInfo = await lrep.getSystemInfo();
         } catch (e) {
             // in case request to /sap/bc/lrep/dta_folder/system_info throws error we continue to standart onPremise flow
@@ -424,7 +392,8 @@ export default class ProjectPrompter {
             };
         }
 
-        const adtService = await this.provider.getAdtService<UIFlexService>(UIFlexService);
+        const provider = this.providerService.getProvider();
+        const adtService = await provider.getAdtService<UIFlexService>(UIFlexService);
         const settings = await adtService?.getUIFlex();
 
         return settings;
@@ -434,7 +403,8 @@ export default class ProjectPrompter {
         let applicationIds = [];
         let result: AppIndex = [];
 
-        const appIndex = this.provider.getAppIndex();
+        const provider = this.providerService.getProvider();
+        const appIndex = provider.getAppIndex();
 
         try {
             if (isCloudSystem) {
@@ -491,7 +461,7 @@ export default class ProjectPrompter {
         password?: string,
         client?: string
     ): Promise<void> {
-        await this.setProvider(system, client, username, password);
+        await this.providerService.setProvider(system, client, username, password);
         if (!this.flexUISystem) {
             this.flexUISystem = await this.isFlexUISupportedSystem();
         }
@@ -969,7 +939,7 @@ export default class ProjectPrompter {
                     (this.hasSystemAuthentication ? this.isLoginSuccessfull : true)
                 );
             },
-            choices: this.versionsOnSystem,
+            choices: () => this.versionsOnSystem,
             guiOptions: {
                 applyDefaultWhenDirty: true,
                 hint: t('prompts.ui5VersionTooltip')
@@ -1264,7 +1234,7 @@ export default class ProjectPrompter {
     public async getFlpConfigurationPrompts(appId: string): Promise<any> {
         //TODO: ADD RETURN TYPE
         if (!this.manifestService.getManifest(appId)) {
-            await this.manifestService.loadManifest(this.provider, appId);
+            await this.manifestService.loadManifest(appId);
         }
         const manifest = this.manifestService.getManifest(appId);
         this.inboundIds = getInboundIds(manifest);
