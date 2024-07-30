@@ -517,17 +517,17 @@ export interface Auth {
     client?: string;
 }
 
-export interface AppIndex {
-    'sap.app/id': string;
-    'sap.app/title': string;
-    'sap.app/ach': string;
-    'sap.fiori/registrationIds': string;
-    'fileType': string;
-    'url': string;
-    'repoName': string;
+export interface Application {
+    id: string;
+    title: string;
+    ach: string;
+    registrationIds: string[];
+    fileType: string;
+    bspUrl: string;
+    bspName: string;
 }
 
-export interface Application {
+export interface ApplicationT {
     id: string;
     fileType: string;
     bspUrl: string;

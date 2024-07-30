@@ -2,11 +2,8 @@ import { resolve } from 'path';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
 import {
-    AbapServiceProvider,
     AdaptationProjectType,
     AppIndex,
-    AxiosRequestConfig,
-    ProviderConfiguration,
     SystemInfo,
     UI5RtVersionService,
     UIFlexService
@@ -14,7 +11,6 @@ import {
 import { Logger } from '@sap-ux/logger';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { isExtensionInstalledVsCode } from '@sap-ux/environment-check';
-import { AbapTarget, createAbapServiceProvider, getCredentialsFromStore } from '@sap-ux/system-access';
 import type {
     ListQuestion,
     InputQuestion,
@@ -44,7 +40,6 @@ import {
     validateByRegex,
     validateClient,
     validateEmptyInput,
-    validateEnvironment,
     validateNamespace,
     validatePackage,
     validatePackageChoiceInput,
@@ -57,8 +52,6 @@ import { EndpointsService } from '../../base/services/endpoints-service';
 import { UI5VersionService, isFeatureSupportedVersion } from '../../base/services/ui5-version-service';
 import { generateValidNamespace, getDefaultProjectName, getProjectNameTooltip } from './prompt-helpers';
 import { getApplicationType, isSupportedAppTypeForAdaptationProject } from '../../base/app-utils';
-import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, S4HANA_APPS_PARAMS } from './constants';
-import { AuthenticationType } from '@sap-ux/store';
 import {
     ManifestService,
     getCachedACH,
@@ -69,7 +62,7 @@ import {
 import { ProviderService } from '../../base/services/abap-provider-service';
 import { listTransports } from '../../base/services/listTransports';
 import { ABAP_PACKAGE_SEARCH_MAX_RESULTS, listPackages } from '../../base/services/listPackages';
-import { Question } from 'inquirer';
+import { ApplicationService, getApplicationChoices } from '../../base/services/application-service';
 
 export default class ProjectPrompter {
     private logger: Logger;
@@ -78,7 +71,6 @@ export default class ProjectPrompter {
     private isLoginSuccessfull: boolean;
     private flexUISystem: FlexUISupportedSystem | undefined;
     private systemInfo: SystemInfo;
-    private applicationIds: any;
     private ui5VersionDetected = true;
     private isCloudProject: boolean;
     private isApplicationSupported: boolean;
@@ -101,6 +93,7 @@ export default class ProjectPrompter {
     private ui5Service: UI5VersionService;
     private manifestService: ManifestService;
     private endpointsService: EndpointsService;
+    private appsService: ApplicationService;
 
     private prompts?: Prompts;
     private packageInputChoiceValid: string | boolean;
@@ -115,6 +108,7 @@ export default class ProjectPrompter {
         this.endpointsService = new EndpointsService(this.isExtensionInstalled);
         this.providerService = new ProviderService(this.endpointsService);
         this.manifestService = new ManifestService(this.providerService);
+        this.appsService = new ApplicationService(this.providerService, this.isCustomerBase);
     }
 
     private modifyAdaptationProjectTypes(): void {
@@ -245,12 +239,12 @@ export default class ProjectPrompter {
     }
 
     public async validateSelectedApplication(
-        applicationData: { fileType: string },
+        application: Application,
         checkForAdpOverAdpSupport: boolean,
         checkForAdpOverAdpPartialSupport: boolean,
         manifest: Manifest | null
     ): Promise<void> {
-        if (!applicationData) {
+        if (!application) {
             throw new Error(t('validators.selectCannotBeEmptyError', { value: 'Application' }));
         }
 
@@ -259,9 +253,8 @@ export default class ProjectPrompter {
         }
 
         this.isV4AppInternalMode = false;
-        const fileType = applicationData.fileType;
+        this.setAdpOverAdpSupport(checkForAdpOverAdpSupport, checkForAdpOverAdpPartialSupport, application.fileType);
 
-        this.setAdpOverAdpSupport(checkForAdpOverAdpSupport, checkForAdpOverAdpPartialSupport, fileType);
         await this.validateSmartTemplateApplication(manifest);
     }
 
@@ -348,7 +341,7 @@ export default class ProjectPrompter {
 
     private async systemPromptValidationHandler(value: string): Promise<boolean | string> {
         this.manifestService.resetCache();
-        this.applicationIds = [];
+        this.appsService.resetApps();
         this.ui5VersionDetected = true;
 
         if (!value) {
@@ -408,62 +401,6 @@ export default class ProjectPrompter {
         return settings;
     }
 
-    public async getApps(isCustomerBase: boolean, isCloudSystem: boolean) {
-        let applicationIds = [];
-        let result: AppIndex = [];
-
-        const provider = this.providerService.getProvider();
-        const appIndex = provider.getAppIndex();
-
-        try {
-            if (isCloudSystem) {
-                result = await appIndex.search(S4HANA_APPS_PARAMS);
-            } else {
-                result = await appIndex.search(ABAP_APPS_PARAMS);
-
-                if (isCustomerBase) {
-                    const extraApps = await appIndex.search(ABAP_VARIANT_APPS_PARAMS);
-                    result = result.concat(extraApps);
-                }
-            }
-
-            applicationIds = result
-                .map((app) => {
-                    return {
-                        id: app['sap.app/id'] ?? '',
-                        title: app['sap.app/title'] ?? '',
-                        ach: app['sap.app/ach'],
-                        registrationIds: app['sap.fiori/registrationIds'],
-                        fileType: app['fileType'],
-                        bspUrl: app['url'],
-                        bspName: app['repoName']
-                    };
-                })
-                .sort((appA, appB) => {
-                    let titleA = appA.title.toUpperCase();
-                    let titleB = appB.title.toUpperCase();
-                    if (!titleA.trim()) {
-                        titleA = appA.id.toUpperCase();
-                    }
-
-                    if (!titleB.trim()) {
-                        titleB = appB.id.toUpperCase();
-                    }
-
-                    if (titleA < titleB) {
-                        return -1;
-                    }
-                    if (titleA > titleB) {
-                        return 1;
-                    }
-                    return 0;
-                });
-        } catch (e) {
-            throw new Error(t('validators.cannotLoadApplicationsError'));
-        }
-        return applicationIds;
-    }
-
     private async getApplications(
         system: string,
         username?: string,
@@ -475,11 +412,13 @@ export default class ProjectPrompter {
             this.flexUISystem = await this.isFlexUISupportedSystem();
         }
 
-        this.applicationIds =
-            this.isCloudProject || (this.flexUISystem && (this.flexUISystem.isOnPremise || this.flexUISystem.isUIFlex))
-                ? await this.getApps(this.isCustomerBase, this.isCloudProject)
-                : [];
-        if (this.applicationIds.length === 0) {
+        this.isCloudProject ||
+            (this.flexUISystem &&
+                (this.flexUISystem.isOnPremise || this.flexUISystem.isUIFlex) &&
+                (await this.appsService.loadApps(this.isCloudProject)));
+
+        const applications = this.appsService.getApps();
+        if (applications.length === 0) {
             this.logger.log('Applications list is empty. No errors were thrown during execution of the request.');
         }
     }
@@ -812,7 +751,6 @@ export default class ProjectPrompter {
             name: 'application',
             message: t('prompts.applicationListLabel'),
             when: (answers: ConfigurationInfoAnswers) => {
-                // show the field when the system is selected and the user is authenticated if needed
                 return (
                     !!answers.system &&
                     !this.shouldAuthenticate(answers) &&
@@ -821,21 +759,8 @@ export default class ProjectPrompter {
                 );
             },
             choices: () => {
-                return Array.isArray(this.applicationIds)
-                    ? this.applicationIds.map((app) => {
-                          const name = app.title
-                              ? `${app.title} (${app.id}, ${app.registrationIds}, ${app.ach})`
-                              : `${app.id} (${app.registrationIds}, ${app.ach})`;
-                          return {
-                              value: { id: app.id, fileType: app.fileType, bspUrl: app.bspUrl, bspName: app.bspName },
-                              name: name
-                                  .replace('(, )', '')
-                                  .replace(', , ', ', ')
-                                  .replace(', )', ')')
-                                  .replace('(, ', '(')
-                          };
-                      })
-                    : this.applicationIds;
+                const apps = this.appsService.getApps();
+                return getApplicationChoices(apps);
             },
             default: '',
             guiOptions: {
@@ -1467,10 +1392,9 @@ export default class ProjectPrompter {
                 mandatory: true
             }
         };
-
     }
 
-    public async getDeployConfigPrompts(): Promise<Question<DeployConfigAnswers>[]> {
+    public async getDeployConfigPrompts(): Promise<any> {
         return [
             this.getAbapRepositoryPrompt(),
             this.getDeployConfigDescriptionPrompt(),
