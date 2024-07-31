@@ -6,7 +6,7 @@ import { PromptState } from '../prompts/prompt-state';
 import LoggerHelper from '../logger-helper';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
-import type { AbapDeployConfigPromptOptions, SystemConfig } from '../types';
+import type { AbapDeployConfigPromptOptions, Credentials, SystemConfig } from '../types';
 import type { AbapTarget } from '@sap-ux/ui5-config';
 
 let abapServiceProvider: AbapServiceProvider | undefined;
@@ -21,7 +21,8 @@ let system: SystemConfig;
  */
 export async function getOrCreateServiceProvider(
     options: AbapDeployConfigPromptOptions,
-    systemConfig: SystemConfig
+    systemConfig: SystemConfig,
+    credentials?: Credentials
 ): Promise<AbapServiceProvider> {
     // use cached service provider
     if (abapServiceProvider && isSameSystem(systemConfig, system?.url, system?.client, system?.destination)) {
@@ -42,7 +43,7 @@ export async function getOrCreateServiceProvider(
         return options.backendTarget.abapServiceProvider;
     }
 
-    abapServiceProvider = await createNewServiceProvider();
+    abapServiceProvider = await createNewServiceProvider(credentials);
 
     return abapServiceProvider;
 }
@@ -52,7 +53,7 @@ export async function getOrCreateServiceProvider(
  *
  * @returns abap service provider
  */
-async function createNewServiceProvider(): Promise<AbapServiceProvider> {
+async function createNewServiceProvider(credentials?: Credentials): Promise<AbapServiceProvider> {
     let abapTarget: AbapTarget;
     if (isAppStudio()) {
         abapTarget = { destination: PromptState.abapDeployConfig.destination } as DestinationAbapTarget;
@@ -67,12 +68,20 @@ async function createNewServiceProvider(): Promise<AbapServiceProvider> {
         }
     }
 
-    const serviceProvider = await createAbapServiceProvider(
-        abapTarget,
-        { ignoreCertErrors: false },
-        false,
-        LoggerHelper.logger
-    );
+    let auth;
+    if (credentials?.username && credentials?.password) {
+        auth = {
+            username: credentials.username,
+            password: credentials.password
+        };
+    }
+
+    const requestOptions = {
+        ignoreCertErrors: false,
+        auth
+    };
+
+    const serviceProvider = await createAbapServiceProvider(abapTarget, requestOptions, false, LoggerHelper.logger);
 
     system = {
         url: PromptState.abapDeployConfig.url,

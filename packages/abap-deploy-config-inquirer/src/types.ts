@@ -12,6 +12,10 @@ export const enum ClientChoiceValue {
     Blank = 'blank'
 }
 
+export interface Credentials {
+    username?: string;
+    password?: string;
+}
 export interface BackendTarget {
     systemName?: string; // name given for backend system
     abapTarget: AbapTarget;

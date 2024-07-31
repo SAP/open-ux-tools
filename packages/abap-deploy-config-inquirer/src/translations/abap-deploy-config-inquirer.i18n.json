@@ -99,6 +99,9 @@
             "enterManually": "Enter manually"
         }
     },
+    "info": {
+        "correctCredentials": "Correct credentials"
+    },
     "warnings": {
         "packageNotFound": "Package list cannot be fetched. Please enter the Package manually.",
         "providePackage": "Provide a package",
@@ -116,6 +119,7 @@
         "debugAbapTargetSystem": "Error while getting ABAP target system during {{method}}, error {{error}}",
         "s4SystemNoExtensible": "S4 system not configured as Extensibility Development system. Cannot deploy to it.",
         "incorrectAtoSettings": "Incorrect ATO settings. Package or prefix settings mising.",
+        "incorrectCredentials": "Incorrect credentials. Try again",
         "atoUnauthorisedSystem": "Authentication required to access the ATO Service",
         "createTransportReqFailed": "Create new Transport Request failed. Please enter Transport Request manually.",
         "requireCredentials": "Please provide credentials to authenticate with backend system",

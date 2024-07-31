@@ -4,7 +4,13 @@ import { deleteCachedServiceProvider, getOrCreateServiceProvider } from './abap-
 import { uniformAtoFormat } from '../utils';
 import LoggerHelper from '../logger-helper';
 import type { AtoSettings } from '@sap-ux/axios-extension';
-import type { TransportConfig, InitTransportConfigResult, AbapDeployConfigPromptOptions, SystemConfig } from '../types';
+import type {
+    TransportConfig,
+    InitTransportConfigResult,
+    AbapDeployConfigPromptOptions,
+    SystemConfig,
+    Credentials
+} from '../types';
 
 /**
  * Dummy transport configuration.
@@ -117,14 +123,16 @@ class DefaultTransportConfig implements TransportConfig {
      */
     public async init({
         options,
-        systemConfig
+        systemConfig,
+        credentials
     }: {
         options: AbapDeployConfigPromptOptions;
         systemConfig: SystemConfig;
+        credentials?: Credentials;
     }): Promise<InitTransportConfigResult> {
         const result: InitTransportConfigResult = {};
         try {
-            const provider = await getOrCreateServiceProvider(options, systemConfig);
+            const provider = await getOrCreateServiceProvider(options, systemConfig, credentials);
             const atoService = await provider.getAdtService<AtoService>(AtoService);
             const atoSettings = await atoService?.getAtoInfo();
 
@@ -133,6 +141,7 @@ class DefaultTransportConfig implements TransportConfig {
             }
         } catch (err) {
             await deleteCachedServiceProvider();
+
             if (err.response?.status === 401) {
                 const auth: string = err.response.headers['www-authenticate'];
 
@@ -225,15 +234,17 @@ class DefaultTransportConfig implements TransportConfig {
 export async function getTransportConfigInstance({
     options,
     scp,
+    credentials,
     systemConfig
 }: {
     options: AbapDeployConfigPromptOptions;
     scp?: boolean;
+    credentials?: Credentials;
     systemConfig: SystemConfig;
 }): Promise<InitTransportConfigResult> {
     if (scp) {
         return { transportConfig: new DummyTransportConfig() };
     }
 
-    return new DefaultTransportConfig().init({ options, systemConfig });
+    return new DefaultTransportConfig().init({ options, systemConfig, credentials });
 }

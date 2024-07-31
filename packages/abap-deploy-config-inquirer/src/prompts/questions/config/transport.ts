@@ -45,15 +45,18 @@ export function getTransportRequestPrompts(
                 input: TransportChoices,
                 previousAnswers: AbapDeployConfigAnswers
             ): Promise<boolean | string> => {
-                const result = validateTransportChoiceInput(
-                    input,
-                    options,
-                    previousAnswers,
-                    true,
-                    transportInputChoice
-                );
-                transportInputChoice = input;
-                return result;
+                if (input) {
+                    const result = validateTransportChoiceInput(
+                        input,
+                        options,
+                        previousAnswers,
+                        true,
+                        transportInputChoice
+                    );
+                    transportInputChoice = input;
+                    return result;
+                }
+                return true;
             }
         } as ListQuestion<AbapDeployConfigAnswers>,
         {

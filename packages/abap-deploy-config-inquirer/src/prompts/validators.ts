@@ -217,9 +217,13 @@ export async function validateCredentials(
         warning
     } = await initTransportConfig({
         options: options,
-        scp: previousAnswers.scp ?? PromptState.abapDeployConfig.scp ?? false,
-        url: previousAnswers.url ?? '',
-        client: PromptState.abapDeployConfig.client ?? previousAnswers.client,
+        scp: PromptState.abapDeployConfig.scp,
+        url: PromptState.abapDeployConfig.url,
+        client: PromptState.abapDeployConfig.client,
+        credentials: {
+            username: previousAnswers.username,
+            password: input
+        },
         errorHandler: (e: string) => {
             handleErrorMessage(e);
         }
@@ -236,9 +240,10 @@ export async function validateCredentials(
     } else {
         // Need to give the CLI some context why the username is shown.
         if (PromptState.transportAnswers.transportConfigNeedsCreds) {
-            LoggerHelper.logger.info(t('errors.atoUnauthorisedSystem'));
-            return t('errors.atoUnauthorisedSystem');
+            LoggerHelper.logger.warn(t('errors.incorrectCredentials'));
+            return t('errors.incorrectCredentials');
         } else {
+            LoggerHelper.logger.info(t('info.correctCredentials'));
             return true;
         }
     }

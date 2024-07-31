@@ -8,6 +8,7 @@ import { listPackages } from './validator-utils';
 import type {
     AbapDeployConfigAnswers,
     AbapDeployConfigPromptOptions,
+    Credentials,
     InitTransportConfigResult,
     SystemConfig
 } from './types';
@@ -119,6 +120,7 @@ export async function initTransportConfig({
     url,
     client,
     destination,
+    credentials,
     errorHandler
 }: {
     options: AbapDeployConfigPromptOptions;
@@ -126,6 +128,7 @@ export async function initTransportConfig({
     url?: string;
     client?: string;
     destination?: string;
+    credentials?: Credentials;
     errorHandler: (errorMessage: string) => void;
 }): Promise<InitTransportConfigResult> {
     let result: InitTransportConfigResult = {};
@@ -143,6 +146,7 @@ export async function initTransportConfig({
         result = await getTransportConfigInstance({
             options,
             scp,
+            credentials,
             systemConfig
         });
     } catch (e) {
