@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.28
+
+### Patch Changes
+
+-   cea098a: FIX: regression in adp preview with reuse libs
+
 ## 0.16.27
 
 ### Patch Changes
