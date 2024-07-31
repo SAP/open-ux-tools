@@ -1,3 +1,6 @@
+import VersionInfo from 'sap/ui/VersionInfo';
+import type {SingleVersionInfo} from '../../types/global';
+
 /**
  * Initializes UI5 connectors based on the current UI5 version.
  *
@@ -7,13 +10,14 @@
  *
  * @example
  * intiConnectors(); // Simply call the function without any arguments.
- * @returns {void}
  */
-export function initConnectors(): void {
-    const version = sap.ui.version;
-    const minor = parseInt(version.split('.')[1], 10);
+export default async function initConnectors(): Promise<void> {
+    const version = (await VersionInfo.load({library:'sap.ui.core'}) as SingleVersionInfo)?.version;
+    const versionArray = version ? version.split('.') : ['2', '99'];
+    const minor = parseInt(versionArray[1], 10);
+    const major = parseInt(versionArray[0], 10);
 
-    if (minor < 72) {
+    if (major === 1 && minor < 72) {
         sap.ui.require(['open/ux/preview/client/flp/enableFakeConnector'], function (enableFakeConnector: () => void) {
             enableFakeConnector();
         });
@@ -26,5 +30,3 @@ export function initConnectors(): void {
         );
     }
 }
-
-initConnectors();
