@@ -1,5 +1,6 @@
 import { documentMock } from 'mock/window';
 import '../../../src/flp/bootstrap';
+import { Window } from '../../../types/global';
 
 describe('flp/ushellBootstrap', () => {
     const htmlElement = {
@@ -9,7 +10,7 @@ describe('flp/ushellBootstrap', () => {
     documentMock.getElementById.mockReturnValue(htmlElement);
     const fetchMock = jest.spyOn(global, 'fetch');
 
-    const ushellBootstrap = window['sap-ui-config']['xx-bootTask'];
+    const ushellBootstrap = (window as unknown as Window)['sap-ui-config']['xx-bootTask'];
 
     afterEach(() => {
         jest.clearAllMocks();
@@ -21,25 +22,25 @@ describe('flp/ushellBootstrap', () => {
 
     test('ushell src when ui5 version is 1.x', async () => {
         fetchMock.mockResolvedValueOnce({
-            json: () => Promise.resolve({ version: '1.126.0' })
+            json: () => Promise.resolve({ libraries: [{name: 'sap.ui.core', version: '1.126.0'}] })
         } as jest.Mocked<Response>);
-        
+
         await ushellBootstrap(() => {});
         expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '/test-resources/sap/ushell/bootstrap/sandbox.js');
     });
 
     test('ushell src when ui5 version is 2.0', async () => {
         fetchMock.mockResolvedValue({
-            json: () => Promise.resolve({ version: '2.0.0' })
+            json: () => Promise.resolve({ libraries: [{name: 'sap.ui.core', version: '2.0.0'}] })
         } as jest.Mocked<Response>);
-        
+
         await ushellBootstrap(() => {});
         expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '/resources/sap/ushell/bootstrap/sandbox2.js');
     });
 
     test('fetching version failed', async () => {
         fetchMock.mockRejectedValueOnce('404');
-        
+
         await ushellBootstrap(() => {});
         expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '/test-resources/sap/ushell/bootstrap/sandbox.js');
     });

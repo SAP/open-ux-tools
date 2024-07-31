@@ -13,7 +13,7 @@ async function ushellBootstrap(fnCallback) {
     try {
         const response = await fetch('/resources/sap-ui-version.json');
         const json = await response.json();
-        const version = json?.version;
+        const version = json?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version;
         const major = version ? parseInt(version.split('.')[0], 10) : 2;
         if (major >= 2) {
             src = '/resources/sap/ushell/bootstrap/sandbox2.js';

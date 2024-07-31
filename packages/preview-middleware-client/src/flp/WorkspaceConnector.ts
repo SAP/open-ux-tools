@@ -2,6 +2,7 @@ import merge from 'sap/base/util/merge';
 import ObjectStorageConnector from 'sap/ui/fl/write/api/connectors/ObjectStorageConnector';
 import Layer from 'sap/ui/fl/Layer';
 import VersionInfo from 'sap/ui/VersionInfo';
+import type { VersionInformation } from '../../types/global';
 import { CHANGES_API_PATH, FlexChange, getFlexSettings } from './common';
 
 const connector = merge({}, ObjectStorageConnector, {
@@ -69,8 +70,8 @@ const connector = merge({}, ObjectStorageConnector, {
     loadFeatures: async function () {
         const features = await ObjectStorageConnector.loadFeatures();
 
-        const ui5Version = (await VersionInfo.load()) as { version: string };
-        const [majorVersion, minorVersion] = ui5Version.version.split('.').map((v: string) => parseInt(v, 10));
+        const version = (await VersionInfo.load() as VersionInformation)?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version as string;
+        const [majorVersion, minorVersion] = version.split('.').map((v: string) => parseInt(v, 10));
         features.isVariantAdaptationEnabled = majorVersion >= 1 && minorVersion >= 90;
         const settings = getFlexSettings();
         if (settings?.developerMode) {

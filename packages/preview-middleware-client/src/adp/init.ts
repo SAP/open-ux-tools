@@ -14,9 +14,10 @@ import VersionInfo from 'sap/ui/VersionInfo';
 import { getUI5VersionValidationMessage } from './ui5-version-utils';
 import UI5Element from 'sap/ui/dt/Element';
 import { getError } from '../cpe/error-utils';
+import type { VersionInformation } from '../../types/global';
 
 export default async function (rta: RuntimeAuthoring) {
-    const { version } = (await VersionInfo.load()) as { version: string };
+    const version = (await VersionInfo.load() as VersionInformation)?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version as string;
     const versionParts = version.split('.');
     const minor = parseInt(versionParts[1], 10);
     const flexSettings = rta.getFlexSettings();

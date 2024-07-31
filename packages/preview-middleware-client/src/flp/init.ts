@@ -10,6 +10,7 @@ import { getManifestAppdescr } from '../adp/api-handler';
 import VersionInfo from 'sap/ui/VersionInfo';
 import { getError } from '../cpe/error-utils';
 import initConnectors from './initConnectors';
+import type { VersionInformation } from '../../types/global';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -269,7 +270,7 @@ export async function init({
     const urlParams = new URLSearchParams(window.location.search);
     const container = sap?.ushell?.Container ?? sap.ui.require('sap/ushell/Container');
     let scenario: string = '';
-    const { version } = (await VersionInfo.load()) as { version: string };
+    const version = (await VersionInfo.load() as VersionInformation)?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version as string;
     // Register RTA if configured
     if (flex) {
         const flexSettings = JSON.parse(flex) as FlexSettings;

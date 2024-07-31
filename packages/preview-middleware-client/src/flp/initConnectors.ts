@@ -1,4 +1,5 @@
 import VersionInfo from 'sap/ui/VersionInfo';
+import type { VersionInformation } from '../../types/global';
 
 /**
  * Initializes UI5 connectors based on the current UI5 version.
@@ -11,7 +12,7 @@ import VersionInfo from 'sap/ui/VersionInfo';
  * intiConnectors(); // Simply call the function without any arguments.
  */
 export default async function initConnectors(): Promise<void> {
-    const { version } = (await VersionInfo.load()) as { version: string };
+    const version = (await VersionInfo.load() as VersionInformation)?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version as string;
     const versionArray = version ? version.split('.') : ['2', '99'];
     const minor = parseInt(versionArray[1], 10);
     const major = parseInt(versionArray[0], 10);
