@@ -1312,7 +1312,7 @@ export default class ProjectPrompter {
         };
     }
 
-    private getInputChoiceChoices(): ChoiceOption[] {
+    private getInputChoiceOptions(): ChoiceOption[] {
         return [
             { name: InputChoice.ENTER_MANUALLY, value: InputChoice.ENTER_MANUALLY },
             { value: InputChoice.CHOOSE_FROM_EXISTING, name: InputChoice.CHOOSE_FROM_EXISTING }
@@ -1331,12 +1331,13 @@ export default class ProjectPrompter {
     }
 
     private getPackageInputChoicePrompt(): ListQuestion<DeployConfigAnswers> {
+        const options = this.getInputChoiceOptions();
         return {
             type: 'list',
             name: 'packageInputChoice',
             message: t('prompts.packageInputChoice'),
-            choices: this.getInputChoiceChoices(),
-            default: (answers: DeployConfigAnswers) => answers.packageInputChoice ?? InputChoice.ENTER_MANUALLY,
+            choices: () => options,
+            default: (answers: DeployConfigAnswers) => answers?.packageInputChoice ?? InputChoice.ENTER_MANUALLY,
             guiOptions: {
                 applyDefaultWhenDirty: true
             },
@@ -1454,11 +1455,12 @@ export default class ProjectPrompter {
     }
 
     private getTransportInputChoice(): ListQuestion<DeployConfigAnswers> {
+        const options = this.getInputChoiceOptions();
         return {
             type: 'list',
             name: 'transportInputChoice',
             message: t('prompts.transportInputChoice'),
-            choices: this.getInputChoiceChoices(),
+            choices: () => options,
             default: (answers: DeployConfigAnswers) => answers.transportInputChoice ?? InputChoice.ENTER_MANUALLY,
             guiOptions: {
                 applyDefaultWhenDirty: true
@@ -1509,7 +1511,7 @@ export default class ProjectPrompter {
         };
     }
 
-    public async getDeployConfigPrompts(): Promise<any> {
+    public async getDeployConfigPrompts(): Promise<YUIQuestion<DeployConfigAnswers>[]> {
         return [
             this.getAbapRepositoryPrompt(),
             this.getDeployConfigDescriptionPrompt(),

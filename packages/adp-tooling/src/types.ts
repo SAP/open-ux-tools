@@ -578,7 +578,7 @@ export interface FlpConfigAnswers {
     parameters?: string;
 }
 
-export declare enum InputChoice {
+export enum InputChoice {
     ENTER_MANUALLY = 'Enter manually',
     CHOOSE_FROM_EXISTING = 'Choose from existing'
 }

@@ -117,7 +117,7 @@ export interface NumberQuestion<A extends Answers = Answers> extends BaseNumberQ
     guiOptions?: YUIQuestion['guiOptions'];
 }
 
-export interface AutocompleteQuestion<A extends Answers = Answers> extends Question<A> {
+export interface AutocompleteQuestion<A extends Answers = Answers> extends YUIQuestion<A> {
     type: 'autocomplete' | any;
     source: (answers: A, input: string) => Promise<string[]>;
     suggestOnly?: boolean; // When false input cannot be used to provide an answer, which must be selected. This only applies to CLI use.
