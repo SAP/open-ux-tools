@@ -1,1 +1,1 @@
-export { hasFileDeletes, validateBasePath } from './validation';
+export { hasFileDeletes, validateBasePath, validateAdpProject, validateCloudAdpProject } from './validation';

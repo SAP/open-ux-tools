@@ -23,6 +23,7 @@ const v2Annotations = `<?xml version="1.0" encoding="utf-8"?>
         </edmx:Edmx>`;
 const validateUrlMock = jest.fn().mockResolvedValue(true);
 const validateAuthMock = jest.fn().mockResolvedValue(true);
+const isAuthRequiredMock = jest.fn().mockResolvedValue(false);
 const serviceProviderMock = {} as Partial<ServiceProvider>;
 
 const catalogs = {
@@ -37,6 +38,7 @@ const connectionValidatorMock = {
     validity: {} as ConnectionValidator['validity'],
     validateUrl: validateUrlMock,
     validateAuth: validateAuthMock,
+    isAuthRequired: isAuthRequiredMock,
     serviceProvider: serviceProviderMock,
     catalogs
 };
@@ -198,6 +200,7 @@ describe('questions', () => {
             authRequired: true,
             reachable: true
         };
+        connectionValidatorMock.isAuthRequired = jest.fn().mockResolvedValue(true);
         const newSystemQuestions = getAbapOnPremQuestions();
         const userNamePrompt = newSystemQuestions.find((question) => question.name === 'abapSystemUsername');
         const passwordPrompt = newSystemQuestions.find((question) => question.name === 'abapSystemPassword');
@@ -211,6 +214,8 @@ describe('questions', () => {
             authRequired: false,
             reachable: true
         };
+        connectionValidatorMock.isAuthRequired = jest.fn().mockResolvedValue(false);
+
         expect(await (userNamePrompt?.when as Function)()).toBe(false);
         expect(await (passwordPrompt?.when as Function)()).toBe(false);
 
@@ -220,6 +225,8 @@ describe('questions', () => {
             authRequired: true,
             reachable: true
         };
+        connectionValidatorMock.isAuthRequired = jest.fn().mockResolvedValue(true);
+
         expect(await (userNamePrompt?.when as Function)()).toBe(true);
         expect(await (passwordPrompt?.when as Function)()).toBe(true);
     });

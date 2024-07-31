@@ -1,5 +1,24 @@
 # @sap-ux/preview-middleware
 
+## 0.16.26
+
+### Patch Changes
+
+-   Updated dependencies [2a7d3c4]
+    -   @sap-ux/adp-tooling@0.12.18
+
+## 0.16.25
+
+### Patch Changes
+
+-   42486a5: fix(locate-reuse-lib): corrected extraction of component name
+
+## 0.16.24
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.17
+
 ## 0.16.23
 
 ### Patch Changes
