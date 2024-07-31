@@ -4,7 +4,7 @@ interface Window {
     };
 }
 
-type SingleVersionInfo = {
+export type SingleVersionInfo = {
     /**
      * The name of the library or application
      */

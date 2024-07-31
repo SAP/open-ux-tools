@@ -2,7 +2,7 @@ import merge from 'sap/base/util/merge';
 import ObjectStorageConnector from 'sap/ui/fl/write/api/connectors/ObjectStorageConnector';
 import Layer from 'sap/ui/fl/Layer';
 import VersionInfo from 'sap/ui/VersionInfo';
-import type { VersionInformation } from '../../types/global';
+import type {SingleVersionInfo} from '../../types/global';
 import { CHANGES_API_PATH, FlexChange, getFlexSettings } from './common';
 
 const connector = merge({}, ObjectStorageConnector, {
@@ -70,7 +70,7 @@ const connector = merge({}, ObjectStorageConnector, {
     loadFeatures: async function () {
         const features = await ObjectStorageConnector.loadFeatures();
 
-        const version = (await VersionInfo.load() as VersionInformation)?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version as string;
+        const version = (await VersionInfo.load({library:'sap.ui.core'}) as SingleVersionInfo)?.version;
         const [majorVersion, minorVersion] = version.split('.').map((v: string) => parseInt(v, 10));
         features.isVariantAdaptationEnabled = majorVersion >= 1 && minorVersion >= 90;
         const settings = getFlexSettings();

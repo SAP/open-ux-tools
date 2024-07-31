@@ -3,7 +3,7 @@ import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
 import { isEditable, isReuseComponent } from './utils';
 import VersionInfo from 'sap/ui/VersionInfo';
-import type { VersionInformation } from '../../../types/global';
+import type {SingleVersionInfo} from '../../../types/global';
 
 interface AdditionalData {
     text?: string;
@@ -88,7 +88,7 @@ export async function transformNodes(
 ): Promise<OutlineNode[]> {
     const stack = [...input];
     const items: OutlineNode[] = [];
-    const version = (await VersionInfo.load() as VersionInformation)?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version as string;
+    const version = (await VersionInfo.load({library:'sap.ui.core'}) as SingleVersionInfo)?.version;
     const versionParts = version.split('.');
     const minor = parseInt(versionParts[1], 10);
     while (stack.length) {
