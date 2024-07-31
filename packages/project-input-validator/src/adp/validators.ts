@@ -18,7 +18,7 @@ export function hasContentDuplication(
 }
 
 /**
- * Validates a field for starting with a customer prefix.
+ * Validates a value for starting with a customer prefix.
  *
  * @param value The value to validate.
  * @returns {boolean} True if the value starts with 'customer.' and false if it does not.
