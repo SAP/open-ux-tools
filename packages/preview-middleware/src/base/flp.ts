@@ -109,7 +109,7 @@ export class FlpSandbox {
         this.createFlexHandler();
         this.config.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app'].id;
-        this.templateConfig = createFlpTemplateConfig(this.config, manifest);
+        this.templateConfig = createFlpTemplateConfig(this.config, manifest, resources);
 
         await addApp(
             this.templateConfig,
