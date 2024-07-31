@@ -65,8 +65,8 @@ Object {
     ],
     "libs": "sap.m,sap.ui.core,sap.ushell",
     "resources": Object {
-      "my.resuse.lib": "/custom/path/my.reuse.lib",
-      "open.ux.preview.client": "/preview/client",
+      "my.reuse.lib": "/custom/path/my.reuse.lib",
+      "open.ux.preview.client": "../preview/client",
     },
     "theme": "sap_horizon",
   },
