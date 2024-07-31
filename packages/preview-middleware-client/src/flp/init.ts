@@ -7,6 +7,10 @@ import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import AppState from 'sap/ushell/services/AppState';
 import { getManifestAppdescr } from '../adp/api-handler';
+import VersionInfo from 'sap/ui/VersionInfo';
+import { getError } from '../cpe/error-utils';
+import initConnectors from './initConnectors';
+import type {SingleVersionInfo} from '../../types/global';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -264,8 +268,9 @@ export async function init({
     customInit?: string | null;
 }): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
-    const container = sap?.ushell?.Container ?? (sap.ui.require('sap/ushell/Container') as typeof sap.ushell.Container);
+    const container = sap?.ushell?.Container ?? sap.ui.require('sap/ushell/Container');
     let scenario: string = '';
+    const version = (await VersionInfo.load({library:'sap.ui.core'}) as SingleVersionInfo)?.version;
     // Register RTA if configured
     if (flex) {
         const flexSettings = JSON.parse(flex) as FlexSettings;
@@ -273,7 +278,6 @@ export async function init({
         container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
-                const version = sap.ui.version;
                 const minor = parseInt(version.split('.')[1], 10);
                 const view = event.getParameter('componentInstance');
                 const flexSettings = JSON.parse(flex) as FlexSettings;
@@ -317,6 +321,9 @@ export async function init({
         await registerComponentDependencyPaths(JSON.parse(appUrls), urlParams);
     }
 
+    // Load rta connector
+    await initConnectors();
+
     // Load custom initialization module
     if (customInit) {
         sap.ui.require([customInit]);
@@ -326,15 +333,22 @@ export async function init({
     const resourceBundle = await loadI18nResourceBundle(scenario as Scenario);
     setI18nTitle(resourceBundle);
     registerSAPFonts();
-    const renderer = await container.createRenderer(undefined, true);
+    const major = version ? parseInt(version.split('.')[0], 10) : 2;
+
+    const renderer =
+        major < 2
+            ? await container.createRenderer(undefined, true)
+            : await container.createRendererInternal(undefined, true);
     renderer.placeAt('content');
 }
-
 const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
 if (bootstrapConfig) {
     init({
         appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
         flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
         customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit')
-    }).catch(() => Log.error('Sandbox initialization failed.'));
+    }).catch((e) => {
+        const error = getError(e);
+        Log.error('Sandbox initialization failed: ' + error.message);
+    });
 }
