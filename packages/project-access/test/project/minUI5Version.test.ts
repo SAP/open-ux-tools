@@ -9,6 +9,7 @@ describe('getters for minUI5Version', () => {
     describe('getMinUI5VersionFromManifest', () => {
         const testVersions: Array<TestCase> = [
             { minUI5Version: undefined, expectedResult: undefined },
+            { minUI5Version: '${sap.ui5.dist.veresion}', expectedResult: '${sap.ui5.dist.veresion}' },
             { minUI5Version: 'a.b.c', expectedResult: 'a.b.c' },
             { minUI5Version: ['a.b.c'], expectedResult: ['a.b.c'] },
             { minUI5Version: '1.76.32', expectedResult: '1.76.32' },
@@ -35,6 +36,13 @@ describe('getters for minUI5Version', () => {
     describe('getMinUI5VersionAsArray, with validation', () => {
         const testVersions: Array<TestCase> = [
             { minUI5Version: undefined, expectedResult: [] },
+            { minUI5Version: '${sap.ui5.dist.veresion}', expectedResult: ['${sap.ui5.dist.veresion}'] },
+            { minUI5Version: ['${sap.ui5.dist.veresion}', 'a.b.c'], expectedResult: ['${sap.ui5.dist.veresion}'] },
+            {
+                minUI5Version: ['${sap.ui5.dist.veresion}', '1.121.0'],
+                expectedResult: ['${sap.ui5.dist.veresion}', '1.121.0']
+            },
+            { minUI5Version: '${sap.ui5.dist.veresion', expectedResult: [] },
             { minUI5Version: 'a.b.c', expectedResult: [] },
             { minUI5Version: ['a.b.c'], expectedResult: [] },
             { minUI5Version: '1.76.32', expectedResult: ['1.76.32'] },
