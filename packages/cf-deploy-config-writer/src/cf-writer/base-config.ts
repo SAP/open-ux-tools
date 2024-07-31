@@ -143,10 +143,11 @@ function validateMtaConfig(config: CFBaseConfig, fs: Editor): void {
     if (!config.routerType || !config.mtaId || !config.mtaPath) {
         throw new Error('Missing required parameters, MTA path, MTA ID or router type');
     }
-    if (!/^[a-zA-Z_]+[\w\-.]*$/.test(config.mtaId)) {
-        throw new Error(
-            'The MTA ID can only contain letters, numbers, dashes, periods, underscores and must start with a letter or underscore'
-        );
+    if (config.mtaId.length > 128 || !/^[a-zA-Z_]/.test(config.mtaId)) {
+        throw new Error('The MTA ID must start with a letter or underscore and be less than 128 characters long');
+    }
+    if (!/^[\w\-.]*$/.test(config.mtaId)) {
+        throw new Error('The MTA ID can only contain letters, numbers, dashes, periods, underscores');
     }
 
     validateVersion(config.mtaVersion);

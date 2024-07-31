@@ -156,9 +156,6 @@ describe('CF Writer', () => {
             await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrowError(
                 'Missing ABAP service details for direct service binding'
             );
-            await expect(generateBaseConfig({ ...config, mtaId: '~sample' } as CFBaseConfig)).rejects.toThrowError(
-                'The MTA ID can only contain letters, numbers, dashes, periods, underscores and must start with a letter or underscore'
-            );
             delete config.routerType;
             await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrowError(
                 'Missing required parameters, MTA path, MTA ID or router type'
@@ -166,9 +163,8 @@ describe('CF Writer', () => {
             hasSyncMock.mockReturnValue(false);
             await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrowError(MTABinNotFound);
         });
-
-        it.each([['~sample'], ['111sample'], [' sample'], ['sample two'], ['0sample'], ['.sample']])(
-            'Validate mtaId %s',
+        it.each([['~sample'], ['111sample'], [' sample'], ['0sample'], ['.sample'], ['s'.repeat(129)]])(
+            'Validate length and starting characters %s',
             async (mtaId) => {
                 const config = {
                     abapServiceProvider: {
@@ -181,9 +177,25 @@ describe('CF Writer', () => {
                     routerType: RouterModuleType.Managed
                 } as Partial<CFBaseConfig>;
                 await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrowError(
-                    'The MTA ID can only contain letters, numbers, dashes, periods, underscores and must start with a letter or underscore'
+                    'The MTA ID must start with a letter or underscore and be less than 128 characters long'
                 );
             }
         );
+
+        it.each([['sampl!e'], ['sample two']])('Validate mtaId %s', async (mtaId) => {
+            const config = {
+                abapServiceProvider: {
+                    abapService: '~abapService',
+                    abapServiceName: '~abapService'
+                },
+                mtaPath: join(outputDir, mtaId),
+                mtaId,
+                mtaDescription: 'MyManagedDescription',
+                routerType: RouterModuleType.Managed
+            } as Partial<CFBaseConfig>;
+            await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrowError(
+                'The MTA ID can only contain letters, numbers, dashes, periods, underscores'
+            );
+        });
     });
 });
