@@ -123,7 +123,7 @@ describe('OutlinePanel', () => {
             dialogMessage: undefined,
             isAdpProject: false
         };
-        render(<OutlinePanel />, { initialState });
+        const { container } = render(<OutlinePanel />, { initialState });
         // check one
         const one = screen.getAllByText(/one/i)[0];
         expect(one).toBeInTheDocument();
@@ -137,6 +137,10 @@ describe('OutlinePanel', () => {
         // check second child of one
         const secondChildOfOne = screen.getByText(/second child of one/i);
         expect(secondChildOfOne).toBeInTheDocument();
+
+        // Check if class 'filter-outline' exists
+        const outlineSearchBar = container.getElementsByClassName('filter-outline');
+        expect(outlineSearchBar.length).toBe(1);
     });
 
     test('query tree', () => {
@@ -158,7 +162,7 @@ describe('OutlinePanel', () => {
             dialogMessage: undefined,
             isAdpProject: false
         };
-        render(<OutlinePanel />, { initialState });
+        const { container } = render(<OutlinePanel />, { initialState });
         const search = screen.getByRole('searchbox');
         // trigger search with query
         fireEvent.change(search, { target: { value: 'second' } });
@@ -173,6 +177,10 @@ describe('OutlinePanel', () => {
         // second child of one matches query
         const secondChildOfOne = screen.getByText(/second child of one/i);
         expect(secondChildOfOne).toBeInTheDocument();
+
+        // Check if class 'filter-outline' exists
+        const outlineSearchBar = container.getElementsByClassName('filter-outline');
+        expect(outlineSearchBar.length).toBe(1);
     });
 
     test('focus editable controls of tree', () => {
@@ -228,6 +236,10 @@ describe('OutlinePanel', () => {
         // class 'focusEditable' is set
         focusEditableRow = container.querySelector('.focusEditable');
         expect(focusEditableRow).toBeInTheDocument();
+
+        // Check if class 'filter-outline' exists
+        const outlineSearchBar = container.getElementsByClassName('filter-outline');
+        expect(outlineSearchBar.length).toBe(1);
     });
 
     test('show only commonly used controls of tree', () => {
@@ -293,6 +305,10 @@ describe('OutlinePanel', () => {
         // node 'SmartTable' exists in tree
         const SmartTable = screen.getByText(/SmartTable/i);
         expect(SmartTable).toBeInTheDocument();
+
+        // Check if class 'filter-outline' exists
+        const outlineSearchBar = container.getElementsByClassName('filter-outline');
+        expect(outlineSearchBar.length).toBe(1);
     });
 
     test('handleOpenTooltip should show and hide the tooltip', () => {
@@ -341,6 +357,10 @@ describe('OutlinePanel', () => {
         fireEvent.click(document); // Simulate a click outside the tooltip
 
         expect(tooltip).toHaveStyle({ visibility: 'hidden', opacity: '0' });
+
+        // Check if class 'filter-outline' exists
+        const outlineSearchBar = container.getElementsByClassName('filter-outline');
+        expect(outlineSearchBar.length).toBe(1);
     });
 
     test('should show and hide tooltip when clicking button to open dialog', () => {
@@ -389,6 +409,10 @@ describe('OutlinePanel', () => {
         fireEvent.click(buttonElement); // Simulate a click on the tooltip button
 
         expect(tooltip).toHaveStyle({ visibility: 'hidden', opacity: '0' });
+
+        // Check if class 'filter-outline' exists
+        const outlineSearchBar = container.getElementsByClassName('filter-outline');
+        expect(outlineSearchBar.length).toBe(1);
     });
 
     test('should hide tooltip if another tooltip is already open', () => {
@@ -452,6 +476,10 @@ describe('OutlinePanel', () => {
 
         expect(tooltip).toHaveStyle({ visibility: 'hidden', opacity: '0' });
         expect(tooltip2).toHaveStyle({ visibility: 'visible', opacity: '1' });
+
+        // Check if class 'filter-outline' exists
+        const outlineSearchBar = container.getElementsByClassName('filter-outline');
+        expect(outlineSearchBar.length).toBe(1);
     });
 
     test('do not expand to previously selected control', () => {
@@ -547,5 +575,9 @@ describe('OutlinePanel', () => {
 
         const indicator = container.querySelectorAll('svg circle');
         expect(indicator).toHaveLength(2);
+
+        // Check if class 'filter-outline' exists
+        const outlineSearchBar = container.getElementsByClassName('filter-outline');
+        expect(outlineSearchBar.length).toBe(1);
     });
 });

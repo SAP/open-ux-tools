@@ -183,7 +183,7 @@ describe('ChangePanel', () => {
             isAdpProject: false,
             scenario: 'APP_VARIANT'
         };
-        render(<ChangesPanel />, { initialState });
+        const { container } = render(<ChangesPanel />, { initialState });
 
         // check unsaved changes
         const unsavedChangesTitle = screen.getByText(/unsaved changes/i);
@@ -203,6 +203,9 @@ describe('ChangePanel', () => {
 
         const changeAddXML = screen.getByText(/add fields/i);
         expect(changeAddXML).toBeInTheDocument();
+
+        const searchBar = container.getElementsByClassName('ms-SearchBox root-109');
+        expect(searchBar.length).toBe(1);
     });
 
     test('saved changes - property change', () => {
@@ -218,7 +221,7 @@ describe('ChangePanel', () => {
             dialogMessage: undefined,
             isAdpProject: false
         };
-        render(<ChangesPanel />, { initialState });
+        const { container } = render(<ChangesPanel />, { initialState });
 
         // check saved changes
         const savedChangesTitle = screen.getByText(/saved changes/i);
@@ -269,6 +272,9 @@ describe('ChangePanel', () => {
 
         expect(screen.queryByText(/Test Property Name1/i)).toStrictEqual(null);
         expect(screen.queryByText(/Test Property Name2/i)).toStrictEqual(null);
+
+        const searchBar = container.getElementsByClassName('ms-SearchBox can-clear root-165');
+        expect(searchBar.length).toBe(1);
     });
 
     test('saved changes - Other change', () => {
@@ -297,7 +303,7 @@ describe('ChangePanel', () => {
             dialogMessage: undefined,
             isAdpProject: false
         };
-        render(<ChangesPanel />, { initialState });
+        const { container } = render(<ChangesPanel />, { initialState });
 
         // check unknown changes
         const savedChangesTitle = screen.getByText(/saved changes/i);
@@ -335,6 +341,9 @@ describe('ChangePanel', () => {
         fireEvent.click(deleteButton);
         const confirmButton = screen.getByRole('button', { name: /^Delete$/i });
         confirmButton.click();
+
+        const searchBar = container.getElementsByClassName('ms-SearchBox root-109');
+        expect(searchBar.length).toBe(1);
     });
 
     test('Filter unsaved changes', () => {
@@ -351,7 +360,7 @@ describe('ChangePanel', () => {
             dialogMessage: undefined,
             isAdpProject: false
         };
-        render(<ChangesPanel />, { initialState });
+        const { container } = render(<ChangesPanel />, { initialState });
 
         // check unsaved changes
         const savedChangesTitle = screen.getByText(/unsaved changes/i);
@@ -359,6 +368,9 @@ describe('ChangePanel', () => {
 
         const controlToolbar = screen.getByRole('button', { name: /overflow toolbar/i });
         expect(controlToolbar).toBeInTheDocument();
+
+        const searchBar = container.getElementsByClassName('ms-SearchBox root-109');
+        expect(searchBar.length).toBe(1);
     });
 
     test('Filter saved changes', () => {
@@ -377,7 +389,7 @@ describe('ChangePanel', () => {
             dialogMessage: undefined,
             isAdpProject: false
         };
-        render(<ChangesPanel />, { initialState });
+        const { container } = render(<ChangesPanel />, { initialState });
 
         // check unsaved changes
         const savedChangesTitle = screen.getByText(/saved changes/i);
@@ -385,6 +397,9 @@ describe('ChangePanel', () => {
 
         const formFieldChange = screen.getByText(/id_1698648267087_373_movesimpleformfield/i);
         expect(formFieldChange).toBeInTheDocument();
+
+        const searchBar = container.getElementsByClassName('ms-SearchBox root-109');
+        expect(searchBar.length).toBe(1);
     });
 
     test('External changes', () => {
@@ -405,7 +420,7 @@ describe('ChangePanel', () => {
             dialogMessage: undefined,
             isAdpProject: false
         };
-        render(<ChangesPanel />, { initialState });
+        const { container } = render(<ChangesPanel />, { initialState });
 
         // check unsaved changes
         const externalChangesTitle = screen.getByText(/Changes detected!/i);
@@ -415,5 +430,8 @@ describe('ChangePanel', () => {
             'example1.changes',
             'example2.changes'
         ]);
+
+        const searchBar = container.getElementsByClassName('ms-SearchBox root-109');
+        expect(searchBar.length).toBe(1);
     });
 });
