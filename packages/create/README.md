@@ -42,6 +42,13 @@ sap-ux change data-source /path/to/adaptation-project
 ```
 If the project path is not provided, the current working directory will be used.
 
+### inbound
+Calling `sap-ux change inbound` allows replacing the Inbound FLP configurations of the base application in an adaptation project.  
+```sh
+sap-ux change inbound /path/to/adaptation-project
+```
+If the project path is not provided, the current working directory will be used.
+
 ## remove
 Calling `sap-ux remove` allows removing a feature to a project.
 
