@@ -29,7 +29,7 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
         } = data;
         const annotationFileNameWithoutExtension = fileName?.toLocaleLowerCase().replace('.xml', '');
         const annotationNameSpace =
-            layer === FlexLayer.customer
+            layer === FlexLayer.CUSTOMER_BASE
                 ? `customer.annotation.${annotationFileNameWithoutExtension}`
                 : `annotation.${annotationFileNameWithoutExtension}`;
         return {

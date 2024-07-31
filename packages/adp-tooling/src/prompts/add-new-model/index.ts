@@ -11,7 +11,7 @@ import { t } from '../../i18n';
 import { getChangesByType } from '../../base/change-utils';
 import {
     ChangeType,
-    FlexLayerPrefix,
+    namespacePrefix,
     type NewModelAnswers,
     type ManifestChangeProperties,
     FlexLayer
@@ -88,7 +88,7 @@ function validatePromptODataName(
     if (isCustomerBase && !hasCustomerPrefix(value)) {
         return t('validators.errorInputInvalidValuePrefix', {
             value: t('prompts.oDataServiceNameLabel'),
-            prefix: FlexLayerPrefix.customer
+            prefix: namespacePrefix.customer
         });
     }
 
@@ -126,7 +126,7 @@ function validatePromptODataAnnotationsName(
     if (isCustomerBase && !hasCustomerPrefix(value)) {
         return t('validators.errorInputInvalidValuePrefix', {
             value: t('prompts.oDataAnnotationDataSourceNameLabel'),
-            prefix: FlexLayerPrefix.customer
+            prefix: namespacePrefix.customer
         });
     }
 
@@ -162,7 +162,7 @@ function validatePromptModelName(
     if (isCustomerBase && !hasCustomerPrefix(value)) {
         return t('validators.errorInputInvalidValuePrefix', {
             value: t('prompts.oDataServiceModelNameLabel'),
-            prefix: FlexLayerPrefix.customer
+            prefix: namespacePrefix.customer
         });
     }
 
@@ -181,8 +181,8 @@ function validatePromptModelName(
  * @returns {YUIQuestion<NewModelAnswers>[]} The questions/prompts.
  */
 export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestion<NewModelAnswers>[] {
-    const isCustomerBase = FlexLayer.customer === layer;
-    const defaultSeviceName = isCustomerBase ? FlexLayerPrefix.customer : FlexLayerPrefix.vendor;
+    const isCustomerBase = FlexLayer.CUSTOMER_BASE === layer;
+    const defaultSeviceName = isCustomerBase ? namespacePrefix.customer : namespacePrefix.empty;
     const isCFEnv = isCFEnvironment(projectPath);
 
     const changeFiles = getChangesByType(projectPath, ChangeType.ADD_NEW_MODEL, 'manifest');

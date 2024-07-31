@@ -206,13 +206,13 @@ export const enum TemplateFileName {
 }
 
 export const enum FlexLayer {
-    customer = 'CUSTOMER_BASE',
-    vendor = 'VENDOR'
+    CUSTOMER_BASE = 'CUSTOMER_BASE',
+    VENDOR = 'VENDOR'
 }
 
-export const enum FlexLayerPrefix {
+export const enum namespacePrefix {
     customer = 'customer.',
-    vendor = ''
+    empty = ''
 }
 
 export const enum HttpStatusCodes {
