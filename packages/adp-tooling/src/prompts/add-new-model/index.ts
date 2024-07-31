@@ -74,21 +74,6 @@ function validatePromptJSON(value: string): boolean | string {
 }
 
 /**
- * Validates a string to check if it can be interpreted as valid JSON.
- *
- * @param {string} value - The string to validate.
- * @returns {string | boolean} - Returns true if the string is valid JSON. If invalid, returns an error message.
- */
-function validatePromptEmptySpaces(value: string): boolean | string {
-    const validationResult = validateEmptyString(value);
-    if (typeof validationResult === 'string') {
-        return validationResult;
-    }
-
-    return validateEmptySpaces(value);
-}
-
-/**
  * Validates the OData name prompts.
  *
  * @param value The value to validate.
@@ -181,7 +166,7 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
                 mandatory: true,
                 hint: t('prompts.oDataServiceUriTooltip')
             },
-            validate: validatePromptEmptySpaces,
+            validate: validateEmptyString,
             store: false
         } as InputQuestion<NewModelAnswers>,
         {
@@ -253,7 +238,7 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
             type: 'input',
             name: 'dataSourceURI',
             message: t('prompts.oDataAnnotationDataSourceUriLabel'),
-            validate: validatePromptEmptySpaces,
+            validate: validateEmptyString,
             store: false,
             guiOptions: {
                 mandatory: true,
