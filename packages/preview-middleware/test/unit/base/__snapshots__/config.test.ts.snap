@@ -36,6 +36,43 @@ Object {
 }
 `;
 
+exports[`config createFlpTemplateConfig minimum settings with one reuse lib 1`] = `
+Object {
+  "apps": Object {},
+  "basePath": "..",
+  "init": undefined,
+  "locateReuseLibsScript": undefined,
+  "ui5": Object {
+    "bootstrapOptions": "",
+    "flex": Array [
+      Object {
+        "connector": "LrepConnector",
+        "layers": Array [],
+        "url": "/sap/bc/lrep",
+      },
+      Object {
+        "applyConnector": "custom.connectors.WorkspaceConnector",
+        "custom": true,
+        "writeConnector": "custom.connectors.WorkspaceConnector",
+      },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
+      },
+    ],
+    "libs": "sap.m,sap.ui.core,sap.ushell",
+    "resources": Object {
+      "my.resuse.lib": "/custom/path/my.reuse.lib",
+      "open.ux.preview.client": "/preview/client",
+    },
+    "theme": "sap_horizon",
+  },
+}
+`;
+
 exports[`config generatePreviewFiles minimum settings 1`] = `
 "<!DOCTYPE HTML>
 <html lang=\\"en\\">
