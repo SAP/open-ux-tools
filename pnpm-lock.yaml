@@ -264,6 +264,9 @@ importers:
         specifier: 10.0.0
         version: 10.0.0
     devDependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.14.4
+        version: 1.14.4
       '@types/adm-zip':
         specifier: 0.5.5
         version: 0.5.5

@@ -98,6 +98,7 @@ export interface ConfirmQuestion<A extends Answers = Answers> extends BaseConfir
 export interface InputQuestion<A extends Answers = Answers> extends BaseInputQuestion<A> {
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
+    additionalMessages?: YUIQuestion['additionalMessages'];
 }
 
 export interface PasswordQuestion<A extends Answers = Answers> extends BasePasswordQuestion<A> {
