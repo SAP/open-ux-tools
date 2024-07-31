@@ -210,9 +210,9 @@ export const enum FlexLayer {
     VENDOR = 'VENDOR'
 }
 
-export const enum namespacePrefix {
-    customer = 'customer.',
-    empty = ''
+export const enum NamespacePrefix {
+    CUSTOMER = 'customer.',
+    EMPTY = ''
 }
 
 export const enum HttpStatusCodes {
