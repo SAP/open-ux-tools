@@ -156,7 +156,7 @@ export async function getCapModelAndServices(
         services = services.map((value) => {
             return {
                 name: value.name,
-                urlPath: uniformUrl(value.endpoints?.find((val) => val.kind === 'odata')?.urlPath ?? value.urlPath),
+                urlPath: uniformUrl(value.endpoints?.find((val) => val.kind === 'odata')?.path ?? value.urlPath),
                 runtime: value.runtime
             };
         });

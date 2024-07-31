@@ -98,7 +98,7 @@ describe('Test getCapModelAndServices()', () => {
                             'name': 'Forwardslash',
                             'endpoints': [
                                 {
-                                    'urlPath': 'odata/service/with/forwardslash/',
+                                    'path': 'odata/service/with/forwardslash/',
                                     'kind': 'odata'
                                 }
                             ]
@@ -107,7 +107,7 @@ describe('Test getCapModelAndServices()', () => {
                             'name': 'Backslash',
                             'endpoints': [
                                 {
-                                    'urlPath': '\\odata\\service\\with\\backslash/',
+                                    'path': '\\odata\\service\\with\\backslash/',
                                     'kind': 'odata'
                                 }
                             ]
@@ -116,7 +116,7 @@ describe('Test getCapModelAndServices()', () => {
                             'name': 'withRuntime',
                             'endpoints': [
                                 {
-                                    'urlPath': 'url',
+                                    'path': 'url',
                                     'kind': 'odata'
                                 }
                             ],
@@ -186,7 +186,7 @@ describe('Test getCapModelAndServices()', () => {
                             'urlPath': 'odata/service/with/forwardslash/',
                             'endpoints': [
                                 {
-                                    'urlPath': 'rest/service/with/forwardslash/',
+                                    'path': 'rest/service/with/forwardslash/',
                                     'kind': 'rest'
                                 }
                             ]
@@ -196,7 +196,7 @@ describe('Test getCapModelAndServices()', () => {
                             'urlPath': '\\odata\\service\\with\\backslash/',
                             'endpoints': [
                                 {
-                                    'urlPath': '\\rest\\service\\with\\backslash/',
+                                    'path': '\\rest\\service\\with\\backslash/',
                                     'kind': 'rest'
                                 }
                             ]
@@ -206,7 +206,7 @@ describe('Test getCapModelAndServices()', () => {
                             'urlPath': 'url',
                             'endpoints': [
                                 {
-                                    'urlPath': 'url',
+                                    'path': 'url',
                                     'kind': 'rest'
                                 }
                             ],

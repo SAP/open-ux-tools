@@ -222,7 +222,7 @@ export interface ServiceInfo {
     endpoints?: [
         {
             kind: string;
-            urlPath: string;
+            path: string;
         }
     ];
 }
