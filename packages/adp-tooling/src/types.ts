@@ -585,7 +585,7 @@ export enum InputChoice {
 
 export interface DeployConfigAnswers {
     abapRepository: string;
-    description?: string;
+    deployConfigDescription?: string;
     packageInputChoice: InputChoice;
     packageManual?: string;
     packageAutocomplete?: string;

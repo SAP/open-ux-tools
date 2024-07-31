@@ -358,7 +358,6 @@ export default class ProjectPrompter {
             try {
                 await this.getSystemData(value);
                 this.versionsOnSystem = await this.systemUI5VersionHandler(value);
-                await this.getApplications(value);
                 return this.validateAdaptationProjectTypes();
             } catch (e) {
                 // this.logger.log(e);
@@ -386,7 +385,6 @@ export default class ProjectPrompter {
             };
             // TODO: catch 401, 403 and throw error
             if (e) {
-                
             }
         }
     }
@@ -417,15 +415,12 @@ export default class ProjectPrompter {
             this.flexUISystem = await this.isFlexUISupportedSystem();
         }
 
-        this.isCloudProject ||
-            (this.flexUISystem &&
-                (this.flexUISystem.isOnPremise || this.flexUISystem.isUIFlex) &&
-                (await this.appsService.loadApps(this.isCloudProject)));
+        await this.appsService.loadApps(this.isCloudProject);
 
         const applications = this.appsService.getApps();
 
         if (applications.length === 0) {
-            this.logger.log('Applications list is empty. No errors were thrown during execution of the request.');
+            //this.logger.log('Applications list is empty. No errors were thrown during execution of the request.');
             throw new Error('Applications list is empty. No errors were thrown during execution of the request.'); // TODO: Should we throw error here?
         }
     }
@@ -1163,7 +1158,7 @@ export default class ProjectPrompter {
     }
 
     //FLP Configuration prompts
-    private getInboundListPrompt(): ListQuestion<FlpConfigAnswers> {
+    private getInboundListPrompt(): YUIQuestion<FlpConfigAnswers> {
         return {
             type: 'list',
             name: 'inboundId',
@@ -1175,7 +1170,7 @@ export default class ProjectPrompter {
             guiOptions: {
                 hint: t('tooltips.inboundId')
             }
-        };
+        } as ListQuestion<FlpConfigAnswers>;
     }
 
     private getFlpInfoPrompt(appId: string): YUIQuestion<FlpConfigAnswers> {
@@ -1330,7 +1325,7 @@ export default class ProjectPrompter {
         };
     }
 
-    private getPackageInputChoicePrompt(): ListQuestion<DeployConfigAnswers> {
+    private getPackageInputChoicePrompt(): YUIQuestion<DeployConfigAnswers> {
         const options = this.getInputChoiceOptions();
         return {
             type: 'list',
@@ -1348,7 +1343,7 @@ export default class ProjectPrompter {
                 );
                 return this.packageInputChoiceValid;
             }
-        };
+        } as ListQuestion<DeployConfigAnswers>;
     }
 
     private async setTransportList(packageName: string, repository: string): Promise<void> {
@@ -1356,7 +1351,7 @@ export default class ProjectPrompter {
             this.transportList = await listTransports(packageName, repository, this.providerService.getProvider());
         } catch (error) {
             //In case that the request fails we should not break package validation
-            this.logger.error(`Could not set transportList! Error: ${error.message}`);
+            //this.logger.error(`Could not set transportList! Error: ${error.message}`);
         }
     }
 
@@ -1366,9 +1361,6 @@ export default class ProjectPrompter {
             return errorMessage;
         }
 
-        if (answers.abapRepository) {
-            await this.setTransportList(value, answers.abapRepository);
-        }
         try {
             const lRepService = await this.providerService.getProvider().getLayeredRepository();
             const systemInfo = await lRepService.getSystemInfo(undefined, value);
@@ -1376,6 +1368,10 @@ export default class ProjectPrompter {
             //If the package is cloud in adaptationProjectTypes we will have array with only one element 'cloudReady', if it is 'onPremise' the element in the array will be 'onPremise'
             if (systemInfo.adaptationProjectTypes[0] !== AdaptationProjectType.CLOUD_READY) {
                 return t('validators.package.notCloudPackage');
+            }
+
+            if (answers.abapRepository && answers.transportInputChoice === InputChoice.CHOOSE_FROM_EXISTING) {
+                await this.setTransportList(value, answers.abapRepository);
             }
 
             return true;
@@ -1409,7 +1405,7 @@ export default class ProjectPrompter {
         };
     }
 
-    private getPackageAutoCompletePrompt(): AutocompleteQuestion<DeployConfigAnswers> {
+    private getPackageAutoCompletePrompt(): YUIQuestion<DeployConfigAnswers> {
         let morePackageResultsMsg = '';
         return {
             type: 'autocomplete',
@@ -1442,7 +1438,7 @@ export default class ProjectPrompter {
                 );
             },
             validate: async (value: string, answers: DeployConfigAnswers) => await this.validatePackage(value, answers)
-        };
+        } as AutocompleteQuestion<DeployConfigAnswers>;
     }
 
     private shouldShowTransportRelatedPrompt(answers: DeployConfigAnswers): boolean {
@@ -1454,7 +1450,7 @@ export default class ProjectPrompter {
         );
     }
 
-    private getTransportInputChoice(): ListQuestion<DeployConfigAnswers> {
+    private getTransportInputChoice(): YUIQuestion<DeployConfigAnswers> {
         const options = this.getInputChoiceOptions();
         return {
             type: 'list',
@@ -1475,10 +1471,10 @@ export default class ProjectPrompter {
                     this.providerService.getProvider()
                 ),
             when: (answers: DeployConfigAnswers) => this.shouldShowTransportRelatedPrompt(answers)
-        };
+        } as ListQuestion<DeployConfigAnswers>;
     }
 
-    private getTransportListPrompt(): ListQuestion<DeployConfigAnswers> {
+    private getTransportListPrompt(): YUIQuestion<DeployConfigAnswers> {
         return {
             type: 'list',
             name: 'transportFromList',
@@ -1492,7 +1488,7 @@ export default class ProjectPrompter {
                 hint: t('tooltips.transport'),
                 mandatory: true
             }
-        };
+        } as ListQuestion<DeployConfigAnswers>;
     }
 
     private getTransportManualPrompt(): YUIQuestion<DeployConfigAnswers> {
@@ -1511,7 +1507,7 @@ export default class ProjectPrompter {
         };
     }
 
-    public async getDeployConfigPrompts(): Promise<YUIQuestion<DeployConfigAnswers>[]> {
+    public getDeployConfigPrompts(): YUIQuestion<DeployConfigAnswers>[] {
         return [
             this.getAbapRepositoryPrompt(),
             this.getDeployConfigDescriptionPrompt(),
