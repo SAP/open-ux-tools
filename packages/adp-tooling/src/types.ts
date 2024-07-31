@@ -205,12 +205,12 @@ export const enum TemplateFileName {
     Annotation = 'annotation.xml'
 }
 
-export const enum UserState {
+export const enum FlexLayer {
     customer = 'CUSTOMER_BASE',
     vendor = 'VENDOR'
 }
 
-export const enum UserStatePrefix {
+export const enum FlexLayerPrefix {
     customer = 'customer.',
     vendor = ''
 }

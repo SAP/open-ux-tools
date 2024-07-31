@@ -11,10 +11,10 @@ import { t } from '../../i18n';
 import { getChangesByType } from '../../base/change-utils';
 import {
     ChangeType,
-    UserStatePrefix,
+    FlexLayerPrefix,
     type NewModelAnswers,
     type ManifestChangeProperties,
-    UserState
+    FlexLayer
 } from '../../types';
 import { isCFEnvironment } from '../../base/cf';
 import {
@@ -88,7 +88,7 @@ function validatePromptODataName(
     if (isCustomerBase && !hasCustomerPrefix(value)) {
         return t('validators.errorInputInvalidValuePrefix', {
             value: t('prompts.oDataServiceNameLabel'),
-            prefix: UserStatePrefix.customer
+            prefix: FlexLayerPrefix.customer
         });
     }
 
@@ -126,7 +126,7 @@ function validatePromptODataAnnotationsName(
     if (isCustomerBase && !hasCustomerPrefix(value)) {
         return t('validators.errorInputInvalidValuePrefix', {
             value: t('prompts.oDataAnnotationDataSourceNameLabel'),
-            prefix: UserStatePrefix.customer
+            prefix: FlexLayerPrefix.customer
         });
     }
 
@@ -162,7 +162,7 @@ function validatePromptModelName(
     if (isCustomerBase && !hasCustomerPrefix(value)) {
         return t('validators.errorInputInvalidValuePrefix', {
             value: t('prompts.oDataServiceModelNameLabel'),
-            prefix: UserStatePrefix.customer
+            prefix: FlexLayerPrefix.customer
         });
     }
 
@@ -181,8 +181,8 @@ function validatePromptModelName(
  * @returns {YUIQuestion<NewModelAnswers>[]} The questions/prompts.
  */
 export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestion<NewModelAnswers>[] {
-    const isCustomerBase = UserState.customer === layer;
-    const defaultSeviceName = isCustomerBase ? UserStatePrefix.customer : UserStatePrefix.vendor;
+    const isCustomerBase = FlexLayer.customer === layer;
+    const defaultSeviceName = isCustomerBase ? FlexLayerPrefix.customer : FlexLayerPrefix.vendor;
     const isCFEnv = isCFEnvironment(projectPath);
 
     const changeFiles = getChangesByType(projectPath, ChangeType.ADD_NEW_MODEL, 'manifest');
