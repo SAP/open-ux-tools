@@ -8,10 +8,12 @@ const props: MultiSelectProps = {
     value: '',
     name: 'testList',
     onChange: jest.fn(),
-    required: undefined,
-    description: '',
+    guiOptions: {
+        mandatory: undefined,
+        hint: '',
+        placeholder: undefined
+    },
     errorMessage: undefined,
-    placeholder: undefined,
     type: 'checkbox',
     choices: [
         { name: 'testText0', value: 'testValue0' },
@@ -83,12 +85,26 @@ describe('MultiSelect', () => {
     });
 
     it('Test property required', () => {
-        render(<MultiSelect {...props} required={true} />);
+        render(
+            <MultiSelect
+                {...props}
+                guiOptions={{
+                    mandatory: true
+                }}
+            />
+        );
         expect(document.getElementsByClassName('.is-required')).toBeDefined();
     });
 
     it('Test property description', () => {
-        render(<MultiSelect {...props} description="testInfo" />);
+        render(
+            <MultiSelect
+                {...props}
+                guiOptions={{
+                    hint: 'testInfo'
+                }}
+            />
+        );
         expect(screen.getByTitle('testInfo')).toBeDefined();
     });
 
@@ -99,7 +115,14 @@ describe('MultiSelect', () => {
     });
 
     it('Test property placeholder', () => {
-        render(<MultiSelect {...props} placeholder="testPlaceholder" />);
+        render(
+            <MultiSelect
+                {...props}
+                guiOptions={{
+                    placeholder: 'testPlaceholder'
+                }}
+            />
+        );
         expect(screen.getByPlaceholderText('testPlaceholder')).toBeDefined();
     });
 

@@ -55,7 +55,6 @@ export const ObjectBasedQuestions = (): JSX.Element => {
     return (
         <Questions
             questions={objectBasedQuestions}
-            // ToDo recheck type
             answers={{
                 test4: {
                     externalWithoutQuestion: 'Dummy',

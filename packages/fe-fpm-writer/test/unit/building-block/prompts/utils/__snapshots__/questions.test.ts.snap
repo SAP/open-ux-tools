@@ -3,10 +3,12 @@
 exports[`utils - questions entityPrompt 1`] = `
 Object {
   "choices": [Function],
+  "guiOptions": Object {
+    "placeholder": "Select an entity",
+    "selectType": "dynamic",
+  },
   "message": "entity",
   "name": "buildingBlockData.metaPath.entitySet",
-  "placeholder": "Select an entity",
-  "selectType": "dynamic",
   "type": "list",
 }
 `;
@@ -139,10 +141,12 @@ Array [
 exports[`utils - questions getAggregationPathPrompt 1`] = `
 Object {
   "choices": [Function],
+  "guiOptions": Object {
+    "placeholder": "Select an aggregation path",
+    "selectType": "dynamic",
+  },
   "message": "AggregationPathMessage",
   "name": "aggregationPath",
-  "placeholder": "Select an aggregation path",
-  "selectType": "dynamic",
   "type": "list",
 }
 `;
@@ -167,9 +171,11 @@ Array [
 exports[`utils - questions getAggregationPathPrompt 3`] = `
 Object {
   "choices": [Function],
+  "guiOptions": Object {
+    "placeholder": "Select an aggregation path",
+    "selectType": "dynamic",
+  },
   "name": "aggregationPath",
-  "placeholder": "Select an aggregation path",
-  "selectType": "dynamic",
   "type": "list",
 }
 `;
@@ -177,9 +183,11 @@ Object {
 exports[`utils - questions getAnnotationPathQualifierPrompt 1`] = `
 Object {
   "choices": [Function],
+  "guiOptions": Object {
+    "selectType": "dynamic",
+  },
   "message": "testMessage",
   "name": "buildingBlockData.metaPath.qualifier",
-  "selectType": "dynamic",
   "type": "list",
 }
 `;
@@ -196,8 +204,10 @@ Array [
 exports[`utils - questions getAnnotationPathQualifierPrompt 3`] = `
 Object {
   "choices": [Function],
+  "guiOptions": Object {
+    "selectType": "dynamic",
+  },
   "name": "buildingBlockData.metaPath.qualifier",
-  "selectType": "dynamic",
   "type": "list",
 }
 `;
@@ -214,12 +224,14 @@ Object {
       "value": "absolute",
     },
   ],
-  "dependantPromptNames": Array [
-    "buildingBlockData.metaPath.qualifier",
-  ],
+  "guiOptions": Object {
+    "dependantPromptNames": Array [
+      "buildingBlockData.metaPath.qualifier",
+    ],
+    "selectType": "static",
+  },
   "message": "bindingContext",
   "name": "buildingBlockData.metaPath.bindingContextType",
-  "selectType": "static",
   "type": "list",
 }
 `;
@@ -236,8 +248,10 @@ Object {
       "value": "absolute",
     },
   ],
+  "guiOptions": Object {
+    "selectType": "static",
+  },
   "name": "buildingBlockData.metaPath.bindingContextType",
-  "selectType": "static",
   "type": "list",
 }
 `;
@@ -245,13 +259,15 @@ Object {
 exports[`utils - questions getViewOrFragmentPathPrompt 1`] = `
 Object {
   "choices": [Function],
-  "dependantPromptNames": Array [
-    "aggregationPath",
-  ],
+  "guiOptions": Object {
+    "dependantPromptNames": Array [
+      "aggregationPath",
+    ],
+    "placeholder": "Select a view or fragment file",
+    "selectType": "dynamic",
+  },
   "message": "testMessage",
   "name": "viewOrFragmentPath",
-  "placeholder": "Select a view or fragment file",
-  "selectType": "dynamic",
   "type": "list",
   "validate": [Function],
 }
@@ -260,9 +276,11 @@ Object {
 exports[`utils - questions getViewOrFragmentPathPrompt 2`] = `
 Object {
   "choices": [Function],
+  "guiOptions": Object {
+    "placeholder": "Select a view or fragment file",
+    "selectType": "dynamic",
+  },
   "name": "viewOrFragmentPath",
-  "placeholder": "Select a view or fragment file",
-  "selectType": "dynamic",
   "type": "list",
   "validate": [Function],
 }

@@ -15,19 +15,8 @@ export interface SelectProps extends ListPromptQuestion {
 }
 
 export const Select = (props: SelectProps) => {
-    const {
-        name,
-        message,
-        onChange,
-        required,
-        pending,
-        description,
-        errorMessage,
-        placeholder,
-        creation,
-        dynamicChoices,
-        id
-    } = props;
+    const { name, message, onChange, guiOptions = {}, pending, errorMessage, dynamicChoices, id } = props;
+    const { mandatory, hint, placeholder, creation } = guiOptions;
     const [value, setValue] = useValue('', props.value ?? '');
     const inputRef = React.createRef<ITextField>();
     const options = useOptions(props, dynamicChoices);
@@ -67,11 +56,11 @@ export const Select = (props: SelectProps) => {
             componentRef={inputRef}
             label={typeof message === 'string' ? message : name}
             value={value?.toString()}
-            placeholder={creation.inputPlaceholder}
+            placeholder={creation.placeholder}
             errorMessage={errorMessage}
-            required={props.required}
+            required={mandatory}
             onChange={onChangeTextInput}
-            onRenderLabel={getLabelRenderer(description)}
+            onRenderLabel={getLabelRenderer(hint)}
             id={id}
         />
     ) : (
@@ -82,13 +71,13 @@ export const Select = (props: SelectProps) => {
             allowFreeform={true}
             useComboBoxAsMenuMinWidth={true}
             autoComplete="on"
-            required={required}
+            required={mandatory}
             isLoading={pending ? [UIComboBoxLoaderType.Input, UIComboBoxLoaderType.List] : undefined}
             selectedKey={value?.toString()}
             disabled={false}
             text={creation ? value?.toString() : undefined}
             onChange={onChangeSelect}
-            onRenderLabel={getLabelRenderer(description)}
+            onRenderLabel={getLabelRenderer(hint)}
             errorMessage={errorMessage}
             placeholder={placeholder}
             id={id}

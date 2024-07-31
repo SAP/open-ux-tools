@@ -205,8 +205,11 @@ describe('utils', () => {
                 },
                 {
                     name: 'test2.dummy2',
-                    type: type,
-                    dependantPromptNames: ['test1.dummy1']
+                    // Edge case to test with undefined
+                    type: type as 'list',
+                    guiOptions: {
+                        dependantPromptNames: ['test1.dummy1']
+                    }
                 }
             ];
             const result = updateAnswers(original, questions, 'test2.dummy2', 'New');

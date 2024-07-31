@@ -76,7 +76,10 @@ describe('Questions', () => {
         const onChangeFn = jest.fn();
         const onChoiceRequestFn = jest.fn();
         const questionsInProps = [
-            { ...questions.staticList, dependantPromptNames: ['dependantPrompt'] } as ListPromptQuestion,
+            {
+                ...questions.staticList,
+                guiOptions: { ...questions.staticList.guiOptions, dependantPromptNames: ['dependantPrompt'] }
+            } as ListPromptQuestion,
             { ...questions.dynamicList, name: 'dependantPrompt' }
         ];
         render(

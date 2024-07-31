@@ -19,7 +19,11 @@ describe('Question', () => {
 
     for (const question of Object.values(questions)) {
         it(`Render question - ${question.name} with message`, () => {
-            render(<Question {...props} question={{ ...question, placeholder: `${question.name} placeholder` }} />);
+            const guiOptions = {
+                ...question.guiOptions,
+                placeholder: `${question.name} placeholder`
+            };
+            render(<Question {...props} question={{ ...question, guiOptions }} />);
             const label = question.message?.toString() ?? question.name;
             expect(screen.getByText(label)).toBeDefined();
             expect(screen.getByPlaceholderText(`${question.name} placeholder`)).toBeDefined();
@@ -58,7 +62,7 @@ describe('Question', () => {
         });
 
         it(`Render question required - ${question.name} with message`, () => {
-            render(<Question {...props} question={{ ...question, required: true }} />);
+            render(<Question {...props} question={{ ...question, guiOptions: { mandatory: true } }} />);
             expect(document.getElementsByClassName('is-required')).toBeDefined();
         });
 
@@ -176,7 +180,12 @@ describe('Question', () => {
         render(
             <Question
                 {...props}
-                question={{ ...questions.staticList, dependantPromptNames: ['dependantPrompt'] } as ListPromptQuestion}
+                question={
+                    {
+                        ...questions.staticList,
+                        guiOptions: { ...questions.staticList.guiOptions, dependantPromptNames: ['dependantPrompt'] }
+                    } as ListPromptQuestion
+                }
                 answers={{
                     testStaticList: 'testValue0'
                 }}

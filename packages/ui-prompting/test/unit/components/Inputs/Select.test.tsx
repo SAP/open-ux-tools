@@ -8,10 +8,13 @@ const props: SelectProps = {
     name: 'select',
     value: '',
     onChange: jest.fn(),
-    required: undefined,
-    description: '',
+    guiOptions: {
+        mandatory: undefined,
+        hint: '',
+        placeholder: undefined
+    },
     errorMessage: undefined,
-    placeholder: undefined,
+
     choices: [
         { name: 'testText0', value: 'testValue0' },
         { name: 'testText1', value: 'testValue1' }
@@ -20,7 +23,10 @@ const props: SelectProps = {
     type: 'list'
 };
 
-const creatableProps: SelectProps = { ...props, creation: { inputPlaceholder: 'test input placeholder' } };
+const creatableProps: SelectProps = {
+    ...props,
+    guiOptions: { ...props.guiOptions, creation: { placeholder: 'test input placeholder' } }
+};
 
 describe('Select', () => {
     initIcons();
@@ -139,12 +145,26 @@ describe('Select', () => {
     });
 
     it('Test property required', () => {
-        render(<Select {...props} required={true} />);
+        render(
+            <Select
+                {...props}
+                guiOptions={{
+                    mandatory: true
+                }}
+            />
+        );
         expect(document.getElementsByClassName('.is-required')).toBeDefined();
     });
 
     it('Test property description', () => {
-        render(<Select {...props} description="testInfo" />);
+        render(
+            <Select
+                {...props}
+                guiOptions={{
+                    hint: 'testInfo'
+                }}
+            />
+        );
         expect(screen.getByTitle('testInfo')).toBeDefined();
     });
 
@@ -154,7 +174,14 @@ describe('Select', () => {
     });
 
     it('Test property placeholder', () => {
-        render(<Select {...props} placeholder="testPlaceholder" />);
+        render(
+            <Select
+                {...props}
+                guiOptions={{
+                    placeholder: 'testPlaceholder'
+                }}
+            />
+        );
         expect(screen.getByPlaceholderText('testPlaceholder')).toBeDefined();
     });
 
@@ -261,12 +288,28 @@ describe('Select', () => {
             });
 
             it('Test creatable input property required', () => {
-                render(<Select {...creatablePropsNoOptions} required={true} />);
+                render(
+                    <Select
+                        {...creatablePropsNoOptions}
+                        guiOptions={{
+                            ...creatablePropsNoOptions.guiOptions,
+                            mandatory: true
+                        }}
+                    />
+                );
                 expect(document.getElementsByClassName('.is-required')).toBeDefined();
             });
 
             it('Test creatable input property description', () => {
-                render(<Select {...creatablePropsNoOptions} description="testInfo" />);
+                render(
+                    <Select
+                        {...creatablePropsNoOptions}
+                        guiOptions={{
+                            ...creatablePropsNoOptions.guiOptions,
+                            hint: 'testInfo'
+                        }}
+                    />
+                );
                 expect(screen.getByTitle('testInfo')).toBeDefined();
             });
 
@@ -276,7 +319,15 @@ describe('Select', () => {
             });
 
             it('Test creatable input property placeholder', () => {
-                render(<Select {...creatablePropsNoOptions} placeholder="testPlaceholder" />);
+                render(
+                    <Select
+                        {...creatablePropsNoOptions}
+                        guiOptions={{
+                            ...creatablePropsNoOptions.guiOptions,
+                            placeholder: 'testPlaceholder'
+                        }}
+                    />
+                );
                 expect(screen.getByPlaceholderText('test input placeholder')).toBeDefined();
             });
 

@@ -1,30 +1,31 @@
-import type { Answers, CheckboxQuestion, DistinctChoice, InputQuestion, ListQuestion } from 'inquirer';
+import type { Answers, DistinctChoice } from 'inquirer';
+import type {
+    CheckBoxQuestion,
+    InputQuestion,
+    ListQuestion,
+    GuiOptions as BaseGuiOptions
+} from '@sap-ux/inquirer-common';
 
 export { Answers };
 
 /**
- * Interfaces for questions.
+ * Extended GUI interface for question.
  */
-export interface BasePromptQuestion {
-    /**
-     * Indication wether value is required.
-     */
-    required?: boolean;
+export interface GuiOptions extends BaseGuiOptions {
     /**
      * Group id for group visualisation.
      */
     groupId?: string;
-    /**
-     * Additional prompt/field description.
-     */
-    description?: string;
     /**
      * Placeholder text.
      */
     placeholder?: string;
 }
 
-export interface ListBasePromptQuestion extends BasePromptQuestion {
+/**
+ * Extended GUI interface for base list question - list and checkbox/multiselect.
+ */
+export interface BaseListGuiOptions extends GuiOptions {
     /**
      * Option population type.
      * 'static' - options are provided within property 'choices'.
@@ -34,19 +35,10 @@ export interface ListBasePromptQuestion extends BasePromptQuestion {
     selectType?: 'static' | 'dynamic';
 }
 
-export interface ListPromptQuestionCreationProps {
-    inputPlaceholder: string;
-}
-
 /**
- * Represents a question prompt for list question with dropdown visualization.
- * Combines properties of ListQuestion and BasePromptQuestion.
+ * Extended GUI interface for list question.
  */
-export interface ListPromptQuestion<T extends Answers = Answers> extends ListQuestion<T>, ListBasePromptQuestion {
-    /**
-     * Mandatory name used in the building block config
-     */
-    name: string;
+export interface ListGuiOptions extends BaseListGuiOptions {
     /**
      * Dependant prompt names which should be updated after value change of current prompt.
      */
@@ -58,27 +50,46 @@ export interface ListPromptQuestion<T extends Answers = Answers> extends ListQue
 }
 
 /**
+ * Interface to enable creation within list/combobox component.
+ */
+export interface ListPromptQuestionCreationProps {
+    /**
+     * Placeholder text for creation mode.
+     */
+    placeholder?: string;
+}
+
+/**
+ * Represents a question prompt for list question with dropdown visualization.
+ * Combines properties of ListQuestion and BasePromptQuestion.
+ */
+export interface ListPromptQuestion<T extends Answers = Answers> extends ListQuestion<T> {
+    /**
+     * Additional properties for ui.
+     */
+    guiOptions?: ListGuiOptions;
+}
+
+/**
  * Represents a question prompt for input with simple input visualization.
  * Combines properties of ListQuestion and BasePromptQuestion.
  */
-export interface InputPromptQuestion<T extends Answers = Answers> extends InputQuestion<T>, BasePromptQuestion {
+export interface InputPromptQuestion<T extends Answers = Answers> extends InputQuestion<T> {
     /**
-     * Mandatory name used in the building block config
+     * Additional properties for ui.
      */
-    name: string;
+    guiOptions?: GuiOptions;
 }
 
 /**
  * Represents a question prompt for checkbox.
  * Combines properties of CheckboxQuestion and BasePromptQuestion.
  */
-export interface CheckboxPromptQuestion<T extends Answers = Answers>
-    extends CheckboxQuestion<T>,
-        ListBasePromptQuestion {
+export interface CheckboxPromptQuestion<T extends Answers = Answers> extends CheckBoxQuestion<T> {
     /**
-     * Mandatory name used in the building block config
+     * Additional properties for ui.
      */
-    name: string;
+    guiOptions?: BaseListGuiOptions;
 }
 
 export type PromptQuestion<T extends Answers = Answers> =

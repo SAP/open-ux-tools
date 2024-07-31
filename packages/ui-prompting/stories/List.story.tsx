@@ -69,9 +69,11 @@ const questions: PromptQuestion[] = [
         message: 'With description and placeholder',
         name: 'description',
         type: 'list',
-        description: 'Test description',
-        placeholder: 'Test placeholder',
-        choices
+        choices,
+        guiOptions: {
+            hint: 'Test description',
+            placeholder: 'Test placeholder'
+        }
     }
 ];
 

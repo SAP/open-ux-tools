@@ -22,6 +22,9 @@
   },
   "references": [
     {
+      "path": "../inquirer-common"
+    },
+    {
       "path": "../ui-components"
     }
   ]

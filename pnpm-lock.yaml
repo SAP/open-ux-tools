@@ -2431,6 +2431,9 @@ importers:
       '@babel/preset-typescript':
         specifier: 7.22.15
         version: 7.22.15(@babel/core@7.22.20)
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
       '@storybook/addons':
         specifier: 7.6.17
         version: 7.6.17(react-dom@16.14.0)(react@16.14.0)

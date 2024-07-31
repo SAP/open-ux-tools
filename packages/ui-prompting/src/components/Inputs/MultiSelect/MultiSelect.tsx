@@ -13,8 +13,8 @@ export interface MultiSelectProps extends CheckboxPromptQuestion {
 }
 
 export const MultiSelect = (props: MultiSelectProps) => {
-    const { name, message, onChange, required, pending, description, errorMessage, placeholder, dynamicChoices, id } =
-        props;
+    const { name, message, onChange, guiOptions = {}, pending, errorMessage, dynamicChoices, id } = props;
+    const { mandatory, hint, placeholder } = guiOptions;
     const [value, setValue] = useValue('', props.value?.toString() ?? '');
     const options = useOptions(props, dynamicChoices);
 
@@ -26,7 +26,7 @@ export const MultiSelect = (props: MultiSelectProps) => {
             allowFreeform={true}
             useComboBoxAsMenuMinWidth={true}
             autoComplete="on"
-            required={required}
+            required={mandatory}
             isLoading={pending ? [UIComboBoxLoaderType.Input, UIComboBoxLoaderType.List] : undefined}
             selectedKey={value?.split(',').map((v) => v.trim())}
             multiSelect
@@ -43,7 +43,7 @@ export const MultiSelect = (props: MultiSelectProps) => {
                 setValue(updatedValue);
                 onChange(name, updatedValue);
             }}
-            onRenderLabel={getLabelRenderer(description)}
+            onRenderLabel={getLabelRenderer(hint)}
             errorMessage={errorMessage}
             placeholder={placeholder}
             id={id}

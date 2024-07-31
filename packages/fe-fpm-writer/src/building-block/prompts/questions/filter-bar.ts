@@ -35,37 +35,52 @@ export async function getFilterBarBuildingBlockPrompts(
     return {
         questions: [
             getViewOrFragmentPathPrompt(context, t('viewOrFragmentPath.validate'), {
-                required: true,
                 message: t('viewOrFragmentPath.message'),
-                dependantPromptNames: ['aggregationPath']
+                guiOptions: {
+                    mandatory: true,
+                    dependantPromptNames: ['aggregationPath']
+                }
             }),
             getBuildingBlockIdPrompt(context, t('id.validation'), {
                 message: t('id.message'),
                 default: defaultAnswers.id,
-                required: true
+                guiOptions: {
+                    mandatory: true
+                }
             }),
             ...(project && isCapProject(project)
                 ? [
                       await getCAPServicePrompt(context, {
-                          required: true,
                           message: t('service'),
-                          dependantPromptNames: []
+                          guiOptions: {
+                              mandatory: true,
+                              dependantPromptNames: []
+                          }
                       })
                   ]
                 : []),
-            getAggregationPathPrompt(context, { message: t('aggregation'), required: true }),
+            getAggregationPathPrompt(context, {
+                message: t('aggregation'),
+                guiOptions: {
+                    mandatory: true
+                }
+            }),
             getEntityPrompt(context, {
                 message: t('entity'),
-                dependantPromptNames: ['buildingBlockData.metaPath.qualifier'],
-                required: true
+                guiOptions: {
+                    mandatory: true,
+                    dependantPromptNames: ['buildingBlockData.metaPath.qualifier']
+                }
             }),
             getAnnotationPathQualifierPrompt(
                 context,
                 {
                     message: t('qualifier'),
-                    description: t('valuesDependentOnEntityTypeInfo'),
-                    required: true,
-                    placeholder: t('qualifierPlaceholder')
+                    guiOptions: {
+                        mandatory: true,
+                        placeholder: t('qualifierPlaceholder'),
+                        hint: t('valuesDependentOnEntityTypeInfo')
+                    }
                 },
                 [UIAnnotationTerms.SelectionFields]
             ),

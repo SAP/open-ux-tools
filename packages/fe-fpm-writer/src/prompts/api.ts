@@ -135,10 +135,11 @@ export class PromptsAPI {
                 continue;
             }
             const t = translate(i18nNamespaces.buildingBlock, 'prompts.common.');
-            const { name, required, type, validate } = question;
+            const { name, guiOptions = {}, type, validate } = question;
+            const { mandatory } = guiOptions;
             result[name] = { isValid: true };
             const answer = getAnswer(answers, name);
-            if (required && !answer) {
+            if (mandatory && !answer) {
                 result[name] = {
                     isValid: false,
                     errorMessage:

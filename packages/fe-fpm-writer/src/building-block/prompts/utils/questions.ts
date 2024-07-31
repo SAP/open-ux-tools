@@ -28,14 +28,18 @@ const t = translate(i18nNamespaces.buildingBlock, 'prompts.common.');
  * @returns a boolean prompt.
  */
 export function getBooleanPrompt(properties: WithRequired<Partial<ListPromptQuestion>, 'name'>): ListPromptQuestion {
+    const { guiOptions } = properties;
     return {
         ...properties,
         type: 'list',
-        selectType: 'static',
         choices: [
             { name: 'False', value: false },
             { name: 'True', value: true }
-        ]
+        ],
+        guiOptions: {
+            ...guiOptions,
+            selectType: 'static'
+        }
     };
 }
 
@@ -53,11 +57,11 @@ export function getAnnotationPathQualifierPrompt(
     annotationTerm: UIAnnotationTerms[] = []
 ): ListPromptQuestion {
     const { project, appId } = context;
+    const { guiOptions } = properties;
     return {
         ...properties,
         type: 'list',
         name: 'buildingBlockData.metaPath.qualifier',
-        selectType: 'dynamic',
         choices: project
             ? async (answers) => {
                   const { entitySet, bindingContextType } = answers.buildingBlockData?.metaPath ?? {};
@@ -82,7 +86,11 @@ export function getAnnotationPathQualifierPrompt(
                   }
                   return choices;
               }
-            : []
+            : [],
+        guiOptions: {
+            ...guiOptions,
+            selectType: 'dynamic'
+        }
     };
 }
 
@@ -100,10 +108,10 @@ export function getViewOrFragmentPathPrompt(
     properties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
     const { fs, project, appPath } = context;
+    const { guiOptions } = properties;
     return {
         ...properties,
         type: 'list',
-        selectType: 'dynamic',
         name: 'viewOrFragmentPath',
         choices: project
             ? async () => {
@@ -122,7 +130,11 @@ export function getViewOrFragmentPathPrompt(
               }
             : [],
         validate: (value: string) => (!project || value ? true : validationErrorMessage),
-        placeholder: properties.placeholder ?? t('viewOrFragmentPath.defaultPlaceholder')
+        guiOptions: {
+            ...guiOptions,
+            selectType: 'dynamic',
+            placeholder: guiOptions?.placeholder ?? t('viewOrFragmentPath.defaultPlaceholder')
+        }
     };
 }
 
@@ -138,6 +150,7 @@ export async function getCAPServicePrompt(
     properties: Partial<ListPromptQuestion> = {}
 ): Promise<ListPromptQuestion> {
     const { project, appId } = context;
+    const { guiOptions } = properties;
     const services = project ? await getCAPServiceChoices(project, appId) : [];
     const defaultValue: string | undefined =
         services.length === 1 ? (services[0] as { name: string; value: string }).value : undefined;
@@ -145,10 +158,13 @@ export async function getCAPServicePrompt(
         ...properties,
         type: 'list',
         name: 'service',
-        selectType: 'dynamic',
         choices: project ? getCAPServiceChoices.bind(null, project, appId) : [],
         default: defaultValue,
-        placeholder: properties.placeholder ?? t('service.defaultPlaceholder')
+        guiOptions: {
+            ...guiOptions,
+            selectType: 'dynamic',
+            placeholder: guiOptions?.placeholder ?? t('service.defaultPlaceholder')
+        }
     };
 }
 
@@ -164,11 +180,11 @@ export function getEntityPrompt(
     properties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
     const { project, appId } = context;
+    const { guiOptions } = properties;
     return {
         ...properties,
         type: 'list',
         name: 'buildingBlockData.metaPath.entitySet',
-        selectType: 'dynamic',
         choices: project
             ? async () => {
                   const entityTypes = await getEntityTypes(project, appId);
@@ -181,7 +197,11 @@ export function getEntityPrompt(
                   return transformChoices(entityTypeMap);
               }
             : [],
-        placeholder: properties.placeholder ?? t('entity.defaultPlaceholder')
+        guiOptions: {
+            ...guiOptions,
+            selectType: 'dynamic',
+            placeholder: guiOptions?.placeholder ?? t('entity.defaultPlaceholder')
+        }
     };
 }
 
@@ -217,11 +237,11 @@ export function getAggregationPathPrompt(
     properties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
     const { fs, project, appPath } = context;
+    const { guiOptions } = properties;
     return {
         ...properties,
         type: 'list',
         name: 'aggregationPath',
-        selectType: 'dynamic',
         choices: project
             ? (answers: Answers) => {
                   const { viewOrFragmentPath } = answers;
@@ -238,7 +258,11 @@ export function getAggregationPathPrompt(
                   return [];
               }
             : [],
-        placeholder: properties.placeholder ?? t('aggregationPath.defaultPlaceholder')
+        guiOptions: {
+            ...guiOptions,
+            selectType: 'dynamic',
+            placeholder: guiOptions?.placeholder ?? t('aggregationPath.defaultPlaceholder')
+        }
     };
 }
 
@@ -275,11 +299,15 @@ export function getFilterBarIdPrompt(
     properties: WithRequired<Partial<ListPromptQuestion | InputPromptQuestion>, 'type'>
 ): ListPromptQuestion | InputPromptQuestion {
     const { fs, project, appPath } = context;
+    const { guiOptions } = properties;
     const prompt: InputPromptQuestion = {
         ...properties,
         type: 'input',
         name: 'buildingBlockData.filterBar',
-        placeholder: properties.placeholder ?? t('filterBar.defaultPlaceholder')
+        guiOptions: {
+            ...guiOptions,
+            placeholder: guiOptions?.placeholder ?? t('filterBar.defaultPlaceholder')
+        }
     };
     if (properties.type === 'input') {
         return prompt;
@@ -287,7 +315,6 @@ export function getFilterBarIdPrompt(
     return {
         ...prompt,
         type: 'list',
-        selectType: 'dynamic',
         choices: project
             ? async (answers: Answers) => {
                   if (!answers.viewOrFragmentPath) {
@@ -295,7 +322,11 @@ export function getFilterBarIdPrompt(
                   }
                   return transformChoices(await getFilterBarIdsInFile(join(appPath, answers.viewOrFragmentPath), fs));
               }
-            : []
+            : [],
+        guiOptions: {
+            ...prompt.guiOptions,
+            selectType: 'dynamic'
+        }
     };
 }
 
@@ -306,15 +337,19 @@ export function getFilterBarIdPrompt(
  * @returns prompt for choosing binding context type.
  */
 export function getBindingContextTypePrompt(properties: Partial<ListPromptQuestion> = {}): ListPromptQuestion {
+    const { guiOptions } = properties;
     return {
         ...properties,
         type: 'list',
         name: 'buildingBlockData.metaPath.bindingContextType',
-        selectType: 'static',
         choices: [
             { name: t('bindingContextType.option.relative'), value: 'relative' },
             { name: t('bindingContextType.option.absolute'), value: 'absolute' }
-        ]
+        ],
+        guiOptions: {
+            ...guiOptions,
+            selectType: 'static'
+        }
     };
 }
 
@@ -332,6 +367,7 @@ export function getBuildingBlockIdPrompt(
     properties: Partial<InputPromptQuestion> = {}
 ): InputPromptQuestion {
     const { fs, project, appPath } = context;
+    const { guiOptions } = properties;
     return {
         ...properties,
         type: 'input',
@@ -349,6 +385,9 @@ export function getBuildingBlockIdPrompt(
                     : true;
             }
         },
-        placeholder: properties.placeholder ?? t('id.defaultPlaceholder')
+        guiOptions: {
+            ...guiOptions,
+            placeholder: guiOptions?.placeholder ?? t('id.defaultPlaceholder')
+        }
     };
 }

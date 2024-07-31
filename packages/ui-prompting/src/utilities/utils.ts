@@ -18,7 +18,7 @@ export function getDependantQuestions(
 ): string[] {
     const question = questions.find((checkQuestion) => checkQuestion.name === name);
     if (question?.type === 'list') {
-        const questionsDependantNames = question?.dependantPromptNames ?? [];
+        const questionsDependantNames = question?.guiOptions?.dependantPromptNames ?? [];
         questionsDependantNames.forEach((dependantName) => {
             dependantPromptNames.push(dependantName);
             getDependantQuestions(questions, dependantName, dependantPromptNames);
@@ -34,10 +34,10 @@ export function getDependantQuestions(
  * @returns Found dynamic questions.
  */
 export function getDynamicQuestions(questions: PromptQuestion[]): string[] {
-    const dynamicQuestions = questions.filter(
-        (question): question is Required<Pick<PromptQuestion, 'name'>> =>
-            'selectType' in question && question.selectType === 'dynamic' && !!question.name
-    );
+    const dynamicQuestions = questions.filter((question): question is Required<Pick<PromptQuestion, 'name'>> => {
+        const { guiOptions = {} } = question;
+        return 'selectType' in guiOptions && guiOptions.selectType === 'dynamic' && !!question.name;
+    });
     return dynamicQuestions.map((question) => question.name);
 }
 

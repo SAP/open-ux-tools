@@ -102,8 +102,9 @@ export const Questions = (props: QuestionsProps) => {
     }));
     if (layoutType === PromptsLayoutType.MultiColumn && groups?.length) {
         questions.forEach((question) => {
-            if (question.groupId) {
-                const foundGroup = groupsWithQuestions.find((g) => g.id === question.groupId);
+            const { guiOptions = {} } = question;
+            if (guiOptions.groupId) {
+                const foundGroup = groupsWithQuestions.find((g) => g.id === guiOptions.groupId);
                 if (foundGroup) {
                     foundGroup.questions.push(question);
                     groupsWithQuestions[groupsWithQuestions.indexOf(foundGroup)] = foundGroup;

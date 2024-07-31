@@ -196,7 +196,9 @@ describe('utils - questions', () => {
     test('getViewOrFragmentPathPrompt', async () => {
         let viewOrFragmentPathPrompt = getViewOrFragmentPathPrompt(context, 'validationError', {
             message: 'testMessage',
-            dependantPromptNames: ['aggregationPath']
+            guiOptions: {
+                dependantPromptNames: ['aggregationPath']
+            }
         });
         expect(viewOrFragmentPathPrompt).toMatchSnapshot();
         const choicesProp = viewOrFragmentPathPrompt.choices as Choices;
@@ -217,7 +219,9 @@ describe('utils - questions', () => {
     test('getBindingContextType', async () => {
         let bindingContextPrompt = getBindingContextTypePrompt({
             message: 'bindingContext',
-            dependantPromptNames: ['buildingBlockData.metaPath.qualifier']
+            guiOptions: {
+                dependantPromptNames: ['buildingBlockData.metaPath.qualifier']
+            }
         });
         expect(bindingContextPrompt).toMatchSnapshot();
 
@@ -228,34 +232,38 @@ describe('utils - questions', () => {
     test('getBooleanPrompt', async () => {
         const booleanPrompt = getBooleanPrompt({ name: 'name', message: 'message' });
         expect(booleanPrompt).toMatchInlineSnapshot(`
+            Object {
+              "choices": Array [
                 Object {
-                  "choices": Array [
-                    Object {
-                      "name": "False",
-                      "value": false,
-                    },
-                    Object {
-                      "name": "True",
-                      "value": true,
-                    },
-                  ],
-                  "message": "message",
-                  "name": "name",
-                  "selectType": "static",
-                  "type": "list",
-                }
-            `);
+                  "name": "False",
+                  "value": false,
+                },
+                Object {
+                  "name": "True",
+                  "value": true,
+                },
+              ],
+              "guiOptions": Object {
+                "selectType": "static",
+              },
+              "message": "message",
+              "name": "name",
+              "type": "list",
+            }
+        `);
     });
     test('getFilterBarIdPrompt - input type', async () => {
         const prompt = getFilterBarIdPrompt(context, { message: 'message', type: 'input' });
         expect(prompt).toMatchInlineSnapshot(`
-                Object {
-                  "message": "message",
-                  "name": "buildingBlockData.filterBar",
-                  "placeholder": "Enter a new filter bar ID",
-                  "type": "input",
-                }
-            `);
+            Object {
+              "guiOptions": Object {
+                "placeholder": "Enter a new filter bar ID",
+              },
+              "message": "message",
+              "name": "buildingBlockData.filterBar",
+              "type": "input",
+            }
+        `);
     });
 
     test('getBuildingBlockIdPrompt', async () => {
@@ -263,14 +271,16 @@ describe('utils - questions', () => {
             message: 'message'
         });
         expect(prompt).toMatchInlineSnapshot(`
-                Object {
-                  "message": "message",
-                  "name": "buildingBlockData.id",
-                  "placeholder": "Enter a building block ID",
-                  "type": "input",
-                  "validate": [Function],
-                }
-            `);
+            Object {
+              "guiOptions": Object {
+                "placeholder": "Enter a building block ID",
+              },
+              "message": "message",
+              "name": "buildingBlockData.id",
+              "type": "input",
+              "validate": [Function],
+            }
+        `);
 
         const validateFn = prompt.validate;
         expect(typeof validateFn).toBe('function');
@@ -279,35 +289,41 @@ describe('utils - questions', () => {
         // no properties
         prompt = getBuildingBlockIdPrompt(context, 'error');
         expect(prompt).toMatchInlineSnapshot(`
-                Object {
-                  "name": "buildingBlockData.id",
-                  "placeholder": "Enter a building block ID",
-                  "type": "input",
-                  "validate": [Function],
-                }
-            `);
+            Object {
+              "guiOptions": Object {
+                "placeholder": "Enter a building block ID",
+              },
+              "name": "buildingBlockData.id",
+              "type": "input",
+              "validate": [Function],
+            }
+        `);
     });
 
     test('getFilterBarIdPrompt - list type', async () => {
         const prompt = getFilterBarIdPrompt(context, {
             message: 'message',
             type: 'list',
-            placeholder: 'Select or enter a filter bar ID',
-            creation: { inputPlaceholder: 'Enter a new filter bar ID' }
+            guiOptions: {
+                placeholder: 'Select or enter a filter bar ID',
+                creation: { placeholder: 'Enter a new filter bar ID' }
+            }
         }) as ListPromptQuestion;
         expect(prompt).toMatchInlineSnapshot(`
-                Object {
-                  "choices": [Function],
-                  "creation": Object {
-                    "inputPlaceholder": "Enter a new filter bar ID",
-                  },
-                  "message": "message",
-                  "name": "buildingBlockData.filterBar",
-                  "placeholder": "Select or enter a filter bar ID",
-                  "selectType": "dynamic",
-                  "type": "list",
-                }
-            `);
+            Object {
+              "choices": [Function],
+              "guiOptions": Object {
+                "creation": Object {
+                  "placeholder": "Enter a new filter bar ID",
+                },
+                "placeholder": "Select or enter a filter bar ID",
+                "selectType": "dynamic",
+              },
+              "message": "message",
+              "name": "buildingBlockData.filterBar",
+              "type": "list",
+            }
+        `);
 
         const choicesProp = prompt.choices as Choices;
         expect(choicesProp).toBeDefined();
@@ -335,28 +351,32 @@ describe('utils - questions', () => {
             message: 'message'
         });
         expect(prompt).toMatchInlineSnapshot(`
-                Object {
-                  "choices": [Function],
-                  "default": "mainService",
-                  "message": "message",
-                  "name": "service",
-                  "placeholder": "Select a service",
-                  "selectType": "dynamic",
-                  "type": "list",
-                }
-            `);
+            Object {
+              "choices": [Function],
+              "default": "mainService",
+              "guiOptions": Object {
+                "placeholder": "Select a service",
+                "selectType": "dynamic",
+              },
+              "message": "message",
+              "name": "service",
+              "type": "list",
+            }
+        `);
 
         // no properties
         prompt = await getCAPServicePrompt(context);
         expect(prompt).toMatchInlineSnapshot(`
-                Object {
-                  "choices": [Function],
-                  "default": "mainService",
-                  "name": "service",
-                  "placeholder": "Select a service",
-                  "selectType": "dynamic",
-                  "type": "list",
-                }
-            `);
+            Object {
+              "choices": [Function],
+              "default": "mainService",
+              "guiOptions": Object {
+                "placeholder": "Select a service",
+                "selectType": "dynamic",
+              },
+              "name": "service",
+              "type": "list",
+            }
+        `);
     });
 });

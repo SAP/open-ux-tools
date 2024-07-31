@@ -8,10 +8,12 @@ const props: InputProps = {
     value: '',
     name: 'testInput',
     onChange: jest.fn(),
-    required: undefined,
-    description: '',
-    errorMessage: undefined,
-    placeholder: undefined
+    guiOptions: {
+        mandatory: undefined,
+        hint: '',
+        placeholder: undefined
+    },
+    errorMessage: undefined
 };
 
 describe('Input', () => {
@@ -43,12 +45,26 @@ describe('Input', () => {
     });
 
     it('Test property "required"', () => {
-        render(<Input {...props} required={true} />);
+        render(
+            <Input
+                {...props}
+                guiOptions={{
+                    mandatory: true
+                }}
+            />
+        );
         expect(document.getElementsByClassName('is-required')).toBeDefined();
     });
 
     it('Test property "description"', () => {
-        render(<Input {...props} description="testInfo" />);
+        render(
+            <Input
+                {...props}
+                guiOptions={{
+                    hint: 'testInfo'
+                }}
+            />
+        );
         expect(screen.getByTitle('testInfo')).toBeDefined();
     });
 
@@ -58,7 +74,14 @@ describe('Input', () => {
     });
 
     it('Test property "placeholder"', () => {
-        render(<Input {...props} placeholder="testPlaceholder" />);
+        render(
+            <Input
+                {...props}
+                guiOptions={{
+                    placeholder: 'testPlaceholder'
+                }}
+            />
+        );
         expect(screen.getByPlaceholderText('testPlaceholder')).toBeDefined();
     });
 });
