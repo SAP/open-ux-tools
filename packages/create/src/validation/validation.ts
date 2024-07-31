@@ -1,10 +1,8 @@
 import { join } from 'path';
 import { existsSync } from 'fs';
 import type { Editor } from 'mem-fs-editor';
-import { isCFEnvironment } from '@sap-ux/adp-tooling';
 import { getAppType, getWebappPath } from '@sap-ux/project-access';
-import { getVariant } from '@sap-ux/adp-tooling';
-import type { DescriptorVariantContent } from '@sap-ux/adp-tooling';
+import { type DescriptorVariantContent, getVariant, isCFEnvironment } from '@sap-ux/adp-tooling';
 
 /**
  * Validate base path of app, throw error if file is missing.
