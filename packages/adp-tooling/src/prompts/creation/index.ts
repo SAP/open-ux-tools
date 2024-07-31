@@ -4,7 +4,6 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import {
     AdaptationProjectType,
-    AppIndex,
     SystemInfo,
     UI5RtVersionService,
     UIFlexService
@@ -427,76 +426,6 @@ export default class ProjectPrompter {
 
     private shouldAuthenticate(answers: ConfigurationInfoAnswers): boolean | string {
         return answers.system && this.hasSystemAuthentication && (answers.username === '' || answers.password === '');
-    }
-
-    private getNamespacePrompt(isCustomerBase: boolean): YUIQuestion<BasicInfoAnswers> {
-        const prompt: InputQuestion<BasicInfoAnswers> = {
-            type: 'input',
-            name: 'namespace',
-            message: t('prompts.namespaceLabel'),
-            guiOptions: {
-                applyDefaultWhenDirty: true
-            },
-            default: (answers: BasicInfoAnswers) => generateValidNamespace(answers.projectName, isCustomerBase),
-            store: false
-        } as InputQuestion<BasicInfoAnswers>;
-
-        if (!isCustomerBase) {
-            if (prompt.guiOptions) {
-                prompt.guiOptions.type = 'label';
-            }
-            prompt.when = (answers: BasicInfoAnswers) => {
-                return !!answers.projectName;
-            };
-        } else {
-            if (prompt.guiOptions) {
-                prompt.guiOptions.mandatory = true;
-                prompt.guiOptions.breadcrumb = t('prompts.namespaceLabel');
-            }
-            prompt.validate = (value: string, answers: BasicInfoAnswers) =>
-                validateNamespace(value, answers.projectName, isCustomerBase);
-        }
-
-        return prompt;
-    }
-
-    public getBasicInfoPrompts(path: string): YUIQuestion<BasicInfoAnswers>[] {
-        return [
-            {
-                type: 'input',
-                name: 'projectName',
-                message: () => 'Project Name',
-                default: () => getDefaultProjectName(path),
-                guiOptions: {
-                    mandatory: true,
-                    hint: getProjectNameTooltip(this.isCustomerBase),
-                    breadcrumb: 'Project Name'
-                },
-                validate: (value: string) => {
-                    return validateProjectName(value, path, this.isCustomerBase);
-                },
-                store: false
-            } as InputQuestion<BasicInfoAnswers>,
-            {
-                type: 'input',
-                name: 'applicationTitle',
-                message: t('prompts.appTitleLabel'),
-                default: () => t('prompts.appTitleDefault'),
-                guiOptions: {
-                    mandatory: true,
-                    hint: t('prompts.appTitleTooltip'),
-                    breadcrumb: t('prompts.appTitleLabel')
-                },
-                validate: (value: string) => {
-                    if (!isNotEmptyString(value)) {
-                        return t('validators.cannotBeEmpty');
-                    }
-                    return true;
-                },
-                store: false
-            } as InputQuestion<BasicInfoAnswers>,
-            this.getNamespacePrompt(this.isCustomerBase)
-        ];
     }
 
     private async getSystemPrompt() {
