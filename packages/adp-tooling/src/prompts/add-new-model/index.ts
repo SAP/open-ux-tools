@@ -297,7 +297,6 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
             validate: validatePromptJSON,
             store: false,
             guiOptions: {
-                mandatory: false,
                 hint: t('prompts.oDataAnnotationSettingsTooltip')
             },
             when: (answers: NewModelAnswers) => answers.addAnnotationMode
