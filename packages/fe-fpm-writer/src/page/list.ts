@@ -1,7 +1,8 @@
 import type { Editor } from 'mem-fs-editor';
-import { getFclConfig, extendPageJSON, initializeTargetSettings } from './common';
+import { getFclConfig, extendPageJSON, initializeTargetSettings, getLibraryDependencies } from './common';
 import type { Manifest } from '../common/types';
 import type { ListReport, InternalListReport } from './types';
+import { PageType } from './types';
 
 /**
  * Enhances the provided list report configuration with default data.
@@ -14,9 +15,12 @@ function enhanceData(data: ListReport, manifest: Manifest): InternalListReport {
     const config: InternalListReport = {
         ...data,
         settings: initializeTargetSettings(data, data.settings),
-        name: 'ListReport',
+        name: PageType.ListReport,
         ...getFclConfig(manifest)
     };
+
+    // set library dependencies
+    config.libraries = getLibraryDependencies(PageType.ListReport);
 
     // use standard file name if i18n enhancement required
     if (config.settings.enhanceI18n === true) {

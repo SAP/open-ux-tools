@@ -10,8 +10,10 @@ import {
     FileStoreService,
     BusinessObjectsService,
     GeneratorService,
+    UI5RtVersionService,
     AbapCDSViewService
 } from '../../src';
+import type { AxiosError } from '../../src';
 import * as auth from '../../src/auth';
 import type { ArchiveFileNode } from '../../src/abap/types';
 import fs from 'fs';
@@ -45,7 +47,8 @@ enum AdtServices {
     FILE_STORE = '/sap/bc/adt/filestore/ui5-bsp/objects',
     //BUSINESS_OBJECTS = '/sap/bc/adt/repository/informationsystem/search',
     GENERATOR = '/sap/bc/adt/repository/generators',
-    PUBLISH = '/sap/bc/adt/businessservices/odatav4'
+    PUBLISH = '/sap/bc/adt/businessservices/odatav4',
+    UI5_RT_VERSION = '/sap/bc/adt/filestore/ui5-bsp/ui5-rt-version'
 }
 
 const server = 'https://server.example';
@@ -969,5 +972,56 @@ describe('Generator Service', () => {
                 uri: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`
             })
         ).rejects.toThrowError();
+    });
+});
+
+describe('UI5 RT Version service', () => {
+    const ui5VersionMock = '1.21.1';
+    beforeAll(() => {
+        nock.disableNetConnect();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
+    });
+
+    const provider = createForAbap(config);
+
+    test('Get UI5 Version', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(AdtServices.UI5_RT_VERSION)
+            .reply(200, ui5VersionMock);
+
+        const ui5RtVersionService = await provider.getAdtService<UI5RtVersionService>(UI5RtVersionService);
+        const ui5Version = await ui5RtVersionService?.getUI5Version();
+        expect(ui5Version).toBe(ui5VersionMock);
+    });
+
+    test('Throws error when request fails', async () => {
+        const mockAxiosError = {
+            response: {
+                status: 404,
+                data: 'Not found'
+            },
+            message: 'Request failed with status code 404'
+        } as AxiosError;
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(AdtServices.UI5_RT_VERSION)
+            .replyWithError(mockAxiosError);
+
+        const ui5RtVersionService = await provider.getAdtService<UI5RtVersionService>(UI5RtVersionService);
+
+        try {
+            await ui5RtVersionService?.getUI5Version();
+            fail('The function should have thrown an error.');
+        } catch (error) {
+            expect(error).toBeDefined();
+            expect(error.message).toBe('Request failed with status code 404');
+        }
     });
 });

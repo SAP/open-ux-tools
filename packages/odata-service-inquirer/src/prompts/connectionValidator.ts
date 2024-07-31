@@ -21,10 +21,15 @@ import { errorHandler } from './prompt-helpers';
  * Structure to store validity information about url to be validated.
  */
 interface Validity {
+    // True if the url is in a valid format
     urlFormat?: boolean;
+    // True if the url is reachable
     reachable?: boolean;
+    // True if the url requires authentication, i.e. returns a 401/403  (note even once authenticated, this will remain true)
     authRequired?: boolean;
+    // True if the url is authenticated and accessible
     authenticated?: boolean;
+    // True if the url has a cert error that can be skipped
     canSkipCertError?: boolean;
 }
 
@@ -41,7 +46,11 @@ const ignorableCertErrors = [ERROR_TYPE.CERT_SELF_SIGNED, ERROR_TYPE.CERT_SELF_S
  */
 export class ConnectionValidator {
     public readonly validity: Validity = {};
+    // The current valid url (not necessarily authenticated but the url is in a valid format)
     private _validatedUrl: string | undefined;
+    // The current client code used for requests, the client code has been validated by a successful request
+    private _validatedClient: string | undefined;
+
     private _odataService: ODataService;
     private _serviceProvider: ServiceProvider;
     private _axiosConfig: AxiosRequestConfig;
@@ -135,7 +144,7 @@ export class ConnectionValidator {
                 // Full service URL
                 await this.createServiceConnection(axiosConfig, url.pathname);
             }
-
+            this._validatedClient = url.searchParams.get(SAP_CLIENT_KEY) ?? undefined;
             return 200;
         } catch (e) {
             LoggerHelper.logger.debug(`ConnectionValidator.checkSapService() - error: ${e.message}`);
@@ -236,7 +245,7 @@ export class ConnectionValidator {
      * @param serviceUrl the odata service url to validate
      * @param options options for the connection validation
      * @param options.ignoreCertError ignore some certificate errors
-     * @param options.forceReValidation force re-validation of the url
+     * @param options.forceReValidation force re-validation of the url even if the same url has been prevously validated
      * @param options.isSystem if true, the url will be treated as a system url rather than a service url
      * @param options.odataVersion if specified will restrict catalog requests to only the specified odata version
      * @returns true if the url is reachable, false if not, or an error message string
@@ -283,7 +292,7 @@ export class ConnectionValidator {
             // More helpful context specific error
             if (ErrorHandler.getErrorType(error) === ERROR_TYPE.CONNECTION) {
                 this.validity.reachable = false;
-                return errorHandler.logErrorMsgs(t('errors.serviceUrlNotFound', { url: serviceUrl }));
+                return errorHandler.logErrorMsgs(t('errors.systemOrserviceUrlNotFound', { url: serviceUrl }));
             }
 
             this.resetValidity();
@@ -301,9 +310,9 @@ export class ConnectionValidator {
      */
     private getValidationResultFromStatusCode(status: string | number): boolean | string | IValidationLink {
         if (status === 200) {
+            this.validity.reachable = true;
             this.validity.authenticated = true;
-            this.validity.authRequired = false;
-        } else if (status === 404) {
+        } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.NOT_FOUND) {
             this.validity.reachable = false;
             return ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NOT_FOUND) ?? false;
         } else if (ErrorHandler.isCertError(status)) {
@@ -313,10 +322,11 @@ export class ConnectionValidator {
         } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.AUTH) {
             this.validity.reachable = true;
             this.validity.authRequired = true;
+            this.validity.authenticated = false;
         } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.REDIRECT) {
             this.validity.reachable = true;
             return t('errors.urlRedirect');
-        } else if (status !== 404) {
+        } else if (ErrorHandler.getErrorType(status) === ERROR_TYPE.CONNECTION) {
             this.validity.reachable = false;
             return ErrorHandler.getErrorMsgFromType(ERROR_TYPE.CONNECTION, `http code: ${status}`) ?? false;
         }
@@ -346,6 +356,50 @@ export class ConnectionValidator {
         }
         this.resetValidity();
         return false;
+    }
+
+    /**
+     * Check whether basic auth is required for the given url, or for the previously validated url if none specified.
+     * This will also set the validity state for the url. This will not validate the URL.
+     *
+     * @param urlString - the url to validate, if not provided the previously validated url will be used
+     * @param client - optional, sap client code, if not provided the previously validated client will be used
+     * @param ignoreCertError
+     * @returns true if basic auth is required, false if not
+     */
+    public async isAuthRequired(
+        urlString = this._validatedUrl,
+        client = this._validatedClient,
+        ignoreCertError = false
+    ): Promise<boolean> {
+        if (!urlString) {
+            return false;
+        }
+
+        // Dont re-request if already validated
+        if (
+            this._validatedUrl === urlString &&
+            this._validatedClient === client &&
+            this.validity.authRequired !== undefined
+        ) {
+            return this.validity.authRequired;
+        }
+        // New URL or client so we need to re-request
+        try {
+            const url = new URL(urlString);
+            if (client) {
+                url.searchParams.append(SAP_CLIENT_KEY, client);
+            }
+            this.validity.authRequired = this.validity.reachable =
+                ErrorHandler.getErrorType(
+                    await this.checkSapService(url, undefined, undefined, { ignoreCertError })
+                ) === ERROR_TYPE.AUTH;
+
+            return this.validity.authRequired;
+        } catch (error) {
+            errorHandler.logErrorMsgs(error);
+            return false; // Cannot determine if auth required
+        }
     }
 
     /**
@@ -387,11 +441,18 @@ export class ConnectionValidator {
                 isSystem,
                 odataVersion
             });
-
+            LoggerHelper.logger.debug(`ConnectionValidator.validateUrl() - status: ${status}; url: ${url}`);
+            // Since an exception was not thrown, this is a valid url
+            this.validity.urlFormat = true;
+            this._validatedUrl = url;
             const valResult = this.getValidationResultFromStatusCode(status);
 
-            if (valResult === true && this.validity.authenticated === true) {
-                return true;
+            if (valResult === true) {
+                if (this.validity.authenticated === true) {
+                    return true;
+                } else if (this.validity.authenticated === false) {
+                    return t('errors.authenticationFailed');
+                }
             }
             return valResult;
         } catch (error) {
