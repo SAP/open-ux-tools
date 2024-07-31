@@ -1,43 +1,36 @@
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import { ActionService } from 'sap/ui/rta/service/Action';
 
 import {
     executeQuickAction,
     ExternalAction,
     QuickAction,
-    quickActionListChanged
+    quickActionListChanged,
+    SIMPLE_QUICK_ACTION_KIND,
+    NESTED_QUICK_ACTION_KIND,
+    QuickActionExecutionPayload
 } from '@sap-ux-private/control-property-editor-common';
 
 import { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction } from '../types';
 
 import { QUICK_ACTION_DEFINITIONS } from './definitions/index';
 
-import { ActivationContext, ExecutionContext } from './definitions/quick-action-definition';
-
-export type RTAActionServiceAPI = {
-    execute: (controlId: string, actionId: string) => Promise<void>;
-    get: (controlId: string) => Promise<{ id: string }[] | undefined>;
-};
+import { QuickActionContext, QuickActionDefinition } from './definitions/quick-action-definition';
 
 /**
  *
  */
 export class QuickActionService implements Service {
     private sendAction: ActionSenderFunction = () => {};
-    private executionContext: ExecutionContext;
-    private actionService: RTAActionServiceAPI | undefined;
+    private actions: QuickActionDefinition[] = [];
+    private actionService: ActionService;
 
     /**
      *
      * @param rta - rta object.
      * @param ui5 - facade for ui5 framework methods
      */
-    constructor(private readonly rta: RuntimeAuthoring) {
-        this.executionContext = {
-            controlIndex: {},
-            rta,
-            actionService: undefined
-        } as ExecutionContext;
-    }
+    constructor(private readonly rta: RuntimeAuthoring) {}
 
     /**
      * Initialize selection service.
@@ -50,46 +43,50 @@ export class QuickActionService implements Service {
         this.actionService = await this.rta.getService('action');
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (executeQuickAction.match(action)) {
-                const definition = QUICK_ACTION_DEFINITIONS.find(
+                const actionInstance = this.actions.find(
                     (quickActionDefinition) => quickActionDefinition.type === action.payload.type
                 );
-                if (!definition) {
+                if (!actionInstance) {
                     return;
                 }
-                await definition.execute(this.executionContext, action.payload.index, action.payload.executionPayload);
+                const commands = await this.executeAction(actionInstance, action.payload);
+
+                for (const command of commands) {
+                    await this.rta.getCommandStack().pushAndExecute(command);
+                }
             }
         });
     }
 
     public async reloadQuickActions(controlIndex: ControlTreeIndex): Promise<void> {
-        const context: ActivationContext = {
+        const context: QuickActionContext = {
             controlIndex,
             manifest: this.rta.getRootControlInstance().getManifest(),
             actionService: this.actionService,
             rta: this.rta
         };
-        this.executionContext = {
-            controlIndex,
-            rta: this.rta,
-            actionService: this.actionService
-        };
-        const quickActions: QuickAction<unknown>[] = [];
-        for (const definition of QUICK_ACTION_DEFINITIONS) {
-            const activationData = await definition.getActivationData(context);
-            if (activationData?.isActive) {
-                const quickAction = {
-                    type: definition.type,
-                    title: activationData.title,
-                    children: new Array<string>(),
-                    executionPayload: activationData.executionPayload
-                };
-                if (activationData.children) {
-                    quickAction.children = activationData.children;
-                }
+
+        const quickActions: QuickAction[] = [];
+        for (const Definition of QUICK_ACTION_DEFINITIONS) {
+            const instance = new Definition(context);
+            await instance.initialize();
+            if (instance.isActive) {
+                const quickAction = instance.getActionObject();
                 quickActions.push(quickAction);
+                this.actions.push(instance);
             }
         }
-        const action = quickActionListChanged(quickActions);
-        this.sendAction(action);
+
+        this.sendAction(quickActionListChanged(quickActions));
+    }
+
+    private executeAction(actionInstance: QuickActionDefinition, payload: QuickActionExecutionPayload) {
+        if (payload.kind === SIMPLE_QUICK_ACTION_KIND && actionInstance.kind === SIMPLE_QUICK_ACTION_KIND) {
+            return actionInstance.execute();
+        }
+        if (payload.kind === NESTED_QUICK_ACTION_KIND && actionInstance.kind === NESTED_QUICK_ACTION_KIND) {
+            return actionInstance.execute(payload.path);
+        }
+        return Promise.resolve([]);
     }
 }

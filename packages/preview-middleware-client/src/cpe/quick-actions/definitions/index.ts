@@ -1,14 +1,8 @@
-import { ENABLE_CLEAR_FILTER_BAR } from './lr-enable-clear-filter-bar';
-import { ADD_FIELD_TO_HEADER } from './op-add-field-to-header';
-import { ADD_PAGE_CONTROLLER } from './page-add-controller';
-import { QuickActionDefinition } from './quick-action-definition';
-import { RENAME_SECTION } from './rename-section-title';
+import { FE_V2_QUICK_ACTION_DEFINITIONS } from './fe-v2/index';
 
-export type AnyQuickActionDefinition = QuickActionDefinition<boolean> | QuickActionDefinition<undefined>;
+import { QuickActionDefinition, QuickActionDefinitionConstructor } from './quick-action-definition';
 
-export const QUICK_ACTION_DEFINITIONS: AnyQuickActionDefinition[] = [
-    ENABLE_CLEAR_FILTER_BAR,
-    ADD_FIELD_TO_HEADER,
-    ADD_PAGE_CONTROLLER,
-    RENAME_SECTION
+
+export const QUICK_ACTION_DEFINITIONS: QuickActionDefinitionConstructor<QuickActionDefinition>[] = [
+    ...FE_V2_QUICK_ACTION_DEFINITIONS
 ];

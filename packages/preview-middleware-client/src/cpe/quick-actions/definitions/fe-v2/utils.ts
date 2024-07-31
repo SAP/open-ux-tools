@@ -1,8 +1,9 @@
 import UI5Element from 'sap/ui/core/Element';
-import { type FEAppPageInfo, getFEAppPagesMap, isPageContainsControlById } from '../../rta-service';
-import { BaseContext } from './quick-action-definition';
 
-export function getCurrentActivePage(context: BaseContext): FEAppPageInfo[] {
+import { type FEAppPageInfo, getFEAppPagesMap, isPageContainsControlById } from '../../../rta-service';
+import { QuickActionContext } from '../quick-action-definition';
+
+export function getCurrentActivePage(context: QuickActionContext): FEAppPageInfo[] {
     const pages = getFEAppPagesMap(context.rta);
     const collectActivePages = [];
     for (const page of Object.keys(pages)) {
@@ -13,7 +14,7 @@ export function getCurrentActivePage(context: BaseContext): FEAppPageInfo[] {
 }
 
 export function getRelevantControlFromActivePage(
-    context: BaseContext,
+    context: QuickActionContext,
     activePage: FEAppPageInfo,
     controlTypes: string[]
 ): UI5Element[] {

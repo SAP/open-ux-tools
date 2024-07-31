@@ -5,7 +5,7 @@ import type { ActionService } from 'sap/ui/rta/service/Action';
 
 import { NESTED_QUICK_ACTION_KIND, NestedQuickAction, SIMPLE_QUICK_ACTION_KIND, SimpleQuickAction } from '@sap-ux-private/control-property-editor-common';
 
-import { ControlTreeIndex } from '../../types';
+import { ControlTreeIndex } from '../../../types';
 
 export interface QuickActionContext {
     controlIndex: ControlTreeIndex;

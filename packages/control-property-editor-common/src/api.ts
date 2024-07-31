@@ -167,13 +167,42 @@ export interface ShowMessage {
     shouldHideIframe: boolean;
 }
 
-export interface QuickAction<T> {
+export const SIMPLE_QUICK_ACTION_KIND = 'simple';
+export interface SimpleQuickAction {
+    kind: typeof SIMPLE_QUICK_ACTION_KIND;
     type: string;
     title: string;
-    children?: string[];
-    index?: number;
-    executionPayload?: T;
+    enabled: boolean;
 }
+
+export const NESTED_QUICK_ACTION_KIND = 'nested';
+export interface NestedQuickAction {
+    kind: typeof NESTED_QUICK_ACTION_KIND;
+    type: string;
+    title: string;
+    enabled: boolean;
+    children: NestedQuickActionChild[];
+}
+
+export interface NestedQuickActionChild {
+    label: string;
+    children: NestedQuickActionChild[];
+}
+
+export type QuickAction = SimpleQuickAction | NestedQuickAction;
+
+export interface SimpleQuickActionExecutionPayload {
+    kind: typeof SIMPLE_QUICK_ACTION_KIND;
+    type: string;
+}
+
+export interface NestedQuickActionExecutionPayload {
+    kind: typeof NESTED_QUICK_ACTION_KIND;
+    type: string;
+    path: string;
+}
+
+export type QuickActionExecutionPayload = SimpleQuickActionExecutionPayload | NestedQuickActionExecutionPayload;
 
 /**
  * ACTIONS
@@ -252,7 +281,7 @@ export const undo = createExternalAction<void>('undo');
 export const redo = createExternalAction<void>('redo');
 export const save = createExternalAction<void>('save');
 export const quickActionListChanged = createExternalAction<QuickAction[]>('quick-action-list-changed');
-export const executeQuickAction = createExternalAction<QuickAction>('execute-quick-action');
+export const executeQuickAction = createExternalAction<QuickActionExecutionPayload>('execute-quick-action');
 
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>

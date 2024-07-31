@@ -2,13 +2,17 @@ import type { ReactElement } from 'react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Label } from '@fluentui/react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import type { QuickAction } from '@sap-ux-private/control-property-editor-common';
+import { NESTED_QUICK_ACTION_KIND, SIMPLE_QUICK_ACTION_KIND } from '@sap-ux-private/control-property-editor-common';
 
 import type { RootState } from '../../store';
 import { sectionHeaderFontSize } from '../properties/constants';
-import { QuickActionListItem } from './QuickActionListItem';
+
+import { SimpleQuickActionListItem } from './SimpleQuickAction';
+import { NestedQuickActionListItem } from './NestedQuickAction';
+
 import './QuickAction.scss';
 
 /**
@@ -19,7 +23,6 @@ import './QuickAction.scss';
 export function QuickActionList(): ReactElement {
     const { t } = useTranslation();
     const quickActions = useSelector<RootState, QuickAction[]>((state) => state.quickActions);
-    const dispatch = useDispatch();
     console.log(quickActions);
 
     return (
@@ -37,9 +40,15 @@ export function QuickActionList(): ReactElement {
                     {t('QUICK_ACTIONS')}
                 </Label>
                 <div className={`quick-action-items`}>
-                    {quickActions.map((quickAction) => (
-                        <QuickActionListItem {...quickAction} />
-                    ))}
+                    {quickActions.map((quickAction) => {
+                        if (quickAction.kind === SIMPLE_QUICK_ACTION_KIND) {
+                            return <SimpleQuickActionListItem key={quickAction.title} action={quickAction} />;
+                        }
+                        if (quickAction.kind === NESTED_QUICK_ACTION_KIND) {
+                            return <NestedQuickActionListItem key={quickAction.title} action={quickAction} />;
+                        }
+                        return <></>;
+                    })}
                 </div>
             </div>
         </>

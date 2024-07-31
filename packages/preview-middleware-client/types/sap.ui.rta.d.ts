@@ -259,3 +259,38 @@ declare module 'sap/ui/rta/api/startAdaptation' {
 
     export default startAdaptation;
 }
+
+declare module 'sap/ui/rta/service/Action' {
+    export type ActionObject = {
+        /**
+         * ID of the action.
+         */
+        id: string;
+        /**
+         * Group name in case the action has been grouped with other action(s).
+         */
+        group: string;
+        /**
+         * Icon name.
+         */
+        icon: string;
+        /**
+         * Indicates whether the action is active and can be executed.
+         */
+        enabled: boolean;
+        /**
+         * Sorting rank for visual representation of the action position.
+         */
+        rank: number;
+        /**
+         * Action name
+         */
+        text: string;
+    }
+    export type ActionService = {
+        get: (controlId: string) => Promise<ActionObject[]>;
+        get: (controlIds: string[]) => Promise<ActionObject[]>;
+        execute: (controlId: string, actionId: string) => Promise<void>;
+        execute: (controlIds: string[], actionId: string) => Promise<void>;
+    }
+}
