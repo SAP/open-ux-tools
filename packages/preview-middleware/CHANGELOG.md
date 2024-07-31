@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.27
+
+### Patch Changes
+
+-   ab2e5a0: Preview support for UI5 2.x
+
 ## 0.16.26
 
 ### Patch Changes
