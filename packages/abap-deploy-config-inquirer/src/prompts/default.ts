@@ -3,6 +3,7 @@ import { PromptState } from './prompt-state';
 import {
     PackageInputChoices,
     TargetSystemType,
+    TransportChoices,
     type AbapDeployConfigAnswers,
     type AbapDeployConfigPromptOptions,
     type AbapSystemChoice
@@ -92,6 +93,26 @@ export function defaultPackage(
             defaultPkg = DEFAULT_PACKAGE_ABAP;
         }
         return previousAnswers.packageManual ?? options.existingDeployTaskConfig?.package ?? defaultPkg;
+    }
+}
+
+/**
+ * Determines the default user choice of how to provide transport number.
+ *
+ * @param previousTransportInputChoice - previous user choice
+ * @param createTrDuringDeploy - existing ui5-deploy.yaml config that indicates to create TR during deployment.
+ * @returns default choice of transport input choice
+ */
+export function defaultTransportRequestChoice(
+    previousTransportInputChoice?: TransportChoices,
+    createTrDuringDeploy = false
+): string {
+    if (previousTransportInputChoice) {
+        return previousTransportInputChoice;
+    } else if (createTrDuringDeploy) {
+        return TransportChoices.CreateDuringDeployChoice;
+    } else {
+        return TransportChoices.EnterManualChoice;
     }
 }
 

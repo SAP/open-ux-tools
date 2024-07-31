@@ -22,7 +22,8 @@ import {
     type AbapDeployConfigPromptOptions,
     type AbapSystemChoice
 } from '../../types';
-import type { InputQuestion, ListQuestion, ConfirmQuestion, Question } from 'inquirer';
+import type { InputQuestion, ListQuestion, ConfirmQuestion } from '@sap-ux/inquirer-common';
+import type { Question } from 'inquirer';
 
 /**
  * Returns the destination prompt.
@@ -122,7 +123,7 @@ function getUrlPrompt(
  */
 function getScpPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswers> {
     return {
-        when: (previousAnswers: AbapDeployConfigAnswers): Promise<boolean> => showScpQuestion(previousAnswers),
+        when: (previousAnswers: AbapDeployConfigAnswers): boolean => showScpQuestion(previousAnswers),
         type: 'confirm',
         name: abapDeployConfigInternalPromptNames.scp,
         message: t('prompts.target.scp.message'),
@@ -189,7 +190,6 @@ export async function getAbapTargetPrompts(
     options: AbapDeployConfigPromptOptions
 ): Promise<Question<AbapDeployConfigAnswers>[]> {
     const { destinations, backendSystems } = await getAbapSystems();
-
     const abapSystemChoices = await getAbapSystemChoices(options.backendTarget, destinations, backendSystems);
 
     return [

@@ -11,7 +11,11 @@ import { validateTransportChoiceInput, validateTransportQuestion } from '../../v
 import { PromptState } from '../../prompt-state';
 import { transportName } from '../../../service-provider-utils/transport-list';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { defaultTransportListChoice, defaultTransportRequestNumber } from '../../default';
+import {
+    defaultTransportListChoice,
+    defaultTransportRequestChoice,
+    defaultTransportRequestNumber
+} from '../../default';
 import {
     abapDeployConfigInternalPromptNames,
     type AbapDeployConfigAnswers,
@@ -19,6 +23,7 @@ import {
     type TransportChoices
 } from '../../../types';
 import type { InputQuestion, ListQuestion, Question } from 'inquirer';
+import { useCreateTrDuringDeploy } from '../../../utils';
 
 /**
  * Returns the transport prompts.
@@ -41,22 +46,21 @@ export function getTransportRequestPrompts(
                 applyDefaultWhenDirty: true
             },
             choices: () => getTransportChoices(),
+            default: (previousAnswers: AbapDeployConfigAnswers): string =>
+                defaultTransportRequestChoice(previousAnswers.transportInputChoice, useCreateTrDuringDeploy(options)),
             validate: async (
                 input: TransportChoices,
                 previousAnswers: AbapDeployConfigAnswers
             ): Promise<boolean | string> => {
-                if (input) {
-                    const result = validateTransportChoiceInput(
-                        input,
-                        options,
-                        previousAnswers,
-                        true,
-                        transportInputChoice
-                    );
-                    transportInputChoice = input;
-                    return result;
-                }
-                return true;
+                const result = validateTransportChoiceInput(
+                    input,
+                    options,
+                    previousAnswers,
+                    true,
+                    transportInputChoice
+                );
+                transportInputChoice = input;
+                return result;
             }
         } as ListQuestion<AbapDeployConfigAnswers>,
         {

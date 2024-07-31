@@ -15,6 +15,7 @@ import type {
 import type { AtoSettings } from '@sap-ux/axios-extension';
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 import type { Destinations, Destination } from '@sap-ux/btp-utils';
+import { CREATE_TR_DURING_DEPLOY } from './constants';
 
 let cachedDestinations: Destinations, cachedBackendSystems: BackendSystem[];
 
@@ -191,4 +192,15 @@ export function getPackageAnswer(previousAnswers?: AbapDeployConfigAnswers): str
     return previousAnswers?.packageInputChoice === PackageInputChoices.ListExistingChoice
         ? previousAnswers?.packageAutocomplete ?? ''
         : previousAnswers?.packageManual ?? '';
+}
+
+/**
+ * If a deploy config already exists in the project, check if the config
+ * uses option to create transport request number during actual deploy process.
+ *
+ * @param generator Instance of AbapGenerator
+ * @returns True if transport setting is set to 'CreateDuringDeployChoice'.
+ */
+export function useCreateTrDuringDeploy(options: AbapDeployConfigPromptOptions): boolean {
+    return options.existingDeployTaskConfig?.transport === CREATE_TR_DURING_DEPLOY;
 }

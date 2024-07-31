@@ -33,7 +33,7 @@ export function showUrlQuestion(targetSystem?: string): boolean {
  * @param previousAnswers - previous answers
  * @returns boolean
  */
-export async function showScpQuestion(previousAnswers: AbapDeployConfigAnswers): Promise<boolean> {
+export function showScpQuestion(previousAnswers: AbapDeployConfigAnswers): boolean {
     if (
         (!isAppStudio() && !previousAnswers.targetSystem) ||
         (showUrlQuestion(previousAnswers.targetSystem) && previousAnswers.url?.length === 0)

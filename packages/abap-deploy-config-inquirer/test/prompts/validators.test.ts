@@ -30,6 +30,7 @@ import {
 import * as utils from '../../src/utils';
 import { AbapTarget } from '@sap-ux/system-access';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { mockDestinations } from '../constants';
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
     ...jest.requireActual('@sap-ux/fiori-generator-shared'),
@@ -43,24 +44,6 @@ describe('Test validators', () => {
         await initI18n();
     });
     describe('validateDestinationQuestion', () => {
-        const mockDestinations = {
-            Dest1: {
-                Name: 'Dest1',
-                Type: 'HTTP',
-                Authentication: 'BasicAuthentication',
-                Description: 'Mock destination',
-                Host: 'https://mock.url.dest1.com',
-                ProxyType: 'OnPremise'
-            },
-            Dest2: {
-                Name: 'Dest2',
-                Type: 'HTTP',
-                Authentication: 'NoAuthentication',
-                Description: 'Mock destination 2',
-                Host: 'https://mock.url.dest2.com',
-                ProxyType: 'OnPremise'
-            }
-        };
         it('should return true for valid destination', async () => {
             const result = validateDestinationQuestion('Dest2', mockDestinations);
             expect(PromptState.abapDeployConfig.destination).toBe('Dest2');
@@ -231,7 +214,7 @@ describe('Test validators', () => {
                 transportConfigNeedsCreds: true
             });
             expect(await validateCredentials({}, 'pass1', { username: 'user1' })).toBe(
-                t('errors.atoUnauthorisedSystem')
+                t('errors.incorrectCredentials')
             );
         });
     });
