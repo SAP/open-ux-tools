@@ -154,9 +154,12 @@ export async function getCapModelAndServices(
     let services = cds.compile.to.serviceinfo(model, { root: _projectRoot }) ?? [];
     if (services.map) {
         services = services.map((value) => {
+            const { endpoints, urlPath } = value;
+            const odataEndpoint = endpoints?.find((endpoint) => endpoint.kind === 'odata');
+            const endpointPath = odataEndpoint?.path ?? urlPath;
             return {
                 name: value.name,
-                urlPath: uniformUrl(value.endpoints?.find((val) => val.kind === 'odata')?.path ?? value.urlPath),
+                urlPath: uniformUrl(endpointPath),
                 runtime: value.runtime
             };
         });
