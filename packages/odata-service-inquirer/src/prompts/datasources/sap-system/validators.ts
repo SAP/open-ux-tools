@@ -18,8 +18,10 @@ async function isSystemNameInUse(systemName: string): Promise<boolean> {
  *
  * @param systemName a system name to validate
  * @returns true if the name is valid, otherwise an error message
- */
-export async function validateSystemName(systemName: string): Promise<boolean | string> {
+ */ export async function validateSystemName(systemName: string): Promise<boolean | string> {
+    if (!systemName) {
+        return t('prompts.systemName.emptySystemNameWarning');
+    }
     const systemExists = await isSystemNameInUse(systemName);
     if (systemExists) {
         return t('prompts.systemName.systemNameExistsWarning');
