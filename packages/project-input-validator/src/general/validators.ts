@@ -91,5 +91,5 @@ export function validateSpecialChars(value: string, regexp = '^[a-zA-Z0-9_$.\\-]
         return true;
     }
 
-    return t('general.errorInvalidValueForSpecialChars');
+    return t('general.invalidValueForSpecialChars');
 }

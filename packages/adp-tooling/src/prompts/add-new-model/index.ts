@@ -35,10 +35,9 @@ const oDataVersions = [
  * Exucute generic validation for input.
  *
  * @param value The value to validate.
- * @param isCustomerBase Whether the validation is for customer usage.
  * @returns {string | boolean} An error message if the value is an empty string, or true if it is not.
  */
-function validatePromptInput(value: string, isCustomerBase: boolean): boolean | string {
+function validatePromptInput(value: string): boolean | string {
     const validators = [validateEmptyString, validateEmptySpaces, validateSpecialChars];
 
     for (const validator of validators) {
@@ -46,13 +45,6 @@ function validatePromptInput(value: string, isCustomerBase: boolean): boolean | 
         if (typeof validationResult === 'string') {
             return validationResult;
         }
-    }
-
-    if (isCustomerBase && !hasCustomerPrefix(value)) {
-        return t('validators.errorInputInvalidValuePrefix', {
-            value: t('prompts.oDataServiceNameLabel'),
-            prefix: UserStatePrefix.customer
-        });
     }
 
     return true;
@@ -74,7 +66,7 @@ function validatePromptJSON(value: string): boolean | string {
 }
 
 /**
- * Validates the OData name prompts.
+ * Validates the OData Service name prompt.
  *
  * @param value The value to validate.
  * @param answers The answers object.
@@ -88,9 +80,54 @@ function validatePromptODataName(
     isCustomerBase: boolean,
     changeFiles: ManifestChangeProperties[]
 ): boolean | string {
-    const validationResult = validatePromptInput(value, isCustomerBase);
+    const validationResult = validatePromptInput(value);
     if (typeof validationResult === 'string') {
         return validationResult;
+    }
+
+    if (isCustomerBase && !hasCustomerPrefix(value)) {
+        return t('validators.errorInputInvalidValuePrefix', {
+            value: t('prompts.oDataServiceNameLabel'),
+            prefix: UserStatePrefix.customer
+        });
+    }
+
+    if (hasContentDuplication(value, 'dataSource', changeFiles)) {
+        return t('validators.errorDuplicatedValueOData');
+    }
+
+    if (value === answers.dataSourceName) {
+        return t('validators.errorDuplicateNamesOData');
+    }
+
+    return true;
+}
+
+/**
+ * Validates the OData Annotation name prompt.
+ *
+ * @param value The value to validate.
+ * @param answers The answers object.
+ * @param isCustomerBase Whether the validation is for customer usage.
+ * @param changeFiles The list of existing change files to check against.
+ * @returns {boolean | string} True if no duplication is found, or an error message if validation fails.
+ */
+function validatePromptODataAnnotationsName(
+    value: string,
+    answers: NewModelAnswers,
+    isCustomerBase: boolean,
+    changeFiles: ManifestChangeProperties[]
+): boolean | string {
+    const validationResult = validatePromptInput(value);
+    if (typeof validationResult === 'string') {
+        return validationResult;
+    }
+
+    if (isCustomerBase && !hasCustomerPrefix(value)) {
+        return t('validators.errorInputInvalidValuePrefix', {
+            value: t('prompts.oDataAnnotationDataSourceNameLabel'),
+            prefix: UserStatePrefix.customer
+        });
     }
 
     if (hasContentDuplication(value, 'dataSource', changeFiles)) {
@@ -117,9 +154,16 @@ function validatePromptModelName(
     isCustomerBase: boolean,
     changeFiles: ManifestChangeProperties[]
 ): boolean | string {
-    const validationResult = validatePromptInput(value, isCustomerBase);
+    const validationResult = validatePromptInput(value);
     if (typeof validationResult === 'string') {
         return validationResult;
+    }
+
+    if (isCustomerBase && !hasCustomerPrefix(value)) {
+        return t('validators.errorInputInvalidValuePrefix', {
+            value: t('prompts.oDataServiceModelNameLabel'),
+            prefix: UserStatePrefix.customer
+        });
     }
 
     if (hasContentDuplication(value, 'model', changeFiles)) {
@@ -224,7 +268,7 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
             name: 'dataSourceName',
             message: t('prompts.oDataAnnotationDataSourceNameLabel'),
             validate: (value: string, answers: NewModelAnswers) => {
-                return validatePromptODataName(value, answers, isCustomerBase, changeFiles);
+                return validatePromptODataAnnotationsName(value, answers, isCustomerBase, changeFiles);
             },
             default: defaultSeviceName,
             store: false,

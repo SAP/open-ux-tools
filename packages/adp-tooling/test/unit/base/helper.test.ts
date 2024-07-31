@@ -4,7 +4,7 @@ import * as mockFs from 'fs';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
 
-import { getVariant, getAdpConfig, isCustomerBase } from '../../../src/base/helper';
+import { getVariant, getAdpConfig } from '../../../src/base/helper';
 
 jest.mock('fs');
 
@@ -16,13 +16,6 @@ describe('helper', () => {
             client: '100'
         }
     };
-
-    describe('isCustomerBase', () => {
-        test('should return the correct value depending on the ', () => {
-            expect(isCustomerBase('CUSTOMER_BASE')).toBe(true);
-            expect(isCustomerBase('VENDOR')).toBe(false);
-        });
-    });
 
     describe('getVariant', () => {
         beforeEach(() => {

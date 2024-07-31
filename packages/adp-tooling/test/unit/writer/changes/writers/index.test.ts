@@ -221,7 +221,7 @@ describe('NewModelWriter', () => {
                 modelSettings: '"someSetting": "someValue"',
                 dataSourceName: 'ODataAnnotations',
                 dataSourceURI: 'some/path/annotations.xml',
-                settings: '"anotherSetting": "anotherValue"',
+                annotationSettings: '"anotherSetting": "anotherValue"',
                 addAnnotationMode: true
             }
         };
