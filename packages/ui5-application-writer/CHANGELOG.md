@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 1.1.2
+
+### Patch Changes
+
+-   42486a5: fix(locate-reuse-lib): corrected extraction of component name
+
 ## 1.1.1
 
 ### Patch Changes

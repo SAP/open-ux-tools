@@ -1,5 +1,19 @@
 # @sap-ux/adp-tooling
 
+## 0.12.18
+
+### Patch Changes
+
+-   2a7d3c4: Add Change Inbound prompting and cli command
+
+## 0.12.17
+
+### Patch Changes
+
+-   Updated dependencies [ad9b56d]
+    -   @sap-ux/axios-extension@1.16.1
+    -   @sap-ux/system-access@0.5.3
+
 ## 0.12.16
 
 ### Patch Changes

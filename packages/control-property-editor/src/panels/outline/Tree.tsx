@@ -289,7 +289,7 @@ export const Tree = (): ReactElement => {
 
         const controlChange = controlChanges[item?.controlId ?? ''];
         const indicator = controlChange ? (
-            <ChangeIndicator id={`${item?.controlId}--ChangeIndicator`} {...controlChange} />
+            <ChangeIndicator id={`${item?.controlId}--ChangeIndicator`} {...controlChange} type="control" />
         ) : (
             <></>
         );
@@ -385,7 +385,11 @@ export const Tree = (): ReactElement => {
         const focusEditable = !data?.editable && focus ? 'focusEditable' : '';
         const controlChange = controlChanges[groupHeaderProps?.group?.key ?? ''];
         const indicator = controlChange ? (
-            <ChangeIndicator id={`${groupHeaderProps?.group?.key ?? ''}--ChangeIndicator`} {...controlChange} />
+            <ChangeIndicator
+                id={`${groupHeaderProps?.group?.key ?? ''}--ChangeIndicator`}
+                {...controlChange}
+                type="control"
+            />
         ) : (
             <></>
         );
