@@ -253,9 +253,14 @@ async function getI18nTextFromProperty(
  *
  * @param config FLP configuration
  * @param manifest application manifest
+ * @param resources additional resources
  * @returns configuration object for the sandbox.html template
  */
-export function createFlpTemplateConfig(config: FlpConfig, manifest: Partial<Manifest>): TemplateConfig {
+export function createFlpTemplateConfig(
+    config: FlpConfig,
+    manifest: Partial<Manifest>,
+    resources: Record<string, string> = {}
+): TemplateConfig {
     const flex = getFlexSettings();
     const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
     const ui5Theme = config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
@@ -270,6 +275,7 @@ export function createFlpTemplateConfig(config: FlpConfig, manifest: Partial<Man
             theme: ui5Theme,
             flex,
             resources: {
+                ...resources,
                 [PREVIEW_URL.client.ns]: PREVIEW_URL.client.url
             },
             bootstrapOptions: ''
