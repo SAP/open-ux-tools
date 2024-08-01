@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.26.3
+
+### Patch Changes
+
+-   88c8bf6: new public/exported method "getCapServiceName" which returns CAP service name by passed datasource uri
+
 ## 1.26.2
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.26.0
+
+### Minor Changes
+
+-   88c8bf6: feat: Prompt API to request question and submit answers for Table, Chart and FilterBar building blocks
+
+### Patch Changes
+
+-   Updated dependencies [88c8bf6]
+    -   @sap-ux/project-access@1.26.3
+    -   @sap-ux/fiori-annotation-api@0.1.30
+
 ## 0.25.7
 
 ### Patch Changes
