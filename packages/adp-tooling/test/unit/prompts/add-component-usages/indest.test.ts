@@ -1,6 +1,17 @@
 import * as i18n from '../../../../src/i18n';
 import { getPrompts } from '../../../../src/prompts/add-component-usages';
-import * as validators from '../../../../src/base/validators';
+import * as validators from '@sap-ux/project-input-validator';
+
+jest.mock('@sap-ux/project-input-validator');
+
+jest.mock('@sap-ux/project-input-validator', () => ({
+    ...jest.requireActual('@sap-ux/project-input-validator'),
+    hasContentDuplication: jest.fn().mockReturnValue(false),
+    hasCustomerPrefix: jest.fn().mockReturnValue(true),
+    validateJSON: jest.fn().mockReturnValue(true),
+    validateSpecialChars: jest.fn().mockReturnValue(true),
+    validateEmptyString: jest.fn().mockReturnValue(true)
+}));
 
 describe('getPrompts', () => {
     const isLazyDropDownOptions = [
@@ -121,63 +132,167 @@ describe('getPrompts', () => {
     });
 
     describe('Validators', () => {
-        test('should validate id for content duplication', () => {
-            jest.spyOn(validators, 'validateContentDuplication').mockReturnValueOnce('error');
-
-            const validator = (getPrompts(mockBasePath, 'CUSTOMER_BASE')[0] as any).validate;
-
-            expect(validator('id')).toBe('error');
-            expect(validators.validateContentDuplication).toHaveBeenCalledWith(
-                'id',
-                'componentUsages',
-                [],
-                true,
-                i18n.t('prompts.component.usageIdLabel'),
-                i18n.t('prompts.component.usage')
-            );
-        });
-
-        test('should validate name for special characters', () => {
+        test('should fail validation of id for special characters', () => {
             jest.spyOn(validators, 'validateSpecialChars').mockReturnValueOnce('error');
 
-            const validator = (getPrompts(mockBasePath, 'CUSTOMER_BASE')[1] as any).validate;
+            const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
-            expect(validator('name')).toBe('error');
-            expect(validators.validateSpecialChars).toHaveBeenCalledWith('name', i18n.t('prompts.component.nameLabel'));
+            const validator = prompts.find((prompt) => prompt.name === 'id')?.validate;
+            if (validator) {
+                expect(validator('customer.@id')).toBe('error');
+            } else {
+                fail('Validator not found');
+            }
         });
 
-        test('should validate comonent settings for JSON', () => {
+        test('should fail validation of id for missing customer prefix', () => {
+            jest.spyOn(validators, 'hasCustomerPrefix').mockReturnValueOnce(false);
+
+            const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
+
+            const validator = prompts.find((prompt) => prompt.name === 'id')?.validate;
+
+            if (validator) {
+                expect(validator('@id')).toBe("Component Usage ID should start with 'customer.'");
+            } else {
+                fail('Validator not found');
+            }
+        });
+
+        test('should fail validation of id for content duplication', () => {
+            jest.spyOn(validators, 'hasContentDuplication').mockReturnValueOnce(true);
+
+            const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
+
+            const validator = prompts.find((prompt) => prompt.name === 'id')?.validate;
+            if (validator) {
+                expect(validator('customer.id')).toBe(
+                    'Component usage with the same name was already added to the project'
+                );
+            } else {
+                fail('Validator not found');
+            }
+        });
+
+        test('should pass validation of id', () => {
+            const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
+
+            const validator = prompts.find((prompt) => prompt.name === 'id')?.validate;
+            if (validator) {
+                expect(validator('customer.id')).toBe(true);
+            } else {
+                fail('Validator not found');
+            }
+        });
+
+        test('should fail validation of name for special characters', () => {
+            jest.spyOn(validators, 'validateSpecialChars').mockReturnValueOnce('error');
+
+            const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
+
+            const validator = prompts.find((prompt) => prompt.name === 'name')?.validate;
+
+            if (validator) {
+                expect(validator('name')).toBe('error');
+            } else {
+                fail('Validator not found');
+            }
+        });
+
+        test('should fail validation of comonent settings for JSON', () => {
             jest.spyOn(validators, 'validateJSON').mockReturnValueOnce('error');
 
-            const validator = (getPrompts(mockBasePath, 'CUSTOMER_BASE')[3] as any).validate;
+            const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
-            expect(validator('settings')).toBe('error');
-            expect(validators.validateJSON).toHaveBeenCalledWith('settings', i18n.t('prompts.component.settingsLabel'));
+            const validator = prompts.find((prompt) => prompt.name === 'settings')?.validate;
+
+            if (validator) {
+                expect(validator('settings')).toBe('error');
+            } else {
+                fail('Validator not found');
+            }
         });
 
-        test('should validate comonent data for JSON', () => {
+        test('should fail validation of comonent data for JSON', () => {
             jest.spyOn(validators, 'validateJSON').mockReturnValueOnce('error');
 
-            const validator = (getPrompts(mockBasePath, 'CUSTOMER_BASE')[4] as any).validate;
+            const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
-            expect(validator('settings')).toBe('error');
-            expect(validators.validateJSON).toHaveBeenCalledWith('settings', i18n.t('prompts.component.settingsLabel'));
+            const validator = prompts.find((prompt) => prompt.name === 'data')?.validate;
+
+            if (validator) {
+                expect(validator('settings')).toBe('error');
+            } else {
+                fail('Validator not found');
+            }
         });
 
-        test('should validate library for content duplication', () => {
-            jest.spyOn(validators, 'validateContentDuplication').mockReturnValueOnce('error');
+        test('should pass validation of comonent data for empty input', () => {
+            jest.spyOn(validators, 'validateEmptyString').mockReturnValueOnce('error');
 
-            const validator = (getPrompts(mockBasePath, 'CUSTOMER_BASE')[6] as any).validate;
+            const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
-            expect(validator('library')).toBe('error');
-            expect(validators.validateContentDuplication).toHaveBeenCalledWith(
-                'library',
-                'libraries',
-                [],
-                true,
-                i18n.t('prompts.component.libraryLabel'),
-                i18n.t('prompts.component.libraryLabel')
-            );
+            const validator = prompts.find((prompt) => prompt.name === 'data')?.validate;
+
+            if (validator) {
+                expect(validator('"key":"value"')).toBe(true);
+            } else {
+                fail('Validator not found');
+            }
+        });
+
+        test('should fail validation of library for special charecters', () => {
+            jest.spyOn(validators, 'validateSpecialChars').mockReturnValueOnce('error');
+
+            const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
+
+            const validator = prompts.find((prompt) => prompt.name === 'library')?.validate;
+
+            if (validator) {
+                expect(validator('customer.@library')).toBe('error');
+            } else {
+                fail('Validator not found');
+            }
+        });
+
+        test('should fail validation of library for missing customer prefix', () => {
+            jest.spyOn(validators, 'hasCustomerPrefix').mockReturnValueOnce(false);
+
+            const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
+
+            const validator = prompts.find((prompt) => prompt.name === 'library')?.validate;
+
+            if (validator) {
+                expect(validator('library')).toBe("Library Reference should start with 'customer.'");
+            } else {
+                fail('Validator not found');
+            }
+        });
+
+        test('should pass validation of library', () => {
+            const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
+
+            const validator = prompts.find((prompt) => prompt.name === 'library')?.validate;
+
+            if (validator) {
+                expect(validator('customer.library')).toBe(true);
+            } else {
+                fail('Validator not found');
+            }
+        });
+
+        test('should fail validation of library for content duplication', () => {
+            jest.spyOn(validators, 'hasContentDuplication').mockReturnValueOnce(true);
+
+            const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
+
+            const validator = prompts.find((prompt) => prompt.name === 'library')?.validate;
+
+            if (validator) {
+                expect(validator('library')).toBe('Library with the same name was already added to the project');
+            } else {
+                fail('Validator not found');
+            }
         });
     });
 

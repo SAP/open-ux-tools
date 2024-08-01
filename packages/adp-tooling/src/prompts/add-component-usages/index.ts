@@ -6,10 +6,121 @@ import type {
     YUIQuestion
 } from '@sap-ux/inquirer-common';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
-import { CUSTOMER_BASE, ChangeType, type AddComponentUsageAnswers } from '../../types';
+import {
+    UserState,
+    ChangeType,
+    UserStatePrefix,
+    type AddComponentUsageAnswers,
+    type ManifestChangeProperties
+} from '../../types';
 import { getChangesByType } from '../../base/change-utils';
 import { t } from '../../i18n';
-import { validateSpecialChars, validateJSON, validateContentDuplication } from '../../base/validators';
+import {
+    validateEmptyString,
+    validateEmptySpaces,
+    validateSpecialChars,
+    hasContentDuplication,
+    hasCustomerPrefix,
+    validateJSON
+} from '@sap-ux/project-input-validator';
+
+/**
+ * Exucute generic validation for input.
+ *
+ * @param value The value to validate.
+ * @returns {string | boolean} An error message if the value is an empty string, or true if it is not.
+ */
+function validatePromptInput(value: string): boolean | string {
+    const validators = [validateEmptyString, validateEmptySpaces, validateSpecialChars];
+
+    for (const validator of validators) {
+        const validationResult = validator(value);
+        if (typeof validationResult === 'string') {
+            return validationResult;
+        }
+    }
+
+    return true;
+}
+
+/**
+ * Validates the input for the component usage ID.
+ *
+ * @param value The value to validate.
+ * @param changeFiles The change files to check for duplication.
+ * @param isCustomerBase Flag to check if the project is customer scenario.
+ * @returns {string | boolean} An error message if the value is invalid, or true if it is not.
+ */
+function validatePromptId(
+    value: string,
+    changeFiles: ManifestChangeProperties[],
+    isCustomerBase: boolean
+): boolean | string {
+    const validationResult = validatePromptInput(value);
+    if (typeof validationResult === 'string') {
+        return validationResult;
+    }
+
+    if (isCustomerBase && !hasCustomerPrefix(value)) {
+        return t('validators.errorInputInvalidValuePrefix', {
+            value: t('prompts.component.usageIdLabel'),
+            prefix: UserStatePrefix.customer
+        });
+    }
+
+    if (hasContentDuplication(value, 'dataSource', changeFiles)) {
+        return t('validators.errorDuplicateValueComponentId');
+    }
+
+    return true;
+}
+
+/**
+ * Validates the input for the library reference.
+ *
+ * @param value The value to validate.
+ * @param changeFiles The change files to check for duplication.
+ * @param isCustomerBase Flag to check if the project is customer scenario.
+ * @returns {string | boolean} An error message if the value is invalid, or true if it is not.
+ */
+function validatePromptLibrary(
+    value: string,
+    changeFiles: ManifestChangeProperties[],
+    isCustomerBase: boolean
+): boolean | string {
+    const validationResult = validatePromptInput(value);
+    if (typeof validationResult === 'string') {
+        return validationResult;
+    }
+
+    if (isCustomerBase && !hasCustomerPrefix(value)) {
+        return t('validators.errorInputInvalidValuePrefix', {
+            value: t('prompts.component.libraryLabel'),
+            prefix: UserStatePrefix.customer
+        });
+    }
+
+    if (hasContentDuplication(value, 'dataSource', changeFiles)) {
+        return t('validators.errorDuplicateValueLibrary');
+    }
+
+    return true;
+}
+
+/**
+ * Validates a JSON string.
+ *
+ * @param value The JSON string to validate.
+ * @returns {boolean | string} True if the JSON is valid, or an error message if validation fails.
+ */
+function validatePromptJSON(value: string): boolean | string {
+    const validationResult = validateEmptyString(value);
+    if (typeof validationResult === 'string') {
+        return true;
+    }
+
+    return validateJSON(value);
+}
 
 /**
  * Gets the prompts for adding a component usage.
@@ -21,7 +132,7 @@ import { validateSpecialChars, validateJSON, validateContentDuplication } from '
 export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<AddComponentUsageAnswers>[] {
     const componentUsageChangeFiles = getChangesByType(basePath, ChangeType.ADD_COMPONENT_USAGES, 'manifest');
     const libraryChangeFiles = getChangesByType(basePath, ChangeType.ADD_LIBRARY_REFERENCE, 'manifest');
-    const isCustomer = layer === CUSTOMER_BASE;
+    const isCustomerBase = layer === UserState.customer;
 
     const isLazyDropDownOptions = [
         { name: t('choices.true'), value: 'true' },
@@ -32,16 +143,8 @@ export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<A
             type: 'input',
             name: `id`,
             message: t('prompts.component.usageIdLabel'),
-            validate: (value: string) =>
-                validateContentDuplication(
-                    value,
-                    'componentUsages',
-                    componentUsageChangeFiles,
-                    isCustomer,
-                    t('prompts.component.usageIdLabel'),
-                    t('prompts.component.usage')
-                ),
-            default: isCustomer ? 'customer.' : '',
+            validate: (value: string) => validatePromptId(value, componentUsageChangeFiles, isCustomerBase),
+            default: isCustomerBase ? UserStatePrefix.customer : UserStatePrefix.vendor,
             store: false,
             guiOptions: {
                 mandatory: true,
@@ -52,7 +155,7 @@ export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<A
             type: 'input',
             name: 'name',
             message: t('prompts.component.nameLabel'),
-            validate: (value: string) => validateSpecialChars(value, t('prompts.component.nameLabel')),
+            validate: validatePromptInput,
             store: false,
             guiOptions: {
                 mandatory: true,
@@ -75,9 +178,7 @@ export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<A
             type: 'editor',
             name: `settings`,
             message: t('prompts.component.settingsLabel'),
-            validate: (value: string) => {
-                return validateJSON(value, t('prompts.component.settingsLabel'));
-            },
+            validate: validatePromptJSON,
             store: false,
             guiOptions: {
                 mandatory: false,
@@ -88,9 +189,7 @@ export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<A
             type: 'editor',
             name: `data`,
             message: t('prompts.component.dataLabel'),
-            validate: (value: string) => {
-                return validateJSON(value, t('prompts.component.dataLabel'));
-            },
+            validate: validatePromptJSON,
             store: false,
             guiOptions: {
                 mandatory: false,
@@ -114,15 +213,7 @@ export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<A
                 mandatory: true,
                 hint: t('prompts.component.libraryTooltip')
             },
-            validate: (value: string) =>
-                validateContentDuplication(
-                    value,
-                    'libraries',
-                    libraryChangeFiles,
-                    isCustomer,
-                    t('prompts.component.libraryLabel'),
-                    t('prompts.component.libraryLabel')
-                ),
+            validate: (value: string) => validatePromptLibrary(value, libraryChangeFiles, isCustomerBase),
             store: false,
             when: (answers: AddComponentUsageAnswers) => answers.shouldAddLibrary
         } as InputQuestion<AddComponentUsageAnswers>,
