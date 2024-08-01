@@ -1,6 +1,7 @@
 import { ExternalAction, storageFileChanged } from '@sap-ux-private/control-property-editor-common';
 import { ActionSenderFunction } from './types';
 import VersionInfo from 'sap/ui/VersionInfo';
+import type {SingleVersionInfo} from '../../types/global';
 
 /**
  * A Class of WorkspaceConnectorService
@@ -12,7 +13,7 @@ export class WorkspaceConnectorService {
      * @param sendAction action sender function
      */
     public async init(sendAction: ActionSenderFunction): Promise<void> {
-        const { version } = (await VersionInfo.load()) as { version: string };
+        const version = (await VersionInfo.load({library:'sap.ui.core'}) as SingleVersionInfo)?.version;
         const versionParts = version.split('.');
         const minor = parseInt(versionParts[1], 10);
         if (minor > 72) {
