@@ -7,10 +7,9 @@ import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import AppState from 'sap/ushell/services/AppState';
 import { getManifestAppdescr } from '../adp/api-handler';
-import VersionInfo from 'sap/ui/VersionInfo';
 import { getError } from '../cpe/error-utils';
 import initConnectors from './initConnectors';
-import type {SingleVersionInfo} from '../../types/global';
+import { getUi5Version } from '../utils/utils';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -142,7 +141,7 @@ async function getManifestLibs(appUrls: string[]): Promise<string> {
 function registerModules(dataFromAppIndex: AppIndexData) {
     Object.keys(dataFromAppIndex).forEach(function (moduleDefinitionKey) {
         const moduleDefinition = dataFromAppIndex[moduleDefinitionKey];
-        if (moduleDefinition && moduleDefinition.dependencies) {
+        if (moduleDefinition?.dependencies) {
             moduleDefinition.dependencies.forEach(function (dependency) {
                 if (dependency.url && dependency.url.length > 0 && dependency.type === 'UI5LIB') {
                     Log.info('Registering Library ' + dependency.componentId + ' from server ' + dependency.url);
@@ -270,7 +269,7 @@ export async function init({
     const urlParams = new URLSearchParams(window.location.search);
     const container = sap?.ushell?.Container ?? sap.ui.require('sap/ushell/Container');
     let scenario: string = '';
-    const version = (await VersionInfo.load({library:'sap.ui.core'}) as SingleVersionInfo)?.version;
+    const version = await getUi5Version();
     // Register RTA if configured
     if (flex) {
         const flexSettings = JSON.parse(flex) as FlexSettings;
