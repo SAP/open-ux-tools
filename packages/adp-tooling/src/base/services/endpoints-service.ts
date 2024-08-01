@@ -87,7 +87,10 @@ export class EndpointsService {
      * @param {string} system - The name or URL of the system to find.
      * @returns {Auth | undefined} Authentication details if the system is found, undefined otherwise.
      */
-    public getSystemDetails(system: string): Auth | undefined {
+    public async getSystemDetails(system: string): Promise<Auth | undefined> {
+        if (this.endpoints.length === 0) {
+            await this.getEndpoints();
+        }
         const endpoint = this.endpoints.find((e) => e.Name === system || e.Url === system);
 
         return endpoint ? { client: endpoint.Client, url: endpoint.Url } : undefined;

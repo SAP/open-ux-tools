@@ -77,7 +77,7 @@ export class ProviderService {
                 destination: system
             };
         } else {
-            const details = this.endpointsService.getSystemDetails(system);
+            const details = await this.endpointsService.getSystemDetails(system);
 
             target = {
                 url: details?.url,

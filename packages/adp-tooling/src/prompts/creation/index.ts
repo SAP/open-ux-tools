@@ -916,7 +916,7 @@ export default class ProjectPrompter {
     private getInboundListPrompt(): YUIQuestion<FlpConfigAnswers> {
         return {
             type: 'list',
-            name: 'inboundId',
+            name: 'flpInboundId',
             message: t('prompts.inboundId'),
             choices: this.inboundIds,
             default: this.inboundIds[0],
@@ -964,7 +964,7 @@ export default class ProjectPrompter {
     private getSemanticObjectPrompt(): YUIQuestion<FlpConfigAnswers> {
         return {
             type: 'input',
-            name: 'semanticObject',
+            name: 'flpSemanticObject',
             message: t('prompts.semanticObject'),
             validate: (value: string) => validateByRegex(value, 'semanticObject', '^[A-Za-z0-9_]{0,30}$'),
             guiOptions: {
@@ -978,7 +978,7 @@ export default class ProjectPrompter {
     private getActionPrompt(): YUIQuestion<FlpConfigAnswers> {
         return {
             type: 'input',
-            name: 'action',
+            name: 'flpAction',
             message: t('prompts.action'),
             validate: (value: string) => validateByRegex(value, 'action', '^[A-Za-z0-9_]{0,60}$'),
             guiOptions: {
@@ -992,7 +992,7 @@ export default class ProjectPrompter {
     private getTitlePrompt(): YUIQuestion<FlpConfigAnswers> {
         return {
             type: 'input',
-            name: 'title',
+            name: 'flpTitle',
             message: t('prompts.title'),
             guiOptions: {
                 mandatory: true,
@@ -1006,7 +1006,7 @@ export default class ProjectPrompter {
     private getSubtitlePrompt(): YUIQuestion<FlpConfigAnswers> {
         return {
             type: 'input',
-            name: 'subtitle',
+            name: 'flpSubtitle',
             message: t('prompts.subtitle'),
             guiOptions: {
                 hint: t('tooltips.subtitle')
@@ -1018,7 +1018,7 @@ export default class ProjectPrompter {
     private getParametersPrompt(): YUIQuestion<FlpConfigAnswers> {
         return {
             type: 'editor',
-            name: 'parameters',
+            name: 'flpParameters',
             message: t('prompts.parameters'),
             validate: (value: string) => validateParameters(value),
             guiOptions: {
