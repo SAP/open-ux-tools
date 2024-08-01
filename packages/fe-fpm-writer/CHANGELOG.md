@@ -1,5 +1,12 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.25.6
+
+### Patch Changes
+
+-   Updated dependencies [a986655]
+    -   @sap-ux/project-access@1.26.1
+
 ## 0.25.5
 
 ### Patch Changes
