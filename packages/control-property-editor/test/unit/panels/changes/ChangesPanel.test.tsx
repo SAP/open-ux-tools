@@ -204,8 +204,11 @@ describe('ChangePanel', () => {
         const changeAddXML = screen.getByText(/add fields/i);
         expect(changeAddXML).toBeInTheDocument();
 
-        const searchBar = screen.getByRole('searchbox');
-        expect(searchBar).toBeInTheDocument();
+        const searchBarByRole = screen.getByRole('searchbox');
+        expect(searchBarByRole).toBeInTheDocument();
+
+        const searchBarByPlaceholder = screen.getByPlaceholderText(/Filter/, { exact: true });
+        expect(searchBarByPlaceholder).toBeInTheDocument();
     });
 
     test('saved changes - property change', () => {
@@ -273,8 +276,11 @@ describe('ChangePanel', () => {
         expect(screen.queryByText(/Test Property Name1/i)).toStrictEqual(null);
         expect(screen.queryByText(/Test Property Name2/i)).toStrictEqual(null);
 
-        const searchBar = screen.getByRole('searchbox');
-        expect(searchBar).toBeInTheDocument();
+        const searchBarByRole = screen.getByRole('searchbox');
+        expect(searchBarByRole).toBeInTheDocument();
+
+        const searchBarByPlaceholder = screen.getByPlaceholderText(/Filter/, { exact: true });
+        expect(searchBarByPlaceholder).toBeInTheDocument();
     });
 
     test('saved changes - Other change', () => {
@@ -342,8 +348,11 @@ describe('ChangePanel', () => {
         const confirmButton = screen.getByRole('button', { name: /^Delete$/i });
         confirmButton.click();
 
-        const searchBar = screen.getByRole('searchbox');
-        expect(searchBar).toBeInTheDocument();
+        const searchBarByRole = screen.getByRole('searchbox');
+        expect(searchBarByRole).toBeInTheDocument();
+
+        const searchBarByPlaceholder = screen.getByPlaceholderText(/Filter/, { exact: true });
+        expect(searchBarByPlaceholder).toBeInTheDocument();
     });
 
     test('Filter unsaved changes', () => {
@@ -369,8 +378,11 @@ describe('ChangePanel', () => {
         const controlToolbar = screen.getByRole('button', { name: /overflow toolbar/i });
         expect(controlToolbar).toBeInTheDocument();
 
-        const searchBar = screen.getByRole('searchbox');
-        expect(searchBar).toBeInTheDocument();
+        const searchBarByRole = screen.getByRole('searchbox');
+        expect(searchBarByRole).toBeInTheDocument();
+
+        const searchBarByPlaceholder = screen.getByPlaceholderText(/Filter/, { exact: true });
+        expect(searchBarByPlaceholder).toBeInTheDocument();
     });
 
     test('Filter saved changes', () => {
@@ -398,8 +410,11 @@ describe('ChangePanel', () => {
         const formFieldChange = screen.getByText(/id_1698648267087_373_movesimpleformfield/i);
         expect(formFieldChange).toBeInTheDocument();
 
-        const searchBar = screen.getByRole('searchbox');
-        expect(searchBar).toBeInTheDocument();
+        const searchBarByRole = screen.getByRole('searchbox');
+        expect(searchBarByRole).toBeInTheDocument();
+
+        const searchBarByPlaceholder = screen.getByPlaceholderText(/Filter/, { exact: true });
+        expect(searchBarByPlaceholder).toBeInTheDocument();
     });
 
     test('External changes', () => {
@@ -431,7 +446,10 @@ describe('ChangePanel', () => {
             'example2.changes'
         ]);
 
-        const searchBar = screen.getByRole('searchbox');
-        expect(searchBar).toBeInTheDocument();
+        const searchBarByRole = screen.getByRole('searchbox');
+        expect(searchBarByRole).toBeInTheDocument();
+
+        const searchBarByPlaceholder = screen.getByPlaceholderText(/Filter/, { exact: true });
+        expect(searchBarByPlaceholder).toBeInTheDocument();
     });
 });
