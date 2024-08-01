@@ -16,6 +16,7 @@ function isFunction(property: unknown): property is Function {
 
 const QUESTION_TYPE_MAP: Record<string, PromptType> = {
     input: 'text',
+    editor: 'text',
     list: 'autocomplete',
     checkbox: 'multiselect'
 };

@@ -1,5 +1,65 @@
 # @sap-ux/preview-middleware
 
+## 0.16.34
+
+### Patch Changes
+
+-   Updated dependencies [88c8bf6]
+    -   @sap-ux/project-access@1.26.3
+    -   @sap-ux/adp-tooling@0.12.24
+
+## 0.16.33
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/project-access@1.26.2
+    -   @sap-ux/adp-tooling@0.12.23
+
+## 0.16.32
+
+### Patch Changes
+
+-   Updated dependencies [a986655]
+    -   @sap-ux/project-access@1.26.1
+    -   @sap-ux/adp-tooling@0.12.22
+
+## 0.16.31
+
+### Patch Changes
+
+-   Updated dependencies [518bf7e]
+    -   @sap-ux/project-access@1.26.0
+    -   @sap-ux/adp-tooling@0.12.21
+
+## 0.16.30
+
+### Patch Changes
+
+-   Updated dependencies [99b7b5f]
+    -   @sap-ux/project-access@1.25.8
+    -   @sap-ux/adp-tooling@0.12.20
+
+## 0.16.29
+
+### Patch Changes
+
+-   Updated dependencies [7ae8207]
+    -   @sap-ux/adp-tooling@0.12.19
+
+## 0.16.28
+
+### Patch Changes
+
+-   cea098a: FIX: regression in adp preview with reuse libs
+
+## 0.16.27
+
+### Patch Changes
+
+-   ab2e5a0: Preview support for UI5 2.x
+
 ## 0.16.26
 
 ### Patch Changes
