@@ -1,5 +1,5 @@
 import type { Dirent } from 'fs';
-import path, { resolve } from 'path';
+import path from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { existsSync, readFileSync, readdirSync } from 'fs';
 

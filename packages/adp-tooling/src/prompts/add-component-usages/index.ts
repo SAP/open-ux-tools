@@ -7,9 +7,9 @@ import type {
 } from '@sap-ux/inquirer-common';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import {
-    UserState,
+    FlexLayer,
     ChangeType,
-    UserStatePrefix,
+    NamespacePrefix,
     type AddComponentUsageAnswers,
     type ManifestChangeProperties
 } from '../../types';
@@ -64,7 +64,7 @@ function validatePromptId(
     if (isCustomerBase && !hasCustomerPrefix(value)) {
         return t('validators.errorInputInvalidValuePrefix', {
             value: t('prompts.component.usageIdLabel'),
-            prefix: UserStatePrefix.customer
+            prefix: NamespacePrefix.CUSTOMER
         });
     }
 
@@ -96,7 +96,7 @@ function validatePromptLibrary(
     if (isCustomerBase && !hasCustomerPrefix(value)) {
         return t('validators.errorInputInvalidValuePrefix', {
             value: t('prompts.component.libraryLabel'),
-            prefix: UserStatePrefix.customer
+            prefix: NamespacePrefix.CUSTOMER
         });
     }
 
@@ -132,7 +132,7 @@ function validatePromptJSON(value: string): boolean | string {
 export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<AddComponentUsageAnswers>[] {
     const componentUsageChangeFiles = getChangesByType(basePath, ChangeType.ADD_COMPONENT_USAGES, 'manifest');
     const libraryChangeFiles = getChangesByType(basePath, ChangeType.ADD_LIBRARY_REFERENCE, 'manifest');
-    const isCustomerBase = layer === UserState.customer;
+    const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
 
     const isLazyDropDownOptions = [
         { name: t('choices.true'), value: 'true' },
@@ -144,7 +144,7 @@ export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<A
             name: `id`,
             message: t('prompts.component.usageIdLabel'),
             validate: (value: string) => validatePromptId(value, componentUsageChangeFiles, isCustomerBase),
-            default: isCustomerBase ? UserStatePrefix.customer : UserStatePrefix.vendor,
+            default: isCustomerBase ? NamespacePrefix.CUSTOMER : NamespacePrefix.EMPTY,
             store: false,
             guiOptions: {
                 mandatory: true,

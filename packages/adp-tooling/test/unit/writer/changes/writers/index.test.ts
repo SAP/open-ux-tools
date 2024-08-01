@@ -8,7 +8,6 @@ import {
     getChange
 } from '../../../../../src/base/change-utils';
 import type {
-    AdpProjectData,
     AnnotationsData,
     ComponentUsagesData,
     DataSourceData,
