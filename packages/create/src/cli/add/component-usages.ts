@@ -7,7 +7,7 @@ import { promptYUIQuestions } from '../../common';
 /**
  * Add a new sub-command to add component usages of an adaptation project to the given command.
  *
- * @param {Command} cmd - The command to add the change data-source sub-command to.
+ * @param {Command} cmd - The command to add the add component-usages sub-command to.
  */
 export function addComponentUsagesCommand(cmd: Command): void {
     cmd.command('component-usages [path]')
