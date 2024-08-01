@@ -91,6 +91,9 @@ describe('OutlinePanel', () => {
         const search = screen.getByRole('searchbox');
         expect(search).toBeInTheDocument();
 
+        const searchbarClassName = container.querySelector('.filter-outline');
+        expect(searchbarClassName).toBeInTheDocument();
+
         // check funnel
         const funnelIcon = container.querySelector('[data-icon-name="funnel"]') as Element;
         expect(funnelIcon).toBeInTheDocument();
