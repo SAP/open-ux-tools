@@ -3,7 +3,7 @@ import * as childProcess from 'child_process';
 import * as projectModuleMock from '../../src/project/module-loader';
 import type { Package } from '../../src';
 import { FileName } from '../../src/constants';
-import { clearCdsModuleCache, clearGlobalCdsModulePromiseCache } from '../../src/project/cap';
+import { clearCdsModuleCache, clearGlobalCdsModulePromiseCache, getCapServiceName } from '../../src/project/cap';
 import {
     getCapCustomPaths,
     getCapEnvironment,
@@ -1071,6 +1071,36 @@ describe('clearCdsModuleCache', () => {
         // Test execution
         const result = await clearCdsModuleCache(projectRoot);
         expect(result).toEqual(false);
+    });
+});
+
+describe('getCapServiceName', () => {
+    beforeEach(() => {
+        jest.restoreAllMocks();
+        const cdsMock = {
+            load: jest.fn().mockImplementation(() => Promise.resolve('MODEL')),
+            compile: {
+                to: {
+                    serviceinfo: jest.fn().mockImplementation(() => [{ name: 'ServiceOne', urlPath: 'service/one' }])
+                }
+            }
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+    });
+
+    test('Return service name', async () => {
+        const capServiceName = await getCapServiceName('/some/test/path', 'service/one');
+        expect(capServiceName).toEqual('ServiceOne');
+    });
+
+    test('Service not found error message', async () => {
+        try {
+            await getCapServiceName('/some/test/path', 'service/two');
+        } catch (error) {
+            expect(error.message).toBe(
+                'Service for uri: \'service/two\' not found. Available services: [{"name":"ServiceOne","urlPath":"service/one"}]'
+            );
+        }
     });
 });
 
