@@ -181,7 +181,6 @@ export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<A
             validate: validatePromptJSON,
             store: false,
             guiOptions: {
-                mandatory: false,
                 hint: t('prompts.component.tooltip', { input: t('prompts.component.settingsLabel') })
             }
         } as EditorQuestion<AddComponentUsageAnswers>,
@@ -192,7 +191,6 @@ export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<A
             validate: validatePromptJSON,
             store: false,
             guiOptions: {
-                mandatory: false,
                 hint: t('prompts.component.tooltip', { input: t('prompts.component.dataLabel') })
             }
         } as EditorQuestion<AddComponentUsageAnswers>,
