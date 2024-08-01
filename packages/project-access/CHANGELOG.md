@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.25.8
+
+### Patch Changes
+
+-   99b7b5f: Fixed an issue where variables in minUI5Version were considered invalid
+
 ## 1.25.7
 
 ### Patch Changes
