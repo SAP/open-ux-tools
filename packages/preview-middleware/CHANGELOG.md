@@ -1,5 +1,14 @@
 # @sap-ux/preview-middleware
 
+## 0.16.33
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/project-access@1.26.2
+    -   @sap-ux/adp-tooling@0.12.23
+
 ## 0.16.32
 
 ### Patch Changes

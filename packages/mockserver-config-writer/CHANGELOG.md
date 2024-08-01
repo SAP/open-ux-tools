@@ -1,5 +1,11 @@
 # @sap-ux/mockserver-config-writer
 
+## 0.6.2
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+
 ## 0.6.1
 
 ### Patch Changes

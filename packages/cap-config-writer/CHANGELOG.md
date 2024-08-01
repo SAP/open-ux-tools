@@ -1,5 +1,15 @@
 # @sap-ux/cap-config-writer
 
+## 0.7.11
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/odata-service-inquirer@0.5.11
+    -   @sap-ux/project-access@1.26.2
+    -   @sap-ux/fiori-generator-shared@0.3.7
+
 ## 0.7.10
 
 ### Patch Changes

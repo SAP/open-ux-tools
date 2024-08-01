@@ -1,5 +1,15 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.11
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/axios-extension@1.16.2
+    -   @sap-ux/project-access@1.26.2
+    -   @sap-ux/telemetry@0.5.13
+
 ## 0.5.10
 
 ### Patch Changes

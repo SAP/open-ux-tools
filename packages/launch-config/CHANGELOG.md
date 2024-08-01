@@ -1,5 +1,13 @@
 # @sap-ux/launch-config
 
+## 0.2.8
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/project-access@1.26.2
+
 ## 0.2.7
 
 ### Patch Changes

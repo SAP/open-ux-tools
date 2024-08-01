@@ -1,5 +1,15 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 1.0.9
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/odata-service-writer@0.22.2
+    -   @sap-ux/fiori-generator-shared@0.3.7
+    -   @sap-ux/ui5-application-writer@1.1.3
+
 ## 1.0.8
 
 ### Patch Changes

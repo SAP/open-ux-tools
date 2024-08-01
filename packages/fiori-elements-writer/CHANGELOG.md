@@ -1,5 +1,17 @@
 # @sap-ux/fiori-elements-writer
 
+## 1.0.11
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/odata-service-writer@0.22.2
+    -   @sap-ux/fe-fpm-writer@0.25.7
+    -   @sap-ux/fiori-generator-shared@0.3.7
+    -   @sap-ux/ui5-application-writer@1.1.3
+    -   @sap-ux/ui5-test-writer@0.4.1
+
 ## 1.0.10
 
 ### Patch Changes

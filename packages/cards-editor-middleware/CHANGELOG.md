@@ -1,5 +1,13 @@
 # @sap-ux/cards-editor-middleware
 
+## 0.4.13
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/project-access@1.26.2
+
 ## 0.4.12
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.26.2
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+
 ## 1.26.1
 
 ### Patch Changes

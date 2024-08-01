@@ -1,5 +1,20 @@
 # @sap-ux/create
 
+## 0.7.36
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/project-access@1.26.2
+    -   @sap-ux/cap-config-writer@0.7.11
+    -   @sap-ux/adp-tooling@0.12.23
+    -   @sap-ux/app-config-writer@0.4.16
+    -   @sap-ux/preview-middleware@0.16.33
+    -   @sap-ux/cards-editor-config-writer@0.4.2
+    -   @sap-ux/mockserver-config-writer@0.6.2
+    -   @sap-ux/system-access@0.5.4
+
 ## 0.7.35
 
 ### Patch Changes
