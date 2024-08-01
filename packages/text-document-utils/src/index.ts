@@ -34,6 +34,6 @@ export {
     copyPosition,
     arePositionsEqual,
     createRange,
-    createRangeWithPosition,
+    createRangeWithPosition
 } from './range';
 export { printOptions, createTextDocument } from './text-formatting';

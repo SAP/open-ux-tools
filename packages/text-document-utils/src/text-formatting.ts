@@ -1,4 +1,5 @@
-import { DocumentUri, TextDocument } from 'vscode-languageserver-textdocument';
+import type { DocumentUri } from 'vscode-languageserver-textdocument';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 
 export const wrapInQuotes = (text: string): string => `'${text}'`;
 

@@ -1,4 +1,5 @@
-import { Position, Range } from 'vscode-languageserver-types';
+import type { Range } from 'vscode-languageserver-types';
+import { Position } from 'vscode-languageserver-types';
 
 /**
  *
@@ -6,6 +7,7 @@ import { Position, Range } from 'vscode-languageserver-types';
  * e.g [0] represents a document with one line that starts at offset 0.
  * @param offset
  * @param textLength
+ * @returns
  */
 export function positionAt(lineOffsets: number[], offset: number, textLength: number): Position {
     const target = Math.max(Math.min(offset, textLength), 0);
