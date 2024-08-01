@@ -116,7 +116,7 @@ exports[`config generatePreviewFiles minimum settings 1`] = `
         };
     </script>
 
-    <script src=\\"/preview/client/flp/bootstrap.js\\" id=\\"preview-bootstrap\\"></script>
+    <script src=\\"../preview/client/flp/bootstrap.js\\" id=\\"preview-bootstrap\\"></script>
     <script id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -190,7 +190,7 @@ Object {
         };
     </script>
 
-    <script src=\\"/preview/client/flp/bootstrap.js\\" id=\\"preview-bootstrap\\"></script>
+    <script src=\\"../preview/client/flp/bootstrap.js\\" id=\\"preview-bootstrap\\"></script>
     <script id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
@@ -267,7 +267,7 @@ Object {
         };
     </script>
 
-    <script src=\\"/preview/client/flp/bootstrap.js\\" id=\\"preview-bootstrap\\"></script>
+    <script src=\\"../preview/client/flp/bootstrap.js\\" id=\\"preview-bootstrap\\"></script>
     <script id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
