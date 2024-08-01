@@ -1,5 +1,30 @@
 # @sap-ux/create
 
+## 0.7.31
+
+### Patch Changes
+
+-   7ae8207: Add Adaptation Project's OData Service and SAPUI5 Model prompting
+-   Updated dependencies [7ae8207]
+    -   @sap-ux/inquirer-common@0.4.3
+    -   @sap-ux/adp-tooling@0.12.19
+    -   @sap-ux/preview-middleware@0.16.29
+    -   @sap-ux/cap-config-writer@0.7.6
+
+## 0.7.30
+
+### Patch Changes
+
+-   Updated dependencies [cea098a]
+    -   @sap-ux/preview-middleware@0.16.28
+
+## 0.7.29
+
+### Patch Changes
+
+-   Updated dependencies [ab2e5a0]
+    -   @sap-ux/preview-middleware@0.16.27
+
 ## 0.7.28
 
 ### Patch Changes
