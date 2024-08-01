@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.9
+
+### Patch Changes
+
+-   ad55f26: fix adding backend system to prompt state
+
 ## 0.5.8
 
 ### Patch Changes
