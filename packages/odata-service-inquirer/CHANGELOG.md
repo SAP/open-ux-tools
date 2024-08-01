@@ -1,5 +1,20 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.10
+
+### Patch Changes
+
+-   Updated dependencies [a986655]
+    -   @sap-ux/project-access@1.26.1
+    -   @sap-ux/axios-extension@1.16.1
+    -   @sap-ux/telemetry@0.5.12
+
+## 0.5.9
+
+### Patch Changes
+
+-   ad55f26: fix adding backend system to prompt state
+
 ## 0.5.8
 
 ### Patch Changes

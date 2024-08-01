@@ -101,15 +101,16 @@ export function getUserSystemNameQuestion(): InputQuestion<NewSystemAnswers> {
             return answers.userSystemName;
         },
         validate: async (systemName: string, answers: AbapOnPremAnswers & NewSystemAnswers) => {
+            let isValid: string | boolean = false;
             // Dont validate the suggested default system name
             if (systemName === defaultSystemName) {
-                return true;
-            }
-            const validationResult = await validateSystemName(systemName);
-
-            if (validationResult === true) {
-                // Not the default system name, so the user modified
+                isValid = true;
+            } else {
                 userModifiedSystemName = true;
+                isValid = await validateSystemName(systemName);
+            }
+            if (isValid === true) {
+                // Not the default system name, so the user modified
                 const backendSystem = new BackendSystem({
                     name: systemName,
                     url: answers.systemUrl!,
@@ -121,7 +122,7 @@ export function getUserSystemNameQuestion(): InputQuestion<NewSystemAnswers> {
                     PromptState.odataService.connectedSystem.backendSystem = backendSystem;
                 }
             }
-            return validationResult;
+            return isValid;
         }
     } as InputQuestion<NewSystemAnswers>;
 

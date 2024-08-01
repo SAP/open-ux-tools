@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.26.1
+
+### Patch Changes
+
+-   a986655: Revert "fix(#2173): consider variables in minUI5Version"
+
 ## 1.26.0
 
 ### Minor Changes
