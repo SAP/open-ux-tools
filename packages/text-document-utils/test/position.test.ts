@@ -4,10 +4,21 @@ import {
     rangeContained,
     getIndentLevel,
     positionContainedStrict,
-    indent
+    indent,
+    positionAt
 } from '../src/position';
 import { printOptions } from '../src/text-formatting';
 import { Position } from 'vscode-languageserver-types';
+
+// Mocking Position.create
+jest.mock('vscode-languageserver-types', () => ({
+    Position: {
+        create: jest.fn((line, character) => ({ line, character }))
+    }
+}));
+
+const mockPositionCreate = Position.create as jest.Mock;
+
 describe('position.ts', () => {
     describe('isBefore', () => {
         it('pos1.line < pos2.line', () => {
@@ -98,5 +109,46 @@ describe('position.ts', () => {
     test('indent with spaces', () => {
         const result = indent(4, false, 2);
         expect(result).toMatchInlineSnapshot(`"        "`);
+    });
+});
+
+describe('positionAt', () => {
+    beforeEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    test('should return position at the start for negative offset', () => {
+        positionAt([0, 10, 20], -5, 30);
+        expect(mockPositionCreate).toHaveBeenCalledWith(0, 0);
+    });
+
+    test('should return position at the end for offset greater than text length', () => {
+        positionAt([0, 10, 20], 35, 30);
+        expect(mockPositionCreate).toHaveBeenCalledWith(2, 10);
+    });
+
+    test('should return correct position for offset within range', () => {
+        positionAt([0, 10, 20], 15, 30);
+        expect(mockPositionCreate).toHaveBeenCalledWith(1, 5);
+    });
+
+    test('should handle empty lineOffsets array', () => {
+        positionAt([], 5, 10);
+        expect(mockPositionCreate).toHaveBeenCalledWith(0, 5);
+    });
+
+    test('should handle offset at exact line start', () => {
+        positionAt([0, 10, 20], 10, 30);
+        expect(mockPositionCreate).toHaveBeenCalledWith(1, 0);
+    });
+
+    test('should handle offset at exact line end', () => {
+        positionAt([0, 10, 20], 9, 30);
+        expect(mockPositionCreate).toHaveBeenCalledWith(0, 9);
+    });
+
+    test('should handle offset at exact text length', () => {
+        positionAt([0, 10, 20], 30, 30);
+        expect(mockPositionCreate).toHaveBeenCalledWith(2, 10);
     });
 });
