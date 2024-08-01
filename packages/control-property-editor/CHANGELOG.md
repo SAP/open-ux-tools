@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.4.27
+
+### Patch Changes
+
+-   b5d9461: Add sticky search bar for outline and filter search
+
 ## 0.4.26
 
 ### Patch Changes

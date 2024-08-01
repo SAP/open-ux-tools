@@ -1,5 +1,13 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.8.4
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/axios-extension@1.16.2
+
 ## 0.8.3
 
 ### Patch Changes

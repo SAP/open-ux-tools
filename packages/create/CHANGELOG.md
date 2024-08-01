@@ -1,5 +1,122 @@
 # @sap-ux/create
 
+## 0.7.37
+
+### Patch Changes
+
+-   Updated dependencies [88c8bf6]
+    -   @sap-ux/project-access@1.26.3
+    -   @sap-ux/adp-tooling@0.12.24
+    -   @sap-ux/app-config-writer@0.4.17
+    -   @sap-ux/cap-config-writer@0.7.12
+    -   @sap-ux/cards-editor-config-writer@0.4.2
+    -   @sap-ux/mockserver-config-writer@0.6.2
+    -   @sap-ux/preview-middleware@0.16.34
+    -   @sap-ux/system-access@0.5.4
+
+## 0.7.36
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/project-access@1.26.2
+    -   @sap-ux/cap-config-writer@0.7.11
+    -   @sap-ux/adp-tooling@0.12.23
+    -   @sap-ux/app-config-writer@0.4.16
+    -   @sap-ux/preview-middleware@0.16.33
+    -   @sap-ux/cards-editor-config-writer@0.4.2
+    -   @sap-ux/mockserver-config-writer@0.6.2
+    -   @sap-ux/system-access@0.5.4
+
+## 0.7.35
+
+### Patch Changes
+
+-   Updated dependencies [a986655]
+    -   @sap-ux/project-access@1.26.1
+    -   @sap-ux/adp-tooling@0.12.22
+    -   @sap-ux/app-config-writer@0.4.15
+    -   @sap-ux/cap-config-writer@0.7.10
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/preview-middleware@0.16.32
+    -   @sap-ux/system-access@0.5.3
+
+## 0.7.34
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.7.9
+
+## 0.7.33
+
+### Patch Changes
+
+-   Updated dependencies [518bf7e]
+    -   @sap-ux/project-access@1.26.0
+    -   @sap-ux/adp-tooling@0.12.21
+    -   @sap-ux/app-config-writer@0.4.14
+    -   @sap-ux/cap-config-writer@0.7.8
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/preview-middleware@0.16.31
+    -   @sap-ux/system-access@0.5.3
+
+## 0.7.32
+
+### Patch Changes
+
+-   Updated dependencies [99b7b5f]
+    -   @sap-ux/project-access@1.25.8
+    -   @sap-ux/adp-tooling@0.12.20
+    -   @sap-ux/app-config-writer@0.4.13
+    -   @sap-ux/cap-config-writer@0.7.7
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/preview-middleware@0.16.30
+    -   @sap-ux/system-access@0.5.3
+
+## 0.7.31
+
+### Patch Changes
+
+-   7ae8207: Add Adaptation Project's OData Service and SAPUI5 Model prompting
+-   Updated dependencies [7ae8207]
+    -   @sap-ux/inquirer-common@0.4.3
+    -   @sap-ux/adp-tooling@0.12.19
+    -   @sap-ux/preview-middleware@0.16.29
+    -   @sap-ux/cap-config-writer@0.7.6
+
+## 0.7.30
+
+### Patch Changes
+
+-   Updated dependencies [cea098a]
+    -   @sap-ux/preview-middleware@0.16.28
+
+## 0.7.29
+
+### Patch Changes
+
+-   Updated dependencies [ab2e5a0]
+    -   @sap-ux/preview-middleware@0.16.27
+
+## 0.7.28
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.7.5
+
+## 0.7.27
+
+### Patch Changes
+
+-   2a7d3c4: Add Change Inbound prompting and cli command
+-   Updated dependencies [2a7d3c4]
+    -   @sap-ux/adp-tooling@0.12.18
+    -   @sap-ux/preview-middleware@0.16.26
+
 ## 0.7.26
 
 ### Patch Changes

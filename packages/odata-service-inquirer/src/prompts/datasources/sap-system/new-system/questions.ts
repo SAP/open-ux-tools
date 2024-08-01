@@ -83,6 +83,7 @@ export function getNewSystemQuestions(promptOptions?: OdataServicePromptOptions)
  */
 export function getUserSystemNameQuestion(): InputQuestion<NewSystemAnswers> {
     let defaultSystemName: string;
+    let userModifiedSystemName: boolean = false;
     const newSystemNamePrompt = {
         type: 'input',
         guiOptions: {
@@ -93,20 +94,23 @@ export function getUserSystemNameQuestion(): InputQuestion<NewSystemAnswers> {
         name: promptNames.userSystemName,
         message: t('prompts.systemName.message'),
         default: async (answers: AbapOnPremAnswers & NewSystemAnswers) => {
-            if (answers.newSystemType === 'abapOnPrem' && answers.systemUrl) {
+            if (answers.newSystemType === 'abapOnPrem' && answers.systemUrl && !userModifiedSystemName) {
                 defaultSystemName = await suggestSystemName(answers.systemUrl, answers.sapClient);
+                return defaultSystemName;
             }
-            return defaultSystemName;
+            return answers.userSystemName;
         },
         validate: async (systemName: string, answers: AbapOnPremAnswers & NewSystemAnswers) => {
-            let validationResult: boolean | string = false;
+            let isValid: string | boolean = false;
             // Dont validate the suggested default system name
             if (systemName === defaultSystemName) {
-                validationResult = true;
+                isValid = true;
+            } else {
+                userModifiedSystemName = true;
+                isValid = await validateSystemName(systemName);
             }
-            validationResult = await validateSystemName(systemName);
-
-            if (validationResult === true) {
+            if (isValid === true) {
+                // Not the default system name, so the user modified
                 const backendSystem = new BackendSystem({
                     name: systemName,
                     url: answers.systemUrl!,
@@ -118,7 +122,7 @@ export function getUserSystemNameQuestion(): InputQuestion<NewSystemAnswers> {
                     PromptState.odataService.connectedSystem.backendSystem = backendSystem;
                 }
             }
-            return validationResult;
+            return isValid;
         }
     } as InputQuestion<NewSystemAnswers>;
 
