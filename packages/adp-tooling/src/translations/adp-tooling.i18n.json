@@ -16,7 +16,7 @@
         "oDataServiceNameLabel": "OData Service Name",
         "oDataServiceNameTooltip": "Enter a name for the OData service you want to add",
         "oDataServiceUriLabel": "OData Service URI",
-        "oDataServiceUriTooltip": "Enter the URI for the OData service you want to add",
+        "oDataServiceUriTooltip": "Enter the URI for the OData service you want to add, e.g. /path/to/odata/",
         "oDataServiceVersionLabel": "OData Version",
         "oDataServiceVersionTooltip": "Select the version of OData of the service you want to add",
         "oDataServiceModelNameLabel": "OData Service SAPUI5 Model Name",
@@ -45,7 +45,8 @@
         "errorDuplicatedValueOData": "OData Annotation or OData Service with the same name was already added to the project",
         "errorDuplicatedValueSapui5Model": "SAPUI5 Model with the same name was already added to the project",
         "errorDuplicateNamesOData": "OData Service Name must be different from OData Annotation Data Source Name",
-        "errorInputInvalidValuePrefix": "{{value}} should start with '{{prefix}}'"
+        "errorInputInvalidValuePrefix": "{{value}} should start with '{{prefix}}'",
+        "errorInvalidDataSourceURI": "Invalid URI. Should start and end with '/' and contain no spaces"
     },
     "choices": {
         "annotationFile": {

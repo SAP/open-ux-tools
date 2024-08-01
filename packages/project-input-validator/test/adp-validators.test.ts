@@ -1,4 +1,4 @@
-import { hasContentDuplication, hasCustomerPrefix } from '../src/adp/validators';
+import { hasContentDuplication, hasCustomerPrefix, isDataSourceURI } from '../src/adp/validators';
 
 describe('project input validators', () => {
     describe('hasContentDuplication', () => {
@@ -28,6 +28,33 @@ describe('project input validators', () => {
         test('should return true if the value has a customer prefix', () => {
             const output = hasCustomerPrefix('customer.ZTEST');
             expect(output).toEqual(true);
+        });
+    });
+
+    describe('isDataSourceURI', () => {
+        test('should return true if the URI is valid', () => {
+            const output = isDataSourceURI('/test/');
+            expect(output).toEqual(true);
+        });
+
+        test('should return false if the URI does not end with /', () => {
+            const output = isDataSourceURI('/test');
+            expect(output).toEqual(false);
+        });
+
+        test('should return false if the URI does not start with /', () => {
+            const output = isDataSourceURI('test/');
+            expect(output).toEqual(false);
+        });
+
+        test('should return false if the URI contains //', () => {
+            const output = isDataSourceURI('//test/');
+            expect(output).toEqual(false);
+        });
+
+        test('should return false if the URI contains whitespace', () => {
+            const output = isDataSourceURI('/test /');
+            expect(output).toEqual(false);
         });
     });
 });

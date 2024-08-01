@@ -24,7 +24,8 @@ jest.mock('@sap-ux/project-input-validator', () => ({
     hasCustomerPrefix: jest.fn().mockReturnValue(true),
     validateJSON: jest.fn().mockReturnValue(true),
     validateSpecialChars: jest.fn().mockReturnValue(true),
-    validateEmptyString: jest.fn().mockReturnValue(true)
+    validateEmptyString: jest.fn().mockReturnValue(true),
+    isDataSourceURI: jest.fn().mockReturnValue(true)
 }));
 
 describe('getPrompts', () => {
@@ -127,9 +128,33 @@ describe('getPrompts', () => {
 
         const uriPrompt = prompts.find((p) => p.name === 'uri');
 
-        const validation = uriPrompt?.validate && uriPrompt?.validate('/sap/odata/v4');
+        const validation = uriPrompt?.validate && uriPrompt?.validate('/sap/odata/v4/');
 
         expect(validation).toBe(true);
+    });
+
+    it('should return error message when validating empty service uri prompt', () => {
+        jest.spyOn(validators, 'validateEmptyString').mockReturnValueOnce('general.inputCannotBeEmpty');
+
+        const prompts = getPrompts(mockPath, 'CUSTOMER_BASE');
+
+        const uriPrompt = prompts.find((p) => p.name === 'uri');
+
+        const validation = uriPrompt?.validate && uriPrompt?.validate('');
+
+        expect(validation).toBe('general.inputCannotBeEmpty');
+    });
+
+    it('should return error message when service uri is not valid uri', () => {
+        jest.spyOn(validators, 'isDataSourceURI').mockReturnValueOnce(false);
+
+        const prompts = getPrompts(mockPath, 'CUSTOMER_BASE');
+
+        const uriPrompt = prompts.find((p) => p.name === 'uri');
+
+        const validation = uriPrompt?.validate && uriPrompt?.validate('');
+
+        expect(validation).toBe("Invalid URI. Should start and end with '/' and contain no spaces");
     });
 
     it('should return default value for odata version when uri answer is present', () => {
@@ -139,7 +164,7 @@ describe('getPrompts', () => {
 
         const versionPrompt = result.find((prompt) => prompt.name === 'version');
 
-        expect(versionPrompt?.default({ uri: 'odata/v4/example' })).toBe('4.0');
+        expect(versionPrompt?.default({ uri: '/odata/v4/example' })).toBe('4.0');
     });
 
     it('should return default value for odata version when uri answer is not present', () => {
@@ -159,7 +184,7 @@ describe('getPrompts', () => {
 
         const versionPrompt = result.find((prompt) => prompt.name === 'version');
 
-        expect(versionPrompt?.default({ uri: 'odata/v4/' })).toBe('4.0');
+        expect(versionPrompt?.default({ uri: '/odata/v4/' })).toBe('4.0');
     });
 
     it('should return default value for odata version based on uri answer not in CF environment', () => {

@@ -23,6 +23,7 @@ import {
     validateSpecialChars,
     hasContentDuplication,
     hasCustomerPrefix,
+    isDataSourceURI,
     validateJSON
 } from '@sap-ux/project-input-validator';
 
@@ -174,6 +175,25 @@ function validatePromptModelName(
 }
 
 /**
+ * Validates the OData Source URI prompt.
+ *
+ * @param value The value to validate.
+ * @returns {boolean | string} True if the URI is valid, or an error message if validation fails.
+ */
+function validatePromptURI(value: string): boolean | string {
+    const validationResult = validateEmptyString(value);
+    if (typeof validationResult === 'string') {
+        return validationResult;
+    }
+
+    if (!isDataSourceURI(value)) {
+        return t('validators.errorInvalidDataSourceURI');
+    }
+
+    return true;
+}
+
+/**
  * Gets the prompts for adding the new model.
  *
  * @param {string} projectPath - The root path of the project.
@@ -210,7 +230,7 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
                 mandatory: true,
                 hint: t('prompts.oDataServiceUriTooltip')
             },
-            validate: validateEmptyString,
+            validate: validatePromptURI,
             store: false
         } as InputQuestion<NewModelAnswers>,
         {
@@ -219,7 +239,7 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
             message: t('prompts.oDataServiceVersionLabel'),
             choices: oDataVersions,
             default: (answers: NewModelAnswers) => {
-                if (answers.uri?.startsWith(isCFEnv ? 'odata/v4/' : '/sap/opu/odata4/')) {
+                if (answers.uri?.startsWith(isCFEnv ? '/odata/v4/' : '/sap/opu/odata4/')) {
                     return oDataVersions[1].value;
                 }
 

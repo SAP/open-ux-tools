@@ -26,3 +26,13 @@ export function hasContentDuplication(
 export function hasCustomerPrefix(value: string): boolean {
     return value.toLowerCase().startsWith('customer.');
 }
+
+/**
+ * Validates if a value is a valid data source URI.
+ *
+ * @param uri The URI to validate.
+ * @returns {boolean} True if the URI is valid, false if it is not.
+ */
+export function isDataSourceURI(uri: string): boolean {
+    return /^(?!.*\/\/)\/([^\s]*)\/$/.test(uri);
+}
