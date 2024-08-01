@@ -1,5 +1,15 @@
 # @sap-ux/adp-tooling
 
+## 0.12.23
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/axios-extension@1.16.2
+    -   @sap-ux/project-access@1.26.2
+    -   @sap-ux/system-access@0.5.4
+
 ## 0.12.22
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @sap-ux/annotation-generator
 
+## 0.1.19
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/project-access@1.26.2
+    -   @sap-ux/fiori-annotation-api@0.1.29
+
 ## 0.1.18
 
 ### Patch Changes

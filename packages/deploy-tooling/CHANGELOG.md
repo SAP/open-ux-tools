@@ -1,5 +1,14 @@
 # @sap-ux/deploy-tooling
 
+## 0.15.7
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/axios-extension@1.16.2
+    -   @sap-ux/system-access@0.5.4
+
 ## 0.15.6
 
 ### Patch Changes

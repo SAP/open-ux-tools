@@ -1,5 +1,14 @@
 # @sap-ux/app-config-writer
 
+## 0.4.16
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/axios-extension@1.16.2
+    -   @sap-ux/project-access@1.26.2
+
 ## 0.4.15
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.5.16
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/project-access@1.26.2
+
 ## 0.5.15
 
 ### Patch Changes
