@@ -5,7 +5,7 @@ import { validateAdpProject } from '../../validation/validation';
 import { promptYUIQuestions } from '../../common';
 
 /**
- * Add a new sub-command to change the data source of an adaptation project to the given command.
+ * Add a new sub-command to add component usages of an adaptation project to the given command.
  *
  * @param {Command} cmd - The command to add the change data-source sub-command to.
  */
