@@ -13,7 +13,7 @@ jest.mock('@sap-ux/store', () => ({
     }))
 }));
 
-describe('Test mew system prompt', () => {
+describe('Test new system prompt', () => {
     beforeAll(async () => {
         await initI18nOdataServiceInquirer();
     });
@@ -76,6 +76,41 @@ describe('Test mew system prompt', () => {
             url: 'http://abap.on.prem:1234',
             userDisplayName: undefined,
             username: 'user01'
+        });
+    });
+
+    test('Should update prompt state when default system name is used', async () => {
+        const userSystemNamePrompt = getUserSystemNameQuestion();
+
+        PromptState.odataService.connectedSystem = {
+            serviceProvider: {} as ServiceProvider
+        };
+
+        await userSystemNamePrompt.default({
+            newSystemType: 'abapOnPrem' as SapSystemType,
+            systemUrl: 'http://mock.abap.on.prem:4300',
+            sapClient: '000'
+        });
+
+        expect(
+            await (userSystemNamePrompt.validate as Function)('http://mock.abap.on.prem:4300, client 000', {
+                systemUrl: 'http://mock.abap.on.prem:4300',
+                sapClient: '000',
+                abapSystemUsername: 'testUser',
+                abapSystemPassword: 'testPassword'
+            })
+        ).toBe(true);
+
+        expect(PromptState.odataService.connectedSystem.backendSystem).toEqual({
+            authenticationType: undefined,
+            client: '000',
+            name: 'http://mock.abap.on.prem:4300, client 000',
+            password: 'testPassword',
+            refreshToken: undefined,
+            serviceKeys: undefined,
+            url: 'http://mock.abap.on.prem:4300',
+            userDisplayName: undefined,
+            username: 'testUser'
         });
     });
 });
