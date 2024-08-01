@@ -62,7 +62,6 @@ describe('getPrompts', () => {
             validate: expect.any(Function),
             store: false,
             guiOptions: {
-                mandatory: false,
                 hint: i18n.t('prompts.component.tooltip', { input: i18n.t('prompts.component.settingsLabel') })
             }
         },
@@ -73,7 +72,6 @@ describe('getPrompts', () => {
             validate: expect.any(Function),
             store: false,
             guiOptions: {
-                mandatory: false,
                 hint: i18n.t('prompts.component.tooltip', { input: i18n.t('prompts.component.dataLabel') })
             }
         },
