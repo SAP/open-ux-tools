@@ -4,8 +4,8 @@ import { t } from '../i18n';
 import { existsSync } from 'fs';
 import { parseParameters } from './helper';
 import { InputChoice } from '../types';
-import { listPackages } from './services/listPackages';
-import { listTransports } from './services/listTransports';
+import { listPackages } from './services/list-packages-service';
+import { listTransports } from './services/list-transports-service';
 
 /**
  * Checks if the input is a valid SAP client.

@@ -6,7 +6,8 @@ import {
     AdaptationProjectType,
     SystemInfo,
     UI5RtVersionService,
-    UIFlexService
+    UIFlexService,
+    isAxiosError
 } from '@sap-ux/axios-extension';
 import { Logger } from '@sap-ux/logger';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
@@ -60,8 +61,8 @@ import {
     isV4Application
 } from '../../base/services/manifest-service';
 import { ProviderService } from '../../base/services/abap-provider-service';
-import { listTransports } from '../../base/services/listTransports';
-import { ABAP_PACKAGE_SEARCH_MAX_RESULTS, listPackages } from '../../base/services/listPackages';
+import { listTransports } from '../../base/services/list-transports-service';
+import { ABAP_PACKAGE_SEARCH_MAX_RESULTS, listPackages } from '../../base/services/list-packages-service';
 import { ApplicationService, getApplicationChoices } from '../../base/services/application-service';
 
 export default class ProjectPrompter {
@@ -382,8 +383,11 @@ export default class ProjectPrompter {
                 adaptationProjectTypes: [AdaptationProjectType.ON_PREMISE],
                 activeLanguages: []
             };
-            // TODO: catch 401, 403 and throw error
-            if (e) {
+
+            if (isAxiosError(e)) {
+                if (e.response?.status === 401 || e.response?.status === 403) {
+                    throw new Error(e.message);
+                }
             }
         }
     }
@@ -602,7 +606,6 @@ export default class ProjectPrompter {
                 !!answers.system &&
                 !this.shouldAuthenticate(answers) &&
                 this.systemInfo?.adaptationProjectTypes?.length &&
-                this.systemInfo.adaptationProjectTypes.length > 1 &&
                 (this.hasSystemAuthentication ? this.isLoginSuccessfull : true),
             choices: () => this.systemInfo.adaptationProjectTypes,
             default: () =>
@@ -629,98 +632,21 @@ export default class ProjectPrompter {
                 hint: t('prompts.projectTypeTooltip'),
                 breadcrumb: t('prompts.projectTypeLabel'),
                 applyDefaultWhenDirty: true
+            },
+            additionalMessages: (_, prevAnswers) => {
+                if (
+                    prevAnswers?.system &&
+                    !this.shouldAuthenticate(prevAnswers as ConfigurationInfoAnswers) &&
+                    this.isCloudProject
+                ) {
+                    return {
+                        message: t('prompts.currentUI5VersionLabel', { version: this.ui5Service.latestVersion }),
+                        severity: Severity.information
+                    };
+                }
             }
-            // TODO: UI5 version only for cloud projects
         } as ListQuestion<ConfigurationInfoAnswers>;
     }
-
-    private getProjectTypeLabelPrompt(projectType: AdaptationProjectType): YUIQuestion<ConfigurationInfoAnswers> {
-        // TODO: combine with projectType prompt and add additionalMessages
-        return {
-            type: 'input',
-            message: `Project Type: ${projectType}`,
-            name: `projectType${projectType}Label`,
-            value: this.systemInfo?.adaptationProjectTypes[0],
-            when: (answers: ConfigurationInfoAnswers) =>
-                !!answers.system &&
-                !this.shouldAuthenticate(answers) &&
-                this.systemInfo?.adaptationProjectTypes?.length &&
-                this.systemInfo.adaptationProjectTypes.length == 1 &&
-                this.systemInfo.adaptationProjectTypes[0] == projectType &&
-                (this.hasSystemAuthentication ? this.isLoginSuccessfull : true),
-            validate: async (_: string, answers: ConfigurationInfoAnswers) => {
-                this.isCloudProject = projectType == AdaptationProjectType.CLOUD_READY;
-                this.setAdditionalPagesForCloudProjects();
-
-                try {
-                    await this.getApplications(answers.system, answers.username, answers.password, answers.client);
-                } catch (e) {
-                    return e.message;
-                }
-
-                return true;
-            },
-            guiOptions: {
-                type: 'label',
-                hint: t('prompts.projectTypeInfoTooltip', { type: projectType })
-            }
-        } as InputQuestion<ConfigurationInfoAnswers>;
-    }
-
-    // private getNotFlexAndNotDeployableSystemLabelPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
-    //     return {
-    //         type: 'input',
-    //         name: 'notDeployableAndNotFlexSystemLabel',
-    //         message: t('validators.notDeployableNotFlexEnabledSystemError'),
-    //         guiOptions: {
-    //             type: 'label'
-    //         },
-    //         when: () =>
-    //             this.flexUISystem &&
-    //             !this.flexUISystem.isOnPremise &&
-    //             !this.flexUISystem.isUIFlex &&
-    //             !this.isCloudProject &&
-    //             this.systemInfo?.adaptationProjectTypes?.length,
-    //         store: false
-    //     } as InputQuestion<ConfigurationInfoAnswers>;
-    // }
-
-    // private getNotFlexEnabledSystemLabelPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
-    //     return {
-    //         type: 'input',
-    //         name: 'notFlexEnabledSystemLabel',
-    //         message: t('validators.notFlexEnabledError'),
-    //         guiOptions: {
-    //             type: 'label'
-    //         },
-    //         when: () =>
-    //             this.flexUISystem &&
-    //             !this.flexUISystem.isUIFlex &&
-    //             this.flexUISystem.isOnPremise &&
-    //             !this.isCloudProject &&
-    //             this.systemInfo?.adaptationProjectTypes?.length,
-
-    //         store: false
-    //     } as InputQuestion<ConfigurationInfoAnswers>;
-    // }
-
-    // private getNotDeployableSystemLabelPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
-    //     return {
-    //         type: 'input',
-    //         name: 'notDeployableSystemLabel',
-    //         message: t('validators.notDeployableSystemError'),
-    //         guiOptions: {
-    //             type: 'label'
-    //         },
-    //         when: () =>
-    //             this.flexUISystem &&
-    //             !this.flexUISystem.isOnPremise &&
-    //             this.flexUISystem.isUIFlex &&
-    //             !this.isCloudProject &&
-    //             this.systemInfo?.adaptationProjectTypes?.length,
-    //         store: false
-    //     } as InputQuestion<ConfigurationInfoAnswers>;
-    // }
 
     private getApplicationPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return this.prompts ? this.getApplicationListPrompt() : this.getApplicationInputPrompt();
@@ -817,6 +743,7 @@ export default class ProjectPrompter {
             additionalMessages: (app) => {
                 if (this.appSync && this.isApplicationSupported && !!app) {
                     return {
+                        // TODO: appInfoLabel is in two places rn
                         message: t('prompts.appInfoLabel'),
                         severity: Severity.information
                     };
@@ -824,64 +751,6 @@ export default class ProjectPrompter {
             }
         } as InputQuestion<ConfigurationInfoAnswers>;
     }
-
-    // private getAdpOverAdpInfoPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
-    //     return {
-    //         type: 'input',
-    //         name: 'adpOverAdpInfo',
-    //         message: t('prompts.notSupportedAdpOverAdpLabel'),
-    //         when: (answers: ConfigurationInfoAnswers) =>
-    //             !!answers.application &&
-    //             !this.getIsSupportedAdpOverAdp() &&
-    //             !this.isPartiallySupportedAdpOverAdp &&
-    //             this.isApplicationSupported,
-    //         guiOptions: {
-    //             type: 'label',
-    //             applyDefaultWhenDirty: true
-    //         }
-    //     } as InputQuestion<ConfigurationInfoAnswers>;
-    // }
-
-    // private getAdpOverAdpPartialSupportInfoPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
-    //     return {
-    //         type: 'input',
-    //         name: 'adpOverAdpPartialInfo',
-    //         message: t('prompts.isPartiallySupportedAdpOverAdpLabel'),
-    //         when: (answers: ConfigurationInfoAnswers) =>
-    //             !!answers.application && this.isPartiallySupportedAdpOverAdp && this.isApplicationSupported,
-    //         guiOptions: {
-    //             type: 'label',
-    //             applyDefaultWhenDirty: true
-    //         }
-    //     } as InputQuestion<ConfigurationInfoAnswers>;
-    // }
-
-    // private getApplicationInfoPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
-    //     return {
-    //         type: 'input',
-    //         name: 'appInfo',
-    //         message: t('prompts.appInfoLabel'),
-    //         when: (answers: ConfigurationInfoAnswers) =>
-    //             this.appSync && this.isApplicationSupported && !!answers.application,
-    //         guiOptions: {
-    //             type: 'label',
-    //             applyDefaultWhenDirty: true
-    //         }
-    //     } as InputQuestion<ConfigurationInfoAnswers>;
-    // }
-
-    // private getApplicationV4InfoPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
-    //     return {
-    //         type: 'input',
-    //         name: 'v4Info',
-    //         message: t('prompts.v4AppNotOfficialLabel'),
-    //         when: () => this.isV4AppInternalMode,
-    //         guiOptions: {
-    //             type: 'label',
-    //             applyDefaultWhenDirty: true
-    //         }
-    //     } as InputQuestion<ConfigurationInfoAnswers>;
-    // }
 
     private getUi5VersionPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
@@ -921,38 +790,6 @@ export default class ProjectPrompter {
             }
         } as ListQuestion<ConfigurationInfoAnswers>;
     }
-
-    private getCurrentUI5VersionPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
-        return {
-            type: 'input',
-            name: 'latestUI5Version',
-            message: t('prompts.currentUI5VersionLabel', { version: this.ui5Service.latestVersion }),
-            when: (answers: ConfigurationInfoAnswers) => {
-                return answers.system && !this.shouldAuthenticate(answers) && this.isCloudProject;
-            },
-            guiOptions: {
-                type: 'label',
-                hint: t('prompts.currentUI5VersionTooltip')
-            }
-        } as InputQuestion<ConfigurationInfoAnswers>;
-    }
-
-    // private getVersionInfoPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
-    //     return {
-    //         type: 'input',
-    //         name: 'versionInfo',
-    //         message: t('validators.ui5VersionNotDetectedError'),
-    //         when: (answers: ConfigurationInfoAnswers) =>
-    //             !this.shouldAuthenticate(answers) &&
-    //             !this.ui5VersionDetected &&
-    //             !this.isCloudProject &&
-    //             (this.hasSystemAuthentication ? this.isLoginSuccessfull : true),
-    //         guiOptions: {
-    //             type: 'label',
-    //             applyDefaultWhenDirty: true
-    //         }
-    //     } as InputQuestion<ConfigurationInfoAnswers>;
-    // }
 
     private getFioriIdPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
@@ -1066,19 +903,8 @@ export default class ProjectPrompter {
             this.getUsernamePrompt(),
             this.getPasswordPrompt(),
             this.getProjectTypeListPrompt(),
-            this.getProjectTypeLabelPrompt(AdaptationProjectType.CLOUD_READY),
-            this.getProjectTypeLabelPrompt(AdaptationProjectType.ON_PREMISE),
-            // this.getNotFlexAndNotDeployableSystemLabelPrompt(),
-            // this.getNotFlexEnabledSystemLabelPrompt(),
-            // this.getNotDeployableSystemLabelPrompt(),
             this.getApplicationPrompt(),
-            // this.getAdpOverAdpInfoPrompt(),
-            // this.getAdpOverAdpPartialSupportInfoPrompt(),
-            // this.getApplicationInfoPrompt(),
-            // this.getApplicationV4InfoPrompt(),
             this.getUi5VersionPrompt(),
-            this.getCurrentUI5VersionPrompt(),
-            // this.getVersionInfoPrompt(),
             this.getFioriIdPrompt(),
             this.getACHprompt(),
             this.getAppInfoErrorPrompt(),
