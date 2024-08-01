@@ -1,0 +1,57 @@
+_schema-version: "3.2"
+ID: managedApp
+version: 0.0.1
+modules:
+  - name: managedApp-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: managedApp-destination-service
+        parameters:
+          content-target: true
+      - name: managedApp_html_repo_host
+        parameters:
+          service-key:
+            name: managedApp_html_repo_host-key
+      - name: uaa_managedApp
+        parameters:
+          service-key:
+            name: uaa_managedApp-key
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Name: uniqueid_managedApp_html_repo_host
+              ServiceInstanceName: managedApp-html5-app-host-service
+              ServiceKeyName: managedApp_html_repo_host-key
+              sap.cloud.service: test2804
+            - Authentication: OAuth2UserTokenExchange
+              Name: test2804_uaa_managedApp
+              ServiceInstanceName: managedApp-xsuaa-service
+              ServiceKeyName: uaa_managedApp-key
+              sap.cloud.service: test2804
+          existing_destinations_policy: ignore
+    build-parameters:
+      no-source: true
+resources:
+  - name: managedApp-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+      service: destination
+      service-name: managedApp-destination-service
+      service-plan: lite
+  - name: managedApp_html_repo_host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-name: managedApp-html5-app-host-service
+      service-plan: app-host
+  - name: uaa_managedApp
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: managedApp-xsuaa-service
+      service-plan: application
