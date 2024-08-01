@@ -35,7 +35,7 @@
         "@sap-ux/mockserver-config-writer": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "ejs": "3.1.10",
-        "fast-xml-parser": "4.2.7",
+        "fast-xml-parser": "4.4.1",
         "i18next": "20.6.1",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
