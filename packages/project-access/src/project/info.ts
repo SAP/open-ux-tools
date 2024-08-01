@@ -231,12 +231,11 @@ export function getMinUI5VersionFromManifest(manifest: Manifest): string | strin
  */
 export function getMinUI5VersionAsArray(manifest: Manifest, noValidation = false): string[] {
     const result: string[] = [];
-    const manifestVariablePattern = /^\$\{.*\}$/; // minUI5Version can also contain variable entries like ${sap.ui5.dist.version}
     const minUI5Version = getMinUI5VersionFromManifest(manifest);
     if (minUI5Version) {
         const minUI5VersionArray = Array.isArray(minUI5Version) ? minUI5Version : [minUI5Version];
         minUI5VersionArray.forEach((version) => {
-            if (noValidation || valid(version) || manifestVariablePattern.test(version)) {
+            if (noValidation || valid(version)) {
                 result.push(version);
             }
         });
