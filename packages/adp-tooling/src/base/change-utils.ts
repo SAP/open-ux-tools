@@ -188,7 +188,7 @@ export function getChangesByType(
 
         const changeFiles: ManifestChangeProperties[] = fileNames
             .map((fileName) => {
-                const filePath = resolve(targetDir, fileName);
+                const filePath = path.resolve(targetDir, fileName);
                 const fileContent = readFileSync(filePath, 'utf-8');
                 const change: ManifestChangeProperties = JSON.parse(fileContent);
                 return change;

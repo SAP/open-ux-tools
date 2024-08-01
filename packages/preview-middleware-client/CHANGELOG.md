@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.10.5
+
+### Patch Changes
+
+-   ab2e5a0: Preview support for UI5 2.x
+
 ## 0.10.4
 
 ### Patch Changes

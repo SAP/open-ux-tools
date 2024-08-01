@@ -1,5 +1,24 @@
 # @sap-ux/preview-middleware
 
+## 0.16.29
+
+### Patch Changes
+
+-   Updated dependencies [7ae8207]
+    -   @sap-ux/adp-tooling@0.12.19
+
+## 0.16.28
+
+### Patch Changes
+
+-   cea098a: FIX: regression in adp preview with reuse libs
+
+## 0.16.27
+
+### Patch Changes
+
+-   ab2e5a0: Preview support for UI5 2.x
+
 ## 0.16.26
 
 ### Patch Changes
