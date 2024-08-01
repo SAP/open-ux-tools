@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.26.0
+
+### Minor Changes
+
+-   518bf7e: Update CAP serviceInfo API handling
+
 ## 1.25.8
 
 ### Patch Changes
