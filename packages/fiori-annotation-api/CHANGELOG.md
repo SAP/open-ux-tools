@@ -1,5 +1,38 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.1.30
+
+### Patch Changes
+
+-   Updated dependencies [88c8bf6]
+    -   @sap-ux/project-access@1.26.3
+    -   @sap-ux/cds-odata-annotation-converter@0.3.2
+
+## 0.1.29
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/project-access@1.26.2
+    -   @sap-ux/cds-odata-annotation-converter@0.3.2
+
+## 0.1.28
+
+### Patch Changes
+
+-   Updated dependencies [a986655]
+    -   @sap-ux/project-access@1.26.1
+    -   @sap-ux/cds-odata-annotation-converter@0.3.1
+
+## 0.1.27
+
+### Patch Changes
+
+-   Updated dependencies [518bf7e]
+    -   @sap-ux/project-access@1.26.0
+    -   @sap-ux/cds-odata-annotation-converter@0.3.1
+
 ## 0.1.26
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 1.1.3
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+
 ## 1.1.2
 
 ### Patch Changes
