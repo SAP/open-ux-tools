@@ -141,7 +141,7 @@ describe('add/annotations', () => {
     });
 
     test('should pass succesfully when missing fiori-tools-preview configuration but has preview-middleware configuration', async () => {
-        const command = new Command('data-source');
+        const command = new Command('annotations');
         addAnnotationsToOdataCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
@@ -150,7 +150,7 @@ describe('add/annotations', () => {
     });
 
     test('should not commit changes when called with simulate', async () => {
-        const command = new Command('data-source');
+        const command = new Command('annotations');
         addAnnotationsToOdataCommand(command);
         await command.parseAsync(getArgv(appRoot, '--simulate'));
 
@@ -165,7 +165,7 @@ describe('add/annotations', () => {
             response: { status: 401 }
         });
 
-        const command = new Command('data-source');
+        const command = new Command('annotations');
         addAnnotationsToOdataCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
@@ -183,7 +183,7 @@ describe('add/annotations', () => {
             new Error('No data sources found in the manifest')
         );
 
-        const command = new Command('data-source');
+        const command = new Command('annotations');
         addAnnotationsToOdataCommand(command);
         await command.parseAsync(getArgv(appRoot));
 

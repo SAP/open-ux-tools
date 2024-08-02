@@ -18601,6 +18601,7 @@ packages:
   /prettier@3.3.2:
     resolution: {integrity: sha512-rAVeHYMcv8ATV5d508CFdn+8/pHPpXeIid1DdrPwXnaAdH7cqjVbpJaT5eq4yRAFU/lsbwYwSF/n5iNrdJHPQA==}
     engines: {node: '>=14'}
+    hasBin: true
     dev: true
 
   /prettify-xml@1.2.0:
