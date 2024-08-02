@@ -1,4 +1,4 @@
-import { wrapInQuotes, printOptions, createTextDocument } from '../src/text-formatting'; 
+import { wrapInQuotes, printOptions, createTextDocument } from '../src/text-formatting';
 
 describe('wrapInQuotes', () => {
     it('should wrap text in single quotes', () => {
@@ -37,9 +37,9 @@ describe('createTextDocument', () => {
         const languageId = 'plaintext';
         const version = 1;
         const content = 'Hello, world!';
-        
+
         const document = createTextDocument(uri, languageId, version, content);
-        
+
         expect(document.uri).toBe(uri);
         expect(document.languageId).toBe(languageId);
         expect(document.version).toBe(version);
@@ -51,9 +51,9 @@ describe('createTextDocument', () => {
         const languageId = 'plaintext';
         const version = 1;
         const content = '';
-        
+
         const document = createTextDocument(uri, languageId, version, content);
-        
+
         expect(document.uri).toBe(uri);
         expect(document.languageId).toBe(languageId);
         expect(document.version).toBe(version);
