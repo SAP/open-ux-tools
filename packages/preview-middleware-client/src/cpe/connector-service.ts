@@ -1,6 +1,6 @@
 import { ExternalAction, storageFileChanged } from '@sap-ux-private/control-property-editor-common';
 import { ActionSenderFunction } from './types';
-import { getUi5Version } from '../utils';
+import { getUi5Version } from '../utils/version';
 
 /**
  * A Class of WorkspaceConnectorService
