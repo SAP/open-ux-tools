@@ -570,12 +570,12 @@ export interface Value {
 }
 
 export interface FlpConfigAnswers {
-    flpInboundId?: string;
-    flpTitle: string;
-    flpSubtitle?: string;
-    flpAction?: string;
-    flpSemanticObject?: string;
-    flpParameters?: string;
+    inboundId?: string;
+    title: string;
+    subTitle?: string;
+    action?: string;
+    semanticObject?: string;
+    parameters?: string;
 }
 
 export enum InputChoice {

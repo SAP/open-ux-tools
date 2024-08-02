@@ -10,7 +10,7 @@ import {
     isAxiosError
 } from '@sap-ux/axios-extension';
 import { Logger } from '@sap-ux/logger';
-import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
+import type { UI5FlexLayer } from '@sap-ux/project-access';
 import { isExtensionInstalledVsCode } from '@sap-ux/environment-check';
 import type {
     ListQuestion,
@@ -25,7 +25,6 @@ import { t } from '../../i18n';
 import { isCustomerBase } from '../../base/helper';
 import {
     Application,
-    BasicInfoAnswers,
     ChoiceOption,
     ConfigurationInfoAnswers,
     DeployConfigAnswers,
@@ -41,29 +40,20 @@ import {
     validateByRegex,
     validateClient,
     validateEmptyInput,
-    validateNamespace,
     validatePackage,
     validatePackageChoiceInput,
     validateParameters,
-    validateProjectName,
     validateTransportChoiceInput
 } from '../../base/validators';
 
 import { EndpointsService } from '../../base/services/endpoints-service';
 import { UI5VersionService, isFeatureSupportedVersion } from '../../base/services/ui5-version-service';
-import { generateValidNamespace, getDefaultProjectName, getProjectNameTooltip } from './prompt-helpers';
-import { getApplicationType, isSupportedAppTypeForAdaptationProject } from '../../base/app-utils';
-import {
-    ManifestService,
-    getCachedACH,
-    getCachedFioriId,
-    getInboundIds,
-    isV4Application
-} from '../../base/services/manifest-service';
+import { ManifestService, getCachedACH, getCachedFioriId, getInboundIds } from '../../base/services/manifest-service';
 import { ProviderService } from '../../base/services/abap-provider-service';
 import { listTransports } from '../../base/services/list-transports-service';
 import { ABAP_PACKAGE_SEARCH_MAX_RESULTS, listPackages } from '../../base/services/list-packages-service';
 import { ApplicationService, getApplicationChoices } from '../../base/services/application-service';
+import { AppIdentifier } from '../../base/services/app-identifier-service';
 
 export default class ProjectPrompter {
     private logger: Logger;
@@ -75,12 +65,7 @@ export default class ProjectPrompter {
     private ui5VersionDetected = true;
     private isCloudProject: boolean;
     private isApplicationSupported: boolean;
-    private isV4AppInternalMode: boolean;
-    private isSupportedAdpOverAdp: boolean;
-    private isPartiallySupportedAdpOverAdp: boolean;
     private extensibilitySubGenerator: string | undefined = undefined;
-
-    private appSync: boolean;
 
     private versionsOnSystem: string[];
     private systemNames: string[];
@@ -95,16 +80,19 @@ export default class ProjectPrompter {
     private manifestService: ManifestService;
     private endpointsService: EndpointsService;
     private appsService: ApplicationService;
+    private appIdentifier: AppIdentifier;
 
     private prompts?: Prompts;
     private packageInputChoiceValid: string | boolean;
     private transportList: string[] | undefined;
 
+    // TODO: Pass common services into the constructor
     constructor(layer: UI5FlexLayer, prompts?: Prompts) {
         this.prompts = prompts;
         this.isCustomerBase = isCustomerBase(layer);
         this.isExtensionInstalled = isExtensionInstalledVsCode('sapse.sap-ux-application-modeler-extension');
 
+        this.appIdentifier = new AppIdentifier(this.isCustomerBase);
         this.ui5Service = new UI5VersionService(this.isCustomerBase);
         this.endpointsService = new EndpointsService(this.isExtensionInstalled);
         this.providerService = new ProviderService(this.endpointsService);
@@ -174,7 +162,7 @@ export default class ProjectPrompter {
             (!this.isApplicationSupported ||
                 (this.isApplicationSupported &&
                     ((this.flexUISystem && (!this.flexUISystem.isOnPremise || !this.flexUISystem.isUIFlex)) ||
-                        this.appSync)))
+                        this.appIdentifier.appSync)))
         );
     }
 
@@ -239,65 +227,6 @@ export default class ProjectPrompter {
         }
     }
 
-    public async validateSelectedApplication(
-        application: Application,
-        checkForAdpOverAdpSupport: boolean,
-        checkForAdpOverAdpPartialSupport: boolean,
-        manifest: Manifest | null
-    ): Promise<void> {
-        if (!application) {
-            throw new Error(t('validators.selectCannotBeEmptyError', { value: 'Application' }));
-        }
-
-        if (!manifest) {
-            throw new Error(t('validators.manifestCouldNotBeValidated'));
-        }
-
-        this.isV4AppInternalMode = false;
-        this.setAdpOverAdpSupport(checkForAdpOverAdpSupport, checkForAdpOverAdpPartialSupport, application.fileType);
-
-        await this.validateSmartTemplateApplication(manifest);
-    }
-
-    private setAdpOverAdpSupport(
-        checkForAdpOverAdpSupport: boolean,
-        checkForAdpOverAdpPartialSupport: boolean,
-        fileType: string
-    ) {
-        this.isSupportedAdpOverAdp = !(checkForAdpOverAdpSupport && fileType === 'appdescr_variant');
-        this.isPartiallySupportedAdpOverAdp = checkForAdpOverAdpPartialSupport && fileType === 'appdescr_variant';
-    }
-
-    private checkForSyncLoadedViews(ui5Settings: Manifest['sap.ui5']) {
-        if (ui5Settings?.rootView) {
-            // @ts-ignore // TODO:
-            this.appSync = !ui5Settings['rootView']['async'];
-            return;
-        }
-        if (ui5Settings?.routing && ui5Settings['routing']['config']) {
-            this.appSync = !ui5Settings['routing']['config']['async'];
-            return;
-        }
-        this.appSync = false;
-    }
-
-    private async validateSmartTemplateApplication(manifest: Manifest) {
-        const isV4App = isV4Application(manifest);
-        this.isV4AppInternalMode = isV4App && !this.isCustomerBase;
-        const sAppType = getApplicationType(manifest);
-
-        if (isSupportedAppTypeForAdaptationProject(sAppType)) {
-            if (manifest['sap.ui5']) {
-                if (manifest['sap.ui5'].flexEnabled === false) {
-                    throw new Error(t('validators.appDoesNotSupportAdaptation'));
-                }
-                this.checkForSyncLoadedViews(manifest['sap.ui5']);
-            }
-        } else {
-            throw new Error(t('validators.adpPluginSmartTemplateProjectError'));
-        }
-    }
-
     private async applicationPromptValidationHandler(value: Application): Promise<boolean | string> {
         if (value) {
             try {
@@ -314,11 +243,13 @@ export default class ProjectPrompter {
                         checkForAdpOverAdpSupport &&
                         isFeatureSupportedVersion('1.90.0', systemVersion);
 
-                    await this.validateSelectedApplication(
+                    const appId = this.manifestService.getManifest(value.id);
+
+                    await this.appIdentifier.validateSelectedApplication(
                         value,
                         checkForAdpOverAdpSupport,
                         checkForAdpOverAdpPartialSupport,
-                        this.manifestService.getManifest(value.id)
+                        appId
                     );
                 }
                 this.isApplicationSupported = true;
@@ -330,14 +261,6 @@ export default class ProjectPrompter {
             return t('validators.selectCannotBeEmptyError', { value: 'Application' });
         }
         return true;
-    }
-
-    public getIsSupportedAdpOverAdp() {
-        return this.isSupportedAdpOverAdp && !this.isPartiallySupportedAdpOverAdp;
-    }
-
-    public getIsPartiallySupportedAdpOverAdp() {
-        return this.isPartiallySupportedAdpOverAdp;
     }
 
     private async systemPromptValidationHandler(value: string): Promise<boolean | string> {
@@ -449,39 +372,29 @@ export default class ProjectPrompter {
             when: isAppStudio() ? this.systemInfo?.adaptationProjectTypes?.length : true,
             validate: this.systemPromptValidationHandler.bind(this),
             additionalMessages: () => {
-                if (
-                    this.flexUISystem &&
-                    !this.flexUISystem.isOnPremise &&
-                    !this.flexUISystem.isUIFlex &&
-                    !this.isCloudProject &&
-                    this.systemInfo?.adaptationProjectTypes?.length
-                ) {
-                    return {
-                        message: t('validators.notDeployableNotFlexEnabledSystemError'),
-                        severity: Severity.error
-                    };
+                const isOnPremise = this.flexUISystem?.isOnPremise;
+                const isUIFlex = this.flexUISystem?.isUIFlex;
+                const hasAdaptationProjectTypes = this.systemInfo?.adaptationProjectTypes?.length > 0;
+
+                if (this.isCloudProject || !hasAdaptationProjectTypes) {
+                    return undefined;
                 }
 
-                if (
-                    this.flexUISystem &&
-                    !this.flexUISystem.isOnPremise &&
-                    this.flexUISystem.isUIFlex &&
-                    !this.isCloudProject &&
-                    this.systemInfo?.adaptationProjectTypes?.length
-                ) {
-                    return {
-                        message: t('validators.notDeployableSystemError'),
-                        severity: Severity.error
-                    };
+                if (!isOnPremise) {
+                    if (!isUIFlex) {
+                        return {
+                            message: t('validators.notDeployableNotFlexEnabledSystemError'),
+                            severity: Severity.error
+                        };
+                    } else {
+                        return {
+                            message: t('validators.notDeployableSystemError'),
+                            severity: Severity.error
+                        };
+                    }
                 }
 
-                if (
-                    this.flexUISystem &&
-                    !this.flexUISystem.isUIFlex &&
-                    this.flexUISystem.isOnPremise &&
-                    !this.isCloudProject &&
-                    this.systemInfo?.adaptationProjectTypes?.length
-                ) {
+                if (isOnPremise && !isUIFlex) {
                     return {
                         message: t('validators.notFlexEnabledError'),
                         severity: Severity.warning
@@ -693,33 +606,35 @@ export default class ProjectPrompter {
                 return validationResult;
             },
             additionalMessages: (app) => {
-                if (this.appSync && this.isApplicationSupported && !!app) {
+                if (!app) {
+                    return undefined;
+                }
+
+                if (this.appIdentifier.appSync && this.isApplicationSupported) {
                     return {
                         message: t('prompts.appInfoLabel'),
                         severity: Severity.information
                     };
                 }
 
-                if (
-                    !!app &&
-                    !this.getIsSupportedAdpOverAdp() &&
-                    !this.isPartiallySupportedAdpOverAdp &&
-                    this.isApplicationSupported
-                ) {
+                const isSupported = this.appIdentifier.getIsSupportedAdpOverAdp();
+                const isPartiallySupported = this.appIdentifier.getIsPartiallySupportedAdpOverAdp();
+
+                if (!isSupported && !isPartiallySupported && this.isApplicationSupported) {
                     return {
                         message: t('prompts.notSupportedAdpOverAdpLabel'),
                         severity: Severity.warning
                     };
                 }
 
-                if (!!app && this.isPartiallySupportedAdpOverAdp && this.isApplicationSupported) {
+                if (isPartiallySupported && this.isApplicationSupported) {
                     return {
                         message: t('prompts.isPartiallySupportedAdpOverAdpLabel'),
                         severity: Severity.warning
                     };
                 }
 
-                if (this.isV4AppInternalMode) {
+                if (this.appIdentifier.isV4AppInternalMode) {
                     return {
                         message: t('prompts.v4AppNotOfficialLabel'),
                         severity: Severity.warning
@@ -741,7 +656,7 @@ export default class ProjectPrompter {
                 breadcrumb: t('prompts.applicationListLabel')
             },
             additionalMessages: (app) => {
-                if (this.appSync && this.isApplicationSupported && !!app) {
+                if (this.appIdentifier.appSync && this.isApplicationSupported && !!app) {
                     return {
                         // TODO: appInfoLabel is in two places rn
                         message: t('prompts.appInfoLabel'),
@@ -797,7 +712,8 @@ export default class ProjectPrompter {
             name: 'fioriId',
             message: t('prompts.fioriIdLabel'),
             guiOptions: {
-                hint: t('prompts.fioriIdHint')
+                hint: t('prompts.fioriIdHint'),
+                breadcrumb: t('prompts.fioriIdLabel')
             },
             when: (answers: ConfigurationInfoAnswers) => {
                 // show the field when the system is selected and in internal mode
@@ -823,6 +739,7 @@ export default class ProjectPrompter {
             message: t('prompts.achLabel'),
             guiOptions: {
                 hint: t('prompts.achHint'),
+                breadcrumb: t('prompts.achLabel'),
                 mandatory: true
             },
             when: (answers: ConfigurationInfoAnswers) => {
@@ -844,6 +761,7 @@ export default class ProjectPrompter {
     }
 
     private getAppInfoErrorPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
+        // TODO: This needs to be moved to additionalMessages
         return {
             type: 'input',
             name: 'applicationInfoError',
@@ -874,7 +792,7 @@ export default class ProjectPrompter {
             type: 'confirm',
             name: 'confirmPrompt',
             message: () => {
-                return this.isApplicationSupported && this.appSync
+                return this.isApplicationSupported && this.appIdentifier.appSync
                     ? t('prompts.createExtProjectWithSyncViewsLabel', { value: projectName })
                     : t('prompts.createExtProjectLabel', { value: projectName });
             },
@@ -884,7 +802,7 @@ export default class ProjectPrompter {
             },
             when: (answers: ConfigurationInfoAnswers) => answers.application && this.allowExtensionProject(),
             validate: (value: boolean) => {
-                if (this.isApplicationSupported && this.appSync) {
+                if (this.isApplicationSupported && this.appIdentifier.appSync) {
                     return !value ? true : this.resolveNodeModuleGenerator();
                 }
 
@@ -912,18 +830,18 @@ export default class ProjectPrompter {
         ];
     }
 
-    //FLP Configuration prompts
     private getInboundListPrompt(): YUIQuestion<FlpConfigAnswers> {
         return {
             type: 'list',
-            name: 'flpInboundId',
+            name: 'inboundId',
             message: t('prompts.inboundId'),
             choices: this.inboundIds,
             default: this.inboundIds[0],
             validate: (value: string) => validateEmptyInput(value, 'inboundId'),
             when: this.isCloudProject && this.inboundIds.length > 0,
             guiOptions: {
-                hint: t('tooltips.inboundId')
+                hint: t('tooltips.inboundId'),
+                breadcrumb: t('prompts.inboundId')
             }
         } as ListQuestion<FlpConfigAnswers>;
     }
@@ -964,11 +882,12 @@ export default class ProjectPrompter {
     private getSemanticObjectPrompt(): YUIQuestion<FlpConfigAnswers> {
         return {
             type: 'input',
-            name: 'flpSemanticObject',
+            name: 'semanticObject',
             message: t('prompts.semanticObject'),
             validate: (value: string) => validateByRegex(value, 'semanticObject', '^[A-Za-z0-9_]{0,30}$'),
             guiOptions: {
                 hint: t('prompts.semanticObject'),
+                breadcrumb: t('prompts.semanticObject'),
                 mandatory: true
             },
             when: this.isCloudProject && !this.inboundIds.length
@@ -978,11 +897,12 @@ export default class ProjectPrompter {
     private getActionPrompt(): YUIQuestion<FlpConfigAnswers> {
         return {
             type: 'input',
-            name: 'flpAction',
+            name: 'action',
             message: t('prompts.action'),
             validate: (value: string) => validateByRegex(value, 'action', '^[A-Za-z0-9_]{0,60}$'),
             guiOptions: {
                 hint: t('tooltips.action'),
+                breadcrumb: t('prompts.action'),
                 mandatory: true
             },
             when: this.isCloudProject && !this.inboundIds.length
@@ -992,11 +912,12 @@ export default class ProjectPrompter {
     private getTitlePrompt(): YUIQuestion<FlpConfigAnswers> {
         return {
             type: 'input',
-            name: 'flpTitle',
+            name: 'title',
             message: t('prompts.title'),
             guiOptions: {
-                mandatory: true,
-                hint: t('tooltips.title')
+                hint: t('tooltips.title'),
+                breadcrumb: t('prompts.title'),
+                mandatory: true
             },
             when: this.isCloudProject,
             validate: (value: string) => validateEmptyInput(value, 'title')
@@ -1006,10 +927,11 @@ export default class ProjectPrompter {
     private getSubtitlePrompt(): YUIQuestion<FlpConfigAnswers> {
         return {
             type: 'input',
-            name: 'flpSubtitle',
+            name: 'subTitle',
             message: t('prompts.subtitle'),
             guiOptions: {
-                hint: t('tooltips.subtitle')
+                hint: t('tooltips.subtitle'),
+                breadcrumb: t('prompts.subtitle')
             },
             when: this.isCloudProject
         };
@@ -1018,11 +940,12 @@ export default class ProjectPrompter {
     private getParametersPrompt(): YUIQuestion<FlpConfigAnswers> {
         return {
             type: 'editor',
-            name: 'flpParameters',
+            name: 'parameters',
             message: t('prompts.parameters'),
             validate: (value: string) => validateParameters(value),
             guiOptions: {
                 hint: t('tooltips.parameters'),
+                breadcrumb: t('prompts.parameters'),
                 mandatory: false
             },
             when: this.isCloudProject && this.inboundIds.length === 0
