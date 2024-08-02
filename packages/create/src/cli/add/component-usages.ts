@@ -4,11 +4,14 @@ import {
     getVariant,
     ChangeType,
     getPromptsForAddComponentUsages,
-    type ComponentUsagesData
+    type ComponentUsagesData,
+    type AddComponentUsageAnswers,
+    DescriptorVariant
 } from '@sap-ux/adp-tooling';
 import { getLogger, traceChanges } from '../../tracing';
 import { validateAdpProject } from '../../validation/validation';
 import { promptYUIQuestions } from '../../common';
+import { get } from 'http';
 
 /**
  * Add a new sub-command to add component usages of an adaptation project to the given command.
@@ -39,32 +42,12 @@ export async function addComponentUsages(basePath: string, simulate: boolean): P
 
         const variant = getVariant(basePath);
 
-        const { data, id, settings, isLazy, name, shouldAddLibrary, library, libraryIsLazy } = await promptYUIQuestions(
-            getPromptsForAddComponentUsages(basePath, variant.layer),
-            false
-        );
-
-        const writerData = {
-            variant,
-            component: {
-                data,
-                usageId: id,
-                settings,
-                isLazy,
-                name
-            },
-            ...(shouldAddLibrary && {
-                library: {
-                    reference: library as string,
-                    referenceIsLazy: libraryIsLazy as string
-                }
-            })
-        } as ComponentUsagesData;
+        const answers = await promptYUIQuestions(getPromptsForAddComponentUsages(basePath, variant.layer), false);
 
         const fs = await generateChange<ChangeType.ADD_COMPONENT_USAGES>(
             basePath,
             ChangeType.ADD_COMPONENT_USAGES,
-            writerData
+            getWriterData(variant, answers)
         );
 
         if (!simulate) {
@@ -76,4 +59,32 @@ export async function addComponentUsages(basePath: string, simulate: boolean): P
         logger.error(error.message);
         logger.debug(error);
     }
+}
+
+/**
+ * Returns the writer data for the component usages change.
+ *
+ * @param {string} variant - The variant of the adaptation project.
+ * @param {AddComponentUsageAnswers} answers - The answers object containing the information needed to construct the writer data.
+ * @returns {ComponentUsagesData} The writer data for the component usages change.
+ */
+function getWriterData(variant: DescriptorVariant, answers: AddComponentUsageAnswers): ComponentUsagesData {
+    const { id, data, settings, isLazy, name, library, libraryIsLazy, shouldAddLibrary } = answers;
+
+    return {
+        variant,
+        component: {
+            data,
+            usageId: id,
+            settings,
+            isLazy,
+            name
+        },
+        ...(shouldAddLibrary && {
+            library: {
+                reference: library as string,
+                referenceIsLazy: libraryIsLazy as string
+            }
+        })
+    };
 }
