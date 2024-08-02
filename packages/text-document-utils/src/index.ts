@@ -17,7 +17,7 @@ export {
     WorkspaceEdit
 } from 'vscode-languageserver-types';
 
-export { getLineOffsets } from './lineOffsets';
+export { getLineOffsets } from './line-offsets';
 export {
     positionAt,
     getIndentLevel,
@@ -36,4 +36,4 @@ export {
     createRange,
     createRangeWithPosition
 } from './range';
-export { printOptions, createTextDocument } from './text-formatting';
+export { printOptions } from './text-formatting';

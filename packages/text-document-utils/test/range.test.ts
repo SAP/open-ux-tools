@@ -1,23 +1,99 @@
 import { Position, Range } from 'vscode-languageserver-types';
-import { arePositionsEqual, areRangesEqual, createRange, createRangeWithPosition, rangeAt } from '../src/range';
+import {
+    arePositionsEqual,
+    areRangesEqual,
+    copyPosition,
+    copyRange,
+    createRange,
+    createRangeWithPosition,
+    rangeAt
+} from '../src/range';
 
-describe('Range utility functions', () => {
-    test('arePositionsEqual', () => {
-        const result1 = arePositionsEqual(Position.create(0, 0), Position.create(0, 0));
-        const result2 = arePositionsEqual(Position.create(1, 0), Position.create(0, 0));
-        const result3 = arePositionsEqual(Position.create(0, 1), Position.create(0, 0));
+describe('areRangesEqual', () => {
+    it('should return true for ranges with the same start and end positions', () => {
+        const range1 = Range.create(Position.create(1, 5), Position.create(2, 10));
+        const range2 = Range.create(Position.create(1, 5), Position.create(2, 10));
 
-        expect(result1 && !result2 && !result3).toBe(true);
+        expect(areRangesEqual(range1, range2)).toBe(true);
     });
 
-    test('areRangesEqual', () => {
-        const pos1 = Position.create(0, 0);
-        const pos2 = Position.create(1, 0);
-        const pos3 = Position.create(2, 0);
-        const result1 = areRangesEqual(Range.create(pos1, pos2), Range.create(pos1, pos2));
-        const result2 = areRangesEqual(Range.create(pos1, pos2), Range.create(pos1, pos3));
+    it('should return false for ranges with different start positions', () => {
+        const range1 = Range.create(Position.create(1, 5), Position.create(2, 10));
+        const range2 = Range.create(Position.create(1, 6), Position.create(2, 10));
 
-        expect(result1 && !result2).toBe(true);
+        expect(areRangesEqual(range1, range2)).toBe(false);
+    });
+
+    it('should return false for ranges with different end positions', () => {
+        const range1 = Range.create(Position.create(1, 5), Position.create(2, 10));
+        const range2 = Range.create(Position.create(1, 5), Position.create(2, 11));
+
+        expect(areRangesEqual(range1, range2)).toBe(false);
+    });
+
+    it('should return false for ranges with different start and end positions', () => {
+        const range1 = Range.create(Position.create(1, 5), Position.create(2, 10));
+        const range2 = Range.create(Position.create(1, 6), Position.create(2, 11));
+
+        expect(areRangesEqual(range1, range2)).toBe(false);
+    });
+
+    it('should handle ranges with start and end positions at zero', () => {
+        const range1 = Range.create(Position.create(0, 0), Position.create(0, 0));
+        const range2 = Range.create(Position.create(0, 0), Position.create(0, 0));
+
+        expect(areRangesEqual(range1, range2)).toBe(true);
+    });
+
+    it('should handle ranges with large values', () => {
+        const range1 = Range.create(Position.create(1000, 1000), Position.create(2000, 2000));
+        const range2 = Range.create(Position.create(1000, 1000), Position.create(2000, 2000));
+
+        expect(areRangesEqual(range1, range2)).toBe(true);
+    });
+});
+
+describe('arePositionsEqual', () => {
+    it('should return true for positions with the same line and character', () => {
+        const pos1 = Position.create(1, 5);
+        const pos2 = Position.create(1, 5);
+
+        expect(arePositionsEqual(pos1, pos2)).toBe(true);
+    });
+
+    it('should return false for positions with different lines', () => {
+        const pos1 = Position.create(1, 5);
+        const pos2 = Position.create(2, 5);
+
+        expect(arePositionsEqual(pos1, pos2)).toBe(false);
+    });
+
+    it('should return false for positions with different characters', () => {
+        const pos1 = Position.create(1, 5);
+        const pos2 = Position.create(1, 6);
+
+        expect(arePositionsEqual(pos1, pos2)).toBe(false);
+    });
+
+    it('should return false for positions with different lines and characters', () => {
+        const pos1 = Position.create(1, 5);
+        const pos2 = Position.create(2, 6);
+
+        expect(arePositionsEqual(pos1, pos2)).toBe(false);
+    });
+
+    it('should handle positions with line and character at zero', () => {
+        const pos1 = Position.create(0, 0);
+        const pos2 = Position.create(0, 0);
+
+        expect(arePositionsEqual(pos1, pos2)).toBe(true);
+    });
+
+    it('should handle positions with large line and character values', () => {
+        const pos1 = Position.create(1000, 1000);
+        const pos2 = Position.create(1000, 1000);
+
+        expect(arePositionsEqual(pos1, pos2)).toBe(true);
     });
 });
 
@@ -173,5 +249,76 @@ describe('createRangeWithPosition', () => {
         const result = createRangeWithPosition(start, end);
 
         expect(result).toEqual(Range.create(expectedStart, expectedEnd));
+    });
+});
+
+describe('copyPosition', () => {
+    it('should create a new Position with the same line and character values', () => {
+        const originalPosition = Position.create(3, 10);
+        const copiedPosition = copyPosition(originalPosition);
+
+        expect(copiedPosition).toEqual(originalPosition);
+    });
+
+    it('should handle positions with line and character values at zero', () => {
+        const originalPosition = Position.create(0, 0);
+        const copiedPosition = copyPosition(originalPosition);
+
+        expect(copiedPosition).toEqual(originalPosition);
+    });
+
+    it('should handle positions with large line and character values', () => {
+        const originalPosition = Position.create(1000, 1000);
+        const copiedPosition = copyPosition(originalPosition);
+
+        expect(copiedPosition).toEqual(originalPosition);
+    });
+
+    it('should create a distinct Position object (reference test)', () => {
+        const originalPosition = Position.create(5, 15);
+        const copiedPosition = copyPosition(originalPosition);
+
+        expect(copiedPosition).not.toBe(originalPosition); // Checks that they are different references
+        expect(copiedPosition.line).toBe(originalPosition.line);
+        expect(copiedPosition.character).toBe(originalPosition.character);
+    });
+});
+
+describe('copyRange', () => {
+    it('should create a new Range with the same start and end positions', () => {
+        const originalRange = Range.create(Position.create(1, 5), Position.create(2, 10));
+        const copiedRange = copyRange(originalRange);
+
+        expect(copiedRange.start).toEqual(originalRange.start);
+        expect(copiedRange.end).toEqual(originalRange.end);
+    });
+
+    it('should handle ranges with start and end positions at zero', () => {
+        const originalRange = Range.create(Position.create(0, 0), Position.create(0, 0));
+        const copiedRange = copyRange(originalRange);
+
+        expect(copiedRange.start).toEqual(originalRange.start);
+        expect(copiedRange.end).toEqual(originalRange.end);
+    });
+
+    it('should handle ranges with large start and end position values', () => {
+        const originalRange = Range.create(Position.create(1000, 1000), Position.create(2000, 2000));
+        const copiedRange = copyRange(originalRange);
+
+        expect(copiedRange.start).toEqual(originalRange.start);
+        expect(copiedRange.end).toEqual(originalRange.end);
+    });
+
+    it('should create a distinct Range object (reference test)', () => {
+        const originalRange = Range.create(Position.create(5, 15), Position.create(10, 20));
+        const copiedRange = copyRange(originalRange);
+
+        expect(copiedRange).not.toBe(originalRange); // Checks that they are different references
+        expect(copiedRange.start).not.toBe(originalRange.start);
+        expect(copiedRange.end).not.toBe(originalRange.end);
+        expect(copiedRange.start.line).toBe(originalRange.start.line);
+        expect(copiedRange.start.character).toBe(originalRange.start.character);
+        expect(copiedRange.end.line).toBe(originalRange.end.line);
+        expect(copiedRange.end.character).toBe(originalRange.end.character);
     });
 });
