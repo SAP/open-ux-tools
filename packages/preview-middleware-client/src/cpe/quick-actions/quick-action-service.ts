@@ -16,6 +16,7 @@ import { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction } fr
 import { QUICK_ACTION_DEFINITIONS } from './definitions/index';
 
 import { QuickActionContext, QuickActionDefinition } from './definitions/quick-action-definition';
+import { getFeVersion } from './utils';
 
 /**
  *
@@ -43,9 +44,9 @@ export class QuickActionService implements Service {
         this.actionService = await this.rta.getService('action');
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (executeQuickAction.match(action)) {
-                const actionInstance = this.actions.find(
-                    (quickActionDefinition) => quickActionDefinition.type === action.payload.type
-                );
+                const actionInstance = this.actions
+                    .filter((quickActionDefinition) => quickActionDefinition.type === action.payload.type)
+                    .pop();
                 if (!actionInstance) {
                     return;
                 }
@@ -67,7 +68,8 @@ export class QuickActionService implements Service {
         };
 
         const quickActions: QuickAction[] = [];
-        for (const Definition of QUICK_ACTION_DEFINITIONS) {
+        const feVersion = getFeVersion(this.rta.getRootControlInstance().getManifest());
+        for (const Definition of QUICK_ACTION_DEFINITIONS(feVersion)) {
             const instance = new Definition(context);
             await instance.initialize();
             if (instance.isActive) {

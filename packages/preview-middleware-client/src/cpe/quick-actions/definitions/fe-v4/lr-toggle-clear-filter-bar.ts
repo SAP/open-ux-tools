@@ -2,13 +2,13 @@ import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 
 import { QuickActionContext, SimpleQuickActionDefinition } from '../quick-action-definition';
-import { getCurrentActivePages, pageHasControlId } from '../../utils';
+import { getAppComponent, getCurrentActivePages, getPageName, getReference, pageHasControlId } from '../../utils';
 import { SIMPLE_QUICK_ACTION_KIND, SimpleQuickAction } from '@sap-ux-private/control-property-editor-common';
+import FilterBar from 'sap/ui/mdc/FilterBar';
 
 export const ENABLE_CLEAR_FILTER_BAR_TYPE = 'enable-clear-filter-bar';
-const PROPERTY_NAME = 'showClearOnFB';
-
-const CONTROL_TYPE = 'sap.ui.comp.smartfilterbar.SmartFilterBar';
+const PROPERTY_PATH = 'controlConfiguration/@com.sap.vocabularies.UI.v1.SelectionFields/showClearButton';
+const CONTROL_TYPE = 'sap.fe.macros.controls.FilterBar'; //'sap.ui.mdc.FilterField';
 export class ToggleClearFilterBarQuickAction implements SimpleQuickActionDefinition {
     readonly kind = SIMPLE_QUICK_ACTION_KIND;
     readonly type = ENABLE_CLEAR_FILTER_BAR_TYPE;
@@ -23,10 +23,11 @@ export class ToggleClearFilterBarQuickAction implements SimpleQuickActionDefinit
             for (const activePage of activePages) {
                 const control = controls[0];
                 const isActionApplicable = pageHasControlId(activePage, control.controlId);
-                const modifiedControl = sap.ui.getCore().byId(control.controlId);
-                if (isActionApplicable && modifiedControl) {
+                const controlObj = sap.ui.getCore().byId(control.controlId);
+                if (isActionApplicable && controlObj) {
                     this.isActive = true;
-                    this.isClearButtonEnabled = (modifiedControl as unknown as any).getShowClearOnFB() as boolean;
+                    this.isClearButtonEnabled = (controlObj as FilterBar).getShowClearButton();
+                    break;
                 }
             }
         }
@@ -54,18 +55,28 @@ export class ToggleClearFilterBarQuickAction implements SimpleQuickActionDefinit
             const flexSettings = this.context.rta.getFlexSettings();
 
             const modifiedValue = {
-                generator: flexSettings.generator,
-                propertyName: PROPERTY_NAME,
-                newValue: !this.isClearButtonEnabled
+                reference: getReference(modifiedControl),
+                appComponent: getAppComponent(modifiedControl),
+                changeType: 'appdescr_fe_changePageConfiguration',
+                parameters: {
+                    page: getPageName(modifiedControl.getParent()),
+                    entityPropertyChange: {
+                        propertyPath: PROPERTY_PATH,
+                        propertyValue: !this.isClearButtonEnabled,
+                        operation: 'UPSERT'
+                    }
+                }
             };
 
             const command = await CommandFactory.getCommandFor<FlexCommand>(
                 modifiedControl,
-                'Property',
+                'appDescriptor',
                 modifiedValue,
                 null,
                 flexSettings
             );
+
+            //await context.rta.getCommandStack().pushAndExecute(command);
 
             this.isClearButtonEnabled = !this.isClearButtonEnabled;
             return [command];

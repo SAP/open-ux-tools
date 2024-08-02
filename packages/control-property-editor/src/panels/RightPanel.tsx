@@ -5,6 +5,9 @@ import { UISectionLayout, UISections, UISplitterLayoutType, UISplitterType } fro
 
 import { PropertiesList } from './properties';
 import { QuickActionList } from './quick-actions';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
+import './RightPanel.scss';
 
 /**
  * React element for right panel containing quick actions and properties.
@@ -12,6 +15,10 @@ import { QuickActionList } from './quick-actions';
  * @returns ReactElement
  */
 export function RightPanel(): ReactElement {
+    const rowSize = 100;
+    const header = 150;
+    const actionsCount = useSelector<RootState, number>((state) => state.quickActions.length);
+    const initialSize = actionsCount * rowSize + header;
     return (
         <UISections
             vertical={true}
@@ -20,8 +27,8 @@ export function RightPanel(): ReactElement {
             splitterType={UISplitterType.Resize}
             splitterLayoutType={UISplitterLayoutType.Compact}
             minSectionSize={[0, 190]}
-            sizes={[12, 88]}
-            sizesAsPercents={true}
+            sizes={[initialSize, undefined]}
+            sizesAsPercents={false}
             animation={true}>
             <UISections.Section
                 scrollable={true}
@@ -32,7 +39,7 @@ export function RightPanel(): ReactElement {
             </UISections.Section>
             <UISections.Section
                 layout={UISectionLayout.Standard}
-                className="editor__outline"
+                className="editor__properties"
                 height="100%"
                 cleanPadding={true}>
                 <PropertiesList />

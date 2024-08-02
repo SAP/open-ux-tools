@@ -8,15 +8,7 @@ import {
     ExternalAction
 } from '@sap-ux-private/control-property-editor-common';
 import { ActionSenderFunction, SubscribeFunction } from './types';
-import RuntimeAuthoring, { FEAppPage } from 'sap/ui/rta/RuntimeAuthoring';
-
-export interface FEAppPageInfo {
-    page: FEAppPage;
-    isInvisible: boolean;
-}
-export interface FEAppPagesMap {
-    [key: string]: FEAppPageInfo[];
-}
+import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 /**
  * A Class of RtaService
@@ -69,29 +61,4 @@ export function modeAndStackChangeHandler(sendAction: (action: ExternalAction) =
         sendAction(setUndoRedoEnablement({ canUndo, canRedo }));
         sendAction(setSaveEnablement(saveAllowed));
     };
-}
-
-export function getFEAppPagesMap(rta: RuntimeAuthoring): FEAppPagesMap {
-    const pages = rta.getRootControlInstance().getRootControl().getPages();
-    const pagesMap: FEAppPagesMap = {};
-    for (const page of pages) {
-        const pageContent = page.getContent();
-        if (pageContent?.length) {
-            const pageName = pageContent[0].getComponentInstance()?.getMetadata().getComponentName();
-            const isInvisible = page.hasStyleClass('sapMNavItemHidden');
-            if (!pagesMap[pageName]) {
-                pagesMap[pageName] = [];
-            }
-            pagesMap[pageName].push({
-                page,
-                isInvisible
-            });
-        }
-    }
-    return pagesMap;
-}
-
-export function isPageContainsControlById(page: FEAppPage, controlId: string): boolean {
-    const controlDomElement = sap.ui.getCore().byId(controlId)?.getDomRef();
-    return !!controlDomElement && !!page.getDomRef()?.contains(controlDomElement);
 }

@@ -45,7 +45,7 @@ export function NestedQuickActionListItem({ action }: NestedQuickActionListItemP
                             })
                         );
                     }}>
-                    {title}
+                    {children[0].label}
                 </UILink>
             );
         } else {
