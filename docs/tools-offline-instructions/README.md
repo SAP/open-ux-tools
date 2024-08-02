@@ -12,7 +12,7 @@ To run the steps below, you'll need a 'connected system' which has Internet conn
 
 Desire to run SAP Fiori tools on an isolated system with following features:
 
-- Windows 10 image
+- Microsoft Windows image (version 10 or similar)
 - No Internet connection
 - User with admin rights
 - Security software that cannot be overwritten
@@ -22,7 +22,7 @@ Desire to run SAP Fiori tools on an isolated system with following features:
 
 ### Node.js
 
-Download Node.js version 16.x.y from https://nodejs.org/en/download/releases/. At the time of writing this document this was https://nodejs.org/download/release/v16.20.0/.
+Download Node.js from https://nodejs.org/en/download/package-manager. We recommend a LTS version, at the time of writing this document this was https://nodejs.org/download/release/v16.20.0/.
 Install node on the connected system, but keep a copy, you will later need to copy the installer also to the isolated system and install it there. In case you do not have permissions to install software on the connected system, you can also download and extract the zip archive instead of the msi installer and do a manual setup[^1].
 
 [^1]:
@@ -35,9 +35,9 @@ Install node on the connected system, but keep a copy, you will later need to co
 Verdaccio is a lightweight node module registry that runs locally and we can use it to collect node modules on the connected system and later to host the module registry in the isolated system. Here, in the preparation, we install Verdaccio as local module in a new folder. This allows us to copy the installation later to the isolated system. To install it, run the commands:
 
 ```
->mkdir verdaccio
->cd verdaccio
->npm install --no-optional verdaccio
+mkdir verdaccio
+cd verdaccio
+npm install --no-optional verdaccio
 ```
 
 This step might take a while and will create a folder `node_modules` in the newly created folder `verdaccio`. Add all the folders in `node_module\*` to a zip archive named `verdaccio.zip`, we need to copy this later to the isolated system. Full installation instructions for Verdaccio can be found at https://verdaccio.org.
@@ -47,14 +47,19 @@ Now that we have Verdaccio installed, we can run it to collect and store node mo
 Execute following command to run Verdaccio:
 
 ```shell
->node_modules\.bin\verdaccio
-warn --- config file -C:\?\AppData\Roaming\verdaccio\config.yaml
+node_modules\.bin\verdaccio
+```
+
+In the terminal you started Verdaccio you can see the host and port on which it runs, default is `localhost:4873`, and the path to the configuration file `config.yaml`.
+
+```
+warn --- config file -C:\<USER_ID>\AppData\Roaming\verdaccio\config.yaml
 warn --- Plugin successfully loaded: verdaccio-htpasswd
 warn --- Plugin successfully loaded: verdaccio-audit
 warn --- http address - http://localhost:4873/ - verdaccio/5.8.0
 ```
 
-In the terminal you started Verdaccio you can see the host and port on which it runs, default is `localhost:4873`, and the path to the configuration file `config.yaml`. The config file defines the storage location, default is `storage` folder next to the config file. Both information, host:port and storage location are important in subsequent steps.
+The config file defines the storage location, default is `storage` folder next to the config file. Both information, host:port and storage location are important in subsequent steps.
 
 ### Cache required modules
 
@@ -66,9 +71,9 @@ But before, we need to make sure the the cache for node modules is empty, otherw
 npm cache clear --force
 ```
 
-If you are using other node package managers, you might need to clean their cache as well. I use yarn and had to run `yarn cache clean` to avoid local cached modules being used.
+If you are using other node package managers, you might need to clean their cache as well. For instance, if `yarn` is used the command to clear cache and therefore avoid local cached modules being used is `yarn cache clean`.
 
-Now we need to do the installation of node modules in order to fill up the Verdaccio storage. The list of all required node modules can be found at [dependencies.json](dependencies.json), but for convenience you'll find the command as one long string below. If you are still in `verdaccio` folder in terminal you should go one folder up. Now create a new temporary folder and switch to it, e.g.
+Now we need to do the installation of node modules in order to fill up the Verdaccio storage. The list of all required node modules can be found in files [./info/globalModules.json](./info/globalModules.json) and [./info/projectModules.json](./info/projectModules.json), but for convenience you'll find the command as one long string below. If you are still in `verdaccio` folder in terminal you should go one folder up. Now create a new temporary folder and switch to it, e.g.
 
 ```shell
 mkdir sap-fiori-tools-modules
@@ -78,14 +83,8 @@ cd sap-fiori-tools-modules
 In the terminal in folder `sap-fiori-tools-modules` run command to install all required modules:
 
 ```shell
-npm install --force @sap/abap-deploy@latest @sap/cds-compiler@latest @sap/eslint-plugin-ui5-jsdocs@2.0.5 @sap/generator-adaptation-project@latest @sap/generator-fiori@latest @sap/ux-cds-odata-language-server-extension@latest @sap-ux/create@latest @sap-ux/deploy-tooling@latest @sapui5/distribution-metadata@latest @ui5/builder@latest chokidar@latest mta@latest yo@latest @babel/eslint-parser@7.14.7 @sap-ux/eslint-plugin-fiori-tools@^0.4.0 @sap-ux/ui5-middleware-fe-mockserver@2 @sap/ui5-builder-webide-extension@^1.1.9 -sap-ux-specification1.71.112@npm:@sap/ux-specification@1.71.112 -sap-ux-specification1.108.33@npm:@sap/ux-specification@1.108.33 -sap-ux-specification1.120.14@npm:@sap/ux-specification@1.120.14 -sap-ux-specification1.84.92@npm:@sap/ux-specification@1.84.92 -sap-ux-specification1.96.66@npm:@sap/ux-specification@1.96.66 @sap/ux-ui5-tooling@1 @sapui5/ts-types@~1.108.0 @sapui5/ts-types-esm@~1.108.0 @sapui5/types@1.119.0 @typescript-eslint/eslint-plugin@^7.1.1 @typescript-eslint/parser@^7.1.1 -ui5-cli-3.0.0@npm:@ui5/cli@^3.0.0 -ui5-cli-3.9.1@npm:@ui5/cli@^3.9.1 -ui5-cli-2.11.1@npm:@ui5/cli@^2.11.1 @ui5/fs@^2.0.6 @ui5/logger@^2.0.1 @ui5/ts-interface-generator@^0.8.1 eslint8.57.0@npm:eslint@8.57.0 eslint-8.57.0@npm:eslint@^8.57.0 eslint-plugin-fiori-custom@2.6.7 karma6.3.17@npm:karma@6.3.17 karma-6.3.17@npm:karma@^6.3.17 karma-chrome-launcher@^3.1.1 karma-cli@^2.0.0 karma-ui5@^3.0.3 mbt@^1.2.27 npm-run-all@^4.1.5 pm2@^5.3.0 rimraf-5.0.5@npm:rimraf@^5.0.5 rimraf3.0.2@npm:rimraf@3.0.2 sqlite3@^5 typescript@^5.1.6 ui5-task-zipper@^3.1.3 ui5-tooling-transpile@^3.3.7 --registry=http://localhost:4873/
+npm install --force @sap/abap-deploy@latest @sap/cds-compiler@latest @sap/eslint-plugin-ui5-jsdocs@2.0.5 @sap/generator-adaptation-project@latest @sap/generator-fiori@latest @sap/ux-cds-odata-language-server-extension@latest @sap-ux/create@latest @sap-ux/deploy-tooling@latest @sapui5/distribution-metadata@latest @ui5/builder@latest chokidar@latest mta@latest yo@latest @babel/eslint-parser@7.14.7 @sap-ux/eslint-plugin-fiori-tools@^0.4.0 @sap-ux/ui5-middleware-fe-mockserver@2 @sap/ui5-builder-webide-extension@^1.1.9 -sap-ux-specification1.71.113@npm:@sap/ux-specification@1.71.113 -sap-ux-specification1.108.34@npm:@sap/ux-specification@1.108.34 -sap-ux-specification1.120.15@npm:@sap/ux-specification@1.120.15 -sap-ux-specification1.84.93@npm:@sap/ux-specification@1.84.93 -sap-ux-specification1.96.67@npm:@sap/ux-specification@1.96.67 @sap/ux-ui5-tooling@1 @sapui5/ts-types@~1.108.0 @sapui5/ts-types-esm@~1.108.0 @typescript-eslint/eslint-plugin@^7.1.1 @typescript-eslint/parser@^7.1.1 -ui5-cli-3.0.0@npm:@ui5/cli@^3.0.0 -ui5-cli-2.11.1@npm:@ui5/cli@^2.11.1 @ui5/fs@^2.0.6 @ui5/logger@^2.0.1 eslint@8.57.0 eslint-plugin-fiori-custom@2.6.7 mbt@^1.2.27 pm2@^5.3.0 rimraf-5.0.5@npm:rimraf@^5.0.5 rimraf3.0.2@npm:rimraf@3.0.2 sqlite3@^5 typescript@^5.1.6 ui5-task-zipper@^3.1.3 ui5-tooling-transpile@^3.3.7 --registry=http://localhost:4873/
 ```
-
-In case you know the version of UI5 that runs on the backend which application are deployed to, you can change `latest` in  `@sap/ux-specification@latest` with `UI5-{MAJOR}.{MINOR}`, e.g `@sap/ux-specification@UI5-1.108`[^2].
-
-[^2]:
-    See list of available UI5 versions tags https://www.npmjs.com/package/@sap/ux-specification?activeTab=versions
-
 
 This assumes your Verdaccio is listening to http://localhost:4873/, if this is not the case, please adjust accordingly.
 
@@ -116,13 +115,19 @@ Copy the downloaded and prepared files to the isolated environment:
 
 ### Node.js
 
-Install Node.js 16 using the downloaded installer.
+Install Node.js using the downloaded installer.
 After installing node you can check the version by running following command in terminal
 
 ```shell
->node --version
+node --version
+```
+
+Teh output shows the version number, e.g.:
+
+```
 v16.20.0
 ```
+
 
 ## Install and setup Verdaccio
 
@@ -135,10 +140,10 @@ C:\Users\?\AppData\Roaming\npm\node_modules
 
 Extract the folders from `verdaccio.zip` into the folder that is shown in the terminal after you execute the command. For instance, folder `verdaccio` from archive `verdaccio.zip` should be extracted to `C:\Users\<USER_ID>\AppData\Roaming\npm\node_modules\verdaccio`
 
-After installing Verdaccio, run it using command (replace `?` with user id):
+After installing Verdaccio, run it using command (replace `<USER_ID>` with user id):
 
 ```shell
->C:\Users\?\AppData\Roaming\npm\node_modules\.bin\verdaccio
+>C:\Users\<USER_ID>\AppData\Roaming\npm\node_modules\.bin\verdaccio
 ```
 
 Same as when we prepared the node modules, you can find information about the URL and config file printed out in the terminal.
@@ -150,7 +155,7 @@ In the isolated system we are using Verdaccio as a local node registry providing
 Set the global setting for npm registry to point to the Verdaccio registry using command
 
 ```shell
->npm config set registry=http://localhost:4873/ -g
+npm config set registry=http://localhost:4873/ -g
 ```
 
 ### Install global node modules
@@ -160,7 +165,7 @@ SAP Fiori tools includes templates to generate new SAP Fiori applications. These
 Install the SAP Fiori tools application generator node module globally by executing command
 
 ```shell
->npm install -g @sap/generator-fiori
+npm install -g @sap/generator-fiori
 ```
 
 ### Extract and run Visual Studio Code

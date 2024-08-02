@@ -7,7 +7,7 @@ const pathToGlobalModules = join(__dirname, '../info/globalModules.json');
 const pathToProjectModules = join(__dirname, '../info/projectModules.json');
 const pathToReadmeMd = join(__dirname, '..', 'README.md');
 
-const regexp = new RegExp(/(?<=```shell\nnpm install ).*?(?= --registry=http:\/\/localhost:4873\/\n```)/);
+const regexp = new RegExp(/(?<=```shell\nnpm install --force ).*?(?= --registry=http:\/\/localhost:4873\/\n```)/);
 const options = { encoding: 'utf8' };
 const readFile = async (path) => promises.readFile(path, options);
 const writeFile = async (path, data) => promises.writeFile(path, data, options);
