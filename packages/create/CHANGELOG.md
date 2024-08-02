@@ -1,5 +1,14 @@
 # @sap-ux/create
 
+## 0.7.38
+
+### Patch Changes
+
+-   c473d24: feat: Add Adaptation Project's Component Usages prompting
+-   Updated dependencies [c473d24]
+    -   @sap-ux/adp-tooling@0.12.25
+    -   @sap-ux/preview-middleware@0.16.35
+
 ## 0.7.37
 
 ### Patch Changes

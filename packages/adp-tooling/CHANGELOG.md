@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.12.25
+
+### Patch Changes
+
+-   c473d24: feat: Add Adaptation Project's Component Usages prompting
+
 ## 0.12.24
 
 ### Patch Changes
