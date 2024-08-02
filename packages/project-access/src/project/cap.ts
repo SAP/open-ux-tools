@@ -150,6 +150,7 @@ export async function getCapModelAndServices(
     _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'cds.home': ${cds.home}`);
     _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'cds.version': ${cds.version}`);
     _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'cds.root': ${cds.root}`);
+    _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'projectRoot': ${_projectRoot}`);
 
     let services = cds.compile.to.serviceinfo(model, { root: _projectRoot }) ?? [];
     if (services.map) {
@@ -425,7 +426,9 @@ async function loadCdsModuleFromProject(capProjectPath: string, strict: boolean 
     if (global) {
         global.cds = cds;
     }
-
+    // correct cds.env for current project root. Especially needed CAP Java projects loading cds dependency from jar file
+    const cdsEnv: any = cds.env.for('cds', capProjectPath);
+    cds.env = cdsEnv;
     return cds;
 }
 
