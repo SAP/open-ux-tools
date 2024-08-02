@@ -53,4 +53,4 @@ export function createRange(line1: number, character1: number, line2: number, ch
 }
 
 export const createRangeWithPosition = (start: Position | undefined, end: Position | undefined): Range | undefined =>
-    start && end ? Range.create(copyPosition(start), copyPosition(end)) : undefined;
+    start && end ? Range.create(copyPosition(start), copyPosition(end)) : undefined; //hint: used as createRange in cds converter package . will remove comments after consumption.

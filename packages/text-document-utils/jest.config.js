@@ -1,2 +1,2 @@
 const config = require('../../jest.base');
-module.exports = config;
+(config.coveragePathIgnorePatterns = ['index.ts']), (module.exports = config);
