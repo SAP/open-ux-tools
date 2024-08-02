@@ -307,26 +307,27 @@ export const enum AnnotationFileSelectType {
 }
 
 export interface ComponentUsagesData {
-    projectData: AdpProjectData;
-    timestamp: number;
-    component: {
-        /** Indicates whether the component is loaded lazily. */
-        isLazy: string;
-        /** Unique ID for the component usage. */
-        usageId: string;
-        /** Name of the component. */
-        name: string;
-        /** Serialized data specific to the component. */
-        data: string;
-        /** Settings related to the component. */
-        settings: string;
-    };
-    library: {
-        /** Reference to the component's library. */
-        reference: string;
-        /** Optional flag indicating if the library reference is lazy. */
-        referenceIsLazy?: string;
-    };
+    variant: DescriptorVariant;
+    answers: AddComponentUsageAnswers;
+}
+
+export interface AddComponentUsageAnswers {
+    /** Indicates whether the component is loaded lazily. */
+    isLazy: string;
+    /** Unique ID for the component usage. */
+    id: string;
+    /** Name of the component. */
+    name: string;
+    /** Serialized data specific to the component. */
+    data: string;
+    /** Settings related to the component. */
+    settings: string;
+    /** Indicates whether a library reference should be added */
+    shouldAddLibrary: boolean;
+    /** Reference to the component's library. */
+    library?: string;
+    /** Indicates whether the library reference is loaded lazily. */
+    libraryIsLazy?: string;
 }
 
 export interface NewModelData {

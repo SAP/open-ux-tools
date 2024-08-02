@@ -1,5 +1,11 @@
 # @sap-ux/cards-editor-config-writer
 
+## 0.4.2
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+
 ## 0.4.1
 
 ### Patch Changes
