@@ -240,8 +240,9 @@ async function getI18nTextFromProperty(
     }
     const propertyI18nKey = propertyValue.replace(/i18n>|[{}]/g, '');
     const projectAccess = await createProjectAccess(projectRoot);
+    const applicationIds = projectAccess.getApplicationIds();
     try {
-        const bundle = (await projectAccess.getApplication('').getI18nBundles())['sap.app'];
+        const bundle = (await projectAccess.getApplication(applicationIds[0]).getI18nBundles())['sap.app'];
         return bundle[propertyI18nKey]?.[0]?.value?.value ?? propertyI18nKey;
     } catch (e) {
         logger.warn('Failed to load i18n properties bundle');
