@@ -29,6 +29,24 @@
         "oDataAnnotationDataSourceUriTooltip": "Enter URI for the OData annotation data source",
         "oDataAnnotationSettingsLabel": "OData Annotation Settings",
         "oDataAnnotationSettingsTooltip": "If needed enter any additional {{value}} settings in the 'key':'value1','key2':'value2' format",
+        "component": {
+            "usage": "Component usage",
+            "usageIdLabel": "Component Usage ID",
+            "usageIdTooltip": "Enter the component usage ID you want to add",
+            "nameLabel": "Component Name",
+            "nameTooltip": "Enter the name of the component you want to add",
+            "isLazyLabel": "Set Component as Lazy",
+            "isLazyTooltip": "Select if the component should be lazy or not",
+            "settingsLabel": "Component Settings",
+            "dataLabel": "Component Data",
+            "tooltip": "If needed enter any additional {{input}} in the  \"key1\":\"value1\",\"key2\":\"value2\" format",
+            "shouldAddLibraryLabel": "Do you want to add library reference?",
+            "shouldAddLibraryTooltip": "Choose if you want to add library reference",
+            "libraryLabel": "Library Reference",
+            "libraryTooltip": "Enter the library reference",
+            "libraryIsLazyLabel": "Set Library as Lazy",
+            "libraryIsLazyTooltip": "Choose if you want the library reference to be lazy or not"
+        },
         "title": "Title",
         "subtitle": "Subtitle",
         "icon": "Icon"
@@ -44,11 +62,15 @@
         "annotationFileAlreadyExists": "There is already an annotation file with the same name, please choose another file or rename the file and select it again",
         "errorDuplicatedValueOData": "OData Annotation or OData Service with the same name was already added to the project",
         "errorDuplicatedValueSapui5Model": "SAPUI5 Model with the same name was already added to the project",
+        "errorDuplicateValueComponentId": "Component usage with the same name was already added to the project",
+        "errorDuplicateValueLibrary": "Library with the same name was already added to the project",
         "errorDuplicateNamesOData": "OData Service Name must be different from OData Annotation Data Source Name",
         "errorInputInvalidValuePrefix": "{{value}} should start with '{{prefix}}'",
         "errorInvalidDataSourceURI": "Invalid URI. Should start and end with '/' and contain no spaces"
     },
     "choices": {
+        "true": "true",
+        "false": "false",
         "annotationFile": {
             "selectFromWorkspace": "Select annotation file from workspace",
             "createEmptyFile": "Create an empty annotation file"

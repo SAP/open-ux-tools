@@ -154,9 +154,12 @@ export async function getCapModelAndServices(
     let services = cds.compile.to.serviceinfo(model, { root: _projectRoot }) ?? [];
     if (services.map) {
         services = services.map((value) => {
+            const { endpoints, urlPath } = value;
+            const odataEndpoint = endpoints?.find((endpoint) => endpoint.kind === 'odata');
+            const endpointPath = odataEndpoint?.path ?? urlPath;
             return {
                 name: value.name,
-                urlPath: uniformUrl(value.urlPath),
+                urlPath: uniformUrl(endpointPath),
                 runtime: value.runtime
             };
         });
@@ -649,4 +652,23 @@ async function getCdsVersionFromPackageJson(packageJsonPath: string): Promise<st
  */
 function getMajorVersion(versionString: string): number {
     return parseInt(/\d+/.exec(versionString.split('.')[0])?.[0] ?? '0', 10);
+}
+
+/**
+ * Method resolves cap service name for passed project root and service uri.
+ *
+ * @param projectRoot - project root
+ * @param datasourceUri - service uri
+ * @returns - found cap service name
+ */
+export async function getCapServiceName(projectRoot: string, datasourceUri: string): Promise<string> {
+    const services = (await getCapModelAndServices(projectRoot)).services;
+    const service = findServiceByUri(services, datasourceUri);
+    if (!service?.name) {
+        const errorMessage = `Service for uri: '${datasourceUri}' not found. Available services: ${JSON.stringify(
+            services
+        )}`;
+        throw Error(errorMessage);
+    }
+    return service.name;
 }

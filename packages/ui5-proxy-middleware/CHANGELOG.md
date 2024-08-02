@@ -1,5 +1,11 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.4.3
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+
 ## 1.4.2
 
 ### Patch Changes

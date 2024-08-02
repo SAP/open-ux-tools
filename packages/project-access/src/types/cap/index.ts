@@ -219,6 +219,12 @@ export interface ServiceInfo {
     name: string;
     urlPath: string;
     runtime?: string;
+    endpoints?: [
+        {
+            kind: string;
+            path: string;
+        }
+    ];
 }
 
 /**

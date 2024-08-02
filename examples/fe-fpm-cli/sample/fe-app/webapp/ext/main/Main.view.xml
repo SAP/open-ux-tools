@@ -1,0 +1,11 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:html="http://www.w3.org/1999/xhtml" controllerName="com.test.myApp.ext.main.Main"
+    xmlns:macros="sap.fe.macros">
+    <Page title="Main">
+        <content>
+            <macros:FilterBar
+                id="FilterBar"
+                metaPath="/C_CustomerOPType/@com.sap.vocabularies.UI.v1.SelectionFields" />
+        </content>
+    </Page>
+</mvc:View>
