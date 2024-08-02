@@ -333,24 +333,39 @@ export interface ComponentUsagesDataWithLibrary extends ComponentUsagesDataBase 
 
 export type ComponentUsagesData = ComponentUsagesDataBase | ComponentUsagesDataWithLibrary;
 
-export interface AddComponentUsageAnswers {
+export type AddComponentUsageAnswersWithoutLibrary = {
+    /** Indicates whether a library reference should be added */
+    shouldAddLibrary: false;
+    /** Reference to the component's library. */
+    library?: string;
+    /** Indicates whether the library reference is loaded lazily. */
+    libraryIsLazy?: string;
+};
+
+export type addComponentUsageAnswersWithLibrary = {
+    /** Indicates whether a library reference should be added */
+    shouldAddLibrary: true;
+    /** Reference to the component's library. */
+    library: string;
+    /** Indicates whether the library reference is loaded lazily. */
+    libraryIsLazy: string;
+};
+
+export type AddComponentUsageAnswersBase = {
     /** Indicates whether the component is loaded lazily. */
     isLazy: string;
     /** Unique ID for the component usage. */
-    id: string;
+    usageId: string;
     /** Name of the component. */
     name: string;
     /** Serialized data specific to the component. */
     data: string;
     /** Settings related to the component. */
     settings: string;
-    /** Indicates whether a library reference should be added */
-    shouldAddLibrary: boolean;
-    /** Reference to the component's library. */
-    library?: string;
-    /** Indicates whether the library reference is loaded lazily. */
-    libraryIsLazy?: string;
-}
+};
+
+export type AddComponentUsageAnswers = AddComponentUsageAnswersBase &
+    (AddComponentUsageAnswersWithoutLibrary | addComponentUsageAnswersWithLibrary);
 
 export interface NewModelData {
     variant: DescriptorVariant;

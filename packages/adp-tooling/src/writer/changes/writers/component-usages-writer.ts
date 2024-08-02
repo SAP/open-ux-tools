@@ -43,10 +43,11 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
      * @returns {object} The constructed content object for the library reference change.
      */
     private constructLibContent({ library }: ComponentUsagesDataWithLibrary): object {
+        const { reference, referenceIsLazy } = library;
         return {
             libraries: {
-                [library.reference]: {
-                    lazy: library.referenceIsLazy === 'true'
+                [reference]: {
+                    lazy: referenceIsLazy === 'true'
                 }
             }
         };

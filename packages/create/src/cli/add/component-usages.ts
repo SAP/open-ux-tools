@@ -6,12 +6,11 @@ import {
     getPromptsForAddComponentUsages,
     type ComponentUsagesData,
     type AddComponentUsageAnswers,
-    DescriptorVariant
+    type DescriptorVariant
 } from '@sap-ux/adp-tooling';
 import { getLogger, traceChanges } from '../../tracing';
 import { validateAdpProject } from '../../validation/validation';
 import { promptYUIQuestions } from '../../common';
-import { get } from 'http';
 
 /**
  * Add a new sub-command to add component usages of an adaptation project to the given command.
@@ -69,21 +68,21 @@ export async function addComponentUsages(basePath: string, simulate: boolean): P
  * @returns {ComponentUsagesData} The writer data for the component usages change.
  */
 function getWriterData(variant: DescriptorVariant, answers: AddComponentUsageAnswers): ComponentUsagesData {
-    const { id, data, settings, isLazy, name, library, libraryIsLazy, shouldAddLibrary } = answers;
+    const { usageId, data, settings, isLazy, name, library, libraryIsLazy, shouldAddLibrary } = answers;
 
     return {
         variant,
         component: {
             data,
-            usageId: id,
+            usageId,
             settings,
             isLazy,
             name
         },
         ...(shouldAddLibrary && {
             library: {
-                reference: library as string,
-                referenceIsLazy: libraryIsLazy as string
+                reference: library,
+                referenceIsLazy: libraryIsLazy
             }
         })
     };
