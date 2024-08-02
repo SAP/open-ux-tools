@@ -1,5 +1,30 @@
 # @sap-ux/create
 
+## 0.7.32
+
+### Patch Changes
+
+-   Updated dependencies [99b7b5f]
+    -   @sap-ux/project-access@1.25.8
+    -   @sap-ux/adp-tooling@0.12.20
+    -   @sap-ux/app-config-writer@0.4.13
+    -   @sap-ux/cap-config-writer@0.7.7
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/preview-middleware@0.16.30
+    -   @sap-ux/system-access@0.5.3
+
+## 0.7.31
+
+### Patch Changes
+
+-   7ae8207: Add Adaptation Project's OData Service and SAPUI5 Model prompting
+-   Updated dependencies [7ae8207]
+    -   @sap-ux/inquirer-common@0.4.3
+    -   @sap-ux/adp-tooling@0.12.19
+    -   @sap-ux/preview-middleware@0.16.29
+    -   @sap-ux/cap-config-writer@0.7.6
+
 ## 0.7.30
 
 ### Patch Changes

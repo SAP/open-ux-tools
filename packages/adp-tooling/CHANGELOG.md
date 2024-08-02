@@ -1,5 +1,23 @@
 # @sap-ux/adp-tooling
 
+## 0.12.20
+
+### Patch Changes
+
+-   Updated dependencies [99b7b5f]
+    -   @sap-ux/project-access@1.25.8
+    -   @sap-ux/axios-extension@1.16.1
+    -   @sap-ux/system-access@0.5.3
+
+## 0.12.19
+
+### Patch Changes
+
+-   7ae8207: Add Adaptation Project's OData Service and SAPUI5 Model prompting
+-   Updated dependencies [7ae8207]
+    -   @sap-ux/inquirer-common@0.4.3
+    -   @sap-ux/project-input-validator@0.3.2
+
 ## 0.12.18
 
 ### Patch Changes
