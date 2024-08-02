@@ -1,5 +1,265 @@
 # @sap-ux/adp-tooling
 
+## 0.12.24
+
+### Patch Changes
+
+-   Updated dependencies [88c8bf6]
+    -   @sap-ux/project-access@1.26.3
+    -   @sap-ux/axios-extension@1.16.2
+    -   @sap-ux/system-access@0.5.4
+
+## 0.12.23
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/axios-extension@1.16.2
+    -   @sap-ux/project-access@1.26.2
+    -   @sap-ux/system-access@0.5.4
+
+## 0.12.22
+
+### Patch Changes
+
+-   Updated dependencies [a986655]
+    -   @sap-ux/project-access@1.26.1
+    -   @sap-ux/axios-extension@1.16.1
+    -   @sap-ux/system-access@0.5.3
+
+## 0.12.21
+
+### Patch Changes
+
+-   Updated dependencies [518bf7e]
+    -   @sap-ux/project-access@1.26.0
+    -   @sap-ux/axios-extension@1.16.1
+    -   @sap-ux/system-access@0.5.3
+
+## 0.12.20
+
+### Patch Changes
+
+-   Updated dependencies [99b7b5f]
+    -   @sap-ux/project-access@1.25.8
+    -   @sap-ux/axios-extension@1.16.1
+    -   @sap-ux/system-access@0.5.3
+
+## 0.12.19
+
+### Patch Changes
+
+-   7ae8207: Add Adaptation Project's OData Service and SAPUI5 Model prompting
+-   Updated dependencies [7ae8207]
+    -   @sap-ux/inquirer-common@0.4.3
+    -   @sap-ux/project-input-validator@0.3.2
+
+## 0.12.18
+
+### Patch Changes
+
+-   2a7d3c4: Add Change Inbound prompting and cli command
+
+## 0.12.17
+
+### Patch Changes
+
+-   Updated dependencies [ad9b56d]
+    -   @sap-ux/axios-extension@1.16.1
+    -   @sap-ux/system-access@0.5.3
+
+## 0.12.16
+
+### Patch Changes
+
+-   Updated dependencies [d549173]
+    -   @sap-ux/project-access@1.25.7
+    -   @sap-ux/axios-extension@1.16.0
+    -   @sap-ux/system-access@0.5.2
+
+## 0.12.15
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.2
+
+## 0.12.14
+
+### Patch Changes
+
+-   Updated dependencies [a9fac04]
+    -   @sap-ux/project-access@1.25.6
+    -   @sap-ux/axios-extension@1.16.0
+    -   @sap-ux/system-access@0.5.2
+
+## 0.12.13
+
+### Patch Changes
+
+-   4c06318: Add Adaptation Project's Add Annotations To OData generator prompting
+
+## 0.12.12
+
+### Patch Changes
+
+-   Updated dependencies [108336f]
+    -   @sap-ux/inquirer-common@0.4.1
+
+## 0.12.11
+
+### Patch Changes
+
+-   Updated dependencies [3a878f3]
+    -   @sap-ux/axios-extension@1.16.0
+    -   @sap-ux/system-access@0.5.2
+
+## 0.12.10
+
+### Patch Changes
+
+-   Updated dependencies [421f3ca]
+    -   @sap-ux/project-access@1.25.5
+    -   @sap-ux/axios-extension@1.15.1
+    -   @sap-ux/system-access@0.5.1
+
+## 0.12.9
+
+### Patch Changes
+
+-   Updated dependencies [173b5f2]
+    -   @sap-ux/project-access@1.25.4
+    -   @sap-ux/axios-extension@1.15.1
+    -   @sap-ux/system-access@0.5.1
+
+## 0.12.8
+
+### Patch Changes
+
+-   9e4ce4d: Remove safeMode from adp-tooling types and change order of ui5.yaml custom configuration
+
+## 0.12.7
+
+### Patch Changes
+
+-   Updated dependencies [e7b9184]
+    -   @sap-ux/project-access@1.25.3
+    -   @sap-ux/axios-extension@1.15.1
+    -   @sap-ux/system-access@0.5.1
+
+## 0.12.6
+
+### Patch Changes
+
+-   22e4ad8: Generate correct ui5.yaml
+-   Updated dependencies [22e4ad8]
+    -   @sap-ux/ui5-config@0.23.1
+    -   @sap-ux/project-access@1.25.2
+    -   @sap-ux/axios-extension@1.15.1
+    -   @sap-ux/system-access@0.5.1
+
+## 0.12.5
+
+### Patch Changes
+
+-   Updated dependencies [0f3cf6b]
+    -   @sap-ux/project-access@1.25.1
+    -   @sap-ux/axios-extension@1.15.1
+    -   @sap-ux/system-access@0.5.1
+
+## 0.12.4
+
+### Patch Changes
+
+-   5f074a7: Add toolsId in ui5.yaml for Adaptation Project writers and remove safeMode
+
+## 0.12.3
+
+### Patch Changes
+
+-   Updated dependencies [f076dd3]
+    -   @sap-ux/project-access@1.25.0
+    -   @sap-ux/axios-extension@1.15.1
+    -   @sap-ux/system-access@0.5.1
+
+## 0.12.2
+
+### Patch Changes
+
+-   Updated dependencies [0ae685e]
+    -   @sap-ux/project-access@1.24.0
+    -   @sap-ux/axios-extension@1.15.1
+    -   @sap-ux/system-access@0.5.1
+
+## 0.12.1
+
+### Patch Changes
+
+-   Updated dependencies [abf491a7]
+    -   @sap-ux/axios-extension@1.15.1
+    -   @sap-ux/system-access@0.5.1
+
+## 0.12.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/axios-extension@1.15.0
+    -   @sap-ux/btp-utils@0.15.0
+    -   @sap-ux/inquirer-common@0.4.0
+    -   @sap-ux/logger@0.6.0
+    -   @sap-ux/project-access@1.23.0
+    -   @sap-ux/system-access@0.5.0
+    -   @sap-ux/ui5-config@0.23.0
+
+## 0.11.13
+
+### Patch Changes
+
+-   9ea58ad4: fix: Release version of @sap-ux/project-access with filterDataSourcesByType
+-   Updated dependencies [9ea58ad4]
+    -   @sap-ux/project-access@1.22.4
+    -   @sap-ux/axios-extension@1.14.4
+    -   @sap-ux/system-access@0.4.7
+
+## 0.11.12
+
+### Patch Changes
+
+-   fa4c088c: fix: Incorrect change mapping for 'reference' property for Adaptation Project's writers
+
+## 0.11.11
+
+### Patch Changes
+
+-   73c741ef: Add option to add description in i18n.properties
+
+## 0.11.10
+
+### Patch Changes
+
+-   c442d2bc: fix: Duplicate i18n model in manifest.appdescr_variant for Adp Project
+
+## 0.11.9
+
+### Patch Changes
+
+-   Updated dependencies [4492fe10]
+    -   @sap-ux/axios-extension@1.14.4
+    -   @sap-ux/system-access@0.4.7
+
+## 0.11.8
+
+### Patch Changes
+
+-   Updated dependencies [d5d3626c]
+    -   @sap-ux/axios-extension@1.14.3
+    -   @sap-ux/system-access@0.4.6
+
 ## 0.11.7
 
 ### Patch Changes

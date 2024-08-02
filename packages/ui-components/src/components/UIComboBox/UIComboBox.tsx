@@ -4,6 +4,7 @@ import {
     ComboBox,
     IComboBox,
     IComboBoxOption,
+    ISelectableOption,
     initializeComponentRef,
     KeyCodes,
     IOnRenderComboBoxLabelProps,
@@ -23,6 +24,7 @@ import { isHTMLInputElement } from '../../utilities';
 
 export {
     IComboBoxOption as UIComboBoxOption,
+    ISelectableOption as UISelectableOption,
     IComboBox as UIComboBoxRef,
     IOnRenderComboBoxLabelProps as UIOnRenderComboBoxLabelProps,
     SelectableOptionMenuItemType as UISelectableOptionMenuItemType

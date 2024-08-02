@@ -1,11 +1,17 @@
 import Log from 'sap/base/Log';
 import type AppLifeCycle from 'sap/ushell/services/AppLifeCycle';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
+import { SCENARIO, type Scenario } from '@sap-ux-private/control-property-editor-common';
 import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import AppState from 'sap/ushell/services/AppState';
-import type Localization from 'sap/base/i18n/Localization';
+import { getManifestAppdescr } from '../adp/api-handler';
+import VersionInfo from 'sap/ui/VersionInfo';
+import { getError } from '../cpe/error-utils';
+import initConnectors from './initConnectors';
+import type {SingleVersionInfo} from '../../types/global';
+
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
  */
@@ -40,7 +46,7 @@ interface Manifest {
             libs: Record<string, unknown>;
             components: Record<string, unknown>;
         };
-        componentUsages?: Record<string, unknown>;
+        componentUsages?: Record<string, { name: string }>;
     };
 }
 
@@ -75,6 +81,28 @@ function addKeys(dependency: Record<string, unknown>, customLibs: Record<string,
 }
 
 /**
+ * Check whether a specific ComponentUsage is a custom component, and if yes, add it to the map.
+ *
+ * @param compUsages ComponentUsage from the manifest
+ * @param customLibs map containing the required custom libraries
+ */
+function getComponentUsageNames(compUsages: Record<string, { name: string }>, customLibs: Record<string, true>): void {
+    const compNames = Object.keys(compUsages).map(function (compUsageKey: string) {
+        return compUsages[compUsageKey].name;
+    });
+    compNames.forEach(function (key) {
+        // ignore libs or Components that start with SAPUI5 delivered namespaces
+        if (
+            !UI5_LIBS.some(function (substring) {
+                return key === substring || key.startsWith(substring + '.');
+            })
+        ) {
+            customLibs[key] = true;
+        }
+    });
+}
+
+/**
  * Fetch the manifest for all the given application urls and generate a string containing all required custom library ids.
  *
  * @param appUrls urls pointing to included applications
@@ -97,7 +125,7 @@ async function getManifestLibs(appUrls: string[]): Promise<string> {
                         }
                     }
                     if (manifest['sap.ui5']?.componentUsages) {
-                        addKeys(manifest['sap.ui5'].componentUsages, result);
+                        getComponentUsageNames(manifest['sap.ui5'].componentUsages, result);
                     }
                 }
             })
@@ -189,18 +217,33 @@ export function registerSAPFonts() {
 }
 
 /**
+ * Create Resource Bundle based on the scenario.
+ *
+ * @param scenario to be used for the resource bundle.
+ */
+export async function loadI18nResourceBundle(scenario: Scenario): Promise<ResourceBundle> {
+    if (scenario === SCENARIO.AdaptationProject) {
+        const manifest = await getManifestAppdescr();
+        const enhanceWith = (manifest.content as { texts: { i18n: string } }[])
+            .filter((content) => content.texts?.i18n)
+            .map((content) => ({ bundleUrl: `../${content.texts.i18n}` }));
+        return ResourceBundle.create({
+            url: '../i18n/i18n.properties',
+            enhanceWith
+        });
+    }
+    return ResourceBundle.create({
+        url: 'i18n/i18n.properties'
+    });
+}
+
+/**
  * Read the application title from the resource bundle and set it as document title.
  *
+ * @param resourceBundle resource bundle to read the title from.
  * @param i18nKey optional parameter to define the i18n key to be used for the title.
  */
-export function setI18nTitle(i18nKey = 'appTitle') {
-    const localization =
-        (sap.ui.require('sap/base/i18n/Localization') as Localization) ?? sap.ui.getCore().getConfiguration();
-    const locale = localization.getLanguage();
-    const resourceBundle = ResourceBundle.create({
-        url: 'i18n/i18n.properties',
-        locale
-    }) as ResourceBundle;
+export function setI18nTitle(resourceBundle: ResourceBundle, i18nKey = 'appTitle') {
     if (resourceBundle.hasText(i18nKey)) {
         document.title = resourceBundle.getText(i18nKey) ?? document.title;
     }
@@ -225,13 +268,16 @@ export async function init({
     customInit?: string | null;
 }): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
-    const container = sap?.ushell?.Container ?? (sap.ui.require('sap/ushell/Container') as typeof sap.ushell.Container);
+    const container = sap?.ushell?.Container ?? sap.ui.require('sap/ushell/Container');
+    let scenario: string = '';
+    const version = (await VersionInfo.load({library:'sap.ui.core'}) as SingleVersionInfo)?.version;
     // Register RTA if configured
     if (flex) {
+        const flexSettings = JSON.parse(flex) as FlexSettings;
+        scenario = flexSettings.scenario;
         container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
-                const version = sap.ui.version;
                 const minor = parseInt(version.split('.')[1], 10);
                 const view = event.getParameter('componentInstance');
                 const flexSettings = JSON.parse(flex) as FlexSettings;
@@ -275,23 +321,34 @@ export async function init({
         await registerComponentDependencyPaths(JSON.parse(appUrls), urlParams);
     }
 
+    // Load rta connector
+    await initConnectors();
+
     // Load custom initialization module
     if (customInit) {
         sap.ui.require([customInit]);
     }
 
     // init
-    setI18nTitle();
+    const resourceBundle = await loadI18nResourceBundle(scenario as Scenario);
+    setI18nTitle(resourceBundle);
     registerSAPFonts();
-    const renderer = await container.createRenderer(undefined, true);
+    const major = version ? parseInt(version.split('.')[0], 10) : 2;
+
+    const renderer =
+        major < 2
+            ? await container.createRenderer(undefined, true)
+            : await container.createRendererInternal(undefined, true);
     renderer.placeAt('content');
 }
-
 const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
 if (bootstrapConfig) {
     init({
         appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
         flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
         customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit')
-    }).catch(() => Log.error('Sandbox initialization failed.'));
+    }).catch((e) => {
+        const error = getError(e);
+        Log.error('Sandbox initialization failed: ' + error.message);
+    });
 }

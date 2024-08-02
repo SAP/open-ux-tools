@@ -9,7 +9,19 @@ export interface DescriptorVariant {
     reference: string;
     id: string;
     namespace: string;
-    content: object[];
+    content: DescriptorVariantContent[];
+}
+
+export interface DescriptorVariantContent {
+    changeType: string;
+    content: Record<string, unknown>;
+    texts?: string;
+}
+
+export interface ToolsSupport {
+    id: string;
+    version: string;
+    toolsId: string;
 }
 
 /**
@@ -35,6 +47,8 @@ export interface OnpremApp {
     title?: string;
     /** Optional: Application variant change content. */
     content?: Content[];
+    /** Optional: Description about i18n.properties. */
+    i18nDescription?: string;
 }
 
 export interface CloudApp extends OnpremApp {
@@ -187,7 +201,18 @@ export interface CodeExtChange extends CommonChangeProperties {
 
 export const enum TemplateFileName {
     Fragment = 'fragment.xml',
-    Controller = 'controller.ejs'
+    Controller = 'controller.ejs',
+    Annotation = 'annotation.xml'
+}
+
+export const enum FlexLayer {
+    CUSTOMER_BASE = 'CUSTOMER_BASE',
+    VENDOR = 'VENDOR'
+}
+
+export const enum NamespacePrefix {
+    CUSTOMER = 'customer.',
+    EMPTY = ''
 }
 
 export const enum HttpStatusCodes {
@@ -271,18 +296,14 @@ export type GeneratorData<T extends ChangeType> = T extends ChangeType.ADD_ANNOT
     : never;
 
 export interface AnnotationsData {
-    projectData: AdpProjectData;
-    timestamp: number;
-    /** Indicates whether the annotation is for internal use only. */
-    isInternalUsage: boolean;
-    annotation: {
-        /** Optional name of the annotation file. */
-        fileName?: string;
-        /** Data source associated with the annotation. */
-        dataSource: string;
-        /** Path to the annotation file. */
-        filePath: string;
-    };
+    fileName?: string;
+    variant: DescriptorVariant;
+    answers: AddAnnotationsAnswers;
+}
+
+export const enum AnnotationFileSelectType {
+    ExistingFile = 1,
+    NewEmptyFile = 2
 }
 
 export interface ComponentUsagesData {
@@ -309,30 +330,28 @@ export interface ComponentUsagesData {
 }
 
 export interface NewModelData {
-    projectData: AdpProjectData;
-    timestamp: number;
-    annotation: {
-        /** Name of the OData annotation data source. */
-        dataSourceName: string;
-        /** Optional URI of the OData annotation data source. */
-        dataSourceURI?: string;
-        /** Optional settings for the OData annotation. */
-        settings?: string;
-    };
-    service: {
-        /** Name of the OData service. */
-        name: string;
-        /** URI of the OData service. */
-        uri: string;
-        /** Name of the OData service model. */
-        modelName: string;
-        /** Version of OData used. */
-        version: string;
-        /** Settings for the OData service model. */
-        modelSettings: string;
-    };
-    /** Indicates whether annotation mode is added. */
+    variant: DescriptorVariant;
+    answers: NewModelAnswers;
+}
+
+export interface NewModelAnswers {
     addAnnotationMode: boolean;
+    /** Name of the OData service. */
+    name: string;
+    /** URI of the OData service. */
+    uri: string;
+    /** Name of the OData service model. */
+    modelName: string;
+    /** Version of OData used. */
+    version: string;
+    /** Settings for the OData service model. */
+    modelSettings: string;
+    /** Name of the OData annotation data source. */
+    dataSourceName: string;
+    /** Optional URI of the OData annotation data source. */
+    dataSourceURI?: string;
+    /** Optional settings for the OData annotation. */
+    annotationSettings?: string;
 }
 
 export interface DataSourceData {
@@ -341,21 +360,20 @@ export interface DataSourceData {
     answers: ChangeDataSourceAnswers;
 }
 
+export interface InboundChangeAnswers {
+    /** Title associated with the inbound navigation data. */
+    title: string;
+    /** Subtitle associated with the inbound navigation data. */
+    subTitle: string;
+    /** Icon associated with the inbound navigation data. */
+    icon: string;
+}
+
 export interface InboundData {
-    projectData: AdpProjectData;
-    timestamp: number;
     /** Identifier for the inbound navigation data. */
     inboundId: string;
-    flp: {
-        /** Title associated with the inbound navigation data. */
-        title: PropertyValueType;
-        /** Subtitle associated with the inbound navigation data. */
-        subTitle: PropertyValueType;
-        /** Icon associated with the inbound navigation data. */
-        icon: PropertyValueType;
-    };
-    /** Optional flag indicating if the project is in safe mode. */
-    isInSafeMode?: boolean;
+    variant: DescriptorVariant;
+    answers: InboundChangeAnswers;
 }
 
 export interface InboundContent {
@@ -381,7 +399,6 @@ export interface AdpProjectData {
     name: string;
     layer: UI5FlexLayer;
     environment: string;
-    safeMode: boolean;
     sourceSystem: string;
     applicationIdx: string;
     reference: string;
@@ -399,12 +416,21 @@ export interface ChangeDataSourceAnswers {
     annotationUri?: string;
 }
 
+export interface AddAnnotationsAnswers {
+    /** Data Source identifier  */
+    id: string;
+    /** Selected option for Annotation File */
+    fileSelectOption: number;
+    /** Annotation File path */
+    filePath?: string;
+}
+
 export type DataSource = ManifestNamespace.DataSource & { dataSourceName: string; annotations: string[] };
 
 export interface CustomConfig {
     adp: {
-        safeMode: boolean;
         environment: OperationsType;
+        support: ToolsSupport;
     };
 }
 

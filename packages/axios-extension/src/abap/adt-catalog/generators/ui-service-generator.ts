@@ -1,24 +1,21 @@
-import type { Logger } from '@sap-ux/logger';
 import type { GeneratorEntry } from './types';
-import type { BusinessObject, ValidationResponse } from '../../types';
+import type { AbapCDSView, BusinessObject, ValidationResponse } from '../../types';
 import { AdtService } from '../services';
 
 /**
  *
  */
 export class UiServiceGenerator extends AdtService {
-    public log: Logger;
-
-    protected bo!: BusinessObject;
+    protected referencedObject!: BusinessObject | AbapCDSView;
 
     /**
      * Configure the UI service generator.
      *
      * @param _config - The generator configuration.
-     * @param bo - The business object.
+     * @param referencedObject - The referenced object (business object or abap cds view).
      */
-    public configure(_config: GeneratorEntry, bo: BusinessObject) {
-        this.bo = bo;
+    public configure(_config: GeneratorEntry, referencedObject: BusinessObject | AbapCDSView) {
+        this.referencedObject = referencedObject;
     }
 
     /**
@@ -32,7 +29,7 @@ export class UiServiceGenerator extends AdtService {
                 Accept: 'application/vnd.sap.adt.repository.generator.schema.v1+json'
             },
             params: {
-                referencedObject: this.bo.uri
+                referencedObject: this.referencedObject.uri
             }
         });
         return JSON.parse(response.data);
@@ -50,7 +47,7 @@ export class UiServiceGenerator extends AdtService {
                 Accept: 'application/vnd.sap.adt.repository.generator.content.v1+json'
             },
             params: {
-                referencedObject: this.bo.uri,
+                referencedObject: this.referencedObject.uri,
                 package: pckg
             }
         });
@@ -77,7 +74,7 @@ export class UiServiceGenerator extends AdtService {
                 Accept: 'application/vnd.sap.adt.validationMessages.v1+xml'
             },
             params: {
-                referencedObject: this.bo.uri,
+                referencedObject: this.referencedObject.uri,
                 package: pckg,
                 checks: 'package'
             }
@@ -98,7 +95,7 @@ export class UiServiceGenerator extends AdtService {
                 Accept: 'application/vnd.sap.adt.validationMessages.v1+xml'
             },
             params: {
-                referencedObject: this.bo.uri,
+                referencedObject: this.referencedObject.uri,
                 checks: 'package,referencedobject,authorization'
             }
         });
@@ -120,10 +117,10 @@ export class UiServiceGenerator extends AdtService {
                 Accept: 'application/vnd.sap.adt.repository.generator.v1+json, application/vnd.sap.as+xml;charset=UTF-8;dataname=com.sap.adt.StatusMessage'
             },
             params: {
-                referencedObject: this.bo.uri,
+                referencedObject: this.referencedObject.uri,
                 corrNr: transport
             }
         });
-        return JSON.parse(response.data);
+        return this.parseResponse(response.data);
     }
 }

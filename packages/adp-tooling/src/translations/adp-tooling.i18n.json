@@ -8,13 +8,50 @@
         "maxAgeTooltip": "(Optional) Enter the time in seconds it takes for a cached response of the service to expire.",
         "oDataAnnotationSourceURILabel": "OData Annotation Data Source URI",
         "oDataAnnotationSourceURITooltip": "Server side annotations have been detected for the selected OData service. If needed, enter new annotation data source URI  for the changed service",
-        "oDataURIInfoLabel": "Have in mind that common OData Service path prefixes are '{{- v2Prefix}}' or '{{- v4Prefix}}'",
-        "isInSafeModeLabel": "Making manifest changes is not upgrade safe and the project will be set in advanced mode. Please continue if you are sure you want to have your project in advanced mode.",
-        "oDataURIV2InfoLabel": "Have in mind that you are trying to replace OData {{versionOne}} Service with OData {{versionTwo}} Service"
+        "fileSelectOptionLabel": "Annotation XML",
+        "fileSelectOptionTooltip": "Select the annotation file source",
+        "filePathLabel": "Annotation File path",
+        "filePathTooltip": "Select the annotation file from your workspace",
+        "addAnnotationOdataSourceTooltip": "Select the annotation file from your workspace",
+        "oDataServiceNameLabel": "OData Service Name",
+        "oDataServiceNameTooltip": "Enter a name for the OData service you want to add",
+        "oDataServiceUriLabel": "OData Service URI",
+        "oDataServiceUriTooltip": "Enter the URI for the OData service you want to add, e.g. /path/to/odata/",
+        "oDataServiceVersionLabel": "OData Version",
+        "oDataServiceVersionTooltip": "Select the version of OData of the service you want to add",
+        "oDataServiceModelNameLabel": "OData Service SAPUI5 Model Name",
+        "oDataServiceModelNameTooltip": "Enter a name for the SAPUI5 model you want to use from the service",
+        "oDataServiceModelSettingsLabel": "OData Service SAPUI5 Model Settings",
+        "oDataServiceModelSettingsTooltip": "If needed enter any additional model settings in the 'key1':'value1','key2':'value2' format",
+        "oDataAnnotationDataSourceNameLabel": "OData Annotation Data Source Name",
+        "oDataAnnotationDataSourceNameTooltip": "Enter a name for the OData annotation data source",
+        "oDataAnnotationDataSourceUriLabel": "OData Annotation Data Source URI",
+        "oDataAnnotationDataSourceUriTooltip": "Enter URI for the OData annotation data source",
+        "oDataAnnotationSettingsLabel": "OData Annotation Settings",
+        "oDataAnnotationSettingsTooltip": "If needed enter any additional {{value}} settings in the 'key':'value1','key2':'value2' format",
+        "title": "Title",
+        "subtitle": "Subtitle",
+        "icon": "Icon"
+    },
+    "tooltips": {
+        "title": "Enter title for your FLP configuration",
+        "subtitle": "Enter subtitle for your FLP configuration",
+        "icon": "Enter icon path for your FLP configuration"
     },
     "validators": {
-        "manifestContainsNoODataServices": "Manifest contains no OData Services.",
-        "inputCannotBeEmpty": "{{input}} cannot be empty.",
-        "inpuCannotHaveSpaces": "{{input}} cannot contain spaces."
+        "missingIconOrTitleOrSubtitle": "At least one of Title, Subtitle and Icon should have a value.",
+        "fileDoesNotExist": "The file doesn't exist",
+        "annotationFileAlreadyExists": "There is already an annotation file with the same name, please choose another file or rename the file and select it again",
+        "errorDuplicatedValueOData": "OData Annotation or OData Service with the same name was already added to the project",
+        "errorDuplicatedValueSapui5Model": "SAPUI5 Model with the same name was already added to the project",
+        "errorDuplicateNamesOData": "OData Service Name must be different from OData Annotation Data Source Name",
+        "errorInputInvalidValuePrefix": "{{value}} should start with '{{prefix}}'",
+        "errorInvalidDataSourceURI": "Invalid URI. Should start and end with '/' and contain no spaces"
+    },
+    "choices": {
+        "annotationFile": {
+            "selectFromWorkspace": "Select annotation file from workspace",
+            "createEmptyFile": "Create an empty annotation file"
+        }
     }
 }

@@ -1,5 +1,42 @@
 # @sap-ux/ui5-library-inquirer
 
+## 0.3.3
+
+### Patch Changes
+
+-   Updated dependencies [7ae8207]
+    -   @sap-ux/inquirer-common@0.4.3
+    -   @sap-ux/project-input-validator@0.3.2
+
+## 0.3.2
+
+### Patch Changes
+
+-   Updated dependencies [6ebfae0]
+    -   @sap-ux/ui5-info@0.7.0
+    -   @sap-ux/inquirer-common@0.4.2
+
+## 0.3.1
+
+### Patch Changes
+
+-   Updated dependencies [108336f]
+    -   @sap-ux/project-input-validator@0.3.1
+    -   @sap-ux/inquirer-common@0.4.1
+
+## 0.3.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/inquirer-common@0.4.0
+    -   @sap-ux/project-input-validator@0.3.0
+    -   @sap-ux/ui5-info@0.6.0
+
 ## 0.2.16
 
 ### Patch Changes

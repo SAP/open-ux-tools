@@ -3,7 +3,7 @@ import * as childProcess from 'child_process';
 import * as projectModuleMock from '../../src/project/module-loader';
 import type { Package } from '../../src';
 import { FileName } from '../../src/constants';
-import { clearCdsModuleCache, clearGlobalCdsPathCache } from '../../src/project/cap';
+import { clearCdsModuleCache, clearGlobalCdsModulePromiseCache, getCapServiceName } from '../../src/project/cap';
 import {
     getCapCustomPaths,
     getCapEnvironment,
@@ -75,10 +75,187 @@ describe('Test isCapJavaProject()', () => {
 describe('Test getCapModelAndServices()', () => {
     afterEach(() => {
         jest.clearAllMocks();
-        clearGlobalCdsPathCache();
+        clearGlobalCdsModulePromiseCache();
     });
 
-    test('Get valid model and services, mock cds with local cds from devDependencies', async () => {
+    test('Get valid model and services, mock cds with local cds from devDependencies Updated API available in @sap/cds: 7.8.0', async () => {
+        // Mock setup
+        const cdsMock = {
+            env: {
+                'for': () => ({
+                    folders: {
+                        app: 'APP',
+                        db: 'DB',
+                        srv: 'SRV'
+                    }
+                })
+            },
+            load: jest.fn().mockImplementation(() => Promise.resolve('MODEL')),
+            compile: {
+                to: {
+                    serviceinfo: jest.fn().mockImplementation(() => [
+                        {
+                            'name': 'Forwardslash',
+                            'endpoints': [
+                                {
+                                    'path': 'odata/service/with/forwardslash/',
+                                    'kind': 'odata'
+                                }
+                            ]
+                        },
+                        {
+                            'name': 'Backslash',
+                            'endpoints': [
+                                {
+                                    'path': '\\odata\\service\\with\\backslash/',
+                                    'kind': 'odata'
+                                }
+                            ]
+                        },
+                        {
+                            'name': 'withRuntime',
+                            'endpoints': [
+                                {
+                                    'path': 'url',
+                                    'kind': 'odata'
+                                }
+                            ],
+                            'runtime': 'Node.js'
+                        }
+                    ])
+                }
+            },
+            home: '/path/to/cds/home',
+            version: '7.0.0',
+            root: '/path/to/cds/root'
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+
+        // Test execution
+        const capMS = await getCapModelAndServices('PROJECT_ROOT');
+
+        // Check results
+        expect(capMS).toEqual({
+            model: 'MODEL',
+            services: [
+                {
+                    'name': 'Forwardslash',
+                    'urlPath': 'odata/service/with/forwardslash/'
+                },
+                {
+                    'name': 'Backslash',
+                    'urlPath': 'odata/service/with/backslash/'
+                },
+                {
+                    'name': 'withRuntime',
+                    'urlPath': 'url',
+                    'runtime': 'Node.js'
+                }
+            ],
+            cdsVersionInfo: {
+                home: '/path/to/cds/home',
+                version: '7.0.0',
+                root: '/path/to/cds/root'
+            }
+        });
+        expect(cdsMock.load).toBeCalledWith(
+            [join('PROJECT_ROOT', 'APP'), join('PROJECT_ROOT', 'SRV'), join('PROJECT_ROOT', 'DB')],
+            { root: 'PROJECT_ROOT' }
+        );
+        expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL', { root: 'PROJECT_ROOT' });
+    });
+
+    test('Get valid model and services, mock cds with local cds from devDependencies Updated API available in @sap/cds: 7.8.0, no odata kind in endpoints', async () => {
+        // Mock setup
+        const cdsMock = {
+            env: {
+                'for': () => ({
+                    folders: {
+                        app: 'APP',
+                        db: 'DB',
+                        srv: 'SRV'
+                    }
+                })
+            },
+            load: jest.fn().mockImplementation(() => Promise.resolve('MODEL')),
+            compile: {
+                to: {
+                    serviceinfo: jest.fn().mockImplementation(() => [
+                        {
+                            'name': 'Forwardslash',
+                            'urlPath': 'odata/service/with/forwardslash/',
+                            'endpoints': [
+                                {
+                                    'path': 'rest/service/with/forwardslash/',
+                                    'kind': 'rest'
+                                }
+                            ]
+                        },
+                        {
+                            'name': 'Backslash',
+                            'urlPath': '\\odata\\service\\with\\backslash/',
+                            'endpoints': [
+                                {
+                                    'path': '\\rest\\service\\with\\backslash/',
+                                    'kind': 'rest'
+                                }
+                            ]
+                        },
+                        {
+                            'name': 'withRuntime',
+                            'urlPath': 'url',
+                            'endpoints': [
+                                {
+                                    'path': 'url',
+                                    'kind': 'rest'
+                                }
+                            ],
+                            'runtime': 'Node.js'
+                        }
+                    ])
+                }
+            },
+            home: '/path/to/cds/home',
+            version: '7.0.0',
+            root: '/path/to/cds/root'
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+
+        // Test execution
+        const capMS = await getCapModelAndServices('PROJECT_ROOT');
+
+        // Check results
+        expect(capMS).toEqual({
+            model: 'MODEL',
+            services: [
+                {
+                    'name': 'Forwardslash',
+                    'urlPath': 'odata/service/with/forwardslash/'
+                },
+                {
+                    'name': 'Backslash',
+                    'urlPath': 'odata/service/with/backslash/'
+                },
+                {
+                    'name': 'withRuntime',
+                    'urlPath': 'url',
+                    'runtime': 'Node.js'
+                }
+            ],
+            cdsVersionInfo: {
+                home: '/path/to/cds/home',
+                version: '7.0.0',
+                root: '/path/to/cds/root'
+            }
+        });
+        expect(cdsMock.load).toBeCalledWith(
+            [join('PROJECT_ROOT', 'APP'), join('PROJECT_ROOT', 'SRV'), join('PROJECT_ROOT', 'DB')],
+            { root: 'PROJECT_ROOT' }
+        );
+        expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL', { root: 'PROJECT_ROOT' });
+    });
+
+    test('Get valid model and services, mock cds with local cds from devDependencies Before @sap/cds: 7.8.0', async () => {
         // Mock setup
         const cdsMock = {
             env: {
@@ -434,6 +611,8 @@ describe('Test getCapCustomPaths()', () => {
 describe('Test getCapEnvironment()', () => {
     afterEach(() => {
         jest.restoreAllMocks();
+        // clearing cache after each test to make tests independent of each other
+        clearGlobalCdsModulePromiseCache();
     });
 
     test('without default property', async () => {
@@ -892,6 +1071,36 @@ describe('clearCdsModuleCache', () => {
         // Test execution
         const result = await clearCdsModuleCache(projectRoot);
         expect(result).toEqual(false);
+    });
+});
+
+describe('getCapServiceName', () => {
+    beforeEach(() => {
+        jest.restoreAllMocks();
+        const cdsMock = {
+            load: jest.fn().mockImplementation(() => Promise.resolve('MODEL')),
+            compile: {
+                to: {
+                    serviceinfo: jest.fn().mockImplementation(() => [{ name: 'ServiceOne', urlPath: 'service/one' }])
+                }
+            }
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+    });
+
+    test('Return service name', async () => {
+        const capServiceName = await getCapServiceName('/some/test/path', 'service/one');
+        expect(capServiceName).toEqual('ServiceOne');
+    });
+
+    test('Service not found error message', async () => {
+        try {
+            await getCapServiceName('/some/test/path', 'service/two');
+        } catch (error) {
+            expect(error.message).toBe(
+                'Service for uri: \'service/two\' not found. Available services: [{"name":"ServiceOne","urlPath":"service/one"}]'
+            );
+        }
     });
 });
 

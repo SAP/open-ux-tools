@@ -384,7 +384,7 @@ exports[`FlpSandbox router custom opa5 path test/integration/opaTests.qunit.html
 
 	<script
 		src=\\"../../resources/sap-ui-core.js\\"
-		data-sap-ui-theme='sap_fiori_3'
+		data-sap-ui-theme='sap_horizon_dark'
 		data-sap-ui-resourceroots='{
 			\\"test.fe.v2.app\\": \\"../..\\"
 		}'
@@ -417,10 +417,12 @@ exports[`FlpSandbox router default Qunit init test/unitTests.qunit.js 1`] = `
             deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon\\"]
         },
         \\"sap/ui/qunit/sinon-qunit-bridge\\": {
-            deps: [\\"sap/ui/thirdparty/qunit\\", \\"sap/ui/thirdparty/sinon-4\\"]
-        }        
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon-4\\"]
+        }
     }
 });
+
+window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
 
 sap.ui.require([
     \\"sap/ui/thirdparty/qunit-2\\",
@@ -428,10 +430,9 @@ sap.ui.require([
     \\"sap/ui/qunit/qunit-coverage\\"
 ], function (QUnit) {
     'use strict';
-    QUnit.config.autostart = false;
     sap.ui.require([], function() {
         QUnit.start();
-    }); 
+    });
 });"
 `;
 
@@ -444,7 +445,7 @@ exports[`FlpSandbox router default Qunit path test/unitTests.qunit.html 1`] = `
 
 	<script
 		src=\\"../resources/sap-ui-core.js\\"
-		data-sap-ui-theme='sap_fiori_3'
+		data-sap-ui-theme='sap_horizon_dark'
 		data-sap-ui-resourceroots='{
 			\\"test.fe.v2.app\\": \\"..\\"
 		}'
@@ -507,7 +508,8 @@ exports[`FlpSandbox router editor with config 1`] = `
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script src=\\"/preview/client/flp/bootstrap.js\\" id=\\"preview-bootstrap\\"></script>
+    <script id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -526,10 +528,6 @@ exports[`FlpSandbox router editor with config 1`] = `
         data-sap-ui-xx-suppressDeactivationOfControllerCode=\\"true\\"
         data-sap-ui-xx-viewCache=\\"false\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
-    </script>
-
-    <script type=\\"text/javascript\\">
-        (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
 
@@ -585,7 +583,8 @@ exports[`FlpSandbox router rta 1`] = `
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script src=\\"/preview/client/flp/bootstrap.js\\" id=\\"preview-bootstrap\\"></script>
+    <script id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -602,10 +601,6 @@ exports[`FlpSandbox router rta 1`] = `
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/preview-middleware\\",\\"developerMode\\":false}'>
-    </script>
-
-    <script type=\\"text/javascript\\">
-        (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
 
@@ -693,7 +688,8 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script src=\\"/preview/client/flp/bootstrap.js\\" id=\\"preview-bootstrap\\"></script>
+    <script id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -713,10 +709,6 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `
         data-sap-ui-xx-viewCache=\\"false\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/preview/client/cpe/init\\"}'>
-    </script>
-
-    <script type=\\"text/javascript\\">
-        (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
 
@@ -786,7 +778,8 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script src=\\"/preview/client/flp/bootstrap.js\\" id=\\"preview-bootstrap\\"></script>
+    <script id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -806,10 +799,6 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
         data-sap-ui-xx-viewCache=\\"false\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/tools/plugin\\"}'>
-    </script>
-
-    <script type=\\"text/javascript\\">
-        (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
 
@@ -879,7 +868,8 @@ exports[`FlpSandbox router test/flp.html 1`] = `
         };
     </script>
 
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script src=\\"/preview/client/flp/bootstrap.js\\" id=\\"preview-bootstrap\\"></script>
+    <script id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
@@ -895,10 +885,6 @@ exports[`FlpSandbox router test/flp.html 1`] = `
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
-    </script>
-
-    <script type=\\"text/javascript\\">
-        (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
 
 

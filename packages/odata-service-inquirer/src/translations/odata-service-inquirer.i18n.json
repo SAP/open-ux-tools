@@ -60,7 +60,48 @@
             "warningCertificateValidationDisabled": "User has disabled certificate validation",
             "annotationsNotFound": "Annotations not found for specified service"
         },
-        "nonUIServiceTypeWarningMessage": "Please note that {{serviceTypeDesc}} services are not intended to be used for the generation of SAP Fiori UI applications"
+        "warnings": {
+            "nonUIServiceTypeWarningMessage": "Please note that {{serviceType}} services are not intended to be used for the generation of SAP Fiori UI applications",
+            "noServicesAvailable": "No services available for the selected system, see logs for further details.",
+            "noServicesAvailableForOdataVersion": "There are no V{{odataVersion}} OData services available from the selected system and the template you have chosen supports V{{odataVersion}} OData services only"
+
+        },
+        "systemUrl" : {
+            "message": "System URL",
+            "description": "Enter the URL of the SAP System",
+            "placeholder": "https://<host>:<port>"
+        }, 
+        "sapClient": {
+            "message": "SAP client (leave empty for default)",
+            "breadcrumb": "SAP Client"
+        },
+        "systemUsername": {
+            "message": "Username"
+        },
+        "systemPassword": {
+            "message": "Password"
+        },
+        "systemService": {
+            "message": "Service name",
+            "breadcrumb": "Service",
+            "noServicesWarning": "No services available for the selected system, see logs for further details."
+        },
+        "systemType": {
+            "choiceAbapOnPrem": "ABAP On Premise",
+            "choiceAbapOnBtp": "ABAP Environment on SAP Business Technology Platform",
+            "message": "System type",
+            "notYetImplementedWarningMessage": "The selected system type: {{ systemType }} is not yet implemented."
+        },
+        "systemName": {
+            "message": "System name",
+            "hint": "Entering a system name will save the connection for re-use.",
+            "systemNameExistsWarning": "A system with that name already exists in the secure storage. Please try a different name.",
+            "reservedSystemNameWarning": "'{{ systemName }}' is a reserved system name. Please try a different name.",
+            "emptySystemNameWarning": "System name cannot be empty."
+        },
+        "systemSelection": {
+            "newSystemChoiceLabel": "New system"
+        }
     },
     "errors": {
         "cannotReadCapServiceMetadata": "An error occurred reading CAP service metadata: {{serviceName}}. See log for more details.",
@@ -89,16 +130,22 @@
         "noSuchHostError": "No such host is known",
         "odataServiceVersionMismatch": "The template you have chosen supports V{{requiredVersion}} OData services only. The provided version is V{{serviceVersion}}.",
         "destinationAuthError": "The selected system is returning an authentication error. Please verify the destination configuration",
-        "serviceUrlNotFound": "Please verify the service url: {{- url}}, target system configuration and network connectivity",
+        "systemOrserviceUrlNotFound": "Please verify the url: {{- url}}, target system configuration and network connectivity",
         "urlRedirect": "The service URL is redirecting",
         "certValidationRequired": "Certificate validation is required to continue.",
-        "exitingGeneration": "Exiting generation. {{exitReason}}"
+        "exitingGeneration": "Exiting generation. {{exitReason}}",
+        "serviceMetadataError": "An error occurred reading service metadata for service: {{- servicePath}}",
+        "serviceMetadataErrorUI": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }). $t(texts.seeLogForDetails)",
+        "serviceMetadataErrorLog": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }). {{error}}",
+        "serviceTypeRequestError": "Error retrieving service type: {{- error}}"
     },
     "texts": {
         "anExpiredCert": "an expired",
         "aSelfSignedCert": "a self-signed",
         "anUnknownOrInvalidCert": "an unknown or invalid",
-        "anUntrustedRootCert": "an untrusted root"
+        "anUntrustedRootCert": "an untrusted root",
+        "suggestedSystemNameClient": ", client {{client}}",
+        "seeLogForDetails": "See log for more details."
     },
     "guidedAnswers": {
         "validationErrorHelpText": "Need help with this error?"

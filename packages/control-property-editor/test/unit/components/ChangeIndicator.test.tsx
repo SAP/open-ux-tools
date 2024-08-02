@@ -15,7 +15,7 @@ beforeAll(() => {
 
 describe('ChangeIndicator', () => {
     test('saved changes', () => {
-        const { container } = render(<ChangeIndicator id={'change-indicator'} saved={1} pending={0} />);
+        const { container } = render(<ChangeIndicator id={'change-indicator'} saved={1} pending={0} type="property" />);
         expect(container.querySelector('svg')).toMatchInlineSnapshot(`
             <svg
               fill="none"
@@ -27,7 +27,7 @@ describe('ChangeIndicator', () => {
               xmlns="http://www.w3.org/2000/svg"
             >
               <title>
-                Modified & Saved
+                All changes on this property are saved
               </title>
               <circle
                 cx="4"
@@ -40,7 +40,7 @@ describe('ChangeIndicator', () => {
     });
 
     test('pending changes', () => {
-        const { container } = render(<ChangeIndicator saved={0} pending={2} />);
+        const { container } = render(<ChangeIndicator saved={0} pending={2} type="property" />);
         expect(container.querySelector('svg')).toMatchInlineSnapshot(`
             <svg
               fill="none"
@@ -51,7 +51,7 @@ describe('ChangeIndicator', () => {
               xmlns="http://www.w3.org/2000/svg"
             >
               <title>
-                Modified & Unsaved
+                All changes on this property are not saved
               </title>
               <circle
                 cx="4"
@@ -64,7 +64,7 @@ describe('ChangeIndicator', () => {
     });
 
     test('pending and saved changes', () => {
-        const { container } = render(<ChangeIndicator saved={3} pending={2} />);
+        const { container } = render(<ChangeIndicator saved={3} pending={2} type="property" />);
         expect(container.querySelector('svg')).toMatchInlineSnapshot(`
             <svg
               fill="none"
@@ -75,7 +75,7 @@ describe('ChangeIndicator', () => {
               xmlns="http://www.w3.org/2000/svg"
             >
               <title>
-                Saved & Unsaved
+                This property has previously saved changes and currently unsaved changes
               </title>
               <circle
                 cx="4"
@@ -93,7 +93,7 @@ describe('ChangeIndicator', () => {
 
     test('do not add unknown properties', () => {
         const { container } = render(
-            <ChangeIndicator id={'change-indicator'} saved={1} pending={0} {...{ xyz: 'abc ' }} />
+            <ChangeIndicator id={'change-indicator'} saved={1} pending={0} {...{ xyz: 'abc ' }} type="property" />
         );
         expect(container.querySelector('svg')).toMatchInlineSnapshot(`
             <svg
@@ -106,7 +106,7 @@ describe('ChangeIndicator', () => {
               xmlns="http://www.w3.org/2000/svg"
             >
               <title>
-                Modified & Saved
+                All changes on this property are saved
               </title>
               <circle
                 cx="4"

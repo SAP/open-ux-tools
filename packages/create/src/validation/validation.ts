@@ -1,7 +1,8 @@
-import { getWebappPath } from '@sap-ux/project-access';
+import { join } from 'path';
 import { existsSync } from 'fs';
 import type { Editor } from 'mem-fs-editor';
-import { join } from 'path';
+import { getAppType, getWebappPath } from '@sap-ux/project-access';
+import { type DescriptorVariantContent, getVariant, isCFEnvironment } from '@sap-ux/adp-tooling';
 
 /**
  * Validate base path of app, throw error if file is missing.
@@ -30,4 +31,35 @@ export async function validateBasePath(basePath: string, ui5YamlPath?: string): 
 export function hasFileDeletes(fs: Editor): boolean {
     const changedFiles = fs.dump() || {};
     return !!Object.keys(changedFiles).find((fileName) => changedFiles[fileName].state === 'deleted');
+}
+
+/**
+ * Validate if adaptation project is supported for command, throws an error if not supported.
+ *
+ * @param basePath - path to the adaptation project
+ */
+export async function validateAdpProject(basePath: string): Promise<void> {
+    if ((await getAppType(basePath)) !== 'Fiori Adaptation') {
+        throw new Error('This command can only be used for an adaptation project');
+    }
+
+    if (isCFEnvironment(basePath)) {
+        throw new Error('This command is not supported for CF projects.');
+    }
+}
+
+/**
+ * Validate if adaptation project is cloud, throws an error if not.
+ *
+ * @param basePath - path to the adaptation project
+ */
+export function validateCloudAdpProject(basePath: string): void {
+    const manifest = getVariant(basePath);
+    if (
+        !manifest?.content?.some(
+            (change: DescriptorVariantContent) => change.changeType === 'appdescr_app_removeAllInboundsExceptOne'
+        )
+    ) {
+        throw new Error('This command can only be used for Cloud Adaptation Project.');
+    }
 }

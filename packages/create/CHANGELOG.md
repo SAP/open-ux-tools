@@ -1,5 +1,488 @@
 # @sap-ux/create
 
+## 0.7.37
+
+### Patch Changes
+
+-   Updated dependencies [88c8bf6]
+    -   @sap-ux/project-access@1.26.3
+    -   @sap-ux/adp-tooling@0.12.24
+    -   @sap-ux/app-config-writer@0.4.17
+    -   @sap-ux/cap-config-writer@0.7.12
+    -   @sap-ux/cards-editor-config-writer@0.4.2
+    -   @sap-ux/mockserver-config-writer@0.6.2
+    -   @sap-ux/preview-middleware@0.16.34
+    -   @sap-ux/system-access@0.5.4
+
+## 0.7.36
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/project-access@1.26.2
+    -   @sap-ux/cap-config-writer@0.7.11
+    -   @sap-ux/adp-tooling@0.12.23
+    -   @sap-ux/app-config-writer@0.4.16
+    -   @sap-ux/preview-middleware@0.16.33
+    -   @sap-ux/cards-editor-config-writer@0.4.2
+    -   @sap-ux/mockserver-config-writer@0.6.2
+    -   @sap-ux/system-access@0.5.4
+
+## 0.7.35
+
+### Patch Changes
+
+-   Updated dependencies [a986655]
+    -   @sap-ux/project-access@1.26.1
+    -   @sap-ux/adp-tooling@0.12.22
+    -   @sap-ux/app-config-writer@0.4.15
+    -   @sap-ux/cap-config-writer@0.7.10
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/preview-middleware@0.16.32
+    -   @sap-ux/system-access@0.5.3
+
+## 0.7.34
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.7.9
+
+## 0.7.33
+
+### Patch Changes
+
+-   Updated dependencies [518bf7e]
+    -   @sap-ux/project-access@1.26.0
+    -   @sap-ux/adp-tooling@0.12.21
+    -   @sap-ux/app-config-writer@0.4.14
+    -   @sap-ux/cap-config-writer@0.7.8
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/preview-middleware@0.16.31
+    -   @sap-ux/system-access@0.5.3
+
+## 0.7.32
+
+### Patch Changes
+
+-   Updated dependencies [99b7b5f]
+    -   @sap-ux/project-access@1.25.8
+    -   @sap-ux/adp-tooling@0.12.20
+    -   @sap-ux/app-config-writer@0.4.13
+    -   @sap-ux/cap-config-writer@0.7.7
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/preview-middleware@0.16.30
+    -   @sap-ux/system-access@0.5.3
+
+## 0.7.31
+
+### Patch Changes
+
+-   7ae8207: Add Adaptation Project's OData Service and SAPUI5 Model prompting
+-   Updated dependencies [7ae8207]
+    -   @sap-ux/inquirer-common@0.4.3
+    -   @sap-ux/adp-tooling@0.12.19
+    -   @sap-ux/preview-middleware@0.16.29
+    -   @sap-ux/cap-config-writer@0.7.6
+
+## 0.7.30
+
+### Patch Changes
+
+-   Updated dependencies [cea098a]
+    -   @sap-ux/preview-middleware@0.16.28
+
+## 0.7.29
+
+### Patch Changes
+
+-   Updated dependencies [ab2e5a0]
+    -   @sap-ux/preview-middleware@0.16.27
+
+## 0.7.28
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.7.5
+
+## 0.7.27
+
+### Patch Changes
+
+-   2a7d3c4: Add Change Inbound prompting and cli command
+-   Updated dependencies [2a7d3c4]
+    -   @sap-ux/adp-tooling@0.12.18
+    -   @sap-ux/preview-middleware@0.16.26
+
+## 0.7.26
+
+### Patch Changes
+
+-   Updated dependencies [42486a5]
+    -   @sap-ux/preview-middleware@0.16.25
+
+## 0.7.25
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.17
+-   @sap-ux/app-config-writer@0.4.12
+-   @sap-ux/preview-middleware@0.16.24
+-   @sap-ux/system-access@0.5.3
+-   @sap-ux/cap-config-writer@0.7.4
+
+## 0.7.24
+
+### Patch Changes
+
+-   Updated dependencies [ae6a213]
+    -   @sap-ux/preview-middleware@0.16.23
+
+## 0.7.23
+
+### Patch Changes
+
+-   Updated dependencies [d549173]
+    -   @sap-ux/project-access@1.25.7
+    -   @sap-ux/adp-tooling@0.12.16
+    -   @sap-ux/app-config-writer@0.4.11
+    -   @sap-ux/cap-config-writer@0.7.3
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/preview-middleware@0.16.22
+    -   @sap-ux/system-access@0.5.2
+
+## 0.7.22
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.2
+-   @sap-ux/preview-middleware@0.16.21
+-   @sap-ux/adp-tooling@0.12.15
+-   @sap-ux/cap-config-writer@0.7.2
+
+## 0.7.21
+
+### Patch Changes
+
+-   Updated dependencies [a9fac04]
+    -   @sap-ux/project-access@1.25.6
+    -   @sap-ux/adp-tooling@0.12.14
+    -   @sap-ux/app-config-writer@0.4.10
+    -   @sap-ux/cap-config-writer@0.7.1
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/preview-middleware@0.16.20
+    -   @sap-ux/system-access@0.5.2
+
+## 0.7.20
+
+### Patch Changes
+
+-   4c06318: Add Adaptation Project's Add Annotations To OData generator prompting
+-   Updated dependencies [4c06318]
+    -   @sap-ux/adp-tooling@0.12.13
+    -   @sap-ux/preview-middleware@0.16.19
+
+## 0.7.19
+
+### Patch Changes
+
+-   Updated dependencies [cac5277]
+    -   @sap-ux/cap-config-writer@0.7.0
+
+## 0.7.18
+
+### Patch Changes
+
+-   Updated dependencies [108336f]
+    -   @sap-ux/inquirer-common@0.4.1
+    -   @sap-ux/cap-config-writer@0.6.10
+    -   @sap-ux/adp-tooling@0.12.12
+    -   @sap-ux/preview-middleware@0.16.18
+
+## 0.7.17
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.11
+-   @sap-ux/app-config-writer@0.4.9
+-   @sap-ux/preview-middleware@0.16.17
+-   @sap-ux/system-access@0.5.2
+-   @sap-ux/cap-config-writer@0.6.9
+
+## 0.7.16
+
+### Patch Changes
+
+-   Updated dependencies [90a8291]
+    -   @sap-ux/preview-middleware@0.16.16
+
+## 0.7.15
+
+### Patch Changes
+
+-   Updated dependencies [421f3ca]
+    -   @sap-ux/project-access@1.25.5
+    -   @sap-ux/adp-tooling@0.12.10
+    -   @sap-ux/app-config-writer@0.4.8
+    -   @sap-ux/cap-config-writer@0.6.8
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/preview-middleware@0.16.15
+    -   @sap-ux/system-access@0.5.1
+
+## 0.7.14
+
+### Patch Changes
+
+-   Updated dependencies [e0ddba7]
+    -   @sap-ux/preview-middleware@0.16.14
+
+## 0.7.13
+
+### Patch Changes
+
+-   Updated dependencies [173b5f2]
+    -   @sap-ux/project-access@1.25.4
+    -   @sap-ux/adp-tooling@0.12.9
+    -   @sap-ux/app-config-writer@0.4.7
+    -   @sap-ux/cap-config-writer@0.6.7
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/preview-middleware@0.16.13
+    -   @sap-ux/system-access@0.5.1
+
+## 0.7.12
+
+### Patch Changes
+
+-   9e4ce4d: Remove safeMode from adp-tooling types and change order of ui5.yaml custom configuration
+-   Updated dependencies [9e4ce4d]
+    -   @sap-ux/adp-tooling@0.12.8
+    -   @sap-ux/preview-middleware@0.16.12
+
+## 0.7.11
+
+### Patch Changes
+
+-   Updated dependencies [e7b9184]
+    -   @sap-ux/project-access@1.25.3
+    -   @sap-ux/adp-tooling@0.12.7
+    -   @sap-ux/app-config-writer@0.4.6
+    -   @sap-ux/cap-config-writer@0.6.6
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/preview-middleware@0.16.11
+    -   @sap-ux/system-access@0.5.1
+
+## 0.7.10
+
+### Patch Changes
+
+-   Updated dependencies [22e4ad8]
+    -   @sap-ux/adp-tooling@0.12.6
+    -   @sap-ux/ui5-config@0.23.1
+    -   @sap-ux/preview-middleware@0.16.10
+    -   @sap-ux/app-config-writer@0.4.5
+    -   @sap-ux/cards-editor-config-writer@0.4.1
+    -   @sap-ux/mockserver-config-writer@0.6.1
+    -   @sap-ux/project-access@1.25.2
+    -   @sap-ux/cap-config-writer@0.6.5
+    -   @sap-ux/system-access@0.5.1
+
+## 0.7.9
+
+### Patch Changes
+
+-   Updated dependencies [671242b]
+    -   @sap-ux/preview-middleware@0.16.9
+
+## 0.7.8
+
+### Patch Changes
+
+-   Updated dependencies [cec4a97]
+    -   @sap-ux/preview-middleware@0.16.8
+
+## 0.7.7
+
+### Patch Changes
+
+-   Updated dependencies [0f3cf6b]
+    -   @sap-ux/project-access@1.25.1
+    -   @sap-ux/adp-tooling@0.12.5
+    -   @sap-ux/app-config-writer@0.4.4
+    -   @sap-ux/cap-config-writer@0.6.4
+    -   @sap-ux/cards-editor-config-writer@0.4.0
+    -   @sap-ux/mockserver-config-writer@0.6.0
+    -   @sap-ux/preview-middleware@0.16.7
+    -   @sap-ux/system-access@0.5.1
+
+## 0.7.6
+
+### Patch Changes
+
+-   Updated dependencies [dbb490a]
+    -   @sap-ux/preview-middleware@0.16.6
+
+## 0.7.5
+
+### Patch Changes
+
+-   5f074a7: Add toolsId in ui5.yaml for Adaptation Project writers and remove safeMode
+-   Updated dependencies [5f074a7]
+    -   @sap-ux/adp-tooling@0.12.4
+    -   @sap-ux/preview-middleware@0.16.5
+
+## 0.7.4
+
+### Patch Changes
+
+-   Updated dependencies [f076dd3]
+    -   @sap-ux/project-access@1.25.0
+    -   @sap-ux/adp-tooling@0.12.3
+    -   @sap-ux/app-config-writer@0.4.3
+    -   @sap-ux/cap-config-writer@0.6.3
+    -   @sap-ux/cards-editor-config-writer@0.4.0
+    -   @sap-ux/mockserver-config-writer@0.6.0
+    -   @sap-ux/preview-middleware@0.16.4
+    -   @sap-ux/system-access@0.5.1
+
+## 0.7.3
+
+### Patch Changes
+
+-   Updated dependencies [0ae685e]
+    -   @sap-ux/project-access@1.24.0
+    -   @sap-ux/adp-tooling@0.12.2
+    -   @sap-ux/app-config-writer@0.4.2
+    -   @sap-ux/cap-config-writer@0.6.2
+    -   @sap-ux/cards-editor-config-writer@0.4.0
+    -   @sap-ux/mockserver-config-writer@0.6.0
+    -   @sap-ux/preview-middleware@0.16.3
+    -   @sap-ux/system-access@0.5.1
+
+## 0.7.2
+
+### Patch Changes
+
+-   Updated dependencies [b2d5843]
+    -   @sap-ux/preview-middleware@0.16.2
+
+## 0.7.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.1
+-   @sap-ux/app-config-writer@0.4.1
+-   @sap-ux/preview-middleware@0.16.1
+-   @sap-ux/system-access@0.5.1
+-   @sap-ux/cap-config-writer@0.6.1
+
+## 0.7.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/adp-tooling@0.12.0
+    -   @sap-ux/app-config-writer@0.4.0
+    -   @sap-ux/cap-config-writer@0.6.0
+    -   @sap-ux/cards-editor-config-writer@0.4.0
+    -   @sap-ux/inquirer-common@0.4.0
+    -   @sap-ux/logger@0.6.0
+    -   @sap-ux/mockserver-config-writer@0.6.0
+    -   @sap-ux/preview-middleware@0.16.0
+    -   @sap-ux/project-access@1.23.0
+    -   @sap-ux/system-access@0.5.0
+    -   @sap-ux/ui5-config@0.23.0
+
+## 0.6.9
+
+### Patch Changes
+
+-   Updated dependencies [8f57ac28]
+    -   @sap-ux/preview-middleware@0.15.8
+
+## 0.6.8
+
+### Patch Changes
+
+-   Updated dependencies [9ea58ad4]
+    -   @sap-ux/adp-tooling@0.11.13
+    -   @sap-ux/project-access@1.22.4
+    -   @sap-ux/preview-middleware@0.15.7
+    -   @sap-ux/app-config-writer@0.3.84
+    -   @sap-ux/cap-config-writer@0.5.7
+    -   @sap-ux/cards-editor-config-writer@0.3.9
+    -   @sap-ux/mockserver-config-writer@0.5.8
+    -   @sap-ux/system-access@0.4.7
+
+## 0.6.7
+
+### Patch Changes
+
+-   Updated dependencies [fa4c088c]
+    -   @sap-ux/adp-tooling@0.11.12
+    -   @sap-ux/preview-middleware@0.15.6
+
+## 0.6.6
+
+### Patch Changes
+
+-   Updated dependencies [0e0c2864]
+    -   @sap-ux/preview-middleware@0.15.5
+
+## 0.6.5
+
+### Patch Changes
+
+-   Updated dependencies [73c741ef]
+    -   @sap-ux/adp-tooling@0.11.11
+    -   @sap-ux/preview-middleware@0.15.4
+
+## 0.6.4
+
+### Patch Changes
+
+-   Updated dependencies [c442d2bc]
+    -   @sap-ux/adp-tooling@0.11.10
+    -   @sap-ux/preview-middleware@0.15.3
+
+## 0.6.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.9
+-   @sap-ux/app-config-writer@0.3.83
+-   @sap-ux/preview-middleware@0.15.2
+-   @sap-ux/system-access@0.4.7
+-   @sap-ux/cap-config-writer@0.5.6
+
+## 0.6.2
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.11.8
+-   @sap-ux/app-config-writer@0.3.82
+-   @sap-ux/preview-middleware@0.15.1
+-   @sap-ux/system-access@0.4.6
+-   @sap-ux/cap-config-writer@0.5.5
+
+## 0.6.1
+
+### Patch Changes
+
+-   Updated dependencies [da2704c7]
+    -   @sap-ux/preview-middleware@0.15.0
+
 ## 0.6.0
 
 ### Minor Changes

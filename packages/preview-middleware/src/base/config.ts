@@ -1,6 +1,5 @@
-import type { Logger } from '@sap-ux/logger';
-import { ToolsLogger } from '@sap-ux/logger';
-import type { App, FlpConfig, Intent, InternalTestConfig, MiddlewareConfig } from '../types';
+import { ToolsLogger, type Logger } from '@sap-ux/logger';
+import type { App, FlpConfig, Intent, InternalTestConfig, MiddlewareConfig, TestConfig } from '../types';
 import { render } from 'ejs';
 import { join, posix } from 'path';
 import { createProjectAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
@@ -118,7 +117,7 @@ const UI5_LIBS = [
  * @param manifest application manifest
  * @returns UI5 libs that should preloaded
  */
-function getUI5Libs(manifest: Manifest): string {
+function getUI5Libs(manifest: Partial<Manifest>): string {
     const libs = manifest['sap.ui5']?.dependencies?.libs ?? {};
     // add libs that should always be preloaded
     libs['sap.m'] = {};
@@ -204,16 +203,16 @@ function getFlexSettings(): TemplateConfig['ui5']['flex'] {
  * @param app configuration for the preview
  * @param logger logger instance
  */
-export async function addApp(templateConfig: TemplateConfig, manifest: Manifest, app: App, logger: Logger) {
-    const id = manifest['sap.app'].id;
+export async function addApp(templateConfig: TemplateConfig, manifest: Partial<Manifest>, app: App, logger: Logger) {
+    const id = manifest['sap.app']?.id ?? '';
     app.intent ??= {
         object: id.replace(/\./g, ''),
         action: 'preview'
     };
     templateConfig.ui5.resources[id] = app.target;
     templateConfig.apps[`${app.intent?.object}-${app.intent?.action}`] = {
-        title: (await getI18nTextFromProperty(app.local, manifest['sap.app'].title, logger)) ?? id,
-        description: (await getI18nTextFromProperty(app.local, manifest['sap.app'].description, logger)) ?? '',
+        title: (await getI18nTextFromProperty(app.local, manifest['sap.app']?.title, logger)) ?? id,
+        description: (await getI18nTextFromProperty(app.local, manifest['sap.app']?.description, logger)) ?? '',
         additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
         applicationType: 'URL',
         url: app.target,
@@ -254,13 +253,18 @@ async function getI18nTextFromProperty(
  *
  * @param config FLP configuration
  * @param manifest application manifest
+ * @param resources additional resources
  * @returns configuration object for the sandbox.html template
  */
-export function createFlpTemplateConfig(config: FlpConfig, manifest: Manifest): TemplateConfig {
+export function createFlpTemplateConfig(
+    config: FlpConfig,
+    manifest: Partial<Manifest>,
+    resources: Record<string, string> = {}
+): TemplateConfig {
     const flex = getFlexSettings();
     const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
     const ui5Theme = config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
-    const id = manifest['sap.app'].id;
+    const id = manifest['sap.app']?.id ?? '';
     const ns = id.replace(/\./g, '/');
     return {
         basePath: posix.relative(posix.dirname(config.path), '/') ?? '.',
@@ -271,6 +275,7 @@ export function createFlpTemplateConfig(config: FlpConfig, manifest: Manifest): 
             theme: ui5Theme,
             flex,
             resources: {
+                ...resources,
                 [PREVIEW_URL.client.ns]: PREVIEW_URL.client.url
             },
             bootstrapOptions: ''
@@ -284,14 +289,16 @@ export function createFlpTemplateConfig(config: FlpConfig, manifest: Manifest): 
  *
  * @param config test configuration
  * @param id application id
+ * @param theme theme to be used
  * @returns configuration object for the test template
  */
-export function createTestTemplateConfig(config: InternalTestConfig, id: string) {
+export function createTestTemplateConfig(config: InternalTestConfig, id: string, theme: string) {
     return {
         id,
         framework: config.framework,
         basePath: posix.relative(posix.dirname(config.path), '/') ?? '.',
-        initPath: posix.relative(posix.dirname(config.path), config.init)
+        initPath: posix.relative(posix.dirname(config.path), config.init),
+        theme
     };
 }
 
@@ -330,6 +337,45 @@ export function getPreviewPaths(config: MiddlewareConfig, logger: ToolsLogger = 
     return urls;
 }
 
+const TEMPLATE_PATH = join(__dirname, '../../templates');
+
+/**
+ * Generate test runners.
+ *
+ * @param configs array of test configurations
+ * @param manifest application manifest
+ * @param fs mem fs editor instance
+ * @param webappPath webapp path
+ * @param flpTemplConfig FLP configuration
+ */
+function generateTestRunners(
+    configs: TestConfig[] | undefined,
+    manifest: Manifest,
+    fs: Editor,
+    webappPath: string,
+    flpTemplConfig: TemplateConfig
+) {
+    for (const test of configs ?? []) {
+        const testConfig = mergeTestConfigDefaults(test);
+        if (['QUnit', 'OPA5'].includes(test.framework)) {
+            const testTemlpate = readFileSync(join(TEMPLATE_PATH, 'test/qunit.html'), 'utf-8');
+            const testTemplateConfig = createTestTemplateConfig(
+                testConfig,
+                manifest['sap.app'].id,
+                flpTemplConfig.ui5.theme
+            );
+            fs.write(join(webappPath, testConfig.path), render(testTemlpate, testTemplateConfig));
+        } else if (test.framework === 'Testsuite') {
+            const testTemlpate = readFileSync(join(TEMPLATE_PATH, 'test/testsuite.qunit.html'), 'utf-8');
+            const testTemplateConfig = {
+                basePath: flpTemplConfig.basePath,
+                initPath: testConfig.init
+            };
+            fs.write(join(webappPath, testConfig.path), render(testTemlpate, testTemplateConfig));
+        }
+    }
+}
+
 /**
  * Generates the preview files.
  *
@@ -353,44 +399,51 @@ export async function generatePreviewFiles(
         fs = create(createStorage());
     }
 
-    const templatePath = join(__dirname, '../../templates');
-    const webappPath = await getWebappPath(basePath, fs);
-    const manifest = (await fs.readJSON(join(webappPath, 'manifest.json'))) as unknown as Manifest;
-
     // generate FLP configuration
+    const flpTemplate = readFileSync(join(TEMPLATE_PATH, 'flp/sandbox.html'), 'utf-8');
     const flpConfig = getFlpConfigWithDefaults(config.flp);
-    const flpTemplate = readFileSync(join(templatePath, 'flp/sandbox.html'), 'utf-8');
-    const flpTemplConfig = createFlpTemplateConfig(flpConfig, manifest);
-    await addApp(
-        flpTemplConfig,
-        manifest,
-        {
-            target: flpTemplConfig.basePath,
-            local: '.',
-            intent: flpConfig.intent
-        },
-        logger
-    );
-    fs.write(join(webappPath, flpConfig.path), render(flpTemplate, flpTemplConfig));
 
-    // optional test files
-    if (config.test) {
-        for (const test of config.test) {
-            const testConfig = mergeTestConfigDefaults(test);
-            if (['QUnit', 'OPA5'].includes(test.framework)) {
-                const testTemlpate = readFileSync(join(templatePath, 'test/qunit.html'), 'utf-8');
-                const testTemplateConfig = createTestTemplateConfig(testConfig, manifest['sap.app'].id);
-                fs.write(join(webappPath, testConfig.path), render(testTemlpate, testTemplateConfig));
-            } else if (test.framework === 'Testsuite') {
-                const testTemlpate = readFileSync(join(templatePath, 'test/testsuite.qunit.html'), 'utf-8');
-                const testTemplateConfig = {
-                    basePath: flpTemplConfig.basePath,
-                    initPath: testConfig.init
-                };
-                fs.write(join(webappPath, testConfig.path), render(testTemlpate, testTemplateConfig));
+    const webappPath = await getWebappPath(basePath, fs);
+    let manifest: Manifest | undefined;
+    if (fs.exists(join(webappPath, 'manifest.json'))) {
+        manifest = (await fs.readJSON(join(webappPath, 'manifest.json'))) as unknown as Manifest;
+    }
+    let flpTemplConfig: TemplateConfig;
+    let flpPath: string;
+
+    if (manifest) {
+        flpTemplConfig = createFlpTemplateConfig(flpConfig, manifest);
+        flpPath = join(webappPath, flpConfig.path);
+        await addApp(
+            flpTemplConfig,
+            manifest,
+            {
+                target: flpTemplConfig.basePath,
+                local: '.',
+                intent: flpConfig.intent
+            },
+            logger
+        );
+        generateTestRunners(config.test, manifest, fs, webappPath, flpTemplConfig);
+    } else {
+        flpTemplConfig = createFlpTemplateConfig(flpConfig, {});
+        flpPath = join(basePath, flpConfig.path);
+    }
+
+    if (flpConfig.apps.length > 0) {
+        for (const app of flpConfig.apps) {
+            if (app.local) {
+                const appPath = await getWebappPath(join(basePath, app.local), fs);
+                if (fs.exists(join(appPath, 'manifest.json'))) {
+                    const appManifest = (await fs.readJSON(join(appPath, 'manifest.json'))) as unknown as Manifest;
+                    await addApp(flpTemplConfig, appManifest, app, logger);
+                } else {
+                    logger.warn(`Could not add route for ${app}`);
+                }
             }
         }
     }
+    fs.write(flpPath, render(flpTemplate, flpTemplConfig));
 
     return fs;
 }

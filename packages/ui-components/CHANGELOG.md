@@ -1,5 +1,23 @@
 # @sap-ux/ui-components
 
+## 1.17.2
+
+### Patch Changes
+
+-   88c8bf6: export interface for UISelectableOption(ISelectableOption from fluent-ui) which support generic type for "data" property
+
+## 1.17.1
+
+### Patch Changes
+
+-   9b7f144: adjust storybook after stroybook update from "7.6.18" to "8.1.11"
+
+## 1.17.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
 ## 1.16.3
 
 ### Patch Changes

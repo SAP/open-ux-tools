@@ -5,8 +5,12 @@ import { generateReadMe } from '../../src/read-me';
 import type { ReadMe } from '../../src/types';
 
 function getLaunchText(): string {
-    return 'In order to launch the generated app, simply start your CAP project (```mvn spring-boot:run```) and navigate to the following location in your browser:' + `\n` + `\n` +
-    'http://localhost:8080/someProjectName/webapp/index.html';
+    return (
+        'In order to launch the generated app, simply start your CAP project (```mvn spring-boot:run```) and navigate to the following location in your browser:' +
+        `\n` +
+        `\n` +
+        'http://localhost:8080/someProjectName/webapp/index.html'
+    );
 }
 
 describe('Readme file generation tests', () => {

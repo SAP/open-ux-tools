@@ -3,7 +3,7 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { ChangeDataSourceAnswers } from '../../types';
 import { t } from '../../i18n';
 import { filterDataSourcesByType } from '@sap-ux/project-access';
-import { isNotEmptyString } from '../../base/helper';
+import { validateEmptyString } from '@sap-ux/project-input-validator';
 
 /**
  * Gets the prompts for changing the data source.
@@ -36,7 +36,7 @@ export function getPrompts(
                 mandatory: true,
                 hint: t('prompts.oDataSourceURITooltip')
             },
-            validate: isNotEmptyString,
+            validate: validateEmptyString,
             when: !!dataSourceIds.length,
             store: false
         } as InputQuestion<ChangeDataSourceAnswers>,

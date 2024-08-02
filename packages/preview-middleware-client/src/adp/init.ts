@@ -14,9 +14,10 @@ import VersionInfo from 'sap/ui/VersionInfo';
 import { getUI5VersionValidationMessage } from './ui5-version-utils';
 import UI5Element from 'sap/ui/dt/Element';
 import { getError } from '../cpe/error-utils';
+import type {SingleVersionInfo} from '../../types/global';
 
 export default async function (rta: RuntimeAuthoring) {
-    const { version } = (await VersionInfo.load()) as { version: string };
+    const version = (await VersionInfo.load({library:'sap.ui.core'}) as SingleVersionInfo)?.version;
     const versionParts = version.split('.');
     const minor = parseInt(versionParts[1], 10);
     const flexSettings = rta.getFlexSettings();
@@ -46,7 +47,7 @@ export default async function (rta: RuntimeAuthoring) {
     );
 
     const syncViewsIds = await getAllSyncViewsIds(minor);
-    initDialogs(rta, syncViewsIds);
+    initDialogs(rta, syncViewsIds, minor);
 
     if (minor > 77) {
         const ExtensionPointService = (await import('open/ux/preview/client/adp/extension-point')).default;
@@ -62,6 +63,7 @@ export default async function (rta: RuntimeAuthoring) {
 
         return;
     }
+
     if (syncViewsIds.length > 0) {
         sendAction(
             showMessage({

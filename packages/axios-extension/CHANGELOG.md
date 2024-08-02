@@ -1,5 +1,53 @@
 # @sap-ux/axios-extension
 
+## 1.16.2
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+
+## 1.16.1
+
+### Patch Changes
+
+-   ad9b56d: Extend axios-extension services
+
+## 1.16.0
+
+### Minor Changes
+
+-   3a878f3: Add support for abap cds view service generation
+
+## 1.15.1
+
+### Patch Changes
+
+-   abf491a7: add service type to catalog request results
+
+## 1.15.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/btp-utils@0.15.0
+    -   @sap-ux/logger@0.6.0
+
+## 1.14.4
+
+### Patch Changes
+
+-   4492fe10: fix for ui service generation response parsing
+
+## 1.14.3
+
+### Patch Changes
+
+-   d5d3626c: chore - Update to "qs": "6.11.0"
+
 ## 1.14.2
 
 ### Patch Changes

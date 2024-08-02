@@ -1,5 +1,22 @@
 # @sap-ux/ui5-info
 
+## 0.7.0
+
+### Minor Changes
+
+-   6ebfae0: A combination of includeMaintained and includeDefault properties of UI5VersionFilterOptions now looks for next maintained version if the default is out of maintenance.
+
+## 0.6.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/logger@0.6.0
+
 ## 0.5.0
 
 ### Minor Changes

@@ -1,8 +1,8 @@
-import path from 'path';
+import path, { isAbsolute } from 'path';
 import type { Editor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../../types';
-import type { IWriter, AnnotationsData } from '../../../types';
+import { FlexLayer, type IWriter, type AnnotationsData } from '../../../types';
 import { getChange, writeAnnotationChange } from '../../../base/change-utils';
 
 /**
@@ -23,15 +23,17 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
      */
     private constructContent(data: AnnotationsData): object {
         const {
-            isInternalUsage,
-            annotation: { dataSource, fileName }
+            variant: { layer },
+            fileName,
+            answers: { id }
         } = data;
         const annotationFileNameWithoutExtension = fileName?.toLocaleLowerCase().replace('.xml', '');
-        const annotationNameSpace = isInternalUsage
-            ? `annotation.${annotationFileNameWithoutExtension}`
-            : `customer.annotation.${annotationFileNameWithoutExtension}`;
+        const annotationNameSpace =
+            layer === FlexLayer.CUSTOMER_BASE
+                ? `customer.annotation.${annotationFileNameWithoutExtension}`
+                : `annotation.${annotationFileNameWithoutExtension}`;
         return {
-            dataSourceId: `${dataSource}`,
+            dataSourceId: `${id}`,
             annotations: [annotationNameSpace],
             annotationsInsertPosition: 'END',
             dataSource: {
@@ -49,8 +51,8 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
      * @param {AnnotationsData} data - The answers object containing user choices.
      * @returns {string | undefined} The determined filename for the annotation file.
      */
-    private getAnnotationFileName({ annotation }: AnnotationsData): string | undefined {
-        return annotation.filePath ? path.basename(annotation.filePath) : `annotation_${Date.now()}.xml`;
+    private getAnnotationFileName({ answers }: AnnotationsData): string | undefined {
+        return answers.filePath ? path.basename(answers.filePath) : `annotation_${Date.now()}.xml`;
     }
 
     /**
@@ -60,9 +62,16 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
      * @returns {Promise<void>} A promise that resolves when the change writing process is completed.
      */
     async write(data: AnnotationsData): Promise<void> {
-        data.annotation.fileName = this.getAnnotationFileName(data);
+        const { variant } = data;
+        data.fileName = this.getAnnotationFileName(data);
+        if (data.answers.filePath) {
+            data.answers.filePath = isAbsolute(data.answers.filePath)
+                ? data.answers.filePath
+                : path.join(this.projectPath, data.answers.filePath);
+        }
         const content = this.constructContent(data);
-        const change = getChange(data.projectData, data.timestamp, content, ChangeType.ADD_ANNOTATIONS_TO_ODATA);
-        writeAnnotationChange(this.projectPath, data, change, this.fs);
+        const timestamp = Date.now();
+        const change = getChange(variant, timestamp, content, ChangeType.ADD_ANNOTATIONS_TO_ODATA);
+        writeAnnotationChange(this.projectPath, timestamp, data, change, this.fs);
     }
 }
