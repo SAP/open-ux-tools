@@ -16,7 +16,7 @@ describe('flp/ushellBootstrap', () => {
         jest.clearAllMocks();
     });
 
-    test('xx-boottask defined', () => {
+    test('xx-bootTask defined', () => {
         expect(ushellBootstrap).toBeDefined();
     });
 
@@ -26,6 +26,7 @@ describe('flp/ushellBootstrap', () => {
         } as jest.Mocked<Response>);
 
         await ushellBootstrap(() => {});
+        expect(fetchMock).toHaveBeenCalledWith('/resources/sap-ui-version.json');
         expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '/test-resources/sap/ushell/bootstrap/sandbox.js');
     });
 
@@ -35,6 +36,7 @@ describe('flp/ushellBootstrap', () => {
         } as jest.Mocked<Response>);
 
         await ushellBootstrap(() => {});
+        expect(fetchMock).toHaveBeenCalledWith('/resources/sap-ui-version.json');
         expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '/resources/sap/ushell/bootstrap/sandbox2.js');
     });
 
@@ -42,6 +44,19 @@ describe('flp/ushellBootstrap', () => {
         fetchMock.mockRejectedValueOnce('404');
 
         await ushellBootstrap(() => {});
+        expect(fetchMock).toHaveBeenCalledWith('/resources/sap-ui-version.json');
         expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '/test-resources/sap/ushell/bootstrap/sandbox.js');
+    });
+
+    test('ushell src with different basePath', async () => {
+        fetchMock.mockResolvedValueOnce({
+            json: () => Promise.resolve({ libraries: [{name: 'sap.ui.core', version: '1.124.0'}] })
+        } as jest.Mocked<Response>);
+        jest.spyOn(window, 'location', 'get').mockReturnValue({
+            pathname: '/root/and/subPath/index.html'
+        } as unknown as Location);
+        await ushellBootstrap(() => {});
+        expect(fetchMock).toHaveBeenCalledWith('../../resources/sap-ui-version.json');
+        expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '../../test-resources/sap/ushell/bootstrap/sandbox.js');
     });
 });
