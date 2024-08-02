@@ -68,7 +68,7 @@ export async function addComponentUsages(basePath: string, simulate: boolean): P
  * @returns {ComponentUsagesData} The writer data for the component usages change.
  */
 function getWriterData(variant: DescriptorVariant, answers: AddComponentUsageAnswers): ComponentUsagesData {
-    const { usageId, data, settings, isLazy, name, library, libraryIsLazy, shouldAddLibrary } = answers;
+    const { usageId, data, settings, isLazy, name, shouldAddLibrary } = answers;
 
     return {
         variant,
@@ -81,8 +81,8 @@ function getWriterData(variant: DescriptorVariant, answers: AddComponentUsageAns
         },
         ...(shouldAddLibrary && {
             library: {
-                reference: library,
-                referenceIsLazy: libraryIsLazy
+                reference: answers.library,
+                referenceIsLazy: answers.libraryIsLazy
             }
         })
     };

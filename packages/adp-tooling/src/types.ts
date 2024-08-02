@@ -336,10 +336,6 @@ export type ComponentUsagesData = ComponentUsagesDataBase | ComponentUsagesDataW
 export type AddComponentUsageAnswersWithoutLibrary = {
     /** Indicates whether a library reference should be added */
     shouldAddLibrary: false;
-    /** Reference to the component's library. */
-    library?: string;
-    /** Indicates whether the library reference is loaded lazily. */
-    libraryIsLazy?: string;
 };
 
 export type addComponentUsageAnswersWithLibrary = {
