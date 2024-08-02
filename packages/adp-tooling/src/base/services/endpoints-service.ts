@@ -1,7 +1,7 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { Endpoint, checkEndpoints } from '@sap-ux/environment-check';
 
-import { Auth } from '../../types';
+import { SystemDetails } from '../../types';
 
 /**
  * Service class to manage and retrieve information about system endpoints,
@@ -38,6 +38,10 @@ export class EndpointsService {
         return this.endpoints
             .map((endpoint) => endpoint.Name)
             .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase(), 'en', { sensitivity: 'base' }));
+    }
+
+    public shouldGetLocalSystemDetails() {
+        return !isAppStudio() && this.isExtensionInstalled;
     }
 
     /**
@@ -87,12 +91,18 @@ export class EndpointsService {
      * @param {string} system - The name or URL of the system to find.
      * @returns {Auth | undefined} Authentication details if the system is found, undefined otherwise.
      */
-    public async getSystemDetails(system: string): Promise<Auth | undefined> {
+    public async getSystemDetails(system: string): Promise<SystemDetails | undefined> {
         if (this.endpoints.length === 0) {
             await this.getEndpoints();
         }
         const endpoint = this.endpoints.find((e) => e.Name === system || e.Url === system);
 
-        return endpoint ? { client: endpoint.Client, url: endpoint.Url } : undefined;
+        return endpoint
+            ? {
+                  client: endpoint.Client || '',
+                  url: endpoint.Url || '',
+                  authenticationType: endpoint.Authentication
+              }
+            : undefined;
     }
 }

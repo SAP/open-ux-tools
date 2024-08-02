@@ -111,7 +111,7 @@ export interface InternalInboundNavigation extends NewInboundNavigation {
     addInboundId: boolean;
 }
 
-export type FlpConfig = ChangeInboundNavigation | NewInboundNavigation;
+export type FlpConfig = ChangeInboundNavigation | NewInboundNavigation | undefined;
 
 export interface Language {
     sap: string;
@@ -505,6 +505,8 @@ export interface ConfigurationInfoAnswers {
     latestUI5version: string;
     versionInfo: string;
     confirmPrompt: boolean;
+    fioriId: string;
+    applicationComponentHierarchy: string;
 }
 
 export interface FlexUISupportedSystem {
@@ -512,9 +514,10 @@ export interface FlexUISupportedSystem {
     isOnPremise: boolean;
 }
 
-export interface Auth {
-    url?: string;
-    client?: string;
+export interface SystemDetails {
+    url: string;
+    client: string;
+    authenticationType?: string;
 }
 
 export interface Application {
@@ -527,16 +530,17 @@ export interface Application {
     bspName: string;
 }
 
-export interface ApplicationT {
-    id: string;
-    fileType: string;
-    bspUrl: string;
-    bspName: string;
-}
-
 export interface UI5Version {
     latest: VersionDetail;
     [key: string]: VersionDetail;
+}
+
+export interface SapModel {
+    type?: string;
+    uri?: string;
+    settings?: {
+        bundleName?: string;
+    };
 }
 
 export interface VersionDetail {

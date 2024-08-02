@@ -70,15 +70,10 @@ export default class ProjectPrompter {
     private versionsOnSystem: string[];
     private systemNames: string[];
 
-    private providerService: ProviderService;
-
     private inboundIds: string[];
 
     private readonly isExtensionInstalled: boolean;
 
-    private ui5Service: UI5VersionService;
-    private manifestService: ManifestService;
-    private endpointsService: EndpointsService;
     private appsService: ApplicationService;
     private appIdentifier: AppIdentifier;
 
@@ -87,16 +82,19 @@ export default class ProjectPrompter {
     private transportList: string[] | undefined;
 
     // TODO: Pass common services into the constructor
-    constructor(layer: UI5FlexLayer, prompts?: Prompts) {
+    constructor(
+        private providerService: ProviderService,
+        private manifestService: ManifestService,
+        private endpointsService: EndpointsService,
+        private ui5Service: UI5VersionService,
+        layer: UI5FlexLayer,
+        prompts?: Prompts
+    ) {
         this.prompts = prompts;
         this.isCustomerBase = isCustomerBase(layer);
         this.isExtensionInstalled = isExtensionInstalledVsCode('sapse.sap-ux-application-modeler-extension');
 
         this.appIdentifier = new AppIdentifier(this.isCustomerBase);
-        this.ui5Service = new UI5VersionService(this.isCustomerBase);
-        this.endpointsService = new EndpointsService(this.isExtensionInstalled);
-        this.providerService = new ProviderService(this.endpointsService);
-        this.manifestService = new ManifestService(this.providerService);
         this.appsService = new ApplicationService(this.providerService, this.isCustomerBase);
     }
 
