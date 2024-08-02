@@ -2,7 +2,7 @@ import type { OutlineNode } from '@sap-ux-private/control-property-editor-common
 import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
 import { isEditable, isReuseComponent } from './utils';
-import { getUi5Version } from '../../utils/utils';
+import { getUi5Version } from '../../utils';
 
 interface AdditionalData {
     text?: string;

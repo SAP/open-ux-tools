@@ -12,7 +12,7 @@ import { ActionHandler } from '../cpe/types';
 import { getUI5VersionValidationMessage } from './ui5-version-utils';
 import UI5Element from 'sap/ui/dt/Element';
 import { getError } from '../cpe/error-utils';
-import { getUi5Version } from '../utils/utils';
+import { getUi5Version } from '../utils';
 
 export default async function (rta: RuntimeAuthoring) {
     const version = await getUi5Version();

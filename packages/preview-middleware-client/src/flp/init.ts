@@ -9,7 +9,7 @@ import AppState from 'sap/ushell/services/AppState';
 import { getManifestAppdescr } from '../adp/api-handler';
 import { getError } from '../cpe/error-utils';
 import initConnectors from './initConnectors';
-import { getUi5Version } from '../utils/utils';
+import { getUi5Version } from '../utils';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
