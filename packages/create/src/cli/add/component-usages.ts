@@ -1,5 +1,11 @@
 import type { Command } from 'commander';
-import { generateChange, getVariant, ChangeType, getPromptsForAddComponentUsages } from '@sap-ux/adp-tooling';
+import {
+    generateChange,
+    getVariant,
+    ChangeType,
+    getPromptsForAddComponentUsages,
+    type ComponentUsagesData
+} from '@sap-ux/adp-tooling';
 import { getLogger, traceChanges } from '../../tracing';
 import { validateAdpProject } from '../../validation/validation';
 import { promptYUIQuestions } from '../../common';
@@ -33,12 +39,33 @@ export async function addComponentUsages(basePath: string, simulate: boolean): P
 
         const variant = getVariant(basePath);
 
-        const answers = await promptYUIQuestions(getPromptsForAddComponentUsages(basePath, variant.layer), false);
+        const { data, id, settings, isLazy, name, shouldAddLibrary, library, libraryIsLazy } = await promptYUIQuestions(
+            getPromptsForAddComponentUsages(basePath, variant.layer),
+            false
+        );
 
-        const fs = await generateChange<ChangeType.ADD_COMPONENT_USAGES>(basePath, ChangeType.ADD_COMPONENT_USAGES, {
+        const writerData = {
             variant,
-            answers
-        });
+            component: {
+                data,
+                usageId: id,
+                settings,
+                isLazy,
+                name
+            },
+            ...(shouldAddLibrary && {
+                library: {
+                    reference: library as string,
+                    referenceIsLazy: libraryIsLazy as string
+                }
+            })
+        } as ComponentUsagesData;
+
+        const fs = await generateChange<ChangeType.ADD_COMPONENT_USAGES>(
+            basePath,
+            ChangeType.ADD_COMPONENT_USAGES,
+            writerData
+        );
 
         if (!simulate) {
             await new Promise((resolve) => fs.commit(resolve));

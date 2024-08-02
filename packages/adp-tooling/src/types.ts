@@ -308,7 +308,24 @@ export const enum AnnotationFileSelectType {
 
 export interface ComponentUsagesData {
     variant: DescriptorVariant;
-    answers: AddComponentUsageAnswers;
+    component: {
+        /** Indicates whether the component is loaded lazily. */
+        isLazy: string;
+        /** Unique ID for the component usage. */
+        usageId: string;
+        /** Name of the component. */
+        name: string;
+        /** Serialized data specific to the component. */
+        data: string;
+        /** Settings related to the component. */
+        settings: string;
+    };
+    library?: {
+        /** Reference to the component's library. */
+        reference: string;
+        /** Optional flag indicating if the library reference is lazy. */
+        referenceIsLazy: string;
+    };
 }
 
 export interface AddComponentUsageAnswers {
