@@ -1,5 +1,38 @@
 # @sap-ux/ui5-library-writer
 
+## 0.5.9
+
+### Patch Changes
+
+-   Updated dependencies [88c8bf6]
+    -   @sap-ux/project-access@1.26.3
+    -   @sap-ux/ui5-application-writer@1.1.3
+
+## 0.5.8
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/project-access@1.26.2
+    -   @sap-ux/ui5-application-writer@1.1.3
+
+## 0.5.7
+
+### Patch Changes
+
+-   Updated dependencies [a986655]
+    -   @sap-ux/project-access@1.26.1
+    -   @sap-ux/ui5-application-writer@1.1.2
+
+## 0.5.6
+
+### Patch Changes
+
+-   Updated dependencies [518bf7e]
+    -   @sap-ux/project-access@1.26.0
+    -   @sap-ux/ui5-application-writer@1.1.2
+
 ## 0.5.5
 
 ### Patch Changes
