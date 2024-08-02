@@ -2,7 +2,7 @@ import type { Editor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../../types';
 import { DirName } from '@sap-ux/project-access';
-import type { IWriter, ComponentUsagesData } from '../../../types';
+import type { IWriter, ComponentUsagesData, ComponentUsagesDataWithLibrary } from '../../../types';
 import { parseStringToObject, getChange, writeChangeToFolder } from '../../../base/change-utils';
 
 /**
@@ -42,17 +42,11 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
      * @param {ComponentUsagesData} library - The answers object containing information needed to construct the content property.
      * @returns {object} The constructed content object for the library reference change.
      */
-    private constructLibContent({
-        reference,
-        referenceIsLazy
-    }: {
-        reference: string;
-        referenceIsLazy: string;
-    }): object {
+    private constructLibContent({ library }: ComponentUsagesDataWithLibrary): object {
         return {
             libraries: {
-                [reference]: {
-                    lazy: referenceIsLazy === 'true'
+                [library.reference]: {
+                    lazy: library.referenceIsLazy === 'true'
                 }
             }
         };
@@ -82,11 +76,11 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
             DirName.Manifest
         );
 
-        if (!data.library) {
+        if (!('library' in data)) {
             return;
         }
 
-        const libRefContent = this.constructLibContent(data.library);
+        const libRefContent = this.constructLibContent(data);
         const libTimestamp = timestamp + 1;
         const refLibChange = getChange(data.variant, libTimestamp, libRefContent, ChangeType.ADD_LIBRARY_REFERENCE);
 

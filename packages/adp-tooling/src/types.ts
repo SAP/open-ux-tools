@@ -306,7 +306,7 @@ export const enum AnnotationFileSelectType {
     NewEmptyFile = 2
 }
 
-export interface ComponentUsagesData {
+export interface ComponentUsagesDataBase {
     variant: DescriptorVariant;
     component: {
         /** Indicates whether the component is loaded lazily. */
@@ -320,13 +320,18 @@ export interface ComponentUsagesData {
         /** Settings related to the component. */
         settings: string;
     };
-    library?: {
+}
+
+export interface ComponentUsagesDataWithLibrary extends ComponentUsagesDataBase {
+    library: {
         /** Reference to the component's library. */
         reference: string;
         /** Optional flag indicating if the library reference is lazy. */
         referenceIsLazy: string;
     };
 }
+
+export type ComponentUsagesData = ComponentUsagesDataBase | ComponentUsagesDataWithLibrary;
 
 export interface AddComponentUsageAnswers {
     /** Indicates whether the component is loaded lazily. */
