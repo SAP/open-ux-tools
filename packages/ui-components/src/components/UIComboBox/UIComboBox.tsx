@@ -231,7 +231,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     private onClick(event: React.FormEvent<IComboBox>): void {
         this.setCaretPosition(event);
         const baseCombobox = this.comboBox.current;
-        const isOpen = baseCombobox && baseCombobox.state.isOpen;
+        const isOpen = baseCombobox?.state.isOpen;
         const isDisabled = this.props.disabled;
         if (this.props.openMenuOnClick && baseCombobox && !isOpen && !isDisabled) {
             baseCombobox.focus(true);
@@ -248,7 +248,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     private onKeyDown(event: React.KeyboardEvent<HTMLInputElement>): void {
         let handled = false;
         const baseCombobox = this.comboBox.current;
-        const isOpen = baseCombobox && baseCombobox.state.isOpen;
+        const isOpen = baseCombobox?.state.isOpen;
         if (event.which === KeyCodes.down || event.which === KeyCodes.up) {
             handled = this._setCyclingNavigation(event.which === KeyCodes.down);
         }
