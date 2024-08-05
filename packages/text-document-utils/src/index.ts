@@ -28,6 +28,8 @@ export {
     MarkedString
 } from 'vscode-languageserver-types';
 
+export { getLanguageService, JSONSchema, JSONDocument } from 'vscode-json-languageservice';
+
 export { getLineOffsets } from './line-offsets';
 export {
     positionAt,
