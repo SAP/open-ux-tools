@@ -1,5 +1,5 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { Endpoint, checkEndpoints } from '@sap-ux/environment-check';
+import { Endpoint, checkEndpoints, isExtensionInstalledVsCode } from '@sap-ux/environment-check';
 
 import { SystemDetails } from '../../types';
 
@@ -9,14 +9,14 @@ import { SystemDetails } from '../../types';
  */
 export class EndpointsService {
     public endpoints: Endpoint[];
+    private isExtensionInstalled: boolean;
 
     /**
      * Creates an instance of EndpointsService.
-     *
-     * @param {boolean} isExtensionInstalled - Indicates if a application modeler extension is installed.
      */
-    constructor(private isExtensionInstalled: boolean) {
+    constructor() {
         this.endpoints = [];
+        this.isExtensionInstalled = isExtensionInstalledVsCode('sapse.sap-ux-application-modeler-extension');
     }
 
     /**
@@ -71,6 +71,16 @@ export class EndpointsService {
             this.endpoints.filter((endpoint) => endpoint.Url === system).length > 0 ||
             this.endpoints.filter((endpoint) => endpoint.Name === system).length > 0
         );
+    }
+
+    /**
+     * Retrieves destination info by name.
+     *
+     * @param {string} system - The name of the system to check.
+     * @returns {Endpoint | undefined} The destination info for the specific system.
+     */
+    public getDestinationInfoByName(system: string): Endpoint | undefined {
+        return this.endpoints.find((endpoint: Endpoint) => endpoint.Name === system);
     }
 
     /**

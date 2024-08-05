@@ -5,3 +5,4 @@ export * from './deploy-config';
 export * from './config';
 export * from './flp-parameters';
 export * from './template-model';
+export * from './fallback/extension-project';

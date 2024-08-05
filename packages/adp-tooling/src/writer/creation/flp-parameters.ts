@@ -34,8 +34,17 @@ export function validateFlpParamString(paramString: string): boolean | string {
     return true;
 }
 
-// TODO: Add correct typings, ts-ignored for now
+/**
+ * Parses a string of FLP parameters into a structured object based on predefined rules.
+ * This includes adding missing ampersands, checking for mandatory parameters, handling empty
+ * parameters, duplications, and constructing parameter objects based on specific conditions.
+ *
+ * @param {string} paramString - The string of parameters to parse.
+ * @returns {FlpParameter} - The structured representation of FLP parameters.
+ * @throws {SyntaxError} - Thrown if the parameter string is invalid or contains errors.
+ */
 export function parseFlpParamString(paramString: string): FlpParameter {
+    // TODO: Add correct typings, ts-ignored for now
     let result = {};
     const modifiedParamString = addMissingAmpersands(paramString);
     const params = modifiedParamString
@@ -72,10 +81,24 @@ export function parseFlpParamString(paramString: string): FlpParameter {
     return result;
 }
 
+/**
+ * Adds missing ampersands between parameter pairs in the provided string.
+ * This function ensures that the parameter string is correctly formatted for further parsing.
+ *
+ * @param {string} value - The original parameter string.
+ * @returns {string} The corrected parameter string with added ampersands where necessary.
+ */
 function addMissingAmpersands(value: string): string {
     return value.replace(/[)]\s*[(]/gm, ')&(');
 }
 
+/**
+ * Checks for duplicated keys in a parameter object and throws an error if duplicates are found.
+ *
+ * @param {FlpParameter} parameters - The parameter object to check for duplicated keys.
+ * @param {string} key - The key to check for duplication within the parameters object.
+ * @throws {Error} - Throws if a duplicate key is found.
+ */
 function checkForDuplicatedKeys(parameters: FlpParameter, key: string): void {
     Object.keys(parameters).forEach((existingKey) => {
         if (existingKey === key) {
@@ -84,7 +107,16 @@ function checkForDuplicatedKeys(parameters: FlpParameter, key: string): void {
     });
 }
 
-function construct(parts: string[], isMandatory: boolean, parameters: FlpParameter): FlpParameter {
+/**
+ * Constructs a parameter object from parts of a parsed parameter string, applying specific rules
+ * based on whether the parameter is mandatory or not.
+ *
+ * @param {string[]} parts - The parts of a single parameter string, split by '='.
+ * @param {boolean} isMandatory - Whether the parameter is considered mandatory.
+ * @param {FlpParameter} parameters - The existing parameters object to which the new parameter will be added.
+ * @returns {FlpParameter} The updated parameter object with the new parameter added.
+ */
+export function construct(parts: string[], isMandatory: boolean, parameters: FlpParameter): FlpParameter {
     const resultObject = {};
     const paramName = parts[0];
     checkForDuplicatedKeys(parameters, paramName);
@@ -119,7 +151,13 @@ function construct(parts: string[], isMandatory: boolean, parameters: FlpParamet
     return resultObject;
 }
 
-function applyRules(resultObject: any, paramPartString: string): void {
+/**
+ * Applies specific formatting and value rules to a parameter object based on the given parameter part string.
+ *
+ * @param {any} resultObject - The parameter object to which rules are being applied.
+ * @param {string} paramPartString - The part of the parameter string that contains potential rule triggers.
+ */
+export function applyRules(resultObject: any, paramPartString: string): void {
     const shouldFilterDefaultValueCheck = rules.shouldHavеFiltertValue(paramPartString);
     const isReferenceCheck = rules.isReference(paramPartString);
     if (shouldFilterDefaultValueCheck.shouldApply && !isReferenceCheck.shouldApply) {
@@ -174,7 +212,6 @@ const rules = {
 
         return defaultParamCheck;
     },
-
     isReference: (paramString: string): ParamCheck => {
         if (paramString.startsWith('%%') && paramString.endsWith('%%')) {
             return {

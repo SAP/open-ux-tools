@@ -1,4 +1,3 @@
-import { resolve } from 'path';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
@@ -54,6 +53,7 @@ import { listTransports } from '../../base/services/list-transports-service';
 import { ABAP_PACKAGE_SEARCH_MAX_RESULTS, listPackages } from '../../base/services/list-packages-service';
 import { ApplicationService, getApplicationChoices } from '../../base/services/application-service';
 import { AppIdentifier } from '../../base/services/app-identifier-service';
+import { resolveNodeModuleGenerator } from '../../base/file-system';
 
 export default class ProjectPrompter {
     private logger: Logger;
@@ -81,7 +81,6 @@ export default class ProjectPrompter {
     private packageInputChoiceValid: string | boolean;
     private transportList: string[] | undefined;
 
-    // TODO: Pass common services into the constructor
     constructor(
         private providerService: ProviderService,
         private manifestService: ManifestService,
@@ -164,36 +163,14 @@ export default class ProjectPrompter {
         );
     }
 
-    private resolveNodeModuleGenerator() {
-        const nodePath = process.env['NODE_PATH'];
-        const nodePaths = nodePath?.split(':') || [];
-
+    private validateExtensibilityGenerator() {
         if (this.extensibilitySubGenerator) {
             return true;
         }
 
-        for (let i = 0; i < nodePaths.length; i++) {
-            try {
-                this.extensibilitySubGenerator = require.resolve(
-                    resolve(nodePaths[i], '@bas-dev/generator-extensibility-sub/generators/app')
-                );
-            } catch (e) {
-                // We don't care if there's an error while resolving the module
-                // Continue with the next node_module path
-            }
-
-            if (this.extensibilitySubGenerator !== undefined) {
-                // this.logger.log(`'@bas-dev/generator-extensibility-sub' generator found for path: ${nodePaths[i]}.`);
-                break;
-            }
-        }
+        this.extensibilitySubGenerator = resolveNodeModuleGenerator();
 
         if (this.extensibilitySubGenerator === undefined) {
-            // this.logger.log(
-            //     `'@bas-dev/generator-extensibility-sub' generator was not found for paths: ${JSON.stringify(
-            //         nodePaths
-            //     )}.`
-            // );
             return 'Extensibility Project generator plugin was not found in your dev space, and is required for this action. To proceed, please install the <SAPUI5 Layout Editor & Extensibility> extension.';
         }
 
@@ -241,13 +218,13 @@ export default class ProjectPrompter {
                         checkForAdpOverAdpSupport &&
                         isFeatureSupportedVersion('1.90.0', systemVersion);
 
-                    const appId = this.manifestService.getManifest(value.id);
+                    const manifest = this.manifestService.getManifest(value.id);
 
                     await this.appIdentifier.validateSelectedApplication(
                         value,
                         checkForAdpOverAdpSupport,
                         checkForAdpOverAdpPartialSupport,
-                        appId
+                        manifest
                     );
                 }
                 this.isApplicationSupported = true;
@@ -345,7 +322,7 @@ export default class ProjectPrompter {
 
         if (applications.length === 0) {
             //this.logger.log('Applications list is empty. No errors were thrown during execution of the request.');
-            throw new Error('Applications list is empty. No errors were thrown during execution of the request.'); // TODO: Should we throw error here?
+            throw new Error('Applications list is empty. No errors were thrown during execution of the request.');
         }
     }
 
@@ -717,13 +694,14 @@ export default class ProjectPrompter {
                 // show the field when the system is selected and in internal mode
                 return (
                     answers.system &&
+                    answers.application &&
                     !this.isCustomerBase &&
                     !this.shouldAuthenticate(answers) &&
                     this.isApplicationSupported
                 );
             },
             default: (answers: ConfigurationInfoAnswers) => {
-                const manifest = this.manifestService.getManifest(answers.application.id);
+                const manifest = this.manifestService.getManifest(answers?.application?.id);
                 return manifest ? getCachedFioriId(manifest) : '';
             },
             store: false
@@ -744,13 +722,14 @@ export default class ProjectPrompter {
                 // show the field when the system is selected and in internal mode
                 return (
                     answers.system &&
+                    answers.application &&
                     !this.isCustomerBase &&
                     !this.shouldAuthenticate(answers) &&
                     this.isApplicationSupported
                 );
             },
             default: (answers: ConfigurationInfoAnswers) => {
-                const manifest = this.manifestService.getManifest(answers.application.id);
+                const manifest = this.manifestService.getManifest(answers?.application?.id);
                 return manifest ? getCachedACH(manifest) : '';
             },
             validate: (value: string) => validateAch(value, this.isCustomerBase),
@@ -801,10 +780,10 @@ export default class ProjectPrompter {
             when: (answers: ConfigurationInfoAnswers) => answers.application && this.allowExtensionProject(),
             validate: (value: boolean) => {
                 if (this.isApplicationSupported && this.appIdentifier.appSync) {
-                    return !value ? true : this.resolveNodeModuleGenerator();
+                    return !value ? true : this.validateExtensibilityGenerator();
                 }
 
-                return !value ? 'Please select whether you want to continue' : this.resolveNodeModuleGenerator();
+                return !value ? 'Please select whether you want to continue' : this.validateExtensibilityGenerator();
             }
         } as ConfirmQuestion<ConfigurationInfoAnswers>;
     }
