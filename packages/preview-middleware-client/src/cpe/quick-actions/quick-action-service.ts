@@ -17,6 +17,9 @@ import { QUICK_ACTION_DEFINITIONS } from './definitions/index';
 
 import { QuickActionContext, QuickActionDefinition } from './definitions/quick-action-definition';
 import { getFeVersion } from './utils';
+import { ADD_CONTROLLER_TO_PAGE_TYPE } from './definitions/fe-v2/add-controller-to-page';
+
+const FE_NOT_APPLICABLE_QUICK_ACTION = [ADD_CONTROLLER_TO_PAGE_TYPE];
 
 /**
  *
@@ -71,6 +74,11 @@ export class QuickActionService implements Service {
         const feVersion = getFeVersion(this.rta.getRootControlInstance().getManifest());
         for (const Definition of QUICK_ACTION_DEFINITIONS(feVersion)) {
             const instance = new Definition(context);
+            if (this.rta.getFlexSettings().scenario === 'FE_FROM_SCRATCH') {
+                if (FE_NOT_APPLICABLE_QUICK_ACTION.includes(instance.type)) {
+                    continue;
+                }
+            }
             await instance.initialize();
             if (instance.isActive) {
                 const quickAction = instance.getActionObject();

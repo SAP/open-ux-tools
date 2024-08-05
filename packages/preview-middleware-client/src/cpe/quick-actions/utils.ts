@@ -113,7 +113,7 @@ export function getAppComponent(control: ManagedObject) {
 
 export function pageHasControlId(page: Control, controlId: string): boolean {
     const controlDomElement = sap.ui.getCore().byId(controlId)?.getDomRef();
-    return !!controlDomElement && !!page.getDomRef()?.contains(controlDomElement);
+    return !!controlDomElement && !!page?.getDomRef()?.contains(controlDomElement);
 }
 
 /**
