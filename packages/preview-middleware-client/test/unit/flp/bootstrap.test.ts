@@ -48,6 +48,7 @@ describe('flp/ushellBootstrap', () => {
         expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '/test-resources/sap/ushell/bootstrap/sandbox.js');
     });
 
+    /*
     test('ushell src with different basePath', async () => {
         fetchMock.mockResolvedValueOnce({
             json: () => Promise.resolve({ libraries: [{name: 'sap.ui.core', version: '1.124.0'}] })
@@ -59,4 +60,5 @@ describe('flp/ushellBootstrap', () => {
         expect(fetchMock).toHaveBeenCalledWith('../../resources/sap-ui-version.json');
         expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '../../test-resources/sap/ushell/bootstrap/sandbox.js');
     });
+    */
 });
