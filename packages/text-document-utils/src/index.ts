@@ -14,7 +14,16 @@ export {
     Diagnostic,
     DiagnosticSeverity,
     TextEdit as TextEditType,
-    WorkspaceEdit
+    WorkspaceEdit,
+    CompletionItemKind,
+    InsertTextFormat,
+    integer,
+    MarkupKind,
+    CodeAction,
+    CodeActionKind,
+    Hover,
+    CompletionList,
+    CompletionItem
 } from 'vscode-languageserver-types';
 
 export { getLineOffsets } from './line-offsets';
