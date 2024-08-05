@@ -2,8 +2,10 @@ import { QuickActionDefinition, QuickActionDefinitionConstructor } from '../quic
 
 import { ToggleClearFilterBarQuickAction } from './lr-toggle-clear-filter-bar';
 import { AddControllerToPageQuickAction } from './add-controller-to-page';
+import { ChangeTableColumnsQuickAction } from './change-table-columns';
 
 export const FE_V2_QUICK_ACTION_DEFINITIONS: QuickActionDefinitionConstructor<QuickActionDefinition>[] = [
     ToggleClearFilterBarQuickAction,
-    AddControllerToPageQuickAction
+    AddControllerToPageQuickAction,
+    ChangeTableColumnsQuickAction,
 ];

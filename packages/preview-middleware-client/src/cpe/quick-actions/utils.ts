@@ -1,6 +1,5 @@
 import UI5Element from 'sap/ui/core/Element';
 
-
 import { QuickActionContext } from './definitions/quick-action-definition';
 import { ControlTreeIndex } from '../types';
 import NavContainer from 'sap/m/NavContainer';
@@ -8,6 +7,7 @@ import Control from 'sap/ui/core/Control';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 import ComponentContainer from 'sap/ui/core/ComponentContainer';
 import RuntimeAuthoring, { FEAppPage } from 'sap/ui/rta/RuntimeAuthoring';
+import FlexibleColumnLayout from 'sap/f/FlexibleColumnLayout';
 
 export interface FEAppPageInfo {
     page: FEAppPage;
@@ -17,19 +17,49 @@ export interface FEAppPagesMap {
     [key: string]: FEAppPageInfo[];
 }
 
-const CONTROL_TYPE = 'sap.m.NavContainer';
+export function getFEAppPagesMap(rta: RuntimeAuthoring): FEAppPagesMap {
+    const pages = rta.getRootControlInstance().getRootControl().getPages();
+    const pagesMap: FEAppPagesMap = {};
+    for (const page of pages) {
+        const pageContent = page.getContent();
+        if (pageContent?.length) {
+            const pageName = pageContent[0].getComponentInstance()?.getMetadata().getComponentName();
+            const isInvisible = page.hasStyleClass('sapMNavItemHidden');
+            if (!pagesMap[pageName]) {
+                pagesMap[pageName] = [];
+            }
+            pagesMap[pageName].push({
+                page,
+                isInvisible
+            });
+        }
+    }
+    return pagesMap;
+}
+
+
 export function getCurrentActivePages(controlIndex: ControlTreeIndex): Control[] {
-    const control = controlIndex[CONTROL_TYPE][0];
+    const controlName = ['sap.m.NavContainer', 'sap.f.FlexibleColumnLayout'].find((item) => !!controlIndex?.[item]);
     const collectActivePages = [];
-    if (control) {
-        const navContainer = sap.ui.getCore().byId(control.controlId) as NavContainer;
-        const pages = navContainer.getPages();
-        for (const page of pages) {
-            if (page.getId() === navContainer.getCurrentPage().getId()) {
-                collectActivePages.push(page);
+
+    if (controlName) {
+        const control = controlIndex?.[controlName]?.[0];
+        if (control) {
+            const container = sap.ui.getCore().byId(control.controlId);
+            if (container?.isA('sap.m.NavContainer')) {
+                const navContainer = container as NavContainer;
+                collectActivePages.push(navContainer.getCurrentPage());
+            } else if (container?.isA('sap.f.FlexibleColumnLayout')) {
+                const flexibleColLayoutContainer = container as FlexibleColumnLayout;
+                collectActivePages.push(
+                    flexibleColLayoutContainer.getCurrentBeginColumnPage(),
+                    flexibleColLayoutContainer.getCurrentMidColumnPage(),
+                    flexibleColLayoutContainer.getCurrentEndColumnPage()
+                );
             }
         }
     }
+
     return collectActivePages;
 }
 
@@ -51,7 +81,6 @@ export function getRelevantControlFromActivePage(
     }
     return relavantControls;
 }
-
 
 export function getTargetView(modifiedControl: ManagedObject) {
     if (modifiedControl && modifiedControl.isA('sap.ui.core.ComponentContainer')) {
@@ -82,32 +111,10 @@ export function getAppComponent(control: ManagedObject) {
 }
 
 
-
-export function getFEAppPagesMap(rta: RuntimeAuthoring): FEAppPagesMap {
-    const pages = rta.getRootControlInstance().getRootControl().getPages();
-    const pagesMap: FEAppPagesMap = {};
-    for (const page of pages) {
-        const pageContent = page.getContent();
-        if (pageContent?.length) {
-            const pageName = pageContent[0].getComponentInstance()?.getMetadata().getComponentName();
-            const isInvisible = page.hasStyleClass('sapMNavItemHidden');
-            if (!pagesMap[pageName]) {
-                pagesMap[pageName] = [];
-            }
-            pagesMap[pageName].push({
-                page,
-                isInvisible
-            });
-        }
-    }
-    return pagesMap;
-}
-
 export function pageHasControlId(page: Control, controlId: string): boolean {
     const controlDomElement = sap.ui.getCore().byId(controlId)?.getDomRef();
     return !!controlDomElement && !!page.getDomRef()?.contains(controlDomElement);
 }
-
 
 /**
  * Determines Fiori Elements version based on the manifest.json
