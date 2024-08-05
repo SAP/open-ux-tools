@@ -23,7 +23,9 @@ export {
     CodeActionKind,
     Hover,
     CompletionList,
-    CompletionItem
+    CompletionItem,
+    MarkupContent,
+    MarkedString
 } from 'vscode-languageserver-types';
 
 export { getLineOffsets } from './line-offsets';
