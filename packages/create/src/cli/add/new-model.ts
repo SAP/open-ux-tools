@@ -1,6 +1,14 @@
 import type { Command } from 'commander';
 
-import { generateChange, ChangeType, getPromptsForNewModel, getVariant } from '@sap-ux/adp-tooling';
+import {
+    generateChange,
+    ChangeType,
+    getPromptsForNewModel,
+    getVariant,
+    DescriptorVariant,
+    NewModelAnswers,
+    NewModelData
+} from '@sap-ux/adp-tooling';
 
 import { promptYUIQuestions } from '../../common';
 import { getLogger, traceChanges } from '../../tracing';
@@ -38,10 +46,11 @@ async function addNewModel(basePath: string, simulate: boolean): Promise<void> {
 
         const answers = await promptYUIQuestions(getPromptsForNewModel(basePath, variant.layer), false);
 
-        const fs = await generateChange<ChangeType.ADD_NEW_MODEL>(basePath, ChangeType.ADD_NEW_MODEL, {
-            variant,
-            answers
-        });
+        const fs = await generateChange<ChangeType.ADD_NEW_MODEL>(
+            basePath,
+            ChangeType.ADD_NEW_MODEL,
+            getWriterData(variant, answers)
+        );
 
         if (!simulate) {
             await new Promise((resolve) => fs.commit(resolve));
@@ -52,4 +61,32 @@ async function addNewModel(basePath: string, simulate: boolean): Promise<void> {
         logger.error(error.message);
         logger.debug(error);
     }
+}
+
+/**
+ * Returns the writer data for the new model change.
+ *
+ * @param {DescriptorVariant} variant - The variant of the adaptation project.
+ * @param {NewModelAnswers} answers - The answers to the prompts.
+ * @returns {NewModelData} The writer data for the new model change.
+ */
+function getWriterData(variant: DescriptorVariant, answers: NewModelAnswers): NewModelData {
+    const { name, uri, modelName, version, modelSettings } = answers;
+    return {
+        variant,
+        service: {
+            name,
+            uri,
+            modelName,
+            version,
+            modelSettings
+        },
+        ...(answers.addAnnotationMode && {
+            library: {
+                dataSourceName: answers.dataSourceName,
+                dataSourceURI: answers.dataSourceURI,
+                settigns: answers.annotationSettings
+            }
+        })
+    };
 }

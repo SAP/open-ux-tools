@@ -296,9 +296,15 @@ export type GeneratorData<T extends ChangeType> = T extends ChangeType.ADD_ANNOT
     : never;
 
 export interface AnnotationsData {
-    fileName?: string;
     variant: DescriptorVariant;
-    answers: AddAnnotationsAnswers;
+    annotation: {
+        /** Optional name of the annotation file. */
+        fileName?: string;
+        /** Data source associated with the annotation. */
+        dataSource: string;
+        /** Path to the annotation file. */
+        filePath?: string;
+    };
 }
 
 export const enum AnnotationFileSelectType {
@@ -363,10 +369,34 @@ export type AddComponentUsageAnswersBase = {
 export type AddComponentUsageAnswers = AddComponentUsageAnswersBase &
     (AddComponentUsageAnswersWithoutLibrary | addComponentUsageAnswersWithLibrary);
 
-export interface NewModelData {
+export interface NewModelDataBase {
     variant: DescriptorVariant;
-    answers: NewModelAnswers;
+    service: {
+        /** Name of the OData service. */
+        name: string;
+        /** URI of the OData service. */
+        uri: string;
+        /** Name of the OData service model. */
+        modelName: string;
+        /** Version of OData used. */
+        version: string;
+        /** Settings for the OData service model. */
+        modelSettings?: string;
+    };
 }
+
+export interface NewModelDataWithAnnotations extends NewModelDataBase {
+    annotation: {
+        /** Name of the OData annotation data source. */
+        dataSourceName: string;
+        /** Optional URI of the OData annotation data source. */
+        dataSourceURI?: string;
+        /** Optional settings for the OData annotation. */
+        settings?: string;
+    };
+}
+
+export type NewModelData = NewModelDataBase | NewModelDataWithAnnotations;
 
 export interface NewModelAnswers {
     addAnnotationMode: boolean;
@@ -391,7 +421,16 @@ export interface NewModelAnswers {
 export interface DataSourceData {
     variant: DescriptorVariant;
     dataSources: Record<string, ManifestNamespace.DataSource>;
-    answers: ChangeDataSourceAnswers;
+    service: {
+        /** Data source identifier. */
+        id: string;
+        /** URI of the data source. */
+        uri: string;
+        /** Optional maximum age for the data source cache. */
+        maxAge?: number;
+        /** URI for the OData annotation source. */
+        annotationUri?: string;
+    };
 }
 
 export interface InboundChangeAnswers {

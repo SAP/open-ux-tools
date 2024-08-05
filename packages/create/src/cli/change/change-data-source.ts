@@ -1,11 +1,15 @@
 import type { Command } from 'commander';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 import {
     generateChange,
     ChangeType,
     getPromptsForChangeDataSource,
     getAdpConfig,
     getManifestDataSources,
-    getVariant
+    getVariant,
+    type DataSourceData,
+    type DescriptorVariant,
+    type ChangeDataSourceAnswers
 } from '@sap-ux/adp-tooling';
 import { getLogger, traceChanges } from '../../tracing';
 import { promptYUIQuestions } from '../../common';
@@ -46,11 +50,11 @@ async function changeDataSource(basePath: string, simulate: boolean, yamlPath: s
         const dataSources = await getManifestDataSources(variant.reference, adpConfig, logger);
         const answers = await promptYUIQuestions(getPromptsForChangeDataSource(dataSources), false);
 
-        const fs = await generateChange<ChangeType.CHANGE_DATA_SOURCE>(basePath, ChangeType.CHANGE_DATA_SOURCE, {
-            variant,
-            dataSources,
-            answers
-        });
+        const fs = await generateChange<ChangeType.CHANGE_DATA_SOURCE>(
+            basePath,
+            ChangeType.CHANGE_DATA_SOURCE,
+            getWriterData(variant, dataSources, answers)
+        );
 
         if (!simulate) {
             await new Promise((resolve) => fs.commit(resolve));
@@ -67,4 +71,30 @@ async function changeDataSource(basePath: string, simulate: boolean, yamlPath: s
         }
         logger.debug(error);
     }
+}
+
+/**
+ * Returns the writer data for the data source change.
+ *
+ * @param {DescriptorVariant} variant - The variant of the adaptation project.
+ * @param {Record<string, ManifestNamespace.DataSource>} dataSources - The data sources of the adaptation project.
+ * @param {ChangeDataSourceAnswers} answers - The answers provided by the user.
+ * @returns {DataSourceData} The writer data for the data source change.
+ */
+function getWriterData(
+    variant: DescriptorVariant,
+    dataSources: Record<string, ManifestNamespace.DataSource>,
+    answers: ChangeDataSourceAnswers
+): DataSourceData {
+    const { id, uri, maxAge, annotationUri } = answers;
+    return {
+        variant,
+        dataSources,
+        service: {
+            id,
+            uri,
+            maxAge,
+            annotationUri
+        }
+    };
 }
