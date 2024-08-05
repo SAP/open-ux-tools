@@ -1,14 +1,7 @@
 import type { Command } from 'commander';
 
-import {
-    generateChange,
-    ChangeType,
-    getPromptsForNewModel,
-    getVariant,
-    DescriptorVariant,
-    NewModelAnswers,
-    NewModelData
-} from '@sap-ux/adp-tooling';
+import type { DescriptorVariant, NewModelAnswers, NewModelData } from '@sap-ux/adp-tooling';
+import { generateChange, ChangeType, getPromptsForNewModel, getVariant } from '@sap-ux/adp-tooling';
 
 import { promptYUIQuestions } from '../../common';
 import { getLogger, traceChanges } from '../../tracing';
