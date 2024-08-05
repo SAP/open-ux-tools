@@ -9,7 +9,7 @@
  * @param fnCallback {Function} The callback function to be executed after the bootstrap is loaded.
  */
 async function ushellBootstrap(fnCallback) {
-    const currentPath = location.pathname.substring(0, location.pathname.lastIndexOf('/'));
+    const currentPath = window?.location?.pathname.substring(0, window.location.pathname.lastIndexOf('/')) ?? '/';
     const numberOfStepsToRoot = currentPath.split('/').length - 2; // ignoring leading '/' and root entry
     const basePath = numberOfStepsToRoot > 0 ? '../'.repeat(numberOfStepsToRoot) : '/';
 
