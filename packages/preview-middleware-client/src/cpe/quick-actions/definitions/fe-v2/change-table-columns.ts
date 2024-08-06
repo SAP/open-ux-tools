@@ -36,14 +36,14 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
                 if (changeColumnAction) {
                     if (table.isA('sap.ui.comp.smarttable.SmartTable')) {
                         this.children.push({
-                            label: `'${(table as SmartTable).getHeader()}' Table`,
+                            label: `'${(table as SmartTable).getHeader()}' table`,
                             children: []
                         });
                     }
                     if (table.isA('sap.m.Table')) {
                         const title = (table as Table)?.getHeaderToolbar()?.getTitleControl()?.getText() || 'Unknown';
                         this.children.push({
-                            label: `${title}' Table`,
+                            label: `${title}' table`,
                             children: []
                         });
                     }
@@ -64,7 +64,7 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
             type: this.type,
             enabled: this.isActive,
             // TODO: translate this?
-            title: 'Change Table Columns',
+            title: 'Change table columns',
             children: this.children
         };
     }

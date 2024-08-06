@@ -31,7 +31,7 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
                 const changeColumnAction = actions.find((action) => action.id === ACTION_ID);
                 if (changeColumnAction) {
                     this.children.push({
-                        label: `'${(smartTable as Table).getHeader()}' Table`,
+                        label: `'${(smartTable as Table).getHeader()}' table`,
                         children: []
                     });
                     this.tableMap[`${this.children.length - 1}`] = index;
@@ -50,7 +50,7 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
             type: this.type,
             enabled: this.isActive,
             // TODO: translate this?
-            title: 'Change Table Columns',
+            title: 'Change table columns',
             children: this.children
         };
     }

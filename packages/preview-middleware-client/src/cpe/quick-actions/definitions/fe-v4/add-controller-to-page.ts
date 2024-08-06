@@ -60,7 +60,7 @@ export class AddControllerToPageQuickAction implements SimpleQuickActionDefiniti
             type: this.type,
             enabled: this.isActive,
             // TODO: translate this?
-            title: this.controllerExists ? 'Show page Controller' : 'Add Controller to page'
+            title: this.controllerExists ? 'Show page controller' : 'Add controller to page'
         };
     }
 
