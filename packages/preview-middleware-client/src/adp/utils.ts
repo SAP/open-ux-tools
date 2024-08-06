@@ -45,6 +45,9 @@ export function createDeferred<T>(): Deferred<T> {
  *                    the specified fragment name; otherwise, returns false.
  */
 export function matchesFragmentName(command: FlexCommand, fragmentName: string): boolean {
+    if (typeof command.getPreparedChange !== 'function') {
+        return false;
+    }
     const change = command.getPreparedChange().getDefinition() as unknown as FragmentChange;
     return change.content?.fragmentPath?.includes(`${fragmentName}.fragment.xml`) || false;
 }

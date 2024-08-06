@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.36
+
+### Patch Changes
+
+-   cea1f9f: Fixed Add XML Fragment dialog not working if there is an unsaved "hideControl" change
+
 ## 0.16.35
 
 ### Patch Changes
