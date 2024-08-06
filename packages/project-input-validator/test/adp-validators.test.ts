@@ -29,6 +29,16 @@ describe('project input validators', () => {
             const output = hasCustomerPrefix('customer.ZTEST');
             expect(output).toEqual(true);
         });
+
+        test('should return false if the value does not have a customer prefix', () => {
+            const output = hasCustomerPrefix('ZTEST');
+            expect(output).toEqual(false);
+        });
+
+        test('should return false if the value does not have at least one additional alphanumeric character', () => {
+            const output = hasCustomerPrefix('customer.');
+            expect(output).toEqual(false);
+        });
     });
 
     describe('isDataSourceURI', () => {

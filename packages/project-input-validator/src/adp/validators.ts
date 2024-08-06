@@ -24,7 +24,7 @@ export function hasContentDuplication(
  * @returns {boolean} True if the value starts with 'customer.' and false if it does not.
  */
 export function hasCustomerPrefix(value: string): boolean {
-    return value.toLowerCase().startsWith('customer.');
+    return /^customer\.[a-zA-Z0-9]/.test(value);
 }
 
 /**
