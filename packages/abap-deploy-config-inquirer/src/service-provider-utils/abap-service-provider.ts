@@ -17,6 +17,7 @@ let system: SystemConfig;
  *
  * @param options - aba deploy config prompt options
  * @param systemConfig - system configuration
+ * @param credentials
  * @returns abap service provider
  */
 export async function getOrCreateServiceProvider(
@@ -30,7 +31,7 @@ export async function getOrCreateServiceProvider(
     }
     // use connected service provider
     if (
-        options.backendTarget?.abapServiceProvider &&
+        options.backendTarget?.serviceProvider &&
         isSameSystem(
             systemConfig,
             options.backendTarget?.abapTarget.url,
@@ -38,19 +39,18 @@ export async function getOrCreateServiceProvider(
             options.backendTarget?.abapTarget.destination
         )
     ) {
-        abapServiceProvider = options.backendTarget.abapServiceProvider;
+        abapServiceProvider = options.backendTarget.serviceProvider as AbapServiceProvider;
         system = options.backendTarget.abapTarget;
-        return options.backendTarget.abapServiceProvider;
+        return abapServiceProvider;
     }
-
     abapServiceProvider = await createNewServiceProvider(credentials);
-
     return abapServiceProvider;
 }
 
 /**
  * Create a new abap service provider using @sap-ux/system-access.
  *
+ * @param credentials
  * @returns abap service provider
  */
 async function createNewServiceProvider(credentials?: Credentials): Promise<AbapServiceProvider> {

@@ -41,9 +41,9 @@ describe('Test abap deploy config inquirer conditions', () => {
 
     test('should not show scp question', async () => {
         // 1 target not chosen
-        expect(await showScpQuestion({})).toBe(false);
+        expect(showScpQuestion({})).toBe(false);
         // 2 url target chosen but no url provided
-        expect(await showScpQuestion({ targetSystem: 'Url', url: '' })).toBe(false);
+        expect(showScpQuestion({ targetSystem: 'Url', url: '' })).toBe(false);
         // 3 scp value has already been provided in existing options
         options.backendTarget = {
             abapTarget: {
@@ -53,7 +53,7 @@ describe('Test abap deploy config inquirer conditions', () => {
             },
             type: 'application'
         };
-        expect(await showScpQuestion({ url: 'http://known.target.url' })).toBe(false);
+        expect(showScpQuestion({ url: 'http://known.target.url' })).toBe(false);
         // 4 scp value has been retrieved from existing system
         options.backendTarget.abapTarget.scp = undefined;
         jest.spyOn(utils, 'findBackendSystemByUrl').mockReturnValue({
@@ -61,12 +61,12 @@ describe('Test abap deploy config inquirer conditions', () => {
             url: 'http://saved.target.url',
             client: '100'
         });
-        expect(await showScpQuestion({ url: 'http://saved.target.url' })).toBe(false);
+        expect(showScpQuestion({ url: 'http://saved.target.url' })).toBe(false);
     });
 
     test('should show scp question', async () => {
         jest.spyOn(utils, 'findBackendSystemByUrl').mockReturnValue(undefined);
-        expect(await showScpQuestion({ targetSystem: 'Url', url: 'http://new.target.url' })).toBe(true);
+        expect(showScpQuestion({ targetSystem: 'Url', url: 'http://new.target.url' })).toBe(true);
     });
 
     test('should show client choice question', () => {

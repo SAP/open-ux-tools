@@ -18,6 +18,7 @@ import { AuthenticationType, type BackendSystem } from '@sap-ux/store';
 import type { AbapSystemChoice } from '../types';
 import type { ChoiceOptions, ListChoiceOptions } from 'inquirer';
 import { getSystemDisplayName } from '@sap-ux/fiori-generator-shared';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 /**
  * Returns a list of destination choices.
@@ -110,7 +111,7 @@ async function getBackendTargetChoices(
 
     if (!targetExists && target?.url && backendTarget?.systemName) {
         const systemName = backendTarget.systemName;
-        const user = await backendTarget.abapServiceProvider?.user();
+        const user = await (backendTarget.serviceProvider as AbapServiceProvider)?.user();
         // add the target system to the list if it does not exist in the store yet
         choices.splice(1, 0, {
             name: `${getSystemDisplayName(

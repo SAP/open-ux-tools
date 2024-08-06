@@ -113,6 +113,7 @@ export function uniformAtoFormat(atoData: AtoSettings & Record<string, any>): At
  * @param transportConfigParams.client - client
  * @param transportConfigParams.destination - destination
  * @param transportConfigParams.errorHandler - error handler
+ * @param transportConfigParams.credentials
  * @returns transport configuration
  */
 export async function initTransportConfig({
@@ -198,7 +199,7 @@ export function getPackageAnswer(previousAnswers?: AbapDeployConfigAnswers): str
  * If a deploy config already exists in the project, check if the config
  * uses option to create transport request number during actual deploy process.
  *
- * @param generator Instance of AbapGenerator
+ * @param options ABAP Deploy prompt options
  * @returns True if transport setting is set to 'CreateDuringDeployChoice'.
  */
 export function useCreateTrDuringDeploy(options: AbapDeployConfigPromptOptions): boolean {

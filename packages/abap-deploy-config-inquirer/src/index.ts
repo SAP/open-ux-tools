@@ -1,10 +1,10 @@
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
-import type { AbapDeployConfigAnswers, AbapDeployConfigPromptOptions } from './types';
 import { initI18n } from './i18n';
 import { PromptState } from './prompts/prompt-state';
 import { getAbapDeployConfigQuestions } from './prompts';
 import LoggerHelper from './logger-helper';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
+import type { AbapDeployConfigAnswers, AbapDeployConfigPromptOptions } from './types';
 
 /**
  * Get the inquirer prompts for abap deploy config.
@@ -22,7 +22,6 @@ async function getPrompts(
     await initI18n();
     LoggerHelper.logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/abap-deploy-config-inquirer' });
     PromptState.isYUI = isYUI;
-
     return {
         prompts: await getAbapDeployConfigQuestions(promptOptions),
         // Return reference to derived answers object that will be populated with user responses (after prompting is complete)

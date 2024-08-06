@@ -1,5 +1,5 @@
 import type { AbapTarget } from '@sap-ux/system-access';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { ServiceProvider } from '@sap-ux/axios-extension';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 
 export const enum TargetSystemType {
@@ -16,10 +16,11 @@ export interface Credentials {
     username?: string;
     password?: string;
 }
+
 export interface BackendTarget {
     systemName?: string; // name given for backend system
     abapTarget: AbapTarget;
-    abapServiceProvider?: AbapServiceProvider;
+    serviceProvider?: ServiceProvider;
     type?: 'application' | 'library';
 }
 
