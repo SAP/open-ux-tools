@@ -8,6 +8,7 @@ import ManagedObject from 'sap/ui/base/ManagedObject';
 import ComponentContainer from 'sap/ui/core/ComponentContainer';
 import RuntimeAuthoring, { FEAppPage } from 'sap/ui/rta/RuntimeAuthoring';
 import FlexibleColumnLayout from 'sap/f/FlexibleColumnLayout';
+import Component from 'sap/ui/core/Component';
 
 export interface FEAppPageInfo {
     page: FEAppPage;
