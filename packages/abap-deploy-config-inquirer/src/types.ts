@@ -25,10 +25,10 @@ export interface BackendTarget {
 }
 
 export interface DeployTaskConfig {
-    name: string;
+    name?: string;
     description?: string;
     package?: string;
-    transport: string;
+    transport?: string;
     [key: string]: unknown;
 }
 

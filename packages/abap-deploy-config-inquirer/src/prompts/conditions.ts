@@ -133,7 +133,7 @@ export async function showUsernameQuestion(options: AbapDeployConfigPromptOption
 
     if (warning) {
         const helpLink = getHelpUrl(HELP_TREE.FIORI_TOOLS, [57266]);
-        const warningMessage = t('WARN_CANNOT_GET_TRANSPORT_CONFIGURATION', { helpLink });
+        const warningMessage = t('warnings.transportConfigFailure', { helpLink });
         LoggerHelper.logger.info(`\n${warningMessage}`);
         LoggerHelper.logger.info(`\n${warning}`);
         PromptState.transportAnswers.transportConfigNeedsCreds = false;
