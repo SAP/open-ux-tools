@@ -2,7 +2,7 @@ import type { ReactElement } from 'react';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
-import { UILink } from '@sap-ux/ui-components';
+import { UIActionButton } from '@sap-ux/ui-components';
 
 import type { SimpleQuickAction } from '@sap-ux-private/control-property-editor-common';
 import { executeQuickAction } from '@sap-ux-private/control-property-editor-common';
@@ -24,13 +24,13 @@ export function SimpleQuickActionListItem({ action }: SimpleQuickActionListItemP
     return (
         <>
             <div className={`quick-action-item`}>
-                <UILink
+                <UIActionButton
                     key={action.type}
                     onClick={() => {
                         dispatch(executeQuickAction({ kind: action.kind, type: action.type }));
                     }}>
                     {action.title}
-                </UILink>
+                </UIActionButton>
             </div>
         </>
     );
