@@ -6,7 +6,8 @@ import {
     validateScpQuestion,
     validateTargetSystem,
     validateTargetSystemUrlCli,
-    validateUrl
+    validateUrl,
+    updateDestinationPromptState
 } from '../validators';
 import { t } from '../../i18n';
 import { getClientChoicePromptChoices, getAbapSystemChoices, updateGeneratorUrl } from '../helpers';
@@ -15,6 +16,7 @@ import { getAbapSystems } from '../../utils';
 import { PromptState } from '../prompt-state';
 import { Severity, type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import { isAppStudio, isOnPremiseDestination, type Destinations } from '@sap-ux/btp-utils';
+import { hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     abapDeployConfigInternalPromptNames,
     ClientChoiceValue,
@@ -22,7 +24,7 @@ import {
     type AbapDeployConfigPromptOptions,
     type AbapSystemChoice
 } from '../../types';
-import type { InputQuestion, ListQuestion, ConfirmQuestion } from '@sap-ux/inquirer-common';
+import type { InputQuestion, ListQuestion, ConfirmQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Question } from 'inquirer';
 
 /**
@@ -37,30 +39,46 @@ function getDestinationPrompt(
     options: AbapDeployConfigPromptOptions,
     choices: AbapSystemChoice[],
     destinations?: Destinations
-): Question<AbapDeployConfigAnswers> {
-    return {
-        when: (): boolean => isAppStudio(),
-        type: 'list',
-        name: abapDeployConfigInternalPromptNames.destination,
-        message: t('prompts.target.destination.message'),
-        guiOptions: {
-            breadcrumb: true
-        },
-        default: (): string | undefined => options.backendTarget?.abapTarget?.destination,
-        filter: (input: string): string => input?.trim(),
-        choices: (): AbapSystemChoice[] => choices,
-        validate: (destination: string): boolean => validateDestinationQuestion(destination, destinations),
-        additionalMessages: (destination: string): IMessageSeverity | undefined => {
-            let additionalMessage;
-            if (destinations && isOnPremiseDestination(destinations[destination])) {
-                additionalMessage = {
-                    message: t('warnings.virtualHost'),
-                    severity: Severity.warning
-                };
+): (YUIQuestion<AbapDeployConfigAnswers> | Question)[] {
+    const prompts: (ListQuestion<AbapDeployConfigAnswers> | Question)[] = [
+        {
+            when: (): boolean => isAppStudio(),
+            type: 'list',
+            name: abapDeployConfigInternalPromptNames.destination,
+            message: t('prompts.target.destination.message'),
+            guiOptions: {
+                breadcrumb: true
+            },
+            default: (): string | undefined => options.backendTarget?.abapTarget?.destination,
+            filter: (input: string): string => input?.trim(),
+            choices: (): AbapSystemChoice[] => choices,
+            validate: (destination: string): boolean => validateDestinationQuestion(destination, destinations),
+            additionalMessages: (destination: string): IMessageSeverity | undefined => {
+                let additionalMessage;
+                if (destinations && isOnPremiseDestination(destinations[destination])) {
+                    additionalMessage = {
+                        message: t('warnings.virtualHost'),
+                        severity: Severity.warning
+                    };
+                }
+                return additionalMessage;
             }
-            return additionalMessage;
-        }
-    } as ListQuestion<AbapDeployConfigAnswers>;
+        } as ListQuestion<AbapDeployConfigAnswers>
+    ];
+
+    if (getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli) {
+        prompts.push({
+            when: async (answers: AbapDeployConfigAnswers): Promise<boolean> => {
+                const destination = answers[abapDeployConfigInternalPromptNames.destination];
+                if (destination) {
+                    updateDestinationPromptState(destination, destinations);
+                }
+                return false;
+            },
+            name: abapDeployConfigInternalPromptNames.destinationCliSetter
+        } as Question);
+    }
+    return prompts;
 }
 
 /**
@@ -191,7 +209,6 @@ export async function getAbapTargetPrompts(
 ): Promise<Question<AbapDeployConfigAnswers>[]> {
     const { destinations, backendSystems } = await getAbapSystems();
     const abapSystemChoices = await getAbapSystemChoices(options.backendTarget, destinations, backendSystems);
-
     return [
         getDestinationPrompt(options, abapSystemChoices, destinations),
         getTargetSystemPrompt(abapSystemChoices),
