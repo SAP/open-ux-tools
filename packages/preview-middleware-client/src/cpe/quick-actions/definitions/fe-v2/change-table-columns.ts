@@ -24,6 +24,7 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
     isClearButtonEnabled = false;
     children: NestedQuickActionChild[] = [];
     tableMap: Record<string, number> = {};
+    eventAttachedOnce: boolean = false;
     constructor(private context: QuickActionContext) {}
 
     async initialize() {
@@ -43,7 +44,7 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
                     if (table.isA('sap.m.Table')) {
                         const title = (table as Table)?.getHeaderToolbar()?.getTitleControl()?.getText() || 'Unknown';
                         this.children.push({
-                            label: `${title}' table`,
+                            label: `'${title}' table`,
                             children: []
                         });
                     }
@@ -96,13 +97,17 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
                         await this.context.actionService.execute(table.getId(), SMART_TABLE_ACTION_ID);
                     }
                     if (table?.isA('sap.m.Table')) {
-                        const eventHanlder = (table as ListBase).attachUpdateFinished ? 'attachUpdateFinished' : 'attachGrowingFinished';
                         if ((table as ListBase).getItems().length > 0) {
                             await this.context.actionService.execute(table.getId(), M_TABLE_ACTION_ID);
                         }
-                        (table as ListBase)?.[eventHanlder](
-                            async () => await this.context.actionService.execute(table.getId(), M_TABLE_ACTION_ID)
-                        );
+                        // to avoid reopening the dialog after close
+                        if (!this.eventAttachedOnce) {
+                            (table as ListBase)?.attachEventOnce(
+                                'updateFinished',
+                                async () => await this.context.actionService.execute(table.getId(), M_TABLE_ACTION_ID)
+                            );
+                            this.eventAttachedOnce = true;
+                        }
                     }
                 }
             }

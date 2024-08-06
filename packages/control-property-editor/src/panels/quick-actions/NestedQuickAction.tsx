@@ -3,11 +3,15 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 
-import { UIActionButton, UIContextualMenuItem, UIDirectionalHint, UILink } from '@sap-ux/ui-components';
+import {
+    UIActionButton,
+    UIContextualMenuItem,
+    UIDirectionalHint,
+    UiIcons
+} from '@sap-ux/ui-components';
 
 import type { NestedQuickAction, NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
 import { executeQuickAction } from '@sap-ux-private/control-property-editor-common';
-import { IconName } from 'src/icons';
 
 export interface NestedQuickActionListItemProps {
     action: Readonly<NestedQuickAction>;
@@ -24,21 +28,25 @@ export function NestedQuickActionListItem({ action }: NestedQuickActionListItemP
     const { t } = useTranslation();
     const dispatch = useDispatch();
 
-    const [expandedCallouts, setExpandedCallouts] = useState<number[]>([]);
-
-    const buildMenuItems = function (children: NestedQuickActionChild[]): UIContextualMenuItem[] {
+    const buildMenuItems = function (
+        children: NestedQuickActionChild[],
+        childIdx: number[] = []
+    ): UIContextualMenuItem[] {
         return children.map((item, idx) => {
             const hasChildren = item?.children?.length > 1;
             return {
                 key: `${idx}`,
+                className: hasChildren ? 'submenu-icon' : '',
                 text: item.label,
+                submenuIconProps: hasChildren
+                    ? {
+                          iconName: UiIcons.ArrowUp // css class overrides Icons.chevronLeft
+                      }
+                    : undefined,
                 subMenuProps: hasChildren
                     ? {
-                          submenuIconProps: {
-                              iconName: IconName.chevronLeft
-                          },
                           directionalHint: UIDirectionalHint.leftCenter,
-                          items: buildMenuItems(item.children)
+                          items: buildMenuItems(item.children, [...childIdx, idx])
                       }
                     : undefined,
                 onClick() {
@@ -46,10 +54,9 @@ export function NestedQuickActionListItem({ action }: NestedQuickActionListItemP
                         executeQuickAction({
                             kind: action.kind,
                             type: action.type,
-                            path: [...expandedCallouts.slice(1), idx].join('/')
+                            path: `${childIdx.length ? `${childIdx.join('/')}/${idx}` : idx}`
                         })
                     );
-                    setExpandedCallouts([]);
                 }
             };
         });

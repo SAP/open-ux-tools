@@ -30,4 +30,12 @@
         }
     }
 }
-
+.submenu-icon {
+    span.ms-ContextualMenu-itemText +  i.ms-ContextualMenu-submenuIcon {
+        order: -1;
+        margin-right: 8px;
+    };
+    span.ms-ContextualMenu-itemText:only-child {
+        margin-left: 24px;
+    };
+}
