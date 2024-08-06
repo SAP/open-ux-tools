@@ -8,15 +8,14 @@ import {
     startPostMessageCommunication,
     enableTelemetry
 } from '@sap-ux-private/control-property-editor-common';
-
 import { ActionHandler } from '../cpe/types';
-import VersionInfo from 'sap/ui/VersionInfo';
 import { getUI5VersionValidationMessage } from './ui5-version-utils';
 import UI5Element from 'sap/ui/dt/Element';
 import { getError } from '../cpe/error-utils';
+import { getUi5Version } from '../utils/version';
 
 export default async function (rta: RuntimeAuthoring) {
-    const { version } = (await VersionInfo.load()) as { version: string };
+    const version = await getUi5Version();
     const versionParts = version.split('.');
     const minor = parseInt(versionParts[1], 10);
     const flexSettings = rta.getFlexSettings();

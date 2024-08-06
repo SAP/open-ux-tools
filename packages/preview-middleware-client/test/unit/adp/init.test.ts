@@ -65,7 +65,7 @@ describe('adp', () => {
             return { dispose: jest.fn(), sendAction: jest.fn() };
         });
         const enableTelemetry = jest.spyOn(common, 'enableTelemetry');
-        VersionInfo.load.mockResolvedValue({ version: '1.118.1' });
+        VersionInfo.load.mockResolvedValue({name: 'sap.ui.core', version: '1.118.1' });
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
@@ -93,7 +93,7 @@ describe('adp', () => {
             return { dispose: jest.fn(), sendAction: sendActionMock };
         });
 
-        VersionInfo.load.mockResolvedValue({ version: '1.70.0' });
+        VersionInfo.load.mockResolvedValue({name: 'sap.ui.core', version: '1.70.0' });
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
@@ -133,7 +133,7 @@ describe('adp', () => {
             'application-app-preview-component---fin.ar.lineitems.display.appView': mockUI5Element
         });
 
-        VersionInfo.load.mockResolvedValue({ version: '1.123.1' });
+        VersionInfo.load.mockResolvedValue({name: 'sap.ui.core', version: '1.123.1' });
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
@@ -172,7 +172,7 @@ describe('adp', () => {
 
         Element.registry.filter.mockReturnValue([mockUI5Element]);
 
-        VersionInfo.load.mockResolvedValue({ version: '1.118.1' });
+        VersionInfo.load.mockResolvedValue({name: 'sap.ui.core', version: '1.118.1' });
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 

@@ -2,7 +2,7 @@ import type { OutlineNode } from '@sap-ux-private/control-property-editor-common
 import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
 import { isEditable, isReuseComponent } from './utils';
-import VersionInfo from 'sap/ui/VersionInfo';
+import { getUi5Version } from '../../utils/version';
 
 interface AdditionalData {
     text?: string;
@@ -87,7 +87,7 @@ export async function transformNodes(
 ): Promise<OutlineNode[]> {
     const stack = [...input];
     const items: OutlineNode[] = [];
-    const { version } = (await VersionInfo.load()) as { version: string };
+    const version = await getUi5Version();
     const versionParts = version.split('.');
     const minor = parseInt(versionParts[1], 10);
     while (stack.length) {
