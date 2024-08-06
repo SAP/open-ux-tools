@@ -53,6 +53,31 @@ function validatePromptInput(value: string): boolean | string {
 }
 
 /**
+ * Validates the customer value.
+ *
+ * @param value The value to validate.
+ * @param label The label of the prompt.
+ * @returns {boolean | string} True if the value is valid, or an error message if validation fails.
+ */
+function validateCustomerValue(value: string, label: string): boolean | string {
+    if (!hasCustomerPrefix(value)) {
+        return t('validators.errorInputInvalidValuePrefix', {
+            value: t(label),
+            prefix: NamespacePrefix.CUSTOMER
+        });
+    }
+
+    if (hasCustomerEmptyValue(value)) {
+        return t('validators.errorCustomerEmptyValue', {
+            value: t(label),
+            prefix: NamespacePrefix.CUSTOMER
+        });
+    }
+
+    return true;
+}
+
+/**
  * Validates a JSON string.
  *
  * @param value The JSON string to validate.
@@ -82,24 +107,15 @@ function validatePromptODataName(
     isCustomerBase: boolean,
     changeFiles: ManifestChangeProperties[]
 ): boolean | string {
-    const validationResult = validatePromptInput(value);
+    let validationResult = validatePromptInput(value);
     if (typeof validationResult === 'string') {
         return validationResult;
     }
 
     if (isCustomerBase) {
-        if (!hasCustomerPrefix(value)) {
-            return t('validators.errorInputInvalidValuePrefix', {
-                value: t('prompts.oDataServiceNameLabel'),
-                prefix: NamespacePrefix.CUSTOMER
-            });
-        }
-
-        if (hasCustomerEmptyValue(value)) {
-            return t('validators.errorCustomerEmptyValue', {
-                value: t('prompts.oDataServiceNameLabel'),
-                prefix: NamespacePrefix.CUSTOMER
-            });
+        validationResult = validateCustomerValue(value, 'prompts.oDataServiceNameLabel');
+        if (typeof validationResult === 'string') {
+            return validationResult;
         }
     }
 
@@ -129,23 +145,15 @@ function validatePromptODataAnnotationsName(
     isCustomerBase: boolean,
     changeFiles: ManifestChangeProperties[]
 ): boolean | string {
-    const validationResult = validatePromptInput(value);
+    let validationResult = validatePromptInput(value);
     if (typeof validationResult === 'string') {
         return validationResult;
     }
 
     if (isCustomerBase) {
-        if (!hasCustomerPrefix(value)) {
-            return t('validators.errorInputInvalidValuePrefix', {
-                value: t('prompts.oDataAnnotationDataSourceNameLabel'),
-                prefix: NamespacePrefix.CUSTOMER
-            });
-        }
-        if (hasCustomerEmptyValue(value)) {
-            return t('validators.errorCustomerEmptyValue', {
-                value: t('prompts.oDataAnnotationDataSourceNameLabel'),
-                prefix: NamespacePrefix.CUSTOMER
-            });
+        validationResult = validateCustomerValue(value, 'prompts.oDataAnnotationDataSourceNameLabel');
+        if (typeof validationResult === 'string') {
+            return validationResult;
         }
     }
 
@@ -173,23 +181,15 @@ function validatePromptModelName(
     isCustomerBase: boolean,
     changeFiles: ManifestChangeProperties[]
 ): boolean | string {
-    const validationResult = validatePromptInput(value);
+    let validationResult = validatePromptInput(value);
     if (typeof validationResult === 'string') {
         return validationResult;
     }
 
     if (isCustomerBase) {
-        if (!hasCustomerPrefix(value)) {
-            return t('validators.errorInputInvalidValuePrefix', {
-                value: t('prompts.oDataServiceModelNameLabel'),
-                prefix: NamespacePrefix.CUSTOMER
-            });
-        }
-        if (hasCustomerEmptyValue(value)) {
-            return t('validators.errorCustomerEmptyValue', {
-                value: t('prompts.oDataServiceModelNameLabel'),
-                prefix: NamespacePrefix.CUSTOMER
-            });
+        validationResult = validateCustomerValue(value, 'prompts.oDataServiceModelNameLabel');
+        if (typeof validationResult === 'string') {
+            return validationResult;
         }
     }
 
