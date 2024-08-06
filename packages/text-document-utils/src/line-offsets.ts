@@ -9,7 +9,7 @@ export function getLineOffsets(text: string): number[] {
     let index = 0;
     while (index < text.length) {
         const match = text.substr(index).match(/[\r\n]/);
-        if (match && match.index !== undefined) {
+        if (match?.index !== undefined) {
             index += match.index + 1;
             if (text[index - 1] === '\r' && text[index] === '\n') {
                 index++;
