@@ -1,12 +1,13 @@
 import type { ReactElement } from 'react';
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import { UISectionLayout, UISections, UISplitterLayoutType, UISplitterType } from '@sap-ux/ui-components';
+import type { Scenario } from '@sap-ux-private/control-property-editor-common';
 
 import { PropertiesList } from './properties';
 import { QuickActionList } from './quick-actions';
-import { useSelector } from 'react-redux';
-import { RootState } from '../store';
+import type { RootState } from '../store';
 import './RightPanel.scss';
 
 /**
@@ -15,9 +16,15 @@ import './RightPanel.scss';
  * @returns ReactElement
  */
 export function RightPanel(): ReactElement {
+    const actionsCount = useSelector<RootState, number>((state) => state.quickActions.length);
+    const scenario = useSelector<RootState, Scenario>((state) => state.scenario);
+
+    if (scenario !== 'ADAPTATION_PROJECT') {
+        return <PropertiesList />;
+    }
+
     const rowSize = 100;
     const header = 150;
-    const actionsCount = useSelector<RootState, number>((state) => state.quickActions.length);
     const initialSize = actionsCount * rowSize + header;
     return (
         <UISections
@@ -33,7 +40,7 @@ export function RightPanel(): ReactElement {
             <UISections.Section
                 scrollable={true}
                 layout={UISectionLayout.Standard}
-                className="editor__outline"
+                className="editor__outline" // TODO: check class name
                 height="100%">
                 <QuickActionList />
             </UISections.Section>
