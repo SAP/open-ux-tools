@@ -1,6 +1,3 @@
-import type { DocumentUri } from 'vscode-languageserver-textdocument';
-import { TextDocument } from 'vscode-languageserver-textdocument';
-
 export const wrapInQuotes = (text: string): string => `'${text}'`;
 
 export interface FormatterOptions {
@@ -29,8 +26,4 @@ export const printOptions: FormatterOptions = {
     tabWidth: 4,
     useTabs: false,
     useSnippetSyntax: true
-};
-
-export const createTextDocument = (uri: DocumentUri, languageId: string, version: number, content: string) => {
-    return TextDocument.create(uri, languageId, version, content);
 };

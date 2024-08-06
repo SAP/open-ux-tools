@@ -29,7 +29,7 @@
         "watch": "tsc --build ./ -watch"
     },
     "dependencies": {
-        "vscode-languageserver-types": "3.17.2"
+        "@sap-ux/text-document-utils": "workspace:*"
     },
     "devDependencies": {
         "npm-run-all2": "6.2.0",

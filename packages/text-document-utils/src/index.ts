@@ -1,19 +1,10 @@
 export {
-    TextDocument,
-    Position,
-    Range,
-    DocumentUri,
-    TextDocumentContentChangeEvent,
-    TextEdit
-} from 'vscode-languageserver-textdocument';
-
-export {
     Location,
-    Range as RangeType,
-    Position as PositionType,
+    Range,
+    Position,
     Diagnostic,
     DiagnosticSeverity,
-    TextEdit as TextEditType,
+    TextEdit,
     WorkspaceEdit,
     CompletionItemKind,
     InsertTextFormat,
@@ -27,8 +18,6 @@ export {
     MarkupContent,
     MarkedString
 } from 'vscode-languageserver-types';
-
-export { getLanguageService, JSONSchema, JSONDocument } from 'vscode-json-languageservice';
 
 export { getLineOffsets } from './line-offsets';
 export {
