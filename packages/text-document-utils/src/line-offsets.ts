@@ -6,15 +6,17 @@
  */
 export function getLineOffsets(text: string): number[] {
     const lineOffsets: number[] = [0];
-    for (let index = 0; index < text.length; index++) {
-        const character = text[index];
-        if (character === '\n') {
-            lineOffsets.push(index + 1);
-        } else if (character === '\r') {
-            if (index + 1 < text.length && text[index + 1] === '\n') {
+    let index = 0;
+    while (index < text.length) {
+        const match = text.substr(index).match(/[\r\n]/);
+        if (match && match.index !== undefined) {
+            index += match.index + 1;
+            if (text[index - 1] === '\r' && text[index] === '\n') {
                 index++;
             }
-            lineOffsets.push(index + 1);
+            lineOffsets.push(index);
+        } else {
+            break;
         }
     }
     return lineOffsets;
