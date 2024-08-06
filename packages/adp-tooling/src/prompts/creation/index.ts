@@ -24,6 +24,7 @@ import { t } from '../../i18n';
 import { isCustomerBase } from '../../base/helper';
 import {
     Application,
+    CUSTOMER_BASE,
     ChoiceOption,
     ConfigurationInfoAnswers,
     DeployConfigAnswers,
@@ -70,8 +71,6 @@ export default class ProjectPrompter {
     private versionsOnSystem: string[];
     private systemNames: string[];
 
-    private inboundIds: string[];
-
     private readonly isExtensionInstalled: boolean;
 
     private appsService: ApplicationService;
@@ -90,7 +89,7 @@ export default class ProjectPrompter {
         prompts?: Prompts
     ) {
         this.prompts = prompts;
-        this.isCustomerBase = isCustomerBase(layer);
+        this.isCustomerBase = layer === CUSTOMER_BASE;
         this.isExtensionInstalled = isExtensionInstalledVsCode('sapse.sap-ux-application-modeler-extension');
 
         this.appIdentifier = new AppIdentifier(this.isCustomerBase);
@@ -455,7 +454,6 @@ export default class ProjectPrompter {
                     return t('prompts.inputCannotBeEmpty');
                 }
 
-                // answers.password not set yet, use "value" instead
                 try {
                     await this.getSystemData(answers.system, answers.client, answers.username, value);
                     this.versionsOnSystem = await this.systemUI5VersionHandler(answers.system);
@@ -629,15 +627,6 @@ export default class ProjectPrompter {
             guiOptions: {
                 hint: t('prompts.applicationListTooltip'),
                 breadcrumb: t('prompts.applicationListLabel')
-            },
-            additionalMessages: (app) => {
-                if (this.appIdentifier.appSync && this.isApplicationSupported && !!app) {
-                    return {
-                        // TODO: appInfoLabel is in two places rn
-                        message: t('prompts.appInfoLabel'),
-                        severity: Severity.information
-                    };
-                }
             }
         } as InputQuestion<ConfigurationInfoAnswers>;
     }
@@ -648,7 +637,6 @@ export default class ProjectPrompter {
             name: 'ui5Version',
             message: t('prompts.ui5VersionLabel'),
             when: (answers: ConfigurationInfoAnswers) => {
-                // show the field when the system is selected
                 return (
                     !!answers.system &&
                     !this.shouldAuthenticate(answers) &&
@@ -691,7 +679,6 @@ export default class ProjectPrompter {
                 breadcrumb: t('prompts.fioriIdLabel')
             },
             when: (answers: ConfigurationInfoAnswers) => {
-                // show the field when the system is selected and in internal mode
                 return (
                     answers.system &&
                     answers.application &&
@@ -719,7 +706,6 @@ export default class ProjectPrompter {
                 mandatory: true
             },
             when: (answers: ConfigurationInfoAnswers) => {
-                // show the field when the system is selected and in internal mode
                 return (
                     answers.system &&
                     answers.application &&
@@ -807,148 +793,6 @@ export default class ProjectPrompter {
         ];
     }
 
-    private getInboundListPrompt(): YUIQuestion<FlpConfigAnswers> {
-        return {
-            type: 'list',
-            name: 'inboundId',
-            message: t('prompts.inboundId'),
-            choices: this.inboundIds,
-            default: this.inboundIds[0],
-            validate: (value: string) => validateEmptyInput(value, 'inboundId'),
-            when: this.isCloudProject && this.inboundIds.length > 0,
-            guiOptions: {
-                hint: t('tooltips.inboundId'),
-                breadcrumb: t('prompts.inboundId')
-            }
-        } as ListQuestion<FlpConfigAnswers>;
-    }
-
-    private getFlpInfoPrompt(appId: string): YUIQuestion<FlpConfigAnswers> {
-        return {
-            type: 'input',
-            name: 'flpInfo',
-            message: t('prompts.flpInfo'),
-            guiOptions: {
-                type: 'label',
-                mandatory: false,
-                link: {
-                    text: 'application page.',
-                    url: `https://fioriappslibrary.hana.ondemand.com/sap/fix/externalViewer/${
-                        appId ? `index.html?appId=${appId}&releaseGroupTextCombined=SC` : '#/home'
-                    }`
-                }
-            },
-            when: this.isCloudProject && this.inboundIds.length === 0
-        };
-    }
-
-    private getFlpConfigurationTypePrompt(): YUIQuestion<FlpConfigAnswers> {
-        return {
-            type: 'input',
-            name: 'flpConfigurationTypeLabel',
-            message: t('prompts.flpConfigurationType'),
-            when: this.isCloudProject,
-            guiOptions: {
-                type: 'label',
-                hint: t('tooltips.flpConfigurationType'),
-                mandatory: false
-            }
-        };
-    }
-
-    private getSemanticObjectPrompt(): YUIQuestion<FlpConfigAnswers> {
-        return {
-            type: 'input',
-            name: 'semanticObject',
-            message: t('prompts.semanticObject'),
-            validate: (value: string) => validateByRegex(value, 'semanticObject', '^[A-Za-z0-9_]{0,30}$'),
-            guiOptions: {
-                hint: t('prompts.semanticObject'),
-                breadcrumb: t('prompts.semanticObject'),
-                mandatory: true
-            },
-            when: this.isCloudProject && !this.inboundIds.length
-        };
-    }
-
-    private getActionPrompt(): YUIQuestion<FlpConfigAnswers> {
-        return {
-            type: 'input',
-            name: 'action',
-            message: t('prompts.action'),
-            validate: (value: string) => validateByRegex(value, 'action', '^[A-Za-z0-9_]{0,60}$'),
-            guiOptions: {
-                hint: t('tooltips.action'),
-                breadcrumb: t('prompts.action'),
-                mandatory: true
-            },
-            when: this.isCloudProject && !this.inboundIds.length
-        };
-    }
-
-    private getTitlePrompt(): YUIQuestion<FlpConfigAnswers> {
-        return {
-            type: 'input',
-            name: 'title',
-            message: t('prompts.title'),
-            guiOptions: {
-                hint: t('tooltips.title'),
-                breadcrumb: t('prompts.title'),
-                mandatory: true
-            },
-            when: this.isCloudProject,
-            validate: (value: string) => validateEmptyInput(value, 'title')
-        };
-    }
-
-    private getSubtitlePrompt(): YUIQuestion<FlpConfigAnswers> {
-        return {
-            type: 'input',
-            name: 'subTitle',
-            message: t('prompts.subtitle'),
-            guiOptions: {
-                hint: t('tooltips.subtitle'),
-                breadcrumb: t('prompts.subtitle')
-            },
-            when: this.isCloudProject
-        };
-    }
-
-    private getParametersPrompt(): YUIQuestion<FlpConfigAnswers> {
-        return {
-            type: 'editor',
-            name: 'parameters',
-            message: t('prompts.parameters'),
-            validate: (value: string) => validateParameters(value),
-            guiOptions: {
-                hint: t('tooltips.parameters'),
-                breadcrumb: t('prompts.parameters'),
-                mandatory: false
-            },
-            when: this.isCloudProject && this.inboundIds.length === 0
-        };
-    }
-
-    public async getFlpConfigurationPrompts(appId: string): Promise<YUIQuestion<FlpConfigAnswers>[]> {
-        if (!this.manifestService.getManifest(appId)) {
-            await this.manifestService.loadManifest(appId);
-        }
-        const manifest = this.manifestService.getManifest(appId);
-        this.inboundIds = getInboundIds(manifest);
-
-        return [
-            this.getInboundListPrompt(),
-            this.getFlpInfoPrompt(appId),
-            this.getFlpConfigurationTypePrompt(),
-            this.getSemanticObjectPrompt(),
-            this.getActionPrompt(),
-            this.getTitlePrompt(),
-            this.getSubtitlePrompt(),
-            this.getParametersPrompt()
-        ];
-    }
-
-    //DEPLOY CONFIG PROMPTS
     private getAbapRepositoryPrompt(): YUIQuestion<DeployConfigAnswers> {
         return {
             type: 'input',
@@ -1017,10 +861,11 @@ export default class ProjectPrompter {
         }
 
         try {
-            const lRepService = await this.providerService.getProvider().getLayeredRepository();
-            const systemInfo = await lRepService.getSystemInfo(undefined, value);
-            //When passing package to the API for getting system info the response contains the type of the package (cloud or onPremise)
-            //If the package is cloud in adaptationProjectTypes we will have array with only one element 'cloudReady', if it is 'onPremise' the element in the array will be 'onPremise'
+            const provider = this.providerService.getProvider();
+            const lrep = provider.getLayeredRepository();
+            const systemInfo = await lrep.getSystemInfo(undefined, value);
+            // When passing package to the API for getting system info the response contains the type of the package (cloud or onPremise)
+            // If the package is cloud in adaptationProjectTypes we will have array with only one element 'cloudReady', if it is 'onPremise' the element in the array will be 'onPremise'
             if (systemInfo.adaptationProjectTypes[0] !== AdaptationProjectType.CLOUD_READY) {
                 return t('validators.package.notCloudPackage');
             }
@@ -1162,6 +1007,7 @@ export default class ProjectPrompter {
         };
     }
 
+    // TODO: Determine if extracted prompts work and remove these ones from ProjectPrompter
     public getDeployConfigPrompts(): YUIQuestion<DeployConfigAnswers>[] {
         return [
             this.getAbapRepositoryPrompt(),
