@@ -427,8 +427,7 @@ async function loadCdsModuleFromProject(capProjectPath: string, strict: boolean 
         global.cds = cds;
     }
     // correct cds.env for current project root. Especially needed CAP Java projects loading cds dependency from jar file
-    const cdsEnv: any = cds.env.for('cds', capProjectPath);
-    cds.env = cdsEnv;
+    cds.env = cds.env.for('cds', capProjectPath) as typeof cds.env;
     return cds;
 }
 
