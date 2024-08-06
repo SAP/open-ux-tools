@@ -16,47 +16,23 @@ import type {
     InputQuestion,
     YUIQuestion,
     PasswordQuestion,
-    ConfirmQuestion,
-    AutocompleteQuestion
+    ConfirmQuestion
 } from '@sap-ux/inquirer-common';
 
 import { t } from '../../i18n';
 import { isCustomerBase } from '../../base/helper';
-import {
-    Application,
-    CUSTOMER_BASE,
-    ChoiceOption,
-    ConfigurationInfoAnswers,
-    DeployConfigAnswers,
-    FlexUISupportedSystem,
-    FlpConfigAnswers,
-    InputChoice,
-    Prompts
-} from '../../types';
-import {
-    isNotEmptyString,
-    validateAbapRepository,
-    validateAch,
-    validateByRegex,
-    validateClient,
-    validateEmptyInput,
-    validatePackage,
-    validatePackageChoiceInput,
-    validateParameters,
-    validateTransportChoiceInput
-} from '../../base/validators';
+import { Application, CUSTOMER_BASE, ConfigurationInfoAnswers, FlexUISupportedSystem, Prompts } from '../../types';
+import { isNotEmptyString, validateAch, validateClient } from '../../base/validators';
 
 import { EndpointsService } from '../../base/services/endpoints-service';
 import { UI5VersionService, isFeatureSupportedVersion } from '../../base/services/ui5-version-service';
-import { ManifestService, getCachedACH, getCachedFioriId, getInboundIds } from '../../base/services/manifest-service';
+import { ManifestService, getCachedACH, getCachedFioriId } from '../../base/services/manifest-service';
 import { ProviderService } from '../../base/services/abap-provider-service';
-import { listTransports } from '../../base/services/list-transports-service';
-import { ABAP_PACKAGE_SEARCH_MAX_RESULTS, listPackages } from '../../base/services/list-packages-service';
 import { ApplicationService, getApplicationChoices } from '../../base/services/application-service';
 import { AppIdentifier } from '../../base/services/app-identifier-service';
 import { resolveNodeModuleGenerator } from '../../base/file-system';
 
-export default class ProjectPrompter {
+export default class ConfigInfoPrompter {
     private logger: Logger;
     private isCustomerBase: boolean;
     private hasSystemAuthentication: boolean;
@@ -77,8 +53,6 @@ export default class ProjectPrompter {
     private appIdentifier: AppIdentifier;
 
     private prompts?: Prompts;
-    private packageInputChoiceValid: string | boolean;
-    private transportList: string[] | undefined;
 
     constructor(
         private providerService: ProviderService,
@@ -790,234 +764,6 @@ export default class ProjectPrompter {
             this.getACHprompt(),
             this.getAppInfoErrorPrompt(),
             this.getConfirmExtProjPrompt(projectName)
-        ];
-    }
-
-    private getAbapRepositoryPrompt(): YUIQuestion<DeployConfigAnswers> {
-        return {
-            type: 'input',
-            name: 'abapRepository',
-            message: t('prompts.abapRepository'),
-            guiOptions: {
-                hint: t('tooltips.abapRepository'),
-                mandatory: true
-            },
-            validate: (value: string) => validateAbapRepository(value)
-        };
-    }
-
-    private getInputChoiceOptions(): ChoiceOption[] {
-        return [
-            { name: InputChoice.ENTER_MANUALLY, value: InputChoice.ENTER_MANUALLY },
-            { value: InputChoice.CHOOSE_FROM_EXISTING, name: InputChoice.CHOOSE_FROM_EXISTING }
-        ];
-    }
-
-    private getDeployConfigDescriptionPrompt(): YUIQuestion<DeployConfigAnswers> {
-        return {
-            type: 'input',
-            name: 'deployConfigDescription',
-            message: t('prompts.deployConfigDescription'),
-            guiOptions: {
-                hint: t('tooltips.deployConfigDescription')
-            }
-        };
-    }
-
-    private getPackageInputChoicePrompt(): YUIQuestion<DeployConfigAnswers> {
-        const options = this.getInputChoiceOptions();
-        return {
-            type: 'list',
-            name: 'packageInputChoice',
-            message: t('prompts.packageInputChoice'),
-            choices: () => options,
-            default: (answers: DeployConfigAnswers) => answers?.packageInputChoice ?? InputChoice.ENTER_MANUALLY,
-            guiOptions: {
-                applyDefaultWhenDirty: true
-            },
-            validate: async (value: InputChoice) => {
-                this.packageInputChoiceValid = await validatePackageChoiceInput(
-                    value,
-                    this.providerService.getProvider()
-                );
-                return this.packageInputChoiceValid;
-            }
-        } as ListQuestion<DeployConfigAnswers>;
-    }
-
-    private async setTransportList(packageName: string, repository: string): Promise<void> {
-        try {
-            this.transportList = await listTransports(packageName, repository, this.providerService.getProvider());
-        } catch (error) {
-            //In case that the request fails we should not break package validation
-            //this.logger.error(`Could not set transportList! Error: ${error.message}`);
-        }
-    }
-
-    private async validatePackage(value: string, answers: DeployConfigAnswers): Promise<string | boolean> {
-        const errorMessage = validatePackage(value, answers.abapRepository);
-        if (errorMessage) {
-            return errorMessage;
-        }
-
-        try {
-            const provider = this.providerService.getProvider();
-            const lrep = provider.getLayeredRepository();
-            const systemInfo = await lrep.getSystemInfo(undefined, value);
-            // When passing package to the API for getting system info the response contains the type of the package (cloud or onPremise)
-            // If the package is cloud in adaptationProjectTypes we will have array with only one element 'cloudReady', if it is 'onPremise' the element in the array will be 'onPremise'
-            if (systemInfo.adaptationProjectTypes[0] !== AdaptationProjectType.CLOUD_READY) {
-                return t('validators.package.notCloudPackage');
-            }
-
-            if (answers.abapRepository && answers.transportInputChoice === InputChoice.CHOOSE_FROM_EXISTING) {
-                await this.setTransportList(value, answers.abapRepository);
-            }
-
-            return true;
-        } catch (error) {
-            //If there is no such package the API will response with 400 or 404 status codes
-            if (error.response && (error.response.status === 400 || error.response.status === 404)) {
-                return t('validators.package.notCloudPackage');
-            }
-            //In case of different response status code than 400 or 404 we are showing the error message
-            return error.message;
-        }
-    }
-
-    private getPackageManualPrompt(): YUIQuestion<DeployConfigAnswers> {
-        return {
-            type: 'input',
-            name: 'packageManual',
-            message: t('prompts.package'),
-            guiOptions: {
-                hint: t('tooltips.package'),
-                mandatory: true
-            },
-            when: (answers: DeployConfigAnswers) => {
-                return (
-                    answers?.packageInputChoice === InputChoice.ENTER_MANUALLY ||
-                    (answers.packageInputChoice === InputChoice.CHOOSE_FROM_EXISTING &&
-                        typeof this.packageInputChoiceValid === 'string')
-                );
-            },
-            validate: async (value: string, answers: DeployConfigAnswers) => await this.validatePackage(value, answers)
-        };
-    }
-
-    private getPackageAutoCompletePrompt(): YUIQuestion<DeployConfigAnswers> {
-        let morePackageResultsMsg = '';
-        return {
-            type: 'autocomplete',
-            name: 'packageAutocomplete',
-            message: t('prompts.package'),
-            guiOptions: {
-                mandatory: true,
-                hint: t('tooltips.package')
-            },
-            source: async (answers: DeployConfigAnswers, input: string) => {
-                let packages: string[] | undefined = [];
-                try {
-                    packages = await listPackages(input, this.providerService.getProvider());
-                    morePackageResultsMsg =
-                        packages && packages.length === ABAP_PACKAGE_SEARCH_MAX_RESULTS
-                            ? t('info.moreSearchResults', { count: packages.length })
-                            : '';
-                    return packages ?? [];
-                } catch (error) {
-                    this.logger.error(`Could not get packages. Error: ${error.message}`);
-                }
-
-                return packages ?? [];
-            },
-            additionalInfo: () => morePackageResultsMsg,
-            when: (answers: DeployConfigAnswers) => {
-                return (
-                    this.packageInputChoiceValid === true &&
-                    answers?.packageInputChoice === InputChoice.CHOOSE_FROM_EXISTING
-                );
-            },
-            validate: async (value: string, answers: DeployConfigAnswers) => await this.validatePackage(value, answers)
-        } as AutocompleteQuestion<DeployConfigAnswers>;
-    }
-
-    private shouldShowTransportRelatedPrompt(answers: DeployConfigAnswers): boolean {
-        return (
-            (answers?.packageAutocomplete?.toUpperCase() !== '$TMP' &&
-                answers?.packageInputChoice === InputChoice.CHOOSE_FROM_EXISTING) ||
-            (answers?.packageManual?.toUpperCase() !== '$TMP' &&
-                answers?.packageInputChoice === InputChoice.ENTER_MANUALLY)
-        );
-    }
-
-    private getTransportInputChoice(): YUIQuestion<DeployConfigAnswers> {
-        const options = this.getInputChoiceOptions();
-        return {
-            type: 'list',
-            name: 'transportInputChoice',
-            message: t('prompts.transportInputChoice'),
-            choices: () => options,
-            default: (answers: DeployConfigAnswers) => answers.transportInputChoice ?? InputChoice.ENTER_MANUALLY,
-            guiOptions: {
-                applyDefaultWhenDirty: true
-            },
-            validate: async (value: InputChoice, answers: DeployConfigAnswers) =>
-                await validateTransportChoiceInput(
-                    value,
-                    answers.packageInputChoice === InputChoice.ENTER_MANUALLY
-                        ? answers.packageManual!
-                        : answers.packageAutocomplete!,
-                    answers.abapRepository,
-                    this.providerService.getProvider()
-                ),
-            when: (answers: DeployConfigAnswers) => this.shouldShowTransportRelatedPrompt(answers)
-        } as ListQuestion<DeployConfigAnswers>;
-    }
-
-    private getTransportListPrompt(): YUIQuestion<DeployConfigAnswers> {
-        return {
-            type: 'list',
-            name: 'transportFromList',
-            message: t('prompts.transport'),
-            choices: () => this.transportList ?? [],
-            validate: (value: string) => validateEmptyInput(value, 'transport'),
-            when: (answers: DeployConfigAnswers) =>
-                this.shouldShowTransportRelatedPrompt(answers) &&
-                answers?.transportInputChoice === InputChoice.CHOOSE_FROM_EXISTING,
-            guiOptions: {
-                hint: t('tooltips.transport'),
-                mandatory: true
-            }
-        } as ListQuestion<DeployConfigAnswers>;
-    }
-
-    private getTransportManualPrompt(): YUIQuestion<DeployConfigAnswers> {
-        return {
-            type: 'input',
-            name: 'transportManual',
-            message: t('prompts.transport'),
-            validate: (value: string) => validateEmptyInput(value, 'transport'),
-            when: (answers: DeployConfigAnswers) =>
-                this.shouldShowTransportRelatedPrompt(answers) &&
-                answers?.transportInputChoice === InputChoice.ENTER_MANUALLY,
-            guiOptions: {
-                hint: t('tooltips.transport'),
-                mandatory: true
-            }
-        };
-    }
-
-    // TODO: Determine if extracted prompts work and remove these ones from ProjectPrompter
-    public getDeployConfigPrompts(): YUIQuestion<DeployConfigAnswers>[] {
-        return [
-            this.getAbapRepositoryPrompt(),
-            this.getDeployConfigDescriptionPrompt(),
-            this.getPackageInputChoicePrompt(),
-            this.getPackageManualPrompt(),
-            this.getPackageAutoCompletePrompt(),
-            this.getTransportInputChoice(),
-            this.getTransportListPrompt(),
-            this.getTransportManualPrompt()
         ];
     }
 }
