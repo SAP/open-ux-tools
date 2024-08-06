@@ -78,7 +78,9 @@ describe('getPrompts', () => {
             namePrompt?.validate &&
             namePrompt?.validate('testName', { dataSourceName: 'otherName' } as NewModelAnswers);
 
-        expect(validation).toBe("OData Service Name should start with 'customer.'");
+        expect(validation).toBe(
+            "OData Service Name should start with 'customer.' and contain at least one additional alphanumeric character"
+        );
     });
 
     it('should return error message when validating service name prompt and has special characters', () => {
@@ -216,7 +218,9 @@ describe('getPrompts', () => {
 
         const validation = modelNamePrompt?.validate && modelNamePrompt?.validate('testName');
 
-        expect(validation).toBe("OData Service SAPUI5 Model Name should start with 'customer.'");
+        expect(validation).toBe(
+            "OData Service SAPUI5 Model Name should start with 'customer.' and contain at least one additional alphanumeric character"
+        );
     });
 
     it('should return error message when validating model name prompt and has special characters', () => {
@@ -291,7 +295,9 @@ describe('getPrompts', () => {
             dataSourcePrompt?.validate &&
             dataSourcePrompt?.validate('testName', { dataSourceName: 'testName' } as NewModelAnswers);
 
-        expect(validation).toBe("OData Annotation Data Source Name should start with 'customer.'");
+        expect(validation).toBe(
+            "OData Annotation Data Source Name should start with 'customer.' and contain at least one additional alphanumeric character"
+        );
     });
 
     it('should return true when validating data source name prompt', () => {

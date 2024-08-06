@@ -151,7 +151,9 @@ describe('getPrompts', () => {
             const validator = prompts.find((prompt) => prompt.name === 'id')?.validate;
 
             if (validator) {
-                expect(validator('@id')).toBe("Component Usage ID should start with 'customer.'");
+                expect(validator('@id')).toBe(
+                    "Component Usage ID should start with 'customer.' and contain at least one additional alphanumeric character"
+                );
             } else {
                 fail('Validator not found');
             }
@@ -261,7 +263,9 @@ describe('getPrompts', () => {
             const validator = prompts.find((prompt) => prompt.name === 'library')?.validate;
 
             if (validator) {
-                expect(validator('library')).toBe("Library Reference should start with 'customer.'");
+                expect(validator('library')).toBe(
+                    "Library Reference should start with 'customer.' and contain at least one additional alphanumeric character"
+                );
             } else {
                 fail('Validator not found');
             }
