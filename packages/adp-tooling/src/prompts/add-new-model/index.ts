@@ -302,7 +302,7 @@ export function getPrompts(projectPath: string, layer: UI5FlexLayer): YUIQuestio
             type: 'input',
             name: 'dataSourceURI',
             message: t('prompts.oDataAnnotationDataSourceUriLabel'),
-            validate: validateEmptyString,
+            validate: validatePromptURI,
             store: false,
             guiOptions: {
                 mandatory: true,

@@ -351,9 +351,20 @@ describe('getPrompts', () => {
         const prompts = getPrompts(mockPath, 'CUSTOMER_BASE');
         const dataSourceUriPrompt = prompts.find((p) => p.name === 'dataSourceURI');
 
-        const validation = dataSourceUriPrompt?.validate && dataSourceUriPrompt?.validate('customer.testName');
+        const validation = dataSourceUriPrompt?.validate && dataSourceUriPrompt?.validate('/sap/opu/odata4Ann/');
 
         expect(validation).toBe(true);
+    });
+
+    it('should return error message when data source uri is not valid uri', () => {
+        jest.spyOn(validators, 'isDataSourceURI').mockReturnValueOnce(false);
+
+        const prompts = getPrompts(mockPath, 'CUSTOMER_BASE');
+        const dataSourceUriPrompt = prompts.find((p) => p.name === 'dataSourceURI');
+
+        const validation = dataSourceUriPrompt?.validate && dataSourceUriPrompt?.validate('/sap/opu /odata4Ann/');
+
+        expect(validation).toBe("Invalid URI. Should start and end with '/' and contain no spaces");
     });
 
     it('should return true when validating annotation settings prompt', () => {
