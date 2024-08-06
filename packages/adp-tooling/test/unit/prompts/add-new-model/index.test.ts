@@ -25,7 +25,8 @@ jest.mock('@sap-ux/project-input-validator', () => ({
     validateJSON: jest.fn().mockReturnValue(true),
     validateSpecialChars: jest.fn().mockReturnValue(true),
     validateEmptyString: jest.fn().mockReturnValue(true),
-    isDataSourceURI: jest.fn().mockReturnValue(true)
+    isDataSourceURI: jest.fn().mockReturnValue(true),
+    hasCustomerEmptyValue: jest.fn().mockReturnValue(false)
 }));
 
 describe('getPrompts', () => {
@@ -78,9 +79,21 @@ describe('getPrompts', () => {
             namePrompt?.validate &&
             namePrompt?.validate('testName', { dataSourceName: 'otherName' } as NewModelAnswers);
 
-        expect(validation).toBe(
-            "OData Service Name should start with 'customer.' and contain at least one additional alphanumeric character"
-        );
+        expect(validation).toBe("OData Service Name should start with 'customer.'");
+    });
+
+    it('should return error message when validating service name prompt and name is only "customer."', () => {
+        jest.spyOn(validators, 'hasCustomerEmptyValue').mockReturnValueOnce(true);
+
+        const prompts = getPrompts(mockPath, 'CUSTOMER_BASE');
+
+        const namePrompt = prompts.find((p) => p.name === 'name');
+
+        const validation =
+            namePrompt?.validate &&
+            namePrompt?.validate('customer.', { dataSourceName: 'otherName' } as NewModelAnswers);
+
+        expect(validation).toBe("OData Service Name should contain at least one character in addition to 'customer.'");
     });
 
     it('should return error message when validating service name prompt and has special characters', () => {
@@ -218,8 +231,20 @@ describe('getPrompts', () => {
 
         const validation = modelNamePrompt?.validate && modelNamePrompt?.validate('testName');
 
+        expect(validation).toBe("OData Service SAPUI5 Model Name should start with 'customer.'");
+    });
+
+    it('should return error message when validating model name contains only "customer."', () => {
+        jest.spyOn(validators, 'hasCustomerEmptyValue').mockReturnValueOnce(true);
+
+        const prompts = getPrompts(mockPath, 'CUSTOMER_BASE');
+
+        const modelNamePrompt = prompts.find((p) => p.name === 'modelName');
+
+        const validation = modelNamePrompt?.validate && modelNamePrompt?.validate('testName');
+
         expect(validation).toBe(
-            "OData Service SAPUI5 Model Name should start with 'customer.' and contain at least one additional alphanumeric character"
+            "OData Service SAPUI5 Model Name should contain at least one character in addition to 'customer.'"
         );
     });
 
@@ -230,9 +255,7 @@ describe('getPrompts', () => {
 
         const namePrompt = prompts.find((p) => p.name === 'modelName');
 
-        const validation =
-            namePrompt?.validate &&
-            namePrompt?.validate('customer.testName@', { dataSourceName: 'otherName' } as NewModelAnswers);
+        const validation = namePrompt?.validate && namePrompt?.validate('customer.testName@');
 
         expect(validation).toBe('general.invalidValueForSpecialChars');
     });
@@ -244,9 +267,7 @@ describe('getPrompts', () => {
 
         const namePrompt = prompts.find((p) => p.name === 'modelName');
 
-        const validation =
-            namePrompt?.validate &&
-            namePrompt?.validate('customer.testName', { dataSourceName: 'otherName' } as NewModelAnswers);
+        const validation = namePrompt?.validate && namePrompt?.validate('customer.testName');
 
         expect(validation).toBe('SAPUI5 Model with the same name was already added to the project');
     });
@@ -285,7 +306,7 @@ describe('getPrompts', () => {
         expect(validation).toBe('general.invalidJSON');
     });
 
-    it('should return error message when validating data source name prompt', () => {
+    it('should return error message when validating data source name prompt without "customer." prefix', () => {
         jest.spyOn(validators, 'hasCustomerPrefix').mockReturnValueOnce(false);
 
         const prompts = getPrompts(mockPath, 'CUSTOMER_BASE');
@@ -293,10 +314,23 @@ describe('getPrompts', () => {
 
         const validation =
             dataSourcePrompt?.validate &&
-            dataSourcePrompt?.validate('testName', { dataSourceName: 'testName' } as NewModelAnswers);
+            dataSourcePrompt?.validate('testName', { name: 'testName' } as NewModelAnswers);
+
+        expect(validation).toBe("OData Annotation Data Source Name should start with 'customer.'");
+    });
+
+    it('should return error message when validating data source name prompt with only "customer." prefix', () => {
+        jest.spyOn(validators, 'hasCustomerEmptyValue').mockReturnValueOnce(true);
+
+        const prompts = getPrompts(mockPath, 'CUSTOMER_BASE');
+        const dataSourcePrompt = prompts.find((p) => p.name === 'dataSourceName');
+
+        const validation =
+            dataSourcePrompt?.validate &&
+            dataSourcePrompt?.validate('customer.', { name: 'customer.testName' } as NewModelAnswers);
 
         expect(validation).toBe(
-            "OData Annotation Data Source Name should start with 'customer.' and contain at least one additional alphanumeric character"
+            "OData Annotation Data Source Name should contain at least one character in addition to 'customer.'"
         );
     });
 
@@ -306,7 +340,7 @@ describe('getPrompts', () => {
 
         const validation =
             dataSourcePrompt?.validate &&
-            dataSourcePrompt?.validate('customer.testName', { dataSourceName: 'otherName' } as NewModelAnswers);
+            dataSourcePrompt?.validate('customer.testName', { name: 'otherName' } as NewModelAnswers);
 
         expect(validation).toBe(true);
     });
@@ -320,7 +354,7 @@ describe('getPrompts', () => {
 
         const validation =
             namePrompt?.validate &&
-            namePrompt?.validate('customer.testName@', { dataSourceName: 'otherName' } as NewModelAnswers);
+            namePrompt?.validate('customer.testName@', { name: 'otherName' } as NewModelAnswers);
 
         expect(validation).toBe('general.invalidValueForSpecialChars');
     });
@@ -333,8 +367,7 @@ describe('getPrompts', () => {
         const namePrompt = prompts.find((p) => p.name === 'dataSourceName');
 
         const validation =
-            namePrompt?.validate &&
-            namePrompt?.validate('customer.testName', { dataSourceName: 'otherName' } as NewModelAnswers);
+            namePrompt?.validate && namePrompt?.validate('customer.testName', { name: 'otherName' } as NewModelAnswers);
 
         expect(validation).toBe(
             'OData Annotation or OData Service with the same name was already added to the project'

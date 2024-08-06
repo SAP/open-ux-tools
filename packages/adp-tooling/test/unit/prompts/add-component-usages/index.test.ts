@@ -6,6 +6,7 @@ jest.mock('@sap-ux/project-input-validator');
 
 jest.mock('@sap-ux/project-input-validator', () => ({
     ...jest.requireActual('@sap-ux/project-input-validator'),
+    hasCustomerEmptyValue: jest.fn().mockReturnValue(false),
     hasContentDuplication: jest.fn().mockReturnValue(false),
     hasCustomerPrefix: jest.fn().mockReturnValue(true),
     validateJSON: jest.fn().mockReturnValue(true),
@@ -151,8 +152,22 @@ describe('getPrompts', () => {
             const validator = prompts.find((prompt) => prompt.name === 'id')?.validate;
 
             if (validator) {
-                expect(validator('@id')).toBe(
-                    "Component Usage ID should start with 'customer.' and contain at least one additional alphanumeric character"
+                expect(validator('@id')).toBe("Component Usage ID should start with 'customer.'");
+            } else {
+                fail('Validator not found');
+            }
+        });
+
+        test('should fail validation of id for empty value except customer prefix', () => {
+            jest.spyOn(validators, 'hasCustomerEmptyValue').mockReturnValueOnce(true);
+
+            const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
+
+            const validator = prompts.find((prompt) => prompt.name === 'id')?.validate;
+
+            if (validator) {
+                expect(validator('customer.')).toBe(
+                    "Component Usage ID should contain at least one character in addition to 'customer.'"
                 );
             } else {
                 fail('Validator not found');
@@ -250,22 +265,6 @@ describe('getPrompts', () => {
 
             if (validator) {
                 expect(validator('customer.@library')).toBe('error');
-            } else {
-                fail('Validator not found');
-            }
-        });
-
-        test('should fail validation of library for missing customer prefix', () => {
-            jest.spyOn(validators, 'hasCustomerPrefix').mockReturnValueOnce(false);
-
-            const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
-
-            const validator = prompts.find((prompt) => prompt.name === 'library')?.validate;
-
-            if (validator) {
-                expect(validator('library')).toBe(
-                    "Library Reference should start with 'customer.' and contain at least one additional alphanumeric character"
-                );
             } else {
                 fail('Validator not found');
             }

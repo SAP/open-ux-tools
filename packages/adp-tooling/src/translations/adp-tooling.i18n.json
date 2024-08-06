@@ -65,7 +65,8 @@
         "errorDuplicateValueComponentId": "Component usage with the same name was already added to the project",
         "errorDuplicateValueLibrary": "Library with the same name was already added to the project",
         "errorDuplicateNamesOData": "OData Service Name must be different from OData Annotation Data Source Name",
-        "errorInputInvalidValuePrefix": "{{value}} should start with '{{prefix}}' and contain at least one additional alphanumeric character",
+        "errorInputInvalidValuePrefix": "{{value}} should start with '{{prefix}}'",
+        "errorCustomerEmptyValue": "{{value}} should contain at least one character in addition to '{{prefix}}'",
         "errorInvalidDataSourceURI": "Invalid URI. Should start and end with '/' and contain no spaces"
     },
     "choices": {

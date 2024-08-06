@@ -23,6 +23,7 @@ import {
     validateSpecialChars,
     hasContentDuplication,
     hasCustomerPrefix,
+    hasCustomerEmptyValue,
     isDataSourceURI,
     validateJSON
 } from '@sap-ux/project-input-validator';
@@ -86,11 +87,20 @@ function validatePromptODataName(
         return validationResult;
     }
 
-    if (isCustomerBase && !hasCustomerPrefix(value)) {
-        return t('validators.errorInputInvalidValuePrefix', {
-            value: t('prompts.oDataServiceNameLabel'),
-            prefix: NamespacePrefix.CUSTOMER
-        });
+    if (isCustomerBase) {
+        if (!hasCustomerPrefix(value)) {
+            return t('validators.errorInputInvalidValuePrefix', {
+                value: t('prompts.oDataServiceNameLabel'),
+                prefix: NamespacePrefix.CUSTOMER
+            });
+        }
+
+        if (hasCustomerEmptyValue(value)) {
+            return t('validators.errorCustomerEmptyValue', {
+                value: t('prompts.oDataServiceNameLabel'),
+                prefix: NamespacePrefix.CUSTOMER
+            });
+        }
     }
 
     if (hasContentDuplication(value, 'dataSource', changeFiles)) {
@@ -124,11 +134,19 @@ function validatePromptODataAnnotationsName(
         return validationResult;
     }
 
-    if (isCustomerBase && !hasCustomerPrefix(value)) {
-        return t('validators.errorInputInvalidValuePrefix', {
-            value: t('prompts.oDataAnnotationDataSourceNameLabel'),
-            prefix: NamespacePrefix.CUSTOMER
-        });
+    if (isCustomerBase) {
+        if (!hasCustomerPrefix(value)) {
+            return t('validators.errorInputInvalidValuePrefix', {
+                value: t('prompts.oDataAnnotationDataSourceNameLabel'),
+                prefix: NamespacePrefix.CUSTOMER
+            });
+        }
+        if (hasCustomerEmptyValue(value)) {
+            return t('validators.errorCustomerEmptyValue', {
+                value: t('prompts.oDataAnnotationDataSourceNameLabel'),
+                prefix: NamespacePrefix.CUSTOMER
+            });
+        }
     }
 
     if (hasContentDuplication(value, 'dataSource', changeFiles)) {
@@ -160,11 +178,19 @@ function validatePromptModelName(
         return validationResult;
     }
 
-    if (isCustomerBase && !hasCustomerPrefix(value)) {
-        return t('validators.errorInputInvalidValuePrefix', {
-            value: t('prompts.oDataServiceModelNameLabel'),
-            prefix: NamespacePrefix.CUSTOMER
-        });
+    if (isCustomerBase) {
+        if (!hasCustomerPrefix(value)) {
+            return t('validators.errorInputInvalidValuePrefix', {
+                value: t('prompts.oDataServiceModelNameLabel'),
+                prefix: NamespacePrefix.CUSTOMER
+            });
+        }
+        if (hasCustomerEmptyValue(value)) {
+            return t('validators.errorCustomerEmptyValue', {
+                value: t('prompts.oDataServiceModelNameLabel'),
+                prefix: NamespacePrefix.CUSTOMER
+            });
+        }
     }
 
     if (hasContentDuplication(value, 'model', changeFiles)) {

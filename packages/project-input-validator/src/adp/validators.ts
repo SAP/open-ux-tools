@@ -24,7 +24,17 @@ export function hasContentDuplication(
  * @returns {boolean} True if the value starts with 'customer.' and false if it does not.
  */
 export function hasCustomerPrefix(value: string): boolean {
-    return /^customer\.[a-zA-Z0-9]/.test(value);
+    return value.toLowerCase().startsWith('customer.');
+}
+
+/**
+ * Validates a value is empty except for customer prefix.
+ *
+ * @param value The value to validate.
+ * @returns {boolean} True if the value is empty and false if it is not empty.
+ */
+export function hasCustomerEmptyValue(value: string): boolean {
+    return value.replace('customer.', '').length === 0;
 }
 
 /**
