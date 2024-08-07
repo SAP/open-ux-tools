@@ -4,8 +4,6 @@ import { isCFEnvironment } from '../../../../src/base/cf';
 import { getPrompts } from '../../../../src/prompts/add-new-model';
 import * as validators from '@sap-ux/project-input-validator';
 import { getChangesByType } from '../../../../src/base/change-utils';
-import exp from 'constants';
-import e from 'express';
 
 const getChangesByTypeMock = getChangesByType as jest.Mock;
 
