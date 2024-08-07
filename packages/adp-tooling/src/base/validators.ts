@@ -63,7 +63,7 @@ export function validateNonEmptyNoSpaces(
 
 export async function validateEnvironment(value: OperationsType, loginEnabled: boolean) {
     if (!isNotEmptyString(value)) {
-        return t('prompts.inputCannotBeEmpty');
+        return t('validators.inputCannotBeEmpty');
     }
 
     if (value === 'C' && !isAppStudio()) {
@@ -77,7 +77,7 @@ export async function validateEnvironment(value: OperationsType, loginEnabled: b
 
 export function validateProjectName(value: string, destinationPath: string, isCustomerBase: boolean): boolean | string {
     if (!isNotEmptyString(value)) {
-        return t('prompts.inputCannotBeEmpty');
+        return t('validators.inputCannotBeEmpty');
     }
 
     if (/[A-Z]/.test(value)) {
@@ -130,7 +130,7 @@ export function validateDuplicateProjectName(value: string, destinationPath: str
 
 export function validateNamespace(namespace: string, projectName: string, isCustomerBase: boolean): string | boolean {
     if (!isNotEmptyString(namespace)) {
-        return t('prompts.inputCannotBeEmpty');
+        return t('validators.inputCannotBeEmpty');
     }
 
     if (!isCustomerBase) {

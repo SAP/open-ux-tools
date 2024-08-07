@@ -420,7 +420,7 @@ export default class ConfigInfoPrompter {
             choices: () => this.systemNames,
             guiOptions: {
                 hint: t('prompts.systemTooltip'),
-                breadcrumb: t('prompts.systemLabel'),
+                breadcrumb: 'System',
                 mandatory: true
             },
             when: isAppStudio() ? this.systemInfo?.adaptationProjectTypes?.length : true,
@@ -503,7 +503,7 @@ export default class ConfigInfoPrompter {
             message: t('prompts.usernameLabel'),
             validate: (value: string) => {
                 if (!isNotEmptyString(value)) {
-                    return t('prompts.inputCannotBeEmpty');
+                    return t('validators.inputCannotBeEmpty');
                 }
                 return true;
             },
@@ -516,7 +516,7 @@ export default class ConfigInfoPrompter {
             },
             guiOptions: {
                 mandatory: true,
-                breadcrumb: t('prompts.usernameLabel')
+                breadcrumb: 'Username'
             },
             store: false
         } as InputQuestion<ConfigurationInfoAnswers>;
@@ -531,7 +531,7 @@ export default class ConfigInfoPrompter {
             mask: '*',
             validate: async (value: string, answers: ConfigurationInfoAnswers) => {
                 if (!isNotEmptyString(value)) {
-                    return t('prompts.inputCannotBeEmpty');
+                    return t('validators.inputCannotBeEmpty');
                 }
 
                 try {
@@ -589,7 +589,7 @@ export default class ConfigInfoPrompter {
                 }
 
                 if (!isNotEmptyString(value)) {
-                    return t('prompts.inputCannotBeEmpty');
+                    return t('validators.inputCannotBeEmpty');
                 }
 
                 return true;

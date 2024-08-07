@@ -35,7 +35,7 @@ export function getDefaultProjectName(path: string): string {
  */
 export function getProjectNameTooltip(isCustomerBase: boolean): string {
     const baseType = isCustomerBase ? 'Ext' : 'Int';
-    return `${t('prompts.inputCannotBeEmpty')} ${t(`validators.projectNameLengthError${baseType}`)} ${t(
+    return `${t('validators.inputCannotBeEmpty')} ${t(`validators.projectNameLengthError${baseType}`)} ${t(
         `validators.projectNameValidationError${baseType}`
     )}`;
 }
