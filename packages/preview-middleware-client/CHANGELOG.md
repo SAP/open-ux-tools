@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.10.7
+
+### Patch Changes
+
+-   cea1f9f: Fixed Add XML Fragment dialog not working if there is an unsaved "hideControl" change
+
+## 0.10.6
+
+### Patch Changes
+
+-   089b984: Fix handling of undefined response from sap/ui/VersionInfo.load
+
 ## 0.10.5
 
 ### Patch Changes

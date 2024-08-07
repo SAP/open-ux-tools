@@ -1,5 +1,20 @@
 # @sap-ux/system-access
 
+## 0.5.5
+
+### Patch Changes
+
+-   Updated dependencies [0084205]
+    -   @sap-ux/axios-extension@1.16.3
+
+## 0.5.4
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/axios-extension@1.16.2
+
 ## 0.5.3
 
 ### Patch Changes

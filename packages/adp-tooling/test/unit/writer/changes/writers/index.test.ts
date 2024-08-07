@@ -8,7 +8,6 @@ import {
     getChange
 } from '../../../../../src/base/change-utils';
 import type {
-    AdpProjectData,
     AnnotationsData,
     ComponentUsagesData,
     DataSourceData,
@@ -135,19 +134,23 @@ describe('AnnotationsWriter', () => {
 
 describe('ComponentUsagesWriter', () => {
     const mockData = {
-        projectData: { namespace: 'apps/mock', layer: 'VENDOR', reference: 'reference' } as AdpProjectData,
-        component: {
-            usageId: 'mockID',
+        variant: {
+            layer: 'CUSTOMER_BASE',
+            reference: 'mock.reference',
+            id: 'adp.mock.variant',
+            namespace: 'apps/adp.mock.variant'
+        } as DescriptorVariant,
+        answers: {
+            id: 'mockID',
             name: 'mockName',
             isLazy: 'true',
             settings: '"key": "value"',
-            data: '"key": "value"'
-        },
-        library: {
-            reference: 'mockLibrary',
-            referenceIsLazy: 'false'
-        },
-        timestamp: 1234567890
+            data: '"key": "value"',
+            shouldAddLibrary: true,
+            library: 'mockLibrary',
+            libraryIsLazy: 'false',
+            timestamp: 1234567890
+        }
     };
 
     let writer: ComponentUsagesWriter;
@@ -165,8 +168,8 @@ describe('ComponentUsagesWriter', () => {
             expect.anything(),
             expect.objectContaining({
                 componentUsages: {
-                    [mockData.component.usageId]: {
-                        name: mockData.component.name,
+                    [mockData.answers.id]: {
+                        name: mockData.answers.name,
                         lazy: true,
                         settings: { key: 'value' },
                         data: { key: 'value' }
@@ -187,15 +190,20 @@ describe('ComponentUsagesWriter', () => {
     });
 
     it('should only write component usages changes when library reference is not required', async () => {
-        mockData.library.reference = '';
+        mockData.answers.shouldAddLibrary = false;
+        mockData.answers.library = '';
+        const systemTime = new Date('2024-03-10');
+        jest.useFakeTimers().setSystemTime(systemTime);
 
         await writer.write(mockData as ComponentUsagesData);
+
+        jest.useRealTimers();
 
         expect(writeChangeToFolderMock).toHaveBeenCalledTimes(1);
         expect(writeChangeToFolderMock).toHaveBeenCalledWith(
             mockProjectPath,
             expect.any(Object),
-            'id_1234567891_addComponentUsages.change',
+            `id_${systemTime.getTime()}_addComponentUsages.change`,
             {},
             'manifest'
         );
