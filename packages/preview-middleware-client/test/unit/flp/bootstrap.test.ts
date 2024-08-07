@@ -24,37 +24,39 @@ describe('flp/ushellBootstrap', () => {
         fetchMock.mockResolvedValueOnce({
             json: () => Promise.resolve({ libraries: [{name: 'sap.ui.core', version: '1.126.0'}] })
         } as jest.Mocked<Response>);
+        (window as unknown as Window)['data-open-ux-preview-basePath'] = '..';
 
         await ushellBootstrap(() => {});
-        expect(fetchMock).toHaveBeenCalledWith('/resources/sap-ui-version.json');
-        expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '/test-resources/sap/ushell/bootstrap/sandbox.js');
+        expect(fetchMock).toHaveBeenCalledWith('../resources/sap-ui-version.json');
+        expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '../test-resources/sap/ushell/bootstrap/sandbox.js');
     });
 
     test('ushell src when ui5 version is 2.0', async () => {
         fetchMock.mockResolvedValue({
             json: () => Promise.resolve({ libraries: [{name: 'sap.ui.core', version: '2.0.0'}] })
         } as jest.Mocked<Response>);
+        (window as unknown as Window)['data-open-ux-preview-basePath'] = '..';
 
         await ushellBootstrap(() => {});
-        expect(fetchMock).toHaveBeenCalledWith('/resources/sap-ui-version.json');
-        expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '/resources/sap/ushell/bootstrap/sandbox2.js');
+        expect(fetchMock).toHaveBeenCalledWith('../resources/sap-ui-version.json');
+        expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '../resources/sap/ushell/bootstrap/sandbox2.js');
     });
 
     test('fetching version failed', async () => {
         fetchMock.mockRejectedValueOnce('404');
+        (window as unknown as Window)['data-open-ux-preview-basePath'] = '..';
 
         await ushellBootstrap(() => {});
-        expect(fetchMock).toHaveBeenCalledWith('/resources/sap-ui-version.json');
-        expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '/test-resources/sap/ushell/bootstrap/sandbox.js');
+        expect(fetchMock).toHaveBeenCalledWith('../resources/sap-ui-version.json');
+        expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '../test-resources/sap/ushell/bootstrap/sandbox.js');
     });
 
     test('ushell src with different basePath', async () => {
         fetchMock.mockResolvedValueOnce({
             json: () => Promise.resolve({ libraries: [{name: 'sap.ui.core', version: '1.124.0'}] })
         } as jest.Mocked<Response>);
-        jest.spyOn(window, 'location', 'get').mockReturnValue({
-            pathname: '/root/and/subPath/index.html'
-        } as unknown as Location);
+        (window as unknown as Window)['data-open-ux-preview-basePath'] = '../..';
+
         await ushellBootstrap(() => {});
         expect(fetchMock).toHaveBeenCalledWith('../../resources/sap-ui-version.json');
         expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '../../test-resources/sap/ushell/bootstrap/sandbox.js');
