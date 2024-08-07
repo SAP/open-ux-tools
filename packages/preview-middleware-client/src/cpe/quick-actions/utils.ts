@@ -1,11 +1,8 @@
 import UI5Element from 'sap/ui/core/Element';
-
-import NavContainer from 'sap/m/NavContainer';
 import Control from 'sap/ui/core/Control';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 import ComponentContainer from 'sap/ui/core/ComponentContainer';
 import { FEAppPage, Manifest } from 'sap/ui/rta/RuntimeAuthoring';
-import FlexibleColumnLayout from 'sap/f/FlexibleColumnLayout';
 import Component from 'sap/ui/core/Component';
 
 import type { ControlTreeIndex } from '../types';
@@ -20,31 +17,6 @@ export interface FEAppPagesMap {
     [key: string]: FEAppPageInfo[];
 }
 
-export function getCurrentActivePages(controlIndex: ControlTreeIndex): Control[] {
-    const controlName = ['sap.m.NavContainer', 'sap.f.FlexibleColumnLayout'].find((item) => !!controlIndex?.[item]);
-    const collectActivePages = [];
-
-    if (controlName) {
-        const control = controlIndex?.[controlName]?.[0];
-        if (control) {
-            const container = sap.ui.getCore().byId(control.controlId);
-            if (container?.isA('sap.m.NavContainer')) {
-                const navContainer = container as NavContainer;
-                collectActivePages.push(navContainer.getCurrentPage());
-            } else if (container?.isA('sap.f.FlexibleColumnLayout')) {
-                const flexibleColLayoutContainer = container as FlexibleColumnLayout;
-                collectActivePages.push(
-                    flexibleColLayoutContainer.getCurrentBeginColumnPage(),
-                    flexibleColLayoutContainer.getCurrentMidColumnPage(),
-                    flexibleColLayoutContainer.getCurrentEndColumnPage()
-                );
-            }
-        }
-    }
-
-    return collectActivePages;
-}
-
 export function pageHasControlId(page: Control, controlId: string): boolean {
     const controlDomElement = getControlById(controlId)?.getDomRef();
     return !!controlDomElement && !!page?.getDomRef()?.contains(controlDomElement);
@@ -55,18 +27,18 @@ export function getRelevantControlFromActivePage(
     activePage: Control,
     controlTypes: string[]
 ): UI5Element[] {
-    const relavantControls: UI5Element[] = [];
+    const relevantControls: UI5Element[] = [];
     for (const type of controlTypes) {
         const controls = controlIndex[type] ?? [];
         for (const control of controls) {
             const isActionApplicable = pageHasControlId(activePage, control.controlId);
             const UI5ControlData = getControlById(control.controlId);
             if (isActionApplicable && UI5ControlData) {
-                relavantControls.push(UI5ControlData);
+                relevantControls.push(UI5ControlData);
             }
         }
     }
-    return relavantControls;
+    return relevantControls;
 }
 
 export function getTargetView(modifiedControl: ManagedObject) {
@@ -98,8 +70,10 @@ export function getAppComponent(control: ManagedObject) {
 }
 
 /**
- * Determines Fiori Elements version based on the manifest.json
- * @param manifest
+ * Determines Fiori Elements version based on the manifest.json.
+ *
+ * @param manifest - Application Manifest.
+ * @returns Fiori Elements version.
  */
 export function getFeVersion(manifest: Manifest): 'v2' | 'v4' | undefined {
     if (manifest['sap.ui.generic.app'] || manifest['sap.ovp']) {

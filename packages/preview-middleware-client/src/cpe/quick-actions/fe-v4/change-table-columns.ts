@@ -1,13 +1,12 @@
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
-import Component from 'sap/ui/core/Component';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import Table from 'sap/ui/mdc/Table';
 
 import { NESTED_QUICK_ACTION_KIND, NestedQuickAction } from '@sap-ux-private/control-property-editor-common';
-import { NestedQuickActionChild, OutlineNode } from '@sap-ux-private/control-property-editor-common';
+import { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
 
 import { QuickActionContext, NestedQuickActionDefinition } from '../quick-action-definition';
-import { getCurrentActivePages, getRelevantControlFromActivePage } from '../utils';
+import { getRelevantControlFromActivePage } from '../utils';
 import { getControlById } from '../../utils';
 
 export const CHANGE_TABLE_COLUMNS = 'change-table-columns';

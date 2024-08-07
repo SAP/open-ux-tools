@@ -3,7 +3,7 @@ import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import FilterBar from 'sap/ui/mdc/FilterBar';
 
 import { QuickActionContext, SimpleQuickActionDefinition } from '../quick-action-definition';
-import { getAppComponent, getCurrentActivePages, getPageName, getReference, pageHasControlId } from '../utils';
+import { getAppComponent, getPageName, getReference, pageHasControlId } from '../utils';
 import { SIMPLE_QUICK_ACTION_KIND, SimpleQuickAction } from '@sap-ux-private/control-property-editor-common';
 import { getControlById } from '../../utils';
 
