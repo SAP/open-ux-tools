@@ -87,19 +87,35 @@ function getDestinationPrompt(
  * @param choices - abap system choices
  * @returns list question for target system
  */
-function getTargetSystemPrompt(choices: AbapSystemChoice[]): Question<AbapDeployConfigAnswers> {
-    return {
-        when: (): boolean => !isAppStudio(),
-        type: 'list',
-        name: abapDeployConfigInternalPromptNames.targetSystem,
-        message: t('prompts.target.targetSystem.message'),
-        guiOptions: {
-            breadcrumb: t('prompts.target.targetSystem.breadcrumb')
-        },
-        choices: (): AbapSystemChoice[] => choices,
-        default: () => defaultTargetSystem(choices),
-        validate: (target: string): boolean | string => validateTargetSystem(target, choices)
-    } as ListQuestion<AbapDeployConfigAnswers>;
+function getTargetSystemPrompt(choices: AbapSystemChoice[]): (YUIQuestion<AbapDeployConfigAnswers> | Question)[] {
+    const prompts: (ListQuestion<AbapDeployConfigAnswers> | Question)[] = [
+        {
+            when: (): boolean => !isAppStudio(),
+            type: 'list',
+            name: abapDeployConfigInternalPromptNames.targetSystem,
+            message: t('prompts.target.targetSystem.message'),
+            guiOptions: {
+                breadcrumb: t('prompts.target.targetSystem.breadcrumb')
+            },
+            choices: (): AbapSystemChoice[] => choices,
+            default: () => defaultTargetSystem(choices),
+            validate: (target: string): boolean | string => validateTargetSystem(target, choices)
+        } as ListQuestion<AbapDeployConfigAnswers>
+    ];
+
+    if (getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli) {
+        prompts.push({
+            when: async (answers: AbapDeployConfigAnswers): Promise<boolean> => {
+                const target = answers[abapDeployConfigInternalPromptNames.targetSystem];
+                if (target) {
+                    validateTargetSystem(target, choices);
+                }
+                return false;
+            },
+            name: abapDeployConfigInternalPromptNames.destinationCliSetter
+        } as Question);
+    }
+    return prompts;
 }
 
 /**
