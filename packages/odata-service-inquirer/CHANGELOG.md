@@ -1,5 +1,12 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.15
+
+### Patch Changes
+
+-   Updated dependencies [593ad0f]
+    -   @sap-ux/project-input-validator@0.3.3
+
 ## 0.5.14
 
 ### Patch Changes

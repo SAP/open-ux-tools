@@ -1,5 +1,13 @@
 # @sap-ux/adp-tooling
 
+## 0.12.28
+
+### Patch Changes
+
+-   593ad0f: Adp-tooling prompting validations
+-   Updated dependencies [593ad0f]
+    -   @sap-ux/project-input-validator@0.3.3
+
 ## 0.12.27
 
 ### Patch Changes
