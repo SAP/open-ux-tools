@@ -219,20 +219,20 @@ export function getPrompts(providerService: ProviderService): YUIQuestion<Deploy
                 hint: t('tooltips.package')
             },
             source: async (_, input: string) => {
-                let packages: string[] | undefined = [];
+                let packages: string[] = [];
                 try {
                     packages = await listPackages(input, provider);
                     morePackageResultsMsg =
                         packages && packages.length === ABAP_PACKAGE_SEARCH_MAX_RESULTS
                             ? t('info.moreSearchResults', { count: packages.length })
                             : '';
-                    return packages ?? [];
+                    return packages;
                 } catch (e) {
                     // TODO: What to do in case of error message?
                     // this.logger.error(`Could not get packages. Error: ${e.message}`);
                 }
 
-                return packages ?? [];
+                return packages;
             },
             additionalInfo: () => morePackageResultsMsg,
             when: (answers: DeployConfigAnswers) => {

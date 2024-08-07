@@ -111,7 +111,7 @@ export class ApplicationService {
      * @param {boolean} isCloudSystem - Determines if the system is a cloud system, affecting which parameters to use for app searching.
      * @throws {Error} Throws an error if the app data cannot be loaded.
      */
-    public async loadApps(isCloudSystem: boolean): Promise<void> {
+    public async loadApps(isCloudSystem: boolean): Promise<Application[]> {
         let result: AppIndex = [];
 
         const provider = this.providerService.getProvider();
@@ -126,6 +126,7 @@ export class ApplicationService {
             }
 
             this.applications = result.map(mapApps).sort(filterApps);
+            return this.applications;
         } catch (e) {
             throw new Error(t('validators.cannotLoadApplicationsError'));
         }
