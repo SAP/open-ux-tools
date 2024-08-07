@@ -3,6 +3,19 @@ import { getSecureStore } from '../../../src/secure-store';
 import { DummyStore } from '../../../src/secure-store/dummy-store';
 import { KeytarStore } from '../../../src/secure-store/keytar-store';
 import { ToolsLogger, NullTransport } from '@sap-ux/logger';
+import { globSync } from 'glob';
+
+jest.mock('glob', () => ({
+    ...jest.requireActual('glob'),
+    globSync: jest.fn()
+}));
+
+jest.mock('os', () => ({
+    ...jest.requireActual('os'),
+    homedir: () => 'test_dir'
+}));
+
+const mockGlobSync = globSync as jest.Mock;
 
 describe('getSecureStore', () => {
     beforeEach(() => jest.resetAllMocks());
@@ -24,6 +37,23 @@ describe('getSecureStore', () => {
         it('returns KeytarStore if keytar can be required with no errors', () => {
             jest.mock('keytar', jest.fn());
             expect(getSecureStore(nullLogger)).toBeInstanceOf(DummyStore);
+        });
+
+        it('returns keytar from application modeler', () => {
+            jest.mock('keytar', () => {
+                throw new Error();
+            });
+
+            mockGlobSync.mockReturnValue([
+                `test_dir/.vscode/extensions/sapse.sap-ux-application-modeler-extension-1.14.1/node_modules/keytar/package.json`
+            ]);
+            jest.mock(
+                `test_dir/.vscode/extensions/sapse.sap-ux-application-modeler-extension-1.14.1/node_modules/keytar`,
+                () => 'keytar',
+                { virtual: true }
+            );
+
+            expect(getSecureStore(nullLogger)).toBeInstanceOf(KeytarStore);
         });
         it('returns DummyStore if keytar & vscode cannot be required', () => {
             jest.mock(
@@ -72,33 +102,7 @@ describe('getSecureStore', () => {
             jest.mock(`vscode_app_root/node_modules/keytar`, () => 'keytar', { virtual: true });
             expect(getSecureStore(nullLogger)).toBeInstanceOf(KeytarStore);
         });
-        it('returns KeytarStore if `.vscode/extensions/sapse.sap-ux-application-modeler-extension-**/node_modules/keytar` can be required with no errors', () => {
-            jest.mock('keytar', () => {
-                throw new Error();
-            });
-            const os = {
-                homeDir: 'test_dir'
-            };
-            jest.mock('os', () => os, { virtual: true });
 
-            const glob = {
-                globSync: [
-                    'test_dir/.vscode/extensions/sapse.sap-ux-application-modeler-extension-1.14.1/node_modules/keytar/package.json'
-                ]
-            };
-            jest.mock('glob', () => glob, { virtual: true });
-            const vscode = {
-                env: { appRoot: 'vscode_app_root' }
-            };
-
-            jest.mock('vscode', () => vscode, { virtual: true });
-            jest.mock(
-                `test_dir/.vscode/extensions/sapse.sap-ux-application-modeler-extension-1.14.1/node_modules/keytar`,
-                () => 'keytar',
-                { virtual: true }
-            );
-            expect(getSecureStore(nullLogger)).toBeInstanceOf(KeytarStore);
-        });
         it('returns DummyStore if `${vscode?.env} is not set', () => {
             jest.mock('keytar', () => {
                 throw new Error();

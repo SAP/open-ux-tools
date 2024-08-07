@@ -8,25 +8,35 @@ import { globSync } from 'glob';
 import { join, dirname } from 'path';
 import { homedir } from 'os';
 
+const keytarGlobVscode = join(
+    homedir(),
+    '.vscode/extensions/sapse.sap-ux-application-modeler-extension-**/node_modules/keytar/package.json'
+);
+const keytarGlobVscodeInsiders = join(
+    homedir(),
+    '.vscode-insiders/extensions/sapse.sap-ux-application-modeler-extension-**/node_modules/keytar/package.json'
+);
+
 function getKeytar(log: Logger): typeof Keytar | undefined {
     try {
         return require('keytar');
     } catch (err) {
-        const keytarGlobVscode = join(
-            homedir(),
-            '.vscode/extensions/sapse.sap-ux-application-modeler-extension-**/node_modules/keytar/package.json'
-        );
-        const keytarGlobVscodeInsiders = join(
-            homedir(),
-            '.vscode-insiders/extensions/sapse.sap-ux-application-modeler-extension-**/node_modules/keytar/package.json'
-        );
-        const files = globSync([keytarGlobVscode, keytarGlobVscodeInsiders]);
-        log.info('files: \n' + JSON.stringify(files));
-        const dirnames: string[] = [];
-        files.forEach((filePath: string) => {
-            dirnames.push(dirname(filePath));
-        });
-        log.info('keytarDirectories: \n' + JSON.stringify(dirnames));
+        try {
+            const files = globSync([keytarGlobVscode, keytarGlobVscodeInsiders]);
+            log.info('files: \n' + JSON.stringify(files));
+            const appModDirs: string[] = [];
+            files.forEach((filePath: string) => {
+                appModDirs.push(dirname(filePath));
+            });
+            log.info('keytarDirectories: \n' + JSON.stringify(appModDirs));
+            if (appModDirs.length >= 0) {
+                const keytarDir = appModDirs[0];
+                return require(keytarDir);
+            }
+        } catch (e) {
+            log.warn(errorString(e));
+            log.warn('Could not get keytar from sap-ux-application-modeler-extension node_modules');
+        }
 
         log.warn(errorString(err));
         log.warn(`Could not "require('keytar')". Trying VSCode's copy`);
@@ -51,14 +61,7 @@ function getKeytar(log: Logger): typeof Keytar | undefined {
             log.warn(errorString(e));
             log.warn('Could not get keytar from vscode node_modules');
         }
-        try {
-            if (dirnames.length >= 0) {
-                return require(dirnames[0]);
-            }
-        } catch (e) {
-            log.warn(errorString(e));
-            log.warn('Could not get keytar from vscode sap-ux-application-modeler-extension node_modules');
-        }
+
         return undefined;
     }
 }
