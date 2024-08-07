@@ -112,7 +112,7 @@ function getTargetSystemPrompt(choices: AbapSystemChoice[]): (YUIQuestion<AbapDe
                 }
                 return false;
             },
-            name: abapDeployConfigInternalPromptNames.destinationCliSetter
+            name: abapDeployConfigInternalPromptNames.targetSystemCliSetter
         } as Question);
     }
     return prompts;
@@ -227,7 +227,7 @@ export async function getAbapTargetPrompts(
     const abapSystemChoices = await getAbapSystemChoices(options.backendTarget, destinations, backendSystems);
     return [
         ...getDestinationPrompt(options, abapSystemChoices, destinations),
-        getTargetSystemPrompt(abapSystemChoices),
+        ...getTargetSystemPrompt(abapSystemChoices),
         getUrlPrompt(options, destinations),
         getScpPrompt(options),
         getClientChoicePrompt(options),

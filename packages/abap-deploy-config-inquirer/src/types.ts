@@ -56,6 +56,7 @@ export enum abapDeployConfigInternalPromptNames {
     destination = 'destination',
     destinationCliSetter = 'destinationCliSetter',
     targetSystem = 'targetSystem',
+    targetSystemCliSetter = 'targetSystemCliSetter',
     url = 'url',
     scp = 'scp',
     clientChoice = 'clientChoice',
