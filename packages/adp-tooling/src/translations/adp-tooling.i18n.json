@@ -116,13 +116,15 @@
         "abapPackagesNotFound": "Package list cannot be fetched. Please enter the Package manually.",
         "package": {
             "invalidFormat": "Package name does not match the expected format. Expected format is '/<namespace>/<package_name>'  or just a single package name as a string. If namespace is not specified package name should starts with '$', 'Z', 'Y' or 'SAP'. Only alphanumeric and _ symbols are allowed",
-            "invalidRepositoryNamespace":"Both the SAPUI5 ABAP Repository and the Package that will be used should start in the same way, i.e. a namespace or capital letters 'Z', 'Y' or 'SAP'",
+            "invalidRepositoryNamespace": "Both the SAPUI5 ABAP Repository and the Package that will be used should start in the same way, i.e. a namespace or capital letters 'Z', 'Y' or 'SAP'",
             "invalidStartingPrefix": "Entered package can start with either namespace, '$', 'Z', 'Y' or 'SAP'",
             "notCloudPackage": "The package entered is not meant to be used for cloud deployments. You should either use cloud package or go back to the project type selection and select On Premise"
         },
         "invalidTranposportPrereq": "Name (SAPUI5 ABAP Repository) and Package are required to retrieve the existing Transport Requests",
         "chooseTransportInput": "Please choose how you want to enter Transport",
-        "errorFetchingTransports": "Transport Request list cannot be fetched. Please enter Transport Request manually."
+        "errorFetchingTransports": "Transport Request list cannot be fetched. Please enter Transport Request manually.",
+        "extensibilityGenNotFound": "Extensibility Project generator plugin was not found in your dev space, and is required for this action. To proceed, please install the <SAPUI5 Layout Editor & Extensibility> extension.",
+        "appListIsEmptyError": "Applications list is empty. No errors were thrown during execution of the request."
     },
     "tooltips": {
         "inboundId": "Choose the inboundID that will be used to set the FLP tile configuration",
@@ -136,7 +138,6 @@
         "deployConfigDescription": "Enter a description for your deployment",
         "package": "Enter a package who has ABAP Language Version 'ABAP for Cloud Development'. Both the SAPUI5 ABAP Repository and the package that will be used should start in the same way, i.e. a namespace or a Z, Y or 'SAP'",
         "transport": "Enter transport number for the entered package"
-        
     },
     "info": {
         "moreSearchResults": "More than {{count}} results, keep typing to narrow down"

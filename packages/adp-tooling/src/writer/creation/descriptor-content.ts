@@ -76,6 +76,29 @@ export function fillDescriptorContent(
 }
 
 /**
+ * Adds support data entries for Fiori registration IDs and application component hierarchy (ACH) to a content array.
+ *
+ * @param {Content[]} content - The array to which support data entries will be added.
+ * @param {string} fioriId - The Fiori ID to set in the registration.
+ * @param {string} ach - The application component hierarchy code, which will be converted to uppercase.
+ */
+export function fillSupportData(content: Content[], fioriId: string, ach: string): void {
+    content.push({
+        changeType: 'appdescr_fiori_setRegistrationIds',
+        content: {
+            registrationIds: [fioriId]
+        }
+    });
+
+    content.push({
+        changeType: 'appdescr_app_setAch',
+        content: {
+            ach: ach?.toUpperCase()
+        }
+    });
+}
+
+/**
  * Class responsible for generating descriptor content for UI5 applications.
  * This includes integrating manifest data, internationalization models, and various
  * deployment settings based on the application's environment and configuration.
@@ -145,19 +168,7 @@ export class DescriptorContent {
         fillDescriptorContent(content, type, systemVersion, i18nModels);
 
         if (!this.isCustomerBase) {
-            content.push({
-                changeType: 'appdescr_fiori_setRegistrationIds',
-                content: {
-                    registrationIds: [fioriId]
-                }
-            });
-
-            content.push({
-                changeType: 'appdescr_app_setAch',
-                content: {
-                    ach: ach?.toUpperCase()
-                }
-            });
+            fillSupportData(content, fioriId, ach);
         }
 
         if (this.ui5Service.shouldSetMinUI5Version()) {

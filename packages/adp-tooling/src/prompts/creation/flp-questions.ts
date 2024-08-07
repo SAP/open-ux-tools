@@ -2,15 +2,22 @@ import { EditorQuestion, InputQuestion, ListQuestion, YUIQuestion } from '@sap-u
 
 import { t } from '../../i18n';
 import { FlpConfigAnswers } from '../../types';
-import { ManifestService, validateByRegex, validateEmptyInput, validateParameters } from '../../base';
 import { getInboundIds } from '../../base/services/manifest-service';
+import { ManifestService, validateByRegex, validateEmptyInput, validateParameters } from '../../base';
 
+/**
+ * Generates a list of configuration prompts based on the application's manifest data and whether it's a cloud project.
+ *
+ * @param {ManifestService} manifestService - Service to manage application manifests.
+ * @param {boolean} isCloudProject - Indicates if the current project is a cloud project.
+ * @param {string} appId - Application identifier.
+ * @returns {Promise<YUIQuestion<FlpConfigAnswers>[]>} A list of FLP questions.
+ */
 export async function getPrompts(
     manifestService: ManifestService,
     isCloudProject: boolean,
     appId: string
 ): Promise<YUIQuestion<FlpConfigAnswers>[]> {
-    // TODO: When click back from deploy page to flp page, the flow breaks, because provider is not initialized and there is no manifest cache
     if (!manifestService.getManifest(appId)) {
         await manifestService.loadManifest(appId);
     }

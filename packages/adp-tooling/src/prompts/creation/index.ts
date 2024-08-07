@@ -9,7 +9,7 @@ import {
     isAxiosError
 } from '@sap-ux/axios-extension';
 import { Logger } from '@sap-ux/logger';
-import type { UI5FlexLayer } from '@sap-ux/project-access';
+import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { isExtensionInstalledVsCode } from '@sap-ux/environment-check';
 import type {
     ListQuestion,
@@ -70,15 +70,23 @@ export default class ConfigInfoPrompter {
         this.appsService = new ApplicationService(this.providerService, this.isCustomerBase);
     }
 
+    /**
+     * Modifies the adaptation project types to remove 'CLOUD_READY' if not allowed for the internal user.
+     */
     private modifyAdaptationProjectTypes(): void {
         const { adaptationProjectTypes } = this.systemInfo;
         if (adaptationProjectTypes.includes(AdaptationProjectType.CLOUD_READY) && !this.isCustomerBase) {
             this.systemInfo.adaptationProjectTypes = adaptationProjectTypes.filter(
-                (type) => type != AdaptationProjectType.CLOUD_READY
+                (type) => type !== AdaptationProjectType.CLOUD_READY
             );
         }
     }
 
+    /**
+     * Adjusts the prompts array by adding or removing configuration pages based on the project type.
+     * For cloud projects, it adds specific configuration steps if only the initial pages are present.
+     * For non-cloud projects, it removes specific pages when more than the standard pages are present.
+     */
     public setAdditionalPagesForCloudProjects(): void {
         if (!this.prompts) {
             return;
@@ -102,107 +110,130 @@ export default class ConfigInfoPrompter {
         }
     }
 
-    private validateAdaptationProjectTypes(): boolean | string {
+    /**
+     * Validates the adaptation project types based on the system information and user base.
+     * It checks the types of projects allowed and modifies them if necessary. Creating cloud projects is forbidden for internal users.
+     *
+     * @returns {boolean | string} True if the project types are valid, otherwise returns an error message.
+     */
+    private validateAdpTypes(): boolean | string {
         const { adaptationProjectTypes } = this.systemInfo;
-        if (adaptationProjectTypes.length === 0) {
-            return !this.isCustomerBase ? t('validators.unsupportedSystemInt') : t('validators.unsupportedSystemExt');
-        }
 
-        if (
-            adaptationProjectTypes.length === 1 &&
-            adaptationProjectTypes[0] === AdaptationProjectType.CLOUD_READY &&
-            !isCustomerBase
-        ) {
+        if (adaptationProjectTypes.length === 0) {
+            return this.isCustomerBase ? t('validators.unsupportedSystemExt') : t('validators.unsupportedSystemInt');
+        }
+        const isCloudReady =
+            adaptationProjectTypes.length === 1 && adaptationProjectTypes[0] === AdaptationProjectType.CLOUD_READY;
+
+        if (isCloudReady && !isCustomerBase) {
             this.systemInfo.adaptationProjectTypes = [];
             return t('validators.unsupportedCloudSystemInt');
         }
 
-        // Internal users are not allowed to create adp cloud projects
         this.modifyAdaptationProjectTypes();
 
         return true;
     }
 
-    private allowExtensionProject() {
+    /**
+     * Determines whether an extension project can be allowed based on the current project settings and environment.
+     *
+     * @returns {boolean} Returns true if the extension project is allowed, otherwise false.
+     */
+    private allowExtensionProject(): boolean | undefined {
+        if (this.isCloudProject) {
+            return false;
+        }
+
+        const isOnPremiseAppStudio = this.flexUISystem?.isOnPremise && isAppStudio();
+        const nonFlexOrNonOnPremise =
+            this.flexUISystem && (!this.flexUISystem.isOnPremise || !this.flexUISystem.isUIFlex);
+
         return (
-            !this.isCloudProject &&
-            this.flexUISystem &&
-            this.flexUISystem.isOnPremise &&
-            isAppStudio() &&
+            isOnPremiseAppStudio &&
             (!this.isApplicationSupported ||
-                (this.isApplicationSupported &&
-                    ((this.flexUISystem && (!this.flexUISystem.isOnPremise || !this.flexUISystem.isUIFlex)) ||
-                        this.appIdentifier.appSync)))
+                (this.isApplicationSupported && (nonFlexOrNonOnPremise || this.appIdentifier.appSync)))
         );
     }
 
-    private validateExtensibilityGenerator() {
+    /**
+     * Validates whether the extensibility sub-generator is available and sets it up if necessary.
+     * If the generator is not found, an error message is returned advising on the necessary action.
+     *
+     * @returns {boolean | string} Returns true if the generator is available, or an error message if not.
+     */
+    private validateExtensibilityGenerator(): boolean | string {
         if (this.extensibilitySubGenerator) {
             return true;
         }
 
         this.extensibilitySubGenerator = resolveNodeModuleGenerator();
 
-        if (this.extensibilitySubGenerator === undefined) {
-            return 'Extensibility Project generator plugin was not found in your dev space, and is required for this action. To proceed, please install the <SAPUI5 Layout Editor & Extensibility> extension.';
+        if (!this.extensibilitySubGenerator) {
+            return t('validators.extensibilityGenNotFound');
         }
 
         return true;
     }
 
-    private async systemUI5VersionHandler(value: string): Promise<string[]> {
-        if (value) {
-            try {
+    /**
+     * Validates the UI5 system version based on the provided value or fetches all relevant versions if no value is provided.
+     * Updates the internal state with the fetched versions and the detection status.
+     *
+     * @param {string} value - The system version to validate.
+     */
+    private async validateSystemVersion(value: string): Promise<void> {
+        try {
+            if (value) {
                 const provider = this.providerService.getProvider();
                 const service = await provider.getAdtService<UI5RtVersionService>(UI5RtVersionService);
                 const version = await service?.getUI5Version();
+
                 this.versionsOnSystem = await this.ui5Service.getSystemRelevantVersions(version);
-            } catch (e) {
+            } else {
                 this.versionsOnSystem = await this.ui5Service.getRelevantVersions();
             }
-        } else {
+        } catch (e) {
             this.versionsOnSystem = await this.ui5Service.getRelevantVersions();
+        } finally {
+            this.ui5VersionDetected = this.ui5Service.detectedVersion;
         }
-        this.ui5VersionDetected = this.ui5Service.detectedVersion;
-        return this.versionsOnSystem;
     }
 
-    private async getVersionDefaultValue() {
-        if (this.versionsOnSystem && (await this.ui5Service.validateUI5Version(this.versionsOnSystem[0])) === true) {
-            return this.versionsOnSystem[0];
-        } else {
+    /**
+     * Gets the default UI5 version from the system versions list by validating the first available version.
+     * If the first version is valid according to the UI5 service, it returns that version; otherwise, returns an empty string.
+     *
+     * @returns {Promise<string>} The valid UI5 version or an empty string if the first version is not valid or if there are no versions.
+     */
+    private async getVersionDefaultValue(): Promise<string> {
+        if (!this.versionsOnSystem || this.versionsOnSystem.length === 0) {
             return '';
         }
+
+        const isValid = (await this.ui5Service.validateUI5Version(this.versionsOnSystem[0])) === true;
+        return isValid ? this.versionsOnSystem[0] : '';
     }
 
+    /**
+     * Validates the selected application to ensure it is supported.
+     *
+     * @param {Application} value - The application to validate.
+     * @returns {Promise<boolean | string>} True if the application is valid, otherwise an error message.
+     */
     private async applicationPromptValidationHandler(value: Application): Promise<boolean | string> {
         if (value) {
             try {
-                const res = await this.manifestService.isAppSupported(value.id);
+                const isSupported = await this.manifestService.isAppSupported(value.id);
 
-                if (res) {
+                if (isSupported) {
                     await this.manifestService.loadManifest(value.id);
 
-                    const systemVersion = this.ui5Service.systemVersion;
-                    const checkForAdpOverAdpSupport =
-                        this.ui5VersionDetected && !isFeatureSupportedVersion('1.96.0', systemVersion);
-                    const checkForAdpOverAdpPartialSupport =
-                        this.ui5VersionDetected &&
-                        checkForAdpOverAdpSupport &&
-                        isFeatureSupportedVersion('1.90.0', systemVersion);
-
                     const manifest = this.manifestService.getManifest(value.id);
-
-                    await this.appIdentifier.validateSelectedApplication(
-                        value,
-                        checkForAdpOverAdpSupport,
-                        checkForAdpOverAdpPartialSupport,
-                        manifest
-                    );
+                    this.evaluateApplicationSupport(manifest, value);
                 }
                 this.isApplicationSupported = true;
             } catch (e) {
-                // this.logger.log(e);
                 return e.message;
             }
         } else {
@@ -211,58 +242,117 @@ export default class ConfigInfoPrompter {
         return true;
     }
 
-    private async systemPromptValidationHandler(value: string): Promise<boolean | string> {
+    /**
+     * Evaluate if the application version supports certain features.
+     *
+     * @param {Manifest} manifest - The application manifest.
+     * @param {Application} application - The application data.
+     */
+    private async evaluateApplicationSupport(manifest: Manifest | null, application: Application): Promise<void> {
+        const systemVersion = this.ui5Service.systemVersion;
+        const checkForSupport = this.ui5VersionDetected && !isFeatureSupportedVersion('1.96.0', systemVersion);
+        const isPartialSupport =
+            this.ui5VersionDetected && checkForSupport && isFeatureSupportedVersion('1.90.0', systemVersion);
+
+        await this.appIdentifier.validateSelectedApplication(application, checkForSupport, isPartialSupport, manifest);
+    }
+
+    /**
+     * Validates the selected system for further operations, fetching necessary data and checking for errors.
+     *
+     * @param {string} value - The system provided by the user.
+     * @returns {Promise<boolean | string>} True if validation succeeds without issues, or an error message otherwise.
+     */
+    private async validateSystem(value: string): Promise<boolean | string> {
         this.manifestService.resetCache();
         this.appsService.resetApps();
         this.ui5VersionDetected = true;
 
         if (!value) {
-            if (isAppStudio()) {
-                return t('validators.selectCannotBeEmptyError', { value: 'System' });
-            }
-
-            return t('validators.inputCannotBeEmpty');
+            return isAppStudio()
+                ? t('validators.selectCannotBeEmptyError', { value: 'System' })
+                : t('validators.inputCannotBeEmpty');
         }
 
         this.hasSystemAuthentication = this.endpointsService.getSystemRequiresAuth(value);
+
         if (!this.hasSystemAuthentication) {
-            try {
-                await this.getSystemData(value);
-                this.versionsOnSystem = await this.systemUI5VersionHandler(value);
-                return this.validateAdaptationProjectTypes();
-            } catch (e) {
-                // this.logger.log(e);
-                return e.message;
-            }
+            return this.handleSystemDataValidation(value);
         }
 
         return true;
     }
 
+    /**
+     * Handles the fetching and validation of system data.
+     *
+     * @param {string} value - The system.
+     * @returns {Promise<boolean | string>} True if successful, or an error message if an error occurs.
+     */
+    private async handleSystemDataValidation(value: string): Promise<boolean | string> {
+        try {
+            await this.getSystemData(value);
+            await this.validateSystemVersion(value);
+            return this.validateAdpTypes();
+        } catch (e) {
+            return e.message;
+        }
+    }
+
+    /**
+     * Sets up the provider and fetches system data for the specified system.
+     *
+     * @param {string} system - The system identifier.
+     * @param {string} [client] - Optional client identifier.
+     * @param {string} [username] - Optional username for authentication.
+     * @param {string} [password] - Optional password for authentication.
+     */
     private async getSystemData(system: string, client?: string, username?: string, password?: string): Promise<void> {
         await this.providerService.setProvider(system, client, username, password);
-        // this.flexUISystem = await this.isFlexUISupportedSystem(); // TODO: Does not work
-        this.flexUISystem = { isOnPremise: true, isUIFlex: true }; // TODO: remove fake assign
 
         try {
-            const provider = this.providerService.getProvider();
-            const lrep = provider.getLayeredRepository();
-            this.systemInfo = await lrep.getSystemInfo();
-        } catch (e) {
-            // in case request to /sap/bc/lrep/dta_folder/system_info throws error we continue to standart onPremise flow
-            this.systemInfo = {
-                adaptationProjectTypes: [AdaptationProjectType.ON_PREMISE],
-                activeLanguages: []
-            };
+            // this.flexUISystem = await this.isFlexUISupportedSystem(); // TODO: Does not work
+            this.flexUISystem = { isOnPremise: true, isUIFlex: true }; // TODO: remove fake assign
 
-            if (isAxiosError(e)) {
-                if (e.response?.status === 401 || e.response?.status === 403) {
-                    throw new Error(e.message);
-                }
+            await this.fetchSystemInfo();
+        } catch (e) {
+            await this.handleSystemInfoError(e);
+        }
+    }
+
+    /**
+     * Fetches system information from the provider's layered repository.
+     */
+    private async fetchSystemInfo(): Promise<void> {
+        const provider = this.providerService.getProvider();
+        const lrep = provider.getLayeredRepository();
+        this.systemInfo = await lrep.getSystemInfo();
+    }
+
+    /**
+     * Handles errors that occur while fetching system information, setting default values and rethrowing if necessary.
+     *
+     * @param {Error} error - The error encountered during the system info fetch.
+     */
+    private async handleSystemInfoError(error: Error): Promise<void> {
+        this.systemInfo = {
+            adaptationProjectTypes: [AdaptationProjectType.ON_PREMISE],
+            activeLanguages: []
+        };
+
+        if (isAxiosError(error)) {
+            if (error.response?.status === 401 || error.response?.status === 403) {
+                throw new Error(`Authentication error: ${error.message}`);
             }
         }
     }
 
+    /**
+     * Checks if the system supports Flex UI features.
+     * Returns settings indicating support for onPremise and UI Flex capabilities.
+     *
+     * @returns {Promise<FlexUISupportedSystem | undefined>} An object with system support details or undefined if it cannot be determined.
+     */
     private async isFlexUISupportedSystem(): Promise<FlexUISupportedSystem | undefined> {
         if (!this.isCustomerBase) {
             return {
@@ -278,6 +368,15 @@ export default class ConfigInfoPrompter {
         return settings;
     }
 
+    /**
+     * Retrieves applications from the specified system.
+     * Throws an error if no applications are available after loading.
+     *
+     * @param {string} system - The identifier of the system.
+     * @param {string} [username] - Optional username for provider authentication.
+     * @param {string} [password] - Optional password for provider authentication.
+     * @param {string} [client] - Optional client identifier for the provider.
+     */
     private async getApplications(
         system: string,
         username?: string,
@@ -285,6 +384,7 @@ export default class ConfigInfoPrompter {
         client?: string
     ): Promise<void> {
         await this.providerService.setProvider(system, client, username, password);
+
         if (!this.flexUISystem) {
             this.flexUISystem = await this.isFlexUISupportedSystem();
         }
@@ -294,20 +394,26 @@ export default class ConfigInfoPrompter {
         const applications = this.appsService.getApps();
 
         if (applications.length === 0) {
-            //this.logger.log('Applications list is empty. No errors were thrown during execution of the request.');
-            throw new Error('Applications list is empty. No errors were thrown during execution of the request.');
+            throw new Error(t('validators.appListIsEmptyError'));
         }
     }
 
-    private shouldAuthenticate(answers: ConfigurationInfoAnswers): boolean | string {
-        return answers.system && this.hasSystemAuthentication && (answers.username === '' || answers.password === '');
+    /**
+     * Determines if authentication is necessary based on the provided configuration answers.
+     * It checks if the system requires authentication and if the necessary credentials are provided.
+     *
+     * @param {ConfigurationInfoAnswers} answers - User provided configuration details.
+     * @returns {boolean | string} True if authentication should proceed, false if there are issues with credentials.
+     */
+    private shouldAuthenticate(answers: ConfigurationInfoAnswers): boolean {
+        return !!answers.system && this.hasSystemAuthentication && (answers.username === '' || answers.password === '');
     }
 
-    private async getSystemPrompt() {
-        return isAppStudio() ? await this.getSystemListPrompt() : await this.getSystemNativePrompt();
+    private getSystemPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
+        return isAppStudio() ? this.getSystemListPrompt() : this.getSystemNativePrompt();
     }
 
-    private async getSystemListPrompt(): Promise<YUIQuestion<ConfigurationInfoAnswers>> {
+    private getSystemListPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
             type: 'list',
             name: 'system',
@@ -318,7 +424,7 @@ export default class ConfigInfoPrompter {
                 breadcrumb: t('prompts.systemLabel')
             },
             when: isAppStudio() ? this.systemInfo?.adaptationProjectTypes?.length : true,
-            validate: this.systemPromptValidationHandler.bind(this),
+            validate: async (value: string) => await this.validateSystem(value),
             additionalMessages: () => {
                 const isOnPremise = this.flexUISystem?.isOnPremise;
                 const isUIFlex = this.flexUISystem?.isUIFlex;
@@ -352,7 +458,7 @@ export default class ConfigInfoPrompter {
         } as ListQuestion<ConfigurationInfoAnswers>;
     }
 
-    private async getSystemNativePrompt(): Promise<YUIQuestion<ConfigurationInfoAnswers>> {
+    private getSystemNativePrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return this.isExtensionInstalled ? this.getSystemListPrompt() : this.getSystemInputPrompt();
     }
 
@@ -361,7 +467,7 @@ export default class ConfigInfoPrompter {
             type: 'input',
             name: 'system',
             message: 'System URL',
-            validate: this.systemPromptValidationHandler.bind(this),
+            validate: async (value: string) => await this.validateSystem(value),
             guiOptions: {
                 mandatory: true,
                 breadcrumb: 'System URL'
@@ -430,11 +536,11 @@ export default class ConfigInfoPrompter {
 
                 try {
                     await this.getSystemData(answers.system, answers.client, answers.username, value);
-                    this.versionsOnSystem = await this.systemUI5VersionHandler(answers.system);
+                    await this.validateSystemVersion(answers.system);
                     await this.getApplications(answers.system, answers.username, value, answers.client);
                     this.isLoginSuccessfull = true;
                     if (isAppStudio()) {
-                        return this.validateAdaptationProjectTypes();
+                        return this.validateAdpTypes();
                     }
                 } catch (e) {
                     this.flexUISystem = undefined;
@@ -698,7 +804,6 @@ export default class ConfigInfoPrompter {
     }
 
     private getAppInfoErrorPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
-        // TODO: This needs to be moved to additionalMessages
         return {
             type: 'input',
             name: 'applicationInfoError',
