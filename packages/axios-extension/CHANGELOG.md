@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.16.3
+
+### Patch Changes
+
+-   0084205: linting: use optional chaining operator ?
+
 ## 1.16.2
 
 ### Patch Changes
