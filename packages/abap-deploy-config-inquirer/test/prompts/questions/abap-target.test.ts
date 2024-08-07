@@ -8,7 +8,8 @@ import {
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { getAbapTargetPrompts } from '../../../src/prompts/questions';
 import { getAbapSystems } from '../../../src/utils';
-import { mockDestinations, mockTargetSystems } from '../../constants';
+import { mockDestinations } from '../../fixtures/destinations';
+import { mockTargetSystems } from '../../fixtures/targets';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import * as validators from '../../../src/prompts/validators';
 import * as conditions from '../../../src/prompts/conditions';

@@ -44,7 +44,8 @@ export function isValidClient(client: string): boolean {
     if (c === '') {
         return true;
     } else {
-        return !!c.match(/^[0-9]{3}$/);
+        const regex = /^\d{3}$/;
+        return !!regex.exec(c);
     }
 }
 

@@ -1,5 +1,6 @@
 import { PromptState } from './prompts/prompt-state';
 import LoggerHelper from './logger-helper';
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Throws error message to end prompting in cli.
@@ -16,7 +17,7 @@ export function bail(errorMessage: string): void {
  * @param errorMsg - error message
  */
 export function handleErrorMessage(errorMsg: string): void {
-    if (!PromptState.isYUI) {
+    if (getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli) {
         bail(errorMsg);
     } else {
         PromptState.transportAnswers.transportConfigError = errorMsg;

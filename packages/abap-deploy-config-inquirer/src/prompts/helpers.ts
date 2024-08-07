@@ -10,12 +10,12 @@ import {
     PackageInputChoices,
     TargetSystemType,
     TransportChoices,
+    type AbapSystemChoice,
     type AbapDeployConfigAnswers,
     type AbapDeployConfigPromptOptions,
     type BackendTarget
 } from '../types';
 import { AuthenticationType, type BackendSystem } from '@sap-ux/store';
-import type { AbapSystemChoice } from '../types';
 import type { ChoiceOptions, ListChoiceOptions } from 'inquirer';
 import { getSystemDisplayName } from '@sap-ux/fiori-generator-shared';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';

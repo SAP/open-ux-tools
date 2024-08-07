@@ -183,9 +183,9 @@ export function validateClientChoiceQuestion(
         case ClientChoiceValue.Blank:
             delete PromptState.abapDeployConfig.client;
             break;
-        default:
+
         case ClientChoiceValue.New:
-            // Leave it to be handled in 'client' prompt
+        default:
             break;
     }
     return true;

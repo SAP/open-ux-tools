@@ -20,7 +20,6 @@ import * as utils from '../../src/utils';
 import { PromptState } from '../../src/prompts/prompt-state';
 import { getHostEnvironment, hostEnvironment, getHelpUrl } from '@sap-ux/fiori-generator-shared';
 import { isFeatureEnabled } from '@sap-ux/feature-toggle';
-import { Transport } from '@sap-ux/logger';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()

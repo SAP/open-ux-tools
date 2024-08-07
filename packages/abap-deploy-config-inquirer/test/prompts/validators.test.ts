@@ -30,7 +30,7 @@ import {
 import * as utils from '../../src/utils';
 import { AbapTarget } from '@sap-ux/system-access';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { mockDestinations } from '../constants';
+import { mockDestinations } from '../fixtures/destinations';
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
     ...jest.requireActual('@sap-ux/fiori-generator-shared'),
@@ -77,14 +77,13 @@ describe('Test validators', () => {
             expect(result).toBe(true);
 
             result = validateTargetSystem('https://mock.url.target1.com', abapSystemChoices);
-            expect(
-                (PromptState.abapDeployConfig = {
-                    url: 'https://mock.url.target1.com',
-                    client: '001',
-                    isS4HC: false,
-                    scp: false
-                })
-            );
+            expect(PromptState.abapDeployConfig).toStrictEqual({
+                url: 'https://mock.url.target1.com',
+                client: '001',
+                destination: undefined,
+                isS4HC: false,
+                scp: false
+            });
             expect(result).toBe(true);
         });
 

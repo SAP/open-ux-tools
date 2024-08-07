@@ -12,7 +12,6 @@ import type {
     InitTransportConfigResult,
     SystemConfig
 } from './types';
-import type { AtoSettings } from '@sap-ux/axios-extension';
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 import type { Destinations, Destination } from '@sap-ux/btp-utils';
 import { CREATE_TR_DURING_DEPLOY } from './constants';
@@ -82,25 +81,6 @@ export function isSameSystem(abapSystem?: SystemConfig, url?: string, client?: s
             abapSystem.client === client) ??
             (!!abapSystem?.destination && destination === abapSystem?.destination)
     );
-}
-
-/**
- * Uniform different ATO setting service response formats.
- *
- * @param atoData Input is JSON ATO response from backend
- * @returns ato settings
- */
-export function uniformAtoFormat(atoData: AtoSettings & Record<string, any>): AtoSettings {
-    if (Object.keys(atoData).includes('developmentPackage')) {
-        atoData.devPackage = atoData.developmentPackage;
-    }
-    if (Object.keys(atoData).includes('developmentPrefix')) {
-        atoData.devPrefix = atoData.developmentPrefix;
-    }
-    if (Object.keys(atoData).includes('isExtensibilityDevelopmentSystem')) {
-        atoData.isExtensibilityDevSystem = atoData.isExtensibilityDevelopmentSystem;
-    }
-    return atoData;
 }
 
 /**

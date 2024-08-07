@@ -1,7 +1,6 @@
 import { AtoService } from '@sap-ux/axios-extension';
 import { t } from '../i18n';
 import { deleteCachedServiceProvider, getOrCreateServiceProvider } from './abap-service-provider';
-import { uniformAtoFormat } from '../utils';
 import LoggerHelper from '../logger-helper';
 import type { AtoSettings } from '@sap-ux/axios-extension';
 import type {
@@ -138,7 +137,7 @@ class DefaultTransportConfig implements TransportConfig {
             const atoSettings = await atoService?.getAtoInfo();
 
             if (atoSettings) {
-                result.error = this.handleAtoResponse(atoSettings);
+                result.error = this.handleAtoResponse();
             }
         } catch (err) {
             await deleteCachedServiceProvider();
@@ -169,12 +168,10 @@ class DefaultTransportConfig implements TransportConfig {
     /**
      * Checks the ATO response.
      *
-     * @param response - ato settings
      * @returns error message or undefined
      */
-    private handleAtoResponse(response: AtoSettings): string | undefined {
+    private handleAtoResponse(): string | undefined {
         let validationRequired = false;
-        this.atoSettings = uniformAtoFormat(response);
 
         // Ignore ATO settings if these parameters are not met
         if (

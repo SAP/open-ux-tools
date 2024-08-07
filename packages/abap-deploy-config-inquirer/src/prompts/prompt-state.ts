@@ -13,7 +13,6 @@ export class PromptState {
     public static isYUI = false;
 
     static resetAbapDeployConfig(): void {
-        // Reset all values in the abapDeployConfig object, do not reset the object reference itself as it may be used by external consumers
         Object.keys(PromptState.abapDeployConfig).forEach((key) => {
             PromptState.abapDeployConfig[key as keyof AbapDeployConfigAnswers] = undefined;
         });
