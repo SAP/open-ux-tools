@@ -60,9 +60,9 @@ describe('getPrompts', () => {
 
         const namePrompt = prompts.find((p) => p.name === 'name');
 
-        const validation =
-            namePrompt?.validate &&
-            namePrompt?.validate('customer.testName', { dataSourceName: 'otherName' } as NewModelAnswers);
+        const validation = namePrompt?.validate?.('customer.testName', {
+            dataSourceName: 'otherName'
+        } as NewModelAnswers);
 
         expect(validation).toBe(true);
     });
@@ -74,9 +74,7 @@ describe('getPrompts', () => {
 
         const namePrompt = prompts.find((p) => p.name === 'name');
 
-        const validation =
-            namePrompt?.validate &&
-            namePrompt?.validate('testName', { dataSourceName: 'otherName' } as NewModelAnswers);
+        const validation = namePrompt?.validate?.('testName', { dataSourceName: 'otherName' } as NewModelAnswers);
 
         expect(validation).toBe("OData Service Name should start with 'customer.'");
     });
@@ -88,9 +86,9 @@ describe('getPrompts', () => {
 
         const namePrompt = prompts.find((p) => p.name === 'name');
 
-        const validation =
-            namePrompt?.validate &&
-            namePrompt?.validate('customer.testName@', { dataSourceName: 'otherName' } as NewModelAnswers);
+        const validation = namePrompt?.validate?.('customer.testName@', {
+            dataSourceName: 'otherName'
+        } as NewModelAnswers);
 
         expect(validation).toBe('general.invalidValueForSpecialChars');
     });
@@ -102,9 +100,9 @@ describe('getPrompts', () => {
 
         const namePrompt = prompts.find((p) => p.name === 'name');
 
-        const validation =
-            namePrompt?.validate &&
-            namePrompt?.validate('customer.testName', { dataSourceName: 'otherName' } as NewModelAnswers);
+        const validation = namePrompt?.validate?.('customer.testName', {
+            dataSourceName: 'otherName'
+        } as NewModelAnswers);
 
         expect(validation).toBe(
             'OData Annotation or OData Service with the same name was already added to the project'
@@ -116,9 +114,9 @@ describe('getPrompts', () => {
 
         const namePrompt = prompts.find((p) => p.name === 'name');
 
-        const validation =
-            namePrompt?.validate &&
-            namePrompt?.validate('customer.testName', { dataSourceName: 'customer.testName' } as NewModelAnswers);
+        const validation = namePrompt?.validate?.('customer.testName', {
+            dataSourceName: 'customer.testName'
+        } as NewModelAnswers);
 
         expect(validation).toBe('OData Service Name must be different from OData Annotation Data Source Name');
     });
@@ -128,7 +126,7 @@ describe('getPrompts', () => {
 
         const uriPrompt = prompts.find((p) => p.name === 'uri');
 
-        const validation = uriPrompt?.validate && uriPrompt?.validate('/sap/odata/v4/');
+        const validation = uriPrompt?.validate?.('/sap/odata/v4/');
 
         expect(validation).toBe(true);
     });
@@ -140,7 +138,7 @@ describe('getPrompts', () => {
 
         const uriPrompt = prompts.find((p) => p.name === 'uri');
 
-        const validation = uriPrompt?.validate && uriPrompt?.validate('');
+        const validation = uriPrompt?.validate?.('');
 
         expect(validation).toBe('general.inputCannotBeEmpty');
     });
@@ -152,7 +150,7 @@ describe('getPrompts', () => {
 
         const uriPrompt = prompts.find((p) => p.name === 'uri');
 
-        const validation = uriPrompt?.validate && uriPrompt?.validate('');
+        const validation = uriPrompt?.validate?.('');
 
         expect(validation).toBe("Invalid URI. Should start and end with '/' and contain no spaces");
     });
@@ -202,7 +200,7 @@ describe('getPrompts', () => {
 
         const modelNamePrompt = prompts.find((p) => p.name === 'modelName');
 
-        const validation = modelNamePrompt?.validate && modelNamePrompt?.validate('customer.testName');
+        const validation = modelNamePrompt?.validate?.('customer.testName');
 
         expect(validation).toBe(true);
     });
@@ -214,7 +212,7 @@ describe('getPrompts', () => {
 
         const modelNamePrompt = prompts.find((p) => p.name === 'modelName');
 
-        const validation = modelNamePrompt?.validate && modelNamePrompt?.validate('testName');
+        const validation = modelNamePrompt?.validate?.('testName');
 
         expect(validation).toBe("OData Service SAPUI5 Model Name should start with 'customer.'");
     });
@@ -226,9 +224,9 @@ describe('getPrompts', () => {
 
         const namePrompt = prompts.find((p) => p.name === 'modelName');
 
-        const validation =
-            namePrompt?.validate &&
-            namePrompt?.validate('customer.testName@', { dataSourceName: 'otherName' } as NewModelAnswers);
+        const validation = namePrompt?.validate?.('customer.testName@', {
+            dataSourceName: 'otherName'
+        } as NewModelAnswers);
 
         expect(validation).toBe('general.invalidValueForSpecialChars');
     });
@@ -240,9 +238,9 @@ describe('getPrompts', () => {
 
         const namePrompt = prompts.find((p) => p.name === 'modelName');
 
-        const validation =
-            namePrompt?.validate &&
-            namePrompt?.validate('customer.testName', { dataSourceName: 'otherName' } as NewModelAnswers);
+        const validation = namePrompt?.validate?.('customer.testName', {
+            dataSourceName: 'otherName'
+        } as NewModelAnswers);
 
         expect(validation).toBe('SAPUI5 Model with the same name was already added to the project');
     });
@@ -252,7 +250,7 @@ describe('getPrompts', () => {
 
         const modelSettPrompt = prompts.find((p) => p.name === 'modelSettings');
 
-        const validation = modelSettPrompt?.validate && modelSettPrompt?.validate('"key": "value"');
+        const validation = modelSettPrompt?.validate?.('"key": "value"');
 
         expect(validation).toBe(true);
     });
@@ -264,7 +262,7 @@ describe('getPrompts', () => {
 
         const modelSettPrompt = prompts.find((p) => p.name === 'modelSettings');
 
-        const validation = modelSettPrompt?.validate && modelSettPrompt?.validate('');
+        const validation = modelSettPrompt?.validate?.('');
 
         expect(validation).toBe(true);
     });
@@ -276,7 +274,7 @@ describe('getPrompts', () => {
 
         const modelSettPrompt = prompts.find((p) => p.name === 'modelSettings');
 
-        const validation = modelSettPrompt?.validate && modelSettPrompt?.validate('{"key": "value"}');
+        const validation = modelSettPrompt?.validate?.('{"key": "value"}');
 
         expect(validation).toBe('general.invalidJSON');
     });
@@ -287,9 +285,7 @@ describe('getPrompts', () => {
         const prompts = getPrompts(mockPath, 'CUSTOMER_BASE');
         const dataSourcePrompt = prompts.find((p) => p.name === 'dataSourceName');
 
-        const validation =
-            dataSourcePrompt?.validate &&
-            dataSourcePrompt?.validate('testName', { dataSourceName: 'testName' } as NewModelAnswers);
+        const validation = dataSourcePrompt?.validate?.('testName', { dataSourceName: 'testName' } as NewModelAnswers);
 
         expect(validation).toBe("OData Annotation Data Source Name should start with 'customer.'");
     });
@@ -298,9 +294,9 @@ describe('getPrompts', () => {
         const prompts = getPrompts(mockPath, 'CUSTOMER_BASE');
         const dataSourcePrompt = prompts.find((p) => p.name === 'dataSourceName');
 
-        const validation =
-            dataSourcePrompt?.validate &&
-            dataSourcePrompt?.validate('customer.testName', { dataSourceName: 'otherName' } as NewModelAnswers);
+        const validation = dataSourcePrompt?.validate?.('customer.testName', {
+            dataSourceName: 'otherName'
+        } as NewModelAnswers);
 
         expect(validation).toBe(true);
     });
@@ -312,9 +308,9 @@ describe('getPrompts', () => {
 
         const namePrompt = prompts.find((p) => p.name === 'dataSourceName');
 
-        const validation =
-            namePrompt?.validate &&
-            namePrompt?.validate('customer.testName@', { dataSourceName: 'otherName' } as NewModelAnswers);
+        const validation = namePrompt?.validate?.('customer.testName@', {
+            dataSourceName: 'otherName'
+        } as NewModelAnswers);
 
         expect(validation).toBe('general.invalidValueForSpecialChars');
     });
@@ -326,9 +322,9 @@ describe('getPrompts', () => {
 
         const namePrompt = prompts.find((p) => p.name === 'dataSourceName');
 
-        const validation =
-            namePrompt?.validate &&
-            namePrompt?.validate('customer.testName', { dataSourceName: 'otherName' } as NewModelAnswers);
+        const validation = namePrompt?.validate?.('customer.testName', {
+            dataSourceName: 'otherName'
+        } as NewModelAnswers);
 
         expect(validation).toBe(
             'OData Annotation or OData Service with the same name was already added to the project'
@@ -340,9 +336,9 @@ describe('getPrompts', () => {
 
         const namePrompt = prompts.find((p) => p.name === 'dataSourceName');
 
-        const validation =
-            namePrompt?.validate &&
-            namePrompt?.validate('customer.testName', { name: 'customer.testName' } as NewModelAnswers);
+        const validation = namePrompt?.validate?.('customer.testName', {
+            name: 'customer.testName'
+        } as NewModelAnswers);
 
         expect(validation).toBe('OData Service Name must be different from OData Annotation Data Source Name');
     });
@@ -351,7 +347,7 @@ describe('getPrompts', () => {
         const prompts = getPrompts(mockPath, 'CUSTOMER_BASE');
         const dataSourceUriPrompt = prompts.find((p) => p.name === 'dataSourceURI');
 
-        const validation = dataSourceUriPrompt?.validate && dataSourceUriPrompt?.validate('customer.testName');
+        const validation = dataSourceUriPrompt?.validate?.('customer.testName');
 
         expect(validation).toBe(true);
     });
@@ -360,7 +356,7 @@ describe('getPrompts', () => {
         const prompts = getPrompts(mockPath, 'CUSTOMER_BASE');
         const annotationSettPrompt = prompts.find((p) => p.name === 'annotationSettings');
 
-        const validation = annotationSettPrompt?.validate && annotationSettPrompt?.validate('"key": "value"');
+        const validation = annotationSettPrompt?.validate?.('"key": "value"');
 
         expect(validation).toBe(true);
     });

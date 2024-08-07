@@ -46,28 +46,22 @@ describe('getPrompts', () => {
     test('test validation', () => {
         const prompts = getPrompts();
         const titlePrompt = prompts.find((p) => p.name === 'title');
-        const titleValidation =
-            titlePrompt?.validate &&
-            titlePrompt?.validate('Some title', {
-                subtitle: 'Some subtitle',
-                icon: 'Some icon'
-            } as unknown as InboundChangeAnswers);
+        const titleValidation = titlePrompt?.validate?.('Some title', {
+            subtitle: 'Some subtitle',
+            icon: 'Some icon'
+        } as unknown as InboundChangeAnswers);
 
         const subTitlePrompt = prompts.find((p) => p.name === 'subtitle');
-        const subtitleValidation =
-            subTitlePrompt?.validate &&
-            subTitlePrompt?.validate('Some subtitle', {
-                title: 'Some title',
-                icon: 'Some icon'
-            } as unknown as InboundChangeAnswers);
+        const subtitleValidation = subTitlePrompt?.validate?.('Some subtitle', {
+            title: 'Some title',
+            icon: 'Some icon'
+        } as unknown as InboundChangeAnswers);
 
         const iconPrompt = prompts.find((p) => p.name === 'icon');
-        const iconValidation =
-            iconPrompt?.validate &&
-            iconPrompt?.validate('Some icon', {
-                subtitle: 'Some title',
-                icon: 'Some icon'
-            } as unknown as InboundChangeAnswers);
+        const iconValidation = iconPrompt?.validate?.('Some icon', {
+            subtitle: 'Some title',
+            icon: 'Some icon'
+        } as unknown as InboundChangeAnswers);
 
         expect(titleValidation).toBe(true);
         expect(subtitleValidation).toBe(true);
