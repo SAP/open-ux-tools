@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { AbapTarget } from '@sap-ux/ui5-config';
 import { AuthenticationType } from '@sap-ux/store';
-import { UI5FlexLayer } from '@sap-ux/project-access';
 
 import {
     AdpWriterConfig,
@@ -60,7 +59,7 @@ export class TemplateModel {
      * and descriptor content based on the system authentication details, basic answers, configuration answers,
      * and FLP configuration answers.
      *
-     * @param {SystemDetails} systemAuthDetails - System authentication details.
+     * @param {SystemDetails} systemDetails - System authentication details.
      * @param {BasicInfoAnswers} basicAnswers - Basic configuration answers such as application title and namespace.
      * @param {ConfigurationInfoAnswers} configAnswers - Detailed configuration answers for the project setup.
      * @param {FlpConfigAnswers} flpConfigAnswers - Answers specific to Fiori Launchpad configurations.
@@ -68,7 +67,7 @@ export class TemplateModel {
      * @returns {Promise<AdpWriterConfig>} Returns a configuration model suitable for deployment.
      */
     public async getTemplateModel(
-        systemAuthDetails: SystemDetails,
+        systemDetails: SystemDetails,
         basicAnswers: BasicInfoAnswers,
         configAnswers: ConfigurationInfoAnswers,
         flpConfigAnswers: FlpConfigAnswers,
@@ -76,23 +75,25 @@ export class TemplateModel {
     ): Promise<AdpWriterConfig> {
         const title = basicAnswers.applicationTitle;
         const isCloudProject = configAnswers.projectType === 'cloudReady';
+
         let i18nDescription =
             '#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.';
+        if (!this.isCustomerBase) {
+            i18nDescription += RESOURCE_BUNDLE_TEXT + title + TRANSLATION_UUID_TEXT + uuidv4() + '\n\n';
+        }
 
         const ui5Version = isCloudProject
             ? this.ui5Service.latestVersion
             : this.ui5Service.getVersionToBeUsed(configAnswers.ui5Version, this.isCustomerBase);
 
-        const ui5SystemVersion = getFormattedVersion(ui5Version);
-        if (!this.isCustomerBase) {
-            i18nDescription += RESOURCE_BUNDLE_TEXT + title + TRANSLATION_UUID_TEXT + uuidv4() + '\n\n';
-        }
+        const systemVersion = getFormattedVersion(ui5Version);
 
         const deploy = getUI5DeployConfig(isCloudProject, deployConfigAnswers);
+
         const appId = configAnswers.application.id;
         const content = this.descriptorContent.getManifestContent(
             appId,
-            ui5SystemVersion,
+            systemVersion,
             title,
             configAnswers.fioriId,
             configAnswers.applicationComponentHierarchy
@@ -107,20 +108,8 @@ export class TemplateModel {
             i18nDescription
         };
 
-        const cloudConfig: FlpConfig = await this.getCloudConfig(app, configAnswers, flpConfigAnswers);
-
-        const target: AbapTarget = {
-            client: isAppStudio() ? configAnswers?.client : systemAuthDetails?.client,
-            ...(isAppStudio() ? { destination: configAnswers.system } : { url: systemAuthDetails?.url })
-        };
-
-        if (
-            !isAppStudio() &&
-            isCloudProject &&
-            systemAuthDetails?.authenticationType === AuthenticationType.ReentranceTicket
-        ) {
-            target['authenticationType'] = AuthenticationType.ReentranceTicket;
-        }
+        const cloudConfig = await this.getCloudConfig(app, configAnswers, flpConfigAnswers);
+        const target = this.getTarget(configAnswers, systemDetails, isCloudProject);
 
         return {
             app: app,
@@ -145,6 +134,35 @@ export class TemplateModel {
                 fioriTools: true
             }
         };
+    }
+
+    /**
+     * Constructs the ABAP target configuration based on the operational context and project type.
+     *
+     * @param {ConfigurationInfoAnswers} configAnswers - Detailed configuration answers for the project setup.
+     * @param {SystemDetails} systemDetails - Details about the system including URL and client information.
+     * @param {boolean} isCloudProject - Flag indicating whether the project is a cloud project.
+     * @returns {AbapTarget} The configured ABAP target object.
+     */
+    private getTarget(
+        configAnswers: ConfigurationInfoAnswers,
+        systemDetails: SystemDetails,
+        isCloudProject: boolean
+    ): AbapTarget {
+        const target: AbapTarget = {
+            client: isAppStudio() ? configAnswers?.client : systemDetails?.client,
+            ...(isAppStudio() ? { destination: configAnswers.system } : { url: systemDetails?.url })
+        };
+
+        if (
+            !isAppStudio() &&
+            isCloudProject &&
+            systemDetails?.authenticationType === AuthenticationType.ReentranceTicket
+        ) {
+            target['authenticationType'] = AuthenticationType.ReentranceTicket;
+        }
+
+        return target;
     }
 
     /**
