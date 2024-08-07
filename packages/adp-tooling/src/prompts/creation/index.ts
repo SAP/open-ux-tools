@@ -9,7 +9,7 @@ import {
     isAxiosError
 } from '@sap-ux/axios-extension';
 import { Logger } from '@sap-ux/logger';
-import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
+import type { Manifest } from '@sap-ux/project-access';
 import { isExtensionInstalledVsCode } from '@sap-ux/environment-check';
 import type {
     ListQuestion,
@@ -20,8 +20,7 @@ import type {
 } from '@sap-ux/inquirer-common';
 
 import { t } from '../../i18n';
-import { isCustomerBase } from '../../base/helper';
-import { Application, CUSTOMER_BASE, ConfigurationInfoAnswers, FlexUISupportedSystem, Prompts } from '../../types';
+import { Application, FlexLayer, ConfigurationInfoAnswers, FlexUISupportedSystem, Prompts } from '../../types';
 import { isNotEmptyString, validateAch, validateClient } from '../../base/validators';
 
 import { EndpointsService } from '../../base/services/endpoints-service';
@@ -59,11 +58,11 @@ export default class ConfigInfoPrompter {
         private manifestService: ManifestService,
         private endpointsService: EndpointsService,
         private ui5Service: UI5VersionService,
-        layer: UI5FlexLayer,
+        layer: FlexLayer,
         prompts?: Prompts
     ) {
         this.prompts = prompts;
-        this.isCustomerBase = layer === CUSTOMER_BASE;
+        this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
         this.isExtensionInstalled = isExtensionInstalledVsCode('sapse.sap-ux-application-modeler-extension');
 
         this.appIdentifier = new AppIdentifier(this.isCustomerBase);
@@ -125,7 +124,7 @@ export default class ConfigInfoPrompter {
         const isCloudReady =
             adaptationProjectTypes.length === 1 && adaptationProjectTypes[0] === AdaptationProjectType.CLOUD_READY;
 
-        if (isCloudReady && !isCustomerBase) {
+        if (isCloudReady && !this.isCustomerBase) {
             this.systemInfo.adaptationProjectTypes = [];
             return t('validators.unsupportedCloudSystemInt');
         }

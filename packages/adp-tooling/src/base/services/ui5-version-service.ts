@@ -1,6 +1,5 @@
-import { UI5FlexLayer } from '@sap-ux/project-access';
 import { t } from '../../i18n';
-import { CUSTOMER_BASE, UI5Version } from '../../types';
+import { UI5Version, FlexLayer } from '../../types';
 
 const UI5_CDN_URL = 'https://ui5.sap.com';
 const UI5_VERSIONS_CDN_URL = 'https://sapui5.hana.ondemand.com/version.json';
@@ -165,10 +164,10 @@ export class UI5VersionService {
     /**
      * Initializes a new instance of the UI5VersionService class.
      *
-     * @param {UI5FlexLayer} layer UI5 Flex layer.
+     * @param {FlexLayer} layer UI5 Flex layer.
      */
-    constructor(layer: UI5FlexLayer) {
-        this.isCustomerBase = layer === CUSTOMER_BASE;
+    constructor(layer: FlexLayer) {
+        this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
     }
 
     /**

@@ -1,7 +1,7 @@
 import { Editor } from 'mem-fs-editor';
 import { UI5FlexLayer } from '@sap-ux/project-access';
 
-import { CUSTOMER_BASE, Content } from '../../types';
+import { FlexLayer, Content } from '../../types';
 import { writeI18nModels } from './i18n-model-writer';
 import { I18nModelExtractor, ResourceModel } from './i18n-model';
 import { ApplicationType, getApplicationType } from '../../base/app-utils';
@@ -115,20 +115,20 @@ export class DescriptorContent {
      *
      * @param {ManifestService} manifestService - Service for managing application manifests.
      * @param {UI5VersionService} ui5Service - Service for handling UI5 version information.
-     * @param {UI5FlexLayer} layer - The UI5 Flex layer, indicating the deployment layer (e.g., CUSTOMER_BASE).
+     * @param {FlexLayer} layer - The UI5 Flex layer, indicating the deployment layer (e.g., CUSTOMER_BASE).
      * @param {string} basePath - The base path where the project files are located.
      * @param {Editor} fs - File system editor used to write internationalization models and other files.
      */
     constructor(
         private manifestService: ManifestService,
         private ui5Service: UI5VersionService,
-        layer: UI5FlexLayer,
+        layer: FlexLayer,
         basePath: string,
         fs: Editor
     ) {
         this.fs = fs;
         this.basePath = basePath;
-        this.isCustomerBase = layer === CUSTOMER_BASE;
+        this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
         this.i18nExtractor = new I18nModelExtractor(layer);
     }
 

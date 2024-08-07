@@ -149,6 +149,30 @@ describe('ChangePanel', () => {
         initIcons();
         registerAppIcons();
     });
+
+    test('ChangePanel - check if search filter rendered', () => {
+        const model = getEmptyModel();
+        const initialState: State = {
+            deviceType: DeviceType.Desktop,
+            scale: 1,
+            outline: {} as any,
+            filterQuery: filterInitOptions,
+            selectedControl: undefined,
+            changes: model,
+            icons: [],
+            dialogMessage: undefined,
+            isAdpProject: false
+        };
+        render(<ChangesPanel />, { initialState });
+
+        // check if search box exists
+        const searchBarByRole = screen.getByRole('searchbox');
+        expect(searchBarByRole).toBeInTheDocument();
+
+        const searchBarByPlaceholder = screen.getByPlaceholderText(/Filter/, { exact: true });
+        expect(searchBarByPlaceholder).toBeInTheDocument();
+    });
+
     test('ChangePanel empty save and pending', () => {
         const model = getEmptyModel();
         const initialState: State = {

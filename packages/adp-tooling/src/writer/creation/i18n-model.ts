@@ -1,7 +1,7 @@
 import { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { ApplicationType } from '../../base/app-utils';
 import { v4 as uuidv4 } from 'uuid';
-import { CUSTOMER_BASE, SapModel } from '../../types';
+import { FlexLayer, SapModel } from '../../types';
 
 export const RESOURCE_BUNDLE_TEXT = '\n\n# This is the resource bundle for ';
 export const TRANSLATION_UUID_TEXT = '\n#__ldi.translation.uuid=';
@@ -61,10 +61,10 @@ export class I18nModelExtractor {
     /**
      * Constructs an instance of I18nModelExtractor.
      *
-     * @param {UI5FlexLayer} layer UI5 Flex layer.
+     * @param {FlexLayer} layer UI5 Flex layer.
      */
-    constructor(layer: UI5FlexLayer) {
-        this.isCustomerBase = layer === CUSTOMER_BASE;
+    constructor(layer: FlexLayer) {
+        this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
     }
 
     /**

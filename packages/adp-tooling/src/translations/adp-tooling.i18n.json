@@ -58,15 +58,32 @@
         "flpConfigurationType": "FLP configuration: Add new tile",
         "semanticObject": "Semantic Object",
         "action": "Action",
-        "title": "Title",
-        "subtitle": "Subtitle",
         "parameters": "Parameters",
         "abapRepository": "SAPUI5 ABAP Repository",
         "deployConfigDescription": "Deployment description",
         "packageInputChoice": "How do you want to enter the Package",
         "package": "Package",
         "transportInputChoice": "How do you want to enter Transport Request",
-        "transport": "Transport Request"
+        "transport": "Transport Request",
+        "oDataServiceNameLabel": "OData Service Name",
+        "oDataServiceNameTooltip": "Enter a name for the OData service you want to add",
+        "oDataServiceUriLabel": "OData Service URI",
+        "oDataServiceUriTooltip": "Enter the URI for the OData service you want to add, e.g. /path/to/odata/",
+        "oDataServiceVersionLabel": "OData Version",
+        "oDataServiceVersionTooltip": "Select the version of OData of the service you want to add",
+        "oDataServiceModelNameLabel": "OData Service SAPUI5 Model Name",
+        "oDataServiceModelNameTooltip": "Enter a name for the SAPUI5 model you want to use from the service",
+        "oDataServiceModelSettingsLabel": "OData Service SAPUI5 Model Settings",
+        "oDataServiceModelSettingsTooltip": "If needed enter any additional model settings in the 'key1':'value1','key2':'value2' format",
+        "oDataAnnotationDataSourceNameLabel": "OData Annotation Data Source Name",
+        "oDataAnnotationDataSourceNameTooltip": "Enter a name for the OData annotation data source",
+        "oDataAnnotationDataSourceUriLabel": "OData Annotation Data Source URI",
+        "oDataAnnotationDataSourceUriTooltip": "Enter URI for the OData annotation data source",
+        "oDataAnnotationSettingsLabel": "OData Annotation Settings",
+        "oDataAnnotationSettingsTooltip": "If needed enter any additional {{value}} settings in the 'key':'value1','key2':'value2' format",
+        "title": "Title",
+        "subtitle": "Subtitle",
+        "icon": "Icon"
     },
     "choices": {
         "annotationFile": {
@@ -124,7 +141,14 @@
         "chooseTransportInput": "Please choose how you want to enter Transport",
         "errorFetchingTransports": "Transport Request list cannot be fetched. Please enter Transport Request manually.",
         "extensibilityGenNotFound": "Extensibility Project generator plugin was not found in your dev space, and is required for this action. To proceed, please install the <SAPUI5 Layout Editor & Extensibility> extension.",
-        "appListIsEmptyError": "Applications list is empty. No errors were thrown during execution of the request."
+        "appListIsEmptyError": "Applications list is empty. No errors were thrown during execution of the request.",
+
+        "missingIconOrTitleOrSubtitle": "At least one of Title, Subtitle and Icon should have a value.",
+        "errorDuplicatedValueOData": "OData Annotation or OData Service with the same name was already added to the project",
+        "errorDuplicatedValueSapui5Model": "SAPUI5 Model with the same name was already added to the project",
+        "errorDuplicateNamesOData": "OData Service Name must be different from OData Annotation Data Source Name",
+        "errorInputInvalidValuePrefix": "{{value}} should start with '{{prefix}}'",
+        "errorInvalidDataSourceURI": "Invalid URI. Should start and end with '/' and contain no spaces"
     },
     "tooltips": {
         "inboundId": "Choose the inboundID that will be used to set the FLP tile configuration",

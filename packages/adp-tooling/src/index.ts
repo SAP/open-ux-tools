@@ -6,4 +6,3 @@ export * from './writer/creation';
 export { generate, migrate } from './writer';
 export { generateChange } from './writer/editors';
 export { promptGeneratorInput, PromptDefaults } from './base/prompt';
-export { isCFEnvironment } from './base/cf';

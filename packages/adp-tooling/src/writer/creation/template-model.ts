@@ -8,7 +8,7 @@ import { UI5FlexLayer } from '@sap-ux/project-access';
 import {
     AdpWriterConfig,
     BasicInfoAnswers,
-    CUSTOMER_BASE,
+    FlexLayer,
     CloudApp,
     ConfigurationInfoAnswers,
     DeployConfigAnswers,
@@ -43,16 +43,16 @@ export class TemplateModel {
      * @param {ProviderService} providerService - Service for managing provider-related configurations.
      * @param {DescriptorContent} descriptorContent - Service for managing application descriptors.
      * @param {EndpointsService} endpointsService - Service for managing and retrieving systems.
-     * @param {UI5FlexLayer} layer - The UI5 Flex layer, indicating the deployment layer (e.g., CUSTOMER_BASE).
+     * @param {FlexLayer} layer - The UI5 Flex layer, indicating the deployment layer (e.g., CUSTOMER_BASE).
      */
     constructor(
         private ui5Service: UI5VersionService,
         private providerService: ProviderService,
         private descriptorContent: DescriptorContent,
         private endpointsService: EndpointsService, // TODO: Use the service
-        private layer: UI5FlexLayer
+        private layer: FlexLayer
     ) {
-        this.isCustomerBase = this.layer === CUSTOMER_BASE;
+        this.isCustomerBase = this.layer === FlexLayer.CUSTOMER_BASE;
     }
 
     /**
