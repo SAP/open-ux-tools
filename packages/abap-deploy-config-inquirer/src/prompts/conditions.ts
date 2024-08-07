@@ -167,17 +167,16 @@ export function showUi5AppDeployConfigQuestion(): boolean {
 /**
  * Determines if the package question should be shown.
  *
- * @param previousAnswers - previous answers
  * @returns boolean
  */
-function defaultOrShowPackageQuestion(previousAnswers: AbapDeployConfigAnswers): boolean {
-    if (PromptState.transportAnswers.transportConfig?.getPackage()) {
-        previousAnswers.package = PromptState.transportAnswers.transportConfig.getPackage();
+function defaultOrShowPackageQuestion(): boolean {
+    if (PromptState.transportAnswers?.transportConfig?.getPackage()) {
+        PromptState.abapDeployConfig.package = PromptState.transportAnswers.transportConfig.getPackage();
         return false;
     } else {
         return (
-            !PromptState.transportAnswers.transportConfigError &&
-            !PromptState.transportAnswers.transportConfigNeedsCreds
+            !PromptState.transportAnswers?.transportConfigError &&
+            !PromptState.transportAnswers?.transportConfigNeedsCreds
         );
     }
 }
@@ -185,15 +184,14 @@ function defaultOrShowPackageQuestion(previousAnswers: AbapDeployConfigAnswers):
 /**
  * Determines if the choice of package input options should include both manual input and search (autocomplete) input options.
  *
- * @param previousAnswers - previous answers
  * @returns boolean
  */
-export function showPackageInputChoiceQuestion(previousAnswers: AbapDeployConfigAnswers): boolean {
+export function showPackageInputChoiceQuestion(): boolean {
     // Only show the input choice (manual/search) when the autocomplete prompt is supported; CLI or YUI specific version
     return Boolean(
         (getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli ||
             isFeatureEnabled('enableAutocompleteUIPrompt')) &&
-            defaultOrShowPackageQuestion(previousAnswers)
+            defaultOrShowPackageQuestion()
     );
 }
 
@@ -209,7 +207,7 @@ export function defaultOrShowManualPackageQuestion(isCli: boolean, previousAnswe
     return (
         ((!isCli && !isFeatureEnabled('enableAutocompleteUIPrompt')) ||
             previousAnswers.packageInputChoice === PackageInputChoices.EnterManualChoice) &&
-        defaultOrShowPackageQuestion(previousAnswers)
+        defaultOrShowPackageQuestion()
     );
 }
 
@@ -225,7 +223,7 @@ export function defaultOrShowSearchPackageQuestion(isCli: boolean, previousAnswe
     return (
         (!isCli || isFeatureEnabled('enableAutocompleteUIPrompt')) &&
         previousAnswers.packageInputChoice === PackageInputChoices.ListExistingChoice &&
-        defaultOrShowPackageQuestion(previousAnswers)
+        defaultOrShowPackageQuestion()
     );
 }
 

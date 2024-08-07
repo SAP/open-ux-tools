@@ -17,7 +17,7 @@ let system: SystemConfig;
  *
  * @param options - aba deploy config prompt options
  * @param systemConfig - system configuration
- * @param credentials
+ * @param credentials - user credentials
  * @returns abap service provider
  */
 export async function getOrCreateServiceProvider(
@@ -50,7 +50,7 @@ export async function getOrCreateServiceProvider(
 /**
  * Create a new abap service provider using @sap-ux/system-access.
  *
- * @param credentials
+ * @param credentials - user credentials
  * @returns abap service provider
  */
 async function createNewServiceProvider(credentials?: Credentials): Promise<AbapServiceProvider> {

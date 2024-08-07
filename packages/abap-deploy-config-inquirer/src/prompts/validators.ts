@@ -237,15 +237,14 @@ export async function validateCredentials(
         PromptState.transportAnswers.transportConfigNeedsCreds = false;
 
         return true; // Log a warning and proceed
+    }
+
+    if (PromptState.transportAnswers.transportConfigNeedsCreds) {
+        LoggerHelper.logger.warn(t('errors.incorrectCredentials'));
+        return t('errors.incorrectCredentials');
     } else {
-        // Need to give the CLI some context why the username is shown.
-        if (PromptState.transportAnswers.transportConfigNeedsCreds) {
-            LoggerHelper.logger.warn(t('errors.incorrectCredentials'));
-            return t('errors.incorrectCredentials');
-        } else {
-            LoggerHelper.logger.info(t('info.correctCredentials'));
-            return true;
-        }
+        LoggerHelper.logger.info(t('info.correctCredentials'));
+        return true;
     }
 }
 

@@ -119,7 +119,7 @@ class DefaultTransportConfig implements TransportConfig {
      * @param initParams - init transport config parameters
      * @param initParams.options - abap deploy config prompt options
      * @param initParams.systemConfig - system configuration
-     * @param initParams.credentials
+     * @param initParams.credentials - user credentials
      * @returns init transport config result
      */
     public async init({
@@ -230,7 +230,7 @@ class DefaultTransportConfig implements TransportConfig {
  * @param transportConfigOptions.options - aba deploy config prompt options
  * @param transportConfigOptions.scp - scp
  * @param transportConfigOptions.systemConfig - system configuration
- * @param transportConfigOptions.credentials
+ * @param transportConfigOptions.credentials - user credentials
  * @returns transport configuration instance
  */
 export async function getTransportConfigInstance({

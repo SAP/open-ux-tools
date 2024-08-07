@@ -31,8 +31,7 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
 
     const questions: Question[] = [
         {
-            when: (previousAnswers: AbapDeployConfigAnswers): boolean =>
-                showPackageInputChoiceQuestion(previousAnswers),
+            when: (): boolean => showPackageInputChoiceQuestion(),
             type: 'list',
             name: abapDeployConfigInternalPromptNames.packageInputChoice,
             message: t('prompts.config.package.packageInputChoice.message'),

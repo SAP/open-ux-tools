@@ -113,7 +113,7 @@ export function uniformAtoFormat(atoData: AtoSettings & Record<string, any>): At
  * @param transportConfigParams.client - client
  * @param transportConfigParams.destination - destination
  * @param transportConfigParams.errorHandler - error handler
- * @param transportConfigParams.credentials
+ * @param transportConfigParams.credentials - user credentials
  * @returns transport configuration
  */
 export async function initTransportConfig({

@@ -1,26 +1,45 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { AbapDeployConfigPromptOptions, ClientChoiceValue } from '../../src/types';
 import {
+    AbapDeployConfigPromptOptions,
+    ClientChoiceValue,
+    PackageInputChoices,
+    TransportConfig
+} from '../../src/types';
+import {
+    defaultOrShowManualPackageQuestion,
     showClientChoiceQuestion,
     showClientQuestion,
+    showPackageInputChoiceQuestion,
+    showPasswordQuestion,
     showScpQuestion,
-    showUrlQuestion
+    showUi5AppDeployConfigQuestion,
+    showUrlQuestion,
+    showUsernameQuestion
 } from '../../src/prompts/conditions';
 import * as utils from '../../src/utils';
-import { PromptState } from '../../../odata-service-inquirer/src/utils';
-import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { PromptState } from '../../src/prompts/prompt-state';
+import { getHostEnvironment, hostEnvironment, getHelpUrl } from '@sap-ux/fiori-generator-shared';
+import { isFeatureEnabled } from '@sap-ux/feature-toggle';
+import { Transport } from '@sap-ux/logger';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()
 }));
 
+jest.mock('@sap-ux/feature-toggle', () => ({
+    isFeatureEnabled: jest.fn()
+}));
+
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
     ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    getHostEnvironment: jest.fn()
+    getHostEnvironment: jest.fn(),
+    getHelpUrl: jest.fn()
 }));
 
 const mockIsAppStudio = isAppStudio as jest.Mock;
 const mockGetHostEnvironment = getHostEnvironment as jest.Mock;
+const mockGetHelpUrl = getHelpUrl as jest.Mock;
+const mockIsFeatureEnabled = isFeatureEnabled as jest.Mock;
 
 const abapDeployConfigPromptOptions: AbapDeployConfigPromptOptions = {};
 
@@ -28,7 +47,8 @@ describe('Test abap deploy config inquirer conditions', () => {
     let options: AbapDeployConfigPromptOptions;
     beforeEach(() => {
         options = abapDeployConfigPromptOptions;
-        PromptState.reset();
+        PromptState.resetAbapDeployConfig();
+        PromptState.resetTransportAnswers();
     });
 
     afterEach(() => {
@@ -100,5 +120,63 @@ describe('Test abap deploy config inquirer conditions', () => {
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
         mockIsAppStudio.mockReturnValue(false);
         expect(showClientQuestion({ clientChoice: ClientChoiceValue.New }, options, false)).toBe(true);
+    });
+
+    test('should show username question', async () => {
+        jest.spyOn(utils, 'initTransportConfig').mockResolvedValueOnce({
+            transportConfig: {} as any,
+            transportConfigNeedsCreds: true
+        });
+        expect(await showUsernameQuestion(options)).toBe(true);
+    });
+
+    test('should not show username question', async () => {
+        jest.spyOn(utils, 'initTransportConfig').mockResolvedValueOnce({
+            transportConfig: {} as any,
+            transportConfigNeedsCreds: false,
+            warning: 'Warning message'
+        });
+        expect(await showUsernameQuestion(options)).toBe(false);
+        expect(mockGetHelpUrl).toHaveBeenCalledWith(3046, [57266]);
+    });
+
+    test('should show password questions', () => {
+        PromptState.transportAnswers.transportConfigNeedsCreds = true;
+        expect(showPasswordQuestion()).toBe(true);
+    });
+
+    test('should show ui5 app deploy config questions', () => {
+        PromptState.transportAnswers.transportConfigNeedsCreds = false;
+        expect(showUi5AppDeployConfigQuestion()).toBe(true);
+    });
+
+    test('should show package input choice question', () => {
+        // cli
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
+        expect(showPackageInputChoiceQuestion()).toBe(true);
+
+        // feature enabled
+        mockIsFeatureEnabled.mockReturnValueOnce(true);
+        expect(showPackageInputChoiceQuestion()).toBe(true);
+    });
+
+    test('should not show package input choice question', () => {
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.vscode);
+        mockIsFeatureEnabled.mockReturnValueOnce(true);
+        PromptState.transportAnswers.transportConfig = {
+            getPackage: () => 'ZPACKAGE1'
+        } as unknown as TransportConfig;
+        expect(showPackageInputChoiceQuestion()).toBe(false);
+        expect((PromptState.abapDeployConfig.package = 'ZPACKAGE1'));
+    });
+
+    test('should show manual package question', () => {
+        mockIsFeatureEnabled.mockReturnValueOnce(false);
+        expect(defaultOrShowManualPackageQuestion(false, {})).toBe(true);
+
+        // cli
+        expect(
+            defaultOrShowManualPackageQuestion(true, { packageInputChoice: PackageInputChoices.EnterManualChoice })
+        ).toBe(true);
     });
 });
