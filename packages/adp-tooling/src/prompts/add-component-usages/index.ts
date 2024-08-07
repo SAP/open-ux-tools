@@ -61,14 +61,23 @@ function validatePromptId(
         return validationResult;
     }
 
-    if (isCustomerBase && !hasCustomerPrefix(value)) {
-        return t('validators.errorInputInvalidValuePrefix', {
-            value: t('prompts.component.usageIdLabel'),
-            prefix: NamespacePrefix.CUSTOMER
-        });
+    if (isCustomerBase) {
+        if (!hasCustomerPrefix(value)) {
+            return t('validators.errorInputInvalidValuePrefix', {
+                value: t('prompts.component.usageIdLabel'),
+                prefix: NamespacePrefix.CUSTOMER
+            });
+        }
+
+        if (!value.replace('customer.', '').length) {
+            return t('validators.errorCustomerEmptyValue', {
+                value: t('prompts.component.usageIdLabel'),
+                prefix: NamespacePrefix.CUSTOMER
+            });
+        }
     }
 
-    if (hasContentDuplication(value, 'dataSource', changeFiles)) {
+    if (hasContentDuplication(value, 'componentUsages', changeFiles)) {
         return t('validators.errorDuplicateValueComponentId');
     }
 
@@ -80,27 +89,15 @@ function validatePromptId(
  *
  * @param value The value to validate.
  * @param changeFiles The change files to check for duplication.
- * @param isCustomerBase Flag to check if the project is customer scenario.
  * @returns {string | boolean} An error message if the value is invalid, or true if it is not.
  */
-function validatePromptLibrary(
-    value: string,
-    changeFiles: ManifestChangeProperties[],
-    isCustomerBase: boolean
-): boolean | string {
+function validatePromptLibrary(value: string, changeFiles: ManifestChangeProperties[]): boolean | string {
     const validationResult = validatePromptInput(value);
     if (typeof validationResult === 'string') {
         return validationResult;
     }
 
-    if (isCustomerBase && !hasCustomerPrefix(value)) {
-        return t('validators.errorInputInvalidValuePrefix', {
-            value: t('prompts.component.libraryLabel'),
-            prefix: NamespacePrefix.CUSTOMER
-        });
-    }
-
-    if (hasContentDuplication(value, 'dataSource', changeFiles)) {
+    if (hasContentDuplication(value, 'libraries', changeFiles)) {
         return t('validators.errorDuplicateValueLibrary');
     }
 
@@ -211,7 +208,7 @@ export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<A
                 mandatory: true,
                 hint: t('prompts.component.libraryTooltip')
             },
-            validate: (value: string) => validatePromptLibrary(value, libraryChangeFiles, isCustomerBase),
+            validate: (value: string) => validatePromptLibrary(value, libraryChangeFiles),
             store: false,
             when: (answers: AddComponentUsageAnswers) => answers.shouldAddLibrary
         } as InputQuestion<AddComponentUsageAnswers>,
