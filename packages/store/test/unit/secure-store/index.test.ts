@@ -120,9 +120,7 @@ describe('getSecureStore', () => {
             jest.mock('os', () => os, { virtual: true });
 
             const glob = {
-                globSync: [
-                    'test_dir/.vscode/extensions/no-app-modeler'
-                ]
+                globSync: ['test_dir/.vscode/extensions/no-app-modeler']
             };
             jest.mock('glob', () => glob, { virtual: true });
             expect(getSecureStore(nullLogger)).toBeInstanceOf(DummyStore);
@@ -146,9 +144,7 @@ describe('getSecureStore', () => {
             jest.mock('os', () => os, { virtual: true });
 
             const glob = {
-                globSync: [
-                    'test_dir/.vscode/extensions/no-app-modeler'
-                ]
+                globSync: ['test_dir/.vscode/extensions/no-app-modeler']
             };
             jest.mock('glob', () => glob, { virtual: true });
             jest.mock(
