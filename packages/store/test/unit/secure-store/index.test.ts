@@ -72,7 +72,7 @@ describe('getSecureStore', () => {
             jest.mock(`vscode_app_root/node_modules/keytar`, () => 'keytar', { virtual: true });
             expect(getSecureStore(nullLogger)).toBeInstanceOf(KeytarStore);
         });
-        it('returns KeytarStore if `.vscode/extensions/sapse.sap-ux-application-modeler-extension-**/node_modules/keytar/package.json` can be required with no errors', () => {
+        it('returns KeytarStore if `.vscode/extensions/sapse.sap-ux-application-modeler-extension-**/node_modules/keytar` can be required with no errors', () => {
             jest.mock('keytar', () => {
                 throw new Error();
             });
@@ -81,7 +81,7 @@ describe('getSecureStore', () => {
             };
             jest.mock('vscode', () => vscode, { virtual: true });
             jest.mock(
-                `homedir/.vscode/extensions/sapse.sap-ux-application-modeler-extension-1.14.2/node_modules/keytar/package.json`,
+                `homedir/.vscode/extensions/sapse.sap-ux-application-modeler-extension-1.14.2/node_modules/keytar`,
                 () => 'keytar',
                 { virtual: true }
             );

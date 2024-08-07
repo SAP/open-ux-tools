@@ -18,11 +18,11 @@ function getKeytar(log: Logger): typeof Keytar | undefined {
 
         const keytarGlobVscode = join(
             homedir(),
-            '.vscode/extensions/sapse.sap-ux-application-modeler-extension-**/node_modules/keytar/'
+            '.vscode/extensions/sapse.sap-ux-application-modeler-extension-**/node_modules/keytar/package.json'
         );
         const keytarGlobVscodeInsiders = join(
             homedir(),
-            '.vscode-insiders/extensions/sapse.sap-ux-application-modeler-extension-**/node_modules/keytar/'
+            '.vscode-insiders/extensions/sapse.sap-ux-application-modeler-extension-**/node_modules/keytar/package.json'
         );
         const files = globSync([keytarGlobVscode, keytarGlobVscodeInsiders]);
         console.log('files: \n' + JSON.stringify(files));
