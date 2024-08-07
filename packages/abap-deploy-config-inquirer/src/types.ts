@@ -54,6 +54,7 @@ export interface AbapSystemChoice {
  */
 export enum abapDeployConfigInternalPromptNames {
     destination = 'destination',
+    destinationCliSetter = 'destinationCliSetter',
     targetSystem = 'targetSystem',
     url = 'url',
     scp = 'scp',

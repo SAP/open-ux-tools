@@ -1,4 +1,5 @@
 import { PromptState } from './prompt-state';
+import { type Destinations, isS4HC, isAbapEnvironmentOnBtp } from '@sap-ux/btp-utils';
 import {
     createTransportNumber,
     getTransportList,
@@ -23,7 +24,6 @@ import {
     type AbapDeployConfigPromptOptions,
     type AbapSystemChoice
 } from '../types';
-import type { Destinations } from '@sap-ux/btp-utils';
 
 /**
  * Validates the destination question and sets the destination in the prompt state.
@@ -34,11 +34,7 @@ import type { Destinations } from '@sap-ux/btp-utils';
  */
 export function validateDestinationQuestion(destination: string, destinations?: Destinations): boolean {
     PromptState.resetAbapDeployConfig();
-    if (destinations) {
-        const dest = destinations[destination];
-        PromptState.abapDeployConfig.destination = destination;
-        PromptState.abapDeployConfig.url = dest?.Host;
-    }
+    updateDestinationPromptState(destination, destinations);
     return true;
 }
 
@@ -66,6 +62,19 @@ function updatePromptState({
     PromptState.abapDeployConfig.client = client;
     PromptState.abapDeployConfig.isS4HC = isS4HC;
     PromptState.abapDeployConfig.scp = scp;
+}
+
+export function updateDestinationPromptState(destination: string, destinations: Destinations = {}): void {
+    const dest = destinations[destination];
+    if (dest) {
+        PromptState.abapDeployConfig.destination = dest.Name;
+        updatePromptState({
+            url: dest?.Host,
+            client: dest['sap-client'],
+            isS4HC: isS4HC(dest),
+            scp: isAbapEnvironmentOnBtp(dest)
+        });
+    }
 }
 
 /**
