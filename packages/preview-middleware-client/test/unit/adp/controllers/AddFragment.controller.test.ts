@@ -339,6 +339,44 @@ describe('AddFragment', () => {
             expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
         });
 
+        test('does not crash if composite command exists in command stack', () => {
+            const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
+
+            const command = {
+                getCommandStack: jest.fn().mockReturnValue([])
+            };
+
+            rtaMock.getCommandStack.mockReturnValue({
+                getCommands: jest.fn().mockReturnValue([command])
+            });
+
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                {} as unknown as UI5Element,
+                rtaMock as unknown as RuntimeAuthoring
+            );
+
+            const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    getValue: jest.fn().mockReturnValue('New'),
+                    setValueState: valueStateSpy
+                })
+            };
+
+            addFragment.model = testModel;
+
+            addFragment.dialog = {
+                getBeginButton: jest
+                    .fn()
+                    .mockReturnValue({ setEnabled: jest.fn().mockReturnValue({ rerender: jest.fn() }) })
+            } as unknown as Dialog;
+
+            addFragment.onFragmentNameInputChange(event as unknown as Event);
+
+            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Success);
+        });
+
         test('sets error when the fragment name already exists in command stack', () => {
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             const change = {
