@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.17.3
+
+### Patch Changes
+
+-   0084205: chore: update sanitize-html and transitive dependencies
+
 ## 1.17.2
 
 ### Patch Changes
