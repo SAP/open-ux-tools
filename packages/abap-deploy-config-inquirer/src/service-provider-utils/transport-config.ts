@@ -137,7 +137,7 @@ class DefaultTransportConfig implements TransportConfig {
             const atoSettings = await atoService?.getAtoInfo();
 
             if (atoSettings) {
-                result.error = this.handleAtoResponse();
+                result.error = this.handleAtoResponse(atoSettings);
             }
         } catch (err) {
             await deleteCachedServiceProvider();
@@ -168,10 +168,12 @@ class DefaultTransportConfig implements TransportConfig {
     /**
      * Checks the ATO response.
      *
+     * @param atoSettings - ATO settings
      * @returns error message or undefined
      */
-    private handleAtoResponse(): string | undefined {
+    private handleAtoResponse(atoSettings: AtoSettings): string | undefined {
         let validationRequired = false;
+        this.atoSettings = atoSettings;
 
         // Ignore ATO settings if these parameters are not met
         if (

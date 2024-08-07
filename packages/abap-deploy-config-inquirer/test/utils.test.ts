@@ -7,7 +7,8 @@ import {
     isSameSystem,
     initTransportConfig,
     getPackageAnswer,
-    useCreateTrDuringDeploy
+    useCreateTrDuringDeploy,
+    queryPackages
 } from '../src/utils';
 import { getService } from '@sap-ux/store';
 import { mockTargetSystems } from './fixtures/targets';
@@ -102,12 +103,9 @@ describe('Test utils', () => {
     });
 
     it('should return initialised transport config', async () => {
-        const loggerSpy = jest.spyOn(LoggerHelper.logger, 'debug');
-        const errorMsg = 'Transport error';
         mockGetTransportConfigInstance.mockResolvedValueOnce({
             transportConfig: { getPackage: jest.fn() } as any,
-            transportConfigNeedsCreds: true,
-            error: errorMsg
+            transportConfigNeedsCreds: true
         });
         const initTransportConfigResult = await initTransportConfig({
             options: {},
@@ -128,15 +126,48 @@ describe('Test utils', () => {
             }
         });
         expect(initTransportConfigResult.transportConfigNeedsCreds).toBe(true);
+    });
+
+    it('should log error when transport config initialisation fails', async () => {
+        const errorHandler = jest.fn();
+        const result = await initTransportConfig({ options: {}, scp: false, errorHandler });
+        expect(result).toStrictEqual({});
+
+        const loggerSpy = jest.spyOn(LoggerHelper.logger, 'debug');
+        const errorMsg = 'Transport error';
+        const errorObj = new Error(errorMsg);
+        mockGetTransportConfigInstance.mockRejectedValueOnce(errorObj);
+        const initTransportConfigResult = await initTransportConfig({
+            options: {},
+            scp: false,
+            url: 'https://mocktarget.url',
+            client: '100',
+            errorHandler
+        });
+
+        expect(mockGetTransportConfigInstance).toBeCalledWith({
+            options: {},
+            scp: false,
+            credentials: undefined,
+            systemConfig: {
+                url: 'https://mocktarget.url',
+                client: '100',
+                destination: undefined
+            }
+        });
+        expect(initTransportConfigResult.error).toStrictEqual(errorObj);
+        expect(errorHandler).toBeCalledWith(errorObj);
         expect(loggerSpy).toBeCalledWith(
-            t('errors.debugAbapTargetSystem', { method: 'initTransportConfig', error: errorMsg })
+            t('errors.debugAbapTargetSystem', { method: 'initTransportConfig', error: errorObj.toString() })
         );
     });
 
     it('should query packages', () => {
         const packages = ['package1', 'package2'];
         mockListPackages.mockResolvedValueOnce(packages);
-        expect(listPackages('pack', {}, { url: 'https://target.url', client: '100' })).resolves.toStrictEqual(packages);
+        expect(queryPackages('pack', {}, { url: 'https://target.url', client: '100' })).resolves.toStrictEqual(
+            packages
+        );
     });
 
     it('should get package answer', () => {
