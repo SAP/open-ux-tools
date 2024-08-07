@@ -23,7 +23,6 @@ import {
     validateSpecialChars,
     hasContentDuplication,
     hasCustomerPrefix,
-    hasCustomerEmptyValue,
     isDataSourceURI,
     validateJSON
 } from '@sap-ux/project-input-validator';
@@ -67,7 +66,7 @@ function validateCustomerValue(value: string, label: string): boolean | string {
         });
     }
 
-    if (hasCustomerEmptyValue(value)) {
+    if (!value.replace('customer.', '').length) {
         return t('validators.errorCustomerEmptyValue', {
             value: t(label),
             prefix: NamespacePrefix.CUSTOMER

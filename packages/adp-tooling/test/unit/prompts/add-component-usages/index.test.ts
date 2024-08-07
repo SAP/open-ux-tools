@@ -6,7 +6,6 @@ jest.mock('@sap-ux/project-input-validator');
 
 jest.mock('@sap-ux/project-input-validator', () => ({
     ...jest.requireActual('@sap-ux/project-input-validator'),
-    hasCustomerEmptyValue: jest.fn().mockReturnValue(false),
     hasContentDuplication: jest.fn().mockReturnValue(false),
     hasCustomerPrefix: jest.fn().mockReturnValue(true),
     validateJSON: jest.fn().mockReturnValue(true),
@@ -159,8 +158,6 @@ describe('getPrompts', () => {
         });
 
         test('should fail validation of id for empty value except customer prefix', () => {
-            jest.spyOn(validators, 'hasCustomerEmptyValue').mockReturnValueOnce(true);
-
             const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
             const validator = prompts.find((prompt) => prompt.name === 'id')?.validate;

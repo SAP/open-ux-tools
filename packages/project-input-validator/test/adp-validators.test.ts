@@ -1,9 +1,4 @@
-import {
-    hasContentDuplication,
-    hasCustomerPrefix,
-    isDataSourceURI,
-    hasCustomerEmptyValue
-} from '../src/adp/validators';
+import { hasContentDuplication, hasCustomerPrefix, isDataSourceURI } from '../src/adp/validators';
 
 describe('project input validators', () => {
     describe('hasContentDuplication', () => {
@@ -37,18 +32,6 @@ describe('project input validators', () => {
 
         test('should return false if the value does not have a customer prefix', () => {
             const output = hasCustomerPrefix('ZTEST');
-            expect(output).toEqual(false);
-        });
-    });
-
-    describe('hasCustomerEmptyValue', () => {
-        test('should return true if the value is empty except for the customer prefix', () => {
-            const output = hasCustomerEmptyValue('customer.');
-            expect(output).toEqual(true);
-        });
-
-        test('should return false if the value is not empty except for the customer prefix', () => {
-            const output = hasCustomerEmptyValue('customer.ZTEST');
             expect(output).toEqual(false);
         });
     });

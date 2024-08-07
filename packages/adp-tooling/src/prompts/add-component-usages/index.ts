@@ -21,7 +21,6 @@ import {
     validateSpecialChars,
     hasContentDuplication,
     hasCustomerPrefix,
-    hasCustomerEmptyValue,
     validateJSON
 } from '@sap-ux/project-input-validator';
 
@@ -70,7 +69,7 @@ function validatePromptId(
             });
         }
 
-        if (hasCustomerEmptyValue(value)) {
+        if (!value.replace('customer.', '').length) {
             return t('validators.errorCustomerEmptyValue', {
                 value: t('prompts.component.usageIdLabel'),
                 prefix: NamespacePrefix.CUSTOMER

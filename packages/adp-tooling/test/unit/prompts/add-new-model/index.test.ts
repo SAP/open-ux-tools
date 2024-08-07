@@ -4,7 +4,6 @@ import { isCFEnvironment } from '../../../../src/base/cf';
 import { getPrompts } from '../../../../src/prompts/add-new-model';
 import * as validators from '@sap-ux/project-input-validator';
 import { getChangesByType } from '../../../../src/base/change-utils';
-import exp from 'constants';
 
 const getChangesByTypeMock = getChangesByType as jest.Mock;
 
@@ -26,8 +25,7 @@ jest.mock('@sap-ux/project-input-validator', () => ({
     validateJSON: jest.fn().mockReturnValue(true),
     validateSpecialChars: jest.fn().mockReturnValue(true),
     validateEmptyString: jest.fn().mockReturnValue(true),
-    isDataSourceURI: jest.fn().mockReturnValue(true),
-    hasCustomerEmptyValue: jest.fn().mockReturnValue(false)
+    isDataSourceURI: jest.fn().mockReturnValue(true)
 }));
 
 describe('getPrompts', () => {
@@ -87,8 +85,6 @@ describe('getPrompts', () => {
     });
 
     it('should return error message when validating service name prompt and name is only "customer."', () => {
-        jest.spyOn(validators, 'hasCustomerEmptyValue').mockReturnValueOnce(true);
-
         const prompts = getPrompts(mockPath, 'CUSTOMER_BASE');
 
         const namePrompt = prompts.find((p) => p.name === 'name');
@@ -242,13 +238,11 @@ describe('getPrompts', () => {
     });
 
     it('should return error message when validating model name contains only "customer."', () => {
-        jest.spyOn(validators, 'hasCustomerEmptyValue').mockReturnValueOnce(true);
-
         const prompts = getPrompts(mockPath, 'CUSTOMER_BASE');
 
         const modelNamePrompt = prompts.find((p) => p.name === 'modelName');
 
-        const validation = modelNamePrompt?.validate && modelNamePrompt?.validate('testName');
+        const validation = modelNamePrompt?.validate && modelNamePrompt?.validate('customer.');
 
         expect(validation).toBe(
             "OData Service SAPUI5 Model Name should contain at least one character in addition to 'customer.'"
@@ -327,8 +321,6 @@ describe('getPrompts', () => {
     });
 
     it('should return error message when validating data source name prompt with only "customer." prefix', () => {
-        jest.spyOn(validators, 'hasCustomerEmptyValue').mockReturnValueOnce(true);
-
         const prompts = getPrompts(mockPath, 'CUSTOMER_BASE');
 
         const dataSourcePrompt = prompts.find((p) => p.name === 'dataSourceName');
