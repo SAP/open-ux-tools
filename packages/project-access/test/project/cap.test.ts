@@ -24,16 +24,16 @@ import type { Logger } from '@sap-ux/logger';
 
 jest.mock('child_process');
 const childProcessMock = jest.mocked(childProcess, { shallow: true });
+const jestEnvForMock = jest.fn().mockImplementation(() => ({
+    'for': jestEnvForMock,
+    folders: {
+        app: 'MY_APP',
+        db: 'MY_DB',
+        srv: 'MY_SRV'
+    }
+}));
 const jestMockEnv = {
-    'for': jest.fn().mockImplementation(() => ({
-        'for': jest.fn().mockImplementation(() => ({
-            'for': jest.fn().mockImplementation(() => ({
-                folders: { app: 'MY_APP', db: 'MY_DB', srv: 'MY_SRV' }
-            })),
-            folders: { app: 'MY_APP', db: 'MY_DB', srv: 'MY_SRV' }
-        })),
-        folders: { app: 'MY_APP', db: 'MY_DB', srv: 'MY_SRV' }
-    }))
+    'for': jestEnvForMock
 };
 
 describe('Test getCapProjectType() & isCapProject()', () => {
