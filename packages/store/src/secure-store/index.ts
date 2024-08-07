@@ -12,10 +12,6 @@ function getKeytar(log: Logger): typeof Keytar | undefined {
     try {
         return require('keytar');
     } catch (err) {
-        log.warn(errorString(err));
-        log.warn(`Could not "require('keytar')". Trying VSCode's copy`);
-        let vscode;
-
         const keytarGlobVscode = join(
             homedir(),
             '.vscode/extensions/sapse.sap-ux-application-modeler-extension-**/node_modules/keytar/package.json'
@@ -25,12 +21,16 @@ function getKeytar(log: Logger): typeof Keytar | undefined {
             '.vscode-insiders/extensions/sapse.sap-ux-application-modeler-extension-**/node_modules/keytar/package.json'
         );
         const files = globSync([keytarGlobVscode, keytarGlobVscodeInsiders]);
-        console.log('files: \n' + JSON.stringify(files));
+        log.info('files: \n' + JSON.stringify(files));
         const dirnames: string[] = [];
         files.forEach((filePath: string) => {
             dirnames.push(dirname(filePath));
         });
-        console.log('keytarDirectories: \n' + JSON.stringify(dirnames));
+        log.info('keytarDirectories: \n' + JSON.stringify(dirnames));
+
+        log.warn(errorString(err));
+        log.warn(`Could not "require('keytar')". Trying VSCode's copy`);
+        let vscode;
 
         try {
             vscode = require('vscode');
