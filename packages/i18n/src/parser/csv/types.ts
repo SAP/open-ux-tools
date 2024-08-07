@@ -1,4 +1,4 @@
-import type { Range } from '../utils';
+import type { Range } from '@sap-ux/text-document-utils';
 export enum TokenType {
     separator = 'separator',
     eol = 'eol',

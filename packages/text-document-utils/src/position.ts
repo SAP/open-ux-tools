@@ -1,4 +1,34 @@
-import type { Position, Range } from '@sap-ux/odata-annotation-core-types';
+import type { Range } from 'vscode-languageserver-types';
+import { Position } from 'vscode-languageserver-types';
+
+/**
+ *
+ * @param lineOffsets Array of indices with line start offsets.
+ * e.g [0] represents a document with one line that starts at offset 0.
+ * @param offset
+ * @param textLength
+ * @returns
+ */
+export function positionAt(lineOffsets: number[], offset: number, textLength: number): Position {
+    const target = Math.max(Math.min(offset, textLength), 0);
+    let low = 0;
+    let high = lineOffsets.length;
+
+    if (high === 0) {
+        return Position.create(0, target);
+    }
+
+    while (low < high) {
+        const mid = Math.floor((low + high) / 2);
+        if (lineOffsets[mid] > target) {
+            high = mid;
+        } else {
+            low = mid + 1;
+        }
+    }
+    const line = low - 1;
+    return Position.create(line, target - lineOffsets[line]);
+}
 
 /**
  * Checks if position1 is before position2.
@@ -43,6 +73,7 @@ export function positionContained(range: Range | undefined, position: Position):
 export function positionContainedStrict(range: Range, position: Position): boolean {
     return !isBefore(position, range.start, false) && isBefore(position, range.end, true);
 }
+
 /**
  * Check if the second range is within the first.
  *
