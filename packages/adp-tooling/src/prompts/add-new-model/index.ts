@@ -52,7 +52,7 @@ function validatePromptInput(value: string): boolean | string {
 }
 
 /**
- * Validates the customer value.
+ * Validates if a value has a customer prefix and is empty except for customer prefix.
  *
  * @param value The value to validate.
  * @param label The label of the prompt.
