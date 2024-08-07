@@ -165,6 +165,9 @@
       "path": "packages/telemetry"
     },
     {
+      "path": "packages/text-document-utils"
+    },
+    {
       "path": "packages/ui-components"
     },
     {
