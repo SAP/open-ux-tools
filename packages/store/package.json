@@ -30,7 +30,8 @@
         "i18next": "20.6.1",
         "i18next-fs-backend": "1.2.0",
         "pluralize": "8.0.0",
-        "reflect-metadata": "0.1.13"
+        "reflect-metadata": "0.1.13",
+        "glob": "11.0.0"
     },
     "optionalDependencies": {
         "keytar": "7.9.0"
