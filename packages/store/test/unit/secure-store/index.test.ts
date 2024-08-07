@@ -114,6 +114,17 @@ describe('getSecureStore', () => {
                 throw new Error();
             });
             jest.mock('vscode', () => undefined, { virtual: true });
+            const os = {
+                homeDir: 'test_dir'
+            };
+            jest.mock('os', () => os, { virtual: true });
+
+            const glob = {
+                globSync: [
+                    'test_dir/.vscode/extensions/no-app-modeler'
+                ]
+            };
+            jest.mock('glob', () => glob, { virtual: true });
             expect(getSecureStore(nullLogger)).toBeInstanceOf(DummyStore);
         });
         it('returns DummyStore if environment variable FIORI_TOOLS_DISABLE_SECURE_STORE is set', () => {
@@ -129,6 +140,17 @@ describe('getSecureStore', () => {
                 env: { appRoot: 'vscode_app_root' }
             };
             jest.mock('vscode', () => vscode, { virtual: true });
+            const os = {
+                homeDir: 'test_dir'
+            };
+            jest.mock('os', () => os, { virtual: true });
+
+            const glob = {
+                globSync: [
+                    'test_dir/.vscode/extensions/no-app-modeler'
+                ]
+            };
+            jest.mock('glob', () => glob, { virtual: true });
             jest.mock(
                 `vscode_app_root/node_modules.asar/keytar`,
                 () => {
