@@ -8,6 +8,7 @@ import type {
     PendingPropertyChange,
     PropertyChange,
     QuickAction,
+    QuickActionGroup,
     SavedPropertyChange,
     Scenario,
     ShowMessage
@@ -55,7 +56,7 @@ interface SliceState {
     };
     canSave: boolean;
     isAppLoading: boolean;
-    quickActions: QuickAction[];
+    quickActions: QuickActionGroup[];
 }
 
 export interface ChangesSlice {

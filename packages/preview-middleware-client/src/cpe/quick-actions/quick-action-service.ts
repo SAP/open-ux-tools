@@ -4,22 +4,20 @@ import { ActionService } from 'sap/ui/rta/service/Action';
 import {
     executeQuickAction,
     ExternalAction,
-    QuickAction,
     quickActionListChanged,
     SIMPLE_QUICK_ACTION_KIND,
     NESTED_QUICK_ACTION_KIND,
-    QuickActionExecutionPayload
+    QuickActionExecutionPayload,
+    QuickActionGroup
 } from '@sap-ux-private/control-property-editor-common';
 
 import { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction } from '../types';
 
-import { QUICK_ACTION_DEFINITIONS } from './definitions/index';
-
-import { QuickActionContext, QuickActionDefinition } from './definitions/quick-action-definition';
+import { QuickActionActivationContext, QuickActionDefinition } from './quick-action-definition';
 import { getFeVersion } from './utils';
-import { ADD_CONTROLLER_TO_PAGE_TYPE } from './definitions/fe-v2/add-controller-to-page';
 
-const FE_NOT_APPLICABLE_QUICK_ACTION = [ADD_CONTROLLER_TO_PAGE_TYPE];
+import { QuickActionDefinitionRegistry } from './registry';
+import Log from 'sap/base/Log';
 
 /**
  *
@@ -27,6 +25,9 @@ const FE_NOT_APPLICABLE_QUICK_ACTION = [ADD_CONTROLLER_TO_PAGE_TYPE];
 export class QuickActionService implements Service {
     private sendAction: ActionSenderFunction = () => {};
     private actions: QuickActionDefinition[] = [];
+
+    private registry: QuickActionDefinitionRegistry = new QuickActionDefinitionRegistry();
+
     private actionService: ActionService;
 
     /**
@@ -45,6 +46,10 @@ export class QuickActionService implements Service {
     public async init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): Promise<void> {
         this.sendAction = sendAction;
         this.actionService = await this.rta.getService('action');
+
+        const feVersion = getFeVersion(this.rta.getRootControlInstance().getManifest());
+        this.registry = await this.loadDefinitions(feVersion);
+
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (executeQuickAction.match(action)) {
                 const actionInstance = this.actions
@@ -63,31 +68,50 @@ export class QuickActionService implements Service {
     }
 
     public async reloadQuickActions(controlIndex: ControlTreeIndex): Promise<void> {
-        const context: QuickActionContext = {
+        const context: QuickActionActivationContext = {
             controlIndex,
             manifest: this.rta.getRootControlInstance().getManifest(),
-            actionService: this.actionService,
-            rta: this.rta
+            actionService: this.actionService
         };
 
-        const quickActions: QuickAction[] = [];
-        const feVersion = getFeVersion(this.rta.getRootControlInstance().getManifest());
-        for (const Definition of QUICK_ACTION_DEFINITIONS(feVersion)) {
-            const instance = new Definition(context);
-            if (this.rta.getFlexSettings().scenario === 'FE_FROM_SCRATCH') {
-                if (FE_NOT_APPLICABLE_QUICK_ACTION.includes(instance.type)) {
-                    continue;
+        const groups: QuickActionGroup[] = [];
+        for (const { title, definitions, view, key } of this.registry.getDefinitions(context)) {
+            const group: QuickActionGroup = {
+                title,
+                actions: []
+            };
+            for (const Definition of definitions) {
+                try {
+                    const instance = new Definition({ ...context, view, key, rta: this.rta });
+                    await instance.initialize();
+                    if (instance.isActive) {
+                        const quickAction = instance.getActionObject();
+                        group.actions.push(quickAction);
+                        this.actions.push(instance);
+                    }
+                } catch {
+                    Log.warning(`Failed to initialize ${Definition.name} quick action.`);
                 }
             }
-            await instance.initialize();
-            if (instance.isActive) {
-                const quickAction = instance.getActionObject();
-                quickActions.push(quickAction);
-                this.actions.push(instance);
-            }
+            groups.push(group);
         }
 
-        this.sendAction(quickActionListChanged(quickActions));
+        this.sendAction(quickActionListChanged(groups));
+    }
+
+    private async loadDefinitions(version: string | undefined): Promise<QuickActionDefinitionRegistry> {
+        if (version === 'v2') {
+            const FEV2QuickActionRegistry = (await import('open/ux/preview/client/cpe/quick-actions/fe-v2/registry'))
+                .default;
+
+            return new FEV2QuickActionRegistry();
+        }
+        if (version === 'v4') {
+            const FEV4QuickActionRegistry = (await import('open/ux/preview/client/cpe/quick-actions/fe-v4/registry'))
+                .default;
+            return new FEV4QuickActionRegistry();
+        }
+        return new QuickActionDefinitionRegistry();
     }
 
     private executeAction(actionInstance: QuickActionDefinition, payload: QuickActionExecutionPayload) {

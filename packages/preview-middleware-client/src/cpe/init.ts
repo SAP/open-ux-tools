@@ -43,8 +43,12 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
     const changesService = new ChangeService({ rta }, selectionService);
     const connectorService = new WorkspaceConnectorService();
     const rtaService = new RtaService(rta);
-    const quickActionService = new QuickActionService(rta);
-    const services: Service[] = [selectionService, changesService, connectorService, rtaService, quickActionService];
+    let quickActionService;
+    const services: Service[] = [selectionService, changesService, connectorService, rtaService];
+    if (rta.getFlexSettings().scenario === 'ADAPTATION_PROJECT') {
+        quickActionService = new QuickActionService(rta);
+        services.push(quickActionService);
+    }
     try {
         loadDefaultLibraries();
         const { sendAction } = startPostMessageCommunication<ExternalAction>(

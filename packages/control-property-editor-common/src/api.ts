@@ -170,6 +170,7 @@ export interface ShowMessage {
 export const SIMPLE_QUICK_ACTION_KIND = 'simple';
 export interface SimpleQuickAction {
     kind: typeof SIMPLE_QUICK_ACTION_KIND;
+    // TODO: rename to id
     type: string;
     title: string;
     enabled: boolean;
@@ -178,6 +179,7 @@ export interface SimpleQuickAction {
 export const NESTED_QUICK_ACTION_KIND = 'nested';
 export interface NestedQuickAction {
     kind: typeof NESTED_QUICK_ACTION_KIND;
+    // TODO: rename to id
     type: string;
     title: string;
     enabled: boolean;
@@ -190,6 +192,11 @@ export interface NestedQuickActionChild {
 }
 
 export type QuickAction = SimpleQuickAction | NestedQuickAction;
+
+export interface QuickActionGroup {
+    title: string;
+    actions: QuickAction[];
+}
 
 export interface SimpleQuickActionExecutionPayload {
     kind: typeof SIMPLE_QUICK_ACTION_KIND;
@@ -280,7 +287,7 @@ export const appLoaded = createExternalAction<void>('app-loaded');
 export const undo = createExternalAction<void>('undo');
 export const redo = createExternalAction<void>('redo');
 export const save = createExternalAction<void>('save');
-export const quickActionListChanged = createExternalAction<QuickAction[]>('quick-action-list-changed');
+export const quickActionListChanged = createExternalAction<QuickActionGroup[]>('quick-action-list-changed');
 export const executeQuickAction = createExternalAction<QuickActionExecutionPayload>('execute-quick-action');
 
 export type ExternalAction =

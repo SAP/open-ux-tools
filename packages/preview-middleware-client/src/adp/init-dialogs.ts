@@ -19,7 +19,7 @@ import ControllerExtension from './controllers/ControllerExtension.controller';
 import { ExtensionPointData } from './extension-point';
 import ExtensionPoint from './controllers/ExtensionPoint.controller';
 import ManagedObject from 'sap/ui/base/ManagedObject';
-import { isReuseComponent } from '../cpe/outline/utils';
+import { isReuseComponent, isControllerExtensionEnabledForControl } from '../cpe/utils';
 
 export const enum DialogNames {
     ADD_FRAGMENT = 'AddFragment',
@@ -46,11 +46,7 @@ export const isControllerExtensionEnabled = (
     if (overlays.length === 0 || overlays.length > 1) {
         return false;
     }
-
-    const clickedControlId = FlUtils.getViewForControl(overlays[0].getElement()).getId();
-    const isClickedControlReuseComponent = isReuseComponent(clickedControlId, minorUI5Version);
-
-    return !syncViewsIds.includes(clickedControlId) && !isClickedControlReuseComponent;
+    return isControllerExtensionEnabledForControl(overlays[0].getElement(), syncViewsIds, minorUI5Version);
 };
 
 /**
@@ -163,9 +159,4 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[], minor
         icon: 'sap-icon://create-form',
         enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds, minorUI5Version)
     });
-};
-
-export const initActionSettings = async (rta: RuntimeAuthoring, syncViewsIds: string[], minorUI5Version: number): Promise<void> => {
-    const actionService =  await rta.getService('action');
-    console.log(actionService);
 };

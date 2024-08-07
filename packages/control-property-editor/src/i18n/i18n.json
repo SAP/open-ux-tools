@@ -85,5 +85,6 @@
   "REDO": "Redo",
   "NAVIGATION": "Navigation",
   "NAVIGATE": "Navigate",
-  "LIST": "list"
+  "LIST": "list",
+  "QUICK_ACTIONS": "{{title}} Quick Actions"
 }

@@ -8,9 +8,14 @@ import { sapCoreMock } from 'mock/window';
 import ComponentMock from 'mock/sap/ui/core/Component';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 
-jest.mock('../../../../src/cpe/outline/utils', () => {
+jest.mock('../../../../src/cpe/outline/editable', () => {
     return {
-        isEditable: () => false,
+        isEditable: () => false
+    };
+});
+
+jest.mock('../../../../src/cpe/utils', () => {
+    return {
         isReuseComponent: () => true
     };
 });
@@ -34,8 +39,8 @@ describe('outline nodes', () => {
     });
 
     beforeAll(() => {
-        VersionInfo.load.mockResolvedValue({name: 'sap.ui.core', version: '1.118.1' });
-    })
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.118.1' });
+    });
 
     describe('transformNodes', () => {
         test('empty tree', async () => {
