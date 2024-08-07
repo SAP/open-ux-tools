@@ -136,11 +136,9 @@ describe('getPrompts', () => {
             const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
             const validator = prompts.find((prompt) => prompt.name === 'id')?.validate;
-            if (validator) {
-                expect(validator('customer.@id')).toBe('error');
-            } else {
-                fail('Validator not found');
-            }
+
+            expect(typeof validator).toBe('function');
+            expect(validator?.('customer.@id')).toBe('error');
         });
 
         test('should fail validation of id for missing customer prefix', () => {
@@ -150,11 +148,19 @@ describe('getPrompts', () => {
 
             const validator = prompts.find((prompt) => prompt.name === 'id')?.validate;
 
-            if (validator) {
-                expect(validator('@id')).toBe("Component Usage ID should start with 'customer.'");
-            } else {
-                fail('Validator not found');
-            }
+            expect(typeof validator).toBe('function');
+            expect(validator?.('@id')).toBe("Component Usage ID should start with 'customer.'");
+        });
+
+        test('should fail validation of id for empty value except customer prefix', () => {
+            const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
+
+            const validator = prompts.find((prompt) => prompt.name === 'id')?.validate;
+
+            expect(typeof validator).toBe('function');
+            expect(validator?.('customer.')).toBe(
+                "Component Usage ID should contain at least one character in addition to 'customer.'"
+            );
         });
 
         test('should fail validation of id for content duplication', () => {
@@ -163,24 +169,23 @@ describe('getPrompts', () => {
             const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
             const validator = prompts.find((prompt) => prompt.name === 'id')?.validate;
-            if (validator) {
-                expect(validator('customer.id')).toBe(
-                    'Component usage with the same name was already added to the project'
-                );
-            } else {
-                fail('Validator not found');
-            }
+
+            expect(typeof validator).toBe('function');
+            expect(validator?.('customer.id')).toBe(
+                'Component usage with the same name was already added to the project'
+            );
         });
 
         test('should pass validation of id', () => {
+            const hasContentDuplicationSpy = jest.spyOn(validators, 'hasContentDuplication');
+
             const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
             const validator = prompts.find((prompt) => prompt.name === 'id')?.validate;
-            if (validator) {
-                expect(validator('customer.id')).toBe(true);
-            } else {
-                fail('Validator not found');
-            }
+
+            expect(typeof validator).toBe('function');
+            expect(validator?.('customer.id')).toBe(true);
+            expect(hasContentDuplicationSpy).toHaveBeenCalledWith('customer.id', 'componentUsages', []);
         });
 
         test('should fail validation of name for special characters', () => {
@@ -190,11 +195,8 @@ describe('getPrompts', () => {
 
             const validator = prompts.find((prompt) => prompt.name === 'name')?.validate;
 
-            if (validator) {
-                expect(validator('name')).toBe('error');
-            } else {
-                fail('Validator not found');
-            }
+            expect(typeof validator).toBe('function');
+            expect(validator?.('name')).toBe('error');
         });
 
         test('should fail validation of comonent settings for JSON', () => {
@@ -204,11 +206,8 @@ describe('getPrompts', () => {
 
             const validator = prompts.find((prompt) => prompt.name === 'settings')?.validate;
 
-            if (validator) {
-                expect(validator('settings')).toBe('error');
-            } else {
-                fail('Validator not found');
-            }
+            expect(typeof validator).toBe('function');
+            expect(validator?.('settings')).toBe('error');
         });
 
         test('should fail validation of comonent data for JSON', () => {
@@ -218,11 +217,8 @@ describe('getPrompts', () => {
 
             const validator = prompts.find((prompt) => prompt.name === 'data')?.validate;
 
-            if (validator) {
-                expect(validator('settings')).toBe('error');
-            } else {
-                fail('Validator not found');
-            }
+            expect(typeof validator).toBe('function');
+            expect(validator?.('settings')).toBe('error');
         });
 
         test('should pass validation of comonent data for empty input', () => {
@@ -232,11 +228,8 @@ describe('getPrompts', () => {
 
             const validator = prompts.find((prompt) => prompt.name === 'data')?.validate;
 
-            if (validator) {
-                expect(validator('"key":"value"')).toBe(true);
-            } else {
-                fail('Validator not found');
-            }
+            expect(typeof validator).toBe('function');
+            expect(validator?.('"key":"value"')).toBe(true);
         });
 
         test('should fail validation of library for special charecters', () => {
@@ -246,37 +239,20 @@ describe('getPrompts', () => {
 
             const validator = prompts.find((prompt) => prompt.name === 'library')?.validate;
 
-            if (validator) {
-                expect(validator('customer.@library')).toBe('error');
-            } else {
-                fail('Validator not found');
-            }
-        });
-
-        test('should fail validation of library for missing customer prefix', () => {
-            jest.spyOn(validators, 'hasCustomerPrefix').mockReturnValueOnce(false);
-
-            const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
-
-            const validator = prompts.find((prompt) => prompt.name === 'library')?.validate;
-
-            if (validator) {
-                expect(validator('library')).toBe("Library Reference should start with 'customer.'");
-            } else {
-                fail('Validator not found');
-            }
+            expect(typeof validator).toBe('function');
+            expect(validator?.('customer.@library')).toBe('error');
         });
 
         test('should pass validation of library', () => {
+            const hasContentDuplicationSpy = jest.spyOn(validators, 'hasContentDuplication');
+
             const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
             const validator = prompts.find((prompt) => prompt.name === 'library')?.validate;
 
-            if (validator) {
-                expect(validator('customer.library')).toBe(true);
-            } else {
-                fail('Validator not found');
-            }
+            expect(typeof validator).toBe('function');
+            expect(validator?.('customer.library')).toBe(true);
+            expect(hasContentDuplicationSpy).toHaveBeenCalledWith('customer.library', 'libraries', []);
         });
 
         test('should fail validation of library for content duplication', () => {
@@ -286,27 +262,30 @@ describe('getPrompts', () => {
 
             const validator = prompts.find((prompt) => prompt.name === 'library')?.validate;
 
-            if (validator) {
-                expect(validator('library')).toBe('Library with the same name was already added to the project');
-            } else {
-                fail('Validator not found');
-            }
+            expect(typeof validator).toBe('function');
+            expect(validator?.('library')).toBe('Library with the same name was already added to the project');
         });
     });
 
     describe('When conditions', () => {
         test('should show library prompts when shouldAddLibrary is true', () => {
-            const when = (getPrompts(mockBasePath, 'CUSTOMER_BASE')[6] as any).when;
+            const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
-            expect(when({ shouldAddLibrary: true })).toBeTruthy();
-            expect(when({ shouldAddLibrary: false })).toBeFalsy();
+            const libraryPromptWhen = prompts.find((p) => p.name === 'library')?.when as Function;
+
+            expect(typeof libraryPromptWhen).toBe('function');
+            expect(libraryPromptWhen({ shouldAddLibrary: true })).toBeTruthy();
+            expect(libraryPromptWhen({ shouldAddLibrary: false })).toBeFalsy();
         });
 
         test('should show libraryIsLazy when library is selected', () => {
-            const when = (getPrompts(mockBasePath, 'CUSTOMER_BASE')[7] as any).when;
+            const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
-            expect(when({ shouldAddLibrary: true })).toBeTruthy();
-            expect(when({ shouldAddLibrary: false })).toBeFalsy();
+            const libraryIsLazyPromptWhen = prompts.find((p) => p.name === 'libraryIsLazy')?.when as Function;
+
+            expect(typeof libraryIsLazyPromptWhen).toBe('function');
+            expect(libraryIsLazyPromptWhen({ shouldAddLibrary: true })).toBeTruthy();
+            expect(libraryIsLazyPromptWhen({ shouldAddLibrary: false })).toBeFalsy();
         });
     });
 });
