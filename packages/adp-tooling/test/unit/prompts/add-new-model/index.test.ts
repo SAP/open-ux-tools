@@ -4,6 +4,7 @@ import { isCFEnvironment } from '../../../../src/base/cf';
 import { getPrompts } from '../../../../src/prompts/add-new-model';
 import * as validators from '@sap-ux/project-input-validator';
 import { getChangesByType } from '../../../../src/base/change-utils';
+import exp from 'constants';
 
 const getChangesByTypeMock = getChangesByType as jest.Mock;
 
@@ -57,6 +58,8 @@ describe('getPrompts', () => {
     });
 
     it('should return true when validating service name prompt', () => {
+        const hasContentDuplicationSpy = jest.spyOn(validators, 'hasContentDuplication');
+
         const prompts = getPrompts(mockPath, 'CUSTOMER_BASE');
 
         const namePrompt = prompts.find((p) => p.name === 'name');
@@ -65,6 +68,7 @@ describe('getPrompts', () => {
             namePrompt?.validate &&
             namePrompt?.validate('customer.testName', { dataSourceName: 'otherName' } as NewModelAnswers);
 
+        expect(hasContentDuplicationSpy).toHaveBeenCalledWith('customer.testName', 'dataSource', []);
         expect(validation).toBe(true);
     });
 
@@ -213,12 +217,15 @@ describe('getPrompts', () => {
     });
 
     it('should return true when validating model name prompt', () => {
+        const hasContentDuplicationSpy = jest.spyOn(validators, 'hasContentDuplication');
+
         const prompts = getPrompts(mockPath, 'CUSTOMER_BASE');
 
         const modelNamePrompt = prompts.find((p) => p.name === 'modelName');
 
         const validation = modelNamePrompt?.validate && modelNamePrompt?.validate('customer.testName');
 
+        expect(hasContentDuplicationSpy).toHaveBeenCalledWith('customer.testName', 'model', []);
         expect(validation).toBe(true);
     });
 
@@ -323,6 +330,7 @@ describe('getPrompts', () => {
         jest.spyOn(validators, 'hasCustomerEmptyValue').mockReturnValueOnce(true);
 
         const prompts = getPrompts(mockPath, 'CUSTOMER_BASE');
+
         const dataSourcePrompt = prompts.find((p) => p.name === 'dataSourceName');
 
         const validation =
@@ -335,13 +343,17 @@ describe('getPrompts', () => {
     });
 
     it('should return true when validating data source name prompt', () => {
+        const hasContentDuplicationSpy = jest.spyOn(validators, 'hasContentDuplication');
+
         const prompts = getPrompts(mockPath, 'CUSTOMER_BASE');
+
         const dataSourcePrompt = prompts.find((p) => p.name === 'dataSourceName');
 
         const validation =
             dataSourcePrompt?.validate &&
             dataSourcePrompt?.validate('customer.testName', { name: 'otherName' } as NewModelAnswers);
 
+        expect(hasContentDuplicationSpy).toHaveBeenCalledWith('customer.testName', 'dataSource', []);
         expect(validation).toBe(true);
     });
 

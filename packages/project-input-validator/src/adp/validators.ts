@@ -28,10 +28,11 @@ export function hasCustomerPrefix(value: string): boolean {
 }
 
 /**
- * Validates a value is empty except for customer prefix.
+ * Validates if value is empty except for customer prefix.
+ * Can be called with an empty value or a value that only contains the customer prefix.
  *
  * @param value The value to validate.
- * @returns {boolean} True if the value is empty and false if it is not empty.
+ * @returns {boolean} True if the value is empty or contains only customer prefix and false if value contains anything except customer prefix.
  */
 export function hasCustomerEmptyValue(value: string): boolean {
     return value.replace('customer.', '').length === 0;

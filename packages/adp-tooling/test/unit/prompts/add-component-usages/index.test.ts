@@ -190,11 +190,14 @@ describe('getPrompts', () => {
         });
 
         test('should pass validation of id', () => {
+            const hasContentDuplicationSpy = jest.spyOn(validators, 'hasContentDuplication');
+
             const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
             const validator = prompts.find((prompt) => prompt.name === 'id')?.validate;
             if (validator) {
                 expect(validator('customer.id')).toBe(true);
+                expect(hasContentDuplicationSpy).toHaveBeenCalledWith('customer.id', 'componentUsages', []);
             } else {
                 fail('Validator not found');
             }
@@ -271,12 +274,15 @@ describe('getPrompts', () => {
         });
 
         test('should pass validation of library', () => {
+            const hasContentDuplicationSpy = jest.spyOn(validators, 'hasContentDuplication');
+
             const prompts = getPrompts(mockBasePath, 'CUSTOMER_BASE');
 
             const validator = prompts.find((prompt) => prompt.name === 'library')?.validate;
 
             if (validator) {
                 expect(validator('customer.library')).toBe(true);
+                expect(hasContentDuplicationSpy).toHaveBeenCalledWith('customer.library', 'libraries', []);
             } else {
                 fail('Validator not found');
             }
