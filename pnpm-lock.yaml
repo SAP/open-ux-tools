@@ -791,12 +791,12 @@ importers:
       '@sap-ux/odata-vocabularies':
         specifier: workspace:*
         version: link:../odata-vocabularies
+      '@sap-ux/text-document-utils':
+        specifier: workspace:*
+        version: link:../text-document-utils
       chevrotain:
         specifier: 7.1.1
         version: 7.1.1
-      vscode-languageserver-types:
-        specifier: 3.17.2
-        version: 3.17.2
     devDependencies:
       npm-run-all2:
         specifier: 6.2.0
@@ -816,15 +816,15 @@ importers:
       '@sap-ux/odata-vocabularies':
         specifier: workspace:*
         version: link:../odata-vocabularies
+      '@sap-ux/text-document-utils':
+        specifier: workspace:*
+        version: link:../text-document-utils
       '@sap/ux-cds-compiler-facade':
         specifier: 1.14.0
         version: 1.14.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
       i18next:
         specifier: 20.6.1
         version: 20.6.1
-      vscode-languageserver-types:
-        specifier: 3.17.2
-        version: 3.17.2
     devDependencies:
       '@sap-ux/odata-annotation-core-types':
         specifier: workspace:*
@@ -1474,15 +1474,15 @@ importers:
 
   packages/i18n:
     dependencies:
+      '@sap-ux/text-document-utils':
+        specifier: workspace:*
+        version: link:../text-document-utils
       jsonc-parser:
         specifier: 3.2.0
         version: 3.2.0
       vscode-languageserver-textdocument:
         specifier: 1.0.7
         version: 1.0.7
-      vscode-languageserver-types:
-        specifier: 3.17.2
-        version: 3.17.2
     devDependencies:
       '@types/mem-fs':
         specifier: 1.1.2
@@ -1696,6 +1696,9 @@ importers:
       '@sap-ux/odata-annotation-core-types':
         specifier: workspace:*
         version: link:../odata-annotation-core-types
+      '@sap-ux/text-document-utils':
+        specifier: workspace:*
+        version: link:../text-document-utils
     devDependencies:
       '@sap-ux/odata-entity-model':
         specifier: workspace:*
@@ -1709,9 +1712,9 @@ importers:
 
   packages/odata-annotation-core-types:
     dependencies:
-      vscode-languageserver-types:
-        specifier: 3.17.2
-        version: 3.17.2
+      '@sap-ux/text-document-utils':
+        specifier: workspace:*
+        version: link:../text-document-utils
     devDependencies:
       npm-run-all2:
         specifier: 6.2.0
@@ -2274,6 +2277,12 @@ importers:
       unionfs:
         specifier: 4.4.0
         version: 4.4.0
+
+  packages/text-document-utils:
+    dependencies:
+      vscode-languageserver-types:
+        specifier: 3.17.2
+        version: 3.17.2
 
   packages/ui-components:
     dependencies:
