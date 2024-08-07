@@ -5,13 +5,23 @@ import {
     findDestination,
     getAbapSystems,
     isSameSystem,
-    initTransportConfig
+    initTransportConfig,
+    getPackageAnswer,
+    useCreateTrDuringDeploy
 } from '../src/utils';
 import { getService } from '@sap-ux/store';
 import { mockTargetSystems } from './fixtures/targets';
 import { getTransportConfigInstance } from '../src/service-provider-utils';
+import { listPackages } from '../src/validator-utils';
 import LoggerHelper from '../src/logger-helper';
 import { initI18n, t } from '../src/i18n';
+import { PackageInputChoices } from '../src/types';
+import { CREATE_TR_DURING_DEPLOY } from '../src/constants';
+
+jest.mock('../src/validator-utils', () => ({
+    ...jest.requireActual('../src/validator-utils'),
+    listPackages: jest.fn()
+}));
 
 jest.mock('../src/service-provider-utils', () => ({
     ...jest.requireActual('../src/service-provider-utils'),
@@ -32,6 +42,7 @@ const mockGetService = getService as jest.Mock;
 const mockIsAppStudio = isAppStudio as jest.Mock;
 const mockListDestinations = listDestinations as jest.Mock;
 const mockGetTransportConfigInstance = getTransportConfigInstance as jest.Mock;
+const mockListPackages = listPackages as jest.Mock;
 
 describe('Test utils', () => {
     beforeAll(async () => {
@@ -120,5 +131,33 @@ describe('Test utils', () => {
         expect(loggerSpy).toBeCalledWith(
             t('errors.debugAbapTargetSystem', { method: 'initTransportConfig', error: errorMsg })
         );
+    });
+
+    it('should query packages', () => {
+        const packages = ['package1', 'package2'];
+        mockListPackages.mockResolvedValueOnce(packages);
+        expect(listPackages('pack', {}, { url: 'https://target.url', client: '100' })).resolves.toStrictEqual(packages);
+    });
+
+    it('should get package answer', () => {
+        const previousAnswers = {
+            packageInputChoice: PackageInputChoices.ListExistingChoice,
+            packageAutocomplete: 'package1',
+            packageManual: ''
+        };
+        expect(getPackageAnswer(previousAnswers)).toBe('package1');
+
+        previousAnswers.packageInputChoice = PackageInputChoices.EnterManualChoice;
+        previousAnswers.packageManual = 'package2';
+        expect(getPackageAnswer(previousAnswers)).toBe('package2');
+    });
+
+    it('should return true when exisintg deploy task configuration has CREATE_TR_DURING_DEPLOY value', () => {
+        const options = {
+            existingDeployTaskConfig: {
+                transport: CREATE_TR_DURING_DEPLOY
+            }
+        };
+        expect(useCreateTrDuringDeploy(options)).toBe(true);
     });
 });
