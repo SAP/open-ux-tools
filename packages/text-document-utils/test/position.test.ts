@@ -4,9 +4,11 @@ import {
     rangeContained,
     getIndentLevel,
     positionContainedStrict,
-    indent
-} from '@sap-ux/text-document-utils';
-import { Position, printOptions } from '@sap-ux/odata-annotation-core-types';
+    indent,
+    positionAt
+} from '../src/position';
+import { printOptions } from '../src/text-formatting';
+import { Position, Range } from 'vscode-languageserver-types';
 
 describe('position.ts', () => {
     describe('isBefore', () => {
@@ -48,22 +50,22 @@ describe('position.ts', () => {
     });
 
     it('positionContained', () => {
-        const range = { start: { line: 2, character: 33 }, end: { line: 2, character: 59 } };
-        const position = { line: 9, character: 33 };
+        const range = Range.create(Position.create(2, 33), Position.create(2, 59));
+        const position = Position.create(9, 33);
         const result = positionContained(range, position);
         expect(result).toMatchInlineSnapshot(`false`);
     });
 
     it('positionContainedStrict', () => {
-        const range = { start: { line: 2, character: 33 }, end: { line: 2, character: 59 } };
-        const position = { line: 9, character: 33 };
+        const range = Range.create(Position.create(2, 33), Position.create(2, 59));
+        const position = Position.create(9, 33);
         const result = positionContainedStrict(range, position);
         expect(result).toMatchInlineSnapshot(`false`);
     });
 
     it('rangeContained', () => {
-        const rangeA = { start: { line: 2, character: 33 }, end: { line: 2, character: 59 } };
-        const rangeB = { start: { line: 4, character: 33 }, end: { line: 4, character: 59 } };
+        const rangeA = Range.create(Position.create(2, 33), Position.create(2, 59));
+        const rangeB = Range.create(Position.create(4, 33), Position.create(4, 59));
         const result = rangeContained(rangeA, rangeB);
         expect(result).toMatchInlineSnapshot(`false`);
     });
@@ -98,5 +100,49 @@ describe('position.ts', () => {
     test('indent with spaces', () => {
         const result = indent(4, false, 2);
         expect(result).toMatchInlineSnapshot(`"        "`);
+    });
+});
+
+describe('positionAt', () => {
+    test('should return position at the start for negative offset', () => {
+        const result = positionAt([0, 10, 20], -5, 30);
+        const expected = Position.create(0, 0); // Line 0, character 0
+        expect(result).toEqual(expected);
+    });
+
+    test('should return position at the end for offset greater than text length', () => {
+        const result = positionAt([0, 10, 20], 35, 30);
+        const expected = Position.create(2, 10); // Line 2, character 10
+        expect(result).toEqual(expected);
+    });
+
+    test('should return correct position for offset within range', () => {
+        const result = positionAt([0, 10, 20], 15, 30);
+        const expected = Position.create(1, 5); // Line 1, character 5
+        expect(result).toEqual(expected);
+    });
+
+    test('should handle empty lineOffsets array', () => {
+        const result = positionAt([], 5, 10);
+        const expected = Position.create(0, 5); // Line 0, character 5
+        expect(result).toEqual(expected);
+    });
+
+    test('should handle offset at exact line start', () => {
+        const result = positionAt([0, 10, 20], 10, 30);
+        const expected = Position.create(1, 0); // Line 1, character 0
+        expect(result).toEqual(expected);
+    });
+
+    test('should handle offset at exact line end', () => {
+        const result = positionAt([0, 10, 20], 9, 30);
+        const expected = Position.create(0, 9); // Line 0, character 9
+        expect(result).toEqual(expected);
+    });
+
+    test('should handle offset at exact text length', () => {
+        const result = positionAt([0, 10, 20], 30, 30);
+        const expected = Position.create(2, 10); // Line 2, character 10
+        expect(result).toEqual(expected);
     });
 });

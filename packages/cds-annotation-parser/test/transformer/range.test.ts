@@ -1,4 +1,4 @@
-import { Position, Range } from 'vscode-languageserver-types';
+import { Position, Range } from '@sap-ux/text-document-utils';
 import { arePositionsEqual, areRangesEqual } from '../../src';
 
 describe('Range utility functions', () => {
