@@ -280,7 +280,7 @@ describe('getPrompts', () => {
         const prompts = getPrompts(mockPath, 'CUSTOMER_BASE');
 
         const validation = prompts.find((p) => p.name === 'modelSettings')?.validate;
- 
+
         expect(typeof validation).toBe('function');
         expect(validation?.('')).toBe(true);
     });
@@ -289,7 +289,7 @@ describe('getPrompts', () => {
         jest.spyOn(validators, 'validateJSON').mockReturnValueOnce('general.invalidJSON');
 
         const prompts = getPrompts(mockPath, 'CUSTOMER_BASE');
- 
+
         const validation = prompts.find((p) => p.name === 'modelSettings')?.validate;
 
         expect(typeof validation).toBe('function');
