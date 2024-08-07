@@ -37,7 +37,7 @@ export class ToggleClearFilterBarQuickAction implements SimpleQuickActionDefinit
     getActionObject(): SimpleQuickAction {
         return {
             kind: SIMPLE_QUICK_ACTION_KIND,
-            type: this.type,
+            id: this.id,
             enabled: this.isActive,
             // TODO: translate this?
             title: `${this.isClearButtonEnabled ? 'Disable' : 'Enable'} clear filterbar button`

@@ -25,9 +25,9 @@ export function SimpleQuickActionListItem({ action }: SimpleQuickActionListItemP
         <>
             <div className={`quick-action-item`}>
                 <UIActionButton
-                    key={action.type}
+                    key={action.id}
                     onClick={() => {
-                        dispatch(executeQuickAction({ kind: action.kind, type: action.type }));
+                        dispatch(executeQuickAction({ kind: action.kind, id: action.id }));
                     }}>
                     {action.title}
                 </UIActionButton>

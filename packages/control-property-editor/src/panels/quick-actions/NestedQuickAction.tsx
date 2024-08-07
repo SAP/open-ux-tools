@@ -1,14 +1,9 @@
 import type { ReactElement } from 'react';
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 
-import {
-    UIActionButton,
-    UIContextualMenuItem,
-    UIDirectionalHint,
-    UiIcons
-} from '@sap-ux/ui-components';
+import type { UIContextualMenuItem } from '@sap-ux/ui-components';
+import { UIActionButton, UIDirectionalHint, UiIcons } from '@sap-ux/ui-components';
 
 import type { NestedQuickAction, NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
 import { executeQuickAction } from '@sap-ux-private/control-property-editor-common';
@@ -25,7 +20,6 @@ export interface NestedQuickActionListItemProps {
  * @returns ReactElement
  */
 export function NestedQuickActionListItem({ action }: NestedQuickActionListItemProps): ReactElement {
-    const { t } = useTranslation();
     const dispatch = useDispatch();
 
     const buildMenuItems = function (
@@ -53,7 +47,7 @@ export function NestedQuickActionListItem({ action }: NestedQuickActionListItemP
                     dispatch(
                         executeQuickAction({
                             kind: action.kind,
-                            type: action.type,
+                            id: action.id,
                             path: `${childIdx.length ? `${childIdx.join('/')}/${idx}` : idx}`
                         })
                     );
@@ -71,7 +65,7 @@ export function NestedQuickActionListItem({ action }: NestedQuickActionListItemP
                             dispatch(
                                 executeQuickAction({
                                     kind: action.kind,
-                                    type: action.type,
+                                    id: action.id,
                                     path: [0].join('/')
                                 })
                             );

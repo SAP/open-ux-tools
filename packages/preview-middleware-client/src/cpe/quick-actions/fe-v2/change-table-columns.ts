@@ -66,7 +66,7 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
     getActionObject(): NestedQuickAction {
         return {
             kind: NESTED_QUICK_ACTION_KIND,
-            type: this.type,
+            id: this.id,
             enabled: this.isActive,
             // TODO: translate this?
             title: 'Change table columns',

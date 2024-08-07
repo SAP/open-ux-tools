@@ -53,7 +53,7 @@ export class QuickActionService implements Service {
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (executeQuickAction.match(action)) {
                 const actionInstance = this.actions
-                    .filter((quickActionDefinition) => quickActionDefinition.type === action.payload.type)
+                    .filter((quickActionDefinition) => quickActionDefinition.id === action.payload.id)
                     .pop();
                 if (!actionInstance) {
                     return;

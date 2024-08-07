@@ -170,8 +170,7 @@ export interface ShowMessage {
 export const SIMPLE_QUICK_ACTION_KIND = 'simple';
 export interface SimpleQuickAction {
     kind: typeof SIMPLE_QUICK_ACTION_KIND;
-    // TODO: rename to id
-    type: string;
+    id: string;
     title: string;
     enabled: boolean;
 }
@@ -179,8 +178,7 @@ export interface SimpleQuickAction {
 export const NESTED_QUICK_ACTION_KIND = 'nested';
 export interface NestedQuickAction {
     kind: typeof NESTED_QUICK_ACTION_KIND;
-    // TODO: rename to id
-    type: string;
+    id: string;
     title: string;
     enabled: boolean;
     children: NestedQuickActionChild[];
@@ -200,12 +198,12 @@ export interface QuickActionGroup {
 
 export interface SimpleQuickActionExecutionPayload {
     kind: typeof SIMPLE_QUICK_ACTION_KIND;
-    type: string;
+    id: string;
 }
 
 export interface NestedQuickActionExecutionPayload {
     kind: typeof NESTED_QUICK_ACTION_KIND;
-    type: string;
+    id: string;
     path: string;
 }
 

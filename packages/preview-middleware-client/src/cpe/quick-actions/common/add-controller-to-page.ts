@@ -45,7 +45,7 @@ export class AddControllerToPageQuickAction implements SimpleQuickActionDefiniti
     getActionObject(): SimpleQuickAction {
         return {
             kind: SIMPLE_QUICK_ACTION_KIND,
-            type: this.id,
+            id: this.id,
             enabled: this.isActive,
             // TODO: translate this?
             title: this.controllerExists ? 'Show page controller' : 'Add controller to page'

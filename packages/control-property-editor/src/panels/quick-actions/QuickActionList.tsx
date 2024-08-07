@@ -45,10 +45,10 @@ export function QuickActionList(): ReactElement {
                         </Label>,
                         ...group.actions.map((quickAction) => {
                             if (quickAction.kind === SIMPLE_QUICK_ACTION_KIND) {
-                                return <SimpleQuickActionListItem key={quickAction.type} action={quickAction} />;
+                                return <SimpleQuickActionListItem key={quickAction.id} action={quickAction} />;
                             }
                             if (quickAction.kind === NESTED_QUICK_ACTION_KIND) {
-                                return <NestedQuickActionListItem key={quickAction.type} action={quickAction} />;
+                                return <NestedQuickActionListItem key={quickAction.id} action={quickAction} />;
                             }
                             return <></>;
                         })

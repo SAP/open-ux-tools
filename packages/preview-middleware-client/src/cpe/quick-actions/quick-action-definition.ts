@@ -45,6 +45,7 @@ export interface SimpleQuickActionDefinition {
 export interface NestedQuickActionDefinition {
     readonly kind: typeof NESTED_QUICK_ACTION_KIND;
     readonly  type: string;
+    readonly id: string;
     isActive: boolean;
     initialize: () => void | Promise<void>;
     getActionObject: () => NestedQuickAction;
