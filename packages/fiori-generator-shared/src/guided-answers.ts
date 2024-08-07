@@ -30,14 +30,14 @@ export const GUIDED_ANSWERS_EXTENSION_ID = 'saposs.sap-guided-answers-extension'
 export const GUIDED_ANSWERS_LAUNCH_CMD_ID = 'sap.ux.guidedAnswer.openGuidedAnswer';
 
 const GUIDED_ANSWERS_SUPPORT_BASE_URL = 'https://ga.support.sap.com/dtp/viewer/index.html';
+
 /**
  * Creates a help url for the specified tree and node ids. If node ids are not specified the root tree path
  * will be returned, which may not be a valid help page.
  *
- * @param treedId
- * @param treeId
- * @param nodeIds
- * @returns
+ * @param treeId - the tree id
+ * @param nodeIds - the node ids
+ * @returns - the help url
  */
 export function getHelpUrl(treeId: number, nodeIds: number[]): string {
     let actions = '';

@@ -19,7 +19,7 @@ function escapeRegExp(str: string): string {
 /**
  * Trim, cleanse and return a system name appended with the appropriate suffix i.e. BTP | S4HC.
  *
- * @param destinationName name of the system
+ * @param systemName name of the system
  * @param suffix the appropriate suffix appended, BTP | S4HC
  * @returns string return an escaped string, appended with the appropriate suffix
  */
@@ -29,11 +29,13 @@ function addSuffix(systemName: string, suffix: Suffix): string {
 }
 
 /**
- * Generate a display name using the destination name, username if supplied and the appropriate suffix i.e. BTP | S4HC.
+ * Get the system display name.
  *
- * @param destination destination info
- * @param displayUsername name to display with destination
- * @returns string a newly generated string value with the name of the destination, username if present and the system type
+ * @param systemName - system name
+ * @param displayUsername - display username
+ * @param isBtp - is BTP
+ * @param isS4HC - is S/4 Hana Cloud
+ * @returns system display name
  */
 export function getSystemDisplayName(
     systemName: string,
