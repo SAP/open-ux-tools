@@ -146,7 +146,7 @@ function handlePackageValidationErrors(error: AxiosError): string {
  * @param {ProviderService} providerService - The ABAP provider service.
  * @returns {YUIQuestion<DeployConfigAnswers>[]} An list of deployment prompts.
  */
-export function getPrompts(providerService: ProviderService): YUIQuestion<DeployConfigAnswers>[] {
+export async function getPrompts(providerService: ProviderService): Promise<YUIQuestion<DeployConfigAnswers>[]> {
     const provider = providerService.getProvider();
     const transportList: string[] = [];
 

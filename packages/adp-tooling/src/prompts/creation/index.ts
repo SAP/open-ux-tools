@@ -229,7 +229,7 @@ export default class ConfigInfoPrompter {
                     await this.manifestService.loadManifest(value.id);
 
                     const manifest = this.manifestService.getManifest(value.id);
-                    this.evaluateApplicationSupport(manifest, value);
+                    await this.evaluateApplicationSupport(manifest, value);
                 }
                 this.isApplicationSupported = true;
             } catch (e) {
@@ -420,7 +420,8 @@ export default class ConfigInfoPrompter {
             choices: () => this.systemNames,
             guiOptions: {
                 hint: t('prompts.systemTooltip'),
-                breadcrumb: t('prompts.systemLabel')
+                breadcrumb: t('prompts.systemLabel'),
+                mandatory: true
             },
             when: isAppStudio() ? this.systemInfo?.adaptationProjectTypes?.length : true,
             validate: async (value: string) => await this.validateSystem(value),
@@ -613,10 +614,6 @@ export default class ConfigInfoPrompter {
         } as ListQuestion<ConfigurationInfoAnswers>;
     }
 
-    private getApplicationPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
-        return this.prompts ? this.getApplicationListPrompt() : this.getApplicationInputPrompt();
-    }
-
     private getApplicationListPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
             type: 'list',
@@ -694,20 +691,6 @@ export default class ConfigInfoPrompter {
                 }
             }
         } as ListQuestion<ConfigurationInfoAnswers>;
-    }
-
-    private getApplicationInputPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
-        return {
-            type: 'input',
-            name: 'application',
-            message: t('prompts.applicationListLabel'),
-            validate: this.applicationPromptValidationHandler.bind(this),
-            store: false,
-            guiOptions: {
-                hint: t('prompts.applicationListTooltip'),
-                breadcrumb: t('prompts.applicationListLabel')
-            }
-        } as InputQuestion<ConfigurationInfoAnswers>;
     }
 
     private getUi5VersionPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
@@ -857,12 +840,12 @@ export default class ConfigInfoPrompter {
         this.systemNames = this.endpointsService.getEndpointNames();
 
         return [
-            await this.getSystemPrompt(),
+            this.getSystemPrompt(),
             this.getSystemClientPrompt(),
             this.getUsernamePrompt(),
             this.getPasswordPrompt(),
             this.getProjectTypeListPrompt(),
-            this.getApplicationPrompt(),
+            this.getApplicationListPrompt(),
             this.getUi5VersionPrompt(),
             this.getFioriIdPrompt(),
             this.getACHprompt(),
