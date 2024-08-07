@@ -48,6 +48,7 @@ describe('Test validators', () => {
             const result = validateDestinationQuestion('Dest2', mockDestinations);
             expect(PromptState.abapDeployConfig.destination).toBe('Dest2');
             expect(PromptState.abapDeployConfig.url).toBe('https://mock.url.dest2.com');
+            debugger;
             expect(result).toBe(true);
         });
     });

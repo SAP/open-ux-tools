@@ -152,7 +152,7 @@ class DefaultTransportConfig implements TransportConfig {
                 // Everything from network errors to service being inactive is a warning.
                 // Will be logged and the user is allowed to move on
                 // Business errors will be returned by the ATO response above and these act as hard stops
-                result.warning = err?.toString();
+                result.warning = err.message;
                 result.transportConfigNeedsCreds = false;
             }
 

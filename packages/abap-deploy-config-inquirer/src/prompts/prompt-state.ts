@@ -6,21 +6,43 @@ import type { AbapDeployConfigAnswers, TransportAnswers } from '../types';
  * across prompts statically for the lifespan of the prompting session.
  */
 export class PromptState {
-    public static abapDeployConfig: Partial<AbapDeployConfigAnswers> = {};
+    private static _abapDeployConfig: Partial<AbapDeployConfigAnswers> = {};
+    private static _transportAnswers: TransportAnswers = {};
+    private static _isYUI = false;
 
-    public static transportAnswers: TransportAnswers = {};
+    public static get abapDeployConfig(): Partial<AbapDeployConfigAnswers> {
+        return this._abapDeployConfig;
+    }
 
-    public static isYUI = false;
+    public static get transportAnswers(): TransportAnswers {
+        return this._transportAnswers;
+    }
+
+    public static get isYUI(): boolean {
+        return this._isYUI;
+    }
+
+    public static set abapDeployConfig(value: Partial<AbapDeployConfigAnswers>) {
+        this._abapDeployConfig = value;
+    }
+
+    public static set transportAnswers(value: TransportAnswers) {
+        this._transportAnswers = value;
+    }
+
+    public static set isYUI(value: boolean) {
+        this._isYUI = value;
+    }
 
     static resetAbapDeployConfig(): void {
-        Object.keys(PromptState.abapDeployConfig).forEach((key) => {
-            PromptState.abapDeployConfig[key as keyof AbapDeployConfigAnswers] = undefined;
+        Object.keys(PromptState._abapDeployConfig).forEach((key) => {
+            PromptState._abapDeployConfig[key as keyof AbapDeployConfigAnswers] = undefined;
         });
     }
 
     static resetTransportAnswers(): void {
-        Object.keys(PromptState.transportAnswers).forEach((key) => {
-            PromptState.transportAnswers[key as keyof TransportAnswers] = undefined;
+        Object.keys(PromptState._transportAnswers).forEach((key) => {
+            PromptState._transportAnswers[key as keyof TransportAnswers] = undefined;
         });
     }
 }

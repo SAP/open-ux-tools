@@ -505,7 +505,7 @@ export async function validateTransportChoiceInput(
  */
 export function validateTransportQuestion(input: string, previousAnswers?: AbapDeployConfigAnswers): boolean | string {
     const packageAnswer = getPackageAnswer(previousAnswers);
-    if (!packageAnswer.match(/^[$LlTt]/) && !input?.trim()) {
+    if (!/^[$LlTt]/.exec(packageAnswer) && !input?.trim()) {
         return t('prompts.config.transport.provideTransportRequest');
     }
     return true;

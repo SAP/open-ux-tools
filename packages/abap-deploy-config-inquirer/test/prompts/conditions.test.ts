@@ -166,7 +166,7 @@ describe('Test abap deploy config inquirer conditions', () => {
             getPackage: () => 'ZPACKAGE1'
         } as unknown as TransportConfig;
         expect(showPackageInputChoiceQuestion()).toBe(false);
-        expect((PromptState.abapDeployConfig.package = 'ZPACKAGE1'));
+        expect(PromptState.abapDeployConfig.package).toBe('ZPACKAGE1');
     });
 
     test('should show manual package question', () => {
