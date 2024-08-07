@@ -1,4 +1,4 @@
-import { Range, Position } from 'vscode-languageserver-types';
+import { Range, Position } from '@sap-ux/text-document-utils';
 
 /**
  *
