@@ -52,8 +52,8 @@ function getKeytar(log: Logger): typeof Keytar | undefined {
             log.warn('Could not get keytar from vscode node_modules');
         }
         try {
-            for (const dirname in dirnames) {
-                return require(dirname);
+            if (dirnames.length >= 0) {
+                return require(dirnames[0]);
             }
         } catch (e) {
             log.warn(errorString(e));

@@ -76,12 +76,24 @@ describe('getSecureStore', () => {
             jest.mock('keytar', () => {
                 throw new Error();
             });
+            const os = {
+                homeDir: 'test_dir'
+            };
+            jest.mock('os', () => os, { virtual: true });
+
+            const glob = {
+                globSync: [
+                    'test_dir/.vscode/extensions/sapse.sap-ux-application-modeler-extension-1.14.1/node_modules/keytar/package.json'
+                ]
+            };
+            jest.mock('glob', () => glob, { virtual: true });
             const vscode = {
                 env: { appRoot: 'vscode_app_root' }
             };
+
             jest.mock('vscode', () => vscode, { virtual: true });
             jest.mock(
-                `homedir/.vscode/extensions/sapse.sap-ux-application-modeler-extension-1.14.2/node_modules/keytar`,
+                `test_dir/.vscode/extensions/sapse.sap-ux-application-modeler-extension-1.14.1/node_modules/keytar`,
                 () => 'keytar',
                 { virtual: true }
             );
