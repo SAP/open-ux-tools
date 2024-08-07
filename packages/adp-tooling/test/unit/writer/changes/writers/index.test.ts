@@ -362,7 +362,7 @@ describe('InboundWriter', () => {
             inboundId: 'testInboundId',
             answers: {
                 title: 'Test Title',
-                subTitle: 'Test SubTitle',
+                subtitle: 'Test SubTitle',
                 icon: 'Test Icon'
             },
             variant: {} as DescriptorVariant
@@ -381,7 +381,7 @@ describe('InboundWriter', () => {
             inboundId: 'testInboundId',
             answers: {
                 title: 'New Title',
-                subTitle: 'New SubTitle',
+                subtitle: 'New SubTitle',
                 icon: 'New Icon'
             },
             variant: {} as DescriptorVariant
