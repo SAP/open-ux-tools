@@ -64,6 +64,12 @@ function updatePromptState({
     PromptState.abapDeployConfig.scp = scp;
 }
 
+/**
+ * Updates the destination prompt state.
+ *
+ * @param destination - destination
+ * @param destinations - list of destinations
+ */
 export function updateDestinationPromptState(destination: string, destinations: Destinations = {}): void {
     const dest = destinations[destination];
     if (dest) {

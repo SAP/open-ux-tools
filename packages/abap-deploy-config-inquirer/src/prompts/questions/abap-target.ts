@@ -210,7 +210,7 @@ export async function getAbapTargetPrompts(
     const { destinations, backendSystems } = await getAbapSystems();
     const abapSystemChoices = await getAbapSystemChoices(options.backendTarget, destinations, backendSystems);
     return [
-        getDestinationPrompt(options, abapSystemChoices, destinations),
+        ...getDestinationPrompt(options, abapSystemChoices, destinations),
         getTargetSystemPrompt(abapSystemChoices),
         getUrlPrompt(options, destinations),
         getScpPrompt(options),
