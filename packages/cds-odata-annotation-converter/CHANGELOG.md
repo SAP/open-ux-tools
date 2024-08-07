@@ -1,5 +1,11 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.3.2
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+
 ## 0.3.1
 
 ### Patch Changes

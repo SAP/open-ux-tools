@@ -1,5 +1,72 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.13
+
+### Patch Changes
+
+-   Updated dependencies [0084205]
+    -   @sap-ux/axios-extension@1.16.3
+
+## 0.5.12
+
+### Patch Changes
+
+-   Updated dependencies [88c8bf6]
+    -   @sap-ux/project-access@1.26.3
+    -   @sap-ux/axios-extension@1.16.2
+    -   @sap-ux/telemetry@0.5.14
+
+## 0.5.11
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/axios-extension@1.16.2
+    -   @sap-ux/project-access@1.26.2
+    -   @sap-ux/telemetry@0.5.13
+
+## 0.5.10
+
+### Patch Changes
+
+-   Updated dependencies [a986655]
+    -   @sap-ux/project-access@1.26.1
+    -   @sap-ux/axios-extension@1.16.1
+    -   @sap-ux/telemetry@0.5.12
+
+## 0.5.9
+
+### Patch Changes
+
+-   ad55f26: fix adding backend system to prompt state
+
+## 0.5.8
+
+### Patch Changes
+
+-   Updated dependencies [518bf7e]
+    -   @sap-ux/project-access@1.26.0
+    -   @sap-ux/axios-extension@1.16.1
+    -   @sap-ux/telemetry@0.5.11
+
+## 0.5.7
+
+### Patch Changes
+
+-   Updated dependencies [99b7b5f]
+    -   @sap-ux/project-access@1.25.8
+    -   @sap-ux/axios-extension@1.16.1
+    -   @sap-ux/telemetry@0.5.10
+
+## 0.5.6
+
+### Patch Changes
+
+-   Updated dependencies [7ae8207]
+    -   @sap-ux/inquirer-common@0.4.3
+    -   @sap-ux/project-input-validator@0.3.2
+
 ## 0.5.5
 
 ### Patch Changes

@@ -1,5 +1,35 @@
 # @sap-ux/project-access
 
+## 1.26.3
+
+### Patch Changes
+
+-   88c8bf6: new public/exported method "getCapServiceName" which returns CAP service name by passed datasource uri
+
+## 1.26.2
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+
+## 1.26.1
+
+### Patch Changes
+
+-   a986655: Revert "fix(#2173): consider variables in minUI5Version"
+
+## 1.26.0
+
+### Minor Changes
+
+-   518bf7e: Update CAP serviceInfo API handling
+
+## 1.25.8
+
+### Patch Changes
+
+-   99b7b5f: Fixed an issue where variables in minUI5Version were considered invalid
+
 ## 1.25.7
 
 ### Patch Changes

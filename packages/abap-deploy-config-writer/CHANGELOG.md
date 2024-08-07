@@ -1,5 +1,52 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.0.27
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.5
+
+## 0.0.26
+
+### Patch Changes
+
+-   Updated dependencies [88c8bf6]
+    -   @sap-ux/project-access@1.26.3
+    -   @sap-ux/system-access@0.5.4
+
+## 0.0.25
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/project-access@1.26.2
+    -   @sap-ux/system-access@0.5.4
+
+## 0.0.24
+
+### Patch Changes
+
+-   Updated dependencies [a986655]
+    -   @sap-ux/project-access@1.26.1
+    -   @sap-ux/system-access@0.5.3
+
+## 0.0.23
+
+### Patch Changes
+
+-   Updated dependencies [518bf7e]
+    -   @sap-ux/project-access@1.26.0
+    -   @sap-ux/system-access@0.5.3
+
+## 0.0.22
+
+### Patch Changes
+
+-   Updated dependencies [99b7b5f]
+    -   @sap-ux/project-access@1.25.8
+    -   @sap-ux/system-access@0.5.3
+
 ## 0.0.21
 
 ### Patch Changes
