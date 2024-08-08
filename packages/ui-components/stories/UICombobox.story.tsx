@@ -372,3 +372,23 @@ export const groupsAndSeparators = () => {
         </div>
     );
 };
+
+const largeData = [...data];
+for (let i = 1; i <= 10000; i++) {
+    largeData.push({
+        key: `value${i}`,
+        text: `Dummy ${i}`
+    });
+}
+export const Virtual = (): JSX.Element => (
+    <div style={{ width: '300px' }}>
+        <UIComboBox
+            options={largeData}
+            highlight={true}
+            allowFreeform={true}
+            useComboBoxAsMenuMinWidth={true}
+            autoComplete="on"
+            virtualization={true}
+        />
+    </div>
+);
