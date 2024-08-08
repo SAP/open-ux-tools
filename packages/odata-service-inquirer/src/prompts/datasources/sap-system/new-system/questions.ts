@@ -19,6 +19,7 @@ import { suggestSystemName } from '../prompt-helpers';
 import { validateSystemName } from '../validators';
 import { getServiceChoices, getServiceDetails, getServiceType } from './service-helper';
 import type { ServiceAnswer } from './types';
+import { AbapOnPremAnswers } from '../abap-on-prem/questions';
 
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
 // since it will be used as a new system value in the system selection prompt.
@@ -184,14 +185,18 @@ export function getUserSystemNameQuestion(
             }
             return answers.userSystemName;
         },
-        validate: async (systemName: string) => {
+        validate: async (systemName: string, answers: AbapOnPremAnswers & NewSystemAnswers) => {
+            let isValid: string | boolean = false;
             // Dont validate the suggested default system name
             if (systemName === defaultSystemName) {
-                return true;
+                isValid = true;
+            } else {
+                userModifiedSystemName = true;
+                isValid = await validateSystemName(systemName);
             }
             const validationResult = await validateSystemName(systemName);
 
-            if (validationResult === true) {
+            if (isValid === true) {
                 // Not the default system name, so the user modified
                 userModifiedSystemName = true;
                 // Update or create the BackendSystem with the new system details for persistent storage
