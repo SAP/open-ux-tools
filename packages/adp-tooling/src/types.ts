@@ -296,9 +296,15 @@ export type GeneratorData<T extends ChangeType> = T extends ChangeType.ADD_ANNOT
     : never;
 
 export interface AnnotationsData {
-    fileName?: string;
     variant: DescriptorVariant;
-    answers: AddAnnotationsAnswers;
+    annotation: {
+        /** Optional name of the annotation file. */
+        fileName?: string;
+        /** Data source associated with the annotation. */
+        dataSource: string;
+        /** Path to the annotation file. */
+        filePath?: string;
+    };
 }
 
 export const enum AnnotationFileSelectType {
@@ -306,34 +312,91 @@ export const enum AnnotationFileSelectType {
     NewEmptyFile = 2
 }
 
-export interface ComponentUsagesData {
+export interface ComponentUsagesDataBase {
     variant: DescriptorVariant;
-    answers: AddComponentUsageAnswers;
+    component: {
+        /** Indicates whether the component is loaded lazily. */
+        isLazy: string;
+        /** Unique ID for the component usage. */
+        usageId: string;
+        /** Name of the component. */
+        name: string;
+        /** Serialized data specific to the component. */
+        data: string;
+        /** Settings related to the component. */
+        settings: string;
+    };
 }
 
-export interface AddComponentUsageAnswers {
+export interface ComponentUsagesDataWithLibrary extends ComponentUsagesDataBase {
+    library: {
+        /** Reference to the component's library. */
+        reference: string;
+        /** Optional flag indicating if the library reference is lazy. */
+        referenceIsLazy: string;
+    };
+}
+
+export type ComponentUsagesData = ComponentUsagesDataBase | ComponentUsagesDataWithLibrary;
+
+export type AddComponentUsageAnswersWithoutLibrary = {
+    /** Indicates whether a library reference should be added */
+    shouldAddLibrary: false;
+};
+
+export type addComponentUsageAnswersWithLibrary = {
+    /** Indicates whether a library reference should be added */
+    shouldAddLibrary: true;
+    /** Reference to the component's library. */
+    library: string;
+    /** Indicates whether the library reference is loaded lazily. */
+    libraryIsLazy: string;
+};
+
+export type AddComponentUsageAnswersBase = {
     /** Indicates whether the component is loaded lazily. */
     isLazy: string;
     /** Unique ID for the component usage. */
-    id: string;
+    usageId: string;
     /** Name of the component. */
     name: string;
     /** Serialized data specific to the component. */
     data: string;
     /** Settings related to the component. */
     settings: string;
-    /** Indicates whether a library reference should be added */
-    shouldAddLibrary: boolean;
-    /** Reference to the component's library. */
-    library?: string;
-    /** Indicates whether the library reference is loaded lazily. */
-    libraryIsLazy?: string;
+};
+
+export type AddComponentUsageAnswers = AddComponentUsageAnswersBase &
+    (AddComponentUsageAnswersWithoutLibrary | addComponentUsageAnswersWithLibrary);
+
+export interface NewModelDataBase {
+    variant: DescriptorVariant;
+    service: {
+        /** Name of the OData service. */
+        name: string;
+        /** URI of the OData service. */
+        uri: string;
+        /** Name of the OData service model. */
+        modelName: string;
+        /** Version of OData used. */
+        version: string;
+        /** Settings for the OData service model. */
+        modelSettings?: string;
+    };
 }
 
-export interface NewModelData {
-    variant: DescriptorVariant;
-    answers: NewModelAnswers;
+export interface NewModelDataWithAnnotations extends NewModelDataBase {
+    annotation: {
+        /** Name of the OData annotation data source. */
+        dataSourceName: string;
+        /** Optional URI of the OData annotation data source. */
+        dataSourceURI?: string;
+        /** Optional settings for the OData annotation. */
+        settings?: string;
+    };
 }
+
+export type NewModelData = NewModelDataBase | NewModelDataWithAnnotations;
 
 export interface NewModelAnswers {
     addAnnotationMode: boolean;
@@ -358,7 +421,16 @@ export interface NewModelAnswers {
 export interface DataSourceData {
     variant: DescriptorVariant;
     dataSources: Record<string, ManifestNamespace.DataSource>;
-    answers: ChangeDataSourceAnswers;
+    service: {
+        /** Data source identifier. */
+        id: string;
+        /** URI of the data source. */
+        uri: string;
+        /** Optional maximum age for the data source cache. */
+        maxAge?: number;
+        /** URI for the OData annotation source. */
+        annotationUri?: string;
+    };
 }
 
 export interface InboundChangeAnswers {

@@ -5,7 +5,10 @@ import {
     getPromptsForAddAnnotationsToOData,
     getAdpConfig,
     getManifestDataSources,
-    getVariant
+    getVariant,
+    type DescriptorVariant,
+    type AddAnnotationsAnswers,
+    type AnnotationsData
 } from '@sap-ux/adp-tooling';
 import { getLogger, traceChanges } from '../../tracing';
 import { promptYUIQuestions } from '../../common';
@@ -49,10 +52,7 @@ async function addAnnotationsToOdata(basePath: string, simulate: boolean, yamlPa
         const fs = await generateChange<ChangeType.ADD_ANNOTATIONS_TO_ODATA>(
             basePath,
             ChangeType.ADD_ANNOTATIONS_TO_ODATA,
-            {
-                variant,
-                answers
-            }
+            getWriterData(variant, answers)
         );
 
         if (!simulate) {
@@ -70,4 +70,22 @@ async function addAnnotationsToOdata(basePath: string, simulate: boolean, yamlPa
         }
         logger.debug(error);
     }
+}
+
+/**
+ * Returns the writer data for the annotations change.
+ *
+ * @param {DescriptorVariant} variant - The variant object containing information about the layer.
+ * @param {AddAnnotationsAnswers} annotation - The answers object containing user choices.
+ * @returns {AnnotationsData} The writer data for the annotations change.
+ */
+function getWriterData(variant: DescriptorVariant, annotation: AddAnnotationsAnswers): AnnotationsData {
+    const { id, filePath } = annotation;
+    return {
+        variant,
+        annotation: {
+            dataSource: id,
+            filePath: filePath
+        }
+    };
 }

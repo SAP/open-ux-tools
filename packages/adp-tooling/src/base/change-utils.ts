@@ -39,7 +39,7 @@ export function writeAnnotationChange(
     fs: Editor
 ): void {
     try {
-        const { fileName, answers } = data;
+        const { annotation } = data;
         const changeFileName = `id_${timestamp}_addAnnotationsToOData.change`;
         const changesFolderPath = path.join(projectPath, DirName.Webapp, DirName.Changes);
         const changeFilePath = path.join(changesFolderPath, DirName.Manifest, changeFileName);
@@ -47,7 +47,7 @@ export function writeAnnotationChange(
 
         writeChangeToFile(changeFilePath, change, fs);
 
-        if (!answers.filePath) {
+        if (!annotation.filePath) {
             const annotationsTemplate = path.join(
                 __dirname,
                 '..',
@@ -56,11 +56,11 @@ export function writeAnnotationChange(
                 'changes',
                 TemplateFileName.Annotation
             );
-            fs.copy(annotationsTemplate, path.join(annotationsFolderPath, fileName ?? ''));
+            fs.copy(annotationsTemplate, path.join(annotationsFolderPath, annotation.fileName ?? ''));
         } else {
-            const selectedDir = path.dirname(answers.filePath);
+            const selectedDir = path.dirname(annotation.filePath);
             if (selectedDir !== annotationsFolderPath) {
-                fs.copy(answers.filePath, path.join(annotationsFolderPath, fileName ?? ''));
+                fs.copy(annotation.filePath, path.join(annotationsFolderPath, annotation.fileName ?? ''));
             }
         }
     } catch (e) {
