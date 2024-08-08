@@ -370,8 +370,7 @@ export default class ProjectPrompter {
 
     private async getSystemData(system: string, client?: string, username?: string, password?: string): Promise<void> {
         await this.providerService.setProvider(system, client, username, password);
-        // this.flexUISystem = await this.isFlexUISupportedSystem(); // TODO: Does not work
-        this.flexUISystem = { isOnPremise: true, isUIFlex: true }; // TODO: remove fake assign
+        this.flexUISystem = await this.isFlexUISupportedSystem();
 
         try {
             const provider = this.providerService.getProvider();
@@ -399,12 +398,20 @@ export default class ProjectPrompter {
                 isUIFlex: true
             };
         }
-
+        const FILTER = {
+            'scheme': 'http://www.sap.com/adt/categories/ui_flex',
+            'term': 'dta_folder'
+        };
         const provider = this.providerService.getProvider();
-        const adtService = await provider.getAdtService<UIFlexService>(UIFlexService);
-        const settings = await adtService?.getUIFlex();
+        const adtDiscoveryService = provider.getAdtCatalogService();
+        const acceptHeaders = {
+            headers: {
+                Accept: 'application/*'
+            }
+        };
+        const response = await adtDiscoveryService.get('', acceptHeaders);
 
-        return settings;
+        return { isOnPremise: response.data.includes(FILTER.term), isUIFlex: response.data.includes(FILTER.scheme) };
     }
 
     private async getApplications(
@@ -938,9 +945,8 @@ export default class ProjectPrompter {
                 mandatory: false,
                 link: {
                     text: 'application page.',
-                    url: `https://fioriappslibrary.hana.ondemand.com/sap/fix/externalViewer/${
-                        appId ? `index.html?appId=${appId}&releaseGroupTextCombined=SC` : '#/home'
-                    }`
+                    url: `https://fioriappslibrary.hana.ondemand.com/sap/fix/externalViewer/${appId ? `index.html?appId=${appId}&releaseGroupTextCombined=SC` : '#/home'
+                        }`
                 }
             },
             when: this.isCloudProject && this.inboundIds.length === 0
