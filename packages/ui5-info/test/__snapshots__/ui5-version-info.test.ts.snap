@@ -2436,39 +2436,39 @@ exports[`getUI5Versions filterOptions: loads and use cached versions - useCache:
 exports[`getUI5Versions filterOptions: loads and use cached versions - useCache: true 3`] = `
 [
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.109.3",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.109.2",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.109.1",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.109.0",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.108.4",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.108.3",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.108.2",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.108.1",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.108.0",
   },
   {
@@ -2488,23 +2488,23 @@ exports[`getUI5Versions filterOptions: loads and use cached versions - useCache:
     "version": "1.106.0",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.105.4",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.105.3",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.105.2",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.105.1",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.105.0",
   },
   {
@@ -2528,67 +2528,67 @@ exports[`getUI5Versions filterOptions: loads and use cached versions - useCache:
     "version": "1.103.0",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.13",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.12",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.11",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.10",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.9",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.8",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.7",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.6",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.5",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.4",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.3",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.2",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.1",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.0",
   },
   {
-    "maintained": true,
+    "maintained": false,
     "version": "1.101.1",
   },
   {
-    "maintained": true,
+    "maintained": false,
     "version": "1.101.0",
   },
   {
@@ -3021,39 +3021,39 @@ exports[`getUI5Versions filterOptions: loads and use cached versions - useCache:
 exports[`getUI5Versions filterOptions: returns support info - includeMaintained 1`] = `
 [
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.109.3",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.109.2",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.109.1",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.109.0",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.108.4",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.108.3",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.108.2",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.108.1",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.108.0",
   },
   {
@@ -3073,23 +3073,23 @@ exports[`getUI5Versions filterOptions: returns support info - includeMaintained 
     "version": "1.106.0",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.105.4",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.105.3",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.105.2",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.105.1",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.105.0",
   },
   {
@@ -3113,67 +3113,67 @@ exports[`getUI5Versions filterOptions: returns support info - includeMaintained 
     "version": "1.103.0",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.13",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.12",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.11",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.10",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.9",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.8",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.7",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.6",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.5",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.4",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.3",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.2",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.1",
   },
   {
-    "maintained": false,
+    "maintained": true,
     "version": "1.102.0",
   },
   {
-    "maintained": true,
+    "maintained": false,
     "version": "1.101.1",
   },
   {
-    "maintained": true,
+    "maintained": false,
     "version": "1.101.0",
   },
   {
