@@ -16,9 +16,16 @@ function isFunction(property: unknown): property is Function {
 
 const QUESTION_TYPE_MAP: Record<string, PromptType> = {
     input: 'text',
+    editor: 'text',
     list: 'autocomplete',
     checkbox: 'multiselect'
 };
+
+export async function filterLabelTypeQuestions<T extends Answers>(
+    questions: YUIQuestion<T>[]
+): Promise<YUIQuestion<T>[]> {
+    return questions.filter((question) => question?.guiOptions?.type !== 'label');
+}
 
 /**
  * Enhances the new prompt with the choices from the original list question.

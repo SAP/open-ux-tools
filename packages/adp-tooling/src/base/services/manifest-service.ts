@@ -2,6 +2,7 @@ import { Manifest } from '@sap-ux/project-access';
 
 import { t } from '../../i18n';
 import { ProviderService } from './abap-provider-service';
+import { ToolsLogger } from '@sap-ux/logger';
 
 export interface ManifestCache {
     url: string;
@@ -55,13 +56,12 @@ export function getInboundIds(manifest: Manifest | null): string[] {
 export class ManifestService {
     private manifestCache = new Map<string, ManifestCache>();
 
-    constructor(private providerService: ProviderService) {}
+    constructor(private providerService: ProviderService, private logger?: ToolsLogger) {}
 
     /**
      * Resets the manifest cache.
      */
     public resetCache(): void {
-        // TODO: Reset cache when switching systems.
         this.manifestCache = new Map();
     }
 
@@ -145,6 +145,7 @@ export class ManifestService {
 
             this.manifestCache.set(id, { url: cached.url, manifest });
         } catch (e) {
+            this.logger?.debug(`Failed to load manifest, error: ${e.message}`);
             throw new Error(`Failed to load manifest from URL: ${e.message}`);
         }
     }
@@ -161,6 +162,7 @@ export class ManifestService {
         const isSupported = await appIndex.getIsManiFirstSupported(id);
 
         if (!isSupported) {
+            this.logger?.debug(`Application '${id}' is not supported by Adaptation Project`);
             throw new Error(t('validators.appDoesNotSupportManifest'));
         }
 

@@ -1,5 +1,20 @@
 # @sap-ux/adp-tooling
 
+## 0.12.19
+
+### Patch Changes
+
+-   7ae8207: Add Adaptation Project's OData Service and SAPUI5 Model prompting
+-   Updated dependencies [7ae8207]
+    -   @sap-ux/inquirer-common@0.4.3
+    -   @sap-ux/project-input-validator@0.3.2
+
+## 0.12.18
+
+### Patch Changes
+
+-   2a7d3c4: Add Change Inbound prompting and cli command
+
 ## 0.12.17
 
 ### Patch Changes

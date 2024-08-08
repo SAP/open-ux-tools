@@ -1,5 +1,5 @@
 import { t } from '../../i18n';
-import { UI5Version } from '../../types';
+import { UI5Version, FlexLayer } from '../../types';
 
 const UI5_CDN_URL = 'https://ui5.sap.com';
 const UI5_VERSIONS_CDN_URL = 'https://sapui5.hana.ondemand.com/version.json';
@@ -89,6 +89,22 @@ export function addSnapshot(version: string, latestVersion: string): string {
     return versionParts[3] && removeTimestampFromVersion(version) != latestVersion ? '-snapshot' : '';
 }
 
+export function getTrimmedUI5Version(version: string): string {
+    const regex = /\b\d+\.\d+\.\d+\b/g;
+    const includesText = version.includes('(system version)') || version.includes('latest');
+
+    let trimmedVersion: string | undefined = '';
+    try {
+        if (includesText) {
+            trimmedVersion = version.match(regex)?.[0];
+        }
+    } catch (e) {
+        return version;
+    }
+
+    return trimmedVersion ?? version;
+}
+
 /**
  * Determines if a specific feature, introduced in a given version, is supported in the current or specified version.
  * This function checks if the provided version is greater than or equal to the feature introduction version.
@@ -143,13 +159,16 @@ export class UI5VersionService {
     public releasedVersions: string[];
     public detectedVersion: boolean;
     public systemVersion?: string;
+    private isCustomerBase: boolean;
 
     /**
      * Initializes a new instance of the UI5VersionService class.
      *
-     * @param {boolean} isCustomerBase Indicates whether the user is from the customer an internal layer.
+     * @param {FlexLayer} layer UI5 Flex layer.
      */
-    constructor(private isCustomerBase: boolean) {}
+    constructor(layer: FlexLayer) {
+        this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
+    }
 
     /**
      * Retrieves the system relevant versions based on the provided version, if available.
@@ -170,6 +189,17 @@ export class UI5VersionService {
         return this.getRelevantVersions(this.systemVersion);
     }
 
+    public getVersionToBeUsed(version: string, isCustomerBase: boolean): string {
+        // in case we are in external mode but system has snapshot version
+        // we should use the latest public version instead
+        // in case S4HANACLOUD end is selected we are using the latest public version
+        if (!version || (isCustomerBase && version.includes('snapshot'))) {
+            return this.latestVersion;
+        }
+
+        return version;
+    }
+
     /**
      * Fetches public versions from the UI5 CDN.
      *
@@ -185,6 +215,19 @@ export class UI5VersionService {
         this.latestVersion = data['latest']['version'];
 
         return this.publicVersions;
+    }
+
+    public shouldSetMinUI5Version(): boolean {
+        if (!this.detectedVersion) {
+            return false;
+        }
+
+        const versionParts = this.systemVersion?.split('.') ?? [];
+        return parseInt(versionParts[1], 10) >= 90;
+    }
+
+    public getMinUI5VersionForManifest(): string {
+        return this.systemVersion?.indexOf('snapshot') === -1 ? this.systemVersion : this.latestVersion;
     }
 
     /**

@@ -12,6 +12,7 @@ import type {
     AnnotationsData,
     ComponentUsagesData,
     DataSourceData,
+    NewModelData,
     InboundData,
     DescriptorVariant,
     AddAnnotationsAnswers
@@ -210,41 +211,38 @@ describe('NewModelWriter', () => {
     });
 
     it('should correctly construct content and write new model change', async () => {
-        const mockData = {
-            projectData: {} as AdpProjectData,
-            service: {
+        const mockData: NewModelData = {
+            variant: {} as DescriptorVariant,
+            answers: {
                 name: 'ODataService',
                 uri: '/sap/opu/odata/custom',
                 version: '4.0',
                 modelName: 'ODataModel',
-                modelSettings: '"someSetting": "someValue"'
-            },
-            annotation: {
+                modelSettings: '"someSetting": "someValue"',
                 dataSourceName: 'ODataAnnotations',
                 dataSourceURI: 'some/path/annotations.xml',
-                settings: '"anotherSetting": "anotherValue"'
-            },
-            addAnnotationMode: true,
-            timestamp: 1234567890
+                annotationSettings: '"anotherSetting": "anotherValue"',
+                addAnnotationMode: true
+            }
         };
 
         await writer.write(mockData);
 
         expect(getChangeMock).toHaveBeenCalledWith(
             expect.anything(),
-            mockData.timestamp,
+            expect.anything(),
             {
                 'dataSource': {
                     'ODataService': {
-                        'uri': mockData.service.uri,
+                        'uri': mockData.answers.uri,
                         'type': 'OData',
                         'settings': {
-                            'odataVersion': mockData.service.version,
-                            'annotations': [mockData.annotation.dataSourceName]
+                            'odataVersion': mockData.answers.version,
+                            'annotations': [mockData.answers.dataSourceName]
                         }
                     },
                     'ODataAnnotations': {
-                        'uri': mockData.annotation.dataSourceURI,
+                        'uri': mockData.answers.dataSourceURI,
                         'type': 'ODataAnnotation',
                         'settings': {
                             'anotherSetting': 'anotherValue'
@@ -253,7 +251,7 @@ describe('NewModelWriter', () => {
                 },
                 'model': {
                     'ODataModel': {
-                        'dataSource': mockData.service.name,
+                        'dataSource': mockData.answers.name,
                         'settings': {
                             'someSetting': 'someValue'
                         }
@@ -266,7 +264,7 @@ describe('NewModelWriter', () => {
         expect(writeChangeToFolderMock).toHaveBeenCalledWith(
             mockProjectPath,
             expect.any(Object),
-            `id_${mockData.timestamp}_addNewModel.change`,
+            expect.stringContaining('_addNewModel.change'),
             {},
             'manifest'
         );
@@ -360,19 +358,19 @@ describe('InboundWriter', () => {
     });
 
     it('should create a new inbound change when no existing change is found', async () => {
-        const mockData = {
+        const mockData: InboundData = {
             inboundId: 'testInboundId',
-            timestamp: 1234567890,
-            flp: {
+            answers: {
                 title: 'Test Title',
                 subTitle: 'Test SubTitle',
                 icon: 'Test Icon'
-            }
+            },
+            variant: {} as DescriptorVariant
         };
 
         findChangeWithInboundIdMock.mockReturnValue({ changeWithInboundId: null, filePath: '' });
 
-        await writer.write(mockData as InboundData);
+        await writer.write(mockData);
 
         expect(getChangeMock).toHaveBeenCalled();
         expect(writeChangeToFolderMock).toHaveBeenCalled();
@@ -381,12 +379,12 @@ describe('InboundWriter', () => {
     it('should enhance existing inbound change content when found', async () => {
         const mockData = {
             inboundId: 'testInboundId',
-            timestamp: 1234567890,
-            flp: {
+            answers: {
                 title: 'New Title',
                 subTitle: 'New SubTitle',
                 icon: 'New Icon'
-            }
+            },
+            variant: {} as DescriptorVariant
         };
 
         const existingChangeContent = { inboundId: 'testInboundId', entityPropertyChange: [] };

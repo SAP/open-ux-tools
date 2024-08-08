@@ -1,4 +1,3 @@
-import { resolve } from 'path';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
@@ -9,64 +8,30 @@ import {
     UIFlexService,
     isAxiosError
 } from '@sap-ux/axios-extension';
-import { Logger } from '@sap-ux/logger';
-import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
+import { ToolsLogger } from '@sap-ux/logger';
+import type { Manifest } from '@sap-ux/project-access';
 import { isExtensionInstalledVsCode } from '@sap-ux/environment-check';
 import type {
     ListQuestion,
     InputQuestion,
     YUIQuestion,
     PasswordQuestion,
-    ConfirmQuestion,
-    AutocompleteQuestion
+    ConfirmQuestion
 } from '@sap-ux/inquirer-common';
 
 import { t } from '../../i18n';
-import { isCustomerBase } from '../../base/helper';
-import {
-    Application,
-    BasicInfoAnswers,
-    ChoiceOption,
-    ConfigurationInfoAnswers,
-    DeployConfigAnswers,
-    FlexUISupportedSystem,
-    FlpConfigAnswers,
-    InputChoice,
-    Prompts
-} from '../../types';
-import {
-    isNotEmptyString,
-    validateAbapRepository,
-    validateAch,
-    validateByRegex,
-    validateClient,
-    validateEmptyInput,
-    validateNamespace,
-    validatePackage,
-    validatePackageChoiceInput,
-    validateParameters,
-    validateProjectName,
-    validateTransportChoiceInput
-} from '../../base/validators';
+import { Application, FlexLayer, ConfigurationInfoAnswers, FlexUISupportedSystem, Prompts } from '../../types';
+import { isNotEmptyString, validateAch, validateClient } from '../../base/validators';
 
 import { EndpointsService } from '../../base/services/endpoints-service';
 import { UI5VersionService, isFeatureSupportedVersion } from '../../base/services/ui5-version-service';
-import { generateValidNamespace, getDefaultProjectName, getProjectNameTooltip } from './prompt-helpers';
-import { getApplicationType, isSupportedAppTypeForAdaptationProject } from '../../base/app-utils';
-import {
-    ManifestService,
-    getCachedACH,
-    getCachedFioriId,
-    getInboundIds,
-    isV4Application
-} from '../../base/services/manifest-service';
+import { ManifestService, getCachedACH, getCachedFioriId } from '../../base/services/manifest-service';
 import { ProviderService } from '../../base/services/abap-provider-service';
-import { listTransports } from '../../base/services/list-transports-service';
-import { ABAP_PACKAGE_SEARCH_MAX_RESULTS, listPackages } from '../../base/services/list-packages-service';
 import { ApplicationService, getApplicationChoices } from '../../base/services/application-service';
+import { AppIdentifier } from '../../base/services/app-identifier-service';
+import { resolveNodeModuleGenerator } from '../../base/file-system';
 
-export default class ProjectPrompter {
-    private logger: Logger;
+export default class ConfigInfoPrompter {
     private isCustomerBase: boolean;
     private hasSystemAuthentication: boolean;
     private isLoginSuccessfull: boolean;
@@ -75,52 +40,54 @@ export default class ProjectPrompter {
     private ui5VersionDetected = true;
     private isCloudProject: boolean;
     private isApplicationSupported: boolean;
-    private isV4AppInternalMode: boolean;
-    private isSupportedAdpOverAdp: boolean;
-    private isPartiallySupportedAdpOverAdp: boolean;
     private extensibilitySubGenerator: string | undefined = undefined;
-
-    private appSync: boolean;
 
     private versionsOnSystem: string[];
     private systemNames: string[];
 
-    private providerService: ProviderService;
-
-    private inboundIds: string[];
-
     private readonly isExtensionInstalled: boolean;
 
-    private ui5Service: UI5VersionService;
-    private manifestService: ManifestService;
-    private endpointsService: EndpointsService;
     private appsService: ApplicationService;
+    private appIdentifier: AppIdentifier;
+    private logger: ToolsLogger;
 
     private prompts?: Prompts;
-    private packageInputChoiceValid: string | boolean;
-    private transportList: string[] | undefined;
 
-    constructor(layer: UI5FlexLayer, prompts?: Prompts) {
+    constructor(
+        private providerService: ProviderService,
+        private manifestService: ManifestService,
+        private endpointsService: EndpointsService,
+        private ui5Service: UI5VersionService,
+        layer: FlexLayer,
+        logger: ToolsLogger,
+        prompts?: Prompts
+    ) {
+        this.logger = logger;
         this.prompts = prompts;
-        this.isCustomerBase = isCustomerBase(layer);
+        this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
         this.isExtensionInstalled = isExtensionInstalledVsCode('sapse.sap-ux-application-modeler-extension');
 
-        this.ui5Service = new UI5VersionService(this.isCustomerBase);
-        this.endpointsService = new EndpointsService(this.isExtensionInstalled);
-        this.providerService = new ProviderService(this.endpointsService);
-        this.manifestService = new ManifestService(this.providerService);
-        this.appsService = new ApplicationService(this.providerService, this.isCustomerBase);
+        this.appIdentifier = new AppIdentifier(this.isCustomerBase);
+        this.appsService = new ApplicationService(this.providerService, this.isCustomerBase, this.logger);
     }
 
+    /**
+     * Modifies the adaptation project types to remove 'CLOUD_READY' if not allowed for the internal user.
+     */
     private modifyAdaptationProjectTypes(): void {
         const { adaptationProjectTypes } = this.systemInfo;
         if (adaptationProjectTypes.includes(AdaptationProjectType.CLOUD_READY) && !this.isCustomerBase) {
             this.systemInfo.adaptationProjectTypes = adaptationProjectTypes.filter(
-                (type) => type != AdaptationProjectType.CLOUD_READY
+                (type) => type !== AdaptationProjectType.CLOUD_READY
             );
         }
     }
 
+    /**
+     * Adjusts the prompts array by adding or removing configuration pages based on the project type.
+     * For cloud projects, it adds specific configuration steps if only the initial pages are present.
+     * For non-cloud projects, it removes specific pages when more than the standard pages are present.
+     */
     public setAdditionalPagesForCloudProjects(): void {
         if (!this.prompts) {
             return;
@@ -144,186 +111,132 @@ export default class ProjectPrompter {
         }
     }
 
-    private validateAdaptationProjectTypes(): boolean | string {
+    /**
+     * Validates the adaptation project types based on the system information and user base.
+     * It checks the types of projects allowed and modifies them if necessary. Creating cloud projects is forbidden for internal users.
+     *
+     * @returns {boolean | string} True if the project types are valid, otherwise returns an error message.
+     */
+    private validateAdpTypes(): boolean | string {
         const { adaptationProjectTypes } = this.systemInfo;
-        if (adaptationProjectTypes.length === 0) {
-            return !this.isCustomerBase ? t('validators.unsupportedSystemInt') : t('validators.unsupportedSystemExt');
-        }
 
-        if (
-            adaptationProjectTypes.length === 1 &&
-            adaptationProjectTypes[0] === AdaptationProjectType.CLOUD_READY &&
-            !isCustomerBase
-        ) {
+        if (adaptationProjectTypes.length === 0) {
+            return this.isCustomerBase ? t('validators.unsupportedSystemExt') : t('validators.unsupportedSystemInt');
+        }
+        const isCloudReady =
+            adaptationProjectTypes.length === 1 && adaptationProjectTypes[0] === AdaptationProjectType.CLOUD_READY;
+
+        if (isCloudReady && !this.isCustomerBase) {
             this.systemInfo.adaptationProjectTypes = [];
             return t('validators.unsupportedCloudSystemInt');
         }
 
-        // Internal users are not allowed to create adp cloud projects
         this.modifyAdaptationProjectTypes();
 
         return true;
     }
 
-    private allowExtensionProject() {
+    /**
+     * Determines whether an extension project can be allowed based on the current project settings and environment.
+     *
+     * @returns {boolean} Returns true if the extension project is allowed, otherwise false.
+     */
+    private allowExtensionProject(): boolean | undefined {
+        if (this.isCloudProject) {
+            return false;
+        }
+
+        const isOnPremiseAppStudio = this.flexUISystem?.isOnPremise && isAppStudio();
+        const nonFlexOrNonOnPremise =
+            this.flexUISystem && (!this.flexUISystem.isOnPremise || !this.flexUISystem.isUIFlex);
+
         return (
-            !this.isCloudProject &&
-            this.flexUISystem &&
-            this.flexUISystem.isOnPremise &&
-            isAppStudio() &&
+            isOnPremiseAppStudio &&
             (!this.isApplicationSupported ||
-                (this.isApplicationSupported &&
-                    ((this.flexUISystem && (!this.flexUISystem.isOnPremise || !this.flexUISystem.isUIFlex)) ||
-                        this.appSync)))
+                (this.isApplicationSupported && (nonFlexOrNonOnPremise || this.appIdentifier.appSync)))
         );
     }
 
-    private resolveNodeModuleGenerator() {
-        const nodePath = process.env['NODE_PATH'];
-        const nodePaths = nodePath?.split(':') || [];
-
+    /**
+     * Validates whether the extensibility sub-generator is available and sets it up if necessary.
+     * If the generator is not found, an error message is returned advising on the necessary action.
+     *
+     * @returns {boolean | string} Returns true if the generator is available, or an error message if not.
+     */
+    private validateExtensibilityGenerator(): boolean | string {
         if (this.extensibilitySubGenerator) {
             return true;
         }
 
-        for (let i = 0; i < nodePaths.length; i++) {
-            try {
-                this.extensibilitySubGenerator = require.resolve(
-                    resolve(nodePaths[i], '@bas-dev/generator-extensibility-sub/generators/app')
-                );
-            } catch (e) {
-                // We don't care if there's an error while resolving the module
-                // Continue with the next node_module path
-            }
+        this.extensibilitySubGenerator = resolveNodeModuleGenerator();
 
-            if (this.extensibilitySubGenerator !== undefined) {
-                // this.logger.log(`'@bas-dev/generator-extensibility-sub' generator found for path: ${nodePaths[i]}.`);
-                break;
-            }
-        }
-
-        if (this.extensibilitySubGenerator === undefined) {
-            // this.logger.log(
-            //     `'@bas-dev/generator-extensibility-sub' generator was not found for paths: ${JSON.stringify(
-            //         nodePaths
-            //     )}.`
-            // );
-            return 'Extensibility Project generator plugin was not found in your dev space, and is required for this action. To proceed, please install the <SAPUI5 Layout Editor & Extensibility> extension.';
+        if (!this.extensibilitySubGenerator) {
+            return t('validators.extensibilityGenNotFound');
         }
 
         return true;
     }
 
-    private async systemUI5VersionHandler(value: string): Promise<string[]> {
-        if (value) {
-            try {
+    /**
+     * Validates the UI5 system version based on the provided value or fetches all relevant versions if no value is provided.
+     * Updates the internal state with the fetched versions and the detection status.
+     *
+     * @param {string} value - The system version to validate.
+     */
+    private async validateSystemVersion(value: string): Promise<void> {
+        try {
+            if (value) {
                 const provider = this.providerService.getProvider();
                 const service = await provider.getAdtService<UI5RtVersionService>(UI5RtVersionService);
                 const version = await service?.getUI5Version();
+
                 this.versionsOnSystem = await this.ui5Service.getSystemRelevantVersions(version);
-            } catch (e) {
+            } else {
                 this.versionsOnSystem = await this.ui5Service.getRelevantVersions();
             }
-        } else {
+        } catch (e) {
+            this.logger.debug(`Could not fetch system version: ${e.message}`);
             this.versionsOnSystem = await this.ui5Service.getRelevantVersions();
+        } finally {
+            this.ui5VersionDetected = this.ui5Service.detectedVersion;
         }
-        this.ui5VersionDetected = this.ui5Service.detectedVersion;
-        return this.versionsOnSystem;
     }
 
-    private async getVersionDefaultValue() {
-        if (this.versionsOnSystem && (await this.ui5Service.validateUI5Version(this.versionsOnSystem[0])) === true) {
-            return this.versionsOnSystem[0];
-        } else {
+    /**
+     * Gets the default UI5 version from the system versions list by validating the first available version.
+     * If the first version is valid according to the UI5 service, it returns that version; otherwise, returns an empty string.
+     *
+     * @returns {Promise<string>} The valid UI5 version or an empty string if the first version is not valid or if there are no versions.
+     */
+    private async getVersionDefaultValue(): Promise<string> {
+        if (!this.versionsOnSystem || this.versionsOnSystem.length === 0) {
             return '';
         }
+
+        const isValid = (await this.ui5Service.validateUI5Version(this.versionsOnSystem[0])) === true;
+        return isValid ? this.versionsOnSystem[0] : '';
     }
 
-    public async validateSelectedApplication(
-        application: Application,
-        checkForAdpOverAdpSupport: boolean,
-        checkForAdpOverAdpPartialSupport: boolean,
-        manifest: Manifest | null
-    ): Promise<void> {
-        if (!application) {
-            throw new Error(t('validators.selectCannotBeEmptyError', { value: 'Application' }));
-        }
-
-        if (!manifest) {
-            throw new Error(t('validators.manifestCouldNotBeValidated'));
-        }
-
-        this.isV4AppInternalMode = false;
-        this.setAdpOverAdpSupport(checkForAdpOverAdpSupport, checkForAdpOverAdpPartialSupport, application.fileType);
-
-        await this.validateSmartTemplateApplication(manifest);
-    }
-
-    private setAdpOverAdpSupport(
-        checkForAdpOverAdpSupport: boolean,
-        checkForAdpOverAdpPartialSupport: boolean,
-        fileType: string
-    ) {
-        this.isSupportedAdpOverAdp = !(checkForAdpOverAdpSupport && fileType === 'appdescr_variant');
-        this.isPartiallySupportedAdpOverAdp = checkForAdpOverAdpPartialSupport && fileType === 'appdescr_variant';
-    }
-
-    private checkForSyncLoadedViews(ui5Settings: Manifest['sap.ui5']) {
-        if (ui5Settings?.rootView) {
-            // @ts-ignore // TODO:
-            this.appSync = !ui5Settings['rootView']['async'];
-            return;
-        }
-        if (ui5Settings?.routing && ui5Settings['routing']['config']) {
-            this.appSync = !ui5Settings['routing']['config']['async'];
-            return;
-        }
-        this.appSync = false;
-    }
-
-    private async validateSmartTemplateApplication(manifest: Manifest) {
-        const isV4App = isV4Application(manifest);
-        this.isV4AppInternalMode = isV4App && !this.isCustomerBase;
-        const sAppType = getApplicationType(manifest);
-
-        if (isSupportedAppTypeForAdaptationProject(sAppType)) {
-            if (manifest['sap.ui5']) {
-                if (manifest['sap.ui5'].flexEnabled === false) {
-                    throw new Error(t('validators.appDoesNotSupportAdaptation'));
-                }
-                this.checkForSyncLoadedViews(manifest['sap.ui5']);
-            }
-        } else {
-            throw new Error(t('validators.adpPluginSmartTemplateProjectError'));
-        }
-    }
-
+    /**
+     * Validates the selected application to ensure it is supported.
+     *
+     * @param {Application} value - The application to validate.
+     * @returns {Promise<boolean | string>} True if the application is valid, otherwise an error message.
+     */
     private async applicationPromptValidationHandler(value: Application): Promise<boolean | string> {
         if (value) {
             try {
-                const res = await this.manifestService.isAppSupported(value.id);
+                const isSupported = await this.manifestService.isAppSupported(value.id);
 
-                if (res) {
+                if (isSupported) {
                     await this.manifestService.loadManifest(value.id);
 
-                    const systemVersion = this.ui5Service.systemVersion;
-                    const checkForAdpOverAdpSupport =
-                        this.ui5VersionDetected && !isFeatureSupportedVersion('1.96.0', systemVersion);
-                    const checkForAdpOverAdpPartialSupport =
-                        this.ui5VersionDetected &&
-                        checkForAdpOverAdpSupport &&
-                        isFeatureSupportedVersion('1.90.0', systemVersion);
-
-                    await this.validateSelectedApplication(
-                        value,
-                        checkForAdpOverAdpSupport,
-                        checkForAdpOverAdpPartialSupport,
-                        this.manifestService.getManifest(value.id)
-                    );
+                    const manifest = this.manifestService.getManifest(value.id);
+                    await this.evaluateApplicationSupport(manifest, value);
                 }
                 this.isApplicationSupported = true;
             } catch (e) {
-                // this.logger.log(e);
+                this.logger.debug(`Application failed validation. Reason: ${e.message}`);
                 return e.message;
             }
         } else {
@@ -332,65 +245,118 @@ export default class ProjectPrompter {
         return true;
     }
 
-    public getIsSupportedAdpOverAdp() {
-        return this.isSupportedAdpOverAdp && !this.isPartiallySupportedAdpOverAdp;
+    /**
+     * Evaluate if the application version supports certain features.
+     *
+     * @param {Manifest} manifest - The application manifest.
+     * @param {Application} application - The application data.
+     */
+    private async evaluateApplicationSupport(manifest: Manifest | null, application: Application): Promise<void> {
+        const systemVersion = this.ui5Service.systemVersion;
+        const checkForSupport = this.ui5VersionDetected && !isFeatureSupportedVersion('1.96.0', systemVersion);
+        const isPartialSupport =
+            this.ui5VersionDetected && checkForSupport && isFeatureSupportedVersion('1.90.0', systemVersion);
+
+        await this.appIdentifier.validateSelectedApplication(application, checkForSupport, isPartialSupport, manifest);
     }
 
-    public getIsPartiallySupportedAdpOverAdp() {
-        return this.isPartiallySupportedAdpOverAdp;
-    }
-
-    private async systemPromptValidationHandler(value: string): Promise<boolean | string> {
+    /**
+     * Validates the selected system for further operations, fetching necessary data and checking for errors.
+     *
+     * @param {string} value - The system provided by the user.
+     * @returns {Promise<boolean | string>} True if validation succeeds without issues, or an error message otherwise.
+     */
+    private async validateSystem(value: string): Promise<boolean | string> {
         this.manifestService.resetCache();
         this.appsService.resetApps();
         this.ui5VersionDetected = true;
 
         if (!value) {
-            if (isAppStudio()) {
-                return t('validators.selectCannotBeEmptyError', { value: 'System' });
-            }
-
-            return t('validators.inputCannotBeEmpty');
+            return isAppStudio()
+                ? t('validators.selectCannotBeEmptyError', { value: 'System' })
+                : t('validators.inputCannotBeEmpty');
         }
 
         this.hasSystemAuthentication = this.endpointsService.getSystemRequiresAuth(value);
+
         if (!this.hasSystemAuthentication) {
-            try {
-                await this.getSystemData(value);
-                this.versionsOnSystem = await this.systemUI5VersionHandler(value);
-                return this.validateAdaptationProjectTypes();
-            } catch (e) {
-                // this.logger.log(e);
-                return e.message;
-            }
+            return this.handleSystemDataValidation(value);
         }
 
         return true;
     }
 
+    /**
+     * Handles the fetching and validation of system data.
+     *
+     * @param {string} value - The system.
+     * @returns {Promise<boolean | string>} True if successful, or an error message if an error occurs.
+     */
+    private async handleSystemDataValidation(value: string): Promise<boolean | string> {
+        try {
+            await this.getSystemData(value);
+            await this.validateSystemVersion(value);
+            return this.validateAdpTypes();
+        } catch (e) {
+            this.logger.debug(`Validating system failed. Reason: ${e.message}`);
+            return e.message;
+        }
+    }
+
+    /**
+     * Sets up the provider and fetches system data for the specified system.
+     *
+     * @param {string} system - The system identifier.
+     * @param {string} [client] - Optional client identifier.
+     * @param {string} [username] - Optional username for authentication.
+     * @param {string} [password] - Optional password for authentication.
+     */
     private async getSystemData(system: string, client?: string, username?: string, password?: string): Promise<void> {
         await this.providerService.setProvider(system, client, username, password);
-        this.flexUISystem = await this.isFlexUISupportedSystem();
 
         try {
-            const provider = this.providerService.getProvider();
-            const lrep = provider.getLayeredRepository();
-            this.systemInfo = await lrep.getSystemInfo();
-        } catch (e) {
-            // in case request to /sap/bc/lrep/dta_folder/system_info throws error we continue to standart onPremise flow
-            this.systemInfo = {
-                adaptationProjectTypes: [AdaptationProjectType.ON_PREMISE],
-                activeLanguages: []
-            };
+            this.flexUISystem = await this.isFlexUISupportedSystem();
 
-            if (isAxiosError(e)) {
-                if (e.response?.status === 401 || e.response?.status === 403) {
-                    throw new Error(e.message);
-                }
+            await this.fetchSystemInfo();
+        } catch (e) {
+            await this.handleSystemInfoError(e);
+        }
+    }
+
+    /**
+     * Fetches system information from the provider's layered repository.
+     */
+    private async fetchSystemInfo(): Promise<void> {
+        const provider = this.providerService.getProvider();
+        const lrep = provider.getLayeredRepository();
+        this.systemInfo = await lrep.getSystemInfo();
+    }
+
+    /**
+     * Handles errors that occur while fetching system information, setting default values and rethrowing if necessary.
+     *
+     * @param {Error} error - The error encountered during the system info fetch.
+     */
+    private async handleSystemInfoError(error: Error): Promise<void> {
+        this.systemInfo = {
+            adaptationProjectTypes: [AdaptationProjectType.ON_PREMISE],
+            activeLanguages: []
+        };
+
+        this.logger.debug(`Failed to fetch system information. Reason: ${error.message}`);
+        if (isAxiosError(error)) {
+            if (error.response?.status === 401 || error.response?.status === 403) {
+                throw new Error(`Authentication error: ${error.message}`);
             }
         }
     }
 
+    /**
+     * Checks if the system supports Flex UI features.
+     * Returns settings indicating support for onPremise and UI Flex capabilities.
+     *
+     * @returns {Promise<FlexUISupportedSystem | undefined>} An object with system support details or undefined if it cannot be determined.
+     */
     private async isFlexUISupportedSystem(): Promise<FlexUISupportedSystem | undefined> {
         if (!this.isCustomerBase) {
             return {
@@ -414,6 +380,15 @@ export default class ProjectPrompter {
         return { isOnPremise: response.data.includes(FILTER.term), isUIFlex: response.data.includes(FILTER.scheme) };
     }
 
+    /**
+     * Retrieves applications from the specified system.
+     * Throws an error if no applications are available after loading.
+     *
+     * @param {string} system - The identifier of the system.
+     * @param {string} [username] - Optional username for provider authentication.
+     * @param {string} [password] - Optional password for provider authentication.
+     * @param {string} [client] - Optional client identifier for the provider.
+     */
     private async getApplications(
         system: string,
         username?: string,
@@ -421,6 +396,7 @@ export default class ProjectPrompter {
         client?: string
     ): Promise<void> {
         await this.providerService.setProvider(system, client, username, password);
+
         if (!this.flexUISystem) {
             this.flexUISystem = await this.isFlexUISupportedSystem();
         }
@@ -430,20 +406,26 @@ export default class ProjectPrompter {
         const applications = this.appsService.getApps();
 
         if (applications.length === 0) {
-            //this.logger.log('Applications list is empty. No errors were thrown during execution of the request.');
-            throw new Error('Applications list is empty. No errors were thrown during execution of the request.'); // TODO: Should we throw error here?
+            throw new Error(t('validators.appListIsEmptyError'));
         }
     }
 
-    private shouldAuthenticate(answers: ConfigurationInfoAnswers): boolean | string {
-        return answers.system && this.hasSystemAuthentication && (answers.username === '' || answers.password === '');
+    /**
+     * Determines if authentication is necessary based on the provided configuration answers.
+     * It checks if the system requires authentication and if the necessary credentials are provided.
+     *
+     * @param {ConfigurationInfoAnswers} answers - User provided configuration details.
+     * @returns {boolean | string} True if authentication should proceed, false if there are issues with credentials.
+     */
+    private shouldAuthenticate(answers: ConfigurationInfoAnswers): boolean {
+        return !!answers.system && this.hasSystemAuthentication && (answers.username === '' || answers.password === '');
     }
 
-    private async getSystemPrompt() {
-        return isAppStudio() ? await this.getSystemListPrompt() : await this.getSystemNativePrompt();
+    private getSystemPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
+        return isAppStudio() ? this.getSystemListPrompt() : this.getSystemNativePrompt();
     }
 
-    private async getSystemListPrompt(): Promise<YUIQuestion<ConfigurationInfoAnswers>> {
+    private getSystemListPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
             type: 'list',
             name: 'system',
@@ -451,44 +433,35 @@ export default class ProjectPrompter {
             choices: () => this.systemNames,
             guiOptions: {
                 hint: t('prompts.systemTooltip'),
-                breadcrumb: t('prompts.systemLabel')
+                breadcrumb: 'System',
+                mandatory: true
             },
             when: isAppStudio() ? this.systemInfo?.adaptationProjectTypes?.length : true,
-            validate: this.systemPromptValidationHandler.bind(this),
+            validate: async (value: string) => await this.validateSystem(value),
             additionalMessages: () => {
-                if (
-                    this.flexUISystem &&
-                    !this.flexUISystem.isOnPremise &&
-                    !this.flexUISystem.isUIFlex &&
-                    !this.isCloudProject &&
-                    this.systemInfo?.adaptationProjectTypes?.length
-                ) {
-                    return {
-                        message: t('validators.notDeployableNotFlexEnabledSystemError'),
-                        severity: Severity.error
-                    };
+                const isOnPremise = this.flexUISystem?.isOnPremise;
+                const isUIFlex = this.flexUISystem?.isUIFlex;
+                const hasAdaptationProjectTypes = this.systemInfo?.adaptationProjectTypes?.length > 0;
+
+                if (this.isCloudProject || !hasAdaptationProjectTypes) {
+                    return undefined;
                 }
 
-                if (
-                    this.flexUISystem &&
-                    !this.flexUISystem.isOnPremise &&
-                    this.flexUISystem.isUIFlex &&
-                    !this.isCloudProject &&
-                    this.systemInfo?.adaptationProjectTypes?.length
-                ) {
-                    return {
-                        message: t('validators.notDeployableSystemError'),
-                        severity: Severity.error
-                    };
+                if (!isOnPremise) {
+                    if (!isUIFlex) {
+                        return {
+                            message: t('validators.notDeployableNotFlexEnabledSystemError'),
+                            severity: Severity.error
+                        };
+                    } else {
+                        return {
+                            message: t('validators.notDeployableSystemError'),
+                            severity: Severity.error
+                        };
+                    }
                 }
 
-                if (
-                    this.flexUISystem &&
-                    !this.flexUISystem.isUIFlex &&
-                    this.flexUISystem.isOnPremise &&
-                    !this.isCloudProject &&
-                    this.systemInfo?.adaptationProjectTypes?.length
-                ) {
+                if (isOnPremise && !isUIFlex) {
                     return {
                         message: t('validators.notFlexEnabledError'),
                         severity: Severity.warning
@@ -498,7 +471,7 @@ export default class ProjectPrompter {
         } as ListQuestion<ConfigurationInfoAnswers>;
     }
 
-    private async getSystemNativePrompt(): Promise<YUIQuestion<ConfigurationInfoAnswers>> {
+    private getSystemNativePrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return this.isExtensionInstalled ? this.getSystemListPrompt() : this.getSystemInputPrompt();
     }
 
@@ -507,7 +480,7 @@ export default class ProjectPrompter {
             type: 'input',
             name: 'system',
             message: 'System URL',
-            validate: this.systemPromptValidationHandler.bind(this),
+            validate: async (value: string) => await this.validateSystem(value),
             guiOptions: {
                 mandatory: true,
                 breadcrumb: 'System URL'
@@ -543,7 +516,7 @@ export default class ProjectPrompter {
             message: t('prompts.usernameLabel'),
             validate: (value: string) => {
                 if (!isNotEmptyString(value)) {
-                    return t('prompts.inputCannotBeEmpty');
+                    return t('validators.inputCannotBeEmpty');
                 }
                 return true;
             },
@@ -556,7 +529,7 @@ export default class ProjectPrompter {
             },
             guiOptions: {
                 mandatory: true,
-                breadcrumb: t('prompts.usernameLabel')
+                breadcrumb: 'Username'
             },
             store: false
         } as InputQuestion<ConfigurationInfoAnswers>;
@@ -571,19 +544,19 @@ export default class ProjectPrompter {
             mask: '*',
             validate: async (value: string, answers: ConfigurationInfoAnswers) => {
                 if (!isNotEmptyString(value)) {
-                    return t('prompts.inputCannotBeEmpty');
+                    return t('validators.inputCannotBeEmpty');
                 }
 
-                // answers.password not set yet, use "value" instead
                 try {
                     await this.getSystemData(answers.system, answers.client, answers.username, value);
-                    this.versionsOnSystem = await this.systemUI5VersionHandler(answers.system);
+                    await this.validateSystemVersion(answers.system);
                     await this.getApplications(answers.system, answers.username, value, answers.client);
                     this.isLoginSuccessfull = true;
                     if (isAppStudio()) {
-                        return this.validateAdaptationProjectTypes();
+                        return this.validateAdpTypes();
                     }
                 } catch (e) {
+                    this.logger.debug(`Failed to validate the password: ${e.message}`);
                     this.flexUISystem = undefined;
                     return e?.response;
                 }
@@ -626,11 +599,12 @@ export default class ProjectPrompter {
                 try {
                     await this.getApplications(answers.system, answers.username, answers.password, answers.client);
                 } catch (e) {
+                    this.logger.debug(`Failed to fetch applications for project type '${value}'. Reason: ${e.message}`);
                     return e.message;
                 }
 
                 if (!isNotEmptyString(value)) {
-                    return t('prompts.inputCannotBeEmpty');
+                    return t('validators.inputCannotBeEmpty');
                 }
 
                 return true;
@@ -653,10 +627,6 @@ export default class ProjectPrompter {
                 }
             }
         } as ListQuestion<ConfigurationInfoAnswers>;
-    }
-
-    private getApplicationPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
-        return this.prompts ? this.getApplicationListPrompt() : this.getApplicationInputPrompt();
     }
 
     private getApplicationListPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
@@ -700,33 +670,35 @@ export default class ProjectPrompter {
                 return validationResult;
             },
             additionalMessages: (app) => {
-                if (this.appSync && this.isApplicationSupported && !!app) {
+                if (!app) {
+                    return undefined;
+                }
+
+                if (this.appIdentifier.appSync && this.isApplicationSupported) {
                     return {
                         message: t('prompts.appInfoLabel'),
                         severity: Severity.information
                     };
                 }
 
-                if (
-                    !!app &&
-                    !this.getIsSupportedAdpOverAdp() &&
-                    !this.isPartiallySupportedAdpOverAdp &&
-                    this.isApplicationSupported
-                ) {
+                const isSupported = this.appIdentifier.getIsSupportedAdpOverAdp();
+                const isPartiallySupported = this.appIdentifier.getIsPartiallySupportedAdpOverAdp();
+
+                if (!isSupported && !isPartiallySupported && this.isApplicationSupported) {
                     return {
                         message: t('prompts.notSupportedAdpOverAdpLabel'),
                         severity: Severity.warning
                     };
                 }
 
-                if (!!app && this.isPartiallySupportedAdpOverAdp && this.isApplicationSupported) {
+                if (isPartiallySupported && this.isApplicationSupported) {
                     return {
                         message: t('prompts.isPartiallySupportedAdpOverAdpLabel'),
                         severity: Severity.warning
                     };
                 }
 
-                if (this.isV4AppInternalMode) {
+                if (this.appIdentifier.isV4AppInternalMode) {
                     return {
                         message: t('prompts.v4AppNotOfficialLabel'),
                         severity: Severity.warning
@@ -736,36 +708,12 @@ export default class ProjectPrompter {
         } as ListQuestion<ConfigurationInfoAnswers>;
     }
 
-    private getApplicationInputPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
-        return {
-            type: 'input',
-            name: 'application',
-            message: t('prompts.applicationListLabel'),
-            validate: this.applicationPromptValidationHandler.bind(this),
-            store: false,
-            guiOptions: {
-                hint: t('prompts.applicationListTooltip'),
-                breadcrumb: t('prompts.applicationListLabel')
-            },
-            additionalMessages: (app) => {
-                if (this.appSync && this.isApplicationSupported && !!app) {
-                    return {
-                        // TODO: appInfoLabel is in two places rn
-                        message: t('prompts.appInfoLabel'),
-                        severity: Severity.information
-                    };
-                }
-            }
-        } as InputQuestion<ConfigurationInfoAnswers>;
-    }
-
     private getUi5VersionPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
             type: 'list',
             name: 'ui5Version',
             message: t('prompts.ui5VersionLabel'),
             when: (answers: ConfigurationInfoAnswers) => {
-                // show the field when the system is selected
                 return (
                     !!answers.system &&
                     !this.shouldAuthenticate(answers) &&
@@ -804,19 +752,20 @@ export default class ProjectPrompter {
             name: 'fioriId',
             message: t('prompts.fioriIdLabel'),
             guiOptions: {
-                hint: t('prompts.fioriIdHint')
+                hint: t('prompts.fioriIdHint'),
+                breadcrumb: t('prompts.fioriIdLabel')
             },
             when: (answers: ConfigurationInfoAnswers) => {
-                // show the field when the system is selected and in internal mode
                 return (
                     answers.system &&
+                    answers.application &&
                     !this.isCustomerBase &&
                     !this.shouldAuthenticate(answers) &&
                     this.isApplicationSupported
                 );
             },
             default: (answers: ConfigurationInfoAnswers) => {
-                const manifest = this.manifestService.getManifest(answers.application.id);
+                const manifest = this.manifestService.getManifest(answers?.application?.id);
                 return manifest ? getCachedFioriId(manifest) : '';
             },
             store: false
@@ -830,19 +779,20 @@ export default class ProjectPrompter {
             message: t('prompts.achLabel'),
             guiOptions: {
                 hint: t('prompts.achHint'),
+                breadcrumb: t('prompts.achLabel'),
                 mandatory: true
             },
             when: (answers: ConfigurationInfoAnswers) => {
-                // show the field when the system is selected and in internal mode
                 return (
                     answers.system &&
+                    answers.application &&
                     !this.isCustomerBase &&
                     !this.shouldAuthenticate(answers) &&
                     this.isApplicationSupported
                 );
             },
             default: (answers: ConfigurationInfoAnswers) => {
-                const manifest = this.manifestService.getManifest(answers.application.id);
+                const manifest = this.manifestService.getManifest(answers?.application?.id);
                 return manifest ? getCachedACH(manifest) : '';
             },
             validate: (value: string) => validateAch(value, this.isCustomerBase),
@@ -881,7 +831,7 @@ export default class ProjectPrompter {
             type: 'confirm',
             name: 'confirmPrompt',
             message: () => {
-                return this.isApplicationSupported && this.appSync
+                return this.isApplicationSupported && this.appIdentifier.appSync
                     ? t('prompts.createExtProjectWithSyncViewsLabel', { value: projectName })
                     : t('prompts.createExtProjectLabel', { value: projectName });
             },
@@ -891,11 +841,11 @@ export default class ProjectPrompter {
             },
             when: (answers: ConfigurationInfoAnswers) => answers.application && this.allowExtensionProject(),
             validate: (value: boolean) => {
-                if (this.isApplicationSupported && this.appSync) {
-                    return !value ? true : this.resolveNodeModuleGenerator();
+                if (this.isApplicationSupported && this.appIdentifier.appSync) {
+                    return !value ? true : this.validateExtensibilityGenerator();
                 }
 
-                return !value ? 'Please select whether you want to continue' : this.resolveNodeModuleGenerator();
+                return !value ? 'Please select whether you want to continue' : this.validateExtensibilityGenerator();
             }
         } as ConfirmQuestion<ConfigurationInfoAnswers>;
     }
@@ -905,12 +855,12 @@ export default class ProjectPrompter {
         this.systemNames = this.endpointsService.getEndpointNames();
 
         return [
-            await this.getSystemPrompt(),
+            this.getSystemPrompt(),
             this.getSystemClientPrompt(),
             this.getUsernamePrompt(),
             this.getPasswordPrompt(),
             this.getProjectTypeListPrompt(),
-            this.getApplicationPrompt(),
+            this.getApplicationListPrompt(),
             this.getUi5VersionPrompt(),
             this.getFioriIdPrompt(),
             this.getACHprompt(),
@@ -918,6 +868,7 @@ export default class ProjectPrompter {
             this.getConfirmExtProjPrompt(projectName)
         ];
     }
+<<<<<<< HEAD
 
     //FLP Configuration prompts
     private getInboundListPrompt(): YUIQuestion<FlpConfigAnswers> {
@@ -1280,4 +1231,6 @@ export default class ProjectPrompter {
             this.getTransportManualPrompt()
         ];
     }
+=======
+>>>>>>> cef3b98d18f893bf79e6bfda77b35d953c55b7b7
 }

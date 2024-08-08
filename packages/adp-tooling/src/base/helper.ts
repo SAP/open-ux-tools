@@ -2,19 +2,7 @@ import { readFileSync } from 'fs';
 import { join, isAbsolute } from 'path';
 
 import { UI5Config } from '@sap-ux/ui5-config';
-import { UI5FlexLayer } from '@sap-ux/project-access';
-
-import type { DescriptorVariant, AdpPreviewConfig, Parameter, ParamCheck } from '../types';
-
-/**
- * Check environment is running in an customer scenario.
- *
- * @param layer - UI5 Flex layer
- * @returns true if running in an customer scenario, false otherwise
- */
-export function isCustomerBase(layer: UI5FlexLayer): boolean {
-    return layer === 'CUSTOMER_BASE';
-}
+import type { DescriptorVariant, AdpPreviewConfig, ParamCheck, Parameter } from '../types';
 
 /**
  * Get the app descriptor variant.
@@ -193,5 +181,3 @@ function applyRules(resultObject: any, paramPartString: string): void {
         };
     }
 }
-
-

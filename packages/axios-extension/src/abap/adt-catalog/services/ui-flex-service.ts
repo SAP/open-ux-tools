@@ -1,6 +1,5 @@
 import { AdtService } from './adt-service';
-import type { AdtCategory, AtoSettings, UIFlexSettings } from 'abap/types';
-import { XMLParser, XMLValidator } from 'fast-xml-parser';
+import type { AdtCategory, UIFlexSettings } from 'abap/types';
 
 /**
  * UIFlexService implements ADT requests for fetching UI Flex settings.

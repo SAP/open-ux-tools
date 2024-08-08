@@ -1,7 +1,8 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { Endpoint, checkEndpoints } from '@sap-ux/environment-check';
+import { Endpoint, checkEndpoints, isExtensionInstalledVsCode } from '@sap-ux/environment-check';
 
-import { Auth } from '../../types';
+import { SystemDetails } from '../../types';
+import { ToolsLogger } from '@sap-ux/logger';
 
 /**
  * Service class to manage and retrieve information about system endpoints,
@@ -9,14 +10,14 @@ import { Auth } from '../../types';
  */
 export class EndpointsService {
     public endpoints: Endpoint[];
+    private isExtensionInstalled: boolean;
 
     /**
      * Creates an instance of EndpointsService.
-     *
-     * @param {boolean} isExtensionInstalled - Indicates if a application modeler extension is installed.
      */
-    constructor(private isExtensionInstalled: boolean) {
+    constructor(private logger?: ToolsLogger) {
         this.endpoints = [];
+        this.isExtensionInstalled = isExtensionInstalledVsCode('sapse.sap-ux-application-modeler-extension');
     }
 
     /**
@@ -24,9 +25,15 @@ export class EndpointsService {
      *
      * @returns {Promise<void>} A promise that resolves when endpoints have been fetched and stored.
      */
-    public async getEndpoints(): Promise<void> {
-        const { endpoints } = await checkEndpoints();
-        this.endpoints = endpoints;
+    public async getEndpoints(): Promise<Endpoint[] | undefined> {
+        try {
+            const { endpoints } = await checkEndpoints();
+            this.endpoints = endpoints;
+            return endpoints;
+        } catch (e) {
+            this.logger?.error(`Failed to fetch endpoints list. Reason: ${e.message}`);
+            throw new Error(e.message);
+        }
     }
 
     /**
@@ -38,6 +45,10 @@ export class EndpointsService {
         return this.endpoints
             .map((endpoint) => endpoint.Name)
             .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase(), 'en', { sensitivity: 'base' }));
+    }
+
+    public shouldGetLocalSystemDetails() {
+        return !isAppStudio() && this.isExtensionInstalled;
     }
 
     /**
@@ -70,6 +81,16 @@ export class EndpointsService {
     }
 
     /**
+     * Retrieves destination info by name.
+     *
+     * @param {string} system - The name of the system to check.
+     * @returns {Endpoint | undefined} The destination info for the specific system.
+     */
+    public getDestinationInfoByName(system: string): Endpoint | undefined {
+        return this.endpoints.find((endpoint: Endpoint) => endpoint.Name === system);
+    }
+
+    /**
      * Determines whether a system requires authentication based on the environment of the application.
      *
      * @param {string} systemName The name of the system to check.
@@ -87,12 +108,18 @@ export class EndpointsService {
      * @param {string} system - The name or URL of the system to find.
      * @returns {Auth | undefined} Authentication details if the system is found, undefined otherwise.
      */
-    public async getSystemDetails(system: string): Promise<Auth | undefined> {
+    public async getSystemDetails(system: string): Promise<SystemDetails | undefined> {
         if (this.endpoints.length === 0) {
             await this.getEndpoints();
         }
         const endpoint = this.endpoints.find((e) => e.Name === system || e.Url === system);
 
-        return endpoint ? { client: endpoint.Client, url: endpoint.Url } : undefined;
+        return endpoint
+            ? {
+                  client: endpoint.Client || '',
+                  url: endpoint.Url || '',
+                  authenticationType: endpoint.Authentication
+              }
+            : undefined;
     }
 }

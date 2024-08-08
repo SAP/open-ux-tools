@@ -2,7 +2,7 @@ import type { Editor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../../types';
 import { DirName } from '@sap-ux/project-access';
-import type { IWriter, NewModelData, DataSourceItem } from '../../../types';
+import type { IWriter, NewModelData, DataSourceItem, NewModelAnswers } from '../../../types';
 import { parseStringToObject, getChange, writeChangeToFolder } from '../../../base/change-utils';
 
 type NewModelContent = {
@@ -30,40 +30,50 @@ export class NewModelWriter implements IWriter<NewModelData> {
     /**
      * Constructs the content for an new model change based on provided data.
      *
-     * @param {NewModelData} data - The answers object containing information needed to construct the content property.
+     * @param {NewModelAnswers} data - The answers object containing information needed to construct the content property.
      * @returns {object} The constructed content object for the new model change.
      */
-    private constructContent({ service, annotation, addAnnotationMode }: NewModelData): object {
+    private constructContent({
+        name,
+        uri,
+        addAnnotationMode,
+        dataSourceName,
+        modelName,
+        modelSettings,
+        version,
+        dataSourceURI,
+        annotationSettings
+    }: NewModelAnswers): object {
         const content: NewModelContent = {
             dataSource: {
-                [service.name]: {
-                    uri: service.uri,
+                [name]: {
+                    uri,
                     type: 'OData',
                     settings: {
-                        odataVersion: service.version
+                        odataVersion: version
                     }
                 }
             },
             model: {
-                [service.modelName]: {
-                    dataSource: service.name
+                [modelName]: {
+                    dataSource: name
                 }
             }
         };
 
-        if (service.modelSettings && service.modelSettings.length !== 0) {
-            content.model[service.modelName].settings = parseStringToObject(service.modelSettings);
+        if (modelSettings && modelSettings.length !== 0) {
+            content.model[modelName].settings = parseStringToObject(modelSettings);
         }
 
         if (addAnnotationMode) {
-            content.dataSource[service.name].settings.annotations = [`${annotation.dataSourceName}`];
-            content.dataSource[annotation.dataSourceName] = {
-                uri: annotation.dataSourceURI,
+            content.dataSource[name].settings.annotations = [`${dataSourceName}`];
+            content.dataSource[dataSourceName] = {
+                uri: dataSourceURI,
                 type: 'ODataAnnotation'
             } as DataSourceItem;
 
-            if (annotation.settings && annotation.settings.length !== 0) {
-                content.dataSource[annotation.dataSourceName].settings = parseStringToObject(annotation.settings);
+            if (annotationSettings && annotationSettings.length !== 0) {
+                content.dataSource[dataSourceName].settings = parseStringToObject(annotationSettings);
             }
         }
 
@@ -77,15 +87,10 @@ export class NewModelWriter implements IWriter<NewModelData> {
      * @returns {Promise<void>} A promise that resolves when the change writing process is completed.
      */
     async write(data: NewModelData): Promise<void> {
-        const content = this.constructContent(data);
-        const change = getChange(data.projectData, data.timestamp, content, ChangeType.ADD_NEW_MODEL);
+        const timestamp = Date.now();
+        const content = this.constructContent(data.answers);
+        const change = getChange(data.variant, timestamp, content, ChangeType.ADD_NEW_MODEL);
 
-        writeChangeToFolder(
-            this.projectPath,
-            change,
-            `id_${data.timestamp}_addNewModel.change`,
-            this.fs,
-            DirName.Manifest
-        );
+        writeChangeToFolder(this.projectPath, change, `id_${timestamp}_addNewModel.change`, this.fs, DirName.Manifest);
     }
 }
