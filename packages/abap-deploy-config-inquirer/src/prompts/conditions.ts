@@ -18,7 +18,7 @@ import {
 } from '../types';
 
 /**
- * Determins if URL question should be shown.
+ * Determines if URL question should be shown.
  *
  * @param targetSystem - chosen target system
  * @returns true if target system type is URL
@@ -49,7 +49,6 @@ export function showScpQuestion(previousAnswers: AbapDeployConfigAnswers): boole
             isSystemUnknown = true;
         }
     }
-
     return isSystemUnknown;
 }
 

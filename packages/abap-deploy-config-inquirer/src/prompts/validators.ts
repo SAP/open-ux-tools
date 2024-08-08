@@ -179,7 +179,7 @@ export function validateClientChoiceQuestion(
     switch (clientChoice) {
         case ClientChoiceValue.Base:
             PromptState.abapDeployConfig.client =
-                PromptState.abapDeployConfig.client ?? options.backendTarget?.abapTarget.client;
+                PromptState.abapDeployConfig?.client ?? options.backendTarget?.abapTarget.client;
             break;
 
         case ClientChoiceValue.Blank:
@@ -294,7 +294,7 @@ export function validateUi5AbapRepoName(input: string): boolean | string {
  * @returns boolean or error message as a string
  */
 export function validateAppDescription(input: string): boolean | string {
-    if (input.length > 60) {
+    if (input?.length > 60) {
         return t('errors.validators.descriptionLength');
     }
     return true;

@@ -55,7 +55,7 @@ function getDestinationPrompt(
             validate: (destination: string): boolean => validateDestinationQuestion(destination, destinations),
             additionalMessages: (destination: string): IMessageSeverity | undefined => {
                 let additionalMessage;
-                if (destinations && isOnPremiseDestination(destinations[destination])) {
+                if (destinations && destination && isOnPremiseDestination(destinations[destination])) {
                     additionalMessage = {
                         message: t('warnings.virtualHost'),
                         severity: Severity.warning
@@ -98,7 +98,7 @@ function getTargetSystemPrompt(choices: AbapSystemChoice[]): (YUIQuestion<AbapDe
                 breadcrumb: t('prompts.target.targetSystem.breadcrumb')
             },
             choices: (): AbapSystemChoice[] => choices,
-            default: () => defaultTargetSystem(choices),
+            default: (): string | undefined => defaultTargetSystem(choices),
             validate: (target: string): boolean | string => validateTargetSystem(target, choices)
         } as ListQuestion<AbapDeployConfigAnswers>
     ];
@@ -163,7 +163,7 @@ function getScpPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDepl
         guiOptions: {
             breadcrumb: t('prompts.target.scp.breadcrumb')
         },
-        default: (): boolean | undefined => options.backendTarget?.abapTarget.scp,
+        default: (): string | undefined => options.backendTarget?.abapTarget?.scp,
         validate: (input: boolean): boolean | string => validateScpQuestion(input)
     } as ConfirmQuestion<AbapDeployConfigAnswers>;
 }
