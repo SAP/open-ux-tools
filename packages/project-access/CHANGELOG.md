@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.26.5
+
+### Patch Changes
+
+-   cc16cbb: fix CAP CDS evironment e.g. loading cds jar dependencies
+
 ## 1.26.4
 
 ### Patch Changes
