@@ -34,6 +34,7 @@ export class AddControllerToPageQuickAction implements SimpleQuickActionDefiniti
             this.context.view,
             CONTROL_TYPES
         )) {
+            // TODO: use new version utility function 
             const { version } = (await VersionInfo.load()) as { version: string };
             const versionParts = version.split('.');
             const minor = parseInt(versionParts[1], 10);

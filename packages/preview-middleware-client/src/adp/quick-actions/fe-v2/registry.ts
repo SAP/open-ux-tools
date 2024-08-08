@@ -4,7 +4,10 @@ import ComponentContainer from 'sap/ui/core/ComponentContainer';
 import UIComponent from 'sap/ui/core/UIComponent';
 
 import { getComponent } from '../../../cpe/ui5-utils';
-import type { QuickActionActivationContext, QuickActionDefinitionGroup } from '../../../cpe/quick-actions/quick-action-definition';
+import type {
+    QuickActionActivationContext,
+    QuickActionDefinitionGroup
+} from '../../../cpe/quick-actions/quick-action-definition';
 import { QuickActionDefinitionRegistry } from '../../../cpe/quick-actions/registry';
 import type { ControlTreeIndex } from '../../../cpe/types';
 
@@ -12,6 +15,7 @@ import { AddControllerToPageQuickAction } from '../common/add-controller-to-page
 
 import { ToggleClearFilterBarQuickAction } from './lr-toggle-clear-filter-bar';
 import { ChangeTableColumnsQuickAction } from './change-table-columns';
+import { AddHeaderFieldQuickAction } from './op-add-header-field';
 
 type PageName = 'listReport' | 'objectPage';
 
@@ -48,7 +52,11 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
                 } else if (name === 'objectPage') {
                     return {
                         title: 'Object Page',
-                        definitions: [AddControllerToPageQuickAction, ChangeTableColumnsQuickAction],
+                        definitions: [
+                            AddControllerToPageQuickAction,
+                            ChangeTableColumnsQuickAction,
+                            AddHeaderFieldQuickAction
+                        ],
                         view,
                         key: name + i
                     };
