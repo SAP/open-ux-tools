@@ -4,7 +4,7 @@ import { ODataService, ServiceProvider } from '@sap-ux/axios-extension';
 import type { AxiosResponse } from 'axios';
 import { AxiosError } from 'axios';
 import { ErrorHandler } from '../../../src/error-handler/error-handler';
-import { GUIDED_ANSWERS_LAUNCH_CMD_ID } from '../../../src/error-handler/help/help-topics';
+import { GUIDED_ANSWERS_LAUNCH_CMD_ID } from '@sap-ux/fiori-generator-shared';
 import { GUIDED_ANSWERS_ICON } from '../../../src/error-handler/help/images';
 import { initI18nOdataServiceInquirer, t } from '../../../src/i18n';
 import { ConnectionValidator } from '../../../src/prompts/connectionValidator';
