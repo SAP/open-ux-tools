@@ -29,7 +29,7 @@ function getKeytar(log: Logger): typeof Keytar | undefined {
                 appModDirs.push(dirname(filePath));
             });
             log.info('keytarDirectories: \n' + JSON.stringify(appModDirs));
-            if (appModDirs.length >= 0) {
+            if (appModDirs.length > 0) {
                 const keytarDir = appModDirs[0];
                 return require(keytarDir);
             }
