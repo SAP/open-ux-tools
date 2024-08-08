@@ -9,6 +9,7 @@ import {
 } from '@sap-ux-private/control-property-editor-common';
 import { ActionSenderFunction, SubscribeFunction } from './types';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+
 /**
  * A Class of RtaService
  */

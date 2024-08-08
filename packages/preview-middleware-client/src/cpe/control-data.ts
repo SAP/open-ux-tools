@@ -73,7 +73,7 @@ function analyzePropertyType(property: ManagedObjectMetadataProperties): Analyze
     const analyzedType: AnalyzedType = {
         primitiveType: 'any',
         ui5Type: null,
-        enumValues: null,
+        enumValues: undefined,
         isArray: false
     };
     const propertyType = property?.getType();
@@ -116,7 +116,7 @@ function analyzePropertyType(property: ManagedObjectMetadataProperties): Analyze
 
         // Determine base type for SAP types
         if (analyzedType.primitiveType === 'enum') {
-            analyzedType.enumValues = sap.ui.require(analyzedType.ui5Type.split('.').join('/'));
+            analyzedType.enumValues = propertyDataType?.getEnumValues();
         }
     }
 

@@ -19,7 +19,7 @@ import ControllerExtension from './controllers/ControllerExtension.controller';
 import { ExtensionPointData } from './extension-point';
 import ExtensionPoint from './controllers/ExtensionPoint.controller';
 import ManagedObject from 'sap/ui/base/ManagedObject';
-import { isReuseComponent } from '../cpe/outline/utils';
+import { isReuseComponent, isControllerExtensionEnabledForControl } from '../cpe/utils';
 
 export const enum DialogNames {
     ADD_FRAGMENT = 'AddFragment',
@@ -46,11 +46,7 @@ export const isControllerExtensionEnabled = (
     if (overlays.length === 0 || overlays.length > 1) {
         return false;
     }
-
-    const clickedControlId = FlUtils.getViewForControl(overlays[0].getElement()).getId();
-    const isClickedControlReuseComponent = isReuseComponent(clickedControlId, minorUI5Version);
-
-    return !syncViewsIds.includes(clickedControlId) && !isClickedControlReuseComponent;
+    return isControllerExtensionEnabledForControl(overlays[0].getElement(), syncViewsIds, minorUI5Version);
 };
 
 /**
@@ -106,13 +102,14 @@ export async function handler(
     overlay: UI5Element,
     rta: RuntimeAuthoring,
     dialogName: DialogNames,
-    extensionPointData?: ExtensionPointData
+    extensionPointData?: ExtensionPointData,
+    aggregation?: string
 ): Promise<void> {
     let controller: Controller;
 
     switch (dialogName) {
         case DialogNames.ADD_FRAGMENT:
-            controller = new AddFragment(`open.ux.preview.client.adp.controllers.${dialogName}`, overlay, rta);
+            controller = new AddFragment(`open.ux.preview.client.adp.controllers.${dialogName}`, overlay, rta, aggregation);
             break;
         case DialogNames.CONTROLLER_EXTENSION:
             controller = new ControllerExtension(`open.ux.preview.client.adp.controllers.${dialogName}`, overlay, rta);

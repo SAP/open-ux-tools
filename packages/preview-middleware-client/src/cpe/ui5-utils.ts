@@ -9,8 +9,10 @@ import IconPool from 'sap/ui/core/IconPool';
  * @param id - unique identifier for control
  * @returns Component | undefined
  */
-export function getComponent<T extends Component>(id: ID): T | undefined {
-    if (Component?.get) {
+export function getComponent<T extends Component = Component>(id: ID): T | undefined {
+    if (Component?.getComponentById) {
+        return Component.getComponentById(id) as T;
+    } else if (Component?.get) {
         return Component.get(id) as T;
     } else {
         // Older version must be still supported until maintenance period.
