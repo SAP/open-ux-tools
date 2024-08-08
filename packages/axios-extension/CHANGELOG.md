@@ -1,5 +1,23 @@
 # @sap-ux/axios-extension
 
+## 1.16.3
+
+### Patch Changes
+
+-   0084205: linting: use optional chaining operator ?
+
+## 1.16.2
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+
+## 1.16.1
+
+### Patch Changes
+
+-   ad9b56d: Extend axios-extension services
+
 ## 1.16.0
 
 ### Minor Changes

@@ -207,7 +207,7 @@ export function getUserSystemNameQuestion(
                     PromptState.odataService.connectedSystem.backendSystem = backendSystem;
                 }
             }
-            return validationResult;
+            return isValid;
         }
     } as InputQuestion<Partial<NewSystemAnswers>>;
 

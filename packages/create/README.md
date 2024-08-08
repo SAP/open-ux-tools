@@ -32,6 +32,13 @@ Calling `sap-ux add annotations` allows adding an annotation to the OData Source
 sap-ux add annotations /path/to/adaptation-project
 ```
 
+### model
+Calling `sap-ux add model` allows to add new OData Service and SAPUI5 Model to an existing adaptation project.  
+```sh
+sap-ux add model /path/to/adaptation-project
+```
+If the project path is not provided, the current working directory will be used.
+
 ## change
 Calling `sap-ux change` allows changing a feature of a project.
 
@@ -39,6 +46,13 @@ Calling `sap-ux change` allows changing a feature of a project.
 Calling `sap-ux change data-source` allows replacing the OData Source of the base application in an adaptation project.  
 ```sh
 sap-ux change data-source /path/to/adaptation-project
+```
+If the project path is not provided, the current working directory will be used.
+
+### inbound
+Calling `sap-ux change inbound` allows replacing the Inbound FLP configurations of the base application in an adaptation project.  
+```sh
+sap-ux change inbound /path/to/adaptation-project
 ```
 If the project path is not provided, the current working directory will be used.
 

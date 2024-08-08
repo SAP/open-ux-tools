@@ -1,5 +1,55 @@
 # @sap-ux/project-access
 
+## 1.26.5
+
+### Patch Changes
+
+-   cc16cbb: fix CAP CDS evironment e.g. loading cds jar dependencies
+
+## 1.26.4
+
+### Patch Changes
+
+-   Updated dependencies [ac22b7e]
+    -   @sap-ux/i18n@0.1.1
+
+## 1.26.3
+
+### Patch Changes
+
+-   88c8bf6: new public/exported method "getCapServiceName" which returns CAP service name by passed datasource uri
+
+## 1.26.2
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+
+## 1.26.1
+
+### Patch Changes
+
+-   a986655: Revert "fix(#2173): consider variables in minUI5Version"
+
+## 1.26.0
+
+### Minor Changes
+
+-   518bf7e: Update CAP serviceInfo API handling
+
+## 1.25.8
+
+### Patch Changes
+
+-   99b7b5f: Fixed an issue where variables in minUI5Version were considered invalid
+
+## 1.25.7
+
+### Patch Changes
+
+-   d549173: - Adjusts getMinUI5VersionAsArray so that semver valid check is included; the function now only returns valid versions.
+    -   Upgrade of @ui5/manifest to 1.66.0; adjustment of all components so that minimumUI5Version definitions as array are processed properly.
+
 ## 1.25.6
 
 ### Patch Changes

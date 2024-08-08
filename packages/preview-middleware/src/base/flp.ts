@@ -109,7 +109,7 @@ export class FlpSandbox {
         this.createFlexHandler();
         this.config.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app'].id;
-        this.templateConfig = createFlpTemplateConfig(this.config, manifest);
+        this.templateConfig = createFlpTemplateConfig(this.config, manifest, resources);
 
         await addApp(
             this.templateConfig,
@@ -442,7 +442,7 @@ export class FlpSandbox {
                     this.logger.warn(`HTML file returned at ${config.path} is loaded from the file system.`);
                     next();
                 } else {
-                    const templateConfig = createTestTemplateConfig(config, id);
+                    const templateConfig = createTestTemplateConfig(config, id, this.templateConfig.ui5.theme);
                     const html = render(htmlTemplate, templateConfig);
                     this.sendResponse(res, 'text/html', 200, html);
                 }

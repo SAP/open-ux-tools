@@ -5,7 +5,7 @@ import { t } from './i18n';
 import type { OdataService, CdsAnnotationsInfo, EdmxAnnotationsInfo } from './types';
 import semVer from 'semver';
 import prettifyXml from 'prettify-xml';
-import type { Manifest } from '@sap-ux/project-access';
+import { getMinimumUI5Version, type Manifest } from '@sap-ux/project-access';
 
 /**
  * Internal function that updates the manifest.json based on the given service configuration.
@@ -29,8 +29,7 @@ export function updateManifest(basePath: string, service: OdataService, fs: Edit
     }
 
     const manifestJsonExt = fs.read(join(templateRoot, 'extend', `manifest.json`));
-    const minUI5Version = manifest['sap.ui5']?.dependencies?.minUI5Version;
-    const manifestSettings = Object.assign(service, getModelSettings(minUI5Version));
+    const manifestSettings = Object.assign(service, getModelSettings(getMinimumUI5Version(manifest)));
     // If the service object includes ejs options, for example 'client' (see: https://ejs.co/#docs),
     // resulting in unexpected behaviour and problems when webpacking. Passing an empty options object prevents this.
     fs.extendJSON(manifestPath, JSON.parse(render(manifestJsonExt, manifestSettings, {})));
@@ -109,7 +108,7 @@ export async function updateCdsFilesWithAnnotations(annotations: CdsAnnotationsI
  */
 function getModelSettings(minUI5Version: string | undefined) {
     let includeSynchronizationMode = false;
-    if (minUI5Version && semVer.valid(minUI5Version)) {
+    if (minUI5Version) {
         includeSynchronizationMode = semVer.satisfies(minUI5Version, '<=1.110');
     }
     return { includeSynchronizationMode };

@@ -1,5 +1,88 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.1.32
+
+### Patch Changes
+
+-   Updated dependencies [cc16cbb]
+    -   @sap-ux/project-access@1.26.5
+    -   @sap-ux/cds-odata-annotation-converter@0.3.3
+
+## 0.1.31
+
+### Patch Changes
+
+-   Updated dependencies [ac22b7e]
+    -   @sap-ux/cds-annotation-parser@0.2.1
+    -   @sap-ux/cds-odata-annotation-converter@0.3.3
+    -   @sap-ux/project-access@1.26.4
+    -   @sap-ux/odata-annotation-core@0.2.1
+    -   @sap-ux/odata-annotation-core-types@0.4.1
+    -   @sap-ux/xml-odata-annotation-converter@0.3.1
+    -   @sap-ux/odata-entity-model@0.3.0
+    -   @sap-ux/odata-vocabularies@0.4.1
+
+## 0.1.30
+
+### Patch Changes
+
+-   Updated dependencies [88c8bf6]
+    -   @sap-ux/project-access@1.26.3
+    -   @sap-ux/cds-odata-annotation-converter@0.3.2
+
+## 0.1.29
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/project-access@1.26.2
+    -   @sap-ux/cds-odata-annotation-converter@0.3.2
+
+## 0.1.28
+
+### Patch Changes
+
+-   Updated dependencies [a986655]
+    -   @sap-ux/project-access@1.26.1
+    -   @sap-ux/cds-odata-annotation-converter@0.3.1
+
+## 0.1.27
+
+### Patch Changes
+
+-   Updated dependencies [518bf7e]
+    -   @sap-ux/project-access@1.26.0
+    -   @sap-ux/cds-odata-annotation-converter@0.3.1
+
+## 0.1.26
+
+### Patch Changes
+
+-   Updated dependencies [99b7b5f]
+    -   @sap-ux/project-access@1.25.8
+    -   @sap-ux/cds-odata-annotation-converter@0.3.1
+
+## 0.1.25
+
+### Patch Changes
+
+-   0ec9420: fix: xml formatting when moving element
+
+## 0.1.24
+
+### Patch Changes
+
+-   Updated dependencies [d549173]
+    -   @sap-ux/project-access@1.25.7
+    -   @sap-ux/cds-odata-annotation-converter@0.3.1
+
+## 0.1.23
+
+### Patch Changes
+
+-   cd12eed: fix: cds formatting issue when deleting properties
+
 ## 0.1.22
 
 ### Patch Changes

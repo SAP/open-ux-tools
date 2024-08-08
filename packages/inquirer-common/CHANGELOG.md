@@ -1,5 +1,18 @@
 # @sap-ux/inquirer-common
 
+## 0.4.3
+
+### Patch Changes
+
+-   7ae8207: Add Adaptation Project's OData Service and SAPUI5 Model prompting
+
+## 0.4.2
+
+### Patch Changes
+
+-   Updated dependencies [6ebfae0]
+    -   @sap-ux/ui5-info@0.7.0
+
 ## 0.4.1
 
 ### Patch Changes

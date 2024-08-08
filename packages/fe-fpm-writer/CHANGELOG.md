@@ -1,5 +1,80 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.26.2
+
+### Patch Changes
+
+-   Updated dependencies [cc16cbb]
+    -   @sap-ux/project-access@1.26.5
+    -   @sap-ux/fiori-annotation-api@0.1.32
+
+## 0.26.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.1.31
+-   @sap-ux/project-access@1.26.4
+
+## 0.26.0
+
+### Minor Changes
+
+-   88c8bf6: feat: Prompt API to request question and submit answers for Table, Chart and FilterBar building blocks
+
+### Patch Changes
+
+-   Updated dependencies [88c8bf6]
+    -   @sap-ux/project-access@1.26.3
+    -   @sap-ux/fiori-annotation-api@0.1.30
+
+## 0.25.7
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/project-access@1.26.2
+
+## 0.25.6
+
+### Patch Changes
+
+-   Updated dependencies [a986655]
+    -   @sap-ux/project-access@1.26.1
+
+## 0.25.5
+
+### Patch Changes
+
+-   Updated dependencies [518bf7e]
+    -   @sap-ux/project-access@1.26.0
+
+## 0.25.4
+
+### Patch Changes
+
+-   Updated dependencies [99b7b5f]
+    -   @sap-ux/project-access@1.25.8
+
+## 0.25.3
+
+### Patch Changes
+
+-   dc60d98: fix: add `@sap-ux/project-access` dependency
+
+## 0.25.2
+
+### Patch Changes
+
+-   29bebd2: feat: add required libraries on page addition
+
+## 0.25.1
+
+### Patch Changes
+
+-   d549173: - Adjusts getMinUI5VersionAsArray so that semver valid check is included; the function now only returns valid versions.
+    -   Upgrade of @ui5/manifest to 1.66.0; adjustment of all components so that minimumUI5Version definitions as array are processed properly.
+
 ## 0.25.0
 
 ### Minor Changes
