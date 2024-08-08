@@ -1,18 +1,25 @@
 import log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import init from '../cpe/init';
-import { initDialogs } from './init-dialogs';
+
 import {
     ExternalAction,
     showMessage,
     startPostMessageCommunication,
     enableTelemetry
 } from '@sap-ux-private/control-property-editor-common';
-import { ActionHandler } from '../cpe/types';
-import { getUI5VersionValidationMessage } from './ui5-version-utils';
+
+import { getUi5Version } from '../utils/version';
+
+import init from '../cpe/init';
 import { getError } from '../cpe/error-utils';
 import { getAllSyncViewsIds } from '../cpe/utils';
-import { getUi5Version } from '../utils/version';
+import { getFeVersion } from '../cpe/quick-actions/utils';
+import { ActionHandler } from '../cpe/types';
+
+
+import { getUI5VersionValidationMessage } from './ui5-version-utils';
+import { loadDefinitions } from './quick-actions/load';
+import { initDialogs } from './init-dialogs';
 
 export default async function (rta: RuntimeAuthoring) {
     const version = await getUi5Version();
@@ -54,7 +61,10 @@ export default async function (rta: RuntimeAuthoring) {
         extPointService.init(subscribe);
     }
 
-    await init(rta);
+    const feVersion = getFeVersion(rta.getRootControlInstance().getManifest());
+    const quickActionRegistry = await loadDefinitions(feVersion);
+
+    await init(rta, [quickActionRegistry]);
     const ui5VersionValidationMsg = getUI5VersionValidationMessage(version);
 
     if (ui5VersionValidationMsg) {
@@ -75,5 +85,3 @@ export default async function (rta: RuntimeAuthoring) {
 
     log.debug('ADP init executed.');
 }
-
-

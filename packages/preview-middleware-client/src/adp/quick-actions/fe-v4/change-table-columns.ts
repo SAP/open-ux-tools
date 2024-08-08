@@ -5,9 +5,9 @@ import Table from 'sap/ui/mdc/Table';
 import { NESTED_QUICK_ACTION_KIND, NestedQuickAction } from '@sap-ux-private/control-property-editor-common';
 import { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
 
-import { QuickActionContext, NestedQuickActionDefinition } from '../quick-action-definition';
-import { getRelevantControlFromActivePage } from '../utils';
-import { getControlById } from '../../utils';
+import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
+import { getControlById } from '../../../cpe/utils';
 
 export const CHANGE_TABLE_COLUMNS = 'change-table-columns';
 const ACTION_ID = 'CTX_SETTINGS0';

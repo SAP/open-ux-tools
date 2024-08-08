@@ -4,11 +4,11 @@ import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import { NESTED_QUICK_ACTION_KIND, NestedQuickAction } from '@sap-ux-private/control-property-editor-common';
 import { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
 
-import { QuickActionContext, NestedQuickActionDefinition } from '../quick-action-definition';
-import { getRelevantControlFromActivePage } from '../utils';
+import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
 import SmartTable from 'sap/ui/comp/smarttable/SmartTable';
 import Table from 'sap/m/Table';
-import { isA } from '../../utils';
+import { isA } from '../../../cpe/utils';
 
 export const CHANGE_TABLE_COLUMNS = 'change-table-columns';
 const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';

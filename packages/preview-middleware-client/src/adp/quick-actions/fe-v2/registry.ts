@@ -1,21 +1,22 @@
+import XMLView from 'sap/ui/core/mvc/XMLView';
+import Log from 'sap/base/Log';
 import ComponentContainer from 'sap/ui/core/ComponentContainer';
 import UIComponent from 'sap/ui/core/UIComponent';
-import Log from 'sap/base/Log';
-import XMLView from 'sap/ui/core/mvc/XMLView';
 
-import { getComponent } from '../../ui5-utils';
-import type { ControlTreeIndex } from '../../types';
-import type { QuickActionActivationContext, QuickActionDefinitionGroup } from '../quick-action-definition';
-import { QuickActionDefinitionRegistry } from '../registry';
+import { getComponent } from '../../../cpe/ui5-utils';
+import type { QuickActionActivationContext, QuickActionDefinitionGroup } from '../../../cpe/quick-actions/quick-action-definition';
+import { QuickActionDefinitionRegistry } from '../../../cpe/quick-actions/registry';
+import type { ControlTreeIndex } from '../../../cpe/types';
 
 import { AddControllerToPageQuickAction } from '../common/add-controller-to-page';
+
 import { ToggleClearFilterBarQuickAction } from './lr-toggle-clear-filter-bar';
 import { ChangeTableColumnsQuickAction } from './change-table-columns';
 
 type PageName = 'listReport' | 'objectPage';
 
-const LIST_REPORT_TYPE = 'sap.fe.templates.ListReport.ListReport';
-const OBJECT_PAGE_TYPE = 'sap.fe.templates.ObjectPage.ObjectPage';
+const OBJECT_PAGE_TYPE = 'sap.suite.ui.generic.template.ObjectPage.view.Details';
+const LIST_REPORT_TYPE = 'sap.suite.ui.generic.template.ListReport.view.ListReport';
 
 const PAGE_NAME_MAP: Record<string, PageName> = {
     [LIST_REPORT_TYPE]: 'listReport',
@@ -27,7 +28,7 @@ interface ActivePage {
     view: XMLView;
 }
 
-export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegistry {
+export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegistry {
     getDefinitions(context: QuickActionActivationContext): QuickActionDefinitionGroup[] {
         const activePages = this.getActivePageContent(context.controlIndex);
 
@@ -56,23 +57,24 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
             })
             .filter((definition) => !!definition);
     }
-
     private getActiveViews(controlIndex: ControlTreeIndex): XMLView[] {
         const pages = this.getActivePages(controlIndex);
 
         const views = pages
             .map((page): XMLView | undefined => {
-                if (page instanceof ComponentContainer) {
-                    const componentId = page.getComponent();
-                    const component = getComponent(componentId);
-                    if (component instanceof UIComponent) {
-                        const rootControl = component.getRootControl();
-                        if (rootControl instanceof XMLView) {
-                            return rootControl;
+                if (page instanceof XMLView) {
+                    const container = page.getContent()[0];
+                    if (container instanceof ComponentContainer) {
+                        const componentId = container.getComponent();
+                        const component = getComponent(componentId);
+                        if (component instanceof UIComponent) {
+                            const rootControl = component.getRootControl();
+                            if (rootControl instanceof XMLView) {
+                                return rootControl;
+                            }
                         }
                     }
                 }
-
                 return undefined;
             })
             .filter((view: XMLView | undefined): view is XMLView => view !== undefined);

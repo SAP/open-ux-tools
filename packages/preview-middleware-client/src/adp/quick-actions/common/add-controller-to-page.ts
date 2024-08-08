@@ -6,12 +6,13 @@ import UI5Element from 'sap/ui/core/Element';
 
 import { SIMPLE_QUICK_ACTION_KIND, SimpleQuickAction } from '@sap-ux-private/control-property-editor-common';
 
-import { DialogNames, handler } from '../../../adp/init-dialogs';
-import { getExistingController } from '../../../adp/api-handler';
+import { getAllSyncViewsIds, getControllerInfoForControl, isControllerExtensionEnabledForControl } from '../../../cpe/utils';
+import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
+import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 
-import { getAllSyncViewsIds, getControllerInfoForControl, isControllerExtensionEnabledForControl } from '../../utils';
-import { getRelevantControlFromActivePage } from '../utils';
-import { QuickActionContext, SimpleQuickActionDefinition } from '../quick-action-definition';
+import { DialogNames, handler } from '../../init-dialogs';
+import { getExistingController } from '../../api-handler';
+
 export const ADD_CONTROLLER_TO_PAGE_TYPE = 'add-controller-to-page';
 const CONTROL_TYPES = ['sap.f.DynamicPage', 'sap.uxap.ObjectPageLayout'];
 
@@ -28,7 +29,11 @@ export class AddControllerToPageQuickAction implements SimpleQuickActionDefiniti
     constructor(private context: QuickActionContext) {}
 
     async initialize() {
-        for (const control of getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, CONTROL_TYPES)) {
+        for (const control of getRelevantControlFromActivePage(
+            this.context.controlIndex,
+            this.context.view,
+            CONTROL_TYPES
+        )) {
             const { version } = (await VersionInfo.load()) as { version: string };
             const versionParts = version.split('.');
             const minor = parseInt(versionParts[1], 10);
