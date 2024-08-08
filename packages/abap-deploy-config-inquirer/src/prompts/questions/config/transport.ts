@@ -67,7 +67,7 @@ export function getTransportRequestPrompts(
             // Validate is not triggered in CLI mode for transportInputChoice.
             // Use this hidden question for calling ADT services.
             when: async (previousAnswers: AbapDeployConfigAnswers): Promise<boolean> => {
-                if (getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli) {
+                if (getHostEnvironment() === hostEnvironment.cli) {
                     const result = await validateTransportChoiceInput(
                         previousAnswers.transportInputChoice,
                         options,

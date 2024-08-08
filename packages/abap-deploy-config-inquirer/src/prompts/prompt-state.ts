@@ -8,7 +8,6 @@ import type { AbapDeployConfigAnswers, TransportAnswers } from '../types';
 export class PromptState {
     private static _abapDeployConfig: Partial<AbapDeployConfigAnswers> = {};
     private static _transportAnswers: TransportAnswers = {};
-    private static _isYUI = false;
 
     /**
      * Returns the current state of the abap deploy config answers.
@@ -29,15 +28,6 @@ export class PromptState {
     }
 
     /**
-     * Returns whether the prompting is running in YUI.
-     *
-     * @returns {boolean} true if running in YUI
-     */
-    public static get isYUI(): boolean {
-        return this._isYUI;
-    }
-
-    /**
      * Sets the current state of the abap deploy config answers.
      *
      * @param {Partial<AbapDeployConfigAnswers>} value - abap deploy config
@@ -53,15 +43,6 @@ export class PromptState {
      */
     public static set transportAnswers(value: TransportAnswers) {
         this._transportAnswers = value;
-    }
-
-    /**
-     * Sets the YUI property.
-     *
-     * @param {boolean} value - if running in YUI
-     */
-    public static set isYUI(value: boolean) {
-        this._isYUI = value;
     }
 
     static resetAbapDeployConfig(): void {

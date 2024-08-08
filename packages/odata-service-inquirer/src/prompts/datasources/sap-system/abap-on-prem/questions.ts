@@ -162,7 +162,7 @@ export function getAbapOnPremQuestions(promptOptions?: OdataServicePromptOptions
     } as ListQuestion<AbapOnPremAnswers> | AutocompleteQuestionOptions<AbapOnPremAnswers>);
 
     // Only for CLI use as `list` prompt validation does not run on CLI
-    if (getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli) {
+    if (getHostEnvironment() === hostEnvironment.cli) {
         questions.push({
             when: async (answers: AbapOnPremAnswers): Promise<boolean> => {
                 if (answers.serviceSelection && answers.systemUrl) {

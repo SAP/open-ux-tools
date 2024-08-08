@@ -66,7 +66,7 @@ function getDestinationPrompt(
         } as ListQuestion<AbapDeployConfigAnswers>
     ];
 
-    if (isAppStudio() && getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli) {
+    if (isAppStudio() && getHostEnvironment() === hostEnvironment.cli) {
         prompts.push({
             when: (answers: AbapDeployConfigAnswers): boolean => {
                 const destination = answers[abapDeployConfigInternalPromptNames.destination];
@@ -103,7 +103,7 @@ function getTargetSystemPrompt(choices: AbapSystemChoice[]): (YUIQuestion<AbapDe
         } as ListQuestion<AbapDeployConfigAnswers>
     ];
 
-    if (!isAppStudio() && getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli) {
+    if (!isAppStudio() && getHostEnvironment() === hostEnvironment.cli) {
         prompts.push({
             when: (answers: AbapDeployConfigAnswers): boolean => {
                 const target = answers[abapDeployConfigInternalPromptNames.targetSystem];
@@ -192,7 +192,7 @@ function getClientChoicePrompt(
         } as ListQuestion<AbapDeployConfigAnswers>
     ];
 
-    if (getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli) {
+    if (getHostEnvironment() === hostEnvironment.cli) {
         prompts.push({
             when: async (answers: AbapDeployConfigAnswers): Promise<boolean> => {
                 const clientChoice = answers[abapDeployConfigInternalPromptNames.clientChoice];

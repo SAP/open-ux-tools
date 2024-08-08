@@ -37,7 +37,7 @@ function getUi5AbapRepoPrompt(options: AbapDeployConfigPromptOptions): Question<
         default: (previousAnswers: AbapDeployConfigAnswers) => defaultAbapRepositoryName(previousAnswers, options),
         validate: (input: string): string | boolean => validateUi5AbapRepoName(input),
         filter: (input: string): string =>
-            getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli ? input?.trim()?.toUpperCase() : input?.trim()
+            getHostEnvironment() === hostEnvironment.cli ? input?.trim()?.toUpperCase() : input?.trim()
     } as InputQuestion<AbapDeployConfigAnswers>;
 }
 

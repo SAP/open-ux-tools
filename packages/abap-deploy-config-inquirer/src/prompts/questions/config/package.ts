@@ -27,7 +27,7 @@ import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswers>[] {
     let packageInputChoiceValid: boolean | string;
     let morePackageResultsMsg = '';
-    const isCli = getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli;
+    const isCli = getHostEnvironment() === hostEnvironment.cli;
 
     const questions: Question[] = [
         {
