@@ -19,13 +19,15 @@ import {
     getCredentialsFromStore,
     getCredentialsWithPrompts,
     isBasicAuth,
-    isServiceAuth
+    isServiceAuth,
+    storeCredentials,
+    storeSystem
 } from './credentials';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import { questions } from './prompts';
 import prompts from 'prompts';
 import { readFileSync } from 'fs';
-import { AuthenticationType } from '@sap-ux/store';
+import { AuthenticationType, BackendSystem } from '@sap-ux/store';
 
 /**
  * Check if it is a url target.
@@ -73,6 +75,12 @@ async function createAbapCloudServiceProvider(
         if (isServiceAuth(storedOpts)) {
             providerConfig.service = storedOpts.serviceKeys as ServiceInfo;
             providerConfig.refreshToken = storedOpts.refreshToken;
+            providerConfig.refreshTokenChangedCb = async (refreshToken?: string) => {
+                if (refreshToken) {
+                    logger.info('Updating refresh token for: ' + storedOpts.url);
+                    await storeSystem({ ...storedOpts, refreshToken }, logger);
+                }
+            };
             logger.info(`Using system [${storedOpts.name}] from System store`);
         }
         if (!providerConfig.service && prompt) {
