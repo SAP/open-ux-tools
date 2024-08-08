@@ -1,5 +1,11 @@
 # @sap-ux/ui5-info
 
+## 0.7.1
+
+### Patch Changes
+
+-   4fcb6fe: Updates ui5 version fallbacks
+
 ## 0.7.0
 
 ### Minor Changes
