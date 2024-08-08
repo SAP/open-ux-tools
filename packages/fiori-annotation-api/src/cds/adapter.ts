@@ -499,14 +499,16 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
             document.ast
         );
         const [currentAstNode] = getAstNodesFromPointer(document.ast, pointer).slice(-1);
+        let isAddMissingRef = false;
         if (containsFlattenedNodes) {
-            this.insertInFlattenedStructure(writer, document, change, pointer);
+            isAddMissingRef = this.insertInFlattenedStructure(writer, document, change, pointer);
         } else if (currentAstNode.type === TARGET_TYPE) {
             writer.addChange({
                 type: 'insert-annotation',
                 pointer: pointer,
                 element: change.element
             });
+            isAddMissingRef = true;
         } else if (currentAstNode.type === ANNOTATION_TYPE) {
             this.insertAnnotation(writer, change, pointer);
         } else if (currentAstNode.type === RECORD_TYPE) {
@@ -542,18 +544,20 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
                 ApiErrorCode.General
             );
         }
-        const aliasInfo = getAliasInfo(document.annotationFile, this.metadataService, this.vocabularyService);
-        const missingReferences = getMissingRefs(
-            this.documents,
-            change.uri,
-            change.target,
-            change.element,
-            aliasInfo,
-            this.metadataService,
-            { apps: Object.keys(this.project.apps), projectRoot: this.project.root, appName: '' }
-        );
+        if (isAddMissingRef) {
+            const aliasInfo = getAliasInfo(document.annotationFile, this.metadataService, this.vocabularyService);
+            const missingReferences = getMissingRefs(
+                this.documents,
+                change.uri,
+                change.target,
+                change.element,
+                aliasInfo,
+                this.metadataService,
+                { apps: Object.keys(this.project.apps), projectRoot: this.project.root, appName: '' }
+            );
 
-        this.addMissingReferences(document.uri, missingReferences);
+            this.addMissingReferences(document.uri, missingReferences);
+        }
     };
 
     private insertInFlattenedStructure(
@@ -561,7 +565,7 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         document: Document,
         change: InsertElement,
         pointer: string
-    ): void {
+    ): boolean {
         const targetPointer = pointer.split('/').slice(0, 3).join('/');
         const termPointer = change.pointer.split('/').slice(0, 5).join('/');
         const annotationValuePointer = change.pointer.split('/').slice(5).join('/');
@@ -574,8 +578,10 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
                     element: annotation,
                     pointer: targetPointer
                 });
+                return true;
             }
         }
+        return false;
     }
 
     private insertAnnotation(writer: CDSWriter, change: InsertElement, pointer: string): void {
