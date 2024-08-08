@@ -55,7 +55,7 @@ function getDestinationPrompt(
             validate: (destination: string): boolean => validateDestinationQuestion(destination, destinations),
             additionalMessages: (destination: string): IMessageSeverity | undefined => {
                 let additionalMessage;
-                if (destinations && destination && isOnPremiseDestination(destinations[destination])) {
+                if (destinations && isOnPremiseDestination(destinations[destination])) {
                     additionalMessage = {
                         message: t('warnings.virtualHost'),
                         severity: Severity.warning
@@ -163,7 +163,7 @@ function getScpPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDepl
         guiOptions: {
             breadcrumb: t('prompts.target.scp.breadcrumb')
         },
-        default: (): string | undefined => options.backendTarget?.abapTarget?.scp,
+        default: (): boolean | undefined => options.backendTarget?.abapTarget?.scp,
         validate: (input: boolean): boolean | string => validateScpQuestion(input)
     } as ConfirmQuestion<AbapDeployConfigAnswers>;
 }

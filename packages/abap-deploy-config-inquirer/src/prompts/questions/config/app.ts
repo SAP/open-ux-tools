@@ -25,7 +25,7 @@ function getUi5AbapRepoPrompt(options: AbapDeployConfigPromptOptions): Question<
         message: (): string => {
             return PromptState.transportAnswers.transportConfig?.getApplicationPrefix()
                 ? t('prompts.config.app.ui5AbapRepo.messageMaxLength', {
-                      applicationPrefix: PromptState.transportAnswers.transportConfig.getApplicationPrefix()
+                      applicationPrefix: PromptState.transportAnswers.transportConfig?.getApplicationPrefix()
                   })
                 : t('prompts.config.app.ui5AbapRepo.message');
         },
@@ -36,7 +36,7 @@ function getUi5AbapRepoPrompt(options: AbapDeployConfigPromptOptions): Question<
         },
         default: (previousAnswers: AbapDeployConfigAnswers) => defaultAbapRepositoryName(previousAnswers, options),
         validate: (input: string): string | boolean => validateUi5AbapRepoName(input),
-        filter: (input: string): string =>
+        filter: (input: string): string | undefined =>
             getHostEnvironment() === hostEnvironment.cli ? input?.trim()?.toUpperCase() : input?.trim()
     } as InputQuestion<AbapDeployConfigAnswers>;
 }

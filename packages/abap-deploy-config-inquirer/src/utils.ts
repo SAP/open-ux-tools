@@ -16,7 +16,8 @@ import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 import type { Destinations, Destination } from '@sap-ux/btp-utils';
 import { CREATE_TR_DURING_DEPLOY } from './constants';
 
-let cachedDestinations: Destinations, cachedBackendSystems: BackendSystem[];
+let cachedDestinations: Destinations = {};
+let cachedBackendSystems: BackendSystem[] = [];
 
 /**
  * Retrieve the ABAP systems from the store or the destinations from BTP.
@@ -52,17 +53,17 @@ export async function getAbapSystems(): Promise<{
  * @returns destination if found
  */
 export function findDestination(destination: string): Destination | undefined {
-    return cachedDestinations[destination];
+    return cachedDestinations?.[destination];
 }
 
 /**
  * Retrieve a specific BackendSystem, based on the URL.
  *
- * @param url - backend system URL
+ * @param backendUrl - backend system URL
  * @returns backend system if found
  */
-export function findBackendSystemByUrl(url: string): BackendSystem | undefined {
-    return Object.values(cachedBackendSystems).find((backend: BackendSystem) => backend.url === url);
+export function findBackendSystemByUrl(backendUrl: string): BackendSystem | undefined {
+    return cachedBackendSystems?.find((backend: BackendSystem) => backend.url === backendUrl);
 }
 
 /**
