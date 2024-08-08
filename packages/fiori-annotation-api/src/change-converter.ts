@@ -580,14 +580,7 @@ export class ChangeConverter {
                 };
                 this.annotationFileChanges.push(internalChange);
             } else if (onlyChangeValue && node.name === valueType) {
-                // element notation
-                const internalChange: ReplaceElementContent = {
-                    type: REPLACE_ELEMENT_CONTENT,
-                    uri: file.uri,
-                    pointer: pointer,
-                    newValue: [createTextNode(newValue)]
-                };
-                this.annotationFileChanges.push(internalChange);
+                this.addReplacementContent(node, file.uri, pointer, newValue);
             } else if (node.attributes[type]) {
                 // attribute notation
                 this.annotationFileChanges.push({
@@ -616,6 +609,19 @@ export class ChangeConverter {
             }
         } else if (node?.type === ATTRIBUTE_TYPE) {
             this.convertUpdateExpressionForAttrributeType(file.uri, targetName, valueType, content, pointer, newValue);
+        }
+    }
+    private addReplacementContent(node: Element, fileUri: string, pointer: string, newValue: string): void {
+        // skip updating value for node name that are already null.
+        if (node.name !== Edm.Null) {
+            // element notation
+            const internalChange: ReplaceElementContent = {
+                type: REPLACE_ELEMENT_CONTENT,
+                uri: fileUri,
+                pointer: pointer,
+                newValue: [createTextNode(newValue)]
+            };
+            this.annotationFileChanges.push(internalChange);
         }
     }
 
