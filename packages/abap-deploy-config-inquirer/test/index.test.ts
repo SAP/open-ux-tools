@@ -1,18 +1,25 @@
 import { getPrompts, prompt } from '../src';
 import { getService } from '@sap-ux/store';
 import { mockTargetSystems } from './fixtures/targets';
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+
+jest.mock('@sap-ux/fiori-generator-shared', () => ({
+    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
+    getHostEnvironment: jest.fn()
+}));
 
 jest.mock('@sap-ux/store', () => ({
     ...jest.requireActual('@sap-ux/store'),
     getService: jest.fn()
 }));
 const mockGetService = getService as jest.Mock;
-
+const mockGetHostEnvironment = getHostEnvironment as jest.Mock;
 describe('index', () => {
     it('should return prompts from getPrompts', async () => {
         mockGetService.mockResolvedValueOnce({
             getAll: jest.fn().mockResolvedValueOnce([mockTargetSystems])
         });
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
         const prompts = await getPrompts({});
         expect(prompts.answers).toBeDefined();
         expect(prompts.prompts.length).toBe(23);
