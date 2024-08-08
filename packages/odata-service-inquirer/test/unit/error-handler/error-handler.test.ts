@@ -1,7 +1,11 @@
 import 'jest-extended';
 import { t } from '../../../src/i18n';
-import { GUIDED_ANSWERS_LAUNCH_CMD_ID, HELP_NODES, HELP_TREE } from '@sap-ux/fiori-generator-shared';
-import { GUIDED_ANSWERS_ICON } from '../../../src/error-handler/help/images';
+import {
+    GUIDED_ANSWERS_LAUNCH_CMD_ID,
+    HELP_NODES,
+    HELP_TREE,
+    GUIDED_ANSWERS_ICON
+} from '@sap-ux/fiori-generator-shared';
 import { ErrorHandler, ERROR_TYPE } from '../../../src/error-handler/error-handler';
 import type { ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
 import { SampleRate } from '@sap-ux/telemetry';
