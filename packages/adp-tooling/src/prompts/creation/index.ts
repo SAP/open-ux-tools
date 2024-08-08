@@ -8,7 +8,7 @@ import {
     UIFlexService,
     isAxiosError
 } from '@sap-ux/axios-extension';
-import { Logger } from '@sap-ux/logger';
+import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { isExtensionInstalledVsCode } from '@sap-ux/environment-check';
 import type {
@@ -32,7 +32,6 @@ import { AppIdentifier } from '../../base/services/app-identifier-service';
 import { resolveNodeModuleGenerator } from '../../base/file-system';
 
 export default class ConfigInfoPrompter {
-    private logger: Logger;
     private isCustomerBase: boolean;
     private hasSystemAuthentication: boolean;
     private isLoginSuccessfull: boolean;
@@ -50,6 +49,7 @@ export default class ConfigInfoPrompter {
 
     private appsService: ApplicationService;
     private appIdentifier: AppIdentifier;
+    private logger: ToolsLogger;
 
     private prompts?: Prompts;
 
@@ -59,14 +59,16 @@ export default class ConfigInfoPrompter {
         private endpointsService: EndpointsService,
         private ui5Service: UI5VersionService,
         layer: FlexLayer,
+        logger: ToolsLogger,
         prompts?: Prompts
     ) {
+        this.logger = logger;
         this.prompts = prompts;
         this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
         this.isExtensionInstalled = isExtensionInstalledVsCode('sapse.sap-ux-application-modeler-extension');
 
         this.appIdentifier = new AppIdentifier(this.isCustomerBase);
-        this.appsService = new ApplicationService(this.providerService, this.isCustomerBase);
+        this.appsService = new ApplicationService(this.providerService, this.isCustomerBase, this.logger);
     }
 
     /**
@@ -193,6 +195,7 @@ export default class ConfigInfoPrompter {
                 this.versionsOnSystem = await this.ui5Service.getRelevantVersions();
             }
         } catch (e) {
+            this.logger.debug(`Could not fetch system version: ${e.message}`);
             this.versionsOnSystem = await this.ui5Service.getRelevantVersions();
         } finally {
             this.ui5VersionDetected = this.ui5Service.detectedVersion;
@@ -233,6 +236,7 @@ export default class ConfigInfoPrompter {
                 }
                 this.isApplicationSupported = true;
             } catch (e) {
+                this.logger.debug(`Application failed validation. Reason: ${e.message}`);
                 return e.message;
             }
         } else {
@@ -294,6 +298,7 @@ export default class ConfigInfoPrompter {
             await this.validateSystemVersion(value);
             return this.validateAdpTypes();
         } catch (e) {
+            this.logger.debug(`Validating system failed. Reason: ${e.message}`);
             return e.message;
         }
     }
@@ -339,6 +344,7 @@ export default class ConfigInfoPrompter {
             activeLanguages: []
         };
 
+        this.logger.debug(`Failed to fetch system information. Reason: ${error.message}`);
         if (isAxiosError(error)) {
             if (error.response?.status === 401 || error.response?.status === 403) {
                 throw new Error(`Authentication error: ${error.message}`);
@@ -543,6 +549,7 @@ export default class ConfigInfoPrompter {
                         return this.validateAdpTypes();
                     }
                 } catch (e) {
+                    this.logger.debug(`Failed to validate the password: ${e.message}`);
                     this.flexUISystem = undefined;
                     return e?.response;
                 }
@@ -585,6 +592,7 @@ export default class ConfigInfoPrompter {
                 try {
                     await this.getApplications(answers.system, answers.username, answers.password, answers.client);
                 } catch (e) {
+                    this.logger.debug(`Failed to fetch applications for project type '${value}'. Reason: ${e.message}`);
                     return e.message;
                 }
 

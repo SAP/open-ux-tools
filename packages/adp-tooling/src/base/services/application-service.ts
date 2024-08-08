@@ -4,6 +4,7 @@ import { App, AppIndex } from '@sap-ux/axios-extension';
 import { Application } from '../../types';
 import { ProviderService } from './abap-provider-service';
 import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, S4HANA_APPS_PARAMS } from '../constants';
+import { ToolsLogger } from '@sap-ux/logger';
 
 interface Choice {
     name: string;
@@ -87,7 +88,11 @@ export class ApplicationService {
      * @param {ProviderService} providerService - The ABAP provider service.
      * @param {boolean} isCustomerBase - Indicates if the current base is a customer base, which affects how applications are loaded.
      */
-    constructor(private providerService: ProviderService, private isCustomerBase: boolean) {}
+    constructor(
+        private providerService: ProviderService,
+        private isCustomerBase: boolean,
+        private logger?: ToolsLogger
+    ) {}
 
     /**
      * Clears the stored list of applications.
@@ -128,6 +133,7 @@ export class ApplicationService {
             this.applications = result.map(mapApps).sort(filterApps);
             return this.applications;
         } catch (e) {
+            this.logger?.error(`Could not load apps: ${e.message}`);
             throw new Error(t('validators.cannotLoadApplicationsError'));
         }
     }

@@ -1,4 +1,4 @@
-import { Logger } from '@sap-ux/logger';
+import { Logger, ToolsLogger } from '@sap-ux/logger';
 import { AbapTarget } from '@sap-ux/ui5-config';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { AuthenticationType } from '@sap-ux/store';
@@ -20,7 +20,7 @@ export class ProviderService {
      *
      * @param {ProviderService} endpointsService - The endpoints service for retrieving system details.
      */
-    constructor(private endpointsService: EndpointsService) {}
+    constructor(private endpointsService: EndpointsService, private logger?: ToolsLogger) {}
 
     /**
      * Retrieves the configured ABAP service provider if set, otherwise throws an error.
@@ -43,17 +43,22 @@ export class ProviderService {
      * @param {string} [password] - The password for authentication.
      */
     public async setProvider(system: string, client?: string, username?: string, password?: string) {
-        const requestOptions: RequestOptions = {
-            ignoreCertErrors: false
-        };
+        try {
+            const requestOptions: RequestOptions = {
+                ignoreCertErrors: false
+            };
 
-        const target = await this.determineTarget(requestOptions, system, client);
+            const target = await this.determineTarget(requestOptions, system, client);
 
-        if (username && password) {
-            requestOptions.auth = { username, password };
+            if (username && password) {
+                requestOptions.auth = { username, password };
+            }
+
+            this.provider = await createAbapServiceProvider(target, requestOptions, false, {} as Logger);
+        } catch (e) {
+            this.logger?.error(`Failed to instantiate provider for system: ${system}. Reason: ${e.message}`);
+            throw new Error(e.message);
         }
-
-        this.provider = await createAbapServiceProvider(target, requestOptions, false, {} as Logger);
     }
 
     /**

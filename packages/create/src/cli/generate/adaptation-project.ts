@@ -58,9 +58,9 @@ async function generateAdaptationProject(basePath: string, simulate: boolean, sk
         logger.debug(`Called generate adaptation-project for path '${basePath}', skip install is '${skipInstall}'`);
 
         const fs = create(createStorage());
-        const endpointsService = new EndpointsService();
-        const providerService = new ProviderService(endpointsService);
-        const manifestService = new ManifestService(providerService);
+        const endpointsService = new EndpointsService(logger);
+        const providerService = new ProviderService(endpointsService, logger);
+        const manifestService = new ManifestService(providerService, logger);
 
         const layer = FlexLayer.CUSTOMER_BASE;
 
@@ -70,7 +70,8 @@ async function generateAdaptationProject(basePath: string, simulate: boolean, sk
             manifestService,
             endpointsService,
             ui5Service,
-            layer
+            layer,
+            logger
         );
 
         const descriptorContent = new DescriptorContent(manifestService, ui5Service, layer, basePath, fs);
@@ -105,7 +106,7 @@ async function generateAdaptationProject(basePath: string, simulate: boolean, sk
             );
             logger.debug(`FLP Configuration: ${JSON.stringify(flpConfigAnswers, null, 2)}`);
 
-            deployConfigAnswers = await promptYUIQuestions(await getDeployPrompts(providerService), false);
+            deployConfigAnswers = await promptYUIQuestions(await getDeployPrompts(providerService, logger), false);
             logger.debug(`Deploy Configuration: ${JSON.stringify(deployConfigAnswers, null, 2)}`);
         }
 
@@ -127,7 +128,7 @@ async function generateAdaptationProject(basePath: string, simulate: boolean, sk
         if (!basePath) {
             basePath = join(process.cwd(), config.app.id);
         }
-        // addChangeForResourceModel(config);
+        // addChangeForResourceModel(config); // TODO: why?
 
         const projectPath = path.join(basePath, basicAnswers.projectName);
         await generate(projectPath, config, fs);

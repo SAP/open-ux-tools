@@ -2,6 +2,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { Endpoint, checkEndpoints, isExtensionInstalledVsCode } from '@sap-ux/environment-check';
 
 import { SystemDetails } from '../../types';
+import { ToolsLogger } from '@sap-ux/logger';
 
 /**
  * Service class to manage and retrieve information about system endpoints,
@@ -14,7 +15,7 @@ export class EndpointsService {
     /**
      * Creates an instance of EndpointsService.
      */
-    constructor() {
+    constructor(private logger?: ToolsLogger) {
         this.endpoints = [];
         this.isExtensionInstalled = isExtensionInstalledVsCode('sapse.sap-ux-application-modeler-extension');
     }
@@ -24,9 +25,15 @@ export class EndpointsService {
      *
      * @returns {Promise<void>} A promise that resolves when endpoints have been fetched and stored.
      */
-    public async getEndpoints(): Promise<void> {
-        const { endpoints } = await checkEndpoints();
-        this.endpoints = endpoints;
+    public async getEndpoints(): Promise<Endpoint[] | undefined> {
+        try {
+            const { endpoints } = await checkEndpoints();
+            this.endpoints = endpoints;
+            return endpoints;
+        } catch (e) {
+            this.logger?.error(`Failed to fetch endpoints list. Reason: ${e.message}`);
+            throw new Error(e.message);
+        }
     }
 
     /**

@@ -13,6 +13,7 @@ import { t } from '../../i18n';
 import { ChoiceOption, DeployConfigAnswers, InputChoice } from '../../types';
 import { listTransports } from '../../base/services/list-transports-service';
 import { ABAP_PACKAGE_SEARCH_MAX_RESULTS, listPackages } from '../../base/services/list-packages-service';
+import { ToolsLogger } from '@sap-ux/logger';
 
 /**
  * Returns the available options for input choices regarding packages.
@@ -54,7 +55,8 @@ export async function setTransportList(
     packageName: string,
     repository: string,
     provider: AbapServiceProvider,
-    transportList: string[] | undefined
+    transportList: string[] | undefined,
+    logger?: ToolsLogger
 ): Promise<void> {
     try {
         const fetchedTransports = await listTransports(packageName, repository, provider);
@@ -68,9 +70,8 @@ export async function setTransportList(
         if (fetchedTransports) {
             transportList.push(...fetchedTransports);
         }
-    } catch (error) {
-        // In case that the request fails we should not break package validation
-        // this.logger.error(`Could not set transportList! Error: ${error.message}`);
+    } catch (e) {
+        logger?.error(`Could not set transportList! Error: ${e.message}`);
     }
 }
 
@@ -87,7 +88,8 @@ export async function validatePackageName(
     value: string,
     answers: DeployConfigAnswers,
     provider: AbapServiceProvider,
-    transportList: string[]
+    transportList: string[],
+    logger?: ToolsLogger
 ): Promise<string | boolean> {
     const errorMessage = validatePackage(value, answers.abapRepository);
     if (errorMessage) {
@@ -104,12 +106,12 @@ export async function validatePackageName(
         }
 
         if (answers.abapRepository && answers.transportInputChoice === InputChoice.CHOOSE_FROM_EXISTING) {
-            await setTransportList(value, answers.abapRepository, provider, transportList);
+            await setTransportList(value, answers.abapRepository, provider, transportList, logger);
         }
 
         return true;
     } catch (e) {
-        return handlePackageValidationErrors(e);
+        return handlePackageValidationErrors(e, logger);
     }
 }
 
@@ -131,7 +133,8 @@ async function fetchPackageSystemInfo(packageName: string, provider: AbapService
  * @param {Error} error - The error caught during the validation process.
  * @returns {string} An appropriate error message based on the error details.
  */
-function handlePackageValidationErrors(error: AxiosError): string {
+function handlePackageValidationErrors(error: AxiosError, logger?: ToolsLogger): string {
+    logger?.error(`Package validation failed. Reason: ${error.message}`);
     // If there is no such package the API will response with 400 or 404 status codes
     if (error.response && (error.response.status === 400 || error.response.status === 404)) {
         return t('validators.package.notCloudPackage');
@@ -146,7 +149,10 @@ function handlePackageValidationErrors(error: AxiosError): string {
  * @param {ProviderService} providerService - The ABAP provider service.
  * @returns {YUIQuestion<DeployConfigAnswers>[]} An list of deployment prompts.
  */
-export async function getPrompts(providerService: ProviderService): Promise<YUIQuestion<DeployConfigAnswers>[]> {
+export async function getPrompts(
+    providerService: ProviderService,
+    logger?: ToolsLogger
+): Promise<YUIQuestion<DeployConfigAnswers>[]> {
     const provider = providerService.getProvider();
     const transportList: string[] = [];
 
@@ -228,8 +234,7 @@ export async function getPrompts(providerService: ProviderService): Promise<YUIQ
                             : '';
                     return packages;
                 } catch (e) {
-                    // TODO: What to do in case of error message?
-                    // this.logger.error(`Could not get packages. Error: ${e.message}`);
+                    logger?.error(`Could not get packages. Error: ${e.message}`);
                 }
 
                 return packages;
