@@ -43,7 +43,7 @@
         "@sap-devx/yeoman-ui-types": "1.14.4",
         "@sap-ux/cap-config-writer": "workspace:*",
         "@types/inquirer-autocomplete-prompt": "2.0.1",
-        "@types/inquirer": "8.2.6",
+        "@types/inquirer": "8.2.10",
         "@types/lodash": "4.14.202",
         "@types/semver": "7.5.4",
         "inquirer": "8.2.6"

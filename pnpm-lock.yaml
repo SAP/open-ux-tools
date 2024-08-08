@@ -196,8 +196,8 @@ importers:
         specifier: 8.1.11
         version: 8.1.11(esbuild@0.19.2)(prettier@3.3.3)(react-dom@16.14.0)(react@16.14.0)(typescript@5.3.3)
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -433,8 +433,8 @@ importers:
         specifier: 4.17.21
         version: 4.17.21
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -1041,8 +1041,8 @@ importers:
         specifier: 5.0.9
         version: 5.0.9
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -1234,8 +1234,8 @@ importers:
         specifier: 1.0.0
         version: 1.0.0
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -1531,8 +1531,8 @@ importers:
         specifier: 1.14.4
         version: 1.14.4
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
@@ -1790,8 +1790,8 @@ importers:
         specifier: workspace:*
         version: link:../odata-service-writer
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.1
         version: 2.0.1
@@ -2463,8 +2463,8 @@ importers:
         specifier: 12.1.5
         version: 12.1.5(react-dom@16.14.0)(react@16.14.0)
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/react':
         specifier: 16.14.55
         version: 16.14.55
@@ -2563,8 +2563,8 @@ importers:
         specifier: workspace:*
         version: link:../cap-config-writer
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.1
         version: 2.0.1
@@ -2696,8 +2696,8 @@ importers:
         version: 2.0.1(inquirer@8.2.6)
     devDependencies:
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.1
         version: 2.0.1
@@ -2721,8 +2721,8 @@ importers:
         specifier: 1.14.4
         version: 1.14.4
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       inquirer:
         specifier: 8.2.6
         version: 8.2.6
@@ -2987,14 +2987,14 @@ packages:
     resolution: {integrity: sha512-TrRLIoSQVzfAJX9H1JeFjzAoDGcoK1IYX1UImfceTZpsyYfWr09Ss1aHW1y5TrrR3iq6RZLBwJ3E24uwPhwahw==}
     engines: {node: '>=12.0.0'}
     dependencies:
-      tslib: 2.5.0
+      tslib: 2.6.3
     dev: false
 
   /@azure/abort-controller@2.0.0:
     resolution: {integrity: sha512-RP/mR/WJchR+g+nQFJGOec+nzeN/VvjlwbinccoqfhTsTHbb8X5+mLDp48kHT0ueyum0BNSwGm0kX0UZuIqTGg==}
     engines: {node: '>=18.0.0'}
     dependencies:
-      tslib: 2.5.0
+      tslib: 2.6.3
     dev: false
 
   /@azure/core-auth@1.6.0:
@@ -3003,7 +3003,7 @@ packages:
     dependencies:
       '@azure/abort-controller': 2.0.0
       '@azure/core-util': 1.2.0
-      tslib: 2.5.0
+      tslib: 2.6.3
     dev: false
 
   /@azure/core-rest-pipeline@1.10.1:
@@ -3018,7 +3018,7 @@ packages:
       form-data: 4.0.0
       http-proxy-agent: 5.0.0
       https-proxy-agent: 5.0.1
-      tslib: 2.5.0
+      tslib: 2.6.3
       uuid: 8.3.2
     transitivePeerDependencies:
       - supports-color
@@ -3028,7 +3028,7 @@ packages:
     resolution: {integrity: sha512-I5CGMoLtX+pI17ZdiFJZgxMJApsK6jjfm85hpgp3oazCdq5Wxgh4wMr7ge/TTWW1B5WBuvIOI1fMU/FrOAMKrw==}
     engines: {node: '>=12.0.0'}
     dependencies:
-      tslib: 2.5.0
+      tslib: 2.6.3
     dev: false
 
   /@azure/core-util@1.2.0:
@@ -3036,14 +3036,14 @@ packages:
     engines: {node: '>=14.0.0'}
     dependencies:
       '@azure/abort-controller': 1.1.0
-      tslib: 2.5.0
+      tslib: 2.6.3
     dev: false
 
   /@azure/logger@1.0.4:
     resolution: {integrity: sha512-ustrPY8MryhloQj7OWGe+HrYx+aoiOxzbXTtgblbV3xwCqpzUK36phH3XNHQKj3EPonyFUuDTfR3qFhTEAuZEg==}
     engines: {node: '>=14.0.0'}
     dependencies:
-      tslib: 2.5.0
+      tslib: 2.6.3
     dev: false
 
   /@azure/opentelemetry-instrumentation-azure-sdk@1.0.0-beta.5:
@@ -3055,7 +3055,7 @@ packages:
       '@opentelemetry/api': 1.7.0
       '@opentelemetry/core': 1.21.0(@opentelemetry/api@1.7.0)
       '@opentelemetry/instrumentation': 0.41.2(@opentelemetry/api@1.7.0)
-      tslib: 2.5.0
+      tslib: 2.6.3
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -6437,7 +6437,7 @@ packages:
     resolution: {integrity: sha512-2tXfg7/9PXu9nfU72/P3o3waHEFEQtHUfQbVexUaYqNNAxMj6sOfsqpUx4vd5nPgO+grSWrl+spqlLN2yej51w==}
     dependencies:
       '@fluentui/set-version': 8.2.11
-      tslib: 2.5.0
+      tslib: 2.6.3
 
   /@fluentui/font-icons-mdl2@8.5.2(@types/react@16.14.55)(react@16.14.0):
     resolution: {integrity: sha512-qDbZNiXVPx6X/Z2MpU3Oa2kWNSrk5+mG8ZRdH/thD7iwnV4l6DtBctNyXK/Cjq4EpG3eQQra8LBVxwOyDt0GqA==}
@@ -6467,7 +6467,7 @@ packages:
   /@fluentui/keyboard-key@0.4.2:
     resolution: {integrity: sha512-6WdMrnFpY94uWefUGGRqO4WiS6R+Kso6/FR95SxXMuS6kfnjGJCHzywFGZcN5OU1fX067Zna4aPQ/nDwYMgBPw==}
     dependencies:
-      tslib: 2.5.0
+      tslib: 2.6.3
 
   /@fluentui/merge-styles@8.5.12:
     resolution: {integrity: sha512-ZnUo0YuMP7AYi68dkknFqVxopIAgbrUnqR/MZlemmRvBYyy1SMj1WQeHcoiLFA8mF8YKn7B+jxQgJbN2bfcrRw==}
@@ -8633,7 +8633,7 @@ packages:
       flat-cache: 3.0.4
       micromatch: 4.0.5
       react-docgen-typescript: 2.2.2(typescript@5.3.3)
-      tslib: 2.5.0
+      tslib: 2.6.3
       typescript: 5.3.3
       webpack: 5.88.0(esbuild@0.19.2)
     transitivePeerDependencies:
@@ -9190,7 +9190,14 @@ packages:
   /@types/inquirer-autocomplete-prompt@2.0.1:
     resolution: {integrity: sha512-y/IFCMwNnxliCUxc7q1fwYUDkekP0Q+niL1YR9dvD1jKnIq8irirfsPCRXKN1jem82fNGT/91IPOufQTEi8STQ==}
     dependencies:
-      '@types/inquirer': 8.2.6
+      '@types/inquirer': 8.2.10
+    dev: true
+
+  /@types/inquirer@8.2.10:
+    resolution: {integrity: sha512-IdD5NmHyVjWM8SHWo/kPBgtzXatwPkfwzyP3fN1jF2g9BWt5WO+8hL2F4o2GKIYsU40PpqeevuUWvkS/roXJkA==}
+    dependencies:
+      '@types/through': 0.0.30
+      rxjs: 7.8.1
     dev: true
 
   /@types/inquirer@8.2.6:
@@ -9618,7 +9625,7 @@ packages:
     resolution: {integrity: sha512-/g92Z/PAMXklSoWafGxTW8DxB4admgl5NDHvKn0qMkz2C0GJUvbV7tpU9LbKNnlMO+ynerz5bCVbhuBzEHbb6Q==}
     dependencies:
       '@types/diff': 5.0.3
-      '@types/inquirer': 8.2.6
+      '@types/inquirer': 8.2.10
       '@types/mem-fs': 1.1.2
       '@types/text-table': 0.2.2
       '@types/vinyl': 2.0.7
@@ -9634,7 +9641,7 @@ packages:
     dependencies:
       '@types/debug': 4.1.8
       '@types/ejs': 3.1.2
-      '@types/inquirer': 8.2.6
+      '@types/inquirer': 8.2.10
       '@types/mem-fs-editor': 7.0.1
       '@types/yeoman-environment': 2.10.8
       rxjs: 6.6.7
@@ -10433,7 +10440,7 @@ packages:
       esbuild: '>=0.10.0'
     dependencies:
       esbuild: 0.19.2
-      tslib: 2.5.0
+      tslib: 2.6.3
     dev: true
 
   /@yarnpkg/fslib@2.10.3:
@@ -10866,7 +10873,7 @@ packages:
     resolution: {integrity: sha512-y+CcFFwelSXpLZk/7fMB2mUbGtX9lKycf1MWJ7CaTIERyitVlyQx6C+sxcROU2BAJ24OiZyK+8wj2i8AlBoS3A==}
     engines: {node: '>=10'}
     dependencies:
-      tslib: 2.5.0
+      tslib: 2.6.3
     dev: true
 
   /aria-query@5.1.3:
@@ -11062,14 +11069,14 @@ packages:
     resolution: {integrity: sha512-O0yuUDnZeQDL+ncNGlJ78BiO4jnYI3bvMsD5prT0/nsgijG/LpNBIr63gTjVTNsiGkgQhiyCShTgxt8oXOrklA==}
     engines: {node: '>=4'}
     dependencies:
-      tslib: 2.5.0
+      tslib: 2.6.3
     dev: true
 
   /ast-types@0.16.1:
     resolution: {integrity: sha512-6t10qk83GOG8p0vKmaCr8eiilZwO171AvbROMtvvNiwrTly62t+7XkA8RdIIVbpMhCASAsxgAzdRSwh6nw/5Dg==}
     engines: {node: '>=4'}
     dependencies:
-      tslib: 2.5.0
+      tslib: 2.6.3
     dev: true
 
   /astring@1.8.6:
@@ -11778,7 +11785,7 @@ packages:
     resolution: {integrity: sha512-gxGWBrTT1JuMx6R+o5PTXMmUnhnVzLQ9SNutD4YqKtI6ap897t3tKECYla6gCWEkplXnlNybEkZg9GEGxKFCgw==}
     dependencies:
       pascal-case: 3.1.2
-      tslib: 2.5.0
+      tslib: 2.6.3
     dev: true
 
   /camelcase@5.3.1:
@@ -13034,7 +13041,7 @@ packages:
     resolution: {integrity: sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.5.0
+      tslib: 2.6.3
     dev: true
 
   /dot-prop@6.0.1:
@@ -17545,7 +17552,7 @@ packages:
   /lower-case@2.0.2:
     resolution: {integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==}
     dependencies:
-      tslib: 2.5.0
+      tslib: 2.6.3
     dev: true
 
   /lowercase-keys@3.0.0:
@@ -18156,7 +18163,7 @@ packages:
     resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}
     dependencies:
       lower-case: 2.0.2
-      tslib: 2.5.0
+      tslib: 2.6.3
     dev: true
 
   /nock@13.4.0:
@@ -19087,7 +19094,7 @@ packages:
     resolution: {integrity: sha512-RXlj7zCYokReqWpOPH9oYivUzLYZ5vAPIfEmCTNViosC78F8F0H9y7T7gG2M39ymgutxF5gcFEsyZQSph9Bp3A==}
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.5.0
+      tslib: 2.6.3
     dev: true
 
   /parent-module@1.0.1:
@@ -19165,7 +19172,7 @@ packages:
     resolution: {integrity: sha512-uWlGT3YSnK9x3BQJaOdcZwrnV6hPpd8jFH1/ucpiLRPh/2zCVJKS19E4GvYHvaCcACn3foXZ0cLB9Wrx1KGe5g==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.5.0
+      tslib: 2.6.3
     dev: true
 
   /path-browserify@1.0.1:
@@ -20000,7 +20007,7 @@ packages:
       '@types/react': 16.14.55
       react: 16.14.0
       react-style-singleton: 2.2.1(@types/react@16.14.55)(react@16.14.0)
-      tslib: 2.5.0
+      tslib: 2.6.3
     dev: true
 
   /react-remove-scroll@2.5.7(@types/react@16.14.55)(react@16.14.0):
@@ -20017,7 +20024,7 @@ packages:
       react: 16.14.0
       react-remove-scroll-bar: 2.3.6(@types/react@16.14.55)(react@16.14.0)
       react-style-singleton: 2.2.1(@types/react@16.14.55)(react@16.14.0)
-      tslib: 2.5.0
+      tslib: 2.6.3
       use-callback-ref: 1.3.2(@types/react@16.14.55)(react@16.14.0)
       use-sidecar: 1.1.2(@types/react@16.14.55)(react@16.14.0)
     dev: true
@@ -20057,7 +20064,7 @@ packages:
       get-nonce: 1.0.1
       invariant: 2.2.4
       react: 16.14.0
-      tslib: 2.5.0
+      tslib: 2.6.3
     dev: true
 
   /react-test-renderer@16.14.0(react@16.14.0):
@@ -20242,7 +20249,7 @@ packages:
       esprima: 4.0.1
       source-map: 0.6.1
       tiny-invariant: 1.3.3
-      tslib: 2.5.0
+      tslib: 2.6.3
     dev: true
 
   /rechoir@0.6.2:
@@ -22058,7 +22065,6 @@ packages:
 
   /tslib@2.6.3:
     resolution: {integrity: sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==}
-    dev: true
 
   /tsutils@3.21.0(typescript@5.3.3):
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
@@ -22563,7 +22569,7 @@ packages:
     dependencies:
       '@types/react': 16.14.55
       react: 16.14.0
-      tslib: 2.5.0
+      tslib: 2.6.3
     dev: true
 
   /use-isomorphic-layout-effect@1.1.2(@types/react@16.14.55)(react@16.14.0):
@@ -22592,7 +22598,7 @@ packages:
       '@types/react': 16.14.55
       detect-node-es: 1.1.0
       react: 16.14.0
-      tslib: 2.5.0
+      tslib: 2.6.3
     dev: true
 
   /utf8-byte-length@1.0.4:
