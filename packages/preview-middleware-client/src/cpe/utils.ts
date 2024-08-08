@@ -201,3 +201,15 @@ export function getControlById<T extends Element = Element>(id: string): T | und
         return sap.ui.getCore().byId(id) as T;
     }
 }
+
+
+/**
+ * Checks whether this object is an instance of the named type.
+ * 
+ * @param type - Type to check for.
+ * @param element - Object to check
+ * @returns Whether this object is an instance of the given type.
+ */
+export function isA<T extends Element>(type: string, element: Element | undefined): element is T {
+    return !!element?.isA(type);
+}

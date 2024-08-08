@@ -7,7 +7,6 @@ import type {
     OutlineNode,
     PendingPropertyChange,
     PropertyChange,
-    QuickAction,
     QuickActionGroup,
     SavedPropertyChange,
     Scenario,
@@ -28,6 +27,7 @@ import {
     setUndoRedoEnablement,
     setSaveEnablement,
     appLoaded,
+    updateQuickAction,
     quickActionListChanged
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
@@ -316,6 +316,20 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 quickActionListChanged.match,
                 (state: SliceState, action: ReturnType<typeof quickActionListChanged>): void => {
                     state.quickActions = action.payload;
+                }
+            )
+            .addMatcher(
+                updateQuickAction.match,
+                (state: SliceState, action: ReturnType<typeof updateQuickAction>): void => {
+                    for (const group of state.quickActions) {
+                        for (let index = 0; index < group.actions.length; index++) {
+                            const quickAction = group.actions[index];
+                            if (quickAction.id === action.payload.id) {
+                                group.actions[index] = action.payload;
+                                return;
+                            }
+                        }
+                    }
                 }
             )
 });

@@ -8,7 +8,8 @@ import {
     SIMPLE_QUICK_ACTION_KIND,
     NESTED_QUICK_ACTION_KIND,
     QuickActionExecutionPayload,
-    QuickActionGroup
+    QuickActionGroup,
+    updateQuickAction
 } from '@sap-ux-private/control-property-editor-common';
 
 import { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction } from '../types';
@@ -62,6 +63,10 @@ export class QuickActionService implements Service {
 
                 for (const command of commands) {
                     await this.rta.getCommandStack().pushAndExecute(command);
+                }
+
+                if (actionInstance.forceRefreshAfterExecution === true) {
+                    this.sendAction(updateQuickAction(actionInstance.getActionObject()));
                 }
             }
         });

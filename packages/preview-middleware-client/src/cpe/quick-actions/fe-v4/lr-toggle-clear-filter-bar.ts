@@ -13,6 +13,7 @@ const CONTROL_TYPE = 'sap.fe.macros.controls.FilterBar'; //'sap.ui.mdc.FilterFie
 export class ToggleClearFilterBarQuickAction implements SimpleQuickActionDefinition {
     readonly kind = SIMPLE_QUICK_ACTION_KIND;
     readonly type = ENABLE_CLEAR_FILTER_BAR_TYPE;
+    readonly forceRefreshAfterExecution = true;
     public get id(): string {
         return `${this.context.key}-${this.type}`;
     }
@@ -76,8 +77,6 @@ export class ToggleClearFilterBarQuickAction implements SimpleQuickActionDefinit
                 null,
                 flexSettings
             );
-
-            //await context.rta.getCommandStack().pushAndExecute(command);
 
             this.isClearButtonEnabled = !this.isClearButtonEnabled;
             return [command];

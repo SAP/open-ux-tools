@@ -36,6 +36,7 @@ export interface SimpleQuickActionDefinition {
     readonly kind: typeof SIMPLE_QUICK_ACTION_KIND;
     readonly type: string;
     readonly id: string;
+    readonly forceRefreshAfterExecution?: boolean;
     isActive: boolean;
     initialize: () => void | Promise<void>;
     getActionObject: () => SimpleQuickAction;
@@ -46,6 +47,7 @@ export interface NestedQuickActionDefinition {
     readonly kind: typeof NESTED_QUICK_ACTION_KIND;
     readonly  type: string;
     readonly id: string;
+    readonly forceRefreshAfterExecution?: boolean;
     isActive: boolean;
     initialize: () => void | Promise<void>;
     getActionObject: () => NestedQuickAction;

@@ -1,6 +1,9 @@
 import XMLView from 'sap/ui/core/mvc/XMLView';
 import Log from 'sap/base/Log';
+import ComponentContainer from 'sap/ui/core/ComponentContainer';
+import UIComponent from 'sap/ui/core/UIComponent';
 
+import { getComponent } from '../../ui5-utils';
 import type { QuickActionActivationContext, QuickActionDefinitionGroup } from '../quick-action-definition';
 import { QuickActionDefinitionRegistry } from '../registry';
 import type { ControlTreeIndex } from '../../types';
@@ -53,6 +56,29 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
                 return undefined;
             })
             .filter((definition) => !!definition);
+    }
+    private getActiveViews(controlIndex: ControlTreeIndex): XMLView[] {
+        const pages = this.getActivePages(controlIndex);
+
+        const views = pages
+            .map((page): XMLView | undefined => {
+                if (page instanceof XMLView) {
+                    const container = page.getContent()[0];
+                    if (container instanceof ComponentContainer) {
+                        const componentId = container.getComponent();
+                        const component = getComponent(componentId);
+                        if (component instanceof UIComponent) {
+                            const rootControl = component.getRootControl();
+                            if (rootControl instanceof XMLView) {
+                                return rootControl;
+                            }
+                        }
+                    }
+                }
+                return undefined;
+            })
+            .filter((view: XMLView | undefined): view is XMLView => view !== undefined);
+        return views;
     }
 
     private getActivePageContent(controlIndex: ControlTreeIndex): ActivePage[] {

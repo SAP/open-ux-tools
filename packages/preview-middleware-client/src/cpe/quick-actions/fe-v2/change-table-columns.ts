@@ -8,7 +8,7 @@ import { QuickActionContext, NestedQuickActionDefinition } from '../quick-action
 import { getRelevantControlFromActivePage } from '../utils';
 import SmartTable from 'sap/ui/comp/smarttable/SmartTable';
 import Table from 'sap/m/Table';
-import ListBase from 'sap/m/ListBase';
+import { isA } from '../../utils';
 
 export const CHANGE_TABLE_COLUMNS = 'change-table-columns';
 const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';
@@ -99,16 +99,16 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
                     controlOverlay.setSelected(true);
                 }
 
-                if (table?.isA('sap.ui.comp.smarttable.SmartTable')) {
+                if (isA<SmartTable>('sap.ui.comp.smarttable.SmartTable', table)) {
                     await this.context.actionService.execute(table.getId(), SMART_TABLE_ACTION_ID);
                 }
-                if (table?.isA('sap.m.Table')) {
-                    if ((table as ListBase).getItems().length > 0) {
+                if (isA<Table>('sap.m.Table', table)) {
+                    if (table.getItems().length > 0) {
                         await this.context.actionService.execute(table.getId(), M_TABLE_ACTION_ID);
                     }
                     // to avoid reopening the dialog after close
                     if (!this.eventAttachedOnce) {
-                        (table as ListBase)?.attachEventOnce(
+                        table.attachEventOnce(
                             'updateFinished',
                             async () => await this.context.actionService.execute(table.getId(), M_TABLE_ACTION_ID)
                         );
