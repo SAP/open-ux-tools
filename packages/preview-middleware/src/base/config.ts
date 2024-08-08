@@ -58,7 +58,8 @@ export interface TemplateConfig {
  */
 export const PREVIEW_URL = {
     client: {
-        url: '/preview/client',
+        path: '/preview/client',
+        getUrl: (basePath: string) => posix.join(basePath, 'preview', 'client'),
         local: join(__dirname, '../../dist/client'),
         ns: 'open.ux.preview.client'
     },
@@ -239,8 +240,9 @@ async function getI18nTextFromProperty(
     }
     const propertyI18nKey = propertyValue.replace(/i18n>|[{}]/g, '');
     const projectAccess = await createProjectAccess(projectRoot);
+    const applicationIds = projectAccess.getApplicationIds();
     try {
-        const bundle = (await projectAccess.getApplication('').getI18nBundles())['sap.app'];
+        const bundle = (await projectAccess.getApplication(applicationIds[0]).getI18nBundles())['sap.app'];
         return bundle[propertyI18nKey]?.[0]?.value?.value ?? propertyI18nKey;
     } catch (e) {
         logger.warn('Failed to load i18n properties bundle');
@@ -266,8 +268,9 @@ export function createFlpTemplateConfig(
     const ui5Theme = config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
     const id = manifest['sap.app']?.id ?? '';
     const ns = id.replace(/\./g, '/');
+    const basePath = posix.relative(posix.dirname(config.path), '/') ?? '.';
     return {
-        basePath: posix.relative(posix.dirname(config.path), '/') ?? '.',
+        basePath: basePath,
         apps: {},
         init: config.init ? ns + config.init : undefined,
         ui5: {
@@ -276,7 +279,7 @@ export function createFlpTemplateConfig(
             flex,
             resources: {
                 ...resources,
-                [PREVIEW_URL.client.ns]: PREVIEW_URL.client.url
+                [PREVIEW_URL.client.ns]: PREVIEW_URL.client.getUrl(basePath)
             },
             bootstrapOptions: ''
         },
