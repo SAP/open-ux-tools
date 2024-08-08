@@ -178,7 +178,8 @@ export function validateClientChoiceQuestion(
 ): boolean {
     switch (clientChoice) {
         case ClientChoiceValue.Base:
-            PromptState.abapDeployConfig.client = options.backendTarget?.abapTarget.client;
+            PromptState.abapDeployConfig.client =
+                PromptState.abapDeployConfig.client ?? options.backendTarget?.abapTarget.client;
             break;
 
         case ClientChoiceValue.Blank:
