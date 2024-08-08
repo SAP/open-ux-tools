@@ -154,34 +154,18 @@ function getUrlPrompt(
  * @param options - abap deploy config prompt options
  * @returns confirm question for scp
  */
-function getScpPrompt(options: AbapDeployConfigPromptOptions): (YUIQuestion<AbapDeployConfigAnswers> | Question)[] {
-    const prompts: (ConfirmQuestion<AbapDeployConfigAnswers> | Question)[] = [
-        {
-            when: (previousAnswers: AbapDeployConfigAnswers): boolean => showScpQuestion(previousAnswers),
-            type: 'confirm',
-            name: abapDeployConfigInternalPromptNames.scp,
-            message: t('prompts.target.scp.message'),
-            guiOptions: {
-                breadcrumb: t('prompts.target.scp.breadcrumb')
-            },
-            default: (): boolean | undefined => options.backendTarget?.abapTarget.scp,
-            validate: (input: boolean): boolean | string => validateScpQuestion(input)
-        } as ConfirmQuestion<AbapDeployConfigAnswers>
-    ];
-
-    if (getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli) {
-        prompts.push({
-            when: async (answers: AbapDeployConfigAnswers): Promise<boolean> => {
-                const scp = answers[abapDeployConfigInternalPromptNames.scp];
-                if (scp) {
-                    validateScpQuestion(scp);
-                }
-                return false;
-            },
-            name: abapDeployConfigInternalPromptNames.scpCliSetter
-        } as Question);
-    }
-    return prompts;
+function getScpPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswers> {
+    return {
+        when: (previousAnswers: AbapDeployConfigAnswers): boolean => showScpQuestion(previousAnswers),
+        type: 'confirm',
+        name: abapDeployConfigInternalPromptNames.scp,
+        message: t('prompts.target.scp.message'),
+        guiOptions: {
+            breadcrumb: t('prompts.target.scp.breadcrumb')
+        },
+        default: (): boolean | undefined => options.backendTarget?.abapTarget.scp,
+        validate: (input: boolean): boolean | string => validateScpQuestion(input)
+    } as ConfirmQuestion<AbapDeployConfigAnswers>;
 }
 
 /**
@@ -229,38 +213,22 @@ function getClientChoicePrompt(
  * @param options - abap deploy config prompt options
  * @returns input question for client
  */
-function getClientPrompt(options: AbapDeployConfigPromptOptions): (YUIQuestion<AbapDeployConfigAnswers> | Question)[] {
-    const prompts: (InputQuestion<AbapDeployConfigAnswers> | Question)[] = [
-        {
-            when: (previousAnswers: AbapDeployConfigAnswers): boolean => {
-                return showClientQuestion(previousAnswers, options, PromptState.abapDeployConfig?.isS4HC);
-            },
-            type: 'input',
-            name: abapDeployConfigInternalPromptNames.client,
-            message: t('prompts.target.client.message'),
-            guiOptions: {
-                mandatory: true,
-                breadcrumb: t('prompts.target.client.breadcrumb')
-            },
-            default: (): string | undefined => options.backendTarget?.abapTarget?.client,
-            filter: (input: string): string => input?.trim(),
-            validate: (client: string): boolean | string => validateClient(client)
-        } as InputQuestion<AbapDeployConfigAnswers>
-    ];
-
-    if (getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli) {
-        prompts.push({
-            when: async (answers: AbapDeployConfigAnswers): Promise<boolean> => {
-                const client = answers[abapDeployConfigInternalPromptNames.client];
-                if (client) {
-                    validateClient(client);
-                }
-                return false;
-            },
-            name: abapDeployConfigInternalPromptNames.clientCliSetter
-        } as Question);
-    }
-    return prompts;
+function getClientPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswers> {
+    return {
+        when: (previousAnswers: AbapDeployConfigAnswers): boolean => {
+            return showClientQuestion(previousAnswers, options, PromptState.abapDeployConfig?.isS4HC);
+        },
+        type: 'input',
+        name: abapDeployConfigInternalPromptNames.client,
+        message: t('prompts.target.client.message'),
+        guiOptions: {
+            mandatory: true,
+            breadcrumb: t('prompts.target.client.breadcrumb')
+        },
+        default: (): string | undefined => options.backendTarget?.abapTarget?.client,
+        filter: (input: string): string => input?.trim(),
+        validate: (client: string): boolean | string => validateClient(client)
+    } as InputQuestion<AbapDeployConfigAnswers>;
 }
 
 /**
@@ -278,8 +246,8 @@ export async function getAbapTargetPrompts(
         ...getDestinationPrompt(options, abapSystemChoices, destinations),
         ...getTargetSystemPrompt(abapSystemChoices),
         getUrlPrompt(options, destinations),
-        ...getScpPrompt(options),
+        getScpPrompt(options),
         ...getClientChoicePrompt(options),
-        ...getClientPrompt(options)
+        getClientPrompt(options)
     ];
 }
