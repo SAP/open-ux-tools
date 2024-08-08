@@ -87,7 +87,7 @@ export function updateDestinationPromptState(destination: string, destinations: 
  * Validates the target system.
  *
  * @param target - target system
- * @param choices - aba system choices
+ * @param choices - abab system choices
  * @returns boolean or error message string
  */
 export function validateTargetSystem(target?: string, choices?: AbapSystemChoice[]): boolean | string {
@@ -142,11 +142,12 @@ export function validateUrl(input: string): boolean | string {
  * Validates the target system URL for CLI.
  *
  * @param targetSystem - target system
+ * @param choices - abap system choices
  * @throws Error if target system is invalid
  */
-export function validateTargetSystemUrlCli(targetSystem?: string): void {
+export function validateTargetSystemUrlCli(targetSystem?: string, choices?: AbapSystemChoice[]): void {
     if (getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli) {
-        const isTargetValid = validateTargetSystem(targetSystem);
+        const isTargetValid = validateTargetSystem(targetSystem, choices);
         if (typeof isTargetValid === 'string') {
             throw new Error(isTargetValid);
         }

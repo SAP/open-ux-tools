@@ -108,7 +108,7 @@ function getTargetSystemPrompt(choices: AbapSystemChoice[]): (YUIQuestion<AbapDe
             when: async (answers: AbapDeployConfigAnswers): Promise<boolean> => {
                 const target = answers[abapDeployConfigInternalPromptNames.targetSystem];
                 if (target) {
-                    validateTargetSystem(target, choices);
+                    validateTargetSystemUrlCli(target, choices);
                 }
                 return false;
             },
@@ -131,7 +131,6 @@ function getUrlPrompt(
 ): Question<AbapDeployConfigAnswers> {
     return {
         when: (previousAnswers: AbapDeployConfigAnswers) => {
-            validateTargetSystemUrlCli(previousAnswers.targetSystem);
             const isValid = showUrlQuestion(previousAnswers.targetSystem);
             updateGeneratorUrl(options, previousAnswers, destinations);
             return isValid;

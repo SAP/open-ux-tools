@@ -10,26 +10,56 @@ export class PromptState {
     private static _transportAnswers: TransportAnswers = {};
     private static _isYUI = false;
 
+    /**
+     * Returns the current state of the abap deploy config answers.
+     *
+     * @returns {Partial<AbapDeployConfigAnswers>} abap deploy config answers
+     */
     public static get abapDeployConfig(): Partial<AbapDeployConfigAnswers> {
         return this._abapDeployConfig;
     }
 
+    /**
+     * Returns the current state of the transport answers.
+     *
+     * @returns {TransportAnswers} transport answers
+     */
     public static get transportAnswers(): TransportAnswers {
         return this._transportAnswers;
     }
 
+    /**
+     * Returns whether the prompting is running in YUI.
+     *
+     * @returns {boolean} true if running in YUI
+     */
     public static get isYUI(): boolean {
         return this._isYUI;
     }
 
+    /**
+     * Sets the current state of the abap deploy config answers.
+     *
+     * @param {Partial<AbapDeployConfigAnswers>} value - abap deploy config
+     */
     public static set abapDeployConfig(value: Partial<AbapDeployConfigAnswers>) {
         this._abapDeployConfig = value;
     }
 
+    /**
+     * Sets the current state of the transport answers.
+     *
+     * @param {TransportAnswers} value - transport answers
+     */
     public static set transportAnswers(value: TransportAnswers) {
         this._transportAnswers = value;
     }
 
+    /**
+     * Sets the YUI property.
+     *
+     * @param {boolean} value - if running in YUI
+     */
     public static set isYUI(value: boolean) {
         this._isYUI = value;
     }
