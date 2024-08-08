@@ -3,6 +3,7 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import {
     AdaptationProjectType,
+    AdtCatalogService,
     SystemInfo,
     UI5RtVersionService,
     UIFlexService,
@@ -368,14 +369,13 @@ export default class ConfigInfoPrompter {
             'scheme': 'http://www.sap.com/adt/categories/ui_flex',
             'term': 'dta_folder'
         };
-        const provider = this.providerService.getProvider();
-        const adtDiscoveryService = provider.getAdtCatalogService();
         const acceptHeaders = {
             headers: {
                 Accept: 'application/*'
             }
         };
-        const response = await adtDiscoveryService.get('', acceptHeaders);
+        const provider = this.providerService.getProvider();
+        const response = await provider.get(AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH, acceptHeaders);
 
         return { isOnPremise: response.data.includes(FILTER.term), isUIFlex: response.data.includes(FILTER.scheme) };
     }
