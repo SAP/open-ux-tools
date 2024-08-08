@@ -146,7 +146,7 @@ export function validateUrl(input: string): boolean | string {
  * @throws Error if target system is invalid
  */
 export function validateTargetSystemUrlCli(targetSystem?: string, choices?: AbapSystemChoice[]): void {
-    if (getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli) {
+    if (getHostEnvironment() === hostEnvironment.cli) {
         const isTargetValid = validateTargetSystem(targetSystem, choices);
         if (typeof isTargetValid === 'string') {
             throw new Error(isTargetValid);

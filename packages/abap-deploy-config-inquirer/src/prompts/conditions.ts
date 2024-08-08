@@ -79,7 +79,7 @@ export function showClientChoiceQuestion(
     options?: AbapDeployConfigPromptOptions,
     isS4HanaCloudSystem?: boolean
 ): boolean {
-    if (getHostEnvironment(PromptState.isYUI) !== hostEnvironment.cli || !options?.backendTarget?.abapTarget?.client) {
+    if (getHostEnvironment() !== hostEnvironment.cli || !options?.backendTarget?.abapTarget?.client) {
         return false;
     }
 
@@ -103,9 +103,7 @@ export function showClientQuestion(
     const showOnCli =
         previousAnswers.clientChoice === ClientChoiceValue.New || !options?.backendTarget?.abapTarget?.client;
 
-    return getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli
-        ? showOnCli && clientCondition
-        : clientCondition;
+    return getHostEnvironment() === hostEnvironment.cli ? showOnCli && clientCondition : clientCondition;
 }
 
 /**
@@ -189,8 +187,7 @@ function defaultOrShowPackageQuestion(): boolean {
 export function showPackageInputChoiceQuestion(): boolean {
     // Only show the input choice (manual/search) when the autocomplete prompt is supported; CLI or YUI specific version
     return Boolean(
-        (getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli ||
-            isFeatureEnabled('enableAutocompleteUIPrompt')) &&
+        (getHostEnvironment() === hostEnvironment.cli || isFeatureEnabled('enableAutocompleteUIPrompt')) &&
             defaultOrShowPackageQuestion()
     );
 }

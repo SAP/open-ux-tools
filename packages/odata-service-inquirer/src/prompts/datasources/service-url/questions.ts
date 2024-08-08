@@ -239,7 +239,7 @@ export function getServiceUrlQuestions({
         getIgnoreCertErrorsPrompt(connectValidator, requiredVersion)
     ];
 
-    if (getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli) {
+    if (getHostEnvironment() === hostEnvironment.cli) {
         questions.push(getCliIgnoreCertValidatePrompt(connectValidator, requiredVersion));
     }
     questions.push(getUsernamePrompt(connectValidator), getPasswordPrompt(connectValidator, requiredVersion));

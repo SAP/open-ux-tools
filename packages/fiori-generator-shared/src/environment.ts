@@ -18,11 +18,10 @@ export const hostEnvironment = {
 /**
  * Determine if the current prompting environment is cli or a hosted extension (app studio or vscode).
  *
- * @param isYUI - is the current environment YUI
  * @returns the platform name and technical name
  */
-export function getHostEnvironment(isYUI: boolean): { name: string; technical: string } {
-    if (!isYUI) {
+export function getHostEnvironment(): { name: string; technical: string } {
+    if (process.argv[1]?.includes('yo') || process.stdin.isTTY) {
         return hostEnvironment.cli;
     } else {
         return isAppStudio() ? hostEnvironment.bas : hostEnvironment.vscode;

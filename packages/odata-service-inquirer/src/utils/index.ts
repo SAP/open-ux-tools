@@ -44,7 +44,7 @@ export function sendTelemetryEvent(eventName: string, telemetryData: TelemetryPr
  */
 function createTelemetryEvent(eventName: string, telemetryData: TelemetryProperties): TelemetryEvent {
     const telemProps: TelemetryProperties = Object.assign(telemetryData, {
-        Platform: getHostEnvironment(PromptState.isYUI).technical,
+        Platform: getHostEnvironment().technical,
         OperatingSystem: osVersionName
     });
     return {

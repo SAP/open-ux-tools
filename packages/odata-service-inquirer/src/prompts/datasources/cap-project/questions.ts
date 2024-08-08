@@ -160,7 +160,7 @@ export function getLocalCapProjectPrompts(
         } as ListQuestion<CapServiceAnswers>
     ];
 
-    if (getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli) {
+    if (getHostEnvironment() === hostEnvironment.cli) {
         prompts.push({
             when: async (answers: CapServiceAnswers): Promise<boolean> => {
                 if (answers?.capService) {

@@ -17,7 +17,7 @@ export function bail(errorMessage: string): void {
  * @param errorMsg - error message
  */
 export function handleErrorMessage(errorMsg: string): void {
-    if (getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli) {
+    if (getHostEnvironment() === hostEnvironment.cli) {
         bail(errorMsg);
     } else {
         PromptState.transportAnswers.transportConfigError = errorMsg;
