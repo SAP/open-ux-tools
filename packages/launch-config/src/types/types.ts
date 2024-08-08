@@ -1,5 +1,6 @@
 import type { ODataVersion } from '@sap-ux/project-access';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
+import { LaunchFile } from '../debug-config/types';
 
 export enum Arguments {
     FrameworkVersion = '--framework-version',
@@ -20,6 +21,7 @@ export interface FioriOptions {
     backendConfigs?: FioriToolsProxyConfigBackend[];
     urlParameters?: string;
     visible?: boolean;
+    debugFileContents?: LaunchFile
 }
 
 export interface LaunchJSON {
@@ -51,6 +53,7 @@ export interface LaunchConfigEnv {
     FIORI_TOOLS_UI5_URI?: string;
     FIORI_TOOLS_BACKEND_CONFIG?: string;
     FIORI_TOOLS_URL_PARAMS?: string;
+    DEBUG?: string;
 }
 
 export interface LaunchConfigInfo {

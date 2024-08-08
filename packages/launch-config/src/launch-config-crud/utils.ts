@@ -79,7 +79,7 @@ export function mergeArgs(newArgs: string[] | undefined, oldArgs: string[] | und
  * @param env - environment variables for the application.
  * @returns launch config object.
  */
-function getLaunchConfig(
+export function getLaunchConfig(
     name: string,
     cwd: string,
     runtimeArgs: string[],

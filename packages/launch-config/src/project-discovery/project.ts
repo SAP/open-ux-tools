@@ -6,6 +6,8 @@ import { parse } from 'jsonc-parser';
 import { Arguments, type FioriOptions } from '../types';
 import type { FioriToolsProxyConfig } from '@sap-ux/ui5-config';
 import type { Logger } from '@sap-ux/logger';
+import { getDebugConfigs } from '../debug-config/debug-configs';
+import { LaunchConfigOptions, LaunchFile } from '../debug-config/types';
 
 /**
  * Find out starting HTML file for project using package.json.
@@ -48,9 +50,45 @@ async function getStartFileFromPackageFile(projectRoot: string): Promise<string 
  * @param options.logger - optional, the logger instance.
  * @returns default configuration options.
  */
+// export async function getDefaultLaunchConfigOptionsForProject(
+//     projectRoot: string,
+//     options?: { logger?: Logger }
+// ): Promise<FioriOptions> {
+//     const logger = options?.logger;
+//     let name = '';
+//     let ui5Version = '';
+//     let startFile;
+//     let backendConfigs;
+//     let oDataVersion; // 4.0 or 2.0
+//     const visible = true;
+//     try {
+//         const manifestPath = join(projectRoot, DirName.Webapp, FileName.Manifest);
+//         const manifestContent = parse(await fs.readFile(manifestPath, { encoding: 'utf8' })) as Manifest;
+//         oDataVersion = manifestContent['sap.app']?.dataSources?.mainService.settings?.odataVersion as ODataVersion;
+//         name = `Launch Fiori app: ${basename(projectRoot)}`;
+//         ui5Version = 'latest'; // reactivate code to find ui5 version in project-access
+//         startFile = await getStartFileFromPackageFile(projectRoot);
+//         const ui5YamlConfig = await readUi5Yaml(projectRoot, FileName.Ui5Yaml);
+//         // read backend configurations from ui5.yaml
+//         backendConfigs =
+//             ui5YamlConfig.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy')?.configuration.backend;
+//     } catch (error) {
+//         logger?.error(`Error while getting the default configuration for project '${projectRoot}'`);
+//     }
+//     return {
+//         name,
+//         projectRoot,
+//         oDataVersion,
+//         ui5Version,
+//         startFile,
+//         backendConfigs,
+//         visible
+//     };
+// }
+
 export async function getDefaultLaunchConfigOptionsForProject(
     projectRoot: string,
-    options?: { logger?: Logger }
+    options?: { logger?: Logger/*, configOpts?: LaunchConfigOptions*/ }
 ): Promise<FioriOptions> {
     const logger = options?.logger;
     let name = '';
@@ -59,6 +97,7 @@ export async function getDefaultLaunchConfigOptionsForProject(
     let backendConfigs;
     let oDataVersion; // 4.0 or 2.0
     const visible = true;
+    let launchFile: LaunchFile = { version: '0.2.0', configurations: [] };
     try {
         const manifestPath = join(projectRoot, DirName.Webapp, FileName.Manifest);
         const manifestContent = parse(await fs.readFile(manifestPath, { encoding: 'utf8' })) as Manifest;
@@ -70,6 +109,12 @@ export async function getDefaultLaunchConfigOptionsForProject(
         // read backend configurations from ui5.yaml
         backendConfigs =
             ui5YamlConfig.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy')?.configuration.backend;
+        // if (options?.configOpts) {
+        //     // temp 
+        //     const hasWorkspace = false
+        //     const nestedFolder = options.configOpts.projectName;
+        //     launchFile = getDebugConfigs('launchFile', options.configOpts, hasWorkspace, nestedFolder) as LaunchFile;
+        // }
     } catch (error) {
         logger?.error(`Error while getting the default configuration for project '${projectRoot}'`);
     }
@@ -80,6 +125,7 @@ export async function getDefaultLaunchConfigOptionsForProject(
         ui5Version,
         startFile,
         backendConfigs,
-        visible
+        visible,
+        debugFileContents: launchFile
     };
 }
