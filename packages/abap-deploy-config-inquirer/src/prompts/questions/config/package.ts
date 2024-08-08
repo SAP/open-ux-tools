@@ -6,7 +6,7 @@ import {
 } from '../../conditions';
 import { t } from '../../../i18n';
 import { getPackageChoices, getPackageInputChoices } from '../../helpers';
-import { defaultPackage, defaultPackageChoice } from '../../default';
+import { defaultPackage, defaultPackageChoice } from '../../defaults';
 import { validatePackage, validatePackageChoiceInput, validatePackageChoiceInputForCli } from '../../validators';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {

@@ -2,7 +2,7 @@ import { showUi5AppDeployConfigQuestion } from '../../conditions';
 import { validateAppDescription, validateUi5AbapRepoName } from '../../validators';
 import { PromptState } from '../../prompt-state';
 import { t } from '../../../i18n';
-import { defaultAbapRepositoryName, defaultAppDescription } from '../../default';
+import { defaultAbapRepositoryName, defaultAppDescription } from '../../defaults';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     abapDeployConfigInternalPromptNames,

@@ -15,7 +15,7 @@ import {
     defaultTransportListChoice,
     defaultTransportRequestChoice,
     defaultTransportRequestNumber
-} from '../../default';
+} from '../../defaults';
 import {
     abapDeployConfigInternalPromptNames,
     type AbapDeployConfigAnswers,

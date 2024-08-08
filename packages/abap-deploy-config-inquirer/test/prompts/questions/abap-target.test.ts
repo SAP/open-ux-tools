@@ -132,7 +132,7 @@ describe('getAbapTargetPrompts', () => {
     });
 
     test('should return expected values from destination prompt methods', async () => {
-        mockIsAppStudio.mockReturnValueOnce(true);
+        mockIsAppStudio.mockReturnValue(true);
         mockGetAbapSystems.mockResolvedValueOnce({
             destinations: mockDestinations,
             backendSystems: undefined
@@ -184,8 +184,31 @@ describe('getAbapTargetPrompts', () => {
         }
     });
 
+    test('should return expected values from destination prompt methods on CLI', async () => {
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
+        mockIsAppStudio.mockReturnValue(true);
+        mockGetAbapSystems.mockResolvedValueOnce({
+            destinations: mockDestinations,
+            backendSystems: undefined
+        });
+        const updateDestinationPromptStateSpy = jest.spyOn(validators, 'updateDestinationPromptState');
+        const abapTargetPrompts = await getAbapTargetPrompts({});
+        const destinationCliSetterPrompt = abapTargetPrompts.find(
+            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.destinationCliSetter
+        );
+
+        if (destinationCliSetterPrompt) {
+            expect(
+                ((await destinationCliSetterPrompt.when) as Function)({
+                    destination: 'mockDest1'
+                })
+            ).toBe(false);
+            expect(updateDestinationPromptStateSpy).toHaveBeenCalledWith('mockDest1', mockDestinations);
+        }
+    });
+
     test('should return expected values from target system prompt methods', async () => {
-        mockIsAppStudio.mockReturnValueOnce(false);
+        mockIsAppStudio.mockReturnValue(false);
         mockGetAbapSystems.mockResolvedValueOnce({
             destinations: undefined,
             backendSystems: mockTargetSystems
@@ -228,6 +251,29 @@ describe('getAbapTargetPrompts', () => {
             `);
         } else {
             throw new Error('Target system prompt not found');
+        }
+    });
+
+    test('should return expected values from target prompt methods on CLI', async () => {
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
+        mockIsAppStudio.mockReturnValue(false);
+        mockGetAbapSystems.mockResolvedValueOnce({
+            destinations: undefined,
+            backendSystems: mockTargetSystems
+        });
+        const validateTargetSystemUrlCliSpy = jest.spyOn(validators, 'validateTargetSystemUrlCli');
+        const abapTargetPrompts = await getAbapTargetPrompts({});
+        const targetSystemCliSetterPrompt = abapTargetPrompts.find(
+            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.targetSystemCliSetter
+        );
+
+        if (targetSystemCliSetterPrompt) {
+            expect(
+                (targetSystemCliSetterPrompt.when as Function)({
+                    targetSystem: 'target1'
+                })
+            ).toBe(false);
+            expect(validateTargetSystemUrlCliSpy).toBeCalledTimes(1);
         }
     });
 

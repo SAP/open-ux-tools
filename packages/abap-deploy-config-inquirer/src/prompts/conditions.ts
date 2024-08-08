@@ -259,7 +259,7 @@ export function showTransportInputChoice(previousAnswers: AbapDeployConfigAnswer
  * Checks if the transport list is empty.
  *
  * @param transportList - list of transports
- * @returns boolean
+ * @returns boolean - true if the transport list is empty
  */
 function isTransportListEmpty(transportList?: TransportListItem[]): boolean {
     return !transportList || transportList.length === 0;

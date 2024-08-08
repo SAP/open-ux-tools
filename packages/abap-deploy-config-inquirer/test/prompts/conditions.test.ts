@@ -3,15 +3,23 @@ import {
     AbapDeployConfigPromptOptions,
     ClientChoiceValue,
     PackageInputChoices,
+    TransportChoices,
     TransportConfig
 } from '../../src/types';
 import {
     defaultOrShowManualPackageQuestion,
+    defaultOrShowManualTransportQuestion,
+    defaultOrShowSearchPackageQuestion,
+    defaultOrShowTransportCreatedQuestion,
+    defaultOrShowTransportListQuestion,
     showClientChoiceQuestion,
     showClientQuestion,
+    showIndexQuestion,
+    showOverwriteQuestion,
     showPackageInputChoiceQuestion,
     showPasswordQuestion,
     showScpQuestion,
+    showTransportInputChoice,
     showUi5AppDeployConfigQuestion,
     showUrlQuestion,
     showUsernameQuestion
@@ -20,6 +28,7 @@ import * as utils from '../../src/utils';
 import { PromptState } from '../../src/prompts/prompt-state';
 import { getHostEnvironment, hostEnvironment, getHelpUrl } from '@sap-ux/fiori-generator-shared';
 import { isFeatureEnabled } from '@sap-ux/feature-toggle';
+import { t } from '@sap-ux/inquirer-common/src/i18n';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()
@@ -176,6 +185,126 @@ describe('Test abap deploy config inquirer conditions', () => {
         // cli
         expect(
             defaultOrShowManualPackageQuestion(true, { packageInputChoice: PackageInputChoices.EnterManualChoice })
+        ).toBe(true);
+    });
+
+    test('should show search package question', () => {
+        mockIsFeatureEnabled.mockReturnValueOnce(true);
+        expect(
+            defaultOrShowSearchPackageQuestion(true, {
+                packageInputChoice: PackageInputChoices.ListExistingChoice
+            })
+        ).toBe(true);
+
+        // cli
+        expect(
+            defaultOrShowSearchPackageQuestion(false, {
+                packageInputChoice: PackageInputChoices.ListExistingChoice
+            })
+        ).toBe(true);
+    });
+
+    test('should show transport input choice question', () => {
+        PromptState.transportAnswers.transportConfigError = undefined;
+        PromptState.transportAnswers.transportConfigNeedsCreds = false;
+        expect(showTransportInputChoice({})).toBe(true);
+    });
+
+    test('should not show transport input choice question', () => {
+        PromptState.transportAnswers.transportConfigError = undefined;
+        PromptState.transportAnswers.transportConfigNeedsCreds = true;
+        expect(showTransportInputChoice({})).toBe(false);
+
+        PromptState.transportAnswers.transportConfig = {
+            getDefaultTransport: jest.fn().mockReturnValue('K123456')
+        } as unknown as TransportConfig;
+
+        expect(showTransportInputChoice({})).toBe(false);
+    });
+
+    test('should show transport list question', () => {
+        PromptState.transportAnswers.transportList = [
+            { transportReqNumber: 'K123456', transportReqDescription: 'Mock transport' }
+        ];
+        expect(
+            defaultOrShowTransportListQuestion({
+                transportInputChoice: TransportChoices.ListExistingChoice
+            })
+        ).toBe(true);
+    });
+
+    test('should not show transport list question', () => {
+        PromptState.transportAnswers.transportList = [];
+        expect(
+            defaultOrShowTransportListQuestion({
+                transportInputChoice: TransportChoices.ListExistingChoice
+            })
+        ).toBe(false);
+
+        PromptState.transportAnswers.transportList = undefined;
+        expect(
+            defaultOrShowTransportListQuestion({
+                transportInputChoice: TransportChoices.ListExistingChoice
+            })
+        ).toBe(false);
+
+        PromptState.transportAnswers.transportConfigNeedsCreds = true;
+        expect(
+            defaultOrShowTransportListQuestion({
+                transportInputChoice: TransportChoices.ListExistingChoice
+            })
+        ).toBe(false);
+    });
+
+    test('should show transport created question', () => {
+        PromptState.transportAnswers.newTransportNumber = 'K123456';
+        expect(
+            defaultOrShowTransportCreatedQuestion({
+                transportInputChoice: TransportChoices.CreateNewChoice
+            })
+        ).toBe(true);
+    });
+
+    test('should not show transport created question', () => {
+        PromptState.transportAnswers.newTransportNumber = undefined;
+        expect(
+            defaultOrShowTransportCreatedQuestion({
+                transportInputChoice: TransportChoices.CreateNewChoice
+            })
+        ).toBe(false);
+
+        PromptState.transportAnswers.transportConfigNeedsCreds = true;
+        expect(
+            defaultOrShowTransportCreatedQuestion({
+                transportInputChoice: TransportChoices.CreateNewChoice
+            })
+        ).toBe(false);
+    });
+
+    test('should show manual transport question', () => {
+        expect(
+            defaultOrShowManualTransportQuestion({
+                transportInputChoice: TransportChoices.EnterManualChoice
+            })
+        ).toBe(true);
+    });
+
+    test('should show index question', () => {
+        PromptState.abapDeployConfig.index = undefined;
+        expect(
+            showIndexQuestion({
+                indexGenerationAllowed: true
+            })
+        ).toBe(true);
+    });
+
+    test('should show overwrite question', () => {
+        PromptState.abapDeployConfig.overwrite = undefined;
+        expect(
+            showOverwriteQuestion({
+                showOverwriteQuestion: true,
+                existingDeployTaskConfig: {}
+            })
         ).toBe(true);
     });
 });

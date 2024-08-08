@@ -133,14 +133,14 @@ async function getBackendTargetChoices(
 /**
  * Returns a list of the aba system choices comprising of either destinations or backend systems.
  *
- * @param backendTarget - backend target
  * @param destinations - destinations retrieved from BTP
+ * @param backendTarget - backend target used previously (may not be saved in store)
  * @param backendSystems - backend systems retrieved from store
  * @returns choices for ABAP systems
  */
 export async function getAbapSystemChoices(
-    backendTarget?: BackendTarget,
     destinations?: Destinations,
+    backendTarget?: BackendTarget,
     backendSystems?: BackendSystem[]
 ): Promise<AbapSystemChoice[]> {
     let choices: AbapSystemChoice[] = [];

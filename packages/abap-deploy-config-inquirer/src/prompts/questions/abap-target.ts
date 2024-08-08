@@ -11,7 +11,7 @@ import {
 } from '../validators';
 import { t } from '../../i18n';
 import { getClientChoicePromptChoices, getAbapSystemChoices, updateGeneratorUrl } from '../helpers';
-import { defaultTargetSystem, defaultUrl } from '../default';
+import { defaultTargetSystem, defaultUrl } from '../defaults';
 import { getAbapSystems } from '../../utils';
 import { PromptState } from '../prompt-state';
 import { Severity, type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
@@ -66,9 +66,9 @@ function getDestinationPrompt(
         } as ListQuestion<AbapDeployConfigAnswers>
     ];
 
-    if (getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli) {
+    if (isAppStudio() && getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli) {
         prompts.push({
-            when: async (answers: AbapDeployConfigAnswers): Promise<boolean> => {
+            when: (answers: AbapDeployConfigAnswers): boolean => {
                 const destination = answers[abapDeployConfigInternalPromptNames.destination];
                 if (destination) {
                     updateDestinationPromptState(destination, destinations);
@@ -103,9 +103,9 @@ function getTargetSystemPrompt(choices: AbapSystemChoice[]): (YUIQuestion<AbapDe
         } as ListQuestion<AbapDeployConfigAnswers>
     ];
 
-    if (getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli) {
+    if (!isAppStudio() && getHostEnvironment(PromptState.isYUI) === hostEnvironment.cli) {
         prompts.push({
-            when: async (answers: AbapDeployConfigAnswers): Promise<boolean> => {
+            when: (answers: AbapDeployConfigAnswers): boolean => {
                 const target = answers[abapDeployConfigInternalPromptNames.targetSystem];
                 if (target) {
                     validateTargetSystemUrlCli(target, choices);
@@ -273,7 +273,7 @@ export async function getAbapTargetPrompts(
     options: AbapDeployConfigPromptOptions
 ): Promise<Question<AbapDeployConfigAnswers>[]> {
     const { destinations, backendSystems } = await getAbapSystems();
-    const abapSystemChoices = await getAbapSystemChoices(options.backendTarget, destinations, backendSystems);
+    const abapSystemChoices = await getAbapSystemChoices(destinations, options.backendTarget, backendSystems);
     return [
         ...getDestinationPrompt(options, abapSystemChoices, destinations),
         ...getTargetSystemPrompt(abapSystemChoices),
