@@ -495,11 +495,11 @@ export default class ConfigInfoPrompter {
         return {
             type: 'input',
             name: 'system',
-            message: 'System URL',
+            message: t('prompts.systemUrlLabel'),
             validate: async (value: string) => await this.validateSystem(value),
             guiOptions: {
                 mandatory: true,
-                breadcrumb: 'System URL'
+                breadcrumb: t('prompts.systemUrlLabel')
             },
             store: false
         } as InputQuestion<ConfigurationInfoAnswers>;
@@ -509,7 +509,7 @@ export default class ConfigInfoPrompter {
         return {
             type: 'input',
             name: 'client',
-            message: 'System client',
+            message: t('prompts.systemClientLabel'),
             validate: validateClient,
             when: (answers: ConfigurationInfoAnswers) => {
                 if (answers.system) {
@@ -519,7 +519,7 @@ export default class ConfigInfoPrompter {
             },
             guiOptions: {
                 mandatory: true,
-                breadcrumb: 'System client'
+                breadcrumb: t('prompts.systemClientLabel')
             },
             store: false
         } as InputQuestion<ConfigurationInfoAnswers>;
@@ -627,7 +627,7 @@ export default class ConfigInfoPrompter {
             },
             guiOptions: {
                 hint: t('prompts.projectTypeTooltip'),
-                breadcrumb: t('prompts.projectTypeLabel'),
+                breadcrumb: 'Project Type',
                 applyDefaultWhenDirty: true
             },
             additionalMessages: (_, prevAnswers) => {
@@ -666,7 +666,7 @@ export default class ConfigInfoPrompter {
             guiOptions: {
                 applyDefaultWhenDirty: true,
                 hint: t('prompts.applicationListTooltip'),
-                breadcrumb: t('prompts.applicationListLabel')
+                breadcrumb: 'Application'
             },
             validate: async (value: Application) => {
                 const validationResult = await this.applicationPromptValidationHandler(value);
@@ -742,7 +742,7 @@ export default class ConfigInfoPrompter {
             guiOptions: {
                 applyDefaultWhenDirty: true,
                 hint: t('prompts.ui5VersionTooltip'),
-                breadcrumb: t('prompts.ui5VersionLabel')
+                breadcrumb: 'SAP UI5 Version'
             },
             validate: this.ui5Service.validateUI5Version.bind(this),
             default: async () => await this.getVersionDefaultValue(),
