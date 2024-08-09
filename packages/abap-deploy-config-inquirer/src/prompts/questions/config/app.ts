@@ -6,7 +6,7 @@ import { defaultAbapRepositoryName, defaultAppDescription } from '../../defaults
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     abapDeployConfigInternalPromptNames,
-    type AbapDeployConfigAnswers,
+    type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions
 } from '../../../types';
 import type { InputQuestion, Question } from 'inquirer';
@@ -17,7 +17,7 @@ import type { InputQuestion, Question } from 'inquirer';
  * @param options - aba deploy config prompt options
  * @returns input question for UI5 ABAP repository
  */
-function getUi5AbapRepoPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswers> {
+function getUi5AbapRepoPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
     return {
         when: (): boolean => showUi5AppDeployConfigQuestion(),
         type: 'input',
@@ -34,11 +34,12 @@ function getUi5AbapRepoPrompt(options: AbapDeployConfigPromptOptions): Question<
             mandatory: true,
             breadcrumb: t('prompts.config.app.ui5AbapRepo.message')
         },
-        default: (previousAnswers: AbapDeployConfigAnswers) => defaultAbapRepositoryName(previousAnswers, options),
+        default: (previousAnswers: AbapDeployConfigAnswersInternal) =>
+            defaultAbapRepositoryName(previousAnswers, options),
         validate: (input: string): string | boolean => validateUi5AbapRepoName(input),
         filter: (input: string): string | undefined =>
             getHostEnvironment() === hostEnvironment.cli ? input?.trim()?.toUpperCase() : input?.trim()
-    } as InputQuestion<AbapDeployConfigAnswers>;
+    } as InputQuestion<AbapDeployConfigAnswersInternal>;
 }
 
 /**
@@ -47,7 +48,7 @@ function getUi5AbapRepoPrompt(options: AbapDeployConfigPromptOptions): Question<
  * @param options - abap deploy config prompt options
  * @returns input question for description
  */
-function getDescriptionPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswers> {
+function getDescriptionPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
     return {
         when: (): boolean => showUi5AppDeployConfigQuestion(),
         type: 'input',
@@ -57,11 +58,11 @@ function getDescriptionPrompt(options: AbapDeployConfigPromptOptions): Question<
             hint: t('prompts.config.app.description.hint'),
             breadcrumb: true
         },
-        default: (previousAnswers: AbapDeployConfigAnswers): string | undefined =>
+        default: (previousAnswers: AbapDeployConfigAnswersInternal): string | undefined =>
             defaultAppDescription(previousAnswers, options),
         filter: (input: string): string | undefined => input?.trim(),
         validate: (input: string): boolean | string => validateAppDescription(input)
-    } as InputQuestion<AbapDeployConfigAnswers>;
+    } as InputQuestion<AbapDeployConfigAnswersInternal>;
 }
 
 /**
@@ -70,6 +71,8 @@ function getDescriptionPrompt(options: AbapDeployConfigPromptOptions): Question<
  * @param options - abap deploy config prompt options
  * @returns list of list of questions for app config prompting
  */
-export function getAppConfigPrompts(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswers>[] {
+export function getAppConfigPrompts(
+    options: AbapDeployConfigPromptOptions
+): Question<AbapDeployConfigAnswersInternal>[] {
     return [getUi5AbapRepoPrompt(options), getDescriptionPrompt(options)];
 }

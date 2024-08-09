@@ -191,14 +191,14 @@ describe('Test abap deploy config inquirer conditions', () => {
     test('should show search package question', () => {
         mockIsFeatureEnabled.mockReturnValueOnce(true);
         expect(
-            defaultOrShowSearchPackageQuestion(true, {
+            defaultOrShowSearchPackageQuestion(false, {
                 packageInputChoice: PackageInputChoices.ListExistingChoice
             })
         ).toBe(true);
 
         // cli
         expect(
-            defaultOrShowSearchPackageQuestion(false, {
+            defaultOrShowSearchPackageQuestion(true, {
                 packageInputChoice: PackageInputChoices.ListExistingChoice
             })
         ).toBe(true);

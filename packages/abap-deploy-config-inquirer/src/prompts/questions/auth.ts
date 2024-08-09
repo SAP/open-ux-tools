@@ -3,7 +3,7 @@ import { showPasswordQuestion, showUsernameQuestion } from '../conditions';
 import { validateCredentials } from '../validators';
 import {
     abapDeployConfigInternalPromptNames,
-    type AbapDeployConfigAnswers,
+    type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions
 } from '../../types';
 import type { InputQuestion, PasswordQuestion, Question } from 'inquirer';
@@ -14,7 +14,7 @@ import type { InputQuestion, PasswordQuestion, Question } from 'inquirer';
  * @param options - abap deploy config prompt options
  * @returns input question for username
  */
-function getUsernamePrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswers> {
+function getUsernamePrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
     return {
         when: (): Promise<boolean> => showUsernameQuestion(options),
         type: 'input',
@@ -23,7 +23,7 @@ function getUsernamePrompt(options: AbapDeployConfigPromptOptions): Question<Aba
         guiOptions: {
             mandatory: true
         }
-    } as InputQuestion<AbapDeployConfigAnswers>;
+    } as InputQuestion<AbapDeployConfigAnswersInternal>;
 }
 
 /**
@@ -32,7 +32,7 @@ function getUsernamePrompt(options: AbapDeployConfigPromptOptions): Question<Aba
  * @param options - abap deploy config prompt options
  * @returns password question for password
  */
-function getPasswordPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswers> {
+function getPasswordPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
     return {
         when: (): boolean => showPasswordQuestion(),
         type: 'password',
@@ -43,9 +43,9 @@ function getPasswordPrompt(options: AbapDeployConfigPromptOptions): Question<Aba
             type: 'login',
             mandatory: true
         },
-        validate: async (input: string, previousAnswers: AbapDeployConfigAnswers): Promise<boolean | string> =>
+        validate: async (input: string, previousAnswers: AbapDeployConfigAnswersInternal): Promise<boolean | string> =>
             await validateCredentials(options, input, previousAnswers)
-    } as PasswordQuestion<AbapDeployConfigAnswers>;
+    } as PasswordQuestion<AbapDeployConfigAnswersInternal>;
 }
 
 /**
@@ -54,6 +54,6 @@ function getPasswordPrompt(options: AbapDeployConfigPromptOptions): Question<Aba
  * @param options - abap deploy config prompt options
  * @returns list of questions for auth prompting
  */
-export function getAuthPrompts(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswers>[] {
+export function getAuthPrompts(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal>[] {
     return [getUsernamePrompt(options), getPasswordPrompt(options)];
 }

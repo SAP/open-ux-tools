@@ -22,6 +22,7 @@ import {
 import * as validatorUtils from '../../src/validator-utils';
 import {
     AbapDeployConfigAnswers,
+    AbapDeployConfigAnswersInternal,
     ClientChoiceValue,
     PackageInputChoices,
     TargetSystemType,
@@ -48,7 +49,6 @@ describe('Test validators', () => {
             const result = validateDestinationQuestion('Dest2', mockDestinations);
             expect(PromptState.abapDeployConfig.destination).toBe('Dest2');
             expect(PromptState.abapDeployConfig.url).toBe('https://mock.url.dest2.com');
-            debugger;
             expect(result).toBe(true);
         });
     });
@@ -306,7 +306,7 @@ describe('Test validators', () => {
         });
 
         it('should return error for invalid package / ui5 abap repo name', async () => {
-            const previousAnswers: AbapDeployConfigAnswers = {};
+            const previousAnswers: AbapDeployConfigAnswersInternal = {};
             let result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, {}, previousAnswers);
             expect(result).toBe(t('errors.validators.transportListPreReqs'));
 
@@ -316,7 +316,7 @@ describe('Test validators', () => {
         });
 
         it('should return true for listing transport when transport request found for given config', async () => {
-            const previousAnswers: AbapDeployConfigAnswers = {
+            const previousAnswers: AbapDeployConfigAnswersInternal = {
                 packageManual: 'ZPACKAGE',
                 ui5AbapRepo: 'ZUI5REPO'
             };
@@ -328,7 +328,7 @@ describe('Test validators', () => {
         });
 
         it('should return errors messages for listing transport when transport request empty or undefined', async () => {
-            const previousAnswers: AbapDeployConfigAnswers = {
+            const previousAnswers: AbapDeployConfigAnswersInternal = {
                 packageManual: 'ZPACKAGE',
                 ui5AbapRepo: 'ZUI5REPO'
             };

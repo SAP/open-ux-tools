@@ -4,7 +4,7 @@ import { t } from '../../i18n';
 import {
     abapDeployConfigInternalPromptNames,
     type AbapDeployConfigPromptOptions,
-    type AbapDeployConfigAnswers
+    type AbapDeployConfigAnswersInternal
 } from '../../types';
 import type { ConfirmQuestion, Question } from 'inquirer';
 
@@ -14,7 +14,7 @@ import type { ConfirmQuestion, Question } from 'inquirer';
  * @param options - abap deploy config prompt options
  * @returns  confirm question for generating the index file
  */
-function getIndexPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswers> {
+function getIndexPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
     return {
         when: (): boolean => showIndexQuestion(options),
         name: abapDeployConfigInternalPromptNames.index,
@@ -24,7 +24,7 @@ function getIndexPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDe
             breadcrumb: t('prompts.confirm.index.hint')
         },
         default: false
-    } as ConfirmQuestion<AbapDeployConfigAnswers>;
+    } as ConfirmQuestion<AbapDeployConfigAnswersInternal>;
 }
 
 /**
@@ -33,7 +33,7 @@ function getIndexPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDe
  * @param options - abap deploy config prompt options
  * @returns confirm question for overwriting the files
  */
-function getOverwritePrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswers> {
+function getOverwritePrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
     return {
         when: (): boolean => showOverwriteQuestion(options),
 
@@ -45,7 +45,7 @@ function getOverwritePrompt(options: AbapDeployConfigPromptOptions): Question<Ab
         },
         default: true,
         validate: (overwrite: boolean): boolean => validateConfirmQuestion(overwrite)
-    } as ConfirmQuestion<AbapDeployConfigAnswers>;
+    } as ConfirmQuestion<AbapDeployConfigAnswersInternal>;
 }
 
 /**
@@ -54,6 +54,6 @@ function getOverwritePrompt(options: AbapDeployConfigPromptOptions): Question<Ab
  * @param options - abap deploy config prompt options
  * @returns list of questions for confirm prompting
  */
-export function getConfirmPrompts(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswers>[] {
+export function getConfirmPrompts(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal>[] {
     return [getIndexPrompt(options), getOverwritePrompt(options)];
 }

@@ -4,7 +4,7 @@ import {
     PackageInputChoices,
     TargetSystemType,
     TransportChoices,
-    type AbapDeployConfigAnswers,
+    type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
     type AbapSystemChoice
 } from '../types';
@@ -43,10 +43,10 @@ export function defaultUrl(options: AbapDeployConfigPromptOptions, targetSystem?
  * @returns default repository name
  */
 export function defaultAbapRepositoryName(
-    previousAnswers: AbapDeployConfigAnswers,
+    previousAnswers: AbapDeployConfigAnswersInternal,
     options: AbapDeployConfigPromptOptions
 ): string | undefined {
-    return previousAnswers.ui5AbapRepo ?? options.existingDeployTaskConfig?.name;
+    return previousAnswers.ui5AbapRepo || options.existingDeployTaskConfig?.name;
 }
 
 /**
@@ -57,10 +57,10 @@ export function defaultAbapRepositoryName(
  * @returns default app description
  */
 export function defaultAppDescription(
-    previousAnswers: AbapDeployConfigAnswers,
+    previousAnswers: AbapDeployConfigAnswersInternal,
     options: AbapDeployConfigPromptOptions
 ): string | undefined {
-    return previousAnswers.description ?? options.existingDeployTaskConfig?.description;
+    return previousAnswers.description || options.existingDeployTaskConfig?.description;
 }
 
 /**
@@ -82,17 +82,17 @@ export function defaultPackageChoice(previousPackageInputChoice?: PackageInputCh
  */
 export function defaultPackage(
     options: AbapDeployConfigPromptOptions,
-    previousAnswers: AbapDeployConfigAnswers
+    previousAnswers: AbapDeployConfigAnswersInternal
 ): string {
     if (PromptState.abapDeployConfig.scp) {
-        return previousAnswers.packageManual ?? options.existingDeployTaskConfig?.package ?? '';
+        return previousAnswers.packageManual || options.existingDeployTaskConfig?.package || '';
     } else {
         let defaultPkg = '';
         // if atoSettings are enabled and operationsType is P (on-premise) we default to $tmp
         if (PromptState.transportAnswers.transportConfig?.getOperationsType() === 'P') {
             defaultPkg = DEFAULT_PACKAGE_ABAP;
         }
-        return previousAnswers.packageManual ?? options.existingDeployTaskConfig?.package ?? defaultPkg;
+        return previousAnswers.packageManual || options.existingDeployTaskConfig?.package || defaultPkg;
     }
 }
 
@@ -135,7 +135,7 @@ export function defaultTransportListChoice(numTransportListChoice?: number) {
  */
 export function defaultTransportRequestNumber(
     options: AbapDeployConfigPromptOptions,
-    previousAnswers: AbapDeployConfigAnswers
+    previousAnswers: AbapDeployConfigAnswersInternal
 ): string | undefined {
-    return previousAnswers.transportManual ?? options.existingDeployTaskConfig?.transport;
+    return previousAnswers.transportManual || options.existingDeployTaskConfig?.transport;
 }

@@ -11,7 +11,7 @@ import {
     TargetSystemType,
     TransportChoices,
     type AbapSystemChoice,
-    type AbapDeployConfigAnswers,
+    type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
     type BackendTarget
 } from '../types';
@@ -224,7 +224,7 @@ export function getTransportChoices(): ListChoiceOptions[] {
  */
 export function updateGeneratorUrl(
     options: AbapDeployConfigPromptOptions,
-    previousAnswers: AbapDeployConfigAnswers,
+    previousAnswers: AbapDeployConfigAnswersInternal,
     destinations?: Destinations
 ): void {
     let destinationUrl: string | undefined;
@@ -255,7 +255,7 @@ export function updateGeneratorUrl(
 export async function getPackageChoices(
     isCli: boolean,
     input: string,
-    previousAnswers: AbapDeployConfigAnswers,
+    previousAnswers: AbapDeployConfigAnswersInternal,
     options: AbapDeployConfigPromptOptions
 ): Promise<{ packages: string[]; morePackageResultsMsg: string }> {
     let packages;

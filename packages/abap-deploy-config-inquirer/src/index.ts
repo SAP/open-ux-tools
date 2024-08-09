@@ -4,7 +4,7 @@ import { PromptState } from './prompts/prompt-state';
 import { getAbapDeployConfigQuestions } from './prompts';
 import LoggerHelper from './logger-helper';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
-import type { AbapDeployConfigAnswers, AbapDeployConfigPromptOptions } from './types';
+import type { AbapDeployConfigAnswers, AbapDeployConfigPromptOptions, AbapDeployConfigQuestion } from './types';
 
 /**
  * Get the inquirer prompts for abap deploy config.
@@ -16,7 +16,10 @@ import type { AbapDeployConfigAnswers, AbapDeployConfigPromptOptions } from './t
 async function getPrompts(
     promptOptions?: AbapDeployConfigPromptOptions,
     logger?: Logger
-): Promise<{ prompts: any[]; answers: Partial<AbapDeployConfigAnswers> }> {
+): Promise<{
+    prompts: AbapDeployConfigQuestion[];
+    answers: Partial<AbapDeployConfigAnswers>;
+}> {
     await initI18n();
     LoggerHelper.logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/abap-deploy-config-inquirer' });
 

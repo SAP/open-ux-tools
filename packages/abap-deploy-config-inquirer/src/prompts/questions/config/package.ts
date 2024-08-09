@@ -12,7 +12,7 @@ import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-sha
 import {
     abapDeployConfigInternalPromptNames,
     type PackageInputChoices,
-    type AbapDeployConfigAnswers,
+    type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions
 } from '../../../types';
 import type { InputQuestion, ListQuestion, Question } from 'inquirer';
@@ -24,7 +24,7 @@ import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
  * @param options - abap deploy config prompt options
  * @returns list of list of questions for package prompting
  */
-export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswers>[] {
+export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal>[] {
     let packageInputChoiceValid: boolean | string;
     let morePackageResultsMsg = '';
     const isCli = getHostEnvironment() === hostEnvironment.cli;
@@ -39,7 +39,7 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
                 applyDefaultWhenDirty: true
             },
             choices: () => getPackageInputChoices(),
-            default: (previousAnswers: AbapDeployConfigAnswers): string =>
+            default: (previousAnswers: AbapDeployConfigAnswersInternal): string =>
                 defaultPackageChoice(previousAnswers.packageInputChoice),
             validate: async (input: PackageInputChoices): Promise<boolean | string> => {
                 packageInputChoiceValid = await validatePackageChoiceInput(input, options, {
@@ -49,9 +49,9 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
                 });
                 return packageInputChoiceValid;
             }
-        } as ListQuestion<AbapDeployConfigAnswers>,
+        } as ListQuestion<AbapDeployConfigAnswersInternal>,
         {
-            when: async (previousAnswers: AbapDeployConfigAnswers): Promise<boolean> => {
+            when: async (previousAnswers: AbapDeployConfigAnswersInternal): Promise<boolean> => {
                 if (isCli) {
                     await validatePackageChoiceInputForCli(
                         options,
@@ -70,7 +70,7 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
             name: abapDeployConfigInternalPromptNames.packageCliExecution
         },
         {
-            when: (previousAnswers: AbapDeployConfigAnswers): boolean =>
+            when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
                 defaultOrShowManualPackageQuestion(isCli, previousAnswers),
             type: 'input',
             name: abapDeployConfigInternalPromptNames.packageManual,
@@ -80,11 +80,12 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
                 mandatory: true,
                 breadcrumb: true
             },
-            default: (previousAnswers: AbapDeployConfigAnswers): string => defaultPackage(options, previousAnswers),
+            default: (previousAnswers: AbapDeployConfigAnswersInternal): string =>
+                defaultPackage(options, previousAnswers),
             validate: (input: string): boolean | string => validatePackage(input)
-        } as InputQuestion<AbapDeployConfigAnswers>,
+        } as InputQuestion<AbapDeployConfigAnswersInternal>,
         {
-            when: (previousAnswers: AbapDeployConfigAnswers): boolean =>
+            when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
                 packageInputChoiceValid === true && defaultOrShowSearchPackageQuestion(isCli, previousAnswers),
             type: 'autocomplete',
             name: abapDeployConfigInternalPromptNames.packageAutocomplete,
@@ -96,13 +97,16 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
                 mandatory: true,
                 breadcrumb: true
             },
-            source: async (previousAnswers: AbapDeployConfigAnswers, input: string): Promise<string[] | undefined> => {
+            source: async (
+                previousAnswers: AbapDeployConfigAnswersInternal,
+                input: string
+            ): Promise<string[] | undefined> => {
                 const results = await getPackageChoices(isCli, input, previousAnswers, options);
                 morePackageResultsMsg = results.morePackageResultsMsg;
                 return results.packages;
             },
             additionalInfo: () => morePackageResultsMsg
-        } as AutocompleteQuestionOptions<AbapDeployConfigAnswers>
+        } as AutocompleteQuestionOptions<AbapDeployConfigAnswersInternal>
     ];
 
     return questions;

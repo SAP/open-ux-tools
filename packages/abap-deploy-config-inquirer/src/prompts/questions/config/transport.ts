@@ -18,7 +18,7 @@ import {
 } from '../../defaults';
 import {
     abapDeployConfigInternalPromptNames,
-    type AbapDeployConfigAnswers,
+    type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
     type TransportChoices
 } from '../../../types';
@@ -33,12 +33,13 @@ import { useCreateTrDuringDeploy } from '../../../utils';
  */
 export function getTransportRequestPrompts(
     options: AbapDeployConfigPromptOptions
-): Question<AbapDeployConfigAnswers>[] {
+): Question<AbapDeployConfigAnswersInternal>[] {
     let transportInputChoice: TransportChoices;
 
-    const questions: Question<AbapDeployConfigAnswers>[] = [
+    const questions: Question<AbapDeployConfigAnswersInternal>[] = [
         {
-            when: (previousAnswers: AbapDeployConfigAnswers): boolean => showTransportInputChoice(previousAnswers),
+            when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
+                showTransportInputChoice(previousAnswers),
             type: 'list',
             name: abapDeployConfigInternalPromptNames.transportInputChoice,
             message: t('prompts.config.transport.transportInputChoice.message'),
@@ -46,11 +47,11 @@ export function getTransportRequestPrompts(
                 applyDefaultWhenDirty: true
             },
             choices: () => getTransportChoices(),
-            default: (previousAnswers: AbapDeployConfigAnswers): string =>
+            default: (previousAnswers: AbapDeployConfigAnswersInternal): string =>
                 defaultTransportRequestChoice(previousAnswers.transportInputChoice, useCreateTrDuringDeploy(options)),
             validate: async (
                 input: TransportChoices,
-                previousAnswers: AbapDeployConfigAnswers
+                previousAnswers: AbapDeployConfigAnswersInternal
             ): Promise<boolean | string> => {
                 const result = validateTransportChoiceInput(
                     input,
@@ -62,11 +63,11 @@ export function getTransportRequestPrompts(
                 transportInputChoice = input;
                 return result;
             }
-        } as ListQuestion<AbapDeployConfigAnswers>,
+        } as ListQuestion<AbapDeployConfigAnswersInternal>,
         {
             // Validate is not triggered in CLI mode for transportInputChoice.
             // Use this hidden question for calling ADT services.
-            when: async (previousAnswers: AbapDeployConfigAnswers): Promise<boolean> => {
+            when: async (previousAnswers: AbapDeployConfigAnswersInternal): Promise<boolean> => {
                 if (getHostEnvironment() === hostEnvironment.cli) {
                     const result = await validateTransportChoiceInput(
                         previousAnswers.transportInputChoice,
@@ -84,15 +85,15 @@ export function getTransportRequestPrompts(
             name: abapDeployConfigInternalPromptNames.transportCliExecution
         },
         {
-            when: (previousAnswers: AbapDeployConfigAnswers): boolean =>
+            when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
                 defaultOrShowTransportCreatedQuestion(previousAnswers),
             name: abapDeployConfigInternalPromptNames.transportCreated,
             type: 'input',
             default: () => PromptState.transportAnswers.newTransportNumber,
             message: t('prompts.config.transport.transportCreated.message')
-        } as InputQuestion<AbapDeployConfigAnswers>,
+        } as InputQuestion<AbapDeployConfigAnswersInternal>,
         {
-            when: (previousAnswers: AbapDeployConfigAnswers): boolean =>
+            when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
                 defaultOrShowTransportListQuestion(previousAnswers),
             type: 'list',
             name: abapDeployConfigInternalPromptNames.transportFromList,
@@ -103,9 +104,9 @@ export function getTransportRequestPrompts(
             },
             choices: () => PromptState.transportAnswers.transportList?.map(transportName),
             default: () => defaultTransportListChoice(PromptState?.transportAnswers.transportList?.length)
-        } as ListQuestion<AbapDeployConfigAnswers>,
+        } as ListQuestion<AbapDeployConfigAnswersInternal>,
         {
-            when: (previousAnswers: AbapDeployConfigAnswers): boolean =>
+            when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
                 defaultOrShowManualTransportQuestion(previousAnswers),
             type: 'input',
             name: abapDeployConfigInternalPromptNames.transportManual,
@@ -114,12 +115,12 @@ export function getTransportRequestPrompts(
                 hint: t('prompts.config.transport.common.provideTransportRequest'),
                 breadcrumb: t('prompts.config.transport.common.transportRequest')
             },
-            default: (previousAnswers: AbapDeployConfigAnswers) =>
+            default: (previousAnswers: AbapDeployConfigAnswersInternal) =>
                 defaultTransportRequestNumber(options, previousAnswers),
-            validate: (input: string, previousAnswers: AbapDeployConfigAnswers): boolean | string =>
+            validate: (input: string, previousAnswers: AbapDeployConfigAnswersInternal): boolean | string =>
                 validateTransportQuestion(input, previousAnswers),
             filter: (input: string): string => input?.trim()?.toUpperCase()
-        } as InputQuestion<AbapDeployConfigAnswers>
+        } as InputQuestion<AbapDeployConfigAnswersInternal>
     ];
 
     return questions;

@@ -12,7 +12,7 @@ import {
     PackageInputChoices,
     TargetSystemType,
     TransportChoices,
-    type AbapDeployConfigAnswers,
+    type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
     type TransportListItem
 } from '../types';
@@ -33,7 +33,7 @@ export function showUrlQuestion(targetSystem?: string): boolean {
  * @param previousAnswers - previous answers
  * @returns boolean
  */
-export function showScpQuestion(previousAnswers: AbapDeployConfigAnswers): boolean {
+export function showScpQuestion(previousAnswers: AbapDeployConfigAnswersInternal): boolean {
     if (
         (!isAppStudio() && !previousAnswers.targetSystem) ||
         (showUrlQuestion(previousAnswers.targetSystem) && previousAnswers.url?.length === 0)
@@ -94,7 +94,7 @@ export function showClientChoiceQuestion(
  * @returns boolean
  */
 export function showClientQuestion(
-    previousAnswers: AbapDeployConfigAnswers,
+    previousAnswers: AbapDeployConfigAnswersInternal,
     options?: AbapDeployConfigPromptOptions,
     isS4HanaCloudSystem?: boolean
 ): boolean {
@@ -198,7 +198,10 @@ export function showPackageInputChoiceQuestion(): boolean {
  * @param previousAnswers - previous answers
  * @returns boolean
  */
-export function defaultOrShowManualPackageQuestion(isCli: boolean, previousAnswers: AbapDeployConfigAnswers): boolean {
+export function defaultOrShowManualPackageQuestion(
+    isCli: boolean,
+    previousAnswers: AbapDeployConfigAnswersInternal
+): boolean {
     // Until the version of YUI installed supports auto-complete we must continue to show a manual input for packages
     return (
         ((!isCli && !isFeatureEnabled('enableAutocompleteUIPrompt')) ||
@@ -214,10 +217,13 @@ export function defaultOrShowManualPackageQuestion(isCli: boolean, previousAnswe
  * @param previousAnswers - previous answers
  * @returns boolean
  */
-export function defaultOrShowSearchPackageQuestion(isCli: boolean, previousAnswers: AbapDeployConfigAnswers): boolean {
+export function defaultOrShowSearchPackageQuestion(
+    isCli: boolean,
+    previousAnswers: AbapDeployConfigAnswersInternal
+): boolean {
     // Only show the autocomplete prompt when the autocomplete prompt is supported; CLI or YUI specific version
     return (
-        (!isCli || isFeatureEnabled('enableAutocompleteUIPrompt')) &&
+        (isCli || isFeatureEnabled('enableAutocompleteUIPrompt')) &&
         previousAnswers.packageInputChoice === PackageInputChoices.ListExistingChoice &&
         defaultOrShowPackageQuestion()
     );
@@ -229,7 +235,7 @@ export function defaultOrShowSearchPackageQuestion(isCli: boolean, previousAnswe
  * @param previousAnswers - previous answers
  * @returns boolean
  */
-function defaultOrShowTransportQuestion(previousAnswers: AbapDeployConfigAnswers): boolean {
+function defaultOrShowTransportQuestion(previousAnswers: AbapDeployConfigAnswersInternal): boolean {
     if (PromptState.transportAnswers.transportConfig?.getDefaultTransport() !== undefined) {
         previousAnswers.transport = PromptState.transportAnswers.transportConfig.getDefaultTransport();
         return false;
@@ -247,7 +253,7 @@ function defaultOrShowTransportQuestion(previousAnswers: AbapDeployConfigAnswers
  * @param previousAnswers - previous answers
  * @returns boolean
  */
-export function showTransportInputChoice(previousAnswers: AbapDeployConfigAnswers): boolean {
+export function showTransportInputChoice(previousAnswers: AbapDeployConfigAnswersInternal): boolean {
     return defaultOrShowTransportQuestion(previousAnswers);
 }
 
@@ -267,7 +273,7 @@ function isTransportListEmpty(transportList?: TransportListItem[]): boolean {
  * @param previousAnswers - previous answers
  * @returns boolean
  */
-export function defaultOrShowTransportListQuestion(previousAnswers: AbapDeployConfigAnswers): boolean {
+export function defaultOrShowTransportListQuestion(previousAnswers: AbapDeployConfigAnswersInternal): boolean {
     const showQuestion = defaultOrShowTransportQuestion(previousAnswers);
     if (!showQuestion) {
         return false;
@@ -285,7 +291,7 @@ export function defaultOrShowTransportListQuestion(previousAnswers: AbapDeployCo
  * @param previousAnswers - previous answers
  * @returns boolean
  */
-export function defaultOrShowTransportCreatedQuestion(previousAnswers: AbapDeployConfigAnswers): boolean {
+export function defaultOrShowTransportCreatedQuestion(previousAnswers: AbapDeployConfigAnswersInternal): boolean {
     const showQuestion = defaultOrShowTransportQuestion(previousAnswers);
     if (!showQuestion) {
         return false;
@@ -303,7 +309,7 @@ export function defaultOrShowTransportCreatedQuestion(previousAnswers: AbapDeplo
  * @param previousAnswers - previous answers
  * @returns boolean
  */
-export function defaultOrShowManualTransportQuestion(previousAnswers: AbapDeployConfigAnswers): boolean {
+export function defaultOrShowManualTransportQuestion(previousAnswers: AbapDeployConfigAnswersInternal): boolean {
     return (
         defaultOrShowTransportQuestion(previousAnswers) &&
         previousAnswers.transportInputChoice === TransportChoices.EnterManualChoice

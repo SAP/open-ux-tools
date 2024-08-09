@@ -6,7 +6,7 @@ import { t } from './i18n';
 import LoggerHelper from './logger-helper';
 import { listPackages } from './validator-utils';
 import type {
-    AbapDeployConfigAnswers,
+    AbapDeployConfigAnswersInternal,
     AbapDeployConfigPromptOptions,
     Credentials,
     InitTransportConfigResult,
@@ -169,7 +169,7 @@ export async function queryPackages(
  * @param previousAnswers - previous answers
  * @returns package name
  */
-export function getPackageAnswer(previousAnswers?: AbapDeployConfigAnswers): string {
+export function getPackageAnswer(previousAnswers?: AbapDeployConfigAnswersInternal): string {
     // Older versions of YUI do not have a packageInputChoice question
     return previousAnswers?.packageInputChoice === PackageInputChoices.ListExistingChoice
         ? previousAnswers?.packageAutocomplete ?? ''

@@ -20,7 +20,7 @@ import {
     TargetSystemType,
     TransportChoices,
     type SystemConfig,
-    type AbapDeployConfigAnswers,
+    type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
     type AbapSystemChoice
 } from '../types';
@@ -221,7 +221,7 @@ export function validateClient(input: string): boolean | string {
 export async function validateCredentials(
     options: AbapDeployConfigPromptOptions,
     input: string,
-    previousAnswers: AbapDeployConfigAnswers
+    previousAnswers: AbapDeployConfigAnswersInternal
 ): Promise<boolean | string> {
     if (!input || !previousAnswers.username) {
         return t('errors.requireCredentials');
@@ -376,7 +376,7 @@ async function handleCreateNewTransportChoice(
     options: AbapDeployConfigPromptOptions,
     systemConfig: SystemConfig,
     input?: TransportChoices,
-    previousAnswers?: AbapDeployConfigAnswers,
+    previousAnswers?: AbapDeployConfigAnswersInternal,
     validateInputChanged?: boolean,
     prevTransportInputChoice?: TransportChoices
 ): Promise<boolean | string> {
@@ -430,7 +430,7 @@ async function handleListExistingTransportChoice(
     packageAnswer: string,
     options: AbapDeployConfigPromptOptions,
     systemConfig: SystemConfig,
-    previousAnswers?: AbapDeployConfigAnswers
+    previousAnswers?: AbapDeployConfigAnswersInternal
 ): Promise<boolean | string> {
     if (!packageAnswer || !previousAnswers?.ui5AbapRepo) {
         return t('errors.validators.transportListPreReqs');
@@ -466,7 +466,7 @@ async function handleListExistingTransportChoice(
 export async function validateTransportChoiceInput(
     input?: TransportChoices,
     options: AbapDeployConfigPromptOptions = {},
-    previousAnswers?: AbapDeployConfigAnswers,
+    previousAnswers?: AbapDeployConfigAnswersInternal,
     validateInputChanged?: boolean,
     prevTransportInputChoice?: TransportChoices
 ): Promise<boolean | string> {
@@ -505,7 +505,10 @@ export async function validateTransportChoiceInput(
  * @param previousAnswers - previous answers
  * @returns boolean or error message as a string
  */
-export function validateTransportQuestion(input: string, previousAnswers?: AbapDeployConfigAnswers): boolean | string {
+export function validateTransportQuestion(
+    input: string,
+    previousAnswers?: AbapDeployConfigAnswersInternal
+): boolean | string {
     const packageAnswer = getPackageAnswer(previousAnswers);
     if (!/^[$LlTt]/.exec(packageAnswer) && !input?.trim()) {
         return t('prompts.config.transport.provideTransportRequest');

@@ -1,4 +1,4 @@
-import type { AbapDeployConfigAnswers, TransportAnswers } from '../types';
+import type { AbapDeployConfigAnswersInternal, TransportAnswers } from '../types';
 
 /**
  * Much of the values returned by the config inquirer prompting are derived from prompt answers and are not direct answer values.
@@ -6,15 +6,15 @@ import type { AbapDeployConfigAnswers, TransportAnswers } from '../types';
  * across prompts statically for the lifespan of the prompting session.
  */
 export class PromptState {
-    private static _abapDeployConfig: Partial<AbapDeployConfigAnswers> = {};
+    private static _abapDeployConfig: Partial<AbapDeployConfigAnswersInternal> = {};
     private static _transportAnswers: TransportAnswers = {};
 
     /**
      * Returns the current state of the abap deploy config answers.
      *
-     * @returns {Partial<AbapDeployConfigAnswers>} abap deploy config answers
+     * @returns {Partial<AbapDeployConfigAnswersInternal>} abap deploy config answers
      */
-    public static get abapDeployConfig(): Partial<AbapDeployConfigAnswers> {
+    public static get abapDeployConfig(): Partial<AbapDeployConfigAnswersInternal> {
         return this._abapDeployConfig;
     }
 
@@ -30,9 +30,9 @@ export class PromptState {
     /**
      * Sets the current state of the abap deploy config answers.
      *
-     * @param {Partial<AbapDeployConfigAnswers>} value - abap deploy config
+     * @param {Partial<AbapDeployConfigAnswersInternal>} value - abap deploy config
      */
-    public static set abapDeployConfig(value: Partial<AbapDeployConfigAnswers>) {
+    public static set abapDeployConfig(value: Partial<AbapDeployConfigAnswersInternal>) {
         this._abapDeployConfig = value;
     }
 
@@ -47,7 +47,7 @@ export class PromptState {
 
     static resetAbapDeployConfig(): void {
         Object.keys(PromptState._abapDeployConfig).forEach((key) => {
-            PromptState._abapDeployConfig[key as keyof AbapDeployConfigAnswers] = undefined;
+            PromptState._abapDeployConfig[key as keyof AbapDeployConfigAnswersInternal] = undefined;
         });
     }
 

@@ -32,6 +32,14 @@ export interface DeployTaskConfig {
     [key: string]: unknown;
 }
 
+/**
+ * AbapDeployConfigPromptOptions
+ *
+ * @param backendTarget - the backend target which may have been used to generate the application (useful for default values)
+ * @param existingDeployTaskConfig - the existing deploy task configuration, will be used to prefill certain prompt answers
+ * @param showOverwriteQuestion - whether to show the overwrite question (this can be determined by the caller)
+ * @param indexGenerationAllowed - whether generating an index.html is allowed
+ */
 export interface AbapDeployConfigPromptOptions {
     backendTarget?: BackendTarget;
     existingDeployTaskConfig?: DeployTaskConfig;
@@ -88,13 +96,21 @@ export interface TransportAnswers {
 }
 
 export interface AbapDeployConfigAnswers {
-    abort?: boolean;
     destination?: string;
     targetSystem?: string;
     url?: string;
     client?: string;
-    clientChoice?: string;
     scp?: boolean;
+    ui5AbapRepo?: string;
+    description?: string;
+    package?: string;
+    transport?: string;
+    index?: boolean;
+    overwrite?: boolean;
+}
+
+export interface AbapDeployConfigAnswersInternal extends AbapDeployConfigAnswers {
+    clientChoice?: string;
     username?: string;
     isS4HC?: boolean;
     packageInputChoice?: PackageInputChoices;
@@ -102,12 +118,7 @@ export interface AbapDeployConfigAnswers {
     packageAutocomplete?: string;
     transportInputChoice?: TransportChoices;
     transportManual?: string;
-    ui5AbapRepo?: string; // reconciles to upper case
-    description?: string;
-    package?: string;
-    transport?: string;
-    index?: boolean;
-    overwrite?: boolean;
+    abort?: boolean;
 }
 
 export interface TransportListItem {
@@ -163,4 +174,4 @@ export enum TransportChoices {
     CreateDuringDeployChoice = 'CreateDuringDeployChoice'
 }
 
-export type AbapDeployConfigQuestion = YUIQuestion<AbapDeployConfigAnswers>;
+export type AbapDeployConfigQuestion = YUIQuestion<AbapDeployConfigAnswersInternal>;
