@@ -1,8 +1,10 @@
-import type { CustomMiddleware } from '@sap-ux/ui5-config';
-import * as mockFs from 'fs';
-import { getVariant, getAdpConfig } from '../../../src/base/helper';
 import { join } from 'path';
+import * as mockFs from 'fs';
+
 import { UI5Config } from '@sap-ux/ui5-config';
+import type { CustomMiddleware } from '@sap-ux/ui5-config';
+
+import { getVariant, getAdpConfig } from '../../../src/base/helper';
 
 jest.mock('fs');
 

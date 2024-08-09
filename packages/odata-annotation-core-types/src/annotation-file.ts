@@ -1,4 +1,4 @@
-import type { Range } from 'vscode-languageserver-types';
+import type { Range } from '@sap-ux/text-document-utils';
 
 export interface Node {
     type: string;

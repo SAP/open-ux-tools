@@ -5,7 +5,7 @@ import {
     getIndentLevel,
     positionContainedStrict,
     indent
-} from '../src/position';
+} from '@sap-ux/text-document-utils';
 import { Position, printOptions } from '@sap-ux/odata-annotation-core-types';
 
 describe('position.ts', () => {

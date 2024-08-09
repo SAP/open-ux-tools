@@ -10,6 +10,7 @@ export {
     isCapNodeJsProject,
     getCapEnvironment,
     readCapServiceMetadataEdmx,
+    getCapServiceName,
     toReferenceUri,
     clearCdsModuleCache
 } from './cap';

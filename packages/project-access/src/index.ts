@@ -37,6 +37,7 @@ export {
     loadModuleFromProject,
     readCapServiceMetadataEdmx,
     readUi5Yaml,
+    getCapServiceName,
     refreshSpecificationDistTags,
     toReferenceUri,
     filterDataSourcesByType,

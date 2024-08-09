@@ -126,7 +126,7 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
         const allCommands = this.rta.getCommandStack().getCommands();
 
         return allCommands.some((command: FlexCommand) => {
-            if (command?.getProperty('name') === 'composite') {
+            if (typeof command.getCommands === 'function') {
                 const addXmlCommand = command
                     .getCommands()
                     .find((c: FlexCommand) => c?.getProperty('name') === 'addXMLAtExtensionPoint');

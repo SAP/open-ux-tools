@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 1.17.3
+
+### Patch Changes
+
+-   0084205: chore: update sanitize-html and transitive dependencies
+
+## 1.17.2
+
+### Patch Changes
+
+-   88c8bf6: export interface for UISelectableOption(ISelectableOption from fluent-ui) which support generic type for "data" property
+
 ## 1.17.1
 
 ### Patch Changes

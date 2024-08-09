@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-writer
 
+## 0.22.2
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/mockserver-config-writer@0.6.2
+
 ## 0.22.1
 
 ### Patch Changes
