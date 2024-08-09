@@ -16,19 +16,15 @@ function getKeytarPaths(insiders: boolean): string[] {
         fs
             .readdirSync(vscodeExtensionsPath)
             .filter((fn) => fn.startsWith('sapse.sap-ux-application-modeler-extension')) ?? [];
-    return (
-        (
-            AppMFoldersVscode.map((AppMFolderVscode) => {
-                const extensionPath = join(vscodeExtensionsPath, AppMFolderVscode);
-                const keytarPackageJsonPath = join(extensionPath, 'node_modules/keytar/package.json');
-                if (fs.existsSync(keytarPackageJsonPath)) {
-                    return dirname(keytarPackageJsonPath);
-                } else {
-                    return null;
-                }
-            }) as string[]
-        ).filter((dirname) => dirname !== null) ?? ([] as string[])
-    );
+    return AppMFoldersVscode.map((AppMFolderVscode) => {
+        const extensionPath = join(vscodeExtensionsPath, AppMFolderVscode);
+        const keytarPackageJsonPath = join(extensionPath, 'node_modules/keytar/package.json');
+        if (fs.existsSync(keytarPackageJsonPath)) {
+            return dirname(keytarPackageJsonPath);
+        } else {
+            return '';
+        }
+    }).filter((dirname) => dirname !== '');
 }
 
 function getKeytar(log: Logger): typeof Keytar | undefined {
