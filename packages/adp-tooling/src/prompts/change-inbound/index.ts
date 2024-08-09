@@ -16,9 +16,11 @@ export function getPrompts(): YUIQuestion<InboundChangeAnswers>[] {
             guiOptions: {
                 hint: t('tooltips.title')
             },
+            store: false,
             validate: (value: string, answers: InboundChangeAnswers) =>
-                answers.subTitle || answers.icon !== '' || value ? true : t('missingIconOrTitleOrSubtitle'),
-            store: false
+                answers.subtitle !== '' || answers.icon !== '' || value !== ''
+                    ? true
+                    : t('validators.missingIconOrTitleOrSubtitle')
         } as InputQuestion<InboundChangeAnswers>,
         {
             type: 'input',
@@ -27,9 +29,11 @@ export function getPrompts(): YUIQuestion<InboundChangeAnswers>[] {
             guiOptions: {
                 hint: t('tooltips.subtitle')
             },
+            store: false,
             validate: (value: string, answers: InboundChangeAnswers) =>
-                value || answers.icon !== '' || answers.title !== '' ? true : t('missingIconOrTitleOrSubtitle'),
-            store: false
+                value !== '' || answers.icon !== '' || answers.title !== ''
+                    ? true
+                    : t('validators.missingIconOrTitleOrSubtitle')
         } as InputQuestion<InboundChangeAnswers>,
         {
             type: 'input',
@@ -40,7 +44,9 @@ export function getPrompts(): YUIQuestion<InboundChangeAnswers>[] {
             },
             store: false,
             validate: (value: string, answers: InboundChangeAnswers) =>
-                answers.subTitle || value || answers.title !== '' ? true : t('missingIconOrTitleOrSubtitle')
+                answers.subtitle !== '' || value !== '' || answers.title !== ''
+                    ? true
+                    : t('validators.missingIconOrTitleOrSubtitle')
         } as InputQuestion<InboundChangeAnswers>
     ];
 }
