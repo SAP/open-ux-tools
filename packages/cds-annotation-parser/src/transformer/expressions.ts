@@ -1,4 +1,4 @@
-import type { Position, Range } from 'vscode-languageserver-types';
+import type { Position, Range } from '@sap-ux/text-document-utils';
 
 import { Edm, isBefore, positionContained } from '@sap-ux/odata-annotation-core';
 import type {
