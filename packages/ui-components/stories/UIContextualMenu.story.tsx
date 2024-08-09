@@ -95,6 +95,19 @@ export const ContextualMenu = (): JSX.Element => {
                     </Stack>
                 </Stack>
             </Stack>
+            <Stack tokens={{ childrenGap: 16 }}>
+                <Text variant={'large'} block>
+                    As menuProps with beak
+                </Text>
+                <Stack horizontal tokens={stackTokens}>
+                    <Stack tokens={{ childrenGap: 8 }}>
+                        <Text variant={'small'} block>
+                            UIIconButton
+                        </Text>
+                        <UIIconButton iconProps={{ iconName: UiIcons.Undo }} menuProps={{ items, isBeakVisible: true }} />
+                    </Stack>
+                </Stack>
+            </Stack>
         </Stack>
     );
 };

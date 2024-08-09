@@ -36,7 +36,7 @@
     background: $menu-background;
     border: 1px solid $menu-border-color;
     border-radius: $menu-border-radius;
-    overflow: hidden;
+    overflow: visible;
     // Apply workaround. resolves callout bottom border flickering during animation of opacity
     box-shadow: transparent 0px 0px 1px;
 

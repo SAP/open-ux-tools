@@ -1,5 +1,12 @@
 import React from 'react';
-import type { IContextualMenuStyles, IContextualMenuItemStyles, ICalloutContentStyles } from '@fluentui/react';
+import type {
+    IContextualMenuStyles,
+    IContextualMenuItemStyles,
+    ICalloutContentStyles,
+    IRawStyle,
+    IStyleFunctionOrObject,
+    ICalloutContentStyleProps
+} from '@fluentui/react';
 import { ContextualMenu, ContextualMenuItemType, IContextualMenuProps, IContextualMenuItem } from '@fluentui/react';
 export { IContextualMenuItem } from '@fluentui/react';
 
@@ -10,6 +17,29 @@ export { ContextualMenuItemType as UIContextualMenuItemType };
 import { UiIcons } from '../Icons';
 
 import './UIContextualMenu.scss';
+import '../../styles/_shadows.scss';
+const CALLOUT_STYLES = {
+    background: 'var(--vscode-editorWidget-background)',
+    boxShadow: 'var(--ui-box-shadow-small)',
+    text: 'var(--vscode-editorSuggestWidget-foreground)',
+    font: 'var(--vscode-font-family)',
+    borderRadius: 4
+};
+/* Method receives callout style and extracts into raw styles object.
+ *
+ * @param {IStyleFunctionOrObject<ICalloutContentStyleProps, ICalloutContentStyles> | undefined} styles Callout styles.
+ * @param {keyof ICalloutContentStyles} name Callout style type.
+ * @returns {IRawStyle} Raw style object.
+ */
+const extractRawStyles = (
+    styles: IStyleFunctionOrObject<ICalloutContentStyleProps, ICalloutContentStyles> | undefined,
+    name: keyof ICalloutContentStyles
+): IRawStyle => {
+    if (typeof styles === 'object' && typeof styles[name] === 'object') {
+        return styles[name] as IRawStyle;
+    }
+    return {};
+};
 
 const submenuIconProps = { iconName: UiIcons.ArrowDown };
 
@@ -24,6 +54,10 @@ export function getUIcontextualMenuStyles(): Partial<IContextualMenuStyles> {
             minWidth: 190,
             background: 'var(--vscode-input-background)',
             border: 0
+        },
+        container: {
+            paddingTop: 2,
+            paddingBottom: 2
         }
     };
 }
@@ -33,7 +67,16 @@ export function getUIcontextualMenuStyles(): Partial<IContextualMenuStyles> {
  *
  * @returns - consumable styles property for ContextualMenuItem
  */
-export function getUIContextualMenuItemStyles(): Partial<IContextualMenuItemStyles> {
+export function getUIContextualMenuItemStyles(
+    props: UIIContextualMenuProps,
+    currentItemHasSubmenu: boolean,
+    itemsHaveSubMenu: boolean
+): Partial<IContextualMenuItemStyles> {
+    const { iconToLeft } = props;
+    let padding: number | undefined = undefined;
+    if (iconToLeft && itemsHaveSubMenu) {
+        padding = currentItemHasSubmenu ? 10 : 25;
+    }
     return {
         checkmarkIcon: {
             color: 'var(--vscode-foreground)',
@@ -49,7 +92,8 @@ export function getUIContextualMenuItemStyles(): Partial<IContextualMenuItemStyl
         label: {
             fontFamily: 'var(--vscode-font-family)',
             lineHeight: 18,
-            height: 18
+            height: 18,
+            paddingLeft: padding
         },
         linkContent: {
             fontSize: 13,
@@ -58,7 +102,7 @@ export function getUIContextualMenuItemStyles(): Partial<IContextualMenuItemStyl
         subMenuIcon: {
             height: 16,
             width: 16,
-            transform: 'rotate(-90deg)',
+            transform: iconToLeft ? 'rotate(90deg)' : 'rotate(-90deg)',
             transformOrigin: '50% 50%',
             lineHeight: 0
         }
@@ -71,10 +115,27 @@ export function getUIContextualMenuItemStyles(): Partial<IContextualMenuItemStyl
  * @param {number} maxWidth
  * @returns consumable styles property for Callout
  */
-export function getUIcontextualMenuCalloutStyles(maxWidth?: number): Partial<ICalloutContentStyles> {
+export function getUIcontextualMenuCalloutStyles(
+    props: IContextualMenuProps,
+    maxWidth?: number
+): Partial<ICalloutContentStyles> {
     return {
         root: {
-            maxWidth: maxWidth
+            maxWidth: maxWidth,
+            boxShadow: CALLOUT_STYLES.boxShadow,
+            backgroundColor: 'transparent',
+            borderRadius: CALLOUT_STYLES.borderRadius,
+            ...extractRawStyles(props.styles, 'root')
+        },
+        beak: {
+            backgroundColor: CALLOUT_STYLES.background,
+            boxShadow: CALLOUT_STYLES.boxShadow,
+            ...extractRawStyles(props.styles, 'beak')
+        },
+        beakCurtain: {
+            backgroundColor: CALLOUT_STYLES.background,
+            borderRadius: CALLOUT_STYLES.borderRadius,
+            ...extractRawStyles(props.styles, 'beakCurtain')
         }
     };
 }
@@ -86,20 +147,22 @@ export function getUIcontextualMenuCalloutStyles(maxWidth?: number): Partial<ICa
  * @param items - IContextualMenu list
  * @returns - mutated IContextualMenuItem prop with styles props generators applied to each menu tree node
  */
-function injectContextualMenuItemsStyle(items: IContextualMenuItem[]): IContextualMenuItem[] {
+function injectContextualMenuItemsStyle(props: UIIContextualMenuProps): IContextualMenuItem[] {
+    const { items, iconToLeft } = props;
     const renderMenuWithIcons = items.some((item) => item.iconProps);
+    const itemsHaveSubMenu = items.some((item) => item.subMenuProps);
     return items.map((item: IContextualMenuItem) => {
         if (!item.itemProps) {
             item.itemProps = {};
         }
-
+        const submenu = !!item.subMenuProps;
         if (item.itemProps.styles) {
             item.itemProps.styles = {
-                ...getUIContextualMenuItemStyles(),
+                ...getUIContextualMenuItemStyles(props, submenu, itemsHaveSubMenu),
                 ...item.itemProps.styles
             };
         } else {
-            item.itemProps.styles = getUIContextualMenuItemStyles();
+            item.itemProps.styles = getUIContextualMenuItemStyles(props, submenu, itemsHaveSubMenu);
         }
 
         if (!item.submenuIconProps) {
@@ -115,6 +178,18 @@ function injectContextualMenuItemsStyle(items: IContextualMenuItem[]): IContextu
                     </>
                 );
             };
+        } else if (iconToLeft) {
+            item.onRenderContent = (props, defaultRenders): React.ReactNode => {
+                return (
+                    <>
+                        {defaultRenders.renderSubMenuIcon(props)}
+                        {defaultRenders.renderCheckMarkIcon(props)}
+                        {defaultRenders.renderItemIcon(props)}
+                        {defaultRenders.renderItemName(props)}
+                        {defaultRenders.renderSecondaryText(props)}
+                    </>
+                );
+            };
         }
 
         return item;
@@ -123,23 +198,24 @@ function injectContextualMenuItemsStyle(items: IContextualMenuItem[]): IContextu
 
 export interface UIIContextualMenuProps extends IContextualMenuProps {
     maxWidth?: number; // max width for the ComboBox
+    iconToLeft?: boolean;
 }
 
 export const UIContextualMenu: React.FC<UIIContextualMenuProps> = (props) => {
     const className = props.className ? ` ${props.className}` : '';
     return (
         <ContextualMenu
+            isBeakVisible={false}
             {...props}
             className={`ts-ContextualMenu${className}`}
-            items={injectContextualMenuItemsStyle(props.items)}
-            isBeakVisible={false}
+            items={injectContextualMenuItemsStyle(props)}
             calloutProps={{
                 className: 'ts-ContextualMenu-callout',
-                styles: getUIcontextualMenuCalloutStyles(props.maxWidth),
+                styles: getUIcontextualMenuCalloutStyles(props, props.maxWidth),
                 ...props.calloutProps
             }}
             styles={{ ...getUIcontextualMenuStyles(), ...props.styles }}
-            onRenderSubMenu={getSubMenu}
+            onRenderSubMenu={getSubMenu.bind(this, props)}
         />
     );
 };
@@ -150,9 +226,10 @@ export const UIContextualMenu: React.FC<UIIContextualMenuProps> = (props) => {
  * @param props Contextual menu properties.
  * @returns Element for submenu of contextual menu.
  */
-function getSubMenu(props?: IContextualMenuProps): JSX.Element | null {
-    if (!props) {
+function getSubMenu(rootMenuProps: UIIContextualMenuProps, subMenuProps?: IContextualMenuProps): JSX.Element | null {
+    if (!subMenuProps) {
         return null;
     }
-    return <UIContextualMenu {...props} />;
+    const { iconToLeft } = rootMenuProps;
+    return <UIContextualMenu iconToLeft {...subMenuProps} />;
 }
