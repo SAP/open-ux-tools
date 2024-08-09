@@ -146,22 +146,3 @@ async function generateAdaptationProject(basePath: string, simulate: boolean, sk
         logger.error(error.message);
     }
 }
-
-/**
- * Add a change for a new resource model to the given configuration.
- *
- * @param config configuration to be enhanced
- */
-function addChangeForResourceModel(config: AdpWriterConfig): void {
-    config.app.content = [
-        {
-            changeType: 'appdescr_ui5_addNewModelEnhanceWith',
-            content: {
-                modelId: 'i18n',
-                bundleUrl: 'i18n/i18n.properties',
-                supportedLocales: [''],
-                fallbackLocale: ''
-            }
-        }
-    ];
-}
