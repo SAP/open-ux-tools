@@ -231,5 +231,5 @@ function getSubMenu(rootMenuProps: UIIContextualMenuProps, subMenuProps?: IConte
         return null;
     }
     const { iconToLeft } = rootMenuProps;
-    return <UIContextualMenu iconToLeft {...subMenuProps} />;
+    return <UIContextualMenu iconToLeft={iconToLeft} {...subMenuProps} />;
 }
