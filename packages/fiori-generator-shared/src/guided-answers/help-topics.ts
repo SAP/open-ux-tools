@@ -22,20 +22,22 @@ export const HELP_NODES = {
     DESTINATION_NOT_FOUND: 51208, // Destination URL is returning an empty response
     BAD_GATEWAY: 48366, // Bad gateway 502
     DESTINATION_BAD_GATEWAY_503: 52526, // Destination Service Unavailable 503
-    NO_V4_SERVICES: 57573 // No V4 OData services available
+    NO_V4_SERVICES: 57573, // No V4 OData services available
+    NO_ADT_SERVICE_AUTH: 57266 //Users does not have authorizations to use ADT services
 };
 
 export const GUIDED_ANSWERS_EXTENSION_ID = 'saposs.sap-guided-answers-extension';
 export const GUIDED_ANSWERS_LAUNCH_CMD_ID = 'sap.ux.guidedAnswer.openGuidedAnswer';
 
 const GUIDED_ANSWERS_SUPPORT_BASE_URL = 'https://ga.support.sap.com/dtp/viewer/index.html';
+
 /**
  * Creates a help url for the specified tree and node ids. If node ids are not specified the root tree path
  * will be returned, which may not be a valid help page.
  *
- * @param treeId The tree id of the help content system (Guided Answers context)
- * @param nodeIds The node ids of the help content page (Guided Answers specific page)
- * @returns The help url
+ * @param treeId - the tree id
+ * @param nodeIds - the node ids
+ * @returns - the help url
  */
 export function getHelpUrl(treeId: number, nodeIds: number[]): string {
     let actions = '';

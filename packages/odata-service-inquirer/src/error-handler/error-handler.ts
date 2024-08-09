@@ -4,8 +4,13 @@ import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import { t } from '../i18n';
 import { ValidationLink } from '../types';
 import { sendTelemetryEvent } from '../utils';
-import { GUIDED_ANSWERS_LAUNCH_CMD_ID, HELP_NODES, HELP_TREE, getHelpUrl } from './help/help-topics';
-import { GUIDED_ANSWERS_ICON } from './help/images';
+import {
+    GUIDED_ANSWERS_ICON,
+    GUIDED_ANSWERS_LAUNCH_CMD_ID,
+    HELP_NODES,
+    HELP_TREE,
+    getHelpUrl
+} from '@sap-ux/fiori-generator-shared';
 
 const teleEventGALinkCreated = 'GA_LINK_CREATED';
 

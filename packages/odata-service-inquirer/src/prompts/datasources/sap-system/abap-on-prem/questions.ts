@@ -8,7 +8,6 @@ import type { InputQuestion, ListChoiceOptions, PasswordQuestion, Question } fro
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import { t } from '../../../../i18n';
 import {
-    hostEnvironment,
     promptNames,
     type OdataServiceAnswers,
     type ServiceSelectionPromptOptions,
@@ -16,12 +15,13 @@ import {
     type OdataServicePromptOptions,
     type SystemNamePromptOptions
 } from '../../../../types';
-import { PromptState, getHostEnvironment } from '../../../../utils';
+import { PromptState } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import type { NewSystemAnswers } from '../new-system/questions';
 import { getUserSystemNameQuestion } from '../new-system/questions';
 import { getServiceChoices, getServiceMetadata, getServiceType } from './service-helper';
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 export enum abapOnPremInternalPromptNames {
     systemUrl = 'systemUrl',

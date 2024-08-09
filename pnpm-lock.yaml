@@ -317,6 +317,52 @@ importers:
         specifier: 1.6.8
         version: 1.6.8
 
+  packages/abap-deploy-config-inquirer:
+    dependencies:
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
+      '@sap-ux/feature-toggle':
+        specifier: workspace:*
+        version: link:../feature-toggle
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@sap-ux/project-input-validator':
+        specifier: workspace:*
+        version: link:../project-input-validator
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
+      '@sap-ux/system-access':
+        specifier: workspace:*
+        version: link:../system-access
+      '@sap-ux/ui5-config':
+        specifier: workspace:*
+        version: link:../ui5-config
+      i18next:
+        specifier: 23.5.1
+        version: 23.5.1
+    devDependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.14.4
+        version: 1.14.4
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
+      '@types/inquirer-autocomplete-prompt':
+        specifier: 2.0.1
+        version: 2.0.1
+
   packages/abap-deploy-config-writer:
     dependencies:
       '@sap-ux/btp-utils':
@@ -1455,6 +1501,9 @@ importers:
 
   packages/fiori-generator-shared:
     dependencies:
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
@@ -1743,6 +1792,9 @@ importers:
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common
