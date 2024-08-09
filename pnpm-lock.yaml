@@ -2150,9 +2150,6 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
-      glob:
-        specifier: 10.4.5
-        version: 10.4.5
       i18next:
         specifier: 20.6.1
         version: 20.6.1

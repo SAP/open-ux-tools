@@ -3,19 +3,17 @@ import { getSecureStore } from '../../../src/secure-store';
 import { DummyStore } from '../../../src/secure-store/dummy-store';
 import { KeytarStore } from '../../../src/secure-store/keytar-store';
 import { ToolsLogger, NullTransport } from '@sap-ux/logger';
-import { globSync } from 'glob';
-
-jest.mock('glob', () => ({
-    ...jest.requireActual('glob'),
-    globSync: jest.fn()
+import { readdirSync } from 'fs';
+jest.mock('fs', () => ({
+    ...jest.requireActual('fs'),
+    existsSync: jest.fn(),
+    readdirSync: jest.fn()
 }));
 
 jest.mock('os', () => ({
     ...jest.requireActual('os'),
     homedir: () => 'test_dir'
 }));
-
-const mockGlobSync = globSync as jest.Mock;
 
 describe('getSecureStore', () => {
     beforeEach(() => jest.resetAllMocks());
@@ -44,9 +42,10 @@ describe('getSecureStore', () => {
                 throw new Error();
             });
 
-            mockGlobSync.mockReturnValue([
-                `test_dir/.vscode/extensions/sapse.sap-ux-application-modeler-extension-1.14.1/node_modules/keytar/package.json`
-            ]);
+            const readdirSyncMock = readdirSync as jest.Mock;
+
+            readdirSyncMock.mockReturnValue(['sapse.sap-ux-application-modeler-extension-1.14.1']);
+
             jest.mock(
                 `test_dir/.vscode/extensions/sapse.sap-ux-application-modeler-extension-1.14.1/node_modules/keytar`,
                 () => 'keytar',
