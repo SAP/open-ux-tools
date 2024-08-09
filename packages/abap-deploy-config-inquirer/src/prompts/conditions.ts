@@ -99,9 +99,11 @@ export function showClientQuestion(
     isS4HanaCloudSystem?: boolean
 ): boolean {
     const clientCondition = showClientCondition(isS4HanaCloudSystem);
-    const showOnCli =
-        previousAnswers.clientChoice === ClientChoiceValue.New || !options?.backendTarget?.abapTarget?.client;
-
+    const client = options?.backendTarget?.abapTarget?.client;
+    if (clientCondition && client) {
+        PromptState.abapDeployConfig.client = client;
+    }
+    const showOnCli = previousAnswers.clientChoice === ClientChoiceValue.New || !client;
     return getHostEnvironment() === hostEnvironment.cli ? showOnCli && clientCondition : clientCondition;
 }
 
