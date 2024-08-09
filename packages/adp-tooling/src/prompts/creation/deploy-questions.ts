@@ -1,3 +1,4 @@
+import { ToolsLogger } from '@sap-ux/logger';
 import { AutocompleteQuestion, InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import { AbapServiceProvider, AdaptationProjectType, AxiosError, SystemInfo } from '@sap-ux/axios-extension';
 
@@ -13,7 +14,6 @@ import { t } from '../../i18n';
 import { ChoiceOption, DeployConfigAnswers, InputChoice } from '../../types';
 import { listTransports } from '../../base/services/list-transports-service';
 import { ABAP_PACKAGE_SEARCH_MAX_RESULTS, listPackages } from '../../base/services/list-packages-service';
-import { ToolsLogger } from '@sap-ux/logger';
 
 /**
  * Returns the available options for input choices regarding packages.

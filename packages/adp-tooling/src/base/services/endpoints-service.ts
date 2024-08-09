@@ -1,8 +1,8 @@
+import { ToolsLogger } from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { Endpoint, checkEndpoints, isExtensionInstalledVsCode } from '@sap-ux/environment-check';
 
 import { SystemDetails } from '../../types';
-import { ToolsLogger } from '@sap-ux/logger';
 
 /**
  * Service class to manage and retrieve information about system endpoints,

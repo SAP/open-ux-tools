@@ -1,8 +1,8 @@
+import { ToolsLogger } from '@sap-ux/logger';
 import { Manifest } from '@sap-ux/project-access';
 
 import { t } from '../../i18n';
 import { ProviderService } from './abap-provider-service';
-import { ToolsLogger } from '@sap-ux/logger';
 
 export interface ManifestCache {
     url: string;

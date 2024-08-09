@@ -1,8 +1,9 @@
-import { Manifest } from '@sap-ux/project-access';
 import { t } from 'i18next';
-import { getApplicationType, isSupportedAppTypeForAdaptationProject } from '../app-utils';
-import { isV4Application } from './manifest-service';
+import { Manifest } from '@sap-ux/project-access';
+
 import { Application } from '../../types';
+import { isV4Application } from './manifest-service';
+import { getApplicationType, isSupportedAppTypeForAdaptationProject } from '../app-utils';
 
 export class AppIdentifier {
     public appSync: boolean;

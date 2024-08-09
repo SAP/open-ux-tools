@@ -1,7 +1,5 @@
-import type { Command } from 'commander';
+import path from 'path';
 import chalk from 'chalk';
-import { getLogger, traceChanges } from '../../tracing';
-import type { AdpWriterConfig, DeployConfigAnswers, FlpConfigAnswers, PromptDefaults } from '@sap-ux/adp-tooling';
 import {
     generate,
     EndpointsService,
@@ -16,11 +14,16 @@ import {
     DescriptorContent,
     TemplateModel
 } from '@sap-ux/adp-tooling';
-import { promptYUIQuestions, runNpmInstallCommand } from '../../common';
-import path, { join } from 'path';
-import { filterLabelTypeQuestions } from '../../common/prompts';
-import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
+
+import type { Command } from 'commander';
+import type { DeployConfigAnswers, FlpConfigAnswers } from '@sap-ux/adp-tooling';
+
+import { getLogger, traceChanges } from '../../tracing';
+import { filterLabelTypeQuestions } from '../../common/prompts';
+import { promptYUIQuestions, runNpmInstallCommand } from '../../common';
+
 /**
  * Add a new sub-command to generate SAP UI5 adaptation projects the given command.
  *
@@ -126,9 +129,8 @@ async function generateAdaptationProject(basePath: string, simulate: boolean, sk
         logger.debug(`Config for generation: ${JSON.stringify(config, null, 2)}`);
 
         if (!basePath) {
-            basePath = join(process.cwd(), config.app.id);
+            basePath = path.join(process.cwd(), config.app.id);
         }
-        // addChangeForResourceModel(config); // TODO: why?
 
         const projectPath = path.join(basePath, basicAnswers.projectName);
         await generate(projectPath, config, fs);

@@ -1,11 +1,11 @@
-import { isAppStudio } from '@sap-ux/btp-utils';
-import { AbapServiceProvider, ListPackageService, OperationsType } from '@sap-ux/axios-extension';
-import { t } from '../i18n';
 import { existsSync } from 'fs';
-import { parseParameters } from './helper';
+import { isAppStudio } from '@sap-ux/btp-utils';
+import { AbapServiceProvider, OperationsType } from '@sap-ux/axios-extension';
+
+import { t } from '../i18n';
 import { InputChoice } from '../types';
-import { listPackages } from './services/list-packages-service';
-import { listTransports } from './services/list-transports-service';
+import { parseParameters } from './helper';
+import { listPackages, listTransports } from './services';
 
 /**
  * Checks if the input is a valid SAP client.

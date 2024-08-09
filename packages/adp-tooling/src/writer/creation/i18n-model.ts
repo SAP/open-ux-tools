@@ -1,7 +1,8 @@
-import { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
-import { ApplicationType } from '../../base/app-utils';
 import { v4 as uuidv4 } from 'uuid';
+import { Manifest } from '@sap-ux/project-access';
+
 import { FlexLayer, SapModel } from '../../types';
+import { ApplicationType } from '../../base/app-utils';
 
 export const RESOURCE_BUNDLE_TEXT = '\n\n# This is the resource bundle for ';
 export const TRANSLATION_UUID_TEXT = '\n#__ldi.translation.uuid=';

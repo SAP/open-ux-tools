@@ -1,7 +1,7 @@
-import { Logger, ToolsLogger } from '@sap-ux/logger';
 import { AbapTarget } from '@sap-ux/ui5-config';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { AuthenticationType } from '@sap-ux/store';
+import { Logger, ToolsLogger } from '@sap-ux/logger';
 import { getCredentialsFromStore, createAbapServiceProvider } from '@sap-ux/system-access';
 import { AbapServiceProvider, AxiosRequestConfig, ProviderConfiguration } from '@sap-ux/axios-extension';
 

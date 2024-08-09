@@ -1,8 +1,9 @@
-import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { AdpPreviewConfig } from '../types';
-import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { isAxiosError } from '@sap-ux/axios-extension';
+import { createAbapServiceProvider } from '@sap-ux/system-access';
+import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
+
+import type { AdpPreviewConfig } from '../types';
 
 /**
  * Get the application manifest.

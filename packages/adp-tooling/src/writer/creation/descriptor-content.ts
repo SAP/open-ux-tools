@@ -1,5 +1,4 @@
 import { Editor } from 'mem-fs-editor';
-import { UI5FlexLayer } from '@sap-ux/project-access';
 
 import { FlexLayer, Content } from '../../types';
 import { writeI18nModels } from './i18n-model-writer';
