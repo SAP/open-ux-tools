@@ -98,10 +98,14 @@ export function showClientQuestion(
     options?: AbapDeployConfigPromptOptions,
     isS4HanaCloudSystem?: boolean
 ): boolean {
+    console.error(`showClientQuestion ${isS4HanaCloudSystem}`);
     const clientCondition = showClientCondition(isS4HanaCloudSystem);
-    const showOnCli =
-        previousAnswers.clientChoice === ClientChoiceValue.New || !options?.backendTarget?.abapTarget?.client;
-
+    console.error(`showClientQuestion clientCondition ${clientCondition}`);
+    const client = options?.backendTarget?.abapTarget?.client;
+    if (clientCondition && client) {
+        PromptState.abapDeployConfig.client = client;
+    }
+    const showOnCli = previousAnswers.clientChoice === ClientChoiceValue.New || !client;
     return getHostEnvironment() === hostEnvironment.cli ? showOnCli && clientCondition : clientCondition;
 }
 

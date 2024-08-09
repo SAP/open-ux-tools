@@ -241,7 +241,7 @@ export async function getAbapTargetPrompts(
     options: AbapDeployConfigPromptOptions
 ): Promise<Question<AbapDeployConfigAnswers>[]> {
     const { destinations, backendSystems } = await getAbapSystems();
-    const abapSystemChoices = await getAbapSystemChoices(destinations, options.backendTarget, backendSystems);
+    const abapSystemChoices = await getAbapSystemChoices(destinations, options?.backendTarget, backendSystems);
     return [
         ...getDestinationPrompt(options, abapSystemChoices, destinations),
         ...getTargetSystemPrompt(abapSystemChoices),
