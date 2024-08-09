@@ -98,9 +98,7 @@ export function showClientQuestion(
     options?: AbapDeployConfigPromptOptions,
     isS4HanaCloudSystem?: boolean
 ): boolean {
-    console.error(`showClientQuestion ${isS4HanaCloudSystem}`);
     const clientCondition = showClientCondition(isS4HanaCloudSystem);
-    console.error(`showClientQuestion clientCondition ${clientCondition}`);
     const client = options?.backendTarget?.abapTarget?.client;
     if (clientCondition && client) {
         PromptState.abapDeployConfig.client = client;
