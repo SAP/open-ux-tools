@@ -40,14 +40,14 @@ export class UILink extends React.Component<UILinkProps, {}> {
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
-        const { secondary } = this.props;
+        const { secondary, underline } = this.props;
         const styles = secondary ? linkStyle.secondary : linkStyle.primary;
         const linkStyles = (): Partial<ILinkStyles> => {
             return {
                 root: {
                     color: styles.color,
                     fontFamily: 'var(--vscode-font-family)',
-                    textDecoration: 'underline',
+                    textDecoration: underline === false ? undefined : 'underline',
                     selectors: {
                         '&:hover, &:hover:focus, &:hover:active': {
                             color: styles.hoverColor,
