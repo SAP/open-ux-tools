@@ -33,13 +33,13 @@ export function isValidUrl(input: string): boolean {
 }
 
 /**
- * Returns true if the input is valid for the client.
+ * Returns true if the input is valid for the client. If the input is empty, it is considered valid.
  *
  * @param client - client string input
  * @returns boolean
  */
 export function isValidClient(client: string): boolean {
-    const c = client?.trim() || '';
+    const c = client && typeof client === 'string' ? client.trim() : '';
 
     if (c === '') {
         return true;
