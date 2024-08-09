@@ -441,10 +441,26 @@ export default class ConfigInfoPrompter {
             additionalMessages: () => {
                 const isOnPremise = this.flexUISystem?.isOnPremise;
                 const isUIFlex = this.flexUISystem?.isUIFlex;
-                const hasAdaptationProjectTypes = this.systemInfo?.adaptationProjectTypes?.length > 0;
+                const projectTypes = this.systemInfo?.adaptationProjectTypes || [];
 
-                if (this.isCloudProject || !hasAdaptationProjectTypes) {
-                    return undefined;
+                if (!projectTypes.length) {
+                    return;
+                }
+
+                let isCloudProject: boolean | undefined = undefined;
+                if (projectTypes.length === 1) {
+                    if (projectTypes[0] === AdaptationProjectType.CLOUD_READY) {
+                        isCloudProject = true;
+                    }
+                    if (projectTypes[0] === AdaptationProjectType.ON_PREMISE) {
+                        isCloudProject = false;
+                    }
+                } else if (projectTypes.length > 1) {
+                    isCloudProject = false;
+                }
+
+                if (isCloudProject) {
+                    return;
                 }
 
                 if (!isOnPremise) {
