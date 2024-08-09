@@ -6,7 +6,6 @@ import {
     AdtCatalogService,
     SystemInfo,
     UI5RtVersionService,
-    UIFlexService,
     isAxiosError
 } from '@sap-ux/axios-extension';
 import { ToolsLogger } from '@sap-ux/logger';
