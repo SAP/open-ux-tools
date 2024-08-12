@@ -158,10 +158,9 @@ export function showPasswordQuestion(): boolean {
 /**
  * Determines if the UI5 app deploy config question should be shown (UI5 Abap Repo name & Description).
  *
- * @param options - abap deploy config prompt options
  * @returns boolean
  */
-export function showUi5AppDeployConfigQuestion(options: AbapDeployConfigPromptOptions): boolean {
+export function showUi5AppDeployConfigQuestion(): boolean {
     return !PromptState.transportAnswers.transportConfigNeedsCreds;
 }
 
