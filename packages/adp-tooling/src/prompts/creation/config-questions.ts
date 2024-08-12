@@ -630,7 +630,8 @@ export default class ConfigInfoPrompter {
             guiOptions: {
                 hint: t('prompts.projectTypeTooltip'),
                 breadcrumb: 'Project Type',
-                applyDefaultWhenDirty: true
+                applyDefaultWhenDirty: true,
+                mandatory: true
             },
             additionalMessages: (_, prevAnswers) => {
                 if (
@@ -668,7 +669,8 @@ export default class ConfigInfoPrompter {
             guiOptions: {
                 applyDefaultWhenDirty: true,
                 hint: t('prompts.applicationListTooltip'),
-                breadcrumb: 'Application'
+                breadcrumb: 'Application',
+                mandatory: true
             },
             validate: async (value: Application) => {
                 const validationResult = await this.applicationPromptValidationHandler(value);
