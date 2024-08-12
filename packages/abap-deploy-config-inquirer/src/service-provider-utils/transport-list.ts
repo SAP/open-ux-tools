@@ -3,6 +3,7 @@ import { t } from '../i18n';
 import { getOrCreateServiceProvider } from './abap-service-provider';
 import type { AbapDeployConfigPromptOptions, SystemConfig, TransportListItem } from '../types';
 import LoggerHelper from '../logger-helper';
+import { PromptState } from '../prompts/prompt-state';
 
 /**
  * Get the transport list from the service.
@@ -34,6 +35,9 @@ export async function getTransportListFromService(
             });
         }
     } catch (e) {
+        if (e.message === TransportChecksService.LocalPackageError) {
+            PromptState.transportAnswers.transportRequired = false;
+        }
         LoggerHelper.logger.debug(
             t('errors.debugAbapTargetSystem', { method: 'getTransportListFromService', error: e.message })
         );

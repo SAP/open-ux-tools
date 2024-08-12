@@ -8,6 +8,7 @@ import {
     isValidUrl,
     isAppNameValid
 } from '../validator-utils';
+import { getTransportListFromService } from '../service-provider-utils';
 import { t } from '../i18n';
 import { findBackendSystemByUrl, initTransportConfig, getPackageAnswer, queryPackages } from '../utils';
 import { handleErrorMessage } from '../error-handler';
@@ -355,12 +356,26 @@ export async function validatePackageChoiceInputForCli(
  * Validates the package name.
  *
  * @param input - package name entered
+ * @param answers - previous answers
+ * @param options - abap deploy config prompt options
  * @returns boolean or error message as a string
  */
-export function validatePackage(input: string): boolean | string {
+export async function validatePackage(
+    input: string,
+    answers: AbapDeployConfigAnswersInternal,
+    options: AbapDeployConfigPromptOptions
+): Promise<boolean | string> {
     if (!input?.trim()) {
         return t('warnings.providePackage');
     }
+    const systemConfig: SystemConfig = {
+        url: PromptState.abapDeployConfig.url,
+        client: PromptState.abapDeployConfig.client,
+        destination: PromptState.abapDeployConfig.destination
+    };
+
+    // checks if package is a local package and will update prompt state accordingly
+    await getTransportListFromService(input, answers.ui5AbapRepo ?? '', options, systemConfig);
     return true;
 }
 
@@ -507,15 +522,10 @@ export async function validateTransportChoiceInput(
  * Validates the transport question.
  *
  * @param input - transport request
- * @param previousAnswers - previous answers
  * @returns boolean or error message as a string
  */
-export function validateTransportQuestion(
-    input: string,
-    previousAnswers?: AbapDeployConfigAnswersInternal
-): boolean | string {
-    const packageAnswer = getPackageAnswer(previousAnswers);
-    if (!/^[$LlTt]/.exec(packageAnswer) && !input?.trim()) {
+export function validateTransportQuestion(input?: string): boolean | string {
+    if (PromptState.transportAnswers.transportRequired && !input?.trim()) {
         return t('prompts.config.transport.provideTransportRequest');
     }
     return true;

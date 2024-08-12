@@ -72,7 +72,7 @@ describe('getTransportRequestPrompts', () => {
                   "breadcrumb": "Transport Request",
                   "hint": "Provide a transport request for your application",
                 },
-                "message": "Transport Request",
+                "message": [Function],
                 "name": "transportManual",
                 "type": "input",
                 "validate": [Function],
@@ -205,7 +205,9 @@ describe('getTransportRequestPrompts', () => {
 
         if (transportManualPrompt) {
             expect((transportManualPrompt.when as Function)()).toBe(true);
-            expect(transportManualPrompt.message).toBe(t('prompts.config.transport.common.transportRequest'));
+            expect((transportManualPrompt.message as Function)()).toBe(
+                t('prompts.config.transport.common.transportRequestMandatory')
+            );
             const previousAnswers = { transportManual: 'TR1234' };
             expect((transportManualPrompt.default as Function)(previousAnswers)).toBe('TR1234');
             expect((transportManualPrompt.validate as Function)(previousAnswers)).toBe(true);

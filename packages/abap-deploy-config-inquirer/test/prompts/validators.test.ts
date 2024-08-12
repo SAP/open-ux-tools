@@ -290,12 +290,12 @@ describe('Test validators', () => {
     });
 
     describe('validatePackage', () => {
-        it('should return error for invalid package input', () => {
-            const result = validatePackage('ZPACKAGE');
+        it('should return error for invalid package input', async () => {
+            const result = await validatePackage('ZPACKAGE', {}, {});
             expect(result).toBe(true);
         });
-        it('should return error for invalid package input', () => {
-            const result = validatePackage(' ');
+        it('should return error for invalid package input', async () => {
+            const result = await validatePackage(' ', {}, {});
             expect(result).toBe(t('warnings.providePackage'));
         });
     });
@@ -409,36 +409,23 @@ describe('Test validators', () => {
     });
 
     describe('validateTransportQuestion', () => {
-        const validateTransportQuestionList: [string, string, boolean | string][] = [
-            ['$', 'Y05', true],
-            ['L', '', true],
-            ['T', '', true],
-            ['', 'Y05', true],
-            ['Z', 'Y05', true],
-            ['Z', '', `${t('prompts.config.transport.provideTransportRequest')}`],
-            ['', '', `${t('prompts.config.transport.provideTransportRequest')}`],
-            ['M', '', `${t('prompts.config.transport.provideTransportRequest')}`]
-        ];
+        it('should return true for valid transport', async () => {
+            PromptState.transportAnswers.transportRequired = true;
+            const result = validateTransportQuestion('TR1234');
+            expect(result).toBe(true);
+        });
 
-        test.each(validateTransportQuestionList)(
-            'should validate transport : (%p, %p, %p)',
-            (packageName, transport, output) => {
-                expect(
-                    validateTransportQuestion(transport, {
-                        packageManual: packageName,
-                        packageInputChoice: PackageInputChoices.EnterManualChoice
-                    })
-                ).toEqual(output);
-                // If current selection is PackageInputChoices.ListExistingChoice but package was manually input previously
-                expect(
-                    validateTransportQuestion(transport, {
-                        packageManual: '$tmp',
-                        packageAutocomplete: packageName,
-                        packageInputChoice: PackageInputChoices.ListExistingChoice
-                    })
-                ).toEqual(output);
-            }
-        );
+        it('should return true for valid transport', async () => {
+            PromptState.transportAnswers.transportRequired = true;
+            const result = validateTransportQuestion('');
+            expect(result).toBe(t('prompts.config.transport.provideTransportRequest'));
+        });
+
+        it('should return true when transport is not required', async () => {
+            PromptState.transportAnswers.transportRequired = false;
+            const result = validateTransportQuestion();
+            expect(result).toBe(true);
+        });
     });
 
     describe('validateConfirmQuestion', () => {
