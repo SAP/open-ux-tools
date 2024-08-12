@@ -35,7 +35,8 @@ export async function getPrompts(
             when: isCloudProject && inboundIds.length > 0,
             guiOptions: {
                 hint: t('tooltips.inboundId'),
-                breadcrumb: t('prompts.inboundId')
+                breadcrumb: t('prompts.inboundId'),
+                mandatory: true
             }
         } as ListQuestion<FlpConfigAnswers>,
         {

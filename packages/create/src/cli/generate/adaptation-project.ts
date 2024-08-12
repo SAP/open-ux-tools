@@ -50,8 +50,6 @@ export function addGenerateAdaptationProjectCommand(cmd: Command): void {
  * Generate an SAP UI5 adaptation project based on the given parameters.
  *
  * @param basePath target folder of the new project
- * @param defaults optional defaults
- * @param useDefaults if set to true, then default values are used for all prompts and the prompting is skipped
  * @param simulate if set to true, then no files will be written to the filesystem
  * @param skipInstall if set to true then `npm i` is not executed in the new project
  */
