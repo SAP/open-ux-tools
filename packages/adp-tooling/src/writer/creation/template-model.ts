@@ -104,7 +104,7 @@ export class TemplateModel {
             reference: appId,
             layer: this.layer,
             title,
-            content,
+            content, // TODO: Move to writer logic
             i18nDescription
         };
 

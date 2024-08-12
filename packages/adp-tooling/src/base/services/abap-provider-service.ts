@@ -85,21 +85,12 @@ export class ProviderService {
             const details = await this.endpointsService.getSystemDetails(system);
 
             target = {
-                url: details?.url,
+                ...details,
                 client: details?.client ?? client
             } as AbapTarget;
 
-            const storedSystem = await getCredentialsFromStore(
-                { url: details?.url ?? system, client: details?.client },
-                {} as Logger
-            );
-
-            if (storedSystem?.username && storedSystem?.password) {
-                requestOptions.auth = { username: storedSystem?.username, password: storedSystem?.password };
-            }
-
-            if (storedSystem?.authenticationType === AuthenticationType.ReentranceTicket) {
-                target.authenticationType = AuthenticationType.ReentranceTicket;
+            if (details?.username && details?.password) {
+                requestOptions.auth = { username: details?.username, password: details?.password };
             }
         }
 

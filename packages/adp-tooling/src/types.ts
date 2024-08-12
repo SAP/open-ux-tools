@@ -529,6 +529,8 @@ export interface FlexUISupportedSystem {
 export interface SystemDetails {
     url: string;
     client: string;
+    username?: string;
+    password?: string;
     authenticationType?: string;
 }
 

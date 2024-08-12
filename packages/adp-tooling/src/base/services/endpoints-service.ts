@@ -1,5 +1,6 @@
 import { ToolsLogger } from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import { getCredentialsFromStore } from '@sap-ux/system-access';
 import { Endpoint, checkEndpoints, isExtensionInstalledVsCode } from '@sap-ux/environment-check';
 
 import { SystemDetails } from '../../types';
@@ -15,7 +16,7 @@ export class EndpointsService {
     /**
      * Creates an instance of EndpointsService.
      */
-    constructor(private logger?: ToolsLogger) {
+    constructor(private logger: ToolsLogger) {
         this.endpoints = [];
         this.isExtensionInstalled = isExtensionInstalledVsCode('sapse.sap-ux-application-modeler-extension');
     }
@@ -112,14 +113,36 @@ export class EndpointsService {
         if (this.endpoints.length === 0) {
             await this.getEndpoints();
         }
+
         const endpoint = this.endpoints.find((e) => e.Name === system || e.Url === system);
 
-        return endpoint
-            ? {
-                  client: endpoint.Client || '',
-                  url: endpoint.Url || '',
-                  authenticationType: endpoint.Authentication
-              }
-            : undefined;
+        if (!endpoint) {
+            this.logger.warn(`No endpoint found for system: ${system}`);
+            return undefined;
+        }
+
+        const details: SystemDetails = {
+            client: endpoint.Client || '',
+            url: endpoint.Url || ''
+        };
+
+        try {
+            const storedSystem = await getCredentialsFromStore(
+                { url: details.url, client: details.client },
+                this.logger
+            );
+
+            if (storedSystem) {
+                details.authenticationType = storedSystem.authenticationType;
+                details.username = storedSystem.username;
+                details.password = storedSystem.password;
+            }
+        } catch (e) {
+            this.logger.error(`Error fetching credentials from store for system: ${system}`);
+            this.logger.debug(e.message);
+            return undefined;
+        }
+
+        return details;
     }
 }
