@@ -1,15 +1,18 @@
 import type { ReactElement } from 'react';
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 import type { UIContextualMenuItem } from '@sap-ux/ui-components';
-import { UIActionButton, UIDirectionalHint, UiIcons } from '@sap-ux/ui-components';
+import { UIDirectionalHint, UIIcon, UILink, UIContextualMenu } from '@sap-ux/ui-components';
 
 import type { NestedQuickAction, NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
 import { executeQuickAction } from '@sap-ux-private/control-property-editor-common';
+import { IconName } from '../../icons';
 
 export interface NestedQuickActionListItemProps {
     action: Readonly<NestedQuickAction>;
+    actionIdx: number; // action lineitem index
 }
 
 /**
@@ -19,36 +22,41 @@ export interface NestedQuickActionListItemProps {
  * @param props.action Nested Quick Action to render.
  * @returns ReactElement
  */
-export function NestedQuickActionListItem({ action }: NestedQuickActionListItemProps): ReactElement {
+export function NestedQuickActionListItem({ action, actionIdx }: NestedQuickActionListItemProps): ReactElement {
+    const { t } = useTranslation();
     const dispatch = useDispatch();
+    const [showContextualMenu, setShowContextualMenu] = useState(false);
+    const [target, setTarget] = useState<(EventTarget & (HTMLAnchorElement | HTMLElement | HTMLButtonElement)) | null>(
+        null
+    );
 
+    /**
+     *
+     * @param children Node children.
+     * @param childIdx Nested Level.
+     * @returns ReactElement
+     */
     const buildMenuItems = function (
         children: NestedQuickActionChild[],
-        childIdx: number[] = []
+        nestedLevel: number[] = []
     ): UIContextualMenuItem[] {
-        return children.map((item, idx) => {
-            const hasChildren = item?.children?.length > 1;
+        return children.map((child, idx) => {
+            const hasChildren = child?.children?.length > 1;
             return {
-                key: `${idx}`,
-                className: hasChildren ? 'submenu-icon' : '',
-                text: item.label,
-                submenuIconProps: hasChildren
-                    ? {
-                          iconName: UiIcons.ArrowUp // css class overrides Icons.chevronLeft
-                      }
-                    : undefined,
+                key: `${child.label}-${idx}`,
+                text: child.label,
                 subMenuProps: hasChildren
                     ? {
-                          directionalHint: UIDirectionalHint.leftCenter,
-                          items: buildMenuItems(item.children, [...childIdx, idx])
+                          directionalHint: UIDirectionalHint.leftTopEdge,
+                          items: buildMenuItems(child.children, [...nestedLevel, idx])
                       }
                     : undefined,
                 onClick() {
                     dispatch(
                         executeQuickAction({
                             kind: action.kind,
-                            id: action.id,
-                            path: `${childIdx.length ? `${childIdx.join('/')}/${idx}` : idx}`
+                            path: `${nestedLevel.length ? `${nestedLevel.join('/')}/${idx}` : idx}`,
+                            id: action.id
                         })
                     );
                 }
@@ -60,29 +68,54 @@ export function NestedQuickActionListItem({ action }: NestedQuickActionListItemP
         <>
             <div className={`quick-action-item`}>
                 {action.children.length === 1 && (
-                    <UIActionButton
-                        onClick={() => {
-                            dispatch(
-                                executeQuickAction({
-                                    kind: action.kind,
-                                    id: action.id,
-                                    path: [0].join('/')
-                                })
-                            );
-                        }}>
-                        {`${action.title} - ${action.children[0].label}`}
-                    </UIActionButton>
+                    <>
+                        <UILink
+                            underline={false}
+                            onClick={(): void => {
+                                dispatch(
+                                    executeQuickAction({
+                                        kind: action.kind,
+                                        id: action.id,
+                                        path: [actionIdx].join('/')
+                                    })
+                                );
+                            }}>
+                            {`${action.title}  - ${action.children[0].label}`}
+                        </UILink>
+                    </>
                 )}
                 {action.children.length > 1 && (
-                    <UIActionButton
-                        menuProps={{
-                            isBeakVisible: true,
-                            directionalHint: UIDirectionalHint.bottomCenter,
-                            directionalHintFixed: false,
-                            items: buildMenuItems(action.children)
-                        }}>
-                        {action.title}
-                    </UIActionButton>
+                    <>
+                        <UILink
+                            underline={false}
+                            onClick={() => {
+                                setShowContextualMenu(true);
+                                setTarget(document.getElementById(`quick-action-children-button${actionIdx}`));
+                            }}>
+                            {action.title}
+                        </UILink>
+                        <UIIcon
+                            id={`quick-action-children-button${actionIdx}`}
+                            iconName={IconName.dropdown}
+                            title={t('LIST')}
+                            style={{ verticalAlign: 'middle' }}
+                            onClick={(): void => {
+                                setShowContextualMenu(true);
+                                setTarget(document.getElementById(`quick-action-children-button${actionIdx}`));
+                            }}
+                        />
+                        {showContextualMenu && (
+                            <UIContextualMenu
+                                target={target}
+                                isBeakVisible={true}
+                                beakWidth={5}
+                                items={buildMenuItems(action.children)}
+                                directionalHint={UIDirectionalHint.bottomRightEdge}
+                                onDismiss={() => setShowContextualMenu(false)}
+                                iconToLeft={true}
+                            />
+                        )}
+                    </>
                 )}
             </div>
         </>

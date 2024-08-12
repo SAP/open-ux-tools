@@ -8,6 +8,7 @@ import { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
 import { getControlById } from '../../../cpe/utils';
+import FlexRuntimeInfoAPI from 'sap/ui/fl/apply/api/FlexRuntimeInfoAPI';
 
 export const CHANGE_TABLE_COLUMNS = 'change-table-columns';
 const ACTION_ID = 'CTX_SETTINGS0';
@@ -30,6 +31,10 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
         for (const smartTable of getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, [
             CONTROL_TYPE
         ])) {
+            const hasVariantManagement = FlexRuntimeInfoAPI.hasVariantManagement({ element: smartTable });
+            if (!hasVariantManagement) {
+                continue;
+            }
             const actions = await this.context.actionService.get(smartTable.getId());
             const changeColumnAction = actions.find((action) => action.id === ACTION_ID);
             if (changeColumnAction) {
@@ -68,6 +73,10 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
                 const controlOverlay = OverlayUtil.getClosestOverlayFor(section);
                 if (controlOverlay) {
                     controlOverlay.setSelected(true);
+                }
+                const hasVariantManagement = FlexRuntimeInfoAPI.hasVariantManagement({ element: smartTables[i] });
+                if (!hasVariantManagement) {
+                    continue;
                 }
                 await this.context.actionService.execute(smartTables[i].getId(), ACTION_ID);
             }

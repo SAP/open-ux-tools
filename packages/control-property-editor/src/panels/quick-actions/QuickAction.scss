@@ -1,41 +1,14 @@
 .quick-action-item {
-    size: 13px;
-    line-height: 22px;
     display: flex;
-    margin-right: 5px;
-    button.ms-Button.ms-Button--action.ms-Button--command {
-        color: var(--vscode-textLink-foreground);
-        font-family: var(--vscode-font-family);
-        text-decoration: underline;
-        &:hover, 
-        &:hover:focus, 
-        &:hover:active {
-            color: var(--vscode-textLink-activeForeground);
-            text-decoration: none;
-        };
-        &:active, 
-        &:focus {
-            color:  var(--vscode-textLink-activeForeground);
-            text-decoration: none;
-            outline: none;
-        };
-        span.ms-Button-label {
-            color: var(--vscode-textLink-foreground);
-            font-size: 13px;
-            font-weight: 700;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            overflow-x: hidden;
-            line-height: 18px;
-        }
+    flex-direction: row; 
+    button.ms-Link {
+        padding-right: 2px;
+        color:  var(--vscode-textLink-foreground);
+        font-size:  13px;
+        font-weight:  bold;
+        text-overflow:  ellipsis;
+        white-space:  nowrap;
+        overflow-x:  hidden;
+        line-height:  18px;
     }
-}
-.submenu-icon {
-    span.ms-ContextualMenu-itemText +  i.ms-ContextualMenu-submenuIcon {
-        order: -1;
-        margin-right: 8px;
-    };
-    span.ms-ContextualMenu-itemText:only-child {
-        margin-left: 24px;
-    };
 }

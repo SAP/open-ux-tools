@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Label } from '@fluentui/react';
+import { Label, Stack } from '@fluentui/react';
 import { useSelector } from 'react-redux';
 
 import type { QuickActionGroup } from '@sap-ux-private/control-property-editor-common';
@@ -27,7 +27,7 @@ export function QuickActionList(): ReactElement {
 
     return (
         <div className={`property-content app-panel-scroller`}>
-            <div className={`quick-action-items`}>
+            <Stack>
                 {groups.flatMap((group) => {
                     const groupTitle = t('QUICK_ACTIONS', { title: group.title });
                     return [
@@ -43,18 +43,31 @@ export function QuickActionList(): ReactElement {
                             }}>
                             {groupTitle}
                         </Label>,
-                        ...group.actions.map((quickAction) => {
+
+                        ...group.actions.map((quickAction, idx) => {
                             if (quickAction.kind === SIMPLE_QUICK_ACTION_KIND) {
-                                return <SimpleQuickActionListItem key={quickAction.id} action={quickAction} />;
+                                return (
+                                    <Stack.Item key={`${quickAction.id}`}>
+                                        <SimpleQuickActionListItem key={quickAction.id} action={quickAction} />
+                                    </Stack.Item>
+                                );
                             }
                             if (quickAction.kind === NESTED_QUICK_ACTION_KIND) {
-                                return <NestedQuickActionListItem key={quickAction.id} action={quickAction} />;
+                                return (
+                                    <Stack.Item key={`${quickAction.id}`}>
+                                        <NestedQuickActionListItem
+                                            key={quickAction.id}
+                                            action={quickAction}
+                                            actionIdx={idx}
+                                        />
+                                    </Stack.Item>
+                                );
                             }
                             return <></>;
                         })
                     ];
                 })}
-            </div>
+            </Stack>
         </div>
     );
 }
