@@ -87,9 +87,7 @@ export async function transformNodes(
 ): Promise<OutlineNode[]> {
     const stack = [...input];
     const items: OutlineNode[] = [];
-    const version = await getUi5Version();
-    const versionParts = version.split('.');
-    const minor = parseInt(versionParts[1], 10);
+    const { minorUi5Version } = await getUi5Version();
     while (stack.length) {
         const current = stack.shift();
         const editable = isEditable(current?.id);
@@ -114,7 +112,7 @@ export async function transformNodes(
                 children: transformedChildren
             };
 
-            fillReuseComponents(reuseComponentsIds, current, scenario, minor);
+            fillReuseComponents(reuseComponentsIds, current, scenario, minorUi5Version);
 
             items.push(node);
         }

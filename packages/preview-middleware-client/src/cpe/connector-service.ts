@@ -12,10 +12,8 @@ export class WorkspaceConnectorService {
      * @param sendAction action sender function
      */
     public async init(sendAction: ActionSenderFunction): Promise<void> {
-        const version = await getUi5Version();
-        const versionParts = version.split('.');
-        const minor = parseInt(versionParts[1], 10);
-        if (minor > 72) {
+        const { minorUi5Version } = await getUi5Version();
+        if (minorUi5Version > 72) {
             const connector = (await import('open/ux/preview/client/flp/WorkspaceConnector')).default;
             // hook the file deletion listener to the UI5 workspace connector
             connector.storage.fileChangeRequestNotifier = notifier(sendAction);

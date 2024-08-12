@@ -68,9 +68,8 @@ const connector = merge({}, ObjectStorageConnector, {
     } as typeof ObjectStorageConnector.storage,
     loadFeatures: async function () {
         const features = await ObjectStorageConnector.loadFeatures();
-        const version = await getUi5Version();
-        const [majorVersion, minorVersion] = version.split('.').map((v: string) => parseInt(v, 10));
-        features.isVariantAdaptationEnabled = majorVersion >= 1 && minorVersion >= 90;
+        const { minorUi5Version, majorUi5Version } = await getUi5Version();
+        features.isVariantAdaptationEnabled = majorUi5Version >= 1 && minorUi5Version >= 90;
         const settings = getFlexSettings();
         if (settings?.developerMode) {
             features.isVariantAdaptationEnabled = false;
