@@ -1,3 +1,4 @@
+import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
@@ -17,6 +18,7 @@ export interface QuickActionActivationContext {
 export interface QuickActionContext {
     controlIndex: ControlTreeIndex;
     actionService: ActionService;
+    resourceBundle: ResourceBundle;
     view: XMLView;
     key: string;
     // TODO: we should not access RTA directly,

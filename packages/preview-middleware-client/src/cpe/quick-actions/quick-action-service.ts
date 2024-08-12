@@ -18,6 +18,8 @@ import { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction } fr
 import { QuickActionActivationContext, QuickActionDefinition } from './quick-action-definition';
 import { QuickActionDefinitionRegistry } from './registry';
 import { OutlineService } from '../outline/service';
+import ResourceBundle from 'sap/base/i18n/ResourceBundle';
+import { getResourceBundle } from '../../i18n';
 
 /**
  *
@@ -27,6 +29,7 @@ export class QuickActionService implements Service {
     private actions: QuickActionDefinition[] = [];
 
     private actionService: ActionService;
+    private resourceBundle: ResourceBundle;
 
     /**
      *
@@ -49,6 +52,7 @@ export class QuickActionService implements Service {
     public async init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): Promise<void> {
         this.sendAction = sendAction;
         this.actionService = await this.rta.getService('action');
+        this.resourceBundle = await getResourceBundle();
 
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (executeQuickAction.match(action)) {
@@ -91,7 +95,13 @@ export class QuickActionService implements Service {
                 };
                 for (const Definition of definitions) {
                     try {
-                        const instance = new Definition({ ...context, view, key, rta: this.rta });
+                        const instance = new Definition({
+                            ...context,
+                            view,
+                            key,
+                            rta: this.rta,
+                            resourceBundle: this.resourceBundle
+                        });
                         await instance.initialize();
                         if (instance.isActive) {
                             const quickAction = instance.getActionObject();

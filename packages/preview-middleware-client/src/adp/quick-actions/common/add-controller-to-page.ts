@@ -1,14 +1,17 @@
-import VersionInfo from 'sap/ui/VersionInfo';
-/** sap.ui.fl */
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import UI5Element from 'sap/ui/core/Element';
 
 import { SIMPLE_QUICK_ACTION_KIND, SimpleQuickAction } from '@sap-ux-private/control-property-editor-common';
 
-import { getAllSyncViewsIds, getControllerInfoForControl, isControllerExtensionEnabledForControl } from '../../../cpe/utils';
+import { getUi5Version } from '../../../utils/version';
+import {
+    getAllSyncViewsIds,
+    getControllerInfoForControl,
+    isControllerExtensionEnabledForControl
+} from '../../../cpe/utils';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
-import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import type { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 
 import { DialogNames, handler } from '../../init-dialogs';
 import { getExistingController } from '../../api-handler';
@@ -34,8 +37,7 @@ export class AddControllerToPageQuickAction implements SimpleQuickActionDefiniti
             this.context.view,
             CONTROL_TYPES
         )) {
-            // TODO: use new version utility function 
-            const { version } = (await VersionInfo.load()) as { version: string };
+            const version = await getUi5Version();
             const versionParts = version.split('.');
             const minor = parseInt(versionParts[1], 10);
             const syncViewsIds = await getAllSyncViewsIds(minor);
@@ -49,12 +51,12 @@ export class AddControllerToPageQuickAction implements SimpleQuickActionDefiniti
     }
 
     getActionObject(): SimpleQuickAction {
+        const key = this.controllerExists ? 'QUICK_ACTION_SHOW_PAGE_CONTROLLER' : 'QUICK_ACTION_ADD_PAGE_CONTROLLER';
         return {
             kind: SIMPLE_QUICK_ACTION_KIND,
             id: this.id,
             enabled: this.isActive,
-            // TODO: translate this?
-            title: this.controllerExists ? 'Show page controller' : 'Add controller to page'
+            title: this.context.resourceBundle.getText(key) ?? key
         };
     }
 

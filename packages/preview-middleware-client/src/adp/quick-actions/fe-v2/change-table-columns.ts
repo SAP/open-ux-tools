@@ -64,12 +64,12 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
     }
 
     getActionObject(): NestedQuickAction {
+        const key = 'V2_QUICK_ACTION_CHANGE_TABLE_COLUMNS';
         return {
             kind: NESTED_QUICK_ACTION_KIND,
             id: this.id,
             enabled: this.isActive,
-            // TODO: translate this?
-            title: 'Change table columns',
+            title: this.context.resourceBundle.getText(key) ?? key,
             children: this.children
         };
     }

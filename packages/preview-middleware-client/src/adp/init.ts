@@ -16,10 +16,10 @@ import { getAllSyncViewsIds } from '../cpe/utils';
 import { getFeVersion } from '../cpe/quick-actions/utils';
 import { ActionHandler } from '../cpe/types';
 
-
 import { getUI5VersionValidationMessage } from './ui5-version-utils';
 import { loadDefinitions } from './quick-actions/load';
 import { initDialogs } from './init-dialogs';
+import { getResourceBundle } from '../i18n';
 
 export default async function (rta: RuntimeAuthoring) {
     const version = await getUi5Version();
@@ -74,10 +74,11 @@ export default async function (rta: RuntimeAuthoring) {
     }
 
     if (syncViewsIds.length > 0) {
+        const bundle = await getResourceBundle();
+        const key = 'ADP_SYNC_VIEWS_MESSAGE';
         sendAction(
             showMessage({
-                message:
-                    'Have in mind that synchronous views are detected for this application and controller extensions are not supported for such views. Controller extension functionality on these views will be disabled.',
+                message: bundle.getText(key) ?? key,
                 shouldHideIframe: false
             })
         );
