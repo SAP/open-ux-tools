@@ -64,7 +64,7 @@ async function addNewModel(basePath: string, simulate: boolean): Promise<void> {
  * @returns {NewModelData} The writer data for the new model change.
  */
 function getWriterData(variant: DescriptorVariant, answers: NewModelAnswers): NewModelData {
-    const { name, uri, modelName, version, modelSettings } = answers;
+    const { name, uri, modelName, version, modelSettings, addAnnotationMode } = answers;
     return {
         variant,
         service: {
@@ -74,7 +74,7 @@ function getWriterData(variant: DescriptorVariant, answers: NewModelAnswers): Ne
             version,
             modelSettings
         },
-        ...(answers.addAnnotationMode && {
+        ...(addAnnotationMode && {
             library: {
                 dataSourceName: answers.dataSourceName,
                 dataSourceURI: answers.dataSourceURI,

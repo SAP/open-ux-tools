@@ -398,8 +398,7 @@ export interface NewModelDataWithAnnotations extends NewModelDataBase {
 
 export type NewModelData = NewModelDataBase | NewModelDataWithAnnotations;
 
-export interface NewModelAnswers {
-    addAnnotationMode: boolean;
+export interface NewModelAnswersBase {
     /** Name of the OData service. */
     name: string;
     /** URI of the OData service. */
@@ -411,12 +410,24 @@ export interface NewModelAnswers {
     /** Settings for the OData service model. */
     modelSettings: string;
     /** Name of the OData annotation data source. */
+}
+
+export interface NewModelAnswersWithAnnotations extends NewModelAnswersBase {
+    addAnnotationMode: true;
+    /** Name of the OData annotation data source. */
     dataSourceName: string;
     /** Optional URI of the OData annotation data source. */
     dataSourceURI?: string;
     /** Optional settings for the OData annotation. */
     annotationSettings?: string;
 }
+
+export interface NewModelAnswersWithoutAnnotations extends NewModelAnswersBase {
+    addAnnotationMode: false;
+}
+
+export type NewModelAnswers = NewModelAnswersBase &
+    (NewModelAnswersWithAnnotations | NewModelAnswersWithoutAnnotations);
 
 export interface DataSourceData {
     variant: DescriptorVariant;
