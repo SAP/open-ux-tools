@@ -446,7 +446,14 @@ export interface InboundData {
     /** Identifier for the inbound navigation data. */
     inboundId: string;
     variant: DescriptorVariant;
-    answers: InboundChangeAnswers;
+    flp: {
+        /** Title associated with the inbound navigation data. */
+        title: string;
+        /** Subtitle associated with the inbound navigation data. */
+        subTitle: string;
+        /** Icon associated with the inbound navigation data. */
+        icon: string;
+    };
 }
 
 export interface InboundContent {
