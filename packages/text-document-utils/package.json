@@ -29,6 +29,7 @@
         "node": ">=18.x"
     },
     "dependencies": {
+        "@sap-ux/text-document-utils": "file:",
         "vscode-languageserver-types": "3.17.2"
     }
 }

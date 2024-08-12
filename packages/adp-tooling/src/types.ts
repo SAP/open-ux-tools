@@ -571,13 +571,14 @@ export interface ParamCheck {
     value: string | undefined;
 }
 
+export interface ParameterOptions {
+    required: boolean;
+    filter?: Value;
+    defaultValue?: Value;
+    renameTo?: string;
+}
 export interface Parameter {
-    [key: string]: {
-        required: boolean;
-        filter?: Value;
-        defaultValue?: Value;
-        renameTo?: string;
-    };
+    [key: string]: ParameterOptions;
 }
 
 export interface Value {
@@ -609,3 +610,41 @@ export interface DeployConfigAnswers {
     transportManual?: string;
     transportFromList?: string;
 }
+
+export type ParameterRules = {
+    /**
+     * Function that checks whether param has empty value, e.g parameter defined in the following format has empty value: param1=
+     *
+     * @param {string} param - param string
+     * @returns {ParamCheck} object which indicates if this rule should be applied and the parameter value
+     */
+    isEmptyParam(param: string): ParamCheck;
+    /**
+     * Function that define whether param is mandatory, param which is placed inside () is not mandatory
+     *
+     * @param {string} param - param string
+     * @returns {boolean} whether param string is mandatory or not
+     */
+    isMandatoryParam(param: string): boolean;
+    /**
+     * Function that checks whehter param has filter value, e.g parameter value placed inside <> indicates for filter value: param1=<value>
+     *
+     * @param {string} param - param string
+     * @returns {ParamCheck} object which indicates if this rule should be applied and the parameter value
+     */
+    shouldHavеFiltertValue(param: string): ParamCheck;
+    /**
+     * Function that checks whether parameter has rename to value, e.g param1=>value
+     *
+     * @param {string} param - param string
+     * @returns {ParamCheck} object which indicates if this rule should be applied and the parameter value
+     */
+    shouldRenameTo(param: string): ParamCheck;
+    /**
+     * Function thath checks whether parameter value should have reference as format value, e.g param1=%%value%%
+     *
+     * @param {string} param - param string
+     * @returns {ParamCheck} object which indicates if this rule should be applied and the parameter value
+     */
+    isReference(param: string): ParamCheck;
+};
