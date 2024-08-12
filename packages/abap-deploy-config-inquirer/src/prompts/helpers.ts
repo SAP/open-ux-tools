@@ -244,6 +244,21 @@ export function updateGeneratorUrl(
 }
 
 /**
+ * Ensures the SCP in the state is updated accordingly.
+ *
+ * @param options - abap deploy config prompt options
+ * @param previousAnswers - previous answers
+ */
+export function updateGeneratorScp(
+    options: AbapDeployConfigPromptOptions,
+    previousAnswers: AbapDeployConfigAnswersInternal
+) {
+    if (PromptState?.abapDeployConfig) {
+        PromptState.abapDeployConfig.scp = previousAnswers.scp ?? options.backendTarget?.abapTarget.scp ?? false;
+    }
+}
+
+/**
  * Queries the packages based on the input provided.
  *
  * @param isCli - is running in CLI
