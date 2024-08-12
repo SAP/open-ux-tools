@@ -8,7 +8,8 @@ import {
     initTransportConfig,
     getPackageAnswer,
     useCreateTrDuringDeploy,
-    queryPackages
+    queryPackages,
+    reconcileAnswers
 } from '../src/utils';
 import { getService } from '@sap-ux/store';
 import { mockTargetSystems } from './fixtures/targets';
@@ -16,8 +17,14 @@ import { getTransportConfigInstance } from '../src/service-provider-utils';
 import { listPackages } from '../src/validator-utils';
 import LoggerHelper from '../src/logger-helper';
 import { initI18n, t } from '../src/i18n';
-import { PackageInputChoices } from '../src/types';
+import {
+    AbapDeployConfigAnswers,
+    AbapDeployConfigAnswersInternal,
+    PackageInputChoices,
+    TransportChoices
+} from '../src/types';
 import { CREATE_TR_DURING_DEPLOY } from '../src/constants';
+import { PromptState } from '../src/prompts/prompt-state';
 
 jest.mock('../src/validator-utils', () => ({
     ...jest.requireActual('../src/validator-utils'),
@@ -48,6 +55,10 @@ const mockListPackages = listPackages as jest.Mock;
 describe('Test utils', () => {
     beforeAll(async () => {
         await initI18n();
+    });
+
+    afterEach(() => {
+        PromptState.resetAbapDeployConfig();
     });
 
     it('should return abap systems (App Studio)', async () => {
@@ -190,5 +201,70 @@ describe('Test utils', () => {
             }
         };
         expect(useCreateTrDuringDeploy(options)).toBe(true);
+    });
+
+    it('should return reconciled answers for destination', () => {
+        // tests from reconcileAnswers
+        const expectedAnswers: AbapDeployConfigAnswers = {
+            destination: 'Dest1',
+            url: 'http://dest.btp.url',
+            client: '100',
+            scp: true,
+            ui5AbapRepo: 'Mock Repo',
+            description: 'Mock Description',
+            package: 'PKGMOCK',
+            transport: 'TRMOCK',
+            index: true
+        };
+
+        PromptState.abapDeployConfig = {
+            url: 'http://dest.btp.url',
+            client: '100',
+            scp: true
+        };
+
+        const internalAnswers: AbapDeployConfigAnswersInternal = {
+            destination: 'Dest1',
+            ui5AbapRepo: 'Mock Repo',
+            description: 'Mock Description',
+            packageInputChoice: PackageInputChoices.EnterManualChoice,
+            packageManual: 'PKGMOCK',
+            transportInputChoice: TransportChoices.ListExistingChoice,
+            transportFromList: 'TRMOCK',
+            index: true
+        };
+
+        expect(reconcileAnswers(internalAnswers)).toStrictEqual(expectedAnswers);
+    });
+
+    it('should return reconciled answers for target system', () => {
+        // tests from reconcileAnswers
+        const expectedAnswers: AbapDeployConfigAnswers = {
+            url: 'htpp://target.url',
+            client: '100',
+            ui5AbapRepo: 'Mock Repo',
+            description: 'Mock Description',
+            package: 'PKGMOCK',
+            transport: CREATE_TR_DURING_DEPLOY,
+            overwrite: false
+        };
+
+        PromptState.abapDeployConfig = {
+            client: '100',
+            scp: false
+        };
+
+        const internalAnswers: AbapDeployConfigAnswersInternal = {
+            targetSystem: 'htpp://target.url',
+            ui5AbapRepo: 'Mock Repo',
+            description: 'Mock Description',
+            packageInputChoice: PackageInputChoices.ListExistingChoice,
+            packageAutocomplete: 'PKGMOCK',
+            transportInputChoice: TransportChoices.CreateDuringDeployChoice,
+            transportFromList: CREATE_TR_DURING_DEPLOY,
+            overwrite: false
+        };
+
+        expect(reconcileAnswers(internalAnswers)).toStrictEqual(expectedAnswers);
     });
 });

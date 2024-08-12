@@ -120,6 +120,8 @@ export interface AbapDeployConfigAnswersInternal extends AbapDeployConfigAnswers
     packageManual?: string;
     packageAutocomplete?: string;
     transportInputChoice?: TransportChoices;
+    transportCreated?: string;
+    transportFromList?: string;
     transportManual?: string;
     abort?: boolean;
 }

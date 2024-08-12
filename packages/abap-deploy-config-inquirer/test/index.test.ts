@@ -2,6 +2,7 @@ import { getPrompts, prompt } from '../src';
 import { getService } from '@sap-ux/store';
 import { mockTargetSystems } from './fixtures/targets';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { AbapDeployConfigAnswersInternal } from '../src/types';
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
     ...jest.requireActual('@sap-ux/fiori-generator-shared'),
@@ -30,18 +31,24 @@ describe('index', () => {
             getAll: jest.fn().mockResolvedValueOnce([mockTargetSystems])
         });
 
-        const answers = {
-            url: 'https://mock.url.target1.com',
+        const answers: AbapDeployConfigAnswersInternal = {
+            targetSystem: 'https://mock.url.target1.com',
             client: '000',
             ui5AbapRepo: 'mockRepo',
-            package: 'mockPackage',
-            transportRequest: 'mockTransport'
+            packageManual: 'mockPackage',
+            transportManual: 'mockTransport'
         };
 
         const adapter = {
             prompt: jest.fn().mockResolvedValueOnce(answers)
         };
 
-        expect(await prompt(adapter)).toStrictEqual(answers);
+        expect(await prompt(adapter)).toStrictEqual({
+            url: 'https://mock.url.target1.com',
+            client: '000',
+            ui5AbapRepo: 'mockRepo',
+            package: 'mockPackage',
+            transport: 'mockTransport'
+        });
     });
 });

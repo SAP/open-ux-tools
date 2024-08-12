@@ -1,11 +1,12 @@
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import { getService } from '@sap-ux/store';
-import { PackageInputChoices } from './types';
+import { PackageInputChoices, TargetSystemType, TransportChoices } from './types';
 import { getTransportConfigInstance } from './service-provider-utils';
 import { t } from './i18n';
 import LoggerHelper from './logger-helper';
 import { listPackages } from './validator-utils';
 import type {
+    AbapDeployConfigAnswers,
     AbapDeployConfigAnswersInternal,
     AbapDeployConfigPromptOptions,
     Credentials,
@@ -15,6 +16,7 @@ import type {
 import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 import type { Destinations, Destination } from '@sap-ux/btp-utils';
 import { CREATE_TR_DURING_DEPLOY } from './constants';
+import { PromptState } from './prompts/prompt-state';
 
 let cachedDestinations: Destinations = {};
 let cachedBackendSystems: BackendSystem[] = [];
@@ -171,9 +173,21 @@ export async function queryPackages(
  */
 export function getPackageAnswer(previousAnswers?: AbapDeployConfigAnswersInternal): string {
     // Older versions of YUI do not have a packageInputChoice question
-    return previousAnswers?.packageInputChoice === PackageInputChoices.ListExistingChoice
+    return PromptState.abapDeployConfig.package ??
+        previousAnswers?.packageInputChoice === PackageInputChoices.ListExistingChoice
         ? previousAnswers?.packageAutocomplete ?? ''
         : previousAnswers?.packageManual ?? '';
+}
+
+export function getTransportAnswer(previousAnswers?: AbapDeployConfigAnswersInternal): string {
+    return (
+        previousAnswers?.transportManual ||
+        previousAnswers?.transportFromList ||
+        previousAnswers?.transportCreated ||
+        (previousAnswers?.transportInputChoice === TransportChoices.CreateDuringDeployChoice
+            ? CREATE_TR_DURING_DEPLOY
+            : '')
+    );
 }
 
 /**
@@ -185,4 +199,77 @@ export function getPackageAnswer(previousAnswers?: AbapDeployConfigAnswersIntern
  */
 export function useCreateTrDuringDeploy(options: AbapDeployConfigPromptOptions): boolean {
     return options.existingDeployTaskConfig?.transport === CREATE_TR_DURING_DEPLOY;
+}
+
+/**
+ * Determines the url from the various sources.
+ *
+ * @param answers - internal abap deploy config answers
+ * @returns url if found
+ */
+function getUrlAnswer(answers: AbapDeployConfigAnswersInternal): string | undefined {
+    let url;
+    if (answers.targetSystem && answers.targetSystem === TargetSystemType.Url && answers.url) {
+        url = answers.url;
+    } else if (PromptState.abapDeployConfig.url) {
+        url = PromptState.abapDeployConfig.url;
+    }
+    return url;
+}
+/**
+ * Convert internal answers to external answers to be used for writing deploy config.
+ *
+ * @param answers - internal abap deploy config answers
+ * @returns - external abap deploy config answers
+ */
+export function reconcileAnswers(answers: AbapDeployConfigAnswersInternal): AbapDeployConfigAnswers {
+    const reconciledAnswers: AbapDeployConfigAnswers = {};
+    if (answers.destination) {
+        reconciledAnswers.destination = answers.destination;
+    }
+
+    if (answers.targetSystem && answers.targetSystem !== TargetSystemType.Url) {
+        reconciledAnswers.url = answers.targetSystem;
+    }
+
+    const url = getUrlAnswer(answers);
+    if (url) {
+        reconciledAnswers.url = url;
+    }
+
+    if (answers.client || PromptState.abapDeployConfig.client) {
+        reconciledAnswers.client = answers.client ?? PromptState.abapDeployConfig.client;
+    }
+
+    if (answers.scp || PromptState.abapDeployConfig.scp) {
+        reconciledAnswers.scp = true;
+    }
+
+    if (answers.ui5AbapRepo) {
+        reconciledAnswers.ui5AbapRepo = answers.ui5AbapRepo;
+    }
+
+    if (answers.description) {
+        reconciledAnswers.description = answers.description;
+    }
+
+    const packageAnswer = getPackageAnswer(answers);
+    if (packageAnswer) {
+        reconciledAnswers.package = packageAnswer;
+    }
+
+    const transportAnswer = getTransportAnswer(answers);
+    if (transportAnswer) {
+        reconciledAnswers.transport = transportAnswer;
+    }
+
+    if (answers.index !== undefined) {
+        reconciledAnswers.index = answers.index;
+    }
+
+    if (answers.overwrite !== undefined) {
+        reconciledAnswers.overwrite = answers.overwrite;
+    }
+
+    return reconciledAnswers;
 }

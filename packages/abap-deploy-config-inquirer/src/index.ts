@@ -4,7 +4,13 @@ import { PromptState } from './prompts/prompt-state';
 import { getAbapDeployConfigQuestions } from './prompts';
 import LoggerHelper from './logger-helper';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
-import type { AbapDeployConfigAnswers, AbapDeployConfigPromptOptions, AbapDeployConfigQuestion } from './types';
+import type {
+    AbapDeployConfigAnswers,
+    AbapDeployConfigAnswersInternal,
+    AbapDeployConfigPromptOptions,
+    AbapDeployConfigQuestion
+} from './types';
+import { reconcileAnswers } from './utils';
 
 /**
  * Get the inquirer prompts for abap deploy config.
@@ -44,12 +50,12 @@ async function prompt(
     logger?: Logger
 ): Promise<AbapDeployConfigAnswers> {
     const abapDeployConfigPrompts = (await getPrompts(promptOptions, logger)).prompts;
-    const answers = await adapter.prompt<AbapDeployConfigAnswers>(abapDeployConfigPrompts);
+    const answers = await adapter.prompt<AbapDeployConfigAnswersInternal>(abapDeployConfigPrompts);
 
     // Add dervied service answers to the answers object
     Object.assign(answers, PromptState.abapDeployConfig);
 
-    return answers;
+    return reconcileAnswers(answers);
 }
 
 export { getPrompts, prompt, type InquirerAdapter, type AbapDeployConfigAnswers, type AbapDeployConfigPromptOptions };
