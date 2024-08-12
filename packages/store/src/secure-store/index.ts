@@ -7,6 +7,7 @@ import type { SecureStore } from './types';
 import { join, dirname } from 'path';
 import { homedir } from 'os';
 import { default as fs } from 'fs';
+// __non_webpack_require__ is used to ensure the require is not bundled by webpack and resolved at runtime
 declare function __non_webpack_require__(m: string): any;
 
 function getKeytarPaths(insiders: boolean): string[] {
@@ -37,11 +38,11 @@ function getKeytar(log: Logger): typeof Keytar | undefined {
         // keytar is not installed or is removed from the fs by virus scanner.
         try {
             const AppMKeytarDirs = getKeytarPaths(false).concat(getKeytarPaths(true));
-            log.info('keytarDirectories: \n' + JSON.stringify(AppMKeytarDirs));
+            log.info('keytarDirectories: \n' + JSON.stringify(AppMKeytarDirs) + '\n');
             if (AppMKeytarDirs.length > 0) {
                 // try to load keytar from the first directory found
                 const keytarDir = AppMKeytarDirs[0];
-                log.info('Try to load keytar from :' + JSON.stringify(keytarDir));
+                log.info('Try to load keytar from :' + JSON.stringify(keytarDir) + '\n');
                 // Support bundling
                 if (typeof __non_webpack_require__ === 'function') {
                     return __non_webpack_require__(keytarDir);
