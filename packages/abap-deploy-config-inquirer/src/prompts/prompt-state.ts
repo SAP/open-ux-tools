@@ -7,7 +7,9 @@ import type { AbapDeployConfigAnswersInternal, TransportAnswers } from '../types
  */
 export class PromptState {
     private static _abapDeployConfig: Partial<AbapDeployConfigAnswersInternal> = {};
-    private static _transportAnswers: TransportAnswers = {};
+    private static _transportAnswers: TransportAnswers = {
+        transportRequired: true // assumed to be required unless the package is local
+    };
 
     /**
      * Returns the current state of the abap deploy config answers.

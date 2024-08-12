@@ -64,6 +64,7 @@ describe('getPackagePrompts', () => {
                 "name": "packageAutocomplete",
                 "source": [Function],
                 "type": "autocomplete",
+                "validate": [Function],
                 "when": [Function],
               },
             ]
@@ -83,17 +84,17 @@ describe('getPackagePrompts', () => {
             expect((packageInputChoicePrompt.when as Function)()).toBe(true);
             expect(packageInputChoicePrompt.message).toBe(t('prompts.config.package.packageInputChoice.message'));
             expect(((packageInputChoicePrompt as ListQuestion).choices as Function)()).toMatchInlineSnapshot(`
-              Array [
-                Object {
-                  "name": "Enter manually",
-                  "value": "EnterManualChoice",
-                },
-                Object {
-                  "name": "Choose from existing",
-                  "value": "ListExistingChoice",
-                },
-              ]
-          `);
+                              Array [
+                                Object {
+                                  "name": "Enter manually",
+                                  "value": "EnterManualChoice",
+                                },
+                                Object {
+                                  "name": "Choose from existing",
+                                  "value": "ListExistingChoice",
+                                },
+                              ]
+                      `);
 
             expect(
                 (packageInputChoicePrompt.default as Function)({
@@ -135,7 +136,7 @@ describe('getPackagePrompts', () => {
 
     test('should return expected values from packageManual prompt methods', async () => {
         jest.spyOn(conditions, 'defaultOrShowManualPackageQuestion').mockReturnValueOnce(true);
-        jest.spyOn(validators, 'validatePackage').mockReturnValueOnce(true);
+        jest.spyOn(validators, 'validatePackage').mockResolvedValueOnce(true);
 
         const packagePrompts = getPackagePrompts({});
         const packageManualPrompt = packagePrompts.find(
@@ -157,7 +158,7 @@ describe('getPackagePrompts', () => {
 
     test('should return expected values from packageAutocomplete prompt methods', async () => {
         jest.spyOn(conditions, 'defaultOrShowSearchPackageQuestion').mockReturnValueOnce(true);
-        jest.spyOn(validators, 'validatePackage').mockReturnValueOnce(true);
+        jest.spyOn(validators, 'validatePackage').mockResolvedValueOnce(true);
         jest.spyOn(validators, 'validatePackageChoiceInput').mockResolvedValueOnce(true);
         jest.spyOn(helpers, 'getPackageChoices').mockResolvedValueOnce({
             packages: ['TEST_PACKAGE_1', 'TEST_PACKAGE_2'],

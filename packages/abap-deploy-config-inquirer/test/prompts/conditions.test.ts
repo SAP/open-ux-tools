@@ -155,7 +155,12 @@ describe('Test abap deploy config inquirer conditions', () => {
 
     test('should show ui5 app deploy config questions', () => {
         PromptState.transportAnswers.transportConfigNeedsCreds = false;
-        expect(showUi5AppDeployConfigQuestion()).toBe(true);
+        expect(showUi5AppDeployConfigQuestion({})).toBe(true);
+    });
+
+    test('should not show ui5 app deploy config questions', () => {
+        PromptState.abapDeployConfig.scp = true;
+        expect(showUi5AppDeployConfigQuestion({ hideUi5AbapRepoBtp: true })).toBe(false);
     });
 
     test('should show package input choice question', () => {

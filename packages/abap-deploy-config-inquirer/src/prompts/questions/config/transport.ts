@@ -110,15 +110,17 @@ export function getTransportRequestPrompts(
                 defaultOrShowManualTransportQuestion(previousAnswers),
             type: 'input',
             name: abapDeployConfigInternalPromptNames.transportManual,
-            message: t('prompts.config.transport.common.transportRequest'),
+            message: () =>
+                PromptState.transportAnswers.transportRequired
+                    ? t('prompts.config.transport.common.transportRequestMandatory')
+                    : t('prompts.config.transport.common.transportRequest'),
             guiOptions: {
                 hint: t('prompts.config.transport.common.provideTransportRequest'),
                 breadcrumb: t('prompts.config.transport.common.transportRequest')
             },
             default: (previousAnswers: AbapDeployConfigAnswersInternal) =>
                 defaultTransportRequestNumber(options, previousAnswers),
-            validate: (input: string, previousAnswers: AbapDeployConfigAnswersInternal): boolean | string =>
-                validateTransportQuestion(input, previousAnswers),
+            validate: (input: string): boolean | string => validateTransportQuestion(input),
             filter: (input: string): string => input?.trim()?.toUpperCase()
         } as InputQuestion<AbapDeployConfigAnswersInternal>
     ];
