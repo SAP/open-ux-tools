@@ -4,6 +4,7 @@ import { DummyStore } from '../../../src/secure-store/dummy-store';
 import { KeytarStore } from '../../../src/secure-store/keytar-store';
 import { ToolsLogger, NullTransport } from '@sap-ux/logger';
 import { readdirSync, existsSync } from 'fs';
+import { join } from 'path';
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
     existsSync: jest.fn(),
@@ -50,7 +51,9 @@ describe('getSecureStore', () => {
             existsSyncSyncMock.mockReturnValue(true);
 
             jest.mock(
-                `test_dir/.vscode/extensions/sapse.sap-ux-application-modeler-extension-1.14.1/node_modules/keytar`,
+                join(
+                    `test_dir/.vscode/extensions/sapse.sap-ux-application-modeler-extension-1.14.1/node_modules/keytar`
+                ),
                 () => 'keytar',
                 { virtual: true }
             );
