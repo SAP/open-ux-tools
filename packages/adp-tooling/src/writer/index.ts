@@ -1,9 +1,11 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
-import type { AdpWriterConfig, InternalInboundNavigation } from '../types';
+
+import { getI18nDescription, getManifestContent, writeI18nModels } from './creation';
 import { enhanceManifestChangeContentWithFlpConfig } from './options';
 import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml } from './project-utils';
+import { FlexLayer, type AdpWriterConfig, type InternalInboundNavigation } from '../types';
 
 const tmplPath = join(__dirname, '../../templates/project');
 
@@ -24,7 +26,7 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
         customConfig: config.customConfig ? { ...config.customConfig } : undefined
     };
     configWithDefaults.app.title ??= `Adaptation of ${config.app.reference}`;
-    configWithDefaults.app.layer ??= 'CUSTOMER_BASE';
+    configWithDefaults.app.layer ??= FlexLayer.CUSTOMER_BASE;
 
     configWithDefaults.package ??= config.package ? { ...config.package } : {};
     configWithDefaults.package.name ??= config.app.id.toLowerCase().replace(/\./g, '-');
@@ -53,6 +55,9 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
 
     const fullConfig = setDefaults(config);
 
+    fullConfig.app.content = getManifestContent(fullConfig);
+    fullConfig.app.i18nDescription = getI18nDescription(fullConfig.app.layer, fullConfig.app?.title);
+
     if (fullConfig.customConfig?.adp.environment === 'C' && fullConfig.flp) {
         enhanceManifestChangeContentWithFlpConfig(
             fullConfig.flp as InternalInboundNavigation,
@@ -60,6 +65,8 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
             fullConfig.app.content
         );
     }
+
+    writeI18nModels(basePath, fullConfig.app.i18nModels, fs);
     writeTemplateToFolder(join(tmplPath, '**/*.*'), join(basePath), fullConfig, fs);
     await writeUI5DeployYaml(basePath, fullConfig, fs);
     await writeUI5Yaml(basePath, fullConfig, fs);

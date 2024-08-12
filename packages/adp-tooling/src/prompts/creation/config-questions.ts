@@ -795,7 +795,7 @@ export default class ConfigInfoPrompter {
     private getACHprompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
             type: 'input',
-            name: 'applicationComponentHierarchy',
+            name: 'ach',
             message: t('prompts.achLabel'),
             guiOptions: {
                 hint: t('prompts.achHint'),

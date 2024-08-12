@@ -11,7 +11,6 @@ import {
     getBasicInfoPrompts,
     getFlpPrompts,
     getDeployPrompts,
-    DescriptorContent,
     TemplateModel
 } from '@sap-ux/adp-tooling';
 import { create } from 'mem-fs-editor';
@@ -75,14 +74,7 @@ async function generateAdaptationProject(basePath: string, simulate: boolean, sk
             logger
         );
 
-        const descriptorContent = new DescriptorContent(manifestService, ui5Service, layer, basePath, fs);
-        const templateModel = new TemplateModel(
-            ui5Service,
-            providerService,
-            descriptorContent,
-            endpointsService,
-            layer
-        );
+        const templateModel = new TemplateModel(ui5Service, providerService, manifestService, layer);
 
         const basicAnswers = await promptYUIQuestions(getBasicInfoPrompts(basePath, layer), false);
         logger.debug(`Basic information: ${JSON.stringify(basicAnswers)}`);

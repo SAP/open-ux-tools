@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
-
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { AbapTarget } from '@sap-ux/ui5-config';
 import { AuthenticationType } from '@sap-ux/store';
@@ -17,17 +15,17 @@ import {
     OnpremApp
 } from '../../types';
 import {
-    EndpointsService,
+    ManifestService,
     ProviderService,
     UI5VersionService,
     getFormattedVersion,
     getOfficialBaseUI5VersionUrl
 } from '../../base/services';
 import { getSupportForUI5Yaml } from './config';
+import { getApplicationType } from '../../base';
 import { getUI5DeployConfig } from './deploy-config';
+import { getI18nDescription, getI18nModels } from './i18n-model';
 import { parseParameters } from '../../base/services/flp-parameters';
-import { DescriptorContent } from './descriptor-content';
-import { RESOURCE_BUNDLE_TEXT, TRANSLATION_UUID_TEXT } from './i18n-model';
 
 /**
  * A class responsible for generating configuration model.
@@ -40,15 +38,13 @@ export class TemplateModel {
      *
      * @param {UI5VersionService} ui5Service - Service for handling UI5 version information.
      * @param {ProviderService} providerService - Service for managing provider-related configurations.
-     * @param {DescriptorContent} descriptorContent - Service for managing application descriptors.
-     * @param {EndpointsService} endpointsService - Service for managing and retrieving systems.
+     * @param {ManifestService} manifestService - Service for managing and retrieving systems.
      * @param {FlexLayer} layer - The UI5 Flex layer, indicating the deployment layer (e.g., CUSTOMER_BASE).
      */
     constructor(
         private ui5Service: UI5VersionService,
         private providerService: ProviderService,
-        private descriptorContent: DescriptorContent,
-        private endpointsService: EndpointsService, // TODO: Use the service
+        private manifestService: ManifestService,
         private layer: FlexLayer
     ) {
         this.isCustomerBase = this.layer === FlexLayer.CUSTOMER_BASE;
@@ -76,36 +72,36 @@ export class TemplateModel {
         const title = basicAnswers.applicationTitle;
         const isCloudProject = configAnswers.projectType === 'cloudReady';
 
-        let i18nDescription =
-            '#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.';
-        if (!this.isCustomerBase) {
-            i18nDescription += RESOURCE_BUNDLE_TEXT + title + TRANSLATION_UUID_TEXT + uuidv4() + '\n\n';
-        }
-
         const ui5Version = isCloudProject
             ? this.ui5Service.latestVersion
             : this.ui5Service.getVersionToBeUsed(configAnswers.ui5Version, this.isCustomerBase);
 
-        const systemVersion = getFormattedVersion(ui5Version);
-
         const deploy = getUI5DeployConfig(isCloudProject, deployConfigAnswers);
 
         const appId = configAnswers.application.id;
-        const content = this.descriptorContent.getManifestContent(
-            appId,
-            systemVersion,
+        const manifest = this.manifestService.getManifest(appId);
+        if (!manifest) {
+            throw new Error('Manifest of the application was not found!');
+        }
+
+        const type = getApplicationType(manifest);
+        const i18nModels = getI18nModels(manifest, this.layer, {
+            id: appId,
             title,
-            configAnswers.fioriId,
-            configAnswers.applicationComponentHierarchy
-        );
+            type
+        });
+
+        const shouldSetMinVersion = this.ui5Service.shouldSetMinUI5Version();
 
         const app: CloudApp | OnpremApp = {
             id: basicAnswers.namespace,
             reference: appId,
             layer: this.layer,
             title,
-            content, // TODO: Move to writer logic
-            i18nDescription
+            i18nModels,
+            appType: type,
+            ach: configAnswers.ach,
+            fioriId: configAnswers.fioriId
         };
 
         const cloudConfig = await this.getCloudConfig(app, configAnswers, flpConfigAnswers);
@@ -117,7 +113,8 @@ export class TemplateModel {
             ui5: {
                 minVersion: ui5Version?.split(' ')[0],
                 version: getFormattedVersion(ui5Version),
-                frameworkUrl: getOfficialBaseUI5VersionUrl(ui5Version)
+                frameworkUrl: getOfficialBaseUI5VersionUrl(ui5Version),
+                shouldSetMinVersion
             },
             package: {
                 name: basicAnswers.projectName

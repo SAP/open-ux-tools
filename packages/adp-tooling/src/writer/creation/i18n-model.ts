@@ -39,59 +39,32 @@ export function extractResourceModelPath(ui5Model: SapModel, modelObjectKey: str
     return resourceModelPath;
 }
 
-/**
- * Generates i18n content for a resource model.
- *
- * @param {boolean} isCustomerBase - Whether the application is in the customer base layer.
- * @param {string} appTitle - The title of the application.
- * @returns {string} The generated i18n content.
- */
-export function getI18NContent(isCustomerBase: boolean, appTitle: string): string {
-    const content =
+export function getI18nDescription(layer: FlexLayer, appTitle?: string): string {
+    const i18nDescription =
         '#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.';
 
-    return isCustomerBase ? content : content + RESOURCE_BUNDLE_TEXT + appTitle + TRANSLATION_UUID_TEXT + uuidv4();
+    return layer === FlexLayer.CUSTOMER_BASE
+        ? i18nDescription
+        : i18nDescription + RESOURCE_BUNDLE_TEXT + appTitle + TRANSLATION_UUID_TEXT + uuidv4();
 }
 
-/**
- * Class responsible for extracting i18n models from a given manifest.
- */
-export class I18nModelExtractor {
-    private isCustomerBase: boolean;
+export function getI18nModels(
+    manifest: Manifest,
+    layer: FlexLayer,
+    appInfo: { title?: string; id: string; type: ApplicationType }
+): ResourceModel[] | undefined {
+    try {
+        const models = manifest['sap.ui5']?.models ?? {};
 
-    /**
-     * Constructs an instance of I18nModelExtractor.
-     *
-     * @param {FlexLayer} layer UI5 Flex layer.
-     */
-    constructor(layer: FlexLayer) {
-        this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
-    }
-
-    /**
-     * Retrieves i18n models from the manifest based on the application's information.
-     *
-     * @param {Manifest} manifest - The application manifest.
-     * @param {object} appInfo - Information about the application.
-     * @returns {ResourceModel[] | undefined} A list of i18n resource models or undefined if none are found.
-     */
-    public getI18NModels(
-        manifest: Manifest,
-        appInfo: { title: string; id: string; type: ApplicationType }
-    ): ResourceModel[] | undefined {
-        try {
-            const models = manifest['sap.ui5']?.models ?? {};
-
-            return Object.entries(models).reduce((acc, [key, ui5Model]) => {
-                if (ui5Model?.type === 'sap.ui.model.resource.ResourceModel') {
-                    const content = getI18NContent(this.isCustomerBase, appInfo.title);
-                    const path = extractResourceModelPath(ui5Model, key, appInfo.id);
-                    acc.push({ key, path, content });
-                }
-                return acc;
-            }, [] as ResourceModel[]);
-        } catch (e) {
-            throw new Error('Manifest parsing error: Check manifest/i18n for missing properties');
-        }
+        return Object.entries(models).reduce((acc, [key, ui5Model]) => {
+            if (ui5Model?.type === 'sap.ui.model.resource.ResourceModel') {
+                const content = getI18nDescription(layer, appInfo?.title);
+                const path = extractResourceModelPath(ui5Model, key, appInfo.id);
+                acc.push({ key, path, content });
+            }
+            return acc;
+        }, [] as ResourceModel[]);
+    } catch (e) {
+        throw new Error('Manifest parsing error: Check manifest/i18n for missing properties');
     }
 }
