@@ -310,17 +310,16 @@ describe('Change Utils', () => {
 
         const mockProjectPath = 'mock/project/path';
         const mockData = {
-            fileName: 'mockAnnotation.xml',
             variant: {
                 layer: 'CUSTOMER_BASE',
                 reference: 'mock.reference',
                 id: 'adp.mock.variant',
                 namespace: 'apps/adp.mock.variant'
             } as DescriptorVariant,
-            answers: {
-                id: '/sap/opu/odata/source',
-                fileSelectOption: 1
-            } as AddAnnotationsAnswers
+            annotation: {
+                fileName: 'mockAnnotation.xml',
+                dataSource: '/sap/opu/odata/source'
+            }
         } as AnnotationsData;
         const mockChange = { key: 'value' };
         const writeJsonSpy = jest.fn();
@@ -353,7 +352,7 @@ describe('Change Utils', () => {
         });
 
         it('should copy the annotation file to the correct directory if not creating a new empty file', () => {
-            mockData.answers.filePath = `mock/path/to/annotation/file.xml`;
+            mockData.annotation.filePath = `mock/path/to/annotation/file.xml`;
 
             writeAnnotationChange(
                 mockProjectPath,
@@ -364,13 +363,13 @@ describe('Change Utils', () => {
             );
 
             expect(copySpy).toHaveBeenCalledWith(
-                mockData.answers.filePath,
+                mockData.annotation.filePath,
                 expect.stringContaining('mockAnnotation.xml')
             );
         });
 
         it('should not copy the annotation file if the selected directory is the same as the target', () => {
-            mockData.answers.filePath = path.join(
+            mockData.annotation.filePath = path.join(
                 'mock',
                 'project',
                 'path',
@@ -392,7 +391,7 @@ describe('Change Utils', () => {
         });
 
         it('should throw error when write operation fails', () => {
-            mockData.answers.filePath = '';
+            mockData.annotation.filePath = '';
 
             mockFs.writeJSON.mockImplementation(() => {
                 throw new Error('Failed to write JSON');

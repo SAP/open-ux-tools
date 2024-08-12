@@ -28,7 +28,6 @@ const mockAnswers = {
     version: '4.0',
     modelName: 'OData_ServiceModelName',
     modelSettings: '"key": "value"',
-    addAnnotationMode: false
 };
 
 jest.mock('fs', () => ({
@@ -78,7 +77,7 @@ describe('add/model', () => {
         expect(loggerMock.debug).not.toBeCalled();
         expect(traceSpy).not.toBeCalled();
         expect(generateChangeMock).toBeCalledWith(expect.anything(), 'appdescr_ui5_addNewModel', {
-            answers: mockAnswers,
+            service: mockAnswers,
             variant: descriptorVariant
         });
     });
@@ -91,7 +90,7 @@ describe('add/model', () => {
         expect(loggerMock.debug).not.toBeCalled();
         expect(traceSpy).toBeCalled();
         expect(generateChangeMock).toBeCalledWith(expect.anything(), 'appdescr_ui5_addNewModel', {
-            answers: mockAnswers,
+            service: mockAnswers,
             variant: descriptorVariant
         });
     });
