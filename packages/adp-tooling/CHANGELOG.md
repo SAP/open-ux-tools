@@ -1,5 +1,44 @@
 # @sap-ux/adp-tooling
 
+## 0.12.30
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.4
+
+## 0.12.29
+
+### Patch Changes
+
+-   Updated dependencies [cc16cbb]
+    -   @sap-ux/project-access@1.26.5
+    -   @sap-ux/axios-extension@1.16.3
+    -   @sap-ux/system-access@0.5.5
+
+## 0.12.28
+
+### Patch Changes
+
+-   593ad0f: Adp-tooling prompting validations
+-   Updated dependencies [593ad0f]
+    -   @sap-ux/project-input-validator@0.3.3
+
+## 0.12.27
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.4
+-   @sap-ux/axios-extension@1.16.3
+-   @sap-ux/system-access@0.5.5
+
+## 0.12.26
+
+### Patch Changes
+
+-   Updated dependencies [0084205]
+    -   @sap-ux/axios-extension@1.16.3
+    -   @sap-ux/system-access@0.5.5
+
 ## 0.12.25
 
 ### Patch Changes
