@@ -10,7 +10,7 @@ import {
     updateDestinationPromptState
 } from '../validators';
 import { t } from '../../i18n';
-import { getClientChoicePromptChoices, getAbapSystemChoices, updateGeneratorUrl } from '../helpers';
+import { getClientChoicePromptChoices, getAbapSystemChoices, updateGeneratorUrl, updateGeneratorScp } from '../helpers';
 import { defaultTargetSystem, defaultUrl } from '../defaults';
 import { getAbapSystems } from '../../utils';
 import { PromptState } from '../prompt-state';
@@ -159,14 +159,18 @@ function getUrlPrompt(
  */
 function getScpPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
     return {
-        when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean => showScpQuestion(previousAnswers),
+        when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean => {
+            const isValid = showScpQuestion(previousAnswers);
+            updateGeneratorScp(options, previousAnswers);
+            return isValid;
+        },
         type: 'confirm',
         name: abapDeployConfigInternalPromptNames.scp,
         message: t('prompts.target.scp.message'),
         guiOptions: {
             breadcrumb: t('prompts.target.scp.breadcrumb')
         },
-        default: (): boolean | undefined => options.backendTarget?.abapTarget?.scp,
+        default: (): boolean | undefined => PromptState.abapDeployConfig?.scp,
         validate: (scp: boolean): boolean | string => validateScpQuestion(scp)
     } as ConfirmQuestion<AbapDeployConfigAnswersInternal>;
 }
