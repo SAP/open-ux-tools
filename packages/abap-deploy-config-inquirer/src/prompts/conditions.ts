@@ -162,9 +162,6 @@ export function showPasswordQuestion(): boolean {
  * @returns boolean
  */
 export function showUi5AppDeployConfigQuestion(options: AbapDeployConfigPromptOptions): boolean {
-    if (options.hideUi5AbapRepoBtp && PromptState.abapDeployConfig.scp) {
-        return false;
-    }
     return !PromptState.transportAnswers.transportConfigNeedsCreds;
 }
 
