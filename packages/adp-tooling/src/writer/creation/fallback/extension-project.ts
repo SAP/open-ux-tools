@@ -1,4 +1,4 @@
-import type { BasicInfoAnswers, ConfigurationInfoAnswers } from '../../../types';
+import type { BasicInfoAnswers, ConfigurationInfoAnswers, ExtProjectConfig } from '../../../types';
 import type { EndpointsService } from '../../../base/services';
 import { getTrimmedUI5Version } from '../../../base/services';
 
@@ -16,7 +16,7 @@ export function getExtProjectConfig(
     endpointsService: EndpointsService,
     basicAnswers: BasicInfoAnswers,
     configAnswers: ConfigurationInfoAnswers
-): object {
+): ExtProjectConfig {
     if (!configAnswers.application) {
         throw new Error('Application parameters are missing.');
     }

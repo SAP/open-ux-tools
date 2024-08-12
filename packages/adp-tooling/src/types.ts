@@ -650,3 +650,21 @@ export type ParameterRules = {
      */
     isReference(param: string): ParamCheck;
 };
+
+interface DestinationConfig {
+    name: string;
+    basUsage: string | undefined;
+    host: string | undefined;
+    sapClient: string | undefined;
+}
+
+export interface ExtProjectConfig {
+    username: string;
+    password: string;
+    destination: DestinationConfig;
+    applicationNS: string;
+    applicationName: string;
+    userUI5Ver: string;
+    BSPUrl: string;
+    namespace: string;
+}
