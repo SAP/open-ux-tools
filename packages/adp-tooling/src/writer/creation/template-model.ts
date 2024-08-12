@@ -25,7 +25,7 @@ import {
 } from '../../base/services';
 import { getSupportForUI5Yaml } from './config';
 import { getUI5DeployConfig } from './deploy-config';
-import { parseFlpParamString } from './flp-parameters';
+import { parseParameters } from '../../base/services/flp-parameters';
 import { DescriptorContent } from './descriptor-content';
 import { RESOURCE_BUNDLE_TEXT, TRANSLATION_UUID_TEXT } from './i18n-model';
 
@@ -200,7 +200,7 @@ export class TemplateModel {
                 inboundId,
                 semanticObject,
                 action,
-                additionalParameters: parameters ? parseFlpParamString(parameters) : {}
+                additionalParameters: parameters ? parseParameters(parameters) : {}
             };
         }
     }

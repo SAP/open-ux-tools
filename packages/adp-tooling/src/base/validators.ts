@@ -4,7 +4,7 @@ import { AbapServiceProvider, OperationsType } from '@sap-ux/axios-extension';
 
 import { t } from '../i18n';
 import { InputChoice } from '../types';
-import { parseParameters } from './helper';
+import { parseParameters } from '../base/services/flp-parameters';
 import { listPackages, listTransports } from './services';
 
 /**
