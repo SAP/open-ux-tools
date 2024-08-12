@@ -1,10 +1,7 @@
-import { Editor } from 'mem-fs-editor';
-
-import { FlexLayer, Content } from '../../types';
-import { writeI18nModels } from './i18n-model-writer';
-import { I18nModelExtractor, ResourceModel } from './i18n-model';
-import { ApplicationType, getApplicationType } from '../../base/app-utils';
-import { ManifestService, UI5VersionService, isFeatureSupportedVersion } from '../../base/services';
+import { ResourceModel } from './i18n-model';
+import { FlexLayer, Content, AdpWriterConfig } from '../../types';
+import { ApplicationType } from '../../base/app-utils';
+import { isFeatureSupportedVersion } from '../../base/services';
 
 /**
  * Creates a descriptor change object for a resource model.
@@ -23,7 +20,7 @@ export function createDescriptorChangeForResourceModel(
     modelId: string,
     path: string,
     type: ApplicationType,
-    ui5Version: string
+    ui5Version?: string
 ): Content {
     const fallbackLocaleSupported = isFeatureSupportedVersion('1.84.0', ui5Version);
 
@@ -64,7 +61,7 @@ export function createDescriptorChangeForResourceModel(
 export function fillDescriptorContent(
     content: Content[],
     type: ApplicationType,
-    systemVersion: string,
+    systemVersion?: string,
     i18nModels?: ResourceModel[]
 ): void {
     if (i18nModels) {
@@ -81,7 +78,7 @@ export function fillDescriptorContent(
  * @param {string} fioriId - The Fiori ID to set in the registration.
  * @param {string} ach - The application component hierarchy code, which will be converted to uppercase.
  */
-export function fillSupportData(content: Content[], fioriId: string, ach: string): void {
+export function fillSupportData(content: Content[], ach?: string, fioriId?: string): void {
     content.push({
         changeType: 'appdescr_fiori_setRegistrationIds',
         content: {
@@ -97,89 +94,33 @@ export function fillSupportData(content: Content[], fioriId: string, ach: string
     });
 }
 
-/**
- * Class responsible for generating descriptor content for UI5 applications.
- * This includes integrating manifest data, internationalization models, and various
- * deployment settings based on the application's environment and configuration.
- */
-export class DescriptorContent {
-    private fs: Editor;
-    private basePath: string;
-    private isCustomerBase: boolean;
-    private i18nExtractor: I18nModelExtractor;
+export function getManifestContent({ app, ui5 }: AdpWriterConfig): Content[] {
+    const { ach, fioriId, appType, layer, i18nModels } = app;
+    const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
+    const content: Content[] = [];
 
-    /**
-     * Constructs an instance of DescriptorContent, initializing required services
-     * and settings for descriptor generation.
-     *
-     * @param {ManifestService} manifestService - Service for managing application manifests.
-     * @param {UI5VersionService} ui5Service - Service for handling UI5 version information.
-     * @param {FlexLayer} layer - The UI5 Flex layer, indicating the deployment layer (e.g., CUSTOMER_BASE).
-     * @param {string} basePath - The base path where the project files are located.
-     * @param {Editor} fs - File system editor used to write internationalization models and other files.
-     */
-    constructor(
-        private manifestService: ManifestService,
-        private ui5Service: UI5VersionService,
-        layer: FlexLayer,
-        basePath: string,
-        fs: Editor
-    ) {
-        this.fs = fs;
-        this.basePath = basePath;
-        this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
-        this.i18nExtractor = new I18nModelExtractor(layer);
+    fillDescriptorContent(content, appType, ui5?.version, i18nModels);
+
+    if (!isCustomerBase) {
+        fillSupportData(content, fioriId, ach);
     }
 
-    /**
-     * Generates and returns descriptor content for a given application based on its manifest.
-     *
-     * @param {string} id - The unique identifier of the application.
-     * @param {string} systemVersion - The system version of UI5.
-     * @param {string} title - The title of the application.
-     * @param {string} fioriId - Fiori application ID for registration purposes.
-     * @param {string} ach - Achievement ID for the application.
-     * @throws {Error} Throws an error if the manifest cannot be found.
-     * @returns {Content[]} An array of descriptor contents including various configurations and settings.
-     */
-    public getManifestContent(
-        id: string,
-        systemVersion: string,
-        title: string,
-        fioriId: string,
-        ach: string
-    ): Content[] {
-        const manifest = this.manifestService.getManifest(id);
-        if (!manifest) {
-            throw new Error('Manifest of the application was not found!');
-        }
-
-        const type = getApplicationType(manifest);
-        const content: Content[] = [];
-
-        const i18nModels = this.i18nExtractor.getI18NModels(manifest, {
-            title,
-            id,
-            type
+    if (ui5?.shouldSetMinVersion) {
+        content.push({
+            changeType: 'appdescr_ui5_setMinUI5Version',
+            content: {
+                minUI5Version: ui5?.minVersion
+            }
         });
-
-        writeI18nModels(this.fs, this.basePath, i18nModels);
-        fillDescriptorContent(content, type, systemVersion, i18nModels);
-
-        if (!this.isCustomerBase) {
-            fillSupportData(content, fioriId, ach);
-        }
-
-        if (this.ui5Service.shouldSetMinUI5Version()) {
-            const minUI5Version = this.ui5Service.getMinUI5VersionForManifest();
-            content.push({
-                changeType: 'appdescr_ui5_setMinUI5Version',
-                content: {
-                    minUI5Version
-                }
-            });
-        }
-
-        return content;
     }
+
+    content.push({
+        changeType: 'appdescr_app_setTitle',
+        content: {},
+        texts: {
+            i18n: 'i18n/i18n.properties'
+        }
+    });
+
+    return content;
 }

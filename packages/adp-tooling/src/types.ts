@@ -1,8 +1,10 @@
-import type { UI5FlexLayer, ManifestNamespace } from '@sap-ux/project-access';
+import type { UI5FlexLayer, ManifestNamespace, Manifest } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp, BspApp } from '@sap-ux/ui5-config';
 import type { AdaptationProjectType, OperationsType } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
+import { ResourceModel } from './writer/creation';
+import { ApplicationType } from './base';
 
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
@@ -43,12 +45,16 @@ export interface OnpremApp {
     id: string;
     /** Reference associated with the ID of the base application. */
     reference: string;
-    layer?: UI5FlexLayer;
+    layer: FlexLayer;
     title?: string;
+    fioriId?: string;
+    ach?: string;
     /** Optional: Application variant change content. */
     content?: Content[];
+    appType: ApplicationType;
     /** Optional: Description about i18n.properties. */
     i18nDescription?: string;
+    i18nModels?: ResourceModel[];
 }
 
 export interface CloudApp extends OnpremApp {
@@ -69,6 +75,7 @@ export interface AdpWriterConfig {
         minVersion?: string;
         version?: string;
         frameworkUrl?: string;
+        shouldSetMinVersion?: boolean;
     };
     package?: {
         name?: string;
@@ -518,7 +525,7 @@ export interface ConfigurationInfoAnswers {
     versionInfo: string;
     confirmPrompt: boolean;
     fioriId: string;
-    applicationComponentHierarchy: string;
+    ach: string;
 }
 
 export interface FlexUISupportedSystem {
