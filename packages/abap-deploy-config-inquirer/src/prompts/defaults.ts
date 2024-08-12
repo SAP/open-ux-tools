@@ -25,13 +25,12 @@ export function defaultTargetSystem(targetSystems?: AbapSystemChoice[]): string 
 }
 
 /**
- * Determines the default url based on the target system or the backend target.
+ * Determines the default url based on the target system or the prompt state.
  *
- * @param options - abap deploy config prompt options
  * @param targetSystem - chosen target system
  * @returns default url
  */
-export function defaultUrl(options: AbapDeployConfigPromptOptions, targetSystem?: string): string {
+export function defaultUrl(targetSystem?: string): string {
     return targetSystem === TargetSystemType.Url ? '' : PromptState.abapDeployConfig.url ?? '';
 }
 

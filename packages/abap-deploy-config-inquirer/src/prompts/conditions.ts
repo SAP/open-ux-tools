@@ -87,7 +87,7 @@ export function showClientChoiceQuestion(
 
 /**
  * Determines if the client question should be shown.
- * Note: In some instances, when a yaml conf is parsed, double quoted properties i.e. client: "100" are saved as a number instead of a string
+ * Note: In some instances, when a yaml conf is parsed, double quoted properties i.e. client: "100" are saved as a number instead of a string.
  *
  * @param previousAnswers - previous answers
  * @param options - abap deploy config prompt options

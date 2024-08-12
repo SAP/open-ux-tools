@@ -237,10 +237,8 @@ export function updateGeneratorUrl(
             ? previousAnswers.targetSystem
             : undefined;
 
-    if (PromptState?.abapDeployConfig) {
-        PromptState.abapDeployConfig.url =
-            destinationUrl ?? targetSystemChoice ?? options.backendTarget?.abapTarget.url ?? '';
-    }
+    PromptState.abapDeployConfig.url =
+        destinationUrl ?? targetSystemChoice ?? options.backendTarget?.abapTarget.url ?? '';
 }
 
 /**

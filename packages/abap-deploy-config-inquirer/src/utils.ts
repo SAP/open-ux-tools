@@ -179,6 +179,12 @@ export function getPackageAnswer(previousAnswers?: AbapDeployConfigAnswersIntern
         : previousAnswers?.packageManual ?? '';
 }
 
+/**
+ * Determines the transport request from the various transport related prompts.
+ *
+ * @param previousAnswers - previous answers
+ * @returns transport request
+ */
 export function getTransportAnswer(previousAnswers?: AbapDeployConfigAnswersInternal): string {
     return (
         previousAnswers?.transportManual ||
