@@ -22,7 +22,6 @@ async function getPrompts(
 }> {
     await initI18n();
     LoggerHelper.logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/abap-deploy-config-inquirer' });
-
     return {
         prompts: await getAbapDeployConfigQuestions(promptOptions),
         // Return reference to derived answers object that will be populated with user responses (after prompting is complete)

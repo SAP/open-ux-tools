@@ -39,24 +39,18 @@ export function isValidUrl(input: string): boolean {
  * @returns boolean
  */
 export function isValidClient(client: string): boolean {
-    const c = client && typeof client === 'string' ? client.trim() : '';
-
-    if (c === '') {
-        return true;
-    } else {
-        const regex = /^\d{3}$/;
-        return !!regex.exec(c);
-    }
+    const regex = /^\d{3}$/;
+    return !!regex.exec(client);
 }
 
 /**
  * Returns true if the input does not exist, or if it exists but it is invalid.
  *
- * @param input - input string
+ * @param client - input string
  * @returns boolean
  */
-export function doesNotExistOrInvalid(input?: string): boolean {
-    return Boolean(!input || (input && !isValidClient(input)));
+export function clientDoesNotExistOrInvalid(client?: string): boolean {
+    return Boolean(!client || (client && !isValidClient(client)));
 }
 
 /**

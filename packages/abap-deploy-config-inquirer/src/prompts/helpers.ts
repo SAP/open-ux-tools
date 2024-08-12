@@ -229,7 +229,7 @@ export function updateGeneratorUrl(
 ): void {
     let destinationUrl: string | undefined;
     if (previousAnswers.destination && destinations) {
-        destinationUrl = destinations[previousAnswers.destination].Host;
+        destinationUrl = destinations[previousAnswers.destination]?.Host;
     }
 
     const targetSystemChoice =

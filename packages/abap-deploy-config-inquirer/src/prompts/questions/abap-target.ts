@@ -167,7 +167,7 @@ function getScpPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDepl
             breadcrumb: t('prompts.target.scp.breadcrumb')
         },
         default: (): boolean | undefined => options.backendTarget?.abapTarget?.scp,
-        validate: (input: boolean): boolean | string => validateScpQuestion(input)
+        validate: (scp: boolean): boolean | string => validateScpQuestion(scp)
     } as ConfirmQuestion<AbapDeployConfigAnswersInternal>;
 }
 

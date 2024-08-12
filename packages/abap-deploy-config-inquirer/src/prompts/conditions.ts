@@ -1,6 +1,6 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { PromptState } from './prompt-state';
-import { doesNotExistOrInvalid } from '../validator-utils';
+import { clientDoesNotExistOrInvalid } from '../validator-utils';
 import { findBackendSystemByUrl, initTransportConfig } from '../utils';
 import { handleErrorMessage } from '../error-handler';
 import { t } from '../i18n';
@@ -61,7 +61,7 @@ export function showScpQuestion(previousAnswers: AbapDeployConfigAnswersInternal
 function showClientCondition(isS4HanaCloudSystem?: boolean): boolean {
     return Boolean(
         !isAppStudio() &&
-            doesNotExistOrInvalid(PromptState.abapDeployConfig.client) &&
+            clientDoesNotExistOrInvalid(PromptState.abapDeployConfig.client) &&
             !PromptState.abapDeployConfig.scp &&
             !isS4HanaCloudSystem
     );
@@ -87,6 +87,7 @@ export function showClientChoiceQuestion(
 
 /**
  * Determines if the client question should be shown.
+ * Note: In some instances, when a yaml conf is parsed, double quoted properties i.e. client: "100" are saved as a number instead of a string
  *
  * @param previousAnswers - previous answers
  * @param options - abap deploy config prompt options
@@ -101,7 +102,7 @@ export function showClientQuestion(
     const clientCondition = showClientCondition(isS4HanaCloudSystem);
     const client = options?.backendTarget?.abapTarget?.client;
     if (clientCondition && client) {
-        PromptState.abapDeployConfig.client = client;
+        PromptState.abapDeployConfig.client = String(client);
     }
     const showOnCli = previousAnswers.clientChoice === ClientChoiceValue.New || !client;
     return getHostEnvironment() === hostEnvironment.cli ? showOnCli && clientCondition : clientCondition;

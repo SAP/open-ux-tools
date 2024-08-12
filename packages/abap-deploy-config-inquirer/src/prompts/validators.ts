@@ -179,7 +179,8 @@ export function validateClientChoiceQuestion(
     switch (clientChoice) {
         case ClientChoiceValue.Base:
             PromptState.abapDeployConfig.client =
-                PromptState.abapDeployConfig?.client ?? options.backendTarget?.abapTarget.client;
+                (PromptState.abapDeployConfig?.client as string) ??
+                (options.backendTarget?.abapTarget.client as string); // Parsing of YAML documents can result in a double quoted property being parsed as a string
             break;
 
         case ClientChoiceValue.Blank:
@@ -196,17 +197,21 @@ export function validateClientChoiceQuestion(
 /**
  * Validates the client and sets the client in the prompt state.
  *
- * @param input - client
+ * @param client - client
  * @returns boolean or error message as a string
  */
-export function validateClient(input: string): boolean | string {
-    const result = isValidClient(input);
+export function validateClient(client: string): boolean | string {
+    if (!client) {
+        return true;
+    }
+    const tmpClient = String(client);
+    const result = isValidClient(tmpClient);
     if (result) {
-        PromptState.abapDeployConfig.client = input;
+        PromptState.abapDeployConfig.client = tmpClient;
         return result;
     } else {
         delete PromptState.abapDeployConfig.client;
-        return t('errors.invalidClient', { client: input });
+        return t('errors.invalidClient', { client });
     }
 }
 
