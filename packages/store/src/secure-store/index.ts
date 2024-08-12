@@ -39,6 +39,7 @@ function getKeytar(log: Logger): typeof Keytar | undefined {
             const AppMKeytarDirs = getKeytarPaths(false).concat(getKeytarPaths(true));
             log.info('keytarDirectories: \n' + JSON.stringify(AppMKeytarDirs));
             if (AppMKeytarDirs.length > 0) {
+                // try to load keytar from the first directory found
                 const keytarDir = AppMKeytarDirs[0];
                 log.info('Try to load keytar from :' + JSON.stringify(keytarDir));
                 // Support bundling
