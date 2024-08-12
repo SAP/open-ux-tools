@@ -51,7 +51,9 @@ describe('getSecureStore', () => {
             existsSyncSyncMock.mockReturnValue(true);
 
             jest.mock(
-                join(`test_dir/.vscode/extensions/sapse.sap-ux-application-modeler-extension-1.14.1/node_modules/keytar`),
+                join(
+                    `test_dir/.vscode/extensions/sapse.sap-ux-application-modeler-extension-1.14.1/node_modules/keytar`
+                ),
                 () => 'keytar',
                 { virtual: true }
             );
