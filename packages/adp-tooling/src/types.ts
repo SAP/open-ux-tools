@@ -444,7 +444,11 @@ export interface DataSourceData {
     };
 }
 
-export interface InboundChangeAnswers {
+export type RequireAtLeastOne<T> = {
+    [K in keyof T]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<keyof T, K>>>;
+}[keyof T];
+
+export interface InboundChangeAnswersBase {
     /** Title associated with the inbound navigation data. */
     title: string;
     /** Subtitle associated with the inbound navigation data. */
@@ -453,18 +457,20 @@ export interface InboundChangeAnswers {
     icon: string;
 }
 
+export type InboundChangeAnswers = RequireAtLeastOne<InboundChangeAnswersBase>;
+
 export interface InboundData {
     /** Identifier for the inbound navigation data. */
     inboundId: string;
     variant: DescriptorVariant;
-    flp: {
+    flp: RequireAtLeastOne<{
         /** Title associated with the inbound navigation data. */
         title: string;
         /** Subtitle associated with the inbound navigation data. */
         subtitle: string;
         /** Icon associated with the inbound navigation data. */
         icon: string;
-    };
+    }>;
 }
 
 export interface InboundContent {
