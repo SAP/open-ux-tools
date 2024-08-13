@@ -5,4 +5,3 @@ export * from './base';
 export * from './writer/creation';
 export { generate, migrate } from './writer';
 export { generateChange } from './writer/editors';
-export { promptGeneratorInput, PromptDefaults } from './base/prompt';

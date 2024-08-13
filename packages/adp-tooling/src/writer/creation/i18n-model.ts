@@ -3,19 +3,13 @@ import { Editor } from 'mem-fs-editor';
 import { Manifest } from '@sap-ux/project-access';
 
 import { FlexLayer, SapModel } from '../../types';
-import { ApplicationType } from '../../base/app-utils';
-
-export const RESOURCE_BUNDLE_TEXT = '\n\n# This is the resource bundle for ';
-export const TRANSLATION_UUID_TEXT = '\n#__ldi.translation.uuid=';
-export const PROPERTIES_TEXT = '.properties';
+import { MAIN_I18N_PATH, PROPERTIES_TEXT, RESOURCE_BUNDLE_TEXT, TRANSLATION_UUID_TEXT } from '../../base';
 
 export interface ResourceModel {
     key: string;
     path: string;
     content?: string;
 }
-
-const MAIN_I18N_PATH = 'i18n/i18n.properties';
 
 /**
  * Writes internationalization (i18n) model files to the specified paths within the project structure.

@@ -1,15 +1,15 @@
+import {
+    SNAPSHOT_CDN_URL,
+    UI5_CDN_URL,
+    UI5_VERSIONS_CDN_URL,
+    UI5_VERSIONS_NEO_CDN_URL,
+    LATEST_VERSION,
+    CURRENT_SYSTEM_VERSION,
+    SNAPSHOT_VERSION,
+    SNAPSHOT_UNTESTED_VERSION
+} from '../constants';
 import { t } from '../../i18n';
 import { UI5Version, FlexLayer } from '../../types';
-
-const UI5_CDN_URL = 'https://ui5.sap.com';
-const UI5_VERSIONS_CDN_URL = 'https://sapui5.hana.ondemand.com/version.json';
-const UI5_VERSIONS_NEO_CDN_URL = 'https://ui5.sap.com/neo-app.json';
-const SNAPSHOT_CDN_URL = 'https://sapui5preview-sapui5.dispatcher.int.sap.eu2.hana.ondemand.com:443';
-
-const CURRENT_SYSTEM_VERSION = '(system version)';
-const LATEST_VERSION = '(latest)';
-const SNAPSHOT_VERSION = 'snapshot';
-const SNAPSHOT_UNTESTED_VERSION = 'snapshot-untested';
 
 /**
  * Gets the official base URL for SAP UI5 resources based on the version information.

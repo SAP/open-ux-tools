@@ -4,7 +4,6 @@ import type { Adp, BspApp } from '@sap-ux/ui5-config';
 import type { AdaptationProjectType, OperationsType } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 import { ResourceModel } from './writer/creation';
-import { ApplicationType } from './base';
 
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
@@ -607,6 +606,13 @@ export interface FlpConfigAnswers {
 export enum InputChoice {
     ENTER_MANUALLY = 'Enter manually',
     CHOOSE_FROM_EXISTING = 'Choose from existing'
+}
+
+export enum ApplicationType {
+    FIORI_ELEMENTS = 'FioriElements',
+    FIORI_ELEMENTS_OVP = 'FioriElementsOVP',
+    FREE_STYLE = 'FreeStyle',
+    NONE = ''
 }
 
 export interface DeployConfigAnswers {
