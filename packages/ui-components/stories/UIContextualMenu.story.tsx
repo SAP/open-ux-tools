@@ -1,11 +1,17 @@
 import React from 'react';
 import { Text, Stack } from '@fluentui/react';
-import type { IStackTokens } from '@fluentui/react';
+import type { IDropdownOption, IStackTokens } from '@fluentui/react';
 
-import { UIContextualMenu, UIContextualMenuItem, UIContextualMenuItemType } from '../src/components/UIContextualMenu';
+import {
+    UIContextualMenu,
+    UIContextualMenuItem,
+    UIContextualMenuItemType,
+    UIContextualMenuLayoutType
+} from '../src/components/UIContextualMenu';
 import { UIDefaultButton, UIIconButton } from '../src/components/UIButton';
 import { UIDirectionalHint } from '../src/components/UITreeDropdown';
 import { initIcons, UiIcons } from '../src/components/Icons';
+import { UIDropdown } from '../src/components/UIDropdown';
 
 initIcons();
 
@@ -47,8 +53,19 @@ function getItems(iconsToLeft = false): UIContextualMenuItem[] {
     ];
 }
 
+const layoutOptions: IDropdownOption[] = [
+    UIContextualMenuLayoutType.ContextualMenu,
+    UIContextualMenuLayoutType.DropdownMenu
+].map((type) => ({
+    key: type.toString(),
+    text: type.toString()
+}));
+
 export const ContextualMenu = (): JSX.Element => {
     const menuAnchorRef = React.useRef(null);
+    const [layoutType, setLayoutType] = React.useState<UIContextualMenuLayoutType>(
+        UIContextualMenuLayoutType.ContextualMenu
+    );
     const [showContextualMenu, setShowContextualMenu] = React.useState(false);
     const onShowContextualMenu = React.useCallback(() => {
         setShowContextualMenu(true);
@@ -57,6 +74,16 @@ export const ContextualMenu = (): JSX.Element => {
 
     return (
         <Stack tokens={stackTokens}>
+            <UIDropdown
+                label="Layout"
+                options={layoutOptions}
+                selectedKey={layoutType.toString()}
+                onChange={(ev, option) => {
+                    if (option) {
+                        setLayoutType(UIContextualMenuLayoutType[option.key]);
+                    }
+                }}
+            />
             <Stack tokens={{ childrenGap: 16 }}>
                 <Text variant={'large'} block>
                     {'Default UIContextualMenu rendering'}
@@ -69,6 +96,7 @@ export const ContextualMenu = (): JSX.Element => {
                     target={menuAnchorRef}
                     items={getItems()}
                     onDismiss={onHideContextualMenu}
+                    layoutType={layoutType}
                 />
             </Stack>
 
@@ -81,7 +109,11 @@ export const ContextualMenu = (): JSX.Element => {
                         <Text variant={'small'} block>
                             UIDefaultButton
                         </Text>
-                        <UIDefaultButton primary text="Toggle Contextual menu" menuProps={{ items: getItems() }} />
+                        <UIDefaultButton
+                            primary
+                            text="Toggle Contextual menu"
+                            menuProps={{ items: getItems(), layoutType }}
+                        />
                     </Stack>
                 </Stack>
             </Stack>
@@ -95,7 +127,10 @@ export const ContextualMenu = (): JSX.Element => {
                         <Text variant={'small'} block>
                             UIIconButton
                         </Text>
-                        <UIIconButton iconProps={{ iconName: UiIcons.Undo }} menuProps={{ items: getItems() }} />
+                        <UIIconButton
+                            iconProps={{ iconName: UiIcons.Undo }}
+                            menuProps={{ items: getItems(), layoutType }}
+                        />
                     </Stack>
                 </Stack>
             </Stack>
@@ -113,7 +148,8 @@ export const ContextualMenu = (): JSX.Element => {
                             menuProps={{
                                 items: getItems(true),
                                 isBeakVisible: true,
-                                iconToLeft: true
+                                iconToLeft: true,
+                                layoutType
                             }}
                         />
                     </Stack>

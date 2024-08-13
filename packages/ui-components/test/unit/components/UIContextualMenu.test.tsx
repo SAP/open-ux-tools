@@ -35,11 +35,11 @@ describe('<UIDropdown />', () => {
     });
 
     it('Test className property', () => {
-        expect(wrapper.find(ContextualMenu).prop('className')).toEqual('ts-ContextualMenu');
+        expect(wrapper.find(ContextualMenu).prop('className')).toEqual('ts-ContextualMenu ts-ContextualMenu--dropdown');
         wrapper.setProps({
             className: 'dummy'
         });
-        expect(wrapper.find(ContextualMenu).prop('className')).toEqual('ts-ContextualMenu dummy');
+        expect(wrapper.find(ContextualMenu).prop('className')).toEqual('ts-ContextualMenu ts-ContextualMenu--dropdown dummy');
     });
 
     for (const testMaxWidth of [350, undefined]) {
@@ -50,18 +50,7 @@ describe('<UIDropdown />', () => {
             const calloutProps = wrapper.find(ContextualMenu).prop('calloutProps');
             expect(calloutProps?.styles).toEqual({
                 root: {
-                    maxWidth: testMaxWidth,
-                    backgroundColor: 'transparent',
-                    borderRadius: 4,
-                    boxShadow: 'var(--ui-box-shadow-small)'
-                },
-                beak: {
-                    backgroundColor: 'var(--vscode-editorWidget-background)',
-                    boxShadow: 'var(--ui-box-shadow-small)'
-                },
-                beakCurtain: {
-                    backgroundColor: 'var(--vscode-editorWidget-background)',
-                    borderRadius: 4
+                    maxWidth: testMaxWidth
                 }
             });
         });

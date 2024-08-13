@@ -16,15 +16,13 @@ export { ContextualMenuItemType as UIContextualMenuItemType };
 
 import { UiIcons } from '../Icons';
 
+export enum UIContextualMenuLayoutType {
+    DropdownMenu = 'DropdownMenu',
+    ContextualMenu = 'ContextualMenu'
+}
+
 import './UIContextualMenu.scss';
-import '../../styles/_shadows.scss';
-const CALLOUT_STYLES = {
-    background: 'var(--vscode-editorWidget-background)',
-    boxShadow: 'var(--ui-box-shadow-small)',
-    text: 'var(--vscode-editorSuggestWidget-foreground)',
-    font: 'var(--vscode-font-family)',
-    borderRadius: 4
-};
+
 /* Method receives callout style and extracts into raw styles object.
  *
  * @param {IStyleFunctionOrObject<ICalloutContentStyleProps, ICalloutContentStyles> | undefined} styles Callout styles.
@@ -54,10 +52,6 @@ export function getUIcontextualMenuStyles(): Partial<IContextualMenuStyles> {
             minWidth: 190,
             background: 'var(--vscode-input-background)',
             border: 0
-        },
-        container: {
-            paddingTop: 2,
-            paddingBottom: 2
         }
     };
 }
@@ -122,20 +116,7 @@ export function getUIcontextualMenuCalloutStyles(
     return {
         root: {
             maxWidth: maxWidth,
-            boxShadow: CALLOUT_STYLES.boxShadow,
-            backgroundColor: 'transparent',
-            borderRadius: CALLOUT_STYLES.borderRadius,
             ...extractRawStyles(props.styles, 'root')
-        },
-        beak: {
-            backgroundColor: CALLOUT_STYLES.background,
-            boxShadow: CALLOUT_STYLES.boxShadow,
-            ...extractRawStyles(props.styles, 'beak')
-        },
-        beakCurtain: {
-            backgroundColor: CALLOUT_STYLES.background,
-            borderRadius: CALLOUT_STYLES.borderRadius,
-            ...extractRawStyles(props.styles, 'beakCurtain')
         }
     };
 }
@@ -199,26 +180,9 @@ function injectContextualMenuItemsStyle(props: UIIContextualMenuProps): IContext
 export interface UIIContextualMenuProps extends IContextualMenuProps {
     maxWidth?: number; // max width for the ComboBox
     iconToLeft?: boolean;
+    // ToDo - default ->
+    layoutType?: UIContextualMenuLayoutType;
 }
-
-export const UIContextualMenu: React.FC<UIIContextualMenuProps> = (props) => {
-    const className = props.className ? ` ${props.className}` : '';
-    return (
-        <ContextualMenu
-            isBeakVisible={false}
-            {...props}
-            className={`ts-ContextualMenu${className}`}
-            items={injectContextualMenuItemsStyle(props)}
-            calloutProps={{
-                className: 'ts-ContextualMenu-callout',
-                styles: getUIcontextualMenuCalloutStyles(props, props.maxWidth),
-                ...props.calloutProps
-            }}
-            styles={{ ...getUIcontextualMenuStyles(), ...props.styles }}
-            onRenderSubMenu={getSubMenu.bind(this, props)}
-        />
-    );
-};
 
 /**
  * Method returns element for submenu of contextual menu.
@@ -231,5 +195,73 @@ function getSubMenu(rootMenuProps: UIIContextualMenuProps, subMenuProps?: IConte
         return null;
     }
     const { iconToLeft } = rootMenuProps;
-    return <UIContextualMenu iconToLeft={iconToLeft} {...subMenuProps} />;
+    return (
+        <UIContextualMenu
+            iconToLeft={iconToLeft}
+            {...subMenuProps}
+            calloutProps={{
+                ...subMenuProps.calloutProps,
+                className: getCalloutClassName(rootMenuProps)
+            }}
+        />
+    );
 }
+
+/**
+ * Method returns class names string depending on props and component state.
+ *
+ * @param props Contextual menu properties.
+ * @returns Class names of root element.
+ */
+function getClassNames(props: UIIContextualMenuProps): string {
+    const classNames = ['ts-ContextualMenu'];
+    const { layoutType = UIContextualMenuLayoutType.DropdownMenu } = props;
+    const layoutClassName =
+        layoutType === UIContextualMenuLayoutType.DropdownMenu
+            ? 'ts-ContextualMenu--dropdown'
+            : 'ts-ContextualMenu--contextual';
+    classNames.push(layoutClassName);
+    if (props.className) {
+        classNames.push(props.className);
+    }
+    return classNames.join(' ');
+}
+
+/**
+ * Method returns class names string for callout element depending on props and component state.
+ *
+ * @param props Contextual menu properties.
+ * @returns Class names of callout element.
+ */
+function getCalloutClassName(props: UIIContextualMenuProps): string {
+    const classNames = ['ts-ContextualMenu-callout'];
+    const { layoutType = UIContextualMenuLayoutType.DropdownMenu } = props;
+    const layoutClassName =
+        layoutType === UIContextualMenuLayoutType.DropdownMenu
+            ? 'ts-ContextualMenu-callout--dropdown'
+            : 'ts-ContextualMenu-callout--contextual';
+    classNames.push(layoutClassName);
+    if (props.calloutProps?.className) {
+        classNames.push(props.calloutProps.className);
+    }
+    return classNames.join(' ');
+}
+
+export const UIContextualMenu: React.FC<UIIContextualMenuProps> = (props) => {
+    return (
+        <ContextualMenu
+            isBeakVisible={false}
+            beakWidth={8}
+            {...props}
+            className={getClassNames(props)}
+            items={injectContextualMenuItemsStyle(props)}
+            calloutProps={{
+                styles: getUIcontextualMenuCalloutStyles(props, props.maxWidth),
+                ...props.calloutProps,
+                className: getCalloutClassName(props)
+            }}
+            styles={{ ...getUIcontextualMenuStyles(), ...props.styles }}
+            onRenderSubMenu={getSubMenu.bind(this, props)}
+        />
+    );
+};

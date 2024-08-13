@@ -1,7 +1,7 @@
 import React from 'react';
 import type { IButtonProps, IButtonStyles, IStyle } from '@fluentui/react';
 import { DefaultButton } from '@fluentui/react';
-import { UIContextualMenu, UIContextualMenuProps } from '../UIContextualMenu';
+import { UIContextualMenu, UIIContextualMenuProps } from '../UIContextualMenu';
 import { COMMON_INPUT_STYLES } from '../UIInput';
 
 const VSCODE_BORDER_COLOR = 'var(--vscode-button-border, transparent)';
@@ -45,7 +45,7 @@ export interface UIDefaultButtonProps extends IButtonProps {
      * @default false
      */
     transparent?: boolean;
-    menuProps?: UIContextualMenuProps;
+    menuProps?: UIIContextualMenuProps;
 }
 
 /**
