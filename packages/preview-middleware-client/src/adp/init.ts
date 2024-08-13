@@ -49,7 +49,7 @@ export default async function (rta: RuntimeAuthoring) {
     const syncViewsIds = await getAllSyncViewsIds(ui5VersionInfo);
     initDialogs(rta, syncViewsIds, ui5VersionInfo);
 
-    if (!isLowerThanMinimalUi5Version(ui5VersionInfo, { majorUi5Version: 1, minorUi5Version: 77, version: '1.77' })) {
+    if (!isLowerThanMinimalUi5Version(ui5VersionInfo, { majorUi5Version: 1, minorUi5Version: 77 })) {
         const ExtensionPointService = (await import('open/ux/preview/client/adp/extension-point')).default;
         const extPointService = new ExtensionPointService(rta);
         extPointService.init(subscribe);
@@ -58,7 +58,7 @@ export default async function (rta: RuntimeAuthoring) {
     await init(rta);
 
     if (isLowerThanMinimalUi5Version(ui5VersionInfo)) {
-        sendAction(showMessage({ message: getUI5VersionValidationMessage(ui5VersionInfo.version), shouldHideIframe: true }));
+        sendAction(showMessage({ message: getUI5VersionValidationMessage(ui5VersionInfo), shouldHideIframe: true }));
         return;
     }
 
@@ -85,11 +85,7 @@ export default async function (rta: RuntimeAuthoring) {
 async function getAllSyncViewsIds(ui5VersionInfo: Ui5VersionInfo): Promise<string[]> {
     const syncViewIds: string[] = [];
     try {
-        if (isLowerThanMinimalUi5Version(ui5VersionInfo, {
-                majorUi5Version: 1,
-                minorUi5Version: 120,
-                version: '1.120'
-            })) {
+        if (isLowerThanMinimalUi5Version(ui5VersionInfo, {majorUi5Version: 1,minorUi5Version: 120})) {
             const Element = (await import('sap/ui/core/Element')).default;
             const elements = Element.registry.filter(() => true) as UI5Element[];
             elements.forEach((ui5Element) => {

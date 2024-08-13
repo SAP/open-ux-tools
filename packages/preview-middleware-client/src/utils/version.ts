@@ -1,20 +1,22 @@
-import type { SingleVersionInfo } from '../../types/global';
 import VersionInfo from 'sap/ui/VersionInfo';
 import Log from 'sap/base/Log';
+
+type SingleVersionInfo = {
+    name: string
+    version: string
+} | undefined
 
 export type Ui5VersionInfo = {
     majorUi5Version: number;
     minorUi5Version: number;
-    version: string;
 };
 
 /**
- * Lowest supported UI5 version
+ * Default minimal supported UI5 version
  */
 const minVersionInfo = {
     majorUi5Version: 1,
-    minorUi5Version: 71,
-    version: '1.71'
+    minorUi5Version: 71
 } as Ui5VersionInfo;
 
 /**
@@ -44,7 +46,7 @@ export async function getUi5Version() {
  *
  * @returns boolean
  */
-export function isLowerThanMinimalUi5Version(ui5VersionInfo: Ui5VersionInfo, minUi5VersionInfo = minVersionInfo): boolean {
+export function isLowerThanMinimalUi5Version(ui5VersionInfo: Ui5VersionInfo, minUi5VersionInfo: Ui5VersionInfo = minVersionInfo): boolean {
     if (!isNaN(ui5VersionInfo.majorUi5Version) && !isNaN(ui5VersionInfo.minorUi5Version)) {
         if (ui5VersionInfo.majorUi5Version < minUi5VersionInfo.majorUi5Version) {
             return true;
@@ -58,9 +60,9 @@ export function isLowerThanMinimalUi5Version(ui5VersionInfo: Ui5VersionInfo, min
 
 /**
  * Get UI5 version validation message.
- * @param ui5Version to be mentioned in the message
+ * @param ui5VersionInfo to be mentioned in the message
  * @returns string with validation message.
  */
-export function getUI5VersionValidationMessage(ui5Version: string): string {
-    return `The current SAPUI5 version set for this Adaptation project is ${ui5Version}. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is ${minVersionInfo.version}`;
+export function getUI5VersionValidationMessage(ui5VersionInfo: Ui5VersionInfo): string {
+    return `The current SAPUI5 version set for this Adaptation project is ${ui5VersionInfo.majorUi5Version}.${ui5VersionInfo.minorUi5Version}. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is ${minVersionInfo.majorUi5Version}.${minVersionInfo.minorUi5Version}`;
 }

@@ -70,8 +70,7 @@ const connector = merge({}, ObjectStorageConnector, {
         const features = await ObjectStorageConnector.loadFeatures();
         features.isVariantAdaptationEnabled = !isLowerThanMinimalUi5Version(await getUi5Version(), {
             majorUi5Version: 1,
-            minorUi5Version: 90,
-            version: '1.90'
+            minorUi5Version: 90
         });
         const settings = getFlexSettings();
         if (settings?.developerMode) {
