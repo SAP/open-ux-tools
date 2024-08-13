@@ -1,5 +1,21 @@
 # @sap-ux/fiori-elements-writer
 
+## 1.0.16
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.26.4
+
+## 1.0.15
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.26.3
+-   @sap-ux/fiori-generator-shared@0.3.11
+-   @sap-ux/odata-service-writer@0.22.2
+-   @sap-ux/ui5-application-writer@1.1.3
+-   @sap-ux/ui5-test-writer@0.4.1
+
 ## 1.0.14
 
 ### Patch Changes
