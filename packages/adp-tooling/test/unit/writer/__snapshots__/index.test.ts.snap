@@ -370,7 +370,7 @@ server:
     "state": "modified",
   },
   "../minimal/webapp/i18n/i18n.properties": Object {
-    "contents": "some-description
+    "contents": "#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app
@@ -582,9 +582,7 @@ server:
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for my.test.app
-
-#Texts for manifest.json
+    "contents": "#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app
@@ -698,7 +696,7 @@ server:
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "some-description
+    "contents": "#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app
@@ -838,9 +836,7 @@ server:
     "state": "modified",
   },
   "../deploy/webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for my.test.app
-
-#Texts for manifest.json
+    "contents": "#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app
@@ -971,9 +967,7 @@ server:
     "state": "modified",
   },
   "../fiori-tools/webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for my.test.app
-
-#Texts for manifest.json
+    "contents": "#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app
@@ -1082,7 +1076,7 @@ server:
     "state": "modified",
   },
   "../minimal/webapp/i18n/i18n.properties": Object {
-    "contents": "some-description
+    "contents": "#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app
@@ -1229,9 +1223,7 @@ builder:
     "state": "modified",
   },
   "../s4hana/webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for my.test.app
-
-#Texts for manifest.json
+    "contents": "#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app
@@ -1259,6 +1251,44 @@ my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.subTitle=test
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
       }
+    },
+    {
+      \\"changeType\\": \\"appdescr_app_addNewInbound\\",
+      \\"content\\": {
+        \\"inbound\\": {
+          \\"my.test.app.InboundID\\": {
+            \\"action\\": \\"sampleAction\\",
+            \\"semanticObject\\": \\"sampleObj\\",
+            \\"title\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.title}}\\",
+            \\"signature\\": {
+              \\"additionalParameters\\": \\"allowed\\",
+              \\"parameters\\": {
+                \\"sap-appvar-id\\": {
+                  \\"required\\": true,
+                  \\"filter\\": {
+                    \\"value\\": \\"my.test.app\\",
+                    \\"format\\": \\"plain\\"
+                  },
+                  \\"launcherValue\\": {
+                    \\"value\\": \\"my.test.app\\"
+                  }
+                }
+              }
+            },
+            \\"subTitle\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.my.test.app.InboundID.subTitle}}\\"
+          }
+        }
+      },
+      \\"texts\\": {
+        \\"i18n\\": \\"i18n/i18n.properties\\"
+      }
+    },
+    {
+      \\"changeType\\": \\"appdescr_app_removeAllInboundsExceptOne\\",
+      \\"content\\": {
+        \\"inboundId\\": \\"my.test.app.InboundID\\"
+      },
+      \\"texts\\": {}
     }
   ]
 }
@@ -1383,9 +1413,7 @@ builder:
     "state": "modified",
   },
   "../s4hanaWithInboundId/webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for my.test.app
-
-#Texts for manifest.json
+    "contents": "#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.
 
 #XTIT: Application name
 my.test.app_sap.app.title=Adaptation of the.original.app
@@ -1413,6 +1441,48 @@ my.test.app_sap.app.crossNavigation.inbounds.sampleId.subTitle=sampleSubTitle
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
       }
+    },
+    {
+      \\"changeType\\": \\"appdescr_app_changeInbound\\",
+      \\"content\\": {
+        \\"inboundId\\": \\"sampleId\\",
+        \\"entityPropertyChange\\": [
+          {
+            \\"propertyPath\\": \\"title\\",
+            \\"operation\\": \\"UPSERT\\",
+            \\"propertyValue\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.sampleId.title}}\\"
+          },
+          {
+            \\"propertyPath\\": \\"subTitle\\",
+            \\"operation\\": \\"UPSERT\\",
+            \\"propertyValue\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.sampleId.subTitle}}\\"
+          },
+          {
+            \\"propertyPath\\": \\"signature/parameters/sap-appvar-id\\",
+            \\"operation\\": \\"UPSERT\\",
+            \\"propertyValue\\": {
+              \\"required\\": true,
+              \\"filter\\": {
+                \\"value\\": \\"my.test.app\\",
+                \\"format\\": \\"plain\\"
+              },
+              \\"launcherValue\\": {
+                \\"value\\": \\"my.test.app\\"
+              }
+            }
+          }
+        ]
+      },
+      \\"texts\\": {
+        \\"i18n\\": \\"i18n/i18n.properties\\"
+      }
+    },
+    {
+      \\"changeType\\": \\"appdescr_app_removeAllInboundsExceptOne\\",
+      \\"content\\": {
+        \\"inboundId\\": \\"sampleId\\"
+      },
+      \\"texts\\": {}
     }
   ]
 }

@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { generate } from '../../../src';
+import { ApplicationType, FlexLayer, generate } from '../../../src';
 import type { AdpWriterConfig } from '../../../src/types';
 import { rimraf } from 'rimraf';
 import { migrate } from '../../../src/writer';
@@ -29,7 +29,9 @@ describe('ADP writer', () => {
     const config: AdpWriterConfig = {
         app: {
             id: 'my.test.app',
-            reference: 'the.original.app'
+            reference: 'the.original.app',
+            layer: FlexLayer.CUSTOMER_BASE,
+            appType: ApplicationType.FIORI_ELEMENTS
         },
         target: {
             url: 'http://sap.example'
@@ -40,7 +42,9 @@ describe('ADP writer', () => {
         app: {
             id: 'my.test.app',
             reference: 'the.original.app',
-            i18nDescription: 'some-description'
+            i18nDescription: 'some-description',
+            layer: FlexLayer.CUSTOMER_BASE,
+            appType: ApplicationType.FIORI_ELEMENTS
         },
         target: {
             url: 'http://sap.example'
@@ -211,7 +215,9 @@ describe('ADP writer', () => {
         const migrateConfig: AdpWriterConfig = {
             app: {
                 id: 'my.test.app',
-                reference: 'the.original.app'
+                reference: 'the.original.app',
+                layer: FlexLayer.CUSTOMER_BASE,
+                appType: ApplicationType.FIORI_ELEMENTS
             },
             target: {
                 destination: 'test',
