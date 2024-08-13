@@ -1,5 +1,5 @@
 import { coerce, major, minor, valid, maxSatisfying } from 'semver';
-import type { UI5VersionFilterOptions, UI5VersionsResponse, UI5Version } from './types';
+import type { UI5VersionFilterOptions, UI5VersionsResponse, UI5VersionSupport, UI5Version } from './types';
 import { executeNpmUI5VersionsCmd } from './commands';
 import axios from 'axios';
 import type { Logger } from '@sap-ux/logger';
@@ -133,11 +133,11 @@ async function parseUI5Versions(url = ui5VersionRequestInfo.OfficialUrl.toString
  *
  * @returns ui5 versions
  */
-async function parseUI5VersionsSupport(): Promise<UI5Version[]> {
+async function parseUI5VersionsSupport(): Promise<UI5VersionSupport[]> {
     let result: UI5Version[] = [];
     let versions: UI5Version[] = [];
     try {
-        const response = await requestUI5Versions<UI5Version[]>(ui5VersionRequestInfo.OfficialUrl);
+        const response = await requestUI5Versions<UI5VersionSupport[]>(ui5VersionRequestInfo.OfficialUrl);
         versions = Object.values(response).map((v) => {
             return {
                 version: v.version,
@@ -150,7 +150,7 @@ async function parseUI5VersionsSupport(): Promise<UI5Version[]> {
         );
         versions = ui5VersionFallbacks;
     }
-    result = versions.map((ver: any): UI5Version | undefined => {
+    result = versions.map((ver: any): UI5VersionSupport | undefined => {
         const parsedVersion = coerce(ver.version)?.version;
         return parsedVersion !== undefined ? { version: parsedVersion, support: ver.support } : undefined;
     }) as UI5Version[];
@@ -347,7 +347,7 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
     }
 
     const defaultUI5Version = filteredUI5Versions[0];
-    let ui5VersionsOverview: UI5Version[];
+    let ui5VersionsOverview: UI5VersionSupport[];
     let finalDefaultUI5Version = defaultUI5Version;
 
     // Retrieve UI5 versions overview if maintained versions are to be included, note: overview and official versions are not the same

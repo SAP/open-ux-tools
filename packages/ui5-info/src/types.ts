@@ -46,10 +46,13 @@ export interface UI5Version {
      * UI5 semantic version
      */
     version: string;
-    support?: string;
-    lts?: string;
     default?: boolean;
     maintained?: boolean;
+}
+
+export interface UI5VersionSupport extends UI5Version {
+    support?: string;
+    lts?: string;
 }
 
 export interface UI5VersionsResponse {
