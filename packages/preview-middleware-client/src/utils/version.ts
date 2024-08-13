@@ -19,6 +19,8 @@ const minVersionInfo = {
 
 /**
  * Retrieve the UI5 version from sap.ui.core library
+ *
+ * @returns Ui5VersionInfo
  */
 export async function getUi5Version() {
     let version = ((await VersionInfo.load({ library: 'sap.ui.core' })) as SingleVersionInfo)?.version;
