@@ -124,9 +124,7 @@ export function getTrimmedUI5Version(version: string): string {
 }
 
 /**
- * Parses the UI5 version
- * Returns NaN for snapshot or snapshot-untested
- * Returns x.xx for snapshot-x.xx
+ * Function that parse the UI5 version. Returns NaN for snapshot or snapshot-untested. eturns x.xx for snapshot-x.xx.xx.
  *
  * @param version the UI5 version to parse
  * @returns The major, the minor and the patch version, e.g. 1.86.11

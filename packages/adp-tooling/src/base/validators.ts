@@ -62,11 +62,13 @@ export function validateNonEmptyNoSpaces(
 }
 
 /**
+ * Validates environment.
  *
- * @param value
- * @param loginEnabled
+ * @param {OperationsType} value - environment
+ * @param {boolean} loginEnabled - if external login is enabled
+ * @returns {string | boolean } if value is valid returns true otherwise error message
  */
-export async function validateEnvironment(value: OperationsType, loginEnabled: boolean) {
+export function validateEnvironment(value: OperationsType, loginEnabled: boolean): string | boolean {
     if (!isNotEmptyString(value)) {
         return t('validators.inputCannotBeEmpty');
     }
@@ -81,10 +83,12 @@ export async function validateEnvironment(value: OperationsType, loginEnabled: b
 }
 
 /**
+ * Validates that the project name is not empty and it is correct for VENDOR and CUSTOMER_BASE layer.
  *
- * @param value
- * @param destinationPath
- * @param isCustomerBase
+ * @param {string} value - project name
+ * @param {string} destinationPath - project directory
+ * @param {boolean} isCustomerBase - whether layer is CUSTOMER_BASE
+ * @returns {string | boolean} if value is valid returns true otherwise error message
  */
 export function validateProjectName(value: string, destinationPath: string, isCustomerBase: boolean): boolean | string {
     if (!isNotEmptyString(value)) {
@@ -103,9 +107,11 @@ export function validateProjectName(value: string, destinationPath: string, isCu
 }
 
 /**
+ * Validates that project name is valid for CUSTOMER_BASE layer.
  *
- * @param value
- * @param destinationPath
+ * @param {string} value - project name
+ * @param {string} destinationPath - project directory
+ * @returns {string | boolean} if value is valid returns true otherwise error message
  */
 export function validateProjectNameExternal(value: string, destinationPath: string): boolean | string {
     const pattern = /^[a-zA-Z]+((\.)?[a-zA-Z0-9])*$/;
@@ -121,9 +127,11 @@ export function validateProjectNameExternal(value: string, destinationPath: stri
 }
 
 /**
+ * Validates that project name is valid for VENDOR layer.
  *
- * @param value
- * @param destinationPath
+ * @param {string} value - project name
+ * @param {string} destinationPath - project directory
+ * @returns {string | boolean} if value is valid returns true otherwise error message
  */
 export function validateProjectNameInternal(value: string, destinationPath: string): boolean | string {
     const pattern = /^([a-z]{1,}[a-z0-9]*((\.){1}[a-z]{1,}[a-z0-9]*){1,})+$/i;
@@ -142,9 +150,11 @@ export function validateProjectNameInternal(value: string, destinationPath: stri
 }
 
 /**
+ * Validates that project name is unique in directory.
  *
- * @param value
- * @param destinationPath
+ * @param {string} value - project name
+ * @param {string} destinationPath - project directory
+ * @returns {string | boolean} if project with same name already exists return error message otherwise true
  */
 export function validateDuplicateProjectName(value: string, destinationPath: string): boolean | string {
     if (existsSync(destinationPath + '/' + value)) {
@@ -155,10 +165,12 @@ export function validateDuplicateProjectName(value: string, destinationPath: str
 }
 
 /**
+ * Validates that the project name is valid. Checks that it is not empty string and it is valid for CUSTOMER_BASE and VENDOR layers.
  *
- * @param namespace
- * @param projectName
- * @param isCustomerBase
+ * @param {string} namespace - project namespace
+ * @param {string} projectName - project name
+ * @param {boolean} isCustomerBase - if layer is CUSTOMER_BASE
+ * @returns {string | boolean} if project namespace is valid returns true otherwise error message
  */
 export function validateNamespace(namespace: string, projectName: string, isCustomerBase: boolean): string | boolean {
     if (!isNotEmptyString(namespace)) {
@@ -188,8 +200,10 @@ export function validateNamespace(namespace: string, projectName: string, isCust
 }
 
 /**
+ * Validate that system client is not empty string and it is numeric.
  *
- * @param value
+ * @param {string} value - system client
+ * @returns {string | boolean} if system client is valid returns true otherwise error message.
  */
 export function validateClient(value: string): string | boolean {
     if (!isNotEmptyString(value)) {
@@ -204,9 +218,11 @@ export function validateClient(value: string): string | boolean {
 }
 
 /**
+ * Validates that application ACH is not empty and it is in correct format.
  *
- * @param value
- * @param isCustomerBase
+ * @param {string} value - application ACH
+ * @param {boolean} isCustomerBase - if layer is CUSTOMER_BASE
+ * @returns {string | boolean} if application ACH is valid returns true otherwise error message.
  */
 export function validateAch(value: string, isCustomerBase: boolean): string | boolean {
     if (!isNotEmptyString(value)) {
@@ -222,9 +238,11 @@ export function validateAch(value: string, isCustomerBase: boolean): string | bo
 }
 
 /**
+ * Validates that input is not empty.
  *
- * @param value
- * @param inputName
+ * @param {string} value - input value
+ * @param {string} inputName - input name
+ * @returns {string | boolean} if input is not empty returns true otherwise error message.
  */
 export function validateEmptyInput(value: string, inputName: string): string | boolean {
     if (!isNotEmptyString(value)) {
@@ -235,10 +253,12 @@ export function validateEmptyInput(value: string, inputName: string): string | b
 }
 
 /**
+ * Validates that value matches regex pattern.
  *
- * @param value
- * @param inputName
- * @param pattern
+ * @param {string} value - value that will be valdiated
+ * @param {string} inputName - input name
+ * @param {string} pattern - regex pattern
+ * @returns {string | boolean} if value matches regex pattern returns true otherwise error message.
  */
 export function validateByRegex(value: string, inputName: string, pattern: string): string | boolean {
     if (!isNotEmptyString(value)) {
@@ -254,8 +274,10 @@ export function validateByRegex(value: string, inputName: string, pattern: strin
 }
 
 /**
+ * Validates that FLP Parameters are in correct format.
  *
- * @param paramString
+ * @param {string} paramString - FLP Parameters string
+ * @returns {string | boolean} if parameters are in correct format returns true otherwise error message.
  */
 export function validateParameters(paramString: string): string | boolean {
     if (!paramString) {
@@ -272,8 +294,11 @@ export function validateParameters(paramString: string): string | boolean {
 }
 
 /**
+ * Validate that ABAP Repository is not empty and it is in correct format.
+ * It can starts with a namespace up from 1 to 8 characters placed inside /{namespace}/ and the value can be up to 15 characters including the namespace if it is defined.
  *
- * @param value
+ * @param {string} value - ABAP Repository
+ * @returns {string | boolean} if value is not empty and it is in correct format returns true otherwise error message.
  */
 export function validateAbapRepository(value: string): string | boolean {
     if (!value) {
@@ -288,7 +313,6 @@ export function validateAbapRepository(value: string): string | boolean {
 }
 
 /**
- *
  * @param value
  * @param provider
  */

@@ -115,6 +115,7 @@ export class ApplicationService {
      * Loads applications based on system type and user parameters, merging results from different app sources as needed.
      *
      * @param {boolean} isCloudSystem - Determines if the system is a cloud system, affecting which parameters to use for app searching.
+     * @returns {Application[]} list of applications.
      * @throws {Error} Throws an error if the app data cannot be loaded.
      */
     public async loadApps(isCloudSystem: boolean): Promise<Application[]> {
