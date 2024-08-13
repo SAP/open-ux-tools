@@ -287,7 +287,7 @@ export function validateUi5AbapRepoName(input: string): boolean | string {
     const result = isAppNameValid(input);
 
     if (result?.valid) {
-        return result?.valid;
+        return result.valid;
     } else {
         return result?.errorMessage ?? t('errors.validators.appNameInvalid');
     }

@@ -18,3 +18,6 @@ Pnpm
 
 ## Usage
 See example usage in [test folder](./test).
+
+You may need to initialise the i18n bundle with the async function `initI18nProjectValidators` in order 
+to retrieve the localised texts returned from the validators.

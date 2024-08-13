@@ -1,6 +1,7 @@
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
-import { initI18n } from './i18n';
+import { initI18n as initI18nAbapDeployConfigInq } from './i18n';
 import { PromptState } from './prompts/prompt-state';
+import { initI18nProjectValidators } from '@sap-ux/project-input-validator';
 import { getAbapDeployConfigQuestions } from './prompts';
 import LoggerHelper from './logger-helper';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
@@ -26,8 +27,11 @@ async function getPrompts(
     prompts: AbapDeployConfigQuestion[];
     answers: Partial<AbapDeployConfigAnswers>;
 }> {
-    await initI18n();
+    await initI18nProjectValidators();
+    await initI18nAbapDeployConfigInq();
+
     LoggerHelper.logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/abap-deploy-config-inquirer' });
+
     return {
         prompts: await getAbapDeployConfigQuestions(promptOptions),
         // Return reference to derived answers object that will be populated with user responses (after prompting is complete)

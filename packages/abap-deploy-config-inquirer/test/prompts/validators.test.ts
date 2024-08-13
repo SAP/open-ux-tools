@@ -21,7 +21,6 @@ import {
 } from '../../src/prompts/validators';
 import * as validatorUtils from '../../src/validator-utils';
 import {
-    AbapDeployConfigAnswers,
     AbapDeployConfigAnswersInternal,
     ClientChoiceValue,
     PackageInputChoices,
@@ -241,7 +240,6 @@ describe('Test validators', () => {
         });
 
         it('should return error for valid UI5 ABAP repo name', () => {
-            // TODO: mock validateAppName when project input validator is used
             const result = validateUi5AbapRepoName('Z?()OSITORY');
             expect(result).toBe('Only alphanumeric, underscore and slash characters are allowed');
         });
