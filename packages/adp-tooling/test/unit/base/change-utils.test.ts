@@ -8,8 +8,7 @@ import {
     type PropertyValueType,
     ChangeType,
     type ManifestChangeProperties,
-    type DescriptorVariant,
-    type AddAnnotationsAnswers
+    type DescriptorVariant
 } from '../../../src';
 import {
     findChangeWithInboundId,

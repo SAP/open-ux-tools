@@ -302,7 +302,7 @@ export interface AnnotationsData {
         fileName?: string;
         /** Data source associated with the annotation. */
         dataSource: string;
-        /** Path to the annotation file. */
+        /** Optional path to the annotation file. */
         filePath?: string;
     };
 }

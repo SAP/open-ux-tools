@@ -86,15 +86,9 @@ function getWriterData(
     dataSources: Record<string, ManifestNamespace.DataSource>,
     answers: ChangeDataSourceAnswers
 ): DataSourceData {
-    const { id, uri, maxAge, annotationUri } = answers;
     return {
         variant,
         dataSources,
-        service: {
-            id,
-            uri,
-            maxAge,
-            annotationUri
-        }
+        service: answers
     };
 }

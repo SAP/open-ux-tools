@@ -9,14 +9,12 @@ import {
 } from '../../../../../src/base/change-utils';
 import type {
     AnnotationsData,
-    ComponentUsagesData,
     ComponentUsagesDataBase,
     ComponentUsagesDataWithLibrary,
     DataSourceData,
     NewModelData,
     InboundData,
-    DescriptorVariant,
-    AddAnnotationsAnswers
+    DescriptorVariant
 } from '../../../../../src';
 import {
     AnnotationsWriter,
@@ -231,12 +229,12 @@ describe('NewModelWriter', () => {
                 uri: '/sap/opu/odata/custom',
                 modelName: 'ODataModel',
                 version: '4.0',
-                modelSettings: '"someSetting": "someValue"',
+                modelSettings: '"someSetting": "someValue"'
             },
             annotation: {
                 dataSourceName: 'ODataAnnotations',
                 dataSourceURI: 'some/path/annotations.xml',
-                settings: '"anotherSetting": "anotherValue"',
+                settings: '"anotherSetting": "anotherValue"'
             }
         };
 

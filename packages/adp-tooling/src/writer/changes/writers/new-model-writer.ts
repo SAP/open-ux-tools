@@ -30,7 +30,7 @@ export class NewModelWriter implements IWriter<NewModelData> {
     /**
      * Constructs the content for an new model change based on provided data.
      *
-     * @param {NewModelAnswers} data - The answers object containing information needed to construct the content property.
+     * @param {NewModelData} data - The answers object containing information needed to construct the content property.
      * @returns {object} The constructed content object for the new model change.
      */
     private constructContent(data: NewModelData): object {
