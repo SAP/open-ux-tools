@@ -1,10 +1,12 @@
 import VersionInfo from 'sap/ui/VersionInfo';
 import Log from 'sap/base/Log';
 
-type SingleVersionInfo = {
-    name: string
-    version: string
-} | undefined
+type SingleVersionInfo =
+    | {
+          name: string;
+          version: string;
+      }
+    | undefined;
 
 export type Ui5VersionInfo = {
     majorUi5Version: number;
@@ -45,12 +47,18 @@ export async function getUi5Version() {
  *
  * @returns boolean
  */
-export function isLowerThanMinimalUi5Version(ui5VersionInfo: Ui5VersionInfo, minUi5VersionInfo: Ui5VersionInfo = minVersionInfo): boolean {
+export function isLowerThanMinimalUi5Version(
+    ui5VersionInfo: Ui5VersionInfo,
+    minUi5VersionInfo: Ui5VersionInfo = minVersionInfo
+): boolean {
     if (!isNaN(ui5VersionInfo.majorUi5Version) && !isNaN(ui5VersionInfo.minorUi5Version)) {
         if (ui5VersionInfo.majorUi5Version < minUi5VersionInfo.majorUi5Version) {
             return true;
         }
-        if (ui5VersionInfo.majorUi5Version === minUi5VersionInfo.majorUi5Version && ui5VersionInfo.minorUi5Version < minUi5VersionInfo.minorUi5Version) {
+        if (
+            ui5VersionInfo.majorUi5Version === minUi5VersionInfo.majorUi5Version &&
+            ui5VersionInfo.minorUi5Version < minUi5VersionInfo.minorUi5Version
+        ) {
             return true;
         }
     }

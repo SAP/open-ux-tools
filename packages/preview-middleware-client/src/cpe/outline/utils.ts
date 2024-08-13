@@ -39,7 +39,7 @@ export const isEditable = (id = ''): boolean => {
  * @returns boolean if control is from reused component view
  */
 export const isReuseComponent = (controlId: string, ui5VersionInfo: Ui5VersionInfo): boolean => {
-    if(isLowerThanMinimalUi5Version(ui5VersionInfo, {majorUi5Version: 1, minorUi5Version: 115})) {
+    if (isLowerThanMinimalUi5Version(ui5VersionInfo, { majorUi5Version: 1, minorUi5Version: 115 })) {
         return false;
     }
 
@@ -49,7 +49,7 @@ export const isReuseComponent = (controlId: string, ui5VersionInfo: Ui5VersionIn
     }
 
     const manifest = component.getManifest() as Manifest;
-    if(!manifest) {
+    if (!manifest) {
         return false;
     }
 

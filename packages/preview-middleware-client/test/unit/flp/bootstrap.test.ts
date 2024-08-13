@@ -22,7 +22,7 @@ describe('flp/ushellBootstrap', () => {
 
     test('ushell src when ui5 version is 1.x', async () => {
         fetchMock.mockResolvedValueOnce({
-            json: () => Promise.resolve({ libraries: [{name: 'sap.ui.core', version: '1.126.0'}] })
+            json: () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.126.0' }] })
         } as jest.Mocked<Response>);
 
         await ushellBootstrap(() => {});
@@ -31,7 +31,7 @@ describe('flp/ushellBootstrap', () => {
 
     test('ushell src when ui5 version is 2.0', async () => {
         fetchMock.mockResolvedValue({
-            json: () => Promise.resolve({ libraries: [{name: 'sap.ui.core', version: '2.0.0'}] })
+            json: () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '2.0.0' }] })
         } as jest.Mocked<Response>);
 
         await ushellBootstrap(() => {});

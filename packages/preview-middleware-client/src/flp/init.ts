@@ -283,7 +283,7 @@ export async function init({
 
                 let libs: string[] = [];
 
-                if(isLowerThanMinimalUi5Version(ui5VersionInfo, {majorUi5Version: 1, minorUi5Version: 72})) {
+                if (isLowerThanMinimalUi5Version(ui5VersionInfo, { majorUi5Version: 1, minorUi5Version: 72 })) {
                     libs.push('open/ux/preview/client/flp/initRta');
                 } else {
                     libs.push('sap/ui/rta/api/startAdaptation');

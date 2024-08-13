@@ -85,7 +85,7 @@ export default async function (rta: RuntimeAuthoring) {
 async function getAllSyncViewsIds(ui5VersionInfo: Ui5VersionInfo): Promise<string[]> {
     const syncViewIds: string[] = [];
     try {
-        if (isLowerThanMinimalUi5Version(ui5VersionInfo, {majorUi5Version: 1,minorUi5Version: 120})) {
+        if (isLowerThanMinimalUi5Version(ui5VersionInfo, { majorUi5Version: 1, minorUi5Version: 120 })) {
             const Element = (await import('sap/ui/core/Element')).default;
             const elements = Element.registry.filter(() => true) as UI5Element[];
             elements.forEach((ui5Element) => {
