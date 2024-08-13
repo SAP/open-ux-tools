@@ -76,7 +76,7 @@ Fix not available yet with latest @nrwl/nx-cloud
 ```
 
 Fix not available yet with latest @nrwl/nx-cloud
-
+```
 ┌─────────────────────┬────────────────────────────────────────────────────────┐
 │ moderate            │ Axios Cross-Site Request Forgery Vulnerability         │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
@@ -90,25 +90,9 @@ Fix not available yet with latest @nrwl/nx-cloud
 │                     │ @sap/wing-service-explorer@1.8.0 > axios@0.21.4        │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ More info           │ https://github.com/advisories/GHSA-wf5p-g6vw-rhxx      │
-
-
-┌─────────────────────┬────────────────────────────────────────────────────────┐
-│ low                 │ fast-xml-parser regex vulnerability patch could be     │
-│                     │ improved from a safety perspective                     │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Package             │ fast-xml-parser                                        │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Vulnerable versions │ =4.2.4                                                 │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Patched versions    │ >=4.2.5                                                │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Paths               │ packages/odata-service-inquirer >                      │
-│                     │ @sap/wing-service-explorer@1.8.0 >                     │
-│                     │ fast-xml-parser@4.2.4                                  │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ More info           │ https://github.com/advisories/GHSA-gpv5-7x3g-ghjv      │
 └─────────────────────┴────────────────────────────────────────────────────────┘
-
+```
+```
 ┌─────────────────────┬────────────────────────────────────────────────────────┐
 │ high                │ Uncontrolled resource consumption in braces            │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
@@ -141,6 +125,8 @@ Fix not available yet with latest @nrwl/nx-cloud
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ More info           │ https://github.com/advisories/GHSA-grv7-fg5c-xmjg      │
 └─────────────────────┴────────────────────────────────────────────────────────┘
+```
+```
 ┌─────────────────────┬────────────────────────────────────────────────────────┐
 │ high                │ ws affected by a DoS when handling a request with many │
 │                     │ HTTP headers                                           │
@@ -160,3 +146,4 @@ Fix not available yet with latest @nrwl/nx-cloud
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ More info           │ https://github.com/advisories/GHSA-3h5v-q93c-6h6q      │
 └─────────────────────┴────────────────────────────────────────────────────────┘
+```

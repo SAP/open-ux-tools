@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/odata-annotation-core",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "Annotation Core",
     "repository": {
         "type": "git",
@@ -29,7 +29,8 @@
         "watch": "tsc  --build ./ -watch"
     },
     "dependencies": {
-        "@sap-ux/odata-annotation-core-types": "workspace:*"
+        "@sap-ux/odata-annotation-core-types": "workspace:*",
+        "@sap-ux/text-document-utils": "workspace:*"
     },
     "devDependencies": {
         "npm-run-all2": "6.2.0",

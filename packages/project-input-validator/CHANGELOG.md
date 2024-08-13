@@ -1,5 +1,17 @@
 # @sap-ux/project-input-validator
 
+## 0.3.3
+
+### Patch Changes
+
+-   593ad0f: Adp-tooling prompting validations
+
+## 0.3.2
+
+### Patch Changes
+
+-   7ae8207: Add Adaptation Project's OData Service and SAPUI5 Model prompting
+
 ## 0.3.1
 
 ### Patch Changes

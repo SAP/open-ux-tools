@@ -1,5 +1,13 @@
 # @sap-ux/i18n
 
+## 0.1.1
+
+### Patch Changes
+
+-   ac22b7e: feat: new package for text document utility functions and types
+-   Updated dependencies [ac22b7e]
+    -   @sap-ux/text-document-utils@0.2.0
+
 ## 0.1.0
 
 ### Minor Changes
