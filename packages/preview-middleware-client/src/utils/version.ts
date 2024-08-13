@@ -19,7 +19,7 @@ export type Ui5VersionInfo = {
 const minVersionInfo = {
     majorUi5Version: 1,
     minorUi5Version: 71
-} as Ui5VersionInfo;
+} as Readonly<Ui5VersionInfo>;
 
 /**
  * Retrieve the UI5 version from sap.ui.core library

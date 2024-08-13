@@ -44,4 +44,13 @@ describe('flp/ushellBootstrap', () => {
         await ushellBootstrap(() => {});
         expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '/test-resources/sap/ushell/bootstrap/sandbox.js');
     });
+
+    test('finding sap.ui.core lib version failed', async () => {
+        fetchMock.mockResolvedValue({
+            json: () => Promise.resolve({ libraries: [{ name: 'sap.ui.something', version: '2.0.0' }] })
+        } as jest.Mocked<Response>);
+
+        await ushellBootstrap(() => {});
+        expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '/test-resources/sap/ushell/bootstrap/sandbox.js');
+    });
 });
