@@ -1,12 +1,7 @@
 import type { Command } from 'commander';
 import { getLogger, traceChanges } from '../../tracing';
 import { ChangeType, generateChange, getPromptsForChangeInbound, getVariant } from '@sap-ux/adp-tooling';
-import type {
-    DescriptorVariant,
-    DescriptorVariantContent,
-    InboundChangeAnswers,
-    InboundData
-} from '@sap-ux/adp-tooling';
+import type { DescriptorVariantContent } from '@sap-ux/adp-tooling';
 import { promptYUIQuestions } from '../../common';
 import { validateAdpProject, validateCloudAdpProject } from '../../validation';
 
@@ -44,11 +39,11 @@ async function changeInbound(basePath: string, simulate: boolean): Promise<void>
         );
         const inboundId = change?.content?.inboundId as string;
         const answers = await promptYUIQuestions(getPromptsForChangeInbound(), false);
-        const fs = await generateChange<ChangeType.CHANGE_INBOUND>(
-            basePath,
-            ChangeType.CHANGE_INBOUND,
-            getWriterData(variant, answers, inboundId)
-        );
+        const fs = await generateChange<ChangeType.CHANGE_INBOUND>(basePath, ChangeType.CHANGE_INBOUND, {
+            inboundId,
+            variant,
+            flp: answers
+        });
 
         if (!simulate) {
             await new Promise((resolve) => fs.commit(resolve));
@@ -59,24 +54,4 @@ async function changeInbound(basePath: string, simulate: boolean): Promise<void>
         logger.error(error?.message);
         logger.debug(error);
     }
-}
-
-/**
- * Gets the writer data for Inbound Change.
- *
- * @param {DescriptorVariant} variant - The variant.
- * @param {InboundChangeAnswers} answers - The answers.
- * @param {string} inboundId - The inbound id.
- * @returns {InboundData} The writer data.
- */
-function getWriterData(variant: DescriptorVariant, answers: InboundChangeAnswers, inboundId: string): InboundData {
-    return {
-        inboundId,
-        variant,
-        flp: {
-            title: answers.title,
-            subTitle: answers.subTitle,
-            icon: answers.icon
-        }
-    };
 }

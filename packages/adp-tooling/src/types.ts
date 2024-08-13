@@ -448,7 +448,7 @@ export interface InboundChangeAnswers {
     /** Title associated with the inbound navigation data. */
     title: string;
     /** Subtitle associated with the inbound navigation data. */
-    subTitle: string;
+    subtitle: string;
     /** Icon associated with the inbound navigation data. */
     icon: string;
 }
@@ -461,7 +461,7 @@ export interface InboundData {
         /** Title associated with the inbound navigation data. */
         title: string;
         /** Subtitle associated with the inbound navigation data. */
-        subTitle: string;
+        subtitle: string;
         /** Icon associated with the inbound navigation data. */
         icon: string;
     };

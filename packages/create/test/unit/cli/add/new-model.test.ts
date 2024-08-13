@@ -30,6 +30,32 @@ const mockAnswers = {
     modelSettings: '"key": "value"'
 };
 
+const mockAnswersWithAnnotation = {
+    name: 'OData_ServiceName',
+    uri: '/sap/opu/odata/some-name',
+    version: '4.0',
+    modelName: 'OData_ServiceModelName',
+    modelSettings: '"key": "value"',
+    addAnnotationMode: true,
+    dataSourceName: 'OData_AnnotationName',
+    dataSourceURI: '/sap/opu/odata/annotation/',
+    annotationSettings: '"key2":"value2"'
+};
+
+const mockService = {
+    name: 'OData_ServiceName',
+    uri: '/sap/opu/odata/some-name',
+    version: '4.0',
+    modelName: 'OData_ServiceModelName',
+    modelSettings: '"key": "value"'
+};
+
+const mockAnnotation = {
+    dataSourceName: 'OData_AnnotationName',
+    dataSourceURI: '/sap/opu/odata/annotation/',
+    settings: '"key2":"value2"'
+};
+
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
     readFileSync: jest.fn()
@@ -78,6 +104,22 @@ describe('add/model', () => {
         expect(traceSpy).not.toBeCalled();
         expect(generateChangeMock).toBeCalledWith(expect.anything(), 'appdescr_ui5_addNewModel', {
             service: mockAnswers,
+            variant: descriptorVariant
+        });
+    });
+
+    test('should generate change with correct data and annotation', async () => {
+        jest.spyOn(common, 'promptYUIQuestions').mockResolvedValue(mockAnswersWithAnnotation);
+
+        const command = new Command('model');
+        addNewModelCommand(command);
+        await command.parseAsync(getArgv(appRoot));
+
+        expect(loggerMock.debug).not.toBeCalled();
+        expect(traceSpy).not.toBeCalled();
+        expect(generateChangeMock).toBeCalledWith(expect.anything(), 'appdescr_ui5_addNewModel', {
+            service: mockService,
+            annotation: mockAnnotation,
             variant: descriptorVariant
         });
     });

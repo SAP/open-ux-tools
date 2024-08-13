@@ -75,10 +75,10 @@ function createNewModelData(variant: DescriptorVariant, answers: NewModelAnswers
             modelSettings
         },
         ...(addAnnotationMode && {
-            library: {
+            annotation: {
                 dataSourceName: answers.dataSourceName,
                 dataSourceURI: answers.dataSourceURI,
-                settigns: answers.annotationSettings
+                settings: answers.annotationSettings
             }
         })
     };
