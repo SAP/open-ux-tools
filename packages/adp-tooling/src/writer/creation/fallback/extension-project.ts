@@ -1,6 +1,6 @@
-import type { BasicInfoAnswers, ConfigurationInfoAnswers, ExtProjectConfig } from '../../../types';
-import type { EndpointsService } from '../../../base/services';
 import { getTrimmedUI5Version } from '../../../base/services';
+import type { EndpointsService } from '../../../base/services';
+import type { BasicInfoAnswers, ConfigurationInfoAnswers, ExtProjectConfig } from '../../../types';
 
 /**
  * Retrieves and structures the configuration necessary for setting up an extension project.

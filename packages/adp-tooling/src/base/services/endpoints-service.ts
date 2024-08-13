@@ -10,7 +10,7 @@ import { SystemDetails } from '../../types';
  * including their names, authentication requirements, and specific details.
  */
 export class EndpointsService {
-    public endpoints: Endpoint[];
+    private endpoints: Endpoint[];
     private isExtensionInstalled: boolean;
 
     /**

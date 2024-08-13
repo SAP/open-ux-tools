@@ -1,6 +1,7 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { AbapTarget } from '@sap-ux/ui5-config';
 import { AuthenticationType } from '@sap-ux/store';
+import type { AbapTarget } from '@sap-ux/ui5-config';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 import {
     AdpWriterConfig,
@@ -26,7 +27,6 @@ import { getSupportForUI5Yaml } from './config';
 import { getApplicationType } from '../../base';
 import { getUI5DeployConfig } from './deploy-config';
 import { parseParameters } from '../../base/services/flp-parameters';
-import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 /**
  * Constructs the ABAP target configuration based on the operational context and project type.

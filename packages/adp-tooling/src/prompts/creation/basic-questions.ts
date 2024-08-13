@@ -5,6 +5,14 @@ import { BasicInfoAnswers } from '../../types';
 import { validateProjectName, isNotEmptyString, validateNamespace } from '../../base/validators';
 import { getDefaultProjectName, getProjectNameTooltip, generateValidNamespace } from './prompt-helpers';
 
+/**
+ * Generates an array of prompt objects configured for collecting basic information about a project.
+ *
+ * @param {string} path - The file path or project path where the project is located or will be created.
+ * @param {string} layer - The layer.
+ * @returns {YUIQuestion<BasicInfoAnswers>[]} An array of YUI prompt objects configured for user interaction
+ *         in a CLI or GUI, including validations and tooltips based on the context.
+ */
 export function getPrompts(path: string, layer: string): YUIQuestion<BasicInfoAnswers>[] {
     const isCustomerBase = layer === 'CUSTOMER_BASE';
     return [
@@ -45,6 +53,12 @@ export function getPrompts(path: string, layer: string): YUIQuestion<BasicInfoAn
     ];
 }
 
+/**
+ * Generates a prompt object for the namespace input based on the project context.
+ *
+ * @param {boolean} isCustomerBase - Flag indicating if the context is based on a customer base layer.
+ * @returns {YUIQuestion<BasicInfoAnswers>} A YUI prompt object specifically configured for the namespace input.
+ */
 function getNamespacePrompt(isCustomerBase: boolean): YUIQuestion<BasicInfoAnswers> {
     const prompt = {
         type: 'input',
