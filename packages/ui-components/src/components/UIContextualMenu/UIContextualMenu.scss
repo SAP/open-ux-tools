@@ -406,4 +406,14 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
             }
         }
     }
+
+    &.ts-ContextualMenu--reverse .ms-ContextualMenu-item {
+        > .ms-ContextualMenu-link,
+        > div > button {
+            padding: $menu-item-vertical-padding 3px;
+            & i + .ms-ContextualMenu-itemText {
+                padding-left: 3px;
+            }
+        }
+    }
 }

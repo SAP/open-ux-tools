@@ -21,46 +21,46 @@ function getItems(iconsToLeft = false): UIContextualMenuItem[] {
     return [
         {
             key: 'item1',
-            text: 'menu item 1',
-            title: 'menu item 1',
+            text: 'Menu item 1',
+            title: 'Menu item 1',
             onClick: () => console.log('New clicked')
         },
         {
             key: 'item2',
-            text: 'menu item 2',
-            title: 'menu item 2',
+            text: 'Menu item 2',
+            title: 'Menu item 2',
             subMenuProps: {
                 ...(iconsToLeft && { directionalHint: UIDirectionalHint.leftTopEdge }),
                 items: [
-                    { key: 'submenuitem1', text: 'submenu item 1' },
+                    { key: 'submenuitem1', text: 'Submenu item 1' },
                     {
                         key: 'submenuitem2',
-                        text: 'submenu item 2',
-                        title: 'submenu item 2',
+                        text: 'Submenu item 2',
+                        title: 'Submenu item 2',
                         // split: true,
                         subMenuProps: {
                             ...(iconsToLeft && { directionalHint: UIDirectionalHint.leftTopEdge }),
                             items: [
                                 {
                                     key: 'submenuitem21',
-                                    text: 'submenu item 21',
-                                    title: 'submenu item 21',
+                                    text: 'Submenu item 21',
+                                    title: 'Submenu item 21',
                                     canCheck: true,
                                     checked: true
                                 },
                                 {
                                     key: 'submenuitem22',
-                                    text: 'submenu item 22',
-                                    title: 'submenu item 22',
+                                    text: 'Submenu item 22',
+                                    title: 'Submenu item 22',
                                     canCheck: true
                                 }
                             ]
                         }
                     },
-                    { key: 'submenuitem3', text: 'submenu item 3', title: 'submenu item 3' },
-                    { key: 'submenuitem4', text: 'submenu item 1', title: 'submenu item 1' },
-                    { key: 'submenuitem5', text: 'submenu item 2', title: 'submenu item 2' },
-                    { key: 'submenuitem6', text: 'submenu item 3', title: 'submenu item 3' }
+                    { key: 'submenuitem3', text: 'Submenu item 3', title: 'Submenu item 3' },
+                    { key: 'submenuitem4', text: 'Submenu item 1', title: 'Submenu item 1' },
+                    { key: 'submenuitem5', text: 'Submenu item 2', title: 'Submenu item 2' },
+                    { key: 'submenuitem6', text: 'Submenu item 3', title: 'Submenu item 3' }
                 ]
             }
         }

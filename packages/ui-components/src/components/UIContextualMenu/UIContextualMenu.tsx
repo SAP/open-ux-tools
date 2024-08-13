@@ -77,7 +77,7 @@ export function getUIContextualMenuItemStyles(
     const { iconToLeft } = props;
     let padding: number | undefined = undefined;
     if (iconToLeft && itemsHaveSubMenu) {
-        padding = currentItemHasSubmenu ? 10 : 25;
+        padding = currentItemHasSubmenu ? 10 : 19;
     }
     return {
         checkmarkIcon: {
@@ -200,7 +200,7 @@ export interface UIIContextualMenuProps extends IContextualMenuProps {
  */
 function getClassNames(props: UIIContextualMenuProps): string {
     const classNames = ['ts-ContextualMenu'];
-    const { layoutType = UIContextualMenuLayoutType.DropdownMenu } = props;
+    const { layoutType = UIContextualMenuLayoutType.DropdownMenu, iconToLeft } = props;
     const layoutClassName =
         layoutType === UIContextualMenuLayoutType.DropdownMenu
             ? 'ts-ContextualMenu--dropdown'
@@ -208,6 +208,9 @@ function getClassNames(props: UIIContextualMenuProps): string {
     classNames.push(layoutClassName);
     if (props.className) {
         classNames.push(props.className);
+    }
+    if (iconToLeft) {
+        classNames.push('ts-ContextualMenu--reverse');
     }
     return classNames.join(' ');
 }
