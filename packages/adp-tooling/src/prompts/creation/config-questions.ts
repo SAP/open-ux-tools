@@ -762,7 +762,8 @@ export default class ConfigInfoPrompter {
             guiOptions: {
                 applyDefaultWhenDirty: true,
                 hint: t('prompts.ui5VersionTooltip'),
-                breadcrumb: 'SAP UI5 Version'
+                breadcrumb: 'SAP UI5 Version',
+                mandatory: true
             },
             validate: this.ui5Service.validateUI5Version.bind(this),
             default: async () => await this.getVersionDefaultValue(),
