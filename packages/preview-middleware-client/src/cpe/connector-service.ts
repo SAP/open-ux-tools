@@ -12,8 +12,11 @@ export class WorkspaceConnectorService {
      * @param sendAction action sender function
      */
     public async init(sendAction: ActionSenderFunction): Promise<void> {
-        const ui5VersionInfo = await getUi5Version();
-        if (isLowerThanMinimalUi5Version(ui5VersionInfo, {majorUi5Version: 1, minorUi5Version: 73, version: '1.73'})) {
+        if (isLowerThanMinimalUi5Version(await getUi5Version(), {
+                majorUi5Version: 1,
+                minorUi5Version: 73,
+                version: '1.73'
+            })) {
             const FakeLrepConnector = (await import('sap/ui/fl/FakeLrepConnector')).default;
             FakeLrepConnector.fileChangeRequestNotifier = notifier(sendAction);
         } else {

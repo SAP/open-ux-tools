@@ -19,7 +19,6 @@ import {
 } from '../utils/version';
 
 export default async function (rta: RuntimeAuthoring) {
-    const ui5VersionInfo = await getUi5Version();
     const flexSettings = rta.getFlexSettings();
     if (flexSettings.telemetry === true) {
         enableTelemetry();
@@ -46,6 +45,7 @@ export default async function (rta: RuntimeAuthoring) {
         }
     );
 
+    const ui5VersionInfo = await getUi5Version();
     const syncViewsIds = await getAllSyncViewsIds(ui5VersionInfo);
     initDialogs(rta, syncViewsIds, ui5VersionInfo);
 
@@ -59,7 +59,6 @@ export default async function (rta: RuntimeAuthoring) {
 
     if (isLowerThanMinimalUi5Version(ui5VersionInfo)) {
         sendAction(showMessage({ message: getUI5VersionValidationMessage(ui5VersionInfo.version), shouldHideIframe: true }));
-
         return;
     }
 
@@ -86,7 +85,11 @@ export default async function (rta: RuntimeAuthoring) {
 async function getAllSyncViewsIds(ui5VersionInfo: Ui5VersionInfo): Promise<string[]> {
     const syncViewIds: string[] = [];
     try {
-        if (ui5VersionInfo.majorUi5Version === 1 && ui5VersionInfo.minorUi5Version < 120) {
+        if (isLowerThanMinimalUi5Version(ui5VersionInfo, {
+                majorUi5Version: 1,
+                minorUi5Version: 120,
+                version: '1.120'
+            })) {
             const Element = (await import('sap/ui/core/Element')).default;
             const elements = Element.registry.filter(() => true) as UI5Element[];
             elements.forEach((ui5Element) => {
