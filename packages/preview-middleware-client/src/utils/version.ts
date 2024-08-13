@@ -34,9 +34,8 @@ export async function getUi5Version() {
 
     return {
         majorUi5Version: Number(versionParts[0]),
-        minorUi5Version: Number(versionParts[1]),
-        version
-    } as Ui5VersionInfo;
+        minorUi5Version: Number(versionParts[1])
+    } satisfies Ui5VersionInfo;
 }
 
 /**
