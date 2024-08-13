@@ -106,6 +106,23 @@ export function getTrimmedUI5Version(version: string): string {
 }
 
 /**
+ * Parses the UI5 version
+ * Returns NaN for snapshot or snapshot-untested
+ * Returns x.xx for snapshot-x.xx
+ *
+ * @param version the UI5 version to parse
+ * @returns The major, the minor and the patch version, e.g. 1.86.11
+ */
+export function parseUI5Version(version: string): { major: number; minor: number; patch: number } {
+    const versionParts = version ? version.replace(/snapshot-untested|snapshot-|snapshot/, '').split('.') : [];
+    const major = parseInt(versionParts[0], 10);
+    const minor = parseInt(versionParts[1], 10);
+    const patch = parseInt(versionParts[2], 10);
+
+    return { major, minor, patch };
+}
+
+/**
  * Determines if a specific feature, introduced in a given version, is supported in the current or specified version.
  * This function checks if the provided version is greater than or equal to the feature introduction version.
  * It also handles edge cases where versions might include 'snapshot' or 'snapshot-untested' strings.
@@ -115,35 +132,28 @@ export function getTrimmedUI5Version(version: string): string {
  * @returns {boolean} - Returns true if the current version supports the feature, false otherwise.
  */
 export function isFeatureSupportedVersion(featureVersion: string, version?: string): boolean {
-    // TODO: Down for refactoring
     if (!version || !featureVersion) {
         return false;
     }
 
-    const featureVersionParts = featureVersion.split('.');
-    const versionParts = version.split('.');
-    const snapshotVersion = version.split('-');
+    const {
+        major: featMajorVersion,
+        minor: featMinorVersion,
+        patch: featPatchVersion
+    } = parseUI5Version(featureVersion);
+    const { major, minor, patch } = parseUI5Version(version);
 
-    // When feature version 2.* (or n.*) is bigger than version that is passed we return false
-    if (parseInt(featureVersionParts[0]) > parseInt(version[0])) {
+    if (isNaN(major) && isNaN(minor) && isNaN(patch)) {
+        return true;
+    }
+
+    if (major > featMajorVersion) {
+        return true;
+    } else if (minor < featMinorVersion) {
         return false;
     }
 
-    const snapshotVersions = ['snapshot', 'snapshot-untested'];
-
-    return (
-        (snapshotVersions.includes(snapshotVersion[0]) &&
-            (parseInt(versionParts[0].slice(-1)) > parseInt(featureVersionParts[0]) ||
-                parseInt(versionParts[1]) >= parseInt(featureVersionParts[1]))) ||
-        snapshotVersions.includes(version) ||
-        version.length === 0 ||
-        parseInt(versionParts[0]) > parseInt(featureVersionParts[0]) ||
-        (parseInt(versionParts[0]) === parseInt(featureVersionParts[0]) &&
-            parseInt(versionParts[1]) > parseInt(featureVersionParts[1])) ||
-        (parseInt(versionParts[0]) === parseInt(featureVersionParts[0]) &&
-            parseInt(versionParts[1]) === parseInt(featureVersionParts[1]) &&
-            parseInt(versionParts[2]) >= parseInt(featureVersionParts[2]))
-    );
+    return patch >= featPatchVersion;
 }
 
 /**
