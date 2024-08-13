@@ -78,6 +78,10 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
         .ms-Callout-main {
             border-radius: $layout-contextual-menu-border-radius;
         }
+        // Contextual menu submenus
+        &.ts-ContextualMenu-callout--submenu-beneath {
+            margin: -2px -2px 2px -2px;
+        }
     }
 }
 

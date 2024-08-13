@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import type {
     IContextualMenuStyles,
     IContextualMenuItemStyles,
@@ -7,7 +7,14 @@ import type {
     IStyleFunctionOrObject,
     ICalloutContentStyleProps
 } from '@fluentui/react';
-import { ContextualMenu, ContextualMenuItemType, IContextualMenuProps, IContextualMenuItem } from '@fluentui/react';
+import {
+    ContextualMenu,
+    ContextualMenuItemType,
+    IContextualMenuProps,
+    IContextualMenuItem,
+    ZIndexes,
+    styled
+} from '@fluentui/react';
 export { IContextualMenuItem } from '@fluentui/react';
 
 export { IContextualMenuItem as UIContextualMenuItem };
@@ -22,6 +29,8 @@ export enum UIContextualMenuLayoutType {
 }
 
 import './UIContextualMenu.scss';
+
+const DEFAULT_ZINDEX = 1000000;
 
 /* Method receives callout style and extracts into raw styles object.
  *
@@ -180,31 +189,8 @@ function injectContextualMenuItemsStyle(props: UIIContextualMenuProps): IContext
 export interface UIIContextualMenuProps extends IContextualMenuProps {
     maxWidth?: number; // max width for the ComboBox
     iconToLeft?: boolean;
-    // ToDo - default ->
     layoutType?: UIContextualMenuLayoutType;
-}
-
-/**
- * Method returns element for submenu of contextual menu.
- *
- * @param props Contextual menu properties.
- * @returns Element for submenu of contextual menu.
- */
-function getSubMenu(rootMenuProps: UIIContextualMenuProps, subMenuProps?: IContextualMenuProps): JSX.Element | null {
-    if (!subMenuProps) {
-        return null;
-    }
-    const { iconToLeft } = rootMenuProps;
-    return (
-        <UIContextualMenu
-            iconToLeft={iconToLeft}
-            {...subMenuProps}
-            calloutProps={{
-                ...subMenuProps.calloutProps,
-                className: getCalloutClassName(rootMenuProps)
-            }}
-        />
-    );
+    showSubmenuBeneath?: boolean;
 }
 
 /**
@@ -231,9 +217,10 @@ function getClassNames(props: UIIContextualMenuProps): string {
  * Method returns class names string for callout element depending on props and component state.
  *
  * @param props Contextual menu properties.
+ * @param isSubmenu Is submenu.
  * @returns Class names of callout element.
  */
-function getCalloutClassName(props: UIIContextualMenuProps): string {
+function getCalloutClassName(props: UIIContextualMenuProps, isSubmenu?: boolean): string {
     const classNames = ['ts-ContextualMenu-callout'];
     const { layoutType = UIContextualMenuLayoutType.DropdownMenu } = props;
     const layoutClassName =
@@ -241,17 +228,58 @@ function getCalloutClassName(props: UIIContextualMenuProps): string {
             ? 'ts-ContextualMenu-callout--dropdown'
             : 'ts-ContextualMenu-callout--contextual';
     classNames.push(layoutClassName);
+    if (isSubmenu && props.showSubmenuBeneath) {
+        classNames.push('ts-ContextualMenu-callout--submenu-beneath');
+    }
     if (props.calloutProps?.className) {
         classNames.push(props.calloutProps.className);
     }
     return classNames.join(' ');
 }
 
+/**
+ * Method returns element for submenu of contextual menu.
+ *
+ * @param rootMenuProps Root contextual menu props.
+ * @param zIndex z-index to apply for layer of submenu.
+ * @param subMenuProps Submenu properties.
+ * @returns Element for submenu of contextual menu.
+ */
+function getSubMenu(
+    rootMenuProps: UIIContextualMenuProps,
+    zIndex?: number,
+    subMenuProps?: IContextualMenuProps
+): JSX.Element | null {
+    if (!subMenuProps) {
+        return null;
+    }
+    const { iconToLeft } = rootMenuProps;
+    const zIndexOfSubmenu = zIndex !== undefined ? zIndex - 1 : undefined;
+    return (
+        <UIContextualMenu
+            iconToLeft={iconToLeft}
+            {...subMenuProps}
+            calloutProps={{
+                gapSpace: 10,
+                layerProps: {
+                    styles: { root: { zIndex } }
+                },
+                ...subMenuProps.calloutProps,
+                className: getCalloutClassName(rootMenuProps, true)
+            }}
+            onRenderSubMenu={getSubMenu.bind(undefined, rootMenuProps, zIndexOfSubmenu)}
+        />
+    );
+}
+
 export const UIContextualMenu: React.FC<UIIContextualMenuProps> = (props) => {
+    const { showSubmenuBeneath } = props;
+    const zIndex = showSubmenuBeneath ? DEFAULT_ZINDEX - 1 : undefined;
     return (
         <ContextualMenu
             isBeakVisible={false}
             beakWidth={8}
+            onRenderSubMenu={getSubMenu.bind(undefined, props, zIndex)}
             {...props}
             className={getClassNames(props)}
             items={injectContextualMenuItemsStyle(props)}
@@ -261,7 +289,6 @@ export const UIContextualMenu: React.FC<UIIContextualMenuProps> = (props) => {
                 className: getCalloutClassName(props)
             }}
             styles={{ ...getUIcontextualMenuStyles(), ...props.styles }}
-            onRenderSubMenu={getSubMenu.bind(this, props)}
         />
     );
 };

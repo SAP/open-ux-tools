@@ -136,7 +136,7 @@ export const ContextualMenu = (): JSX.Element => {
             </Stack>
             <Stack tokens={{ childrenGap: 16 }}>
                 <Text variant={'large'} block>
-                    As menuProps with beak - iconToLeft and open the menu towards left
+                    As menuProps with beak and showSubmenuBeneath - iconToLeft and open the menu towards left
                 </Text>
                 <Stack horizontal tokens={stackTokens} horizontalAlign="center">
                     <Stack tokens={{ childrenGap: 8 }}>
@@ -149,7 +149,8 @@ export const ContextualMenu = (): JSX.Element => {
                                 items: getItems(true),
                                 isBeakVisible: true,
                                 iconToLeft: true,
-                                layoutType
+                                layoutType,
+                                showSubmenuBeneath: true
                             }}
                         />
                     </Stack>
