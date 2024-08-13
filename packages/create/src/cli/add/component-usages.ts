@@ -46,7 +46,7 @@ export async function addComponentUsages(basePath: string, simulate: boolean): P
         const fs = await generateChange<ChangeType.ADD_COMPONENT_USAGES>(
             basePath,
             ChangeType.ADD_COMPONENT_USAGES,
-            getWriterData(variant, answers)
+            createComponentUsageData(variant, answers)
         );
 
         if (!simulate) {
@@ -67,7 +67,7 @@ export async function addComponentUsages(basePath: string, simulate: boolean): P
  * @param {AddComponentUsageAnswers} answers - The answers object containing the information needed to construct the writer data.
  * @returns {ComponentUsagesData} The writer data for the component usages change.
  */
-function getWriterData(variant: DescriptorVariant, answers: AddComponentUsageAnswers): ComponentUsagesData {
+function createComponentUsageData(variant: DescriptorVariant, answers: AddComponentUsageAnswers): ComponentUsagesData {
     const { usageId, data, settings, isLazy, name, shouldAddLibrary } = answers;
 
     return {

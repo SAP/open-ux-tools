@@ -42,7 +42,7 @@ async function addNewModel(basePath: string, simulate: boolean): Promise<void> {
         const fs = await generateChange<ChangeType.ADD_NEW_MODEL>(
             basePath,
             ChangeType.ADD_NEW_MODEL,
-            getWriterData(variant, answers)
+            createNewModelData(variant, answers)
         );
 
         if (!simulate) {
@@ -63,7 +63,7 @@ async function addNewModel(basePath: string, simulate: boolean): Promise<void> {
  * @param {NewModelAnswers} answers - The answers to the prompts.
  * @returns {NewModelData} The writer data for the new model change.
  */
-function getWriterData(variant: DescriptorVariant, answers: NewModelAnswers): NewModelData {
+function createNewModelData(variant: DescriptorVariant, answers: NewModelAnswers): NewModelData {
     const { name, uri, modelName, version, modelSettings, addAnnotationMode } = answers;
     return {
         variant,
