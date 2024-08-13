@@ -1,8 +1,8 @@
-import { ToolsLogger } from '@sap-ux/logger';
-import { Manifest } from '@sap-ux/project-access';
+import type { ToolsLogger } from '@sap-ux/logger';
+import type { Manifest } from '@sap-ux/project-access';
 
 import { t } from '../../i18n';
-import { ProviderService } from './abap-provider-service';
+import type { ProviderService } from './abap-provider-service';
 
 export interface ManifestCache {
     url: string;
@@ -90,7 +90,7 @@ export class ManifestService {
      */
     public getUrl(id: string): string {
         const cached = this.manifestCache.get(id);
-        return cached && cached.url ? cached.url : '';
+        return cached?.url ? cached.url : '';
     }
 
     /**
@@ -102,7 +102,7 @@ export class ManifestService {
      */
     public async loadManifestUrl(id: string): Promise<void> {
         const cached = this.manifestCache.get(id);
-        if (cached && cached.url) {
+        if (cached?.url) {
             return;
         }
 
@@ -127,16 +127,16 @@ export class ManifestService {
         const provider = this.providerService.getProvider();
         let cached = this.manifestCache.get(id);
 
-        if (cached && cached.manifest) {
+        if (cached?.manifest) {
             return;
         }
 
-        if (!cached || !cached.url) {
+        if (!cached?.url) {
             await this.loadManifestUrl(id);
             cached = this.manifestCache.get(id);
         }
 
-        if (!cached || !cached.url) {
+        if (!cached?.url) {
             throw new Error('Manifest URL could not be loaded.');
         }
 

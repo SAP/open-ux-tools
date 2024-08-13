@@ -5,34 +5,27 @@ import type {
     PasswordQuestion,
     ConfirmQuestion
 } from '@sap-ux/inquirer-common';
-import {
-    AdaptationProjectType,
-    AdtCatalogService,
-    SystemInfo,
-    UI5RtVersionService,
-    isAxiosError
-} from '@sap-ux/axios-extension';
-import { ToolsLogger } from '@sap-ux/logger';
+import type { SystemInfo } from '@sap-ux/axios-extension';
+import { AdaptationProjectType, AdtCatalogService, UI5RtVersionService, isAxiosError } from '@sap-ux/axios-extension';
+import type { ToolsLogger } from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Manifest } from '@sap-ux/project-access';
 import { isExtensionInstalledVsCode } from '@sap-ux/environment-check';
 
+import type { EndpointsService, ProviderService, UI5VersionService, ManifestService } from '../../base/services';
 import {
-    EndpointsService,
     AppIdentifier,
-    ProviderService,
     ApplicationService,
     getApplicationChoices,
-    UI5VersionService,
     isFeatureSupportedVersion,
-    ManifestService,
     getCachedACH,
     getCachedFioriId
 } from '../../base/services';
 import { t } from '../../i18n';
 import { resolveNodeModuleGenerator, isNotEmptyString, validateAch, validateClient } from '../../base';
-import { Application, FlexLayer, ConfigurationInfoAnswers, FlexUISupportedSystem, Prompts } from '../../types';
+import type { Application, ConfigurationInfoAnswers, FlexUISupportedSystem, Prompts } from '../../types';
+import { FlexLayer } from '../../types';
 
 /**
  * ConfigInfoPrompter handles the setup and interaction logic for configuration prompts related to project setup.
@@ -439,10 +432,16 @@ export default class ConfigInfoPrompter {
         return !!answers.system && this.hasSystemAuthentication && (answers.username === '' || answers.password === '');
     }
 
+    /**
+     *
+     */
     private getSystemPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return isAppStudio() ? this.getSystemListPrompt() : this.getSystemNativePrompt();
     }
 
+    /**
+     *
+     */
     private getSystemListPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
             type: 'list',
@@ -465,7 +464,7 @@ export default class ConfigInfoPrompter {
                     return;
                 }
 
-                let isCloudProject: boolean | undefined = undefined;
+                let isCloudProject: boolean | undefined;
                 if (projectTypes.length === 1) {
                     if (projectTypes[0] === AdaptationProjectType.CLOUD_READY) {
                         isCloudProject = true;
@@ -505,10 +504,16 @@ export default class ConfigInfoPrompter {
         } as ListQuestion<ConfigurationInfoAnswers>;
     }
 
+    /**
+     *
+     */
     private getSystemNativePrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return this.isExtensionInstalled ? this.getSystemListPrompt() : this.getSystemInputPrompt();
     }
 
+    /**
+     *
+     */
     private getSystemInputPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
             type: 'input',
@@ -523,6 +528,9 @@ export default class ConfigInfoPrompter {
         } as InputQuestion<ConfigurationInfoAnswers>;
     }
 
+    /**
+     *
+     */
     private getSystemClientPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
             type: 'input',
@@ -543,6 +551,9 @@ export default class ConfigInfoPrompter {
         } as InputQuestion<ConfigurationInfoAnswers>;
     }
 
+    /**
+     *
+     */
     private getUsernamePrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
             type: 'input',
@@ -569,6 +580,9 @@ export default class ConfigInfoPrompter {
         } as InputQuestion<ConfigurationInfoAnswers>;
     }
 
+    /**
+     *
+     */
     private getPasswordPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
             type: 'password',
@@ -611,6 +625,9 @@ export default class ConfigInfoPrompter {
         } as PasswordQuestion<ConfigurationInfoAnswers>;
     }
 
+    /**
+     *
+     */
     private getProjectTypeListPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
             type: 'list',
@@ -664,6 +681,9 @@ export default class ConfigInfoPrompter {
         } as ListQuestion<ConfigurationInfoAnswers>;
     }
 
+    /**
+     *
+     */
     private getApplicationListPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
             type: 'list',
@@ -744,6 +764,9 @@ export default class ConfigInfoPrompter {
         } as ListQuestion<ConfigurationInfoAnswers>;
     }
 
+    /**
+     *
+     */
     private getUi5VersionPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
             type: 'list',
@@ -783,6 +806,9 @@ export default class ConfigInfoPrompter {
         } as ListQuestion<ConfigurationInfoAnswers>;
     }
 
+    /**
+     *
+     */
     private getFioriIdPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
             type: 'input',
@@ -809,6 +835,9 @@ export default class ConfigInfoPrompter {
         } as InputQuestion<ConfigurationInfoAnswers>;
     }
 
+    /**
+     *
+     */
     private getACHprompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
             type: 'input',
@@ -837,6 +866,9 @@ export default class ConfigInfoPrompter {
         } as InputQuestion<ConfigurationInfoAnswers>;
     }
 
+    /**
+     *
+     */
     private getAppInfoErrorPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
             type: 'input',
@@ -863,6 +895,10 @@ export default class ConfigInfoPrompter {
         } as InputQuestion<ConfigurationInfoAnswers>;
     }
 
+    /**
+     *
+     * @param projectName
+     */
     private getConfirmExtProjPrompt(projectName: string): YUIQuestion<ConfigurationInfoAnswers> {
         return {
             type: 'confirm',
@@ -887,6 +923,10 @@ export default class ConfigInfoPrompter {
         } as ConfirmQuestion<ConfigurationInfoAnswers>;
     }
 
+    /**
+     *
+     * @param projectName
+     */
     public async getConfigurationPrompts(projectName: string): Promise<YUIQuestion<ConfigurationInfoAnswers>[]> {
         await this.endpointsService.getEndpoints();
         this.systemNames = this.endpointsService.getEndpointNames();

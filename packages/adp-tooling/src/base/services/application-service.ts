@@ -1,9 +1,9 @@
 import { t } from 'i18next';
-import { ToolsLogger } from '@sap-ux/logger';
-import { App, AppIndex } from '@sap-ux/axios-extension';
+import type { ToolsLogger } from '@sap-ux/logger';
+import type { App, AppIndex } from '@sap-ux/axios-extension';
 
-import { Application } from '../../types';
-import { ProviderService } from './abap-provider-service';
+import type { Application } from '../../types';
+import type { ProviderService } from './abap-provider-service';
 import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, S4HANA_APPS_PARAMS } from '../constants';
 
 interface Choice {

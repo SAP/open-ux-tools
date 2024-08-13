@@ -1,8 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Editor } from 'mem-fs-editor';
-import { Manifest } from '@sap-ux/project-access';
+import type { Editor } from 'mem-fs-editor';
+import type { Manifest } from '@sap-ux/project-access';
 
-import { FlexLayer, SapModel } from '../../types';
+import type { SapModel } from '../../types';
+import { FlexLayer } from '../../types';
 import { MAIN_I18N_PATH, PROPERTIES_TEXT, RESOURCE_BUNDLE_TEXT, TRANSLATION_UUID_TEXT } from '../../base';
 
 export interface ResourceModel {
@@ -14,10 +15,11 @@ export interface ResourceModel {
 /**
  * Writes internationalization (i18n) model files to the specified paths within the project structure.
  *
- * @param {Editor} fs - The file system editor interface used for writing files.
  * @param {string} basePath - The base path of the project where i18n files are located, typically the root.
  * @param {ResourceModel[]} [i18nModels] - An optional array of i18n models to be written. Each model contains
  *                                         the key, path, and content for an i18n file.
+ * @param {Editor} fs - The file system editor interface used for writing files.
+ 
  *
  * This function ensures that:
  * - Only i18n models that are not the main i18n file (`i18n/i18n.properties`) are processed.

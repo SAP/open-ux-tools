@@ -3,10 +3,9 @@ import { AuthenticationType } from '@sap-ux/store';
 import type { AbapTarget } from '@sap-ux/ui5-config';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
-import {
+import type {
     AdpWriterConfig,
     BasicInfoAnswers,
-    FlexLayer,
     CloudApp,
     ConfigurationInfoAnswers,
     DeployConfigAnswers,
@@ -15,13 +14,9 @@ import {
     SystemDetails,
     OnpremApp
 } from '../../types';
-import {
-    ManifestService,
-    ProviderService,
-    UI5VersionService,
-    getFormattedVersion,
-    getOfficialBaseUI5VersionUrl
-} from '../../base/services';
+import { FlexLayer } from '../../types';
+import type { ManifestService, ProviderService, UI5VersionService } from '../../base/services';
+import { getFormattedVersion, getOfficialBaseUI5VersionUrl } from '../../base/services';
 import { getI18nModels } from './i18n-model';
 import { getSupportForUI5Yaml } from './config';
 import { getApplicationType } from '../../base';

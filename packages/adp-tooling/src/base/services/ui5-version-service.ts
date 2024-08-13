@@ -9,7 +9,8 @@ import {
     SNAPSHOT_UNTESTED_VERSION
 } from '../constants';
 import { t } from '../../i18n';
-import { UI5Version, FlexLayer } from '../../types';
+import type { UI5Version } from '../../types';
+import { FlexLayer } from '../../types';
 
 /**
  * Gets the official base URL for SAP UI5 resources based on the version information.
@@ -224,7 +225,6 @@ export class UI5VersionService {
      * @param {string} version - The current version string, which may include qualifiers like 'snapshot'.
      * @param {boolean} isCustomerBase - Flag indicating whether the current mode is based on a customer base.
      * @returns {string} The version string to be used.
-     *
      * @example
      * // returns '1.80.2'
      * getVersionToBeUsed('1.80.2', false);
@@ -246,7 +246,9 @@ export class UI5VersionService {
      * @returns {Promise<UI5Version>} An object containing version details fetched from the UI5 CDN.
      */
     public async getPublicVersions(): Promise<UI5Version> {
-        if (this.publicVersions) return this.publicVersions;
+        if (this.publicVersions) {
+            return this.publicVersions;
+        }
 
         const response = await fetch(UI5_VERSIONS_CDN_URL);
         const data = await response.json();
@@ -345,15 +347,13 @@ export class UI5VersionService {
             }
             relevantVersions.unshift(SNAPSHOT_VERSION);
             relevantVersions.unshift(SNAPSHOT_UNTESTED_VERSION);
+        } else if (version && systemSnapshotVersion === '') {
+            relevantVersions = await this.getHigherVersions(formattedVersion);
+            relevantVersions.unshift(
+                `${formattedVersion}${systemSnapshotVersion} ${CURRENT_SYSTEM_VERSION + systemLatestVersion}`
+            );
         } else {
-            if (version && systemSnapshotVersion === '') {
-                relevantVersions = await this.getHigherVersions(formattedVersion);
-                relevantVersions.unshift(
-                    `${formattedVersion}${systemSnapshotVersion} ${CURRENT_SYSTEM_VERSION + systemLatestVersion}`
-                );
-            } else {
-                relevantVersions = [`${allPublicVersions['latest']['version']} ${LATEST_VERSION}`];
-            }
+            relevantVersions = [`${allPublicVersions['latest']['version']} ${LATEST_VERSION}`];
         }
         return [...new Set(relevantVersions)];
     }
@@ -366,18 +366,19 @@ export class UI5VersionService {
      */
     private async getHigherVersions(version: string): Promise<string[]> {
         const allPublicVersions = await this.getPublicVersions();
+        const radix = 10;
 
         const versionParts = version.split('.');
-        const minorVersion = parseInt(versionParts[1]);
-        const microVersion = parseInt(versionParts[2]);
+        const minorVersion = parseInt(versionParts[1], radix);
+        const microVersion = parseInt(versionParts[2], radix);
 
         let versions = '';
 
         Object.keys(allPublicVersions).forEach((publicVersionKey) => {
             const versionArr = allPublicVersions[publicVersionKey]['version'].split('.');
             if (
-                parseInt(versionArr[1]) > minorVersion ||
-                (parseInt(versionArr[1]) == minorVersion && parseInt(versionArr[2]) > microVersion)
+                parseInt(versionArr[1], radix) > minorVersion ||
+                (parseInt(versionArr[1], radix) == minorVersion && parseInt(versionArr[2], radix) > microVersion)
             ) {
                 versions += allPublicVersions[publicVersionKey]['version'] + ',';
             }

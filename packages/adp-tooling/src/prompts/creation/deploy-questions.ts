@@ -1,9 +1,10 @@
-import { ToolsLogger } from '@sap-ux/logger';
-import { AutocompleteQuestion, InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
-import { AbapServiceProvider, AdaptationProjectType, AxiosError, SystemInfo } from '@sap-ux/axios-extension';
+import type { ToolsLogger } from '@sap-ux/logger';
+import type { AutocompleteQuestion, InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { AbapServiceProvider, AxiosError, SystemInfo } from '@sap-ux/axios-extension';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
+import type { ProviderService } from '../../base';
 import {
-    ProviderService,
     validateAbapRepository,
     validateEmptyInput,
     validatePackage,
@@ -11,7 +12,8 @@ import {
     validateTransportChoiceInput
 } from '../../base';
 import { t } from '../../i18n';
-import { ChoiceOption, DeployConfigAnswers, InputChoice } from '../../types';
+import type { ChoiceOption, DeployConfigAnswers } from '../../types';
+import { InputChoice } from '../../types';
 import { listTransports } from '../../base/services/list-transports-service';
 import { ABAP_PACKAGE_SEARCH_MAX_RESULTS, listPackages } from '../../base/services/list-packages-service';
 
@@ -49,6 +51,7 @@ export function shouldShowTransportRelatedPrompt(answers: DeployConfigAnswers): 
  * @param {string} repository - The repository identifier.
  * @param {AbapServiceProvider} provider - The ABAP service provider.
  * @param {string[] | undefined} transportList - An array to store the list of transports.
+ * @param logger
  * @returns {Promise<void>}
  */
 export async function setTransportList(
@@ -82,6 +85,7 @@ export async function setTransportList(
  * @param {DeployConfigAnswers} answers - Answers object containing deployment configuration answers.
  * @param {AbapServiceProvider} provider - ABAP service provider to fetch system information.
  * @param {string[]} transportList - An array to store the list of transports if applicable.
+ * @param logger
  * @returns {Promise<string | boolean>} A promise that resolves with true if validation is successful, or an error message otherwise.
  */
 export async function validatePackageName(
@@ -129,6 +133,7 @@ async function fetchPackageSystemInfo(packageName: string, provider: AbapService
  * Handles errors that occur during the package validation process.
  *
  * @param {Error} error - The error caught during the validation process.
+ * @param logger
  * @returns {string} An appropriate error message based on the error details.
  */
 function handlePackageValidationErrors(error: AxiosError, logger?: ToolsLogger): string {
@@ -145,6 +150,7 @@ function handlePackageValidationErrors(error: AxiosError, logger?: ToolsLogger):
  * Generates prompts for deployment settings based on the current system and project settings.
  *
  * @param {ProviderService} providerService - The ABAP provider service.
+ * @param logger
  * @returns {YUIQuestion<DeployConfigAnswers>[]} An list of deployment prompts.
  */
 export async function getPrompts(

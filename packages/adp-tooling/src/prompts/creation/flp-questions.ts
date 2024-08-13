@@ -1,9 +1,10 @@
-import { EditorQuestion, InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { EditorQuestion, InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 
 import { t } from '../../i18n';
-import { FlpConfigAnswers } from '../../types';
+import type { FlpConfigAnswers } from '../../types';
 import { getInboundIds } from '../../base/services/manifest-service';
-import { ManifestService, validateByRegex, validateEmptyInput, validateParameters } from '../../base';
+import type { ManifestService } from '../../base';
+import { validateByRegex, validateEmptyInput, validateParameters } from '../../base';
 
 /**
  * Generates a list of configuration prompts based on the application's manifest data and whether it's a cloud project.

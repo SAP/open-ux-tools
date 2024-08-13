@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { ToolsSupport } from '../../types';
+import type { ToolsSupport } from '../../types';
 import { getPackageJSONInfo } from '../project-utils';
 
 /**

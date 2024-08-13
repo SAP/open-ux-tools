@@ -1,10 +1,10 @@
-import { AbapTarget } from '@sap-ux/ui5-config';
+import type { AbapTarget } from '@sap-ux/ui5-config';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { Logger, ToolsLogger } from '@sap-ux/logger';
+import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
-import { AbapServiceProvider, AxiosRequestConfig, ProviderConfiguration } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider, AxiosRequestConfig, ProviderConfiguration } from '@sap-ux/axios-extension';
 
-import { EndpointsService } from './endpoints-service';
+import type { EndpointsService } from './endpoints-service';
 
 export type RequestOptions = AxiosRequestConfig & Partial<ProviderConfiguration>;
 

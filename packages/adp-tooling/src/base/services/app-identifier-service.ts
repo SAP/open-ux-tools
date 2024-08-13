@@ -1,7 +1,7 @@
 import { t } from 'i18next';
-import { Manifest, ManifestNamespace } from '@sap-ux/project-access';
+import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
-import { Application } from '../../types';
+import type { Application } from '../../types';
 import { isV4Application } from './manifest-service';
 import { getApplicationType, isSupportedAppTypeForAdaptationProject } from '../app-utils';
 

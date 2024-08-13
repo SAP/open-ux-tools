@@ -1,6 +1,6 @@
 import { existsSync } from 'fs';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { AbapServiceProvider, OperationsType } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider, OperationsType } from '@sap-ux/axios-extension';
 
 import { t } from '../i18n';
 import { InputChoice } from '../types';
@@ -61,6 +61,11 @@ export function validateNonEmptyNoSpaces(
     return true;
 }
 
+/**
+ *
+ * @param value
+ * @param loginEnabled
+ */
 export async function validateEnvironment(value: OperationsType, loginEnabled: boolean) {
     if (!isNotEmptyString(value)) {
         return t('validators.inputCannotBeEmpty');
@@ -75,6 +80,12 @@ export async function validateEnvironment(value: OperationsType, loginEnabled: b
     return true;
 }
 
+/**
+ *
+ * @param value
+ * @param destinationPath
+ * @param isCustomerBase
+ */
 export function validateProjectName(value: string, destinationPath: string, isCustomerBase: boolean): boolean | string {
     if (!isNotEmptyString(value)) {
         return t('validators.inputCannotBeEmpty');
@@ -91,6 +102,11 @@ export function validateProjectName(value: string, destinationPath: string, isCu
     }
 }
 
+/**
+ *
+ * @param value
+ * @param destinationPath
+ */
 export function validateProjectNameExternal(value: string, destinationPath: string): boolean | string {
     const pattern = /^[a-zA-Z]+((\.)?[a-zA-Z0-9])*$/;
     if (pattern.test(value)) {
@@ -104,6 +120,11 @@ export function validateProjectNameExternal(value: string, destinationPath: stri
     }
 }
 
+/**
+ *
+ * @param value
+ * @param destinationPath
+ */
 export function validateProjectNameInternal(value: string, destinationPath: string): boolean | string {
     const pattern = /^([a-z]{1,}[a-z0-9]*((\.){1}[a-z]{1,}[a-z0-9]*){1,})+$/i;
     if (pattern.test(value)) {
@@ -120,6 +141,11 @@ export function validateProjectNameInternal(value: string, destinationPath: stri
     }
 }
 
+/**
+ *
+ * @param value
+ * @param destinationPath
+ */
 export function validateDuplicateProjectName(value: string, destinationPath: string): boolean | string {
     if (existsSync(destinationPath + '/' + value)) {
         return 'Project with this name already exists in your workspace';
@@ -128,6 +154,12 @@ export function validateDuplicateProjectName(value: string, destinationPath: str
     return true;
 }
 
+/**
+ *
+ * @param namespace
+ * @param projectName
+ * @param isCustomerBase
+ */
 export function validateNamespace(namespace: string, projectName: string, isCustomerBase: boolean): string | boolean {
     if (!isNotEmptyString(namespace)) {
         return t('validators.inputCannotBeEmpty');
@@ -155,6 +187,10 @@ export function validateNamespace(namespace: string, projectName: string, isCust
     return true;
 }
 
+/**
+ *
+ * @param value
+ */
 export function validateClient(value: string): string | boolean {
     if (!isNotEmptyString(value)) {
         return t('validators.inputCannotBeEmpty');
@@ -167,6 +203,11 @@ export function validateClient(value: string): string | boolean {
     return true;
 }
 
+/**
+ *
+ * @param value
+ * @param isCustomerBase
+ */
 export function validateAch(value: string, isCustomerBase: boolean): string | boolean {
     if (!isNotEmptyString(value)) {
         return t('validators.inputCannotBeEmpty');
@@ -180,6 +221,11 @@ export function validateAch(value: string, isCustomerBase: boolean): string | bo
     return true;
 }
 
+/**
+ *
+ * @param value
+ * @param inputName
+ */
 export function validateEmptyInput(value: string, inputName: string): string | boolean {
     if (!isNotEmptyString(value)) {
         return t('validators.inputCannotBeEmptyGeneric', { input: t(`prompts.${inputName}`) });
@@ -188,6 +234,12 @@ export function validateEmptyInput(value: string, inputName: string): string | b
     return true;
 }
 
+/**
+ *
+ * @param value
+ * @param inputName
+ * @param pattern
+ */
 export function validateByRegex(value: string, inputName: string, pattern: string): string | boolean {
     if (!isNotEmptyString(value)) {
         return t('validators.inputCannotBeEmptyGeneric', { input: t(`prompts.${inputName}`) });
@@ -201,6 +253,10 @@ export function validateByRegex(value: string, inputName: string, pattern: strin
     return true;
 }
 
+/**
+ *
+ * @param paramString
+ */
 export function validateParameters(paramString: string): string | boolean {
     if (!paramString) {
         return true;
@@ -215,6 +271,10 @@ export function validateParameters(paramString: string): string | boolean {
     return true;
 }
 
+/**
+ *
+ * @param value
+ */
 export function validateAbapRepository(value: string): string | boolean {
     if (!value) {
         return t('validators.inputCannotBeEmptyGeneric', { input: t('prompts.abapRepository') });
@@ -227,6 +287,11 @@ export function validateAbapRepository(value: string): string | boolean {
     return true;
 }
 
+/**
+ *
+ * @param value
+ * @param provider
+ */
 export async function validatePackageChoiceInput(
     value: InputChoice,
     provider: AbapServiceProvider
@@ -246,6 +311,11 @@ export async function validatePackageChoiceInput(
     return true;
 }
 
+/**
+ *
+ * @param value
+ * @param repository
+ */
 export function validatePackage(value: string, repository: string): string | undefined {
     if (!isNotEmptyString(value)) {
         return t('validators.inputCannotBeEmptyGeneric', { input: t(`prompts.package`) });
@@ -282,6 +352,13 @@ export function validatePackage(value: string, repository: string): string | und
     return undefined;
 }
 
+/**
+ *
+ * @param value
+ * @param packageName
+ * @param repository
+ * @param provider
+ */
 export async function validateTransportChoiceInput(
     value: InputChoice,
     packageName: string,

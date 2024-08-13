@@ -27,7 +27,7 @@ export function resolveNodeModuleGenerator(): string | undefined {
     const nodePath = process.env['NODE_PATH'];
     const nodePaths = nodePath?.split(':') || [];
 
-    let generator: string | undefined = undefined;
+    let generator: string | undefined;
     for (let i = 0; i < nodePaths.length; i++) {
         try {
             generator = require.resolve(resolve(nodePaths[i], '@bas-dev/generator-extensibility-sub/generators/app'));

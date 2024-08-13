@@ -1,9 +1,9 @@
-import type { UI5FlexLayer, ManifestNamespace, Manifest } from '@sap-ux/project-access';
+import type { UI5FlexLayer, ManifestNamespace } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp, BspApp } from '@sap-ux/ui5-config';
 import type { AdaptationProjectType, OperationsType } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
-import { ResourceModel } from './writer/creation';
+import type { ResourceModel } from './writer/creation';
 
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
@@ -493,11 +493,23 @@ export interface IPrompt {
     name: string;
     description: string;
 }
+/**
+ *
+ */
 export declare class Prompts {
     private readonly items;
     private callback;
+    /**
+     *
+     */
     constructor(items?: IPrompt[]);
+    /**
+     *
+     */
     splice(start: number, deleteCount: number, items?: IPrompt[]): void;
+    /**
+     *
+     */
     setCallback(callback: any): void;
     size(): number;
 }

@@ -1,6 +1,7 @@
-import { ResourceModel } from './i18n-model';
+import type { ResourceModel } from './i18n-model';
 import { isFeatureSupportedVersion } from '../../base/services';
-import { FlexLayer, Content, AdpWriterConfig, ApplicationType } from '../../types';
+import type { Content, AdpWriterConfig } from '../../types';
+import { FlexLayer, ApplicationType } from '../../types';
 
 /**
  * Creates a descriptor change object for a resource model.
@@ -98,14 +99,15 @@ export function fillSupportData(content: Content[], fioriId?: string, ach?: stri
  * This function populates descriptor content and, depending on the application layer, may include additional
  * support data. It also handles setting the minimum UI5 version if specified in the configuration.
  *
- * @param {AdpWriterConfig} { app, ui5 } - Configuration object containing application and UI5 specific settings.
+ * @param {AdpWriterConfig} config - Configuration object containing application and UI5 specific settings.
  *      `app` contains properties like application type, layer, and identifiers.
  *      `ui5` may include version details and flags for setting minimum UI5 version.
  * @returns {Content[]} An array of content objects for the application manifest. Each object describes a specific
  *      change or setting necessary for the application configuration, such as setting minimum UI5 version,
  *      updating title, or adding support data.
  */
-export function getManifestContent({ app, ui5 }: AdpWriterConfig): Content[] {
+export function getManifestContent(config: AdpWriterConfig): Content[] {
+    const { app, ui5 } = config;
     const { ach, fioriId, appType, layer, i18nModels } = app;
     const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
     const content: Content[] = [];

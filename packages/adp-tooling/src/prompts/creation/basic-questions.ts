@@ -1,7 +1,7 @@
-import { InputQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { InputQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 
 import { t } from '../../i18n';
-import { BasicInfoAnswers } from '../../types';
+import type { BasicInfoAnswers } from '../../types';
 import { validateProjectName, isNotEmptyString, validateNamespace } from '../../base/validators';
 import { getDefaultProjectName, getProjectNameTooltip, generateValidNamespace } from './prompt-helpers';
 
