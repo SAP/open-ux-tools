@@ -11,7 +11,12 @@ import {
 import { ActionHandler } from '../cpe/types';
 import UI5Element from 'sap/ui/dt/Element';
 import { getError } from '../cpe/error-utils';
-import { getUi5Version, getUI5VersionValidationMessage, isLowerThanMinimalUi5Version } from '../utils/version';
+import {
+    getUi5Version,
+    getUI5VersionValidationMessage,
+    isLowerThanMinimalUi5Version,
+    Ui5VersionInfo
+} from '../utils/version';
 
 export default async function (rta: RuntimeAuthoring) {
     const ui5VersionInfo = await getUi5Version();
@@ -41,10 +46,10 @@ export default async function (rta: RuntimeAuthoring) {
         }
     );
 
-    const syncViewsIds = await getAllSyncViewsIds(ui5VersionInfo.minorUi5Version);
-    initDialogs(rta, syncViewsIds, ui5VersionInfo.minorUi5Version);
+    const syncViewsIds = await getAllSyncViewsIds(ui5VersionInfo);
+    initDialogs(rta, syncViewsIds, ui5VersionInfo);
 
-    if (ui5VersionInfo.minorUi5Version > 77) {
+    if (!isLowerThanMinimalUi5Version(ui5VersionInfo, { majorUi5Version: 1, minorUi5Version: 77, version: '1.77' })) {
         const ExtensionPointService = (await import('open/ux/preview/client/adp/extension-point')).default;
         const extPointService = new ExtensionPointService(rta);
         extPointService.init(subscribe);
@@ -74,14 +79,14 @@ export default async function (rta: RuntimeAuthoring) {
 /**
  * Get Ids for all sync views
  *
- * @param minor UI5 Version
+ * @param ui5VersionInfo UI5 Version Information
  *
  * @returns array of Ids for application sync views
  */
-async function getAllSyncViewsIds(minor: number): Promise<string[]> {
+async function getAllSyncViewsIds(ui5VersionInfo: Ui5VersionInfo): Promise<string[]> {
     const syncViewIds: string[] = [];
     try {
-        if (minor < 120) {
+        if (ui5VersionInfo.majorUi5Version === 1 && ui5VersionInfo.minorUi5Version < 120) {
             const Element = (await import('sap/ui/core/Element')).default;
             const elements = Element.registry.filter(() => true) as UI5Element[];
             elements.forEach((ui5Element) => {

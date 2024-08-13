@@ -9,7 +9,7 @@ import AppState from 'sap/ushell/services/AppState';
 import { getManifestAppdescr } from '../adp/api-handler';
 import { getError } from '../cpe/error-utils';
 import initConnectors from './initConnectors';
-import { getUi5Version } from '../utils/version';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -269,7 +269,7 @@ export async function init({
     const urlParams = new URLSearchParams(window.location.search);
     const container = sap?.ushell?.Container ?? sap.ui.require('sap/ushell/Container');
     let scenario: string = '';
-    const { majorUi5Version, minorUi5Version } = await getUi5Version();
+    const ui5VersionInfo = await getUi5Version();
     // Register RTA if configured
     if (flex) {
         const flexSettings = JSON.parse(flex) as FlexSettings;
@@ -282,10 +282,11 @@ export async function init({
                 const pluginScript = flexSettings.pluginScript ?? '';
 
                 let libs: string[] = [];
-                if (minorUi5Version > 71) {
-                    libs.push('sap/ui/rta/api/startAdaptation');
-                } else {
+
+                if(isLowerThanMinimalUi5Version(ui5VersionInfo, {majorUi5Version: 1, minorUi5Version: 72, version: '1.72'})) {
                     libs.push('open/ux/preview/client/flp/initRta');
+                } else {
+                    libs.push('sap/ui/rta/api/startAdaptation');
                 }
 
                 if (flexSettings.pluginScript) {
@@ -333,7 +334,7 @@ export async function init({
     registerSAPFonts();
 
     const renderer =
-        majorUi5Version < 2
+        ui5VersionInfo.majorUi5Version < 2
             ? await container.createRenderer(undefined, true)
             : await container.createRendererInternal(undefined, true);
     renderer.placeAt('content');

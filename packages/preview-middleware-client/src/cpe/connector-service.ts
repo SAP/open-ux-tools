@@ -1,6 +1,6 @@
 import { ExternalAction, storageFileChanged } from '@sap-ux-private/control-property-editor-common';
 import { ActionSenderFunction } from './types';
-import { getUi5Version } from '../utils/version';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
 
 /**
  * A Class of WorkspaceConnectorService
@@ -12,14 +12,14 @@ export class WorkspaceConnectorService {
      * @param sendAction action sender function
      */
     public async init(sendAction: ActionSenderFunction): Promise<void> {
-        const { minorUi5Version } = await getUi5Version();
-        if (minorUi5Version > 72) {
+        const ui5VersionInfo = await getUi5Version();
+        if (isLowerThanMinimalUi5Version(ui5VersionInfo, {majorUi5Version: 1, minorUi5Version: 73, version: '1.73'})) {
+            const FakeLrepConnector = (await import('sap/ui/fl/FakeLrepConnector')).default;
+            FakeLrepConnector.fileChangeRequestNotifier = notifier(sendAction);
+        } else {
             const connector = (await import('open/ux/preview/client/flp/WorkspaceConnector')).default;
             // hook the file deletion listener to the UI5 workspace connector
             connector.storage.fileChangeRequestNotifier = notifier(sendAction);
-        } else {
-            const FakeLrepConnector = (await import('sap/ui/fl/FakeLrepConnector')).default;
-            FakeLrepConnector.fileChangeRequestNotifier = notifier(sendAction);
         }
     }
 }

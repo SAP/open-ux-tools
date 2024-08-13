@@ -37,16 +37,17 @@ export async function getUi5Version() {
 
 /**
  * Checks if the given version is lower than the required minimal version.
- * @param versionInfo to check
+ * @param ui5VersionInfo to check
+ * @param minUi5VersionInfo to check against (default is 1.71)
  *
  * @returns boolean
  */
-export function isLowerThanMinimalUi5Version(versionInfo: Ui5VersionInfo): boolean {
-    if (!isNaN(versionInfo.majorUi5Version) && !isNaN(versionInfo.minorUi5Version)) {
-        if (versionInfo.majorUi5Version < minVersionInfo.majorUi5Version) {
+export function isLowerThanMinimalUi5Version(ui5VersionInfo: Ui5VersionInfo, minUi5VersionInfo = minVersionInfo): boolean {
+    if (!isNaN(ui5VersionInfo.majorUi5Version) && !isNaN(ui5VersionInfo.minorUi5Version)) {
+        if (ui5VersionInfo.majorUi5Version < minUi5VersionInfo.majorUi5Version) {
             return true;
         }
-        if (versionInfo.majorUi5Version === minVersionInfo.majorUi5Version && versionInfo.minorUi5Version < minVersionInfo.minorUi5Version) {
+        if (ui5VersionInfo.majorUi5Version === minUi5VersionInfo.majorUi5Version && ui5VersionInfo.minorUi5Version < minUi5VersionInfo.minorUi5Version) {
             return true;
         }
     }
