@@ -32,11 +32,11 @@ export async function getUi5Version() {
         Log.error('Could not get UI5 version of application. Using 1.121.0 as fallback.');
         version = '1.121.0';
     }
-    const versionParts = version.replace(/snapshot-untested|snapshot-|snapshot/, '').split('.');
+    const [major, minor] = version.replace(/snapshot-untested|snapshot-|snapshot/, '').split('.').map(Number);
 
     return {
-        majorUi5Version: Number(versionParts[0]),
-        minorUi5Version: Number(versionParts[1])
+        majorUi5Version: major,
+        minorUi5Version: minor
     } satisfies Ui5VersionInfo;
 }
 
