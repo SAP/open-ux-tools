@@ -7,12 +7,7 @@ import type {
     IStyleFunctionOrObject,
     ICalloutContentStyleProps
 } from '@fluentui/react';
-import {
-    ContextualMenu,
-    ContextualMenuItemType,
-    IContextualMenuProps,
-    IContextualMenuItem
-} from '@fluentui/react';
+import { ContextualMenu, ContextualMenuItemType, IContextualMenuProps, IContextualMenuItem } from '@fluentui/react';
 export { IContextualMenuItem } from '@fluentui/react';
 
 export { IContextualMenuItem as UIContextualMenuItem };
@@ -67,6 +62,9 @@ export function getUIcontextualMenuStyles(): Partial<IContextualMenuStyles> {
 /**
  * ContextualMenu subcomponent styles prop generator.
  *
+ * @param props Contextual menu properties.
+ * @param currentItemHasSubmenu Item has submenu.
+ * @param itemsHaveSubMenu At least one of sibling item has submenu.
  * @returns - consumable styles property for ContextualMenuItem
  */
 export function getUIContextualMenuItemStyles(
@@ -75,7 +73,7 @@ export function getUIContextualMenuItemStyles(
     itemsHaveSubMenu: boolean
 ): Partial<IContextualMenuItemStyles> {
     const { iconToLeft } = props;
-    let padding: number | undefined = undefined;
+    let padding: number | undefined;
     if (iconToLeft && itemsHaveSubMenu) {
         padding = currentItemHasSubmenu ? 10 : 19;
     }
@@ -114,7 +112,8 @@ export function getUIContextualMenuItemStyles(
 /**
  * ContextualMenu sub-component styles prop generator.
  *
- * @param {number} maxWidth
+ * @param props Contextual menu properties.
+ * @param maxWidth Maximal width of callout
  * @returns consumable styles property for Callout
  */
 export function getUIcontextualMenuCalloutStyles(
@@ -133,7 +132,7 @@ export function getUIcontextualMenuCalloutStyles(
  * Recursively applies corresponding styles generator to each,
  * IContextualMenuItem, ICallourProps and IContxualMenuProps item in props tree.
  *
- * @param items - IContextualMenu list
+ * @param props Contextual menu properties.
  * @returns - mutated IContextualMenuItem prop with styles props generators applied to each menu tree node
  */
 function injectContextualMenuItemsStyle(props: UIIContextualMenuProps): IContextualMenuItem[] {
@@ -239,6 +238,27 @@ function getCalloutClassName(props: UIIContextualMenuProps, isSubmenu?: boolean)
     return classNames.join(' ');
 }
 
+export const UIContextualMenu: React.FC<UIIContextualMenuProps> = (props) => {
+    const { showSubmenuBeneath } = props;
+    const zIndex = showSubmenuBeneath ? DEFAULT_ZINDEX - 1 : undefined;
+    return (
+        <ContextualMenu
+            isBeakVisible={false}
+            beakWidth={8}
+            onRenderSubMenu={getSubMenu.bind(undefined, props, zIndex)}
+            {...props}
+            className={getClassNames(props)}
+            items={injectContextualMenuItemsStyle(props)}
+            calloutProps={{
+                styles: getUIcontextualMenuCalloutStyles(props, props.maxWidth),
+                ...props.calloutProps,
+                className: getCalloutClassName(props)
+            }}
+            styles={{ ...getUIcontextualMenuStyles(), ...props.styles }}
+        />
+    );
+};
+
 /**
  * Method returns element for submenu of contextual menu.
  *
@@ -273,24 +293,3 @@ function getSubMenu(
         />
     );
 }
-
-export const UIContextualMenu: React.FC<UIIContextualMenuProps> = (props) => {
-    const { showSubmenuBeneath } = props;
-    const zIndex = showSubmenuBeneath ? DEFAULT_ZINDEX - 1 : undefined;
-    return (
-        <ContextualMenu
-            isBeakVisible={false}
-            beakWidth={8}
-            onRenderSubMenu={getSubMenu.bind(undefined, props, zIndex)}
-            {...props}
-            className={getClassNames(props)}
-            items={injectContextualMenuItemsStyle(props)}
-            calloutProps={{
-                styles: getUIcontextualMenuCalloutStyles(props, props.maxWidth),
-                ...props.calloutProps,
-                className: getCalloutClassName(props)
-            }}
-            styles={{ ...getUIcontextualMenuStyles(), ...props.styles }}
-        />
-    );
-};

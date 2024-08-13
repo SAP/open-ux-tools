@@ -39,7 +39,9 @@ describe('<UIDropdown />', () => {
         wrapper.setProps({
             className: 'dummy'
         });
-        expect(wrapper.find(ContextualMenu).prop('className')).toEqual('ts-ContextualMenu ts-ContextualMenu--dropdown dummy');
+        expect(wrapper.find(ContextualMenu).prop('className')).toEqual(
+            'ts-ContextualMenu ts-ContextualMenu--dropdown dummy'
+        );
     });
 
     for (const testMaxWidth of [350, undefined]) {
@@ -63,10 +65,12 @@ describe('<UIDropdown />', () => {
                     key: 'item1',
                     text: 'menu item 1',
                     subMenuProps: {
-                        items: [{
-                            key: 'item1',
-                            text: 'item 1 - submenu1',
-                        }]
+                        items: [
+                            {
+                                key: 'item1',
+                                text: 'item 1 - submenu1'
+                            }
+                        ]
                     }
                 },
                 {
@@ -90,8 +94,7 @@ describe('<UIDropdown />', () => {
             } else {
                 expect(containerElement.getDOMNode().childNodes[0]).toBe(textElement);
             }
-        })
-        
+        });
     });
 
     it('Test item with icon', () => {

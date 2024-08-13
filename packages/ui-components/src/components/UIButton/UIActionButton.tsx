@@ -2,7 +2,8 @@ import React from 'react';
 import type { IButtonProps, IButtonStyles } from '@fluentui/react';
 import { ActionButton } from '@fluentui/react';
 
-import { UIContextualMenu, UIIContextualMenuProps } from '../UIContextualMenu';
+import { UIContextualMenu } from '../UIContextualMenu';
+import type { UIIContextualMenuProps } from '../UIContextualMenu';
 
 interface UIButtonProps extends IButtonProps {
     menuProps?: UIIContextualMenuProps;
