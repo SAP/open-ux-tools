@@ -27,7 +27,7 @@ const mockAnswers = {
     uri: '/sap/opu/odata/some-name',
     version: '4.0',
     modelName: 'OData_ServiceModelName',
-    modelSettings: '"key": "value"',
+    modelSettings: '"key": "value"'
 };
 
 jest.mock('fs', () => ({
