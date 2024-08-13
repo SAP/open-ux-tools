@@ -1,5 +1,5 @@
 import { t } from 'i18next';
-import { Manifest } from '@sap-ux/project-access';
+import { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
 import { Application } from '../../types';
 import { isV4Application } from './manifest-service';
@@ -63,8 +63,8 @@ export class AppIdentifier {
 
     public checkForSyncLoadedViews(ui5Settings: Manifest['sap.ui5']) {
         if (ui5Settings?.rootView) {
-            // @ts-ignore // TODO:
-            this.appSync = !ui5Settings['rootView']['async'];
+            const rootView = ui5Settings?.rootView as ManifestNamespace.RootViewDefFlexEnabled;
+            this.appSync = !rootView.async;
             return;
         }
         if (ui5Settings?.routing && ui5Settings['routing']['config']) {
