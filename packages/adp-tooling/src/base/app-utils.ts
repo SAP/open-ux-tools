@@ -1,11 +1,6 @@
 import { Manifest } from '@sap-ux/project-access';
 
-export enum ApplicationType {
-    FIORI_ELEMENTS = 'FioriElements',
-    FIORI_ELEMENTS_OVP = 'FioriElementsOVP',
-    FREE_STYLE = 'FreeStyle',
-    NONE = ''
-}
+import { ApplicationType } from '../types';
 
 /**
  * Determines the type of UI5 application based on the content of its manifest file.
