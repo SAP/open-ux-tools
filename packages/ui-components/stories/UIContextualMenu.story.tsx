@@ -22,11 +22,13 @@ function getItems(iconsToLeft = false): UIContextualMenuItem[] {
         {
             key: 'item1',
             text: 'menu item 1',
+            title: 'menu item 1',
             onClick: () => console.log('New clicked')
         },
         {
             key: 'item2',
             text: 'menu item 2',
+            title: 'menu item 2',
             subMenuProps: {
                 ...(iconsToLeft && { directionalHint: UIDirectionalHint.leftTopEdge }),
                 items: [
@@ -34,19 +36,31 @@ function getItems(iconsToLeft = false): UIContextualMenuItem[] {
                     {
                         key: 'submenuitem2',
                         text: 'submenu item 2',
+                        title: 'submenu item 2',
                         // split: true,
                         subMenuProps: {
                             ...(iconsToLeft && { directionalHint: UIDirectionalHint.leftTopEdge }),
                             items: [
-                                { key: 'submenuitem21', text: 'submenu item 21', canCheck: true, checked: true },
-                                { key: 'submenuitem22', text: 'submenu item 22', canCheck: true }
+                                {
+                                    key: 'submenuitem21',
+                                    text: 'submenu item 21',
+                                    title: 'submenu item 21',
+                                    canCheck: true,
+                                    checked: true
+                                },
+                                {
+                                    key: 'submenuitem22',
+                                    text: 'submenu item 22',
+                                    title: 'submenu item 22',
+                                    canCheck: true
+                                }
                             ]
                         }
                     },
-                    { key: 'submenuitem3', text: 'submenu item 3' },
-                    { key: 'submenuitem4', text: 'submenu item 1' },
-                    { key: 'submenuitem5', text: 'submenu item 2' },
-                    { key: 'submenuitem6', text: 'submenu item 3' }
+                    { key: 'submenuitem3', text: 'submenu item 3', title: 'submenu item 3' },
+                    { key: 'submenuitem4', text: 'submenu item 1', title: 'submenu item 1' },
+                    { key: 'submenuitem5', text: 'submenu item 2', title: 'submenu item 2' },
+                    { key: 'submenuitem6', text: 'submenu item 3', title: 'submenu item 3' }
                 ]
             }
         }

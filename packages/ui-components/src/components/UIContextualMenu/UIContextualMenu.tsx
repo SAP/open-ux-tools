@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import type {
     IContextualMenuStyles,
     IContextualMenuItemStyles,
@@ -11,9 +11,7 @@ import {
     ContextualMenu,
     ContextualMenuItemType,
     IContextualMenuProps,
-    IContextualMenuItem,
-    ZIndexes,
-    styled
+    IContextualMenuItem
 } from '@fluentui/react';
 export { IContextualMenuItem } from '@fluentui/react';
 
@@ -59,6 +57,7 @@ export function getUIcontextualMenuStyles(): Partial<IContextualMenuStyles> {
     return {
         root: {
             minWidth: 190,
+            maxWidth: 300,
             background: 'var(--vscode-input-background)',
             border: 0
         }

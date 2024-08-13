@@ -9,8 +9,8 @@ $layout-dropdown-menu-item-focus-color: $menu-item-selection-color;
 
 $layout-contextual-menu-border-color: var(--vscode-editorWidget-border);
 $layout-contextual-menu-border-radius: 4px;
-$layout-contextual-menu-item-hover-background: var(--vscode-menu-selectionBackground, var(--vscode-list-hoverBackground));
-$layout-contextual-menu-item-hover-color: var(--vscode-menu-selectionForeground, var(--vscode-editorSuggestWidget-foreground));
+$layout-contextual-menu-item-hover-background: var(--vscode-menu-selectionBackground);
+$layout-contextual-menu-item-hover-color: var(--vscode-menu-selectionForeground, var(--vscode-menu-foreground));
 $layout-contextual-menu-item-focus-background: $layout-contextual-menu-item-hover-background;
 $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-color;
 
@@ -64,9 +64,11 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
     }
     .ms-Callout-beak {
         background: $menu-background;
+        border-radius: $layout-dropdown-menu-border-radius;
     }
     .ms-Callout-beakCurtain {
         background: transparent;
+        border-radius: $layout-dropdown-menu-border-radius;
     }
     &--contextual {
         border-radius: $layout-contextual-menu-border-radius;
@@ -262,6 +264,7 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
 
     .ms-ContextualMenu-itemText {
         margin: 0;
+        overflow: hidden;
     }
 
     // Icons inside menu item
