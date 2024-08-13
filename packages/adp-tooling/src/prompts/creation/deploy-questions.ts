@@ -99,8 +99,6 @@ export async function validatePackageName(
     try {
         const systemInfo = await fetchPackageSystemInfo(value, provider);
 
-        // When passing package to the API for getting system info the response contains the type of the package (cloud or onPremise)
-        // If the package is cloud in adaptationProjectTypes we will have array with only one element 'cloudReady', if it is 'onPremise' the element in the array will be 'onPremise'
         if (systemInfo.adaptationProjectTypes[0] !== AdaptationProjectType.CLOUD_READY) {
             return t('validators.package.notCloudPackage');
         }

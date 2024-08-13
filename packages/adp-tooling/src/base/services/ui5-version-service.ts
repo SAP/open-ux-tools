@@ -89,6 +89,23 @@ export function addSnapshot(version: string, latestVersion: string): string {
     return versionParts[3] && removeTimestampFromVersion(version) != latestVersion ? '-snapshot' : '';
 }
 
+/**
+ * Extracts a specific version pattern (major.minor.patch) from a given string.
+ * This function is useful for normalizing version strings that may include additional text such as labels or descriptions.
+ *
+ * @param {string} version - The version string that potentially contains additional text alongside the version number.
+ * @returns {string} A trimmed version string containing only the first matched major.minor.patch pattern if present;
+ *                   otherwise, returns the original version string.
+ * @example
+ * // returns '1.84.6'
+ * getTrimmedUI5Version('UI5 version 1.84.6 (system version)');
+ * @example
+ * // returns '1.99.2'
+ * getTrimmedUI5Version('latest 1.99.2');
+ * @example
+ * // returns '2.10.3'
+ * getTrimmedUI5Version('2.10.3');
+ */
 export function getTrimmedUI5Version(version: string): string {
     const regex = /\b\d+\.\d+\.\d+\b/g;
     const includesText = version.includes('(system version)') || version.includes('latest');
@@ -199,10 +216,23 @@ export class UI5VersionService {
         return this.getRelevantVersions(this.systemVersion);
     }
 
+    /**
+     * Determines the appropriate UI5 version to use based on the provided version string and customer base status.
+     * This function handles scenarios where a 'snapshot' version might be in use while in external mode,
+     * or when the environment specifically requires using the latest public version, such as for S4HANA Cloud.
+     *
+     * @param {string} version - The current version string, which may include qualifiers like 'snapshot'.
+     * @param {boolean} isCustomerBase - Flag indicating whether the current mode is based on a customer base.
+     * @returns {string} The version string to be used.
+     *
+     * @example
+     * // returns '1.80.2'
+     * getVersionToBeUsed('1.80.2', false);
+     * @example
+     * // returns 'latestVersion' property value from class if 'version' contains 'snapshot'
+     * getVersionToBeUsed('1.84.6 snapshot', true);
+     */
     public getVersionToBeUsed(version: string, isCustomerBase: boolean): string {
-        // in case we are in external mode but system has snapshot version
-        // we should use the latest public version instead
-        // in case S4HANACLOUD end is selected we are using the latest public version
         if (!version || (isCustomerBase && version.includes('snapshot'))) {
             return this.latestVersion;
         }
@@ -227,6 +257,12 @@ export class UI5VersionService {
         return this.publicVersions;
     }
 
+    /**
+     * Determines whether the minimum SAP UI5 version should be set for the application manifest.
+     *
+     * @returns {boolean} True if the minimum UI5 version should be set (i.e., the detected version is
+     *         available and the minor version is 90 or higher); otherwise, false.
+     */
     public shouldSetMinUI5Version(): boolean {
         if (!this.detectedVersion) {
             return false;
@@ -236,6 +272,14 @@ export class UI5VersionService {
         return parseInt(versionParts[1], 10) >= 90;
     }
 
+    /**
+     * Retrieves the minimum SAP UI5 version to be specified in the application manifest.
+     * If the system version does not contain 'snapshot', the system version itself is used;
+     * otherwise, the latest stable version is used as the minimum version.
+     *
+     * @returns {string} The SAP UI5 version string to be set in the manifest, which can be either
+     *         the current system version or the latest stable version, depending on the presence of 'snapshot'.
+     */
     public getMinUI5VersionForManifest(): string {
         return this.systemVersion?.indexOf('snapshot') === -1 ? this.systemVersion : this.latestVersion;
     }

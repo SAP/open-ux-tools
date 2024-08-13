@@ -34,6 +34,11 @@ import { t } from '../../i18n';
 import { resolveNodeModuleGenerator, isNotEmptyString, validateAch, validateClient } from '../../base';
 import { Application, FlexLayer, ConfigurationInfoAnswers, FlexUISupportedSystem, Prompts } from '../../types';
 
+/**
+ * ConfigInfoPrompter handles the setup and interaction logic for configuration prompts related to project setup.
+ * This class manages and validates the necessary configuration settings required during the initiation
+ * or adaptation of projects. It integrates services to fetch, validate, and prompt for configuration options based on the system environment and project specifications.
+ */
 export default class ConfigInfoPrompter {
     private isCustomerBase: boolean;
     private hasSystemAuthentication: boolean;
@@ -56,6 +61,17 @@ export default class ConfigInfoPrompter {
 
     private prompts?: Prompts;
 
+    /**
+     * Constructs an instance of ConfigInfoPrompter.
+     *
+     * @param {ProviderService} providerService - The ABAP provider service.
+     * @param {ManifestService} manifestService - Service to manage application manifests.
+     * @param {EndpointsService} endpointsService - The endpoints service for retrieving system details.
+     * @param {UI5VersionService} ui5Service - Service for handling UI5 version information.
+     * @param {FlexLayer} layer - The application layer context.
+     * @param {ToolsLogger} logger - A logger instance.
+     * @param {Prompts} [prompts] - Prompts utility, used for user interaction flows.
+     */
     constructor(
         private providerService: ProviderService,
         private manifestService: ManifestService,
@@ -260,7 +276,7 @@ export default class ConfigInfoPrompter {
         const isPartialSupport =
             this.ui5VersionDetected && checkForSupport && isFeatureSupportedVersion('1.90.0', systemVersion);
 
-        await this.appIdentifier.validateSelectedApplication(application, checkForSupport, isPartialSupport, manifest);
+        await this.appIdentifier.validateSelectedApplication(application, manifest, checkForSupport, isPartialSupport);
     }
 
     /**

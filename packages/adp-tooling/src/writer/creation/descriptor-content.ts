@@ -1,7 +1,7 @@
 import { ResourceModel } from './i18n-model';
-import { FlexLayer, Content, AdpWriterConfig } from '../../types';
 import { ApplicationType } from '../../base/app-utils';
 import { isFeatureSupportedVersion } from '../../base/services';
+import { FlexLayer, Content, AdpWriterConfig } from '../../types';
 
 /**
  * Creates a descriptor change object for a resource model.
@@ -75,10 +75,10 @@ export function fillDescriptorContent(
  * Adds support data entries for Fiori registration IDs and application component hierarchy (ACH) to a content array.
  *
  * @param {Content[]} content - The array to which support data entries will be added.
- * @param {string} fioriId - The Fiori ID to set in the registration.
- * @param {string} ach - The application component hierarchy code, which will be converted to uppercase.
+ * @param {string} [fioriId] - The Fiori ID to set in the registration.
+ * @param {string} [ach] - The application component hierarchy code, which will be converted to uppercase.
  */
-export function fillSupportData(content: Content[], ach?: string, fioriId?: string): void {
+export function fillSupportData(content: Content[], fioriId?: string, ach?: string): void {
     content.push({
         changeType: 'appdescr_fiori_setRegistrationIds',
         content: {
@@ -94,6 +94,18 @@ export function fillSupportData(content: Content[], ach?: string, fioriId?: stri
     });
 }
 
+/**
+ * Generates an array of content objects for a `manifest.appdescr_variant` file based on the application configuration.
+ * This function populates descriptor content and, depending on the application layer, may include additional
+ * support data. It also handles setting the minimum UI5 version if specified in the configuration.
+ *
+ * @param {AdpWriterConfig} { app, ui5 } - Configuration object containing application and UI5 specific settings.
+ *      `app` contains properties like application type, layer, and identifiers.
+ *      `ui5` may include version details and flags for setting minimum UI5 version.
+ * @returns {Content[]} An array of content objects for the application manifest. Each object describes a specific
+ *      change or setting necessary for the application configuration, such as setting minimum UI5 version,
+ *      updating title, or adding support data.
+ */
 export function getManifestContent({ app, ui5 }: AdpWriterConfig): Content[] {
     const { ach, fioriId, appType, layer, i18nModels } = app;
     const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;

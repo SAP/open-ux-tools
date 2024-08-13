@@ -87,6 +87,7 @@ export class ApplicationService {
      *
      * @param {ProviderService} providerService - The ABAP provider service.
      * @param {boolean} isCustomerBase - Indicates if the current base is a customer base, which affects how applications are loaded.
+     * @param {ToolsLogger} [logger] - The logger.
      */
     constructor(
         private providerService: ProviderService,

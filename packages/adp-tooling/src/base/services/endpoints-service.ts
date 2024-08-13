@@ -15,6 +15,8 @@ export class EndpointsService {
 
     /**
      * Creates an instance of EndpointsService.
+     *
+     * @param {ToolsLogger} logger - The logger.
      */
     constructor(private logger: ToolsLogger) {
         this.endpoints = [];
@@ -48,7 +50,13 @@ export class EndpointsService {
             .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase(), 'en', { sensitivity: 'base' }));
     }
 
-    public shouldGetLocalSystemDetails() {
+    /**
+     * Determines whether local system details should be retrieved based on the environment and installation status.
+     *
+     * @returns {boolean} True if the application is running in VS Code native and the extension is installed,
+     *                    indicating that it's appropriate to fetch local system details; otherwise, false.
+     */
+    public shouldGetLocalSystemDetails(): boolean {
         return !isAppStudio() && this.isExtensionInstalled;
     }
 

@@ -21,11 +21,37 @@ import {
     getFormattedVersion,
     getOfficialBaseUI5VersionUrl
 } from '../../base/services';
+import { getI18nModels } from './i18n-model';
 import { getSupportForUI5Yaml } from './config';
 import { getApplicationType } from '../../base';
 import { getUI5DeployConfig } from './deploy-config';
-import { getI18nDescription, getI18nModels } from './i18n-model';
 import { parseParameters } from '../../base/services/flp-parameters';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
+
+/**
+ * Constructs the ABAP target configuration based on the operational context and project type.
+ *
+ * @param {ConfigurationInfoAnswers} configAnswers - Detailed configuration answers for the project setup.
+ * @param {SystemDetails} systemDetails - Details about the system including URL and client information.
+ * @param {boolean} isCloudProject - Flag indicating whether the project is a cloud project.
+ * @returns {AbapTarget} The configured ABAP target object.
+ */
+export function getTarget(
+    configAnswers: ConfigurationInfoAnswers,
+    systemDetails: SystemDetails,
+    isCloudProject: boolean
+): AbapTarget {
+    const target: AbapTarget = {
+        client: isAppStudio() ? configAnswers?.client : systemDetails?.client,
+        ...(isAppStudio() ? { destination: configAnswers.system } : { url: systemDetails?.url })
+    };
+
+    if (!isAppStudio() && isCloudProject && systemDetails?.authenticationType === AuthenticationType.ReentranceTicket) {
+        target['authenticationType'] = AuthenticationType.ReentranceTicket;
+    }
+
+    return target;
+}
 
 /**
  * A class responsible for generating configuration model.
@@ -70,7 +96,7 @@ export class TemplateModel {
         deployConfigAnswers: DeployConfigAnswers
     ): Promise<AdpWriterConfig> {
         const title = basicAnswers.applicationTitle;
-        const isCloudProject = configAnswers.projectType === 'cloudReady';
+        const isCloudProject = configAnswers.projectType === AdaptationProjectType.CLOUD_READY;
 
         const ui5Version = isCloudProject
             ? this.ui5Service.latestVersion
@@ -84,12 +110,8 @@ export class TemplateModel {
             throw new Error('Manifest of the application was not found!');
         }
 
-        const type = getApplicationType(manifest);
-        const i18nModels = getI18nModels(manifest, this.layer, {
-            id: appId,
-            title,
-            type
-        });
+        const appType = getApplicationType(manifest);
+        const i18nModels = getI18nModels(manifest, this.layer, appId, title);
 
         const shouldSetMinVersion = this.ui5Service.shouldSetMinUI5Version();
 
@@ -98,14 +120,14 @@ export class TemplateModel {
             reference: appId,
             layer: this.layer,
             title,
+            appType,
             i18nModels,
-            appType: type,
             ach: configAnswers.ach,
             fioriId: configAnswers.fioriId
         };
 
         const cloudConfig = await this.getCloudConfig(app, configAnswers, flpConfigAnswers);
-        const target = this.getTarget(configAnswers, systemDetails, isCloudProject);
+        const target = getTarget(configAnswers, systemDetails, isCloudProject);
 
         return {
             app: app,
@@ -134,35 +156,6 @@ export class TemplateModel {
     }
 
     /**
-     * Constructs the ABAP target configuration based on the operational context and project type.
-     *
-     * @param {ConfigurationInfoAnswers} configAnswers - Detailed configuration answers for the project setup.
-     * @param {SystemDetails} systemDetails - Details about the system including URL and client information.
-     * @param {boolean} isCloudProject - Flag indicating whether the project is a cloud project.
-     * @returns {AbapTarget} The configured ABAP target object.
-     */
-    private getTarget(
-        configAnswers: ConfigurationInfoAnswers,
-        systemDetails: SystemDetails,
-        isCloudProject: boolean
-    ): AbapTarget {
-        const target: AbapTarget = {
-            client: isAppStudio() ? configAnswers?.client : systemDetails?.client,
-            ...(isAppStudio() ? { destination: configAnswers.system } : { url: systemDetails?.url })
-        };
-
-        if (
-            !isAppStudio() &&
-            isCloudProject &&
-            systemDetails?.authenticationType === AuthenticationType.ReentranceTicket
-        ) {
-            target['authenticationType'] = AuthenticationType.ReentranceTicket;
-        }
-
-        return target;
-    }
-
-    /**
      * Assembles the cloud configuration for an application based on project settings and user inputs
      * specific to the Fiori Launchpad.
      *
@@ -179,10 +172,10 @@ export class TemplateModel {
         configAnswers: ConfigurationInfoAnswers,
         flpConfigAnswers: FlpConfigAnswers
     ): Promise<FlpConfig> {
-        if (configAnswers.projectType === 'cloudReady') {
+        if (configAnswers.projectType === AdaptationProjectType.CLOUD_READY) {
             const provider = this.providerService.getProvider();
-            const lrepService = provider.getLayeredRepository();
-            const systemInfo = await lrepService.getSystemInfo();
+            const lrep = provider.getLayeredRepository();
+            const systemInfo = await lrep.getSystemInfo();
 
             Object.assign(app as CloudApp, {
                 bspName: configAnswers.application.bspName,

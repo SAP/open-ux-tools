@@ -17,7 +17,8 @@ export class ProviderService {
     /**
      * Constructs an instance of ProviderService.
      *
-     * @param {ProviderService} endpointsService - The endpoints service for retrieving system details.
+     * @param {EndpointsService} endpointsService - The endpoints service for retrieving system details.
+     * @param {ToolsLogger} [logger] - The logger.
      */
     constructor(private endpointsService: EndpointsService, private logger?: ToolsLogger) {}
 

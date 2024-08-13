@@ -60,9 +60,8 @@ export function getUIPageLabels(): PageLabel[] {
     return [
         {
             name: 'Basic Information',
-            description:
-                'You are about to create a new App Variant. App Variant inherits the properties of the source application. The changes that you make will reflect only in the app variant and not in the source application.'
+            description: t('prompts.basicInfoDescr')
         },
-        { name: 'Configuration', description: 'Configure the system and the application you want to use.' }
+        { name: 'Configuration', description: t('prompts.configureInfoDescr') }
     ];
 }

@@ -2,8 +2,8 @@ import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 
-import { getI18nDescription, getManifestContent, writeI18nModels } from './creation';
 import { enhanceManifestChangeContentWithFlpConfig } from './options';
+import { getI18nDescription, getManifestContent, writeI18nModels } from './creation';
 import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml } from './project-utils';
 import { FlexLayer, type AdpWriterConfig, type InternalInboundNavigation } from '../types';
 

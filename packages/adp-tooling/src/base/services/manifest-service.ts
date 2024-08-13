@@ -56,6 +56,12 @@ export function getInboundIds(manifest: Manifest | null): string[] {
 export class ManifestService {
     private manifestCache = new Map<string, ManifestCache>();
 
+    /**
+     * Creates an instance of ManifestService.
+     *
+     * @param {ProviderService} providerService - The ABAP provider service.
+     * @param {ToolsLogger} [logger] - The logger.
+     */
     constructor(private providerService: ProviderService, private logger?: ToolsLogger) {}
 
     /**

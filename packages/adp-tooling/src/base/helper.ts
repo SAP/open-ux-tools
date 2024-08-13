@@ -2,14 +2,8 @@ import { readFileSync } from 'fs';
 import { join, isAbsolute } from 'path';
 
 import { UI5Config } from '@sap-ux/ui5-config';
-import type {
-    DescriptorVariant,
-    AdpPreviewConfig,
-    ParamCheck,
-    Parameter,
-    ParameterRules,
-    ParameterOptions
-} from '../types';
+
+import type { DescriptorVariant, AdpPreviewConfig } from '../types';
 
 /**
  * Get the app descriptor variant.
