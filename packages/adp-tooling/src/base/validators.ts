@@ -114,16 +114,16 @@ export function validateProjectName(value: string, destinationPath: string, isCu
  * @returns {string | boolean} If value is valid returns true otherwise error message.
  */
 export function validateProjectNameExternal(value: string, destinationPath: string): boolean | string {
-    const pattern = /^[a-zA-Z]+((\.)?[a-zA-Z0-9])*$/;
-    if (pattern.test(value)) {
-        if (value.length > 61 || value.toLocaleLowerCase().endsWith('component')) {
-            return t('validators.projectNameLengthErrorExt');
-        }
+    if (value.length > 61 || value.toLocaleLowerCase().endsWith('component')) {
+        return t('validators.projectNameLengthErrorExt');
+    }
 
-        return validateDuplicateProjectName(value, destinationPath);
-    } else {
+    const pattern = /^(\w\.\w|[a-zA-Z0-9]){1,61}$/;
+    if (!pattern.test(value)) {
         return t('validators.projectNameValidationErrorExt');
     }
+
+    return validateDuplicateProjectName(value, destinationPath);
 }
 
 /**
