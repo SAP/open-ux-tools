@@ -120,7 +120,7 @@ export default class ConfigInfoPrompter {
 
             this.prompts.splice(2, 0, [flpConfigPageLabel, deployConfigPageLabel]);
         } else if (!this.isCloudProject && totalPagesCount === 4) {
-            this.prompts.splice(totalPagesCount - 2, 2, undefined);
+            this.prompts.splice(totalPagesCount - 2, 2);
         }
     }
 
