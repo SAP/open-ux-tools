@@ -26,6 +26,7 @@ import { t } from '../../i18n';
 import { resolveNodeModuleGenerator, isNotEmptyString, validateAch, validateClient } from '../../base';
 import type { Application, ConfigurationInfoAnswers, FlexUISupportedSystem, Prompts } from '../../types';
 import { FlexLayer } from '../../types';
+import { systemAdditionalMessages } from './prompt-helpers';
 
 /**
  * ConfigInfoPrompter handles the setup and interaction logic for configuration prompts related to project setup.
@@ -460,52 +461,7 @@ export default class ConfigInfoPrompter {
             },
             when: isAppStudio() ? this.systemInfo?.adaptationProjectTypes?.length : true,
             validate: async (value: string) => await this.validateSystem(value),
-            additionalMessages: () => {
-                const isOnPremise = this.flexUISystem?.isOnPremise;
-                const isUIFlex = this.flexUISystem?.isUIFlex;
-                const projectTypes = this.systemInfo?.adaptationProjectTypes || [];
-
-                if (!projectTypes.length) {
-                    return;
-                }
-
-                let isCloudProject: boolean | undefined;
-                if (projectTypes.length === 1) {
-                    if (projectTypes[0] === AdaptationProjectType.CLOUD_READY) {
-                        isCloudProject = true;
-                    }
-                    if (projectTypes[0] === AdaptationProjectType.ON_PREMISE) {
-                        isCloudProject = false;
-                    }
-                } else if (projectTypes.length > 1) {
-                    isCloudProject = false;
-                }
-
-                if (isCloudProject) {
-                    return;
-                }
-
-                if (!isOnPremise) {
-                    if (!isUIFlex) {
-                        return {
-                            message: t('validators.notDeployableNotFlexEnabledSystemError'),
-                            severity: Severity.error
-                        };
-                    } else {
-                        return {
-                            message: t('validators.notDeployableSystemError'),
-                            severity: Severity.error
-                        };
-                    }
-                }
-
-                if (isOnPremise && !isUIFlex) {
-                    return {
-                        message: t('validators.notFlexEnabledError'),
-                        severity: Severity.warning
-                    };
-                }
-            }
+            additionalMessages: () => systemAdditionalMessages(this.flexUISystem, this.systemInfo)
         } as ListQuestion<ConfigurationInfoAnswers>;
     }
 

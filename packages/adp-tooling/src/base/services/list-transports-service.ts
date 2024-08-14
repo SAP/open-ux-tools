@@ -16,5 +16,5 @@ export async function listTransports(
 ): Promise<string[]> {
     const transportCheckService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
     const transportRequests = await transportCheckService?.getTransportRequests(packageName, repository);
-    return transportRequests?.map((transport) => transport.transportNumber) || [];
+    return transportRequests?.map((transport) => transport.transportNumber) ?? [];
 }

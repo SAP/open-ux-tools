@@ -160,13 +160,13 @@ export class TemplateModel {
      * @param {CloudApp | OnpremApp} app - The application object to which additional properties might be added.
      * @param {ConfigurationInfoAnswers} configAnswers - User provided answers for configuration settings.
      * @param {FlpConfigAnswers} flpConfigAnswers - Fiori Launchpad specific configuration answers.
-     * @returns {Promise<FlpConfig>} Returns a detailed cloud configuration object.
+     * @returns {Promise<FlpConfig | undefined>} Returns a detailed cloud configuration object.
      */
     private async getCloudConfig(
         app: CloudApp | OnpremApp,
         configAnswers: ConfigurationInfoAnswers,
         flpConfigAnswers: FlpConfigAnswers
-    ): Promise<FlpConfig> {
+    ): Promise<FlpConfig | undefined> {
         if (configAnswers.projectType === AdaptationProjectType.CLOUD_READY) {
             const provider = this.providerService.getProvider();
             const lrep = provider.getLayeredRepository();

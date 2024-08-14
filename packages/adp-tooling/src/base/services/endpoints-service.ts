@@ -116,7 +116,7 @@ export class EndpointsService {
      * Retrieves authentication details for a specified system if available.
      *
      * @param {string} system - The name or URL of the system to find.
-     * @returns {Auth | undefined} Authentication details if the system is found, undefined otherwise.
+     * @returns {SystemDetails | undefined} Authentication details if the system is found, undefined otherwise.
      */
     public async getSystemDetails(system: string): Promise<SystemDetails | undefined> {
         if (this.endpoints.length === 0) {
@@ -131,8 +131,8 @@ export class EndpointsService {
         }
 
         const details: SystemDetails = {
-            client: endpoint.Client || '',
-            url: endpoint.Url || ''
+            client: endpoint.Client ?? '',
+            url: endpoint.Url ?? ''
         };
 
         try {

@@ -51,7 +51,7 @@ export function shouldShowTransportRelatedPrompt(answers: DeployConfigAnswers): 
  * @param {string} repository - The repository identifier.
  * @param {AbapServiceProvider} provider - The ABAP service provider.
  * @param {string[] | undefined} transportList - An array to store the list of transports.
- * @param logger
+ * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<void>}
  */
 export async function setTransportList(
@@ -85,7 +85,7 @@ export async function setTransportList(
  * @param {DeployConfigAnswers} answers - Answers object containing deployment configuration answers.
  * @param {AbapServiceProvider} provider - ABAP service provider to fetch system information.
  * @param {string[]} transportList - An array to store the list of transports if applicable.
- * @param logger
+ * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<string | boolean>} A promise that resolves with true if validation is successful, or an error message otherwise.
  */
 export async function validatePackageName(
@@ -133,7 +133,7 @@ async function fetchPackageSystemInfo(packageName: string, provider: AbapService
  * Handles errors that occur during the package validation process.
  *
  * @param {Error} error - The error caught during the validation process.
- * @param logger
+ * @param {ToolsLogger} [logger] - The logger.
  * @returns {string} An appropriate error message based on the error details.
  */
 function handlePackageValidationErrors(error: AxiosError, logger?: ToolsLogger): string {
@@ -150,7 +150,7 @@ function handlePackageValidationErrors(error: AxiosError, logger?: ToolsLogger):
  * Generates prompts for deployment settings based on the current system and project settings.
  *
  * @param {ProviderService} providerService - The ABAP provider service.
- * @param logger
+ * @param {ToolsLogger} [logger] - The logger.
  * @returns {YUIQuestion<DeployConfigAnswers>[]} An list of deployment prompts.
  */
 export async function getPrompts(

@@ -28,7 +28,7 @@ export function getUI5DeployConfig(isCloudProject: boolean, answers: DeployConfi
             package:
                 (answers.packageInputChoice === InputChoice.ENTER_MANUALLY
                     ? answers?.packageManual
-                    : answers?.packageAutocomplete) || '',
+                    : answers?.packageAutocomplete) ?? '',
             transport:
                 answers.transportInputChoice === InputChoice.ENTER_MANUALLY
                     ? answers?.transportManual

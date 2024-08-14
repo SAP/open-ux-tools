@@ -25,7 +25,7 @@ export function getProjectNames(path: string, regex: RegExp = APP_VARIANT_REGEX)
  */
 export function resolveNodeModuleGenerator(): string | undefined {
     const nodePath = process.env['NODE_PATH'];
-    const nodePaths = nodePath?.split(':') || [];
+    const nodePaths = nodePath?.split(':') ?? [];
 
     let generator: string | undefined;
     for (let i = 0; i < nodePaths.length; i++) {
