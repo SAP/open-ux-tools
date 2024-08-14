@@ -1,5 +1,11 @@
 # @sap-ux/generator-simple-fe
 
+## 1.0.20
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.6
+
 ## 1.0.19
 
 ### Patch Changes
