@@ -151,10 +151,14 @@ export async function getServiceType(
  */
 export async function getServiceDetails(
     service: ServiceAnswer,
-    systemUrl: string,
     connectionValidator: ConnectionValidator
 ): Promise<string | boolean> {
     const serviceCatalog = connectionValidator.catalogs[service.serviceODataVersion];
+
+    if (!serviceCatalog || !connectionValidator.serviceProvider) {
+        LoggerHelper.logger.error('ConenctionValidator is not initialized');
+        return false;
+    }
 
     const serviceResult = await getServiceMetadata(
         service.servicePath,
@@ -169,6 +173,6 @@ export async function getServiceDetails(
     PromptState.odataService.odataVersion =
         service.serviceODataVersion === ODataVersion.v2 ? OdataVersion.v2 : OdataVersion.v4;
     PromptState.odataService.servicePath = service.servicePath;
-    PromptState.odataService.origin = systemUrl;
+    PromptState.odataService.origin = connectionValidator.validatedUrl;
     return true;
 }

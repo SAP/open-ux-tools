@@ -5,7 +5,7 @@ import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { CatalogService, V2CatalogService } from '@sap-ux/axios-extension';
 import { ODataVersion, ServiceType } from '@sap-ux/axios-extension';
-import { PromptSeverityMessage, searchChoices, type ListQuestion } from '@sap-ux/inquirer-common';
+import { searchChoices, type ListQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { AuthenticationType, BackendSystem } from '@sap-ux/store';
 import type { Answers, InputQuestion, ListChoiceOptions, Question } from 'inquirer';
@@ -14,12 +14,10 @@ import type { OdataServiceAnswers, OdataServicePromptOptions, SapSystemType, Val
 import { promptNames } from '../../../../types';
 import { PromptState, convertODataVersionType } from '../../../../utils';
 import type { ConnectionValidator, SystemAuthType } from '../../../connectionValidator';
-import LoggerHelper from '../../../logger-helper';
 import { suggestSystemName } from '../prompt-helpers';
 import { validateSystemName } from '../validators';
 import { getServiceChoices, getServiceDetails, getServiceType } from './service-helper';
 import type { ServiceAnswer } from './types';
-import { AbapOnPremAnswers } from '../abap-on-prem/questions';
 
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
 // since it will be used as a new system value in the system selection prompt.
@@ -39,6 +37,9 @@ export interface NewSystemAnswers {
     [newSystemPromptNames.newSystemUrl]?: string;
     [promptNames.userSystemName]?: string;
 }
+
+
+
 const systemSelectionPromptNames = {
     system: 'system'
 } as const;
@@ -48,16 +49,15 @@ export interface SystemSelectionAnswer extends OdataServiceAnswers {
 }
 
 /**
- * Convert the system connection scheme (Service Key, CF Discovery, Rentrance Ticket, etc) to the store specific authentication type.
+ * Convert the system connection scheme (Service Key, Rentrance Ticket, etc) to the store specific authentication type.
+ * Note the absence of CF Discovery as this is not the system to which we are connecting. In this case the service key file (UAA) is also used for the Abap connectivity.
  *
  * @param systemAuthType
  */
-function systemAuthTypeToAuthenticationType(systemAuthType: SystemAuthType): AuthenticationType | undefined {
+function systemAuthTypeToAuthenticationType(systemAuthType: SystemAuthType | undefined): AuthenticationType | undefined {
     switch (systemAuthType) {
         case 'serviceKey':
             return AuthenticationType.OAuth2RefreshToken;
-        case 'cloudFoundry':
-            return AuthenticationType.OAuth2ClientCredential;
         case 'reentranceTicket':
             return AuthenticationType.ReentranceTicket;
         case 'basic':
@@ -66,49 +66,6 @@ function systemAuthTypeToAuthenticationType(systemAuthType: SystemAuthType): Aut
             return undefined;
     }
 }
-
-/**
- * Provides prompts that allow the creation of a new system connection.
- *
- * @param promptOptions options for the new system prompts see {@link OdataServicePromptOptions}
- * @returns questions for creating a new system connection
- */
-/* export function getNewSystemQuestions(promptOptions?: OdataServicePromptOptions): Question<NewSystemAnswers>[] {
-    const questions: Question<NewSystemAnswers>[] = [
-        {
-            type: 'list',
-            name: newSystemPromptNames.newSystemType,
-            choices: [
-                { name: t('prompts.newSystemType.choiceAbapOnBtp'), value: 'abapOnBtp' as SapSystemType },
-                { name: t('prompts.newSystemType.choiceAbapOnPrem'), value: 'abapOnPrem' as SapSystemType }
-            ],
-            message: t('prompts.newSystemType.message'),
-            additionalMessages: (systemType: SapSystemType) => {
-                if (['abapOnBtp'].includes(systemType)) {
-                    LoggerHelper.logger?.warn(t('prompts.systemType.notYetImplementedWarningMessage', { systemType }));
-                    return {
-                        message: t('prompts.systemType.notYetImplementedWarningMessage', { systemType }),
-                        severity: Severity.warning
-                    };
-                }
-            }
-        } as ListQuestion<NewSystemAnswers>
-    ];
-    questions.push(
-        ...withCondition(
-            getAbapOnPremQuestions(promptOptions) as Question[],
-            (answers: Answers) => (answers as NewSystemAnswers).newSystemType === 'abapOnPrem'
-        )
-    );
-    questions.push(
-        ...withCondition(
-            getAbapOnBTPSystemQuestions() as Question[],
-            (answers: Answers) => (answers as NewSystemAnswers).newSystemType === 'abapOnBtp'
-        )
-    );
-
-    return questions;
-} */
 
 /**
  * Get the system url prompt. The system url prompt is used to connect to a new system using the user input system url.
@@ -139,7 +96,7 @@ export function getSystemUrlQuestion<T extends Answers>(
                 odataVersion: convertODataVersionType(requiredOdataVersion)
             });
             // If basic auth not required we should have an active connection
-            if (valResult === true && !connectValidator.validity.authRequired) {
+            if (valResult === true && !connectValidator.validity.authRequired && connectValidator.serviceProvider) {
                 PromptState.odataService.connectedSystem = {
                     serviceProvider: connectValidator.serviceProvider
                 };
@@ -178,36 +135,40 @@ export function getUserSystemNameQuestion(
         name: promptName,
         message: t('prompts.systemName.message'),
         default: async (answers: Partial<NewSystemAnswers>) => {
-            const systemUrl = connectValidator.validatedUrl;
-            if (systemUrl && !userModifiedSystemName) {
-                defaultSystemName = await suggestSystemName(systemUrl, connectValidator.axiosConfig.params?.sapClient);
+            const systemName = connectValidator.connectedSystemName;
+            if (systemName && !userModifiedSystemName) {
+                defaultSystemName = await suggestSystemName(systemName, connectValidator.axiosConfig?.params?.sapClient);
                 return defaultSystemName;
             }
-            return answers.userSystemName;
+            return defaultSystemName;
         },
-        validate: async (systemName: string, answers: AbapOnPremAnswers & NewSystemAnswers) => {
+        validate: async (systemName: string) => {
+            if (!systemName) {
+                return false;
+            }
             let isValid: string | boolean = false;
             // Dont validate the suggested default system name
             if (systemName === defaultSystemName) {
                 isValid = true;
             } else {
                 userModifiedSystemName = true;
+                defaultSystemName = systemName;
                 isValid = await validateSystemName(systemName);
             }
-            const validationResult = await validateSystemName(systemName);
 
             if (isValid === true) {
-                // Not the default system name, so the user modified
-                userModifiedSystemName = true;
                 // Update or create the BackendSystem with the new system details for persistent storage
                 if (connectValidator.validatedUrl && PromptState.odataService.connectedSystem) {
                     const backendSystem = new BackendSystem({
                         authenticationType: systemAuthTypeToAuthenticationType(connectValidator.systemAuthType),
                         name: systemName,
                         url: connectValidator.validatedUrl,
-                        client: connectValidator.axiosConfig.params?.sapClient,
-                        username: connectValidator.axiosConfig.auth?.username,
-                        password: connectValidator.axiosConfig.auth?.password
+                        client: connectValidator.axiosConfig?.params?.sapClient,
+                        username: connectValidator.axiosConfig?.auth?.username,
+                        password: connectValidator.axiosConfig?.auth?.password,
+                        serviceKeys: connectValidator.serviceInfo,
+                        userDisplayName: connectValidator.connectedUserName,
+                        refreshToken: connectValidator.refreshToken
                     });
                     PromptState.odataService.connectedSystem.backendSystem = backendSystem;
                 }
@@ -217,6 +178,14 @@ export function getUserSystemNameQuestion(
     } as InputQuestion<Partial<NewSystemAnswers>>;
 
     return newSystemNamePrompt;
+}
+
+export function getSelectedServiceLabel(username: string | undefined): string {
+    let message = t('prompts.systemService.message');
+    if (username) {
+        message = message.concat(` ${t('texts.forUserName', { username })}`);
+    }
+    return message;
 }
 
 /**
@@ -243,19 +212,19 @@ export function getSystemServiceQuestion<T extends Answers>(
             connectValidator.validity.authenticated || connectValidator.validity.authRequired === false,
         name: `${promptNamespace}:${promptNames.serviceSelection}`,
         type: promptOptions?.serviceSelection?.useAutoComplete ? 'autocomplete' : 'list',
-        message: t('prompts.systemService.message'),
+        message: () => getSelectedServiceLabel(connectValidator.connectedUserName),
         guiOptions: {
             breadcrumb: t('prompts.systemService.breadcrumb'),
-            mandatory: true
+            mandatory: true,
         },
         source: (prevAnswers: T, input: string) => searchChoices(input, serviceChoices as ListChoiceOptions[]),
         choices: async () => {
             if (serviceChoices.length === 0 || previousSystemUrl !== connectValidator.validatedUrl) {
                 let catalogs: CatalogService[] = [];
-                if (requiredOdataVersion) {
-                    catalogs.push(connectValidator.catalogs[requiredOdataVersion]);
+                if (requiredOdataVersion && connectValidator.catalogs[requiredOdataVersion]) {
+                    catalogs.push(connectValidator.catalogs[requiredOdataVersion]!);
                 } else {
-                    catalogs = Object.values(connectValidator.catalogs);
+                    catalogs = Object.values(connectValidator.catalogs).filter((cat) => cat !== undefined) as CatalogService[];
                 }
                 previousSystemUrl = connectValidator.validatedUrl;
                 serviceChoices = await getServiceChoices(catalogs);
@@ -273,7 +242,7 @@ export function getSystemServiceQuestion<T extends Answers>(
             // Dont re-request the same service details
             if (service && previousService?.servicePath !== service.servicePath) {
                 previousService = service;
-                return getServiceDetails(service, connectValidator.validatedUrl, connectValidator);
+                return getServiceDetails(service, connectValidator);
             }
             return true;
         }

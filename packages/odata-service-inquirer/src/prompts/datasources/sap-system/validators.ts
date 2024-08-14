@@ -1,6 +1,8 @@
 import { t } from '../../../i18n';
 import { SystemService } from '@sap-ux/store';
 import LoggerHelper from '../../logger-helper';
+import { ServiceInfo } from '@sap-ux/btp-utils';
+import { readFileSync } from 'fs';
 
 /**
  * Check if the system name is already in use.
@@ -28,5 +30,27 @@ export async function validateSystemName(systemName: string): Promise<boolean | 
         return t('prompts.systemName.systemNameExistsWarning');
     } else {
         return true;
+    }
+}
+
+/**
+ * Validates the existence and content of the file at the given path.
+ * 
+ * @param path path to a service key file
+ */
+export function validateServiceKey(path: string): string | ServiceInfo | boolean {
+    if (!path) {
+        return false;
+    }
+    try {
+        const serviceKeys = readFileSync(path, 'utf8');
+        const serviceInfo: ServiceInfo = JSON.parse(serviceKeys);
+
+        if (!serviceInfo.url || !serviceInfo.uaa || !serviceInfo.catalogs) {
+            return t('prompts.serviceKey.incompleteServiceKeyInfo');
+        }
+        return serviceInfo;
+    } catch (error) {
+        return t('prompts.serviceLey.unparseableServiceKey');
     }
 }

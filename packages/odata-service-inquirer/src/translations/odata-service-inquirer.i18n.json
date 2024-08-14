@@ -58,13 +58,12 @@
             "metadataFilePathNotValid": "Metadata file does not exist or is not accessible. Please specify a valid file path.",
             "capProjectNotFound": "The folder you have selected does not seem to contain a valid CAP project. Please check and try again.",
             "warningCertificateValidationDisabled": "User has disabled certificate validation",
-            "annotationsNotFound": "Annotations not found for specified service"
+            "annotationsNotFound": "Annotations not found for specified service",
         },
         "warnings": {
             "nonUIServiceTypeWarningMessage": "Please note that {{serviceType}} services are not intended to be used for the generation of SAP Fiori UI applications",
             "noServicesAvailable": "No services available for the selected system, see logs for further details.",
             "noServicesAvailableForOdataVersion": "There are no V{{odataVersion}} OData services available from the selected system and the template you have chosen supports V{{odataVersion}} OData services only"
-
         },
         "systemUrl" : {
             "message": "System URL",
@@ -107,6 +106,16 @@
             "choiceReentranceTicket": "Use Reentrance Ticket",
             "choiceServiceKey": "Upload a Service Key File",
             "choiceCloudFoundry": "Discover a Cloud Foundry Service"
+        },
+        "serviceKey": {
+            "message": "Service key file path",
+            "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform",
+            "incompleteServiceKeyInfo": "Service keys file does not contain the required information",
+            "unparseableServiceKey": "Service keys file is not in a valid JSON format"
+        },
+        "cloudFoundryAbapSystem": {
+            "message": "Abap environment",
+            "hint": "Enter the name of the Cloud Foundry service that contains the ABAP Environment instance"
         }
     },
     "errors": {
@@ -143,7 +152,9 @@
         "serviceMetadataError": "An error occurred reading service metadata for service: {{- servicePath}}",
         "serviceMetadataErrorUI": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }). $t(texts.seeLogForDetails)",
         "serviceMetadataErrorLog": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }). {{error}}",
-        "serviceTypeRequestError": "Error retrieving service type: {{- error}}"
+        "serviceTypeRequestError": "Error retrieving service type: {{- error}}",
+        "noAbapEnvsInCFSpace": "No ABAP environments in CF space found.",
+        "abapEnvsCFDiscoveryFailed": "Discovering ABAP Environments failed. Please ensure you are logged into Cloud Foundry (see https://docs.cloudfoundry.org/cf-cli/getting-started.html#login)."
     },
     "texts": {
         "anExpiredCert": "an expired",
@@ -151,7 +162,8 @@
         "anUnknownOrInvalidCert": "an unknown or invalid",
         "anUntrustedRootCert": "an untrusted root",
         "suggestedSystemNameClient": ", client {{client}}",
-        "seeLogForDetails": "See log for more details."
+        "seeLogForDetails": "See log for more details.",
+        "forUserName": "(for user [{{username}}])"
     },
     "guidedAnswers": {
         "validationErrorHelpText": "Need help with this error?"

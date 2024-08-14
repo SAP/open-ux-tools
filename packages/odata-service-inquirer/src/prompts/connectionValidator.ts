@@ -6,6 +6,7 @@ import type {
     CatalogService,
     ODataService,
     ProviderConfiguration,
+    ServiceInfo,
     ServiceProvider
 } from '@sap-ux/axios-extension';
 import {
@@ -50,8 +51,8 @@ interface AxiosExtensionRequestConfig extends AxiosRequestConfig {
     url: string;
     baseURL: string;
 }
-// System specific authentication mechanism (e.g. service key, cf discovery), note this is not the same as AuthenticationType (OAuth, Basic, etc.)
-export type SystemAuthType = AbapOnBTPType | 'basic' | 'unknown';
+// System specific authentication mechanism, used to determine the connection auth type
+export type SystemAuthType = 'serviceKey' | 'reentranceTicket' | 'basic' | 'unknown';
 /**
  * Class that validates the connection to a service url or catalog url.
  * This will determine if authentication is required and if the service/catalog is reachable, generating messages to guide the user.
@@ -65,19 +66,23 @@ export class ConnectionValidator {
     // The current client code used for requests, the client code has been validated by a successful request
     private _validatedClient: string | undefined;
 
-    private _odataService: ODataService;
-    private _serviceProvider: ServiceProvider;
-    private _axiosConfig: AxiosExtensionRequestConfig & ProviderConfiguration;
-    private _catalogV2: CatalogService;
-    private _catalogV4: CatalogService;
-    private _systemAuthType: SystemAuthType;
+    private _odataService: ODataService | undefined;
+    private _serviceProvider: ServiceProvider | undefined;
+    private _axiosConfig: AxiosExtensionRequestConfig & ProviderConfiguration | undefined;
+    private _catalogV2: CatalogService | undefined;
+    private _catalogV4: CatalogService | undefined;
+    private _systemAuthType: SystemAuthType | undefined;
+    private _serviceInfo: ServiceInfo | undefined;
+    private _connectedUserName: string | undefined;
+    private _connectedSystemName: string | undefined;
 
+    private _refreshToken: string | undefined;
     /**
      * Getter for the axios configuration.
      *
      * @returns the axios configuration
      */
-    public get axiosConfig(): AxiosRequestConfig {
+    public get axiosConfig(): AxiosRequestConfig | undefined {
         return this._axiosConfig;
     }
 
@@ -86,7 +91,7 @@ export class ConnectionValidator {
      *
      * @returns the odata service instance
      */
-    public get odataService(): ODataService {
+    public get odataService(): ODataService | undefined{
         return this._odataService;
     }
 
@@ -95,7 +100,7 @@ export class ConnectionValidator {
      *
      * @returns the catalog services for each the odata versions
      */
-    public get catalogs(): Record<ODataVersion, CatalogService> {
+    public get catalogs(): Record<ODataVersion, CatalogService | undefined> {
         return {
             [ODataVersion.v2]: this._catalogV2,
             [ODataVersion.v4]: this._catalogV4
@@ -106,14 +111,14 @@ export class ConnectionValidator {
      *
      * @returns the current connections service provider
      */
-    public get serviceProvider(): ServiceProvider {
+    public get serviceProvider(): ServiceProvider | undefined {
         return this._serviceProvider;
     }
 
     /**
      *
      */
-    public get systemAuthType(): SystemAuthType {
+    public get systemAuthType(): SystemAuthType | undefined {
         return this._systemAuthType;
     }
     /**
@@ -130,6 +135,41 @@ export class ConnectionValidator {
         return this._validatedUrl;
     }
 
+    public get serviceInfo(): ServiceInfo | undefined{
+        return this._serviceInfo;
+    }
+
+    public set serviceInfo(serviceInfo: ServiceInfo) {
+        this._serviceInfo = serviceInfo;
+    }
+
+    public get connectedUserName(): string | undefined {
+        return this._connectedUserName;
+    }
+    public get refreshToken(): string | undefined {
+        return this._refreshToken;
+    }
+
+    /**
+     * Get the connected system name. If previously set this will be used, otherwise the name is determined
+     * by the system auth type, or the validated url.
+     * 
+     */
+    public get connectedSystemName(): string | undefined {
+
+        if (this._connectedSystemName) {
+            return this._connectedSystemName;
+        }
+
+        if (this.systemAuthType === 'serviceKey') {
+            return this.serviceInfo?.systemid;
+        }
+        return this.validatedUrl;
+    }
+    public set connectedSystemName(value: string | undefined) {
+        this._connectedSystemName = value;
+    }
+
     /**
      * Calls a given service or system url to test its reachability and authentication requirements.
      * If the url is a system url, it will attempt to use the catalog service to get the service info.
@@ -143,7 +183,7 @@ export class ConnectionValidator {
      * @param options.odataVersion if specified will restrict catalog requests to only the specified odata version
      * @returns the status code or error returned by the connection attempt
      */
-    private async checkSapService(
+    private async checkSapServiceUrl(
         url: URL,
         username?: string,
         password?: string,
@@ -175,7 +215,7 @@ export class ConnectionValidator {
             );
 
             if (isSystem) {
-                await this.createSystemConnection(axiosConfig, odataVersion);
+                await this.createSystemConnection({ axiosConfig, url, odataVersion });
             } else {
                 // Full service URL
                 await this.createServiceConnection(axiosConfig, url.pathname);
@@ -245,30 +285,53 @@ export class ConnectionValidator {
     ) {
         this._axiosConfig = axiosConfig;
         this._serviceProvider = create(this._axiosConfig);
-        this._odataService = this._serviceProvider.service(servicePath);
+        this._odataService = this._serviceProvider.service(servicePath) as ODataService;
         LoggerHelper.attachAxiosLogger(this._serviceProvider.interceptors);
         await this._odataService.get('');
     }
 
+    public resetConnectionState(): void {
+        this._serviceProvider = undefined;
+        this._odataService = undefined;
+        this._catalogV2 = undefined;
+        this._catalogV4 = undefined;
+        this._serviceInfo = undefined;
+        this._connectedUserName = undefined;
+        this._refreshToken = undefined;
+        this.resetValidity();
+    }
+
     /**
-     * Create the connection for a system url. The system url should be provided as a base url axios config property.
+     * Create the connection for a system url, the specified axios config or the specified service info.
      *
      * @param axiosConfig the axios request configuration
      * @param odataVersion the odata version to restrict the catalog requests if only a specific version is required
      */
-    private async createSystemConnection(
-        axiosConfig: AxiosExtensionRequestConfig & ProviderConfiguration,
-        odataVersion?: ODataVersion
-    ) {
-        this._axiosConfig = axiosConfig;
+    private async createSystemConnection({
+            axiosConfig,
+            url,
+            serviceInfo,
+            odataVersion
+        } : {
+            axiosConfig?: AxiosExtensionRequestConfig & ProviderConfiguration;
+            url?: URL,
+            serviceInfo?: ServiceInfo;
+            odataVersion?: ODataVersion
+        }
+    ): Promise<void> {
 
-        if (this.systemAuthType === 'reentranceTicket') {
-            this._serviceProvider = this.getAbapOnCloudServiceProvider(axiosConfig);
-        } else {
-            this._serviceProvider = createForAbap(axiosConfig);
+        this.resetConnectionState();
+
+        if (this.systemAuthType === 'reentranceTicket' || this.systemAuthType === 'serviceKey') {
+            this._serviceProvider = this.getAbapOnCloudServiceProvider(url, serviceInfo);
+        } else if (axiosConfig) {
+            this._axiosConfig = axiosConfig;
+            this._serviceProvider = createForAbap(axiosConfig) as AbapServiceProvider;
         }
 
-        LoggerHelper.attachAxiosLogger(this._serviceProvider.interceptors);
+        if (this._serviceProvider) {
+            LoggerHelper.attachAxiosLogger(this._serviceProvider.interceptors);
+        }
 
         if (!odataVersion || odataVersion === ODataVersion.v2) {
             this._catalogV2 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v2);
@@ -277,7 +340,7 @@ export class ConnectionValidator {
             this._catalogV4 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v4);
         }
         try {
-            this._catalogV2 ? await this._catalogV2.listServices() : await this._catalogV4.listServices();
+            this._catalogV2 ? await this._catalogV2.listServices() : await this._catalogV4?.listServices();
         } catch (error) {
             // We will try the v4 catalog if v2 returns a 404
             if ((error as AxiosError).response?.status === 404 && this._catalogV4) {
@@ -288,23 +351,62 @@ export class ConnectionValidator {
         }
     }
 
+    private async refreshTokenChangedCb(refreshToken?: string): Promise<void> {
+        LoggerHelper.logger.debug(`ConnectionValidator.refreshTokenChangedCb()`);
+        this._refreshToken = refreshToken;
+    }
+
     /**
      *
      * @param axiosConfig
      */
-    private getAbapOnCloudServiceProvider(
-        axiosConfig: AxiosExtensionRequestConfig & ProviderConfiguration
-    ): ServiceProvider {
-        const providerConfiguration: ProviderConfiguration = {
-            ignoreCertErrors: axiosConfig.ignoreCertErrors,
-            cookies: axiosConfig.cookies
-        };
+    private getAbapOnCloudServiceProvider(url?: URL, serviceInfo?: ServiceInfo): ServiceProvider {
 
-        return createForAbapOnCloud({
-            environment: AbapCloudEnvironment.EmbeddedSteampunk,
-            url: new URL(axiosConfig.url, axiosConfig.baseURL).toString(), // URL cannot be undefined
-            ...providerConfiguration
-        });
+        if (this.systemAuthType === 'reentranceTicket' && url) {
+            return createForAbapOnCloud({
+                environment: AbapCloudEnvironment.EmbeddedSteampunk,
+                url: new URL(url.pathname, url.origin).toString()
+            });
+        }
+
+        if (this.systemAuthType === 'serviceKey' && serviceInfo) {
+            return createForAbapOnCloud({
+                environment: AbapCloudEnvironment.Standalone,
+                service: serviceInfo,
+                refreshTokenChangedCb: this.refreshTokenChangedCb.bind(this)
+            });
+        }
+
+        throw new Error('Invalid system auth type');
+    }
+
+    /**
+     * Validate the system connectivity with the specified service info (containing UAA details).
+     * 
+     * @param serviceInfo 
+     * @param odataVersion 
+     * @returns 
+     */
+    public async validateServiceInfo(serviceInfo: ServiceInfo, odataVersion?: ODataVersion): Promise<ValidationResult> {
+
+        if (!serviceInfo) {
+            return false;
+        }
+        try {
+            this.systemAuthType = 'serviceKey';
+            await this.createSystemConnection({ serviceInfo, odataVersion });
+            // Cache the user info
+            this._connectedUserName = await (this.serviceProvider as AbapServiceProvider).user();
+            this._serviceInfo = serviceInfo;
+            this._validatedUrl = serviceInfo.url;
+            return this.getValidationResultFromStatusCode(200);
+        } catch (error) {
+            LoggerHelper.logger.debug(`ConnectionValidator.validateServiceInfo() - error: ${error.message}`);
+            if (error?.isAxiosError) {
+                this.getValidationResultFromStatusCode(error?.response?.status || error?.code);
+            } 
+            return errorHandler.getErrorMsg(error) ?? false;
+        }
     }
 
     /**
@@ -349,7 +451,7 @@ export class ConnectionValidator {
                 return t('errors.invalidUrl');
             }
             // Ignore path if a system url
-            const status = await this.checkSapService(url, undefined, undefined, {
+            const status = await this.checkSapServiceUrl(url, undefined, undefined, {
                 ignoreCertError,
                 isSystem,
                 odataVersion
@@ -462,7 +564,7 @@ export class ConnectionValidator {
             }
             this.validity.authRequired = this.validity.reachable =
                 ErrorHandler.getErrorType(
-                    await this.checkSapService(url, undefined, undefined, { ignoreCertError })
+                    await this.checkSapServiceUrl(url, undefined, undefined, { ignoreCertError })
                 ) === ERROR_TYPE.AUTH;
 
             return this.validity.authRequired;
@@ -511,7 +613,7 @@ export class ConnectionValidator {
             }
 
             this.systemAuthType = 'basic';
-            const status = await this.checkSapService(urlObject, username, password, {
+            const status = await this.checkSapServiceUrl(urlObject, username, password, {
                 ignoreCertError,
                 isSystem,
                 odataVersion

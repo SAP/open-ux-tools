@@ -69,7 +69,6 @@ export function getAbapOnPremQuestions(promptOptions?: OdataServicePromptOptions
                 if (answers.serviceSelection && answers.systemUrl) {
                     const result = await getServiceDetails(
                         answers.serviceSelection,
-                        answers.systemUrl,
                         connectValidator
                     );
                     if (typeof result === 'string') {
@@ -154,7 +153,7 @@ export function getAbapOnPremSystemQuestions(
                         isSystem: true
                     }
                 );
-                if (valResult === true) {
+                if (valResult === true && connectValidator.serviceProvider) {
                     PromptState.odataService.connectedSystem = {
                         serviceProvider: connectValidator.serviceProvider
                     };

@@ -1,8 +1,8 @@
-import { withCondition } from '@sap-ux/inquirer-common';
-import type { ListQuestion, Question } from 'inquirer';
+import { FileBrowserQuestion, withCondition, ListQuestion, PromptSeverityMessage } from '@sap-ux/inquirer-common';
+import type { Question } from 'inquirer';
 import { t } from '../../../../i18n';
-import type { OdataServiceAnswers, OdataServicePromptOptions } from '../../../../types';
-import { PromptState } from '../../../../utils';
+import { hostEnvironment, type OdataServiceAnswers, type OdataServicePromptOptions } from '../../../../types';
+import { PromptState, getHostEnvironment } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
 import {
     getSystemServiceQuestion,
@@ -10,6 +10,12 @@ import {
     getUserSystemNameQuestion,
     newSystemPromptNames
 } from '../new-system/questions';
+import { validateServiceKey } from '../validators';
+import { getABAPInstanceChoices } from './cf-helper';
+import { ServiceInstanceInfo, apiGetInstanceCredentials, cfGetTarget } from '@sap/cf-tools';
+import { IMessageSeverity, IValidationLink, Severity } from '@sap-devx/yeoman-ui-types';
+import { errorHandler } from '../../../prompt-helpers';
+import { ERROR_TYPE } from '../../../../error-handler/error-handler';
 
 const abapOnBtpPromptNamespace = 'abapOnBtp';
 const systemUrlPromptName = `${abapOnBtpPromptNamespace}:${newSystemPromptNames.newSystemUrl}` as const;
@@ -18,7 +24,7 @@ const abapOnBtpPromptNames = {
     'abapOnBtpAuthType': 'abapOnBtpAuthType',
     'abapOnBtpServiceUrl': 'abapOnBtpServiceUrl',
     'serviceKey': 'serviceKey',
-    'cloudFoundry': 'cloudFoundry',
+    'cloudFoundryAbapSystem': 'cloudFoundryAbapSystem',
     'abapOnBtpServiceSelection': 'abapOnBtpServiceSelection'
 } as const;
 
@@ -28,7 +34,7 @@ interface AbapOnBtpAnswers extends Partial<OdataServiceAnswers> {
     [abapOnBtpPromptNames.abapOnBtpAuthType]?: AbapOnBTPType;
     [systemUrlPromptName]?: string;
     [abapOnBtpPromptNames.serviceKey]?: string;
-    [abapOnBtpPromptNames.cloudFoundry]?: string;
+    [abapOnBtpPromptNames.cloudFoundryAbapSystem]?: string;
 }
 
 /**
@@ -47,9 +53,15 @@ export function getAbapOnBTPSystemQuestions(promptOptions?: OdataServicePromptOp
             { name: t('prompts.abapOnBTPType.choiceServiceKey'), value: 'serviceKey' as AbapOnBTPType },
             { name: t('prompts.abapOnBTPType.choiceReentranceTicket'), value: 'reentranceTicket' as AbapOnBTPType }
         ],
-        message: t('prompts.abapOnBTPType.message')
+        message: t('prompts.abapOnBTPType.message'),
+        // Only runs on YUI, but we only need to reset on YUI as the user cannot change previous values on the Yo CLI
+        validate: () => {
+            connectValidator.resetConnectionState();
+            return true;
+        }
     } as ListQuestion);
 
+    // Re-entrance ticket system prompt
     questions.push(
         withCondition(
             [
@@ -60,7 +72,6 @@ export function getAbapOnBTPSystemQuestions(promptOptions?: OdataServicePromptOp
                 )
             ],
             (answers: AbapOnBtpAnswers) => {
-                // todo: implement the rest of the conditions
                 if (answers?.abapOnBtpAuthType === 'reentranceTicket') {
                     connectValidator.systemAuthType = answers.abapOnBtpAuthType;
                     return true;
@@ -70,222 +81,129 @@ export function getAbapOnBTPSystemQuestions(promptOptions?: OdataServicePromptOp
         )[0]
     );
 
+    // Service Key file prompt
+    questions.push(
+        withCondition([getServiceKeyPrompt(connectValidator)], (answers: AbapOnBtpAnswers) => {
+            if (answers?.abapOnBtpAuthType === 'serviceKey') {
+                connectValidator.systemAuthType = answers.abapOnBtpAuthType; // Is this needed?
+                return true;
+            }
+            return false;
+        })[0]
+    );
+
+    questions.push(getCFDiscoverPrompt(connectValidator));
+
+    // New system store name propmt
     if (promptOptions?.userSystemName?.exclude !== true) {
         // New system question will allow user to give the system a user friendly name
         questions.push(
             withCondition(
                 [getUserSystemNameQuestion(connectValidator, abapOnBtpPromptNamespace)],
                 (answers: AbapOnBtpAnswers) =>
-                    !!answers?.[systemUrlPromptName] && // todo: should we get the prompt name and therefore the answer name from the returned question?
+                    (!!answers?.[systemUrlPromptName] ||
+                        !!answers?.[abapOnBtpPromptNames.serviceKey] ||
+                        !!answers?.[abapOnBtpPromptNames.cloudFoundryAbapSystem]) &&
                     connectValidator.validity.reachable === true &&
                     (connectValidator.validity.authenticated || connectValidator.validity.authRequired !== true)
             )[0]
         );
     }
 
+    // Service selection prompt
     questions.push(getSystemServiceQuestion(connectValidator, abapOnBtpPromptNamespace, promptOptions));
     return questions;
 }
 
-//** todo: Ad generic answers type (or overloaded answers type), reuse for abap-on-prem */
-/* function getServiceSelectionPrompt(
-    connectValidator: ConnectionValidator,
-    promptOptions?: ServiceSelectionPromptOptions
-): Question<AbapOnBtpAnswers> {
-    let serviceChoices: ListChoiceOptions<ServiceAnswer>[];
-    // Prevent re-requesting services repeatedly by only requesting them once and when the system is changed
-    let previousSystemUrl: string | undefined;
-    let previousService: ServiceAnswer | undefined;
-    // Prompt options
-    const requiredOdataVersion = promptOptions?.requiredOdataVersion;
-    return {
-        when: (): boolean =>
-            connectValidator.validity.authenticated || connectValidator.validity.authRequired === false,
-        name: abapOnBtpPromptNames.abapOnBtpServiceSelection,
-        type: promptOptions?.useAutoComplete ? 'autocomplete' : 'list',
-        message: t('prompts.systemService.message'),
-        guiOptions: {
-            breadcrumb: t('prompts.systemService.breadcrumb'),
-            mandatory: true,
-            applyDefaultWhenDirty: true
-        },
-        source: (prevAnswers: AbapOnBtpAnswers, input: string) =>
-            searchChoices(input, serviceChoices as ListChoiceOptions[]),
-        choices: async (answers: AbapOnBtpAnswers) => {
-            if (!serviceChoices || previousSystemUrl !== answers.abapOnBtpServiceUrl) {
-                let catalogs: CatalogService[] = [];
-                if (requiredOdataVersion) {
-                    catalogs.push(connectValidator.catalogs[requiredOdataVersion]);
-                } else {
-                    catalogs = Object.values(connectValidator.catalogs);
-                }
-                previousSystemUrl = answers.abapOnBtpServiceUrl;
-                serviceChoices = await getServiceChoices(catalogs);
-            }
-            return serviceChoices;
-        },
-        additionalMessages: async (selectedService: ServiceAnswer) => {
-            if (serviceChoices?.length === 0) {
-                if (requiredOdataVersion) {
-                    return {
-                        message: t('prompts.warnings.noServicesAvailableForOdataVersion', {
-                            odataVersion: requiredOdataVersion
-                        }),
-                        severity: Severity.warning
-                    };
-                } else {
-                    return {
-                        message: t('prompts.warnings.noServicesAvailable'),
-                        severity: Severity.warning
-                    };
-                }
-            }
-            if (selectedService) {
-                let serviceType = selectedService.serviceType;
-                if (selectedService.serviceODataVersion === ODataVersion.v2) {
-                    serviceType = await getServiceType(
-                        selectedService.servicePath,
-                        selectedService.serviceType,
-                        connectValidator.catalogs[ODataVersion.v2] as V2CatalogService
-                    );
-                }
-                if (serviceType && serviceType !== ServiceType.UI) {
-                    return {
-                        message: t('prompts.warnings.nonUIServiceTypeWarningMessage', { serviceType: 'A2X' }),
-                        severity: Severity.warning
-                    };
-                }
-            }
-        },
-        default: () => (serviceChoices?.length > 1 ? undefined : 0),
-        // Warning: only executes in YUI not cli
-        validate: async (
-            service: ServiceAnswer,
-            { abapOnBtpServiceUrl }: Partial<AbapOnBtpAnswers> = {}
-        ): Promise<string | boolean | ValidationLink> => {
-            if (!abapOnBtpServiceUrl) {
-                return false;
-            }
-            // Dont re-request the same service details
-            if (service && previousService?.servicePath !== service.servicePath) {
-                previousService = service;
-                return getServiceDetails(service, abapOnBtpServiceUrl, connectValidator);
-            }
-            return true;
-        }
-    } as ListQuestion<AbapOnBtpAnswers> | AutocompleteQuestionOptions<AbapOnBtpAnswers>;
-} */
-
 /**
- * todo: Make generic abapOnBTPSystemUrl
+ * Get the Cloud Foundry Abap system discovery prompt. This prompt will list all available ABAP environments in the connected Cloud Foundry space.
+ * If the Cloud Foundry connection fails, a warning message will be displayed.
  *
- * @param connectValidator
+ * @param connectionValidator
  * @returns
  */
-/* function getAbapOnBtpServiceUrlPrompt(
-    connectValidator: ConnectionValidator,
-    requiredOdataVersion?: OdataVersion
-): Question<AbapOnBtpAnswers> {
+function getCFDiscoverPrompt(connectionValidator: ConnectionValidator): ListQuestion {
     return {
-        type: 'input',
-        name: abapOnBtpPromptNames.abapOnBtpServiceUrl,
-        message: t('prompts.systemUrl.message'),
+        when: (answers: AbapOnBtpAnswers) => answers.abapOnBtpAuthType === 'cloudFoundry',
+        type: 'list',
+        name: abapOnBtpPromptNames.cloudFoundryAbapSystem,
         guiOptions: {
-            mandatory: true,
             breadcrumb: true
         },
-        validate: async (url, answers: AbapOnBtpAnswers) => {
-            const valResult = await connectValidator.validateUrl(url, {
-                systemAuthType: answers.abapOnBtpAuthType,
-                odataVersion: convertODataVersionType(requiredOdataVersion)
-            });
-            if (valResult === true) {
-                PromptState.odataService.connectedSystem = {
-                    serviceProvider: connectValidator.serviceProvider
+        choices: async () => {
+            const choices = await getABAPInstanceChoices();
+            // Cannot continue if no ABAP environments are found on Yo CLI
+            if (choices.length === 0) {
+                if (getHostEnvironment() === hostEnvironment.cli) {
+                    throw new Error(t('errors.abapEnvsUnavailable'));
+                }
+            }
+            return choices;
+        },
+        message: t('prompts.cloudFoundryAbapSystem.message'),
+        validate: async (abapService: ServiceInstanceInfo): Promise<string | boolean | IValidationLink> => {
+            // todo: CLI equivalent...
+            if (abapService) {
+                const uaaCreds = await apiGetInstanceCredentials(abapService.label);
+                const valResult = await connectionValidator.validateServiceInfo(uaaCreds.credentials);
+                if (valResult !== true) {
+                    return valResult;
+                }
+   
+                if (connectionValidator.serviceProvider) {
+                    // Create a unique connected system name based on the selected ABAP service
+                    const cfTarget = await cfGetTarget(true);
+                    connectionValidator.connectedSystemName =
+                        `abap-cloud-${abapService.label}-${cfTarget.org}-${cfTarget.space}`
+                            .replace(/[^\w]/gi, '-')
+                            .toLowerCase();
+                    PromptState.odataService.connectedSystem = {
+                        serviceProvider: connectionValidator.serviceProvider
+                    };
+                }
+            }
+            return true;
+        },
+        additionalMessages: (): IMessageSeverity | undefined => {
+            const errorType = errorHandler.getCurrentErrorType();
+            if (errorType === ERROR_TYPE.NO_ABAP_ENVS) {
+                const errorMsg = errorHandler.getErrorMsg(true);
+                const seeLogMsg = t('texts.seeLogForDetails');
+                return {
+                    message: `${errorMsg} ${seeLogMsg}`,
+                    severity: Severity.warning
                 };
             }
-            return valResult;
         }
-    } as InputQuestion<AbapOnBtpAnswers>;
-} */
+    } as ListQuestion;
+}
 
-function getServiceKeyPrompt() {}
-
-function getCFDiscoveryPrompt() {}
-
-/**
- * questions.push({
-            when: (answers) => answers.serviceKeySource === 'FILE',
-            type: 'input',
-            name: 'newSystemServiceKeyPath',
-            message: t('LABEL_SERVICE_KEY_MESSAGE'),
-            guiType: 'file-browser',
-            guiOptions: {
-                hint: t('SERVICE_CONNECTION_LOCAL_FILE'),
-                applyDefaultWhenDirty: true,
-                mandatory: true
-            },
-            validate: (keyPath) => {
-                const validRes = validateServiceKey(keyPath);
-                if (typeof validRes === 'string' || typeof validRes === 'boolean') {
-                    return validRes;
-                }
-                service.newSystemServiceInfo = validRes;
-                return true;
-            }
-        } as FileBrowserQuestion);
-    }
-    questions.push({
-        when: (answers) => (answers.serviceKeySource ?? serviceKeySource) === 'DISCOVER',
-        type: 'list',
-        name: 'newSystemServiceInstance',
-        guiOptions: {
-            breadcrumb: t('SCP_ABAP_SELECT_MESSAGE')
-        },
-        choices: async () => {
-            const output = await getABAPInstanceChoices();
-            if (output.outputError) {
-                errorHandler.logErrorMsgs(output.outputError.error, output.outputError.userMsg);
-                if (getPlatform() === PLATFORMS.CLI) {
-                    throw new Error(t('INFO_ABAP_ENVIRONMENTS_UNAVAILABLE'));
-                }
-            }
-            return output.choices;
-        },
-        message: t('SCP_ABAP_SELECT_MESSAGE'),
-        // Warning: only executes in YUI not cli, temp workaround until YUI provide non validation msgs to users
-        default: () => ERROR_TYPE.NO_ABAP_ENVS,
-        validate: (choice): string | boolean => {
-            if (choice === ERROR_TYPE.NO_ABAP_ENVS) {
-                const userMsg = errorHandler.getErrorMsg('', true);
-                const checkConsoleMsg = t('ERROR_SCP_ABAP_SOURCE_DISCOVER_CHECK_LOG');
-                return userMsg ? `${userMsg} ${checkConsoleMsg}` : checkConsoleMsg;
-            }
-            resetSystemState(service);
-            service.newSystemServiceInstance = choice;
-            return true;
-        }
-    } as ListQuestion);
- 
-    questions.push({
-        when: (answers) => (answers.serviceKeySource ?? serviceKeySource) === 'REENTRANCE_TICKET',
+function getServiceKeyPrompt(connectionValidator: ConnectionValidator): FileBrowserQuestion {
+    const question = {
         type: 'input',
-        name: 'newS4HCSystemUrl',
-        message: t('MSG_SYSTEM_URL'),
+        name: abapOnBtpPromptNames.serviceKey,
+        message: t('prompts.serviceKey.message'),
+        guiType: 'file-browser',
         guiOptions: {
-            mandatory: true,
-            breadcrumb: t('MSG_SYSTEM_URL')
+            hint: t('prompts.serviceKey.hint'),
+            applyDefaultWhenDirty: true,
+            mandatory: true
         },
-        validate: (url, answers) => {
-            const result = validateUrl(url);
-            if (result === true) {
-                service.newSystem = createNewSystem({
-                    ...answers,
-                    newSystemUrl: url,
-                    newSystemType: SapSystemSourceType.S4HC
-                });
+        validate: async (keyPath) => {
+            const serviceKeyValResult = validateServiceKey(keyPath);
+            if (typeof serviceKeyValResult === 'string' || typeof serviceKeyValResult === 'boolean') {
+                return serviceKeyValResult;
             }
-            return result;
+            const connectValResult = await connectionValidator.validateServiceInfo(serviceKeyValResult);
+
+            if (connectValResult === true && connectionValidator.serviceProvider) {
+                PromptState.odataService.connectedSystem = {
+                    serviceProvider: connectionValidator.serviceProvider
+                };
+            }
+            return connectValResult;
         }
-    } as InputQuestion);
- */
+    } as FileBrowserQuestion;
+
+    return question;
+}
