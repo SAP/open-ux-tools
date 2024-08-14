@@ -188,11 +188,9 @@ export function validateNamespace(namespace: string, projectName: string, isCust
         namespace = namespace.slice('customer.'.length, namespace.length);
     }
 
-    const pattern = /^[a-zA-Z]+((\.)?[a-zA-Z0-9])*$/;
-
     if (namespace.length > 61 || namespace.toLowerCase().endsWith('component') === true) {
         return t('validators.namespaceLengthError');
-    } else if (namespace !== '' && pattern.test(namespace) === false) {
+    } else if (namespace !== '' && projectNamePattern.test(namespace) === false) {
         return t('validators.namespaceValidationError');
     }
 
