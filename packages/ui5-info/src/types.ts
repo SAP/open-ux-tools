@@ -58,7 +58,7 @@ export interface UI5VersionSupport extends UI5Version {
 export interface UI5VersionsResponse {
     [key: string]: {
         patches?: string[];
-    } & UI5Version;
+    } & UI5VersionSupport;
 }
 
 export interface UI5Theme {
