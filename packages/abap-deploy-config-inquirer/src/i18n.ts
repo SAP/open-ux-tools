@@ -2,13 +2,13 @@ import type { TOptions } from 'i18next';
 import i18next from 'i18next';
 import translations from './translations/abap-deploy-config-inquirer.i18n.json';
 
-const ui5LibI18nNamespace = 'abap-deploy-config-inquirer';
+const abapDeployConfigInquirerNs = 'abap-deploy-config-inquirer';
 /**
  * Initialize i18next with the translations for this module.
  */
 export async function initI18n(): Promise<void> {
     await i18next.init({ lng: 'en', fallbackLng: 'en' }, () =>
-        i18next.addResourceBundle('en', ui5LibI18nNamespace, translations)
+        i18next.addResourceBundle('en', abapDeployConfigInquirerNs, translations)
     );
 }
 
@@ -21,7 +21,7 @@ export async function initI18n(): Promise<void> {
  */
 export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {
-        options = Object.assign(options ?? {}, { ns: ui5LibI18nNamespace });
+        options = Object.assign(options ?? {}, { ns: abapDeployConfigInquirerNs });
     }
     return i18next.t(key, options);
 }

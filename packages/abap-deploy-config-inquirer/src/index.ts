@@ -8,7 +8,10 @@ import type {
     AbapDeployConfigAnswers,
     AbapDeployConfigAnswersInternal,
     AbapDeployConfigPromptOptions,
-    AbapDeployConfigQuestion
+    AbapDeployConfigQuestion,
+    PackageInputChoices,
+    TargetSystemType,
+    TransportChoices
 } from './types';
 import { reconcileAnswers } from './utils';
 
@@ -59,4 +62,13 @@ async function prompt(
     return reconcileAnswers(answers);
 }
 
-export { getPrompts, prompt, type InquirerAdapter, type AbapDeployConfigAnswers, type AbapDeployConfigPromptOptions };
+export {
+    getPrompts,
+    prompt,
+    type InquirerAdapter,
+    type AbapDeployConfigAnswers,
+    type AbapDeployConfigPromptOptions,
+    type TargetSystemType,
+    type PackageInputChoices,
+    type TransportChoices
+};
