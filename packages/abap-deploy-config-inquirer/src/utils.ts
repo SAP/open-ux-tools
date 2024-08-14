@@ -185,7 +185,7 @@ export function getPackageAnswer(previousAnswers?: AbapDeployConfigAnswersIntern
  * @param previousAnswers - previous answers
  * @returns transport request
  */
-export function getTransportAnswer(previousAnswers?: AbapDeployConfigAnswersInternal): string {
+function getTransportAnswer(previousAnswers?: AbapDeployConfigAnswersInternal): string {
     return (
         previousAnswers?.transportManual ||
         previousAnswers?.transportFromList ||
@@ -244,7 +244,7 @@ export function reconcileAnswers(answers: AbapDeployConfigAnswersInternal): Abap
     }
 
     if (answers.client || PromptState.abapDeployConfig.client) {
-        reconciledAnswers.client = answers.client ?? PromptState.abapDeployConfig.client;
+        reconciledAnswers.client = answers.client || PromptState.abapDeployConfig.client;
     }
 
     if (answers.scp || PromptState.abapDeployConfig.scp) {
