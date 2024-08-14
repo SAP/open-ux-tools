@@ -40,9 +40,10 @@ export function getDefaultProjectName(path: string): string {
  */
 export function getProjectNameTooltip(isCustomerBase: boolean): string {
     const baseType = isCustomerBase ? 'Ext' : 'Int';
-    return `${t('validators.inputCannotBeEmpty')} ${t(`validators.projectNameLengthError${baseType}`)} ${t(
-        `validators.projectNameValidationError${baseType}`
-    )}`;
+    const emptyErrorMsg = t('validators.inputCannotBeEmpty');
+    const lenghtErrorMsg = t(`validators.projectNameLengthError${baseType}`);
+    const validationErrorMsg = t(`validators.projectNameValidationError${baseType}`);
+    return `${emptyErrorMsg} ${lenghtErrorMsg} ${validationErrorMsg}`;
 }
 
 /**

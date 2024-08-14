@@ -95,7 +95,7 @@ export function parseParameters(paramString: string): Parameter {
  * @returns {string} modified value
  */
 function addMissingAmpersands(value: string): string {
-    return value.replace(/[)]\s*[(]/gm, ')&(');
+    return value.replace(/\)\s*\(/gm, ')&(');
 }
 
 /**

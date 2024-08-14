@@ -228,7 +228,7 @@ export function validateAch(value: string, isCustomerBase: boolean): string | bo
         return t('validators.inputCannotBeEmpty');
     }
 
-    const isValid = /^([A-Z0-9]{2,3})(\-[A-Z0-9]{1,6})*$/.exec(value.toUpperCase());
+    const isValid = /^([A-Z0-9]{2,3})(-[A-Z0-9]{1,6})*$/.exec(value.toUpperCase());
 
     if (!isCustomerBase && !isValid) {
         return t('validators.achMandatoryError');
@@ -305,7 +305,7 @@ export function validateAbapRepository(value: string): string | boolean {
         return t('validators.inputCannotBeEmptyGeneric', { input: t('prompts.abapRepository') });
     }
 
-    if (!/^(?:[/]\w{1,8}[/])?\w{1,15}$/.test(value)) {
+    if (!/^(?:\/\w{1,8}\/)?\w{1,15}$/.test(value)) {
         return t('validators.invalidAbapRepository');
     }
 
