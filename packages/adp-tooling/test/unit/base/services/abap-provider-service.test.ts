@@ -1,6 +1,6 @@
 import { join } from 'path';
 
-import { ToolsLogger } from '@sap-ux/logger';
+import type { ToolsLogger } from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 
