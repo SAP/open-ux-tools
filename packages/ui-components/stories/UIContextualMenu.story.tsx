@@ -12,6 +12,7 @@ import { UIDefaultButton, UIIconButton } from '../src/components/UIButton';
 import { UIDirectionalHint } from '../src/components/UITreeDropdown';
 import { initIcons, UiIcons } from '../src/components/Icons';
 import { UIDropdown } from '../src/components/UIDropdown';
+import { UIToggle } from '../src/components/UIToggle';
 
 initIcons();
 
@@ -80,6 +81,7 @@ export const ContextualMenu = (): JSX.Element => {
     const [layoutType, setLayoutType] = React.useState<UIContextualMenuLayoutType>(
         UIContextualMenuLayoutType.ContextualMenu
     );
+    const [showSubmenuBeneath, setShowSubmenuBeneath] = React.useState<boolean>(true);
     const [showContextualMenu, setShowContextualMenu] = React.useState(false);
     const onShowContextualMenu = React.useCallback(() => {
         setShowContextualMenu(true);
@@ -98,6 +100,13 @@ export const ContextualMenu = (): JSX.Element => {
                     }
                 }}
             />
+            <UIToggle
+                checked={showSubmenuBeneath}
+                label={'showSubmenuBeneath'}
+                onChange={(_event, checked) => {
+                    setShowSubmenuBeneath(!!checked);
+                }}
+            />
             <Stack tokens={{ childrenGap: 16 }}>
                 <Text variant={'large'} block>
                     {'Default UIContextualMenu rendering'}
@@ -111,6 +120,7 @@ export const ContextualMenu = (): JSX.Element => {
                     items={getItems()}
                     onDismiss={onHideContextualMenu}
                     layoutType={layoutType}
+                    showSubmenuBeneath={showSubmenuBeneath}
                 />
             </Stack>
 
@@ -126,7 +136,7 @@ export const ContextualMenu = (): JSX.Element => {
                         <UIDefaultButton
                             primary
                             text="Toggle Contextual menu"
-                            menuProps={{ items: getItems(), layoutType }}
+                            menuProps={{ items: getItems(), layoutType, showSubmenuBeneath: showSubmenuBeneath }}
                         />
                     </Stack>
                 </Stack>
@@ -143,7 +153,7 @@ export const ContextualMenu = (): JSX.Element => {
                         </Text>
                         <UIIconButton
                             iconProps={{ iconName: UiIcons.Undo }}
-                            menuProps={{ items: getItems(), layoutType }}
+                            menuProps={{ items: getItems(), layoutType, showSubmenuBeneath: showSubmenuBeneath }}
                         />
                     </Stack>
                 </Stack>
@@ -164,7 +174,7 @@ export const ContextualMenu = (): JSX.Element => {
                                 isBeakVisible: true,
                                 iconToLeft: true,
                                 layoutType,
-                                showSubmenuBeneath: true
+                                showSubmenuBeneath: showSubmenuBeneath
                             }}
                         />
                     </Stack>
