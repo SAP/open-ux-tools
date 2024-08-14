@@ -51,11 +51,11 @@ export class UILink extends React.Component<UILinkProps, {}> {
                     selectors: {
                         '&:hover, &:hover:focus, &:hover:active': {
                             color: styles.hoverColor,
-                            textDecoration: 'none'
+                            textDecoration: underline === false ? 'underline' : 'none'
                         },
                         '&:active, &:focus': {
                             color: styles.hoverColor,
-                            textDecoration: 'none',
+                            textDecoration: underline === false ? 'underline' : 'none',
                             outline: 'none'
                         },
                         // Focus through tab navigation
