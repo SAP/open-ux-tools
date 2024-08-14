@@ -14,7 +14,7 @@ export function getProjectNames(path: string, regex: RegExp = APP_VARIANT_REGEX)
     return readdirSync(path, { withFileTypes: true })
         .filter((dirent) => !dirent.isFile() && regex.test(dirent.name))
         .map((dirent) => dirent.name)
-        .sort()
+        .sort((a, b) => a.localeCompare(b))
         .reverse();
 }
 
@@ -28,9 +28,9 @@ export function resolveNodeModuleGenerator(): string | undefined {
     const nodePaths = nodePath?.split(':') ?? [];
 
     let generator: string | undefined;
-    for (let i = 0; i < nodePaths.length; i++) {
+    for (const path of nodePaths) {
         try {
-            generator = require.resolve(resolve(nodePaths[i], '@bas-dev/generator-extensibility-sub/generators/app'));
+            generator = require.resolve(resolve(path, '@bas-dev/generator-extensibility-sub/generators/app'));
         } catch (e) {
             /**
              * We don't care if there's an error while resolving the module, continue with the next node_module path
