@@ -433,14 +433,19 @@ export default class ConfigInfoPrompter {
     }
 
     /**
+     * Determines and returns the appropriate system prompt configuration based on the current environment.
+     * If in SAP App Studio, it provides a system list prompt; otherwise, it provides a native system prompt.
      *
+     * @returns {YUIQuestion<ConfigurationInfoAnswers>} The configured system prompt question for the user interface.
      */
     private getSystemPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return isAppStudio() ? this.getSystemListPrompt() : this.getSystemNativePrompt();
     }
 
     /**
+     * Generates a list prompt for selecting a system from a predefined list.
      *
+     * @returns {YUIQuestion<ConfigurationInfoAnswers>} A list prompt configuration for selecting a system.
      */
     private getSystemListPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
@@ -505,14 +510,19 @@ export default class ConfigInfoPrompter {
     }
 
     /**
+     * Returns a system prompt configuration based on the installation status of an extension.
+     * If the extension is installed, it uses a list prompt; otherwise, it uses an input prompt for manual system URL entry.
      *
+     * @returns {YUIQuestion<ConfigurationInfoAnswers>} Either a list or input prompt configuration for system selection.
      */
     private getSystemNativePrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return this.isExtensionInstalled ? this.getSystemListPrompt() : this.getSystemInputPrompt();
     }
 
     /**
+     * Generates an input prompt for manually entering a system URL.
      *
+     * @returns {YUIQuestion<ConfigurationInfoAnswers>} An input prompt configuration for entering a system URL.
      */
     private getSystemInputPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
@@ -529,7 +539,11 @@ export default class ConfigInfoPrompter {
     }
 
     /**
+     * Generates a prompt for entering the system client when certain conditions are met.
+     * The prompt is displayed only if a system is selected and the environment is not SAP App Studio
+     * or the necessary extension is not installed.
      *
+     * @returns {YUIQuestion<ConfigurationInfoAnswers>} A prompt for entering the system client.
      */
     private getSystemClientPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
@@ -552,7 +566,10 @@ export default class ConfigInfoPrompter {
     }
 
     /**
+     * Generates a prompt for the user to enter their username. This prompt appears only if a system has been selected
+     * and system authentication is required.
      *
+     * @returns {YUIQuestion<ConfigurationInfoAnswers>} An input prompt for the username.
      */
     private getUsernamePrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
@@ -581,7 +598,11 @@ export default class ConfigInfoPrompter {
     }
 
     /**
+     * Provides a prompt for the user to enter their password. This is required for system authentication and
+     * is displayed conditionally based on whether the system and authentication requirements are met.
+     * It also performs several system checks and updates the login success status based on the provided credentials.
      *
+     * @returns {YUIQuestion<ConfigurationInfoAnswers>} A password input prompt.
      */
     private getPasswordPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
@@ -626,7 +647,9 @@ export default class ConfigInfoPrompter {
     }
 
     /**
+     * Generates a list prompt for selecting the project type based on system selection and authentication status.
      *
+     * @returns {YUIQuestion<ConfigurationInfoAnswers>} A list prompt for project type selection.
      */
     private getProjectTypeListPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
@@ -682,7 +705,9 @@ export default class ConfigInfoPrompter {
     }
 
     /**
+     * Generates a list prompt for selecting an application from a dynamically fetched list.
      *
+     * @returns {YUIQuestion<ConfigurationInfoAnswers>} A configured list prompt for selecting an application.
      */
     private getApplicationListPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
@@ -765,7 +790,9 @@ export default class ConfigInfoPrompter {
     }
 
     /**
+     * Provides a list prompt for selecting the SAP UI5 version for the project.
      *
+     * @returns {YUIQuestion<ConfigurationInfoAnswers>} A list prompt for selecting an SAP UI5 version.
      */
     private getUi5VersionPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
@@ -807,7 +834,9 @@ export default class ConfigInfoPrompter {
     }
 
     /**
+     * Creates an input prompt for entering the Fiori ID.
      *
+     * @returns {YUIQuestion<ConfigurationInfoAnswers>} An input prompt for the Fiori ID.
      */
     private getFioriIdPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
@@ -836,7 +865,9 @@ export default class ConfigInfoPrompter {
     }
 
     /**
+     * Generates an input prompt for entering the Application Component Hierarchy code for a project.
      *
+     * @returns {YUIQuestion<ConfigurationInfoAnswers>} An input prompt for Application Component Hierarchy code.
      */
     private getACHprompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
@@ -867,7 +898,9 @@ export default class ConfigInfoPrompter {
     }
 
     /**
+     * Generates an input label type prompt that serves as an informational message indicating that the adaptation project is not supported.
      *
+     * @returns {YUIQuestion<ConfigurationInfoAnswers>} An input label type prompt configured as a label with a link to more information.
      */
     private getAppInfoErrorPrompt(): YUIQuestion<ConfigurationInfoAnswers> {
         return {
@@ -896,8 +929,11 @@ export default class ConfigInfoPrompter {
     }
 
     /**
+     * Generates a confirmation prompt to decide whether to create an extension project based on the application's
+     * sync capabilities and support status.
      *
-     * @param projectName
+     * @param {string} projectName - The name of the project for which the extension project may be created.
+     * @returns {YUIQuestion<ConfigurationInfoAnswers>} A confirmation prompt.
      */
     private getConfirmExtProjPrompt(projectName: string): YUIQuestion<ConfigurationInfoAnswers> {
         return {
@@ -924,8 +960,11 @@ export default class ConfigInfoPrompter {
     }
 
     /**
+     * Compiles a series of configuration prompts for the project setup process. These prompts collect necessary information across various stages of project initialization,
+     * including system selection, authentication, and project-specific details.
      *
-     * @param projectName
+     * @param {string} projectName - The name of the project for which configuration is being set up.
+     * @returns {Promise<YUIQuestion<ConfigurationInfoAnswers>[]>} A promise that resolves to an array of configuration prompts.
      */
     public async getConfigurationPrompts(projectName: string): Promise<YUIQuestion<ConfigurationInfoAnswers>[]> {
         await this.endpointsService.getEndpoints();
