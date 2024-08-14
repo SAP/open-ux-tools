@@ -42,7 +42,7 @@ export function hasEmptySpaces(value: string): boolean {
  *
  * @param {string} value - The input value to validate.
  * @param {string | undefined} input - The name of the input field being validated, used for error messaging.
- * @param {boolean} isMandatory - Indicates whether the input is mandatory.
+ * @param {boolean} [isMandatory] - Indicates whether the input is mandatory.
  * @returns {string | boolean} Returns true if the input is valid. If invalid, returns a localized error message.
  */
 export function validateNonEmptyNoSpaces(
@@ -64,9 +64,9 @@ export function validateNonEmptyNoSpaces(
 /**
  * Validates environment.
  *
- * @param {OperationsType} value - environment
- * @param {boolean} loginEnabled - if external login is enabled
- * @returns {string | boolean } if value is valid returns true otherwise error message
+ * @param {OperationsType} value - The environment.
+ * @param {boolean} loginEnabled - If external login is enabled.
+ * @returns {string | boolean } If value is valid returns true otherwise error message.
  */
 export function validateEnvironment(value: OperationsType, loginEnabled: boolean): string | boolean {
     if (!isNotEmptyString(value)) {
@@ -85,10 +85,10 @@ export function validateEnvironment(value: OperationsType, loginEnabled: boolean
 /**
  * Validates that the project name is not empty and it is correct for VENDOR and CUSTOMER_BASE layer.
  *
- * @param {string} value - project name
- * @param {string} destinationPath - project directory
- * @param {boolean} isCustomerBase - whether layer is CUSTOMER_BASE
- * @returns {string | boolean} if value is valid returns true otherwise error message
+ * @param {string} value - The project name.
+ * @param {string} destinationPath - The project directory.
+ * @param {boolean} isCustomerBase - Whether the layer is customer base.
+ * @returns {string | boolean} If value is valid returns true otherwise error message.
  */
 export function validateProjectName(value: string, destinationPath: string, isCustomerBase: boolean): boolean | string {
     if (!isNotEmptyString(value)) {
@@ -109,9 +109,9 @@ export function validateProjectName(value: string, destinationPath: string, isCu
 /**
  * Validates that project name is valid for CUSTOMER_BASE layer.
  *
- * @param {string} value - project name
- * @param {string} destinationPath - project directory
- * @returns {string | boolean} if value is valid returns true otherwise error message
+ * @param {string} value - The project name.
+ * @param {string} destinationPath - The project directory.
+ * @returns {string | boolean} If value is valid returns true otherwise error message.
  */
 export function validateProjectNameExternal(value: string, destinationPath: string): boolean | string {
     const pattern = /^[a-zA-Z]+((\.)?[a-zA-Z0-9])*$/;
@@ -129,9 +129,9 @@ export function validateProjectNameExternal(value: string, destinationPath: stri
 /**
  * Validates that project name is valid for VENDOR layer.
  *
- * @param {string} value - project name
- * @param {string} destinationPath - project directory
- * @returns {string | boolean} if value is valid returns true otherwise error message
+ * @param {string} value - The project name.
+ * @param {string} destinationPath - The project directory.
+ * @returns {string | boolean} If value is valid returns true otherwise error message.
  */
 export function validateProjectNameInternal(value: string, destinationPath: string): boolean | string {
     const pattern = /^([a-z]{1,}[a-z0-9]*((\.){1}[a-z]{1,}[a-z0-9]*){1,})+$/i;
@@ -152,9 +152,9 @@ export function validateProjectNameInternal(value: string, destinationPath: stri
 /**
  * Validates that project name is unique in directory.
  *
- * @param {string} value - project name
- * @param {string} destinationPath - project directory
- * @returns {string | boolean} if project with same name already exists return error message otherwise true
+ * @param {string} value - The project name.
+ * @param {string} destinationPath - The project directory.
+ * @returns {string | boolean} If project with same name already exists return error message otherwise true.
  */
 export function validateDuplicateProjectName(value: string, destinationPath: string): boolean | string {
     if (existsSync(destinationPath + '/' + value)) {
@@ -167,10 +167,10 @@ export function validateDuplicateProjectName(value: string, destinationPath: str
 /**
  * Validates that the project name is valid. Checks that it is not empty string and it is valid for CUSTOMER_BASE and VENDOR layers.
  *
- * @param {string} namespace - project namespace
- * @param {string} projectName - project name
- * @param {boolean} isCustomerBase - if layer is CUSTOMER_BASE
- * @returns {string | boolean} if project namespace is valid returns true otherwise error message
+ * @param {string} namespace - The project namespace.
+ * @param {string} projectName - The project name.
+ * @param {boolean} isCustomerBase - Whether the layer is customer base.
+ * @returns {string | boolean} If project namespace is valid returns true otherwise error message.
  */
 export function validateNamespace(namespace: string, projectName: string, isCustomerBase: boolean): string | boolean {
     if (!isNotEmptyString(namespace)) {
@@ -184,7 +184,6 @@ export function validateNamespace(namespace: string, projectName: string, isCust
     } else if (namespace.toLowerCase().startsWith('customer.') !== true) {
         return t('validators.namespaceSameAsProjectNameError');
     } else {
-        // simulate the behavior of FullStack as the customer prefix is in another input
         namespace = namespace.slice('customer.'.length, namespace.length);
     }
 
@@ -200,10 +199,10 @@ export function validateNamespace(namespace: string, projectName: string, isCust
 }
 
 /**
- * Validate that system client is not empty string and it is numeric.
+ * Validates that system client is not empty string and it is numeric.
  *
- * @param {string} value - system client
- * @returns {string | boolean} if system client is valid returns true otherwise error message.
+ * @param {string} value - The system client.
+ * @returns {string | boolean} If system client is valid returns true otherwise error message.
  */
 export function validateClient(value: string): string | boolean {
     if (!isNotEmptyString(value)) {
@@ -220,9 +219,9 @@ export function validateClient(value: string): string | boolean {
 /**
  * Validates that application ACH is not empty and it is in correct format.
  *
- * @param {string} value - application ACH
- * @param {boolean} isCustomerBase - if layer is CUSTOMER_BASE
- * @returns {string | boolean} if application ACH is valid returns true otherwise error message.
+ * @param {string} value - The application component hierarchy.
+ * @param {boolean} isCustomerBase - Whether the layer is customer base.
+ * @returns {string | boolean} If application ACH is valid returns true otherwise error message.
  */
 export function validateAch(value: string, isCustomerBase: boolean): string | boolean {
     if (!isNotEmptyString(value)) {
@@ -240,8 +239,8 @@ export function validateAch(value: string, isCustomerBase: boolean): string | bo
 /**
  * Validates that input is not empty.
  *
- * @param {string} value - input value
- * @param {string} inputName - input name
+ * @param {string} value - The value that will be validated.
+ * @param {string} inputName - The input name.
  * @returns {string | boolean} if input is not empty returns true otherwise error message.
  */
 export function validateEmptyInput(value: string, inputName: string): string | boolean {
@@ -255,9 +254,9 @@ export function validateEmptyInput(value: string, inputName: string): string | b
 /**
  * Validates that value matches regex pattern.
  *
- * @param {string} value - value that will be valdiated
- * @param {string} inputName - input name
- * @param {string} pattern - regex pattern
+ * @param {string} value - The value that will be validated.
+ * @param {string} inputName - The input name.
+ * @param {string} pattern - The regex pattern.
  * @returns {string | boolean} if value matches regex pattern returns true otherwise error message.
  */
 export function validateByRegex(value: string, inputName: string, pattern: string): string | boolean {
@@ -276,8 +275,8 @@ export function validateByRegex(value: string, inputName: string, pattern: strin
 /**
  * Validates that FLP Parameters are in correct format.
  *
- * @param {string} paramString - FLP Parameters string
- * @returns {string | boolean} if parameters are in correct format returns true otherwise error message.
+ * @param {string} paramString - The FLP Parameters string
+ * @returns {string | boolean} If parameters are in correct format returns true otherwise error message.
  */
 export function validateParameters(paramString: string): string | boolean {
     if (!paramString) {
@@ -294,11 +293,11 @@ export function validateParameters(paramString: string): string | boolean {
 }
 
 /**
- * Validate that ABAP Repository is not empty and it is in correct format.
+ * Validates that ABAP Repository is not empty and it is in correct format.
  * It can starts with a namespace up from 1 to 8 characters placed inside /{namespace}/ and the value can be up to 15 characters including the namespace if it is defined.
  *
- * @param {string} value - ABAP Repository
- * @returns {string | boolean} if value is not empty and it is in correct format returns true otherwise error message.
+ * @param {string} value - The ABAP Repository.
+ * @returns {string | boolean} If value is not empty and it is in correct format returns true otherwise error message.
  */
 export function validateAbapRepository(value: string): string | boolean {
     if (!value) {
@@ -313,8 +312,13 @@ export function validateAbapRepository(value: string): string | boolean {
 }
 
 /**
- * @param value
- * @param provider
+ * Validates the user's choice for selecting an ABAP package.
+ * This function checks if the user wants to enter the package name manually or selects it from a list.
+ * If not entering manually, it verifies that there are available packages by listing them from the ABAP system.
+ *
+ * @param {InputChoice} value - The user's choice on how to input the package name.
+ * @param {AbapServiceProvider} provider - The ABAP service provider.
+ * @returns {Promise<string | boolean>} A promise that resolves to true if the input choice is valid or a validation error message otherwise.
  */
 export async function validatePackageChoiceInput(
     value: InputChoice,
@@ -336,9 +340,13 @@ export async function validatePackageChoiceInput(
 }
 
 /**
+ * Validates the format, namespace, and prefix of a given package name against a repository.
+ * This function ensures the package name is not empty, follows a specific format, belongs to the correct namespace,
+ * and starts with a valid prefix.
  *
- * @param value
- * @param repository
+ * @param {string} value - The package name to validate.
+ * @param {string} repository - The repository name against which the package name should be validated.
+ * @returns {string | undefined} An error message if the validation fails, or undefined if the package name is valid.
  */
 export function validatePackage(value: string, repository: string): string | undefined {
     if (!isNotEmptyString(value)) {
@@ -377,11 +385,16 @@ export function validatePackage(value: string, repository: string): string | und
 }
 
 /**
+ * Validates the user's choice of transport request input method for an ABAP package.
+ * If choosing from existing transport requests, it checks that the package and repository are specified,
+ * and that there are available transport requests.
  *
- * @param value
- * @param packageName
- * @param repository
- * @param provider
+ * @param {InputChoice} value - The user's transport choice input method.
+ * @param {string} packageName - The package name involved in the transport operation.
+ * @param {string} repository - The repository associated with the package.
+ * @param {AbapServiceProvider} provider - The ABAP service provider.
+ * @returns {Promise<string | boolean>} A promise that resolves to true if the input method is valid,
+ *                                      or an error message string if there are issues with the prerequisites or fetching transports.
  */
 export async function validateTransportChoiceInput(
     value: InputChoice,
