@@ -12,6 +12,7 @@ describe('getProjectNames', () => {
     ];
 
     beforeEach(() => {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
         require('fs').readdirSync.mockReturnValue(mockDirents);
     });
 
@@ -23,6 +24,7 @@ describe('getProjectNames', () => {
     });
 
     it('handles empty directories', () => {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
         require('fs').readdirSync.mockReturnValue([]);
         const path = '/path/to/empty';
 
@@ -36,6 +38,7 @@ describe('resolveNodeModuleGenerator', () => {
     beforeEach(() => {
         jest.resetModules();
         process.env['NODE_PATH'] = '/usr/local/lib:/usr/lib';
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
         require('path').resolve.mockImplementation((...args: string[]) => args.join('/'));
     });
 
