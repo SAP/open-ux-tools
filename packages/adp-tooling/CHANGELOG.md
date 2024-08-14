@@ -1,5 +1,12 @@
 # @sap-ux/adp-tooling
 
+## 0.12.32
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.6
+-   @sap-ux/ui5-config@0.23.1
+
 ## 0.12.31
 
 ### Patch Changes
