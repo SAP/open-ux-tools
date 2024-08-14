@@ -35,7 +35,6 @@
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/logger": "workspace:*",
-        "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",

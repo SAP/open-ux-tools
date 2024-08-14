@@ -1,10 +1,10 @@
+import { t } from './i18n';
 import { PromptState } from './prompts/prompt-state';
 import {
     createTransportNumberFromService,
     getTransportListFromService,
     listPackagesFromService
 } from './service-provider-utils';
-import { validateAppName } from '@sap-ux/project-input-validator';
 import type { AbapDeployConfigPromptOptions, SystemConfig, TransportListItem } from './types';
 
 /**
@@ -71,6 +71,51 @@ export async function listPackages(
     }
 
     return listPackagesFromService(input, options, systemConfig);
+}
+
+/**
+ * Temporary duplication of `validateAppName` from `@sap-ux/project-input-validator` until i18n loading issue is resolved.
+ * Validator Fiori app name is compatble with Fiori project requirements.
+ *
+ * @param name Fiori app name
+ * @param prefix Prefix required by backend system
+ * @returns True or error message
+ */
+function validateAppName(name: string, prefix?: string): boolean | string {
+    const length = name ? name.trim().length : 0;
+    if (!length) {
+        return t('errors.validators.appNameRequired');
+    }
+
+    if (name.split('/').length > 3) {
+        return t('errors.validators.abapInvalidNamespace');
+    } else if (/^\/.*\/\w*$/g.test(name)) {
+        const splitNames = name.split('/');
+        let accumulatedMsg = '';
+        if (splitNames[1].length > 10) {
+            const errMsg = t('errors.validators.abapInvalidNamespaceLength', { length: splitNames[1].length });
+            accumulatedMsg += `${errMsg}, `;
+        }
+        if (splitNames[2].length > 15) {
+            const errMsg = t('errors.validators.abapInvalidAppNameLength', { length: splitNames[2].length });
+            accumulatedMsg += `${errMsg}, `;
+        }
+        if (accumulatedMsg) {
+            accumulatedMsg = accumulatedMsg.substring(0, accumulatedMsg.length - 2);
+            return accumulatedMsg;
+        }
+    } else if (length > 15) {
+        return t('errors.validators.abapInvalidAppNameLength', { length });
+    }
+
+    if (prefix && !name.toUpperCase().startsWith(prefix.toUpperCase())) {
+        return t('errors.validators.abapInvalidAppName', { prefix });
+    }
+    if (!/^[A-Za-z0-9_/]*$/.test(name)) {
+        return t('errors.validators.charactersForbiddenInAppName');
+    }
+
+    return true;
 }
 
 /**
