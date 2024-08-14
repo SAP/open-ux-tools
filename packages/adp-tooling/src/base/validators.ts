@@ -134,7 +134,7 @@ export function validateProjectNameExternal(value: string, destinationPath: stri
  * @returns {string | boolean} If value is valid returns true otherwise error message.
  */
 export function validateProjectNameInternal(value: string, destinationPath: string): boolean | string {
-    const pattern = /^([a-z]{1,}[a-z0-9]*((\.){1}[a-z]{1,}[a-z0-9]*){1,})+$/i;
+    const pattern = /^([a-z]+[a-z0-9]*((\.)[a-z]+[a-z0-9]*)+)+$/i;
     if (pattern.test(value)) {
         if (
             value.toLowerCase().startsWith('customer') ||
@@ -209,7 +209,7 @@ export function validateClient(value: string): string | boolean {
         return t('validators.inputCannotBeEmpty');
     }
 
-    if (!value.match(/^([0-9])*$/)) {
+    if (!/^\d*$/.exec(value)) {
         return t('validators.systemClientMandatoryError');
     }
 
@@ -227,7 +227,8 @@ export function validateAch(value: string, isCustomerBase: boolean): string | bo
     if (!isNotEmptyString(value)) {
         return t('validators.inputCannotBeEmpty');
     }
-    const isValid = value.toUpperCase().match(/^([A-Z0-9]{2,3})(\-[A-Z0-9]{1,6})*$/);
+
+    const isValid = /^([A-Z0-9]{2,3})(\-[A-Z0-9]{1,6})*$/.exec(value.toUpperCase());
 
     if (!isCustomerBase && !isValid) {
         return t('validators.achMandatoryError');

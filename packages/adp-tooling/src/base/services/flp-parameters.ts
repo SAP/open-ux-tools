@@ -6,7 +6,7 @@ const rules: ParameterRules = {
         if (/^.+=\s*$/g.test(paramString)) {
             return {
                 shouldApply: true,
-                value: paramString.replace(/[=]/g, '').trim()
+                value: paramString.replaceAll('=', '').trim()
             };
         }
         return defaultParamCheck;

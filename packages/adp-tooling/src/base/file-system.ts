@@ -1,7 +1,7 @@
 import { readdirSync } from 'fs';
 import { resolve } from 'path';
 
-const APP_VARIANT_REGEX = /^app[.]variant[0-9]{1,3}$/;
+const APP_VARIANT_REGEX = /^app[.]variant\d{1,3}$/;
 
 /**
  * Retrieves a list of project directory names that match a specific naming pattern from the given directory path.

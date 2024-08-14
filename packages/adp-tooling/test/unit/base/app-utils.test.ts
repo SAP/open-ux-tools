@@ -1,4 +1,4 @@
-import { Manifest } from '@sap-ux/project-access';
+import type { Manifest } from '@sap-ux/project-access';
 
 import { ApplicationType, getApplicationType, isFioriElementsApp, isOVPApp, isSupportedType } from '../../../src';
 
