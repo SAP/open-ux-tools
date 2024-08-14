@@ -60,6 +60,6 @@ export function isOVPApp(type: string): boolean {
  * @param {string} type - The application type to evaluate.
  * @returns {boolean} True if the type is either Fiori Elements or a free style application.
  */
-export function isSupportedAppTypeForAdaptationProject(type: string): boolean {
+export function isSupportedType(type: string): boolean {
     return isFioriElementsApp(type) || type === ApplicationType.FREE_STYLE;
 }

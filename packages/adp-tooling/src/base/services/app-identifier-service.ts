@@ -3,7 +3,7 @@ import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
 import type { Application } from '../../types';
 import { isV4Application } from './manifest-service';
-import { getApplicationType, isSupportedAppTypeForAdaptationProject } from '../app-utils';
+import { getApplicationType, isSupportedType } from '../app-utils';
 
 /**
  * Manages and validates application identifiers and compatibility for adaptation projects,
@@ -85,7 +85,7 @@ export class AppIdentifier {
 
         const appType = getApplicationType(manifest);
 
-        if (isSupportedAppTypeForAdaptationProject(appType)) {
+        if (isSupportedType(appType)) {
             if (manifest['sap.ui5']) {
                 if (manifest['sap.ui5'].flexEnabled === false) {
                     throw new Error(t('validators.appDoesNotSupportAdaptation'));
