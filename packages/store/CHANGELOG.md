@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 0.9.0
+
+### Minor Changes
+
+-   e7a6c68: Load keytar from application modeler extension
+
 ## 0.8.0
 
 ### Minor Changes
