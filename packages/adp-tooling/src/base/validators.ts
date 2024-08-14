@@ -7,6 +7,8 @@ import { InputChoice } from '../types';
 import { parseParameters } from '../base/services/flp-parameters';
 import { listPackages, listTransports } from './services';
 
+const projectNamePattern = /^(\w\.\w|[a-zA-Z0-9]){1,61}$/;
+
 /**
  * Checks if the input is a valid SAP client.
  *
@@ -118,8 +120,7 @@ export function validateProjectNameExternal(value: string, destinationPath: stri
         return t('validators.projectNameLengthErrorExt');
     }
 
-    const pattern = /^(\w\.\w|[a-zA-Z0-9]){1,61}$/;
-    if (!pattern.test(value)) {
+    if (!projectNamePattern.test(value)) {
         return t('validators.projectNameValidationErrorExt');
     }
 
@@ -134,19 +135,19 @@ export function validateProjectNameExternal(value: string, destinationPath: stri
  * @returns {string | boolean} If value is valid returns true otherwise error message.
  */
 export function validateProjectNameInternal(value: string, destinationPath: string): boolean | string {
-    const pattern = /^([a-z]+[a-z0-9]*((\.)[a-z]+[a-z0-9]*)+)+$/i;
-    if (pattern.test(value)) {
-        if (
-            value.toLowerCase().startsWith('customer') ||
-            value.length > 61 ||
-            value.toLocaleLowerCase().endsWith('component')
-        ) {
-            return t('validators.projectNameLengthErrorInt');
-        }
-        return validateDuplicateProjectName(value, destinationPath);
-    } else {
+    if (
+        value.toLowerCase().startsWith('customer') ||
+        value.length > 61 ||
+        value.toLocaleLowerCase().endsWith('component')
+    ) {
+        return t('validators.projectNameLengthErrorInt');
+    }
+
+    if (!projectNamePattern.test(value)) {
         return t('validators.projectNameValidationErrorInt');
     }
+
+    return validateDuplicateProjectName(value, destinationPath);
 }
 
 /**
