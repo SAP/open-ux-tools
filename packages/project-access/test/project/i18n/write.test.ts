@@ -203,6 +203,7 @@ describe('write', () => {
         });
         test('i18n file with custom path', async () => {
             const i18nPropertiesPaths: I18nPropertiesPaths = {
+                'sap.app': 'absolute-path',
                 models: {}
             };
             const readJSONSpy = jest.spyOn(file, 'readJSON').mockResolvedValue({});
