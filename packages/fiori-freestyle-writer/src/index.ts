@@ -35,12 +35,6 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     // add new and overwrite files from templates e.g.
     const tmplPath = join(__dirname, '..', 'templates');
     const ignore = [isTypeScriptEnabled ? '**/*.js' : '**/*.ts'];
-    // Check if sap.ushell is already in the ui5Libs array
-    const ushellLib = 'sap.ushell';
-    const ui5Libs = Array.isArray(ffApp.ui5?.ui5Libs) ? ffApp.ui5.ui5Libs : [ffApp.ui5?.ui5Libs];
-    if (!ui5Libs.includes(ushellLib)) {
-        ui5Libs.push(ushellLib);
-    }
 
     // Determine if the project type is 'EDMXBackend'.
     const isEdmxProjectType = ffApp.app.projectType === 'EDMXBackend';
@@ -53,7 +47,6 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 
     const appConfig = {
         ...ffApp,
-        ui5: { ...ffApp.ui5, ui5Libs },
         uShellBootstrapResourceUrl,
         uiBootstrapResourceUrl
     };
