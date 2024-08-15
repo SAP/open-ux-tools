@@ -1,14 +1,13 @@
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
-import { generateCustomPage } from '@sap-ux/fe-fpm-writer';
 import type { App, Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService, OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import { generateOPAFiles } from '@sap-ux/ui5-test-writer';
 import { getPackageJsonTasks } from './packageConfig';
 import cloneDeep from 'lodash/cloneDeep';
-import type { FioriElementsApp, FPMSettings } from './types';
+import type { FioriElementsApp } from './types';
 import { TemplateType } from './types';
 import { validateApp, validateRequiredProperties } from './validate';
 import { setAppDefaults, setDefaultTemplateSettings, getTemplateOptions } from './data/defaults';
@@ -23,6 +22,7 @@ import semVer from 'semver';
 import { initI18n } from './i18n';
 import { getBootstrapResourceUrls } from '@sap-ux/fiori-generator-shared';
 import { UI5Config } from '@sap-ux/ui5-config';
+import { fpmConfig } from './fpmConfig';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -154,27 +154,8 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
 
     // Special handling for FPM because it is not based on template files but used the fpm writer
     if (feApp.template.type === TemplateType.FlexibleProgrammingModel) {
-        const config: FPMSettings = feApp.template.settings as unknown as FPMSettings;
-        generateCustomPage(
-            basePath,
-            {
-                entity: config.entityConfig.mainEntityName,
-                name: config.pageName,
-                minUI5Version: feApp.ui5?.minUI5Version,
-                typescript: feApp.appOptions?.typescript
-            },
-            fs
-        );
-        // Updating ui5-local for V4 FPM specific libs
-        if (feApp.service.version === OdataVersion.v4) {
-            const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
-            const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-            const ui5Libs = ['sap.fe.templates'];
-            ui5LocalConfig.addUI5Libs(ui5Libs);
-            fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
-        }
+        await fpmConfig(feApp, basePath, fs);
     } else {
-        // Copy odata version specific common templates and version specific, floorplan specific templates
         const templateVersionPath = join(rootTemplatesPath, `v${feApp.service?.version}`);
         [join(templateVersionPath, 'common', 'add'), join(templateVersionPath, feApp.template.type, 'add')].forEach(
             (templatePath) => {
