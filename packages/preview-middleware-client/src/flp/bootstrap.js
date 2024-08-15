@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment,
                   @typescript-eslint/no-unsafe-member-access,
+                  @typescript-eslint/no-unsafe-argument,
                   no-console */
 
 /**
@@ -12,7 +13,7 @@ async function ushellBootstrap(fnCallback) {
         const response = await fetch('/resources/sap-ui-version.json');
         const json = await response.json();
         const version = json?.libraries?.find((lib) => lib.name === 'sap.ui.core')?.version ?? '1.121.0';
-        const [ majorUi5Version ] = version.replace(/snapshot-untested|snapshot-|snapshot/, '').split('.').map(Number);
+        const majorUi5Version = parseInt(version.split('.')[0], 10);
         if (majorUi5Version >= 2) {
             src = '/resources/sap/ushell/bootstrap/sandbox2.js';
         }
