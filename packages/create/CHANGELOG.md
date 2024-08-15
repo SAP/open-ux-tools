@@ -1,5 +1,27 @@
 # @sap-ux/create
 
+## 0.7.47
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.33
+-   @sap-ux/app-config-writer@0.4.23
+-   @sap-ux/preview-middleware@0.16.44
+-   @sap-ux/system-access@0.5.7
+-   @sap-ux/ui5-config@0.23.1
+-   @sap-ux/cap-config-writer@0.7.20
+
+## 0.7.46
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.32
+-   @sap-ux/app-config-writer@0.4.22
+-   @sap-ux/preview-middleware@0.16.43
+-   @sap-ux/system-access@0.5.6
+-   @sap-ux/ui5-config@0.23.1
+-   @sap-ux/cap-config-writer@0.7.19
+
 ## 0.7.45
 
 ### Patch Changes
