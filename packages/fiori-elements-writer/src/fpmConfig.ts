@@ -5,7 +5,7 @@ import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { FioriElementsApp, FPMSettings } from './types';
 import { UI5Config } from '@sap-ux/ui5-config';
 /**
- * Processes the template for a Flexible Programming Model (FPM).
+ * Processes the template for the Flexible Programming Model (FPM).
  * Generates a custom page and updates the UI5 local yaml for OData v4.
  *
  * @param feApp - The FE application configuration object.
@@ -15,7 +15,6 @@ import { UI5Config } from '@sap-ux/ui5-config';
  */
 export async function fpmConfig<T extends {}>(feApp: FioriElementsApp<T>, basePath: string, fs: Editor): Promise<void> {
     const config: FPMSettings = feApp.template.settings as unknown as FPMSettings;
-    const feTemplates = 'sap.fe.templates';
     generateCustomPage(
         basePath,
         {
@@ -30,7 +29,7 @@ export async function fpmConfig<T extends {}>(feApp: FioriElementsApp<T>, basePa
     if (feApp.service.version === OdataVersion.v4) {
         const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
         const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-        ui5LocalConfig.addUI5Libs([feTemplates]);
+        ui5LocalConfig.addUI5Libs(['sap.fe.templates']);
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     }
 }

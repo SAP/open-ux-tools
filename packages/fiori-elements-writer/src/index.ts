@@ -98,14 +98,9 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
         feApp.ui5?.frameworkUrl,
         feApp.ui5?.version
     );
-    const ushellLib = 'sap.ushell';
     const ui5Libs = isEdmxProjectType ? feApp.ui5?.ui5Libs : undefined;
     // Define template options with changes preview and loader settings based on project type
     const templateOptions = getTemplateOptions(isEdmxProjectType, feApp.service.version, feApp.ui5?.version);
-
-    if (ui5Libs && !ui5Libs.includes(ushellLib)) {
-        (ui5Libs as string[]).push(ushellLib);
-    }
 
     const appConfig = {
         ...feApp,
@@ -156,6 +151,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     if (feApp.template.type === TemplateType.FlexibleProgrammingModel) {
         await fpmConfig(feApp, basePath, fs);
     } else {
+        // Copy odata version specific common templates and version specific, floorplan specific templates
         const templateVersionPath = join(rootTemplatesPath, `v${feApp.service?.version}`);
         [join(templateVersionPath, 'common', 'add'), join(templateVersionPath, feApp.template.type, 'add')].forEach(
             (templatePath) => {
@@ -184,7 +180,6 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
         // Extend ui5-local.yaml only for non-CAP projects
         const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
         const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-        ui5LocalConfig.addUI5Libs([ushellLib]);
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
         // Add scripts to package.json only for non-CAP projects
         packageJson.scripts = Object.assign(packageJson.scripts ?? {}, {
