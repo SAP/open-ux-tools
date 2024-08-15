@@ -111,7 +111,7 @@ export function getTrimmedUI5Version(version: string): string {
     const regex = /\b\d+\.\d+\.\d+\b/g;
     const includesText = version.includes('(system version)') || version.includes('latest');
 
-    let trimmedVersion: string | undefined = '';
+    let trimmedVersion: string | undefined = undefined;
     try {
         if (includesText) {
             trimmedVersion = version.match(regex)?.[0];
@@ -415,7 +415,7 @@ export class UI5VersionService {
                 if (e.response.status === 400 || e.response.status === 404) {
                     return t('validators.ui5VersionOutdatedError');
                 }
-                return `Error on validating ui5 version: ${e}`;
+                return `Error on validating UI5 Version: ${e.message}`;
             }
         }
         return t('validators.ui5VersionCannotBeEmpty');
