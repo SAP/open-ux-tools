@@ -1,14 +1,13 @@
 import { FileBrowserQuestion, withCondition, ListQuestion, PromptSeverityMessage } from '@sap-ux/inquirer-common';
-import type { Question } from 'inquirer';
+import type { Question, ListChoiceOptions } from 'inquirer';
 import { t } from '../../../../i18n';
 import { hostEnvironment, type OdataServiceAnswers, type OdataServicePromptOptions } from '../../../../types';
-import { PromptState, getHostEnvironment } from '../../../../utils';
+import { PromptState, getDefaultChoiceIndex, getHostEnvironment } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
 import {
     getSystemServiceQuestion,
     getSystemUrlQuestion,
     getUserSystemNameQuestion,
-    newSystemPromptNames
 } from '../new-system/questions';
 import { validateServiceKey } from '../validators';
 import { getABAPInstanceChoices } from './cf-helper';
@@ -16,6 +15,7 @@ import { ServiceInstanceInfo, apiGetInstanceCredentials, cfGetTarget } from '@sa
 import { IMessageSeverity, IValidationLink, Severity } from '@sap-devx/yeoman-ui-types';
 import { errorHandler } from '../../../prompt-helpers';
 import { ERROR_TYPE } from '../../../../error-handler/error-handler';
+import { newSystemPromptNames } from '../new-system/types';
 
 const abapOnBtpPromptNamespace = 'abapOnBtp';
 const systemUrlPromptName = `${abapOnBtpPromptNamespace}:${newSystemPromptNames.newSystemUrl}` as const;
@@ -41,7 +41,7 @@ interface AbapOnBtpAnswers extends Partial<OdataServiceAnswers> {
  *
  * @param promptOptions
  */
-export function getAbapOnBTPSystemQuestions(promptOptions?: OdataServicePromptOptions): Question[] {
+export function getAbapOnBTPSystemQuestions(promptOptions?: OdataServicePromptOptions): Question<AbapOnBtpAnswers>[] {
     PromptState.reset();
     const connectValidator = new ConnectionValidator();
     const questions: Question[] = [];
@@ -92,7 +92,12 @@ export function getAbapOnBTPSystemQuestions(promptOptions?: OdataServicePromptOp
         })[0]
     );
 
-    questions.push(getCFDiscoverPrompt(connectValidator));
+    questions.push(
+        withCondition(
+            [getCFDiscoverPrompt(connectValidator)],
+            (answers: AbapOnBtpAnswers) => answers?.abapOnBtpAuthType === 'cloudFoundry'
+        )[0]
+    );
 
     // New system store name propmt
     if (promptOptions?.userSystemName?.exclude !== true) {
@@ -122,16 +127,17 @@ export function getAbapOnBTPSystemQuestions(promptOptions?: OdataServicePromptOp
  * @param connectionValidator
  * @returns
  */
-function getCFDiscoverPrompt(connectionValidator: ConnectionValidator): ListQuestion {
+export function getCFDiscoverPrompt(connectionValidator: ConnectionValidator): ListQuestion {
+    let choices: ListChoiceOptions<ServiceInstanceInfo>[] = [];
     return {
-        when: (answers: AbapOnBtpAnswers) => answers.abapOnBtpAuthType === 'cloudFoundry',
         type: 'list',
         name: abapOnBtpPromptNames.cloudFoundryAbapSystem,
         guiOptions: {
-            breadcrumb: true
+            breadcrumb: true,
+            applyDefaultWhenDirty: true,
         },
         choices: async () => {
-            const choices = await getABAPInstanceChoices();
+            choices = await getABAPInstanceChoices();
             // Cannot continue if no ABAP environments are found on Yo CLI
             if (choices.length === 0) {
                 if (getHostEnvironment() === hostEnvironment.cli) {
@@ -140,6 +146,7 @@ function getCFDiscoverPrompt(connectionValidator: ConnectionValidator): ListQues
             }
             return choices;
         },
+        default: getDefaultChoiceIndex,
         message: t('prompts.cloudFoundryAbapSystem.message'),
         validate: async (abapService: ServiceInstanceInfo): Promise<string | boolean | IValidationLink> => {
             // todo: CLI equivalent...
@@ -149,7 +156,7 @@ function getCFDiscoverPrompt(connectionValidator: ConnectionValidator): ListQues
                 if (valResult !== true) {
                     return valResult;
                 }
-   
+
                 if (connectionValidator.serviceProvider) {
                     // Create a unique connected system name based on the selected ABAP service
                     const cfTarget = await cfGetTarget(true);
@@ -186,7 +193,6 @@ function getServiceKeyPrompt(connectionValidator: ConnectionValidator): FileBrow
         guiType: 'file-browser',
         guiOptions: {
             hint: t('prompts.serviceKey.hint'),
-            applyDefaultWhenDirty: true,
             mandatory: true
         },
         validate: async (keyPath) => {

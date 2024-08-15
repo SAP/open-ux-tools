@@ -9,6 +9,7 @@ import { OdataVersion } from '@sap-ux/odata-service-writer';
 import LoggerHelper from '../prompts/logger-helper';
 import { t } from '../i18n';
 import { ODataVersion } from '@sap-ux/axios-extension';
+import { ListChoiceOptions } from 'inquirer';
 
 const osVersionName = osName();
 
@@ -128,6 +129,20 @@ export function convertODataVersionType(odataVersion?: OdataVersion): ODataVersi
         return undefined;
     }
     return odataVersion === OdataVersion.v2 ? ODataVersion.v2 : ODataVersion.v4;
+}
+
+/**
+ * Gets the default index for a list of items, used to default list prompts to the first item if only one item is available.
+ * If list is undefined or has more than one, returns undefined which will default to the 'please select' message.
+ * 
+ */
+export function getDefaultChoiceIndex(list: ListChoiceOptions[]): number | undefined {
+
+    if (list?.length === 1) {
+        return 0;
+    }
+
+    return undefined;
 }
 
 export { PromptState };

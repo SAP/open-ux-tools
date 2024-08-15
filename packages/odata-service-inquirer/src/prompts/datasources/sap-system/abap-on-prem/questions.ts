@@ -18,10 +18,9 @@ import {
     getSystemServiceQuestion,
     getSystemUrlQuestion,
     getUserSystemNameQuestion,
-    newSystemPromptNames
 } from '../new-system/questions';
 import { getServiceDetails } from '../new-system/service-helper';
-import type { ServiceAnswer } from '../new-system/types';
+import { newSystemPromptNames, type ServiceAnswer } from '../new-system/types';
 
 const abapOnPremPromptNamespace = 'abapOnPrem';
 const systemUrlPromptName = `${abapOnPremPromptNamespace}:${newSystemPromptNames.newSystemUrl}` as const;
@@ -32,7 +31,7 @@ export enum abapOnPremInternalPromptNames {
     systemPassword = 'abapSystemPassword'
 }
 
-export interface AbapOnPremAnswers extends Partial<OdataServiceAnswers> {
+interface AbapOnPremAnswers extends Partial<OdataServiceAnswers> {
     [systemUrlPromptName]?: string;
     [abapOnPremInternalPromptNames.systemUsername]?: string;
     [abapOnPremInternalPromptNames.systemPassword]?: string;

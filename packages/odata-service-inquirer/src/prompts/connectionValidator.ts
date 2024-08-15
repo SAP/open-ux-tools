@@ -116,7 +116,7 @@ export class ConnectionValidator {
     }
 
     /**
-     *
+     * The auth type used to create a connection to the system
      */
     public get systemAuthType(): SystemAuthType | undefined {
         return this._systemAuthType;
@@ -298,6 +298,7 @@ export class ConnectionValidator {
         this._serviceInfo = undefined;
         this._connectedUserName = undefined;
         this._refreshToken = undefined;
+        this._connectedSystemName = undefined;
         this.resetValidity();
     }
 

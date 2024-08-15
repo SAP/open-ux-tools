@@ -5,36 +5,33 @@ import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { CatalogService, V2CatalogService } from '@sap-ux/axios-extension';
 import { ODataVersion, ServiceType } from '@sap-ux/axios-extension';
-import { searchChoices, type ListQuestion } from '@sap-ux/inquirer-common';
+import { searchChoices, withCondition, type ListQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { AuthenticationType, BackendSystem } from '@sap-ux/store';
 import type { Answers, InputQuestion, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
 import type { OdataServiceAnswers, OdataServicePromptOptions, SapSystemType, ValidationLink } from '../../../../types';
 import { promptNames } from '../../../../types';
-import { PromptState, convertODataVersionType } from '../../../../utils';
+import { PromptState, convertODataVersionType, getDefaultChoiceIndex } from '../../../../utils';
 import type { ConnectionValidator, SystemAuthType } from '../../../connectionValidator';
 import { suggestSystemName } from '../prompt-helpers';
 import { validateSystemName } from '../validators';
 import { getServiceChoices, getServiceDetails, getServiceType } from './service-helper';
-import type { ServiceAnswer } from './types';
+import { type ServiceAnswer, newSystemPromptNames } from './types';
+import { getAbapOnPremQuestions } from '../abap-on-prem/questions';
+import { getAbapOnBTPSystemQuestions } from '../abap-on-btp/questions';
 
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
 // since it will be used as a new system value in the system selection prompt.
 export const newSystemChoiceValue = '!@£*&937newSystem*X~qy^';
 
-export const newSystemPromptNames = {
-    newSystemType: 'newSystemType',
-    newSystemUrl: 'newSystemUrl',
-    newSystemAuthType: 'newSystemAuthType'
-} as const;
+
 
 /**
  * Internal only answers to service URL prompting not returned with OdataServiceAnswers.
  */
 export interface NewSystemAnswers {
     [newSystemPromptNames.newSystemType]?: SapSystemType;
-    [newSystemPromptNames.newSystemUrl]?: string;
     [promptNames.userSystemName]?: string;
 }
 
@@ -65,6 +62,39 @@ function systemAuthTypeToAuthenticationType(systemAuthType: SystemAuthType | und
         default:
             return undefined;
     }
+}
+
+/**
+ * Provides prompts that allow the creation of a new system connection.
+ *
+ * @param promptOptions options for the new system prompts see {@link OdataServicePromptOptions}
+ * @returns questions for creating a new system connection
+ */
+export function getNewSystemQuestions(promptOptions?: OdataServicePromptOptions): Question<NewSystemAnswers>[] {
+    const questions: Question<NewSystemAnswers>[] = [
+        {
+            type: 'list',
+            name: newSystemPromptNames.newSystemType,
+            choices: [
+                { name: t('prompts.newSystemType.choiceAbapOnBtp'), value: 'abapOnBtp' as SapSystemType },
+                { name: t('prompts.newSystemType.choiceAbapOnPrem'), value: 'abapOnPrem' as SapSystemType }
+            ],
+            message: t('prompts.newSystemType.message')
+        } as ListQuestion<NewSystemAnswers>
+    ];
+    questions.push(
+        ...withCondition(
+            getAbapOnPremQuestions(promptOptions) as Question[],
+            (answers: Answers) => (answers as NewSystemAnswers).newSystemType === 'abapOnPrem'
+        )
+    );
+    questions.push(
+        ...withCondition(
+            getAbapOnBTPSystemQuestions(promptOptions) as Question[],
+            (answers: Answers) => (answers as NewSystemAnswers).newSystemType === 'abapOnBtp'
+        )
+    );
+    return questions;
 }
 
 /**
@@ -216,6 +246,7 @@ export function getSystemServiceQuestion<T extends Answers>(
         guiOptions: {
             breadcrumb: t('prompts.systemService.breadcrumb'),
             mandatory: true,
+            applyDefaultWhenDirty: true
         },
         source: (prevAnswers: T, input: string) => searchChoices(input, serviceChoices as ListChoiceOptions[]),
         choices: async () => {
@@ -232,8 +263,8 @@ export function getSystemServiceQuestion<T extends Answers>(
             return serviceChoices;
         },
         additionalMessages: (selectedService: ServiceAnswer) =>
-            getServiceMessage(serviceChoices, selectedService, connectValidator, requiredOdataVersion),
-        default: () => (serviceChoices?.length > 1 ? undefined : 0),
+            getSelectedServiceMessage(serviceChoices, selectedService, connectValidator, requiredOdataVersion),
+        default: getDefaultChoiceIndex,
         // Warning: only executes in YUI not cli
         validate: async (service: ServiceAnswer): Promise<string | boolean | ValidationLink> => {
             if (!connectValidator.validatedUrl) {
@@ -258,7 +289,7 @@ export function getSystemServiceQuestion<T extends Answers>(
  * @param connectValidator
  * @param requiredOdataVersion
  */
-async function getServiceMessage(
+async function getSelectedServiceMessage(
     serviceChoices: ListChoiceOptions<ServiceAnswer>[],
     selectedService: ServiceAnswer,
     connectValidator: ConnectionValidator,

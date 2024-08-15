@@ -85,7 +85,7 @@
             "breadcrumb": "Service",
             "noServicesWarning": "No services available for the selected system, see logs for further details."
         },
-        "systemType": {
+        "newSystemType": {
             "choiceAbapOnPrem": "ABAP On Premise",
             "choiceAbapOnBtp": "ABAP Environment on SAP Business Technology Platform",
             "message": "System type",
@@ -114,7 +114,7 @@
             "unparseableServiceKey": "Service keys file is not in a valid JSON format"
         },
         "cloudFoundryAbapSystem": {
-            "message": "Abap environment",
+            "message": "ABAP environment",
             "hint": "Enter the name of the Cloud Foundry service that contains the ABAP Environment instance"
         }
     },

@@ -9,3 +9,9 @@ export type ServiceAnswer = {
     toString: () => string;
     serviceType?: string;
 };
+
+export const newSystemPromptNames = {
+    newSystemType: 'newSystemType',
+    newSystemUrl: 'newSystemUrl',
+    newSystemAuthType: 'newSystemAuthType'
+} as const;
