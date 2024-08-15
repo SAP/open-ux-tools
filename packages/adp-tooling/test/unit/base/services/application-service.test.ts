@@ -1,11 +1,10 @@
-import { ToolsLogger } from '@sap-ux/logger';
+import type { ToolsLogger } from '@sap-ux/logger';
 
+import type { Application, ProviderService } from '../../../../src';
 import {
     ABAP_APPS_PARAMS,
     ABAP_VARIANT_APPS_PARAMS,
-    Application,
     ApplicationService,
-    ProviderService,
     filterApps,
     getApplicationChoices
 } from '../../../../src';
