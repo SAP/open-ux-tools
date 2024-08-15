@@ -47,9 +47,9 @@ async function createUI5I18nEntriesBase(
     newEntries: NewI18nEntry[],
     modelKey: string,
     fs?: Editor,
-    i18nFolder = ''
+    i18nFolder?: string
 ): Promise<boolean> {
-    const defaultPath = join('i18n', i18nFolder, 'i18n.properties');
+    const defaultPath = `i18n/${i18nFolder ? `${i18nFolder}/` : ''}i18n.properties`;
     const i18nFilePath = i18nPropertiesPaths.models[modelKey]?.path;
     if (i18nFilePath) {
         // ensure folder for i18n exists
