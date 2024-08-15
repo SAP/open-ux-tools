@@ -69,8 +69,8 @@ export function getUIcontextualMenuStyles(): Partial<IContextualMenuStyles> {
  */
 export function getUIContextualMenuItemStyles(
     props: UIIContextualMenuProps,
-    currentItemHasSubmenu: boolean,
-    itemsHaveSubMenu: boolean
+    currentItemHasSubmenu?: boolean,
+    itemsHaveSubMenu?: boolean
 ): Partial<IContextualMenuItemStyles> {
     const { iconToLeft } = props;
     let padding: number | undefined;
