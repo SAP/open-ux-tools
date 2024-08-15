@@ -31,7 +31,10 @@ export function getRelevantControlFromActivePage(
     for (const type of controlTypes) {
         const controls = controlIndex[type] ?? [];
         for (const control of controls) {
-            const isActionApplicable = pageHasControlId(activePage, control.controlId);
+            // const isActionApplicable = pageHasControlId(activePage, control.controlId);
+            const ctrl = getControlById(control.controlId)?.getParent() || null;
+            const isActionApplicable = isDescendantOfPage(ctrl, activePage);
+
             const UI5ControlData = getControlById(control.controlId);
             if (isActionApplicable && UI5ControlData) {
                 relevantControls.push(UI5ControlData);
@@ -93,4 +96,14 @@ export function getFeVersion(manifest: Manifest): 'v2' | 'v4' | undefined {
     } else {
         return 'v4';
     }
+}
+
+function isDescendantOfPage(control: ManagedObject | null, oRootControl: ManagedObject) {
+    while (control) {
+        if (control === oRootControl) {
+            return true;
+        }
+        control = control.getParent();
+    }
+    return false;
 }
