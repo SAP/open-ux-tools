@@ -37,6 +37,7 @@ export async function createCapI18nEntries(
  * @param newEntries translation entries to write in the `.properties` file
  * @param modelKey i18n model key,
  * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node
+ * @param i18nFolder optional path to `i18n` folder
  * @returns boolean or exception
  */
 async function createUI5I18nEntriesBase(
@@ -45,9 +46,10 @@ async function createUI5I18nEntriesBase(
     i18nPropertiesPaths: I18nPropertiesPaths,
     newEntries: NewI18nEntry[],
     modelKey: string,
-    fs?: Editor
+    fs?: Editor,
+    i18nFolder = ''
 ): Promise<boolean> {
-    const defaultPath = 'i18n/i18n.properties';
+    const defaultPath = join('i18n', i18nFolder, 'i18n.properties');
     const i18nFilePath = i18nPropertiesPaths.models[modelKey]?.path;
     if (i18nFilePath) {
         // ensure folder for i18n exists
@@ -79,9 +81,9 @@ async function createUI5I18nEntriesBase(
     const dirPath = dirname(defaultPath);
     if (!fs) {
         // create directory when mem-fs-editor is not provided. when mem-fs-editor is provided, directory is created on using `.commit()` API
-        await mkdir(join(root, dirPath), { recursive: true });
+        await mkdir(join(dirname(manifestPath), dirPath), { recursive: true });
     }
-    return createPropertiesI18nEntries(join(root, defaultPath), newEntries, root, fs);
+    return createPropertiesI18nEntries(join(dirname(manifestPath), defaultPath), newEntries, root, fs);
 }
 
 /**
@@ -93,6 +95,7 @@ async function createUI5I18nEntriesBase(
  * @param newEntries translation entries to write in the `.properties` file
  * @param modelKey i18n model key
  * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node
+ * @param i18nFolder optional path to `i18n` folder
  * @returns boolean or exception
  * @description It also update `manifest.json` file if `<modelKey>` entry is missing from `"sap.ui5":{"models": {}}`
  * as
@@ -115,9 +118,10 @@ export async function createUI5I18nEntries(
     i18nPropertiesPaths: I18nPropertiesPaths,
     newEntries: NewI18nEntry[],
     modelKey: string,
-    fs?: Editor
+    fs?: Editor,
+    i18nFolder?: string
 ): Promise<boolean> {
-    return createUI5I18nEntriesBase(root, manifestPath, i18nPropertiesPaths, newEntries, modelKey, fs);
+    return createUI5I18nEntriesBase(root, manifestPath, i18nPropertiesPaths, newEntries, modelKey, fs, i18nFolder);
 }
 /**
  * Maintains new translation entries in an existing i18n file or in a new i18n properties file if it does not exist.
@@ -127,6 +131,7 @@ export async function createUI5I18nEntries(
  * @param i18nPropertiesPaths paths to `.properties` file`
  * @param newEntries translation entries to write in the `.properties` file
  * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node
+ * @param i18nFolder optional path to `i18n` folder. Default is `annotation`
  * @returns boolean or exception
  * @description It also update `manifest.json` file if `@i18n` entry is missing from `"sap.ui5":{"models": {}}`
  * as
@@ -148,9 +153,10 @@ export async function createAnnotationI18nEntries(
     manifestPath: string,
     i18nPropertiesPaths: I18nPropertiesPaths,
     newEntries: NewI18nEntry[],
-    fs?: Editor
+    fs?: Editor,
+    i18nFolder = 'annotation'
 ): Promise<boolean> {
-    return createUI5I18nEntriesBase(root, manifestPath, i18nPropertiesPaths, newEntries, '@i18n', fs);
+    return createUI5I18nEntriesBase(root, manifestPath, i18nPropertiesPaths, newEntries, '@i18n', fs, i18nFolder);
 }
 
 /**
