@@ -177,10 +177,6 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
         (!!feApp.service?.metadata || feApp.service.type === ServiceType.CDS);
 
     if (isEdmxProjectType) {
-        // Extend ui5-local.yaml only for non-CAP projects
-        const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
-        const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-        fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
         // Add scripts to package.json only for non-CAP projects
         packageJson.scripts = Object.assign(packageJson.scripts ?? {}, {
             ...getPackageJsonTasks({
