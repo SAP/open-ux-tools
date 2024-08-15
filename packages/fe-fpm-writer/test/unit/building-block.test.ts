@@ -72,11 +72,11 @@ describe('Building Blocks', () => {
         ).toThrowError(/Invalid view path/);
     });
 
-    test('validate sap.fe.templates manifest dependency', async () => {
+    test('validate sap.fe.core manifest dependency', async () => {
         const basePath = join(testAppPath, 'validate-manifest-dep');
         fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
 
-        // Test generator without sap.fe.templates as dependency in manifest.json
+        // Test generator without sap.fe.core as dependency in manifest.json
         fs.write(join(basePath, manifestFilePath), JSON.stringify({ ...testManifestContent, 'sap.ui5': {} }));
         expect(() =>
             generateBuildingBlock<FilterBar>(

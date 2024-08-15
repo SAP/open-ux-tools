@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.27.0
+
+### Minor Changes
+
+-   ec4a9c8: Update fpm-writer to validate sap.fe.core as minimum library required for building block creation
+
 ## 0.26.4
 
 ### Patch Changes
