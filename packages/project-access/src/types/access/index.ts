@@ -20,6 +20,7 @@ export interface ApplicationAccess extends BaseAccess {
      * Maintains new translation entries in an existing i18n file or in a new i18n properties file if it does not exist.
      *
      * @param newEntries - translation entries to write in the `.properties` file
+     * @param i18nFolder - path to i18n folder. Default is `annotation`
      * @returns - boolean or exception
      * @description It also update `manifest.json` file if `@i18n` entry is missing from `"sap.ui5":{"models": {}}`
      * as
@@ -29,19 +30,20 @@ export interface ApplicationAccess extends BaseAccess {
      *          "models": {
      *              "@i18n": {
      *                  "type": "sap.ui.model.resource.ResourceModel",
-     *                  "uri": "i18n/i18n.properties"
+     *                  "uri": "i18n/annotation/i18n.properties"
      *              }
      *          }
      *      }
      * }
      * ```
      */
-    createAnnotationI18nEntries(newEntries: NewI18nEntry[]): Promise<boolean>;
+    createAnnotationI18nEntries(newEntries: NewI18nEntry[], i18nFolder?: string): Promise<boolean>;
     /**
      * Maintains new translation entries in an existing i18n file or in a new i18n properties file if it does not exist.
      *
      * @param newEntries - translation entries to write in the `.properties` file
      * @param modelKey - i18n model key. Default key is `i18n`
+     * @param i18nFolder - path to i18n folder. Default is empty
      * @returns boolean or exception
      * @description It also update `manifest.json` file if `<modelKey>` entry is missing from `"sap.ui5":{"models": {}}`
      * as
@@ -51,14 +53,14 @@ export interface ApplicationAccess extends BaseAccess {
      *          "models": {
      *              "<modelKey>": {
      *                  "type": "sap.ui.model.resource.ResourceModel",
-     *                  "uri": "i18n/i18n.properties"
+     *                  "uri": "i18n/${i18nFolder?}/i18n.properties"
      *              }
      *          }
      *      }
      * }
      * ```
      */
-    createUI5I18nEntries(newEntries: NewI18nEntry[], modelKey?: string): Promise<boolean>;
+    createUI5I18nEntries(newEntries: NewI18nEntry[], modelKey?: string, i18nFolder?: string): Promise<boolean>;
     /**
      * Maintains new translation entries in an existing i18n file or in a new i18n properties file if it does not exist.
      *
