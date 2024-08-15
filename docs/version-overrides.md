@@ -1,30 +1,6 @@
 # Version Overrides
 This document lists the version overrides for vulnerable (nested) dependencies and the reason.
 
-
-```
-┌─────────────────────┬────────────────────────────────────────────────────────┐
-│ moderate            │ @adobe/css-tools Regular Expression Denial of Service  │
-│                     │ (ReDOS) while Parsing CSS                              │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Package             │ @adobe/css-tools                                       │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Vulnerable versions │ <4.3.1                                                 │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Patched versions    │ >=4.3.1                                                │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Paths               │ packages/ui-components >                               │
-│                     │ @testing-library/jest-dom@5.17.0 >                     │
-│                     │ @adobe/css-tools@4.0.1                                 │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ More info           │ https://github.com/advisories/GHSA-hpx4-r86g-5jrg      │
-└─────────────────────┴────────────────────────────────────────────────────────┘
-```
-
-:warning: Attention :warning: 
-* `@adobe/css-tools`` is used in packages/ui-components > `@testing-library/jest-dom`, which can't be updated to the very latest version due peer dependency to react 18.
-
-```
 ┌─────────────────────┬────────────────────────────────────────────────────────┐
 │ moderate            │ Axios Cross-Site Request Forgery Vulnerability         │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
@@ -90,60 +66,5 @@ Fix not available yet with latest @nrwl/nx-cloud
 │                     │ @sap/wing-service-explorer@1.8.0 > axios@0.21.4        │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
 │ More info           │ https://github.com/advisories/GHSA-wf5p-g6vw-rhxx      │
-└─────────────────────┴────────────────────────────────────────────────────────┘
-```
-```
-┌─────────────────────┬────────────────────────────────────────────────────────┐
-│ high                │ Uncontrolled resource consumption in braces            │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Package             │ braces                                                 │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Vulnerable versions │ <3.0.3                                                 │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Patched versions    │ >=3.0.3                                                │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Paths               │ . > @changesets/cli@2.27.7 >                           │
-│                     │ @changesets/apply-release-plan@7.0.4 >                 │
-│                     │ @changesets/config@3.0.2 >                             │
-│                     │ @changesets/get-dependents-graph@2.1.1 >               │
-│                     │ @manypkg/get-packages@1.1.3 > globby@11.1.0 >          │
-│                     │ fast-glob@3.3.1 > micromatch@4.0.5 > braces@3.0.2      │
-│                     │                                                        │
-│                     │ . > @changesets/cli@2.27.7 >                           │
-│                     │ @changesets/apply-release-plan@7.0.4 >                 │
-│                     │ @changesets/config@3.0.2 > @manypkg/get-packages@1.1.3 │
-│                     │ > globby@11.1.0 > fast-glob@3.3.1 > micromatch@4.0.5 > │
-│                     │ braces@3.0.2                                           │
-│                     │                                                        │
-│                     │ . > @changesets/cli@2.27.7 >                           │
-│                     │ @changesets/apply-release-plan@7.0.4 >                 │
-│                     │ @changesets/config@3.0.2 > micromatch@4.0.5 >          │
-│                     │ braces@3.0.2                                           │
-│                     │                                                        │
-│                     │ ... Found 5897 paths, run `pnpm why braces` for more   │
-│                     │ information                                            │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ More info           │ https://github.com/advisories/GHSA-grv7-fg5c-xmjg      │
-└─────────────────────┴────────────────────────────────────────────────────────┘
-```
-```
-┌─────────────────────┬────────────────────────────────────────────────────────┐
-│ high                │ ws affected by a DoS when handling a request with many │
-│                     │ HTTP headers                                           │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Package             │ ws                                                     │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Vulnerable versions │ >=8.0.0 <8.17.1                                        │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Patched versions    │ >=8.17.1                                               │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Paths               │ packages/ui-components > jest-environment-jsdom@29.7.0 │
-│                     │ > jsdom@20.0.3 > ws@8.13.0                             │
-│                     │                                                        │
-│                     │ packages/ui-components > storybook@8.1.11 >            │
-│                     │ @storybook/cli@8.1.11 > @storybook/core-server@8.1.11  │
-│                     │ > ws@8.13.0                                            │
-├─────────────────────┼────────────────────────────────────────────────────────┤
-│ More info           │ https://github.com/advisories/GHSA-3h5v-q93c-6h6q      │
 └─────────────────────┴────────────────────────────────────────────────────────┘
 ```

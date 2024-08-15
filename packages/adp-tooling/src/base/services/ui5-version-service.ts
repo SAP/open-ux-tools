@@ -111,7 +111,7 @@ export function getTrimmedUI5Version(version: string): string {
     const regex = /\b\d+\.\d+\.\d+\b/g;
     const includesText = version.includes('(system version)') || version.includes('latest');
 
-    let trimmedVersion: string | undefined = undefined;
+    let trimmedVersion: string | undefined;
     try {
         if (includesText) {
             trimmedVersion = version.match(regex)?.[0];
