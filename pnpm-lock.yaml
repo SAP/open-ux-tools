@@ -5,12 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@testing-library/jest-dom>@adobe/css-tools@<4.3.2': '>=4.3.2'
   nx-cloud>axios@<1.6.8: '>=1.6.8'
   nx-cloud>tar@<6.2.1: '>=6.2.1'
   '@sap/bas-sdk>axios@<1.6.8': '>=1.6.8'
-  braces@<3.0.3: '>=3.0.3'
-  'ws@>=7.0.0 <7.5.10 ': '>=7.5.10'
 
 importers:
 
@@ -17426,7 +17423,7 @@ packages:
       chokidar: 3.5.3
       livereload-js: 3.4.1
       opts: 2.0.2
-      ws: 8.18.0
+      ws: 7.5.10
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -23193,6 +23190,19 @@ packages:
       signal-exit: 3.0.7
     dev: true
 
+  /ws@7.5.10:
+    resolution: {integrity: sha512-+dbF1tHwZpXcbOJdVOkzLDxZP1ailvSxM6ZweXTegylPny803bFhA+vqBYw4s31NSAk4S2Qz+AKXK9a4wkdjcQ==}
+    engines: {node: '>=8.3.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: ^5.0.2
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+    dev: false
+
   /ws@8.17.1:
     resolution: {integrity: sha512-6XQFvXTkbfUOZOKKILFG1PDK2NDQs4azKQl26T0YS5CxqWLgXajbPZ+h4gZekJyRqFU8pvnbAbbs/3TgRPy+GQ==}
     engines: {node: '>=10.0.0'}
@@ -23217,6 +23227,7 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+    dev: true
 
   /xdg-basedir@5.1.0:
     resolution: {integrity: sha512-GCPAHLvrIH13+c0SuacwvRYj2SxJXQ4kaVTT5xgL3kPrz56XxkF21IGhjSE1+W0aw7gpBWRGXLCPnPby6lSpmQ==}
