@@ -334,9 +334,6 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
-      '@sap-ux/project-input-validator':
-        specifier: workspace:*
-        version: link:../project-input-validator
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
