@@ -1,6 +1,6 @@
 import type { InputQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
-
 import { t } from '../../i18n';
+import { FlexLayer } from '../../types';
 import type { BasicInfoAnswers } from '../../types';
 import { validateProjectName, isNotEmptyString, validateNamespace } from '../../base/validators';
 import { getDefaultProjectName, getProjectNameTooltip, generateValidNamespace } from './prompt-helpers';
@@ -13,13 +13,13 @@ import { getDefaultProjectName, getProjectNameTooltip, generateValidNamespace } 
  * @returns {YUIQuestion<BasicInfoAnswers>[]} An array of YUI prompt objects configured for user interaction
  *         in a CLI or GUI, including validations and tooltips based on the context.
  */
-export function getPrompts(path: string, layer: string): YUIQuestion<BasicInfoAnswers>[] {
-    const isCustomerBase = layer === 'CUSTOMER_BASE';
+export function getPrompts(path: string, layer: FlexLayer): YUIQuestion<BasicInfoAnswers>[] {
+    const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
     return [
         {
             type: 'input',
             name: 'projectName',
-            message: () => 'Project Name',
+            message: 'Project Name',
             default: () => getDefaultProjectName(path),
             guiOptions: {
                 mandatory: true,
@@ -35,7 +35,7 @@ export function getPrompts(path: string, layer: string): YUIQuestion<BasicInfoAn
             type: 'input',
             name: 'applicationTitle',
             message: t('prompts.appTitleLabel'),
-            default: () => t('prompts.appTitleDefault'),
+            default: t('prompts.appTitleDefault'),
             guiOptions: {
                 mandatory: true,
                 hint: t('prompts.appTitleTooltip'),
