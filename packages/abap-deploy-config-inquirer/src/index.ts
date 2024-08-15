@@ -1,5 +1,5 @@
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
-import { initI18n as initI18nAbapDeployConfigInq } from './i18n';
+import { initI18nProjectValidators } from '@sap-ux/project-input-validator';
 import { PromptState } from './prompts/prompt-state';
 import { getAbapDeployConfigQuestions } from './prompts';
 import LoggerHelper from './logger-helper';
@@ -29,7 +29,7 @@ async function getPrompts(
     prompts: AbapDeployConfigQuestion[];
     answers: Partial<AbapDeployConfigAnswers>;
 }> {
-    await initI18nAbapDeployConfigInq();
+    await initI18nProjectValidators();
 
     LoggerHelper.logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/abap-deploy-config-inquirer' });
 
