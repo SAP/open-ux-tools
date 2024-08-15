@@ -78,6 +78,7 @@ export class ManifestService {
      * @returns {Manifest | null} The cached manifest or null if not available.
      */
     public getManifest(id: string): Manifest | null {
+        // TODO: Try to load the manifest if it is null
         const cached = this.manifestCache.get(id);
         return cached ? cached.manifest : null;
     }
