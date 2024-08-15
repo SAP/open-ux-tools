@@ -76,7 +76,7 @@ export function NestedQuickActionListItem({ action, actionIdx }: NestedQuickActi
                                     executeQuickAction({
                                         kind: action.kind,
                                         id: action.id,
-                                        path: [actionIdx].join('/')
+                                        path: [0].join('/')
                                     })
                                 );
                             }}>
