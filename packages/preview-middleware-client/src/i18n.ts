@@ -12,10 +12,8 @@ export async function getResourceBundle(key = 'open.ux.preview.client'): Promise
     const bundle = await ResourceBundle.create({
         bundleUrl: '/preview/client/messagebundle.properties',
         supportedLocales: [''],
-        // fallbackLocale: vI18n.fallbackLocale,
         locale: '',
         async: true
-        // activeTerminologies: Localization.getActiveTerminologies()
     });
     BUNDLE_CACHE[key] = bundle;
     return bundle;

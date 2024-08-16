@@ -1,1 +1,4 @@
-export default class UIComponent {}
+export default class UIComponent {
+    // getRootContainer = jest.fn();
+    getRootControl = jest.fn();
+}

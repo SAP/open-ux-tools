@@ -210,6 +210,6 @@ export function getControlById<T extends Element = Element>(id: string): T | und
  * @param element - Object to check
  * @returns Whether this object is an instance of the given type.
  */
-export function isA<T extends Element>(type: string, element: Element | undefined): element is T {
+export function isA<T extends ManagedObject>(type: string, element: ManagedObject | undefined): element is T {
     return !!element?.isA(type);
 }

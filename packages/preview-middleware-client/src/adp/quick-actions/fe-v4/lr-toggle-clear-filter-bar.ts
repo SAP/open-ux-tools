@@ -2,10 +2,12 @@ import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import FilterBar from 'sap/ui/mdc/FilterBar';
 
-import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
-import { getAppComponent, getPageName, getReference, pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { SIMPLE_QUICK_ACTION_KIND, SimpleQuickAction } from '@sap-ux-private/control-property-editor-common';
+
+import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import { pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { getControlById } from '../../../cpe/utils';
+import { getAppComponent, getPageName, getReference } from './utils';
 
 export const ENABLE_CLEAR_FILTER_BAR_TYPE = 'enable-clear-filter-bar';
 const PROPERTY_PATH = 'controlConfiguration/@com.sap.vocabularies.UI.v1.SelectionFields/showClearButton';

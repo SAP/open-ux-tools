@@ -3,7 +3,7 @@ export default class ComponentMock {
     static create() {
         return new ComponentMock();
     }
-    static getComponentById(_id: string) {
+    static getComponentById(_id: string): ComponentMock | undefined{
         return undefined;
     }
 }

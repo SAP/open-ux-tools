@@ -1,7 +1,7 @@
 import init from '../../../src/cpe/init';
 import * as common from '@sap-ux-private/control-property-editor-common';
 import * as flexChange from '../../../src/cpe/changes/flex-change';
-import * as outline from '../../../src/cpe/outline';
+import * as outline from '../../../src/cpe/outline/service';
 import type Event from 'sap/ui/base/Event';
 import Log from 'mock/sap/base/Log';
 import { fetchMock, sapCoreMock } from 'mock/window';

@@ -44,7 +44,7 @@ type AddFragmentModel = JSONModel & {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddFragment extends BaseDialog<AddFragmentModel> {
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, private aggregation: string) {
+    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, private aggregation?: string) {
         super(name);
         this.rta = rta;
         this.overlays = overlays;

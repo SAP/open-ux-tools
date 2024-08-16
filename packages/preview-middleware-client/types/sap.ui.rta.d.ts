@@ -159,6 +159,9 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         };
         'sap.ui5': {
             [key: string]: string;
+            routing?: {
+                targets?: Record<string, { name?: string }>;
+            };
             flexEnabled?: boolean;
         };
     };
@@ -286,11 +289,11 @@ declare module 'sap/ui/rta/service/Action' {
          * Action name
          */
         text: string;
-    }
+    };
     export type ActionService = {
         get: (controlId: string) => Promise<ActionObject[]>;
         get: (controlIds: string[]) => Promise<ActionObject[]>;
         execute: (controlId: string, actionId: string) => Promise<void>;
         execute: (controlIds: string[], actionId: string) => Promise<void>;
-    }
+    };
 }

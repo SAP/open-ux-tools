@@ -36,34 +36,34 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
     getDefinitions(context: QuickActionActivationContext): QuickActionDefinitionGroup[] {
         const activePages = this.getActivePageContent(context.controlIndex);
 
-        return activePages
-            .map(({ name, view }, i) => {
-                if (name === 'listReport') {
-                    return {
-                        title: 'List Report',
-                        definitions: [
-                            ToggleClearFilterBarQuickAction,
-                            AddControllerToPageQuickAction,
-                            ChangeTableColumnsQuickAction
-                        ],
-                        view,
-                        key: name + i
-                    };
-                } else if (name === 'objectPage') {
-                    return {
-                        title: 'Object Page',
-                        definitions: [
-                            AddControllerToPageQuickAction,
-                            ChangeTableColumnsQuickAction,
-                            AddHeaderFieldQuickAction
-                        ],
-                        view,
-                        key: name + i
-                    };
-                }
-                return undefined;
-            })
-            .filter((definition) => !!definition);
+        const definitionGroups: QuickActionDefinitionGroup[] = [];
+        for (let index = 0; index < activePages.length; index++) {
+            const { name, view } = activePages[index];
+            if (name === 'listReport') {
+                definitionGroups.push({
+                    title: 'List Report',
+                    definitions: [
+                        ToggleClearFilterBarQuickAction,
+                        AddControllerToPageQuickAction,
+                        ChangeTableColumnsQuickAction
+                    ],
+                    view,
+                    key: name + index
+                });
+            } else if (name === 'objectPage') {
+                definitionGroups.push({
+                    title: 'Object Page',
+                    definitions: [
+                        AddControllerToPageQuickAction,
+                        ChangeTableColumnsQuickAction,
+                        AddHeaderFieldQuickAction
+                    ],
+                    view,
+                    key: name + index
+                });
+            }
+        }
+        return definitionGroups;
     }
     private getActiveViews(controlIndex: ControlTreeIndex): XMLView[] {
         const pages = this.getActivePages(controlIndex);
