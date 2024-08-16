@@ -44,7 +44,6 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         ffApp.ui5?.frameworkUrl,
         ffApp.ui5?.version
     );
-
     const appConfig = {
         ...ffApp,
         uShellBootstrapResourceUrl,

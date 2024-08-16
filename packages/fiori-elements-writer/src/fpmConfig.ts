@@ -1,7 +1,6 @@
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { generateCustomPage } from '@sap-ux/fe-fpm-writer';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { FioriElementsApp, FPMSettings } from './types';
 import { UI5Config } from '@sap-ux/ui5-config';
 /**
@@ -25,11 +24,8 @@ export async function fpmConfig<T extends {}>(feApp: FioriElementsApp<T>, basePa
         },
         fs
     );
-
-    if (feApp.service.version === OdataVersion.v4) {
-        const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
-        const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-        ui5LocalConfig.addUI5Libs(['sap.fe.templates']);
-        fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
-    }
+    const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
+    const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
+    ui5LocalConfig.addUI5Libs(['sap.fe.templates']);
+    fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
 }

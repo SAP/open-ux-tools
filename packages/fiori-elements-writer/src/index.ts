@@ -21,7 +21,6 @@ import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
 import { initI18n } from './i18n';
 import { getBootstrapResourceUrls } from '@sap-ux/fiori-generator-shared';
-import { UI5Config } from '@sap-ux/ui5-config';
 import { fpmConfig } from './fpmConfig';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
@@ -102,6 +101,10 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     // Define template options with changes preview and loader settings based on project type
     const templateOptions = getTemplateOptions(isEdmxProjectType, feApp.service.version, feApp.ui5?.version);
 
+    // FPM to preload sap.fe.templates for FLP template
+    if (feApp.template.type === TemplateType.FlexibleProgrammingModel) {
+        (ui5Libs as string[]).push('sap.fe.templates');
+    }
     const appConfig = {
         ...feApp,
         templateOptions,
