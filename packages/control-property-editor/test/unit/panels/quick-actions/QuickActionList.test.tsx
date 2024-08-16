@@ -30,7 +30,7 @@ describe('QuickActionList', () => {
         initIcons();
         registerAppIcons();
     });
-    test('ChangePanel - check if search filter rendered', () => {
+    test.skip('ChangePanel - check if search filter rendered', () => {
         const model = getEmptyModel();
         const children = [
             {

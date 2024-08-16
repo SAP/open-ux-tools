@@ -16,7 +16,7 @@ import './RightPanel.scss';
  * @returns ReactElement
  */
 export function RightPanel(): ReactElement {
-    const actionsCount = useSelector<RootState, number>((state) => state.quickActions.length);
+    const actionsCount = useSelector<RootState, number>((state) => state.quickActions?.length ?? 0);
     const scenario = useSelector<RootState, Scenario>((state) => state.scenario);
 
     if (scenario !== 'ADAPTATION_PROJECT') {
