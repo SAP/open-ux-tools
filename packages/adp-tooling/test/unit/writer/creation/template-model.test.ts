@@ -1,13 +1,11 @@
 import path from 'path';
 
-import { AdaptationProjectType, SystemInfo } from '@sap-ux/axios-extension';
+import { isAppStudio } from '@sap-ux/btp-utils';
 import { AuthenticationType } from '@sap-ux/store';
+import type { SystemInfo } from '@sap-ux/axios-extension';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
-import {
-    TemplateModel,
-    FlexLayer,
-    getUI5DeployConfig,
-    getI18nModels,
+import type {
     ManifestService,
     UI5VersionService,
     ProviderService,
@@ -16,7 +14,7 @@ import {
     DeployConfigAnswers,
     SystemDetails
 } from '../../../../src';
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { TemplateModel, FlexLayer } from '../../../../src';
 
 jest.mock('../../../../src/base/app-utils.ts', () => ({
     getApplicationType: jest.fn().mockReturnValue('FreeStyle')
