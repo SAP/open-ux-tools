@@ -5,12 +5,12 @@ import type { FioriElementsApp, FPMSettings } from './types';
 import { UI5Config } from '@sap-ux/ui5-config';
 /**
  * Processes the template for the Flexible Programming Model (FPM).
- * Generates a custom page and updates the UI5 local yaml for OData v4.
+ * Generates a custom page and updates the UI5 local yaml.
  *
- * @param feApp - The FE application configuration object.
- * @param basePath - The base path where the generated files will be placed.
- * @param fs - The file system object used for file operations.
- * @returns {Promise<void>} A promise that resolves when the operation is complete.
+ * @param feApp - the FE app config
+ * @param basePath - the absolute target path where the application will be generated
+ * @param fs - reference to a mem-fs editor
+ * @returns {Promise<void>}
  */
 export async function fpmConfig<T extends {}>(feApp: FioriElementsApp<T>, basePath: string, fs: Editor): Promise<void> {
     const config: FPMSettings = feApp.template.settings as unknown as FPMSettings;
