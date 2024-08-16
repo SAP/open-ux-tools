@@ -1,5 +1,23 @@
 # @sap-ux/create
 
+## 0.7.49
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.5
+-   @sap-ux/preview-middleware@0.16.46
+-   @sap-ux/adp-tooling@0.12.35
+-   @sap-ux/cap-config-writer@0.7.21
+
+## 0.7.48
+
+### Patch Changes
+
+-   b813843: Fix validation in change-inbound prompts
+-   Updated dependencies [b813843]
+    -   @sap-ux/adp-tooling@0.12.34
+    -   @sap-ux/preview-middleware@0.16.45
+
 ## 0.7.47
 
 ### Patch Changes

@@ -31,7 +31,7 @@ describe('change/inbound', () => {
     };
     const mockAnswers = {
         title: 'Some Title',
-        subTutle: 'Some Subtitle',
+        subtitle: 'Some Subtitle',
         icon: 'Some Icon'
     };
 
