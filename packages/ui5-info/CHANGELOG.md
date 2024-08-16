@@ -1,5 +1,11 @@
 # @sap-ux/ui5-info
 
+## 0.8.0
+
+### Minor Changes
+
+-   cc1ac72: Move away from using versionoverview UI5 specification for version metadata, use 'official' instead.
+
 ## 0.7.1
 
 ### Patch Changes
