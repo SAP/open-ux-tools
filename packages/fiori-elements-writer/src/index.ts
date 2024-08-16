@@ -21,7 +21,7 @@ import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
 import { initI18n } from './i18n';
 import { getBootstrapResourceUrls } from '@sap-ux/fiori-generator-shared';
-import { fpmConfig } from './fpmConfig';
+import { generateFpmConfig } from './fpmConfig';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -152,7 +152,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
 
     // Special handling for FPM because it is not based on template files but used the fpm writer
     if (feApp.template.type === TemplateType.FlexibleProgrammingModel) {
-        await fpmConfig(feApp, basePath, fs);
+        await generateFpmConfig(feApp, basePath, fs);
     } else {
         // Copy odata version specific common templates and version specific, floorplan specific templates
         const templateVersionPath = join(rootTemplatesPath, `v${feApp.service?.version}`);

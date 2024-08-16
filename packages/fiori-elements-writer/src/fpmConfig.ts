@@ -12,7 +12,11 @@ import { UI5Config } from '@sap-ux/ui5-config';
  * @param fs - reference to a mem-fs editor
  * @returns {Promise<void>}
  */
-export async function fpmConfig<T extends {}>(feApp: FioriElementsApp<T>, basePath: string, fs: Editor): Promise<void> {
+export async function generateFpmConfig<T extends {}>(
+    feApp: FioriElementsApp<T>,
+    basePath: string,
+    fs: Editor
+): Promise<void> {
     const config: FPMSettings = feApp.template.settings as unknown as FPMSettings;
     generateCustomPage(
         basePath,
