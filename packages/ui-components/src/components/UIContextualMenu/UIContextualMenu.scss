@@ -82,7 +82,7 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
         }
         // Contextual menu submenus
         &.ts-ContextualMenu-callout--submenu-beneath {
-            margin: -2px -2px 2px -2px;
+            margin: -2.5px -2px 2.5px -2px;
             .ts-ContextualMenu {
                 padding: 2px 0;
                 .ms-ContextualMenu-link {
