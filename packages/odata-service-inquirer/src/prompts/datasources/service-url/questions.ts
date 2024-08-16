@@ -4,8 +4,8 @@ import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConfirmQuestion, InputQuestion, PasswordQuestion, Question } from 'inquirer';
 import { t } from '../../../i18n';
 import type { OdataServiceAnswers, OdataServicePromptOptions } from '../../../types';
-import { promptNames } from '../../../types';
-import { PromptState } from '../../../utils';
+import { hostEnvironment, promptNames } from '../../../types';
+import { PromptState, getHostEnvironment } from '../../../utils';
 import LoggerHelper from '../../logger-helper';
 import { ConnectionValidator } from '../../connectionValidator';
 import { serviceUrlInternalPromptNames } from './types';
@@ -238,7 +238,7 @@ export function getServiceUrlQuestions({
         getIgnoreCertErrorsPrompt(connectValidator, requiredVersion)
     ];
 
-    if (!PromptState.isYUI) {
+    if (getHostEnvironment() === hostEnvironment.cli) {
         questions.push(getCliIgnoreCertValidatePrompt(connectValidator, requiredVersion));
     }
     questions.push(getUsernamePrompt(connectValidator), getPasswordPrompt(connectValidator, requiredVersion));

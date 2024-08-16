@@ -6,6 +6,7 @@ describe('questions', () => {
         // Wait for i18n to bootstrap so we can test localised strings
         await initI18nOdataServiceInquirer();
     });
+
     test('should return expected questions', () => {
         const newSystemQuestions = getNewSystemQuestions();
         expect(newSystemQuestions).toMatchInlineSnapshot(`

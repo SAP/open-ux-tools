@@ -8,6 +8,7 @@ import type { InputQuestion, ListChoiceOptions, PasswordQuestion, Question } fro
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import { t } from '../../../../i18n';
 import {
+    hostEnvironment,
     promptNames,
     type OdataServiceAnswers,
     type ServiceSelectionPromptOptions,
@@ -15,7 +16,7 @@ import {
     type OdataServicePromptOptions,
     type SystemNamePromptOptions
 } from '../../../../types';
-import { PromptState } from '../../../../utils';
+import { PromptState, getHostEnvironment } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import type { NewSystemAnswers } from '../new-system/questions';
@@ -161,7 +162,7 @@ export function getAbapOnPremQuestions(promptOptions?: OdataServicePromptOptions
     } as ListQuestion<AbapOnPremAnswers> | AutocompleteQuestionOptions<AbapOnPremAnswers>);
 
     // Only for CLI use as `list` prompt validation does not run on CLI
-    if (!PromptState.isYUI) {
+    if (getHostEnvironment() === hostEnvironment.cli) {
         questions.push({
             when: async (answers: AbapOnPremAnswers): Promise<boolean> => {
                 if (answers.serviceSelection && answers.systemUrl) {

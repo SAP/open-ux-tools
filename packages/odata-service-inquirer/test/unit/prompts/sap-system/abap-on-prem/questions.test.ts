@@ -10,6 +10,8 @@ import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-s
 import { getAbapOnPremQuestions } from '../../../../../src/prompts/datasources/sap-system/abap-on-prem/questions';
 import LoggerHelper from '../../../../../src/prompts/logger-helper';
 import { PromptState } from '../../../../../src/utils';
+import * as utils from '../../../../../src/utils';
+import { hostEnvironment } from '../../../../../src/types';
 
 const v2Metadata =
     '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"></edmx:Edmx>';
@@ -582,6 +584,7 @@ describe('questions', () => {
     });
 
     test('Should get the service detailed on CLI using `when` condition(list validators dont run on CLI)', async () => {
+        const getHostEnvSpy = jest.spyOn(utils, 'getHostEnvironment').mockReturnValueOnce(hostEnvironment.cli);
         const annotations = [
             {
                 Definitions: v2Annotations,
@@ -606,6 +609,7 @@ describe('questions', () => {
         } as Partial<ServiceProvider>;
 
         const newSystemQuestions = getAbapOnPremQuestions();
+        expect(getHostEnvSpy).toHaveBeenCalled();
         const cliServicePromptName = newSystemQuestions.find((question) => question.name === 'cliServicePromptName');
         expect(
             await (cliServicePromptName?.when as Function)({
