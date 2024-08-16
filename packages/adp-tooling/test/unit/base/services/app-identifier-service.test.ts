@@ -1,11 +1,11 @@
-import { Manifest } from '@sap-ux/project-access';
+import type { Manifest } from '@sap-ux/project-access';
 
+import type { Application } from '../../../../src';
 import {
     AppIdentifier,
     isV4Application,
     getApplicationType,
     isSupportedType,
-    Application,
     FlexLayer,
     ApplicationType
 } from '../../../../src';
