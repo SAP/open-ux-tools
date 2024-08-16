@@ -83,6 +83,9 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
         // Contextual menu submenus
         &.ts-ContextualMenu-callout--submenu-beneath {
             margin: -2px -2px 2px -2px;
+            .ts-ContextualMenu {
+                padding: 2px 0;
+            }
         }
     }
 }
@@ -124,6 +127,15 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
                         $layout-dropdown-menu-item-hover-color,
                         $layout-dropdown-menu-item-hover-color
                     );
+                }
+            }
+        }
+
+        > .ms-ContextualMenu-link {
+            &.is-checked {
+                padding-left: $menu-item-horizontal-padding / 2;
+                .ms-ContextualMenu-checkmarkIcon {
+                    padding-right: $menu-item-horizontal-padding / 2;
                 }
             }
         }
@@ -286,7 +298,6 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
 
     // Layout type - contextual
     &.ts-ContextualMenu--contextual {
-        padding: 2px 0;
         .ms-ContextualMenu-item {
             > .ms-ContextualMenu-link,
             > div > button {
