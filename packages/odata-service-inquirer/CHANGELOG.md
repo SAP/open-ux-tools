@@ -1,5 +1,74 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.22
+
+### Patch Changes
+
+-   Updated dependencies [08b788c]
+    -   @sap-ux/store@0.9.1
+    -   @sap-ux/telemetry@0.5.20
+
+## 0.5.21
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.5
+
+## 0.5.20
+
+### Patch Changes
+
+-   Updated dependencies [e7a6c68]
+    -   @sap-ux/store@0.9.0
+    -   @sap-ux/telemetry@0.5.19
+
+## 0.5.19
+
+### Patch Changes
+
+-   Updated dependencies [dced368]
+    -   @sap-ux/store@0.8.0
+    -   @sap-ux/telemetry@0.5.18
+
+## 0.5.18
+
+### Patch Changes
+
+-   Updated dependencies [82aaea3]
+    -   @sap-ux/project-access@1.26.6
+    -   @sap-ux/axios-extension@1.16.3
+    -   @sap-ux/telemetry@0.5.17
+
+## 0.5.17
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.4
+
+## 0.5.16
+
+### Patch Changes
+
+-   Updated dependencies [cc16cbb]
+    -   @sap-ux/project-access@1.26.5
+    -   @sap-ux/axios-extension@1.16.3
+    -   @sap-ux/telemetry@0.5.16
+
+## 0.5.15
+
+### Patch Changes
+
+-   Updated dependencies [593ad0f]
+    -   @sap-ux/project-input-validator@0.3.3
+
+## 0.5.14
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.4
+-   @sap-ux/axios-extension@1.16.3
+-   @sap-ux/telemetry@0.5.15
+
 ## 0.5.13
 
 ### Patch Changes

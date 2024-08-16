@@ -6,5 +6,10 @@
         "lib": ["ES2022", "ESNext.BigInt"],
         "preserveConstEnums": true
     },
-    "include": ["src"]
+    "include": ["src"],
+    "references": [
+    {
+      "path": "../text-document-utils"
+    }
+  ]
 }

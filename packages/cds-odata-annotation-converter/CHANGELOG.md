@@ -1,5 +1,22 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.3.4
+
+### Patch Changes
+
+-   26379ea: - Updated dependencies - @sap/ux-cds-compiler-facade@1.14.1
+
+## 0.3.3
+
+### Patch Changes
+
+-   ac22b7e: feat: new package for text document utility functions and types
+-   Updated dependencies [ac22b7e]
+    -   @sap-ux/cds-annotation-parser@0.2.1
+    -   @sap-ux/text-document-utils@0.2.0
+    -   @sap-ux/odata-annotation-core@0.2.1
+    -   @sap-ux/odata-vocabularies@0.4.1
+
 ## 0.3.2
 
 ### Patch Changes

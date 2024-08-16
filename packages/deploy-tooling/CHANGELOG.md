@@ -1,5 +1,33 @@
 # @sap-ux/deploy-tooling
 
+## 0.15.12
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.8
+-   @sap-ux/ui5-config@0.23.1
+
+## 0.15.11
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.7
+-   @sap-ux/ui5-config@0.23.1
+
+## 0.15.10
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.6
+-   @sap-ux/ui5-config@0.23.1
+
+## 0.15.9
+
+### Patch Changes
+
+-   Updated dependencies [593ad0f]
+    -   @sap-ux/project-input-validator@0.3.3
+
 ## 0.15.8
 
 ### Patch Changes

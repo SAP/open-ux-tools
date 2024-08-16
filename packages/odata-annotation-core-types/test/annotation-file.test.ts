@@ -1,4 +1,4 @@
-import { Range } from 'vscode-languageserver-types';
+import { Range } from '@sap-ux/text-document-utils';
 
 import {
     createTextNode,
