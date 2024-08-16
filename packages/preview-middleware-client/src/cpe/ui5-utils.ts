@@ -13,7 +13,8 @@ export function getComponent<T extends Component = Component>(id: ID): T | undef
     if (Component?.getComponentById) {
         return Component.getComponentById(id) as T;
     } else if (Component?.get) {
-        return Component.get(id) as T;
+        // Older version must be still supported until maintenance period.
+        return Component.get(id) as T; // NOSONAR
     } else {
         // Older version must be still supported until maintenance period.
         return sap.ui.getCore().getComponent(id) as T; // NOSONAR

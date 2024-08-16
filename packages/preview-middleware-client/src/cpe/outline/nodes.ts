@@ -81,7 +81,8 @@ function addChildToExtensionPoint(id: string, children: OutlineNode[]) {
  * @param input outline view node
  * @param scenario type of project
  * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
- * @returns {Promise<OutlineNode[]>} transformed outline tree nodes
+ * @param controlIndex
+ * @returns transformed outline tree nodes
  */
 export async function transformNodes(
     input: OutlineViewNode[],

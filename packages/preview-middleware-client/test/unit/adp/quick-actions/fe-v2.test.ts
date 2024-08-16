@@ -101,7 +101,7 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'kind': 'simple',
                                     id: 'listReport0-enable-clear-filter-bar',
-                                    title: 'V2_QUICK_ACTION_LR_ENABLE_CLEAR_FILTER_BAR',
+                                    title: 'Enable clear filterbar button',
                                     enabled: true
                                 }
                             ]

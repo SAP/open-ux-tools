@@ -57,13 +57,17 @@ export class ToggleClearFilterBarQuickAction implements SimpleQuickActionDefinit
             }
 
             const flexSettings = this.context.rta.getFlexSettings();
+            const parent = modifiedControl.getParent();
+            if (!parent) {
+                return [];
+            }
 
             const modifiedValue = {
                 reference: getReference(modifiedControl),
                 appComponent: getAppComponent(modifiedControl),
                 changeType: 'appdescr_fe_changePageConfiguration',
                 parameters: {
-                    page: getPageName(modifiedControl.getParent()),
+                    page: getPageName(parent),
                     entityPropertyChange: {
                         propertyPath: PROPERTY_PATH,
                         propertyValue: !this.isClearButtonEnabled,

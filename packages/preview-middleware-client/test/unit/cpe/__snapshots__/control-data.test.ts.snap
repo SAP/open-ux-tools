@@ -6,10 +6,10 @@ Object {
   "name": "sap.m.Button",
   "properties": Array [
     Object {
-      "editor": "dropdown",
+      "editor": "input",
       "isEnabled": false,
+      "isIcon": true,
       "name": "activeIcon",
-      "options": Array [],
       "readableName": "Active Icon",
       "type": "string",
       "ui5Type": "sap.ui.core.URI",
@@ -86,10 +86,10 @@ Object {
       "value": undefined,
     },
     Object {
-      "editor": "dropdown",
+      "editor": "input",
       "isEnabled": false,
+      "isIcon": false,
       "name": "width",
-      "options": Array [],
       "readableName": "Width",
       "type": "string",
       "ui5Type": "sap.ui.core.CSSSize",

@@ -1999,6 +1999,9 @@ importers:
       '@sap-ux/eslint-plugin-fiori-tools':
         specifier: workspace:*
         version: link:../eslint-plugin-fiori-tools
+      '@sap-ux/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@sapui5/types':
         specifier: 1.120.5
         version: 1.120.5

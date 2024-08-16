@@ -21,7 +21,7 @@ import {
 import AddFragment from '../../../src/adp/controllers/AddFragment.controller';
 import ControllerExtension from '../../../src/adp/controllers/ControllerExtension.controller';
 import ExtensionPoint from '../../../src/adp/controllers/ExtensionPoint.controller';
-import * as cpeUtils from '../../../src/cpe/outline/utils';
+import * as cpeUtils from '../../../src/cpe/utils';
 
 describe('Dialogs', () => {
     describe('initDialogs', () => {

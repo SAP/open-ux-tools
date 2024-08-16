@@ -6,7 +6,7 @@ import type { ExternalAction } from '@sap-ux-private/control-property-editor-com
 import { outlineChanged, SCENARIO, showMessage } from '@sap-ux-private/control-property-editor-common';
 
 import { getError } from '../error-utils';
-// import type { QuickActionService } from '../quick-actions/quick-action-service';
+import { getResourceBundle } from '../../i18n';
 import { ControlTreeIndex } from '../types';
 import { transformNodes } from './nodes';
 
@@ -31,6 +31,9 @@ export class OutlineService extends EventTarget {
     public async init(sendAction: (action: ExternalAction) => void): Promise<void> {
         const outline = await this.rta.getService<RTAOutlineService>('outline');
         const scenario = this.rta.getFlexSettings().scenario;
+        const resourceBundle = await getResourceBundle();
+        const key = 'ADP_REUSE_COMPONENTS_MESSAGE';
+        const message = resourceBundle.getText(key) ?? key;
         let hasSentWarning = false;
         const reuseComponentsIds = new Set<string>();
         const syncOutline = async () => {
@@ -50,8 +53,7 @@ export class OutlineService extends EventTarget {
                 if (reuseComponentsIds.size > 0 && scenario === SCENARIO.AdaptationProject && !hasSentWarning) {
                     sendAction(
                         showMessage({
-                            message:
-                                'Have in mind that reuse components are detected for some views in this application and controller extensions and adding fragments are not supported for such views. Controller extension and adding fragment functionality on these views will be disabled.',
+                            message,
                             shouldHideIframe: false
                         })
                     );
