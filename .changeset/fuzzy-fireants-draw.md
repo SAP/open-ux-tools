@@ -3,4 +3,4 @@
 "@sap-ux/ui-components": patch
 ---
 
-chore upgrade @fluentui/react
+chore upgrade @fluentui/react@8.120.5
