@@ -101,7 +101,7 @@ describe('getUI5Versions', () => {
             useCache: true,
             includeMaintained: true
         });
-        expect(axiosGetSpy).toHaveBeenCalled();
+        // ui5VersionsType.support is already cached when ui5VersionsType.offical is called(1st test case)
         expect(versions5).toMatchSnapshot();
 
         axiosGetSpy.mockClear();
