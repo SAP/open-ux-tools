@@ -1,5 +1,3 @@
-import type Event from 'sap/ui/base/Event';
-
 import * as common from '@sap-ux-private/control-property-editor-common';
 
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';

@@ -84,7 +84,6 @@ export async function getAllSyncViewsIds(minor: number): Promise<string[]> {
     const syncViewIds: string[] = [];
     try {
         if (minor < 120) {
-            const Element = (await import('sap/ui/core/Element')).default;
             const elements = Element.registry.filter(() => true) as UI5Element[];
             elements.forEach((ui5Element) => {
                 if (isSyncView(ui5Element)) {

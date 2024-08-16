@@ -20,6 +20,7 @@ export interface NestedQuickActionListItemProps {
  *
  * @param props Component props.
  * @param props.action Nested Quick Action to render.
+ * @param props.actionIdx
  * @returns ReactElement
  */
 export function NestedQuickActionListItem({ action, actionIdx }: NestedQuickActionListItemProps): ReactElement {
@@ -34,6 +35,7 @@ export function NestedQuickActionListItem({ action, actionIdx }: NestedQuickActi
      *
      * @param children Node children.
      * @param childIdx Nested Level.
+     * @param nestedLevel
      * @returns ReactElement
      */
     const buildMenuItems = function (

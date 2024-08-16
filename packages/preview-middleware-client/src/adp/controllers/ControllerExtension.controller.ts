@@ -17,9 +17,6 @@ import JSONModel from 'sap/ui/model/json/JSONModel';
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-/** sap.ui.fl */
-import Utils from 'sap/ui/fl/Utils';
-
 /** sap.ui.layout */
 import type SimpleForm from 'sap/ui/layout/form/SimpleForm';
 

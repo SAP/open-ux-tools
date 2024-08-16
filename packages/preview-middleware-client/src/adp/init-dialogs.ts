@@ -97,6 +97,7 @@ export const getAddFragmentItemText = (overlay: ElementOverlay) => {
  * @param rta Runtime Authoring
  * @param dialogName Dialog name
  * @param extensionPointData Control ID
+ * @param aggregation Name of aggregation that should be selected when dialog is opened
  */
 export async function handler(
     overlay: UI5Element,

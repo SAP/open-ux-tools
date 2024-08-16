@@ -265,8 +265,8 @@ export class ChangeService {
                 try {
                     if (typeof command.getCommands === 'function') {
                         const subCommands = command.getCommands();
-                        subCommands.forEach((command) => {
-                            const pendingChange = this.prepareChangeType(command, inactiveCommandCount, i);
+                        subCommands.forEach((subCommand) => {
+                            const pendingChange = this.prepareChangeType(subCommand, inactiveCommandCount, i);
                             if (pendingChange) {
                                 activeChanges.push(pendingChange);
                             }

@@ -34,8 +34,8 @@ export class QuickActionService implements Service {
     /**
      *
      * @param rta - rta object.
-     * @param outlineService
-     * @param registries
+     * @param outlineService - Outline service instance
+     * @param registries - Quick action registries
      */
     constructor(
         private readonly rta: RuntimeAuthoring,
@@ -103,11 +103,7 @@ export class QuickActionService implements Service {
                             resourceBundle: this.resourceBundle
                         });
                         await instance.initialize();
-                        if (instance.isActive) {
-                            const quickAction = instance.getActionObject();
-                            group.actions.push(quickAction);
-                            this.actions.push(instance);
-                        }
+                        this.addAction(group, instance);
                     } catch {
                         Log.warning(`Failed to initialize ${Definition.name} quick action.`);
                     }
@@ -117,6 +113,14 @@ export class QuickActionService implements Service {
         }
 
         this.sendAction(quickActionListChanged(groups));
+    }
+
+    private addAction(group: QuickActionGroup, instance: QuickActionDefinition): void {
+        if (instance.isActive) {
+            const quickAction = instance.getActionObject();
+            group.actions.push(quickAction);
+            this.actions.push(instance);
+        }
     }
 
     private executeAction(actionInstance: QuickActionDefinition, payload: QuickActionExecutionPayload) {

@@ -6,7 +6,7 @@ import { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-
 
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
-import SmartTable from 'sap/ui/comp/smarttable/SmartTable';
+import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
 import Table from 'sap/m/Table';
 import { getControlById, isA } from '../../../cpe/utils';
 import UI5Element from 'sap/ui/core/Element';
@@ -40,9 +40,6 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
     constructor(private context: QuickActionContext) {}
 
     async initialize() {
-        let index = 0;
-        // if (this.context.controlIndex['sap.m.IconTabBar']) {
-        // } else {
         const tabBar = getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, [
             'sap.m.IconTabBar'
         ])[0];
@@ -73,14 +70,14 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
                         iconTabBarFilterKey: tabKey
                     };
                 } else {
-                    if (table.isA('sap.ui.comp.smarttable.SmartTable')) {
+                    if (isA<SmartTable>('sap.ui.comp.smarttable.SmartTable', table)) {
                         this.children.push({
-                            label: `'${(table as SmartTable).getHeader()}' table`,
+                            label: `'${table.getHeader()}' table`,
                             children: []
                         });
                     }
-                    if (table.isA('sap.m.Table')) {
-                        const title = (table as Table)?.getHeaderToolbar()?.getTitleControl()?.getText() || 'Unknown';
+                    if (isA<Table>('sap.m.Table', table)) {
+                        const title = table?.getHeaderToolbar()?.getTitleControl()?.getText() || 'Unknown';
                         this.children.push({
                             label: `'${title}' table`,
                             children: []
@@ -90,11 +87,9 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
                         table
                     };
                 }
-
-                index++;
             }
         }
-        // }
+
         if (this.children.length > 0) {
             this.isActive = true;
         }
@@ -114,8 +109,7 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
     async execute(path: string): Promise<FlexCommand[]> {
         const { table, iconTabBarFilterKey } = this.tableMap[path];
         if (table) {
-            const element = document.getElementById(table.getId());
-            element?.scrollIntoView();
+            getControlById(table.getId())?.getDomRef()?.scrollIntoView();
             const controlOverlay = OverlayUtil.getClosestOverlayFor(table);
             if (controlOverlay) {
                 controlOverlay.setSelected(true);

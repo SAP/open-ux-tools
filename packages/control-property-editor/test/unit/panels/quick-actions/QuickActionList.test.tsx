@@ -117,7 +117,6 @@ describe('QuickActionList', () => {
             })
         );
 
-
         // nested quick actions
         fireEvent.click(quickAction2);
 

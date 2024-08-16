@@ -208,8 +208,8 @@ export function registerAppIcons(): void {
             chevronLeft: (
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
+                        fillRule="evenodd"
+                        clipRule="evenodd"
                         d="M9.24927 13L9.99927 12.338L6.16727 7.997L9.99527 3.662L9.24527 3L5.12527 7.666C4.95827 7.855 4.95827 8.139 5.12527 8.328L9.24927 13Z"
                         fill="var(--vscode-editor-foreground)"
                     />
