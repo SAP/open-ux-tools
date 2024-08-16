@@ -85,6 +85,12 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
             margin: -2px -2px 2px -2px;
             .ts-ContextualMenu {
                 padding: 2px 0;
+                .ms-ContextualMenu-link {
+                    &.is-checked  .ms-ContextualMenu-checkmarkIcon {
+                        margin-right: 2px;
+                        margin-left: -2px;
+                    }
+                }
             }
         }
     }
@@ -132,11 +138,9 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
         }
 
         > .ms-ContextualMenu-link {
-            &.is-checked {
-                padding-left: $menu-item-horizontal-padding / 2;
-                .ms-ContextualMenu-checkmarkIcon {
-                    padding-right: $menu-item-horizontal-padding / 2;
-                }
+            &.is-checked  .ms-ContextualMenu-checkmarkIcon {
+                margin-right: $menu-item-horizontal-padding/2;
+                margin-left: -$menu-item-horizontal-padding/2;
             }
         }
 
