@@ -139,25 +139,28 @@ async function parseUI5VersionsAndSupport(
 /**
  * Returns ui5 versions from cache object.
  *
- * @param type 'officialVersions' or 'snapshotsVersions
+ * @param type 'officialVersions', 'snapshotsVersions or 'support'
  * @param useCache - will not make a network call but use pre-cached versions
- * @param snapshotUrl - the url from which snapshot UI% versions may be requested
- * @returns Array of UI5 versions
+ * @param snapshotUrl - the url from which snapshot UI5 versions may be requested
+ * @returns Array of UI5 versions or UI5VersionSupport objects
  */
 const retrieveUI5VersionsCache = async (
     type: ui5VersionsType.official | ui5VersionsType.snapshot | ui5VersionsType.support,
     useCache = false,
     snapshotUrl?: string
 ): Promise<string[] | UI5VersionSupport[]> => {
+    let versions: string[] = [];
+    let support: UI5VersionSupport[] = [];
+
     if (!useCache) {
         switch (type) {
             case ui5VersionsType.official:
             case ui5VersionsType.support:
-                const { versions, support } = await parseUI5VersionsAndSupport();
+                ({ versions, support } = await parseUI5VersionsAndSupport());
                 return type === ui5VersionsType.official ? versions : support;
             case ui5VersionsType.snapshot:
                 if (snapshotUrl) {
-                    const { versions } = await parseUI5VersionsAndSupport(snapshotUrl);
+                    ({ versions } = await parseUI5VersionsAndSupport(snapshotUrl));
                     return versions;
                 }
                 break;
@@ -169,13 +172,13 @@ const retrieveUI5VersionsCache = async (
         switch (type) {
             case ui5VersionsType.official:
             case ui5VersionsType.support:
-                const { versions, support } = await parseUI5VersionsAndSupport();
+                ({ versions, support } = await parseUI5VersionsAndSupport());
                 ui5VersionsCache.officialVersions = versions;
                 ui5VersionsCache.support = support;
                 break;
             case ui5VersionsType.snapshot:
                 if (snapshotUrl) {
-                    const { versions } = await parseUI5VersionsAndSupport(snapshotUrl);
+                    ({ versions } = await parseUI5VersionsAndSupport(snapshotUrl));
                     ui5VersionsCache.snapshotsVersions = versions;
                 }
                 break;
