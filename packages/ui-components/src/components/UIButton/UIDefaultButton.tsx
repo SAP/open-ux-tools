@@ -4,6 +4,7 @@ import { DefaultButton } from '@fluentui/react';
 import { UIContextualMenu } from '../UIContextualMenu';
 import type { UIIContextualMenuProps } from '../UIContextualMenu';
 import { COMMON_INPUT_STYLES } from '../UIInput';
+import { UiIcons } from '../Icons';
 
 const VSCODE_BORDER_COLOR = 'var(--vscode-button-border, transparent)';
 export const BASE_STYLES = {
@@ -370,6 +371,15 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
-        return <DefaultButton {...this.props} styles={this.setStyle(this.props)} menuAs={UIContextualMenu} />;
+        return (
+            <DefaultButton
+                menuIconProps={{
+                    iconName: UiIcons.ArrowDown
+                }}
+                {...this.props}
+                styles={this.setStyle(this.props)}
+                menuAs={UIContextualMenu}
+            />
+        );
     }
 }
