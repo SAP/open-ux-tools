@@ -1,7 +1,7 @@
 import { t } from 'i18next';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
-import type { Application } from '../../types';
+import { Application, FlexLayer } from '../../types';
 import { isV4Application } from './manifest-service';
 import { getApplicationType, isSupportedType } from '../app-utils';
 
@@ -10,6 +10,8 @@ import { getApplicationType, isSupportedType } from '../app-utils';
  * particularly focusing on UI5 applications.
  */
 export class AppIdentifier {
+    private isCustomerBase: boolean;
+
     public appSync: boolean;
     public isV4AppInternalMode: boolean;
     public isSupportedAdpOverAdp: boolean;
@@ -18,9 +20,11 @@ export class AppIdentifier {
     /**
      * Initializes the AppIdentifier with specified base settings.
      *
-     * @param {boolean} isCustomerBase - Indicates whether the application is based on a customer base layer.
+     * @param {boolean} layer - Indicates whether the application is based on a customer base layer.
      */
-    constructor(private isCustomerBase: boolean) {}
+    constructor(layer: FlexLayer) {
+        this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
+    }
 
     /**
      * Determines if adaptation over adaptation (Adp over Adp) is fully supported.

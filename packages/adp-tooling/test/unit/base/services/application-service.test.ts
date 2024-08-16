@@ -1,6 +1,7 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import type { Application, ProviderService } from '../../../../src';
+
 import {
     ABAP_APPS_PARAMS,
     ABAP_VARIANT_APPS_PARAMS,
@@ -50,7 +51,6 @@ describe('Application Service', () => {
             searchMock.mockResolvedValue(mockApps);
 
             const apps = await service.loadApps(true);
-            console.log(apps);
             expect(apps.length).toBe(2);
             expect(apps[0].title).toEqual('App One');
         });
@@ -71,7 +71,6 @@ describe('Application Service', () => {
             searchMock.mockResolvedValueOnce(mockCloudApps).mockResolvedValueOnce(mockVariantApps);
 
             const apps = await service.loadApps(false);
-            console.log(apps);
             expect(apps.length).toBe(2);
             expect(apps).toEqual(
                 expect.arrayContaining([

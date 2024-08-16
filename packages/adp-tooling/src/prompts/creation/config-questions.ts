@@ -80,7 +80,7 @@ export default class ConfigInfoPrompter {
         this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
         this.isExtensionInstalled = isExtensionInstalledVsCode('sapse.sap-ux-application-modeler-extension');
 
-        this.appIdentifier = new AppIdentifier(this.isCustomerBase);
+        this.appIdentifier = new AppIdentifier(layer);
         this.appsService = new ApplicationService(this.providerService, this.isCustomerBase, this.logger);
     }
 
