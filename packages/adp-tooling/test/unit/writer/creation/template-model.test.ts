@@ -22,7 +22,7 @@ jest.mock('../../../../src/base/app-utils.ts', () => ({
 
 jest.mock('../../../../src/writer/creation/i18n-model.ts', () => ({ getI18nModels: jest.fn().mockReturnValue([]) }));
 
-jest.mock('../../../../src/writer/creation/config.ts', () => ({ getSupportForUI5Yaml: jest.fn() }));
+jest.mock('../../../../src/writer/creation/support-config.ts', () => ({ getSupportForUI5Yaml: jest.fn() }));
 
 jest.mock('../../../../src/writer/creation/deploy-config.ts', () => ({
     getUI5DeployConfig: jest.fn().mockReturnValue(undefined)

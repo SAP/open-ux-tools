@@ -18,7 +18,7 @@ import { FlexLayer } from '../../types';
 import type { ManifestService, ProviderService, UI5VersionService } from '../../base/services';
 import { getFormattedVersion, getOfficialBaseUI5VersionUrl } from '../../base/services';
 import { getI18nModels } from './i18n-model';
-import { getSupportForUI5Yaml } from './config';
+import { getSupportForUI5Yaml } from './support-config';
 import { getApplicationType } from '../../base';
 import { getUI5DeployConfig } from './deploy-config';
 import { parseParameters } from '../../base/services/flp-parameters';

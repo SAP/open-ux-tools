@@ -30,9 +30,9 @@ export function getUI5DeployConfig(isCloudProject: boolean, answers: DeployConfi
                     ? answers?.packageManual
                     : answers?.packageAutocomplete) ?? '',
             transport:
-                answers.transportInputChoice === InputChoice.ENTER_MANUALLY
+                (answers.transportInputChoice === InputChoice.ENTER_MANUALLY
                     ? answers?.transportManual
-                    : answers?.transportFromList
+                    : answers?.transportFromList) ?? ''
         };
     }
 }

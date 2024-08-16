@@ -1,4 +1,4 @@
-export * from './config';
+export * from './support-config';
 export * from './i18n-model';
 export * from './deploy-config';
 export * from './template-model';
