@@ -212,6 +212,7 @@ test('renders warning message for "ADAPTATION_PROJECT" scenario', async () => {
             canUndo: true,
             canRedo: true
         },
+        quickActions: [],
         canSave: true
     };
     render(<App previewUrl="" scenario="ADAPTATION_PROJECT" />, { initialState });
