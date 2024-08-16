@@ -50,16 +50,15 @@ export interface UI5Version {
     maintained?: boolean;
 }
 
-export interface UI5VersionOverview {
-    version: string;
-    support: string;
+export interface UI5VersionSupport extends UI5Version {
+    support?: string;
     lts?: string;
 }
 
 export interface UI5VersionsResponse {
     [key: string]: {
         patches?: string[];
-    } & UI5VersionOverview;
+    } & UI5VersionSupport;
 }
 
 export interface UI5Theme {
