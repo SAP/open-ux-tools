@@ -1,5 +1,5 @@
 import { coerce, gte } from 'semver';
-import type { UI5VersionOverview } from './types';
+import type { UI5VersionSupport } from './types';
 import { defaultMinUi5Version } from './constants';
 
 export const supportState = {
@@ -358,7 +358,7 @@ export const ui5VersionFallbacks = [
         version: '*',
         support: supportState.outOfMaintenance
     }
-] as UI5VersionOverview[];
+] as UI5VersionSupport[];
 
 const supportedUi5VersionFallbacks = ui5VersionFallbacks
     .filter((supportVersion) => {
