@@ -34,8 +34,7 @@ export function NestedQuickActionListItem({ action, actionIdx }: NestedQuickActi
     /**
      *
      * @param children Node children.
-     * @param childIdx Nested Level.
-     * @param nestedLevel
+     * @param nestedLevel Nested Level.
      * @returns ReactElement
      */
     const buildMenuItems = function (

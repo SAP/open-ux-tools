@@ -23,7 +23,7 @@ const getEmptyModel = (): ChangesSlice => {
     return model;
 };
 
-const filterInitOptions: FilterOptions[] = [{ name: FilterName.changeSummaryFilterQuery, value: '' }];
+const _filterInitOptions: FilterOptions[] = [{ name: FilterName.changeSummaryFilterQuery, value: '' }];
 describe('QuickActionList', () => {
     beforeAll(() => {
         initI18n();
