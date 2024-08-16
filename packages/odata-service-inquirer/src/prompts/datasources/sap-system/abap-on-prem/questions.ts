@@ -21,7 +21,6 @@ import LoggerHelper from '../../../logger-helper';
 import type { NewSystemAnswers } from '../new-system/questions';
 import { getUserSystemNameQuestion } from '../new-system/questions';
 import { getServiceChoices, getServiceMetadata, getServiceType } from './service-helper';
-import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 export enum abapOnPremInternalPromptNames {
     systemUrl = 'systemUrl',
@@ -162,7 +161,7 @@ export function getAbapOnPremQuestions(promptOptions?: OdataServicePromptOptions
     } as ListQuestion<AbapOnPremAnswers> | AutocompleteQuestionOptions<AbapOnPremAnswers>);
 
     // Only for CLI use as `list` prompt validation does not run on CLI
-    if (getHostEnvironment() === hostEnvironment.cli) {
+    if (!PromptState.isYUI) {
         questions.push({
             when: async (answers: AbapOnPremAnswers): Promise<boolean> => {
                 if (answers.serviceSelection && answers.systemUrl) {

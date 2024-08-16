@@ -1,7 +1,6 @@
 import type { FileBrowserQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { getCapCustomPaths } from '@sap-ux/project-access';
-import { hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { Question } from 'inquirer';
 import { t } from '../../../i18n';
 import type { CapServiceChoice, OdataServicePromptOptions } from '../../../types';
@@ -160,7 +159,7 @@ export function getLocalCapProjectPrompts(
         } as ListQuestion<CapServiceAnswers>
     ];
 
-    if (getHostEnvironment() === hostEnvironment.cli) {
+    if (!PromptState.isYUI) {
         prompts.push({
             when: async (answers: CapServiceAnswers): Promise<boolean> => {
                 if (answers?.capService) {

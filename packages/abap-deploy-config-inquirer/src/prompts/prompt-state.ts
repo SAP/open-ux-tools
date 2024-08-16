@@ -11,6 +11,8 @@ export class PromptState {
         transportRequired: true // assumed to be required unless the package is local
     };
 
+    public static isYUI = false;
+
     /**
      * Returns the current state of the abap deploy config answers.
      *

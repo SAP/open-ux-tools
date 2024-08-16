@@ -1,20 +1,10 @@
 import { initI18n, t } from '../../../../src/i18n';
 import { getTransportRequestPrompts } from '../../../../src/prompts/questions';
-import * as helpers from '../../../../src/prompts/helpers';
 import * as conditions from '../../../../src/prompts/conditions';
 import * as validators from '../../../../src/prompts/validators';
 import { abapDeployConfigInternalPromptNames, TransportChoices } from '../../../../src/types';
-import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { ListQuestion } from '@sap-ux/inquirer-common';
-import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import { PromptState } from '../../../../src/prompts/prompt-state';
-
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    getHostEnvironment: jest.fn()
-}));
-
-const mockGetHostEnvironment = getHostEnvironment as jest.Mock;
 
 describe('getTransportRequestPrompts', () => {
     beforeAll(async () => {
@@ -123,7 +113,7 @@ describe('getTransportRequestPrompts', () => {
     test('should return expected values from transportCliExecution prompt methods', async () => {
         const validateTransportChoiceInputSpy = jest.spyOn(validators, 'validateTransportChoiceInput');
 
-        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
+        PromptState.isYUI = false;
         const transportPrompts = getTransportRequestPrompts({});
         const transportCliExecutionPrompt = transportPrompts.find(
             (prompt) => prompt.name === abapDeployConfigInternalPromptNames.transportCliExecution

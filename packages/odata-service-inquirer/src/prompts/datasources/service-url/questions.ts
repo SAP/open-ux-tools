@@ -1,7 +1,6 @@
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import { extendWithOptions } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import { hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { ConfirmQuestion, InputQuestion, PasswordQuestion, Question } from 'inquirer';
 import { t } from '../../../i18n';
 import type { OdataServiceAnswers, OdataServicePromptOptions } from '../../../types';
@@ -239,7 +238,7 @@ export function getServiceUrlQuestions({
         getIgnoreCertErrorsPrompt(connectValidator, requiredVersion)
     ];
 
-    if (getHostEnvironment() === hostEnvironment.cli) {
+    if (!PromptState.isYUI) {
         questions.push(getCliIgnoreCertValidatePrompt(connectValidator, requiredVersion));
     }
     questions.push(getUsernamePrompt(connectValidator), getPasswordPrompt(connectValidator, requiredVersion));

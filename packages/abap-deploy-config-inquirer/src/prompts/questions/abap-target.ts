@@ -16,7 +16,6 @@ import { getAbapSystems } from '../../utils';
 import { PromptState } from '../prompt-state';
 import { Severity, type IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import { isAppStudio, isOnPremiseDestination, type Destinations } from '@sap-ux/btp-utils';
-import { hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     abapDeployConfigInternalPromptNames,
     ClientChoiceValue,
@@ -66,7 +65,7 @@ function getDestinationPrompt(
         } as ListQuestion<AbapDeployConfigAnswersInternal>
     ];
 
-    if (isAppStudio() && getHostEnvironment() === hostEnvironment.cli) {
+    if (isAppStudio() && !PromptState.isYUI) {
         prompts.push({
             when: (answers: AbapDeployConfigAnswersInternal): boolean => {
                 const destination = answers[abapDeployConfigInternalPromptNames.destination];
@@ -105,7 +104,7 @@ function getTargetSystemPrompt(
         } as ListQuestion<AbapDeployConfigAnswersInternal>
     ];
 
-    if (!isAppStudio() && getHostEnvironment() === hostEnvironment.cli) {
+    if (!isAppStudio() && !PromptState.isYUI) {
         prompts.push({
             when: (answers: AbapDeployConfigAnswersInternal): boolean => {
                 const target = answers[abapDeployConfigInternalPromptNames.targetSystem];
@@ -198,7 +197,7 @@ function getClientChoicePrompt(
         } as ListQuestion<AbapDeployConfigAnswersInternal>
     ];
 
-    if (getHostEnvironment() === hostEnvironment.cli) {
+    if (!PromptState.isYUI) {
         prompts.push({
             when: async (answers: AbapDeployConfigAnswersInternal): Promise<boolean> => {
                 const clientChoice = answers[abapDeployConfigInternalPromptNames.clientChoice];

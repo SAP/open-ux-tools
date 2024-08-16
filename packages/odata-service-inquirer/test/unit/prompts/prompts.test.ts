@@ -4,7 +4,6 @@ import { DatasourceType } from '../../../src/types';
 import * as btpUtils from '@sap-ux/btp-utils';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { ToolsLogger } from '@sap-ux/logger';
-import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
 
 /**
  * Workaround to for spyOn TypeError: Jest cannot redefine property
@@ -15,11 +14,6 @@ jest.mock('@sap-ux/btp-utils', () => {
         ...jest.requireActual('@sap-ux/btp-utils')
     };
 });
-
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    getHostEnvironment: jest.fn()
-}));
 
 describe('getQuestions', () => {
     beforeAll(async () => {
@@ -32,7 +26,6 @@ describe('getQuestions', () => {
         jest.restoreAllMocks();
     });
     test('getQuestions', async () => {
-        jest.spyOn(fioriGenShared, 'getHostEnvironment').mockReturnValue(fioriGenShared.hostEnvironment.cli);
         // Tests all declaritive values
         expect(await getQuestions()).toMatchInlineSnapshot(`
             [

@@ -1,5 +1,4 @@
 import type { ListQuestion } from 'inquirer';
-import { hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import { getLocalCapProjectPrompts } from '../../../../src/prompts/datasources/cap-project/questions';
 import type { CapService } from '../../../../src/types';
@@ -14,11 +13,6 @@ import * as capValidators from '../../../../src/prompts/datasources/cap-project/
 import type { CapCustomPaths } from '@sap-ux/project-access';
 import { errorHandler } from '../../../../src/prompts/prompt-helpers';
 import { type CdsVersionInfo } from '@sap-ux/project-access';
-
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    getHostEnvironment: jest.fn()
-}));
 
 jest.mock('../../../../src/error-handler/error-handler', () => ({
     ...jest.requireActual('../../../../src/error-handler/error-handler'),
@@ -84,7 +78,6 @@ jest.mock('../../../../src/prompts/datasources/cap-project/cap-helpers', () => (
 
 describe('getLocalCapProjectPrompts', () => {
     beforeAll(async () => {
-        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         // Wait for i18n to bootstrap so we can test localised strings
         await initI18nOdataServiceInquirer();
     });

@@ -3,7 +3,6 @@ import { validateAppDescription, validateUi5AbapRepoName } from '../../validator
 import { PromptState } from '../../prompt-state';
 import { t } from '../../../i18n';
 import { defaultAbapRepositoryName, defaultAppDescription } from '../../defaults';
-import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     abapDeployConfigInternalPromptNames,
     type AbapDeployConfigAnswersInternal,
@@ -38,7 +37,7 @@ function getUi5AbapRepoPrompt(options: AbapDeployConfigPromptOptions): Question<
             defaultAbapRepositoryName(previousAnswers, options),
         validate: (input: string): string | boolean => validateUi5AbapRepoName(input),
         filter: (input: string): string | undefined =>
-            getHostEnvironment() === hostEnvironment.cli ? input?.trim()?.toUpperCase() : input?.trim()
+            !PromptState.isYUI ? input?.trim()?.toUpperCase() : input?.trim()
     } as InputQuestion<AbapDeployConfigAnswersInternal>;
 }
 

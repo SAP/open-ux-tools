@@ -1,29 +1,12 @@
-import { isAppStudio } from '@sap-ux/btp-utils';
-
-export const hostEnvironment = {
-    vscode: {
-        name: 'Visual Studio Code',
-        technical: 'VSCode'
-    },
-    bas: {
-        name: 'SAP Business Application Studio',
-        technical: 'SBAS'
-    },
-    cli: {
-        name: 'CLI',
-        technical: 'CLI'
-    }
-};
-
 /**
- * Determine if the current prompting environment is cli or a hosted extension (app studio or vscode).
+ * Determine if the current prompting environment is cli .
  *
- * @returns the platform name and technical name
+ * @returns true if it is a cli environment, false otherwise
  */
-export function getHostEnvironment(): { name: string; technical: string } {
+export function isCli(): boolean {
     if (process.argv[1]?.includes('yo') || process.stdin.isTTY) {
-        return hostEnvironment.cli;
+        return true;
     } else {
-        return isAppStudio() ? hostEnvironment.bas : hostEnvironment.vscode;
+        return false;
     }
 }

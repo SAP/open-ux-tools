@@ -4,16 +4,9 @@ import * as helpers from '../../../../src/prompts/helpers';
 import * as conditions from '../../../../src/prompts/conditions';
 import * as validators from '../../../../src/prompts/validators';
 import { abapDeployConfigInternalPromptNames, PackageInputChoices } from '../../../../src/types';
-import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { ListQuestion } from '@sap-ux/inquirer-common';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
-
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    getHostEnvironment: jest.fn()
-}));
-
-const mockGetHostEnvironment = getHostEnvironment as jest.Mock;
+import { PromptState } from '../../../../src/prompts/prompt-state';
 
 describe('getPackagePrompts', () => {
     beforeAll(async () => {
@@ -60,7 +53,7 @@ describe('getPackagePrompts', () => {
                   "hint": "Select a package for the deployed application.",
                   "mandatory": true,
                 },
-                "message": "Package",
+                "message": "Package (Type to filter matching records)",
                 "name": "packageAutocomplete",
                 "source": [Function],
                 "type": "autocomplete",
@@ -109,7 +102,7 @@ describe('getPackagePrompts', () => {
         const validatePackageChoiceInputForCliSpy = jest.spyOn(validators, 'validatePackageChoiceInputForCli');
         validatePackageChoiceInputForCliSpy.mockResolvedValueOnce();
         // Cli
-        mockGetHostEnvironment.mockReturnValueOnce(hostEnvironment.cli);
+        PromptState.isYUI = false;
         const packagePromptsCli = getPackagePrompts({});
         const packageCliExecutionPromptCli = packagePromptsCli.find(
             (prompt) => prompt.name === abapDeployConfigInternalPromptNames.packageCliExecution
@@ -120,7 +113,7 @@ describe('getPackagePrompts', () => {
         }
 
         // Vscode
-        mockGetHostEnvironment.mockReturnValueOnce(hostEnvironment.vscode);
+        PromptState.isYUI = true;
 
         const packagePrompts = getPackagePrompts({});
         const packageCliExecutionPrompt = packagePrompts.find(
@@ -179,7 +172,7 @@ describe('getPackagePrompts', () => {
 
         if (packageAutocompletePrompt) {
             expect((packageAutocompletePrompt.when as Function)()).toBe(true);
-            mockGetHostEnvironment.mockReturnValueOnce(hostEnvironment.cli);
+            PromptState.isYUI = false;
             expect(
                 await ((packageAutocompletePrompt as AutocompleteQuestionOptions).source as Function)()
             ).toStrictEqual(['TEST_PACKAGE_1', 'TEST_PACKAGE_2']);

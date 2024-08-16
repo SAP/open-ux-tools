@@ -4,6 +4,7 @@ import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { type ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
 import type { Question } from 'inquirer';
 import autocomplete from 'inquirer-autocomplete-prompt';
+import { isCli } from '@sap-ux/fiori-generator-shared';
 import { ERROR_TYPE, ErrorHandler } from './error-handler/error-handler';
 import { initI18nOdataServiceInquirer } from './i18n';
 import { getQuestions } from './prompts';
@@ -39,7 +40,7 @@ async function getPrompts(
     logger?: Logger,
     enableGuidedAnswers = false,
     telemetryClient?: ToolsSuiteTelemetryClient,
-    isYUI = false
+    isYUI?: boolean
 ): Promise<{ prompts: OdataServiceQuestion[]; answers: Partial<OdataServiceAnswers> }> {
     // prompt texts must be loaded before the prompts are created, wait for the i18n bundle to be initialized
     await initI18nOdataServiceInquirer();
@@ -48,7 +49,9 @@ async function getPrompts(
     }
     ErrorHandler.logger = LoggerHelper.logger;
     ErrorHandler.guidedAnswersEnabled = enableGuidedAnswers;
-    PromptState.isYUI = isYUI;
+
+    PromptState.isYUI = isYUI ?? !isCli();
+
     setTelemetryClient(telemetryClient);
 
     return {
@@ -75,7 +78,7 @@ async function prompt(
     logger?: Logger,
     enableGuidedAnswers?: boolean,
     telemetryClient?: ToolsSuiteTelemetryClient,
-    isYUI = false
+    isYUI?: boolean
 ): Promise<OdataServiceAnswers> {
     if (adapter?.promptModule && promptOptions?.serviceSelection?.useAutoComplete) {
         const pm = adapter.promptModule;

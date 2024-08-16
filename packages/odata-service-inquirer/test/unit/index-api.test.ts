@@ -3,16 +3,10 @@ import { getPrompts } from '../../src/index';
 import * as prompts from '../../src/prompts';
 import LoggerHelper from '../../src/prompts/logger-helper';
 import { PromptState } from '../../src/utils';
-import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
 
 jest.mock('../../src/prompts', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('../../src/prompts')
-}));
-
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    getHostEnvironment: jest.fn()
 }));
 
 describe('API tests', () => {
@@ -43,7 +37,6 @@ describe('API tests', () => {
     });
 
     test('getPrompts, i18n is loaded', async () => {
-        jest.spyOn(fioriGenShared, 'getHostEnvironment').mockReturnValueOnce(fioriGenShared.hostEnvironment.cli);
         const { prompts: questions } = await getPrompts(undefined, undefined, true, undefined, true);
 
         expect(questions).toMatchInlineSnapshot(`
@@ -130,10 +123,6 @@ describe('API tests', () => {
                 "name": "capService",
                 "type": "list",
                 "validate": [Function],
-                "when": [Function],
-              },
-              {
-                "name": "capCliStateSetter",
                 "when": [Function],
               },
               {

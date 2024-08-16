@@ -1,6 +1,7 @@
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import { initI18n } from './i18n';
 import { PromptState } from './prompts/prompt-state';
+import { isCli } from '@sap-ux/fiori-generator-shared';
 import { getAbapDeployConfigQuestions } from './prompts';
 import LoggerHelper from './logger-helper';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
@@ -20,17 +21,20 @@ import { reconcileAnswers } from './utils';
  *
  * @param promptOptions - options that can control some of the prompt behavior. See {@link AbapDeployConfigPromptOptions} for details
  * @param logger - a logger compatible with the {@link Logger} interface
+ * @param isYUI - if true, the prompt is being called from the Yeoman UI extension host
  * @returns the prompts used to provide input for abap deploy config generation and a reference to the answers object which will be populated with the user's responses once `inquirer.prompt` returns
  */
 async function getPrompts(
     promptOptions?: AbapDeployConfigPromptOptions,
-    logger?: Logger
+    logger?: Logger,
+    isYUI?: boolean
 ): Promise<{
     prompts: AbapDeployConfigQuestion[];
     answers: Partial<AbapDeployConfigAnswers>;
 }> {
     await initI18n();
     LoggerHelper.logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/abap-deploy-config-inquirer' });
+    PromptState.isYUI = isYUI ?? !isCli();
 
     return {
         prompts: await getAbapDeployConfigQuestions(promptOptions),
@@ -45,14 +49,16 @@ async function getPrompts(
  * @param adapter - optionally provide references to a calling inquirer instance, this supports integration to Yeoman generators, for example
  * @param promptOptions - options that can control some of the prompt behavior. See {@link AbapDeployConfigPromptOptions} for details
  * @param logger - a logger compatible with the {@link Logger} interface
+ * @param isYUI - if true, the prompt is being called from the Yeoman UI extension host
  * @returns the prompt answers
  */
 async function prompt(
     adapter: InquirerAdapter,
     promptOptions?: AbapDeployConfigPromptOptions,
-    logger?: Logger
+    logger?: Logger,
+    isYUI?: boolean
 ): Promise<AbapDeployConfigAnswers> {
-    const abapDeployConfigPrompts = (await getPrompts(promptOptions, logger)).prompts;
+    const abapDeployConfigPrompts = (await getPrompts(promptOptions, logger, isYUI)).prompts;
     const answers = await adapter.prompt<AbapDeployConfigAnswersInternal>(abapDeployConfigPrompts);
 
     // Add dervied service answers to the answers object

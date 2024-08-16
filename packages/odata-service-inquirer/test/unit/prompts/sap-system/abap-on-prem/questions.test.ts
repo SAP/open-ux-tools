@@ -10,8 +10,6 @@ import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-s
 import { getAbapOnPremQuestions } from '../../../../../src/prompts/datasources/sap-system/abap-on-prem/questions';
 import LoggerHelper from '../../../../../src/prompts/logger-helper';
 import { PromptState } from '../../../../../src/utils';
-import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import * as fioriGeneratorShared from '@sap-ux/fiori-generator-shared';
 
 const v2Metadata =
     '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"></edmx:Edmx>';
@@ -47,11 +45,6 @@ jest.mock('../../../../../src/prompts/connectionValidator', () => {
         ConnectionValidator: jest.fn().mockImplementation(() => connectionValidatorMock)
     };
 });
-
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    getHostEnvironment: jest.fn()
-}));
 
 const serviceV4a = {
     id: '/DMO/FLIGHT',
@@ -89,7 +82,6 @@ describe('questions', () => {
     });
 
     test('should return expected questions', () => {
-        jest.spyOn(fioriGeneratorShared, 'getHostEnvironment').mockReturnValueOnce(hostEnvironment.cli);
         const newSystemQuestions = getAbapOnPremQuestions();
         expect(newSystemQuestions).toMatchInlineSnapshot(`
             [
@@ -590,9 +582,6 @@ describe('questions', () => {
     });
 
     test('Should get the service detailed on CLI using `when` condition(list validators dont run on CLI)', async () => {
-        const getHostEnvSpy = jest
-            .spyOn(fioriGeneratorShared, 'getHostEnvironment')
-            .mockReturnValueOnce(hostEnvironment.cli);
         const annotations = [
             {
                 Definitions: v2Annotations,
@@ -617,7 +606,6 @@ describe('questions', () => {
         } as Partial<ServiceProvider>;
 
         const newSystemQuestions = getAbapOnPremQuestions();
-        expect(getHostEnvSpy).toHaveBeenCalled();
         const cliServicePromptName = newSystemQuestions.find((question) => question.name === 'cliServicePromptName');
         expect(
             await (cliServicePromptName?.when as Function)({

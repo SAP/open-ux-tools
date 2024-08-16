@@ -26,9 +26,8 @@ import {
 } from '../../src/prompts/conditions';
 import * as utils from '../../src/utils';
 import { PromptState } from '../../src/prompts/prompt-state';
-import { getHostEnvironment, hostEnvironment, getHelpUrl } from '@sap-ux/fiori-generator-shared';
+import { getHelpUrl } from '@sap-ux/fiori-generator-shared';
 import { isFeatureEnabled } from '@sap-ux/feature-toggle';
-import { t } from '@sap-ux/inquirer-common/src/i18n';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()
@@ -45,7 +44,6 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
 }));
 
 const mockIsAppStudio = isAppStudio as jest.Mock;
-const mockGetHostEnvironment = getHostEnvironment as jest.Mock;
 const mockGetHelpUrl = getHelpUrl as jest.Mock;
 const mockIsFeatureEnabled = isFeatureEnabled as jest.Mock;
 
@@ -108,24 +106,24 @@ describe('Test abap deploy config inquirer conditions', () => {
             }
         };
         mockIsAppStudio.mockReturnValueOnce(false);
-        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
+        PromptState.isYUI = false;
         expect(showClientChoiceQuestion(options, false)).toBe(true);
     });
 
     test('should not show client choice question', () => {
         mockIsAppStudio.mockReturnValueOnce(false);
-        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
+        PromptState.isYUI = false;
         expect(showClientChoiceQuestion({}, true)).toBe(false);
     });
 
     test('should show client question', () => {
-        mockGetHostEnvironment.mockReturnValue(hostEnvironment.vscode);
+        PromptState.isYUI = true;
         mockIsAppStudio.mockReturnValueOnce(false);
         expect(showClientQuestion({}, options, false)).toBe(true);
     });
 
     test('should show client question (CLI)', () => {
-        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
+        PromptState.isYUI = false;
         mockIsAppStudio.mockReturnValue(false);
         expect(showClientQuestion({ clientChoice: ClientChoiceValue.New }, options, false)).toBe(true);
     });
@@ -165,7 +163,7 @@ describe('Test abap deploy config inquirer conditions', () => {
 
     test('should show package input choice question', () => {
         // cli
-        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
+        PromptState.isYUI = false;
         expect(showPackageInputChoiceQuestion()).toBe(true);
 
         // feature enabled
@@ -174,7 +172,7 @@ describe('Test abap deploy config inquirer conditions', () => {
     });
 
     test('should not show package input choice question', () => {
-        mockGetHostEnvironment.mockReturnValue(hostEnvironment.vscode);
+        PromptState.isYUI = true;
         mockIsFeatureEnabled.mockReturnValueOnce(true);
         PromptState.transportAnswers.transportConfig = {
             getPackage: () => 'ZPACKAGE1'

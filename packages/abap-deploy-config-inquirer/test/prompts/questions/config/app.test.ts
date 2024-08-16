@@ -4,14 +4,6 @@ import * as conditions from '../../../../src/prompts/conditions';
 import * as validators from '../../../../src/prompts/validators';
 import { abapDeployConfigInternalPromptNames, TransportConfig } from '../../../../src/types';
 import { PromptState } from '../../../../src/prompts/prompt-state';
-import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    getHostEnvironment: jest.fn()
-}));
-
-const mockGetHostEnvironment = getHostEnvironment as jest.Mock;
 
 describe('getConfirmPrompts', () => {
     beforeAll(async () => {
@@ -78,9 +70,9 @@ describe('getConfirmPrompts', () => {
             expect((ui5AbapRepoPrompt.default as Function)({ ui5AbapRepo: 'ZTEST' })).toBe('ZTEST');
             expect((ui5AbapRepoPrompt.validate as Function)()).toBe(true);
 
-            mockGetHostEnvironment.mockReturnValueOnce(hostEnvironment.cli);
+            PromptState.isYUI = false;
             expect((ui5AbapRepoPrompt.filter as Function)('test')).toBe('TEST');
-            mockGetHostEnvironment.mockReturnValueOnce(hostEnvironment.vscode);
+            PromptState.isYUI = true;
             expect((ui5AbapRepoPrompt.filter as Function)('test  ')).toBe('test');
         }
     });

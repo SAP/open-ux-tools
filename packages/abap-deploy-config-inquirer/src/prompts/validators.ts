@@ -13,7 +13,7 @@ import { t } from '../i18n';
 import { findBackendSystemByUrl, initTransportConfig, getPackageAnswer, queryPackages } from '../utils';
 import { handleErrorMessage } from '../error-handler';
 import { AuthenticationType } from '@sap-ux/store';
-import { getHostEnvironment, hostEnvironment, getHelpUrl, HELP_TREE } from '@sap-ux/fiori-generator-shared';
+import { getHelpUrl, HELP_TREE } from '@sap-ux/fiori-generator-shared';
 import LoggerHelper from '../logger-helper';
 import {
     ClientChoiceValue,
@@ -147,7 +147,7 @@ export function validateUrl(input: string): boolean | string {
  * @throws Error if target system is invalid
  */
 export function validateTargetSystemUrlCli(targetSystem?: string, choices?: AbapSystemChoice[]): void {
-    if (getHostEnvironment() === hostEnvironment.cli) {
+    if (!PromptState.isYUI) {
         const isTargetValid = validateTargetSystem(targetSystem, choices);
         if (typeof isTargetValid === 'string') {
             throw new Error(isTargetValid);

@@ -5,7 +5,6 @@ import {
     ClientChoiceValue,
     TargetSystemType
 } from '../../../src/types';
-import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { getAbapTargetPrompts } from '../../../src/prompts/questions';
 import { getAbapSystems } from '../../../src/utils';
 import { mockDestinations } from '../../fixtures/destinations';
@@ -16,16 +15,12 @@ import * as conditions from '../../../src/prompts/conditions';
 import { initI18n, t } from '../../../src/i18n';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { UrlAbapTarget } from '@sap-ux/system-access';
+import { PromptState } from '../../../src/prompts/prompt-state';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
     isOnPremiseDestination: jest.fn(),
     isAppStudio: jest.fn()
-}));
-
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    getHostEnvironment: jest.fn()
 }));
 
 jest.mock('../../../src/utils', () => ({
@@ -35,7 +30,6 @@ jest.mock('../../../src/utils', () => ({
 
 const mockIsOnPremiseDestination = isOnPremiseDestination as jest.Mock;
 const mockIsAppStudio = isAppStudio as jest.Mock;
-const mockGetHostEnvironment = getHostEnvironment as jest.Mock;
 const mockGetAbapSystems = getAbapSystems as jest.Mock;
 
 describe('getAbapTargetPrompts', () => {
@@ -48,7 +42,7 @@ describe('getAbapTargetPrompts', () => {
             destinations: undefined,
             backendSystems: undefined
         });
-        mockGetHostEnvironment.mockReturnValue(hostEnvironment.vscode);
+        PromptState.isYUI = true;
         const prompts = await getAbapTargetPrompts({});
         expect(prompts).toMatchInlineSnapshot(`
             Array [
@@ -185,7 +179,7 @@ describe('getAbapTargetPrompts', () => {
     });
 
     test('should return expected values from destination prompt methods on CLI', async () => {
-        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
+        PromptState.isYUI = false;
         mockIsAppStudio.mockReturnValue(true);
         mockGetAbapSystems.mockResolvedValueOnce({
             destinations: mockDestinations,
@@ -255,7 +249,7 @@ describe('getAbapTargetPrompts', () => {
     });
 
     test('should return expected values from target prompt methods on CLI', async () => {
-        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
+        PromptState.isYUI = false;
         mockIsAppStudio.mockReturnValue(false);
         mockGetAbapSystems.mockResolvedValueOnce({
             destinations: undefined,
@@ -282,7 +276,7 @@ describe('getAbapTargetPrompts', () => {
             destinations: undefined,
             backendSystems: undefined
         });
-        mockGetHostEnvironment.mockReturnValue(hostEnvironment.vscode);
+        PromptState.isYUI = true;
         jest.spyOn(validators, 'validateTargetSystemUrlCli').mockReturnValueOnce();
         jest.spyOn(validators, 'validateUrl').mockReturnValueOnce(true);
         const abapTargetPrompts = await getAbapTargetPrompts({});

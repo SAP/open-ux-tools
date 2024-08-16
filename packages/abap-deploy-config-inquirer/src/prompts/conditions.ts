@@ -4,7 +4,7 @@ import { clientDoesNotExistOrInvalid } from '../validator-utils';
 import { findBackendSystemByUrl, initTransportConfig } from '../utils';
 import { handleErrorMessage } from '../error-handler';
 import { t } from '../i18n';
-import { getHostEnvironment, hostEnvironment, getHelpUrl, HELP_TREE } from '@sap-ux/fiori-generator-shared';
+import { getHelpUrl, HELP_TREE } from '@sap-ux/fiori-generator-shared';
 import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 import LoggerHelper from '../logger-helper';
 import {
@@ -78,7 +78,7 @@ export function showClientChoiceQuestion(
     options?: AbapDeployConfigPromptOptions,
     isS4HanaCloudSystem?: boolean
 ): boolean {
-    if (getHostEnvironment() !== hostEnvironment.cli || !options?.backendTarget?.abapTarget?.client) {
+    if (PromptState.isYUI || !options?.backendTarget?.abapTarget?.client) {
         return false;
     }
 
@@ -105,7 +105,7 @@ export function showClientQuestion(
         PromptState.abapDeployConfig.client = String(client);
     }
     const showOnCli = previousAnswers.clientChoice === ClientChoiceValue.New || !client;
-    return getHostEnvironment() === hostEnvironment.cli ? showOnCli && clientCondition : clientCondition;
+    return !PromptState.isYUI ? showOnCli && clientCondition : clientCondition;
 }
 
 /**
@@ -193,8 +193,7 @@ function defaultOrShowPackageQuestion(): boolean {
 export function showPackageInputChoiceQuestion(): boolean {
     // Only show the input choice (manual/search) when the autocomplete prompt is supported; CLI or YUI specific version
     return Boolean(
-        (getHostEnvironment() === hostEnvironment.cli || isFeatureEnabled('enableAutocompleteUIPrompt')) &&
-            defaultOrShowPackageQuestion()
+        (!PromptState.isYUI || isFeatureEnabled('enableAutocompleteUIPrompt')) && defaultOrShowPackageQuestion()
     );
 }
 

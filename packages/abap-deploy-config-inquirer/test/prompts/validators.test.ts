@@ -29,15 +29,7 @@ import {
 } from '../../src/types';
 import * as utils from '../../src/utils';
 import { AbapTarget } from '@sap-ux/system-access';
-import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { mockDestinations } from '../fixtures/destinations';
-
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    getHostEnvironment: jest.fn()
-}));
-
-const mockGetHostEnvironment = getHostEnvironment as jest.Mock;
 
 describe('Test validators', () => {
     beforeAll(async () => {
@@ -122,12 +114,12 @@ describe('Test validators', () => {
 
     describe('validateTargetSystemUrlCli', () => {
         it('should resolve when target is valid', () => {
-            mockGetHostEnvironment.mockReturnValueOnce(hostEnvironment.cli);
+            PromptState.isYUI = false;
             expect(validateTargetSystemUrlCli('https://mock.url.target1.com')).toBeUndefined();
         });
 
         it('should throw error when target is invalid', () => {
-            mockGetHostEnvironment.mockReturnValueOnce(hostEnvironment.cli);
+            PromptState.isYUI = true;
             try {
                 validateTargetSystemUrlCli('/x/inval.z');
             } catch (e) {

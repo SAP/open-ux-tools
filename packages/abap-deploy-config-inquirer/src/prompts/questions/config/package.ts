@@ -8,7 +8,6 @@ import { t } from '../../../i18n';
 import { getPackageChoices, getPackageInputChoices } from '../../helpers';
 import { defaultPackage, defaultPackageChoice } from '../../defaults';
 import { validatePackage, validatePackageChoiceInput, validatePackageChoiceInputForCli } from '../../validators';
-import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     abapDeployConfigInternalPromptNames,
     type PackageInputChoices,
@@ -27,7 +26,7 @@ import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal>[] {
     let packageInputChoiceValid: boolean | string;
     let morePackageResultsMsg = '';
-    const isCli = getHostEnvironment() === hostEnvironment.cli;
+    const isCli = !PromptState.isYUI;
 
     const questions: Question[] = [
         {
