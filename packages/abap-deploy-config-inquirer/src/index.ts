@@ -1,7 +1,6 @@
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import { initI18n } from './i18n';
 import { PromptState } from './prompts/prompt-state';
-import { isCli } from '@sap-ux/fiori-generator-shared';
 import { getAbapDeployConfigQuestions } from './prompts';
 import LoggerHelper from './logger-helper';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
@@ -27,14 +26,14 @@ import { reconcileAnswers } from './utils';
 async function getPrompts(
     promptOptions?: AbapDeployConfigPromptOptions,
     logger?: Logger,
-    isYUI?: boolean
+    isYUI = false
 ): Promise<{
     prompts: AbapDeployConfigQuestion[];
     answers: Partial<AbapDeployConfigAnswers>;
 }> {
     await initI18n();
     LoggerHelper.logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/abap-deploy-config-inquirer' });
-    PromptState.isYUI = isYUI ?? !isCli();
+    PromptState.isYUI = isYUI;
 
     return {
         prompts: await getAbapDeployConfigQuestions(promptOptions),
@@ -56,7 +55,7 @@ async function prompt(
     adapter: InquirerAdapter,
     promptOptions?: AbapDeployConfigPromptOptions,
     logger?: Logger,
-    isYUI?: boolean
+    isYUI = false
 ): Promise<AbapDeployConfigAnswers> {
     const abapDeployConfigPrompts = (await getPrompts(promptOptions, logger, isYUI)).prompts;
     const answers = await adapter.prompt<AbapDeployConfigAnswersInternal>(abapDeployConfigPrompts);
