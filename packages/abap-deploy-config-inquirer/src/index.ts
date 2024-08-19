@@ -69,10 +69,10 @@ async function prompt(
 export {
     getPrompts,
     prompt,
+    TargetSystemType,
+    PackageInputChoices,
+    TransportChoices,
     type InquirerAdapter,
     type AbapDeployConfigAnswers,
-    type AbapDeployConfigPromptOptions,
-    type TargetSystemType,
-    type PackageInputChoices,
-    type TransportChoices
+    type AbapDeployConfigPromptOptions
 };
