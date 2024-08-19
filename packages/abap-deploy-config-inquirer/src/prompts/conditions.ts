@@ -44,7 +44,7 @@ export function showScpQuestion(previousAnswers: AbapDeployConfigAnswersInternal
 
     let isSystemUnknown = false;
 
-    if (previousAnswers.url && previousAnswers.url.length >= 0) {
+    if (previousAnswers.url && previousAnswers.url.length > 0) {
         const backendSystem = findBackendSystemByUrl(previousAnswers.targetSystem ?? previousAnswers.url);
         if (!backendSystem) {
             isSystemUnknown = true;
@@ -152,11 +152,11 @@ export function showPasswordQuestion(): boolean {
 /**
  * Determines if the UI5 app deploy config question should be shown (UI5 Abap Repo name & Description).
  *
- * @param hideUi5AbapRepoBtp - option to hide the prompt if using a btp system
+ * @param hideUi5AbapRepoPrompt - option to hide the prompt if using a btp system
  * @returns boolean
  */
-export function showUi5AppDeployConfigQuestion(hideUi5AbapRepoBtp?: boolean): boolean {
-    if (hideUi5AbapRepoBtp && PromptState.abapDeployConfig.scp) {
+export function showUi5AppDeployConfigQuestion(hideUi5AbapRepoPrompt?: boolean): boolean {
+    if (hideUi5AbapRepoPrompt) {
         return false;
     }
     return !PromptState.transportAnswers.transportConfigNeedsCreds;

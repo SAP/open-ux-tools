@@ -37,14 +37,14 @@ export interface DeployTaskConfig {
  *
  * @param backendTarget - the backend target which may have been used to generate the application (useful for default values)
  * @param existingDeployTaskConfig - the existing deploy task configuration, will be used to prefill certain prompt answers
- * @param hideUi5AbapRepoBtp - whether to hide the UI5 ABAP repository prompt when BTP is used
+ * @param hideUi5AbapRepoPrompt - whether to hide the UI5 ABAP repository prompt
  * @param showOverwriteQuestion - whether to show the overwrite question (this can be determined by the caller)
  * @param indexGenerationAllowed - whether generating an index.html is allowed
  */
 export interface AbapDeployConfigPromptOptions {
     backendTarget?: BackendTarget;
     existingDeployTaskConfig?: DeployTaskConfig;
-    hideUi5AbapRepoBtp?: boolean;
+    hideUi5AbapRepoPrompt?: boolean;
     showOverwriteQuestion?: boolean;
     indexGenerationAllowed?: boolean;
 }
