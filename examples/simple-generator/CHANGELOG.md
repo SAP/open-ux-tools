@@ -1,5 +1,16 @@
 # @sap-ux/generator-simple-fe
 
+## 1.0.24
+
+### Patch Changes
+
+-   9c8dc5c: fix: update `axios` to `1.7.4`
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/axios-extension@1.16.4
+    -   @sap-ux/btp-utils@0.15.1
+    -   @sap-ux/system-access@0.5.9
+    -   @sap-ux/fiori-elements-writer@1.0.18
+
 ## 1.0.23
 
 ### Patch Changes
