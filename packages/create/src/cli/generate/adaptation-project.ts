@@ -58,7 +58,7 @@ async function generateAdaptationProject(basePath: string, simulate: boolean, sk
         logger.debug(`Called generate adaptation-project for path '${basePath}', skip install is '${skipInstall}'`);
 
         const fs = create(createStorage());
-        const endpointsManager = new EndpointsManager(logger);
+        const endpointsManager = await EndpointsManager.getInstance(logger);
         const provider = new AbapProvider(endpointsManager, logger);
         const manifestManager = new ManifestManager(provider, logger);
 

@@ -41,6 +41,7 @@ function getSystemRequiresAuthentication(system: string, endpoints: Endpoint[]):
  * including their names, authentication requirements, and specific details.
  */
 export class EndpointsManager {
+    private static instance: EndpointsManager;
     private endpoints: Endpoint[];
     private isExtensionInstalled: boolean;
 
@@ -49,9 +50,24 @@ export class EndpointsManager {
      *
      * @param {ToolsLogger} logger - The logger.
      */
-    constructor(private logger: ToolsLogger) {
+    private constructor(private logger: ToolsLogger) {
         this.endpoints = [];
         this.isExtensionInstalled = isExtensionInstalledVsCode('sapse.sap-ux-application-modeler-extension');
+    }
+
+    /**
+     * Creates an instance of EndpointsManager.
+     *
+     * @param {ToolsLogger} logger - The logger.
+     * @returns {EndpointsManager} instance of endpoints manager
+     */
+    static async getInstance(logger: ToolsLogger): Promise<EndpointsManager> {
+        if (!this.instance) {
+            this.instance = new EndpointsManager(logger);
+            await this.instance.loadEnpoints();
+        }
+
+        return this.instance;
     }
 
     /**
@@ -60,15 +76,7 @@ export class EndpointsManager {
      * @returns {Promise<void>} A promise that resolves when endpoints have been fetched and stored.
      */
     public async getEndpoints(): Promise<Endpoint[] | undefined> {
-        try {
-            // TODO:
-            const { endpoints } = await checkEndpoints();
-            this.endpoints = endpoints;
-            return endpoints;
-        } catch (e) {
-            this.logger?.error(`Failed to fetch endpoints list. Reason: ${e.message}`);
-            throw new Error(e.message);
-        }
+        return this.endpoints;
     }
 
     /**
@@ -121,10 +129,6 @@ export class EndpointsManager {
      * @returns {SystemDetails | undefined} Authentication details if the system is found, undefined otherwise.
      */
     public async getSystemDetails(system: string): Promise<SystemDetails | undefined> {
-        if (this.endpoints.length === 0) {
-            await this.getEndpoints();
-        }
-
         const endpoint = this.endpoints.find((e) => e.Name === system || e.Url === system);
 
         if (!endpoint) {
@@ -155,5 +159,18 @@ export class EndpointsManager {
         }
 
         return details;
+    }
+
+    /**
+     * Fetches endpoints from a predefined source and stores them in the service.
+     */
+    private async loadEnpoints(): Promise<void> {
+        try {
+            const { endpoints } = await checkEndpoints();
+            this.endpoints = endpoints;
+        } catch (e) {
+            this.logger?.error(`Failed to fetch endpoints list. Reason: ${e.message}`);
+            throw new Error(e.message);
+        }
     }
 }

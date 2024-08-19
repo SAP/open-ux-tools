@@ -46,8 +46,8 @@ describe('AbapProvider', () => {
     const system = 'http://u1y.sap.corp';
     const destination = 'U1Y';
 
-    beforeEach(() => {
-        endpointsManager = new EndpointsManager(loggerMock);
+    beforeEach(async () => {
+        endpointsManager = await EndpointsManager.getInstance(loggerMock);
         service = new AbapProvider(endpointsManager, loggerMock);
         mockIsAppStudio.mockReturnValue(false);
     });
