@@ -60,7 +60,7 @@ export class AddHeaderFieldQuickAction implements SimpleQuickActionDefinition {
         if (headerContent.length === 1 && isA<FlexBox>('sap.m.FlexBox', headerContent[0])) {
             const overlay = OverlayRegistry.getOverlay(headerContent[0]) || [];
             await handler(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, 'items');
-        } else {
+        } else if (this.control) {
             const overlay = OverlayRegistry.getOverlay(this.control) || [];
             await handler(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, 'headerContent');
         }
