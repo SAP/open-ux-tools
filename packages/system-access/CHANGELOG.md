@@ -1,5 +1,12 @@
 # @sap-ux/system-access
 
+## 0.5.8
+
+### Patch Changes
+
+-   Updated dependencies [08b788c]
+    -   @sap-ux/store@0.9.1
+
 ## 0.5.7
 
 ### Patch Changes
