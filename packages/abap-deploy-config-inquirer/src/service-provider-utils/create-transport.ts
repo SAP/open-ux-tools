@@ -20,7 +20,7 @@ export async function createTransportNumberFromService(
 ): Promise<string | undefined> {
     let transportReqNumber: string | undefined;
     try {
-        const provider = await getOrCreateServiceProvider(options, systemConfig);
+        const provider = await getOrCreateServiceProvider(systemConfig, options.backendTarget);
         const adtService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
         if (adtService) {
             transportReqNumber = await adtService.createTransportRequest(createTransportParams);

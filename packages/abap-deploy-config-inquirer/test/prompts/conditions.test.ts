@@ -47,12 +47,8 @@ const mockIsAppStudio = isAppStudio as jest.Mock;
 const mockGetHelpUrl = getHelpUrl as jest.Mock;
 const mockIsFeatureEnabled = isFeatureEnabled as jest.Mock;
 
-const abapDeployConfigPromptOptions: AbapDeployConfigPromptOptions = {};
-
 describe('Test abap deploy config inquirer conditions', () => {
-    let options: AbapDeployConfigPromptOptions;
     beforeEach(() => {
-        options = abapDeployConfigPromptOptions;
         PromptState.resetAbapDeployConfig();
         PromptState.resetTransportAnswers();
     });
@@ -70,18 +66,8 @@ describe('Test abap deploy config inquirer conditions', () => {
         expect(showScpQuestion({})).toBe(false);
         // 2 url target chosen but no url provided
         expect(showScpQuestion({ targetSystem: 'Url', url: '' })).toBe(false);
-        // 3 scp value has already been provided in existing options
-        options.backendTarget = {
-            abapTarget: {
-                url: 'http://known.target.url',
-                scp: false,
-                client: '100'
-            },
-            type: 'application'
-        };
-        expect(showScpQuestion({ url: 'http://known.target.url' })).toBe(false);
-        // 4 scp value has been retrieved from existing system
-        options.backendTarget.abapTarget.scp = undefined;
+
+        // 3 scp value has been retrieved from existing system
         jest.spyOn(utils, 'findBackendSystemByUrl').mockReturnValue({
             name: 'Target system 1',
             url: 'http://saved.target.url',
@@ -96,36 +82,27 @@ describe('Test abap deploy config inquirer conditions', () => {
     });
 
     test('should show client choice question', () => {
-        options = {
-            backendTarget: {
-                abapTarget: {
-                    url: 'http://known.target.url',
-                    scp: false,
-                    client: '100'
-                }
-            }
-        };
         mockIsAppStudio.mockReturnValueOnce(false);
         PromptState.isYUI = false;
-        expect(showClientChoiceQuestion(options, false)).toBe(true);
+        expect(showClientChoiceQuestion('100', false)).toBe(true);
     });
 
     test('should not show client choice question', () => {
         mockIsAppStudio.mockReturnValueOnce(false);
         PromptState.isYUI = false;
-        expect(showClientChoiceQuestion({}, true)).toBe(false);
+        expect(showClientChoiceQuestion(undefined, true)).toBe(false);
     });
 
     test('should show client question', () => {
         PromptState.isYUI = true;
         mockIsAppStudio.mockReturnValueOnce(false);
-        expect(showClientQuestion({}, options, false)).toBe(true);
+        expect(showClientQuestion(undefined, undefined, false)).toBe(true);
     });
 
     test('should show client question (CLI)', () => {
         PromptState.isYUI = false;
         mockIsAppStudio.mockReturnValue(false);
-        expect(showClientQuestion({ clientChoice: ClientChoiceValue.New }, options, false)).toBe(true);
+        expect(showClientQuestion(ClientChoiceValue.New, undefined, false)).toBe(true);
     });
 
     test('should show username question', async () => {
@@ -133,7 +110,7 @@ describe('Test abap deploy config inquirer conditions', () => {
             transportConfig: {} as any,
             transportConfigNeedsCreds: true
         });
-        expect(await showUsernameQuestion(options)).toBe(true);
+        expect(await showUsernameQuestion(undefined)).toBe(true);
     });
 
     test('should not show username question', async () => {
@@ -142,7 +119,7 @@ describe('Test abap deploy config inquirer conditions', () => {
             transportConfigNeedsCreds: false,
             warning: 'Warning message'
         });
-        expect(await showUsernameQuestion(options)).toBe(false);
+        expect(await showUsernameQuestion(undefined)).toBe(false);
         expect(mockGetHelpUrl).toHaveBeenCalledWith(3046, [57266]);
     });
 
@@ -153,12 +130,12 @@ describe('Test abap deploy config inquirer conditions', () => {
 
     test('should show ui5 app deploy config questions', () => {
         PromptState.transportAnswers.transportConfigNeedsCreds = false;
-        expect(showUi5AppDeployConfigQuestion({})).toBe(true);
+        expect(showUi5AppDeployConfigQuestion(undefined)).toBe(true);
     });
 
     test('should not show ui5 app deploy config questions', () => {
         PromptState.abapDeployConfig.scp = true;
-        expect(showUi5AppDeployConfigQuestion({ hideUi5AbapRepoBtp: true })).toBe(false);
+        expect(showUi5AppDeployConfigQuestion(true)).toBe(false);
     });
 
     test('should show package input choice question', () => {
@@ -183,113 +160,71 @@ describe('Test abap deploy config inquirer conditions', () => {
 
     test('should show manual package question', () => {
         mockIsFeatureEnabled.mockReturnValueOnce(false);
-        expect(defaultOrShowManualPackageQuestion(false, {})).toBe(true);
+        expect(defaultOrShowManualPackageQuestion(false, '')).toBe(true);
 
         // cli
-        expect(
-            defaultOrShowManualPackageQuestion(true, { packageInputChoice: PackageInputChoices.EnterManualChoice })
-        ).toBe(true);
+        expect(defaultOrShowManualPackageQuestion(true, PackageInputChoices.EnterManualChoice)).toBe(true);
     });
 
     test('should show search package question', () => {
         mockIsFeatureEnabled.mockReturnValueOnce(true);
-        expect(
-            defaultOrShowSearchPackageQuestion(false, {
-                packageInputChoice: PackageInputChoices.ListExistingChoice
-            })
-        ).toBe(true);
+        expect(defaultOrShowSearchPackageQuestion(false, PackageInputChoices.ListExistingChoice)).toBe(true);
 
         // cli
-        expect(
-            defaultOrShowSearchPackageQuestion(true, {
-                packageInputChoice: PackageInputChoices.ListExistingChoice
-            })
-        ).toBe(true);
+        expect(defaultOrShowSearchPackageQuestion(true, PackageInputChoices.ListExistingChoice)).toBe(true);
     });
 
     test('should show transport input choice question', () => {
         PromptState.transportAnswers.transportConfigError = undefined;
         PromptState.transportAnswers.transportConfigNeedsCreds = false;
-        expect(showTransportInputChoice({})).toBe(true);
+        expect(showTransportInputChoice()).toBe(true);
     });
 
     test('should not show transport input choice question', () => {
         PromptState.transportAnswers.transportConfigError = undefined;
         PromptState.transportAnswers.transportConfigNeedsCreds = true;
-        expect(showTransportInputChoice({})).toBe(false);
+        expect(showTransportInputChoice()).toBe(false);
 
         PromptState.transportAnswers.transportConfig = {
             getDefaultTransport: jest.fn().mockReturnValue('K123456')
         } as unknown as TransportConfig;
 
-        expect(showTransportInputChoice({})).toBe(false);
+        expect(showTransportInputChoice()).toBe(false);
     });
 
     test('should show transport list question', () => {
         PromptState.transportAnswers.transportList = [
             { transportReqNumber: 'K123456', transportReqDescription: 'Mock transport' }
         ];
-        expect(
-            defaultOrShowTransportListQuestion({
-                transportInputChoice: TransportChoices.ListExistingChoice
-            })
-        ).toBe(true);
+        expect(defaultOrShowTransportListQuestion(TransportChoices.ListExistingChoice)).toBe(true);
     });
 
     test('should not show transport list question', () => {
         PromptState.transportAnswers.transportList = [];
-        expect(
-            defaultOrShowTransportListQuestion({
-                transportInputChoice: TransportChoices.ListExistingChoice
-            })
-        ).toBe(false);
+        expect(defaultOrShowTransportListQuestion(TransportChoices.ListExistingChoice)).toBe(false);
 
         PromptState.transportAnswers.transportList = undefined;
-        expect(
-            defaultOrShowTransportListQuestion({
-                transportInputChoice: TransportChoices.ListExistingChoice
-            })
-        ).toBe(false);
+        expect(defaultOrShowTransportListQuestion(TransportChoices.ListExistingChoice)).toBe(false);
 
         PromptState.transportAnswers.transportConfigNeedsCreds = true;
-        expect(
-            defaultOrShowTransportListQuestion({
-                transportInputChoice: TransportChoices.ListExistingChoice
-            })
-        ).toBe(false);
+        expect(defaultOrShowTransportListQuestion(TransportChoices.ListExistingChoice)).toBe(false);
     });
 
     test('should show transport created question', () => {
         PromptState.transportAnswers.newTransportNumber = 'K123456';
-        expect(
-            defaultOrShowTransportCreatedQuestion({
-                transportInputChoice: TransportChoices.CreateNewChoice
-            })
-        ).toBe(true);
+        expect(defaultOrShowTransportCreatedQuestion(TransportChoices.CreateNewChoice)).toBe(true);
     });
 
     test('should not show transport created question', () => {
         PromptState.transportAnswers.newTransportNumber = undefined;
-        expect(
-            defaultOrShowTransportCreatedQuestion({
-                transportInputChoice: TransportChoices.CreateNewChoice
-            })
-        ).toBe(false);
+        expect(defaultOrShowTransportCreatedQuestion(TransportChoices.CreateNewChoice)).toBe(false);
 
         PromptState.transportAnswers.transportConfigNeedsCreds = true;
-        expect(
-            defaultOrShowTransportCreatedQuestion({
-                transportInputChoice: TransportChoices.CreateNewChoice
-            })
-        ).toBe(false);
+        expect(defaultOrShowTransportCreatedQuestion(TransportChoices.CreateNewChoice)).toBe(false);
     });
 
     test('should show manual transport question', () => {
-        expect(
-            defaultOrShowManualTransportQuestion({
-                transportInputChoice: TransportChoices.EnterManualChoice
-            })
-        ).toBe(true);
+        expect(defaultOrShowManualTransportQuestion(TransportChoices.EnterManualChoice)).toBe(true);
     });
 
     test('should show index question', () => {

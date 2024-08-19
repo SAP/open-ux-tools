@@ -16,7 +16,7 @@ import type { InputQuestion, PasswordQuestion, Question } from 'inquirer';
  */
 function getUsernamePrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
     return {
-        when: (): Promise<boolean> => showUsernameQuestion(options),
+        when: (): Promise<boolean> => showUsernameQuestion(options.backendTarget),
         type: 'input',
         name: abapDeployConfigInternalPromptNames.username,
         message: t('prompts.auth.username.message'),
@@ -44,7 +44,7 @@ function getPasswordPrompt(options: AbapDeployConfigPromptOptions): Question<Aba
             mandatory: true
         },
         validate: async (input: string, previousAnswers: AbapDeployConfigAnswersInternal): Promise<boolean | string> =>
-            await validateCredentials(options, input, previousAnswers)
+            await validateCredentials(input, previousAnswers, options.backendTarget)
     } as PasswordQuestion<AbapDeployConfigAnswersInternal>;
 }
 

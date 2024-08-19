@@ -184,7 +184,11 @@ function getClientChoicePrompt(
 ): (YUIQuestion<AbapDeployConfigAnswersInternal> | Question)[] {
     const prompts: (ListQuestion<AbapDeployConfigAnswersInternal> | Question)[] = [
         {
-            when: (): boolean => showClientChoiceQuestion(options, PromptState.abapDeployConfig?.isS4HC),
+            when: (): boolean =>
+                showClientChoiceQuestion(
+                    options?.backendTarget?.abapTarget?.client,
+                    PromptState.abapDeployConfig?.isS4HC
+                ),
             type: 'list',
             name: abapDeployConfigInternalPromptNames.clientChoice,
             message: t('prompts.target.clientChoice.message'),
@@ -193,7 +197,8 @@ function getClientChoicePrompt(
             },
             choices: () => getClientChoicePromptChoices(options),
             default: (): string => ClientChoiceValue.Blank,
-            validate: (input: ClientChoiceValue): boolean | string => validateClientChoiceQuestion(options, input)
+            validate: (input: ClientChoiceValue): boolean | string =>
+                validateClientChoiceQuestion(input, options.backendTarget?.abapTarget?.client)
         } as ListQuestion<AbapDeployConfigAnswersInternal>
     ];
 
@@ -202,7 +207,10 @@ function getClientChoicePrompt(
             when: async (answers: AbapDeployConfigAnswersInternal): Promise<boolean> => {
                 const clientChoice = answers[abapDeployConfigInternalPromptNames.clientChoice];
                 if (clientChoice) {
-                    validateClientChoiceQuestion(options, clientChoice as ClientChoiceValue);
+                    validateClientChoiceQuestion(
+                        clientChoice as ClientChoiceValue,
+                        options.backendTarget?.abapTarget?.client
+                    );
                 }
                 return false;
             },
@@ -221,7 +229,11 @@ function getClientChoicePrompt(
 function getClientPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
     return {
         when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean => {
-            return showClientQuestion(previousAnswers, options, PromptState.abapDeployConfig?.isS4HC);
+            return showClientQuestion(
+                previousAnswers.clientChoice,
+                options?.backendTarget?.abapTarget?.client,
+                PromptState.abapDeployConfig?.isS4HC
+            );
         },
         type: 'input',
         name: abapDeployConfigInternalPromptNames.client,

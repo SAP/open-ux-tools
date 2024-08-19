@@ -32,7 +32,7 @@ describe('Test list packages', () => {
             getAdtService: jest.fn().mockResolvedValueOnce(mockGetAdtService)
         });
 
-        const allPackages = await listPackagesFromService(phrase, {}, systemConfig);
+        const allPackages = await listPackagesFromService(phrase, systemConfig);
         expect(allPackages).toBe(packages);
     });
 
@@ -41,7 +41,7 @@ describe('Test list packages', () => {
         const loggerSpy = jest.spyOn(LoggerHelper.logger, 'debug');
         mockGetOrCreateServiceProvider.mockRejectedValueOnce(errorObj);
 
-        const allPackages = await listPackagesFromService(phrase, {}, systemConfig);
+        const allPackages = await listPackagesFromService(phrase, systemConfig);
         expect(allPackages).toStrictEqual([]);
         expect(loggerSpy).toBeCalledWith(
             t('errors.debugAbapTargetSystem', { method: 'listPackagesFromService', error: errorObj.message })

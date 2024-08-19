@@ -9,6 +9,7 @@ import type {
     AbapDeployConfigAnswers,
     AbapDeployConfigAnswersInternal,
     AbapDeployConfigPromptOptions,
+    BackendTarget,
     Credentials,
     InitTransportConfigResult,
     SystemConfig
@@ -90,7 +91,7 @@ export function isSameSystem(abapSystem?: SystemConfig, url?: string, client?: s
  * Get transport configuration from the backend.
  *
  * @param transportConfigParams - transport configuration parameters
- * @param transportConfigParams.options - abap deploy config prompt options
+ * @param transportConfigParams.backendTarget - backend target from prompt options
  * @param transportConfigParams.scp - scp
  * @param transportConfigParams.url - url
  * @param transportConfigParams.client - client
@@ -100,7 +101,7 @@ export function isSameSystem(abapSystem?: SystemConfig, url?: string, client?: s
  * @returns transport configuration
  */
 export async function initTransportConfig({
-    options,
+    backendTarget,
     scp,
     url,
     client,
@@ -108,7 +109,7 @@ export async function initTransportConfig({
     credentials,
     errorHandler
 }: {
-    options: AbapDeployConfigPromptOptions;
+    backendTarget?: BackendTarget;
     scp?: boolean;
     url?: string;
     client?: string;
@@ -129,7 +130,7 @@ export async function initTransportConfig({
 
     try {
         result = await getTransportConfigInstance({
-            options,
+            backendTarget,
             scp,
             credentials,
             systemConfig
@@ -152,17 +153,17 @@ export async function initTransportConfig({
  * Querying package names that match the user input.
  *
  * @param input - user input
- * @param options - abap deploy config prompt options
  * @param inputSystemConfig System configuration extracted from user answers for establishing backend connection
+ * @param backendTarget - backend target from abap deploy config prompt options
  * @returns list of package names
  */
 export async function queryPackages(
     input: string,
-    options: AbapDeployConfigPromptOptions,
-    inputSystemConfig: SystemConfig
+    inputSystemConfig: SystemConfig,
+    backendTarget?: BackendTarget
 ): Promise<string[]> {
     const uppercaseInput = (input ?? '').toUpperCase();
-    return listPackages(uppercaseInput, options, inputSystemConfig);
+    return listPackages(uppercaseInput, inputSystemConfig, backendTarget);
 }
 
 /**

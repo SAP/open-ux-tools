@@ -137,7 +137,7 @@ describe('getPackagePrompts', () => {
         );
 
         if (packageManualPrompt) {
-            expect((packageManualPrompt.when as Function)()).toBe(true);
+            expect((packageManualPrompt.when as Function)({ packageInputChoice: 'EnterManualChoice' })).toBe(true);
             expect(packageManualPrompt.message).toBe(t('prompts.config.package.packageManual.message'));
 
             expect(
@@ -171,7 +171,9 @@ describe('getPackagePrompts', () => {
         );
 
         if (packageAutocompletePrompt) {
-            expect((packageAutocompletePrompt.when as Function)()).toBe(true);
+            expect((packageAutocompletePrompt.when as Function)({ packageInputChoice: 'ListExistingChoice' })).toBe(
+                true
+            );
             PromptState.isYUI = false;
             expect(
                 await ((packageAutocompletePrompt as AutocompleteQuestionOptions).source as Function)()

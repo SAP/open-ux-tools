@@ -1,13 +1,6 @@
 import { DEFAULT_PACKAGE_ABAP } from '../constants';
 import { PromptState } from './prompt-state';
-import {
-    PackageInputChoices,
-    TargetSystemType,
-    TransportChoices,
-    type AbapDeployConfigAnswersInternal,
-    type AbapDeployConfigPromptOptions,
-    type AbapSystemChoice
-} from '../types';
+import { PackageInputChoices, TargetSystemType, TransportChoices, type AbapSystemChoice } from '../types';
 
 /**
  * Determines the default target system from the abap system choices.
@@ -35,34 +28,6 @@ export function defaultUrl(targetSystem?: string): string {
 }
 
 /**
- * Determines the default repository name based on the previous answers or the existing deploy task config.
- *
- * @param previousAnswers - previous answers
- * @param options - abap deploy config prompt options
- * @returns default repository name
- */
-export function defaultAbapRepositoryName(
-    previousAnswers: AbapDeployConfigAnswersInternal,
-    options: AbapDeployConfigPromptOptions
-): string | undefined {
-    return previousAnswers.ui5AbapRepo || options.existingDeployTaskConfig?.name;
-}
-
-/**
- * Determines the default app description based on the previous answers or the existing deploy task config.
- *
- * @param previousAnswers - previous answers
- * @param options - aba deploy config prompt options
- * @returns default app description
- */
-export function defaultAppDescription(
-    previousAnswers: AbapDeployConfigAnswersInternal,
-    options: AbapDeployConfigPromptOptions
-): string | undefined {
-    return previousAnswers.description || options.existingDeployTaskConfig?.description;
-}
-
-/**
  * Determines the default package choice based on the previous package input choice.
  *
  * @param previousPackageInputChoice - previous package choice
@@ -75,23 +40,19 @@ export function defaultPackageChoice(previousPackageInputChoice?: PackageInputCh
 /**
  * Determines the default package based on the previous answers or the existing deploy task config.
  *
- * @param options - abap deploy config prompt options
- * @param previousAnswers - previous answers
+ * @param existingPkg - existing package from manual input prompt or backend config
  * @returns default package
  */
-export function defaultPackage(
-    options: AbapDeployConfigPromptOptions,
-    previousAnswers: AbapDeployConfigAnswersInternal
-): string {
+export function defaultPackage(existingPkg?: string): string {
     if (PromptState.abapDeployConfig.scp) {
-        return previousAnswers.packageManual || options.existingDeployTaskConfig?.package || '';
+        return existingPkg || '';
     } else {
         let defaultPkg = '';
         // if atoSettings are enabled and operationsType is P (on-premise) we default to $tmp
         if (PromptState.transportAnswers.transportConfig?.getOperationsType() === 'P') {
             defaultPkg = DEFAULT_PACKAGE_ABAP;
         }
-        return previousAnswers.packageManual || options.existingDeployTaskConfig?.package || defaultPkg;
+        return existingPkg || defaultPkg;
     }
 }
 
@@ -123,18 +84,4 @@ export function defaultTransportRequestChoice(
  */
 export function defaultTransportListChoice(numTransportListChoice?: number) {
     return numTransportListChoice && numTransportListChoice > 1 ? undefined : 0;
-}
-
-/**
- * Determines the default transport request based on the previous answers or the existing deploy task config.
- *
- * @param options - abap deploy config prompt options
- * @param previousAnswers - previous answers
- * @returns default transport request number
- */
-export function defaultTransportRequestNumber(
-    options: AbapDeployConfigPromptOptions,
-    previousAnswers: AbapDeployConfigAnswersInternal
-): string | undefined {
-    return previousAnswers.transportManual || options.existingDeployTaskConfig?.transport;
 }

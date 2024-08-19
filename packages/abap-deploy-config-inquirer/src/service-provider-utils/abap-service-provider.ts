@@ -6,7 +6,7 @@ import { PromptState } from '../prompts/prompt-state';
 import LoggerHelper from '../logger-helper';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
-import type { AbapDeployConfigPromptOptions, Credentials, SystemConfig } from '../types';
+import type { BackendTarget, Credentials, SystemConfig } from '../types';
 import type { AbapTarget } from '@sap-ux/ui5-config';
 
 let abapServiceProvider: AbapServiceProvider | undefined;
@@ -15,14 +15,14 @@ let system: SystemConfig;
 /**
  * Get or create an abap service provider.
  *
- * @param options - aba deploy config prompt options
  * @param systemConfig - system configuration
+ * @param backendTarget - backend target from prompt options
  * @param credentials - user credentials
  * @returns abap service provider
  */
 export async function getOrCreateServiceProvider(
-    options: AbapDeployConfigPromptOptions,
     systemConfig: SystemConfig,
+    backendTarget?: BackendTarget,
     credentials?: Credentials
 ): Promise<AbapServiceProvider> {
     // use cached service provider
@@ -31,16 +31,16 @@ export async function getOrCreateServiceProvider(
     }
     // use connected service provider
     if (
-        options.backendTarget?.serviceProvider &&
+        backendTarget?.serviceProvider &&
         isSameSystem(
             systemConfig,
-            options.backendTarget?.abapTarget.url,
-            options.backendTarget?.abapTarget.client,
-            options.backendTarget?.abapTarget.destination
+            backendTarget?.abapTarget.url,
+            backendTarget?.abapTarget.client,
+            backendTarget?.abapTarget.destination
         )
     ) {
-        abapServiceProvider = options.backendTarget.serviceProvider as AbapServiceProvider;
-        system = options.backendTarget.abapTarget;
+        abapServiceProvider = backendTarget.serviceProvider as AbapServiceProvider;
+        system = backendTarget.abapTarget;
         return abapServiceProvider;
     }
     abapServiceProvider = await createNewServiceProvider(credentials);

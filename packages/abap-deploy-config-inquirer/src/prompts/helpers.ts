@@ -262,24 +262,28 @@ export function updateGeneratorScp(
  * @param isCli - is running in CLI
  * @param input - package input
  * @param previousAnswers - previous answers
- * @param options - abap deploy config prompt options
+ * @param backendTarget - backend target from abap deploy config prompt options
  * @returns results of query and message based on number of results
  */
 export async function getPackageChoices(
     isCli: boolean,
     input: string,
     previousAnswers: AbapDeployConfigAnswersInternal,
-    options: AbapDeployConfigPromptOptions
+    backendTarget?: BackendTarget
 ): Promise<{ packages: string[]; morePackageResultsMsg: string }> {
     let packages;
     let morePackageResultsMsg = '';
     // For YUI we need to ensure input is provided so the prompt is not re-rendered with no input
     if (isCli || input) {
-        packages = await queryPackages(input, options, {
-            url: PromptState.abapDeployConfig.url,
-            client: PromptState.abapDeployConfig.client,
-            destination: PromptState.abapDeployConfig.destination
-        });
+        packages = await queryPackages(
+            input,
+            {
+                url: PromptState.abapDeployConfig.url,
+                client: PromptState.abapDeployConfig.client,
+                destination: PromptState.abapDeployConfig.destination
+            },
+            backendTarget
+        );
 
         morePackageResultsMsg =
             packages && packages.length === ABAP_PACKAGE_SEARCH_MAX_RESULTS

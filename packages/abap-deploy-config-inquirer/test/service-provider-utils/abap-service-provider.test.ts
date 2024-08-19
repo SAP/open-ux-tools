@@ -41,7 +41,7 @@ describe('getOrCreateServiceProvider', () => {
             password: 'password1'
         };
 
-        const serviceProvider = await getOrCreateServiceProvider({}, {}, credentials);
+        const serviceProvider = await getOrCreateServiceProvider({}, undefined, credentials);
 
         expect(serviceProvider).toBeInstanceOf(AbapServiceProvider);
         expect(mockCreateAbapServiceProvider).toBeCalledWith(
@@ -58,11 +58,11 @@ describe('getOrCreateServiceProvider', () => {
 
         // use existing provider when called again
         const serviceProvider2 = await getOrCreateServiceProvider(
-            {},
             {
                 url: 'http://target.url',
                 client: '100'
             },
+            undefined,
             credentials
         );
         expect(serviceProvider2).toBe(serviceProvider);
@@ -75,7 +75,7 @@ describe('getOrCreateServiceProvider', () => {
             destination: 'MOCK_DESTINATION'
         };
 
-        const serviceProvider = await getOrCreateServiceProvider({}, {});
+        const serviceProvider = await getOrCreateServiceProvider({});
 
         expect(serviceProvider).toBeInstanceOf(AbapServiceProvider);
         expect(mockCreateAbapServiceProvider).toBeCalledWith(
@@ -95,14 +95,12 @@ describe('getOrCreateServiceProvider', () => {
             destination: 'MOCK_DESTINATION'
         };
 
-        const options = {
-            backendTarget: {
-                abapTarget: systemConfig,
-                serviceProvider: abapServiceProvider
-            }
+        const backendTarget = {
+            abapTarget: systemConfig,
+            serviceProvider: abapServiceProvider
         };
 
-        const serviceProvider = await getOrCreateServiceProvider(options, systemConfig);
+        const serviceProvider = await getOrCreateServiceProvider(systemConfig, backendTarget);
         expect(serviceProvider).toBe(abapServiceProvider);
     });
 });

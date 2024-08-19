@@ -10,11 +10,7 @@ import { getTransportChoices } from '../../helpers';
 import { validateTransportChoiceInput, validateTransportQuestion } from '../../validators';
 import { PromptState } from '../../prompt-state';
 import { transportName } from '../../../service-provider-utils/transport-list';
-import {
-    defaultTransportListChoice,
-    defaultTransportRequestChoice,
-    defaultTransportRequestNumber
-} from '../../defaults';
+import { defaultTransportListChoice, defaultTransportRequestChoice } from '../../defaults';
 import {
     abapDeployConfigInternalPromptNames,
     type AbapDeployConfigAnswersInternal,
@@ -37,8 +33,7 @@ export function getTransportRequestPrompts(
 
     const questions: Question<AbapDeployConfigAnswersInternal>[] = [
         {
-            when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
-                showTransportInputChoice(previousAnswers),
+            when: (): boolean => showTransportInputChoice(),
             type: 'list',
             name: abapDeployConfigInternalPromptNames.transportInputChoice,
             message: t('prompts.config.transport.transportInputChoice.message'),
@@ -85,7 +80,7 @@ export function getTransportRequestPrompts(
         },
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
-                defaultOrShowTransportCreatedQuestion(previousAnswers),
+                defaultOrShowTransportCreatedQuestion(previousAnswers.transportInputChoice),
             name: abapDeployConfigInternalPromptNames.transportCreated,
             type: 'input',
             default: () => PromptState.transportAnswers.newTransportNumber,
@@ -93,7 +88,7 @@ export function getTransportRequestPrompts(
         } as InputQuestion<AbapDeployConfigAnswersInternal>,
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
-                defaultOrShowTransportListQuestion(previousAnswers),
+                defaultOrShowTransportListQuestion(previousAnswers.transportInputChoice),
             type: 'list',
             name: abapDeployConfigInternalPromptNames.transportFromList,
             message: t('prompts.config.transport.common.transportRequest'),
@@ -106,7 +101,7 @@ export function getTransportRequestPrompts(
         } as ListQuestion<AbapDeployConfigAnswersInternal>,
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
-                defaultOrShowManualTransportQuestion(previousAnswers),
+                defaultOrShowManualTransportQuestion(previousAnswers.transportInputChoice),
             type: 'input',
             name: abapDeployConfigInternalPromptNames.transportManual,
             message: () =>
@@ -118,7 +113,7 @@ export function getTransportRequestPrompts(
                 breadcrumb: t('prompts.config.transport.common.transportRequest')
             },
             default: (previousAnswers: AbapDeployConfigAnswersInternal) =>
-                defaultTransportRequestNumber(options, previousAnswers),
+                previousAnswers.transportManual || options.existingDeployTaskConfig?.transport,
             validate: (input: string): boolean | string => validateTransportQuestion(input),
             filter: (input: string): string => input?.trim()?.toUpperCase()
         } as InputQuestion<AbapDeployConfigAnswersInternal>

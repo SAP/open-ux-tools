@@ -22,7 +22,7 @@ export async function getTransportListFromService(
 ): Promise<TransportListItem[] | undefined> {
     let transportListItems: TransportListItem[] | undefined;
     try {
-        const provider = await getOrCreateServiceProvider(options, systemConfig);
+        const provider = await getOrCreateServiceProvider(systemConfig, options.backendTarget);
         const adtService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
         const transportReqList = await adtService?.getTransportRequests(packageName, appName);
 

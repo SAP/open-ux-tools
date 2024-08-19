@@ -139,19 +139,16 @@ describe('Test validators', () => {
     describe('validateClientChoiceQuestion', () => {
         it('should return true for valid client', () => {
             // Base
-            let result = validateClientChoiceQuestion(
-                { backendTarget: { abapTarget: { client: '000' } as AbapTarget } },
-                ClientChoiceValue.Base
-            );
+            let result = validateClientChoiceQuestion(ClientChoiceValue.Base, '000');
             expect(PromptState.abapDeployConfig.client).toBe('000');
             expect(result).toBe(true);
 
             // New
-            result = validateClientChoiceQuestion({}, ClientChoiceValue.New);
+            result = validateClientChoiceQuestion(ClientChoiceValue.New);
             expect(result).toBe(true);
 
             // Blank
-            result = validateClientChoiceQuestion({}, ClientChoiceValue.Blank);
+            result = validateClientChoiceQuestion(ClientChoiceValue.Blank);
             expect(result).toBe(true);
         });
     });
@@ -159,19 +156,16 @@ describe('Test validators', () => {
     describe('validateClientChoiceQuestion', () => {
         it('should return true for valid client', () => {
             // Base
-            let result = validateClientChoiceQuestion(
-                { backendTarget: { abapTarget: { client: '000' } as AbapTarget } },
-                ClientChoiceValue.Base
-            );
+            let result = validateClientChoiceQuestion(ClientChoiceValue.Base, '000');
             expect(PromptState.abapDeployConfig.client).toBe('000');
             expect(result).toBe(true);
 
             // New
-            result = validateClientChoiceQuestion({}, ClientChoiceValue.New);
+            result = validateClientChoiceQuestion(ClientChoiceValue.New);
             expect(result).toBe(true);
 
             // Blank
-            result = validateClientChoiceQuestion({}, ClientChoiceValue.Blank);
+            result = validateClientChoiceQuestion(ClientChoiceValue.Blank);
             expect(result).toBe(true);
         });
     });
@@ -196,7 +190,7 @@ describe('Test validators', () => {
                 transportConfig: {} as any,
                 transportConfigNeedsCreds: false
             });
-            expect(await validateCredentials({}, 'pass1', { username: 'user1' })).toBe(true);
+            expect(await validateCredentials('pass1', { username: 'user1' })).toBe(true);
         });
 
         it('should return error message for invalid credentials', async () => {
@@ -204,9 +198,7 @@ describe('Test validators', () => {
                 transportConfig: {} as any,
                 transportConfigNeedsCreds: true
             });
-            expect(await validateCredentials({}, 'pass1', { username: 'user1' })).toBe(
-                t('errors.incorrectCredentials')
-            );
+            expect(await validateCredentials('pass1', { username: 'user1' })).toBe(t('errors.incorrectCredentials'));
         });
     });
 
@@ -251,19 +243,19 @@ describe('Test validators', () => {
 
     describe('validatePackageChoiceInput', () => {
         it('should return true for valid package choice input (EnterManualChoice)', async () => {
-            const result = await validatePackageChoiceInput(PackageInputChoices.EnterManualChoice, {}, {});
+            const result = await validatePackageChoiceInput(PackageInputChoices.EnterManualChoice, {});
             expect(result).toBe(true);
         });
 
         it('should return true when list packages is selected and querying packages is succesful', async () => {
             jest.spyOn(utils, 'queryPackages').mockResolvedValueOnce(['ZPACKAGE1', 'ZPACKAGE2']);
-            const result = await validatePackageChoiceInput(PackageInputChoices.ListExistingChoice, {}, {});
+            const result = await validatePackageChoiceInput(PackageInputChoices.ListExistingChoice, {});
             expect(result).toBe(true);
         });
 
         it('should return error when list packages is selected and querying packages fails', async () => {
             jest.spyOn(utils, 'queryPackages').mockResolvedValueOnce([]);
-            const result = await validatePackageChoiceInput(PackageInputChoices.ListExistingChoice, {}, {});
+            const result = await validatePackageChoiceInput(PackageInputChoices.ListExistingChoice, {});
             expect(result).toBe(t('warnings.packageNotFound'));
         });
     });
@@ -272,7 +264,7 @@ describe('Test validators', () => {
         it('should throw error for invalid package choice input', async () => {
             jest.spyOn(utils, 'queryPackages').mockResolvedValueOnce([]);
             try {
-                await validatePackageChoiceInputForCli({}, {}, PackageInputChoices.ListExistingChoice);
+                await validatePackageChoiceInputForCli({}, PackageInputChoices.ListExistingChoice);
             } catch (e) {
                 expect(e).toStrictEqual(new Error(t('warnings.packageNotFound')));
             }

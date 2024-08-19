@@ -146,7 +146,9 @@ describe('getTransportRequestPrompts', () => {
         );
 
         if (transportCreatedPrompt) {
-            expect((transportCreatedPrompt.when as Function)()).toBe(true);
+            expect(
+                (transportCreatedPrompt.when as Function)({ transportInputChoice: TransportChoices.CreateNewChoice })
+            ).toBe(true);
             expect(transportCreatedPrompt.message).toBe(t('prompts.config.transport.transportCreated.message'));
             expect((transportCreatedPrompt.default as Function)()).toBe('TR1234');
         }
@@ -166,7 +168,11 @@ describe('getTransportRequestPrompts', () => {
         );
 
         if (transportFromListPrompt) {
-            expect((transportFromListPrompt.when as Function)()).toBe(true);
+            expect(
+                (transportFromListPrompt.when as Function)({
+                    transportInputChoice: TransportChoices.ListExistingChoice
+                })
+            ).toBe(true);
             expect(transportFromListPrompt.message).toBe(t('prompts.config.transport.common.transportRequest'));
             expect(((transportFromListPrompt as ListQuestion).choices as Function)()).toMatchInlineSnapshot(`
                 Array [
@@ -194,7 +200,11 @@ describe('getTransportRequestPrompts', () => {
         );
 
         if (transportManualPrompt) {
-            expect((transportManualPrompt.when as Function)()).toBe(true);
+            expect(
+                (transportManualPrompt.when as Function)({
+                    transportInputChoice: TransportChoices.EnterManualChoice
+                })
+            ).toBe(true);
             expect((transportManualPrompt.message as Function)()).toBe(
                 t('prompts.config.transport.common.transportRequestMandatory')
             );

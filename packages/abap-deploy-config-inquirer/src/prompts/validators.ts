@@ -23,7 +23,8 @@ import {
     type SystemConfig,
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
-    type AbapSystemChoice
+    type AbapSystemChoice,
+    type BackendTarget
 } from '../types';
 
 /**
@@ -169,19 +170,15 @@ export function validateScpQuestion(input: boolean): boolean {
 /**
  * Validates and updates the client property in the state.
  *
- * @param options - abap deploy config prompt options
  * @param clientChoice - client choice
+ * @param client - client from backend config
  * @returns boolean
  */
-export function validateClientChoiceQuestion(
-    options: AbapDeployConfigPromptOptions,
-    clientChoice: ClientChoiceValue
-): boolean {
+export function validateClientChoiceQuestion(clientChoice: ClientChoiceValue, client?: string): boolean {
     switch (clientChoice) {
         case ClientChoiceValue.Base:
             PromptState.abapDeployConfig.client =
-                (PromptState.abapDeployConfig?.client as string) ??
-                (options.backendTarget?.abapTarget.client as string); // Parsing of YAML documents can result in a double quoted property being parsed as a string
+                (PromptState.abapDeployConfig?.client as string) ?? (client as string); // Parsing of YAML documents can result in a double quoted property being parsed as a string
             break;
 
         case ClientChoiceValue.Blank:
@@ -219,15 +216,15 @@ export function validateClient(client: string): boolean | string {
 /**
  * Validates the credentials.
  *
- * @param options - abap deploy config prompt options
  * @param input - password entered
  * @param previousAnswers - previous answers
+ * @param backendTarget - backend target from abap deploy config prompt options
  * @returns boolean or error message as a string
  */
 export async function validateCredentials(
-    options: AbapDeployConfigPromptOptions,
     input: string,
-    previousAnswers: AbapDeployConfigAnswersInternal
+    previousAnswers: AbapDeployConfigAnswersInternal,
+    backendTarget?: BackendTarget
 ): Promise<boolean | string> {
     if (!input || !previousAnswers.username) {
         return t('errors.requireCredentials');
@@ -239,7 +236,7 @@ export async function validateCredentials(
         transportConfigNeedsCreds: PromptState.transportAnswers.transportConfigNeedsCreds,
         warning
     } = await initTransportConfig({
-        options: options,
+        backendTarget: backendTarget,
         scp: PromptState.abapDeployConfig.scp,
         url: PromptState.abapDeployConfig.url,
         client: PromptState.abapDeployConfig.client,
@@ -310,17 +307,17 @@ export function validateAppDescription(input: string): boolean | string {
  * Makes an empty string package query to test connectivity if searching, otherwise returns true.
  *
  * @param input - package input choice
- * @param options - abap deploy config prompt options
  * @param systemConfig - system configuration
+ * @param backendTarget - backend target from abap deploy config prompt options
  * @returns boolean or error message as a string
  */
 export async function validatePackageChoiceInput(
     input: PackageInputChoices,
-    options: AbapDeployConfigPromptOptions,
-    systemConfig: SystemConfig
+    systemConfig: SystemConfig,
+    backendTarget?: BackendTarget
 ): Promise<boolean | string> {
     if (input === PackageInputChoices.ListExistingChoice) {
-        const retrievedPackageList = await queryPackages('', options, systemConfig);
+        const retrievedPackageList = await queryPackages('', systemConfig, backendTarget);
         if (retrievedPackageList && retrievedPackageList.length > 0) {
             return true;
         } else {
@@ -335,17 +332,17 @@ export async function validatePackageChoiceInput(
  * This function is used to validate if user choice of providing package name is valid.
  * The validation attempts to connect to backend ADT service to see if it is able to fetch package names.
  *
- * @param options - abap deploy config prompt options
  * @param systemConfig - system configuration
  * @param inputChoice - user choice of how to provide package name
+ * @param backendTarget - backend target from abap deploy config prompt options
  */
 export async function validatePackageChoiceInputForCli(
-    options: AbapDeployConfigPromptOptions,
     systemConfig: SystemConfig,
-    inputChoice?: PackageInputChoices
+    inputChoice?: PackageInputChoices,
+    backendTarget?: BackendTarget
 ): Promise<void> {
     if (inputChoice) {
-        const result = await validatePackageChoiceInput(inputChoice, options, systemConfig);
+        const result = await validatePackageChoiceInput(inputChoice, systemConfig, backendTarget);
         if (result !== true) {
             throw new Error(result as string);
         }

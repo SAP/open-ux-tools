@@ -13,7 +13,7 @@ const mockGetOrCreateServiceProvider = getOrCreateServiceProvider as jest.Mock;
 describe('getTransportConfigInstance', () => {
     it('should return the dummy instance of TransportConfig', async () => {
         const transportConfigResult = await getTransportConfigInstance({
-            options: {},
+            backendTarget: undefined,
             scp: true,
             credentials: {},
             systemConfig: {}
@@ -41,7 +41,7 @@ describe('getTransportConfigInstance', () => {
         });
 
         const transportConfigResult = await getTransportConfigInstance({
-            options: {},
+            backendTarget: undefined,
             scp: false,
             credentials: {},
             systemConfig: {}
@@ -70,7 +70,7 @@ describe('getTransportConfigInstance', () => {
         });
 
         const transportConfigResult = await getTransportConfigInstance({
-            options: {},
+            backendTarget: undefined,
             scp: false,
             credentials: {},
             systemConfig: {}
@@ -89,7 +89,7 @@ describe('getTransportConfigInstance', () => {
         });
 
         const transportConfigResult2 = await getTransportConfigInstance({
-            options: {},
+            backendTarget: undefined,
             scp: false,
             credentials: {},
             systemConfig: {}
@@ -115,7 +115,7 @@ describe('getTransportConfigInstance', () => {
         });
 
         const transportConfigResult = await getTransportConfigInstance({
-            options: {},
+            backendTarget: undefined,
             scp: false,
             credentials: {},
             systemConfig: {}
@@ -141,7 +141,7 @@ describe('getTransportConfigInstance', () => {
         });
 
         const transportConfigResult = await getTransportConfigInstance({
-            options: {},
+            backendTarget: undefined,
             scp: false,
             credentials: {},
             systemConfig: {}
@@ -161,7 +161,7 @@ describe('getTransportConfigInstance', () => {
         });
 
         const transportConfigResult2 = await getTransportConfigInstance({
-            options: {},
+            backendTarget: undefined,
             scp: false,
             credentials: {},
             systemConfig: {}

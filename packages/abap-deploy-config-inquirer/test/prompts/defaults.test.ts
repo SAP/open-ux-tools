@@ -1,4 +1,3 @@
-import { BackendSystem } from '@sap-ux/store';
 import { defaultPackage, defaultTargetSystem, defaultTransportRequestChoice } from '../../src/prompts/defaults';
 import { getAbapSystemChoices } from '../../src/prompts/helpers';
 import { mockTargetSystems } from '../fixtures/targets';
@@ -27,18 +26,10 @@ describe('defaults', () => {
     it('should return default package', () => {
         PromptState.abapDeployConfig.scp = true;
 
-        let defaultPkg = defaultPackage(
-            {},
-            {
-                packageManual: 'PKGDEFAULT'
-            }
-        );
+        let defaultPkg = defaultPackage('PKGDEFAULT');
         expect(defaultPkg).toBe('PKGDEFAULT');
 
-        defaultPkg = defaultPackage({ existingDeployTaskConfig: { package: 'EXISTING_PKG' } }, {});
-        expect(defaultPkg).toBe('EXISTING_PKG');
-
-        defaultPkg = defaultPackage({}, {});
+        defaultPkg = defaultPackage();
         expect(defaultPkg).toBe('');
 
         PromptState.abapDeployConfig.scp = false;
@@ -46,7 +37,7 @@ describe('defaults', () => {
             getOperationsType: jest.fn().mockReturnValue('P')
         } as unknown as TransportConfig;
 
-        defaultPkg = defaultPackage({}, {});
+        defaultPkg = defaultPackage();
         expect(defaultPkg).toBe('$tmp');
     });
 

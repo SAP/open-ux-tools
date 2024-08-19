@@ -5,7 +5,7 @@ import {
     getTransportListFromService,
     listPackagesFromService
 } from './service-provider-utils';
-import type { AbapDeployConfigPromptOptions, SystemConfig, TransportListItem } from './types';
+import type { AbapDeployConfigPromptOptions, BackendTarget, SystemConfig, TransportListItem } from './types';
 
 /**
  * Checks if the input is an empty string.
@@ -57,20 +57,20 @@ export function clientDoesNotExistOrInvalid(client?: string): boolean {
  * Returns the list of packages for the given input.
  *
  * @param input - input string
- * @param options - aba deploy config prompt options
  * @param systemConfig - system configuration
+ * @param backendTarget - backend target from abap deploy config prompt options
  * @returns list of packages
  */
 export async function listPackages(
     input: string,
-    options: AbapDeployConfigPromptOptions,
-    systemConfig: SystemConfig
+    systemConfig: SystemConfig,
+    backendTarget?: BackendTarget
 ): Promise<string[]> {
     if (!systemConfig.url && !systemConfig.destination) {
         return [];
     }
 
-    return listPackagesFromService(input, options, systemConfig);
+    return listPackagesFromService(input, systemConfig, backendTarget);
 }
 
 /**

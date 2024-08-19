@@ -14,6 +14,7 @@ import {
     TransportChoices,
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
+    type BackendTarget,
     type TransportListItem
 } from '../types';
 
@@ -70,15 +71,12 @@ function showClientCondition(isS4HanaCloudSystem?: boolean): boolean {
 /**
  * Determines if the client choice question should be shown.
  *
- * @param options - abap deploy config prompt options
+ * @param client - client
  * @param isS4HanaCloudSystem - is S/4 HANA Cloud system
  * @returns boolean
  */
-export function showClientChoiceQuestion(
-    options?: AbapDeployConfigPromptOptions,
-    isS4HanaCloudSystem?: boolean
-): boolean {
-    if (PromptState.isYUI || !options?.backendTarget?.abapTarget?.client) {
+export function showClientChoiceQuestion(client?: string, isS4HanaCloudSystem?: boolean): boolean {
+    if (PromptState.isYUI || !client) {
         return false;
     }
 
@@ -89,39 +87,35 @@ export function showClientChoiceQuestion(
  * Determines if the client question should be shown.
  * Note: In some instances, when a yaml conf is parsed, double quoted properties i.e. client: "100" are saved as a number instead of a string.
  *
- * @param previousAnswers - previous answers
- * @param options - abap deploy config prompt options
+ * @param clientChoice - client choice from previous answers
+ * @param client - client
  * @param isS4HanaCloudSystem - is S/4 HANA Cloud system
  * @returns boolean
  */
-export function showClientQuestion(
-    previousAnswers: AbapDeployConfigAnswersInternal,
-    options?: AbapDeployConfigPromptOptions,
-    isS4HanaCloudSystem?: boolean
-): boolean {
+export function showClientQuestion(clientChoice?: string, client?: string, isS4HanaCloudSystem?: boolean): boolean {
     const clientCondition = showClientCondition(isS4HanaCloudSystem);
-    const client = options?.backendTarget?.abapTarget?.client;
+
     if (clientCondition && client) {
         PromptState.abapDeployConfig.client = String(client);
     }
-    const showOnCli = previousAnswers.clientChoice === ClientChoiceValue.New || !client;
+    const showOnCli = clientChoice === ClientChoiceValue.New || !client;
     return !PromptState.isYUI ? showOnCli && clientCondition : clientCondition;
 }
 
 /**
  * Determines if the username question should be shown.
  *
- * @param options - abap deploy config prompt options
+ * @param backendTarget - backend target from prompt options
  * @returns boolean
  */
-export async function showUsernameQuestion(options: AbapDeployConfigPromptOptions): Promise<boolean> {
+export async function showUsernameQuestion(backendTarget?: BackendTarget): Promise<boolean> {
     let warning: unknown;
     ({
         transportConfig: PromptState.transportAnswers.transportConfig,
         transportConfigNeedsCreds: PromptState.transportAnswers.transportConfigNeedsCreds,
         warning
     } = await initTransportConfig({
-        options: options,
+        backendTarget: backendTarget,
         scp: PromptState.abapDeployConfig.scp,
         url: PromptState.abapDeployConfig.url,
         client: PromptState.abapDeployConfig.client,
@@ -158,11 +152,11 @@ export function showPasswordQuestion(): boolean {
 /**
  * Determines if the UI5 app deploy config question should be shown (UI5 Abap Repo name & Description).
  *
- * @param options - abap deploy config prompt options
+ * @param hideUi5AbapRepoBtp - option to hide the prompt if using a btp system
  * @returns boolean
  */
-export function showUi5AppDeployConfigQuestion(options: AbapDeployConfigPromptOptions): boolean {
-    if (options.hideUi5AbapRepoBtp && PromptState.abapDeployConfig.scp) {
+export function showUi5AppDeployConfigQuestion(hideUi5AbapRepoBtp?: boolean): boolean {
+    if (hideUi5AbapRepoBtp && PromptState.abapDeployConfig.scp) {
         return false;
     }
     return !PromptState.transportAnswers.transportConfigNeedsCreds;
@@ -201,17 +195,14 @@ export function showPackageInputChoiceQuestion(): boolean {
  * Determines if the manual package input prompt should be shown.
  *
  * @param isCli - is in CLI
- * @param previousAnswers - previous answers
+ * @param packageInputChoice - package input choice from previous answers
  * @returns boolean
  */
-export function defaultOrShowManualPackageQuestion(
-    isCli: boolean,
-    previousAnswers: AbapDeployConfigAnswersInternal
-): boolean {
+export function defaultOrShowManualPackageQuestion(isCli: boolean, packageInputChoice?: string): boolean {
     // Until the version of YUI installed supports auto-complete we must continue to show a manual input for packages
     return (
         ((!isCli && !isFeatureEnabled('enableAutocompleteUIPrompt')) ||
-            previousAnswers.packageInputChoice === PackageInputChoices.EnterManualChoice) &&
+            packageInputChoice === PackageInputChoices.EnterManualChoice) &&
         defaultOrShowPackageQuestion()
     );
 }
@@ -220,17 +211,14 @@ export function defaultOrShowManualPackageQuestion(
  * Determines if the search (autcomplete) package input prompt can be shown based on backend availability.
  *
  * @param isCli - is in CLI
- * @param previousAnswers - previous answers
+ * @param packageInputChoice - package input choice from previous answers
  * @returns boolean
  */
-export function defaultOrShowSearchPackageQuestion(
-    isCli: boolean,
-    previousAnswers: AbapDeployConfigAnswersInternal
-): boolean {
+export function defaultOrShowSearchPackageQuestion(isCli: boolean, packageInputChoice?: string): boolean {
     // Only show the autocomplete prompt when the autocomplete prompt is supported; CLI or YUI specific version
     return (
         (isCli || isFeatureEnabled('enableAutocompleteUIPrompt')) &&
-        previousAnswers.packageInputChoice === PackageInputChoices.ListExistingChoice &&
+        packageInputChoice === PackageInputChoices.ListExistingChoice &&
         defaultOrShowPackageQuestion()
     );
 }
@@ -238,12 +226,11 @@ export function defaultOrShowSearchPackageQuestion(
 /**
  * Determines if the transport question should be shown.
  *
- * @param previousAnswers - previous answers
  * @returns boolean
  */
-function defaultOrShowTransportQuestion(previousAnswers: AbapDeployConfigAnswersInternal): boolean {
+function defaultOrShowTransportQuestion(): boolean {
     if (PromptState.transportAnswers.transportConfig?.getDefaultTransport() !== undefined) {
-        previousAnswers.transport = PromptState.transportAnswers.transportConfig.getDefaultTransport();
+        PromptState.abapDeployConfig.transport = PromptState.transportAnswers.transportConfig.getDefaultTransport();
         return false;
     } else {
         return (
@@ -256,11 +243,10 @@ function defaultOrShowTransportQuestion(previousAnswers: AbapDeployConfigAnswers
 /**
  * Determines if the transport input choice question should be shown.
  *
- * @param previousAnswers - previous answers
  * @returns boolean
  */
-export function showTransportInputChoice(previousAnswers: AbapDeployConfigAnswersInternal): boolean {
-    return defaultOrShowTransportQuestion(previousAnswers);
+export function showTransportInputChoice(): boolean {
+    return defaultOrShowTransportQuestion();
 }
 
 /**
@@ -276,17 +262,17 @@ function isTransportListEmpty(transportList?: TransportListItem[]): boolean {
 /**
  * Determines if the transport list question should be shown.
  *
- * @param previousAnswers - previous answers
+ * @param transportInputChoice - transportInputChoice from previous answers
  * @returns boolean
  */
-export function defaultOrShowTransportListQuestion(previousAnswers: AbapDeployConfigAnswersInternal): boolean {
-    const showQuestion = defaultOrShowTransportQuestion(previousAnswers);
+export function defaultOrShowTransportListQuestion(transportInputChoice?: string): boolean {
+    const showQuestion = defaultOrShowTransportQuestion();
     if (!showQuestion) {
         return false;
     }
 
     return (
-        previousAnswers.transportInputChoice === TransportChoices.ListExistingChoice &&
+        transportInputChoice === TransportChoices.ListExistingChoice &&
         !isTransportListEmpty(PromptState.transportAnswers.transportList)
     );
 }
@@ -294,32 +280,28 @@ export function defaultOrShowTransportListQuestion(previousAnswers: AbapDeployCo
 /**
  * Determines if the transport created prompt should be shown.
  *
- * @param previousAnswers - previous answers
+ * @param transportInputChoice - transportInputChoice from previous answers
  * @returns boolean
  */
-export function defaultOrShowTransportCreatedQuestion(previousAnswers: AbapDeployConfigAnswersInternal): boolean {
-    const showQuestion = defaultOrShowTransportQuestion(previousAnswers);
+export function defaultOrShowTransportCreatedQuestion(transportInputChoice?: string): boolean {
+    const showQuestion = defaultOrShowTransportQuestion();
     if (!showQuestion) {
         return false;
     }
 
     return (
-        previousAnswers.transportInputChoice === TransportChoices.CreateNewChoice &&
-        !!PromptState.transportAnswers.newTransportNumber
+        transportInputChoice === TransportChoices.CreateNewChoice && !!PromptState.transportAnswers.newTransportNumber
     );
 }
 
 /**
  * Determines if the manual transport prompt should be shown.
  *
- * @param previousAnswers - previous answers
+ * @param transportInputChoice - transportInputChoice from previous answers
  * @returns boolean
  */
-export function defaultOrShowManualTransportQuestion(previousAnswers: AbapDeployConfigAnswersInternal): boolean {
-    return (
-        defaultOrShowTransportQuestion(previousAnswers) &&
-        previousAnswers.transportInputChoice === TransportChoices.EnterManualChoice
-    );
+export function defaultOrShowManualTransportQuestion(transportInputChoice?: string): boolean {
+    return defaultOrShowTransportQuestion() && transportInputChoice === TransportChoices.EnterManualChoice;
 }
 
 /**

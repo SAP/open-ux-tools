@@ -3,13 +3,7 @@ import { t } from '../i18n';
 import { deleteCachedServiceProvider, getOrCreateServiceProvider } from './abap-service-provider';
 import LoggerHelper from '../logger-helper';
 import type { AtoSettings } from '@sap-ux/axios-extension';
-import type {
-    TransportConfig,
-    InitTransportConfigResult,
-    AbapDeployConfigPromptOptions,
-    SystemConfig,
-    Credentials
-} from '../types';
+import type { TransportConfig, InitTransportConfigResult, SystemConfig, Credentials, BackendTarget } from '../types';
 
 /**
  * Dummy transport configuration.
@@ -116,23 +110,23 @@ class DefaultTransportConfig implements TransportConfig {
      * Initialises the transport configuration.
      *
      * @param initParams - init transport config parameters
-     * @param initParams.options - abap deploy config prompt options
+     * @param initParams.backendTarget - backend target from prompt options
      * @param initParams.systemConfig - system configuration
      * @param initParams.credentials - user credentials
      * @returns init transport config result
      */
     public async init({
-        options,
+        backendTarget,
         systemConfig,
         credentials
     }: {
-        options: AbapDeployConfigPromptOptions;
+        backendTarget?: BackendTarget;
         systemConfig: SystemConfig;
         credentials?: Credentials;
     }): Promise<InitTransportConfigResult> {
         const result: InitTransportConfigResult = {};
         try {
-            const provider = await getOrCreateServiceProvider(options, systemConfig, credentials);
+            const provider = await getOrCreateServiceProvider(systemConfig, backendTarget, credentials);
             const atoService = await provider.getAdtService<AtoService>(AtoService);
             const atoSettings = await atoService?.getAtoInfo();
 
@@ -226,19 +220,19 @@ class DefaultTransportConfig implements TransportConfig {
  * Returns the transport configuration instance.
  *
  * @param transportConfigOptions - transport configuration options
- * @param transportConfigOptions.options - aba deploy config prompt options
+ * @param transportConfigOptions.backendTarget - backend target from prompt options
  * @param transportConfigOptions.scp - scp
  * @param transportConfigOptions.systemConfig - system configuration
  * @param transportConfigOptions.credentials - user credentials
  * @returns transport configuration instance
  */
 export async function getTransportConfigInstance({
-    options,
+    backendTarget,
     scp,
     credentials,
     systemConfig
 }: {
-    options: AbapDeployConfigPromptOptions;
+    backendTarget?: BackendTarget;
     scp?: boolean;
     credentials?: Credentials;
     systemConfig: SystemConfig;
@@ -247,5 +241,5 @@ export async function getTransportConfigInstance({
         return { transportConfig: new DummyTransportConfig() };
     }
 
-    return new DefaultTransportConfig().init({ options, systemConfig, credentials });
+    return new DefaultTransportConfig().init({ backendTarget, systemConfig, credentials });
 }

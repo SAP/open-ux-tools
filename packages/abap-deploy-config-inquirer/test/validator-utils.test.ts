@@ -22,12 +22,12 @@ describe('validator-utils', () => {
     });
 
     it('should list packages for the given input', async () => {
-        expect(await listPackages('PK', {}, {})).toEqual([]);
+        expect(await listPackages('PK', {})).toEqual([]);
 
         const systemConfig = { url: 'http://mock.url', client: '123' };
 
         mockListPackagesFromService.mockResolvedValueOnce(['PK1', 'PK2']);
-        expect(await listPackages('PK', {}, systemConfig)).toEqual(['PK1', 'PK2']);
+        expect(await listPackages('PK', systemConfig)).toEqual(['PK1', 'PK2']);
     });
 
     it('should list transports', async () => {

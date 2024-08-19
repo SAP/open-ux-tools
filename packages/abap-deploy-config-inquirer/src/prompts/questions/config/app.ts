@@ -2,7 +2,6 @@ import { showUi5AppDeployConfigQuestion } from '../../conditions';
 import { validateAppDescription, validateUi5AbapRepoName } from '../../validators';
 import { PromptState } from '../../prompt-state';
 import { t } from '../../../i18n';
-import { defaultAbapRepositoryName, defaultAppDescription } from '../../defaults';
 import {
     abapDeployConfigInternalPromptNames,
     type AbapDeployConfigAnswersInternal,
@@ -18,7 +17,7 @@ import type { InputQuestion, Question } from 'inquirer';
  */
 function getUi5AbapRepoPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
     return {
-        when: (): boolean => showUi5AppDeployConfigQuestion(options),
+        when: (): boolean => showUi5AppDeployConfigQuestion(options.hideUi5AbapRepoBtp),
         type: 'input',
         name: abapDeployConfigInternalPromptNames.ui5AbapRepo,
         message: (): string => {
@@ -34,7 +33,7 @@ function getUi5AbapRepoPrompt(options: AbapDeployConfigPromptOptions): Question<
             breadcrumb: t('prompts.config.app.ui5AbapRepo.message')
         },
         default: (previousAnswers: AbapDeployConfigAnswersInternal) =>
-            defaultAbapRepositoryName(previousAnswers, options),
+            previousAnswers.ui5AbapRepo || options.existingDeployTaskConfig?.name,
         validate: (input: string): string | boolean => validateUi5AbapRepoName(input),
         filter: (input: string): string | undefined =>
             !PromptState.isYUI ? input?.trim()?.toUpperCase() : input?.trim()
@@ -49,7 +48,7 @@ function getUi5AbapRepoPrompt(options: AbapDeployConfigPromptOptions): Question<
  */
 function getDescriptionPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
     return {
-        when: (): boolean => showUi5AppDeployConfigQuestion(options),
+        when: (): boolean => showUi5AppDeployConfigQuestion(options.hideUi5AbapRepoBtp),
         type: 'input',
         name: abapDeployConfigInternalPromptNames.description,
         message: t('prompts.config.app.description.message'),
@@ -58,7 +57,7 @@ function getDescriptionPrompt(options: AbapDeployConfigPromptOptions): Question<
             breadcrumb: true
         },
         default: (previousAnswers: AbapDeployConfigAnswersInternal): string | undefined =>
-            defaultAppDescription(previousAnswers, options),
+            previousAnswers.description || options.existingDeployTaskConfig?.description,
         filter: (input: string): string | undefined => input?.trim(),
         validate: (input: string): boolean | string => validateAppDescription(input)
     } as InputQuestion<AbapDeployConfigAnswersInternal>;

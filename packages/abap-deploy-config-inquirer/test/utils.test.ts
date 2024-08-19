@@ -119,7 +119,7 @@ describe('Test utils', () => {
             transportConfigNeedsCreds: true
         });
         const initTransportConfigResult = await initTransportConfig({
-            options: {},
+            backendTarget: undefined,
             scp: false,
             url: 'https://mocktarget.url',
             client: '100',
@@ -127,7 +127,7 @@ describe('Test utils', () => {
         });
 
         expect(mockGetTransportConfigInstance).toBeCalledWith({
-            options: {},
+            backendTarget: undefined,
             scp: false,
             credentials: undefined,
             systemConfig: {
@@ -141,7 +141,7 @@ describe('Test utils', () => {
 
     it('should log error when transport config initialisation fails', async () => {
         const errorHandler = jest.fn();
-        const result = await initTransportConfig({ options: {}, scp: false, errorHandler });
+        const result = await initTransportConfig({ backendTarget: undefined, scp: false, errorHandler });
         expect(result).toStrictEqual({});
 
         const loggerSpy = jest.spyOn(LoggerHelper.logger, 'debug');
@@ -149,7 +149,7 @@ describe('Test utils', () => {
         const errorObj = new Error(errorMsg);
         mockGetTransportConfigInstance.mockRejectedValueOnce(errorObj);
         const initTransportConfigResult = await initTransportConfig({
-            options: {},
+            backendTarget: undefined,
             scp: false,
             url: 'https://mocktarget.url',
             client: '100',
@@ -157,7 +157,7 @@ describe('Test utils', () => {
         });
 
         expect(mockGetTransportConfigInstance).toBeCalledWith({
-            options: {},
+            backendTarget: undefined,
             scp: false,
             credentials: undefined,
             systemConfig: {
@@ -176,9 +176,7 @@ describe('Test utils', () => {
     it('should query packages', () => {
         const packages = ['package1', 'package2'];
         mockListPackages.mockResolvedValueOnce(packages);
-        expect(queryPackages('pack', {}, { url: 'https://target.url', client: '100' })).resolves.toStrictEqual(
-            packages
-        );
+        expect(queryPackages('pack', { url: 'https://target.url', client: '100' })).resolves.toStrictEqual(packages);
     });
 
     it('should get package answer', () => {

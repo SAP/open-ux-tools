@@ -41,11 +41,15 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
             default: (previousAnswers: AbapDeployConfigAnswersInternal): string =>
                 defaultPackageChoice(previousAnswers.packageInputChoice),
             validate: async (input: PackageInputChoices): Promise<boolean | string> => {
-                packageInputChoiceValid = await validatePackageChoiceInput(input, options, {
-                    url: PromptState.abapDeployConfig.url,
-                    client: PromptState.abapDeployConfig.client,
-                    destination: PromptState.abapDeployConfig.destination
-                });
+                packageInputChoiceValid = await validatePackageChoiceInput(
+                    input,
+                    {
+                        url: PromptState.abapDeployConfig.url,
+                        client: PromptState.abapDeployConfig.client,
+                        destination: PromptState.abapDeployConfig.destination
+                    },
+                    options.backendTarget
+                );
                 return packageInputChoiceValid;
             }
         } as ListQuestion<AbapDeployConfigAnswersInternal>,
@@ -53,13 +57,13 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
             when: async (previousAnswers: AbapDeployConfigAnswersInternal): Promise<boolean> => {
                 if (isCli) {
                     await validatePackageChoiceInputForCli(
-                        options,
                         {
                             url: PromptState.abapDeployConfig.url,
                             client: PromptState.abapDeployConfig.client,
                             destination: PromptState.abapDeployConfig.destination
                         },
-                        previousAnswers.packageInputChoice
+                        previousAnswers.packageInputChoice,
+                        options.backendTarget
                     );
                     packageInputChoiceValid = true;
                 }
@@ -70,7 +74,7 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
         },
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
-                defaultOrShowManualPackageQuestion(isCli, previousAnswers),
+                defaultOrShowManualPackageQuestion(isCli, previousAnswers.packageInputChoice),
             type: 'input',
             name: abapDeployConfigInternalPromptNames.packageManual,
             message: t('prompts.config.package.packageManual.message'),
@@ -80,13 +84,14 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
                 breadcrumb: true
             },
             default: (previousAnswers: AbapDeployConfigAnswersInternal): string =>
-                defaultPackage(options, previousAnswers),
+                defaultPackage(previousAnswers.packageManual || options.existingDeployTaskConfig?.package),
             validate: async (input: string, answers: AbapDeployConfigAnswersInternal): Promise<boolean | string> =>
                 await validatePackage(input, answers, options)
         } as InputQuestion<AbapDeployConfigAnswersInternal>,
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
-                packageInputChoiceValid === true && defaultOrShowSearchPackageQuestion(isCli, previousAnswers),
+                packageInputChoiceValid === true &&
+                defaultOrShowSearchPackageQuestion(isCli, previousAnswers.packageInputChoice),
             type: 'autocomplete',
             name: abapDeployConfigInternalPromptNames.packageAutocomplete,
             message: `${t('prompts.config.package.packageAutocomplete.message')}${
@@ -101,7 +106,7 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
                 previousAnswers: AbapDeployConfigAnswersInternal,
                 input: string
             ): Promise<string[] | undefined> => {
-                const results = await getPackageChoices(isCli, input, previousAnswers, options);
+                const results = await getPackageChoices(isCli, input, previousAnswers, options.backendTarget);
                 morePackageResultsMsg = results.morePackageResultsMsg;
                 return results.packages;
             },
