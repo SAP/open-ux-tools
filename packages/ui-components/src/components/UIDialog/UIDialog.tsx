@@ -183,6 +183,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
                 actionsRight: {
                     width: '100%',
                     textAlign: 'center',
+                    justifyContent: 'center',
                     margin: '0px'
                 },
                 actions: {
