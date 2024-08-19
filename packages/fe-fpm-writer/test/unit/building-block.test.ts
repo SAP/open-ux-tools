@@ -530,29 +530,26 @@ describe('Building Blocks', () => {
                 }
             }
         ];
-        test.each(chartInput)(
-            'Generate Chart from object metaPath. $name',
-            async ({ metaPath }) => {
-                const basePath = join(testAppPath, `generate-${BuildingBlockType.Chart}-with-optional-params`);
-                const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
-                fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+        test.each(chartInput)('Generate Chart from object metaPath. $name', async ({ metaPath }) => {
+            const basePath = join(testAppPath, `generate-${BuildingBlockType.Chart}-with-optional-params`);
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
 
-                const codeSnippet = getSerializedFileContent(
-                    basePath,
-                    {
-                        viewOrFragmentPath: '',
-                        aggregationPath,
-                        buildingBlockData: {
-                            buildingBlockType: BuildingBlockType.Chart,
-                            metaPath
-                        } as Chart
-                    },
-                    fs
-                );
+            const codeSnippet = getSerializedFileContent(
+                basePath,
+                {
+                    viewOrFragmentPath: '',
+                    aggregationPath,
+                    buildingBlockData: {
+                        buildingBlockType: BuildingBlockType.Chart,
+                        metaPath
+                    } as Chart
+                },
+                fs
+            );
 
-                expect(codeSnippet.viewOrFragmentPath.content).toMatchSnapshot();
-                expect(codeSnippet.viewOrFragmentPath.filePathProps?.fileName).toBeUndefined();
-            }
-        );
+            expect(codeSnippet.viewOrFragmentPath.content).toMatchSnapshot();
+            expect(codeSnippet.viewOrFragmentPath.filePathProps?.fileName).toBeUndefined();
+        });
     });
 });
