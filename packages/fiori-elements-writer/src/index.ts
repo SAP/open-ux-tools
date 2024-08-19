@@ -1,14 +1,13 @@
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
-import { generateCustomPage } from '@sap-ux/fe-fpm-writer';
 import type { App, Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService, OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import { generateOPAFiles } from '@sap-ux/ui5-test-writer';
 import { getPackageJsonTasks } from './packageConfig';
 import cloneDeep from 'lodash/cloneDeep';
-import type { FioriElementsApp, FPMSettings } from './types';
+import type { FioriElementsApp } from './types';
 import { TemplateType } from './types';
 import { validateApp, validateRequiredProperties } from './validate';
 import { setAppDefaults, setDefaultTemplateSettings, getTemplateOptions } from './data/defaults';
@@ -22,6 +21,7 @@ import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
 import { initI18n } from './i18n';
 import { getBootstrapResourceUrls } from '@sap-ux/fiori-generator-shared';
+import { generateFpmConfig } from './fpmConfig';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -49,6 +49,24 @@ function getTypeScriptIgnoreGlob<T extends {}>(feApp: FioriElementsApp<T>, coerc
         ignore.push('**/ui5.d.ts');
     }
     return ignore;
+}
+/**
+ * Configures the UI5 libraries based on the project type and template type.
+ *
+ * @param feApp - The FE app config.
+ * @param isEdmxProjectType - Whether the project is of EDMX type.
+ * @returns The configured UI5 libraries, or undefined if not applicable.
+ */
+function configureUi5Libs<T extends {}>(feApp: FioriElementsApp<T>, isEdmxProjectType: boolean) {
+    let ui5Libs: string | string[] | undefined;
+    if (isEdmxProjectType) {
+        ui5Libs = feApp.ui5?.ui5Libs;
+        // FPM to preload sap.fe.templates for FLP template
+        if (feApp.template.type === TemplateType.FlexibleProgrammingModel) {
+            (ui5Libs as string[]).push('sap.fe.templates');
+        }
+    }
+    return ui5Libs;
 }
 /**
  * Generate a UI5 application based on the specified Fiori Elements floorplan template.
@@ -97,10 +115,9 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
         feApp.ui5?.frameworkUrl,
         feApp.ui5?.version
     );
-    const ui5Libs = isEdmxProjectType ? feApp.ui5?.ui5Libs : undefined;
+    const ui5Libs = configureUi5Libs(feApp, isEdmxProjectType);
     // Define template options with changes preview and loader settings based on project type
     const templateOptions = getTemplateOptions(isEdmxProjectType, feApp.service.version, feApp.ui5?.version);
-
     const appConfig = {
         ...feApp,
         templateOptions,
@@ -148,17 +165,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
 
     // Special handling for FPM because it is not based on template files but used the fpm writer
     if (feApp.template.type === TemplateType.FlexibleProgrammingModel) {
-        const config: FPMSettings = feApp.template.settings as unknown as FPMSettings;
-        generateCustomPage(
-            basePath,
-            {
-                entity: config.entityConfig.mainEntityName,
-                name: config.pageName,
-                minUI5Version: feApp.ui5?.minUI5Version,
-                typescript: feApp.appOptions?.typescript
-            },
-            fs
-        );
+        await generateFpmConfig(feApp, basePath, fs);
     } else {
         // Copy odata version specific common templates and version specific, floorplan specific templates
         const templateVersionPath = join(rootTemplatesPath, `v${feApp.service?.version}`);
