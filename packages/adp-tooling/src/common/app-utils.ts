@@ -16,7 +16,6 @@ import { ApplicationType } from '../types';
  * - If the manifest is empty, it returns None.
  */
 export function getApplicationType(manifest: Manifest): ApplicationType {
-    // TODO: Move to writer module
     if (Object.keys(manifest).length > 0) {
         const appInfo = manifest['sap.app'];
         const isSmartTemplate = !!manifest['sap.ui.generic.app'];
@@ -32,35 +31,4 @@ export function getApplicationType(manifest: Manifest): ApplicationType {
     } else {
         return ApplicationType.NONE;
     }
-}
-
-// TODO: Move to prompting
-/**
- * Checks if the given application type is a Fiori Elements application.
- *
- * @param {string} type - The application type to check.
- * @returns {boolean} True if the application is a Fiori Elements or Fiori Elements OVP app.
- */
-export function isFioriElementsApp(type: string): boolean {
-    return type === ApplicationType.FIORI_ELEMENTS || type === ApplicationType.FIORI_ELEMENTS_OVP;
-}
-
-/**
- * Determines if the application type is specifically a Fiori Elements Overview Page (OVP).
- *
- * @param {string} type - The application type to check.
- * @returns {boolean} True if the application type is Fiori Elements OVP.
- */
-export function isOVPApp(type: string): boolean {
-    return type === ApplicationType.FIORI_ELEMENTS_OVP;
-}
-
-/**
- * Checks if the application type is supported for adaptation projects.
- *
- * @param {string} type - The application type to evaluate.
- * @returns {boolean} True if the type is either Fiori Elements or a free style application.
- */
-export function isSupportedType(type: string): boolean {
-    return isFioriElementsApp(type) || type === ApplicationType.FREE_STYLE;
 }

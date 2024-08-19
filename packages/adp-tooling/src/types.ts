@@ -562,6 +562,11 @@ export interface Application {
     bspName: string;
 }
 
+export interface Choice {
+    name: string;
+    value: Application;
+}
+
 export interface UI5Version {
     latest: VersionDetail;
     [key: string]: VersionDetail;

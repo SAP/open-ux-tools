@@ -1,4 +1,4 @@
-import { getTrimmedUI5Version, type EndpointsManager } from '../../../client';
+import { getTrimmedUI5Version, type EndpointsManager } from '../../../common';
 import type { BasicInfoAnswers, ConfigurationInfoAnswers, ExtProjectConfig } from '../../../types';
 
 /**

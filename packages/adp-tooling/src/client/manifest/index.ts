@@ -2,52 +2,11 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
 import { t } from '../../i18n';
-import type { AbapProvider } from '../providers';
+import type { AbapProvider } from '../abap-provider';
 
 export interface ManifestCache {
     url: string;
     manifest: Manifest | null;
-}
-
-/**
- * Evaluates whether the application described by the manifest is a SAP Fiori Elements version 4 application.
- *
- * @param {Manifest} manifest - The application manifest to evaluate.
- * @returns {boolean} True if the application uses SAP Fiori Elements version 4 libraries.
- */
-export function isV4Application(manifest: Manifest | null): boolean {
-    return !!manifest?.['sap.ui5']?.dependencies?.libs?.['sap.fe.templates'];
-}
-
-/**
- * Retrieves the cached Fiori ID from the manifest.
- *
- * @param {Manifest} manifest - The manifest object containing Fiori registration IDs.
- * @returns {string} The Fiori ID as a string, or an empty string if not found.
- */
-export function getCachedFioriId(manifest: Manifest | null): string {
-    return manifest?.['sap.fiori']?.registrationIds?.toString() ?? '';
-}
-
-/**
- * Retrieves the Application Component Hierarchy (ACH) code from the manifest.
- *
- * @param {Manifest} manifest - The manifest object containing the ACH.
- * @returns {string} The ACH code as a string, or an empty string if not found.
- */
-export function getCachedACH(manifest: Manifest | null): string {
-    return manifest?.['sap.app']?.ach?.toString() ?? '';
-}
-
-/**
- * Extracts inbound IDs from the manifest's cross-navigation section.
- *
- * @param {Manifest} manifest - The manifest object containing cross-navigation data.
- * @returns {string[]} An array of inbound IDs, or an empty array if none are found.
- */
-export function getInboundIds(manifest: Manifest | null): string[] {
-    const inbounds = manifest?.['sap.app']?.crossNavigation?.inbounds;
-    return inbounds ? Object.keys(inbounds) : [];
 }
 
 /**

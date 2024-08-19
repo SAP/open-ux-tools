@@ -18,8 +18,6 @@
         "filePathLabel": "Annotation File path",
         "filePathTooltip": "Select the annotation file from your workspace",
 
-        "basicInfoDescr": "You are about to create a new App Variant. App Variant inherits the properties of the source application. The changes that you make will reflect only in the app variant and not in the source application.",
-        "configureInfoDescr": "Configure the system and the application you want to use.",
         "appTitleLabel": "Application Title",
         "appTitleTooltip": "Enter an application title for your application variant",
         "appTitleDefault": "App Variant Title",

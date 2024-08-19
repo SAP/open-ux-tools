@@ -1,7 +1,7 @@
 import type { ResourceModel } from '../i18n/model';
 import type { Content, AdpWriterConfig } from '../../../types';
 import { FlexLayer, ApplicationType } from '../../../types';
-import { isFeatureSupportedVersion } from '../../../client';
+import { isFeatureSupportedVersion } from '../../../common';
 
 /**
  * Creates a descriptor change object for a resource model.

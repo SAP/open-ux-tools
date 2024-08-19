@@ -15,8 +15,8 @@ import type {
     OnpremApp
 } from '../../../types';
 import { FlexLayer } from '../../../types';
-import type { ManifestManager, UI5VersionManager } from '../../../client';
-import { getFormattedVersion, getOfficialBaseUI5VersionUrl } from '../../../client';
+import type { ManifestManager } from '../../../client';
+import { UI5VersionManager, getFormattedVersion, getOfficialBaseUI5VersionUrl } from '../../../common';
 import { getI18nModels } from '../i18n/model';
 import { getSupportForUI5Yaml } from '../configs/support';
 import { AbapProvider } from '../../../client';

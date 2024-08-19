@@ -3,18 +3,18 @@ import type { AutocompleteQuestion, InputQuestion, ListQuestion, YUIQuestion } f
 import type { AbapServiceProvider, AxiosError, SystemInfo } from '@sap-ux/axios-extension';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
-import type { AbapProvider } from '../../client';
+import type { AbapProvider } from '../../../client';
 import {
     validateAbapRepository,
     validateEmptyInput,
     validatePackage,
     validatePackageChoiceInput,
     validateTransportChoiceInput
-} from '../../base';
-import { t } from '../../i18n';
-import type { ChoiceOption, DeployConfigAnswers } from '../../types';
-import { InputChoice } from '../../types';
-import { ABAP_PACKAGE_SEARCH_MAX_RESULTS, listPackages, listTransports } from '../../client';
+} from '../../../base';
+import { t } from '../../../i18n';
+import type { ChoiceOption, DeployConfigAnswers } from '../../../types';
+import { InputChoice } from '../../../types';
+import { ABAP_PACKAGE_SEARCH_MAX_RESULTS, listPackages, listTransports } from '../../../client';
 
 /**
  * Returns the available options for input choices regarding packages.

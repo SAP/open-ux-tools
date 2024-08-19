@@ -3,13 +3,8 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { App, AppIndex } from '@sap-ux/axios-extension';
 
 import type { Application } from '../../types';
-import type { AbapProvider } from '../providers';
+import type { AbapProvider } from '../abap-provider';
 import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, S4HANA_APPS_PARAMS } from '../../base/constants';
-
-interface Choice {
-    name: string;
-    value: Application;
-}
 
 /**
  * Compares two applications for sorting, using the title and falling back to the ID if titles are missing or equal.
@@ -54,27 +49,6 @@ export const mapApps = (app: Partial<App>): Application => ({
     bspUrl: app['url'] ?? '',
     bspName: app['repoName'] ?? ''
 });
-
-/**
- * Creates a list of choices from a list of applications, formatted for display or selection in a UI.
- * Each choice consists of an application's title (or ID if no title), followed by its registration IDs and ACH, formatted for easy reading.
- *
- * @param {Application[]} apps - An array of applications to be transformed into display choices.
- * @returns {Choice[]} An array of objects each containing a value (the full application object) and a name (a formatted string).
- */
-export const getApplicationChoices = (apps: Application[]): Choice[] => {
-    return Array.isArray(apps)
-        ? apps.map((app) => {
-              const name = app.title
-                  ? `${app.title} (${app.id}, ${app.registrationIds}, ${app.ach})`
-                  : `${app.id} (${app.registrationIds}, ${app.ach})`;
-              return {
-                  value: app,
-                  name: name.replace('(, )', '').replace(', , ', ', ').replace(', )', ')').replace('(, ', '(')
-              };
-          })
-        : apps;
-};
 
 /**
  * Provides services related to managing and loading applications from an ABAP provider.

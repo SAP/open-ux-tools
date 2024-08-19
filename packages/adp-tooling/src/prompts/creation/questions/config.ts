@@ -13,20 +13,15 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Manifest } from '@sap-ux/project-access';
 import { isExtensionInstalledVsCode } from '@sap-ux/environment-check';
 
-import type { EndpointsManager, UI5VersionManager, ManifestManager, AbapProvider } from '../../client';
-import {
-    ApplicationManager,
-    getApplicationChoices,
-    isFeatureSupportedVersion,
-    getCachedACH,
-    getCachedFioriId
-} from '../../client';
-import { t } from '../../i18n';
-import { resolveNodeModuleGenerator, isNotEmptyString, validateAch, validateClient } from '../../base';
-import type { Application, ConfigurationInfoAnswers, FlexUISupportedSystem, Prompts } from '../../types';
-import { FlexLayer } from '../../types';
-import { systemAdditionalMessages } from './prompt-helpers';
-import { AppIdentifier } from './identifier';
+import type { ManifestManager, AbapProvider } from '../../../client';
+import { ApplicationManager } from '../../../client';
+import { t } from '../../../i18n';
+import { resolveNodeModuleGenerator, isNotEmptyString, validateAch, validateClient } from '../../../base';
+import type { Application, ConfigurationInfoAnswers, FlexUISupportedSystem, Prompts } from '../../../types';
+import { FlexLayer } from '../../../types';
+import { AppIdentifier } from '../identifier';
+import { EndpointsManager, UI5VersionManager, isFeatureSupportedVersion } from '../../../common';
+import { getApplicationChoices, systemAdditionalMessages } from './helper';
 
 /**
  * ConfigInfoPrompter handles the setup and interaction logic for configuration prompts related to project setup.
@@ -814,7 +809,7 @@ export default class ConfigInfoPrompter {
             },
             default: (answers: ConfigurationInfoAnswers) => {
                 const manifest = this.manifestManager.getManifest(answers?.application?.id);
-                return manifest ? getCachedFioriId(manifest) : '';
+                return manifest?.['sap.fiori']?.registrationIds?.toString() ?? '';
             },
             store: false
         } as InputQuestion<ConfigurationInfoAnswers>;
@@ -846,7 +841,7 @@ export default class ConfigInfoPrompter {
             },
             default: (answers: ConfigurationInfoAnswers) => {
                 const manifest = this.manifestManager.getManifest(answers?.application?.id);
-                return manifest ? getCachedACH(manifest) : '';
+                return manifest?.['sap.app']?.ach?.toString() ?? '';
             },
             validate: (value: string) => validateAch(value, this.isCustomerBase),
             store: false

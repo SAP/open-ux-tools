@@ -1,9 +1,10 @@
 import type { InputQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
-import { t } from '../../i18n';
-import { FlexLayer } from '../../types';
-import type { BasicInfoAnswers } from '../../types';
-import { validateProjectName, isNotEmptyString, validateNamespace } from '../../base/validators';
-import { getDefaultProjectName, getProjectNameTooltip, generateValidNamespace } from './prompt-helpers';
+
+import { t } from '../../../i18n';
+import { FlexLayer } from '../../../types';
+import type { BasicInfoAnswers } from '../../../types';
+import { validateProjectName, isNotEmptyString, validateNamespace } from '../../../base/validators';
+import { generateValidNamespace, getDefaultProjectName, getProjectNameTooltip } from './helper';
 
 /**
  * Generates an array of prompt objects configured for collecting basic information about a project.

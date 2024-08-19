@@ -1,10 +1,21 @@
+import { Manifest } from '@sap-ux/project-access';
 import type { EditorQuestion, InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 
-import { t } from '../../i18n';
-import type { FlpConfigAnswers } from '../../types';
-import { getInboundIds } from '../../client/manifest';
-import type { ManifestManager } from '../../client';
-import { validateByRegex, validateEmptyInput, validateParameters } from '../../base';
+import { t } from '../../../i18n';
+import type { FlpConfigAnswers } from '../../../types';
+import type { ManifestManager } from '../../../client';
+import { validateByRegex, validateEmptyInput, validateParameters } from '../../../base';
+
+/**
+ * Extracts inbound IDs from the manifest's cross-navigation section.
+ *
+ * @param {Manifest} manifest - The manifest object containing cross-navigation data.
+ * @returns {string[]} An array of inbound IDs, or an empty array if none are found.
+ */
+export function getInboundIds(manifest: Manifest | null): string[] {
+    const inbounds = manifest?.['sap.app']?.crossNavigation?.inbounds;
+    return inbounds ? Object.keys(inbounds) : [];
+}
 
 /**
  * Generates a list of configuration prompts based on the application's manifest data and whether it's a cloud project.

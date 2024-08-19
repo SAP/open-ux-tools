@@ -5,7 +5,7 @@ import type { AbapServiceProvider, OperationsType } from '@sap-ux/axios-extensio
 import { t } from '../i18n';
 import { InputChoice } from '../types';
 import { parseParameters } from '../common/flp-parameters';
-import { listPackages, listTransports } from '../client/deployment';
+import { listPackages, listTransports } from '../client';
 
 const projectNamePattern = /^(\w\.\w|[a-zA-Z0-9]){1,61}$/;
 
