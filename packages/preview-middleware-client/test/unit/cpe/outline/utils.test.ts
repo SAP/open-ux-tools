@@ -63,13 +63,13 @@ describe('utils', () => {
         };
         const clickedControlId = 'someViewId';
         it('should return false for ui5 minor version lower than 114', () => {
-            expect(isReuseComponent(clickedControlId, 112)).toBe(false);
+            expect(isReuseComponent(clickedControlId, { major: 1, minor: 112 })).toBe(false);
         });
 
         it('should return false when cannot find component with clicked control Id', () => {
             ComponentMock.getComponentById = jest.fn().mockReturnValue(undefined);
 
-            expect(isReuseComponent(clickedControlId, 118)).toBe(false);
+            expect(isReuseComponent(clickedControlId, { major: 1, minor: 118 })).toBe(false);
         });
 
         it('should return false when manifest is undefined', () => {
@@ -77,7 +77,7 @@ describe('utils', () => {
                 getManifest: () => undefined
             });
 
-            expect(isReuseComponent(clickedControlId, 118)).toBe(false);
+            expect(isReuseComponent(clickedControlId, { major: 1, minor: 118 })).toBe(false);
         });
 
         it('should return false when type is not component', () => {
@@ -91,13 +91,13 @@ describe('utils', () => {
                 }
             });
 
-            expect(isReuseComponent(clickedControlId, 118)).toBe(false);
+            expect(isReuseComponent(clickedControlId, { major: 1, minor: 118 })).toBe(false);
         });
 
         it('should return true when type is component', () => {
             ComponentMock.getComponentById = jest.fn().mockReturnValue(componentMock);
 
-            expect(isReuseComponent(clickedControlId, 118)).toBe(true);
+            expect(isReuseComponent(clickedControlId, { major: 1, minor: 118 })).toBe(true);
         });
     });
 });

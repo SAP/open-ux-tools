@@ -5,6 +5,7 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import { getComponent } from '../ui5-utils';
 import Component from 'sap/ui/core/Component';
 import { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
+import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../../utils/version';
 
 export const isEditable = (id = ''): boolean => {
     let editable = false;
@@ -34,11 +35,11 @@ export const isEditable = (id = ''): boolean => {
  * Function that checks if control is reuse component
  *
  * @param controlId id control
- * @param minorUI5Version minor UI5 version
+ * @param ui5VersionInfo UI5 version information
  * @returns boolean if control is from reused component view
  */
-export const isReuseComponent = (controlId: string, minorUI5Version: number): boolean => {
-    if(minorUI5Version <= 114) {
+export const isReuseComponent = (controlId: string, ui5VersionInfo: Ui5VersionInfo): boolean => {
+    if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 115 })) {
         return false;
     }
 
@@ -48,7 +49,7 @@ export const isReuseComponent = (controlId: string, minorUI5Version: number): bo
     }
 
     const manifest = component.getManifest() as Manifest;
-    if(!manifest) {
+    if (!manifest) {
         return false;
     }
 
