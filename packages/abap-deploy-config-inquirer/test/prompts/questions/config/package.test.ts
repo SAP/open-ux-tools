@@ -57,7 +57,6 @@ describe('getPackagePrompts', () => {
                 "name": "packageAutocomplete",
                 "source": [Function],
                 "type": "autocomplete",
-                "validate": [Function],
                 "when": [Function],
               },
             ]

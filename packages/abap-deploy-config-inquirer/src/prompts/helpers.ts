@@ -93,7 +93,9 @@ async function getBackendTargetChoices(
     const systemChoices: AbapSystemChoice[] = Object.values(backendSystems)
         .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, caseFirst: 'lower' }))
         .map((system) => {
-            targetExists = system.url === target?.url && (system.client ?? '') === (target?.client ?? '');
+            if (!targetExists) {
+                targetExists = system.url === target?.url && (system.client ?? '') === (target?.client ?? '');
+            }
             return {
                 name: targetExists
                     ? `${getBackendDisplayName({ backendSystem: system })} (Source system)`
