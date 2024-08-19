@@ -68,6 +68,6 @@ describe('flp/ushellBootstrap', () => {
         } as jest.Mocked<Response>);
 
         await ushellBootstrap(() => {});
-        expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '/test-resources/sap/ushell/bootstrap/sandbox.js');
+        expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '../../test-resources/sap/ushell/bootstrap/sandbox.js');
     });
 });
