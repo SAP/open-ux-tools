@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.48
+
+### Patch Changes
+
+-   53a5b13: fix static preview client url
+
 ## 0.16.47
 
 ### Patch Changes
