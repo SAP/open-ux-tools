@@ -22,7 +22,8 @@ import {
     getCachedFioriId
 } from '../../client';
 import { t } from '../../i18n';
-import { resolveNodeModuleGenerator, isNotEmptyString, validateAch, validateClient, AbapProvider } from '../../base';
+import type { AbapProvider } from '../../base';
+import { resolveNodeModuleGenerator, isNotEmptyString, validateAch, validateClient } from '../../base';
 import type { Application, ConfigurationInfoAnswers, FlexUISupportedSystem, Prompts } from '../../types';
 import { FlexLayer } from '../../types';
 import { systemAdditionalMessages } from './prompt-helpers';

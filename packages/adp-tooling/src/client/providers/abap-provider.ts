@@ -3,7 +3,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { AbapServiceProvider, AxiosRequestConfig, ProviderConfiguration } from '@sap-ux/axios-extension';
-import { EndpointsManager } from '../endpoint';
+import type { EndpointsManager } from '../endpoint';
 
 export type RequestOptions = AxiosRequestConfig & Partial<ProviderConfiguration>;
 

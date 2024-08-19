@@ -9,7 +9,8 @@ import {
     SNAPSHOT_VERSION,
     SNAPSHOT_UNTESTED_VERSION
 } from '../../base';
-import { UI5Version, FlexLayer } from '../../types';
+import type { UI5Version } from '../../types';
+import { FlexLayer } from '../../types';
 
 /**
  * Gets the official base URL for SAP UI5 resources based on the version information.
