@@ -1,14 +1,32 @@
+import { readdirSync } from 'fs';
+
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { SystemInfo } from '@sap-ux/axios-extension';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 import { t } from '../../i18n';
 import type { FlexUISupportedSystem } from '../../types';
-import { getProjectNames } from '../../base/file-system';
 
 export interface PageLabel {
     name: string;
     description: string;
+}
+
+const APP_VARIANT_REGEX = /^app[.]variant\d{1,3}$/;
+
+/**
+ * Retrieves a list of project directory names that match a specific naming pattern from the given directory path.
+ *
+ * @param {string} path - The directory path from which to list project names.
+ * @param {RegExp} regex - The specific naming pattern to filter by.
+ * @returns {string[]} An array of project names that match the pattern /^app\.variant[0-9]{1,3}$/, sorted in reverse order.
+ */
+export function getProjectNames(path: string, regex: RegExp = APP_VARIANT_REGEX): string[] {
+    return readdirSync(path, { withFileTypes: true })
+        .filter((dirent) => !dirent.isFile() && regex.test(dirent.name))
+        .map((dirent) => dirent.name)
+        .sort((a, b) => a.localeCompare(b))
+        .reverse();
 }
 
 /**

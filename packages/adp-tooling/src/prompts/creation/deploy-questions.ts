@@ -3,7 +3,7 @@ import type { AutocompleteQuestion, InputQuestion, ListQuestion, YUIQuestion } f
 import type { AbapServiceProvider, AxiosError, SystemInfo } from '@sap-ux/axios-extension';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
-import type { AbapProvider } from '../../base';
+import type { AbapProvider } from '../../client';
 import {
     validateAbapRepository,
     validateEmptyInput,

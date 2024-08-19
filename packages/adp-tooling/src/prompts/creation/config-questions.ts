@@ -13,7 +13,7 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Manifest } from '@sap-ux/project-access';
 import { isExtensionInstalledVsCode } from '@sap-ux/environment-check';
 
-import type { EndpointsManager, UI5VersionManager, ManifestManager } from '../../client';
+import type { EndpointsManager, UI5VersionManager, ManifestManager, AbapProvider } from '../../client';
 import {
     ApplicationManager,
     getApplicationChoices,
@@ -22,11 +22,11 @@ import {
     getCachedFioriId
 } from '../../client';
 import { t } from '../../i18n';
-import { resolveNodeModuleGenerator, isNotEmptyString, validateAch, validateClient, AbapProvider } from '../../base';
+import { resolveNodeModuleGenerator, isNotEmptyString, validateAch, validateClient } from '../../base';
 import type { Application, ConfigurationInfoAnswers, FlexUISupportedSystem, Prompts } from '../../types';
 import { FlexLayer } from '../../types';
 import { systemAdditionalMessages } from './prompt-helpers';
-import { AppIdentifier } from '../../base/app-identifier';
+import { AppIdentifier } from './identifier';
 
 /**
  * ConfigInfoPrompter handles the setup and interaction logic for configuration prompts related to project setup.

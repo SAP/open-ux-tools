@@ -13,15 +13,16 @@ import type {
     FlpConfigAnswers,
     SystemDetails,
     OnpremApp
-} from '../../types';
-import { FlexLayer } from '../../types';
-import type { ManifestManager, UI5VersionManager } from '../../client';
-import { getFormattedVersion, getOfficialBaseUI5VersionUrl } from '../../client';
-import { getI18nModels } from './i18n/model';
-import { getSupportForUI5Yaml } from './configs/support';
-import { AbapProvider, getApplicationType } from '../../base';
-import { getUI5DeployConfig } from './configs/deploy';
-import { parseParameters } from '../../common/flp-parameters';
+} from '../../../types';
+import { FlexLayer } from '../../../types';
+import type { ManifestManager, UI5VersionManager } from '../../../client';
+import { getFormattedVersion, getOfficialBaseUI5VersionUrl } from '../../../client';
+import { getI18nModels } from '../i18n/model';
+import { getSupportForUI5Yaml } from '../configs/support';
+import { AbapProvider } from '../../../client';
+import { getUI5DeployConfig } from '../configs/deploy';
+import { parseParameters } from '../../../common/flp-parameters';
+import { getApplicationType } from '../../../common';
 
 /**
  * Constructs the ABAP target configuration based on the operational context and project type.

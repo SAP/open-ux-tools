@@ -1,8 +1,9 @@
 import { t } from 'i18next';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
-import { Application, FlexLayer } from '../types';
-import { getApplicationType, isSupportedType } from './app-utils';
-import { isV4Application } from '../client';
+
+import { Application, FlexLayer } from '../../../types';
+import { isV4Application } from '../../../client';
+import { getApplicationType, isSupportedType } from '../../../common';
 
 /**
  * Manages and validates application identifiers and compatibility for adaptation projects,
