@@ -4,14 +4,14 @@ import { PromptState } from './prompts/prompt-state';
 import { getAbapDeployConfigQuestions } from './prompts';
 import LoggerHelper from './logger-helper';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
-import type {
-    AbapDeployConfigAnswers,
-    AbapDeployConfigAnswersInternal,
-    AbapDeployConfigPromptOptions,
-    AbapDeployConfigQuestion,
+import {
     PackageInputChoices,
     TargetSystemType,
-    TransportChoices
+    TransportChoices,
+    type AbapDeployConfigAnswers,
+    type AbapDeployConfigAnswersInternal,
+    type AbapDeployConfigPromptOptions,
+    type AbapDeployConfigQuestion
 } from './types';
 import { reconcileAnswers } from './utils';
 
