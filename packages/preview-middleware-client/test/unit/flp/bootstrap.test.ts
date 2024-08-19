@@ -66,8 +66,9 @@ describe('flp/ushellBootstrap', () => {
         fetchMock.mockResolvedValue({
             json: () => Promise.resolve({ libraries: [{ name: 'sap.ui.something', version: '2.0.0' }] })
         } as jest.Mocked<Response>);
+        (window as unknown as Window)['data-open-ux-preview-basePath'] = '..';
 
         await ushellBootstrap(() => {});
-        expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '../../test-resources/sap/ushell/bootstrap/sandbox.js');
+        expect(htmlElement.setAttribute).toHaveBeenCalledWith('src', '../test-resources/sap/ushell/bootstrap/sandbox.js');
     });
 });
