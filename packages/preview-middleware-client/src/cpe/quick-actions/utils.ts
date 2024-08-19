@@ -40,7 +40,6 @@ export function getRelevantControlFromActivePage(
     for (const type of controlTypes) {
         const controls = controlIndex[type] ?? [];
         for (const control of controls) {
-            // const isActionApplicable = pageHasControlId(activePage, control.controlId);
             const ctrl = getControlById(control.controlId)?.getParent();
             const isActionApplicable = isDescendantOfPage(ctrl, activePage);
 
