@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.22
+
+### Patch Changes
+
+-   Updated dependencies [08b788c]
+    -   @sap-ux/store@0.9.1
+    -   @sap-ux/telemetry@0.5.20
+
 ## 0.5.21
 
 ### Patch Changes
