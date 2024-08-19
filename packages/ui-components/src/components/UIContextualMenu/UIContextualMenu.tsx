@@ -73,11 +73,18 @@ export function getUIContextualMenuItemStyles(
     itemsHaveSubMenu?: boolean
 ): Partial<IContextualMenuItemStyles> {
     const { iconToLeft } = props;
-    let padding: number | undefined;
+    const padding: { label?: number; root?: string; rootRight?: string } = {};
     if (iconToLeft && itemsHaveSubMenu) {
-        padding = currentItemHasSubmenu ? 10 : 19;
+        padding.label = currentItemHasSubmenu ? 10 : 19;
+        padding.root = '0 3px !important';
+    } else if (!iconToLeft && currentItemHasSubmenu) {
+        padding.rootRight = '3px !important';
     }
     return {
+        root: {
+            padding: padding.root,
+            paddingRight: padding.rootRight
+        },
         checkmarkIcon: {
             color: 'var(--vscode-foreground)',
             maxHeight: 18,
@@ -93,7 +100,7 @@ export function getUIContextualMenuItemStyles(
             fontFamily: 'var(--vscode-font-family)',
             lineHeight: 18,
             height: 18,
-            paddingLeft: padding
+            paddingLeft: padding.label
         },
         linkContent: {
             fontSize: 13,

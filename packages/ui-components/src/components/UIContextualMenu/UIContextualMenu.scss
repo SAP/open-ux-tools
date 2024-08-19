@@ -112,7 +112,6 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
             font-size: 13px;
             color: $menu-color;
             padding: $menu-item-padding;
-            padding-right: 3px;
 
             svg > path {
                 fill: $menu-color;
@@ -425,7 +424,6 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
     &.ts-ContextualMenu--reverse .ms-ContextualMenu-item {
         > .ms-ContextualMenu-link,
         > div > button {
-            padding: $menu-item-vertical-padding 3px;
             & i + .ms-ContextualMenu-itemText {
                 padding-left: 3px;
             }
