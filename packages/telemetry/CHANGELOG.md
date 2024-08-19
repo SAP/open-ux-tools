@@ -1,5 +1,21 @@
 # @sap-ux/telemetry
 
+## 0.5.22
+
+### Patch Changes
+
+-   Updated dependencies [61721f2]
+    -   @sap-ux/ui5-config@0.24.0
+    -   @sap-ux/project-access@1.26.7
+
+## 0.5.21
+
+### Patch Changes
+
+-   9c8dc5c: fix: update `axios` to `1.7.4`
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/btp-utils@0.15.1
+
 ## 0.5.20
 
 ### Patch Changes

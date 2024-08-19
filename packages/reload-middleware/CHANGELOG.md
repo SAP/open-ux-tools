@@ -1,5 +1,13 @@
 # @sap-ux/reload-middleware
 
+## 0.2.1
+
+### Patch Changes
+
+-   9c8dc5c: fix: update `axios` to `1.7.4`
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/btp-utils@0.15.1
+
 ## 0.2.0
 
 ### Minor Changes

@@ -1,5 +1,23 @@
 # @sap-ux/app-config-writer
 
+## 0.4.26
+
+### Patch Changes
+
+-   Updated dependencies [61721f2]
+    -   @sap-ux/ui5-config@0.24.0
+    -   @sap-ux/project-access@1.26.7
+    -   @sap-ux/axios-extension@1.16.4
+
+## 0.4.25
+
+### Patch Changes
+
+-   9c8dc5c: fix: update `axios` to `1.7.4`
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/axios-extension@1.16.4
+    -   @sap-ux/btp-utils@0.15.1
+
 ## 0.4.24
 
 ### Patch Changes
