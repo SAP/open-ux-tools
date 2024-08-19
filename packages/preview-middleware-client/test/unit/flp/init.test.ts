@@ -197,7 +197,7 @@ describe('flp/init', () => {
         });
 
         test('nothing configured', async () => {
-            VersionInfo.load.mockResolvedValue({name: 'sap.ui.core', version: '1.118.1' });
+            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.118.1' });
             await init({});
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).not.toBeCalled();
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
@@ -209,7 +209,7 @@ describe('flp/init', () => {
                 layer: 'CUSTOMER_BASE',
                 pluginScript: 'my/script'
             };
-            VersionInfo.load.mockResolvedValue({name: 'sap.ui.core', version: '1.84.50' });
+            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.84.50' });
             await init({ flex: JSON.stringify(flexSettings) });
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
@@ -247,7 +247,7 @@ describe('flp/init', () => {
                 layer: 'CUSTOMER_BASE',
                 pluginScript: 'my/script'
             };
-            VersionInfo.load.mockResolvedValue({name: 'sap.ui.core', version: '1.71.60' });
+            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.71.60' });
             await init({ flex: JSON.stringify(flexSettings) });
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
@@ -282,7 +282,7 @@ describe('flp/init', () => {
 
         test('custom init module configured & ui5 version is 1.120.9', async () => {
             const customInit = 'my/app/test/integration/opaTests.qunit';
-            VersionInfo.load.mockResolvedValue({name: 'sap.ui.core', version: '1.120.9' });
+            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.120.9' });
 
             await init({ customInit: customInit });
 
@@ -292,7 +292,7 @@ describe('flp/init', () => {
 
         test('custom init module configured & ui5 version is 2.0.0', async () => {
             const customInit = 'my/app/test/integration/opaTests.qunit';
-            VersionInfo.load.mockResolvedValue({name: 'sap.ui.core', version: '2.0.0' });
+            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '2.0.0' });
 
             await init({ customInit: customInit });
 
