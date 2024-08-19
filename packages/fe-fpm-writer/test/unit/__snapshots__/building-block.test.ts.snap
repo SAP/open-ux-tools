@@ -383,8 +383,8 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 exports[`Building Blocks Generate with optional parameters getSerializedFileContent for chart building block 2`] = `
 "<macros:Chart
     id=\\"testChart\\"
-    metaPath=\\"/REPLACE_WITH_ENTITY\\"
-    contextPath=\\"REPLACE_WITH_A_QUALIFIER\\"
+    metaPath=\\"/REPLACE_WITH_A_QUALIFIER\\"
+    contextPath=\\"REPLACE_WITH_ENTITY\\"
 />"
 `;
 

@@ -108,8 +108,8 @@ function getOrAddMacrosNamespace(ui5XmlDocument: Document): string {
 function getDefaultMetaPath(type: BuildingBlockType, usePlaceholders?: boolean): MetadataPath {
     if (type === BuildingBlockType.Chart) {
         return {
-            metaPath: usePlaceholders ? `/${PLACEHOLDERS.entitySet}` : '',
-            contextPath: usePlaceholders ? PLACEHOLDERS.qualifier : ''
+            metaPath: usePlaceholders ? `/${PLACEHOLDERS.qualifier}` : '',
+            contextPath: usePlaceholders ? PLACEHOLDERS.entitySet : ''
         };
     }
     return {

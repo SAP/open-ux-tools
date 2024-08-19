@@ -203,8 +203,8 @@ Array [
 exports[`Prompts - no project getCodeSnippet Type "chart", get code snippet 1`] = `
 "<macros:Chart
     id=\\"id\\"
-    metaPath=\\"/REPLACE_WITH_ENTITY\\"
-    contextPath=\\"REPLACE_WITH_A_QUALIFIER\\"
+    metaPath=\\"/REPLACE_WITH_A_QUALIFIER\\"
+    contextPath=\\"REPLACE_WITH_ENTITY\\"
 />"
 `;
 
