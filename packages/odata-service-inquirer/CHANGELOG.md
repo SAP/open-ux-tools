@@ -1,5 +1,16 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.23
+
+### Patch Changes
+
+-   9c8dc5c: fix: update `axios` to `1.7.4`
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/axios-extension@1.16.4
+    -   @sap-ux/btp-utils@0.15.1
+    -   @sap-ux/telemetry@0.5.21
+    -   @sap-ux/inquirer-common@0.4.6
+
 ## 0.5.22
 
 ### Patch Changes
