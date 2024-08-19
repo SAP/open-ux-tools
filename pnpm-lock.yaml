@@ -311,8 +311,8 @@ importers:
         specifier: 5.2.11
         version: 5.2.11
       axios:
-        specifier: 1.6.8
-        version: 1.6.8
+        specifier: 1.7.4
+        version: 1.7.4
 
   packages/abap-deploy-config-inquirer:
     dependencies:
@@ -595,8 +595,8 @@ importers:
         specifier: 2.4.4
         version: 2.4.4
       axios:
-        specifier: 1.6.8
-        version: 1.6.8
+        specifier: 1.7.4
+        version: 1.7.4
       nock:
         specifier: 13.4.0
         version: 13.4.0
@@ -613,8 +613,8 @@ importers:
         specifier: 0.8.10
         version: 0.8.10
       axios:
-        specifier: 1.6.8
-        version: 1.6.8
+        specifier: 1.7.4
+        version: 1.7.4
       detect-content-type:
         specifier: 1.2.0
         version: 1.2.0
@@ -717,8 +717,8 @@ importers:
         specifier: 2.1.1
         version: 2.1.1
       axios:
-        specifier: 1.6.8
-        version: 1.6.8
+        specifier: 1.7.4
+        version: 1.7.4
     devDependencies:
       '@sap-ux/logger':
         specifier: workspace:*
@@ -1117,8 +1117,8 @@ importers:
         specifier: 0.5.10
         version: 0.5.10
       axios:
-        specifier: 1.6.8
-        version: 1.6.8
+        specifier: 1.7.4
+        version: 1.7.4
       chalk:
         specifier: 4.1.2
         version: 4.1.2
@@ -1169,8 +1169,8 @@ importers:
         specifier: 5.3.2
         version: 5.3.2
       axios:
-        specifier: 1.6.8
-        version: 1.6.8
+        specifier: 1.7.4
+        version: 1.7.4
       glob-gitignore:
         specifier: 1.0.14
         version: 1.0.14
@@ -1808,8 +1808,8 @@ importers:
         specifier: workspace:*
         version: link:../telemetry
       axios:
-        specifier: 1.6.8
-        version: 1.6.8
+        specifier: 1.7.4
+        version: 1.7.4
       axios-logger:
         specifier: 2.8.0
         version: 2.8.0
@@ -1913,8 +1913,8 @@ importers:
         version: link:../odata-annotation-core-types
     devDependencies:
       axios:
-        specifier: 1.6.8
-        version: 1.6.8
+        specifier: 1.7.4
+        version: 1.7.4
       npm-run-all2:
         specifier: 6.2.0
         version: 6.2.0
@@ -2157,8 +2157,8 @@ importers:
         specifier: 2.0.12
         version: 2.0.12
       axios:
-        specifier: 1.6.8
-        version: 1.6.8
+        specifier: 1.7.4
+        version: 1.7.4
       express:
         specifier: 4.19.2
         version: 4.19.2
@@ -2293,8 +2293,8 @@ importers:
         specifier: 2.9.2
         version: 2.9.2
       axios:
-        specifier: 1.6.8
-        version: 1.6.8
+        specifier: 1.7.4
+        version: 1.7.4
       performance-now:
         specifier: 2.1.0
         version: 2.1.0
@@ -2707,8 +2707,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       axios:
-        specifier: 1.6.8
-        version: 1.6.8
+        specifier: 1.7.4
+        version: 1.7.4
       semver:
         specifier: 7.5.4
         version: 7.5.4
@@ -3428,7 +3428,7 @@ packages:
       '@babel/core': 7.24.6
       '@babel/helper-compilation-targets': 7.24.6
       '@babel/helper-plugin-utils': 7.24.0
-      debug: 4.3.6
+      debug: 4.3.5
       lodash.debounce: 4.0.8
       resolve: 1.22.8
     transitivePeerDependencies:
@@ -11202,6 +11202,7 @@ packages:
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
+    dev: false
 
   /axios@1.7.3:
     resolution: {integrity: sha512-Ar7ND9pU99eJ9GpoGQKhKf58GpUOgnzuaB7ueNQ5BMi0p+LZ5oaEnfF999fAArcTIBwXTCHAmGcHOZJaWPq9Nw==}
@@ -11211,7 +11212,6 @@ packages:
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
-    dev: true
 
   /b4a@1.6.6:
     resolution: {integrity: sha512-5Tk1HLk6b6ctmjIkAcU/Ujv/1WqiDl0F0JdRCR80VsOcUlHcu7pWeWRlOqQLHfDEsVx9YH/aif5AG4ehoCtTmg==}
@@ -22781,7 +22781,7 @@ packages:
     resolution: {integrity: sha512-wCQcHkRazgjG5XoAq9jbTMLpNIjoSlZslrJ2+N9MxDsGEv1HnFoVjOCexL0ESva7Y9cu350j+DWADdk54s4AFQ==}
     engines: {node: '>=12.0.0'}
     dependencies:
-      axios: 1.6.8
+      axios: 1.7.4
       joi: 17.11.0
       lodash: 4.17.21
       minimist: 1.2.8
