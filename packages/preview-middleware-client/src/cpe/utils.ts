@@ -3,8 +3,17 @@ import type Control from 'sap/ui/core/Control';
 import Element from 'sap/ui/core/Element';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import DataType from 'sap/ui/base/DataType';
-import log from 'sap/base/Log';
+import Log from 'sap/base/Log';
 import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
+import ComponentContainer from 'sap/ui/core/ComponentContainer';
+import XMLView from 'sap/ui/core/mvc/XMLView';
+import UIComponent from 'sap/ui/core/UIComponent';
+import DTElement from 'sap/ui/dt/Element';
+import FlexUtils from 'sap/ui/fl/Utils';
+
+import { getError } from './error-utils';
+import { getComponent } from './ui5-utils';
+
 
 export interface PropertiesInfo {
     defaultValue: string;
@@ -69,10 +78,16 @@ export async function getLibrary(controlName: string): Promise<string> {
     });
 }
 
-import { getError } from './error-utils';
-import UI5Element from 'sap/ui/dt/Element';
-import Utils from 'sap/ui/fl/Utils';
-import { getComponent } from './ui5-utils';
+/**
+ * Check if element is sync view
+ *
+ * @param element UI5Element
+ * @returns boolean if element is sync view or not
+ */
+const isSyncView = (element: DTElement): boolean => {
+    return element?.getMetadata()?.getName()?.includes('XMLView') && element?.oAsyncState === undefined;
+};
+
 /**
  * Get Ids for all sync views
  *
@@ -84,7 +99,7 @@ export async function getAllSyncViewsIds(minor: number): Promise<string[]> {
     const syncViewIds: string[] = [];
     try {
         if (minor < 120) {
-            const elements = Element.registry.filter(() => true) as UI5Element[];
+            const elements = Element.registry.filter(() => true) as DTElement[];
             elements.forEach((ui5Element) => {
                 if (isSyncView(ui5Element)) {
                     syncViewIds.push(ui5Element.getId());
@@ -92,7 +107,7 @@ export async function getAllSyncViewsIds(minor: number): Promise<string[]> {
             });
         } else {
             const ElementRegistry = (await import('sap/ui/core/ElementRegistry')).default;
-            const elements = ElementRegistry.all() as Record<string, UI5Element>;
+            const elements = ElementRegistry.all() as Record<string, DTElement>;
             Object.entries(elements).forEach(([key, ui5Element]) => {
                 if (isSyncView(ui5Element)) {
                     syncViewIds.push(key);
@@ -100,21 +115,12 @@ export async function getAllSyncViewsIds(minor: number): Promise<string[]> {
             });
         }
     } catch (error) {
-        log.error('Could not get application sync views', getError(error));
+        Log.error('Could not get application sync views', getError(error));
     }
 
     return syncViewIds;
 }
 
-/**
- * Check if element is sync view
- *
- * @param element UI5Element
- * @returns boolean if element is sync view or not
- */
-const isSyncView = (element: UI5Element): boolean => {
-    return element?.getMetadata()?.getName()?.includes('XMLView') && element?.oAsyncState === undefined;
-};
 
 /**
  * Gets controller name and view ID for the given UI5 control.
@@ -124,7 +130,7 @@ const isSyncView = (element: UI5Element): boolean => {
  */
 
 export function getControllerInfoForControl(control: ManagedObject): ControllerInfo {
-    const view = Utils.getViewForControl(control);
+    const view = FlexUtils.getViewForControl(control);
     const controllerName = view.getController().getMetadata().getName();
     const viewId = view.getId();
     return { controllerName, viewId };
@@ -181,7 +187,7 @@ export function isControllerExtensionEnabledForControl(
     syncViewsIds: string[],
     minorUI5Version: number
 ): boolean {
-    const clickedControlId = Utils.getViewForControl(control).getId();
+    const clickedControlId = FlexUtils.getViewForControl(control).getId();
     const isClickedControlReuseComponent = isReuseComponent(clickedControlId, minorUI5Version);
 
     return !syncViewsIds.includes(clickedControlId) && !isClickedControlReuseComponent;
@@ -201,14 +207,33 @@ export function getControlById<T extends Element = Element>(id: string): T | und
     }
 }
 
-
 /**
  * Checks whether this object is an instance of the named type.
- * 
+ *
  * @param type - Type to check for.
  * @param element - Object to check
  * @returns Whether this object is an instance of the given type.
  */
 export function isA<T extends ManagedObject>(type: string, element: ManagedObject | undefined): element is T {
     return !!element?.isA(type);
+}
+
+/**
+ * Gets the root view of component for the provided ComponentContainer control.
+ * 
+ * @param container ComponentContainer control.
+ * @returns XMLView which is the root control of the component if it exists.
+ */
+export function getRootControlFromComponentContainer(container: Control): XMLView | undefined {
+    if (container instanceof ComponentContainer) {
+        const componentId = container.getComponent();
+        const component = getComponent(componentId);
+        if (component instanceof UIComponent) {
+            const rootControl = component.getRootControl();
+            if (rootControl instanceof XMLView) {
+                return rootControl;
+            }
+        }
+    }
+    return undefined;
 }

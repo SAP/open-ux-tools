@@ -47,7 +47,7 @@ class MockDefinition implements SimpleQuickActionDefinition {
     }
 }
 
-class MockRegistry extends QuickActionDefinitionRegistry {
+class MockRegistry extends QuickActionDefinitionRegistry<string> {
     getDefinitions(_context: QuickActionActivationContext): QuickActionDefinitionGroup[] {
         return [
             {

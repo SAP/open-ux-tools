@@ -22,7 +22,7 @@ import { getError } from './error-utils';
 import { QuickActionService } from './quick-actions/quick-action-service';
 import type { QuickActionDefinitionRegistry } from './quick-actions/registry';
 
-export default function init(rta: RuntimeAuthoring, registries: QuickActionDefinitionRegistry[] = []): Promise<void> {
+export default function init(rta: RuntimeAuthoring, registries: QuickActionDefinitionRegistry<string>[] = []): Promise<void> {
     Log.info('Initializing Control Property Editor');
 
     // enable telemetry if requested

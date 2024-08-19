@@ -1,10 +1,3 @@
-import ComponentContainer from 'sap/ui/core/ComponentContainer';
-import UIComponent from 'sap/ui/core/UIComponent';
-import Log from 'sap/base/Log';
-import XMLView from 'sap/ui/core/mvc/XMLView';
-
-import { getComponent } from '../../../cpe/ui5-utils';
-import type { ControlTreeIndex } from '../../../cpe/types';
 import type {
     QuickActionActivationContext,
     QuickActionDefinitionGroup
@@ -20,17 +13,12 @@ type PageName = 'listReport' | 'objectPage';
 const LIST_REPORT_TYPE = 'sap.fe.templates.ListReport.ListReport';
 const OBJECT_PAGE_TYPE = 'sap.fe.templates.ObjectPage.ObjectPage';
 
-const PAGE_NAME_MAP: Record<string, PageName> = {
-    [LIST_REPORT_TYPE]: 'listReport',
-    [OBJECT_PAGE_TYPE]: 'objectPage'
-};
-
-interface ActivePage {
-    name: PageName;
-    view: XMLView;
-}
-
-export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegistry {
+export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegistry<PageName> {
+    PAGE_NAME_MAP: Record<string, PageName> = {
+        [LIST_REPORT_TYPE]: 'listReport',
+        [OBJECT_PAGE_TYPE]: 'objectPage'
+    };
+    
     getDefinitions(context: QuickActionActivationContext): QuickActionDefinitionGroup[] {
         const activePages = this.getActivePageContent(context.controlIndex);
 
@@ -60,44 +48,5 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
         }
         return definitionGroups;
     }
-
-    private getActiveViews(controlIndex: ControlTreeIndex): XMLView[] {
-        const pages = this.getActivePages(controlIndex);
-
-        const views = pages
-            .map((page): XMLView | undefined => {
-                if (page instanceof ComponentContainer) {
-                    const componentId = page.getComponent();
-                    const component = getComponent(componentId);
-                    if (component instanceof UIComponent) {
-                        const rootControl = component.getRootControl();
-                        if (rootControl instanceof XMLView) {
-                            return rootControl;
-                        }
-                    }
-                }
-
-                return undefined;
-            })
-            .filter((view: XMLView | undefined): view is XMLView => view !== undefined);
-        return views;
-    }
-
-    private getActivePageContent(controlIndex: ControlTreeIndex): ActivePage[] {
-        const views = this.getActiveViews(controlIndex);
-        const pages: ActivePage[] = [];
-        for (const view of views) {
-            const name = view.getViewName();
-            const pageName = PAGE_NAME_MAP[name];
-            if (pageName) {
-                pages.push({
-                    name: pageName,
-                    view
-                });
-            } else {
-                Log.warning(`Could not find matching page for view of type "${name}".`);
-            }
-        }
-        return pages;
-    }
+ 
 }

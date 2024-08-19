@@ -2008,6 +2008,9 @@ importers:
       '@ui5/cli':
         specifier: 3.8.0
         version: 3.8.0
+      npm-run-all2:
+        specifier: 6.2.0
+        version: 6.2.0
       ui5-tooling-modules:
         specifier: 3.0.5
         version: 3.0.5
@@ -10099,7 +10102,7 @@ packages:
       globby: 13.2.2
       graceful-fs: 4.2.11
       micromatch: 4.0.5
-      minimatch: 9.0.3
+      minimatch: 9.0.5
       pretty-hrtime: 1.0.3
       random-int: 3.0.0
     dev: true
@@ -15094,7 +15097,7 @@ packages:
     dependencies:
       foreground-child: 3.3.0
       jackspeak: 2.3.6
-      minimatch: 9.0.3
+      minimatch: 9.0.5
       minipass: 7.0.4
       path-scurry: 1.10.1
 
@@ -15732,7 +15735,7 @@ packages:
     resolution: {integrity: sha512-C7FfFoTA+bI10qfeydT8aZbvr91vAEU+2W5BZUlzPec47oNb07SsOfwYrtxuvOYdUApPP/Qlh4DtAO51Ekk2QA==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dependencies:
-      minimatch: 9.0.3
+      minimatch: 9.0.5
     dev: true
 
   /ignore-walk@6.0.4:
@@ -18084,7 +18087,7 @@ packages:
       array-differ: 3.0.0
       array-union: 2.1.0
       arrify: 2.0.1
-      minimatch: 3.1.2
+      minimatch: 3.0.5
     dev: true
 
   /multimatch@5.0.0:
@@ -18190,7 +18193,7 @@ packages:
     resolution: {integrity: sha512-tmPX422rYgofd4epzrNoOXiE8XFZYOcCq1vD7MAXCDO+O+zndlA2ztdKKMa+EeuBG5tHETpr4ml4RGgpqDCCAg==}
     engines: {node: '>= 0.10.5'}
     dependencies:
-      minimatch: 3.1.2
+      minimatch: 3.0.5
     dev: true
 
   /node-fetch-native@1.4.0:
@@ -19276,6 +19279,7 @@ packages:
   /pidtree@0.6.0:
     resolution: {integrity: sha512-eG2dWTVw5bzqGRztnHExczNxt5VGsE6OwTeCG3fdUf9KBsZzO3R5OIIIzWR+iZA0NtZ+RDVdaoE2dK1cn6jH4g==}
     engines: {node: '>=0.10'}
+    hasBin: true
     dev: true
 
   /pify@2.3.0:
@@ -23002,6 +23006,7 @@ packages:
 
   /which@1.3.1:
     resolution: {integrity: sha512-HxJdYWq1MTIQbJ3nw0cqssHoTNU267KlrDuGZ1WYlxDStUtKUhOaJmh112/TZmHxxUfuJqPXSOm7tDyas0OSIQ==}
+    hasBin: true
     dependencies:
       isexe: 2.0.0
 
