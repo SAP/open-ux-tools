@@ -23,7 +23,7 @@ export function getPageName(modifiedControl: ManagedObject): string | undefined 
 }
 
 export function getReference(modifiedControl: ManagedObject): string {
-    // probably same as flexsetting id or base id TODO: CONFIRM
+    // probably same as flex setting id or base id TODO: CONFIRM
     const manifest = getAppComponent(modifiedControl)?.getManifest() as Manifest;
     return manifest?.['sap.app']?.id ?? '';
 }

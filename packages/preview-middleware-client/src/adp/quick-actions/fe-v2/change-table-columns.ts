@@ -1,23 +1,26 @@
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import UI5Element from 'sap/ui/core/Element';
+import type IconTabBar from 'sap/m/IconTabBar';
+import type IconTabFilter from 'sap/m/IconTabFilter';
+import type Table from 'sap/m/Table';
+import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
 
-import { NESTED_QUICK_ACTION_KIND, NestedQuickAction } from '@sap-ux-private/control-property-editor-common';
-import { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
+import type { NestedQuickAction, NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
+import { NESTED_QUICK_ACTION_KIND } from '@sap-ux-private/control-property-editor-common';
 
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
-import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
-import Table from 'sap/m/Table';
-import { getControlById, isA } from '../../../cpe/utils';
-import UI5Element from 'sap/ui/core/Element';
-import IconTabBar from 'sap/m/IconTabBar';
-import IconTabFilter from 'sap/m/IconTabFilter';
+import { getControlById, isA, isManagedObject } from '../../../cpe/utils';
 
 export const CHANGE_TABLE_COLUMNS = 'change-table-columns';
 const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';
 const M_TABLE_ACTION_ID = 'CTX_ADD_ELEMENTS_AS_CHILD';
+const ICON_TAB_BAR_TYPE = 'sap.m.IconTabBar';
+const SMART_TABLE_TYPE = 'sap.ui.comp.smarttable.SmartTable';
+const M_TABLE_TYPE = 'sap.m.Table';
 const ACTION_ID = [SMART_TABLE_ACTION_ID, M_TABLE_ACTION_ID];
-const CONTROL_TYPES = ['sap.ui.comp.smarttable.SmartTable', 'sap.m.Table'];
+const CONTROL_TYPES = [SMART_TABLE_TYPE, M_TABLE_TYPE];
 
 export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinition {
     readonly kind = NESTED_QUICK_ACTION_KIND;
@@ -41,14 +44,19 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
 
     async initialize() {
         const tabBar = getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, [
-            'sap.m.IconTabBar'
+            ICON_TAB_BAR_TYPE
         ])[0];
         const filters: { [key: string]: string } = {};
         if (tabBar) {
-            this.iconTabBar = getControlById<IconTabBar>(tabBar.getId());
-            this.iconTabBar?.getItems().forEach((item) => {
-                filters[(item as IconTabFilter).getKey()] = (item as IconTabFilter).getText();
-            });
+            const control = getControlById(tabBar.getId());
+            if (isA<IconTabBar>(ICON_TAB_BAR_TYPE, control)) {
+                this.iconTabBar = control;
+                for (const item of control.getItems()) {
+                    if (isManagedObject(item) && isA<IconTabFilter>('sap.m.IconTabFilter', item)) {
+                        filters[item.getKey()] = item.getText();
+                    }
+                }
+            }
         }
 
         for (const table of getRelevantControlFromActivePage(
@@ -70,22 +78,7 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
                         iconTabBarFilterKey: tabKey
                     };
                 } else {
-                    if (isA<SmartTable>('sap.ui.comp.smarttable.SmartTable', table)) {
-                        this.children.push({
-                            label: `'${table.getHeader()}' table`,
-                            children: []
-                        });
-                    }
-                    if (isA<Table>('sap.m.Table', table)) {
-                        const title = table?.getHeaderToolbar()?.getTitleControl()?.getText() || 'Unknown';
-                        this.children.push({
-                            label: `'${title}' table`,
-                            children: []
-                        });
-                    }
-                    this.tableMap[`${this.children.length - 1}`] = {
-                        table
-                    };
+                    this.processTable(table);
                 }
             }
         }
@@ -93,6 +86,25 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
         if (this.children.length > 0) {
             this.isActive = true;
         }
+    }
+
+    private processTable(table: UI5Element): void {
+        if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {
+            this.children.push({
+                label: `'${table.getHeader()}' table`,
+                children: []
+            });
+        }
+        if (isA<Table>(M_TABLE_TYPE, table)) {
+            const title = table?.getHeaderToolbar()?.getTitleControl()?.getText() || 'Unknown';
+            this.children.push({
+                label: `'${title}' table`,
+                children: []
+            });
+        }
+        this.tableMap[`${this.children.length - 1}`] = {
+            table
+        };
     }
 
     getActionObject(): NestedQuickAction {
@@ -108,33 +120,36 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
 
     async execute(path: string): Promise<FlexCommand[]> {
         const { table, iconTabBarFilterKey } = this.tableMap[path];
-        if (table) {
-            getControlById(table.getId())?.getDomRef()?.scrollIntoView();
-            const controlOverlay = OverlayUtil.getClosestOverlayFor(table);
-            if (controlOverlay) {
-                controlOverlay.setSelected(true);
-            }
+        if (!table) {
+            return [];
+        }
 
-            if (this.iconTabBar && iconTabBarFilterKey) {
-                this.iconTabBar.setSelectedKey(iconTabBarFilterKey);
+        getControlById(table.getId())?.getDomRef()?.scrollIntoView();
+        const controlOverlay = OverlayUtil.getClosestOverlayFor(table);
+        if (controlOverlay) {
+            controlOverlay.setSelected(true);
+        }
+
+        if (this.iconTabBar && iconTabBarFilterKey) {
+            this.iconTabBar.setSelectedKey(iconTabBarFilterKey);
+        }
+        if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {
+            await this.context.actionService.execute(table.getId(), SMART_TABLE_ACTION_ID);
+        }
+        if (isA<Table>(M_TABLE_TYPE, table)) {
+            if (table.getItems().length > 0) {
+                await this.context.actionService.execute(table.getId(), M_TABLE_ACTION_ID);
             }
-            if (isA<SmartTable>('sap.ui.comp.smarttable.SmartTable', table)) {
-                await this.context.actionService.execute(table.getId(), SMART_TABLE_ACTION_ID);
-            }
-            if (isA<Table>('sap.m.Table', table)) {
-                if (table.getItems().length > 0) {
-                    await this.context.actionService.execute(table.getId(), M_TABLE_ACTION_ID);
-                }
-                // to avoid reopening the dialog after close
-                if (!this.eventAttachedOnce) {
-                    table.attachEventOnce(
-                        'updateFinished',
-                        async () => await this.context.actionService.execute(table.getId(), M_TABLE_ACTION_ID)
-                    );
-                    this.eventAttachedOnce = true;
-                }
+            // to avoid reopening the dialog after close
+            if (!this.eventAttachedOnce) {
+                table.attachEventOnce(
+                    'updateFinished',
+                    async () => await this.context.actionService.execute(table.getId(), M_TABLE_ACTION_ID)
+                );
+                this.eventAttachedOnce = true;
             }
         }
+
         return [];
     }
 }

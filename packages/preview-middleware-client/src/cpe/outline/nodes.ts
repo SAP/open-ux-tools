@@ -75,6 +75,15 @@ function addChildToExtensionPoint(id: string, children: OutlineNode[]) {
     });
 }
 
+function indexNode(controlIndex: ControlTreeIndex, node: OutlineNode): void {
+    const indexedControls = controlIndex[node.controlType];
+    if (indexedControls) {
+        indexedControls.push(node);
+    } else {
+        controlIndex[node.controlType] = [node];
+    }
+}
+
 /**
  * Transform node.
  *
@@ -119,13 +128,7 @@ export async function transformNodes(
                 children: transformedChildren
             };
 
-            const indexedControls = controlIndex[node.controlType];
-            if (indexedControls) {
-                indexedControls.push(node);
-            } else {
-                controlIndex[node.controlType] = [node];
-            }
-
+            indexNode(controlIndex, node);
             fillReuseComponents(reuseComponentsIds, current, scenario, minor);
 
             items.push(node);

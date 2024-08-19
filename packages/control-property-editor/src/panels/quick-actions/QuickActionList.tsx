@@ -58,7 +58,7 @@ export function QuickActionList(): ReactElement {
                                         <NestedQuickActionListItem
                                             key={quickAction.id}
                                             action={quickAction}
-                                            actionIdx={idx}
+                                            actionIndex={idx}
                                         />
                                     </Stack.Item>
                                 );

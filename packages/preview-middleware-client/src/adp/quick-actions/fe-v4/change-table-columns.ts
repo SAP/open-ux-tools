@@ -1,14 +1,14 @@
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import Table from 'sap/ui/mdc/Table';
+import FlexRuntimeInfoAPI from 'sap/ui/fl/apply/api/FlexRuntimeInfoAPI';
 
-import { NESTED_QUICK_ACTION_KIND, NestedQuickAction } from '@sap-ux-private/control-property-editor-common';
-import { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
+import type { NestedQuickActionChild, NestedQuickAction } from '@sap-ux-private/control-property-editor-common';
+import { NESTED_QUICK_ACTION_KIND } from '@sap-ux-private/control-property-editor-common';
 
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
 import { getControlById } from '../../../cpe/utils';
-import FlexRuntimeInfoAPI from 'sap/ui/fl/apply/api/FlexRuntimeInfoAPI';
 
 export const CHANGE_TABLE_COLUMNS = 'change-table-columns';
 const ACTION_ID = 'CTX_SETTINGS0';
@@ -52,12 +52,12 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
     }
 
     getActionObject(): NestedQuickAction {
+        const key = 'V4_QUICK_ACTION_CHANGE_TABLE_COLUMNS';
         return {
             kind: NESTED_QUICK_ACTION_KIND,
             id: this.id,
             enabled: this.isActive,
-            // TODO: translate this?
-            title: 'Change table columns',
+            title: this.context.resourceBundle.getText(key) ?? key,
             children: this.children
         };
     }

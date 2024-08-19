@@ -14,7 +14,6 @@ import FlexUtils from 'sap/ui/fl/Utils';
 import { getError } from './error-utils';
 import { getComponent } from './ui5-utils';
 
-
 export interface PropertiesInfo {
     defaultValue: string;
     description: string;
@@ -121,7 +120,6 @@ export async function getAllSyncViewsIds(minor: number): Promise<string[]> {
     return syncViewIds;
 }
 
-
 /**
  * Gets controller name and view ID for the given UI5 control.
  *
@@ -208,6 +206,20 @@ export function getControlById<T extends Element = Element>(id: string): T | und
 }
 
 /**
+ * Checks wether this object is an instance of a ManagedObject.
+ *
+ * @param element An object.
+ * @returns True if element is an instance of a ManagedObject.
+ */
+export function isManagedObject(element: object | undefined): element is ManagedObject {
+    if (typeof (element as unknown as { isA?: (_type: string) => boolean })?.isA === 'function') {
+        return (element as unknown as { isA: (_type: string) => boolean }).isA('sap.ui.base.ManagedObject');
+    }
+
+    return false;
+}
+
+/**
  * Checks whether this object is an instance of the named type.
  *
  * @param type - Type to check for.
@@ -220,7 +232,7 @@ export function isA<T extends ManagedObject>(type: string, element: ManagedObjec
 
 /**
  * Gets the root view of component for the provided ComponentContainer control.
- * 
+ *
  * @param container ComponentContainer control.
  * @returns XMLView which is the root control of the component if it exists.
  */

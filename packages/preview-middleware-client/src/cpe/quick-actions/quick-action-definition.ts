@@ -1,11 +1,12 @@
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
+import { FlexSettings, Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 import type { ActionService } from 'sap/ui/rta/service/Action';
 import type XMLView from 'sap/ui/core/mvc/XMLView';
 
-import { NESTED_QUICK_ACTION_KIND, NestedQuickAction, SIMPLE_QUICK_ACTION_KIND, SimpleQuickAction } from '@sap-ux-private/control-property-editor-common';
+import type { NestedQuickAction, SimpleQuickAction } from '@sap-ux-private/control-property-editor-common';
+import { NESTED_QUICK_ACTION_KIND, SIMPLE_QUICK_ACTION_KIND } from '@sap-ux-private/control-property-editor-common';
 
 import { ControlTreeIndex } from '../types';
 
@@ -21,9 +22,17 @@ export interface QuickActionContext {
     resourceBundle: ResourceBundle;
     view: XMLView;
     key: string;
-    // TODO: we should not access RTA directly,
-    // provide flex settings and a method for modifying command stack instead (or return a command and service can call the "pushAndExecute" method).
+
+    /**
+     * RTA should not be used directly by quick actions.
+     *
+     * Currently it is only used for actions opening ADP dialogs,
+     * but this should be removed in the future.
+     *
+     * @deprecated
+     */
     rta: RuntimeAuthoring;
+    flexSettings: FlexSettings;
     manifest: Manifest;
 }
 
@@ -47,7 +56,7 @@ export interface SimpleQuickActionDefinition {
 
 export interface NestedQuickActionDefinition {
     readonly kind: typeof NESTED_QUICK_ACTION_KIND;
-    readonly  type: string;
+    readonly type: string;
     readonly id: string;
     readonly forceRefreshAfterExecution?: boolean;
     isActive: boolean;
@@ -72,11 +81,3 @@ export interface QuickActionDefinitionGroup {
     view: XMLView;
     key: string;
 }
-
-// export interface SimpleQuickActionDefinitionConstructor {
-//     new (context: QuickActionContext): SimpleQuickActionDefinition;
-// }
-// export interface NestedQuickActionDefinitionConstructor {
-//     new (context: QuickActionContext): NestedQuickActionDefinition;
-// }
-// export type QuickActionDefinitionConstructor = SimpleQuickActionDefinitionConstructor | NestedQuickActionDefinitionConstructor;

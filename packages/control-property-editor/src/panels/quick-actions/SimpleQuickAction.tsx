@@ -18,21 +18,19 @@ export interface SimpleQuickActionListItemProps {
  * @param props.action Simple Quick Action to render.
  * @returns ReactElement
  */
-export function SimpleQuickActionListItem({ action }: SimpleQuickActionListItemProps): ReactElement {
+export function SimpleQuickActionListItem({ action }: Readonly<SimpleQuickActionListItemProps>): ReactElement {
     const dispatch = useDispatch();
 
     return (
-        <>
-            <div className={`quick-action-item`}>
-                <UILink
-                    key={action.id}
-                    underline={false}
-                    onClick={() => {
-                        dispatch(executeQuickAction({ kind: action.kind, id: action.id }));
-                    }}>
-                    {action.title}
-                </UILink>
-            </div>
-        </>
+        <div className={`quick-action-item`}>
+            <UILink
+                key={action.id}
+                underline={false}
+                onClick={() => {
+                    dispatch(executeQuickAction({ kind: action.kind, id: action.id }));
+                }}>
+                {action.title}
+            </UILink>
+        </div>
     );
 }

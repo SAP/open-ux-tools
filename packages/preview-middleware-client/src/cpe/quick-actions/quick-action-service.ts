@@ -15,7 +15,7 @@ import {
 
 import { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction } from '../types';
 
-import { QuickActionActivationContext, QuickActionDefinition } from './quick-action-definition';
+import { QuickActionActivationContext, QuickActionContext, QuickActionDefinition } from './quick-action-definition';
 import { QuickActionDefinitionRegistry } from './registry';
 import { OutlineService } from '../outline/service';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
@@ -93,15 +93,17 @@ export class QuickActionService implements Service {
                     title,
                     actions: []
                 };
+                const actionContext: QuickActionContext = {
+                    ...context,
+                    view,
+                    key,
+                    rta: this.rta,
+                    flexSettings: this.rta.getFlexSettings(),
+                    resourceBundle: this.resourceBundle
+                };
                 for (const Definition of definitions) {
                     try {
-                        const instance = new Definition({
-                            ...context,
-                            view,
-                            key,
-                            rta: this.rta,
-                            resourceBundle: this.resourceBundle
-                        });
+                        const instance = new Definition(actionContext);
                         await instance.initialize();
                         this.addAction(group, instance);
                     } catch {

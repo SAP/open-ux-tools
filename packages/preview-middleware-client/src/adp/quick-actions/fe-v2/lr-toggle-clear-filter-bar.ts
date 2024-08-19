@@ -54,7 +54,7 @@ export class ToggleClearFilterBarQuickAction implements SimpleQuickActionDefinit
 
     async execute(): Promise<FlexCommand[]> {
         if (this.filterBar) {
-            const flexSettings = this.context.rta.getFlexSettings();
+            const { flexSettings } = this.context;
 
             const modifiedValue = {
                 generator: flexSettings.generator,

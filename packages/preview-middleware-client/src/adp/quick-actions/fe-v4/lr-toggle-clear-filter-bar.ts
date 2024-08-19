@@ -21,7 +21,6 @@ export class ToggleClearFilterBarQuickAction implements SimpleQuickActionDefinit
     }
     isActive = false;
     private isClearButtonEnabled = false;
-    private filterBar: FilterBar | undefined;
     constructor(private context: QuickActionContext) {}
 
     initialize(): void {
@@ -32,18 +31,19 @@ export class ToggleClearFilterBarQuickAction implements SimpleQuickActionDefinit
             if (isActionApplicable && filterBar) {
                 this.isActive = true;
                 this.isClearButtonEnabled = filterBar.getShowClearButton();
-                this.filterBar = filterBar;
             }
         }
     }
 
     getActionObject(): SimpleQuickAction {
+        const key = this.isClearButtonEnabled
+            ? 'V4_QUICK_ACTION_LR_DISABLE_CLEAR_FILTER_BAR'
+            : 'V4_QUICK_ACTION_LR_ENABLE_CLEAR_FILTER_BAR';
         return {
             kind: SIMPLE_QUICK_ACTION_KIND,
             id: this.id,
             enabled: this.isActive,
-            // TODO: translate this?
-            title: `${this.isClearButtonEnabled ? 'Disable' : 'Enable'} clear filterbar button`
+            title: this.context.resourceBundle.getText(key) ?? key
         };
     }
 
@@ -51,12 +51,12 @@ export class ToggleClearFilterBarQuickAction implements SimpleQuickActionDefinit
         const controls = this.context.controlIndex[CONTROL_TYPE];
         const control = controls[0];
         if (control) {
-            const modifiedControl = sap.ui.getCore().byId(control.controlId);
+            const modifiedControl = getControlById(control.controlId);
             if (!modifiedControl) {
                 return [];
             }
 
-            const flexSettings = this.context.rta.getFlexSettings();
+            const { flexSettings } = this.context;
             const parent = modifiedControl.getParent();
             if (!parent) {
                 return [];
