@@ -190,7 +190,8 @@ function getClientChoicePrompt(
                 applyDefaultWhenDirty: true
             },
             choices: () => getClientChoicePromptChoices(backendTarget?.abapTarget?.client),
-            default: (): string => ClientChoiceValue.Blank,
+            default: (): string =>
+                backendTarget?.abapTarget.client ? ClientChoiceValue.Base : ClientChoiceValue.Blank,
             validate: (input: ClientChoiceValue): boolean | string =>
                 validateClientChoiceQuestion(input, backendTarget?.abapTarget?.client)
         } as ListQuestion<AbapDeployConfigAnswersInternal>
