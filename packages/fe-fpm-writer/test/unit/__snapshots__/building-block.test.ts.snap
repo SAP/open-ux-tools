@@ -152,6 +152,22 @@ Object {
 }
 `;
 
+exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Absolute path without entity 1`] = `
+"<macros:Chart
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"testQualifier\\"
+    contextPath=\\"/REPLACE_WITH_ENTITY\\"
+/>"
+`;
+
+exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Absolute path without qualifier 1`] = `
+"<macros:Chart
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"REPLACE_WITH_A_QUALIFIER\\"
+    contextPath=\\"/testEntitySet\\"
+/>"
+`;
+
 exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Complex absolute path 1`] = `
 "<macros:Chart
     id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
@@ -165,6 +181,22 @@ exports[`Building Blocks Generate with optional parameters Generate Chart from o
     id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
     metaPath=\\"@com.sap.vocabularies.UI.v1.Chart#chartMacro4\\"
     contextPath=\\"/Sessions/Speed\\"
+/>"
+`;
+
+exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Relative path without entity 1`] = `
+"<macros:Chart
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"testQualifier\\"
+    contextPath=\\"/REPLACE_WITH_ENTITY\\"
+/>"
+`;
+
+exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Relative path without qualifier 1`] = `
+"<macros:Chart
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"REPLACE_WITH_A_QUALIFIER\\"
+    contextPath=\\"/testEntitySet\\"
 />"
 `;
 
