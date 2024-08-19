@@ -153,7 +153,7 @@ describe('getAbapTargetPrompts', () => {
             expect((destPrompt.default as Function)()).toEqual('mockDest1');
             expect((destPrompt.filter as Function)('mockDest1 ')).toEqual('mockDest1');
             expect((destPrompt.validate as Function)()).toEqual(true);
-            expect(((destPrompt as ListQuestion).additionalMessages as Function)()).toStrictEqual({
+            expect(((destPrompt as ListQuestion).additionalMessages as Function)('mockDestination')).toStrictEqual({
                 message: t('warnings.virtualHost'),
                 severity: Severity.warning
             });

@@ -55,7 +55,7 @@ function getDestinationPrompt(
             validate: (destination: string): boolean => validateDestinationQuestion(destination, destinations),
             additionalMessages: (destination: string): IMessageSeverity | undefined => {
                 let additionalMessage;
-                if (destinations && isOnPremiseDestination(destinations[destination])) {
+                if (destinations && destination && isOnPremiseDestination(destinations[destination])) {
                     additionalMessage = {
                         message: t('warnings.virtualHost'),
                         severity: Severity.warning
