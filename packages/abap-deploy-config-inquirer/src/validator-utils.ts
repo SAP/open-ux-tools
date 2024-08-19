@@ -5,7 +5,7 @@ import {
     getTransportListFromService,
     listPackagesFromService
 } from './service-provider-utils';
-import type { AbapDeployConfigPromptOptions, BackendTarget, SystemConfig, TransportListItem } from './types';
+import type { BackendTarget, SystemConfig, TransportListItem } from './types';
 
 /**
  * Checks if the input is an empty string.
@@ -150,21 +150,21 @@ export function isAppNameValid(name: string): { valid: boolean; errorMessage: st
  *
  * @param packageName - package name
  * @param appName - app name
- * @param options - abap deploy config prompt options
  * @param systemConfig - system configuration
+ * @param backendTarget - backend target
  * @returns list of transport numbers
  */
 export async function getTransportList(
     packageName: string,
     appName: string,
-    options: AbapDeployConfigPromptOptions,
-    systemConfig: SystemConfig
+    systemConfig: SystemConfig,
+    backendTarget?: BackendTarget
 ): Promise<TransportListItem[] | undefined> {
     if (!systemConfig.url && !systemConfig.destination) {
         return undefined;
     }
 
-    const transportList = await getTransportListFromService(packageName, appName, options, systemConfig);
+    const transportList = await getTransportListFromService(packageName, appName, systemConfig, backendTarget);
     return transportList?.length === 1 && transportList[0].transportReqNumber === '' ? [] : transportList;
 }
 
@@ -175,8 +175,8 @@ export async function getTransportList(
  * @param createTransportParams.packageName - package name
  * @param createTransportParams.ui5AppName - UI5 app name
  * @param createTransportParams.description - transport request description
- * @param options - abap deploy config prompt options
  * @param systemConfig - system configuration
+ * @param backendTarget - backend target
  * @returns transport number if created successfully, otherwise undefined
  */
 export async function createTransportNumber(
@@ -185,12 +185,12 @@ export async function createTransportNumber(
         ui5AppName: string;
         description: string;
     },
-    options: AbapDeployConfigPromptOptions,
-    systemConfig: SystemConfig
+    systemConfig: SystemConfig,
+    backendTarget?: BackendTarget
 ): Promise<string | undefined> {
     if (!systemConfig.url && !systemConfig.destination) {
         return undefined;
     }
 
-    return createTransportNumberFromService(createTransportParams, options, systemConfig);
+    return createTransportNumberFromService(createTransportParams, systemConfig, backendTarget);
 }

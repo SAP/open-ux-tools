@@ -86,7 +86,7 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
             default: (previousAnswers: AbapDeployConfigAnswersInternal): string =>
                 defaultPackage(previousAnswers.packageManual || options.existingDeployTaskConfig?.package),
             validate: async (input: string, answers: AbapDeployConfigAnswersInternal): Promise<boolean | string> =>
-                await validatePackage(input, answers, options)
+                await validatePackage(input, answers, options.backendTarget)
         } as InputQuestion<AbapDeployConfigAnswersInternal>,
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
@@ -112,7 +112,7 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
             },
             additionalInfo: () => morePackageResultsMsg,
             validate: async (input: string, answers: AbapDeployConfigAnswersInternal): Promise<boolean | string> =>
-                await validatePackage(input, answers, options)
+                await validatePackage(input, answers, options.backendTarget)
         } as AutocompleteQuestionOptions<AbapDeployConfigAnswersInternal>
     ];
 

@@ -35,7 +35,7 @@ describe('Test list transports', () => {
             getAdtService: jest.fn().mockResolvedValueOnce(mockGetAdtService)
         });
 
-        const allTransports = await getTransportListFromService(packageName, appName, {}, systemConfig);
+        const allTransports = await getTransportListFromService(packageName, appName, systemConfig);
 
         expect(allTransports).toStrictEqual([
             { transportReqNumber: 'TR122C', transportReqDescription: 'TR1 description' },
@@ -48,7 +48,7 @@ describe('Test list transports', () => {
         const loggerSpy = jest.spyOn(LoggerHelper.logger, 'debug');
         mockGetOrCreateServiceProvider.mockRejectedValueOnce(errorObj);
 
-        const allTransports = await getTransportListFromService(packageName, appName, {}, systemConfig);
+        const allTransports = await getTransportListFromService(packageName, appName, systemConfig);
         expect(allTransports).toStrictEqual(undefined);
         expect(loggerSpy).toBeCalledWith(
             t('errors.debugAbapTargetSystem', { method: 'getTransportListFromService', error: errorObj.message })

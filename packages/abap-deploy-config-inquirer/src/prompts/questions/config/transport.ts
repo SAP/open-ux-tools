@@ -42,18 +42,15 @@ export function getTransportRequestPrompts(
             },
             choices: () => getTransportChoices(),
             default: (previousAnswers: AbapDeployConfigAnswersInternal): string =>
-                defaultTransportRequestChoice(previousAnswers.transportInputChoice, useCreateTrDuringDeploy(options)),
+                defaultTransportRequestChoice(
+                    previousAnswers.transportInputChoice,
+                    useCreateTrDuringDeploy(options.existingDeployTaskConfig)
+                ),
             validate: async (
                 input: TransportChoices,
                 previousAnswers: AbapDeployConfigAnswersInternal
             ): Promise<boolean | string> => {
-                const result = validateTransportChoiceInput(
-                    input,
-                    options,
-                    previousAnswers,
-                    true,
-                    transportInputChoice
-                );
+                const result = validateTransportChoiceInput(input, previousAnswers, true, transportInputChoice);
                 transportInputChoice = input;
                 return result;
             }
@@ -65,9 +62,10 @@ export function getTransportRequestPrompts(
                 if (!PromptState.isYUI) {
                     const result = await validateTransportChoiceInput(
                         previousAnswers.transportInputChoice,
-                        options,
                         previousAnswers,
-                        false
+                        false,
+                        undefined,
+                        options.backendTarget
                     );
                     if (result !== true) {
                         throw new Error(result as string);

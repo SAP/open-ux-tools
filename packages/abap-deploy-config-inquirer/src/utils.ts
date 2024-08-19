@@ -8,9 +8,9 @@ import { listPackages } from './validator-utils';
 import type {
     AbapDeployConfigAnswers,
     AbapDeployConfigAnswersInternal,
-    AbapDeployConfigPromptOptions,
     BackendTarget,
     Credentials,
+    DeployTaskConfig,
     InitTransportConfigResult,
     SystemConfig
 } from './types';
@@ -201,11 +201,11 @@ function getTransportAnswer(previousAnswers?: AbapDeployConfigAnswersInternal): 
  * If a deploy config already exists in the project, check if the config
  * uses option to create transport request number during actual deploy process.
  *
- * @param options ABAP Deploy prompt options
- * @returns True if transport setting is set to 'CreateDuringDeployChoice'.
+ * @param existingDeployTaskConfig - existing deploy task config
+ * @returns true if transport setting is set to 'CreateDuringDeployChoice'.
  */
-export function useCreateTrDuringDeploy(options: AbapDeployConfigPromptOptions): boolean {
-    return options.existingDeployTaskConfig?.transport === CREATE_TR_DURING_DEPLOY;
+export function useCreateTrDuringDeploy(existingDeployTaskConfig?: DeployTaskConfig): boolean {
+    return existingDeployTaskConfig?.transport === CREATE_TR_DURING_DEPLOY;
 }
 
 /**

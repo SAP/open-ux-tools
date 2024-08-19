@@ -31,7 +31,7 @@ describe('validator-utils', () => {
     });
 
     it('should list transports', async () => {
-        expect(await getTransportList('PK123', 'MOCK_APP', {}, {})).toEqual(undefined);
+        expect(await getTransportList('PK123', 'MOCK_APP', {})).toEqual(undefined);
 
         const systemConfig = { url: 'http://mock.url', client: '123' };
 
@@ -39,13 +39,13 @@ describe('validator-utils', () => {
             { transportReqNumber: 'TR1' },
             { transportReqNumber: 'TR2' }
         ]);
-        expect(await getTransportList('PK123', 'MOCK_APP', {}, systemConfig)).toEqual([
+        expect(await getTransportList('PK123', 'MOCK_APP', systemConfig)).toEqual([
             { transportReqNumber: 'TR1' },
             { transportReqNumber: 'TR2' }
         ]);
 
         mockGetTransportListFromService.mockResolvedValueOnce([{ transportReqNumber: '' }]);
-        expect(await getTransportList('PK123', 'MOCK_APP', {}, systemConfig)).toEqual([]);
+        expect(await getTransportList('PK123', 'MOCK_APP', systemConfig)).toEqual([]);
     });
 
     it('should create transports', async () => {
@@ -54,11 +54,11 @@ describe('validator-utils', () => {
             ui5AppName: 'MOCK_APP',
             description: 'Mock transport'
         };
-        expect(await createTransportNumber(createTransportParams, {}, {})).toEqual(undefined);
+        expect(await createTransportNumber(createTransportParams, {})).toEqual(undefined);
 
         const systemConfig = { url: 'http://mock.url', client: '123' };
         mockCreateTransportNumberFromService.mockResolvedValueOnce('NEWTR1');
-        expect(await createTransportNumberFromService(createTransportParams, {}, systemConfig)).toEqual('NEWTR1');
+        expect(await createTransportNumberFromService(createTransportParams, systemConfig)).toEqual('NEWTR1');
     });
 
     describe('isAppNameValid', () => {

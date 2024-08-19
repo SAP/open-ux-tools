@@ -12,7 +12,6 @@ import {
     TransportChoices,
     type AbapSystemChoice,
     type AbapDeployConfigAnswersInternal,
-    type AbapDeployConfigPromptOptions,
     type BackendTarget
 } from '../types';
 import { AuthenticationType, type BackendSystem } from '@sap-ux/store';
@@ -159,15 +158,13 @@ export async function getAbapSystemChoices(
 /**
  * Returns a list of the client choice prompt options.
  *
- * @param options abap deploy config prompt options
+ * @param client - client from backend target
  * @returns list of client choice options
  */
-export function getClientChoicePromptChoices(options: AbapDeployConfigPromptOptions): ChoiceOptions[] {
+export function getClientChoicePromptChoices(client?: string): ChoiceOptions[] {
     return [
         {
-            name: t('choices.clientChoice.existing', {
-                client: options.backendTarget?.abapTarget?.client
-            }),
+            name: t('choices.clientChoice.existing', { client }),
             value: ClientChoiceValue.Base
         },
         { name: t('choices.clientChoice.new'), value: ClientChoiceValue.New },
@@ -218,14 +215,14 @@ export function getTransportChoices(): ListChoiceOptions[] {
 /**
  * Ensures the URL in the state is update accordingly.
  *
- * @param options - abap deploy config prompt options
  * @param previousAnswers - previous answers
  * @param destinations - destinations retrieved from BTP
+ * @param backendTarget - backend target from abap deploy config prompt options
  */
-export function updateGeneratorUrl(
-    options: AbapDeployConfigPromptOptions,
+export function updatePromptStateUrl(
     previousAnswers: AbapDeployConfigAnswersInternal,
-    destinations?: Destinations
+    destinations?: Destinations,
+    backendTarget?: BackendTarget
 ): void {
     let destinationUrl: string | undefined;
     if (previousAnswers.destination && destinations) {
@@ -237,23 +234,7 @@ export function updateGeneratorUrl(
             ? previousAnswers.targetSystem
             : undefined;
 
-    PromptState.abapDeployConfig.url =
-        destinationUrl ?? targetSystemChoice ?? options.backendTarget?.abapTarget.url ?? '';
-}
-
-/**
- * Ensures the SCP in the state is updated accordingly.
- *
- * @param options - abap deploy config prompt options
- * @param previousAnswers - previous answers
- */
-export function updateGeneratorScp(
-    options: AbapDeployConfigPromptOptions,
-    previousAnswers: AbapDeployConfigAnswersInternal
-) {
-    if (PromptState?.abapDeployConfig) {
-        PromptState.abapDeployConfig.scp = previousAnswers.scp ?? options.backendTarget?.abapTarget.scp ?? false;
-    }
+    PromptState.abapDeployConfig.url = destinationUrl ?? targetSystemChoice ?? backendTarget?.abapTarget.url ?? '';
 }
 
 /**

@@ -273,11 +273,11 @@ describe('Test validators', () => {
 
     describe('validatePackage', () => {
         it('should return error for invalid package input', async () => {
-            const result = await validatePackage('ZPACKAGE', {}, {});
+            const result = await validatePackage('ZPACKAGE', {});
             expect(result).toBe(true);
         });
         it('should return error for invalid package input', async () => {
-            const result = await validatePackage(' ', {}, {});
+            const result = await validatePackage(' ', {});
             expect(result).toBe(t('warnings.providePackage'));
         });
     });
@@ -289,11 +289,11 @@ describe('Test validators', () => {
 
         it('should return error for invalid package / ui5 abap repo name', async () => {
             const previousAnswers: AbapDeployConfigAnswersInternal = {};
-            let result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, {}, previousAnswers);
+            let result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, previousAnswers);
             expect(result).toBe(t('errors.validators.transportListPreReqs'));
 
             previousAnswers.packageManual = 'ZPACKAGE';
-            result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, {}, previousAnswers);
+            result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, previousAnswers);
             expect(result).toBe(t('errors.validators.transportListPreReqs'));
         });
 
@@ -305,7 +305,7 @@ describe('Test validators', () => {
             jest.spyOn(validatorUtils, 'getTransportList').mockResolvedValueOnce([
                 { transportReqNumber: 'K123456', transportReqDescription: 'Mock transport request' }
             ]);
-            const result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, {}, previousAnswers);
+            const result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, previousAnswers);
             expect(result).toBe(true);
         });
 
@@ -315,11 +315,11 @@ describe('Test validators', () => {
                 ui5AbapRepo: 'ZUI5REPO'
             };
             jest.spyOn(validatorUtils, 'getTransportList').mockResolvedValueOnce([]);
-            let result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, {}, previousAnswers);
+            let result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, previousAnswers);
             expect(result).toBe(t('warnings.noTransportReqs'));
 
             jest.spyOn(validatorUtils, 'getTransportList').mockResolvedValueOnce(undefined);
-            result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, {}, previousAnswers);
+            result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, previousAnswers);
             expect(result).toBe(t('warnings.noExistingTransportReqList'));
         });
 
@@ -327,7 +327,7 @@ describe('Test validators', () => {
             const result = await validateTransportChoiceInput(
                 TransportChoices.CreateNewChoice,
                 {},
-                {},
+
                 true,
                 TransportChoices.CreateNewChoice
             );
@@ -342,7 +342,7 @@ describe('Test validators', () => {
             const result = await validateTransportChoiceInput(
                 TransportChoices.CreateNewChoice,
                 {},
-                {},
+
                 true,
                 undefined
             );
@@ -356,7 +356,7 @@ describe('Test validators', () => {
             const result = await validateTransportChoiceInput(
                 TransportChoices.CreateNewChoice,
                 {},
-                {},
+
                 false,
                 undefined
             );
@@ -370,7 +370,7 @@ describe('Test validators', () => {
             const result = await validateTransportChoiceInput(
                 TransportChoices.CreateNewChoice,
                 {},
-                {},
+
                 false,
                 undefined
             );
@@ -382,7 +382,7 @@ describe('Test validators', () => {
             const result = await validateTransportChoiceInput(
                 TransportChoices.EnterManualChoice,
                 {},
-                {},
+
                 false,
                 undefined
             );

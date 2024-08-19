@@ -3,24 +3,24 @@ import { t } from '../i18n';
 import { getOrCreateServiceProvider } from './abap-service-provider';
 import LoggerHelper from '../logger-helper';
 import type { NewUi5ObjectRequestParams } from '@sap-ux/axios-extension';
-import type { AbapDeployConfigPromptOptions, SystemConfig } from '../types';
+import type { BackendTarget, SystemConfig } from '../types';
 
 /**
  * Create a transport number from the service.
  *
  * @param createTransportParams - input parameters for creating a new transport request for an UI5 app object
- * @param options - abap deploy config prompt options
  * @param systemConfig - system configuration
+ * @param backendTarget - backend target
  * @returns transport number if created successfully, otherwise undefined
  */
 export async function createTransportNumberFromService(
     createTransportParams: NewUi5ObjectRequestParams,
-    options: AbapDeployConfigPromptOptions,
-    systemConfig: SystemConfig
+    systemConfig: SystemConfig,
+    backendTarget?: BackendTarget
 ): Promise<string | undefined> {
     let transportReqNumber: string | undefined;
     try {
-        const provider = await getOrCreateServiceProvider(systemConfig, options.backendTarget);
+        const provider = await getOrCreateServiceProvider(systemConfig, backendTarget);
         const adtService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
         if (adtService) {
             transportReqNumber = await adtService.createTransportRequest(createTransportParams);

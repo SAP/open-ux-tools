@@ -34,7 +34,7 @@ describe('Test create transport', () => {
             getAdtService: jest.fn().mockResolvedValueOnce(mockGetAdtService)
         });
 
-        const transportNumber = await createTransportNumberFromService(createTransportParams, {}, systemConfig);
+        const transportNumber = await createTransportNumberFromService(createTransportParams, systemConfig);
         expect(transportNumber).toBe('NEWTR123');
     });
 
@@ -43,7 +43,7 @@ describe('Test create transport', () => {
         const loggerSpy = jest.spyOn(LoggerHelper.logger, 'debug');
         mockGetOrCreateServiceProvider.mockRejectedValueOnce(errorObj);
 
-        const transportNumber = await createTransportNumberFromService(createTransportParams, {}, systemConfig);
+        const transportNumber = await createTransportNumberFromService(createTransportParams, systemConfig);
         expect(transportNumber).toBe(undefined);
         expect(loggerSpy).toBeCalledWith(
             t('errors.debugAbapTargetSystem', { method: 'createTransportNumberFromService', error: errorObj.message })

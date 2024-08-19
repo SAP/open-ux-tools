@@ -193,12 +193,10 @@ describe('Test utils', () => {
     });
 
     it('should return true when exisintg deploy task configuration has CREATE_TR_DURING_DEPLOY value', () => {
-        const options = {
-            existingDeployTaskConfig: {
-                transport: CREATE_TR_DURING_DEPLOY
-            }
+        const existingDeployTaskConfig = {
+            transport: CREATE_TR_DURING_DEPLOY
         };
-        expect(useCreateTrDuringDeploy(options)).toBe(true);
+        expect(useCreateTrDuringDeploy(existingDeployTaskConfig)).toBe(true);
     });
 
     it('should return reconciled answers for destination', () => {

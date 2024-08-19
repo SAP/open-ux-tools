@@ -44,7 +44,7 @@ export function showScpQuestion(previousAnswers: AbapDeployConfigAnswersInternal
 
     let isSystemUnknown = false;
 
-    if (previousAnswers.url) {
+    if (previousAnswers.url && previousAnswers.url.length >= 0) {
         const backendSystem = findBackendSystemByUrl(previousAnswers.targetSystem ?? previousAnswers.url);
         if (!backendSystem) {
             isSystemUnknown = true;
