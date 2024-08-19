@@ -152,6 +152,38 @@ Object {
 }
 `;
 
+exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Complex absolute path 1`] = `
+"<macros:Chart
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"@com.sap.vocabularies.UI.v1.Chart#chartMacro5\\"
+    contextPath=\\"/SessionMetrics\\"
+/>"
+`;
+
+exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Complex relative path 1`] = `
+"<macros:Chart
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"@com.sap.vocabularies.UI.v1.Chart#chartMacro4\\"
+    contextPath=\\"/Sessions/Speed\\"
+/>"
+`;
+
+exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Simple absolute path 1`] = `
+"<macros:Chart
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"testQualifier\\"
+    contextPath=\\"/testEntitySet\\"
+/>"
+`;
+
+exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Simple relative path 1`] = `
+"<macros:Chart
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"testQualifier\\"
+    contextPath=\\"/testEntitySet\\"
+/>"
+`;
+
 exports[`Building Blocks Generate with optional parameters generate chart building block with metaPath as object: generate-chart-with-optional-params 1`] = `
 Object {
   "generate-chart-with-optional-params/webapp/ext/main/Main.view.xml": Object {
@@ -319,7 +351,8 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 exports[`Building Blocks Generate with optional parameters getSerializedFileContent for chart building block 2`] = `
 "<macros:Chart
     id=\\"testChart\\"
-    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
+    metaPath=\\"/REPLACE_WITH_ENTITY\\"
+    contextPath=\\"REPLACE_WITH_A_QUALIFIER\\"
 />"
 `;
 

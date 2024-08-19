@@ -494,5 +494,65 @@ describe('Building Blocks', () => {
                 expect(codeSnippet.viewOrFragmentPath.filePathProps?.fileName).toBeUndefined();
             }
         );
+
+        // While runtime does not support approach without contextPath - special test for Chart
+        const chartInput = [
+            {
+                name: 'Simple absolute path',
+                metaPath: {
+                    entitySet: 'testEntitySet',
+                    qualifier: 'testQualifier',
+                    bindingContextType: 'absolute'
+                }
+            },
+            {
+                name: 'Complex absolute path',
+                metaPath: {
+                    entitySet: 'GT7Service.SessionMetrics',
+                    qualifier: '@com.sap.vocabularies.UI.v1.Chart#chartMacro5',
+                    bindingContextType: 'absolute'
+                }
+            },
+            {
+                name: 'Simple relative path',
+                metaPath: {
+                    entitySet: 'testEntitySet',
+                    qualifier: 'testQualifier',
+                    bindingContextType: 'relative'
+                }
+            },
+            {
+                name: 'Complex relative path',
+                metaPath: {
+                    entitySet: 'GT7Service.Sessions',
+                    qualifier: 'Speed/@com.sap.vocabularies.UI.v1.Chart#chartMacro4',
+                    bindingContextType: 'relative'
+                }
+            }
+        ];
+        test.each(chartInput)(
+            'Generate Chart from object metaPath. $name',
+            async ({ metaPath }) => {
+                const basePath = join(testAppPath, `generate-${BuildingBlockType.Chart}-with-optional-params`);
+                const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+                fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+                const codeSnippet = getSerializedFileContent(
+                    basePath,
+                    {
+                        viewOrFragmentPath: '',
+                        aggregationPath,
+                        buildingBlockData: {
+                            buildingBlockType: BuildingBlockType.Chart,
+                            metaPath
+                        } as Chart
+                    },
+                    fs
+                );
+
+                expect(codeSnippet.viewOrFragmentPath.content).toMatchSnapshot();
+                expect(codeSnippet.viewOrFragmentPath.filePathProps?.fileName).toBeUndefined();
+            }
+        );
     });
 });
