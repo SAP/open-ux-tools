@@ -118,7 +118,6 @@ describe('Test function createApplicationAccess()', () => {
                     annotation: 'newAnnotation'
                 }
             ],
-            undefined,
             undefined
         );
         expect(createUI5I18nEntriesMock).toBeCalledWith(
@@ -127,7 +126,6 @@ describe('Test function createApplicationAccess()', () => {
             appAccess.project.apps[''].i18n,
             [{ key: 'one', value: 'two', annotation: 'three' }],
             'modelKey',
-            undefined,
             undefined
         );
         expect(createManifestI18nEntriesMock).toBeCalledWith(
@@ -176,84 +174,15 @@ describe('Test function createApplicationAccess()', () => {
                     annotation: 'newAnnotation'
                 }
             ],
-            memFs,
-            undefined
-        );
-        expect(createUI5I18nEntriesMock).toBeCalledWith(
-            appRoot,
-            appAccess.project.apps[''].manifest,
-            appAccess.project.apps[''].i18n,
-            [{ key: 'one', value: 'two', annotation: 'three' }],
-            'modelKey',
-            memFs,
-            undefined
-        );
-        expect(createManifestI18nEntriesMock).toBeCalledWith(
-            appRoot,
-            appAccess.app.i18n,
-            [
-                { key: '1', value: '1v' },
-                { key: '2', value: '2v' }
-            ],
             memFs
         );
-    });
-    test('Write access to i18n of standalone app - custom i18n path', async () => {
-        // Mock setup
-        const createAnnotationI18nEntriesMock = jest
-            .spyOn(i18nMock, 'createAnnotationI18nEntries')
-            .mockResolvedValue(true);
-        const createUI5I18nEntriesMock = jest.spyOn(i18nMock, 'createUI5I18nEntries').mockResolvedValue(true);
-        const createManifestI18nEntriesMock = jest.spyOn(i18nMock, 'createManifestI18nEntries').mockResolvedValue(true);
-        const appRoot = join(sampleRoot, 'fiori_elements');
-        const i18nAnnotationFolder = 'customAnnotationFolder';
-        const i18nModelFolder = 'customModelFolder';
-
-        // Test execution
-        const appAccess = await createApplicationAccess(appRoot, { fs: memFs });
-        await appAccess.createAnnotationI18nEntries(
-            [
-                {
-                    key: 'newKey',
-                    value: 'newValue',
-                    annotation: 'newAnnotation'
-                }
-            ],
-            i18nAnnotationFolder
-        );
-        await appAccess.createUI5I18nEntries(
-            [{ key: 'one', value: 'two', annotation: 'three' }],
-            'modelKey',
-            i18nModelFolder
-        );
-        await appAccess.createManifestI18nEntries([
-            { key: '1', value: '1v' },
-            { key: '2', value: '2v' }
-        ]);
-
-        // Result check
-        expect(createAnnotationI18nEntriesMock).toBeCalledWith(
-            appRoot,
-            join(appRoot, 'webapp/manifest.json'),
-            appAccess.project.apps[''].i18n,
-            [
-                {
-                    key: 'newKey',
-                    value: 'newValue',
-                    annotation: 'newAnnotation'
-                }
-            ],
-            memFs,
-            i18nAnnotationFolder
-        );
         expect(createUI5I18nEntriesMock).toBeCalledWith(
             appRoot,
             appAccess.project.apps[''].manifest,
             appAccess.project.apps[''].i18n,
             [{ key: 'one', value: 'two', annotation: 'three' }],
             'modelKey',
-            memFs,
-            i18nModelFolder
+            memFs
         );
         expect(createManifestI18nEntriesMock).toBeCalledWith(
             appRoot,
@@ -286,7 +215,6 @@ describe('Test function createApplicationAccess()', () => {
             appAccess.app.i18n,
             [{ key: 'one', value: 'two', annotation: 'three' }],
             'i18n',
-            undefined,
             undefined
         );
     });
@@ -310,8 +238,7 @@ describe('Test function createApplicationAccess()', () => {
             appAccess.app.i18n,
             [{ key: 'one', value: 'two', annotation: 'three' }],
             'i18n',
-            memFs,
-            undefined
+            memFs
         );
     });
 

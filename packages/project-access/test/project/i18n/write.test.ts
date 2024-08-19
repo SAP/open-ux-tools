@@ -201,56 +201,6 @@ describe('write', () => {
                 memFs
             );
         });
-        test('i18n file with custom path', async () => {
-            const i18nPropertiesPaths: I18nPropertiesPaths = {
-                'sap.app': 'absolute-path',
-                models: {}
-            };
-            const readJSONSpy = jest.spyOn(file, 'readJSON').mockResolvedValue({});
-            const writeFileSpy = jest.spyOn(file, 'writeFile').mockResolvedValue(undefined);
-            const mkdirSpy = jest.spyOn(fs.promises, 'mkdir').mockResolvedValue(undefined);
-            const createPropertiesI18nEntriesSpy = jest
-                .spyOn(uxI18n, 'createPropertiesI18nEntries')
-                .mockResolvedValue(true);
-
-            const result = await createUI5I18nEntries(
-                root,
-                manifestPath,
-                i18nPropertiesPaths,
-                newI18nEntries,
-                'i18n',
-                memFs,
-                'customPath'
-            );
-
-            expect(result).toBeTruthy();
-            expect(readJSONSpy).toHaveBeenNthCalledWith(1, manifestPath);
-            const absolutePathI18n = join(dirname(manifestPath), 'i18n/customPath/i18n.properties');
-            const manifest = {
-                'sap.ui5': {
-                    models: {
-                        i18n: {
-                            type: 'sap.ui.model.resource.ResourceModel',
-                            uri: 'i18n/customPath/i18n.properties'
-                        }
-                    }
-                }
-            };
-            expect(writeFileSpy).toHaveBeenNthCalledWith(
-                1,
-                manifestPath,
-                JSON.stringify(manifest, undefined, 4),
-                memFs
-            );
-            expect(mkdirSpy).toHaveBeenCalledTimes(0);
-            expect(createPropertiesI18nEntriesSpy).toHaveBeenNthCalledWith(
-                1,
-                absolutePathI18n,
-                newI18nEntries,
-                root,
-                memFs
-            );
-        });
     });
     describe('createAnnotationI18nEntries', () => {
         test('i18n file exists', async () => {
@@ -325,13 +275,13 @@ describe('write', () => {
             const result = await createAnnotationI18nEntries(root, manifestPath, i18nPropertiesPaths, newI18nEntries);
             expect(result).toBeTruthy();
             expect(readJSONSpy).toHaveBeenNthCalledWith(1, manifestPath);
-            const absolutePathI18n = join(dirname(manifestPath), 'i18n/annotation/i18n.properties');
+            const absolutePathI18n = join(dirname(manifestPath), 'i18n/i18n.properties');
             const manifest = {
                 'sap.ui5': {
                     models: {
                         '@i18n': {
                             type: 'sap.ui.model.resource.ResourceModel',
-                            uri: 'i18n/annotation/i18n.properties'
+                            uri: 'i18n/i18n.properties'
                         }
                     }
                 }
@@ -373,62 +323,13 @@ describe('write', () => {
 
             expect(result).toBeTruthy();
             expect(readJSONSpy).toHaveBeenNthCalledWith(1, manifestPath);
-            const absolutePathI18n = join(dirname(manifestPath), 'i18n/annotation/i18n.properties');
+            const absolutePathI18n = join(dirname(manifestPath), 'i18n/i18n.properties');
             const manifest = {
                 'sap.ui5': {
                     models: {
                         '@i18n': {
                             type: 'sap.ui.model.resource.ResourceModel',
-                            uri: 'i18n/annotation/i18n.properties'
-                        }
-                    }
-                }
-            };
-            expect(writeFileSpy).toHaveBeenNthCalledWith(
-                1,
-                manifestPath,
-                JSON.stringify(manifest, undefined, 4),
-                memFs
-            );
-            expect(mkdirSpy).toHaveBeenCalledTimes(0);
-            expect(createPropertiesI18nEntriesSpy).toHaveBeenNthCalledWith(
-                1,
-                absolutePathI18n,
-                newI18nEntries,
-                root,
-                memFs
-            );
-        });
-        test('i18n annotation file with custom path', async () => {
-            const i18nPropertiesPaths: I18nPropertiesPaths = {
-                'sap.app': 'absolute-path',
-                models: {}
-            };
-            const readJSONSpy = jest.spyOn(file, 'readJSON').mockResolvedValue({});
-            const writeFileSpy = jest.spyOn(file, 'writeFile').mockResolvedValue(undefined);
-            const mkdirSpy = jest.spyOn(fs.promises, 'mkdir').mockResolvedValue(undefined);
-            const createPropertiesI18nEntriesSpy = jest
-                .spyOn(uxI18n, 'createPropertiesI18nEntries')
-                .mockResolvedValue(true);
-
-            const result = await createAnnotationI18nEntries(
-                root,
-                manifestPath,
-                i18nPropertiesPaths,
-                newI18nEntries,
-                memFs,
-                'customPath'
-            );
-
-            expect(result).toBeTruthy();
-            expect(readJSONSpy).toHaveBeenNthCalledWith(1, manifestPath);
-            const absolutePathI18n = join(dirname(manifestPath), 'i18n/customPath/i18n.properties');
-            const manifest = {
-                'sap.ui5': {
-                    models: {
-                        '@i18n': {
-                            type: 'sap.ui.model.resource.ResourceModel',
-                            uri: 'i18n/customPath/i18n.properties'
+                            uri: 'i18n/i18n.properties'
                         }
                     }
                 }
