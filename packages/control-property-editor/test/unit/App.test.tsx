@@ -122,7 +122,7 @@ test('renders properties', () => {
                     name: 'unknownprop',
                     isEnabled: true,
                     value: 'checkBoxDynamicExpression',
-                    readableName: 'test check dynamic expression',
+                    readableName: 'test check dynamic expression'
                 }
             ]
         })
