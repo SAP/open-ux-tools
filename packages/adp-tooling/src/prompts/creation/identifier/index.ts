@@ -1,8 +1,8 @@
 import { t } from 'i18next';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
-import { getApplicationType } from '../../../common';
 import { Application, ApplicationType, FlexLayer } from '../../../types';
+import { getApplicationType } from '../../../common/app-type';
 
 /**
  * Checks if the given application type is a Fiori Elements application.

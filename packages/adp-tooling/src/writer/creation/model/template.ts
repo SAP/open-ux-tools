@@ -22,7 +22,7 @@ import { getSupportForUI5Yaml } from '../configs/support';
 import { AbapProvider } from '../../../client';
 import { getUI5DeployConfig } from '../configs/deploy';
 import { parseParameters } from '../../../common/flp-parameters';
-import { getApplicationType } from '../../../common';
+import { getApplicationType } from '../../../common/app-type';
 
 /**
  * Constructs the ABAP target configuration based on the operational context and project type.

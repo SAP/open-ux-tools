@@ -3,7 +3,38 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { getCredentialsFromStore } from '@sap-ux/system-access';
 import type { Endpoint } from '@sap-ux/environment-check';
 import { checkEndpoints, isExtensionInstalledVsCode } from '@sap-ux/environment-check';
+
 import type { SystemDetails } from '../types';
+
+/**
+ * Determines if authentication is not required for accessing a specified system.
+ *
+ * @param {string} system - The name of the system to check.
+ * @returns {boolean} True if no authentication is required, false otherwise.
+ */
+function getDestinationRequiresAuth(system: string, endpoints: Endpoint[]): boolean {
+    const found = endpoints.find((endpoint: Endpoint) => endpoint.Name === system);
+
+    return found?.Authentication === 'NoAuthentication';
+}
+
+/**
+ * Checks if a specified system requires authentication based on the endpoint information and installation status.
+ *
+ * @param {string} system - The name of the system to check.
+ * @returns {boolean} True if the system requires authentication, false otherwise.
+ */
+function getSystemRequiresAuthentication(system: string, endpoints: Endpoint[]): boolean {
+    const isInstalled = isExtensionInstalledVsCode('sapse.sap-ux-application-modeler-extension');
+    if (!isInstalled || endpoints.length === 0) {
+        return true;
+    }
+
+    return !(
+        endpoints.filter((endpoint) => endpoint.Url === system).length > 0 ||
+        endpoints.filter((endpoint) => endpoint.Name === system).length > 0
+    );
+}
 
 /**
  * Service class to manage and retrieve information about system endpoints,
@@ -30,6 +61,7 @@ export class EndpointsManager {
      */
     public async getEndpoints(): Promise<Endpoint[] | undefined> {
         try {
+            // TODO:
             const { endpoints } = await checkEndpoints();
             this.endpoints = endpoints;
             return endpoints;
@@ -61,35 +93,6 @@ export class EndpointsManager {
     }
 
     /**
-     * Determines if authentication is not required for accessing a specified system.
-     *
-     * @param {string} system - The name of the system to check.
-     * @returns {boolean} True if no authentication is required, false otherwise.
-     */
-    private getDestinationRequiresAuth(system: string): boolean {
-        const found = this.endpoints.find((endpoint: Endpoint) => endpoint.Name === system);
-
-        return found?.Authentication === 'NoAuthentication';
-    }
-
-    /**
-     * Checks if a specified system requires authentication based on the endpoint information and installation status.
-     *
-     * @param {string} system - The name of the system to check.
-     * @returns {boolean} True if the system requires authentication, false otherwise.
-     */
-    private getSystemRequiresAuthentication(system: string): boolean {
-        if (!this.isExtensionInstalled || this.endpoints.length === 0) {
-            return true;
-        }
-
-        return !(
-            this.endpoints.filter((endpoint) => endpoint.Url === system).length > 0 ||
-            this.endpoints.filter((endpoint) => endpoint.Name === system).length > 0
-        );
-    }
-
-    /**
      * Retrieves destination info by name.
      *
      * @param {string} system - The name of the system to check.
@@ -107,8 +110,8 @@ export class EndpointsManager {
      */
     public getSystemRequiresAuth(systemName: string): boolean {
         return isAppStudio()
-            ? this.getDestinationRequiresAuth(systemName)
-            : this.getSystemRequiresAuthentication(systemName);
+            ? getDestinationRequiresAuth(systemName, this.endpoints)
+            : getSystemRequiresAuthentication(systemName, this.endpoints);
     }
 
     /**
