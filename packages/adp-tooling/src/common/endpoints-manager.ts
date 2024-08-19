@@ -37,6 +37,17 @@ function getSystemRequiresAuthentication(system: string, endpoints: Endpoint[]):
 }
 
 /**
+ * Retrieves the names of all stored endpoints and sorted alphabetically.
+ *
+ * @returns {string[]} An array of endpoint names and sorted order.
+ */
+export function getEndpointNames(endpoints: Endpoint[]): string[] {
+    return endpoints
+        .map((endpoint) => endpoint.Name)
+        .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase(), 'en', { sensitivity: 'base' }));
+}
+
+/**
  * Service class to manage and retrieve information about system endpoints,
  * including their names, authentication requirements, and specific details.
  */
@@ -64,7 +75,7 @@ export class EndpointsManager {
     static async getInstance(logger: ToolsLogger): Promise<EndpointsManager> {
         if (!this.instance) {
             this.instance = new EndpointsManager(logger);
-            await this.instance.loadEnpoints();
+            await this.instance.loadEndpoints();
         }
 
         return this.instance;
@@ -73,21 +84,25 @@ export class EndpointsManager {
     /**
      * Fetches endpoints from a predefined source and stores them in the service.
      *
-     * @returns {Promise<void>} A promise that resolves when endpoints have been fetched and stored.
+     * @returns {Endpoint[]} Array of system endpoints.
      */
-    public async getEndpoints(): Promise<Endpoint[] | undefined> {
+    public getEndpoints(): Endpoint[] {
         return this.endpoints;
     }
 
     /**
-     * Retrieves the names of all stored endpoints and sorted alphabetically.
+     * Fetches endpoints from a predefined source and stores them in the service.
      *
-     * @returns {string[]} An array of endpoint names and sorted order.
+     * @returns {Promise<void>} A promise that resolves when endpoints are fetched and stored.
      */
-    public getEndpointNames(): string[] {
-        return this.endpoints
-            .map((endpoint) => endpoint.Name)
-            .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase(), 'en', { sensitivity: 'base' }));
+    private async loadEndpoints(): Promise<void> {
+        try {
+            const { endpoints } = await checkEndpoints();
+            this.endpoints = endpoints;
+        } catch (e) {
+            this.logger?.error(`Failed to fetch endpoints list. Reason: ${e.message}`);
+            throw new Error(e.message);
+        }
     }
 
     /**
@@ -159,18 +174,5 @@ export class EndpointsManager {
         }
 
         return details;
-    }
-
-    /**
-     * Fetches endpoints from a predefined source and stores them in the service.
-     */
-    private async loadEnpoints(): Promise<void> {
-        try {
-            const { endpoints } = await checkEndpoints();
-            this.endpoints = endpoints;
-        } catch (e) {
-            this.logger?.error(`Failed to fetch endpoints list. Reason: ${e.message}`);
-            throw new Error(e.message);
-        }
     }
 }

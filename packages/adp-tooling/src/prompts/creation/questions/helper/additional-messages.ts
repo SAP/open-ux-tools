@@ -1,8 +1,9 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { SystemInfo, AdaptationProjectType } from '@sap-ux/axios-extension';
 
-import { FlexUISupportedSystem } from '../../../../types';
 import { t } from '../../../../i18n';
+import type ConfigInfoPrompter from '../config';
+import { Application, ConfigurationInfoAnswers, FlexUISupportedSystem } from '../../../../types';
 
 /**
  * Evaluates a system's deployment and flexibility capabilities to generate relevant messages based on the system's characteristics.
@@ -59,6 +60,93 @@ export const systemAdditionalMessages = (
         return {
             message: t('validators.notFlexEnabledError'),
             severity: Severity.warning
+        };
+    }
+};
+
+/**
+ * Provides additional messages related to the application based on its support and sync status.
+ *
+ * @param {Application} app - The application object.
+ * @param {ConfigInfoPrompter} prompter - The prompter instance managing and providing system and application state information.
+ * @returns {object | undefined} An object containing a message and its severity level, or undefined if no message is necessary.
+ */
+export const appAdditionalMessages = (app: Application, prompter: ConfigInfoPrompter): object | undefined => {
+    if (!app) {
+        return undefined;
+    }
+
+    if (prompter.appIdentifier.appSync && prompter.isApplicationSupported) {
+        return {
+            message: t('prompts.appInfoLabel'),
+            severity: Severity.information
+        };
+    }
+
+    const isSupported = prompter.appIdentifier.getIsSupportedAdpOverAdp();
+    const isPartiallySupported = prompter.appIdentifier.getIsPartiallySupportedAdpOverAdp();
+
+    if (!isSupported && !isPartiallySupported && prompter.isApplicationSupported) {
+        return {
+            message: t('prompts.notSupportedAdpOverAdpLabel'),
+            severity: Severity.warning
+        };
+    }
+
+    if (isPartiallySupported && prompter.isApplicationSupported) {
+        return {
+            message: t('prompts.isPartiallySupportedAdpOverAdpLabel'),
+            severity: Severity.warning
+        };
+    }
+
+    if (prompter.appIdentifier.isV4AppInternalMode) {
+        return {
+            message: t('prompts.v4AppNotOfficialLabel'),
+            severity: Severity.warning
+        };
+    }
+};
+
+/**
+ * Provides additional messages related to UI5 version detection based on system and authentication conditions.
+ *
+ * @param {ConfigurationInfoAnswers} answers - The configuration answers that include system-specific details and user credentials.
+ * @param {ConfigInfoPrompter} prompter - The prompter instance managing system authentication and project configurations.
+ * @returns {object | undefined} An object containing a message and its severity level if conditions are met; otherwise, undefined.
+ */
+export const versionAdditionalMessages = (
+    answers: ConfigurationInfoAnswers,
+    prompter: ConfigInfoPrompter
+): object | undefined => {
+    if (
+        !prompter.shouldAuthenticate(answers) &&
+        !prompter.ui5VersionDetected &&
+        !prompter.isCloudProject &&
+        (prompter.hasSystemAuthentication ? prompter.isLoginSuccessfull : true)
+    ) {
+        return {
+            message: t('validators.ui5VersionNotDetectedError'),
+            severity: Severity.warning
+        };
+    }
+};
+
+/**
+ * Provides additional messages related to project type, particularly regarding the UI5 version in cloud projects.
+ *
+ * @param {ConfigurationInfoAnswers} answers - The configuration answers that include system-specific details.
+ * @param {ConfigInfoPrompter} prompter - The prompter instance that contains system and project configuration details.
+ * @returns {object | undefined} An object containing a message and its severity level, tailored to the project type and current settings.
+ */
+export const projectTypeAdditionalMessages = (
+    answers: ConfigurationInfoAnswers,
+    prompter: ConfigInfoPrompter
+): object | undefined => {
+    if (answers?.system && !prompter.shouldAuthenticate(answers) && prompter.isCloudProject) {
+        return {
+            message: t('prompts.currentUI5VersionLabel', { version: prompter.ui5Manager.latestVersion }),
+            severity: Severity.information
         };
     }
 };

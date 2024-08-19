@@ -5,23 +5,34 @@ import type {
     PasswordQuestion,
     ConfirmQuestion
 } from '@sap-ux/inquirer-common';
-import type { SystemInfo } from '@sap-ux/axios-extension';
-import { AdaptationProjectType, AdtCatalogService, UI5RtVersionService, isAxiosError } from '@sap-ux/axios-extension';
-import type { ToolsLogger } from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { Severity } from '@sap-devx/yeoman-ui-types';
+import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
+import type { SystemInfo } from '@sap-ux/axios-extension';
 import { isExtensionInstalledVsCode } from '@sap-ux/environment-check';
+import { AdaptationProjectType, AdtCatalogService, UI5RtVersionService, isAxiosError } from '@sap-ux/axios-extension';
 
-import type { ManifestManager, AbapProvider } from '../../../client';
-import { ApplicationManager } from '../../../client';
+import {
+    appAdditionalMessages,
+    getApplicationChoices,
+    getDefaultAch,
+    getDefaultFioriId,
+    getDefaultProjectType,
+    getVersionDefaultValue,
+    projectTypeAdditionalMessages,
+    systemAdditionalMessages,
+    versionAdditionalMessages,
+    getExtProjectMessage
+} from './helper';
 import { t } from '../../../i18n';
-import { resolveNodeModuleGenerator, isNotEmptyString, validateAch, validateClient } from '../../../base';
-import type { Application, ConfigurationInfoAnswers, FlexUISupportedSystem, Prompts } from '../../../types';
 import { FlexLayer } from '../../../types';
 import { AppIdentifier } from '../identifier';
-import { EndpointsManager, UI5VersionManager, isFeatureSupportedVersion } from '../../../common';
-import { getApplicationChoices, systemAdditionalMessages } from './helper';
+import { ApplicationManager } from '../../../client';
+import { whenExtensionProjectAllowed } from './helper/conditions';
+import type { ManifestManager, AbapProvider } from '../../../client';
+import { EndpointsManager, UI5VersionManager, getEndpointNames, isFeatureSupportedVersion } from '../../../common';
+import { resolveNodeModuleGenerator, isNotEmptyString, validateAch, validateClient } from '../../../base';
+import type { Application, ConfigurationInfoAnswers, FlexUISupportedSystem, Prompts } from '../../../types';
 
 /**
  * ConfigInfoPrompter handles the setup and interaction logic for configuration prompts related to project setup.
@@ -29,14 +40,14 @@ import { getApplicationChoices, systemAdditionalMessages } from './helper';
  * or adaptation of projects. It integrates services to fetch, validate, and prompt for configuration options based on the system environment and project specifications.
  */
 export default class ConfigInfoPrompter {
-    private isCustomerBase: boolean;
-    private hasSystemAuthentication: boolean;
-    private isLoginSuccessfull: boolean;
-    private flexUISystem: FlexUISupportedSystem | undefined;
-    private systemInfo: SystemInfo;
-    private ui5VersionDetected = true;
-    private isCloudProject: boolean;
-    private isApplicationSupported: boolean;
+    public isCustomerBase: boolean;
+    public hasSystemAuthentication: boolean;
+    public isLoginSuccessfull: boolean;
+    public flexUISystem: FlexUISupportedSystem | undefined;
+    public systemInfo: SystemInfo;
+    public ui5VersionDetected = true;
+    public isCloudProject: boolean;
+    public isApplicationSupported: boolean;
     private extensibilitySubGenerator: string | undefined = undefined;
 
     private versionsOnSystem: string[];
@@ -45,7 +56,7 @@ export default class ConfigInfoPrompter {
     private readonly isExtensionInstalled: boolean;
 
     private appsManager: ApplicationManager;
-    private appIdentifier: AppIdentifier;
+    public appIdentifier: AppIdentifier;
     private logger: ToolsLogger;
 
     private prompts?: Prompts;
@@ -65,7 +76,7 @@ export default class ConfigInfoPrompter {
         private provider: AbapProvider,
         private manifestManager: ManifestManager,
         private endpointsManager: EndpointsManager,
-        private ui5Manager: UI5VersionManager,
+        public ui5Manager: UI5VersionManager,
         layer: FlexLayer,
         logger: ToolsLogger,
         prompts?: Prompts
@@ -208,21 +219,6 @@ export default class ConfigInfoPrompter {
         } finally {
             this.ui5VersionDetected = this.ui5Manager.detectedVersion;
         }
-    }
-
-    /**
-     * Gets the default UI5 version from the system versions list by validating the first available version.
-     * If the first version is valid according to the UI5 service, it returns that version; otherwise, returns an empty string.
-     *
-     * @returns {Promise<string>} The valid UI5 version or an empty string if the first version is not valid or if there are no versions.
-     */
-    private async getVersionDefaultValue(): Promise<string> {
-        if (!this.versionsOnSystem || this.versionsOnSystem.length === 0) {
-            return '';
-        }
-
-        const isValid = (await this.ui5Manager.validateUI5Version(this.versionsOnSystem[0])) === true;
-        return isValid ? this.versionsOnSystem[0] : '';
     }
 
     /**
@@ -424,7 +420,7 @@ export default class ConfigInfoPrompter {
      * @param {ConfigurationInfoAnswers} answers - User provided configuration details.
      * @returns {boolean | string} True if authentication should proceed, false if there are issues with credentials.
      */
-    private shouldAuthenticate(answers: ConfigurationInfoAnswers): boolean {
+    public shouldAuthenticate(answers: ConfigurationInfoAnswers): boolean {
         return !!answers.system && this.hasSystemAuthentication && (answers.username === '' || answers.password === '');
     }
 
@@ -613,10 +609,7 @@ export default class ConfigInfoPrompter {
                 this.systemInfo?.adaptationProjectTypes?.length &&
                 (this.hasSystemAuthentication ? this.isLoginSuccessfull : true),
             choices: () => this.systemInfo.adaptationProjectTypes,
-            default: () =>
-                this.systemInfo.adaptationProjectTypes.includes(AdaptationProjectType.ON_PREMISE)
-                    ? AdaptationProjectType.ON_PREMISE
-                    : this.systemInfo.adaptationProjectTypes[0],
+            default: () => getDefaultProjectType(this),
             validate: async (value: AdaptationProjectType, answers: ConfigurationInfoAnswers) => {
                 this.isCloudProject = value === AdaptationProjectType.CLOUD_READY;
                 this.setAdditionalPagesForCloudProjects();
@@ -640,18 +633,7 @@ export default class ConfigInfoPrompter {
                 applyDefaultWhenDirty: true,
                 mandatory: true
             },
-            additionalMessages: (_, prevAnswers) => {
-                if (
-                    prevAnswers?.system &&
-                    !this.shouldAuthenticate(prevAnswers as ConfigurationInfoAnswers) &&
-                    this.isCloudProject
-                ) {
-                    return {
-                        message: t('prompts.currentUI5VersionLabel', { version: this.ui5Manager.latestVersion }),
-                        severity: Severity.information
-                    };
-                }
-            }
+            additionalMessages: (_, answers) => projectTypeAdditionalMessages(answers as ConfigurationInfoAnswers, this)
         } as ListQuestion<ConfigurationInfoAnswers>;
     }
 
@@ -701,42 +683,7 @@ export default class ConfigInfoPrompter {
 
                 return validationResult;
             },
-            additionalMessages: (app) => {
-                if (!app) {
-                    return undefined;
-                }
-
-                if (this.appIdentifier.appSync && this.isApplicationSupported) {
-                    return {
-                        message: t('prompts.appInfoLabel'),
-                        severity: Severity.information
-                    };
-                }
-
-                const isSupported = this.appIdentifier.getIsSupportedAdpOverAdp();
-                const isPartiallySupported = this.appIdentifier.getIsPartiallySupportedAdpOverAdp();
-
-                if (!isSupported && !isPartiallySupported && this.isApplicationSupported) {
-                    return {
-                        message: t('prompts.notSupportedAdpOverAdpLabel'),
-                        severity: Severity.warning
-                    };
-                }
-
-                if (isPartiallySupported && this.isApplicationSupported) {
-                    return {
-                        message: t('prompts.isPartiallySupportedAdpOverAdpLabel'),
-                        severity: Severity.warning
-                    };
-                }
-
-                if (this.appIdentifier.isV4AppInternalMode) {
-                    return {
-                        message: t('prompts.v4AppNotOfficialLabel'),
-                        severity: Severity.warning
-                    };
-                }
-            }
+            additionalMessages: (app: Application) => appAdditionalMessages(app, this)
         } as ListQuestion<ConfigurationInfoAnswers>;
     }
 
@@ -767,20 +714,9 @@ export default class ConfigInfoPrompter {
                 mandatory: true
             },
             validate: this.ui5Manager.validateUI5Version.bind(this),
-            default: async () => await this.getVersionDefaultValue(),
-            additionalMessages: (_, prevAnswers: unknown) => {
-                if (
-                    !this.shouldAuthenticate(prevAnswers as ConfigurationInfoAnswers) &&
-                    !this.ui5VersionDetected &&
-                    !this.isCloudProject &&
-                    (this.hasSystemAuthentication ? this.isLoginSuccessfull : true)
-                ) {
-                    return {
-                        message: t('validators.ui5VersionNotDetectedError'),
-                        severity: Severity.warning
-                    };
-                }
-            }
+            default: async () => await getVersionDefaultValue(this.versionsOnSystem, this.ui5Manager),
+            additionalMessages: (_, answers: unknown) =>
+                versionAdditionalMessages(answers as ConfigurationInfoAnswers, this)
         } as ListQuestion<ConfigurationInfoAnswers>;
     }
 
@@ -807,10 +743,7 @@ export default class ConfigInfoPrompter {
                     this.isApplicationSupported
                 );
             },
-            default: (answers: ConfigurationInfoAnswers) => {
-                const manifest = this.manifestManager.getManifest(answers?.application?.id);
-                return manifest?.['sap.fiori']?.registrationIds?.toString() ?? '';
-            },
+            default: (answers: ConfigurationInfoAnswers) => getDefaultFioriId(answers, this.manifestManager),
             store: false
         } as InputQuestion<ConfigurationInfoAnswers>;
     }
@@ -839,10 +772,7 @@ export default class ConfigInfoPrompter {
                     this.isApplicationSupported
                 );
             },
-            default: (answers: ConfigurationInfoAnswers) => {
-                const manifest = this.manifestManager.getManifest(answers?.application?.id);
-                return manifest?.['sap.app']?.ach?.toString() ?? '';
-            },
+            default: (answers: ConfigurationInfoAnswers) => getDefaultAch(answers, this.manifestManager),
             validate: (value: string) => validateAch(value, this.isCustomerBase),
             store: false
         } as InputQuestion<ConfigurationInfoAnswers>;
@@ -890,16 +820,12 @@ export default class ConfigInfoPrompter {
         return {
             type: 'confirm',
             name: 'confirmPrompt',
-            message: () => {
-                return this.isApplicationSupported && this.appIdentifier.appSync
-                    ? t('prompts.createExtProjectWithSyncViewsLabel', { value: projectName })
-                    : t('prompts.createExtProjectLabel', { value: projectName });
-            },
+            message: () => getExtProjectMessage(projectName, this),
             default: false,
             guiOptions: {
                 applyDefaultWhenDirty: true
             },
-            when: (answers: ConfigurationInfoAnswers) => answers.application && this.allowExtensionProject(),
+            when: (answers: ConfigurationInfoAnswers) => whenExtensionProjectAllowed(answers, this),
             validate: (value: boolean) => {
                 if (this.isApplicationSupported && this.appIdentifier.appSync) {
                     return !value ? true : this.validateExtensibilityGenerator();
@@ -918,8 +844,7 @@ export default class ConfigInfoPrompter {
      * @returns {Promise<YUIQuestion<ConfigurationInfoAnswers>[]>} A promise that resolves to an array of configuration prompts.
      */
     public async getConfigurationPrompts(projectName: string): Promise<YUIQuestion<ConfigurationInfoAnswers>[]> {
-        await this.endpointsManager.getEndpoints();
-        this.systemNames = this.endpointsManager.getEndpointNames();
+        this.systemNames = getEndpointNames(this.endpointsManager.getEndpoints());
 
         return [
             this.getSystemPrompt(),
