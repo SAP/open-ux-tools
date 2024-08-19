@@ -1,5 +1,14 @@
 # @sap-ux/ui5-application-writer
 
+## 1.1.4
+
+### Patch Changes
+
+-   61721f2: fpm v4 removed sap.fe.templates in manifest.json, now has dependency on sap.fe.core
+    removed dependency on sap.ushell for v4 manifest.json
+-   Updated dependencies [61721f2]
+    -   @sap-ux/ui5-config@0.24.0
+
 ## 1.1.3
 
 ### Patch Changes
