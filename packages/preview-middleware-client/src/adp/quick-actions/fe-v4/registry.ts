@@ -7,6 +7,7 @@ import { QuickActionDefinitionRegistry } from '../../../cpe/quick-actions/regist
 import { AddControllerToPageQuickAction } from '../common/add-controller-to-page';
 import { ToggleClearFilterBarQuickAction } from './lr-toggle-clear-filter-bar';
 import { ChangeTableColumnsQuickAction } from './change-table-columns';
+import { AddHeaderFieldQuickAction } from './op-add-header-field';
 
 type PageName = 'listReport' | 'objectPage';
 
@@ -40,7 +41,11 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
             } else if (name === 'objectPage') {
                 definitionGroups.push({
                     title: 'Object Page',
-                    definitions: [AddControllerToPageQuickAction, ChangeTableColumnsQuickAction],
+                    definitions: [
+                        AddControllerToPageQuickAction,
+                        ChangeTableColumnsQuickAction,
+                        AddHeaderFieldQuickAction
+                    ],
                     view,
                     key: name + index
                 });

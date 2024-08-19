@@ -3,7 +3,7 @@ import type { RequestHandler } from 'express';
 import type { MiddlewareParameters } from '@ui5/server';
 import { FlpSandbox, initAdp } from '../base/flp';
 import type { MiddlewareConfig } from '../types';
-import { getPreviewPaths, sanitizeConfig } from '../base/config';
+import { getPreviewPaths } from '../base/config';
 
 /**
  * Create the router that is to be exposed as UI5 middleware.
