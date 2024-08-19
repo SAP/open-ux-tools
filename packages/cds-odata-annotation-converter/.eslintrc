@@ -1,0 +1,10 @@
+{
+    "extends": ["../../.eslintrc"],
+    "parserOptions": {
+        "EXPERIMENTAL_useSourceOfProjectReferenceRedirect": true,
+        "project": "./tsconfig.eslint.json"
+    },
+    "rules": {
+        "@typescript-eslint/no-use-before-define": ["off"]
+    }
+}

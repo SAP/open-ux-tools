@@ -169,3 +169,11 @@ dist
 
 # tsc delta build
 *.tsbuildinfo
+
+# playwright
+**/playwright-report
+**/test-results
+**/fixtures-copy
+
+# nx 
+.nx

@@ -36,7 +36,7 @@ declare module '@ui5/fs' {
         /**
          * Locates resources by matching a given path.
          */
-        byPath(virPattern: string | string[], options?: object): Promise<Resource[]>;
+        byPath(virPattern: string | string[], options?: object): Promise<Resource>;
     }
 
     /**
@@ -114,6 +114,11 @@ declare module '@ui5/server' {
              * Get the full path of the source (webapp in case of an app) folder.
              */
             getSourcePath(): string;
+
+            /**
+             * Get the name of the project.
+             */
+            getName(): string;
         };
     }
 

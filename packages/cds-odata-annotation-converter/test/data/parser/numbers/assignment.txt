@@ -1,0 +1,41 @@
+UI: {
+    LineItem: [
+        {
+            Value: 1
+        },
+        {
+            Value: 1.0
+        },
+        {
+            Value: 1.5
+        },
+        {
+            Value: 123e5
+        },
+        {
+            Value: 123e500
+        },
+        {
+            Value: 123e-500
+        },
+        {
+            Value: -123e500
+        },
+        {
+            Value: -123e-500
+        },
+    ],
+    DataPoint #a: {
+        MinimumValue : -123e500
+        MaximumValue : 123e500,
+    },
+    DataPoint #b: {
+        MinimumValue : -123e-500
+        MaximumValue : 123e-500,
+    },
+    DataPoint #c: {
+        MinimumValue : -0.5
+        MaximumValue : 2.5,
+    },
+    
+}

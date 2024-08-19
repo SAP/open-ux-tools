@@ -1,0 +1,59 @@
+{
+    "name": "@sap-ux/i18n",
+    "version": "0.1.1",
+    "description": "Library for i18n",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/i18n"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Ai18n"
+    },
+    "license": "Apache-2.0",
+    "private": false,
+    "main": "dist/index.js",
+    "exports": {
+        ".": {
+            "browser": "./dist/web/index.js",
+            "import": "./dist/index.js",
+            "default": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "build": "tsc --build",
+        "watch": "tsc --watch",
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --maxWorkers=1 --colors --silent",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global",
+        "test:update": "npm-run-all -l -s test:update-properties test:update-csv",
+        "test:update-properties": "ts-node --project tsconfig.eslint.json --cwdMode test/unit/scripts/update-properties.ts",
+        "test:update-csv": "ts-node --project tsconfig.eslint.json --cwdMode test/unit/scripts/update-csv.ts"
+    },
+    "dependencies": {
+        "jsonc-parser": "3.2.0",
+        "vscode-languageserver-textdocument": "1.0.7",
+        "@sap-ux/text-document-utils": "workspace:*"
+    },
+    "devDependencies": {
+        "npm-run-all2": "6.2.0",
+        "@types/mem-fs-editor": "7.0.1",
+        "@types/mem-fs": "1.1.2",
+        "ts-node": "10.9.2",
+        "mem-fs": "2.1.0",
+        "mem-fs-editor": "9.4.0"
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "engines": {
+        "node": ">=18.x"
+    }
+}

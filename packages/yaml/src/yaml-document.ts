@@ -9,6 +9,17 @@ import { interpolate } from './texts';
 export interface NodeComment<T> {
     path: string;
     comment: string;
+    key?: string;
+}
+
+/**
+ * Converts a YAML document object into a YAML string.
+ *
+ * @param {YamlDocument} yamlDocument The YAML document object to convert into a string.
+ * @returns {string} The YAML string representation of the input YAML document.
+ */
+export function yamlDocumentToYamlString(yamlDocument: YamlDocument): string {
+    return yaml.stringify(yamlDocument);
 }
 
 /**
@@ -93,6 +104,30 @@ export class YamlDocument {
                 break;
         }
         return this;
+    }
+
+    /**
+     * Creates a Node element and adds the provided comments.
+     * To add the comments the value must be flat JSON.
+     *
+     * @param options - Options
+     * @param options.value - the object's value (must be flat json)
+     * @param options.comments - optional comments for no in value being added
+     * @returns the node create from the value with any added comments
+     */
+    createNode({ value, comments }: { value: unknown; comments?: NodeComment<unknown>[] }): yaml.YAMLSeq<Node> {
+        const newNode = this.documents[0].createNode(value) as YAMLSeq<yaml.Node>;
+        if (comments?.length) {
+            for (const c of comments) {
+                const nodeIndex = newNode.items.findIndex((item) => {
+                    const keyValue = ((item as yaml.Pair).key as yaml.Scalar).value;
+                    return keyValue === c.key;
+                });
+                ((newNode.items[nodeIndex] as yaml.Pair).value as yaml.Scalar).comment = c.comment;
+            }
+        }
+
+        return newNode;
     }
 
     /**
@@ -269,6 +304,16 @@ export class YamlDocument {
     }
 
     /**
+     * Simplified method to delete a value in the yaml document.
+     *
+     * @param key - key of the yaml node to delete
+     * @returns `true` if the item was found and removed.
+     */
+    delete(key: string): boolean {
+        return this.documents[0].delete(key);
+    }
+
+    /**
      * Deletes a node in a sequence in the document.
      *
      * @param path - hierarchical path where the node will be deleted
@@ -282,7 +327,7 @@ export class YamlDocument {
     deleteAt({ path, matcher }: { path: string; matcher: { key: string; value: string } }): YamlDocument {
         const pathArray = this.toPathArray(path);
         const seq = this.documents[0].getIn(pathArray) as YAMLSeq<yaml.Node>;
-        if (!seq || !seq.items) {
+        if (!seq?.items) {
             throw new YAMLError(interpolate(errorTemplate.seqDoesNotExist, { path }), errorCode.seqDoesNotExist);
         }
 
@@ -375,11 +420,12 @@ export class YamlDocument {
      * @returns {string[]} - the path array
      * @memberof YamlDocument
      */
-    private toPathArray(path: string): string[] {
+    private toPathArray(path: string): (string | number)[] {
         const result = path
             ?.toString()
             .split('.')
-            .filter((p) => p !== '');
+            .filter((p) => p !== '')
+            .map((p) => (isNaN(Number(p)) ? p : Number(p))); // to add comments to array elements e.g arr.0.prop
 
         if (!result || result.length === 0) {
             throw new YAMLError(errorTemplate.pathCannotBeEmpty, errorCode.pathCannotBeEmpty);

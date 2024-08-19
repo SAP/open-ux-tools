@@ -1,0 +1,34 @@
+# Some standard definitions
+* text eol=lf
+*.cmd eol=crlf
+*.sh eol=lf
+*.bat eol=crlf
+*.ps1 eol=crlf
+*.json-dos eol=crlf
+*.cjs eol=lf
+pnpm-lock.yaml eol=lf merge=ours
+
+# binary files have to be explicitly listed
+*.png -text -delta
+*.PNG -text -delta
+*.jpg -text -delta
+*.JPG -text -delta
+*.jpeg -text -delta
+*.JPEG -text -delta
+*.ico -text
+*.ICO -text
+*.gif -text -delta
+*.GIF -text -delta
+*.vsdx -text -delta
+*.woff2 -text
+*.tar -text
+*.gz -text -delta
+*.tgz -text -delta
+*.vsix -text -delta
+*.pptx -text -delta
+*.epgz -text -delta
+*.so binary
+*.so.0 binary
+*.so.0.0.0 binary
+*.zip binary -delta
+*.node binary -delta

@@ -1,58 +1,70 @@
 # Version Overrides
 This document lists the version overrides for vulnerable (nested) dependencies and the reason.
+
 ┌─────────────────────┬────────────────────────────────────────────────────────┐
-│ moderate            │ word-wrap vulnerable to Regular Expression Denial of   │
-│                     │ Service                                                │
+│ moderate            │ Axios Cross-Site Request Forgery Vulnerability         │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Package             │ word-wrap                                              │
+│ Package             │ axios                                                  │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Vulnerable versions │ <1.2.4                                                 │
+│ Vulnerable versions │ >=0.8.1 <1.6.0                                         │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
-│ Patched versions    │ >=1.2.4                                                │
+│ Patched versions    │ >=1.6.0                                                │
 ├─────────────────────┼────────────────────────────────────────────────────────┤
-│ More info           │ https://github.com/advisories/GHSA-j8xg-fqg3-53r7      │
+│ Paths               │ . > @nrwl/nx-cloud@16.5.2 > nx-cloud@16.5.2 >          │
+│                     │ axios@1.1.3                                            │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-wf5p-g6vw-rhxx      │
 └─────────────────────┴────────────────────────────────────────────────────────┘
-## semver
-| Override:           | >=7.5.2 |
-|:--------------------| :-------------|
-|                     | |
-| **moderate**        | Regular Expression Denial of Service in semver  |
-| Package             | semver |
-| Vulnerable versions | <7.5.2 |
-| Patched versions    | >=7.5.2 |
-| More info           | https://github.com/advisories/GHSA-c2qf-rxjj-qqgw  |
+```
 
-## trim
-| Override:           | >=0.0.3 |
-|:--------------------| :-------------|
-|                     | |
-| **high**            | Regular Expression Denial of Service in trim  |
-| Package             | trim |
-| Vulnerable versions | <0.0.3 |
-| Patched versions    | >=0.0.3 |
-| More info           | https://github.com/advisories/GHSA-w5p7-h5w8-2hfq  |
+Fix not available yet with latest @nrwl/nx-cloud
 
-## trim-newlines
-| Override:           | >=3.0.1 |
-|:--------------------| :-------------|
-|                     | |
-| **high**            | Uncontrolled Resource Consumption in trim-newlines |
-| Package             | trim-newlines |
-| Vulnerable versions | <3.0.1 |
-| Patched versions    | >=3.0.1 |
-| More info           | https://github.com/advisories/GHSA-7p7h-4mm5-852v |
+`follows-redirects upgrade` achieved by `axios` upgrade to 1.6.8
 
-## glob-parent
-| Override:           | >=5.1.2 |
-|:--------------------| :-------------|
-|                     | |
-| **high**            | glob-parent before 5.1.2 vulnerable to Regular Expression Denial of Service in enclosure regex |
-| Package             | glob-parent |
-| Vulnerable versions | <5.1.2 |
-| Patched versions    | >=5.1.2 |
-| More info           | https://github.com/advisories/GHSA-ww39-953v-wcq6   |
+```
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ moderate            │ Denial of service while parsing a tar file due to lack │
+│                     │ of folders count validation                            │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ tar                                                    │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ <6.2.1                                                 │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=6.2.1                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ . > @nrwl/nx-cloud@18.0.0 > nx-cloud@18.0.0 >          │
+│                     │ tar@6.1.11                                             │
+│                     │                                                        │
+│                     │ examples/simple-generator > yeoman-generator@5.10.0 >  │
+│                     │ pacote@15.2.0 > @npmcli/run-script@6.0.2 >             │
+│                     │ node-gyp@9.4.0 > make-fetch-happen@11.1.1 >            │
+│                     │ cacache@17.1.3 > tar@6.1.15                            │
+│                     │                                                        │
+│                     │ examples/simple-generator > yeoman-generator@5.10.0 >  │
+│                     │ pacote@15.2.0 > @npmcli/run-script@6.0.2 >             │
+│                     │ node-gyp@9.4.0 > tar@6.1.15                            │
+│                     │                                                        │
+│                     │ ... Found 17 paths, run `pnpm why tar` for more        │
+│                     │ information                                            │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-f5x3-32g6-xq36      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
+```
 
-:warning: Attention :warning: 
-* `trim`, `trim-newlines` and `glob-parent` are dependencies of `storybook` that is used in `@sap-ux/ui-components`. Once a new version without the vulnerable dependency is available, it is to be used and this override can be removed.
-* `semver` is used by too many modules. Override can be removed or kept for specific dependencies after we have cleaned up our devDependencies.
-*  `word-wrap` no fix available yet for @typescript-eslint/* modules.
+Fix not available yet with latest @nrwl/nx-cloud
+```
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ moderate            │ Axios Cross-Site Request Forgery Vulnerability         │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ axios                                                  │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ >=0.8.1 <0.28.0                                        │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=0.28.0                                               │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ packages/odata-service-inquirer >                      │
+│                     │ @sap/wing-service-explorer@1.8.0 > axios@0.21.4        │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-wf5p-g6vw-rhxx      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
+```

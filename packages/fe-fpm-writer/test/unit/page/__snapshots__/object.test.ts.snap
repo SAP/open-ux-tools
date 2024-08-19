@@ -1,5 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ObjectPage generate Add library dependency \`sap.fe.templates\`  1`] = `
+Object {
+  "libs": Object {
+    "sap.fe.templates": Object {},
+  },
+}
+`;
+
 exports[`ObjectPage generate all optional settings 1`] = `
 Object {
   "sap.app": Object {
@@ -149,6 +157,55 @@ Object {
 }
 `;
 
+exports[`ObjectPage generate minimal input, plus optional page id 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "routes": Array [
+        Object {
+          "name": "RootEntityListReport",
+          "pattern": ":?query:",
+          "target": "TestListReport",
+        },
+        Object {
+          "name": "RootEntityObjectPage",
+          "pattern": "RootEntity({RootEntityKey}):?query:",
+          "target": "RootEntityObjectPage",
+        },
+        Object {
+          "name": "DummyPage",
+          "pattern": "OtherEntity:?query:",
+          "target": "DummyPage",
+        },
+      ],
+      "targets": Object {
+        "DummyPage": Object {
+          "id": "DummyPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": Object {
+            "settings": Object {
+              "contextPath": "/OtherEntity",
+              "navigation": Object {},
+            },
+          },
+          "type": "Component",
+        },
+        "RootEntityListReport": Object {},
+        "RootEntityObjectPage": Object {},
+      },
+    },
+  },
+}
+`;
+
 exports[`ObjectPage generate simple inbound navigation 1`] = `
 Object {
   "routes": Array [
@@ -187,6 +244,55 @@ Object {
             "OtherEntity": Object {
               "detail": Object {
                 "route": "OtherEntityObjectPage",
+              },
+            },
+          },
+        },
+      },
+    },
+    "RootEntityObjectPage": Object {},
+  },
+}
+`;
+
+exports[`ObjectPage generate simple inbound navigation, plus optional page id 1`] = `
+Object {
+  "routes": Array [
+    Object {
+      "name": "RootEntityListReport",
+      "pattern": ":?query:",
+      "target": "TestListReport",
+    },
+    Object {
+      "name": "RootEntityObjectPage",
+      "pattern": "RootEntity({RootEntityKey}):?query:",
+      "target": "RootEntityObjectPage",
+    },
+    Object {
+      "name": "DummyPage",
+      "pattern": "OtherEntity({OtherEntityKey}):?query:",
+      "target": "DummyPage",
+    },
+  ],
+  "targets": Object {
+    "DummyPage": Object {
+      "id": "DummyPage",
+      "name": "sap.fe.templates.ObjectPage",
+      "options": Object {
+        "settings": Object {
+          "contextPath": "/OtherEntity",
+          "navigation": Object {},
+        },
+      },
+      "type": "Component",
+    },
+    "RootEntityListReport": Object {
+      "options": Object {
+        "settings": Object {
+          "navigation": Object {
+            "OtherEntity": Object {
+              "detail": Object {
+                "route": "DummyPage",
               },
             },
           },

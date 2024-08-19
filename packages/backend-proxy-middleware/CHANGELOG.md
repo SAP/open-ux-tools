@@ -1,5 +1,487 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.8.9
+
+### Patch Changes
+
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/axios-extension@1.16.4
+    -   @sap-ux/btp-utils@0.15.1
+
+## 0.8.8
+
+### Patch Changes
+
+-   Updated dependencies [08b788c]
+    -   @sap-ux/store@0.9.1
+
+## 0.8.7
+
+### Patch Changes
+
+-   Updated dependencies [e7a6c68]
+    -   @sap-ux/store@0.9.0
+
+## 0.8.6
+
+### Patch Changes
+
+-   Updated dependencies [dced368]
+    -   @sap-ux/store@0.8.0
+
+## 0.8.5
+
+### Patch Changes
+
+-   Updated dependencies [0084205]
+    -   @sap-ux/axios-extension@1.16.3
+
+## 0.8.4
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/axios-extension@1.16.2
+
+## 0.8.3
+
+### Patch Changes
+
+-   Updated dependencies [ad9b56d]
+    -   @sap-ux/axios-extension@1.16.1
+
+## 0.8.2
+
+### Patch Changes
+
+-   Updated dependencies [3a878f3]
+    -   @sap-ux/axios-extension@1.16.0
+
+## 0.8.1
+
+### Patch Changes
+
+-   Updated dependencies [abf491a7]
+    -   @sap-ux/axios-extension@1.15.1
+
+## 0.8.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+### Patch Changes
+
+-   Updated dependencies [c2359077]
+    -   @sap-ux/axios-extension@1.15.0
+    -   @sap-ux/btp-utils@0.15.0
+    -   @sap-ux/logger@0.6.0
+    -   @sap-ux/store@0.7.0
+
+## 0.7.41
+
+### Patch Changes
+
+-   Updated dependencies [4492fe10]
+    -   @sap-ux/axios-extension@1.14.4
+
+## 0.7.40
+
+### Patch Changes
+
+-   Updated dependencies [d5d3626c]
+    -   @sap-ux/axios-extension@1.14.3
+
+## 0.7.39
+
+### Patch Changes
+
+-   Updated dependencies [65bfb244]
+    -   @sap-ux/axios-extension@1.14.2
+
+## 0.7.38
+
+### Patch Changes
+
+-   Updated dependencies [844e79c4]
+    -   @sap-ux/axios-extension@1.14.1
+
+## 0.7.37
+
+### Patch Changes
+
+-   Updated dependencies [31cc53f8]
+    -   @sap-ux/axios-extension@1.14.0
+
+## 0.7.36
+
+### Patch Changes
+
+-   Updated dependencies [d02be637]
+    -   @sap-ux/store@0.6.0
+
+## 0.7.35
+
+### Patch Changes
+
+-   Updated dependencies [869c1c0d]
+    -   @sap-ux/axios-extension@1.13.1
+
+## 0.7.34
+
+### Patch Changes
+
+-   Updated dependencies [b2ee99fc]
+    -   @sap-ux/axios-extension@1.13.0
+
+## 0.7.33
+
+### Patch Changes
+
+-   Updated dependencies [558891c2]
+    -   @sap-ux/axios-extension@1.12.6
+
+## 0.7.32
+
+### Patch Changes
+
+-   Updated dependencies [69282b7d]
+    -   @sap-ux/axios-extension@1.12.5
+
+## 0.7.31
+
+### Patch Changes
+
+-   Updated dependencies [6e3d4da4]
+    -   @sap-ux/axios-extension@1.12.4
+
+## 0.7.30
+
+### Patch Changes
+
+-   Updated dependencies [19ec0f01]
+    -   @sap-ux/axios-extension@1.12.3
+
+## 0.7.29
+
+### Patch Changes
+
+-   Updated dependencies [a41bbd95]
+    -   @sap-ux/axios-extension@1.12.2
+
+## 0.7.28
+
+### Patch Changes
+
+-   Updated dependencies [1b5f7442]
+    -   @sap-ux/axios-extension@1.12.1
+
+## 0.7.27
+
+### Patch Changes
+
+-   Updated dependencies [312919ec]
+    -   @sap-ux/axios-extension@1.12.0
+
+## 0.7.26
+
+### Patch Changes
+
+-   Updated dependencies [9a32e102]
+    -   @sap-ux/btp-utils@0.14.4
+    -   @sap-ux/axios-extension@1.11.9
+
+## 0.7.25
+
+### Patch Changes
+
+-   Updated dependencies [56b77fd9]
+    -   @sap-ux/axios-extension@1.11.8
+
+## 0.7.24
+
+### Patch Changes
+
+-   Updated dependencies [31f5027c]
+    -   @sap-ux/axios-extension@1.11.7
+
+## 0.7.23
+
+### Patch Changes
+
+-   6291bc37: chore - update dependencies to fix audit warnings
+
+## 0.7.22
+
+### Patch Changes
+
+-   Updated dependencies [080e7b06]
+    -   @sap-ux/axios-extension@1.11.6
+
+## 0.7.21
+
+### Patch Changes
+
+-   1db4c60c: FIX: use correct url for reentrance tickets and enhance config to support it
+-   Updated dependencies [1db4c60c]
+    -   @sap-ux/axios-extension@1.11.5
+
+## 0.7.20
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+-   Updated dependencies [61b46bc8]
+    -   @sap-ux/axios-extension@1.11.4
+    -   @sap-ux/btp-utils@0.14.3
+
+## 0.7.19
+
+### Patch Changes
+
+-   Updated dependencies [e443e534]
+    -   @sap-ux/store@0.5.0
+
+## 0.7.18
+
+### Patch Changes
+
+-   Updated dependencies [811c4324]
+    -   @sap-ux/btp-utils@0.14.2
+    -   @sap-ux/axios-extension@1.11.3
+
+## 0.7.17
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/axios-extension@1.11.2
+    -   @sap-ux/btp-utils@0.14.1
+    -   @sap-ux/logger@0.5.1
+    -   @sap-ux/store@0.4.3
+
+## 0.7.16
+
+### Patch Changes
+
+-   Updated dependencies [efd2f6d4]
+    -   @sap-ux/axios-extension@1.11.1
+
+## 0.7.15
+
+### Patch Changes
+
+-   Updated dependencies [0f6e0e1b]
+    -   @sap-ux/axios-extension@1.11.0
+    -   @sap-ux/btp-utils@0.14.0
+
+## 0.7.14
+
+### Patch Changes
+
+-   Updated dependencies [64f9c513]
+    -   @sap-ux/axios-extension@1.10.2
+
+## 0.7.13
+
+### Patch Changes
+
+-   9f1836b2: Remove 'Partitioned' from cookies
+
+## 0.7.12
+
+### Patch Changes
+
+-   Updated dependencies [2e0b1a6d]
+    -   @sap-ux/logger@0.5.0
+    -   @sap-ux/axios-extension@1.10.1
+    -   @sap-ux/store@0.4.2
+
+## 0.7.11
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+-   Updated dependencies [eb0b7b37]
+    -   @sap-ux/store@0.4.1
+
+## 0.7.10
+
+### Patch Changes
+
+-   Updated dependencies [ecd5275d]
+    -   @sap-ux/axios-extension@1.10.0
+
+## 0.7.9
+
+### Patch Changes
+
+-   Updated dependencies [de8a4878]
+    -   @sap-ux/axios-extension@1.9.0
+    -   @sap-ux/btp-utils@0.13.0
+
+## 0.7.8
+
+### Patch Changes
+
+-   10ad4b51: Use token in backend-proxy-middleware when connecting to abap cloud
+
+## 0.7.7
+
+### Patch Changes
+
+-   Updated dependencies [3000e8f4]
+    -   @sap-ux/axios-extension@1.8.1
+
+## 0.7.6
+
+### Patch Changes
+
+-   Updated dependencies [62232236]
+    -   @sap-ux/axios-extension@1.8.0
+
+## 0.7.5
+
+### Patch Changes
+
+-   Updated dependencies [286883cb]
+    -   @sap-ux/axios-extension@1.7.3
+    -   @sap-ux/btp-utils@0.12.1
+
+## 0.7.4
+
+### Patch Changes
+
+-   Updated dependencies [db918804]
+    -   @sap-ux/axios-extension@1.7.2
+
+## 0.7.3
+
+### Patch Changes
+
+-   Updated dependencies [fa4537b2]
+    -   @sap-ux/axios-extension@1.7.1
+
+## 0.7.2
+
+### Patch Changes
+
+-   Updated dependencies [aa2ff95b]
+    -   @sap-ux/axios-extension@1.7.0
+
+## 0.7.1
+
+### Patch Changes
+
+-   Updated dependencies [3cfaba52]
+    -   @sap-ux/axios-extension@1.6.1
+
+## 0.7.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/axios-extension@1.6.0
+    -   @sap-ux/btp-utils@0.12.0
+    -   @sap-ux/logger@0.4.0
+    -   @sap-ux/store@0.4.0
+
+## 0.6.77
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+-   Updated dependencies [cbcad88d]
+    -   @sap-ux/store@0.3.16
+
+## 0.6.76
+
+### Patch Changes
+
+-   Updated dependencies [4052822f]
+    -   @sap-ux/logger@0.3.9
+    -   @sap-ux/store@0.3.15
+    -   @sap-ux/axios-extension@1.5.1
+
+## 0.6.75
+
+### Patch Changes
+
+-   Updated dependencies [d7492b53]
+    -   @sap-ux/axios-extension@1.5.0
+
+## 0.6.74
+
+### Patch Changes
+
+-   Updated dependencies [0760c9f8]
+    -   @sap-ux/axios-extension@1.4.8
+
+## 0.6.73
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/axios-extension@1.4.7
+    -   @sap-ux/btp-utils@0.11.9
+    -   @sap-ux/logger@0.3.8
+    -   @sap-ux/store@0.3.14
+
+## 0.6.72
+
+### Patch Changes
+
+-   Updated dependencies [7b156515]
+    -   @sap-ux/axios-extension@1.4.6
+
+## 0.6.71
+
+### Patch Changes
+
+-   Updated dependencies [01fa690e]
+    -   @sap-ux/axios-extension@1.4.5
+
+## 0.6.70
+
+### Patch Changes
+
+-   Updated dependencies [0dbad1b8]
+    -   @sap-ux/store@0.3.13
+
+## 0.6.69
+
+### Patch Changes
+
+-   118692c3: update dependency http-proxy-middleware to v2.0.6
+
+## 0.6.68
+
+### Patch Changes
+
+-   Updated dependencies [676f8ba0]
+    -   @sap-ux/axios-extension@1.4.4
+
+## 0.6.67
+
+### Patch Changes
+
+-   Updated dependencies [6e403f27]
+    -   @sap-ux/axios-extension@1.4.3
+
+## 0.6.66
+
+### Patch Changes
+
+-   Updated dependencies [29e71f68]
+    -   @sap-ux/axios-extension@1.4.2
+
 ## 0.6.65
 
 ### Patch Changes

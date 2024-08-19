@@ -1,0 +1,24 @@
+
+# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: '1.0'
+metadata:
+  name: 'project13356'
+type: application
+ui5Theme: sap_fiori_3
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: http://ccwdfgl9773.devint.net.sap:50000
+        app:
+          name: PROJECT13356
+          description: null
+          package: $TMP
+          transport: ""

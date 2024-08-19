@@ -1,23 +1,11 @@
-import type { AxiosResponse, AxiosRequestConfig } from 'axios';
-import { prettyPrintError, prettyPrintMessage } from './message';
-import type { ErrorMessage } from './message';
+import { type AxiosResponse, type AxiosRequestConfig } from 'axios';
+import { logError, getErrorMessageFromString, prettyPrintError, prettyPrintMessage } from './message';
 import { ODataService } from '../base/odata-service';
 import { isAxiosError } from '../base/odata-request-error';
-
 /**
- * Required configuration for the BSP hosting an app.
+ * Required configuration a transportable object.
  */
-export interface BspConfig {
-    /**
-     * Name of the BSP, additionally, the last part of the exposed service path
-     */
-    name: string;
-
-    /**
-     * Optional description of the ABAP development object representing the BSP
-     */
-    description?: string;
-
+export interface TransportConfig {
     /**
      * Optional package for the ABAP development object
      */
@@ -27,6 +15,21 @@ export interface BspConfig {
      * Optional transport request to record the changes
      */
     transport?: string;
+}
+
+/**
+ * Required configuration for the BSP hosting an app.
+ */
+export interface BspConfig extends TransportConfig {
+    /**
+     * Name of the BSP, additionally, the last part of the exposed service path
+     */
+    name: string;
+
+    /**
+     * Optional description of the ABAP development object representing the BSP
+     */
+    description?: string;
 }
 
 /**
@@ -101,6 +104,7 @@ function encodeXmlValue(xmlValue: string): string {
 export class Ui5AbapRepositoryService extends ODataService {
     public static readonly PATH = '/sap/opu/odata/UI5/ABAP_REPOSITORY_SRV';
     private readonly publicUrl: string;
+    private readonly isDest: boolean;
 
     /**
      * Extension of the base constructor to set preferred response format if not provided by caller.
@@ -114,6 +118,7 @@ export class Ui5AbapRepositoryService extends ODataService {
         config.headers['Accept'] = config.headers['Accept'] ?? 'application/json,application/xml,text/plain,*/*';
         super(config);
         this.publicUrl = config.publicUrl || this.defaults.baseURL;
+        this.isDest = /\.dest\//.test(this.defaults.baseURL);
     }
 
     /**
@@ -126,6 +131,31 @@ export class Ui5AbapRepositoryService extends ODataService {
         try {
             const response = await this.get<AppInfo>(`/Repositories('${encodeURIComponent(app)}')`);
             return response.odata();
+        } catch (error) {
+            this.log.debug(`Retrieving application ${app} from ${Ui5AbapRepositoryService.PATH}, ${error}`);
+            if (isAxiosError(error) && error.response?.status === 404) {
+                return undefined;
+            }
+            throw error;
+        }
+    }
+
+    /**
+     * Get the application files as zip archive. This will only work on ABAP systems 2308 or newer.
+     *
+     * @param app application id (BSP application name)
+     * @returns undefined if no app is found or downloading files is not supported, otherwise return the application files as a buffer.
+     */
+    public async downloadFiles(app: string): Promise<Buffer> {
+        try {
+            const response = await this.get<AppInfo>(`/Repositories('${encodeURIComponent(app)}')`, {
+                params: {
+                    CodePage: 'UTF8',
+                    DownloadFiles: 'RUNTIME'
+                }
+            });
+            const data = response.odata();
+            return data.ZipArchive ? Buffer.from(data.ZipArchive) : undefined;
         } catch (error) {
             this.log.debug(`Retrieving application ${app}, ${error}`);
             if (isAxiosError(error) && error.response?.status === 404) {
@@ -153,14 +183,23 @@ export class Ui5AbapRepositoryService extends ODataService {
             bsp.description || 'Deployed with SAP Fiori tools',
             info ? info.Package : bsp.package
         );
-        this.log.debug(`Payload:\n${payload}`);
+        this.log.debug(
+            `Payload:\n ID: ${this.publicUrl}/Repositories('${bsp.name}') \n ABAP Package: ${
+                info ? info.Package : bsp.package
+            }`
+        );
         const config = this.createConfig(bsp.transport, testMode, safeMode);
         const frontendUrl = this.getAbapFrontendUrl();
         try {
             const response: AxiosResponse | undefined = await this.updateRepoRequest(!!info, bsp.name, payload, config);
             // An app can be successfully deployed after a timeout exception, no value in showing exception headers
             if (response?.headers?.['sap-message']) {
-                prettyPrintMessage({ msg: response.headers['sap-message'], log: this.log, host: frontendUrl });
+                prettyPrintMessage({
+                    msg: response.headers['sap-message'],
+                    log: this.log,
+                    host: frontendUrl,
+                    isDest: this.isDest
+                });
             }
             if (!testMode) {
                 // log url of created/updated app
@@ -173,16 +212,17 @@ export class Ui5AbapRepositoryService extends ODataService {
                 // Test mode returns a HTTP response code of 403 so we dont want to show all error messages
                 prettyPrintError(
                     {
-                        error: this.getErrorMessageFromString(response?.data),
+                        error: getErrorMessageFromString(response?.data),
                         log: this.log,
-                        host: frontendUrl
+                        host: frontendUrl,
+                        isDest: this.isDest
                     },
                     false
                 );
             }
             return response;
         } catch (error) {
-            this.logError({ error, host: frontendUrl });
+            logError({ error, host: frontendUrl, log: this.log, isDest: this.isDest });
             throw error;
         }
     }
@@ -198,12 +238,18 @@ export class Ui5AbapRepositoryService extends ODataService {
     public async undeploy({ bsp, testMode = false }: UndeployConfig): Promise<AxiosResponse | undefined> {
         const config = this.createConfig(bsp.transport, testMode);
         const host = this.getAbapFrontendUrl();
+
         const info: AppInfo = await this.getInfo(bsp.name);
         try {
             if (info) {
                 const response = await this.deleteRepoRequest(bsp.name, config);
                 if (response?.headers?.['sap-message']) {
-                    prettyPrintMessage({ msg: response.headers['sap-message'], log: this.log, host });
+                    prettyPrintMessage({
+                        msg: response.headers['sap-message'],
+                        log: this.log,
+                        host,
+                        isDest: this.isDest
+                    });
                 }
                 return response;
             } else {
@@ -211,7 +257,7 @@ export class Ui5AbapRepositoryService extends ODataService {
                 return undefined;
             }
         } catch (error) {
-            this.logError({ error, host });
+            logError({ error, host, log: this.log });
             throw error;
         }
     }
@@ -375,7 +421,7 @@ export class Ui5AbapRepositoryService extends ODataService {
             if (tryCount === 2) {
                 this.log.warn('Warning: retry undeploy to handle a backend rejection...');
             }
-            return await this.delete(`/Repositories('${appName}')`, config);
+            return await this.delete(`/Repositories('${encodeURIComponent(appName)}')`, config);
         } catch (error) {
             if (error?.response?.status === 400) {
                 // Kill the flow after 1 attempt
@@ -387,45 +433,5 @@ export class Ui5AbapRepositoryService extends ODataService {
                 throw error;
             }
         }
-    }
-
-    /**
-     * Log errors more user friendly if it is a standard Gateway error.
-     *
-     * @param e error thrown by Axios after sending a request
-     * @param e.error error from Axios
-     * @param e.host hostname
-     */
-    protected logError({ error, host }: { error: Error; host?: string }): void {
-        this.log.error(error.message);
-        if (isAxiosError(error) && error.response?.data) {
-            const errorMessage = this.getErrorMessageFromString(error.response?.data);
-            if (errorMessage) {
-                prettyPrintError({ error: errorMessage, host, log: this.log });
-            } else {
-                this.log.error(error.response.data.toString());
-            }
-        }
-    }
-
-    /**
-     * Get ErrorMessage object from response contain an error as a string.
-     *
-     * @param data string value
-     * @returns undefined if an error object is not found or populated ErrorMessage object
-     */
-    protected getErrorMessageFromString(data: unknown): ErrorMessage | undefined {
-        let error;
-        if (typeof data === 'string') {
-            try {
-                const errorMsg = JSON.parse(data);
-                if (errorMsg.error) {
-                    error = errorMsg.error as ErrorMessage;
-                }
-            } catch {
-                // Not much we can do!
-            }
-        }
-        return error;
     }
 }

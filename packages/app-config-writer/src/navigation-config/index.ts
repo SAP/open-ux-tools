@@ -22,7 +22,7 @@ import { NAV_CONFIG_NS, t } from '../i18n';
  */
 export async function generateInboundNavigationConfig(
     appRootPath: string,
-    { semanticObject, action, title, subTitle }: Partial<ManifestNamespace.Inbound[string]>,
+    { semanticObject, action, title, subTitle }: ManifestNamespace.Inbound[string],
     overwrite = false,
     fs?: Editor
 ): Promise<Editor> {
@@ -40,8 +40,8 @@ export async function generateInboundNavigationConfig(
         [inboundKey]: {
             semanticObject,
             action,
-            title: title ?? '',
-            subTitle: subTitle ?? '',
+            title,
+            subTitle,
             signature: {
                 parameters: {},
                 additionalParameters: 'allowed'

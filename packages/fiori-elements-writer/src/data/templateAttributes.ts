@@ -1,7 +1,8 @@
 import { OdataVersion, TemplateType } from '../types';
 
 // first version with SAP Fiori 3 theme
-export const oldestSupportedUI5Version = '1.65.0';
+export const minSupportedUI5Version = '1.65.0';
+export const minSupportedUI5VersionV4 = '1.84.0';
 
 export const changesPreviewToVersion = '1.78.0';
 
@@ -31,7 +32,7 @@ const commonUi5Libs: FrameworkLibs = {
         'sap.ui.generic.app',
         'sap.suite.ui.generic.template'
     ],
-    [OdataVersion.v4]: ['sap.m', 'sap.ushell', 'sap.fe.templates']
+    [OdataVersion.v4]: ['sap.m']
 };
 
 type TemplateLibsEntry = {
@@ -67,27 +68,27 @@ const templateLibs: TemplateLibs = {
     [OdataVersion.v4]: {
         [TemplateType.ListReportObjectPage]: {
             baseComponent: appComponentLibFioriElements,
-            ui5Libs: commonUi5Libs[OdataVersion.v4]
+            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.fe.templates']
         },
         [TemplateType.FormEntryObjectPage]: {
             baseComponent: appComponentLibFioriElements,
-            ui5Libs: commonUi5Libs[OdataVersion.v4]
+            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.fe.templates']
         },
         [TemplateType.AnalyticalListPage]: {
             baseComponent: appComponentLibFioriElements,
-            ui5Libs: commonUi5Libs[OdataVersion.v4]
+            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.fe.templates']
         },
         [TemplateType.Worklist]: {
             baseComponent: appComponentLibFioriElements,
-            ui5Libs: commonUi5Libs[OdataVersion.v4]
+            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.fe.templates']
         },
         [TemplateType.OverviewPage]: {
             baseComponent: appComponentLibOVP,
-            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.ovp', 'sap.ui.rta', 'sap.ui.layout']
+            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.fe.templates', 'sap.ovp', 'sap.ui.rta', 'sap.ui.layout']
         },
         [TemplateType.FlexibleProgrammingModel]: {
             baseComponent: appComponentLibFioriElements,
-            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.fe.templates']
+            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.fe.core']
         }
     }
 };
@@ -110,8 +111,8 @@ export function getBaseComponent(type: TemplateType, version: OdataVersion): str
  * @param version - The odata service version determines the appropriate base component to use
  * @returns The Ui5 libs required by the specified template type and OData version
  */
-export function getUi5Libs(type: TemplateType, version: OdataVersion): string[] | undefined {
-    return templateLibs[version][type]?.ui5Libs;
+export function getTemplateUi5Libs(type: TemplateType, version: OdataVersion): string[] {
+    return templateLibs[version][type]?.ui5Libs ?? [];
 }
 
 // Additional attributes associated with TemplateType
@@ -128,28 +129,28 @@ export const TemplateTypeAttributes: TemplateAttributes = {
     [TemplateType.Worklist]: {
         supportedODataVersions: [OdataVersion.v2, OdataVersion.v4],
         minimumUi5Version: {
-            [OdataVersion.v2]: oldestSupportedUI5Version,
+            [OdataVersion.v2]: minSupportedUI5Version,
             [OdataVersion.v4]: '1.99.0'
         }
     },
     [TemplateType.ListReportObjectPage]: {
         supportedODataVersions: [OdataVersion.v2, OdataVersion.v4],
         minimumUi5Version: {
-            [OdataVersion.v2]: oldestSupportedUI5Version,
+            [OdataVersion.v2]: minSupportedUI5Version,
             [OdataVersion.v4]: '1.84.0'
         }
     },
     [TemplateType.AnalyticalListPage]: {
         supportedODataVersions: [OdataVersion.v2, OdataVersion.v4],
         minimumUi5Version: {
-            [OdataVersion.v2]: oldestSupportedUI5Version,
+            [OdataVersion.v2]: minSupportedUI5Version,
             [OdataVersion.v4]: '1.90.0'
         }
     },
     [TemplateType.OverviewPage]: {
         supportedODataVersions: [OdataVersion.v2, OdataVersion.v4],
         minimumUi5Version: {
-            [OdataVersion.v2]: oldestSupportedUI5Version,
+            [OdataVersion.v2]: minSupportedUI5Version,
             [OdataVersion.v4]: '1.96.8'
         }
     },

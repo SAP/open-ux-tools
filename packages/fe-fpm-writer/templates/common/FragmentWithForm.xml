@@ -1,0 +1,7 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:f="sap.ui.layout.form"<%- typeof dependencies !== 'undefined' ? ` ${dependencies}` : '' %>>
+    <f:FormElement<%- typeof requireAttribute !== 'undefined' ? ` ${requireAttribute}` : '' %>>
+        <f:fields>
+            <%- content %>
+        </f:fields>
+    </f:FormElement>
+</core:FragmentDefinition>

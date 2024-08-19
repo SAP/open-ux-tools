@@ -1,0 +1,55 @@
+{
+    "name": "@sap-ux/jest-runner-puppeteer",
+    "version": "0.1.0",
+    "description": "Jest runner for puppeteer",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/jest-runner-puppeteer"
+    },
+    "license": "Apache-2.0",
+    "private": false,
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc --build",
+        "watch": "tsc --watch",
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "author": "",
+    "files": [
+        "dist",
+        "src"
+    ],
+    "devDependencies": {
+        "chalk": "4.1.2",
+        "jest-environment-node": "29.7.0",
+        "mkdirp": "1.0.4",
+        "puppeteer-core": "22.12.1",
+        "rimraf": "5.0.5",
+        "typescript": "5.3.3",
+        "which": "2.0.2"
+    },
+    "eslint-formatter-multiple": {
+        "formatters": [
+            {
+                "name": "stylish",
+                "output": "console"
+            },
+            {
+                "name": "json",
+                "output": "file",
+                "path": "reports/lint/eslint.json"
+            },
+            {
+                "name": "checkstyle",
+                "output": "file",
+                "path": "reports/lint/eslint.checkstyle.xml"
+            }
+        ]
+    }
+}

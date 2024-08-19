@@ -9,6 +9,7 @@ server:
           configuration:
               flp:
                 path: /my/custom/path/preview.html
+                libs: true
                 rta:
                   layer: CUSTOMER_BASE
               debug: true

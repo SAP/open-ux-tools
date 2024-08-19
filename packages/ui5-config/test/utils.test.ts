@@ -1,5 +1,5 @@
 import { UI5_DEFAULT } from '../src/defaults';
-import { getEsmTypesVersion, getTypesPackage, getTypesVersion, mergeObjects } from '../src/utils';
+import { getEsmTypesVersion, getTypesPackage, getTypesVersion, mergeObjects, replaceEnvVariables } from '../src/utils';
 
 describe('mergeObjects', () => {
     const base = {
@@ -59,7 +59,7 @@ describe('getEsmTypesVersion, getTypesVersion, getTypesPackage', () => {
         ['1.80-snapshot', esmTypesVersionSince],
         ['metadata', typesVersionBest],
         [undefined, typesVersionBest],
-        ['1.109.1', '~1.109.1'],
+        ['1.109.1', '~1.109.0'],
         [UI5_DEFAULT.TYPES_VERSION_BEST, typesVersionBest],
         ['1.109-snapshot', '~1.109.0'],
         ['1.80-snapshot', esmTypesVersionSince],
@@ -80,7 +80,7 @@ describe('getEsmTypesVersion, getTypesVersion, getTypesPackage', () => {
         ['1.75.0', minU5Version],
         ['1.83.0', '~1.83.0'],
         [UI5_DEFAULT.TYPES_VERSION_BEST, typesVersionBest],
-        ['1.109.1', '~1.109.1'],
+        ['1.109.1', '~1.109.0'],
         ['1.80-snapshot', '~1.80.0'],
         ['1.102-snapshot', '~1.102.0'],
         ['1.109-snapshot', '~1.109.0']
@@ -99,7 +99,7 @@ describe('getEsmTypesVersion, getTypesVersion, getTypesPackage', () => {
         ['1.75.0', UI5_DEFAULT.TS_TYPES_ESM_PACKAGE_NAME],
         ['1.83.0', UI5_DEFAULT.TS_TYPES_ESM_PACKAGE_NAME],
         [UI5_DEFAULT.TYPES_VERSION_BEST, UI5_DEFAULT.TS_TYPES_ESM_PACKAGE_NAME],
-        ['1.109.1', UI5_DEFAULT.TS_TYPES_ESM_PACKAGE_NAME],
+        ['1.109.0', UI5_DEFAULT.TS_TYPES_ESM_PACKAGE_NAME],
         ['1.80-snapshot', UI5_DEFAULT.TS_TYPES_ESM_PACKAGE_NAME],
         ['1.102-snapshot', UI5_DEFAULT.TS_TYPES_ESM_PACKAGE_NAME],
         ['1.109-snapshot', UI5_DEFAULT.TS_TYPES_ESM_PACKAGE_NAME],
@@ -124,5 +124,27 @@ describe('getEsmTypesVersion, getTypesVersion, getTypesPackage', () => {
     // Tests validation of getting the correct types package name
     test.each(getTypesPackageTestData)('Types package: (%p, %p)', (input, expected) => {
         expect(getTypesPackage(input)).toEqual(expected);
+    });
+});
+describe('replaceEnvVariables', () => {
+    const envVal = '~testvalue';
+    const envRef = 'env:TEST_VAR';
+
+    process.env.TEST_VAR = envVal;
+    test('top level', () => {
+        const config = { hello: envRef };
+        replaceEnvVariables(config);
+        expect(config.hello).toBe(envVal);
+    });
+    test('in array', () => {
+        const config = ['hello', envRef];
+        replaceEnvVariables(config);
+        expect(config[1]).toBe(envVal);
+    });
+    test('nested', () => {
+        const config = { hello: { world: envRef }, world: envRef };
+        replaceEnvVariables(config);
+        expect(config.hello.world).toBe(envVal);
+        expect(config.world).toBe(envVal);
     });
 });

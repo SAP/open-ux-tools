@@ -2,9 +2,10 @@ import type { TaskParameters } from '@ui5/builder';
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { AbapDeployConfig } from '../types';
 import { NAME } from '../types';
-import { deploy, replaceEnvVariables, validateConfig } from '../base';
+import { deploy, validateConfig } from '../base';
 import { createUi5Archive } from './archive';
 import { config as loadEnvConfig } from 'dotenv';
+import { replaceEnvVariables } from '@sap-ux/ui5-config';
 
 /**
  * Custom task to upload the build result to the UI5 ABAP Repository.
@@ -28,7 +29,12 @@ async function task({ workspace, options }: TaskParameters<AbapDeployConfig>): P
     replaceEnvVariables(config);
 
     // The calling client can use either the projectNamespace or projectName when creating the workspace, needs to match when creating the archive.
-    const archive = await createUi5Archive(logger, workspace, options.projectNamespace ?? options.projectName);
+    const archive = await createUi5Archive(
+        logger,
+        workspace,
+        options.projectNamespace ?? options.projectName,
+        config.exclude
+    );
     await deploy(archive, config, logger);
 }
 

@@ -1,0 +1,96 @@
+// UITextField
+.ms-TextField {
+    .ms-Label {
+        margin-top: 0;
+        margin-bottom: 4px;
+        padding: 0;
+        font-weight: normal;
+        height: 18px;
+    }
+}
+
+// UIDialog
+.ms-Dialog {
+    .ms-Dialog-title {
+        color: var(--vscode-foreground);
+    }
+
+    .ms-Dialog-subText {
+        color: var(--vscode-foreground);
+    }
+}
+
+// UIList
+
+.ms-GroupHeader.app-panel-selected-bg {
+    .ms-GroupHeader-title {
+        color: var(--vscode-list-activeSelectionForeground);
+    }
+
+    .ms-GroupHeader-expand svg path {
+        fill: var(--vscode-list-activeSelectionForeground);
+    }
+}
+
+.uiList-group-entry:hover {
+    outline: 1px dashed var(--vscode-contrastActiveBorder);
+}
+
+// UIIconButton
+.ms-Button.ms-Button--icon.is-checked {
+    background-color: var(--vscode-button-hoverBackground);
+    outline: 1px solid var(--vscode-contrastActiveBorder);
+    svg {
+        path,
+        rect {
+            fill: var(--vscode-button-foreground);
+        }
+    }
+}
+
+// CPE-UIIcon-Changes
+.ui-cpe-icon-light-theme {
+    margin-right: 5px;
+    background-color: var(--vscode-terminal-ansiBlue);
+    border-radius: 50%;
+    height: 16px;
+    width: 16px;
+    vertical-align: bottom;
+    svg {
+        path,
+        rect {
+            fill: var(--vscode-button-foreground);
+        }
+    }
+}
+
+// Tree
+.app-panel-selected-bg {
+    .ms-GroupHeader-expand:hover {
+        color: var(--vscode-list-activeSelectionForeground);
+        background-color: var(--vscode-list-activeSelectionBackground);
+    }
+}
+
+.app-panel-hc-selected-bg {
+    outline: 1px solid var(--vscode-contrastActiveBorder);
+}
+
+.ms-GroupHeader.ms-GroupHeader--compact {
+    &:hover {
+        outline: 1px dashed var(--vscode-contrastActiveBorder);
+    }
+    .ms-GroupHeader-title {
+        height: 18px;
+        padding: 5px 0;
+        font-family: var(--vscode-font-family);
+    }
+    > div {
+        height: 28px;
+    }
+}
+
+// Callout
+.ms-Callout-main {
+    border: 1px solid var(--vscode-contrastBorder);
+}

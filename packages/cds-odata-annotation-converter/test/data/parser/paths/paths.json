@@ -1,0 +1,15 @@
+[
+    "",
+    "assignedIndividual",
+    "assignedIndividual/",
+    "assignedIndividual/@Communication.Contact",
+    "@UI.LineItem#q1",
+    "@UI.LineItem#q2",
+    "incedentStatus/@LineItem",
+    "safetyIncidents/@Common.Application/Component",
+    "safetyIncidents/@sap.com.vocabularies.Common.v1.Application/Component/",
+    "safetyIncidents/@sap.com.vocabularies.Common.v1.Application#q1/Component/",
+    "@Common.Label#l1",
+    "@Common.Application#q1/Component",
+    "aaa/@Common.Application#"
+]

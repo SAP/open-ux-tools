@@ -18,8 +18,10 @@ module.exports = {
     modulePathIgnorePatterns: [
         '<rootDir>/dist',
         '<rootDir>/coverage',
+        '<rootDir>/templates',
         '<rootDir>/test/test-input',
-        '<rootDir>/test/test-output'
+        '<rootDir>/test/test-output',
+        '<rootDir>/test/integration'
     ],
     verbose: true,
     snapshotFormat: {

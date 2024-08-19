@@ -6,7 +6,7 @@ import type { CustomFilter } from '../../src/filter/types';
 import { generateCustomFilter } from '../../src/filter';
 import type { EventHandlerConfiguration, FileContentPosition } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
-import os from 'os';
+import { getEndOfLinesLength } from '../common';
 
 describe('CustomFilter', () => {
     describe('generateCustomFilter', () => {
@@ -151,6 +151,7 @@ describe('CustomFilter', () => {
                 generateCustomFilterWithEventHandler(filter.name, extension, folder);
 
                 expect(fs.read(join(testDir, 'webapp', 'ext', 'custom', `${extension.fileName}.js`))).toMatchSnapshot();
+                expect(fs.read(getExpectedFragmentPath({ ...filter, folder: folder }))).toMatchSnapshot();
             });
 
             test('"eventHandler" is "object" - create new file with custom function name', () => {
@@ -186,12 +187,13 @@ describe('CustomFilter', () => {
                     {
                         line: 18,
                         character: 9
-                    }
+                    },
+                    undefined
                 ],
-                ['absolute position', 870 + 18 * os.EOL.length]
+                ['absolute position', 870, 18]
             ])(
                 '"eventHandler" is object. Append new function to existing js file with %s',
-                (_desc: string, position: number | FileContentPosition) => {
+                (_desc: string, position: number | FileContentPosition, appendLines?: number) => {
                     const fileName = 'MyExistingFilter';
                     // Create existing file with existing filters
                     const folder = join('ext', 'fragments');
@@ -201,6 +203,10 @@ describe('CustomFilter', () => {
                         ...filter,
                         eventHandlerFnName: 'filterItems'
                     });
+                    if (typeof position === 'number' && appendLines !== undefined) {
+                        const content = fs.read(existingPath);
+                        position += getEndOfLinesLength(appendLines, content);
+                    }
                     // Create third action - append existing js file
                     const filterName = 'CustomFilter2';
                     const fnName = 'onHandleSecondAction';
@@ -295,6 +301,36 @@ describe('CustomFilter', () => {
                 expect(fs.exists(getControllerPath(filter, languageConfig.typescript))).toBeTruthy();
                 expect(fs.read(getControllerPath(filter, languageConfig.typescript))).toMatchSnapshot();
             });
+        });
+
+        test('Avoid overwrite for existing extension files', () => {
+            const fileName = 'Existing';
+            const target = join(testDir, 'different-folder');
+            const folder = join('ext', 'different');
+            // Copy manifest
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            // Prepare existing extension files
+            const fragmentPath = join(target, `webapp/${folder}/${fileName}.fragment.xml`);
+            fs.write(fragmentPath, 'fragmentContent');
+            const handlerPath = join(target, `webapp/${folder}/${fileName}.js`);
+            fs.write(handlerPath, 'handlerContent');
+            generateCustomFilter(
+                target,
+                {
+                    ...filter,
+                    folder,
+                    eventHandler: {
+                        fileName
+                    },
+                    fragmentFile: fileName
+                },
+                fs
+            );
+
+            expect(fs.exists(handlerPath)).toBe(true);
+            expect(fs.read(handlerPath)).toEqual('handlerContent');
+            expect(fs.exists(fragmentPath)).toBe(true);
+            expect(fs.read(fragmentPath)).toEqual('fragmentContent');
         });
     });
 });

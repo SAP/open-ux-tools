@@ -8,7 +8,7 @@
     isExtensibilityDevelopmentSystem="false" 
     isTransportRequestRequired="false" 
     transportationMode="COL" 
-    operationsType="C" 
+    operationsType="P" 
     tenantType="CUSTOMER" 
     tenantRole="07" 
     isPrefixNamespace="false" 

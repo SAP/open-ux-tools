@@ -1,8 +1,14 @@
 import type { Logger } from '@sap-ux/logger';
 import type { AdtCategory, AdtCollection } from 'abap/types';
 import { Axios } from 'axios';
+import { XMLParser, XMLValidator } from 'fast-xml-parser';
 
 interface AdtServiceExtension {
+    /**
+     * Attaches an ADT schema to the service.
+     *
+     * @param serviceSchema - The ADT collection to attach.
+     */
     attachAdtSchema(serviceSchema: AdtCollection): void;
 }
 
@@ -33,5 +39,27 @@ export abstract class AdtService extends Axios implements AdtServiceExtension {
      */
     attachAdtSchema(serviceSchema: AdtCollection): void {
         this.serviceSchema = serviceSchema;
+    }
+
+    /**
+     * Parse an XML document for ATO (Adaptation Transport Organizer) settings.
+     *
+     * @param xml xml document containing ATO settings
+     * @returns parsed ATO settings
+     */
+    protected parseResponse<T>(xml: string): T {
+        if (XMLValidator.validate(xml) !== true) {
+            this.log.warn(`Invalid XML: ${xml}`);
+            return {} as T;
+        }
+        const options = {
+            attributeNamePrefix: '',
+            ignoreAttributes: false,
+            ignoreNameSpace: true,
+            parseAttributeValue: true,
+            removeNSPrefix: true
+        };
+        const parser: XMLParser = new XMLParser(options);
+        return parser.parse(xml, true) as T;
     }
 }

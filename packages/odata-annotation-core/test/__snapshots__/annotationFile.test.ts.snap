@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`annotationFile.ts attributeValue 1`] = `"UI.LineItem"`;
+
+exports[`annotationFile.ts attributeValue: false 1`] = `""`;
+
+exports[`annotationFile.ts elementsWithName: true 1`] = `
+Array [
+  Object {
+    "attributes": Object {},
+    "content": Array [],
+    "name": "Collection",
+    "nameRange": Object {
+      "end": Object {
+        "character": 0,
+        "line": 0,
+      },
+      "start": Object {
+        "character": 0,
+        "line": 0,
+      },
+    },
+    "range": Object {
+      "end": Object {
+        "character": 0,
+        "line": 0,
+      },
+      "start": Object {
+        "character": 0,
+        "line": 0,
+      },
+    },
+    "type": "element",
+  },
+]
+`;

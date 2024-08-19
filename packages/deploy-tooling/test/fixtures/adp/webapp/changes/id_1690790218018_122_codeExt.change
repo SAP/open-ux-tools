@@ -1,0 +1,23 @@
+{
+	"changeType": "codeExt",
+	"reference": "adp.example",
+	"namespace": "apps/adp.example/changes/",
+	"projectId": "adp.example",
+	"moduleName": "adp/example/changes/coding/test",
+	"support": {
+		"generator": "rta.service.ControllerExtension",
+		"sapui5Version": "1.118.0-SNAPSHOT"
+	},
+	"originalLanguage": "EN",
+	"layer": "VENDOR",
+	"fileType": "change",
+	"fileName": "id_1690790218018_122_codeExt",
+	"content": {
+		"codeRef": "coding/share.js"
+	},
+	"texts": {},
+	"selector": {
+		"controllerName": "sap.suite.ui.generic.template.ListReport.view.ListReport"
+	},
+	"creation": "2023-07-31T07:56:58.021Z"
+}

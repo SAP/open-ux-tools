@@ -1,10 +1,13 @@
 {
     "sap.ui5": {
+        "dependencies": {
+            "libs": <%- JSON.stringify(libraries) %>
+        },
         "routing": {
             "targets": {
-                "<%- entity %>ObjectPage": {
+                "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %>ObjectPage<% } %>": {
                     "type": "Component",
-                    "id": "<%- entity %>ObjectPage",
+                    "id": "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %>ObjectPage<% } %>",
                     "name": "sap.fe.templates.ObjectPage",<%if (locals.controlAggregation) {%>
                     "controlAggregation": "<%- locals.controlAggregation %>",<% } %>
                     "options": {
@@ -17,7 +20,7 @@
                             "navigation": {
                                 "<%- navigation.navEntity %>": {
                                     "detail": {
-                                        "route": "<%- entity %>ObjectPage"
+                                        "route": "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %>ObjectPage<% } %>"
                                     }
                                 }
                             }

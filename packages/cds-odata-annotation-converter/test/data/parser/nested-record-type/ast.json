@@ -1,0 +1,338 @@
+{
+    "type": "annotation",
+    "term": {
+        "type": "path",
+        "value": "UI.LineItem",
+        "segments": [
+            {
+                "type": "identifier",
+                "value": "UI",
+                "range": "[(0,0)..(0,2)]",
+                "quoted": false
+            },
+            {
+                "type": "identifier",
+                "value": "LineItem",
+                "range": "[(0,3)..(0,11)]",
+                "quoted": false
+            }
+        ],
+        "separators": [
+            {
+                "type": "separator",
+                "value": ".",
+                "range": "[(0,2)..(0,3)]",
+                "escaped": false
+            }
+        ],
+        "range": "[(0,0)..(0,11)]"
+    },
+    "range": "[(0,0)..(12,1)]",
+    "colon": {
+        "type": "token",
+        "range": "[(0,12)..(0,13)]",
+        "value": ":"
+    },
+    "value": {
+        "type": "collection",
+        "items": [
+            {
+                "type": "record",
+                "properties": [
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "$Type",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "$Type",
+                                    "range": "[(2,8)..(2,13)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(2,8)..(2,13)]"
+                        },
+                        "value": {
+                            "type": "string",
+                            "value": "UI.DataFieldForIntentBasedNavigation",
+                            "range": "[(2,16)..(2,54)]",
+                            "openToken": {
+                                "type": "token",
+                                "value": "'",
+                                "range": "[(2,16)..(2,17)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": "'",
+                                "range": "[(2,53)..(2,54)]"
+                            }
+                        },
+                        "range": "[(2,8)..(2,54)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(2,14)..(2,15)]",
+                            "value": ":"
+                        }
+                    },
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "SemanticObject",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "SemanticObject",
+                                    "range": "[(3,8)..(3,22)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(3,8)..(3,22)]"
+                        },
+                        "value": {
+                            "type": "string",
+                            "value": "Scholars",
+                            "range": "[(3,25)..(3,35)]",
+                            "openToken": {
+                                "type": "token",
+                                "value": "'",
+                                "range": "[(3,25)..(3,26)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": "'",
+                                "range": "[(3,34)..(3,35)]"
+                            }
+                        },
+                        "range": "[(3,8)..(3,35)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(3,23)..(3,24)]",
+                            "value": ":"
+                        }
+                    },
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Action",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Action",
+                                    "range": "[(4,8)..(4,14)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(4,8)..(4,14)]"
+                        },
+                        "value": {
+                            "type": "string",
+                            "value": "Manage",
+                            "range": "[(4,17)..(4,25)]",
+                            "openToken": {
+                                "type": "token",
+                                "value": "'",
+                                "range": "[(4,17)..(4,18)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": "'",
+                                "range": "[(4,24)..(4,25)]"
+                            }
+                        },
+                        "range": "[(4,8)..(4,25)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(4,15)..(4,16)]",
+                            "value": ":"
+                        }
+                    },
+                    {
+                        "type": "record-property",
+                        "name": {
+                            "type": "path",
+                            "value": "Mapping",
+                            "segments": [
+                                {
+                                    "type": "identifier",
+                                    "value": "Mapping",
+                                    "range": "[(5,8)..(5,15)]",
+                                    "quoted": false
+                                }
+                            ],
+                            "separators": [],
+                            "range": "[(5,8)..(5,15)]"
+                        },
+                        "value": {
+                            "type": "collection",
+                            "items": [
+                                {
+                                    "type": "record",
+                                    "properties": [
+                                        {
+                                            "type": "record-property",
+                                            "name": {
+                                                "type": "path",
+                                                "value": "LocalProperty",
+                                                "segments": [
+                                                    {
+                                                        "type": "identifier",
+                                                        "value": "LocalProperty",
+                                                        "range": "[(7,16)..(7,29)]",
+                                                        "quoted": false
+                                                    }
+                                                ],
+                                                "separators": [],
+                                                "range": "[(7,16)..(7,29)]"
+                                            },
+                                            "value": {
+                                                "type": "path",
+                                                "value": "userID",
+                                                "segments": [
+                                                    {
+                                                        "type": "identifier",
+                                                        "value": "userID",
+                                                        "range": "[(7,32)..(7,38)]",
+                                                        "quoted": false
+                                                    }
+                                                ],
+                                                "separators": [],
+                                                "range": "[(7,32)..(7,38)]"
+                                            },
+                                            "range": "[(7,16)..(7,38)]",
+                                            "colon": {
+                                                "type": "token",
+                                                "range": "[(7,30)..(7,31)]",
+                                                "value": ":"
+                                            }
+                                        },
+                                        {
+                                            "type": "record-property",
+                                            "name": {
+                                                "type": "path",
+                                                "value": "SemanticObjectProperty",
+                                                "segments": [
+                                                    {
+                                                        "type": "identifier",
+                                                        "value": "SemanticObjectProperty",
+                                                        "range": "[(8,16)..(8,38)]",
+                                                        "quoted": false
+                                                    }
+                                                ],
+                                                "separators": [],
+                                                "range": "[(8,16)..(8,38)]"
+                                            },
+                                            "value": {
+                                                "type": "string",
+                                                "value": "userID",
+                                                "range": "[(8,41)..(8,49)]",
+                                                "openToken": {
+                                                    "type": "token",
+                                                    "value": "'",
+                                                    "range": "[(8,41)..(8,42)]"
+                                                },
+                                                "closeToken": {
+                                                    "type": "token",
+                                                    "value": "'",
+                                                    "range": "[(8,48)..(8,49)]"
+                                                }
+                                            },
+                                            "range": "[(8,16)..(8,49)]",
+                                            "colon": {
+                                                "type": "token",
+                                                "range": "[(8,39)..(8,40)]",
+                                                "value": ":"
+                                            }
+                                        }
+                                    ],
+                                    "range": "[(6,12)..(9,13)]",
+                                    "commas": [
+                                        {
+                                            "type": "token",
+                                            "value": ",",
+                                            "range": "[(7,38)..(7,39)]"
+                                        }
+                                    ],
+                                    "openToken": {
+                                        "type": "token",
+                                        "value": "{",
+                                        "range": "[(6,12)..(6,13)]"
+                                    },
+                                    "closeToken": {
+                                        "type": "token",
+                                        "value": "}",
+                                        "range": "[(9,12)..(9,13)]"
+                                    }
+                                }
+                            ],
+                            "range": "[(5,18)..(10,9)]",
+                            "commas": [],
+                            "openToken": {
+                                "type": "token",
+                                "value": "[",
+                                "range": "[(5,18)..(5,19)]"
+                            },
+                            "closeToken": {
+                                "type": "token",
+                                "value": "]",
+                                "range": "[(10,8)..(10,9)]"
+                            }
+                        },
+                        "range": "[(5,8)..(10,9)]",
+                        "colon": {
+                            "type": "token",
+                            "range": "[(5,16)..(5,17)]",
+                            "value": ":"
+                        }
+                    }
+                ],
+                "range": "[(1,4)..(11,2)]",
+                "commas": [
+                    {
+                        "type": "token",
+                        "value": ",",
+                        "range": "[(2,54)..(2,55)]"
+                    },
+                    {
+                        "type": "token",
+                        "value": ",",
+                        "range": "[(3,35)..(3,36)]"
+                    },
+                    {
+                        "type": "token",
+                        "value": ",",
+                        "range": "[(4,25)..(4,26)]"
+                    }
+                ],
+                "openToken": {
+                    "type": "token",
+                    "value": "{",
+                    "range": "[(1,4)..(1,5)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "}",
+                    "range": "[(11,1)..(11,2)]"
+                }
+            }
+        ],
+        "range": "[(0,14)..(12,1)]",
+        "commas": [],
+        "openToken": {
+            "type": "token",
+            "value": "[",
+            "range": "[(0,14)..(0,15)]"
+        },
+        "closeToken": {
+            "type": "token",
+            "value": "]",
+            "range": "[(12,0)..(12,1)]"
+        }
+    }
+}

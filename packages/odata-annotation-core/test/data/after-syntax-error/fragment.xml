@@ -1,0 +1,8 @@
+<
+<Annotations Target="SAP.SEPMRA_C_PD_ProductType">
+    <Annotation Term="UI.DataPoint">
+            <Record Type="UI.DataPointType">
+                <PropertyValue Property="Value" | />
+            </Record>
+    </Annotation>
+</Annotations>

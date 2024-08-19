@@ -1,0 +1,163 @@
+{
+  "name": "declaration",
+  "children": {
+    "assignment": [
+      {
+        "name": "assignment",
+        "children": {
+          "Colon": [
+            {
+              "tokenTypeName": "Colon",
+              "image": ":",
+              "startOffset": 1,
+              "endOffset": 1
+            }
+          ],
+          "path": [
+            {
+              "name": "path",
+              "children": {
+                "pathSegment": [
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "Identifier": [
+                        {
+                          "tokenTypeName": "Identifier",
+                          "image": "s",
+                          "startOffset": 0,
+                          "endOffset": 0
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 0,
+                      "endOffset": 0
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 0,
+                "endOffset": 0
+              }
+            }
+          ],
+          "value": [
+            {
+              "name": "value",
+              "children": {
+                "collection": [
+                  {
+                    "name": "collection",
+                    "children": {
+                      "collectionValue": [
+                        {
+                          "name": "collectionValue",
+                          "children": {
+                            "Number": [
+                              {
+                                "tokenTypeName": "Number",
+                                "image": "1",
+                                "startOffset": 9,
+                                "endOffset": 9
+                              }
+                            ]
+                          },
+                          "location": {
+                            "startOffset": 9,
+                            "endOffset": 9
+                          }
+                        },
+                        {
+                          "name": "collectionValue",
+                          "children": {
+                            "Number": [
+                              {
+                                "tokenTypeName": "Number",
+                                "image": "2",
+                                "startOffset": 15,
+                                "endOffset": 15
+                              }
+                            ]
+                          },
+                          "location": {
+                            "startOffset": 15,
+                            "endOffset": 15
+                          }
+                        },
+                        {
+                          "name": "collectionValue",
+                          "children": {
+                            "Number": [
+                              {
+                                "tokenTypeName": "Number",
+                                "image": "3",
+                                "startOffset": 22,
+                                "endOffset": 22
+                              }
+                            ]
+                          },
+                          "location": {
+                            "startOffset": 22,
+                            "endOffset": 22
+                          }
+                        }
+                      ],
+                      "Comma": [
+                        {
+                          "tokenTypeName": "Comma",
+                          "image": ",",
+                          "startOffset": 16,
+                          "endOffset": 16
+                        },
+                        {
+                          "tokenTypeName": "Comma",
+                          "image": ",",
+                          "startOffset": 23,
+                          "endOffset": 23
+                        }
+                      ],
+                      "LBracket": [
+                        {
+                          "tokenTypeName": "LBracket",
+                          "image": "[",
+                          "startOffset": 3,
+                          "endOffset": 3
+                        }
+                      ],
+                      "RBracket": [
+                        {
+                          "tokenTypeName": "RBracket",
+                          "image": "]",
+                          "startOffset": 25,
+                          "endOffset": 25
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 3,
+                      "endOffset": 25
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 3,
+                "endOffset": 25
+              }
+            }
+          ]
+        },
+        "location": {
+          "startOffset": 0,
+          "endOffset": 25
+        }
+      }
+    ]
+  },
+  "location": {
+    "startOffset": 0,
+    "endOffset": 25
+  }
+}

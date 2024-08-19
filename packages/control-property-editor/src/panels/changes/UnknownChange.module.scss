@@ -1,0 +1,81 @@
+.item {
+    padding: 5px 15px 5px 15px;
+}
+.text {
+    line-height: 18px;
+    display: inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    color: var(--vscode-editor-foreground);
+    width: 240px;
+    direction: rtl;
+    text-align: left;
+}
+.fileLabel {
+    min-width: 30px;
+    margin-top: 5px;
+}
+.fileText {
+    margin-top: 5px;
+    line-height: 18px;
+    display: inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    color: var(--vscode-editor-foreground);
+    width: 210px;
+    direction: rtl;
+    text-align: left;
+}
+.controlLabel {
+    min-width: 75px;
+    margin-top: 5px;
+}
+.controlText {
+    margin-top: 5px;
+    line-height: 18px;
+    display: inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    color: var(--vscode-editor-foreground);
+    width: 165px;
+    direction: rtl;
+    text-align: left;
+}
+.timestamp {
+    margin-top: 5px;
+    color: var(--vscode-editor-foreground);
+    font-size: 11px;
+    line-height: 15px;
+    opacity: 0.5;
+    
+}
+.textHeader {
+    display: inline-block;
+    color: var(--vscode-foreground);
+    font-size: 13px;
+    font-weight: bold;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    line-height: 18px;
+}
+
+.property {
+    overflow-wrap: anywhere;
+}
+
+.item:hover {
+    background-color: var(--vscode-dropdown-background);
+    color: var(--vscode-dropdown-foreground);
+    outline: 1px dashed var(--vscode-contrastActiveBorder);
+    .actions {
+        visibility: visible;
+    }
+}
+
+.actions {
+    visibility: hidden;
+}

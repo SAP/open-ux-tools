@@ -22,9 +22,22 @@ const stackTokens: IStackTokens = { childrenGap: 40 };
 
 export const defaultUsage = (): JSX.Element => {
     const [selection, setSelection] = useState<string>('');
+    const [checked, setChecked] = useState<{ [key: string]: boolean }>({
+        btn1: true,
+        btn2: true,
+        btn3: true
+    });
 
     const onCallback = (key?: string) => {
         setSelection(key);
+    };
+
+    const onToggleChecked = (id: string) => {
+        const newChecked = {
+            ...checked,
+            [id]: !checked[id]
+        };
+        setChecked(newChecked);
     };
 
     const getMenuItem = (key: string, text: string, icon?: UiIcons): UIContextualMenuItem => {
@@ -51,28 +64,35 @@ export const defaultUsage = (): JSX.Element => {
         }
     }));
 
-    const menuItemsWithSeparators: UIContextualMenuItem[] = [
-        getMenuItem('option1', 'option 1'),
-        getMenuItem('option2', 'option 2'),
-        {
-            key: '',
-            itemType: UIContextualMenuItemType.Divider
-        },
-        getMenuItem('option3', 'option 3'),
-        getMenuItem('option4', 'option 4'),
-        getMenuItem('option5', 'option 5'),
-        {
-            key: '',
-            itemType: UIContextualMenuItemType.Header,
-            text: 'Dummy header'
-        },
-        getMenuItem('option6', 'option 6'),
-        getMenuItem('option7', 'option 7'),
-        getMenuItem('option8', 'option 8'),
-        getMenuItem('option10', 'option 10'),
-        getMenuItem('option11', 'option 11'),
-        getMenuItem('option12', 'option 12')
-    ];
+    const mixtureMenuItemsWithIcon = [menuItemsWithIcon[0], { ...menuItemsWithIcon[1], iconProps: undefined }];
+
+    const getMenuItemsWithSeparators = (): UIContextualMenuItem[] => {
+        return [
+            getMenuItem('option1', 'option 1'),
+            getMenuItem('rename', 'Simulate rename'),
+            {
+                key: '',
+                itemType: UIContextualMenuItemType.Divider
+            },
+            getMenuItem('option3', 'option 3'),
+            getMenuItem('option4', 'option 4'),
+            getMenuItem('option5', 'option 5'),
+            {
+                key: '',
+                itemType: UIContextualMenuItemType.Header,
+                text: 'Dummy header'
+            },
+            getMenuItem('option6', 'option 6'),
+            getMenuItem('option7', 'option 7'),
+            getMenuItem('option8', 'option 8'),
+            getMenuItem('option10', 'option 10'),
+            getMenuItem('option11', 'option 11'),
+            getMenuItem('option12', 'option 12')
+        ];
+    };
+    const [menuItemsWithSeparators, setMenuItemsWithSeparators] = useState<UIContextualMenuItem[]>(
+        getMenuItemsWithSeparators()
+    );
 
     return (
         <Stack tokens={stackTokens}>
@@ -85,8 +105,11 @@ export const defaultUsage = (): JSX.Element => {
                     <UIDefaultButton primary disabled>
                         Primary disabled button
                     </UIDefaultButton>
-                    <UIDefaultButton primary iconProps={{ iconName: 'ArrowLeft13x13' }}>
+                    <UIDefaultButton primary iconProps={{ iconName: UiIcons.Calendar }}>
                         Primary button with icon
+                    </UIDefaultButton>
+                    <UIDefaultButton primary checked>
+                        Primary checked button
                     </UIDefaultButton>
                 </Stack>
             </Stack>
@@ -97,8 +120,26 @@ export const defaultUsage = (): JSX.Element => {
                 <Stack horizontal tokens={stackTokens}>
                     <UIDefaultButton>Secondary button</UIDefaultButton>
                     <UIDefaultButton disabled>Secondary disabled button</UIDefaultButton>
-                    <UIDefaultButton iconProps={{ iconName: 'ArrowLRight13x13' }}>
+                    <UIDefaultButton iconProps={{ iconName: UiIcons.Calendar }}>
                         Secondary button with icon
+                    </UIDefaultButton>
+                    <UIDefaultButton checked>Secondary checked button</UIDefaultButton>
+                </Stack>
+            </Stack>
+            <Stack tokens={stackTokens}>
+                <Text variant={'large'} className="textColor" block>
+                    Transparent Button
+                </Text>
+                <Stack horizontal tokens={stackTokens}>
+                    <UIDefaultButton transparent>Transparent button</UIDefaultButton>
+                    <UIDefaultButton transparent disabled>
+                        Transparent disabled button
+                    </UIDefaultButton>
+                    <UIDefaultButton transparent iconProps={{ iconName: UiIcons.Calendar }}>
+                        Transparent button with icon
+                    </UIDefaultButton>
+                    <UIDefaultButton transparent checked>
+                        Transparent checked button
                     </UIDefaultButton>
                 </Stack>
             </Stack>
@@ -121,7 +162,17 @@ export const defaultUsage = (): JSX.Element => {
                     />
                     <UISplitButton
                         id="test3"
-                        callback={onCallback.bind(this)}
+                        callback={(key?: string) => {
+                            if (key === 'rename') {
+                                const newItems = getMenuItemsWithSeparators();
+                                const item = newItems.find((item) => item.key === 'rename');
+                                if (item) {
+                                    item.text = 'Renamed';
+                                }
+                                setMenuItemsWithSeparators(newItems);
+                            }
+                            onCallback(key);
+                        }}
                         menuItems={menuItemsWithSeparators}
                         button={buttonItem}
                     />
@@ -155,6 +206,32 @@ export const defaultUsage = (): JSX.Element => {
             </Stack>
             <Stack tokens={stackTokens}>
                 <Text variant={'large'} className="textColor" block>
+                    Icon Button - Checked
+                </Text>
+                <Stack horizontal tokens={stackTokens}>
+                    <UIIconButton
+                        id="btn1"
+                        iconProps={{ iconName: UiIcons.Undo }}
+                        checked={checked.btn1}
+                        onClick={onToggleChecked.bind(window, 'btn1')}
+                        title="Undo"></UIIconButton>
+                    <UIIconButton
+                        id="btn2"
+                        checked={checked.btn2}
+                        iconProps={{ iconName: UiIcons.LayoutLeft }}
+                        onClick={onToggleChecked.bind(window, 'btn2')}
+                        title="LayoutLeft"></UIIconButton>
+                    <UIIconButton
+                        id="btn3"
+                        sizeType={UIIconButtonSizes.Wide}
+                        checked={checked.btn3}
+                        iconProps={{ iconName: UiIcons.QuestionMarkWithChevron }}
+                        onClick={onToggleChecked.bind(window, 'btn3')}
+                        title="Wide"></UIIconButton>
+                </Stack>
+            </Stack>
+            <Stack tokens={stackTokens}>
+                <Text variant={'large'} className="textColor" block>
                     Action Button
                 </Text>
                 <Stack horizontal tokens={stackTokens}>
@@ -184,6 +261,8 @@ export const defaultUsage = (): JSX.Element => {
                         }}>
                         Icon with color - disabled
                     </UIActionButton>
+                </Stack>
+                <Stack horizontal tokens={stackTokens}>
                     <UIActionButton
                         iconProps={{
                             iconName: UiIcons.Bulb
@@ -194,6 +273,17 @@ export const defaultUsage = (): JSX.Element => {
                             items: menuItemsWithIcon
                         }}>
                         Button with menu
+                    </UIActionButton>
+                    <UIActionButton
+                        iconProps={{
+                            iconName: UiIcons.Bulb
+                        }}
+                        menuProps={{
+                            directionalHint: UIDirectionalHint.bottomRightEdge,
+                            directionalHintFixed: false,
+                            items: mixtureMenuItemsWithIcon
+                        }}>
+                        Button with mixture menu
                     </UIActionButton>
                 </Stack>
             </Stack>

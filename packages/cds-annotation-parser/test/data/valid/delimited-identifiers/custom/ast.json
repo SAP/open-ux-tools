@@ -1,0 +1,55 @@
+{
+  "type": "annotation",
+  "range": "[(0,0)..(0,20)]",
+  "term": {
+    "type": "path",
+    "range": "[(0,0)..(0,20)]",
+    "value": "xyz.abc.fgh.thing",
+    "segments": [
+      {
+        "type": "identifier",
+        "range": "[(0,0)..(0,3)]",
+        "value": "xyz",
+        "quoted": false
+      },
+      {
+        "type": "identifier",
+        "range": "[(0,6)..(0,9)]",
+        "value": "abc",
+        "quoted": true
+      },
+      {
+        "type": "identifier",
+        "range": "[(0,10)..(0,13)]",
+        "value": "fgh",
+        "quoted": true
+      },
+      {
+        "type": "identifier",
+        "range": "[(0,15)..(0,20)]",
+        "value": "thing",
+        "quoted": false
+      }
+    ],
+    "separators": [
+      {
+        "type": "separator",
+        "range": "[(0,3)..(0,4)]",
+        "value": ".",
+        "escaped": false
+      },
+      {
+        "type": "separator",
+        "range": "[(0,9)..(0,10)]",
+        "value": ".",
+        "escaped": true
+      },
+      {
+        "type": "separator",
+        "range": "[(0,14)..(0,15)]",
+        "value": ".",
+        "escaped": false
+      }
+    ]
+  }
+}

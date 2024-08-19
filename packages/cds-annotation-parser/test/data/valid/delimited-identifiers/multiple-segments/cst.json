@@ -1,0 +1,91 @@
+{
+  "name": "declaration",
+  "children": {
+    "assignment": [
+      {
+        "name": "assignment",
+        "children": {
+          "path": [
+            {
+              "name": "path",
+              "children": {
+                "pathSegment": [
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "delimitedIdentifier": [
+                        {
+                          "name": "delimitedIdentifier",
+                          "children": {
+                            "DelimitedIdentifier": [
+                              {
+                                "tokenTypeName": "DelimitedIdentifier",
+                                "image": "abcd",
+                                "startOffset": 2,
+                                "endOffset": 5
+                              },
+                              {
+                                "tokenTypeName": "DelimitedIdentifier",
+                                "image": "fgh",
+                                "startOffset": 7,
+                                "endOffset": 9
+                              }
+                            ],
+                            "DelimitedIdentifierExit": [
+                              {
+                                "tokenTypeName": "DelimitedIdentifierExit",
+                                "image": "]",
+                                "startOffset": 10,
+                                "endOffset": 10
+                              }
+                            ],
+                            "IdentifierStart": [
+                              {
+                                "tokenTypeName": "IdentifierStart",
+                                "image": "![",
+                                "startOffset": 0,
+                                "endOffset": 1
+                              }
+                            ],
+                            "PathSegmentSeparator": [
+                              {
+                                "tokenTypeName": "PathSegmentSeparator",
+                                "image": ".",
+                                "startOffset": 6,
+                                "endOffset": 6
+                              }
+                            ]
+                          },
+                          "location": {
+                            "startOffset": 0,
+                            "endOffset": 10
+                          }
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 0,
+                      "endOffset": 10
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 0,
+                "endOffset": 10
+              }
+            }
+          ]
+        },
+        "location": {
+          "startOffset": 0,
+          "endOffset": 10
+        }
+      }
+    ]
+  },
+  "location": {
+    "startOffset": 0,
+    "endOffset": 10
+  }
+}

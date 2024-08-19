@@ -1,0 +1,78 @@
+{
+    "type": "annotation",
+    "term": {
+        "type": "path",
+        "value": "Common.Text.@UI.TextArrangement",
+        "segments": [
+            {
+                "type": "identifier",
+                "value": "Common",
+                "range": "[(0,0)..(0,6)]",
+                "quoted": false
+            },
+            {
+                "type": "identifier",
+                "value": "Text",
+                "range": "[(0,7)..(0,11)]",
+                "quoted": false
+            },
+            {
+                "type": "identifier",
+                "value": "@UI",
+                "range": "[(0,12)..(0,15)]",
+                "quoted": false
+            },
+            {
+                "type": "identifier",
+                "value": "TextArrangement",
+                "range": "[(0,16)..(0,31)]",
+                "quoted": false
+            }
+        ],
+        "separators": [
+            {
+                "type": "separator",
+                "value": ".",
+                "range": "[(0,6)..(0,7)]",
+                "escaped": false
+            },
+            {
+                "type": "separator",
+                "value": ".",
+                "range": "[(0,11)..(0,12)]",
+                "escaped": false
+            },
+            {
+                "type": "separator",
+                "value": ".",
+                "range": "[(0,15)..(0,16)]",
+                "escaped": false
+            }
+        ],
+        "range": "[(0,0)..(0,31)]"
+    },
+    "range": "[(0,0)..(0,43)]",
+    "colon": {
+        "type": "token",
+        "range": "[(0,32)..(0,33)]",
+        "value": ":"
+    },
+    "value": {
+        "type": "enum",
+        "path": {
+            "type": "path",
+            "value": "TextLast",
+            "segments": [
+                {
+                    "type": "identifier",
+                    "value": "TextLast",
+                    "range": "[(0,35)..(0,43)]",
+                    "quoted": false
+                }
+            ],
+            "separators": [],
+            "range": "[(0,35)..(0,43)]"
+        },
+        "range": "[(0,34)..(0,43)]"
+    }
+}

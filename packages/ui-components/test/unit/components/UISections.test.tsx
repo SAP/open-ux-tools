@@ -123,7 +123,7 @@ describe('<Sections />', () => {
             jest.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(() => rect);
             jest.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(() => 1000);
             jest.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockImplementation(() => 1000);
-            jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+            jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb: any) => {
                 cb(1);
                 return 1;
             });
@@ -445,5 +445,71 @@ describe('<Sections />', () => {
                 );
             });
         }
+    });
+
+    it('Test data property', () => {
+        const testValue = 'test value';
+        wrapper = Enzyme.mount(
+            <UISections data-test={testValue}>
+                <UISections.Section>
+                    <div />
+                </UISections.Section>
+                <UISections.Section>
+                    <div />
+                </UISections.Section>
+            </UISections>
+        );
+        expect(wrapper.find('.sections[data-test="test value"]').getDOMNode().getAttribute('data-test')).toEqual(
+            testValue
+        );
+    });
+
+    it('Resize with splitter and apply window resize', () => {
+        jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb: any) => {
+            cb(1);
+            return 1;
+        });
+        const mockWidth = (windowWidth: number) => {
+            jest.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(() => {
+                return windowWidth;
+            });
+            jest.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(() => {
+                return {
+                    top: 0,
+                    height: 1000,
+                    width: windowWidth,
+                    left: 0
+                } as DOMRect;
+            });
+        };
+
+        mockWidth(1000);
+        wrapper = Enzyme.mount(
+            <UISections vertical={false} splitter={true} sizes={[450, undefined]} minSectionSize={[200, 190]}>
+                <UISections.Section>
+                    <div>Left</div>
+                </UISections.Section>
+                <UISections.Section>
+                    <div>Right</div>
+                </UISections.Section>
+            </UISections>
+        );
+
+        simulateSplitterResize(wrapper, 200, 100);
+        // Simulate restore for min size
+        mockWidth(650);
+        windowEventListenerMock.simulateEvent('resize', {});
+        expect(wrapper.state().sizes).toEqual([
+            { end: 450, percentage: false, start: 0 },
+            { end: 0, percentage: false, size: 450, start: undefined }
+        ]);
+        simulateSplitterResize(wrapper, 0, 0);
+        const section: HTMLElement = wrapper.find('.sections__item').first().getDOMNode();
+        expect(section.style.left).toEqual('0px');
+        expect(section.style.right).toEqual('450px');
+        expect(wrapper.state().sizes).toEqual([
+            { end: 450, percentage: false, start: 0 },
+            { end: 0, percentage: false, size: 450, start: undefined }
+        ]);
     });
 });

@@ -1,0 +1,53 @@
+{
+    "deploy": {
+        "abapAppDescLength": "Deployment Description should not exceed 60 characters",
+        "abapTransportNumRequired": "Provide a transport request for your application",
+        "abapPackageWarn": "Provide a package",
+        "abapAppNameRequired": "Application name required",
+        "abapInvalidNamespace": "Namespace invalid as there are too many forward slashes",
+        "abapInvalidNamespaceLength": "Namespace limited to 10 characters, entered {{length}}",
+        "abapInvalidAppNameLength": "Application name limited to 15 characters, entered {{length}}",
+        "abapInvalidAppName": "Application name needs to be prefixed with [{{prefix}}]",
+        "charactersForbiddenInAppName": "Only alphanumeric, underscore and slash characters are allowed",
+        "invalidAppNameMultipleReason": "Application name is invalid for multiple reasons:"
+    },
+    "ui5": {
+        "namespaceMustStartWithLetter": "The namespace must start with a letter",
+        "namespaceEndInPeriod": "The namespace cannot end with a period",
+        "namespaceCannotBeSap": "The namespace cannot be {{str}}",
+        "namespaceStartsWithNew": "The namespace cannot start with {{str}}",
+        "namespaceNumberAfterPeriod": "A number cannot follow a period in the namespace",
+        "lowerAlphaNumericOnly": "Please use lowercase alpha numeric characters only",
+        "lowerAlphaNumericDotsOnly": "Please use lowercase alpha numeric characters and dots only for the namespace.",
+        "namespaceSpecialCharacter": "The namespace can only contain letters, digits, dots, and underscores",
+        "moduleNameMustStartWithLetter": "The module name must start with a letter",
+        "nameCombinedTooLong": "The combined length of the namespace and module name must not exceed {{length}} characters",
+        "folderDoesNotExist": "Folder does not exist. Please enter the root folder for your project",
+        "folderDoesNotHaveCorrectPermissions": "Selected folder does not have required permissions. Please ensure you have permission to write to the selected folder and try again.",
+        "enterProjectFolder": "Please enter a project folder",
+        "nameNull": "Module name cannot be null",
+        "nameUndefined": "Module name cannot be undefined",
+        "nameNotString": "Module name must be a string",
+        "nameLengthZero": "Module name's length must be greater than zero",
+        "nameStartsWithPeriod": "Module name cannot start with a period",
+        "nameStartsWithUnderscore": "Module name cannot start with an underscore",
+        "nameStartsOrEndsWithSpace": "Module name cannot contain leading or trailing spaces",
+        "nameBlocklisted": "{{modName}} is a blocklisted module name",
+        "nameIsCoreModule": "{{modName}} is a core module name",
+        "nameTooLong": "Module name cannot contain more than {{length}} characters",
+        "nameTooShort": "Module name must be at least {{length}} characters",
+        "inputValueContainsCapital": "{{promptName}} cannot contain capital letters",
+        "nameContainsSpecialCharacters": "Module name cannot contain special characters (\"~'!()*)",
+        "nameNotUrlFriendly": "Module name can only contain URL-friendly characters",
+        "invalidModuleName": "Invalid module name",
+        "moduleAlreadyExists": "The module folder named: {{folderName}} already exists at the specified path"
+    },
+    "general": {
+        "invalidUrl": "Invalid URL: [{{-input}}]",
+        "invalidClient": "[{{client}}] is invalid. Leave empty or enter value between 000-999",
+        "inputCannotBeEmpty": "Input cannot be empty.",
+        "inputCannotHaveSpaces": "Input cannot contain spaces.",
+        "invalidJSON": "Invalid JSON",
+        "invalidValueForSpecialChars": "Input must contain only Latin alphanumeric characters or the following symbols: '-','_','$' and '.'"
+    }
+}

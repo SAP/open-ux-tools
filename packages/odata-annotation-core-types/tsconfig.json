@@ -1,0 +1,15 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "dist",
+        "rootDir": "./src",
+        "lib": ["ES2022", "ESNext.BigInt"],
+        "preserveConstEnums": true
+    },
+    "include": ["src"],
+    "references": [
+    {
+      "path": "../text-document-utils"
+    }
+  ]
+}

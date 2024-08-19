@@ -1,0 +1,21 @@
+{
+  "fileName": "manifest",
+  "layer": "<%- app.layer %>",
+  "fileType": "appdescr_variant",
+  "reference": "<%- app.reference %>",
+  "id": "<%- app.id %>",
+  "namespace": "apps/<%- app.reference %>/appVariants/<%- app.id %>/",
+  "version": "0.1.0",
+  "content": [
+<%if(app.content){-%><% for(let change of app.content){-%>
+    <%- JSON.stringify(change, undefined, 4) %><%-","%>
+<%}-%><%}-%>
+    {
+      "changeType": "appdescr_app_setTitle",
+      "content": {},
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    }
+  ]
+}

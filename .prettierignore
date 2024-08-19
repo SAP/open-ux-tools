@@ -8,3 +8,6 @@ typings/
 **/coverage
 **/__snapshots__
 pnpm-lock.yaml
+**/playwright-report
+**/test-results
+/.nx/workspace-data

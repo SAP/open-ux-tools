@@ -14,8 +14,10 @@ import type {
     ObjectPage,
     ListReport,
     Navigation,
-    InternalListReport
+    InternalListReport,
+    Libraries
 } from './types';
+import { PageType } from './types';
 import type { Manifest } from '../common/types';
 import { FCL_ROUTER } from '../common/defaults';
 import { extendJSON } from '../common/file';
@@ -113,9 +115,14 @@ export function getManifestJsonExtensionHelper(
             case 'routes':
                 const routes = value as ManifestNamespace.Route[];
                 routes.push({
-                    name: `${config.entity}${config.name}`,
+                    name: config.id ?? `${config.entity}${config.name}`,
                     pattern: generateRoutePattern(routes, config.entity, config.navigation),
-                    target: generateRouteTarget(routes, `${config.entity}${config.name}`, config.fcl, config.navigation)
+                    target: generateRouteTarget(
+                        routes,
+                        config.id ?? `${config.entity}${config.name}`,
+                        config.fcl,
+                        config.navigation
+                    )
                 });
                 break;
             default:
@@ -150,6 +157,28 @@ export function getFclConfig(manifest: Manifest, navigation?: Navigation): FCL {
 }
 
 /**
+ * Get the library dependencies for a given page type.
+ *
+ * @param pageType - Page type for which the dependencies are to be added
+ * @returns Library dependencies
+ */
+export function getLibraryDependencies(pageType: PageType): Libraries {
+    const libraries: Libraries = {};
+    switch (pageType) {
+        case PageType.CustomPage: {
+            libraries['sap.fe.core'] = {};
+            break;
+        }
+        case PageType.ListReport:
+        case PageType.ObjectPage: {
+            libraries['sap.fe.templates'] = {};
+            break;
+        }
+    }
+    return libraries;
+}
+
+/**
  * Create target settings for a Fiori elements page.
  *
  * @param data - incoming configuration
@@ -180,12 +209,18 @@ export function initializeTargetSettings(
  * @param basePath - the base path
  * @param config - the custom page configuration
  * @param fs - the memfs editor instance
+ * @param dependencies - expected dependencies
  * @returns the updated memfs editor instance
  */
-export function validatePageConfig(basePath: string, config: CustomPage | ObjectPage, fs: Editor): Editor {
+export function validatePageConfig(
+    basePath: string,
+    config: CustomPage | ObjectPage,
+    fs: Editor,
+    dependencies = []
+): Editor {
     // common validators
 
-    validateBasePath(basePath, fs);
+    validateBasePath(basePath, fs, dependencies);
 
     // validate config against the manifest
     if (config.navigation?.sourcePage) {
@@ -203,7 +238,7 @@ export function validatePageConfig(basePath: string, config: CustomPage | Object
         }
 
         const route = routes[config.navigation.sourcePage];
-        if (!route || !route.pattern || !route.target) {
+        if (!route?.pattern || !route.target) {
             throw new Error(`Invalid routing configuration for navigation source ${config.navigation.sourcePage}!`);
         }
     }

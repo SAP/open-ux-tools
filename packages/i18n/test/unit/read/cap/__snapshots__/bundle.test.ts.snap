@@ -1,0 +1,441 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getCapI18nBundle .json file with invalid content 1`] = `Object {}`;
+
+exports[`getCapI18nBundle .properties and CSV files 1`] = `
+Object {
+  "Properties": Array [
+    Object {
+      "annotation": undefined,
+      "filePath": "app/properties-csv/_i18n/i18n.properties",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 10,
+            "line": 0,
+          },
+          "start": Object {
+            "character": 0,
+            "line": 0,
+          },
+        },
+        "value": "Properties",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 37,
+            "line": 0,
+          },
+          "start": Object {
+            "character": 13,
+            "line": 0,
+          },
+        },
+        "value": "Properties wins over CSV",
+      },
+    },
+  ],
+}
+`;
+
+exports[`getCapI18nBundle multiple .properties file merge 1`] = `
+Object {
+  "App1": Array [
+    Object {
+      "filePath": "app/app1/_i18n/i18n.json",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 9,
+            "line": 2,
+          },
+          "start": Object {
+            "character": 5,
+            "line": 2,
+          },
+        },
+        "value": "App1",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 18,
+            "line": 2,
+          },
+          "start": Object {
+            "character": 13,
+            "line": 2,
+          },
+        },
+        "value": "App 1",
+      },
+    },
+  ],
+  "Key": Array [
+    Object {
+      "annotation": undefined,
+      "filePath": "srv/i18n/i18n.properties",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 3,
+            "line": 1,
+          },
+          "start": Object {
+            "character": 0,
+            "line": 1,
+          },
+        },
+        "value": "Key",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 19,
+            "line": 1,
+          },
+          "start": Object {
+            "character": 6,
+            "line": 1,
+          },
+        },
+        "value": "Service Layer",
+      },
+    },
+    Object {
+      "filePath": "app/app1/_i18n/i18n.json",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 8,
+            "line": 3,
+          },
+          "start": Object {
+            "character": 5,
+            "line": 3,
+          },
+        },
+        "value": "Key",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 21,
+            "line": 3,
+          },
+          "start": Object {
+            "character": 12,
+            "line": 3,
+          },
+        },
+        "value": "App Layer",
+      },
+    },
+  ],
+  "Product": Array [
+    Object {
+      "annotation": undefined,
+      "filePath": "srv/i18n/i18n.properties",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 7,
+            "line": 0,
+          },
+          "start": Object {
+            "character": 0,
+            "line": 0,
+          },
+        },
+        "value": "Product",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 25,
+            "line": 0,
+          },
+          "start": Object {
+            "character": 10,
+            "line": 0,
+          },
+        },
+        "value": "Service Product",
+      },
+    },
+  ],
+}
+`;
+
+exports[`getCapI18nBundle single .csv file 1`] = `
+Object {
+  "Key": Array [
+    Object {
+      "filePath": "db/i18n/i18n.csv",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 3,
+            "line": 2,
+          },
+          "start": Object {
+            "character": 0,
+            "line": 2,
+          },
+        },
+        "value": "Key",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 18,
+            "line": 2,
+          },
+          "start": Object {
+            "character": 4,
+            "line": 2,
+          },
+        },
+        "value": "Database Layer",
+      },
+    },
+  ],
+  "db": Array [
+    Object {
+      "filePath": "db/i18n/i18n.csv",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 2,
+            "line": 1,
+          },
+          "start": Object {
+            "character": 0,
+            "line": 1,
+          },
+        },
+        "value": "db",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 11,
+            "line": 1,
+          },
+          "start": Object {
+            "character": 3,
+            "line": 1,
+          },
+        },
+        "value": "Database",
+      },
+    },
+  ],
+}
+`;
+
+exports[`getCapI18nBundle single .json file 1`] = `
+Object {
+  "App1": Array [
+    Object {
+      "filePath": "app/app1/_i18n/i18n.json",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 9,
+            "line": 2,
+          },
+          "start": Object {
+            "character": 5,
+            "line": 2,
+          },
+        },
+        "value": "App1",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 18,
+            "line": 2,
+          },
+          "start": Object {
+            "character": 13,
+            "line": 2,
+          },
+        },
+        "value": "App 1",
+      },
+    },
+  ],
+  "Key": Array [
+    Object {
+      "filePath": "app/app1/_i18n/i18n.json",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 8,
+            "line": 3,
+          },
+          "start": Object {
+            "character": 5,
+            "line": 3,
+          },
+        },
+        "value": "Key",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 21,
+            "line": 3,
+          },
+          "start": Object {
+            "character": 12,
+            "line": 3,
+          },
+        },
+        "value": "App Layer",
+      },
+    },
+  ],
+}
+`;
+
+exports[`getCapI18nBundle single .properties file - mem-fs-editor 1`] = `
+Object {
+  "Key": Array [
+    Object {
+      "annotation": undefined,
+      "filePath": "srv/i18n/i18n.properties",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 3,
+            "line": 1,
+          },
+          "start": Object {
+            "character": 0,
+            "line": 1,
+          },
+        },
+        "value": "Key",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 19,
+            "line": 1,
+          },
+          "start": Object {
+            "character": 6,
+            "line": 1,
+          },
+        },
+        "value": "Service Layer",
+      },
+    },
+  ],
+  "Product": Array [
+    Object {
+      "annotation": undefined,
+      "filePath": "srv/i18n/i18n.properties",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 7,
+            "line": 0,
+          },
+          "start": Object {
+            "character": 0,
+            "line": 0,
+          },
+        },
+        "value": "Product",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 25,
+            "line": 0,
+          },
+          "start": Object {
+            "character": 10,
+            "line": 0,
+          },
+        },
+        "value": "Service Product",
+      },
+    },
+  ],
+}
+`;
+
+exports[`getCapI18nBundle single .properties file 1`] = `
+Object {
+  "Key": Array [
+    Object {
+      "annotation": undefined,
+      "filePath": "srv/i18n/i18n.properties",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 3,
+            "line": 1,
+          },
+          "start": Object {
+            "character": 0,
+            "line": 1,
+          },
+        },
+        "value": "Key",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 19,
+            "line": 1,
+          },
+          "start": Object {
+            "character": 6,
+            "line": 1,
+          },
+        },
+        "value": "Service Layer",
+      },
+    },
+  ],
+  "Product": Array [
+    Object {
+      "annotation": undefined,
+      "filePath": "srv/i18n/i18n.properties",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 7,
+            "line": 0,
+          },
+          "start": Object {
+            "character": 0,
+            "line": 0,
+          },
+        },
+        "value": "Product",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 25,
+            "line": 0,
+          },
+          "start": Object {
+            "character": 10,
+            "line": 0,
+          },
+        },
+        "value": "Service Product",
+      },
+    },
+  ],
+}
+`;

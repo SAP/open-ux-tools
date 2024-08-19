@@ -1,0 +1,62 @@
+{
+    "type": "annotation",
+    "term": {
+        "type": "path",
+        "value": "a",
+        "segments": [
+            {
+                "type": "identifier",
+                "value": "a",
+                "range": "[(0,0)..(0,1)]",
+                "quoted": false
+            }
+        ],
+        "separators": [],
+        "range": "[(0,0)..(0,1)]"
+    },
+    "range": "[(0,0)..(0,31)]",
+    "colon": {
+        "type": "token",
+        "range": "[(0,1)..(0,2)]",
+        "value": ":"
+    },
+    "value": {
+        "type": "path",
+        "value": "navigation.element@UI.Hidden",
+        "segments": [
+            {
+                "type": "identifier",
+                "value": "navigation",
+                "range": "[(0,3)..(0,13)]",
+                "quoted": false
+            },
+            {
+                "type": "identifier",
+                "value": "element@UI",
+                "range": "[(0,14)..(0,24)]",
+                "quoted": false
+            },
+            {
+                "type": "identifier",
+                "value": "Hidden",
+                "range": "[(0,25)..(0,31)]",
+                "quoted": false
+            }
+        ],
+        "separators": [
+            {
+                "type": "separator",
+                "value": ".",
+                "range": "[(0,13)..(0,14)]",
+                "escaped": false
+            },
+            {
+                "type": "separator",
+                "value": ".",
+                "range": "[(0,24)..(0,25)]",
+                "escaped": false
+            }
+        ],
+        "range": "[(0,3)..(0,31)]"
+    }
+}

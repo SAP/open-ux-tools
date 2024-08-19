@@ -1,0 +1,166 @@
+{
+  "name": "declaration",
+  "children": {
+    "assignment": [
+      {
+        "name": "assignment",
+        "children": {
+          "Colon": [
+            {
+              "tokenTypeName": "Colon",
+              "image": ":",
+              "startOffset": 8,
+              "endOffset": 8
+            }
+          ],
+          "path": [
+            {
+              "name": "path",
+              "children": {
+                "pathSegment": [
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "Identifier": [
+                        {
+                          "tokenTypeName": "Identifier",
+                          "image": "UI",
+                          "startOffset": 0,
+                          "endOffset": 1
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 0,
+                      "endOffset": 1
+                    }
+                  },
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "Identifier": [
+                        {
+                          "tokenTypeName": "Identifier",
+                          "image": "Text",
+                          "startOffset": 3,
+                          "endOffset": 6
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 3,
+                      "endOffset": 6
+                    }
+                  }
+                ],
+                "PathSegmentSeparator": [
+                  {
+                    "tokenTypeName": "PathSegmentSeparator",
+                    "image": ".",
+                    "startOffset": 2,
+                    "endOffset": 2
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 0,
+                "endOffset": 6
+              }
+            }
+          ],
+          "value": [
+            {
+              "name": "value",
+              "children": {
+                "path": [
+                  {
+                    "name": "path",
+                    "children": {
+                      "pathSegment": [
+                        {
+                          "name": "pathSegment",
+                          "children": {
+                            "delimitedIdentifier": [
+                              {
+                                "name": "delimitedIdentifier",
+                                "children": {
+                                  "DelimitedIdentifier": [
+                                    {
+                                      "tokenTypeName": "DelimitedIdentifier",
+                                      "image": "aaa",
+                                      "startOffset": 12,
+                                      "endOffset": 14
+                                    },
+                                    {
+                                      "tokenTypeName": "DelimitedIdentifier",
+                                      "image": "",
+                                      "startOffset": -1,
+                                      "endOffset": -1,
+                                      "isInsertedInRecovery": true
+                                    }
+                                  ],
+                                  "DelimitedIdentifierExit": [
+                                    {
+                                      "tokenTypeName": "DelimitedIdentifierExit",
+                                      "image": "]",
+                                      "startOffset": 16,
+                                      "endOffset": 16
+                                    }
+                                  ],
+                                  "IdentifierStart": [
+                                    {
+                                      "tokenTypeName": "IdentifierStart",
+                                      "image": "![",
+                                      "startOffset": 10,
+                                      "endOffset": 11
+                                    }
+                                  ],
+                                  "PathSegmentSeparator": [
+                                    {
+                                      "tokenTypeName": "PathSegmentSeparator",
+                                      "image": ".",
+                                      "startOffset": 15,
+                                      "endOffset": 15
+                                    }
+                                  ]
+                                },
+                                "location": {
+                                  "startOffset": 10,
+                                  "endOffset": 16
+                                }
+                              }
+                            ]
+                          },
+                          "location": {
+                            "startOffset": 10,
+                            "endOffset": 16
+                          }
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 10,
+                      "endOffset": 16
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 10,
+                "endOffset": 16
+              }
+            }
+          ]
+        },
+        "location": {
+          "startOffset": 0,
+          "endOffset": 16
+        }
+      }
+    ]
+  },
+  "location": {
+    "startOffset": 0,
+    "endOffset": 16
+  }
+}

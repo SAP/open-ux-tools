@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as Enzyme from 'enzyme';
 import type { UIComboBoxProps, UIComboBoxState } from '../../../src/components/UIComboBox';
-import { UIComboBox } from '../../../src/components/UIComboBox';
+import { UIComboBox, UIComboBoxLoaderType } from '../../../src/components/UIComboBox';
 import { data as originalData, groupsData as originalGroupsData } from '../../__mock__/select-data';
 import { initIcons } from '../../../src/components/Icons';
 import type { IComboBox, IComboBoxOption } from '@fluentui/react';
@@ -19,15 +19,17 @@ describe('<UIComboBox />', () => {
     const headerItemSelector = '.ms-ComboBox-header';
     initIcons();
 
+    const getInputTarget = (value = '') => {
+        return { tagName: 'INPUT', value };
+    };
+
     const openDropdown = (): void => {
         wrapper.find('.ms-ComboBox .ms-Button--icon').simulate('click', document.createEvent('Events'));
     };
 
     const triggerSearch = (query: string) => {
         wrapper.find('input').simulate('input', {
-            target: {
-                value: query
-            }
+            target: getInputTarget(query)
         });
     };
 
@@ -150,6 +152,44 @@ describe('<UIComboBox />', () => {
             triggerSearch(query);
             expect(wrapper.find('.ts-Menu-option--highlighted').length).toEqual(1);
             expect(wrapper.find('.ts-Menu-option--highlighted').text()).toEqual(query);
+        });
+
+        it('Test onInput value selection', async () => {
+            const requestAnimationFrameSpy = jest.spyOn(window, 'requestAnimationFrame');
+            const input = wrapper.find('input');
+
+            input.simulate('input', { target: getInputTarget('test') });
+            await new Promise((resolve) => setTimeout(resolve));
+            const inputDOM = input.getDOMNode() as HTMLInputElement;
+            const selections = inputDOM.selectionEnd;
+            expect(requestAnimationFrameSpy).toHaveBeenCalledTimes(1);
+            expect(selections).toBe(4);
+
+            const event = {
+                target: inputDOM
+            } as unknown as React.FormEvent<IComboBox>;
+            inputDOM.value = 'test01';
+            inputDOM.selectionEnd = inputDOM.selectionStart = 2;
+            input.simulate('input', event);
+            inputDOM.selectionEnd = inputDOM.selectionStart = selections;
+            await new Promise((resolve) => setTimeout(resolve));
+            expect(requestAnimationFrameSpy).toHaveBeenCalledTimes(2);
+            expect((input.getDOMNode() as HTMLInputElement).selectionEnd).toBe(2);
+        });
+
+        it('Test onClick value selection', async () => {
+            wrapper.setProps({ selectedKey: 'AU' });
+            const input = wrapper.find('input');
+            const inputDOM = input.getDOMNode() as HTMLInputElement;
+            const event = {
+                target: inputDOM
+            } as unknown as React.FormEvent<IComboBox>;
+
+            inputDOM.selectionEnd = inputDOM.selectionStart = 2;
+            input.simulate('click', event);
+            inputDOM.selectionEnd = inputDOM.selectionStart = 5;
+            await new Promise((resolve) => setTimeout(resolve));
+            expect((input.getDOMNode() as HTMLInputElement).selectionEnd).toBe(2);
         });
 
         it('Test "reserQuery"', () => {
@@ -312,9 +352,7 @@ describe('<UIComboBox />', () => {
                 .find('input')
                 .at(0)
                 .simulate('input', {
-                    target: {
-                        value: query
-                    }
+                    target: getInputTarget(query)
                 });
             expect(wrapper.find('.ts-Menu-option--highlighted').length).toEqual(1);
             expect(wrapper.find('.ts-Menu-option--highlighted').text()).toEqual(query);
@@ -713,5 +751,84 @@ describe('<UIComboBox />', () => {
         const callArgs = onPendingValueChanged.mock.calls[0];
         expect(callArgs[0].key).toEqual('LV');
         expect(callArgs[1]).toEqual(35);
+    });
+
+    describe('Test "calloutCollisionTransformation" property', () => {
+        const testCases = [
+            {
+                multiSelect: true,
+                enabled: true,
+                expected: true
+            },
+            {
+                multiSelect: false,
+                enabled: true,
+                expected: false
+            },
+            {
+                multiSelect: true,
+                enabled: false,
+                expected: false
+            }
+        ];
+        for (const testCase of testCases) {
+            const { multiSelect, enabled, expected } = testCase;
+            it(`calloutCollisionTransformation=${enabled}, multiSelect=${multiSelect}`, () => {
+                wrapper.setProps({
+                    multiSelect: testCase.multiSelect,
+                    calloutCollisionTransformation: testCase.enabled
+                });
+                const dropdown = wrapper.find(ComboBox);
+                expect(dropdown.length).toEqual(1);
+                const calloutProps = dropdown.prop('calloutProps');
+                if (expected) {
+                    expect(calloutProps?.preventDismissOnEvent).toBeDefined();
+                    expect(calloutProps?.layerProps?.onLayerDidMount).toBeDefined();
+                    expect(calloutProps?.layerProps?.onLayerWillUnmount).toBeDefined();
+                } else {
+                    expect(calloutProps?.preventDismissOnEvent).toBeUndefined();
+                    expect(calloutProps?.layerProps?.onLayerDidMount).toBeUndefined();
+                    expect(calloutProps?.layerProps?.onLayerWillUnmount).toBeUndefined();
+                }
+            });
+        }
+    });
+
+    describe('Test "isLoading" property', () => {
+        const testCases = [
+            {
+                isLoading: undefined,
+                expectLoaderInInput: false,
+                expectLoaderInMenu: false
+            },
+            {
+                isLoading: true,
+                expectLoaderInInput: false,
+                expectLoaderInMenu: true
+            },
+            {
+                isLoading: [UIComboBoxLoaderType.Input],
+                expectLoaderInInput: true,
+                expectLoaderInMenu: false
+            },
+            {
+                isLoading: [UIComboBoxLoaderType.List],
+                expectLoaderInInput: false,
+                expectLoaderInMenu: true
+            },
+            {
+                isLoading: [UIComboBoxLoaderType.Input, UIComboBoxLoaderType.List],
+                expectLoaderInInput: true,
+                expectLoaderInMenu: true
+            }
+        ];
+        test.each(testCases)('isLoading = $isLoading', ({ isLoading, expectLoaderInInput, expectLoaderInMenu }) => {
+            wrapper.setProps({
+                isLoading
+            });
+            openDropdown();
+            expect(wrapper.find('.ms-Callout UILoader').length).toEqual(expectLoaderInMenu ? 1 : 0);
+            expect(wrapper.find('.ms-ComboBox UILoader').length).toEqual(expectLoaderInInput ? 1 : 0);
+        });
     });
 });

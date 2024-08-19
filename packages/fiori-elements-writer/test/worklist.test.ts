@@ -1,5 +1,5 @@
 import type { FioriElementsApp } from '../src';
-import { generate, TemplateType } from '../src';
+import { generate, TableType, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import {
@@ -37,6 +37,18 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } as FioriElementsApp<WorklistSettings>
         },
         {
+            name: 'worklistV2_table_type',
+            config: {
+                ...Object.assign(feBaseConfig('fewrk1'), {
+                    template: {
+                        type: TemplateType.Worklist,
+                        settings: Object.assign(v2TemplateSettings, { tableType: TableType.TREE })
+                    }
+                }),
+                service: v2Service
+            } as FioriElementsApp<WorklistSettings>
+        },
+        {
             name: 'worklistV4',
             config: {
                 ...Object.assign(feBaseConfig('fewrk2'), {
@@ -50,6 +62,26 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     }
                 }),
                 service: v4Service
+            } as FioriElementsApp<WorklistSettings>
+        },
+        {
+            name: 'worklistV4_Add_tests',
+            config: {
+                ...Object.assign(feBaseConfig('fewrk2'), {
+                    template: {
+                        type: TemplateType.Worklist,
+                        settings: v4TemplateSettings
+                    },
+                    ui5: {
+                        ...feBaseConfig('fewrk2', true),
+                        version: '1.99.0'
+                    }
+                }),
+                service: v4Service,
+                appOptions: {
+                    ...feBaseConfig('fewrk2').appOptions,
+                    addTests: true
+                }
             } as FioriElementsApp<WorklistSettings>
         }
     ];

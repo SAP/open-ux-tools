@@ -5,7 +5,7 @@ The `@sap-ux/ui5-proxy-middleware` is a [Custom UI5 Server Middleware](https://s
 ## Configuration Options
 | Option       | Default Value | Description |
 | ------------ | ------------- | ----------- |
-| `ui5`        | mandatory     | List of mount paths and target urls that should be handled by the proxy |
+| `ui5`        | `object`      | List of mount paths and target urls that should be handled by the proxy. If not provided then `/resources` and `/test-resources` are proxied to `https://ui5.sap.com` |
 | `version`    | `undefined`   | The UI5 version. If this property is not defined, then the `minUI5Version` from the `manifest.json` will be used |
 | `secure`     | true          | Defines if SSL certs should be verified |
 | `debug`      | false         | Enables debug output |
@@ -13,7 +13,19 @@ The `@sap-ux/ui5-proxy-middleware` is a [Custom UI5 Server Middleware](https://s
 | `directLoad` | false         | Defines whether the UI5 sources should be loaded directly from UI5 CDN |
 
 ## Usage
-In order to use the middleware this is the minimal configuration that you need to provide in the `ui5.yaml` of your application.
+In order to use the middleware this is the minimal configuration that you need to provide in the `ui5.yaml` of your application. All requests to `/resources` and `/test-resources` will be proxied to the latest UI5 version at https://ui5.sap.com.
+
+```yaml
+server:
+  customMiddleware:
+  - name: ui5-proxy-middleware
+    afterMiddleware: compression
+```
+
+## Examples
+
+### Defining url and path
+If you want to explicitly define paths that should be proxied to a specific server, the following configuration is required.
 
 ```Yaml
 server:
@@ -44,17 +56,6 @@ server:
 ```
 **NOTE: You can't mix both syntaxes!**
 
-Finally don't forget to add the following in your `package.json`.
-
-```JSON
-"ui5": {
-    "dependencies": [
-        "@sap-ux/ui5-proxy-middleware"
-    ]
-}
-```
-
-## Examples
 ### Loading a specific UI5 version
 To load a specific a UI5 version in your application you can use the `version` parameter, e.g.
 

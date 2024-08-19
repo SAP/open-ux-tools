@@ -39,7 +39,7 @@ describe('Setting defaults', () => {
             input: { framework: 'OpenUI5' },
             expected: {
                 framework: 'OpenUI5',
-                frameworkUrl: 'https://openui5.hana.ondemand.com',
+                frameworkUrl: 'https://sdk.openui5.org',
                 version: UI5_DEFAULT.DEFAULT_UI5_VERSION,
                 localVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
                 minUI5Version: UI5_DEFAULT.MIN_UI5_VERSION,
@@ -55,7 +55,7 @@ describe('Setting defaults', () => {
             input: { framework: 'OpenUI5', version: '1.72.0' },
             expected: {
                 framework: 'OpenUI5',
-                frameworkUrl: 'https://openui5.hana.ondemand.com',
+                frameworkUrl: 'https://sdk.openui5.org',
                 version: '1.72.0',
                 localVersion: '1.72.0',
                 minUI5Version: '1.72.0',
@@ -88,7 +88,7 @@ describe('Setting defaults', () => {
         {
             input: {
                 ui5Libs: ['sap.m', 'sap.fe'],
-                frameworkUrl: 'https://sapui5.hana.ondemand.com/',
+                frameworkUrl: 'https://ui5.sap.com/',
                 descriptorVersion: '1.12.1',
                 typesVersion: '1.95.0',
                 minUI5Version: '1.80.0',
@@ -96,7 +96,7 @@ describe('Setting defaults', () => {
             },
             expected: {
                 framework: 'SAPUI5',
-                frameworkUrl: 'https://sapui5.hana.ondemand.com/',
+                frameworkUrl: 'https://ui5.sap.com/',
                 version: UI5_DEFAULT.DEFAULT_UI5_VERSION,
                 localVersion: '1.95.6',
                 minUI5Version: '1.80.0',
@@ -119,7 +119,7 @@ describe('Setting defaults', () => {
                 localVersion: '1.95.0',
                 minUI5Version: '1.80.1',
                 descriptorVersion: '1.24.0',
-                typesVersion: '~1.80.1',
+                typesVersion: '~1.80.0',
                 typesPackage: UI5_DEFAULT.TS_TYPES_ESM_PACKAGE_NAME,
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
@@ -177,7 +177,7 @@ describe('Setting defaults', () => {
                 localVersion: 'snapshot-1.98',
                 minUI5Version: 'snapshot-1.78.6',
                 descriptorVersion: '1.22.0',
-                typesVersion: '~1.78.6',
+                typesVersion: '~1.78.0',
                 typesPackage: UI5_DEFAULT.TS_TYPES_ESM_PACKAGE_NAME,
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
@@ -194,7 +194,7 @@ describe('Setting defaults', () => {
                 version: '1.199.0',
                 localVersion: '1.199.0',
                 minUI5Version: '1.199.0',
-                descriptorVersion: '1.49.0',
+                descriptorVersion: '1.65.0',
                 typesVersion: `~1.199.0`,
                 typesPackage: UI5_DEFAULT.TYPES_PACKAGE_NAME,
                 ui5Theme: 'sap_fiori_3',
@@ -213,7 +213,7 @@ describe('Setting defaults', () => {
                 localVersion: '1.97.2',
                 minUI5Version: '1.97.2',
                 descriptorVersion: '1.37.0',
-                typesVersion: '~1.97.2',
+                typesVersion: '~1.97.0',
                 typesPackage: UI5_DEFAULT.TS_TYPES_ESM_PACKAGE_NAME,
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
@@ -247,7 +247,8 @@ describe('Setting defaults', () => {
         const input: Ui5App = {
             app: {
                 id: 'test_appId',
-                description: 'Should be default package description'
+                description: 'Should be default package description',
+                projectType: 'EDMXBackend'
             },
             'package': {
                 name: 'test-package-name',
@@ -293,11 +294,55 @@ describe('Setting defaults', () => {
         expect(mergeWithDefaults(input).package).toEqual(expectedPackage);
     });
 
+    it('merge Ui5App.package settings with defaults for cap projects', async () => {
+        const input: Ui5App = {
+            app: {
+                id: 'test_appId_cap',
+                description: 'Should be default package description',
+                projectType: 'CAPJava'
+            },
+            'package': {
+                name: 'test-package-name',
+                dependencies: {
+                    depA: '1.2.3',
+                    depB: '3.4.5'
+                },
+                devDependencies: {
+                    '@ui5/cli': '3.0.0'
+                },
+                scripts: {
+                    doTaskA: 'echo "Doing task A"',
+                    doTaskB: 'echo "Doing task B"'
+                }
+            }
+        };
+
+        const expectedPackage = {
+            dependencies: {
+                depA: '1.2.3',
+                depB: '3.4.5'
+            },
+            description: 'Should be default package description',
+            devDependencies: {
+                '@ui5/cli': '3.0.0',
+                '@sap/ux-ui5-tooling': '1'
+            },
+            name: 'test-package-name',
+            scripts: {
+                doTaskA: 'echo "Doing task A"',
+                doTaskB: 'echo "Doing task B"'
+            },
+            version: '0.0.1'
+        };
+        expect(mergeWithDefaults(input).package).toEqual(expectedPackage);
+    });
+
     // Test function `mergeApp` sets the correct defaults
     describe('mergeApp', () => {
         const baseInput: App = {
             id: 'test_appId',
-            description: 'Should be default package description'
+            description: 'Should be default package description',
+            projectType: 'EDMXBackend'
         };
 
         const expectedApp = {
@@ -309,7 +354,8 @@ describe('Setting defaults', () => {
                 version: ''
             },
             title: 'Title of test_appId',
-            version: '0.0.1'
+            version: '0.0.1',
+            projectType: 'EDMXBackend'
         } as App;
 
         test('minimal input', async () => {

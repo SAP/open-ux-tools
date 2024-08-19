@@ -4,6 +4,8 @@ import ui5Task from '../../../src/ui5';
 import { task } from '../../../src';
 import { mockedUi5RepoService } from '../../__mocks__';
 import { config } from 'dotenv';
+import { readdirSync } from 'fs';
+import { join } from 'path';
 
 jest.mock('dotenv');
 
@@ -23,12 +25,12 @@ describe('ui5', () => {
     };
     const projectName = '~test';
     const workspace = {
-        byGlob: jest.fn().mockReturnValue([
-            {
-                getPath: () => `${projectName}/~path`,
+        byGlob: jest.fn().mockReturnValue(
+            readdirSync(join(__dirname, '../../fixtures/simple-app/webapp')).map((file) => ({
+                getPath: () => `/resources/${projectName}/${file}`,
                 getBuffer: () => Promise.resolve(Buffer.from(''))
-            }
-        ])
+            }))
+        )
     };
     const options = { projectName, configuration };
 

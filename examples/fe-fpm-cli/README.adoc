@@ -1,0 +1,11 @@
+# Example: CLI using the prompts and fe-fpm-writer modules
+
+This project contains scripts to prompt and generate FPM based building blocks.
+
+## Usage
+Run the following:
+```bash
+pnpm start
+```
+
+This will prompt a series a questions to capture information required to generate building blocks. The building blocks will be inserted into a new Fiori elements application in the `test-output/fe-app` folder. Look for the view xml file in the `webapp/ext` folder.

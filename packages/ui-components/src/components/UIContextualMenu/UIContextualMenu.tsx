@@ -74,10 +74,6 @@ export function getUIContextualMenuItemStyles(): Partial<IContextualMenuItemStyl
 export function getUIcontextualMenuCalloutStyles(maxWidth?: number): Partial<ICalloutContentStyles> {
     return {
         root: {
-            // workaround. resolves callout root element borders being cut or invisible
-            // issue appears in webkit based environments with double as devicePixelRatio value
-            animationFillMode: 'none',
-            transform: 'rotate(0.0001deg)',
             maxWidth: maxWidth
         }
     };
@@ -91,6 +87,7 @@ export function getUIcontextualMenuCalloutStyles(maxWidth?: number): Partial<ICa
  * @returns - mutated IContextualMenuItem prop with styles props generators applied to each menu tree node
  */
 function injectContextualMenuItemsStyle(items: IContextualMenuItem[]): IContextualMenuItem[] {
+    const renderMenuWithIcons = items.some((item) => item.iconProps);
     return items.map((item: IContextualMenuItem) => {
         if (!item.itemProps) {
             item.itemProps = {};
@@ -109,12 +106,12 @@ function injectContextualMenuItemsStyle(items: IContextualMenuItem[]): IContextu
             item.submenuIconProps = submenuIconProps;
         }
 
-        if (item?.iconProps) {
+        if (item.iconProps || renderMenuWithIcons) {
             item.onRenderContent = (props, renderers): React.ReactNode => {
                 return (
                     <>
                         {renderers.renderItemName(props)}
-                        {renderers.renderItemIcon(props)}
+                        {item.iconProps && renderers.renderItemIcon(props)}
                     </>
                 );
             };
@@ -142,12 +139,20 @@ export const UIContextualMenu: React.FC<UIIContextualMenuProps> = (props) => {
                 ...props.calloutProps
             }}
             styles={{ ...getUIcontextualMenuStyles(), ...props.styles }}
-            onRenderSubMenu={(props?: IContextualMenuProps): JSX.Element | null => {
-                if (!props) {
-                    return null;
-                }
-                return <UIContextualMenu {...props} />;
-            }}
+            onRenderSubMenu={getSubMenu}
         />
     );
 };
+
+/**
+ * Method returns element for submenu of contextual menu.
+ *
+ * @param props Contextual menu properties.
+ * @returns Element for submenu of contextual menu.
+ */
+function getSubMenu(props?: IContextualMenuProps): JSX.Element | null {
+    if (!props) {
+        return null;
+    }
+    return <UIContextualMenu {...props} />;
+}

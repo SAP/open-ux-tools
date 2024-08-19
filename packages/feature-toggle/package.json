@@ -1,0 +1,39 @@
+{
+    "name": "@sap-ux/feature-toggle",
+    "version": "0.2.0",
+    "description": "Feature toggle manager for Fiori tools",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/feature-toggle"
+    },
+    "license": "Apache-2.0",
+    "private": false,
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc --build",
+        "watch": "tsc --watch",
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "link": "pnpm link --global",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "unlink": "pnpm unlink --global"
+    },
+    "author": "@SAP/ux-tools-team",
+    "files": [
+        "dist",
+        "src"
+    ],
+    "devDependencies": {
+        "@types/jest-when": "2.7.0",
+        "jest-when": "3.6.0",
+        "rimraf": "5.0.5",
+        "typescript": "^5.1.6",
+        "@types/vscode": "1.73.1"
+    },
+    "engines": {
+        "node": ">=18.x"
+    }
+}

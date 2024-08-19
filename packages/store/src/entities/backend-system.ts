@@ -1,12 +1,14 @@
 import type { EntityKey } from '.';
 import { sensitiveData, serializable } from '../decorators';
 
-export enum AuthenticationType {
-    Basic = 'basic',
-    ReentranceTicket = 'reentranceTicket',
-    OAuth2RefreshToken = 'oauth2',
-    OAuth2ClientCredential = 'oauth2ClientCredential'
-}
+export const AuthenticationType = {
+    Basic: 'basic',
+    ReentranceTicket: 'reentranceTicket',
+    OAuth2RefreshToken: 'oauth2',
+    OAuth2ClientCredential: 'oauth2ClientCredential'
+} as const;
+
+export type AuthenticationType = (typeof AuthenticationType)[keyof typeof AuthenticationType];
 
 export class BackendSystem {
     @serializable public readonly name: string;

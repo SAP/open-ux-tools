@@ -1,8 +1,11 @@
 {
     "sap.ui5": {
+        "dependencies": {
+            "libs": <%- JSON.stringify(libraries) %>
+        },
         "routing": {
             "targets": {
-                "<%- entity %><%- name %>": {
+                "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %><%- name %><% } %>": {
                     "viewId": "<%- name %>View",
                     "viewName": "<%- ns %>.<%- name %>",<%if (locals.controlAggregation) {%>
                     "controlAggregation": "<%- locals.controlAggregation %>",<% } %>
@@ -16,7 +19,7 @@
                             "navigation": {
                                 "<%- navigation.navEntity %>": {
                                     "detail": {
-                                        "route": "<%- entity %><%- name %>"
+                                        "route": "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %><%- name %><% } %>"
                                     }
                                 }
                             }

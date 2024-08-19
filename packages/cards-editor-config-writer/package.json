@@ -1,0 +1,40 @@
+{
+    "name": "@sap-ux/cards-editor-config-writer",
+    "version": "0.4.3",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/cards-editor-config-writer"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Acards-editor-config-writer"
+    },
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "pnpm clean && tsc --build",
+        "watch": "tsc --watch",
+        "clean": "rimraf --glob dist test/test-output *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors"
+    },
+    "files": [
+        "LICENSE",
+        "dist"
+    ],
+    "dependencies": {
+        "@sap-ux/ui5-config": "workspace:*",
+        "mem-fs": "2.1.0",
+        "mem-fs-editor": "9.4.0"
+    },
+    "devDependencies": {
+        "@types/mem-fs": "1.1.2",
+        "@types/mem-fs-editor": "7.0.1",
+        "@sap-ux/project-access": "workspace:*"
+    },
+    "engines": {
+        "node": ">=18.x"
+    }
+}

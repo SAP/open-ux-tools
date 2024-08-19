@@ -1,0 +1,17 @@
+[
+    {
+        "type": "element",
+        "range": "[(0,0)..(0,21)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.TextArrangement",
+                "valueRange": "[(0,0)..(0,18)]"
+            }
+        },
+        "contentRange": "[(0,20)..(0,21)]",
+        "content": []
+    }
+]

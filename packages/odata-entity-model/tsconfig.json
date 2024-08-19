@@ -1,0 +1,14 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "dist",
+        "rootDir": "src",
+        "preserveConstEnums": false
+    },
+    "include": ["src"],
+    "references": [
+        {
+            "path": "../odata-annotation-core-types"
+        }
+    ]
+}

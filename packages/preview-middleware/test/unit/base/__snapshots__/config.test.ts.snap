@@ -1,0 +1,354 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`config createFlpTemplateConfig minimum settings 1`] = `
+Object {
+  "apps": Object {},
+  "basePath": "..",
+  "init": undefined,
+  "locateReuseLibsScript": undefined,
+  "ui5": Object {
+    "bootstrapOptions": "",
+    "flex": Array [
+      Object {
+        "connector": "LrepConnector",
+        "layers": Array [],
+        "url": "/sap/bc/lrep",
+      },
+      Object {
+        "applyConnector": "custom.connectors.WorkspaceConnector",
+        "custom": true,
+        "writeConnector": "custom.connectors.WorkspaceConnector",
+      },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
+      },
+    ],
+    "libs": "sap.m,sap.ui.core,sap.ushell",
+    "resources": Object {
+      "open.ux.preview.client": "../preview/client",
+    },
+    "theme": "sap_horizon",
+  },
+}
+`;
+
+exports[`config createFlpTemplateConfig minimum settings with one reuse lib 1`] = `
+Object {
+  "apps": Object {},
+  "basePath": "..",
+  "init": undefined,
+  "locateReuseLibsScript": undefined,
+  "ui5": Object {
+    "bootstrapOptions": "",
+    "flex": Array [
+      Object {
+        "connector": "LrepConnector",
+        "layers": Array [],
+        "url": "/sap/bc/lrep",
+      },
+      Object {
+        "applyConnector": "custom.connectors.WorkspaceConnector",
+        "custom": true,
+        "writeConnector": "custom.connectors.WorkspaceConnector",
+      },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
+      },
+    ],
+    "libs": "sap.m,sap.ui.core,sap.ushell",
+    "resources": Object {
+      "my.reuse.lib": "/custom/path/my.reuse.lib",
+      "open.ux.preview.client": "../preview/client",
+    },
+    "theme": "sap_horizon",
+  },
+}
+`;
+
+exports[`config generatePreviewFiles minimum settings 1`] = `
+"<!DOCTYPE HTML>
+<html lang=\\"en\\">
+<!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
+
+<head>
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <title>Local FLP Sandbox</title>
+
+    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
+
+         The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
+
+         The fiori2 renderer will render the shell header allowing, for instance,
+         testing of additional application setting buttons.
+
+         The navigation target resolution service is configured in a way that the empty URL hash is
+         resolved to our own application.
+
+         This example uses relative path references for the SAPUI5 resources and test-resources;
+         it might be necessary to adapt them depending on the target runtime platform.
+         The sandbox platform is restricted to development or demo use cases and must NOT be used
+         for productive scenarios.
+    -->
+    <script type=\\"text/javascript\\">
+        window[\\"sap-ushell-config\\"] = {
+            defaultRenderer: \\"fiori2\\",
+            renderers: {
+                fiori2: {
+                    componentData: {
+                        config: {
+                            search: \\"hidden\\",
+                            enableSearch: false
+                        }
+                    }
+                }
+            },
+            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
+        };
+    </script>
+
+    <script type=\\"text/javascript\\">
+        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    </script>
+
+    <script src=\\"../preview/client/flp/bootstrap.js\\" id=\\"preview-bootstrap\\"></script>
+    <script id=\\"sap-ushell-bootstrap\\"></script>
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
+    <script id=\\"sap-ui-bootstrap\\"
+        src=\\"../resources/sap-ui-core.js\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-preload=\\"async\\"
+        data-sap-ui-theme=\\"sap_horizon_dark\\"
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-language=\\"en\\"
+        data-sap-ui-bindingSyntax=\\"complex\\"
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"writeConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
+        data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\"}'
+        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-xx-componentPreload=\\"off\\"
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
+    </script>
+
+
+</head>
+
+<!-- UI Content -->
+<body class=\\"sapUiBody\\" id=\\"content\\">
+</body>
+
+</html>"
+`;
+
+exports[`config generatePreviewFiles multi-app setup e.g. in CAP 1`] = `
+Object {
+  "test/flpSandbox.thml": Object {
+    "contents": "<!DOCTYPE HTML>
+<html lang=\\"en\\">
+<!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
+
+<head>
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <title>Local FLP Sandbox</title>
+
+    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
+
+         The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
+
+         The fiori2 renderer will render the shell header allowing, for instance,
+         testing of additional application setting buttons.
+
+         The navigation target resolution service is configured in a way that the empty URL hash is
+         resolved to our own application.
+
+         This example uses relative path references for the SAPUI5 resources and test-resources;
+         it might be necessary to adapt them depending on the target runtime platform.
+         The sandbox platform is restricted to development or demo use cases and must NOT be used
+         for productive scenarios.
+    -->
+    <script type=\\"text/javascript\\">
+        window[\\"sap-ushell-config\\"] = {
+            defaultRenderer: \\"fiori2\\",
+            renderers: {
+                fiori2: {
+                    componentData: {
+                        config: {
+                            search: \\"hidden\\",
+                            enableSearch: false
+                        }
+                    }
+                }
+            },
+            applications:  {\\"simpleApp-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/apps/simple-app\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/apps/other-app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
+        };
+    </script>
+
+    <script type=\\"text/javascript\\">
+        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    </script>
+
+    <script src=\\"../preview/client/flp/bootstrap.js\\" id=\\"preview-bootstrap\\"></script>
+    <script id=\\"sap-ushell-bootstrap\\"></script>
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
+    <script id=\\"sap-ui-bootstrap\\"
+        src=\\"../resources/sap-ui-core.js\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-preload=\\"async\\"
+        data-sap-ui-theme=\\"sap_horizon\\"
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-language=\\"en\\"
+        data-sap-ui-bindingSyntax=\\"complex\\"
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"writeConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
+        data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"/apps/simple-app\\",\\"test.fe.v2.other\\":\\"/apps/other-app\\"}'
+        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-xx-componentPreload=\\"off\\"
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
+    </script>
+
+
+</head>
+
+<!-- UI Content -->
+<body class=\\"sapUiBody\\" id=\\"content\\">
+</body>
+
+</html>",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`config generatePreviewFiles tests included and a custom path 1`] = `
+Object {
+  "webapp/test/flpSandbox.html": Object {
+    "contents": "<!DOCTYPE HTML>
+<html lang=\\"en\\">
+<!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
+
+<head>
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <title>Local FLP Sandbox</title>
+
+    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
+
+         The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
+
+         The fiori2 renderer will render the shell header allowing, for instance,
+         testing of additional application setting buttons.
+
+         The navigation target resolution service is configured in a way that the empty URL hash is
+         resolved to our own application.
+
+         This example uses relative path references for the SAPUI5 resources and test-resources;
+         it might be necessary to adapt them depending on the target runtime platform.
+         The sandbox platform is restricted to development or demo use cases and must NOT be used
+         for productive scenarios.
+    -->
+    <script type=\\"text/javascript\\">
+        window[\\"sap-ushell-config\\"] = {
+            defaultRenderer: \\"fiori2\\",
+            renderers: {
+                fiori2: {
+                    componentData: {
+                        config: {
+                            search: \\"hidden\\",
+                            enableSearch: false
+                        }
+                    }
+                }
+            },
+            applications:  {\\"myapp-myaction\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
+        };
+    </script>
+
+    <script type=\\"text/javascript\\">
+        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    </script>
+
+    <script src=\\"../preview/client/flp/bootstrap.js\\" id=\\"preview-bootstrap\\"></script>
+    <script id=\\"sap-ushell-bootstrap\\"></script>
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
+    <script id=\\"sap-ui-bootstrap\\"
+        src=\\"../resources/sap-ui-core.js\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-preload=\\"async\\"
+        data-sap-ui-theme=\\"sap_horizon_dark\\"
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-language=\\"en\\"
+        data-sap-ui-bindingSyntax=\\"complex\\"
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"writeConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
+        data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\"}'
+        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-xx-componentPreload=\\"off\\"
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
+    </script>
+
+
+</head>
+
+<!-- UI Content -->
+<body class=\\"sapUiBody\\" id=\\"content\\">
+</body>
+
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+	<title>OPA5 tests</title>
+	<meta charset=\\"utf-8\\">
+
+	<script
+		src=\\"../resources/sap-ui-core.js\\"
+		data-sap-ui-theme='sap_horizon_dark'
+		data-sap-ui-resourceroots='{
+			\\"test.fe.v2.app\\": \\"..\\"
+		}'
+		data-sap-ui-animation=\\"false\\"
+		data-sap-ui-compatVersion=\\"edge\\"
+		data-sap-ui-async=\\"true\\">
+	</script>
+
+	<script src=\\"opaTests.qunit.js\\"></script>
+
+	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../resources/sap/ui/thirdparty/qunit-2.css\\">
+</head>
+<body>
+	<div id=\\"qunit\\"></div>
+	<div id=\\"qunit-fixture\\"></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html lang=\\"en\\">
+<head>
+    <title>QUnit TestSuite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"/test/testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+</head>
+<body>
+</body>
+</html>",
+    "state": "modified",
+  },
+}
+`;

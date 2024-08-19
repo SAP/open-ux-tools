@@ -1,4 +1,5 @@
 import React from 'react';
+import { divProperties, getNativeProps } from '@fluentui/react';
 import { UISection } from './UISection';
 import type { UISectionProps } from './UISection';
 import { UISplitter, UISplitterType, UISplitterLayoutType } from './UISplitter';
@@ -66,7 +67,7 @@ interface SizeCalculationInfo {
  * @extends {React.Component<UISectionsProps, UISectionsState>}
  */
 export class UISections extends React.Component<UISectionsProps, UISectionsState> {
-    static Section = UISection;
+    static readonly Section = UISection;
     private sizeProperty: 'height' | 'width';
     private readonly domSizeProperty: 'clientHeight' | 'clientWidth';
     private startPositionProperty: 'top' | 'left';
@@ -116,7 +117,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                 section.size = Math.abs(this.rootSize - position.end - position.start);
             }
             if (index !== dynamicSectionIndex) {
-                availableSize += (typeof section === 'object' ? section.size : section) || 0;
+                availableSize += (typeof section === 'object' ? section.size : section) ?? 0;
             }
         });
         availableSize = layoutSize - availableSize;
@@ -213,8 +214,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         let recalculateSizes = false;
         const sizesInfo: Array<SizeCalculationInfo> = [];
         for (let i = 0; i < this.props.children.length; i++) {
-            //const size = this.getSectionCurrentSize(i);
-            const size = sizes[i].size || 0;
+            const size = sizes[i].size ?? 0;
             const minSize = this.getMinSectionSize(i);
             if (minSize > size) {
                 recalculateSizes = true;
@@ -251,6 +251,12 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         if (sizes) {
             // Update sizes after resize
             sizes = this.updateStateSizes(layoutSize, sizes);
+            // Update cached section's sizes
+            for (let i = 0; i < sizes.length; i++) {
+                if (this.resizeSections[i]) {
+                    this.resizeSections[i].section = sizes[i];
+                }
+            }
             // Apply state
             this.ignoreAnimation = true;
             this.setState({
@@ -295,7 +301,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
     private onSplitterResizeStart(): void {
         const rootDom = this.rootRef.current;
         const resizeSections = [];
-        if (rootDom && rootDom.childNodes) {
+        if (rootDom?.childNodes) {
             rootDom.classList.remove(SECTIONS_ANIMATION_CLASS);
             for (let i = 0; i < rootDom.childNodes.length; i++) {
                 const minSectionSize = this.getMinSectionSize(i);
@@ -497,7 +503,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         };
         // Use values from state or calculate initial percents
         const childrenCount = this.getVisibleChildrenCount();
-        const stateSize = this.state.sizes && this.state.sizes[index];
+        const stateSize = this.state.sizes?.[index];
         if (childrenCount === this.props.children.length && stateSize) {
             sectionStyle.style = {
                 ...(stateSize.start !== undefined && { [this.startPositionProperty]: stateSize.start + 'px' }),
@@ -539,13 +545,8 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             visible: false
         };
         // Hidden section when animation is ON
-        let stateSize = this.state.sizes && this.state.sizes[index];
-        if (
-            !stateSize &&
-            this.props.splitterType === UISplitterType.Toggle &&
-            this.props.sizes &&
-            this.props.sizes[index]
-        ) {
+        let stateSize = this.state.sizes?.[index];
+        if (!stateSize && this.props.splitterType === UISplitterType.Toggle && this.props.sizes?.[index]) {
             stateSize = {
                 size: this.props.sizes[index],
                 percentage: false
@@ -626,9 +627,14 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         if (!sectionStyle) {
             return undefined;
         }
-        const splitterType = this.props.splitterType || UISplitterType.Resize;
-        const splitterLayoutType = this.props.splitterLayoutType || UISplitterLayoutType.Standard;
-        let isSplitterVisible = this.props.splitter && index > 0;
+        const {
+            splitter,
+            vertical,
+            splitterTitle,
+            splitterType = UISplitterType.Resize,
+            splitterLayoutType = UISplitterLayoutType.Standard
+        } = this.props;
+        let isSplitterVisible = splitter && index > 0;
         const isSingleSection = this.getVisibleChildrenCount() === 1;
         if (isSingleSection && !this.isAnimationEnabled()) {
             isSplitterVisible = false;
@@ -642,14 +648,14 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                 style={sectionStyle.style}>
                 {isSplitterVisible && childNode && (
                     <UISplitter
-                        vertical={this.props.vertical}
+                        vertical={vertical}
                         onResize={this.onSplitterResize.bind(this)}
                         onResizeStart={this.onSplitterResizeStart.bind(this)}
                         onResizeEnd={this.onSplitterResizeEnd.bind(this)}
                         onToggle={this.onSplitterToggle.bind(this)}
                         hidden={isSectionHidden || isSingleSection}
                         type={splitterType}
-                        title={this.props.splitterTitle}
+                        title={splitterTitle}
                         splitterLayoutType={splitterLayoutType}
                     />
                 )}
@@ -683,7 +689,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      * @returns Position object.
      */
     private getSectionPosition(section: UISectionSize): { start: number; end: number } {
-        return { start: section.start || 0, end: section.end || 0 };
+        return { start: section.start ?? 0, end: section.end ?? 0 };
     }
 
     /**
@@ -764,14 +770,14 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         sizes.forEach((section) => {
             section.start = start;
             // Next start
-            start += section.size || 0;
+            start += section.size ?? 0;
         });
         // Recalculate positions - END
         let end = 0;
         for (let i = sizes.length - 1; i >= 0; i--) {
             sizes[i].end = end;
             // Next start
-            end += sizes[i].size || 0;
+            end += sizes[i].size ?? 0;
         }
     }
 
@@ -782,13 +788,17 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      */
     private getRootSize(): number {
         const rootDom = this.rootRef.current;
-        return rootDom?.getBoundingClientRect()[this.sizeProperty] || 0;
+        return rootDom?.getBoundingClientRect()[this.sizeProperty] ?? 0;
     }
 
     /**
      * @returns {React.ReactElement}
      */
     render(): React.ReactElement {
+        const divProps = getNativeProps<React.HTMLAttributes<HTMLDivElement>>(this.props, divProperties, [
+            'className',
+            'children'
+        ]);
         const sections = [];
         let visibleSections = 0;
         for (let i = 0; i < this.props.children.length; i++) {
@@ -806,6 +816,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
         return (
             <div
+                {...divProps}
                 ref={this.rootRef}
                 className={`sections ${this.getClassNames(visibleSections === 1)}`}
                 style={{

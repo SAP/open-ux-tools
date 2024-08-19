@@ -1,0 +1,18 @@
+UI : {
+    HeaderInfo : {
+        $Type          : 'UI.HeaderInfoType',
+        Title          : {
+            $Value : {
+                ![@UI.Importance] : #High,
+                $Type             : 'UI.DataFieldForAnnotation',
+                Target            : '@UI.DataPoint#booksTitle',
+            }
+        },
+        TypeName : {
+            ![@UI.MultiLineText],
+            $alue : 'someValue'
+        },
+    },
+    LineItem : { val: []},
+    lineItem : [{ Value: ''}]
+}

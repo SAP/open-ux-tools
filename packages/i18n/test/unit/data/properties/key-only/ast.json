@@ -1,0 +1,21 @@
+[
+  {
+    "type": "comment-line",
+    "value": "# A word on a line will just create a key with no value.",
+    "range": "[(0,0)..(0,56)]"
+  },
+  {
+    "type": "key-element-line",
+    "key": {
+      "type": "key",
+      "value": "empty",
+      "range": "[(1,0)..(1,5)]"
+    },
+    "element": {
+      "type": "value",
+      "value": "",
+      "range": "[(1,5)..(1,5)]"
+    },
+    "range": "[(1,0)..(1,5)]"
+  }
+]

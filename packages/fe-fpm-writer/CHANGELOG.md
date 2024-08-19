@@ -1,5 +1,286 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.27.2
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.7
+-   @sap-ux/fiori-annotation-api@0.1.36
+
+## 0.27.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.1.35
+
+## 0.27.0
+
+### Minor Changes
+
+-   ec4a9c8: Update fpm-writer to validate sap.fe.core as minimum library required for building block creation
+
+## 0.26.4
+
+### Patch Changes
+
+-   Updated dependencies [26379ea]
+    -   @sap-ux/fiori-annotation-api@0.1.34
+
+## 0.26.3
+
+### Patch Changes
+
+-   Updated dependencies [82aaea3]
+    -   @sap-ux/project-access@1.26.6
+    -   @sap-ux/fiori-annotation-api@0.1.33
+
+## 0.26.2
+
+### Patch Changes
+
+-   Updated dependencies [cc16cbb]
+    -   @sap-ux/project-access@1.26.5
+    -   @sap-ux/fiori-annotation-api@0.1.32
+
+## 0.26.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.1.31
+-   @sap-ux/project-access@1.26.4
+
+## 0.26.0
+
+### Minor Changes
+
+-   88c8bf6: feat: Prompt API to request question and submit answers for Table, Chart and FilterBar building blocks
+
+### Patch Changes
+
+-   Updated dependencies [88c8bf6]
+    -   @sap-ux/project-access@1.26.3
+    -   @sap-ux/fiori-annotation-api@0.1.30
+
+## 0.25.7
+
+### Patch Changes
+
+-   e69db46: Upgrade fast-xml-parser
+-   Updated dependencies [e69db46]
+    -   @sap-ux/project-access@1.26.2
+
+## 0.25.6
+
+### Patch Changes
+
+-   Updated dependencies [a986655]
+    -   @sap-ux/project-access@1.26.1
+
+## 0.25.5
+
+### Patch Changes
+
+-   Updated dependencies [518bf7e]
+    -   @sap-ux/project-access@1.26.0
+
+## 0.25.4
+
+### Patch Changes
+
+-   Updated dependencies [99b7b5f]
+    -   @sap-ux/project-access@1.25.8
+
+## 0.25.3
+
+### Patch Changes
+
+-   dc60d98: fix: add `@sap-ux/project-access` dependency
+
+## 0.25.2
+
+### Patch Changes
+
+-   29bebd2: feat: add required libraries on page addition
+
+## 0.25.1
+
+### Patch Changes
+
+-   d549173: - Adjusts getMinUI5VersionAsArray so that semver valid check is included; the function now only returns valid versions.
+    -   Upgrade of @ui5/manifest to 1.66.0; adjustment of all components so that minimumUI5Version definitions as array are processed properly.
+
+## 0.25.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+## 0.24.16
+
+### Patch Changes
+
+-   1a1baeb0: Revert "feat(fiori-elements-writer): remove `sap.fe.templates` dependency
+
+## 0.24.15
+
+### Patch Changes
+
+-   9188fe8b: fpm v4 removed sap.fe.templates in manifest.json, now has dependency on sap.fe.core
+    sap.ushell removed from ui5-application-writer, now loaded in fiori-elements and fiori-freestyle writers respectively
+
+## 0.24.14
+
+### Patch Changes
+
+-   d2063073: Fixed custom action path when it's generated in custom section.
+
+## 0.24.13
+
+### Patch Changes
+
+-   f69d72c1: Fixed custom action path when it's generated within custom section.
+
+## 0.24.12
+
+### Patch Changes
+
+-   855a4ae2: Added support for custom action within custom section
+
+## 0.24.11
+
+### Patch Changes
+
+-   4e267684: chore - ejs upgrade
+
+## 0.24.10
+
+### Patch Changes
+
+-   2e10a7ae: fix: fragment of custom section with event handler - move attribute 'core:require' from inner element('Button', 'Input') to wrapper element('VBox', 'FormElement')
+
+## 0.24.9
+
+### Patch Changes
+
+-   3c9d8f5d: Fixed namespace for controller event handler
+
+## 0.24.8
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+
+## 0.24.7
+
+### Patch Changes
+
+-   392522e8: Added optional `controllerPrefix` property to custom action event handler
+
+## 0.24.6
+
+### Patch Changes
+
+-   9b62f5a1: Added optional `id` property to use as page key in manifest templates
+
+## 0.24.5
+
+### Patch Changes
+
+-   112170a1: fix: use correct namespace when generating typescript controllers of controller extension and custom page controllers
+
+## 0.24.4
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+
+## 0.24.3
+
+### Patch Changes
+
+-   b84cb0f3: Added `fragmentFile` property in order to allow to use fragment name different from custom extension key
+
+## 0.24.2
+
+### Patch Changes
+
+-   3c5fa042: fpm localize custom xml view
+
+## 0.24.1
+
+### Patch Changes
+
+-   deabc5bd: Remove hardcode string in XML view templates
+
+## 0.24.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+## 0.23.9
+
+### Patch Changes
+
+-   d880c217: Correction for `stashed` property of header sections in manifest template: Property type is changed from string to boolean
+
+## 0.23.8
+
+### Patch Changes
+
+-   c11f6c02: Correction for `templateEdit` property in manifest which led to parsing errors: Missing comma is added right after `templateEdit` value if it exists
+
+## 0.23.7
+
+### Patch Changes
+
+-   7a2229ff: Fix. Avoid overwrite of existing extension fragment file while creating new filter field.
+
+## 0.23.6
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+
+## 0.23.5
+
+### Patch Changes
+
+-   7b156515: fix(deps): update dependency xpath to v0.0.33
+
+## 0.23.4
+
+### Patch Changes
+
+-   01fa690e: fix(deps): update dependency @xmldom/xmldom to v0.8.10
+-   3137514f: use platform independent UI5 CDN URLs
+
+## 0.23.3
+
+### Patch Changes
+
+-   7c8a6946: fix(deps): update dependency semver to v7.5.4
+
+## 0.23.2
+
+### Patch Changes
+
+-   78e726a6: Custom Filter Field. Property "eventHandler".
+    1. Generated fragment requires js file when no "eventHandler" is passed.
+    2. Wrong reference to js file is generated in fragment, when "eventHandler.fileName" is passed.
+
+## 0.23.1
+
+### Patch Changes
+
+-   da6aed84: Correction for content of generated fragment for `templateEdit` property: Content is wrapped inside `sap.ui.layout.form.FormElement`
+
+## 0.23.0
+
+### Minor Changes
+
+-   c1c9396a: Feature: Custom header sections support for fe-fpm-writer
+
 ## 0.22.3
 
 ### Patch Changes

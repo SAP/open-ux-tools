@@ -497,7 +497,9 @@ appDescription=Restaurant List",
 
             opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
                 // Note: this test will fail if the ListReport page doesn't show any data
+                
                 When.onTheRestaurantList.onFilterBar().iExecuteSearch();
+                
                 Then.onTheRestaurantList.onTable().iCheckRows();
 
                 When.onTheRestaurantList.onTable().iPressRow(0);
@@ -1138,7 +1140,9 @@ appDescription=Restaurant List",
 
             opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
                 // Note: this test will fail if the ListReport page doesn't show any data
+                
                 When.onTheRestaurantList.onFilterBar().iExecuteSearch();
+                
                 Then.onTheRestaurantList.onTable().iCheckRows();
 
                 When.onTheRestaurantList.onTable().iPressRow(0);

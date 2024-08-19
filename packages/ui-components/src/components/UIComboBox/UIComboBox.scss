@@ -148,10 +148,14 @@
 }
 
 .ts-Callout-Dropdown {
+    border: $dropdown-input-border-width solid $menu-border-color;
+    box-sizing: border-box;
+    border-radius: $menu-border-radius;
+    // Hide overflow to correctly see browser scrollbar and borders after applying border-radius
+    overflow: hidden;
     .ms-Callout-main {
         background: $menu-background;
-        border: $dropdown-input-border-width solid $menu-border-color;
-        box-sizing: border-box;
+        border: none;
         border-radius: 0;
     }
     // Combobox list items

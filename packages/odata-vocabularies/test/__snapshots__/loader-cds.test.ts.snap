@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`lib vocabulary loader (CDS) correct term definition in dictionary 1`] = `
+Object {
+  "appliesTo": Array [
+    "Property",
+  ],
+  "cdsName": "assert.notNull",
+  "defaultValue": true,
+  "description": "Generic not null check will be carried out",
+  "isCollection": false,
+  "kind": "Term",
+  "longDescription": "Value false means: property value is ignored during the generic not null check, for example if your persistence fills it automatically.
+                See: https://cap.cloud.sap/docs/guides/providing-services#assert-notNull",
+  "name": "com.sap.vocabularies.CDS.v1.AssertNotNull",
+  "type": "Edm.Boolean",
+}
+`;
+
+exports[`lib vocabulary loader (CDS) namespace listed with alias  1`] = `
+Object {
+  "defaultAlias": "CDS",
+  "defaultUri": "",
+  "namespace": "com.sap.vocabularies.CDS.v1",
+}
+`;

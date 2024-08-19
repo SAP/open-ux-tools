@@ -1,32 +1,42 @@
 {
-    "extends": "../../tsconfig.json",
-    "include": [
-        "../../types/ui5.d.ts",
-        "../../types/mem-fs-editor.d.ts",
-        "src"
-    ],
-    "compilerOptions": {
-        "rootDir": "src",
-        "outDir": "dist"
+  "extends": "../../tsconfig.json",
+  "include": [
+    "../../types/ui5.d.ts",
+    "../../types/mem-fs-editor.d.ts",
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../axios-extension"
     },
-    "references": [
-        {
-            "path": "../axios-extension"
-        },
-        {
-            "path": "../logger"
-        },
-        {
-            "path": "../project-access"
-        },
-        {
-            "path": "../store"
-        },
-        {
-            "path": "../system-access"
-        },
-        {
-            "path": "../ui5-config"
-        }
-    ]
+    {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../inquirer-common"
+    },
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../project-input-validator"
+    },
+    {
+      "path": "../store"
+    },
+    {
+      "path": "../system-access"
+    },
+    {
+      "path": "../ui5-config"
+    }
+  ]
 }

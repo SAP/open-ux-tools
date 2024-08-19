@@ -1,8 +1,9 @@
 import { type UrlAbapTarget, isUrlTarget } from '@sap-ux/system-access';
-import { getConfigForLogging, replaceEnvVariables, validateConfig } from '../../../src/base/config';
+import { getConfigForLogging, validateConfig } from '../../../src/base/config';
 import type { AbapDeployConfig } from '../../../src/types';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
+
 jest.mock('@sap-ux/btp-utils');
 const mockIsAppStudio = isAppStudio as jest.Mock;
 
@@ -10,29 +11,6 @@ describe('base/config', () => {
     test('isUrlTarget', () => {
         expect(isUrlTarget({ url: '~url' })).toBe(true);
         expect(isUrlTarget({ destination: '~destination' })).toBe(false);
-    });
-
-    describe('replaceEnvVariables', () => {
-        const envVal = '~testvalue';
-        const envRef = 'env:TEST_VAR';
-
-        process.env.TEST_VAR = envVal;
-        test('top level', () => {
-            const config = { hello: envRef };
-            replaceEnvVariables(config);
-            expect(config.hello).toBe(envVal);
-        });
-        test('in array', () => {
-            const config = ['hello', envRef];
-            replaceEnvVariables(config);
-            expect(config[1]).toBe(envVal);
-        });
-        test('nested', () => {
-            const config = { hello: { world: envRef }, world: envRef };
-            replaceEnvVariables(config);
-            expect(config.hello.world).toBe(envVal);
-            expect(config.world).toBe(envVal);
-        });
     });
 
     describe('getConfigForLogging', () => {
@@ -57,7 +35,7 @@ describe('base/config', () => {
             } as AbapDeployConfig;
             const configForLogging = getConfigForLogging(config);
             expect(configForLogging.credentials).toBe('hidden');
-            expect(configForLogging.app.name).toBe(config.app.name);
+            expect(configForLogging.app).toEqual(config.app);
         });
     });
 
@@ -87,8 +65,6 @@ describe('base/config', () => {
 
         test('incorrect app', () => {
             const config = { app: { ...validConfig.app }, target: validConfig.target };
-            delete (config.app as any).name;
-            expect(() => validateConfig(config)).toThrowError();
             delete (config as any).app;
             expect(() => validateConfig(config)).toThrowError();
         });

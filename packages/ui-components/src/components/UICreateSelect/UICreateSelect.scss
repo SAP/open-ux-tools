@@ -1,0 +1,49 @@
+.ui-create-select {
+    &-indicator {
+        &-clear,
+        &-dropdown {
+            display: flex;
+            height: 16px;
+            align-items: center;
+            justify-content: center;
+            align-content: center;
+        }
+        &-loading {
+            padding-right: 8px;
+        }
+    }
+    &__option {
+        position: relative;
+
+        &--is-selected {
+            .ts-Menu-option--highlighted {
+                color: var(
+                    --vscode-editorSuggestWidget-focusHighlightForeground,
+                    var(--vscode-list-focusHighlightForeground)
+                );
+            }
+            &::after {
+                content: '';
+                position: absolute;
+                inset: 1px;
+                z-index: 1;
+                outline: 1px dashed var(--vscode-contrastActiveBorder);
+                outline-offset: -1px;
+                pointer-events: none;
+                border: none;
+            }
+        }
+        &:hover {
+            &::after {
+                content: '';
+                position: absolute;
+                inset: 1px;
+                z-index: 1;
+                outline: 1px dashed var(--vscode-contrastActiveBorder);
+                outline-offset: -1px;
+                pointer-events: none;
+                border: none;
+            }
+        }
+    }
+}

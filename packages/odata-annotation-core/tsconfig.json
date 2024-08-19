@@ -1,0 +1,26 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "lib": [
+      "ES2022",
+      "ESNext.BigInt"
+    ],
+    "preserveConstEnums": false
+  },
+  "include": [
+    "src"
+  ],
+  "references": [
+    {
+      "path": "../odata-annotation-core-types"
+    },
+    {
+      "path": "../odata-entity-model"
+    },
+    {
+      "path": "../text-document-utils"
+    }
+  ]
+}

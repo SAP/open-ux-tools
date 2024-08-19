@@ -1,0 +1,28 @@
+{
+    "name": "<%= package.name %>",
+    "version": "0.1.0",
+    "private": true,
+    "description": "<%= package.description %>",
+    "keywords": [
+        "ui5",
+        "sapui5",
+        "adaptation-project"
+    ],
+    "dependencies": {},
+    "devDependencies": {
+        <%if (locals.options?.fioriTools) {%>"@sap/ux-ui5-tooling": "1"<%} else {%>"@sap-ux/backend-proxy-middleware": "^0.7.5",
+        "@sap-ux/preview-middleware": "^0.11.1",
+        "@sap-ux/ui5-proxy-middleware": "^1.3.0",
+        "@sap-ux/deploy-tooling": "^0.11.7"<%}%>,
+        "@ui5/task-adaptation": "^1.3.0",
+        "@ui5/cli": "^3.9.2"
+    },
+    "scripts": {
+        "build": "ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest",
+        "start": "<%= locals.options?.fioriTools ? 'fiori run' : 'ui5 serve' %> --open /test/flp.html#app-preview",
+        "start-editor": "<%= locals.options?.fioriTools ? 'fiori run' : 'ui5 serve' %> --open /test/adaptation-editor.html"<%if (locals.deploy) {%>,
+        "deploy": "ui5 build --config ui5-deploy.yaml --exclude-task <%= locals.options?.fioriTools ? 'deploy-to-abap' : 'abap-deploy-task' %> generateFlexChangesBundle generateComponentPreload --clean-dest && <%= locals.options?.fioriTools ? 'fiori deploy' : 'deploy' %> --config ui5-deploy.yaml",
+        "undeploy": "<%= locals.options?.fioriTools ? 'fiori undeploy' : 'undeploy' %> --config ui5-deploy.yaml --lrep \"apps/<%= app.reference %>/appVariants/<%= app.id %>/\"",
+        "deploy-test": "npm run build && fiori deploy --config ui5-deploy.yaml --testMode true"<%}%>
+    }
+}

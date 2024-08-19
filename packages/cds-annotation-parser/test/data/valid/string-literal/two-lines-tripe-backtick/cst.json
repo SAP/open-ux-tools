@@ -1,0 +1,104 @@
+{
+  "name": "declaration",
+  "children": {
+    "assignment": [
+      {
+        "name": "assignment",
+        "children": {
+          "Colon": [
+            {
+              "tokenTypeName": "Colon",
+              "image": ":",
+              "startOffset": 2,
+              "endOffset": 2
+            }
+          ],
+          "path": [
+            {
+              "name": "path",
+              "children": {
+                "pathSegment": [
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "Identifier": [
+                        {
+                          "tokenTypeName": "Identifier",
+                          "image": "a",
+                          "startOffset": 0,
+                          "endOffset": 0
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 0,
+                      "endOffset": 0
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 0,
+                "endOffset": 0
+              }
+            }
+          ],
+          "value": [
+            {
+              "name": "value",
+              "children": {
+                "multiLineStringStripIndent": [
+                  {
+                    "name": "multiLineStringStripIndent",
+                    "children": {
+                      "MultiLineString": [
+                        {
+                          "tokenTypeName": "MultiLineString",
+                          "image": "a\\nb",
+                          "startOffset": 7,
+                          "endOffset": 10
+                        }
+                      ],
+                      "MultiLineStringStripIndentExit": [
+                        {
+                          "tokenTypeName": "MultiLineStringStripIndentExit",
+                          "image": "```",
+                          "startOffset": 11,
+                          "endOffset": 13
+                        }
+                      ],
+                      "TripleBacktick": [
+                        {
+                          "tokenTypeName": "TripleBacktick",
+                          "image": "```",
+                          "startOffset": 4,
+                          "endOffset": 6
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 4,
+                      "endOffset": 13
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 4,
+                "endOffset": 13
+              }
+            }
+          ]
+        },
+        "location": {
+          "startOffset": 0,
+          "endOffset": 13
+        }
+      }
+    ]
+  },
+  "location": {
+    "startOffset": 0,
+    "endOffset": 13
+  }
+}

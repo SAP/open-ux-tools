@@ -1,5 +1,53 @@
 # @sap-ux/yaml
 
+## 0.16.0
+
+### Minor Changes
+
+-   c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
+
+## 0.15.1
+
+### Patch Changes
+
+-   399d2ad8: adds new abap deploy config writer
+
+## 0.15.0
+
+### Minor Changes
+
+-   64a95bd1: Add additional cap configuration writing functionalities
+
+## 0.14.2
+
+### Patch Changes
+
+-   3684195d: adds authenticationType to fiori tools proxy backend and ability to add inline comments to yaml nodes
+
+## 0.14.1
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+
+## 0.14.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+## 0.13.9
+
+### Patch Changes
+
+-   4052822f: Corrected license reference in package.json (no license change)
+
+## 0.13.8
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+
 ## 0.13.7
 
 ### Patch Changes

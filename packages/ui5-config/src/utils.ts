@@ -36,7 +36,7 @@ export function getEsmTypesVersion(minUI5Version?: string) {
     } else if (semVer.lt(version, UI5_DEFAULT.ESM_TYPES_VERSION_SINCE)) {
         return `~${UI5_DEFAULT.ESM_TYPES_VERSION_SINCE}`;
     } else {
-        return `~${semVer.major(version)}.${semVer.minor(version)}.${semVer.patch(version)}`;
+        return `~${semVer.major(version)}.${semVer.minor(version)}.0`;
     }
 }
 
@@ -53,7 +53,7 @@ export function getTypesVersion(minUI5Version?: string) {
     } else if (semVer.lt(version, UI5_DEFAULT.TYPES_VERSION_SINCE)) {
         return `~${UI5_DEFAULT.TYPES_VERSION_SINCE}`;
     } else {
-        return `~${semVer.major(version)}.${semVer.minor(version)}.${semVer.patch(version)}`;
+        return `~${semVer.major(version)}.${semVer.minor(version)}.0`;
     }
 }
 
@@ -71,5 +71,22 @@ export function getTypesPackage(ui5Version?: string) {
         return UI5_DEFAULT.TS_TYPES_ESM_PACKAGE_NAME;
     } else {
         return UI5_DEFAULT.TYPES_PACKAGE_NAME;
+    }
+}
+
+/**
+ * Replace environment variable references of pattern `env:VAR_NAME` with the value of the corresponding environment variable.
+ *
+ * @param obj - any object structure
+ */
+export function replaceEnvVariables(obj: object): void {
+    for (const key in obj) {
+        const value = (obj as Record<string, unknown>)[key];
+        if (typeof value === 'object') {
+            replaceEnvVariables(value as object);
+        } else if (typeof value === 'string' && value.startsWith('env:')) {
+            const varName = value.split('env:')[1];
+            (obj as Record<string, unknown>)[key] = process.env[varName];
+        }
     }
 }

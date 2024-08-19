@@ -151,6 +151,24 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
 "
 `;
 
+exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHandler" is "object", append new function to controller extension 1`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        },
+        onHandleSecondAction: function() {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
 exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHandler" is empty "object" - create new file with default function name 1`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
@@ -200,6 +218,48 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
     };
 });
 "
+`;
+
+exports[`CustomAction generateCustomAction custom section as target 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "content": Object {
+                "body": Object {
+                  "sections": Object {
+                    "CustomSectionOne": Object {
+                      "actions": Object {
+                        "MyCustomAction": Object {
+                          "enabled": true,
+                          "press": "",
+                          "text": "My custom action text",
+                          "visible": true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
 `;
 
 exports[`CustomAction generateCustomAction minimal settings (no eventhandler) 1`] = `

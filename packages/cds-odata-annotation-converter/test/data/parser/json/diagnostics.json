@@ -1,0 +1,15 @@
+[
+    {
+        "message": "Wrong element '$edmJS'. Did you mean '$edmJson'?",
+        "range": "[(14,8)..(14,16)]",
+        "severity": 1,
+        "data": {
+            "caseCheck": {
+                "value": "$edmJS",
+                "proposedValue": "$edmJson",
+                "lookupPath": [],
+                "isNamespacedValue": false
+            }
+        }
+    }
+]

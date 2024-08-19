@@ -1,0 +1,66 @@
+*:not([data-icon-name='CheckMark']):not(.sapUiIcon) {
+    font-family: var(--vscode-font-family) !important;
+}
+html {
+    overflow: hidden;
+}
+body {
+    background-color: var(--vscode-editor-background);
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%
+}
+
+.app {
+    display: flex;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    justify-content: space-between;
+}
+
+.app-preview {
+    height: 100%;
+    border-width: 0;
+}
+
+.app-content {
+    flex-grow: 1;
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    background-color: inherit;
+    padding: 19px;
+}
+
+.app-canvas {
+    flex-shrink: 1;
+    margin: 0 auto;
+}
+
+.app-panel {
+    height: 100%;
+    width: 300px;
+    background: var(--vscode-sideBar-background);
+    color: var(--vscode-foreground);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.app-panel-scroller {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.app-panel-left {
+    border-right: 1px solid var(--vscode-contrastBorder);
+}
+
+.app-panel-right {
+    border-left: 1px solid var(--vscode-contrastBorder);
+}

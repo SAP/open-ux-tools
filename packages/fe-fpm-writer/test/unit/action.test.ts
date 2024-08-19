@@ -1,4 +1,3 @@
-import os from 'os';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
@@ -9,7 +8,7 @@ import { TargetControl } from '../../src/action/types';
 import type { EventHandlerConfiguration, FileContentPosition, Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
 import { detectTabSpacing } from '../../src/common/file';
-import { tabSizingTestCases } from '../common';
+import { getEndOfLinesLength, tabSizingTestCases } from '../common';
 
 describe('CustomAction', () => {
     describe('getTargetElementReference', () => {
@@ -140,6 +139,24 @@ describe('CustomAction', () => {
                         control: TargetControl.table,
                         qualifier: 'MyQualifier',
                         navProperty: 'TestItems'
+                    },
+                    settings
+                },
+                fs
+            );
+            expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
+            expect(fs.exists(join(testDir, 'webapp/ext/myCustomAction/MyCustomAction.js'))).toBeFalsy();
+        });
+
+        test('custom section as target', () => {
+            generateCustomAction(
+                testDir,
+                {
+                    name,
+                    target: {
+                        page: target.page,
+                        control: TargetControl.body,
+                        customSectionKey: 'CustomSectionOne'
                     },
                     settings
                 },
@@ -305,12 +322,13 @@ describe('CustomAction', () => {
                     {
                         line: 8,
                         character: 9
-                    }
+                    },
+                    undefined
                 ],
-                ['absolute position', 196 + 8 * os.EOL.length]
+                ['absolute position', 196, 8]
             ])(
                 '"eventHandler" is object. Append new function to existing js file with %s',
-                (_desc: string, position: number | FileContentPosition) => {
+                (_desc: string, position: number | FileContentPosition, appendLines?: number) => {
                     const fileName = 'MyExistingAction';
                     // Create existing file with existing actions
                     const folder = join('ext', 'fragments');
@@ -319,6 +337,10 @@ describe('CustomAction', () => {
                     fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath, {
                         eventHandlerFnName: 'onPress'
                     });
+                    if (typeof position === 'number' && appendLines !== undefined) {
+                        const content = fs.read(existingPath);
+                        position += getEndOfLinesLength(appendLines, content);
+                    }
                     // Create third action - append existing js file
                     const actionName = 'CustomAction2';
                     const fnName = 'onHandleSecondAction';
@@ -343,6 +365,48 @@ describe('CustomAction', () => {
                     expect(fs.read(existingPath)).toMatchSnapshot();
                 }
             );
+
+            test('"eventHandler" is "object", append new function to controller extension', () => {
+                const expectedFileName = 'MyExistingAction';
+                const fileName = `${expectedFileName}.controller`;
+                // Create existing file with existing actions
+                const folder = join('ext', 'fragments');
+                const existingPath = join(testDir, 'webapp', folder, `${fileName}.js`);
+                // Generate handler with single method - content should be updated during generating of custom action
+                fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath, {
+                    eventHandlerFnName: 'onPress'
+                });
+                // Create third action - append existing js file
+                const actionName = 'CustomAction2';
+                const fnName = 'onHandleSecondAction';
+                const controllerPrefix = '.extension';
+                // use controller prefix to make sure it is controller extension
+                generateCustomActionWithEventHandler(
+                    actionName,
+                    {
+                        fnName,
+                        fileName,
+                        controllerPrefix,
+                        insertScript: {
+                            fragment:
+                                ',\n        onHandleSecondAction: function() {\n            MessageToast.show("Custom handler invoked.");\n        }',
+                            position: {
+                                line: 8,
+                                character: 9
+                            }
+                        }
+                    },
+                    folder
+                );
+                const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as Manifest;
+                const action = getActionByName(manifest, actionName);
+                // Check if action press has controller prefix added
+                expect(action['press']).toEqual(
+                    `${controllerPrefix}.my.test.App.ext.fragments.${expectedFileName}.${fnName}`
+                );
+                // Check update js file content
+                expect(fs.read(existingPath)).toMatchSnapshot();
+            });
         });
 
         describe('Test property custom "tabSizing"', () => {

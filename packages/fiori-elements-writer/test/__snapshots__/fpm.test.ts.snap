@@ -19,7 +19,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"fefpmjs\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -38,10 +37,10 @@ archive.zip
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmjs-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmjs-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmjs-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmjs-tile\\\\\\"\\"
+    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -51,7 +50,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: fefpmjs
 type: application
@@ -61,9 +60,10 @@ framework:
   libraries:
     - name: sap.m
     - name: sap.ui.core
+    - name: sap.fe.core
     - name: sap.ushell
-    - name: sap.fe.templates
     - name: themelib_sap_fiori_3
+    - name: sap.fe.templates
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -95,7 +95,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: fefpmjs
 type: application
@@ -128,14 +128,16 @@ server:
             metadataPath: ./webapp/localService/metadata.xml
             mockdataPath: ./webapp/localService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/annotations/annotation.xml
+            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: fefpmjs
 type: application
@@ -250,7 +252,7 @@ server:
   "webapp/ext/main/Main.view.xml": Object {
     "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\"
     xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"fefpmjs.ext.main.Main\\">
-    <Page id=\\"Main\\" title=\\"Main\\">
+    <Page id=\\"Main\\" title=\\"{i18n>MainTitle}\\">
         <content></content>
     </Page>
 </mvc:View>",
@@ -265,7 +267,9 @@ server:
 appTitle=App \\"Title\\" \\\\\\"
 
 #YDES: Application description
-appDescription=A Fiori application.",
+appDescription=A Fiori application.
+#XTIT: Custom view title
+MainTitle=Main",
     "state": "modified",
   },
   "webapp/index.html": Object {
@@ -3275,8 +3279,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
-        \\"sap.ushell\\": {},
-        \\"sap.fe.templates\\": {}
+        \\"sap.fe.core\\": {}
       }
     },
     \\"contentDensities\\": {
@@ -3399,14 +3402,15 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.fe.templates\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.fe.core,sap.ushell,sap.fe.templates\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"fefpmjs\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\">
+        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-flexibilityServices='[{\\"connector\\": \\"LocalStorageConnector\\"}]'>
     </script>
     <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
@@ -3465,6 +3469,23 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
             });
             return libOrCompKeysStringTmp;
         }
+        function getComponentUsageNames(compUsages, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            var compNames = Object.keys(compUsages).map(function (compUsageKey) {
+                return compUsages[compUsageKey].name;
+            });
+            compNames.forEach(function (compName) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return compName === substring || compName.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + compName;
+                    } else {
+                        libOrCompKeysStringTmp = compName;
+                    }
+                }
+            });
+            return libOrCompKeysStringTmp;
+        }
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -3484,7 +3505,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                             manifest[\\"sap.ui5\\"] &&
                             manifest[\\"sap.ui5\\"].componentUsages
                         ) {
-                            result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
+                            result = getComponentUsageNames(manifest[\\"sap.ui5\\"].componentUsages, result);
                         }
                     }
                     resolve(result);
@@ -3571,7 +3592,7 @@ function registerSAPFonts() {
     };
     //Registering to the icon pool
     IconPool.registerFont(bSuiteTheme);
-    })
+    });
 }
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
@@ -3606,7 +3627,7 @@ sap.registerComponentDependencyPaths(manifestUri)
         if (componentName && componentName.length > 0) {
             if (useMockserver && useMockserver === \\"true\\") {
                 sap.ui.getCore().attachInit(function () {
-                    registerSAPFonts()
+                    registerSAPFonts();
                     sap.ui.require([componentName.replace(/\\\\./g, \\"/\\") + \\"/localService/mockserver\\"], function (server) {
                         // set up test service for local testing
                         server.init();
@@ -3620,7 +3641,7 @@ sap.registerComponentDependencyPaths(manifestUri)
 
                 // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
-                    registerSAPFonts()
+                    registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
                     sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
                         var oResourceBundle = ResourceBundle.create({
@@ -3633,9 +3654,11 @@ sap.registerComponentDependencyPaths(manifestUri)
             }
         } else {
             sap.ui.getCore().attachInit(function () {
-                registerSAPFonts()
+                registerSAPFonts();
                 // initialize the ushell sandbox component
-                sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                sap.ushell.Container.createRenderer(true).then(function (component) {
+                    component.placeAt(\\"content\\");
+                });
             });
         }
     });",
@@ -3646,34 +3669,6 @@ sap.registerComponentDependencyPaths(manifestUri)
 
 exports[`Flexible Programming Model template: fpmTemplates Generate files for template: with-ts 1`] = `
 Object {
-  ".babelrc.json": Object {
-    "contents": "{
-    \\"ignore\\": [
-        \\"**/*.d.ts\\"
-    ],
-    \\"presets\\": [
-        \\"@babel/preset-env\\",
-        [
-            \\"transform-ui5\\",
-            {
-                \\"overridesToOverride\\": true
-            }
-        ],
-        \\"@babel/preset-typescript\\"
-    ],
-    \\"plugins\\": [
-        \\"transform-remove-console\\",
-        [
-            \\"transform-async-to-promises\\",
-            {
-                \\"inlineHelpers\\": true
-            }
-        ]
-    ],
-    \\"sourceMaps\\": true
-}",
-    "state": "modified",
-  },
   ".eslintrc": Object {
     "contents": "{
     \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
@@ -3699,7 +3694,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"fefpmts\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -3712,12 +3706,12 @@ archive.zip
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"latest\\",
-    \\"@sapui5/ts-types-esm\\": \\"~1.96.11\\",
-    \\"ui5-tooling-transpile\\": \\"^0.7.10\\",
-    \\"typescript\\": \\"^4.6.3\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
-    \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.2.0\\",
+    \\"@sapui5/ts-types-esm\\": \\"~1.96.0\\",
+    \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
+    \\"typescript\\": \\"^5.1.6\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
+    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -3728,10 +3722,10 @@ archive.zip
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
     \\"prestart\\": \\"npm run ts-typecheck\\",
     \\"prebuild\\": \\"npm run ts-typecheck\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmts-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmts-tile\\\\\\"\\"
+    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -3749,14 +3743,16 @@ archive.zip
         \\"strictPropertyInitialization\\": false,
         \\"moduleResolution\\": \\"node\\",
         \\"rootDir\\": \\"./webapp\\",
+        \\"outDir\\": \\"./dist\\",
         \\"baseUrl\\": \\"./\\",
         \\"paths\\": {
             \\"fefpmts/*\\": [
                 \\"./webapp/*\\"
             ]
         },
-        \\"types\\": [
-            \\"@sapui5/ts-types-esm\\"
+        \\"typeRoots\\": [
+            \\"./node_modules/@types\\",
+            \\"./node_modules/@sapui5/ts-types-esm\\"
         ]
     },
     \\"include\\": [
@@ -3768,7 +3764,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: fefpmts
 type: application
@@ -3778,9 +3774,10 @@ framework:
   libraries:
     - name: sap.m
     - name: sap.ui.core
+    - name: sap.fe.core
     - name: sap.ushell
-    - name: sap.fe.templates
     - name: themelib_sap_fiori_3
+    - name: sap.fe.templates
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -3793,6 +3790,8 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
         excludePatterns:
           - /Component-preload.js
     - name: fiori-tools-proxy
@@ -3818,13 +3817,15 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
 ",
     "state": "modified",
   },
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: fefpmts
 type: application
@@ -3852,6 +3853,8 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
         excludePatterns:
           - /Component-preload.js
     - name: sap-fe-mockserver
@@ -3863,20 +3866,24 @@ server:
             metadataPath: ./webapp/localService/metadata.xml
             mockdataPath: ./webapp/localService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/annotations/annotation.xml
+            urlPath: annotations/annotation.xml
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
 ",
     "state": "modified",
   },
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: fefpmts
 type: application
@@ -3904,6 +3911,8 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
         excludePatterns:
           - /Component-preload.js
 builder:
@@ -3912,6 +3921,8 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
 ",
     "state": "modified",
   },
@@ -3963,7 +3974,7 @@ export default class Component extends BaseComponent {
     "contents": "import Controller from \\"sap/fe/core/PageController\\";
 
 /**
- * @namespace fefpmts.ext.main.Main.controller
+ * @namespace fefpmts.ext.main
  */
 export default class Main extends Controller {
 
@@ -4007,7 +4018,7 @@ export default class Main extends Controller {
   "webapp/ext/main/Main.view.xml": Object {
     "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\"
     xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"fefpmts.ext.main.Main\\">
-    <Page id=\\"Main\\" title=\\"Main\\">
+    <Page id=\\"Main\\" title=\\"{i18n>MainTitle}\\">
         <content></content>
     </Page>
 </mvc:View>",
@@ -4069,7 +4080,9 @@ declare module 'sap/fe/core/PageController' {
 appTitle=App \\"Title\\" \\\\\\"
 
 #YDES: Application description
-appDescription=A Fiori application.",
+appDescription=A Fiori application.
+#XTIT: Custom view title
+MainTitle=Main",
     "state": "modified",
   },
   "webapp/index.html": Object {
@@ -7079,8 +7092,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
-        \\"sap.ushell\\": {},
-        \\"sap.fe.templates\\": {}
+        \\"sap.fe.core\\": {}
       }
     },
     \\"contentDensities\\": {
@@ -7203,14 +7215,15 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.fe.templates\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.fe.core,sap.ushell,sap.fe.templates\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"fefpmts\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\">
+        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-flexibilityServices='[{\\"connector\\": \\"LocalStorageConnector\\"}]'>
     </script>
     <script>
         sap.ui.getCore().attachInit(function () {

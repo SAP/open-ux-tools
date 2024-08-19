@@ -19,7 +19,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"test.me\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"Test App Description\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -49,7 +48,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -92,7 +91,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -132,7 +131,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -206,7 +205,7 @@ sap.ui.define([
       \\"use strict\\";
   
       return BaseController.extend(\\"test.me.controller.App\\", {
-        onInit() {
+        onInit: function() {
         }
       });
     }
@@ -218,18 +217,15 @@ sap.ui.define([
     "contents": "sap.ui.define([
     \\"sap/ui/core/mvc/Controller\\"
 ],
-    /**
-     * @param {typeof sap.ui.core.mvc.Controller} Controller
-     */
-    function (Controller) {
-        \\"use strict\\";
+function (Controller) {
+    \\"use strict\\";
 
-        return Controller.extend(\\"test.me.controller.View1\\", {
-            onInit: function () {
+    return Controller.extend(\\"test.me.controller.View1\\", {
+        onInit: function () {
 
-            }
-        });
+        }
     });
+});
 ",
     "state": "modified",
   },
@@ -973,24 +969,20 @@ title=My Test App",
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
 ], 
-    /**
-     * provide app-view type models (as in the first \\"V\\" in MVVC)
-     * 
-     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
-     * @param {typeof sap.ui.Device} Device
-     * 
-     * @returns {Function} createDeviceModel() for providing runtime info for the device the UI5 app is running on
-     */
-    function (JSONModel, Device) {
-        \\"use strict\\";
+function (JSONModel, Device) {
+    \\"use strict\\";
 
-        return {
-            createDeviceModel: function () {
-                var oModel = new JSONModel(Device);
-                oModel.setDefaultBindingMode(\\"OneWay\\");
-                return oModel;
+    return {
+        /**
+         * Provides runtime info for the device the UI5 app is running on as JSONModel
+         */
+        createDeviceModel: function () {
+            var oModel = new JSONModel(Device);
+            oModel.setDefaultBindingMode(\\"OneWay\\");
+            return oModel;
         }
     };
+
 });",
     "state": "modified",
   },
@@ -1063,7 +1055,8 @@ title=My Test App",
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\">
+        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-flexibilityServices='[{\\"connector\\": \\"LocalStorageConnector\\"}]'>
     </script>
     <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
@@ -1122,6 +1115,23 @@ title=My Test App",
             });
             return libOrCompKeysStringTmp;
         }
+        function getComponentUsageNames(compUsages, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            var compNames = Object.keys(compUsages).map(function (compUsageKey) {
+                return compUsages[compUsageKey].name;
+            });
+            compNames.forEach(function (compName) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return compName === substring || compName.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + compName;
+                    } else {
+                        libOrCompKeysStringTmp = compName;
+                    }
+                }
+            });
+            return libOrCompKeysStringTmp;
+        }
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -1141,7 +1151,7 @@ title=My Test App",
                             manifest[\\"sap.ui5\\"] &&
                             manifest[\\"sap.ui5\\"].componentUsages
                         ) {
-                            result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
+                            result = getComponentUsageNames(manifest[\\"sap.ui5\\"].componentUsages, result);
                         }
                     }
                     resolve(result);
@@ -1228,7 +1238,7 @@ function registerSAPFonts() {
     };
     //Registering to the icon pool
     IconPool.registerFont(bSuiteTheme);
-    })
+    });
 }
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
@@ -1263,7 +1273,7 @@ sap.registerComponentDependencyPaths(manifestUri)
         if (componentName && componentName.length > 0) {
             if (useMockserver && useMockserver === \\"true\\") {
                 sap.ui.getCore().attachInit(function () {
-                    registerSAPFonts()
+                    registerSAPFonts();
                     sap.ui.require([componentName.replace(/\\\\./g, \\"/\\") + \\"/localService/mockserver\\"], function (server) {
                         // set up test service for local testing
                         server.init();
@@ -1277,7 +1287,7 @@ sap.registerComponentDependencyPaths(manifestUri)
 
                 // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
-                    registerSAPFonts()
+                    registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
                     sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
                         var oResourceBundle = ResourceBundle.create({
@@ -1290,9 +1300,11 @@ sap.registerComponentDependencyPaths(manifestUri)
             }
         } else {
             sap.ui.getCore().attachInit(function () {
-                registerSAPFonts()
+                registerSAPFonts();
                 // initialize the ushell sandbox component
-                sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                sap.ushell.Container.createRenderer(true).then(function (component) {
+                    component.placeAt(\\"content\\");
+                });
             });
         }
     });",
@@ -1342,7 +1354,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"test.me\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"Test App Description\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -1372,7 +1383,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -1415,7 +1426,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -1455,7 +1466,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -1494,10 +1505,6 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
     \\"use strict\\";
 
     return UIComponent.extend(\\"test.me.Component\\", {
-        /**
-         * @param {typeof sap.ui.model.json.JSONModel} JSONModel
-         * @param {typeof sap.ui.Device} Device
-         */ 
         metadata : {
             manifest : \\"json\\"
         },
@@ -3334,24 +3341,20 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
 ], 
-    /**
-     * provide app-view type models (as in the first \\"V\\" in MVVC)
-     * 
-     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
-     * @param {typeof sap.ui.Device} Device
-     * 
-     * @returns {Function} createDeviceModel() for providing runtime info for the device the UI5 app is running on
-     */
-    function (JSONModel, Device) {
-        \\"use strict\\";
+function (JSONModel, Device) {
+    \\"use strict\\";
 
-        return {
-            createDeviceModel: function () {
-                var oModel = new JSONModel(Device);
-                oModel.setDefaultBindingMode(\\"OneWay\\");
-                return oModel;
+    return {
+        /**
+         * Provides runtime info for the device the UI5 app is running on as JSONModel
+         */
+        createDeviceModel: function () {
+            var oModel = new JSONModel(Device);
+            oModel.setDefaultBindingMode(\\"OneWay\\");
+            return oModel;
         }
     };
+
 });",
     "state": "modified",
   },
@@ -3424,7 +3427,8 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\">
+        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-flexibilityServices='[{\\"connector\\": \\"LocalStorageConnector\\"}]'>
     </script>
     <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
@@ -3483,6 +3487,23 @@ errorText=Sorry, a technical error occurred! Please try again later.",
             });
             return libOrCompKeysStringTmp;
         }
+        function getComponentUsageNames(compUsages, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            var compNames = Object.keys(compUsages).map(function (compUsageKey) {
+                return compUsages[compUsageKey].name;
+            });
+            compNames.forEach(function (compName) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return compName === substring || compName.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + compName;
+                    } else {
+                        libOrCompKeysStringTmp = compName;
+                    }
+                }
+            });
+            return libOrCompKeysStringTmp;
+        }
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -3502,7 +3523,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
                             manifest[\\"sap.ui5\\"] &&
                             manifest[\\"sap.ui5\\"].componentUsages
                         ) {
-                            result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
+                            result = getComponentUsageNames(manifest[\\"sap.ui5\\"].componentUsages, result);
                         }
                     }
                     resolve(result);
@@ -3589,7 +3610,7 @@ function registerSAPFonts() {
     };
     //Registering to the icon pool
     IconPool.registerFont(bSuiteTheme);
-    })
+    });
 }
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
@@ -3624,7 +3645,7 @@ sap.registerComponentDependencyPaths(manifestUri)
         if (componentName && componentName.length > 0) {
             if (useMockserver && useMockserver === \\"true\\") {
                 sap.ui.getCore().attachInit(function () {
-                    registerSAPFonts()
+                    registerSAPFonts();
                     sap.ui.require([componentName.replace(/\\\\./g, \\"/\\") + \\"/localService/mockserver\\"], function (server) {
                         // set up test service for local testing
                         server.init();
@@ -3638,7 +3659,7 @@ sap.registerComponentDependencyPaths(manifestUri)
 
                 // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
-                    registerSAPFonts()
+                    registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
                     sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
                         var oResourceBundle = ResourceBundle.create({
@@ -3651,9 +3672,11 @@ sap.registerComponentDependencyPaths(manifestUri)
             }
         } else {
             sap.ui.getCore().attachInit(function () {
-                registerSAPFonts()
+                registerSAPFonts();
                 // initialize the ushell sandbox component
-                sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                sap.ushell.Container.createRenderer(true).then(function (component) {
+                    component.placeAt(\\"content\\");
+                });
             });
         }
     });",
@@ -3982,7 +4005,6 @@ archive.zip
     "contents": "{
   \\"name\\": \\"test.me\\",
   \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
   \\"description\\": \\"Test App Description\\",
   \\"keywords\\": [
     \\"ui5\\",
@@ -4012,7 +4034,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -4055,7 +4077,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -4095,7 +4117,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -5512,24 +5534,20 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
 ], 
-    /**
-     * provide app-view type models (as in the first \\"V\\" in MVVC)
-     * 
-     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
-     * @param {typeof sap.ui.Device} Device
-     * 
-     * @returns {Function} createDeviceModel() for providing runtime info for the device the UI5 app is running on
-     */
-    function (JSONModel, Device) {
-        \\"use strict\\";
+function (JSONModel, Device) {
+    \\"use strict\\";
 
-        return {
-            createDeviceModel: function () {
-                var oModel = new JSONModel(Device);
-                oModel.setDefaultBindingMode(\\"OneWay\\");
-                return oModel;
+    return {
+        /**
+         * Provides runtime info for the device the UI5 app is running on as JSONModel
+         */
+        createDeviceModel: function () {
+            var oModel = new JSONModel(Device);
+            oModel.setDefaultBindingMode(\\"OneWay\\");
+            return oModel;
         }
     };
+
 });",
     "state": "modified",
   },
@@ -5602,7 +5620,8 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\">
+        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-flexibilityServices='[{\\"connector\\": \\"LocalStorageConnector\\"}]'>
     </script>
     <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
@@ -5661,6 +5680,23 @@ errorText=Sorry, a technical error occurred! Please try again later.",
             });
             return libOrCompKeysStringTmp;
         }
+        function getComponentUsageNames(compUsages, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            var compNames = Object.keys(compUsages).map(function (compUsageKey) {
+                return compUsages[compUsageKey].name;
+            });
+            compNames.forEach(function (compName) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return compName === substring || compName.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + compName;
+                    } else {
+                        libOrCompKeysStringTmp = compName;
+                    }
+                }
+            });
+            return libOrCompKeysStringTmp;
+        }
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -5680,7 +5716,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
                             manifest[\\"sap.ui5\\"] &&
                             manifest[\\"sap.ui5\\"].componentUsages
                         ) {
-                            result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
+                            result = getComponentUsageNames(manifest[\\"sap.ui5\\"].componentUsages, result);
                         }
                     }
                     resolve(result);
@@ -5767,7 +5803,7 @@ function registerSAPFonts() {
     };
     //Registering to the icon pool
     IconPool.registerFont(bSuiteTheme);
-    })
+    });
 }
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
@@ -5802,7 +5838,7 @@ sap.registerComponentDependencyPaths(manifestUri)
         if (componentName && componentName.length > 0) {
             if (useMockserver && useMockserver === \\"true\\") {
                 sap.ui.getCore().attachInit(function () {
-                    registerSAPFonts()
+                    registerSAPFonts();
                     sap.ui.require([componentName.replace(/\\\\./g, \\"/\\") + \\"/localService/mockserver\\"], function (server) {
                         // set up test service for local testing
                         server.init();
@@ -5816,7 +5852,7 @@ sap.registerComponentDependencyPaths(manifestUri)
 
                 // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
-                    registerSAPFonts()
+                    registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
                     sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
                         var oResourceBundle = ResourceBundle.create({
@@ -5829,9 +5865,11 @@ sap.registerComponentDependencyPaths(manifestUri)
             }
         } else {
             sap.ui.getCore().attachInit(function () {
-                registerSAPFonts()
+                registerSAPFonts();
                 // initialize the ushell sandbox component
-                sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                sap.ushell.Container.createRenderer(true).then(function (component) {
+                    component.placeAt(\\"content\\");
+                });
             });
         }
     });",

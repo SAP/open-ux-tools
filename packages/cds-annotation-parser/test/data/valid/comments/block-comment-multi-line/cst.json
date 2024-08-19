@@ -1,0 +1,96 @@
+{
+  "name": "declaration",
+  "children": {
+    "assignment": [
+      {
+        "name": "assignment",
+        "children": {
+          "Colon": [
+            {
+              "tokenTypeName": "Colon",
+              "image": ":",
+              "startOffset": 2,
+              "endOffset": 2
+            }
+          ],
+          "path": [
+            {
+              "name": "path",
+              "children": {
+                "pathSegment": [
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "Identifier": [
+                        {
+                          "tokenTypeName": "Identifier",
+                          "image": "a",
+                          "startOffset": 0,
+                          "endOffset": 0
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 0,
+                      "endOffset": 0
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 0,
+                "endOffset": 0
+              }
+            }
+          ],
+          "value": [
+            {
+              "name": "value",
+              "children": {
+                "collection": [
+                  {
+                    "name": "collection",
+                    "children": {
+                      "LBracket": [
+                        {
+                          "tokenTypeName": "LBracket",
+                          "image": "[",
+                          "startOffset": 4,
+                          "endOffset": 4
+                        }
+                      ],
+                      "RBracket": [
+                        {
+                          "tokenTypeName": "RBracket",
+                          "image": "]",
+                          "startOffset": 21,
+                          "endOffset": 21
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 4,
+                      "endOffset": 21
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 4,
+                "endOffset": 21
+              }
+            }
+          ]
+        },
+        "location": {
+          "startOffset": 0,
+          "endOffset": 21
+        }
+      }
+    ]
+  },
+  "location": {
+    "startOffset": 0,
+    "endOffset": 21
+  }
+}

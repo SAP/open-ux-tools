@@ -1,7 +1,11 @@
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { dirname, relative } from 'path';
+import { join, relative } from 'path';
 import { getArchive } from '../../../src/cli/archive';
+import { createUi5Archive } from '../../../src/ui5/archive';
 import axios from 'axios';
+import type { Resource } from '@ui5/fs';
+import AdmZip from 'adm-zip';
+import { existsSync } from 'fs';
 
 jest.mock('axios');
 
@@ -10,8 +14,13 @@ describe('cli/archive', () => {
 
     describe('createArchiveFromFolder', () => {
         test('existing folder', async () => {
-            const archiveFolder = relative(process.cwd(), dirname(__dirname));
-            await getArchive(nullLogger, { archiveFolder } as any);
+            const archiveFolder = join(__dirname, '../../fixtures/simple-app/webapp');
+            const archive = await getArchive(nullLogger, { archiveFolder } as any);
+            expect(archive).toBeDefined();
+            const files = new AdmZip(archive).getEntries().map((entry) => entry.entryName);
+            for (const file of files) {
+                expect(existsSync(join(archiveFolder, file))).toBe(true);
+            }
         });
 
         test('not existing folder', async () => {
@@ -60,5 +69,40 @@ describe('cli/archive', () => {
                 expect(error).toBeDefined();
             }
         });
+    });
+});
+
+describe('Archive Generation', () => {
+    const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
+    const projectName = 'ProjectName';
+    const files: Partial<Resource>[] = [];
+    // Should be included
+    files.push({
+        getPath: () => `${projectName}/~path`,
+        getBuffer: () => Promise.resolve(Buffer.from(''))
+    });
+    // Should be excluded
+    files.push({
+        getPath: () => `${projectName}/test/change_loader.js`,
+        getBuffer: () => Promise.resolve(Buffer.from(''))
+    });
+    const mockProject = {
+        byGlob: jest.fn().mockResolvedValue(files)
+    };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test('Create archive with exclude parameter', async () => {
+        const buffer = await createUi5Archive(nullLogger, mockProject as any, projectName, ['/test/']);
+        const zip = new AdmZip(buffer);
+        expect(zip.getEntryCount()).toBe(1);
+    });
+
+    test('Create archive to include everything', async () => {
+        const buffer = await createUi5Archive(nullLogger, mockProject as any, projectName);
+        const zip = new AdmZip(buffer);
+        expect(zip.getEntryCount()).toBe(2);
     });
 });

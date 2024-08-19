@@ -74,18 +74,34 @@ export enum TenantType {
     Customer = 'CUSTOMER'
 }
 
-/**
- * Possible values for operations type property: (C)loud and on-(P)remise.
- */
 export type OperationsType = 'C' | 'P';
 
+/**
+ * ATO Settings properties
+ *
+ * @typedef AtoSettings
+ * @property {string} developmentPackage Local package name i.e YY1_TEST_PACKAGE
+ * @property {string} developmentPrefix Describes a custom prefix that is used for your packages and transports i.e.YY1_ | ZZ1_
+ * @property {OperationsType} operationsType Hosting type i.e. Cloud | onPremise
+ * @property {boolean} isExtensibilityDevelopmentSystem Whether target system is a extensible development tenant, true | false
+ * @property {TenantType} tenantType Type of tenant exposed i.e. SAP | CUSTOMER
+ * @property {boolean} isTransportRequestRequired Whether Transport Request (TR) is required during deployment, true | false
+ * @property {boolean} isConfigured Whether ATO is enabled on target system, true | false
+ */
 export interface AtoSettings {
     developmentPackage?: string;
     developmentPrefix?: string;
+    /**
+     * Operations type cloud or on premise.
+     */
     operationsType?: OperationsType;
+    /**
+     * True if it is an S/4HANA Cloud Public Edition client for key user extensibility.
+     */
     isExtensibilityDevelopmentSystem?: boolean;
     tenantType?: TenantType;
     isTransportRequestRequired?: boolean;
+    isConfigured?: boolean;
 }
 
 // Success | Error
@@ -117,3 +133,18 @@ export interface ArchiveFileNode {
 export type ArchiveFileNodeType = 'file' | 'folder';
 
 export type ArchiveFileContentType<T> = T extends 'file' ? string : T extends 'folder' ? ArchiveFileNode[] : never;
+
+export type BusinessObject = {
+    name: string;
+    uri: string;
+    description?: string;
+};
+
+export type AbapCDSView = {
+    name: string;
+    uri: string;
+    description?: string;
+};
+
+export type PublishResponse = { SEVERITY: string; SHORT_TEXT: string; LONG_TEXT: string };
+export type ValidationResponse = { severity: string; short_text: string; long_text: string };

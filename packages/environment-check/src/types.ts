@@ -136,6 +136,7 @@ export interface MarkdownWriter {
     addDetails: (description: string, details: string) => void;
     addSub: (text: string) => void;
     addTable: (table: Array<Array<string>>) => void;
+    addTableInDropdown: (description: string, table: Array<Array<string>>) => void;
     toString: () => string;
 }
 
@@ -164,13 +165,18 @@ export const enum UI5FlexLayer {
     CUSTOMER_BASE = 'CUSTOMER_BASE'
 }
 
-export enum DirName {
-    Sapux = 'src',
-    Webapp = 'webapp'
-}
-
 export interface ILogger extends Logger {
+    /**
+     * Pushes new messages to the logger.
+     *
+     * @param newMessages - An array of ResultMessage objects representing the new messages to be added.
+     */
     push(...newMessages: ResultMessage[]): void;
+    /**
+     * Retrieves all the messages stored in the logger.
+     *
+     * @returns An array of ResultMessage objects representing the stored messages.
+     */
     getMessages(): ResultMessage[];
 }
 

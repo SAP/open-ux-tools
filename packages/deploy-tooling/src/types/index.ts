@@ -54,6 +54,11 @@ export interface CommonOptions {
      * If set to true, a transport request will be created during deployment
      */
     createTransport?: boolean;
+
+    /**
+     * Optional layered repository namespace.
+     */
+    lrep?: string;
 }
 
 /**
@@ -63,8 +68,9 @@ export type AbapTarget = BaseAbapTarget & { service?: string };
 
 export interface AbapDeployConfig extends CommonOptions {
     target: AbapTarget;
-    app: BspConfig;
+    app: Partial<BspConfig>;
     credentials?: AxiosRequestConfig['auth'];
+    exclude?: string[];
 }
 
 export interface CliOptions

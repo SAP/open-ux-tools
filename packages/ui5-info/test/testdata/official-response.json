@@ -1,0 +1,321 @@
+{
+    "latest": {
+        "version": "1.109.3",
+        "support": "Maintenance",
+        "lts": false
+    },
+    "1.109": {
+        "version": "1.109.3",
+        "support": "Maintenance",
+        "lts": false,
+        "patches": ["1.109.3", "1.109.2", "1.109.1", "1.109.0"]
+    },
+    "1.108": {
+        "version": "1.108.4",
+        "support": "Maintenance",
+        "lts": true,
+        "patches": ["1.108.4", "1.108.3", "1.108.2", "1.108.1", "1.108.0"]
+    },
+    "1.107": {
+        "version": "1.107.1",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.107.1", "1.107.0"]
+    },
+    "1.106": {
+        "version": "1.106.1",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.106.1", "1.106.0"]
+    },
+    "1.105": {
+        "version": "1.105.4",
+        "support": "Maintenance",
+        "lts": false,
+        "patches": ["1.105.4", "1.105.3", "1.105.2", "1.105.1", "1.105.0"]
+    },
+    "1.104": {
+        "version": "1.104.2",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.104.2", "1.104.1", "1.104.0"]
+    },
+    "1.103": {
+        "version": "1.103.1",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.103.1", "1.103.0"]
+    },
+    "1.102": {
+        "version": "1.102.13",
+        "support": "Maintenance",
+        "lts": false,
+        "patches": [
+            "1.102.13",
+            "1.102.12",
+            "1.102.11",
+            "1.102.10",
+            "1.102.9",
+            "1.102.8",
+            "1.102.7",
+            "1.102.6",
+            "1.102.5",
+            "1.102.4",
+            "1.102.3",
+            "1.102.2",
+            "1.102.1",
+            "1.102.0"
+        ]
+    },
+    "1.101": {
+        "version": "1.101.1",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.101.1", "1.101.0"]
+    },
+    "1.100": {
+        "version": "1.100.2",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.100.2", "1.100.1", "1.100.0"]
+    },
+    "1.99": {
+        "version": "1.99.4",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.99.4", "1.99.3", "1.99.2", "1.99.1", "1.99.0"]
+    },
+    "1.98": {
+        "version": "1.98.0",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.98.0"]
+    },
+    "1.97": {
+        "version": "1.97.2",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.97.2", "1.97.1", "1.97.0"]
+    },
+    "1.96": {
+        "version": "1.96.16",
+        "support": "Maintenance",
+        "lts": true,
+        "patches": [
+            "1.96.16",
+            "1.96.15",
+            "1.96.14",
+            "1.96.13",
+            "1.96.12",
+            "1.96.11",
+            "1.96.10",
+            "1.96.9",
+            "1.96.8",
+            "1.96.7",
+            "1.96.6",
+            "1.96.5",
+            "1.96.4",
+            "1.96.3",
+            "1.96.2",
+            "1.96.1",
+            "1.96.0"
+        ]
+    },
+    "1.95": {
+        "version": "1.95.0",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.95.0"]
+    },
+    "1.94": {
+        "version": "1.94.1",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.94.1"]
+    },
+    "1.93": {
+        "version": "1.93.7",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.93.7", "1.93.6", "1.93.5", "1.93.4", "1.93.3", "1.93.2", "1.93.0"]
+    },
+    "1.92": {
+        "version": "1.92.2",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.92.2", "1.92.1", "1.92.0"]
+    },
+    "1.91": {
+        "version": "1.91.1",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.91.1"]
+    },
+    "1.90": {
+        "version": "1.90.14",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": [
+            "1.90.14",
+            "1.90.13",
+            "1.90.12",
+            "1.90.11",
+            "1.90.10",
+            "1.90.9",
+            "1.90.8",
+            "1.90.7",
+            "1.90.6",
+            "1.90.0"
+        ]
+    },
+    "1.87": {
+        "version": "1.87.7",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.87.7"]
+    },
+    "1.84": {
+        "version": "1.84.31",
+        "support": "Maintenance",
+        "lts": true,
+        "patches": [
+            "1.84.31",
+            "1.84.30",
+            "1.84.29",
+            "1.84.28",
+            "1.84.27",
+            "1.84.26",
+            "1.84.25",
+            "1.84.24",
+            "1.84.23",
+            "1.84.22",
+            "1.84.21",
+            "1.84.20",
+            "1.84.19",
+            "1.84.16",
+            "1.84.13",
+            "1.84.8",
+            "1.84.3",
+            "1.84.1",
+            "1.84.0"
+        ]
+    },
+    "1.82": {
+        "version": "1.82.0",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.82.0"]
+    },
+    "1.80": {
+        "version": "1.80.0",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.80.0"]
+    },
+    "1.78": {
+        "version": "1.78.9",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.78.9"]
+    },
+    "1.75": {
+        "version": "1.75.0",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.75.0"]
+    },
+    "1.74": {
+        "version": "1.74.0",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.74.0"]
+    },
+    "1.73": {
+        "version": "1.73.1",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.73.1"]
+    },
+    "1.71": {
+        "version": "1.71.53",
+        "support": "Maintenance",
+        "lts": true,
+        "patches": [
+            "1.71.53",
+            "1.71.52",
+            "1.71.51",
+            "1.71.50",
+            "1.71.49",
+            "1.71.48",
+            "1.71.47",
+            "1.71.46",
+            "1.71.45",
+            "1.71.44",
+            "1.71.43",
+            "1.71.42",
+            "1.71.41",
+            "1.71.40",
+            "1.71.39",
+            "1.71.36",
+            "1.71.35",
+            "1.71.33",
+            "1.71.30",
+            "1.71.29",
+            "1.71.24",
+            "1.71.23",
+            "1.71.22",
+            "1.71.17",
+            "1.71.9",
+            "1.71.5",
+            "1.71.2"
+        ]
+    },
+    "1.65": {
+        "version": "1.65.1",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.65.1"]
+    },
+    "1.60": {
+        "version": "1.60.44",
+        "support": "Out of maintenance",
+        "lts": true,
+        "patches": ["1.60.44", "1.60.43", "1.60.41", "1.60.40", "1.60.38", "1.60.29", "1.60.14", "1.60.1"]
+    },
+    "1.56": {
+        "version": "1.56.12",
+        "support": "Out of maintenance",
+        "lts": false,
+        "patches": ["1.56.12", "1.56.11", "1.56.9", "1.56.6"]
+    },
+    "1.52": {
+        "version": "1.52.51",
+        "support": "Out of maintenance",
+        "lts": true,
+        "patches": ["1.52.51"]
+    },
+    "1.44": {
+        "version": "1.44.51",
+        "support": "Out of maintenance",
+        "lts": true,
+        "patches": ["1.44.51"]
+    },
+    "1.38": {
+        "version": "1.38.59",
+        "support": "Maintenance",
+        "lts": true,
+        "patches": [
+            "1.38.59",
+            "1.38.58",
+            "1.38.57",
+            "1.38.56",
+            "1.38.55",
+            "1.38.54",
+            "1.38.53",
+            "1.38.48",
+            "1.38.47",
+            "1.38.40",
+            "1.38.5"
+        ]
+    }
+}

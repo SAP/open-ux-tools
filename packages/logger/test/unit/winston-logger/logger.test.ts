@@ -19,7 +19,7 @@ jest.mock(
         return {
             window: {
                 createOutputChannel() {
-                    return { appendLine: () => 0 };
+                    return { info: () => 0 };
                 }
             }
         };

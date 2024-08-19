@@ -1,0 +1,69 @@
+{
+  "type": "annotation",
+  "range": "[(0,0)..(0,36)]",
+  "term": {
+    "type": "path",
+    "range": "[(0,0)..(0,32)]",
+    "value": "UI.HeaderInfo#def.Description",
+    "segments": [
+      {
+        "type": "identifier",
+        "range": "[(0,0)..(0,2)]",
+        "value": "UI",
+        "quoted": false
+      },
+      {
+        "type": "identifier",
+        "range": "[(0,5)..(0,15)]",
+        "value": "HeaderInfo",
+        "quoted": true
+      },
+      {
+        "type": "identifier",
+        "range": "[(0,20)..(0,31)]",
+        "value": "Description",
+        "quoted": true
+      }
+    ],
+    "separators": [
+      {
+        "type": "separator",
+        "range": "[(0,2)..(0,3)]",
+        "value": ".",
+        "escaped": false
+      },
+      {
+        "type": "separator",
+        "range": "[(0,19)..(0,20)]",
+        "value": ".",
+        "escaped": true
+      }
+    ]
+  },
+  "qualifier": {
+    "type": "qualifier",
+    "range": "[(0,16)..(0,19)]",
+    "value": "def"
+  },
+  "colon": {
+    "type": "token",
+    "range": "[(0,32)..(0,33)]",
+    "value": ":"
+  },
+  "value": {
+    "type": "record",
+    "range": "[(0,34)..(0,36)]",
+    "properties": [],
+    "commas": [],
+    "openToken": {
+      "type": "token",
+      "range": "[(0,34)..(0,35)]",
+      "value": "{"
+    },
+    "closeToken": {
+      "type": "token",
+      "range": "[(0,35)..(0,36)]",
+      "value": "}"
+    }
+  }
+}

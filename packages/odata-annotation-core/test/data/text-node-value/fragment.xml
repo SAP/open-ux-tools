@@ -1,0 +1,11 @@
+<Annotations Target="IncidentService.Category">
+    <Annotation Term="Analytics.AggregatedProperties">
+        <Collection>
+            <Record Type="Analytics.AggregatedPropertyType">
+                <PropertyValue Property="Name">
+                    <String>Aggr|egatedPrice</String>
+                </PropertyValue>
+            </Record>
+        </Collection>
+    </Annotation>
+</Annotations>

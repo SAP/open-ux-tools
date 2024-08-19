@@ -1,4 +1,4 @@
-import { basename, dirname, join, parse, sep } from 'path';
+import { basename, dirname, isAbsolute, join, parse, sep } from 'path';
 import type {
     AdaptationResults,
     AllAppResults,
@@ -13,7 +13,7 @@ import type {
 import { FileName } from '../constants';
 import { fileExists, findBy, findFileUp, readJSON } from '../file';
 import { hasDependency } from './dependencies';
-import { getCapProjectType, isCapJavaProject, isCapNodeJsProject } from './cap';
+import { getCapProjectType } from './cap';
 import { getWebappPath } from './ui5-config';
 
 /**
@@ -22,11 +22,11 @@ import { getWebappPath } from './ui5-config';
  * Further filtering for specific artifact types happens in the filter{Artifact}
  * functions.
  */
-const filterFileMap: Record<FioriArtifactTypes, string> = {
-    applications: FileName.Manifest,
-    adaptations: FileName.ManifestAppDescrVar,
-    extensions: FileName.ExtConfigJson,
-    libraries: FileName.Manifest
+const filterFileMap: Record<FioriArtifactTypes, string[]> = {
+    applications: [FileName.Manifest],
+    adaptations: [FileName.ManifestAppDescrVar],
+    extensions: [FileName.ExtConfigJson],
+    libraries: [FileName.Library, FileName.Manifest]
 };
 
 /**
@@ -182,13 +182,21 @@ async function findRootsForPath(path: string): Promise<{ appRoot: string; projec
         if (appPckJson.sapux) {
             return findRootsWithSapux(appPckJson.sapux, path, appRoot);
         }
-        if (isCapNodeJsProject(appPckJson) || (await isCapJavaProject(appRoot))) {
+        if ((await getCapProjectType(appRoot)) !== undefined) {
             // App is part of a CAP project, but doesn't have own package.json and is not mentioned in sapux array
             // in root -> not supported
             return null;
         }
-        // Now we have the app root folder. Check for freestyle non CAP
-        if (
+        // Check if app is included in CAP project
+        const projectRoot = await findCapProjectRoot(appRoot);
+        if (projectRoot) {
+            // App included in CAP
+            return {
+                appRoot,
+                projectRoot
+            };
+        } else if (
+            // Check for freestyle non CAP
             (await fileExists(join(appRoot, FileName.Ui5LocalYaml))) &&
             hasDependency(appPckJson, '@sap/ux-ui5-tooling')
         ) {
@@ -197,28 +205,37 @@ async function findRootsForPath(path: string): Promise<{ appRoot: string; projec
                 projectRoot: appRoot
             };
         }
-        // Project must be CAP, find project root
-        try {
-            const { root } = parse(appRoot);
-            let projectRoot = dirname(appRoot);
-            while (projectRoot !== root) {
-                if (await getCapProjectType(projectRoot)) {
-                    // We have found a CAP project as root. Check if the found app is not directly in CAP's 'app/' folder.
-                    // Sometime there is a <CAP_ROOT>/app/package.json file that is used for app router (not an app)
-                    if (join(projectRoot, 'app') !== appRoot) {
-                        return {
-                            appRoot,
-                            projectRoot
-                        };
-                    }
-                }
-                projectRoot = dirname(projectRoot);
-            }
-        } catch {
-            // No project root can be found at parent folder.
-        }
     } catch {
         // Finding root should not throw error. Return null instead.
+    }
+    return null;
+}
+
+/**
+ * Find CAP project root path.
+ *
+ * @param path - path inside CAP project
+ * @returns - CAP project root path
+ */
+export async function findCapProjectRoot(path: string): Promise<string | null> {
+    try {
+        if (!isAbsolute(path)) {
+            return null;
+        }
+        const { root } = parse(path);
+        let projectRoot = dirname(path);
+        while (projectRoot !== root) {
+            if (await getCapProjectType(projectRoot)) {
+                // We have found a CAP project as root. Check if the found app is not directly in CAP's 'app/' folder.
+                // Sometime there is a <CAP_ROOT>/app/package.json file that is used for app router (not an app)
+                if (join(projectRoot, 'app') !== path) {
+                    return projectRoot;
+                }
+            }
+            projectRoot = dirname(projectRoot);
+        }
+    } catch {
+        // No project root can be found at parent folder.
     }
     return null;
 }
@@ -245,25 +262,27 @@ export async function findAllApps(
  * @returns - results as path to apps plus files already parsed, e.g. manifest.json
  */
 async function filterApplications(pathMap: FileMapAndCache): Promise<AllAppResults[]> {
-    const result: AllAppResults[] = [];
-    const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
-    for (const manifestPath of manifestPaths) {
-        try {
-            // All UI5 apps have at least sap.app: { id: <ID>, type: "application" } in manifest.json
-            pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
-            const manifest = pathMap[manifestPath] as Manifest;
-            if (!manifest['sap.app'] || !manifest['sap.app'].id || manifest['sap.app'].type !== 'application') {
-                continue;
-            }
-            const roots = await findRootsForPath(manifestPath);
+    const filterApplicationByManifest = async (manifestPath: string) => {
+        pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
+        const manifest: Manifest = pathMap[manifestPath] as Manifest; // cast needed as pathMap also allows strings and any other objects
+        // cast allowed, as this is the only place pathMap is filled for manifests
+        if (manifest['sap.app'].id && manifest['sap.app'].type === 'application') {
+            const roots = await findRootsForPath(dirname(manifestPath));
             if (roots && !(await fileExists(join(roots.appRoot, '.adp', FileName.AdaptationConfig)))) {
-                result.push({ appRoot: roots.appRoot, projectRoot: roots.projectRoot, manifest, manifestPath });
+                return { appRoot: roots.appRoot, projectRoot: roots.projectRoot, manifest: manifest, manifestPath };
             }
-        } catch {
-            // ignore exceptions for invalid manifests
         }
-    }
-    return result;
+        throw new Error('Not relevant');
+    };
+
+    const isFulFilled = (input: PromiseSettledResult<AllAppResults>): input is PromiseFulfilledResult<AllAppResults> =>
+        input.status === 'fulfilled';
+
+    const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
+
+    return (await Promise.allSettled(manifestPaths.map(filterApplicationByManifest)))
+        .filter(isFulFilled) // returning only valid applications
+        .map(({ value }) => value);
 }
 
 /**
@@ -276,9 +295,10 @@ async function filterAdaptations(pathMap: FileMapAndCache): Promise<AdaptationRe
     const results: AdaptationResults[] = [];
     const manifestAppDescrVars = Object.keys(pathMap).filter((path) => path.endsWith(FileName.ManifestAppDescrVar));
     for (const manifestAppDescrVar of manifestAppDescrVars) {
-        const adpPath = await findFileUp('.adp', dirname(manifestAppDescrVar));
-        if (adpPath && (await fileExists(join(adpPath, FileName.AdaptationConfig)))) {
-            results.push({ appRoot: dirname(adpPath), manifestAppdescrVariantPath: manifestAppDescrVar });
+        const packageJsonPath = await findFileUp(FileName.Package, dirname(manifestAppDescrVar));
+        const projectRoot = packageJsonPath ? dirname(packageJsonPath) : null;
+        if (projectRoot && (await fileExists(join(projectRoot, 'webapp', FileName.ManifestAppDescrVar)))) {
+            results.push({ appRoot: projectRoot, manifestAppdescrVariantPath: manifestAppDescrVar });
         }
     }
     return results;
@@ -324,6 +344,28 @@ async function filterExtensions(pathMap: FileMapAndCache): Promise<ExtensionResu
 }
 
 /**
+ * Find and filter libraries with only a `.library` and no `manifest.json`.
+ *
+ * @param pathMap - path to files
+ * @param manifestPaths - paths to manifest.json files
+ * @returns - results as array of found .library projects.
+ */
+async function filterDotLibraries(pathMap: FileMapAndCache, manifestPaths: string[]): Promise<LibraryResults[]> {
+    const dotLibraries: LibraryResults[] = [];
+    const dotLibraryPaths = Object.keys(pathMap)
+        .filter((path) => basename(path) === FileName.Library)
+        .map((path) => dirname(path))
+        .filter((path) => !manifestPaths.map((manifestPath) => dirname(manifestPath)).includes(path));
+    if (dotLibraryPaths) {
+        for (const libraryPath of dotLibraryPaths) {
+            const projectRoot = dirname((await findFileUp(FileName.Package, dirname(libraryPath))) ?? libraryPath);
+            dotLibraries.push({ projectRoot, libraryPath });
+        }
+    }
+    return dotLibraries;
+}
+
+/**
  * Filter extensions projects from a list of files.
  *
  * @param pathMap - path to files
@@ -332,6 +374,7 @@ async function filterExtensions(pathMap: FileMapAndCache): Promise<ExtensionResu
 async function filterLibraries(pathMap: FileMapAndCache): Promise<LibraryResults[]> {
     const results: LibraryResults[] = [];
     const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
+    results.push(...(await filterDotLibraries(pathMap, manifestPaths)));
     for (const manifestPath of manifestPaths) {
         try {
             pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
@@ -360,7 +403,7 @@ function getFilterFileNames(artifacts: FioriArtifactTypes[]): string[] {
     const uniqueFilterFiles = new Set<string>();
     for (const artifact of artifacts) {
         if (filterFileMap[artifact]) {
-            uniqueFilterFiles.add(filterFileMap[artifact]);
+            filterFileMap[artifact].forEach((artifactFile) => uniqueFilterFiles.add(artifactFile));
         }
     }
     return Array.from(uniqueFilterFiles);
@@ -406,4 +449,53 @@ export async function findFioriArtifacts(options: {
         results.libraries = await filterLibraries(pathMap);
     }
     return results;
+}
+
+/**
+ * Find all CAP project roots by locating pom.xml or package.json in a given workspace.
+ *
+ * @param options - find options
+ * @param options.wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
+ * @returns - root file paths that may contain a CAP project
+ */
+export async function findCapProjects(options: {
+    readonly wsFolders: WorkspaceFolder[] | string[];
+}): Promise<string[]> {
+    const result = new Set<string>();
+    const excludeFolders = ['node_modules', 'dist', 'webapp', 'MDKModule', 'gen'];
+    const fileNames = [FileName.Pom, FileName.Package, FileName.CapJavaApplicationYaml];
+    const wsRoots = wsFoldersToRootPaths(options.wsFolders);
+    for (const root of wsRoots) {
+        const filesToCheck = await findBy({
+            fileNames,
+            root,
+            excludeFolders
+        });
+        const appYamlsToCheck = Array.from(
+            new Set(
+                filesToCheck
+                    .filter((file) => basename(file) === FileName.CapJavaApplicationYaml)
+                    .map((file) => dirname(file))
+            )
+        );
+        const foldersToCheck = Array.from(
+            new Set(
+                filesToCheck
+                    .filter((file) => basename(file) !== FileName.CapJavaApplicationYaml)
+                    .map((file) => dirname(file))
+            )
+        );
+        for (const appYamlToCheck of appYamlsToCheck) {
+            const capRoot = await findCapProjectRoot(appYamlToCheck);
+            if (capRoot) {
+                result.add(capRoot);
+            }
+        }
+        for (const folderToCheck of foldersToCheck) {
+            if ((await getCapProjectType(folderToCheck)) !== undefined) {
+                result.add(folderToCheck);
+            }
+        }
+    }
+    return Array.from(result);
 }

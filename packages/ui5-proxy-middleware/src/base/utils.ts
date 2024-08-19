@@ -1,6 +1,6 @@
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { Manifest } from '@sap-ux/project-access';
+import { getMinimumUI5Version, type Manifest } from '@sap-ux/project-access';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { NextFunction, Request, Response } from 'express';
 import type { ProxyConfig } from './types';
@@ -38,7 +38,7 @@ export const proxyRequestHandler = (
     etag: string,
     logger: ToolsLogger
 ): void => {
-    logger.info(proxyReq.path);
+    logger.debug(proxyReq.path);
     if (proxyReq.getHeader('if-none-match') === etag) {
         res.statusCode = 304;
         res.end();
@@ -185,7 +185,11 @@ export const setHtmlResponse = (res: any, html: string): void => {
         res.write(html);
         res.end();
     } else {
-        res.status(200).contentType('html').send(html);
+        res.writeHead(200, {
+            'Content-Type': 'text/html'
+        });
+        res.write(html);
+        res.end();
     }
 };
 
@@ -209,8 +213,7 @@ export async function resolveUI5Version(version?: string, log?: ToolsLogger, man
         ui5Version = version ? version : '';
         ui5VersionLocation = getYamlFile(process.argv);
     } else {
-        const minUI5Version = manifest?.['sap.ui5']?.dependencies?.minUI5Version;
-        ui5Version = minUI5Version && !isNaN(parseFloat(minUI5Version)) ? minUI5Version : '';
+        ui5Version = (manifest && getMinimumUI5Version(manifest)) || '';
         ui5VersionLocation = 'manifest.json';
     }
 

@@ -1,0 +1,100 @@
+{
+  "name": "declaration",
+  "recoveredNode": true,
+  "children": {
+    "assignment": [
+      {
+        "name": "assignment",
+        "recoveredNode": true,
+        "children": {
+          "Colon": [
+            {
+              "tokenTypeName": "Colon",
+              "image": ":",
+              "startOffset": 5,
+              "endOffset": 5
+            }
+          ],
+          "path": [
+            {
+              "name": "path",
+              "children": {
+                "pathSegment": [
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "Identifier": [
+                        {
+                          "tokenTypeName": "Identifier",
+                          "image": "Test",
+                          "startOffset": 0,
+                          "endOffset": 3
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 0,
+                      "endOffset": 3
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 0,
+                "endOffset": 3
+              }
+            }
+          ],
+          "value": [
+            {
+              "name": "value",
+              "recoveredNode": true,
+              "children": {
+                "string": [
+                  {
+                    "name": "string",
+                    "recoveredNode": true,
+                    "children": {
+                      "SingleQuote": [
+                        {
+                          "tokenTypeName": "SingleQuote",
+                          "image": "'",
+                          "startOffset": 7,
+                          "endOffset": 7
+                        }
+                      ],
+                      "String": [
+                        {
+                          "tokenTypeName": "String",
+                          "image": "aaa",
+                          "startOffset": 8,
+                          "endOffset": 10
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 7,
+                      "endOffset": 10
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 7,
+                "endOffset": 10
+              }
+            }
+          ]
+        },
+        "location": {
+          "startOffset": 0,
+          "endOffset": 10
+        }
+      }
+    ]
+  },
+  "location": {
+    "startOffset": 0,
+    "endOffset": 10
+  }
+}
