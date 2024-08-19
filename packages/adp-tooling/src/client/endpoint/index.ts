@@ -3,19 +3,18 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { getCredentialsFromStore } from '@sap-ux/system-access';
 import type { Endpoint } from '@sap-ux/environment-check';
 import { checkEndpoints, isExtensionInstalledVsCode } from '@sap-ux/environment-check';
-
-import type { SystemDetails } from '../../types';
+import { SystemDetails } from '../../types';
 
 /**
  * Service class to manage and retrieve information about system endpoints,
  * including their names, authentication requirements, and specific details.
  */
-export class EndpointsService {
+export class EndpointsManager {
     private endpoints: Endpoint[];
     private isExtensionInstalled: boolean;
 
     /**
-     * Creates an instance of EndpointsService.
+     * Creates an instance of EndpointsManager.
      *
      * @param {ToolsLogger} logger - The logger.
      */

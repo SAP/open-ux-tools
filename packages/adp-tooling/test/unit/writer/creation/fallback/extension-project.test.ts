@@ -1,5 +1,5 @@
 import { getTrimmedUI5Version, getExtProjectConfig } from '../../../../../src';
-import type { Application, BasicInfoAnswers, ConfigurationInfoAnswers, EndpointsService } from '../../../../../src';
+import type { Application, BasicInfoAnswers, ConfigurationInfoAnswers, EndpointsManager } from '../../../../../src';
 
 jest.mock('../../../../../src/base/services/ui5-version-service.ts', () => ({
     getTrimmedUI5Version: jest.fn()
@@ -10,9 +10,9 @@ const getTrimmedUI5VersionMock = getTrimmedUI5Version as jest.Mock;
 describe('getExtProjectConfig', () => {
     const getDestinationInfoByNameMock = jest.fn();
 
-    const endpointsService = {
+    const endpointsManager = {
         getDestinationInfoByName: getDestinationInfoByNameMock
-    } as unknown as EndpointsService;
+    } as unknown as EndpointsManager;
 
     const basicAnswers = {
         namespace: 'my.namespace',
@@ -39,7 +39,7 @@ describe('getExtProjectConfig', () => {
     it('throws an error if application parameters are missing', () => {
         const configAnswersMissingApp = { ...configAnswers, application: undefined as unknown as Application };
 
-        expect(() => getExtProjectConfig(endpointsService, basicAnswers, configAnswersMissingApp)).toThrow(
+        expect(() => getExtProjectConfig(endpointsManager, basicAnswers, configAnswersMissingApp)).toThrow(
             'Application parameters are missing.'
         );
     });
@@ -47,7 +47,7 @@ describe('getExtProjectConfig', () => {
     it('throws an error if destination information is missing', () => {
         getDestinationInfoByNameMock.mockReturnValue(undefined);
 
-        expect(() => getExtProjectConfig(endpointsService, basicAnswers, configAnswers)).toThrow(
+        expect(() => getExtProjectConfig(endpointsManager, basicAnswers, configAnswers)).toThrow(
             'Destination info is missing.'
         );
     });
@@ -61,7 +61,7 @@ describe('getExtProjectConfig', () => {
         };
         getDestinationInfoByNameMock.mockReturnValue(destinationInfo);
 
-        const result = getExtProjectConfig(endpointsService, basicAnswers, configAnswers);
+        const result = getExtProjectConfig(endpointsManager, basicAnswers, configAnswers);
 
         expect(result).toEqual({
             username: configAnswers.username,

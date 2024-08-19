@@ -3,7 +3,7 @@ import type { AutocompleteQuestion, InputQuestion, ListQuestion, YUIQuestion } f
 import type { AbapServiceProvider, AxiosError, SystemInfo } from '@sap-ux/axios-extension';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
-import type { ProviderService } from '../../base';
+import type { AbapProvider } from '../../base';
 import {
     validateAbapRepository,
     validateEmptyInput,
@@ -14,8 +14,7 @@ import {
 import { t } from '../../i18n';
 import type { ChoiceOption, DeployConfigAnswers } from '../../types';
 import { InputChoice } from '../../types';
-import { listTransports } from '../../base/services/list-transports-service';
-import { ABAP_PACKAGE_SEARCH_MAX_RESULTS, listPackages } from '../../base/services/list-packages-service';
+import { ABAP_PACKAGE_SEARCH_MAX_RESULTS, listPackages, listTransports } from '../../client';
 
 /**
  * Returns the available options for input choices regarding packages.
@@ -149,15 +148,15 @@ function handlePackageValidationErrors(error: AxiosError, logger?: ToolsLogger):
 /**
  * Generates prompts for deployment settings based on the current system and project settings.
  *
- * @param {ProviderService} providerService - The ABAP provider service.
+ * @param {AbapProvider} abapProvider - The ABAP provider service.
  * @param {ToolsLogger} [logger] - The logger.
  * @returns {YUIQuestion<DeployConfigAnswers>[]} An list of deployment prompts.
  */
 export async function getPrompts(
-    providerService: ProviderService,
+    abapProvider: AbapProvider,
     logger?: ToolsLogger
 ): Promise<YUIQuestion<DeployConfigAnswers>[]> {
-    const provider = providerService.getProvider();
+    const provider = abapProvider.getProvider();
     const transportList: string[] = [];
 
     let packageInputChoiceValid: string | boolean;
@@ -195,7 +194,7 @@ export async function getPrompts(
                 breadcrumb: t('prompts.packageInputChoice')
             },
             validate: async (value: InputChoice) => {
-                packageInputChoiceValid = await validatePackageChoiceInput(value, providerService.getProvider());
+                packageInputChoiceValid = await validatePackageChoiceInput(value, provider);
 
                 return packageInputChoiceValid;
             }

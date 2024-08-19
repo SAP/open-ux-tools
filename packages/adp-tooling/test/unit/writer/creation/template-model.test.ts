@@ -6,9 +6,9 @@ import type { SystemInfo } from '@sap-ux/axios-extension';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 import type {
-    ManifestService,
-    UI5VersionService,
-    ProviderService,
+    ManifestManager,
+    UI5VersionManager,
+    AbapProvider,
     ConfigurationInfoAnswers,
     FlpConfigAnswers,
     DeployConfigAnswers,
@@ -38,17 +38,17 @@ const appManifest = jest
     .requireActual('fs')
     .readFileSync(path.join(__dirname, '../../../fixtures/base-app', 'manifest.json'), 'utf-8');
 
-const manifestServiceMock = {
+const manifestManagerMock = {
     getManifest: jest.fn().mockReturnValue(appManifest)
 };
 
-const ui5ServiceMock = {
+const ui5ManagerMock = {
     shouldSetMinUI5Version: jest.fn().mockReturnValue(true),
     getVersionToBeUsed: jest.fn().mockReturnValue('1.127.0'),
     latestVersion: '1.127.0'
-} as unknown as UI5VersionService;
+} as unknown as UI5VersionManager;
 
-const providerServiceMock = {
+const providerMock = {
     getProvider: jest.fn().mockReturnValue({
         getLayeredRepository: jest.fn().mockReturnValue({
             getSystemInfo: jest.fn().mockReturnValue({
@@ -57,7 +57,7 @@ const providerServiceMock = {
             } as SystemInfo)
         })
     })
-} as unknown as ProviderService;
+} as unknown as AbapProvider;
 
 const systemDetails: SystemDetails = {
     url: 'https://example.com',
@@ -81,12 +81,12 @@ describe('TemplateModel', () => {
             const flpConfigAnswers = { title: 'FLP Title', inboundId: 'inboundId' } as FlpConfigAnswers;
             mockIsAppStudio.mockReturnValue(false);
 
-            manifestServiceMock.getManifest.mockReturnValue({});
+            manifestManagerMock.getManifest.mockReturnValue({});
 
             const templateModel = new TemplateModel(
-                ui5ServiceMock,
-                providerServiceMock,
-                manifestServiceMock as unknown as ManifestService,
+                ui5ManagerMock,
+                providerMock,
+                manifestManagerMock as unknown as ManifestManager,
                 FlexLayer.CUSTOMER_BASE
             );
 
@@ -98,7 +98,7 @@ describe('TemplateModel', () => {
                 {} as DeployConfigAnswers
             );
 
-            expect(manifestServiceMock.getManifest).toHaveBeenCalledWith('app1');
+            expect(manifestManagerMock.getManifest).toHaveBeenCalledWith('app1');
             expect(model).toMatchObject({
                 app: {
                     ach: undefined,
@@ -134,12 +134,12 @@ describe('TemplateModel', () => {
         it('should assemble a complete template model based on provided answers and system details', async () => {
             const flpConfigAnswers = { title: 'FLP Title', inboundId: 'inboundId' } as FlpConfigAnswers;
             mockIsAppStudio.mockReturnValue(true);
-            manifestServiceMock.getManifest.mockReturnValue({});
+            manifestManagerMock.getManifest.mockReturnValue({});
 
             const templateModel = new TemplateModel(
-                ui5ServiceMock,
-                providerServiceMock,
-                manifestServiceMock as unknown as ManifestService,
+                ui5ManagerMock,
+                providerMock,
+                manifestManagerMock as unknown as ManifestManager,
                 FlexLayer.CUSTOMER_BASE
             );
 
@@ -151,7 +151,7 @@ describe('TemplateModel', () => {
                 {} as DeployConfigAnswers
             );
 
-            expect(manifestServiceMock.getManifest).toHaveBeenCalledWith('app1');
+            expect(manifestManagerMock.getManifest).toHaveBeenCalledWith('app1');
             expect(model).toMatchObject({
                 app: {
                     ach: undefined,
@@ -185,12 +185,12 @@ describe('TemplateModel', () => {
         });
 
         it('throws an error if the manifest is not found', async () => {
-            manifestServiceMock.getManifest.mockReturnValue(undefined);
+            manifestManagerMock.getManifest.mockReturnValue(undefined);
 
             const templateModel = new TemplateModel(
-                ui5ServiceMock,
-                providerServiceMock,
-                manifestServiceMock as unknown as ManifestService,
+                ui5ManagerMock,
+                providerMock,
+                manifestManagerMock as unknown as ManifestManager,
                 FlexLayer.CUSTOMER_BASE
             );
 

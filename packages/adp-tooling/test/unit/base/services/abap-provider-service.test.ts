@@ -4,7 +4,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 
-import { EndpointsService, ProviderService } from '../../../../src';
+import { EndpointsManager, AbapProvider } from '../../../../src';
 
 jest.mock('fs');
 
@@ -35,9 +35,9 @@ jest.mock('@sap-ux/system-access', () => {
     };
 });
 
-describe('ProviderService', () => {
-    let service: ProviderService;
-    let endpointsService: EndpointsService;
+describe('AbapProvider', () => {
+    let service: AbapProvider;
+    let endpointsManager: EndpointsManager;
 
     const loggerMock = {
         error: jest.fn(),
@@ -47,8 +47,8 @@ describe('ProviderService', () => {
     const destination = 'U1Y';
 
     beforeEach(() => {
-        endpointsService = new EndpointsService(loggerMock);
-        service = new ProviderService(endpointsService, loggerMock);
+        endpointsManager = new EndpointsManager(loggerMock);
+        service = new AbapProvider(endpointsManager, loggerMock);
         mockIsAppStudio.mockReturnValue(false);
     });
 
@@ -68,7 +68,7 @@ describe('ProviderService', () => {
                 password
             };
 
-            jest.spyOn(endpointsService, 'getSystemDetails').mockResolvedValue(mockTarget);
+            jest.spyOn(endpointsManager, 'getSystemDetails').mockResolvedValue(mockTarget);
 
             await service.setProvider(system, client, username, password);
 

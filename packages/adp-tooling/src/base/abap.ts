@@ -14,6 +14,7 @@ import type { AdpPreviewConfig } from '../types';
  * @returns {Promise<Manifest>} The manifest.
  */
 export async function getManifest(appId: string, adpConfig: AdpPreviewConfig, logger: ToolsLogger): Promise<Manifest> {
+    // TODO: Reuse manifestManager
     const provider = await createAbapServiceProvider(
         adpConfig.target,
         {

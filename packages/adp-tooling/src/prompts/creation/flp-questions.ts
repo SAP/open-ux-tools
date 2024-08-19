@@ -2,27 +2,27 @@ import type { EditorQuestion, InputQuestion, ListQuestion, YUIQuestion } from '@
 
 import { t } from '../../i18n';
 import type { FlpConfigAnswers } from '../../types';
-import { getInboundIds } from '../../base/services/manifest-service';
-import type { ManifestService } from '../../base';
+import { getInboundIds } from '../../client/manifest';
+import type { ManifestManager } from '../../client';
 import { validateByRegex, validateEmptyInput, validateParameters } from '../../base';
 
 /**
  * Generates a list of configuration prompts based on the application's manifest data and whether it's a cloud project.
  *
- * @param {ManifestService} manifestService - Service to manage application manifests.
+ * @param {ManifestManager} manifestManager - Service to manage application manifests.
  * @param {boolean} isCloudProject - Indicates if the current project is a cloud project.
  * @param {string} appId - Application identifier.
  * @returns {Promise<YUIQuestion<FlpConfigAnswers>[]>} A list of FLP questions.
  */
 export async function getPrompts(
-    manifestService: ManifestService,
+    manifestManager: ManifestManager,
     isCloudProject: boolean,
     appId: string
 ): Promise<YUIQuestion<FlpConfigAnswers>[]> {
-    if (!manifestService.getManifest(appId)) {
-        await manifestService.loadManifest(appId);
+    if (!manifestManager.getManifest(appId)) {
+        await manifestManager.loadManifest(appId);
     }
-    const manifest = manifestService.getManifest(appId);
+    const manifest = manifestManager.getManifest(appId);
     const inboundIds = getInboundIds(manifest);
 
     return [

@@ -1,7 +1,7 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
 
-import type { DeployConfig, DeployConfigAnswers } from '../../types';
-import { InputChoice } from '../../types';
+import type { DeployConfig, DeployConfigAnswers } from '../../../types';
+import { InputChoice } from '../../../types';
 
 /**
  * Generates a deployment configuration for UI5 applications based on user input.

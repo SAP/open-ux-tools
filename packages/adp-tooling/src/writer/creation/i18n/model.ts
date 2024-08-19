@@ -2,9 +2,9 @@ import { v4 as uuidv4 } from 'uuid';
 import type { Editor } from 'mem-fs-editor';
 import type { Manifest } from '@sap-ux/project-access';
 
-import type { SapModel } from '../../types';
-import { FlexLayer } from '../../types';
-import { MAIN_I18N_PATH, PROPERTIES_TEXT, RESOURCE_BUNDLE_TEXT, TRANSLATION_UUID_TEXT } from '../../base';
+import type { SapModel } from '../../../types';
+import { FlexLayer } from '../../../types';
+import { MAIN_I18N_PATH, PROPERTIES_TEXT, RESOURCE_BUNDLE_TEXT, TRANSLATION_UUID_TEXT } from '../../../base';
 
 export interface ResourceModel {
     key: string;

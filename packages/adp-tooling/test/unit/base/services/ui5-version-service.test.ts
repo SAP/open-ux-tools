@@ -11,7 +11,7 @@ import {
     parseUI5Version,
     isFeatureSupportedVersion,
     FlexLayer,
-    UI5VersionService,
+    UI5VersionManager,
     UI5_VERSIONS_CDN_URL
 } from '../../../../src';
 import { t } from '../../../../src/i18n';
@@ -116,7 +116,7 @@ describe('UI5 Version Service', () => {
         });
     });
 
-    describe('UI5VersionService', () => {
+    describe('UI5VersionManager', () => {
         const publicVersions = {
             'latest': {
                 version: '1.127.0',
@@ -152,11 +152,11 @@ describe('UI5 Version Service', () => {
         });
 
         describe('getSystemRelevantVersions', () => {
-            let service: UI5VersionService;
+            let service: UI5VersionManager;
             let versionsSpy: jest.SpyInstance;
 
             beforeEach(() => {
-                service = new UI5VersionService(FlexLayer.CUSTOMER_BASE);
+                service = new UI5VersionManager(FlexLayer.CUSTOMER_BASE);
                 versionsSpy = jest.spyOn(service, 'getRelevantVersions').mockResolvedValue(['1.127.0 (latest)']);
             });
 
@@ -178,10 +178,10 @@ describe('UI5 Version Service', () => {
         });
 
         describe('getVersionToBeUsed', () => {
-            let service: UI5VersionService;
+            let service: UI5VersionManager;
 
             beforeEach(() => {
-                service = new UI5VersionService(FlexLayer.CUSTOMER_BASE);
+                service = new UI5VersionManager(FlexLayer.CUSTOMER_BASE);
             });
 
             it('returns the latest version for snapshot in customer base', () => {
@@ -195,10 +195,10 @@ describe('UI5 Version Service', () => {
         });
 
         describe('getPublicVersions', () => {
-            let service: UI5VersionService;
+            let service: UI5VersionManager;
 
             beforeEach(() => {
-                service = new UI5VersionService(FlexLayer.CUSTOMER_BASE);
+                service = new UI5VersionManager(FlexLayer.CUSTOMER_BASE);
             });
 
             it('fetches public versions if not cached', async () => {
@@ -216,10 +216,10 @@ describe('UI5 Version Service', () => {
         });
 
         describe('shouldSetMinUI5Version', () => {
-            let service: UI5VersionService;
+            let service: UI5VersionManager;
 
             beforeEach(() => {
-                service = new UI5VersionService(FlexLayer.CUSTOMER_BASE);
+                service = new UI5VersionManager(FlexLayer.CUSTOMER_BASE);
             });
 
             it('returns false if no detected version', () => {
@@ -235,10 +235,10 @@ describe('UI5 Version Service', () => {
         });
 
         describe('getMinUI5VersionForManifest', () => {
-            let service: UI5VersionService;
+            let service: UI5VersionManager;
 
             beforeEach(() => {
-                service = new UI5VersionService(FlexLayer.CUSTOMER_BASE);
+                service = new UI5VersionManager(FlexLayer.CUSTOMER_BASE);
             });
 
             it('returns system version if no snapshot', () => {
@@ -254,7 +254,7 @@ describe('UI5 Version Service', () => {
         });
 
         describe('getRelevantVersions', () => {
-            let service: UI5VersionService;
+            let service: UI5VersionManager;
 
             beforeEach(() => {
                 fetchMock.mockResolvedValue({
@@ -268,14 +268,14 @@ describe('UI5 Version Service', () => {
             });
 
             it('should return latest version when provided version is "1.124.0.53435768432" (CUSTOMER_BASE layer)', async () => {
-                service = new UI5VersionService(FlexLayer.CUSTOMER_BASE);
+                service = new UI5VersionManager(FlexLayer.CUSTOMER_BASE);
                 const versions = await service.getRelevantVersions('1.124.0.53435768432');
 
                 expect(versions).toContain('1.127.0 (latest)');
             });
 
             it('should return latest version if provided version is "undefined" (CUSTOMER_BASE layer)', async () => {
-                service = new UI5VersionService(FlexLayer.CUSTOMER_BASE);
+                service = new UI5VersionManager(FlexLayer.CUSTOMER_BASE);
                 const versions = await service.getRelevantVersions(undefined);
 
                 expect(versions).toEqual(['1.127.0 (latest)']);
@@ -290,7 +290,7 @@ describe('UI5 Version Service', () => {
                         json: () => Promise.resolve(mockRoutes)
                     });
 
-                service = new UI5VersionService(FlexLayer.CUSTOMER_BASE);
+                service = new UI5VersionManager(FlexLayer.CUSTOMER_BASE);
                 const versions = await service.getRelevantVersions('1.127.0.53435768432');
 
                 expect(versions).toEqual(['1.127.0 (system version)(latest)']);
@@ -305,7 +305,7 @@ describe('UI5 Version Service', () => {
                         json: () => Promise.resolve(mockRoutes)
                     });
 
-                service = new UI5VersionService(FlexLayer.VENDOR);
+                service = new UI5VersionManager(FlexLayer.VENDOR);
                 const versions = await service.getRelevantVersions('1.124.0.53435768432');
 
                 expect(versions).toEqual([
@@ -327,7 +327,7 @@ describe('UI5 Version Service', () => {
                         json: () => Promise.resolve(mockRoutes)
                     });
 
-                service = new UI5VersionService(FlexLayer.VENDOR);
+                service = new UI5VersionManager(FlexLayer.VENDOR);
                 const versions = await service.getRelevantVersions(undefined);
 
                 expect(versions).toEqual(['snapshot-untested', 'snapshot', '1.127.0 (latest)', '1.125.1', '1.124.5']);
@@ -335,11 +335,11 @@ describe('UI5 Version Service', () => {
         });
 
         describe('validateUI5Version', () => {
-            let service: UI5VersionService;
+            let service: UI5VersionManager;
 
             beforeEach(() => {
                 fetchMock.mockClear();
-                service = new UI5VersionService(FlexLayer.CUSTOMER_BASE);
+                service = new UI5VersionManager(FlexLayer.CUSTOMER_BASE);
             });
 
             it('validates a regular version successfully', async () => {

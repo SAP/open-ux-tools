@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import type { ToolsSupport } from '../../types';
-import { getPackageJSONInfo } from '../project-utils';
+import type { ToolsSupport } from '../../../types';
+import { getPackageJSONInfo } from '../../project-utils';
 
 /**
  * Retrieves the current package.json.

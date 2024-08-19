@@ -1,10 +1,8 @@
 import { t } from 'i18next';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
-
-import type { Application } from '../../types';
-import { FlexLayer } from '../../types';
-import { isV4Application } from './manifest-service';
-import { getApplicationType, isSupportedType } from '../app-utils';
+import { Application, FlexLayer } from '../types';
+import { getApplicationType, isSupportedType } from './app-utils';
+import { isV4Application } from '../client';
 
 /**
  * Manages and validates application identifiers and compatibility for adaptation projects,
@@ -73,7 +71,7 @@ export class AppIdentifier {
         this.isSupportedAdpOverAdp = !(checkFullSupport && application.fileType === 'appdescr_variant');
         this.isPartiallySupportedAdpOverAdp = checkPartialSupport && application.fileType === 'appdescr_variant';
 
-        await this.validateSmartTemplateApplication(manifest);
+        await this.validateFioriApplication(manifest);
     }
 
     /**
@@ -83,7 +81,7 @@ export class AppIdentifier {
      * @returns {Promise<void>} Resolves when the validation is complete.
      * @throws {Error} When the application does not support adaptation or is incompatible.
      */
-    public async validateSmartTemplateApplication(manifest: Manifest): Promise<void> {
+    public async validateFioriApplication(manifest: Manifest): Promise<void> {
         const isV4App = isV4Application(manifest);
 
         this.isV4AppInternalMode = isV4App && !this.isCustomerBase;

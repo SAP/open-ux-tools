@@ -2,11 +2,11 @@ import path from 'path';
 import chalk from 'chalk';
 import {
     generate,
-    EndpointsService,
-    ManifestService,
-    ProviderService,
+    EndpointsManager,
+    ManifestManager,
+    AbapProvider,
     FlexLayer,
-    UI5VersionService,
+    UI5VersionManager,
     ConfigInfoPrompter,
     getBasicInfoPrompts,
     getFlpPrompts,
@@ -58,23 +58,23 @@ async function generateAdaptationProject(basePath: string, simulate: boolean, sk
         logger.debug(`Called generate adaptation-project for path '${basePath}', skip install is '${skipInstall}'`);
 
         const fs = create(createStorage());
-        const endpointsService = new EndpointsService(logger);
-        const providerService = new ProviderService(endpointsService, logger);
-        const manifestService = new ManifestService(providerService, logger);
+        const endpointsManager = new EndpointsManager(logger);
+        const provider = new AbapProvider(endpointsManager, logger);
+        const manifestManager = new ManifestManager(provider, logger);
 
         const layer = FlexLayer.CUSTOMER_BASE;
 
-        const ui5Service = new UI5VersionService(layer);
+        const ui5Manager = new UI5VersionManager(layer);
         const configPrompter = new ConfigInfoPrompter(
-            providerService,
-            manifestService,
-            endpointsService,
-            ui5Service,
+            provider,
+            manifestManager,
+            endpointsManager,
+            ui5Manager,
             layer,
             logger
         );
 
-        const templateModel = new TemplateModel(ui5Service, providerService, manifestService, layer);
+        const templateModel = new TemplateModel(ui5Manager, provider, manifestManager, layer);
 
         const basicAnswers = await promptYUIQuestions(getBasicInfoPrompts(basePath, layer), false);
         logger.debug(`Basic information: ${JSON.stringify(basicAnswers)}`);
@@ -93,17 +93,17 @@ async function generateAdaptationProject(basePath: string, simulate: boolean, sk
         if (isCloudProject) {
             flpConfigAnswers = await promptYUIQuestions(
                 await filterLabelTypeQuestions(
-                    await getFlpPrompts(manifestService, isCloudProject, configAnswers.application.id)
+                    await getFlpPrompts(manifestManager, isCloudProject, configAnswers.application.id)
                 ),
                 false
             );
             logger.debug(`FLP Configuration: ${JSON.stringify(flpConfigAnswers, null, 2)}`);
 
-            deployConfigAnswers = await promptYUIQuestions(await getDeployPrompts(providerService, logger), false);
+            deployConfigAnswers = await promptYUIQuestions(await getDeployPrompts(provider, logger), false);
             logger.debug(`Deploy Configuration: ${JSON.stringify(deployConfigAnswers, null, 2)}`);
         }
 
-        const systemAuthDetails = await endpointsService.getSystemDetails(configAnswers.system);
+        const systemAuthDetails = await endpointsManager.getSystemDetails(configAnswers.system);
 
         if (!systemAuthDetails) {
             throw new Error(`No system details were found!`);

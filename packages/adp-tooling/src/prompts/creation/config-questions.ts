@@ -13,20 +13,20 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Manifest } from '@sap-ux/project-access';
 import { isExtensionInstalledVsCode } from '@sap-ux/environment-check';
 
-import type { EndpointsService, ProviderService, UI5VersionService, ManifestService } from '../../base/services';
+import type { EndpointsManager, UI5VersionManager, ManifestManager } from '../../client';
 import {
-    AppIdentifier,
-    ApplicationService,
+    ApplicationManager,
     getApplicationChoices,
     isFeatureSupportedVersion,
     getCachedACH,
     getCachedFioriId
-} from '../../base/services';
+} from '../../client';
 import { t } from '../../i18n';
-import { resolveNodeModuleGenerator, isNotEmptyString, validateAch, validateClient } from '../../base';
+import { resolveNodeModuleGenerator, isNotEmptyString, validateAch, validateClient, AbapProvider } from '../../base';
 import type { Application, ConfigurationInfoAnswers, FlexUISupportedSystem, Prompts } from '../../types';
 import { FlexLayer } from '../../types';
 import { systemAdditionalMessages } from './prompt-helpers';
+import { AppIdentifier } from '../../base/app-identifier';
 
 /**
  * ConfigInfoPrompter handles the setup and interaction logic for configuration prompts related to project setup.
@@ -49,7 +49,7 @@ export default class ConfigInfoPrompter {
 
     private readonly isExtensionInstalled: boolean;
 
-    private appsService: ApplicationService;
+    private appsManager: ApplicationManager;
     private appIdentifier: AppIdentifier;
     private logger: ToolsLogger;
 
@@ -58,19 +58,19 @@ export default class ConfigInfoPrompter {
     /**
      * Constructs an instance of ConfigInfoPrompter.
      *
-     * @param {ProviderService} providerService - The ABAP provider service.
-     * @param {ManifestService} manifestService - Service to manage application manifests.
-     * @param {EndpointsService} endpointsService - The endpoints service for retrieving system details.
-     * @param {UI5VersionService} ui5Service - Service for handling UI5 version information.
+     * @param {AbapProvider} provider - The ABAP provider service.
+     * @param {ManifestManager} manifestManager - Service to manage application manifests.
+     * @param {EndpointsManager} endpointsManager - The endpoints service for retrieving system details.
+     * @param {UI5VersionManager} ui5Manager - Service for handling UI5 version information.
      * @param {FlexLayer} layer - The application layer context.
      * @param {ToolsLogger} logger - A logger instance.
      * @param {Prompts} [prompts] - Prompts utility, used for user interaction flows.
      */
     constructor(
-        private providerService: ProviderService,
-        private manifestService: ManifestService,
-        private endpointsService: EndpointsService,
-        private ui5Service: UI5VersionService,
+        private provider: AbapProvider,
+        private manifestManager: ManifestManager,
+        private endpointsManager: EndpointsManager,
+        private ui5Manager: UI5VersionManager,
         layer: FlexLayer,
         logger: ToolsLogger,
         prompts?: Prompts
@@ -81,7 +81,7 @@ export default class ConfigInfoPrompter {
         this.isExtensionInstalled = isExtensionInstalledVsCode('sapse.sap-ux-application-modeler-extension');
 
         this.appIdentifier = new AppIdentifier(layer);
-        this.appsService = new ApplicationService(this.providerService, this.isCustomerBase, this.logger);
+        this.appsManager = new ApplicationManager(this.provider, this.isCustomerBase, this.logger);
     }
 
     /**
@@ -199,19 +199,19 @@ export default class ConfigInfoPrompter {
     private async validateSystemVersion(value: string): Promise<void> {
         try {
             if (value) {
-                const provider = this.providerService.getProvider();
+                const provider = this.provider.getProvider();
                 const service = await provider.getAdtService<UI5RtVersionService>(UI5RtVersionService);
                 const version = await service?.getUI5Version();
 
-                this.versionsOnSystem = await this.ui5Service.getSystemRelevantVersions(version);
+                this.versionsOnSystem = await this.ui5Manager.getSystemRelevantVersions(version);
             } else {
-                this.versionsOnSystem = await this.ui5Service.getRelevantVersions();
+                this.versionsOnSystem = await this.ui5Manager.getRelevantVersions();
             }
         } catch (e) {
             this.logger.debug(`Could not fetch system version: ${e.message}`);
-            this.versionsOnSystem = await this.ui5Service.getRelevantVersions();
+            this.versionsOnSystem = await this.ui5Manager.getRelevantVersions();
         } finally {
-            this.ui5VersionDetected = this.ui5Service.detectedVersion;
+            this.ui5VersionDetected = this.ui5Manager.detectedVersion;
         }
     }
 
@@ -226,7 +226,7 @@ export default class ConfigInfoPrompter {
             return '';
         }
 
-        const isValid = (await this.ui5Service.validateUI5Version(this.versionsOnSystem[0])) === true;
+        const isValid = (await this.ui5Manager.validateUI5Version(this.versionsOnSystem[0])) === true;
         return isValid ? this.versionsOnSystem[0] : '';
     }
 
@@ -239,12 +239,12 @@ export default class ConfigInfoPrompter {
     private async applicationPromptValidationHandler(value: Application): Promise<boolean | string> {
         if (value) {
             try {
-                const isSupported = await this.manifestService.isAppSupported(value.id);
+                const isSupported = await this.manifestManager.isAppSupported(value.id);
 
                 if (isSupported) {
-                    await this.manifestService.loadManifest(value.id);
+                    await this.manifestManager.loadManifest(value.id);
 
-                    const manifest = this.manifestService.getManifest(value.id);
+                    const manifest = this.manifestManager.getManifest(value.id);
                     await this.evaluateApplicationSupport(manifest, value);
                 }
                 this.isApplicationSupported = true;
@@ -265,7 +265,7 @@ export default class ConfigInfoPrompter {
      * @param {Application} application - The application data.
      */
     private async evaluateApplicationSupport(manifest: Manifest | null, application: Application): Promise<void> {
-        const systemVersion = this.ui5Service.systemVersion;
+        const systemVersion = this.ui5Manager.systemVersion;
         const checkForSupport = this.ui5VersionDetected && !isFeatureSupportedVersion('1.96.0', systemVersion);
         const isPartialSupport =
             this.ui5VersionDetected && checkForSupport && isFeatureSupportedVersion('1.90.0', systemVersion);
@@ -280,8 +280,8 @@ export default class ConfigInfoPrompter {
      * @returns {Promise<boolean | string>} True if validation succeeds without issues, or an error message otherwise.
      */
     private async validateSystem(value: string): Promise<boolean | string> {
-        this.manifestService.resetCache();
-        this.appsService.resetApps();
+        this.manifestManager.resetCache();
+        this.appsManager.resetApps();
         this.ui5VersionDetected = true;
 
         if (!value) {
@@ -290,7 +290,7 @@ export default class ConfigInfoPrompter {
                 : t('validators.inputCannotBeEmpty');
         }
 
-        this.hasSystemAuthentication = this.endpointsService.getSystemRequiresAuth(value);
+        this.hasSystemAuthentication = this.endpointsManager.getSystemRequiresAuth(value);
 
         if (!this.hasSystemAuthentication) {
             return this.handleSystemDataValidation(value);
@@ -325,7 +325,7 @@ export default class ConfigInfoPrompter {
      * @param {string} [password] - Optional password for authentication.
      */
     private async getSystemData(system: string, client?: string, username?: string, password?: string): Promise<void> {
-        await this.providerService.setProvider(system, client, username, password);
+        await this.provider.setProvider(system, client, username, password);
 
         try {
             this.flexUISystem = await this.isFlexUISupportedSystem();
@@ -340,7 +340,7 @@ export default class ConfigInfoPrompter {
      * Fetches system information from the provider's layered repository.
      */
     private async fetchSystemInfo(): Promise<void> {
-        const provider = this.providerService.getProvider();
+        const provider = this.provider.getProvider();
         const lrep = provider.getLayeredRepository();
         this.systemInfo = await lrep.getSystemInfo();
     }
@@ -386,7 +386,7 @@ export default class ConfigInfoPrompter {
                 Accept: 'application/*'
             }
         };
-        const provider = this.providerService.getProvider();
+        const provider = this.provider.getProvider();
         const response = await provider.get(AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH, acceptHeaders);
 
         return { isOnPremise: response.data.includes(FILTER.term), isUIFlex: response.data.includes(FILTER.scheme) };
@@ -407,15 +407,15 @@ export default class ConfigInfoPrompter {
         password?: string,
         client?: string
     ): Promise<void> {
-        await this.providerService.setProvider(system, client, username, password);
+        await this.provider.setProvider(system, client, username, password);
 
         if (!this.flexUISystem) {
             this.flexUISystem = await this.isFlexUISupportedSystem();
         }
 
-        await this.appsService.loadApps(this.isCloudProject);
+        await this.appsManager.loadApps(this.isCloudProject);
 
-        const applications = this.appsService.getApps();
+        const applications = this.appsManager.getApps();
 
         if (applications.length === 0) {
             throw new Error(t('validators.appListIsEmptyError'));
@@ -652,7 +652,7 @@ export default class ConfigInfoPrompter {
                     this.isCloudProject
                 ) {
                     return {
-                        message: t('prompts.currentUI5VersionLabel', { version: this.ui5Service.latestVersion }),
+                        message: t('prompts.currentUI5VersionLabel', { version: this.ui5Manager.latestVersion }),
                         severity: Severity.information
                     };
                 }
@@ -679,7 +679,7 @@ export default class ConfigInfoPrompter {
                 );
             },
             choices: () => {
-                const apps = this.appsService.getApps();
+                const apps = this.appsManager.getApps();
                 return getApplicationChoices(apps);
             },
             default: '',
@@ -771,7 +771,7 @@ export default class ConfigInfoPrompter {
                 breadcrumb: 'SAP UI5 Version',
                 mandatory: true
             },
-            validate: this.ui5Service.validateUI5Version.bind(this),
+            validate: this.ui5Manager.validateUI5Version.bind(this),
             default: async () => await this.getVersionDefaultValue(),
             additionalMessages: (_, prevAnswers: unknown) => {
                 if (
@@ -813,7 +813,7 @@ export default class ConfigInfoPrompter {
                 );
             },
             default: (answers: ConfigurationInfoAnswers) => {
-                const manifest = this.manifestService.getManifest(answers?.application?.id);
+                const manifest = this.manifestManager.getManifest(answers?.application?.id);
                 return manifest ? getCachedFioriId(manifest) : '';
             },
             store: false
@@ -845,7 +845,7 @@ export default class ConfigInfoPrompter {
                 );
             },
             default: (answers: ConfigurationInfoAnswers) => {
-                const manifest = this.manifestService.getManifest(answers?.application?.id);
+                const manifest = this.manifestManager.getManifest(answers?.application?.id);
                 return manifest ? getCachedACH(manifest) : '';
             },
             validate: (value: string) => validateAch(value, this.isCustomerBase),
@@ -923,8 +923,8 @@ export default class ConfigInfoPrompter {
      * @returns {Promise<YUIQuestion<ConfigurationInfoAnswers>[]>} A promise that resolves to an array of configuration prompts.
      */
     public async getConfigurationPrompts(projectName: string): Promise<YUIQuestion<ConfigurationInfoAnswers>[]> {
-        await this.endpointsService.getEndpoints();
-        this.systemNames = this.endpointsService.getEndpointNames();
+        await this.endpointsManager.getEndpoints();
+        this.systemNames = this.endpointsManager.getEndpointNames();
 
         return [
             this.getSystemPrompt(),

@@ -1,5 +1,4 @@
 import type { Manifest } from '@sap-ux/project-access';
-
 import { ApplicationType } from '../types';
 
 /**
@@ -17,6 +16,7 @@ import { ApplicationType } from '../types';
  * - If the manifest is empty, it returns None.
  */
 export function getApplicationType(manifest: Manifest): ApplicationType {
+    // TODO: Move to writer module
     if (Object.keys(manifest).length > 0) {
         const appInfo = manifest['sap.app'];
         const isSmartTemplate = !!manifest['sap.ui.generic.app'];
@@ -34,6 +34,7 @@ export function getApplicationType(manifest: Manifest): ApplicationType {
     }
 }
 
+// TODO: Move to prompting
 /**
  * Checks if the given application type is a Fiori Elements application.
  *

@@ -2,7 +2,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
 import { t } from '../../i18n';
-import type { ProviderService } from './abap-provider-service';
+import type { AbapProvider } from '../providers';
 
 export interface ManifestCache {
     url: string;
@@ -53,16 +53,16 @@ export function getInboundIds(manifest: Manifest | null): string[] {
 /**
  * Service class for handling operations related to application manifests.
  */
-export class ManifestService {
+export class ManifestManager {
     private manifestCache = new Map<string, ManifestCache>();
 
     /**
-     * Creates an instance of ManifestService.
+     * Creates an instance of ManifestManager.
      *
-     * @param {ProviderService} providerService - The ABAP provider service.
+     * @param {AbapProvider} provider - The ABAP provider service.
      * @param {ToolsLogger} [logger] - The logger.
      */
-    constructor(private providerService: ProviderService, private logger?: ToolsLogger) {}
+    constructor(private provider: AbapProvider, private logger?: ToolsLogger) {}
 
     /**
      * Resets the manifest cache.
@@ -107,7 +107,7 @@ export class ManifestService {
             return;
         }
 
-        const provider = this.providerService.getProvider();
+        const provider = this.provider.getProvider();
         const appIndex = provider.getAppIndex();
         const data = await appIndex.getAppInfo(id);
 
@@ -125,7 +125,7 @@ export class ManifestService {
      * @returns {Promise<Manifest>} The fetched manifest.
      */
     public async loadManifest(id: string): Promise<void> {
-        const provider = this.providerService.getProvider();
+        const provider = this.provider.getProvider();
         let cached = this.manifestCache.get(id);
 
         if (cached?.manifest) {
@@ -164,7 +164,7 @@ export class ManifestService {
      * @returns {Promise<boolean>} True if supported, otherwise throws an error.
      */
     public async isAppSupported(id: string): Promise<boolean> {
-        const provider = this.providerService.getProvider();
+        const provider = this.provider.getProvider();
         const appIndex = provider.getAppIndex();
         const isSupported = await appIndex.getIsManiFirstSupported(id);
 

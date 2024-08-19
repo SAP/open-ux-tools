@@ -15,13 +15,13 @@ import type {
     OnpremApp
 } from '../../types';
 import { FlexLayer } from '../../types';
-import type { ManifestService, ProviderService, UI5VersionService } from '../../base/services';
-import { getFormattedVersion, getOfficialBaseUI5VersionUrl } from '../../base/services';
-import { getI18nModels } from './i18n-model';
-import { getSupportForUI5Yaml } from './support-config';
-import { getApplicationType } from '../../base';
-import { getUI5DeployConfig } from './deploy-config';
-import { parseParameters } from '../../base/services/flp-parameters';
+import type { ManifestManager, UI5VersionManager } from '../../client';
+import { getFormattedVersion, getOfficialBaseUI5VersionUrl } from '../../client';
+import { getI18nModels } from './i18n/model';
+import { getSupportForUI5Yaml } from './configs/support';
+import { AbapProvider, getApplicationType } from '../../base';
+import { getUI5DeployConfig } from './configs/deploy';
+import { parseParameters } from '../../common/flp-parameters';
 
 /**
  * Constructs the ABAP target configuration based on the operational context and project type.
@@ -57,15 +57,15 @@ export class TemplateModel {
     /**
      * Constructs an instance of the TemplateModel class.
      *
-     * @param {UI5VersionService} ui5Service - Service for handling UI5 version information.
-     * @param {ProviderService} providerService - Service for managing provider-related configurations.
-     * @param {ManifestService} manifestService - Service for managing and retrieving systems.
+     * @param {UI5VersionManager} ui5Manager - Service for handling UI5 version information.
+     * @param {AbapProvider} provider - Service for managing provider-related configurations.
+     * @param {ManifestManager} manifestManager - Service for managing and retrieving systems.
      * @param {FlexLayer} layer - The UI5 Flex layer, indicating the deployment layer (e.g., CUSTOMER_BASE).
      */
     constructor(
-        private ui5Service: UI5VersionService,
-        private providerService: ProviderService,
-        private manifestService: ManifestService,
+        private ui5Manager: UI5VersionManager,
+        private provider: AbapProvider,
+        private manifestManager: ManifestManager,
         private layer: FlexLayer
     ) {
         this.isCustomerBase = this.layer === FlexLayer.CUSTOMER_BASE;
@@ -94,13 +94,13 @@ export class TemplateModel {
         const isCloudProject = configAnswers.projectType === AdaptationProjectType.CLOUD_READY;
 
         const ui5Version = isCloudProject
-            ? this.ui5Service.latestVersion
-            : this.ui5Service.getVersionToBeUsed(configAnswers.ui5Version, this.isCustomerBase);
+            ? this.ui5Manager.latestVersion
+            : this.ui5Manager.getVersionToBeUsed(configAnswers.ui5Version, this.isCustomerBase);
 
         const deploy = getUI5DeployConfig(isCloudProject, deployConfigAnswers);
 
         const appId = configAnswers.application.id;
-        const manifest = this.manifestService.getManifest(appId);
+        const manifest = this.manifestManager.getManifest(appId);
         if (!manifest) {
             throw new Error('Manifest of the application was not found!');
         }
@@ -108,7 +108,7 @@ export class TemplateModel {
         const appType = getApplicationType(manifest);
         const i18nModels = getI18nModels(manifest, this.layer, appId, title);
 
-        const shouldSetMinVersion = this.ui5Service.shouldSetMinUI5Version();
+        const shouldSetMinVersion = this.ui5Manager.shouldSetMinUI5Version();
 
         const app: CloudApp | OnpremApp = {
             id: basicAnswers.namespace,
@@ -168,7 +168,7 @@ export class TemplateModel {
         flpConfigAnswers: FlpConfigAnswers
     ): Promise<FlpConfig | undefined> {
         if (configAnswers.projectType === AdaptationProjectType.CLOUD_READY) {
-            const provider = this.providerService.getProvider();
+            const provider = this.provider.getProvider();
             const lrep = provider.getLayeredRepository();
             const systemInfo = await lrep.getSystemInfo();
 

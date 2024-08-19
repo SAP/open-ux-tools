@@ -1,11 +1,10 @@
-import { getTrimmedUI5Version } from '../../../base/services';
-import type { EndpointsService } from '../../../base/services';
+import { getTrimmedUI5Version, type EndpointsManager } from '../../../client';
 import type { BasicInfoAnswers, ConfigurationInfoAnswers, ExtProjectConfig } from '../../../types';
 
 /**
  * Retrieves and structures the configuration necessary for setting up an extension project.
  *
- * @param {EndpointsService} endpointsService - An instance of EndpointsService used to fetch destination information.
+ * @param {EndpointsManager} endpointsManager - An instance of EndpointsManager used to fetch destination information.
  * @param {BasicInfoAnswers} basicAnswers - Basic user responses containing namespace and project name.
  * @param {ConfigurationInfoAnswers} configAnswers - Configuration answers that include system-specific details,
  *                                                   user credentials, and UI5 version.
@@ -13,7 +12,7 @@ import type { BasicInfoAnswers, ConfigurationInfoAnswers, ExtProjectConfig } fro
  * @returns {object} A structured object containing all necessary configurations for the external project.
  */
 export function getExtProjectConfig(
-    endpointsService: EndpointsService,
+    endpointsManager: EndpointsManager,
     basicAnswers: BasicInfoAnswers,
     configAnswers: ConfigurationInfoAnswers
 ): ExtProjectConfig {
@@ -21,7 +20,7 @@ export function getExtProjectConfig(
         throw new Error('Application parameters are missing.');
     }
 
-    const destinationInfo = endpointsService.getDestinationInfoByName(configAnswers.system);
+    const destinationInfo = endpointsManager.getDestinationInfoByName(configAnswers.system);
 
     if (!destinationInfo) {
         throw new Error('Destination info is missing.');

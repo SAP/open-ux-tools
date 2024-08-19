@@ -1,8 +1,8 @@
 import * as i18n from '../../../../src/i18n';
 import { getPrompts } from '../../../../src/prompts/creation/flp-questions';
-import type { ManifestService } from '../../../../src/base';
+import type { ManifestManager } from '../../../../src/base';
 
-const manifestServiceInboundId = {
+const manifestManagerInboundId = {
     getManifest: (_appId: string) => {
         return {
             ['sap.app']: {
@@ -23,7 +23,7 @@ const manifestServiceInboundId = {
     }
 };
 
-const manifestServiceWithoutInboundId = {
+const manifestManagerWithoutInboundId = {
     getManifest: (_appId: string) => {
         return {
             ['sap.app']: {
@@ -44,7 +44,7 @@ describe('getPrompts', () => {
 
     it('should get prompts - base app with inboundId', async () => {
         const prompts = await getPrompts(
-            manifestServiceInboundId as unknown as ManifestService,
+            manifestManagerInboundId as unknown as ManifestManager,
             true,
             'fin.cash.factsheet.bank'
         );
@@ -151,7 +151,7 @@ describe('getPrompts', () => {
 
     it('should get prompts - base app without inboundId', async () => {
         const prompts = await getPrompts(
-            manifestServiceWithoutInboundId as unknown as ManifestService,
+            manifestManagerWithoutInboundId as unknown as ManifestManager,
             true,
             'fin.cash.factsheet.bank'
         );
@@ -258,7 +258,7 @@ describe('getPrompts', () => {
 
     it('should pass with valid inboundId', async () => {
         const prompts = await getPrompts(
-            manifestServiceInboundId as unknown as ManifestService,
+            manifestManagerInboundId as unknown as ManifestManager,
             true,
             'fin.cash.factsheet.bank'
         );
@@ -268,7 +268,7 @@ describe('getPrompts', () => {
 
     it('should fail with empty inboundId', async () => {
         const prompts = await getPrompts(
-            manifestServiceInboundId as unknown as ManifestService,
+            manifestManagerInboundId as unknown as ManifestManager,
             true,
             'fin.cash.factsheet.bank'
         );
@@ -280,7 +280,7 @@ describe('getPrompts', () => {
 
     it('should pass with valid semantic object', async () => {
         const prompts = await getPrompts(
-            manifestServiceWithoutInboundId as unknown as ManifestService,
+            manifestManagerWithoutInboundId as unknown as ManifestManager,
             true,
             'fin.cash.factsheet.bank'
         );
@@ -290,7 +290,7 @@ describe('getPrompts', () => {
 
     it('should fail with invalid semantic object', async () => {
         const prompts = await getPrompts(
-            manifestServiceWithoutInboundId as unknown as ManifestService,
+            manifestManagerWithoutInboundId as unknown as ManifestManager,
             true,
             'fin.cash.factsheet.bank'
         );
@@ -302,7 +302,7 @@ describe('getPrompts', () => {
 
     it('should pass with valid action', async () => {
         const prompts = await getPrompts(
-            manifestServiceWithoutInboundId as unknown as ManifestService,
+            manifestManagerWithoutInboundId as unknown as ManifestManager,
             true,
             'fin.cash.factsheet.bank'
         );
@@ -312,7 +312,7 @@ describe('getPrompts', () => {
 
     it('should fail with invalid action', async () => {
         const prompts = await getPrompts(
-            manifestServiceWithoutInboundId as unknown as ManifestService,
+            manifestManagerWithoutInboundId as unknown as ManifestManager,
             true,
             'fin.cash.factsheet.bank'
         );
@@ -324,7 +324,7 @@ describe('getPrompts', () => {
 
     it('should pass with valid title', async () => {
         const prompts = await getPrompts(
-            manifestServiceWithoutInboundId as unknown as ManifestService,
+            manifestManagerWithoutInboundId as unknown as ManifestManager,
             true,
             'fin.cash.factsheet.bank'
         );
@@ -334,7 +334,7 @@ describe('getPrompts', () => {
 
     it('should fail with invalid title', async () => {
         const prompts = await getPrompts(
-            manifestServiceWithoutInboundId as unknown as ManifestService,
+            manifestManagerWithoutInboundId as unknown as ManifestManager,
             true,
             'fin.cash.factsheet.bank'
         );
@@ -346,7 +346,7 @@ describe('getPrompts', () => {
 
     it('should pass with valid parameters', async () => {
         const prompts = await getPrompts(
-            manifestServiceWithoutInboundId as unknown as ManifestService,
+            manifestManagerWithoutInboundId as unknown as ManifestManager,
             true,
             'fin.cash.factsheet.bank'
         );
@@ -356,7 +356,7 @@ describe('getPrompts', () => {
 
     it('should fail with invalid parameters', async () => {
         const prompts = await getPrompts(
-            manifestServiceWithoutInboundId as unknown as ManifestService,
+            manifestManagerWithoutInboundId as unknown as ManifestManager,
             true,
             'fin.cash.factsheet.bank'
         );

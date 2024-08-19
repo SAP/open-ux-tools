@@ -1,11 +1,11 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import type { Application, ProviderService } from '../../../../src';
+import type { Application, AbapProvider } from '../../../../src';
 
 import {
     ABAP_APPS_PARAMS,
     ABAP_VARIANT_APPS_PARAMS,
-    ApplicationService,
+    ApplicationManager,
     filterApps,
     getApplicationChoices
 } from '../../../../src';
@@ -16,7 +16,7 @@ jest.mock('i18next', () => ({
 
 const searchMock = jest.fn();
 
-const mockProviderService = {
+const mockAbapProvider = {
     getProvider: jest.fn().mockReturnValue({
         getAppIndex: jest.fn().mockReturnValue({
             search: searchMock
@@ -25,7 +25,7 @@ const mockProviderService = {
 };
 
 describe('Application Service', () => {
-    let service: ApplicationService;
+    let service: ApplicationManager;
 
     const loggerMock = {
         error: jest.fn(),
@@ -39,7 +39,7 @@ describe('Application Service', () => {
     ];
 
     beforeEach(() => {
-        service = new ApplicationService(mockProviderService as unknown as ProviderService, true, loggerMock);
+        service = new ApplicationManager(mockAbapProvider as unknown as AbapProvider, true, loggerMock);
     });
 
     afterEach(() => {

@@ -3,8 +3,8 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { App, AppIndex } from '@sap-ux/axios-extension';
 
 import type { Application } from '../../types';
-import type { ProviderService } from './abap-provider-service';
-import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, S4HANA_APPS_PARAMS } from '../constants';
+import type { AbapProvider } from '../providers';
+import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, S4HANA_APPS_PARAMS } from '../../base/constants';
 
 interface Choice {
     name: string;
@@ -79,21 +79,17 @@ export const getApplicationChoices = (apps: Application[]): Choice[] => {
 /**
  * Provides services related to managing and loading applications from an ABAP provider.
  */
-export class ApplicationService {
+export class ApplicationManager {
     private applications: Application[] = [];
 
     /**
-     * Constructs an instance of ApplicationService.
+     * Constructs an instance of ApplicationManager.
      *
-     * @param {ProviderService} providerService - The ABAP provider service.
+     * @param {AbapProvider} provider - The ABAP provider service.
      * @param {boolean} isCustomerBase - Indicates if the current base is a customer base, which affects how applications are loaded.
      * @param {ToolsLogger} [logger] - The logger.
      */
-    constructor(
-        private providerService: ProviderService,
-        private isCustomerBase: boolean,
-        private logger?: ToolsLogger
-    ) {}
+    constructor(private provider: AbapProvider, private isCustomerBase: boolean, private logger?: ToolsLogger) {}
 
     /**
      * Clears the stored list of applications.
@@ -121,7 +117,7 @@ export class ApplicationService {
     public async loadApps(isCloudSystem: boolean): Promise<Application[]> {
         let result: AppIndex = [];
 
-        const provider = this.providerService.getProvider();
+        const provider = this.provider.getProvider();
         const appIndex = provider.getAppIndex();
 
         try {

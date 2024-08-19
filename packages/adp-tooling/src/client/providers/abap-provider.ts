@@ -3,24 +3,23 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { AbapServiceProvider, AxiosRequestConfig, ProviderConfiguration } from '@sap-ux/axios-extension';
-
-import type { EndpointsService } from './endpoints-service';
+import { EndpointsManager } from '../endpoint';
 
 export type RequestOptions = AxiosRequestConfig & Partial<ProviderConfiguration>;
 
 /**
  * Service for managing and providing access to an ABAP service provider.
  */
-export class ProviderService {
+export class AbapProvider {
     private provider: AbapServiceProvider;
 
     /**
-     * Constructs an instance of ProviderService.
+     * Constructs an instance of AbapProvider.
      *
-     * @param {EndpointsService} endpointsService - The endpoints service for retrieving system details.
+     * @param {EndpointsManager} endpointsManager - The endpoints service for retrieving system details.
      * @param {ToolsLogger} [logger] - The logger.
      */
-    constructor(private endpointsService: EndpointsService, private logger?: ToolsLogger) {}
+    constructor(private endpointsManager: EndpointsManager, private logger?: ToolsLogger) {}
 
     /**
      * Retrieves the configured ABAP service provider if set, otherwise throws an error.
@@ -82,7 +81,7 @@ export class ProviderService {
                 destination: system
             };
         } else {
-            const details = await this.endpointsService.getSystemDetails(system);
+            const details = await this.endpointsManager.getSystemDetails(system);
 
             target = {
                 ...details,

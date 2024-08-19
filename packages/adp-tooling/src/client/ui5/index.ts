@@ -1,3 +1,4 @@
+import { t } from 'i18next';
 import {
     SNAPSHOT_CDN_URL,
     UI5_CDN_URL,
@@ -7,10 +8,8 @@ import {
     CURRENT_SYSTEM_VERSION,
     SNAPSHOT_VERSION,
     SNAPSHOT_UNTESTED_VERSION
-} from '../constants';
-import { t } from '../../i18n';
-import type { UI5Version } from '../../types';
-import { FlexLayer } from '../../types';
+} from '../../base';
+import { UI5Version, FlexLayer } from '../../types';
 
 /**
  * Gets the official base URL for SAP UI5 resources based on the version information.
@@ -177,9 +176,9 @@ export function isFeatureSupportedVersion(featureVersion: string, version?: stri
  * This class provides methods to fetch and validate UI5 versions, retrieve public and internal versions,
  * and format or modify version strings as per specific requirements like snapshots.
  *
- * @class UI5VersionService
+ * @class UI5VersionManager
  */
-export class UI5VersionService {
+export class UI5VersionManager {
     public latestVersion: string;
     public publicVersions: UI5Version;
     public releasedVersions: string[];
@@ -188,7 +187,7 @@ export class UI5VersionService {
     private isCustomerBase: boolean;
 
     /**
-     * Initializes a new instance of the UI5VersionService class.
+     * Initializes a new instance of the UI5VersionManager class.
      *
      * @param {FlexLayer} layer UI5 Flex layer.
      */
