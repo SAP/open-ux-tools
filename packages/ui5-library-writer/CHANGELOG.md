@@ -1,5 +1,14 @@
 # @sap-ux/ui5-library-writer
 
+## 0.5.13
+
+### Patch Changes
+
+-   Updated dependencies [61721f2]
+    -   @sap-ux/ui5-config@0.24.0
+    -   @sap-ux/ui5-application-writer@1.1.4
+    -   @sap-ux/project-access@1.26.7
+
 ## 0.5.12
 
 ### Patch Changes
