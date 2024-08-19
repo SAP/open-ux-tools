@@ -1,5 +1,90 @@
 # @sap-ux/create
 
+## 0.7.53
+
+### Patch Changes
+
+-   Updated dependencies [61721f2]
+    -   @sap-ux/ui5-config@0.24.0
+    -   @sap-ux/adp-tooling@0.12.38
+    -   @sap-ux/app-config-writer@0.4.26
+    -   @sap-ux/cards-editor-config-writer@0.4.3
+    -   @sap-ux/mockserver-config-writer@0.6.3
+    -   @sap-ux/project-access@1.26.7
+    -   @sap-ux/preview-middleware@0.16.50
+    -   @sap-ux/cap-config-writer@0.7.24
+    -   @sap-ux/system-access@0.5.9
+
+## 0.7.52
+
+### Patch Changes
+
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/app-config-writer@0.4.25
+    -   @sap-ux/cap-config-writer@0.7.23
+    -   @sap-ux/adp-tooling@0.12.37
+    -   @sap-ux/preview-middleware@0.16.49
+    -   @sap-ux/system-access@0.5.9
+    -   @sap-ux/inquirer-common@0.4.6
+
+## 0.7.51
+
+### Patch Changes
+
+-   Updated dependencies [53a5b13]
+    -   @sap-ux/preview-middleware@0.16.48
+
+## 0.7.50
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.36
+-   @sap-ux/app-config-writer@0.4.24
+-   @sap-ux/preview-middleware@0.16.47
+-   @sap-ux/system-access@0.5.8
+-   @sap-ux/ui5-config@0.23.1
+-   @sap-ux/cap-config-writer@0.7.22
+
+## 0.7.49
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.4.5
+-   @sap-ux/preview-middleware@0.16.46
+-   @sap-ux/adp-tooling@0.12.35
+-   @sap-ux/cap-config-writer@0.7.21
+
+## 0.7.48
+
+### Patch Changes
+
+-   b813843: Fix validation in change-inbound prompts
+-   Updated dependencies [b813843]
+    -   @sap-ux/adp-tooling@0.12.34
+    -   @sap-ux/preview-middleware@0.16.45
+
+## 0.7.47
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.33
+-   @sap-ux/app-config-writer@0.4.23
+-   @sap-ux/preview-middleware@0.16.44
+-   @sap-ux/system-access@0.5.7
+-   @sap-ux/ui5-config@0.23.1
+-   @sap-ux/cap-config-writer@0.7.20
+
+## 0.7.46
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.32
+-   @sap-ux/app-config-writer@0.4.22
+-   @sap-ux/preview-middleware@0.16.43
+-   @sap-ux/system-access@0.5.6
+-   @sap-ux/ui5-config@0.23.1
+-   @sap-ux/cap-config-writer@0.7.19
+
 ## 0.7.45
 
 ### Patch Changes
