@@ -64,11 +64,9 @@ $layout-contextual-menu-item-focus-color: $layout-contextual-menu-item-hover-col
     }
     .ms-Callout-beak {
         background: $menu-background;
-        border-radius: $layout-dropdown-menu-border-radius;
     }
     .ms-Callout-beakCurtain {
         background: transparent;
-        border-radius: $layout-dropdown-menu-border-radius;
     }
     &--contextual {
         border-radius: $layout-contextual-menu-border-radius;
