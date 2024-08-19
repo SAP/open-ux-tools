@@ -9,16 +9,16 @@ type SingleVersionInfo =
     | undefined;
 
 export type Ui5VersionInfo = {
-    majorUi5Version: number;
-    minorUi5Version: number;
+    major: number;
+    minor: number;
 };
 
 /**
  * Default minimal supported UI5 version
  */
 const minVersionInfo = {
-    majorUi5Version: 1,
-    minorUi5Version: 71
+    major: 1,
+    minor: 71
 } as Readonly<Ui5VersionInfo>;
 
 /**
@@ -35,8 +35,8 @@ export async function getUi5Version(): Promise<Ui5VersionInfo> {
     const [major, minor] = version.split('.').map(versionPart => parseInt(versionPart, 10));
 
     return {
-        majorUi5Version: major,
-        minorUi5Version: minor
+        major: major,
+        minor: minor
     } satisfies Ui5VersionInfo;
 }
 
@@ -51,13 +51,13 @@ export function isLowerThanMinimalUi5Version(
     ui5VersionInfo: Ui5VersionInfo,
     minUi5VersionInfo: Ui5VersionInfo = minVersionInfo
 ): boolean {
-    if (!isNaN(ui5VersionInfo.majorUi5Version) && !isNaN(ui5VersionInfo.minorUi5Version)) {
-        if (ui5VersionInfo.majorUi5Version < minUi5VersionInfo.majorUi5Version) {
+    if (!isNaN(ui5VersionInfo.major) && !isNaN(ui5VersionInfo.minor)) {
+        if (ui5VersionInfo.major < minUi5VersionInfo.major) {
             return true;
         }
         if (
-            ui5VersionInfo.majorUi5Version === minUi5VersionInfo.majorUi5Version &&
-            ui5VersionInfo.minorUi5Version < minUi5VersionInfo.minorUi5Version
+            ui5VersionInfo.major === minUi5VersionInfo.major &&
+            ui5VersionInfo.minor < minUi5VersionInfo.minor
         ) {
             return true;
         }
@@ -71,5 +71,5 @@ export function isLowerThanMinimalUi5Version(
  * @returns string with validation message.
  */
 export function getUI5VersionValidationMessage(ui5VersionInfo: Ui5VersionInfo): string {
-    return `The current SAPUI5 version set for this Adaptation project is ${ui5VersionInfo.majorUi5Version}.${ui5VersionInfo.minorUi5Version}. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is ${minVersionInfo.majorUi5Version}.${minVersionInfo.minorUi5Version}`;
+    return `The current SAPUI5 version set for this Adaptation project is ${ui5VersionInfo.major}.${ui5VersionInfo.minor}. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is ${minVersionInfo.major}.${minVersionInfo.minor}`;
 }

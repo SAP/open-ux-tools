@@ -283,7 +283,7 @@ export async function init({
 
                 let libs: string[] = [];
 
-                if (isLowerThanMinimalUi5Version(ui5VersionInfo, { majorUi5Version: 1, minorUi5Version: 72 })) {
+                if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 72 })) {
                     libs.push('open/ux/preview/client/flp/initRta');
                 } else {
                     libs.push('sap/ui/rta/api/startAdaptation');
@@ -334,7 +334,7 @@ export async function init({
     registerSAPFonts();
 
     const renderer =
-        ui5VersionInfo.majorUi5Version < 2
+        ui5VersionInfo.major < 2
             ? await container.createRenderer(undefined, true)
             : await container.createRendererInternal(undefined, true);
     renderer.placeAt('content');
