@@ -26,7 +26,7 @@ const minVersionInfo = {
  *
  * @returns Ui5VersionInfo
  */
-export async function getUi5Version() {
+export async function getUi5Version(): Promise<Ui5VersionInfo> {
     let version = ((await VersionInfo.load({ library: 'sap.ui.core' })) as SingleVersionInfo)?.version;
     if (!version) {
         Log.error('Could not get UI5 version of application. Using 1.121.0 as fallback.');
@@ -50,7 +50,7 @@ export async function getUi5Version() {
 export function isLowerThanMinimalUi5Version(
     ui5VersionInfo: Ui5VersionInfo,
     minUi5VersionInfo: Ui5VersionInfo = minVersionInfo
-): boolean {
+) {
     if (!isNaN(ui5VersionInfo.majorUi5Version) && !isNaN(ui5VersionInfo.minorUi5Version)) {
         if (ui5VersionInfo.majorUi5Version < minUi5VersionInfo.majorUi5Version) {
             return true;
@@ -70,6 +70,6 @@ export function isLowerThanMinimalUi5Version(
  * @param ui5VersionInfo to be mentioned in the message
  * @returns string with validation message.
  */
-export function getUI5VersionValidationMessage(ui5VersionInfo: Ui5VersionInfo): string {
+export function getUI5VersionValidationMessage(ui5VersionInfo: Ui5VersionInfo) {
     return `The current SAPUI5 version set for this Adaptation project is ${ui5VersionInfo.majorUi5Version}.${ui5VersionInfo.minorUi5Version}. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is ${minVersionInfo.majorUi5Version}.${minVersionInfo.minorUi5Version}`;
 }
