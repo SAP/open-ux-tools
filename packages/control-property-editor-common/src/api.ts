@@ -204,6 +204,11 @@ export interface NestedQuickActionExecutionPayload {
 
 export type QuickActionExecutionPayload = SimpleQuickActionExecutionPayload | NestedQuickActionExecutionPayload;
 
+export interface InfoCenterMessage {
+    message: string;
+    type: any;
+}
+
 /**
  * ACTIONS
  */
@@ -282,6 +287,8 @@ export const redo = createExternalAction<void>('redo');
 export const save = createExternalAction<void>('save');
 export const quickActionListChanged = createExternalAction<QuickAction[]>('quick-action-list-changed');
 export const executeQuickAction = createExternalAction<QuickActionExecutionPayload>('execute-quick-action');
+export const showInfoCenterMessage = createExternalAction<InfoCenterMessage>('show-info-center-message');
+export const clearInfoCenterMessage = createExternalAction<any>('clear-info-center-message');
 
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
@@ -305,4 +312,6 @@ export type ExternalAction =
     | ReturnType<typeof save>
     | ReturnType<typeof appLoaded>
     | ReturnType<typeof quickActionListChanged>
-    | ReturnType<typeof executeQuickAction>;
+    | ReturnType<typeof executeQuickAction>
+    | ReturnType<typeof showInfoCenterMessage>
+    | ReturnType<typeof clearInfoCenterMessage>;

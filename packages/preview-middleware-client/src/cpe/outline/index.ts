@@ -1,6 +1,5 @@
 import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
-import { outlineChanged, showMessage } from '@sap-ux-private/control-property-editor-common';
-
+import { outlineChanged, showMessage, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type OutlineService from 'sap/ui/rta/command/OutlineService';
 
@@ -34,10 +33,10 @@ export async function initOutline(
             console.log("Inside syncOutline");
             if (reuseComponentsIds.size > 0 && scenario === 'ADAPTATION_PROJECT' && !hasSentWarning) {
                 sendAction(
-                    showMessage({
+                    showInfoCenterMessage({
                         message:
                             'Have in mind that reuse components are detected for some views in this application and controller extensions and adding fragments are not supported for such views. Controller extension and adding fragment functionality on these views will be disabled.',
-                        shouldHideIframe: false
+                        type: 0
                     })
                 );
                 hasSentWarning = true;

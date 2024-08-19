@@ -13,7 +13,8 @@ import {
     redo,
     save,
     setAppMode,
-    executeQuickAction
+    executeQuickAction,
+    clearInfoCenterMessage
 } from '@sap-ux-private/control-property-editor-common';
 
 import { changeProperty } from './slice';
@@ -50,6 +51,7 @@ export const communicationMiddleware: Middleware<Dispatch<ExternalAction>> = (st
                     sendAction(externalChangeProperty(action.payload));
                     break;
                 }
+                case clearInfoCenterMessage.type:
                 case executeQuickAction.type:
                 case reloadApplication.type:
                 case deletePropertyChanges.type:

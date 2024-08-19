@@ -4,6 +4,7 @@ import { createSlice, createAction } from '@reduxjs/toolkit';
 import type {
     Control,
     IconDetails,
+    InfoCenterMessage,
     OutlineNode,
     PendingPropertyChange,
     PropertyChange,
@@ -27,7 +28,9 @@ import {
     setUndoRedoEnablement,
     setSaveEnablement,
     appLoaded,
-    quickActionListChanged
+    quickActionListChanged,
+    showInfoCenterMessage,
+    clearInfoCenterMessage
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -56,6 +59,7 @@ interface SliceState {
     canSave: boolean;
     isAppLoading: boolean;
     quickActions: QuickAction[];
+    infoCenter: InfoCenterMessage[];
 }
 
 export interface ChangesSlice {
@@ -142,7 +146,8 @@ export const initialState: SliceState = {
     },
     canSave: false,
     isAppLoading: true,
-    quickActions: []
+    quickActions: [],
+    infoCenter: [{message: 'Message success', type: 4}, {message: 'Message error', type: 1}]
 };
 
 const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
@@ -315,6 +320,18 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 quickActionListChanged.match,
                 (state: SliceState, action: ReturnType<typeof quickActionListChanged>): void => {
                     state.quickActions = action.payload;
+                }
+            )
+            .addMatcher(
+                showInfoCenterMessage.match,
+                (state: SliceState, action: ReturnType<typeof showInfoCenterMessage>): void => {
+                    state.infoCenter.unshift(action.payload);
+                }
+            )
+            .addMatcher(
+                clearInfoCenterMessage.match,
+                (state: SliceState, action: ReturnType<typeof clearInfoCenterMessage>): void => {
+                    state.infoCenter = state.infoCenter.filter((_, index) => index !== action.payload)
                 }
             )
 });

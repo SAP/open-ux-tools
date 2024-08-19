@@ -1,0 +1,22 @@
+.info-center-item {
+    size: 13px;
+    line-height: 22px;
+    display: flex;
+    margin-right: 5px;
+}
+
+.message-bar {
+    position: relative; 
+}
+
+.icon-button-container {
+    display: none;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.message-bar:hover .icon-button-container {
+    display: block;
+}

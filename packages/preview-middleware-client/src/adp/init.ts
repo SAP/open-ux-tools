@@ -4,9 +4,9 @@ import init from '../cpe/init';
 import { initDialogs } from './init-dialogs';
 import {
     ExternalAction,
-    showMessage,
     startPostMessageCommunication,
-    enableTelemetry
+    enableTelemetry,
+    showInfoCenterMessage
 } from '@sap-ux-private/control-property-editor-common';
 
 import { ActionHandler } from '../cpe/types';
@@ -60,17 +60,17 @@ export default async function (rta: RuntimeAuthoring) {
     const ui5VersionValidationMsg = getUI5VersionValidationMessage(version);
 
     if (ui5VersionValidationMsg) {
-        sendAction(showMessage({ message: ui5VersionValidationMsg, shouldHideIframe: true }));
+        sendAction(showInfoCenterMessage({ message: ui5VersionValidationMsg, type: 0 }));
 
         return;
     }
 
     if (syncViewsIds.length > 0) {
         sendAction(
-            showMessage({
+            showInfoCenterMessage({
                 message:
                     'Have in mind that synchronous views are detected for this application and controller extensions are not supported for such views. Controller extension functionality on these views will be disabled.',
-                shouldHideIframe: false
+                type: 0
             })
         );
     }
