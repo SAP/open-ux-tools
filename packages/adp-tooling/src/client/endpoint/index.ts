@@ -3,7 +3,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { getCredentialsFromStore } from '@sap-ux/system-access';
 import type { Endpoint } from '@sap-ux/environment-check';
 import { checkEndpoints, isExtensionInstalledVsCode } from '@sap-ux/environment-check';
-import { SystemDetails } from '../../types';
+import type { SystemDetails } from '../../types';
 
 /**
  * Service class to manage and retrieve information about system endpoints,
