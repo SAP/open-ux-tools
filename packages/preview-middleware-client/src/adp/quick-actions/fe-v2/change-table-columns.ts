@@ -16,10 +16,11 @@ import { getControlById, isA, isManagedObject } from '../../../cpe/utils';
 export const CHANGE_TABLE_COLUMNS = 'change-table-columns';
 const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';
 const M_TABLE_ACTION_ID = 'CTX_ADD_ELEMENTS_AS_CHILD';
+const SETTINGS_ID = 'CTX_SETTINGS';
 const ICON_TAB_BAR_TYPE = 'sap.m.IconTabBar';
 const SMART_TABLE_TYPE = 'sap.ui.comp.smarttable.SmartTable';
 const M_TABLE_TYPE = 'sap.m.Table';
-const ACTION_ID = [SMART_TABLE_ACTION_ID, M_TABLE_ACTION_ID];
+const ACTION_ID = [SMART_TABLE_ACTION_ID, M_TABLE_ACTION_ID, SETTINGS_ID];
 const CONTROL_TYPES = [SMART_TABLE_TYPE, M_TABLE_TYPE];
 
 export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinition {
@@ -36,6 +37,7 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
         {
             table: UI5Element;
             iconTabBarFilterKey?: string;
+            changeColumnActionId: string;
         }
     > = {};
     private eventAttachedOnce: boolean = false;
@@ -65,7 +67,7 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
             CONTROL_TYPES
         )) {
             const actions = await this.context.actionService.get(table.getId());
-            const changeColumnAction = actions.some((action) => ACTION_ID.includes(action.id));
+            const changeColumnAction = actions.find((action) => ACTION_ID.includes(action.id));
             if (changeColumnAction) {
                 const tabKey = Object.keys(filters).find((key) => table.getId().endsWith(key));
                 if (this.iconTabBar && tabKey) {
@@ -75,10 +77,11 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
                     });
                     this.tableMap[`${this.children.length - 1}`] = {
                         table,
-                        iconTabBarFilterKey: tabKey
+                        iconTabBarFilterKey: tabKey,
+                        changeColumnActionId: changeColumnAction.id
                     };
                 } else {
-                    this.processTable(table);
+                    this.processTable(table, changeColumnAction.id);
                 }
             }
         }
@@ -88,22 +91,26 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
         }
     }
 
-    private processTable(table: UI5Element): void {
+    private getTableLabel(tableName: string | undefined): string {
+        return tableName ? `'${tableName}' table` : 'Unnamed table';
+    }
+
+    private processTable(table: UI5Element, changeColumnActionId: string): void {
         if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {
             this.children.push({
-                label: `'${table.getHeader()}' table`,
+                label: this.getTableLabel(table.getHeader()),
                 children: []
             });
         }
         if (isA<Table>(M_TABLE_TYPE, table)) {
-            const title = table?.getHeaderToolbar()?.getTitleControl()?.getText() || 'Unknown';
             this.children.push({
-                label: `'${title}' table`,
+                label: this.getTableLabel(table?.getHeaderToolbar()?.getTitleControl()?.getText()),
                 children: []
             });
         }
         this.tableMap[`${this.children.length - 1}`] = {
-            table
+            table,
+            changeColumnActionId
         };
     }
 
@@ -119,7 +126,7 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
     }
 
     async execute(path: string): Promise<FlexCommand[]> {
-        const { table, iconTabBarFilterKey } = this.tableMap[path];
+        const { table, iconTabBarFilterKey, changeColumnActionId } = this.tableMap[path];
         if (!table) {
             return [];
         }
@@ -133,20 +140,18 @@ export class ChangeTableColumnsQuickAction implements NestedQuickActionDefinitio
         if (this.iconTabBar && iconTabBarFilterKey) {
             this.iconTabBar.setSelectedKey(iconTabBarFilterKey);
         }
-        if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {
-            await this.context.actionService.execute(table.getId(), SMART_TABLE_ACTION_ID);
-        }
-        if (isA<Table>(M_TABLE_TYPE, table)) {
-            if (table.getItems().length > 0) {
-                await this.context.actionService.execute(table.getId(), M_TABLE_ACTION_ID);
-            }
-            // to avoid reopening the dialog after close
-            if (!this.eventAttachedOnce) {
-                table.attachEventOnce(
-                    'updateFinished',
-                    async () => await this.context.actionService.execute(table.getId(), M_TABLE_ACTION_ID)
-                );
-                this.eventAttachedOnce = true;
+
+        const executeAction = async () => await this.context.actionService.execute(table.getId(), changeColumnActionId);
+        if (isA<SmartTable>(SMART_TABLE_TYPE, table) || isA<Table>(M_TABLE_TYPE, table)) {
+            // if table is busy, i.e. lazy loading, then we subscribe to 'updateFinished' event and call action service when loading is done
+            if (table.getBusy()) {
+                // to avoid reopening the dialog after close
+                if (!this.eventAttachedOnce) {
+                    table.attachEventOnce('updateFinished', executeAction);
+                    this.eventAttachedOnce = true;
+                }
+            } else {
+                await executeAction();
             }
         }
 

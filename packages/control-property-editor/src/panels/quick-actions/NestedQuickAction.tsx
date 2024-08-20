@@ -82,7 +82,7 @@ export function NestedQuickActionListItem(props: Readonly<NestedQuickActionListI
                                 })
                             );
                         }}>
-                        {`${action.title}  - ${action.children[0].label}`}
+                        {`${action.title} - ${action.children[0].label}`}
                     </UILink>
                 </>
             )}
