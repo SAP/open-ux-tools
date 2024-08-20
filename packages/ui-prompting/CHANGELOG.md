@@ -1,5 +1,11 @@
 # @sap-ux/ui-prompting
 
+## 0.1.3
+
+### Patch Changes
+
+-   3de01ca: Remove left margin from prompt group element when in multi-column view
+
 ## 0.1.2
 
 ### Patch Changes

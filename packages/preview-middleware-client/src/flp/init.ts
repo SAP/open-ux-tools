@@ -7,7 +7,7 @@ import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import AppState from 'sap/ushell/services/AppState';
 import { getManifestAppdescr } from '../adp/api-handler';
-import { getError } from '../cpe/error-utils';
+import { getError } from '../utils/error';
 import initConnectors from './initConnectors';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
 
