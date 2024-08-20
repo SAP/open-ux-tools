@@ -10,7 +10,7 @@ import { AddControllerToPageQuickAction } from '../common/add-controller-to-page
 
 import { ToggleClearFilterBarQuickAction } from './lr-toggle-clear-filter-bar';
 import { ChangeTableColumnsQuickAction } from './change-table-columns';
-import { AddHeaderFieldQuickAction } from './common/op-add-header-field';
+import { AddHeaderFieldQuickAction } from '../common/op-add-header-field';
 import Control from 'sap/ui/core/Control';
 
 type PageName = 'listReport' | 'objectPage';
