@@ -29,7 +29,7 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
 
             if (name === 'listReport') {
                 definitionGroups.push({
-                    title: 'List Report',
+                    title: 'LIST REPORT',
                     definitions: [
                         ToggleClearFilterBarQuickAction,
                         AddControllerToPageQuickAction,
@@ -40,7 +40,7 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
                 });
             } else if (name === 'objectPage') {
                 definitionGroups.push({
-                    title: 'Object Page',
+                    title: 'OBJECT PAGE',
                     definitions: [
                         AddControllerToPageQuickAction,
                         ChangeTableColumnsQuickAction,

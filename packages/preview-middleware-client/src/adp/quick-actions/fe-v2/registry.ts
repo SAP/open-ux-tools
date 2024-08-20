@@ -31,7 +31,7 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
             const { name, view } = activePages[index];
             if (name === 'listReport') {
                 definitionGroups.push({
-                    title: 'List Report',
+                    title: 'LIST REPORT',
                     definitions: [
                         ToggleClearFilterBarQuickAction,
                         AddControllerToPageQuickAction,
@@ -42,7 +42,7 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
                 });
             } else if (name === 'objectPage') {
                 definitionGroups.push({
-                    title: 'Object Page',
+                    title: 'OBJECT PAGE',
                     definitions: [
                         AddControllerToPageQuickAction,
                         ChangeTableColumnsQuickAction,
