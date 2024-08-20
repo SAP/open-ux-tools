@@ -1,7 +1,7 @@
 import { getTrimmedUI5Version, getExtProjectConfig } from '../../../../../src';
 import type { Application, BasicInfoAnswers, ConfigurationInfoAnswers, EndpointsManager } from '../../../../../src';
 
-jest.mock('../../../../../src/base/services/ui5-version-service.ts', () => ({
+jest.mock('../../../../../src/common/ui5/utils.ts', () => ({
     getTrimmedUI5Version: jest.fn()
 }));
 

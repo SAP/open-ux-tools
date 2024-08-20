@@ -1,12 +1,30 @@
 import * as fs from 'fs';
-import * as i18n from '../../../../src/i18n';
-import { getBasicInfoPrompts } from '../../../../src/prompts/creation';
-import type { BasicInfoAnswers } from '../../../../src/types';
-import { FlexLayer } from '../../../../src/types';
-// import * as promptHelper from '../../../../src/prompts/creation/questions/basic';
-// import * as fileSystem from '../../../../src/base/file-system';
+
+import * as i18n from '../../../../../src/i18n';
+import { FlexLayer } from '../../../../../src/types';
+import type { BasicInfoAnswers } from '../../../../../src/types';
+import {
+    getBasicInfoPrompts,
+    getDefaultProjectName,
+    getProjectNameTooltip,
+    getProjectNames
+} from '../../../../../src/prompts/creation';
 
 jest.mock('fs');
+
+jest.mock('../../../../../src/prompts/creation/questions/helper/tooltips.ts', () => ({
+    getProjectNameTooltip: jest.fn()
+}));
+
+jest.mock('../../../../../src/prompts/creation/questions/helper/default-values.ts', () => ({
+    ...jest.requireActual('../../../../../src/prompts/creation/questions/helper/default-values.ts'),
+    getProjectNames: jest.fn(),
+    getDefaultProjectName: jest.fn()
+}));
+
+const getProjectNameTooltipMock = getProjectNameTooltip as jest.Mock;
+const getProjectNamesMock = getProjectNames as jest.Mock;
+const getDefaultProjectNameMock = getDefaultProjectName as jest.Mock;
 
 describe('getPrompts', () => {
     beforeAll(async () => {
@@ -15,7 +33,7 @@ describe('getPrompts', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        // jest.spyOn(promptHelper, 'getProjectNameTooltip').mockReturnValueOnce('some hint');
+        getProjectNameTooltipMock.mockReturnValueOnce('some hint');
     });
 
     it('should return prompts - CUSTOMER_BASE layer', () => {
@@ -108,7 +126,8 @@ describe('getPrompts', () => {
     });
 
     it('should get default values', () => {
-        // jest.spyOn(fileSystem, 'getProjectNames').mockReturnValue([]);
+        getProjectNamesMock.mockReturnValue([]);
+        getDefaultProjectNameMock.mockReturnValue('app.variant1');
         const prompts = getBasicInfoPrompts('/path', FlexLayer.CUSTOMER_BASE);
         const projectNamePrompt = prompts.find((prompt) => prompt.name === 'projectName');
         const namespacePrompt = prompts.find((prompt) => prompt.name === 'namespace');

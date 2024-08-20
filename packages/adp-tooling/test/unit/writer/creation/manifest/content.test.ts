@@ -6,12 +6,12 @@ import {
     fillSupportData,
     FlexLayer,
     getManifestContent
-} from '../../../../src';
-import type { AdpWriterConfig, Content } from '../../../../src';
+} from '../../../../../src';
+import type { AdpWriterConfig, Content } from '../../../../../src';
 
 const isSupportedMock = isFeatureSupportedVersion as jest.Mock;
 
-jest.mock('../../../../src/base/services/ui5-version-service.ts', () => ({
+jest.mock('../../../../../src/common/ui5/utils.ts', () => ({
     isFeatureSupportedVersion: jest.fn()
 }));
 

@@ -1,26 +1,22 @@
 import type { Manifest } from '@sap-ux/project-access';
 
-import type { Application } from '../../../../src';
-import {
-    AppIdentifier,
-    isV4Application,
-    getApplicationType,
-    isSupportedType,
-    FlexLayer,
-    ApplicationType
-} from '../../../../src';
+import type { Application } from '../../../../../src';
+import { FlexLayer, ApplicationType } from '../../../../../src';
+import { getApplicationType } from '../../../../../src/common/app-type';
+import { AppIdentifier } from '../../../../../src/prompts/creation/identifier';
+import { isSupportedType, isV4Application } from '../../../../../src/prompts/creation/identifier/utils';
 
 const isV4ApplicationMock = isV4Application as jest.Mock;
 const getApplicationTypeMock = getApplicationType as jest.Mock;
 const isSupportedTypeMock = isSupportedType as jest.Mock;
 
-jest.mock('../../../../src/base/services/manifest-service.ts', () => ({
-    isV4Application: jest.fn()
+jest.mock('../../../../../src/prompts/creation/identifier/utils', () => ({
+    isV4Application: jest.fn(),
+    isSupportedType: jest.fn()
 }));
 
-jest.mock('../../../../src/base/app-utils.ts', () => ({
-    getApplicationType: jest.fn(),
-    isSupportedType: jest.fn()
+jest.mock('../../../../../src/common/app-type.ts', () => ({
+    getApplicationType: jest.fn()
 }));
 
 describe('AppIdentifier', () => {
@@ -89,14 +85,14 @@ describe('AppIdentifier', () => {
         });
     });
 
-    describe('validateSmartTemplateApplication', () => {
+    describe('validateFioriApplication', () => {
         it('throws an error if application does not support adaptation', async () => {
             const manifest = { 'sap.ui5': { flexEnabled: false } };
             getApplicationTypeMock.mockReturnValue(ApplicationType.FREE_STYLE);
             isSupportedTypeMock.mockReturnValue(true);
             isV4ApplicationMock.mockReturnValue(true);
 
-            await expect(appIdentifier.validateSmartTemplateApplication(manifest as Manifest)).rejects.toThrow(
+            await expect(appIdentifier.validateFioriApplication(manifest as Manifest)).rejects.toThrow(
                 'Select a different application. Selected application does not support Flexibility and therefore it does not support Adaptation Project.'
             );
         });
@@ -107,7 +103,7 @@ describe('AppIdentifier', () => {
             isSupportedTypeMock.mockReturnValue(false);
             isV4ApplicationMock.mockReturnValue(true);
 
-            await expect(appIdentifier.validateSmartTemplateApplication(manifest as Manifest)).rejects.toThrow(
+            await expect(appIdentifier.validateFioriApplication(manifest as Manifest)).rejects.toThrow(
                 "Select a different application. Adaptation project doesn't support the selected application."
             );
         });
@@ -123,7 +119,7 @@ describe('AppIdentifier', () => {
             isSupportedTypeMock.mockReturnValue(true);
             isV4ApplicationMock.mockReturnValue(true);
 
-            await appIdentifier.validateSmartTemplateApplication(manifest as Manifest);
+            await appIdentifier.validateFioriApplication(manifest as Manifest);
 
             expect(appIdentifier.appSync).toBe(true);
         });
