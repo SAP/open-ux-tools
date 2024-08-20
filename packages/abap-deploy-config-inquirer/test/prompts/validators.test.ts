@@ -28,7 +28,6 @@ import {
     TransportChoices
 } from '../../src/types';
 import * as utils from '../../src/utils';
-import { AbapTarget } from '@sap-ux/system-access';
 import { mockDestinations } from '../fixtures/destinations';
 
 describe('Test validators', () => {

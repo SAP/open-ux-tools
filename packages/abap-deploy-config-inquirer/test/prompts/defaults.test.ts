@@ -1,8 +1,14 @@
-import { defaultPackage, defaultTargetSystem, defaultTransportRequestChoice } from '../../src/prompts/defaults';
+import {
+    defaultPackage,
+    defaultPackageChoice,
+    defaultTargetSystem,
+    defaultUrl,
+    defaultTransportRequestChoice
+} from '../../src/prompts/defaults';
 import { getAbapSystemChoices } from '../../src/prompts/helpers';
 import { mockTargetSystems } from '../fixtures/targets';
 import { PromptState } from '../../src/prompts/prompt-state';
-import { TransportChoices, TransportConfig } from '../../src/types';
+import { PackageInputChoices, TargetSystemType, TransportChoices, TransportConfig } from '../../src/types';
 
 describe('defaults', () => {
     beforeEach(() => {
@@ -21,6 +27,26 @@ describe('defaults', () => {
 
         const defaultTarget = defaultTargetSystem(abapSystemChoices);
         expect(defaultTarget).toBe('https://mock.url.target1.com');
+    });
+
+    it('should return default url', () => {
+        PromptState.abapDeployConfig.url = 'https://mock.url.target1.com';
+        let url = defaultUrl(TargetSystemType.Url);
+        expect(url).toBe('');
+
+        url = defaultUrl('');
+        expect(url).toBe('https://mock.url.target1.com');
+
+        PromptState.abapDeployConfig.url = undefined;
+        url = defaultUrl('');
+        expect(url).toBe('');
+    });
+
+    it('should return default package choice', () => {
+        expect(defaultPackageChoice(PackageInputChoices.ListExistingChoice)).toBe(
+            PackageInputChoices.ListExistingChoice
+        );
+        expect(defaultPackageChoice()).toBe(PackageInputChoices.EnterManualChoice);
     });
 
     it('should return default package', () => {
