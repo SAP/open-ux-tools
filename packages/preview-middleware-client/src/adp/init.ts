@@ -58,9 +58,9 @@ export default async function (rta: RuntimeAuthoring) {
     }
 
     const feVersion = getFeVersion(rta.getRootControlInstance().getManifest());
-    const quickActionRegistry = await loadDefinitions(feVersion);
+    const quickActionRegistries = await loadDefinitions(feVersion);
 
-    await init(rta, [quickActionRegistry]);
+    await init(rta, quickActionRegistries);
 
     if (isLowerThanMinimalUi5Version(ui5VersionInfo)) {
         sendAction(showMessage({ message: getUI5VersionValidationMessage(ui5VersionInfo), shouldHideIframe: true }));

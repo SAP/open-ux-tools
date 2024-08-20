@@ -23,7 +23,6 @@ import './QuickAction.scss';
 export function QuickActionList(): ReactElement {
     const { t } = useTranslation();
     const groups = useSelector<RootState, QuickActionGroup[]>((state) => state.quickActions);
-    console.log(groups);
 
     return (
         <div className={`property-content app-panel-scroller`}>

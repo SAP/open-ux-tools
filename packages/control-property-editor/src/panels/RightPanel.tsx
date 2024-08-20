@@ -19,7 +19,7 @@ export function RightPanel(): ReactElement {
     const actionsCount = useSelector<RootState, number>((state) => state.quickActions.length);
     const scenario = useSelector<RootState, Scenario>((state) => state.scenario);
 
-    if (scenario !== 'ADAPTATION_PROJECT') {
+    if (scenario !== 'ADAPTATION_PROJECT' || actionsCount === 0) {
         return <PropertiesList />;
     }
 
