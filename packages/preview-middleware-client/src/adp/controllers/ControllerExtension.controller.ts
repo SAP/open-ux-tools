@@ -32,7 +32,7 @@ import {
     writeController
 } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
-import { getControllerInfo } from '../../cpe/utils';
+import { getControllerInfo } from '../utils';
 
 interface ControllerExtensionService {
     add: (codeRef: string, viewId: string) => Promise<{ creation: string }>;
@@ -177,7 +177,6 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
             }
         }
     }
-
     /**
      * Updates the model properties for an existing controller.
      *
@@ -281,5 +280,3 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
         }
     }
 }
-
-

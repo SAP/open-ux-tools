@@ -5,15 +5,14 @@ import UI5Element from 'sap/ui/core/Element';
 import { SIMPLE_QUICK_ACTION_KIND, SimpleQuickAction } from '@sap-ux-private/control-property-editor-common';
 
 import { getUi5Version } from '../../../utils/version';
-import {
-    getAllSyncViewsIds,
-    getControllerInfoForControl,
-    isControllerExtensionEnabledForControl
-} from '../../../cpe/utils';
+import { getAllSyncViewsIds, getControllerInfoForControl } from '../../utils';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
-import type { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import type {
+    QuickActionContext,
+    SimpleQuickActionDefinition
+} from '../../../cpe/quick-actions/quick-action-definition';
 
-import { DialogNames, handler } from '../../init-dialogs';
+import { DialogNames, handler, isControllerExtensionEnabledForControl } from '../../init-dialogs';
 import { getExistingController } from '../../api-handler';
 
 export const ADD_CONTROLLER_TO_PAGE_TYPE = 'add-controller-to-page';

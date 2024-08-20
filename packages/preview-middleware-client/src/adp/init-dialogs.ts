@@ -19,7 +19,7 @@ import ControllerExtension from './controllers/ControllerExtension.controller';
 import { ExtensionPointData } from './extension-point';
 import ExtensionPoint from './controllers/ExtensionPoint.controller';
 import ManagedObject from 'sap/ui/base/ManagedObject';
-import { isReuseComponent, isControllerExtensionEnabledForControl } from '../cpe/utils';
+import { isReuseComponent } from '../cpe/utils';
 import { Ui5VersionInfo } from '../utils/version';
 
 export const enum DialogNames {
@@ -29,6 +29,26 @@ export const enum DialogNames {
 }
 
 type Controller = AddFragment | ControllerExtension | ExtensionPoint;
+
+/**
+ * Handler for enablement of Extend With Controller context menu entry
+ *
+ * @param control UI5 control.
+ * @param syncViewsIds Runtime Authoring
+ * @param ui5VersionInfo UI5 version information
+ *
+ * @returns boolean whether menu item is enabled or not
+ */
+export function isControllerExtensionEnabledForControl(
+    control: ManagedObject,
+    syncViewsIds: string[],
+    ui5VersionInfo: Ui5VersionInfo
+): boolean {
+    const clickedControlId = FlUtils.getViewForControl(control).getId();
+    const isClickedControlReuseComponent = isReuseComponent(clickedControlId, ui5VersionInfo);
+
+    return !syncViewsIds.includes(clickedControlId) && !isClickedControlReuseComponent;
+}
 
 /**
  * Handler for enablement of Extend With Controller context menu entry
@@ -111,7 +131,12 @@ export async function handler(
 
     switch (dialogName) {
         case DialogNames.ADD_FRAGMENT:
-            controller = new AddFragment(`open.ux.preview.client.adp.controllers.${dialogName}`, overlay, rta, aggregation);
+            controller = new AddFragment(
+                `open.ux.preview.client.adp.controllers.${dialogName}`,
+                overlay,
+                rta,
+                aggregation
+            );
             break;
         case DialogNames.CONTROLLER_EXTENSION:
             controller = new ControllerExtension(`open.ux.preview.client.adp.controllers.${dialogName}`, overlay, rta);

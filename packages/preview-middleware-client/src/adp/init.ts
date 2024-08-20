@@ -13,12 +13,12 @@ import { getError } from '../cpe/error-utils';
 import { getUi5Version, getUI5VersionValidationMessage, isLowerThanMinimalUi5Version } from '../utils/version';
 
 import init from '../cpe/init';
-import { getAllSyncViewsIds } from '../cpe/utils';
 import { getFeVersion } from '../cpe/quick-actions/utils';
+import { getResourceBundle } from '../i18n';
 
 import { loadDefinitions } from './quick-actions/load';
+import { getAllSyncViewsIds } from './utils';
 import { initDialogs } from './init-dialogs';
-import { getResourceBundle } from '../i18n';
 
 export default async function (rta: RuntimeAuthoring) {
     const flexSettings = rta.getFlexSettings();

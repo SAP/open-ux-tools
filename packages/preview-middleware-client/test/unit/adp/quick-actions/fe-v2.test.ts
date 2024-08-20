@@ -96,7 +96,7 @@ describe('FE V2 quick actions', () => {
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([
                         {
-                            title: 'List Report',
+                            title: 'LIST REPORT',
                             actions: [
                                 {
                                     'kind': 'simple',

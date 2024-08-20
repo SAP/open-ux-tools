@@ -12,12 +12,14 @@ import VersionInfo from 'mock/sap/ui/VersionInfo';
 
 jest.mock('../../../../src/cpe/outline/editable', () => {
     return {
+        ...jest.requireActual('../../../../src/cpe/outline/editable'),
         isEditable: () => false
     };
 });
 
 jest.mock('../../../../src/cpe/utils', () => {
     return {
+        ...jest.requireActual('../../../../src/cpe/utils'),
         isReuseComponent: () => true
     };
 });

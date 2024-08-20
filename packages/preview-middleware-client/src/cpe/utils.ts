@@ -3,15 +3,12 @@ import type Control from 'sap/ui/core/Control';
 import Element from 'sap/ui/core/Element';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import DataType from 'sap/ui/base/DataType';
-import Log from 'sap/base/Log';
 import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 import ComponentContainer from 'sap/ui/core/ComponentContainer';
 import XMLView from 'sap/ui/core/mvc/XMLView';
 import UIComponent from 'sap/ui/core/UIComponent';
-import DTElement from 'sap/ui/dt/Element';
-import FlexUtils from 'sap/ui/fl/Utils';
 
-import { getError } from './error-utils';
+
 import { getComponent } from './ui5-utils';
 import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
 
@@ -26,10 +23,6 @@ export interface Properties {
     [key: string]: PropertiesInfo;
 }
 
-interface ControllerInfo {
-    controllerName: string;
-    viewId: string;
-}
 
 export interface ManagedObjectMetadataProperties {
     name: string;
@@ -79,75 +72,6 @@ export async function getLibrary(controlName: string): Promise<string> {
 }
 
 /**
- * Check if element is sync view
- *
- * @param element Design time Element
- * @returns boolean if element is sync view or not
- */
-function isSyncView(element: DTElement): boolean {
-    return element?.getMetadata()?.getName()?.includes('XMLView') && element?.oAsyncState === undefined;
-}
-
-/**
- * Get Ids for all sync views
- *
- * @param ui5VersionInfo UI5 Version Information
- *
- * @returns array of Ids for application sync views
- */
-export async function getAllSyncViewsIds(ui5VersionInfo: Ui5VersionInfo): Promise<string[]> {
-    const syncViewIds: string[] = [];
-    try {
-        if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 120 })) {
-            const elements = Element.registry.filter(() => true) as DTElement[];
-            elements.forEach((ui5Element) => {
-                if (isSyncView(ui5Element)) {
-                    syncViewIds.push(ui5Element.getId());
-                }
-            });
-        } else {
-            const ElementRegistry = (await import('sap/ui/core/ElementRegistry')).default;
-            const elements = ElementRegistry.all() as Record<string, DTElement>;
-            Object.entries(elements).forEach(([key, ui5Element]) => {
-                if (isSyncView(ui5Element)) {
-                    syncViewIds.push(key);
-                }
-            });
-        }
-    } catch (error) {
-        Log.error('Could not get application sync views', getError(error));
-    }
-
-    return syncViewIds;
-}
-
-/**
- * Gets controller name and view ID for the given UI5 control.
- *
- * @param control UI5 control.
- * @returns The controller name and view ID.
- */
-
-export function getControllerInfoForControl(control: ManagedObject): ControllerInfo {
-    const view = FlexUtils.getViewForControl(control);
-    const controllerName = view.getController().getMetadata().getName();
-    const viewId = view.getId();
-    return { controllerName, viewId };
-}
-
-/**
- * Gets controller name and view ID for the given overlay control.
- *
- * @param overlayControl The overlay control.
- * @returns The controller name and view ID.
- */
-
-export function getControllerInfo(overlayControl: ElementOverlay): ControllerInfo {
-    const control = overlayControl.getElement();
-    return getControllerInfoForControl(control);
-}
-
-/**
  * Function that checks if control is reuse component
  *
  * @param controlId id control
@@ -170,26 +94,6 @@ export function isReuseComponent(controlId: string, ui5VersionInfo: Ui5VersionIn
     }
 
     return manifest['sap.app']?.type === 'component';
-}
-
-/**
- * Handler for enablement of Extend With Controller context menu entry
- *
- * @param control UI5 control.
- * @param syncViewsIds Runtime Authoring
- * @param ui5VersionInfo UI5 version information
- *
- * @returns boolean whether menu item is enabled or not
- */
-export function isControllerExtensionEnabledForControl(
-    control: ManagedObject,
-    syncViewsIds: string[],
-    ui5VersionInfo: Ui5VersionInfo
-): boolean {
-    const clickedControlId = FlexUtils.getViewForControl(control).getId();
-    const isClickedControlReuseComponent = isReuseComponent(clickedControlId, ui5VersionInfo);
-
-    return !syncViewsIds.includes(clickedControlId) && !isClickedControlReuseComponent;
 }
 
 /**
