@@ -184,6 +184,10 @@ describe('Test validators', () => {
     });
 
     describe('validateCredentials', () => {
+        it('should return error for no credentials', async () => {
+            expect(await validateCredentials('', {})).toBe(t('errors.requireCredentials'));
+        });
+
         it('should return true for valid credentials', async () => {
             jest.spyOn(utils, 'initTransportConfig').mockResolvedValueOnce({
                 transportConfig: {} as any,
