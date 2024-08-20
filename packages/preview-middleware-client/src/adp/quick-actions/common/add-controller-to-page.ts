@@ -38,12 +38,10 @@ export class AddControllerToPageQuickAction implements SimpleQuickActionDefiniti
             CONTROL_TYPES
         )) {
             const version = await getUi5Version();
-            const versionParts = version.split('.');
-            const minor = parseInt(versionParts[1], 10);
-            const syncViewsIds = await getAllSyncViewsIds(minor);
+            const syncViewsIds = await getAllSyncViewsIds(version);
             const controlInfo = getControllerInfoForControl(control);
             const data = await getExistingController(controlInfo.controllerName);
-            this.isActive = isControllerExtensionEnabledForControl(control, syncViewsIds, minor);
+            this.isActive = isControllerExtensionEnabledForControl(control, syncViewsIds, version);
             this.controllerExists = data?.controllerExists;
             this.control = control;
             break;
