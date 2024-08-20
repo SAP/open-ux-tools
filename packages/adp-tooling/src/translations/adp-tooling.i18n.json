@@ -186,6 +186,7 @@
         "transport": "Enter transport number for the entered package"
     },
     "info": {
-        "moreSearchResults": "More than {{count}} results, keep typing to narrow down"
+        "moreSearchResults": "More than {{count}} results, keep typing to narrow down",
+        "applicationErrorMoreInfo": "https://help.sap.com/docs/bas/developing-sap-fiori-app-in-sap-business-application-studio/adaptation-project-for-on-premise-system"
     }
 }
