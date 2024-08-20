@@ -1,6 +1,7 @@
 import { existsSync } from 'fs';
 import { t } from '../i18n';
-import { isEmptyString, validateSpecialChars } from '../general/validators';
+import { isEmptyString, validateEmptyString, validateSpecialChars } from '../general/validators';
+import { isAbsolute, join, sep } from 'path';
 
 const projectNamePattern = /^(\w\.\w|[a-zA-Z0-9]){1,61}$/;
 
@@ -263,4 +264,35 @@ export function validateAction(value: string): string | boolean {
  */
 export function validateSemanticObject(value: string): string | boolean {
     return validateSpecialChars(value, '^[A-Za-z0-9_]{0,30}$', t('adp.invalidSemanticObject'));
+}
+
+/**
+ * Validates if selected annotation file is valid.
+ *
+ * @param value The annotation file
+ * @param basePath The base path of the project
+ * @returns {boolean} True if validation passes, or an error message if validation fails.
+ */
+export function annotationFile(value: string, basePath: string): string | boolean {
+    const validationResult = validateEmptyString(value);
+    if (typeof validationResult === 'string') {
+        return validationResult;
+    }
+
+    const filePath = isAbsolute(value) ? value : join(basePath, value);
+    if (!existsSync(filePath)) {
+        return t('adp.fileDoesNotExist');
+    }
+
+    const fileName = filePath.split(sep).pop();
+
+    if (!fileName) {
+        return t('adp.fileDoesNotExist');
+    }
+
+    if (existsSync(join(basePath, 'webapp', 'changes', 'annotations', fileName))) {
+        return t('adp.annotationFileAlreadyExists');
+    }
+
+    return true;
 }

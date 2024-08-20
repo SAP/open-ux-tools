@@ -112,8 +112,6 @@
         "inputCannotBeEmpty": "Input cannot be empty.",
         "inputCannotBeEmptyGeneric": "{{input}} cannot be empty",
         "inpuCannotHaveSpaces": "Input cannot contain spaces.",
-        "fileDoesNotExist": "The file doesn't exist",
-        "annotationFileAlreadyExists": "There is already an annotation file with the same name, please choose another file or rename the file and select it again",
         "externalLoginDisabled": "CF Login cannot be detected as extension in current installation of VSCode, please refer to documentation (link not yet available) in order to install it.",
         "systemClientMandatoryError": "System client can contain only digits.",
         "unsupportedSystemInt": "The system that you have selected cannot be detected to be of type OnPremise. You should select system of this type in order to continue with the generation of the project.",
