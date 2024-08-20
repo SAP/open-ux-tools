@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.5.26
+
+### Patch Changes
+
+-   12504d5: adds new module @sap-ux/abap-deploy-config-inquirer
+-   Updated dependencies [12504d5]
+    -   @sap-ux/fiori-generator-shared@0.3.14
+
 ## 0.5.25
 
 ### Patch Changes
