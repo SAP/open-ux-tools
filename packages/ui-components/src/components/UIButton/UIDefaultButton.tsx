@@ -371,11 +371,15 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
+        const defaultMenuIconProps = this.props.menuProps?.items
+            ? {
+                  // Overwrite build-in fluentui icon
+                  iconName: UiIcons.ArrowDown
+              }
+            : undefined;
         return (
             <DefaultButton
-                menuIconProps={{
-                    iconName: UiIcons.ArrowDown
-                }}
+                menuIconProps={defaultMenuIconProps}
                 {...this.props}
                 styles={this.setStyle(this.props)}
                 menuAs={UIContextualMenu}

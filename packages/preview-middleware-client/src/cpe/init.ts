@@ -17,7 +17,7 @@ import { logger } from './logger';
 import { getIcons } from './ui5-utils';
 import { WorkspaceConnectorService } from './connector-service';
 import { RtaService } from './rta-service';
-import { getError } from './error-utils';
+import { getError } from '../utils/error';
 
 export default function init(rta: RuntimeAuthoring): Promise<void> {
     Log.info('Initializing Control Property Editor');

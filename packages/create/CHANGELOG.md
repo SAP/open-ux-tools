@@ -1,5 +1,11 @@
 # @sap-ux/create
 
+## 0.7.55
+
+### Patch Changes
+
+-   a3cb772: chore: added missing return types to functions
+
 ## 0.7.54
 
 ### Patch Changes
