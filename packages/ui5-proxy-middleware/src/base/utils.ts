@@ -272,7 +272,7 @@ export const injectScripts = async (
     try {
         const projectRoot = process.cwd();
         const args = process.argv;
-        const htmlFileName = getHtmlFile(req.baseUrl);
+        const htmlFileName = getHtmlFile(req.url);
         const yamlFileName = getYamlFile(args);
         const ui5YamlPath = join(projectRoot, yamlFileName);
         const webAppFolder = await getWebAppFolderFromYaml(ui5YamlPath);

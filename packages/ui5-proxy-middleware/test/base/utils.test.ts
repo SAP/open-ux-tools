@@ -466,7 +466,7 @@ describe('utils', () => {
 
         test('HTML is modified and response is sent', async () => {
             readFileMock.mockReturnValue('<html></html>');
-            await baseUtils.injectScripts({ baseUrl: 'index.html' } as any, respMock, nextMock, []);
+            await baseUtils.injectScripts({ url: 'index.html' } as any, respMock, nextMock, []);
             expect(respMock.writeHead).toBeCalledTimes(1);
             expect(respMock.writeHead).toBeCalledWith(200, {
                 'Content-Type': 'text/html'
