@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.27.3
+
+### Patch Changes
+
+-   6916f9e: Chart building block creation. Create 'contextPath' attribute when 'metaPath' property is received as 'BuildingBlockMetaPath' object
+
 ## 0.27.2
 
 ### Patch Changes
