@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.27.5
+
+### Patch Changes
+
+-   73aa3cd: FilterBar prompt. Show binding context path type for filter bar
+
 ## 0.27.4
 
 ### Patch Changes
