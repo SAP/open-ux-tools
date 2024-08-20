@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 0.9.1
+
+### Patch Changes
+
+-   08b788c: export getFioriToolsDirectory, FioriToolsSettings
+
 ## 0.9.0
 
 ### Minor Changes
