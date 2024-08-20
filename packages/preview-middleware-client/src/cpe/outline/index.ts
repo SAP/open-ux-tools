@@ -6,7 +6,7 @@ import type OutlineService from 'sap/ui/rta/command/OutlineService';
 
 import { transformNodes } from './nodes';
 import Log from 'sap/base/Log';
-import { getError } from '../error-utils';
+import { getError } from '../../utils/error';
 
 /**
  *
@@ -26,8 +26,8 @@ export async function initOutline(rta: RuntimeAuthoring, sendAction: (action: Ex
             if(reuseComponentsIds.size > 0 && scenario === 'ADAPTATION_PROJECT' && !hasSentWarning) {
                 sendAction(showMessage({ message: 'Have in mind that reuse components are detected for some views in this application and controller extensions and adding fragments are not supported for such views. Controller extension and adding fragment functionality on these views will be disabled.', shouldHideIframe: false}));
                 hasSentWarning = true;
-            } 
-           
+            }
+
         } catch (error) {
             Log.error('Outline sync failed!', getError(error));
         }

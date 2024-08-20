@@ -10,7 +10,7 @@ import {
 } from '@sap-ux-private/control-property-editor-common';
 import { ActionHandler } from '../cpe/types';
 import UI5Element from 'sap/ui/dt/Element';
-import { getError } from '../cpe/error-utils';
+import { getError } from '../utils/error';
 import {
     getUi5Version,
     getUI5VersionValidationMessage,
