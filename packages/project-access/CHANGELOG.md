@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.26.8
+
+### Patch Changes
+
+-   df6262e: fix: use manifest.json path as root for `i18n` folder
+
 ## 1.26.7
 
 ### Patch Changes
