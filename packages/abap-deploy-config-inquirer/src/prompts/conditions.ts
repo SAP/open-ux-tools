@@ -2,7 +2,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { PromptState } from './prompt-state';
 import { clientDoesNotExistOrInvalid } from '../validator-utils';
 import { findBackendSystemByUrl, initTransportConfig } from '../utils';
-import { handleErrorMessage } from '../error-handler';
+import { handleTransportConfigError } from '../error-handler';
 import { t } from '../i18n';
 import { getHelpUrl, HELP_TREE } from '@sap-ux/fiori-generator-shared';
 import { isFeatureEnabled } from '@sap-ux/feature-toggle';
@@ -121,7 +121,7 @@ export async function showUsernameQuestion(backendTarget?: BackendTarget): Promi
         client: PromptState.abapDeployConfig.client,
         destination: PromptState.abapDeployConfig.destination,
         errorHandler: (e: string) => {
-            handleErrorMessage(e);
+            handleTransportConfigError(e);
         }
     }));
 

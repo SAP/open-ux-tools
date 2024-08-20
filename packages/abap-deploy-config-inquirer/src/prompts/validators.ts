@@ -11,7 +11,7 @@ import {
 import { getTransportListFromService } from '../service-provider-utils';
 import { t } from '../i18n';
 import { findBackendSystemByUrl, initTransportConfig, getPackageAnswer, queryPackages } from '../utils';
-import { handleErrorMessage } from '../error-handler';
+import { handleTransportConfigError } from '../error-handler';
 import { AuthenticationType } from '@sap-ux/store';
 import { getHelpUrl, HELP_TREE } from '@sap-ux/fiori-generator-shared';
 import LoggerHelper from '../logger-helper';
@@ -244,7 +244,7 @@ export async function validateCredentials(
             password: input
         },
         errorHandler: (e: string) => {
-            handleErrorMessage(e);
+            handleTransportConfigError(e);
         }
     }));
 

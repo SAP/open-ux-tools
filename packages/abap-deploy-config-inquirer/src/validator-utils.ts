@@ -75,7 +75,7 @@ export async function listPackages(
 
 /**
  * Temporary duplication of `validateAppName` from `@sap-ux/project-input-validator` until i18n loading issue is resolved.
- * Validator Fiori app name is compatble with Fiori project requirements.
+ * Validator Fiori app name is compatible with Fiori project requirements.
  *
  * @param name Fiori app name
  * @param prefix Prefix required by backend system
