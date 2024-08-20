@@ -273,7 +273,7 @@ export function validateSemanticObject(value: string): string | boolean {
  * @param basePath The base path of the project
  * @returns {boolean} True if validation passes, or an error message if validation fails.
  */
-export function annotationFile(value: string, basePath: string): string | boolean {
+export function validateAnnotationFile(value: string, basePath: string): string | boolean {
     const validationResult = validateEmptyString(value);
     if (typeof validationResult === 'string') {
         return validationResult;
