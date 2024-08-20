@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.17.5
+
+### Patch Changes
+
+-   128a3dc: UIDefaultButton. Regression after context menu enhancements - ArrowDown icon always rendered for button
+
 ## 1.17.4
 
 ### Patch Changes
