@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.17.29
+
+### Patch Changes
+
+-   1cab2f9: chore(env-check) upgrade archiver 7.0.1
+
 ## 0.17.28
 
 ### Patch Changes
