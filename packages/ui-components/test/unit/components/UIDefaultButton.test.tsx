@@ -3,6 +3,7 @@ import * as Enzyme from 'enzyme';
 import { DefaultButton } from '@fluentui/react';
 import { UIDefaultButton } from '../../../src/components/UIButton/UIDefaultButton';
 import type { UIDefaultButtonProps } from '../../../src/components/UIButton/UIDefaultButton';
+import { UiIcons } from '../../../src/components/Icons';
 
 describe('<UIDefaultButton />', () => {
     let wrapper: Enzyme.ReactWrapper<UIDefaultButtonProps>;
@@ -510,5 +511,37 @@ describe('<UIDefaultButton />', () => {
               },
             }
         `);
+    });
+
+    describe('Menu', () => {
+        it('Default render without icon', () => {
+            expect(wrapper.find('[data-icon-name="ArrowDown"]').length).toEqual(0);
+        });
+
+        it('Render without icon', () => {
+            wrapper.setProps({
+                menuProps: undefined
+            });
+            expect(wrapper.find('[data-icon-name="ArrowDown"]').length).toEqual(0);
+        });
+
+        it('Render with default icon', () => {
+            wrapper.setProps({
+                menuProps: {
+                    items: []
+                }
+            });
+            expect(wrapper.find('[data-icon-name="ArrowDown"]').length).toEqual(1);
+        });
+
+        it('Render with custom icon', () => {
+            wrapper.setProps({
+                menuIconProps: {
+                    iconName: UiIcons.ArrowUp
+                }
+            });
+            expect(wrapper.find('[data-icon-name="ArrowDown"]').length).toEqual(0);
+            expect(wrapper.find('[data-icon-name="ArrowUp"]').length).toEqual(1);
+        });
     });
 });
