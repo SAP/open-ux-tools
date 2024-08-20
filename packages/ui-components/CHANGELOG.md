@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.17.4
+
+### Patch Changes
+
+-   ee7aeb8: Layout types for UIContextualMenu and consider underline prop for UILink
+
 ## 1.17.3
 
 ### Patch Changes
