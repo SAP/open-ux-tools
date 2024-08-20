@@ -1,5 +1,31 @@
 # @sap-ux/environment-check
 
+## 0.17.27
+
+### Patch Changes
+
+-   Updated dependencies [61721f2]
+    -   @sap-ux/ui5-config@0.24.0
+    -   @sap-ux/project-access@1.26.7
+    -   @sap-ux/axios-extension@1.16.4
+
+## 0.17.26
+
+### Patch Changes
+
+-   9c8dc5c: fix: update `axios` to `1.7.4`
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/axios-extension@1.16.4
+    -   @sap-ux/btp-utils@0.15.1
+
+## 0.17.25
+
+### Patch Changes
+
+-   Updated dependencies [08b788c]
+    -   @sap-ux/store@0.9.1
+    -   @sap-ux/ui5-config@0.23.1
+
 ## 0.17.24
 
 ### Patch Changes

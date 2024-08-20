@@ -1,5 +1,45 @@
 # @sap-ux/preview-middleware
 
+## 0.16.50
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.38
+-   @sap-ux/project-access@1.26.7
+
+## 0.16.49
+
+### Patch Changes
+
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/btp-utils@0.15.1
+    -   @sap-ux/adp-tooling@0.12.37
+
+## 0.16.48
+
+### Patch Changes
+
+-   53a5b13: fix static preview client url
+
+## 0.16.47
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.36
+
+## 0.16.46
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.35
+
+## 0.16.45
+
+### Patch Changes
+
+-   Updated dependencies [b813843]
+    -   @sap-ux/adp-tooling@0.12.34
+
 ## 0.16.44
 
 ### Patch Changes
