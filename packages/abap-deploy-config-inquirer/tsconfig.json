@@ -28,19 +28,13 @@
       "path": "../logger"
     },
     {
-      "path": "../odata-service-writer"
-    },
-    {
-      "path": "../project-access"
-    },
-    {
-      "path": "../project-input-validator"
-    },
-    {
       "path": "../store"
     },
     {
-      "path": "../telemetry"
+      "path": "../system-access"
+    },
+    {
+      "path": "../ui5-config"
     }
   ]
 }
