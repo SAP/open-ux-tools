@@ -118,7 +118,7 @@ export function validateSpecialChars(
         return true;
     }
 
-    return errorMessage ?? t('general.invalidValueForSpecialChars');
+    return errorMessage != '' ? errorMessage : t('general.invalidValueForSpecialChars');
 }
 
 /**

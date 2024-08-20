@@ -72,6 +72,6 @@
         "invalidAction": "Action should contain only alphanumerical characters and '_' up to 60 characters.",
         "invalidSemanticObject": "Semantic Object should contain only alphanumerical characters and '_' up to 30 characters.",
         "fileDoesNotExist": "The file doesn't exist",
-        "annotationFileAlreadyExists": "There is already an annotation file with the same name, please choose another file or rename the file and select it again",
+        "annotationFileAlreadyExists": "There is already an annotation file with the same name, please choose another file or rename the file and select it again"
     }
 }
