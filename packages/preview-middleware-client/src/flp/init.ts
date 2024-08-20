@@ -7,9 +7,9 @@ import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import AppState from 'sap/ushell/services/AppState';
 import { getManifestAppdescr } from '../adp/api-handler';
-import { getError } from '../cpe/error-utils';
+import { getError } from '../utils/error';
 import initConnectors from './initConnectors';
-import { getUi5Version } from '../utils/version';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -269,7 +269,7 @@ export async function init({
     const urlParams = new URLSearchParams(window.location.search);
     const container = sap?.ushell?.Container ?? sap.ui.require('sap/ushell/Container');
     let scenario: string = '';
-    const version = await getUi5Version();
+    const ui5VersionInfo = await getUi5Version();
     // Register RTA if configured
     if (flex) {
         const flexSettings = JSON.parse(flex) as FlexSettings;
@@ -277,16 +277,16 @@ export async function init({
         container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
-                const minor = parseInt(version.split('.')[1], 10);
                 const view = event.getParameter('componentInstance');
                 const flexSettings = JSON.parse(flex) as FlexSettings;
                 const pluginScript = flexSettings.pluginScript ?? '';
 
                 let libs: string[] = [];
-                if (minor > 71) {
-                    libs.push('sap/ui/rta/api/startAdaptation');
-                } else {
+
+                if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 72 })) {
                     libs.push('open/ux/preview/client/flp/initRta');
+                } else {
+                    libs.push('sap/ui/rta/api/startAdaptation');
                 }
 
                 if (flexSettings.pluginScript) {
@@ -332,10 +332,9 @@ export async function init({
     const resourceBundle = await loadI18nResourceBundle(scenario as Scenario);
     setI18nTitle(resourceBundle);
     registerSAPFonts();
-    const major = version ? parseInt(version.split('.')[0], 10) : 2;
 
     const renderer =
-        major < 2
+        ui5VersionInfo.major < 2
             ? await container.createRenderer(undefined, true)
             : await container.createRendererInternal(undefined, true);
     renderer.placeAt('content');
