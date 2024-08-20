@@ -1,5 +1,11 @@
 # @sap-ux/ui5-info
 
+## 0.8.1
+
+### Patch Changes
+
+-   9c8dc5c: fix: update `axios` to `1.7.4`
+
 ## 0.8.0
 
 ### Minor Changes

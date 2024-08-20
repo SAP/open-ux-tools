@@ -35,11 +35,13 @@ describe('<UIDropdown />', () => {
     });
 
     it('Test className property', () => {
-        expect(wrapper.find(ContextualMenu).prop('className')).toEqual('ts-ContextualMenu');
+        expect(wrapper.find(ContextualMenu).prop('className')).toEqual('ts-ContextualMenu ts-ContextualMenu--dropdown');
         wrapper.setProps({
             className: 'dummy'
         });
-        expect(wrapper.find(ContextualMenu).prop('className')).toEqual('ts-ContextualMenu dummy');
+        expect(wrapper.find(ContextualMenu).prop('className')).toEqual(
+            'ts-ContextualMenu ts-ContextualMenu--dropdown dummy'
+        );
     });
 
     for (const testMaxWidth of [350, undefined]) {
@@ -55,6 +57,45 @@ describe('<UIDropdown />', () => {
             });
         });
     }
+
+    it('iconToLeft prop', () => {
+        wrapper.setProps({
+            items: [
+                {
+                    key: 'item1',
+                    text: 'menu item 1',
+                    subMenuProps: {
+                        items: [
+                            {
+                                key: 'item1',
+                                text: 'item 1 - submenu1'
+                            }
+                        ]
+                    }
+                },
+                {
+                    key: 'item2',
+                    text: 'menu item 2'
+                }
+            ],
+            iconToLeft: true
+        });
+        wrapper.update();
+        //Check if submenu icon is rendered
+        // Check if icon is on left side
+
+        const containerElements = wrapper.find('.ms-ContextualMenu-linkContent');
+        containerElements.forEach((containerElement, index) => {
+            const textElement = containerElement.find('.ms-ContextualMenu-itemText').getDOMNode();
+            if (index === 0) {
+                const iconElement = containerElement.find('i.ms-ContextualMenu-submenuIcon').getDOMNode();
+                expect(containerElement.getDOMNode().childNodes[0]).toBe(iconElement);
+                expect(containerElement.getDOMNode().childNodes[1]).toBe(textElement);
+            } else {
+                expect(containerElement.getDOMNode().childNodes[0]).toBe(textElement);
+            }
+        });
+    });
 
     it('Test item with icon', () => {
         wrapper.setProps({
