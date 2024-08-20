@@ -4,7 +4,28 @@ import type { EditorQuestion, InputQuestion, ListQuestion, YUIQuestion } from '@
 import { t } from '../../../i18n';
 import type { FlpConfigAnswers } from '../../../types';
 import type { ManifestManager } from '../../../client';
-import { validateByRegex, validateEmptyInput, validateParameters } from '../../../base';
+import { parseParameters } from '../../../common';
+import { validateAction, validateEmptyString, validateSemanticObject } from '@sap-ux/project-input-validator';
+
+/**
+ * Validates that FLP Parameters are in correct format.
+ *
+ * @param {string} paramString - The FLP Parameters string
+ * @returns {string | boolean} If parameters are in correct format returns true otherwise error message.
+ */
+export function validateParameters(paramString: string): string | boolean {
+    if (!paramString) {
+        return true;
+    }
+
+    try {
+        parseParameters(paramString);
+    } catch (error) {
+        return error.message;
+    }
+
+    return true;
+}
 
 /**
  * Extracts inbound IDs from the manifest's cross-navigation section.
@@ -43,7 +64,7 @@ export async function getPrompts(
             message: t('prompts.inboundId'),
             choices: inboundIds,
             default: inboundIds[0],
-            validate: (value: string) => validateEmptyInput(value, 'inboundId'),
+            validate: (value: string) => validateEmptyString(value),
             when: isCloudProject && inboundIds.length > 0,
             guiOptions: {
                 hint: t('tooltips.inboundId'),
@@ -82,7 +103,7 @@ export async function getPrompts(
             type: 'input',
             name: 'semanticObject',
             message: t('prompts.semanticObject'),
-            validate: (value: string) => validateByRegex(value, 'semanticObject', '^[A-Za-z0-9_]{0,30}$'),
+            validate: (value: string) => validateSemanticObject(value),
             guiOptions: {
                 hint: t('prompts.semanticObject'),
                 breadcrumb: t('prompts.semanticObject'),
@@ -94,7 +115,7 @@ export async function getPrompts(
             type: 'input',
             name: 'action',
             message: t('prompts.action'),
-            validate: (value: string) => validateByRegex(value, 'action', '^[A-Za-z0-9_]{0,60}$'),
+            validate: (value: string) => validateAction(value),
             guiOptions: {
                 hint: t('tooltips.action'),
                 breadcrumb: t('prompts.action'),
@@ -112,7 +133,7 @@ export async function getPrompts(
                 mandatory: true
             },
             when: isCloudProject,
-            validate: (value: string) => validateEmptyInput(value, 'title')
+            validate: (value: string) => validateEmptyString(value)
         } as InputQuestion<FlpConfigAnswers>,
         {
             type: 'input',

@@ -3,8 +3,8 @@ import type { InputQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import { t } from '../../../i18n';
 import { FlexLayer } from '../../../types';
 import type { BasicInfoAnswers } from '../../../types';
-import { validateProjectName, isNotEmptyString, validateNamespace } from '../../../base/validators';
 import { generateValidNamespace, getDefaultProjectName, getProjectNameTooltip } from './helper';
+import { isEmptyString, validateProjectName, validateNamespace } from '@sap-ux/project-input-validator';
 
 /**
  * Generates an array of prompt objects configured for collecting basic information about a project.
@@ -43,7 +43,7 @@ export function getPrompts(path: string, layer: FlexLayer): YUIQuestion<BasicInf
                 breadcrumb: t('prompts.appTitleLabel')
             },
             validate: (value: string) => {
-                if (!isNotEmptyString(value)) {
+                if (isEmptyString(value)) {
                     return t('validators.cannotBeEmpty');
                 }
                 return true;

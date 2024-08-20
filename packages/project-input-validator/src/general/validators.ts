@@ -1,6 +1,26 @@
 import { t } from '../i18n';
 
 /**
+ * Checks if the input is a empty string.
+ *
+ * @param input - input to check
+ * @returns true if the input is a empty string
+ */
+export function isEmptyString(input: string): boolean {
+    return input?.trim().length === 0;
+}
+
+/**
+ * Checks if the input contain any whitespace characters.
+ *
+ * @param input - input to check
+ * @returns true if the input contain any whitespace characters.
+ */
+export function hasEmptySpaces(input: string): boolean {
+    return /\s/.test(input);
+}
+
+/**
  * SAP client number is either empty or 3 digit string.
  *
  * @param client ABAP system client number
@@ -40,13 +60,11 @@ export function validateUrl(input: string): boolean | string {
  * @returns true or error message
  */
 export function validateEmptyString(input: string): boolean | string {
-    const formattedInput = input?.trim() || '';
-
-    if (formattedInput.trim().length > 0) {
-        return true;
+    if (isEmptyString(input)) {
+        return t('general.inputCannotBeEmpty');
     }
 
-    return t('general.inputCannotBeEmpty');
+    return true;
 }
 
 /**
@@ -56,7 +74,7 @@ export function validateEmptyString(input: string): boolean | string {
  * @returns true or error message
  */
 export function validateEmptySpaces(value: string): boolean | string {
-    if (/\s/.test(value)) {
+    if (hasEmptySpaces(value)) {
         return t('general.inputCannotHaveSpaces');
     }
 
@@ -83,13 +101,40 @@ export function validateJSON(value: string): boolean | string {
  *
  * @param value The value to validate.
  * @param regexp The regex expression for allowed special characters.
+ * @param errorMessage The error message if validation fails.
  * @returns {boolean} True if validation passes, or an error message if validation fails.
  */
-export function validateSpecialChars(value: string, regexp = '^[a-zA-Z0-9_$.\\-]+$'): boolean | string {
+export function validateSpecialChars(
+    value: string,
+    regexp = '^[a-zA-Z0-9_$.\\-]+$',
+    errorMessage = ''
+): boolean | string {
+    if (isEmptyString(value)) {
+        return t('general.inputCannotBeEmpty');
+    }
+
     const regex = new RegExp(regexp, 'g');
     if (regex.test(value)) {
         return true;
     }
 
-    return t('general.invalidValueForSpecialChars');
+    return errorMessage ?? t('general.invalidValueForSpecialChars');
+}
+
+/**
+ * Validate input is not empty string and does not contain any whitespace characters.
+ *
+ * @param value The string to check for whitespace characters.
+ * @returns true or error message
+ */
+export function validateEmptyStringAndEmptySpaces(value: string): boolean | string {
+    if (isEmptyString(value)) {
+        return t('general.inputCannotBeEmpty');
+    }
+
+    if (hasEmptySpaces(value)) {
+        return t('general.inputCannotHaveSpaces');
+    }
+
+    return true;
 }
