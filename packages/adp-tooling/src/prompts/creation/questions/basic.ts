@@ -4,7 +4,7 @@ import { t } from '../../../i18n';
 import { FlexLayer } from '../../../types';
 import type { BasicInfoAnswers } from '../../../types';
 import { generateValidNamespace, getDefaultProjectName, getProjectNameTooltip } from './helper';
-import { validateProjectName, validateNamespace, validateEmptyString } from '@sap-ux/project-input-validator';
+import { validateProjectName, validateNamespaceAdp, validateEmptyString } from '@sap-ux/project-input-validator';
 
 /**
  * Generates an array of prompt objects configured for collecting basic information about a project.
@@ -80,7 +80,7 @@ function getNamespacePrompt(isCustomerBase: boolean): YUIQuestion<BasicInfoAnswe
             prompt.guiOptions.breadcrumb = t('prompts.namespaceLabel');
         }
         prompt.validate = (value: string, answers: BasicInfoAnswers) =>
-            validateNamespace(value, answers.projectName, isCustomerBase);
+            validateNamespaceAdp(value, answers.projectName, isCustomerBase);
     }
 
     return prompt;

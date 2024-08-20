@@ -177,14 +177,14 @@ describe('getPrompts', () => {
     });
 
     it('should pass with valid namespace', () => {
-        jest.spyOn(validators, 'validateNamespace').mockReturnValue(true);
+        jest.spyOn(validators, 'validateNamespaceAdp').mockReturnValue(true);
         const prompts = getBasicInfoPrompts('/path', FlexLayer.CUSTOMER_BASE);
         const namespacePrompt = prompts.find((prompt) => prompt.name === 'namespace') as any;
         expect(namespacePrompt.validate('customer.app.variant1', { projectName: 'app.variant1' })).toBeTruthy();
     });
 
     it('should fail with invalid namespace', () => {
-        jest.spyOn(validators, 'validateNamespace').mockReturnValue('Input cannot be empty');
+        jest.spyOn(validators, 'validateNamespaceAdp').mockReturnValue('Input cannot be empty');
         const prompts = getBasicInfoPrompts('/path', FlexLayer.CUSTOMER_BASE);
         const namespacePrompt = prompts.find((prompt) => prompt.name === 'namespace') as any;
         expect(namespacePrompt.validate('', { projectName: 'app.variant1' })).toBe('Input cannot be empty');
