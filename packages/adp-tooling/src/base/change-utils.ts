@@ -34,12 +34,11 @@ interface InboundChange extends ManifestChangeProperties {
 export function writeAnnotationChange(
     projectPath: string,
     timestamp: number,
-    data: AnnotationsData,
+    { annotation }: AnnotationsData,
     change: ManifestChangeProperties,
     fs: Editor
 ): void {
     try {
-        const { annotation } = data;
         const changeFileName = `id_${timestamp}_addAnnotationsToOData.change`;
         const changesFolderPath = path.join(projectPath, DirName.Webapp, DirName.Changes);
         const changeFilePath = path.join(changesFolderPath, DirName.Manifest, changeFileName);
