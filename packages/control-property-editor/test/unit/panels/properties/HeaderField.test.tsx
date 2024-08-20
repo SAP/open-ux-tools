@@ -34,7 +34,7 @@ describe('HeaderField', () => {
         expect(writeTextMock).toBeCalled();
     });
 
-    test.only('clipboard is updated after prop change', () => {
+    test('clipboard is updated after prop change', () => {
         const { rerender, debug } = render(<HeaderField {...headerFieldProps} />);
 
         const newHeaderFieldProps: HeaderFieldProps = {
